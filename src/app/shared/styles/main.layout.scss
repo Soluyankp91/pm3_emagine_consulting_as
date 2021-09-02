@@ -1,0 +1,55 @@
+.has-danger .form-control-feedback {
+    color: #fd397a;
+    margin-top: 0.2rem;
+    font-size: .85rem;
+    text-align: left;
+}
+
+ul.text-danger {
+    list-style: none;
+    color: #f4516c;
+    margin-top: 0.2rem;
+    font-size: .85rem;
+    text-align: left;
+    padding-left: 0;
+}
+
+.captcha-container {
+    margin: auto;
+    width: 70%;
+}
+
+.main-navigation {
+  &--list {
+      list-style-type: none;
+      padding: 20px !important;
+      &.bottom-nav--list {
+          .bottom-nav--list-item {
+              margin-bottom: 35px !important;
+              &:last-of-type {
+                  margin-bottom: 0 !important;
+              }
+          }
+      }
+      &-item {
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          margin-bottom: 55px;
+          cursor: pointer;
+          &:focus {
+              outline: none !important;
+          }
+          mat-icon svg [fill],
+          mat-icon svg g [fill] {
+              fill: #474849 !important;
+          }
+          &.active {
+              mat-icon svg [fill],
+              mat-icon svg g [fill] {
+                  fill: #7D9DB2 !important;
+              }
+          }
+      }
+  }
+}

@@ -1,0 +1,39 @@
+html,
+body,
+p,
+h1,
+h3,
+h4,
+h5,
+h6,
+span,
+label {
+  font-family: 'Roboto', sans-serif !important;
+}
+
+
+.text-left {
+  text-align: left !important;
+}
+
+.text-right {
+    text-align: right !important;
+}
+
+.text-center {
+    text-align: center !important;
+}
+
+.text-bold {
+  font-weight: 700;
+}
+
+.underlined-text {
+    text-decoration: underline;
+}
+
+.text-truncate-ellipsis {
+    text-overflow: ellipsis;
+    overflow: hidden;
+    white-space: nowrap;
+}

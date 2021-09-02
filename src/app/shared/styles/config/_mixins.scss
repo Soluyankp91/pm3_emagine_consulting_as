@@ -1,0 +1,11 @@
+@mixin flexCentered() {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+
+@mixin opacityActions() {
+    opacity: 1;
+    transition: opacity .4s ease-in;
+}
