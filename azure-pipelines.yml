@@ -9,7 +9,7 @@ pool:
 steps:
 - task: NodeTool@0
   inputs:
-    versionSpec: '12.x'
+    versionSpec: '14.x'
   displayName: 'Install Node.js'
 
 - task: Npm@0
@@ -25,7 +25,7 @@ steps:
 - task: Bash@3
   inputs:
     targetType: 'inline'
-    script: 'npm run publish'
+    script: 'npm run build'
     workingDirectory: '$(Build.SourcesDirectory)'
   displayName: 'angular build'
 
