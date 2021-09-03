@@ -1,0 +1,42 @@
+trigger:
+  branches:
+    include:
+    - devel
+
+pool:
+  vmImage: 'windows-2019'
+
+steps:
+- task: NodeTool@0
+  inputs:
+    versionSpec: '12.x'
+  displayName: 'Install Node.js'
+
+- task: Npm@0
+  inputs:
+    command: install 
+    arguments: '--global @angular/cli'
+  displayName: 'install @angular/cli'
+
+- script: |
+    yarn
+  displayName: 'yarn install'
+
+- task: Bash@3
+  inputs:
+    targetType: 'inline'
+    script: 'npm run publish'
+    workingDirectory: '$(Build.SourcesDirectory)'
+  displayName: 'angular build'
+
+- task: ArchiveFiles@2
+  inputs:
+    rootFolderOrFile: dist
+    includeRootFolder: false
+  displayName: 'Archive dist'
+
+- task: PublishBuildArtifacts@1
+  inputs:
+    PathtoPublish: '$(Build.ArtifactStagingDirectory)'
+    ArtifactName: 'drop'
+    publishLocation: 'Container'

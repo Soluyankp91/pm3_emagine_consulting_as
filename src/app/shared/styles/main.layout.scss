@@ -1,0 +1,39 @@
+.main-navigation {
+  &--list {
+      list-style-type: none;
+      padding: 0 !important;
+      &-item {
+        display: flex;
+        align-items: center;
+        justify-content: flex-start;
+        margin-bottom: 30px;
+        cursor: pointer;
+        height: 44px;
+        mat-icon {
+          margin-left: 20px;
+          margin-right: 20px;
+        }
+        &__name {
+          display: none;
+          overflow: hidden;
+          white-space: nowrap;
+          word-break: keep-all;
+        }
+        &:focus {
+            outline: none !important;
+        }
+        &.active,
+        &:hover {
+          background: #FFFFFF;
+          box-shadow: 0px 0px 20px rgba(26, 35, 126, 0.15);
+          border-radius: 0px;
+          border-left: 3px solid #CDFF96;
+          mat-icon svg [fill],
+          mat-icon svg path [fill],
+          mat-icon svg g [fill] {
+              fill: #17A297 !important;
+          }
+        }
+      }
+  }
+}

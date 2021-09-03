@@ -1,0 +1,154 @@
+.full-height {
+    height: 100%;
+}
+
+html {
+    box-sizing: border-box;
+}
+
+*,
+*:before,
+*:after {
+    box-sizing: inherit;
+}
+
+body {
+    font-size: 1em;
+    line-height: 1.5;
+    background-color: #EDF1F4;
+    transition: background-color 0.24s ease-in;
+}
+
+html,
+body {
+    font-size: 16px !important;
+}
+
+#container {
+    padding: 25px;
+}
+
+.full-width {
+    width: 100% !important;
+}
+
+.full-height {
+    height: 100%;
+}
+
+.auto-height {
+    height: auto !important;
+}
+
+.none-flex {
+    flex: initial;
+}
+
+.none-padding-left {
+    padding-left: 0 !important;
+}
+
+.flex-initial {
+    flex: 1 1 auto !important;
+}
+
+.flex-initial-noStrech {
+    flex: 0 1 auto;
+}
+
+.flex-end {
+    display: flex !important;
+    justify-content: flex-end !important;
+}
+
+.shadow-block {
+    box-shadow: 0 3px 6px rgba(0, 0, 0, 0.16), 0 3px 6px rgba(0, 0, 0, 0.23);
+}
+
+.column {
+    display: flex;
+    flex-direction: column;
+    flex: unset;
+    width: 100%;
+}
+
+p {
+    font-size: 1em;
+    color: black;
+    line-height: 24px;
+    letter-spacing: .5px;
+}
+
+.display-none {
+    display: none;
+}
+
+.visible {
+    visibility: visible;
+}
+
+.unvisible {
+    visibility: hidden;
+}
+
+.cursor-pointer {
+    cursor: pointer;
+}
+
+.none-select {
+    user-select: none;
+}
+
+.no-data {
+    pointer-events: none;
+}
+
+html {
+    display: block !important;
+    top: 0px !important;
+    left: 0px !important;
+    position: inherit !important;
+}
+
+.main {
+    &-drawer {
+        &-container {
+            display: flex;
+            flex-direction: column;
+            height: 100%;
+        }
+        &-sidebar {
+            display: flex;
+            flex-direction: column;
+            height: 100%;
+            width: 100%;
+            max-width: 64px !important;
+            -webkit-transition: all .3s ease-in-out;
+            -moz-transition: all .3s ease-in-out;
+            transition: all .3s ease-in-out;
+            &:hover {
+              max-width: 250px !important;
+              .main-navigation--list-item__name {
+                display: flex;
+              }
+            }
+        }
+        &-content {
+            flex: 1;
+            width: 100%;
+            background-color: #fff !important;
+            >.full-height {
+                overflow: hidden;
+            }
+        }
+    }
+    &-content {
+        height: 100%;
+    }
+}
+
+.mat-drawer-inner-container {
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+}
