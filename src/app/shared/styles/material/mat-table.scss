@@ -1,1 +1,46 @@
-// @import "~config";
+mat-table.rounded-table {
+    background: transparent !important;
+    box-shadow: none;
+    font-family: 'Roboto';
+    font-weight: 400;
+    line-height: 19px;
+    font-size: 16px;
+    mat-header-row {
+        border-bottom-color: rgb(255, 255, 255) !important;
+        color: rgba(56, 72, 83, 0.87) !important;
+        font-size: 16px;
+        mat-header-cell {
+            font-family: 'OpenSansWeb', sans-serif !important;
+            color: rgba(56, 72, 83, 0.87) !important;
+            font-weight: 500;
+            padding-right: 15px;
+        }
+        padding: 0 16px;
+    }
+    mat-row {
+        // border: 0.5px solid rgba(56, 72, 83, 0.3) !important;
+        height: 35px;
+        min-height: 35px;
+        border-radius: 5px;
+        margin-bottom: 4px;
+        padding: 0 16px;
+        background-color: #F8F8F8;
+
+        &:hover {
+            transition: background-color .7s ease;
+            background-color: rgba(102, 140, 164, .17);
+        }
+        mat-cell {
+            color: rgba(56, 72, 83, 0.6) !important;
+            font-size: 16px;
+            padding-right: 15px;
+        }
+    }
+}
+
+.mat-paginator-container {
+    .mat-focus-indicator.mat-paginator-navigation-previous.mat-icon-button.mat-button-base:not([disabled]),
+    .mat-focus-indicator.mat-paginator-navigation-next.mat-icon-button.mat-button-base:not([disabled]) {
+        color: rgba(0, 0, 0, .6) !important;
+    }
+}

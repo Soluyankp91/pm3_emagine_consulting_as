@@ -1,1 +1,67 @@
-<p>client-list works!</p>
+<div class="client-list">
+    <div fxLayout="row" fxLayoutAlign="space-between center" class="client-list--filter">
+        <div fxFlex="20%">
+            <mat-form-field appearance="outline" class="u-w--100 formFieldNoMarginPadding">
+                <mat-label>Search</mat-label>
+                <input autocomplete="off" matInput [formControl]="clientFilter" placeholder="Search" type="text">
+                <mat-icon matSuffix>search</mat-icon>
+            </mat-form-field>
+        </div>
+
+        <div class="client-list--filter-country" fxFlex="20%">
+            <span *ngFor="let item of [0,1,2,3]">
+                {{ item }}
+            </span>
+        </div>
+
+        <div class="client-list--filter-country" fxFlex="20%">
+            <mat-form-field appearance="outline" class="u-w--100 formFieldNoMarginPadding">
+                <mat-label>Account manager</mat-label>
+                <mat-select [formControl]="acoountManagerFilter" placeholder="Account manager">
+                    <mat-option *ngFor="let item of [0,1,2,3]" [value]="item">
+                        {{ item }}
+                    </mat-option>
+                </mat-select>
+            </mat-form-field>
+        </div>
+    </div>
+    <div fxLayout="row" fxLayoutAlign="start center" class="client-list--table u-w--100">
+        <mat-table #table [dataSource]="clientDataSource" class="rounded-table u-w--100">
+            <ng-container matColumnDef="name">
+                <mat-header-cell *matHeaderCellDef> Name </mat-header-cell>
+                <mat-cell *matCellDef="let row"> {{row.name}} </mat-cell>
+            </ng-container>
+            <ng-container matColumnDef="clientAddress_Address">
+                <mat-header-cell *matHeaderCellDef> Address </mat-header-cell>
+                <mat-cell *matCellDef="let row"> {{row.clientAddress_Address}} </mat-cell>
+            </ng-container>
+            <ng-container matColumnDef="clientAddress_Address2">
+                <mat-header-cell *matHeaderCellDef> Address2 </mat-header-cell>
+                <mat-cell *matCellDef="let row"> {{row.clientAddress_Address2}} </mat-cell>
+            </ng-container>
+            <ng-container matColumnDef="clientAddress_PostCode">
+                <mat-header-cell *matHeaderCellDef> PostCode </mat-header-cell>
+                <mat-cell *matCellDef="let row"> {{row.clientAddress_PostCode}} </mat-cell>
+            </ng-container>
+            <ng-container matColumnDef="clientAddress_City">
+                <mat-header-cell *matHeaderCellDef> City </mat-header-cell>
+                <mat-cell *matCellDef="let row"> {{row.clientAddress_City}} </mat-cell>
+            </ng-container>
+            <ng-container matColumnDef="clientAddress_Country_Name">
+                <mat-header-cell *matHeaderCellDef> Country </mat-header-cell>
+                <mat-cell *matCellDef="let row"> {{row.clientAddress_Country_Name}} </mat-cell>
+            </ng-container>
+            <ng-container matColumnDef="phone">
+                <mat-header-cell *matHeaderCellDef> Phone </mat-header-cell>
+                <mat-cell *matCellDef="let row"> {{row.phone}} </mat-cell>
+            </ng-container>
+            <ng-container matColumnDef="owner_Name">
+                <mat-header-cell *matHeaderCellDef> Account manager </mat-header-cell>
+                <mat-cell *matCellDef="let row"> {{row.owner_Name}} </mat-cell>
+            </ng-container>
+
+            <mat-header-row *matHeaderRowDef="clientDisplayColumns"></mat-header-row>
+            <mat-row *matRowDef="let row; columns: clientDisplayColumns;"></mat-row>
+        </mat-table>
+    </div>
+</div>

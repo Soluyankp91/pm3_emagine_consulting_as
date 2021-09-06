@@ -17,102 +17,116 @@ import { TimeTrackingComponent } from './time-tracking/time-tracking.component';
 import { EvaluationComponent } from './evaluation/evaluation.component';
 import { InvoicingComponent } from './invoicing/invoicing.component';
 import { ContractsComponent } from './contracts/contracts.component';
+import { FormsModule, ReactiveFormsModule } from '@angular/forms';
+import { ServiceProxyModule } from 'src/shared/service-proxies/service-proxy.module';
+import { API_BASE_URL } from 'src/shared/service-proxies/service-proxies';
+import { AppConsts } from 'src/shared/AppConsts';
 
+export function getRemoteServiceBaseUrl(): string {
+  return AppConsts.remoteServiceBaseUrl;
+}
 @NgModule({
-  declarations: [
-    AppComponent,
-    DashboardComponent,
-    MainOverviewComponent,
-    ClientListComponent,
-    SourcingShortcutComponent,
-    WorkflowComponent,
-    StatisticsComponent,
-    TimeTrackingComponent,
-    EvaluationComponent,
-    InvoicingComponent,
-    ContractsComponent
-  ],
-  imports: [
-    BrowserModule,
-    AppRoutingModule,
-    BrowserAnimationsModule,
-    HttpClientModule,
-    AppCommonModule
-  ],
-  providers: [],
-  bootstrap: [AppComponent]
+    declarations: [
+        AppComponent,
+        DashboardComponent,
+        MainOverviewComponent,
+        ClientListComponent,
+        SourcingShortcutComponent,
+        WorkflowComponent,
+        StatisticsComponent,
+        TimeTrackingComponent,
+        EvaluationComponent,
+        InvoicingComponent,
+        ContractsComponent
+    ],
+    imports: [
+        BrowserModule,
+        AppRoutingModule,
+        BrowserAnimationsModule,
+        HttpClientModule,
+        AppCommonModule,
+        FormsModule,
+        ReactiveFormsModule,
+        ServiceProxyModule
+    ],
+    providers: [
+        {
+            provide: API_BASE_URL, useFactory: getRemoteServiceBaseUrl
+        },
+    ],
+    bootstrap: [AppComponent]
 })
 export class AppModule {
-  constructor(iconRegistry: MatIconRegistry, sanitizer: DomSanitizer) {
-    // MENU ICONS REGISRTY
-    iconRegistry.addSvgIcon(
-        'evaluation-menu',
-        sanitizer.bypassSecurityTrustResourceUrl(
-            'assets/common/images/menu/achievement-menu.svg'
-        )
-    );
+    constructor(iconRegistry: MatIconRegistry, sanitizer: DomSanitizer) {
+        // MENU ICONS REGISRTY
+        iconRegistry.addSvgIcon(
+            'evaluation-menu',
+            sanitizer.bypassSecurityTrustResourceUrl(
+                'assets/common/images/menu/achievement-menu.svg'
+            )
+        );
 
-    iconRegistry.addSvgIcon(
-        'contracts-menu',
-        sanitizer.bypassSecurityTrustResourceUrl(
-            'assets/common/images/menu/agreement-menu.svg'
-        )
-    );
+        iconRegistry.addSvgIcon(
+            'contracts-menu',
+            sanitizer.bypassSecurityTrustResourceUrl(
+                'assets/common/images/menu/agreement-menu.svg'
+            )
+        );
 
-    iconRegistry.addSvgIcon(
-      'dashboard-menu',
-      sanitizer.bypassSecurityTrustResourceUrl(
-          'assets/common/images/menu/dashboard-menu.svg'
-      )
-    );
+        iconRegistry.addSvgIcon(
+            'dashboard-menu',
+            sanitizer.bypassSecurityTrustResourceUrl(
+                'assets/common/images/menu/dashboard-menu.svg'
+            )
+        );
 
-    iconRegistry.addSvgIcon(
-      'overview-menu',
-      sanitizer.bypassSecurityTrustResourceUrl(
-          'assets/common/images/menu/list-menu.svg'
-      )
-    );
+        iconRegistry.addSvgIcon(
+            'overview-menu',
+            sanitizer.bypassSecurityTrustResourceUrl(
+                'assets/common/images/menu/list-menu.svg'
+            )
+        );
 
-    iconRegistry.addSvgIcon(
-      'time-tracking-menu',
-      sanitizer.bypassSecurityTrustResourceUrl(
-          'assets/common/images/menu/location-menu.svg'
-      )
-    );
+        iconRegistry.addSvgIcon(
+            'time-tracking-menu',
+            sanitizer.bypassSecurityTrustResourceUrl(
+                'assets/common/images/menu/location-menu.svg'
+            )
+        );
 
-    iconRegistry.addSvgIcon(
-      'invoicing-menu',
-      sanitizer.bypassSecurityTrustResourceUrl(
-          'assets/common/images/menu/reports-menu.svg'
-      )
-    );
+        iconRegistry.addSvgIcon(
+            'invoicing-menu',
+            sanitizer.bypassSecurityTrustResourceUrl(
+                'assets/common/images/menu/reports-menu.svg'
+            )
+        );
 
-    iconRegistry.addSvgIcon(
-      'sourcing-shortcut-menu',
-      sanitizer.bypassSecurityTrustResourceUrl(
-          'assets/common/images/menu/script-menu.svg'
-      )
-    );
+        iconRegistry.addSvgIcon(
+            'sourcing-shortcut-menu',
+            sanitizer.bypassSecurityTrustResourceUrl(
+                'assets/common/images/menu/script-menu.svg'
+            )
+        );
 
-    iconRegistry.addSvgIcon(
-      'statistic-menu',
-      sanitizer.bypassSecurityTrustResourceUrl(
-          'assets/common/images/menu/statistic-menu.svg'
-      )
-    );
+        iconRegistry.addSvgIcon(
+            'statistic-menu',
+            sanitizer.bypassSecurityTrustResourceUrl(
+                'assets/common/images/menu/statistic-menu.svg'
+            )
+        );
 
-    iconRegistry.addSvgIcon(
-      'client-list-menu',
-      sanitizer.bypassSecurityTrustResourceUrl(
-          'assets/common/images/menu/users-menu.svg'
-      )
-    );
+        iconRegistry.addSvgIcon(
+            'client-list-menu',
+            sanitizer.bypassSecurityTrustResourceUrl(
+                'assets/common/images/menu/users-menu.svg'
+            )
+        );
 
-    iconRegistry.addSvgIcon(
-      'workflow-menu',
-      sanitizer.bypassSecurityTrustResourceUrl(
-          'assets/common/images/menu/value-chain-menu.svg'
-      )
-    );
-  }
+        iconRegistry.addSvgIcon(
+            'workflow-menu',
+            sanitizer.bypassSecurityTrustResourceUrl(
+                'assets/common/images/menu/value-chain-menu.svg'
+            )
+        );
+    }
 }

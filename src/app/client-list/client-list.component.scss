@@ -1,0 +1,9 @@
+.client-list {
+    padding: 14px 20px;
+    &--filter {
+        &-country {
+            justify-content: center;
+            align-items: center;
+        }
+    }
+}
