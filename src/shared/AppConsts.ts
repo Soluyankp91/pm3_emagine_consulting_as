@@ -1,5 +1,5 @@
 export class AppConsts {
-    static remoteServiceBaseUrl: string = 'https://pm3-dev-app.azurewebsites.net/';
+    static remoteServiceBaseUrl: string = 'https://pm3-dev-app.azurewebsites.net';
     static remoteServiceBaseUrlFormat: string;
     static remoteSyncServiceBaseUrl: string;
     static appBaseUrl: string;

@@ -57,7 +57,7 @@ export function MSALInstanceFactory(): IPublicClientApplication {
 export function MSALInterceptorConfigFactory(): MsalInterceptorConfiguration {
   const protectedResourceMap = new Map<string, Array<string>>();
   // protectedResourceMap.set('https://graph.microsoft.com/v1.0/me', ['user.read']); // Prod environment. Uncomment to use.
-  protectedResourceMap.set('https://pm3-dev-app.azurewebsites.net', ['user.read']);
+  protectedResourceMap.set('https://pm3-dev-app.azurewebsites.net', ['openid', 'profile', 'api://5f63a91e-8bfd-40ea-b562-3dad54244ff7/access_as_user']);
 
   return {
     interactionType: InteractionType.Redirect,
@@ -69,7 +69,7 @@ export function MSALGuardConfigFactory(): MsalGuardConfiguration {
   return {
     interactionType: InteractionType.Redirect,
     authRequest: {
-      scopes: ['user.read']
+      scopes: ['openid', 'profile', 'api://5f63a91e-8bfd-40ea-b562-3dad54244ff7/access_as_user']
     },
     loginFailedRoute: '/login'
   };
