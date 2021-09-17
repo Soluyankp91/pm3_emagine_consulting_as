@@ -1,0 +1,18 @@
+.client-documents--contract-folders {
+    .mat-expansion-panel {
+        background: #F8F8F8;
+        border-radius: 5px;
+    }
+    .mat-expansion-panel-body {
+        padding: 0 10px;
+    }
+    &__subfolder {
+        .mat-expansion-panel-body {
+            padding: 0 24px 16px;
+        }
+        .mat-expansion-panel {
+            background: #FFFFFF;
+            border-radius: 5px;
+        }
+    }
+}

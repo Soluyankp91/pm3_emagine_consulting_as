@@ -2,6 +2,7 @@ import { NgModule } from '@angular/core';
 import { RouterModule, Routes } from '@angular/router';
 import { MsalGuard } from '@azure/msal-angular';
 import { AppComponent } from './app.component';
+import { ClientDetailsComponent } from './client-list/client-details/client-details.component';
 import { ClientListComponent } from './client-list/client-list.component';
 import { ContractsComponent } from './contracts/contracts.component';
 import { DashboardComponent } from './dashboard/dashboard.component';
@@ -28,6 +29,7 @@ const routes: Routes = [
         { path: 'dashboard', component: DashboardComponent, canActivate: [MsalGuard] },
         { path: 'overview', component: MainOverviewComponent, canActivate: [MsalGuard] },
         { path: 'clients', component: ClientListComponent, canActivate: [MsalGuard] },
+        { path: 'clients/:id', component: ClientDetailsComponent, canActivate: [MsalGuard] },
         { path: 'sourcing-shortcut', component: SourcingShortcutComponent, canActivate: [MsalGuard] },
         { path: 'workflow', component: WorkflowComponent, canActivate: [MsalGuard] },
         { path: 'statistics', component: StatisticsComponent, canActivate: [MsalGuard] },

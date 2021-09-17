@@ -1,7 +1,7 @@
 <div class="client-list">
     <div fxLayout="row" fxLayoutAlign="space-between center" class="client-list--filter">
         <div fxFlex="20%">
-            <mat-form-field appearance="outline" class="u-w--100 formFieldNoMarginPadding">
+            <mat-form-field appearance="outline" class="u-w--100 formFieldNoMarginPadding greenFilterInput mat-elevation-z0">
                 <mat-label>Search</mat-label>
                 <input autocomplete="off" matInput [formControl]="clientFilter" placeholder="Search" type="text">
                 <mat-icon matSuffix>search</mat-icon>
@@ -9,13 +9,14 @@
         </div>
 
         <div class="client-list--filter-country" fxFlex="20%">
-            <span *ngFor="let item of [0,1,2,3]">
-                {{ item }}
-            </span>
+            <button mat-icon-button *ngFor="let country of countryList" (click)="selectLookupCountry(country)" [matTooltip]="country.name">
+                <mat-icon class="country-lookup--btn__flag" *ngIf="!country.selected" svgIcon="{{country.flag}}-flag"></mat-icon>
+                <mat-icon class="country-lookup--btn__flag selected-country" *ngIf="country.selected" svgIcon="{{country.flag}}-flag-selected"></mat-icon>
+            </button>
         </div>
 
         <div class="client-list--filter-country" fxFlex="20%">
-            <mat-form-field appearance="outline" class="u-w--100 formFieldNoMarginPadding">
+            <mat-form-field appearance="outline" class="u-w--100 formFieldNoMarginPadding filter-select">
                 <mat-label>Account manager</mat-label>
                 <mat-select [formControl]="acoountManagerFilter" placeholder="Account manager">
                     <mat-option *ngFor="let item of [0,1,2,3]" [value]="item">
@@ -25,43 +26,100 @@
             </mat-form-field>
         </div>
     </div>
-    <div fxLayout="row" fxLayoutAlign="start center" class="client-list--table u-w--100">
-        <mat-table #table [dataSource]="clientDataSource" class="rounded-table u-w--100">
-            <ng-container matColumnDef="name">
-                <mat-header-cell *matHeaderCellDef> Name </mat-header-cell>
-                <mat-cell *matCellDef="let row"> {{row.name}} </mat-cell>
-            </ng-container>
-            <ng-container matColumnDef="clientAddress_Address">
-                <mat-header-cell *matHeaderCellDef> Address </mat-header-cell>
-                <mat-cell *matCellDef="let row"> {{row.clientAddress_Address}} </mat-cell>
-            </ng-container>
-            <ng-container matColumnDef="clientAddress_Address2">
-                <mat-header-cell *matHeaderCellDef> Address2 </mat-header-cell>
-                <mat-cell *matCellDef="let row"> {{row.clientAddress_Address2}} </mat-cell>
-            </ng-container>
-            <ng-container matColumnDef="clientAddress_PostCode">
-                <mat-header-cell *matHeaderCellDef> PostCode </mat-header-cell>
-                <mat-cell *matCellDef="let row"> {{row.clientAddress_PostCode}} </mat-cell>
-            </ng-container>
-            <ng-container matColumnDef="clientAddress_City">
-                <mat-header-cell *matHeaderCellDef> City </mat-header-cell>
-                <mat-cell *matCellDef="let row"> {{row.clientAddress_City}} </mat-cell>
-            </ng-container>
-            <ng-container matColumnDef="clientAddress_Country_Name">
-                <mat-header-cell *matHeaderCellDef> Country </mat-header-cell>
-                <mat-cell *matCellDef="let row"> {{row.clientAddress_Country_Name}} </mat-cell>
-            </ng-container>
-            <ng-container matColumnDef="phone">
-                <mat-header-cell *matHeaderCellDef> Phone </mat-header-cell>
-                <mat-cell *matCellDef="let row"> {{row.phone}} </mat-cell>
-            </ng-container>
-            <ng-container matColumnDef="owner_Name">
-                <mat-header-cell *matHeaderCellDef> Account manager </mat-header-cell>
-                <mat-cell *matCellDef="let row"> {{row.owner_Name}} </mat-cell>
-            </ng-container>
+    <div fxLayout="column" fxLayoutAlign="start center" class="client-list--table u-w--100">
+        <div fxLayout="column" fxFlexFill>
+            <mat-table #table [dataSource]="clientDataSource" class="rounded-table u-w--100" matSort matSortStart="asc" (matSortChange)="sortChanged($event)">
+                <ng-container matColumnDef="countryFlag">
+                    <mat-header-cell *matHeaderCellDef fxFlex="2%"></mat-header-cell>
+                    <mat-cell *matCellDef="let row" fxFlex="2%">
+                        <mat-icon class="country-lookup--btn__flag selected-country" svgIcon="{{row.clientAddress_Country_Code.toLowerCase()}}-flag-selected"></mat-icon>
+                    </mat-cell>
+                </ng-container>
+                <ng-container matColumnDef="id">
+                    <mat-header-cell *matHeaderCellDef mat-sort-header fxFlex="8%"> # </mat-header-cell>
+                    <mat-cell *matCellDef="let row" fxFlex="8%">
+                        {{row.id}}
+                    </mat-cell>
+                </ng-container>
+                <ng-container matColumnDef="name">
+                    <mat-header-cell *matHeaderCellDef mat-sort-header fxFlex="15%"> Name </mat-header-cell>
+                    <mat-cell *matCellDef="let row" fxFlex="15%">
+                        <span class="text-truncate-ellipsis" [matTooltip]="row.name">
+                            {{row.name}}
+                        </span>
+                    </mat-cell>
+                </ng-container>
+                <ng-container matColumnDef="clientAddress_Address">
+                    <mat-header-cell *matHeaderCellDef mat-sort-header fxFlex="10%"> Address </mat-header-cell>
+                    <mat-cell *matCellDef="let row" fxFlex="10%">
+                        <span class="text-truncate-ellipsis" [matTooltip]="row.clientAddress_Address">
+                            {{row.clientAddress_Address}}
+                        </span>
+                    </mat-cell>
+                </ng-container>
+                <ng-container matColumnDef="clientAddress_Address2">
+                    <mat-header-cell *matHeaderCellDef mat-sort-header fxFlex="10%"> Address2 </mat-header-cell>
+                    <mat-cell *matCellDef="let row" fxFlex="10%">
+                        <span class="text-truncate-ellipsis" [matTooltip]="row.clientAddress_Address2">
+                            {{row.clientAddress_Address2}}
+                        </span>
+                    </mat-cell>
+                </ng-container>
+                <ng-container matColumnDef="clientAddress_PostCode">
+                    <mat-header-cell *matHeaderCellDef mat-sort-header fxFlex="5%"> PostCode </mat-header-cell>
+                    <mat-cell *matCellDef="let row" fxFlex="5%">
+                        <span class="text-truncate-ellipsis" [matTooltip]="row.clientAddress_PostCode">
+                            {{row.clientAddress_PostCode}}
+                        </span>
+                    </mat-cell>
+                </ng-container>
+                <ng-container matColumnDef="clientAddress_City">
+                    <mat-header-cell *matHeaderCellDef mat-sort-header fxFlex="10%"> City </mat-header-cell>
+                    <mat-cell *matCellDef="let row" fxFlex="10%">
+                        <span class="text-truncate-ellipsis" [matTooltip]="row.clientAddress_City">
+                            {{row.clientAddress_City}}
+                        </span>
+                    </mat-cell>
+                </ng-container>
+                <ng-container matColumnDef="clientAddress_Country_Name">
+                    <mat-header-cell *matHeaderCellDef mat-sort-header fxFlex="10%"> Country </mat-header-cell>
+                    <mat-cell *matCellDef="let row" fxFlex="10%">
+                        <span class="text-truncate-ellipsis" [matTooltip]="row.clientAddress_Country_Name">
+                            {{row.clientAddress_Country_Name}}
+                        </span>
+                    </mat-cell>
+                </ng-container>
+                <ng-container matColumnDef="phone">
+                    <mat-header-cell *matHeaderCellDef mat-sort-header fxFlex="15%"> Phone </mat-header-cell>
+                    <mat-cell *matCellDef="let row" fxFlex="15%">
+                        <span class="text-truncate-ellipsis" [matTooltip]="row.phone">
+                            {{row.phone}}
+                        </span>
+                    </mat-cell>
+                    </ng-container>
+                <ng-container matColumnDef="owner_Name">
+                    <mat-header-cell *matHeaderCellDef mat-sort-header fxFlex="15%"> Account manager </mat-header-cell>
+                    <mat-cell *matCellDef="let row" fxFlex="15%">
+                        <span class="text-truncate-ellipsis" [matTooltip]="row.owner_Name">
+                            {{row.owner_Name}}
+                        </span>
+                    </mat-cell>
+                </ng-container>
 
-            <mat-header-row *matHeaderRowDef="clientDisplayColumns"></mat-header-row>
-            <mat-row *matRowDef="let row; columns: clientDisplayColumns;"></mat-row>
-        </mat-table>
+                <mat-header-row *matHeaderRowDef="clientDisplayColumns"></mat-header-row>
+                <mat-row *matRowDef="let row; columns: clientDisplayColumns;" class="mat-elevation-z0" (click)="navigateToClientDetails(row.id)"></mat-row>
+            </mat-table>
+            <div class="spinner-container" *ngIf="isDataLoading">
+                <mat-spinner [diameter]="50"></mat-spinner>
+            </div>
+            <div class="results-not-found" *ngIf="totalCount === 0 && !isDataLoading">
+                RESULTS NOT FOUND
+            </div>
+        </div>
+        <div class="pagination-contaier">
+            <mat-paginator #clientsPaginator [length]="totalCount" [pageSize]="deafultPageSize"
+                [pageSizeOptions]="pageSizeOptions" [showFirstLastButtons]="true" (page)="pageChanged($event)">
+            </mat-paginator>
+        </div>
     </div>
 </div>

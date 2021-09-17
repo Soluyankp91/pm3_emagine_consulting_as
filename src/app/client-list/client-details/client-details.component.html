@@ -1,0 +1,104 @@
+<div class="client-details">
+    <div fxLayout="column" fxLayoutAlign="space-between center" class="client-details--header" fxFlexFill>
+        <div fxLayout="row" fxLayoutAlign="space-between start" class="u-w--100">
+            <button class="arrow-container--btn u-pl--0" (click)="navigateBack()" mat-button><mat-icon svgIcon="arrow"></mat-icon><span>Client name</span></button>
+            <div fxLayout="row" fxLayoutAlign="space-between start">
+                <button mat-raised-button>LOGIN TO HUBSPOT</button>
+                <button mat-raised-button>LOGIN TO CAM</button>
+            </div>
+        </div>
+        <div fxLayout="row" fxLayoutAlign="start start" class="u-w--100">
+            <div fxLayout="column" fxLayoutAlign="space-between start" fxFlex="15%">
+                <div fxLayout="row" class="client-details--client-info">
+                    <span fxFlex="40%" class="client-details--client-info__header">
+                        Address
+                    </span>
+                    <span class="client-details--client-info__value">
+                        Some Address 210
+                    </span>
+                </div>
+                <div fxLayout="row" class="client-details--client-info">
+                    <span fxFlex="40%" class="client-details--client-info__header">
+                        Address
+                    </span>
+                    <span class="client-details--client-info__value">
+                        Some Address 210
+                    </span>
+                </div>
+            </div>
+            <div fxLayout="column" fxLayoutAlign="space-between start" fxFlex="15%">
+                <div fxLayout="row" class="client-details--client-info">
+                    <span fxFlex="40%" class="client-details--client-info__header">
+                        Address
+                    </span>
+                    <span class="client-details--client-info__value">
+                        Some Address 210
+                    </span>
+                </div>
+                <div fxLayout="row" class="client-details--client-info">
+                    <span fxFlex="40%" class="client-details--client-info__header">
+                        Address
+                    </span>
+                    <span class="client-details--client-info__value">
+                        Some Address 210
+                    </span>
+                </div>
+            </div>
+            <div fxLayout="column" fxLayoutAlign="space-between start" fxFlex="15%">
+                <div fxLayout="row" class="client-details--client-info">
+                    <span fxFlex="40%" class="client-details--client-info__header">
+                        Address
+                    </span>
+                    <span class="client-details--client-info__value">
+                        Some Address 210
+                    </span>
+                </div>
+                <div fxLayout="row" class="client-details--client-info">
+                    <span fxFlex="40%" class="client-details--client-info__header">
+                        Address
+                    </span>
+                    <span class="client-details--client-info__value">
+                        Some Address 210
+                    </span>
+                </div>
+            </div>
+            <div fxLayout="column" fxLayoutAlign="space-between start" fxFlex="15%">
+                <div fxLayout="row" class="client-details--client-info">
+                    <span fxFlex="40%" class="client-details--client-info__header">
+                        Address
+                    </span>
+                    <span class="client-details--client-info__value">
+                        Some Address 210
+                    </span>
+                </div>
+                <div fxLayout="row" class="client-details--client-info">
+                    <span fxFlex="40%" class="client-details--client-info__header">
+                        Address
+                    </span>
+                    <span class="client-details--client-info__value">
+                        Some Address 210
+                    </span>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div fxLayout="row" fxLayoutAlign="start start">
+        <mat-tab-group class="client-details--tabs u-w--100 u-mt--20">
+            <mat-tab label="Request track">
+                <app-client-request-track [clientInfo]="selectedClient"></app-client-request-track>
+            </mat-tab>
+            <mat-tab label="Documents">
+                <app-client-documents></app-client-documents>
+            </mat-tab>
+            <mat-tab label="Consultant track">
+                <app-client-consultant-track></app-client-consultant-track>
+            </mat-tab>
+            <mat-tab label="Invoicing">
+                <app-client-invoicing></app-client-invoicing>
+            </mat-tab>
+            <mat-tab label="Consultants">
+                <app-client-consultants></app-client-consultants>
+            </mat-tab>
+        </mat-tab-group>
+    </div>
+</div>

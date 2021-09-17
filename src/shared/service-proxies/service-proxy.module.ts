@@ -1,5 +1,6 @@
 import { HTTP_INTERCEPTORS } from '@angular/common/http';
 import { NgModule } from '@angular/core';
+import { GlobalHttpInterceptorService } from './global-http-interceptor.service';
 import * as ApiServiceProxies from './service-proxies';
 
 @NgModule({
@@ -7,11 +8,15 @@ import * as ApiServiceProxies from './service-proxies';
         ApiServiceProxies.AccountServiceProxy,
         ApiServiceProxies.ApiServiceProxy,
         ApiServiceProxies.ClientsServiceProxy,
-        ApiServiceProxies.ConsultantsServiceProxy,
         ApiServiceProxies.EnumServiceProxy,
         ApiServiceProxies.HubSpotContractFetchServiceProxy,
         ApiServiceProxies.HubSpotInstallServiceProxy,
-        ApiServiceProxies.HubSpotTestServiceProxy
+        ApiServiceProxies.HubSpotTestServiceProxy,
+        {
+            provide: HTTP_INTERCEPTORS,
+            useClass: GlobalHttpInterceptorService,
+            multi: true
+        }
     ]
 })
 export class ServiceProxyModule { }

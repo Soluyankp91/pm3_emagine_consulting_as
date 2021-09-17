@@ -23,6 +23,12 @@ import { API_BASE_URL } from 'src/shared/service-proxies/service-proxies';
 import { AppConsts } from 'src/shared/AppConsts';
 import { MsalBroadcastService, MsalGuard, MsalGuardConfiguration, MsalInterceptor, MsalInterceptorConfiguration, MsalModule, MsalRedirectComponent, MsalService, MSAL_GUARD_CONFIG, MSAL_INSTANCE, MSAL_INTERCEPTOR_CONFIG } from '@azure/msal-angular';
 import { BrowserCacheLocation, InteractionType, IPublicClientApplication, LogLevel, PublicClientApplication } from '@azure/msal-browser';
+import { ClientDetailsComponent } from './client-list/client-details/client-details.component';
+import { ClientRequestTrackComponent } from './client-list/client-request-track/client-request-track.component';
+import { ClientConsultantTrackComponent } from './client-list/client-consultant-track/client-consultant-track.component';
+import { ClientDocumentsComponent } from './client-list/client-documents/client-documents.component';
+import { ClientInvoicingComponent } from './client-list/client-invoicing/client-invoicing.component';
+import { ClientConsultantsComponent } from './client-list/client-consultants/client-consultants.component';
 
 const isIE = window.navigator.userAgent.indexOf("MSIE ") > -1 || window.navigator.userAgent.indexOf("Trident/") > -1; // Remove this line to use Angular Universal
 
@@ -90,7 +96,13 @@ export function getRemoteServiceBaseUrl(): string {
         TimeTrackingComponent,
         EvaluationComponent,
         InvoicingComponent,
-        ContractsComponent
+        ContractsComponent,
+        ClientDetailsComponent,
+        ClientRequestTrackComponent,
+        ClientConsultantTrackComponent,
+        ClientDocumentsComponent,
+        ClientInvoicingComponent,
+        ClientConsultantsComponent
     ],
     imports: [
         BrowserModule,
@@ -255,5 +267,113 @@ export class AppModule {
                 'assets/common/images/menu/value-chain-menu.svg'
             )
         );
+
+        // COUNTRY FLAGS ICON REGISTRY
+
+        iconRegistry.addSvgIcon(
+            'dk-flag',
+            sanitizer.bypassSecurityTrustResourceUrl(
+                'assets/common/images/country-flags/dk-flag.svg'
+            )
+        );
+
+        iconRegistry.addSvgIcon(
+            'dk-flag-selected',
+            sanitizer.bypassSecurityTrustResourceUrl(
+                'assets/common/images/country-flags/dk-flag-selected.svg'
+            )
+        );
+
+        iconRegistry.addSvgIcon(
+            'de-flag',
+            sanitizer.bypassSecurityTrustResourceUrl(
+                'assets/common/images/country-flags/de-flag.svg'
+            )
+        );
+
+        iconRegistry.addSvgIcon(
+            'de-flag-selected',
+            sanitizer.bypassSecurityTrustResourceUrl(
+                'assets/common/images/country-flags/de-flag-selected.svg'
+            )
+        );
+
+        iconRegistry.addSvgIcon(
+            'en-flag',
+            sanitizer.bypassSecurityTrustResourceUrl(
+                'assets/common/images/country-flags/en-flag.svg'
+            )
+        );
+
+        iconRegistry.addSvgIcon(
+            'en-flag-selected',
+            sanitizer.bypassSecurityTrustResourceUrl(
+                'assets/common/images/country-flags/en-flag-selected.svg'
+            )
+        );
+
+        iconRegistry.addSvgIcon(
+            'ne-flag',
+            sanitizer.bypassSecurityTrustResourceUrl(
+                'assets/common/images/country-flags/ne-flag.svg'
+            )
+        );
+
+        iconRegistry.addSvgIcon(
+            'ne-flag-selected',
+            sanitizer.bypassSecurityTrustResourceUrl(
+                'assets/common/images/country-flags/ne-flag-selected.svg'
+            )
+        );
+
+        iconRegistry.addSvgIcon(
+            'no-flag',
+            sanitizer.bypassSecurityTrustResourceUrl(
+                'assets/common/images/country-flags/no-flag.svg'
+            )
+        );
+
+        iconRegistry.addSvgIcon(
+            'no-flag-selected',
+            sanitizer.bypassSecurityTrustResourceUrl(
+                'assets/common/images/country-flags/no-flag-selected.svg'
+            )
+        );
+
+        iconRegistry.addSvgIcon(
+            'pl-flag',
+            sanitizer.bypassSecurityTrustResourceUrl(
+                'assets/common/images/country-flags/pl-flag.svg'
+            )
+        );
+
+        iconRegistry.addSvgIcon(
+            'pl-flag-selected',
+            sanitizer.bypassSecurityTrustResourceUrl(
+                'assets/common/images/country-flags/pl-flag-selected.svg'
+            )
+        );
+
+        iconRegistry.addSvgIcon(
+            'se-flag',
+            sanitizer.bypassSecurityTrustResourceUrl(
+                'assets/common/images/country-flags/se-flag.svg'
+            )
+        );
+
+        iconRegistry.addSvgIcon(
+            'se-flag-selected',
+            sanitizer.bypassSecurityTrustResourceUrl(
+                'assets/common/images/country-flags/se-flag-selected.svg'
+            )
+        );
+
+        iconRegistry.addSvgIcon(
+            'arrow',
+            sanitizer.bypassSecurityTrustResourceUrl(
+                'assets/common/images/arrow.svg'
+            )
+        );
+
     }
 }

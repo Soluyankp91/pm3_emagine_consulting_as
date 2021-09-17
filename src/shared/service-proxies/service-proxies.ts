@@ -638,69 +638,6 @@ export class ClientsServiceProxy {
 }
 
 @Injectable()
-export class ConsultantsServiceProxy {
-    private http: HttpClient;
-    private baseUrl: string;
-    protected jsonParseReviver: ((key: string, value: any) => any) | undefined = undefined;
-
-    constructor(@Inject(HttpClient) http: HttpClient, @Optional() @Inject(API_BASE_URL) baseUrl?: string) {
-        this.http = http;
-        this.baseUrl = baseUrl !== undefined && baseUrl !== null ? baseUrl : "";
-    }
-
-    /**
-     * @return Success
-     */
-    testAdTokenFlow(): Observable<string> {
-        let url_ = this.baseUrl + "/api/Consultants/TestAdTokenFlow";
-        url_ = url_.replace(/[?&]$/, "");
-
-        let options_ : any = {
-            observe: "response",
-            responseType: "blob",
-            headers: new HttpHeaders({
-                "Accept": "text/plain"
-            })
-        };
-
-        return this.http.request("get", url_, options_).pipe(_observableMergeMap((response_ : any) => {
-            return this.processTestAdTokenFlow(response_);
-        })).pipe(_observableCatch((response_: any) => {
-            if (response_ instanceof HttpResponseBase) {
-                try {
-                    return this.processTestAdTokenFlow(<any>response_);
-                } catch (e) {
-                    return <Observable<string>><any>_observableThrow(e);
-                }
-            } else
-                return <Observable<string>><any>_observableThrow(response_);
-        }));
-    }
-
-    protected processTestAdTokenFlow(response: HttpResponseBase): Observable<string> {
-        const status = response.status;
-        const responseBlob =
-            response instanceof HttpResponse ? response.body :
-            (<any>response).error instanceof Blob ? (<any>response).error : undefined;
-
-        let _headers: any = {}; if (response.headers) { for (let key of response.headers.keys()) { _headers[key] = response.headers.get(key); }}
-        if (status === 200) {
-            return blobToText(responseBlob).pipe(_observableMergeMap(_responseText => {
-            let result200: any = null;
-            let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
-            result200 = resultData200 !== undefined ? resultData200 : <any>null;
-            return _observableOf(result200);
-            }));
-        } else if (status !== 200 && status !== 204) {
-            return blobToText(responseBlob).pipe(_observableMergeMap(_responseText => {
-            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
-            }));
-        }
-        return _observableOf<string>(<any>null);
-    }
-}
-
-@Injectable()
 export class EnumServiceProxy {
     private http: HttpClient;
     private baseUrl: string;
@@ -1033,13 +970,13 @@ export class HubSpotTestServiceProxy {
 }
 
 export class ClientContractListItemDto implements IClientContractListItemDto {
-    id!: number;
-    consultantName!: string | undefined;
-    email!: string | undefined;
-    phone!: string | undefined;
-    contractOwner!: string | undefined;
-    startDate!: moment.Moment;
-    endDate!: moment.Moment;
+    id?: number;
+    consultantName?: string | undefined;
+    email?: string | undefined;
+    phone?: string | undefined;
+    contractOwner?: string | undefined;
+    startDate?: moment.Moment;
+    endDate?: moment.Moment;
 
     constructor(data?: IClientContractListItemDto) {
         if (data) {
@@ -1083,23 +1020,23 @@ export class ClientContractListItemDto implements IClientContractListItemDto {
 }
 
 export interface IClientContractListItemDto {
-    id: number;
-    consultantName: string | undefined;
-    email: string | undefined;
-    phone: string | undefined;
-    contractOwner: string | undefined;
-    startDate: moment.Moment;
-    endDate: moment.Moment;
+    id?: number;
+    consultantName?: string | undefined;
+    email?: string | undefined;
+    phone?: string | undefined;
+    contractOwner?: string | undefined;
+    startDate?: moment.Moment;
+    endDate?: moment.Moment;
 }
 
 export class ClientContractListItemDtoPaginatedList implements IClientContractListItemDtoPaginatedList {
-    readonly items!: ClientContractListItemDto[] | undefined;
-    readonly pageIndex!: number;
-    readonly totalPages!: number;
-    readonly totalCount!: number;
-    readonly pageSize!: number;
-    readonly hasPreviousPage!: boolean;
-    readonly hasNextPage!: boolean;
+    readonly items?: ClientContractListItemDto[] | undefined;
+    readonly pageIndex?: number;
+    readonly totalPages?: number;
+    readonly totalCount?: number;
+    readonly pageSize?: number;
+    readonly hasPreviousPage?: boolean;
+    readonly hasNextPage?: boolean;
 
     constructor(data?: IClientContractListItemDtoPaginatedList) {
         if (data) {
@@ -1151,29 +1088,29 @@ export class ClientContractListItemDtoPaginatedList implements IClientContractLi
 }
 
 export interface IClientContractListItemDtoPaginatedList {
-    items: ClientContractListItemDto[] | undefined;
-    pageIndex: number;
-    totalPages: number;
-    totalCount: number;
-    pageSize: number;
-    hasPreviousPage: boolean;
-    hasNextPage: boolean;
+    items?: ClientContractListItemDto[] | undefined;
+    pageIndex?: number;
+    totalPages?: number;
+    totalCount?: number;
+    pageSize?: number;
+    hasPreviousPage?: boolean;
+    hasNextPage?: boolean;
 }
 
 export class ClientListItemDto implements IClientListItemDto {
-    id!: number;
-    crmClientId!: number | undefined;
-    legacyClientId!: number | undefined;
-    name!: string | undefined;
-    clientAddress_Address!: string | undefined;
-    clientAddress_Address2!: string | undefined;
-    clientAddress_PostCode!: string | undefined;
-    clientAddress_City!: string | undefined;
-    clientAddress_Country_Name!: string | undefined;
-    clientAddress_Country_Code!: string | undefined;
-    phone!: string | undefined;
-    owner_Name!: string | undefined;
-    tenant_TenantId_Value!: number;
+    id?: number;
+    crmClientId?: number | undefined;
+    legacyClientId?: number | undefined;
+    name?: string | undefined;
+    clientAddress_Address?: string | undefined;
+    clientAddress_Address2?: string | undefined;
+    clientAddress_PostCode?: string | undefined;
+    clientAddress_City?: string | undefined;
+    clientAddress_Country_Name?: string | undefined;
+    clientAddress_Country_Code?: string | undefined;
+    phone?: string | undefined;
+    owner_Name?: string | undefined;
+    tenant_TenantId_Value?: number;
 
     constructor(data?: IClientListItemDto) {
         if (data) {
@@ -1229,29 +1166,29 @@ export class ClientListItemDto implements IClientListItemDto {
 }
 
 export interface IClientListItemDto {
-    id: number;
-    crmClientId: number | undefined;
-    legacyClientId: number | undefined;
-    name: string | undefined;
-    clientAddress_Address: string | undefined;
-    clientAddress_Address2: string | undefined;
-    clientAddress_PostCode: string | undefined;
-    clientAddress_City: string | undefined;
-    clientAddress_Country_Name: string | undefined;
-    clientAddress_Country_Code: string | undefined;
-    phone: string | undefined;
-    owner_Name: string | undefined;
-    tenant_TenantId_Value: number;
+    id?: number;
+    crmClientId?: number | undefined;
+    legacyClientId?: number | undefined;
+    name?: string | undefined;
+    clientAddress_Address?: string | undefined;
+    clientAddress_Address2?: string | undefined;
+    clientAddress_PostCode?: string | undefined;
+    clientAddress_City?: string | undefined;
+    clientAddress_Country_Name?: string | undefined;
+    clientAddress_Country_Code?: string | undefined;
+    phone?: string | undefined;
+    owner_Name?: string | undefined;
+    tenant_TenantId_Value?: number;
 }
 
 export class ClientListItemDtoPaginatedList implements IClientListItemDtoPaginatedList {
-    readonly items!: ClientListItemDto[] | undefined;
-    readonly pageIndex!: number;
-    readonly totalPages!: number;
-    readonly totalCount!: number;
-    readonly pageSize!: number;
-    readonly hasPreviousPage!: boolean;
-    readonly hasNextPage!: boolean;
+    readonly items?: ClientListItemDto[] | undefined;
+    readonly pageIndex?: number;
+    readonly totalPages?: number;
+    readonly totalCount?: number;
+    readonly pageSize?: number;
+    readonly hasPreviousPage?: boolean;
+    readonly hasNextPage?: boolean;
 
     constructor(data?: IClientListItemDtoPaginatedList) {
         if (data) {
@@ -1303,25 +1240,25 @@ export class ClientListItemDtoPaginatedList implements IClientListItemDtoPaginat
 }
 
 export interface IClientListItemDtoPaginatedList {
-    items: ClientListItemDto[] | undefined;
-    pageIndex: number;
-    totalPages: number;
-    totalCount: number;
-    pageSize: number;
-    hasPreviousPage: boolean;
-    hasNextPage: boolean;
+    items?: ClientListItemDto[] | undefined;
+    pageIndex?: number;
+    totalPages?: number;
+    totalCount?: number;
+    pageSize?: number;
+    hasPreviousPage?: boolean;
+    hasNextPage?: boolean;
 }
 
 export class ClientOverviewListItemDto implements IClientOverviewListItemDto {
-    consultantId!: number;
-    clientName!: string | undefined;
-    consultantName!: string | undefined;
-    note!: string | undefined;
-    endDate!: moment.Moment;
-    projectType!: string | undefined;
-    contractsCount!: number;
-    contractsPendingCount!: number;
-    contractsExtensionsOkCount!: number;
+    consultantId?: number;
+    clientName?: string | undefined;
+    consultantName?: string | undefined;
+    note?: string | undefined;
+    endDate?: moment.Moment;
+    projectType?: string | undefined;
+    contractsCount?: number;
+    contractsPendingCount?: number;
+    contractsExtensionsOkCount?: number;
 
     constructor(data?: IClientOverviewListItemDto) {
         if (data) {
@@ -1369,25 +1306,25 @@ export class ClientOverviewListItemDto implements IClientOverviewListItemDto {
 }
 
 export interface IClientOverviewListItemDto {
-    consultantId: number;
-    clientName: string | undefined;
-    consultantName: string | undefined;
-    note: string | undefined;
-    endDate: moment.Moment;
-    projectType: string | undefined;
-    contractsCount: number;
-    contractsPendingCount: number;
-    contractsExtensionsOkCount: number;
+    consultantId?: number;
+    clientName?: string | undefined;
+    consultantName?: string | undefined;
+    note?: string | undefined;
+    endDate?: moment.Moment;
+    projectType?: string | undefined;
+    contractsCount?: number;
+    contractsPendingCount?: number;
+    contractsExtensionsOkCount?: number;
 }
 
 export class ClientOverviewListItemDtoPaginatedList implements IClientOverviewListItemDtoPaginatedList {
-    readonly items!: ClientOverviewListItemDto[] | undefined;
-    readonly pageIndex!: number;
-    readonly totalPages!: number;
-    readonly totalCount!: number;
-    readonly pageSize!: number;
-    readonly hasPreviousPage!: boolean;
-    readonly hasNextPage!: boolean;
+    readonly items?: ClientOverviewListItemDto[] | undefined;
+    readonly pageIndex?: number;
+    readonly totalPages?: number;
+    readonly totalCount?: number;
+    readonly pageSize?: number;
+    readonly hasPreviousPage?: boolean;
+    readonly hasNextPage?: boolean;
 
     constructor(data?: IClientOverviewListItemDtoPaginatedList) {
         if (data) {
@@ -1439,27 +1376,27 @@ export class ClientOverviewListItemDtoPaginatedList implements IClientOverviewLi
 }
 
 export interface IClientOverviewListItemDtoPaginatedList {
-    items: ClientOverviewListItemDto[] | undefined;
-    pageIndex: number;
-    totalPages: number;
-    totalCount: number;
-    pageSize: number;
-    hasPreviousPage: boolean;
-    hasNextPage: boolean;
+    items?: ClientOverviewListItemDto[] | undefined;
+    pageIndex?: number;
+    totalPages?: number;
+    totalCount?: number;
+    pageSize?: number;
+    hasPreviousPage?: boolean;
+    hasNextPage?: boolean;
 }
 
 export class ClientRequestTrackDto implements IClientRequestTrackDto {
-    requestId!: number;
-    headline!: string | undefined;
-    status!: RequestStatusValueValueNameDto;
-    clientDeadline!: moment.Moment | undefined;
-    dateAdded!: moment.Moment;
-    projectType!: RequestProjectTypeValueValueNameDto;
-    priority!: number;
-    numberOfConsultants!: number;
-    locations!: SimpleRequestLocationDto[] | undefined;
-    requestSourcers!: EmployeeDto[] | undefined;
-    accountManagers!: EmployeeDto[] | undefined;
+    requestId?: number;
+    headline?: string | undefined;
+    status?: RequestStatusValueValueNameDto;
+    clientDeadline?: moment.Moment | undefined;
+    dateAdded?: moment.Moment;
+    projectType?: RequestProjectTypeValueValueNameDto;
+    priority?: number;
+    numberOfConsultants?: number;
+    locations?: SimpleRequestLocationDto[] | undefined;
+    requestSourcers?: EmployeeDto[] | undefined;
+    accountManagers?: EmployeeDto[] | undefined;
 
     constructor(data?: IClientRequestTrackDto) {
         if (data) {
@@ -1535,27 +1472,27 @@ export class ClientRequestTrackDto implements IClientRequestTrackDto {
 }
 
 export interface IClientRequestTrackDto {
-    requestId: number;
-    headline: string | undefined;
-    status: RequestStatusValueValueNameDto;
-    clientDeadline: moment.Moment | undefined;
-    dateAdded: moment.Moment;
-    projectType: RequestProjectTypeValueValueNameDto;
-    priority: number;
-    numberOfConsultants: number;
-    locations: SimpleRequestLocationDto[] | undefined;
-    requestSourcers: EmployeeDto[] | undefined;
-    accountManagers: EmployeeDto[] | undefined;
+    requestId?: number;
+    headline?: string | undefined;
+    status?: RequestStatusValueValueNameDto;
+    clientDeadline?: moment.Moment | undefined;
+    dateAdded?: moment.Moment;
+    projectType?: RequestProjectTypeValueValueNameDto;
+    priority?: number;
+    numberOfConsultants?: number;
+    locations?: SimpleRequestLocationDto[] | undefined;
+    requestSourcers?: EmployeeDto[] | undefined;
+    accountManagers?: EmployeeDto[] | undefined;
 }
 
 export class ClientRequestTrackDtoPaginatedList implements IClientRequestTrackDtoPaginatedList {
-    readonly items!: ClientRequestTrackDto[] | undefined;
-    readonly pageIndex!: number;
-    readonly totalPages!: number;
-    readonly totalCount!: number;
-    readonly pageSize!: number;
-    readonly hasPreviousPage!: boolean;
-    readonly hasNextPage!: boolean;
+    readonly items?: ClientRequestTrackDto[] | undefined;
+    readonly pageIndex?: number;
+    readonly totalPages?: number;
+    readonly totalCount?: number;
+    readonly pageSize?: number;
+    readonly hasPreviousPage?: boolean;
+    readonly hasNextPage?: boolean;
 
     constructor(data?: IClientRequestTrackDtoPaginatedList) {
         if (data) {
@@ -1607,19 +1544,19 @@ export class ClientRequestTrackDtoPaginatedList implements IClientRequestTrackDt
 }
 
 export interface IClientRequestTrackDtoPaginatedList {
-    items: ClientRequestTrackDto[] | undefined;
-    pageIndex: number;
-    totalPages: number;
-    totalCount: number;
-    pageSize: number;
-    hasPreviousPage: boolean;
-    hasNextPage: boolean;
+    items?: ClientRequestTrackDto[] | undefined;
+    pageIndex?: number;
+    totalPages?: number;
+    totalCount?: number;
+    pageSize?: number;
+    hasPreviousPage?: boolean;
+    hasNextPage?: boolean;
 }
 
 export class CountryDto implements ICountryDto {
-    id!: number;
-    code!: string | undefined;
-    name!: string | undefined;
+    id?: number;
+    code?: string | undefined;
+    name?: string | undefined;
 
     constructor(data?: ICountryDto) {
         if (data) {
@@ -1655,15 +1592,15 @@ export class CountryDto implements ICountryDto {
 }
 
 export interface ICountryDto {
-    id: number;
-    code: string | undefined;
-    name: string | undefined;
+    id?: number;
+    code?: string | undefined;
+    name?: string | undefined;
 }
 
 export class EmployeeDto implements IEmployeeDto {
-    id!: number;
-    externalId!: string;
-    name!: string | undefined;
+    id?: number;
+    externalId?: string;
+    name?: string | undefined;
 
     constructor(data?: IEmployeeDto) {
         if (data) {
@@ -1699,14 +1636,14 @@ export class EmployeeDto implements IEmployeeDto {
 }
 
 export interface IEmployeeDto {
-    id: number;
-    externalId: string;
-    name: string | undefined;
+    id?: number;
+    externalId?: string;
+    name?: string | undefined;
 }
 
 export class IdNameDto implements IIdNameDto {
-    id!: number;
-    name!: string | undefined;
+    id?: number;
+    name?: string | undefined;
 
     constructor(data?: IIdNameDto) {
         if (data) {
@@ -1740,13 +1677,13 @@ export class IdNameDto implements IIdNameDto {
 }
 
 export interface IIdNameDto {
-    id: number;
-    name: string | undefined;
+    id?: number;
+    name?: string | undefined;
 }
 
 export class ProjectTypeDto implements IProjectTypeDto {
-    id!: number;
-    name!: string | undefined;
+    id?: number;
+    name?: string | undefined;
 
     constructor(data?: IProjectTypeDto) {
         if (data) {
@@ -1780,8 +1717,8 @@ export class ProjectTypeDto implements IProjectTypeDto {
 }
 
 export interface IProjectTypeDto {
-    id: number;
-    name: string | undefined;
+    id?: number;
+    name?: string | undefined;
 }
 
 export enum RequestProjectTypeValue {
@@ -1798,8 +1735,8 @@ export enum RequestProjectTypeValue {
 }
 
 export class RequestProjectTypeValueValueNameDto implements IRequestProjectTypeValueValueNameDto {
-    value!: RequestProjectTypeValue;
-    name!: string | undefined;
+    value?: RequestProjectTypeValue;
+    name?: string | undefined;
 
     constructor(data?: IRequestProjectTypeValueValueNameDto) {
         if (data) {
@@ -1833,8 +1770,8 @@ export class RequestProjectTypeValueValueNameDto implements IRequestProjectTypeV
 }
 
 export interface IRequestProjectTypeValueValueNameDto {
-    value: RequestProjectTypeValue;
-    name: string | undefined;
+    value?: RequestProjectTypeValue;
+    name?: string | undefined;
 }
 
 export enum RequestStatusValue {
@@ -1849,8 +1786,8 @@ export enum RequestStatusValue {
 }
 
 export class RequestStatusValueValueNameDto implements IRequestStatusValueValueNameDto {
-    value!: RequestStatusValue;
-    name!: string | undefined;
+    value?: RequestStatusValue;
+    name?: string | undefined;
 
     constructor(data?: IRequestStatusValueValueNameDto) {
         if (data) {
@@ -1884,8 +1821,8 @@ export class RequestStatusValueValueNameDto implements IRequestStatusValueValueN
 }
 
 export interface IRequestStatusValueValueNameDto {
-    value: RequestStatusValue;
-    name: string | undefined;
+    value?: RequestStatusValue;
+    name?: string | undefined;
 }
 
 export class SimplePublicObject implements ISimplePublicObject {
@@ -1893,9 +1830,9 @@ export class SimplePublicObject implements ISimplePublicObject {
     properties!: { [key: string]: string; };
     createdAt!: moment.Moment;
     updatedAt!: moment.Moment;
-    archived!: boolean | undefined;
-    archivedAt!: moment.Moment | undefined;
-    additionalProperties!: { [key: string]: any; } | undefined;
+    archived?: boolean | undefined;
+    archivedAt?: moment.Moment | undefined;
+    additionalProperties?: { [key: string]: any; } | undefined;
 
     constructor(data?: ISimplePublicObject) {
         if (data) {
@@ -1970,15 +1907,15 @@ export interface ISimplePublicObject {
     properties: { [key: string]: string; };
     createdAt: moment.Moment;
     updatedAt: moment.Moment;
-    archived: boolean | undefined;
-    archivedAt: moment.Moment | undefined;
-    additionalProperties: { [key: string]: any; } | undefined;
+    archived?: boolean | undefined;
+    archivedAt?: moment.Moment | undefined;
+    additionalProperties?: { [key: string]: any; } | undefined;
 }
 
 export class SimpleRequestLocationDto implements ISimpleRequestLocationDto {
-    id!: number;
-    country!: IdNameDto;
-    city!: IdNameDto;
+    id?: number;
+    country?: IdNameDto;
+    city?: IdNameDto;
 
     constructor(data?: ISimpleRequestLocationDto) {
         if (data) {
@@ -2014,9 +1951,9 @@ export class SimpleRequestLocationDto implements ISimpleRequestLocationDto {
 }
 
 export interface ISimpleRequestLocationDto {
-    id: number;
-    country: IdNameDto;
-    city: IdNameDto;
+    id?: number;
+    country?: IdNameDto;
+    city?: IdNameDto;
 }
 
 export class ApiException extends Error {

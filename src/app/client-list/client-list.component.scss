@@ -6,4 +6,9 @@
             align-items: center;
         }
     }
+
+    &--table {
+        position: relative;
+        min-height: 120px;
+    }
 }

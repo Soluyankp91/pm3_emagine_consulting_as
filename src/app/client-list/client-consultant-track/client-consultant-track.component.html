@@ -1,0 +1,78 @@
+<div class="client-request-track">
+    <div fxLayout="column" fxLayoutAlign="start center" class="client-request-track--table u-w--100">
+        <div fxLayout="column" fxFlexFill>
+            <mat-table #table [dataSource]="consultantTrackDataSource" class="rounded-table u-w--100" matSort matSortStart="asc" (matSortChange)="sortChanged($event)">
+                <ng-container matColumnDef="id">
+                    <mat-header-cell *matHeaderCellDef mat-sort-header fxFlex="15%"> ID </mat-header-cell>
+                    <mat-cell *matCellDef="let row" fxFlex="15%">
+                        <span class="text-truncate-ellipsis" [matTooltip]="row.headline">
+                            {{row.headline}}
+                        </span>
+                    </mat-cell>
+                </ng-container>
+                <ng-container matColumnDef="contact">
+                    <mat-header-cell *matHeaderCellDef mat-sort-header fxFlex="10%"> Contact </mat-header-cell>
+                    <mat-cell *matCellDef="let row" fxFlex="10%">
+                        <span class="text-truncate-ellipsis" [matTooltip]="row?.status?.name">
+                            {{row?.status?.name}}
+                        </span>
+                    </mat-cell>
+                </ng-container>
+                <ng-container matColumnDef="position">
+                    <mat-header-cell *matHeaderCellDef mat-sort-header fxFlex="8%"> Position </mat-header-cell>
+                    <mat-cell *matCellDef="let row" fxFlex="8%">
+                        <span class="text-truncate-ellipsis" [matTooltip]="row.clientDeadline">
+                            {{row.clientDeadline}}
+                        </span>
+                    </mat-cell>
+                </ng-container>
+                <ng-container matColumnDef="email">
+                    <mat-header-cell *matHeaderCellDef mat-sort-header fxFlex="8%"> Email </mat-header-cell>
+                    <mat-cell *matCellDef="let row" fxFlex="8%">
+                        <span class="text-truncate-ellipsis" [matTooltip]="row?.dateAdded">
+                            {{row?.dateAdded}}
+                        </span>
+                    </mat-cell>
+                </ng-container>
+                <ng-container matColumnDef="phone">
+                    <mat-header-cell *matHeaderCellDef mat-sort-header fxFlex="10%"> Phone </mat-header-cell>
+                    <mat-cell *matCellDef="let row" fxFlex="10%">
+                        <span class="text-truncate-ellipsis" [matTooltip]="row?.projectType?.name">
+                            {{row?.projectType?.name}}
+                        </span>
+                    </mat-cell>
+                </ng-container>
+                <ng-container matColumnDef="relation">
+                    <mat-header-cell *matHeaderCellDef mat-sort-header fxFlex="5%"> Priority </mat-header-cell>
+                    <mat-cell *matCellDef="let row" fxFlex="5%">
+                        <span class="text-truncate-ellipsis" [matTooltip]="row.priority">
+                            {{row.priority}}
+                        </span>
+                    </mat-cell>
+                </ng-container>
+                <ng-container matColumnDef="contactOwner">
+                    <mat-header-cell *matHeaderCellDef mat-sort-header fxFlex="5%"> Consultants </mat-header-cell>
+                    <mat-cell *matCellDef="let row" fxFlex="5%">
+                        <span class="text-truncate-ellipsis" [matTooltip]="row.numberOfConsultants">
+                            {{row.numberOfConsultants}}
+                        </span>
+                    </mat-cell>
+                </ng-container>
+
+                <mat-header-row *matHeaderRowDef="clientDisplayColumns"></mat-header-row>
+                <mat-row *matRowDef="let row; columns: clientDisplayColumns;" class="mat-elevation-z0"></mat-row>
+            </mat-table>
+            <div class="spinner-container" *ngIf="isDataLoading">
+                <mat-spinner [diameter]="50"></mat-spinner>
+            </div>
+            <div class="results-not-found" *ngIf="totalCount === 0 && !isDataLoading">
+                RESULTS NOT FOUND
+            </div>
+        </div>
+        <div class="pagination-contaier">
+            <mat-paginator #clientsPaginator [length]="totalCount" [pageSize]="deafultPageSize"
+                [pageSizeOptions]="pageSizeOptions" [showFirstLastButtons]="true" (page)="pageChanged($event)">
+            </mat-paginator>
+        </div>
+    </div>
+</div>
