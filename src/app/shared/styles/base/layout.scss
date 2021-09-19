@@ -152,3 +152,60 @@ html {
     flex-direction: column;
     justify-content: space-between;
 }
+
+.flex-row {
+    display: flex;
+    box-sizing: border-box;
+    flex-direction: row;
+}
+
+.flex-center {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.flex-start {
+    display: flex;
+    flex-direction: row;
+    justify-content: flex-start;
+}
+
+.form-field-noPadding {
+    margin-bottom: -1.25em;
+}
+
+.flex-items-center {
+    display: flex;
+    align-items: center;
+}
+
+.flex-items-end {
+    display: flex;
+    align-items: flex-end;
+}
+
+.flex-items-start {
+    display: flex;
+    align-items: flex-start;
+}
+
+.flex-justify-between {
+    display: flex;
+    justify-content: space-between;
+}
+
+.flex-justify-end {
+    display: flex;
+    justify-content: flex-end;
+}
+
+.flex-justify-center {
+    display: flex;
+    justify-content: center;
+}
+
+.flex-justify-start {
+    display: flex;
+    justify-content: flex-start;
+}

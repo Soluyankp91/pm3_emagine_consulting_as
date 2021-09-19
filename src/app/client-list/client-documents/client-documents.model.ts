@@ -1,19 +1,25 @@
-export interface FolderNode {
-    name: string;
-    files?: string[];
-    children?: FolderNode[];
+export class FolderNode {
+    name: string | undefined;
+    files?: string[] | undefined;
+    children?: FolderNode[] | undefined;
 }
 
-export interface FolderFlatNode {
-    expandable: boolean;
-    name: string;
-    files?: string[];
-    level: number;
+export class FolderFlatNode {
+    constructor(
+        public expandable: boolean,
+        public name: string | undefined,
+        public level: number,
+        public files?: string[] | undefined,
+        public children?: FolderNode[] | undefined
+    ) {}
 }
 
 export const TREE_DATA: FolderNode[] = [
     {
         name: 'Folder1',
+        files: [
+            'File folder1'
+        ],
         children: [
             {
                 name: 'Subfolder11',

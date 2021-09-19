@@ -77,9 +77,9 @@ export class ClientDocumentsComponent implements OnInit {
     //     },
     // ];
 
-    // treeControl: FlatTreeControl<FolderFlatNode>;
-    // treeFlattener: MatTreeFlattener<FolderNode, FolderFlatNode>;
-    // dataSource: MatTreeFlatDataSource<FolderNode, FolderFlatNode>;
+    flatTreeControl: FlatTreeControl<FolderFlatNode>;
+    flatTreeFlattener: MatTreeFlattener<FolderNode, FolderFlatNode>;
+    flatDataSource: MatTreeFlatDataSource<FolderNode, FolderFlatNode>;
     // private transformer = (node: FolderNode, level: number) => {
     //     return {
     //       expandable: !!node.children && node.children.length > 0,
@@ -105,25 +105,64 @@ export class ClientDocumentsComponent implements OnInit {
     dataSource = new MatTreeNestedDataSource<FolderNode>();
 
     constructor() {
-        this.dataSource.data = TREE_DATA;
-        // this.treeControl = new FlatTreeControl<FolderFlatNode>(node => node.level, node => node.expandable);
-
-        // this.treeFlattener = new MatTreeFlattener(this.transformer, node => node.level, node => node.expandable, node => node.children);
-
-        // this.dataSource = new MatTreeFlatDataSource(this.treeControl, this.treeFlattener);
+        this.flatTreeFlattener = new MatTreeFlattener( this._transformer, this._getLevel, this._isExpandable, this._getChildren);
+        this.flatTreeControl = new FlatTreeControl<FolderFlatNode>(this._getLevel, this._isExpandable);
+        this.flatDataSource = new MatTreeFlatDataSource(this.flatTreeControl, this.flatTreeFlattener);
     }
 
+    _transformer(node: FolderNode, level: number) {
+        return {
+            expandable: !!node.children && node.children.length > 0,
+            name: node.name,
+            level: level,
+            files: node.files
+        };
+    }
 
+    hasChild = (_: number, _nodeData: FolderFlatNode) => !!_nodeData.expandable;
 
-    hasChild = (_: number, _nodeData: FolderFlatNode) => _nodeData.expandable;
+    hasFiles = (_: number, _nodeData: FolderFlatNode) => _nodeData.files && _nodeData.files?.length;
 
-    // private _getLevel = (node: FolderFlatNode) => node.level;
+    private _getLevel = (node: FolderFlatNode) => node.level;
 
-    // private _isExpandable = (node: FolderFlatNode) => node.expandable;
+    private _isExpandable = (node: FolderFlatNode) => node.expandable;
 
-    // private _getChildren = (node: FolderNode) => node.children;
+    private _getChildren = (node: FolderNode) => node.children;
+
+    isOdd(node: FolderFlatNode) {
+        return this._getLevel(node) % 2 === 1;
+    }
+
+    isParentOdd(node: FolderFlatNode) {
+        const parentNode = this.getParent(node);
+        if (parentNode) {
+            return this.isOdd(parentNode);
+        } else {
+            this.isOdd(node);
+        }
+    }
+
+    getParent(node: FolderFlatNode) {
+        const currentLevel = this._getLevel(node);
+    
+        if (currentLevel < 1) {
+          return null;
+        }
+    
+        const startIndex = this.flatTreeControl.dataNodes.indexOf(node) - 1;
+    
+        for (let i = startIndex; i >= 0; i--) {
+          const currentNode = this.flatTreeControl.dataNodes[i];
+    
+          if (this._getLevel(currentNode) < currentLevel) {
+            return currentNode;
+          }
+        }
+      }
 
     ngOnInit(): void {
+        this.flatDataSource.data = [];
+        this.flatDataSource.data = TREE_DATA;
     }
 
     pageChanged(event?: any): void {

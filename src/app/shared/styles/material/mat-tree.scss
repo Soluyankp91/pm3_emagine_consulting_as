@@ -1,0 +1,35 @@
+.client-contracts-tree {
+    mat-tree {
+        width: 100%;
+        .mat-tree-node {
+            position: relative;
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start !important;
+            width: 100%;
+            // background: #F8F8F8;
+            background: red;
+
+            padding-bottom: 8px;
+            // border-radius: 5px; 
+            .mat-tree--expand-btn {
+                position: absolute;
+                right: 0;
+            }
+            .client-contracts-tree--node {
+                background: red;
+                min-height: 48px;
+            }
+            &.parent-is-odd-node {
+                background: green;
+               
+            }
+            &.odd-node {
+                // background: #fff;
+                .client-contracts-tree--node {
+                    background: green;
+                }
+            }
+        }
+    }
+}
