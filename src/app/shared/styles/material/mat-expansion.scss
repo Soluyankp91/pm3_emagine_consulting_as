@@ -1,18 +1,47 @@
 .client-documents--contract-folders {
-    .mat-expansion-panel {
-        background: #F8F8F8;
-        border-radius: 5px;
-    }
-    .mat-expansion-panel-body {
-        padding: 0 10px;
-    }
-    &__subfolder {
-        .mat-expansion-panel-body {
-            padding: 0 24px 16px;
+    .mat-accordion {
+        width: 100%;
+        .mat-expansion-panel-spacing {
+            margin: 0 !important;
         }
         .mat-expansion-panel {
-            background: #FFFFFF;
-            border-radius: 5px;
+            background: #F8F8F8;
+            border-radius: 5px !important;
+            width: 100%;
+            margin-bottom: 10px !important;
+            .mat-expansion-indicator::after {
+                border: solid #17A297;
+                border-width: 0 2px 2px 0;
+                display: inline-block;
+                padding: 2px;
+                transform: rotate(45deg);
+                width: 10px;
+                height: 10px;
+                margin-top: -3px;
+            }
+            &.max-expanded {
+                .mat-expansion-indicator::after {
+                    transform: rotate(225deg);
+                }
+            }
+            &.even-folder {
+                background: #FFFFFF;
+            }
+        }
+        .mat-expansion-panel-body {
+            padding: 10px 16px !important;
+        }
+        .mat-expansion-panel-header {
+            padding: 0 16px !important;
+        }
+        &__subfolder {
+            .mat-expansion-panel-body {
+                padding: 0 24px 16px;
+            }
+            .mat-expansion-panel {
+                background: #FFFFFF;
+                border-radius: 5px;
+            }
         }
     }
 }

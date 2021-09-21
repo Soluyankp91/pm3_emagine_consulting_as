@@ -29,6 +29,10 @@ import { ClientConsultantTrackComponent } from './client-list/client-consultant-
 import { ClientDocumentsComponent } from './client-list/client-documents/client-documents.component';
 import { ClientInvoicingComponent } from './client-list/client-invoicing/client-invoicing.component';
 import { ClientConsultantsComponent } from './client-list/client-consultants/client-consultants.component';
+import { AddFileDialogComponent } from './client-list/client-documents/add-file-dialog/add-file-dialog.component';
+import { RenameFileDialogComponent } from './client-list/client-documents/rename-file-dialog/rename-file-dialog.component';
+import { FileDragAndDropDirective } from './shared/components/file-uploader/file-drag-and-drop.directive';
+import { FileUploaderComponent } from './shared/components/file-uploader/file-uploader.component';
 
 const isIE = window.navigator.userAgent.indexOf("MSIE ") > -1 || window.navigator.userAgent.indexOf("Trident/") > -1; // Remove this line to use Angular Universal
 
@@ -102,7 +106,11 @@ export function getRemoteServiceBaseUrl(): string {
         ClientConsultantTrackComponent,
         ClientDocumentsComponent,
         ClientInvoicingComponent,
-        ClientConsultantsComponent
+        ClientConsultantsComponent,
+        AddFileDialogComponent,
+        RenameFileDialogComponent,
+        FileDragAndDropDirective,
+        FileUploaderComponent
     ],
     imports: [
         BrowserModule,
@@ -114,52 +122,6 @@ export function getRemoteServiceBaseUrl(): string {
         ReactiveFormsModule,
         ServiceProxyModule,
         MsalModule
-        // MsalModule.forRoot( new PublicClientApplication({
-        //     auth: {
-        //       clientId: '54e44fbe-ca87-45be-9344-9a3bb6dd0dca',
-        //       authority: '',
-        //       redirectUri: '/'
-        //     },
-        //     cache: {
-        //       cacheLocation: 'localStorage',
-        //       storeAuthStateInCookie: isIE,
-        //     }
-        //   }),
-        //     {
-        //         interactionType: InteractionType.Redirect, // MSAL Guard Configuration
-        //         authRequest: {
-        //             scopes: ['user.read']
-        //         }
-        //     },
-        //     {
-        //         interactionType: InteractionType.Redirect, // MSAL Interceptor Configuration
-        //         protectedResourceMap: new Map([
-        //             ['https://login.microsoftonline.com/0749517d-d788-4fc5-b761-0cb1a1112694/oauth2/v2.0/authorize', ['user.read']]
-        //         ])
-        //     })
-        // MsalModule.forRoot( new PublicClientApplication({
-        //     auth: {
-        //       clientId: '54e44fbe-ca87-45be-9344-9a3bb6dd0dca', // This is your client ID
-        //       authority: '', // This is your tenant ID
-        //       redirectUri: '/'// This is your redirect URI
-        //     },
-        //     cache: {
-        //       cacheLocation: 'localStorage',
-        //       storeAuthStateInCookie: isIE, // Set to true for Internet Explorer 11
-        //     }
-        //   }),
-        //   {
-        //     interactionType: InteractionType.Redirect, // MSAL Guard Configuration
-        //     authRequest: {
-        //         scopes: ['user.read']
-        //     }
-        //   },{
-        //     interactionType: InteractionType.Redirect, // MSAL Interceptor Configuration
-        //     protectedResourceMap: new Map([
-        //         ['Enter_the_Graph_Endpoint_Here/v1.0/me', ['user.read']]
-        //     ])
-        //  }
-        // )
     ],
     providers: [
         {
@@ -184,12 +146,7 @@ export function getRemoteServiceBaseUrl(): string {
           },
           MsalService,
           MsalGuard,
-          MsalBroadcastService,
-        // {
-        //     provide: HTTP_INTERCEPTORS,
-        //     useClass: MsalInterceptor,
-        //     multi: true
-        // }
+          MsalBroadcastService
     ],
     bootstrap: [
         AppComponent
@@ -372,6 +329,76 @@ export class AppModule {
             'arrow',
             sanitizer.bypassSecurityTrustResourceUrl(
                 'assets/common/images/arrow.svg'
+            )
+        );
+
+        // File uploader
+        iconRegistry.addSvgIcon(
+            'file-uploader-icon',
+            sanitizer.bypassSecurityTrustResourceUrl(
+                'assets/common/images/file-uploader/file-uploader-icon.svg'
+            )
+        );
+
+        iconRegistry.addSvgIcon(
+            'file-drag-and-drop',
+            sanitizer.bypassSecurityTrustResourceUrl(
+                'assets/common/images/file-uploader/file-drag-and-drop.svg'
+            )
+        );
+
+        iconRegistry.addSvgIcon(
+            'pdf',
+            sanitizer.bypassSecurityTrustResourceUrl(
+                'assets/common/images/file-uploader/pdf.svg'
+            )
+        );
+        iconRegistry.addSvgIcon(
+            'doc',
+            sanitizer.bypassSecurityTrustResourceUrl(
+                'assets/common/images/file-uploader/doc.svg'
+            )
+        );
+
+        iconRegistry.addSvgIcon(
+            'xls',
+            sanitizer.bypassSecurityTrustResourceUrl(
+                'assets/common/images/file-uploader/xls.svg'
+            )
+        );
+
+        iconRegistry.addSvgIcon(
+            'txt',
+            sanitizer.bypassSecurityTrustResourceUrl(
+                'assets/common/images/file-uploader/txt.svg'
+            )
+        );
+
+        iconRegistry.addSvgIcon(
+            'raw',
+            sanitizer.bypassSecurityTrustResourceUrl(
+                'assets/common/images/file-uploader/raw.svg'
+            )
+        );
+
+        iconRegistry.addSvgIcon(
+            'jpg',
+            sanitizer.bypassSecurityTrustResourceUrl(
+                'assets/common/images/file-uploader/jpg.svg'
+            )
+        );
+
+        iconRegistry.addSvgIcon(
+            'svg',
+            sanitizer.bypassSecurityTrustResourceUrl(
+                'assets/common/images/file-uploader/svg.svg'
+            )
+        );
+
+        iconRegistry.addSvgIcon(
+            'png',
+            sanitizer.bypassSecurityTrustResourceUrl(
+                'assets/common/images/file-uploader/png.svg'
             )
         );
 

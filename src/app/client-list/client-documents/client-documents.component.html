@@ -2,6 +2,9 @@
     <mat-tab-group class="client-documents--tabs">
         <mat-tab label="Important docs">
             Important docs
+            <!-- <span style="background-color: aqua;">
+                <mat-icon class="icon" svgIcon="file-uploader-icon"></mat-icon>
+            </span> -->
         </mat-tab>
         <mat-tab label="General docs">
             General docs
@@ -104,63 +107,66 @@
                         </mat-form-field>
                     </div>
                 </div>
-                <div fxLayout="column" fxLayoutAlign="center center" class="u-mt--20 client-contracts-tree">
-                    <mat-tree [dataSource]="flatDataSource" [treeControl]="flatTreeControl">
-                        <mat-tree-node *matTreeNodeDef="let node" matTreeNodePadding [ngStyle]="{ 'margin-bottom: 8px' : node.level === 0, 'padding-bottom: 8px': node.level > 0 }"
-                            [class.odd-node]="isOdd(node)" [class.parent-is-odd-node]="isParentOdd(node)">
-                            <div class="client-contracts-tree--node column">
-                                <div class="flex-row">
-                                    <b>{{node.name}}</b>
+                <div fxLayout="column" fxLayoutAlign="center center" class="u-mt--20 client-documents--contract-folders u-w--100">
+                    <mat-accordion [multi]="true" class="mat-elevation-z0">
+                        <mat-expansion-panel *ngFor="let folder of contractFolders" class="mat-elevation-z0" [ngClass]="{'even-folder': folder.level && folder.level % 2 === 0}">
+                            <mat-expansion-panel-header [collapsedHeight]="'54px'" [expandedHeight]="'54px'">
+                                <div class="flex-row flex-justify-between flex-items-center u-w--100 u-mr--10">
+                                    <h4 class="u-mb--0">
+                                        {{folder.name}}
+                                    </h4>
+                                    <button mat-icon-button [matMenuTriggerFor]="contractActions" [matMenuTriggerData]="{folder: folder}"><mat-icon>more_vert</mat-icon></button>
                                 </div>
-                                <ng-container *ngIf="node.files?.length">
-                                    <div *ngFor="let file of node.files" class="column u-mt--20">
-                                      {{ file }}
-                                    </div>
-                                </ng-container>
-                            </div>
-                            <!-- <button *ngif="hasFiles(node)" mat-icon-button matTreeNodeToggle [attr.aria-label]="'toggle ' + node.name">
-                                <mat-icon class="mat-icon-rtl-mirror">
-                                    {{flatTreeControl.isExpanded(node) ? 'expand_more' : 'chevron_right'}}
-                                </mat-icon>
-                            </button> -->
-                        </mat-tree-node>
-                        <mat-tree-node *matTreeNodeDef="let node;when: hasFiles" matTreeNodePadding [ngStyle]="{ 'margin-bottom: 8px' : node.level === 0, 'padding-bottom: 8px': node.level > 0 }"
-                            [class.odd-node]="isOdd(node)" [class.parent-is-odd-node]="isParentOdd(node)">
-                            <div class="client-contracts-tree--node column">
-                                <div class="flex-row">
-                                    <b>{{node.name}}</b>
+                            </mat-expansion-panel-header>
+                            <div *ngIf="folder.files?.length" class="column">
+                                <div *ngFor="let file of folder.files; last as last" [ngClass]="{'u-mb--20': !last}">
+                                  {{ file }}
                                 </div>
-                                <ng-container *ngIf="node.files?.length && flatTreeControl.isExpanded(node)">
-                                    <div *ngFor="let file of node.files" class="column u-mt--20">
-                                      {{ file }}
-                                    </div>
-                                </ng-container>
                             </div>
-                            <button class="mat-tree--expand-btn" mat-icon-button matTreeNodeToggle [attr.aria-label]="'toggle ' + node.name">
-                                <mat-icon class="mat-icon-rtl-mirror">
-                                    {{flatTreeControl.isExpanded(node) ? 'expand_more' : 'chevron_right'}}
-                                </mat-icon>
+                            <ng-container [ngTemplateOutlet]="folder.children?.length ? nestedFolder : simpleFolder"
+                                          [ngTemplateOutletContext]="{folders:folder.children}">
+                            </ng-container>
+                        </mat-expansion-panel>
+                    </mat-accordion>
+                    <mat-menu #contractActions="matMenu" [overlapTrigger]="false">
+                        <ng-template matMenuContent let-aliasMenuItems="folder">
+                            <button mat-menu-item (click)="addFile(aliasMenuItems)">
+                                Add file
                             </button>
-                        </mat-tree-node>
-                        <mat-tree-node *matTreeNodeDef="let node;when: hasChild" matTreeNodePadding [ngStyle]="{ 'margin-bottom: 8px' : node.level === 0, 'padding-bottom: 8px': node.level > 0 }"
-                            [class.odd-node]="isOdd(node)" [class.parent-is-odd-node]="isParentOdd(node)">
-                            <div class="client-contracts-tree--node column">
-                                <div class="flex-row">
-                                    <b>{{node.name}}</b>
-                                </div>
-                                <ng-container *ngIf="node.files?.length && flatTreeControl.isExpanded(node)">
-                                    <div *ngFor="let file of node.files" class="column u-mt--20">
+                            <button mat-menu-item (click)="addFolder(aliasMenuItems)">
+                                Add folder
+                            </button>
+                            <button mat-menu-item (click)="deleteFolder(aliasMenuItems)">
+                                Delete folder
+                            </button>
+                        </ng-template>
+                    </mat-menu>
+                    <ng-template #nestedFolder let-folders='folders'>
+                        <mat-accordion [multi]="true" class="mat-elevation-z0">
+                            <mat-expansion-panel *ngFor="let folder of folders" class="mat-elevation-z0" [ngClass]="{'even-folder': folder.level && folder.level % 2 === 0}">
+                                <mat-expansion-panel-header [collapsedHeight]="'54px'" [expandedHeight]="'54px'">
+                                    <div class="flex-row flex-justify-between flex-items-center u-w--100 u-mr--10">
+                                        <h4 class="u-mb--0">
+                                            {{folder.name}}
+                                        </h4>
+                                        <button mat-icon-button [matMenuTriggerFor]="contractActions" [matMenuTriggerData]="{folder: folder}"><mat-icon>more_vert</mat-icon></button>
+                                    </div>
+                                </mat-expansion-panel-header>
+                                <div *ngIf="folder.files?.length" class="column">
+                                    <div *ngFor="let file of folder.files; last as last" [ngClass]="{'u-mb--20': !last}">
                                       {{ file }}
                                     </div>
+                                </div>
+                                <ng-container [ngTemplateOutlet]="folder.children?.length ? nestedFolder : simpleFolder"
+                                              [ngTemplateOutletContext]="{folders:folder.children}">
                                 </ng-container>
-                            </div>
-                            <button class="mat-tree--expand-btn" mat-icon-button matTreeNodeToggle [attr.aria-label]="'toggle ' + node.name">
-                                <mat-icon class="mat-icon-rtl-mirror">
-                                    {{flatTreeControl.isExpanded(node) ? 'expand_more' : 'chevron_right'}}
-                                </mat-icon>
-                            </button>
-                        </mat-tree-node>
-                    </mat-tree>
+                            </mat-expansion-panel>
+                        </mat-accordion>
+                    </ng-template>
+                    <ng-template #simpleFolder let-folders='folders'>
+                        <div style="display: none;">
+                        </div>
+                    </ng-template>
                 </div>
             </div>
         </mat-tab>

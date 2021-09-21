@@ -1,0 +1,46 @@
+<div class="file-uploader" file-drag-and-drop (click)="fileInput.click()"
+    (onFileDropped)="fileDropped($event)">
+    <input #fileInput type="file" [accept]="'.pdf,.doc,.docx,.xls,.xlsx,.txt,.jpg,.jpeg,.png,.svg'" style="display: none"
+        (change)="onFilesAdded()">
+    <div class="content">
+        <div class="watermark">
+            <mat-icon class="icon" svgIcon="file-uploader-icon"></mat-icon>
+            <span class="label">Drag & drop File</span>
+        </div>
+    </div>
+</div>
+<div class="d-flex flex-column uploader-hint">
+    <mat-hint *ngIf="maxFileSize" class="maxfilesize-hint">FILE_UPLOADER_ERROR_SIZE</mat-hint>
+    <mat-hint *ngIf="duplicatedFile" class="maxfilesize-hint">FILE_UPLOADER_ERROR_DUPLICATE_FILE</mat-hint>
+    <mat-hint *ngIf="!acceptedFileType" class="maxfilesize-hint">File type is not supported, accepted file types: {{ acceptedTypes.join(', ')}} </mat-hint>
+</div>
+
+<div class="files">
+    <ng-container *ngFor="let file of _files">
+        <div class="file">
+            <span class="flex-row flex-items-center">
+                <mat-icon class="icon" svgIcon="{{ file.icon }}"></mat-icon>
+                <span (click)="$event.stopPropagation()" class="label">{{ file.name }}</span>
+            </span>
+            <mat-icon *ngIf="!isCreationMode" class="show-menu--icon" [matMenuTriggerFor]="lookupMenu">more_vert</mat-icon>
+            <button *ngIf="isCreationMode" (click)="$event.stopPropagation();removeFile(file);" mat-icon-button>
+                <mat-icon>close</mat-icon>
+            </button>
+        </div>
+        <mat-menu #lookupMenu="matMenu">
+            <button (click)="$event.stopPropagation();removeFile(file);" mat-menu-item>
+                <mat-icon>delete</mat-icon>
+                Delete
+            </button>
+            <button (click)="$event.stopPropagation();renameFile(file);" mat-menu-item>
+                <mat-icon>edit</mat-icon>
+                Rename
+            </button>
+            <button (click)="$event.stopPropagation();downloadFile(file);" mat-menu-item>
+                <mat-icon>file_download</mat-icon>
+                Download
+            </button>
+        </mat-menu>
+    </ng-container>
+</div>
+

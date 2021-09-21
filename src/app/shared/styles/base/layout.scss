@@ -209,3 +209,23 @@ html {
     display: flex;
     justify-content: flex-start;
 }
+
+.backdrop-modal--wrapper {
+    background: rgba(23, 162, 151, .5);
+        &~ .cdk-global-overlay-wrapper {
+        pointer-events: auto !important;
+        position: relative !important;
+        overflow: auto !important;
+        &::before {
+            content: '' !important;
+            display: inline-block !important;
+            height: 100% !important;
+            white-space: nowrap !important;
+            .cdk-overlay-pane {
+                position: relative !important;
+                text-align: left !important;
+                white-space: normal !important;
+            }
+        }
+    }
+}

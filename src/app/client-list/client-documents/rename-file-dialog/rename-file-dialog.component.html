@@ -1,0 +1,32 @@
+<mat-dialog-content class="rename-file--modal">
+    <div mat-dialog-title class="rename-file--modal-header">
+        <h1>
+            Rename file {{fileName}}
+        </h1>
+    </div>
+    <div class="flex-row" fxFill>
+        <mat-form-field appearance="fill" class="u-w--100">
+            <mat-label>Filename</mat-label>
+            <input matInput required name="fileName" [formControl]="fileName">
+            <mat-icon *ngIf="fileName.touched && !fileName.valid" matSuffix>
+                warning
+            </mat-icon>
+            <mat-error>
+                <!-- {{getValidationMessage(fileName)}} -->
+            </mat-error>
+        </mat-form-field>
+    </div>
+    <mat-dialog-actions align="center" class="rename-file--actions">
+        <button [mat-dialog-close]="true" mat-raised-button color="primary" class="rename-file--actions-btn__outlined">
+            <span translate>
+                CREATE_CONSULTANT_FORM_Cancel
+            </span>
+        </button>
+        <button mat-raised-button color="primary" class="rename-file--actions-btn" (click)="save()" [disabled]="!fileName.valid">
+            <span translate>
+                RENAME_FILE_RenameFile
+            </span>
+        </button>
+    </mat-dialog-actions>
+</mat-dialog-content>
+

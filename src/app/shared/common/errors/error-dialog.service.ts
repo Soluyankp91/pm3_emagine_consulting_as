@@ -14,11 +14,13 @@ export class ErrorDialogService {
             this.opened = true;
             const dialogRef = this.dialog.open(ErrorDialogComponent, {
                 data: { message, header, status },
-                maxHeight: '100%',
+                minHeight: '150px',
+                height: 'auto',
                 width: '540px',
                 maxWidth: '100%',
                 disableClose: true,
                 hasBackdrop: true,
+                backdropClass: 'backdrop-modal--wrapper'
             });
 
             dialogRef.afterClosed().subscribe(() => {
