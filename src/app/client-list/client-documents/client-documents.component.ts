@@ -1,4 +1,4 @@
-import { Component, Input, OnInit } from '@angular/core';
+import { Component, Input, OnInit, ViewChild } from '@angular/core';
 import { FormControl } from '@angular/forms';
 import { MatTableDataSource } from '@angular/material/table';
 import { AppConsts } from 'src/shared/AppConsts';
@@ -6,6 +6,8 @@ import { TREE_DATA } from './client-documents.model';
 import { AddFileDialogComponent } from './add-file-dialog/add-file-dialog.component';
 import { Overlay } from '@angular/cdk/overlay';
 import { MatDialog } from '@angular/material/dialog';
+import { ConfirmationDialogComponent } from 'src/app/shared/components/confirmation-dialog/confirmation-dialog.component';
+import { MatTabGroup } from '@angular/material/tabs';
 
 @Component({
     selector: 'app-client-documents',
@@ -13,6 +15,7 @@ import { MatDialog } from '@angular/material/dialog';
     styleUrls: ['./client-documents.component.scss']
 })
 export class ClientDocumentsComponent implements OnInit {
+    @ViewChild('documentsTabs', {static: false}) documentsTabs: MatTabGroup;
     @Input() clientInfo: any;
 
     // Evals tab
@@ -50,7 +53,16 @@ export class ClientDocumentsComponent implements OnInit {
     }
 
     ngOnInit(): void {
-
+        if (!this.documentsTabs) {
+            let interval = setInterval(() => {
+                if (this.documentsTabs) {
+                    this.documentsTabs.realignInkBar();
+                    clearInterval(interval);
+                }
+            }, 100);
+        } else {
+            this.documentsTabs.realignInkBar();
+        }
     }
 
     pageChanged(event?: any): void {
@@ -102,8 +114,36 @@ export class ClientDocumentsComponent implements OnInit {
         console.log(folder);
     }
 
+    conformDeleteFolder(folder: any) {
+        const scrollStrategy = this.overlay.scrollStrategies.reposition();
+        const dialogRef = this.dialog.open(ConfirmationDialogComponent, {
+            width: '450px',
+            minHeight: '180px',
+            height: 'auto',
+            scrollStrategy,
+            backdropClass: 'backdrop-modal--wrapper',
+            autoFocus: false,
+            panelClass: 'confirmation-modal',
+            data: {
+                confirmationMessageTitle: `Are you sure you want to delete ${folder.name} folder?`,
+                confirmationMessage: 'When you confirm the deletion, all the files contained in this folder will disappear.',
+                rejectButtonText: 'Cancel',
+                confirmButtonText: 'Delete',
+                isNegative: true
+            }
+        });
+
+        dialogRef.componentInstance.onConfimrmed.subscribe(() => {
+            this.deleteFolder(folder);
+        });
+
+        dialogRef.componentInstance.onRejected.subscribe(() => {
+            // nthng
+        });
+    }
+
     deleteFolder(folder: any) {
-        console.log(folder);
+        // API TO DELETE FOLDER
     }
 
 }

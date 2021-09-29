@@ -489,21 +489,16 @@ export class ClientsServiceProxy {
     }
 
     /**
-     * @param clientIdQuery (optional) 
      * @param pageNumber (optional) 
      * @param pageSize (optional) 
      * @param sort (optional) 
      * @return Success
      */
-    consultantContracts(clientIdQuery: number | undefined, pageNumber: number | undefined, pageSize: number | undefined, sort: string | undefined, clientIdPath: string): Observable<ClientContractListItemDtoPaginatedList> {
+    consultantContracts(clientId: number, pageNumber: number | undefined, pageSize: number | undefined, sort: string | undefined): Observable<ClientContractListItemDtoPaginatedList> {
         let url_ = this.baseUrl + "/api/Clients/{clientId}/consultant-contracts?";
-        if (clientIdPath === undefined || clientIdPath === null)
-            throw new Error("The parameter 'clientIdPath' must be defined.");
-        url_ = url_.replace("{clientId}", encodeURIComponent("" + clientIdPath));
-        if (clientIdQuery === null)
-            throw new Error("The parameter 'clientIdQuery' cannot be null.");
-        else if (clientIdQuery !== undefined)
-            url_ += "clientId=" + encodeURIComponent("" + clientIdQuery) + "&";
+        if (clientId === undefined || clientId === null)
+            throw new Error("The parameter 'clientId' must be defined.");
+        url_ = url_.replace("{clientId}", encodeURIComponent("" + clientId));
         if (pageNumber === null)
             throw new Error("The parameter 'pageNumber' cannot be null.");
         else if (pageNumber !== undefined)
@@ -563,21 +558,16 @@ export class ClientsServiceProxy {
     }
 
     /**
-     * @param legacyClientIdQuery (optional) 
      * @param pageNumber (optional) 
      * @param pageSize (optional) 
      * @param sort (optional) 
      * @return Success
      */
-    requestTrack(legacyClientIdQuery: number | undefined, pageNumber: number | undefined, pageSize: number | undefined, sort: string | undefined, legacyClientIdPath: string): Observable<ClientRequestTrackDtoPaginatedList> {
+    requestTrack(legacyClientId: number, pageNumber: number | undefined, pageSize: number | undefined, sort: string | undefined): Observable<ClientRequestTrackDtoPaginatedList> {
         let url_ = this.baseUrl + "/api/Clients/{legacyClientId}/request-track?";
-        if (legacyClientIdPath === undefined || legacyClientIdPath === null)
-            throw new Error("The parameter 'legacyClientIdPath' must be defined.");
-        url_ = url_.replace("{legacyClientId}", encodeURIComponent("" + legacyClientIdPath));
-        if (legacyClientIdQuery === null)
-            throw new Error("The parameter 'legacyClientIdQuery' cannot be null.");
-        else if (legacyClientIdQuery !== undefined)
-            url_ += "legacyClientId=" + encodeURIComponent("" + legacyClientIdQuery) + "&";
+        if (legacyClientId === undefined || legacyClientId === null)
+            throw new Error("The parameter 'legacyClientId' must be defined.");
+        url_ = url_.replace("{legacyClientId}", encodeURIComponent("" + legacyClientId));
         if (pageNumber === null)
             throw new Error("The parameter 'pageNumber' cannot be null.");
         else if (pageNumber !== undefined)
@@ -634,6 +624,53 @@ export class ClientsServiceProxy {
             }));
         }
         return _observableOf<ClientRequestTrackDtoPaginatedList>(<any>null);
+    }
+
+    /**
+     * @return Success
+     */
+    syncParents(): Observable<void> {
+        let url_ = this.baseUrl + "/api/Clients/sync-parents";
+        url_ = url_.replace(/[?&]$/, "");
+
+        let options_ : any = {
+            observe: "response",
+            responseType: "blob",
+            headers: new HttpHeaders({
+            })
+        };
+
+        return this.http.request("post", url_, options_).pipe(_observableMergeMap((response_ : any) => {
+            return this.processSyncParents(response_);
+        })).pipe(_observableCatch((response_: any) => {
+            if (response_ instanceof HttpResponseBase) {
+                try {
+                    return this.processSyncParents(<any>response_);
+                } catch (e) {
+                    return <Observable<void>><any>_observableThrow(e);
+                }
+            } else
+                return <Observable<void>><any>_observableThrow(response_);
+        }));
+    }
+
+    protected processSyncParents(response: HttpResponseBase): Observable<void> {
+        const status = response.status;
+        const responseBlob =
+            response instanceof HttpResponse ? response.body :
+            (<any>response).error instanceof Blob ? (<any>response).error : undefined;
+
+        let _headers: any = {}; if (response.headers) { for (let key of response.headers.keys()) { _headers[key] = response.headers.get(key); }}
+        if (status === 200) {
+            return blobToText(responseBlob).pipe(_observableMergeMap(_responseText => {
+            return _observableOf<void>(<any>null);
+            }));
+        } else if (status !== 200 && status !== 204) {
+            return blobToText(responseBlob).pipe(_observableMergeMap(_responseText => {
+            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+            }));
+        }
+        return _observableOf<void>(<any>null);
     }
 }
 
@@ -1110,7 +1147,7 @@ export class ClientListItemDto implements IClientListItemDto {
     clientAddress_Country_Code?: string | undefined;
     phone?: string | undefined;
     owner_Name?: string | undefined;
-    tenant_TenantId_Value?: number;
+    tenant_TenantId?: number;
 
     constructor(data?: IClientListItemDto) {
         if (data) {
@@ -1135,7 +1172,7 @@ export class ClientListItemDto implements IClientListItemDto {
             this.clientAddress_Country_Code = _data["clientAddress_Country_Code"];
             this.phone = _data["phone"];
             this.owner_Name = _data["owner_Name"];
-            this.tenant_TenantId_Value = _data["tenant_TenantId_Value"];
+            this.tenant_TenantId = _data["tenant_TenantId"];
         }
     }
 
@@ -1160,7 +1197,7 @@ export class ClientListItemDto implements IClientListItemDto {
         data["clientAddress_Country_Code"] = this.clientAddress_Country_Code;
         data["phone"] = this.phone;
         data["owner_Name"] = this.owner_Name;
-        data["tenant_TenantId_Value"] = this.tenant_TenantId_Value;
+        data["tenant_TenantId"] = this.tenant_TenantId;
         return data; 
     }
 }
@@ -1178,7 +1215,7 @@ export interface IClientListItemDto {
     clientAddress_Country_Code?: string | undefined;
     phone?: string | undefined;
     owner_Name?: string | undefined;
-    tenant_TenantId_Value?: number;
+    tenant_TenantId?: number;
 }
 
 export class ClientListItemDtoPaginatedList implements IClientListItemDtoPaginatedList {

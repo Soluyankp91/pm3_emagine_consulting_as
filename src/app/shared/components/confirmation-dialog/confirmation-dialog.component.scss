@@ -1,0 +1,29 @@
+.confiramtion-dialog {
+    &--actions{
+        button {
+            width: 150px;
+            text-transform: uppercase;
+        }
+        &-btn {
+            &-negative {
+                color: #FFF !important;
+                background-color: #FF7A78 !important;
+                border: 2px solid #FF7A78 !important;
+                box-sizing: border-box;
+                border-radius: 5px;
+            }
+            &-outlined {
+                color: #89838D !important;
+                background-color: #fff;
+                border: 2px solid #CDFF96;
+                border-radius: 5px;
+            }
+            &-positive {
+                background-color: #668CA4;
+                color: #89838D !important;
+                background: #CDFF96;
+                border-radius: 5px;
+            }
+        }
+    }
+}

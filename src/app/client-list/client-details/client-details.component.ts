@@ -9,7 +9,15 @@ import { Router } from '@angular/router';
 export class ClientDetailsComponent implements OnInit {
     selectedClient = {
         name: 'test',
-        id: 1327
+        id: 1327,
+        address: 'Some address 1',
+        address2: 'Some address 2',
+        postcode: '28912',
+        country: 'Denmark',
+        phone: '+54 456 788 45 12',
+        website: 'somewebsite.com',
+        type: 'Type',
+        accountManager: 'Some owner'
     };
 
     constructor(

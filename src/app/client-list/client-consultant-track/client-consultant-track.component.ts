@@ -2,6 +2,40 @@ import { Component, Input, OnInit } from '@angular/core';
 import { MatTableDataSource } from '@angular/material/table';
 import { AppConsts } from 'src/shared/AppConsts';
 
+const TABLE_DATA = [
+    {
+        consultant: 'Martin Deangelo',
+        workflowsStart: '24.12.2020',
+        workflowsEnd: '24.12.2020',
+        consultantPrice: '250$',
+        clientPrice: '300%',
+        margin: '15%'
+    },
+    {
+        consultant: 'Martin Deangelo',
+        workflowsStart: '24.12.2020',
+        workflowsEnd: '24.12.2020',
+        consultantPrice: '250$',
+        clientPrice: '300%',
+        margin: '15%'
+    },
+    {
+        consultant: 'Martin Deangelo',
+        workflowsStart: '24.12.2020',
+        workflowsEnd: '24.12.2020',
+        consultantPrice: '250$',
+        clientPrice: '300%',
+        margin: '15%'
+    },
+    {
+        consultant: 'Martin Deangelo',
+        workflowsStart: '24.12.2020',
+        workflowsEnd: '24.12.2020',
+        consultantPrice: '250$',
+        clientPrice: '300%',
+        margin: '15%'
+    }
+];
 @Component({
     selector: 'app-client-consultant-track',
     templateUrl: './client-consultant-track.component.html',
@@ -9,7 +43,7 @@ import { AppConsts } from 'src/shared/AppConsts';
 })
 export class ClientConsultantTrackComponent implements OnInit {
     @Input() clientInfo: any;
-    consultantTrackDataSource: MatTableDataSource<any> = new MatTableDataSource<any>();
+    consultantTrackDataSource: MatTableDataSource<any> = new MatTableDataSource<any>(TABLE_DATA);
 
     isDataLoading = false;
     selectedCountries: string[] = [];
@@ -20,13 +54,12 @@ export class ClientConsultantTrackComponent implements OnInit {
     sorting = '';
 
     clientDisplayColumns = [
-        'id',
-        'contact',
-        'position',
-        'email',
-        'phone',
-        'relation',
-        'contactOwner'
+        'consultant',
+        'workflowsStart',
+        'workflowsEnd',
+        'consultantPrice',
+        'clientPrice',
+        'margin'
     ];
     constructor() { }
 

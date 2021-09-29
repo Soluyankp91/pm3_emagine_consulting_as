@@ -15,24 +15,19 @@ mat-table.rounded-table {
             color: rgba(56, 72, 83, 0.87) !important;
             font-weight: 700;
             padding-right: 15px;
+            &:first-of-type {
+                padding-left: 0;
+            }
         }
         padding: 0 16px;
     }
     mat-row {
-        // border: 0.5px solid rgba(56, 72, 83, 0.3) !important;
         height: 35px;
         min-height: 35px;
         border-radius: 5px;
         margin-bottom: 4px;
         padding: 0 16px;
         background-color: #F8F8F8;
-        // &:first-of-type {
-        //     padding-left: 0;
-        // }
-
-        // &:last-of-type {
-        //     padding-right: 0;
-        // }
         &:hover {
             transition: background-color .7s ease;
             background-color: rgba(102, 140, 164, .17);

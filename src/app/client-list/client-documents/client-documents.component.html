@@ -1,10 +1,7 @@
 <div class="client-documents">
-    <mat-tab-group class="client-documents--tabs">
+    <mat-tab-group class="client-documents--tabs" #documentsTabs>
         <mat-tab label="Important docs">
             Important docs
-            <!-- <span style="background-color: aqua;">
-                <mat-icon class="icon" svgIcon="file-uploader-icon"></mat-icon>
-            </span> -->
         </mat-tab>
         <mat-tab label="General docs">
             General docs
@@ -109,13 +106,14 @@
                 </div>
                 <div fxLayout="column" fxLayoutAlign="center center" class="u-mt--20 client-documents--contract-folders u-w--100">
                     <mat-accordion [multi]="true" class="mat-elevation-z0">
-                        <mat-expansion-panel *ngFor="let folder of contractFolders" class="mat-elevation-z0" [ngClass]="{'even-folder': folder.level && folder.level % 2 === 0}">
-                            <mat-expansion-panel-header [collapsedHeight]="'54px'" [expandedHeight]="'54px'">
+                        <mat-expansion-panel *ngFor="let folder of contractFolders" class="mat-elevation-z0"
+                            [ngClass]="{'even-folder': folder.level && folder.level % 2 === 0}">
+                            <mat-expansion-panel-header [collapsedHeight]="'44px'" [expandedHeight]="'44px'" [ngClass]="{ 'u-pr--32': folder.level === 1, 'u-pr--24': folder.level === 2, 'u-pr--16': folder.level === 3}">
                                 <div class="flex-row flex-justify-between flex-items-center u-w--100 u-mr--10">
                                     <h4 class="u-mb--0">
                                         {{folder.name}}
                                     </h4>
-                                    <button mat-icon-button [matMenuTriggerFor]="contractActions" [matMenuTriggerData]="{folder: folder}"><mat-icon>more_vert</mat-icon></button>
+                                    <button class="client-documents--contract__action-btn u-mr--10" mat-icon-button [matMenuTriggerFor]="contractActions" [matMenuTriggerData]="{folder: folder}"><mat-icon>more_vert</mat-icon></button>
                                 </div>
                             </mat-expansion-panel-header>
                             <div *ngIf="folder.files?.length" class="column">
@@ -136,7 +134,7 @@
                             <button mat-menu-item (click)="addFolder(aliasMenuItems)">
                                 Add folder
                             </button>
-                            <button mat-menu-item (click)="deleteFolder(aliasMenuItems)">
+                            <button mat-menu-item (click)="conformDeleteFolder(aliasMenuItems)">
                                 Delete folder
                             </button>
                         </ng-template>
@@ -144,12 +142,12 @@
                     <ng-template #nestedFolder let-folders='folders'>
                         <mat-accordion [multi]="true" class="mat-elevation-z0">
                             <mat-expansion-panel *ngFor="let folder of folders" class="mat-elevation-z0" [ngClass]="{'even-folder': folder.level && folder.level % 2 === 0}">
-                                <mat-expansion-panel-header [collapsedHeight]="'54px'" [expandedHeight]="'54px'">
+                                <mat-expansion-panel-header [collapsedHeight]="'44px'" [expandedHeight]="'44px'" [ngClass]="{ 'u-pr--32': folder.level === 1, 'u-pr--24': folder.level === 2, 'u-pr--16': folder.level === 3}">
                                     <div class="flex-row flex-justify-between flex-items-center u-w--100 u-mr--10">
                                         <h4 class="u-mb--0">
                                             {{folder.name}}
                                         </h4>
-                                        <button mat-icon-button [matMenuTriggerFor]="contractActions" [matMenuTriggerData]="{folder: folder}"><mat-icon>more_vert</mat-icon></button>
+                                        <button class="client-documents--contract__action-btn u-mr--10" mat-icon-button [matMenuTriggerFor]="contractActions" [matMenuTriggerData]="{folder: folder}"><mat-icon>more_vert</mat-icon></button>
                                     </div>
                                 </mat-expansion-panel-header>
                                 <div *ngIf="folder.files?.length" class="column">
@@ -169,6 +167,6 @@
                     </ng-template>
                 </div>
             </div>
-        </mat-tab>
+        </mat-tab>\
     </mat-tab-group>
 </div>

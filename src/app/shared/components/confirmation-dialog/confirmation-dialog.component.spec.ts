@@ -1,20 +1,20 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 
-import { RenameFileDialogComponent } from './rename-file-dialog.component';
+import { ConfirmationDialogComponent } from './confirmation-dialog.component';
 
-describe('RenameFileDialogComponent', () => {
-  let component: RenameFileDialogComponent;
-  let fixture: ComponentFixture<RenameFileDialogComponent>;
+describe('ConfiramationDialogComponent', () => {
+  let component: ConfirmationDialogComponent;
+  let fixture: ComponentFixture<ConfirmationDialogComponent>;
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      declarations: [ RenameFileDialogComponent ]
+      declarations: [ ConfirmationDialogComponent ]
     })
     .compileComponents();
   });
 
   beforeEach(() => {
-    fixture = TestBed.createComponent(RenameFileDialogComponent);
+    fixture = TestBed.createComponent(ConfirmationDialogComponent);
     component = fixture.componentInstance;
     fixture.detectChanges();
   });

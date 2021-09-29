@@ -1,0 +1,11 @@
+.green-checkbox {
+    .mat-checkbox-frame {
+        border-color: #17A297 !important;
+    }
+    &.mat-checkbox-checked .mat-checkbox-background {
+        background-color: #17A297 !important;
+        svg path {
+            stroke: #fff !important;
+        }
+    }
+}

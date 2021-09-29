@@ -1,3 +1,11 @@
+.mat-form-field {
+    font-size: 1em !important;
+    margin-bottom: .5rem;
+    .mat-input-element {
+        caret-color: rgba(0, 0, 0, 0.87) !important;
+    }
+}
+
 .formFieldNoMarginPadding {
     margin: 0 !important;
     margin-bottom: 0 !important;
@@ -17,6 +25,12 @@
 
         .mat-form-field-outline {
             top: 0 !important;
+            opacity: 0 !important;
+        }
+
+        .mat-form-field-outline .mat-form-field-outline-thick {
+            color: transparent !important;
+            opacity: 0 !important;
         }
 
         .mat-form-field-flex>.mat-form-field-infix {
@@ -32,8 +46,53 @@
             width: 133.33333% !important;
         }
         &.mat-focused {
-            .mat-form-field-outline.mat-form-field-outline-thick {
-                color: rgba(23, 162, 151, .2);
+            .mat-form-field-outline .mat-form-field-outline-thick {
+                color: transparent !important;
+                opacity: 0 !important;
+            }
+            .mat-form-field-label {
+                color: rgba(0, 0, 0, 0.87) !important;
+                &-wrapper {
+                    top: -1em !important;
+                }
+            }
+        }
+    }
+}
+
+.client-invoicing {
+    .mat-form-field-appearance-outline {
+        .mat-form-field-flex {
+            background-color: rgba(0, 0, 0, .07) !important;
+            border-radius: 5px !important;
+        }
+
+        .mat-form-field-outline {
+            top: 0 !important;
+            opacity: 0 !important;
+        }
+
+        .mat-form-field-outline .mat-form-field-outline-thick {
+            color: transparent !important;
+            opacity: 0 !important;
+        }
+
+        .mat-form-field-flex>.mat-form-field-infix {
+            padding: 0.4em 0px !important;
+        }
+
+        .mat-form-field-label-wrapper {
+            top: -1.5em !important;
+        }
+
+        .mat-form-field-appearance-outline.mat-form-field-can-float.mat-form-field-should-float .mat-form-field-label {
+            transform: translateY(-1.1em) scale(.75) !important;
+            width: 133.33333% !important;
+        }
+        &.mat-focused {
+            .mat-form-field-outline .mat-form-field-outline-thick {
+                color: transparent !important;
+                opacity: 0 !important;
             }
             .mat-form-field-label {
                 color: rgba(0, 0, 0, 0.87) !important;

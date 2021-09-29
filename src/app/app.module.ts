@@ -21,7 +21,7 @@ import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { ServiceProxyModule } from 'src/shared/service-proxies/service-proxy.module';
 import { API_BASE_URL } from 'src/shared/service-proxies/service-proxies';
 import { AppConsts } from 'src/shared/AppConsts';
-import { MsalBroadcastService, MsalGuard, MsalGuardConfiguration, MsalInterceptor, MsalInterceptorConfiguration, MsalModule, MsalRedirectComponent, MsalService, MSAL_GUARD_CONFIG, MSAL_INSTANCE, MSAL_INTERCEPTOR_CONFIG } from '@azure/msal-angular';
+import { MsalBroadcastService, MsalGuard, MsalGuardConfiguration, MsalInterceptor, MsalInterceptorConfiguration, MsalModule, MsalService, MSAL_GUARD_CONFIG, MSAL_INSTANCE, MSAL_INTERCEPTOR_CONFIG } from '@azure/msal-angular';
 import { BrowserCacheLocation, InteractionType, IPublicClientApplication, LogLevel, PublicClientApplication } from '@azure/msal-browser';
 import { ClientDetailsComponent } from './client-list/client-details/client-details.component';
 import { ClientRequestTrackComponent } from './client-list/client-request-track/client-request-track.component';
@@ -30,9 +30,10 @@ import { ClientDocumentsComponent } from './client-list/client-documents/client-
 import { ClientInvoicingComponent } from './client-list/client-invoicing/client-invoicing.component';
 import { ClientConsultantsComponent } from './client-list/client-consultants/client-consultants.component';
 import { AddFileDialogComponent } from './client-list/client-documents/add-file-dialog/add-file-dialog.component';
-import { RenameFileDialogComponent } from './client-list/client-documents/rename-file-dialog/rename-file-dialog.component';
 import { FileDragAndDropDirective } from './shared/components/file-uploader/file-drag-and-drop.directive';
 import { FileUploaderComponent } from './shared/components/file-uploader/file-uploader.component';
+import { ConfirmationDialogComponent } from './shared/components/confirmation-dialog/confirmation-dialog.component';
+import { AddFolderDialogComponent } from './client-list/client-documents/add-folder-dialog/add-folder-dialog.component';
 
 const isIE = window.navigator.userAgent.indexOf("MSIE ") > -1 || window.navigator.userAgent.indexOf("Trident/") > -1; // Remove this line to use Angular Universal
 
@@ -108,9 +109,10 @@ export function getRemoteServiceBaseUrl(): string {
         ClientInvoicingComponent,
         ClientConsultantsComponent,
         AddFileDialogComponent,
-        RenameFileDialogComponent,
         FileDragAndDropDirective,
-        FileUploaderComponent
+        FileUploaderComponent,
+        ConfirmationDialogComponent,
+        AddFolderDialogComponent
     ],
     imports: [
         BrowserModule,
@@ -333,6 +335,21 @@ export class AppModule {
         );
 
         // File uploader
+        iconRegistry.addSvgIcon(
+            'folderCustom',
+            sanitizer.bypassSecurityTrustResourceUrl(
+                'assets/common/images/file-uploader/folder.svg'
+            )
+        );
+
+
+        iconRegistry.addSvgIcon(
+            'file-folder',
+            sanitizer.bypassSecurityTrustResourceUrl(
+                'assets/common/images/file-uploader/file-folder.svg'
+            )
+        );
+
         iconRegistry.addSvgIcon(
             'file-uploader-icon',
             sanitizer.bypassSecurityTrustResourceUrl(
