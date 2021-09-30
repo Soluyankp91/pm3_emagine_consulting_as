@@ -1,5 +1,7 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, ViewChild } from '@angular/core';
+import { MatTabChangeEvent } from '@angular/material/tabs';
 import { Router } from '@angular/router';
+import { ClientDocumentsComponent } from '../client-documents/client-documents.component';
 
 @Component({
     selector: 'app-client-details',
@@ -7,6 +9,7 @@ import { Router } from '@angular/router';
     styleUrls: ['./client-details.component.scss']
 })
 export class ClientDetailsComponent implements OnInit {
+    @ViewChild('documentsTab', {static: true}) documentsTab: ClientDocumentsComponent;
     selectedClient = {
         name: 'test',
         id: 1327,
@@ -29,6 +32,12 @@ export class ClientDetailsComponent implements OnInit {
 
     navigateBack() {
         this.router.navigate(['clients']);
+    }
+
+    selectedTabChange(event: MatTabChangeEvent) {
+        if (event.tab.textLabel === 'Documents') {
+            this.documentsTab.init();
+        }
     }
 
 }

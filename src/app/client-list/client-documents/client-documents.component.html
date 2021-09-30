@@ -116,7 +116,7 @@
                                     <button class="client-documents--contract__action-btn u-mr--10" mat-icon-button [matMenuTriggerFor]="contractActions" [matMenuTriggerData]="{folder: folder}"><mat-icon>more_vert</mat-icon></button>
                                 </div>
                             </mat-expansion-panel-header>
-                            <div *ngIf="folder.files?.length" class="column">
+                            <div *ngIf="folder.files?.length" class="column u-pl--16">
                                 <div *ngFor="let file of folder.files; last as last" [ngClass]="{'u-mb--20': !last}">
                                   {{ file }}
                                 </div>
@@ -127,14 +127,14 @@
                         </mat-expansion-panel>
                     </mat-accordion>
                     <mat-menu #contractActions="matMenu" [overlapTrigger]="false">
-                        <ng-template matMenuContent let-aliasMenuItems="folder">
-                            <button mat-menu-item (click)="addFile(aliasMenuItems)">
+                        <ng-template matMenuContent let-folder="folder">
+                            <button mat-menu-item (click)="addFile(folder)">
                                 Add file
                             </button>
-                            <button mat-menu-item (click)="addFolder(aliasMenuItems)">
+                            <button mat-menu-item (click)="addFolder(folder)" *ngIf="folder.level !== 3">
                                 Add folder
                             </button>
-                            <button mat-menu-item (click)="conformDeleteFolder(aliasMenuItems)">
+                            <button mat-menu-item (click)="confirmDeleteFolder(folder)">
                                 Delete folder
                             </button>
                         </ng-template>
@@ -150,7 +150,7 @@
                                         <button class="client-documents--contract__action-btn u-mr--10" mat-icon-button [matMenuTriggerFor]="contractActions" [matMenuTriggerData]="{folder: folder}"><mat-icon>more_vert</mat-icon></button>
                                     </div>
                                 </mat-expansion-panel-header>
-                                <div *ngIf="folder.files?.length" class="column">
+                                <div *ngIf="folder.files?.length" class="column u-pl--16">
                                     <div *ngFor="let file of folder.files; last as last" [ngClass]="{'u-mb--20': !last}">
                                       {{ file }}
                                     </div>

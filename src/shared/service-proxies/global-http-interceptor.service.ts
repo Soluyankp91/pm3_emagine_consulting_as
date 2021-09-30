@@ -38,6 +38,7 @@ export class GlobalHttpInterceptorService implements HttpInterceptor {
                                 message = 'You will redirected to login page.';
                                 console.log(`redirect to login`);
                                 handled = true;
+                                this.router.navigate(['/login']);
                                 break;
                             case 403:     //forbidden
                                 header = 'Access is forbidden';

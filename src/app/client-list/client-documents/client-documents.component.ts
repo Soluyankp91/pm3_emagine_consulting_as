@@ -8,6 +8,7 @@ import { Overlay } from '@angular/cdk/overlay';
 import { MatDialog } from '@angular/material/dialog';
 import { ConfirmationDialogComponent } from 'src/app/shared/components/confirmation-dialog/confirmation-dialog.component';
 import { MatTabGroup } from '@angular/material/tabs';
+import { AddFolderDialogComponent } from './add-folder-dialog/add-folder-dialog.component';
 
 @Component({
     selector: 'app-client-documents',
@@ -53,16 +54,11 @@ export class ClientDocumentsComponent implements OnInit {
     }
 
     ngOnInit(): void {
-        if (!this.documentsTabs) {
-            let interval = setInterval(() => {
-                if (this.documentsTabs) {
-                    this.documentsTabs.realignInkBar();
-                    clearInterval(interval);
-                }
-            }, 100);
-        } else {
-            this.documentsTabs.realignInkBar();
-        }
+
+    }
+
+    init(): void {
+        this.documentsTabs.realignInkBar();
     }
 
     pageChanged(event?: any): void {
@@ -111,10 +107,22 @@ export class ClientDocumentsComponent implements OnInit {
     }
 
     addFolder(folder: any) {
-        console.log(folder);
+        const scrollStrategy = this.overlay.scrollStrategies.reposition();
+        const dialogRef = this.dialog.open(AddFolderDialogComponent, {
+            width: '450px',
+            minHeight: '180px',
+            height: 'auto',
+            scrollStrategy,
+            backdropClass: 'backdrop-modal--wrapper',
+            autoFocus: false
+        });
+
+        dialogRef.componentInstance.onFolderAdded.subscribe(() => {
+            // API CALL TO ADD FOLDER inside folder id
+        });
     }
 
-    conformDeleteFolder(folder: any) {
+    confirmDeleteFolder(folder: any) {
         const scrollStrategy = this.overlay.scrollStrategies.reposition();
         const dialogRef = this.dialog.open(ConfirmationDialogComponent, {
             width: '450px',

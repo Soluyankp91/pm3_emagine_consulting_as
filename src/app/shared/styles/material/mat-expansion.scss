@@ -29,14 +29,14 @@
             }
         }
         .mat-expansion-panel-body {
-            padding: 10px 16px !important;
+            padding: 10px 8px !important;
         }
         .mat-expansion-panel-header {
-            padding: 0 16px;
+            padding-left: 16px !important;
         }
         &__subfolder {
             .mat-expansion-panel-body {
-                padding: 0 16px 16px;
+                padding: 0 8px 16px;
             }
             .mat-expansion-panel {
                 background: #FFFFFF;

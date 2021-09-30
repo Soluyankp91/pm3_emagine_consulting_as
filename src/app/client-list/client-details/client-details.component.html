@@ -83,12 +83,12 @@
         </div>
     </div>
     <div fxLayout="row" fxLayoutAlign="start start">
-        <mat-tab-group class="client-details--tabs u-w--100 u-mt--20">
+        <mat-tab-group class="client-details--tabs u-w--100 u-mt--20" #clientDetailsTabs (selectedTabChange)="selectedTabChange($event)">
             <mat-tab label="Request track">
                 <app-client-request-track [clientInfo]="selectedClient"></app-client-request-track>
             </mat-tab>
             <mat-tab label="Documents">
-                <app-client-documents></app-client-documents>
+                <app-client-documents #documentsTab></app-client-documents>
             </mat-tab>
             <mat-tab label="Consultant track">
                 <app-client-consultant-track></app-client-consultant-track>

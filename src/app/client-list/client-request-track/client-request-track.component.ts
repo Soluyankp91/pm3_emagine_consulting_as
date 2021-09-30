@@ -54,7 +54,7 @@ export class ClientRequestTrackComponent implements OnInit {
     }
 
     getRequestTrack() {
-        let legacyClientIdQuery = 2000212;
+        let legacyClientIdQuery = this.clientInfo.id;
         let pageNumber = 1;
         let pageSize = 20;
         let sort = '';
