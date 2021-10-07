@@ -1,0 +1,104 @@
+<div class="client-details">
+    <div fxLayout="column" fxLayoutAlign="space-between center" class="client-details--header" fxFlexFill>
+        <div fxLayout="row" fxLayoutAlign="space-between start" class="u-w--100">
+            <button class="arrow-container--btn u-pl--0" (click)="navigateBack()" mat-button><mat-icon svgIcon="arrow"></mat-icon><span>Client name</span></button>
+            <div fxLayout="row" fxLayoutAlign="space-between start">
+                <button mat-raised-button color="primary" class="u-mr--10 mat-elevation-z0">LOGIN TO HUBSPOT</button>
+                <button mat-raised-button color="primary" class="mat-elevation-z0">LOGIN TO CAM</button>
+            </div>
+        </div>
+        <div fxLayout="row" fxLayoutAlign="start start" class="u-w--100 u-mt--20">
+            <div fxLayout="row" fxLayoutAlign="start start" fxFlex="20%">
+                <div fxLayout="column" class="client-details--client-info">
+                    <span class="client-details--client-info__header u-mb--10">
+                        Address
+                    </span>
+                    <span class="client-details--client-info__header">
+                        Address2
+                    </span>
+                </div>
+                <div fxLayout="column" class="client-details--client-info">
+                    <span class="client-details--client-info__value u-mb--10">
+                        {{ selectedClient.address }}
+                    </span>
+                    <span class="client-details--client-info__value">
+                        {{ selectedClient.address2 }}
+                    </span>
+                </div>
+            </div>
+            <div fxLayout="row" fxLayoutAlign="start start" fxFlex="20%">
+                <div fxLayout="column" class="client-details--client-info">
+                    <span class="client-details--client-info__header u-mb--10">
+                        Postcode
+                    </span>
+                    <span class="client-details--client-info__header">
+                        Country
+                    </span>
+                </div>
+                <div fxLayout="column" class="client-details--client-info">
+                    <span class="client-details--client-info__value u-mb--10">
+                        {{ selectedClient.postcode }}
+                    </span>
+                    <span class="client-details--client-info__value">
+                        {{ selectedClient.country }}
+                    </span>
+                </div>
+            </div>
+            <div fxLayout="row" fxLayoutAlign="start start" fxFlex="20%">
+                <div fxLayout="column" class="client-details--client-info">
+                    <span class="client-details--client-info__header u-mb--10">
+                        Phone
+                    </span>
+                    <span class="client-details--client-info__header">
+                        Website
+                    </span>
+                </div>
+                <div fxLayout="column" class="client-details--client-info">
+                    <span class="client-details--client-info__value u-mb--10">
+                        {{ selectedClient.phone }}
+                    </span>
+                    <span class="client-details--client-info__value">
+                        {{ selectedClient.website }}
+                    </span>
+                </div>
+            </div>
+            <div fxLayout="row" fxLayoutAlign="start start" fxFlex="20%">
+                <div fxLayout="column" class="client-details--client-info">
+                    <span class="client-details--client-info__header u-mb--10">
+                        Type
+                    </span>
+                    <span class="client-details--client-info__header">
+                        Account manager
+                    </span>
+                </div>
+                <div fxLayout="column" class="client-details--client-info">
+                    <span class="client-details--client-info__value u-mb--10">
+                        {{ selectedClient.type }}
+                    </span>
+                    <span class="client-details--client-info__value">
+                        {{ selectedClient.accountManager }}
+                    </span>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div fxLayout="row" fxLayoutAlign="start start">
+        <mat-tab-group class="client-details--tabs u-w--100 u-mt--20" #clientDetailsTabs (selectedTabChange)="selectedTabChange($event)">
+            <mat-tab label="Request track">
+                <app-client-request-track [clientInfo]="selectedClient"></app-client-request-track>
+            </mat-tab>
+            <mat-tab label="Documents">
+                <app-client-documents #documentsTab></app-client-documents>
+            </mat-tab>
+            <mat-tab label="Consultant track">
+                <app-client-consultant-track></app-client-consultant-track>
+            </mat-tab>
+            <mat-tab label="Invoicing">
+                <app-client-invoicing></app-client-invoicing>
+            </mat-tab>
+            <mat-tab label="Consultants">
+                <app-client-consultants></app-client-consultants>
+            </mat-tab>
+        </mat-tab-group>
+    </div>
+</div>

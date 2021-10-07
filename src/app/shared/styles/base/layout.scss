@@ -15,7 +15,7 @@ html {
 body {
     font-size: 1em;
     line-height: 1.5;
-    background-color: #EDF1F4;
+    background-color: #FFF;
     transition: background-color 0.24s ease-in;
 }
 
@@ -151,4 +151,81 @@ html {
     display: flex;
     flex-direction: column;
     justify-content: space-between;
+}
+
+.flex-row {
+    display: flex;
+    box-sizing: border-box;
+    flex-direction: row;
+}
+
+.flex-center {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.flex-start {
+    display: flex;
+    flex-direction: row;
+    justify-content: flex-start;
+}
+
+.form-field-noPadding {
+    margin-bottom: -1.25em;
+}
+
+.flex-items-center {
+    display: flex;
+    align-items: center;
+}
+
+.flex-items-end {
+    display: flex;
+    align-items: flex-end;
+}
+
+.flex-items-start {
+    display: flex;
+    align-items: flex-start;
+}
+
+.flex-justify-between {
+    display: flex;
+    justify-content: space-between;
+}
+
+.flex-justify-end {
+    display: flex;
+    justify-content: flex-end;
+}
+
+.flex-justify-center {
+    display: flex;
+    justify-content: center;
+}
+
+.flex-justify-start {
+    display: flex;
+    justify-content: flex-start;
+}
+
+.backdrop-modal--wrapper {
+    background: rgba(23, 162, 151, .5);
+        &~ .cdk-global-overlay-wrapper {
+        pointer-events: auto !important;
+        position: relative !important;
+        overflow: auto !important;
+        &::before {
+            content: '' !important;
+            display: inline-block !important;
+            height: 100% !important;
+            white-space: nowrap !important;
+            .cdk-overlay-pane {
+                position: relative !important;
+                text-align: left !important;
+                white-space: normal !important;
+            }
+        }
+    }
 }
