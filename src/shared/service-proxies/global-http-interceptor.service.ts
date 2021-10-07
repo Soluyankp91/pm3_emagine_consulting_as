@@ -4,6 +4,7 @@ import { Observable, of, throwError } from "rxjs";
 import { catchError, map } from 'rxjs/operators';
 import { Router } from '@angular/router';
 import { ErrorDialogService } from "src/app/shared/common/errors/error-dialog.service";
+import { MsalService } from "@azure/msal-angular";
 
 @Injectable()
 export class GlobalHttpInterceptorService implements HttpInterceptor {
@@ -11,7 +12,8 @@ export class GlobalHttpInterceptorService implements HttpInterceptor {
     constructor(
         public router: Router,
         private errorDialogService: ErrorDialogService,
-        private zone: NgZone
+        private zone: NgZone,
+        private authService: MsalService
     ) {
     }
 
@@ -38,6 +40,7 @@ export class GlobalHttpInterceptorService implements HttpInterceptor {
                                 message = 'You will redirected to login page.';
                                 console.log(`redirect to login`);
                                 handled = true;
+                                this.authService.logout();
                                 this.router.navigate(['/login']);
                                 break;
                             case 403:     //forbidden

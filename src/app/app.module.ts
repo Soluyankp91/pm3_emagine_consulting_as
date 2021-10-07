@@ -7,33 +7,13 @@ import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { AppCommonModule } from './shared/common/app-common.module';
 import { MatIconRegistry } from '@angular/material/icon';
 import { HttpClientModule, HTTP_INTERCEPTORS } from '@angular/common/http';
-import { DashboardComponent } from './dashboard/dashboard.component';
-import { MainOverviewComponent } from './main-overview/main-overview.component';
-import { ClientListComponent } from './client-list/client-list.component';
-import { SourcingShortcutComponent } from './sourcing-shortcut/sourcing-shortcut.component';
-import { WorkflowComponent } from './workflow/workflow.component';
-import { StatisticsComponent } from './statistics/statistics.component';
-import { TimeTrackingComponent } from './time-tracking/time-tracking.component';
-import { EvaluationComponent } from './evaluation/evaluation.component';
-import { InvoicingComponent } from './invoicing/invoicing.component';
-import { ContractsComponent } from './contracts/contracts.component';
-import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { ServiceProxyModule } from 'src/shared/service-proxies/service-proxy.module';
 import { API_BASE_URL } from 'src/shared/service-proxies/service-proxies';
 import { AppConsts } from 'src/shared/AppConsts';
 import { MsalBroadcastService, MsalGuard, MsalGuardConfiguration, MsalInterceptor, MsalInterceptorConfiguration, MsalModule, MsalService, MSAL_GUARD_CONFIG, MSAL_INSTANCE, MSAL_INTERCEPTOR_CONFIG } from '@azure/msal-angular';
 import { BrowserCacheLocation, InteractionType, IPublicClientApplication, LogLevel, PublicClientApplication } from '@azure/msal-browser';
-import { ClientDetailsComponent } from './client-list/client-details/client-details.component';
-import { ClientRequestTrackComponent } from './client-list/client-request-track/client-request-track.component';
-import { ClientConsultantTrackComponent } from './client-list/client-consultant-track/client-consultant-track.component';
-import { ClientDocumentsComponent } from './client-list/client-documents/client-documents.component';
-import { ClientInvoicingComponent } from './client-list/client-invoicing/client-invoicing.component';
-import { ClientConsultantsComponent } from './client-list/client-consultants/client-consultants.component';
-import { AddFileDialogComponent } from './client-list/client-documents/add-file-dialog/add-file-dialog.component';
-import { FileDragAndDropDirective } from './shared/components/file-uploader/file-drag-and-drop.directive';
-import { FileUploaderComponent } from './shared/components/file-uploader/file-uploader.component';
-import { ConfirmationDialogComponent } from './shared/components/confirmation-dialog/confirmation-dialog.component';
-import { AddFolderDialogComponent } from './client-list/client-documents/add-folder-dialog/add-folder-dialog.component';
+import { LoginGuard } from './login/login.guard';
+import { LoginComponent } from './login/login.component';
 
 const isIE = window.navigator.userAgent.indexOf("MSIE ") > -1 || window.navigator.userAgent.indexOf("Trident/") > -1; // Remove this line to use Angular Universal
 
@@ -92,27 +72,7 @@ export function getRemoteServiceBaseUrl(): string {
 @NgModule({
     declarations: [
         AppComponent,
-        DashboardComponent,
-        MainOverviewComponent,
-        ClientListComponent,
-        SourcingShortcutComponent,
-        WorkflowComponent,
-        StatisticsComponent,
-        TimeTrackingComponent,
-        EvaluationComponent,
-        InvoicingComponent,
-        ContractsComponent,
-        ClientDetailsComponent,
-        ClientRequestTrackComponent,
-        ClientConsultantTrackComponent,
-        ClientDocumentsComponent,
-        ClientInvoicingComponent,
-        ClientConsultantsComponent,
-        AddFileDialogComponent,
-        FileDragAndDropDirective,
-        FileUploaderComponent,
-        ConfirmationDialogComponent,
-        AddFolderDialogComponent
+        LoginComponent
     ],
     imports: [
         BrowserModule,
@@ -120,12 +80,11 @@ export function getRemoteServiceBaseUrl(): string {
         BrowserAnimationsModule,
         HttpClientModule,
         AppCommonModule,
-        FormsModule,
-        ReactiveFormsModule,
         ServiceProxyModule,
-        MsalModule
+        MsalModule,
     ],
     providers: [
+        LoginGuard,
         {
             provide: API_BASE_URL, useFactory: getRemoteServiceBaseUrl
         },
@@ -416,6 +375,13 @@ export class AppModule {
             'png',
             sanitizer.bypassSecurityTrustResourceUrl(
                 'assets/common/images/file-uploader/png.svg'
+            )
+        );
+
+        iconRegistry.addSvgIcon(
+            'calendar',
+            sanitizer.bypassSecurityTrustResourceUrl(
+                'assets/common/images/calendar.svg'
             )
         );
 

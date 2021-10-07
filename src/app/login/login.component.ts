@@ -1,30 +1,27 @@
 import { HttpClient } from '@angular/common/http';
 import { Component, Inject, OnInit } from '@angular/core';
+import { Router } from '@angular/router';
 import { MSAL_GUARD_CONFIG, MsalGuardConfiguration, MsalService, MsalBroadcastService } from '@azure/msal-angular';
 import { InteractionStatus, RedirectRequest, PopupRequest, AuthenticationResult } from '@azure/msal-browser';
 import { Subject } from 'rxjs';
 import { filter, takeUntil } from 'rxjs/operators';
-
-const GRAPH_ENDPOINT = 'Enter_the_Graph_Endpoint_Here/v1.0/me';
-
 @Component({
     selector: 'app-login',
     templateUrl: './login.component.html',
     styleUrls: ['./login.component.scss']
 })
 export class LoginComponent implements OnInit {
-    title = 'Angular 12 - Angular v2 Sample';
     isIframe = false;
     loginDisplay = false;
     private readonly _destroying$ = new Subject<void>();
     constructor(
         @Inject(MSAL_GUARD_CONFIG) private msalGuardConfig: MsalGuardConfiguration,
         private authService: MsalService,
-        private msalBroadcastService: MsalBroadcastService
+        private msalBroadcastService: MsalBroadcastService,
+        private router: Router
     ) { }
 
     ngOnInit(): void {
-        // this.isIframe = window !== window.parent && !window.opener; // Remove this line to use Angular Universal
         this.setLoginDisplay();
 
         this.msalBroadcastService.inProgress$
@@ -36,14 +33,7 @@ export class LoginComponent implements OnInit {
                 this.setLoginDisplay();
                 this.checkAndSetActiveAccount();
             })
-        // this.getProfile();
     }
-    // getProfile() {
-    //     this.http.get(GRAPH_ENDPOINT)
-    //       .subscribe(profile => {
-    //         this.profile = profile;
-    //     });
-    // }
 
     setLoginDisplay() {
         this.loginDisplay = this.authService.instance.getAllAccounts().length > 0;
@@ -76,11 +66,13 @@ export class LoginComponent implements OnInit {
             this.authService.loginPopup({ ...this.msalGuardConfig.authRequest } as PopupRequest)
                 .subscribe((response: AuthenticationResult) => {
                     this.authService.instance.setActiveAccount(response.account);
+                    this.router.navigate(['/main']);
                 });
         } else {
             this.authService.loginPopup()
                 .subscribe((response: AuthenticationResult) => {
                     this.authService.instance.setActiveAccount(response.account);
+                    this.router.navigate(['/main']);
                 });
         }
     }

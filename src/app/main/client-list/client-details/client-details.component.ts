@@ -31,7 +31,7 @@ export class ClientDetailsComponent implements OnInit {
     }
 
     navigateBack() {
-        this.router.navigate(['clients']);
+        this.router.navigate(['/main/clients']);
     }
 
     selectedTabChange(event: MatTabChangeEvent) {

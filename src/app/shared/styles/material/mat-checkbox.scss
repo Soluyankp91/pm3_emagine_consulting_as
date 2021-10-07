@@ -1,6 +1,14 @@
 .green-checkbox {
     .mat-checkbox-frame {
         border-color: #17A297 !important;
+        border-radius: 5px;
+        transform: scale(1.1);
+    }
+    .mat-checkbox-ripple {
+        left: calc(50% - 16px);
+        top: calc(50% - 16px);
+        height: 32px;
+        width: 32px;
     }
     &.mat-checkbox-checked .mat-checkbox-background {
         background-color: #17A297 !important;

@@ -130,18 +130,7 @@ export class ClientListComponent implements OnInit, OnDestroy {
     }
 
     navigateToClientDetails(clientId: number): void {
-        this.router.navigate(['clients', clientId]);
+        this.router.navigate(['/main/clients', clientId]);
     }
 
-    localError() {
-        throw Error('The app component has thrown an error!');
-      }
-
-      failingRequest() {
-        this.http.get('https://httpstat.us/404?sleep=200').toPromise();
-      }
-
-      successfulRequest() {
-        this.http.get('https://httpstat.us/200?sleep=2000').toPromise();
-      }
 }
