@@ -1,1 +1,79 @@
-// @import "~config";
+mat-table.rounded-table {
+    background: transparent !important;
+    box-shadow: none;
+    font-family: 'Roboto';
+    font-weight: 400;
+    line-height: 19px;
+    font-size: 16px;
+    mat-header-row {
+        border-bottom-color: rgb(255, 255, 255) !important;
+        color: rgba(56, 72, 83, 0.87) !important;
+        font-size: 18px;
+        min-height: 35px;
+        mat-header-cell {
+            font-family: 'OpenSansWeb', sans-serif !important;
+            color: rgba(56, 72, 83, 0.87) !important;
+            font-weight: 700;
+            padding-right: 15px;
+            &:first-of-type {
+                padding-left: 0;
+            }
+        }
+        padding: 0 16px;
+    }
+    mat-row {
+        height: 35px;
+        min-height: 35px;
+        border-radius: 5px;
+        margin-bottom: 4px;
+        padding: 0 16px;
+        background-color: #F8F8F8;
+        &:hover {
+            transition: background-color .7s ease;
+            background-color: rgba(102, 140, 164, .17);
+        }
+        mat-cell {
+            color: rgba(56, 72, 83, 0.6) !important;
+            font-size: 16px;
+            padding-right: 15px;
+
+            &:first-of-type {
+                padding-left: 0;
+            }
+
+            &:last-of-type {
+                padding-right: 0;
+            }
+        }
+    }
+}
+
+.mat-paginator-container {
+    .mat-focus-indicator.mat-paginator-navigation-previous.mat-icon-button.mat-button-base:not([disabled]),
+    .mat-focus-indicator.mat-paginator-navigation-next.mat-icon-button.mat-button-base:not([disabled]) {
+        color: rgba(0, 0, 0, .6) !important;
+    }
+}
+
+.spinner-container {
+    position: absolute;
+    z-index: 101;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, .18);
+
+    mat-spinner {
+        position: absolute;
+        top: calc(50% - 25px);
+        left: calc(50% - 25px);
+    }
+}
+
+.results-not-found {
+    display: flex;
+    justify-content: center;
+    padding: 24px;
+    color: rgba(0, 0, 0, 0.38);
+}
