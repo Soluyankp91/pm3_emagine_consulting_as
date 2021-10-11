@@ -1,6 +1,5 @@
 trigger:
   - refs/heads/master
-  - refs/heads/dev
   - refs/heads/release*
 
 pool:

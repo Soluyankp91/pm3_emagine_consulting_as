@@ -1,0 +1,280 @@
+<div class="workflow">
+    <div fxLayout="row" fxLayoutAlign="start start">
+        <div fxFlex="20%" fxLayout="column" fxLayoutAlign="start start">
+            <div class="workflow-sidebar">
+                <mat-vertical-stepper [linear]="true" [style.position]="'fixed'" [selectedIndex]="selectedIndex" (selectionChange)="selectionChange($event)">
+                    <ng-template matStepperIcon="edit">
+                        <mat-icon>done</mat-icon>
+                      </ng-template>
+                    <mat-step label="Sales" [stepControl]="salesMainClientDataForm">
+                        <mat-list>
+                            <mat-list-item [ngxScrollTo]="'sales1'">Sales1</mat-list-item>
+                            <mat-list-item [ngxScrollTo]="'sales2'">Sales2</mat-list-item>
+                            <mat-list-item [ngxScrollTo]="'sales3'">sales3</mat-list-item>
+                            <mat-list-item [ngxScrollTo]="'sales4'">sales4</mat-list-item>
+                            <mat-list-item [ngxScrollTo]="'sales5'">sales5</mat-list-item>
+                        </mat-list>
+                    </mat-step>
+                    <mat-step label="Contracts">
+                        <mat-list>
+                            <mat-list-item [ngxScrollTo]="'sales1'">Summary</mat-list-item>
+                            <mat-list-item [ngxScrollTo]="'sales2'">Client Contract Template</mat-list-item>
+                            <mat-list-item [ngxScrollTo]="'sales5'">Consultant Contract Template</mat-list-item>
+                        </mat-list>
+                    </mat-step>
+                    <mat-step label="Accounts">
+
+                    </mat-step>
+                    <mat-step label="Extension Sales">
+
+                    </mat-step>
+                    <mat-step label="Extension Contracts">
+
+                    </mat-step>
+                    <mat-step label="Termination Sales">
+
+                    </mat-step>
+                    <mat-step label="Termination Contracts">
+
+                    </mat-step>
+                    <mat-step label="CV Update">
+
+                    </mat-step>
+                    <mat-step label="Change in WF Data">
+
+                    </mat-step>
+                </mat-vertical-stepper>
+            </div>
+        </div>
+        <div fxFlex="80%" fxLayout="column" fxLayoutAlign="start start">
+            <ng-container *ngIf="selectedIndex === 0">
+                <div id="sales1" class="u-mb--20 u-w--100">
+                    <form [formGroup]="salesMainClientDataForm" class="workflow-sales--form u-w--100">
+                        <h2>Direct Client</h2>
+                        <div fxLayout="row" fxLayoutAlign="start start" class="u-w--100 u-mb--20">
+                            <mat-form-field appearance="outline" class="u-w--100 formFieldNoMarginPadding filter-select" fxFlex="20%">
+                                <mat-label>Direct Client</mat-label>
+                                <mat-select formControlName="directClient" placeholder="Direct Client">
+                                    <mat-option *ngFor="let item of [0,1,2,3]" [value]="item">
+                                        {{ item }}
+                                    </mat-option>
+                                </mat-select>
+                            </mat-form-field>
+                        </div>
+
+                        <h2>Client Invoicing Recipient</h2>
+                        <div fxLayout="row" fxLayoutAlign="start center" class="u-w--100 u-mb--20">
+                            <mat-form-field appearance="outline" class="u-w--100 formFieldNoMarginPadding filter-select u-mr--16" fxFlex="20%">
+                                <mat-label>Client Invoicing Recipient</mat-label>
+                                <mat-select formControlName="clientInvoicingRecipient" placeholder="Client Invoicing Recipient">
+                                    <mat-option *ngFor="let item of [0,1,2,3]" [value]="item">
+                                        {{ item }}
+                                    </mat-option>
+                                </mat-select>
+                            </mat-form-field>
+
+                            <mat-checkbox color="accent" formControlName="sameAsDirectClient" name="sameAsDirectClient" class="green-checkbox u-mr--10">
+                                Same as direct client
+                            </mat-checkbox>
+                        </div>
+
+                        <h2>Client Invoicing Reference Person</h2>
+                        <div fxLayout="row" fxLayoutAlign="start center" class="u-w--100 u-mb--20">
+                            <mat-form-field appearance="outline" class="u-w--100 formFieldNoMarginPadding filter-select u-mr--16" fxFlex="20%">
+                                <mat-label>Invoicing Reference Person</mat-label>
+                                <mat-select formControlName="clientInvoicingReferencePerson" placeholder="Invoicing Reference Person">
+                                    <mat-option *ngFor="let item of [0,1,2,3]" [value]="item">
+                                        {{ item }}
+                                    </mat-option>
+                                </mat-select>
+                            </mat-form-field>
+
+                            <mat-checkbox color="accent" formControlName="isClientInvoicingNone" name="isClientInvoicingNone" class="green-checkbox u-mr--10">
+                                None
+                            </mat-checkbox>
+                        </div>
+
+                        <h2>Client Evaluations - Consultant</h2>
+                        <div fxLayout="row" fxLayoutAlign="start center" class="u-w--100 u-mb--20">
+                            <mat-form-field appearance="outline" class="u-w--100 formFieldNoMarginPadding filter-select u-mr--16" fxFlex="20%">
+                                <mat-label>Evaluation Reference Person</mat-label>
+                                <mat-select formControlName="evaluationReferencePerson" placeholder="Evaluation Reference Person">
+                                    <mat-option *ngFor="let item of [0,1,2,3]" [value]="item">
+                                        {{ item }}
+                                    </mat-option>
+                                </mat-select>
+                            </mat-form-field>
+
+                            <mat-checkbox color="accent" formControlName="disableEvaluations" name="disableEvaluations" class="green-checkbox u-mr--10">
+                                Disable Evaluations
+                            </mat-checkbox>
+                        </div>
+
+                        <h2>Client Contract Signers</h2>
+                        <div formArrayName="clientSigners" class="u-w--100 u-mb--20">
+                            <div fxLayout="row" fxLayoutAlign="start center" class="u-w--100 u-mb--10" *ngFor="let signer of clientSigners.controls; let i = index" [formGroupName]="i">
+                                <mat-form-field appearance="outline" class="u-w--100 mat-elevation-z0 formFieldNoMarginPadding u-mr--16"  fxFlex="20%">
+                                    <mat-label>Name</mat-label>
+                                    <input autocomplete="off" matInput formControlName="clientName" placeholder="Name" type="text">
+                                </mat-form-field>
+
+                                <mat-form-field appearance="outline" class="u-w--100 formFieldNoMarginPadding filter-select u-mr--16" fxFlex="20%">
+                                    <mat-label>Client Role</mat-label>
+                                    <mat-select formControlName="clientRole" placeholder="Client Role">
+                                        <mat-option *ngFor="let item of [0,1,2,3]" [value]="item">
+                                            {{ item }}
+                                        </mat-option>
+                                    </mat-select>
+                                </mat-form-field>
+
+                                <mat-form-field appearance="outline" class="u-w--100 formFieldNoMarginPadding filter-select u-mr--15" fxFlex="15%">
+                                    <mat-label>Client Sigvens</mat-label>
+                                    <mat-select formControlName="clientSigvens" placeholder="Client Sigvens">
+                                        <mat-option *ngFor="let item of [0,1,2,3]" [value]="item">
+                                            {{ item }}
+                                        </mat-option>
+                                    </mat-select>
+                                </mat-form-field>
+                                <button mat-icon-button (click)="removeSigner(i)"><mat-icon>delete</mat-icon></button>
+                            </div>
+                            <button color="primary" class="mat-elevation-z0" mat-raised-button (click)="addSignerToForm()">
+                                Add signer
+                            </button>
+                        </div>
+
+                        <h2>Client Special Contract Terms</h2>
+                        <div fxLayout="row" fxLayoutAlign="start start" class="u-w--100 u-mb--20">
+                            <mat-form-field appearance="outline" class="u-w--100 formFieldNoMarginPadding u-mr--16" fxFlex="0 0 calc(40% + 15px)">
+                                <mat-label>Special Contract Terms</mat-label>
+                                <textarea matInput autocomplete="new-password" name="specialContractTerms" formControlName="specialContractTerms">
+                                </textarea>
+                            </mat-form-field>
+
+                            <mat-checkbox color="accent" formControlName="isSpecialContractTermsNone" name="isSpecialContractTermsNone" class="green-checkbox u-mt--10">
+                                None
+                            </mat-checkbox>
+                        </div>
+
+                        <h2>Invoicing Reference Number</h2>
+                        <div fxLayout="row" fxLayoutAlign="start start" class="u-w--100 u-mb--20">
+                            <mat-form-field appearance="outline" class="u-w--100 mat-elevation-z0 formFieldNoMarginPadding" fxFlex="20%">
+                                <mat-label>Invoicing Reference Number</mat-label>
+                                <input autocomplete="off" matInput formControlName="invoicingReferenceNumber" placeholder="Invoicing Reference Number" type="text">
+                            </mat-form-field>
+                        </div>
+
+                        <h2>Client Rate & Invoicing</h2>
+                        <div fxLayout="row" fxLayoutAlign="start start" class="u-w--100 u-mb--20">
+                            <mat-form-field appearance="outline" class="u-w--100 formFieldNoMarginPadding filter-select" fxFlex="20%">
+                                <mat-label>Client Rate & Invoicing</mat-label>
+                                <mat-select formControlName="clientRateAndInvoicing" placeholder="Client Rate & Invoicing">
+                                    <mat-option *ngFor="let item of [0,1,2,3]" [value]="item">
+                                        {{ item }}
+                                    </mat-option>
+                                </mat-select>
+                            </mat-form-field>
+                        </div>
+
+                        <h2>Client Invoicing Period</h2>
+                        <div fxLayout="row" fxLayoutAlign="start start" class="u-w--100 u-mb--20">
+                            <mat-form-field appearance="outline" class="u-w--100 formFieldNoMarginPadding filter-select" fxFlex="20%">
+                                <mat-label>Client Invoicing Period</mat-label>
+                                <mat-select formControlName="clientInvoicingPeriod" placeholder="Client Invoicing Period">
+                                    <mat-option *ngFor="let item of [0,1,2,3]" [value]="item">
+                                        {{ item }}
+                                    </mat-option>
+                                </mat-select>
+                            </mat-form-field>
+                        </div>
+
+                        <h2>Client Project Duration</h2>
+                        <div fxLayout="row" fxLayoutAlign="start center" class="u-w--100 u-mb--20">
+                            <mat-form-field appearance="outline" class="formFieldNoMarginPadding u-mr--5" fxFlex="20%">
+                                <mat-label>Start date</mat-label>
+                                <input autocomplete="off" placeholder="" matInput
+                                        [matDatepicker]="clientProjectStartDatePicker"
+                                        name="saleDate" formControlName="clientProjectStartDate"
+                                        (focus)="clientProjectStartDatePicker.open()"
+                                        (click)="clientProjectStartDatePicker.open()" readonly>
+                                <mat-icon class="calendar-icon" matSuffix svgIcon="calendar"></mat-icon>
+                                <mat-datepicker #clientProjectStartDatePicker></mat-datepicker>
+                            </mat-form-field>
+
+                            <span class="u-mr--5">-</span>
+
+                            <mat-form-field appearance="outline" class="formFieldNoMarginPadding u-mr--16" fxFlex="20%">
+                                <mat-label>End date</mat-label>
+                                <input autocomplete="off" placeholder="" matInput
+                                        [matDatepicker]="clientProjectEndDatePicker"
+                                        name="saleDate" formControlName="clientProjectEndDate"
+                                        (focus)="clientProjectEndDatePicker.open()"
+                                        (click)="clientProjectEndDatePicker.open()" readonly>
+                                <mat-icon class="calendar-icon" matSuffix svgIcon="calendar"></mat-icon>
+                                <mat-datepicker #clientProjectEndDatePicker></mat-datepicker>
+                            </mat-form-field>
+
+                            <mat-checkbox color="accent" formControlName="clientProjectNoEndDate" name="clientProjectNoEndDate" class="green-checkbox">
+                                No end date
+                            </mat-checkbox>
+                        </div>
+
+                        <h2>Client Extension Option</h2>
+                        <div fxLayout="row" fxLayoutAlign="start center" class="u-w--100 u-mb--20">
+                            <mat-form-field appearance="outline" class="formFieldNoMarginPadding u-mr--5" fxFlex="20%">
+                                <mat-label>Option Duration</mat-label>
+                                <input autocomplete="off" placeholder="" matInput
+                                        [matDatepicker]="clientExtensionStartDatePicker"
+                                        name="saleDate" formControlName="clientExtensionStartDate"
+                                        (focus)="clientExtensionStartDatePicker.open()"
+                                        (click)="clientExtensionStartDatePicker.open()" readonly>
+                                <mat-icon class="calendar-icon" matSuffix svgIcon="calendar"></mat-icon>
+                                <mat-datepicker #clientExtensionStartDatePicker></mat-datepicker>
+                            </mat-form-field>
+
+                            <span class="u-mr--5">-</span>
+
+                            <mat-form-field appearance="outline" class="formFieldNoMarginPadding u-mr--16" fxFlex="20%">
+                                <mat-label>Option Deadline</mat-label>
+                                <input autocomplete="off" placeholder="" matInput
+                                        [matDatepicker]="clientExtensionEndDatePicker"
+                                        name="saleDate" formControlName="clientExtensionEndDate"
+                                        (focus)="clientExtensionEndDatePicker.open()"
+                                        (click)="clientExtensionEndDatePicker.open()" readonly>
+                                <mat-icon class="calendar-icon" matSuffix svgIcon="calendar"></mat-icon>
+                                <mat-datepicker #clientExtensionEndDatePicker></mat-datepicker>
+                            </mat-form-field>
+
+                            <mat-checkbox color="accent" formControlName="clientExtensionNoEndDate" name="clientExtensionNoEndDate" class="green-checkbox">
+                                No end date
+                            </mat-checkbox>
+                        </div>
+                    </form>
+                </div>
+
+                <div id="sales2" class="u-mb--20 column">
+                    SALES2
+                </div>
+
+                <div id="sales3" class="u-mb--20 column">
+                    SALES3
+                </div>
+
+                <div id="sales4" class="u-mb--20 column">
+                    SALES4
+                </div>
+
+                <div id="sales5" class="u-mb--20 column">
+                    SALES5
+                </div>
+
+                <div id="sales6" class="u-mb--20 column">
+                    SALES6
+                </div>
+            </ng-container>
+
+            <ng-container *ngIf="selectedIndex === 1">
+                step 2
+            </ng-container>
+        </div>
+    </div>
+</div>
