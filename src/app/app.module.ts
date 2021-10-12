@@ -1,4 +1,4 @@
-import { NgModule } from '@angular/core';
+import { APP_INITIALIZER, NgModule } from '@angular/core';
 import { BrowserModule, DomSanitizer } from '@angular/platform-browser';
 
 import { AppRoutingModule } from './app-routing.module';
@@ -14,61 +14,69 @@ import { MsalBroadcastService, MsalGuard, MsalGuardConfiguration, MsalIntercepto
 import { BrowserCacheLocation, InteractionType, IPublicClientApplication, LogLevel, PublicClientApplication } from '@azure/msal-browser';
 import { LoginGuard } from './login/login.guard';
 import { LoginComponent } from './login/login.component';
+import { environment } from 'src/environments/environment';
 
 const isIE = window.navigator.userAgent.indexOf("MSIE ") > -1 || window.navigator.userAgent.indexOf("Trident/") > -1; // Remove this line to use Angular Universal
 
 export function loggerCallback(logLevel: LogLevel, message: string) {
-  console.log(message);
+    console.log(message);
 }
 
 export function MSALInstanceFactory(): IPublicClientApplication {
-  return new PublicClientApplication({
-    auth: {
-      // clientId: '6226576d-37e9-49eb-b201-ec1eeb0029b6', // Prod enviroment. Uncomment to use.
-      clientId: '54e44fbe-ca87-45be-9344-9a3bb6dd0dca', // PPE testing environment
-      // authority: 'https://login.microsoftonline.com/common', // Prod environment. Uncomment to use.
-      authority: 'https://login.microsoftonline.com/0749517d-d788-4fc5-b761-0cb1a1112694/', // PPE testing environment.
-      redirectUri: '/',
-      postLogoutRedirectUri: '/'
-    },
-    cache: {
-      cacheLocation: BrowserCacheLocation.LocalStorage,
-      storeAuthStateInCookie: isIE, // set to true for IE 11. Remove this line to use Angular Universal
-    },
-    system: {
-      loggerOptions: {
-        loggerCallback,
-        logLevel: LogLevel.Info,
-        piiLoggingEnabled: false
-      }
-    }
-  });
+    return new PublicClientApplication({
+        auth: {
+            clientId: '54e44fbe-ca87-45be-9344-9a3bb6dd0dca', // PPE testing environment
+            authority: 'https://login.microsoftonline.com/0749517d-d788-4fc5-b761-0cb1a1112694/', // PPE testing environment.
+            redirectUri: '/',
+            postLogoutRedirectUri: '/'
+        },
+        cache: {
+            cacheLocation: BrowserCacheLocation.LocalStorage,
+            storeAuthStateInCookie: isIE, // set to true for IE 11. Remove this line to use Angular Universal
+        },
+        system: {
+            loggerOptions: {
+                loggerCallback,
+                logLevel: LogLevel.Info,
+                piiLoggingEnabled: false
+            }
+        }
+    });
 }
 
 export function MSALInterceptorConfigFactory(): MsalInterceptorConfiguration {
-  const protectedResourceMap = new Map<string, Array<string>>();
-  // protectedResourceMap.set('https://graph.microsoft.com/v1.0/me', ['user.read']); // Prod environment. Uncomment to use.
-  protectedResourceMap.set('https://pm3-dev-app.azurewebsites.net', ['openid', 'profile', 'api://5f63a91e-8bfd-40ea-b562-3dad54244ff7/access_as_user']);
+    const protectedResourceMap = new Map<string, Array<string>>();
+    protectedResourceMap.set(environment.apiUrl, ['openid', 'profile', 'api://5f63a91e-8bfd-40ea-b562-3dad54244ff7/access_as_user']);
+    // if (environment.dev) {
+    //     protectedResourceMap.set('https://pm3-dev-app.azurewebsites.net', ['openid', 'profile', 'api://5f63a91e-8bfd-40ea-b562-3dad54244ff7/access_as_user']);
+    // }
+    // if (environment.qa) {
+    //     protectedResourceMap.set('https://pm3-dev-app.azurewebsites.net', ['openid', 'profile', 'api://5f63a91e-8bfd-40ea-b562-3dad54244ff7/access_as_user']);
+    // }
+    // if (environment.production) {
+    //     protectedResourceMap.set('https://pm3-dev-app.azurewebsites.net', ['openid', 'profile', 'api://5f63a91e-8bfd-40ea-b562-3dad54244ff7/access_as_user']);
+    // }
 
-  return {
-    interactionType: InteractionType.Redirect,
-    protectedResourceMap
-  };
+    return {
+        interactionType: InteractionType.Redirect,
+        protectedResourceMap
+    };
 }
 
 export function MSALGuardConfigFactory(): MsalGuardConfiguration {
-  return {
-    interactionType: InteractionType.Redirect,
-    authRequest: {
-      scopes: ['openid', 'profile', 'api://5f63a91e-8bfd-40ea-b562-3dad54244ff7/access_as_user']
-    },
-    loginFailedRoute: '/login'
-  };
+    return {
+        interactionType: InteractionType.Redirect,
+        authRequest: {
+            scopes: ['openid', 'profile', 'api://5f63a91e-8bfd-40ea-b562-3dad54244ff7/access_as_user']
+        },
+        loginFailedRoute: '/login'
+    };
 }
 
 export function getRemoteServiceBaseUrl(): string {
-  return AppConsts.remoteServiceBaseUrl;
+    return AppConsts.remoteServiceBaseUrl;
 }
+
 @NgModule({
     declarations: [
         AppComponent,
@@ -86,28 +94,29 @@ export function getRemoteServiceBaseUrl(): string {
     providers: [
         LoginGuard,
         {
-            provide: API_BASE_URL, useFactory: getRemoteServiceBaseUrl
+            provide: API_BASE_URL,
+            useFactory: getRemoteServiceBaseUrl
         },
         {
             provide: HTTP_INTERCEPTORS,
             useClass: MsalInterceptor,
             multi: true
-          },
-          {
+        },
+        {
             provide: MSAL_INSTANCE,
             useFactory: MSALInstanceFactory
-          },
-          {
+        },
+        {
             provide: MSAL_GUARD_CONFIG,
             useFactory: MSALGuardConfigFactory
-          },
-          {
+        },
+        {
             provide: MSAL_INTERCEPTOR_CONFIG,
             useFactory: MSALInterceptorConfigFactory
-          },
-          MsalService,
-          MsalGuard,
-          MsalBroadcastService
+        },
+        MsalService,
+        MsalGuard,
+        MsalBroadcastService
     ],
     bootstrap: [
         AppComponent
@@ -382,6 +391,20 @@ export class AppModule {
             'calendar',
             sanitizer.bypassSecurityTrustResourceUrl(
                 'assets/common/images/calendar.svg'
+            )
+        );
+
+        iconRegistry.addSvgIcon(
+            'workflow-intracompany',
+            sanitizer.bypassSecurityTrustResourceUrl(
+                'assets/common/images/workflow-intracompany.svg'
+            )
+        );
+
+        iconRegistry.addSvgIcon(
+            'workflow-direct-company',
+            sanitizer.bypassSecurityTrustResourceUrl(
+                'assets/common/images/workflow-direct-company.svg'
             )
         );
 

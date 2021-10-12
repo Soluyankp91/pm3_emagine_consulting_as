@@ -1,3 +1,7 @@
+.mat-expansion-panel-content {
+    font: 400 16px 'Open Sans', sans-serif !important;
+}
+
 .client-documents--contract-folders {
     .mat-accordion {
         width: 100%;
@@ -42,6 +46,46 @@
                 background: #FFFFFF;
                 border-radius: 5px;
             }
+        }
+    }
+}
+
+.workflow-form--panel {
+    .mat-accordion {
+        width: 100%;
+        .mat-expansion-panel-spacing {
+            margin: 0 !important;
+        }
+        .mat-expansion-panel {
+            background: #fff;
+            border-radius: 5px !important;
+            width: 100%;
+            margin-bottom: 10px !important;
+            .mat-expansion-indicator::after {
+                border: solid #17A297;
+                border-width: 0 2px 2px 0;
+                display: inline-block;
+                padding: 2px;
+                transform: rotate(45deg);
+                width: 8px;
+                height: 8px;
+                margin-top: -10px;
+            }
+            &.max-expanded {
+                .mat-expansion-indicator::after {
+                    transform: rotate(225deg);
+                }
+            }
+        }
+        .mat-expansion-panel-body {
+            padding: 10px 8px !important;
+        }
+        .mat-expansion-panel-header {
+            padding-left: 16px !important;
+            font-weight: bold;
+            font-size: 16px;
+            text-transform: uppercase;
+            color: #17A297;
         }
     }
 }
