@@ -3,6 +3,9 @@
     &-sidebar {
         background: rgba(23, 162, 151, 0.04);
         border-radius: 5px;
+        &--stepper {
+            position: fixed;
+        }
     }
     &-form {
         &--sales,

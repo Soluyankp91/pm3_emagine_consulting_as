@@ -2,7 +2,7 @@
     <div fxLayout="row" fxLayoutAlign="start start">
         <div fxFlex="20%" fxLayout="column" fxLayoutAlign="start start">
             <div class="workflow-sidebar">
-                <mat-vertical-stepper [linear]="true" [style.position]="'fixed'" [selectedIndex]="selectedIndex" (selectionChange)="selectionChange($event)">
+                <mat-vertical-stepper class="workflow-sidebar--stepper" [linear]="true" [selectedIndex]="selectedIndex" (selectionChange)="selectionChange($event)">
                     <ng-template matStepperIcon="edit">
                         <mat-icon>done</mat-icon>
                       </ng-template>

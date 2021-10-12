@@ -1,0 +1,20 @@
+.workflow-sidebar--stepper {
+    box-shadow: 0px 0px 20px rgba(26, 35, 126, 0.15);
+    background: rgba(23, 162, 151, 0.06);
+    border-radius: 5px;
+    .mat-vertical-stepper-header {
+        padding: 8px 24px;
+        height: 36px;
+    }
+    .mat-step-icon {
+        height: 36px;
+        width: 36px;
+        background-color: #17A297;
+    }
+    .mat-vertical-content-container {
+        margin-left: 42px;
+    }
+    .mat-stepper-vertical-line::before {
+        top: -8px;
+    }
+}
