@@ -23,7 +23,9 @@
             min-height: 45px;
             margin-top: 0 !important;
         }
-
+        .mat-form-field-wrapper {
+            margin: 0 !important;
+        }
         .mat-form-field-outline {
             top: 0 !important;
             opacity: 0 !important;
@@ -35,7 +37,7 @@
         }
 
         .mat-form-field-flex>.mat-form-field-infix {
-            padding: 0.4em 0px !important;
+            padding: 0.2em 0px 0.4em !important;
         }
 
         .mat-form-field-label-wrapper {
@@ -72,6 +74,10 @@
             margin-top: 0 !important;
         }
 
+        .mat-form-field-wrapper {
+            margin: 0 !important;
+        }
+
         .mat-form-field-outline {
             top: 0 !important;
             opacity: 0 !important;
@@ -83,7 +89,7 @@
         }
 
         .mat-form-field-flex>.mat-form-field-infix {
-            padding: 0.4em 0px !important;
+            padding: 0.2em 0px 0.4em !important;
         }
 
         .mat-form-field-label-wrapper {
