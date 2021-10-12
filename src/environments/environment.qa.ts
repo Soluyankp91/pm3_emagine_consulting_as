@@ -3,10 +3,10 @@
 // The list of file replacements can be found in `angular.json`.
 
 export const environment = {
-    production: false,
-    dev: true,
-    qa: false,
-    apiUrl: 'https://pm3-dev-app.azurewebsites.net'
+  production: false,
+  dev: false,
+  qa: true,
+  apiUrl: 'https://pm3-qa-app.azurewebsites.net'
 };
 
 /*
