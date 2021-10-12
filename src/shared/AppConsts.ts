@@ -1,5 +1,7 @@
+import { environment } from "src/environments/environment";
+
 export class AppConsts {
-    static remoteServiceBaseUrl: string = 'https://pm3-dev-app.azurewebsites.net';
+    static remoteServiceBaseUrl: string = environment.apiUrl;
     static remoteServiceBaseUrlFormat: string;
     static remoteSyncServiceBaseUrl: string;
     static appBaseUrl: string;

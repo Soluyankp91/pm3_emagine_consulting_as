@@ -113,7 +113,7 @@
                                     <h4 class="u-mb--0">
                                         {{folder.name}}
                                     </h4>
-                                    <button class="client-documents--contract__action-btn u-mr--10" mat-icon-button [matMenuTriggerFor]="contractActions" [matMenuTriggerData]="{folder: folder}"><mat-icon>more_vert</mat-icon></button>
+                                    <button class="client-documents--contract__action-btn u-mr--10" mat-icon-button [matMenuTriggerFor]="contractActions" [matMenuTriggerData]="{folder: folder}" (click)="$event.stopPropagation()"><mat-icon>more_vert</mat-icon></button>
                                 </div>
                             </mat-expansion-panel-header>
                             <div *ngIf="folder.files?.length" class="column u-pl--16">
@@ -147,7 +147,7 @@
                                         <h4 class="u-mb--0">
                                             {{folder.name}}
                                         </h4>
-                                        <button class="client-documents--contract__action-btn u-mr--10" mat-icon-button [matMenuTriggerFor]="contractActions" [matMenuTriggerData]="{folder: folder}"><mat-icon>more_vert</mat-icon></button>
+                                        <button class="client-documents--contract__action-btn u-mr--10" mat-icon-button [matMenuTriggerFor]="contractActions" [matMenuTriggerData]="{folder: folder}" (click)="$event.stopPropagation()"><mat-icon>more_vert</mat-icon></button>
                                     </div>
                                 </mat-expansion-panel-header>
                                 <div *ngIf="folder.files?.length" class="column u-pl--16">

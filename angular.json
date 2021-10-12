@@ -70,6 +70,29 @@
               "extractLicenses": false,
               "sourceMap": true,
               "namedChunks": true
+            },
+            "qa": {
+                "budgets": [
+                    {
+                      "type": "initial",
+                      "maximumWarning": "4mb",
+                      "maximumError": "5mb"
+                    },
+                    {
+                      "type": "anyComponentStyle",
+                      "maximumWarning": "2kb",
+                      "maximumError": "4kb"
+                    }
+                ],
+                "optimization": true,
+                "outputHashing": "all",
+                "sourceMap": false,
+                "vendorChunk": false,
+                "buildOptimizer": true,
+                "fileReplacements": [{
+                    "replace": "src/environments/environment.ts",
+                    "with": "src/environments/environment.qa.ts"
+                }]
             }
           },
           "defaultConfiguration": "production"
