@@ -72,8 +72,14 @@
                                         </mat-select>
                                     </mat-form-field>
                                     <div fxFLex="33%" fxLayout="row" fxLayoutAlign="start start" class="u-w--100">
-                                        <button mat-raised-button class="u-mr--16 u-w--100" fxFlex="50%">Intracompany</button>
-                                        <button mat-raised-button class="u-w--100" fxFlex="50%">Direct</button>
+                                        <button mat-raised-button class="u-mr--16 u-w--100 workflow-company--btn" fxFlex="50%" (click)="intracompanyActive = true" [ngClass]="{'active-btn': intracompanyActive}">
+                                            <mat-icon svgIcon="workflow-intracompany" class="u-mr--16"></mat-icon>
+                                            Intracompany
+                                        </button>
+                                        <button mat-raised-button class="u-w--100 workflow-company--btn" fxFlex="50%"  (click)="intracompanyActive = false" [ngClass]="{'active-btn': !intracompanyActive}">
+                                            <mat-icon svgIcon="workflow-direct-company" class="u-mr--16"></mat-icon>
+                                            Direct
+                                        </button>
                                     </div>
                                 </div>
 
@@ -94,7 +100,7 @@
                                             </mat-option>
                                         </mat-select>
                                     </mat-form-field>
-                                    <mat-form-field appearance="outline" class="u-w--100 formFieldNoMarginPadding filter-select" fxFlex="33%">
+                                    <mat-form-field *ngIf="intracompanyActive" appearance="outline" class="u-w--100 formFieldNoMarginPadding filter-select" fxFlex="33%">
                                         <mat-label>Intracompany Account Manager</mat-label>
                                         <mat-select formControlName="intracompanyAccountManager" placeholder="Intracompany Account Manager">
                                             <mat-option *ngFor="let item of [0,1,2,3]" [value]="item">
@@ -102,8 +108,9 @@
                                             </mat-option>
                                         </mat-select>
                                     </mat-form-field>
+                                    <div fxFlex="33%" *ngIf="!intracompanyActive"></div>
                                 </div>
-                                <div fxLayout="row" fxLayoutAlign="start start" class="u-w--100 u-mb--20">
+                                <div fxLayout="row" fxLayoutAlign="start start" class="u-w--100 u-mb--20" *ngIf="intracompanyActive">
                                     <mat-form-field appearance="outline" class="u-w--100 formFieldNoMarginPadding filter-select" fxFlex="33%">
                                         <mat-label>PDC Intracompany Unit</mat-label>
                                         <mat-select formControlName="PDCIntracompanyUnit" placeholder="PDC Intracompany Unit">
@@ -197,7 +204,7 @@
                                             </mat-select>
                                         </mat-form-field>
 
-                                        <mat-form-field appearance="outline" class="u-w--100 formFieldNoMarginPadding filter-select u-mr--15" fxFlex="20%">
+                                        <mat-form-field appearance="outline" class="u-w--100 formFieldNoMarginPadding filter-select u-mr--16" fxFlex="20%">
                                             <mat-label>Client Sigvens</mat-label>
                                             <mat-select formControlName="clientSigvens" placeholder="Client Sigvens">
                                                 <mat-option *ngFor="let item of [0,1,2,3]" [value]="item">
@@ -205,7 +212,7 @@
                                                 </mat-option>
                                             </mat-select>
                                         </mat-form-field>
-                                        <button mat-icon-button (click)="removeSigner(i)"><mat-icon>delete</mat-icon></button>
+                                        <button class="workflow-remove--btn" mat-icon-button (click)="removeSigner(i)"><mat-icon>delete</mat-icon></button>
                                     </div>
                                     <button color="primary" class="button-outlined mat-elevation-z0" mat-raised-button (click)="addSignerToForm()">
                                         Add signer
@@ -373,7 +380,7 @@
                                                     </mat-select>
                                                 </mat-form-field>
 
-                                                <mat-form-field appearance="outline" class="u-w--100 formFieldNoMarginPadding filter-select u-mr--15" fxFlex="20%">
+                                                <mat-form-field appearance="outline" class="u-w--100 formFieldNoMarginPadding filter-select u-mr--16" fxFlex="20%">
                                                     <mat-label>Client Sigvens</mat-label>
                                                     <mat-select formControlName="clientSigvens" placeholder="Client Sigvens">
                                                         <mat-option *ngFor="let item of [0,1,2,3]" [value]="item">
@@ -381,7 +388,7 @@
                                                         </mat-option>
                                                     </mat-select>
                                                 </mat-form-field>
-                                                <button mat-icon-button (click)="removeConsultantSigner(i, j)"><mat-icon>delete</mat-icon></button>
+                                                <button class="workflow-remove--btn" mat-icon-button (click)="removeConsultantSigner(i, j)"><mat-icon>delete</mat-icon></button>
                                             </div>
                                             <button color="primary" class="button-outlined mat-elevation-z0" mat-raised-button (click)="addConsultantSigner(i)">
                                                 Add signer
@@ -639,7 +646,7 @@
                                             </mat-select>
                                         </mat-form-field>
                                         <button mat-raised-button class="u-mr--16 mat-elevation-z0 button-outlined">Open contract</button>
-                                        <button mat-icon-button (click)="removeContractSigner(i)"><mat-icon>delete</mat-icon></button>
+                                        <button class="workflow-remove--btn" mat-icon-button (click)="removeContractSigner(i)"><mat-icon>delete</mat-icon></button>
                                     </div>
                                     <button color="primary" class="button-outlined mat-elevation-z0" mat-raised-button (click)="addContractSigner()">
                                         Add signer

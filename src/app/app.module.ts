@@ -394,5 +394,19 @@ export class AppModule {
             )
         );
 
+        iconRegistry.addSvgIcon(
+            'workflow-intracompany',
+            sanitizer.bypassSecurityTrustResourceUrl(
+                'assets/common/images/workflow-intracompany.svg'
+            )
+        );
+
+        iconRegistry.addSvgIcon(
+            'workflow-direct-company',
+            sanitizer.bypassSecurityTrustResourceUrl(
+                'assets/common/images/workflow-direct-company.svg'
+            )
+        );
+
     }
 }

@@ -10,9 +10,8 @@ import { WorkflowContractsSummaryForm, WorkflowSalesAdditionalDataForm, Workflow
 })
 export class WorkflowComponent implements OnInit {
     selectedIndex = 0;
-    firstForm = new FormGroup({
-        test: new FormControl(null, Validators.required)
-    });
+
+    intracompanyActive = false;
 
     salesMainClientDataForm: WorkflowSalesClientDataForm;
     salesMainDataForm: WorkflowSalesMainForm;
