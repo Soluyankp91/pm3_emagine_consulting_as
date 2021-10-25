@@ -43,6 +43,15 @@
 
                     </mat-step>
                 </mat-vertical-stepper>
+                <div fxLayout="column" fxLayoutAlign="start start" class="u-pl--24 u-pr--24 u-w--100 u-mt--10 u-mb--10">
+                    <div fxLayout="row" fxLayoutAlign="start start" class="u-w--100 u-mb--20">
+                        <button mat-raised-button class="mat-elevation-z0 u-mr--16 button-outlined" fxFlex="50%">Cancel</button>
+                        <button mat-raised-button color="primary" class="mat-elevation-z0 button-accept" fxFlex="50%">Save</button>
+                    </div>
+                    <div fxLayout="row" fxLayoutAlign="start start" class="u-w--100">
+                        <button mat-raised-button color="primary" class="mat-elevation-z0 button-accept" fxFlex="100%">Done</button>
+                    </div>
+                </div>
             </div>
         </div>
         <div fxFlex="80%" fxLayout="column" fxLayoutAlign="start start">
@@ -122,7 +131,7 @@
                                 </div>
                             </form>
                         </mat-expansion-panel>
-                        <mat-expansion-panel id="clientData">
+                        <mat-expansion-panel id="clientData" [ngClass]="{'pointerEventsNone': !salesMainDataForm.valid}">
                             <mat-expansion-panel-header>
                                 CLIENT DATA
                             </mat-expansion-panel-header>
