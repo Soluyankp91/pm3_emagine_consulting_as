@@ -1,49 +1,63 @@
 <div class="workflow">
     <div fxLayout="row" fxLayoutAlign="start start">
-        <div fxFlex="20%" fxLayout="column" fxLayoutAlign="start start">
+        <div fxFlex="20%" class="workflow-sidebar--container" fxLayout="column" fxLayoutAlign="start start">
             <div class="workflow-sidebar">
-                <mat-vertical-stepper class="workflow-sidebar--stepper" [linear]="true" [selectedIndex]="selectedIndex" (selectionChange)="selectionChange($event)">
-                    <ng-template matStepperIcon="edit">
-                        <mat-icon>done</mat-icon>
-                      </ng-template>
-                    <mat-step label="Sales" [stepControl]="salesMainClientDataForm">
-                        <mat-list>
-                            <mat-list-item [ngxScrollTo]="'mainData'">Main data</mat-list-item>
-                            <mat-list-item [ngxScrollTo]="'clientData'">Client data</mat-list-item>
-                            <mat-list-item [ngxScrollTo]="'consultantData'">Consultant data</mat-list-item>
-                            <mat-list-item [ngxScrollTo]="'additionalData'">Additional data</mat-list-item>
-                        </mat-list>
-                    </mat-step>
-                    <mat-step label="Contracts">
-                        <mat-list>
-                            <mat-list-item [ngxScrollTo]="'sales1'">Summary</mat-list-item>
-                            <mat-list-item [ngxScrollTo]="'sales2'">Client Contract Template</mat-list-item>
-                            <mat-list-item [ngxScrollTo]="'sales5'">Consultant Contract Template</mat-list-item>
-                        </mat-list>
-                    </mat-step>
-                    <mat-step label="Accounts">
+                <div class="workflow-sidebar--stepper">
+                    <ng-scrollbar #scrollable>
+                        <div class="workflow-sidebar--content">
+                            <mat-vertical-stepper class="workflow-sidebar--stepper" [selectedIndex]="selectedIndex" (selectionChange)="selectionChange($event)">
+                                <ng-template matStepperIcon="edit">
+                                    <mat-icon>done</mat-icon>
+                                </ng-template>
+                                <!-- <mat-step *ngFor="let step of workflowNavigation; let i = index" label="{{step.displayName}}" (click)="setActiveStep(step)">
+                                    <mat-list *ngIf="step.name === 'Sales'">
+                                        <mat-list-item [ngxScrollTo]="'mainData'">Main data</mat-list-item>
+                                        <mat-list-item [ngxScrollTo]="'clientData'">Client data</mat-list-item>
+                                        <mat-list-item [ngxScrollTo]="'consultantData'">Consultant data</mat-list-item>
+                                        <mat-list-item [ngxScrollTo]="'additionalData'">Additional data</mat-list-item>
+                                    </mat-list>
 
-                    </mat-step>
-                    <mat-step label="Extension Sales">
+                                    <mat-list *ngIf="step.name === 'Contracts'">
+                                        <mat-list-item [ngxScrollTo]="'sales1'">Summary</mat-list-item>
+                                        <mat-list-item [ngxScrollTo]="'sales2'">Client Contract Template</mat-list-item>
+                                        <mat-list-item [ngxScrollTo]="'sales5'">Consultant Contract Template</mat-list-item>
+                                    </mat-list>
+                                </mat-step> -->
 
-                    </mat-step>
-                    <mat-step label="Extension Contracts">
+                                <mat-step label="Sales" [stepControl]="salesMainClientDataForm">
+                                    <mat-list>
+                                        <mat-list-item [ngxScrollTo]="'mainData'">Main data</mat-list-item>
+                                        <mat-list-item [ngxScrollTo]="'clientData'">Client data</mat-list-item>
+                                        <mat-list-item [ngxScrollTo]="'consultantData'">Consultant data</mat-list-item>
+                                        <mat-list-item [ngxScrollTo]="'additionalData'">Additional data</mat-list-item>
+                                    </mat-list>
+                                </mat-step>
+                                <mat-step label="Contracts">
+                                    <mat-list>
+                                        <mat-list-item [ngxScrollTo]="'sales1'">Summary</mat-list-item>
+                                        <mat-list-item [ngxScrollTo]="'sales2'">Client Contract Template</mat-list-item>
+                                        <mat-list-item [ngxScrollTo]="'sales5'">Consultant Contract Template</mat-list-item>
+                                    </mat-list>
+                                </mat-step>
+                                <mat-step label="Accounts"></mat-step>
+                                <mat-step label="What's next?"></mat-step>
+                                <mat-step label="Extension Sales"></mat-step>
+                                <mat-step label="Extension Contracts"></mat-step>
+                                <mat-step label="Termination Sales"></mat-step>
+                                <mat-step label="Termination Contracts"></mat-step>
+                                <mat-step label="CV Update"></mat-step>
+                                <mat-step label="Change in WF Data"></mat-step>
+                            </mat-vertical-stepper>
 
-                    </mat-step>
-                    <mat-step label="Termination Sales">
-
-                    </mat-step>
-                    <mat-step label="Termination Contracts">
-
-                    </mat-step>
-                    <mat-step label="CV Update">
-
-                    </mat-step>
-                    <mat-step label="Change in WF Data">
-
-                    </mat-step>
-                </mat-vertical-stepper>
-                <div fxLayout="column" fxLayoutAlign="start start" class="u-pl--24 u-pr--24 u-w--100 u-mt--10 u-mb--10">
+                            <!-- <div fxLayout="column" class="workflow-sidebar--stepper">
+                                <span class="u-w--100" *ngFor="let item of workflowNavigation" (click)="setActiveStep(item)">
+                                    ({{item.id}}) {{ item.name }}
+                                </span>
+                            </div> -->
+                        </div>
+                    </ng-scrollbar>
+                </div>
+                <div fxLayout="column" fxLayoutAlign="start start" class="workflow-sidebar--actions u-pl--24 u-pr--24 u-w--100 u-mt--10 u-mb--10">
                     <div fxLayout="row" fxLayoutAlign="start start" class="u-w--100 u-mb--20">
                         <button mat-raised-button class="mat-elevation-z0 u-mr--16 button-outlined" fxFlex="50%">Cancel</button>
                         <button mat-raised-button color="primary" class="mat-elevation-z0 button-accept" fxFlex="50%">Save</button>
@@ -67,16 +81,16 @@
                                     <mat-form-field appearance="outline" class="u-w--100 formFieldNoMarginPadding filter-select u-mr--16" fxFlex="33%">
                                         <mat-label>Sales type</mat-label>
                                         <mat-select formControlName="salesType" placeholder="Sales type">
-                                            <mat-option *ngFor="let item of [0,1,2,3]" [value]="item">
-                                                {{ item }}
+                                            <mat-option *ngFor="let item of saleTypes" [value]="item.id">
+                                                {{ item.name }}
                                             </mat-option>
                                         </mat-select>
                                     </mat-form-field>
                                     <mat-form-field appearance="outline" class="u-w--100 formFieldNoMarginPadding filter-select u-mr--16" fxFlex="33%">
                                         <mat-label>Nearshore/Offshore</mat-label>
                                         <mat-select formControlName="nearshoreOffshore" placeholder="Nearshore/Offshore">
-                                            <mat-option *ngFor="let item of [0,1,2,3]" [value]="item">
-                                                {{ item }}
+                                            <mat-option *ngFor="let item of deliveryTypes" [value]="item.id">
+                                                {{ item.name }}
                                             </mat-option>
                                         </mat-select>
                                     </mat-form-field>
@@ -336,7 +350,7 @@
                             <ng-container formArrayName="consultantData">
                                 <mat-expansion-panel *ngFor="let consultant of consultantsForm.consultantData.controls; let i = index" [formGroupName]="i">
                                     <mat-expansion-panel-header>
-                                        <div fxLayout="row" fxLayoutAlign="start start">
+                                        <div fxLayout="row" fxLayoutAlign="start center">
                                             <span>
                                                 CONSULTANT DATA
                                             </span>
@@ -775,6 +789,22 @@
             <ng-container *ngIf="selectedIndex === 3">
                 <div class="workflow-panel u-w--100">
                     <form [formGroup]="salesExtensionForm" class="u-w--100">
+                        <h2 class="workflow-green--header">Add new</h2>
+                        <div fxLayout="row" fxLayoutAlign="start center" class="u-w--100 u-mb--20">
+                            <button mat-raised-button class="u-mr--16 u-w--100 workflow-company--btn" fxFlex="50%" (click)="addNewExtension()">
+                                Add new extension
+                            </button>
+                            <button mat-raised-button class="u-w--100 workflow-company--btn" fxFlex="50%"  (click)="addNewTermination()">
+                                Add new termination
+                            </button>
+                        </div>
+                    </form>
+                </div>
+            </ng-container>
+
+            <ng-container *ngIf="selectedIndex === 4">
+                <div class="workflow-panel u-w--100">
+                    <form [formGroup]="salesExtensionForm" class="u-w--100">
                         <h2 class="workflow-green--header">Extension</h2>
                         <div fxLayout="row" fxLayoutAlign="start center" class="u-w--100 u-mb--20">
                             <mat-form-field appearance="outline" class="formFieldNoMarginPadding u-mr--16" fxFlex="33%">
@@ -803,13 +833,13 @@
                 </div>
             </ng-container>
 
-            <ng-container *ngIf="selectedIndex === 4">
+            <ng-container *ngIf="selectedIndex === 5">
                 <div class="workflow-panel u-w--100">
                     Extension contract step
                 </div>
             </ng-container>
 
-            <ng-container *ngIf="selectedIndex === 5">
+            <ng-container *ngIf="selectedIndex === 6">
                 <div class="workflow-panel u-w--100">
                     <h2 class="workflow-green--header">Termination</h2>
                     <form [formGroup]="terminationSalesForm" class="u-w--100">
@@ -868,13 +898,13 @@
                 </div>
             </ng-container>
 
-            <ng-container *ngIf="selectedIndex === 6">
+            <ng-container *ngIf="selectedIndex === 7">
                 <div class="workflow-panel u-w--100">
                     Termination Contracts step
                 </div>
             </ng-container>
 
-            <ng-container *ngIf="selectedIndex === 7">
+            <ng-container *ngIf="selectedIndex === 8">
                 <div class="workflow-panel u-w--100">
                     <div fxLayout="column" fxLayoutAlign="start start" class="u-w--100 u-mb--20">
                         <h2>CV Update</h2>
@@ -883,7 +913,7 @@
                 </div>
             </ng-container>
 
-            <ng-container *ngIf="selectedIndex === 8">
+            <ng-container *ngIf="selectedIndex === 9">
                 <div class="workflow-panel u-w--100">
                     Change in WF Data Step
                 </div>

@@ -278,3 +278,106 @@ export class WorkflowTerminationSalesForm extends FormGroup {
     }
 }
 
+// Sales step data
+
+export const SaleTypes = [
+    {
+        id: 1,
+        name: 'T&M'
+    },
+    {
+        id: 2,
+        name: 'Referred'
+    },
+    {
+        id: 3,
+        name: 'Managed Service'
+    },
+    {
+        id: 4,
+        name: 'Fee Only'
+    },
+    {
+        id: 5,
+        name: 'Recruitment'
+    }
+];
+
+export const DeliveryTypes = [
+    {
+        id: 1,
+        name: 'Managed Service'
+    },
+    {
+        id: 2,
+        name: 'Normal'
+    },
+    {
+        id: 3,
+        name: 'Offshore'
+    },
+    {
+        id: 4,
+        name: 'Nearshore'
+    }
+];
+
+export interface IWorkflowNavigationStep {
+    id: number;
+    name: string;
+    displayName: string;
+    selected: boolean;
+    finished: boolean;
+    index: number;
+}
+
+export const WorkflowNavigation: IWorkflowNavigationStep[] = [
+    {
+        id: 1,
+        name: 'Sales',
+        displayName: 'Sales',
+        selected: true,
+        finished: false,
+        index: 0
+    },
+    {
+        id: 2,
+        name: 'Contracts',
+        displayName: 'Contracts',
+        selected: false,
+        finished: false,
+        index: 0
+    },
+    {
+        id: 3,
+        name: 'Account',
+        displayName: 'Account',
+        selected: false,
+        finished: false,
+        index: 0
+    },
+    {
+        id: 9997,
+        name: 'WhatNext',
+        displayName: 'What\'s next?',
+        selected: false,
+        finished: false,
+        index: 0
+    },
+    {
+        id: 9998,
+        name: 'CvUpdate',
+        displayName: 'CV update',
+        selected: false,
+        finished: false,
+        index: 0
+    },
+    {
+        id: 9999,
+        name: 'ChangeInWfData',
+        displayName: 'Change in WF Data',
+        selected: false,
+        finished: false,
+        index: 0
+    }
+];

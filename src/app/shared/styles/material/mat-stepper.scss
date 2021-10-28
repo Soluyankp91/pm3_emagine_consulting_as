@@ -1,23 +1,35 @@
 .workflow-sidebar--stepper {
-    // background: rgba(23, 162, 151, 0.06);
-    // box-shadow: 0px 0px 20px rgba(26, 35, 126, 0.15);
-    // border-radius: 5px;
+    font-family: 'Open Sans', sans-serif !important;
     background: transparent !important;
     box-shadow: none;
     border-radius: 0;
     .mat-vertical-stepper-header {
         padding: 8px 24px;
         height: 36px;
+        cursor: pointer !important;
+    }
+    .mat-step-text-label {
+        font-weight: 700;
+        font-size: 16px;
+        line-height: 16px;
+        color: rgba(56, 72, 83, 0.87);
+    }
+    .mat-step {
+        cursor: pointer;
     }
     .mat-step-icon {
         height: 36px;
         width: 36px;
         background-color: #17A297;
     }
+    .mat-vertical-content {
+        padding: 0 16px;
+    }
     .mat-vertical-content-container {
         margin-left: 42px;
     }
     .mat-stepper-vertical-line::before {
-        top: -8px;
+        top: 0px;
+        bottom: 0px;
     }
 }

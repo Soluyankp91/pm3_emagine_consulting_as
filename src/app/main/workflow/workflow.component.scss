@@ -3,12 +3,25 @@
     &-sidebar {
         box-shadow: 0px 0px 20px rgba(26, 35, 126, 0.15);
         border-radius: 5px;
-        background: rgba(23, 162, 151, 0.06);
-        // background: rgba(23, 162, 151, 0.04);
-        // border-radius: 5px;
-        // &--stepper {
+        background: rgba(23, 162, 151, 0.04);
+        height: calc(100vh - 20px);
+        width: calc(20% - 36px);
         position: fixed;
-        // }
+        &--stepper {
+            height: calc(85vh - 20px);
+        }
+        &--actions {
+            height: calc(15vh - 20px);
+        }
+        &--content {
+            display: flex;
+            flex-direction: column;
+            width: 100%;
+            height: 100%;
+        }
+        &--container {
+            overflow: hidden;
+        }
     }
 
     &-form {
@@ -23,6 +36,10 @@
                 color: rgba(56, 72, 83, 0.87);
             }
         }
+    }
+    &-content {
+        height: 100vh;
+        overflow-y: scroll;
     }
     &-panel {
         background: #FFFFFF;

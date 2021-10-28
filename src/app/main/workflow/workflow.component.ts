@@ -4,7 +4,7 @@ import { FormArray, FormBuilder, FormControl, FormGroup, Validators } from '@ang
 import { pipe } from 'rxjs';
 import { finalize } from 'rxjs/operators';
 import { ApiServiceProxy, ContractSignerDto, SalesClientDataUpdateRequestDto, SalesMainDataUpdateRequestDto, SalesServiceProxy, SignerRole, WorkflowsServiceProxy } from 'src/shared/service-proxies/service-proxies';
-import { WorkflowContractsSummaryForm, WorkflowSalesAdditionalDataForm, WorkflowSalesClientDataForm, WorkflowSalesConsultantsForm, WorkflowSalesExtensionForm, WorkflowSalesMainForm, WorkflowTerminationSalesForm } from './workflow.model';
+import { DeliveryTypes, IWorkflowNavigationStep, SaleTypes, WorkflowContractsSummaryForm, WorkflowNavigation, WorkflowSalesAdditionalDataForm, WorkflowSalesClientDataForm, WorkflowSalesConsultantsForm, WorkflowSalesExtensionForm, WorkflowSalesMainForm, WorkflowTerminationSalesForm } from './workflow.model';
 
 @Component({
     selector: 'app-workflow',
@@ -14,11 +14,18 @@ import { WorkflowContractsSummaryForm, WorkflowSalesAdditionalDataForm, Workflow
 export class WorkflowComponent implements OnInit {
     workflowId: string;
     selectedIndex = 0;
+    selectedStep = 'Sales';
 
+    workflowNavigation = WorkflowNavigation;
+
+    // SalesStep
     intracompanyActive = false;
-
     salesMainClientDataForm: WorkflowSalesClientDataForm;
     salesMainDataForm: WorkflowSalesMainForm;
+    saleTypes = SaleTypes;
+    deliveryTypes = DeliveryTypes;
+
+
     consultantsForm: WorkflowSalesConsultantsForm;
     additionalDataForm: WorkflowSalesAdditionalDataForm;
     contactSummaryForm: WorkflowContractsSummaryForm;
@@ -189,6 +196,20 @@ export class WorkflowComponent implements OnInit {
             .subscribe(result => {
 
             });
+    }
+
+
+    addNewExtension() {
+
+    }
+
+    addNewTermination() {
+
+    }
+
+
+    setActiveStep(step: IWorkflowNavigationStep) {
+        this.selectedStep = step.name;
     }
 
 }

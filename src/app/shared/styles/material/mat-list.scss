@@ -1,0 +1,11 @@
+.workflow-sidebar--stepper {
+    .mat-list-base {
+        padding-top: 0 !important;
+        .mat-list-item,
+        .mat-list-option {
+            height: 28px !important;
+            color: rgba(56, 72, 83, 0.87);
+            font-weight: 500;
+        }
+    }
+}
