@@ -233,21 +233,25 @@ export class WorkflowContractsSummaryForm extends FormGroup {
 export class WorkflowSalesExtensionForm extends FormGroup {
     constructor() {
         super({
-            extensionEndDate: new FormControl(null),
-            noExtensionEndDate: new FormControl(false),
-            workflowInformation: new FormControl(null)
+            salesExtension: new FormArray([])
+            // extensionEndDate: new FormControl(null),
+            // noExtensionEndDate: new FormControl(false),
+            // workflowInformation: new FormControl(null)
         })
 
     }
-    get extensionEndDate() {
-        return this.get('extensionEndDate');
+    get salesExtension() {
+        return this.get('salesExtension') as FormArray;
     }
-    get noExtensionEndDate() {
-        return this.get('noExtensionEndDate');
-    }
-    get workflowInformation() {
-        return this.get('workflowInformation');
-    }
+    // get extensionEndDate() {
+    //     return this.get('extensionEndDate');
+    // }
+    // get noExtensionEndDate() {
+    //     return this.get('noExtensionEndDate');
+    // }
+    // get workflowInformation() {
+    //     return this.get('workflowInformation');
+    // }
 }
 
 export class WorkflowTerminationSalesForm extends FormGroup {
@@ -328,6 +332,7 @@ export interface IWorkflowNavigationStep {
     displayName: string;
     selected: boolean;
     finished: boolean;
+    state: string;
     index: number;
 }
 
@@ -338,6 +343,7 @@ export const WorkflowNavigation: IWorkflowNavigationStep[] = [
         displayName: 'Sales',
         selected: true,
         finished: false,
+        state: '',
         index: 0
     },
     {
@@ -346,6 +352,7 @@ export const WorkflowNavigation: IWorkflowNavigationStep[] = [
         displayName: 'Contracts',
         selected: false,
         finished: false,
+        state: '',
         index: 0
     },
     {
@@ -354,30 +361,67 @@ export const WorkflowNavigation: IWorkflowNavigationStep[] = [
         displayName: 'Account',
         selected: false,
         finished: false,
+        state: '',
         index: 0
     },
     {
         id: 9997,
-        name: 'WhatNext',
+        name: 'Whatsnext',
         displayName: 'What\'s next?',
         selected: false,
         finished: false,
+        state: '',
         index: 0
     },
     {
         id: 9998,
-        name: 'CvUpdate',
+        name: 'CVupdate',
         displayName: 'CV update',
         selected: false,
         finished: false,
+        state: '',
         index: 0
     },
     {
         id: 9999,
-        name: 'ChangeInWfData',
+        name: 'ChangeinWFData',
         displayName: 'Change in WF Data',
         selected: false,
         finished: false,
+        state: '',
         index: 0
+    }
+];
+
+export const WorkflowList = [
+    {
+        id: '1111',
+        client: 'Martha Marikel',
+        supplier: 'Martha Marikel',
+        step: 'Sales',
+        status: 'In progress',
+        type: 'T&M',
+        managers: [1,2],
+        isDeleted: false
+    },
+    {
+        id: '1112',
+        client: 'Martha Marikel',
+        supplier: 'Martha Marikel',
+        step: 'Sales',
+        status: 'In progress',
+        type: 'T&M',
+        managers: [1,2],
+        isDeleted: false
+    },
+    {
+        id: '1113',
+        client: 'Martha Marikel',
+        supplier: 'Martha Marikel',
+        step: 'Contracts',
+        status: 'In progress',
+        type: 'Managed service',
+        managers: [1,2],
+        isDeleted: true
     }
 ];

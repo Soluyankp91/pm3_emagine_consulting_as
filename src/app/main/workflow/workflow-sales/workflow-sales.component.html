@@ -1,0 +1,124 @@
+<mat-accordion [multi]="true">
+    <mat-expansion-panel id="contractsSummary">
+        <mat-expansion-panel-header>
+            Summary
+        </mat-expansion-panel-header>
+        <form [formGroup]="contactSummaryForm" class="workflow-form--summary u-w--100">
+            <h2>Client Contract Signers</h2>
+            <div formArrayName="contractData" class="u-w--100 u-mb--20">
+                <div fxLayout="row" fxLayoutAlign="start center" class="u-w--100 u-mb--10" *ngFor="let signer of contractData.controls; let i = index" [formGroupName]="i">
+                    <mat-form-field appearance="outline" class="u-w--100 mat-elevation-z0 formFieldNoMarginPadding u-mr--16"  fxFlex="33%">
+                        <mat-label>Name</mat-label>
+                        <input autocomplete="off" matInput formControlName="name" placeholder="Name" type="text">
+                    </mat-form-field>
+
+                    <mat-form-field appearance="outline" class="u-w--100 formFieldNoMarginPadding filter-select u-mr--16" fxFlex="33%">
+                        <mat-label>Role</mat-label>
+                        <mat-select formControlName="role" placeholder="Role">
+                            <mat-option *ngFor="let item of [0,1,2,3]" [value]="item">
+                                {{ item }}
+                            </mat-option>
+                        </mat-select>
+                    </mat-form-field>
+                    <button mat-raised-button class="u-mr--16 mat-elevation-z0 button-outlined">Open contract</button>
+                    <button class="workflow-remove--btn" mat-icon-button (click)="removeContractSigner(i)"><mat-icon>delete</mat-icon></button>
+                </div>
+                <button color="primary" class="button-outlined mat-elevation-z0" mat-raised-button (click)="addContractSigner()">
+                    Add signer
+                </button>
+            </div>
+        </form>
+    </mat-expansion-panel>
+    <mat-expansion-panel id="clientContractTemplate">
+        <mat-expansion-panel-header>
+            Client Contract Template
+        </mat-expansion-panel-header>
+        <div fxLayout="row" fxLayoutAlign="start center" class="u-w--100 u-mb--20 workflow-form--summary">
+            <div fxLayout="column" fxLayoutAlign="start start" fxFlex="20%" class="u-mr--16">
+                <h2>Normal</h2>
+                <button color="primary" class="button-outlined mat-elevation-z0" mat-raised-button>Open contract</button>
+            </div>
+            <div fxLayout="column" fxLayoutAlign="start start" fxFlex="20%" class="u-mr--16">
+                <h2>Nearshore</h2>
+                <button color="primary" class="button-outlined mat-elevation-z0" mat-raised-button>Open contract</button>
+            </div>
+            <div fxLayout="column" fxLayoutAlign="start start" fxFlex="20%" class="u-mr--16">
+                <h2>SKI</h2>
+                <button color="primary" class="button-outlined mat-elevation-z0" mat-raised-button>Open contract</button>
+            </div>
+            <div fxLayout="column" fxLayoutAlign="start start" fxFlex="20%" class="u-mr--16">
+                <h2>Temporary Worker</h2>
+                <button color="primary" class="button-outlined mat-elevation-z0" mat-raised-button>Open contract</button>
+            </div>
+            <div fxLayout="column" fxLayoutAlign="start start" fxFlex="20%">
+                <h2>Managed Service</h2>
+                <button color="primary" class="button-outlined mat-elevation-z0" mat-raised-button>Open contract</button>
+            </div>
+        </div>
+    </mat-expansion-panel>
+    <mat-expansion-panel id="consultantContractTemplate">
+        <mat-expansion-panel-header>
+            Consultant Contract Template
+        </mat-expansion-panel-header>
+        <div fxLayout="row" fxLayoutAlign="start center" class="u-w--100 u-mb--20 workflow-form--summary">
+            <div fxLayout="column" fxLayoutAlign="start start" fxFlex="20%" class="u-mr--16">
+                <h2>Freelance</h2>
+                <button color="primary" class="button-outlined mat-elevation-z0" mat-raised-button>Open contract</button>
+            </div>
+            <div fxLayout="column" fxLayoutAlign="start start" fxFlex="20%" class="u-mr--16">
+                <h2>Referred</h2>
+                <button color="primary" class="button-outlined mat-elevation-z0" mat-raised-button>Open contract</button>
+            </div>
+            <div fxLayout="column" fxLayoutAlign="start start" fxFlex="20%" class="u-mr--16">
+                <h2>Project Employment</h2>
+                <button color="primary" class="button-outlined mat-elevation-z0" mat-raised-button>Open contract</button>
+            </div>
+            <div fxLayout="column" fxLayoutAlign="start start" fxFlex="20%" class="u-mr--16">
+                <h2>Temporary Worker</h2>
+                <button color="primary" class="button-outlined mat-elevation-z0" mat-raised-button>Open contract</button>
+            </div>
+            <div fxLayout="column" fxLayoutAlign="start start" fxFlex="20%">
+                <h2>SKI</h2>
+                <button color="primary" class="button-outlined mat-elevation-z0" mat-raised-button>Open contract</button>
+            </div>
+        </div>
+        <div fxLayout="row" fxLayoutAlign="start center" class="u-w--100 u-mb--20 workflow-form--summary">
+            <div fxLayout="column" fxLayoutAlign="start start" fxFlex="20%" class="u-mr--16">
+                <h2>Fee Only</h2>
+                <button color="primary" class="button-outlined mat-elevation-z0" mat-raised-button>Open contract</button>
+            </div>
+            <div fxLayout="column" fxLayoutAlign="start start" fxFlex="20%" class="u-mr--16">
+                <h2>Civil Law Consultant</h2>
+                <button color="primary" class="button-outlined mat-elevation-z0" mat-raised-button>Open contract</button>
+            </div>
+            <div fxLayout="column" fxLayoutAlign="start start" fxFlex="20%" class="u-mr--16">
+                <h2>Consultant 48</h2>
+                <button color="primary" class="button-outlined mat-elevation-z0" mat-raised-button>Open contract</button>
+            </div>
+            <div fxLayout="column" fxLayoutAlign="start start" fxFlex="20%" class="u-mr--16">
+                <h2>Supplier Consultant</h2>
+                <button color="primary" class="button-outlined mat-elevation-z0" mat-raised-button>Open contract</button>
+            </div>
+            <div fxLayout="column" fxLayoutAlign="start start" fxFlex="20%">
+                <h2>Managed Service</h2>
+                <button color="primary" class="button-outlined mat-elevation-z0" mat-raised-button>Open contract</button>
+            </div>
+        </div>
+        <div fxLayout="row" fxLayoutAlign="start center" class="u-w--100 u-mb--20 workflow-form--summary">
+            <div fxLayout="column" fxLayoutAlign="start start" fxFlex="20%" class="u-mr--16">
+                <h2>Permanent Employee</h2>
+                <button color="primary" class="button-outlined mat-elevation-z0" mat-raised-button>Open contract</button>
+            </div>
+            <div fxLayout="column" fxLayoutAlign="start start" fxFlex="20%" class="u-mr--16">
+                <h2>Belongs to Supplier</h2>
+                <button color="primary" class="button-outlined mat-elevation-z0" mat-raised-button>Open contract</button>
+            </div>
+            <div fxLayout="column" fxLayoutAlign="start start" fxFlex="20%" class="u-mr--16">
+                <h2>Nearshore</h2>
+                <button color="primary" class="button-outlined mat-elevation-z0" mat-raised-button>Open contract</button>
+            </div>
+            <div fxLayout="column" fxLayoutAlign="start start" fxFlex="20%" class="u-mr--16"></div>
+            <div fxLayout="column" fxLayoutAlign="start start" fxFlex="20%"></div>
+        </div>
+    </mat-expansion-panel>
+</mat-accordion>
