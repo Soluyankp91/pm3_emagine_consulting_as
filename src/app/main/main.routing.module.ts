@@ -12,6 +12,7 @@ import { MainComponent } from './main.component';
 import { SourcingShortcutComponent } from './sourcing-shortcut/sourcing-shortcut.component';
 import { StatisticsComponent } from './statistics/statistics.component';
 import { TimeTrackingComponent } from './time-tracking/time-tracking.component';
+import { WorkflowDetailsComponent } from './workflow/workflow-details/workflow-details.component';
 import { WorkflowComponent } from './workflow/workflow.component';
 
 @NgModule({
@@ -24,6 +25,7 @@ import { WorkflowComponent } from './workflow/workflow.component';
             { path: 'clients/:id', component: ClientDetailsComponent, canActivate: [MsalGuard] },
             { path: 'sourcing-shortcut', component: SourcingShortcutComponent, canActivate: [MsalGuard] },
             { path: 'workflow', component: WorkflowComponent, canActivate: [MsalGuard] },
+            { path: 'workflow/:id', component: WorkflowDetailsComponent, canActivate: [MsalGuard] },
             { path: 'statistics', component: StatisticsComponent, canActivate: [MsalGuard] },
             { path: 'time-tracking', component: TimeTrackingComponent, canActivate: [MsalGuard] },
             { path: 'evaluation', component: EvaluationComponent, canActivate: [MsalGuard] },

@@ -1,6 +1,8 @@
 import { Component, Input, OnInit } from '@angular/core';
 import { MatTableDataSource } from '@angular/material/table';
+import { finalize } from 'rxjs/operators';
 import { AppConsts } from 'src/shared/AppConsts';
+import { ClientContractListItemDto, ClientsServiceProxy } from 'src/shared/service-proxies/service-proxies';
 
 const TABLE_DATA = [
     {
@@ -61,7 +63,9 @@ export class ClientConsultantTrackComponent implements OnInit {
         'clientPrice',
         'margin'
     ];
-    constructor() { }
+    constructor(
+        private _clientService: ClientsServiceProxy
+    ) { }
 
     ngOnInit(): void {
     }
@@ -73,6 +77,19 @@ export class ClientConsultantTrackComponent implements OnInit {
 
     sortChanged(event?: any): void {
         this.sorting = event.active.concat(' ', event.direction);
+    }
+
+    getRequestTrack() {
+        let pageNumber = 1;
+        let pageSize = 20;
+        let sort = undefined;
+        this._clientService.consultantContracts(this.clientInfo.id, pageNumber, pageSize, sort)
+            .pipe(finalize(() => {
+
+            }))
+            .subscribe(result => {
+                this.consultantTrackDataSource = new MatTableDataSource<ClientContractListItemDto>(result.items);
+            });
     }
 
 }

@@ -233,21 +233,25 @@ export class WorkflowContractsSummaryForm extends FormGroup {
 export class WorkflowSalesExtensionForm extends FormGroup {
     constructor() {
         super({
-            extensionEndDate: new FormControl(null),
-            noExtensionEndDate: new FormControl(false),
-            workflowInformation: new FormControl(null)
+            salesExtension: new FormArray([])
+            // extensionEndDate: new FormControl(null),
+            // noExtensionEndDate: new FormControl(false),
+            // workflowInformation: new FormControl(null)
         })
 
     }
-    get extensionEndDate() {
-        return this.get('extensionEndDate');
+    get salesExtension() {
+        return this.get('salesExtension') as FormArray;
     }
-    get noExtensionEndDate() {
-        return this.get('noExtensionEndDate');
-    }
-    get workflowInformation() {
-        return this.get('workflowInformation');
-    }
+    // get extensionEndDate() {
+    //     return this.get('extensionEndDate');
+    // }
+    // get noExtensionEndDate() {
+    //     return this.get('noExtensionEndDate');
+    // }
+    // get workflowInformation() {
+    //     return this.get('workflowInformation');
+    // }
 }
 
 export class WorkflowTerminationSalesForm extends FormGroup {
@@ -278,3 +282,146 @@ export class WorkflowTerminationSalesForm extends FormGroup {
     }
 }
 
+// Sales step data
+
+export const SaleTypes = [
+    {
+        id: 1,
+        name: 'T&M'
+    },
+    {
+        id: 2,
+        name: 'Referred'
+    },
+    {
+        id: 3,
+        name: 'Managed Service'
+    },
+    {
+        id: 4,
+        name: 'Fee Only'
+    },
+    {
+        id: 5,
+        name: 'Recruitment'
+    }
+];
+
+export const DeliveryTypes = [
+    {
+        id: 1,
+        name: 'Managed Service'
+    },
+    {
+        id: 2,
+        name: 'Normal'
+    },
+    {
+        id: 3,
+        name: 'Offshore'
+    },
+    {
+        id: 4,
+        name: 'Nearshore'
+    }
+];
+
+export interface IWorkflowNavigationStep {
+    id: number;
+    name: string;
+    displayName: string;
+    selected: boolean;
+    finished: boolean;
+    state: string;
+    index: number;
+}
+
+export const WorkflowNavigation: IWorkflowNavigationStep[] = [
+    {
+        id: 1,
+        name: 'Sales',
+        displayName: 'Sales',
+        selected: true,
+        finished: false,
+        state: '',
+        index: 0
+    },
+    {
+        id: 2,
+        name: 'Contracts',
+        displayName: 'Contracts',
+        selected: false,
+        finished: false,
+        state: '',
+        index: 0
+    },
+    {
+        id: 3,
+        name: 'Account',
+        displayName: 'Account',
+        selected: false,
+        finished: false,
+        state: '',
+        index: 0
+    },
+    {
+        id: 9997,
+        name: 'Whatsnext',
+        displayName: 'What\'s next?',
+        selected: false,
+        finished: false,
+        state: '',
+        index: 0
+    },
+    {
+        id: 9998,
+        name: 'CVupdate',
+        displayName: 'CV update',
+        selected: false,
+        finished: false,
+        state: '',
+        index: 0
+    },
+    {
+        id: 9999,
+        name: 'ChangeinWFData',
+        displayName: 'Change in WF Data',
+        selected: false,
+        finished: false,
+        state: '',
+        index: 0
+    }
+];
+
+export const WorkflowList = [
+    {
+        id: '1111',
+        client: 'Martha Marikel',
+        supplier: 'Martha Marikel',
+        step: 'Sales',
+        status: 'In progress',
+        type: 'T&M',
+        managers: [1,2],
+        isDeleted: false
+    },
+    {
+        id: '1112',
+        client: 'Martha Marikel',
+        supplier: 'Martha Marikel',
+        step: 'Sales',
+        status: 'In progress',
+        type: 'T&M',
+        managers: [1,2],
+        isDeleted: false
+    },
+    {
+        id: '1113',
+        client: 'Martha Marikel',
+        supplier: 'Martha Marikel',
+        step: 'Contracts',
+        status: 'In progress',
+        type: 'Managed service',
+        managers: [1,2],
+        isDeleted: true
+    }
+];

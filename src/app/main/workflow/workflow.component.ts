@@ -1,130 +1,93 @@
-import { StepperSelectionEvent } from '@angular/cdk/stepper';
-import { Component, OnInit } from '@angular/core';
-import { FormArray, FormBuilder, FormControl, FormGroup, Validators } from '@angular/forms';
-import { WorkflowContractsSummaryForm, WorkflowSalesAdditionalDataForm, WorkflowSalesClientDataForm, WorkflowSalesConsultantsForm, WorkflowSalesExtensionForm, WorkflowSalesMainForm, WorkflowTerminationSalesForm } from './workflow.model';
+import { Component, OnDestroy, OnInit } from '@angular/core';
+import { FormControl } from '@angular/forms';
+import { MatTableDataSource } from '@angular/material/table';
+import { Router } from '@angular/router';
+import { Subject } from 'rxjs';
+import { debounceTime, switchMap, takeUntil } from 'rxjs/operators';
+import { AppConsts } from 'src/shared/AppConsts';
+import { ApiServiceProxy, SalesServiceProxy, WorkflowsServiceProxy } from 'src/shared/service-proxies/service-proxies';
+import { WorkflowList } from './workflow.model';
 
 @Component({
     selector: 'app-workflow',
     templateUrl: './workflow.component.html',
     styleUrls: ['./workflow.component.scss']
 })
-export class WorkflowComponent implements OnInit {
-    selectedIndex = 0;
 
-    intracompanyActive = false;
+export class WorkflowComponent implements OnInit, OnDestroy {
+    workflowFilter = new FormControl(null);
 
-    salesMainClientDataForm: WorkflowSalesClientDataForm;
-    salesMainDataForm: WorkflowSalesMainForm;
-    consultantsForm: WorkflowSalesConsultantsForm;
-    additionalDataForm: WorkflowSalesAdditionalDataForm;
-    contactSummaryForm: WorkflowContractsSummaryForm;
-    salesExtensionForm: WorkflowSalesExtensionForm;
-    terminationSalesForm: WorkflowTerminationSalesForm;
+    pageNumber = 1;
+    deafultPageSize = AppConsts.grid.defaultPageSize;
+    pageSizeOptions = [5, 10, 20, 50, 100];
+    totalCount: number | undefined = 0;
+    sorting = '';
+    isDataLoading = false;
+
+    workflowDisplayColumns = [
+        'Client',
+        'Supplier',
+        'Step',
+        'Status',
+        'Type',
+        'Managers',
+        'action'
+    ];
+
+    workflowDataSource: MatTableDataSource<any> = new MatTableDataSource<any>(WorkflowList);
+
+    private _unsubscribe = new Subject();
     constructor(
-        private _fb: FormBuilder
+        private router: Router,
+        private _apiService: ApiServiceProxy,
+        private _workflowService: WorkflowsServiceProxy,
+        private _workflowSalesService: SalesServiceProxy
     ) {
-        this.salesMainClientDataForm = new WorkflowSalesClientDataForm();
-        this.salesMainDataForm = new WorkflowSalesMainForm();
-        this.consultantsForm = new WorkflowSalesConsultantsForm();
-        this.additionalDataForm = new WorkflowSalesAdditionalDataForm();
-        this.contactSummaryForm = new WorkflowContractsSummaryForm();
-        this.salesExtensionForm = new WorkflowSalesExtensionForm();
-        this.terminationSalesForm = new WorkflowTerminationSalesForm();
+        this.workflowFilter.valueChanges.pipe(
+            takeUntil(this._unsubscribe),
+            debounceTime(300),
+            switchMap((value: any) => {
+                let input = value ? value : '';
+                this.isDataLoading = true;
+                // get workflow list
+                return this._apiService.workflows('test');
+            }),
+        ).subscribe((list: any) => {
+            if (list.length) {
+                // list load
+            } else {
+                // empty list
+            }
+            this.isDataLoading = false;
+        });
     }
 
     ngOnInit(): void {
-        // init form to add signers array
-        this.addSignerToForm();
-        this.addConsultantForm();
-        this.addContractSigner();
+
     }
 
-
-    addSignerToForm() {
-        const form = this._fb.group({
-            clientName: new FormControl(null),
-            clientRole: new FormControl(null),
-            clientSigvens: new FormControl(null)
-        });
-        this.salesMainClientDataForm.clientSigners.push(form);
+    ngOnDestroy(): void {
+        this._unsubscribe.next();
+        this._unsubscribe.complete();
     }
 
-    get clientSigners(): FormArray {
-        return this.salesMainClientDataForm.get('clientSigners') as FormArray;
+    getWorkflowList() {
+
     }
 
-    removeSigner(index: number) {
-        this.clientSigners.removeAt(index);
+    pageChanged(event?: any): void {
+        this.pageNumber = event.pageIndex;
+        this.deafultPageSize = event.pageSize;
+        this.getWorkflowList();
     }
 
-    addConsultantForm() {
-        const form = this._fb.group({
-            consultantType: new FormControl(null),
-            consultantEvaluationsProData: new FormControl(null),
-            disableEvaluations: new FormControl(false),
-            consultantContractSigners: new FormArray([this.addConsultantSignerToForm()]),
-            consultantSpecialContractTerms: new FormControl(null),
-            consultantRate: new FormControl(null),
-            consultantProjectStartDate: new FormControl(null),
-            consultantProjectEndDate: new FormControl(null),
-            consultantProjectNoEndDate: new FormControl(false),
-            consultantProjectSameAsClientDuration: new FormControl(false)
-        });
-        this.consultantsForm.consultantData.push(form);
+    sortChanged(event?: any): void {
+        this.sorting = event.active.concat(' ', event.direction);
+        this.getWorkflowList();
     }
 
-    addConsultantSignerToForm() {
-        const form = this._fb.group({
-            clientName: new FormControl(null),
-            clientRole: new FormControl(null),
-            clientSigvens: new FormControl(null)
-        });
-        return form;
-    }
-
-    removeConsultant(index: number) {
-        this.consultantsForm.consultantData.removeAt(index);
-    }
-
-    removeConsultantSigner(consultantIndex: number, signerIndex: number) {
-        (this.consultantsForm.consultantData.at(consultantIndex).get('consultantContractSigners') as FormArray).removeAt(signerIndex);
-    }
-
-    addConsultantSigner(consultantIndex: number) {
-        const form = this._fb.group({
-            clientName: new FormControl(null),
-            clientRole: new FormControl(null),
-            clientSigvens: new FormControl(null)
-        });
-        (this.consultantsForm.consultantData.at(consultantIndex).get('consultantContractSigners') as FormArray).push(form);
-    }
-
-    removeConsulant(index: number) {
-        this.consultantsForm.consultantData.removeAt(index);
-    }
-
-    getConsultantContractSignersControls(index: number) {
-        return (this.consultantsForm.consultantData.at(index).get('consultantContractSigners') as FormArray).controls;
-    }
-
-    addContractSigner() {
-        const form = this._fb.group({
-            name: new FormControl(null),
-            role: new FormControl(null)
-        });
-        this.contactSummaryForm.contractData.push(form);
-    }
-
-    get contractData(): FormArray {
-        return this.contactSummaryForm.get('contractData') as FormArray;
-    }
-
-    removeContractSigner(index: number) {
-        this.contractData.removeAt(index);
-    }
-
-    selectionChange(event: StepperSelectionEvent) {
-        this.selectedIndex = event.selectedIndex;
+    navigateToWorkflowDetails(workflowId: string): void {
+        this.router.navigate(['/main/workflow', workflowId]);
     }
 
 }

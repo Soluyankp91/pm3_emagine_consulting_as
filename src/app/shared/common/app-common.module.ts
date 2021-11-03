@@ -8,20 +8,22 @@ import { ConfirmationDialogComponent } from '../components/confirmation-dialog/c
 import { FileUploaderComponent } from '../components/file-uploader/file-uploader.component';
 import { FileDragAndDropDirective } from '../components/file-uploader/file-drag-and-drop.directive';
 import { ScrollToModule } from '@nicky-lenaers/ngx-scroll-to';
+import { NgScrollbarModule } from 'ngx-scrollbar';
 
 @NgModule({
     declarations: [
         ErrorDialogComponent,
         FileDragAndDropDirective,
         FileUploaderComponent,
-        ConfirmationDialogComponent
+        ConfirmationDialogComponent,
     ],
     imports: [
         CommonModule,
         MaterialModule,
         FormsModule,
         ReactiveFormsModule,
-        ScrollToModule.forRoot()
+        ScrollToModule.forRoot(),
+        NgScrollbarModule
     ],
     exports: [
         MaterialModule,
@@ -30,7 +32,8 @@ import { ScrollToModule } from '@nicky-lenaers/ngx-scroll-to';
         FileDragAndDropDirective,
         FileUploaderComponent,
         ConfirmationDialogComponent,
-        ScrollToModule
+        ScrollToModule,
+        NgScrollbarModule
     ],
     providers: [
         ErrorDialogService

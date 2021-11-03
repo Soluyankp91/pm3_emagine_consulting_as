@@ -12,6 +12,8 @@ import * as ApiServiceProxies from './service-proxies';
         ApiServiceProxies.HubSpotContractFetchServiceProxy,
         ApiServiceProxies.HubSpotInstallServiceProxy,
         ApiServiceProxies.HubSpotTestServiceProxy,
+        ApiServiceProxies.WorkflowsServiceProxy,
+        ApiServiceProxies.SalesServiceProxy,
         {
             provide: HTTP_INTERCEPTORS,
             useClass: GlobalHttpInterceptorService,
