@@ -25,6 +25,7 @@ import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { ExtensionSalesComponent } from './workflow/extension-sales/extension-sales.component';
 import { WorkflowSalesComponent } from './workflow/workflow-sales/workflow-sales.component';
 import { WorkflowDetailsComponent } from './workflow/workflow-details/workflow-details.component';
+import { WorkflowContractsComponent } from './workflow/workflow-contracts/workflow-contracts.component';
 
 
 @NgModule({
@@ -52,7 +53,8 @@ import { WorkflowDetailsComponent } from './workflow/workflow-details/workflow-d
         AddFileDialogComponent,
         ExtensionSalesComponent,
         WorkflowSalesComponent,
-        WorkflowDetailsComponent
+        WorkflowDetailsComponent,
+        WorkflowContractsComponent
     ],
     imports: [
         CommonModule,

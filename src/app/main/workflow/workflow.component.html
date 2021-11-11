@@ -7,8 +7,10 @@
                 <mat-icon matSuffix>search</mat-icon>
             </mat-form-field>
         </div>
-
-        <button mat-icon-button><mat-icon>done</mat-icon></button>
+        <button mat-icon-button><mat-icon>tune</mat-icon></button>
+    </div>
+    <div fxLayout="row" fxLayoutAlign="space-between center" class="workflow-list--filter">
+        <button mat-raised-button (click)="createWorkflow()">CREATE</button>
     </div>
     <div fxLayout="column" fxLayoutAlign="start center" class="workflow-list--table u-w--100">
         <div fxLayout="column" fxFlexFill>

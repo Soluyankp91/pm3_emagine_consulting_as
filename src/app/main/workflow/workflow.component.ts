@@ -3,7 +3,7 @@ import { FormControl } from '@angular/forms';
 import { MatTableDataSource } from '@angular/material/table';
 import { Router } from '@angular/router';
 import { Subject } from 'rxjs';
-import { debounceTime, switchMap, takeUntil } from 'rxjs/operators';
+import { debounceTime, finalize, switchMap, takeUntil } from 'rxjs/operators';
 import { AppConsts } from 'src/shared/AppConsts';
 import { ApiServiceProxy, SalesServiceProxy, WorkflowsServiceProxy } from 'src/shared/service-proxies/service-proxies';
 import { WorkflowList } from './workflow.model';
@@ -43,23 +43,23 @@ export class WorkflowComponent implements OnInit, OnDestroy {
         private _workflowService: WorkflowsServiceProxy,
         private _workflowSalesService: SalesServiceProxy
     ) {
-        this.workflowFilter.valueChanges.pipe(
-            takeUntil(this._unsubscribe),
-            debounceTime(300),
-            switchMap((value: any) => {
-                let input = value ? value : '';
-                this.isDataLoading = true;
-                // get workflow list
-                return this._apiService.workflows('test');
-            }),
-        ).subscribe((list: any) => {
-            if (list.length) {
-                // list load
-            } else {
-                // empty list
-            }
-            this.isDataLoading = false;
-        });
+        // this.workflowFilter.valueChanges.pipe(
+        //     takeUntil(this._unsubscribe),
+        //     debounceTime(300),
+        //     switchMap((value: any) => {
+        //         let input = value ? value : '';
+        //         this.isDataLoading = true;
+        //         // get workflow list
+        //         return this._apiService.workflows('test');
+        //     }),
+        // ).subscribe((list: any) => {
+        //     if (list.length) {
+        //         // list load
+        //     } else {
+        //         // empty list
+        //     }
+        //     this.isDataLoading = false;
+        // });
     }
 
     ngOnInit(): void {
@@ -88,6 +88,16 @@ export class WorkflowComponent implements OnInit, OnDestroy {
 
     navigateToWorkflowDetails(workflowId: string): void {
         this.router.navigate(['/main/workflow', workflowId]);
+    }
+
+    createWorkflow() {
+        this._workflowService.start()
+            .pipe(finalize(() => {
+
+            }))
+            .subscribe(result => {
+                this.router.navigate(['/main/workflow', result.workflowId]);
+            });
     }
 
 }
