@@ -198,98 +198,98 @@ export class AppModule {
         // COUNTRY FLAGS ICON REGISTRY
 
         iconRegistry.addSvgIcon(
-            'dk-flag',
+            'Denmark-flag',
             sanitizer.bypassSecurityTrustResourceUrl(
                 'assets/common/images/country-flags/dk-flag.svg'
             )
         );
 
         iconRegistry.addSvgIcon(
-            'dk-flag-selected',
+            'Denmark-flag-selected',
             sanitizer.bypassSecurityTrustResourceUrl(
                 'assets/common/images/country-flags/dk-flag-selected.svg'
             )
         );
 
         iconRegistry.addSvgIcon(
-            'de-flag',
+            'Germany-flag',
             sanitizer.bypassSecurityTrustResourceUrl(
                 'assets/common/images/country-flags/de-flag.svg'
             )
         );
 
         iconRegistry.addSvgIcon(
-            'de-flag-selected',
+            'Germany-flag-selected',
             sanitizer.bypassSecurityTrustResourceUrl(
                 'assets/common/images/country-flags/de-flag-selected.svg'
             )
         );
 
         iconRegistry.addSvgIcon(
-            'en-flag',
+            'International-flag',
             sanitizer.bypassSecurityTrustResourceUrl(
                 'assets/common/images/country-flags/en-flag.svg'
             )
         );
 
         iconRegistry.addSvgIcon(
-            'en-flag-selected',
+            'International-flag-selected',
             sanitizer.bypassSecurityTrustResourceUrl(
                 'assets/common/images/country-flags/en-flag-selected.svg'
             )
         );
 
         iconRegistry.addSvgIcon(
-            'ne-flag',
+            'Netherlands-flag',
             sanitizer.bypassSecurityTrustResourceUrl(
                 'assets/common/images/country-flags/ne-flag.svg'
             )
         );
 
         iconRegistry.addSvgIcon(
-            'ne-flag-selected',
+            'Netherlands-flag-selected',
             sanitizer.bypassSecurityTrustResourceUrl(
                 'assets/common/images/country-flags/ne-flag-selected.svg'
             )
         );
 
         iconRegistry.addSvgIcon(
-            'no-flag',
+            'Norway-flag',
             sanitizer.bypassSecurityTrustResourceUrl(
                 'assets/common/images/country-flags/no-flag.svg'
             )
         );
 
         iconRegistry.addSvgIcon(
-            'no-flag-selected',
+            'Norway-flag-selected',
             sanitizer.bypassSecurityTrustResourceUrl(
                 'assets/common/images/country-flags/no-flag-selected.svg'
             )
         );
 
         iconRegistry.addSvgIcon(
-            'pl-flag',
+            'Poland-flag',
             sanitizer.bypassSecurityTrustResourceUrl(
                 'assets/common/images/country-flags/pl-flag.svg'
             )
         );
 
         iconRegistry.addSvgIcon(
-            'pl-flag-selected',
+            'Poland-flag-selected',
             sanitizer.bypassSecurityTrustResourceUrl(
                 'assets/common/images/country-flags/pl-flag-selected.svg'
             )
         );
 
         iconRegistry.addSvgIcon(
-            'se-flag',
+            'Sweden-flag',
             sanitizer.bypassSecurityTrustResourceUrl(
                 'assets/common/images/country-flags/se-flag.svg'
             )
         );
 
         iconRegistry.addSvgIcon(
-            'se-flag-selected',
+            'Sweden-flag-selected',
             sanitizer.bypassSecurityTrustResourceUrl(
                 'assets/common/images/country-flags/se-flag-selected.svg'
             )

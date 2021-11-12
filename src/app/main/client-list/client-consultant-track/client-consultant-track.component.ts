@@ -2,7 +2,7 @@ import { Component, Input, OnInit } from '@angular/core';
 import { MatTableDataSource } from '@angular/material/table';
 import { finalize } from 'rxjs/operators';
 import { AppConsts } from 'src/shared/AppConsts';
-import { ClientContractListItemDto, ClientsServiceProxy } from 'src/shared/service-proxies/service-proxies';
+import { ClientsServiceProxy } from 'src/shared/service-proxies/service-proxies';
 
 const TABLE_DATA = [
     {
@@ -83,13 +83,13 @@ export class ClientConsultantTrackComponent implements OnInit {
         let pageNumber = 1;
         let pageSize = 20;
         let sort = undefined;
-        this._clientService.consultantContracts(this.clientInfo.id, pageNumber, pageSize, sort)
-            .pipe(finalize(() => {
+        // this._clientService.consultantContracts(this.clientInfo.id, pageNumber, pageSize, sort)
+        //     .pipe(finalize(() => {
 
-            }))
-            .subscribe(result => {
-                this.consultantTrackDataSource = new MatTableDataSource<ClientContractListItemDto>(result.items);
-            });
+        //     }))
+        //     .subscribe(result => {
+        //         this.consultantTrackDataSource = new MatTableDataSource<ClientContractListItemDto>(result.items);
+        //     });
     }
 
 }

@@ -42,3 +42,23 @@ export const CountryList = [
         selected: false
     }
 ];
+
+export interface ISelectableCountry {
+    id: number;
+    flag: string;
+    name: string;
+    selected: boolean;
+}
+
+export class SelectableCountry implements ISelectableCountry {
+    id: number;
+    flag: string;
+    name: string;
+    selected: boolean;
+    constructor(data?: ISelectableCountry) {
+        this.id = data?.id!;
+        this.flag = data?.flag!;
+        this.name = data?.name!;
+        this.selected = data?.selected!;
+    }
+}

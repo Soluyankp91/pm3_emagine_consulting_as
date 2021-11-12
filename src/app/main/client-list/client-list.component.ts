@@ -6,8 +6,8 @@ import { Router } from '@angular/router';
 import { Subject } from 'rxjs';
 import { takeUntil, debounceTime, switchMap, finalize } from 'rxjs/operators';
 import { AppConsts } from 'src/shared/AppConsts';
-import { ApiServiceProxy, ClientListItemDto, ClientsServiceProxy, IClientListItemDto } from 'src/shared/service-proxies/service-proxies';
-import { CountryList } from './client-list.model';
+import { ApiServiceProxy, ClientListItemDto, ClientsServiceProxy, EnumServiceProxy, IClientListItemDto } from 'src/shared/service-proxies/service-proxies';
+import { CountryList, SelectableCountry } from './client-list.model';
 
 @Component({
     selector: 'app-client-list',
@@ -20,8 +20,8 @@ export class ClientListComponent implements OnInit, OnDestroy {
     acoountManagerFilter = new FormControl();
     clientsList: any[] = [];
     isDataLoading = false;
-    countryList = CountryList;
-    selectedCountries: string[] = [];
+    countryList: SelectableCountry[] = [];
+    selectedCountries: number[] = [];
     pageNumber = 1;
     deafultPageSize = AppConsts.grid.defaultPageSize;
     pageSizeOptions = [5, 10, 20, 50, 100];
@@ -44,10 +44,9 @@ export class ClientListComponent implements OnInit, OnDestroy {
     clientDataSource: MatTableDataSource<ClientListItemDto> = new MatTableDataSource<ClientListItemDto>();
     private _unsubscribe = new Subject();
     constructor(
-        private _clientService: ClientsServiceProxy,
         private _apiService: ApiServiceProxy,
         private router: Router,
-        private http: HttpClient
+        private _enumService: EnumServiceProxy
     ) {
         this.clientFilter.valueChanges.pipe(
             takeUntil(this._unsubscribe),
@@ -84,6 +83,7 @@ export class ClientListComponent implements OnInit, OnDestroy {
     }
 
     ngOnInit(): void {
+        this.getCountries();
         this.getClientsGrid(this.clientFilter.value, this.selectedCountries, this.pageNumber, this.deafultPageSize, this.sorting);
     }
 
@@ -92,7 +92,24 @@ export class ClientListComponent implements OnInit, OnDestroy {
         this._unsubscribe.complete();
     }
 
-    getClientsGrid(filter: string, selectedCountires: string[], pageNumber: number, pageSize: number, sort: string) {
+    getCountries() {
+        this._enumService.tenants()
+            .pipe(finalize(() => {
+
+            }))
+            .subscribe(result => {
+                this.countryList = result.map(x => {
+                    return new SelectableCountry({
+                        id: x.id!,
+                        name: x.name!,
+                        selected: false,
+                        flag: x.name!
+                    });
+                });
+            });
+    }
+
+    getClientsGrid(filter: string, selectedCountires: number[], pageNumber: number, pageSize: number, sort: string) {
         let searchFilter = filter ? filter : '';
         this.isDataLoading = true;
         this._apiService.clients(searchFilter, selectedCountires, pageNumber, pageSize, sort)
@@ -105,12 +122,12 @@ export class ClientListComponent implements OnInit, OnDestroy {
             });
     }
 
-    selectLookupCountry(country: any) {
+    selectLookupCountry(country: SelectableCountry) {
         country.selected = !country.selected;
         if (country.selected) {
-            this.selectedCountries.push(country.flag);
+            this.selectedCountries.push(country.id);
         } else {
-            const index = this.selectedCountries.indexOf(country.flag);
+            const index = this.selectedCountries.indexOf(country.id);
             if (index > -1) {
                 this.selectedCountries.splice(index, 1);
             }

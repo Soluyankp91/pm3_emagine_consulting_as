@@ -34,10 +34,15 @@ export class GlobalHttpInterceptorService implements HttpInterceptor {
                     } else {
                         console.log(`error status : ${error.status} ${error.statusText}`);
                         switch (error.status) {
+                            case 400:
+                                header = 'Bad request!';
+                                message = 'Status code: 400.';
+                                handled = true;
+                                break;
                             case 401:      //login
                                 // this.router.navigateByUrl("/login");
                                 header = 'Current user did not login to the application!';
-                                message = 'You will redirected to login page.';
+                                message = 'You will be redirected to login page.';
                                 console.log(`redirect to login`);
                                 handled = true;
                                 this.authService.logout();

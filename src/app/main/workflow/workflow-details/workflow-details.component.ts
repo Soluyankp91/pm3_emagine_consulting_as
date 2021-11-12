@@ -1,124 +1,172 @@
 import { StepperSelectionEvent } from '@angular/cdk/stepper';
-import { Component, OnInit, ViewChild } from '@angular/core';
+import { Component, OnDestroy, OnInit, ViewChild } from '@angular/core';
 import { FormBuilder, FormControl, FormArray } from '@angular/forms';
+import { ActivatedRoute } from '@angular/router';
 import { NgScrollbar } from 'ngx-scrollbar';
-import { finalize } from 'rxjs/operators';
-import { WorkflowsServiceProxy, SalesServiceProxy, SalesMainDataUpdateRequestDto, SalesClientDataUpdateRequestDto, ContractSignerDto, SignerRole } from 'src/shared/service-proxies/service-proxies';
-import { WorkflowNavigation, WorkflowSalesClientDataForm, WorkflowSalesMainForm, SaleTypes, DeliveryTypes, WorkflowSalesConsultantsForm, WorkflowSalesAdditionalDataForm, WorkflowContractsSummaryForm, WorkflowSalesExtensionForm, WorkflowTerminationSalesForm, IWorkflowNavigationStep } from '../workflow.model';
+import { Subject } from 'rxjs';
+import { finalize, takeUntil } from 'rxjs/operators';
+import { WorkflowsServiceProxy, SalesServiceProxy, EnumServiceProxy, EnumEntityTypeDto, WorkflowSalesDataDto, ContractSignerDto, SignerRole, ClientRateDto, WorkflowConsultantDto } from 'src/shared/service-proxies/service-proxies';
+import { WorkflowDataService } from '../workflow-data.service';
+import { WorkflowSalesComponent } from '../workflow-sales/workflow-sales.component';
+import { WorkflowNavigation, WorkflowContractsSummaryForm, WorkflowSalesExtensionForm, WorkflowTerminationSalesForm } from '../workflow.model';
 
 @Component({
   selector: 'app-workflow-details',
   templateUrl: './workflow-details.component.html',
   styleUrls: ['./workflow-details.component.scss']
 })
-export class WorkflowDetailsComponent implements OnInit {
+export class WorkflowDetailsComponent implements OnInit, OnDestroy {
     @ViewChild('scrollable', {static: true}) scrollBar: NgScrollbar;
+    @ViewChild('workflowSales', {static: false}) workflowSales: WorkflowSalesComponent;
+
     workflowId: string;
     selectedIndex = 0;
     selectedStep = 'Sales';
 
     workflowNavigation = WorkflowNavigation;
 
-    // SalesStep
-    intracompanyActive = false;
-    salesMainClientDataForm: WorkflowSalesClientDataForm;
-    salesMainDataForm: WorkflowSalesMainForm;
-    saleTypes = SaleTypes;
-    deliveryTypes = DeliveryTypes;
-
-
-    consultantsForm: WorkflowSalesConsultantsForm;
-    additionalDataForm: WorkflowSalesAdditionalDataForm;
     contactSummaryForm: WorkflowContractsSummaryForm;
     salesExtensionForm: WorkflowSalesExtensionForm;
     terminationSalesForm: WorkflowTerminationSalesForm;
+
+    deliveryTypes: EnumEntityTypeDto[] = [];
+    currencies: EnumEntityTypeDto[] = [];
+    saleTypes: EnumEntityTypeDto[] = [];
+
+    private _unsubscribe = new Subject();
     constructor(
         private _fb: FormBuilder,
         private _workflowService: WorkflowsServiceProxy,
-        private _workflowSalesService: SalesServiceProxy
+        private _workflowSalesService: SalesServiceProxy,
+        private _enumService: EnumServiceProxy,
+        private _workflofDataService: WorkflowDataService,
+        private activatedRoute: ActivatedRoute
     ) {
-        this.salesMainClientDataForm = new WorkflowSalesClientDataForm();
-        this.salesMainDataForm = new WorkflowSalesMainForm();
-        this.consultantsForm = new WorkflowSalesConsultantsForm();
-        this.additionalDataForm = new WorkflowSalesAdditionalDataForm();
         this.contactSummaryForm = new WorkflowContractsSummaryForm();
         this.salesExtensionForm = new WorkflowSalesExtensionForm();
         this.terminationSalesForm = new WorkflowTerminationSalesForm();
+
     }
 
     ngOnInit(): void {
+        this.activatedRoute.paramMap.pipe(
+            takeUntil(this._unsubscribe)
+        ).subscribe(params => {
+            this.workflowId = params.get('id')!;
+        });
+        // get enums
+        // this.getCurrencies();
+        // this.getDeliveryTypes();
+        // this.getSaleTypes();
         // init form to add signers array
-        this.addSignerToForm();
-        this.addConsultantForm();
+        // this.addSignerToForm();
+        // this.addConsultantForm();
+        console.log('init');
+        this._workflofDataService.getData();
         this.addContractSigner();
     }
 
-    addSignerToForm() {
-        const form = this._fb.group({
-            clientName: new FormControl(null),
-            clientRole: new FormControl(null),
-            clientSigvens: new FormControl(null)
-        });
-        this.salesMainClientDataForm.clientSigners.push(form);
+    ngOnDestroy(): void {
+        this._unsubscribe.next();
+        this._unsubscribe.complete();
     }
 
-    get clientSigners(): FormArray {
-        return this.salesMainClientDataForm.get('clientSigners') as FormArray;
-    }
+    // getCurrencies() {
+    //     this._enumService.currencies()
+    //         .pipe(finalize(() => {
 
-    removeSigner(index: number) {
-        this.clientSigners.removeAt(index);
-    }
+    //         }))
+    //         .subscribe(result => {
+    //             this.currencies = result;
+    //         })
+    // }
 
-    addConsultantForm() {
-        const form = this._fb.group({
-            consultantType: new FormControl(null),
-            consultantEvaluationsProData: new FormControl(null),
-            disableEvaluations: new FormControl(false),
-            consultantContractSigners: new FormArray([this.addConsultantSignerToForm()]),
-            consultantSpecialContractTerms: new FormControl(null),
-            consultantRate: new FormControl(null),
-            consultantProjectStartDate: new FormControl(null),
-            consultantProjectEndDate: new FormControl(null),
-            consultantProjectNoEndDate: new FormControl(false),
-            consultantProjectSameAsClientDuration: new FormControl(false)
-        });
-        this.consultantsForm.consultantData.push(form);
-    }
+    // getDeliveryTypes() {
+    //     this._enumService.deliveryTypes()
+    //         .pipe(finalize(() => {
 
-    addConsultantSignerToForm() {
-        const form = this._fb.group({
-            clientName: new FormControl(null),
-            clientRole: new FormControl(null),
-            clientSigvens: new FormControl(null)
-        });
-        return form;
-    }
+    //         }))
+    //         .subscribe(result => {
+    //             this.deliveryTypes = result;
+    //         })
+    // }
 
-    removeConsultant(index: number) {
-        this.consultantsForm.consultantData.removeAt(index);
-    }
+    // getSaleTypes() {
+    //     this._enumService.salesTypes()
+    //         .pipe(finalize(() => {
 
-    removeConsultantSigner(consultantIndex: number, signerIndex: number) {
-        (this.consultantsForm.consultantData.at(consultantIndex).get('consultantContractSigners') as FormArray).removeAt(signerIndex);
-    }
+    //         }))
+    //         .subscribe(result => {
+    //             this.saleTypes = result;
+    //         })
+    // }
 
-    addConsultantSigner(consultantIndex: number) {
-        const form = this._fb.group({
-            clientName: new FormControl(null),
-            clientRole: new FormControl(null),
-            clientSigvens: new FormControl(null)
-        });
-        (this.consultantsForm.consultantData.at(consultantIndex).get('consultantContractSigners') as FormArray).push(form);
-    }
+    // addSignerToForm() {
+    //     const form = this._fb.group({
+    //         clientName: new FormControl(null),
+    //         clientRole: new FormControl(null),
+    //         clientSigvens: new FormControl(null)
+    //     });
+    //     this.salesMainClientDataForm.clientSigners.push(form);
+    // }
 
-    removeConsulant(index: number) {
-        this.consultantsForm.consultantData.removeAt(index);
-    }
+    // get clientSigners(): FormArray {
+    //     return this.salesMainClientDataForm.get('clientSigners') as FormArray;
+    // }
 
-    getConsultantContractSignersControls(index: number) {
-        return (this.consultantsForm.consultantData.at(index).get('consultantContractSigners') as FormArray).controls;
-    }
+    // removeSigner(index: number) {
+    //     this.clientSigners.removeAt(index);
+    // }
+
+    // addConsultantForm() {
+    //     const form = this._fb.group({
+    //         consultantType: new FormControl(null),
+    //         consultantEvaluationsProData: new FormControl(null),
+    //         disableEvaluations: new FormControl(false),
+    //         consultantContractSigners: new FormArray([this.addConsultantSignerToForm()]),
+    //         consultantSpecialContractTerms: new FormControl(null),
+    //         consultantRate: new FormControl(null),
+    //         consultantProjectStartDate: new FormControl(null),
+    //         consultantProjectEndDate: new FormControl(null),
+    //         consultantProjectNoEndDate: new FormControl(false),
+    //         consultantProjectSameAsClientDuration: new FormControl(false)
+    //     });
+    //     this.consultantsForm.consultantData.push(form);
+    // }
+
+    // addConsultantSignerToForm() {
+    //     const form = this._fb.group({
+    //         clientName: new FormControl(null),
+    //         clientRole: new FormControl(null),
+    //         clientSigvens: new FormControl(null)
+    //     });
+    //     return form;
+    // }
+
+    // removeConsultant(index: number) {
+    //     this.consultantsForm.consultantData.removeAt(index);
+    // }
+
+    // removeConsultantSigner(consultantIndex: number, signerIndex: number) {
+    //     (this.consultantsForm.consultantData.at(consultantIndex).get('consultantContractSigners') as FormArray).removeAt(signerIndex);
+    // }
+
+    // addConsultantSigner(consultantIndex: number) {
+    //     const form = this._fb.group({
+    //         clientName: new FormControl(null),
+    //         clientRole: new FormControl(null),
+    //         clientSigvens: new FormControl(null)
+    //     });
+    //     (this.consultantsForm.consultantData.at(consultantIndex).get('consultantContractSigners') as FormArray).push(form);
+    // }
+
+    // removeConsulant(index: number) {
+    //     this.consultantsForm.consultantData.removeAt(index);
+    // }
+
+    // getConsultantContractSignersControls(index: number) {
+    //     return (this.consultantsForm.consultantData.at(index).get('consultantContractSigners') as FormArray).controls;
+    // }
 
     addContractSigner() {
         const form = this._fb.group({
@@ -168,12 +216,6 @@ export class WorkflowDetailsComponent implements OnInit {
         return label.replace(/[^A-Z0-9]/ig, '');
     }
 
-    setActiveStep(step: IWorkflowNavigationStep) {
-        console.log('ss');
-        this.selectedStep = step.name;
-        this.selectedIndex = step.index;
-    }
-
     starWorkflow() {
         this._workflowService.start()
             .subscribe(result => {
@@ -182,54 +224,54 @@ export class WorkflowDetailsComponent implements OnInit {
     }
 
     saveSalesMainData() {
-        let input: SalesMainDataUpdateRequestDto = new SalesMainDataUpdateRequestDto();
-        input.salesTypeId = this.salesMainDataForm.salesType?.value;
-        input.isNearshore = this.salesMainDataForm.nearshoreOffshore?.value === 'Nearshore';
-        input.isOffshore = this.salesMainDataForm.nearshoreOffshore?.value  === 'Offshore';
-        input.isNormal = false; // ISNORMAL ??
-        input.isIntracompanySale = this.intracompanyActive;
-        input.intracompanyAccountManagerId = this.salesMainDataForm.intracompanyAccountManager?.value;
-        input.intracompanyTenantId = this.salesMainDataForm.intracompanyAccountManager?.value; // tenant?
-        input.salesAccountManagerId = this.salesMainDataForm.salesAccountManager?.value;
-        input.commissionAccountManagerId = this.salesMainDataForm.commissionAccountManager?.value;
-        this._workflowSalesService.mainData(this.workflowId, input)
-            .pipe(finalize(() => {
+        // let input: SalesMainDataUpdateRequestDto = new SalesMainDataUpdateRequestDto();
+        // input.salesTypeId = this.salesMainDataForm.salesType?.value;
+        // input.isNearshore = this.salesMainDataForm.nearshoreOffshore?.value === 'Nearshore';
+        // input.isOffshore = this.salesMainDataForm.nearshoreOffshore?.value  === 'Offshore';
+        // input.isNormal = false; // ISNORMAL ??
+        // input.isIntracompanySale = this.intracompanyActive;
+        // input.intracompanyAccountManagerId = this.salesMainDataForm.intracompanyAccountManager?.value;
+        // input.intracompanyTenantId = this.salesMainDataForm.intracompanyAccountManager?.value; // tenant?
+        // input.salesAccountManagerId = this.salesMainDataForm.salesAccountManager?.value;
+        // input.commissionAccountManagerId = this.salesMainDataForm.commissionAccountManager?.value;
+        // this._workflowSalesService.mainData(this.workflowId, input)
+        //     .pipe(finalize(() => {
 
-            }))
-            .subscribe(result => {
+        //     }))
+        //     .subscribe(result => {
 
-            });
+        //     });
     }
 
     saveSalesClientData() {
-        let input: SalesClientDataUpdateRequestDto = new SalesClientDataUpdateRequestDto();
-        input.directClientId = this.salesMainClientDataForm.directClient?.value;
-        input.clientInvoicingRecipientSameAsDirectClient = this.salesMainClientDataForm.isClientInvoicingNone?.value;
-        input.clientInvoicingRecipientId = this.salesMainClientDataForm.clientInvoicingRecipient?.value;
-        input.invoicingReferencePersonId = this.salesMainClientDataForm.clientInvoicingPeriod?.value;
-        input.evaluationsDisabled = this.salesMainClientDataForm.disableEvaluations?.value;
-        input.evaluationsDisabledReason = this.salesMainClientDataForm.disableEvaluations?.value;
-        input.evaluationsReferencePersonId = this.salesMainClientDataForm.evaluationReferencePerson?.value;
-        input.clientSpecialContractTerms = this.salesMainClientDataForm.specialContractTerms?.value;
-        input.invoicingReferenceNumber = this.salesMainClientDataForm.invoicingReferenceNumber?.value;
+        // let input: SalesClientDataUpdateRequestDto = new SalesClientDataUpdateRequestDto();
+        // input.directClientId = this.salesMainClientDataForm.directClient?.value;
+        // input.clientInvoicingRecipientSameAsDirectClient = this.salesMainClientDataForm.isClientInvoicingNone?.value;
+        // input.clientInvoicingRecipientId = this.salesMainClientDataForm.clientInvoicingRecipient?.value;
+        // input.invoicingReferencePersonId = this.salesMainClientDataForm.clientInvoicingPeriod?.value;
+        // input.evaluationsDisabled = this.salesMainClientDataForm.disableEvaluations?.value;
+        // input.evaluationsDisabledReason = this.salesMainClientDataForm.disableEvaluations?.value;
+        // input.evaluationsReferencePersonId = this.salesMainClientDataForm.evaluationReferencePerson?.value;
+        // input.clientSpecialContractTerms = this.salesMainClientDataForm.specialContractTerms?.value;
+        // input.invoicingReferenceNumber = this.salesMainClientDataForm.invoicingReferenceNumber?.value;
 
-        input.contractSigners = [];
-        for (let i = 0; i < this.salesMainClientDataForm.clientSigners.value.length; i++) {
-            let signer = this.salesMainClientDataForm.clientSigners.value[i];
-            let contractSigner = new ContractSignerDto();
-            contractSigner.order = i + 1;
-            contractSigner.contractSignerId = signer.clientSigvens;
-            contractSigner.signerRole = new SignerRole();
-            contractSigner.signerRole.roleName = signer.clientRole;
-            input.contractSigners.push(contractSigner);
-        }
-        this._workflowSalesService.clientData(this.workflowId, input)
-            .pipe(finalize(() => {
+        // input.contractSigners = [];
+        // for (let i = 0; i < this.salesMainClientDataForm.clientSigners.value.length; i++) {
+        //     let signer = this.salesMainClientDataForm.clientSigners.value[i];
+        //     let contractSigner = new ContractSignerDto();
+        //     contractSigner.order = i + 1;
+        //     contractSigner.contractSignerId = signer.clientSigvens;
+        //     contractSigner.signerRole = new SignerRole();
+        //     contractSigner.signerRole.roleName = signer.clientRole;
+        //     input.contractSigners.push(contractSigner);
+        // }
+        // this._workflowSalesService.clientData(this.workflowId, input)
+        //     .pipe(finalize(() => {
 
-            }))
-            .subscribe(result => {
+        //     }))
+        //     .subscribe(result => {
 
-            });
+        //     });
     }
 
     addNewExtension() {
@@ -347,7 +389,7 @@ export class WorkflowDetailsComponent implements OnInit {
     }
 
     saveSalesStep() {
-
+        this.workflowSales.saveSalesStep(this.workflowId);
     }
 
     saveContractsStep() {
