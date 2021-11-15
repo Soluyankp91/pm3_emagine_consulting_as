@@ -390,7 +390,7 @@ export const WorkflowNavigation: IWorkflowNavigationStep[] = [
 
 export const WorkflowList = [
     {
-        id: '1111',
+        id: '6a3e6877-c26a-45e7-8a3d-21b7f002d66c',
         client: 'Martha Marikel',
         supplier: 'Martha Marikel',
         step: 'Sales',

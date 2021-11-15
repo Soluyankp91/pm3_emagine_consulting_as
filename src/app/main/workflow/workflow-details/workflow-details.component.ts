@@ -186,7 +186,7 @@ export class WorkflowDetailsComponent implements OnInit, OnDestroy {
 
     selectionChange(event: StepperSelectionEvent) {
         this.selectedStep = this.formatStepLabel(event.selectedStep.label);
-        if (this.selectedStep.startsWith('ExtensionSales')) {
+        if (this.selectedStep.startsWith('ExtensionSales') || this.selectedStep.startsWith('NewExtension')) {
             this.selectedIndex = parseInt(this.selectedStep.match(/\d/g)!.join(''));
         }
     }
@@ -274,6 +274,25 @@ export class WorkflowDetailsComponent implements OnInit, OnDestroy {
         //     });
     }
 
+    addExtension() {
+        let newId = this.workflowNavigation[this.workflowNavigation.length - 1].id + 1;
+        let extensionIndex = this.workflowNavigation.filter(x => x.name.startsWith('NewExtension')).length;
+        this.workflowNavigation.push(
+            {
+                id: newId,
+                name: `NewExtension${extensionIndex + 1}`,
+                displayName: `New Extension - ${extensionIndex + 1}`,
+                selected: false,
+                finished: false,
+                state: '',
+                index: extensionIndex + 1
+            }
+        );
+        this.initSalesExtensionForm();
+        this.initContractExtensionForm();
+        this.scrollBar.update();
+    }
+
     addNewExtension() {
         let newId = this.workflowNavigation[this.workflowNavigation.length - 1].id + 1;
         let extensionIndex = this.workflowNavigation.filter(x => x.name.startsWith('ExtensionSales')).length;
@@ -306,8 +325,16 @@ export class WorkflowDetailsComponent implements OnInit, OnDestroy {
         return this.workflowNavigation.filter(x => x.name.startsWith('ExtensionSales'));
     }
 
+    getNewExtensionsCount() {
+        return this.workflowNavigation.filter(x => x.name.startsWith('NewExtension'));
+    }
+
     getExtensionSalesNameWithIndex(index: number) {
         return `ExtensionSales${index}`;
+    }
+
+    getExtensionNameWithIndex(index: number) {
+        return `NewExtension${index}`;
     }
 
     getExtensionContractsNameWithIndex(index: number) {
