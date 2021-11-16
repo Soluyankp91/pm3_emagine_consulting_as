@@ -1,8 +1,8 @@
 <div class="workflow-page" fxFlexFill>
 
-    <mat-drawer-container class="workflow u-w--100" fxLayout="row" fxLayoutAlign="start start">
-        <mat-drawer mode="side" opened fxFlex="20%">
-            <div fxLayout="row" fxLayoutAlign="start start" style="padding: 10px 16px;">
+    <mat-drawer-container class="workflow u-w--100" fxLayout="row" fxLayoutAlign="start start" >
+        <mat-drawer mode="side" opened fxFlex="30%" class="u-w--100">
+            <div fxLayout="row" fxLayoutAlign="start start" style="padding: 10px 0 10px 16px;">
                 <div fxFlex="30%" class="workflow-sidebar--container" fxLayout="column" fxLayoutAlign="start start">
                     <mat-list class="workflow-sidebar--tabs u-w--100">
                         <mat-list-item *ngFor="let tab of _workflowDataService.sideNavigationTabs; let i = index;">
@@ -122,9 +122,9 @@
                 </div>
             </div>
         </mat-drawer>
-        <mat-drawer-content fxFlex="80%">
+        <mat-drawer-content fxFlex="70%" class="u-w--100">
             <ng-scrollbar>
-                <div style="padding: 10px 16px;">
+                <div style="padding: 10px 16px 10px 8px;">
                     <ng-container *ngIf="selectedStep === 'Sales'">
                         <div class="u-mb--20 u-w--100 workflow-form--panel">
                             <app-workflow-sales [workflowId]="workflowId" #workflowSales></app-workflow-sales>
