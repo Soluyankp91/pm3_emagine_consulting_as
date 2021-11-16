@@ -1,7 +1,7 @@
 
 <div class="workflow">
     <div fxLayout="row" fxLayoutAlign="start start">
-        <div fxFlex="8%" class="workflow-sidebar--container" fxLayout="column" fxLayoutAlign="start start">
+        <!-- <div fxFlex="8%" class="workflow-sidebar--container" fxLayout="column" fxLayoutAlign="start start">
             <mat-list class="workflow-sidebar--tabs u-w--100">
                 <mat-list-item *ngFor="let tab of _workflowDataService.sideNavigationTabs; let i = index;">
                     <button mat-button (click)="changeSideNavTab(tab, i)">
@@ -9,10 +9,10 @@
                     </button>
                 </mat-list-item>
             </mat-list>
-        </div>
-        <div fxFlex="22%" class="workflow-sidebar--container" fxLayout="column" fxLayoutAlign="start start">
-            <mat-tab-group [(selectedIndex)]="menuIndex" class="header-less-tabs" animationDuration="100ms">
-                <mat-tab>
+        </div> -->
+        <div fxFlex="20%" class="workflow-sidebar--container" fxLayout="column" fxLayoutAlign="start start">
+            <!-- <mat-tab-group [(selectedIndex)]="menuIndex" class="header-less-tabs" animationDuration="100ms">
+                <mat-tab> -->
                     <div class="workflow-sidebar">
                         <!-- <div class="workflow-sidebar--wrapper"> -->
                             <div class="workflow-sidebar--stepper">
@@ -64,9 +64,9 @@
                             </div>
                         <!-- </div> -->
                     </div>
-                </mat-tab>
-                <mat-tab>
-                    <div class="workflow-sidebar">
+                <!-- </mat-tab>
+                <mat-tab> -->
+                    <!-- <div class="workflow-sidebar">
                         <div class="workflow-sidebar--stepper">
                             <ng-scrollbar #scrollable>
                                 <div class="workflow-sidebar--content">
@@ -116,7 +116,7 @@
                         </div>
                     </div>
                 </mat-tab>
-            </mat-tab-group>
+            </mat-tab-group> -->
             <!-- <mat-tab-group class="workflow-sidebar--tabs">
                 <mat-tab label="Workflow"> -->
                     <!-- <div class="workflow-sidebar">
@@ -172,7 +172,7 @@
                 <mat-tab *ngFor="let tab of workflowSales?.consultantsForm?.consultantData?.value; index as i" [label]="tab?.consultantName ? tab?.consultantName : 'Consultant' + (i + 1)"></mat-tab>
             </mat-tab-group> -->
         </div>
-        <div fxFlex="70%" fxLayout="column" fxLayoutAlign="start start">
+        <div fxFlex="80%" fxLayout="column" fxLayoutAlign="start start">
             <!-- SALES -->
             <ng-container *ngIf="selectedStep === 'Sales'">
                 <div class="u-mb--20 u-w--100 workflow-form--panel">
