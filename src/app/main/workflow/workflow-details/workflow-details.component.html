@@ -1,57 +1,178 @@
+
 <div class="workflow">
     <div fxLayout="row" fxLayoutAlign="start start">
-        <div fxFlex="20%" class="workflow-sidebar--container" fxLayout="column" fxLayoutAlign="start start">
-            <div class="workflow-sidebar">
-                <div class="workflow-sidebar--stepper">
-                    <ng-scrollbar #scrollable>
-                        <div class="workflow-sidebar--content">
-                            <mat-vertical-stepper class="workflow-sidebar--stepper" (selectionChange)="selectionChange($event)">
-                                <ng-template matStepperIcon="edit">
-                                    <mat-icon>done</mat-icon>
-                                </ng-template>
-                                <mat-step *ngFor="let step of workflowNavigation; let i = index" label="{{step.displayName}}" [completed]="step.finished" [state]="step.state" [attr.aria-label]="step.name">
-                                    <mat-list *ngIf="step.name === 'Sales'">
-                                        <mat-list-item [ngxScrollTo]="'mainData'">Main data</mat-list-item>
-                                        <mat-list-item [ngxScrollTo]="'clientData'">Client data</mat-list-item>
-                                        <mat-list-item [ngxScrollTo]="'consultantData'">Consultant data</mat-list-item>
-                                        <mat-list-item [ngxScrollTo]="'additionalData'">Additional data</mat-list-item>
-                                    </mat-list>
-
-                                    <mat-list *ngIf="step.name === 'Contracts'">
-                                        <mat-list-item [ngxScrollTo]="'contractsSummary'">Summary</mat-list-item>
-                                        <mat-list-item [ngxScrollTo]="'clientContractTemplate'">Client Contract Template</mat-list-item>
-                                        <mat-list-item [ngxScrollTo]="'consultantContractTemplate'">Consultant Contract Template</mat-list-item>
-                                    </mat-list>
-
-                                    <mat-list *ngIf="step.name.startsWith('NewExtension')">
-                                        <mat-list-item>Sales</mat-list-item>
-                                        <mat-list class="u-ml--16">
-                                            <mat-list-item>Summary</mat-list-item>
-                                            <mat-list-item>blah-blah</mat-list-item>
-                                        </mat-list>
-                                        <mat-list-item>Contracts</mat-list-item>
-                                        <mat-list class="u-ml--16">
-                                            <mat-list-item>Overview</mat-list-item>
-                                            <mat-list-item>blah-blah</mat-list-item>
-                                        </mat-list>
-                                    </mat-list>
-                                </mat-step>
-                            </mat-vertical-stepper>
-                        </div>
-                    </ng-scrollbar>
-                </div>
-                <div fxLayout="column" fxLayoutAlign="start start" class="workflow-sidebar--actions u-pl--24 u-pr--24 u-w--100 u-mt--10 u-mb--10">
-                    <div fxLayout="row" fxLayoutAlign="start start" class="u-w--100 u-mb--20">
-                        <button mat-raised-button class="mat-elevation-z0 u-mr--16 button-outlined" fxFlex="50%">Cancel</button>
-                        <button mat-raised-button color="primary" class="mat-elevation-z0 button-accept" fxFlex="50%">Save</button>
-                    </div>
-                    <div fxLayout="row" fxLayoutAlign="start start" class="u-w--100">
-                        <button mat-raised-button color="primary" class="mat-elevation-z0 button-accept" fxFlex="100%" (click)="done()">Done</button>
-                    </div>
-                </div>
-            </div>
+        <div fxFlex="8%" class="workflow-sidebar--container" fxLayout="column" fxLayoutAlign="start start">
+            <mat-list class="workflow-sidebar--tabs u-w--100">
+                <mat-list-item *ngFor="let tab of _workflowDataService.sideNavigationTabs; let i = index;">
+                    <button mat-button (click)="changeSideNavTab(tab, i)">
+                        {{ tab.displayName }}
+                    </button>
+                </mat-list-item>
+            </mat-list>
         </div>
-        <div fxFlex="80%" fxLayout="column" fxLayoutAlign="start start">
+        <div fxFlex="22%" class="workflow-sidebar--container" fxLayout="column" fxLayoutAlign="start start">
+            <mat-tab-group [(selectedIndex)]="menuIndex" class="header-less-tabs" animationDuration="100ms">
+                <mat-tab>
+                    <div class="workflow-sidebar">
+                        <!-- <div class="workflow-sidebar--wrapper"> -->
+                            <div class="workflow-sidebar--stepper">
+                                <ng-scrollbar #scrollable>
+                                    <div class="workflow-sidebar--content">
+                                        <mat-vertical-stepper class="workflow-sidebar--stepper" (selectionChange)="selectionChange($event)">
+                                            <ng-template matStepperIcon="edit">
+                                                <mat-icon>done</mat-icon>
+                                            </ng-template>
+                                            <mat-step *ngFor="let step of workflowNavigation; let i = index" label="{{step.displayName}}" [completed]="step.finished" [state]="step.state" [attr.aria-label]="step.name">
+                                                <mat-list *ngIf="step.name === 'Sales'">
+                                                    <mat-list-item [ngxScrollTo]="'mainData'">Main data</mat-list-item>
+                                                    <mat-list-item [ngxScrollTo]="'clientData'">Client data</mat-list-item>
+                                                    <mat-list-item [ngxScrollTo]="'consultantData'">Consultant data</mat-list-item>
+                                                    <mat-list-item [ngxScrollTo]="'additionalData'">Additional data</mat-list-item>
+                                                </mat-list>
+
+                                                <mat-list *ngIf="step.name === 'Contracts'">
+                                                    <mat-list-item [ngxScrollTo]="'contractsSummary'">Summary</mat-list-item>
+                                                    <mat-list-item [ngxScrollTo]="'clientContractTemplate'">Client Contract Template</mat-list-item>
+                                                    <mat-list-item [ngxScrollTo]="'consultantContractTemplate'">Consultant Contract Template</mat-list-item>
+                                                </mat-list>
+
+                                                <mat-list *ngIf="step.name.startsWith('NewExtension')">
+                                                    <mat-list-item>Sales</mat-list-item>
+                                                    <mat-list class="u-ml--16">
+                                                        <mat-list-item>Summary</mat-list-item>
+                                                        <mat-list-item>blah-blah</mat-list-item>
+                                                    </mat-list>
+                                                    <mat-list-item>Contracts</mat-list-item>
+                                                    <mat-list class="u-ml--16">
+                                                        <mat-list-item>Overview</mat-list-item>
+                                                        <mat-list-item>blah-blah</mat-list-item>
+                                                    </mat-list>
+                                                </mat-list>
+                                            </mat-step>
+                                        </mat-vertical-stepper>
+                                    </div>
+                                </ng-scrollbar>
+                            </div>
+                            <div fxLayout="column" fxLayoutAlign="start start" class="workflow-sidebar--actions u-pl--24 u-pr--24 u-w--100 u-mt--10 u-mb--10">
+                                <div fxLayout="row" fxLayoutAlign="start start" class="u-w--100 u-mb--20">
+                                    <button mat-raised-button class="mat-elevation-z0 u-mr--16 button-outlined" fxFlex="50%">Cancel</button>
+                                    <button mat-raised-button color="primary" class="mat-elevation-z0 button-accept" fxFlex="50%">Save</button>
+                                </div>
+                                <div fxLayout="row" fxLayoutAlign="start start" class="u-w--100">
+                                    <button mat-raised-button color="primary" class="mat-elevation-z0 button-accept" fxFlex="100%" (click)="done()">Done</button>
+                                </div>
+                            </div>
+                        <!-- </div> -->
+                    </div>
+                </mat-tab>
+                <mat-tab>
+                    <div class="workflow-sidebar">
+                        <div class="workflow-sidebar--stepper">
+                            <ng-scrollbar #scrollable>
+                                <div class="workflow-sidebar--content">
+                                    <mat-vertical-stepper class="workflow-sidebar--stepper" (selectionChange)="selectionChange($event)">
+                                        <ng-template matStepperIcon="edit">
+                                            <mat-icon>done</mat-icon>
+                                        </ng-template>
+                                        <mat-step *ngFor="let step of workflowNavigation; let i = index" label="{{step.displayName}}" [completed]="step.finished" [state]="step.state" [attr.aria-label]="step.name">
+                                            <mat-list *ngIf="step.name === 'Sales'">
+                                                <mat-list-item [ngxScrollTo]="'mainData'">Main2 data</mat-list-item>
+                                                <mat-list-item [ngxScrollTo]="'clientData'">Client2 data</mat-list-item>
+                                                <mat-list-item [ngxScrollTo]="'consultantData'">Consultant data</mat-list-item>
+                                                <mat-list-item [ngxScrollTo]="'additionalData'">Additional data</mat-list-item>
+                                            </mat-list>
+
+                                            <mat-list *ngIf="step.name === 'Contracts'">
+                                                <mat-list-item [ngxScrollTo]="'contractsSummary'">Summary</mat-list-item>
+                                                <mat-list-item [ngxScrollTo]="'clientContractTemplate'">Client Contract Template</mat-list-item>
+                                                <mat-list-item [ngxScrollTo]="'consultantContractTemplate'">Consultant Contract Template</mat-list-item>
+                                            </mat-list>
+
+                                            <mat-list *ngIf="step.name.startsWith('NewExtension')">
+                                                <mat-list-item>Sales</mat-list-item>
+                                                <mat-list class="u-ml--16">
+                                                    <mat-list-item>Summary</mat-list-item>
+                                                    <mat-list-item>blah-blah</mat-list-item>
+                                                </mat-list>
+                                                <mat-list-item>Contracts</mat-list-item>
+                                                <mat-list class="u-ml--16">
+                                                    <mat-list-item>Overview</mat-list-item>
+                                                    <mat-list-item>blah-blah</mat-list-item>
+                                                </mat-list>
+                                            </mat-list>
+                                        </mat-step>
+                                    </mat-vertical-stepper>
+                                </div>
+                            </ng-scrollbar>
+                        </div>
+                        <div fxLayout="column" fxLayoutAlign="start start" class="workflow-sidebar--actions u-pl--24 u-pr--24 u-w--100 u-mt--10 u-mb--10">
+                            <div fxLayout="row" fxLayoutAlign="start start" class="u-w--100 u-mb--20">
+                                <button mat-raised-button class="mat-elevation-z0 u-mr--16 button-outlined" fxFlex="50%">Cancel</button>
+                                <button mat-raised-button color="primary" class="mat-elevation-z0 button-accept" fxFlex="50%">Save</button>
+                            </div>
+                            <div fxLayout="row" fxLayoutAlign="start start" class="u-w--100">
+                                <button mat-raised-button color="primary" class="mat-elevation-z0 button-accept" fxFlex="100%" (click)="done()">Done</button>
+                            </div>
+                        </div>
+                    </div>
+                </mat-tab>
+            </mat-tab-group>
+            <!-- <mat-tab-group class="workflow-sidebar--tabs">
+                <mat-tab label="Workflow"> -->
+                    <!-- <div class="workflow-sidebar">
+                        <div class="workflow-sidebar--stepper">
+                            <ng-scrollbar #scrollable>
+                                <div class="workflow-sidebar--content">
+                                    <mat-vertical-stepper class="workflow-sidebar--stepper" (selectionChange)="selectionChange($event)">
+                                        <ng-template matStepperIcon="edit">
+                                            <mat-icon>done</mat-icon>
+                                        </ng-template>
+                                        <mat-step *ngFor="let step of workflowNavigation; let i = index" label="{{step.displayName}}" [completed]="step.finished" [state]="step.state" [attr.aria-label]="step.name">
+                                            <mat-list *ngIf="step.name === 'Sales'">
+                                                <mat-list-item [ngxScrollTo]="'mainData'">Main data</mat-list-item>
+                                                <mat-list-item [ngxScrollTo]="'clientData'">Client data</mat-list-item>
+                                                <mat-list-item [ngxScrollTo]="'consultantData'">Consultant data</mat-list-item>
+                                                <mat-list-item [ngxScrollTo]="'additionalData'">Additional data</mat-list-item>
+                                            </mat-list>
+
+                                            <mat-list *ngIf="step.name === 'Contracts'">
+                                                <mat-list-item [ngxScrollTo]="'contractsSummary'">Summary</mat-list-item>
+                                                <mat-list-item [ngxScrollTo]="'clientContractTemplate'">Client Contract Template</mat-list-item>
+                                                <mat-list-item [ngxScrollTo]="'consultantContractTemplate'">Consultant Contract Template</mat-list-item>
+                                            </mat-list>
+
+                                            <mat-list *ngIf="step.name.startsWith('NewExtension')">
+                                                <mat-list-item>Sales</mat-list-item>
+                                                <mat-list class="u-ml--16">
+                                                    <mat-list-item>Summary</mat-list-item>
+                                                    <mat-list-item>blah-blah</mat-list-item>
+                                                </mat-list>
+                                                <mat-list-item>Contracts</mat-list-item>
+                                                <mat-list class="u-ml--16">
+                                                    <mat-list-item>Overview</mat-list-item>
+                                                    <mat-list-item>blah-blah</mat-list-item>
+                                                </mat-list>
+                                            </mat-list>
+                                        </mat-step>
+                                    </mat-vertical-stepper>
+                                </div>
+                            </ng-scrollbar>
+                        </div>
+                        <div fxLayout="column" fxLayoutAlign="start start" class="workflow-sidebar--actions u-pl--24 u-pr--24 u-w--100 u-mt--10 u-mb--10">
+                            <div fxLayout="row" fxLayoutAlign="start start" class="u-w--100 u-mb--20">
+                                <button mat-raised-button class="mat-elevation-z0 u-mr--16 button-outlined" fxFlex="50%">Cancel</button>
+                                <button mat-raised-button color="primary" class="mat-elevation-z0 button-accept" fxFlex="50%">Save</button>
+                            </div>
+                            <div fxLayout="row" fxLayoutAlign="start start" class="u-w--100">
+                                <button mat-raised-button color="primary" class="mat-elevation-z0 button-accept" fxFlex="100%" (click)="done()">Done</button>
+                            </div>
+                        </div>
+                    </div> -->
+                <!-- </mat-tab>
+                <mat-tab *ngFor="let tab of workflowSales?.consultantsForm?.consultantData?.value; index as i" [label]="tab?.consultantName ? tab?.consultantName : 'Consultant' + (i + 1)"></mat-tab>
+            </mat-tab-group> -->
+        </div>
+        <div fxFlex="70%" fxLayout="column" fxLayoutAlign="start start">
             <!-- SALES -->
             <ng-container *ngIf="selectedStep === 'Sales'">
                 <div class="u-mb--20 u-w--100 workflow-form--panel">

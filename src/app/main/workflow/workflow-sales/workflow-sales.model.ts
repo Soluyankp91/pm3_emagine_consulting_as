@@ -35,19 +35,35 @@ export class WorkflowSalesMainForm extends FormGroup {
 export class WorkflowSalesClientDataForm extends FormGroup {
     constructor() {
         super({
+            // Client
             directClient: new FormControl(null),
-            clientInvoicingRecipient: new FormControl(null),
+            сustomer: new FormControl(null),
+            endCustomer: new FormControl(null),
+
+            // PDC Invoicing Entity (client)
+
+            // Client Invoicing Recipient
+            invoicingProDataEntity: new FormControl(null),
             sameAsDirectClient: new FormControl(false),
+
+            // Client Invoicing Reference Person
             clientInvoicingReferencePerson: new FormControl(null),
             isClientInvoicingNone: new FormControl(false),
+
+            // Client Evaluations - Consultant
             evaluationReferencePerson: new FormControl(null),
             disableEvaluations: new FormControl(false),
             disableEvaluationsReason: new FormControl(null),
+
+            // Client Contract Signers
             clientSigners: new FormArray([]),
+
+            // Client Special Contract Terms
             specialContractTerms: new FormControl(null),
             isSpecialContractTermsNone: new FormControl(false),
             invoicingReferenceNumber: new FormControl(null),
-            // client price
+
+            // Client Rate & Invoicing
             clientRateAndInvoicing: new FormControl(null),
             clientPrice: new FormControl(null),
             clientCurrency: new FormControl(null),
@@ -57,22 +73,37 @@ export class WorkflowSalesClientDataForm extends FormGroup {
             //client special rates
             clientSpecialRatePrice: new FormControl(null),
             clientSpecialRateCurrency: new FormControl(null),
-            //client fees
-            // TODO: TBD
-            clientProjectStartDate: new FormControl(null),
-            clientProjectEndDate: new FormControl(null),
-            clientProjectNoEndDate: new FormControl(false),
+
+            // clientFees
+            clientFees: new FormControl(null),
+            clientFeesCurrency: new FormControl(null),
+
+            // Client Contract Duration
+            clientContractStartDate: new FormControl(null),
+            clientContractEndDate: new FormControl(null),
+            clientContractNoEndDate: new FormControl(false),
+
+            // Client Extension Option
             clientExtensionStartDate: new FormControl(null),
             clientExtensionEndDate: new FormControl(null),
             clientExtensionNoEndDate: new FormControl(false)
         });
     }
 
+    // Client
     get directClient() {
         return this.get('directClient');
     }
-    get clientInvoicingRecipient() {
-        return this.get('clientInvoicingRecipient');
+    get сustomer() {
+        return this.get('сustomer');
+    }
+    get endCustomer() {
+        return this.get('endCustomer');
+    }
+
+    // PDC Invoicing Entity (client)
+    get invoicingProDataEntity() {
+        return this.get('invoicingProDataEntity');
     }
     get sameAsDirectClient() {
         return this.get('sameAsDirectClient');
@@ -104,6 +135,8 @@ export class WorkflowSalesClientDataForm extends FormGroup {
     get invoicingReferenceNumber() {
         return this.get('invoicingReferenceNumber');
     }
+
+    // CLient rate and invoicing
     get clientRateAndInvoicing() {
         return this.get('clientRateAndInvoicing');
     }
@@ -122,21 +155,34 @@ export class WorkflowSalesClientDataForm extends FormGroup {
     get clientInvoicingDate() {
         return this.get('clientInvoicingDate');
     }
-    get clientProjectStartDate() {
-        return this.get('clientProjectStartDate');
-    }
     get clientSpecialRatePrice() {
         return this.get('clientSpecialRatePrice');
     }
     get clientSpecialRateCurrency() {
         return this.get('clientSpecialRateCurrency');
     }
-    get clientProjectEndDate() {
-        return this.get('clientProjectEndDate');
+
+    //clientFees
+
+    get clientFees() {
+        return this.get('clientFees');
     }
-    get clientProjectNoEndDate() {
-        return this.get('clientProjectNoEndDate');
+    get clientFeesCurrency() {
+        return this.get('clientFeesCurrency');
     }
+
+    // Client Contract Duration
+    get clientContractStartDate() {
+        return this.get('clientContractStartDate');
+    }
+    get clientContractEndDate() {
+        return this.get('clientContractEndDate');
+    }
+    get clientContractNoEndDate() {
+        return this.get('clientContractNoEndDate');
+    }
+
+    // Client Extension Option
     get clientExtensionStartDate() {
         return this.get('clientExtensionStartDate');
     }

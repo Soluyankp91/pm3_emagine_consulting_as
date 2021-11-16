@@ -76,3 +76,8 @@ mat-tab-group.client-details--tabs {
         }
     }
 }
+
+
+.header-less-tabs.mat-tab-group .mat-tab-header {
+    display: none;
+}

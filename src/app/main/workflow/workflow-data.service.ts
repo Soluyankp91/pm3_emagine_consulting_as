@@ -2,6 +2,7 @@ import { Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
 import { finalize } from 'rxjs/operators';
 import { EnumEntityTypeDto, EnumServiceProxy } from 'src/shared/service-proxies/service-proxies';
+import { SideMenuTabs, SideMenuTabsDto } from './workflow.model';
 
 @Injectable({
     providedIn: 'root'
@@ -11,12 +12,43 @@ export class WorkflowDataService {
     currencies: EnumEntityTypeDto[] = [];
     saleTypes: EnumEntityTypeDto[] = [];
     invoicingTimes: EnumEntityTypeDto[] = [];
+
+    sideMenuTabs: SideMenuTabsDto[] = SideMenuTabs;
     constructor(
         private _enumService: EnumServiceProxy
     ) { }
 
+    get sideNavigationTabs() {
+        return this.sideMenuTabs;
+    }
+
+    addOrUpdateConsultantTab(index: number, consultantName?: string) {
+        const tabIndex = this.sideMenuTabs.findIndex(x => {
+            return x.index === index && x.name === 'Consultant';
+        });
+        if (tabIndex > -1) {
+            this.sideMenuTabs[tabIndex].displayName = consultantName ?? 'Consultant';
+        } else {
+            this.sideMenuTabs.push(
+                {
+                    name: 'Consultant',
+                    displayName: consultantName ?? 'Consultant',
+                    index: index
+                }
+            );
+        }
+    }
+
+    removeConsultantTab(index: number) {
+        const tabIndex = this.sideMenuTabs.findIndex(x => {
+            return x.index === index && x.name === 'Consultant';
+        });
+        if (tabIndex > -1) {
+            this.sideMenuTabs.splice(tabIndex, 1);
+        }
+    }
+
     getData() {
-        console.log('getData');
         this.getCurrencies();
         this.getDeliveryTypes();
         this.getInvoicingTimes();

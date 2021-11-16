@@ -113,6 +113,7 @@ export class WorkflowSalesComponent extends AppComopnentBase implements OnInit {
     addConsultantForm() {
         const form = this._fb.group({
             consultantType: new FormControl(null),
+            consultantName: new FormControl(null),
             consultantEvaluationsProData: new FormControl(null),
             disableEvaluations: new FormControl(false),
             consultantContractSigners: new FormArray([this.addConsultantSignerToForm()]),
@@ -124,6 +125,7 @@ export class WorkflowSalesComponent extends AppComopnentBase implements OnInit {
             consultantProjectSameAsClientDuration: new FormControl(false)
         });
         this.consultantsForm.consultantData.push(form);
+        this._workflodDataService.addOrUpdateConsultantTab(this.consultantsForm.consultantData.length - 1, form.get('consultantName')?.value);
     }
 
     addConsultantSignerToForm() {
@@ -137,6 +139,7 @@ export class WorkflowSalesComponent extends AppComopnentBase implements OnInit {
 
     removeConsultant(index: number) {
         this.consultantsForm.consultantData.removeAt(index);
+        this._workflodDataService.removeConsultantTab(index);
     }
 
     removeConsultantSigner(consultantIndex: number, signerIndex: number) {
@@ -167,11 +170,11 @@ export class WorkflowSalesComponent extends AppComopnentBase implements OnInit {
         input.salesAccountManagerIdValue = this.salesMainDataForm.salesAccountManager?.value;
         input.commissionAccountManagerIdValue = this.salesMainDataForm.commissionAccountManager?.value;
         input.directClientIdValue = this.salesMainClientDataForm.directClient?.value;
-        input.endClientIdValue = this.salesMainClientDataForm.clientInvoicingRecipient?.value;
+        input.endClientIdValue = this.salesMainClientDataForm.invoicingProDataEntity?.value;
         input.pdcInvoicingEntityId = this.salesMainClientDataForm.clientInvoicingReferencePerson?.value;
         input.clientInvoicingRecipientSameAsDirectClient = this.salesMainClientDataForm.sameAsDirectClient?.value;
         // FIXME: fix after design changes
-        input.clientInvoicingRecipientIdValue = this.salesMainClientDataForm.clientInvoicingRecipient?.value;
+        input.clientInvoicingRecipientIdValue = this.salesMainClientDataForm.invoicingProDataEntity?.value;
         // FIXME: fix after design changes
         input.noInvoicingReferencePerson = this.salesMainClientDataForm.isClientInvoicingNone?.value ? this.salesMainClientDataForm.isClientInvoicingNone?.value : false;
         // FIXME: fix after design changes
@@ -214,9 +217,9 @@ export class WorkflowSalesComponent extends AppComopnentBase implements OnInit {
         // "clientSpecialFees": [
         //     0
         // ],
-        input.contractStartDate = this.salesMainClientDataForm.clientProjectStartDate?.value;
-        input.contractEndDate = this.salesMainClientDataForm.clientProjectEndDate?.value;
-        input.noContractEndDate = this.salesMainClientDataForm.clientProjectNoEndDate?.value ? this.salesMainClientDataForm.clientProjectNoEndDate?.value : false;
+        input.contractStartDate = this.salesMainClientDataForm.clientContractStartDate?.value;
+        input.contractEndDate = this.salesMainClientDataForm.clientContractEndDate?.value;
+        input.noContractEndDate = this.salesMainClientDataForm.clientContractNoEndDate?.value ? this.salesMainClientDataForm.clientContractNoEndDate?.value : false;
 
         input.noClientExtensionOption = this.salesMainClientDataForm.clientExtensionNoEndDate?.value ? this.salesMainClientDataForm.clientExtensionNoEndDate?.value : false;
         input.clientExtensionDurationId = this.salesMainClientDataForm.clientExtensionStartDate?.value;
@@ -283,11 +286,18 @@ export class WorkflowSalesComponent extends AppComopnentBase implements OnInit {
 
         this._workflowService.salesPut(this.workflowId, input)
             .pipe(finalize(() => {
-
+                this.updateConsultantTabs();
             }))
             .subscribe(result => {
 
             });
+    }
+
+    updateConsultantTabs() {
+        for (let i = 0; i < this.consultantsForm.consultantData.value.length; i++) {
+            let consultant = this.consultantsForm.consultantData.value[i];
+            this._workflodDataService.addOrUpdateConsultantTab(this.consultantsForm.consultantData.length - 1, consultant.consultantName);
+        }
     }
 
     getWorkflowSalesStep() {
@@ -301,10 +311,22 @@ export class WorkflowSalesComponent extends AppComopnentBase implements OnInit {
                 this.salesMainDataForm.salesAccountManager?.setValue(result.salesAccountManagerIdValue, {emitEvent: false});
                 this.salesMainDataForm.commissionAccountManager?.setValue(result.commissionAccountManagerIdValue, {emitEvent: false});
                 this.salesMainClientDataForm.directClient?.setValue(result.directClientIdValue, {emitEvent: false});
-                this.salesMainClientDataForm.clientInvoicingRecipient?.setValue(result.endClientIdValue, {emitEvent: false});
+                this.salesMainClientDataForm.invoicingProDataEntity?.setValue(result.endClientIdValue, {emitEvent: false});
                 this.salesMainClientDataForm.clientInvoicingReferencePerson?.setValue(result.pdcInvoicingEntityId, {emitEvent: false});
                 this.salesMainClientDataForm.sameAsDirectClient?.setValue(result.clientInvoicingRecipientSameAsDirectClient, {emitEvent: false});
             });
+    }
+
+    toggleClientFees() {
+        this.salesMainClientDataForm.clientFees?.setValue(null, {emitEvent: false})
+        this.salesMainClientDataForm.clientFeesCurrency?.setValue(null, {emitEvent: false});
+        this.clientSpecialFeesActive = !this.clientSpecialFeesActive;
+    }
+
+    toggleSpecialClientRates() {
+        this.salesMainClientDataForm.clientSpecialRatePrice?.setValue(null, {emitEvent: false})
+        this.salesMainClientDataForm.clientSpecialRateCurrency?.setValue(null, {emitEvent: false});
+        this.clientSpecialRateActive = !this.clientSpecialRateActive;
     }
 
 }

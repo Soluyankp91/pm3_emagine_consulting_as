@@ -1,13 +1,30 @@
-mat-sidenav-container,
-mat-drawer-container {
+mat-sidenav-container.main-sidenav-container,
+mat-drawer-container.main-drawer-container {
   height: 100%;
 }
 
-mat-drawer-container {
+mat-drawer-container.main-sidenav-container {
   background-color: inherit !important;
 }
 
-mat-drawer {
+mat-drawer.main-drawer-sidebar {
   background-color: #FFF !important;
   box-shadow: 0px 0px 20px rgba(26, 35, 126, 0.15) !important;
+}
+
+.workflow-page {
+    mat-sidenav-container,
+    mat-drawer-container {
+      height: 100%;
+    }
+
+    mat-drawer-container {
+      background-color: #fff !important;
+    }
+
+    mat-drawer {
+      background-color: #FFF !important;
+      box-shadow: none !important;
+      border: 0 !important;
+    }
 }

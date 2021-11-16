@@ -1,21 +1,21 @@
 import { StepperSelectionEvent } from '@angular/cdk/stepper';
-import { Component, OnDestroy, OnInit, ViewChild } from '@angular/core';
+import { Component, OnInit, ViewChild } from '@angular/core';
 import { FormBuilder, FormControl, FormArray } from '@angular/forms';
 import { ActivatedRoute } from '@angular/router';
 import { NgScrollbar } from 'ngx-scrollbar';
 import { Subject } from 'rxjs';
-import { finalize, takeUntil } from 'rxjs/operators';
-import { WorkflowsServiceProxy, SalesServiceProxy, EnumServiceProxy, EnumEntityTypeDto, WorkflowSalesDataDto, ContractSignerDto, SignerRole, ClientRateDto, WorkflowConsultantDto } from 'src/shared/service-proxies/service-proxies';
+import { takeUntil } from 'rxjs/operators';
+import { EnumEntityTypeDto, WorkflowsServiceProxy, SalesServiceProxy, EnumServiceProxy } from 'src/shared/service-proxies/service-proxies';
 import { WorkflowDataService } from '../workflow-data.service';
 import { WorkflowSalesComponent } from '../workflow-sales/workflow-sales.component';
 import { WorkflowNavigation, WorkflowContractsSummaryForm, WorkflowSalesExtensionForm, WorkflowTerminationSalesForm, SideMenuTabsDto } from '../workflow.model';
 
 @Component({
-  selector: 'app-workflow-details',
-  templateUrl: './workflow-details.component.html',
-  styleUrls: ['./workflow-details.component.scss']
+  selector: 'app-workflow-second',
+  templateUrl: './workflow-second.component.html',
+  styleUrls: ['./workflow-second.component.scss']
 })
-export class WorkflowDetailsComponent implements OnInit, OnDestroy {
+export class WorkflowSecondComponent implements OnInit {
     @ViewChild('scrollable', {static: true}) scrollBar: NgScrollbar;
     @ViewChild('workflowSales', {static: false}) workflowSales: WorkflowSalesComponent;
     menuIndex = 0;

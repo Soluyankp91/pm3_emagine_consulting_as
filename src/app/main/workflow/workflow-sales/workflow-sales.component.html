@@ -82,21 +82,39 @@
         <form [formGroup]="salesMainClientDataForm" class="workflow-form--sales u-w--100">
             <h2>Direct Client</h2>
             <div fxLayout="row" fxLayoutAlign="start start" class="u-w--100 u-mb--20">
-                <mat-form-field appearance="fill" class="u-w--100 formFieldNoMarginPadding filter-select" fxFlex="33%">
-                    <mat-label>Direct Client</mat-label>
+                <mat-form-field appearance="fill" class="u-w--100 formFieldNoMarginPadding filter-select u-mr--16" fxFlex="33%">
+                    <mat-label>Client</mat-label>
                     <mat-select formControlName="directClient" placeholder="Direct Client">
                         <mat-option *ngFor="let item of [0,1,2,3]" [value]="item">
                             {{ item }}
                         </mat-option>
                     </mat-select>
                 </mat-form-field>
+
+                <mat-form-field appearance="fill" class="u-w--100 formFieldNoMarginPadding filter-select u-mr--16" fxFlex="33%">
+                    <mat-label>Customer</mat-label>
+                    <mat-select formControlName="сustomer" placeholder="Customer">
+                        <mat-option *ngFor="let item of currencies" [value]="item.id">
+                            {{ item.name }}
+                        </mat-option>
+                    </mat-select>
+                </mat-form-field>
+
+                <mat-form-field appearance="fill" class="u-w--100 formFieldNoMarginPadding filter-select" fxFlex="31%">
+                    <mat-label>End Customer</mat-label>
+                    <mat-select formControlName="endCustomer" placeholder="End Customer">
+                        <mat-option *ngFor="let item of currencies" [value]="item.id">
+                            {{ item.name }}
+                        </mat-option>
+                    </mat-select>
+                </mat-form-field>
             </div>
 
-            <h2>Client Invoicing Recipient</h2>
+            <h2>PDC Invoicing Entity (client)</h2>
             <div fxLayout="row" fxLayoutAlign="start center" class="u-w--100 u-mb--20">
                 <mat-form-field appearance="fill" class="u-w--100 formFieldNoMarginPadding filter-select u-mr--16" fxFlex="33%">
-                    <mat-label>Client Invoicing Recipient</mat-label>
-                    <mat-select formControlName="clientInvoicingRecipient" placeholder="Client Invoicing Recipient">
+                    <mat-label>ProData entity</mat-label>
+                    <mat-select formControlName="invoicingProDataEntity" placeholder="ProData entity">
                         <mat-option *ngFor="let item of [0,1,2,3]" [value]="item">
                             {{ item }}
                         </mat-option>
@@ -173,7 +191,7 @@
                     </mat-form-field>
                     <button class="workflow-remove--btn" mat-icon-button (click)="removeSigner(i)"><mat-icon>delete</mat-icon></button>
                 </div>
-                <button color="primary" class="button-outlined mat-elevation-z0" mat-raised-button (click)="addSignerToForm()">
+                <button color="primary" class="button-accept mat-elevation-z0" mat-raised-button (click)="addSignerToForm()">
                     Add signer
                 </button>
             </div>
@@ -277,46 +295,63 @@
             <div fxLayout="row" fxLayoutAlign="start center" class="u-w--100 u-mb--20">
                 <button mat-raised-button color="primary" class="mat-elevation-z0" fxFlex="20%"
                         [ngClass]="clientSpecialRateActive ? 'button-outlined' : 'button-accept'"
-                        (click)="clientSpecialRateActive = !clientSpecialRateActive">
+                        (click)="toggleSpecialClientRates()">
                         {{clientSpecialRateActive ? 'Delete Client Special rates' : 'Add Client Special rates'}}
                 </button>
             </div>
 
             <h2>Client Fees</h2>
+
+            <div fxLayout="row" fxLayoutAlign="start center" class="u-w--100 u-mb--20" *ngIf="clientSpecialFeesActive">
+                <mat-form-field appearance="fill" class="u-w--100 formFieldNoMarginPadding u-mr--16" fxFlex="33%">
+                    <mat-label>Client fees</mat-label>
+                    <input autocomplete="off" matInput formControlName="clientFees" placeholder="Client fees" type="text">
+                </mat-form-field>
+
+                <mat-form-field appearance="fill" class="u-w--100 formFieldNoMarginPadding filter-select u-mr--16" fxFlex="33%">
+                    <mat-label>Currency</mat-label>
+                    <mat-select formControlName="clientFeesCurrency" placeholder="Currency">
+                        <mat-option *ngFor="let item of currencies" [value]="item.id">
+                            {{ item.name }}
+                        </mat-option>
+                    </mat-select>
+                </mat-form-field>
+            </div>
+
             <div fxLayout="row" fxLayoutAlign="start center" class="u-w--100 u-mb--20">
                 <button mat-raised-button color="primary" class="mat-elevation-z0" fxFlex="20%"
                         [ngClass]="clientSpecialFeesActive ? 'button-outlined' : 'button-accept'"
-                        (click)="clientSpecialFeesActive = !clientSpecialFeesActive">
-                        {{clientSpecialFeesActive ? 'Delete client special fees' : 'Add client special fees'}}
+                        (click)="toggleClientFees()">
+                        {{clientSpecialFeesActive ? 'Delete client fees' : 'Add client fees'}}
                 </button>
             </div>
 
-            <h2>Client Project Duration</h2>
+            <h2>Client Contract Duration</h2>
             <div fxLayout="row" fxLayoutAlign="start center" class="u-w--100 u-mb--20">
                 <mat-form-field appearance="fill" class="formFieldNoMarginPadding u-mr--16" fxFlex="33%">
                     <mat-label>Start date</mat-label>
                     <input autocomplete="off" placeholder="" matInput
-                            [matDatepicker]="clientProjectStartDatePicker"
-                            name="saleDate" formControlName="clientProjectStartDate"
-                            (focus)="clientProjectStartDatePicker.open()"
-                            (click)="clientProjectStartDatePicker.open()" readonly>
+                            [matDatepicker]="clientContractStartDatePicker"
+                            name="saleDate" formControlName="clientContractStartDate"
+                            (focus)="clientContractStartDatePicker.open()"
+                            (click)="clientContractStartDatePicker.open()" readonly>
                     <mat-icon class="calendar-icon" matSuffix svgIcon="calendar"></mat-icon>
-                    <mat-datepicker #clientProjectStartDatePicker></mat-datepicker>
+                    <mat-datepicker #clientContractStartDatePicker></mat-datepicker>
                 </mat-form-field>
 
                 <mat-form-field appearance="fill" class="formFieldNoMarginPadding u-mr--16" fxFlex="33%">
                     <mat-label>End date</mat-label>
                     <input autocomplete="off" placeholder="" matInput
-                            [matDatepicker]="clientProjectEndDatePicker"
-                            name="saleDate" formControlName="clientProjectEndDate"
-                            (focus)="clientProjectEndDatePicker.open()"
-                            [disabled]="salesMainClientDataForm.clientProjectNoEndDate?.value"
-                            (click)="clientProjectEndDatePicker.open()" readonly>
+                            [matDatepicker]="clientContractEndDatePicker"
+                            name="saleDate" formControlName="clientContractEndDate"
+                            (focus)="clientContractEndDatePicker.open()"
+                            [disabled]="salesMainClientDataForm.clientContractNoEndDate?.value"
+                            (click)="clientContractEndDatePicker.open()" readonly>
                     <mat-icon class="calendar-icon" matSuffix svgIcon="calendar"></mat-icon>
-                    <mat-datepicker #clientProjectEndDatePicker></mat-datepicker>
+                    <mat-datepicker #clientContractEndDatePicker></mat-datepicker>
                 </mat-form-field>
 
-                <mat-checkbox color="accent" formControlName="clientProjectNoEndDate" name="clientProjectNoEndDate" class="green-checkbox">
+                <mat-checkbox color="accent" formControlName="clientContractNoEndDate" name="clientContractNoEndDate" class="green-checkbox">
                     No end date
                 </mat-checkbox>
             </div>
@@ -363,13 +398,18 @@
                 <div fxLayout="column" fxLayoutAlign="start start" class="u-w--100">
                     <h2>Consultant</h2>
                     <div fxLayout="row" fxLayoutAlign="start start" class="u-w--100 u-mb--20">
-                        <mat-form-field appearance="fill" class="u-w--100 formFieldNoMarginPadding filter-select" fxFlex="33%">
+                        <mat-form-field appearance="fill" class="u-w--100 formFieldNoMarginPadding filter-select u-mr--16" fxFlex="33%">
                             <mat-label>Consultant Type</mat-label>
                             <mat-select formControlName="consultantType" placeholder="Consultant Type">
                                 <mat-option *ngFor="let item of [0,1,2,3]" [value]="item">
                                     {{ item }}
                                 </mat-option>
                             </mat-select>
+                        </mat-form-field>
+
+                        <mat-form-field appearance="fill" class="u-w--100 mat-elevation-z0 formFieldNoMarginPadding"  fxFlex="33%">
+                            <mat-label>Consultant Name</mat-label>
+                            <input autocomplete="off" matInput formControlName="consultantName" placeholder="Consultant Name" type="text">
                         </mat-form-field>
                     </div>
 

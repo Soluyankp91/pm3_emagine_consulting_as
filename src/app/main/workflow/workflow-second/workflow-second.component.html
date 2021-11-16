@@ -1,0 +1,304 @@
+<div class="workflow-page" fxFlexFill>
+
+    <mat-drawer-container class="workflow u-w--100" fxLayout="row" fxLayoutAlign="start start">
+        <mat-drawer mode="side" opened fxFlex="20%">
+            <div fxLayout="row" fxLayoutAlign="start start" style="padding: 10px 16px;">
+                <div fxFlex="30%" class="workflow-sidebar--container" fxLayout="column" fxLayoutAlign="start start">
+                    <mat-list class="workflow-sidebar--tabs u-w--100">
+                        <mat-list-item *ngFor="let tab of _workflowDataService.sideNavigationTabs; let i = index;">
+                            <button mat-button (click)="changeSideNavTab(tab, i)">
+                                {{ tab.displayName }}
+                            </button>
+                        </mat-list-item>
+                    </mat-list>
+                </div>
+                <div fxFlex="70%" class="workflow-sidebar--container" fxLayout="column" fxLayoutAlign="start start">
+                    <mat-tab-group [(selectedIndex)]="menuIndex" class="header-less-tabs u-w--100" animationDuration="100ms">
+                        <mat-tab>
+                            <div class="workflow-sidebar">
+                                <div class="workflow-sidebar--wrapper">
+                                    <div class="workflow-sidebar--stepper">
+                                        <ng-scrollbar #scrollable>
+                                            <div class="workflow-sidebar--content">
+                                                <mat-vertical-stepper class="workflow-sidebar--stepper" (selectionChange)="selectionChange($event)">
+                                                    <ng-template matStepperIcon="edit">
+                                                        <mat-icon>done</mat-icon>
+                                                    </ng-template>
+                                                    <mat-step *ngFor="let step of workflowNavigation; let i = index" label="{{step.displayName}}" [completed]="step.finished" [state]="step.state" [attr.aria-label]="step.name">
+                                                        <mat-list *ngIf="step.name === 'Sales'">
+                                                            <mat-list-item [ngxScrollTo]="'mainData'">Main data</mat-list-item>
+                                                            <mat-list-item [ngxScrollTo]="'clientData'">Client data</mat-list-item>
+                                                            <mat-list-item [ngxScrollTo]="'consultantData'">Consultant data</mat-list-item>
+                                                            <mat-list-item [ngxScrollTo]="'additionalData'">Additional data</mat-list-item>
+                                                        </mat-list>
+
+                                                        <mat-list *ngIf="step.name === 'Contracts'">
+                                                            <mat-list-item [ngxScrollTo]="'contractsSummary'">Summary</mat-list-item>
+                                                            <mat-list-item [ngxScrollTo]="'clientContractTemplate'">Client Contract Template</mat-list-item>
+                                                            <mat-list-item [ngxScrollTo]="'consultantContractTemplate'">Consultant Contract Template</mat-list-item>
+                                                        </mat-list>
+
+                                                        <mat-list *ngIf="step.name.startsWith('NewExtension')">
+                                                            <mat-list-item>Sales</mat-list-item>
+                                                            <mat-list class="u-ml--16">
+                                                                <mat-list-item>Summary</mat-list-item>
+                                                                <mat-list-item>blah-blah</mat-list-item>
+                                                            </mat-list>
+                                                            <mat-list-item>Contracts</mat-list-item>
+                                                            <mat-list class="u-ml--16">
+                                                                <mat-list-item>Overview</mat-list-item>
+                                                                <mat-list-item>blah-blah</mat-list-item>
+                                                            </mat-list>
+                                                        </mat-list>
+                                                    </mat-step>
+                                                </mat-vertical-stepper>
+                                            </div>
+                                        </ng-scrollbar>
+                                    </div>
+                                    <div fxLayout="column" fxLayoutAlign="start start" class="workflow-sidebar--actions u-pl--24 u-pr--24 u-w--100 u-mt--10 u-mb--10">
+                                        <div fxLayout="row" fxLayoutAlign="start start" class="u-w--100 u-mb--20">
+                                            <button mat-raised-button class="mat-elevation-z0 u-mr--16 button-outlined" fxFlex="50%">Cancel</button>
+                                            <button mat-raised-button color="primary" class="mat-elevation-z0 button-accept" fxFlex="50%">Save</button>
+                                        </div>
+                                        <div fxLayout="row" fxLayoutAlign="start start" class="u-w--100">
+                                            <button mat-raised-button color="primary" class="mat-elevation-z0 button-accept" fxFlex="100%" (click)="done()">Done</button>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </mat-tab>
+                        <mat-tab>
+                            <div class="workflow-sidebar">
+                                <div class="workflow-sidebar--stepper">
+                                    <ng-scrollbar #scrollable>
+                                        <div class="workflow-sidebar--content">
+                                            <mat-vertical-stepper class="workflow-sidebar--stepper" (selectionChange)="selectionChange($event)">
+                                                <ng-template matStepperIcon="edit">
+                                                    <mat-icon>done</mat-icon>
+                                                </ng-template>
+                                                <mat-step *ngFor="let step of workflowNavigation; let i = index" label="{{step.displayName}}" [completed]="step.finished" [state]="step.state" [attr.aria-label]="step.name">
+                                                    <mat-list *ngIf="step.name === 'Sales'">
+                                                        <mat-list-item [ngxScrollTo]="'mainData'">Main2 data</mat-list-item>
+                                                        <mat-list-item [ngxScrollTo]="'clientData'">Client2 data</mat-list-item>
+                                                        <mat-list-item [ngxScrollTo]="'consultantData'">Consultant data</mat-list-item>
+                                                        <mat-list-item [ngxScrollTo]="'additionalData'">Additional data</mat-list-item>
+                                                    </mat-list>
+
+                                                    <mat-list *ngIf="step.name === 'Contracts'">
+                                                        <mat-list-item [ngxScrollTo]="'contractsSummary'">Summary</mat-list-item>
+                                                        <mat-list-item [ngxScrollTo]="'clientContractTemplate'">Client Contract Template</mat-list-item>
+                                                        <mat-list-item [ngxScrollTo]="'consultantContractTemplate'">Consultant Contract Template</mat-list-item>
+                                                    </mat-list>
+
+                                                    <mat-list *ngIf="step.name.startsWith('NewExtension')">
+                                                        <mat-list-item>Sales</mat-list-item>
+                                                        <mat-list class="u-ml--16">
+                                                            <mat-list-item>Summary</mat-list-item>
+                                                            <mat-list-item>blah-blah</mat-list-item>
+                                                        </mat-list>
+                                                        <mat-list-item>Contracts</mat-list-item>
+                                                        <mat-list class="u-ml--16">
+                                                            <mat-list-item>Overview</mat-list-item>
+                                                            <mat-list-item>blah-blah</mat-list-item>
+                                                        </mat-list>
+                                                    </mat-list>
+                                                </mat-step>
+                                            </mat-vertical-stepper>
+                                        </div>
+                                    </ng-scrollbar>
+                                </div>
+                                <div fxLayout="column" fxLayoutAlign="start start" class="workflow-sidebar--actions u-pl--24 u-pr--24 u-w--100 u-mt--10 u-mb--10">
+                                    <div fxLayout="row" fxLayoutAlign="start start" class="u-w--100 u-mb--20">
+                                        <button mat-raised-button class="mat-elevation-z0 u-mr--16 button-outlined" fxFlex="50%">Cancel</button>
+                                        <button mat-raised-button color="primary" class="mat-elevation-z0 button-accept" fxFlex="50%">Save</button>
+                                    </div>
+                                    <div fxLayout="row" fxLayoutAlign="start start" class="u-w--100">
+                                        <button mat-raised-button color="primary" class="mat-elevation-z0 button-accept" fxFlex="100%" (click)="done()">Done</button>
+                                    </div>
+                                </div>
+                            </div>
+                        </mat-tab>
+                    </mat-tab-group>
+                </div>
+            </div>
+        </mat-drawer>
+        <mat-drawer-content fxFlex="80%">
+            <ng-scrollbar>
+                <div style="padding: 10px 16px;">
+                    <ng-container *ngIf="selectedStep === 'Sales'">
+                        <div class="u-mb--20 u-w--100 workflow-form--panel">
+                            <app-workflow-sales [workflowId]="workflowId" #workflowSales></app-workflow-sales>
+                        </div>
+                    </ng-container>
+
+                    <ng-container *ngIf="selectedStep === 'Contracts'">
+                        <div class="u-mb--20 u-w--100 workflow-form--panel">
+                            <app-workflow-contracts></app-workflow-contracts>
+                        </div>
+                    </ng-container>
+
+                    <ng-container *ngIf="selectedStep === 'Account'">
+                        <div class="workflow-panel u-w--100">
+                            <div fxLayout="column" fxLayoutAlign="start start" class="u-w--100 u-mb--20">
+                                <h2>Customer (debtor) created</h2>
+                                <button color="primary" class="button-outlined mat-elevation-z0" mat-raised-button>No</button>
+                            </div>
+                            <div fxLayout="column" fxLayoutAlign="start start" class="u-w--100 u-mb--20">
+                                <h2>Sub contractor (creditor) created</h2>
+                                <button color="primary" class="button-outlined mat-elevation-z0" mat-raised-button>Yes</button>
+                            </div>
+                        </div>
+                    </ng-container>
+
+                    <ng-container *ngIf="selectedStep === 'Whatsnext'">
+                        <div class="workflow-panel u-w--100">
+                            <form [formGroup]="salesExtensionForm" class="u-w--100">
+                                <h2 class="workflow-green--header">Add new</h2>
+                                <div fxLayout="row" fxLayoutAlign="start center" class="u-w--100 u-mb--20">
+                                    <div fxLayout="row" fxLayoutAlign="start start" fxFLex="100%">
+                                        <button mat-raised-button class="u-mr--16 u-w--100 workflow-company--btn" fxFlex="30%" (click)="addNewExtension()">
+                                            Add new extension
+                                        </button>
+
+                                        <button mat-raised-button class="u-mr--16 u-w--100 workflow-company--btn" fxFlex="30%" (click)="addExtension()">
+                                            Add grouped extension
+                                        </button>
+
+                                        <button mat-raised-button class="u-w--100 workflow-company--btn" fxFlex="30%"  (click)="addNewTermination()">
+                                            Add new termination
+                                        </button>
+                                    </div>
+                                </div>
+                            </form>
+                        </div>
+                    </ng-container>
+
+                    <ng-container *ngFor="let extension of getExtensionsCount(); let i = index;">
+                        <ng-container *ngIf="selectedStep === getExtensionSalesNameWithIndex(i + 1)">
+                            <div class="workflow-panel u-w--100">
+                                <form [formGroup]="salesExtensionForm" class="u-w--100">
+                                    <h2 class="workflow-green--header">Extension {{ i + 1 }}</h2>
+                                    <div formArrayName="salesExtension">
+                                        <div *ngFor="let item of salesExtension.controls; let i = index;" [formGroupName]="i" [hidden]="selectedIndex - 1 !== i">
+                                            <div fxLayout="row" fxLayoutAlign="start center" class="u-w--100 u-mb--20">
+                                                <mat-form-field appearance="fill" class="formFieldNoMarginPadding u-mr--16" fxFlex="33%">
+                                                    <mat-label>New end date</mat-label>
+                                                    <input autocomplete="off" placeholder="New end date" matInput
+                                                            [matDatepicker]="extensionDatePicker"
+                                                            name="saleDate" formControlName="extensionEndDate"
+                                                            (focus)="extensionDatePicker.open()"
+                                                            (click)="extensionDatePicker.open()" readonly>
+                                                    <mat-icon class="calendar-icon" matSuffix svgIcon="calendar"></mat-icon>
+                                                    <mat-datepicker #extensionDatePicker></mat-datepicker>
+                                                </mat-form-field>
+
+                                                <mat-checkbox color="accent" formControlName="noExtensionEndDate" name="noExtensionEndDate" class="green-checkbox u-mr--16">
+                                                    No end date
+                                                </mat-checkbox>
+                                            </div>
+                                            <div fxLayout="row" fxLayoutAlign="start start" class="u-w--100 u-mb--20">
+                                                <mat-form-field appearance="fill" class="u-w--100 textarea-input formFieldNoMarginPadding u-mr--16" fxFlex="0 0 calc(66% + 16px)">
+                                                    <mat-label>WF Information</mat-label>
+                                                    <textarea matInput autocomplete="new-password" name="workflowInformation" formControlName="workflowInformation">
+                                                    </textarea>
+                                                </mat-form-field>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </form>
+                            </div>
+                        </ng-container>
+                    </ng-container>
+
+                    <ng-container *ngFor="let extension of getExtensionsCount(); let i = index;">
+                        <ng-container *ngIf="selectedStep === getExtensionContractsNameWithIndex(i + 1)">
+                            <div class="workflow-panel u-w--100">
+                                Extension contract step {{i + 1}}
+                            </div>
+                        </ng-container>
+                    </ng-container>
+
+                    <ng-container *ngIf="selectedStep === 'TerminationSales'">
+                        <div class="workflow-panel u-w--100">
+                            <h2 class="workflow-green--header">Termination</h2>
+                            <form [formGroup]="terminationSalesForm" class="u-w--100">
+                                <h2>Cause</h2>
+                                <div fxLayout="row" fxLayoutAlign="start start" class="u-w--100 u-mb--20">
+                                    <mat-form-field appearance="fill" class="u-w--100 formFieldNoMarginPadding filter-select" fxFlex="33%">
+                                        <mat-label>Cause</mat-label>
+                                        <mat-select formControlName="cause" placeholder="Cause">
+                                            <mat-option *ngFor="let item of [0,1,2,3]" [value]="item">
+                                                {{ item }}
+                                            </mat-option>
+                                        </mat-select>
+                                    </mat-form-field>
+                                </div>
+                                <h2>Comments</h2>
+                                <div fxLayout="row" fxLayoutAlign="start start" class="u-w--100 u-mb--20">
+                                    <mat-form-field appearance="fill" class="u-w--100 textarea-input formFieldNoMarginPadding u-mr--16" fxFlex="0 0 calc(66% + 16px)">
+                                        <mat-label>WF Information</mat-label>
+                                        <textarea matInput autocomplete="new-password" name="comments" formControlName="comments">
+                                        </textarea>
+                                    </mat-form-field>
+                                </div>
+                                <h2>Final Evaluation Reference Persons</h2>
+                                <div fxLayout="row" fxLayoutAlign="start start" class="u-w--100 u-mb--20">
+                                    <mat-form-field appearance="fill" class="u-w--100 formFieldNoMarginPadding filter-select u-mr--16" fxFlex="33%">
+                                        <mat-label>Client Evaluation - Consultant</mat-label>
+                                        <mat-select formControlName="clientEvaluationConsultant" placeholder="Client Evaluation - Consultant">
+                                            <mat-option *ngFor="let item of [0,1,2,3]" [value]="item">
+                                                {{ item }}
+                                            </mat-option>
+                                        </mat-select>
+                                    </mat-form-field>
+                                    <mat-form-field appearance="fill" class="u-w--100 formFieldNoMarginPadding filter-select" fxFlex="33%">
+                                        <mat-label>Client Evaluation - ProData</mat-label>
+                                        <mat-select formControlName="clientEvaluationProData" placeholder="Client Evaluation - ProData">
+                                            <mat-option *ngFor="let item of [0,1,2,3]" [value]="item">
+                                                {{ item }}
+                                            </mat-option>
+                                        </mat-select>
+                                    </mat-form-field>
+                                </div>
+                                <h2>Contract ended</h2>
+                                <div fxLayout="row" fxLayoutAlign="start start" class="u-w--100 u-mb--20">
+                                    <mat-form-field appearance="fill" class="formFieldNoMarginPadding" fxFlex="33%">
+                                        <mat-label>End date</mat-label>
+                                        <input autocomplete="off" placeholder="End date" matInput
+                                                [matDatepicker]="terminationSalesDatePicker"
+                                                name="saleDate" formControlName="endDate"
+                                                (focus)="terminationSalesDatePicker.open()"
+                                                (click)="terminationSalesDatePicker.open()" readonly>
+                                        <mat-icon class="calendar-icon" matSuffix svgIcon="calendar"></mat-icon>
+                                        <mat-datepicker #terminationSalesDatePicker></mat-datepicker>
+                                    </mat-form-field>
+                                </div>
+                            </form>
+                        </div>
+                    </ng-container>
+
+                    <ng-container *ngIf="selectedStep === 'TerminationContracts'">
+                        <div class="workflow-panel u-w--100">
+                            Termination Contracts step
+                        </div>
+                    </ng-container>
+
+                    <ng-container *ngIf="selectedStep === 'CVupdate'">
+                        <div class="workflow-panel u-w--100">
+                            <div fxLayout="column" fxLayoutAlign="start start" class="u-w--100 u-mb--20">
+                                <h2>CV Update</h2>
+                                <button color="primary" class="button-outlined mat-elevation-z0" mat-raised-button>Yes</button>
+                            </div>
+                        </div>
+                    </ng-container>
+
+                    <ng-container *ngIf="selectedStep === 'ChangeinWFData'">
+                        <div class="workflow-panel u-w--100">
+                            Change in WF Data Step
+                        </div>
+                    </ng-container>
+                </div>
+            </ng-scrollbar>
+        </mat-drawer-content>
+    </mat-drawer-container>
+</div>
