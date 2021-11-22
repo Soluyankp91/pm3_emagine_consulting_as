@@ -1,0 +1,44 @@
+.workflow-overview {
+    &--team {
+        padding: 16px 0;
+        border-bottom: 1px solid;
+        &__user {
+            &-block {
+                font-family: 'IBM Plex Mono', monospace !important;
+                color: #546E7A;
+                font-weight: 700;
+                font-size: 20px;
+            }
+            &-img {
+                border-radius: 50%;
+                margin-right: 10px;
+            }
+            &-position {
+                font-family: 'IBM Plex Mono', monospace !important;
+                color: #9CA4A9;
+            }
+            &-name {
+                font-family: 'IBM Plex Mono', monospace !important;
+                color: #606D75;
+                font-weight: 700;
+            }
+            &-progress {
+                height: 24px;
+                width: 100%;
+                &.finished {
+                    background-color: #17A297;
+                }
+                &.in-progress {
+                    background-color: #8AD0CA;
+                }
+                &.not-started {
+                    background-color: #e3e3e3;
+                }
+            }
+        }
+    }
+
+    &--timeline {
+        padding: 16px 0;
+    }
+}

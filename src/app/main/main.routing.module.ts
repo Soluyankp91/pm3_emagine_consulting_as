@@ -14,6 +14,7 @@ import { StatisticsComponent } from './statistics/statistics.component';
 import { TimeTrackingComponent } from './time-tracking/time-tracking.component';
 import { WorkflowDetailsComponent } from './workflow/workflow-details/workflow-details.component';
 import { WorkflowSecondComponent } from './workflow/workflow-second/workflow-second.component';
+import { WorkflowThirdComponent } from './workflow/workflow-third/workflow-third.component';
 import { WorkflowComponent } from './workflow/workflow.component';
 
 @NgModule({
@@ -28,6 +29,7 @@ import { WorkflowComponent } from './workflow/workflow.component';
             { path: 'workflow', component: WorkflowComponent, canActivate: [MsalGuard] },
             { path: 'workflow/:id', component: WorkflowDetailsComponent, canActivate: [MsalGuard] },
             { path: 'workflow-test/:id', component: WorkflowSecondComponent, canActivate: [MsalGuard] },
+            { path: 'workflow-new/:id', component: WorkflowThirdComponent, canActivate: [MsalGuard] },
             { path: 'statistics', component: StatisticsComponent, canActivate: [MsalGuard] },
             { path: 'time-tracking', component: TimeTrackingComponent, canActivate: [MsalGuard] },
             { path: 'evaluation', component: EvaluationComponent, canActivate: [MsalGuard] },

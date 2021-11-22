@@ -81,3 +81,56 @@ mat-tab-group.client-details--tabs {
 .header-less-tabs.mat-tab-group .mat-tab-header {
     display: none;
 }
+
+.workflow-content--tabs {
+    .mat-tab-header {
+        border-bottom: 1px solid rgba(0, 0, 0, 0.12);
+        border-bottom-width: 1px;
+        border-bottom-style: solid;
+        border-bottom-color: rgba(0, 0, 0, 0.12);
+        background-color: #f8f8f8;
+    }
+
+    .mat-tab-label-container {
+        padding-top: 0 !important;
+    }
+
+    mat-ink-bar {
+        background-color: #17A297 !important;
+        height: 4px;
+    }
+
+    .mat-tab-label {
+        font-family: 'IBM Plex Mono', monospace !important;
+        opacity: 1 !important;
+        height: 48px;
+        padding: 8px 24px 0 24px;
+        min-width: 100px;
+        font-weight: 700;
+        font-size: 16px;
+        line-height: 16px;
+        color: #546E7A;
+        box-shadow: unset;
+        background-color: transparent;
+        margin-right: 24px;
+        align-items: flex-start;
+        &-active,
+        &:hover {
+            background-color: transparent;
+            box-shadow: unset !important;
+            color: #17A297;
+        }
+
+        &:first-of-type {
+            margin-left: 32px !important;
+        }
+
+        &:last-of-type {
+            margin-left: 0 !important;
+        }
+    }
+
+    .mat-tab-body-content {
+        overflow: hidden;
+    }
+}

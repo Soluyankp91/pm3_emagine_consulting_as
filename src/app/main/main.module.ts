@@ -27,6 +27,8 @@ import { WorkflowSalesComponent } from './workflow/workflow-sales/workflow-sales
 import { WorkflowDetailsComponent } from './workflow/workflow-details/workflow-details.component';
 import { WorkflowContractsComponent } from './workflow/workflow-contracts/workflow-contracts.component';
 import { WorkflowSecondComponent } from './workflow/workflow-second/workflow-second.component';
+import { WorkflowThirdComponent } from './workflow/workflow-third/workflow-third.component';
+import { WorkflowOverviewComponent } from './workflow/workflow-overview/workflow-overview.component';
 
 
 @NgModule({
@@ -56,7 +58,9 @@ import { WorkflowSecondComponent } from './workflow/workflow-second/workflow-sec
         WorkflowSalesComponent,
         WorkflowDetailsComponent,
         WorkflowContractsComponent,
-        WorkflowSecondComponent
+        WorkflowSecondComponent,
+        WorkflowThirdComponent,
+        WorkflowOverviewComponent
     ],
     imports: [
         CommonModule,

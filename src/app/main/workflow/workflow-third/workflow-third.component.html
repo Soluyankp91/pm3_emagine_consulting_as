@@ -1,0 +1,60 @@
+<div class="workflow" fxFlexFill fxLayout="column" fxLayoutAlign="start start">
+    <div class="workflow-header u-w--100" fxFlex="20%" *ngIf="isExpanded">
+        <h2 class="workflow-header--title u-mb--10">Workflow</h2>
+        <p class="workflow-header--client u-mb--20">Flack Danmark A/S</p>
+        <div class="flex-row">
+            <span class="workflow-header--status__icon"></span>
+            <span class="workflow-header--status__icon"></span>
+            <span class="workflow-header--status__icon"></span>
+            <span class="workflow-header--status u-ml--10">
+                New workflow
+            </span>
+        </div>
+    </div>
+    <div class="workflow-content u-w--100" fxFlex="{{isExpanded ? '80%' : '100%' }}" [ngStyle]="{'height': isExpanded ? '80vh' : '100vh'}">
+        <button class="workflow-content--expand" mat-icon-button (click)="expandCollapseHeader()">
+            <mat-icon>{{isExpanded ? 'expand_less' : 'expand_more'}}</mat-icon>
+        </button>
+        <mat-tab-group class="workflow-content--tabs u-w--100">
+            <!-- <mat-tab *ngFor="let tab of _workflowDataService.topMenuTabs; let i=index" [label]="tab.displayName">
+                {{ tab.displayName }}
+            </mat-tab> -->
+            <mat-tab label="Overview">
+                <div class="workflow-form--panel u-w--100" [ngStyle]="{'height': isExpanded ? 'calc(80vh - 50px)' : 'calc(100vh - 50px)'}">
+                    <app-workflow-overview></app-workflow-overview>
+                </div>
+            </mat-tab>
+            <mat-tab label="Sales">
+                <div class="workflow-form--panel u-w--100" [ngStyle]="{'height': isExpanded ? 'calc(80vh - 50px)' : 'calc(100vh - 50px)'}">
+                    <ng-scrollbar #salesScrollbar>
+                        <div class="u-pg--10">
+                            <app-workflow-sales [workflowId]="workflowId" #workflowSales></app-workflow-sales>
+                        </div>
+                    </ng-scrollbar>
+                </div>
+            </mat-tab>
+            <mat-tab label="Consultants">
+                <div class="workflow-form--panel u-w--100" [ngStyle]="{'height': isExpanded ? 'calc(80vh - 50px)' : 'calc(100vh - 50px)'}">
+                    Consultants
+                </div>
+            </mat-tab>
+            <mat-tab label="Contracts">
+                <div class="workflow-form--panel u-w--100" [ngStyle]="{'height': isExpanded ? 'calc(80vh - 50px)' : 'calc(100vh - 50px)'}">
+                    <app-workflow-contracts></app-workflow-contracts>
+                </div>
+            </mat-tab>
+            <mat-tab label="Accounts">
+                <div class="workflow-panel u-w--100">
+                    <div fxLayout="column" fxLayoutAlign="start start" class="u-w--100 u-mb--20">
+                        <h2>Customer (debtor) created</h2>
+                        <button color="primary" class="button-outlined mat-elevation-z0" mat-raised-button>No</button>
+                    </div>
+                    <div fxLayout="column" fxLayoutAlign="start start" class="u-w--100 u-mb--20">
+                        <h2>Sub contractor (creditor) created</h2>
+                        <button color="primary" class="button-outlined mat-elevation-z0" mat-raised-button>Yes</button>
+                    </div>
+                </div>
+            </mat-tab>
+        </mat-tab-group>
+    </div>
+</div>

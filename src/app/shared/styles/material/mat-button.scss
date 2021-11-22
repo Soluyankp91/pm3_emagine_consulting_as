@@ -53,3 +53,49 @@
         line-height: 20px
     }
 }
+
+.workflow-content--expand {
+    width: 50px;
+    height: 50px;
+    mat-icon {
+        width: 36px;
+        height: 36px;
+        line-height: 36px;
+        font-size: 36px;
+    }
+}
+
+.workflow-toggle-buttons {
+    &.mat-button-toggle-group-appearance-standard {
+        border: 0 !important;
+        border-radius: 0;
+        .mat-button-toggle {
+            margin-right: 16px;
+            color: #384853;
+            font-weight: 700;
+            background-color: #EDEDED;
+            border: 0 !important;
+            border-radius: 5px;
+            height: 55px;
+            min-width: 125px;
+        }
+
+        .mat-button-toggle-label-content {
+            line-height: 55px;
+            padding: 0 16px;
+        }
+
+        .mat-button-toggle.mat-button-toggle-checked {
+            color: #FFF;
+            font-weight: 700;
+            background-color: #546E7A;
+            .mat-button-toggle-focus-overlay {
+                border-bottom: solid 55px;
+            }
+        }
+
+        .mat-button-toggle + .mat-button-toggle {
+            border: 0 !important;
+        }
+    }
+}

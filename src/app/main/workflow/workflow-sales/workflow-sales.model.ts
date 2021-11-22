@@ -7,7 +7,7 @@ export class WorkflowSalesMainForm extends FormGroup {
             nearshoreOffshore: new FormControl(null),
             salesAccountManager: new FormControl(null),
             commissionAccountManager: new FormControl(null),
-            intracompanyAccountManager: new FormControl(null),
+            // intracompanyAccountManager: new FormControl(null),
             PDCIntracompanyUnit: new FormControl(null)
         });
     }
@@ -24,9 +24,9 @@ export class WorkflowSalesMainForm extends FormGroup {
     get commissionAccountManager () {
         return this.get('commissionAccountManager');
     }
-    get intracompanyAccountManager () {
-        return this.get('intracompanyAccountManager');
-    }
+    // get intracompanyAccountManager () {
+    //     return this.get('intracompanyAccountManager');
+    // }
     get PDCIntracompanyUnit () {
         return this.get('PDCIntracompanyUnit');
     }
@@ -67,6 +67,7 @@ export class WorkflowSalesClientDataForm extends FormGroup {
             clientRateAndInvoicing: new FormControl(null),
             clientPrice: new FormControl(null),
             clientCurrency: new FormControl(null),
+            rateUnitTypeId: new FormControl(null),
             clientInvoiceCurrency: new FormControl(null),
             clientInvoicingTime: new FormControl(null),
             clientInvoicingDate: new FormControl(null),
@@ -86,6 +87,7 @@ export class WorkflowSalesClientDataForm extends FormGroup {
             // Client Extension Option
             clientExtensionStartDate: new FormControl(null),
             clientExtensionEndDate: new FormControl(null),
+            clientExtensionDeadline: new FormControl(null),
             clientExtensionNoEndDate: new FormControl(false)
         });
     }
@@ -146,6 +148,9 @@ export class WorkflowSalesClientDataForm extends FormGroup {
     get clientCurrency() {
         return this.get('clientCurrency');
     }
+    get rateUnitTypeId() {
+        return this.get('rateUnitTypeId');
+    }
     get clientInvoiceCurrency() {
         return this.get('clientInvoiceCurrency');
     }
@@ -188,6 +193,9 @@ export class WorkflowSalesClientDataForm extends FormGroup {
     }
     get clientExtensionEndDate() {
         return this.get('clientExtensionEndDate');
+    }
+    get clientExtensionDeadline() {
+        return this.get('clientExtensionDeadline');
     }
     get clientExtensionNoEndDate() {
         return this.get('clientExtensionNoEndDate');

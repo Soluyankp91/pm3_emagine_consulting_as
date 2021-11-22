@@ -119,6 +119,34 @@ export const SideMenuTabs: SideMenuTabsDto[] = [
     }
 ];
 
+export const TopMenuTabs: SideMenuTabsDto[] = [
+    {
+        name: 'Overview',
+        displayName: 'Overview',
+        index: 1
+    },
+    {
+        name: 'Sales',
+        displayName: 'Sales',
+        index: 1
+    },
+    {
+        name: 'Consultants',
+        displayName: 'Consultants',
+        index: 1
+    },
+    {
+        name: 'Contracts',
+        displayName: 'Contracts',
+        index: 1
+    },
+    {
+        name: 'Accounts',
+        displayName: 'Accounts',
+        index: 1
+    }
+];
+
 export interface IWorkflowNavigationStep {
     id: number;
     name: string;

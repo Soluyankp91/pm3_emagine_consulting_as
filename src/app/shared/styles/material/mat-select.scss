@@ -32,14 +32,24 @@
                 opacity: 0 !important;
             }
             .mat-form-field-label {
-                color: rgba(0, 0, 0, 0.87) !important;
+                color: #939BA0 !important;
+                font-weight: 600;
+                line-height: 20px !important;
                 &-wrapper {
                     top: -1em !important;
                 }
             }
         }
+        .mat-form-field-label {
+            color: #939BA0 !important;
+            font-weight: 600;
+            line-height: 20px !important;
+        }
     }
 
+    .mat-option.mat-selected:not(.mat-option-disabled) {
+        color: #546E7A;
+    }
 
     .mat-select-arrow {
         border: solid #17A297;
@@ -51,6 +61,20 @@
         height: 15px;
         // margin-top: 5px;
         margin-top: -2px;
+        transition: all .3s ease-in-out;
+    }
+    mat-select[aria-expanded="true"] {
+        .mat-select-arrow {
+            transform: rotate(225deg);
+            margin-top: 10px;
+        }
+    }
+
+}
+
+.mat-select-panel {
+    .mat-option.mat-selected:not(.mat-option-disabled) {
+        color: #546E7A;
     }
 }
 
