@@ -29,6 +29,7 @@ import { WorkflowContractsComponent } from './workflow/workflow-contracts/workfl
 import { WorkflowSecondComponent } from './workflow/workflow-second/workflow-second.component';
 import { WorkflowThirdComponent } from './workflow/workflow-third/workflow-third.component';
 import { WorkflowOverviewComponent } from './workflow/workflow-overview/workflow-overview.component';
+import { PrimaryWorkflowComponent } from './workflow/primary-workflow/primary-workflow.component';
 
 
 @NgModule({
@@ -60,7 +61,8 @@ import { WorkflowOverviewComponent } from './workflow/workflow-overview/workflow
         WorkflowContractsComponent,
         WorkflowSecondComponent,
         WorkflowThirdComponent,
-        WorkflowOverviewComponent
+        WorkflowOverviewComponent,
+        PrimaryWorkflowComponent
     ],
     imports: [
         CommonModule,

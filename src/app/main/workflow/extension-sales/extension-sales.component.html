@@ -1,7 +1,8 @@
-<form [formGroup]="salesExtensionForm" class="u-w--100">
-    <h2 class="workflow-green--header">Extension</h2>
-    <div formArrayName="salesExtension">
-        <div *ngFor="let item of salesExtension.controls; let i = index;" [formGroupName]="i" [ngClass]="{'hide': selectedIndex !== i}">
+<!-- <form [formGroup]="salesExtensionForm" class="u-w--100"> -->
+<form [formGroup]="extensionForm" class="u-w--100">
+    <h2 class="workflow-green--header">Extension {{selectedIndex}}</h2>
+    <!-- <div formArrayName="salesExtension"> -->
+        <!-- <div *ngFor="let item of salesExtension.controls; let i = index;" [formGroupName]="i" [ngClass]="{'hide': selectedIndex !== i}"> -->
             <div fxLayout="row" fxLayoutAlign="start center" class="u-w--100 u-mb--20">
                 <mat-form-field appearance="outline" class="formFieldNoMarginPadding u-mr--16" fxFlex="33%">
                     <mat-label>New end date</mat-label>
@@ -25,6 +26,6 @@
                     </textarea>
                 </mat-form-field>
             </div>
-        </div>
-    </div>
+        <!-- </div> -->
+    <!-- </div> -->
 </form>

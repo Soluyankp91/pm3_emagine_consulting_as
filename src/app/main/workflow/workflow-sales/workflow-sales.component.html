@@ -1,27 +1,10 @@
 <div class="workflow-sales">
-
-    <div fxLayout="row" fxLayoutAlign="start center" class="u-w--100 u-mt--10">
-        <div fxFlex="20%" fxLayoutAlign="end center">
-        </div>
-        <div fxFlex="80%">
-            <h1 class="section-header--page">Sales</h1>
-        </div>
-    </div>
-
-    <div fxLayout="row" fxLayoutAlign="start center" class="u-w--100 u-mt--20">
-        <div fxFlex="20%" fxLayoutAlign="end center">
-            <h1 class="section-header--main">Main data</h1>
-        </div>
-        <div fxFlex="80%">
-            <h2 class="section-header--top">Main data</h2>
-        </div>
-    </div>
-    <form fxLayout="column" fxLayoutAlign="start start" [formGroup]="salesMainDataForm" class="workflow-form--main u-w--100">
-        <div fxLayout="row" fxLayoutAlign="center center" class="u-w--100 u-mt--40">
-            <div fxFlex="20%" fxLayoutAlign="end center">
-                <h3 class="section-header--block">Project</h3>
-            </div>
-            <div fxFlex="80%" class="workflow-form__border-left u-w--100">
+    <mat-accordion [multi]="true" [togglePosition]="'before'">
+        <mat-expansion-panel id="mainData" class="mat-elevation-z0">
+            <mat-expansion-panel-header [collapsedHeight]="'80px'" [expandedHeight]="'80px'">
+                MAIN DATA
+            </mat-expansion-panel-header>
+            <form [formGroup]="salesMainDataForm" class="workflow-form workflow-form--main u-w--100">
                 <h2 class="workflow-gray--header">Sales Type</h2>
                 <div fxLayout="row" fxLayoutAlign="start start" class="u-w--100 u-mb--20">
                     <mat-button-toggle-group class="workflow-toggle-buttons u-mt--10" formControlName="salesType" (change)="salesTypeChange($event.value)">
@@ -45,44 +28,6 @@
                         </mat-button-toggle>
                     </mat-button-toggle-group>
                 </div>
-            </div>
-        </div>
-        <!-- <div fxLayout="row" fxLayoutAlign="start start" class="u-w--100 u-mb--20">
-            <mat-form-field appearance="fill" class="u-w--100 formFieldNoMarginPadding filter-select u-mr--16" fxFlex="33%">
-                <mat-label>Sales type</mat-label>
-                <mat-select formControlName="salesType" placeholder="Sales type">
-                    <mat-option *ngFor="let item of saleTypes" [value]="item.id">
-                        {{ item.name }}
-                    </mat-option>
-                </mat-select>
-                <mat-error>
-                    {{getValidationMessage(salesMainDataForm.salesType!)}}
-                </mat-error>
-            </mat-form-field>
-            <mat-form-field appearance="fill" class="u-w--100 formFieldNoMarginPadding filter-select u-mr--16" fxFlex="33%">
-                <mat-label>Nearshore/Offshore</mat-label>
-                <mat-select formControlName="nearshoreOffshore" placeholder="Nearshore/Offshore">
-                    <mat-option *ngFor="let item of deliveryTypes" [value]="item.id">
-                        {{ item.name }}
-                    </mat-option>
-                </mat-select>
-            </mat-form-field>
-            <div fxFLex="33%" fxLayout="row" fxLayoutAlign="start start" class="u-w--100">
-                <button mat-raised-button class="u-mr--16 u-w--100 workflow-company--btn" fxFlex="50%" (click)="intracompanyActive = true" [ngClass]="{'active-btn': intracompanyActive}">
-                    <mat-icon svgIcon="workflow-intracompany" class="u-mr--16"></mat-icon>
-                    Intracompany
-                </button>
-                <button mat-raised-button class="u-w--100 workflow-company--btn" fxFlex="50%"  (click)="intracompanyActive = false" [ngClass]="{'active-btn': !intracompanyActive}">
-                    <mat-icon svgIcon="workflow-direct-company" class="u-mr--16"></mat-icon>
-                    Direct
-                </button>
-            </div>
-        </div> -->
-        <div fxLayout="row" fxLayoutAlign="center center" class="u-w--100 u-mt--40">
-            <div fxFlex="20%" fxLayoutAlign="end center">
-                <h3 class="section-header--block">Project</h3>
-            </div>
-            <div fxFlex="80%" class="workflow-form__border-left u-w--100">
                 <div fxLayout="row" fxLayoutAlign="start start" class="u-w--100">
                     <mat-form-field appearance="fill" class="u-w--100 formFieldNoMarginPadding filter-select u-mr--16" fxFlex="33%">
                         <mat-label>Sales Account Manager</mat-label>
@@ -110,24 +55,13 @@
                     </mat-form-field> -->
                     <!-- <div fxFlex="33%" *ngIf="!intracompanyActive"></div> -->
                 </div>
-            </div>
-        </div>
-    </form>
-
-    <div fxLayout="row" fxLayoutAlign="start center" class="u-w--100 u-mt--60">
-        <div fxFlex="20%" fxLayoutAlign="end center">
-            <h1 class="section-header--main">Client data</h1>
-        </div>
-        <div fxFlex="80%">
-            <h2 class="section-header--top">Client data</h2>
-        </div>
-    </div>
-    <form fxLayout="column" fxLayoutAlign="start start" [formGroup]="salesMainClientDataForm" class="workflow-form--sales u-w--100">
-        <div fxLayout="row" fxLayoutAlign="center center" class="u-w--100 u-mt--30">
-            <div fxFlex="20%" fxLayoutAlign="end center">
-                <h3 class="section-header--block">Project</h3>
-            </div>
-            <div fxFlex="80%" class="workflow-form__border-left">
+            </form>
+        </mat-expansion-panel>
+        <mat-expansion-panel class="mat-elevation-z0">
+            <mat-expansion-panel-header [collapsedHeight]="'80px'" [expandedHeight]="'80px'">
+                Client data
+            </mat-expansion-panel-header>
+            <form fxLayout="column" fxLayoutAlign="start start" [formGroup]="salesMainClientDataForm" class="workflow-form workflow-form--sales u-w--100">
                 <div fxLayout="row" fxLayoutAlign="start start" class="u-w--100 u-mb--20">
                     <mat-button-toggle-group class="workflow-toggle-buttons" formControlName="directClient">
                         <mat-button-toggle [value]="item" *ngFor="let item of ['Direct Client', 'Different end-client']">
@@ -135,7 +69,7 @@
                         </mat-button-toggle>
                     </mat-button-toggle-group>
                 </div>
-                <div fxLayout="row" fxLayoutAlign="start start" class="u-w--100" [ngClass]="{'u-mb--20': salesMainClientDataForm?.directClient?.value === 'Different end-client'}">
+                <div fxLayout="row" fxLayoutAlign="start start" class="u-w--100 u-mb--20">
                     <mat-form-field appearance="fill" class="u-w--100 formFieldNoMarginPadding filter-select" fxFlex="calc(66% + 16px)">
                         <mat-label>Customer</mat-label>
                         <mat-select formControlName="сustomer" [disableOptionCentering]="true">
@@ -145,8 +79,7 @@
                         </mat-select>
                     </mat-form-field>
                 </div>
-
-                <div fxLayout="row" fxLayoutAlign="start start" class="u-w--100" *ngIf="salesMainClientDataForm?.directClient?.value === 'Different end-client'">
+                <div fxLayout="row" fxLayoutAlign="start start" class="u-w--100 u-mb--20" *ngIf="salesMainClientDataForm?.directClient?.value === 'Different end-client'">
                     <mat-form-field appearance="fill" class="u-w--100 formFieldNoMarginPadding filter-select" fxFlex="calc(66% + 16px)">
                         <mat-label>End Customer</mat-label>
                         <mat-select formControlName="endCustomer" [disableOptionCentering]="true">
@@ -156,14 +89,7 @@
                         </mat-select>
                     </mat-form-field>
                 </div>
-            </div>
-        </div>
 
-        <div fxLayout="row" fxLayoutAlign="center center" class="u-w--100 u-mt--30">
-            <div fxFlex="20%" fxLayoutAlign="end center">
-                <h3 class="section-header--block">Duration</h3>
-            </div>
-            <div fxFlex="80%" class="workflow-form__border-left">
                 <h2 class="workflow-gray--header">Project Duration</h2>
                 <div fxLayout="row" fxLayoutAlign="start center" class="u-w--100 u-mb--20">
                     <mat-form-field appearance="fill" class="formFieldNoMarginPadding u-mr--16" fxFlex="33%">
@@ -237,14 +163,7 @@
                         <mat-datepicker #clientExtensionEndDatePicker></mat-datepicker>
                     </mat-form-field>
                 </div>
-            </div>
-        </div>
 
-        <div fxLayout="row" fxLayoutAlign="center center" class="u-w--100 u-mt--30">
-            <div fxFlex="20%" fxLayoutAlign="end center">
-                <h3 class="section-header--block">Invoicing</h3>
-            </div>
-            <div fxFlex="80%" class="workflow-form__border-left">
                 <h2 class="workflow-gray--header">Invoicing Entity</h2>
                 <div fxLayout="row" fxLayoutAlign="start center" class="u-w--100 u-mb--20">
                     <mat-form-field appearance="fill" class="u-w--100 formFieldNoMarginPadding filter-select" fxFlex="33%">
@@ -265,7 +184,7 @@
                         </mat-button-toggle>
                     </mat-button-toggle-group>
                 </div>
-                <span [ngSwitch]="salesMainClientDataForm.clientRateAndInvoicing?.value?.name">
+                <div class="u-w--100" [ngSwitch]="salesMainClientDataForm.clientRateAndInvoicing?.value?.name">
                     <ng-container *ngSwitchCase="'Time based'">
                         <div fxLayout="row" fxLayoutAlign="start start" class="u-w--100 u-mb--20">
                             <mat-form-field appearance="fill" class="u-w--100 formFieldNoMarginPadding u-mr--16" fxFlex="0 0 calc(16.5% - 8px)">
@@ -314,7 +233,7 @@
                     </ng-container>
                     <ng-container *ngSwitchDefault>
                     </ng-container>
-                </span>
+                </div>
 
                 <h2 class="workflow-gray--header">Client Invoicing Reference Person</h2>
                 <div fxLayout="row" fxLayoutAlign="start center" class="u-w--100 u-mb--20">
@@ -478,207 +397,21 @@
                             {{clientSpecialFeesActive ? 'Delete client fees' : 'Add client fees'}}
                     </button>
                 </div>
+            </form>
+        </mat-expansion-panel>
 
-            </div>
-        </div>
-    </form>
-
-    <div fxLayout="row" fxLayoutAlign="start center" class="u-w--100 u-mt--60">
-        <div fxFlex="20%" fxLayoutAlign="end center">
-            <h1 class="section-header--main">Additional data</h1>
-        </div>
-        <div fxFlex="80%">
-            <h2 class="section-header--top">Additional data</h2>
-        </div>
-    </div>
-    <form fxLayout="column" fxLayoutAlign="start start" [formGroup]="additionalDataForm" class="workflow-form--sales u-w--100">
-        <div fxLayout="row" fxLayoutAlign="center center" class="u-w--100 u-mt--30">
-            <div fxFlex="20%" fxLayoutAlign="end center">
-                <h3 class="section-header--block">Additional data</h3>
-            </div>
-            <div fxFlex="80%" class="workflow-form__border-left">
-                <h2 class="workflow-gray--header">Internal Notice, Contract Expires</h2>
-                <div fxLayout="row" fxLayoutAlign="start start" class="u-w--100 u-mb--20">
-                    <mat-form-field appearance="fill" class="u-w--100 formFieldNoMarginPadding filter-select" fxFlex="33%">
-                        <mat-label>Notification</mat-label>
-                        <mat-select formControlName="notification" [disableOptionCentering]="true">
-                            <mat-option *ngFor="let item of [0,1,2,3]" [value]="item">
-                                {{ item }}
-                            </mat-option>
-                        </mat-select>
-                    </mat-form-field>
-                </div>
-
-                <h2 class="workflow-gray--header">Project Category</h2>
-                <div fxLayout="row" fxLayoutAlign="start center" class="u-w--100 u-mb--20">
-                    <mat-form-field appearance="fill" class="u-w--100 formFieldNoMarginPadding filter-select u-mr--16" fxFlex="33%">
-                        <mat-label>Project Category</mat-label>
-                        <mat-select formControlName="projectCategory" [disableOptionCentering]="true">
-                            <mat-option *ngFor="let item of [0,1,2,3]" [value]="item">
-                                {{ item }}
-                            </mat-option>
-                        </mat-select>
-                    </mat-form-field>
-                </div>
-
-                <h2 class="workflow-gray--header">Project Description</h2>
-                <div fxLayout="row" fxLayoutAlign="start start" class="u-w--100 u-mb--20">
-                    <mat-form-field appearance="fill" class="u-w--100 textarea-input formFieldNoMarginPadding u-mr--16" fxFlex="100%">
-                        <mat-label>Project Description</mat-label>
-                        <textarea matInput autocomplete="new-password" name="projectDescription" formControlName="projectDescription">
-                        </textarea>
-                    </mat-form-field>
-                </div>
-
-                <h2 class="workflow-gray--header">Workplace</h2>
-                <div fxLayout="row" fxLayoutAlign="start center" class="u-w--100 u-mb--20">
-                    <mat-form-field appearance="fill" class="u-w--100 formFieldNoMarginPadding filter-select u-mr--16" fxFlex="33%">
-                        <mat-label>Project</mat-label>
-                        <mat-select formControlName="workplace" [disableOptionCentering]="true">
-                            <mat-option *ngFor="let item of [0,1,2,3]" [value]="item">
-                                {{ item }}
-                            </mat-option>
-                        </mat-select>
-                    </mat-form-field>
-                </div>
-
-                <h2 class="workflow-gray--header">Expected Workload</h2>
-                <div fxLayout="row" fxLayoutAlign="start center" class="u-w--100 u-mb--20">
-                    <mat-form-field appearance="fill" class="u-w--100 mat-elevation-z0 formFieldNoMarginPadding u-mr--16" fxFlex="33%">
-                        <mat-label>Hours</mat-label>
-                        <input autocomplete="off" matInput formControlName="expectedWorkloadHours" placeholder="Hours" type="text">
-                    </mat-form-field>
-
-                    <mat-form-field appearance="fill" class="u-w--100 formFieldNoMarginPadding filter-select u-mr--16" fxFlex="33%">
-                        <mat-label>Period</mat-label>
-                        <mat-select formControlName="expectedWorkloadPeriod" [disableOptionCentering]="true">
-                            <mat-option *ngFor="let item of [0,1,2,3]" [value]="item">
-                                {{ item }}
-                            </mat-option>
-                        </mat-select>
-                    </mat-form-field>
-
-                    <mat-checkbox color="accent" formControlName="expectedWorkloadNA" name="expectedWorkloadNA" class="green-checkbox">
-                        N / A
-                    </mat-checkbox>
-                </div>
-
-                <h2 class="workflow-gray--header">Time Reporting</h2>
-                <div fxLayout="row" fxLayoutAlign="start center" class="u-w--100 u-mb--20">
-                    <mat-form-field appearance="fill" class="u-w--100 formFieldNoMarginPadding filter-select u-mr--16" fxFlex="33%">
-                        <mat-label>Cap</mat-label>
-                        <mat-select formControlName="timeReportingCap" [disableOptionCentering]="true">
-                            <mat-option *ngFor="let item of [0,1,2,3]" [value]="item">
-                                {{ item }}
-                            </mat-option>
-                        </mat-select>
-                    </mat-form-field>
-
-                    <mat-checkbox color="accent" formControlName="timeReportingNoCap" name="timeReportingNoCap" class="green-checkbox">
-                        No cap
-                    </mat-checkbox>
-                </div>
-
-                <h2 class="workflow-gray--header">Margin</h2>
-                <div fxLayout="row" fxLayoutAlign="start start" class="u-w--100 u-mb--20">
-                    <mat-form-field appearance="fill" class="u-w--100 formFieldNoMarginPadding filter-select" fxFlex="33%">
-                        <mat-label>High/Low Margin</mat-label>
-                        <mat-select formControlName="highLowMargin" [disableOptionCentering]="true">
-                            <mat-option *ngFor="let item of margins" [value]="item.id">
-                                {{ item.name }}
-                            </mat-option>
-                        </mat-select>
-                    </mat-form-field>
-                </div>
-
-                <h2 class="workflow-gray--header">Discounts</h2>
-                <div fxLayout="row" fxLayoutAlign="start center" class="u-w--100 u-mb--20">
-                    <mat-form-field appearance="fill" class="u-w--100 formFieldNoMarginPadding filter-select u-mr--16" fxFlex="33%">
-                        <mat-label>Discounts</mat-label>
-                        <mat-select formControlName="discounts" [disableOptionCentering]="true">
-                            <mat-option *ngFor="let item of [0,1,2,3]" [value]="item">
-                                {{ item }}
-                            </mat-option>
-                        </mat-select>
-                    </mat-form-field>
-
-                    <mat-checkbox color="accent" formControlName="isDiscounts" name="isDiscounts" class="green-checkbox">
-                        None
-                    </mat-checkbox>
-                </div>
-
-                <h2 class="workflow-gray--header">Fees</h2>
-                <div fxLayout="row" fxLayoutAlign="start center" class="u-w--100 u-mb--20">
-                    <mat-form-field appearance="fill" class="u-w--100 formFieldNoMarginPadding filter-select u-mr--16" fxFlex="33%">
-                        <mat-label>Fees</mat-label>
-                        <mat-select formControlName="fees" [disableOptionCentering]="true">
-                            <mat-option *ngFor="let item of [0,1,2,3]" [value]="item">
-                                {{ item }}
-                            </mat-option>
-                        </mat-select>
-                    </mat-form-field>
-
-                    <mat-checkbox color="accent" formControlName="isFees" name="isFees" class="green-checkbox">
-                        None
-                    </mat-checkbox>
-                </div>
-
-                <h2 class="workflow-gray--header">Commision</h2>
-                <div fxLayout="row" fxLayoutAlign="start center" class="u-w--100 u-mb--20">
-                    <mat-form-field appearance="fill" class="u-w--100 formFieldNoMarginPadding filter-select u-mr--16" fxFlex="33%">
-                        <mat-label>Commision</mat-label>
-                        <mat-select formControlName="comission" [disableOptionCentering]="true">
-                            <mat-option *ngFor="let item of [0,1,2,3]" [value]="item">
-                                {{ item }}
-                            </mat-option>
-                        </mat-select>
-                    </mat-form-field>
-
-                    <mat-checkbox color="accent" formControlName="isComission" name="isComission" class="green-checkbox">
-                        None
-                    </mat-checkbox>
-                </div>
-
-                <h2 class="workflow-gray--header">Remarks</h2>
-                <div fxLayout="row" fxLayoutAlign="start start" class="u-w--100 u-mb--20">
-                    <mat-form-field appearance="fill" class="u-w--100 formFieldNoMarginPadding textarea-input u-mr--16" fxFlex="0 0 calc(66% + 16px)">
-                        <mat-label>Remarks</mat-label>
-                        <textarea matInput autocomplete="new-password" name="remarks" formControlName="remarks">
-                        </textarea>
-                    </mat-form-field>
-
-                    <mat-checkbox color="accent" formControlName="isRemarks" name="isRemarks" class="green-checkbox u-mt--10">
-                        None
-                    </mat-checkbox>
-                </div>
-            </div>
-        </div>
-
-    </form>
-
-    <form fxLayout="column" fxLayoutAlign="start start" [formGroup]="consultantsForm" class="workflow-form--consultants u-w--100" id="consultantData">
-        <ng-container formArrayName="consultantData">
-            <ng-container *ngFor="let consultant of consultantsForm.consultantData.controls; let i = index" [formGroupName]="i">
-                <div fxLayout="row" fxLayoutAlign="start center" class="u-w--100 u-mt--60">
-                    <div fxFlex="20%" fxLayoutAlign="end center">
-                        <h1 class="section-header--main">Consultants data</h1>
-                    </div>
-                    <div fxFlex="80%" fxLayout="row" fxLayoutAlign="start center">
-                        <h2 class="section-header--top">Consultants data {{i}}</h2>
-                        <button *ngIf="consultantsForm.consultantData?.controls?.length && consultantsForm.consultantData.controls.length > 1" mat-icon-button (click)="removeConsultant(i)">
-                            <mat-icon>delete</mat-icon>
-                        </button>
-                    </div>
-                </div>
-                <!-- <span>
-                    CONSULTANT DATA
-                </span> -->
-
-                <div fxLayout="row" fxLayoutAlign="center center" class="u-w--100 u-mt--30">
-                    <div fxFlex="20%" fxLayoutAlign="end center">
-                        <h3 class="section-header--block">Consultant</h3>
-                    </div>
-                    <div fxFlex="80%" class="workflow-form__border-left">
+        <form [formGroup]="consultantsForm" class="workflow-form--consultants u-w--100" id="consultantData">
+            <ng-container formArrayName="consultantData">
+                <mat-expansion-panel *ngFor="let consultant of consultantsForm.consultantData.controls; let i = index" [formGroupName]="i" class="mat-elevation-z0">
+                    <mat-expansion-panel-header  [collapsedHeight]="'80px'" [expandedHeight]="'80px'">
+                        <div fxLayout="row" fxLayoutAlign="start center">
+                            <span>
+                                Consultants data
+                            </span>
+                            <button *ngIf="consultantsForm.consultantData?.controls?.length && consultantsForm.consultantData.controls.length > 1" mat-icon-button (click)="removeConsultant(i)"><mat-icon>delete</mat-icon></button>
+                        </div>
+                    </mat-expansion-panel-header>
+                    <div class="workflow-form">
                         <h2 class="workflow-gray--header">Consultant</h2>
                         <div fxLayout="row" fxLayoutAlign="start start" class="u-w--100 u-mb--20">
                             <mat-form-field appearance="fill" class="u-w--100 formFieldNoMarginPadding filter-select u-mr--16" fxFlex="33%">
@@ -798,12 +531,13 @@
                             </mat-checkbox>
                         </div>
                     </div>
+                </mat-expansion-panel>
+                <div fxLayout="row" fxLayoutAlign="center center" class="u-w--100">
+                    <button color="primary" class="button-outlined mat-elevation-z0 u-mt--10 u-mb--20" mat-raised-button (click)="addConsultantForm()">Add consultant</button>
                 </div>
             </ng-container>
-            <div fxLayout="row" fxLayoutAlign="center center" class="u-w--100">
-                <button color="primary" class="button-outlined mat-elevation-z0 u-mt--10 u-mb--20" mat-raised-button (click)="addConsultantForm()">Add consultant</button>
-            </div>
-        </ng-container>
-    </form>
+        </form>
+
+    </mat-accordion>
 
 </div>

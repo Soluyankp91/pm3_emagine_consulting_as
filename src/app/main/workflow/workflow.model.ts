@@ -22,15 +22,30 @@ export class WorkflowSalesExtensionForm extends FormGroup {
     get salesExtension() {
         return this.get('salesExtension') as FormArray;
     }
-    // get extensionEndDate() {
-    //     return this.get('extensionEndDate');
+}
+
+export class WorkflowExtensionForm extends FormGroup {
+    constructor() {
+        super({
+            // salesExtension: new FormArray([])
+            extensionEndDate: new FormControl(null),
+            noExtensionEndDate: new FormControl(null),
+            workflowInformation: new FormControl(null)
+        })
+
+    }
+    // get salesExtension() {
+    //     return this.get('salesExtension') as FormArray;
     // }
-    // get noExtensionEndDate() {
-    //     return this.get('noExtensionEndDate');
-    // }
-    // get workflowInformation() {
-    //     return this.get('workflowInformation');
-    // }
+    get extensionEndDate() {
+        return this.get('extensionEndDate');
+    }
+    get noExtensionEndDate() {
+        return this.get('noExtensionEndDate');
+    }
+    get workflowInformation() {
+        return this.get('workflowInformation');
+    }
 }
 
 export class WorkflowTerminationSalesForm extends FormGroup {
@@ -126,14 +141,19 @@ export const TopMenuTabs: SideMenuTabsDto[] = [
         index: 1
     },
     {
-        name: 'Sales',
-        displayName: 'Sales',
+        name: 'Workflow',
+        displayName: 'Workflow',
         index: 1
     },
     {
-        name: 'Consultants',
-        displayName: 'Consultants',
+        name: 'Extension1',
+        displayName: 'Extension 1',
         index: 1
+    },
+    {
+        name: 'Extension2',
+        displayName: 'Extension 2',
+        index: 2
     },
     {
         name: 'Contracts',
@@ -246,3 +266,66 @@ export const WorkflowList = [
         isDeleted: true
     }
 ];
+
+// Workflow progress status
+
+export class WorkflowProgressStatus implements IWorkflowProgressStatus {
+    started: boolean | undefined;
+    isExtensionAdded: boolean | undefined;
+    currentlyActiveExtensionIndex: number | undefined;
+    isExtensionCompleted: boolean | undefined;
+    isPrimaryWorkflowSaved: boolean | undefined;
+    isPrimaryWorkflowCompleted: boolean | undefined;
+    currentlyActiveSection: number | undefined;
+    currentlyActiveStep: number | undefined;
+
+    constructor(
+        started?: boolean,
+        isExtensionAdded?: boolean,
+        currentlyActiveExtensionIndex?: number,
+        isExtensionCompleted?: boolean,
+        isPrimaryWorkflowSaved?: boolean,
+        isPrimaryWorkflowCompleted?: boolean,
+        currentlyActiveSection?: number,
+        currentlyActiveStep?: number) {
+            this.started = started;
+            this.isExtensionAdded = isExtensionAdded;
+            this.currentlyActiveExtensionIndex = currentlyActiveExtensionIndex;
+            this.isExtensionCompleted = isExtensionCompleted;
+            this.isPrimaryWorkflowSaved = isPrimaryWorkflowSaved;
+            this.isPrimaryWorkflowCompleted = isPrimaryWorkflowCompleted;
+            this.currentlyActiveSection = currentlyActiveSection;
+            this.currentlyActiveStep = currentlyActiveStep;
+    }
+}
+
+export interface IWorkflowProgressStatus {
+    started: boolean | undefined,
+    isExtensionAdded: boolean | undefined,
+    isExtensionCompleted: boolean | undefined,
+    isPrimaryWorkflowSaved: boolean | undefined,
+    isPrimaryWorkflowCompleted: boolean | undefined,
+    currentlyActiveSection: number | undefined,
+    currentlyActiveStep: number | undefined,
+}
+
+export enum WorkflowSections {
+    Overview = 1,
+    Workflow = 2,
+    Extension = 3,
+    Termination = 4,
+    ChangesInWF = 5
+}
+
+export enum WorkflowSteps {
+    Sales = 1,
+    Contracts = 2,
+    Accounts = 3
+}
+
+
+export const WorkflowStepList: { [key: number]: string } = {
+    1: "Sales",
+    2: "Contracts",
+    3: "Accounts",
+}

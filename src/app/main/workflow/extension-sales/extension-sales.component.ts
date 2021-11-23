@@ -1,6 +1,7 @@
 import { Component, Input, OnInit } from '@angular/core';
 import { FormArray, FormBuilder, FormControl } from '@angular/forms';
-import { WorkflowSalesExtensionForm } from '../workflow.model';
+import { WorkflowDataService } from '../workflow-data.service';
+import { WorkflowExtensionForm, WorkflowSalesExtensionForm, WorkflowSteps } from '../workflow.model';
 
 @Component({
     selector: 'app-extension-sales',
@@ -10,13 +11,22 @@ import { WorkflowSalesExtensionForm } from '../workflow.model';
 export class ExtensionSalesComponent implements OnInit {
     @Input() selectedIndex: number;
     salesExtensionForm: WorkflowSalesExtensionForm;
+    extensionForm: WorkflowExtensionForm;
     constructor(
+        public _workflowDatService: WorkflowDataService,
         private _fb: FormBuilder
     ) {
         this.salesExtensionForm = new WorkflowSalesExtensionForm();
+        this.extensionForm = new WorkflowExtensionForm();
     }
 
     ngOnInit(): void {
+        // this.initSalesExtensionForm();
+    }
+
+    initPage() {
+        this._workflowDatService.workflowProgress.currentlyActiveStep = WorkflowSteps.Sales;
+        console.log('extInit');
     }
 
     initSalesExtensionForm() {
@@ -26,6 +36,7 @@ export class ExtensionSalesComponent implements OnInit {
             workflowInformation: new FormControl(null)
         });
         this.salesExtensionForm.salesExtension.push(form);
+        console.log('ss');
     }
 
     get salesExtension() {

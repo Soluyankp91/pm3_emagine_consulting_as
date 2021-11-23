@@ -67,18 +67,18 @@
 
 .workflow-toggle-buttons {
     &.mat-button-toggle-group-appearance-standard {
-        border: 0 !important;
-        border-radius: 0;
         .mat-button-toggle {
             margin-right: 16px;
             color: #384853;
             font-weight: 700;
-            background-color: #EDEDED;
-            border: 0 !important;
+            background-color: #fff;
+            border: 1px solid #B6B4B2;
             border-radius: 5px;
             height: 55px;
             min-width: 125px;
         }
+        border: 0 !important;
+        border-radius: 0;
 
         .mat-button-toggle-label-content {
             line-height: 55px;
@@ -88,14 +88,15 @@
         .mat-button-toggle.mat-button-toggle-checked {
             color: #FFF;
             font-weight: 700;
-            background-color: #546E7A;
+            background-color: #4A4E60;
+            border: 1px solid #4A4E60;
             .mat-button-toggle-focus-overlay {
                 border-bottom: solid 55px;
             }
         }
 
-        .mat-button-toggle + .mat-button-toggle {
-            border: 0 !important;
-        }
+        // .mat-button-toggle + .mat-button-toggle {
+
+        // }
     }
 }

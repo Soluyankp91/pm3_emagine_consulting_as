@@ -2,7 +2,7 @@ import { Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
 import { finalize } from 'rxjs/operators';
 import { EnumEntityTypeDto, EnumServiceProxy } from 'src/shared/service-proxies/service-proxies';
-import { SideMenuTabs, SideMenuTabsDto, TopMenuTabs } from './workflow.model';
+import { IWorkflowProgressStatus, SideMenuTabs, SideMenuTabsDto, TopMenuTabs, WorkflowProgressStatus } from './workflow.model';
 
 @Injectable({
     providedIn: 'root'
@@ -27,6 +27,8 @@ export class WorkflowDataService {
 
     sideMenuTabs: SideMenuTabsDto[] = SideMenuTabs;
     topMenuTabs: SideMenuTabsDto[] = TopMenuTabs;
+
+    workflowProgress: WorkflowProgressStatus = new WorkflowProgressStatus();
     constructor(
         private _enumService: EnumServiceProxy
     ) { }
@@ -347,5 +349,22 @@ export class WorkflowDataService {
                     });
             }
         });
+    }
+
+    updateWorkflowProgressStatus(status: WorkflowProgressStatus) {
+        this.workflowProgress = {
+            started: status.started,
+            isExtensionAdded: status.isExtensionAdded,
+            currentlyActiveExtensionIndex: status.currentlyActiveExtensionIndex,
+            isExtensionCompleted: status.isExtensionCompleted,
+            isPrimaryWorkflowSaved: status.isPrimaryWorkflowSaved,
+            isPrimaryWorkflowCompleted: status.isPrimaryWorkflowCompleted,
+            currentlyActiveSection: status.currentlyActiveSection,
+            currentlyActiveStep: status.currentlyActiveStep
+        }
+    }
+
+    get getWorkflowProgress() {
+        return this.workflowProgress;
     }
 }

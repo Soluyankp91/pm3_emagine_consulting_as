@@ -57,12 +57,13 @@
             margin: 0 !important;
         }
         .mat-expansion-panel {
-            background: #fff;
-            border-radius: 5px !important;
+            background: #FAF9FB;
+            border-radius: 0 !important;
             width: 100%;
-            margin-bottom: 10px !important;
+            margin-bottom: 0 !important;
+            border-bottom: 1px solid #E7E3E8;
             .mat-expansion-indicator::after {
-                border: solid #17A297;
+                border: solid #4A4E60;
                 border-width: 0 2px 2px 0;
                 display: inline-block;
                 padding: 2px;
@@ -85,7 +86,11 @@
             font-weight: bold;
             font-size: 16px;
             text-transform: uppercase;
-            color: #17A297;
+            color: #4A4E60;
+            // padding-left: 165px !important;
+            .mat-content {
+                margin-left: 5px;
+            }
         }
     }
 }

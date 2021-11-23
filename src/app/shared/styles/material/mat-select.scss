@@ -2,8 +2,9 @@
 .filter-select,
 .client-documents--contract-filter__select {
     .mat-form-field-flex {
-        background-color: rgba(0, 0, 0, .07) !important;
+        background-color: rgba(255, 255, 255, .77) !important;
         border-radius: 5px;
+        border: 1px solid #B6B4B2;
         min-height: 45px;
     }
 
@@ -47,12 +48,17 @@
         }
     }
 
+    .mat-select-value {
+        color: rgba(56, 72, 83, 0.87);
+        font-weight: 700;
+    }
+
     .mat-option.mat-selected:not(.mat-option-disabled) {
         color: #546E7A;
     }
 
     .mat-select-arrow {
-        border: solid #17A297;
+        border: solid #4A4E60;
         border-width: 0 2px 2px 0;
         display: inline-block;
         padding: 5px;
@@ -73,8 +79,16 @@
 }
 
 .mat-select-panel {
-    .mat-option.mat-selected:not(.mat-option-disabled) {
-        color: #546E7A;
+    .mat-option {
+        color: rgba(56, 72, 83, 0.87) !important;
+        font-weight: 700;
+        &:hover:not(.mat-option-disabled),
+        &:focus:not(.mat-option-disabled),
+        &.mat-active,
+        &.mat-selected:not(.mat-option-disabled) {
+            // color: #546E7A;
+            background: rgba(23, 162, 151, 0.07);
+        }
     }
 }
 
