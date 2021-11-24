@@ -183,7 +183,7 @@ export class WorkflowDetailsComponent implements OnInit, OnDestroy {
     // new
     expandCollapseHeader() {
         this.isExpanded = !this.isExpanded;
-        this.salesScrollbar.update();
+        // this.salesScrollbar.update();
     }
 
     tabChanged(event: MatTabChangeEvent) {
@@ -225,6 +225,7 @@ export class WorkflowDetailsComponent implements OnInit, OnDestroy {
 
     isExpandedAndToolbarVisible() {
         if (this.isExpanded) {
+            // NB: because overview doesn't have sticky-bottom toolbar
             if (this.selectedTabName !== 'Overview') {
                 return 'calc(80vh - 110px)';
             } else {

@@ -90,6 +90,18 @@
                         <app-extension-sales #extensionSales [selectedIndex]="extensionIndex - 1"></app-extension-sales>
                     </ng-scrollbar>
                 </div>
+
+                <div class="workflow-form--panel u-w--100" *ngIf="selectedTabName === 'Termination'" [ngStyle]="{'height': isExpandedAndToolbarVisible()}">
+                    <ng-scrollbar #salesScrollbar>
+                        <app-extension-sales #extensionSales [selectedIndex]="extensionIndex - 1"></app-extension-sales>
+                    </ng-scrollbar>
+                </div>
+
+                <div class="workflow-form--panel u-w--100" *ngIf="selectedTabName === 'Consultants'" [ngStyle]="{'height': isExpandedAndToolbarVisible()}">
+                    <ng-scrollbar #salesScrollbar>
+                        <app-extension-sales #extensionSales [selectedIndex]="extensionIndex - 1"></app-extension-sales>
+                    </ng-scrollbar>
+                </div>
                 <!-- </ng-container> -->
             </mat-tab>
             <!-- <mat-tab label="Overview">
