@@ -87,8 +87,7 @@ export class WorkflowComponent implements OnInit, OnDestroy {
     }
 
     navigateToWorkflowDetails(workflowId: string): void {
-        // this.router.navigate(['/main/workflow', workflowId]);
-        this.router.navigate(['/main/workflow-test', workflowId]);
+        this.router.navigate(['/main/workflow', workflowId]);
     }
 
     createWorkflow() {

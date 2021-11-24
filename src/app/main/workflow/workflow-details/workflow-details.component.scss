@@ -1,46 +1,79 @@
 .workflow {
-    padding: 10px 16px;
-    &-sidebar {
-        box-shadow: 0px 0px 20px rgba(26, 35, 126, 0.15);
-        border-radius: 5px;
-        background: rgba(23, 162, 151, 0.04);
-        height: calc(100vh - 20px);
-        width: calc(20% - 36px);
-        position: fixed;
-
-        &--stepper {
-            height: calc(85vh - 20px);
+    height: 100vh;
+    &-header {
+        padding: 32px 75px;
+        background-color: #fff;
+        &--title {
+            font-family: 'IBM Plex Mono', monospace !important;
+            color: rgba(56, 72, 83, 0.87);
+            font-size: 18px;
+            line-height: 18px;
         }
-        &--actions {
-            height: calc(15vh - 20px);
+        &--client {
+            font-family: 'IBM Plex Mono', monospace !important;
+            color: rgba(56, 72, 83, 0.87);
+            font-size: 46px;
+            line-height: 46px;
         }
-        &--content {
-            display: flex;
-            flex-direction: column;
-            width: 100%;
-            height: 100%;
-        }
-        &--container {
-            overflow: hidden;
-        }
-    }
-
-    &-form {
-        &--sales,
-        &--consultants,
-        &--summary {
-            h2:not(.workflow-green--header) {
-                margin-bottom: 8px !important;
-                font-weight: bold;
-                font-size: 16px;
-                line-height: 16px;
-                color: rgba(56, 72, 83, 0.87);
+        &--status {
+            font-family: 'IBM Plex Mono', monospace !important;
+            color: rgba(56, 72, 83, 0.87);
+            font-size: 14px;
+            line-height: 14px;
+            &__icon {
+                border: 1px solid;
+                border-radius: 50%;
+                width: 14px;
+                height: 14px;
+                margin-right: 5px;
             }
         }
     }
     &-content {
-        height: 100vh;
-        overflow-y: scroll;
+        background-color: #FAF9FB;
+    }
+
+    &-form {
+        // &--sales,
+        // &--consultants,
+        // &--summary {
+        //     h2:not(.workflow-green--header) {
+        //         margin-bottom: 8px !important;
+        //         font-weight: bold;
+        //         font-size: 16px;
+        //         line-height: 16px;
+        //         color: rgba(56, 72, 83, 0.87);
+        //     }
+        // }
+        &--panel {
+            // background: #FFFFFF;
+            padding: 16px 75px;
+            // height: calc(80vh - 50px);
+            // h2:not(.workflow-green--header) {
+            //     margin-bottom: 8px !important;
+            //     font-weight: bold;
+            //     font-size: 16px;
+            //     line-height: 16px;
+            //     color: rgba(56, 72, 83, 0.87);
+            // }
+        }
+    }
+    &-content {
+        // height: 80vh;
+        position: relative;
+        overflow-y: hidden;
+        &--expand {
+            position: absolute;
+            right: 0;
+            color: rgba(56, 72, 83, 0.87);
+            z-index: 999;
+            mat-icon {
+                width: 36px;
+                height: 36px;
+                line-height: 36px;
+                font-size: 36px;
+            }
+        }
     }
     &-panel {
         background: #FFFFFF;
@@ -63,9 +96,16 @@
         text-transform: uppercase;
         color: #17A297;
     }
-}
 
-
-.hide {
-    display: none;
+    &-controls {
+        position: sticky;
+        bottom: 0;
+        background-color: #fff;
+        height: 60px;
+        padding: 0 75px;
+        box-shadow: 0px 0px 20px rgba(26, 35, 126, 0.15);
+        button {
+            width: 150px;
+        }
+    }
 }
