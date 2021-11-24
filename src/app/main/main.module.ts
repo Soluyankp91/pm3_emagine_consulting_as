@@ -26,8 +26,6 @@ import { ExtensionSalesComponent } from './workflow/extension-sales/extension-sa
 import { WorkflowSalesComponent } from './workflow/workflow-sales/workflow-sales.component';
 import { WorkflowDetailsComponent } from './workflow/workflow-details/workflow-details.component';
 import { WorkflowContractsComponent } from './workflow/workflow-contracts/workflow-contracts.component';
-import { WorkflowSecondComponent } from './workflow/workflow-second/workflow-second.component';
-import { WorkflowThirdComponent } from './workflow/workflow-third/workflow-third.component';
 import { WorkflowOverviewComponent } from './workflow/workflow-overview/workflow-overview.component';
 import { PrimaryWorkflowComponent } from './workflow/primary-workflow/primary-workflow.component';
 
@@ -59,8 +57,6 @@ import { PrimaryWorkflowComponent } from './workflow/primary-workflow/primary-wo
         WorkflowSalesComponent,
         WorkflowDetailsComponent,
         WorkflowContractsComponent,
-        WorkflowSecondComponent,
-        WorkflowThirdComponent,
         WorkflowOverviewComponent,
         PrimaryWorkflowComponent
     ],
