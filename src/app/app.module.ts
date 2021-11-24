@@ -19,7 +19,7 @@ import { environment } from 'src/environments/environment';
 const isIE = window.navigator.userAgent.indexOf("MSIE ") > -1 || window.navigator.userAgent.indexOf("Trident/") > -1; // Remove this line to use Angular Universal
 
 export function loggerCallback(logLevel: LogLevel, message: string) {
-    console.log(message);
+    // console.log(message);
 }
 
 export function MSALInstanceFactory(): IPublicClientApplication {

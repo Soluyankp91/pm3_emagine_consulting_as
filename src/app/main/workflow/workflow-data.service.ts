@@ -351,17 +351,31 @@ export class WorkflowDataService {
         });
     }
 
-    updateWorkflowProgressStatus(status: WorkflowProgressStatus) {
-        this.workflowProgress = {
-            started: status.started,
-            isExtensionAdded: status.isExtensionAdded,
-            currentlyActiveExtensionIndex: status.currentlyActiveExtensionIndex,
-            isExtensionCompleted: status.isExtensionCompleted,
-            isPrimaryWorkflowSaved: status.isPrimaryWorkflowSaved,
-            isPrimaryWorkflowCompleted: status.isPrimaryWorkflowCompleted,
-            currentlyActiveSection: status.currentlyActiveSection,
-            currentlyActiveStep: status.currentlyActiveStep
+    updateWorkflowProgressStatus(status: Partial<WorkflowProgressStatus>) {
+        for (const update in status) {
+            const key = update as keyof WorkflowProgressStatus;
+            if (status[key] !== null && status[key] !== undefined) {
+                (this.workflowProgress[key] as any) = status[key];
+            }
         }
+
+        console.log(this.workflowProgress);
+
+        // this.workflowProgress = {
+        //     started: status.started,
+        //     isExtensionAdded: status.isExtensionAdded,
+        //     currentlyActiveExtensionIndex: status.currentlyActiveExtensionIndex,
+        //     isExtensionCompleted: status.isExtensionCompleted,
+        //     isExtensionSalesSaved: status.isExtensionSalesSaved,
+        //     isExtensionContractsSaved: status.isExtensionContractsSaved,
+        //     isWorkflowSalesSaved: status.isWorkflowSalesSaved,
+        //     isWorkflowContractsSaved: status.isWorkflowContractsSaved,
+        //     isWorkflowAccountsSaved: status.isWorkflowAccountsSaved,
+        //     isPrimaryWorkflowCompleted: status.isPrimaryWorkflowCompleted,
+        //     isTerminationAdded: status.isTerminationAdded,
+        //     currentlyActiveSection: status.currentlyActiveSection,
+        //     currentlyActiveStep: status.currentlyActiveStep
+        // }
     }
 
     get getWorkflowProgress() {

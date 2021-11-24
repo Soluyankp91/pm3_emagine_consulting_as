@@ -14,7 +14,7 @@
     </div>
     <div fxFlex="80%">
         <ng-container *ngIf="selectedStep === 'Sales'">
-            <app-workflow-sales [workflowId]="workflowId"></app-workflow-sales>
+            <app-workflow-sales #workflowSales [workflowId]="workflowId"></app-workflow-sales>
         </ng-container>
         <ng-container *ngIf="selectedStep === 'Contracts'">
             <app-workflow-contracts></app-workflow-contracts>

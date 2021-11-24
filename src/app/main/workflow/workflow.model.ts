@@ -77,49 +77,6 @@ export class WorkflowTerminationSalesForm extends FormGroup {
 }
 
 // Sales step data
-
-export const SaleTypes = [
-    {
-        id: 1,
-        name: 'T&M'
-    },
-    {
-        id: 2,
-        name: 'Referred'
-    },
-    {
-        id: 3,
-        name: 'Managed Service'
-    },
-    {
-        id: 4,
-        name: 'Fee Only'
-    },
-    {
-        id: 5,
-        name: 'Recruitment'
-    }
-];
-
-export const DeliveryTypes = [
-    {
-        id: 1,
-        name: 'Managed Service'
-    },
-    {
-        id: 2,
-        name: 'Normal'
-    },
-    {
-        id: 3,
-        name: 'Offshore'
-    },
-    {
-        id: 4,
-        name: 'Nearshore'
-    }
-];
-
 export class SideMenuTabsDto {
     name: string;
     displayName: string;
@@ -145,26 +102,26 @@ export const TopMenuTabs: SideMenuTabsDto[] = [
         displayName: 'Workflow',
         index: 1
     },
-    {
-        name: 'Extension1',
-        displayName: 'Extension 1',
-        index: 1
-    },
-    {
-        name: 'Extension2',
-        displayName: 'Extension 2',
-        index: 2
-    },
-    {
-        name: 'Contracts',
-        displayName: 'Contracts',
-        index: 1
-    },
-    {
-        name: 'Accounts',
-        displayName: 'Accounts',
-        index: 1
-    }
+    // {
+    //     name: 'Extension1',
+    //     displayName: 'Extension 1',
+    //     index: 1
+    // },
+    // {
+    //     name: 'Extension2',
+    //     displayName: 'Extension 2',
+    //     index: 2
+    // },
+    // {
+    //     name: 'Contracts',
+    //     displayName: 'Contracts',
+    //     index: 1
+    // },
+    // {
+    //     name: 'Accounts',
+    //     displayName: 'Accounts',
+    //     index: 1
+    // }
 ];
 
 export interface IWorkflowNavigationStep {
@@ -274,8 +231,13 @@ export class WorkflowProgressStatus implements IWorkflowProgressStatus {
     isExtensionAdded: boolean | undefined;
     currentlyActiveExtensionIndex: number | undefined;
     isExtensionCompleted: boolean | undefined;
-    isPrimaryWorkflowSaved: boolean | undefined;
+    isExtensionSalesSaved: boolean | undefined;
+    isExtensionContractsSaved: boolean | undefined;
+    isWorkflowSalesSaved: boolean | undefined;
+    isWorkflowContractsSaved: boolean | undefined;
+    isWorkflowAccountsSaved: boolean | undefined;
     isPrimaryWorkflowCompleted: boolean | undefined;
+    isTerminationAdded: boolean | undefined;
     currentlyActiveSection: number | undefined;
     currentlyActiveStep: number | undefined;
 
@@ -284,16 +246,26 @@ export class WorkflowProgressStatus implements IWorkflowProgressStatus {
         isExtensionAdded?: boolean,
         currentlyActiveExtensionIndex?: number,
         isExtensionCompleted?: boolean,
-        isPrimaryWorkflowSaved?: boolean,
+        isExtensionSalesSaved?: boolean,
+        isExtensionContractsSaved?: boolean,
+        isWorkflowSalesSaved?: boolean,
+        isWorkflowContractsSaved?: boolean,
+        isWorkflowAccountsSaved?: boolean,
         isPrimaryWorkflowCompleted?: boolean,
+        isTerminationAdded?: boolean,
         currentlyActiveSection?: number,
         currentlyActiveStep?: number) {
             this.started = started;
             this.isExtensionAdded = isExtensionAdded;
             this.currentlyActiveExtensionIndex = currentlyActiveExtensionIndex;
             this.isExtensionCompleted = isExtensionCompleted;
-            this.isPrimaryWorkflowSaved = isPrimaryWorkflowSaved;
+            this.isExtensionSalesSaved = isExtensionSalesSaved;
+            this.isExtensionContractsSaved = isExtensionContractsSaved;
+            this.isWorkflowSalesSaved = isWorkflowSalesSaved;
+            this.isWorkflowContractsSaved = isWorkflowContractsSaved;
+            this.isWorkflowAccountsSaved = isWorkflowAccountsSaved;
             this.isPrimaryWorkflowCompleted = isPrimaryWorkflowCompleted;
+            this.isTerminationAdded = isTerminationAdded;
             this.currentlyActiveSection = currentlyActiveSection;
             this.currentlyActiveStep = currentlyActiveStep;
     }
@@ -303,7 +275,7 @@ export interface IWorkflowProgressStatus {
     started: boolean | undefined,
     isExtensionAdded: boolean | undefined,
     isExtensionCompleted: boolean | undefined,
-    isPrimaryWorkflowSaved: boolean | undefined,
+    isWorkflowSalesSaved: boolean | undefined,
     isPrimaryWorkflowCompleted: boolean | undefined,
     currentlyActiveSection: number | undefined,
     currentlyActiveStep: number | undefined,

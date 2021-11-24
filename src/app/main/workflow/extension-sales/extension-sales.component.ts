@@ -13,7 +13,7 @@ export class ExtensionSalesComponent implements OnInit {
     salesExtensionForm: WorkflowSalesExtensionForm;
     extensionForm: WorkflowExtensionForm;
     constructor(
-        public _workflowDatService: WorkflowDataService,
+        public _workflowDataService: WorkflowDataService,
         private _fb: FormBuilder
     ) {
         this.salesExtensionForm = new WorkflowSalesExtensionForm();
@@ -25,7 +25,7 @@ export class ExtensionSalesComponent implements OnInit {
     }
 
     initPage() {
-        this._workflowDatService.workflowProgress.currentlyActiveStep = WorkflowSteps.Sales;
+        this._workflowDataService.workflowProgress.currentlyActiveStep = WorkflowSteps.Sales;
         console.log('extInit');
     }
 

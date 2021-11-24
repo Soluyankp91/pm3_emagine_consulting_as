@@ -12,8 +12,8 @@
                 </span>
             </div>
         </div>
-        <div fxFlex="40%" fxLayout="column">
-            <div fxLayout="column" style="font-size: 12px;">
+        <div fxFlex="40%" fxLayout="row">
+            <div fxFlex="40%" fxLayout="column wrap" style="font-size: 12px;">
                 <span>
                     Started: {{_workflowDataService.getWorkflowProgress?.started}}
                 </span>
@@ -21,25 +21,49 @@
                     isExtensionAdded: {{_workflowDataService.getWorkflowProgress?.isExtensionAdded}}
                 </span>
                 <span>
-                    currentlyActiveExtensionIndex: {{_workflowDataService.getWorkflowProgress?.currentlyActiveExtensionIndex}}
-                </span>
-                <span>
                     isExtensionCompleted: {{_workflowDataService.getWorkflowProgress?.isExtensionCompleted}}
                 </span>
                 <span>
-                    isPrimaryWorkflowSaved: {{_workflowDataService.getWorkflowProgress?.isPrimaryWorkflowSaved}}
+                    isWorkflowSalesSaved: {{_workflowDataService.getWorkflowProgress?.isWorkflowSalesSaved}}
+                </span>
+                <span>
+                    isWorkflowContractsSaved: {{_workflowDataService.getWorkflowProgress?.isWorkflowContractsSaved}}
+                </span>
+                <span>
+                    isWorkflowAccountsSaved: {{_workflowDataService.getWorkflowProgress?.isWorkflowAccountsSaved}}
                 </span>
                 <span>
                     isPrimaryWorkflowCompleted: {{_workflowDataService.getWorkflowProgress?.isPrimaryWorkflowCompleted}}
                 </span>
+            </div>
+            <div fxFlex="40%" fxLayout="column wrap" style="font-size: 12px;">
                 <span>
                     currentlyActiveSection: {{mapSectionName(_workflowDataService.getWorkflowProgress?.currentlyActiveSection)}}
                 </span>
                 <span>
                     currentlyActiveStep: {{mapStepName(_workflowDataService.getWorkflowProgress?.currentlyActiveStep)}}
                 </span>
+                <span>
+                    currentlyActiveExtensionIndex: {{_workflowDataService.getWorkflowProgress?.currentlyActiveExtensionIndex}}
+                </span>
             </div>
-            <button (click)="initExtensionsStep()" mat-button>Add ext</button>
+            <div fxFlex="20%" fxLayoutAlign="center center">
+                <button mat-icon-button [matMenuTriggerFor]="workflowMenu"><mat-icon>more_horiz</mat-icon></button>
+                <mat-menu #workflowMenu>
+                    <button
+                        mat-menu-item
+                        [disabled]="_workflowDataService.getWorkflowProgress?.isExtensionAdded && !_workflowDataService.getWorkflowProgress?.isExtensionCompleted"
+                        (click)="addExtension()">
+                        Add extension
+                    </button>
+                    <button
+                        mat-menu-item
+                        [disabled]="_workflowDataService.getWorkflowProgress?.isTerminationAdded"
+                        (click)="addTermination()">
+                        Add termination
+                    </button>
+                </mat-menu>
+            </div>
         </div>
     </div>
     <div class="workflow-content u-w--100" fxFlex="{{isExpanded ? '80%' : '100%' }}" [ngStyle]="{'height': isExpanded ? '80vh' : '100vh'}">
@@ -54,18 +78,18 @@
                     </ng-scrollbar>
                 </div>
                 <!-- <ng-container *ngIf="selectedTabName === 'Workflow'"> -->
-                    <div class="workflow-form--panel u-w--100" *ngIf="selectedTabName === 'Workflow'" [ngStyle]="{'height': isExpandedAndToolbarVisible()}">
-                        <ng-scrollbar #salesScrollbar>
-                            <app-primary-workflow [workflowId]="workflowId"></app-primary-workflow>
-                        </ng-scrollbar>
-                    </div>
+                <div class="workflow-form--panel u-w--100" *ngIf="selectedTabName === 'Workflow'" [ngStyle]="{'height': isExpandedAndToolbarVisible()}">
+                    <ng-scrollbar #salesScrollbar>
+                        <app-primary-workflow #primaryWorkflow [workflowId]="workflowId"></app-primary-workflow>
+                    </ng-scrollbar>
+                </div>
                 <!-- </ng-container> -->
                 <!-- <ng-container *ngIf="selectedTabName === 'Extension'"> -->
-                    <div class="workflow-form--panel u-w--100" *ngIf="selectedTabName === 'Extension'" [ngStyle]="{'height': isExpandedAndToolbarVisible()}">
-                        <ng-scrollbar #salesScrollbar>
-                            <app-extension-sales #extensionSales [selectedIndex]="extensionIndex - 1"></app-extension-sales>
-                        </ng-scrollbar>
-                    </div>
+                <div class="workflow-form--panel u-w--100" *ngIf="selectedTabName === 'Extension'" [ngStyle]="{'height': isExpandedAndToolbarVisible()}">
+                    <ng-scrollbar #salesScrollbar>
+                        <app-extension-sales #extensionSales [selectedIndex]="extensionIndex - 1"></app-extension-sales>
+                    </ng-scrollbar>
+                </div>
                 <!-- </ng-container> -->
             </mat-tab>
             <!-- <mat-tab label="Overview">

@@ -13,7 +13,7 @@ export class WorkflowOverviewComponent implements OnInit {
     inPorgress = true;
     notStarted = true;
     constructor(
-        public _workflowDatService: WorkflowDataService
+        public _workflowDataService: WorkflowDataService
     ) { }
 
     ngOnInit(): void {
