@@ -1,218 +1,5 @@
 import { FormArray, FormControl, FormGroup } from "@angular/forms";
 
-// export class WorkflowSalesMainForm extends FormGroup {
-//     constructor() {
-//         super({
-//             salesType: new FormControl(null),
-//             nearshoreOffshore: new FormControl(null),
-//             salesAccountManager: new FormControl(null),
-//             commissionAccountManager: new FormControl(null),
-//             intracompanyAccountManager: new FormControl(null),
-//             PDCIntracompanyUnit: new FormControl(null)
-//         });
-//     }
-
-//     get salesType() {
-//         return this.get('salesType');
-//     }
-//     get nearshoreOffshore() {
-//         return this.get('nearshoreOffshore');
-//     }
-//     get salesAccountManager () {
-//         return this.get('salesAccountManager');
-//     }
-//     get commissionAccountManager () {
-//         return this.get('commissionAccountManager');
-//     }
-//     get intracompanyAccountManager () {
-//         return this.get('intracompanyAccountManager');
-//     }
-//     get PDCIntracompanyUnit () {
-//         return this.get('PDCIntracompanyUnit');
-//     }
-// }
-
-// export class WorkflowSalesClientDataForm extends FormGroup {
-//     constructor() {
-//         super({
-//             directClient: new FormControl(null),
-//             clientInvoicingRecipient: new FormControl(null),
-//             sameAsDirectClient: new FormControl(false),
-//             clientInvoicingReferencePerson: new FormControl(null),
-//             isClientInvoicingNone: new FormControl(false),
-//             evaluationReferencePerson: new FormControl(null),
-//             disableEvaluations: new FormControl(false),
-//             disableEvaluationsReason: new FormControl(null),
-//             clientSigners: new FormArray([]),
-//             specialContractTerms: new FormControl(null),
-//             isSpecialContractTermsNone: new FormControl(false),
-//             invoicingReferenceNumber: new FormControl(null),
-//             clientRateAndInvoicing: new FormControl(null),
-//             clientInvoicingPeriod: new FormControl(null),
-//             clientProjectStartDate: new FormControl(null),
-//             clientProjectEndDate: new FormControl(null),
-//             clientProjectNoEndDate: new FormControl(false),
-//             clientExtensionStartDate: new FormControl(null),
-//             clientExtensionEndDate: new FormControl(null),
-//             clientExtensionNoEndDate: new FormControl(false)
-//         });
-//     }
-
-//     get directClient() {
-//         return this.get('directClient');
-//     }
-//     get clientInvoicingRecipient() {
-//         return this.get('clientInvoicingRecipient');
-//     }
-//     get sameAsDirectClient() {
-//         return this.get('sameAsDirectClient');
-//     }
-//     get clientInvoicingReferencePerson() {
-//         return this.get('clientInvoicingReferencePerson');
-//     }
-//     get isClientInvoicingNone() {
-//         return this.get('isClientInvoicingNone');
-//     }
-//     get evaluationReferencePerson() {
-//         return this.get('evaluationReferencePerson');
-//     }
-//     get disableEvaluations() {
-//         return this.get('disableEvaluations');
-//     }
-//     get disableEvaluationsReason() {
-//         return this.get('disableEvaluationsReason');
-//     }
-//     get clientSigners() {
-//         return this.get('clientSigners') as FormArray;
-//     }
-//     get specialContractTerms() {
-//         return this.get('specialContractTerms');
-//     }
-//     get isSpecialContractTermsNone() {
-//         return this.get('isSpecialContractTermsNone');
-//     }
-//     get invoicingReferenceNumber() {
-//         return this.get('invoicingReferenceNumber');
-//     }
-//     get clientRateAndInvoicing() {
-//         return this.get('clientRateAndInvoicing');
-//     }
-//     get clientInvoicingPeriod() {
-//         return this.get('clientInvoicingPeriod');
-//     }
-//     get clientProjectStartDate() {
-//         return this.get('clientProjectStartDate');
-//     }
-//     get clientProjectEndDate() {
-//         return this.get('clientProjectEndDate');
-//     }
-//     get clientProjectNoEndDate() {
-//         return this.get('clientProjectNoEndDate');
-//     }
-//     get clientExtensionStartDate() {
-//         return this.get('clientExtensionStartDate');
-//     }
-//     get clientExtensionEndDate() {
-//         return this.get('clientExtensionEndDate');
-//     }
-//     get clientExtensionNoEndDate() {
-//         return this.get('clientExtensionNoEndDate');
-//     }
-
-// }
-
-// export class WorkflowSalesConsultantsForm extends FormGroup {
-//     constructor() {
-//         super({
-//             consultantData: new FormArray([])
-//         })
-
-//     }
-//     get consultantData() {
-//         return this.get('consultantData') as FormArray;
-//     }
-// }
-
-// export class WorkflowSalesAdditionalDataForm extends FormGroup {
-//     constructor() {
-//         super({
-//             notification: new FormControl(null),
-//             projectCategory: new FormControl(null),
-//             projectDescription: new FormControl(null),
-//             workplace: new FormControl(null),
-//             expectedWorkloadHours: new FormControl(null),
-//             expectedWorkloadPeriod: new FormControl(null),
-//             expectedWorkloadNA: new FormControl(false),
-//             timeReportingCap: new FormControl(null),
-//             timeReportingNoCap: new FormControl(false),
-//             highLowMargin: new FormControl(null),
-//             discounts: new FormControl(null),
-//             isDiscounts: new FormControl(false),
-//             fees: new FormControl(null),
-//             isFees: new FormControl(false),
-//             comission: new FormControl(null),
-//             isComission: new FormControl(false),
-//             remarks: new FormControl(null),
-//             isRemarks: new FormControl(false),
-//         })
-
-//     }
-//     get notification() {
-//         return this.get('notification');
-//     }
-//     get projectCategory() {
-//         return this.get('projectCategory');
-//     }
-//     get projectDescription() {
-//         return this.get('projectDescription');
-//     }
-//     get workplace() {
-//         return this.get('workplace');
-//     }
-//     get expectedWorkloadHours() {
-//         return this.get('expectedWorkloadHours');
-//     }
-//     get expectedWorkloadPeriod() {
-//         return this.get('expectedWorkloadPeriod');
-//     }
-//     get expectedWorkloadNA() {
-//         return this.get('expectedWorkloadNA');
-//     }
-//     get timeReportingCap() {
-//         return this.get('timeReportingCap');
-//     }
-//     get timeReportingNoCap() {
-//         return this.get('timeReportingNoCap');
-//     }
-//     get highLowMargin() {
-//         return this.get('highLowMargin');
-//     }
-//     get discounts() {
-//         return this.get('discounts');
-//     }
-//     get isDiscounts() {
-//         return this.get('isDiscounts');
-//     }
-//     get fees() {
-//         return this.get('fees');
-//     }
-//     get isFees() {
-//         return this.get('isFees');
-//     }
-//     get comission() {
-//         return this.get('comission');
-//     }
-//     get isComission() {
-//         return this.get('isComission');
-//     }
-//     get remarks() {
-//         return this.get('remarks');
-//     }
-//     get isRemarks() {
-//         return this.get('isRemarks');
-//     }
-// }
-
 export class WorkflowContractsSummaryForm extends FormGroup {
     constructor() {
         super({
@@ -229,24 +16,36 @@ export class WorkflowSalesExtensionForm extends FormGroup {
     constructor() {
         super({
             salesExtension: new FormArray([])
-            // extensionEndDate: new FormControl(null),
-            // noExtensionEndDate: new FormControl(false),
-            // workflowInformation: new FormControl(null)
         })
 
     }
     get salesExtension() {
         return this.get('salesExtension') as FormArray;
     }
-    // get extensionEndDate() {
-    //     return this.get('extensionEndDate');
+}
+
+export class WorkflowExtensionForm extends FormGroup {
+    constructor() {
+        super({
+            // salesExtension: new FormArray([])
+            extensionEndDate: new FormControl(null),
+            noExtensionEndDate: new FormControl(null),
+            workflowInformation: new FormControl(null)
+        })
+
+    }
+    // get salesExtension() {
+    //     return this.get('salesExtension') as FormArray;
     // }
-    // get noExtensionEndDate() {
-    //     return this.get('noExtensionEndDate');
-    // }
-    // get workflowInformation() {
-    //     return this.get('workflowInformation');
-    // }
+    get extensionEndDate() {
+        return this.get('extensionEndDate');
+    }
+    get noExtensionEndDate() {
+        return this.get('noExtensionEndDate');
+    }
+    get workflowInformation() {
+        return this.get('workflowInformation');
+    }
 }
 
 export class WorkflowTerminationSalesForm extends FormGroup {
@@ -278,47 +77,51 @@ export class WorkflowTerminationSalesForm extends FormGroup {
 }
 
 // Sales step data
+export class SideMenuTabsDto {
+    name: string;
+    displayName: string;
+    index: number;
+}
 
-export const SaleTypes = [
+export const SideMenuTabs: SideMenuTabsDto[] = [
     {
-        id: 1,
-        name: 'T&M'
-    },
-    {
-        id: 2,
-        name: 'Referred'
-    },
-    {
-        id: 3,
-        name: 'Managed Service'
-    },
-    {
-        id: 4,
-        name: 'Fee Only'
-    },
-    {
-        id: 5,
-        name: 'Recruitment'
+        name: 'Workflow',
+        displayName: 'Workflow',
+        index: 1
     }
 ];
 
-export const DeliveryTypes = [
+export const TopMenuTabs: SideMenuTabsDto[] = [
     {
-        id: 1,
-        name: 'Managed Service'
+        name: 'Overview',
+        displayName: 'Overview',
+        index: 1
     },
     {
-        id: 2,
-        name: 'Normal'
+        name: 'Workflow',
+        displayName: 'Workflow',
+        index: 1
     },
-    {
-        id: 3,
-        name: 'Offshore'
-    },
-    {
-        id: 4,
-        name: 'Nearshore'
-    }
+    // {
+    //     name: 'Extension1',
+    //     displayName: 'Extension 1',
+    //     index: 1
+    // },
+    // {
+    //     name: 'Extension2',
+    //     displayName: 'Extension 2',
+    //     index: 2
+    // },
+    // {
+    //     name: 'Contracts',
+    //     displayName: 'Contracts',
+    //     index: 1
+    // },
+    // {
+    //     name: 'Accounts',
+    //     displayName: 'Accounts',
+    //     index: 1
+    // }
 ];
 
 export interface IWorkflowNavigationStep {
@@ -420,3 +223,81 @@ export const WorkflowList = [
         isDeleted: true
     }
 ];
+
+// Workflow progress status
+
+export class WorkflowProgressStatus implements IWorkflowProgressStatus {
+    started: boolean | undefined;
+    isExtensionAdded: boolean | undefined;
+    currentlyActiveExtensionIndex: number | undefined;
+    isExtensionCompleted: boolean | undefined;
+    isExtensionSalesSaved: boolean | undefined;
+    isExtensionContractsSaved: boolean | undefined;
+    isWorkflowSalesSaved: boolean | undefined;
+    isWorkflowContractsSaved: boolean | undefined;
+    isWorkflowAccountsSaved: boolean | undefined;
+    isPrimaryWorkflowCompleted: boolean | undefined;
+    isTerminationAdded: boolean | undefined;
+    currentlyActiveSection: number | undefined;
+    currentlyActiveStep: number | undefined;
+
+    constructor(
+        started?: boolean,
+        isExtensionAdded?: boolean,
+        currentlyActiveExtensionIndex?: number,
+        isExtensionCompleted?: boolean,
+        isExtensionSalesSaved?: boolean,
+        isExtensionContractsSaved?: boolean,
+        isWorkflowSalesSaved?: boolean,
+        isWorkflowContractsSaved?: boolean,
+        isWorkflowAccountsSaved?: boolean,
+        isPrimaryWorkflowCompleted?: boolean,
+        isTerminationAdded?: boolean,
+        currentlyActiveSection?: number,
+        currentlyActiveStep?: number) {
+            this.started = started;
+            this.isExtensionAdded = isExtensionAdded;
+            this.currentlyActiveExtensionIndex = currentlyActiveExtensionIndex;
+            this.isExtensionCompleted = isExtensionCompleted;
+            this.isExtensionSalesSaved = isExtensionSalesSaved;
+            this.isExtensionContractsSaved = isExtensionContractsSaved;
+            this.isWorkflowSalesSaved = isWorkflowSalesSaved;
+            this.isWorkflowContractsSaved = isWorkflowContractsSaved;
+            this.isWorkflowAccountsSaved = isWorkflowAccountsSaved;
+            this.isPrimaryWorkflowCompleted = isPrimaryWorkflowCompleted;
+            this.isTerminationAdded = isTerminationAdded;
+            this.currentlyActiveSection = currentlyActiveSection;
+            this.currentlyActiveStep = currentlyActiveStep;
+    }
+}
+
+export interface IWorkflowProgressStatus {
+    started: boolean | undefined,
+    isExtensionAdded: boolean | undefined,
+    isExtensionCompleted: boolean | undefined,
+    isWorkflowSalesSaved: boolean | undefined,
+    isPrimaryWorkflowCompleted: boolean | undefined,
+    currentlyActiveSection: number | undefined,
+    currentlyActiveStep: number | undefined,
+}
+
+export enum WorkflowSections {
+    Overview = 1,
+    Workflow = 2,
+    Extension = 3,
+    Termination = 4,
+    ChangesInWF = 5
+}
+
+export enum WorkflowSteps {
+    Sales = 1,
+    Contracts = 2,
+    Accounts = 3
+}
+
+
+export const WorkflowStepList: { [key: number]: string } = {
+    1: "Sales",
+    2: "Contracts",
+    3: "Accounts",
+}

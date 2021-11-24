@@ -19,7 +19,7 @@ import { environment } from 'src/environments/environment';
 const isIE = window.navigator.userAgent.indexOf("MSIE ") > -1 || window.navigator.userAgent.indexOf("Trident/") > -1; // Remove this line to use Angular Universal
 
 export function loggerCallback(logLevel: LogLevel, message: string) {
-    console.log(message);
+    // console.log(message);
 }
 
 export function MSALInstanceFactory(): IPublicClientApplication {
@@ -46,16 +46,16 @@ export function MSALInstanceFactory(): IPublicClientApplication {
 
 export function MSALInterceptorConfigFactory(): MsalInterceptorConfiguration {
     const protectedResourceMap = new Map<string, Array<string>>();
-    // protectedResourceMap.set(environment.apiUrl, ['openid', 'profile', 'api://5f63a91e-8bfd-40ea-b562-3dad54244ff7/access_as_user']);
-    if (environment.dev) {
-        protectedResourceMap.set('https://pm3-dev-app.azurewebsites.net', ['openid', 'profile', 'api://5f63a91e-8bfd-40ea-b562-3dad54244ff7/access_as_user']);
-    }
-    if (environment.qa) {
-        protectedResourceMap.set('https://pm3-qa-app.azurewebsites.net', ['openid', 'profile', 'api://5f63a91e-8bfd-40ea-b562-3dad54244ff7/access_as_user']);
-    }
-    if (environment.production) {
-        protectedResourceMap.set('https://pm3-prod-app.azurewebsites.net', ['openid', 'profile', 'api://5f63a91e-8bfd-40ea-b562-3dad54244ff7/access_as_user']);
-    }
+    protectedResourceMap.set(environment.apiUrl, ['openid', 'profile', 'api://5f63a91e-8bfd-40ea-b562-3dad54244ff7/access_as_user']);
+    // if (environment.dev) {
+    //     protectedResourceMap.set('https://pm3-dev-app.azurewebsites.net', ['openid', 'profile', 'api://5f63a91e-8bfd-40ea-b562-3dad54244ff7/access_as_user']);
+    // }
+    // if (environment.qa) {
+    //     protectedResourceMap.set('https://pm3-qa-app.azurewebsites.net', ['openid', 'profile', 'api://5f63a91e-8bfd-40ea-b562-3dad54244ff7/access_as_user']);
+    // }
+    // if (environment.production) {
+    //     protectedResourceMap.set('https://pm3-prod-app.azurewebsites.net', ['openid', 'profile', 'api://5f63a91e-8bfd-40ea-b562-3dad54244ff7/access_as_user']);
+    // }
 
     return {
         interactionType: InteractionType.Redirect,

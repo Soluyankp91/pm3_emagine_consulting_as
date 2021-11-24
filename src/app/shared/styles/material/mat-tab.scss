@@ -76,3 +76,88 @@ mat-tab-group.client-details--tabs {
         }
     }
 }
+
+
+.header-less-tabs.mat-tab-group .mat-tab-header {
+    display: none;
+}
+
+.workflow-content--tabs {
+    .mat-tab-header {
+        // border-bottom: 1px solid rgba(0, 0, 0, 0.12);
+        // border-bottom-width: 1px;
+        // border-bottom-style: solid;
+        // border-bottom-color: rgba(0, 0, 0, 0.12);
+        border-bottom: 0;
+        background-color: #fff;
+    }
+
+    .mat-tab-label-container {
+        padding-top: 0 !important;
+    }
+
+    mat-ink-bar {
+        background-color: #17A297 !important;
+        height: 4px;
+        top: 15px;
+    }
+
+    .mat-tab-body-wrapper {
+        box-shadow: 0px 0px 15px rgba(0, 0, 0, 0.15);
+    }
+
+    .mat-tab-labels {
+        padding-top: 15px;
+    }
+
+    .mat-tab-label {
+        font-family: 'IBM Plex Mono', monospace !important;
+        opacity: 1 !important;
+        height: 48px;
+        padding: 8px 24px 0 24px;
+        min-width: 100px;
+        font-weight: 700;
+        font-size: 16px;
+        line-height: 16px;
+        color: #546E7A;
+        box-shadow: unset;
+        background-color: #fff;
+        margin-right: 24px;
+        box-shadow: 0px 0px 15px rgba(0, 0, 0, 0.15);
+        // box-shadow: 0px 0px 15px rgb(0 0 0 / 15%), inset 0px -15px 20px 2px rgb(0 0 0 / 5%);
+        position: relative;
+        &::before {
+            content: "";
+            display: block;
+            position: absolute;
+            top: 50px;
+            right: 0px;
+            height: 30px;
+            width: 100%;
+            padding: 0;
+            background-color: #fff;
+            box-shadow: 1px -6px 20px rgb(0 0 0 / 15%);
+        }
+        &-active,
+        &:hover {
+            background-color: #FAF9FB;
+            color: #17A297;
+            box-shadow: 0px 0px 15px rgba(0, 0, 0, 0.15);
+            &::before {
+                content: unset;
+            }
+        }
+
+        &:first-of-type {
+            margin-left: 75px !important;
+        }
+
+        // &:last-of-type {
+        //     margin-left: 0 !important;
+        // }
+    }
+
+    .mat-tab-body-content {
+        overflow: hidden;
+    }
+}

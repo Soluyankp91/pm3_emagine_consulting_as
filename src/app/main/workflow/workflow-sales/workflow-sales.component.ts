@@ -26,6 +26,34 @@ export class WorkflowSalesComponent extends AppComopnentBase implements OnInit {
     currencies: EnumEntityTypeDto[] = [];
     saleTypes: EnumEntityTypeDto[] = [];
     invoicingTimes: EnumEntityTypeDto[] = [];
+    rateUnitTypes: EnumEntityTypeDto[] = [];
+    invoiceFrequencies: EnumEntityTypeDto[] = [];
+    signerRoles: EnumEntityTypeDto[] = [];
+    margins: EnumEntityTypeDto[] = [];
+    clientExtensionDeadlines: EnumEntityTypeDto[] = [];
+    clientExtensionDurations: EnumEntityTypeDto[] = [];
+    clientSpecialFeeFrequencies: EnumEntityTypeDto[] = [];
+    clientSpecialFeeSpecifications: EnumEntityTypeDto[] = [];
+    clientSpecialRateOrFeeDirections: EnumEntityTypeDto[] = [];
+    clientSpecialRateReportUnits: EnumEntityTypeDto[] = [];
+    clientSpecialRateSpecifications: EnumEntityTypeDto[] = [];
+
+    // new UI
+    clientRateTypes: EnumEntityTypeDto[] = new Array<EnumEntityTypeDto>(
+        new EnumEntityTypeDto({
+            id: 1,
+            name: 'Time based'
+        }),
+        new EnumEntityTypeDto(
+            {
+                id: 2,
+                name: 'Fixed'
+        }),
+        new EnumEntityTypeDto(
+            {
+                id: 3,
+                name: 'Milestones'
+        }));
     constructor(
         injector: Injector,
         private _fb: FormBuilder,
@@ -46,6 +74,17 @@ export class WorkflowSalesComponent extends AppComopnentBase implements OnInit {
         this.getDeliveryTypes();
         this.getSaleTypes();
         this.getInvoicingTimes();
+        this.getUnitTypes();
+        this.getInvoiceFrequencies();
+        this.getSignerRoles();
+        this.getMargins();
+        this.getExtensionDeadlines();
+        this.getExtensionDurations();
+        this.getSpecialFeeFrequencies();
+        this.getSpecialFeeSpecifications();
+        this.getSpecialRateOrFeeDirections();
+        this.getSpecialRateReportUnits();
+        this.getSpecialRateSpecifications();
         // init form to add signers array
         this.addSignerToForm();
         this.addConsultantForm();
@@ -60,6 +99,16 @@ export class WorkflowSalesComponent extends AppComopnentBase implements OnInit {
             }))
             .subscribe(result => {
                 this.currencies = result;
+            });
+    }
+
+    getUnitTypes() {
+        this._workflodDataService.getUnitTypes()
+            .pipe(finalize(() => {
+
+            }))
+            .subscribe(result => {
+                this.rateUnitTypes = result;
             });
     }
 
@@ -93,6 +142,107 @@ export class WorkflowSalesComponent extends AppComopnentBase implements OnInit {
             });
     }
 
+    getInvoiceFrequencies() {
+        this._workflodDataService.getInvoiceFrequencies()
+            .pipe(finalize(() => {
+
+            }))
+            .subscribe(result => {
+                this.invoiceFrequencies = result;
+            });
+    }
+
+    getSignerRoles() {
+        this._workflodDataService.getSignerRoles()
+            .pipe(finalize(() => {
+
+            }))
+            .subscribe(result => {
+                this.signerRoles = result;
+            });
+    }
+
+
+    getMargins() {
+        this._workflodDataService.getMargins()
+            .pipe(finalize(() => {
+
+            }))
+            .subscribe(result => {
+                this.margins = result;
+            });
+    }
+
+    getExtensionDeadlines() {
+        this._workflodDataService.getExtensionDeadlines()
+            .pipe(finalize(() => {
+
+            }))
+            .subscribe(result => {
+                this.clientExtensionDeadlines = result;
+            });
+    }
+
+    getExtensionDurations() {
+        this._workflodDataService.getExtensionDurations()
+            .pipe(finalize(() => {
+
+            }))
+            .subscribe(result => {
+                this.clientExtensionDurations = result;
+            });
+    }
+
+    getSpecialFeeFrequencies() {
+        this._workflodDataService.getSpecialFeeFrequencies()
+            .pipe(finalize(() => {
+
+            }))
+            .subscribe(result => {
+                this.clientSpecialFeeFrequencies = result;
+            });
+    }
+
+    getSpecialFeeSpecifications() {
+        this._workflodDataService.getSpecialFeeSpecifications()
+            .pipe(finalize(() => {
+
+            }))
+            .subscribe(result => {
+                this.clientSpecialFeeSpecifications = result;
+            });
+    }
+
+    getSpecialRateOrFeeDirections() {
+        this._workflodDataService.getSpecialRateOrFeeDirections()
+            .pipe(finalize(() => {
+
+            }))
+            .subscribe(result => {
+                this.clientSpecialRateOrFeeDirections = result;
+            });
+    }
+
+    getSpecialRateReportUnits() {
+        this._workflodDataService.getSpecialRateReportUnits()
+            .pipe(finalize(() => {
+
+            }))
+            .subscribe(result => {
+                this.clientSpecialRateReportUnits = result;
+            });
+    }
+
+    getSpecialRateSpecifications() {
+        this._workflodDataService.getSpecialRateSpecifications()
+            .pipe(finalize(() => {
+
+            }))
+            .subscribe(result => {
+                this.clientSpecialRateSpecifications = result;
+            });
+    }
+
     addSignerToForm() {
         const form = this._fb.group({
             clientName: new FormControl(null),
@@ -113,6 +263,7 @@ export class WorkflowSalesComponent extends AppComopnentBase implements OnInit {
     addConsultantForm() {
         const form = this._fb.group({
             consultantType: new FormControl(null),
+            consultantName: new FormControl(null),
             consultantEvaluationsProData: new FormControl(null),
             disableEvaluations: new FormControl(false),
             consultantContractSigners: new FormArray([this.addConsultantSignerToForm()]),
@@ -124,6 +275,7 @@ export class WorkflowSalesComponent extends AppComopnentBase implements OnInit {
             consultantProjectSameAsClientDuration: new FormControl(false)
         });
         this.consultantsForm.consultantData.push(form);
+        this._workflodDataService.addOrUpdateConsultantTab(this.consultantsForm.consultantData.length - 1, form.get('consultantName')?.value);
     }
 
     addConsultantSignerToForm() {
@@ -137,6 +289,7 @@ export class WorkflowSalesComponent extends AppComopnentBase implements OnInit {
 
     removeConsultant(index: number) {
         this.consultantsForm.consultantData.removeAt(index);
+        this._workflodDataService.removeConsultantTab(index);
     }
 
     removeConsultantSigner(consultantIndex: number, signerIndex: number) {
@@ -167,11 +320,11 @@ export class WorkflowSalesComponent extends AppComopnentBase implements OnInit {
         input.salesAccountManagerIdValue = this.salesMainDataForm.salesAccountManager?.value;
         input.commissionAccountManagerIdValue = this.salesMainDataForm.commissionAccountManager?.value;
         input.directClientIdValue = this.salesMainClientDataForm.directClient?.value;
-        input.endClientIdValue = this.salesMainClientDataForm.clientInvoicingRecipient?.value;
+        input.endClientIdValue = this.salesMainClientDataForm.invoicingProDataEntity?.value;
         input.pdcInvoicingEntityId = this.salesMainClientDataForm.clientInvoicingReferencePerson?.value;
         input.clientInvoicingRecipientSameAsDirectClient = this.salesMainClientDataForm.sameAsDirectClient?.value;
         // FIXME: fix after design changes
-        input.clientInvoicingRecipientIdValue = this.salesMainClientDataForm.clientInvoicingRecipient?.value;
+        input.clientInvoicingRecipientIdValue = this.salesMainClientDataForm.invoicingProDataEntity?.value;
         // FIXME: fix after design changes
         input.noInvoicingReferencePerson = this.salesMainClientDataForm.isClientInvoicingNone?.value ? this.salesMainClientDataForm.isClientInvoicingNone?.value : false;
         // FIXME: fix after design changes
@@ -214,9 +367,9 @@ export class WorkflowSalesComponent extends AppComopnentBase implements OnInit {
         // "clientSpecialFees": [
         //     0
         // ],
-        input.contractStartDate = this.salesMainClientDataForm.clientProjectStartDate?.value;
-        input.contractEndDate = this.salesMainClientDataForm.clientProjectEndDate?.value;
-        input.noContractEndDate = this.salesMainClientDataForm.clientProjectNoEndDate?.value ? this.salesMainClientDataForm.clientProjectNoEndDate?.value : false;
+        input.contractStartDate = this.salesMainClientDataForm.clientContractStartDate?.value;
+        input.contractEndDate = this.salesMainClientDataForm.clientContractEndDate?.value;
+        input.noContractEndDate = this.salesMainClientDataForm.clientContractNoEndDate?.value ? this.salesMainClientDataForm.clientContractNoEndDate?.value : false;
 
         input.noClientExtensionOption = this.salesMainClientDataForm.clientExtensionNoEndDate?.value ? this.salesMainClientDataForm.clientExtensionNoEndDate?.value : false;
         input.clientExtensionDurationId = this.salesMainClientDataForm.clientExtensionStartDate?.value;
@@ -283,11 +436,18 @@ export class WorkflowSalesComponent extends AppComopnentBase implements OnInit {
 
         this._workflowService.salesPut(this.workflowId, input)
             .pipe(finalize(() => {
-
+                this.updateConsultantTabs();
             }))
             .subscribe(result => {
 
             });
+    }
+
+    updateConsultantTabs() {
+        for (let i = 0; i < this.consultantsForm.consultantData.value.length; i++) {
+            let consultant = this.consultantsForm.consultantData.value[i];
+            this._workflodDataService.addOrUpdateConsultantTab(this.consultantsForm.consultantData.length - 1, consultant.consultantName);
+        }
     }
 
     getWorkflowSalesStep() {
@@ -296,15 +456,59 @@ export class WorkflowSalesComponent extends AppComopnentBase implements OnInit {
 
             }))
             .subscribe(result => {
-                this.salesMainDataForm.salesType?.setValue(result.salesTypeId, {emitEvent: false});
-                this.salesMainDataForm.nearshoreOffshore?.setValue(result.deliveryTypeId, {emitEvent: false});
+                this.salesMainDataForm.salesType?.setValue(this.findItemById(this.saleTypes, result.salesTypeId), {emitEvent: false});
+                this.salesMainDataForm.nearshoreOffshore?.setValue(this.findItemById(this.deliveryTypes, result.deliveryTypeId), {emitEvent: false});
                 this.salesMainDataForm.salesAccountManager?.setValue(result.salesAccountManagerIdValue, {emitEvent: false});
                 this.salesMainDataForm.commissionAccountManager?.setValue(result.commissionAccountManagerIdValue, {emitEvent: false});
                 this.salesMainClientDataForm.directClient?.setValue(result.directClientIdValue, {emitEvent: false});
-                this.salesMainClientDataForm.clientInvoicingRecipient?.setValue(result.endClientIdValue, {emitEvent: false});
+                this.salesMainClientDataForm.invoicingProDataEntity?.setValue(result.endClientIdValue, {emitEvent: false});
                 this.salesMainClientDataForm.clientInvoicingReferencePerson?.setValue(result.pdcInvoicingEntityId, {emitEvent: false});
                 this.salesMainClientDataForm.sameAsDirectClient?.setValue(result.clientInvoicingRecipientSameAsDirectClient, {emitEvent: false});
             });
+    }
+
+    toggleClientFees() {
+        this.salesMainClientDataForm.clientFees?.setValue(null, {emitEvent: false})
+        this.salesMainClientDataForm.clientFeesCurrency?.setValue(null, {emitEvent: false});
+        this.clientSpecialFeesActive = !this.clientSpecialFeesActive;
+    }
+
+    toggleSpecialClientRates() {
+        this.salesMainClientDataForm.clientSpecialRatePrice?.setValue(null, {emitEvent: false})
+        this.salesMainClientDataForm.clientSpecialRateCurrency?.setValue(null, {emitEvent: false});
+        this.clientSpecialRateActive = !this.clientSpecialRateActive;
+    }
+
+    clientRateTypeChange(value: EnumEntityTypeDto) {
+        if (value) {
+            this.salesMainClientDataForm.rateUnitTypeId?.setValue(null, {emitEvent: false});
+            this.salesMainClientDataForm.clientPrice?.setValue(null, {emitEvent: false});
+            this.salesMainClientDataForm.clientCurrency?.setValue(null, {emitEvent: false});
+        }
+    }
+
+
+    salesTypeChange(value: EnumEntityTypeDto) {
+        if (value.name === 'ManagedService') {
+            const itemToPreselct = this.deliveryTypes.find(x => x.name === 'ManagedService')
+            this.salesMainDataForm.nearshoreOffshore?.setValue(itemToPreselct, {emitEvent: false});
+        }
+    }
+
+    findItemById(list: EnumEntityTypeDto[], id?: number) {
+        if (id) {
+            return list.find((x: any) => x.id === id);
+        } else {
+            return null;
+        }
+    }
+
+    findItemByName(list: EnumEntityTypeDto[], name?: string) {
+        if (name) {
+            return list.find((x: any) => x.name === name);
+        } else {
+            return null;
+        }
     }
 
 }

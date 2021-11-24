@@ -1,73 +1,132 @@
-<div class="workflow">
-    <div fxLayout="row" fxLayoutAlign="start start">
-        <div fxFlex="20%" class="workflow-sidebar--container" fxLayout="column" fxLayoutAlign="start start">
-            <div class="workflow-sidebar">
-                <div class="workflow-sidebar--stepper">
-                    <ng-scrollbar #scrollable>
-                        <div class="workflow-sidebar--content">
-                            <mat-vertical-stepper class="workflow-sidebar--stepper" (selectionChange)="selectionChange($event)">
-                                <ng-template matStepperIcon="edit">
-                                    <mat-icon>done</mat-icon>
-                                </ng-template>
-                                <mat-step *ngFor="let step of workflowNavigation; let i = index" label="{{step.displayName}}" [completed]="step.finished" [state]="step.state" [attr.aria-label]="step.name">
-                                    <mat-list *ngIf="step.name === 'Sales'">
-                                        <mat-list-item [ngxScrollTo]="'mainData'">Main data</mat-list-item>
-                                        <mat-list-item [ngxScrollTo]="'clientData'">Client data</mat-list-item>
-                                        <mat-list-item [ngxScrollTo]="'consultantData'">Consultant data</mat-list-item>
-                                        <mat-list-item [ngxScrollTo]="'additionalData'">Additional data</mat-list-item>
-                                    </mat-list>
-
-                                    <mat-list *ngIf="step.name === 'Contracts'">
-                                        <mat-list-item [ngxScrollTo]="'contractsSummary'">Summary</mat-list-item>
-                                        <mat-list-item [ngxScrollTo]="'clientContractTemplate'">Client Contract Template</mat-list-item>
-                                        <mat-list-item [ngxScrollTo]="'consultantContractTemplate'">Consultant Contract Template</mat-list-item>
-                                    </mat-list>
-
-                                    <mat-list *ngIf="step.name.startsWith('NewExtension')">
-                                        <mat-list-item>Sales</mat-list-item>
-                                        <mat-list class="u-ml--16">
-                                            <mat-list-item>Summary</mat-list-item>
-                                            <mat-list-item>blah-blah</mat-list-item>
-                                        </mat-list>
-                                        <mat-list-item>Contracts</mat-list-item>
-                                        <mat-list class="u-ml--16">
-                                            <mat-list-item>Overview</mat-list-item>
-                                            <mat-list-item>blah-blah</mat-list-item>
-                                        </mat-list>
-                                    </mat-list>
-                                </mat-step>
-                            </mat-vertical-stepper>
-                        </div>
-                    </ng-scrollbar>
-                </div>
-                <div fxLayout="column" fxLayoutAlign="start start" class="workflow-sidebar--actions u-pl--24 u-pr--24 u-w--100 u-mt--10 u-mb--10">
-                    <div fxLayout="row" fxLayoutAlign="start start" class="u-w--100 u-mb--20">
-                        <button mat-raised-button class="mat-elevation-z0 u-mr--16 button-outlined" fxFlex="50%">Cancel</button>
-                        <button mat-raised-button color="primary" class="mat-elevation-z0 button-accept" fxFlex="50%">Save</button>
-                    </div>
-                    <div fxLayout="row" fxLayoutAlign="start start" class="u-w--100">
-                        <button mat-raised-button color="primary" class="mat-elevation-z0 button-accept" fxFlex="100%" (click)="done()">Done</button>
-                    </div>
-                </div>
+<div class="workflow" fxFlexFill fxLayout="column" fxLayoutAlign="start start">
+    <div fxLayout="row" fxLayoutAlign="start start" class="workflow-header u-w--100" fxFlex="20%" *ngIf="isExpanded">
+        <div fxFlex="60%" fxLayout="column">
+            <h2 class="workflow-header--title u-mb--10">Workflow</h2>
+            <p class="workflow-header--client u-mb--20">Flack Danmark A/S</p>
+            <div class="flex-row">
+                <span class="workflow-header--status__icon"></span>
+                <span class="workflow-header--status__icon"></span>
+                <span class="workflow-header--status__icon"></span>
+                <span class="workflow-header--status u-ml--10">
+                    New workflow
+                </span>
             </div>
         </div>
-        <div fxFlex="80%" fxLayout="column" fxLayoutAlign="start start">
-            <!-- SALES -->
-            <ng-container *ngIf="selectedStep === 'Sales'">
-                <div class="u-mb--20 u-w--100 workflow-form--panel">
-                    <app-workflow-sales [workflowId]="workflowId" #workflowSales></app-workflow-sales>
+        <div fxFlex="40%" fxLayout="row">
+            <div fxFlex="40%" fxLayout="column wrap" style="font-size: 12px;">
+                <span>
+                    Started: {{_workflowDataService.getWorkflowProgress?.started}}
+                </span>
+                <span>
+                    isExtensionAdded: {{_workflowDataService.getWorkflowProgress?.isExtensionAdded}}
+                </span>
+                <span>
+                    isExtensionCompleted: {{_workflowDataService.getWorkflowProgress?.isExtensionCompleted}}
+                </span>
+                <span>
+                    isWorkflowSalesSaved: {{_workflowDataService.getWorkflowProgress?.isWorkflowSalesSaved}}
+                </span>
+                <span>
+                    isWorkflowContractsSaved: {{_workflowDataService.getWorkflowProgress?.isWorkflowContractsSaved}}
+                </span>
+                <span>
+                    isWorkflowAccountsSaved: {{_workflowDataService.getWorkflowProgress?.isWorkflowAccountsSaved}}
+                </span>
+                <span>
+                    isPrimaryWorkflowCompleted: {{_workflowDataService.getWorkflowProgress?.isPrimaryWorkflowCompleted}}
+                </span>
+            </div>
+            <div fxFlex="40%" fxLayout="column wrap" style="font-size: 12px;">
+                <span>
+                    currentlyActiveSection: {{mapSectionName(_workflowDataService.getWorkflowProgress?.currentlyActiveSection)}}
+                </span>
+                <span>
+                    currentlyActiveStep: {{mapStepName(_workflowDataService.getWorkflowProgress?.currentlyActiveStep)}}
+                </span>
+                <span>
+                    currentlyActiveExtensionIndex: {{_workflowDataService.getWorkflowProgress?.currentlyActiveExtensionIndex}}
+                </span>
+            </div>
+            <div fxFlex="20%" fxLayoutAlign="center center">
+                <button mat-icon-button [matMenuTriggerFor]="workflowMenu"><mat-icon>more_horiz</mat-icon></button>
+                <mat-menu #workflowMenu>
+                    <button
+                        mat-menu-item
+                        [disabled]="_workflowDataService.getWorkflowProgress?.isExtensionAdded && !_workflowDataService.getWorkflowProgress?.isExtensionCompleted"
+                        (click)="addExtension()">
+                        Add extension
+                    </button>
+                    <button
+                        mat-menu-item
+                        [disabled]="_workflowDataService.getWorkflowProgress?.isTerminationAdded"
+                        (click)="addTermination()">
+                        Add termination
+                    </button>
+                </mat-menu>
+            </div>
+        </div>
+    </div>
+    <div class="workflow-content u-w--100" fxFlex="{{isExpanded ? '80%' : '100%' }}" [ngStyle]="{'height': isExpanded ? '80vh' : '100vh'}">
+        <button class="workflow-content--expand" mat-icon-button (click)="expandCollapseHeader()">
+            <mat-icon>{{isExpanded ? 'expand_less' : 'expand_more'}}</mat-icon>
+        </button>
+        <mat-tab-group class="workflow-content--tabs u-w--100" (selectedTabChange)="tabChanged($event)">
+            <mat-tab *ngFor="let tab of _workflowDataService.topMenuTabs; let i = index;" [label]="tab.displayName">
+                <div class="workflow-form--panel u-w--100" *ngIf="selectedTabName === 'Overview'" [ngStyle]="{'height': isExpandedAndToolbarVisible()}">
+                    <ng-scrollbar #salesScrollbar>
+                        <app-workflow-overview [workflowId]="workflowId"></app-workflow-overview>
+                    </ng-scrollbar>
                 </div>
-            </ng-container>
+                <!-- <ng-container *ngIf="selectedTabName === 'Workflow'"> -->
+                <div class="workflow-form--panel u-w--100" *ngIf="selectedTabName === 'Workflow'" [ngStyle]="{'height': isExpandedAndToolbarVisible()}">
+                    <ng-scrollbar #salesScrollbar>
+                        <app-primary-workflow #primaryWorkflow [workflowId]="workflowId"></app-primary-workflow>
+                    </ng-scrollbar>
+                </div>
+                <!-- </ng-container> -->
+                <!-- <ng-container *ngIf="selectedTabName === 'Extension'"> -->
+                <div class="workflow-form--panel u-w--100" *ngIf="selectedTabName === 'Extension'" [ngStyle]="{'height': isExpandedAndToolbarVisible()}">
+                    <ng-scrollbar #salesScrollbar>
+                        <app-extension-sales #extensionSales [selectedIndex]="extensionIndex - 1"></app-extension-sales>
+                    </ng-scrollbar>
+                </div>
 
-            <!-- CONTRACTS -->
-            <ng-container *ngIf="selectedStep === 'Contracts'">
-                <div class="u-mb--20 u-w--100 workflow-form--panel">
+                <div class="workflow-form--panel u-w--100" *ngIf="selectedTabName === 'Termination'" [ngStyle]="{'height': isExpandedAndToolbarVisible()}">
+                    <ng-scrollbar #salesScrollbar>
+                        <app-extension-sales #extensionSales [selectedIndex]="extensionIndex - 1"></app-extension-sales>
+                    </ng-scrollbar>
+                </div>
+
+                <div class="workflow-form--panel u-w--100" *ngIf="selectedTabName === 'Consultants'" [ngStyle]="{'height': isExpandedAndToolbarVisible()}">
+                    <ng-scrollbar #salesScrollbar>
+                        <app-extension-sales #extensionSales [selectedIndex]="extensionIndex - 1"></app-extension-sales>
+                    </ng-scrollbar>
+                </div>
+                <!-- </ng-container> -->
+            </mat-tab>
+            <!-- <mat-tab label="Overview">
+                <div class="workflow-form--panel u-w--100" [ngStyle]="{'height': isExpanded ? 'calc(80vh - 50px)' : 'calc(100vh - 50px)'}">
+                    <app-workflow-overview></app-workflow-overview>
+                </div>
+            </mat-tab>
+            <mat-tab label="Sales">
+                <div class="workflow-form--panel u-w--100" [ngStyle]="{'height': isExpanded ? 'calc(80vh - 50px)' : 'calc(100vh - 50px)'}">
+                    <ng-scrollbar #salesScrollbar>
+                        <app-workflow-sales [workflowId]="workflowId" #workflowSales></app-workflow-sales>
+                    </ng-scrollbar>
+                </div>
+            </mat-tab>
+            <mat-tab label="Consultants">
+                <div class="workflow-form--panel u-w--100" [ngStyle]="{'height': isExpanded ? 'calc(80vh - 50px)' : 'calc(100vh - 50px)'}">
+                    Consultants
+                </div>
+            </mat-tab>
+            <mat-tab label="Contracts">
+                <div class="workflow-form--panel u-w--100" [ngStyle]="{'height': isExpanded ? 'calc(80vh - 50px)' : 'calc(100vh - 50px)'}">
                     <app-workflow-contracts></app-workflow-contracts>
                 </div>
-            </ng-container>
-
-            <!-- ACCOUNTS -->
-            <ng-container *ngIf="selectedStep === 'Account'">
+            </mat-tab>
+            <mat-tab label="Accounts">
                 <div class="workflow-panel u-w--100">
                     <div fxLayout="column" fxLayoutAlign="start start" class="u-w--100 u-mb--20">
                         <h2>Customer (debtor) created</h2>
@@ -78,259 +137,11 @@
                         <button color="primary" class="button-outlined mat-elevation-z0" mat-raised-button>Yes</button>
                     </div>
                 </div>
-            </ng-container>
-
-            <!-- WHATS NEXT -->
-            <ng-container *ngIf="selectedStep === 'Whatsnext'">
-                <div class="workflow-panel u-w--100">
-                    <form [formGroup]="salesExtensionForm" class="u-w--100">
-                        <h2 class="workflow-green--header">Add new</h2>
-                        <div fxLayout="row" fxLayoutAlign="start center" class="u-w--100 u-mb--20">
-                            <div fxLayout="row" fxLayoutAlign="start start" fxFLex="100%">
-                                <button mat-raised-button class="u-mr--16 u-w--100 workflow-company--btn" fxFlex="30%" (click)="addNewExtension()">
-                                    Add new extension
-                                </button>
-
-                                <button mat-raised-button class="u-mr--16 u-w--100 workflow-company--btn" fxFlex="30%" (click)="addExtension()">
-                                    Add grouped extension
-                                </button>
-
-                                <button mat-raised-button class="u-w--100 workflow-company--btn" fxFlex="30%"  (click)="addNewTermination()">
-                                    Add new termination
-                                </button>
-                            </div>
-                        </div>
-                    </form>
-                </div>
-            </ng-container>
-
-            <!-- GROUPPED EXTENSION -->
-            <!-- <ng-container *ngFor="let extension of getNewExtensionsCount(); let i = index;">
-                <ng-container *ngIf="selectedStep === getExtensionNameWithIndex(i + 1)">
-                    <div class="workflow-form--panel u-w--100">
-                        SALES
-                        <mat-accordion [multi]="true">
-                            <mat-expansion-panel>
-                                <mat-expansion-panel-header [collapsedHeight]="'60px'" [expandedHeight]="'60px'">
-                                    Summary
-                                </mat-expansion-panel-header>
-                                <form [formGroup]="salesExtensionForm" class="u-w--100">
-                                    <h2 class="workflow-green--header">Extension {{ i + 1 }}</h2>
-                                    <div formArrayName="salesExtension">
-                                        <div *ngFor="let item of salesExtension.controls; let i = index;" [formGroupName]="i" [hidden]="selectedIndex - 1 !== i">
-                                            <div fxLayout="row" fxLayoutAlign="start center" class="u-w--100 u-mb--20">
-                                                <mat-form-field appearance="fill" class="formFieldNoMarginPadding u-mr--16" fxFlex="33%">
-                                                    <mat-label>New end date</mat-label>
-                                                    <input autocomplete="off" placeholder="New end date" matInput
-                                                            [matDatepicker]="extensionDatePicker"
-                                                            name="saleDate" formControlName="extensionEndDate"
-                                                            (focus)="extensionDatePicker.open()"
-                                                            (click)="extensionDatePicker.open()" readonly>
-                                                    <mat-icon class="calendar-icon" matSuffix svgIcon="calendar"></mat-icon>
-                                                    <mat-datepicker #extensionDatePicker></mat-datepicker>
-                                                </mat-form-field>
-
-                                                <mat-checkbox color="accent" formControlName="noExtensionEndDate" name="noExtensionEndDate" class="green-checkbox u-mr--16">
-                                                    No end date
-                                                </mat-checkbox>
-                                            </div>
-                                            <div fxLayout="row" fxLayoutAlign="start start" class="u-w--100 u-mb--20">
-                                                <mat-form-field appearance="fill" class="u-w--100 textarea-input formFieldNoMarginPadding u-mr--16" fxFlex="0 0 calc(66% + 16px)">
-                                                    <mat-label>WF Information</mat-label>
-                                                    <textarea matInput autocomplete="new-password" name="workflowInformation" formControlName="workflowInformation">
-                                                    </textarea>
-                                                </mat-form-field>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </form>
-                            </mat-expansion-panel>
-                            <mat-expansion-panel>
-                                <mat-expansion-panel-header [collapsedHeight]="'60px'" [expandedHeight]="'60px'">
-                                    Second
-                                </mat-expansion-panel-header>
-                                Extension contract step {{i + 1}}
-                            </mat-expansion-panel>
-                        </mat-accordion>
-
-                        CONTRACTS
-                        <mat-accordion [multi]="true">
-                            <mat-expansion-panel>
-                                <mat-expansion-panel-header [collapsedHeight]="'60px'" [expandedHeight]="'60px'">
-                                    Summary
-                                </mat-expansion-panel-header>
-                                <form [formGroup]="salesExtensionForm" class="u-w--100">
-                                    <h2 class="workflow-green--header">Extension {{ i + 1 }}</h2>
-                                    <div formArrayName="salesExtension">
-                                        <div *ngFor="let item of salesExtension.controls; let i = index;" [formGroupName]="i" [hidden]="selectedIndex - 1 !== i">
-                                            <div fxLayout="row" fxLayoutAlign="start center" class="u-w--100 u-mb--20">
-                                                <mat-form-field appearance="fill" class="formFieldNoMarginPadding u-mr--16" fxFlex="33%">
-                                                    <mat-label>New end date</mat-label>
-                                                    <input autocomplete="off" placeholder="New end date" matInput
-                                                            [matDatepicker]="extensionDatePicker"
-                                                            name="saleDate" formControlName="extensionEndDate"
-                                                            (focus)="extensionDatePicker.open()"
-                                                            (click)="extensionDatePicker.open()" readonly>
-                                                    <mat-icon class="calendar-icon" matSuffix svgIcon="calendar"></mat-icon>
-                                                    <mat-datepicker #extensionDatePicker></mat-datepicker>
-                                                </mat-form-field>
-
-                                                <mat-checkbox color="accent" formControlName="noExtensionEndDate" name="noExtensionEndDate" class="green-checkbox u-mr--16">
-                                                    No end date
-                                                </mat-checkbox>
-                                            </div>
-                                            <div fxLayout="row" fxLayoutAlign="start start" class="u-w--100 u-mb--20">
-                                                <mat-form-field appearance="fill" class="u-w--100 textarea-input formFieldNoMarginPadding u-mr--16" fxFlex="0 0 calc(66% + 16px)">
-                                                    <mat-label>WF Information</mat-label>
-                                                    <textarea matInput autocomplete="new-password" name="workflowInformation" formControlName="workflowInformation">
-                                                    </textarea>
-                                                </mat-form-field>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </form>
-                            </mat-expansion-panel>
-                            <mat-expansion-panel>
-                                <mat-expansion-panel-header [collapsedHeight]="'60px'" [expandedHeight]="'60px'">
-                                    Second
-                                </mat-expansion-panel-header>
-                                Extension contract step {{i + 1}}
-                            </mat-expansion-panel>
-                        </mat-accordion>
-                    </div>
-                </ng-container>
-            </ng-container> -->
-
-            <!-- EXTENSION SALES -->
-            <ng-container *ngFor="let extension of getExtensionsCount(); let i = index;">
-                <ng-container *ngIf="selectedStep === getExtensionSalesNameWithIndex(i + 1)">
-                    <div class="workflow-panel u-w--100">
-                        <form [formGroup]="salesExtensionForm" class="u-w--100">
-                            <h2 class="workflow-green--header">Extension {{ i + 1 }}</h2>
-                            <div formArrayName="salesExtension">
-                                <div *ngFor="let item of salesExtension.controls; let i = index;" [formGroupName]="i" [hidden]="selectedIndex - 1 !== i">
-                                    <div fxLayout="row" fxLayoutAlign="start center" class="u-w--100 u-mb--20">
-                                        <mat-form-field appearance="fill" class="formFieldNoMarginPadding u-mr--16" fxFlex="33%">
-                                            <mat-label>New end date</mat-label>
-                                            <input autocomplete="off" placeholder="New end date" matInput
-                                                    [matDatepicker]="extensionDatePicker"
-                                                    name="saleDate" formControlName="extensionEndDate"
-                                                    (focus)="extensionDatePicker.open()"
-                                                    (click)="extensionDatePicker.open()" readonly>
-                                            <mat-icon class="calendar-icon" matSuffix svgIcon="calendar"></mat-icon>
-                                            <mat-datepicker #extensionDatePicker></mat-datepicker>
-                                        </mat-form-field>
-
-                                        <mat-checkbox color="accent" formControlName="noExtensionEndDate" name="noExtensionEndDate" class="green-checkbox u-mr--16">
-                                            No end date
-                                        </mat-checkbox>
-                                    </div>
-                                    <div fxLayout="row" fxLayoutAlign="start start" class="u-w--100 u-mb--20">
-                                        <mat-form-field appearance="fill" class="u-w--100 textarea-input formFieldNoMarginPadding u-mr--16" fxFlex="0 0 calc(66% + 16px)">
-                                            <mat-label>WF Information</mat-label>
-                                            <textarea matInput autocomplete="new-password" name="workflowInformation" formControlName="workflowInformation">
-                                            </textarea>
-                                        </mat-form-field>
-                                    </div>
-                                </div>
-                            </div>
-                        </form>
-                    </div>
-                </ng-container>
-            </ng-container>
-
-            <!-- EXTENSION CONTRACTS -->
-            <ng-container *ngFor="let extension of getExtensionsCount(); let i = index;">
-                <ng-container *ngIf="selectedStep === getExtensionContractsNameWithIndex(i + 1)">
-                    <div class="workflow-panel u-w--100">
-                        Extension contract step {{i + 1}}
-                    </div>
-                </ng-container>
-            </ng-container>
-
-            <!-- TERMINATION SALES -->
-            <ng-container *ngIf="selectedStep === 'TerminationSales'">
-                <div class="workflow-panel u-w--100">
-                    <h2 class="workflow-green--header">Termination</h2>
-                    <form [formGroup]="terminationSalesForm" class="u-w--100">
-                        <h2>Cause</h2>
-                        <div fxLayout="row" fxLayoutAlign="start start" class="u-w--100 u-mb--20">
-                            <mat-form-field appearance="fill" class="u-w--100 formFieldNoMarginPadding filter-select" fxFlex="33%">
-                                <mat-label>Cause</mat-label>
-                                <mat-select formControlName="cause" placeholder="Cause">
-                                    <mat-option *ngFor="let item of [0,1,2,3]" [value]="item">
-                                        {{ item }}
-                                    </mat-option>
-                                </mat-select>
-                            </mat-form-field>
-                        </div>
-                        <h2>Comments</h2>
-                        <div fxLayout="row" fxLayoutAlign="start start" class="u-w--100 u-mb--20">
-                            <mat-form-field appearance="fill" class="u-w--100 textarea-input formFieldNoMarginPadding u-mr--16" fxFlex="0 0 calc(66% + 16px)">
-                                <mat-label>WF Information</mat-label>
-                                <textarea matInput autocomplete="new-password" name="comments" formControlName="comments">
-                                </textarea>
-                            </mat-form-field>
-                        </div>
-                        <h2>Final Evaluation Reference Persons</h2>
-                        <div fxLayout="row" fxLayoutAlign="start start" class="u-w--100 u-mb--20">
-                            <mat-form-field appearance="fill" class="u-w--100 formFieldNoMarginPadding filter-select u-mr--16" fxFlex="33%">
-                                <mat-label>Client Evaluation - Consultant</mat-label>
-                                <mat-select formControlName="clientEvaluationConsultant" placeholder="Client Evaluation - Consultant">
-                                    <mat-option *ngFor="let item of [0,1,2,3]" [value]="item">
-                                        {{ item }}
-                                    </mat-option>
-                                </mat-select>
-                            </mat-form-field>
-                            <mat-form-field appearance="fill" class="u-w--100 formFieldNoMarginPadding filter-select" fxFlex="33%">
-                                <mat-label>Client Evaluation - ProData</mat-label>
-                                <mat-select formControlName="clientEvaluationProData" placeholder="Client Evaluation - ProData">
-                                    <mat-option *ngFor="let item of [0,1,2,3]" [value]="item">
-                                        {{ item }}
-                                    </mat-option>
-                                </mat-select>
-                            </mat-form-field>
-                        </div>
-                        <h2>Contract ended</h2>
-                        <div fxLayout="row" fxLayoutAlign="start start" class="u-w--100 u-mb--20">
-                            <mat-form-field appearance="fill" class="formFieldNoMarginPadding" fxFlex="33%">
-                                <mat-label>End date</mat-label>
-                                <input autocomplete="off" placeholder="End date" matInput
-                                        [matDatepicker]="terminationSalesDatePicker"
-                                        name="saleDate" formControlName="endDate"
-                                        (focus)="terminationSalesDatePicker.open()"
-                                        (click)="terminationSalesDatePicker.open()" readonly>
-                                <mat-icon class="calendar-icon" matSuffix svgIcon="calendar"></mat-icon>
-                                <mat-datepicker #terminationSalesDatePicker></mat-datepicker>
-                            </mat-form-field>
-                        </div>
-                    </form>
-                </div>
-            </ng-container>
-
-            <!-- TERMINATION CONTRACTS -->
-            <ng-container *ngIf="selectedStep === 'TerminationContracts'">
-                <div class="workflow-panel u-w--100">
-                    Termination Contracts step
-                </div>
-            </ng-container>
-
-            <!-- CV UPDATE -->
-            <ng-container *ngIf="selectedStep === 'CVupdate'">
-                <div class="workflow-panel u-w--100">
-                    <div fxLayout="column" fxLayoutAlign="start start" class="u-w--100 u-mb--20">
-                        <h2>CV Update</h2>
-                        <button color="primary" class="button-outlined mat-elevation-z0" mat-raised-button>Yes</button>
-                    </div>
-                </div>
-            </ng-container>
-
-            <!-- CHANGES IN WF DATA -->
-            <ng-container *ngIf="selectedStep === 'ChangeinWFData'">
-                <div class="workflow-panel u-w--100">
-                    Change in WF Data Step
-                </div>
-            </ng-container>
+            </mat-tab> -->
+        </mat-tab-group>
+        <div fxLayout="row" fxLayoutAlign="end center" class="workflow-controls" *ngIf="selectedTabName !== 'Overview'">
+            <button mat-raised-button class="button-outlined mat-elevation-z0 u-mr--16" (click)="saveDraft()">Save draft</button>
+            <button color="primary" class="button-accept mat-elevation-z0" mat-raised-button  (click)="completeStep()">Save</button>
         </div>
     </div>
 </div>
