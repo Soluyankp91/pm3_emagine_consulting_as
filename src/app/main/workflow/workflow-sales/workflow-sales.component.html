@@ -34,7 +34,7 @@
                 <div fxLayout="row" fxLayoutAlign="start start" class="u-w--100 u-mb--20">
                     <mat-form-field appearance="fill" class="u-w--100 formFieldNoMarginPadding filter-select u-mr--16" fxFlex="33%">
                         <mat-label>Margin</mat-label>
-                        <mat-select formControlName="margin" [disableOptionCentering]="true">
+                        <mat-select formControlName="margin" [disableOptionCentering]="true" required>
                             <mat-option *ngFor="let item of margins" [value]="item.id">
                                 {{ item.name }}
                             </mat-option>

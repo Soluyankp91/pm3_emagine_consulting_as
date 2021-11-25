@@ -292,12 +292,12 @@ export enum WorkflowSections {
 export enum WorkflowSteps {
     Sales = 1,
     Contracts = 2,
-    Accounts = 3
+    Finance = 3
 }
 
 
 export const WorkflowStepList: { [key: number]: string } = {
     1: "Sales",
     2: "Contracts",
-    3: "Accounts",
+    3: "Finance",
 }

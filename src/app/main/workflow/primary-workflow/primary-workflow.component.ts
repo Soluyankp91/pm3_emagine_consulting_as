@@ -13,7 +13,7 @@ export class PrimaryWorkflowComponent implements OnInit {
     @ViewChild('workflowSales', {static: false}) workflowSales: WorkflowSalesComponent;
     selectedStep: string;
 
-    // workflowSteps = [{id: 1, name: 'Sales'}, {id: 2, name: 'Contracts'}, {id: 3, name: 'Accounts'}];
+    // workflowSteps = [{id: 1, name: 'Sales'}, {id: 2, name: 'Contracts'}, {id: 3, name: 'Finance'}];
     workflowSteps = WorkflowStepList;
     constructor(
         public _workflowDataService: WorkflowDataService

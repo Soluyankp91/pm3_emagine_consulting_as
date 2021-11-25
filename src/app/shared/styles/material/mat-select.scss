@@ -69,6 +69,11 @@
         margin-top: -2px;
         transition: all .3s ease-in-out;
     }
+    &.mat-form-field-invalid {
+        .mat-select-arrow {
+            border-color: #FF7A78 !important;
+        }
+    }
     mat-select[aria-expanded="true"] {
         .mat-select-arrow {
             transform: rotate(225deg);

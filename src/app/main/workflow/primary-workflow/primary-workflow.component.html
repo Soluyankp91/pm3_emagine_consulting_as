@@ -1,25 +1,19 @@
 <div fxLayout="row" fxLayoutAlign="start start" class="workflow">
-    <div fxFlex="20%">
+    <div fxFlex="15%">
         <mat-list>
             <mat-list-item *ngFor="let step of workflowSteps | keyvalue; let i = index;" (click)="changeStepSelection(step.value, step.key)" [ngClass]="{'active-step': step.value === selectedStep}">
                 {{step.value}}
             </mat-list-item>
-            <!-- <mat-list-item (click)="selectedStep = 'Contracts'">
-                Contracts
-            </mat-list-item>
-            <mat-list-item (click)="selectedStep = 'Accounts'">
-                Accounts
-            </mat-list-item> -->
         </mat-list>
     </div>
-    <div fxFlex="80%">
+    <div fxFlex="85%">
         <ng-container *ngIf="selectedStep === 'Sales'">
             <app-workflow-sales #workflowSales [workflowId]="workflowId"></app-workflow-sales>
         </ng-container>
         <ng-container *ngIf="selectedStep === 'Contracts'">
             <app-workflow-contracts></app-workflow-contracts>
         </ng-container>
-        <ng-container *ngIf="selectedStep === 'Accounts'">
+        <ng-container *ngIf="selectedStep === 'Finance'">
             <!-- TODO: create account component make a UI-->
             <app-workflow-sales [workflowId]="workflowId"></app-workflow-sales>
         </ng-container>

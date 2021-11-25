@@ -252,8 +252,8 @@ export class WorkflowDetailsComponent implements OnInit, OnDestroy {
                     case WorkflowSteps.Contracts:
                         console.log('save WF Contracts');
                         break;
-                    case WorkflowSteps.Accounts:
-                        console.log('save WF Accounts');
+                    case WorkflowSteps.Finance:
+                        console.log('save WF Finance');
                         break;
                 }
                 break;
@@ -265,8 +265,8 @@ export class WorkflowDetailsComponent implements OnInit, OnDestroy {
                     case WorkflowSteps.Contracts:
                         console.log('save Extension Contracts');
                         break;
-                    case WorkflowSteps.Accounts:
-                        console.log('save Extension Accounts');
+                    case WorkflowSteps.Finance:
+                        console.log('save Extension Finance');
                         break;
                 }
                 break;
@@ -278,8 +278,8 @@ export class WorkflowDetailsComponent implements OnInit, OnDestroy {
                     case WorkflowSteps.Contracts:
                         console.log('save Termination Contracts');
                         break;
-                    case WorkflowSteps.Accounts:
-                        console.log('save Termination Accounts');
+                    case WorkflowSteps.Finance:
+                        console.log('save Termination Finance');
                         break;
                 }
                 break;
@@ -299,8 +299,8 @@ export class WorkflowDetailsComponent implements OnInit, OnDestroy {
                     case WorkflowSteps.Contracts:
                         console.log('Complete WF Contracts');
                         break;
-                    case WorkflowSteps.Accounts:
-                        console.log('Complete WF Accounts');
+                    case WorkflowSteps.Finance:
+                        console.log('Complete WF Finance');
                         break;
                 }
                 break;
@@ -314,8 +314,8 @@ export class WorkflowDetailsComponent implements OnInit, OnDestroy {
                     case WorkflowSteps.Contracts:
                         console.log('Complete Extension Contracts');
                         break;
-                    case WorkflowSteps.Accounts:
-                        console.log('Complete Extension Accounts');
+                    case WorkflowSteps.Finance:
+                        console.log('Complete Extension Finance');
                         break;
                 }
                 break;
@@ -327,8 +327,8 @@ export class WorkflowDetailsComponent implements OnInit, OnDestroy {
                     case WorkflowSteps.Contracts:
                         console.log('Complete Termination Contracts');
                         break;
-                    case WorkflowSteps.Accounts:
-                        console.log('Complete Termination Accounts');
+                    case WorkflowSteps.Finance:
+                        console.log('Complete Termination Finance');
                         break;
                 }
                 break;
