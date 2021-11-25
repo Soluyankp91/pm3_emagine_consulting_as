@@ -4,7 +4,7 @@ import { finalize } from 'rxjs/operators';
 import { AppComopnentBase } from 'src/shared/app-component-base';
 import { ClientRateDto, ContractSignerDto, EnumEntityTypeDto, EnumServiceProxy, SignerRole, WorkflowConsultantDto, WorkflowSalesDataDto, WorkflowsServiceProxy } from 'src/shared/service-proxies/service-proxies';
 import { WorkflowDataService } from '../workflow-data.service';
-import { WorkflowSalesAdditionalDataForm, WorkflowSalesClientDataForm, WorkflowSalesConsultantsForm, WorkflowSalesMainForm } from './workflow-sales.model';
+import { ConsultantTypes, WorkflowSalesAdditionalDataForm, WorkflowSalesClientDataForm, WorkflowSalesConsultantsForm, WorkflowSalesMainForm } from './workflow-sales.model';
 @Component({
     selector: 'app-workflow-sales',
     templateUrl: './workflow-sales.component.html',
@@ -54,6 +54,8 @@ export class WorkflowSalesComponent extends AppComopnentBase implements OnInit {
                 id: 3,
                 name: 'Milestones'
         }));
+
+    consultantTypes = ConsultantTypes;
     constructor(
         injector: Injector,
         private _fb: FormBuilder,
@@ -247,7 +249,7 @@ export class WorkflowSalesComponent extends AppComopnentBase implements OnInit {
         const form = this._fb.group({
             clientName: new FormControl(null),
             clientRole: new FormControl(null),
-            clientSigvens: new FormControl(null)
+            clientSequence: new FormControl(null)
         });
         this.salesMainClientDataForm.clientSigners.push(form);
     }
@@ -264,28 +266,39 @@ export class WorkflowSalesComponent extends AppComopnentBase implements OnInit {
         const form = this._fb.group({
             consultantType: new FormControl(null),
             consultantName: new FormControl(null),
-            consultantEvaluationsProData: new FormControl(null),
-            disableEvaluations: new FormControl(false),
-            consultantContractSigners: new FormArray([this.addConsultantSignerToForm()]),
-            consultantSpecialContractTerms: new FormControl(null),
-            consultantRate: new FormControl(null),
+
+            consultantProjectDuration: new FormControl(null),
             consultantProjectStartDate: new FormControl(null),
             consultantProjectEndDate: new FormControl(null),
             consultantProjectNoEndDate: new FormControl(false),
-            consultantProjectSameAsClientDuration: new FormControl(false)
+
+            consultantWorkplace: new FormControl(null),
+            consultantWorkplaceOnsite: new FormControl(null),
+            consultantWorkplaceRemote: new FormControl(null),
+            consultantWorkplaceMixPercentage: new FormControl(null),
+
+            consultantExpectedWorkloadHours: new FormControl(null),
+            consultantExpectedWorkloadPeriod: new FormControl(null),
+            consultantCapOnTimeReporting: new FormControl(null),
+            consultantCapOnTimeReportingValue: new FormControl(null),
+            consultantCapOnTimeReportingCurrency: new FormControl(null),
+
+            consultantRate: new FormControl(null),
+            consultantRateUnitType: new FormControl(null),
+            consultantRateCurrency: new FormControl(null),
+            consultantPDCRate: new FormControl(null),
+            consultantPDCRateUnitType: new FormControl(null),
+            consultantPDCRateCurrency: new FormControl(null),
+
+            consultantSpecialContractTerms: new FormControl(null),
+            consultantSpecialContractTermsNone: new FormControl(false),
+
+            consultantAccountManager: new FormControl(false)
         });
         this.consultantsForm.consultantData.push(form);
         this._workflodDataService.addOrUpdateConsultantTab(this.consultantsForm.consultantData.length - 1, form.get('consultantName')?.value);
     }
 
-    addConsultantSignerToForm() {
-        const form = this._fb.group({
-            clientName: new FormControl(null),
-            clientRole: new FormControl(null),
-            clientSigvens: new FormControl(null)
-        });
-        return form;
-    }
 
     removeConsultant(index: number) {
         this.consultantsForm.consultantData.removeAt(index);
@@ -316,7 +329,7 @@ export class WorkflowSalesComponent extends AppComopnentBase implements OnInit {
     saveSalesStep(workflowId: string) {
         let input = new WorkflowSalesDataDto();
         input.salesTypeId = this.salesMainDataForm.salesType?.value;
-        input.deliveryTypeId = this.salesMainDataForm.nearshoreOffshore?.value;
+        input.deliveryTypeId = this.salesMainDataForm.deliveryType?.value;
         input.salesAccountManagerIdValue = this.salesMainDataForm.salesAccountManager?.value;
         input.commissionAccountManagerIdValue = this.salesMainDataForm.commissionAccountManager?.value;
         input.directClientIdValue = this.salesMainClientDataForm.directClient?.value;
@@ -338,7 +351,7 @@ export class WorkflowSalesComponent extends AppComopnentBase implements OnInit {
             let signer = this.salesMainClientDataForm.clientSigners.value[i];
             let contractSigner = new ContractSignerDto();
             contractSigner.signOrder = i + 1;
-            contractSigner.contactId = signer.clientSigvens;
+            contractSigner.contactId = signer.clientSequence;
             contractSigner.signerRole = new SignerRole();
             input.contractSigners.push(contractSigner);
         }
@@ -457,7 +470,7 @@ export class WorkflowSalesComponent extends AppComopnentBase implements OnInit {
             }))
             .subscribe(result => {
                 this.salesMainDataForm.salesType?.setValue(this.findItemById(this.saleTypes, result.salesTypeId), {emitEvent: false});
-                this.salesMainDataForm.nearshoreOffshore?.setValue(this.findItemById(this.deliveryTypes, result.deliveryTypeId), {emitEvent: false});
+                this.salesMainDataForm.deliveryType?.setValue(this.findItemById(this.deliveryTypes, result.deliveryTypeId), {emitEvent: false});
                 this.salesMainDataForm.salesAccountManager?.setValue(result.salesAccountManagerIdValue, {emitEvent: false});
                 this.salesMainDataForm.commissionAccountManager?.setValue(result.commissionAccountManagerIdValue, {emitEvent: false});
                 this.salesMainClientDataForm.directClient?.setValue(result.directClientIdValue, {emitEvent: false});
@@ -491,7 +504,7 @@ export class WorkflowSalesComponent extends AppComopnentBase implements OnInit {
     salesTypeChange(value: EnumEntityTypeDto) {
         if (value.name === 'ManagedService') {
             const itemToPreselct = this.deliveryTypes.find(x => x.name === 'ManagedService')
-            this.salesMainDataForm.nearshoreOffshore?.setValue(itemToPreselct, {emitEvent: false});
+            this.salesMainDataForm.deliveryType?.setValue(itemToPreselct, {emitEvent: false});
         }
     }
 

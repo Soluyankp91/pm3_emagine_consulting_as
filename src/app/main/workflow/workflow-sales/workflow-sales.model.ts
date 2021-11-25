@@ -4,35 +4,56 @@ export class WorkflowSalesMainForm extends FormGroup {
     constructor() {
         super({
             salesType: new FormControl(null),
-            nearshoreOffshore: new FormControl(null),
+            deliveryType: new FormControl(null),
+            margin: new FormControl(null),
+            projectCategory: new FormControl(null),
+            projectDescription: new FormControl(null),
+
             salesAccountManager: new FormControl(null),
             commissionAccountManager: new FormControl(null),
-            // intracompanyAccountManager: new FormControl(null),
-            PDCIntracompanyUnit: new FormControl(null)
+            contractExpirationNotification: new FormControl(null),
+
+            remarks: new FormControl(null),
+            isRemarks: new FormControl(false)
         });
     }
 
     get salesType() {
         return this.get('salesType');
     }
-    get nearshoreOffshore() {
-        return this.get('nearshoreOffshore');
+    get deliveryType() {
+        return this.get('deliveryType');
     }
+    get margin() {
+        return this.get('margin');
+    }
+    get projectCategory() {
+        return this.get('projectCategory');
+    }
+    get projectDescription() {
+        return this.get('projectDescription');
+    }
+
     get salesAccountManager () {
         return this.get('salesAccountManager');
     }
     get commissionAccountManager () {
         return this.get('commissionAccountManager');
     }
-    // get intracompanyAccountManager () {
-    //     return this.get('intracompanyAccountManager');
-    // }
-    get PDCIntracompanyUnit () {
-        return this.get('PDCIntracompanyUnit');
+    get contractExpirationNotification() {
+        return this.get('contractExpirationNotification');
+    }
+
+    get remarks() {
+        return this.get('remarks');
+    }
+    get isRemarks() {
+        return this.get('isRemarks');
     }
 }
 
 export class WorkflowSalesClientDataForm extends FormGroup {
+    isDisabled = true;
     constructor() {
         super({
             // Client
@@ -45,6 +66,8 @@ export class WorkflowSalesClientDataForm extends FormGroup {
             // Client Invoicing Recipient
             invoicingProDataEntity: new FormControl(null),
             sameAsDirectClient: new FormControl(false),
+            clientInvoicingReferenceNumber: new FormControl(null),
+            clientInvoicingRecipient: new FormControl(null),
 
             // Client Invoicing Reference Person
             clientInvoicingReferencePerson: new FormControl(null),
@@ -88,7 +111,11 @@ export class WorkflowSalesClientDataForm extends FormGroup {
             clientExtensionStartDate: new FormControl(null),
             clientExtensionEndDate: new FormControl(null),
             clientExtensionDeadline: new FormControl(null),
-            clientExtensionNoEndDate: new FormControl(false)
+            clientExtensionNoEndDate: new FormControl(false),
+
+            // Client project
+            capOnTimeReporting: new FormControl(null),
+            capOnTimeReportingValue: new FormControl(null)
         });
     }
 
@@ -109,6 +136,12 @@ export class WorkflowSalesClientDataForm extends FormGroup {
     }
     get sameAsDirectClient() {
         return this.get('sameAsDirectClient');
+    }
+    get clientInvoicingReferenceNumber() {
+        return this.get('clientInvoicingReferenceNumber');
+    }
+    get clientInvoicingRecipient() {
+        return this.get('clientInvoicingRecipient');
     }
     get clientInvoicingReferencePerson() {
         return this.get('clientInvoicingReferencePerson');
@@ -199,6 +232,15 @@ export class WorkflowSalesClientDataForm extends FormGroup {
     }
     get clientExtensionNoEndDate() {
         return this.get('clientExtensionNoEndDate');
+    }
+
+    // Client Porject
+
+    get capOnTimeReporting() {
+        return this.get('capOnTimeReporting');
+    }
+    get capOnTimeReportingValue() {
+        return this.get('capOnTimeReportingValue');
     }
 
 }
@@ -294,3 +336,43 @@ export class WorkflowSalesAdditionalDataForm extends FormGroup {
         return this.get('isRemarks');
     }
 }
+
+export const ConsultantTypes = [
+    {
+        id: 1,
+        name: 'Freelance'
+    },
+    {
+        id: 2,
+        name: 'Freelance low margin'
+    },
+    {
+        id: 3,
+        name: 'Project employment'
+    },
+    {
+        id: 4,
+        name: 'Temporary worker'
+    },
+    {
+        id: 5,
+        name: 'Nearshore'
+    },
+    {
+        id: 6,
+        name: 'VMS/Referred'
+    },
+    {
+        id: 7,
+        name: 'Permanent employee'
+    },
+    {
+        id: 8,
+        name: '48E consultant'
+    },
+    {
+        id: 9,
+        name: 'Fee only'
+    }
+];
+
