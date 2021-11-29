@@ -267,7 +267,7 @@
             top: calc(100% - 0.5em) !important;
         }
 
-        &.disabled-input.mat-focused {
+        &.disabled-input {
             .mat-form-field-flex {
                 background-color: transparent !important;
             }

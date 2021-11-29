@@ -65,7 +65,7 @@
 
                 <h3 class="workflow-gray--header">Discounts</h3>
                 <div fxLayout="row" fxLayoutAlign="start start" class="u-w--100 u-mb--20">
-                    <mat-button-toggle-group class="workflow-toggle-buttons u-mt--10" formControlName="deliveryType">
+                    <mat-button-toggle-group class="workflow-toggle-buttons u-mt--10" formControlName="discounts">
                         <mat-button-toggle
                             [value]="item.value"
                             *ngFor="let item of [{name: 'None', value: null}, {name: 'SKI 02.17', value: 'SKI-02-17'}]">
@@ -74,7 +74,7 @@
                     </mat-button-toggle-group>
                 </div>
 
-                <h3 class="workflow-gray--header">Discounts</h3>
+                <h3 class="workflow-gray--header">Commission</h3>
                 <div fxLayout="row" fxLayoutAlign="start start" class="u-w--100 u-mb--20">
                     <button color="primary" class="u-mt--10 button-outlined" mat-raised-button>Add commission</button>
                 </div>
@@ -111,9 +111,9 @@
                 </div>
 
                 <div fxLayout="row" fxLayoutAlign="start start" class="u-w--100 u-mb--20">
-                    <mat-form-field appearance="fill" class="u-w--100 textarea-input formFieldNoMarginPadding" fxFlex="0 0 calc(66% + 16px)">
+                    <mat-form-field appearance="fill" class="u-w--100 textarea-input formFieldNoMarginPadding" fxFlex="0 0 calc(66% + 16px)" [ngClass]="{'disabled-input': salesMainDataForm?.isRemarks?.value}">
                         <mat-label>Remarks</mat-label>
-                        <textarea matInput autocomplete="new-password" name="remarks" formControlName="remarks">
+                        <textarea matInput autocomplete="new-password" name="remarks" [attr.disabled]="salesMainDataForm?.isRemarks?.value" formControlName="remarks">
                         </textarea>
                     </mat-form-field>
                 </div>
@@ -179,7 +179,7 @@
                                 [matDatepicker]="clientContractEndDatePicker"
                                 name="clientContractEndDate" formControlName="clientContractEndDate"
                                 (focus)="clientContractEndDatePicker.open()"
-                                [disabled]="salesMainClientDataForm.clientContractNoEndDate?.value"
+                                [attr.disabled]="salesMainClientDataForm.clientContractNoEndDate?.value"
                                 (click)="clientContractEndDatePicker.open()" readonly>
                         <mat-icon class="calendar-icon" matSuffix svgIcon="calendar"></mat-icon>
                         <mat-datepicker #clientContractEndDatePicker></mat-datepicker>
@@ -218,8 +218,8 @@
                     <mat-form-field appearance="fill" class="formFieldNoMarginPadding u-mr--16" fxFlex="33%">
                         <mat-label> Deadline</mat-label>
                         <mat-select formControlName="clientExtensionDeadline" [disableOptionCentering]="true">
-                            <mat-option *ngFor="let item of ['1-3 months', 'Specific date']" [value]="item">
-                                {{ item }}
+                            <mat-option *ngFor="let item of clientExtensionDeadlines" [value]="item.id">
+                                {{ item.name }}
                             </mat-option>
                         </mat-select>
                     </mat-form-field>
@@ -242,7 +242,7 @@
                 <h3 class="workflow-gray--header">Shared Cap on Time Reporting</h3>
                 <div fxLayout="row" fxLayoutAlign="start start" class="u-w--100 u-mb--20">
                     <mat-button-toggle-group class="workflow-toggle-buttons u-mt--10" formControlName="capOnTimeReporting">
-                        <mat-button-toggle *ngFor="let item of ['Cap on units', 'Cap on value', 'Individual cap', 'No cap']" [value]="true">
+                        <mat-button-toggle *ngFor="let item of ['Cap on units', 'Cap on value', 'Individual cap', 'No cap']" [value]="item">
                             {{ item }}
                         </mat-button-toggle>
                     </mat-button-toggle-group>
@@ -605,7 +605,7 @@
                                         [matDatepicker]="consultantProjectEndDatePicker"
                                         name="consultantProjectEndDate" formControlName="consultantProjectEndDate"
                                         (focus)="consultantProjectEndDatePicker.open()"
-                                        [disabled]="consultantsForm.consultantData.at(i).get('consultantProjectNoEndDate')?.value"
+                                        [attr.disabled]="consultantsForm.consultantData.at(i).get('consultantProjectNoEndDate')?.value"
                                         (click)="consultantProjectEndDatePicker.open()" readonly>
                                 <mat-icon class="calendar-icon" matSuffix svgIcon="calendar"></mat-icon>
                                 <mat-datepicker #consultantProjectEndDatePicker></mat-datepicker>
@@ -673,7 +673,7 @@
                         <h3 class="workflow-gray--header">Consultant Cap on Time Reporting</h3>
                         <div fxLayout="row" fxLayoutAlign="start start" class="u-w--100 u-mb--20">
                             <mat-button-toggle-group class="workflow-toggle-buttons u-mt--10" formControlName="consultantCapOnTimeReporting">
-                                <mat-button-toggle *ngFor="let item of ['Cap on units', 'Cap on value', 'No cap']" [value]="true">
+                                <mat-button-toggle *ngFor="let item of ['Cap on units', 'Cap on value', 'No cap']" [value]="false">
                                     {{ item }}
                                 </mat-button-toggle>
                             </mat-button-toggle-group>
@@ -789,5 +789,4 @@
         </form>
 
     </mat-accordion>
-
 </div>

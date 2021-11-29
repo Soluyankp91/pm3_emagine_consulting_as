@@ -9,6 +9,8 @@ export class WorkflowSalesMainForm extends FormGroup {
             projectCategory: new FormControl(null),
             projectDescription: new FormControl(null),
 
+            discounts: new FormControl(null),
+
             salesAccountManager: new FormControl(null),
             commissionAccountManager: new FormControl(null),
             contractExpirationNotification: new FormControl(null),
@@ -33,7 +35,9 @@ export class WorkflowSalesMainForm extends FormGroup {
     get projectDescription() {
         return this.get('projectDescription');
     }
-
+    get discounts() {
+        return this.get('discounts');
+    }
     get salesAccountManager () {
         return this.get('salesAccountManager');
     }
@@ -53,7 +57,6 @@ export class WorkflowSalesMainForm extends FormGroup {
 }
 
 export class WorkflowSalesClientDataForm extends FormGroup {
-    isDisabled = true;
     constructor() {
         super({
             // Client
@@ -114,7 +117,7 @@ export class WorkflowSalesClientDataForm extends FormGroup {
             clientExtensionNoEndDate: new FormControl(false),
 
             // Client project
-            capOnTimeReporting: new FormControl(null),
+            capOnTimeReporting: new FormControl(false),
             capOnTimeReportingValue: new FormControl(null)
         });
     }

@@ -1,8 +1,7 @@
-import { Injectable } from '@angular/core';
+import { EventEmitter, Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
-import { finalize } from 'rxjs/operators';
 import { EnumEntityTypeDto, EnumServiceProxy } from 'src/shared/service-proxies/service-proxies';
-import { IWorkflowProgressStatus, SideMenuTabs, SideMenuTabsDto, TopMenuTabs, WorkflowProgressStatus } from './workflow.model';
+import { SideMenuTabs, SideMenuTabsDto, TopMenuTabs, WorkflowProgressStatus } from './workflow.model';
 
 @Injectable({
     providedIn: 'root'
@@ -29,6 +28,8 @@ export class WorkflowDataService {
     topMenuTabs: SideMenuTabsDto[] = TopMenuTabs;
 
     workflowProgress: WorkflowProgressStatus = new WorkflowProgressStatus();
+
+    workflowSalesSaved = new EventEmitter();
     constructor(
         private _enumService: EnumServiceProxy
     ) { }
