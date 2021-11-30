@@ -1,6 +1,6 @@
 <div class="workflow" fxFlexFill fxLayout="column" fxLayoutAlign="start start">
     <div fxLayout="row" fxLayoutAlign="start start" class="workflow-header u-w--100" fxFlex="20%" *ngIf="isExpanded">
-        <div fxFlex="60%" fxLayout="column">
+        <div fxFlex="40%" fxLayout="column">
             <h2 class="workflow-header--title u-mb--10">Workflow</h2>
             <p class="workflow-header--client u-mb--20">Flack Danmark A/S</p>
             <div class="flex-row">
@@ -10,10 +10,9 @@
                 <span class="workflow-header--status u-ml--10">
                     New workflow
                 </span>
-                {{menuTabs | json}}
             </div>
         </div>
-        <div fxFlex="40%" fxLayout="row">
+        <div fxFlex="50%" fxLayout="row">
             <div fxFlex="40%" fxLayout="column wrap" style="font-size: 12px;">
                 <span>
                     Started: {{_workflowDataService.getWorkflowProgress?.started}}
@@ -33,11 +32,11 @@
                 <span>
                     isWorkflowAccountsSaved: {{_workflowDataService.getWorkflowProgress?.isWorkflowAccountsSaved}}
                 </span>
+            </div>
+            <div fxFlex="40%" fxLayout="column wrap" style="font-size: 12px;">
                 <span>
                     isPrimaryWorkflowCompleted: {{_workflowDataService.getWorkflowProgress?.isPrimaryWorkflowCompleted}}
                 </span>
-            </div>
-            <div fxFlex="40%" fxLayout="column wrap" style="font-size: 12px;">
                 <span>
                     currentlyActiveSection: {{mapSectionName(_workflowDataService.getWorkflowProgress?.currentlyActiveSection)}}
                 </span>
@@ -48,7 +47,7 @@
                     currentlyActiveExtensionIndex: {{_workflowDataService.getWorkflowProgress?.currentlyActiveExtensionIndex}}
                 </span>
             </div>
-            <div fxFlex="20%" fxLayoutAlign="center center">
+            <div fxFlex="10%" fxLayoutAlign="center center">
                 <button mat-icon-button [matMenuTriggerFor]="workflowMenu"><mat-icon>more_horiz</mat-icon></button>
                 <mat-menu #workflowMenu>
                     <button

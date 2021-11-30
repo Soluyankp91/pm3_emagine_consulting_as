@@ -305,7 +305,7 @@ export const WorkflowStepList = [
     {
         id: 2,
         name: "Contracts",
-        isCompleted: true
+        isCompleted: false
     },
     {
         id: 3,
