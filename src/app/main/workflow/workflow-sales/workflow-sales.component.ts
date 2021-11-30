@@ -478,17 +478,17 @@ export class WorkflowSalesComponent extends AppComopnentBase implements OnInit {
 
             }))
             .subscribe(result => {
-                this.salesMainDataForm.salesType?.setValue(this.findItemById(this.saleTypes, result.salesMainData?.salesTypeId), {emitEvent: false});
-                this.salesMainDataForm.deliveryType?.setValue(this.findItemById(this.deliveryTypes, result.salesMainData?.deliveryTypeId), {emitEvent: false});
-                this.salesMainDataForm.margin?.setValue(result.salesAdditionalData?.marginId, {emitEvent: false});
-                this.salesMainDataForm.projectDescription?.setValue(result.salesMainData?.projectDescription, {emitEvent: false});
-                this.salesMainDataForm.remarks?.setValue(result.salesAdditionalData?.remarks, {emitEvent: false});
-                this.salesMainDataForm.salesAccountManager?.setValue(result.salesMainData?.salesAccountManagerIdValue, {emitEvent: false});
-                this.salesMainDataForm.commissionAccountManager?.setValue(result.salesMainData?.commissionAccountManagerIdValue, {emitEvent: false});
-                this.salesMainClientDataForm.directClient?.setValue(result.salesClientData?.directClientIdValue, {emitEvent: false});
-                this.salesMainClientDataForm.invoicingProDataEntity?.setValue(result.salesClientData?.endClientIdValue, {emitEvent: false});
-                this.salesMainClientDataForm.clientInvoicingReferencePerson?.setValue(result.salesClientData?.pdcInvoicingEntityId, {emitEvent: false});
-                this.salesMainClientDataForm.sameAsDirectClient?.setValue(result.salesClientData?.clientInvoicingRecipientSameAsDirectClient, {emitEvent: false});
+                this.salesMainDataForm.salesType?.setValue(this.findItemById(this.saleTypes, result?.salesMainData?.salesTypeId), {emitEvent: false});
+                this.salesMainDataForm.deliveryType?.setValue(this.findItemById(this.deliveryTypes, result?.salesMainData?.deliveryTypeId), {emitEvent: false});
+                this.salesMainDataForm.margin?.setValue(result?.salesAdditionalData?.marginId, {emitEvent: false});
+                this.salesMainDataForm.projectDescription?.setValue(result?.salesMainData?.projectDescription, {emitEvent: false});
+                this.salesMainDataForm.remarks?.setValue(result?.salesAdditionalData?.remarks, {emitEvent: false});
+                this.salesMainDataForm.salesAccountManager?.setValue(result?.salesMainData?.salesAccountManagerIdValue, {emitEvent: false});
+                this.salesMainDataForm.commissionAccountManager?.setValue(result?.salesMainData?.commissionAccountManagerIdValue, {emitEvent: false});
+                this.salesMainClientDataForm.directClient?.setValue(result?.salesClientData?.directClientIdValue, {emitEvent: false});
+                this.salesMainClientDataForm.invoicingProDataEntity?.setValue(result?.salesClientData?.endClientIdValue, {emitEvent: false});
+                this.salesMainClientDataForm.clientInvoicingReferencePerson?.setValue(result?.salesClientData?.pdcInvoicingEntityId, {emitEvent: false});
+                this.salesMainClientDataForm.sameAsDirectClient?.setValue(result?.salesClientData?.clientInvoicingRecipientSameAsDirectClient, {emitEvent: false});
 
                 //this.salesMainDataForm.salesType?.setValue(this.findItemById(this.saleTypes, result?.salesMainData?.salesTypeId), {emitEvent: false});
                 //this.salesMainDataForm.deliveryType?.setValue(this.findItemById(this.deliveryTypes, result?.salesMainData?.deliveryTypeId), {emitEvent: false});

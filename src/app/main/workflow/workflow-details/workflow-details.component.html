@@ -10,6 +10,7 @@
                 <span class="workflow-header--status u-ml--10">
                     New workflow
                 </span>
+                {{menuTabs | json}}
             </div>
         </div>
         <div fxFlex="40%" fxLayout="row">
@@ -71,7 +72,7 @@
             <mat-icon>{{isExpanded ? 'expand_less' : 'expand_more'}}</mat-icon>
         </button>
         <mat-tab-group class="workflow-content--tabs u-w--100" (selectedTabChange)="tabChanged($event)">
-            <mat-tab *ngFor="let tab of _workflowDataService.topMenuTabs; let i = index;" [label]="tab.displayName">
+            <mat-tab *ngFor="let tab of menuTabs; let i = index;" [label]="tab.displayName">
                 <div class="workflow-form--panel u-w--100" [ngStyle]="{'height': isExpandedAndToolbarVisible()}">
                     <ng-scrollbar #salesScrollbar>
                         <dynamic-component-loader *ngIf="componentInitalized" [type]="detectComponentToRender(tab)" [index]="detectExtensionIndex(tab)">
