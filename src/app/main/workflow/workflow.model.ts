@@ -95,12 +95,12 @@ export const TopMenuTabs: SideMenuTabsDto[] = [
     {
         name: 'Overview',
         displayName: 'Overview',
-        index: 1
+        index: 0
     },
     {
         name: 'Workflow',
         displayName: 'Workflow',
-        index: 1
+        index: 0
     },
     // {
     //     name: 'Extension1',

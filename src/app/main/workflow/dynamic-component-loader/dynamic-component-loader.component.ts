@@ -1,4 +1,5 @@
 import { AfterViewInit, Compiler, Component, ComponentFactoryResolver, ComponentRef, Input, OnChanges, OnDestroy, OnInit, Type, ViewChild, ViewContainerRef } from '@angular/core';
+import { ExtensionSalesComponent } from '../extension-sales/extension-sales.component';
 
 @Component({
     selector: 'dynamic-component-loader',
@@ -8,7 +9,8 @@ import { AfterViewInit, Compiler, Component, ComponentFactoryResolver, Component
 export class DynamicComponentLoaderComponent implements OnChanges, OnDestroy, AfterViewInit {
     @ViewChild('target', { read: ViewContainerRef }) target: ViewContainerRef;
     @Input() type: Type<Component>;
-    cmpRef: ComponentRef<Component>;
+    @Input() index: number | null;
+    cmpRef: ComponentRef<Component | any>;
     private isViewInitialized: boolean = false;
 
     constructor(private componentFactoryResolver: ComponentFactoryResolver, private compiler: Compiler) { }
@@ -25,9 +27,13 @@ export class DynamicComponentLoaderComponent implements OnChanges, OnDestroy, Af
 
         setTimeout(() => {
             let factory = this.componentFactoryResolver.resolveComponentFactory(this.type);
-            this.cmpRef = this.target.createComponent(factory)
+            // let factory = this.componentFactoryResolver.resolveComponentFactory(ExtensionSalesComponent);
+            this.cmpRef = this.target.createComponent(factory);
+            if (this.index) {
+                this.cmpRef.instance.selectedIndex = this.index;
+            }
             // to access the created instance use
-            // this.cmpRef.instance.inputs
+            // this.cmpRef.instance.
             // this.compRef.instance.someOutput.subscribe(val => doSomething());
         }, 100);
 

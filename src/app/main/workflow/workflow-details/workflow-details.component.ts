@@ -1,19 +1,17 @@
 import { ComponentType } from '@angular/cdk/portal';
-import { StepperSelectionEvent } from '@angular/cdk/stepper';
-import { AfterViewInit, ChangeDetectorRef, Component, ComponentFactoryResolver, ComponentRef, OnDestroy, OnInit, TemplateRef, Type, ViewChild, ViewContainerRef } from '@angular/core';
-import { FormBuilder, FormControl, FormArray } from '@angular/forms';
+import { AfterViewInit, Component, OnDestroy, OnInit, TemplateRef, ViewChild } from '@angular/core';
 import { MatTabChangeEvent } from '@angular/material/tabs';
 import { ActivatedRoute } from '@angular/router';
 import { NgScrollbar } from 'ngx-scrollbar';
 import { Subject } from 'rxjs';
-import { finalize, takeUntil } from 'rxjs/operators';
-import { WorkflowsServiceProxy, SalesServiceProxy, EnumServiceProxy, EnumEntityTypeDto } from 'src/shared/service-proxies/service-proxies';
+import { takeUntil } from 'rxjs/operators';
+import { EnumEntityTypeDto } from 'src/shared/service-proxies/service-proxies';
 import { ExtensionSalesComponent } from '../extension-sales/extension-sales.component';
 import { PrimaryWorkflowComponent } from '../primary-workflow/primary-workflow.component';
 import { WorkflowDataService } from '../workflow-data.service';
 import { WorkflowOverviewComponent } from '../workflow-overview/workflow-overview.component';
 import { WorkflowSalesComponent } from '../workflow-sales/workflow-sales.component';
-import { WorkflowNavigation, WorkflowContractsSummaryForm, WorkflowSalesExtensionForm, WorkflowTerminationSalesForm, SideMenuTabsDto, WorkflowProgressStatus, WorkflowSections, WorkflowSteps } from '../workflow.model';
+import { WorkflowSalesExtensionForm, WorkflowTerminationSalesForm, SideMenuTabsDto, WorkflowProgressStatus, WorkflowSections, WorkflowSteps } from '../workflow.model';
 
 @Component({
   selector: 'app-workflow-details',
@@ -22,34 +20,6 @@ import { WorkflowNavigation, WorkflowContractsSummaryForm, WorkflowSalesExtensio
 })
 
 export class WorkflowDetailsComponent implements OnInit, OnDestroy, AfterViewInit {
-    @ViewChild('overviewComponent') overviewComponent!: TemplateRef<any>;
-    @ViewChild('workflowComponent') workflowComponent!: TemplateRef<any>;
-    @ViewChild('extensionComponent') extensionComponent!: TemplateRef<any>;
-    @ViewChild('terminationComponent') terminationComponent!: TemplateRef<any>;
-    public components = [
-        {
-            name: 'Overview',
-            component: 'WorkflowOverviewComponent'
-        },
-        {
-            name: 'Worfklow',
-            component: 'PrimaryWorkflowComponent'
-        },
-        {
-            name: 'Extension',
-            component: 'ExtensionSalesComponent'
-        },
-        {
-            name: 'Termination',
-            component: 'ExtensionSalesComponent'
-        }
-    ];
-
-    componentToRender: TemplateRef<any>;
-
-    @ViewChild('componentContainer', {read: ViewContainerRef, static: false}) public componentContainer: ViewContainerRef;
-
-
     @ViewChild('scrollable', {static: true}) scrollBar: NgScrollbar;
     @ViewChild('salesScrollbar', {static: true}) salesScrollbar: NgScrollbar;
     @ViewChild('workflowSales', {static: false}) workflowSales: WorkflowSalesComponent;
@@ -59,9 +29,6 @@ export class WorkflowDetailsComponent implements OnInit, OnDestroy, AfterViewIni
     selectedIndex = 0;
     selectedStep = 'Sales';
 
-    workflowNavigation = WorkflowNavigation;
-
-    // contactSummaryForm: WorkflowContractsSummaryForm;
     salesExtensionForm: WorkflowSalesExtensionForm;
     terminationSalesForm: WorkflowTerminationSalesForm;
 
@@ -79,19 +46,11 @@ export class WorkflowDetailsComponent implements OnInit, OnDestroy, AfterViewIni
     private _unsubscribe = new Subject();
     comopnentInitalized = false;
     constructor(
-        private _fb: FormBuilder,
-        private _workflowService: WorkflowsServiceProxy,
-        private _workflowSalesService: SalesServiceProxy,
-        private _enumService: EnumServiceProxy,
         public _workflowDataService: WorkflowDataService,
         private activatedRoute: ActivatedRoute,
-        private cdr: ChangeDetectorRef,
-        private componentFactoryResolver: ComponentFactoryResolver
     ) {
         this.salesExtensionForm = new WorkflowSalesExtensionForm();
         this.terminationSalesForm = new WorkflowTerminationSalesForm();
-        this.componentToRender = this.overviewComponent;
-
     }
 
     ngOnInit(): void {
@@ -102,7 +61,6 @@ export class WorkflowDetailsComponent implements OnInit, OnDestroy, AfterViewIni
         });
         this.comopnentInitalized = true;
         this._workflowDataService.getData();
-        // this.addContractSigner();
     }
 
     ngAfterViewInit(): void {
@@ -125,6 +83,14 @@ export class WorkflowDetailsComponent implements OnInit, OnDestroy, AfterViewIni
                 return ExtensionSalesComponent;
             default:
                 return WorkflowOverviewComponent;
+        }
+    }
+
+    detectExtensionIndex(tab: SideMenuTabsDto) {
+        if (tab.name.startsWith('Extension')) {
+            return tab.index;
+        } else {
+            return null;
         }
     }
 
@@ -343,7 +309,7 @@ export class WorkflowDetailsComponent implements OnInit, OnDestroy, AfterViewIni
             {
                 name: `Termination`,
                 displayName: `Termination`,
-                index: 1
+                index: 0
             }
         )
 
@@ -353,12 +319,13 @@ export class WorkflowDetailsComponent implements OnInit, OnDestroy, AfterViewIni
     }
 
     addExtension() {
-        const existingExtension = this._workflowDataService.topMenuTabs.find(x => x.name.startsWith('Extension'));
+        let existingExtensions = this._workflowDataService.topMenuTabs.filter(x => x.name.startsWith('Extension'));
+        let newExtensionIndex = existingExtensions.length ? Math.max.apply(Math, existingExtensions.map(function(o) { return o.index + 1; })) : 0;
         this._workflowDataService.topMenuTabs.push(
             {
-                name: `Extension${existingExtension ? existingExtension.index + 1 : 1}`,
-                displayName: `Extension${existingExtension ? existingExtension.index + 1 : 1}`,
-                index: existingExtension ? existingExtension.index + 1 : 1
+                name: `Extension${newExtensionIndex}`,
+                displayName: `Extension ${newExtensionIndex}`,
+                index: newExtensionIndex
             }
         )
 

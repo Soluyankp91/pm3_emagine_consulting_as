@@ -74,15 +74,8 @@
             <mat-tab *ngFor="let tab of _workflowDataService.topMenuTabs; let i = index;" [label]="tab.displayName">
                 <div class="workflow-form--panel u-w--100" [ngStyle]="{'height': isExpandedAndToolbarVisible()}">
                     <ng-scrollbar #salesScrollbar>
-                        <dynamic-component-loader *ngIf="comopnentInitalized" [type]="detectComponentToRender(tab)">
+                        <dynamic-component-loader *ngIf="comopnentInitalized" [type]="detectComponentToRender(tab)" [index]="detectExtensionIndex(tab)">
                         </dynamic-component-loader>
-                        <!-- <ng-template matTabContent>
-                            <div #componentContainer></div>
-                        </ng-template> -->
-                        <!-- <ng-container [ngTemplateOutlet]="detectComopnentToLoad(tab)"
-                                      [ngTemplateOutletContext]="{workflowId:workflowId}">
-                        </ng-container> -->
-
                     </ng-scrollbar>
                 </div>
                 <!-- <ng-container *ngIf="selectedTabName === 'Workflow'"> -->
@@ -153,19 +146,3 @@
         </div>
     </div>
 </div>
-
-<ng-template #overviewComponent let-worflowId="workflowId">
-    <app-workflow-overview [workflowId]="workflowId"></app-workflow-overview>
-</ng-template>
-
-<ng-template #workflowComponent let-worflowId="workflowId">
-    <app-primary-workflow #primaryWorkflow [workflowId]="workflowId"></app-primary-workflow>
-</ng-template>
-
-<ng-template #extensionComponent let-worflowId="workflowId">
-    <app-extension-sales #extensionSales [selectedIndex]="extensionIndex - 1"></app-extension-sales>
-</ng-template>
-
-<ng-template #terminationComponent let-worflowId="workflowId">
-
-</ng-template>
