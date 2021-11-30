@@ -12,18 +12,35 @@
 
 .button-outlined {
     background-color: #fff !important;
-    border: 2px solid #CDFF96 !important;
-    color: #89838D !important;
-    text-transform: uppercase;
+    border: 2px solid #17A297 !important;
+    color: #17A297 !important;
+    // text-transform: uppercase;
     font-weight: 700;
 }
 
 .button-accept {
-    background-color: #CDFF96 !important;
-    border: 2px solid #CDFF96 !important;
-    color: #89838D !important;
-    text-transform: uppercase;
+    background-color: #17A297 !important;
+    border: 2px solid #17A297 !important;
+    color: #fff !important;
+    // text-transform: uppercase;
     font-weight: 700;
+}
+
+.button-add {
+    background-color: transparent !important;
+    color: #17A297 !important;
+    font-weight: 700;
+    padding-left: 0px !important;
+    font-size: 16px;
+    .mat-button-wrapper {
+        display: flex;
+        align-items: center;
+    }
+    mat-icon {
+        background-color: rgba($color: #17A297, $alpha: .2) !important;
+        border-radius: 50% !important;
+        margin-right: 5px;
+    }
 }
 
 .workflow-company--btn {
@@ -67,6 +84,11 @@
 
 .workflow-toggle-buttons {
     &.mat-button-toggle-group-appearance-standard {
+        border: 0 !important;
+        border-radius: 0;
+        display: flex;
+        flex-flow: wrap;
+        gap: 16px 0;
         .mat-button-toggle {
             margin-right: 16px;
             color: #384853;
@@ -77,9 +99,6 @@
             height: 55px;
             min-width: 125px;
         }
-        border: 0 !important;
-        border-radius: 0;
-
         .mat-button-toggle-label-content {
             line-height: 55px;
             padding: 0 16px;

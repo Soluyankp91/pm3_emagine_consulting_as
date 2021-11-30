@@ -1,4 +1,4 @@
-import { Component, Input, OnInit, ViewChild } from '@angular/core';
+import { AfterViewInit, ChangeDetectorRef, Component, Input, OnInit, ViewChild } from '@angular/core';
 import { WorkflowDataService } from '../workflow-data.service';
 import { WorkflowSalesComponent } from '../workflow-sales/workflow-sales.component';
 import { WorkflowStepList, WorkflowSteps } from '../workflow.model';
@@ -9,20 +9,21 @@ import { WorkflowStepList, WorkflowSteps } from '../workflow.model';
     styleUrls: ['./primary-workflow.component.scss']
 })
 export class PrimaryWorkflowComponent implements OnInit {
-    @Input() workflowId: string;
+    @Input() workflowId: number;
     @ViewChild('workflowSales', {static: false}) workflowSales: WorkflowSalesComponent;
     selectedStep: string;
 
-    // workflowSteps = [{id: 1, name: 'Sales'}, {id: 2, name: 'Contracts'}, {id: 3, name: 'Accounts'}];
+    // workflowSteps = [{id: 1, name: 'Sales'}, {id: 2, name: 'Contracts'}, {id: 3, name: 'Finance'}];
     workflowSteps = WorkflowStepList;
     constructor(
-        public _workflowDataService: WorkflowDataService
+        public _workflowDataService: WorkflowDataService,
+        private cdr: ChangeDetectorRef
     ) { }
 
     ngOnInit(): void {
-        console.log('s');
-
+        console.log('init PW');
         this.selectedStep = 'Sales';
+        // this.selectedStep = 'Sales';
     }
 
     changeStepSelection(stepName: string, stepId: any) {
@@ -30,8 +31,8 @@ export class PrimaryWorkflowComponent implements OnInit {
         this._workflowDataService.workflowProgress.currentlyActiveStep = stepId * 1;
     }
 
-    saveSalesStep(workflowId: string) {
-        this.workflowSales.saveSalesStep(workflowId);
+    saveSalesStep() {
+        this.workflowSales.saveSalesStep();
     }
 
 }

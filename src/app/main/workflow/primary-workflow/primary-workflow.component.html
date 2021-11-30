@@ -1,27 +1,31 @@
 <div fxLayout="row" fxLayoutAlign="start start" class="workflow">
-    <div fxFlex="20%">
-        <mat-list>
-            <mat-list-item *ngFor="let step of workflowSteps | keyvalue; let i = index;" (click)="changeStepSelection(step.value, step.key)" [ngClass]="{'active-step': step.value === selectedStep}">
-                {{step.value}}
+    <div fxFlex="15%" class="workflow-navigation--wrapper">
+        <mat-list class="workflow-navigation">
+            <mat-list-item class="workflow-navigation--step" *ngFor="let step of workflowSteps; let i = index;" (click)="changeStepSelection(step.name, step.id)"
+            [ngClass]="{'active-step': step.name === selectedStep, 'completed-step': step.isCompleted}">
+                <span class="workflow-navigation--step__number">
+                    {{step.id}}
+                </span>
+                <span  class="workflow-navigation--step__name">
+                    {{step.name}}
+                </span>
             </mat-list-item>
-            <!-- <mat-list-item (click)="selectedStep = 'Contracts'">
-                Contracts
-            </mat-list-item>
-            <mat-list-item (click)="selectedStep = 'Accounts'">
-                Accounts
-            </mat-list-item> -->
         </mat-list>
     </div>
-    <div fxFlex="80%">
-        <ng-container *ngIf="selectedStep === 'Sales'">
-            <app-workflow-sales #workflowSales [workflowId]="workflowId"></app-workflow-sales>
-        </ng-container>
-        <ng-container *ngIf="selectedStep === 'Contracts'">
-            <app-workflow-contracts></app-workflow-contracts>
-        </ng-container>
-        <ng-container *ngIf="selectedStep === 'Accounts'">
-            <!-- TODO: create account component make a UI-->
-            <app-workflow-sales [workflowId]="workflowId"></app-workflow-sales>
+    <div fxFlex="85%">
+        <ng-container [ngSwitch]="selectedStep">
+            <ng-container *ngSwitchCase="'Sales'">
+                <app-workflow-sales #workflowSales [workflowId]="workflowId"></app-workflow-sales>
+            </ng-container>
+            <ng-container *ngSwitchCase="'Contracts'">
+                <app-workflow-contracts></app-workflow-contracts>
+            </ng-container>
+            <ng-container *ngSwitchCase="'Finance'">
+
+            </ng-container>
+            <ng-container *ngSwitchDefault>
+
+            </ng-container>
         </ng-container>
     </div>
 </div>

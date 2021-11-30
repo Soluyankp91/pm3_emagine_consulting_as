@@ -95,12 +95,12 @@ export const TopMenuTabs: SideMenuTabsDto[] = [
     {
         name: 'Overview',
         displayName: 'Overview',
-        index: 1
+        index: 0
     },
     {
         name: 'Workflow',
         displayName: 'Workflow',
-        index: 1
+        index: 0
     },
     // {
     //     name: 'Extension1',
@@ -193,7 +193,7 @@ export const WorkflowNavigation: IWorkflowNavigationStep[] = [
 
 export const WorkflowList = [
     {
-        id: '6a3e6877-c26a-45e7-8a3d-21b7f002d66c',
+        id: 1,
         client: 'Martha Marikel',
         supplier: 'Martha Marikel',
         step: 'Sales',
@@ -203,7 +203,7 @@ export const WorkflowList = [
         isDeleted: false
     },
     {
-        id: '1112',
+        id: 1,
         client: 'Martha Marikel',
         supplier: 'Martha Marikel',
         step: 'Sales',
@@ -213,7 +213,7 @@ export const WorkflowList = [
         isDeleted: false
     },
     {
-        id: '1113',
+        id: 1,
         client: 'Martha Marikel',
         supplier: 'Martha Marikel',
         step: 'Contracts',
@@ -292,12 +292,24 @@ export enum WorkflowSections {
 export enum WorkflowSteps {
     Sales = 1,
     Contracts = 2,
-    Accounts = 3
+    Finance = 3
 }
 
 
-export const WorkflowStepList: { [key: number]: string } = {
-    1: "Sales",
-    2: "Contracts",
-    3: "Accounts",
-}
+export const WorkflowStepList = [
+    {
+        id: 1,
+        name: "Sales",
+        isCompleted: false
+    },
+    {
+        id: 2,
+        name: "Contracts",
+        isCompleted: true
+    },
+    {
+        id: 3,
+        name: "Finance",
+        isCompleted: false
+    }
+]

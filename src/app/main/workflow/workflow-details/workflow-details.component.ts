@@ -1,37 +1,34 @@
-import { StepperSelectionEvent } from '@angular/cdk/stepper';
-import { Component, OnDestroy, OnInit, ViewChild } from '@angular/core';
-import { FormBuilder, FormControl, FormArray } from '@angular/forms';
+import { ComponentType } from '@angular/cdk/portal';
+import { AfterViewInit, Component, OnDestroy, OnInit, TemplateRef, ViewChild } from '@angular/core';
 import { MatTabChangeEvent } from '@angular/material/tabs';
 import { ActivatedRoute } from '@angular/router';
 import { NgScrollbar } from 'ngx-scrollbar';
 import { Subject } from 'rxjs';
-import { finalize, takeUntil } from 'rxjs/operators';
-import { WorkflowsServiceProxy, SalesServiceProxy, EnumServiceProxy, EnumEntityTypeDto, WorkflowSalesDataDto, ContractSignerDto, SignerRole, ClientRateDto, WorkflowConsultantDto } from 'src/shared/service-proxies/service-proxies';
+import { takeUntil } from 'rxjs/operators';
+import { EnumEntityTypeDto } from 'src/shared/service-proxies/service-proxies';
 import { ExtensionSalesComponent } from '../extension-sales/extension-sales.component';
 import { PrimaryWorkflowComponent } from '../primary-workflow/primary-workflow.component';
 import { WorkflowDataService } from '../workflow-data.service';
+import { WorkflowOverviewComponent } from '../workflow-overview/workflow-overview.component';
 import { WorkflowSalesComponent } from '../workflow-sales/workflow-sales.component';
-import { WorkflowNavigation, WorkflowContractsSummaryForm, WorkflowSalesExtensionForm, WorkflowTerminationSalesForm, SideMenuTabsDto, WorkflowProgressStatus, WorkflowSections, WorkflowSteps } from '../workflow.model';
+import { WorkflowSalesExtensionForm, WorkflowTerminationSalesForm, SideMenuTabsDto, WorkflowProgressStatus, WorkflowSections, WorkflowSteps } from '../workflow.model';
 
 @Component({
   selector: 'app-workflow-details',
   templateUrl: './workflow-details.component.html',
   styleUrls: ['./workflow-details.component.scss']
 })
-export class WorkflowDetailsComponent implements OnInit, OnDestroy {
+
+export class WorkflowDetailsComponent implements OnInit, OnDestroy, AfterViewInit {
     @ViewChild('scrollable', {static: true}) scrollBar: NgScrollbar;
     @ViewChild('salesScrollbar', {static: true}) salesScrollbar: NgScrollbar;
     @ViewChild('workflowSales', {static: false}) workflowSales: WorkflowSalesComponent;
     @ViewChild('extensionSales', {static: false}) extensionSales: ExtensionSalesComponent;
-    @ViewChild('primaryWorkflow', {static: false}) primaryWorkflow: PrimaryWorkflowComponent;
     menuIndex = 0;
-    workflowId: string;
+    workflowId: number;
     selectedIndex = 0;
     selectedStep = 'Sales';
 
-    workflowNavigation = WorkflowNavigation;
-
-    // contactSummaryForm: WorkflowContractsSummaryForm;
     salesExtensionForm: WorkflowSalesExtensionForm;
     terminationSalesForm: WorkflowTerminationSalesForm;
 
@@ -47,28 +44,26 @@ export class WorkflowDetailsComponent implements OnInit, OnDestroy {
     selectedTabName = 'Overview';
     extensionIndex: number;
     private _unsubscribe = new Subject();
+    comopnentInitalized = false;
     constructor(
-        private _fb: FormBuilder,
-        private _workflowService: WorkflowsServiceProxy,
-        private _workflowSalesService: SalesServiceProxy,
-        private _enumService: EnumServiceProxy,
         public _workflowDataService: WorkflowDataService,
-        private activatedRoute: ActivatedRoute
+        private activatedRoute: ActivatedRoute,
     ) {
-        // this.contactSummaryForm = new WorkflowContractsSummaryForm();
         this.salesExtensionForm = new WorkflowSalesExtensionForm();
         this.terminationSalesForm = new WorkflowTerminationSalesForm();
-
     }
 
     ngOnInit(): void {
         this.activatedRoute.paramMap.pipe(
             takeUntil(this._unsubscribe)
         ).subscribe(params => {
-            this.workflowId = params.get('id')!;
+            this.workflowId = +params.get('id')!;
         });
+        this.comopnentInitalized = true;
         this._workflowDataService.getData();
-        // this.addContractSigner();
+    }
+
+    ngAfterViewInit(): void {
     }
 
     ngOnDestroy(): void {
@@ -76,57 +71,28 @@ export class WorkflowDetailsComponent implements OnInit, OnDestroy {
         this._unsubscribe.complete();
     }
 
-    saveSalesMainData() {
-        // let input: SalesMainDataUpdateRequestDto = new SalesMainDataUpdateRequestDto();
-        // input.salesTypeId = this.salesMainDataForm.salesType?.value;
-        // input.isNearshore = this.salesMainDataForm.nearshoreOffshore?.value === 'Nearshore';
-        // input.isOffshore = this.salesMainDataForm.nearshoreOffshore?.value  === 'Offshore';
-        // input.isNormal = false; // ISNORMAL ??
-        // input.isIntracompanySale = this.intracompanyActive;
-        // input.intracompanyAccountManagerId = this.salesMainDataForm.intracompanyAccountManager?.value;
-        // input.intracompanyTenantId = this.salesMainDataForm.intracompanyAccountManager?.value; // tenant?
-        // input.salesAccountManagerId = this.salesMainDataForm.salesAccountManager?.value;
-        // input.commissionAccountManagerId = this.salesMainDataForm.commissionAccountManager?.value;
-        // this._workflowSalesService.mainData(this.workflowId, input)
-        //     .pipe(finalize(() => {
-
-        //     }))
-        //     .subscribe(result => {
-
-        //     });
+    detectComponentToRender(tab: SideMenuTabsDto): ComponentType<any> {
+        switch (this.formatStepLabel(tab.displayName)) {
+            case 'Overview':
+                return WorkflowOverviewComponent;
+            case 'Workflow':
+                return PrimaryWorkflowComponent;
+            case 'Extension':
+                return ExtensionSalesComponent;
+            case 'Termination':
+                return ExtensionSalesComponent;
+            default:
+                return WorkflowOverviewComponent;
+        }
     }
 
-    saveSalesClientData() {
-        // let input: SalesClientDataUpdateRequestDto = new SalesClientDataUpdateRequestDto();
-        // input.directClientId = this.salesMainClientDataForm.directClient?.value;
-        // input.clientInvoicingRecipientSameAsDirectClient = this.salesMainClientDataForm.isClientInvoicingNone?.value;
-        // input.clientInvoicingRecipientId = this.salesMainClientDataForm.clientInvoicingRecipient?.value;
-        // input.invoicingReferencePersonId = this.salesMainClientDataForm.clientInvoicingPeriod?.value;
-        // input.evaluationsDisabled = this.salesMainClientDataForm.disableEvaluations?.value;
-        // input.evaluationsDisabledReason = this.salesMainClientDataForm.disableEvaluations?.value;
-        // input.evaluationsReferencePersonId = this.salesMainClientDataForm.evaluationReferencePerson?.value;
-        // input.clientSpecialContractTerms = this.salesMainClientDataForm.specialContractTerms?.value;
-        // input.invoicingReferenceNumber = this.salesMainClientDataForm.invoicingReferenceNumber?.value;
-
-        // input.contractSigners = [];
-        // for (let i = 0; i < this.salesMainClientDataForm.clientSigners.value.length; i++) {
-        //     let signer = this.salesMainClientDataForm.clientSigners.value[i];
-        //     let contractSigner = new ContractSignerDto();
-        //     contractSigner.order = i + 1;
-        //     contractSigner.contractSignerId = signer.clientSigvens;
-        //     contractSigner.signerRole = new SignerRole();
-        //     contractSigner.signerRole.roleName = signer.clientRole;
-        //     input.contractSigners.push(contractSigner);
-        // }
-        // this._workflowSalesService.clientData(this.workflowId, input)
-        //     .pipe(finalize(() => {
-
-        //     }))
-        //     .subscribe(result => {
-
-        //     });
+    detectExtensionIndex(tab: SideMenuTabsDto) {
+        if (tab.name.startsWith('Extension')) {
+            return tab.index;
+        } else {
+            return null;
+        }
     }
-
 
     done() {
         if (this.selectedStep === 'Sales') {
@@ -153,7 +119,7 @@ export class WorkflowDetailsComponent implements OnInit, OnDestroy {
     }
 
     saveSalesStep() {
-        this.primaryWorkflow.saveSalesStep(this.workflowId);
+        this._workflowDataService.workflowSalesSaved.emit();
     }
 
     saveContractsStep() {
@@ -187,11 +153,13 @@ export class WorkflowDetailsComponent implements OnInit, OnDestroy {
     }
 
     tabChanged(event: MatTabChangeEvent) {
+        console.log('change tab PW');
         this.selectedTabIndex = event.index;
         this.selectedTabName = this.formatStepLabel(event.tab.textLabel);
         this.extensionIndex = this.selectedTabName.startsWith('Extension') ? parseInt(event.tab.textLabel.match(/\d/g)!.join('')) : 0;
         let newStatus = new WorkflowProgressStatus();
         newStatus.currentlyActiveSection = this.mapSelectedTabNameToEnum(this.selectedTabName);
+        // FIXME: just for test
         newStatus.currentlyActiveStep = WorkflowSteps.Sales;
         this._workflowDataService.updateWorkflowProgressStatus(newStatus);
     }
@@ -252,8 +220,8 @@ export class WorkflowDetailsComponent implements OnInit, OnDestroy {
                     case WorkflowSteps.Contracts:
                         console.log('save WF Contracts');
                         break;
-                    case WorkflowSteps.Accounts:
-                        console.log('save WF Accounts');
+                    case WorkflowSteps.Finance:
+                        console.log('save WF Finance');
                         break;
                 }
                 break;
@@ -265,8 +233,8 @@ export class WorkflowDetailsComponent implements OnInit, OnDestroy {
                     case WorkflowSteps.Contracts:
                         console.log('save Extension Contracts');
                         break;
-                    case WorkflowSteps.Accounts:
-                        console.log('save Extension Accounts');
+                    case WorkflowSteps.Finance:
+                        console.log('save Extension Finance');
                         break;
                 }
                 break;
@@ -278,8 +246,8 @@ export class WorkflowDetailsComponent implements OnInit, OnDestroy {
                     case WorkflowSteps.Contracts:
                         console.log('save Termination Contracts');
                         break;
-                    case WorkflowSteps.Accounts:
-                        console.log('save Termination Accounts');
+                    case WorkflowSteps.Finance:
+                        console.log('save Termination Finance');
                         break;
                 }
                 break;
@@ -299,8 +267,8 @@ export class WorkflowDetailsComponent implements OnInit, OnDestroy {
                     case WorkflowSteps.Contracts:
                         console.log('Complete WF Contracts');
                         break;
-                    case WorkflowSteps.Accounts:
-                        console.log('Complete WF Accounts');
+                    case WorkflowSteps.Finance:
+                        console.log('Complete WF Finance');
                         break;
                 }
                 break;
@@ -314,8 +282,8 @@ export class WorkflowDetailsComponent implements OnInit, OnDestroy {
                     case WorkflowSteps.Contracts:
                         console.log('Complete Extension Contracts');
                         break;
-                    case WorkflowSteps.Accounts:
-                        console.log('Complete Extension Accounts');
+                    case WorkflowSteps.Finance:
+                        console.log('Complete Extension Finance');
                         break;
                 }
                 break;
@@ -327,8 +295,8 @@ export class WorkflowDetailsComponent implements OnInit, OnDestroy {
                     case WorkflowSteps.Contracts:
                         console.log('Complete Termination Contracts');
                         break;
-                    case WorkflowSteps.Accounts:
-                        console.log('Complete Termination Accounts');
+                    case WorkflowSteps.Finance:
+                        console.log('Complete Termination Finance');
                         break;
                 }
                 break;
@@ -341,7 +309,7 @@ export class WorkflowDetailsComponent implements OnInit, OnDestroy {
             {
                 name: `Termination`,
                 displayName: `Termination`,
-                index: 1
+                index: 0
             }
         )
 
@@ -351,12 +319,13 @@ export class WorkflowDetailsComponent implements OnInit, OnDestroy {
     }
 
     addExtension() {
-        const existingExtension = this._workflowDataService.topMenuTabs.find(x => x.name.startsWith('Extension'));
+        let existingExtensions = this._workflowDataService.topMenuTabs.filter(x => x.name.startsWith('Extension'));
+        let newExtensionIndex = existingExtensions.length ? Math.max.apply(Math, existingExtensions.map(function(o) { return o.index + 1; })) : 0;
         this._workflowDataService.topMenuTabs.push(
             {
-                name: `Extension${existingExtension ? existingExtension.index + 1 : 1}`,
-                displayName: `Extension${existingExtension ? existingExtension.index + 1 : 1}`,
-                index: existingExtension ? existingExtension.index + 1 : 1
+                name: `Extension${newExtensionIndex}`,
+                displayName: `Extension ${newExtensionIndex}`,
+                index: newExtensionIndex
             }
         )
 
