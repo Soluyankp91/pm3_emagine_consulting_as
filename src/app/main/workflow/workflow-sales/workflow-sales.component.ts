@@ -98,21 +98,21 @@ export class WorkflowSalesComponent extends AppComopnentBase implements OnInit {
         this.getSpecialRateOrFeeDirections();
         this.getSpecialRateReportUnits();
         this.getSpecialRateSpecifications();
+
         // init form to add signers array
         this.addSignerToForm();
         this.addConsultantForm();
 
         this.getWorkflowSalesStep();
 
-        this._workflodDataService.workflowSalesSaved.subscribe(() => {
-                console.log('ss');
+        this._workflodDataService.workflowSalesSaved
+            .pipe(takeUntil(this._unsubscribe))
+            .subscribe(() => {
                 this.saveSalesStep();
             });
     }
 
     ngOnDestroy(): void {
-        console.log('destroy');
-
         this._unsubscribe.next();
         this._unsubscribe.complete();
     }
@@ -319,12 +319,16 @@ export class WorkflowSalesComponent extends AppComopnentBase implements OnInit {
             consultantAccountManager: new FormControl(false)
         });
         this.consultantsForm.consultantData.push(form);
+
+        // FIXME: remove
         this._workflodDataService.addOrUpdateConsultantTab(this.consultantsForm.consultantData.length - 1, form.get('consultantName')?.value);
     }
 
 
     removeConsultant(index: number) {
         this.consultantsForm.consultantData.removeAt(index);
+
+        // FIXME: remove
         this._workflodDataService.removeConsultantTab(index);
     }
 
@@ -350,8 +354,6 @@ export class WorkflowSalesComponent extends AppComopnentBase implements OnInit {
     }
 
     saveSalesStep() {
-        this.salesMainDataForm.updateValueAndValidity();
-        console.log(this.salesMainDataForm.value);
         let input = new WorkflowSalesDataDto();
         input.salesMainData = new SalesMainDataDto();
         input.salesMainData.salesTypeId = this.salesMainDataForm.salesType?.value?.id;

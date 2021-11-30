@@ -74,36 +74,36 @@
             <mat-tab *ngFor="let tab of _workflowDataService.topMenuTabs; let i = index;" [label]="tab.displayName">
                 <div class="workflow-form--panel u-w--100" [ngStyle]="{'height': isExpandedAndToolbarVisible()}">
                     <ng-scrollbar #salesScrollbar>
-                        <dynamic-component-loader *ngIf="comopnentInitalized" [type]="detectComponentToRender(tab)" [index]="detectExtensionIndex(tab)">
+                        <dynamic-component-loader *ngIf="componentInitalized" [type]="detectComponentToRender(tab)" [index]="detectExtensionIndex(tab)">
                         </dynamic-component-loader>
                     </ng-scrollbar>
                 </div>
-                <!-- <ng-container *ngIf="selectedTabName === 'Workflow'"> -->
-                <!-- <div class="workflow-form--panel u-w--100" *ngIf="selectedTabName === 'Workflow'" [ngStyle]="{'height': isExpandedAndToolbarVisible()}">
+                <!-- <ng-container *ngIf="selectedTabName === 'Workflow'">
+                <div class="workflow-form--panel u-w--100" *ngIf="selectedTabName === 'Workflow'" [ngStyle]="{'height': isExpandedAndToolbarVisible()}">
                     <ng-scrollbar #salesScrollbar>
                         <app-primary-workflow #primaryWorkflow [workflowId]="workflowId"></app-primary-workflow>
                     </ng-scrollbar>
-                </div> -->
-                <!-- </ng-container> -->
-                <!-- <ng-container *ngIf="selectedTabName === 'Extension'"> -->
-                <!-- <div class="workflow-form--panel u-w--100" *ngIf="selectedTabName === 'Extension'" [ngStyle]="{'height': isExpandedAndToolbarVisible()}"> -->
-                    <!-- <ng-scrollbar #salesScrollbar>
+                </div>
+                </ng-container>
+                <ng-container *ngIf="selectedTabName === 'Extension'">
+                <div class="workflow-form--panel u-w--100" *ngIf="selectedTabName === 'Extension'" [ngStyle]="{'height': isExpandedAndToolbarVisible()}">
+                    <ng-scrollbar #salesScrollbar>
                         <app-extension-sales #extensionSales [selectedIndex]="extensionIndex - 1"></app-extension-sales>
-                    </ng-scrollbar> -->
-                <!-- </div> -->
+                    </ng-scrollbar>
+                </div>
 
-                <!-- <div class="workflow-form--panel u-w--100" *ngIf="selectedTabName === 'Termination'" [ngStyle]="{'height': isExpandedAndToolbarVisible()}"> -->
-                    <!-- <ng-scrollbar #salesScrollbar>
+                <div class="workflow-form--panel u-w--100" *ngIf="selectedTabName === 'Termination'" [ngStyle]="{'height': isExpandedAndToolbarVisible()}">
+                    <ng-scrollbar #salesScrollbar>
                         <app-extension-sales #extensionSales [selectedIndex]="extensionIndex - 1"></app-extension-sales>
-                    </ng-scrollbar> -->
-                <!-- </div> -->
+                    </ng-scrollbar>
+                </div>
 
-                <!-- <div class="workflow-form--panel u-w--100" *ngIf="selectedTabName === 'Consultants'" [ngStyle]="{'height': isExpandedAndToolbarVisible()}"> -->
-                    <!-- <ng-scrollbar #salesScrollbar>
+                <div class="workflow-form--panel u-w--100" *ngIf="selectedTabName === 'Consultants'" [ngStyle]="{'height': isExpandedAndToolbarVisible()}">
+                    <ng-scrollbar #salesScrollbar>
                         <app-extension-sales #extensionSales [selectedIndex]="extensionIndex - 1"></app-extension-sales>
-                    </ng-scrollbar> -->
-                <!-- </div> -->
-                <!-- </ng-container> -->
+                    </ng-scrollbar>
+                </div>
+                </ng-container> -->
             </mat-tab>
             <!-- <mat-tab label="Overview">
                 <div class="workflow-form--panel u-w--100" [ngStyle]="{'height': isExpanded ? 'calc(80vh - 50px)' : 'calc(100vh - 50px)'}">

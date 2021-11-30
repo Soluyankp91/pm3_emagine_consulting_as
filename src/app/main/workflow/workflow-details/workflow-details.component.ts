@@ -44,7 +44,7 @@ export class WorkflowDetailsComponent implements OnInit, OnDestroy, AfterViewIni
     selectedTabName = 'Overview';
     extensionIndex: number;
     private _unsubscribe = new Subject();
-    comopnentInitalized = false;
+    componentInitalized = false;
     constructor(
         public _workflowDataService: WorkflowDataService,
         private activatedRoute: ActivatedRoute,
@@ -59,7 +59,7 @@ export class WorkflowDetailsComponent implements OnInit, OnDestroy, AfterViewIni
         ).subscribe(params => {
             this.workflowId = +params.get('id')!;
         });
-        this.comopnentInitalized = true;
+        this.componentInitalized = true;
         this._workflowDataService.getData();
     }
 
