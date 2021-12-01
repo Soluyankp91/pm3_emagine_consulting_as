@@ -1,3 +1,5 @@
+@import "/src/app/shared/styles/config/_colors";
+
 .green-checkbox {
     .mat-checkbox-frame {
         border-color: #17A297 !important;
@@ -14,6 +16,38 @@
         background-color: #17A297 !important;
         svg path {
             stroke: #fff !important;
+        }
+    }
+}
+
+.black-checkbox {
+    .mat-checkbox-frame {
+        border: 2px solid $light-grey-color !important;
+        border-radius: 5px;
+        transform: scale(1.1);
+    }
+    .mat-checkbox-ripple {
+        left: calc(50% - 16px);
+        top: calc(50% - 16px);
+        height: 32px;
+        width: 32px;
+        .mat-ripple-element {
+            background: $dark-grey-color !important;
+        }
+    }
+    .mat-checkbox-label {
+        color: #384853DE;
+        font-weight: 700;
+    }
+    &.mat-checkbox-checked {
+        .mat-checkbox-frame {
+            border: 2px solid $dark-grey-color !important;
+        }
+        .mat-checkbox-background {
+            background-color: $dark-grey-color !important;
+            svg path {
+                stroke: #fff !important;
+            }
         }
     }
 }

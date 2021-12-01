@@ -1,0 +1,60 @@
+<div class="workflow-finances u-w--100">
+
+    <form fxLayout="column" fxLayoutAlign="start start" [formGroup]="financesClientForm" class="workflow-form u-w--100">
+        <div class="workflow-finances--block">
+            <h2 class="workflow-section--header">Client</h2>
+
+            <h3 class="workflow-gray--header">Client (debitor) created in Navision</h3>
+            <div fxLayout="row" fxLayoutAlign="start center" class="u-w--100 u-mb--20">
+                <mat-checkbox color="accent" formControlName="clientCreatedInNavision" name="clientCreatedInNavision" class="black-checkbox u-mr--10">
+                    Done
+                </mat-checkbox>
+            </div>
+
+            <h3 class="workflow-gray--header">Client (debitor) number for invoicing</h3>
+            <div fxLayout="row" fxLayoutAlign="start start" class="u-w--100 u-mb--20">
+                <mat-button-toggle-group class="workflow-toggle-buttons u-mt--10" formControlName="clientNumberTypeForInvoicing">
+                    <mat-button-toggle [value]="item" *ngFor="let item of ['Same as client', 'Custom']">
+                        {{ item }}
+                    </mat-button-toggle>
+                </mat-button-toggle-group>
+            </div>
+
+            <div fxLayout="row" fxLayoutAlign="start start" class="u-w--100 u-mb--20" *ngIf="financesClientForm?.clientNumberTypeForInvoicing?.value === 'Custom'">
+                <mat-form-field appearance="fill" class="u-w--100 formFieldNoMarginPadding u-mr--16" fxFlex="33%">
+                    <mat-label>Debitor number</mat-label>
+                    <input autocomplete="off" matInput formControlName="clientNumberForInvoicing" type="text">
+                </mat-form-field>
+            </div>
+        </div>
+    </form>
+
+    <form [formGroup]="financesConsultantsForm" class="workflow-form u-w--100" id="consultantData">
+        <ng-container formArrayName="consultants">
+            <div *ngFor="let consultant of financesConsultantsForm.consultants.controls; let i = index; last as last" [formGroupName]="i" class="workflow-finances--block" [ngClass]="{'last-block': last}">
+                <h2 class="workflow-section--header">Consultant</h2>
+
+                <div fxLayout="row" fxLayoutAlign="start center" class="u-mb--20">
+                    <img class="workflow-finances--consultant-img u-mr--16" src="https://placekitten.com/50/50">
+                    <p class="workflow-finances--consultant-name">
+                        {{financesConsultantsForm.consultants.at(i).get('consultantName')?.value}}
+                    </p>
+                </div>
+
+                <h3 class="workflow-gray--header">Check invoicing settings on consultant</h3>
+                <div fxLayout="row" fxLayoutAlign="start center" class="u-w--100 u-mb--20">
+                    <mat-checkbox color="accent" formControlName="checkConsualtantInvoicingSettings" name="checkConsualtantInvoicingSettings" class="black-checkbox u-mr--10">
+                        Done
+                    </mat-checkbox>
+                </div>
+
+                <h3 class="workflow-gray--header">Consultant company (creditor) created in Navision</h3>
+                <div fxLayout="row" fxLayoutAlign="start center" class="u-w--100 u-mb--20">
+                    <mat-checkbox color="accent" formControlName="consultantCreatedInNavision" name="consultantCreatedInNavision" class="black-checkbox u-mr--10">
+                        Done
+                    </mat-checkbox>
+                </div>
+            </div>
+        </ng-container>
+    </form>
+</div>
