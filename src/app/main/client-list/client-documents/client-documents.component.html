@@ -126,7 +126,7 @@
                             </ng-container>
                         </mat-expansion-panel>
                     </mat-accordion>
-                    <mat-menu #contractActions="matMenu" [overlapTrigger]="false">
+                    <mat-menu #contractActions="matMenu" [overlapTrigger]="false" (click)="$event.stopPropagation();">
                         <ng-template matMenuContent let-folder="folder">
                             <button mat-menu-item (click)="addFile(folder)">
                                 Add file

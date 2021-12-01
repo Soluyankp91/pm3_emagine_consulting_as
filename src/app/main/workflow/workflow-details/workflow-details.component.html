@@ -13,7 +13,7 @@
             </div>
         </div>
         <div fxFlex="50%" fxLayout="row">
-            <div fxFlex="40%" fxLayout="column wrap" style="font-size: 12px;">
+            <div fxFlex="50%" fxLayout="column wrap" style="font-size: 12px;">
                 <span>
                     Started: {{_workflowDataService.getWorkflowProgress?.started}}
                 </span>
@@ -33,7 +33,7 @@
                     isWorkflowAccountsSaved: {{_workflowDataService.getWorkflowProgress?.isWorkflowAccountsSaved}}
                 </span>
             </div>
-            <div fxFlex="40%" fxLayout="column wrap" style="font-size: 12px;">
+            <div fxFlex="50%" fxLayout="column wrap" style="font-size: 12px;">
                 <span>
                     isPrimaryWorkflowCompleted: {{_workflowDataService.getWorkflowProgress?.isPrimaryWorkflowCompleted}}
                 </span>
@@ -47,23 +47,35 @@
                     currentlyActiveExtensionIndex: {{_workflowDataService.getWorkflowProgress?.currentlyActiveExtensionIndex}}
                 </span>
             </div>
-            <div fxFlex="10%" fxLayoutAlign="center center">
-                <button mat-icon-button [matMenuTriggerFor]="workflowMenu"><mat-icon>more_horiz</mat-icon></button>
-                <mat-menu #workflowMenu>
-                    <button
-                        mat-menu-item
-                        [disabled]="_workflowDataService.getWorkflowProgress?.isExtensionAdded && !_workflowDataService.getWorkflowProgress?.isExtensionCompleted"
-                        (click)="addExtension()">
-                        Add extension
-                    </button>
-                    <button
-                        mat-menu-item
-                        [disabled]="_workflowDataService.getWorkflowProgress?.isTerminationAdded"
-                        (click)="addTermination()">
-                        Add termination
-                    </button>
-                </mat-menu>
-            </div>
+        </div>
+        <div fxFlex="10%" fxLayoutAlign="end center">
+            <button mat-icon-button [matMenuTriggerFor]="workflowMenu" class="workflow-icon--actions"><mat-icon>add</mat-icon></button>
+            <mat-menu #workflowMenu>
+                <button
+                    class="menu-item menu-item--edit"
+                    mat-menu-item
+                    [disabled]="_workflowDataService.getWorkflowProgress?.isExtensionAdded && !_workflowDataService.getWorkflowProgress?.isExtensionCompleted"
+                    (click)="addExtension()">
+                    <mat-icon>create</mat-icon>
+                    Edit Workflow
+                </button>
+                <button
+                    class="menu-item menu-item--add"
+                    mat-menu-item
+                    [disabled]="_workflowDataService.getWorkflowProgress?.isExtensionAdded && !_workflowDataService.getWorkflowProgress?.isExtensionCompleted"
+                    (click)="addExtension()">
+                    <mat-icon>add</mat-icon>
+                    Extend Workflow
+                </button>
+                <button
+                    class="menu-item menu-item--cancel"
+                    mat-menu-item
+                    [disabled]="_workflowDataService.getWorkflowProgress?.isTerminationAdded"
+                    (click)="addTermination()">
+                    <mat-icon>clear</mat-icon>
+                    Terminate Workflow
+                </button>
+            </mat-menu>
         </div>
     </div>
     <div class="workflow-content u-w--100" fxFlex="{{isExpanded ? '80%' : '100%' }}" [ngStyle]="{'height': isExpanded ? '80vh' : '100vh'}">
@@ -72,77 +84,24 @@
         </button>
         <mat-tab-group class="workflow-content--tabs u-w--100" (selectedTabChange)="tabChanged($event)">
             <mat-tab *ngFor="let tab of menuTabs; let i = index;" [label]="tab.displayName">
+                <ng-template mat-tab-label>
+                    <div fxLayout="row" fxLayoutAlign="center center">
+                        <mat-icon *ngIf="tab.displayName === 'Overview'" class="u-mr--5" svgIcon="overview-icon"></mat-icon>
+                        <span class="tab-header">{{tab.displayName}}</span>
+                    </div>
+                    <span class="tab-subheader">{{tab.additionalInfo}}</span>
+                  </ng-template>
                 <div class="workflow-form--panel u-w--100" [ngStyle]="{'height': isExpandedAndToolbarVisible()}">
                     <ng-scrollbar #salesScrollbar>
                         <dynamic-component-loader *ngIf="componentInitalized" [type]="detectComponentToRender(tab)" [index]="detectExtensionIndex(tab)">
                         </dynamic-component-loader>
                     </ng-scrollbar>
                 </div>
-                <!-- <ng-container *ngIf="selectedTabName === 'Workflow'">
-                <div class="workflow-form--panel u-w--100" *ngIf="selectedTabName === 'Workflow'" [ngStyle]="{'height': isExpandedAndToolbarVisible()}">
-                    <ng-scrollbar #salesScrollbar>
-                        <app-primary-workflow #primaryWorkflow [workflowId]="workflowId"></app-primary-workflow>
-                    </ng-scrollbar>
-                </div>
-                </ng-container>
-                <ng-container *ngIf="selectedTabName === 'Extension'">
-                <div class="workflow-form--panel u-w--100" *ngIf="selectedTabName === 'Extension'" [ngStyle]="{'height': isExpandedAndToolbarVisible()}">
-                    <ng-scrollbar #salesScrollbar>
-                        <app-extension-sales #extensionSales [selectedIndex]="extensionIndex - 1"></app-extension-sales>
-                    </ng-scrollbar>
-                </div>
-
-                <div class="workflow-form--panel u-w--100" *ngIf="selectedTabName === 'Termination'" [ngStyle]="{'height': isExpandedAndToolbarVisible()}">
-                    <ng-scrollbar #salesScrollbar>
-                        <app-extension-sales #extensionSales [selectedIndex]="extensionIndex - 1"></app-extension-sales>
-                    </ng-scrollbar>
-                </div>
-
-                <div class="workflow-form--panel u-w--100" *ngIf="selectedTabName === 'Consultants'" [ngStyle]="{'height': isExpandedAndToolbarVisible()}">
-                    <ng-scrollbar #salesScrollbar>
-                        <app-extension-sales #extensionSales [selectedIndex]="extensionIndex - 1"></app-extension-sales>
-                    </ng-scrollbar>
-                </div>
-                </ng-container> -->
             </mat-tab>
-            <!-- <mat-tab label="Overview">
-                <div class="workflow-form--panel u-w--100" [ngStyle]="{'height': isExpanded ? 'calc(80vh - 50px)' : 'calc(100vh - 50px)'}">
-                    <app-workflow-overview></app-workflow-overview>
-                </div>
-            </mat-tab>
-            <mat-tab label="Sales">
-                <div class="workflow-form--panel u-w--100" [ngStyle]="{'height': isExpanded ? 'calc(80vh - 50px)' : 'calc(100vh - 50px)'}">
-                    <ng-scrollbar #salesScrollbar>
-                        <app-workflow-sales [workflowId]="workflowId" #workflowSales></app-workflow-sales>
-                    </ng-scrollbar>
-                </div>
-            </mat-tab>
-            <mat-tab label="Consultants">
-                <div class="workflow-form--panel u-w--100" [ngStyle]="{'height': isExpanded ? 'calc(80vh - 50px)' : 'calc(100vh - 50px)'}">
-                    Consultants
-                </div>
-            </mat-tab>
-            <mat-tab label="Contracts">
-                <div class="workflow-form--panel u-w--100" [ngStyle]="{'height': isExpanded ? 'calc(80vh - 50px)' : 'calc(100vh - 50px)'}">
-                    <app-workflow-contracts></app-workflow-contracts>
-                </div>
-            </mat-tab>
-            <mat-tab label="Accounts">
-                <div class="workflow-panel u-w--100">
-                    <div fxLayout="column" fxLayoutAlign="start start" class="u-w--100 u-mb--20">
-                        <h2>Customer (debtor) created</h2>
-                        <button color="primary" class="button-outlined mat-elevation-z0" mat-raised-button>No</button>
-                    </div>
-                    <div fxLayout="column" fxLayoutAlign="start start" class="u-w--100 u-mb--20">
-                        <h2>Sub contractor (creditor) created</h2>
-                        <button color="primary" class="button-outlined mat-elevation-z0" mat-raised-button>Yes</button>
-                    </div>
-                </div>
-            </mat-tab> -->
         </mat-tab-group>
         <div fxLayout="row" fxLayoutAlign="end center" class="workflow-controls" *ngIf="selectedTabName !== 'Overview'">
             <button mat-raised-button class="button-outlined mat-elevation-z0 u-mr--16" (click)="saveDraft()">Save draft</button>
-            <button color="primary" class="button-accept mat-elevation-z0" mat-raised-button  (click)="completeStep()">Save</button>
+            <button color="primary" class="button-accept mat-elevation-z0" mat-raised-button  (click)="completeStep()">Complete step</button>
         </div>
     </div>
 </div>

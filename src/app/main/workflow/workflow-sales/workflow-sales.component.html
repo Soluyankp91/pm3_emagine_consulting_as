@@ -490,7 +490,7 @@
                                 </mat-option>
                             </mat-select>
                         </mat-form-field>
-                        <button class="workflow-remove--btn" mat-icon-button (click)="removeSigner(i)"><mat-icon>delete</mat-icon></button>
+                        <button class="form-icon--delete-row"  mat-icon-button (click)="removeSigner(i)"><mat-icon svgIcon="remove-icon"></mat-icon></button>
                     </div>
                     <button class="button-add mat-elevation-z0" mat-flat-button (click)="addSignerToForm()">
                         <mat-icon>add</mat-icon>
@@ -558,7 +558,7 @@
                             <span>
                                 Consultants data
                             </span>
-                            <button *ngIf="consultantsForm.consultantData?.controls?.length && consultantsForm.consultantData.controls.length > 1" mat-icon-button (click)="removeConsultant(i)"><mat-icon>delete</mat-icon></button>
+                            <button class="form-icon--delete-row u-ml--8" *ngIf="consultantsForm.consultantData?.controls?.length && consultantsForm.consultantData.controls.length > 1" mat-icon-button (click)="$event.stopPropagation();confirmRemoveConsultant(i)"><mat-icon svgIcon="remove-icon"></mat-icon></button>
                         </div>
                     </mat-expansion-panel-header>
                     <div class="workflow-form">
