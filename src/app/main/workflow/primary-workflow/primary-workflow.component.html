@@ -1,12 +1,13 @@
 <div fxLayout="row" fxLayoutAlign="start start" class="workflow">
     <div fxFlex="15%" class="workflow-navigation--wrapper">
         <mat-list class="workflow-navigation">
-            <mat-list-item class="workflow-navigation--step" *ngFor="let step of workflowSteps; let i = index;" (click)="changeStepSelection(step.name, step.id)"
-            [ngClass]="{'active-step': step.name === selectedStep, 'completed-step': step.isCompleted}">
+            <mat-list-item class="workflow-navigation--step" *ngFor="let step of workflowSteps; let i = index;"
+                (click)="changeStepSelection(step.name, step.id)"
+                [ngClass]="{'active-step': step.name === selectedStep, 'completed-step': step.isCompleted}">
                 <span class="workflow-navigation--step__number">
                     {{step.id}}
                 </span>
-                <span  class="workflow-navigation--step__name">
+                <span class="workflow-navigation--step__name">
                     {{step.name}}
                 </span>
             </mat-list-item>
@@ -18,10 +19,10 @@
                 <app-workflow-sales #workflowSales [workflowId]="workflowId"></app-workflow-sales>
             </ng-container>
             <ng-container *ngSwitchCase="'Contracts'">
-                <app-workflow-contracts></app-workflow-contracts>
+                <app-workflow-contracts #workflowContracts [workflowId]="workflowId"></app-workflow-contracts>
             </ng-container>
             <ng-container *ngSwitchCase="'Finance'">
-
+                <app-workflow-finances #workflowFinances [workflowId]="workflowId"></app-workflow-finances>
             </ng-container>
             <ng-container *ngSwitchDefault>
 

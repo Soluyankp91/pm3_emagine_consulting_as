@@ -29,6 +29,7 @@ import { WorkflowContractsComponent } from './workflow/workflow-contracts/workfl
 import { WorkflowOverviewComponent } from './workflow/workflow-overview/workflow-overview.component';
 import { PrimaryWorkflowComponent } from './workflow/primary-workflow/primary-workflow.component';
 import { DynamicComponentLoaderComponent } from './workflow/dynamic-component-loader/dynamic-component-loader.component';
+import { WorkflowFinancesComponent } from './workflow/workflow-finances/workflow-finances.component';
 
 
 @NgModule({
@@ -60,7 +61,8 @@ import { DynamicComponentLoaderComponent } from './workflow/dynamic-component-lo
         WorkflowContractsComponent,
         WorkflowOverviewComponent,
         PrimaryWorkflowComponent,
-        DynamicComponentLoaderComponent
+        DynamicComponentLoaderComponent,
+        WorkflowFinancesComponent
     ],
     imports: [
         CommonModule,

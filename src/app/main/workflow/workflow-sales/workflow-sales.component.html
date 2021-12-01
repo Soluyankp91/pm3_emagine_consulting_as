@@ -118,7 +118,7 @@
                     </mat-form-field>
                 </div>
                 <div fxLayout="row" fxLayoutAlign="start start" class="u-w--100">
-                    <mat-checkbox color="accent" formControlName="isRemarks" name="isRemarks" class="green-checkbox">
+                    <mat-checkbox color="accent" formControlName="isRemarks" name="isRemarks" class="black-checkbox">
                         None
                     </mat-checkbox>
                 </div>
@@ -187,7 +187,7 @@
                 </div>
 
                 <div fxLayout="row" fxLayoutAlign="start start" class="u-w--100 u-mb--20">
-                    <mat-checkbox color="accent" formControlName="clientContractNoEndDate" name="clientContractNoEndDate" class="green-checkbox">
+                    <mat-checkbox color="accent" formControlName="clientContractNoEndDate" name="clientContractNoEndDate" class="black-checkbox">
                         No end date
                     </mat-checkbox>
                 </div>
@@ -380,7 +380,7 @@
                 </div>
 
                 <div fxLayout="row" fxLayoutAlign="start center" class="u-w--100 u-mb--20">
-                    <mat-checkbox color="accent" formControlName="sameAsDirectClient" name="sameAsDirectClient" class="green-checkbox u-mr--10">
+                    <mat-checkbox color="accent" formControlName="sameAsDirectClient" name="sameAsDirectClient" class="black-checkbox u-mr--10">
                         Same as direct client
                     </mat-checkbox>
                 </div>
@@ -397,13 +397,26 @@
                 </div>
 
                 <div fxLayout="row" fxLayoutAlign="start center" class="u-w--100 u-mb--20">
-                    <mat-checkbox color="accent" formControlName="isClientInvoicingNone" name="isClientInvoicingNone" class="green-checkbox u-mr--10">
+                    <mat-checkbox color="accent" formControlName="isClientInvoicingNone" name="isClientInvoicingNone" class="black-checkbox u-mr--10">
                         None
                     </mat-checkbox>
                 </div>
 
                 <h2 class="workflow-section--header">Rates and fees</h2>
-                // rates and feees
+
+                <div fxLayout="row" fxLayoutAlign="start start" class="u-mb--20">
+                    <button class="button-add mat-elevation-z0" mat-flat-button (click)="addSignerToForm()">
+                        <mat-icon>add</mat-icon>
+                        Add special rates
+                    </button>
+                </div>
+
+                <div fxLayout="row" fxLayoutAlign="start start" class="u-mb--40">
+                    <button class="button-add mat-elevation-z0" mat-flat-button (click)="addSignerToForm()">
+                        <mat-icon>add</mat-icon>
+                        Add special fees
+                    </button>
+                </div>
 
                 <h2 class="workflow-section--header">Evaluation</h2>
 
@@ -447,7 +460,7 @@
                 </div>
 
                 <div fxLayout="row" fxLayoutAlign="start start" class="u-w--100 u-mb--20">
-                    <mat-checkbox color="accent" formControlName="isSpecialContractTermsNone" name="isSpecialContractTermsNone" class="green-checkbox u-mt--10">
+                    <mat-checkbox color="accent" formControlName="isSpecialContractTermsNone" name="isSpecialContractTermsNone" class="black-checkbox u-mt--10">
                         None
                     </mat-checkbox>
                 </div>
@@ -554,9 +567,19 @@
 
                         <div fxLayout="row" fxLayoutAlign="start start" class="u-w--100 u-mb--20">
                             <mat-button-toggle-group class="workflow-toggle-buttons u-mt--10" formControlName="consultantType">
-                                <mat-button-toggle *ngFor="let item of consultantTypes" [value]="item.id">
-                                    {{ item.name }}
-                                </mat-button-toggle>
+                                <ng-container *ngIf="showMore; else showLess">
+                                    <mat-button-toggle *ngFor="let item of consultantTypes" [value]="item.id">
+                                        {{ item.name }}
+                                    </mat-button-toggle>
+                                </ng-container>
+                                <ng-template #showLess>
+                                    <mat-button-toggle *ngFor="let item of consultantTypes | slice: 0:3" [value]="item.id">
+                                        {{ item.name }}
+                                    </mat-button-toggle>
+                                </ng-template>
+
+
+                                <button mat-flat-button (click)="showMore = !showMore">...</button>
                             </mat-button-toggle-group>
                         </div>
 
@@ -614,7 +637,7 @@
                         </div>
 
                         <div fxLayout="row" fxLayoutAlign="start center" class="u-w--100 u-mb--20">
-                            <mat-checkbox color="accent" formControlName="consultantProjectNoEndDate" name="consultantProjectNoEndDate" class="green-checkbox u-mr--16">
+                            <mat-checkbox color="accent" formControlName="consultantProjectNoEndDate" name="consultantProjectNoEndDate" class="black-checkbox u-mr--16">
                                 No end date
                             </mat-checkbox>
                         </div>
@@ -760,7 +783,7 @@
                             </mat-form-field>
                         </div>
                         <div fxLayout="row" fxLayoutAlign="start center" class="u-w--100 u-mb--20">
-                            <mat-checkbox color="accent" formControlName="consultantSpecialContractTermsNone" name="consultantSpecialContractTermsNone" class="green-checkbox u-mr--16">
+                            <mat-checkbox color="accent" formControlName="consultantSpecialContractTermsNone" name="consultantSpecialContractTermsNone" class="black-checkbox u-mr--16">
                                 None
                             </mat-checkbox>
                         </div>

@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, Input, OnInit } from '@angular/core';
 import { FormArray, FormBuilder, FormControl } from '@angular/forms';
 import { WorkflowContractsSummaryForm } from '../workflow.model';
 
@@ -8,6 +8,7 @@ import { WorkflowContractsSummaryForm } from '../workflow.model';
     styleUrls: ['./workflow-contracts.component.scss']
 })
 export class WorkflowContractsComponent implements OnInit {
+    @Input() workflowId: number;
     contactSummaryForm: WorkflowContractsSummaryForm;
     constructor(
         private _fb: FormBuilder

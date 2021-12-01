@@ -44,7 +44,8 @@ export class WorkflowDetailsComponent implements OnInit, OnDestroy, AfterViewIni
     selectedTabName = 'Overview';
     extensionIndex: number;
     private _unsubscribe = new Subject();
-    comopnentInitalized = false;
+    componentInitalized = false;
+    menuTabs: SideMenuTabsDto[];
     constructor(
         public _workflowDataService: WorkflowDataService,
         private activatedRoute: ActivatedRoute,
@@ -59,7 +60,8 @@ export class WorkflowDetailsComponent implements OnInit, OnDestroy, AfterViewIni
         ).subscribe(params => {
             this.workflowId = +params.get('id')!;
         });
-        this.comopnentInitalized = true;
+        this.menuTabs = new Array<SideMenuTabsDto>(...this._workflowDataService.topMenuTabs);
+        this.componentInitalized = true;
         this._workflowDataService.getData();
     }
 
@@ -305,7 +307,8 @@ export class WorkflowDetailsComponent implements OnInit, OnDestroy, AfterViewIni
 
     // add Termiantion
     addTermination() {
-        this._workflowDataService.topMenuTabs.push(
+        // this._workflowDataService.topMenuTabs.push(
+        this.menuTabs.push(
             {
                 name: `Termination`,
                 displayName: `Termination`,
@@ -319,9 +322,10 @@ export class WorkflowDetailsComponent implements OnInit, OnDestroy, AfterViewIni
     }
 
     addExtension() {
-        let existingExtensions = this._workflowDataService.topMenuTabs.filter(x => x.name.startsWith('Extension'));
+        let existingExtensions = this.menuTabs.filter(x => x.name.startsWith('Extension'));
         let newExtensionIndex = existingExtensions.length ? Math.max.apply(Math, existingExtensions.map(function(o) { return o.index + 1; })) : 0;
-        this._workflowDataService.topMenuTabs.push(
+        // this._workflowDataService.topMenuTabs.push(
+        this.menuTabs.push(
             {
                 name: `Extension${newExtensionIndex}`,
                 displayName: `Extension ${newExtensionIndex}`,
