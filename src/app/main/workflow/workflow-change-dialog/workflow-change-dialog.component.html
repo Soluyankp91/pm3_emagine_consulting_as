@@ -1,0 +1,21 @@
+<mat-dialog-content class="workflow-dialog">
+    <div mat-dialog-title class="workflow-dialog--header">
+        <h1>{{data.dialogHeader}}</h1>
+    </div>
+    <h2>{{data.formFieldLabel}}</h2>
+    <div fxLayout="row" fxLayoutAlign="center center">
+        <mat-form-field appearance="outline"
+            class="u-w--100 formFieldNoMarginPadding mat-elevation-z0">
+            <input autocomplete="off" matInput [formControl]="workflowChangesForm" [placeholder]="data.formFieldPlaceholder" type="text">
+        </mat-form-field>
+    </div>
+</mat-dialog-content>
+<mat-dialog-actions align="center" class="workflow-dialog--actions">
+    <button mat-flat-button color="primary" class="workflow-dialog--actions-btn__outlined" (click)="reject()">
+        Cancel
+    </button>
+    <button mat-flat-button color="primary" class="workflow-dialog--actions-btn" (click)="confirm()">
+        Add
+    </button>
+</mat-dialog-actions>
+

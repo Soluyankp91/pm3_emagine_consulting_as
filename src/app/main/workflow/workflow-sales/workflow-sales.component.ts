@@ -1,6 +1,6 @@
 import { Overlay } from '@angular/cdk/overlay';
 import { Component, Injector, Input, OnDestroy, OnInit } from '@angular/core';
-import { FormArray, FormBuilder, FormControl } from '@angular/forms';
+import { AbstractControl, FormArray, FormBuilder, FormControl } from '@angular/forms';
 import { MatDialog } from '@angular/material/dialog';
 import { ActivatedRoute } from '@angular/router';
 import { Subject } from 'rxjs';
@@ -561,6 +561,18 @@ export class WorkflowSalesComponent extends AppComopnentBase implements OnInit {
             return list.find((x: any) => x.name === name);
         } else {
             return null;
+        }
+    }
+
+
+    // form validations
+    diasbleOrEnableInput(boolValue: boolean, control: AbstractControl | null | undefined) {
+        if (boolValue) {
+            // FIXME: do we need to clear input if it will be disabled ?
+            control!.setValue(null, {emitEvent: false});
+            control!.disable();
+        } else {
+            control!.enable();
         }
     }
 
