@@ -1,126 +1,325 @@
 <div class="worfklow-contracts">
-    <mat-accordion [multi]="true" [togglePosition]="'before'">
-        <mat-expansion-panel id="contractsSummary"class="mat-elevation-z0">
+    <mat-accordion [multi]="true">
+        <mat-expansion-panel id="mainData" class="mat-elevation-z0">
             <mat-expansion-panel-header [collapsedHeight]="'80px'" [expandedHeight]="'80px'">
-                Summary
+                MAIN DATA
             </mat-expansion-panel-header>
-            <form [formGroup]="contactSummaryForm" class="workflow-form--summary u-w--100">
-                <h2>Client Contract Signers</h2>
-                <div formArrayName="contractData" class="u-w--100 u-mb--20">
-                    <div fxLayout="row" fxLayoutAlign="start center" class="u-w--100 u-mb--10" *ngFor="let signer of contractData.controls; let i = index" [formGroupName]="i">
+            <form [formGroup]="contractsMainDataForm" class="workflow-form workflow-form--main u-w--100">
+                <div fxLayout="row" fxLayoutAlign="start start" fxLayoutGap="50px" class="u-w--100 u-mb--20">
+                    <div fxLayout="column">
+                        <h3 class="workflow-gray--header">Sales Type</h3>
+                        <span class="workflow-darkblue--text">Managed Service</span>
+                    </div>
+                    <div fxLayout="column">
+                        <h3 class="workflow-gray--header">Delivery Type</h3>
+                        <span class="workflow-darkblue--text">Managed Service</span>
+                    </div>
+                </div>
+
+                <div fxLayout="row" fxLayoutAlign="start start" class="u-w--100 u-mb--20">
+                    <mat-form-field appearance="fill" class="u-w--100 textarea-input formFieldNoMarginPadding" fxFlex="0 0 calc(66% + 16px)">
+                        <mat-label>Project Description</mat-label>
+                        <textarea matInput autocomplete="new-password" name="projectDescription" formControlName="projectDescription">
+                        </textarea>
+                    </mat-form-field>
+                </div>
+
+                <div fxLayout="row" fxLayoutAlign="start start" class="u-w--100 u-mb--20">
+                    <div fxLayout="column">
+                        <h3 class="workflow-gray--header">Discounts</h3>
+                        <span class="workflow-darkblue--text">SKI 02.17</span>
+                    </div>
+                </div>
+
+                <div fxLayout="row" fxLayoutAlign="start start" class="u-w--100 u-mb--20">
+                    <mat-form-field appearance="fill" class="u-w--100 textarea-input formFieldNoMarginPadding" fxFlex="0 0 calc(66% + 16px)" [ngClass]="{'disabled-input': contractsMainDataForm?.isRemarks?.value}">
+                        <mat-label>Remarks</mat-label>
+                        <textarea matInput autocomplete="new-password" name="remarks" formControlName="remarks">
+                        </textarea>
+                    </mat-form-field>
+                </div>
+                <div fxLayout="row" fxLayoutAlign="start start" class="u-w--100">
+                    <mat-checkbox color="accent" formControlName="isRemarks" name="isRemarks" class="black-checkbox">
+                        None
+                    </mat-checkbox>
+                </div>
+            </form>
+        </mat-expansion-panel>
+        <mat-expansion-panel class="mat-elevation-z0">
+            <mat-expansion-panel-header [collapsedHeight]="'80px'" [expandedHeight]="'80px'">
+                Client data
+            </mat-expansion-panel-header>
+            <form fxLayout="column" fxLayoutAlign="start start" [formGroup]="contractsClientDataForm" class="workflow-form workflow-form--sales u-w--100">
+                <div fxLayout="column" class="u-mb--20">
+                    <h3 class="workflow-gray--header">Shared Cap on Hour Reporting</h3>
+                    <span class="workflow-darkblue--text">Cap on units</span>
+                </div>
+
+                <div fxLayout="row" fxLayoutAlign="start start" class="u-w--100">
+                    <mat-form-field appearance="fill" class="u-w--100 formFieldNoMarginPadding textarea-input" fxFlex="0 0 calc(66% + 16px)">
+                        <mat-label>Special Contract Terms</mat-label>
+                        <textarea matInput autocomplete="new-password" name="specialContractTerms" formControlName="specialContractTerms">
+                        </textarea>
+                    </mat-form-field>
+                </div>
+
+                <div fxLayout="row" fxLayoutAlign="start start" class="u-w--100 u-mb--20">
+                    <mat-checkbox color="accent" formControlName="isSpecialContractTermsNone" name="isSpecialContractTermsNone" class="black-checkbox u-mt--10">
+                        None
+                    </mat-checkbox>
+                </div>
+
+                <h2 class="workflow-section--header">Client Special Rates</h2>
+                <div formArrayName="clientSpecialRates" class="u-w--100 u-mb--20">
+                    <div fxLayout="row" fxLayoutAlign="start center" class="u-w--100 u-mb--10" *ngFor="let signer of clientSpecialRates.controls; let i = index" [formGroupName]="i">
                         <mat-form-field appearance="fill" class="u-w--100 mat-elevation-z0 formFieldNoMarginPadding u-mr--16"  fxFlex="33%">
                             <mat-label>Name</mat-label>
-                            <input autocomplete="off" matInput formControlName="name" placeholder="Name" type="text">
+                            <input autocomplete="off" matInput formControlName="rateName" type="text">
                         </mat-form-field>
 
                         <mat-form-field appearance="fill" class="u-w--100 formFieldNoMarginPadding filter-select u-mr--16" fxFlex="33%">
-                            <mat-label>Role</mat-label>
-                            <mat-select formControlName="role" placeholder="Role">
+                            <mat-label>Client Role</mat-label>
+                            <mat-select formControlName="rateDirection" [disableOptionCentering]="true">
                                 <mat-option *ngFor="let item of [0,1,2,3]" [value]="item">
                                     {{ item }}
                                 </mat-option>
                             </mat-select>
                         </mat-form-field>
-                        <button mat-raised-button class="u-mr--16 mat-elevation-z0 button-outlined">Open contract</button>
-                        <button class="workflow-remove--btn" mat-icon-button (click)="removeContractSigner(i)"><mat-icon>delete</mat-icon></button>
+
+                        <mat-form-field appearance="fill" class="u-w--100 formFieldNoMarginPadding filter-select u-mr--16" fxFlex="20%">
+                            <mat-label>Sequence</mat-label>
+                            <mat-select formControlName="reportingUnit" [disableOptionCentering]="true">
+                                <mat-option *ngFor="let item of [0,1,2,3]" [value]="item">
+                                    {{ item }}
+                                </mat-option>
+                            </mat-select>
+                        </mat-form-field>
+                        <button class="workflow-remove--btn" mat-icon-button (click)="removeSpecialRate(i)"><mat-icon>delete</mat-icon></button>
                     </div>
-                    <button color="primary" class="button-outlined mat-elevation-z0" mat-raised-button (click)="addContractSigner()">
-                        Add signer
+                    <button class="button-add mat-elevation-z0" mat-flat-button (click)="addSpecialRateToForm()">
+                        <mat-icon>add</mat-icon>
+                        Add special rates
+                    </button>
+                </div>
+
+                <h2 class="workflow-section--header">Client Fees</h2>
+                <div formArrayName="clientFees" class="u-w--100 u-mb--20">
+                    <div fxLayout="row" fxLayoutAlign="start center" class="u-w--100 u-mb--10" *ngFor="let signer of clientFees.controls; let i = index" [formGroupName]="i">
+                        <mat-form-field appearance="fill" class="u-w--100 mat-elevation-z0 formFieldNoMarginPadding u-mr--16"  fxFlex="33%">
+                            <mat-label>Name</mat-label>
+                            <input autocomplete="off" matInput formControlName="feeName" type="text">
+                        </mat-form-field>
+
+                        <mat-form-field appearance="fill" class="u-w--100 formFieldNoMarginPadding filter-select u-mr--16" fxFlex="33%">
+                            <mat-label>Client Role</mat-label>
+                            <mat-select formControlName="feeDirection" [disableOptionCentering]="true">
+                                <mat-option *ngFor="let item of [0,1,2,3]" [value]="item">
+                                    {{ item }}
+                                </mat-option>
+                            </mat-select>
+                        </mat-form-field>
+
+                        <mat-form-field appearance="fill" class="u-w--100 formFieldNoMarginPadding filter-select u-mr--16" fxFlex="20%">
+                            <mat-label>Sequence</mat-label>
+                            <mat-select formControlName="frequency" [disableOptionCentering]="true">
+                                <mat-option *ngFor="let item of [0,1,2,3]" [value]="item">
+                                    {{ item }}
+                                </mat-option>
+                            </mat-select>
+                        </mat-form-field>
+                        <button class="workflow-remove--btn" mat-icon-button (click)="removeFee(i)"><mat-icon>delete</mat-icon></button>
+                    </div>
+                    <button class="button-add mat-elevation-z0" mat-flat-button (click)="addClientFeeToForm()">
+                        <mat-icon>add</mat-icon>
+                        Add special fees
                     </button>
                 </div>
             </form>
         </mat-expansion-panel>
-        <mat-expansion-panel id="clientContractTemplate" class="mat-elevation-z0">
+        <form [formGroup]="contractsConsultantsDataForm" class="workflow-form--consultants u-w--100" id="consultantData">
+            <ng-container formArrayName="consultantData">
+                <mat-expansion-panel *ngFor="let consultant of contractsConsultantsDataForm.consultantData.controls; let consultantIndex = index" [formGroupName]="consultantIndex" class="mat-elevation-z0">
+                    <mat-expansion-panel-header  [collapsedHeight]="'80px'" [expandedHeight]="'80px'">
+                        <div fxLayout="row" fxLayoutAlign="start center">
+                            <span>
+                                Consultants data: {{ contractsConsultantsDataForm.consultantData.at(consultantIndex).get('consultantName')?.value}}
+                            </span>
+                        </div>
+                    </mat-expansion-panel-header>
+
+                    <div fxLayout="row" fxLayoutAlign="start start" class="u-w--100">
+                        <div fxLayout="column" class="u-mb--20">
+                            <h3 class="workflow-gray--header">Consultant type</h3>
+                            <span class="workflow-darkblue--text">Temporary Worker</span>
+                        </div>
+                        <div fxLayout="column" class="u-mb--20">
+                            <h3 class="workflow-gray--header">Cap on Time Reporting</h3>
+                            <span class="workflow-darkblue--text">100 000 DKK</span>
+                        </div>
+                    </div>
+
+                    <div fxLayout="row" fxLayoutAlign="start start" class="u-w--100">
+                        <mat-form-field appearance="fill" class="u-w--100 formFieldNoMarginPadding textarea-input" fxFlex="0 0 calc(66% + 16px)">
+                            <mat-label>Special Contract Terms</mat-label>
+                            <textarea matInput autocomplete="new-password" name="specialContractTerms" formControlName="specialContractTerms">
+                            </textarea>
+                        </mat-form-field>
+                    </div>
+
+                    <div fxLayout="row" fxLayoutAlign="start start" class="u-w--100 u-mb--20">
+                        <mat-checkbox color="accent" formControlName="isSpecialContractTermsNone" name="isSpecialContractTermsNone" class="black-checkbox u-mt--10">
+                            None
+                        </mat-checkbox>
+                    </div>
+
+                    <h2 class="workflow-section--header">Client Special Rates</h2>
+                    <div formArrayName="specialRates" class="u-w--100 u-mb--20">
+                        <div fxLayout="row" fxLayoutAlign="start center" class="u-w--100 u-mb--10" *ngFor="let rate of getConsultantSpecialRateControls(consultantIndex); let specialRateIndex = index" [formGroupName]="specialRateIndex">
+                            <mat-form-field appearance="fill" class="u-w--100 mat-elevation-z0 formFieldNoMarginPadding u-mr--16"  fxFlex="33%">
+                                <mat-label>Name</mat-label>
+                                <input autocomplete="off" matInput formControlName="rateName" type="text">
+                            </mat-form-field>
+
+                            <mat-form-field appearance="fill" class="u-w--100 formFieldNoMarginPadding filter-select u-mr--16" fxFlex="33%">
+                                <mat-label>Client Role</mat-label>
+                                <mat-select formControlName="rateDirection" [disableOptionCentering]="true">
+                                    <mat-option *ngFor="let item of [0,1,2,3]" [value]="item">
+                                        {{ item }}
+                                    </mat-option>
+                                </mat-select>
+                            </mat-form-field>
+
+                            <mat-form-field appearance="fill" class="u-w--100 formFieldNoMarginPadding filter-select u-mr--16" fxFlex="20%">
+                                <mat-label>Sequence</mat-label>
+                                <mat-select formControlName="reportingUnit" [disableOptionCentering]="true">
+                                    <mat-option *ngFor="let item of [0,1,2,3]" [value]="item">
+                                        {{ item }}
+                                    </mat-option>
+                                </mat-select>
+                            </mat-form-field>
+                            <button class="workflow-remove--btn" mat-icon-button (click)="removeConsultantDataSpecialRate(consultantIndex, specialRateIndex)"><mat-icon>delete</mat-icon></button>
+                        </div>
+                        <button class="button-add mat-elevation-z0" mat-flat-button (click)="addSpecialRateToConsultantData(consultantIndex)">
+                            <mat-icon>add</mat-icon>
+                            Add special rates
+                        </button>
+                    </div>
+
+                    <h2 class="workflow-section--header">Client Fees</h2>
+                    <div formArrayName="clientFees" class="u-w--100 u-mb--20">
+                        <div fxLayout="row" fxLayoutAlign="start center" class="u-w--100 u-mb--10" *ngFor="let fee of getConsultantClientFeesControls(consultantIndex); let clientFeeIndex = index" [formGroupName]="clientFeeIndex">
+                            <mat-form-field appearance="fill" class="u-w--100 mat-elevation-z0 formFieldNoMarginPadding u-mr--16"  fxFlex="33%">
+                                <mat-label>Name</mat-label>
+                                <input autocomplete="off" matInput formControlName="feeName" type="text">
+                            </mat-form-field>
+
+                            <mat-form-field appearance="fill" class="u-w--100 formFieldNoMarginPadding filter-select u-mr--16" fxFlex="33%">
+                                <mat-label>Client Role</mat-label>
+                                <mat-select formControlName="feeDirection" [disableOptionCentering]="true">
+                                    <mat-option *ngFor="let item of [0,1,2,3]" [value]="item">
+                                        {{ item }}
+                                    </mat-option>
+                                </mat-select>
+                            </mat-form-field>
+
+                            <mat-form-field appearance="fill" class="u-w--100 formFieldNoMarginPadding filter-select u-mr--16" fxFlex="20%">
+                                <mat-label>Sequence</mat-label>
+                                <mat-select formControlName="frequency" [disableOptionCentering]="true">
+                                    <mat-option *ngFor="let item of [0,1,2,3]" [value]="item">
+                                        {{ item }}
+                                    </mat-option>
+                                </mat-select>
+                            </mat-form-field>
+                            <button class="workflow-remove--btn" mat-icon-button (click)="removeConsultantDataClientFees(consultantIndex, clientFeeIndex)"><mat-icon>delete</mat-icon></button>
+                        </div>
+                        <button class="button-add mat-elevation-z0" mat-flat-button (click)="addClientFeesToConsultantData(consultantIndex)">
+                            <mat-icon>add</mat-icon>
+                            Add special fees
+                        </button>
+                    </div>
+
+                    <h2 class="workflow-section--header">Project Lines</h2>
+                    <div formArrayName="projectLines" class="u-w--100 u-mb--20">
+                        <div fxLayout="row" fxLayoutAlign="start center" class="u-w--100 u-mb--10" *ngFor="let projectLine of getConsultantProjectLinesControls(consultantIndex); let projectLinesIndex = index" [formGroupName]="projectLinesIndex">
+                            <mat-form-field appearance="fill" class="u-w--100 mat-elevation-z0 formFieldNoMarginPadding u-mr--16"  fxFlex="33%">
+                                <mat-label>Name</mat-label>
+                                <input autocomplete="off" matInput formControlName="feeName" type="text">
+                            </mat-form-field>
+
+                            <mat-form-field appearance="fill" class="u-w--100 formFieldNoMarginPadding filter-select u-mr--16" fxFlex="33%">
+                                <mat-label>Client Role</mat-label>
+                                <mat-select formControlName="feeDirection" [disableOptionCentering]="true">
+                                    <mat-option *ngFor="let item of [0,1,2,3]" [value]="item">
+                                        {{ item }}
+                                    </mat-option>
+                                </mat-select>
+                            </mat-form-field>
+
+                            <mat-form-field appearance="fill" class="u-w--100 formFieldNoMarginPadding filter-select u-mr--16" fxFlex="20%">
+                                <mat-label>Sequence</mat-label>
+                                <mat-select formControlName="frequency" [disableOptionCentering]="true">
+                                    <mat-option *ngFor="let item of [0,1,2,3]" [value]="item">
+                                        {{ item }}
+                                    </mat-option>
+                                </mat-select>
+                            </mat-form-field>
+                            <button class="workflow-remove--btn" mat-icon-button (click)="removeConsultantDataProjectLines(consultantIndex, projectLinesIndex)"><mat-icon>delete</mat-icon></button>
+                        </div>
+                        <button class="button-add mat-elevation-z0" mat-flat-button (click)="addProjectLinesToConsultantData(consultantIndex)">
+                            <mat-icon>add</mat-icon>
+                            Add special fees
+                        </button>
+                    </div>
+
+
+
+                </mat-expansion-panel>
+            </ng-container>
+        </form>
+        <mat-expansion-panel class="mat-elevation-z0">
             <mat-expansion-panel-header [collapsedHeight]="'80px'" [expandedHeight]="'80px'">
-                Client Contract Template
+                Sync & legal contracts
             </mat-expansion-panel-header>
-            <div fxLayout="row" fxLayoutAlign="start center" class="u-w--100 u-mb--20 workflow-form--summary">
-                <div fxLayout="column" fxLayoutAlign="start start" fxFlex="20%" class="u-mr--16">
-                    <h2>Normal</h2>
-                    <button color="primary" class="button-outlined mat-elevation-z0" mat-raised-button>Open contract</button>
+            <form [formGroup]="contractsMainDataForm" class="workflow-form workflow-form--main u-w--100">
+                <div fxLayout="row" fxLayoutAlign="start start" fxLayoutGap="50px" class="u-w--100 u-mb--20">
+                    <div fxLayout="column">
+                        <h3 class="workflow-gray--header">Sales Type</h3>
+                        <span class="workflow-darkblue--text">Managed Service</span>
+                    </div>
+                    <div fxLayout="column">
+                        <h3 class="workflow-gray--header">Delivery Type</h3>
+                        <span class="workflow-darkblue--text">Managed Service</span>
+                    </div>
                 </div>
-                <div fxLayout="column" fxLayoutAlign="start start" fxFlex="20%" class="u-mr--16">
-                    <h2>Nearshore</h2>
-                    <button color="primary" class="button-outlined mat-elevation-z0" mat-raised-button>Open contract</button>
+
+                <div fxLayout="row" fxLayoutAlign="start start" class="u-w--100 u-mb--20">
+                    <mat-form-field appearance="fill" class="u-w--100 textarea-input formFieldNoMarginPadding" fxFlex="0 0 calc(66% + 16px)">
+                        <mat-label>Project Description</mat-label>
+                        <textarea matInput autocomplete="new-password" name="projectDescription" formControlName="projectDescription">
+                        </textarea>
+                    </mat-form-field>
                 </div>
-                <div fxLayout="column" fxLayoutAlign="start start" fxFlex="20%" class="u-mr--16">
-                    <h2>SKI</h2>
-                    <button color="primary" class="button-outlined mat-elevation-z0" mat-raised-button>Open contract</button>
+
+                <div fxLayout="row" fxLayoutAlign="start start" class="u-w--100 u-mb--20">
+                    <div fxLayout="column">
+                        <h3 class="workflow-gray--header">Discounts</h3>
+                        <span class="workflow-darkblue--text">SKI 02.17</span>
+                    </div>
                 </div>
-                <div fxLayout="column" fxLayoutAlign="start start" fxFlex="20%" class="u-mr--16">
-                    <h2>Temporary Worker</h2>
-                    <button color="primary" class="button-outlined mat-elevation-z0" mat-raised-button>Open contract</button>
+
+                <div fxLayout="row" fxLayoutAlign="start start" class="u-w--100 u-mb--20">
+                    <mat-form-field appearance="fill" class="u-w--100 textarea-input formFieldNoMarginPadding" fxFlex="0 0 calc(66% + 16px)" [ngClass]="{'disabled-input': contractsMainDataForm?.isRemarks?.value}">
+                        <mat-label>Remarks</mat-label>
+                        <textarea matInput autocomplete="new-password" name="remarks" formControlName="remarks">
+                        </textarea>
+                    </mat-form-field>
                 </div>
-                <div fxLayout="column" fxLayoutAlign="start start" fxFlex="20%">
-                    <h2>Managed Service</h2>
-                    <button color="primary" class="button-outlined mat-elevation-z0" mat-raised-button>Open contract</button>
+                <div fxLayout="row" fxLayoutAlign="start start" class="u-w--100">
+                    <mat-checkbox color="accent" formControlName="isRemarks" name="isRemarks" class="black-checkbox">
+                        None
+                    </mat-checkbox>
                 </div>
-            </div>
-        </mat-expansion-panel>
-        <mat-expansion-panel id="consultantContractTemplate" class="mat-elevation-z0">
-            <mat-expansion-panel-header [collapsedHeight]="'80px'" [expandedHeight]="'80px'">
-                Consultant Contract Template
-            </mat-expansion-panel-header>
-            <div fxLayout="row" fxLayoutAlign="start center" class="u-w--100 u-mb--20 workflow-form--summary">
-                <div fxLayout="column" fxLayoutAlign="start start" fxFlex="20%" class="u-mr--16">
-                    <h2>Freelance</h2>
-                    <button color="primary" class="button-outlined mat-elevation-z0" mat-raised-button>Open contract</button>
-                </div>
-                <div fxLayout="column" fxLayoutAlign="start start" fxFlex="20%" class="u-mr--16">
-                    <h2>Referred</h2>
-                    <button color="primary" class="button-outlined mat-elevation-z0" mat-raised-button>Open contract</button>
-                </div>
-                <div fxLayout="column" fxLayoutAlign="start start" fxFlex="20%" class="u-mr--16">
-                    <h2>Project Employment</h2>
-                    <button color="primary" class="button-outlined mat-elevation-z0" mat-raised-button>Open contract</button>
-                </div>
-                <div fxLayout="column" fxLayoutAlign="start start" fxFlex="20%" class="u-mr--16">
-                    <h2>Temporary Worker</h2>
-                    <button color="primary" class="button-outlined mat-elevation-z0" mat-raised-button>Open contract</button>
-                </div>
-                <div fxLayout="column" fxLayoutAlign="start start" fxFlex="20%">
-                    <h2>SKI</h2>
-                    <button color="primary" class="button-outlined mat-elevation-z0" mat-raised-button>Open contract</button>
-                </div>
-            </div>
-            <div fxLayout="row" fxLayoutAlign="start center" class="u-w--100 u-mb--20 workflow-form--summary">
-                <div fxLayout="column" fxLayoutAlign="start start" fxFlex="20%" class="u-mr--16">
-                    <h2>Fee Only</h2>
-                    <button color="primary" class="button-outlined mat-elevation-z0" mat-raised-button>Open contract</button>
-                </div>
-                <div fxLayout="column" fxLayoutAlign="start start" fxFlex="20%" class="u-mr--16">
-                    <h2>Civil Law Consultant</h2>
-                    <button color="primary" class="button-outlined mat-elevation-z0" mat-raised-button>Open contract</button>
-                </div>
-                <div fxLayout="column" fxLayoutAlign="start start" fxFlex="20%" class="u-mr--16">
-                    <h2>Consultant 48</h2>
-                    <button color="primary" class="button-outlined mat-elevation-z0" mat-raised-button>Open contract</button>
-                </div>
-                <div fxLayout="column" fxLayoutAlign="start start" fxFlex="20%" class="u-mr--16">
-                    <h2>Supplier Consultant</h2>
-                    <button color="primary" class="button-outlined mat-elevation-z0" mat-raised-button>Open contract</button>
-                </div>
-                <div fxLayout="column" fxLayoutAlign="start start" fxFlex="20%">
-                    <h2>Managed Service</h2>
-                    <button color="primary" class="button-outlined mat-elevation-z0" mat-raised-button>Open contract</button>
-                </div>
-            </div>
-            <div fxLayout="row" fxLayoutAlign="start center" class="u-w--100 u-mb--20 workflow-form--summary">
-                <div fxLayout="column" fxLayoutAlign="start start" fxFlex="20%" class="u-mr--16">
-                    <h2>Permanent Employee</h2>
-                    <button color="primary" class="button-outlined mat-elevation-z0" mat-raised-button>Open contract</button>
-                </div>
-                <div fxLayout="column" fxLayoutAlign="start start" fxFlex="20%" class="u-mr--16">
-                    <h2>Belongs to Supplier</h2>
-                    <button color="primary" class="button-outlined mat-elevation-z0" mat-raised-button>Open contract</button>
-                </div>
-                <div fxLayout="column" fxLayoutAlign="start start" fxFlex="20%" class="u-mr--16">
-                    <h2>Nearshore</h2>
-                    <button color="primary" class="button-outlined mat-elevation-z0" mat-raised-button>Open contract</button>
-                </div>
-                <div fxLayout="column" fxLayoutAlign="start start" fxFlex="20%" class="u-mr--16"></div>
-                <div fxLayout="column" fxLayoutAlign="start start" fxFlex="20%"></div>
-            </div>
+            </form>
         </mat-expansion-panel>
     </mat-accordion>
 </div>
