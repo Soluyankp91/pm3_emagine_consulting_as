@@ -1,3 +1,5 @@
+@import "/src/app/shared/styles/config/_colors";
+
 .client-documents--contract__action-btn {
     width: 24px !important;
     height: 24px !important;
@@ -60,17 +62,6 @@
     }
 }
 
-.workflow-remove--btn {
-    width: 36px;
-    height: 36px;
-    border-radius: 50%;
-    background-color: #E8F6F5;
-    color: #17A297;
-    mat-icon {
-        line-height: 20px
-    }
-}
-
 .workflow-content--expand {
     width: 50px;
     height: 50px;
@@ -117,5 +108,36 @@
         // .mat-button-toggle + .mat-button-toggle {
 
         // }
+    }
+}
+
+.workflow-icon--actions {
+    background: rgba($color: $green-color, $alpha: .2);
+    mat-icon {
+        color: $green-color;
+        display: inline-flex;
+        justify-content: center;
+        align-items: center;
+        line-height: 24px;
+        font-size: 24px;
+        border-radius: 50%;
+        height: 36px;
+        width: 36px;
+    }
+}
+
+.form-icon--delete-row {
+    &.mat-icon-button {
+        height: 32px;
+        width: 32px;
+        line-height: 28px !important;
+        background: rgba($color: $green-color, $alpha: .2);
+    }
+    mat-icon {
+        color: $green-color;
+        line-height: 18px !important;
+        font-size: 18px;
+        width: 18px;
+        height: 18px;
     }
 }

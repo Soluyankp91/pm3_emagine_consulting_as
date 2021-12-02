@@ -1,8 +1,11 @@
+import { Overlay } from '@angular/cdk/overlay';
 import { Component, Injector, Input, OnDestroy, OnInit } from '@angular/core';
 import { FormArray, FormBuilder, FormControl } from '@angular/forms';
+import { MatDialog } from '@angular/material/dialog';
 import { ActivatedRoute } from '@angular/router';
 import { Subject } from 'rxjs';
 import { finalize, takeUntil } from 'rxjs/operators';
+import { ConfirmationDialogComponent } from 'src/app/shared/components/confirmation-dialog/confirmation-dialog.component';
 import { AppComopnentBase } from 'src/shared/app-component-base';
 import { ClientRateDto, ConsultantSalesDataDto, ContractSignerDto, EnumEntityTypeDto, EnumServiceProxy, SalesAdditionalDataDto, SalesClientDataDto, SalesMainDataDto, SignerRole, WorkflowSalesDataDto, WorkflowsServiceProxy } from 'src/shared/service-proxies/service-proxies';
 import { WorkflowDataService } from '../workflow-data.service';
@@ -71,7 +74,9 @@ export class WorkflowSalesComponent extends AppComopnentBase implements OnInit {
         private _enumService: EnumServiceProxy,
         private _workflowService: WorkflowsServiceProxy,
         private _workflodDataService: WorkflowDataService,
-        private activatedRoute: ActivatedRoute
+        private activatedRoute: ActivatedRoute,
+        private overlay: Overlay,
+        private dialog: MatDialog
     ) {
         super(injector);
         this.salesMainClientDataForm = new WorkflowSalesClientDataForm();
@@ -327,17 +332,39 @@ export class WorkflowSalesComponent extends AppComopnentBase implements OnInit {
             consultantAccountManager: new FormControl(false)
         });
         this.consultantsForm.consultantData.push(form);
-
-        // FIXME: remove
-        this._workflodDataService.addOrUpdateConsultantTab(this.consultantsForm.consultantData.length - 1, form.get('consultantName')?.value);
     }
 
+    confirmRemoveConsultant(index: number) {
+        const consultant = this.consultantsForm.consultantData.at(index).value;
+        const scrollStrategy = this.overlay.scrollStrategies.reposition();
+        const dialogRef = this.dialog.open(ConfirmationDialogComponent, {
+            width: '450px',
+            minHeight: '180px',
+            height: 'auto',
+            scrollStrategy,
+            backdropClass: 'backdrop-modal--wrapper',
+            autoFocus: false,
+            panelClass: 'confirmation-modal',
+            data: {
+                confirmationMessageTitle: `Are you sure you want to delete consultant ${consultant.consultantName ?? ''}?`,
+                confirmationMessage: 'When you confirm the deletion, all the info contained inside this block will disappear.',
+                rejectButtonText: 'Cancel',
+                confirmButtonText: 'Delete',
+                isNegative: true
+            }
+        });
+
+        dialogRef.componentInstance.onConfimrmed.subscribe(() => {
+            this.removeConsultant(index);
+        });
+
+        dialogRef.componentInstance.onRejected.subscribe(() => {
+            // nthng
+        });
+    }
 
     removeConsultant(index: number) {
         this.consultantsForm.consultantData.removeAt(index);
-
-        // FIXME: remove
-        this._workflodDataService.removeConsultantTab(index);
     }
 
     removeConsultantSigner(consultantIndex: number, signerIndex: number) {
@@ -466,7 +493,6 @@ export class WorkflowSalesComponent extends AppComopnentBase implements OnInit {
 
         this._workflowService.salesPut(this.workflowId, input)
             .pipe(finalize(() => {
-                this.updateConsultantTabs();
             }))
             .subscribe(result => {
 
@@ -495,13 +521,6 @@ export class WorkflowSalesComponent extends AppComopnentBase implements OnInit {
             });
     }
 
-    updateConsultantTabs() {
-        for (let i = 0; i < this.consultantsForm.consultantData.value.length; i++) {
-            let consultant = this.consultantsForm.consultantData.value[i];
-            this._workflodDataService.addOrUpdateConsultantTab(this.consultantsForm.consultantData.length - 1, consultant.consultantName);
-        }
-    }
-
     toggleClientFees() {
         this.salesMainClientDataForm.clientFees?.setValue(null, {emitEvent: false})
         this.salesMainClientDataForm.clientFeesCurrency?.setValue(null, {emitEvent: false});
@@ -521,7 +540,6 @@ export class WorkflowSalesComponent extends AppComopnentBase implements OnInit {
             this.salesMainClientDataForm.clientCurrency?.setValue(null, {emitEvent: false});
         }
     }
-
 
     salesTypeChange(value: EnumEntityTypeDto) {
         if (value.name === 'ManagedService') {

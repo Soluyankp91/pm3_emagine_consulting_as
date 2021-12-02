@@ -1,7 +1,7 @@
 import { EventEmitter, Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
 import { EnumEntityTypeDto, EnumServiceProxy } from 'src/shared/service-proxies/service-proxies';
-import { SideMenuTabs, SideMenuTabsDto, TopMenuTabs, WorkflowProgressStatus } from './workflow.model';
+import { SideMenuTabsDto, TopMenuTabs, WorkflowProgressStatus } from './workflow.model';
 
 @Injectable({
     providedIn: 'root'
@@ -24,7 +24,7 @@ export class WorkflowDataService {
     clientSpecialRateSpecifications: EnumEntityTypeDto[] = [];
 
 
-    sideMenuTabs: SideMenuTabsDto[] = SideMenuTabs;
+    // sideMenuTabs: SideMenuTabsDto[] = SideMenuTabs;
     topMenuTabs: SideMenuTabsDto[] = TopMenuTabs;
 
     workflowProgress: WorkflowProgressStatus = new WorkflowProgressStatus();
@@ -34,35 +34,35 @@ export class WorkflowDataService {
         private _enumService: EnumServiceProxy
     ) { }
 
-    get sideNavigationTabs() {
-        return this.sideMenuTabs;
-    }
+    // get sideNavigationTabs() {
+    //     return this.sideMenuTabs;
+    // }
 
-    addOrUpdateConsultantTab(index: number, consultantName?: string) {
-        const tabIndex = this.sideMenuTabs.findIndex(x => {
-            return x.index === index && x.name === 'Consultant';
-        });
-        if (tabIndex > -1) {
-            this.sideMenuTabs[tabIndex].displayName = consultantName ?? 'Consultant';
-        } else {
-            this.sideMenuTabs.push(
-                {
-                    name: 'Consultant',
-                    displayName: consultantName ?? 'Consultant',
-                    index: index
-                }
-            );
-        }
-    }
+    // addOrUpdateConsultantTab(index: number, consultantName?: string) {
+    //     const tabIndex = this.sideMenuTabs.findIndex(x => {
+    //         return x.index === index && x.name === 'Consultant';
+    //     });
+    //     if (tabIndex > -1) {
+    //         this.sideMenuTabs[tabIndex].displayName = consultantName ?? 'Consultant';
+    //     } else {
+    //         this.sideMenuTabs.push(
+    //             {
+    //                 name: 'Consultant',
+    //                 displayName: consultantName ?? 'Consultant',
+    //                 index: index
+    //             }
+    //         );
+    //     }
+    // }
 
-    removeConsultantTab(index: number) {
-        const tabIndex = this.sideMenuTabs.findIndex(x => {
-            return x.index === index && x.name === 'Consultant';
-        });
-        if (tabIndex > -1) {
-            this.sideMenuTabs.splice(tabIndex, 1);
-        }
-    }
+    // removeConsultantTab(index: number) {
+    //     const tabIndex = this.sideMenuTabs.findIndex(x => {
+    //         return x.index === index && x.name === 'Consultant';
+    //     });
+    //     if (tabIndex > -1) {
+    //         this.sideMenuTabs.splice(tabIndex, 1);
+    //     }
+    // }
 
     getData() {
         this.getCurrencies();
