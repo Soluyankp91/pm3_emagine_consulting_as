@@ -566,7 +566,7 @@ export class WorkflowSalesComponent extends AppComopnentBase implements OnInit {
 
 
     // form validations
-    diasbleOrEnableInput(boolValue: boolean, control: AbstractControl | null | undefined) {
+    disableOrEnableInput(boolValue: boolean, control: AbstractControl | null | undefined) {
         if (boolValue) {
             // FIXME: do we need to clear input if it will be disabled ?
             control!.setValue(null, {emitEvent: false});

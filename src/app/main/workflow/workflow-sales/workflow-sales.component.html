@@ -122,7 +122,7 @@
                     </mat-form-field>
                 </div>
                 <div fxLayout="row" fxLayoutAlign="start start" class="u-w--100">
-                    <mat-checkbox color="accent" formControlName="isRemarks" name="isRemarks" class="black-checkbox" (change)="diasbleOrEnableInput(salesMainDataForm?.isRemarks?.value, salesMainDataForm?.remarks)">
+                    <mat-checkbox color="accent" formControlName="isRemarks" name="isRemarks" class="black-checkbox" (change)="disableOrEnableInput(salesMainDataForm?.isRemarks?.value, salesMainDataForm?.remarks)">
                         None
                     </mat-checkbox>
                 </div>
@@ -190,7 +190,7 @@
                 </div>
 
                 <div fxLayout="row" fxLayoutAlign="start start" class="u-w--100 u-mb--10">
-                    <mat-checkbox color="accent" formControlName="clientContractNoEndDate" name="clientContractNoEndDate" class="black-checkbox" (change)="diasbleOrEnableInput(salesMainClientDataForm?.clientContractNoEndDate?.value, salesMainClientDataForm?.clientContractEndDate)">
+                    <mat-checkbox color="accent" formControlName="clientContractNoEndDate" name="clientContractNoEndDate" class="black-checkbox" (change)="disableOrEnableInput(salesMainClientDataForm?.clientContractNoEndDate?.value, salesMainClientDataForm?.clientContractEndDate)">
                         No end date
                     </mat-checkbox>
                 </div>
@@ -470,7 +470,7 @@
 
                 <h3 class="workflow-gray--header">Client Contract Signers</h3>
                 <div formArrayName="clientSigners" class="u-w--100 u-mb--10">
-                    <div fxLayout="row" fxLayoutAlign="start center" class="u-w--100 u-mb--10" *ngFor="let signer of clientSigners.controls; let i = index" [formGroupName]="i">
+                    <div fxLayout="row" fxLayoutAlign="start start" class="u-w--100 u-mb--10" *ngFor="let signer of clientSigners.controls; let i = index" [formGroupName]="i">
                         <mat-form-field appearance="outline" class="u-w--100 mat-elevation-z0 formFieldNoMarginPadding u-mr--16"  fxFlex="33%">
                             <mat-label>Name</mat-label>
                             <input autocomplete="off" matInput formControlName="clientName" type="text">
@@ -493,9 +493,9 @@
                                 </mat-option>
                             </mat-select>
                         </mat-form-field>
-                        <button class="form-icon--delete-row"  mat-icon-button (click)="removeSigner(i)"><mat-icon svgIcon="remove-icon"></mat-icon></button>
+                        <button class="form-icon--delete-row u-mt--5" mat-icon-button (click)="removeSigner(i)"><mat-icon svgIcon="remove-icon"></mat-icon></button>
                     </div>
-                    <button class="button-add mat-elevation-z0" mat-flat-button (click)="addSignerToForm()">
+                    <button class="button-add" mat-flat-button (click)="addSignerToForm()">
                         <mat-icon>add</mat-icon>
                         Add Signer
                     </button>
@@ -645,7 +645,7 @@
                                             formControlName="consultantProjectNoEndDate"
                                             name="consultantProjectNoEndDate"
                                             class="black-checkbox u-mr--16"
-                                            (change)="diasbleOrEnableInput(consultantsForm.consultantData.at(i).get('consultantProjectNoEndDate')?.value, consultantsForm.consultantData.at(i).get('consultantProjectEndDate'))">
+                                            (change)="disableOrEnableInput(consultantsForm.consultantData.at(i).get('consultantProjectNoEndDate')?.value, consultantsForm.consultantData.at(i).get('consultantProjectEndDate'))">
                                 No end date
                             </mat-checkbox>
                         </div>
