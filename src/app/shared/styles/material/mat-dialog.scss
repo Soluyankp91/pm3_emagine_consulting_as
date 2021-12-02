@@ -13,4 +13,9 @@
         max-height: none;
         overflow: hidden !important;
     }
+
+    .mat-dialog-actions {
+        margin-bottom: 0 !important;
+        padding: 8px 30px;
+    }
 }

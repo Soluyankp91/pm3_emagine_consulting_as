@@ -81,26 +81,29 @@ export class SideMenuTabsDto {
     name: string;
     displayName: string;
     index: number;
+    additionalInfo: string | null;
 }
 
-export const SideMenuTabs: SideMenuTabsDto[] = [
-    {
-        name: 'Workflow',
-        displayName: 'Workflow',
-        index: 1
-    }
-];
+// export const SideMenuTabs: SideMenuTabsDto[] = [
+//     {
+//         name: 'Workflow',
+//         displayName: 'Workflow',
+//         index: 1
+//     }
+// ];
 
 export const TopMenuTabs: SideMenuTabsDto[] = [
     {
         name: 'Overview',
         displayName: 'Overview',
-        index: 0
+        index: 0,
+        additionalInfo: null
     },
     {
         name: 'Workflow',
         displayName: 'Workflow',
-        index: 0
+        index: 0,
+        additionalInfo: 'New'
     },
     // {
     //     name: 'Extension1',
@@ -229,7 +232,7 @@ export const WorkflowList = [
 export class WorkflowProgressStatus implements IWorkflowProgressStatus {
     started: boolean | undefined;
     isExtensionAdded: boolean | undefined;
-    currentlyActiveExtensionIndex: number | undefined;
+    currentlyActiveExtensionIndex: number | undefined | null;
     isExtensionCompleted: boolean | undefined;
     isExtensionSalesSaved: boolean | undefined;
     isExtensionContractsSaved: boolean | undefined;

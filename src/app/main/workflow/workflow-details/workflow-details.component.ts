@@ -42,7 +42,7 @@ export class WorkflowDetailsComponent implements OnInit, OnDestroy, AfterViewIni
     // tabs navigation
     selectedTabIndex: number;
     selectedTabName = 'Overview';
-    extensionIndex: number;
+    extensionIndex: number | null;
     private _unsubscribe = new Subject();
     componentInitalized = false;
     menuTabs: SideMenuTabsDto[];
@@ -158,9 +158,11 @@ export class WorkflowDetailsComponent implements OnInit, OnDestroy, AfterViewIni
         console.log('change tab PW');
         this.selectedTabIndex = event.index;
         this.selectedTabName = this.formatStepLabel(event.tab.textLabel);
-        this.extensionIndex = this.selectedTabName.startsWith('Extension') ? parseInt(event.tab.textLabel.match(/\d/g)!.join('')) : 0;
+        this.extensionIndex = this.selectedTabName.startsWith('Extension') ? parseInt(event.tab.textLabel.match(/\d/g)!.join('')) : null;
         let newStatus = new WorkflowProgressStatus();
         newStatus.currentlyActiveSection = this.mapSelectedTabNameToEnum(this.selectedTabName);
+
+        newStatus.currentlyActiveExtensionIndex = this.extensionIndex;
         // FIXME: just for test
         newStatus.currentlyActiveStep = WorkflowSteps.Sales;
         this._workflowDataService.updateWorkflowProgressStatus(newStatus);
@@ -197,14 +199,14 @@ export class WorkflowDetailsComponent implements OnInit, OnDestroy, AfterViewIni
         if (this.isExpanded) {
             // NB: because overview doesn't have sticky-bottom toolbar
             if (this.selectedTabName !== 'Overview') {
-                return 'calc(80vh - 110px)';
+                return 'calc(80vh - 120px)';
             } else {
-                return 'calc(80vh - 50px)';
+                return 'calc(80vh - 60px)';
             }
         } else if (this.selectedTabName !== 'Overview') {
-            return 'calc(100vh - 110px)';
+            return 'calc(100vh - 120px)';
         } else {
-            return 'calc(100vh - 50px)';
+            return 'calc(100vh - 60px)';
         }
     }
 
@@ -312,7 +314,8 @@ export class WorkflowDetailsComponent implements OnInit, OnDestroy, AfterViewIni
             {
                 name: `Termination`,
                 displayName: `Termination`,
-                index: 0
+                index: 0,
+                additionalInfo: 'New'
             }
         )
 
@@ -329,7 +332,8 @@ export class WorkflowDetailsComponent implements OnInit, OnDestroy, AfterViewIni
             {
                 name: `Extension${newExtensionIndex}`,
                 displayName: `Extension ${newExtensionIndex}`,
-                index: newExtensionIndex
+                index: newExtensionIndex,
+                additionalInfo: 'New'
             }
         )
 

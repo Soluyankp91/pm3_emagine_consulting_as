@@ -1,3 +1,5 @@
+@import "/src/app/shared/styles/config/_colors";
+
 mat-tab-group.client-details--tabs {
     .mat-tab-body-wrapper {
         box-shadow: 0px 0px 20px rgba(26, 35, 126, 0.15);
@@ -99,38 +101,50 @@ mat-tab-group.client-details--tabs {
     mat-ink-bar {
         background-color: #17A297 !important;
         height: 4px;
-        top: 15px;
+        top: 0;
     }
 
     .mat-tab-body-wrapper {
-        box-shadow: 0px 0px 15px rgba(0, 0, 0, 0.15);
+        box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.15);
     }
 
     .mat-tab-labels {
-        padding-top: 15px;
+        // padding-top: 15px;
     }
 
     .mat-tab-label {
+        position: relative;
         font-family: 'IBM Plex Mono', monospace !important;
         opacity: 1 !important;
-        height: 48px;
+        height: 60px;
         padding: 8px 24px 0 24px;
-        min-width: 100px;
+        min-width: 150px;
         font-weight: 700;
         font-size: 16px;
         line-height: 16px;
-        color: #546E7A;
+        color: $dark-grey-color;
         box-shadow: unset;
         background-color: #fff;
-        margin-right: 24px;
-        box-shadow: 0px 0px 15px rgba(0, 0, 0, 0.15);
-        // box-shadow: 0px 0px 15px rgb(0 0 0 / 15%), inset 0px -15px 20px 2px rgb(0 0 0 / 5%);
-        position: relative;
+        margin-right: 5px;
+        box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.15);
+        .mat-tab-label-content {
+            flex-direction: column;
+            align-items: flex-start;
+        }
+        .tab-header {
+            font-size: 16px;
+            line-height: 16px;
+        }
+        .tab-subheader {
+            font-size: 14px;
+            line-height: 14px;
+            color: $medium-grey-color;
+        }
         &::before {
             content: "";
             display: block;
             position: absolute;
-            top: 50px;
+            top: 60px;
             right: 0px;
             height: 30px;
             width: 100%;
@@ -141,7 +155,7 @@ mat-tab-group.client-details--tabs {
         &-active,
         &:hover {
             background-color: #FAF9FB;
-            color: #17A297;
+            color: $dark-grey-color;
             box-shadow: 0px 0px 15px rgba(0, 0, 0, 0.15);
             &::before {
                 content: unset;

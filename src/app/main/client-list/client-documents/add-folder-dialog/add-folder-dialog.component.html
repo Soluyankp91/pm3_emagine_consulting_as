@@ -11,13 +11,13 @@
             <input autocomplete="off" matInput [formControl]="folderName" placeholder="Folder name" type="text">
         </mat-form-field>
     </div>
-    <mat-dialog-actions align="center" class="add-folder--actions">
-        <button [mat-dialog-close]="true" mat-raised-button color="primary" class="add-folder--actions-btn__outlined">
-            Cancel
-        </button>
-        <button mat-raised-button color="primary" class="add-folder--actions-btn" (click)="save()">
-            Add
-        </button>
-    </mat-dialog-actions>
 </mat-dialog-content>
+<mat-dialog-actions align="center" class="add-folder--actions">
+    <button [mat-dialog-close]="true" mat-flat-button color="primary" class="add-folder--actions-btn__outlined">
+        Cancel
+    </button>
+    <button mat-flat-button color="primary" class="add-folder--actions-btn" (click)="save()">
+        Add
+    </button>
+</mat-dialog-actions>
 
