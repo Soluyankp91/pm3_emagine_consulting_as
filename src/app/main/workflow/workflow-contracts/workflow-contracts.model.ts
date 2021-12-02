@@ -32,6 +32,38 @@ export class WorkflowContractsMainForm extends FormGroup {
     }
 }
 
+export class WorkflowContractsSyncForm extends FormGroup {
+    constructor() {
+        super({
+            salesType: new FormControl(null),
+            deliveryType: new FormControl(null),
+            projectDescription: new FormControl(null),
+            discounts: new FormControl(null),
+            remarks: new FormControl(null),
+            manualCheckbox: new FormControl(false)
+        });
+    }
+
+    get salesType() {
+        return this.get('salesType');
+    }
+    get deliveryType() {
+        return this.get('deliveryType');
+    }
+    get projectDescription() {
+        return this.get('projectDescription');
+    }
+    get discounts() {
+        return this.get('discounts');
+    }
+    get remarks() {
+        return this.get('remarks');
+    }
+    get manualCheckbox() {
+        return this.get('manualCheckbox');
+    }
+}
+
 export class WorkflowContractsClientDataForm extends FormGroup {
     constructor() {
         super({

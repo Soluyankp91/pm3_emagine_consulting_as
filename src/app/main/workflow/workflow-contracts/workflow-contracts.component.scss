@@ -1,6 +1,18 @@
 @import "/src/app/shared/styles/config/_colors";
 
 .workflow {
+    &-contracts {
+        &--consultant {
+            &-name {
+                font-weight: 800;
+                font-size: 16px;
+                color: $dark-grey-color;
+            }
+            &-img {
+                border-radius: 50%;
+            }
+        }
+    }
     &-form {
         // margin: 0 145px;
         &--main,

@@ -1,7 +1,7 @@
 import { Component, Input, OnInit } from '@angular/core';
 import { AbstractControl, FormArray, FormBuilder, FormControl, FormGroup } from '@angular/forms';
 import { WorkflowContractsSummaryForm } from '../workflow.model';
-import { WorkflowContractsClientDataForm, WorkflowContractsConsultantsDataForm, WorkflowContractsMainForm } from './workflow-contracts.model';
+import { WorkflowContractsClientDataForm, WorkflowContractsConsultantsDataForm, WorkflowContractsMainForm, WorkflowContractsSyncForm } from './workflow-contracts.model';
 
 @Component({
     selector: 'app-workflow-contracts',
@@ -14,12 +14,14 @@ export class WorkflowContractsComponent implements OnInit {
     contractsMainDataForm: WorkflowContractsMainForm;
     contractsClientDataForm: WorkflowContractsClientDataForm;
     contractsConsultantsDataForm: WorkflowContractsConsultantsDataForm;
+    contractsSyncDataForm: WorkflowContractsSyncForm;
+
 
     consultantList = [{
-        name: 'Robert'
+        name: 'Robertsen Oscar'
     },
     {
-        name: 'Ser'
+        name: 'Van Trier Mia'
     }];
     constructor(
         private _fb: FormBuilder
