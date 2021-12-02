@@ -16,16 +16,25 @@
     background-color: #fff !important;
     border: 2px solid #17A297 !important;
     color: #17A297 !important;
-    // text-transform: uppercase;
     font-weight: 700;
+    &.mat-button-disabled {
+        color: $light-grey-color !important;
+        border: 2px solid $light-grey-color !important;
+    }
+    &:hover:not(.mat-button-disabled) {
+        background-color: rgba(23, 162, 151, 0.07) !important;
+    }
 }
 
 .button-accept {
     background-color: #17A297 !important;
     border: 2px solid #17A297 !important;
     color: #fff !important;
-    // text-transform: uppercase;
     font-weight: 700;
+    &.mat-button-disabled {
+        background-color: rgba($color: $light-grey-color, $alpha: 0.55) !important;
+        border: 2px solid rgba($color: $light-grey-color, $alpha: 0.55) !important;
+    }
 }
 
 .button-add {
