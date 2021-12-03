@@ -1,14 +1,12 @@
 <mat-dialog-content class="confiramtion-dialog">
-    <!-- <div class="confiramtion-dialog--content"> -->
-        <div mat-dialog-title class="confiramtion-dialog--header">
-            <h1>
-                {{ data.confirmationMessageTitle }}
-            </h1>
-        </div>
-        <p>
-            {{ data.confirmationMessage }}
-        </p>
-    <!-- </div> -->
+    <div mat-dialog-title class="confiramtion-dialog--header">
+        <h1>
+            {{ data.confirmationMessageTitle }}
+        </h1>
+    </div>
+    <p>
+        {{ data.confirmationMessage }}
+    </p>
 </mat-dialog-content>
 <mat-dialog-actions align="start" class="confiramtion-dialog--actions">
     <button mat-flat-button class="confiramtion-dialog--actions-btn-outlined mat-elevation-z0" (click)="reject()">

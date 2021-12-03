@@ -54,8 +54,8 @@
                 <button
                     class="menu-item menu-item--edit"
                     mat-menu-item
-                    [disabled]="_workflowDataService.getWorkflowProgress?.isExtensionAdded && !_workflowDataService.getWorkflowProgress?.isExtensionCompleted"
-                    (click)="addExtension()">
+                    [disabled]="false"
+                    (click)="changeWorkflow()">
                     <mat-icon>create</mat-icon>
                     Edit Workflow
                 </button>
@@ -100,8 +100,8 @@
             </mat-tab>
         </mat-tab-group>
         <div fxLayout="row" fxLayoutAlign="end center" class="workflow-controls" *ngIf="selectedTabName !== 'Overview'">
-            <button mat-raised-button class="button-outlined mat-elevation-z0 u-mr--16" (click)="saveDraft()">Save draft</button>
-            <button color="primary" class="button-accept mat-elevation-z0" mat-raised-button  (click)="completeStep()">Complete step</button>
+            <button mat-flat-button class="button-outlined mat-elevation-z0 u-mr--16" (click)="saveDraft()">Save draft</button>
+            <button color="primary" class="button-accept mat-elevation-z0" mat-flat-button  (click)="completeStep()">Complete step</button>
         </div>
     </div>
 </div>

@@ -30,6 +30,7 @@ export class WorkflowContractsComponent implements OnInit {
         this.contractsMainDataForm = new WorkflowContractsMainForm();
         this.contractsClientDataForm = new WorkflowContractsClientDataForm();
         this.contractsConsultantsDataForm = new WorkflowContractsConsultantsDataForm();
+        this.contractsSyncDataForm = new WorkflowContractsSyncForm();
     }
 
     ngOnInit(): void {
@@ -175,4 +176,15 @@ export class WorkflowContractsComponent implements OnInit {
         return (this.contractsConsultantsDataForm.consultantData.at(index).get('projectLines') as FormArray).controls
     }
     // Consultant data Project Lines END REGION
+
+    // form validations
+    disableOrEnableInput(boolValue: boolean, control: AbstractControl | null | undefined) {
+        if (boolValue) {
+            // FIXME: do we need to clear input if it will be disabled ?
+            control!.setValue(null, {emitEvent: false});
+            control!.disable();
+        } else {
+            control!.enable();
+        }
+    }
 }

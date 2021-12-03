@@ -106,6 +106,7 @@ export class ClientListComponent implements OnInit, OnDestroy {
                         flag: x.name!
                     });
                 });
+                console.log(this.countryList);
             });
     }
 

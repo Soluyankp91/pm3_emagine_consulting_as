@@ -1,5 +1,7 @@
+import { Overlay } from '@angular/cdk/overlay';
 import { ComponentType } from '@angular/cdk/portal';
 import { AfterViewInit, Component, OnDestroy, OnInit, TemplateRef, ViewChild } from '@angular/core';
+import { MatDialog } from '@angular/material/dialog';
 import { MatTabChangeEvent } from '@angular/material/tabs';
 import { ActivatedRoute } from '@angular/router';
 import { NgScrollbar } from 'ngx-scrollbar';
@@ -8,6 +10,7 @@ import { takeUntil } from 'rxjs/operators';
 import { EnumEntityTypeDto } from 'src/shared/service-proxies/service-proxies';
 import { ExtensionSalesComponent } from '../extension-sales/extension-sales.component';
 import { PrimaryWorkflowComponent } from '../primary-workflow/primary-workflow.component';
+import { WorkflowChangeDialogComponent } from '../workflow-change-dialog/workflow-change-dialog.component';
 import { WorkflowDataService } from '../workflow-data.service';
 import { WorkflowOverviewComponent } from '../workflow-overview/workflow-overview.component';
 import { WorkflowSalesComponent } from '../workflow-sales/workflow-sales.component';
@@ -49,6 +52,8 @@ export class WorkflowDetailsComponent implements OnInit, OnDestroy, AfterViewIni
     constructor(
         public _workflowDataService: WorkflowDataService,
         private activatedRoute: ActivatedRoute,
+        private overlay: Overlay,
+        private dialog: MatDialog
     ) {
         this.salesExtensionForm = new WorkflowSalesExtensionForm();
         this.terminationSalesForm = new WorkflowTerminationSalesForm();
@@ -340,5 +345,31 @@ export class WorkflowDetailsComponent implements OnInit, OnDestroy, AfterViewIni
         // TODO: detect which exactly extension was added & saved to disable\enable button
         this._workflowDataService.updateWorkflowProgressStatus({isExtensionAdded: true, isExtensionCompleted: false});
 
+    }
+
+    changeWorkflow() {WorkflowChangeDialogComponent
+        const scrollStrategy = this.overlay.scrollStrategies.reposition();
+        const dialogRef = this.dialog.open(WorkflowChangeDialogComponent, {
+            width: '450px',
+            minHeight: '180px',
+            height: 'auto',
+            scrollStrategy,
+            backdropClass: 'backdrop-modal--wrapper',
+            autoFocus: false,
+            panelClass: 'confirmation-modal',
+            data: {
+                dialogHeader: 'Add change',
+                formFieldLabel: 'Select date, when the change should take effect',
+                formFieldPlaceholder: 'Start date'
+            }
+        });
+
+        dialogRef.componentInstance.onConfimrmed.subscribe(() => {
+            // confirmed
+        });
+
+        dialogRef.componentInstance.onRejected.subscribe(() => {
+            // rejected
+        });
     }
 }
