@@ -1,7 +1,7 @@
 <div class="client-list">
     <div fxLayout="row" fxLayoutAlign="space-between center" class="client-list--filter">
         <div fxFlex="20%">
-            <mat-form-field appearance="outline" class="u-w--100 formFieldNoMarginPadding greenFilterInput mat-elevation-z0">
+            <mat-form-field appearance="outline" class="u-w--100  greenFilterInput mat-elevation-z0">
                 <mat-label>Search</mat-label>
                 <input autocomplete="off" matInput [formControl]="clientFilter" placeholder="Search" type="text">
                 <mat-icon matSuffix>search</mat-icon>
@@ -16,7 +16,7 @@
         </div>
 
         <div class="client-list--filter-country" fxFlex="20%">
-            <mat-form-field appearance="outline" class="u-w--100 formFieldNoMarginPadding filter-select">
+            <mat-form-field appearance="outline" class="u-w--100  filter-select">
                 <mat-label>Account manager</mat-label>
                 <mat-select [formControl]="acoountManagerFilter" placeholder="Account manager">
                     <mat-option *ngFor="let item of [0,1,2,3]" [value]="item">

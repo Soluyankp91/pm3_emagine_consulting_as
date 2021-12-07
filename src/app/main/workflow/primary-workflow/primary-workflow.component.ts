@@ -2,6 +2,7 @@ import { AfterViewInit, ChangeDetectorRef, Component, Input, OnInit, ViewChild }
 import { WorkflowDataService } from '../workflow-data.service';
 import { WorkflowSalesComponent } from '../workflow-sales/workflow-sales.component';
 import { WorkflowStepList, WorkflowSteps } from '../workflow.model';
+import { AddConsultantDto, WorkflowSideNavigation } from './primary-workflow.model';
 
 @Component({
     selector: 'app-primary-workflow',
@@ -15,6 +16,8 @@ export class PrimaryWorkflowComponent implements OnInit {
 
     // workflowSteps = [{id: 1, name: 'Sales'}, {id: 2, name: 'Contracts'}, {id: 3, name: 'Finance'}];
     workflowSteps = WorkflowStepList;
+
+    workflowSideNavigation = WorkflowSideNavigation;
     constructor(
         public _workflowDataService: WorkflowDataService,
         private cdr: ChangeDetectorRef
@@ -31,8 +34,8 @@ export class PrimaryWorkflowComponent implements OnInit {
         this._workflowDataService.workflowProgress.currentlyActiveStep = stepId * 1;
     }
 
-    saveSalesStep() {
-        this.workflowSales.saveSalesStep();
+    addConsultantToPrimaryWorkflow() {
+        this.workflowSideNavigation.push(AddConsultantDto);
     }
 
 }

@@ -422,5 +422,27 @@ export class AppModule {
             )
         );
 
+        // WORKFLOW ICONS
+        iconRegistry.addSvgIcon(
+            'workflowAdd',
+            sanitizer.bypassSecurityTrustResourceUrl(
+                'assets/common/images/workflow-icons/add-workflow.svg'
+            )
+        );
+
+        iconRegistry.addSvgIcon(
+            'workflowEdit',
+            sanitizer.bypassSecurityTrustResourceUrl(
+                'assets/common/images/workflow-icons/edit-workflow.svg'
+            )
+        );
+
+        iconRegistry.addSvgIcon(
+            'workflowStart',
+            sanitizer.bypassSecurityTrustResourceUrl(
+                'assets/common/images/workflow-icons/start-workflow.svg'
+            )
+        );
+
     }
 }

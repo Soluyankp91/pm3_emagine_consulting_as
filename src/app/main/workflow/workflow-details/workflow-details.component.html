@@ -90,7 +90,7 @@
                         <span class="tab-header">{{tab.displayName}}</span>
                     </div>
                     <span class="tab-subheader">{{tab.additionalInfo}}</span>
-                  </ng-template>
+                </ng-template>
                 <div class="workflow-form--panel u-w--100" [ngStyle]="{'height': isExpandedAndToolbarVisible()}">
                     <ng-scrollbar #salesScrollbar>
                         <dynamic-component-loader *ngIf="componentInitalized" [type]="detectComponentToRender(tab)" [index]="detectExtensionIndex(tab)">
