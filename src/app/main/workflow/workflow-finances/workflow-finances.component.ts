@@ -9,6 +9,7 @@ import { FinancesClientForm, FinancesConsultantsForm } from './workflow-finances
 })
 export class WorkflowFinancesComponent implements OnInit {
     @Input() workflowId: number;
+    @Input() editWorfklow: boolean;
     financesClientForm: FinancesClientForm;
     financesConsultantsForm: FinancesConsultantsForm;
 
@@ -28,6 +29,7 @@ export class WorkflowFinancesComponent implements OnInit {
     }
 
     ngOnInit(): void {
+        console.log('init', this.editWorfklow);
         this.consultantList.forEach(consultant => {
             this.addConsultantToForm(consultant);
         });

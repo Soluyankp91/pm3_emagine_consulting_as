@@ -29,7 +29,7 @@ export class WorkflowDataService {
 
     workflowProgress: WorkflowProgressStatus = new WorkflowProgressStatus();
 
-    workflowSalesSaved = new EventEmitter();
+    workflowSalesSaved = new EventEmitter<boolean>();
     constructor(
         private _enumService: EnumServiceProxy
     ) { }

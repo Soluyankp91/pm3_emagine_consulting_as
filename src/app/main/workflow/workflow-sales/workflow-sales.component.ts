@@ -9,7 +9,7 @@ import { ConfirmationDialogComponent } from 'src/app/shared/components/confirmat
 import { AppComopnentBase } from 'src/shared/app-component-base';
 import { ClientRateDto, ConsultantSalesDataDto, ContractSignerDto, EnumEntityTypeDto, EnumServiceProxy, SalesAdditionalDataDto, SalesClientDataDto, SalesMainDataDto, SignerRole, WorkflowSalesDataDto, WorkflowsServiceProxy } from 'src/shared/service-proxies/service-proxies';
 import { WorkflowDataService } from '../workflow-data.service';
-import { ConsultantTypes, WorkflowSalesAdditionalDataForm, WorkflowSalesClientDataForm, WorkflowSalesConsultantsForm, WorkflowSalesMainForm } from './workflow-sales.model';
+import { ConsultantTypes, InputReadonlyState, InputReadonlyStates, WorkflowSalesAdditionalDataForm, WorkflowSalesClientDataForm, WorkflowSalesConsultantsForm, WorkflowSalesMainForm } from './workflow-sales.model';
 @Component({
     selector: 'app-workflow-sales',
     templateUrl: './workflow-sales.component.html',
@@ -17,6 +17,7 @@ import { ConsultantTypes, WorkflowSalesAdditionalDataForm, WorkflowSalesClientDa
 })
 export class WorkflowSalesComponent extends AppComopnentBase implements OnInit {
     @Input() workflowId: number;
+    @Input() editWorfklow: boolean;
     // SalesStep
     intracompanyActive = false;
     salesMainClientDataForm: WorkflowSalesClientDataForm;
@@ -68,6 +69,9 @@ export class WorkflowSalesComponent extends AppComopnentBase implements OnInit {
     consultantTypes = ConsultantTypes;
 
     private _unsubscribe = new Subject();
+
+    // Read-onluy state for inputs
+    readonlyInput = InputReadonlyStates;
     constructor(
         injector: Injector,
         private _fb: FormBuilder,
@@ -86,6 +90,7 @@ export class WorkflowSalesComponent extends AppComopnentBase implements OnInit {
     }
 
     ngOnInit(): void {
+        console.log('init', this.editWorfklow);
         this.activatedRoute.paramMap.pipe(
             takeUntil(this._unsubscribe)
         ).subscribe(params => {
@@ -116,9 +121,36 @@ export class WorkflowSalesComponent extends AppComopnentBase implements OnInit {
 
         this._workflodDataService.workflowSalesSaved
             .pipe(takeUntil(this._unsubscribe))
-            .subscribe(() => {
-                this.saveSalesStep();
+            .subscribe((value: boolean) => {
+                // NB: SAVE DRAFT or COMPLETE
+                this.saveSalesStep(value);
             });
+
+        this.updateReadonlyState();
+    }
+
+    updateReadonlyState() {
+        // detect if WF Completed
+        // then all inputs are readonly
+        if (this._workflodDataService.getWorkflowProgress.isPrimaryWorkflowCompleted) {
+            this.readonlyInput.forEach(item => {
+                item.readonly = true;
+            });
+            this.updateReadonlyState();
+        }
+        // else if extensions disable only needed controls
+        // const controlsToDisable = ['salesType', 'deliveryType', ...];
+    }
+
+    isReadonlyInput(controlName: string): boolean {
+        const controlToDetect = this.readonlyInput.find(x => x.name === controlName);
+        return controlToDetect ? controlToDetect.readonly : false;
+    }
+
+    changeReadonly() {
+        this.readonlyInput.forEach(item => {
+            item.readonly = !item.readonly;
+        });
     }
 
     ngOnDestroy(): void {
@@ -388,7 +420,7 @@ export class WorkflowSalesComponent extends AppComopnentBase implements OnInit {
         return (this.consultantsForm.consultantData.at(index).get('consultantContractSigners') as FormArray).controls;
     }
 
-    saveSalesStep() {
+    saveSalesStep(isDraft: boolean) {
         let input = new WorkflowSalesDataDto();
         input.salesMainData = new SalesMainDataDto();
         input.salesMainData.salesTypeId = this.salesMainDataForm.salesType?.value?.id;
@@ -413,6 +445,7 @@ export class WorkflowSalesComponent extends AppComopnentBase implements OnInit {
         input.salesClientData.evaluationsDisabled = this.salesMainClientDataForm.disableEvaluations?.value ? this.salesMainClientDataForm.disableEvaluations?.value : false;
         input.salesClientData.evaluationsDisabledReason = this.salesMainClientDataForm.disableEvaluationsReason?.value;
         input.salesClientData.contractSigners = [];
+        // FIXME: fix after BE changes
         // for (let i = 0; i < this.salesMainClientDataForm.clientSigners.value.length; i++) {
         //     let signer = this.salesMainClientDataForm.clientSigners.value[i];
         //     let contractSigner = new ContractSignerDto();
@@ -421,6 +454,7 @@ export class WorkflowSalesComponent extends AppComopnentBase implements OnInit {
         //     contractSigner.signerRole = new SignerRole();
         //     input.salesClientData.contractSigners.push(contractSigner);
         // }
+
         input.salesClientData.noSpecialContractTerms = this.salesMainClientDataForm.isSpecialContractTermsNone?.value ? this.salesMainClientDataForm.isSpecialContractTermsNone?.value : false;
         input.salesClientData.specialContractTerms = this.salesMainClientDataForm.specialContractTerms?.value;
         // FIXME: fix after design changes
@@ -447,7 +481,6 @@ export class WorkflowSalesComponent extends AppComopnentBase implements OnInit {
         // "clientSpecialFees": [
         //     0
         // ],
-
 
         input.salesClientData.contractStartDate = this.salesMainClientDataForm.clientContractStartDate?.value;
         input.salesClientData.contractEndDate = this.salesMainClientDataForm.clientContractEndDate?.value;
@@ -491,12 +524,16 @@ export class WorkflowSalesComponent extends AppComopnentBase implements OnInit {
         input.salesAdditionalData.remarks = this.additionalDataForm.remarks?.value;
         input.salesAdditionalData.noSharedCap = this.salesMainClientDataForm.capOnTimeReporting?.value;
 
-        this._workflowService.salesPut(this.workflowId, input)
-            .pipe(finalize(() => {
-            }))
-            .subscribe(result => {
+        if (isDraft) {
 
-            });
+        } else {
+            this._workflowService.salesPut(this.workflowId, input)
+                .pipe(finalize(() => {
+                }))
+                .subscribe(result => {
+
+                });
+        }
     }
 
     getWorkflowSalesStep() {

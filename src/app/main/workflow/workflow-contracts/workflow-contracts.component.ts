@@ -10,6 +10,7 @@ import { WorkflowContractsClientDataForm, WorkflowContractsConsultantsDataForm, 
 })
 export class WorkflowContractsComponent implements OnInit {
     @Input() workflowId: number;
+    @Input() editWorfklow: boolean;
     contactSummaryForm: WorkflowContractsSummaryForm;
     contractsMainDataForm: WorkflowContractsMainForm;
     contractsClientDataForm: WorkflowContractsClientDataForm;
@@ -34,6 +35,7 @@ export class WorkflowContractsComponent implements OnInit {
     }
 
     ngOnInit(): void {
+        console.log('init', this.editWorfklow);
         this.addSpecialRateToForm();
         this.addClientFeeToForm();
         this.consultantList.forEach(item =>this.addConsultantDataToForm(item));

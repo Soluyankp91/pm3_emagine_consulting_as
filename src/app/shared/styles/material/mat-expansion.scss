@@ -1,3 +1,5 @@
+@import "/src/app/shared/styles/config/_colors";
+
 .mat-expansion-panel-content {
     font: 400 16px 'Open Sans', sans-serif !important;
 }
@@ -91,6 +93,72 @@
             // .mat-content {
             //     margin-left: 5px;
             // }
+        }
+    }
+}
+
+.workflow-sidenav--expansion {
+    &.mat-accordion {
+        width: 100%;
+        .mat-expansion-panel-spacing {
+            margin: 0 !important;
+        }
+        .mat-expansion-panel {
+            background: #FAF9FB;
+            border-radius: 0 !important;
+            width: 100%;
+            margin-bottom: 0 !important;
+            border-bottom: 1px solid #E7E3E8;
+            .mat-expansion-indicator::after {
+                border: solid #4A4E60;
+                border-width: 0 2px 2px 0;
+                display: inline-block;
+                padding: 2px;
+                transform: rotate(45deg);
+                width: 5px;
+                height: 5px;
+                margin-top: -10px;
+            }
+            &.max-expanded {
+                .mat-expansion-indicator::after {
+                    transform: rotate(225deg);
+                }
+            }
+        }
+        .mat-expansion-panel-body {
+            padding: 10px 16px !important;
+        }
+        .mat-expansion-panel-header {
+            align-items: flex-start !important;
+            padding-left: 16px !important;
+            font-weight: bold;
+            font-size: 16px;
+            text-transform: uppercase;
+            color: #4A4E60;
+
+            .sidenav-expansion--header {
+                mat-icon {
+
+                }
+
+                &__name {
+                    color: $dark-grey-color;
+                    font-size: 16px;
+                    font-weight: 700;
+                }
+
+                &__person {
+                    color: $dark-grey-color;
+                    font-size: 14px;
+                    font-weight: 600;
+                }
+
+                &__date {
+                    color: $medium-grey-color;
+                    font-size: 12px;
+                    font-weight: 600;
+                }
+            }
         }
     }
 }
