@@ -379,3 +379,23 @@ export const ConsultantTypes = [
     }
 ];
 
+
+
+export const InputReadonlyState = {
+    deliveryType: true,
+    salesType: true,
+    margin: true,
+    // all inputs
+}
+
+export const InputReadonlyStates = [
+    {
+        name: "deliveryType",
+        readonly: true,
+    },
+    {
+        name: "salesType",
+        readonly: true,
+    }
+];
+

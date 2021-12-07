@@ -125,8 +125,8 @@ export class WorkflowDetailsComponent implements OnInit, OnDestroy, AfterViewIni
         }
     }
 
-    saveSalesStep() {
-        this._workflowDataService.workflowSalesSaved.emit();
+    saveSalesStep(isDraft = false) {
+        this._workflowDataService.workflowSalesSaved.emit(isDraft);
     }
 
     saveContractsStep() {
@@ -223,7 +223,7 @@ export class WorkflowDetailsComponent implements OnInit, OnDestroy, AfterViewIni
             case WorkflowSections.Workflow:
                 switch (this._workflowDataService.workflowProgress.currentlyActiveStep) {
                     case WorkflowSteps.Sales:
-                        this.saveSalesStep();
+                        this.saveSalesStep(true);
                         console.log('save WF Sales');
                         break;
                     case WorkflowSteps.Contracts:
@@ -278,6 +278,7 @@ export class WorkflowDetailsComponent implements OnInit, OnDestroy, AfterViewIni
                         break;
                     case WorkflowSteps.Finance:
                         console.log('Complete WF Finance');
+                        this._workflowDataService.updateWorkflowProgressStatus({isWorkflowAccountsSaved: true, isPrimaryWorkflowCompleted: true});
                         break;
                 }
                 break;

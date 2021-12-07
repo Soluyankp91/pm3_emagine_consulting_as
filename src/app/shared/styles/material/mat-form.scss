@@ -1,18 +1,18 @@
-// .mat-form-field {
-//     font-size: 1em !important;
-//     margin-bottom: .5rem;
-//     .mat-input-element {
-//         caret-color: #17A297 !important;
-//     }
+@import "/src/app/shared/styles/config/_colors";
 
-//     &.mat-form-field-invalid {
-//         border-radius: 5px !important;
-//         border: 1px solid #FF7A78 !important;
-//         .mat-input-element {
-//             caret-color: #FF7A78 !important;
-//         }
+.mat-form-field {
+    font-size: 1em !important;
+    .mat-input-element {
+        caret-color: $dark-grey-color !important;
+    }
 
-//     }
+    &.mat-form-field-invalid {
+        .mat-input-element {
+            caret-color: $red-color !important;
+        }
+
+    }
+}
 
 // }
 
@@ -134,18 +134,24 @@
         }
     }
 }
-.client-list,
-.workflow {
+
+// FIXME: uncomment if we will have a few styleguides for separate pages
+// .client-list,
+// .workflow {
     .mat-form-field-appearance-outline {
+        .mat-form-field-flex:not(.textarea-input) {
+            background-color: transparent !important;
+            height: 45px;
+            .mat-input-element {
+                color: rgba(56, 72, 83, 0.87);
+                font-weight: 700
+            }
+        }
         &.textarea-input {
             .mat-form-field-flex {
                 min-height: 45px;
                 height: unset !important;
             }
-        }
-        .mat-form-field-flex {
-            background-color: transparent !important;
-            height: 45px;
             .mat-input-element {
                 color: rgba(56, 72, 83, 0.87);
                 font-weight: 700
@@ -229,7 +235,7 @@
             }
         }
     }
-}
+// }
 
 .workflow {
     .mat-form-field-appearance-fill {

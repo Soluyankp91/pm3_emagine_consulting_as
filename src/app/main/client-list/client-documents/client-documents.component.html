@@ -84,7 +84,7 @@
                     class="u-w--100 client-documents--contract-filter">
                     <div fxFlex="20%">
                         <mat-form-field appearance="outline"
-                            class="u-w--100 formFieldNoMarginPadding greenFilterInput client-documents--contract-filter__input mat-elevation-z0">
+                            class="u-w--100  greenFilterInput client-documents--contract-filter__input mat-elevation-z0">
                             <mat-label>Search</mat-label>
                             <input autocomplete="off" matInput [formControl]="clientFilter" placeholder="Search"
                                 type="text">
@@ -94,7 +94,7 @@
 
                     <div fxFlex="20%">
                         <mat-form-field appearance="outline"
-                            class="u-w--100 formFieldNoMarginPadding client-documents--contract-filter__select">
+                            class="u-w--100  client-documents--contract-filter__select">
                             <mat-label>Account manager</mat-label>
                             <mat-select [formControl]="dataFilter" placeholder="Account manager">
                                 <mat-option *ngFor="let item of [0,1,2,3]" [value]="item">
