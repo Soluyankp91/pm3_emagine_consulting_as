@@ -438,9 +438,16 @@ export class AppModule {
         );
 
         iconRegistry.addSvgIcon(
-            'workflowStart',
+            'workflowStartOrExtend',
             sanitizer.bypassSecurityTrustResourceUrl(
                 'assets/common/images/workflow-icons/start-workflow.svg'
+            )
+        );
+
+        iconRegistry.addSvgIcon(
+            'workflowTerminate',
+            sanitizer.bypassSecurityTrustResourceUrl(
+                'assets/common/images/workflow-icons/terminate-workflow.svg'
             )
         );
 

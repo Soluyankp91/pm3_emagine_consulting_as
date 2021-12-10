@@ -30,6 +30,10 @@ export class WorkflowDataService {
     workflowProgress: WorkflowProgressStatus = new WorkflowProgressStatus();
 
     workflowSalesSaved = new EventEmitter<boolean>();
+
+
+    collapseHeader = false;
+    clientName = 'Test';
     constructor(
         private _enumService: EnumServiceProxy
     ) { }
@@ -63,6 +67,10 @@ export class WorkflowDataService {
     //         this.sideMenuTabs.splice(tabIndex, 1);
     //     }
     // }
+
+    get showInfoInToolbar() {
+        return this.collapseHeader;
+    }
 
     getData() {
         this.getCurrencies();

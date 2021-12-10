@@ -2,7 +2,7 @@ import { AfterViewInit, ChangeDetectorRef, Component, Input, OnInit, ViewChild }
 import { WorkflowDataService } from '../workflow-data.service';
 import { WorkflowSalesComponent } from '../workflow-sales/workflow-sales.component';
 import { WorkflowStepList, WorkflowSteps } from '../workflow.model';
-import { AddConsultantDto, WorkflowSideNavigation } from './primary-workflow.model';
+import { AddConsultantDto, EditConsultantDto, ExtendConsultantDto, ExtendWorkflowDto, TerminateConsultantDto, TerminateWorkflowDto, WorkflowSideNavigation } from './primary-workflow.model';
 
 @Component({
     selector: 'app-primary-workflow',
@@ -36,6 +36,26 @@ export class PrimaryWorkflowComponent implements OnInit {
 
     addConsultantToPrimaryWorkflow() {
         this.workflowSideNavigation.push(AddConsultantDto);
+    }
+
+    extendWorkflow() {
+        this.workflowSideNavigation.push(ExtendWorkflowDto);
+    }
+
+    terminateWorkflow() {
+        this.workflowSideNavigation.push(TerminateWorkflowDto);
+    }
+
+    editConsultant() {
+        this.workflowSideNavigation.push(EditConsultantDto);
+    }
+
+    extendConsultant() {
+        this.workflowSideNavigation.push(ExtendConsultantDto);
+    }
+
+    terminateConsultant() {
+        this.workflowSideNavigation.push(TerminateConsultantDto);
     }
 
 }
