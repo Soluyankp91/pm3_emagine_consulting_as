@@ -1,9 +1,13 @@
+<!-- leave as comment start -->
 <!-- <form [formGroup]="salesExtensionForm" class="u-w--100"> -->
-<form [formGroup]="extensionForm" class="u-w--100">
-    <h2 class="workflow-green--header">Extension {{selectedIndex}}</h2>
+<!-- leave as comment end -->
+<!-- <form [formGroup]="extensionForm" class="u-w--100">
+    <h2 class="workflow-green--header">Extension {{selectedIndex}}</h2> -->
+<!-- leave as comment start-->
     <!-- <div formArrayName="salesExtension"> -->
         <!-- <div *ngFor="let item of salesExtension.controls; let i = index;" [formGroupName]="i" [ngClass]="{'hide': selectedIndex !== i}"> -->
-            <div fxLayout="row" fxLayoutAlign="start center" class="u-w--100 u-mb--20">
+<!-- leave as comment end -->
+            <!-- <div fxLayout="row" fxLayoutAlign="start center" class="u-w--100 u-mb--20">
                 <mat-form-field appearance="outline" class=" u-mr--16" fxFlex="33%">
                     <mat-label>New end date</mat-label>
                     <input autocomplete="off" placeholder="New end date" matInput
@@ -25,7 +29,75 @@
                     <textarea matInput autocomplete="new-password" name="workflowInformation" formControlName="workflowInformation">
                     </textarea>
                 </mat-form-field>
-            </div>
+            </div> -->
+<!-- leave as comment start -->
         <!-- </div> -->
     <!-- </div> -->
-</form>
+<!-- leave as comment end -->
+<!-- </form> -->
+
+
+<!-- Extension start -->
+<div fxLayout="row" fxLayoutAlign="start start" class="workflow">
+    <div fxFlex="15%" class="workflow-navigation--wrapper">
+        <mat-accordion class="workflow-sidenav--expansion" [togglePosition]="'before'">
+            <mat-expansion-panel class="mat-elevation-z0" *ngFor="let item of workflowSideNavigation">
+                <mat-expansion-panel-header [collapsedHeight]="'80px'" [expandedHeight]="'80px'">
+                    <div class="sidenav-expansion--header">
+                        <span class="flex-row">
+                            <mat-icon [svgIcon]="item.name"></mat-icon>
+                             <span class="sidenav-expansion--header__name">
+                                 {{item.displayName}}
+                             </span>
+                        </span>
+                        <span class="sidenav-expansion--header__person">
+                            {{item.responsiblePerson}}
+                        </span>
+                        <span class="sidenav-expansion--header__date">
+                            {{item.dateRange}}
+                        </span>
+                    </div>
+                </mat-expansion-panel-header>
+                <mat-list class="workflow-navigation">
+                    <mat-list-item class="workflow-navigation--step" *ngFor="let step of item.subItems; let i = index;"
+                        (click)="changeStepSelection(step.name, step.id)"
+                        [ngClass]="{'active-step': step.name === selectedStep, 'completed-step': step.isCompleted}">
+                        <span class="workflow-navigation--step__number">
+                            {{step.id}}
+                        </span>
+                        <span class="workflow-navigation--step__name">
+                            {{step.displayName}}
+                        </span>
+                    </mat-list-item>
+                </mat-list>
+            </mat-expansion-panel>
+        </mat-accordion>
+    </div>
+    <div fxFlex="85%">
+        <ng-container [ngSwitch]="selectedStep">
+            <!-- EDIT WORKFLOW -->
+            <ng-container *ngSwitchCase="'Sales'">
+                <app-workflow-sales #workflowSales [workflowId]="workflowId"></app-workflow-sales>
+            </ng-container>
+            <ng-container *ngSwitchCase="'Contracts'">
+                <app-workflow-contracts #workflowContracts [workflowId]="workflowId"></app-workflow-contracts>
+            </ng-container>
+            <!-- <ng-container *ngSwitchCase="'Finance'">
+                <app-workflow-finances #workflowFinances [workflowId]="workflowId"></app-workflow-finances>
+            </ng-container> -->
+            <!-- EDIT WORKFLOW -->
+            <ng-container *ngSwitchCase="'EditSales'">
+                <app-workflow-sales #workflowEditSales [workflowId]="workflowId" [editWorfklow]="true"></app-workflow-sales>
+            </ng-container>
+            <ng-container *ngSwitchCase="'EditContracts'">
+                <app-workflow-contracts #workflowEditContracts [workflowId]="workflowId" [editWorfklow]="true"></app-workflow-contracts>
+            </ng-container>
+            <ng-container *ngSwitchCase="'EditFinance'">
+                <app-workflow-finances #workflowEditFinances [workflowId]="workflowId" [editWorfklow]="true"></app-workflow-finances>
+            </ng-container>
+
+            <ng-container *ngSwitchDefault>
+            </ng-container>
+        </ng-container>
+    </div>
+</div>

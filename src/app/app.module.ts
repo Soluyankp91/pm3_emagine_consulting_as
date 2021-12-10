@@ -444,5 +444,12 @@ export class AppModule {
             )
         );
 
+        iconRegistry.addSvgIcon(
+            'workflowExtend',
+            sanitizer.bypassSecurityTrustResourceUrl(
+                'assets/common/images/workflow-icons/start-workflow.svg'
+            )
+        );
+
     }
 }

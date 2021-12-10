@@ -8,6 +8,7 @@ import { NgScrollbar } from 'ngx-scrollbar';
 import { Subject } from 'rxjs';
 import { takeUntil } from 'rxjs/operators';
 import { EnumEntityTypeDto } from 'src/shared/service-proxies/service-proxies';
+import { ExtendWorkflowDialogComponent } from '../extend-workflow-dialog/extend-workflow-dialog.component';
 import { ExtensionSalesComponent } from '../extension-sales/extension-sales.component';
 import { PrimaryWorkflowComponent } from '../primary-workflow/primary-workflow.component';
 import { WorkflowChangeDialogComponent } from '../workflow-change-dialog/workflow-change-dialog.component';
@@ -331,21 +332,43 @@ export class WorkflowDetailsComponent implements OnInit, OnDestroy, AfterViewIni
     }
 
     addExtension() {
-        let existingExtensions = this.menuTabs.filter(x => x.name.startsWith('Extension'));
-        let newExtensionIndex = existingExtensions.length ? Math.max.apply(Math, existingExtensions.map(function(o) { return o.index + 1; })) : 0;
-        // this._workflowDataService.topMenuTabs.push(
-        this.menuTabs.push(
-            {
-                name: `Extension${newExtensionIndex}`,
-                displayName: `Extension ${newExtensionIndex}`,
-                index: newExtensionIndex,
-                additionalInfo: 'New'
+        const scrollStrategy = this.overlay.scrollStrategies.reposition();
+        const dialogRef = this.dialog.open(ExtendWorkflowDialogComponent, {
+            width: '450px',
+            minHeight: '180px',
+            height: 'auto',
+            scrollStrategy,
+            backdropClass: 'backdrop-modal--wrapper',
+            autoFocus: false,
+            panelClass: 'confirmation-modal',
+            data: {
+                dialogHeader: 'Extend workflow',
+                formFieldLabel: 'Select extension end date',
+                formFieldPlaceholder: 'Start date'
             }
-        )
+        });
 
-        // TODO: detect which exactly extension was added & saved to disable\enable button
-        this._workflowDataService.updateWorkflowProgressStatus({isExtensionAdded: true, isExtensionCompleted: false});
+        dialogRef.componentInstance.onConfimrmed.subscribe(() => {
+            // confirmed
+            let existingExtensions = this.menuTabs.filter(x => x.name.startsWith('Extension'));
+            let newExtensionIndex = existingExtensions.length ? Math.max.apply(Math, existingExtensions.map(function(o) { return o.index + 1; })) : 0;
+            // this._workflowDataService.topMenuTabs.push(
+            this.menuTabs.push(
+                {
+                    name: `Extension${newExtensionIndex}`,
+                    displayName: `Extension ${newExtensionIndex}`,
+                    index: newExtensionIndex,
+                    additionalInfo: 'New'
+                }
+            )
 
+            // TODO: detect which exactly extension was added & saved to disable\enable button
+            this._workflowDataService.updateWorkflowProgressStatus({isExtensionAdded: true, isExtensionCompleted: false});
+        });
+
+        dialogRef.componentInstance.onRejected.subscribe(() => {
+            // rejected
+        });
     }
 
     changeWorkflow() {WorkflowChangeDialogComponent
