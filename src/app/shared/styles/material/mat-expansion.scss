@@ -74,10 +74,10 @@
                 height: 8px;
                 margin-top: -10px;
             }
-            &.max-expanded {
-                .mat-expansion-indicator::after {
-                    transform: rotate(225deg);
-                }
+            &.mat-expanded {
+                // .mat-expansion-indicator::after {
+                //     transform: rotate(225deg);
+                // }
             }
         }
         .mat-expansion-panel-body {
@@ -119,10 +119,12 @@
                 height: 5px;
                 margin-top: -10px;
             }
-            &.max-expanded {
-                .mat-expansion-indicator::after {
-                    transform: rotate(225deg);
-                }
+            &.mat-expanded {
+                border-left: 3px solid $green-color !important;
+                background-color: $white-color !important;
+                // .mat-expansion-indicator::after {
+                //     transform: rotate(225deg);
+                // }
             }
         }
         .mat-expansion-panel-body {
@@ -137,8 +139,11 @@
             color: #4A4E60;
 
             .sidenav-expansion--header {
+                display: flex;
+                flex-direction: column;
                 mat-icon {
-
+                    // icon styles
+                    margin-right: 3px;
                 }
 
                 &__name {

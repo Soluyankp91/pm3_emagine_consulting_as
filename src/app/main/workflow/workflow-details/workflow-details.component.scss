@@ -1,7 +1,28 @@
 .workflow {
-    height: 100vh;
+    &-toolbar {
+        height: 50px;
+        width: 100%;
+        background-color: #fff;
+        position: sticky;
+        top: 0;
+        z-index: 999;
+        padding: 0 75px;
+        &--title {
+            color: rgba(56, 72, 83, 0.87);
+            font-size: 16px;
+            line-height: 16px;
+            font-weight: 700;
+        }
+        &--client {
+            color: rgba(56, 72, 83, 0.87);
+            font-size: 16px;
+            line-height: 16px;
+            font-weight: 700;
+        }
+    }
     &-header {
         padding: 32px 75px;
+        height: 120px;
         background-color: #fff;
         &--title {
             font-family: 'IBM Plex Mono', monospace !important;
@@ -29,9 +50,10 @@
             }
         }
     }
-    &-content {
-        background-color: #FAF9FB;
-    }
+    // &-content {
+    //     background-color: #FAF9FB;
+    //     // position: sticky;
+    // }
 
     &-form {
         // &--sales,
@@ -46,7 +68,7 @@
         //     }
         // }
         &--panel {
-            // background: #FFFFFF;
+            background: #FAF9FB;
             padding: 16px 75px;
             // height: calc(80vh - 50px);
             // h2:not(.workflow-green--header) {
@@ -59,9 +81,11 @@
         }
     }
     &-content {
+        background-color: #FAF9FB;
+        height: auto;
         // height: 80vh;
-        position: relative;
-        overflow-y: hidden;
+        // position: relative;
+        // overflow-y: hidden;
         &--expand {
             position: absolute;
             right: 0;
@@ -98,11 +122,15 @@
     }
 
     &-controls {
-        position: sticky;
+        // position: sticky;
+        position: fixed;
         bottom: 0;
+        z-index: 999;
         background-color: #fff;
         height: 60px;
+        width: 100%;
         padding: 0 75px;
+        margin-right: 17px;
         box-shadow: 0px 0px 20px rgba(26, 35, 126, 0.15);
         button {
             width: 150px;

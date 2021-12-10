@@ -1,7 +1,7 @@
 export const WorkflowSideNavigation = [
     {
         displayName: 'Start workflow',
-        name: 'workflowStart',
+        icon: 'workflowStartOrExtend',
         responsiblePerson: 'Andersen Rasmus1',
         dateRange: '02.01.2021 - 31.12.2021',
         subItems: [
@@ -27,90 +27,79 @@ export const WorkflowSideNavigation = [
                 assignedPerson: 'Roberto Olberto'
             }
         ]
-    },
-    {
-        displayName: 'Add workflow',
-        name: 'workflowAdd',
-        responsiblePerson: 'Andersen Rasmus2',
-        dateRange: '02.01.2021 - 31.12.2021',
-        subItems: [
-            {
-                id: 1,
-                name: "AddSales",
-                displayName: "Sales",
-                isCompleted: false,
-                assignedPerson: 'Roberto Olberto'
-            },
-            {
-                id: 2,
-                name: "AddContracts",
-                displayName: "Contracts",
-                isCompleted: false,
-                assignedPerson: 'Roberto Olberto'
-            },
-            {
-                id: 3,
-                name: "AddFinance",
-                displayName: "Finance",
-                isCompleted: false,
-                assignedPerson: 'Roberto Olberto'
-            }
-        ]
-    },
-    {
-        displayName: 'Edit workflow',
-        name: 'workflowEdit',
-        responsiblePerson: 'Andersen Rasmus3',
-        dateRange: '02.01.2021 - 31.12.2021',
-        subItems: [
-            {
-                id: 1,
-                name: "EditSales",
-                displayName: "Sales",
-                isCompleted: false,
-                assignedPerson: 'Roberto Olberto'
-            },
-            {
-                id: 2,
-                name: "EditContracts",
-                displayName: "Contracts",
-                isCompleted: false,
-                assignedPerson: 'Roberto Olberto'
-            },
-            {
-                id: 3,
-                name: "EditFinance",
-                displayName: "Finance",
-                isCompleted: false,
-                assignedPerson: 'Roberto Olberto'
-            }
-        ]
     }
 ];
 
-export const AddConsultantDto = {
-    displayName: 'Add workflow',
-    name: 'workflowAdd',
+export const ExtendWorkflowDto = {
+    displayName: 'Extend workflow',
+    icon: 'workflowStartOrExtend',
     responsiblePerson: 'Andersen Rasmus2',
     dateRange: '02.01.2021 - 31.12.2021',
     subItems: [
         {
             id: 1,
-            name: "AddSales",
+            name: "ExtendWorkflowSales",
             displayName: "Sales",
             isCompleted: false,
             assignedPerson: 'Roberto Olberto'
         },
         {
             id: 2,
-            name: "AddContracts",
+            name: "ExtendWorkflowContracts",
+            displayName: "Contracts",
+            isCompleted: false,
+            assignedPerson: 'Roberto Olberto'
+        }
+    ]
+};
+
+export const TerminateWorkflowDto = {
+    displayName: 'Terminate workflow',
+    icon: 'workflowTerminate',
+    responsiblePerson: 'Andersen Rasmus2',
+    dateRange: '02.01.2021 - 31.12.2021',
+    subItems: [
+        {
+            id: 1,
+            name: "TerminateWorkflowSales",
+            displayName: "Sales",
+            isCompleted: false,
+            assignedPerson: 'Roberto Olberto'
+        },
+        {
+            id: 2,
+            name: "TerminateWorkflowContracts",
+            displayName: "Contracts",
+            isCompleted: false,
+            assignedPerson: 'Roberto Olberto'
+        }
+    ]
+};
+
+
+export const AddConsultantDto = {
+    displayName: 'Add consultant',
+    icon: 'workflowAdd',
+    responsiblePerson: 'Andersen Rasmus2',
+    dateRange: '02.01.2021 - 31.12.2021',
+    subItems: [
+        {
+            id: 1,
+            name: "AddConsultantSales",
+            displayName: "Sales",
+            isCompleted: false,
+            assignedPerson: 'Roberto Olberto'
+        },
+        {
+            id: 2,
+            name: "AddConsultantContracts",
             displayName: "Contracts",
             isCompleted: false,
             assignedPerson: 'Roberto Olberto'
         },
         {
             id: 3,
-            name: "AddFinance",
+            name: "AddConsultantFinance",
             displayName: "Finance",
             isCompleted: false,
             assignedPerson: 'Roberto Olberto'
@@ -118,30 +107,77 @@ export const AddConsultantDto = {
     ]
 };
 
-export const ExtendWorkflowDto = {
-    displayName: 'Add workflow',
-    name: 'workflowAdd',
+
+export const EditConsultantDto = {
+    displayName: 'Edit consultant',
+    icon: 'workflowEdit',
     responsiblePerson: 'Andersen Rasmus2',
     dateRange: '02.01.2021 - 31.12.2021',
     subItems: [
         {
             id: 1,
-            name: "AddSales",
+            name: "EditConsultantSales",
             displayName: "Sales",
             isCompleted: false,
             assignedPerson: 'Roberto Olberto'
         },
         {
             id: 2,
-            name: "AddContracts",
+            name: "EditConsultantContracts",
             displayName: "Contracts",
             isCompleted: false,
             assignedPerson: 'Roberto Olberto'
         },
         {
             id: 3,
-            name: "AddFinance",
+            name: "EditConsultantFinance",
             displayName: "Finance",
+            isCompleted: false,
+            assignedPerson: 'Roberto Olberto'
+        }
+    ]
+};
+
+export const ExtendConsultantDto = {
+    displayName: 'Extend consultant',
+    icon: 'workflowStartOrExtend',
+    responsiblePerson: 'Andersen Rasmus2',
+    dateRange: '02.01.2021 - 31.12.2021',
+    subItems: [
+        {
+            id: 1,
+            name: "ExtendConsultantSales",
+            displayName: "Sales",
+            isCompleted: false,
+            assignedPerson: 'Roberto Olberto'
+        },
+        {
+            id: 2,
+            name: "ExtendConsultantContracts",
+            displayName: "Contracts",
+            isCompleted: false,
+            assignedPerson: 'Roberto Olberto'
+        }
+    ]
+};
+
+export const TerminateConsultantDto = {
+    displayName: 'Terminate consultant',
+    icon: 'workflowTerminate',
+    responsiblePerson: 'Andersen Rasmus2',
+    dateRange: '02.01.2021 - 31.12.2021',
+    subItems: [
+        {
+            id: 1,
+            name: "TerminateConsultantSales",
+            displayName: "Sales",
+            isCompleted: false,
+            assignedPerson: 'Roberto Olberto'
+        },
+        {
+            id: 2,
+            name: "TerminateConsultantContracts",
+            displayName: "Contracts",
             isCompleted: false,
             assignedPerson: 'Roberto Olberto'
         }
