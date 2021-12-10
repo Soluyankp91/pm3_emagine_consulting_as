@@ -403,9 +403,9 @@ export class WorkflowDetailsComponent implements OnInit, OnDestroy, AfterViewIni
         if (this._workflowDataService.getWorkflowProgress?.isExtensionAdded) {
             // validate by indexes
             if (!this._workflowDataService.getWorkflowProgress?.isExtensionCompleted) {
-                return this._workflowDataService.getWorkflowProgress.lastSavedExtensionIndex === this._workflowDataService.getWorkflowProgress.numberOfAddedExtensions! - 1;
-            } else {
                 return true;
+            } else {
+                return this._workflowDataService.getWorkflowProgress.lastSavedExtensionIndex === this._workflowDataService.getWorkflowProgress.numberOfAddedExtensions! - 1;
             }
         } else if (this._workflowDataService.getWorkflowProgress.isPrimaryWorkflowCompleted) {
             return false;
