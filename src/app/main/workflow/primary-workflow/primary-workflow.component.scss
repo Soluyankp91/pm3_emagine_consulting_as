@@ -1,10 +1,14 @@
 @import "/src/app/shared/styles/config/_colors";
 
+.primary-workflow {
+    position: relative;
+    overflow: visible;
+}
 .workflow-navigation {
-    width: 80%;
     &--wrapper {
+        height: 70vh;
         position: sticky;
-        top: 0;
+        top: 135px;
     }
     &--step {
         cursor: pointer;

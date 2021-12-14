@@ -1,126 +1,87 @@
-<div fxLayout="row" fxLayoutAlign="start start" class="workflow">
-    <div fxFlex="15%" class="workflow-navigation--wrapper">
-        <mat-accordion class="workflow-sidenav--expansion" [togglePosition]="'before'">
-            <!-- <mat-expansion-panel class="mat-elevation-z0">
-                <mat-expansion-panel-header [collapsedHeight]="'80px'" [expandedHeight]="'80px'">
-                    <div class="sidenav-expansion--header">
-                        <span class="flex-row">
-                            <mat-icon svgIcon="workflowAdd"></mat-icon>
-                            Add workflow
-                        </span>
-                        <span class="sidenav-expansion--header__person">
-                            Andersen Rasmus
-                        </span>
-                        <span class="sidenav-expansion--header__date">
-                            02.01.2021 - 31.12.2021
-                        </span>
-                    </div>
-                </mat-expansion-panel-header>
-                <mat-list class="workflow-navigation">
-                    <mat-list-item class="workflow-navigation--step" *ngFor="let step of workflowSteps; let i = index;"
-                        (click)="changeStepSelection(step.name, step.id)"
-                        [ngClass]="{'active-step': step.name === selectedStep, 'completed-step': step.isCompleted}">
-                        <span class="workflow-navigation--step__number">
-                            {{step.id}}
-                        </span>
-                        <span class="workflow-navigation--step__name">
-                            {{step.name}}
-                        </span>
-                    </mat-list-item>
-                </mat-list>
-            </mat-expansion-panel>
-            <mat-expansion-panel class="mat-elevation-z0">
-                <mat-expansion-panel-header [collapsedHeight]="'80px'" [expandedHeight]="'80px'">
-                    <div class="sidenav-expansion--header">
-                        <span class="flex-row">
-                            <mat-icon svgIcon="workflowEdit"></mat-icon>
-                            Edit workflow
-                        </span>
-                        <span class="sidenav-expansion--header__person">
-                            Andersen Rasmus
-                        </span>
-                        <span class="sidenav-expansion--header__date">
-                            02.01.2021 - 31.12.2021
-                        </span>
-                    </div>
-                </mat-expansion-panel-header>
-                <mat-list class="workflow-navigation">
-                    <mat-list-item class="workflow-navigation--step" *ngFor="let step of workflowSteps; let i = index;"
-                        (click)="changeStepSelection(step.name, step.id)"
-                        [ngClass]="{'active-step': step.name === selectedStep, 'completed-step': step.isCompleted}">
-                        <span class="workflow-navigation--step__number">
-                            {{step.id}}
-                        </span>
-                        <span class="workflow-navigation--step__name">
-                            {{step.name}}
-                        </span>
-                    </mat-list-item>
-                </mat-list>
-            </mat-expansion-panel>
-            <mat-expansion-panel class="mat-elevation-z0">
-                <mat-expansion-panel-header [collapsedHeight]="'80px'" [expandedHeight]="'80px'">
-                    <div class="sidenav-expansion--header">
-                        <span class="flex-row">
-                            <mat-icon svgIcon="workflowStart"></mat-icon>
-                            <span class="sidenav-expansion--header__name">
-                                Start workflow
-                            </span>
-                        </span>
-                        <span class="sidenav-expansion--header__person">
-                            Andersen Rasmus
-                        </span>
-                        <span class="sidenav-expansion--header__date">
-                            02.01.2021 - 31.12.2021
-                        </span>
-                    </div>
-                </mat-expansion-panel-header>
-                <mat-list class="workflow-navigation">
-                    <mat-list-item class="workflow-navigation--step" *ngFor="let step of workflowSteps; let i = index;"
-                        (click)="changeStepSelection(step.name, step.id)"
-                        [ngClass]="{'active-step': step.name === selectedStep, 'completed-step': step.isCompleted}">
-                        <span class="workflow-navigation--step__number">
-                            {{step.id}}
-                        </span>
-                        <span class="workflow-navigation--step__name">
-                            {{step.name}}
-                        </span>
-                    </mat-list-item>
-                </mat-list>
-            </mat-expansion-panel> -->
-
-            <mat-expansion-panel class="mat-elevation-z0" *ngFor="let item of workflowSideNavigation">
-                <mat-expansion-panel-header [collapsedHeight]="'80px'" [expandedHeight]="'80px'">
-                    <div class="sidenav-expansion--header">
-                        <span class="flex-row">
-                            <mat-icon [svgIcon]="item.name"></mat-icon>
-                             <span class="sidenav-expansion--header__name">
-                                 {{item.displayName}}
-                             </span>
-                        </span>
-                        <span class="sidenav-expansion--header__person">
-                            {{item.responsiblePerson}}
-                        </span>
-                        <span class="sidenav-expansion--header__date">
-                            {{item.dateRange}}
-                        </span>
-                    </div>
-                </mat-expansion-panel-header>
-                <mat-list class="workflow-navigation">
-                    <mat-list-item class="workflow-navigation--step" *ngFor="let step of item.subItems; let i = index;"
-                        (click)="changeStepSelection(step.name, step.id)"
-                        [ngClass]="{'active-step': step.name === selectedStep, 'completed-step': step.isCompleted}">
-                        <span class="workflow-navigation--step__number">
-                            {{step.id}}
-                        </span>
-                        <span class="workflow-navigation--step__name">
-                            {{step.displayName}}
-                        </span>
-                    </mat-list-item>
-                </mat-list>
-            </mat-expansion-panel>
-        </mat-accordion>
-    </div>
-    <div fxFlex="85%">
+<div fxLayout="row" fxLayoutAlign="start start" class="primary-workflow">
+    <div fxFlex="20%" class="workflow-navigation--wrapper">
+            <ng-scrollbar>
+                <mat-accordion class="workflow-sidenav--expansion" [togglePosition]="'before'">
+                    <mat-expansion-panel class="mat-elevation-z0" *ngFor="let item of workflowSideNavigation">
+                        <mat-expansion-panel-header [collapsedHeight]="'80px'" [expandedHeight]="'80px'">
+                            <div class="sidenav-expansion--header">
+                                <span class="flex-row">
+                                    <mat-icon [svgIcon]="item.icon"></mat-icon>
+                                    <span class="sidenav-expansion--header__name">
+                                        {{item.displayName}}
+                                    </span>
+                                </span>
+                                <span class="sidenav-expansion--header__person">
+                                    {{item.responsiblePerson}}
+                                </span>
+                                <span class="sidenav-expansion--header__date">
+                                    {{item.dateRange}}
+                                </span>
+                            </div>
+                        </mat-expansion-panel-header>
+                        <mat-list class="workflow-navigation">
+                            <mat-list-item class="workflow-navigation--step" *ngFor="let step of item.subItems; let i = index;"
+                                (click)="changeStepSelection(step.name, step.id)"
+                                [ngClass]="{'active-step': step.name === selectedStep, 'completed-step': step.isCompleted}">
+                                <span class="workflow-navigation--step__number">
+                                    {{step.id}}
+                                </span>
+                                <span class="workflow-navigation--step__name">
+                                    {{step.displayName}}
+                                </span>
+                            </mat-list-item>
+                        </mat-list>
+                    </mat-expansion-panel>
+                </mat-accordion>
+            </ng-scrollbar>
+        </div>
+    <div fxFlex="80%">
+        <button mat-icon-button [matMenuTriggerFor]="workflowMenu" class="workflow-icon--actions"><mat-icon>add</mat-icon></button>
+            <mat-menu #workflowMenu>
+                <button
+                    class="menu-item menu-item--edit"
+                    mat-menu-item
+                    [disabled]="false"
+                    (click)="addConsultantToPrimaryWorkflow()">
+                    <mat-icon>create</mat-icon>
+                    addConsultantToPrimaryWorkflow
+                </button>
+                <button
+                    class="menu-item menu-item--add"
+                    mat-menu-item
+                    (click)="extendWorkflow()">
+                    <mat-icon>add</mat-icon>
+                    extendWorkflow
+                </button>
+                <button
+                    class="menu-item menu-item--cancel"
+                    mat-menu-item
+                    (click)="terminateWorkflow()">
+                    <mat-icon>clear</mat-icon>
+                    terminateWorkflow
+                </button>
+                <button
+                    class="menu-item menu-item--cancel"
+                    mat-menu-item
+                    (click)="editConsultant()">
+                    <mat-icon>clear</mat-icon>
+                    editConsultant
+                </button>
+                <button
+                    class="menu-item menu-item--cancel"
+                    mat-menu-item
+                    (click)="extendConsultant()">
+                    <mat-icon>clear</mat-icon>
+                    extendConsultant
+                </button>
+                <button
+                    class="menu-item menu-item--cancel"
+                    mat-menu-item
+                    (click)="terminateConsultant()">
+                    <mat-icon>clear</mat-icon>
+                    terminateConsultant
+                </button>
+            </mat-menu>
         <ng-container [ngSwitch]="selectedStep">
             <!-- EDIT WORKFLOW -->
             <ng-container *ngSwitchCase="'Sales'">

@@ -10,6 +10,7 @@ export class DynamicComponentLoaderComponent implements OnChanges, OnDestroy, Af
     @ViewChild('target', { read: ViewContainerRef }) target: ViewContainerRef;
     @Input() type: Type<Component>;
     @Input() index: number | null;
+    @Input() isCollapsedHeader: boolean;
     cmpRef: ComponentRef<Component | any>;
     private isViewInitialized: boolean = false;
 
@@ -29,6 +30,7 @@ export class DynamicComponentLoaderComponent implements OnChanges, OnDestroy, Af
             let factory = this.componentFactoryResolver.resolveComponentFactory(this.type);
             // let factory = this.componentFactoryResolver.resolveComponentFactory(ExtensionSalesComponent);
             this.cmpRef = this.target.createComponent(factory);
+            // this.cmpRef.instance.isCollapsedHeader = this.isCollapsedHeader;
             if (this.index) {
                 this.cmpRef.instance.selectedIndex = this.index;
             }

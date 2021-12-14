@@ -86,10 +86,10 @@ mat-tab-group.client-details--tabs {
 
 .workflow-content--tabs {
     .mat-tab-header {
-        // border-bottom: 1px solid rgba(0, 0, 0, 0.12);
-        // border-bottom-width: 1px;
-        // border-bottom-style: solid;
-        // border-bottom-color: rgba(0, 0, 0, 0.12);
+        top: 50px;
+        z-index: 1000;
+        position: sticky;
+        position: -webkit-sticky;
         border-bottom: 0;
         background-color: #fff;
     }
@@ -171,7 +171,28 @@ mat-tab-group.client-details--tabs {
         // }
     }
 
-    .mat-tab-body-content {
-        overflow: hidden;
+    .mat-tab-body-wrapper {
+        min-height: calc(100vh - 190px); // 65 tab header + 120 header + 5 margins
+    }
+     /* Needed in order to allow the sticky content  */
+    .mat-tab-body-wrapper .mat-tab-body.mat-tab-body-active {
+        overflow: visible !important;
+    }
+
+    .mat-tab-body-wrapper {
+        overflow: visible !important;
+    }
+
+    .mat-tab-body-wrapper .mat-tab-body-content {
+        overflow: visible !important;
+    }
+}
+
+.test-tabs {
+    .mat-tab-header {
+        top: 0;
+        z-index: 1000;
+        position: sticky;
+        position: -webkit-sticky; /* macOS/iOS Safari */
     }
 }

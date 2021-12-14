@@ -108,17 +108,17 @@ export const TopMenuTabs: SideMenuTabsDto[] = [
     // {
     //     name: 'Extension1',
     //     displayName: 'Extension 1',
-    //     index: 1
+    //     index: 0
     // },
     // {
     //     name: 'Extension2',
     //     displayName: 'Extension 2',
-    //     index: 2
+    //     index: 1
     // },
     // {
     //     name: 'Contracts',
     //     displayName: 'Contracts',
-    //     index: 1
+    //     index:
     // },
     // {
     //     name: 'Accounts',
@@ -231,43 +231,59 @@ export const WorkflowList = [
 
 export class WorkflowProgressStatus implements IWorkflowProgressStatus {
     started: boolean | undefined;
+
     isExtensionAdded: boolean | undefined;
     currentlyActiveExtensionIndex: number | undefined | null;
+    numberOfAddedExtensions: number | undefined | null;
+    lastSavedExtensionIndex: number | undefined | null;
+
     isExtensionCompleted: boolean | undefined;
     isExtensionSalesSaved: boolean | undefined;
     isExtensionContractsSaved: boolean | undefined;
+
     isWorkflowSalesSaved: boolean | undefined;
     isWorkflowContractsSaved: boolean | undefined;
     isWorkflowAccountsSaved: boolean | undefined;
     isPrimaryWorkflowCompleted: boolean | undefined;
+
     isTerminationAdded: boolean | undefined;
     currentlyActiveSection: number | undefined;
     currentlyActiveStep: number | undefined;
 
     constructor(
         started?: boolean,
+
         isExtensionAdded?: boolean,
         currentlyActiveExtensionIndex?: number,
+        numberOfAddedExtensions?: number,
+        lastSavedExtensionIndex?: number,
         isExtensionCompleted?: boolean,
         isExtensionSalesSaved?: boolean,
         isExtensionContractsSaved?: boolean,
+
         isWorkflowSalesSaved?: boolean,
         isWorkflowContractsSaved?: boolean,
         isWorkflowAccountsSaved?: boolean,
         isPrimaryWorkflowCompleted?: boolean,
+
         isTerminationAdded?: boolean,
         currentlyActiveSection?: number,
         currentlyActiveStep?: number) {
             this.started = started;
+
             this.isExtensionAdded = isExtensionAdded;
             this.currentlyActiveExtensionIndex = currentlyActiveExtensionIndex;
+            this.numberOfAddedExtensions = numberOfAddedExtensions;
+            this.lastSavedExtensionIndex = lastSavedExtensionIndex;
             this.isExtensionCompleted = isExtensionCompleted;
             this.isExtensionSalesSaved = isExtensionSalesSaved;
             this.isExtensionContractsSaved = isExtensionContractsSaved;
+
             this.isWorkflowSalesSaved = isWorkflowSalesSaved;
             this.isWorkflowContractsSaved = isWorkflowContractsSaved;
             this.isWorkflowAccountsSaved = isWorkflowAccountsSaved;
             this.isPrimaryWorkflowCompleted = isPrimaryWorkflowCompleted;
+
             this.isTerminationAdded = isTerminationAdded;
             this.currentlyActiveSection = currentlyActiveSection;
             this.currentlyActiveStep = currentlyActiveStep;

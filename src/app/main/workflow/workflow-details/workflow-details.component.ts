@@ -1,12 +1,12 @@
-import { Overlay } from '@angular/cdk/overlay';
+import { CdkScrollable, Overlay, ScrollDispatcher } from '@angular/cdk/overlay';
 import { ComponentType } from '@angular/cdk/portal';
-import { AfterViewInit, Component, OnDestroy, OnInit, TemplateRef, ViewChild } from '@angular/core';
+import { AfterViewInit, Component, ElementRef, NgZone, OnDestroy, OnInit, ViewChild } from '@angular/core';
 import { MatDialog } from '@angular/material/dialog';
 import { MatTabChangeEvent } from '@angular/material/tabs';
 import { ActivatedRoute } from '@angular/router';
 import { NgScrollbar } from 'ngx-scrollbar';
 import { Subject } from 'rxjs';
-import { takeUntil } from 'rxjs/operators';
+import { startWith, takeUntil } from 'rxjs/operators';
 import { EnumEntityTypeDto } from 'src/shared/service-proxies/service-proxies';
 import { ExtendWorkflowDialogComponent } from '../extend-workflow-dialog/extend-workflow-dialog.component';
 import { ExtensionSalesComponent } from '../extension-sales/extension-sales.component';
@@ -24,6 +24,8 @@ import { WorkflowSalesExtensionForm, WorkflowTerminationSalesForm, SideMenuTabsD
 })
 
 export class WorkflowDetailsComponent implements OnInit, OnDestroy, AfterViewInit {
+    @ViewChild('scroller', {static: true}) scroller: ElementRef<HTMLElement>;
+
     @ViewChild('scrollable', {static: true}) scrollBar: NgScrollbar;
     @ViewChild('salesScrollbar', {static: true}) salesScrollbar: NgScrollbar;
     @ViewChild('workflowSales', {static: false}) workflowSales: WorkflowSalesComponent;
@@ -42,19 +44,21 @@ export class WorkflowDetailsComponent implements OnInit, OnDestroy, AfterViewIni
 
     isExpanded = true;
 
+    showToolbar = false;
 
     // tabs navigation
     selectedTabIndex: number;
     selectedTabName = 'Overview';
     extensionIndex: number | null;
-    private _unsubscribe = new Subject();
     componentInitalized = false;
     menuTabs: SideMenuTabsDto[];
+    private _unsubscribe = new Subject();
     constructor(
         public _workflowDataService: WorkflowDataService,
         private activatedRoute: ActivatedRoute,
         private overlay: Overlay,
-        private dialog: MatDialog
+        private dialog: MatDialog,
+        private scrollDispatcher: ScrollDispatcher, private zone: NgZone
     ) {
         this.salesExtensionForm = new WorkflowSalesExtensionForm();
         this.terminationSalesForm = new WorkflowTerminationSalesForm();
@@ -72,6 +76,20 @@ export class WorkflowDetailsComponent implements OnInit, OnDestroy, AfterViewIni
     }
 
     ngAfterViewInit(): void {
+        this.scrollDispatcher.scrolled()
+            .pipe(
+                takeUntil(this._unsubscribe)
+            )
+            .subscribe((cdk: CdkScrollable | any) => {
+                this.zone.run(() => {
+                    const scrollPosition = cdk.getElementRef().nativeElement.scrollTop;
+                    if (scrollPosition > 120) { // 120 - header height
+                        this.showToolbar = true;
+                    } else {
+                        this.showToolbar = false;
+                    }
+                });
+            });
     }
 
     ngOnDestroy(): void {
@@ -287,7 +305,7 @@ export class WorkflowDetailsComponent implements OnInit, OnDestroy, AfterViewIni
                 switch (this._workflowDataService.workflowProgress.currentlyActiveStep) {
                     case WorkflowSteps.Sales:
                         //  FIXME: only for test
-                        this._workflowDataService.updateWorkflowProgressStatus({isExtensionCompleted: true});
+                        this._workflowDataService.updateWorkflowProgressStatus({isExtensionCompleted: true, lastSavedExtensionIndex: this.extensionIndex});
                         console.log('Complete Extension Sales');
                         break;
                     case WorkflowSteps.Contracts:
@@ -361,17 +379,26 @@ export class WorkflowDetailsComponent implements OnInit, OnDestroy, AfterViewIni
                     additionalInfo: 'New'
                 }
             )
+            this.makeExtensionActiveTab(newExtensionIndex);
 
             // TODO: detect which exactly extension was added & saved to disable\enable button
-            this._workflowDataService.updateWorkflowProgressStatus({isExtensionAdded: true, isExtensionCompleted: false});
+            this._workflowDataService.updateWorkflowProgressStatus({isExtensionAdded: true, isExtensionCompleted: false, numberOfAddedExtensions: newExtensionIndex + 1});
         });
 
         dialogRef.componentInstance.onRejected.subscribe(() => {
             // rejected
         });
+
     }
 
-    changeWorkflow() {WorkflowChangeDialogComponent
+    makeExtensionActiveTab(index: number) {
+        const extensions = this.menuTabs.filter(x => x.name.startsWith('Extension'));
+        const neededExtension = extensions.find(x => x.index === index);
+        this.selectedIndex = this.menuTabs.findIndex(x => x === neededExtension);
+        this.selectedTabName = this.formatStepLabel(neededExtension?.name!);
+    }
+
+    changeWorkflow() {
         const scrollStrategy = this.overlay.scrollStrategies.reposition();
         const dialogRef = this.dialog.open(WorkflowChangeDialogComponent, {
             width: '450px',
@@ -395,5 +422,21 @@ export class WorkflowDetailsComponent implements OnInit, OnDestroy, AfterViewIni
         dialogRef.componentInstance.onRejected.subscribe(() => {
             // rejected
         });
+    }
+
+
+    disableAddExtension() {
+        if (this._workflowDataService.getWorkflowProgress?.isExtensionAdded) {
+            // validate by indexes
+            if (!this._workflowDataService.getWorkflowProgress?.isExtensionCompleted) {
+                return true;
+            } else {
+                return this._workflowDataService.getWorkflowProgress.lastSavedExtensionIndex === this._workflowDataService.getWorkflowProgress.numberOfAddedExtensions! - 1;
+            }
+        } else if (this._workflowDataService.getWorkflowProgress.isPrimaryWorkflowCompleted) {
+            return false;
+        } else {
+            return true;
+        }
     }
 }
