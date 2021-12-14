@@ -22,7 +22,7 @@ import { ClientRequestTrackComponent } from './client-list/client-request-track/
 import { AddFolderDialogComponent } from './client-list/client-documents/add-folder-dialog/add-folder-dialog.component';
 import { AddFileDialogComponent } from './client-list/client-documents/add-file-dialog/add-file-dialog.component';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
-import { ExtensionSalesComponent } from './workflow/extension-sales/extension-sales.component';
+import { WorkflowExtensionComponent } from './workflow/workflow-extension/workflow-extension.component';
 import { WorkflowSalesComponent } from './workflow/workflow-sales/workflow-sales.component';
 import { WorkflowDetailsComponent } from './workflow/workflow-details/workflow-details.component';
 import { WorkflowContractsComponent } from './workflow/workflow-contracts/workflow-contracts.component';
@@ -57,7 +57,7 @@ import { ExtendWorkflowDialogComponent } from './workflow/extend-workflow-dialog
         ClientConsultantsComponent,
         AddFolderDialogComponent,
         AddFileDialogComponent,
-        ExtensionSalesComponent,
+        WorkflowExtensionComponent,
         WorkflowSalesComponent,
         WorkflowDetailsComponent,
         WorkflowContractsComponent,

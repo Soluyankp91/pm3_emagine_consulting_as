@@ -9,7 +9,7 @@ import { Subject } from 'rxjs';
 import { startWith, takeUntil } from 'rxjs/operators';
 import { EnumEntityTypeDto } from 'src/shared/service-proxies/service-proxies';
 import { ExtendWorkflowDialogComponent } from '../extend-workflow-dialog/extend-workflow-dialog.component';
-import { ExtensionSalesComponent } from '../extension-sales/extension-sales.component';
+import { WorkflowExtensionComponent } from '../workflow-extension/workflow-extension.component';
 import { PrimaryWorkflowComponent } from '../primary-workflow/primary-workflow.component';
 import { WorkflowChangeDialogComponent } from '../workflow-change-dialog/workflow-change-dialog.component';
 import { WorkflowDataService } from '../workflow-data.service';
@@ -29,7 +29,7 @@ export class WorkflowDetailsComponent implements OnInit, OnDestroy, AfterViewIni
     @ViewChild('scrollable', {static: true}) scrollBar: NgScrollbar;
     @ViewChild('salesScrollbar', {static: true}) salesScrollbar: NgScrollbar;
     @ViewChild('workflowSales', {static: false}) workflowSales: WorkflowSalesComponent;
-    @ViewChild('extensionSales', {static: false}) extensionSales: ExtensionSalesComponent;
+    @ViewChild('extensionSales', {static: false}) extensionSales: WorkflowExtensionComponent;
     menuIndex = 0;
     workflowId: number;
     selectedIndex = 0;
@@ -104,9 +104,9 @@ export class WorkflowDetailsComponent implements OnInit, OnDestroy, AfterViewIni
             case 'Workflow':
                 return PrimaryWorkflowComponent;
             case 'Extension':
-                return ExtensionSalesComponent;
+                return WorkflowExtensionComponent;
             case 'Termination':
-                return ExtensionSalesComponent;
+                return WorkflowExtensionComponent;
             default:
                 return WorkflowOverviewComponent;
         }
@@ -379,6 +379,37 @@ export class WorkflowDetailsComponent implements OnInit, OnDestroy, AfterViewIni
                     additionalInfo: 'New'
                 }
             )
+            this._workflowDataService.extensionSideNavigation.push(
+                {
+                    name: `Extension${newExtensionIndex}`,
+                    index: newExtensionIndex,
+                    sideNav: [
+                        {
+                            displayName: 'Extend Workflow',
+                            name: 'workflowStartOrExtend',
+                            responsiblePerson: 'Andersen Rasmus2',
+                            dateRange: '02.01.2021 - 31.12.2021',
+                            subItems: [
+                                {
+                                    id: 1,
+                                    name: "ExtendSales",
+                                    displayName: "Sales",
+                                    isCompleted: false,
+                                    assignedPerson: 'Roberto Olberto'
+                                },
+                                {
+                                    id: 2,
+                                    name: "ExtendContracts",
+                                    displayName: "Contracts",
+                                    isCompleted: false,
+                                    assignedPerson: 'Roberto Olberto'
+                                }
+                            ]
+                        }
+                    ]
+
+                }
+            )
             this.makeExtensionActiveTab(newExtensionIndex);
 
             // TODO: detect which exactly extension was added & saved to disable\enable button
@@ -431,7 +462,7 @@ export class WorkflowDetailsComponent implements OnInit, OnDestroy, AfterViewIni
             if (!this._workflowDataService.getWorkflowProgress?.isExtensionCompleted) {
                 return true;
             } else {
-                return this._workflowDataService.getWorkflowProgress.lastSavedExtensionIndex === this._workflowDataService.getWorkflowProgress.numberOfAddedExtensions! - 1;
+                return this._workflowDataService.getWorkflowProgress.lastSavedExtensionIndex !== this._workflowDataService.getWorkflowProgress.numberOfAddedExtensions! - 1;
             }
         } else if (this._workflowDataService.getWorkflowProgress.isPrimaryWorkflowCompleted) {
             return false;

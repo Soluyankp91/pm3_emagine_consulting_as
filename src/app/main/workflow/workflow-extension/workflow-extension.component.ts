@@ -1,16 +1,16 @@
-import { Component, Input, OnInit, ViewChild } from '@angular/core';
+import { AfterViewInit, Component, Input, OnInit, ViewChild } from '@angular/core';
 import { FormArray, FormBuilder, FormControl } from '@angular/forms';
-import { AddConsultantDto, WorkflowSideNavigation } from './extensions.model';
+import { AddConsultantDto, ExtensionSideNavigation, SideNavigationDto, SideNavigationParentItemDto } from './workflow-extension.model';
 import { WorkflowDataService } from '../workflow-data.service';
 import { WorkflowSalesComponent } from '../workflow-sales/workflow-sales.component';
 import { WorkflowExtensionForm, WorkflowSalesExtensionForm, WorkflowStepList, WorkflowSteps } from '../workflow.model';
 
 @Component({
-    selector: 'app-extension-sales',
-    templateUrl: './extension-sales.component.html',
-    styleUrls: ['./extension-sales.component.scss']
+    selector: 'app-workflow-extension',
+    templateUrl: './workflow-extension.component.html',
+    styleUrls: ['./workflow-extension.component.scss']
 })
-export class ExtensionSalesComponent implements OnInit {
+export class WorkflowExtensionComponent implements OnInit, AfterViewInit {
     @Input() selectedIndex: number;
     salesExtensionForm: WorkflowSalesExtensionForm;
     extensionForm: WorkflowExtensionForm;
@@ -20,7 +20,7 @@ export class ExtensionSalesComponent implements OnInit {
     @ViewChild('workflowSales', {static: false}) workflowSales: WorkflowSalesComponent;
     selectedStep: string;
     workflowSteps = WorkflowStepList;
-    workflowSideNavigation = WorkflowSideNavigation;
+    sideNav: SideNavigationParentItemDto[];
     // Extension end
 
     constructor(
@@ -33,7 +33,12 @@ export class ExtensionSalesComponent implements OnInit {
 
     ngOnInit(): void {
         // this.initSalesExtensionForm();
-        this.selectedStep = 'Sales';
+        this.selectedStep = 'ExtendSales';
+        const sideNavForSpecificExtension: SideNavigationDto = this._workflowDataService.extensionSideNavigation.find(x => x.index === this._workflowDataService.getWorkflowProgress.currentlyActiveExtensionIndex)!;
+        this.sideNav = new Array<SideNavigationParentItemDto>(...sideNavForSpecificExtension.sideNav);
+    }
+
+    ngAfterViewInit(): void {
     }
 
     initPage() {
@@ -62,7 +67,7 @@ export class ExtensionSalesComponent implements OnInit {
     }
 
     addConsultantToPrimaryWorkflow() {
-        this.workflowSideNavigation.push(AddConsultantDto);
+        // this.sideNav.push(AddConsultantDto);
     }
     // Extension end
 

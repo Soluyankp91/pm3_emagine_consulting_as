@@ -39,9 +39,9 @@
 
 <!-- Extension start -->
 <div fxLayout="row" fxLayoutAlign="start start" class="workflow">
-    <div fxFlex="15%" class="workflow-navigation--wrapper">
+    <div fxFlex="20%" class="workflow-navigation--wrapper">
         <mat-accordion class="workflow-sidenav--expansion" [togglePosition]="'before'">
-            <mat-expansion-panel class="mat-elevation-z0" *ngFor="let item of workflowSideNavigation">
+            <mat-expansion-panel class="mat-elevation-z0" *ngFor="let item of sideNav">
                 <mat-expansion-panel-header [collapsedHeight]="'80px'" [expandedHeight]="'80px'">
                     <div class="sidenav-expansion--header">
                         <span class="flex-row">
@@ -73,13 +73,14 @@
             </mat-expansion-panel>
         </mat-accordion>
     </div>
-    <div fxFlex="85%">
+    <div fxFlex="80%">
         <ng-container [ngSwitch]="selectedStep">
             <!-- EDIT WORKFLOW -->
-            <ng-container *ngSwitchCase="'Sales'">
+            <!-- TODO: add isExtension param -->
+            <ng-container *ngSwitchCase="'ExtendSales'">
                 <app-workflow-sales #workflowSales [workflowId]="workflowId"></app-workflow-sales>
             </ng-container>
-            <ng-container *ngSwitchCase="'Contracts'">
+            <ng-container *ngSwitchCase="'ExtendContracts'">
                 <app-workflow-contracts #workflowContracts [workflowId]="workflowId"></app-workflow-contracts>
             </ng-container>
             <!-- <ng-container *ngSwitchCase="'Finance'">

@@ -136,7 +136,7 @@ export class WorkflowSalesComponent extends AppComopnentBase implements OnInit {
             this.readonlyInput.forEach(item => {
                 item.readonly = true;
             });
-            this.updateReadonlyState();
+            // this.updateReadonlyState();
         }
         // else if extensions disable only needed controls
         // const controlsToDisable = ['salesType', 'deliveryType', ...];
