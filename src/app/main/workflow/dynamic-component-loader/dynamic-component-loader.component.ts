@@ -1,5 +1,5 @@
 import { AfterViewInit, Compiler, Component, ComponentFactoryResolver, ComponentRef, Input, OnChanges, OnDestroy, OnInit, Type, ViewChild, ViewContainerRef } from '@angular/core';
-import { ExtensionSalesComponent } from '../extension-sales/extension-sales.component';
+import { WorkflowExtensionComponent } from '../workflow-extension/workflow-extension.component';
 
 @Component({
     selector: 'dynamic-component-loader',
@@ -28,7 +28,7 @@ export class DynamicComponentLoaderComponent implements OnChanges, OnDestroy, Af
 
         setTimeout(() => {
             let factory = this.componentFactoryResolver.resolveComponentFactory(this.type);
-            // let factory = this.componentFactoryResolver.resolveComponentFactory(ExtensionSalesComponent);
+            // let factory = this.componentFactoryResolver.resolveComponentFactory(WorkflowExtensionComponent);
             this.cmpRef = this.target.createComponent(factory);
             // this.cmpRef.instance.isCollapsedHeader = this.isCollapsedHeader;
             if (this.index) {
