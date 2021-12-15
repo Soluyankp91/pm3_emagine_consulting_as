@@ -600,7 +600,6 @@ export class WorkflowSalesComponent extends AppComopnentBase implements OnInit {
         }
     }
 
-
     // form validations
     disableOrEnableInput(boolValue: boolean, control: AbstractControl | null | undefined) {
         if (boolValue) {
