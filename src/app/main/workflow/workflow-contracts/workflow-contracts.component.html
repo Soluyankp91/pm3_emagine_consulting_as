@@ -71,30 +71,43 @@
 
                 <h2 class="workflow-section--header">Client Special Rates</h2>
                 <div formArrayName="clientSpecialRates" class="u-w--100 u-mb--20">
-                    <div fxLayout="row" fxLayoutAlign="start start" class="u-w--100 u-mb--10" *ngFor="let signer of clientSpecialRates.controls; let i = index" [formGroupName]="i">
-                        <mat-form-field appearance="outline" class="u-w--100 mat-elevation-z0  u-mr--16"  fxFlex="33%">
-                            <mat-label>Name</mat-label>
-                            <input autocomplete="off" matInput formControlName="rateName" type="text">
-                        </mat-form-field>
-
-                        <mat-form-field appearance="outline" class="u-w--100  filter-select u-mr--16" fxFlex="33%">
-                            <mat-label>Client Role</mat-label>
-                            <mat-select formControlName="rateDirection" [disableOptionCentering]="true">
-                                <mat-option *ngFor="let item of [0,1,2,3]" [value]="item">
-                                    {{ item }}
-                                </mat-option>
-                            </mat-select>
-                        </mat-form-field>
-
-                        <mat-form-field appearance="outline" class="u-w--100  filter-select u-mr--16" fxFlex="20%">
-                            <mat-label>Sequence</mat-label>
-                            <mat-select formControlName="reportingUnit" [disableOptionCentering]="true">
-                                <mat-option *ngFor="let item of [0,1,2,3]" [value]="item">
-                                    {{ item }}
-                                </mat-option>
-                            </mat-select>
-                        </mat-form-field>
-                        <button class="form-icon--delete-row u-mt--5"  mat-icon-button (click)="removeSpecialRate(i)"><mat-icon svgIcon="remove-icon"></mat-icon></button>
+                    <div fxLayout="row" fxLayoutAlign="start center" class="u-mb--10">
+                        <div class="u-ml--20" fxFlex="35%">
+                            <span class="workflow-contracts--list-header">Rate name</span>
+                        </div>
+                        <div fxFlex="17.5%">
+                            <span class="workflow-contracts--list-header">Rate direction</span>
+                        </div>
+                        <div fxFlex="25%">
+                            <span class="workflow-contracts--list-header">Reporting unit</span>
+                        </div>
+                        <div fxFlex="22.5%">
+                            <span class="workflow-contracts--list-header">Client rate</span>
+                        </div>
+                    </div>
+                    <div fxLayout="row" fxLayoutAlign="start center" class="workflow-contracts--list u-w--100 u-mb--10" *ngFor="let signer of clientSpecialRates.controls; let i = index" [formGroupName]="i">
+                        <div class="u-ml--20" fxFlex="35%">
+                            <span class="workflow-contracts--list-item">Onsite rate</span>
+                        </div>
+                        <div fxFlex="17.5%">
+                            <span class="workflow-contracts--list-item">Client / Pay</span>
+                        </div>
+                        <div fxFlex="25%">
+                            <span class="workflow-contracts--list-item">Months</span>
+                        </div>
+                        <div fxFlex="17.5%">
+                            <span class="workflow-contracts--list-item">-</span>
+                        </div>
+                        <div fxFlex="5%">
+                            <button class="form-icon--delete-row u-mt--5"  mat-icon-button [matMenuTriggerFor]="contractActions" [matMenuTriggerData]="{elem: i}" (click)="$event.stopPropagation()"><mat-icon>more_horiz</mat-icon></button>
+                        </div>
+                        <mat-menu #contractActions="matMenu" [overlapTrigger]="false" (click)="$event.stopPropagation();">
+                            <ng-template matMenuContent let-elem="elem">
+                                <button mat-menu-item (click)="removeSpecialRate(elem)">
+                                    Delete
+                                </button>
+                            </ng-template>
+                        </mat-menu>
                     </div>
                     <button class="button-add" mat-flat-button (click)="addSpecialRateToForm()">
                         <mat-icon>add</mat-icon>
@@ -104,30 +117,43 @@
 
                 <h2 class="workflow-section--header">Client Fees</h2>
                 <div formArrayName="clientFees" class="u-w--100 u-mb--20">
-                    <div fxLayout="row" fxLayoutAlign="start start" class="u-w--100 u-mb--10" *ngFor="let signer of clientFees.controls; let i = index" [formGroupName]="i">
-                        <mat-form-field appearance="outline" class="u-w--100 mat-elevation-z0  u-mr--16"  fxFlex="33%">
-                            <mat-label>Name</mat-label>
-                            <input autocomplete="off" matInput formControlName="feeName" type="text">
-                        </mat-form-field>
-
-                        <mat-form-field appearance="outline" class="u-w--100  filter-select u-mr--16" fxFlex="33%">
-                            <mat-label>Client Role</mat-label>
-                            <mat-select formControlName="feeDirection" [disableOptionCentering]="true">
-                                <mat-option *ngFor="let item of [0,1,2,3]" [value]="item">
-                                    {{ item }}
-                                </mat-option>
-                            </mat-select>
-                        </mat-form-field>
-
-                        <mat-form-field appearance="outline" class="u-w--100  filter-select u-mr--16" fxFlex="20%">
-                            <mat-label>Sequence</mat-label>
-                            <mat-select formControlName="frequency" [disableOptionCentering]="true">
-                                <mat-option *ngFor="let item of [0,1,2,3]" [value]="item">
-                                    {{ item }}
-                                </mat-option>
-                            </mat-select>
-                        </mat-form-field>
-                        <button class="form-icon--delete-row u-mt--5"  mat-icon-button (click)="removeFee(i)"><mat-icon svgIcon="remove-icon"></mat-icon></button>
+                    <div fxLayout="row" fxLayoutAlign="start center" class="u-mb--10">
+                        <div class="u-ml--20" fxFlex="35%">
+                            <span class="workflow-contracts--list-header">Fee name</span>
+                        </div>
+                        <div fxFlex="17.5%">
+                            <span class="workflow-contracts--list-header">Fee direction</span>
+                        </div>
+                        <div fxFlex="25%">
+                            <span class="workflow-contracts--list-header">Frequency</span>
+                        </div>
+                        <div fxFlex="22.5%">
+                            <span class="workflow-contracts--list-header">Client rate</span>
+                        </div>
+                    </div>
+                    <div fxLayout="row" fxLayoutAlign="start center" class="workflow-contracts--list u-w--100 u-mb--10" *ngFor="let signer of clientFees.controls; let i = index" [formGroupName]="i">
+                        <div class="u-ml--20" fxFlex="35%">
+                            <span class="workflow-contracts--list-item">Laptop fee</span>
+                        </div>
+                        <div fxFlex="17.5%">
+                            <span class="workflow-contracts--list-item">Client / Pay</span>
+                        </div>
+                        <div fxFlex="25%">
+                            <span class="workflow-contracts--list-item">Every milestone</span>
+                        </div>
+                        <div fxFlex="17.5%">
+                            <span class="workflow-contracts--list-item">500 PLN</span>
+                        </div>
+                        <div fxFlex="5%">
+                            <button class="form-icon--delete-row u-mt--5"  mat-icon-button [matMenuTriggerFor]="contractActions" [matMenuTriggerData]="{elem: i}" (click)="$event.stopPropagation()"><mat-icon>more_horiz</mat-icon></button>
+                        </div>
+                        <mat-menu #contractActions="matMenu" [overlapTrigger]="false" (click)="$event.stopPropagation();">
+                            <ng-template matMenuContent let-elem="elem">
+                                <button mat-menu-item (click)="removeFee(elem)">
+                                    Delete
+                                </button>
+                            </ng-template>
+                        </mat-menu>
                     </div>
                     <button class="button-add" mat-flat-button (click)="addClientFeeToForm()">
                         <mat-icon>add</mat-icon>
@@ -178,31 +204,51 @@
                     </div>
 
                     <h2 class="workflow-section--header">Special Rates</h2>
+                    <div fxLayout="row" fxLayoutAlign="start center" class="u-mb--10">
+                        <div class="u-ml--20" fxFlex="35%">
+                            <span class="workflow-contracts--list-header">Rate name</span>
+                        </div>
+                        <div fxFlex="20%">
+                            <span class="workflow-contracts--list-header">Rate direction</span>
+                        </div>
+                        <div fxFlex="12.5%">
+                            <span class="workflow-contracts--list-header">Reporting unit</span>
+                        </div>
+                        <div fxFlex="12.5%">
+                            <span class="workflow-contracts--list-header">ProData rate</span>
+                        </div>
+                        <div fxFlex="20%">
+                            <span class="workflow-contracts--list-header">Consultant rate</span>
+                        </div>
+                    </div>
                     <div formArrayName="specialRates" class="u-w--100 u-mb--20">
-                        <div fxLayout="row" fxLayoutAlign="start start" class="u-w--100 u-mb--10" *ngFor="let rate of getConsultantSpecialRateControls(consultantIndex); let specialRateIndex = index" [formGroupName]="specialRateIndex">
-                            <mat-form-field appearance="outline" class="u-w--100 mat-elevation-z0  u-mr--16"  fxFlex="33%">
-                                <mat-label>Name</mat-label>
-                                <input autocomplete="off" matInput formControlName="rateName" type="text">
-                            </mat-form-field>
-
-                            <mat-form-field appearance="outline" class="u-w--100  filter-select u-mr--16" fxFlex="33%">
-                                <mat-label>Client Role</mat-label>
-                                <mat-select formControlName="rateDirection" [disableOptionCentering]="true">
-                                    <mat-option *ngFor="let item of [0,1,2,3]" [value]="item">
-                                        {{ item }}
-                                    </mat-option>
-                                </mat-select>
-                            </mat-form-field>
-
-                            <mat-form-field appearance="outline" class="u-w--100  filter-select u-mr--16" fxFlex="20%">
-                                <mat-label>Sequence</mat-label>
-                                <mat-select formControlName="reportingUnit" [disableOptionCentering]="true">
-                                    <mat-option *ngFor="let item of [0,1,2,3]" [value]="item">
-                                        {{ item }}
-                                    </mat-option>
-                                </mat-select>
-                            </mat-form-field>
-                            <button class="form-icon--delete-row u-mt--5"  mat-icon-button (click)="removeConsultantDataSpecialRate(consultantIndex, specialRateIndex)"><mat-icon svgIcon="remove-icon"></mat-icon></button>
+                        <div fxLayout="row" fxLayoutAlign="start center" class="workflow-contracts--list u-w--100 u-mb--10" *ngFor="let rate of getConsultantSpecialRateControls(consultantIndex); let specialRateIndex = index" [formGroupName]="specialRateIndex">
+                            <div class="u-ml--20" fxFlex="35%">
+                                <span class="workflow-contracts--list-item">Onsite rate</span>
+                            </div>
+                            <div fxFlex="20%">
+                                <span class="workflow-contracts--list-item">Consultant / Pay</span>
+                            </div>
+                            <div fxFlex="12.5%">
+                                <span class="workflow-contracts--list-item">Months</span>
+                            </div>
+                            <div fxFlex="12.5%">
+                                <span class="workflow-contracts--list-item">2500 DKK</span>
+                            </div>
+                            <div fxFlex="12.5%">
+                                <span class="workflow-contracts--list-item">2500 DKK</span>
+                            </div>
+                            <div fxFlex="7.5%">
+                                <button class="form-icon--delete-row u-mt--5"  mat-icon-button [matMenuTriggerFor]="contractActions" [matMenuTriggerData]="{elem: specialRateIndex}" (click)="$event.stopPropagation()"><mat-icon>more_horiz</mat-icon></button>
+                            </div>
+                            <mat-menu #contractActions="matMenu" [overlapTrigger]="false" (click)="$event.stopPropagation();">
+                                <ng-template matMenuContent let-elem="elem">
+                                    <button mat-menu-item (click)="removeConsultantDataSpecialRate(consultantIndex, elem)">
+                                        Delete
+                                    </button>
+                                </ng-template>
+                            </mat-menu>
+                            <!-- <button class="form-icon--delete-row u-mt--5"  mat-icon-button (click)="removeConsultantDataSpecialRate(consultantIndex, specialRateIndex)"><mat-icon svgIcon="remove-icon"></mat-icon></button> -->
                         </div>
                         <button class="button-add" mat-flat-button (click)="addSpecialRateToConsultantData(consultantIndex)">
                             <mat-icon>add</mat-icon>
@@ -211,31 +257,51 @@
                     </div>
 
                     <h2 class="workflow-section--header">Client Fees</h2>
+                    <div fxLayout="row" fxLayoutAlign="start center" class="u-mb--10">
+                        <div class="u-ml--20" fxFlex="35%">
+                            <span class="workflow-contracts--list-header">Fee name</span>
+                        </div>
+                        <div fxFlex="20%">
+                            <span class="workflow-contracts--list-header">Fee direction</span>
+                        </div>
+                        <div fxFlex="12.5%">
+                            <span class="workflow-contracts--list-header">Frequency</span>
+                        </div>
+                        <div fxFlex="12.5%">
+                            <span class="workflow-contracts--list-header">ProData rate</span>
+                        </div>
+                        <div fxFlex="20%">
+                            <span class="workflow-contracts--list-header">Consultant rate</span>
+                        </div>
+                    </div>
                     <div formArrayName="clientFees" class="u-w--100 u-mb--20">
-                        <div fxLayout="row" fxLayoutAlign="start start" class="u-w--100 u-mb--10" *ngFor="let fee of getConsultantClientFeesControls(consultantIndex); let clientFeeIndex = index" [formGroupName]="clientFeeIndex">
-                            <mat-form-field appearance="outline" class="u-w--100 mat-elevation-z0  u-mr--16"  fxFlex="33%">
-                                <mat-label>Name</mat-label>
-                                <input autocomplete="off" matInput formControlName="feeName" type="text">
-                            </mat-form-field>
-
-                            <mat-form-field appearance="outline" class="u-w--100  filter-select u-mr--16" fxFlex="33%">
-                                <mat-label>Client Role</mat-label>
-                                <mat-select formControlName="feeDirection" [disableOptionCentering]="true">
-                                    <mat-option *ngFor="let item of [0,1,2,3]" [value]="item">
-                                        {{ item }}
-                                    </mat-option>
-                                </mat-select>
-                            </mat-form-field>
-
-                            <mat-form-field appearance="outline" class="u-w--100  filter-select u-mr--16" fxFlex="20%">
-                                <mat-label>Sequence</mat-label>
-                                <mat-select formControlName="frequency" [disableOptionCentering]="true">
-                                    <mat-option *ngFor="let item of [0,1,2,3]" [value]="item">
-                                        {{ item }}
-                                    </mat-option>
-                                </mat-select>
-                            </mat-form-field>
-                            <button class="form-icon--delete-row u-mt--5"  mat-icon-button (click)="removeConsultantDataClientFees(consultantIndex, clientFeeIndex)"><mat-icon svgIcon="remove-icon"></mat-icon></button>
+                        <div fxLayout="row" fxLayoutAlign="start center" class="workflow-contracts--list u-w--100 u-mb--10" *ngFor="let fee of getConsultantClientFeesControls(consultantIndex); let clientFeeIndex = index" [formGroupName]="clientFeeIndex">
+                            <div class="u-ml--20" fxFlex="35%">
+                                <span class="workflow-contracts--list-item">Desk fee</span>
+                            </div>
+                            <div fxFlex="20%">
+                                <span class="workflow-contracts--list-item">Consultant / Pay</span>
+                            </div>
+                            <div fxFlex="12.5%">
+                                <span class="workflow-contracts--list-item">Every invoice</span>
+                            </div>
+                            <div fxFlex="12.5%">
+                                <span class="workflow-contracts--list-item">2500 DKK</span>
+                            </div>
+                            <div fxFlex="12.5%">
+                                <span class="workflow-contracts--list-item">2500 DKK</span>
+                            </div>
+                            <div fxFlex="7.5%">
+                                <button class="form-icon--delete-row u-mt--5"  mat-icon-button [matMenuTriggerFor]="contractClientFeesActions" [matMenuTriggerData]="{elem: clientFeeIndex}" (click)="$event.stopPropagation()"><mat-icon>more_horiz</mat-icon></button>
+                            </div>
+                            <mat-menu #contractClientFeesActions="matMenu" [overlapTrigger]="false" (click)="$event.stopPropagation();">
+                                <ng-template matMenuContent let-elem="elem">
+                                    <button mat-menu-item (click)="removeConsultantDataClientFees(consultantIndex, elem)">
+                                        Delete
+                                    </button>
+                                </ng-template>
+                            </mat-menu>
+                            <!-- <button class="form-icon--delete-row u-mt--5"  mat-icon-button (click)="removeConsultantDataClientFees(consultantIndex, clientFeeIndex)"><mat-icon svgIcon="remove-icon"></mat-icon></button> -->
                         </div>
                         <button class="button-add" mat-flat-button (click)="addClientFeesToConsultantData(consultantIndex)">
                             <mat-icon>add</mat-icon>
@@ -244,35 +310,85 @@
                     </div>
 
                     <h2 class="workflow-section--header">Project Lines</h2>
+                    <div fxLayout="row" fxLayoutAlign="start center" class="u-mb--10">
+                        <div class="u-ml--20" fxFlex="10%">
+                            <span class="workflow-contracts--list-header">Unique id</span>
+                        </div>
+                        <div fxFlex="16%">
+                            <span class="workflow-contracts--list-header">Project name</span>
+                        </div>
+                        <div fxFlex="10%">
+                            <span class="workflow-contracts--list-header">Assignment ID/PO No</span>
+                        </div>
+                        <div fxFlex="7%">
+                            <span class="workflow-contracts--list-header">Start date</span>
+                        </div>
+                        <div fxFlex="7%">
+                            <span class="workflow-contracts--list-header">End date</span>
+                        </div>
+                        <div fxFlex="10%">
+                            <span class="workflow-contracts--list-header">Invoice ref</span>
+                        </div>
+                        <div fxFlex="10%">
+                            <span class="workflow-contracts--list-header">Last changed</span>
+                        </div>
+                        <div fxFlex="15%">
+                            <span class="workflow-contracts--list-header">Optional Invoicing Info</span>
+                        </div>
+                        <div fxFlex="15%">
+                            <span class="workflow-contracts--list-header">Cap on hour reporting</span>
+                        </div>
+                    </div>
                     <div formArrayName="projectLines" class="u-w--100 u-mb--20">
-                        <div fxLayout="row" fxLayoutAlign="start start" class="u-w--100 u-mb--10" *ngFor="let projectLine of getConsultantProjectLinesControls(consultantIndex); let projectLinesIndex = index" [formGroupName]="projectLinesIndex">
-                            <mat-form-field appearance="outline" class="u-w--100 mat-elevation-z0  u-mr--16"  fxFlex="33%">
-                                <mat-label>Name</mat-label>
-                                <input autocomplete="off" matInput formControlName="feeName" type="text">
-                            </mat-form-field>
-
-                            <mat-form-field appearance="outline" class="u-w--100  filter-select u-mr--16" fxFlex="33%">
-                                <mat-label>Client Role</mat-label>
-                                <mat-select formControlName="feeDirection" [disableOptionCentering]="true">
-                                    <mat-option *ngFor="let item of [0,1,2,3]" [value]="item">
-                                        {{ item }}
-                                    </mat-option>
-                                </mat-select>
-                            </mat-form-field>
-
-                            <mat-form-field appearance="outline" class="u-w--100  filter-select u-mr--16" fxFlex="20%">
-                                <mat-label>Sequence</mat-label>
-                                <mat-select formControlName="frequency" [disableOptionCentering]="true">
-                                    <mat-option *ngFor="let item of [0,1,2,3]" [value]="item">
-                                        {{ item }}
-                                    </mat-option>
-                                </mat-select>
-                            </mat-form-field>
-                            <button class="form-icon--delete-row u-mt--5"  mat-icon-button (click)="removeConsultantDataProjectLines(consultantIndex, projectLinesIndex)"><mat-icon svgIcon="remove-icon"></mat-icon></button>
+                        <div fxLayout="row" fxLayoutAlign="start center" class="workflow-contracts--list u-w--100 u-mb--10" *ngFor="let projectLine of getConsultantProjectLinesControls(consultantIndex); let projectLinesIndex = index" [formGroupName]="projectLinesIndex">
+                            <div class="u-ml--20" fxFlex="10%">
+                                <span class="workflow-contracts--list-item">34535334</span>
+                            </div>
+                            <div fxFlex="16%">
+                                <span class="workflow-contracts--list-item">System Center Operations manager (SCOM) consultant</span>
+                            </div>
+                            <div fxFlex="10%">
+                                <span class="workflow-contracts--list-item">Andrzej Walewski - CTR04464</span>
+                            </div>
+                            <div fxFlex="7%">
+                                <span class="workflow-contracts--list-item">24.12.2020</span>
+                            </div>
+                            <div fxFlex="7%">
+                                <span class="workflow-contracts--list-item">24.12.2020</span>
+                            </div>
+                            <div fxFlex="10%">
+                                <span class="workflow-contracts--list-item">Lars Larsen</span>
+                            </div>
+                            <div fxFlex="10%">
+                                <span class="workflow-contracts--list-item">24.12.2020 (by mk)</span>
+                            </div>
+                            <div fxFlex="15%">
+                                <span class="workflow-contracts--list-item">System Center Operations manager (SCOM) consultant..</span>
+                            </div>
+                            <div fxFlex="10%">
+                                <span class="workflow-contracts--list-item">0.18</span>
+                            </div>
+                            <div fxFlex="5%">
+                                <button class="form-icon--delete-row u-mt--5"  mat-icon-button [matMenuTriggerFor]="contractProjectLinesActions" [matMenuTriggerData]="{elem: projectLinesIndex}" (click)="$event.stopPropagation()"><mat-icon>more_horiz</mat-icon></button>
+                            </div>
+                            <mat-menu #contractProjectLinesActions="matMenu" [overlapTrigger]="false" (click)="$event.stopPropagation();">
+                                <ng-template matMenuContent let-elem="elem">
+                                    <button mat-menu-item (click)="removeConsultantDataSpecialRate(consultantIndex, elem)">
+                                        Duplicate
+                                    </button>
+                                    <button mat-menu-item (click)="removeConsultantDataSpecialRate(consultantIndex, elem)">
+                                        Edit
+                                    </button>
+                                    <button mat-menu-item (click)="removeConsultantDataProjectLines(consultantIndex, elem)">
+                                        Delete
+                                    </button>
+                                </ng-template>
+                            </mat-menu>
+                            <!-- <button class="form-icon--delete-row u-mt--5"  mat-icon-button (click)="removeConsultantDataProjectLines(consultantIndex, projectLinesIndex)"><mat-icon svgIcon="remove-icon"></mat-icon></button> -->
                         </div>
                         <button class="button-add" mat-flat-button (click)="addProjectLinesToConsultantData(consultantIndex)">
                             <mat-icon>add</mat-icon>
-                            Add special fees
+                            Add project line
                         </button>
                     </div>
 

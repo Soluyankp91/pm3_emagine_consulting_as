@@ -1,0 +1,51 @@
+<mat-dialog-content class="workflow-dialog">
+    <div mat-dialog-title class="workflow-dialog--header">
+        <h1>{{data.dialogHeader}}</h1>
+    </div>
+    <h2>{{data.formFieldLabel}}</h2>
+    <div fxLayout="row" fxLayoutAlign="start start" class="u-w--100 u-mt--10">
+        <div class="u-mr--10" fxFlex="50%">
+            <mat-form-field appearance="outline" class="u-w--100  mat-elevation-z0">
+                <input autocomplete="off" matInput [formControl]="workflowChangesForm" [placeholder]="data.formFieldPlaceholder" type="text">
+            </mat-form-field>
+        </div>
+        <div fxLayout="column" fxLayoutAlign="center start" fxFlex="50%" class="u-mb--20">
+            <mat-form-field appearance="outline" class="u-w--100">
+                <mat-label>New end date</mat-label>
+                <input autocomplete="off" placeholder="New end date" matInput
+                        [matDatepicker]="extensionDatePicker"
+                        name="saleDate"
+                        (focus)="extensionDatePicker.open()"
+                        (click)="extensionDatePicker.open()" readonly>
+                <mat-icon class="calendar-icon" matSuffix svgIcon="calendar"></mat-icon>
+                <mat-datepicker #extensionDatePicker></mat-datepicker>
+            </mat-form-field>
+
+            <mat-checkbox color="accent" name="noExtensionEndDate" class="green-checkbox u-mr--16">
+                No end date
+            </mat-checkbox>
+        </div>
+    </div>
+    <mat-divider class="u-mb--15">
+    </mat-divider>
+
+    <h2>Select consultants to be extended</h2>
+    <div fxLayout="column" fxLayoutAlign="center start" fxLayoutGap="10px" class="u-mt--10">
+        <mat-checkbox color="accent" name="noExtensionEndDate" class="green-checkbox u-mr--16">
+            Robertsen Oscar
+        </mat-checkbox>
+        <mat-checkbox color="accent" name="noExtensionEndDate" class="green-checkbox u-mr--16">
+            Van Trier Mia
+        </mat-checkbox>
+    </div>
+
+</mat-dialog-content>
+<mat-dialog-actions align="center" class="workflow-dialog--actions">
+    <button mat-flat-button color="accent" class="workflow-dialog--actions-btn__outlined" (click)="reject()">
+        Cancel
+    </button>
+    <button mat-flat-button color="accent" class="workflow-dialog--actions-btn" (click)="confirm()">
+        Add
+    </button>
+</mat-dialog-actions>
+
