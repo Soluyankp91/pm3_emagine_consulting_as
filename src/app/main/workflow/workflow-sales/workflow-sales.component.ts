@@ -90,7 +90,6 @@ export class WorkflowSalesComponent extends AppComopnentBase implements OnInit {
     }
 
     ngOnInit(): void {
-        console.log('init', this.editWorfklow);
         this.activatedRoute.paramMap.pipe(
             takeUntil(this._unsubscribe)
         ).subscribe(params => {
@@ -319,15 +318,15 @@ export class WorkflowSalesComponent extends AppComopnentBase implements OnInit {
             clientRole: new FormControl(null),
             clientSequence: new FormControl(null)
         });
-        this.salesMainClientDataForm.clientSigners.push(form);
+        this.salesMainClientDataForm.contractSigners.push(form);
     }
 
-    get clientSigners(): FormArray {
-        return this.salesMainClientDataForm.get('clientSigners') as FormArray;
+    get contractSigners(): FormArray {
+        return this.salesMainClientDataForm.get('contractSigners') as FormArray;
     }
 
     removeSigner(index: number) {
-        this.clientSigners.removeAt(index);
+        this.contractSigners.removeAt(index);
     }
 
     addConsultantForm() {
@@ -425,29 +424,29 @@ export class WorkflowSalesComponent extends AppComopnentBase implements OnInit {
         input.salesMainData = new SalesMainDataDto();
         input.salesMainData.salesTypeId = this.salesMainDataForm.salesType?.value?.id;
         input.salesMainData.deliveryTypeId = this.salesMainDataForm.deliveryType?.value?.id;
-        input.salesMainData.salesAccountManagerIdValue = this.salesMainDataForm.salesAccountManager?.value;
-        input.salesMainData.commissionAccountManagerIdValue = this.salesMainDataForm.commissionAccountManager?.value;
+        input.salesMainData.salesAccountManagerIdValue = this.salesMainDataForm.salesAccountManagerIdValue?.value;
+        input.salesMainData.commissionAccountManagerIdValue = this.salesMainDataForm.commissionAccountManagerIdValue?.value;
         input.salesMainData.projectDescription = this.salesMainDataForm.projectDescription?.value;
 
         input.salesClientData = new SalesClientDataDto();
-        input.salesClientData.directClientIdValue = this.salesMainClientDataForm.directClient?.value;
-        input.salesClientData.endClientIdValue = this.salesMainClientDataForm.invoicingProDataEntity?.value;
-        input.salesClientData.pdcInvoicingEntityId = this.salesMainClientDataForm.clientInvoicingReferencePerson?.value;
-        input.salesClientData.clientInvoicingRecipientSameAsDirectClient = this.salesMainClientDataForm.sameAsDirectClient?.value;
+        input.salesClientData.directClientIdValue = this.salesMainClientDataForm.directClientIdValue?.value;
+        input.salesClientData.endClientIdValue = this.salesMainClientDataForm.pdcInvoicingEntityId?.value;
+        input.salesClientData.pdcInvoicingEntityId = this.salesMainClientDataForm.pdcInvoicingEntityId?.value;
+        input.salesClientData.clientInvoicingRecipientSameAsDirectClient = this.salesMainClientDataForm.clientInvoicingRecipientSameAsDirectClient?.value;
         // FIXME: fix after design changes
-        input.salesClientData.clientInvoicingRecipientIdValue = this.salesMainClientDataForm.invoicingProDataEntity?.value;
+        input.salesClientData.clientInvoicingRecipientIdValue = this.salesMainClientDataForm.clientInvoicingRecipientIdValue?.value?.id;
         // FIXME: fix after design changes
-        input.salesClientData.noInvoicingReferencePerson = this.salesMainClientDataForm.isClientInvoicingNone?.value ? this.salesMainClientDataForm.isClientInvoicingNone?.value : false;
+        input.salesClientData.noInvoicingReferencePerson = this.salesMainClientDataForm.noInvoicingReferencePerson?.value ? this.salesMainClientDataForm.noInvoicingReferencePerson?.value : false;
         // FIXME: fix after design changes
-        input.salesClientData.invoicingReferencePersonIdValue = this.salesMainClientDataForm.clientInvoicingReferencePerson?.value;
+        input.salesClientData.invoicingReferencePersonIdValue = this.salesMainClientDataForm.invoicingReferencePersonIdValue?.value?.id;
         // FIXME: fix after design changes
-        input.salesClientData.evaluationsReferencePersonIdValue = this.salesMainClientDataForm.evaluationReferencePerson?.value;
-        input.salesClientData.evaluationsDisabled = this.salesMainClientDataForm.disableEvaluations?.value ? this.salesMainClientDataForm.disableEvaluations?.value : false;
-        input.salesClientData.evaluationsDisabledReason = this.salesMainClientDataForm.disableEvaluationsReason?.value;
+        input.salesClientData.evaluationsReferencePersonIdValue = this.salesMainClientDataForm.evaluationsReferencePersonIdValue?.value?.id;
+        input.salesClientData.evaluationsDisabled = this.salesMainClientDataForm.evaluationsDisabled?.value ? this.salesMainClientDataForm.evaluationsDisabled?.value : false;
+        input.salesClientData.evaluationsDisabledReason = this.salesMainClientDataForm.evaluationsDisabledReason?.value;
         input.salesClientData.contractSigners = [];
         // FIXME: fix after BE changes
-        // for (let i = 0; i < this.salesMainClientDataForm.clientSigners.value.length; i++) {
-        //     let signer = this.salesMainClientDataForm.clientSigners.value[i];
+        // for (let i = 0; i < this.salesMainClientDataForm.contractSigners.value.length; i++) {
+        //     let signer = this.salesMainClientDataForm.contractSigners.value[i];
         //     let contractSigner = new ContractSignerDto();
         //     contractSigner.signOrder = i + 1;
         //     contractSigner.contactId = signer.clientSequence;
@@ -455,7 +454,7 @@ export class WorkflowSalesComponent extends AppComopnentBase implements OnInit {
         //     input.salesClientData.contractSigners.push(contractSigner);
         // }
 
-        input.salesClientData.noSpecialContractTerms = this.salesMainClientDataForm.isSpecialContractTermsNone?.value ? this.salesMainClientDataForm.isSpecialContractTermsNone?.value : false;
+        input.salesClientData.noSpecialContractTerms = this.salesMainClientDataForm.noSpecialContractTerms?.value ? this.salesMainClientDataForm.noSpecialContractTerms?.value : false;
         input.salesClientData.specialContractTerms = this.salesMainClientDataForm.specialContractTerms?.value;
         // FIXME: fix after design changes
         input.salesClientData.noInvoicingReferenceNumber = false;
@@ -547,13 +546,13 @@ export class WorkflowSalesComponent extends AppComopnentBase implements OnInit {
                 this.salesMainDataForm.margin?.setValue(result?.salesAdditionalData?.marginId, {emitEvent: false});
                 this.salesMainDataForm.projectDescription?.setValue(result?.salesMainData?.projectDescription, {emitEvent: false});
                 this.salesMainDataForm.remarks?.setValue(result?.salesAdditionalData?.remarks, {emitEvent: false});
-                this.salesMainDataForm.salesAccountManager?.setValue(result?.salesMainData?.salesAccountManagerIdValue, {emitEvent: false});
-                this.salesMainDataForm.commissionAccountManager?.setValue(result?.salesMainData?.commissionAccountManagerIdValue, {emitEvent: false});
+                this.salesMainDataForm.salesAccountManagerIdValue?.setValue(result?.salesMainData?.salesAccountManagerIdValue, {emitEvent: false});
+                this.salesMainDataForm.commissionAccountManagerIdValue?.setValue(result?.salesMainData?.commissionAccountManagerIdValue, {emitEvent: false});
 
-                this.salesMainClientDataForm.directClient?.setValue(result?.salesClientData?.directClientIdValue, {emitEvent: false});
-                this.salesMainClientDataForm.invoicingProDataEntity?.setValue(result?.salesClientData?.endClientIdValue, {emitEvent: false});
-                this.salesMainClientDataForm.clientInvoicingReferencePerson?.setValue(result?.salesClientData?.pdcInvoicingEntityId, {emitEvent: false});
-                this.salesMainClientDataForm.sameAsDirectClient?.setValue(result?.salesClientData?.clientInvoicingRecipientSameAsDirectClient, {emitEvent: false});
+                this.salesMainClientDataForm.directClientIdValue?.setValue(result?.salesClientData?.directClientIdValue, {emitEvent: false});
+                this.salesMainClientDataForm.pdcInvoicingEntityId?.setValue(result?.salesClientData?.pdcInvoicingEntityId, {emitEvent: false});
+                this.salesMainClientDataForm.invoicingReferencePersonIdValue?.setValue(result?.salesClientData?.invoicingReferencePersonIdValue, {emitEvent: false});
+                this.salesMainClientDataForm.clientInvoicingRecipientSameAsDirectClient?.setValue(result?.salesClientData?.clientInvoicingRecipientSameAsDirectClient, {emitEvent: false});
 
             });
     }

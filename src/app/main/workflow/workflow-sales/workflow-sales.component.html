@@ -98,7 +98,7 @@
                 <div fxLayout="row" fxLayoutAlign="start start" class="u-w--100 u-mb--10">
                     <mat-form-field appearance="outline" class="u-w--100  filter-select u-mr--16" fxFlex="33%">
                         <mat-label>Sales Account Manager</mat-label>
-                        <mat-select formControlName="salesAccountManager" [disableOptionCentering]="true">
+                        <mat-select formControlName="salesAccountManagerIdValue" [disableOptionCentering]="true">
                             <mat-option *ngFor="let item of [0,1,2,3]" [value]="item">
                                 {{ item }}
                             </mat-option>
@@ -106,7 +106,7 @@
                     </mat-form-field>
                     <mat-form-field appearance="outline" class="u-w--100  filter-select" fxFlex="33%">
                         <mat-label>Commission Account Manager</mat-label>
-                        <mat-select formControlName="commissionAccountManager" [disableOptionCentering]="true">
+                        <mat-select formControlName="commissionAccountManagerIdValue" [disableOptionCentering]="true">
                             <mat-option *ngFor="let item of [0,1,2,3]" [value]="item">
                                 {{ item }}
                             </mat-option>
@@ -145,26 +145,26 @@
             <form fxLayout="column" fxLayoutAlign="start start" [formGroup]="salesMainClientDataForm" class="workflow-form workflow-form--sales u-w--100">
                 <h2 class="workflow-section--header">Client</h2>
                 <div fxLayout="row" fxLayoutAlign="start start" class="u-w--100 u-mb--20">
-                    <mat-button-toggle-group class="workflow-toggle-buttons" formControlName="directClient">
-                        <mat-button-toggle [value]="item" *ngFor="let item of ['Direct Client', 'Different end-client']">
-                            {{ item }}
+                    <mat-button-toggle-group class="workflow-toggle-buttons" formControlName="isDirectClient">
+                        <mat-button-toggle [value]="item.value" *ngFor="let item of [{name: 'Direct Client', value: true}, {name: 'Different end-client', value: false}]">
+                            {{ item.name }}
                         </mat-button-toggle>
                     </mat-button-toggle-group>
                 </div>
                 <div fxLayout="row" fxLayoutAlign="start start" class="u-w--100 u-mb--10">
                     <mat-form-field appearance="outline" class="u-w--100  filter-select" fxFlex="0 0 calc(66% + 16px)">
                         <mat-label>Customer</mat-label>
-                        <mat-select formControlName="сustomer" [disableOptionCentering]="true">
+                        <mat-select formControlName="directClientIdValue" [disableOptionCentering]="true">
                             <mat-option *ngFor="let item of currencies" [value]="item.id">
                                 {{ item.name }}
                             </mat-option>
                         </mat-select>
                     </mat-form-field>
                 </div>
-                <div fxLayout="row" fxLayoutAlign="start start" class="u-w--100 u-mb--10" *ngIf="salesMainClientDataForm?.directClient?.value === 'Different end-client'">
+                <div fxLayout="row" fxLayoutAlign="start start" class="u-w--100 u-mb--10" *ngIf="salesMainClientDataForm?.isDirectClient?.value === false">
                     <mat-form-field appearance="outline" class="u-w--100  filter-select" fxFlex="0 0 calc(66% + 16px)">
                         <mat-label>End Customer</mat-label>
-                        <mat-select formControlName="endCustomer" [disableOptionCentering]="true">
+                        <mat-select formControlName="endClientIdValue" [disableOptionCentering]="true">
                             <mat-option *ngFor="let item of currencies" [value]="item.id">
                                 {{ item.name }}
                             </mat-option>
@@ -274,7 +274,7 @@
                 <div fxLayout="row" fxLayoutAlign="start center" class="u-w--100 u-mb--10">
                     <mat-form-field appearance="outline" class="u-w--100  filter-select" fxFlex="33%">
                         <mat-label>ProData entity</mat-label>
-                        <mat-select formControlName="invoicingProDataEntity" [disableOptionCentering]="true">
+                        <mat-select formControlName="pdcInvoicingEntityId" [disableOptionCentering]="true">
                             <mat-option *ngFor="let item of [0,1,2,3]" [value]="item">
                                 {{ item }}
                             </mat-option>
@@ -377,14 +377,14 @@
                 <div fxLayout="row" fxLayoutAlign="start start" class="u-w--100 u-mb--10">
                     <mat-form-field appearance="outline" class="u-w--100 " fxFlex="33%">
                         <mat-label>Invoicing Reference Number</mat-label>
-                        <input autocomplete="off" matInput formControlName="clientInvoicingReferenceNumber" type="text">
+                        <input autocomplete="off" matInput formControlName="invoicingReferenceNumber" type="text">
                     </mat-form-field>
                 </div>
 
                 <div fxLayout="row" fxLayoutAlign="start start" class="u-w--100 u-mb--10">
                     <mat-form-field appearance="outline" class="u-w--100  filter-select" fxFlex="0 0 calc(66% + 16px)">
                         <mat-label>Client Invoicing Recipient</mat-label>
-                        <mat-select formControlName="clientInvoicingRecipient" [disableOptionCentering]="true">
+                        <mat-select formControlName="clientInvoicingRecipientIdValue" [disableOptionCentering]="true">
                             <mat-option *ngFor="let item of [0,1,2,3]" [value]="item">
                                 {{ item }}
                             </mat-option>
@@ -393,7 +393,7 @@
                 </div>
 
                 <div fxLayout="row" fxLayoutAlign="start center" class="u-w--100 u-mb--10">
-                    <mat-checkbox color="accent" formControlName="sameAsDirectClient" name="sameAsDirectClient" class="black-checkbox u-mr--10">
+                    <mat-checkbox color="accent" formControlName="clientInvoicingRecipientSameAsDirectClient" name="clientInvoicingRecipientSameAsDirectClient" class="black-checkbox u-mr--10">
                         Same as direct client
                     </mat-checkbox>
                 </div>
@@ -401,7 +401,7 @@
                 <div fxLayout="row" fxLayoutAlign="start center" class="u-w--100 u-mb--10">
                     <mat-form-field appearance="outline" class="u-w--100  filter-select" fxFlex="33%">
                         <mat-label>Invoicing Reference Person</mat-label>
-                        <mat-select formControlName="clientInvoicingReferencePerson" [disableOptionCentering]="true">
+                        <mat-select formControlName="invoicingReferencePersonIdValue" [disableOptionCentering]="true">
                             <mat-option *ngFor="let item of [0,1,2,3]" [value]="item">
                                 {{ item }}
                             </mat-option>
@@ -410,7 +410,7 @@
                 </div>
 
                 <div fxLayout="row" fxLayoutAlign="start center" class="u-w--100 u-mb--10">
-                    <mat-checkbox color="accent" formControlName="isClientInvoicingNone" name="isClientInvoicingNone" class="black-checkbox u-mr--10">
+                    <mat-checkbox color="accent" formControlName="noInvoicingReferencePerson" name="noInvoicingReferencePerson" class="black-checkbox u-mr--10" (change)="disableOrEnableInput(salesMainClientDataForm?.noInvoicingReferencePerson?.value, salesMainClientDataForm?.invoicingReferencePersonIdValue)">
                         None
                     </mat-checkbox>
                 </div>
@@ -435,7 +435,7 @@
 
                 <h3 class="workflow-gray--header">Client Evaluations</h3>
                 <div fxLayout="row" fxLayoutAlign="start start" class="u-w--100 u-mb--20">
-                    <mat-button-toggle-group class="workflow-toggle-buttons" formControlName="disableEvaluations">
+                    <mat-button-toggle-group class="workflow-toggle-buttons" formControlName="evaluationsDisabled">
                         <mat-button-toggle [value]="false">
                             Enable
                         </mat-button-toggle>
@@ -446,18 +446,18 @@
                 </div>
 
                 <div fxLayout="row" fxLayoutAlign="start start" class="u-w--100 u-mb--10">
-                    <mat-form-field *ngIf="!salesMainClientDataForm?.value?.disableEvaluations" appearance="outline" class="u-w--100  filter-select" fxFlex="33%">
+                    <mat-form-field *ngIf="!salesMainClientDataForm?.value?.evaluationsDisabled" appearance="outline" class="u-w--100  filter-select" fxFlex="33%">
                         <mat-label>Evaluation Reference Person</mat-label>
-                        <mat-select formControlName="evaluationReferencePerson" [disableOptionCentering]="true">
+                        <mat-select formControlName="evaluationsReferencePersonIdValue" [disableOptionCentering]="true">
                             <mat-option *ngFor="let item of [0,1,2,3]" [value]="item">
                                 {{ item }}
                             </mat-option>
                         </mat-select>
                     </mat-form-field>
 
-                    <mat-form-field *ngIf="salesMainClientDataForm?.value?.disableEvaluations" appearance="outline" class="u-w--100 textarea-input " fxFlex="0 0 calc(66% + 16px)">
+                    <mat-form-field *ngIf="salesMainClientDataForm?.value?.evaluationsDisabled" appearance="outline" class="u-w--100 textarea-input " fxFlex="0 0 calc(66% + 16px)">
                         <mat-label>Disable Evaluations Reason</mat-label>
-                        <textarea matInput autocomplete="new-password" name="disableEvaluationsReason" formControlName="disableEvaluationsReason">
+                        <textarea matInput autocomplete="new-password" name="evaluationsDisabledReason" formControlName="evaluationsDisabledReason">
                         </textarea>
                     </mat-form-field>
                 </div>
@@ -473,14 +473,14 @@
                 </div>
 
                 <div fxLayout="row" fxLayoutAlign="start start" class="u-w--100 u-mb--10">
-                    <mat-checkbox color="accent" formControlName="isSpecialContractTermsNone" name="isSpecialContractTermsNone" class="black-checkbox u-mt--10">
+                    <mat-checkbox color="accent" formControlName="noSpecialContractTerms" name="noSpecialContractTerms" class="black-checkbox u-mt--10">
                         None
                     </mat-checkbox>
                 </div>
 
                 <h3 class="workflow-gray--header">Client Contract Signers</h3>
-                <div formArrayName="clientSigners" class="u-w--100 u-mb--10">
-                    <div fxLayout="row" fxLayoutAlign="start start" class="u-w--100 u-mb--10" *ngFor="let signer of clientSigners.controls; let i = index" [formGroupName]="i">
+                <div formArrayName="contractSigners" class="u-w--100 u-mb--10">
+                    <div fxLayout="row" fxLayoutAlign="start start" class="u-w--100 u-mb--10" *ngFor="let signer of contractSigners.controls; let i = index" [formGroupName]="i">
                         <mat-form-field appearance="outline" class="u-w--100 mat-elevation-z0  u-mr--16"  fxFlex="33%">
                             <mat-label>Name</mat-label>
                             <input autocomplete="off" matInput formControlName="clientName" type="text">

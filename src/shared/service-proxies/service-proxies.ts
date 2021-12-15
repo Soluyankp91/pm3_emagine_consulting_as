@@ -2749,6 +2749,53 @@ export class HubSpotTestServiceProxy {
         }
         return _observableOf<SimplePublicObject>(<any>null);
     }
+
+    /**
+     * @return Success
+     */
+    testSyncUpdateToLegacy(): Observable<void> {
+        let url_ = this.baseUrl + "/api/HubSpotTest/TestSyncUpdateToLegacy";
+        url_ = url_.replace(/[?&]$/, "");
+
+        let options_ : any = {
+            observe: "response",
+            responseType: "blob",
+            headers: new HttpHeaders({
+            })
+        };
+
+        return this.http.request("post", url_, options_).pipe(_observableMergeMap((response_ : any) => {
+            return this.processTestSyncUpdateToLegacy(response_);
+        })).pipe(_observableCatch((response_: any) => {
+            if (response_ instanceof HttpResponseBase) {
+                try {
+                    return this.processTestSyncUpdateToLegacy(<any>response_);
+                } catch (e) {
+                    return <Observable<void>><any>_observableThrow(e);
+                }
+            } else
+                return <Observable<void>><any>_observableThrow(response_);
+        }));
+    }
+
+    protected processTestSyncUpdateToLegacy(response: HttpResponseBase): Observable<void> {
+        const status = response.status;
+        const responseBlob =
+            response instanceof HttpResponse ? response.body :
+            (<any>response).error instanceof Blob ? (<any>response).error : undefined;
+
+        let _headers: any = {}; if (response.headers) { for (let key of response.headers.keys()) { _headers[key] = response.headers.get(key); }}
+        if (status === 200) {
+            return blobToText(responseBlob).pipe(_observableMergeMap(_responseText => {
+            return _observableOf<void>(<any>null);
+            }));
+        } else if (status !== 200 && status !== 204) {
+            return blobToText(responseBlob).pipe(_observableMergeMap(_responseText => {
+            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+            }));
+        }
+        return _observableOf<void>(<any>null);
+    }
 }
 
 @Injectable()
@@ -6593,6 +6640,7 @@ export class Employee implements IEmployee {
     externalId?: string;
     excludeFromSearch?: boolean;
     readonly isDeleted?: boolean;
+    employeeRole?: EmployeeRole;
 
     constructor(data?: IEmployee) {
         if (data) {
@@ -6622,6 +6670,7 @@ export class Employee implements IEmployee {
             this.externalId = _data["externalId"];
             this.excludeFromSearch = _data["excludeFromSearch"];
             (<any>this).isDeleted = _data["isDeleted"];
+            this.employeeRole = _data["employeeRole"];
         }
     }
 
@@ -6651,6 +6700,7 @@ export class Employee implements IEmployee {
         data["externalId"] = this.externalId;
         data["excludeFromSearch"] = this.excludeFromSearch;
         data["isDeleted"] = this.isDeleted;
+        data["employeeRole"] = this.employeeRole;
         return data; 
     }
 }
@@ -6669,6 +6719,7 @@ export interface IEmployee {
     externalId?: string;
     excludeFromSearch?: boolean;
     isDeleted?: boolean;
+    employeeRole?: EmployeeRole;
 }
 
 export class EmployeeDto implements IEmployeeDto {
@@ -6749,6 +6800,12 @@ export class EmployeeId implements IEmployeeId {
 
 export interface IEmployeeId {
     value?: number;
+}
+
+export enum EmployeeRole {
+    _0 = 0,
+    _1 = 1,
+    _2 = 2,
 }
 
 export class EmploymentType implements IEmploymentType {

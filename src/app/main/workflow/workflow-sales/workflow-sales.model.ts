@@ -11,8 +11,8 @@ export class WorkflowSalesMainForm extends FormGroup {
 
             discounts: new FormControl(null),
 
-            salesAccountManager: new FormControl(null),
-            commissionAccountManager: new FormControl(null),
+            salesAccountManagerIdValue: new FormControl(null),
+            commissionAccountManagerIdValue: new FormControl(null),
             contractExpirationNotification: new FormControl(null),
 
             remarks: new FormControl(null),
@@ -38,11 +38,11 @@ export class WorkflowSalesMainForm extends FormGroup {
     get discounts() {
         return this.get('discounts');
     }
-    get salesAccountManager () {
-        return this.get('salesAccountManager');
+    get salesAccountManagerIdValue () {
+        return this.get('salesAccountManagerIdValue');
     }
-    get commissionAccountManager () {
-        return this.get('commissionAccountManager');
+    get commissionAccountManagerIdValue () {
+        return this.get('commissionAccountManagerIdValue');
     }
     get contractExpirationNotification() {
         return this.get('contractExpirationNotification');
@@ -60,34 +60,33 @@ export class WorkflowSalesClientDataForm extends FormGroup {
     constructor() {
         super({
             // Client
-            directClient: new FormControl(null),
-            сustomer: new FormControl(null),
-            endCustomer: new FormControl(null),
+            isDirectClient: new FormControl(true),
+            directClientIdValue: new FormControl(null),
+            endClientIdValue: new FormControl(null),
 
             // PDC Invoicing Entity (client)
 
             // Client Invoicing Recipient
-            invoicingProDataEntity: new FormControl(null),
-            sameAsDirectClient: new FormControl(false),
-            clientInvoicingReferenceNumber: new FormControl(null),
-            clientInvoicingRecipient: new FormControl(null),
+            pdcInvoicingEntityId: new FormControl(null),
+            clientInvoicingRecipientSameAsDirectClient: new FormControl(false),
+            invoicingReferenceNumber: new FormControl(null),
+            clientInvoicingRecipientIdValue: new FormControl(null),
 
             // Client Invoicing Reference Person
-            clientInvoicingReferencePerson: new FormControl(null),
-            isClientInvoicingNone: new FormControl(false),
+            invoicingReferencePersonIdValue: new FormControl(null),
+            noInvoicingReferencePerson: new FormControl(false),
 
             // Client Evaluations - Consultant
-            evaluationReferencePerson: new FormControl(null),
-            disableEvaluations: new FormControl(false),
-            disableEvaluationsReason: new FormControl(null),
+            evaluationsReferencePersonIdValue: new FormControl(null),
+            evaluationsDisabled: new FormControl(false),
+            evaluationsDisabledReason: new FormControl(null),
 
             // Client Contract Signers
-            clientSigners: new FormArray([]),
+            contractSigners: new FormArray([]),
 
             // Client Special Contract Terms
             specialContractTerms: new FormControl(null),
-            isSpecialContractTermsNone: new FormControl(false),
-            invoicingReferenceNumber: new FormControl(null),
+            noSpecialContractTerms: new FormControl(false),
 
             // Client Rate & Invoicing
             clientRateAndInvoicing: new FormControl(null),
@@ -123,55 +122,52 @@ export class WorkflowSalesClientDataForm extends FormGroup {
     }
 
     // Client
-    get directClient() {
-        return this.get('directClient');
+    get isDirectClient() {
+        return this.get('isDirectClient');
     }
-    get сustomer() {
-        return this.get('сustomer');
+    get directClientIdValue() {
+        return this.get('directClientIdValue');
     }
-    get endCustomer() {
-        return this.get('endCustomer');
+    get endClientIdValue() {
+        return this.get('endClientIdValue');
     }
 
     // PDC Invoicing Entity (client)
-    get invoicingProDataEntity() {
-        return this.get('invoicingProDataEntity');
+    get pdcInvoicingEntityId() {
+        return this.get('pdcInvoicingEntityId');
     }
-    get sameAsDirectClient() {
-        return this.get('sameAsDirectClient');
+    get clientInvoicingRecipientSameAsDirectClient() {
+        return this.get('clientInvoicingRecipientSameAsDirectClient');
     }
-    get clientInvoicingReferenceNumber() {
-        return this.get('clientInvoicingReferenceNumber');
+    get invoicingReferenceNumber() {
+        return this.get('invoicingReferenceNumber');
     }
-    get clientInvoicingRecipient() {
-        return this.get('clientInvoicingRecipient');
+    get clientInvoicingRecipientIdValue() {
+        return this.get('clientInvoicingRecipientIdValue');
     }
-    get clientInvoicingReferencePerson() {
-        return this.get('clientInvoicingReferencePerson');
+    get invoicingReferencePersonIdValue() {
+        return this.get('invoicingReferencePersonIdValue');
     }
-    get isClientInvoicingNone() {
-        return this.get('isClientInvoicingNone');
+    get noInvoicingReferencePerson() {
+        return this.get('noInvoicingReferencePerson');
     }
-    get evaluationReferencePerson() {
-        return this.get('evaluationReferencePerson');
+    get evaluationsReferencePersonIdValue() {
+        return this.get('evaluationsReferencePersonIdValue');
     }
-    get disableEvaluations() {
-        return this.get('disableEvaluations');
+    get evaluationsDisabled() {
+        return this.get('evaluationsDisabled');
     }
-    get disableEvaluationsReason() {
-        return this.get('disableEvaluationsReason');
+    get evaluationsDisabledReason() {
+        return this.get('evaluationsDisabledReason');
     }
-    get clientSigners() {
-        return this.get('clientSigners') as FormArray;
+    get contractSigners() {
+        return this.get('contractSigners') as FormArray;
     }
     get specialContractTerms() {
         return this.get('specialContractTerms');
     }
-    get isSpecialContractTermsNone() {
-        return this.get('isSpecialContractTermsNone');
-    }
-    get invoicingReferenceNumber() {
-        return this.get('invoicingReferenceNumber');
+    get noSpecialContractTerms() {
+        return this.get('noSpecialContractTerms');
     }
 
     // CLient rate and invoicing
