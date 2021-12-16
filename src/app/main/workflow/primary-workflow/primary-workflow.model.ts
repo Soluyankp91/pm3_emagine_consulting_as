@@ -1,7 +1,13 @@
-export const WorkflowSideNavigation = [
+// export const WorkflowSideNavigation: SideNavigationDto[] = [];
+
+import { SideNavigationParentItemDto } from "../workflow-extension/workflow-extension.model";
+import { WorkflowSideSections } from "../workflow.model";
+
+export const WorkflowSideNavigation: SideNavigationParentItemDto[] = [
     {
         displayName: 'Start workflow',
-        icon: 'workflowStartOrExtend',
+        name: 'workflowStartOrExtend',
+        sectionEnumValue: WorkflowSideSections.StartWorkflow,
         responsiblePerson: 'Andersen Rasmus1',
         dateRange: '02.01.2021 - 31.12.2021',
         subItems: [
@@ -32,7 +38,8 @@ export const WorkflowSideNavigation = [
 
 export const ExtendWorkflowDto = {
     displayName: 'Extend workflow',
-    icon: 'workflowStartOrExtend',
+    name: 'workflowStartOrExtend',
+    sectionEnumValue: WorkflowSideSections.ExtendWorkflow,
     responsiblePerson: 'Andersen Rasmus2',
     dateRange: '02.01.2021 - 31.12.2021',
     subItems: [
@@ -55,7 +62,8 @@ export const ExtendWorkflowDto = {
 
 export const TerminateWorkflowDto = {
     displayName: 'Terminate workflow',
-    icon: 'workflowTerminate',
+    name: 'workflowTerminate',
+    sectionEnumValue: WorkflowSideSections.TerminateWorkflow,
     responsiblePerson: 'Andersen Rasmus2',
     dateRange: '02.01.2021 - 31.12.2021',
     subItems: [
@@ -79,7 +87,8 @@ export const TerminateWorkflowDto = {
 
 export const AddConsultantDto = {
     displayName: 'Add consultant',
-    icon: 'workflowAdd',
+    name: 'workflowAdd',
+    sectionEnumValue: WorkflowSideSections.AddConsultant,
     responsiblePerson: 'Andersen Rasmus2',
     dateRange: '02.01.2021 - 31.12.2021',
     subItems: [
@@ -110,7 +119,8 @@ export const AddConsultantDto = {
 
 export const EditConsultantDto = {
     displayName: 'Edit consultant',
-    icon: 'workflowEdit',
+    name: 'workflowEdit',
+    sectionEnumValue: WorkflowSideSections.ChangeWorkflow,
     responsiblePerson: 'Andersen Rasmus2',
     dateRange: '02.01.2021 - 31.12.2021',
     subItems: [
@@ -140,7 +150,8 @@ export const EditConsultantDto = {
 
 export const ExtendConsultantDto = {
     displayName: 'Extend consultant',
-    icon: 'workflowStartOrExtend',
+    name: 'workflowStartOrExtend',
+    sectionEnumValue: WorkflowSideSections.TerminateConsultant,
     responsiblePerson: 'Andersen Rasmus2',
     dateRange: '02.01.2021 - 31.12.2021',
     subItems: [
@@ -163,7 +174,8 @@ export const ExtendConsultantDto = {
 
 export const TerminateConsultantDto = {
     displayName: 'Terminate consultant',
-    icon: 'workflowTerminate',
+    name: 'workflowTerminate',
+    sectionEnumValue: WorkflowSideSections.TerminateConsultant,
     responsiblePerson: 'Andersen Rasmus2',
     dateRange: '02.01.2021 - 31.12.2021',
     subItems: [
