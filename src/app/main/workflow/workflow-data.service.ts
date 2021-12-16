@@ -1,6 +1,7 @@
 import { EventEmitter, Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
 import { EnumEntityTypeDto, EnumServiceProxy } from 'src/shared/service-proxies/service-proxies';
+import { WorkflowSideNavigation } from './primary-workflow/primary-workflow.model';
 import { ExtensionSideNavigation } from './workflow-extension/workflow-extension.model';
 import { SideMenuTabsDto, TopMenuTabs, WorkflowProgressStatus } from './workflow.model';
 
@@ -28,6 +29,7 @@ export class WorkflowDataService {
     // sideMenuTabs: SideMenuTabsDto[] = SideMenuTabs;
     topMenuTabs: SideMenuTabsDto[] = TopMenuTabs;
     extensionSideNavigation = ExtensionSideNavigation;
+    workflowSideNavIgation = WorkflowSideNavigation;
 
     workflowProgress: WorkflowProgressStatus = new WorkflowProgressStatus();
 

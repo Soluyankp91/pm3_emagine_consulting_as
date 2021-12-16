@@ -15,7 +15,7 @@ import { WorkflowChangeDialogComponent } from '../workflow-change-dialog/workflo
 import { WorkflowDataService } from '../workflow-data.service';
 import { WorkflowOverviewComponent } from '../workflow-overview/workflow-overview.component';
 import { WorkflowSalesComponent } from '../workflow-sales/workflow-sales.component';
-import { WorkflowSalesExtensionForm, WorkflowTerminationSalesForm, SideMenuTabsDto, WorkflowProgressStatus, WorkflowSections, WorkflowSteps } from '../workflow.model';
+import { WorkflowSalesExtensionForm, WorkflowTerminationSalesForm, SideMenuTabsDto, WorkflowProgressStatus, WorkflowTopSections, WorkflowSteps, WorkflowSideSections } from '../workflow.model';
 
 @Component({
   selector: 'app-workflow-details',
@@ -189,11 +189,21 @@ export class WorkflowDetailsComponent implements OnInit, OnDestroy, AfterViewIni
         newStatus.currentlyActiveExtensionIndex = this.extensionIndex;
         // FIXME: just for test
         newStatus.currentlyActiveStep = WorkflowSteps.Sales;
+        if (this.selectedTabName === 'Workflow') {
+            newStatus.currentlyActiveSideSection = WorkflowSideSections.StartWorkflow;
+        } else if (this.selectedTabName.startsWith('Extension')) {
+            newStatus.currentlyActiveSideSection = WorkflowSideSections.ExtendWorkflow;
+        }
+
         this._workflowDataService.updateWorkflowProgressStatus(newStatus);
     }
 
+    mapSideSectionName(value: number | undefined) {
+        return value ? WorkflowSideSections[value] : '';
+    }
+
     mapSectionName(value: number | undefined) {
-        return value ? WorkflowSections[value] : '';
+        return value ? WorkflowTopSections[value] : '';
     }
 
     mapStepName(value: number | undefined) {
@@ -203,15 +213,15 @@ export class WorkflowDetailsComponent implements OnInit, OnDestroy, AfterViewIni
     mapSelectedTabNameToEnum(tabName: string) {
         switch (tabName) {
             case 'Extension':
-                return WorkflowSections.Extension;
+                return WorkflowTopSections.Extension;
             case 'Workflow':
-                return WorkflowSections.Workflow;
+                return WorkflowTopSections.Workflow;
             case 'Workflow':
-                return WorkflowSections.Overview;
+                return WorkflowTopSections.Overview;
             case 'ChangeInWF':
-                return WorkflowSections.ChangesInWF;
+                return WorkflowTopSections.ChangesInWF;
             case 'Termination':
-                return WorkflowSections.Termination;
+                return WorkflowTopSections.Termination;
         }
     }
 
@@ -236,24 +246,56 @@ export class WorkflowDetailsComponent implements OnInit, OnDestroy, AfterViewIni
 
     saveDraft() {
         switch (this._workflowDataService.workflowProgress.currentlyActiveSection) {
-            case WorkflowSections.Overview:
+            case WorkflowTopSections.Overview:
                 console.log('save Overview');
                 break;
-            case WorkflowSections.Workflow:
-                switch (this._workflowDataService.workflowProgress.currentlyActiveStep) {
-                    case WorkflowSteps.Sales:
-                        this.saveSalesStep(true);
-                        console.log('save WF Sales');
-                        break;
-                    case WorkflowSteps.Contracts:
-                        console.log('save WF Contracts');
-                        break;
-                    case WorkflowSteps.Finance:
-                        console.log('save WF Finance');
-                        break;
+            case WorkflowTopSections.Workflow:
+                switch (this._workflowDataService.workflowProgress.currentlyActiveSideSection) {
+                    case WorkflowSideSections.StartWorkflow:
+                        switch (this._workflowDataService.workflowProgress.currentlyActiveStep) {
+                            case WorkflowSteps.Sales:
+                                this.saveSalesStep(true);
+                                console.log('save WF Sales');
+                                break;
+                            case WorkflowSteps.Contracts:
+                                console.log('save WF Contracts');
+                                break;
+                            case WorkflowSteps.Finance:
+                                console.log('save WF Finance');
+                                break;
+                        }
+                    break;
+                    case WorkflowSideSections.AddConsultant:
+                        switch (this._workflowDataService.workflowProgress.currentlyActiveStep) {
+                            case WorkflowSteps.Sales:
+                                this.saveSalesStep(true);
+                                console.log('save WF AddConsSales');
+                                break;
+                            case WorkflowSteps.Contracts:
+                                console.log('save WF AddConsContracts');
+                                break;
+                            case WorkflowSteps.Finance:
+                                console.log('save WF AddConsFinance');
+                                break;
+                        }
+                    break;
+                    case WorkflowSideSections.ChangeWorkflow:
+                        switch (this._workflowDataService.workflowProgress.currentlyActiveStep) {
+                            case WorkflowSteps.Sales:
+                                this.saveSalesStep(true);
+                                console.log('save WF ChnageWFSales');
+                                break;
+                            case WorkflowSteps.Contracts:
+                                console.log('save WF ChnageWFContracts');
+                                break;
+                            case WorkflowSteps.Finance:
+                                console.log('save WF ChnageWFFinance');
+                                break;
+                        }
+                    break;
                 }
                 break;
-            case WorkflowSections.Extension:
+            case WorkflowTopSections.Extension:
                 switch (this._workflowDataService.workflowProgress.currentlyActiveStep) {
                     case WorkflowSteps.Sales:
                         console.log('save Extension Sales');
@@ -266,7 +308,7 @@ export class WorkflowDetailsComponent implements OnInit, OnDestroy, AfterViewIni
                         break;
                 }
                 break;
-            case WorkflowSections.Termination:
+            case WorkflowTopSections.Termination:
                 switch (this._workflowDataService.workflowProgress.currentlyActiveStep) {
                     case WorkflowSteps.Sales:
                         console.log('save Termination Sales');
@@ -284,10 +326,10 @@ export class WorkflowDetailsComponent implements OnInit, OnDestroy, AfterViewIni
 
     completeStep() {
         switch (this._workflowDataService.workflowProgress.currentlyActiveSection) {
-            case WorkflowSections.Overview:
+            case WorkflowTopSections.Overview:
                 console.log('Complete Overview');
                 break;
-            case WorkflowSections.Workflow:
+            case WorkflowTopSections.Workflow:
                 switch (this._workflowDataService.workflowProgress.currentlyActiveStep) {
                     case WorkflowSteps.Sales:
                         console.log('Complete WF Sales');
@@ -301,7 +343,7 @@ export class WorkflowDetailsComponent implements OnInit, OnDestroy, AfterViewIni
                         break;
                 }
                 break;
-            case WorkflowSections.Extension:
+            case WorkflowTopSections.Extension:
                 switch (this._workflowDataService.workflowProgress.currentlyActiveStep) {
                     case WorkflowSteps.Sales:
                         //  FIXME: only for test
@@ -316,7 +358,7 @@ export class WorkflowDetailsComponent implements OnInit, OnDestroy, AfterViewIni
                         break;
                 }
                 break;
-            case WorkflowSections.Termination:
+            case WorkflowTopSections.Termination:
                 switch (this._workflowDataService.workflowProgress.currentlyActiveStep) {
                     case WorkflowSteps.Sales:
                         console.log('Complete Termination Sales');
@@ -381,12 +423,14 @@ export class WorkflowDetailsComponent implements OnInit, OnDestroy, AfterViewIni
             )
             this._workflowDataService.extensionSideNavigation.push(
                 {
+                    // TODO: move in constant variable, e.g. NewExtensionDto
                     name: `Extension${newExtensionIndex}`,
                     index: newExtensionIndex,
                     sideNav: [
                         {
                             displayName: 'Extend Workflow',
                             name: 'workflowStartOrExtend',
+                            sectionEnumValue: WorkflowSideSections.ExtendWorkflow,
                             responsiblePerson: 'Andersen Rasmus2',
                             dateRange: '02.01.2021 - 31.12.2021',
                             subItems: [

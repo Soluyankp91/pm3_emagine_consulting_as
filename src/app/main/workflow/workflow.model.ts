@@ -249,6 +249,7 @@ export class WorkflowProgressStatus implements IWorkflowProgressStatus {
     isTerminationAdded: boolean | undefined;
     currentlyActiveSection: number | undefined;
     currentlyActiveStep: number | undefined;
+    currentlyActiveSideSection: number | undefined;
 
     constructor(
         started?: boolean,
@@ -268,7 +269,8 @@ export class WorkflowProgressStatus implements IWorkflowProgressStatus {
 
         isTerminationAdded?: boolean,
         currentlyActiveSection?: number,
-        currentlyActiveStep?: number) {
+        currentlyActiveStep?: number,
+        currentlyActiveSideSection?: number) {
             this.started = started;
 
             this.isExtensionAdded = isExtensionAdded;
@@ -287,25 +289,48 @@ export class WorkflowProgressStatus implements IWorkflowProgressStatus {
             this.isTerminationAdded = isTerminationAdded;
             this.currentlyActiveSection = currentlyActiveSection;
             this.currentlyActiveStep = currentlyActiveStep;
+            this.currentlyActiveSideSection = currentlyActiveSideSection;
     }
 }
 
 export interface IWorkflowProgressStatus {
     started: boolean | undefined,
-    isExtensionAdded: boolean | undefined,
-    isExtensionCompleted: boolean | undefined,
-    isWorkflowSalesSaved: boolean | undefined,
-    isPrimaryWorkflowCompleted: boolean | undefined,
-    currentlyActiveSection: number | undefined,
-    currentlyActiveStep: number | undefined,
+
+    isExtensionAdded: boolean | undefined;
+    currentlyActiveExtensionIndex: number | undefined | null;
+    numberOfAddedExtensions: number | undefined | null;
+    lastSavedExtensionIndex: number | undefined | null;
+
+    isExtensionCompleted: boolean | undefined;
+    isExtensionSalesSaved: boolean | undefined;
+    isExtensionContractsSaved: boolean | undefined;
+
+    isWorkflowSalesSaved: boolean | undefined;
+    isWorkflowContractsSaved: boolean | undefined;
+    isWorkflowAccountsSaved: boolean | undefined;
+    isPrimaryWorkflowCompleted: boolean | undefined;
+
+    isTerminationAdded: boolean | undefined;
+    currentlyActiveSection: number | undefined;
+    currentlyActiveStep: number | undefined;
+    currentlyActiveSideSection: number | undefined;
 }
 
-export enum WorkflowSections {
+export enum WorkflowTopSections {
     Overview = 1,
     Workflow = 2,
     Extension = 3,
     Termination = 4,
     ChangesInWF = 5
+}
+
+export enum WorkflowSideSections {
+    StartWorkflow = 1,
+    ExtendWorkflow = 2,
+    TerminateWorkflow = 3,
+    ChangeWorkflow = 4,
+    AddConsultant = 5,
+    TerminateConsultant = 6
 }
 
 export enum WorkflowSteps {

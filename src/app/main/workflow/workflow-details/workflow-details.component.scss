@@ -1,4 +1,5 @@
 .workflow {
+    min-height: 100%;
     &-toolbar {
         height: 50px;
         width: 100%;
@@ -23,6 +24,7 @@
     &-header {
         padding: 32px 75px;
         height: 120px;
+        // height: 15vh;
         background-color: #fff;
         &--title {
             font-family: 'IBM Plex Mono', monospace !important;
@@ -83,6 +85,9 @@
     &-content {
         background-color: #FAF9FB;
         height: auto;
+        display: flex;
+        flex-direction: column;
+        flex-grow: 1;
         // height: 80vh;
         // position: relative;
         // overflow-y: hidden;

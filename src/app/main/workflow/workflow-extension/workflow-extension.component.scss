@@ -8,8 +8,9 @@
 .workflow-navigation {
     width: 80%;
     &--wrapper {
+        height: 70vh;
         position: sticky;
-        top: 0;
+        top: 135px;
     }
     &--step {
         cursor: pointer;
