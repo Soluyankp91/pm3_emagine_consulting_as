@@ -60,6 +60,37 @@ export const ExtendWorkflowDto = {
     ]
 };
 
+export const EditWorkflowDto = {
+    displayName: 'Edit workflow',
+    name: 'workflowStartOrExtend',
+    sectionEnumValue: WorkflowSideSections.ChangeWorkflow,
+    responsiblePerson: 'Andersen Rasmus2',
+    dateRange: '02.01.2021 - 31.12.2021',
+    subItems: [
+        {
+            id: 1,
+            name: "EditWorkflowSales",
+            displayName: "Sales",
+            isCompleted: false,
+            assignedPerson: 'Roberto Olberto'
+        },
+        {
+            id: 2,
+            name: "EditWorkflowContracts",
+            displayName: "Contracts",
+            isCompleted: false,
+            assignedPerson: 'Roberto Olberto'
+        },
+        {
+            id: 2,
+            name: "EditWorkflowFinances",
+            displayName: "Finances",
+            isCompleted: false,
+            assignedPerson: 'Roberto Olberto'
+        }
+    ]
+};
+
 export const TerminateWorkflowDto = {
     displayName: 'Terminate workflow',
     name: 'workflowTerminate',

@@ -47,6 +47,14 @@
                     addConsultantToPrimaryWorkflow
                 </button>
                 <button
+                    class="menu-item menu-item--edit"
+                    mat-menu-item
+                    [disabled]="false"
+                    (click)="editWorkflow()">
+                    <mat-icon>create</mat-icon>
+                    editWorkflow
+                </button>
+                <button
                     class="menu-item menu-item--add"
                     mat-menu-item
                     (click)="extendWorkflow()">
@@ -94,13 +102,13 @@
                 <app-workflow-finances #workflowFinances [workflowId]="workflowId"></app-workflow-finances>
             </ng-container>
             <!-- EDIT WORKFLOW -->
-            <ng-container *ngSwitchCase="'EditSales'">
+            <ng-container *ngSwitchCase="'EditWorkflowSales'">
                 <app-workflow-sales #workflowEditSales [workflowId]="workflowId" [editWorfklow]="true"></app-workflow-sales>
             </ng-container>
-            <ng-container *ngSwitchCase="'EditContracts'">
+            <ng-container *ngSwitchCase="'EditWorkflowContracts'">
                 <app-workflow-contracts #workflowEditContracts [workflowId]="workflowId" [editWorfklow]="true"></app-workflow-contracts>
             </ng-container>
-            <ng-container *ngSwitchCase="'EditFinance'">
+            <ng-container *ngSwitchCase="'EditWorkflowFinance'">
                 <app-workflow-finances #workflowEditFinances [workflowId]="workflowId" [editWorfklow]="true"></app-workflow-finances>
             </ng-container>
 

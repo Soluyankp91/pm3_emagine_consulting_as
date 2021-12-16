@@ -1,9 +1,9 @@
-import { AfterViewInit, ChangeDetectorRef, Component, Input, OnInit, ViewChild } from '@angular/core';
+import { Component, Input, OnInit, ViewChild } from '@angular/core';
 import { WorkflowDataService } from '../workflow-data.service';
 import { SideNavigationParentItemDto } from '../workflow-extension/workflow-extension.model';
 import { WorkflowSalesComponent } from '../workflow-sales/workflow-sales.component';
-import { WorkflowStepList, WorkflowSteps } from '../workflow.model';
-import { AddConsultantDto, EditConsultantDto, ExtendConsultantDto, ExtendWorkflowDto, TerminateConsultantDto, TerminateWorkflowDto, WorkflowSideNavigation } from './primary-workflow.model';
+import { WorkflowStepList } from '../workflow.model';
+import { AddConsultantDto, EditConsultantDto, EditWorkflowDto, ExtendConsultantDto, ExtendWorkflowDto, TerminateConsultantDto, TerminateWorkflowDto } from './primary-workflow.model';
 
 @Component({
     selector: 'app-primary-workflow',
@@ -15,21 +15,17 @@ export class PrimaryWorkflowComponent implements OnInit {
     @ViewChild('workflowSales', {static: false}) workflowSales: WorkflowSalesComponent;
     selectedStep: string;
 
-    // workflowSteps = [{id: 1, name: 'Sales'}, {id: 2, name: 'Contracts'}, {id: 3, name: 'Finance'}];
     workflowSteps = WorkflowStepList;
 
-    // workflowSideNavigation = WorkflowSideNavigation;
 
     workflowSideNavigation: SideNavigationParentItemDto[];
 
     sectionIndex: number;
     constructor(
-        public _workflowDataService: WorkflowDataService,
-        private cdr: ChangeDetectorRef
+        public _workflowDataService: WorkflowDataService
     ) { }
 
     ngOnInit(): void {
-        console.log('init PW');
         this.workflowSideNavigation = new Array<SideNavigationParentItemDto>(...this._workflowDataService.workflowSideNavIgation);
         this.changeSideSection(this.workflowSideNavigation[0] , 0);
     }
@@ -60,6 +56,10 @@ export class PrimaryWorkflowComponent implements OnInit {
 
     editConsultant() {
         this.workflowSideNavigation.push(EditConsultantDto);
+    }
+
+    editWorkflow() {
+        this.workflowSideNavigation.push(EditWorkflowDto);
     }
 
     extendConsultant() {
