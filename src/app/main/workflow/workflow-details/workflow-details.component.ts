@@ -245,6 +245,11 @@ export class WorkflowDetailsComponent implements OnInit, OnDestroy, AfterViewIni
     }
 
     saveDraft() {
+        // TODO: move in global WF model file - tool for detection from where and what we want to save
+        // enum SaveOptions {
+        //     Draft = 1,
+        //     Complete = 2
+        // };
         switch (this._workflowDataService.workflowProgress.currentlyActiveSection) {
             case WorkflowTopSections.Overview:
                 console.log('save Overview');
@@ -254,6 +259,8 @@ export class WorkflowDetailsComponent implements OnInit, OnDestroy, AfterViewIni
                     case WorkflowSideSections.StartWorkflow:
                         switch (this._workflowDataService.workflowProgress.currentlyActiveStep) {
                             case WorkflowSteps.Sales:
+                                // TODO: update event triggers\handlers  - tool for detection from where and what we want to save
+                                // this.saveSalesStep(SaveOptions.Draft, WorkflowSideSections.StartWorkflow);
                                 this.saveSalesStep(true);
                                 console.log('save WF Sales');
                                 break;
@@ -268,7 +275,7 @@ export class WorkflowDetailsComponent implements OnInit, OnDestroy, AfterViewIni
                     case WorkflowSideSections.AddConsultant:
                         switch (this._workflowDataService.workflowProgress.currentlyActiveStep) {
                             case WorkflowSteps.Sales:
-                                this.saveSalesStep(true);
+                                // this.saveSalesStep(true);
                                 console.log('save WF AddConsSales');
                                 break;
                             case WorkflowSteps.Contracts:
@@ -282,7 +289,7 @@ export class WorkflowDetailsComponent implements OnInit, OnDestroy, AfterViewIni
                     case WorkflowSideSections.ChangeWorkflow:
                         switch (this._workflowDataService.workflowProgress.currentlyActiveStep) {
                             case WorkflowSteps.Sales:
-                                this.saveSalesStep(true);
+                                // this.saveSalesStep(true);
                                 console.log('save WF ChnageWFSales');
                                 break;
                             case WorkflowSteps.Contracts:

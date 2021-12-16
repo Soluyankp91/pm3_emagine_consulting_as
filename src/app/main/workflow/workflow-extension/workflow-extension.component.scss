@@ -1,8 +1,3 @@
-.hide {
-    display: none;
-}
-
-
 @import "/src/app/shared/styles/config/_colors";
 
 .workflow-navigation {
@@ -67,4 +62,8 @@
             }
         }
     }
+}
+
+.hide {
+    display: none;
 }
