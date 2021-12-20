@@ -18,6 +18,8 @@ import { ConsultantTypes, InputReadonlyState, InputReadonlyStates, WorkflowSales
 export class WorkflowSalesComponent extends AppComopnentBase implements OnInit {
     @Input() workflowId: number;
     @Input() editWorfklow: boolean;
+    @Input() extendWorkflow: boolean;
+
     // SalesStep
     intracompanyActive = false;
     salesMainClientDataForm: WorkflowSalesClientDataForm;

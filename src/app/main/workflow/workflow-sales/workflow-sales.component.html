@@ -5,76 +5,133 @@
                 MAIN DATA
             </mat-expansion-panel-header>
             <form [formGroup]="salesMainDataForm" class="workflow-form workflow-form--main u-w--100">
-                <h2 class="workflow-section--header">Project</h2>
+                <div *ngIf="!extendWorkflow">
+                    <h2 class="workflow-section--header">Project</h2>
 
-                <h3 class="workflow-gray--header">Sales Type</h3>
-                <!-- <button mat-button (click)="changeReadonly()">Change</button> -->
-                <!-- EDIT -->
-                <!-- NB: uncomment for readonly\edit -->
-                <!-- <div fxLayout="row" fxLayoutAlign="start start" class="u-w--100 u-mb--20" *ngIf="!isReadonlyInput('salesType'); else salesTypeReadOnly"> -->
-                <div fxLayout="row" fxLayoutAlign="start start" class="u-w--100 u-mb--20">
-                    <mat-button-toggle-group class="workflow-toggle-buttons u-mt--10" formControlName="salesType" (change)="salesTypeChange($event.value)">
-                        <mat-button-toggle [value]="item" *ngFor="let item of saleTypes">
-                            {{ item.name }}
-                        </mat-button-toggle>
-                    </mat-button-toggle-group>
-                </div>
-                <!-- READONLY -->
-                <!-- NB: uncomment for readonly\edit -->
-                <!-- <ng-template #salesTypeReadOnly>
-                    {{salesMainDataForm?.salesType?.value?.name}}
-                </ng-template> -->
-
-
-                <h3 class="workflow-gray--header">Delivery Type</h3>
-                <div fxLayout="row" fxLayoutAlign="start start" class="u-w--100 u-mb--20">
-                    <mat-button-toggle-group class="workflow-toggle-buttons u-mt--10" formControlName="deliveryType">
-                        <mat-button-toggle
-                            [value]="item"
-                            *ngFor="let item of deliveryTypes"
-                            [ngClass]="{'hide':
-                                    item.name === 'ManagedService' && salesMainDataForm?.salesType?.value?.name !== 'ManagedService' ||
-                                    item.name !== 'ManagedService' && salesMainDataForm?.salesType?.value?.name === 'ManagedService'
-                            }">
-                            {{ item.name }}
-                        </mat-button-toggle>
-                    </mat-button-toggle-group>
-                </div>
-
-                <div fxLayout="row" fxLayoutAlign="start start" class="u-w--100 u-mb--10">
-                    <mat-form-field appearance="outline" class="u-w--100  filter-select u-mr--16" fxFlex="33%">
-                        <mat-label>Margin</mat-label>
-                        <mat-select formControlName="margin" [disableOptionCentering]="true" required>
-                            <mat-option class="mat-select-clear-option">
-                                Clear
-                            </mat-option>
-                            <mat-option *ngFor="let item of margins" [value]="item.id">
+                    <h3 class="workflow-gray--header">Sales Type</h3>
+                    <!-- <button mat-button (click)="changeReadonly()">Change</button> -->
+                    <!-- EDIT -->
+                    <!-- NB: uncomment for readonly\edit -->
+                    <!-- <div fxLayout="row" fxLayoutAlign="start start" class="u-w--100 u-mb--20" *ngIf="!isReadonlyInput('salesType'); else salesTypeReadOnly"> -->
+                    <div fxLayout="row" fxLayoutAlign="start start" class="u-w--100 u-mb--20">
+                        <mat-button-toggle-group class="workflow-toggle-buttons u-mt--10" formControlName="salesType" (change)="salesTypeChange($event.value)">
+                            <mat-button-toggle [value]="item" *ngFor="let item of saleTypes">
                                 {{ item.name }}
-                            </mat-option>
-                        </mat-select>
-                        <mat-error>{{getValidationMessage(salesMainDataForm.margin)}}</mat-error>
-                    </mat-form-field>
+                            </mat-button-toggle>
+                        </mat-button-toggle-group>
+                    </div>
+                    <!-- READONLY -->
+                    <!-- NB: uncomment for readonly\edit -->
+                    <!-- <ng-template #salesTypeReadOnly>
+                        {{salesMainDataForm?.salesType?.value?.name}}
+                    </ng-template> -->
+
+
+                    <h3 class="workflow-gray--header">Delivery Type</h3>
+                    <div fxLayout="row" fxLayoutAlign="start start" class="u-w--100 u-mb--20">
+                        <mat-button-toggle-group class="workflow-toggle-buttons u-mt--10" formControlName="deliveryType">
+                            <mat-button-toggle
+                                [value]="item"
+                                *ngFor="let item of deliveryTypes"
+                                [ngClass]="{'hide':
+                                        item.name === 'ManagedService' && salesMainDataForm?.salesType?.value?.name !== 'ManagedService' ||
+                                        item.name !== 'ManagedService' && salesMainDataForm?.salesType?.value?.name === 'ManagedService'
+                                }">
+                                {{ item.name }}
+                            </mat-button-toggle>
+                        </mat-button-toggle-group>
+                    </div>
+
+                    <div fxLayout="row" fxLayoutAlign="start start" class="u-w--100 u-mb--10">
+                        <mat-form-field appearance="outline" class="u-w--100  filter-select u-mr--16" fxFlex="33%">
+                            <mat-label>Margin</mat-label>
+                            <mat-select formControlName="margin" [disableOptionCentering]="true" required>
+                                <mat-option class="mat-select-clear-option">
+                                    Clear
+                                </mat-option>
+                                <mat-option *ngFor="let item of margins" [value]="item.id">
+                                    {{ item.name }}
+                                </mat-option>
+                            </mat-select>
+                            <mat-error>{{getValidationMessage(salesMainDataForm.margin)}}</mat-error>
+                        </mat-form-field>
+                    </div>
+
+                    <div fxLayout="row" fxLayoutAlign="start start" class="u-w--100 u-mb--10">
+                        <mat-form-field appearance="outline" class="u-w--100  filter-select u-mr--16" fxFlex="33%">
+                            <mat-label>Project Category</mat-label>
+                            <mat-select formControlName="projectCategory" [disableOptionCentering]="false">
+                                <mat-option *ngFor="let item of [0]" [value]="item">
+                                    {{ item }}
+                                </mat-option>
+                            </mat-select>
+                        </mat-form-field>
+                    </div>
+
+                    <div fxLayout="row" fxLayoutAlign="start start" class="u-w--100 u-mb--10">
+                        <mat-form-field appearance="outline" class="u-w--100 textarea-input " fxFlex="0 0 calc(66% + 16px)">
+                            <mat-label>Project Description</mat-label>
+                            <textarea matInput autocomplete="new-password" name="projectDescription" formControlName="projectDescription">
+                            </textarea>
+                        </mat-form-field>
+                    </div>
                 </div>
 
-                <div fxLayout="row" fxLayoutAlign="start start" class="u-w--100 u-mb--10">
-                    <mat-form-field appearance="outline" class="u-w--100  filter-select u-mr--16" fxFlex="33%">
-                        <mat-label>Project Category</mat-label>
-                        <mat-select formControlName="projectCategory" [disableOptionCentering]="false">
-                            <mat-option *ngFor="let item of [0]" [value]="item">
-                                {{ item }}
-                            </mat-option>
-                        </mat-select>
-                    </mat-form-field>
-                </div>
+                <div *ngIf="extendWorkflow">
+                    <!-- <button mat-button (click)="changeReadonly()">Change</button> -->
+                    <!-- EDIT -->
+                    <!-- NB: uncomment for readonly\edit -->
+                    <div fxLayout="row" fxLayoutAlign="start start" fxLayoutGap="120px" class="u-w--100 u-mb--20">
+                        <div fxLayout="column">
+                            <h3 class="workflow-extension--gray-header">Project Type (Legacy)</h3>
+                            <span class="workflow-extension--blue-text">
+                                {{salesMainDataForm?.projectType?.value?.name}}
+                            </span>
+                        </div>
+                        <div fxLayout="column">
+                            <h3 class="workflow-extension--gray-header">Sales Type</h3>
+                            <span class="workflow-extension--blue-text">
+                                {{salesMainDataForm?.salesType?.value?.name}}
+                            </span>
+                        </div>
+                        <div fxLayout="column">
+                            <h3 class="workflow-extension--gray-header">Delivery Type</h3>
+                            <span class="workflow-extension--blue-text">
+                                {{salesMainDataForm?.deliveryType?.value?.name}}
+                            </span>
+                        </div>
+                    </div>
 
-                <div fxLayout="row" fxLayoutAlign="start start" class="u-w--100 u-mb--10">
-                    <mat-form-field appearance="outline" class="u-w--100 textarea-input " fxFlex="0 0 calc(66% + 16px)">
-                        <mat-label>Project Description</mat-label>
-                        <textarea matInput autocomplete="new-password" name="projectDescription" formControlName="projectDescription">
-                        </textarea>
-                    </mat-form-field>
-                </div>
+                    <div fxLayout="column" class="u-w--100 u-mb--20">
+                        <h3 class="workflow-extension--gray-header">Project Category</h3>
+                        <span class="workflow-extension--blue-text">
+                            {{salesMainDataForm?.projectCategory?.value?.name}}
+                        </span>
+                    </div>
 
+                    <div fxLayout="row" fxLayoutAlign="start start" class="u-w--100 u-mb--10">
+                        <mat-form-field appearance="outline" class="u-w--100  filter-select u-mr--16" fxFlex="33%">
+                            <mat-label>Margin</mat-label>
+                            <mat-select formControlName="margin" [disableOptionCentering]="true" required>
+                                <mat-option class="mat-select-clear-option">
+                                    Clear
+                                </mat-option>
+                                <mat-option *ngFor="let item of margins" [value]="item.id">
+                                    {{ item.name }}
+                                </mat-option>
+                            </mat-select>
+                            <mat-error>{{getValidationMessage(salesMainDataForm.margin)}}</mat-error>
+                        </mat-form-field>
+                    </div>
+
+                    <div fxLayout="row" fxLayoutAlign="start start" class="u-w--100 u-mb--10">
+                        <mat-form-field appearance="outline" class="u-w--100 textarea-input " fxFlex="0 0 calc(66% + 16px)">
+                            <mat-label>Project Description</mat-label>
+                            <textarea matInput autocomplete="new-password" name="projectDescription" formControlName="projectDescription">
+                            </textarea>
+                        </mat-form-field>
+                    </div>
+                </div>
                 <h2 class="workflow-section--header">Invoicing</h2>
 
                 <h3 class="workflow-gray--header">Discounts</h3>
@@ -143,33 +200,58 @@
                 Client data
             </mat-expansion-panel-header>
             <form fxLayout="column" fxLayoutAlign="start start" [formGroup]="salesMainClientDataForm" class="workflow-form workflow-form--sales u-w--100">
-                <h2 class="workflow-section--header">Client</h2>
-                <div fxLayout="row" fxLayoutAlign="start start" class="u-w--100 u-mb--20">
-                    <mat-button-toggle-group class="workflow-toggle-buttons" formControlName="isDirectClient">
-                        <mat-button-toggle [value]="item.value" *ngFor="let item of [{name: 'Direct Client', value: true}, {name: 'Different end-client', value: false}]">
-                            {{ item.name }}
-                        </mat-button-toggle>
-                    </mat-button-toggle-group>
-                </div>
-                <div fxLayout="row" fxLayoutAlign="start start" class="u-w--100 u-mb--10">
-                    <mat-form-field appearance="outline" class="u-w--100  filter-select" fxFlex="0 0 calc(66% + 16px)">
-                        <mat-label>Customer</mat-label>
-                        <mat-select formControlName="directClientIdValue" [disableOptionCentering]="true">
-                            <mat-option *ngFor="let item of currencies" [value]="item.id">
+                <div *ngIf="!extendWorkflow">
+                    <h2 class="workflow-section--header">Client</h2>
+                    <div fxLayout="row" fxLayoutAlign="start start" class="u-w--100 u-mb--20">
+                        <mat-button-toggle-group class="workflow-toggle-buttons" formControlName="isDirectClient">
+                            <mat-button-toggle [value]="item.value" *ngFor="let item of [{name: 'Direct Client', value: true}, {name: 'Different end-client', value: false}]">
                                 {{ item.name }}
-                            </mat-option>
-                        </mat-select>
-                    </mat-form-field>
+                            </mat-button-toggle>
+                        </mat-button-toggle-group>
+                    </div>
+                    <div fxLayout="row" fxLayoutAlign="start start" class="u-w--100 u-mb--10">
+                        <mat-form-field appearance="outline" class="u-w--100  filter-select" fxFlex="0 0 calc(66% + 16px)">
+                            <mat-label>Customer</mat-label>
+                            <mat-select formControlName="directClientIdValue" [disableOptionCentering]="true">
+                                <mat-option *ngFor="let item of currencies" [value]="item.id">
+                                    {{ item.name }}
+                                </mat-option>
+                            </mat-select>
+                        </mat-form-field>
+                    </div>
+                    <div fxLayout="row" fxLayoutAlign="start start" class="u-w--100 u-mb--10" *ngIf="salesMainClientDataForm?.isDirectClient?.value === false">
+                        <mat-form-field appearance="outline" class="u-w--100  filter-select" fxFlex="0 0 calc(66% + 16px)">
+                            <mat-label>End Customer</mat-label>
+                            <mat-select formControlName="endClientIdValue" [disableOptionCentering]="true">
+                                <mat-option *ngFor="let item of currencies" [value]="item.id">
+                                    {{ item.name }}
+                                </mat-option>
+                            </mat-select>
+                        </mat-form-field>
+                    </div>
                 </div>
-                <div fxLayout="row" fxLayoutAlign="start start" class="u-w--100 u-mb--10" *ngIf="salesMainClientDataForm?.isDirectClient?.value === false">
-                    <mat-form-field appearance="outline" class="u-w--100  filter-select" fxFlex="0 0 calc(66% + 16px)">
-                        <mat-label>End Customer</mat-label>
-                        <mat-select formControlName="endClientIdValue" [disableOptionCentering]="true">
-                            <mat-option *ngFor="let item of currencies" [value]="item.id">
-                                {{ item.name }}
-                            </mat-option>
-                        </mat-select>
-                    </mat-form-field>
+                <div fxLayout="column" fxLayoutAlign="start start" fxLayoutGap="20px" class="u-w--100 u-mb--20" *ngIf="extendWorkflow">
+                    <div fxLayout="column">
+                        <h3 class="workflow-extension--gray-header">Client relation</h3>
+                        <span class="workflow-extension--blue-text">
+                            <!-- {{salesMainDataForm?.projectType?.value?.name}} -->
+                            Different end-client
+                        </span>
+                    </div>
+                    <div fxLayout="column">
+                        <h3 class="workflow-extension--gray-header">Direct client - name + address</h3>
+                        <span class="workflow-extension--blue-text">
+                            <!-- {{salesMainDataForm?.salesType?.value?.name}} -->
+                            Some Client Name (Address 210/53)
+                        </span>
+                    </div>
+                    <div fxLayout="column">
+                        <h3 class="workflow-extension--gray-header">End-client  - name + address</h3>
+                        <span class="workflow-extension--blue-text">
+                            <!-- {{salesMainDataForm?.deliveryType?.value?.name}} -->
+                            Some Client Name (Address 210/53)
+                        </span>
+                    </div>
                 </div>
 
                 <h2 class="workflow-section--header">Duration</h2>
@@ -462,7 +544,7 @@
                     </mat-form-field>
                 </div>
 
-                <h2 class="workflow-section--header">Evaluation</h2>
+                <h2 class="workflow-section--header">Contract</h2>
 
                 <div fxLayout="row" fxLayoutAlign="start start" class="u-w--100 u-mb--10">
                     <mat-form-field appearance="outline" class="u-w--100  textarea-input" fxFlex="0 0 calc(66% + 16px)">
@@ -575,34 +657,58 @@
                         </div>
                     </mat-expansion-panel-header>
                     <div class="workflow-form">
+                        <div *ngIf="!extendWorkflow">
+                            <h2 class="workflow-section--header">Consultant</h2>
 
-                        <h2 class="workflow-section--header">Consultant</h2>
-
-                        <div fxLayout="row" fxLayoutAlign="start start" class="u-w--100 u-mb--20">
-                            <mat-button-toggle-group class="workflow-toggle-buttons" formControlName="consultantType">
-                                <ng-container *ngIf="showMore; else showLess">
-                                    <mat-button-toggle *ngFor="let item of consultantTypes" [value]="item.id">
-                                        {{ item.name }}
-                                    </mat-button-toggle>
-                                </ng-container>
-                                <ng-template #showLess>
-                                    <mat-button-toggle *ngFor="let item of consultantTypes | slice: 0:3" [value]="item.id">
-                                        {{ item.name }}
-                                    </mat-button-toggle>
-                                </ng-template>
+                            <div fxLayout="row" fxLayoutAlign="start start" class="u-w--100 u-mb--20">
+                                <mat-button-toggle-group class="workflow-toggle-buttons" formControlName="consultantType">
+                                    <ng-container *ngIf="showMore; else showLess">
+                                        <mat-button-toggle *ngFor="let item of consultantTypes" [value]="item.id">
+                                            {{ item.name }}
+                                        </mat-button-toggle>
+                                    </ng-container>
+                                    <ng-template #showLess>
+                                        <mat-button-toggle *ngFor="let item of consultantTypes | slice: 0:3" [value]="item.id">
+                                            {{ item.name }}
+                                        </mat-button-toggle>
+                                    </ng-template>
 
 
-                                <button class="workflow-toggle-buttons--showMore" mat-flat-button (click)="showMore = !showMore">
-                                    {{showMore ? '<<' : '>>'}}
-                                </button>
-                            </mat-button-toggle-group>
+                                    <button class="workflow-toggle-buttons--showMore" mat-flat-button (click)="showMore = !showMore">
+                                        {{showMore ? '<<' : '>>'}}
+                                    </button>
+                                </mat-button-toggle-group>
+                            </div>
+
+                            <div fxLayout="row" fxLayoutAlign="start start" class="u-w--100 u-mb--10">
+                                <mat-form-field appearance="outline" class="u-w--100 mat-elevation-z0 " fxFlex="33%">
+                                    <mat-label>Consultant Name</mat-label>
+                                    <input autocomplete="off" matInput formControlName="consultantName" type="text">
+                                </mat-form-field>
+                            </div>
                         </div>
+                        <div *ngIf="extendWorkflow">
+                            <div fxLayout="column" class="u-mb--20">
+                                <h3 class="workflow-extension--gray-header">Consultant type</h3>
+                                <span class="workflow-extension--blue-text">
+                                    <!-- {{salesMainDataForm?.deliveryType?.value?.name}} -->
+                                    Freelance
+                                </span>
+                            </div>
 
-                        <div fxLayout="row" fxLayoutAlign="start start" class="u-w--100 u-mb--10">
-                            <mat-form-field appearance="outline" class="u-w--100 mat-elevation-z0 " fxFlex="33%">
-                                <mat-label>Consultant Name</mat-label>
-                                <input autocomplete="off" matInput formControlName="consultantName" type="text">
-                            </mat-form-field>
+                            <h3 class="workflow-extension--gray-header">Consultant</h3>
+                            <div fxLayout="row" fxLayoutAlign="start center" class="u-mb--20">
+                                <img class="workflow-extension--consultant-data--consultant-img u-mr--16" src="https://placekitten.com/50/50">
+                                <div fxLayout="column">
+                                    <p class="workflow-extension--consultant-data--consultant-name">
+                                        <!-- {{contractsConsultantsDataForm.consultantData.at(i).get('consultantName')?.value}} -->
+                                        Robertsen Oscar
+                                    </p>
+                                    <span class="workflow-extension--consultant-data--consultant-text">
+                                        Just Do IT | Warsaw, PL | #9876 / PL-06281
+                                    </span>
+                                </div>
+                            </div>
                         </div>
 
                         <h2 class="workflow-section--header">Duration</h2>

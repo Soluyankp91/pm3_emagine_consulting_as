@@ -1,4 +1,4 @@
-<div class="worfklow-contracts">
+<div class="workflow-contracts">
     <mat-accordion [multi]="true">
         <mat-expansion-panel id="mainData" class="mat-elevation-z0">
             <mat-expansion-panel-header [collapsedHeight]="'80px'" [expandedHeight]="'80px'">
@@ -405,9 +405,17 @@
 
                 <h2 class="workflow-section--header">Sync</h2>
 
-                <button class="button-accept" mat-flat-button>
+                <button class="button-accept u-mb--10" mat-flat-button>
                     Sync to legacy system
                 </button>
+                <div fxLayout="row" fxLayoutAlign="start center" class="u-mb--10">
+                    <span class="icon-cancel u-mr--5">
+                        x
+                    </span>
+                    <span class="sync-hint-text">
+                        Sync not possible
+                    </span>
+                </div>
 
                 <div fxLayout="row" fxLayoutAlign="start start" class="u-w--100 u-mb--20">
                     <mat-checkbox color="accent" formControlName="manualCheckbox" name="isSpecialContractTermsNone" class="black-checkbox u-mt--10">
@@ -422,9 +430,17 @@
 
                 <div fxLayout="column" fxLayoutAlign="start start" class="u-mb--20">
                     <span class="workflow-darkblue--text">Client legal contracts</span>
-                    <button class="button-accept u-mb--20" disabled mat-flat-button>
+                    <button class="button-accept u-mb--10" disabled mat-flat-button>
                         Open contract module for client
                     </button>
+                    <div fxLayout="row" fxLayoutAlign="start center" class="u-mb--20">
+                        <span class="icon-done u-mr--5">
+                            <mat-icon>done</mat-icon>
+                        </span>
+                        <span class="sync-hint-text">
+                            Complete
+                        </span>
+                    </div>
 
                     <span class="workflow-darkblue--text u-mt--20">Consultant legal contracts</span>
                 </div>
@@ -437,9 +453,17 @@
                     </p>
                 </div>
 
-                <button class="button-outlined u-mb--20" disabled mat-flat-button>
+                <button class="button-outlined u-mb--10" disabled mat-flat-button>
                     Open contract module for client
                 </button>
+                <div fxLayout="row" fxLayoutAlign="start center" class="u-mb--20">
+                    <span class="icon-done u-mr--5">
+                        <mat-icon>done</mat-icon>
+                    </span>
+                    <span class="sync-hint-text">
+                        Complete
+                    </span>
+                </div>
 
                 <div fxLayout="row" fxLayoutAlign="start center" class="u-mb--20">
                     <img class="workflow-contracts--consultant-img u-mr--16" src="https://placekitten.com/50/50">
@@ -449,9 +473,17 @@
                     </p>
                 </div>
 
-                <button class="button-outlined" mat-flat-button>
+                <button class="button-outlined u-mb--10" mat-flat-button>
                     Open contract module for client
                 </button>
+                <div fxLayout="row" fxLayoutAlign="start center" class="u-mb--20">
+                    <span class="icon-in-progress u-mr--5">
+                        <mat-icon svgIcon="in-progress-icon"></mat-icon>
+                    </span>
+                    <span class="sync-hint-text">
+                        In progress
+                    </span>
+                </div>
             </form>
         </mat-expansion-panel>
     </mat-accordion>
