@@ -11,6 +11,8 @@ import { WorkflowContractsClientDataForm, WorkflowContractsConsultantsDataForm, 
 export class WorkflowContractsComponent implements OnInit {
     @Input() workflowId: number;
     @Input() editWorfklow: boolean;
+    @Input() extendWorkflow: boolean;
+
     contactSummaryForm: WorkflowContractsSummaryForm;
     contractsMainDataForm: WorkflowContractsMainForm;
     contractsClientDataForm: WorkflowContractsClientDataForm;

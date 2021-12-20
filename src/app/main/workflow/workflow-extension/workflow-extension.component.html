@@ -78,10 +78,10 @@
             <!-- EDIT WORKFLOW -->
             <!-- TODO: add isExtension param -->
             <ng-container *ngSwitchCase="'ExtendSales'">
-                <app-workflow-sales #workflowSales [workflowId]="workflowId"></app-workflow-sales>
+                <app-workflow-sales #workflowSales [workflowId]="workflowId" [extendWorkflow]="true"></app-workflow-sales>
             </ng-container>
             <ng-container *ngSwitchCase="'ExtendContracts'">
-                <app-workflow-contracts #workflowContracts [workflowId]="workflowId"></app-workflow-contracts>
+                <app-workflow-contracts #workflowContracts [workflowId]="workflowId" [extendWorkflow]="true"></app-workflow-contracts>
             </ng-container>
             <!-- <ng-container *ngSwitchCase="'Finance'">
                 <app-workflow-finances #workflowFinances [workflowId]="workflowId"></app-workflow-finances>

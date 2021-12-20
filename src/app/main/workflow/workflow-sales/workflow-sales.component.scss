@@ -34,6 +34,46 @@
     //         width: 150px;
     //     }
     // }
+    &-sales {
+        padding-left: 8px;
+    }
+
+    &-extension {
+        &--gray-header {
+            margin-bottom: 8px !important;
+            font-weight: bold;
+            font-size: 14px;
+            line-height: 14px;
+            color: #B6B4B2
+        }
+        &--blue-text {
+            font-weight: bold;
+            font-size: 16px;
+            line-height: 16px;
+            color: rgba(56, 72, 83, 0.87);
+        }
+
+        &--consultant-data {
+            &--consultant {
+                &-text {
+                    font-family: 'Open Sans';
+                    font-weight: 600;
+                    font-size: 14px;
+                    line-height: 150%;
+                    color: rgba(56, 72, 83, 0.87);
+                }
+                &-name {
+                    font-weight: 800;
+                    font-size: 16px;
+                    color: $dark-grey-color;
+                }
+                &-img {
+                    border-radius: 50%;
+                }
+            }
+
+        }
+    }
 }
 
 .hide {

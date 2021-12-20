@@ -5,6 +5,7 @@ export class WorkflowSalesMainForm extends FormGroup {
         super({
             salesType: new FormControl(null),
             deliveryType: new FormControl(null),
+            projectType: new FormControl(null),
             margin: new FormControl(null),
             projectCategory: new FormControl(null),
             projectDescription: new FormControl(null),
@@ -22,6 +23,9 @@ export class WorkflowSalesMainForm extends FormGroup {
 
     get salesType() {
         return this.get('salesType');
+    }
+    get projectType() {
+        return this.get('projectType');
     }
     get deliveryType() {
         return this.get('deliveryType');
