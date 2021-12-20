@@ -451,5 +451,12 @@ export class AppModule {
             )
         );
 
+        iconRegistry.addSvgIcon(
+            'in-progress-icon',
+            sanitizer.bypassSecurityTrustResourceUrl(
+                'assets/common/images/in-progress-icon.svg'
+            )
+        );
+
     }
 }
