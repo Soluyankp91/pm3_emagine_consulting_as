@@ -163,7 +163,8 @@ mat-tab-group.client-details--tabs {
         }
 
         &:first-of-type {
-            margin-left: 75px !important;
+            // margin-left: 75px !important;
+            width: 20%;
         }
 
         // &:last-of-type {

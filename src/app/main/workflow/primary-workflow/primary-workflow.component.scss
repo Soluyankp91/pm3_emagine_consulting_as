@@ -6,9 +6,10 @@
 }
 .workflow-navigation {
     &--wrapper {
-        height: 70vh;
+        height: 73vh;
         position: sticky;
         top: 135px;
+        border-right: 1px solid #E7E3E8;
     }
     &--step {
         cursor: pointer;
