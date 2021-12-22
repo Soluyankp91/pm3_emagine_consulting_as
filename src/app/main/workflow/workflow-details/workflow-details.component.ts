@@ -16,6 +16,7 @@ import { WorkflowDataService } from '../workflow-data.service';
 import { WorkflowOverviewComponent } from '../workflow-overview/workflow-overview.component';
 import { WorkflowSalesComponent } from '../workflow-sales/workflow-sales.component';
 import { WorkflowSalesExtensionForm, WorkflowTerminationSalesForm, SideMenuTabsDto, WorkflowProgressStatus, WorkflowTopSections, WorkflowSteps, WorkflowSideSections } from '../workflow.model';
+import { InternalLookupService } from 'src/app/shared/common/internal-lookup.service';
 
 @Component({
   selector: 'app-workflow-details',
@@ -58,7 +59,9 @@ export class WorkflowDetailsComponent implements OnInit, OnDestroy, AfterViewIni
         private activatedRoute: ActivatedRoute,
         private overlay: Overlay,
         private dialog: MatDialog,
-        private scrollDispatcher: ScrollDispatcher, private zone: NgZone
+        private scrollDispatcher: ScrollDispatcher,
+        private zone: NgZone,
+        private _lookupService: InternalLookupService
     ) {
         this.salesExtensionForm = new WorkflowSalesExtensionForm();
         this.terminationSalesForm = new WorkflowTerminationSalesForm();
@@ -72,7 +75,7 @@ export class WorkflowDetailsComponent implements OnInit, OnDestroy, AfterViewIni
         });
         this.menuTabs = new Array<SideMenuTabsDto>(...this._workflowDataService.topMenuTabs);
         this.componentInitalized = true;
-        this._workflowDataService.getData();
+        this._lookupService.getData();
     }
 
     ngAfterViewInit(): void {

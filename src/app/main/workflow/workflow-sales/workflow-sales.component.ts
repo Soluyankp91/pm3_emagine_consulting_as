@@ -5,6 +5,7 @@ import { MatDialog } from '@angular/material/dialog';
 import { ActivatedRoute } from '@angular/router';
 import { Subject } from 'rxjs';
 import { finalize, takeUntil } from 'rxjs/operators';
+import { InternalLookupService } from 'src/app/shared/common/internal-lookup.service';
 import { ConfirmationDialogComponent } from 'src/app/shared/components/confirmation-dialog/confirmation-dialog.component';
 import { AppComopnentBase } from 'src/shared/app-component-base';
 import { ClientRateDto, ConsultantSalesDataDto, ContractSignerDto, EnumEntityTypeDto, EnumServiceProxy, SalesAdditionalDataDto, SalesClientDataDto, SalesMainDataDto, SignerRole, WorkflowSalesDataDto, WorkflowsServiceProxy } from 'src/shared/service-proxies/service-proxies';
@@ -82,7 +83,8 @@ export class WorkflowSalesComponent extends AppComopnentBase implements OnInit {
         private _workflodDataService: WorkflowDataService,
         private activatedRoute: ActivatedRoute,
         private overlay: Overlay,
-        private dialog: MatDialog
+        private dialog: MatDialog,
+        private _lookupService: InternalLookupService
     ) {
         super(injector);
         this.salesMainClientDataForm = new WorkflowSalesClientDataForm();
@@ -162,7 +164,7 @@ export class WorkflowSalesComponent extends AppComopnentBase implements OnInit {
     //#region dataFetch
 
     getCurrencies() {
-        this._workflodDataService.getCurrencies()
+        this._lookupService.getCurrencies()
             .pipe(finalize(() => {
 
             }))
@@ -172,7 +174,7 @@ export class WorkflowSalesComponent extends AppComopnentBase implements OnInit {
     }
 
     getUnitTypes() {
-        this._workflodDataService.getUnitTypes()
+        this._lookupService.getUnitTypes()
             .pipe(finalize(() => {
 
             }))
@@ -182,7 +184,7 @@ export class WorkflowSalesComponent extends AppComopnentBase implements OnInit {
     }
 
     getDeliveryTypes() {
-        this._workflodDataService.getDeliveryTypes()
+        this._lookupService.getDeliveryTypes()
             .pipe(finalize(() => {
 
             }))
@@ -192,7 +194,7 @@ export class WorkflowSalesComponent extends AppComopnentBase implements OnInit {
     }
 
     getSaleTypes() {
-        this._workflodDataService.getSaleTypes()
+        this._lookupService.getSaleTypes()
             .pipe(finalize(() => {
 
             }))
@@ -202,7 +204,7 @@ export class WorkflowSalesComponent extends AppComopnentBase implements OnInit {
     }
 
     getInvoicingTimes() {
-        this._workflodDataService.getInvoicingTimes()
+        this._lookupService.getInvoicingTimes()
             .pipe(finalize(() => {
 
             }))
@@ -212,7 +214,7 @@ export class WorkflowSalesComponent extends AppComopnentBase implements OnInit {
     }
 
     getInvoiceFrequencies() {
-        this._workflodDataService.getInvoiceFrequencies()
+        this._lookupService.getInvoiceFrequencies()
             .pipe(finalize(() => {
 
             }))
@@ -222,7 +224,7 @@ export class WorkflowSalesComponent extends AppComopnentBase implements OnInit {
     }
 
     getSignerRoles() {
-        this._workflodDataService.getSignerRoles()
+        this._lookupService.getSignerRoles()
             .pipe(finalize(() => {
 
             }))
@@ -233,7 +235,7 @@ export class WorkflowSalesComponent extends AppComopnentBase implements OnInit {
 
 
     getMargins() {
-        this._workflodDataService.getMargins()
+        this._lookupService.getMargins()
             .pipe(finalize(() => {
 
             }))
@@ -243,7 +245,7 @@ export class WorkflowSalesComponent extends AppComopnentBase implements OnInit {
     }
 
     getExtensionDeadlines() {
-        this._workflodDataService.getExtensionDeadlines()
+        this._lookupService.getExtensionDeadlines()
             .pipe(finalize(() => {
 
             }))
@@ -253,7 +255,7 @@ export class WorkflowSalesComponent extends AppComopnentBase implements OnInit {
     }
 
     getExtensionDurations() {
-        this._workflodDataService.getExtensionDurations()
+        this._lookupService.getExtensionDurations()
             .pipe(finalize(() => {
 
             }))
@@ -263,7 +265,7 @@ export class WorkflowSalesComponent extends AppComopnentBase implements OnInit {
     }
 
     getSpecialFeeFrequencies() {
-        this._workflodDataService.getSpecialFeeFrequencies()
+        this._lookupService.getSpecialFeeFrequencies()
             .pipe(finalize(() => {
 
             }))
@@ -273,7 +275,7 @@ export class WorkflowSalesComponent extends AppComopnentBase implements OnInit {
     }
 
     getSpecialFeeSpecifications() {
-        this._workflodDataService.getSpecialFeeSpecifications()
+        this._lookupService.getSpecialFeeSpecifications()
             .pipe(finalize(() => {
 
             }))
@@ -283,7 +285,7 @@ export class WorkflowSalesComponent extends AppComopnentBase implements OnInit {
     }
 
     getSpecialRateOrFeeDirections() {
-        this._workflodDataService.getSpecialRateOrFeeDirections()
+        this._lookupService.getSpecialRateOrFeeDirections()
             .pipe(finalize(() => {
 
             }))
@@ -293,7 +295,7 @@ export class WorkflowSalesComponent extends AppComopnentBase implements OnInit {
     }
 
     getSpecialRateReportUnits() {
-        this._workflodDataService.getSpecialRateReportUnits()
+        this._lookupService.getSpecialRateReportUnits()
             .pipe(finalize(() => {
 
             }))
@@ -303,7 +305,7 @@ export class WorkflowSalesComponent extends AppComopnentBase implements OnInit {
     }
 
     getSpecialRateSpecifications() {
-        this._workflodDataService.getSpecialRateSpecifications()
+        this._lookupService.getSpecialRateSpecifications()
             .pipe(finalize(() => {
 
             }))

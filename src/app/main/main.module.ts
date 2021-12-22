@@ -32,6 +32,7 @@ import { DynamicComponentLoaderComponent } from './workflow/dynamic-component-lo
 import { WorkflowFinancesComponent } from './workflow/workflow-finances/workflow-finances.component';
 import { WorkflowChangeDialogComponent } from './workflow/workflow-change-dialog/workflow-change-dialog.component';
 import { ExtendWorkflowDialogComponent } from './workflow/extend-workflow-dialog/extend-workflow-dialog.component';
+import { ClientRatesAndFeesComponent } from './client-list/client-rates-and-fees/client-rates-and-fees.component';
 
 
 @NgModule({
@@ -66,7 +67,8 @@ import { ExtendWorkflowDialogComponent } from './workflow/extend-workflow-dialog
         DynamicComponentLoaderComponent,
         WorkflowFinancesComponent,
         WorkflowChangeDialogComponent,
-        ExtendWorkflowDialogComponent
+        ExtendWorkflowDialogComponent,
+        ClientRatesAndFeesComponent
     ],
     imports: [
         CommonModule,
