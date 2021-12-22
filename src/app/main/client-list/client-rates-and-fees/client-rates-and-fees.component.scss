@@ -1,6 +1,22 @@
 @import "/src/app/shared/styles/config/_colors";
 
 .client-rates {
+    padding: 0 15px;
+    &--header {
+        font-size: 21px;
+        line-height: 21px;
+        font-weight: 800;
+        color: $dark-grey-color;
+    }
+    &--hint {
+        font-weight: 400;
+        font-size: 14px;
+        color: rgba($color: #384853, $alpha: 0.87);
+    }
+    &--section__header {
+        font-weight: 800;
+        color: $dark-grey-color;
+    }
     &--form {
         padding: 0;
         &__header {

@@ -1,5 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { FormArray, FormBuilder, FormControl } from '@angular/forms';
+import { MatSlideToggleChange } from '@angular/material/slide-toggle';
 import { InternalLookupService } from 'src/app/shared/common/internal-lookup.service';
 import { EnumEntityTypeDto, EnumServiceProxy } from 'src/shared/service-proxies/service-proxies';
 import { ClientFeesForm, ClientSpecailRateForm } from './client-rates-and-fees.model';
@@ -21,6 +22,9 @@ export class ClientRatesAndFeesComponent implements OnInit {
     clientSpecialFeeSpecifications: EnumEntityTypeDto[];
     clientSpecialRateSpecifications: EnumEntityTypeDto[];
     clientSpecialRateOrFeeDirections: EnumEntityTypeDto[];
+
+    showHiddenSpecialRates = true;
+    showHiddenSpecialFees = true;
     constructor(
         private _fb: FormBuilder,
         private _lookupService: InternalLookupService
@@ -35,6 +39,7 @@ export class ClientRatesAndFeesComponent implements OnInit {
         this.getSpecialRatesReportingUnits();
         this.getSpecialFeeSpecifications();
         this.getSpecialRateSpecifications();
+        this.getSpecialRateOrFeeDirections();
     }
 
     getCurrencies() {
@@ -91,7 +96,8 @@ export class ClientRatesAndFeesComponent implements OnInit {
             proDataRate: new FormControl(null),
             consultantRate: new FormControl(null),
             categoryId: new FormControl(null),
-            editable: new FormControl(true)
+            editable: new FormControl(true),
+            hidden: new FormControl(false)
         });
         this.clientSpecailRateForm.specialRates.push(form);
     }
@@ -108,6 +114,10 @@ export class ClientRatesAndFeesComponent implements OnInit {
         this.specialRates.at(index).get('editable')?.setValue(!this.specialRates.at(index).get('editable')?.value, {emitEvent: false});
     }
 
+    toggleSpecialRateHiddenState(index: number) {
+        this.specialRates.at(index).get('hidden')?.setValue(!this.specialRates.at(index).get('hidden')?.value);
+    }
+
     addClientFee() {
         const form = this._fb.group({
             rateName: new FormControl(null),
@@ -120,7 +130,8 @@ export class ClientRatesAndFeesComponent implements OnInit {
             proDataRate: new FormControl(null),
             consultantRate: new FormControl(null),
             categoryId: new FormControl(null),
-            editable: new FormControl(true)
+            editable: new FormControl(true),
+            hidden: new FormControl(false)
         });
         this.clientFeesForm.clientFees.push(form);
     }
@@ -135,6 +146,26 @@ export class ClientRatesAndFeesComponent implements OnInit {
 
     editOrSaveClientFee(index: number) {
         this.clientFees.at(index).get('editable')?.setValue(!this.clientFees.at(index).get('editable')?.value, {emitEvent: false});
+    }
+
+    toggleSpecialFeeHiddenState(index: number) {
+        this.clientFees.at(index).get('hidden')?.setValue(!this.clientFees.at(index).get('hidden')?.value);
+    }
+
+    showHideSpecialRatesToggle(event: MatSlideToggleChange) {
+        if (event.checked) {
+            // logic to show hidden rows
+        } else {
+            // logic to hide hidden rows
+        }
+    }
+
+    showHideSpecialFeesToggle(event: MatSlideToggleChange) {
+        if (event.checked) {
+            // logic to show hidden rows
+        } else {
+            // logic to hide hidden rows
+        }
     }
 
 }
