@@ -465,5 +465,19 @@ export class AppModule {
             )
         );
 
+        iconRegistry.addSvgIcon(
+            'icon-show',
+            sanitizer.bypassSecurityTrustResourceUrl(
+                'assets/common/images/icon-show.svg'
+            )
+        );
+
+        iconRegistry.addSvgIcon(
+            'icon-hide',
+            sanitizer.bypassSecurityTrustResourceUrl(
+                'assets/common/images/icon-hide.svg'
+            )
+        );
+
     }
 }
