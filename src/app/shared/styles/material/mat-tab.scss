@@ -5,7 +5,8 @@ mat-tab-group.client-details--tabs {
         box-shadow: 0px 0px 20px rgba(26, 35, 126, 0.15);
     }
     mat-ink-bar {
-        display: none;
+        background-color: #17A297 !important;
+        height: 4px;
     }
 
     .mat-tab-header {
@@ -13,23 +14,24 @@ mat-tab-group.client-details--tabs {
     }
 
     .mat-tab-label-container {
-        padding-top: 25px;
+        padding-top: 0 !important;
+        margin: 0 75px;
     }
     .mat-tab-label {
-        min-width: 115px;
-        font-weight: 400;
-        font-size: 12px;
-        background-color: #00000005;
-        box-shadow: 0px 0px 20px rgb(26 35 126 / 15%);
-        border-radius: 5px 5px 0px 0px;
+        background-color: transparent !important;
+        padding: 0 24px !important;
+        min-width: 160px !important;
+        font-weight: 700 !important;
+        font-size: 16px !important;
+        line-height: 16px !important;
         opacity: 1;
-        height: 27px;
+        height: 48px;
         margin-right: 5px;
 
         &-active,
         &:hover {
-            background-color: #ffffff;
-            box-shadow: 0px 0px 20px rgba(26, 35, 126, 0.15);
+            background-color: transparent !important;
+            // box-shadow: 0px 0px 20px rgba(26, 35, 126, 0.15);
         }
 
         &:last-of-type {
@@ -37,9 +39,14 @@ mat-tab-group.client-details--tabs {
             margin-right: 0;
         }
     }
+    .mat-tab-body-content {
+        height: calc(100vh - 200px);
+        // min-height: calc(100vh - 200px);
+        padding: 16px 60px;
+    }
 }
 
-.client-documents {
+mat-tab-group.client-documents--tabs {
     .mat-tab-body-wrapper {
         box-shadow: unset !important;
     }
@@ -56,26 +63,31 @@ mat-tab-group.client-details--tabs {
 
     .mat-tab-label-container {
         padding-top: 0 !important;
+        margin: 0 !important;
     }
     .mat-tab-label {
         height: 48px !important;
         padding: 0 24px !important;
         min-width: 160px !important;
         font-weight: 700 !important;
-        font-size: 12px !important;
+        font-size: 16px !important;
         line-height: 16px !important;
-        color: #384853 !important;
+        color: $dark-grey-color !important;
         box-shadow: unset !important;
-        background-color: #ffffff !important;
+        background-color: transparent !important;
         &-active,
         &:hover {
-            background-color: #ffffff;
+            // background-color: #ffffff;
             box-shadow: unset !important;
         }
 
         &:last-of-type {
             margin-left: 0 !important;
         }
+    }
+    .mat-tab-body-content {
+        min-height: unset !important;
+        padding: 16px 0 !important;
     }
 }
 
@@ -127,6 +139,9 @@ mat-tab-group.client-details--tabs {
         background-color: #fff;
         margin-right: 5px;
         box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.15);
+        &:first-of-type {
+            justify-content: flex-start;
+        }
         .mat-tab-label-content {
             flex-direction: column;
             align-items: flex-start;

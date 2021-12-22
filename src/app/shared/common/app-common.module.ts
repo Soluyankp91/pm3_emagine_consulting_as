@@ -9,6 +9,7 @@ import { FileUploaderComponent } from '../components/file-uploader/file-uploader
 import { FileDragAndDropDirective } from '../components/file-uploader/file-drag-and-drop.directive';
 import { ScrollToModule } from '@nicky-lenaers/ngx-scroll-to';
 import { NgScrollbarModule } from 'ngx-scrollbar';
+import { InternalLookupService } from './internal-lookup.service';
 
 @NgModule({
     declarations: [
@@ -36,7 +37,8 @@ import { NgScrollbarModule } from 'ngx-scrollbar';
         NgScrollbarModule
     ],
     providers: [
-        ErrorDialogService
+        ErrorDialogService,
+        InternalLookupService
     ],
     entryComponents: [
         ErrorDialogComponent
