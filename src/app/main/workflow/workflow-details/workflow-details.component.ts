@@ -6,7 +6,7 @@ import { MatTabChangeEvent } from '@angular/material/tabs';
 import { ActivatedRoute } from '@angular/router';
 import { NgScrollbar } from 'ngx-scrollbar';
 import { Subject } from 'rxjs';
-import { startWith, takeUntil } from 'rxjs/operators';
+import { takeUntil } from 'rxjs/operators';
 import { EnumEntityTypeDto } from 'src/shared/service-proxies/service-proxies';
 import { ExtendWorkflowDialogComponent } from '../extend-workflow-dialog/extend-workflow-dialog.component';
 import { WorkflowExtensionComponent } from '../workflow-extension/workflow-extension.component';
@@ -16,6 +16,7 @@ import { WorkflowDataService } from '../workflow-data.service';
 import { WorkflowOverviewComponent } from '../workflow-overview/workflow-overview.component';
 import { WorkflowSalesComponent } from '../workflow-sales/workflow-sales.component';
 import { WorkflowSalesExtensionForm, WorkflowTerminationSalesForm, SideMenuTabsDto, WorkflowProgressStatus, WorkflowTopSections, WorkflowSteps, WorkflowSideSections } from '../workflow.model';
+import { EditWorkflowDto } from '../primary-workflow/primary-workflow.model';
 import { InternalLookupService } from 'src/app/shared/common/internal-lookup.service';
 
 @Component({
@@ -53,6 +54,7 @@ export class WorkflowDetailsComponent implements OnInit, OnDestroy, AfterViewIni
     extensionIndex: number | null;
     componentInitalized = false;
     menuTabs: SideMenuTabsDto[];
+
     private _unsubscribe = new Subject();
     constructor(
         public _workflowDataService: WorkflowDataService,
@@ -500,8 +502,9 @@ export class WorkflowDetailsComponent implements OnInit, OnDestroy, AfterViewIni
             }
         });
 
-        dialogRef.componentInstance.onConfimrmed.subscribe(() => {
+        dialogRef.componentInstance.onConfirmed.subscribe(() => {
             // confirmed
+            this._workflowDataService.workflowSideNavigation.push(EditWorkflowDto);
         });
 
         dialogRef.componentInstance.onRejected.subscribe(() => {
