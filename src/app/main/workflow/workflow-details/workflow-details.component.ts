@@ -6,7 +6,7 @@ import { MatTabChangeEvent } from '@angular/material/tabs';
 import { ActivatedRoute } from '@angular/router';
 import { NgScrollbar } from 'ngx-scrollbar';
 import { Subject } from 'rxjs';
-import { startWith, takeUntil } from 'rxjs/operators';
+import { takeUntil } from 'rxjs/operators';
 import { EnumEntityTypeDto } from 'src/shared/service-proxies/service-proxies';
 import { ExtendWorkflowDialogComponent } from '../extend-workflow-dialog/extend-workflow-dialog.component';
 import { WorkflowExtensionComponent } from '../workflow-extension/workflow-extension.component';
@@ -17,7 +17,7 @@ import { WorkflowOverviewComponent } from '../workflow-overview/workflow-overvie
 import { WorkflowSalesComponent } from '../workflow-sales/workflow-sales.component';
 import { WorkflowSalesExtensionForm, WorkflowTerminationSalesForm, SideMenuTabsDto, WorkflowProgressStatus, WorkflowTopSections, WorkflowSteps, WorkflowSideSections } from '../workflow.model';
 import { EditWorkflowDto } from '../primary-workflow/primary-workflow.model';
-import { SideNavigationParentItemDto } from '../workflow-extension/workflow-extension.model';
+import { InternalLookupService } from 'src/app/shared/common/internal-lookup.service';
 
 @Component({
   selector: 'app-workflow-details',
@@ -61,7 +61,9 @@ export class WorkflowDetailsComponent implements OnInit, OnDestroy, AfterViewIni
         private activatedRoute: ActivatedRoute,
         private overlay: Overlay,
         private dialog: MatDialog,
-        private scrollDispatcher: ScrollDispatcher, private zone: NgZone
+        private scrollDispatcher: ScrollDispatcher,
+        private zone: NgZone,
+        private _lookupService: InternalLookupService
     ) {
         this.salesExtensionForm = new WorkflowSalesExtensionForm();
         this.terminationSalesForm = new WorkflowTerminationSalesForm();
@@ -75,7 +77,7 @@ export class WorkflowDetailsComponent implements OnInit, OnDestroy, AfterViewIni
         });
         this.menuTabs = new Array<SideMenuTabsDto>(...this._workflowDataService.topMenuTabs);
         this.componentInitalized = true;
-        this._workflowDataService.getData();
+        this._lookupService.getData();
     }
 
     ngAfterViewInit(): void {

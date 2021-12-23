@@ -1,0 +1,349 @@
+<div class="client-rates" fxLayout="column" fxLayoutAlign="start start" fxFlexFill>
+    <div fxFlex="10%" fxLayout="column" fxLayoutAlign="start start" class="u-w--100 u-mb--25">
+        <h2 class="client-rates--header u-mb--15">Rates & Fees</h2>
+        <div class="u-w--50" fxLayout="row" fxLayoutAlign="start center">
+            <mat-icon svgIcon="info_icon" class="u-mr--16"></mat-icon>
+            <p class="client-rates--hint">
+                Changing these will only create new easy to apply defaults for future workflow steps.
+                <br/>
+                It <strong>will not</strong> change any active contracts without also making a new Workflow extension or Change to apply them.
+            </p>
+        </div>
+    </div>
+    <div fxFlex="90%" fxLayout="column" fxLayoutAlign="start start" class="u-w--100">
+        <div fxLayout="column" fxLayoutAlign="start start" class="u-w--100 u-mb--40">
+            <h3 class="client-rates--section__header u-mb--15">Client Special Rates</h3>
+            <form [formGroup]="clientSpecailRateForm" class="client-rates--form u-w--100">
+                <div fxLayout="row" fxLayoutAlign="space-between start" fxLayoutGap="10px" class="client-rates--form__header-container u-w--100" *ngIf="clientSpecailRateForm.specialRates?.controls?.length">
+                    <span fxFlex="10%" class="client-rates--form__header u-w--100">
+                        Rate name
+                    </span>
+                    <span fxFlex="10%" class="client-rates--form__header u-w--100">
+                        Name for invoices
+                    </span>
+                    <span fxFlex="10%" class="client-rates--form__header u-w--100">
+                        Rate direction
+                    </span>
+                    <span fxFlex="10%" class="client-rates--form__header u-w--100">
+                        Reporting unit
+                    </span>
+                    <span fxFlex="10%" class="client-rates--form__header u-w--100">
+                        Rate specified as
+                    </span>
+                    <span fxFlex="10%" class="client-rates--form__header u-w--100">
+                        Client rate
+                    </span>
+                    <span fxFlex="10%" class="client-rates--form__header u-w--100">
+                        ProData rate
+                    </span>
+                    <span fxFlex="10%" class="client-rates--form__header u-w--100">
+                        Consultant rate
+                    </span>
+                    <span fxFlex="10%" class="client-rates--form__header u-w--100">
+                        Category
+                    </span>
+                    <span fxFlex="10%" class="client-rates--form__header u-w--100">
+
+                    </span>
+                </div>
+                <ng-container formArrayName="specialRates" class="u-w--100">
+                    <div fxLayout="row" fxLayoutAlign="space-between center" fxLayoutGap="10px" class="client-rates--form__row u-w--100"
+                        [fxHide]="clientSpecailRateForm.specialRates.at(i).get('hidden')?.value && !showHiddenSpecialRates"
+                        *ngFor="let rate of clientSpecailRateForm.specialRates.controls; index as i"
+                        [formArrayName]="i">
+                        <ng-container *ngIf="clientSpecailRateForm.specialRates.at(i).get('editable')?.value">
+                            <mat-form-field appearance="fill" class="u-w--100 formFieldNoMarginPadding filter-select" fxFlex="10%">
+                                <input matInput type="text" formControlName="rateName" placeholder="Rate name" />
+                            </mat-form-field>
+                            <mat-form-field appearance="fill" class="u-w--100 formFieldNoMarginPadding filter-select" fxFlex="10%">
+                                <input matInput type="text" formControlName="nameForInvoices" placeholder="Name for invoicing" />
+                            </mat-form-field>
+                            <mat-form-field appearance="fill" class="u-w--100 formFieldNoMarginPadding filter-select" fxFlex="10%">
+                                <mat-select formControlName="rateDirection" placeholder="Rate direction" [disableOptionCentering]="true">
+                                    <mat-option *ngFor="let item of clientSpecialRateOrFeeDirections" [value]="item.id">
+                                        {{ item.name }}
+                                    </mat-option>
+                                </mat-select>
+                            </mat-form-field>
+                            <mat-form-field appearance="fill" class="u-w--100 formFieldNoMarginPadding filter-select" fxFlex="10%">
+                                <mat-select formControlName="reportingUnit" placeholder="Reporting Unit" [disableOptionCentering]="true">
+                                    <mat-option *ngFor="let item of clientSpecialRateReportUnits" [value]="item.id">
+                                        {{ item.name }}
+                                    </mat-option>
+                                </mat-select>
+                            </mat-form-field>
+                            <mat-form-field appearance="fill" class="u-w--100 formFieldNoMarginPadding filter-select" fxFlex="10%">
+                                <mat-select formControlName="rateSpecifiedAs" placeholder="Rate specified as" [disableOptionCentering]="true">
+                                    <mat-option *ngFor="let item of clientSpecialRateSpecifications" [value]="item.id">
+                                        {{ item.name }}
+                                    </mat-option>
+                                </mat-select>
+                            </mat-form-field>
+                            <div fxFlex="10%" fxLayout="row" fxLayoutAlign="start start">
+                                <mat-form-field appearance="fill" class="u-w--100 formFieldNoMarginPadding filter-select" fxFlex="40%">
+                                    <input matInput type="text" placeholder="Rate" formControlName="clientRateValue">
+                                </mat-form-field>
+                                <mat-form-field appearance="fill" class="u-w--100 formFieldNoMarginPadding filter-select" fxFlex="60%">
+                                    <mat-select formControlName="clientRateCurrency" placeholder="Currency" [disableOptionCentering]="true">
+                                        <mat-option *ngFor="let item of currencies" [value]="item.id">
+                                            {{ item.name }}
+                                        </mat-option>
+                                    </mat-select>
+                                </mat-form-field>
+                            </div>
+                            <mat-form-field appearance="fill" class="u-w--100 formFieldNoMarginPadding filter-select" fxFlex="10%">
+                                <input matInput type="text" formControlName="proDataRate" placeholder="ProData rate" />
+                            </mat-form-field>
+                            <mat-form-field appearance="fill" class="u-w--100 formFieldNoMarginPadding filter-select" fxFlex="10%">
+                                <input matInput type="text" formControlName="consultantRate" placeholder="Consultant rate" />
+                            </mat-form-field>
+                            <mat-form-field appearance="fill" class="u-w--100 formFieldNoMarginPadding filter-select" fxFlex="10%">
+                                <mat-select formControlName="categoryId" placeholder="Category" [disableOptionCentering]="true">
+                                    <mat-option *ngFor="let item of [0,1,2,3]" [value]="item">
+                                        {{ item }}
+                                    </mat-option>
+                                </mat-select>
+                            </mat-form-field>
+                        </ng-container>
+                        <ng-container *ngIf="!clientSpecailRateForm.specialRates.at(i).get('editable')?.value">
+                            <span fxFlex="10%" class="u-w--100">
+                                {{clientSpecailRateForm.specialRates.at(i).get('rateName')?.value ?? '-'}}
+                            </span>
+                            <span fxFlex="10%" class="u-w--100">
+                                {{clientSpecailRateForm.specialRates.at(i).get('nameForInvoices')?.value ?? '-'}}
+                            </span>
+                            <span fxFlex="10%" class="u-w--100">
+                                {{clientSpecailRateForm.specialRates.at(i).get('rateDirection')?.value ?? '-'}}
+                            </span>
+                            <span fxFlex="10%" class="u-w--100">
+                                {{clientSpecailRateForm.specialRates.at(i).get('reportingUnit')?.value ?? '-'}}
+                            </span>
+                            <span fxFlex="10%" class="u-w--100">
+                                {{clientSpecailRateForm.specialRates.at(i).get('rateSpecifiedAs')?.value ?? '-'}}
+                            </span>
+                            <span fxFlex="10%" class="u-w--100">
+                                {{clientSpecailRateForm.specialRates.at(i).get('clientRateValue')?.value || clientSpecailRateForm.specialRates.at(i).get('clientRateCurrency')?.value ?
+                                clientSpecailRateForm.specialRates.at(i).get('clientRateValue')?.value + ' ' + clientSpecailRateForm.specialRates.at(i).get('clientRateCurrency')?.value : '-'}}
+                            </span>
+                            <span fxFlex="10%" class="u-w--100">
+                                {{clientSpecailRateForm.specialRates.at(i).get('proDataRate')?.value ?? '-'}}
+                            </span>
+                            <span fxFlex="10%" class="u-w--100">
+                                {{clientSpecailRateForm.specialRates.at(i).get('consultantRate')?.value ?? '-'}}
+                            </span>
+                            <span fxFlex="10%" class="u-w--100">
+                                {{clientSpecailRateForm.specialRates.at(i).get('categoryId')?.value ?? '-'}}
+                            </span>
+                        </ng-container>
+                        <div fxFlex="10%" fxLayoutAlign="center center" class="u-w--100">
+                            <button mat-icon-button [matMenuTriggerFor]="clientRateMenu" class="client-rates-icon--actions"><mat-icon>more_horiz</mat-icon></button>
+                            <mat-menu #clientRateMenu>
+                                <button
+                                    class="menu-item"
+                                    [ngClass]="clientSpecailRateForm.specialRates.at(i).get('editable')?.value ? 'menu-item--add': 'menu-item--edit'"
+                                    mat-menu-item
+                                    [disabled]="false"
+                                    (click)="editOrSaveSpecialRate(i)">
+                                    <mat-icon>{{clientSpecailRateForm.specialRates.at(i).get('editable')?.value ? 'save' : 'create'}}</mat-icon>
+                                    {{clientSpecailRateForm.specialRates.at(i).get('editable')?.value ? 'Save' : 'Edit'}}
+                                </button>
+                                <button
+                                    class="menu-item"
+                                    mat-menu-item
+                                    [disabled]="false"
+                                    (click)="toggleSpecialRateHiddenState(i)">
+                                    <mat-icon [svgIcon]="clientSpecailRateForm.specialRates.at(i).get('hidden')?.value ? 'icon-show' : 'icon-hide'"></mat-icon>
+                                    {{clientSpecailRateForm.specialRates.at(i).get('hidden')?.value ? 'Show' : 'Hide'}}
+                                </button>
+                                <button
+                                    class="menu-item menu-item--cancel"
+                                    mat-menu-item
+                                    (click)="removeSpecialRate(i)">
+                                    <mat-icon>clear</mat-icon>
+                                    Remove
+                                </button>
+                            </mat-menu>
+                        </div>
+                    </div>
+                </ng-container>
+            </form>
+            <div fxLayout="row" fxLayoutAlign="space-between center" class="u-w--100">
+                <button class="button-add mat-elevation-z0" mat-flat-button (click)="addSpecialRate()">
+                    <mat-icon>add</mat-icon>
+                    Add Special Rate
+                </button>
+                <mat-slide-toggle [(ngModel)]="showHiddenSpecialRates" labelPosition="before" (change)="showHideSpecialRatesToggle($event)">
+                    {{showHiddenSpecialRates ? 'Show hidden' : 'Hide hidden'}}
+                </mat-slide-toggle>
+            </div>
+        </div>
+        <div fxLayout="column" fxLayoutAlign="start start" class="u-w--100">
+            <h3 class="client-rates--section__header u-mb--15">Client Fees</h3>
+            <form [formGroup]="clientFeesForm" class="client-rates--form u-w--100">
+                <div fxLayout="row" fxLayoutAlign="space-between start" fxLayoutGap="10px" class="client-rates--form__header-container u-w--100" *ngIf="clientFeesForm.clientFees?.controls?.length">
+                    <span fxFlex="10%" class="client-rates--form__header u-w--100">
+                        Rate name
+                    </span>
+                    <span fxFlex="10%" class="client-rates--form__header u-w--100">
+                        Name for invoices
+                    </span>
+                    <span fxFlex="10%" class="client-rates--form__header u-w--100">
+                        Rate direction
+                    </span>
+                    <span fxFlex="10%" class="client-rates--form__header u-w--100">
+                        Reporting unit
+                    </span>
+                    <span fxFlex="10%" class="client-rates--form__header u-w--100">
+                        Rate specified as
+                    </span>
+                    <span fxFlex="10%" class="client-rates--form__header u-w--100">
+                        Client rate
+                    </span>
+                    <span fxFlex="10%" class="client-rates--form__header u-w--100">
+                        ProData rate
+                    </span>
+                    <span fxFlex="10%" class="client-rates--form__header u-w--100">
+                        Consultant rate
+                    </span>
+                    <span fxFlex="10%" class="client-rates--form__header u-w--100">
+                        Category
+                    </span>
+                    <span fxFlex="10%" class="client-rates--form__header u-w--100">
+
+                    </span>
+                </div>
+                <ng-container formArrayName="clientFees" class="u-w--100">
+                    <div fxLayout="row" fxLayoutAlign="space-between center" fxLayoutGap="10px" class="client-rates--form__row u-w--100"
+                        [fxHide]="clientFeesForm.clientFees.at(i).get('hidden')?.value && !showHiddenSpecialFees"
+                        *ngFor="let rate of clientFeesForm.clientFees.controls; index as i"
+                        [formArrayName]="i">
+                        <ng-container *ngIf="clientFeesForm.clientFees.at(i).get('editable')?.value">
+                            {{clientFeesForm.clientFees.at(i).get('hidden')?.value}}
+                            <mat-form-field appearance="fill" class="u-w--100 formFieldNoMarginPadding filter-select" fxFlex="10%">
+                                <input matInput type="text" formControlName="rateName" placeholder="Rate name" />
+                            </mat-form-field>
+                            <mat-form-field appearance="fill" class="u-w--100 formFieldNoMarginPadding filter-select" fxFlex="10%">
+                                <input matInput type="text" formControlName="nameForInvoices" placeholder="Name for invoicing" />
+                            </mat-form-field>
+                            <mat-form-field appearance="fill" class="u-w--100 formFieldNoMarginPadding filter-select" fxFlex="10%">
+                                <mat-select formControlName="rateDirection" placeholder="Rate direction" [disableOptionCentering]="true">
+                                    <mat-option *ngFor="let item of clientSpecialRateOrFeeDirections" [value]="item.id">
+                                        {{ item.name }}
+                                    </mat-option>
+                                </mat-select>
+                            </mat-form-field>
+                            <mat-form-field appearance="fill" class="u-w--100 formFieldNoMarginPadding filter-select" fxFlex="10%">
+                                <mat-select formControlName="reportingUnit" placeholder="Reporting Unit" [disableOptionCentering]="true">
+                                    <mat-option *ngFor="let item of clientSpecialRateReportUnits" [value]="item.id">
+                                        {{ item.name }}
+                                    </mat-option>
+                                </mat-select>
+                            </mat-form-field>
+                            <mat-form-field appearance="fill" class="u-w--100 formFieldNoMarginPadding filter-select" fxFlex="10%">
+                                <mat-select formControlName="rateSpecifiedAs" placeholder="Rate specified as" [disableOptionCentering]="true">
+                                    <mat-option *ngFor="let item of clientSpecialFeeSpecifications" [value]="item.id">
+                                        {{ item.name }}
+                                    </mat-option>
+                                </mat-select>
+                            </mat-form-field>
+                            <div fxFlex="10%" fxLayout="row" fxLayoutAlign="start start">
+                                <mat-form-field appearance="fill" class="u-w--100 formFieldNoMarginPadding filter-select" fxFlex="40%">
+                                    <input matInput type="text" placeholder="Rate" formControlName="clientRateValue">
+                                </mat-form-field>
+                                <mat-form-field appearance="fill" class="u-w--100 formFieldNoMarginPadding filter-select" fxFlex="60%">
+                                    <mat-select formControlName="clientRateCurrency" placeholder="Currency" [disableOptionCentering]="true">
+                                        <mat-option *ngFor="let item of currencies" [value]="item.id">
+                                            {{ item.name }}
+                                        </mat-option>
+                                    </mat-select>
+                                </mat-form-field>
+                            </div>
+                            <mat-form-field appearance="fill" class="u-w--100 formFieldNoMarginPadding filter-select" fxFlex="10%">
+                                <input matInput type="text" formControlName="proDataRate" placeholder="ProData rate" />
+                            </mat-form-field>
+                            <mat-form-field appearance="fill" class="u-w--100 formFieldNoMarginPadding filter-select" fxFlex="10%">
+                                <input matInput type="text" formControlName="consultantRate" placeholder="Consultant rate" />
+                            </mat-form-field>
+                            <mat-form-field appearance="fill" class="u-w--100 formFieldNoMarginPadding filter-select" fxFlex="10%">
+                                <mat-select formControlName="categoryId" placeholder="Category" [disableOptionCentering]="true">
+                                    <mat-option *ngFor="let item of [0,1,2,3]" [value]="item">
+                                        {{ item }}
+                                    </mat-option>
+                                </mat-select>
+                            </mat-form-field>
+                        </ng-container>
+                        <ng-container *ngIf="!clientFeesForm.clientFees.at(i).get('editable')?.value">
+                            <span fxFlex="10%" class="u-w--100">
+                                {{clientFeesForm.clientFees.at(i).get('rateName')?.value ?? '-'}}
+                            </span>
+                            <span fxFlex="10%" class="u-w--100">
+                                {{clientFeesForm.clientFees.at(i).get('nameForInvoices')?.value ?? '-'}}
+                            </span>
+                            <span fxFlex="10%" class="u-w--100">
+                                {{clientFeesForm.clientFees.at(i).get('rateDirection')?.value ?? '-'}}
+                            </span>
+                            <span fxFlex="10%" class="u-w--100">
+                                {{clientFeesForm.clientFees.at(i).get('reportingUnit')?.value ?? '-'}}
+                            </span>
+                            <span fxFlex="10%" class="u-w--100">
+                                {{clientFeesForm.clientFees.at(i).get('rateSpecifiedAs')?.value ?? '-'}}
+                            </span>
+                            <span fxFlex="10%" class="u-w--100">
+                                {{clientFeesForm.clientFees.at(i).get('clientRateValue')?.value || clientFeesForm.clientFees.at(i).get('clientRateCurrency')?.value ?
+                                clientFeesForm.clientFees.at(i).get('clientRateValue')?.value + ' ' + clientFeesForm.clientFees.at(i).get('clientRateCurrency')?.value : '-'}}
+                            </span>
+                            <span fxFlex="10%" class="u-w--100">
+                                {{clientFeesForm.clientFees.at(i).get('proDataRate')?.value ?? '-'}}
+                            </span>
+                            <span fxFlex="10%" class="u-w--100">
+                                {{clientFeesForm.clientFees.at(i).get('consultantRate')?.value ?? '-'}}
+                            </span>
+                            <span fxFlex="10%" class="u-w--100">
+                                {{clientFeesForm.clientFees.at(i).get('categoryId')?.value ?? '-'}}
+                            </span>
+                        </ng-container>
+
+                        <div fxFlex="10%" fxLayoutAlign="center center" class="u-w--100">
+                            <button mat-icon-button [matMenuTriggerFor]="clientFeeMenu" class="client-rates-icon--actions"><mat-icon>more_horiz</mat-icon></button>
+                            <mat-menu #clientFeeMenu>
+                                <button
+                                    class="menu-item"
+                                    [ngClass]="clientFeesForm.clientFees.at(i).get('editable')?.value ? 'menu-item--add': 'menu-item--edit'"
+                                    mat-menu-item
+                                    [disabled]="false"
+                                    (click)="editOrSaveClientFee(i)">
+                                    <mat-icon>{{clientFeesForm.clientFees.at(i).get('editable')?.value ? 'save' : 'create'}}</mat-icon>
+                                    {{clientFeesForm.clientFees.at(i).get('editable')?.value ? 'Save' : 'Edit'}}
+                                </button>
+                                <button
+                                    class="menu-item"
+                                    mat-menu-item
+                                    [disabled]="false"
+                                    (click)="toggleSpecialFeeHiddenState(i)">
+                                    <mat-icon [svgIcon]="clientFeesForm.clientFees.at(i).get('hidden')?.value ? 'icon-show' : 'icon-hide'"></mat-icon>
+                                    {{clientFeesForm.clientFees.at(i).get('hidden')?.value ? 'Show' : 'Hide'}}
+                                </button>
+                                <button
+                                    class="menu-item menu-item--cancel"
+                                    mat-menu-item
+                                    (click)="removeClientFee(i)">
+                                    <mat-icon>clear</mat-icon>
+                                    Remove
+                                </button>
+                            </mat-menu>
+                        </div>
+                    </div>
+                </ng-container>
+            </form>
+            <div fxLayout="row" fxLayoutAlign="space-between center" class="u-w--100">
+                <button class="button-add mat-elevation-z0" mat-flat-button (click)="addClientFee()">
+                    <mat-icon>add</mat-icon>
+                    Add Client Fee
+                </button>
+                <mat-slide-toggle [(ngModel)]="showHiddenSpecialFees" labelPosition="before" (change)="showHideSpecialFeesToggle($event)">
+                    {{showHiddenSpecialFees ? 'Show hidden' : 'Hide hidden'}}
+                </mat-slide-toggle>
+            </div>
+        </div>
+    </div>
+</div>
