@@ -8,7 +8,7 @@ import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
     styleUrls: ['./workflow-change-dialog.component.scss']
 })
 export class WorkflowChangeDialogComponent implements OnInit {
-    @Output() onConfimrmed: EventEmitter<any> = new EventEmitter<any>();
+    @Output() onConfirmed: EventEmitter<any> = new EventEmitter<any>();
     @Output() onRejected: EventEmitter<any> = new EventEmitter<any>();
 
     workflowChangesForm = new FormControl();
@@ -31,7 +31,7 @@ export class WorkflowChangeDialogComponent implements OnInit {
     }
 
     confirm(): void {
-        this.onConfimrmed.emit();
+        this.onConfirmed.emit();
         this.closeInternal();
     }
 

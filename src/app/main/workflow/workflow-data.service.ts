@@ -29,7 +29,7 @@ export class WorkflowDataService {
     // sideMenuTabs: SideMenuTabsDto[] = SideMenuTabs;
     topMenuTabs: SideMenuTabsDto[] = TopMenuTabs;
     extensionSideNavigation = ExtensionSideNavigation;
-    workflowSideNavIgation = WorkflowSideNavigation;
+    workflowSideNavigation = WorkflowSideNavigation;
 
     workflowProgress: WorkflowProgressStatus = new WorkflowProgressStatus();
 

@@ -26,8 +26,12 @@ export class PrimaryWorkflowComponent implements OnInit {
     ) { }
 
     ngOnInit(): void {
-        this.workflowSideNavigation = new Array<SideNavigationParentItemDto>(...this._workflowDataService.workflowSideNavIgation);
+        this.workflowSideNavigation = new Array<SideNavigationParentItemDto>(...this._workflowDataService.workflowSideNavigation);
         this.changeSideSection(this.workflowSideNavigation[0] , 0);
+    }
+
+    get sideNavigation() {
+        return this.workflowSideNavigation = new Array<SideNavigationParentItemDto>(...this._workflowDataService.workflowSideNavigation);
     }
 
     changeStepSelection(stepName: string, stepId: any) {
