@@ -16,8 +16,9 @@ import { WorkflowDataService } from '../workflow-data.service';
 import { WorkflowOverviewComponent } from '../workflow-overview/workflow-overview.component';
 import { WorkflowSalesComponent } from '../workflow-sales/workflow-sales.component';
 import { WorkflowSalesExtensionForm, WorkflowTerminationSalesForm, SideMenuTabsDto, WorkflowProgressStatus, WorkflowTopSections, WorkflowSteps, WorkflowSideSections } from '../workflow.model';
-import { EditWorkflowDto } from '../primary-workflow/primary-workflow.model';
+import { ChangeWorkflowDto } from '../primary-workflow/primary-workflow.model';
 import { InternalLookupService } from 'src/app/shared/common/internal-lookup.service';
+import { SideNavigationParentItemDto } from '../workflow-extension/workflow-extension.model';
 
 @Component({
   selector: 'app-workflow-details',
@@ -54,6 +55,8 @@ export class WorkflowDetailsComponent implements OnInit, OnDestroy, AfterViewIni
     extensionIndex: number | null;
     componentInitalized = false;
     menuTabs: SideMenuTabsDto[];
+
+    sectionIndex: number;
 
     private _unsubscribe = new Subject();
     constructor(
@@ -504,7 +507,12 @@ export class WorkflowDetailsComponent implements OnInit, OnDestroy, AfterViewIni
 
         dialogRef.componentInstance.onConfirmed.subscribe(() => {
             // confirmed
-            this._workflowDataService.workflowSideNavigation.push(EditWorkflowDto);
+            // let existingWorkflows = this.menuTabs.filter(x => x.name.startsWith('Extension'));
+            // let newExtensionIndex = existingExtensions.length ? Math.max.apply(Math, existingExtensions.map(function(o) { return o.index + 1; })) : 0;
+
+            this._workflowDataService.workflowSideNavigation.unshift(ChangeWorkflowDto);
+            this.changeSideSection(this._workflowDataService.workflowSideNavigation[this._workflowDataService.workflowSideNavigation.length - 1] , this._workflowDataService.workflowSideNavigation.length - 1);
+
         });
 
         dialogRef.componentInstance.onRejected.subscribe(() => {
@@ -512,6 +520,17 @@ export class WorkflowDetailsComponent implements OnInit, OnDestroy, AfterViewIni
         });
     }
 
+    changeStepSelection(stepName: string, stepId: any) {
+        this.selectedStep = stepName;
+        this._workflowDataService.workflowProgress.currentlyActiveStep = stepId * 1;
+    }
+
+    changeSideSection(item: SideNavigationParentItemDto, index: number) {
+        this.sectionIndex = index;
+        this._workflowDataService.updateWorkflowProgressStatus({currentlyActiveSideSection: item.sectionEnumValue});
+        const firstitemInSection = this._workflowDataService.workflowSideNavigation.find(x => x.displayName === item.displayName)?.subItems[0];
+        this.changeStepSelection(firstitemInSection!.name, firstitemInSection!.id);
+    }
 
     disableAddExtension() {
         if (this._workflowDataService.getWorkflowProgress?.isExtensionAdded) {

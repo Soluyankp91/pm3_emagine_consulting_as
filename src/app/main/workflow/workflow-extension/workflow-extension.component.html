@@ -88,14 +88,14 @@
             </ng-container> -->
             <!-- EDIT WORKFLOW -->
             <ng-container *ngSwitchCase="'EditSales'">
-                <app-workflow-sales #workflowEditSales [workflowId]="workflowId" [editWorfklow]="true"></app-workflow-sales>
+                <app-workflow-sales #workflowEditSales [workflowId]="workflowId" [changeWorkflow]="true"></app-workflow-sales>
             </ng-container>
             <ng-container *ngSwitchCase="'EditContracts'">
-                <app-workflow-contracts #workflowEditContracts [workflowId]="workflowId" [editWorfklow]="true"></app-workflow-contracts>
+                <app-workflow-contracts #workflowEditContracts [workflowId]="workflowId" [changeWorkflow]="true"></app-workflow-contracts>
             </ng-container>
-            <ng-container *ngSwitchCase="'EditFinance'">
+            <!-- <ng-container *ngSwitchCase="'EditFinance'">
                 <app-workflow-finances #workflowEditFinances [workflowId]="workflowId" [editWorfklow]="true"></app-workflow-finances>
-            </ng-container>
+            </ng-container> -->
 
             <ng-container *ngSwitchDefault>
             </ng-container>

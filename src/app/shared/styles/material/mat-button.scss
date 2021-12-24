@@ -112,6 +112,20 @@
         height: 36px;
         width: 36px;
     }
+    &-treedot {
+        background: none;
+        mat-icon {
+            color: unset;
+            display: inline-flex;
+            justify-content: center;
+            align-items: center;
+            line-height: 24px;
+            font-size: 24px;
+            border-radius: 50%;
+            height: 36px;
+            width: 36px;
+        }
+    }
 }
 
 .form-icon--delete-row {

@@ -465,9 +465,14 @@
 
                 <div fxLayout="column" fxLayoutAlign="start start" class="u-mb--20">
                     <span class="workflow-darkblue--text">Client legal contracts</span>
-                    <button class="button-accept u-mb--10" disabled mat-flat-button>
-                        Open contract module for client
-                    </button>
+                    <div fxlayout="row" fxLayoutAlign="start center" class="u-mb--10">
+                        <button class="button-accept u-mr--20" disabled mat-flat-button>
+                            Open contract module for client
+                        </button>
+                        <mat-checkbox *ngIf="changeWorkflow" color="accent" formControlName="newLegalContract" name="isSpecialContractTermsNone" class="black-checkbox u-mt--10">
+                            New legal contract needed
+                        </mat-checkbox>
+                    </div>
                     <div fxLayout="row" fxLayoutAlign="start center" class="u-mb--20">
                         <span class="icon-done u-mr--5">
                             <mat-icon>done</mat-icon>
@@ -487,10 +492,15 @@
                         Robertsen Oscar
                     </p>
                 </div>
+                <div fxlayout="row" fxLayoutAlign="start center" class="u-mb--10">
+                    <button class="button-outlined  u-mr--20" disabled mat-flat-button>
+                        Open contract module for client
+                    </button>
+                    <mat-checkbox *ngIf="changeWorkflow" color="accent" formControlName="newLegalContract" name="isSpecialContractTermsNone" class="black-checkbox u-mt--10">
+                        New legal contract needed
+                    </mat-checkbox>
+                </div>
 
-                <button class="button-outlined u-mb--10" disabled mat-flat-button>
-                    Open contract module for client
-                </button>
                 <div fxLayout="row" fxLayoutAlign="start center" class="u-mb--20">
                     <span class="icon-done u-mr--5">
                         <mat-icon>done</mat-icon>
@@ -508,9 +518,14 @@
                     </p>
                 </div>
 
-                <button class="button-outlined u-mb--10" mat-flat-button>
-                    Open contract module for client
-                </button>
+                <div fxlayout="row" fxLayoutAlign="start center" class="u-mb--10">
+                    <button class="button-outlined  u-mr--20" disabled mat-flat-button>
+                        Open contract module for client
+                    </button>
+                    <mat-checkbox *ngIf="changeWorkflow" color="accent" formControlName="newLegalContract" name="isSpecialContractTermsNone" class="black-checkbox u-mt--10">
+                        New legal contract needed
+                    </mat-checkbox>
+                </div>
                 <div fxLayout="row" fxLayoutAlign="start center" class="u-mb--20">
                     <span class="icon-in-progress u-mr--5">
                         <mat-icon svgIcon="in-progress-icon"></mat-icon>
