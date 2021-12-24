@@ -1,5 +1,9 @@
+import { Overlay } from '@angular/cdk/overlay';
 import { Component, Input, OnInit } from '@angular/core';
 import { AbstractControl, FormArray, FormBuilder, FormControl, FormGroup } from '@angular/forms';
+import { MatDialog } from '@angular/material/dialog';
+import { WorkflowConsultantActionsDialogComponent } from '../workflow-consultant-actions-dialog/workflow-consultant-actions-dialog.component';
+import { ConsultantDiallogAction } from '../workflow-sales/workflow-sales.model';
 import { WorkflowContractsSummaryForm } from '../workflow.model';
 import { WorkflowContractsClientDataForm, WorkflowContractsConsultantsDataForm, WorkflowContractsMainForm, WorkflowContractsSyncForm } from './workflow-contracts.model';
 
@@ -12,6 +16,7 @@ export class WorkflowContractsComponent implements OnInit {
     @Input() workflowId: number;
     @Input() editWorfklow: boolean;
     @Input() extendWorkflow: boolean;
+    @Input() addConsultant: boolean;
 
     contactSummaryForm: WorkflowContractsSummaryForm;
     contractsMainDataForm: WorkflowContractsMainForm;
@@ -27,7 +32,9 @@ export class WorkflowContractsComponent implements OnInit {
         name: 'Van Trier Mia'
     }];
     constructor(
-        private _fb: FormBuilder
+        private _fb: FormBuilder,
+        private overlay: Overlay,
+        private dialog: MatDialog
     ) {
         this.contactSummaryForm = new WorkflowContractsSummaryForm();
         this.contractsMainDataForm = new WorkflowContractsMainForm();
@@ -191,4 +198,78 @@ export class WorkflowContractsComponent implements OnInit {
             control!.enable();
         }
     }
+
+       //#region Consultant menu actions
+       changeConsultantData(index: number) {
+        const consultantData = this.contractsConsultantsDataForm.consultantData.at(index).value;
+        console.log('change consultant ', consultantData);
+        const scrollStrategy = this.overlay.scrollStrategies.reposition();
+        const dialogRef = this.dialog.open(WorkflowConsultantActionsDialogComponent, {
+            minWidth: '450px',
+            minHeight: '180px',
+            height: 'auto',
+            width: 'auto',
+            scrollStrategy,
+            backdropClass: 'backdrop-modal--wrapper',
+            autoFocus: false,
+            panelClass: 'confirmation-modal',
+            data: {
+                dialogType: ConsultantDiallogAction.Change,
+                consultantData: consultantData,
+                dialogTitle: `Change consultant`,
+                rejectButtonText: 'Cancel',
+                confirmButtonText: 'Create',
+                isNegative: false
+            }
+        });
+
+        dialogRef.componentInstance.onConfimrmed.subscribe((result) => {
+            console.log('new date ', result?.newCutoverDate, 'new contract required ', result?.newLegalContractRequired);
+            // call API to change consultant
+        });
+
+        dialogRef.componentInstance.onRejected.subscribe(() => {
+            // nthng
+        });
+    }
+
+    extendConsultant(index: number) {
+        const consultantData = this.contractsConsultantsDataForm.consultantData.at(index).value;
+        console.log('extend consultant ', consultantData);
+        const scrollStrategy = this.overlay.scrollStrategies.reposition();
+        const dialogRef = this.dialog.open(WorkflowConsultantActionsDialogComponent, {
+            minWidth: '450px',
+            minHeight: '180px',
+            height: 'auto',
+            width: 'auto',
+            scrollStrategy,
+            backdropClass: 'backdrop-modal--wrapper',
+            autoFocus: false,
+            panelClass: 'confirmation-modal',
+            data: {
+                dialogType: ConsultantDiallogAction.Extend,
+                consultantData: consultantData,
+                dialogTitle: `Extend consultant`,
+                rejectButtonText: 'Cancel',
+                confirmButtonText: 'Create',
+                isNegative: false
+            }
+        });
+
+        dialogRef.componentInstance.onConfimrmed.subscribe((result) => {
+            console.log('start date ', result?.startDate, 'end date ', result?.endDate, 'no end date ', result?.noEndDate);
+            // call API to change consultant
+        });
+
+        dialogRef.componentInstance.onRejected.subscribe(() => {
+            // nthng
+        });
+    }
+
+    terminateConsultant(index: number) {
+        const consultantData = this.contractsConsultantsDataForm.consultantData.at(index).value;
+        console.log('terminate consultant ', consultantData);
+    }
+
+    //#endregion Consultant menu actions
 }

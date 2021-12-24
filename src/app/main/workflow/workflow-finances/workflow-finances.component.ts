@@ -10,6 +10,7 @@ import { FinancesClientForm, FinancesConsultantsForm } from './workflow-finances
 export class WorkflowFinancesComponent implements OnInit {
     @Input() workflowId: number;
     @Input() editWorfklow: boolean;
+    @Input() addConsultant: boolean;
     financesClientForm: FinancesClientForm;
     financesConsultantsForm: FinancesConsultantsForm;
 

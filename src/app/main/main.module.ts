@@ -33,6 +33,7 @@ import { WorkflowFinancesComponent } from './workflow/workflow-finances/workflow
 import { WorkflowChangeDialogComponent } from './workflow/workflow-change-dialog/workflow-change-dialog.component';
 import { ExtendWorkflowDialogComponent } from './workflow/extend-workflow-dialog/extend-workflow-dialog.component';
 import { ClientRatesAndFeesComponent } from './client-list/client-rates-and-fees/client-rates-and-fees.component';
+import { WorkflowConsultantActionsDialogComponent } from './workflow/workflow-consultant-actions-dialog/workflow-consultant-actions-dialog.component';
 
 
 @NgModule({
@@ -68,7 +69,8 @@ import { ClientRatesAndFeesComponent } from './client-list/client-rates-and-fees
         WorkflowFinancesComponent,
         WorkflowChangeDialogComponent,
         ExtendWorkflowDialogComponent,
-        ClientRatesAndFeesComponent
+        ClientRatesAndFeesComponent,
+        WorkflowConsultantActionsDialogComponent
     ],
     imports: [
         CommonModule,
