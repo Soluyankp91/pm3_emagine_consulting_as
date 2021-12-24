@@ -399,3 +399,9 @@ export const InputReadonlyStates = [
     }
 ];
 
+
+export enum ConsultantDiallogAction {
+    Change = 1,
+    Extend = 2,
+    Terminate = 3
+}

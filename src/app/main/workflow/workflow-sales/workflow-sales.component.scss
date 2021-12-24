@@ -15,6 +15,13 @@
                 color: rgba(56, 72, 83, 0.87);
             }
         }
+        &--consultants {
+            &__name,
+            &__period {
+                font-weight: 600;
+                font-size: 16px;
+            }
+        }
     }
     &-section--header {
         color: $light-grey-color;

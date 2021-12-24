@@ -166,10 +166,45 @@
             <ng-container formArrayName="consultantData">
                 <mat-expansion-panel *ngFor="let consultant of contractsConsultantsDataForm.consultantData.controls; let consultantIndex = index" [formGroupName]="consultantIndex" class="mat-elevation-z0">
                     <mat-expansion-panel-header  [collapsedHeight]="'80px'" [expandedHeight]="'80px'">
-                        <div fxLayout="row" fxLayoutAlign="start center">
-                            <span>
-                                Consultants data: {{ contractsConsultantsDataForm.consultantData.at(consultantIndex).get('consultantName')?.value}}
+                        <div fxLayout="row" fxLayoutAlign="start center" class="u-w--100">
+                            <span fxFlex="50%" fxLayout="row" fxLayoutAlign="start center">
+                                Consultant data
+                                <img class="border-rounded-50 u-ml--16 u-mr--16" src="https://picsum.photos/35/35" />
+                                <span class="workflow-form--consultants__name u-mr--16">
+                                    {{ contractsConsultantsDataForm.consultantData.at(consultantIndex).get('consultantName')?.value}}
+                                </span>
                             </span>
+                            <div fxFlex="50%" fxLayoutAlign="end center">
+                                <span class="workflow-form--consultants__period u-mr--8">
+                                    24.10.2021 - 24.11.2021
+                                </span>
+                                <button mat-icon-button [matMenuTriggerFor]="consultantMenu" type="button" (click)="$event.stopPropagation();" class="workflow-icon--actions u-mr--16"><mat-icon>more_horiz</mat-icon></button>
+                                <mat-menu #consultantMenu>
+                                    <button
+                                        class="menu-item menu-item--edit"
+                                        mat-menu-item
+                                        [disabled]="false"
+                                        (click)="changeConsultantData(consultantIndex)">
+                                        <mat-icon>create</mat-icon>
+                                        Change consultant data
+                                    </button>
+                                    <button
+                                        class="menu-item menu-item--edit"
+                                        mat-menu-item
+                                        [disabled]="false"
+                                        (click)="extendConsultant(consultantIndex)">
+                                        <mat-icon>add</mat-icon>
+                                        Extend consultant
+                                    </button>
+                                    <button
+                                        class="menu-item menu-item--cancel"
+                                        mat-menu-item
+                                        (click)="terminateConsultant(consultantIndex)">
+                                        <mat-icon>clear</mat-icon>
+                                        Terminate consultant
+                                    </button>
+                                </mat-menu>
+                            </div>
                         </div>
                     </mat-expansion-panel-header>
 
