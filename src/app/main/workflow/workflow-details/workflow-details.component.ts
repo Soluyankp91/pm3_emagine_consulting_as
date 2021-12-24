@@ -488,7 +488,7 @@ export class WorkflowDetailsComponent implements OnInit, OnDestroy, AfterViewIni
     changeWorkflow() {
         const scrollStrategy = this.overlay.scrollStrategies.reposition();
         const dialogRef = this.dialog.open(WorkflowChangeDialogComponent, {
-            width: '450px',
+            width: '500px',
             minHeight: '180px',
             height: 'auto',
             scrollStrategy,
@@ -496,8 +496,8 @@ export class WorkflowDetailsComponent implements OnInit, OnDestroy, AfterViewIni
             autoFocus: false,
             panelClass: 'confirmation-modal',
             data: {
-                dialogHeader: 'Add change',
-                formFieldLabel: 'Select date, when the change should take effect',
+                dialogHeader: 'Change workflow data',
+                formFieldLabel: 'Select new cutover date',
                 formFieldPlaceholder: 'Start date'
             }
         });

@@ -48,6 +48,30 @@ export class WorkflowExtensionForm extends FormGroup {
     }
 }
 
+export class WorkflowChangeForm extends FormGroup {
+    constructor() {
+        super({
+            // salesExtension: new FormArray([])
+            extensionEndDate: new FormControl(null),
+            noExtensionEndDate: new FormControl(null),
+            workflowInformation: new FormControl(null)
+        })
+
+    }
+    // get salesExtension() {
+    //     return this.get('salesExtension') as FormArray;
+    // }
+    get extensionEndDate() {
+        return this.get('extensionEndDate');
+    }
+    get noExtensionEndDate() {
+        return this.get('noExtensionEndDate');
+    }
+    get workflowInformation() {
+        return this.get('workflowInformation');
+    }
+}
+
 export class WorkflowTerminationSalesForm extends FormGroup {
     constructor() {
         super({
