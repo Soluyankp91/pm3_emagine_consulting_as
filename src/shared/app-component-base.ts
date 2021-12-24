@@ -40,4 +40,15 @@ export abstract class AppComopnentBase {
             }
         }
     }
+
+    // form validations
+    disableOrEnableInput(boolValue: boolean, control: AbstractControl | null | undefined) {
+        if (boolValue) {
+            // FIXME: do we need to clear input if it will be disabled ?
+            control!.setValue(null, {emitEvent: false});
+            control!.disable();
+        } else {
+            control!.enable();
+        }
+    }
 }

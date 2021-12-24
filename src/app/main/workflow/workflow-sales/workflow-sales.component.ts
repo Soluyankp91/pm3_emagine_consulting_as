@@ -9,8 +9,9 @@ import { InternalLookupService } from 'src/app/shared/common/internal-lookup.ser
 import { ConfirmationDialogComponent } from 'src/app/shared/components/confirmation-dialog/confirmation-dialog.component';
 import { AppComopnentBase } from 'src/shared/app-component-base';
 import { ClientRateDto, ConsultantSalesDataDto, ContractSignerDto, EnumEntityTypeDto, EnumServiceProxy, SalesAdditionalDataDto, SalesClientDataDto, SalesMainDataDto, SignerRole, WorkflowSalesDataDto, WorkflowsServiceProxy } from 'src/shared/service-proxies/service-proxies';
+import { WorkflowConsultantActionsDialogComponent } from '../workflow-consultant-actions-dialog/workflow-consultant-actions-dialog.component';
 import { WorkflowDataService } from '../workflow-data.service';
-import { ConsultantTypes, InputReadonlyState, InputReadonlyStates, WorkflowSalesAdditionalDataForm, WorkflowSalesClientDataForm, WorkflowSalesConsultantsForm, WorkflowSalesMainForm } from './workflow-sales.model';
+import { ConsultantDiallogAction, ConsultantTypes, InputReadonlyState, InputReadonlyStates, WorkflowSalesAdditionalDataForm, WorkflowSalesClientDataForm, WorkflowSalesConsultantsForm, WorkflowSalesMainForm } from './workflow-sales.model';
 @Component({
     selector: 'app-workflow-sales',
     templateUrl: './workflow-sales.component.html',
@@ -20,6 +21,7 @@ export class WorkflowSalesComponent extends AppComopnentBase implements OnInit {
     @Input() workflowId: number;
     @Input() editWorfklow: boolean;
     @Input() extendWorkflow: boolean;
+    @Input() addConsultant: boolean;
 
     // SalesStep
     intracompanyActive = false;
@@ -604,15 +606,78 @@ export class WorkflowSalesComponent extends AppComopnentBase implements OnInit {
         }
     }
 
-    // form validations
-    disableOrEnableInput(boolValue: boolean, control: AbstractControl | null | undefined) {
-        if (boolValue) {
-            // FIXME: do we need to clear input if it will be disabled ?
-            control!.setValue(null, {emitEvent: false});
-            control!.disable();
-        } else {
-            control!.enable();
-        }
+    //#region Consultant menu actions
+    changeConsultantData(index: number) {
+        const consultantData = this.consultantsForm.consultantData.at(index).value;
+        console.log('change consultant ', consultantData);
+        const scrollStrategy = this.overlay.scrollStrategies.reposition();
+        const dialogRef = this.dialog.open(WorkflowConsultantActionsDialogComponent, {
+            minWidth: '450px',
+            minHeight: '180px',
+            height: 'auto',
+            width: 'auto',
+            scrollStrategy,
+            backdropClass: 'backdrop-modal--wrapper',
+            autoFocus: false,
+            panelClass: 'confirmation-modal',
+            data: {
+                dialogType: ConsultantDiallogAction.Change,
+                consultantData: consultantData,
+                dialogTitle: `Change consultant`,
+                rejectButtonText: 'Cancel',
+                confirmButtonText: 'Create',
+                isNegative: false
+            }
+        });
+
+        dialogRef.componentInstance.onConfimrmed.subscribe((result) => {
+            console.log('new date ', result?.newCutoverDate, 'new contract required ', result?.newLegalContractRequired);
+            // call API to change consultant
+        });
+
+        dialogRef.componentInstance.onRejected.subscribe(() => {
+            // nthng
+        });
     }
+
+    extendConsultant(index: number) {
+        const consultantData = this.consultantsForm.consultantData.at(index).value;
+        console.log('extend consultant ', consultantData);
+        const scrollStrategy = this.overlay.scrollStrategies.reposition();
+        const dialogRef = this.dialog.open(WorkflowConsultantActionsDialogComponent, {
+            minWidth: '450px',
+            minHeight: '180px',
+            height: 'auto',
+            width: 'auto',
+            scrollStrategy,
+            backdropClass: 'backdrop-modal--wrapper',
+            autoFocus: false,
+            panelClass: 'confirmation-modal',
+            data: {
+                dialogType: ConsultantDiallogAction.Extend,
+                consultantData: consultantData,
+                dialogTitle: `Extend consultant`,
+                rejectButtonText: 'Cancel',
+                confirmButtonText: 'Create',
+                isNegative: false
+            }
+        });
+
+        dialogRef.componentInstance.onConfimrmed.subscribe((result) => {
+            console.log('start date ', result?.startDate, 'end date ', result?.endDate, 'no end date ', result?.noEndDate);
+            // call API to change consultant
+        });
+
+        dialogRef.componentInstance.onRejected.subscribe(() => {
+            // nthng
+        });
+    }
+
+    terminateConsultant(index: number) {
+        const consultantData = this.consultantsForm.consultantData.at(index).value;
+        console.log('terminate consultant ', consultantData);
+    }
+
+    //#endregion Consultant menu actions
 
 }
