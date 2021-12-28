@@ -80,7 +80,8 @@ export class PrimaryWorkflowComponent implements OnInit, AfterViewInit {
         this.workflowSideNavigation.push(TerminateConsultantDto);
     }
 
-    deleteChange() {
-        this._workflowDataService.workflowSideNavigation.shift();
+    deleteChange(item: SideNavigationParentItemDto) {
+        let sideNavToDelete = this._workflowDataService.workflowSideNavigation.findIndex(x => x.name === item.name);
+        this._workflowDataService.workflowSideNavigation.splice(sideNavToDelete, 1)
     }
 }
