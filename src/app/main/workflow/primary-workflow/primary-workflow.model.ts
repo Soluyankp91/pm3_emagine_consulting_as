@@ -5,7 +5,7 @@ import { WorkflowSideSections } from "../workflow.model";
 
 export const WorkflowSideNavigation: SideNavigationParentItemDto[] = [
     {
-        displayName: 'Start workflow',
+        displayName: 'Start Workflow',
         name: 'workflowStartOrExtend',
         sectionEnumValue: WorkflowSideSections.StartWorkflow,
         responsiblePerson: 'Andersen Rasmus1',
@@ -37,7 +37,7 @@ export const WorkflowSideNavigation: SideNavigationParentItemDto[] = [
 ];
 
 export const ExtendWorkflowDto = {
-    displayName: 'Extend workflow',
+    displayName: 'Extend Workflow',
     name: 'workflowStartOrExtend',
     sectionEnumValue: WorkflowSideSections.ExtendWorkflow,
     responsiblePerson: 'Andersen Rasmus2',
@@ -60,9 +60,9 @@ export const ExtendWorkflowDto = {
     ]
 };
 
-export const EditWorkflowDto = {
-    displayName: 'Edit workflow',
-    name: 'workflowStartOrExtend',
+export const ChangeWorkflowDto = {
+    displayName: 'Change Workflow',
+    name: 'workflowEdit',
     sectionEnumValue: WorkflowSideSections.ChangeWorkflow,
     responsiblePerson: 'Andersen Rasmus2',
     dateRange: '02.01.2021 - 31.12.2021',
@@ -80,19 +80,12 @@ export const EditWorkflowDto = {
             displayName: "Contracts",
             isCompleted: false,
             assignedPerson: 'Roberto Olberto'
-        },
-        {
-            id: 2,
-            name: "EditWorkflowFinances",
-            displayName: "Finances",
-            isCompleted: false,
-            assignedPerson: 'Roberto Olberto'
         }
     ]
 };
 
 export const TerminateWorkflowDto = {
-    displayName: 'Terminate workflow',
+    displayName: 'Terminate Workflow',
     name: 'workflowTerminate',
     sectionEnumValue: WorkflowSideSections.TerminateWorkflow,
     responsiblePerson: 'Andersen Rasmus2',
@@ -117,7 +110,7 @@ export const TerminateWorkflowDto = {
 
 
 export const AddConsultantDto = {
-    displayName: 'Add consultant',
+    displayName: 'Add Consultant',
     name: 'workflowAdd',
     sectionEnumValue: WorkflowSideSections.AddConsultant,
     responsiblePerson: 'Andersen Rasmus2',
@@ -149,7 +142,7 @@ export const AddConsultantDto = {
 
 
 export const EditConsultantDto = {
-    displayName: 'Edit consultant',
+    displayName: 'Edit Consultant',
     name: 'workflowEdit',
     sectionEnumValue: WorkflowSideSections.ChangeWorkflow,
     responsiblePerson: 'Andersen Rasmus2',
@@ -180,7 +173,7 @@ export const EditConsultantDto = {
 };
 
 export const ExtendConsultantDto = {
-    displayName: 'Extend consultant',
+    displayName: 'Extend Consultant',
     name: 'workflowStartOrExtend',
     sectionEnumValue: WorkflowSideSections.TerminateConsultant,
     responsiblePerson: 'Andersen Rasmus2',
@@ -204,7 +197,7 @@ export const ExtendConsultantDto = {
 };
 
 export const TerminateConsultantDto = {
-    displayName: 'Terminate consultant',
+    displayName: 'Terminate Consultant',
     name: 'workflowTerminate',
     sectionEnumValue: WorkflowSideSections.TerminateConsultant,
     responsiblePerson: 'Andersen Rasmus2',

@@ -5,7 +5,7 @@
                 MAIN DATA
             </mat-expansion-panel-header>
             <form [formGroup]="salesMainDataForm" class="workflow-form workflow-form--main u-w--100">
-                <div *ngIf="!extendWorkflow">
+                <div *ngIf="!extendWorkflow && !changeWorkflow">
                     <h2 class="workflow-section--header">Project</h2>
 
                     <h3 class="workflow-gray--header">Sales Type</h3>
@@ -77,7 +77,7 @@
                     </div>
                 </div>
 
-                <div *ngIf="extendWorkflow">
+                <div *ngIf="extendWorkflow || changeWorkflow">
                     <!-- <button mat-button (click)="changeReadonly()">Change</button> -->
                     <!-- EDIT -->
                     <!-- NB: uncomment for readonly\edit -->
@@ -200,7 +200,7 @@
                 Client data
             </mat-expansion-panel-header>
             <form fxLayout="column" fxLayoutAlign="start start" [formGroup]="salesMainClientDataForm" class="workflow-form workflow-form--sales u-w--100">
-                <div *ngIf="!extendWorkflow">
+                <div *ngIf="!extendWorkflow && !changeWorkflow">
                     <h2 class="workflow-section--header">Client</h2>
                     <div fxLayout="row" fxLayoutAlign="start start" class="u-w--100 u-mb--20">
                         <mat-button-toggle-group class="workflow-toggle-buttons" formControlName="isDirectClient">
@@ -230,7 +230,7 @@
                         </mat-form-field>
                     </div>
                 </div>
-                <div fxLayout="column" fxLayoutAlign="start start" fxLayoutGap="20px" class="u-w--100 u-mb--20" *ngIf="extendWorkflow">
+                <div fxLayout="column" fxLayoutAlign="start start" fxLayoutGap="20px" class="u-w--100 u-mb--20" *ngIf="extendWorkflow || changeWorkflow">
                     <div fxLayout="column">
                         <h3 class="workflow-extension--gray-header">Client relation</h3>
                         <span class="workflow-extension--blue-text">
@@ -694,7 +694,7 @@
                         </div>
                     </mat-expansion-panel-header>
                     <div class="workflow-form">
-                        <div *ngIf="!extendWorkflow">
+                        <div *ngIf="!extendWorkflow && !changeWorkflow">
                             <h2 class="workflow-section--header">Consultant</h2>
 
                             <div fxLayout="row" fxLayoutAlign="start start" class="u-w--100 u-mb--20">
@@ -724,7 +724,7 @@
                                 </mat-form-field>
                             </div>
                         </div>
-                        <div *ngIf="extendWorkflow">
+                        <div *ngIf="extendWorkflow || changeWorkflow">
                             <div fxLayout="column" class="u-mb--20">
                                 <h3 class="workflow-extension--gray-header">Consultant type</h3>
                                 <span class="workflow-extension--blue-text">
