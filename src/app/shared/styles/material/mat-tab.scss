@@ -141,6 +141,7 @@ mat-tab-group.client-documents--tabs {
         box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.15);
         &:first-of-type {
             justify-content: flex-start;
+            padding: 8px 24px 0 36px;
         }
         .mat-tab-label-content {
             flex-direction: column;

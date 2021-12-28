@@ -3,7 +3,7 @@ import { WorkflowDataService } from '../workflow-data.service';
 import { SideNavigationParentItemDto } from '../workflow-extension/workflow-extension.model';
 import { WorkflowSalesComponent } from '../workflow-sales/workflow-sales.component';
 import { WorkflowStepList } from '../workflow.model';
-import { AddConsultantDto, EditConsultantDto, EditWorkflowDto, ExtendConsultantDto, ExtendWorkflowDto, TerminateConsultantDto, TerminateWorkflowDto } from './primary-workflow.model';
+import { AddConsultantDto, EditConsultantDto, ChangeWorkflowDto, ExtendConsultantDto, ExtendWorkflowDto, TerminateConsultantDto, TerminateWorkflowDto } from './primary-workflow.model';
 
 @Component({
     selector: 'app-primary-workflow',
@@ -26,13 +26,13 @@ export class PrimaryWorkflowComponent implements OnInit, AfterViewInit {
     ) { }
 
     ngOnInit(): void {
-        this.workflowSideNavigation = new Array<SideNavigationParentItemDto>(...this._workflowDataService.workflowSideNavigation);
-        this.changeSideSection(this.workflowSideNavigation[0] , 0);
+        // this.workflowSideNavigation = new Array<SideNavigationParentItemDto>(...this._workflowDataService.workflowSideNavigation);
+        this.changeSideSection(this.sideNavigation[0] , 0);
     }
 
     ngAfterViewInit(): void {
         // this.workflowSideNavigation = new Array<SideNavigationParentItemDto>(...this._workflowDataService.workflowSideNavigation);
-        // this.changeSideSection(this.workflowSideNavigation[0] , 0);
+        this.changeSideSection(this.sideNavigation[0] , 0);
     }
 
     get sideNavigation() {
@@ -69,7 +69,7 @@ export class PrimaryWorkflowComponent implements OnInit, AfterViewInit {
     }
 
     editWorkflow() {
-        this.workflowSideNavigation.push(EditWorkflowDto);
+        this.workflowSideNavigation.push(ChangeWorkflowDto);
     }
 
     extendConsultant() {
@@ -80,4 +80,8 @@ export class PrimaryWorkflowComponent implements OnInit, AfterViewInit {
         this.workflowSideNavigation.push(TerminateConsultantDto);
     }
 
+    deleteChange(item: SideNavigationParentItemDto) {
+        let sideNavToDelete = this._workflowDataService.workflowSideNavigation.findIndex(x => x.name === item.name);
+        this._workflowDataService.workflowSideNavigation.splice(sideNavToDelete, 1)
+    }
 }

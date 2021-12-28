@@ -4,19 +4,34 @@
                 <mat-accordion class="workflow-sidenav--expansion" [togglePosition]="'before'">
                     <mat-expansion-panel class="mat-elevation-z0" *ngFor="let item of sideNavigation; index as i" [expanded]="sectionIndex === i" (opened)="changeSideSection(item, i)">
                         <mat-expansion-panel-header [collapsedHeight]="'80px'" [expandedHeight]="'80px'">
-                            <div class="sidenav-expansion--header">
-                                <span class="flex-row">
-                                    <mat-icon [svgIcon]="item.name"></mat-icon>
-                                    <span class="sidenav-expansion--header__name">
-                                        {{item.displayName}}
+                            <div fxLayout="row" fxLayoutAlign="space-between start" class="u-w--100">
+                                <div class="sidenav-expansion--header">
+                                    <span class="flex-row">
+                                        <mat-icon [svgIcon]="item.name"></mat-icon>
+                                        <span class="sidenav-expansion--header__name">
+                                            {{item.displayName}}
+                                        </span>
                                     </span>
-                                </span>
-                                <span class="sidenav-expansion--header__person">
-                                    {{item.responsiblePerson}}
-                                </span>
-                                <span class="sidenav-expansion--header__date">
-                                    {{item.dateRange}}
-                                </span>
+                                    <span class="sidenav-expansion--header__person">
+                                        {{item.responsiblePerson}}
+                                    </span>
+                                    <span class="sidenav-expansion--header__date">
+                                        {{item.dateRange}}
+                                    </span>
+                                </div>
+                                <div *ngIf="item.name === 'workflowEdit'">
+                                    <button mat-icon-button [matMenuTriggerFor]="consultantMenu" type="button" (click)="$event.stopPropagation();" class="workflow-icon--actions-treedot u-mr--16"><mat-icon>more_horiz</mat-icon></button>
+                                    <mat-menu #consultantMenu>
+                                        <button
+                                            class="menu-item-change menu-item-change--delete"
+                                            mat-menu-item
+                                            [disabled]="false"
+                                            (click)="deleteChange(item)">
+                                            <mat-icon>clear</mat-icon>
+                                            Delete
+                                        </button>
+                                    </mat-menu>
+                                </div>
                             </div>
                         </mat-expansion-panel-header>
                         <mat-list class="workflow-navigation">
@@ -91,7 +106,7 @@
                 </button>
             </mat-menu> -->
         <ng-container [ngSwitch]="selectedStep">
-            <!-- EDIT WORKFLOW -->
+            <!-- START WORKFLOW -->
             <ng-container *ngSwitchCase="'Sales'">
                 <app-workflow-sales #workflowSales [workflowId]="workflowId"></app-workflow-sales>
             </ng-container>
@@ -104,14 +119,14 @@
 
             <!-- EDIT WORKFLOW -->
             <ng-container *ngSwitchCase="'EditWorkflowSales'">
-                <app-workflow-sales #workflowEditSales [workflowId]="workflowId" [editWorfklow]="true"></app-workflow-sales>
+                <app-workflow-sales #workflowEditSales [workflowId]="workflowId" [changeWorkflow]="true"></app-workflow-sales>
             </ng-container>
             <ng-container *ngSwitchCase="'EditWorkflowContracts'">
-                <app-workflow-contracts #workflowEditContracts [workflowId]="workflowId" [editWorfklow]="true"></app-workflow-contracts>
+                <app-workflow-contracts #workflowEditContracts [workflowId]="workflowId" [changeWorkflow]="true"></app-workflow-contracts>
             </ng-container>
-            <ng-container *ngSwitchCase="'EditWorkflowFinance'">
+            <!-- <ng-container *ngSwitchCase="'EditWorkflowFinance'">
                 <app-workflow-finances #workflowEditFinances [workflowId]="workflowId" [editWorfklow]="true"></app-workflow-finances>
-            </ng-container>
+            </ng-container> -->
 
             <!-- ADD CONSULTANT -->
             <ng-container *ngSwitchCase="'AddConsultantSales'">

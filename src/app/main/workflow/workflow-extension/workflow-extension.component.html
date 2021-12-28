@@ -1,42 +1,3 @@
-<!-- leave as comment start -->
-<!-- <form [formGroup]="salesExtensionForm" class="u-w--100"> -->
-<!-- leave as comment end -->
-<!-- <form [formGroup]="extensionForm" class="u-w--100">
-    <h2 class="workflow-green--header">Extension {{selectedIndex}}</h2> -->
-<!-- leave as comment start-->
-    <!-- <div formArrayName="salesExtension"> -->
-        <!-- <div *ngFor="let item of salesExtension.controls; let i = index;" [formGroupName]="i" [ngClass]="{'hide': selectedIndex !== i}"> -->
-<!-- leave as comment end -->
-            <!-- <div fxLayout="row" fxLayoutAlign="start center" class="u-w--100 u-mb--20">
-                <mat-form-field appearance="outline" class=" u-mr--16" fxFlex="33%">
-                    <mat-label>New end date</mat-label>
-                    <input autocomplete="off" placeholder="New end date" matInput
-                            [matDatepicker]="extensionDatePicker"
-                            name="saleDate" formControlName="extensionEndDate"
-                            (focus)="extensionDatePicker.open()"
-                            (click)="extensionDatePicker.open()" readonly>
-                    <mat-icon class="calendar-icon" matSuffix svgIcon="calendar"></mat-icon>
-                    <mat-datepicker #extensionDatePicker></mat-datepicker>
-                </mat-form-field>
-
-                <mat-checkbox color="accent" formControlName="noExtensionEndDate" name="noExtensionEndDate" class="green-checkbox u-mr--16">
-                    No end date
-                </mat-checkbox>
-            </div>
-            <div fxLayout="row" fxLayoutAlign="start start" class="u-w--100 u-mb--20">
-                <mat-form-field appearance="outline" class="u-w--100  textarea-input u-mr--16" fxFlex="0 0 calc(66% + 16px)">
-                    <mat-label>WF Information</mat-label>
-                    <textarea matInput autocomplete="new-password" name="workflowInformation" formControlName="workflowInformation">
-                    </textarea>
-                </mat-form-field>
-            </div> -->
-<!-- leave as comment start -->
-        <!-- </div> -->
-    <!-- </div> -->
-<!-- leave as comment end -->
-<!-- </form> -->
-
-
 <!-- Extension start -->
 <div fxLayout="row" fxLayoutAlign="start start" class="workflow">
     <div fxFlex="20%" class="workflow-navigation--wrapper">
@@ -88,14 +49,14 @@
             </ng-container> -->
             <!-- EDIT WORKFLOW -->
             <ng-container *ngSwitchCase="'EditSales'">
-                <app-workflow-sales #workflowEditSales [workflowId]="workflowId" [editWorfklow]="true"></app-workflow-sales>
+                <app-workflow-sales #workflowEditSales [workflowId]="workflowId" [changeWorkflow]="true"></app-workflow-sales>
             </ng-container>
             <ng-container *ngSwitchCase="'EditContracts'">
-                <app-workflow-contracts #workflowEditContracts [workflowId]="workflowId" [editWorfklow]="true"></app-workflow-contracts>
+                <app-workflow-contracts #workflowEditContracts [workflowId]="workflowId" [changeWorkflow]="true"></app-workflow-contracts>
             </ng-container>
-            <ng-container *ngSwitchCase="'EditFinance'">
+            <!-- <ng-container *ngSwitchCase="'EditFinance'">
                 <app-workflow-finances #workflowEditFinances [workflowId]="workflowId" [editWorfklow]="true"></app-workflow-finances>
-            </ng-container>
+            </ng-container> -->
 
             <ng-container *ngSwitchDefault>
             </ng-container>

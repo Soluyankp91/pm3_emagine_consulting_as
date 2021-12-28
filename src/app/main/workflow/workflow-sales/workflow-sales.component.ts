@@ -19,7 +19,7 @@ import { ConsultantDiallogAction, ConsultantTypes, InputReadonlyState, InputRead
 })
 export class WorkflowSalesComponent extends AppComopnentBase implements OnInit {
     @Input() workflowId: number;
-    @Input() editWorfklow: boolean;
+    @Input() changeWorkflow: boolean;
     @Input() extendWorkflow: boolean;
     @Input() addConsultant: boolean;
 

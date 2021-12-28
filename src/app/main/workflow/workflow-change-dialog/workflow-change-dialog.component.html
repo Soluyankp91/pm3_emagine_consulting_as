@@ -1,20 +1,72 @@
-<mat-dialog-content class="workflow-dialog">
-    <div mat-dialog-title class="workflow-dialog--header">
+<mat-dialog-content class="workflow-change-dialog">
+    <div mat-dialog-title class="workflow-change-dialog--header">
         <h1>{{data.dialogHeader}}</h1>
     </div>
-    <h2>{{data.formFieldLabel}}</h2>
-    <div fxLayout="row" fxLayoutAlign="center center">
-        <mat-form-field appearance="outline"
-            class="u-w--100  mat-elevation-z0">
-            <input autocomplete="off" matInput [formControl]="workflowChangesForm" [placeholder]="data.formFieldPlaceholder" type="text">
-        </mat-form-field>
+    <h2 class="workflow-change-dialog--label">{{data.formFieldLabel}}</h2>
+    <div fxLayout="row" fxLayoutAlign="space-between center" class="u-w--100 u-mt--10">
+        <!-- <div class="u-mr--10" fxFlex="50%">
+            <mat-form-field appearance="outline" class="u-w--100  mat-elevation-z0">
+                <input autocomplete="off" matInput [formControl]="workflowChangesForm" [placeholder]="data.formFieldPlaceholder" type="text">
+            </mat-form-field>
+        </div> -->
+        <!-- <div fxLayout="row" fxLayoutAlign="space-between center" class="u-mb--20"> -->
+            <mat-form-field appearance="outline" class="u-w--100 u-mr--16" fxFlex="45%">
+                <mat-label>Cutover date</mat-label>
+                <input autocomplete="off" placeholder="New end date" matInput
+                        [matDatepicker]="extensionDatePicker"
+                        name="saleDate"
+                        (focus)="extensionDatePicker.open()"
+                        (click)="extensionDatePicker.open()" readonly>
+                <mat-icon class="calendar-icon" matSuffix svgIcon="calendar"></mat-icon>
+                <mat-datepicker #extensionDatePicker></mat-datepicker>
+            </mat-form-field>
+
+            <mat-checkbox color="accent" name="newLegalContractRequired" class="workflow-change-dialog--checkbox black-checkbox u-w--100 u-mb--15" fxFlex="50%">
+                New legal contract required
+            </mat-checkbox>
+        <!-- </div> -->
     </div>
+    <mat-divider class="u-mb--15">
+    </mat-divider>
+
+    <h2 class="workflow-change-dialog--label">Select consultants the change applies to</h2>
+    <div fxLayout="column" fxLayoutAlign="center start" fxLayoutGap="15px" class="u-w--100 u-mt--10">
+        <div fxLayout="row" fxLayoutAlign="start center" class="u-w--100">
+            <mat-checkbox color="accent" name="noExtensionEndDate" class="black-checkbox u-mr--16" fxFlex="45%">
+                <div fxLayout="row" fxLayoutAlign="start center" class="text-truncate-ellipsis">
+                    <img class="workflow-change-dialog--consultant-img u-mr--8" src="https://placekitten.com/50/50">
+                    <p class="workflow-change-dialog--consultant-name text-truncate-ellipsis" fxFlex="75%">
+                        <!-- {{financesConsultantsForm.consultants.at(i).get('consultantName')?.value}} -->
+                        Robertsen Oscar
+                    </p>
+                </div>
+            </mat-checkbox>
+            <mat-checkbox color="accent" name="newLegalContractRequired" class="workflow-change-dialog--checkbox black-checkbox u-w--100" fxFlex="50%">
+                New legal contract required
+            </mat-checkbox>
+        </div>
+        <div fxLayout="row" fxLayoutAlign="start center" class="u-w--100">
+            <mat-checkbox color="accent" name="noExtensionEndDate" class="black-checkbox u-mr--16" fxFlex="45%">
+                <div fxLayout="row" fxLayoutAlign="start center">
+                    <img class="workflow-change-dialog--consultant-img u-mr--8" src="https://placekitten.com/50/50">
+                    <p class="workflow-change-dialog--consultant-name text-truncate-ellipsis" fxFlex="75%">
+                        <!-- {{financesConsultantsForm.consultants.at(i).get('consultantName')?.value}} -->
+                        Van Trier Mia
+                    </p>
+                </div>
+            </mat-checkbox>
+            <mat-checkbox color="accent" name="newLegalContractRequired" class="workflow-change-dialog--checkbox black-checkbox u-w--100" fxFlex="50%">
+                New legal contract required
+            </mat-checkbox>
+        </div>
+    </div>
+
 </mat-dialog-content>
-<mat-dialog-actions align="center" class="workflow-dialog--actions">
-    <button mat-flat-button color="primary" class="workflow-dialog--actions-btn__outlined" (click)="reject()">
+<mat-dialog-actions align="center" class="workflow-change-dialog--actions">
+    <button mat-flat-button color="accent" class="workflow-change-dialog--actions-btn__outlined" (click)="reject()">
         Cancel
     </button>
-    <button mat-flat-button color="primary" class="workflow-dialog--actions-btn" (click)="confirm()">
+    <button mat-flat-button color="accent" class="workflow-change-dialog--actions-btn" (click)="confirm()">
         Add
     </button>
 </mat-dialog-actions>
