@@ -160,3 +160,31 @@
         height: 18px;
     }
 }
+
+.mat-flat-button {
+    &.dialog-btn {
+        width: 150px;
+        font-weight: 700;
+
+        &__outlined {
+            color: $green-color !important;
+            background-color: transparent !important;
+            border: 0;
+            border-radius: 5px;
+        }
+    
+        &__positive {
+            color: $white-color !important;
+            background: $green-color !important;
+            border-radius: 5px;
+        }
+    
+        &__negative {
+            color: #FFF !important;
+            background-color: $red-color !important;
+            border: 2px solid $red-color !important;
+            box-sizing: border-box;
+            border-radius: 5px;
+        }
+    }
+}

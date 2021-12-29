@@ -26,13 +26,12 @@ mat-tab-group.client-details--tabs {
         font-size: 16px !important;
         line-height: 16px !important;
         opacity: 1;
-        height: 48px;
+        height: 50px;
         margin-right: 5px;
 
         &-active,
         &:hover {
             background-color: transparent !important;
-            // box-shadow: 0px 0px 20px rgba(26, 35, 126, 0.15);
         }
 
         &:last-of-type {
@@ -42,8 +41,6 @@ mat-tab-group.client-details--tabs {
     }
     .mat-tab-body-content {
         height: calc(100vh - 200px);
-        // height: calc(100vh - $white-header-height - 50px);
-        // min-height: calc(100vh - 200px);
         padding: 16px 60px;
     }
 }
@@ -88,7 +85,7 @@ mat-tab-group.client-documents--tabs {
         }
     }
     .mat-tab-body-content {
-        min-height: unset !important;
+        height: unset !important;
         padding: 16px 0 !important;
     }
 }
