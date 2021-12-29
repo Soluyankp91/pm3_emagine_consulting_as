@@ -154,10 +154,11 @@
                 font-weight: 700
             }
         }
-
-        .mat-form-field-wrapper {
-            margin: 0 !important;
-            padding-bottom: 1em !important;
+        &:not(.formFieldNoMarginPadding) {
+            .mat-form-field-wrapper {
+                margin: 0 !important;
+                padding-bottom: 1em !important;
+            }
         }
 
         .mat-form-field-outline {

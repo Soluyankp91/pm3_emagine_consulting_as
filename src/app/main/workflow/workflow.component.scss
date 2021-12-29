@@ -1,12 +1,35 @@
+@import "/src/app/shared/styles/config/_colors";
+@import "/src/app/shared/styles/config/_sizes";
+
 .workflow-list {
-    padding: 14px 20px;
+
     &--filter {
+        padding: 14px 20px;
+        height: $white-header-height;
+        background-color: $white-color;
         &-country {
             justify-content: center;
             align-items: center;
         }
+        &__add-btn mat-icon {
+            width: 34px;
+            height: 34px;
+        }
     }
 
+    &--header {
+        color: $dark-grey-color;
+        font-size: 56px;
+        font-weight: 700;
+        font-size: 36px;
+        line-height: 120%;
+    }
+    &--content {
+        background-color: $sand-25-color;
+        height: 100%;
+        flex-grow: 1;
+        padding: 14px 20px;
+    }
     &--table {
         position: relative;
         min-height: 120px;

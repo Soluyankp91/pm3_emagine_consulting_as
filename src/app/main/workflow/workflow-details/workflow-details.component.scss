@@ -1,3 +1,6 @@
+@import "/src/app/shared/styles/config/_sizes";
+@import "/src/app/shared/styles/config/_colors";
+
 .workflow {
     min-height: 100%;
     &-toolbar {
@@ -23,8 +26,7 @@
     }
     &-header {
         padding: 32px 75px;
-        height: 120px;
-        // height: 15vh;
+        height: $white-header-height;
         background-color: #fff;
         &--title {
             font-family: 'Open Sans', sans-serif !important;

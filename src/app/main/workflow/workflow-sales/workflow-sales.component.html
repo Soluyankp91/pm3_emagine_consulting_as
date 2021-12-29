@@ -2,7 +2,7 @@
     <mat-accordion [multi]="true">
         <mat-expansion-panel id="mainData" class="mat-elevation-z0">
             <mat-expansion-panel-header [collapsedHeight]="'80px'" [expandedHeight]="'80px'">
-                MAIN DATA
+                Main data
             </mat-expansion-panel-header>
             <form [formGroup]="salesMainDataForm" class="workflow-form workflow-form--main u-w--100">
                 <div *ngIf="!extendWorkflow && !changeWorkflow">
@@ -25,7 +25,6 @@
                     <!-- <ng-template #salesTypeReadOnly>
                         {{salesMainDataForm?.salesType?.value?.name}}
                     </ng-template> -->
-
 
                     <h3 class="workflow-gray--header">Delivery Type</h3>
                     <div fxLayout="row" fxLayoutAlign="start start" class="u-w--100 u-mb--20">

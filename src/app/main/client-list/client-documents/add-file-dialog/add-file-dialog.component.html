@@ -8,11 +8,11 @@
         <app-file-uploader></app-file-uploader>
     </div>
 </mat-dialog-content>
-<mat-dialog-actions align="center" class="add-file--actions">
-    <button [mat-dialog-close]="true" mat-flat-button color="primary" class="add-file--actions-btn__outlined">
+<mat-dialog-actions class="add-file--actions flex-justify-between">
+    <button [mat-dialog-close]="true" mat-flat-button class="add-file--actions-btn dialog-btn dialog-btn__outlined">
         Cancel
     </button>
-    <button mat-flat-button color="primary" class="add-file--actions-btn" (click)="save()">
+    <button mat-flat-button class="add-file--actions-btn dialog-btn dialog-btn__positive" (click)="save()">
         Upload
     </button>
 </mat-dialog-actions>

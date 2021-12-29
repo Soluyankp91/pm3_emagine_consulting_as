@@ -2,10 +2,16 @@ import { Injector } from "@angular/core";
 import { AbstractControl } from "@angular/forms";
 
 export abstract class AppComopnentBase {
+    
     constructor(injector: Injector) {
 
     }
 
+    mapListByProperty(list: [], prop: string) {
+        return list.map(x =>  x[prop]).join(', ');
+    }
+
+    // form validations
     getValidationMessage(formControl: AbstractControl | null): string | string[] | undefined {
         if (formControl) {
             if (formControl.hasError('required')) {
@@ -41,7 +47,6 @@ export abstract class AppComopnentBase {
         }
     }
 
-    // form validations
     disableOrEnableInput(boolValue: boolean, control: AbstractControl | null | undefined) {
         if (boolValue) {
             // FIXME: do we need to clear input if it will be disabled ?

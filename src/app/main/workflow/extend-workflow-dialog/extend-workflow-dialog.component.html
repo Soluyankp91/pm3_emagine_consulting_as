@@ -40,11 +40,11 @@
     </div>
 
 </mat-dialog-content>
-<mat-dialog-actions align="center" class="workflow-dialog--actions">
-    <button mat-flat-button color="accent" class="workflow-dialog--actions-btn__outlined" (click)="reject()">
+<mat-dialog-actions class="workflow-dialog--actions flex-justify-between">
+    <button mat-flat-button class="workflow-dialog--actions-btn dialog-btn dialog-btn__outlined" (click)="reject()">
         Cancel
     </button>
-    <button mat-flat-button color="accent" class="workflow-dialog--actions-btn" (click)="confirm()">
+    <button mat-flat-button class="workflow-dialog--actions-btn dialog-btn dialog-btn__positive" (click)="confirm()">
         Add
     </button>
 </mat-dialog-actions>
