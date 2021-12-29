@@ -1,3 +1,5 @@
+@import "/src/app/shared/styles/config/_colors";
+
 mat-table.rounded-table {
     background: transparent !important;
     box-shadow: none;
@@ -76,4 +78,56 @@ mat-table.rounded-table {
     justify-content: center;
     padding: 24px;
     color: rgba(0, 0, 0, 0.38);
+}
+
+
+mat-table.white-table {
+    background: transparent !important;
+    box-shadow: none;
+    font-weight: 400;
+    line-height: 19px;
+    font-size: 16px;
+    mat-header-row {
+        border: 0 !important;
+        font-size: 18px;
+        min-height: 35px;
+        mat-header-cell {
+            font-family: 'OpenSansWeb', sans-serif !important;
+            color: $medium-grey-color !important;
+            font-weight: 600;
+            &:first-of-type {
+                padding-left: 16px;
+            }
+            &:last-of-type {
+                padding-right: 16px;
+            }
+        }
+        padding: 0 16px;
+    }
+    mat-row {
+        height: auto;
+        min-height: 50px;
+        border-radius: 0;
+        border: 1px solid $sand-color;
+        margin-bottom: 0;
+        padding: 0 16px;
+        background-color: $white-color;
+        &:hover {
+            transition: background-color .7s ease;
+            background-color: rgba(102, 140, 164, .17);
+        }
+        mat-cell {
+            color: $dark-grey-color !important;
+            font-size: 16px;
+            padding-right: 15px;
+
+            &:first-of-type {
+                padding-left: 16px;
+            }
+
+            &:last-of-type {
+                padding-right: 16px;
+            }
+        }
+    }
 }

@@ -26,8 +26,9 @@
 @import "/src/app/shared/styles/base/layout";
 @import "/src/app/shared/styles/base/utilities";
 
-// Confid
-// @import "/src/app/shared/styles/config/_colors";
+// Config
+@import "/src/app/shared/styles/config/_colors";
+@import "/src/app/shared/styles/config/_sizes";
 
 // Core Styles
 @import "/src/app/shared/styles/main.layout";

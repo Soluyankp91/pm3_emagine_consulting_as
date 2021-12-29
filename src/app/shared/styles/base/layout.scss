@@ -214,7 +214,8 @@ html {
     background: rgba(23, 162, 151, .5);
         &~ .cdk-global-overlay-wrapper {
         pointer-events: auto !important;
-        position: relative !important;
+        // Commented out for dialog over dialog
+        // position: relative !important;
         overflow: auto !important;
         &::before {
             content: '' !important;

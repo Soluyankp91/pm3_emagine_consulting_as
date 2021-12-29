@@ -6,8 +6,8 @@
     mat-icon {
         margin-right: 8px !important;
         border-radius: 50%;
-        line-height: 16px;
-        font-size: 16px;
+        line-height: 20px;
+        font-size: 20px;
         align-items: center;
         display: inline-flex;
         justify-content: center;
@@ -33,31 +33,11 @@
             color: $green-color !important;
         }
     }
-    &--delete {
-        color: $red-color;
-        mat-icon {
-            // background: rgba($color: $red-color, $alpha: 0.2);
-            color: $red-color !important;
-        }
-    }
 
-    &-change {
-        padding: 0 16px;
-        font-weight: 700;
+    &--delete {
+        color: $darkred-color !important;
         mat-icon {
-            margin-right: 0px !important;
-            border-radius: 50%;
-            line-height: 20px;
-            font-size: 20px;
-            align-items: center;
-            display: inline-flex;
-            justify-content: center;
-        }
-        &--delete {
-            color: $darkred-color;
-            mat-icon {
-                color: $darkred-color !important;
-            }
+            color: $darkred-color !important;
         }
     }
 }

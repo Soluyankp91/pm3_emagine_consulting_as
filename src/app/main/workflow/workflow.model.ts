@@ -218,39 +218,6 @@ export const WorkflowNavigation: IWorkflowNavigationStep[] = [
     }
 ];
 
-export const WorkflowList = [
-    {
-        id: 1,
-        client: 'Martha Marikel',
-        supplier: 'Martha Marikel',
-        step: 'Sales',
-        status: 'In progress',
-        type: 'T&M',
-        managers: [1,2],
-        isDeleted: false
-    },
-    {
-        id: 11,
-        client: 'Martha Marikel',
-        supplier: 'Martha Marikel',
-        step: 'Sales',
-        status: 'In progress',
-        type: 'T&M',
-        managers: [1,2],
-        isDeleted: false
-    },
-    {
-        id: 12,
-        client: 'Martha Marikel',
-        supplier: 'Martha Marikel',
-        step: 'Contracts',
-        status: 'In progress',
-        type: 'Managed service',
-        managers: [1,2],
-        isDeleted: true
-    }
-];
-
 // Workflow progress status
 
 export class WorkflowProgressStatus implements IWorkflowProgressStatus {
@@ -381,3 +348,132 @@ export const WorkflowStepList = [
         isCompleted: false
     }
 ]
+
+
+
+
+export const WorkflowList = [
+    {
+        id: 1,
+        client: 'Martha Marikel',
+        consultants: [
+            { name: 'Martha Marikel' },
+            { name: 'John Doe'}
+        ],
+        salesType: 'T&M',
+        deliveryType: 'Offshore',
+        startDate: new Date(2021, 4, 2),
+        endDate: new Date(2021, 5, 3),
+        step: 'Sales',
+        openProcess: [null, WorkflowSideSections.StartWorkflow],
+        status: 'In progress',
+        managers: [1,2],
+        isDeleted: false
+    },
+    {
+        id: 11,
+        client: 'Martha Marikel',
+        consultants: [
+            { name: 'Martha Marikel'}
+        ],
+        salesType: 'T&M',
+        deliveryType: 'Nearshore',
+        startDate: new Date(2021, 2, 1),
+        endDate: new Date(2021, 5, 3),
+        step: 'Sales',
+        openProcess: [WorkflowSideSections.ExtendWorkflow, null],
+        status: 'In progress',
+        managers: [1,2],
+        isDeleted: false
+    },
+    {
+        id: 123,
+        client: 'Martha Marikel',
+        consultants: [
+            { name: 'Martha Marikel' },
+            { name: 'Van Trier Mia' },
+            { name: 'Robertsen Oscar'}
+        ],
+        salesType: 'Managed service',
+        deliveryType: 'Managed Service',
+        startDate: new Date(2021, 2, 15),
+        endDate: new Date(2022, 11, 25),
+        step: 'Contracts',
+        openProcess: [WorkflowSideSections.TerminateWorkflow],
+        status: 'In progress',
+        managers: [1,2],
+        isDeleted: true
+    },
+    {
+        id: 124,
+        client: 'Martha Marikel',
+        consultants: [
+            { name: 'Martha Marikel' },
+            { name: 'Van Trier Mia' },
+            { name: 'Robertsen Oscar'}
+        ],
+        salesType: 'Managed service',
+        deliveryType: 'Managed Service',
+        startDate: new Date(2021, 2, 15),
+        endDate: new Date(2022, 11, 25),
+        step: 'Contracts',
+        openProcess: [WorkflowSideSections.ChangeWorkflow],
+        status: 'In progress',
+        managers: [1,2],
+        isDeleted: true
+    },
+    {
+        id: 152,
+        client: 'Martha Marikel',
+        consultants: [
+            { name: 'Martha Marikel' },
+            { name: 'Van Trier Mia' },
+            { name: 'Robertsen Oscar'}
+        ],
+        salesType: 'Managed service',
+        deliveryType: 'Managed Service',
+        startDate: new Date(2021, 2, 15),
+        endDate: new Date(2022, 11, 25),
+        step: 'Contracts',
+        openProcess: [WorkflowSideSections.AddConsultant, WorkflowSideSections.ChangeWorkflow],
+        status: 'In progress',
+        managers: [1,2],
+        isDeleted: true
+    },
+    {
+        id: 1212,
+        client: 'Martha Marikel',
+        consultants: [
+            { name: 'Martha Marikel' },
+            { name: 'Van Trier Mia' },
+            { name: 'Robertsen Oscar'}
+        ],
+        salesType: 'Managed service',
+        deliveryType: 'Managed Service',
+        startDate: new Date(2021, 2, 15),
+        endDate: new Date(2022, 11, 25),
+        step: 'Contracts',
+        openProcess: [WorkflowSideSections.TerminateConsultant],
+        status: 'In progress',
+        managers: [1,2],
+        isDeleted: true
+    },
+    {
+        id: 1212,
+        client: 'Martha Marikel',
+        consultants: [
+            { name: 'Martha Marikel' },
+            { name: 'Van Trier Mia' },
+            { name: 'Robertsen Oscar'}
+        ],
+        salesType: 'Managed service',
+        deliveryType: 'Managed Service',
+        startDate: new Date(2021, 2, 15),
+        endDate: new Date(2022, 11, 25),
+        step: 'Contracts',
+        openProcess: null,
+        status: 'In progress',
+        managers: [1,2],
+        isDeleted: true
+    }
+];

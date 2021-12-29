@@ -7,6 +7,24 @@
                 display: flex;
                 justify-content: space-between;
                 border-top: 1px solid #E7E3E8;
+                button {
+                    width: 150px;
+                    font-weight: 700;
+                }
+                &-btn {
+                    &__outlined {
+                        color: $green-color !important;
+                        background-color: transparent;
+                        // border: 2px solid #CDFF96;
+                        border: 0;
+                        border-radius: 5px;
+                    }
+                    &__positive {
+                        color: $white-color !important;
+                        background: $green-color;
+                        border-radius: 5px;
+                    }
+                }
             }
 
             &--header {
