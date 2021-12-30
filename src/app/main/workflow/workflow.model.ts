@@ -349,11 +349,14 @@ export const WorkflowStepList = [
     }
 ]
 
-
-
+export enum WorkflowFlag {
+    NewSales = 1,
+    Extension = 2
+}
 
 export const WorkflowList = [
     {
+        flag: WorkflowFlag.NewSales,
         id: 1,
         client: 'Martha Marikel',
         consultants: [
@@ -371,6 +374,7 @@ export const WorkflowList = [
         isDeleted: false
     },
     {
+        flag: WorkflowFlag.NewSales,
         id: 11,
         client: 'Martha Marikel',
         consultants: [
@@ -387,6 +391,7 @@ export const WorkflowList = [
         isDeleted: false
     },
     {
+        flag: WorkflowFlag.Extension,
         id: 123,
         client: 'Martha Marikel',
         consultants: [
@@ -405,6 +410,7 @@ export const WorkflowList = [
         isDeleted: true
     },
     {
+        flag: WorkflowFlag.Extension,
         id: 124,
         client: 'Martha Marikel',
         consultants: [
@@ -423,6 +429,7 @@ export const WorkflowList = [
         isDeleted: true
     },
     {
+        flag: WorkflowFlag.NewSales,
         id: 152,
         client: 'Martha Marikel',
         consultants: [
@@ -441,6 +448,7 @@ export const WorkflowList = [
         isDeleted: true
     },
     {
+        flag: WorkflowFlag.NewSales,
         id: 1212,
         client: 'Martha Marikel',
         consultants: [
@@ -459,6 +467,7 @@ export const WorkflowList = [
         isDeleted: true
     },
     {
+        flag: WorkflowFlag.Extension,
         id: 1212,
         client: 'Martha Marikel',
         consultants: [

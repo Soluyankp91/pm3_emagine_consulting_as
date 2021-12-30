@@ -1,30 +1,35 @@
 <div class="workflow-list" fxFlexFill>
     <div fxLayout="column" fxLayoutAlign="start start" class="workflow-list--filter">
-        <div fxLayout="row" fxLayoutAlign="start start">
+        <!-- <div fxLayout="row" fxLayoutAlign="start start"> -->
             <h2 class="workflow-list--header">Workflows</h2>
-        </div>
+        <!-- </div> -->
         <div fxLayout="row" fxLayoutAlign="space-between center" class="u-w--100">
             <div fxFlex fxLayout="row" fxLayoutAlign="start center" class="u-w--100">
-                <span>
-                    // country
-                </span>
-                <span>
-                    // filter
-                </span>
-                <span>
-                    // filter2
+                <mat-icon class="workflow-list--filter-country__flag u-mr--16" svgIcon="International-flag"></mat-icon>
+                <div class="workflow-list--filter-type u-mr--16" *ngFor="let type of selectedTypes">
+                    <mat-icon class="workflow-flag" [ngClass]="getFlagColor(type.flag)" [matTooltip]="mapFlagTooltip(type.flag)">fiber_manual_record</mat-icon>
+                    <span class="workflow-list--filter-type__name">
+                        {{type.name}}
+                    </span>
+                </div>
+                <span class="workflow-list--filter-manager">
+                    <img src="../../../assets/common/images/no-img.svg">
                 </span>
             </div>
-            <div fxFlex="25%" fxLayout="row" fxLayoutAlign="space-between center" fxLayoutGap="16px">
-                <button mat-icon-button><mat-icon svgIcon="filter-icon"></mat-icon></button>
-                <mat-form-field appearance="outline" class="u-w--100 mat-elevation-z0 formFieldNoMarginPadding">
-                    <mat-label>Search</mat-label>
-                    <input autocomplete="off" matInput [formControl]="workflowFilter" placeholder="Search" type="text">
-                    <mat-icon matSuffix>search</mat-icon>
-                </mat-form-field>
-                <button mat-icon-button (click)="createWorkflow()" class="workflow-list--filter__add-btn">
-                    <mat-icon svgIcon="plus-button-icon"></mat-icon>
-                </button>
+            <div fxFlex="25%" fxLayout="column" fxLayoutAlign="start end">
+                <div fxLayout="row" fxLayoutAlign="space-between center" fxLayoutGap="16px" class="u-w--100 u-mb--20">
+                    <button mat-icon-button><mat-icon svgIcon="filter-icon"></mat-icon></button>
+                    
+                    <mat-form-field appearance="outline" class="u-w--100 mat-elevation-z0 formFieldNoMarginPadding">
+                        <mat-label>Search</mat-label>
+                        <input autocomplete="off" matInput [formControl]="workflowFilter" placeholder="Search" type="text">
+                        <mat-icon matSuffix>search</mat-icon>
+                    </mat-form-field>
+                    <button mat-icon-button (click)="createWorkflow()" class="workflow-list--filter__add-btn">
+                        <mat-icon svgIcon="plus-button-icon"></mat-icon>
+                    </button>
+                </div>
+                <mat-slide-toggle color="primary" labelPosition="before">Show terminated</mat-slide-toggle>
             </div>
         </div>
     </div>
@@ -34,9 +39,7 @@
                 <ng-container matColumnDef="flag">
                     <mat-header-cell *matHeaderCellDef fxFlex="3%"></mat-header-cell>
                     <mat-cell *matCellDef="let row" fxFlex="3%">
-                        <span class="text-truncate-ellipsis" [matTooltip]="row.id">
-                            {{row.id}}
-                        </span>
+                        <mat-icon class="workflow-flag" [ngClass]="getFlagColor(row.flag)" [matTooltip]="mapFlagTooltip(row.flag)">fiber_manual_record</mat-icon>
                     </mat-cell>
                 </ng-container>
                 <ng-container matColumnDef="id">

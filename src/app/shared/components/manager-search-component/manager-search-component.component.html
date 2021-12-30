@@ -1,0 +1,16 @@
+<div class="manager-search">
+    <div class="manager-search--image-wrapper" [matMenuTriggerFor]="managerSearch">
+        <img class="manager-search--photo" src="../../../../assets/common/images/no-img.svg" alt="Search manger" />
+        <mat-icon class="manager-search--status" svgIcon="in-progress-icon" [matTooltip]="'Pending'"></mat-icon>
+    </div>
+    <mat-menu #managerSearch>
+        <mat-form-field appearance="outline" class="">
+            <input type="text" matInput [matAutocomplete]="auto">
+            <mat-autocomplete #auto="matAutocomplete" dropdown-arrow="true">
+                <mat-option *ngFor="let option of [0, 1, 2]" [value]="option">
+                    {{option}}
+                </mat-option>
+            </mat-autocomplete>
+        </mat-form-field>
+    </mat-menu>
+</div>
