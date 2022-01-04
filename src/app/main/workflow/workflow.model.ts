@@ -349,12 +349,15 @@ export const WorkflowStepList = [
     }
 ]
 
-
-
+export enum WorkflowFlag {
+    NewSales = 1,
+    Extension = 2
+}
 
 export const WorkflowList = [
     {
-        id: 1,
+        flag: WorkflowFlag.NewSales,
+        id: '8295ac1a-b10c-461f-8183-79ec5ff35475',
         client: 'Martha Marikel',
         consultants: [
             { name: 'Martha Marikel' },
@@ -371,7 +374,8 @@ export const WorkflowList = [
         isDeleted: false
     },
     {
-        id: 11,
+        flag: WorkflowFlag.NewSales,
+        id: '8295ac1a-b10c-461f-8183-79ec5ff35475',
         client: 'Martha Marikel',
         consultants: [
             { name: 'Martha Marikel'}
@@ -387,7 +391,8 @@ export const WorkflowList = [
         isDeleted: false
     },
     {
-        id: 123,
+        flag: WorkflowFlag.Extension,
+        id: '8295ac1a-b10c-461f-8183-79ec5ff35475',
         client: 'Martha Marikel',
         consultants: [
             { name: 'Martha Marikel' },
@@ -405,7 +410,8 @@ export const WorkflowList = [
         isDeleted: true
     },
     {
-        id: 124,
+        flag: WorkflowFlag.Extension,
+        id: '8295ac1a-b10c-461f-8183-79ec5ff35475',
         client: 'Martha Marikel',
         consultants: [
             { name: 'Martha Marikel' },
@@ -423,7 +429,8 @@ export const WorkflowList = [
         isDeleted: true
     },
     {
-        id: 152,
+        flag: WorkflowFlag.NewSales,
+        id: '8295ac1a-b10c-461f-8183-79ec5ff35475',
         client: 'Martha Marikel',
         consultants: [
             { name: 'Martha Marikel' },
@@ -441,7 +448,8 @@ export const WorkflowList = [
         isDeleted: true
     },
     {
-        id: 1212,
+        flag: WorkflowFlag.NewSales,
+        id: '8295ac1a-b10c-461f-8183-79ec5ff35475',
         client: 'Martha Marikel',
         consultants: [
             { name: 'Martha Marikel' },
@@ -459,7 +467,8 @@ export const WorkflowList = [
         isDeleted: true
     },
     {
-        id: 1212,
+        flag: WorkflowFlag.Extension,
+        id: '8295ac1a-b10c-461f-8183-79ec5ff35475',
         client: 'Martha Marikel',
         consultants: [
             { name: 'Martha Marikel' },

@@ -8,7 +8,7 @@ import { FinancesClientForm, FinancesConsultantsForm } from './workflow-finances
     styleUrls: ['./workflow-finances.component.scss']
 })
 export class WorkflowFinancesComponent implements OnInit {
-    @Input() workflowId: number;
+    @Input() workflowId: string;
     @Input() editWorfklow: boolean;
     @Input() addConsultant: boolean;
     financesClientForm: FinancesClientForm;

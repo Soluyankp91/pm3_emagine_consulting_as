@@ -13,7 +13,7 @@ import { WorkflowContractsClientDataForm, WorkflowContractsConsultantsDataForm, 
     styleUrls: ['./workflow-contracts.component.scss']
 })
 export class WorkflowContractsComponent implements OnInit {
-    @Input() workflowId: number;
+    @Input() workflowId: string;
     @Input() changeWorkflow: boolean;
     @Input() extendWorkflow: boolean;
     @Input() addConsultant: boolean;

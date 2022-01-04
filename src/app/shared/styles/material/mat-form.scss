@@ -342,3 +342,15 @@
 
     }
 }
+
+
+.autocomplete-input {
+    .mat-form-field-suffix {
+        .mat-icon {
+            color: #4A4E60 !important;
+            width: 12px;
+            height: 12px;
+            transition: all .3s ease-in-out;
+        }
+    }
+}

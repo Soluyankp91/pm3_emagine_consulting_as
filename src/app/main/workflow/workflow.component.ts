@@ -6,8 +6,8 @@ import { Subject } from 'rxjs';
 import { finalize } from 'rxjs/operators';
 import { AppComopnentBase } from 'src/shared/app-component-base';
 import { AppConsts } from 'src/shared/AppConsts';
-import { ApiServiceProxy, SalesServiceProxy, WorkflowsServiceProxy } from 'src/shared/service-proxies/service-proxies';
-import { WorkflowList, WorkflowSideSections } from './workflow.model';
+import { ApiServiceProxy, SalesServiceProxy, StartWorkflowControllerServiceProxy, WorkflowsServiceProxy } from 'src/shared/service-proxies/service-proxies';
+import { WorkflowFlag, WorkflowList, WorkflowSideSections } from './workflow.model';
 
 @Component({
     selector: 'app-workflow',
@@ -41,8 +41,18 @@ export class WorkflowComponent extends AppComopnentBase implements OnInit, OnDes
     ];
 
     workflowDataSource: MatTableDataSource<any> = new MatTableDataSource<any>(WorkflowList);
-
     workflowProcess = WorkflowSideSections;
+
+    selectedTypes = [
+        {
+            flag: WorkflowFlag.NewSales,
+            name: 'New Sales'
+        },
+        {
+            flag: WorkflowFlag.Extension,
+            name: 'Extension'
+        }
+    ];
 
     private _unsubscribe = new Subject();
     constructor(
@@ -50,7 +60,7 @@ export class WorkflowComponent extends AppComopnentBase implements OnInit, OnDes
         private router: Router,
         private _apiService: ApiServiceProxy,
         private _workflowService: WorkflowsServiceProxy,
-        private _workflowSalesService: SalesServiceProxy
+        private _startWorkflowService: StartWorkflowControllerServiceProxy
     ) {
         super(injector);
         // this.workflowFilter.valueChanges.pipe(
@@ -96,18 +106,40 @@ export class WorkflowComponent extends AppComopnentBase implements OnInit, OnDes
         this.getWorkflowList();
     }
 
-    navigateToWorkflowDetails(workflowId: number): void {
+    navigateToWorkflowDetails(workflowId: string): void {
         this.router.navigate(['/main/workflow', workflowId]);
     }
 
     createWorkflow() {
-        this._workflowService.start()
+        this._startWorkflowService.start()
             .pipe(finalize(() => {
 
             }))
             .subscribe(result => {
                 this.router.navigate(['/main/workflow', result.workflowId]);
             });
+    }
+
+    getFlagColor(flag: number): string {
+        switch (flag) {
+            case WorkflowFlag.NewSales:
+                return 'workflow-flag--sales'
+            case WorkflowFlag.Extension:
+                return 'workflow-flag--extension'
+            default:
+                return '';
+        }
+    }
+
+    mapFlagTooltip(flag: number): string {
+        switch (flag) {
+            case WorkflowFlag.NewSales:
+                return 'New Sales'
+            case WorkflowFlag.Extension:
+                return 'Has Extension'
+            default:
+                return '';
+        }
     }
 
 }

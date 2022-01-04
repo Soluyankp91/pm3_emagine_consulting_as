@@ -34,7 +34,7 @@ export class WorkflowDetailsComponent implements OnInit, OnDestroy, AfterViewIni
     @ViewChild('workflowSales', {static: false}) workflowSales: WorkflowSalesComponent;
     @ViewChild('extensionSales', {static: false}) extensionSales: WorkflowExtensionComponent;
     menuIndex = 0;
-    workflowId: number;
+    workflowId: string;
     selectedIndex = 0;
     selectedStep = 'Sales';
 
@@ -76,7 +76,7 @@ export class WorkflowDetailsComponent implements OnInit, OnDestroy, AfterViewIni
         this.activatedRoute.paramMap.pipe(
             takeUntil(this._unsubscribe)
         ).subscribe(params => {
-            this.workflowId = +params.get('id')!;
+            this.workflowId = params.get('id')!;
         });
         this.menuTabs = new Array<SideMenuTabsDto>(...this._workflowDataService.topMenuTabs);
         this.componentInitalized = true;

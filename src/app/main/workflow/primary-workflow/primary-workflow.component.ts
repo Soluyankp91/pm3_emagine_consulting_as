@@ -11,7 +11,7 @@ import { AddConsultantDto, EditConsultantDto, ChangeWorkflowDto, ExtendConsultan
     styleUrls: ['./primary-workflow.component.scss']
 })
 export class PrimaryWorkflowComponent implements OnInit, AfterViewInit {
-    @Input() workflowId: number;
+    @Input() workflowId: string;
     @ViewChild('workflowSales', {static: false}) workflowSales: WorkflowSalesComponent;
     selectedStep: string;
 

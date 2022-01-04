@@ -8,7 +8,7 @@ import { finalize, takeUntil } from 'rxjs/operators';
 import { InternalLookupService } from 'src/app/shared/common/internal-lookup.service';
 import { ConfirmationDialogComponent } from 'src/app/shared/components/confirmation-dialog/confirmation-dialog.component';
 import { AppComopnentBase } from 'src/shared/app-component-base';
-import { ClientRateDto, ConsultantSalesDataDto, ContractSignerDto, EnumEntityTypeDto, EnumServiceProxy, SalesAdditionalDataDto, SalesClientDataDto, SalesMainDataDto, SignerRole, WorkflowSalesDataDto, WorkflowsServiceProxy } from 'src/shared/service-proxies/service-proxies';
+import { ClientRateDto, ConsultantSalesDataDto, ContractSignerDto, EnumEntityTypeDto, EnumServiceProxy, SalesAdditionalDataDto, SalesClientDataDto, SalesMainDataDto, SignerRole, StartWorkflowControllerServiceProxy, WorkflowSalesDataDto, WorkflowsServiceProxy } from 'src/shared/service-proxies/service-proxies';
 import { WorkflowConsultantActionsDialogComponent } from '../workflow-consultant-actions-dialog/workflow-consultant-actions-dialog.component';
 import { WorkflowDataService } from '../workflow-data.service';
 import { ConsultantDiallogAction, ConsultantTypes, InputReadonlyState, InputReadonlyStates, WorkflowSalesAdditionalDataForm, WorkflowSalesClientDataForm, WorkflowSalesConsultantsForm, WorkflowSalesMainForm } from './workflow-sales.model';
@@ -18,7 +18,7 @@ import { ConsultantDiallogAction, ConsultantTypes, InputReadonlyState, InputRead
     styleUrls: ['./workflow-sales.component.scss']
 })
 export class WorkflowSalesComponent extends AppComopnentBase implements OnInit {
-    @Input() workflowId: number;
+    @Input() workflowId: string;
     @Input() changeWorkflow: boolean;
     @Input() extendWorkflow: boolean;
     @Input() addConsultant: boolean;
@@ -86,7 +86,8 @@ export class WorkflowSalesComponent extends AppComopnentBase implements OnInit {
         private activatedRoute: ActivatedRoute,
         private overlay: Overlay,
         private dialog: MatDialog,
-        private _lookupService: InternalLookupService
+        private _lookupService: InternalLookupService,
+        private _startWorkflowService: StartWorkflowControllerServiceProxy
     ) {
         super(injector);
         this.salesMainClientDataForm = new WorkflowSalesClientDataForm();
@@ -99,7 +100,7 @@ export class WorkflowSalesComponent extends AppComopnentBase implements OnInit {
         this.activatedRoute.paramMap.pipe(
             takeUntil(this._unsubscribe)
         ).subscribe(params => {
-            this.workflowId = +params.get('id')!;
+            this.workflowId = params.get('id')!;
         });
         // get enums
         this.getCurrencies();
@@ -532,7 +533,7 @@ export class WorkflowSalesComponent extends AppComopnentBase implements OnInit {
         if (isDraft) {
 
         } else {
-            this._workflowService.salesPut(this.workflowId, input)
+            this._startWorkflowService.salesPut(this.workflowId, input)
                 .pipe(finalize(() => {
                 }))
                 .subscribe(result => {
@@ -542,7 +543,7 @@ export class WorkflowSalesComponent extends AppComopnentBase implements OnInit {
     }
 
     getWorkflowSalesStep() {
-        this._workflowService.salesGet(this.workflowId)
+        this._startWorkflowService.salesGet(this.workflowId)
             .pipe(finalize(() => {
 
             }))
