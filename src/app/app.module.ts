@@ -268,6 +268,20 @@ export class AppModule {
         );
 
         iconRegistry.addSvgIcon(
+            'France-flag',
+            sanitizer.bypassSecurityTrustResourceUrl(
+                'assets/common/images/country-flags/fr-flag.svg'
+            )
+        );
+
+        iconRegistry.addSvgIcon(
+            'France-flag-selected',
+            sanitizer.bypassSecurityTrustResourceUrl(
+                'assets/common/images/country-flags/fr-flag-selected.svg'
+            )
+        );
+
+        iconRegistry.addSvgIcon(
             'Poland-flag',
             sanitizer.bypassSecurityTrustResourceUrl(
                 'assets/common/images/country-flags/pl-flag.svg'

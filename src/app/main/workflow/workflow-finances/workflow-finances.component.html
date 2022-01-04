@@ -21,7 +21,7 @@
             </div>
 
             <div fxLayout="row" fxLayoutAlign="start start" class="u-w--100 u-mb--20" *ngIf="financesClientForm?.clientNumberTypeForInvoicing?.value === 'Custom'">
-                <mat-form-field appearance="fill" class="u-w--100  u-mr--16" fxFlex="33%">
+                <mat-form-field appearance="outline" class="u-w--100  u-mr--16" fxFlex="33%">
                     <mat-label>Debitor number</mat-label>
                     <input autocomplete="off" matInput formControlName="clientNumberForInvoicing" type="text">
                 </mat-form-field>

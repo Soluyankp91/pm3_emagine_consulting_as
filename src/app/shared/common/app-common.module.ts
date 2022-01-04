@@ -10,7 +10,7 @@ import { FileDragAndDropDirective } from '../components/file-uploader/file-drag-
 import { ScrollToModule } from '@nicky-lenaers/ngx-scroll-to';
 import { NgScrollbarModule } from 'ngx-scrollbar';
 import { InternalLookupService } from './internal-lookup.service';
-import { ManagerSearchComponentComponent } from '../components/manager-search-component/manager-search-component.component';
+import { ManagerSearchComponent } from '../components/manager-search/manager-search.component';
 
 @NgModule({
     declarations: [
@@ -18,7 +18,7 @@ import { ManagerSearchComponentComponent } from '../components/manager-search-co
         FileDragAndDropDirective,
         FileUploaderComponent,
         ConfirmationDialogComponent,
-        ManagerSearchComponentComponent
+        ManagerSearchComponent
     ],
     imports: [
         CommonModule,
@@ -37,7 +37,7 @@ import { ManagerSearchComponentComponent } from '../components/manager-search-co
         ConfirmationDialogComponent,
         ScrollToModule,
         NgScrollbarModule,
-        ManagerSearchComponentComponent
+        ManagerSearchComponent
     ],
     providers: [
         ErrorDialogService,

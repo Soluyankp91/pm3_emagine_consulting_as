@@ -16,7 +16,7 @@ export class WorkflowExtensionComponent implements OnInit, AfterViewInit {
     extensionForm: WorkflowExtensionForm;
 
     // Extension start
-    @Input() workflowId: number;
+    @Input() workflowId: string;
     @ViewChild('workflowSales', {static: false}) workflowSales: WorkflowSalesComponent;
     selectedStep: string;
     workflowSteps = WorkflowStepList;

@@ -5,7 +5,8 @@
     <h2>{{data.formFieldLabel}}</h2>
     <div fxLayout="row" fxLayoutAlign="start start" class="u-w--100 u-mt--10">
         <div class="u-mr--10" fxFlex="50%">
-            <mat-form-field appearance="outline" class="u-w--100  mat-elevation-z0">
+            <mat-form-field appearance="outline" class="u-w--100">
+                <mat-label>{{data.formFieldPlaceholder}}</mat-label>
                 <input autocomplete="off" matInput [formControl]="workflowChangesForm" [placeholder]="data.formFieldPlaceholder" type="text">
             </mat-form-field>
         </div>

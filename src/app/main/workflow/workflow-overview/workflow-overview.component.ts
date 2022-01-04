@@ -11,7 +11,7 @@ import { WorkflowSteps } from '../workflow.model';
     styleUrls: ['./workflow-overview.component.scss']
 })
 export class WorkflowOverviewComponent implements OnInit {
-    @Input() workflowId: number;
+    @Input() workflowId: string;
     finished = true;
     inPorgress = true;
     notStarted = true;
@@ -26,7 +26,7 @@ export class WorkflowOverviewComponent implements OnInit {
         this.activatedRoute.paramMap.pipe(
             takeUntil(this._unsubscribe)
         ).subscribe(params => {
-            this.workflowId = +params.get('id')!;
+            this.workflowId = params.get('id')!;
         });
         this.componentInitalized = true;
     }

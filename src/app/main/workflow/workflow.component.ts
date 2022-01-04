@@ -6,7 +6,7 @@ import { Subject } from 'rxjs';
 import { finalize } from 'rxjs/operators';
 import { AppComopnentBase } from 'src/shared/app-component-base';
 import { AppConsts } from 'src/shared/AppConsts';
-import { ApiServiceProxy, SalesServiceProxy, WorkflowsServiceProxy } from 'src/shared/service-proxies/service-proxies';
+import { ApiServiceProxy, SalesServiceProxy, StartWorkflowControllerServiceProxy, WorkflowsServiceProxy } from 'src/shared/service-proxies/service-proxies';
 import { WorkflowFlag, WorkflowList, WorkflowSideSections } from './workflow.model';
 
 @Component({
@@ -60,7 +60,7 @@ export class WorkflowComponent extends AppComopnentBase implements OnInit, OnDes
         private router: Router,
         private _apiService: ApiServiceProxy,
         private _workflowService: WorkflowsServiceProxy,
-        private _workflowSalesService: SalesServiceProxy
+        private _startWorkflowService: StartWorkflowControllerServiceProxy
     ) {
         super(injector);
         // this.workflowFilter.valueChanges.pipe(
@@ -106,12 +106,12 @@ export class WorkflowComponent extends AppComopnentBase implements OnInit, OnDes
         this.getWorkflowList();
     }
 
-    navigateToWorkflowDetails(workflowId: number): void {
+    navigateToWorkflowDetails(workflowId: string): void {
         this.router.navigate(['/main/workflow', workflowId]);
     }
 
     createWorkflow() {
-        this._workflowService.start()
+        this._startWorkflowService.start()
             .pipe(finalize(() => {
 
             }))
