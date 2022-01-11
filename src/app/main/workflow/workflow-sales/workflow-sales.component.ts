@@ -530,16 +530,16 @@ export class WorkflowSalesComponent extends AppComopnentBase implements OnInit {
         input.salesAdditionalData.remarks = this.additionalDataForm.remarks?.value;
         input.salesAdditionalData.noSharedCap = this.salesMainClientDataForm.capOnTimeReporting?.value;
 
-        if (isDraft) {
+        // if (isDraft) {
 
-        } else {
+        // } else {
             this._startWorkflowService.salesPut(this.workflowId, input)
                 .pipe(finalize(() => {
                 }))
                 .subscribe(result => {
 
                 });
-        }
+        // }
     }
 
     getWorkflowSalesStep() {

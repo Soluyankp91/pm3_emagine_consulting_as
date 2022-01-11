@@ -445,7 +445,6 @@ export class WorkflowDetailsComponent implements OnInit, OnDestroy, AfterViewIni
                     name: `Extension${newExtensionIndex}`,
                     index: newExtensionIndex,
                     sideNav: [ExtendWorkflowDto]
-
                 }
             )
             this.makeExtensionActiveTab(newExtensionIndex);
@@ -489,8 +488,22 @@ export class WorkflowDetailsComponent implements OnInit, OnDestroy, AfterViewIni
 
         dialogRef.componentInstance.onConfirmed.subscribe(() => {
             // confirmed
-            this._workflowDataService.workflowSideNavigation.unshift(ChangeWorkflowDto);
-            this.changeSideSection(this._workflowDataService.workflowSideNavigation[this._workflowDataService.workflowSideNavigation.length - 1] , this._workflowDataService.workflowSideNavigation.length - 1);
+            // let existingWorkflows = this.menuTabs.filter(x => x.name.startsWith('Extension'));
+            // let newExtensionIndex = existingExtensions.length ? Math.max.apply(Math, existingExtensions.map(function(o) { return o.index + 1; })) : 0;
+
+
+            // for PrimaryWorkflow
+            if (this._workflowDataService.getWorkflowProgress.currentlyActiveSection === WorkflowTopSections.Workflow) {
+                this._workflowDataService.workflowSideNavigation.unshift(ChangeWorkflowDto);
+                this.changeSideSection(this._workflowDataService.workflowSideNavigation[this._workflowDataService.workflowSideNavigation.length - 1] , this._workflowDataService.workflowSideNavigation.length - 1);
+            } else if (this._workflowDataService.getWorkflowProgress.currentlyActiveSection === WorkflowTopSections.Extension) {
+                // for WorkflowExtension
+                const currentExtension = this._workflowDataService.extensionSideNavigation.find(x => x.index === this._workflowDataService.getWorkflowProgress.currentlyActiveExtensionIndex);
+                currentExtension!.sideNav.unshift(ChangeWorkflowDto);
+                this.changeSideSection(currentExtension!.sideNav[currentExtension!.sideNav.length - 1] , currentExtension!.sideNav.length - 1);
+            }
+
+
 
         });
 
