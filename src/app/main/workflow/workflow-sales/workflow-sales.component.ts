@@ -392,7 +392,7 @@ export class WorkflowSalesComponent extends AppComopnentBase implements OnInit {
             }
         });
 
-        dialogRef.componentInstance.onConfimrmed.subscribe(() => {
+        dialogRef.componentInstance.onConfirmed.subscribe(() => {
             this.removeConsultant(index);
         });
 
@@ -631,7 +631,7 @@ export class WorkflowSalesComponent extends AppComopnentBase implements OnInit {
             }
         });
 
-        dialogRef.componentInstance.onConfimrmed.subscribe((result) => {
+        dialogRef.componentInstance.onConfirmed.subscribe((result) => {
             console.log('new date ', result?.newCutoverDate, 'new contract required ', result?.newLegalContractRequired);
             // call API to change consultant
         });
@@ -664,7 +664,7 @@ export class WorkflowSalesComponent extends AppComopnentBase implements OnInit {
             }
         });
 
-        dialogRef.componentInstance.onConfimrmed.subscribe((result) => {
+        dialogRef.componentInstance.onConfirmed.subscribe((result) => {
             console.log('start date ', result?.startDate, 'end date ', result?.endDate, 'no end date ', result?.noEndDate);
             // call API to change consultant
         });

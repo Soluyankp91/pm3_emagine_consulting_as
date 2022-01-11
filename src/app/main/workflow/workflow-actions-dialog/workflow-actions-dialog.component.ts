@@ -1,21 +1,22 @@
 import { Component, EventEmitter, Inject, Injector, OnInit, Output } from '@angular/core';
 import { FormControl } from '@angular/forms';
-import { MAT_DIALOG_DATA, MatDialogRef } from '@angular/material/dialog';
+import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
 import { AppComopnentBase } from 'src/shared/app-component-base';
-import { ConsultantDiallogAction } from '../workflow-sales/workflow-sales.model';
+import { WorkflowDiallogAction } from '../workflow.model';
 
 @Component({
-    selector: 'app-workflow-consultant-actions-dialog',
-    templateUrl: './workflow-consultant-actions-dialog.component.html',
-    styleUrls: ['./workflow-consultant-actions-dialog.component.scss']
+  selector: 'app-workflow-actions-dialog',
+  templateUrl: './workflow-actions-dialog.component.html',
+  styleUrls: ['./workflow-actions-dialog.component.scss']
 })
-export class WorkflowConsultantActionsDialogComponent extends AppComopnentBase implements OnInit {
+export class WorkflowActionsDialogComponent extends AppComopnentBase implements OnInit {
     @Output() onConfirmed: EventEmitter<any> = new EventEmitter<any>();
     @Output() onRejected: EventEmitter<any> = new EventEmitter<any>();
     // Change consultant
     newCutoverDate = new FormControl(null);
     newLegalContractRequired = new FormControl(false);
     // Extend consultant
+    workflowChangesForm = new FormControl();
     startDate = new FormControl(null);
     endDate = new FormControl(null);
     noEndDate = new FormControl(false);
@@ -23,7 +24,7 @@ export class WorkflowConsultantActionsDialogComponent extends AppComopnentBase i
     // TBD
 
     // Dialog data
-    dialogTypes = ConsultantDiallogAction;
+    dialogTypes = WorkflowDiallogAction;
     consultant: any;
     constructor(
         injector: Injector,
@@ -36,7 +37,7 @@ export class WorkflowConsultantActionsDialogComponent extends AppComopnentBase i
             confirmButtonText: string,
             isNegative: boolean
         },
-        private dialogRef: MatDialogRef<WorkflowConsultantActionsDialogComponent>
+        private dialogRef: MatDialogRef<WorkflowActionsDialogComponent>
         ) {
             super(injector);
             this.consultant = data.consultantData;
@@ -53,20 +54,27 @@ export class WorkflowConsultantActionsDialogComponent extends AppComopnentBase i
     confirm(): void {
         let outputData = {};
         switch (this.data.dialogType) {
-            case ConsultantDiallogAction.Change:
-                outputData = {
-                    newCutoverDate: this.newCutoverDate.value,
-                    newLegalContractRequired: this.newLegalContractRequired.value
-                }
-                break;
-            case ConsultantDiallogAction.Extend:
+            case WorkflowDiallogAction.Add:
                 outputData = {
                     startDate: this.startDate.value,
                     endDate: this.endDate.value,
                     noEndDate: this.noEndDate.value
                 }
                 break;
-            case ConsultantDiallogAction.Terminate:
+            case WorkflowDiallogAction.Change:
+                outputData = {
+                    newCutoverDate: this.newCutoverDate.value,
+                    newLegalContractRequired: this.newLegalContractRequired.value
+                }
+                break;
+            case WorkflowDiallogAction.Extend:
+                outputData = {
+                    startDate: this.startDate.value,
+                    endDate: this.endDate.value,
+                    noEndDate: this.noEndDate.value
+                }
+                break;
+            case WorkflowDiallogAction.Terminate:
 
                 break;
         }

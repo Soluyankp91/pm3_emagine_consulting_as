@@ -15,10 +15,11 @@ import { WorkflowChangeDialogComponent } from '../workflow-change-dialog/workflo
 import { WorkflowDataService } from '../workflow-data.service';
 import { WorkflowOverviewComponent } from '../workflow-overview/workflow-overview.component';
 import { WorkflowSalesComponent } from '../workflow-sales/workflow-sales.component';
-import { WorkflowSalesExtensionForm, WorkflowTerminationSalesForm, SideMenuTabsDto, WorkflowProgressStatus, WorkflowTopSections, WorkflowSteps, WorkflowSideSections } from '../workflow.model';
-import { ChangeWorkflowDto } from '../primary-workflow/primary-workflow.model';
+import { WorkflowSalesExtensionForm, WorkflowTerminationSalesForm, SideMenuTabsDto, WorkflowProgressStatus, WorkflowTopSections, WorkflowSteps, WorkflowSideSections, WorkflowDiallogAction } from '../workflow.model';
+import { AddConsultantDto, ChangeWorkflowDto, ExtendWorkflowDto } from '../primary-workflow/primary-workflow.model';
 import { InternalLookupService } from 'src/app/shared/common/internal-lookup.service';
 import { SideNavigationParentItemDto } from '../workflow-extension/workflow-extension.model';
+import { WorkflowActionsDialogComponent } from '../workflow-actions-dialog/workflow-actions-dialog.component';
 
 @Component({
   selector: 'app-workflow-details',
@@ -408,7 +409,7 @@ export class WorkflowDetailsComponent implements OnInit, OnDestroy, AfterViewIni
 
     addExtension() {
         const scrollStrategy = this.overlay.scrollStrategies.reposition();
-        const dialogRef = this.dialog.open(ExtendWorkflowDialogComponent, {
+        const dialogRef = this.dialog.open(WorkflowActionsDialogComponent, {
             width: '450px',
             minHeight: '180px',
             height: 'auto',
@@ -417,13 +418,15 @@ export class WorkflowDetailsComponent implements OnInit, OnDestroy, AfterViewIni
             autoFocus: false,
             panelClass: 'confirmation-modal',
             data: {
-                dialogHeader: 'Extend workflow',
-                formFieldLabel: 'Select extension end date',
-                formFieldPlaceholder: 'Start date'
+                dialogType: WorkflowDiallogAction.Extend,
+                dialogTitle: 'Extend Workflow',
+                rejectButtonText: 'Cancel',
+                confirmButtonText: 'Create',
+                isNegative: false
             }
         });
 
-        dialogRef.componentInstance.onConfimrmed.subscribe(() => {
+        dialogRef.componentInstance.onConfirmed.subscribe(() => {
             // confirmed
             let existingExtensions = this.menuTabs.filter(x => x.name.startsWith('Extension'));
             let newExtensionIndex = existingExtensions.length ? Math.max.apply(Math, existingExtensions.map(function(o) { return o.index + 1; })) : 0;
@@ -441,31 +444,7 @@ export class WorkflowDetailsComponent implements OnInit, OnDestroy, AfterViewIni
                     // TODO: move in constant variable, e.g. NewExtensionDto
                     name: `Extension${newExtensionIndex}`,
                     index: newExtensionIndex,
-                    sideNav: [
-                        {
-                            displayName: 'Extend Workflow',
-                            name: 'workflowStartOrExtend',
-                            sectionEnumValue: WorkflowSideSections.ExtendWorkflow,
-                            responsiblePerson: 'Andersen Rasmus2',
-                            dateRange: '02.01.2021 - 31.12.2021',
-                            subItems: [
-                                {
-                                    id: 1,
-                                    name: "ExtendSales",
-                                    displayName: "Sales",
-                                    isCompleted: false,
-                                    assignedPerson: 'Roberto Olberto'
-                                },
-                                {
-                                    id: 2,
-                                    name: "ExtendContracts",
-                                    displayName: "Contracts",
-                                    isCompleted: false,
-                                    assignedPerson: 'Roberto Olberto'
-                                }
-                            ]
-                        }
-                    ]
+                    sideNav: [ExtendWorkflowDto]
 
                 }
             )
@@ -490,8 +469,9 @@ export class WorkflowDetailsComponent implements OnInit, OnDestroy, AfterViewIni
 
     changeWorkflow() {
         const scrollStrategy = this.overlay.scrollStrategies.reposition();
-        const dialogRef = this.dialog.open(WorkflowChangeDialogComponent, {
+        const dialogRef = this.dialog.open(WorkflowActionsDialogComponent, {
             width: '500px',
+            minWidth: '450px',
             minHeight: '180px',
             height: 'auto',
             scrollStrategy,
@@ -499,17 +479,16 @@ export class WorkflowDetailsComponent implements OnInit, OnDestroy, AfterViewIni
             autoFocus: false,
             panelClass: 'confirmation-modal',
             data: {
-                dialogHeader: 'Change workflow data',
-                formFieldLabel: 'Select new cutover date',
-                formFieldPlaceholder: 'Start date'
+                dialogType: WorkflowDiallogAction.Change,
+                dialogTitle: 'Change Workflow data',
+                rejectButtonText: 'Cancel',
+                confirmButtonText: 'Create',
+                isNegative: false
             }
         });
 
         dialogRef.componentInstance.onConfirmed.subscribe(() => {
             // confirmed
-            // let existingWorkflows = this.menuTabs.filter(x => x.name.startsWith('Extension'));
-            // let newExtensionIndex = existingExtensions.length ? Math.max.apply(Math, existingExtensions.map(function(o) { return o.index + 1; })) : 0;
-
             this._workflowDataService.workflowSideNavigation.unshift(ChangeWorkflowDto);
             this.changeSideSection(this._workflowDataService.workflowSideNavigation[this._workflowDataService.workflowSideNavigation.length - 1] , this._workflowDataService.workflowSideNavigation.length - 1);
 
@@ -546,4 +525,59 @@ export class WorkflowDetailsComponent implements OnInit, OnDestroy, AfterViewIni
             return true;
         }
     }
+
+    addConsultant() {
+        const scrollStrategy = this.overlay.scrollStrategies.reposition();
+        const dialogRef = this.dialog.open(WorkflowActionsDialogComponent, {
+            minWidth: '450px',
+            minHeight: '180px',
+            height: 'auto',
+            width: 'auto',
+            scrollStrategy,
+            backdropClass: 'backdrop-modal--wrapper',
+            autoFocus: false,
+            panelClass: 'confirmation-modal',
+            data: {
+                dialogType: WorkflowDiallogAction.Add,
+                dialogTitle: 'Add consultant',
+                rejectButtonText: 'Cancel',
+                confirmButtonText: 'Create',
+                isNegative: false
+            }
+        });
+
+        dialogRef.componentInstance.onConfirmed.subscribe(() => {
+            // confirmed
+            let existingExtensions = this.menuTabs.filter(x => x.name.startsWith('Extension'));
+            let newExtensionIndex = existingExtensions.length ? Math.max.apply(Math, existingExtensions.map(function(o) { return o.index + 1; })) : 0;
+            if (existingExtensions.length < 1) {
+                this.menuTabs.push(
+                    {
+                        name: `Extension${newExtensionIndex}`,
+                        displayName: `Extension ${newExtensionIndex}`,
+                        index: newExtensionIndex,
+                        additionalInfo: 'New'
+                    }
+                )
+            }
+            this._workflowDataService.extensionSideNavigation.push(
+                {
+                    // TODO: move in constant variable, e.g. NewExtensionDto
+                    name: `Extension${newExtensionIndex}`,
+                    index: newExtensionIndex,
+                    sideNav: [AddConsultantDto]
+
+                }
+            )
+            this.makeExtensionActiveTab(newExtensionIndex);
+
+            // TODO: detect which exactly extension was added & saved to disable\enable button
+            this._workflowDataService.updateWorkflowProgressStatus({isExtensionAdded: true, isExtensionCompleted: false, numberOfAddedExtensions: newExtensionIndex + 1});
+        });
+
+        dialogRef.componentInstance.onRejected.subscribe(() => {
+            // rejected
+        });
+    }
+
 }

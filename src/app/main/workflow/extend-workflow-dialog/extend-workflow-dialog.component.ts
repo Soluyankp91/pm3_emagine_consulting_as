@@ -10,7 +10,7 @@ import { WorkflowExtensionForm } from '../workflow.model';
 })
 export class ExtendWorkflowDialogComponent implements OnInit {
 
-    @Output() onConfimrmed: EventEmitter<any> = new EventEmitter<any>();
+    @Output() onConfirmed: EventEmitter<any> = new EventEmitter<any>();
     @Output() onRejected: EventEmitter<any> = new EventEmitter<any>();
 
     workflowChangesForm = new FormControl();
@@ -36,7 +36,7 @@ export class ExtendWorkflowDialogComponent implements OnInit {
     }
 
     confirm(): void {
-        this.onConfimrmed.emit();
+        this.onConfirmed.emit();
         this.closeInternal();
     }
 

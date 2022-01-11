@@ -486,3 +486,10 @@ export const WorkflowList = [
         isDeleted: true
     }
 ];
+
+export enum WorkflowDiallogAction {
+    Add = 1,
+    Change = 2,
+    Extend = 3,
+    Terminate = 4
+}

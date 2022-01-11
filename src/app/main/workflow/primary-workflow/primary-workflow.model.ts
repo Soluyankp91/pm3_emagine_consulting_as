@@ -45,14 +45,14 @@ export const ExtendWorkflowDto = {
     subItems: [
         {
             id: 1,
-            name: "ExtendWorkflowSales",
+            name: "ExtendSales",
             displayName: "Sales",
             isCompleted: false,
             assignedPerson: 'Roberto Olberto'
         },
         {
             id: 2,
-            name: "ExtendWorkflowContracts",
+            name: "ExtendContracts",
             displayName: "Contracts",
             isCompleted: false,
             assignedPerson: 'Roberto Olberto'

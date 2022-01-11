@@ -141,7 +141,7 @@ export class ClientDocumentsComponent implements OnInit {
             }
         });
 
-        dialogRef.componentInstance.onConfimrmed.subscribe(() => {
+        dialogRef.componentInstance.onConfirmed.subscribe(() => {
             this.deleteFolder(folder);
         });
 
