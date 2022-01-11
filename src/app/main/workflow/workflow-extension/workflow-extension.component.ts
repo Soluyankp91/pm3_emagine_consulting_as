@@ -38,6 +38,11 @@ export class WorkflowExtensionComponent implements OnInit, AfterViewInit {
         this.sideNav = new Array<SideNavigationParentItemDto>(...sideNavForSpecificExtension.sideNav);
     }
 
+    get extensionSideNav() {
+        const sideNavForSpecificExtension: SideNavigationDto = this._workflowDataService.extensionSideNavigation.find(x => x.index === this._workflowDataService.getWorkflowProgress.currentlyActiveExtensionIndex)!;
+        return this.sideNav = new Array<SideNavigationParentItemDto>(...sideNavForSpecificExtension.sideNav);
+    }
+
     ngAfterViewInit(): void {
     }
 
