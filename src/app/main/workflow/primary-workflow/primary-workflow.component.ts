@@ -1,4 +1,5 @@
 import { AfterViewInit, Component, Input, OnInit, ViewChild } from '@angular/core';
+import { ManagerStatus } from 'src/app/shared/components/manager-search/manager-search.model';
 import { WorkflowDataService } from '../workflow-data.service';
 import { SideNavigationParentItemDto } from '../workflow-extension/workflow-extension.model';
 import { WorkflowSalesComponent } from '../workflow-sales/workflow-sales.component';
@@ -21,6 +22,8 @@ export class PrimaryWorkflowComponent implements OnInit, AfterViewInit {
     workflowSideNavigation: SideNavigationParentItemDto[];
 
     sectionIndex: number;
+
+    managerStatus = ManagerStatus;
     constructor(
         public _workflowDataService: WorkflowDataService
     ) { }

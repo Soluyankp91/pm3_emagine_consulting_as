@@ -453,6 +453,7 @@ export class WorkflowDetailsComponent implements OnInit, OnDestroy, AfterViewIni
                                     id: 1,
                                     name: "ExtendSales",
                                     displayName: "Sales",
+                                    enumStepValue: WorkflowSteps.Sales,
                                     isCompleted: false,
                                     assignedPerson: 'Roberto Olberto'
                                 },
@@ -460,6 +461,7 @@ export class WorkflowDetailsComponent implements OnInit, OnDestroy, AfterViewIni
                                     id: 2,
                                     name: "ExtendContracts",
                                     displayName: "Contracts",
+                                    enumStepValue: WorkflowSteps.Contracts,
                                     isCompleted: false,
                                     assignedPerson: 'Roberto Olberto'
                                 }
@@ -510,8 +512,19 @@ export class WorkflowDetailsComponent implements OnInit, OnDestroy, AfterViewIni
             // let existingWorkflows = this.menuTabs.filter(x => x.name.startsWith('Extension'));
             // let newExtensionIndex = existingExtensions.length ? Math.max.apply(Math, existingExtensions.map(function(o) { return o.index + 1; })) : 0;
 
-            this._workflowDataService.workflowSideNavigation.unshift(ChangeWorkflowDto);
-            this.changeSideSection(this._workflowDataService.workflowSideNavigation[this._workflowDataService.workflowSideNavigation.length - 1] , this._workflowDataService.workflowSideNavigation.length - 1);
+
+            // for PrimaryWorkflow
+            if (this._workflowDataService.getWorkflowProgress.currentlyActiveSection === WorkflowTopSections.Workflow) {
+                this._workflowDataService.workflowSideNavigation.unshift(ChangeWorkflowDto);
+                this.changeSideSection(this._workflowDataService.workflowSideNavigation[this._workflowDataService.workflowSideNavigation.length - 1] , this._workflowDataService.workflowSideNavigation.length - 1);
+            } else if (this._workflowDataService.getWorkflowProgress.currentlyActiveSection === WorkflowTopSections.Extension) {
+                // for WorkflowExtension
+                const currentExtension = this._workflowDataService.extensionSideNavigation.find(x => x.index === this._workflowDataService.getWorkflowProgress.currentlyActiveExtensionIndex);
+                currentExtension!.sideNav.unshift(ChangeWorkflowDto);
+                this.changeSideSection(currentExtension!.sideNav[currentExtension!.sideNav.length - 1] , currentExtension!.sideNav.length - 1);
+            }
+
+
 
         });
 
