@@ -69,7 +69,7 @@ export const ExtendWorkflowDto = {
     subItems: [
         {
             id: 1,
-            name: "AddSales",
+            name: "ExtendSales",
             displayName: "Sales",
             enumStepValue: WorkflowSteps.Sales,
             isCompleted: false,
@@ -77,7 +77,7 @@ export const ExtendWorkflowDto = {
         },
         {
             id: 2,
-            name: "AddContracts",
+            name: "ExtendContracts",
             displayName: "Contracts",
             enumStepValue: WorkflowSteps.Contracts,
             isCompleted: false,
@@ -85,7 +85,7 @@ export const ExtendWorkflowDto = {
         },
         {
             id: 3,
-            name: "AddFinance",
+            name: "ExtendFinance",
             displayName: "Finance",
             enumStepValue: WorkflowSteps.Finance,
             isCompleted: false,
