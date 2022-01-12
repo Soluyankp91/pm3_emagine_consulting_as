@@ -19,14 +19,14 @@
                                     {{item.dateRange}}
                                 </span>
                             </div>
-                            <div *ngIf="item.name === 'workflowEdit'">
+                            <div *ngIf="item.name === 'workflowEdit' || item.name === 'workflowTerminate'">
                                 <button mat-icon-button [matMenuTriggerFor]="consultantMenu" type="button" (click)="$event.stopPropagation();" class="workflow-icon--actions-treedot u-mr--16"><mat-icon>more_horiz</mat-icon></button>
                                 <mat-menu #consultantMenu>
                                     <button
                                         class="menu-item menu-item--delete"
                                         mat-menu-item
                                         [disabled]="false"
-                                        (click)="deleteChange(item)">
+                                        (click)="deleteSideSection(item)">
                                         <mat-icon>clear</mat-icon>
                                         Delete
                                     </button>
@@ -60,13 +60,13 @@
         <ng-container [ngSwitch]="selectedStep">
             <!-- START WORKFLOW -->
             <ng-container *ngSwitchCase="'Sales'">
-                <app-workflow-sales #workflowSales [workflowId]="workflowId"></app-workflow-sales>
+                <app-workflow-sales #workflowSales [workflowId]="workflowId" [activeSideSection]="workflowSideSections.StartWorkflow"></app-workflow-sales>
             </ng-container>
             <ng-container *ngSwitchCase="'Contracts'">
-                <app-workflow-contracts #workflowContracts [workflowId]="workflowId"></app-workflow-contracts>
+                <app-workflow-contracts #workflowContracts [workflowId]="workflowId" [activeSideSection]="workflowSideSections.StartWorkflow"></app-workflow-contracts>
             </ng-container>
             <ng-container *ngSwitchCase="'Finance'">
-                <app-workflow-finances #workflowFinances [workflowId]="workflowId"></app-workflow-finances>
+                <app-workflow-finances #workflowFinances [workflowId]="workflowId" [activeSideSection]="workflowSideSections.StartWorkflow"></app-workflow-finances>
             </ng-container>
 
             <!-- EDIT WORKFLOW -->
@@ -87,6 +87,31 @@
             <ng-container *ngSwitchCase="'AddConsultantFinance'">
                 <app-workflow-finances #workflowEditFinances [workflowId]="workflowId" [addConsultant]="true"></app-workflow-finances>
             </ng-container>
+
+            <!-- CHANGE CONSULTANT -->
+            <ng-container *ngSwitchCase="'ChangeConsultantSales'">
+                <app-workflow-sales #workflowEditSales [workflowId]="workflowId" [changeConsultant]="true"></app-workflow-sales>
+            </ng-container>
+            <ng-container *ngSwitchCase="'ChangeConsultantContracts'">
+                <app-workflow-contracts #workflowEditContracts [workflowId]="workflowId" [changeConsultant]="true"></app-workflow-contracts>
+            </ng-container>
+
+            <!-- EXTEND CONSULTANT -->
+            <ng-container *ngSwitchCase="'ExtendConsultantSales'">
+                <app-workflow-sales #workflowEditSales [workflowId]="workflowId" [activeSideSection]="workflowSideSections.ExtendConsultant"></app-workflow-sales>
+            </ng-container>
+            <ng-container *ngSwitchCase="'ExtendConsultantContracts'">
+                <app-workflow-contracts #workflowEditContracts [workflowId]="workflowId" [activeSideSection]="workflowSideSections.ExtendConsultant"></app-workflow-contracts>
+            </ng-container>
+
+            <!-- TERMINATE CONSULTANT -->
+            <ng-container *ngSwitchCase="'TerminateConsultantSales'">
+                <app-workflow-sales #workflowEditSales [workflowId]="workflowId" [activeSideSection]="workflowSideSections.TerminateConsultant"></app-workflow-sales>
+            </ng-container>
+            <ng-container *ngSwitchCase="'TerminateConsultantContracts'">
+                <app-workflow-contracts #workflowEditContracts [workflowId]="workflowId" [activeSideSection]="workflowSideSections.TerminateConsultant"></app-workflow-contracts>
+            </ng-container>
+
             <ng-container *ngSwitchDefault>
             </ng-container>
 

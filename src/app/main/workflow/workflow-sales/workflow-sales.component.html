@@ -5,6 +5,34 @@
                 Main data
             </mat-expansion-panel-header>
             <form [formGroup]="salesMainDataForm" class="workflow-form workflow-form--main u-w--100">
+                <ng-container [ngSwitch]="activeSideSection">
+                    <ng-container *ngSwitchCase="workflowSideSections.StartWorkflow">
+                        StartWorkflow
+                    </ng-container>
+                    <ng-container *ngSwitchCase="activeSideSection === workflowSideSections.ExtendWorkflow || activeSideSection === workflowSideSections.TerminateWorkflow">
+                        ExtendWorkflow
+                    </ng-container>
+                    <ng-container *ngSwitchCase="workflowSideSections.TerminateWorkflow">
+                        TerminateWorkflow
+                    </ng-container>
+                    <ng-container *ngSwitchCase="workflowSideSections.ChangeWorkflow">
+                        ChangeWorkflow
+                    </ng-container>
+                    <ng-container *ngSwitchCase="workflowSideSections.AddConsultant">
+                        AddConsultant
+                    </ng-container>
+                    <ng-container *ngSwitchCase="workflowSideSections.TerminateConsultant">
+                        TerminateConsultant
+                    </ng-container>
+                    <ng-container *ngSwitchCase="workflowSideSections.ChangeConsultant">
+                        ChangeConsultant
+                    </ng-container>
+                    <ng-container *ngSwitchCase="workflowSideSections.ExtendConsultant">
+                        ExtendConsultant
+                    </ng-container>
+                    <ng-container *ngSwitchDefault>
+                    </ng-container>
+                </ng-container>
                 <div *ngIf="!extendWorkflow && !changeWorkflow">
                     <h2 class="workflow-section--header">Project</h2>
 
@@ -180,6 +208,7 @@
                     </mat-form-field>
                 </div>
 
+                <!-- Only visible fields on changeconsultant *ngIf="changeConsultant" -->
                 <div fxLayout="row" fxLayoutAlign="start start" class="u-w--100 u-mb--10">
                     <mat-form-field appearance="outline" class="u-w--100 textarea-input " fxFlex="0 0 calc(66% + 16px)">
                         <mat-label>Remarks</mat-label>
@@ -194,7 +223,7 @@
                 </div>
             </form>
         </mat-expansion-panel>
-        <mat-expansion-panel class="mat-elevation-z0">
+        <mat-expansion-panel class="mat-elevation-z0" *ngIf="activeSideSection !== workflowSideSections.ChangeConsultant">
             <mat-expansion-panel-header [collapsedHeight]="'80px'" [expandedHeight]="'80px'">
                 Client data
             </mat-expansion-panel-header>
@@ -953,7 +982,7 @@
 
                     </div>
                 </mat-expansion-panel>
-                <div fxLayout="row" fxLayoutAlign="start start" class="u-w--100">
+                <div fxLayout="row" fxLayoutAlign="start start" class="u-w--100" *ngIf="primaryWorkflow">
                     <button class="button-add mat-elevation-z0 u-mt--10 u-mb--10" mat-flat-button (click)="addConsultantForm()">
                         <mat-icon>add</mat-icon>
                         Add consultant

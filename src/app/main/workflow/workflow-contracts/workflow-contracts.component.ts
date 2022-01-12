@@ -4,7 +4,6 @@ import { AbstractControl, FormArray, FormBuilder, FormControl, FormGroup } from 
 import { MatDialog } from '@angular/material/dialog';
 import { WorkflowConsultantActionsDialogComponent } from '../workflow-consultant-actions-dialog/workflow-consultant-actions-dialog.component';
 import { ConsultantDiallogAction } from '../workflow-sales/workflow-sales.model';
-import { WorkflowContractsSummaryForm } from '../workflow.model';
 import { WorkflowContractsClientDataForm, WorkflowContractsConsultantsDataForm, WorkflowContractsMainForm, WorkflowContractsSyncForm } from './workflow-contracts.model';
 
 @Component({
@@ -14,11 +13,16 @@ import { WorkflowContractsClientDataForm, WorkflowContractsConsultantsDataForm, 
 })
 export class WorkflowContractsComponent implements OnInit {
     @Input() workflowId: string;
+
+    @Input() primaryWorkflow: boolean;
     @Input() changeWorkflow: boolean;
     @Input() extendWorkflow: boolean;
     @Input() addConsultant: boolean;
+    @Input() changeConsultant: boolean;
 
-    contactSummaryForm: WorkflowContractsSummaryForm;
+    // Changed all above to enum
+    @Input() activeSideSection: number;
+
     contractsMainDataForm: WorkflowContractsMainForm;
     contractsClientDataForm: WorkflowContractsClientDataForm;
     contractsConsultantsDataForm: WorkflowContractsConsultantsDataForm;
@@ -36,7 +40,6 @@ export class WorkflowContractsComponent implements OnInit {
         private overlay: Overlay,
         private dialog: MatDialog
     ) {
-        this.contactSummaryForm = new WorkflowContractsSummaryForm();
         this.contractsMainDataForm = new WorkflowContractsMainForm();
         this.contractsClientDataForm = new WorkflowContractsClientDataForm();
         this.contractsConsultantsDataForm = new WorkflowContractsConsultantsDataForm();

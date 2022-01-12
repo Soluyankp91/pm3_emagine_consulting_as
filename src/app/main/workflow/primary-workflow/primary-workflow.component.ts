@@ -1,10 +1,12 @@
+import { Overlay } from '@angular/cdk/overlay';
 import { AfterViewInit, Component, Input, OnInit, ViewChild } from '@angular/core';
+import { MatDialog } from '@angular/material/dialog';
+import { ConfirmationDialogComponent } from 'src/app/shared/components/confirmation-dialog/confirmation-dialog.component';
 import { ManagerStatus } from 'src/app/shared/components/manager-search/manager-search.model';
 import { WorkflowDataService } from '../workflow-data.service';
 import { SideNavigationParentItemDto } from '../workflow-extension/workflow-extension.model';
 import { WorkflowSalesComponent } from '../workflow-sales/workflow-sales.component';
-import { WorkflowStepList } from '../workflow.model';
-import { AddConsultantDto, EditConsultantDto, ChangeWorkflowDto, ExtendConsultantDto, ExtendWorkflowDto, TerminateConsultantDto, TerminateWorkflowDto } from './primary-workflow.model';
+import { AddConsultantDto, ChangeWorkflowDto, ExtendConsultantDto, ExtendWorkflowDto, TerminateConsultantDto, TerminateWorkflowDto, WorkflowSideSections } from '../workflow.model';
 
 @Component({
     selector: 'app-primary-workflow',
@@ -16,8 +18,7 @@ export class PrimaryWorkflowComponent implements OnInit, AfterViewInit {
     @ViewChild('workflowSales', {static: false}) workflowSales: WorkflowSalesComponent;
     selectedStep: string;
 
-    workflowSteps = WorkflowStepList;
-
+    workflowSideSections = WorkflowSideSections;
 
     workflowSideNavigation: SideNavigationParentItemDto[];
 
@@ -25,7 +26,9 @@ export class PrimaryWorkflowComponent implements OnInit, AfterViewInit {
 
     managerStatus = ManagerStatus;
     constructor(
-        public _workflowDataService: WorkflowDataService
+        public _workflowDataService: WorkflowDataService,
+        private overlay: Overlay,
+        private dialog: MatDialog
     ) { }
 
     ngOnInit(): void {
@@ -67,10 +70,6 @@ export class PrimaryWorkflowComponent implements OnInit, AfterViewInit {
         this.workflowSideNavigation.push(TerminateWorkflowDto);
     }
 
-    editConsultant() {
-        this.workflowSideNavigation.push(EditConsultantDto);
-    }
-
     editWorkflow() {
         this.workflowSideNavigation.push(ChangeWorkflowDto);
     }
@@ -83,8 +82,34 @@ export class PrimaryWorkflowComponent implements OnInit, AfterViewInit {
         this.workflowSideNavigation.push(TerminateConsultantDto);
     }
 
-    deleteChange(item: SideNavigationParentItemDto) {
-        let sideNavToDelete = this._workflowDataService.workflowSideNavigation.findIndex(x => x.name === item.name);
-        this._workflowDataService.workflowSideNavigation.splice(sideNavToDelete, 1)
+    deleteSideSection(item: SideNavigationParentItemDto) {
+        const scrollStrategy = this.overlay.scrollStrategies.reposition();
+        const dialogRef = this.dialog.open(ConfirmationDialogComponent, {
+            minWidth: '450px',
+            minHeight: '180px',
+            height: 'auto',
+            width: 'auto',
+            scrollStrategy,
+            backdropClass: 'backdrop-modal--wrapper',
+            autoFocus: false,
+            panelClass: 'confirmation-modal',
+            data: {
+                confirmationMessageTitle: `Are you sure you want to delete ${item.displayName} ?`,
+                confirmationMessage: 'The data, which has been filled until now - will be removed.',
+                rejectButtonText: 'Cancel',
+                confirmButtonText: 'Yes',
+                isNegative: false
+            }
+        });
+
+        dialogRef.componentInstance.onConfirmed.subscribe((result) => {
+            let sideNavToDelete = this._workflowDataService.workflowSideNavigation.findIndex(x => x.name === item.name);
+            this._workflowDataService.workflowSideNavigation.splice(sideNavToDelete, 1)
+        });
+
+        dialogRef.componentInstance.onRejected.subscribe(() => {
+            // nthng
+        });
+
     }
 }

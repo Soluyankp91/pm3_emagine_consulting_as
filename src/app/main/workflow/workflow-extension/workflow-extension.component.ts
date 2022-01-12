@@ -1,9 +1,9 @@
 import { AfterViewInit, Component, Input, OnInit, ViewChild } from '@angular/core';
 import { FormArray, FormBuilder, FormControl } from '@angular/forms';
-import { AddConsultantDto, ExtensionSideNavigation, SideNavigationDto, SideNavigationParentItemDto } from './workflow-extension.model';
+import { SideNavigationDto, SideNavigationParentItemDto } from './workflow-extension.model';
 import { WorkflowDataService } from '../workflow-data.service';
 import { WorkflowSalesComponent } from '../workflow-sales/workflow-sales.component';
-import { WorkflowExtensionForm, WorkflowSalesExtensionForm, WorkflowStepList, WorkflowSteps } from '../workflow.model';
+import { WorkflowExtensionForm, WorkflowSalesExtensionForm, WorkflowSideSections, WorkflowSteps } from '../workflow.model';
 
 @Component({
     selector: 'app-workflow-extension',
@@ -15,14 +15,17 @@ export class WorkflowExtensionComponent implements OnInit, AfterViewInit {
     salesExtensionForm: WorkflowSalesExtensionForm;
     extensionForm: WorkflowExtensionForm;
 
+    workflowSideSections = WorkflowSideSections;
+
+
     // Extension start
     @Input() workflowId: string;
     @ViewChild('workflowSales', {static: false}) workflowSales: WorkflowSalesComponent;
     selectedStep: string;
-    workflowSteps = WorkflowStepList;
     sideNav: SideNavigationParentItemDto[];
     // Extension end
 
+    sectionIndex: number;
     constructor(
         public _workflowDataService: WorkflowDataService,
         private _fb: FormBuilder
@@ -36,6 +39,14 @@ export class WorkflowExtensionComponent implements OnInit, AfterViewInit {
         this.selectedStep = 'ExtendSales';
         const sideNavForSpecificExtension: SideNavigationDto = this._workflowDataService.extensionSideNavigation.find(x => x.index === this._workflowDataService.getWorkflowProgress.currentlyActiveExtensionIndex)!;
         this.sideNav = new Array<SideNavigationParentItemDto>(...sideNavForSpecificExtension.sideNav);
+        this.changeSideSection(this.sideNav[0] , 0);
+    }
+
+    changeSideSection(item: SideNavigationParentItemDto, index: number) {
+        this.sectionIndex = index;
+        this._workflowDataService.updateWorkflowProgressStatus({currentlyActiveSideSection: item.sectionEnumValue});
+        const firstitemInSection = this.sideNav.find(x => x.displayName === item.displayName)?.subItems[0];
+        this.changeStepSelection(firstitemInSection!.name, firstitemInSection!.id);
     }
 
     get extensionSideNav() {

@@ -15,8 +15,7 @@ import { WorkflowChangeDialogComponent } from '../workflow-change-dialog/workflo
 import { WorkflowDataService } from '../workflow-data.service';
 import { WorkflowOverviewComponent } from '../workflow-overview/workflow-overview.component';
 import { WorkflowSalesComponent } from '../workflow-sales/workflow-sales.component';
-import { WorkflowSalesExtensionForm, WorkflowTerminationSalesForm, SideMenuTabsDto, WorkflowProgressStatus, WorkflowTopSections, WorkflowSteps, WorkflowSideSections, WorkflowDiallogAction } from '../workflow.model';
-import { AddConsultantDto, ChangeWorkflowDto, ExtendWorkflowDto } from '../primary-workflow/primary-workflow.model';
+import { WorkflowSalesExtensionForm, WorkflowTerminationSalesForm, SideMenuTabsDto, WorkflowProgressStatus, WorkflowTopSections, WorkflowSteps, WorkflowSideSections, WorkflowDiallogAction, AddConsultantDto, ChangeWorkflowDto, ExtendWorkflowDto } from '../workflow.model';
 import { InternalLookupService } from 'src/app/shared/common/internal-lookup.service';
 import { SideNavigationParentItemDto } from '../workflow-extension/workflow-extension.model';
 import { WorkflowActionsDialogComponent } from '../workflow-actions-dialog/workflow-actions-dialog.component';
@@ -392,19 +391,19 @@ export class WorkflowDetailsComponent implements OnInit, OnDestroy, AfterViewIni
 
     // add Termiantion
     addTermination() {
-        // this._workflowDataService.topMenuTabs.push(
-        this.menuTabs.push(
-            {
-                name: `Termination`,
-                displayName: `Termination`,
-                index: 0,
-                additionalInfo: 'New'
-            }
-        )
+        // TODO: change new tab to side section
+        // this.menuTabs.push(
+        //     {
+        //         name: `Termination`,
+        //         displayName: `Termination`,
+        //         index: 0,
+        //         additionalInfo: 'New'
+        //     }
+        // )
 
-        let newStatus = new WorkflowProgressStatus();
-        newStatus.isTerminationAdded = true;
-        this._workflowDataService.updateWorkflowProgressStatus({isTerminationAdded: true});
+        // let newStatus = new WorkflowProgressStatus();
+        // newStatus.isTerminationAdded = true;
+        // this._workflowDataService.updateWorkflowProgressStatus({isTerminationAdded: true});
     }
 
     addExtension() {
