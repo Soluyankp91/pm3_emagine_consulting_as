@@ -1,17 +1,5 @@
 import { FormArray, FormControl, FormGroup } from "@angular/forms";
 
-export class WorkflowContractsSummaryForm extends FormGroup {
-    constructor() {
-        super({
-            contractData: new FormArray([])
-        })
-
-    }
-    get contractData() {
-        return this.get('contractData') as FormArray;
-    }
-}
-
 export class WorkflowSalesExtensionForm extends FormGroup {
     constructor() {
         super({
@@ -321,7 +309,9 @@ export enum WorkflowSideSections {
     TerminateWorkflow = 3,
     ChangeWorkflow = 4,
     AddConsultant = 5,
-    TerminateConsultant = 6
+    TerminateConsultant = 6,
+    ChangeConsultant = 7,
+    ExtendConsultant = 8
 }
 
 export enum WorkflowSteps {
@@ -330,25 +320,209 @@ export enum WorkflowSteps {
     Finance = 3
 }
 
+//#region side sections to Add
+export const ExtendWorkflowDto = {
+    displayName: 'Extend Workflow',
+    name: 'workflowStartOrExtend',
+    sectionEnumValue: WorkflowSideSections.ExtendWorkflow,
+    responsiblePerson: 'Andersen Rasmus2',
+    dateRange: '02.01.2021 - 31.12.2021',
+    subItems: [
+        {
+            id: 1,
+            name: "ExtendSales",
+            displayName: "Sales",
+            enumStepValue: WorkflowSteps.Sales,
+            isCompleted: false,
+            assignedPerson: 'Roberto Olberto'
+        },
+        {
+            id: 2,
+            name: "ExtendContracts",
+            displayName: "Contracts",
+            enumStepValue: WorkflowSteps.Contracts,
+            isCompleted: false,
+            assignedPerson: 'Roberto Olberto'
+        }
+    ]
+};
 
-export const WorkflowStepList = [
-    {
-        id: 1,
-        name: "Sales",
-        isCompleted: false
-    },
-    {
-        id: 2,
-        name: "Contracts",
-        isCompleted: false
-    },
-    {
-        id: 3,
-        name: "Finance",
-        isCompleted: false
-    }
-]
+export const ChangeWorkflowDto = {
+    displayName: 'Change Workflow',
+    name: 'workflowEdit',
+    sectionEnumValue: WorkflowSideSections.ChangeWorkflow,
+    responsiblePerson: 'Andersen Rasmus2',
+    dateRange: '02.01.2021 - 31.12.2021',
+    subItems: [
+        {
+            id: 1,
+            name: "EditWorkflowSales",
+            displayName: "Sales",
+            enumStepValue: WorkflowSteps.Sales,
+            isCompleted: false,
+            assignedPerson: 'Roberto Olberto'
+        },
+        {
+            id: 2,
+            name: "EditWorkflowContracts",
+            displayName: "Contracts",
+            enumStepValue: WorkflowSteps.Contracts,
+            isCompleted: false,
+            assignedPerson: 'Roberto Olberto'
+        }
+    ]
+};
 
+export const TerminateWorkflowDto = {
+    displayName: 'Terminate Workflow',
+    name: 'workflowTerminate',
+    sectionEnumValue: WorkflowSideSections.TerminateWorkflow,
+    responsiblePerson: 'Andersen Rasmus2',
+    dateRange: '02.01.2021 - 31.12.2021',
+    subItems: [
+        {
+            id: 1,
+            name: "TerminateWorkflowSales",
+            displayName: "Sales",
+            enumStepValue: WorkflowSteps.Sales,
+            isCompleted: false,
+            assignedPerson: 'Roberto Olberto'
+        },
+        {
+            id: 2,
+            name: "TerminateWorkflowContracts",
+            displayName: "Contracts",
+            enumStepValue: WorkflowSteps.Contracts,
+            isCompleted: false,
+            assignedPerson: 'Roberto Olberto'
+        }
+    ]
+};
+
+
+export const AddConsultantDto = {
+    displayName: 'Add Consultant',
+    name: 'workflowAdd',
+    sectionEnumValue: WorkflowSideSections.AddConsultant,
+    responsiblePerson: 'Andersen Rasmus2',
+    dateRange: '02.01.2021 - 31.12.2021',
+    subItems: [
+        {
+            id: 1,
+            name: "AddConsultantSales",
+            displayName: "Sales",
+            enumStepValue: WorkflowSteps.Sales,
+            isCompleted: false,
+            assignedPerson: 'Roberto Olberto'
+        },
+        {
+            id: 2,
+            name: "AddConsultantContracts",
+            displayName: "Contracts",
+            enumStepValue: WorkflowSteps.Contracts,
+            isCompleted: false,
+            assignedPerson: 'Roberto Olberto'
+        },
+        {
+            id: 3,
+            name: "AddConsultantFinance",
+            displayName: "Finance",
+            enumStepValue: WorkflowSteps.Finance,
+            isCompleted: false,
+            assignedPerson: 'Roberto Olberto'
+        }
+    ]
+};
+
+export const ChangeConsultantDto = {
+    displayName: 'Change Consultant',
+    name: 'workflowEdit',
+    sectionEnumValue: WorkflowSideSections.ChangeConsultant,
+    responsiblePerson: 'Andersen Rasmus2',
+    dateRange: '02.01.2021 - 31.12.2021',
+    subItems: [
+        {
+            id: 1,
+            name: "ChangeConsultantSales",
+            displayName: "Sales",
+            enumStepValue: WorkflowSteps.Sales,
+            isCompleted: false,
+            assignedPerson: 'Roberto Olberto'
+        },
+        {
+            id: 2,
+            name: "ChangeConsultantContracts",
+            displayName: "Contracts",
+            enumStepValue: WorkflowSteps.Contracts,
+            isCompleted: false,
+            assignedPerson: 'Roberto Olberto'
+        }
+    ]
+};
+
+export const ExtendConsultantDto = {
+    displayName: 'Extend Consultant',
+    name: 'workflowStartOrExtend',
+    sectionEnumValue: WorkflowSideSections.ExtendConsultant,
+    responsiblePerson: 'Andersen Rasmus2',
+    dateRange: '02.01.2021 - 31.12.2021',
+    subItems: [
+        {
+            id: 1,
+            name: "ExtendConsultantSales",
+            displayName: "Sales",
+            enumStepValue: WorkflowSteps.Sales,
+            isCompleted: false,
+            assignedPerson: 'Roberto Olberto'
+        },
+        {
+            id: 2,
+            name: "ExtendConsultantContracts",
+            displayName: "Contracts",
+            enumStepValue: WorkflowSteps.Contracts,
+            isCompleted: false,
+            assignedPerson: 'Roberto Olberto'
+        }
+    ]
+};
+
+export const TerminateConsultantDto = {
+    displayName: 'Terminate Consultant',
+    name: 'workflowTerminate',
+    sectionEnumValue: WorkflowSideSections.TerminateConsultant,
+    responsiblePerson: 'Andersen Rasmus2',
+    dateRange: '02.01.2021 - 31.12.2021',
+    subItems: [
+        {
+            id: 1,
+            name: "TerminateConsultantSales",
+            displayName: "Sales",
+            enumStepValue: WorkflowSteps.Sales,
+            isCompleted: false,
+            assignedPerson: 'Roberto Olberto'
+        },
+        {
+            id: 2,
+            name: "TerminateConsultantContracts",
+            displayName: "Contracts",
+            enumStepValue: WorkflowSteps.Contracts,
+            isCompleted: false,
+            assignedPerson: 'Roberto Olberto'
+        }
+    ]
+};
+
+//#endregion side section to add
+
+export enum WorkflowDiallogAction {
+    Add = 1,
+    Change = 2,
+    Extend = 3,
+    Terminate = 4
+}
+
+
+// #region hardcoded grid
 export enum WorkflowFlag {
     NewSales = 1,
     Extension = 2
@@ -487,9 +661,4 @@ export const WorkflowList = [
     }
 ];
 
-export enum WorkflowDiallogAction {
-    Add = 1,
-    Change = 2,
-    Extend = 3,
-    Terminate = 4
-}
+// #endrefion hardcoded grid

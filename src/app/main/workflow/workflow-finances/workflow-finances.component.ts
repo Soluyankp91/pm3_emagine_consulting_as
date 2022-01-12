@@ -9,8 +9,14 @@ import { FinancesClientForm, FinancesConsultantsForm } from './workflow-finances
 })
 export class WorkflowFinancesComponent implements OnInit {
     @Input() workflowId: string;
+
+    @Input() primaryWorkflow: boolean;
     @Input() editWorfklow: boolean;
     @Input() addConsultant: boolean;
+
+    // Changed all above to enum
+    @Input() activeSideSection: number;
+
     financesClientForm: FinancesClientForm;
     financesConsultantsForm: FinancesConsultantsForm;
 

@@ -11,6 +11,7 @@ import { AppComopnentBase } from 'src/shared/app-component-base';
 import { ClientRateDto, ConsultantSalesDataDto, ContractSignerDto, EnumEntityTypeDto, EnumServiceProxy, SalesAdditionalDataDto, SalesClientDataDto, SalesMainDataDto, SignerRole, StartWorkflowControllerServiceProxy, WorkflowSalesDataDto, WorkflowsServiceProxy } from 'src/shared/service-proxies/service-proxies';
 import { WorkflowConsultantActionsDialogComponent } from '../workflow-consultant-actions-dialog/workflow-consultant-actions-dialog.component';
 import { WorkflowDataService } from '../workflow-data.service';
+import { ChangeConsultantDto, ExtendConsultantDto, TerminateConsultantDto, WorkflowSideSections, WorkflowTopSections } from '../workflow.model';
 import { ConsultantDiallogAction, ConsultantTypes, InputReadonlyState, InputReadonlyStates, WorkflowSalesAdditionalDataForm, WorkflowSalesClientDataForm, WorkflowSalesConsultantsForm, WorkflowSalesMainForm } from './workflow-sales.model';
 @Component({
     selector: 'app-workflow-sales',
@@ -19,10 +20,17 @@ import { ConsultantDiallogAction, ConsultantTypes, InputReadonlyState, InputRead
 })
 export class WorkflowSalesComponent extends AppComopnentBase implements OnInit {
     @Input() workflowId: string;
+
+    @Input() primaryWorkflow: boolean;
     @Input() changeWorkflow: boolean;
     @Input() extendWorkflow: boolean;
     @Input() addConsultant: boolean;
+    @Input() changeConsultant: boolean;
 
+    // Changed all above to enum
+    @Input() activeSideSection: number;
+
+    workflowSideSections = WorkflowSideSections;
     // SalesStep
     intracompanyActive = false;
     salesMainClientDataForm: WorkflowSalesClientDataForm;
@@ -82,7 +90,7 @@ export class WorkflowSalesComponent extends AppComopnentBase implements OnInit {
         private _fb: FormBuilder,
         private _enumService: EnumServiceProxy,
         private _workflowService: WorkflowsServiceProxy,
-        private _workflodDataService: WorkflowDataService,
+        private _workflowDataService: WorkflowDataService,
         private activatedRoute: ActivatedRoute,
         private overlay: Overlay,
         private dialog: MatDialog,
@@ -125,7 +133,7 @@ export class WorkflowSalesComponent extends AppComopnentBase implements OnInit {
 
         this.getWorkflowSalesStep();
 
-        this._workflodDataService.workflowSalesSaved
+        this._workflowDataService.workflowSalesSaved
             .pipe(takeUntil(this._unsubscribe))
             .subscribe((value: boolean) => {
                 // NB: SAVE DRAFT or COMPLETE
@@ -138,7 +146,7 @@ export class WorkflowSalesComponent extends AppComopnentBase implements OnInit {
     updateReadonlyState() {
         // detect if WF Completed
         // then all inputs are readonly
-        if (this._workflodDataService.getWorkflowProgress.isPrimaryWorkflowCompleted) {
+        if (this._workflowDataService.getWorkflowProgress.isPrimaryWorkflowCompleted) {
             this.readonlyInput.forEach(item => {
                 item.readonly = true;
             });
@@ -633,7 +641,13 @@ export class WorkflowSalesComponent extends AppComopnentBase implements OnInit {
 
         dialogRef.componentInstance.onConfirmed.subscribe((result) => {
             console.log('new date ', result?.newCutoverDate, 'new contract required ', result?.newLegalContractRequired);
-            // call API to change consultant
+            //  TODO: call API to change consultant
+            if (this._workflowDataService.getWorkflowProgress.currentlyActiveSection === WorkflowTopSections.Workflow) {
+                this._workflowDataService.workflowSideNavigation.unshift(ChangeConsultantDto);
+            } else if (this._workflowDataService.getWorkflowProgress.currentlyActiveSection === WorkflowTopSections.Extension) {
+                const currentExtension = this._workflowDataService.extensionSideNavigation.find(x => x.index === this._workflowDataService.getWorkflowProgress.currentlyActiveExtensionIndex);
+                currentExtension!.sideNav.unshift(ChangeConsultantDto);
+            }
         });
 
         dialogRef.componentInstance.onRejected.subscribe(() => {
@@ -666,7 +680,13 @@ export class WorkflowSalesComponent extends AppComopnentBase implements OnInit {
 
         dialogRef.componentInstance.onConfirmed.subscribe((result) => {
             console.log('start date ', result?.startDate, 'end date ', result?.endDate, 'no end date ', result?.noEndDate);
-            // call API to change consultant
+            // TODO: call API to change consultant
+            if (this._workflowDataService.getWorkflowProgress.currentlyActiveSection === WorkflowTopSections.Workflow) {
+                this._workflowDataService.workflowSideNavigation.unshift(ExtendConsultantDto);
+            } else if (this._workflowDataService.getWorkflowProgress.currentlyActiveSection === WorkflowTopSections.Extension) {
+                const currentExtension = this._workflowDataService.extensionSideNavigation.find(x => x.index === this._workflowDataService.getWorkflowProgress.currentlyActiveExtensionIndex);
+                currentExtension!.sideNav.unshift(ExtendConsultantDto);
+            }
         });
 
         dialogRef.componentInstance.onRejected.subscribe(() => {
@@ -677,6 +697,12 @@ export class WorkflowSalesComponent extends AppComopnentBase implements OnInit {
     terminateConsultant(index: number) {
         const consultantData = this.consultantsForm.consultantData.at(index).value;
         console.log('terminate consultant ', consultantData);
+        if (this._workflowDataService.getWorkflowProgress.currentlyActiveSection === WorkflowTopSections.Workflow) {
+            this._workflowDataService.workflowSideNavigation.unshift(TerminateConsultantDto);
+        } else if (this._workflowDataService.getWorkflowProgress.currentlyActiveSection === WorkflowTopSections.Extension) {
+            const currentExtension = this._workflowDataService.extensionSideNavigation.find(x => x.index === this._workflowDataService.getWorkflowProgress.currentlyActiveExtensionIndex);
+            currentExtension!.sideNav.unshift(TerminateConsultantDto);
+        }
     }
 
     //#endregion Consultant menu actions
