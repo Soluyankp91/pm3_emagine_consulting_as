@@ -37,7 +37,8 @@
             "styles": [
               "./node_modules/@angular/material/prebuilt-themes/indigo-pink.css",
               "src/app/shared/core.scss",
-              "src/styles.scss"
+              "src/styles.scss",
+              "./node_modules/flag-icon-css/css/flag-icons.min.css"
             ],
             "scripts": []
           },
@@ -129,7 +130,8 @@
             "styles": [
               "./node_modules/@angular/material/prebuilt-themes/indigo-pink.css",
               "src/app/shared/core.scss",
-              "src/styles.scss"
+              "src/styles.scss",
+              "./node_modules/flag-icon-css/css/flag-icons.min.css"
             ],
             "scripts": []
           }

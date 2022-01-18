@@ -1,10 +1,74 @@
+@import "/src/app/shared/styles/config/_sizes";
+@import "/src/app/shared/styles/config/_mixins";
+@import "/src/app/shared/styles/config/_colors";
+
 .client-list {
-    padding: 14px 20px;
     &--filter {
+        // height: 150px;
+        height: $white-header-height;
+        padding: 16px 75px;
         &-country {
-            justify-content: center;
-            align-items: center;
+            width: 40px;
+            height: 40px;
+            &__btn {
+                background-color: #4a4e60;
+                color: $white-color;
+                font-weight: 700;
+            }
         }
+        &-status {
+            @include flexCentered;
+            // display: flex;
+            // justify-content: center;
+            // align-items: center;
+            height: 40px;
+            padding: 8px 16px;
+            border: 1px solid $light-grey-color;
+            border-radius: 40px;
+            &.selected-status {
+                background-color: #384853;
+                color: $white-color;
+            }
+            &__selected {
+                font-weight: 700;
+                color: #384853;
+            }
+
+            &__badge {
+                height: 40px;
+                padding: 8px 16px;
+                border: 1px solid $light-grey-color;
+                border-radius: 40px;
+                font-weight: 700;
+                color: #384853;
+                &.selected-status {
+                    background-color: #384853;
+                    color: $white-color;
+                }
+            }
+        }
+        &-manager {
+            width: 40px;
+            height: 40px;
+            img {
+                width: 40px;
+                height: 40px;
+            }
+        }
+    }
+
+    &--header {
+        color: $dark-grey-color;
+        font-size: 56px;
+        font-weight: 700;
+        font-size: 36px;
+        line-height: 120%;
+    }
+
+    &--content {
+        padding: 16px 75px;
+        background-color: #faf9fb;
+        min-height: calc(100vh - 150px);
     }
 
     &--table {

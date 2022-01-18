@@ -1,13 +1,14 @@
 import { HttpClient } from '@angular/common/http';
-import { Component, OnDestroy, OnInit } from '@angular/core';
-import { FormControl } from '@angular/forms';
+import { Component, Injector, OnDestroy, OnInit } from '@angular/core';
+import { AbstractControl, FormControl } from '@angular/forms';
 import { MatTableDataSource } from '@angular/material/table';
 import { Router } from '@angular/router';
-import { Subject } from 'rxjs';
-import { takeUntil, debounceTime, switchMap, finalize } from 'rxjs/operators';
+import { Observable, Subject } from 'rxjs';
+import { takeUntil, debounceTime, switchMap, finalize, map } from 'rxjs/operators';
 import { AppConsts } from 'src/shared/AppConsts';
-import { ApiServiceProxy, ClientListItemDto, ClientsServiceProxy, EnumServiceProxy, IClientListItemDto } from 'src/shared/service-proxies/service-proxies';
-import { CountryList, SelectableCountry } from './client-list.model';
+import { ApiServiceProxy, ClientListItemDto, EmployeeDto, EnumServiceProxy, IdNameDto, LookupServiceProxy } from 'src/shared/service-proxies/service-proxies';
+import { SelectableCountry, SelectableEmployeeDto, SelectableIdNameDto, StatusList } from './client-list.model';
+import { AppComopnentBase } from 'src/shared/app-component-base';
 
 @Component({
     selector: 'app-client-list',
@@ -15,46 +16,72 @@ import { CountryList, SelectableCountry } from './client-list.model';
     styleUrls: ['./client-list.component.scss']
 })
 
-export class ClientListComponent implements OnInit, OnDestroy {
+export class ClientListComponent extends AppComopnentBase implements OnInit, OnDestroy {
     clientFilter = new FormControl();
-    acoountManagerFilter = new FormControl();
+    accountManagerFilter = new FormControl();
     clientsList: any[] = [];
     isDataLoading = false;
     countryList: SelectableCountry[] = [];
-    selectedCountries: number[] = [];
+    selectedCountryIds: number[] = [];
     pageNumber = 1;
     deafultPageSize = AppConsts.grid.defaultPageSize;
     pageSizeOptions = [5, 10, 20, 50, 100];
     totalCount: number | undefined = 0;
     sorting = '';
 
+    // clientDisplayColumns = [
+    //     'countryFlag',
+    //     'id',
+    //     'name',
+    //     'clientAddress_Address',
+    //     'clientAddress_Address2',
+    //     'clientAddress_PostCode',
+    //     'clientAddress_City',
+    //     'clientAddress_Country_Name',
+    //     'phone',
+    //     'owner_Name'
+    // ];
+
     clientDisplayColumns = [
-        'countryFlag',
+        // 'countryFlag',
         'id',
         'name',
-        'clientAddress_Address',
-        'clientAddress_Address2',
-        'clientAddress_PostCode',
-        'clientAddress_City',
         'clientAddress_Country_Name',
-        'phone',
-        'owner_Name'
+        // 'clientCountry',
+        'clientAddress_City',
+        'clientAddress_Address',
+        'status',
+        'owner_Name',
+        'action'
     ];
+
+    selectedAccountManagers: SelectableEmployeeDto[] = [];
+    filteredAccountManagers: SelectableEmployeeDto[] = [];
+
+    countryFilter = new FormControl('');
+    selectedCountries: SelectableCountry[] = [];
+    filteredCountries: Observable<SelectableCountry[] | undefined>;
+
+    statusList = StatusList;
+    selecedStatuses: SelectableIdNameDto[] = [];
 
     clientDataSource: MatTableDataSource<ClientListItemDto> = new MatTableDataSource<ClientListItemDto>();
     private _unsubscribe = new Subject();
     constructor(
+        injector: Injector,
         private _apiService: ApiServiceProxy,
         private router: Router,
-        private _enumService: EnumServiceProxy
+        private _enumService: EnumServiceProxy,
+        private _lookupService: LookupServiceProxy
     ) {
+        super(injector);
         this.clientFilter.valueChanges.pipe(
             takeUntil(this._unsubscribe),
             debounceTime(300),
             switchMap((value: any) => {
                 let input = value ? value : '';
                 this.isDataLoading = true;
-                return this._apiService.clients(input, this.selectedCountries, this.pageNumber, this.deafultPageSize, this.sorting);
+                return this._apiService.clients(input, this.selectedCountryIds, this.pageNumber, this.deafultPageSize, this.sorting);
             }),
         ).subscribe((list: any) => {
             if (list.length) {
@@ -64,32 +91,99 @@ export class ClientListComponent implements OnInit, OnDestroy {
             }
             this.isDataLoading = false;
         });
-        this.acoountManagerFilter.valueChanges.pipe(
+
+        this.accountManagerFilter.valueChanges.pipe(
             takeUntil(this._unsubscribe),
             debounceTime(300),
             switchMap((value: any) => {
-                this.isDataLoading = true;
-                let input = value ? value : '';
-                return this._apiService.clients(input, this.selectedCountries, this.pageNumber, this.deafultPageSize, this.sorting);
+                let toSend = {
+                    name: value,
+                    maxRecordsCount: 1000,
+                };
+                if (value?.id) {
+                    toSend.name = value.id
+                        ? value.name
+                        : value;
+                }
+
+                return this._lookupService.employees(value);
             }),
-        ).subscribe((list: any) => {
+        ).subscribe((list: EmployeeDto[]) => {
             if (list.length) {
-                this.clientsList = list;
+                this.filteredAccountManagers = list.map(x => {
+                    return new SelectableEmployeeDto({
+                        id: x.id!,
+                        name: x.name!,
+                        externalId: x.externalId!,
+                        selected: false
+                    })
+                });
             } else {
-                this.clientsList = [];
+                this.filteredAccountManagers = [{ name: 'No managers found', externalId: '', id: 'no-data', selected: false }];
             }
-            this.isDataLoading = false;
         });
+
     }
 
     ngOnInit(): void {
         this.getCountries();
-        this.getClientsGrid(this.clientFilter.value, this.selectedCountries, this.pageNumber, this.deafultPageSize, this.sorting);
+        this.filteredCountries = this.countryFilter.valueChanges
+            .pipe(
+            map(value => {
+                if (typeof value === 'string') {
+                    return this._filterCountries(value);
+                }
+            })
+        );
+        this.getClientsGrid(this.clientFilter.value, this.selectedCountryIds, this.pageNumber, this.deafultPageSize, this.sorting);
+    }
+
+    private _filterCountries(value: string): SelectableCountry[] {
+        const filterValue = value.toLowerCase();
+
+        const result = this.countryList.filter(option => option.name.toLowerCase().includes(filterValue));
+        return result.length ? result : this.countryList;
     }
 
     ngOnDestroy(): void {
         this._unsubscribe.next();
         this._unsubscribe.complete();
+    }
+
+    optionClicked(event: Event, item: SelectableIdNameDto | SelectableCountry | SelectableEmployeeDto, list: SelectableIdNameDto[] | SelectableCountry[] | SelectableEmployeeDto[]) {
+        event.stopPropagation();
+        this.toggleSelection(item, list);
+      }
+
+    toggleSelection(item: any, list: any) {
+        item.selected = !item.selected;
+        if (item.selected) {
+            if (!list.includes(item)) {
+                list.push(item);
+            }
+
+        } else {
+            const i = list.findIndex((value: any) => value.name === item.name);
+            list.splice(i, 1);
+        }
+
+    }
+
+    toggleStatusSelection(event: Event, status: SelectableIdNameDto) {
+        event.stopPropagation();
+        status.selected = !status.selected;
+    }
+
+    displaySelectedStatus(): string {
+        if (this.selecedStatuses.length) {
+            if (this.selecedStatuses.length > 1) {
+                return this.selecedStatuses[0].name + ` +${this.selecedStatuses.length - 1}`;
+            } else { // if only one status
+                return this.selecedStatuses[0].name;
+            }
+        } else {
+            return '';
+        }
     }
 
     getCountries() {
@@ -126,29 +220,42 @@ export class ClientListComponent implements OnInit, OnDestroy {
     selectLookupCountry(country: SelectableCountry) {
         country.selected = !country.selected;
         if (country.selected) {
-            this.selectedCountries.push(country.id);
+            this.selectedCountryIds.push(+country.id);
         } else {
-            const index = this.selectedCountries.indexOf(country.id);
+            const index = this.selectedCountryIds.indexOf(+country.id);
             if (index > -1) {
-                this.selectedCountries.splice(index, 1);
+                this.selectedCountryIds.splice(index, 1);
             }
         }
-        this.getClientsGrid(this.clientFilter.value, this.selectedCountries, this.pageNumber, this.deafultPageSize, this.sorting);
+        this.getClientsGrid(this.clientFilter.value, this.selectedCountryIds, this.pageNumber, this.deafultPageSize, this.sorting);
     }
 
     pageChanged(event?: any): void {
         this.pageNumber = event.pageIndex;
         this.deafultPageSize = event.pageSize;
-        this.getClientsGrid(this.clientFilter.value, this.selectedCountries, this.pageNumber, this.deafultPageSize, this.sorting);
+        this.getClientsGrid(this.clientFilter.value, this.selectedCountryIds, this.pageNumber, this.deafultPageSize, this.sorting);
     }
 
     sortChanged(event?: any): void {
         this.sorting = event.active.concat(' ', event.direction);
-        this.getClientsGrid(this.clientFilter.value, this.selectedCountries, this.pageNumber, this.deafultPageSize, this.sorting);
+        this.getClientsGrid(this.clientFilter.value, this.selectedCountryIds, this.pageNumber, this.deafultPageSize, this.sorting);
     }
 
     navigateToClientDetails(clientId: number): void {
         this.router.navigate(['/main/clients', clientId]);
     }
+
+    restoreWrongfullyDeleted(item: ClientListItemDto) {
+
+    }
+
+    openInHubspot(item: ClientListItemDto) {
+
+    }
+
+    openInCAM(item: ClientListItemDto) {
+
+    }
+
 
 }
