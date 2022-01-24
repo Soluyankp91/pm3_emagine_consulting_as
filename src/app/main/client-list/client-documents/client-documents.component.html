@@ -170,3 +170,28 @@
         </mat-tab>
     </mat-tab-group>
 </div>
+
+<div class="client-documents u-w--100" fxLayout="row" fxFlexAlign="">
+    <div class="client-documents--sidenav">
+        <div
+            class="client-documents--sidenav__item"
+            *ngFor="let item of documentSideNavigation"
+            [ngClass]="{'selected-sidenav': item.selected}"
+            (click)="selectSideNav(item)">
+            {{item.name}}
+        </div>
+    </div>
+    <div class="client-documents--content">
+        <ng-container [ngSwitch]="selectedItem">
+            <ng-container *ngSwitchCase="documentSideItems.General">
+                General
+            </ng-container>
+            <ng-container *ngSwitchCase="documentSideItems.Contracts">
+                Contracts
+            </ng-container>
+            <ng-container *ngSwitchCase="documentSideItems.Evaluations">
+                Evaluations
+            </ng-container>
+        </ng-container>
+    </div>
+</div>

@@ -15,6 +15,36 @@ export class FolderFlatNode {
     ) {}
 }
 
+export enum DocumentSideNavItem {
+    General = 1,
+    Contracts = 2,
+    Evaluations = 3
+}
+
+export class DocumentSideNavDto {
+    name: string;
+    selected: boolean;
+    enumValue: number;
+}
+
+export const DocumentSideNavigation: DocumentSideNavDto[] = [
+    {
+        name: 'General',
+        selected: true,
+        enumValue: DocumentSideNavItem.General
+    },
+    {
+        name: 'Contracts',
+        selected: false,
+        enumValue: DocumentSideNavItem.Contracts
+    },
+    {
+        name: 'Evaluations',
+        selected: false,
+        enumValue: DocumentSideNavItem.Evaluations
+    }
+];
+
 export const TREE_DATA: FolderNode[] = [
     {
         name: 'Folder1',

@@ -1,9 +1,57 @@
 import { Component, Input, OnInit } from '@angular/core';
 import { MatTableDataSource } from '@angular/material/table';
+import * as moment from 'moment';
 import { finalize } from 'rxjs/operators';
 import { AppConsts } from 'src/shared/AppConsts';
-import { ClientRequestTrackDto, ClientsServiceProxy } from 'src/shared/service-proxies/service-proxies';
+import { ClientRequestTrackDto, ClientsServiceProxy, EmployeeDto } from 'src/shared/service-proxies/service-proxies';
 
+const DATA_SOURCE: ClientRequestTrackDto[] = [
+    new ClientRequestTrackDto(
+        {
+            requestId: 12,
+            headline: 'Test',
+            status: undefined,
+            clientDeadline: moment(),
+            dateAdded: moment(),
+            projectType: undefined,
+            priority: 1,
+            numberOfConsultants: 2,
+            locations: [],
+            requestSourcers: [new EmployeeDto({id: 1, name: 'Ron Weasley', externalId: ''})],
+            accountManagers: [new EmployeeDto({id: 1, name: 'Ron Weasley', externalId: ''})],
+        }
+    ),
+    new ClientRequestTrackDto(
+        {
+            requestId: 1222,
+            headline: 'Test2',
+            status: undefined,
+            clientDeadline: moment(),
+            dateAdded: moment(),
+            projectType: undefined,
+            priority: 1,
+            numberOfConsultants: 2,
+            locations: [],
+            requestSourcers: [new EmployeeDto({id: 1, name: 'Ron Weasley', externalId: ''})],
+            accountManagers: [new EmployeeDto({id: 1, name: 'Ron Weasley', externalId: ''})],
+        }
+    ),
+    new ClientRequestTrackDto(
+        {
+            requestId: 123,
+            headline: 'Test3',
+            status: undefined,
+            clientDeadline: moment(),
+            dateAdded: moment(),
+            projectType: undefined,
+            priority: 1,
+            numberOfConsultants: 2,
+            locations: [],
+            requestSourcers: [new EmployeeDto({id: 1, name: 'Ron Weasley', externalId: ''})],
+            accountManagers: [new EmployeeDto({id: 1, name: 'Ron Weasley', externalId: ''})],
+        }
+    )
+]
 @Component({
     selector: 'app-client-request-track',
     templateUrl: './client-request-track.component.html',
@@ -63,7 +111,8 @@ export class ClientRequestTrackComponent implements OnInit {
 
             }))
             .subscribe(result => {
-                this.clientDataSource = new MatTableDataSource<ClientRequestTrackDto>(result.items);
+                // this.clientDataSource = new MatTableDataSource<ClientRequestTrackDto>(result.items);
+                this.clientDataSource = new MatTableDataSource<ClientRequestTrackDto>(DATA_SOURCE);
             });
     }
 
