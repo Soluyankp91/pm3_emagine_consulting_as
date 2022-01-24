@@ -1,11 +1,11 @@
 <div class="client-request-track">
     <div fxLayout="column" fxLayoutAlign="start center" class="client-list--table u-w--100">
         <div fxLayout="column" fxFlexFill>
-            <mat-table #table [dataSource]="clientDataSource" class="rounded-table u-w--100" matSort matSortStart="asc" (matSortChange)="sortChanged($event)">
+            <mat-table #table [dataSource]="clientDataSource" class="white-table u-w--100" matSort matSortStart="asc" (matSortChange)="sortChanged($event)">
                 <ng-container matColumnDef="countryFlag">
                     <mat-header-cell *matHeaderCellDef fxFlex="2%"></mat-header-cell>
                     <mat-cell *matCellDef="let row" fxFlex="2%">
-                        <mat-icon class="country-lookup--btn__flag selected-country" svgIcon="{{row.clientAddress_Country_Name}}-flag-selected"></mat-icon>
+                        <!-- <mat-icon class="country-lookup--btn__flag selected-country" svgIcon="{{row.clientAddress_Country_Name}}-flag-selected"></mat-icon> -->
                     </mat-cell>
                 </ng-container>
                 <ng-container matColumnDef="id">
@@ -33,16 +33,16 @@
                 <ng-container matColumnDef="clientDeadline">
                     <mat-header-cell *matHeaderCellDef mat-sort-header fxFlex="8%"> Client deadline </mat-header-cell>
                     <mat-cell *matCellDef="let row" fxFlex="8%">
-                        <span class="text-truncate-ellipsis" [matTooltip]="row.clientDeadline">
-                            {{row.clientDeadline}}
+                        <span class="text-truncate-ellipsis" [matTooltip]="row.clientDeadline | momentFormat: 'DD.MM.YYYY'">
+                            {{row.clientDeadline | momentFormat: 'DD.MM.YYYY'}}
                         </span>
                     </mat-cell>
                 </ng-container>
                 <ng-container matColumnDef="dateAdded">
                     <mat-header-cell *matHeaderCellDef mat-sort-header fxFlex="8%"> Date added </mat-header-cell>
                     <mat-cell *matCellDef="let row" fxFlex="8%">
-                        <span class="text-truncate-ellipsis" [matTooltip]="row?.dateAdded">
-                            {{row?.dateAdded}}
+                        <span class="text-truncate-ellipsis" [matTooltip]="row?.dateAdded | momentFormat: 'DD.MM.YYYY'">
+                            {{row?.dateAdded | momentFormat: 'DD.MM.YYYY'}}
                         </span>
                     </mat-cell>
                 </ng-container>

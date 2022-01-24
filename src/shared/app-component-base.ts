@@ -1,14 +1,24 @@
 import { Injector } from "@angular/core";
 import { AbstractControl } from "@angular/forms";
+import { API_BASE_URL } from "./service-proxies/service-proxies";
 
 export abstract class AppComopnentBase {
-    
-    constructor(injector: Injector) {
+    apiUrl: string;
 
+    constructor(injector: Injector) {
+        this.apiUrl = injector.get(API_BASE_URL);
     }
 
-    mapListByProperty(list: [], prop: string) {
+    mapListByProperty(list: any[], prop: string) {
         return list.map(x =>  x[prop]).join(', ');
+    }
+
+    employeePhoto(externalId: string): string {
+        if (externalId) {
+            return `${this.apiUrl}/api/Employee/ProfilePicture/${externalId}`;
+        } else {
+            return '';
+        }
     }
 
     // form validations

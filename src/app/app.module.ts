@@ -514,5 +514,12 @@ export class AppModule {
             )
         );
 
+        iconRegistry.addSvgIcon(
+            'Country-filter-flag',
+            sanitizer.bypassSecurityTrustResourceUrl(
+                'assets/common/images/country-filter-flag.svg'
+            )
+        );
+
     }
 }

@@ -94,6 +94,11 @@
                     <app-client-documents #documentsTab></app-client-documents>
                 </ng-scrollbar>
             </mat-tab>
+            <mat-tab label="Workflow track">
+                <ng-scrollbar>
+                    <app-client-workflow-track [clientInfo]="selectedClient"></app-client-workflow-track>
+                </ng-scrollbar>
+            </mat-tab>
             <mat-tab label="Consultant track">
                 <ng-scrollbar>
                     <app-client-consultant-track></app-client-consultant-track>
@@ -107,6 +112,11 @@
             <mat-tab label="Rates and Fees">
                 <ng-scrollbar>
                     <app-client-rates-and-fees></app-client-rates-and-fees>
+                </ng-scrollbar>
+            </mat-tab>
+            <mat-tab label="Contacts">
+                <ng-scrollbar>
+                    <app-client-contacts [clientInfo]="selectedClient"></app-client-contacts>
                 </ng-scrollbar>
             </mat-tab>
             <mat-tab label="Consultants">

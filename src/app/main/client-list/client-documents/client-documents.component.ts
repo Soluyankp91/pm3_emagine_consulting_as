@@ -2,7 +2,7 @@ import { Component, Input, OnInit, ViewChild } from '@angular/core';
 import { FormControl } from '@angular/forms';
 import { MatTableDataSource } from '@angular/material/table';
 import { AppConsts } from 'src/shared/AppConsts';
-import { TREE_DATA } from './client-documents.model';
+import { DocumentSideNavDto, DocumentSideNavigation, DocumentSideNavItem, TREE_DATA } from './client-documents.model';
 import { AddFileDialogComponent } from './add-file-dialog/add-file-dialog.component';
 import { Overlay } from '@angular/cdk/overlay';
 import { MatDialog } from '@angular/material/dialog';
@@ -46,11 +46,20 @@ export class ClientDocumentsComponent implements OnInit {
 
     contractFolders = TREE_DATA;
 
+    documentSideNavigation = DocumentSideNavigation;
+    documentSideItems = DocumentSideNavItem;
+    selectedItem = DocumentSideNavItem.General;
     constructor(
         private overlay: Overlay,
         private dialog: MatDialog
     ) {
 
+    }
+
+    selectSideNav(item: DocumentSideNavDto) {
+        this.documentSideNavigation.forEach(x => x.selected = false);
+        item.selected = true;
+        this.selectedItem = item.enumValue;
     }
 
     ngOnInit(): void {

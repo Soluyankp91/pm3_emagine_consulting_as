@@ -1,0 +1,15 @@
+.inactive-status {
+    color: #ffda44;
+}
+
+.active-status {
+    color: #17a297;
+}
+
+.deleted-status {
+    color: rgba($color: #ff7a78, $alpha: .5);
+}
+
+.icon-arrow-rotate180 {
+    transform: rotateY(180deg);
+}

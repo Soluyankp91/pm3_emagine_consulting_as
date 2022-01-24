@@ -4,6 +4,7 @@
 mat-tab-group.client-details--tabs {
     .mat-tab-body-wrapper {
         box-shadow: 0px 0px 20px rgba(26, 35, 126, 0.15);
+        background-color: #FAF9FB !important;
     }
     mat-ink-bar {
         background-color: #17A297 !important;
@@ -34,10 +35,10 @@ mat-tab-group.client-details--tabs {
             background-color: transparent !important;
         }
 
-        &:last-of-type {
-            margin-left: auto;
-            margin-right: 0;
-        }
+        // &:last-of-type {
+        //     margin-left: auto;
+        //     margin-right: 0;
+        // }
     }
     .mat-tab-body-content {
         height: calc(100vh - 200px);

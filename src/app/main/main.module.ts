@@ -35,6 +35,8 @@ import { ExtendWorkflowDialogComponent } from './workflow/extend-workflow-dialog
 import { ClientRatesAndFeesComponent } from './client-list/client-rates-and-fees/client-rates-and-fees.component';
 import { WorkflowConsultantActionsDialogComponent } from './workflow/workflow-consultant-actions-dialog/workflow-consultant-actions-dialog.component';
 import { WorkflowActionsDialogComponent } from './workflow/workflow-actions-dialog/workflow-actions-dialog.component';
+import { ClientWorkflowTrackComponent } from './client-list/client-workflow-track/client-workflow-track.component';
+import { ClientContactsComponent } from './client-list/client-contacts/client-contacts.component';
 
 
 @NgModule({
@@ -72,7 +74,9 @@ import { WorkflowActionsDialogComponent } from './workflow/workflow-actions-dial
         ExtendWorkflowDialogComponent,
         ClientRatesAndFeesComponent,
         WorkflowConsultantActionsDialogComponent,
-        WorkflowActionsDialogComponent
+        WorkflowActionsDialogComponent,
+        ClientWorkflowTrackComponent,
+        ClientContactsComponent
     ],
     imports: [
         CommonModule,

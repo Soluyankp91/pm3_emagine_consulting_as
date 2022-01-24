@@ -11,6 +11,7 @@ import { ScrollToModule } from '@nicky-lenaers/ngx-scroll-to';
 import { NgScrollbarModule } from 'ngx-scrollbar';
 import { InternalLookupService } from './internal-lookup.service';
 import { ManagerSearchComponent } from '../components/manager-search/manager-search.component';
+import { MomentFormatPipe } from 'src/shared/common/pipes/moment-format.pipe';
 
 @NgModule({
     declarations: [
@@ -18,7 +19,8 @@ import { ManagerSearchComponent } from '../components/manager-search/manager-sea
         FileDragAndDropDirective,
         FileUploaderComponent,
         ConfirmationDialogComponent,
-        ManagerSearchComponent
+        ManagerSearchComponent,
+        MomentFormatPipe
     ],
     imports: [
         CommonModule,
@@ -37,7 +39,8 @@ import { ManagerSearchComponent } from '../components/manager-search/manager-sea
         ConfirmationDialogComponent,
         ScrollToModule,
         NgScrollbarModule,
-        ManagerSearchComponent
+        ManagerSearchComponent,
+        MomentFormatPipe
     ],
     providers: [
         ErrorDialogService,

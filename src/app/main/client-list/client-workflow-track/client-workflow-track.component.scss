@@ -1,0 +1,19 @@
+// .client-workflow-track {
+//     padding: 10px 16px;
+// }
+
+.progress-status {
+    color: #ffda44;
+}
+
+.running-status {
+    color: #17a297;
+}
+
+.termianted-status {
+    color: rgba($color: #ff7a78, $alpha: .5);
+}
+
+.icon-arrow-rotate180 {
+    transform: rotateY(180deg);
+}
