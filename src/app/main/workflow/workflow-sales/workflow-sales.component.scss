@@ -20,6 +20,9 @@
             &__period {
                 font-weight: 600;
                 font-size: 16px;
+                font-family: 'Open Sans';
+                line-height: 120%;
+                color: #4A4E60;
             }
         }
     }
@@ -29,6 +32,16 @@
         text-transform: uppercase;
         font-size: 18px;
         margin-bottom: 20px;
+
+        &-main {
+            font-family: 'Open Sans';
+            font-weight: bold;
+            font-size: 18px;
+            line-height: 120%;
+            letter-spacing: 1px;
+            text-transform: uppercase;
+            color: #4A4E60;
+        }
     }
     // &-controls {
     //     position: sticky;
