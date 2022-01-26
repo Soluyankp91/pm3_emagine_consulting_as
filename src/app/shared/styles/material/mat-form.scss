@@ -157,7 +157,15 @@
         &:not(.formFieldNoMarginPadding) {
             .mat-form-field-wrapper {
                 margin: 0 !important;
-                padding-bottom: 1em !important;
+                padding-bottom: 0.3em !important;
+            }
+        }
+        &.mat-form-field-invalid {
+            &:not(.formFieldNoMarginPadding) {
+                .mat-form-field-wrapper {
+                    margin: 0 !important;
+                    padding-bottom: 1em !important;
+                }
             }
         }
 

@@ -1,21 +1,20 @@
 <div class="workflow-sales">
-    <form [formGroup]="salesMainDataForm" id="mainData" class="workflow-form workflow-form--main u-w--100">
-        <ng-container [ngSwitch]="activeSideSection">
-            <ng-container *ngSwitchCase="workflowSideSections.StartWorkflow">
-                StartWorkflow
-            </ng-container>
-            <ng-container *ngSwitchCase="activeSideSection === workflowSideSections.ExtendWorkflow || activeSideSection === workflowSideSections.TerminateWorkflow">
-                ExtendWorkflow
-            </ng-container>
-            <ng-container *ngSwitchCase="workflowSideSections.TerminateWorkflow">
-                TerminateWorkflow
-            </ng-container>
-            <ng-container *ngSwitchCase="workflowSideSections.ChangeWorkflow">
-                ChangeWorkflow
-            </ng-container>
-            <ng-container *ngSwitchCase="workflowSideSections.AddConsultant">
-                AddConsultant
-            </ng-container>
+    <ng-container [ngSwitch]="activeSideSection">
+        <ng-container *ngSwitchCase="workflowSideSections.StartWorkflow">
+            StartWorkflow
+        </ng-container>
+        <ng-container *ngSwitchCase="activeSideSection === workflowSideSections.ExtendWorkflow || activeSideSection === workflowSideSections.TerminateWorkflow">
+            ExtendWorkflow
+        </ng-container>
+        <ng-container *ngSwitchCase="workflowSideSections.TerminateWorkflow">
+            TerminateWorkflow
+        </ng-container>
+        <ng-container *ngSwitchCase="workflowSideSections.ChangeWorkflow">
+            ChangeWorkflow
+        </ng-container>
+        <ng-container *ngSwitchCase="workflowSideSections.AddConsultant">
+            AddConsultant
+        </ng-container>
             <ng-container *ngSwitchCase="workflowSideSections.TerminateConsultant">
                 TerminateConsultant
             </ng-container>
@@ -27,7 +26,8 @@
             </ng-container>
             <ng-container *ngSwitchDefault>
             </ng-container>
-        </ng-container>
+    </ng-container>
+    <form [formGroup]="salesMainDataForm" id="mainData" class="workflow-form workflow-form--main u-mb--20 u-w--100">
         <div fxLayout="row" fxLayoutAlign="start start" fxLayoutGap="30px">
             <div class="text-end" fxFlex="20%">
                 <h1 class="workflow-section--header-main">Main data</h1>
@@ -182,7 +182,7 @@
             </div>
         </div>
 
-        <div fxLayout="row" fxLayoutAlign="start start" fxLayoutGap="30px">
+        <div fxLayout="row" fxLayoutAlign="start start" fxLayoutGap="30px" class="u-mb--20">
             <div class="text-end" fxFlex="20%">
                 <h2 class="workflow-section--header">Account manager</h2>
             </div>
@@ -217,25 +217,24 @@
                 </div>
 
                 <!-- Only visible fields on changeconsultant *ngIf="changeConsultant" -->
-                <div fxLayout="row" fxLayoutAlign="start start" fxLayoutGap="10px" class="u-w--100 u-mb--10">
+                <div fxLayout="row" fxLayoutAlign="start start" class="u-w--100 u-mb--10">
                     <mat-form-field appearance="outline" class="u-w--100 textarea-input " fxFlex="0 0 calc(66% + 16px)">
                         <mat-label>Remarks</mat-label>
                         <textarea matInput autocomplete="new-password" name="remarks" formControlName="remarks">
                         </textarea>
                     </mat-form-field>
-                    <!-- <div fxLayout="row" fxLayoutAlign="start start" class="u-w--100"> -->
+                </div>
+                <div fxLayout="row" fxLayoutAlign="start start" class="u-w--100">
                     <mat-checkbox color="accent" formControlName="isRemarks" name="isRemarks" class="black-checkbox" (change)="disableOrEnableInput(salesMainDataForm?.isRemarks?.value, salesMainDataForm?.remarks)">
                         None
                     </mat-checkbox>
-                    <!-- </div> -->
                 </div>
             </div>
-
         </div>
     </form>
 
     <div *ngIf="activeSideSection !== workflowSideSections.ChangeConsultant">
-        <form [formGroup]="salesMainClientDataForm" id="clientData" class="workflow-form workflow-form--sales u-w--100">
+        <form [formGroup]="salesMainClientDataForm" id="clientData" class="workflow-form workflow-form--client u-mb--20 u-w--100">
             <div fxLayout="row" fxLayoutAlign="start start" fxLayoutGap="30px">
                 <div class="text-end" fxFlex="20%">
                     <h1 class="workflow-section--header-main">Client data</h1>
@@ -300,38 +299,42 @@
                     <h2 class="workflow-section--header">Duration</h2>
                 </div>
                 <div fxFlex="80%">
-                    <h3 class="workflow-gray--header">Project Duration</h3>
+                    <h3 class="workflow-gray--header u-mb--10">Project duration</h3>
                     <div fxLayout="row" fxLayoutAlign="start center" class="u-w--100 u-mb--10">
-                        <mat-form-field appearance="outline" class=" u-mr--16" fxFlex="33%">
-                            <mat-label>Start date</mat-label>
-                            <input autocomplete="off" matInput
-                                    [matDatepicker]="clientContractStartDatePicker"
-                                    name="clientContractStartDate" formControlName="clientContractStartDate"
-                                    (focus)="clientContractStartDatePicker.open()"
-                                    (click)="clientContractStartDatePicker.open()" readonly>
-                            <mat-icon class="calendar-icon" matSuffix svgIcon="calendar"></mat-icon>
-                            <mat-datepicker #clientContractStartDatePicker></mat-datepicker>
-                        </mat-form-field>
+                        <div>
+                            <mat-form-field appearance="outline" class="u-mr--16">
+                                <mat-label>Start date</mat-label>
+                                <input autocomplete="off" matInput
+                                        [matDatepicker]="clientContractStartDatePicker"
+                                        name="clientContractStartDate" formControlName="clientContractStartDate"
+                                        (focus)="clientContractStartDatePicker.open()"
+                                        (click)="clientContractStartDatePicker.open()" readonly>
+                                <mat-icon class="calendar-icon" matSuffix svgIcon="calendar"></mat-icon>
+                                <mat-datepicker #clientContractStartDatePicker></mat-datepicker>
+                            </mat-form-field>
+                        </div>
+                        <div>
+                            <mat-form-field appearance="outline" class="u-mr--16">
+                                <mat-label>End date</mat-label>
+                                <input autocomplete="off" matInput
+                                        [matDatepicker]="clientContractEndDatePicker"
+                                        name="clientContractEndDate" formControlName="clientContractEndDate"
+                                        (focus)="clientContractEndDatePicker.open()"
+                                        (click)="clientContractEndDatePicker.open()" readonly>
+                                <mat-icon class="calendar-icon" matSuffix svgIcon="calendar"></mat-icon>
+                                <mat-datepicker #clientContractEndDatePicker></mat-datepicker>
+                            </mat-form-field>
+                        </div>
 
-                        <mat-form-field appearance="outline" class="" fxFlex="33%">
-                            <mat-label>End date</mat-label>
-                            <input autocomplete="off" matInput
-                                    [matDatepicker]="clientContractEndDatePicker"
-                                    name="clientContractEndDate" formControlName="clientContractEndDate"
-                                    (focus)="clientContractEndDatePicker.open()"
-                                    (click)="clientContractEndDatePicker.open()" readonly>
-                            <mat-icon class="calendar-icon" matSuffix svgIcon="calendar"></mat-icon>
-                            <mat-datepicker #clientContractEndDatePicker></mat-datepicker>
-                        </mat-form-field>
+                        <div fxLayout="row" fxLayoutAlign="start start" class="u-w--100 u-mb--10">
+                            <mat-checkbox color="accent" formControlName="clientContractNoEndDate" name="clientContractNoEndDate" class="black-checkbox" (change)="disableOrEnableInput(salesMainClientDataForm?.clientContractNoEndDate?.value, salesMainClientDataForm?.clientContractEndDate)">
+                                No end date
+                            </mat-checkbox>
+                        </div>
                     </div>
 
-                    <div fxLayout="row" fxLayoutAlign="start start" class="u-w--100 u-mb--10">
-                        <mat-checkbox color="accent" formControlName="clientContractNoEndDate" name="clientContractNoEndDate" class="black-checkbox" (change)="disableOrEnableInput(salesMainClientDataForm?.clientContractNoEndDate?.value, salesMainClientDataForm?.clientContractEndDate)">
-                            No end date
-                        </mat-checkbox>
-                    </div>
 
-                    <h3 class="workflow-gray--header">Option to extend</h3>
+                    <h3 class="workflow-gray--header u-mb--10">Option to extend</h3>
                     <div fxLayout="row" fxLayoutAlign="start start" class="u-w--100 u-mb--20">
                         <mat-button-toggle-group class="workflow-toggle-buttons" formControlName="clientExtensionNoEndDate">
                             <mat-button-toggle [value]="true">
@@ -344,7 +347,7 @@
                     </div>
 
                     <div fxLayout="row" fxLayoutAlign="start center" class="u-w--100 u-mb--10" *ngIf="salesMainClientDataForm?.clientExtensionNoEndDate?.value">
-                        <mat-form-field appearance="outline" class="u-w--100  filter-select u-mr--16" fxFlex="33%">
+                        <mat-form-field appearance="outline" class="filter-select u-mr--16">
                             <mat-label> Duration</mat-label>
                             <mat-select formControlName="clientExtensionStartDate" [disableOptionCentering]="true">
                                 <mat-option *ngFor="let item of invoicingTimes" [value]="item.id">
@@ -353,7 +356,7 @@
                             </mat-select>
                         </mat-form-field>
 
-                        <mat-form-field appearance="outline" class=" u-mr--16" fxFlex="33%">
+                        <mat-form-field appearance="outline" class="filter-select u-mr--16">
                             <mat-label> Deadline</mat-label>
                             <mat-select formControlName="clientExtensionDeadline" [disableOptionCentering]="true">
                                 <mat-option *ngFor="let item of clientExtensionDeadlines" [value]="item.id">
@@ -363,7 +366,7 @@
                         </mat-form-field>
 
                         <!-- FIXME: change ngIf when real data will be available -->
-                        <mat-form-field appearance="outline" class="" fxFlex="31%" *ngIf="salesMainClientDataForm?.clientExtensionDeadline?.value === 'Specific date'">
+                        <mat-form-field appearance="outline" *ngIf="salesMainClientDataForm?.clientExtensionDeadline?.value === 'Specific date'">
                             <mat-label>Specific date</mat-label>
                             <input autocomplete="off" matInput
                                     [matDatepicker]="clientExtensionEndDatePicker"
@@ -382,7 +385,7 @@
                     <h2 class="workflow-section--header">Project</h2>
                 </div>
                 <div fxFlex="80">
-                    <h3 class="workflow-gray--header">Shared Cap on Time Reporting</h3>
+                    <h3 class="workflow-gray--header u-mb--10">Shared Cap on Time Reporting</h3>
                     <div fxLayout="row" fxLayoutAlign="start start" class="u-w--100 u-mb--20">
                         <mat-button-toggle-group class="workflow-toggle-buttons" formControlName="capOnTimeReporting">
                             <mat-button-toggle *ngFor="let item of ['Cap on units', 'Cap on value', 'Individual cap', 'No cap']" [value]="item">
@@ -405,7 +408,7 @@
                     <h2 class="workflow-section--header">Invoicing</h2>
                 </div>
                 <div fxFlex="80%">
-                    <h3 class="workflow-gray--header">Invoicing Entity</h3>
+                    <h3 class="workflow-gray--header u-mb--10">Invoicing Entity</h3>
                     <div fxLayout="row" fxLayoutAlign="start center" class="u-w--100 u-mb--10">
                         <mat-form-field appearance="outline" class="u-w--100  filter-select" fxFlex="33%">
                             <mat-label>ProData entity</mat-label>
@@ -417,7 +420,7 @@
                         </mat-form-field>
                     </div>
 
-                    <h3 class="workflow-gray--header">Price</h3>
+                    <h3 class="workflow-gray--header u-mb--10">Price</h3>
                     <div fxLayout="row" fxLayoutAlign="start start" class="u-w--100 u-mb--20">
                         <mat-button-toggle-group class="workflow-toggle-buttons" formControlName="clientRateAndInvoicing" (change)="clientRateTypeChange($event.value)">
                             <mat-button-toggle [value]="item" *ngFor="let item of clientRateTypes">
@@ -476,10 +479,10 @@
                         </ng-container>
                     </div>
 
-                    <h3 class="workflow-gray--header">Invoicing information</h3>
+                    <h3 class="workflow-gray--header u-mb--10">Invoicing information</h3>
 
                     <div fxLayout="row" fxLayoutAlign="start center" class="u-w--100 u-mb--10">
-                        <mat-form-field appearance="outline" class="u-w--100  filter-select u-mr--16" fxFlex="0 0 calc(16.5% - 8px)">
+                        <mat-form-field appearance="outline" class="filter-select u-mr--16" fxFlex="33%">
                             <mat-label>Invoicing currency</mat-label>
                             <mat-select formControlName="clientInvoiceCurrency" [disableOptionCentering]="true">
                                 <mat-option *ngFor="let item of currencies" [value]="item.id">
@@ -516,8 +519,8 @@
                         </mat-form-field>
                     </div>
 
-                    <div fxLayout="row" fxLayoutAlign="start start" class="u-w--100 u-mb--10">
-                        <mat-form-field appearance="outline" class="u-w--100  filter-select" fxFlex="0 0 calc(66% + 16px)">
+                    <div fxLayout="row" fxLayoutAlign="start center" class="u-w--100 u-mb--10">
+                        <mat-form-field appearance="outline" class="u-w--100 filter-select u-mr--16" fxFlex="33%">
                             <mat-label>Client Invoicing Recipient</mat-label>
                             <mat-select formControlName="clientInvoicingRecipientIdValue" [disableOptionCentering]="true">
                                 <mat-option *ngFor="let item of [0,1,2,3]" [value]="item">
@@ -525,16 +528,15 @@
                                 </mat-option>
                             </mat-select>
                         </mat-form-field>
+                        <div fxLayout="row" fxLayoutAlign="start center" class="u-w--100 u-mb--10">
+                            <mat-checkbox color="accent" formControlName="clientInvoicingRecipientSameAsDirectClient" name="clientInvoicingRecipientSameAsDirectClient" class="black-checkbox u-mr--10">
+                                Same as direct client
+                            </mat-checkbox>
+                        </div>
                     </div>
 
                     <div fxLayout="row" fxLayoutAlign="start center" class="u-w--100 u-mb--10">
-                        <mat-checkbox color="accent" formControlName="clientInvoicingRecipientSameAsDirectClient" name="clientInvoicingRecipientSameAsDirectClient" class="black-checkbox u-mr--10">
-                            Same as direct client
-                        </mat-checkbox>
-                    </div>
-
-                    <div fxLayout="row" fxLayoutAlign="start center" class="u-w--100 u-mb--10">
-                        <mat-form-field appearance="outline" class="u-w--100  filter-select" fxFlex="33%">
+                        <mat-form-field appearance="outline" class="u-w--100 filter-select u-mr--16" fxFlex="33%">
                             <mat-label>Invoicing Reference Person</mat-label>
                             <mat-select formControlName="invoicingReferencePersonIdValue" [disableOptionCentering]="true">
                                 <mat-option *ngFor="let item of [0,1,2,3]" [value]="item">
@@ -542,12 +544,11 @@
                                 </mat-option>
                             </mat-select>
                         </mat-form-field>
-                    </div>
-
-                    <div fxLayout="row" fxLayoutAlign="start center" class="u-w--100 u-mb--10">
-                        <mat-checkbox color="accent" formControlName="noInvoicingReferencePerson" name="noInvoicingReferencePerson" class="black-checkbox u-mr--10" (change)="disableOrEnableInput(salesMainClientDataForm?.noInvoicingReferencePerson?.value, salesMainClientDataForm?.invoicingReferencePersonIdValue)">
-                            None
-                        </mat-checkbox>
+                        <div fxLayout="row" fxLayoutAlign="start center" class="u-w--100 u-mb--10">
+                            <mat-checkbox color="accent" formControlName="noInvoicingReferencePerson" name="noInvoicingReferencePerson" class="black-checkbox u-mr--10" (change)="disableOrEnableInput(salesMainClientDataForm?.noInvoicingReferencePerson?.value, salesMainClientDataForm?.invoicingReferencePersonIdValue)">
+                                None
+                            </mat-checkbox>
+                        </div>
                     </div>
                 </div>
             </div>
@@ -564,7 +565,7 @@
                         </button>
                     </div>
 
-                    <div fxLayout="row" fxLayoutAlign="start start" class="u-mb--40">
+                    <div fxLayout="row" fxLayoutAlign="start start" class="u-mb--20">
                         <button class="button-add mat-elevation-z0" mat-flat-button (click)="addSignerToForm()">
                             <mat-icon>add</mat-icon>
                             Add special fees
@@ -578,7 +579,7 @@
                     <h2 class="workflow-section--header">Evaluation</h2>
                 </div>
                 <div fxFlex="80%">
-                    <h3 class="workflow-gray--header">Client Evaluations</h3>
+                    <h3 class="workflow-gray--header u-mb--10">Client Evaluations</h3>
                     <div fxLayout="row" fxLayoutAlign="start start" class="u-w--100 u-mb--20">
                         <mat-button-toggle-group class="workflow-toggle-buttons" formControlName="evaluationsDisabled">
                             <mat-button-toggle [value]="false">
@@ -609,12 +610,12 @@
                 </div>
             </div>
 
-            <div fxLayout="row" fxLayoutAlign="start start" fxLayoutGap="30px">
+            <div fxLayout="row" fxLayoutAlign="start start" fxLayoutGap="30px" class="u-mb--20">
                 <div class="text-end" fxFlex="20%">
                     <h2 class="workflow-section--header">Contract</h2>
                 </div>
                 <div fxFlex="80%">
-                    <h3 class="workflow-gray--header">Special Contract Terms</h3>
+                    <h3 class="workflow-gray--header u-mb--10">Special Contract Terms</h3>
                     <div fxLayout="row" fxLayoutAlign="start start" fxLayoutGap="10px" class="u-w--100 u-mb--10">
                         <mat-form-field appearance="outline" class="u-w--100  textarea-input" fxFlex="0 0 calc(66% + 16px)">
                             <mat-label>Special Contract Terms</mat-label>
@@ -626,8 +627,7 @@
                         </mat-checkbox>
                     </div>
 
-
-                    <h3 class="workflow-gray--header">Client Contract Signers</h3>
+                    <h3 class="workflow-gray--header u-mb--10">Client Contract Signers</h3>
                     <div formArrayName="contractSigners" class="u-w--100 u-mb--10">
                         <div fxLayout="row" fxLayoutAlign="start start" class="u-w--100 u-mb--10" *ngFor="let signer of contractSigners.controls; let i = index" [formGroupName]="i">
                             <mat-form-field appearance="outline" class="u-w--100 mat-elevation-z0  u-mr--16"  fxFlex="33%">
@@ -714,8 +714,8 @@
         </form>
     </div>
 
-    <form [formGroup]="consultantsForm" class="workflow-form--consultants u-w--100" id="consultantData">
-        <ng-container formArrayName="consultantData">
+    <form [formGroup]="consultantsForm" class="workflow-form--consultants u-mb--20 u-w--100" id="consultantData">
+        <ng-container formArrayName="consultantData" class="u-mb--20">
             <div *ngFor="let consultant of consultantsForm.consultantData.controls; let i = index" [formGroupName]="i">
                 <div fxLayout="row" fxLayoutAlign="start start" fxLayoutGap="30px" class="u-w--100">
                     <div class="text-end" fxFlex="20%">
@@ -765,8 +765,7 @@
                         </div>
 
                         <div *ngIf="!extendWorkflow && !changeWorkflow">
-                            <h2 class="workflow-gray--header">Employment type</h2>
-
+                            <h3 class="workflow-gray--header u-mb--10">Employment type</h3>
                             <div fxLayout="row" fxLayoutAlign="start start" class="u-w--100 u-mb--20">
                                 <mat-button-toggle-group class="workflow-toggle-buttons" formControlName="consultantType">
                                     <ng-container *ngIf="showMore; else showLess">
@@ -774,12 +773,12 @@
                                             {{ item.name }}
                                         </mat-button-toggle>
                                     </ng-container>
+
                                     <ng-template #showLess>
                                         <mat-button-toggle *ngFor="let item of consultantTypes | slice: 0:3" [value]="item.id">
                                             {{ item.name }}
                                         </mat-button-toggle>
                                     </ng-template>
-
 
                                     <button class="workflow-toggle-buttons--showMore" mat-flat-button (click)="showMore = !showMore">
                                         {{showMore ? '<<' : '>>'}}
@@ -825,7 +824,7 @@
                         <h2 class="workflow-section--header">Contract Duration</h2>
                     </div>
                     <div fxFlex="80%">
-                        <h3 class="workflow-gray--header">Project duration</h3>
+                        <h3 class="workflow-gray--header u-mb--10">Project duration</h3>
                         <div fxLayout="row" fxLayoutAlign="start start" class="u-w--100 u-mb--20">
                             <mat-button-toggle-group class="workflow-toggle-buttons" formControlName="consultantProjectDuration">
                                 <mat-button-toggle *ngFor="let item of ['Same as client', 'Different from client']" [value]="item">
@@ -835,7 +834,7 @@
                         </div>
 
                         <div fxLayout="row" fxLayoutAlign="start center" class="u-w--100 u-mb--10">
-                            <mat-form-field appearance="outline" class=" u-mr--16" fxFlex="33%">
+                            <mat-form-field appearance="outline" class=" u-mr--16" fxFlex="0 0 calc(16.5% - 8px)">
                                 <mat-label>Start date</mat-label>
                                 <input autocomplete="off" matInput
                                         [matDatepicker]="consultantProjectStartDatePicker"
@@ -846,7 +845,7 @@
                                 <mat-datepicker #consultantProjectStartDatePicker></mat-datepicker>
                             </mat-form-field>
 
-                            <mat-form-field appearance="outline" class=" u-mr--16" fxFlex="33%">
+                            <mat-form-field appearance="outline" class=" u-mr--16" fxFlex="0 0 calc(16.5% - 8px)">
                                 <mat-label>End date</mat-label>
                                 <input autocomplete="off" matInput
                                         [matDatepicker]="consultantProjectEndDatePicker"
@@ -859,7 +858,7 @@
 
                         </div>
 
-                        <div fxLayout="row" fxLayoutAlign="start center" class="u-w--100 u-mb--10">
+                        <div fxLayout="row" fxLayoutAlign="start center" class="u-w--100 u-mb--20">
                             <mat-checkbox   color="accent"
                                             formControlName="consultantProjectNoEndDate"
                                             name="consultantProjectNoEndDate"
@@ -876,7 +875,7 @@
                         <h2 class="workflow-section--header">Consultant Project</h2>
                     </div>
                     <div fxFlex="80%">
-                        <h3 class="workflow-gray--header">Workplace</h3>
+                        <h3 class="workflow-gray--header u-mb--10">Workplace</h3>
                         <div fxLayout="row" fxLayoutAlign="start start" class="u-w--100 u-mb--20">
                             <mat-button-toggle-group class="workflow-toggle-buttons" formControlName="consultantWorkplace">
                                 <mat-button-toggle *ngFor="let item of ['Onsite', 'Remote', 'Mix']" [value]="item">
@@ -909,13 +908,13 @@
                             </mat-form-field>
                         </div>
 
-                        <h3 class="workflow-gray--header">Expected Workload</h3>
+                        <h3 class="workflow-gray--header u-mb--10">Expected Workload</h3>
                         <div fxLayout="row" fxLayoutAlign="start center" class="u-w--100 u-mb--10">
-                            <mat-form-field appearance="outline" class="u-w--100 mat-elevation-z0  u-mr--16" fxFlex="33%">
+                            <mat-form-field appearance="outline" class="u-w--100 mat-elevation-z0  u-mr--16" fxFlex="0 0 calc(16.5% - 8px)">
                                 <mat-label>Hours</mat-label>
                                 <input autocomplete="off" matInput formControlName="consultantExpectedWorkloadHours" type="text">
                             </mat-form-field>
-                            <mat-form-field appearance="outline" class="u-w--100  filter-select" fxFlex="33%">
+                            <mat-form-field appearance="outline" class="u-w--100  filter-select" fxFlex="0 0 calc(16.5% - 8px)">
                                 <mat-label>Period</mat-label>
                                 <mat-select formControlName="consultantExpectedWorkloadPeriod" [disableOptionCentering]="true">
                                     <mat-option *ngFor="let item of [0,1,2,3]" [value]="item">
@@ -925,7 +924,7 @@
                             </mat-form-field>
                         </div>
 
-                        <h3 class="workflow-gray--header">Cap on Time Reporting</h3>
+                        <h3 class="workflow-gray--header u-mb--10">Cap on Time Reporting</h3>
                         <div fxLayout="row" fxLayoutAlign="start start" class="u-w--100 u-mb--20">
                             <mat-button-toggle-group class="workflow-toggle-buttons" formControlName="consultantCapOnTimeReporting">
                                 <mat-button-toggle *ngFor="let item of ['Cap on units', 'Cap on value', 'No cap']" [value]="false">
@@ -956,8 +955,27 @@
                         <h2 class="workflow-section--header">Consultant Payment</h2>
                     </div>
                     <div fxFlex="80%">
-                        <!--TODO: Missing select and Price select buttons -->
-                        <h3 class="workflow-gray--header">Payment entity (consultant)</h3>
+                        <h3 class="workflow-gray--header u-mb--10">Payment entity (consultant)</h3>
+                        <div fxLayout="row" fxLayoutAlign="start start" class="u-w--100 u-mb--10">
+                            <mat-form-field appearance="outline" class="u-w--100  filter-select" fxFlex="33%">
+                                <mat-label>ProData Entity</mat-label>
+                                <mat-select formControlName="consultantProdataEntity" [disableOptionCentering]="true">
+                                    <mat-option *ngFor="let item of currencies" [value]="item.id">
+                                        {{ item.name }}
+                                    </mat-option>
+                                </mat-select>
+                            </mat-form-field>
+                        </div>
+
+                        <h3 class="workflow-gray--header u-mb--10">Price</h3>
+                        <div fxLayout="row" fxLayoutAlign="start start" class="u-w--100 u-mb--20">
+                            <mat-button-toggle-group class="workflow-toggle-buttons" formControlName="consultantPrice">
+                                <mat-button-toggle *ngFor="let item of ['Time based', 'Fixed', 'Milestones']" [value]="false">
+                                    {{ item }}
+                                </mat-button-toggle>
+                            </mat-button-toggle-group>
+                        </div>
+
                         <div fxLayout="row" fxLayoutAlign="start center" class="u-w--100 u-mb--10">
                             <mat-form-field appearance="outline" class="u-w--100  u-mr--16" fxFlex="0 0 calc(16.5% - 8px)">
                                 <mat-label>Rate</mat-label>
@@ -979,7 +997,7 @@
                                     </mat-option>
                                 </mat-select>
                             </mat-form-field>
-                            <div fxFlex="0 0 calc(16.5% - 8px)" fxLayoutAlign="start center">
+                            <div fxFlex="0 0 calc(16.5% - 8px)" fxLayoutAlign="start center" class="workflow-form--consultants__payment-price-text">
                                 Calculated margin (20%)
                             </div>
                         </div>
@@ -1005,7 +1023,7 @@
                                     </mat-option>
                                 </mat-select>
                             </mat-form-field>
-                            <div fxFlex="0 0 calc(16.5% - 8px)" fxLayoutAlign="start center">
+                            <div fxFlex="0 0 calc(16.5% - 8px)" fxLayoutAlign="start center" class="workflow-form--consultants__payment-price-text">
                                 Calculated margin (%)
                             </div>
                         </div>
@@ -1017,7 +1035,7 @@
                         <h2 class="workflow-section--header">Consultant Contract</h2>
                     </div>
                     <div fxFlex="80%">
-                        <h3 class="workflow-gray--header">Special Contract Terms</h3>
+                        <h3 class="workflow-gray--header u-mb--10">Special Contract Terms</h3>
                         <div fxLayout="row" fxLayoutAlign="start center" class="u-w--100">
                             <mat-form-field appearance="outline" class="u-w--100  textarea-input u-mr--16" fxFlex="0 0 calc(66% + 16px)">
                                 <mat-label>Consultant Special Contract Terms</mat-label>
