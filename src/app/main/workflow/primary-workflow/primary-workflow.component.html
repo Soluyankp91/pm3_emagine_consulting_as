@@ -34,24 +34,32 @@
                             </div>
                         </div>
                     </mat-expansion-panel-header>
-                    <mat-list class="workflow-navigation">
-                        <mat-list-item class="workflow-navigation--step" *ngFor="let step of item.subItems; let i = index;"
+                    <div class="workflow-navigation">
+                        <div class="workflow-navigation--step u-mb--10" *ngFor="let step of item.subItems; let i = index;"
                             (click)="changeStepSelection(step.name, step.id)"
                             [ngClass]="{'active-step': step.name === selectedStep, 'completed-step': step.isCompleted}">
-                            <app-manager-search
-                                (click)="$event.stopPropagation()"
-                                [formFieldLabel]="step.name + ' Manager'"
-                                [managerSearchType]="step.enumStepValue"
-                                [managerStatus]="i % 2 === 0 ? managerStatus.Pending : managerStatus.Completed">
-                            </app-manager-search>
-                            <!-- <span class="workflow-navigation--step__number">
-                                {{step.id}}
-                            </span> -->
-                            <span class="workflow-navigation--step__name">
-                                {{step.displayName}}
-                            </span>
-                        </mat-list-item>
-                    </mat-list>
+                            <div fxLayout="column" fxLayoutAlign="start start">
+                                <div fxLayout="row" fxLayoutAlign="start center">
+                                    <app-manager-search
+                                        (click)="$event.stopPropagation()"
+                                        [formFieldLabel]="step.name + ' Manager'"
+                                        [managerSearchType]="step.enumStepValue"
+                                        [managerStatus]="i % 2 === 0 ? managerStatus.Pending : managerStatus.Completed">
+                                    </app-manager-search>
+
+                                    <span class="workflow-navigation--step__name">
+                                        {{step.displayName}}
+                                    </span>
+                                </div>
+                                <div fxLayout="column" fxLayoutAlign="start start" class="u-ml--55" *ngIf="step.name === selectedStep">
+                                    <div *ngFor="let anchor of step.menuAnchors" class="workflow-navigation--step__anchor u-mb--10" (click)="changeAnchorSelection(anchor.name)" [ngxScrollTo]="anchor.value"
+                                        [ngClass]="{'active-anchor': anchor.name === selectedAnchor}">
+                                        {{anchor.name}}
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
                 </mat-expansion-panel>
             </mat-accordion>
         </ng-scrollbar>

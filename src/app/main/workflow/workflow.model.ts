@@ -1,4 +1,5 @@
 import { FormArray, FormControl, FormGroup } from "@angular/forms";
+import { SideNavigationParentItemDto } from "./workflow-extension/workflow-extension.model";
 
 export class WorkflowSalesExtensionForm extends FormGroup {
     constructor() {
@@ -89,14 +90,14 @@ export class WorkflowTerminationSalesForm extends FormGroup {
 }
 
 // Sales step data
-export class SideMenuTabsDto {
+export class TopMenuTabsDto {
     name: string;
     displayName: string;
     index: number;
     additionalInfo: string | null;
 }
 
-// export const SideMenuTabs: SideMenuTabsDto[] = [
+// export const SideMenuTabs: TopMenuTabsDto[] = [
 //     {
 //         name: 'Workflow',
 //         displayName: 'Workflow',
@@ -104,7 +105,7 @@ export class SideMenuTabsDto {
 //     }
 // ];
 
-export const TopMenuTabs: SideMenuTabsDto[] = [
+export const TopMenuTabs: TopMenuTabsDto[] = [
     {
         name: 'Overview',
         displayName: 'Overview',
@@ -321,7 +322,7 @@ export enum WorkflowSteps {
 }
 
 //#region side sections to Add
-export const ExtendWorkflowDto = {
+export const ExtendWorkflowDto: SideNavigationParentItemDto = {
     displayName: 'Extend Workflow',
     name: 'workflowStartOrExtend',
     sectionEnumValue: WorkflowSideSections.ExtendWorkflow,
@@ -334,7 +335,21 @@ export const ExtendWorkflowDto = {
             displayName: "Sales",
             enumStepValue: WorkflowSteps.Sales,
             isCompleted: false,
-            assignedPerson: 'Roberto Olberto'
+            assignedPerson: 'Roberto Olberto',
+            menuAnchors: [
+                {
+                    name: 'Main data',
+                    value: 'mainData'
+                },
+                {
+                    name: 'Client data',
+                    value: 'clientData'
+                },
+                {
+                    name: 'Consultant data',
+                    value: 'consultantData'
+                }
+            ]
         },
         {
             id: 2,
@@ -342,12 +357,30 @@ export const ExtendWorkflowDto = {
             displayName: "Contracts",
             enumStepValue: WorkflowSteps.Contracts,
             isCompleted: false,
-            assignedPerson: 'Roberto Olberto'
+            assignedPerson: 'Roberto Olberto',
+            menuAnchors: [
+                {
+                    name: 'Main data',
+                    value: 'mainData'
+                },
+                {
+                    name: 'Client data',
+                    value: 'clientData'
+                },
+                {
+                    name: 'Consultant data',
+                    value: 'consultantData'
+                },
+                {
+                    name: 'Sync & legal contracts',
+                    value: 'legalContracts'
+                }
+            ]
         }
     ]
 };
 
-export const ChangeWorkflowDto = {
+export const ChangeWorkflowDto: SideNavigationParentItemDto = {
     displayName: 'Change Workflow',
     name: 'workflowEdit',
     sectionEnumValue: WorkflowSideSections.ChangeWorkflow,
@@ -360,7 +393,21 @@ export const ChangeWorkflowDto = {
             displayName: "Sales",
             enumStepValue: WorkflowSteps.Sales,
             isCompleted: false,
-            assignedPerson: 'Roberto Olberto'
+            assignedPerson: 'Roberto Olberto',
+            menuAnchors: [
+                {
+                    name: 'Main data',
+                    value: 'mainData'
+                },
+                {
+                    name: 'Client data',
+                    value: 'clientData'
+                },
+                {
+                    name: 'Consultant data',
+                    value: 'consultantData'
+                }
+            ]
         },
         {
             id: 2,
@@ -368,12 +415,30 @@ export const ChangeWorkflowDto = {
             displayName: "Contracts",
             enumStepValue: WorkflowSteps.Contracts,
             isCompleted: false,
-            assignedPerson: 'Roberto Olberto'
+            assignedPerson: 'Roberto Olberto',
+            menuAnchors: [
+                {
+                    name: 'Main data',
+                    value: 'mainData'
+                },
+                {
+                    name: 'Client data',
+                    value: 'clientData'
+                },
+                {
+                    name: 'Consultant data',
+                    value: 'consultantData'
+                },
+                {
+                    name: 'Sync & legal contracts',
+                    value: 'legalContracts'
+                }
+            ]
         }
     ]
 };
 
-export const TerminateWorkflowDto = {
+export const TerminateWorkflowDto: SideNavigationParentItemDto = {
     displayName: 'Terminate Workflow',
     name: 'workflowTerminate',
     sectionEnumValue: WorkflowSideSections.TerminateWorkflow,
@@ -386,7 +451,21 @@ export const TerminateWorkflowDto = {
             displayName: "Sales",
             enumStepValue: WorkflowSteps.Sales,
             isCompleted: false,
-            assignedPerson: 'Roberto Olberto'
+            assignedPerson: 'Roberto Olberto',
+            menuAnchors: [
+                {
+                    name: 'Main data',
+                    value: 'mainData'
+                },
+                {
+                    name: 'Client data',
+                    value: 'clientData'
+                },
+                {
+                    name: 'Consultant data',
+                    value: 'consultantData'
+                }
+            ]
         },
         {
             id: 2,
@@ -394,13 +473,31 @@ export const TerminateWorkflowDto = {
             displayName: "Contracts",
             enumStepValue: WorkflowSteps.Contracts,
             isCompleted: false,
-            assignedPerson: 'Roberto Olberto'
+            assignedPerson: 'Roberto Olberto',
+            menuAnchors: [
+                {
+                    name: 'Main data',
+                    value: 'mainData'
+                },
+                {
+                    name: 'Client data',
+                    value: 'clientData'
+                },
+                {
+                    name: 'Consultant data',
+                    value: 'consultantData'
+                },
+                {
+                    name: 'Sync & legal contracts',
+                    value: 'legalContracts'
+                }
+            ]
         }
     ]
 };
 
 
-export const AddConsultantDto = {
+export const AddConsultantDto: SideNavigationParentItemDto = {
     displayName: 'Add Consultant',
     name: 'workflowAdd',
     sectionEnumValue: WorkflowSideSections.AddConsultant,
@@ -413,7 +510,21 @@ export const AddConsultantDto = {
             displayName: "Sales",
             enumStepValue: WorkflowSteps.Sales,
             isCompleted: false,
-            assignedPerson: 'Roberto Olberto'
+            assignedPerson: 'Roberto Olberto',
+            menuAnchors: [
+                {
+                    name: 'Main data',
+                    value: 'mainData'
+                },
+                {
+                    name: 'Client data',
+                    value: 'clientData'
+                },
+                {
+                    name: 'Consultant data',
+                    value: 'consultantData'
+                }
+            ]
         },
         {
             id: 2,
@@ -421,7 +532,25 @@ export const AddConsultantDto = {
             displayName: "Contracts",
             enumStepValue: WorkflowSteps.Contracts,
             isCompleted: false,
-            assignedPerson: 'Roberto Olberto'
+            assignedPerson: 'Roberto Olberto',
+            menuAnchors: [
+                {
+                    name: 'Main data',
+                    value: 'mainData'
+                },
+                {
+                    name: 'Client data',
+                    value: 'clientData'
+                },
+                {
+                    name: 'Consultant data',
+                    value: 'consultantData'
+                },
+                {
+                    name: 'Sync & legal contracts',
+                    value: 'legalContracts'
+                }
+            ]
         },
         {
             id: 3,
@@ -429,12 +558,13 @@ export const AddConsultantDto = {
             displayName: "Finance",
             enumStepValue: WorkflowSteps.Finance,
             isCompleted: false,
-            assignedPerson: 'Roberto Olberto'
+            assignedPerson: 'Roberto Olberto',
+            menuAnchors: []
         }
     ]
 };
 
-export const ChangeConsultantDto = {
+export const ChangeConsultantDto: SideNavigationParentItemDto = {
     displayName: 'Change Consultant',
     name: 'workflowEdit',
     sectionEnumValue: WorkflowSideSections.ChangeConsultant,
@@ -447,7 +577,21 @@ export const ChangeConsultantDto = {
             displayName: "Sales",
             enumStepValue: WorkflowSteps.Sales,
             isCompleted: false,
-            assignedPerson: 'Roberto Olberto'
+            assignedPerson: 'Roberto Olberto',
+            menuAnchors: [
+                {
+                    name: 'Main data',
+                    value: 'mainData'
+                },
+                {
+                    name: 'Client data',
+                    value: 'clientData'
+                },
+                {
+                    name: 'Consultant data',
+                    value: 'consultantData'
+                }
+            ]
         },
         {
             id: 2,
@@ -455,12 +599,30 @@ export const ChangeConsultantDto = {
             displayName: "Contracts",
             enumStepValue: WorkflowSteps.Contracts,
             isCompleted: false,
-            assignedPerson: 'Roberto Olberto'
+            assignedPerson: 'Roberto Olberto',
+            menuAnchors: [
+                {
+                    name: 'Main data',
+                    value: 'mainData'
+                },
+                {
+                    name: 'Client data',
+                    value: 'clientData'
+                },
+                {
+                    name: 'Consultant data',
+                    value: 'consultantData'
+                },
+                {
+                    name: 'Sync & legal contracts',
+                    value: 'legalContracts'
+                }
+            ]
         }
     ]
 };
 
-export const ExtendConsultantDto = {
+export const ExtendConsultantDto: SideNavigationParentItemDto = {
     displayName: 'Extend Consultant',
     name: 'workflowStartOrExtend',
     sectionEnumValue: WorkflowSideSections.ExtendConsultant,
@@ -473,7 +635,21 @@ export const ExtendConsultantDto = {
             displayName: "Sales",
             enumStepValue: WorkflowSteps.Sales,
             isCompleted: false,
-            assignedPerson: 'Roberto Olberto'
+            assignedPerson: 'Roberto Olberto',
+            menuAnchors: [
+                {
+                    name: 'Main data',
+                    value: 'mainData'
+                },
+                {
+                    name: 'Client data',
+                    value: 'clientData'
+                },
+                {
+                    name: 'Consultant data',
+                    value: 'consultantData'
+                }
+            ]
         },
         {
             id: 2,
@@ -481,12 +657,30 @@ export const ExtendConsultantDto = {
             displayName: "Contracts",
             enumStepValue: WorkflowSteps.Contracts,
             isCompleted: false,
-            assignedPerson: 'Roberto Olberto'
+            assignedPerson: 'Roberto Olberto',
+            menuAnchors: [
+                {
+                    name: 'Main data',
+                    value: 'mainData'
+                },
+                {
+                    name: 'Client data',
+                    value: 'clientData'
+                },
+                {
+                    name: 'Consultant data',
+                    value: 'consultantData'
+                },
+                {
+                    name: 'Sync & legal contracts',
+                    value: 'legalContracts'
+                }
+            ]
         }
     ]
 };
 
-export const TerminateConsultantDto = {
+export const TerminateConsultantDto: SideNavigationParentItemDto = {
     displayName: 'Terminate Consultant',
     name: 'workflowTerminate',
     sectionEnumValue: WorkflowSideSections.TerminateConsultant,
@@ -499,7 +693,21 @@ export const TerminateConsultantDto = {
             displayName: "Sales",
             enumStepValue: WorkflowSteps.Sales,
             isCompleted: false,
-            assignedPerson: 'Roberto Olberto'
+            assignedPerson: 'Roberto Olberto',
+            menuAnchors: [
+                {
+                    name: 'Main data',
+                    value: 'mainData'
+                },
+                {
+                    name: 'Client data',
+                    value: 'clientData'
+                },
+                {
+                    name: 'Consultant data',
+                    value: 'consultantData'
+                }
+            ]
         },
         {
             id: 2,
@@ -507,7 +715,25 @@ export const TerminateConsultantDto = {
             displayName: "Contracts",
             enumStepValue: WorkflowSteps.Contracts,
             isCompleted: false,
-            assignedPerson: 'Roberto Olberto'
+            assignedPerson: 'Roberto Olberto',
+            menuAnchors: [
+                {
+                    name: 'Main data',
+                    value: 'mainData'
+                },
+                {
+                    name: 'Client data',
+                    value: 'clientData'
+                },
+                {
+                    name: 'Consultant data',
+                    value: 'consultantData'
+                },
+                {
+                    name: 'Sync & legal contracts',
+                    value: 'legalContracts'
+                }
+            ]
         }
     ]
 };

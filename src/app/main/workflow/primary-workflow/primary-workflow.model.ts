@@ -17,7 +17,21 @@ export const WorkflowSideNavigation: SideNavigationParentItemDto[] = [
                 displayName: "Sales",
                 enumStepValue: WorkflowSteps.Sales,
                 isCompleted: false,
-                assignedPerson: 'Roberto Olberto'
+                assignedPerson: 'Roberto Olberto',
+                menuAnchors: [
+                    {
+                        name: 'Main data',
+                        value: 'mainData'
+                    },
+                    {
+                        name: 'Client data',
+                        value: 'clientData'
+                    },
+                    {
+                        name: 'Consultant data',
+                        value: 'consultantData'
+                    }
+                ]
             },
             {
                 id: 2,
@@ -25,7 +39,25 @@ export const WorkflowSideNavigation: SideNavigationParentItemDto[] = [
                 displayName: "Contracts",
                 enumStepValue: WorkflowSteps.Contracts,
                 isCompleted: false,
-                assignedPerson: 'Roberto Olberto'
+                assignedPerson: 'Roberto Olberto',
+                menuAnchors: [
+                    {
+                        name: 'Main data',
+                        value: 'mainData'
+                    },
+                    {
+                        name: 'Client data',
+                        value: 'clientData'
+                    },
+                    {
+                        name: 'Consultant data',
+                        value: 'consultantData'
+                    },
+                    {
+                        name: 'Sync & legal contracts',
+                        value: 'legalContracts'
+                    }
+                ]
             },
             {
                 id: 3,
@@ -33,7 +65,8 @@ export const WorkflowSideNavigation: SideNavigationParentItemDto[] = [
                 displayName: "Finance",
                 enumStepValue: WorkflowSteps.Finance,
                 isCompleted: false,
-                assignedPerson: 'Roberto Olberto'
+                assignedPerson: 'Roberto Olberto',
+                menuAnchors: []
             }
         ]
     }
