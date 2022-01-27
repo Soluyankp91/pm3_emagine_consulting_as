@@ -4,10 +4,15 @@
     padding: 10px 24px;
     &--block {
         width: 100%;
-        border-bottom: 1px solid $sand-color;
+        // border-bottom: 1px solid $sand-color;
         padding: 25px 0;
         &.last-block {
             border-bottom: 0;
+        }
+
+        &-consultants:not(:last-child) {
+            border-bottom: 1px solid $sand-color;
+            margin-bottom: 20px;
         }
     }
 

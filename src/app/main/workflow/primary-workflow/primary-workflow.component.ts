@@ -17,6 +17,7 @@ export class PrimaryWorkflowComponent implements OnInit, AfterViewInit {
     @Input() workflowId: string;
     @ViewChild('workflowSales', {static: false}) workflowSales: WorkflowSalesComponent;
     selectedStep: string;
+    selectedAnchor: string;
 
     workflowSideSections = WorkflowSideSections;
 
@@ -111,5 +112,9 @@ export class PrimaryWorkflowComponent implements OnInit, AfterViewInit {
             // nthng
         });
 
+    }
+
+    changeAnchorSelection(anchorName: string) {
+        this.selectedAnchor = anchorName;
     }
 }
