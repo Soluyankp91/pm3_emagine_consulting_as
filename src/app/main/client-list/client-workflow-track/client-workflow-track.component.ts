@@ -1,7 +1,9 @@
 import { Component, Input, OnInit } from '@angular/core';
 import { MatTableDataSource } from '@angular/material/table';
+import { ActivatedRoute } from '@angular/router';
 import * as moment from 'moment';
-import { finalize } from 'rxjs/operators';
+import { Subject } from 'rxjs';
+import { finalize, takeUntil } from 'rxjs/operators';
 import { AppConsts } from 'src/shared/AppConsts';
 import { ClientRequestTrackDto, ClientsServiceProxy, EmployeeDto } from 'src/shared/service-proxies/service-proxies';
 
@@ -43,6 +45,7 @@ const DATA_SOURCE = [
 })
 export class ClientWorkflowTrackComponent implements OnInit {
     @Input() clientInfo: any;
+    clientId: number;
 
     isDataLoading = false;
     selectedCountries: string[] = [];
@@ -64,25 +67,28 @@ export class ClientWorkflowTrackComponent implements OnInit {
     ];
     workflowTrackDataSource: MatTableDataSource<any> = new MatTableDataSource<any>();
 
+    private _unsubscribe = new Subject();
     constructor(
-        private _clientService: ClientsServiceProxy
+        private _clientService: ClientsServiceProxy,
+        private activatedRoute: ActivatedRoute
     ) { }
 
     ngOnInit(): void {
-        if (!this.clientInfo?.id) {
-            let interval = setInterval(() => {
-                if (this.clientInfo?.id) {
-                    this.getRequestTrack();
-                    clearInterval(interval);
-                }
-            }, 100);
-        } else {
+        this.activatedRoute.paramMap.pipe(
+            takeUntil(this._unsubscribe)
+        ).subscribe(params => {
+            this.clientId = +params.get('id')!;
             this.getRequestTrack();
-        }
+        });
+    }
+
+    ngOnDestroy(): void {
+        this._unsubscribe.next();
+        this._unsubscribe.complete();
     }
 
     getRequestTrack() {
-        let legacyClientIdQuery = this.clientInfo.id;
+        let legacyClientIdQuery = this.clientId;
         let pageNumber = 1;
         let pageSize = 20;
         let sort = undefined;
