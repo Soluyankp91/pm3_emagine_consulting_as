@@ -364,7 +364,8 @@ export class WorkflowSalesComponent extends AppComopnentBase implements OnInit {
             consultantCapOnTimeReporting: new FormControl(null),
             consultantCapOnTimeReportingValue: new FormControl(null),
             consultantCapOnTimeReportingCurrency: new FormControl(null),
-
+            consultantProdataEntity: new FormControl(null),
+            consultantPrice: new FormControl(null),
             consultantRate: new FormControl(null),
             consultantRateUnitType: new FormControl(null),
             consultantRateCurrency: new FormControl(null),

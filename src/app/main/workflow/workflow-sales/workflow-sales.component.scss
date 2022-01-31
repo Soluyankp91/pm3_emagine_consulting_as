@@ -4,11 +4,13 @@
     &-form {
         // margin: 0 145px;
         &--main,
-        &--sales,
+        &--client,
         &--consultants,
         &--summary {
+            border-bottom: 1px solid #E7E3E8;
+
             .workflow-gray--header {
-                margin-bottom: 8px !important;
+                // margin-bottom: 8px !important;
                 font-weight: bold;
                 font-size: 16px;
                 line-height: 16px;
@@ -20,6 +22,16 @@
             &__period {
                 font-weight: 600;
                 font-size: 16px;
+                font-family: 'Open Sans';
+                line-height: 120%;
+                color: #4A4E60;
+            }
+            &__payment-price-text {
+                font-family: 'Open Sans';
+                font-weight: bold;
+                font-size: 14px;
+                line-height: 16px;
+                color: rgba(56, 72, 83, 0.87);
             }
         }
     }
@@ -29,6 +41,17 @@
         text-transform: uppercase;
         font-size: 18px;
         margin-bottom: 20px;
+        font-family: "Open Sans", sans-serif;
+
+        &-main {
+            font-family: "Open Sans", sans-serif;
+            font-weight: 700;
+            font-size: 20px;
+            line-height: 120%;
+            letter-spacing: 1px;
+            text-transform: uppercase;
+            color: #4A4E60;
+        }
     }
     // &-controls {
     //     position: sticky;

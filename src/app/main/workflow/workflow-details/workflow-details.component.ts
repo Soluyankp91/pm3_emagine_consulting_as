@@ -15,7 +15,7 @@ import { WorkflowChangeDialogComponent } from '../workflow-change-dialog/workflo
 import { WorkflowDataService } from '../workflow-data.service';
 import { WorkflowOverviewComponent } from '../workflow-overview/workflow-overview.component';
 import { WorkflowSalesComponent } from '../workflow-sales/workflow-sales.component';
-import { WorkflowSalesExtensionForm, WorkflowTerminationSalesForm, SideMenuTabsDto, WorkflowProgressStatus, WorkflowTopSections, WorkflowSteps, WorkflowSideSections, WorkflowDiallogAction, AddConsultantDto, ChangeWorkflowDto, ExtendWorkflowDto } from '../workflow.model';
+import { WorkflowSalesExtensionForm, WorkflowTerminationSalesForm, TopMenuTabsDto, WorkflowProgressStatus, WorkflowTopSections, WorkflowSteps, WorkflowSideSections, WorkflowDiallogAction, AddConsultantDto, ChangeWorkflowDto, ExtendWorkflowDto } from '../workflow.model';
 import { InternalLookupService } from 'src/app/shared/common/internal-lookup.service';
 import { SideNavigationParentItemDto } from '../workflow-extension/workflow-extension.model';
 import { WorkflowActionsDialogComponent } from '../workflow-actions-dialog/workflow-actions-dialog.component';
@@ -54,7 +54,7 @@ export class WorkflowDetailsComponent implements OnInit, OnDestroy, AfterViewIni
     selectedTabName = 'Overview';
     extensionIndex: number | null;
     componentInitalized = false;
-    menuTabs: SideMenuTabsDto[];
+    topMenuTabs: TopMenuTabsDto[];
 
     sectionIndex: number;
 
@@ -78,7 +78,7 @@ export class WorkflowDetailsComponent implements OnInit, OnDestroy, AfterViewIni
         ).subscribe(params => {
             this.workflowId = params.get('id')!;
         });
-        this.menuTabs = new Array<SideMenuTabsDto>(...this._workflowDataService.topMenuTabs);
+        this.topMenuTabs = new Array<TopMenuTabsDto>(...this._workflowDataService.topMenuTabs);
         this.componentInitalized = true;
         this._lookupService.getData();
     }
@@ -105,7 +105,7 @@ export class WorkflowDetailsComponent implements OnInit, OnDestroy, AfterViewIni
         this._unsubscribe.complete();
     }
 
-    detectComponentToRender(tab: SideMenuTabsDto): ComponentType<any> {
+    detectComponentToRender(tab: TopMenuTabsDto): ComponentType<any> {
         switch (this.formatStepLabel(tab.displayName)) {
             case 'Overview':
                 return WorkflowOverviewComponent;
@@ -120,7 +120,7 @@ export class WorkflowDetailsComponent implements OnInit, OnDestroy, AfterViewIni
         }
     }
 
-    detectExtensionIndex(tab: SideMenuTabsDto) {
+    detectExtensionIndex(tab: TopMenuTabsDto) {
         if (tab.name.startsWith('Extension')) {
             return tab.index;
         } else {
@@ -392,7 +392,7 @@ export class WorkflowDetailsComponent implements OnInit, OnDestroy, AfterViewIni
     // add Termiantion
     addTermination() {
         // TODO: change new tab to side section
-        // this.menuTabs.push(
+        // this.topMenuTabs.push(
         //     {
         //         name: `Termination`,
         //         displayName: `Termination`,
@@ -427,10 +427,10 @@ export class WorkflowDetailsComponent implements OnInit, OnDestroy, AfterViewIni
 
         dialogRef.componentInstance.onConfirmed.subscribe(() => {
             // confirmed
-            let existingExtensions = this.menuTabs.filter(x => x.name.startsWith('Extension'));
+            let existingExtensions = this.topMenuTabs.filter(x => x.name.startsWith('Extension'));
             let newExtensionIndex = existingExtensions.length ? Math.max.apply(Math, existingExtensions.map(function(o) { return o.index + 1; })) : 0;
             // this._workflowDataService.topMenuTabs.push(
-            this.menuTabs.push(
+            this.topMenuTabs.push(
                 {
                     name: `Extension${newExtensionIndex}`,
                     displayName: `Extension ${newExtensionIndex}`,
@@ -458,13 +458,6 @@ export class WorkflowDetailsComponent implements OnInit, OnDestroy, AfterViewIni
 
     }
 
-    makeExtensionActiveTab(index: number) {
-        const extensions = this.menuTabs.filter(x => x.name.startsWith('Extension'));
-        const neededExtension = extensions.find(x => x.index === index);
-        this.selectedIndex = this.menuTabs.findIndex(x => x === neededExtension);
-        this.selectedTabName = this.formatStepLabel(neededExtension?.name!);
-    }
-
     changeWorkflow() {
         const scrollStrategy = this.overlay.scrollStrategies.reposition();
         const dialogRef = this.dialog.open(WorkflowActionsDialogComponent, {
@@ -487,55 +480,21 @@ export class WorkflowDetailsComponent implements OnInit, OnDestroy, AfterViewIni
 
         dialogRef.componentInstance.onConfirmed.subscribe(() => {
             // confirmed
-            // let existingWorkflows = this.menuTabs.filter(x => x.name.startsWith('Extension'));
-            // let newExtensionIndex = existingExtensions.length ? Math.max.apply(Math, existingExtensions.map(function(o) { return o.index + 1; })) : 0;
-
-
             // for PrimaryWorkflow
             if (this._workflowDataService.getWorkflowProgress.currentlyActiveSection === WorkflowTopSections.Workflow) {
                 this._workflowDataService.workflowSideNavigation.unshift(ChangeWorkflowDto);
-                this.changeSideSection(this._workflowDataService.workflowSideNavigation[this._workflowDataService.workflowSideNavigation.length - 1] , this._workflowDataService.workflowSideNavigation.length - 1);
+                this.updateWorkflowProgress(this._workflowDataService.workflowSideNavigation[0]);
             } else if (this._workflowDataService.getWorkflowProgress.currentlyActiveSection === WorkflowTopSections.Extension) {
                 // for WorkflowExtension
                 const currentExtension = this._workflowDataService.extensionSideNavigation.find(x => x.index === this._workflowDataService.getWorkflowProgress.currentlyActiveExtensionIndex);
                 currentExtension!.sideNav.unshift(ChangeWorkflowDto);
-                this.changeSideSection(currentExtension!.sideNav[currentExtension!.sideNav.length - 1] , currentExtension!.sideNav.length - 1);
+                this.updateWorkflowProgress(this._workflowDataService.workflowSideNavigation[0]);
             }
-
-
-
         });
 
         dialogRef.componentInstance.onRejected.subscribe(() => {
             // rejected
         });
-    }
-
-    changeStepSelection(stepName: string, stepId: any) {
-        this.selectedStep = stepName;
-        this._workflowDataService.workflowProgress.currentlyActiveStep = stepId * 1;
-    }
-
-    changeSideSection(item: SideNavigationParentItemDto, index: number) {
-        this.sectionIndex = index;
-        this._workflowDataService.updateWorkflowProgressStatus({currentlyActiveSideSection: item.sectionEnumValue});
-        const firstitemInSection = this._workflowDataService.workflowSideNavigation.find(x => x.displayName === item.displayName)?.subItems[0];
-        this.changeStepSelection(firstitemInSection!.name, firstitemInSection!.id);
-    }
-
-    disableAddExtension() {
-        if (this._workflowDataService.getWorkflowProgress?.isExtensionAdded) {
-            // validate by indexes
-            if (!this._workflowDataService.getWorkflowProgress?.isExtensionCompleted) {
-                return true;
-            } else {
-                return this._workflowDataService.getWorkflowProgress.lastSavedExtensionIndex !== this._workflowDataService.getWorkflowProgress.numberOfAddedExtensions! - 1;
-            }
-        } else if (this._workflowDataService.getWorkflowProgress.isPrimaryWorkflowCompleted) {
-            return false;
-        } else {
-            return true;
-        }
     }
 
     addConsultant() {
@@ -560,31 +519,16 @@ export class WorkflowDetailsComponent implements OnInit, OnDestroy, AfterViewIni
 
         dialogRef.componentInstance.onConfirmed.subscribe(() => {
             // confirmed
-            let existingExtensions = this.menuTabs.filter(x => x.name.startsWith('Extension'));
-            let newExtensionIndex = existingExtensions.length ? Math.max.apply(Math, existingExtensions.map(function(o) { return o.index + 1; })) : 0;
-            if (existingExtensions.length < 1) {
-                this.menuTabs.push(
-                    {
-                        name: `Extension${newExtensionIndex}`,
-                        displayName: `Extension ${newExtensionIndex}`,
-                        index: newExtensionIndex,
-                        additionalInfo: 'New'
-                    }
-                )
+             // for PrimaryWorkflow
+             if (this._workflowDataService.getWorkflowProgress.currentlyActiveSection === WorkflowTopSections.Workflow) {
+                this._workflowDataService.workflowSideNavigation.unshift(AddConsultantDto);
+                this.updateWorkflowProgress(this._workflowDataService.workflowSideNavigation[0]);
+            } else if (this._workflowDataService.getWorkflowProgress.currentlyActiveSection === WorkflowTopSections.Extension) {
+                // for WorkflowExtension
+                const currentExtension = this._workflowDataService.extensionSideNavigation.find(x => x.index === this._workflowDataService.getWorkflowProgress.currentlyActiveExtensionIndex);
+                currentExtension!.sideNav.unshift(ChangeWorkflowDto);
+                this.updateWorkflowProgress(this._workflowDataService.workflowSideNavigation[0]);
             }
-            this._workflowDataService.extensionSideNavigation.push(
-                {
-                    // TODO: move in constant variable, e.g. NewExtensionDto
-                    name: `Extension${newExtensionIndex}`,
-                    index: newExtensionIndex,
-                    sideNav: [AddConsultantDto]
-
-                }
-            )
-            this.makeExtensionActiveTab(newExtensionIndex);
-
-            // TODO: detect which exactly extension was added & saved to disable\enable button
-            this._workflowDataService.updateWorkflowProgressStatus({isExtensionAdded: true, isExtensionCompleted: false, numberOfAddedExtensions: newExtensionIndex + 1});
         });
 
         dialogRef.componentInstance.onRejected.subscribe(() => {
@@ -592,4 +536,30 @@ export class WorkflowDetailsComponent implements OnInit, OnDestroy, AfterViewIni
         });
     }
 
+    updateWorkflowProgress(item: SideNavigationParentItemDto) {
+        const firstitemInSection = this._workflowDataService.workflowSideNavigation.find(x => x.displayName === item.displayName)?.subItems[0];
+        this._workflowDataService.workflowProgress.currentlyActiveStep = firstitemInSection!.id * 1;
+    }
+
+    disableAddExtension() {
+        if (this._workflowDataService.getWorkflowProgress?.isExtensionAdded) {
+            // validate by indexes
+            if (!this._workflowDataService.getWorkflowProgress?.isExtensionCompleted) {
+                return true;
+            } else {
+                return this._workflowDataService.getWorkflowProgress.lastSavedExtensionIndex !== this._workflowDataService.getWorkflowProgress.numberOfAddedExtensions! - 1;
+            }
+        } else if (this._workflowDataService.getWorkflowProgress.isPrimaryWorkflowCompleted) {
+            return false;
+        } else {
+            return true;
+        }
+    }
+
+    makeExtensionActiveTab(index: number) {
+        const extensions = this.topMenuTabs.filter(x => x.name.startsWith('Extension'));
+        const neededExtension = extensions.find(x => x.index === index);
+        this.selectedIndex = this.topMenuTabs.findIndex(x => x === neededExtension);
+        this.selectedTabName = this.formatStepLabel(neededExtension?.name!);
+    }
 }

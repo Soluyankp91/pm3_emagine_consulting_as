@@ -3,14 +3,14 @@ import { Observable } from 'rxjs';
 import { EnumEntityTypeDto, EnumServiceProxy } from 'src/shared/service-proxies/service-proxies';
 import { WorkflowSideNavigation } from './primary-workflow/primary-workflow.model';
 import { ExtensionSideNavigation } from './workflow-extension/workflow-extension.model';
-import { SideMenuTabsDto, TopMenuTabs, WorkflowProgressStatus } from './workflow.model';
+import { TopMenuTabsDto, TopMenuTabs, WorkflowProgressStatus } from './workflow.model';
 
 @Injectable({
     providedIn: 'root'
 })
 export class WorkflowDataService {
-    // sideMenuTabs: SideMenuTabsDto[] = SideMenuTabs;
-    topMenuTabs: SideMenuTabsDto[] = TopMenuTabs;
+    // sideMenuTabs: TopMenuTabsDto[] = SideMenuTabs;
+    topMenuTabs: TopMenuTabsDto[] = TopMenuTabs;
     extensionSideNavigation = ExtensionSideNavigation;
     workflowSideNavigation = WorkflowSideNavigation;
 

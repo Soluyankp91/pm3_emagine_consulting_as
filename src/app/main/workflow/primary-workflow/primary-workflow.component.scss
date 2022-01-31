@@ -5,6 +5,8 @@
     overflow: visible;
 }
 .workflow-navigation {
+    padding-left: 25px;
+
     &--wrapper {
         height: 65vh;
         position: sticky;
@@ -12,9 +14,19 @@
         border-right: 1px solid #E7E3E8;
     }
     &--step {
+        display: flex;
         cursor: pointer;
         &:hover {
             background-color: rgba($color: $sand-color, $alpha: 0.5);
+        }
+        &__anchor {
+            font-family: 'Open Sans', sans-serif;
+            font-style: normal;
+            font-weight: bold;
+            font-size: 14px;
+            line-height: 140%;
+            color: #17A297;
+            text-transform: uppercase;
         }
         &__number {
             color: $medium-grey-color;
@@ -66,4 +78,9 @@
             }
         }
     }
+}
+
+.active-anchor {
+    color: rgba(56, 72, 83, 0.87);
+    font-weight: 700;
 }
