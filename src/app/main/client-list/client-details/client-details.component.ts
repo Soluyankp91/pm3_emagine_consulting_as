@@ -1,4 +1,5 @@
 import { Component, OnInit, ViewChild } from '@angular/core';
+import { FormControl } from '@angular/forms';
 import { MatTabChangeEvent } from '@angular/material/tabs';
 import { Router } from '@angular/router';
 import { ClientDocumentsComponent } from '../client-documents/client-documents.component';
@@ -11,18 +12,20 @@ import { ClientDocumentsComponent } from '../client-documents/client-documents.c
 export class ClientDetailsComponent implements OnInit {
     @ViewChild('documentsTab', {static: true}) documentsTab: ClientDocumentsComponent;
     selectedClient = {
-        name: 'test',
+        name: 'Volkswagen Financial Services',
         id: 1327,
         address: 'Some address 1',
         address2: 'Some address 2',
         postcode: '28912',
         country: 'Denmark',
+        countryCode: 'DK',
         phone: '+54 456 788 45 12',
         website: 'somewebsite.com',
         type: 'Type',
         accountManager: 'Some owner'
     };
 
+    clientFilterInput = new FormControl();
     constructor(
         private router: Router
     ) { }
@@ -33,11 +36,4 @@ export class ClientDetailsComponent implements OnInit {
     navigateBack() {
         this.router.navigate(['/main/clients']);
     }
-
-    selectedTabChange(event: MatTabChangeEvent) {
-        if (event.tab.textLabel === 'Documents') {
-            this.documentsTab.init();
-        }
-    }
-
 }

@@ -4,20 +4,42 @@
     &--contract {
         padding: 16px 24px;
     }
+    &--form {
+        &__header {
+            font-size: 12px;
+            min-height: 35px;
+            font-family: 'OpenSansWeb', sans-serif !important;
+            color: $medium-grey-color !important;
+            font-weight: 600;
+        }
+        &__row {
+            background: #fff;
+            // height: 50px;
+            color: $dark-grey-color !important;
+            // font-size: 16px;
+            border: 1px solid $sand-color;
+        }
+    }
 
     &--sidenav {
         display: flex;
         flex-direction: column;
         &__item {
             color: $dark-grey-color;
-            border-left: 2px solid transparent;
+            border-left: 3px solid transparent;
             height: 45px;
             padding: 5px 10px;
             &.selected-sidenav {
                 color: $green-color;
                 font-weight: 700;
-                border-left: 2px solid $green-color;
+                border-left: 3px solid $green-color;
             }
+        }
+    }
+
+    &-icon--actions {
+        &:hover {
+            background: rgba($color: $green-color, $alpha: .2);
         }
     }
 }

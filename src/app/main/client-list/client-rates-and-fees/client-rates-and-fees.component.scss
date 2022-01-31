@@ -34,9 +34,11 @@
         }
     }
     &-icon--actions {
-        background: rgba($color: $green-color, $alpha: .2);
+        &:hover {
+            background: rgba($color: $green-color, $alpha: .2);
+        }
         mat-icon {
-            color: $green-color;
+            // color: $green-color;
             display: inline-flex;
             justify-content: center;
             align-items: center;

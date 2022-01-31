@@ -1,17 +1,15 @@
 @import "/src/app/shared/styles/config/_sizes";
+@import "/src/app/shared/styles/config/_colors";
 
 .arrow-container--btn {
-    font-family: 'Barlow', sans-serif;
-    font-style: normal;
-    font-weight: 500;
-    font-size: 24px;
-    line-height: 24px;
-    text-transform: uppercase;
-    color: rgba(43, 53, 59, 0.87);
-    cursor: pointer;
-    span {
-        margin-left: 5px;
-    }
+    // font-family: 'Barlow', sans-serif;
+    // font-style: normal;
+    // font-weight: 500;
+    // font-size: 24px;
+    // line-height: 24px;
+    // text-transform: uppercase;
+    // color: rgba(43, 53, 59, 0.87);
+    // cursor: pointer;
 }
 
 .client-details {
@@ -21,23 +19,42 @@
         // height: 150px;
         height: $white-header-height;
         padding: 16px 75px;
+        &__client-name {
+            font-size: 32px;
+            font-weight: 700;
+        }
     }
     &--content {
         height: calc(100vh - 150px);
     }
-    &--client-info {
-        // margin-right: 8px;
-        &__header {
-            // font-size: 9px;
-            // line-height: 12px;
-
-            margin-right: 8px;
-            color: rgba(56, 72, 83, .3);
+    &--search {
+        mat-icon {
+            line-height: 40px;
+            width: 40px;
+            height: 40px;
         }
-        &__value {
-            // font-size: 10px;
-            // line-height: 14px;
-            color: #384853;
+    }
+    &--client-info {
+        &__header {
+            display: flex;
+            align-items: center;
+            margin-right: 10px;
+            font-weight: 700;
+            color: $dark-grey-color;
+            &.client-id {
+                color: rgba($color: $dark-grey-color, $alpha: 0.44);
+            }
+            &.headerWithDot {
+                &::before {
+                    content:"\A";
+                    width: 5px;
+                    height: 5px;
+                    border-radius: 50%;
+                    background: $dark-grey-color;
+                    display: inline-block;
+                    margin: 0 8px;
+                }
+            }
         }
     }
 }

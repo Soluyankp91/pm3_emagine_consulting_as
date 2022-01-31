@@ -1,8 +1,10 @@
+import { FormArray, FormGroup } from "@angular/forms";
+
 export class FolderNode {
     name: string | undefined;
     files?: string[] | undefined;
     children?: FolderNode[] | undefined;
-    level?: number | undefined;
+    level: number;
 }
 
 export class FolderFlatNode {
@@ -14,6 +16,19 @@ export class FolderFlatNode {
         public children?: FolderNode[] | undefined
     ) {}
 }
+
+export class GeneralDocumentForm extends FormGroup {
+    constructor() {
+        super({
+            documents: new FormArray([])
+        })
+
+    }
+    get documents() {
+        return this.get('documents') as FormArray;
+    }
+}
+
 
 export enum DocumentSideNavItem {
     General = 1,

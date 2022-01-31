@@ -521,5 +521,19 @@ export class AppModule {
             )
         );
 
+        iconRegistry.addSvgIcon(
+            'CAM-icon',
+            sanitizer.bypassSecurityTrustResourceUrl(
+                'assets/common/images/CAM-icon.svg'
+            )
+        );
+
+        iconRegistry.addSvgIcon(
+            'HUBSPOT-icon',
+            sanitizer.bypassSecurityTrustResourceUrl(
+                'assets/common/images/HUBSPOT-icon.svg'
+            )
+        );
+
     }
 }
