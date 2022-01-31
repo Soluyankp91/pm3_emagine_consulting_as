@@ -1,13 +1,38 @@
 <div class="client-details">
     <div fxLayout="column" fxLayoutAlign="space-between center" class="client-details--header">
         <div fxLayout="row" fxLayoutAlign="space-between start" class="u-w--100">
-            <button class="arrow-container--btn u-pl--0" (click)="navigateBack()" mat-button><mat-icon svgIcon="arrow"></mat-icon><span>Client name</span></button>
-            <div fxLayout="row" fxLayoutAlign="space-between start">
-                <button mat-raised-button color="primary" class="u-mr--10 mat-elevation-z0">LOGIN TO HUBSPOT</button>
-                <button mat-raised-button color="primary" class="mat-elevation-z0">LOGIN TO CAM</button>
+            <div fxLayout="column" fxLayoutAlign="start start">
+                <div fxLayout="row" fxLayoutAlign="start center">
+                    <button class="back-arrow--btn u-pl--0" (click)="navigateBack()" mat-icon-button><mat-icon svgIcon="arrow"></mat-icon></button>
+                    <span class="client-details--header__client-name">{{selectedClient.name}}</span>
+                </div>
+                <div fxLayout="row" fxLayoutAlign="start center" class="client-details--client-info u-mt--10">
+                    <span class="client-details--client-info__header client-id">
+                        #{{selectedClient.id}}
+                    </span>
+                    <span class="flag-icon flag-icon-{{selectedClient.countryCode | lowercase }} u-mr--10"></span>
+                    <span class="client-details--client-info__header">
+                        {{selectedClient.address}}
+                    </span>
+                    <span class="client-details--client-info__header headerWithDot">
+                        {{selectedClient.phone}}
+                    </span>
+                    <span class="client-details--client-info__header headerWithDot">
+                        {{selectedClient.website}}
+                    </span>
+                </div>
+            </div>
+            <div fxLayout="row" fxLayoutAlign="start center" class="client-details--search">
+                <mat-form-field appearance="outline" class="u-w--100 mat-elevation-z0 formFieldNoMarginPadding u-mr--10">
+                    <mat-label>Search</mat-label>
+                    <input autocomplete="off" matInput [formControl]="clientFilterInput" placeholder="Search" type="text">
+                    <mat-icon matPrefix>search</mat-icon>
+                </mat-form-field>
+                <button mat-icon-button color="primary" class="u-mr--10 mat-elevation-z0"><mat-icon svgIcon="HUBSPOT-icon"></mat-icon></button>
+                <button mat-icon-button color="primary" class="mat-elevation-z0"><mat-icon svgIcon="CAM-icon"></mat-icon></button>
             </div>
         </div>
-        <div fxLayout="row" fxLayoutAlign="start start" class="u-w--100 u-mt--20">
+        <!-- <div fxLayout="row" fxLayoutAlign="start start" class="u-w--100 u-mt--20">
             <div fxLayout="row" fxLayoutAlign="start start" fxFlex="20%">
                 <div fxLayout="column" class="client-details--client-info">
                     <span class="client-details--client-info__header u-mb--10">
@@ -80,18 +105,13 @@
                     </span>
                 </div>
             </div>
-        </div>
+        </div> -->
     </div>
     <div fxLayout="row" fxLayoutAlign="start start"class="client-details--content">
-        <mat-tab-group class="client-details--tabs u-w--100" #clientDetailsTabs (selectedTabChange)="selectedTabChange($event)">
+        <mat-tab-group class="client-details--tabs u-w--100" #clientDetailsTabs>
             <mat-tab label="Request track">
                 <ng-scrollbar>
                     <app-client-request-track [clientInfo]="selectedClient"></app-client-request-track>
-                </ng-scrollbar>
-            </mat-tab>
-            <mat-tab label="Documents">
-                <ng-scrollbar>
-                    <app-client-documents #documentsTab></app-client-documents>
                 </ng-scrollbar>
             </mat-tab>
             <mat-tab label="Workflow track">
@@ -99,19 +119,24 @@
                     <app-client-workflow-track [clientInfo]="selectedClient"></app-client-workflow-track>
                 </ng-scrollbar>
             </mat-tab>
-            <mat-tab label="Consultant track">
+            <!-- <mat-tab label="Consultant track">
                 <ng-scrollbar>
                     <app-client-consultant-track></app-client-consultant-track>
                 </ng-scrollbar>
-            </mat-tab>
-            <mat-tab label="Invoicing">
+            </mat-tab> -->
+            <!-- <mat-tab label="Invoicing">
                 <ng-scrollbar>
                     <app-client-invoicing></app-client-invoicing>
                 </ng-scrollbar>
-            </mat-tab>
+            </mat-tab> -->
             <mat-tab label="Rates and Fees">
                 <ng-scrollbar>
                     <app-client-rates-and-fees></app-client-rates-and-fees>
+                </ng-scrollbar>
+            </mat-tab>
+            <mat-tab label="Documents">
+                <ng-scrollbar>
+                    <app-client-documents #documentsTab></app-client-documents>
                 </ng-scrollbar>
             </mat-tab>
             <mat-tab label="Contacts">
@@ -119,11 +144,11 @@
                     <app-client-contacts [clientInfo]="selectedClient"></app-client-contacts>
                 </ng-scrollbar>
             </mat-tab>
-            <mat-tab label="Consultants">
+            <!-- <mat-tab label="Consultants">
                 <ng-scrollbar>
                     <app-client-consultants></app-client-consultants>
                 </ng-scrollbar>
-            </mat-tab>
+            </mat-tab> -->
         </mat-tab-group>
     </div>
 </div>

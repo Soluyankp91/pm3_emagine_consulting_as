@@ -142,9 +142,9 @@ export class ClientRatesAndFeesComponent implements OnInit, OnDestroy {
             clientRateCurrency: new FormControl(clientRate?.clientRateCurrency ?? null),
             proDataRate: new FormControl(clientRate?.proDataToProDataRate ?? null),
             consultantRate: new FormControl(clientRate?.consultantRate ?? null),
-            category: new FormControl(clientRate?.specialRateCategory), // missing category in a response
-            editable: new FormControl(true),
-            hidden: new FormControl(clientRate?.isHidden)
+            category: new FormControl(clientRate?.specialRateCategory ?? null),
+            editable: new FormControl(clientRate ? false : true),
+            hidden: new FormControl(clientRate?.isHidden ?? false)
         });
         this.clientSpecailRateForm.specialRates.push(form);
     }
@@ -179,7 +179,7 @@ export class ClientRatesAndFeesComponent implements OnInit, OnDestroy {
         input.prodataToProdataRateCurrencyId = clientRate.clientRateCurrency?.id;
         input.consultantRate = clientRate.consultantRate;
         input.consultantCurrencyId = clientRate.clientRateCurrency?.id;
-        input.isHidden = clientRate.hidden;
+        input.isHidden = clientRate.hidden ?? false;
         if (clientRate?.id === null || clientRate?.id === undefined) {
             this._clientService.specialRatesPost(this.clientId, input)
                 .pipe(finalize(() => {
@@ -216,8 +216,8 @@ export class ClientRatesAndFeesComponent implements OnInit, OnDestroy {
             proDataRate: new FormControl(clientFee?.prodataToProdataRate ?? null),
             consultantRate: new FormControl(clientFee?.consultantRate ?? null),
             category: new FormControl(null), // missing category in a response
-            editable: new FormControl(true),
-            hidden: new FormControl(clientFee?.isHidden)
+            editable: new FormControl(clientFee ? false : true),
+            hidden: new FormControl(clientFee?.isHidden ?? false)
         });
         this.clientFeesForm.clientFees.push(form);
     }
@@ -252,7 +252,7 @@ export class ClientRatesAndFeesComponent implements OnInit, OnDestroy {
         input.prodataToProdataRateCurrencyId = clientRate.clientRateCurrency?.id;
         input.consultantRate = clientRate.consultantRate;
         input.consultantCurrencyId = clientRate.clientRateCurrency?.id;
-        input.isHidden = clientRate.hidden;
+        input.isHidden = clientRate.hidden ?? false;
         if (clientRate.id === null || clientRate.id === undefined) {
             this._clientService.specialFeesPost(this.clientId, input)
                 .pipe(finalize(() => {
@@ -290,6 +290,10 @@ export class ClientRatesAndFeesComponent implements OnInit, OnDestroy {
         } else {
             // logic to hide hidden rows
         }
+    }
+
+    compareWithFn(listOfItems: any, selectedItem: any) {
+        return listOfItems && selectedItem && listOfItems.id === selectedItem.id;;
     }
 
 }

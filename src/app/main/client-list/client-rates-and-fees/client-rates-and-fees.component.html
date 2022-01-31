@@ -59,21 +59,21 @@
                                 <input matInput type="text" formControlName="nameForInvoices" placeholder="Name for invoicing" />
                             </mat-form-field>
                             <mat-form-field appearance="fill" class="u-w--100 formFieldNoMarginPadding filter-select" fxFlex="10%">
-                                <mat-select formControlName="rateDirection" placeholder="Rate direction" [disableOptionCentering]="true">
+                                <mat-select formControlName="rateDirection" placeholder="Rate direction" [disableOptionCentering]="true" [compareWith]="compareWithFn">
                                     <mat-option *ngFor="let item of clientSpecialRateOrFeeDirections" [value]="item">
                                         {{ item.name }}
                                     </mat-option>
                                 </mat-select>
                             </mat-form-field>
                             <mat-form-field appearance="fill" class="u-w--100 formFieldNoMarginPadding filter-select" fxFlex="10%">
-                                <mat-select formControlName="reportingUnit" placeholder="Reporting Unit" [disableOptionCentering]="true">
+                                <mat-select formControlName="reportingUnit" placeholder="Reporting Unit" [disableOptionCentering]="true" [compareWith]="compareWithFn">
                                     <mat-option *ngFor="let item of clientSpecialRateReportUnits" [value]="item">
                                         {{ item.name }}
                                     </mat-option>
                                 </mat-select>
                             </mat-form-field>
                             <mat-form-field appearance="fill" class="u-w--100 formFieldNoMarginPadding filter-select" fxFlex="10%">
-                                <mat-select formControlName="rateSpecifiedAs" placeholder="Rate specified as" [disableOptionCentering]="true">
+                                <mat-select formControlName="rateSpecifiedAs" placeholder="Rate specified as" [disableOptionCentering]="true" [compareWith]="compareWithFn">
                                     <mat-option *ngFor="let item of clientSpecialRateSpecifications" [value]="item">
                                         {{ item.name }}
                                     </mat-option>
@@ -84,7 +84,7 @@
                                     <input matInput type="text" placeholder="Rate" formControlName="clientRateValue">
                                 </mat-form-field>
                                 <mat-form-field appearance="fill" class="u-w--100 formFieldNoMarginPadding filter-select" fxFlex="60%">
-                                    <mat-select formControlName="clientRateCurrency" placeholder="Currency" [disableOptionCentering]="true">
+                                    <mat-select formControlName="clientRateCurrency" placeholder="Currency" [disableOptionCentering]="true" [compareWith]="compareWithFn">
                                         <mat-option *ngFor="let item of currencies" [value]="item">
                                             {{ item.name }}
                                         </mat-option>
@@ -106,33 +106,33 @@
                             </mat-form-field>
                         </ng-container>
                         <ng-container *ngIf="!clientSpecailRateForm.specialRates.at(i).get('editable')?.value">
-                            <span fxFlex="10%" class="u-w--100 text-truncate-ellipsis" [matTooltip]="clientSpecailRateForm.specialRates.at(i).get('rateName')?.value ?? '-'">
-                                {{clientSpecailRateForm.specialRates.at(i).get('rateName')?.value ?? '-'}}
+                            <span fxFlex="10%" class="u-w--100 text-truncate-ellipsis" [matTooltip]="clientSpecailRateForm.specialRates.at(i).get('rateName')?.value">
+                                {{clientSpecailRateForm.specialRates.at(i).get('rateName')?.value}}
                             </span>
-                            <span fxFlex="10%" class="u-w--100 text-truncate-ellipsis" [matTooltip]="clientSpecailRateForm.specialRates.at(i).get('nameForInvoices')?.value ?? '-'">
-                                {{clientSpecailRateForm.specialRates.at(i).get('nameForInvoices')?.value ?? '-'}}
+                            <span fxFlex="10%" class="u-w--100 text-truncate-ellipsis" [matTooltip]="clientSpecailRateForm.specialRates.at(i).get('nameForInvoices')?.value">
+                                {{clientSpecailRateForm.specialRates.at(i).get('nameForInvoices')?.value}}
                             </span>
-                            <span fxFlex="10%" class="u-w--100 text-truncate-ellipsis" [matTooltip]="clientSpecailRateForm.specialRates.at(i).get('rateDirection')?.value?.name ?? '-'">
-                                {{clientSpecailRateForm.specialRates.at(i).get('rateDirection')?.value?.name ?? '-'}}
+                            <span fxFlex="10%" class="u-w--100 text-truncate-ellipsis" [matTooltip]="clientSpecailRateForm.specialRates.at(i).get('rateDirection')?.value?.name">
+                                {{clientSpecailRateForm.specialRates.at(i).get('rateDirection')?.value?.name}}
                             </span>
-                            <span fxFlex="10%" class="u-w--100 text-truncate-ellipsis" [matTooltip]="clientSpecailRateForm.specialRates.at(i).get('reportingUnit')?.value?.name ?? '-'">
-                                {{clientSpecailRateForm.specialRates.at(i).get('reportingUnit')?.value?.name ?? '-'}}
+                            <span fxFlex="10%" class="u-w--100 text-truncate-ellipsis" [matTooltip]="clientSpecailRateForm.specialRates.at(i).get('reportingUnit')?.value?.name">
+                                {{clientSpecailRateForm.specialRates.at(i).get('reportingUnit')?.value?.name}}
                             </span>
-                            <span fxFlex="10%" class="u-w--100 text-truncate-ellipsis" [matTooltip]="clientSpecailRateForm.specialRates.at(i).get('rateSpecifiedAs')?.value?.name ?? '-'">
-                                {{clientSpecailRateForm.specialRates.at(i).get('rateSpecifiedAs')?.value?.name ?? '-'}}
+                            <span fxFlex="10%" class="u-w--100 text-truncate-ellipsis" [matTooltip]="clientSpecailRateForm.specialRates.at(i).get('rateSpecifiedAs')?.value?.name">
+                                {{clientSpecailRateForm.specialRates.at(i).get('rateSpecifiedAs')?.value?.name}}
                             </span>
                             <span fxFlex="10%" class="u-w--100 text-truncate-ellipsis" [matTooltip]="clientSpecailRateForm.specialRates.at(i).get('clientRateValue')?.value + ' ' + clientSpecailRateForm.specialRates.at(i).get('clientRateCurrency')?.value?.name">
                                 {{clientSpecailRateForm.specialRates.at(i).get('clientRateValue')?.value || clientSpecailRateForm.specialRates.at(i).get('clientRateCurrency')?.value?.name ?
                                 clientSpecailRateForm.specialRates.at(i).get('clientRateValue')?.value + ' ' + clientSpecailRateForm.specialRates.at(i).get('clientRateCurrency')?.value?.name : '-'}}
                             </span>
-                            <span fxFlex="10%" class="u-w--100 text-truncate-ellipsis" [matTooltip]="clientSpecailRateForm.specialRates.at(i).get('proDataRate')?.value ?? '-'">
-                                {{clientSpecailRateForm.specialRates.at(i).get('proDataRate')?.value ?? '-'}}
+                            <span fxFlex="10%" class="u-w--100 text-truncate-ellipsis" [matTooltip]="clientSpecailRateForm.specialRates.at(i).get('proDataRate')?.value">
+                                {{clientSpecailRateForm.specialRates.at(i).get('proDataRate')?.value}}
                             </span>
-                            <span fxFlex="10%" class="u-w--100 text-truncate-ellipsis" [matTooltip]="clientSpecailRateForm.specialRates.at(i).get('consultantRate')?.value ?? '-'">
-                                {{clientSpecailRateForm.specialRates.at(i).get('consultantRate')?.value ?? '-'}}
+                            <span fxFlex="10%" class="u-w--100 text-truncate-ellipsis" [matTooltip]="clientSpecailRateForm.specialRates.at(i).get('consultantRate')?.value">
+                                {{clientSpecailRateForm.specialRates.at(i).get('consultantRate')?.value}}
                             </span>
-                            <span fxFlex="10%" class="u-w--100 text-truncate-ellipsis" [matTooltip]="clientSpecailRateForm.specialRates.at(i).get('category')?.value?.name ?? '-'">
-                                {{clientSpecailRateForm.specialRates.at(i).get('category')?.value?.name ?? '-'}}
+                            <span fxFlex="10%" class="u-w--100 text-truncate-ellipsis" [matTooltip]="clientSpecailRateForm.specialRates.at(i).get('category')?.value?.name">
+                                {{clientSpecailRateForm.specialRates.at(i).get('category')?.value?.name}}
                             </span>
                         </ng-container>
                         <div fxFlex="10%" fxLayoutAlign="center center" class="u-w--100">
@@ -225,21 +225,21 @@
                                 <input matInput type="text" formControlName="nameForInvoices" placeholder="Name for invoicing" />
                             </mat-form-field>
                             <mat-form-field appearance="fill" class="u-w--100 formFieldNoMarginPadding filter-select" fxFlex="10%">
-                                <mat-select formControlName="rateDirection" placeholder="Rate direction" [disableOptionCentering]="true">
+                                <mat-select formControlName="rateDirection" placeholder="Rate direction" [disableOptionCentering]="true" [compareWith]="compareWithFn">
                                     <mat-option *ngFor="let item of clientSpecialRateOrFeeDirections" [value]="item">
                                         {{ item.name }}
                                     </mat-option>
                                 </mat-select>
                             </mat-form-field>
                             <mat-form-field appearance="fill" class="u-w--100 formFieldNoMarginPadding filter-select" fxFlex="10%">
-                                <mat-select formControlName="reportingUnit" placeholder="Reporting Unit" [disableOptionCentering]="true">
+                                <mat-select formControlName="reportingUnit" placeholder="Reporting Unit" [disableOptionCentering]="true" [compareWith]="compareWithFn">
                                     <mat-option *ngFor="let item of clientSpecialRateReportUnits" [value]="item">
                                         {{ item.name }}
                                     </mat-option>
                                 </mat-select>
                             </mat-form-field>
                             <mat-form-field appearance="fill" class="u-w--100 formFieldNoMarginPadding filter-select" fxFlex="10%">
-                                <mat-select formControlName="rateSpecifiedAs" placeholder="Rate specified as" [disableOptionCentering]="true">
+                                <mat-select formControlName="rateSpecifiedAs" placeholder="Rate specified as" [disableOptionCentering]="true" [compareWith]="compareWithFn">
                                     <mat-option *ngFor="let item of clientSpecialFeeSpecifications" [value]="item">
                                         {{ item.name }}
                                     </mat-option>
@@ -250,7 +250,7 @@
                                     <input matInput type="text" placeholder="Rate" formControlName="clientRateValue">
                                 </mat-form-field>
                                 <mat-form-field appearance="fill" class="u-w--100 formFieldNoMarginPadding filter-select" fxFlex="60%">
-                                    <mat-select formControlName="clientRateCurrency" placeholder="Currency" [disableOptionCentering]="true">
+                                    <mat-select formControlName="clientRateCurrency" placeholder="Currency" [disableOptionCentering]="true" [compareWith]="compareWithFn">
                                         <mat-option *ngFor="let item of currencies" [value]="item">
                                             {{ item.name }}
                                         </mat-option>
@@ -303,16 +303,22 @@
                         </ng-container>
 
                         <div fxFlex="10%" fxLayoutAlign="center center" class="u-w--100">
+                            <button *ngIf="clientFeesForm.clientFees.at(i).get('editable')?.value"
+                                    mat-icon-button
+                                    [disabled]="false"
+                                    (click)="editOrSaveClientFee(clientFeesForm.clientFees.at(i).get('editable')?.value, i)">
+                                    <mat-icon>save</mat-icon>
+                            </button>
                             <button mat-icon-button [matMenuTriggerFor]="clientFeeMenu" class="client-rates-icon--actions"><mat-icon>more_horiz</mat-icon></button>
                             <mat-menu #clientFeeMenu>
                                 <button
-                                    class="menu-item"
-                                    [ngClass]="clientFeesForm.clientFees.at(i).get('editable')?.value ? 'menu-item--add': 'menu-item--edit'"
+                                    class="menu-item menu-item--edit"
+                                    *ngIf="!clientFeesForm.clientFees.at(i).get('editable')?.value"
                                     mat-menu-item
                                     [disabled]="false"
                                     (click)="editOrSaveClientFee(clientFeesForm.clientFees.at(i).get('editable')?.value, i)">
-                                    <mat-icon>{{clientFeesForm.clientFees.at(i).get('editable')?.value ? 'save' : 'create'}}</mat-icon>
-                                    {{clientFeesForm.clientFees.at(i).get('editable')?.value ? 'Save' : 'Edit'}}
+                                    <mat-icon>create</mat-icon>
+                                    Edit
                                 </button>
                                 <button
                                     class="menu-item"

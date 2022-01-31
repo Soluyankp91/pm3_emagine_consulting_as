@@ -1,15 +1,72 @@
 import { Component, Input, OnInit, ViewChild } from '@angular/core';
-import { FormControl } from '@angular/forms';
+import { FormArray, FormBuilder, FormControl } from '@angular/forms';
 import { MatTableDataSource } from '@angular/material/table';
 import { AppConsts } from 'src/shared/AppConsts';
-import { DocumentSideNavDto, DocumentSideNavigation, DocumentSideNavItem, TREE_DATA } from './client-documents.model';
+import { DocumentSideNavDto, DocumentSideNavigation, DocumentSideNavItem, GeneralDocumentForm, TREE_DATA } from './client-documents.model';
 import { AddFileDialogComponent } from './add-file-dialog/add-file-dialog.component';
 import { Overlay } from '@angular/cdk/overlay';
 import { MatDialog } from '@angular/material/dialog';
 import { ConfirmationDialogComponent } from 'src/app/shared/components/confirmation-dialog/confirmation-dialog.component';
 import { MatTabGroup } from '@angular/material/tabs';
 import { AddFolderDialogComponent } from './add-folder-dialog/add-folder-dialog.component';
+import * as moment from 'moment';
 
+const GENERAL_DATA_SOURCE = [
+    {
+        documentTitle: 'General document',
+        file: {
+            name: 'General document #123/7891562.pdf',
+            type: {
+                id: 1,
+                name: 'General'
+            },
+            icon: 'pdf'
+        },
+        date: moment(),
+        uploadedBy: 'Roberto Mancini'
+    },
+    {
+        documentTitle: 'Invoicing document',
+        file: {
+            name: 'Invoicing document #123/7891562.pdf',
+            type: {
+                id: 2,
+                name: 'Invoicing'
+            },
+            icon: 'doc'
+        },
+        date: moment(),
+        uploadedBy: 'Roberto Mancini'
+    },
+    {
+        documentTitle: 'Tender document',
+        file: {
+            name: 'Tender document #123/7891562.pdf',
+            type: {
+                id: 3,
+                name: 'Tender'
+            },
+            icon: 'txt'
+        },
+        date: moment(),
+        uploadedBy: 'Roberto Mancini'
+    }
+];
+
+const generalFileTypes = [
+    {
+        id: 1,
+        name: 'General'
+    },
+    {
+        id: 2,
+        name: 'Invoicing'
+    },
+    {
+        id: 3,
+        name: 'Tender'
+    }
+]
 @Component({
     selector: 'app-client-documents',
     templateUrl: './client-documents.component.html',
@@ -18,6 +75,28 @@ import { AddFolderDialogComponent } from './add-folder-dialog/add-folder-dialog.
 export class ClientDocumentsComponent implements OnInit {
     @ViewChild('documentsTabs', {static: false}) documentsTabs: MatTabGroup;
     @Input() clientInfo: any;
+
+    //General tab
+    generalDocumentsDataSource: MatTableDataSource<any> = new MatTableDataSource<any>();
+    generalFileTypes = generalFileTypes;
+    generalDocumentForm: GeneralDocumentForm;
+
+    isGeneralDataLoading = false;
+    generalDocsPageNumber = 1;
+    generalDocsPageSize = AppConsts.grid.defaultPageSize;
+    generalDocsPageSizeOptions = [5, 10, 20, 50, 100];
+    generalDocsTotalCount: number | undefined = 0;
+    generalDocsSorting = '';
+
+    generalDocsDisplayColumns = [
+        'icon',
+        'documentTitle',
+        'fileName',
+        'type',
+        'date',
+        'uploadedBy',
+        'action'
+    ];
 
     // Evals tab
     evalsDocumentsDataSource: MatTableDataSource<any> = new MatTableDataSource<any>();
@@ -49,11 +128,14 @@ export class ClientDocumentsComponent implements OnInit {
     documentSideNavigation = DocumentSideNavigation;
     documentSideItems = DocumentSideNavItem;
     selectedItem = DocumentSideNavItem.General;
+
+    generalFiles = GENERAL_DATA_SOURCE;
     constructor(
         private overlay: Overlay,
-        private dialog: MatDialog
+        private dialog: MatDialog,
+        private _fb: FormBuilder
     ) {
-
+        this.generalDocumentForm = new GeneralDocumentForm();
     }
 
     selectSideNav(item: DocumentSideNavDto) {
@@ -63,11 +145,122 @@ export class ClientDocumentsComponent implements OnInit {
     }
 
     ngOnInit(): void {
+        this.generalDocumentsDataSource = new MatTableDataSource<any>(GENERAL_DATA_SOURCE);
+
+        // documentTitle: 'General document',
+        // file: {
+        //     name: 'General document #123/7891562.pdf',
+        //     type: {
+        //         id: 1,
+        //         name: 'General'
+        //     },
+        //     icon: 'pdf'
+        // },
+        // date: moment(),
+        // uploadedBy: 'Roberto Mancini'
+        GENERAL_DATA_SOURCE.forEach(item => {
+            let generalDoc = {
+                id: null,
+                documentTitle: item.documentTitle,
+                fileName: item.file.name,
+                type: item.file.type,
+                icon: item.file.icon,
+                date: item.date,
+                uploadedBy: item.uploadedBy
+            }
+            this.addGeneralDocument(generalDoc);
+        })
+    }
+
+    compareWithFn(listOfItems: any, selectedItem: any) {
+        return listOfItems && selectedItem && listOfItems.id === selectedItem.id;;
+    }
+
+    addGeneralDocument(generalDocument?: any) {
+        const form = this._fb.group({
+            id: new FormControl(generalDocument?.id ?? null),
+            icon: new FormControl(generalDocument?.icon ?? null),
+            documentTitle: new FormControl(generalDocument?.documentTitle ?? null),
+            fileName: new FormControl(generalDocument?.fileName ?? null),
+            type: new FormControl(generalDocument?.type ?? null),
+            date: new FormControl(generalDocument?.date ?? null),
+            uploadedBy: new FormControl(generalDocument?.uploadedBy ?? null),
+            editable: new FormControl(generalDocument ? false : true)
+        });
+        this.generalDocumentForm.documents.push(form);
+    }
+
+    get documents(): FormArray {
+        return this.generalDocumentForm.get('documents') as FormArray;
+    }
+
+    deleteGeneralDocument(index: number) {
+        this.documents.removeAt(index);
+    }
+
+    editOrSaveGeneralDocument(isEditMode: boolean, index: number) {
+        this.documents.at(index).get('editable')?.setValue(!isEditMode, {emitEvent: false});
+        if (isEditMode) {
+            this.saveOrUpdateGeneralDocument(index);
+        }
+    }
+
+    saveOrUpdateGeneralDocument(index: number) {
 
     }
 
     init(): void {
-        this.documentsTabs.realignInkBar();
+        // this.documentsTabs.realignInkBar();
+    }
+
+    getFileTypeHint(fileIcon: string) {
+
+    }
+
+    getFileTypeIcon(fileIcon: string) {
+        // switch (fileIcon) {
+        //     case '.pdf':
+        //         return 'pdf';
+        //     case '.doc':
+        //     case '.docx':
+        //         return 'doc';
+        //     case '.xls':
+        //     case '.xlsx':
+        //         return 'xls';
+        //     case '.txt':
+        //         return 'txt';
+        //     case '.jpeg':
+        //     case '.jpg':
+        //         return 'jpg';
+        //     case '.png':
+        //         return 'png';
+        //     case '.svg':
+        //         return 'svg';
+        // }
+    }
+
+    generalDocsSortChanged(event?: any): void {
+        this.generalDocsSorting = event.active.concat(' ', event.direction);
+    }
+
+    generalDocsPageChanged(event?: any): void {
+        this.generalDocsPageNumber = event.pageIndex;
+        this.generalDocsPageSize = event.pageSize;
+    }
+
+    previewGeneralDocument(row: any) {
+
+    }
+
+    downloadGeneralDocument(row: any) {
+
+    }
+
+    editGeneralDocument(isEditMode: boolean, index: number) {
+        this.documents.at(index).get('editable')?.setValue(!isEditMode, {emitEvent: false});
+        if (isEditMode) {
+            this.saveOrUpdateGeneralDocument(index);
+        }
     }
 
     pageChanged(event?: any): void {
@@ -161,6 +354,10 @@ export class ClientDocumentsComponent implements OnInit {
 
     deleteFolder(folder: any) {
         // API TO DELETE FOLDER
+    }
+
+    calculateStyleForFolders(level: number) {
+        return `u-ml--${16 + level*16}`;
     }
 
 }
