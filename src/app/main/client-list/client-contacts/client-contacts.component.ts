@@ -1,6 +1,8 @@
-import { Component, Input, OnInit } from '@angular/core';
+import { Component, Input, OnDestroy, OnInit } from '@angular/core';
 import { MatTableDataSource } from '@angular/material/table';
-import { finalize } from 'rxjs/operators';
+import { ActivatedRoute } from '@angular/router';
+import { Subject } from 'rxjs';
+import { finalize, takeUntil } from 'rxjs/operators';
 import { AppConsts } from 'src/shared/AppConsts';
 import { ClientsServiceProxy } from 'src/shared/service-proxies/service-proxies';
 
@@ -39,9 +41,9 @@ const DATA_SOURCE = [
     templateUrl: './client-contacts.component.html',
     styleUrls: ['./client-contacts.component.scss']
 })
-export class ClientContactsComponent implements OnInit {
+export class ClientContactsComponent implements OnInit, OnDestroy {
     @Input() clientInfo: any;
-
+    clientId: number;
     isDataLoading = false;
     selectedCountries: string[] = [];
     pageNumber = 1;
@@ -62,26 +64,29 @@ export class ClientContactsComponent implements OnInit {
     ];
     clientContractsDataSource: MatTableDataSource<any> = new MatTableDataSource<any>();
 
+    private _unsubscribe = new Subject();
     constructor(
-        private _clientService: ClientsServiceProxy
+        private _clientService: ClientsServiceProxy,
+        private activatedRoute: ActivatedRoute
     ) { }
 
     ngOnInit(): void {
-        if (!this.clientInfo?.id) {
-            let interval = setInterval(() => {
-                if (this.clientInfo?.id) {
-                    this.getRequestTrack();
-                    clearInterval(interval);
-                }
-            }, 100);
-        } else {
+        this.activatedRoute.paramMap.pipe(
+            takeUntil(this._unsubscribe)
+        ).subscribe(params => {
+            this.clientId = +params.get('id')!;
             this.getRequestTrack();
-        }
+        });
+    }
+
+    ngOnDestroy(): void {
+        this._unsubscribe.next();
+        this._unsubscribe.complete();
     }
 
     getRequestTrack() {
         this.clientContractsDataSource = new MatTableDataSource<any>(DATA_SOURCE);
-        // let legacyClientIdQuery = this.clientInfo.id;
+        // let legacyClientIdQuery = this.clientId;
         // let pageNumber = 1;
         // let pageSize = 20;
         // let sort = undefined;

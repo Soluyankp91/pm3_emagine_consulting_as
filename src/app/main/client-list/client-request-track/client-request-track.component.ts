@@ -1,7 +1,9 @@
-import { Component, Input, OnInit } from '@angular/core';
+import { Component, Input, OnDestroy, OnInit } from '@angular/core';
 import { MatTableDataSource } from '@angular/material/table';
+import { ActivatedRoute } from '@angular/router';
 import * as moment from 'moment';
-import { finalize } from 'rxjs/operators';
+import { Subject } from 'rxjs';
+import { finalize, takeUntil } from 'rxjs/operators';
 import { AppConsts } from 'src/shared/AppConsts';
 import { ClientRequestTrackDto, ClientsServiceProxy, EmployeeDto } from 'src/shared/service-proxies/service-proxies';
 
@@ -57,8 +59,9 @@ const DATA_SOURCE: ClientRequestTrackDto[] = [
     templateUrl: './client-request-track.component.html',
     styleUrls: ['./client-request-track.component.scss']
 })
-export class ClientRequestTrackComponent implements OnInit {
+export class ClientRequestTrackComponent implements OnInit, OnDestroy {
     @Input() clientInfo: any;
+    clientId: number;
 
     isDataLoading = false;
     selectedCountries: string[] = [];
@@ -84,25 +87,28 @@ export class ClientRequestTrackComponent implements OnInit {
     ];
     clientDataSource: MatTableDataSource<ClientRequestTrackDto> = new MatTableDataSource<ClientRequestTrackDto>();
 
+    private _unsubscribe = new Subject();
     constructor(
-        private _clientService: ClientsServiceProxy
+        private _clientService: ClientsServiceProxy,
+        private activatedRoute: ActivatedRoute
     ) { }
 
     ngOnInit(): void {
-        if (!this.clientInfo?.id) {
-            let interval = setInterval(() => {
-                if (this.clientInfo?.id) {
-                    this.getRequestTrack();
-                    clearInterval(interval);
-                }
-            }, 100);
-        } else {
+        this.activatedRoute.paramMap.pipe(
+            takeUntil(this._unsubscribe)
+        ).subscribe(params => {
+            this.clientId = +params.get('id')!;
             this.getRequestTrack();
-        }
+        });
+    }
+
+    ngOnDestroy(): void {
+        this._unsubscribe.next();
+        this._unsubscribe.complete();
     }
 
     getRequestTrack() {
-        let legacyClientIdQuery = this.clientInfo.id;
+        let legacyClientIdQuery = this.clientId;
         let pageNumber = 1;
         let pageSize = 20;
         let sort = undefined;
