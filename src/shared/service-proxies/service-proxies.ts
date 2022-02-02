@@ -919,6 +919,7 @@ export class ConsultantWorkflowServiceProxy {
 
     /**
      * @return Success
+     * @deprecated
      */
     consultantWorkflowSalesGet(consultantWorkflowId: string): Observable<ConsultantSalesDataDto> {
         let url_ = this.baseUrl + "/api/ConsultantWorkflow/{consultantWorkflowId}/consultant-workflow-sales";
@@ -975,6 +976,7 @@ export class ConsultantWorkflowServiceProxy {
      * @param remarks (optional) 
      * @param body (optional) 
      * @return Success
+     * @deprecated
      */
     consultantWorkflowSalesPut(consultantWorkflowId: string, remarks?: string | undefined, body?: ConsultantSalesDataDto | undefined): Observable<void> {
         let url_ = this.baseUrl + "/api/ConsultantWorkflow/{consultantWorkflowId}/consultant-workflow-sales?";
@@ -1045,6 +1047,7 @@ export class SalesServiceProxy {
 
     /**
      * @return Success
+     * @deprecated
      */
     accountManagerConsultantEditFinish(consultantWorkflowId: string): Observable<void> {
         let url_ = this.baseUrl + "/api/ConsultantWorkflow/{consultantWorkflowId}/sales/account-manager-consultant-edit-finish";
@@ -1095,6 +1098,7 @@ export class SalesServiceProxy {
 
     /**
      * @return Success
+     * @deprecated
      */
     accountManagerConsultantWorkflowExtensionEditFinish(workflowExtensionId: string): Observable<void> {
         let url_ = this.baseUrl + "/api/ConsultantWorkflowExtension/{workflowExtensionId}/sales/account-manager-consultant-workflow-extension-edit-finish";
@@ -1145,6 +1149,7 @@ export class SalesServiceProxy {
 
     /**
      * @return Success
+     * @deprecated
      */
     accountManagerEditFinish(workflowId: string): Observable<void> {
         let url_ = this.baseUrl + "/api/StartWorkflowController/{workflowId}/sales/account-manager-edit-finish";
@@ -1195,6 +1200,7 @@ export class SalesServiceProxy {
 
     /**
      * @return Success
+     * @deprecated
      */
     workflowExtensionSales(workflowExtensionId: string): Observable<WorkflowSalesDataDto> {
         let url_ = this.baseUrl + "/api/WorkflowExtensions/{workflowExtensionId}/sales/workflow-extension-sales";
@@ -1249,6 +1255,7 @@ export class SalesServiceProxy {
 
     /**
      * @return Success
+     * @deprecated
      */
     accountManagerExtensionEditFinish(workflowExtensionId: string): Observable<void> {
         let url_ = this.baseUrl + "/api/WorkflowExtensions/{workflowExtensionId}/sales/account-manager-extension-edit-finish";
@@ -1311,6 +1318,7 @@ export class ContractsServiceProxy {
 
     /**
      * @return Success
+     * @deprecated
      */
     contractManagerConsultantEdit(consultantWorkflowId: string): Observable<void> {
         let url_ = this.baseUrl + "/api/ConsultantWorkflow/{consultantWorkflowId}/contracts/contract-manager-consultant-edit";
@@ -1361,6 +1369,7 @@ export class ContractsServiceProxy {
 
     /**
      * @return Success
+     * @deprecated
      */
     requestAccountManagerConsultantChange(consultantWorkflowId: string): Observable<void> {
         let url_ = this.baseUrl + "/api/ConsultantWorkflow/{consultantWorkflowId}/contracts/request-account-manager-consultant-change";
@@ -1411,6 +1420,7 @@ export class ContractsServiceProxy {
 
     /**
      * @return Success
+     * @deprecated
      */
     contractManagerConsultantEditFinish(consultantWorkflowId: string): Observable<void> {
         let url_ = this.baseUrl + "/api/ConsultantWorkflow/{consultantWorkflowId}/contracts/contract-manager-consultant-edit-finish";
@@ -1461,6 +1471,7 @@ export class ContractsServiceProxy {
 
     /**
      * @return Success
+     * @deprecated
      */
     contractManagerEdit(workflowId: string): Observable<void> {
         let url_ = this.baseUrl + "/api/StartWorkflowController/{workflowId}/contracts/contract-manager-edit";
@@ -1511,6 +1522,7 @@ export class ContractsServiceProxy {
 
     /**
      * @return Success
+     * @deprecated
      */
     requestAccountManagerChange(workflowId: string): Observable<void> {
         let url_ = this.baseUrl + "/api/StartWorkflowController/{workflowId}/contracts/request-account-manager-change";
@@ -1561,6 +1573,7 @@ export class ContractsServiceProxy {
 
     /**
      * @return Success
+     * @deprecated
      */
     contractManagerEditFinish(workflowId: string): Observable<void> {
         let url_ = this.baseUrl + "/api/StartWorkflowController/{workflowId}/contracts/contract-manager-edit-finish";
@@ -1623,6 +1636,7 @@ export class FinanceServiceProxy {
 
     /**
      * @return Success
+     * @deprecated
      */
     financeConsultantEdit(consultantWorkflowId: string): Observable<void> {
         let url_ = this.baseUrl + "/api/ConsultantWorkflow/{consultantWorkflowId}/finance/finance-consultant-edit";
@@ -1673,6 +1687,7 @@ export class FinanceServiceProxy {
 
     /**
      * @return Success
+     * @deprecated
      */
     financeEditConsultantFinish(consultantWorkflowId: string): Observable<void> {
         let url_ = this.baseUrl + "/api/ConsultantWorkflow/{consultantWorkflowId}/finance/finance-edit-consultant-finish";
@@ -1723,6 +1738,7 @@ export class FinanceServiceProxy {
 
     /**
      * @return Success
+     * @deprecated
      */
     financeEdit(workflowId: string): Observable<void> {
         let url_ = this.baseUrl + "/api/StartWorkflowController/{workflowId}/finance/finance-edit";
@@ -1773,6 +1789,7 @@ export class FinanceServiceProxy {
 
     /**
      * @return Success
+     * @deprecated
      */
     financeEditFinish(workflowId: string): Observable<void> {
         let url_ = this.baseUrl + "/api/StartWorkflowController/{workflowId}/finance/finance-edit-finish";
@@ -1835,6 +1852,7 @@ export class ConsultantWorkflowExtensionServiceProxy {
 
     /**
      * @return Success
+     * @deprecated
      */
     consultantWorkflowExtensionSales(consultantWorkflowExtensionId: string): Observable<ConsultantSalesDataDto> {
         let url_ = this.baseUrl + "/api/ConsultantWorkflowExtension/{consultantWorkflowExtensionId}/consultant-workflow-extension-sales";
@@ -3526,114 +3544,7 @@ export class StartWorkflowControllerServiceProxy {
 
     /**
      * @return Success
-     */
-    start(): Observable<NewWorkflowCreatedDto> {
-        let url_ = this.baseUrl + "/api/StartWorkflowController/start";
-        url_ = url_.replace(/[?&]$/, "");
-
-        let options_ : any = {
-            observe: "response",
-            responseType: "blob",
-            headers: new HttpHeaders({
-                "Accept": "text/plain"
-            })
-        };
-
-        return this.http.request("post", url_, options_).pipe(_observableMergeMap((response_ : any) => {
-            return this.processStart(response_);
-        })).pipe(_observableCatch((response_: any) => {
-            if (response_ instanceof HttpResponseBase) {
-                try {
-                    return this.processStart(<any>response_);
-                } catch (e) {
-                    return <Observable<NewWorkflowCreatedDto>><any>_observableThrow(e);
-                }
-            } else
-                return <Observable<NewWorkflowCreatedDto>><any>_observableThrow(response_);
-        }));
-    }
-
-    protected processStart(response: HttpResponseBase): Observable<NewWorkflowCreatedDto> {
-        const status = response.status;
-        const responseBlob =
-            response instanceof HttpResponse ? response.body :
-            (<any>response).error instanceof Blob ? (<any>response).error : undefined;
-
-        let _headers: any = {}; if (response.headers) { for (let key of response.headers.keys()) { _headers[key] = response.headers.get(key); }}
-        if (status === 200) {
-            return blobToText(responseBlob).pipe(_observableMergeMap(_responseText => {
-            let result200: any = null;
-            let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
-            result200 = NewWorkflowCreatedDto.fromJS(resultData200);
-            return _observableOf(result200);
-            }));
-        } else if (status !== 200 && status !== 204) {
-            return blobToText(responseBlob).pipe(_observableMergeMap(_responseText => {
-            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
-            }));
-        }
-        return _observableOf<NewWorkflowCreatedDto>(<any>null);
-    }
-
-    /**
-     * @return Success
-     */
-    startForRequest(requestId: number, soldRequestConsultantId: number): Observable<NewWorkflowCreatedDto> {
-        let url_ = this.baseUrl + "/api/StartWorkflowController/start-for-request/{requestId}/{soldRequestConsultantId}";
-        if (requestId === undefined || requestId === null)
-            throw new Error("The parameter 'requestId' must be defined.");
-        url_ = url_.replace("{requestId}", encodeURIComponent("" + requestId));
-        if (soldRequestConsultantId === undefined || soldRequestConsultantId === null)
-            throw new Error("The parameter 'soldRequestConsultantId' must be defined.");
-        url_ = url_.replace("{soldRequestConsultantId}", encodeURIComponent("" + soldRequestConsultantId));
-        url_ = url_.replace(/[?&]$/, "");
-
-        let options_ : any = {
-            observe: "response",
-            responseType: "blob",
-            headers: new HttpHeaders({
-                "Accept": "text/plain"
-            })
-        };
-
-        return this.http.request("post", url_, options_).pipe(_observableMergeMap((response_ : any) => {
-            return this.processStartForRequest(response_);
-        })).pipe(_observableCatch((response_: any) => {
-            if (response_ instanceof HttpResponseBase) {
-                try {
-                    return this.processStartForRequest(<any>response_);
-                } catch (e) {
-                    return <Observable<NewWorkflowCreatedDto>><any>_observableThrow(e);
-                }
-            } else
-                return <Observable<NewWorkflowCreatedDto>><any>_observableThrow(response_);
-        }));
-    }
-
-    protected processStartForRequest(response: HttpResponseBase): Observable<NewWorkflowCreatedDto> {
-        const status = response.status;
-        const responseBlob =
-            response instanceof HttpResponse ? response.body :
-            (<any>response).error instanceof Blob ? (<any>response).error : undefined;
-
-        let _headers: any = {}; if (response.headers) { for (let key of response.headers.keys()) { _headers[key] = response.headers.get(key); }}
-        if (status === 200) {
-            return blobToText(responseBlob).pipe(_observableMergeMap(_responseText => {
-            let result200: any = null;
-            let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
-            result200 = NewWorkflowCreatedDto.fromJS(resultData200);
-            return _observableOf(result200);
-            }));
-        } else if (status !== 200 && status !== 204) {
-            return blobToText(responseBlob).pipe(_observableMergeMap(_responseText => {
-            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
-            }));
-        }
-        return _observableOf<NewWorkflowCreatedDto>(<any>null);
-    }
-
-    /**
-     * @return Success
+     * @deprecated
      */
     salesGet(workflowId: string): Observable<WorkflowSalesDataDto> {
         let url_ = this.baseUrl + "/api/StartWorkflowController/{workflowId}/sales";
@@ -3689,6 +3600,7 @@ export class StartWorkflowControllerServiceProxy {
     /**
      * @param body (optional) 
      * @return Success
+     * @deprecated
      */
     salesPut(workflowId: string, body?: WorkflowSalesDataDto | undefined): Observable<void> {
         let url_ = this.baseUrl + "/api/StartWorkflowController/{workflowId}/sales";
@@ -3744,6 +3656,7 @@ export class StartWorkflowControllerServiceProxy {
     /**
      * @param body (optional) 
      * @return Success
+     * @deprecated
      */
     contracts(workflowId: string, body?: ContractsSalesDataDto | undefined): Observable<void> {
         let url_ = this.baseUrl + "/api/StartWorkflowController/{workflowId}/contracts";
@@ -3799,6 +3712,7 @@ export class StartWorkflowControllerServiceProxy {
     /**
      * @param body (optional) 
      * @return Success
+     * @deprecated
      */
     finance(workflowId: string, body?: ContractsFinanceDataDto | undefined): Observable<void> {
         let url_ = this.baseUrl + "/api/StartWorkflowController/{workflowId}/finance";
@@ -3854,6 +3768,7 @@ export class StartWorkflowControllerServiceProxy {
     /**
      * @param body (optional) 
      * @return Success
+     * @deprecated
      */
     extend(workflowId: string, body?: WorkflowSalesDataDto | undefined): Observable<void> {
         let url_ = this.baseUrl + "/api/StartWorkflowController/{workflowId}/extend";
@@ -3908,6 +3823,7 @@ export class StartWorkflowControllerServiceProxy {
 
     /**
      * @return Success
+     * @deprecated
      */
     terminate(workflowId: string): Observable<void> {
         let url_ = this.baseUrl + "/api/StartWorkflowController/{workflowId}/terminate";
@@ -3958,6 +3874,128 @@ export class StartWorkflowControllerServiceProxy {
 }
 
 @Injectable()
+export class WorkflowServiceProxy {
+    private http: HttpClient;
+    private baseUrl: string;
+    protected jsonParseReviver: ((key: string, value: any) => any) | undefined = undefined;
+
+    constructor(@Inject(HttpClient) http: HttpClient, @Optional() @Inject(API_BASE_URL) baseUrl?: string) {
+        this.http = http;
+        this.baseUrl = baseUrl !== undefined && baseUrl !== null ? baseUrl : "";
+    }
+
+    /**
+     * @param body (optional) 
+     * @return Success
+     */
+    start(body?: StartNewWorkflowInputDto | undefined): Observable<NewWorkflowCreatedDto> {
+        let url_ = this.baseUrl + "/api/Workflow/start";
+        url_ = url_.replace(/[?&]$/, "");
+
+        const content_ = JSON.stringify(body);
+
+        let options_ : any = {
+            body: content_,
+            observe: "response",
+            responseType: "blob",
+            headers: new HttpHeaders({
+                "Content-Type": "application/json",
+                "Accept": "text/plain"
+            })
+        };
+
+        return this.http.request("post", url_, options_).pipe(_observableMergeMap((response_ : any) => {
+            return this.processStart(response_);
+        })).pipe(_observableCatch((response_: any) => {
+            if (response_ instanceof HttpResponseBase) {
+                try {
+                    return this.processStart(<any>response_);
+                } catch (e) {
+                    return <Observable<NewWorkflowCreatedDto>><any>_observableThrow(e);
+                }
+            } else
+                return <Observable<NewWorkflowCreatedDto>><any>_observableThrow(response_);
+        }));
+    }
+
+    protected processStart(response: HttpResponseBase): Observable<NewWorkflowCreatedDto> {
+        const status = response.status;
+        const responseBlob =
+            response instanceof HttpResponse ? response.body :
+            (<any>response).error instanceof Blob ? (<any>response).error : undefined;
+
+        let _headers: any = {}; if (response.headers) { for (let key of response.headers.keys()) { _headers[key] = response.headers.get(key); }}
+        if (status === 200) {
+            return blobToText(responseBlob).pipe(_observableMergeMap(_responseText => {
+            let result200: any = null;
+            let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
+            result200 = NewWorkflowCreatedDto.fromJS(resultData200);
+            return _observableOf(result200);
+            }));
+        } else if (status !== 200 && status !== 204) {
+            return blobToText(responseBlob).pipe(_observableMergeMap(_responseText => {
+            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+            }));
+        }
+        return _observableOf<NewWorkflowCreatedDto>(<any>null);
+    }
+
+    /**
+     * @return Success
+     */
+    workflowExists(requestConsultantId: number): Observable<WorkflowAlreadyExistsDto> {
+        let url_ = this.baseUrl + "/api/Workflow/{requestConsultantId}/workflowExists";
+        if (requestConsultantId === undefined || requestConsultantId === null)
+            throw new Error("The parameter 'requestConsultantId' must be defined.");
+        url_ = url_.replace("{requestConsultantId}", encodeURIComponent("" + requestConsultantId));
+        url_ = url_.replace(/[?&]$/, "");
+
+        let options_ : any = {
+            observe: "response",
+            responseType: "blob",
+            headers: new HttpHeaders({
+                "Accept": "text/plain"
+            })
+        };
+
+        return this.http.request("get", url_, options_).pipe(_observableMergeMap((response_ : any) => {
+            return this.processWorkflowExists(response_);
+        })).pipe(_observableCatch((response_: any) => {
+            if (response_ instanceof HttpResponseBase) {
+                try {
+                    return this.processWorkflowExists(<any>response_);
+                } catch (e) {
+                    return <Observable<WorkflowAlreadyExistsDto>><any>_observableThrow(e);
+                }
+            } else
+                return <Observable<WorkflowAlreadyExistsDto>><any>_observableThrow(response_);
+        }));
+    }
+
+    protected processWorkflowExists(response: HttpResponseBase): Observable<WorkflowAlreadyExistsDto> {
+        const status = response.status;
+        const responseBlob =
+            response instanceof HttpResponse ? response.body :
+            (<any>response).error instanceof Blob ? (<any>response).error : undefined;
+
+        let _headers: any = {}; if (response.headers) { for (let key of response.headers.keys()) { _headers[key] = response.headers.get(key); }}
+        if (status === 200) {
+            return blobToText(responseBlob).pipe(_observableMergeMap(_responseText => {
+            let result200: any = null;
+            let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
+            result200 = WorkflowAlreadyExistsDto.fromJS(resultData200);
+            return _observableOf(result200);
+            }));
+        } else if (status !== 200 && status !== 204) {
+            return blobToText(responseBlob).pipe(_observableMergeMap(_responseText => {
+            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+            }));
+        }
+        return _observableOf<WorkflowAlreadyExistsDto>(<any>null);
+    }
+}
+
+@Injectable()
 export class WorkflowExtensionsServiceProxy {
     private http: HttpClient;
     private baseUrl: string;
@@ -3971,6 +4009,7 @@ export class WorkflowExtensionsServiceProxy {
     /**
      * @param body (optional) 
      * @return Success
+     * @deprecated
      */
     workflowExtensionSales(workflowExtensionId: string, body?: WorkflowSalesDataDto | undefined): Observable<void> {
         let url_ = this.baseUrl + "/api/WorkflowExtensions/{workflowExtensionId}/workflow-extension-sales";
@@ -4037,6 +4076,7 @@ export class WorkflowsServiceProxy {
 
     /**
      * @return Success
+     * @deprecated
      */
     overview(workflowId: string): Observable<WorkflowOverviewDto> {
         let url_ = this.baseUrl + "/api/Workflows/{workflowId}/overview";
@@ -4092,6 +4132,7 @@ export class WorkflowsServiceProxy {
     /**
      * @param includeWorkflowSnapshot (optional) 
      * @return Success
+     * @deprecated
      */
     events(workflowId: string, includeWorkflowSnapshot?: boolean | undefined): Observable<WorkflowDataDto> {
         let url_ = this.baseUrl + "/api/Workflows/{workflowId}/events?";
@@ -4163,6 +4204,7 @@ export class ConsultantWorkflowsServiceProxy {
     /**
      * @param body (optional) 
      * @return Success
+     * @deprecated
      */
     extend(workflowId: string, consultantWorkflowId: string, body?: ConsultantSalesDataDto[] | undefined): Observable<void> {
         let url_ = this.baseUrl + "/api/Workflows/{workflowId}/ConsultantWorkflows/{consultantWorkflowId}/extend";
@@ -5001,6 +5043,256 @@ export interface IClientOverviewListItemDtoPaginatedList {
     pageSize?: number;
     hasPreviousPage?: boolean;
     hasNextPage?: boolean;
+}
+
+export class ClientPeriod implements IClientPeriod {
+    readonly domainEvents?: DomainEventBase[] | undefined;
+    id?: ClientPeriodId;
+    periodType?: ClientPeriodType;
+    startDate?: moment.Moment;
+    noContractEndDate?: boolean;
+    endDate?: moment.Moment | undefined;
+    salesStep?: ClientPeriodStep;
+    contractsStep?: ClientPeriodStep;
+    financeStep?: ClientPeriodStep;
+    salesMainData?: SalesMainData;
+    salesClientData?: SalesClientData;
+    salesAdditionalData?: SalesAdditionalData;
+    contractsStepData?: WorkflowContractsStep;
+    financeStepData?: WorkflowFinanceStep;
+    readonly isCompleted?: boolean;
+    consultantPeriods?: ConsultantPeriod[] | undefined;
+    workflow?: Workflow;
+
+    constructor(data?: IClientPeriod) {
+        if (data) {
+            for (var property in data) {
+                if (data.hasOwnProperty(property))
+                    (<any>this)[property] = (<any>data)[property];
+            }
+        }
+    }
+
+    init(_data?: any) {
+        if (_data) {
+            if (Array.isArray(_data["domainEvents"])) {
+                (<any>this).domainEvents = [] as any;
+                for (let item of _data["domainEvents"])
+                    (<any>this).domainEvents!.push(DomainEventBase.fromJS(item));
+            }
+            this.id = _data["id"] ? ClientPeriodId.fromJS(_data["id"]) : <any>undefined;
+            this.periodType = _data["periodType"];
+            this.startDate = _data["startDate"] ? moment(_data["startDate"].toString()) : <any>undefined;
+            this.noContractEndDate = _data["noContractEndDate"];
+            this.endDate = _data["endDate"] ? moment(_data["endDate"].toString()) : <any>undefined;
+            this.salesStep = _data["salesStep"] ? ClientPeriodStep.fromJS(_data["salesStep"]) : <any>undefined;
+            this.contractsStep = _data["contractsStep"] ? ClientPeriodStep.fromJS(_data["contractsStep"]) : <any>undefined;
+            this.financeStep = _data["financeStep"] ? ClientPeriodStep.fromJS(_data["financeStep"]) : <any>undefined;
+            this.salesMainData = _data["salesMainData"] ? SalesMainData.fromJS(_data["salesMainData"]) : <any>undefined;
+            this.salesClientData = _data["salesClientData"] ? SalesClientData.fromJS(_data["salesClientData"]) : <any>undefined;
+            this.salesAdditionalData = _data["salesAdditionalData"] ? SalesAdditionalData.fromJS(_data["salesAdditionalData"]) : <any>undefined;
+            this.contractsStepData = _data["contractsStepData"] ? WorkflowContractsStep.fromJS(_data["contractsStepData"]) : <any>undefined;
+            this.financeStepData = _data["financeStepData"] ? WorkflowFinanceStep.fromJS(_data["financeStepData"]) : <any>undefined;
+            (<any>this).isCompleted = _data["isCompleted"];
+            if (Array.isArray(_data["consultantPeriods"])) {
+                this.consultantPeriods = [] as any;
+                for (let item of _data["consultantPeriods"])
+                    this.consultantPeriods!.push(ConsultantPeriod.fromJS(item));
+            }
+            this.workflow = _data["workflow"] ? Workflow.fromJS(_data["workflow"]) : <any>undefined;
+        }
+    }
+
+    static fromJS(data: any): ClientPeriod {
+        data = typeof data === 'object' ? data : {};
+        let result = new ClientPeriod();
+        result.init(data);
+        return result;
+    }
+
+    toJSON(data?: any) {
+        data = typeof data === 'object' ? data : {};
+        if (Array.isArray(this.domainEvents)) {
+            data["domainEvents"] = [];
+            for (let item of this.domainEvents)
+                data["domainEvents"].push(item.toJSON());
+        }
+        data["id"] = this.id ? this.id.toJSON() : <any>undefined;
+        data["periodType"] = this.periodType;
+        data["startDate"] = this.startDate ? this.startDate.format('YYYY-MM-DD') : <any>undefined;
+        data["noContractEndDate"] = this.noContractEndDate;
+        data["endDate"] = this.endDate ? this.endDate.format('YYYY-MM-DD') : <any>undefined;
+        data["salesStep"] = this.salesStep ? this.salesStep.toJSON() : <any>undefined;
+        data["contractsStep"] = this.contractsStep ? this.contractsStep.toJSON() : <any>undefined;
+        data["financeStep"] = this.financeStep ? this.financeStep.toJSON() : <any>undefined;
+        data["salesMainData"] = this.salesMainData ? this.salesMainData.toJSON() : <any>undefined;
+        data["salesClientData"] = this.salesClientData ? this.salesClientData.toJSON() : <any>undefined;
+        data["salesAdditionalData"] = this.salesAdditionalData ? this.salesAdditionalData.toJSON() : <any>undefined;
+        data["contractsStepData"] = this.contractsStepData ? this.contractsStepData.toJSON() : <any>undefined;
+        data["financeStepData"] = this.financeStepData ? this.financeStepData.toJSON() : <any>undefined;
+        data["isCompleted"] = this.isCompleted;
+        if (Array.isArray(this.consultantPeriods)) {
+            data["consultantPeriods"] = [];
+            for (let item of this.consultantPeriods)
+                data["consultantPeriods"].push(item.toJSON());
+        }
+        data["workflow"] = this.workflow ? this.workflow.toJSON() : <any>undefined;
+        return data;
+    }
+}
+
+export interface IClientPeriod {
+    domainEvents?: DomainEventBase[] | undefined;
+    id?: ClientPeriodId;
+    periodType?: ClientPeriodType;
+    startDate?: moment.Moment;
+    noContractEndDate?: boolean;
+    endDate?: moment.Moment | undefined;
+    salesStep?: ClientPeriodStep;
+    contractsStep?: ClientPeriodStep;
+    financeStep?: ClientPeriodStep;
+    salesMainData?: SalesMainData;
+    salesClientData?: SalesClientData;
+    salesAdditionalData?: SalesAdditionalData;
+    contractsStepData?: WorkflowContractsStep;
+    financeStepData?: WorkflowFinanceStep;
+    isCompleted?: boolean;
+    consultantPeriods?: ConsultantPeriod[] | undefined;
+    workflow?: Workflow;
+}
+
+export class ClientPeriodId implements IClientPeriodId {
+    readonly value?: number;
+
+    constructor(data?: IClientPeriodId) {
+        if (data) {
+            for (var property in data) {
+                if (data.hasOwnProperty(property))
+                    (<any>this)[property] = (<any>data)[property];
+            }
+        }
+    }
+
+    init(_data?: any) {
+        if (_data) {
+            (<any>this).value = _data["value"];
+        }
+    }
+
+    static fromJS(data: any): ClientPeriodId {
+        data = typeof data === 'object' ? data : {};
+        let result = new ClientPeriodId();
+        result.init(data);
+        return result;
+    }
+
+    toJSON(data?: any) {
+        data = typeof data === 'object' ? data : {};
+        data["value"] = this.value;
+        return data;
+    }
+}
+
+export interface IClientPeriodId {
+    value?: number;
+}
+
+export class ClientPeriodStep implements IClientPeriodStep {
+    readonly domainEvents?: DomainEventBase[] | undefined;
+    id?: ClientPeriodStepId;
+    responsibleEmployee?: Employee;
+    readonly isCompleted?: boolean;
+
+    constructor(data?: IClientPeriodStep) {
+        if (data) {
+            for (var property in data) {
+                if (data.hasOwnProperty(property))
+                    (<any>this)[property] = (<any>data)[property];
+            }
+        }
+    }
+
+    init(_data?: any) {
+        if (_data) {
+            if (Array.isArray(_data["domainEvents"])) {
+                (<any>this).domainEvents = [] as any;
+                for (let item of _data["domainEvents"])
+                    (<any>this).domainEvents!.push(DomainEventBase.fromJS(item));
+            }
+            this.id = _data["id"] ? ClientPeriodStepId.fromJS(_data["id"]) : <any>undefined;
+            this.responsibleEmployee = _data["responsibleEmployee"] ? Employee.fromJS(_data["responsibleEmployee"]) : <any>undefined;
+            (<any>this).isCompleted = _data["isCompleted"];
+        }
+    }
+
+    static fromJS(data: any): ClientPeriodStep {
+        data = typeof data === 'object' ? data : {};
+        let result = new ClientPeriodStep();
+        result.init(data);
+        return result;
+    }
+
+    toJSON(data?: any) {
+        data = typeof data === 'object' ? data : {};
+        if (Array.isArray(this.domainEvents)) {
+            data["domainEvents"] = [];
+            for (let item of this.domainEvents)
+                data["domainEvents"].push(item.toJSON());
+        }
+        data["id"] = this.id ? this.id.toJSON() : <any>undefined;
+        data["responsibleEmployee"] = this.responsibleEmployee ? this.responsibleEmployee.toJSON() : <any>undefined;
+        data["isCompleted"] = this.isCompleted;
+        return data;
+    }
+}
+
+export interface IClientPeriodStep {
+    domainEvents?: DomainEventBase[] | undefined;
+    id?: ClientPeriodStepId;
+    responsibleEmployee?: Employee;
+    isCompleted?: boolean;
+}
+
+export class ClientPeriodStepId implements IClientPeriodStepId {
+    readonly value?: number;
+
+    constructor(data?: IClientPeriodStepId) {
+        if (data) {
+            for (var property in data) {
+                if (data.hasOwnProperty(property))
+                    (<any>this)[property] = (<any>data)[property];
+            }
+        }
+    }
+
+    init(_data?: any) {
+        if (_data) {
+            (<any>this).value = _data["value"];
+        }
+    }
+
+    static fromJS(data: any): ClientPeriodStepId {
+        data = typeof data === 'object' ? data : {};
+        let result = new ClientPeriodStepId();
+        result.init(data);
+        return result;
+    }
+
+    toJSON(data?: any) {
+        data = typeof data === 'object' ? data : {};
+        data["value"] = this.value;
+        return data;
+    }
+}
+
+export interface IClientPeriodStepId {
+    value?: number;
+}
+
+export enum ClientPeriodType {
+    _1 = 1,
+    _2 = 2,
+    _3 = 3,
 }
 
 export class ClientRateBase implements IClientRateBase {
@@ -6259,6 +6551,236 @@ export interface IConsultantId {
     value?: number;
 }
 
+export class ConsultantPeriod implements IConsultantPeriod {
+    readonly domainEvents?: DomainEventBase[] | undefined;
+    id?: ConsultantPeriodId;
+    readonly startDate?: moment.Moment;
+    readonly endDate?: moment.Moment;
+    periodType?: ConsultantPeriodType;
+    consultant?: Consultant;
+    salesStep?: ConsultantPeriodStep;
+    contractsStep?: ConsultantPeriodStep;
+    financesStep?: ConsultantPeriodStep;
+    isClientPeriodDependent?: boolean;
+    salesStepData?: ConsultantSalesStep;
+    contractsStepData?: ConsultantContractsStep;
+    financeStepData?: ConsultantFinanceStep;
+    clientPeriod?: ClientPeriod;
+
+    constructor(data?: IConsultantPeriod) {
+        if (data) {
+            for (var property in data) {
+                if (data.hasOwnProperty(property))
+                    (<any>this)[property] = (<any>data)[property];
+            }
+        }
+    }
+
+    init(_data?: any) {
+        if (_data) {
+            if (Array.isArray(_data["domainEvents"])) {
+                (<any>this).domainEvents = [] as any;
+                for (let item of _data["domainEvents"])
+                    (<any>this).domainEvents!.push(DomainEventBase.fromJS(item));
+            }
+            this.id = _data["id"] ? ConsultantPeriodId.fromJS(_data["id"]) : <any>undefined;
+            (<any>this).startDate = _data["startDate"] ? moment(_data["startDate"].toString()) : <any>undefined;
+            (<any>this).endDate = _data["endDate"] ? moment(_data["endDate"].toString()) : <any>undefined;
+            this.periodType = _data["periodType"];
+            this.consultant = _data["consultant"] ? Consultant.fromJS(_data["consultant"]) : <any>undefined;
+            this.salesStep = _data["salesStep"] ? ConsultantPeriodStep.fromJS(_data["salesStep"]) : <any>undefined;
+            this.contractsStep = _data["contractsStep"] ? ConsultantPeriodStep.fromJS(_data["contractsStep"]) : <any>undefined;
+            this.financesStep = _data["financesStep"] ? ConsultantPeriodStep.fromJS(_data["financesStep"]) : <any>undefined;
+            this.isClientPeriodDependent = _data["isClientPeriodDependent"];
+            this.salesStepData = _data["salesStepData"] ? ConsultantSalesStep.fromJS(_data["salesStepData"]) : <any>undefined;
+            this.contractsStepData = _data["contractsStepData"] ? ConsultantContractsStep.fromJS(_data["contractsStepData"]) : <any>undefined;
+            this.financeStepData = _data["financeStepData"] ? ConsultantFinanceStep.fromJS(_data["financeStepData"]) : <any>undefined;
+            this.clientPeriod = _data["clientPeriod"] ? ClientPeriod.fromJS(_data["clientPeriod"]) : <any>undefined;
+        }
+    }
+
+    static fromJS(data: any): ConsultantPeriod {
+        data = typeof data === 'object' ? data : {};
+        let result = new ConsultantPeriod();
+        result.init(data);
+        return result;
+    }
+
+    toJSON(data?: any) {
+        data = typeof data === 'object' ? data : {};
+        if (Array.isArray(this.domainEvents)) {
+            data["domainEvents"] = [];
+            for (let item of this.domainEvents)
+                data["domainEvents"].push(item.toJSON());
+        }
+        data["id"] = this.id ? this.id.toJSON() : <any>undefined;
+        data["startDate"] = this.startDate ? this.startDate.format('YYYY-MM-DD') : <any>undefined;
+        data["endDate"] = this.endDate ? this.endDate.format('YYYY-MM-DD') : <any>undefined;
+        data["periodType"] = this.periodType;
+        data["consultant"] = this.consultant ? this.consultant.toJSON() : <any>undefined;
+        data["salesStep"] = this.salesStep ? this.salesStep.toJSON() : <any>undefined;
+        data["contractsStep"] = this.contractsStep ? this.contractsStep.toJSON() : <any>undefined;
+        data["financesStep"] = this.financesStep ? this.financesStep.toJSON() : <any>undefined;
+        data["isClientPeriodDependent"] = this.isClientPeriodDependent;
+        data["salesStepData"] = this.salesStepData ? this.salesStepData.toJSON() : <any>undefined;
+        data["contractsStepData"] = this.contractsStepData ? this.contractsStepData.toJSON() : <any>undefined;
+        data["financeStepData"] = this.financeStepData ? this.financeStepData.toJSON() : <any>undefined;
+        data["clientPeriod"] = this.clientPeriod ? this.clientPeriod.toJSON() : <any>undefined;
+        return data;
+    }
+}
+
+export interface IConsultantPeriod {
+    domainEvents?: DomainEventBase[] | undefined;
+    id?: ConsultantPeriodId;
+    startDate?: moment.Moment;
+    endDate?: moment.Moment;
+    periodType?: ConsultantPeriodType;
+    consultant?: Consultant;
+    salesStep?: ConsultantPeriodStep;
+    contractsStep?: ConsultantPeriodStep;
+    financesStep?: ConsultantPeriodStep;
+    isClientPeriodDependent?: boolean;
+    salesStepData?: ConsultantSalesStep;
+    contractsStepData?: ConsultantContractsStep;
+    financeStepData?: ConsultantFinanceStep;
+    clientPeriod?: ClientPeriod;
+}
+
+export class ConsultantPeriodId implements IConsultantPeriodId {
+    readonly value?: number;
+
+    constructor(data?: IConsultantPeriodId) {
+        if (data) {
+            for (var property in data) {
+                if (data.hasOwnProperty(property))
+                    (<any>this)[property] = (<any>data)[property];
+            }
+        }
+    }
+
+    init(_data?: any) {
+        if (_data) {
+            (<any>this).value = _data["value"];
+        }
+    }
+
+    static fromJS(data: any): ConsultantPeriodId {
+        data = typeof data === 'object' ? data : {};
+        let result = new ConsultantPeriodId();
+        result.init(data);
+        return result;
+    }
+
+    toJSON(data?: any) {
+        data = typeof data === 'object' ? data : {};
+        data["value"] = this.value;
+        return data;
+    }
+}
+
+export interface IConsultantPeriodId {
+    value?: number;
+}
+
+export class ConsultantPeriodStep implements IConsultantPeriodStep {
+    readonly domainEvents?: DomainEventBase[] | undefined;
+    id?: ConsultantPeriodStepId;
+    responsibleEmployee?: Employee;
+    readonly isCompleted?: boolean;
+
+    constructor(data?: IConsultantPeriodStep) {
+        if (data) {
+            for (var property in data) {
+                if (data.hasOwnProperty(property))
+                    (<any>this)[property] = (<any>data)[property];
+            }
+        }
+    }
+
+    init(_data?: any) {
+        if (_data) {
+            if (Array.isArray(_data["domainEvents"])) {
+                (<any>this).domainEvents = [] as any;
+                for (let item of _data["domainEvents"])
+                    (<any>this).domainEvents!.push(DomainEventBase.fromJS(item));
+            }
+            this.id = _data["id"] ? ConsultantPeriodStepId.fromJS(_data["id"]) : <any>undefined;
+            this.responsibleEmployee = _data["responsibleEmployee"] ? Employee.fromJS(_data["responsibleEmployee"]) : <any>undefined;
+            (<any>this).isCompleted = _data["isCompleted"];
+        }
+    }
+
+    static fromJS(data: any): ConsultantPeriodStep {
+        data = typeof data === 'object' ? data : {};
+        let result = new ConsultantPeriodStep();
+        result.init(data);
+        return result;
+    }
+
+    toJSON(data?: any) {
+        data = typeof data === 'object' ? data : {};
+        if (Array.isArray(this.domainEvents)) {
+            data["domainEvents"] = [];
+            for (let item of this.domainEvents)
+                data["domainEvents"].push(item.toJSON());
+        }
+        data["id"] = this.id ? this.id.toJSON() : <any>undefined;
+        data["responsibleEmployee"] = this.responsibleEmployee ? this.responsibleEmployee.toJSON() : <any>undefined;
+        data["isCompleted"] = this.isCompleted;
+        return data;
+    }
+}
+
+export interface IConsultantPeriodStep {
+    domainEvents?: DomainEventBase[] | undefined;
+    id?: ConsultantPeriodStepId;
+    responsibleEmployee?: Employee;
+    isCompleted?: boolean;
+}
+
+export class ConsultantPeriodStepId implements IConsultantPeriodStepId {
+    readonly value?: number;
+
+    constructor(data?: IConsultantPeriodStepId) {
+        if (data) {
+            for (var property in data) {
+                if (data.hasOwnProperty(property))
+                    (<any>this)[property] = (<any>data)[property];
+            }
+        }
+    }
+
+    init(_data?: any) {
+        if (_data) {
+            (<any>this).value = _data["value"];
+        }
+    }
+
+    static fromJS(data: any): ConsultantPeriodStepId {
+        data = typeof data === 'object' ? data : {};
+        let result = new ConsultantPeriodStepId();
+        result.init(data);
+        return result;
+    }
+
+    toJSON(data?: any) {
+        data = typeof data === 'object' ? data : {};
+        data["value"] = this.value;
+        return data;
+    }
+}
+
+export interface IConsultantPeriodStepId {
+    value?: number;
+}
+
+export enum ConsultantPeriodType {
+    _1 = 1,
+    _2 = 2,
+    _3 = 3,
+}
+
 export class ConsultantPersonalData implements IConsultantPersonalData {
     firstName?: string | undefined;
     lastName?: string | undefined;
@@ -6693,206 +7215,6 @@ export class ConsultantStatus implements IConsultantStatus {
 
 export interface IConsultantStatus {
     value?: string | undefined;
-}
-
-export class ConsultantWorkflow implements IConsultantWorkflow {
-    readonly domainEvents?: DomainEventBase[] | undefined;
-    readonly id?: string;
-    readonly contractStartDate?: moment.Moment | undefined;
-    readonly contractEndDate?: moment.Moment | undefined;
-    currentState?: WorkflowStateBase;
-    consultant?: Consultant;
-    salesStep?: ConsultantSalesStep;
-    contractsStep?: ConsultantContractsStep;
-    financeStep?: ConsultantFinanceStep;
-    readonly consultantWorkflowStates?: WorkflowStateBase[] | undefined;
-    readonly consultantExtensions?: ConsultantWorkflowExtension[] | undefined;
-    parentWorkflow?: Workflow;
-    readonly createdAtUtc?: moment.Moment;
-
-    constructor(data?: IConsultantWorkflow) {
-        if (data) {
-            for (var property in data) {
-                if (data.hasOwnProperty(property))
-                    (<any>this)[property] = (<any>data)[property];
-            }
-        }
-    }
-
-    init(_data?: any) {
-        if (_data) {
-            if (Array.isArray(_data["domainEvents"])) {
-                (<any>this).domainEvents = [] as any;
-                for (let item of _data["domainEvents"])
-                    (<any>this).domainEvents!.push(DomainEventBase.fromJS(item));
-            }
-            (<any>this).id = _data["id"];
-            (<any>this).contractStartDate = _data["contractStartDate"] ? moment(_data["contractStartDate"].toString()) : <any>undefined;
-            (<any>this).contractEndDate = _data["contractEndDate"] ? moment(_data["contractEndDate"].toString()) : <any>undefined;
-            this.currentState = _data["currentState"] ? WorkflowStateBase.fromJS(_data["currentState"]) : <any>undefined;
-            this.consultant = _data["consultant"] ? Consultant.fromJS(_data["consultant"]) : <any>undefined;
-            this.salesStep = _data["salesStep"] ? ConsultantSalesStep.fromJS(_data["salesStep"]) : <any>undefined;
-            this.contractsStep = _data["contractsStep"] ? ConsultantContractsStep.fromJS(_data["contractsStep"]) : <any>undefined;
-            this.financeStep = _data["financeStep"] ? ConsultantFinanceStep.fromJS(_data["financeStep"]) : <any>undefined;
-            if (Array.isArray(_data["consultantWorkflowStates"])) {
-                (<any>this).consultantWorkflowStates = [] as any;
-                for (let item of _data["consultantWorkflowStates"])
-                    (<any>this).consultantWorkflowStates!.push(WorkflowStateBase.fromJS(item));
-            }
-            if (Array.isArray(_data["consultantExtensions"])) {
-                (<any>this).consultantExtensions = [] as any;
-                for (let item of _data["consultantExtensions"])
-                    (<any>this).consultantExtensions!.push(ConsultantWorkflowExtension.fromJS(item));
-            }
-            this.parentWorkflow = _data["parentWorkflow"] ? Workflow.fromJS(_data["parentWorkflow"]) : <any>undefined;
-            (<any>this).createdAtUtc = _data["createdAtUtc"] ? moment(_data["createdAtUtc"].toString()) : <any>undefined;
-        }
-    }
-
-    static fromJS(data: any): ConsultantWorkflow {
-        data = typeof data === 'object' ? data : {};
-        let result = new ConsultantWorkflow();
-        result.init(data);
-        return result;
-    }
-
-    toJSON(data?: any) {
-        data = typeof data === 'object' ? data : {};
-        if (Array.isArray(this.domainEvents)) {
-            data["domainEvents"] = [];
-            for (let item of this.domainEvents)
-                data["domainEvents"].push(item.toJSON());
-        }
-        data["id"] = this.id;
-        data["contractStartDate"] = this.contractStartDate ? this.contractStartDate.toISOString() : <any>undefined;
-        data["contractEndDate"] = this.contractEndDate ? this.contractEndDate.toISOString() : <any>undefined;
-        data["currentState"] = this.currentState ? this.currentState.toJSON() : <any>undefined;
-        data["consultant"] = this.consultant ? this.consultant.toJSON() : <any>undefined;
-        data["salesStep"] = this.salesStep ? this.salesStep.toJSON() : <any>undefined;
-        data["contractsStep"] = this.contractsStep ? this.contractsStep.toJSON() : <any>undefined;
-        data["financeStep"] = this.financeStep ? this.financeStep.toJSON() : <any>undefined;
-        if (Array.isArray(this.consultantWorkflowStates)) {
-            data["consultantWorkflowStates"] = [];
-            for (let item of this.consultantWorkflowStates)
-                data["consultantWorkflowStates"].push(item.toJSON());
-        }
-        if (Array.isArray(this.consultantExtensions)) {
-            data["consultantExtensions"] = [];
-            for (let item of this.consultantExtensions)
-                data["consultantExtensions"].push(item.toJSON());
-        }
-        data["parentWorkflow"] = this.parentWorkflow ? this.parentWorkflow.toJSON() : <any>undefined;
-        data["createdAtUtc"] = this.createdAtUtc ? this.createdAtUtc.toISOString() : <any>undefined;
-        return data;
-    }
-}
-
-export interface IConsultantWorkflow {
-    domainEvents?: DomainEventBase[] | undefined;
-    id?: string;
-    contractStartDate?: moment.Moment | undefined;
-    contractEndDate?: moment.Moment | undefined;
-    currentState?: WorkflowStateBase;
-    consultant?: Consultant;
-    salesStep?: ConsultantSalesStep;
-    contractsStep?: ConsultantContractsStep;
-    financeStep?: ConsultantFinanceStep;
-    consultantWorkflowStates?: WorkflowStateBase[] | undefined;
-    consultantExtensions?: ConsultantWorkflowExtension[] | undefined;
-    parentWorkflow?: Workflow;
-    createdAtUtc?: moment.Moment;
-}
-
-export class ConsultantWorkflowExtension implements IConsultantWorkflowExtension {
-    readonly domainEvents?: DomainEventBase[] | undefined;
-    currentState?: WorkflowStateBase;
-    readonly consultantWorkflowExtensionStates?: WorkflowStateBase[] | undefined;
-    readonly id?: string;
-    salesStep?: ConsultantSalesStep;
-    consultantWorkflowContractsStep?: ConsultantContractsStep;
-    consultantWorkflow?: ConsultantWorkflow;
-    readonly isActive?: boolean;
-    readonly contractStartDate?: moment.Moment | undefined;
-    readonly contractEndDate?: moment.Moment | undefined;
-    createdBy?: Employee;
-
-    constructor(data?: IConsultantWorkflowExtension) {
-        if (data) {
-            for (var property in data) {
-                if (data.hasOwnProperty(property))
-                    (<any>this)[property] = (<any>data)[property];
-            }
-        }
-    }
-
-    init(_data?: any) {
-        if (_data) {
-            if (Array.isArray(_data["domainEvents"])) {
-                (<any>this).domainEvents = [] as any;
-                for (let item of _data["domainEvents"])
-                    (<any>this).domainEvents!.push(DomainEventBase.fromJS(item));
-            }
-            this.currentState = _data["currentState"] ? WorkflowStateBase.fromJS(_data["currentState"]) : <any>undefined;
-            if (Array.isArray(_data["consultantWorkflowExtensionStates"])) {
-                (<any>this).consultantWorkflowExtensionStates = [] as any;
-                for (let item of _data["consultantWorkflowExtensionStates"])
-                    (<any>this).consultantWorkflowExtensionStates!.push(WorkflowStateBase.fromJS(item));
-            }
-            (<any>this).id = _data["id"];
-            this.salesStep = _data["salesStep"] ? ConsultantSalesStep.fromJS(_data["salesStep"]) : <any>undefined;
-            this.consultantWorkflowContractsStep = _data["consultantWorkflowContractsStep"] ? ConsultantContractsStep.fromJS(_data["consultantWorkflowContractsStep"]) : <any>undefined;
-            this.consultantWorkflow = _data["consultantWorkflow"] ? ConsultantWorkflow.fromJS(_data["consultantWorkflow"]) : <any>undefined;
-            (<any>this).isActive = _data["isActive"];
-            (<any>this).contractStartDate = _data["contractStartDate"] ? moment(_data["contractStartDate"].toString()) : <any>undefined;
-            (<any>this).contractEndDate = _data["contractEndDate"] ? moment(_data["contractEndDate"].toString()) : <any>undefined;
-            this.createdBy = _data["createdBy"] ? Employee.fromJS(_data["createdBy"]) : <any>undefined;
-        }
-    }
-
-    static fromJS(data: any): ConsultantWorkflowExtension {
-        data = typeof data === 'object' ? data : {};
-        let result = new ConsultantWorkflowExtension();
-        result.init(data);
-        return result;
-    }
-
-    toJSON(data?: any) {
-        data = typeof data === 'object' ? data : {};
-        if (Array.isArray(this.domainEvents)) {
-            data["domainEvents"] = [];
-            for (let item of this.domainEvents)
-                data["domainEvents"].push(item.toJSON());
-        }
-        data["currentState"] = this.currentState ? this.currentState.toJSON() : <any>undefined;
-        if (Array.isArray(this.consultantWorkflowExtensionStates)) {
-            data["consultantWorkflowExtensionStates"] = [];
-            for (let item of this.consultantWorkflowExtensionStates)
-                data["consultantWorkflowExtensionStates"].push(item.toJSON());
-        }
-        data["id"] = this.id;
-        data["salesStep"] = this.salesStep ? this.salesStep.toJSON() : <any>undefined;
-        data["consultantWorkflowContractsStep"] = this.consultantWorkflowContractsStep ? this.consultantWorkflowContractsStep.toJSON() : <any>undefined;
-        data["consultantWorkflow"] = this.consultantWorkflow ? this.consultantWorkflow.toJSON() : <any>undefined;
-        data["isActive"] = this.isActive;
-        data["contractStartDate"] = this.contractStartDate ? this.contractStartDate.toISOString() : <any>undefined;
-        data["contractEndDate"] = this.contractEndDate ? this.contractEndDate.toISOString() : <any>undefined;
-        data["createdBy"] = this.createdBy ? this.createdBy.toJSON() : <any>undefined;
-        return data;
-    }
-}
-
-export interface IConsultantWorkflowExtension {
-    domainEvents?: DomainEventBase[] | undefined;
-    currentState?: WorkflowStateBase;
-    consultantWorkflowExtensionStates?: WorkflowStateBase[] | undefined;
-    id?: string;
-    salesStep?: ConsultantSalesStep;
-    consultantWorkflowContractsStep?: ConsultantContractsStep;
-    consultantWorkflow?: ConsultantWorkflow;
-    isActive?: boolean;
-    contractStartDate?: moment.Moment | undefined;
-    contractEndDate?: moment.Moment | undefined;
-    createdBy?: Employee;
 }
 
 export class ConsultantWorkflowFinanceStepId implements IConsultantWorkflowFinanceStepId {
@@ -9914,6 +10236,54 @@ export interface ISpecialRateSpecifiedAs {
     name?: string | undefined;
 }
 
+export class StartNewWorkflowInputDto implements IStartNewWorkflowInputDto {
+    startDate?: moment.Moment;
+    endDate?: moment.Moment;
+    requestId?: number | undefined;
+    soldRequestConsultantId?: number | undefined;
+
+    constructor(data?: IStartNewWorkflowInputDto) {
+        if (data) {
+            for (var property in data) {
+                if (data.hasOwnProperty(property))
+                    (<any>this)[property] = (<any>data)[property];
+            }
+        }
+    }
+
+    init(_data?: any) {
+        if (_data) {
+            this.startDate = _data["startDate"] ? moment(_data["startDate"].toString()) : <any>undefined;
+            this.endDate = _data["endDate"] ? moment(_data["endDate"].toString()) : <any>undefined;
+            this.requestId = _data["requestId"];
+            this.soldRequestConsultantId = _data["soldRequestConsultantId"];
+        }
+    }
+
+    static fromJS(data: any): StartNewWorkflowInputDto {
+        data = typeof data === 'object' ? data : {};
+        let result = new StartNewWorkflowInputDto();
+        result.init(data);
+        return result;
+    }
+
+    toJSON(data?: any) {
+        data = typeof data === 'object' ? data : {};
+        data["startDate"] = this.startDate ? this.startDate.format('YYYY-MM-DD') : <any>undefined;
+        data["endDate"] = this.endDate ? this.endDate.format('YYYY-MM-DD') : <any>undefined;
+        data["requestId"] = this.requestId;
+        data["soldRequestConsultantId"] = this.soldRequestConsultantId;
+        return data;
+    }
+}
+
+export interface IStartNewWorkflowInputDto {
+    startDate?: moment.Moment;
+    endDate?: moment.Moment;
+    requestId?: number | undefined;
+    soldRequestConsultantId?: number | undefined;
+}
+
 export class Supplier implements ISupplier {
     readonly domainEvents?: DomainEventBase[] | undefined;
     id?: SupplierId;
@@ -10288,16 +10658,10 @@ export interface IVatNumber {
 
 export class Workflow implements IWorkflow {
     readonly domainEvents?: DomainEventBase[] | undefined;
-    currentState?: WorkflowStateBase;
     readonly id?: string;
-    salesStep?: WorkflowSalesStep;
-    contractsStep?: WorkflowContractsStep;
-    financeStep?: WorkflowFinanceStep;
+    clientPeriods?: ClientPeriod[] | undefined;
+    currentState?: WorkflowStateBase;
     readonly workflowStates?: WorkflowStateBase[] | undefined;
-    readonly consultantWorkflows?: ConsultantWorkflow[] | undefined;
-    readonly extensions?: WorkflowExtension[] | undefined;
-    readonly isCompleted?: boolean;
-    createdBy?: Employee;
 
     constructor(data?: IWorkflow) {
         if (data) {
@@ -10315,28 +10679,18 @@ export class Workflow implements IWorkflow {
                 for (let item of _data["domainEvents"])
                     (<any>this).domainEvents!.push(DomainEventBase.fromJS(item));
             }
-            this.currentState = _data["currentState"] ? WorkflowStateBase.fromJS(_data["currentState"]) : <any>undefined;
             (<any>this).id = _data["id"];
-            this.salesStep = _data["salesStep"] ? WorkflowSalesStep.fromJS(_data["salesStep"]) : <any>undefined;
-            this.contractsStep = _data["contractsStep"] ? WorkflowContractsStep.fromJS(_data["contractsStep"]) : <any>undefined;
-            this.financeStep = _data["financeStep"] ? WorkflowFinanceStep.fromJS(_data["financeStep"]) : <any>undefined;
+            if (Array.isArray(_data["clientPeriods"])) {
+                this.clientPeriods = [] as any;
+                for (let item of _data["clientPeriods"])
+                    this.clientPeriods!.push(ClientPeriod.fromJS(item));
+            }
+            this.currentState = _data["currentState"] ? WorkflowStateBase.fromJS(_data["currentState"]) : <any>undefined;
             if (Array.isArray(_data["workflowStates"])) {
                 (<any>this).workflowStates = [] as any;
                 for (let item of _data["workflowStates"])
                     (<any>this).workflowStates!.push(WorkflowStateBase.fromJS(item));
             }
-            if (Array.isArray(_data["consultantWorkflows"])) {
-                (<any>this).consultantWorkflows = [] as any;
-                for (let item of _data["consultantWorkflows"])
-                    (<any>this).consultantWorkflows!.push(ConsultantWorkflow.fromJS(item));
-            }
-            if (Array.isArray(_data["extensions"])) {
-                (<any>this).extensions = [] as any;
-                for (let item of _data["extensions"])
-                    (<any>this).extensions!.push(WorkflowExtension.fromJS(item));
-            }
-            (<any>this).isCompleted = _data["isCompleted"];
-            this.createdBy = _data["createdBy"] ? Employee.fromJS(_data["createdBy"]) : <any>undefined;
         }
     }
 
@@ -10354,44 +10708,64 @@ export class Workflow implements IWorkflow {
             for (let item of this.domainEvents)
                 data["domainEvents"].push(item.toJSON());
         }
-        data["currentState"] = this.currentState ? this.currentState.toJSON() : <any>undefined;
         data["id"] = this.id;
-        data["salesStep"] = this.salesStep ? this.salesStep.toJSON() : <any>undefined;
-        data["contractsStep"] = this.contractsStep ? this.contractsStep.toJSON() : <any>undefined;
-        data["financeStep"] = this.financeStep ? this.financeStep.toJSON() : <any>undefined;
+        if (Array.isArray(this.clientPeriods)) {
+            data["clientPeriods"] = [];
+            for (let item of this.clientPeriods)
+                data["clientPeriods"].push(item.toJSON());
+        }
+        data["currentState"] = this.currentState ? this.currentState.toJSON() : <any>undefined;
         if (Array.isArray(this.workflowStates)) {
             data["workflowStates"] = [];
             for (let item of this.workflowStates)
                 data["workflowStates"].push(item.toJSON());
         }
-        if (Array.isArray(this.consultantWorkflows)) {
-            data["consultantWorkflows"] = [];
-            for (let item of this.consultantWorkflows)
-                data["consultantWorkflows"].push(item.toJSON());
-        }
-        if (Array.isArray(this.extensions)) {
-            data["extensions"] = [];
-            for (let item of this.extensions)
-                data["extensions"].push(item.toJSON());
-        }
-        data["isCompleted"] = this.isCompleted;
-        data["createdBy"] = this.createdBy ? this.createdBy.toJSON() : <any>undefined;
         return data;
     }
 }
 
 export interface IWorkflow {
     domainEvents?: DomainEventBase[] | undefined;
-    currentState?: WorkflowStateBase;
     id?: string;
-    salesStep?: WorkflowSalesStep;
-    contractsStep?: WorkflowContractsStep;
-    financeStep?: WorkflowFinanceStep;
+    clientPeriods?: ClientPeriod[] | undefined;
+    currentState?: WorkflowStateBase;
     workflowStates?: WorkflowStateBase[] | undefined;
-    consultantWorkflows?: ConsultantWorkflow[] | undefined;
-    extensions?: WorkflowExtension[] | undefined;
-    isCompleted?: boolean;
-    createdBy?: Employee;
+}
+
+export class WorkflowAlreadyExistsDto implements IWorkflowAlreadyExistsDto {
+    existingWorkflowId?: string | undefined;
+
+    constructor(data?: IWorkflowAlreadyExistsDto) {
+        if (data) {
+            for (var property in data) {
+                if (data.hasOwnProperty(property))
+                    (<any>this)[property] = (<any>data)[property];
+            }
+        }
+    }
+
+    init(_data?: any) {
+        if (_data) {
+            this.existingWorkflowId = _data["existingWorkflowId"];
+        }
+    }
+
+    static fromJS(data: any): WorkflowAlreadyExistsDto {
+        data = typeof data === 'object' ? data : {};
+        let result = new WorkflowAlreadyExistsDto();
+        result.init(data);
+        return result;
+    }
+
+    toJSON(data?: any) {
+        data = typeof data === 'object' ? data : {};
+        data["existingWorkflowId"] = this.existingWorkflowId;
+        return data;
+    }
+}
+
+export interface IWorkflowAlreadyExistsDto {
+    existingWorkflowId?: string | undefined;
 }
 
 export class WorkflowConsultantDataId implements IWorkflowConsultantDataId {
@@ -10624,110 +10998,6 @@ export interface IWorkflowEventDtoBase {
     occuredAtUtc?: moment.Moment;
     eventName?: string | undefined;
     initiatedByEmployeeId?: number;
-}
-
-export class WorkflowExtension implements IWorkflowExtension {
-    readonly domainEvents?: DomainEventBase[] | undefined;
-    currentState?: WorkflowStateBase;
-    readonly id?: string;
-    workflow?: Workflow;
-    contractStartDate?: moment.Moment | undefined;
-    contractEndDate?: moment.Moment | undefined;
-    salesStepExtension?: WorkflowSalesStep;
-    contractsStepExtension?: WorkflowContractsStep;
-    readonly consultantWorkflows?: ConsultantWorkflow[] | undefined;
-    readonly extensionStates?: WorkflowStateBase[] | undefined;
-    createdBy?: Employee;
-    readonly createdAtUtc?: moment.Moment;
-
-    constructor(data?: IWorkflowExtension) {
-        if (data) {
-            for (var property in data) {
-                if (data.hasOwnProperty(property))
-                    (<any>this)[property] = (<any>data)[property];
-            }
-        }
-    }
-
-    init(_data?: any) {
-        if (_data) {
-            if (Array.isArray(_data["domainEvents"])) {
-                (<any>this).domainEvents = [] as any;
-                for (let item of _data["domainEvents"])
-                    (<any>this).domainEvents!.push(DomainEventBase.fromJS(item));
-            }
-            this.currentState = _data["currentState"] ? WorkflowStateBase.fromJS(_data["currentState"]) : <any>undefined;
-            (<any>this).id = _data["id"];
-            this.workflow = _data["workflow"] ? Workflow.fromJS(_data["workflow"]) : <any>undefined;
-            this.contractStartDate = _data["contractStartDate"] ? moment(_data["contractStartDate"].toString()) : <any>undefined;
-            this.contractEndDate = _data["contractEndDate"] ? moment(_data["contractEndDate"].toString()) : <any>undefined;
-            this.salesStepExtension = _data["salesStepExtension"] ? WorkflowSalesStep.fromJS(_data["salesStepExtension"]) : <any>undefined;
-            this.contractsStepExtension = _data["contractsStepExtension"] ? WorkflowContractsStep.fromJS(_data["contractsStepExtension"]) : <any>undefined;
-            if (Array.isArray(_data["consultantWorkflows"])) {
-                (<any>this).consultantWorkflows = [] as any;
-                for (let item of _data["consultantWorkflows"])
-                    (<any>this).consultantWorkflows!.push(ConsultantWorkflow.fromJS(item));
-            }
-            if (Array.isArray(_data["extensionStates"])) {
-                (<any>this).extensionStates = [] as any;
-                for (let item of _data["extensionStates"])
-                    (<any>this).extensionStates!.push(WorkflowStateBase.fromJS(item));
-            }
-            this.createdBy = _data["createdBy"] ? Employee.fromJS(_data["createdBy"]) : <any>undefined;
-            (<any>this).createdAtUtc = _data["createdAtUtc"] ? moment(_data["createdAtUtc"].toString()) : <any>undefined;
-        }
-    }
-
-    static fromJS(data: any): WorkflowExtension {
-        data = typeof data === 'object' ? data : {};
-        let result = new WorkflowExtension();
-        result.init(data);
-        return result;
-    }
-
-    toJSON(data?: any) {
-        data = typeof data === 'object' ? data : {};
-        if (Array.isArray(this.domainEvents)) {
-            data["domainEvents"] = [];
-            for (let item of this.domainEvents)
-                data["domainEvents"].push(item.toJSON());
-        }
-        data["currentState"] = this.currentState ? this.currentState.toJSON() : <any>undefined;
-        data["id"] = this.id;
-        data["workflow"] = this.workflow ? this.workflow.toJSON() : <any>undefined;
-        data["contractStartDate"] = this.contractStartDate ? this.contractStartDate.toISOString() : <any>undefined;
-        data["contractEndDate"] = this.contractEndDate ? this.contractEndDate.toISOString() : <any>undefined;
-        data["salesStepExtension"] = this.salesStepExtension ? this.salesStepExtension.toJSON() : <any>undefined;
-        data["contractsStepExtension"] = this.contractsStepExtension ? this.contractsStepExtension.toJSON() : <any>undefined;
-        if (Array.isArray(this.consultantWorkflows)) {
-            data["consultantWorkflows"] = [];
-            for (let item of this.consultantWorkflows)
-                data["consultantWorkflows"].push(item.toJSON());
-        }
-        if (Array.isArray(this.extensionStates)) {
-            data["extensionStates"] = [];
-            for (let item of this.extensionStates)
-                data["extensionStates"].push(item.toJSON());
-        }
-        data["createdBy"] = this.createdBy ? this.createdBy.toJSON() : <any>undefined;
-        data["createdAtUtc"] = this.createdAtUtc ? this.createdAtUtc.toISOString() : <any>undefined;
-        return data;
-    }
-}
-
-export interface IWorkflowExtension {
-    domainEvents?: DomainEventBase[] | undefined;
-    currentState?: WorkflowStateBase;
-    id?: string;
-    workflow?: Workflow;
-    contractStartDate?: moment.Moment | undefined;
-    contractEndDate?: moment.Moment | undefined;
-    salesStepExtension?: WorkflowSalesStep;
-    contractsStepExtension?: WorkflowContractsStep;
-    consultantWorkflows?: ConsultantWorkflow[] | undefined;
-    extensionStates?: WorkflowStateBase[] | undefined;
-    createdBy?: Employee;
-    createdAtUtc?: moment.Moment;
 }
 
 export class WorkflowFinanceStep implements IWorkflowFinanceStep {
@@ -11042,115 +11312,9 @@ export interface IWorkflowSalesDataDto {
     salesAdditionalData?: SalesAdditionalDataDto;
 }
 
-export class WorkflowSalesStep implements IWorkflowSalesStep {
-    readonly domainEvents?: DomainEventBase[] | undefined;
-    id?: WorkflowSalesStepId;
-    salesMainData?: SalesMainData;
-    salesClientData?: SalesClientData;
-    salesAdditionalData?: SalesAdditionalData;
-    responsibleEmployee?: Employee;
-    readonly isCompleted?: boolean;
-
-    constructor(data?: IWorkflowSalesStep) {
-        if (data) {
-            for (var property in data) {
-                if (data.hasOwnProperty(property))
-                    (<any>this)[property] = (<any>data)[property];
-            }
-        }
-    }
-
-    init(_data?: any) {
-        if (_data) {
-            if (Array.isArray(_data["domainEvents"])) {
-                (<any>this).domainEvents = [] as any;
-                for (let item of _data["domainEvents"])
-                    (<any>this).domainEvents!.push(DomainEventBase.fromJS(item));
-            }
-            this.id = _data["id"] ? WorkflowSalesStepId.fromJS(_data["id"]) : <any>undefined;
-            this.salesMainData = _data["salesMainData"] ? SalesMainData.fromJS(_data["salesMainData"]) : <any>undefined;
-            this.salesClientData = _data["salesClientData"] ? SalesClientData.fromJS(_data["salesClientData"]) : <any>undefined;
-            this.salesAdditionalData = _data["salesAdditionalData"] ? SalesAdditionalData.fromJS(_data["salesAdditionalData"]) : <any>undefined;
-            this.responsibleEmployee = _data["responsibleEmployee"] ? Employee.fromJS(_data["responsibleEmployee"]) : <any>undefined;
-            (<any>this).isCompleted = _data["isCompleted"];
-        }
-    }
-
-    static fromJS(data: any): WorkflowSalesStep {
-        data = typeof data === 'object' ? data : {};
-        let result = new WorkflowSalesStep();
-        result.init(data);
-        return result;
-    }
-
-    toJSON(data?: any) {
-        data = typeof data === 'object' ? data : {};
-        if (Array.isArray(this.domainEvents)) {
-            data["domainEvents"] = [];
-            for (let item of this.domainEvents)
-                data["domainEvents"].push(item.toJSON());
-        }
-        data["id"] = this.id ? this.id.toJSON() : <any>undefined;
-        data["salesMainData"] = this.salesMainData ? this.salesMainData.toJSON() : <any>undefined;
-        data["salesClientData"] = this.salesClientData ? this.salesClientData.toJSON() : <any>undefined;
-        data["salesAdditionalData"] = this.salesAdditionalData ? this.salesAdditionalData.toJSON() : <any>undefined;
-        data["responsibleEmployee"] = this.responsibleEmployee ? this.responsibleEmployee.toJSON() : <any>undefined;
-        data["isCompleted"] = this.isCompleted;
-        return data;
-    }
-}
-
-export interface IWorkflowSalesStep {
-    domainEvents?: DomainEventBase[] | undefined;
-    id?: WorkflowSalesStepId;
-    salesMainData?: SalesMainData;
-    salesClientData?: SalesClientData;
-    salesAdditionalData?: SalesAdditionalData;
-    responsibleEmployee?: Employee;
-    isCompleted?: boolean;
-}
-
-export class WorkflowSalesStepId implements IWorkflowSalesStepId {
-    readonly value?: number;
-
-    constructor(data?: IWorkflowSalesStepId) {
-        if (data) {
-            for (var property in data) {
-                if (data.hasOwnProperty(property))
-                    (<any>this)[property] = (<any>data)[property];
-            }
-        }
-    }
-
-    init(_data?: any) {
-        if (_data) {
-            (<any>this).value = _data["value"];
-        }
-    }
-
-    static fromJS(data: any): WorkflowSalesStepId {
-        data = typeof data === 'object' ? data : {};
-        let result = new WorkflowSalesStepId();
-        result.init(data);
-        return result;
-    }
-
-    toJSON(data?: any) {
-        data = typeof data === 'object' ? data : {};
-        data["value"] = this.value;
-        return data;
-    }
-}
-
-export interface IWorkflowSalesStepId {
-    value?: number;
-}
-
 export class WorkflowStateBase implements IWorkflowStateBase {
     readonly id?: number;
     workflowIdKey?: string;
-    workflowExtensionIdKey?: string | undefined;
-    consultantWorkflowIdKey?: string | undefined;
     readonly stateName?: string | undefined;
     isCurrent?: boolean;
     occuredAtUtc?: moment.Moment;
@@ -11171,8 +11335,6 @@ export class WorkflowStateBase implements IWorkflowStateBase {
         if (_data) {
             (<any>this).id = _data["id"];
             this.workflowIdKey = _data["workflowIdKey"];
-            this.workflowExtensionIdKey = _data["workflowExtensionIdKey"];
-            this.consultantWorkflowIdKey = _data["consultantWorkflowIdKey"];
             (<any>this).stateName = _data["stateName"];
             this.isCurrent = _data["isCurrent"];
             this.occuredAtUtc = _data["occuredAtUtc"] ? moment(_data["occuredAtUtc"].toString()) : <any>undefined;
@@ -11193,8 +11355,6 @@ export class WorkflowStateBase implements IWorkflowStateBase {
         data = typeof data === 'object' ? data : {};
         data["id"] = this.id;
         data["workflowIdKey"] = this.workflowIdKey;
-        data["workflowExtensionIdKey"] = this.workflowExtensionIdKey;
-        data["consultantWorkflowIdKey"] = this.consultantWorkflowIdKey;
         data["stateName"] = this.stateName;
         data["isCurrent"] = this.isCurrent;
         data["occuredAtUtc"] = this.occuredAtUtc ? this.occuredAtUtc.toISOString() : <any>undefined;
@@ -11208,8 +11368,6 @@ export class WorkflowStateBase implements IWorkflowStateBase {
 export interface IWorkflowStateBase {
     id?: number;
     workflowIdKey?: string;
-    workflowExtensionIdKey?: string | undefined;
-    consultantWorkflowIdKey?: string | undefined;
     stateName?: string | undefined;
     isCurrent?: boolean;
     occuredAtUtc?: moment.Moment;

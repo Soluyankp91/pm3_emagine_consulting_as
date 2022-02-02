@@ -15,17 +15,17 @@
         <ng-container *ngSwitchCase="workflowSideSections.AddConsultant">
             AddConsultant
         </ng-container>
-            <ng-container *ngSwitchCase="workflowSideSections.TerminateConsultant">
-                TerminateConsultant
-            </ng-container>
-            <ng-container *ngSwitchCase="workflowSideSections.ChangeConsultant">
-                ChangeConsultant
-            </ng-container>
-            <ng-container *ngSwitchCase="workflowSideSections.ExtendConsultant">
-                ExtendConsultant
-            </ng-container>
-            <ng-container *ngSwitchDefault>
-            </ng-container>
+        <ng-container *ngSwitchCase="workflowSideSections.TerminateConsultant">
+            TerminateConsultant
+        </ng-container>
+        <ng-container *ngSwitchCase="workflowSideSections.ChangeConsultant">
+            ChangeConsultant
+        </ng-container>
+        <ng-container *ngSwitchCase="workflowSideSections.ExtendConsultant">
+            ExtendConsultant
+        </ng-container>
+        <ng-container *ngSwitchDefault>
+        </ng-container>
     </ng-container>
     <form [formGroup]="salesMainDataForm" id="mainData" class="workflow-form workflow-form--main u-mb--20 u-w--100">
         <div fxLayout="row" fxLayoutAlign="start start" fxLayoutGap="30px">
