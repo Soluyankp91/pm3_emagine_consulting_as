@@ -1,0 +1,52 @@
+<mat-dialog-content class="confiramtion-dialog">
+    <div mat-dialog-title class="confiramtion-dialog--header" align="center">
+        Create workflow
+    </div>
+    <h3>Select workflow start and end dates</h3>
+    <div fxLayout="row" fxLayoutAlign="space-between start" fxLayoutGap="16px" class="u-w--100 u-mt--20">
+        <mat-form-field appearance="outline" floatLabel="never" fxFlex="50%">
+            <mat-label>Start date</mat-label>
+            <input autocomplete="off" matInput
+                    [matDatepicker]="startDatePicker"
+                    name="clientExtensionEndDate" [formControl]="startDate"
+                    (focus)="startDatePicker.open()"
+                    required
+                    (click)="startDatePicker.open()" readonly>
+            <mat-icon class="calendar-icon" matSuffix svgIcon="calendar"></mat-icon>
+            <mat-datepicker #startDatePicker></mat-datepicker>
+            <mat-error>
+                {{getValidationMessage(startDate)}}
+            </mat-error>
+        </mat-form-field>
+
+        <div fxLayout="column" fxLayoutAlign="start start" fxFlex="50%">
+            <mat-form-field appearance="outline" floatLabel="never">
+                <mat-label>End date</mat-label>
+                <input autocomplete="off" matInput
+                        [matDatepicker]="endDatePicker"
+                        name="clientExtensionEndDate" [formControl]="endDate"
+                        (focus)="endDatePicker.open()"
+                        [min]="startDate.value"
+                        required
+                        (click)="endDatePicker.open()" readonly>
+                <mat-icon class="calendar-icon" matSuffix svgIcon="calendar"></mat-icon>
+                <mat-datepicker #endDatePicker></mat-datepicker>
+                <mat-error>
+                    {{getValidationMessage(endDate)}}
+                </mat-error>
+            </mat-form-field>
+            <mat-checkbox color="accent" [formControl]="noEndDate" name="noEndDate" class="black-checkbox u-mr--10" (change)="disableOrEnableInput(noEndDate.value, endDate)">
+                No end date
+            </mat-checkbox>
+        </div>
+    </div>
+</mat-dialog-content>
+<mat-dialog-actions class="confiramtion-dialog--actions">
+    <button mat-flat-button class="dialog-btn dialog-btn__outlined" (click)="reject()">
+        Cancel
+    </button>
+    <button mat-flat-button class="dialog-btn dialog-btn__positive" [disabled]="!startDate.value || (!endDate.value && !noEndDate.value)" (click)="confirm()">
+        Create
+    </button>
+</mat-dialog-actions>
+
