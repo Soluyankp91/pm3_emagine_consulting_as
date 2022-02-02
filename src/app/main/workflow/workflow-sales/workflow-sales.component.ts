@@ -142,6 +142,9 @@ export class WorkflowSalesComponent extends AppComopnentBase implements OnInit {
 
         this.updateReadonlyState();
     }
+    get readOnlyMode() {
+        return this._workflowDataService.getWorkflowProgress.isPrimaryWorkflowCompleted;
+    }
 
     updateReadonlyState() {
         // detect if WF Completed
