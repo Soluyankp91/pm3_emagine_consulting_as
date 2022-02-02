@@ -17,7 +17,7 @@ export class WorkflowDataService {
     workflowProgress: WorkflowProgressStatus = new WorkflowProgressStatus();
 
     workflowSalesSaved = new EventEmitter<boolean>();
-
+    workflowSideSectionAdded = new EventEmitter<boolean>();
 
     collapseHeader = false;
     clientName = 'Test';

@@ -652,6 +652,7 @@ export class WorkflowSalesComponent extends AppComopnentBase implements OnInit {
                 const currentExtension = this._workflowDataService.extensionSideNavigation.find(x => x.index === this._workflowDataService.getWorkflowProgress.currentlyActiveExtensionIndex);
                 currentExtension!.sideNav.unshift(ChangeConsultantDto);
             }
+            this._workflowDataService.workflowSideSectionAdded.emit(true);
         });
 
         dialogRef.componentInstance.onRejected.subscribe(() => {
@@ -691,6 +692,7 @@ export class WorkflowSalesComponent extends AppComopnentBase implements OnInit {
                 const currentExtension = this._workflowDataService.extensionSideNavigation.find(x => x.index === this._workflowDataService.getWorkflowProgress.currentlyActiveExtensionIndex);
                 currentExtension!.sideNav.unshift(ExtendConsultantDto);
             }
+            this._workflowDataService.workflowSideSectionAdded.emit(true);
         });
 
         dialogRef.componentInstance.onRejected.subscribe(() => {

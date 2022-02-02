@@ -154,7 +154,7 @@
                 font-weight: 700
             }
         }
-        &:not(.formFieldNoMarginPadding) {
+        &.mat-form-field-invalid:not(.formFieldNoMarginPadding) {
             .mat-form-field-wrapper {
                 margin: 0 !important;
                 padding-bottom: 0.3em !important;
@@ -166,6 +166,12 @@
                     margin: 0 !important;
                     padding-bottom: 1em !important;
                 }
+            }
+        }
+        &:not(.formFieldNoMarginPadding) {
+            .mat-form-field-wrapper {
+                margin: 0 !important;
+                padding-bottom: 0.3em !important;
             }
         }
 
@@ -246,13 +252,19 @@
     }
 // }
 
-.client-rates {
+.client-rates,
+.client-documents--form {
     .mat-form-field-appearance-fill {
         &.textarea-input {
             .mat-form-field-flex {
                 min-height: 45px;
                 // min-height: 55px;
                 height: unset !important;
+            }
+        }
+        &.formFieldDatePicker {
+            .mat-form-field-flex {
+                align-items: center;
             }
         }
         .mat-form-field-flex {
@@ -288,8 +300,7 @@
         }
 
         .mat-form-field-flex>.mat-form-field-infix {
-            padding: 0.2em 0.2em 0.4em !important;
-            // padding: 0em 0px 0.2em !important;
+            padding: 0.2em 0.2em 0.2em !important;
             width: auto;
             border: 0 !important;
         }
@@ -347,6 +358,9 @@
                 color: #FF7A78 !important;
             }
         }
+        // .mat-form-field-suffix {
+        //     top: 0.4em !important;
+        // }
 
     }
 }

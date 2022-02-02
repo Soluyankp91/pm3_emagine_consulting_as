@@ -1,12 +1,15 @@
 import { Overlay } from '@angular/cdk/overlay';
 import { AfterViewInit, Component, Input, OnInit, ViewChild } from '@angular/core';
 import { MatDialog } from '@angular/material/dialog';
+import { ScrollToConfigOptions, ScrollToService } from '@nicky-lenaers/ngx-scroll-to';
+import { Subject } from 'rxjs';
+import { takeUntil } from 'rxjs/operators';
 import { ConfirmationDialogComponent } from 'src/app/shared/components/confirmation-dialog/confirmation-dialog.component';
 import { ManagerStatus } from 'src/app/shared/components/manager-search/manager-search.model';
 import { WorkflowDataService } from '../workflow-data.service';
 import { SideNavigationParentItemDto } from '../workflow-extension/workflow-extension.model';
 import { WorkflowSalesComponent } from '../workflow-sales/workflow-sales.component';
-import { AddConsultantDto, ChangeWorkflowDto, ExtendConsultantDto, ExtendWorkflowDto, TerminateConsultantDto, TerminateWorkflowDto, WorkflowSideSections } from '../workflow.model';
+import { AddConsultantDto, ChangeWorkflowDto, ExtendConsultantDto, ExtendWorkflowDto, TerminateConsultantDto, TerminateWorkflowDto, WorkflowSideSections, WorkflowSteps } from '../workflow.model';
 
 @Component({
     selector: 'app-primary-workflow',
@@ -20,21 +23,37 @@ export class PrimaryWorkflowComponent implements OnInit, AfterViewInit {
     selectedAnchor: string;
 
     workflowSideSections = WorkflowSideSections;
+    workflowSteps = WorkflowSteps;
+    selectedStepEnum: number;
+    selectedSideSection: number;
 
     workflowSideNavigation: SideNavigationParentItemDto[];
 
     sectionIndex: number;
 
     managerStatus = ManagerStatus;
+
+    private _unsubscribe = new Subject();
     constructor(
         public _workflowDataService: WorkflowDataService,
         private overlay: Overlay,
-        private dialog: MatDialog
+        private dialog: MatDialog,
     ) { }
 
     ngOnInit(): void {
+        this._workflowDataService.workflowSideSectionAdded
+            .pipe(takeUntil(this._unsubscribe))
+            .subscribe((value: boolean) => {
+                // NB: SAVE DRAFT or COMPLETE
+                this.makeFirstSectionActive();
+            });
         // this.workflowSideNavigation = new Array<SideNavigationParentItemDto>(...this._workflowDataService.workflowSideNavigation);
         this.changeSideSection(this.sideNavigation[0] , 0);
+    }
+
+    makeFirstSectionActive() {
+        this.changeSideSection(this.sideNavigation[0] , 0);
+        // TODO: scroll to top on newly added section?
     }
 
     ngAfterViewInit(): void {
@@ -46,16 +65,18 @@ export class PrimaryWorkflowComponent implements OnInit, AfterViewInit {
         return this.workflowSideNavigation = new Array<SideNavigationParentItemDto>(...this._workflowDataService.workflowSideNavigation);
     }
 
-    changeStepSelection(stepName: string, stepId: any) {
+    changeStepSelection(stepName: string, stepId: any, stepEnum: number) {
         this.selectedStep = stepName;
+        this.selectedStepEnum =
         this._workflowDataService.workflowProgress.currentlyActiveStep = stepId * 1;
     }
 
     changeSideSection(item: SideNavigationParentItemDto, index: number) {
         this.sectionIndex = index;
+        this.selectedSideSection = item.sectionEnumValue;
         this._workflowDataService.updateWorkflowProgressStatus({currentlyActiveSideSection: item.sectionEnumValue});
         const firstitemInSection = this.workflowSideNavigation.find(x => x.displayName === item.displayName)?.subItems[0];
-        this.changeStepSelection(firstitemInSection!.name, firstitemInSection!.id);
+        this.changeStepSelection(firstitemInSection!.name, firstitemInSection!.id, firstitemInSection!.enumStepValue);
     }
 
     addConsultantToPrimaryWorkflow() {

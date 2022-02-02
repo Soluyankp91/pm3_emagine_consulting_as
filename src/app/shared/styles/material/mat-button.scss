@@ -167,22 +167,22 @@
         font-weight: 700;
 
         &__outlined {
-            color: $green-color !important;
-            background-color: transparent !important;
+            color: $green-color;
+            background-color: transparent;
             border: 0;
             border-radius: 5px;
         }
-    
+
         &__positive {
-            color: $white-color !important;
-            background: $green-color !important;
+            color: $white-color;
+            background: $green-color;
             border-radius: 5px;
         }
-    
+
         &__negative {
-            color: #FFF !important;
-            background-color: $red-color !important;
-            border: 2px solid $red-color !important;
+            color: #FFF;
+            background-color: $red-color;
+            border: 2px solid $red-color;
             box-sizing: border-box;
             border-radius: 5px;
         }

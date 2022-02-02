@@ -8,13 +8,14 @@
     .mat-accordion {
         width: 100%;
         .mat-expansion-panel-spacing {
-            margin: 0 !important;
+            margin-top: 0 !important;
+            margin-bottom: 0 !important;
         }
         .mat-expansion-panel {
-            background: #F8F8F8;
-            border-radius: 5px !important;
+            background: #FFFFFF;
+            // border-radius: 5px !important;
             width: 100%;
-            margin-bottom: 10px !important;
+            // margin-bottom: 10px !important;
             .mat-expansion-indicator::after {
                 border: solid #17A297;
                 border-width: 0 2px 2px 0;
@@ -30,15 +31,21 @@
                     transform: rotate(225deg);
                 }
             }
-            &.even-folder {
+            &.odd-folder {
                 background: #FFFFFF;
+            }
+        }
+        .contract-parent--folder.mat-expansion-panel {
+            border: solid 1px #e7e3e8;
+            &.mat-expanded {
+                box-shadow: 0 0 20px 0 rgba(0, 0, 0, 0.1);
             }
         }
         .mat-expansion-panel-body {
             padding: 10px 8px !important;
         }
         .mat-expansion-panel-header {
-            padding-left: 16px !important;
+            padding: 0 16px !important;
         }
         &__subfolder {
             .mat-expansion-panel-body {
