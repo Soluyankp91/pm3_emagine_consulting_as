@@ -706,8 +706,35 @@ export class WorkflowSalesComponent extends AppComopnentBase implements OnInit {
             const currentExtension = this._workflowDataService.extensionSideNavigation.find(x => x.index === this._workflowDataService.getWorkflowProgress.currentlyActiveExtensionIndex);
             currentExtension!.sideNav.unshift(TerminateConsultantDto);
         }
+        this._workflowDataService.workflowSideSectionAdded.emit(true);
+
     }
 
     //#endregion Consultant menu actions
 
+
+    addCommission() {
+        const form = this._fb.group({
+            type: new FormControl(null),
+            value: new FormControl(''),
+            recipientType: new FormControl(null),
+            recipient: new FormControl(null),
+            frequency: new FormControl(null),
+            editable: new FormControl(false)
+        });
+        this.salesMainDataForm.commissions.push(form);
+    }
+
+    get commissions() {
+        return this.salesMainDataForm.commissions as FormArray;
+    }
+
+    removeCommission(index: number) {
+        this.commissions.removeAt(index);
+    }
+
+    editCommissionRow(index: number) {
+        const isEditable = this.commissions.at(index).get('editable')?.value;
+        this.commissions.at(index).get('editable')?.setValue(!isEditable);
+    }
 }

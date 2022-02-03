@@ -2902,6 +2902,180 @@ export class EnumServiceProxy {
         }
         return _observableOf<EnumEntityTypeDto[]>(<any>null);
     }
+
+    /**
+     * @return Success
+     */
+    clientPeriodType(): Observable<EnumEntityTypeDto[]> {
+        let url_ = this.baseUrl + "/api/Enum/client-period-type";
+        url_ = url_.replace(/[?&]$/, "");
+
+        let options_ : any = {
+            observe: "response",
+            responseType: "blob",
+            headers: new HttpHeaders({
+                "Accept": "text/plain"
+            })
+        };
+
+        return this.http.request("get", url_, options_).pipe(_observableMergeMap((response_ : any) => {
+            return this.processClientPeriodType(response_);
+        })).pipe(_observableCatch((response_: any) => {
+            if (response_ instanceof HttpResponseBase) {
+                try {
+                    return this.processClientPeriodType(<any>response_);
+                } catch (e) {
+                    return <Observable<EnumEntityTypeDto[]>><any>_observableThrow(e);
+                }
+            } else
+                return <Observable<EnumEntityTypeDto[]>><any>_observableThrow(response_);
+        }));
+    }
+
+    protected processClientPeriodType(response: HttpResponseBase): Observable<EnumEntityTypeDto[]> {
+        const status = response.status;
+        const responseBlob =
+            response instanceof HttpResponse ? response.body :
+            (<any>response).error instanceof Blob ? (<any>response).error : undefined;
+
+        let _headers: any = {}; if (response.headers) { for (let key of response.headers.keys()) { _headers[key] = response.headers.get(key); }}
+        if (status === 200) {
+            return blobToText(responseBlob).pipe(_observableMergeMap(_responseText => {
+            let result200: any = null;
+            let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
+            if (Array.isArray(resultData200)) {
+                result200 = [] as any;
+                for (let item of resultData200)
+                    result200!.push(EnumEntityTypeDto.fromJS(item));
+            }
+            else {
+                result200 = <any>null;
+            }
+            return _observableOf(result200);
+            }));
+        } else if (status !== 200 && status !== 204) {
+            return blobToText(responseBlob).pipe(_observableMergeMap(_responseText => {
+            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+            }));
+        }
+        return _observableOf<EnumEntityTypeDto[]>(<any>null);
+    }
+
+    /**
+     * @return Success
+     */
+    consultantPeriodType(): Observable<EnumEntityTypeDto[]> {
+        let url_ = this.baseUrl + "/api/Enum/consultant-period-type";
+        url_ = url_.replace(/[?&]$/, "");
+
+        let options_ : any = {
+            observe: "response",
+            responseType: "blob",
+            headers: new HttpHeaders({
+                "Accept": "text/plain"
+            })
+        };
+
+        return this.http.request("get", url_, options_).pipe(_observableMergeMap((response_ : any) => {
+            return this.processConsultantPeriodType(response_);
+        })).pipe(_observableCatch((response_: any) => {
+            if (response_ instanceof HttpResponseBase) {
+                try {
+                    return this.processConsultantPeriodType(<any>response_);
+                } catch (e) {
+                    return <Observable<EnumEntityTypeDto[]>><any>_observableThrow(e);
+                }
+            } else
+                return <Observable<EnumEntityTypeDto[]>><any>_observableThrow(response_);
+        }));
+    }
+
+    protected processConsultantPeriodType(response: HttpResponseBase): Observable<EnumEntityTypeDto[]> {
+        const status = response.status;
+        const responseBlob =
+            response instanceof HttpResponse ? response.body :
+            (<any>response).error instanceof Blob ? (<any>response).error : undefined;
+
+        let _headers: any = {}; if (response.headers) { for (let key of response.headers.keys()) { _headers[key] = response.headers.get(key); }}
+        if (status === 200) {
+            return blobToText(responseBlob).pipe(_observableMergeMap(_responseText => {
+            let result200: any = null;
+            let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
+            if (Array.isArray(resultData200)) {
+                result200 = [] as any;
+                for (let item of resultData200)
+                    result200!.push(EnumEntityTypeDto.fromJS(item));
+            }
+            else {
+                result200 = <any>null;
+            }
+            return _observableOf(result200);
+            }));
+        } else if (status !== 200 && status !== 204) {
+            return blobToText(responseBlob).pipe(_observableMergeMap(_responseText => {
+            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+            }));
+        }
+        return _observableOf<EnumEntityTypeDto[]>(<any>null);
+    }
+
+    /**
+     * @return Success
+     */
+    periodStepType(): Observable<EnumEntityTypeDto[]> {
+        let url_ = this.baseUrl + "/api/Enum/period-step-type";
+        url_ = url_.replace(/[?&]$/, "");
+
+        let options_ : any = {
+            observe: "response",
+            responseType: "blob",
+            headers: new HttpHeaders({
+                "Accept": "text/plain"
+            })
+        };
+
+        return this.http.request("get", url_, options_).pipe(_observableMergeMap((response_ : any) => {
+            return this.processPeriodStepType(response_);
+        })).pipe(_observableCatch((response_: any) => {
+            if (response_ instanceof HttpResponseBase) {
+                try {
+                    return this.processPeriodStepType(<any>response_);
+                } catch (e) {
+                    return <Observable<EnumEntityTypeDto[]>><any>_observableThrow(e);
+                }
+            } else
+                return <Observable<EnumEntityTypeDto[]>><any>_observableThrow(response_);
+        }));
+    }
+
+    protected processPeriodStepType(response: HttpResponseBase): Observable<EnumEntityTypeDto[]> {
+        const status = response.status;
+        const responseBlob =
+            response instanceof HttpResponse ? response.body :
+            (<any>response).error instanceof Blob ? (<any>response).error : undefined;
+
+        let _headers: any = {}; if (response.headers) { for (let key of response.headers.keys()) { _headers[key] = response.headers.get(key); }}
+        if (status === 200) {
+            return blobToText(responseBlob).pipe(_observableMergeMap(_responseText => {
+            let result200: any = null;
+            let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
+            if (Array.isArray(resultData200)) {
+                result200 = [] as any;
+                for (let item of resultData200)
+                    result200!.push(EnumEntityTypeDto.fromJS(item));
+            }
+            else {
+                result200 = <any>null;
+            }
+            return _observableOf(result200);
+            }));
+        } else if (status !== 200 && status !== 204) {
+            return blobToText(responseBlob).pipe(_observableMergeMap(_responseText => {
+            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+            }));
+        }
+        return _observableOf<EnumEntityTypeDto[]>(<any>null);
+    }
 }
 
 @Injectable()
@@ -3993,6 +4167,70 @@ export class WorkflowServiceProxy {
         }
         return _observableOf<WorkflowAlreadyExistsDto>(<any>null);
     }
+
+    /**
+     * @param clientPeriodId (optional) 
+     * @param includeProcesses (optional) 
+     * @return Success
+     */
+    clientPeriods(workflowId: string, clientPeriodId?: number | undefined, includeProcesses?: boolean | undefined): Observable<WorkflowDto> {
+        let url_ = this.baseUrl + "/api/Workflow/{workflowId}/clientPeriods?";
+        if (workflowId === undefined || workflowId === null)
+            throw new Error("The parameter 'workflowId' must be defined.");
+        url_ = url_.replace("{workflowId}", encodeURIComponent("" + workflowId));
+        if (clientPeriodId === null)
+            throw new Error("The parameter 'clientPeriodId' cannot be null.");
+        else if (clientPeriodId !== undefined)
+            url_ += "clientPeriodId=" + encodeURIComponent("" + clientPeriodId) + "&";
+        if (includeProcesses === null)
+            throw new Error("The parameter 'includeProcesses' cannot be null.");
+        else if (includeProcesses !== undefined)
+            url_ += "includeProcesses=" + encodeURIComponent("" + includeProcesses) + "&";
+        url_ = url_.replace(/[?&]$/, "");
+
+        let options_ : any = {
+            observe: "response",
+            responseType: "blob",
+            headers: new HttpHeaders({
+                "Accept": "text/plain"
+            })
+        };
+
+        return this.http.request("get", url_, options_).pipe(_observableMergeMap((response_ : any) => {
+            return this.processClientPeriods(response_);
+        })).pipe(_observableCatch((response_: any) => {
+            if (response_ instanceof HttpResponseBase) {
+                try {
+                    return this.processClientPeriods(<any>response_);
+                } catch (e) {
+                    return <Observable<WorkflowDto>><any>_observableThrow(e);
+                }
+            } else
+                return <Observable<WorkflowDto>><any>_observableThrow(response_);
+        }));
+    }
+
+    protected processClientPeriods(response: HttpResponseBase): Observable<WorkflowDto> {
+        const status = response.status;
+        const responseBlob =
+            response instanceof HttpResponse ? response.body :
+            (<any>response).error instanceof Blob ? (<any>response).error : undefined;
+
+        let _headers: any = {}; if (response.headers) { for (let key of response.headers.keys()) { _headers[key] = response.headers.get(key); }}
+        if (status === 200) {
+            return blobToText(responseBlob).pipe(_observableMergeMap(_responseText => {
+            let result200: any = null;
+            let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
+            result200 = WorkflowDto.fromJS(resultData200);
+            return _observableOf(result200);
+            }));
+        } else if (status !== 200 && status !== 204) {
+            return blobToText(responseBlob).pipe(_observableMergeMap(_responseText => {
+            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+            }));
+        }
+        return _observableOf<WorkflowDto>(<any>null);
+    }
 }
 
 @Injectable()
@@ -5081,7 +5319,7 @@ export class ClientPeriod implements IClientPeriod {
                     (<any>this).domainEvents!.push(DomainEventBase.fromJS(item));
             }
             this.id = _data["id"] ? ClientPeriodId.fromJS(_data["id"]) : <any>undefined;
-            this.periodType = _data["periodType"];
+            this.periodType = _data["periodType"] ? ClientPeriodType.fromJS(_data["periodType"]) : <any>undefined;
             this.startDate = _data["startDate"] ? moment(_data["startDate"].toString()) : <any>undefined;
             this.noContractEndDate = _data["noContractEndDate"];
             this.endDate = _data["endDate"] ? moment(_data["endDate"].toString()) : <any>undefined;
@@ -5118,7 +5356,7 @@ export class ClientPeriod implements IClientPeriod {
                 data["domainEvents"].push(item.toJSON());
         }
         data["id"] = this.id ? this.id.toJSON() : <any>undefined;
-        data["periodType"] = this.periodType;
+        data["periodType"] = this.periodType ? this.periodType.toJSON() : <any>undefined;
         data["startDate"] = this.startDate ? this.startDate.format('YYYY-MM-DD') : <any>undefined;
         data["noContractEndDate"] = this.noContractEndDate;
         data["endDate"] = this.endDate ? this.endDate.format('YYYY-MM-DD') : <any>undefined;
@@ -5161,6 +5399,70 @@ export interface IClientPeriod {
     workflow?: Workflow;
 }
 
+export class ClientPeriodDto implements IClientPeriodDto {
+    id?: number;
+    name?: string | undefined;
+    typeId?: number;
+    additionalInfo?: string | undefined;
+    isCompleted?: boolean;
+    workflowProcesses?: WorkflowProcessDto[] | undefined;
+
+    constructor(data?: IClientPeriodDto) {
+        if (data) {
+            for (var property in data) {
+                if (data.hasOwnProperty(property))
+                    (<any>this)[property] = (<any>data)[property];
+            }
+        }
+    }
+
+    init(_data?: any) {
+        if (_data) {
+            this.id = _data["id"];
+            this.name = _data["name"];
+            this.typeId = _data["typeId"];
+            this.additionalInfo = _data["additionalInfo"];
+            this.isCompleted = _data["isCompleted"];
+            if (Array.isArray(_data["workflowProcesses"])) {
+                this.workflowProcesses = [] as any;
+                for (let item of _data["workflowProcesses"])
+                    this.workflowProcesses!.push(WorkflowProcessDto.fromJS(item));
+            }
+        }
+    }
+
+    static fromJS(data: any): ClientPeriodDto {
+        data = typeof data === 'object' ? data : {};
+        let result = new ClientPeriodDto();
+        result.init(data);
+        return result;
+    }
+
+    toJSON(data?: any) {
+        data = typeof data === 'object' ? data : {};
+        data["id"] = this.id;
+        data["name"] = this.name;
+        data["typeId"] = this.typeId;
+        data["additionalInfo"] = this.additionalInfo;
+        data["isCompleted"] = this.isCompleted;
+        if (Array.isArray(this.workflowProcesses)) {
+            data["workflowProcesses"] = [];
+            for (let item of this.workflowProcesses)
+                data["workflowProcesses"].push(item.toJSON());
+        }
+        return data;
+    }
+}
+
+export interface IClientPeriodDto {
+    id?: number;
+    name?: string | undefined;
+    typeId?: number;
+    additionalInfo?: string | undefined;
+    isCompleted?: boolean;
+    workflowProcesses?: WorkflowProcessDto[] | undefined;
+}
+
 export class ClientPeriodId implements IClientPeriodId {
     readonly value?: number;
 
@@ -5200,6 +5502,7 @@ export interface IClientPeriodId {
 export class ClientPeriodStep implements IClientPeriodStep {
     readonly domainEvents?: DomainEventBase[] | undefined;
     id?: ClientPeriodStepId;
+    stepType?: PeriodStepType;
     responsibleEmployee?: Employee;
     readonly isCompleted?: boolean;
 
@@ -5220,6 +5523,7 @@ export class ClientPeriodStep implements IClientPeriodStep {
                     (<any>this).domainEvents!.push(DomainEventBase.fromJS(item));
             }
             this.id = _data["id"] ? ClientPeriodStepId.fromJS(_data["id"]) : <any>undefined;
+            this.stepType = _data["stepType"] ? PeriodStepType.fromJS(_data["stepType"]) : <any>undefined;
             this.responsibleEmployee = _data["responsibleEmployee"] ? Employee.fromJS(_data["responsibleEmployee"]) : <any>undefined;
             (<any>this).isCompleted = _data["isCompleted"];
         }
@@ -5240,6 +5544,7 @@ export class ClientPeriodStep implements IClientPeriodStep {
                 data["domainEvents"].push(item.toJSON());
         }
         data["id"] = this.id ? this.id.toJSON() : <any>undefined;
+        data["stepType"] = this.stepType ? this.stepType.toJSON() : <any>undefined;
         data["responsibleEmployee"] = this.responsibleEmployee ? this.responsibleEmployee.toJSON() : <any>undefined;
         data["isCompleted"] = this.isCompleted;
         return data;
@@ -5249,6 +5554,7 @@ export class ClientPeriodStep implements IClientPeriodStep {
 export interface IClientPeriodStep {
     domainEvents?: DomainEventBase[] | undefined;
     id?: ClientPeriodStepId;
+    stepType?: PeriodStepType;
     responsibleEmployee?: Employee;
     isCompleted?: boolean;
 }
@@ -5289,10 +5595,56 @@ export interface IClientPeriodStepId {
     value?: number;
 }
 
-export enum ClientPeriodType {
-    _1 = 1,
-    _2 = 2,
-    _3 = 3,
+export class ClientPeriodType implements IClientPeriodType {
+    readonly domainEvents?: DomainEventBase[] | undefined;
+    readonly id?: number;
+    readonly name?: string | undefined;
+
+    constructor(data?: IClientPeriodType) {
+        if (data) {
+            for (var property in data) {
+                if (data.hasOwnProperty(property))
+                    (<any>this)[property] = (<any>data)[property];
+            }
+        }
+    }
+
+    init(_data?: any) {
+        if (_data) {
+            if (Array.isArray(_data["domainEvents"])) {
+                (<any>this).domainEvents = [] as any;
+                for (let item of _data["domainEvents"])
+                    (<any>this).domainEvents!.push(DomainEventBase.fromJS(item));
+            }
+            (<any>this).id = _data["id"];
+            (<any>this).name = _data["name"];
+        }
+    }
+
+    static fromJS(data: any): ClientPeriodType {
+        data = typeof data === 'object' ? data : {};
+        let result = new ClientPeriodType();
+        result.init(data);
+        return result;
+    }
+
+    toJSON(data?: any) {
+        data = typeof data === 'object' ? data : {};
+        if (Array.isArray(this.domainEvents)) {
+            data["domainEvents"] = [];
+            for (let item of this.domainEvents)
+                data["domainEvents"].push(item.toJSON());
+        }
+        data["id"] = this.id;
+        data["name"] = this.name;
+        return data;
+    }
+}
+
+export interface IClientPeriodType {
+    domainEvents?: DomainEventBase[] | undefined;
+    id?: number;
+    name?: string | undefined;
 }
 
 export class ClientRateBase implements IClientRateBase {
@@ -6586,7 +6938,7 @@ export class ConsultantPeriod implements IConsultantPeriod {
             this.id = _data["id"] ? ConsultantPeriodId.fromJS(_data["id"]) : <any>undefined;
             (<any>this).startDate = _data["startDate"] ? moment(_data["startDate"].toString()) : <any>undefined;
             (<any>this).endDate = _data["endDate"] ? moment(_data["endDate"].toString()) : <any>undefined;
-            this.periodType = _data["periodType"];
+            this.periodType = _data["periodType"] ? ConsultantPeriodType.fromJS(_data["periodType"]) : <any>undefined;
             this.consultant = _data["consultant"] ? Consultant.fromJS(_data["consultant"]) : <any>undefined;
             this.salesStep = _data["salesStep"] ? ConsultantPeriodStep.fromJS(_data["salesStep"]) : <any>undefined;
             this.contractsStep = _data["contractsStep"] ? ConsultantPeriodStep.fromJS(_data["contractsStep"]) : <any>undefined;
@@ -6616,7 +6968,7 @@ export class ConsultantPeriod implements IConsultantPeriod {
         data["id"] = this.id ? this.id.toJSON() : <any>undefined;
         data["startDate"] = this.startDate ? this.startDate.format('YYYY-MM-DD') : <any>undefined;
         data["endDate"] = this.endDate ? this.endDate.format('YYYY-MM-DD') : <any>undefined;
-        data["periodType"] = this.periodType;
+        data["periodType"] = this.periodType ? this.periodType.toJSON() : <any>undefined;
         data["consultant"] = this.consultant ? this.consultant.toJSON() : <any>undefined;
         data["salesStep"] = this.salesStep ? this.salesStep.toJSON() : <any>undefined;
         data["contractsStep"] = this.contractsStep ? this.contractsStep.toJSON() : <any>undefined;
@@ -6686,6 +7038,7 @@ export interface IConsultantPeriodId {
 export class ConsultantPeriodStep implements IConsultantPeriodStep {
     readonly domainEvents?: DomainEventBase[] | undefined;
     id?: ConsultantPeriodStepId;
+    stepType?: PeriodStepType;
     responsibleEmployee?: Employee;
     readonly isCompleted?: boolean;
 
@@ -6706,6 +7059,7 @@ export class ConsultantPeriodStep implements IConsultantPeriodStep {
                     (<any>this).domainEvents!.push(DomainEventBase.fromJS(item));
             }
             this.id = _data["id"] ? ConsultantPeriodStepId.fromJS(_data["id"]) : <any>undefined;
+            this.stepType = _data["stepType"] ? PeriodStepType.fromJS(_data["stepType"]) : <any>undefined;
             this.responsibleEmployee = _data["responsibleEmployee"] ? Employee.fromJS(_data["responsibleEmployee"]) : <any>undefined;
             (<any>this).isCompleted = _data["isCompleted"];
         }
@@ -6726,6 +7080,7 @@ export class ConsultantPeriodStep implements IConsultantPeriodStep {
                 data["domainEvents"].push(item.toJSON());
         }
         data["id"] = this.id ? this.id.toJSON() : <any>undefined;
+        data["stepType"] = this.stepType ? this.stepType.toJSON() : <any>undefined;
         data["responsibleEmployee"] = this.responsibleEmployee ? this.responsibleEmployee.toJSON() : <any>undefined;
         data["isCompleted"] = this.isCompleted;
         return data;
@@ -6735,6 +7090,7 @@ export class ConsultantPeriodStep implements IConsultantPeriodStep {
 export interface IConsultantPeriodStep {
     domainEvents?: DomainEventBase[] | undefined;
     id?: ConsultantPeriodStepId;
+    stepType?: PeriodStepType;
     responsibleEmployee?: Employee;
     isCompleted?: boolean;
 }
@@ -6775,10 +7131,56 @@ export interface IConsultantPeriodStepId {
     value?: number;
 }
 
-export enum ConsultantPeriodType {
-    _1 = 1,
-    _2 = 2,
-    _3 = 3,
+export class ConsultantPeriodType implements IConsultantPeriodType {
+    readonly domainEvents?: DomainEventBase[] | undefined;
+    readonly id?: number;
+    readonly name?: string | undefined;
+
+    constructor(data?: IConsultantPeriodType) {
+        if (data) {
+            for (var property in data) {
+                if (data.hasOwnProperty(property))
+                    (<any>this)[property] = (<any>data)[property];
+            }
+        }
+    }
+
+    init(_data?: any) {
+        if (_data) {
+            if (Array.isArray(_data["domainEvents"])) {
+                (<any>this).domainEvents = [] as any;
+                for (let item of _data["domainEvents"])
+                    (<any>this).domainEvents!.push(DomainEventBase.fromJS(item));
+            }
+            (<any>this).id = _data["id"];
+            (<any>this).name = _data["name"];
+        }
+    }
+
+    static fromJS(data: any): ConsultantPeriodType {
+        data = typeof data === 'object' ? data : {};
+        let result = new ConsultantPeriodType();
+        result.init(data);
+        return result;
+    }
+
+    toJSON(data?: any) {
+        data = typeof data === 'object' ? data : {};
+        if (Array.isArray(this.domainEvents)) {
+            data["domainEvents"] = [];
+            for (let item of this.domainEvents)
+                data["domainEvents"].push(item.toJSON());
+        }
+        data["id"] = this.id;
+        data["name"] = this.name;
+        return data;
+    }
+}
+
+export interface IConsultantPeriodType {
+    domainEvents?: DomainEventBase[] | undefined;
+    id?: number;
+    name?: string | undefined;
 }
 
 export class ConsultantPersonalData implements IConsultantPersonalData {
@@ -8753,6 +9155,118 @@ export interface INewWorkflowCreatedDto {
     workflowId?: string;
 }
 
+export class PeriodStepDto implements IPeriodStepDto {
+    name?: string | undefined;
+    typeId?: number;
+    isCompleted?: boolean | undefined;
+    responsiblePerson?: EmployeeDto;
+    stepDataItems?: StepDataItemDto[] | undefined;
+
+    constructor(data?: IPeriodStepDto) {
+        if (data) {
+            for (var property in data) {
+                if (data.hasOwnProperty(property))
+                    (<any>this)[property] = (<any>data)[property];
+            }
+        }
+    }
+
+    init(_data?: any) {
+        if (_data) {
+            this.name = _data["name"];
+            this.typeId = _data["typeId"];
+            this.isCompleted = _data["isCompleted"];
+            this.responsiblePerson = _data["responsiblePerson"] ? EmployeeDto.fromJS(_data["responsiblePerson"]) : <any>undefined;
+            if (Array.isArray(_data["stepDataItems"])) {
+                this.stepDataItems = [] as any;
+                for (let item of _data["stepDataItems"])
+                    this.stepDataItems!.push(StepDataItemDto.fromJS(item));
+            }
+        }
+    }
+
+    static fromJS(data: any): PeriodStepDto {
+        data = typeof data === 'object' ? data : {};
+        let result = new PeriodStepDto();
+        result.init(data);
+        return result;
+    }
+
+    toJSON(data?: any) {
+        data = typeof data === 'object' ? data : {};
+        data["name"] = this.name;
+        data["typeId"] = this.typeId;
+        data["isCompleted"] = this.isCompleted;
+        data["responsiblePerson"] = this.responsiblePerson ? this.responsiblePerson.toJSON() : <any>undefined;
+        if (Array.isArray(this.stepDataItems)) {
+            data["stepDataItems"] = [];
+            for (let item of this.stepDataItems)
+                data["stepDataItems"].push(item.toJSON());
+        }
+        return data;
+    }
+}
+
+export interface IPeriodStepDto {
+    name?: string | undefined;
+    typeId?: number;
+    isCompleted?: boolean | undefined;
+    responsiblePerson?: EmployeeDto;
+    stepDataItems?: StepDataItemDto[] | undefined;
+}
+
+export class PeriodStepType implements IPeriodStepType {
+    readonly domainEvents?: DomainEventBase[] | undefined;
+    readonly id?: number;
+    readonly name?: string | undefined;
+
+    constructor(data?: IPeriodStepType) {
+        if (data) {
+            for (var property in data) {
+                if (data.hasOwnProperty(property))
+                    (<any>this)[property] = (<any>data)[property];
+            }
+        }
+    }
+
+    init(_data?: any) {
+        if (_data) {
+            if (Array.isArray(_data["domainEvents"])) {
+                (<any>this).domainEvents = [] as any;
+                for (let item of _data["domainEvents"])
+                    (<any>this).domainEvents!.push(DomainEventBase.fromJS(item));
+            }
+            (<any>this).id = _data["id"];
+            (<any>this).name = _data["name"];
+        }
+    }
+
+    static fromJS(data: any): PeriodStepType {
+        data = typeof data === 'object' ? data : {};
+        let result = new PeriodStepType();
+        result.init(data);
+        return result;
+    }
+
+    toJSON(data?: any) {
+        data = typeof data === 'object' ? data : {};
+        if (Array.isArray(this.domainEvents)) {
+            data["domainEvents"] = [];
+            for (let item of this.domainEvents)
+                data["domainEvents"].push(item.toJSON());
+        }
+        data["id"] = this.id;
+        data["name"] = this.name;
+        return data;
+    }
+}
+
+export interface IPeriodStepType {
+    domainEvents?: DomainEventBase[] | undefined;
+    id?: number;
+    name?: string | undefined;
+}
+
 export class PredefinedContractExpiryNotificationDate implements IPredefinedContractExpiryNotificationDate {
     readonly domainEvents?: DomainEventBase[] | undefined;
     readonly id?: number;
@@ -10284,6 +10798,50 @@ export interface IStartNewWorkflowInputDto {
     soldRequestConsultantId?: number | undefined;
 }
 
+export class StepDataItemDto implements IStepDataItemDto {
+    name?: string | undefined;
+    consultantPeriodId?: number | undefined;
+    additionalInfo?: string | undefined;
+
+    constructor(data?: IStepDataItemDto) {
+        if (data) {
+            for (var property in data) {
+                if (data.hasOwnProperty(property))
+                    (<any>this)[property] = (<any>data)[property];
+            }
+        }
+    }
+
+    init(_data?: any) {
+        if (_data) {
+            this.name = _data["name"];
+            this.consultantPeriodId = _data["consultantPeriodId"];
+            this.additionalInfo = _data["additionalInfo"];
+        }
+    }
+
+    static fromJS(data: any): StepDataItemDto {
+        data = typeof data === 'object' ? data : {};
+        let result = new StepDataItemDto();
+        result.init(data);
+        return result;
+    }
+
+    toJSON(data?: any) {
+        data = typeof data === 'object' ? data : {};
+        data["name"] = this.name;
+        data["consultantPeriodId"] = this.consultantPeriodId;
+        data["additionalInfo"] = this.additionalInfo;
+        return data;
+    }
+}
+
+export interface IStepDataItemDto {
+    name?: string | undefined;
+    consultantPeriodId?: number | undefined;
+    additionalInfo?: string | undefined;
+}
+
 export class Supplier implements ISupplier {
     readonly domainEvents?: DomainEventBase[] | undefined;
     id?: SupplierId;
@@ -10956,6 +11514,58 @@ export interface IWorkflowDataDto {
     accountManagerId?: EmployeeId;
 }
 
+export class WorkflowDto implements IWorkflowDto {
+    workflowId?: string;
+    workflowCurrentState?: string | undefined;
+    clientPeriods?: ClientPeriodDto[] | undefined;
+
+    constructor(data?: IWorkflowDto) {
+        if (data) {
+            for (var property in data) {
+                if (data.hasOwnProperty(property))
+                    (<any>this)[property] = (<any>data)[property];
+            }
+        }
+    }
+
+    init(_data?: any) {
+        if (_data) {
+            this.workflowId = _data["workflowId"];
+            this.workflowCurrentState = _data["workflowCurrentState"];
+            if (Array.isArray(_data["clientPeriods"])) {
+                this.clientPeriods = [] as any;
+                for (let item of _data["clientPeriods"])
+                    this.clientPeriods!.push(ClientPeriodDto.fromJS(item));
+            }
+        }
+    }
+
+    static fromJS(data: any): WorkflowDto {
+        data = typeof data === 'object' ? data : {};
+        let result = new WorkflowDto();
+        result.init(data);
+        return result;
+    }
+
+    toJSON(data?: any) {
+        data = typeof data === 'object' ? data : {};
+        data["workflowId"] = this.workflowId;
+        data["workflowCurrentState"] = this.workflowCurrentState;
+        if (Array.isArray(this.clientPeriods)) {
+            data["clientPeriods"] = [];
+            for (let item of this.clientPeriods)
+                data["clientPeriods"].push(item.toJSON());
+        }
+        return data;
+    }
+}
+
+export interface IWorkflowDto {
+    workflowId?: string;
+    workflowCurrentState?: string | undefined;
+    clientPeriods?: ClientPeriodDto[] | undefined;
+}
+
 export class WorkflowEventDtoBase implements IWorkflowEventDtoBase {
     occuredAtUtc?: moment.Moment;
     eventName?: string | undefined;
@@ -11254,6 +11864,58 @@ export interface IWorkflowPeriodDto {
     contractEndDate?: moment.Moment | undefined;
     workflowEvents?: WorkflowEventDtoBase[] | undefined;
     consultants?: ConsultantsDto[] | undefined;
+}
+
+export class WorkflowProcessDto implements IWorkflowProcessDto {
+    name?: string | undefined;
+    additionalInfo?: string | undefined;
+    periodSteps?: PeriodStepDto[] | undefined;
+
+    constructor(data?: IWorkflowProcessDto) {
+        if (data) {
+            for (var property in data) {
+                if (data.hasOwnProperty(property))
+                    (<any>this)[property] = (<any>data)[property];
+            }
+        }
+    }
+
+    init(_data?: any) {
+        if (_data) {
+            this.name = _data["name"];
+            this.additionalInfo = _data["additionalInfo"];
+            if (Array.isArray(_data["periodSteps"])) {
+                this.periodSteps = [] as any;
+                for (let item of _data["periodSteps"])
+                    this.periodSteps!.push(PeriodStepDto.fromJS(item));
+            }
+        }
+    }
+
+    static fromJS(data: any): WorkflowProcessDto {
+        data = typeof data === 'object' ? data : {};
+        let result = new WorkflowProcessDto();
+        result.init(data);
+        return result;
+    }
+
+    toJSON(data?: any) {
+        data = typeof data === 'object' ? data : {};
+        data["name"] = this.name;
+        data["additionalInfo"] = this.additionalInfo;
+        if (Array.isArray(this.periodSteps)) {
+            data["periodSteps"] = [];
+            for (let item of this.periodSteps)
+                data["periodSteps"].push(item.toJSON());
+        }
+        return data;
+    }
+}
+
+export interface IWorkflowProcessDto {
+    name?: string | undefined;
+    additionalInfo?: string | undefined;
+    periodSteps?: PeriodStepDto[] | undefined;
 }
 
 export class WorkflowSalesDataDto implements IWorkflowSalesDataDto {

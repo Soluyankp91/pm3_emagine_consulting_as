@@ -12,6 +12,8 @@ export class WorkflowSalesMainForm extends FormGroup {
 
             discounts: new FormControl(null),
 
+            commissions: new FormArray([]),
+
             salesAccountManagerIdValue: new FormControl(null),
             commissionAccountManagerIdValue: new FormControl(null),
             contractExpirationNotification: new FormControl(null),
@@ -41,6 +43,9 @@ export class WorkflowSalesMainForm extends FormGroup {
     }
     get discounts() {
         return this.get('discounts');
+    }
+    get commissions() {
+        return this.get('commissions') as FormArray;
     }
     get salesAccountManagerIdValue () {
         return this.get('salesAccountManagerIdValue');

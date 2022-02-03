@@ -1,0 +1,17 @@
+<div class="workflow-sourcing">
+    <form [formGroup]="workflowSourcingConsultantsForm">
+        <ng-container formArrayName="consultantData" class="u-mb--20">
+            <div *ngFor="let consultant of workflowSourcingConsultantsForm.consultantData.controls; let i = index" [formGroupName]="i">
+                <div fxLayout="column" fxLayoutAlign="start start">
+                    <div fxLayout="row" fxLayoutAlign="start start" class="u-w--100">
+                        <img class="border-rounded-50 u-mr--8" src="{{workflowSourcingConsultantsForm.consultantData.at(i).get('pictureId')?.value}}">
+                        {{workflowSourcingConsultantsForm.consultantData.at(i).get('name')?.value}}
+                    </div>
+                    <mat-checkbox color="accent" formControlName="isCvUpdated" name="isCvUpdated" class="black-checkbox">
+                        CV uploaded
+                    </mat-checkbox>
+                </div>
+            </div>
+        </ng-container>
+    </form>
+</div>

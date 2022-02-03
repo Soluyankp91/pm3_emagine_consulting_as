@@ -6,12 +6,10 @@ import { MatTabChangeEvent } from '@angular/material/tabs';
 import { ActivatedRoute } from '@angular/router';
 import { NgScrollbar } from 'ngx-scrollbar';
 import { Subject } from 'rxjs';
-import { takeUntil } from 'rxjs/operators';
-import { EnumEntityTypeDto } from 'src/shared/service-proxies/service-proxies';
-import { ExtendWorkflowDialogComponent } from '../extend-workflow-dialog/extend-workflow-dialog.component';
+import { finalize, takeUntil } from 'rxjs/operators';
+import { ClientPeriodDto, EnumEntityTypeDto, WorkflowDto, WorkflowServiceProxy } from 'src/shared/service-proxies/service-proxies';
 import { WorkflowExtensionComponent } from '../workflow-extension/workflow-extension.component';
 import { PrimaryWorkflowComponent } from '../primary-workflow/primary-workflow.component';
-import { WorkflowChangeDialogComponent } from '../workflow-change-dialog/workflow-change-dialog.component';
 import { WorkflowDataService } from '../workflow-data.service';
 import { WorkflowOverviewComponent } from '../workflow-overview/workflow-overview.component';
 import { WorkflowSalesComponent } from '../workflow-sales/workflow-sales.component';
@@ -58,6 +56,8 @@ export class WorkflowDetailsComponent implements OnInit, OnDestroy, AfterViewIni
 
     sectionIndex: number;
 
+    workflowResponse: WorkflowDto;
+    clientPeriods: ClientPeriodDto[] | undefined = [];
     private _unsubscribe = new Subject();
     constructor(
         public _workflowDataService: WorkflowDataService,
@@ -66,7 +66,8 @@ export class WorkflowDetailsComponent implements OnInit, OnDestroy, AfterViewIni
         private dialog: MatDialog,
         private scrollDispatcher: ScrollDispatcher,
         private zone: NgZone,
-        private _lookupService: InternalLookupService
+        private _lookupService: InternalLookupService,
+        private _workflowService: WorkflowServiceProxy
     ) {
         this.salesExtensionForm = new WorkflowSalesExtensionForm();
         this.terminationSalesForm = new WorkflowTerminationSalesForm();
@@ -81,6 +82,7 @@ export class WorkflowDetailsComponent implements OnInit, OnDestroy, AfterViewIni
         this.topMenuTabs = new Array<TopMenuTabsDto>(...this._workflowDataService.topMenuTabs);
         this.componentInitalized = true;
         this._lookupService.getData();
+        this.getTopLevelMenu();
     }
 
     ngAfterViewInit(): void {
@@ -103,6 +105,16 @@ export class WorkflowDetailsComponent implements OnInit, OnDestroy, AfterViewIni
     ngOnDestroy(): void {
         this._unsubscribe.next();
         this._unsubscribe.complete();
+    }
+
+    getTopLevelMenu() {
+        this._workflowService.clientPeriods(this.workflowId)
+            .pipe(finalize(() => {
+
+            }))
+            .subscribe(result => {
+                this.clientPeriods = result.clientPeriods;
+            });
     }
 
     detectComponentToRender(tab: TopMenuTabsDto): ComponentType<any> {

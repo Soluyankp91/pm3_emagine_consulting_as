@@ -318,7 +318,8 @@ export enum WorkflowSideSections {
 export enum WorkflowSteps {
     Sales = 1,
     Contracts = 2,
-    Finance = 3
+    Finance = 3,
+    Sourcing = 4
 }
 
 //#region side sections to Add
@@ -734,6 +735,15 @@ export const TerminateConsultantDto: SideNavigationParentItemDto = {
                     value: 'legalContracts'
                 }
             ]
+        },
+        {
+            id: 3,
+            name: "TerminateConsultantSourcing",
+            displayName: "Sourcing",
+            enumStepValue: WorkflowSteps.Sourcing,
+            isCompleted: false,
+            assignedPerson: 'Roberto Olberto',
+            menuAnchors: []
         }
     ]
 };
@@ -757,7 +767,7 @@ export enum WorkflowFlag {
 export const WorkflowList = [
     {
         flag: WorkflowFlag.NewSales,
-        id: '8295ac1a-b10c-461f-8183-79ec5ff35475',
+        id: 'e7fe2c30-d443-4a2e-b2b6-5460610f6409',
         client: 'Martha Marikel',
         consultants: [
             { name: 'Martha Marikel' },
@@ -775,7 +785,7 @@ export const WorkflowList = [
     },
     {
         flag: WorkflowFlag.NewSales,
-        id: '8295ac1a-b10c-461f-8183-79ec5ff35475',
+        id: 'e7fe2c30-d443-4a2e-b2b6-5460610f6409',
         client: 'Martha Marikel',
         consultants: [
             { name: 'Martha Marikel'}
@@ -792,7 +802,7 @@ export const WorkflowList = [
     },
     {
         flag: WorkflowFlag.Extension,
-        id: '8295ac1a-b10c-461f-8183-79ec5ff35475',
+        id: 'e7fe2c30-d443-4a2e-b2b6-5460610f6409',
         client: 'Martha Marikel',
         consultants: [
             { name: 'Martha Marikel' },
@@ -811,7 +821,7 @@ export const WorkflowList = [
     },
     {
         flag: WorkflowFlag.Extension,
-        id: '8295ac1a-b10c-461f-8183-79ec5ff35475',
+        id: 'e7fe2c30-d443-4a2e-b2b6-5460610f6409',
         client: 'Martha Marikel',
         consultants: [
             { name: 'Martha Marikel' },
@@ -830,7 +840,7 @@ export const WorkflowList = [
     },
     {
         flag: WorkflowFlag.NewSales,
-        id: '8295ac1a-b10c-461f-8183-79ec5ff35475',
+        id: 'e7fe2c30-d443-4a2e-b2b6-5460610f6409',
         client: 'Martha Marikel',
         consultants: [
             { name: 'Martha Marikel' },
@@ -849,7 +859,7 @@ export const WorkflowList = [
     },
     {
         flag: WorkflowFlag.NewSales,
-        id: '8295ac1a-b10c-461f-8183-79ec5ff35475',
+        id: 'e7fe2c30-d443-4a2e-b2b6-5460610f6409',
         client: 'Martha Marikel',
         consultants: [
             { name: 'Martha Marikel' },
@@ -868,7 +878,7 @@ export const WorkflowList = [
     },
     {
         flag: WorkflowFlag.Extension,
-        id: '8295ac1a-b10c-461f-8183-79ec5ff35475',
+        id: 'e7fe2c30-d443-4a2e-b2b6-5460610f6409',
         client: 'Martha Marikel',
         consultants: [
             { name: 'Martha Marikel' },
