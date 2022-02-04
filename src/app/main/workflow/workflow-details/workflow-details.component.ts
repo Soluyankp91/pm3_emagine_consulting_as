@@ -5,7 +5,7 @@ import { MatDialog } from '@angular/material/dialog';
 import { MatTabChangeEvent } from '@angular/material/tabs';
 import { ActivatedRoute } from '@angular/router';
 import { NgScrollbar } from 'ngx-scrollbar';
-import { Subject } from 'rxjs';
+import { Observable, Subject } from 'rxjs';
 import { finalize, takeUntil } from 'rxjs/operators';
 import { ClientPeriodDto, EnumEntityTypeDto, WorkflowDto, WorkflowServiceProxy } from 'src/shared/service-proxies/service-proxies';
 import { WorkflowExtensionComponent } from '../workflow-extension/workflow-extension.component';
@@ -58,6 +58,11 @@ export class WorkflowDetailsComponent implements OnInit, OnDestroy, AfterViewIni
 
     workflowResponse: WorkflowDto;
     clientPeriods: ClientPeriodDto[] | undefined = [];
+
+    workflowClientPeriodTypes: EnumEntityTypeDto[] = [];
+    workflowConsultantPeriodTypes: EnumEntityTypeDto[] = [];
+    workflowPeriodStepTypes: EnumEntityTypeDto[] = [];
+
     private _unsubscribe = new Subject();
     constructor(
         public _workflowDataService: WorkflowDataService,
@@ -83,6 +88,48 @@ export class WorkflowDetailsComponent implements OnInit, OnDestroy, AfterViewIni
         this.componentInitalized = true;
         this._lookupService.getData();
         this.getTopLevelMenu();
+        this.getClientPeriodTypes();
+        this.getConsultantPeriodTypes();
+        this.getPeriodStepTypes();
+    }
+
+    detectClientPeriodType(clietPeriod: string) {
+        // const detectedType = this.workflowClientPeriodTypes.find(x => x.name === clietPeriod);
+        // if (detectedType) {
+        //     return detectedType.id;
+        // }
+
+        return this.workflowClientPeriodTypes.find(x => x.name === clietPeriod)?.id ?? null;
+    }
+
+    getClientPeriodTypes() {
+        this._lookupService.getWorkflowClientPeriodTypes()
+            .pipe(finalize(() => {
+
+            }))
+            .subscribe(result => {
+                this.workflowClientPeriodTypes = result;
+            });
+    }
+
+    getConsultantPeriodTypes() {
+        this._lookupService.getWorkflowConsultantPeriodTypes()
+            .pipe(finalize(() => {
+
+            }))
+            .subscribe(result => {
+                this.workflowConsultantPeriodTypes = result;
+            });
+    }
+
+    getPeriodStepTypes() {
+        this._lookupService.getWorkflowPeriodStepTypes()
+            .pipe(finalize(() => {
+
+            }))
+            .subscribe(result => {
+                this.workflowClientPeriodTypes = result;
+            });
     }
 
     ngAfterViewInit(): void {

@@ -20,6 +20,10 @@ export class InternalLookupService {
     clientSpecialRateReportUnits: EnumEntityTypeDto[] = [];
     clientSpecialRateSpecifications: EnumEntityTypeDto[] = [];
 
+    workflowClientPeriodTypes: EnumEntityTypeDto[] = [];
+    workflowConsultantPeriodTypes: EnumEntityTypeDto[] = [];
+    workflowPeriodStepTypes: EnumEntityTypeDto[] = [];
+
     constructor(private _enumService: EnumServiceProxy) {
 
     }
@@ -40,6 +44,9 @@ export class InternalLookupService {
         this.getSpecialRateOrFeeDirections();
         this.getSpecialRateReportUnits();
         this.getSpecialRateSpecifications();
+        this.getWorkflowClientPeriodTypes();
+        this.getWorkflowConsultantPeriodTypes();
+        this.getWorkflowPeriodStepTypes();
     }
 
     getCurrencies(): Observable<EnumEntityTypeDto[]> {
@@ -304,6 +311,60 @@ export class InternalLookupService {
                     .subscribe(response => {
                         this.clientSpecialRateSpecifications = response;
                         observer.next(this.clientSpecialRateSpecifications);
+                        observer.complete();
+                    }, error => {
+                        observer.error(error);
+                    });
+            }
+        });
+    }
+
+    getWorkflowClientPeriodTypes(): Observable<EnumEntityTypeDto[]> {
+        return new Observable<EnumEntityTypeDto[]>((observer) => {
+            if (this.workflowClientPeriodTypes.length) {
+                observer.next(this.workflowClientPeriodTypes);
+                observer.complete();
+            } else {
+                this._enumService.clientPeriodType()
+                    .subscribe(response => {
+                        this.workflowClientPeriodTypes = response;
+                        observer.next(this.workflowClientPeriodTypes);
+                        observer.complete();
+                    }, error => {
+                        observer.error(error);
+                    });
+            }
+        });
+    }
+
+    getWorkflowConsultantPeriodTypes(): Observable<EnumEntityTypeDto[]> {
+        return new Observable<EnumEntityTypeDto[]>((observer) => {
+            if (this.workflowConsultantPeriodTypes.length) {
+                observer.next(this.workflowConsultantPeriodTypes);
+                observer.complete();
+            } else {
+                this._enumService.clientPeriodType()
+                    .subscribe(response => {
+                        this.workflowConsultantPeriodTypes = response;
+                        observer.next(this.workflowConsultantPeriodTypes);
+                        observer.complete();
+                    }, error => {
+                        observer.error(error);
+                    });
+            }
+        });
+    }
+
+    getWorkflowPeriodStepTypes(): Observable<EnumEntityTypeDto[]> {
+        return new Observable<EnumEntityTypeDto[]>((observer) => {
+            if (this.workflowPeriodStepTypes.length) {
+                observer.next(this.workflowPeriodStepTypes);
+                observer.complete();
+            } else {
+                this._enumService.clientPeriodType()
+                    .subscribe(response => {
+                        this.workflowPeriodStepTypes = response;
+                        observer.next(this.workflowPeriodStepTypes);
                         observer.complete();
                     }, error => {
                         observer.error(error);

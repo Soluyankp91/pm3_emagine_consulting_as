@@ -6,7 +6,7 @@ import { Subject } from 'rxjs';
 import { finalize, takeUntil } from 'rxjs/operators';
 import { ConfirmationDialogComponent } from 'src/app/shared/components/confirmation-dialog/confirmation-dialog.component';
 import { ManagerStatus } from 'src/app/shared/components/manager-search/manager-search.model';
-import { WorkflowServiceProxy } from 'src/shared/service-proxies/service-proxies';
+import { WorkflowProcessDto, WorkflowServiceProxy } from 'src/shared/service-proxies/service-proxies';
 import { WorkflowDataService } from '../workflow-data.service';
 import { SideNavigationParentItemDto } from '../workflow-extension/workflow-extension.model';
 import { WorkflowSalesComponent } from '../workflow-sales/workflow-sales.component';
@@ -39,6 +39,7 @@ export class PrimaryWorkflowComponent implements OnInit, AfterViewInit {
     managerStatus = ManagerStatus;
 
 
+    sideMenuItms: WorkflowProcessDto[] = [];
     // WAIT A SEC, MAMA ZAISHLA!!!
 
     private _unsubscribe = new Subject();
@@ -68,6 +69,7 @@ export class PrimaryWorkflowComponent implements OnInit, AfterViewInit {
 
             }))
             .subscribe(result => {
+                this.sideMenuItms = result?.clientPeriods![0].workflowProcesses!;
                 console.log(result);
             });
     }

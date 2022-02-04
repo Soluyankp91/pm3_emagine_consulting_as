@@ -2,7 +2,7 @@
     <div fxFlex="20%" class="workflow-navigation--wrapper">
         <ng-scrollbar>
             <mat-accordion class="workflow-sidenav--expansion" [togglePosition]="'before'">
-                <mat-expansion-panel class="mat-elevation-z0" *ngFor="let item of sideNavigation; index as i" [expanded]="sectionIndex === i" (opened)="changeSideSection(item, i)">
+                <mat-expansion-panel class="mat-elevation-z0" *ngFor="let item of sideNavigation; index as i" [expanded]="sectionIndex === i" (click)="sectionIndex === i ? $event.preventDefault() : ''" (opened)="changeSideSection(item, i)">
                     <mat-expansion-panel-header [collapsedHeight]="'80px'" [expandedHeight]="'80px'">
                         <div fxLayout="row" fxLayoutAlign="space-between start" class="u-w--100">
                             <div class="sidenav-expansion--header">
