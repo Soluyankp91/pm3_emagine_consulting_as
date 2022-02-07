@@ -67,7 +67,7 @@ export class PrimaryWorkflowComponent implements OnInit, AfterViewInit {
 
     changeStepSelection(stepName: string, stepId: any, stepEnum: number) {
         this.selectedStep = stepName;
-        this.selectedStepEnum =
+        this.selectedStepEnum = stepEnum;
         this._workflowDataService.workflowProgress.currentlyActiveStep = stepId * 1;
     }
 
