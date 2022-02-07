@@ -21,7 +21,6 @@ export class WorkflowExtensionForm extends FormGroup {
             noExtensionEndDate: new FormControl(null),
             workflowInformation: new FormControl(null)
         })
-
     }
     // get salesExtension() {
     //     return this.get('salesExtension') as FormArray;

@@ -66,24 +66,7 @@ export class WorkflowDataService {
                 (this.workflowProgress[key] as any) = status[key];
             }
         }
-
         console.log(this.workflowProgress);
-
-        // this.workflowProgress = {
-        //     started: status.started,
-        //     isExtensionAdded: status.isExtensionAdded,
-        //     currentlyActiveExtensionIndex: status.currentlyActiveExtensionIndex,
-        //     isExtensionCompleted: status.isExtensionCompleted,
-        //     isExtensionSalesSaved: status.isExtensionSalesSaved,
-        //     isExtensionContractsSaved: status.isExtensionContractsSaved,
-        //     isWorkflowSalesSaved: status.isWorkflowSalesSaved,
-        //     isWorkflowContractsSaved: status.isWorkflowContractsSaved,
-        //     isWorkflowAccountsSaved: status.isWorkflowAccountsSaved,
-        //     isPrimaryWorkflowCompleted: status.isPrimaryWorkflowCompleted,
-        //     isTerminationAdded: status.isTerminationAdded,
-        //     currentlyActiveSection: status.currentlyActiveSection,
-        //     currentlyActiveStep: status.currentlyActiveStep
-        // }
     }
 
     get getWorkflowProgress() {
