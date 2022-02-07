@@ -3,8 +3,8 @@
         hi
     </ng-container>
     <ng-template #editMode>
-        <ng-container [ngSwitch]="activeSideSection">
-            <ng-container *ngSwitchCase="workflowSideSections.StartWorkflow">
+        <ng-container [ngSwitch]="true">
+            <ng-container *ngSwitchCase="activeSideSection === workflowSideSections.StartWorkflow">
                 StartWorkflow
                 <form [formGroup]="salesMainDataForm" id="mainData" class="workflow-form workflow-form--main u-mb--20 u-mt--20 u-w--100">
                     <div fxLayout="row" fxLayoutAlign="start start" fxLayoutGap="30px">
@@ -955,7 +955,7 @@
                     </ng-container>
                 </form>
             </ng-container>
-            <ng-container *ngSwitchCase="workflowSideSections.ExtendWorkflow || workflowSideSections.ChangeWorkflow">
+            <ng-container *ngSwitchCase="activeSideSection === workflowSideSections.ExtendWorkflow || activeSideSection === workflowSideSections.ChangeWorkflow">
                 ExtendWorkflow or ChangeWorkflow
                 <form [formGroup]="salesMainDataForm" id="mainData" class="workflow-form workflow-form--main u-mb--20 u-mt--20 u-w--100">
                     <div fxLayout="row" fxLayoutAlign="start start" fxLayoutGap="30px">
@@ -1881,13 +1881,13 @@
                     </ng-container>
                 </form>
             </ng-container>
-            <ng-container *ngSwitchCase="workflowSideSections.TerminateWorkflow || workflowSideSections.TerminateConsultant">
+            <ng-container *ngSwitchCase="activeSideSection === workflowSideSections.TerminateWorkflow || activeSideSection === workflowSideSections.TerminateConsultant">
                 TerminateWorkflow or TerminateConsultant
             </ng-container>
             <!-- <ng-container *ngSwitchCase="workflowSideSections.ChangeWorkflow">
                 ChangeWorkflow
             </ng-container> -->
-            <ng-container *ngSwitchCase="workflowSideSections.AddConsultant || workflowSideSections.ChangeConsultant || workflowSideSections.ExtendConsultant">
+            <ng-container *ngSwitchCase="(activeSideSection === workflowSideSections.AddConsultant) || (activeSideSection === workflowSideSections.ChangeConsultant) || (activeSideSection === workflowSideSections.ExtendConsultant)">
                 AddConsultant or ChangeConsultant or ExtendConsultant
                 <form [formGroup]="salesMainDataForm" id="mainData" class="workflow-form workflow-form--main u-mb--20 u-mt--20 u-w--100">
                     <div fxLayout="row" fxLayoutAlign="start start" fxLayoutGap="30px">
@@ -2266,6 +2266,7 @@
                 ExtendConsultant
             </ng-container> -->
             <ng-container *ngSwitchDefault>
+                Default
                 <form [formGroup]="salesMainDataForm" id="mainData" class="workflow-form workflow-form--main u-mb--20 u-mt--20 u-w--100">
                     <div fxLayout="row" fxLayoutAlign="start start" fxLayoutGap="30px">
                         <div class="text-end" fxFlex="20%">

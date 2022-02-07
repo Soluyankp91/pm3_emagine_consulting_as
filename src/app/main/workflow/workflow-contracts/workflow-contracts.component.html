@@ -1,4 +1,22 @@
 <div class="workflow-contracts">
+    <!-- <ng-container [ngSwitch]="true">
+        <ng-container *ngSwitchCase="activeSideSection === workflowSideSections.StartWorkflow">
+
+        </ng-container>
+        <ng-container *ngSwitchCase="activeSideSection === workflowSideSections.ExtendWorkflow 
+            || activeSideSection === workflowSideSections.ChangeWorkflow">
+
+        </ng-container>
+        <ng-container *ngSwitchCase="(activeSideSection === workflowSideSections.AddConsultant) 
+            || (activeSideSection === workflowSideSections.ChangeConsultant) 
+            || (activeSideSection === workflowSideSections.ExtendConsultant)">
+
+        </ng-container>
+        <ng-container *ngSwitchCase="activeSideSection === workflowSideSections.TerminateWorkflow 
+            || activeSideSection === workflowSideSections.TerminateConsultant">
+            TerminateWorkflow or TerminateConsultant
+        </ng-container>
+    </ng-container> -->
     <mat-accordion [multi]="true">
         <mat-expansion-panel id="mainData" class="mat-elevation-z0">
             <mat-expansion-panel-header [collapsedHeight]="'80px'" [expandedHeight]="'80px'">
@@ -45,123 +63,129 @@
                 </div>
             </form>
         </mat-expansion-panel>
-        <mat-expansion-panel class="mat-elevation-z0">
-            <mat-expansion-panel-header [collapsedHeight]="'80px'" [expandedHeight]="'80px'">
-                Client data
-            </mat-expansion-panel-header>
-            <form fxLayout="column" fxLayoutAlign="start start" [formGroup]="contractsClientDataForm" class="workflow-form workflow-form--sales u-w--100">
-                <div fxLayout="column" class="u-mb--20">
-                    <h3 class="workflow-gray--header">Shared Cap on Hour Reporting</h3>
-                    <span class="workflow-darkblue--text">Cap on units</span>
-                </div>
 
-                <div fxLayout="row" fxLayoutAlign="start start" class="u-w--100">
-                    <mat-form-field appearance="outline" class="u-w--100  textarea-input" fxFlex="0 0 calc(66% + 16px)">
-                        <mat-label>Special Contract Terms</mat-label>
-                        <textarea matInput autocomplete="new-password" name="specialContractTerms" formControlName="specialContractTerms">
-                        </textarea>
-                    </mat-form-field>
-                </div>
+        <!-- hidden on AddConsultant, ChangeConsultant, Extend Consultant -->
+        <ng-container *ngIf="activeSideSection === workflowSideSections.StartWorkflow || activeSideSection === workflowSideSections.ExtendWorkflow || activeSideSection === workflowSideSections.ChangeWorkflow">
+            <mat-expansion-panel id="clientData" class="mat-elevation-z0" >
+                <mat-expansion-panel-header [collapsedHeight]="'80px'" [expandedHeight]="'80px'">
+                    Client data
+                </mat-expansion-panel-header>
+                <form fxLayout="column" fxLayoutAlign="start start" [formGroup]="contractsClientDataForm" class="workflow-form workflow-form--sales u-w--100">
+                    <div fxLayout="column" class="u-mb--20">
+                        <h3 class="workflow-gray--header">Shared Cap on Hour Reporting</h3>
+                        <span class="workflow-darkblue--text">Cap on units</span>
+                    </div>
+    
+                    <div fxLayout="row" fxLayoutAlign="start start" class="u-w--100">
+                        <mat-form-field appearance="outline" class="u-w--100  textarea-input" fxFlex="0 0 calc(66% + 16px)">
+                            <mat-label>Special Contract Terms</mat-label>
+                            <textarea matInput autocomplete="new-password" name="specialContractTerms" formControlName="specialContractTerms">
+                            </textarea>
+                        </mat-form-field>
+                    </div>
+    
+                    <div fxLayout="row" fxLayoutAlign="start start" class="u-w--100 u-mb--20">
+                        <mat-checkbox color="accent" formControlName="isSpecialContractTermsNone" name="isSpecialContractTermsNone" class="black-checkbox u-mt--10" (change)="disableOrEnableInput(contractsClientDataForm?.isSpecialContractTermsNone?.value, contractsClientDataForm?.specialContractTerms)">
+                            None
+                        </mat-checkbox>
+                    </div>
+    
+                    <h2 class="workflow-section--header">Client Special Rates</h2>
+                    <div formArrayName="clientSpecialRates" class="u-w--100 u-mb--20">
+                        <div fxLayout="row" fxLayoutAlign="start center" class="u-mb--10">
+                            <div class="u-ml--20" fxFlex="35%">
+                                <span class="workflow-contracts--list-header">Rate name</span>
+                            </div>
+                            <div fxFlex="17.5%">
+                                <span class="workflow-contracts--list-header">Rate direction</span>
+                            </div>
+                            <div fxFlex="25%">
+                                <span class="workflow-contracts--list-header">Reporting unit</span>
+                            </div>
+                            <div fxFlex="22.5%">
+                                <span class="workflow-contracts--list-header">Client rate</span>
+                            </div>
+                        </div>
+                        <div fxLayout="row" fxLayoutAlign="start center" class="workflow-contracts--list u-w--100 u-mb--10" *ngFor="let signer of clientSpecialRates.controls; let i = index" [formGroupName]="i">
+                            <div class="u-ml--20" fxFlex="35%">
+                                <span class="workflow-contracts--list-item">Onsite rate</span>
+                            </div>
+                            <div fxFlex="17.5%">
+                                <span class="workflow-contracts--list-item">Client / Pay</span>
+                            </div>
+                            <div fxFlex="25%">
+                                <span class="workflow-contracts--list-item">Months</span>
+                            </div>
+                            <div fxFlex="17.5%">
+                                <span class="workflow-contracts--list-item">-</span>
+                            </div>
+                            <div fxFlex="5%">
+                                <button class="form-icon--delete-row u-mt--5"  mat-icon-button [matMenuTriggerFor]="contractActions" [matMenuTriggerData]="{elem: i}" (click)="$event.stopPropagation()"><mat-icon>more_horiz</mat-icon></button>
+                            </div>
+                            <mat-menu #contractActions="matMenu" [overlapTrigger]="false" (click)="$event.stopPropagation();">
+                                <ng-template matMenuContent let-elem="elem">
+                                    <button mat-menu-item (click)="removeSpecialRate(elem)">
+                                        Delete
+                                    </button>
+                                </ng-template>
+                            </mat-menu>
+                        </div>
+                        <button class="button-add" mat-flat-button (click)="addSpecialRateToForm()">
+                            <mat-icon>add</mat-icon>
+                            Add special rates
+                        </button>
+                    </div>
+    
+                    <h2 class="workflow-section--header">Client Fees</h2>
+                    <div formArrayName="clientFees" class="u-w--100 u-mb--20">
+                        <div fxLayout="row" fxLayoutAlign="start center" class="u-mb--10">
+                            <div class="u-ml--20" fxFlex="35%">
+                                <span class="workflow-contracts--list-header">Fee name</span>
+                            </div>
+                            <div fxFlex="17.5%">
+                                <span class="workflow-contracts--list-header">Fee direction</span>
+                            </div>
+                            <div fxFlex="25%">
+                                <span class="workflow-contracts--list-header">Frequency</span>
+                            </div>
+                            <div fxFlex="22.5%">
+                                <span class="workflow-contracts--list-header">Client rate</span>
+                            </div>
+                        </div>
+                        <div fxLayout="row" fxLayoutAlign="start center" class="workflow-contracts--list u-w--100 u-mb--10" *ngFor="let signer of clientFees.controls; let i = index" [formGroupName]="i">
+                            <div class="u-ml--20" fxFlex="35%">
+                                <span class="workflow-contracts--list-item">Laptop fee</span>
+                            </div>
+                            <div fxFlex="17.5%">
+                                <span class="workflow-contracts--list-item">Client / Pay</span>
+                            </div>
+                            <div fxFlex="25%">
+                                <span class="workflow-contracts--list-item">Every milestone</span>
+                            </div>
+                            <div fxFlex="17.5%">
+                                <span class="workflow-contracts--list-item">500 PLN</span>
+                            </div>
+                            <div fxFlex="5%">
+                                <button class="form-icon--delete-row u-mt--5"  mat-icon-button [matMenuTriggerFor]="contractActions" [matMenuTriggerData]="{elem: i}" (click)="$event.stopPropagation()"><mat-icon>more_horiz</mat-icon></button>
+                            </div>
+                            <mat-menu #contractActions="matMenu" [overlapTrigger]="false" (click)="$event.stopPropagation();">
+                                <ng-template matMenuContent let-elem="elem">
+                                    <button mat-menu-item (click)="removeFee(elem)">
+                                        Delete
+                                    </button>
+                                </ng-template>
+                            </mat-menu>
+                        </div>
+                        <button class="button-add" mat-flat-button (click)="addClientFeeToForm()">
+                            <mat-icon>add</mat-icon>
+                            Add special fees
+                        </button>
+                    </div>
+                </form>
+            </mat-expansion-panel>
+        </ng-container>
+        
 
-                <div fxLayout="row" fxLayoutAlign="start start" class="u-w--100 u-mb--20">
-                    <mat-checkbox color="accent" formControlName="isSpecialContractTermsNone" name="isSpecialContractTermsNone" class="black-checkbox u-mt--10" (change)="disableOrEnableInput(contractsClientDataForm?.isSpecialContractTermsNone?.value, contractsClientDataForm?.specialContractTerms)">
-                        None
-                    </mat-checkbox>
-                </div>
-
-                <h2 class="workflow-section--header">Client Special Rates</h2>
-                <div formArrayName="clientSpecialRates" class="u-w--100 u-mb--20">
-                    <div fxLayout="row" fxLayoutAlign="start center" class="u-mb--10">
-                        <div class="u-ml--20" fxFlex="35%">
-                            <span class="workflow-contracts--list-header">Rate name</span>
-                        </div>
-                        <div fxFlex="17.5%">
-                            <span class="workflow-contracts--list-header">Rate direction</span>
-                        </div>
-                        <div fxFlex="25%">
-                            <span class="workflow-contracts--list-header">Reporting unit</span>
-                        </div>
-                        <div fxFlex="22.5%">
-                            <span class="workflow-contracts--list-header">Client rate</span>
-                        </div>
-                    </div>
-                    <div fxLayout="row" fxLayoutAlign="start center" class="workflow-contracts--list u-w--100 u-mb--10" *ngFor="let signer of clientSpecialRates.controls; let i = index" [formGroupName]="i">
-                        <div class="u-ml--20" fxFlex="35%">
-                            <span class="workflow-contracts--list-item">Onsite rate</span>
-                        </div>
-                        <div fxFlex="17.5%">
-                            <span class="workflow-contracts--list-item">Client / Pay</span>
-                        </div>
-                        <div fxFlex="25%">
-                            <span class="workflow-contracts--list-item">Months</span>
-                        </div>
-                        <div fxFlex="17.5%">
-                            <span class="workflow-contracts--list-item">-</span>
-                        </div>
-                        <div fxFlex="5%">
-                            <button class="form-icon--delete-row u-mt--5"  mat-icon-button [matMenuTriggerFor]="contractActions" [matMenuTriggerData]="{elem: i}" (click)="$event.stopPropagation()"><mat-icon>more_horiz</mat-icon></button>
-                        </div>
-                        <mat-menu #contractActions="matMenu" [overlapTrigger]="false" (click)="$event.stopPropagation();">
-                            <ng-template matMenuContent let-elem="elem">
-                                <button mat-menu-item (click)="removeSpecialRate(elem)">
-                                    Delete
-                                </button>
-                            </ng-template>
-                        </mat-menu>
-                    </div>
-                    <button class="button-add" mat-flat-button (click)="addSpecialRateToForm()">
-                        <mat-icon>add</mat-icon>
-                        Add special rates
-                    </button>
-                </div>
-
-                <h2 class="workflow-section--header">Client Fees</h2>
-                <div formArrayName="clientFees" class="u-w--100 u-mb--20">
-                    <div fxLayout="row" fxLayoutAlign="start center" class="u-mb--10">
-                        <div class="u-ml--20" fxFlex="35%">
-                            <span class="workflow-contracts--list-header">Fee name</span>
-                        </div>
-                        <div fxFlex="17.5%">
-                            <span class="workflow-contracts--list-header">Fee direction</span>
-                        </div>
-                        <div fxFlex="25%">
-                            <span class="workflow-contracts--list-header">Frequency</span>
-                        </div>
-                        <div fxFlex="22.5%">
-                            <span class="workflow-contracts--list-header">Client rate</span>
-                        </div>
-                    </div>
-                    <div fxLayout="row" fxLayoutAlign="start center" class="workflow-contracts--list u-w--100 u-mb--10" *ngFor="let signer of clientFees.controls; let i = index" [formGroupName]="i">
-                        <div class="u-ml--20" fxFlex="35%">
-                            <span class="workflow-contracts--list-item">Laptop fee</span>
-                        </div>
-                        <div fxFlex="17.5%">
-                            <span class="workflow-contracts--list-item">Client / Pay</span>
-                        </div>
-                        <div fxFlex="25%">
-                            <span class="workflow-contracts--list-item">Every milestone</span>
-                        </div>
-                        <div fxFlex="17.5%">
-                            <span class="workflow-contracts--list-item">500 PLN</span>
-                        </div>
-                        <div fxFlex="5%">
-                            <button class="form-icon--delete-row u-mt--5"  mat-icon-button [matMenuTriggerFor]="contractActions" [matMenuTriggerData]="{elem: i}" (click)="$event.stopPropagation()"><mat-icon>more_horiz</mat-icon></button>
-                        </div>
-                        <mat-menu #contractActions="matMenu" [overlapTrigger]="false" (click)="$event.stopPropagation();">
-                            <ng-template matMenuContent let-elem="elem">
-                                <button mat-menu-item (click)="removeFee(elem)">
-                                    Delete
-                                </button>
-                            </ng-template>
-                        </mat-menu>
-                    </div>
-                    <button class="button-add" mat-flat-button (click)="addClientFeeToForm()">
-                        <mat-icon>add</mat-icon>
-                        Add special fees
-                    </button>
-                </div>
-            </form>
-        </mat-expansion-panel>
         <form [formGroup]="contractsConsultantsDataForm" class="workflow-form--consultants u-w--100" id="consultantData">
             <ng-container formArrayName="consultantData">
                 <mat-expansion-panel *ngFor="let consultant of contractsConsultantsDataForm.consultantData.controls; let consultantIndex = index" [formGroupName]="consultantIndex" class="mat-elevation-z0">
@@ -429,7 +453,8 @@
                 </mat-expansion-panel>
             </ng-container>
         </form>
-        <mat-expansion-panel class="mat-elevation-z0">
+
+        <mat-expansion-panel id="syncLegalContracts" class="mat-elevation-z0">
             <mat-expansion-panel-header [collapsedHeight]="'80px'" [expandedHeight]="'80px'">
                 Sync & legal contracts
             </mat-expansion-panel-header>
@@ -455,21 +480,51 @@
                     </mat-checkbox>
                 </div>
 
-                <mat-divider>
-                </mat-divider>
+                <mat-divider></mat-divider>
 
                 <h2 class="workflow-section--header u-mb--20 u-mt--20">Legal contracts</h2>
-
+                
+                <!-- hidden on Add Consultant -->
+                <ng-container *ngIf="activeSideSection !== workflowSideSections.AddConsultant">
+                    <div fxLayout="column" fxLayoutAlign="start start" class="u-mb--20">
+                        <span class="workflow-darkblue--text">Client legal contracts</span>
+                        <div fxlayout="row" fxLayoutAlign="start center" class="u-mb--10">
+                            <button class="button-accept u-mr--20" disabled mat-flat-button>
+                                Open contract module for client
+                            </button>
+                            <mat-checkbox *ngIf="activeSideSection === workflowSideSections.ChangeWorkflow" color="accent" formControlName="newLegalContract" name="isSpecialContractTermsNone" class="black-checkbox u-mt--10">
+                                New legal contract needed
+                            </mat-checkbox>
+                        </div>
+                        <div fxLayout="row" fxLayoutAlign="start center" class="u-mb--20">
+                            <span class="icon-done u-mr--5">
+                                <mat-icon>done</mat-icon>
+                            </span>
+                            <span class="sync-hint-text">
+                                Complete
+                            </span>
+                        </div>
+                    </div>
+                </ng-container>
+                
                 <div fxLayout="column" fxLayoutAlign="start start" class="u-mb--20">
-                    <span class="workflow-darkblue--text">Client legal contracts</span>
+                    <span class="workflow-darkblue--text u-mt--20">Consultant legal contracts</span>
+                    <div fxLayout="row" fxLayoutAlign="start center" class="u-mb--20">
+                        <img class="workflow-contracts--consultant-img u-mr--16" src="https://placekitten.com/50/50">
+                        <p class="workflow-contracts--consultant-name">
+                            <!-- {{contractsConsultantsDataForm.consultantData.at(i).get('consultantName')?.value}} -->
+                            Robertsen Oscar
+                        </p>
+                    </div>
                     <div fxlayout="row" fxLayoutAlign="start center" class="u-mb--10">
-                        <button class="button-accept u-mr--20" disabled mat-flat-button>
-                            Open contract module for client
+                        <button class="button-outlined  u-mr--20" disabled mat-flat-button>
+                            Open contract module for consultant
                         </button>
-                        <mat-checkbox *ngIf="changeWorkflow" color="accent" formControlName="newLegalContract" name="isSpecialContractTermsNone" class="black-checkbox u-mt--10">
+                        <mat-checkbox *ngIf="activeSideSection === workflowSideSections.ChangeWorkflow" color="accent" formControlName="newLegalContract" name="isSpecialContractTermsNone" class="black-checkbox u-mt--10">
                             New legal contract needed
                         </mat-checkbox>
                     </div>
+    
                     <div fxLayout="row" fxLayoutAlign="start center" class="u-mb--20">
                         <span class="icon-done u-mr--5">
                             <mat-icon>done</mat-icon>
@@ -478,58 +533,31 @@
                             Complete
                         </span>
                     </div>
-
-                    <span class="workflow-darkblue--text u-mt--20">Consultant legal contracts</span>
-                </div>
-
-                <div fxLayout="row" fxLayoutAlign="start center" class="u-mb--20">
-                    <img class="workflow-contracts--consultant-img u-mr--16" src="https://placekitten.com/50/50">
-                    <p class="workflow-contracts--consultant-name">
-                        <!-- {{contractsConsultantsDataForm.consultantData.at(i).get('consultantName')?.value}} -->
-                        Robertsen Oscar
-                    </p>
-                </div>
-                <div fxlayout="row" fxLayoutAlign="start center" class="u-mb--10">
-                    <button class="button-outlined  u-mr--20" disabled mat-flat-button>
-                        Open contract module for client
-                    </button>
-                    <mat-checkbox *ngIf="changeWorkflow" color="accent" formControlName="newLegalContract" name="isSpecialContractTermsNone" class="black-checkbox u-mt--10">
-                        New legal contract needed
-                    </mat-checkbox>
-                </div>
-
-                <div fxLayout="row" fxLayoutAlign="start center" class="u-mb--20">
-                    <span class="icon-done u-mr--5">
-                        <mat-icon>done</mat-icon>
-                    </span>
-                    <span class="sync-hint-text">
-                        Complete
-                    </span>
-                </div>
-
-                <div fxLayout="row" fxLayoutAlign="start center" class="u-mb--20">
-                    <img class="workflow-contracts--consultant-img u-mr--16" src="https://placekitten.com/50/50">
-                    <p class="workflow-contracts--consultant-name">
-                        <!-- {{financesConsultantsForm.consultants.at(i).get('consultantName')?.value}} -->
-                        Van Trier Mia
-                    </p>
-                </div>
-
-                <div fxlayout="row" fxLayoutAlign="start center" class="u-mb--10">
-                    <button class="button-outlined  u-mr--20" disabled mat-flat-button>
-                        Open contract module for client
-                    </button>
-                    <mat-checkbox *ngIf="changeWorkflow" color="accent" formControlName="newLegalContract" name="isSpecialContractTermsNone" class="black-checkbox u-mt--10">
-                        New legal contract needed
-                    </mat-checkbox>
-                </div>
-                <div fxLayout="row" fxLayoutAlign="start center" class="u-mb--20">
-                    <span class="icon-in-progress u-mr--5">
-                        <mat-icon svgIcon="in-progress-icon"></mat-icon>
-                    </span>
-                    <span class="sync-hint-text">
-                        In progress
-                    </span>
+    
+                    <div fxLayout="row" fxLayoutAlign="start center" class="u-mb--20">
+                        <img class="workflow-contracts--consultant-img u-mr--16" src="https://placekitten.com/50/50">
+                        <p class="workflow-contracts--consultant-name">
+                            <!-- {{financesConsultantsForm.consultants.at(i).get('consultantName')?.value}} -->
+                            Van Trier Mia
+                        </p>
+                    </div>
+    
+                    <div fxlayout="row" fxLayoutAlign="start center" class="u-mb--10">
+                        <button class="button-outlined  u-mr--20" disabled mat-flat-button>
+                            Open contract module for client
+                        </button>
+                        <mat-checkbox *ngIf="activeSideSection === workflowSideSections.ChangeWorkflow" color="accent" formControlName="newLegalContract" name="isSpecialContractTermsNone" class="black-checkbox u-mt--10">
+                            New legal contract needed
+                        </mat-checkbox>
+                    </div>
+                    <div fxLayout="row" fxLayoutAlign="start center" class="u-mb--20">
+                        <span class="icon-in-progress u-mr--5">
+                            <mat-icon svgIcon="in-progress-icon"></mat-icon>
+                        </span>
+                        <span class="sync-hint-text">
+                            In progress
+                        </span>
+                    </div>
                 </div>
             </form>
         </mat-expansion-panel>
