@@ -83,10 +83,6 @@ export class WorkflowDetailsComponent implements OnInit, OnDestroy, AfterViewIni
         this._lookupService.getData();
     }
 
-    hi() {
-        this._workflowDataService.updateWorkflowProgressStatus({isPrimaryWorkflowCompleted: !this._workflowDataService.getWorkflowProgress.isPrimaryWorkflowCompleted})
-    }
-
     ngAfterViewInit(): void {
         this.scrollDispatcher.scrolled()
             .pipe(
