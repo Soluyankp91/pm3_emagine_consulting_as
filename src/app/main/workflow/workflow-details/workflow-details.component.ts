@@ -407,6 +407,7 @@ export class WorkflowDetailsComponent implements OnInit, OnDestroy, AfterViewIni
                 switch (this._workflowDataService.workflowProgress.currentlyActiveStep) {
                     case WorkflowSteps.Sales:
                         console.log('Complete WF Sales');
+                        this._workflowDataService.updateWorkflowProgressStatus({isWorkflowSalesSaved: true});
                         break;
                     case WorkflowSteps.Contracts:
                         console.log('Complete WF Contracts');

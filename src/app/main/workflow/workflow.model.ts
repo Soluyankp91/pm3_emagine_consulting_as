@@ -21,7 +21,6 @@ export class WorkflowExtensionForm extends FormGroup {
             noExtensionEndDate: new FormControl(null),
             workflowInformation: new FormControl(null)
         })
-
     }
     // get salesExtension() {
     //     return this.get('salesExtension') as FormArray;
@@ -518,10 +517,6 @@ export const AddConsultantDto: SideNavigationParentItemDto = {
                     value: 'mainData'
                 },
                 {
-                    name: 'Client data',
-                    value: 'clientData'
-                },
-                {
                     name: 'Consultant data',
                     value: 'consultantData'
                 }
@@ -538,10 +533,6 @@ export const AddConsultantDto: SideNavigationParentItemDto = {
                 {
                     name: 'Main data',
                     value: 'mainData'
-                },
-                {
-                    name: 'Client data',
-                    value: 'clientData'
                 },
                 {
                     name: 'Consultant data',
@@ -585,10 +576,6 @@ export const ChangeConsultantDto: SideNavigationParentItemDto = {
                     value: 'mainData'
                 },
                 {
-                    name: 'Client data',
-                    value: 'clientData'
-                },
-                {
                     name: 'Consultant data',
                     value: 'consultantData'
                 }
@@ -605,10 +592,6 @@ export const ChangeConsultantDto: SideNavigationParentItemDto = {
                 {
                     name: 'Main data',
                     value: 'mainData'
-                },
-                {
-                    name: 'Client data',
-                    value: 'clientData'
                 },
                 {
                     name: 'Consultant data',
@@ -643,10 +626,6 @@ export const ExtendConsultantDto: SideNavigationParentItemDto = {
                     value: 'mainData'
                 },
                 {
-                    name: 'Client data',
-                    value: 'clientData'
-                },
-                {
                     name: 'Consultant data',
                     value: 'consultantData'
                 }
@@ -663,10 +642,6 @@ export const ExtendConsultantDto: SideNavigationParentItemDto = {
                 {
                     name: 'Main data',
                     value: 'mainData'
-                },
-                {
-                    name: 'Client data',
-                    value: 'clientData'
                 },
                 {
                     name: 'Consultant data',
@@ -768,6 +743,7 @@ export const WorkflowList = [
     {
         flag: WorkflowFlag.NewSales,
         id: '0d17b2e5-d4fd-4321-8d28-7af88285f22e',
+
         client: 'Martha Marikel',
         consultants: [
             { name: 'Martha Marikel' },

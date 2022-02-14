@@ -4,6 +4,7 @@ import { AbstractControl, FormArray, FormBuilder, FormControl, FormGroup } from 
 import { MatDialog } from '@angular/material/dialog';
 import { WorkflowConsultantActionsDialogComponent } from '../workflow-consultant-actions-dialog/workflow-consultant-actions-dialog.component';
 import { ConsultantDiallogAction } from '../workflow-sales/workflow-sales.model';
+import { WorkflowSideSections } from '../workflow.model';
 import { WorkflowContractsClientDataForm, WorkflowContractsConsultantsDataForm, WorkflowContractsMainForm, WorkflowContractsSyncForm } from './workflow-contracts.model';
 
 @Component({
@@ -22,6 +23,8 @@ export class WorkflowContractsComponent implements OnInit {
 
     // Changed all above to enum
     @Input() activeSideSection: number;
+
+    workflowSideSections = WorkflowSideSections;
 
     contractsMainDataForm: WorkflowContractsMainForm;
     contractsClientDataForm: WorkflowContractsClientDataForm;

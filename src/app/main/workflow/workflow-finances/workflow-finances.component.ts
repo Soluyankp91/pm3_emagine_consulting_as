@@ -1,5 +1,6 @@
 import { Component, Input, OnInit } from '@angular/core';
 import { FormArray, FormBuilder, FormControl } from '@angular/forms';
+import { WorkflowSideSections } from '../workflow.model';
 import { FinancesClientForm, FinancesConsultantsForm } from './workflow-finances.model';
 
 @Component({
@@ -16,6 +17,7 @@ export class WorkflowFinancesComponent implements OnInit {
 
     // Changed all above to enum
     @Input() activeSideSection: number;
+    workflowSideSections = WorkflowSideSections;
 
     financesClientForm: FinancesClientForm;
     financesConsultantsForm: FinancesConsultantsForm;
