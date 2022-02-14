@@ -8,7 +8,7 @@ import { finalize, takeUntil } from 'rxjs/operators';
 import { InternalLookupService } from 'src/app/shared/common/internal-lookup.service';
 import { ConfirmationDialogComponent } from 'src/app/shared/components/confirmation-dialog/confirmation-dialog.component';
 import { AppComopnentBase } from 'src/shared/app-component-base';
-import { ClientRateDto, ConsultantSalesDataDto, ContractSignerDto, EnumEntityTypeDto, EnumServiceProxy, SalesAdditionalDataDto, SalesClientDataDto, SalesMainDataDto, SignerRole, StartWorkflowControllerServiceProxy, WorkflowSalesDataDto, WorkflowsServiceProxy } from 'src/shared/service-proxies/service-proxies';
+import { ClientPeriodSalesDataDto, ClientPeriodServiceProxy, ClientRateDto, ConsultantRateDto, ConsultantSalesDataDto, ContractSignerDto, EnumEntityTypeDto, EnumServiceProxy, SalesClientDataDto, SalesMainDataDto, SignerRole } from 'src/shared/service-proxies/service-proxies';
 import { WorkflowConsultantActionsDialogComponent } from '../workflow-consultant-actions-dialog/workflow-consultant-actions-dialog.component';
 import { WorkflowDataService } from '../workflow-data.service';
 import { ChangeConsultantDto, ExtendConsultantDto, TerminateConsultantDto, WorkflowSideSections, WorkflowTopSections } from '../workflow.model';
@@ -89,13 +89,14 @@ export class WorkflowSalesComponent extends AppComopnentBase implements OnInit {
         injector: Injector,
         private _fb: FormBuilder,
         private _enumService: EnumServiceProxy,
-        private _workflowService: WorkflowsServiceProxy,
         private _workflowDataService: WorkflowDataService,
+        // private _workflowService: WorkflowsServiceProxy,
         private activatedRoute: ActivatedRoute,
         private overlay: Overlay,
         private dialog: MatDialog,
         private _lookupService: InternalLookupService,
-        private _startWorkflowService: StartWorkflowControllerServiceProxy
+        // private _startWorkflowService: StartWorkflowControllerServiceProxy
+        private _clientPeriodService: ClientPeriodServiceProxy
     ) {
         super(injector);
         this.salesMainClientDataForm = new WorkflowSalesClientDataForm();
@@ -435,8 +436,138 @@ export class WorkflowSalesComponent extends AppComopnentBase implements OnInit {
         return (this.consultantsForm.consultantData.at(index).get('consultantContractSigners') as FormArray).controls;
     }
 
+    saveStep(clientPeriodId: string) {
+        let input = new ClientPeriodSalesDataDto();
+        input.salesMainData = new SalesMainDataDto();
+        input.salesClientData = new SalesClientDataDto();
+        input.consultantSalesData = new Array<ConsultantSalesDataDto>();
+
+        input.salesMainData.projectTypeId = this.salesMainDataForm.projectType?.value.id;
+        input.salesMainData.salesTypeId = this.salesMainDataForm.salesType?.value.id;
+        input.salesMainData.deliveryTypeId = this.salesMainDataForm.deliveryType?.value.id;
+        input.salesMainData.marginId = this.salesMainDataForm.margin?.value;
+        input.salesMainData.projectCategoryId = this.salesMainDataForm.projectCategory?.value.id;
+        input.salesMainData.projectDescription = this.salesMainDataForm.projectDescription?.value;
+        input.salesMainData.discountId = this.salesMainDataForm.discounts?.value;
+        input.salesMainData.salesAccountManagerIdValue = this.salesMainDataForm.salesAccountManagerIdValue?.value.id;
+        input.salesMainData.commissionAccountManagerIdValue = this.salesMainDataForm.commissionAccountManagerIdValue?.value.id;
+        input.salesMainData.customContractExpirationNotificationDate = this.salesMainDataForm.contractExpirationNotification?.value;
+        input.salesMainData.remarks = this.salesMainDataForm.remarks?.value;
+        input.salesMainData.noRemarks = !this.salesMainDataForm.isRemarks?.value;
+
+        input.salesClientData.differentEndClient = this.salesMainClientDataForm.endClientIdValue?.value;
+        input.salesClientData.directClientIdValue = this.salesMainClientDataForm.directClientIdValue?.value;
+        input.salesClientData.endClientIdValue = this.salesMainClientDataForm.endClientIdValue?.value;
+        input.salesClientData.startDate = this.salesMainClientDataForm.clientContractStartDate?.value;
+        input.salesClientData.noEndDate = this.salesMainClientDataForm.clientContractNoEndDate?.value;
+        input.salesClientData.endDate = this.salesMainClientDataForm.clientContractEndDate?.value;
+        input.salesClientData.noClientExtensionOption = !this.salesMainClientDataForm.clientExtensionNoEndDate?.value;
+        input.salesClientData.clientExtensionDurationId = this.salesMainClientDataForm.clientExtensionDuration?.value;
+        input.salesClientData.clientExtensionDeadlineId = this.salesMainClientDataForm.clientExtensionDeadline?.value;
+        input.salesClientData.clientExtensionSpecificDate = this.salesMainClientDataForm.clientExtensionEndDate?.value;
+        input.salesClientData.clientTimeReportingCapId = this.salesMainClientDataForm.capOnTimeReporting?.value.id;
+        input.salesClientData.clientTimeReportingCapMaxValue = this.salesMainClientDataForm.capOnTimeReportingValue?.value;
+        input.salesClientData.pdcInvoicingEntityId = this.salesMainClientDataForm.pdcInvoicingEntityId?.value;
+
+        input.salesClientData.clientRate = new ClientRateDto();
+        input.salesClientData.clientRate.isTimeBasedRate = this.salesMainClientDataForm.clientRateAndInvoicing?.value?.name === 'Time base';
+        input.salesClientData.clientRate.isFixedRate = this.salesMainClientDataForm.clientRateAndInvoicing?.value?.name === 'Fixed';
+        input.salesClientData.clientRate.currencyId = this.salesMainClientDataForm.clientCurrency?.value
+        input.salesClientData.clientRate.invoiceCurrencyId = this.salesMainClientDataForm.clientInvoiceCurrency?.value;
+        input.salesClientData.clientRate.normalRate = this.salesMainClientDataForm.clientPrice?.value;
+        input.salesClientData.clientRate.rateUnitTypeId = this.salesMainClientDataForm.rateUnitTypeId?.value;
+        input.salesClientData.clientRate.invoiceFrequencyId = this.salesMainClientDataForm.clientInvoicingTime?.value;
+        input.salesClientData.clientRate.manualDate = this.salesMainClientDataForm.clientInvoicingDate?.value;
+        // input.salesClientData.clientRate.invoicingTimeId = this.salesMainClientDataForm.clientInvoicingDate?.value;
+        // input.salesClientData.clientRate.price =
+        // input.salesClientData.clientRate.invoicingTimeId =
+
+        input.salesClientData.noInvoicingReferenceNumber = this.salesMainClientDataForm.invoicingReferenceNumber?.value ?? false;
+        input.salesClientData.invoicingReferenceNumber = this.salesMainClientDataForm.invoicingReferenceNumber?.value;
+        input.salesClientData.clientInvoicingRecipientSameAsDirectClient = this.salesMainClientDataForm.clientInvoicingRecipientSameAsDirectClient?.value;
+        input.salesClientData.clientInvoicingRecipientIdValue = this.salesMainClientDataForm.clientInvoicingRecipientIdValue?.value;
+        input.salesClientData.noInvoicingReferencePerson = this.salesMainClientDataForm.noInvoicingReferencePerson?.value;
+        input.salesClientData.invoicingReferencePersonIdValue = this.salesMainClientDataForm.invoicingReferencePersonIdValue?.value.id;
+
+        // TODO: ADD when UI + API For client rates/fee inside WF will be ready
+        // input.salesClientData.noClientSpecialRate = this.salesMainClientDataForm.value.
+        // input.salesClientData.clientSpecialRates = this.salesMainClientDataForm.value.
+        // input.salesClientData.noClientSpecialFee = this.salesMainClientDataForm.value.
+        // input.salesClientData.clientSpecialFees = this.salesMainClientDataForm.value.
+
+        input.salesClientData.evaluationsReferencePersonIdValue = this.salesMainClientDataForm.evaluationsReferencePersonIdValue?.value.id;
+        input.salesClientData.evaluationsDisabled = this.salesMainClientDataForm.evaluationsDisabled?.value;
+        input.salesClientData.evaluationsDisabledReason = this.salesMainClientDataForm.evaluationsDisabledReason?.value;
+        input.salesClientData.noSpecialContractTerms = this.salesMainClientDataForm.noSpecialContractTerms?.value;
+        input.salesClientData.specialContractTerms = this.salesMainClientDataForm.specialContractTerms?.value;
+
+        input.salesClientData.contractSigners = new Array<ContractSignerDto>();
+        this.salesMainClientDataForm.contractSigners.value.forEach((signer: any) => {
+            let signerInput = new ContractSignerDto();
+            signerInput.signOrder = signer.clientSequence;
+            signerInput.contactId = signer.clientName;
+            signerInput.signerRole = signer.clientRole;
+        });
+
+        this.consultantsForm.value.forEach((consultant: any) => {
+            let consultantInput = new ConsultantSalesDataDto();
+            consultantInput.employmentTypeId = consultant.consultantType;
+            consultantInput.consultantId = consultant.consultantName;
+
+            // ??
+            // consultantInput.nameOnly = consultant.nameOnly;
+            // ??
+
+            consultantInput.startDate = consultant.consultantProjectStartDate;
+            consultantInput.noEndDate = consultant.consultantProjectNoEndDate;
+            consultantInput.endDate = consultant.consultantProjectEndDate;
+
+            consultantInput.isOnsiteWorkplace = consultant.isOnsiteWorkplace;
+            consultantInput.onsiteClientId = consultant.onsiteClientId;
+            consultantInput.isEmagineOfficeWorkplace = consultant.isEmagineOfficeWorkplace;
+            consultantInput.emagineOfficeId = consultant.emagineOfficeId;
+            consultantInput.isRemoteWorkplace = consultant.isRemoteWorkplace;
+            consultantInput.remoteAddressCountryId = consultant.remoteAddressCountryId;
+            consultantInput.percentageOnSite = consultant.percentageOnSite;
+            consultantInput.noExpectedWorkload = consultant.noExpectedWorkload;
+            consultantInput.expectedWorkloadHours = consultant.expectedWorkloadHours;
+            consultantInput.expectedWorkloadUnitId = consultant.expectedWorkloadUnitId;
+            consultantInput.consultantTimeReportingCapId = consultant.consultantTimeReportingCapId;
+            consultantInput.consultantTimeReportingCapMaxValue = consultant.consultantTimeReportingCapMaxValue;
+            consultantInput.pdcPaymentEntityId = consultant.consultantProdataEntity;
+
+            consultantInput.consultantRate = new ConsultantRateDto();
+            consultantInput.consultantRate.isTimeBasedRate = consultant.isTimeBasedRate;
+            consultantInput.consultantRate.isFixedRate = consultant.isFixedRate;
+            consultantInput.consultantRate.normalRate = consultant.normalRate;
+            consultantInput.consultantRate.currencyId = consultant.currencyId;
+            consultantInput.consultantRate.prodataToProdataRate = consultant.prodataToProdataRate;
+            consultantInput.consultantRate.prodataToProdataCurrencyId = consultant.prodataToProdataCurrencyId;
+            consultantInput.consultantRate.prodataToProdataInvoiceCurrencyId = consultant.prodataToProdataInvoiceCurrencyId;
+            consultantInput.consultantRate.manualDate = consultant.manualDate;
+            consultantInput.consultantRate.rateUnitTypeId = consultant.rateUnitTypeId;
+            consultantInput.consultantRate.invoiceFrequencyId = consultant.invoiceFrequencyId;
+            consultantInput.consultantRate.invoicingTimeId = consultant.invoicingTimeId;
+
+            consultantInput.noSpecialContractTerms = consultant.noSpecialContractTerms;
+            consultantInput.specialContractTerms = consultant.specialContractTerms;
+            consultantInput.deliveryManagerSameAsAccountManager = consultant.deliveryManagerSameAsAccountManager;
+            consultantInput.deliveryAccountManagerIdValue = consultant.deliveryAccountManagerIdValue;
+
+            input.consultantSalesData!.push(consultantInput);
+        });
+
+        this._clientPeriodService.sales(clientPeriodId, input)
+            .pipe(finalize(() => {
+
+            }))
+            .subscribe(result => {
+
+            })
+    }
+
     saveSalesStep(isDraft: boolean) {
-        let input = new WorkflowSalesDataDto();
+        let input: any = {};
         input.salesMainData = new SalesMainDataDto();
         input.salesMainData.salesTypeId = this.salesMainDataForm.salesType?.value?.id;
         input.salesMainData.deliveryTypeId = this.salesMainDataForm.deliveryType?.value?.id;
@@ -502,7 +633,7 @@ export class WorkflowSalesComponent extends AppComopnentBase implements OnInit {
         input.salesClientData.noContractEndDate = this.salesMainClientDataForm.clientContractNoEndDate?.value ? this.salesMainClientDataForm.clientContractNoEndDate?.value : false;
 
         input.salesClientData.noClientExtensionOption = this.salesMainClientDataForm.clientExtensionNoEndDate?.value ? this.salesMainClientDataForm.clientExtensionNoEndDate?.value : false;
-        input.salesClientData.clientExtensionDurationId = this.salesMainClientDataForm.clientExtensionStartDate?.value;
+        input.salesClientData.clientExtensionDurationId = this.salesMainClientDataForm.clientExtensionDuration?.value;
         input.salesClientData.clientExtensionDeadlineId = this.salesMainClientDataForm.clientExtensionDeadline?.value;
 
         input.consultantSalesDatas = new Array<ConsultantSalesDataDto>();
@@ -534,43 +665,43 @@ export class WorkflowSalesComponent extends AppComopnentBase implements OnInit {
         //     input.consultantSalesDatas.push(consultant);
         // }
 
-        input.salesAdditionalData = new SalesAdditionalDataDto();
-        input.salesAdditionalData.marginId = this.salesMainDataForm.margin?.value;
-        input.salesAdditionalData.remarks = this.additionalDataForm.remarks?.value;
-        input.salesAdditionalData.noSharedCap = this.salesMainClientDataForm.capOnTimeReporting?.value;
+        // input.salesAdditionalData = new SalesAdditionalDataDto();
+        // input.salesAdditionalData.marginId = this.salesMainDataForm.margin?.value;
+        // input.salesAdditionalData.remarks = this.additionalDataForm.remarks?.value;
+        // input.salesAdditionalData.noSharedCap = this.salesMainClientDataForm.capOnTimeReporting?.value;
 
         // if (isDraft) {
 
         // } else {
-            this._startWorkflowService.salesPut(this.workflowId, input)
-                .pipe(finalize(() => {
-                }))
-                .subscribe(result => {
+            // this._startWorkflowService.salesPut(this.workflowId, input)
+            //     .pipe(finalize(() => {
+            //     }))
+            //     .subscribe(result => {
 
-                });
+            //     });
         // }
     }
 
     getWorkflowSalesStep() {
-        this._startWorkflowService.salesGet(this.workflowId)
-            .pipe(finalize(() => {
+        // this._startWorkflowService.salesGet(this.workflowId)
+        //     .pipe(finalize(() => {
 
-            }))
-            .subscribe(result => {
-                this.salesMainDataForm.salesType?.setValue(this.findItemById(this.saleTypes, result?.salesMainData?.salesTypeId), {emitEvent: false});
-                this.salesMainDataForm.deliveryType?.setValue(this.findItemById(this.deliveryTypes, result?.salesMainData?.deliveryTypeId), {emitEvent: false});
-                this.salesMainDataForm.margin?.setValue(result?.salesAdditionalData?.marginId, {emitEvent: false});
-                this.salesMainDataForm.projectDescription?.setValue(result?.salesMainData?.projectDescription, {emitEvent: false});
-                this.salesMainDataForm.remarks?.setValue(result?.salesAdditionalData?.remarks, {emitEvent: false});
-                this.salesMainDataForm.salesAccountManagerIdValue?.setValue(result?.salesMainData?.salesAccountManagerIdValue, {emitEvent: false});
-                this.salesMainDataForm.commissionAccountManagerIdValue?.setValue(result?.salesMainData?.commissionAccountManagerIdValue, {emitEvent: false});
+        //     }))
+        //     .subscribe(result => {
+        //         this.salesMainDataForm.salesType?.setValue(this.findItemById(this.saleTypes, result?.salesMainData?.salesTypeId), {emitEvent: false});
+        //         this.salesMainDataForm.deliveryType?.setValue(this.findItemById(this.deliveryTypes, result?.salesMainData?.deliveryTypeId), {emitEvent: false});
+        //         this.salesMainDataForm.margin?.setValue(result?.salesAdditionalData?.marginId, {emitEvent: false});
+        //         this.salesMainDataForm.projectDescription?.setValue(result?.salesMainData?.projectDescription, {emitEvent: false});
+        //         this.salesMainDataForm.remarks?.setValue(result?.salesAdditionalData?.remarks, {emitEvent: false});
+        //         this.salesMainDataForm.salesAccountManagerIdValue?.setValue(result?.salesMainData?.salesAccountManagerIdValue, {emitEvent: false});
+        //         this.salesMainDataForm.commissionAccountManagerIdValue?.setValue(result?.salesMainData?.commissionAccountManagerIdValue, {emitEvent: false});
 
-                this.salesMainClientDataForm.directClientIdValue?.setValue(result?.salesClientData?.directClientIdValue, {emitEvent: false});
-                this.salesMainClientDataForm.pdcInvoicingEntityId?.setValue(result?.salesClientData?.pdcInvoicingEntityId, {emitEvent: false});
-                this.salesMainClientDataForm.invoicingReferencePersonIdValue?.setValue(result?.salesClientData?.invoicingReferencePersonIdValue, {emitEvent: false});
-                this.salesMainClientDataForm.clientInvoicingRecipientSameAsDirectClient?.setValue(result?.salesClientData?.clientInvoicingRecipientSameAsDirectClient, {emitEvent: false});
+        //         this.salesMainClientDataForm.directClientIdValue?.setValue(result?.salesClientData?.directClientIdValue, {emitEvent: false});
+        //         this.salesMainClientDataForm.pdcInvoicingEntityId?.setValue(result?.salesClientData?.pdcInvoicingEntityId, {emitEvent: false});
+        //         this.salesMainClientDataForm.invoicingReferencePersonIdValue?.setValue(result?.salesClientData?.invoicingReferencePersonIdValue, {emitEvent: false});
+        //         this.salesMainClientDataForm.clientInvoicingRecipientSameAsDirectClient?.setValue(result?.salesClientData?.clientInvoicingRecipientSameAsDirectClient, {emitEvent: false});
 
-            });
+        //     });
     }
 
     toggleClientFees() {

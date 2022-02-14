@@ -19,7 +19,7 @@ import { AddConsultantDto, ChangeWorkflowDto, ExtendConsultantDto, ExtendWorkflo
 })
 export class PrimaryWorkflowComponent implements OnInit, AfterViewInit {
     @Input() workflowId: string;
-    @Input() clientPeriodId: number | undefined;
+    @Input() clientPeriodId: string | undefined;
 
     @Input() componentTypeId: number;
 

@@ -119,7 +119,7 @@ export class WorkflowSalesClientDataForm extends FormGroup {
             clientContractNoEndDate: new FormControl(false),
 
             // Client Extension Option
-            clientExtensionStartDate: new FormControl(null),
+            clientExtensionDuration: new FormControl(null),
             clientExtensionEndDate: new FormControl(null),
             clientExtensionDeadline: new FormControl(null),
             clientExtensionNoEndDate: new FormControl(false),
@@ -229,8 +229,8 @@ export class WorkflowSalesClientDataForm extends FormGroup {
     }
 
     // Client Extension Option
-    get clientExtensionStartDate() {
-        return this.get('clientExtensionStartDate');
+    get clientExtensionDuration() {
+        return this.get('clientExtensionDuration');
     }
     get clientExtensionEndDate() {
         return this.get('clientExtensionEndDate');
