@@ -21,7 +21,7 @@
                 </mat-expansion-panel-header>
                 <mat-list class="workflow-navigation">
                     <mat-list-item class="workflow-navigation--step" *ngFor="let step of item.subItems; let i = index;"
-                        (click)="changeStepSelection(step.name, step.id)"
+                        (click)="changeStepSelection(step.name, step.id, step.enumStepValue)"
                         [ngClass]="{'active-step': step.name === selectedStep, 'completed-step': step.isCompleted}">
                         <span class="workflow-navigation--step__number">
                             {{step.id}}
@@ -36,61 +36,16 @@
     </div>
     <div fxFlex="80%">
         <ng-container [ngSwitch]="selectedStep">
-            <!-- EDIT WORKFLOW -->
-
-            <!-- TODO:  [activeSideSection]="workflowSideSections.ExtendWorkflow" -->
-            <ng-container *ngSwitchCase="'ExtendSales'">
-                <app-workflow-sales #workflowSales [workflowId]="workflowId" [extendWorkflow]="true"></app-workflow-sales>
-            </ng-container>
-            <ng-container *ngSwitchCase="'ExtendContracts'">
-                <app-workflow-contracts #workflowContracts [workflowId]="workflowId" [extendWorkflow]="true"></app-workflow-contracts>
-            </ng-container>
-
-            <!-- EDIT WORKFLOW -->
-            <ng-container *ngSwitchCase="'EditSales'">
-                <app-workflow-sales #workflowEditSales [workflowId]="workflowId" [changeWorkflow]="true"></app-workflow-sales>
-            </ng-container>
-            <ng-container *ngSwitchCase="'EditContracts'">
-                <app-workflow-contracts #workflowEditContracts [workflowId]="workflowId" [changeWorkflow]="true"></app-workflow-contracts>
-            </ng-container>
-
-            <!-- ADD CONSULTANT -->
-
-            <ng-container *ngSwitchCase="'AddConsultantSales'">
-                <app-workflow-sales #workflowAddConsultantSales [workflowId]="workflowId" [addConsultant]="true"></app-workflow-sales>
-            </ng-container>
-            <ng-container *ngSwitchCase="'AddConsultantContracts'">
-                <app-workflow-contracts #workflowAddConsultantContracts [workflowId]="workflowId" [addConsultant]="true"></app-workflow-contracts>
-            </ng-container>
-            <ng-container *ngSwitchCase="'AddConsultantFinance'">
-                <app-workflow-finances #workflowAddConsultantFinances [workflowId]="workflowId" [addConsultant]="true"></app-workflow-finances>
-            </ng-container>
-
-            <!-- CHANGE CONSULTANT -->
-            <ng-container *ngSwitchCase="'ChangeConsultantSales'">
-                <app-workflow-sales #workflowEditSales [workflowId]="workflowId" [changeConsultant]="true"></app-workflow-sales>
-            </ng-container>
-            <ng-container *ngSwitchCase="'ChangeConsultantContracts'">
-                <app-workflow-contracts #workflowEditContracts [workflowId]="workflowId" [changeConsultant]="true"></app-workflow-contracts>
-            </ng-container>
-
-            <!-- EXTEND CONSULTANT -->
-            <ng-container *ngSwitchCase="'ExtendConsultantSales'">
-                <app-workflow-sales #workflowEditSales [workflowId]="workflowId" [activeSideSection]="workflowSideSections.ExtendConsultant"></app-workflow-sales>
-            </ng-container>
-            <ng-container *ngSwitchCase="'ExtendConsultantContracts'">
-                <app-workflow-contracts #workflowEditContracts [workflowId]="workflowId" [activeSideSection]="workflowSideSections.ExtendConsultant"></app-workflow-contracts>
-            </ng-container>
-
-            <!-- TERMINATE CONSULTANT -->
-            <ng-container *ngSwitchCase="'TerminateConsultantSales'">
-                <app-workflow-sales #workflowEditSales [workflowId]="workflowId" [activeSideSection]="workflowSideSections.TerminateConsultant"></app-workflow-sales>
-            </ng-container>
-            <ng-container *ngSwitchCase="'TerminateConsultantContracts'">
-                <app-workflow-contracts #workflowEditContracts [workflowId]="workflowId" [activeSideSection]="workflowSideSections.TerminateConsultant"></app-workflow-contracts>
-            </ng-container>
-
-            <ng-container *ngSwitchDefault>
+            <ng-container [ngSwitch]="selectedStepEnum">
+                <ng-container *ngSwitchCase="workflowSteps.Sales">
+                    <app-workflow-sales #workflowSales [workflowId]="workflowId" [activeSideSection]="selectedSideSection"></app-workflow-sales>
+                </ng-container>
+                <ng-container *ngSwitchCase="workflowSteps.Contracts">
+                    <app-workflow-contracts #workflowContracts [workflowId]="workflowId" [activeSideSection]="selectedSideSection"></app-workflow-contracts>
+                </ng-container>
+                <ng-container *ngSwitchCase="workflowSteps.Finance">
+                    <app-workflow-finances #workflowFinances [workflowId]="workflowId" [activeSideSection]="selectedSideSection"></app-workflow-finances>
+                </ng-container>
             </ng-container>
         </ng-container>
     </div>

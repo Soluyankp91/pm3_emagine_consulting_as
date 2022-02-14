@@ -9,7 +9,7 @@ import { ManagerStatus } from 'src/app/shared/components/manager-search/manager-
 import { WorkflowDataService } from '../workflow-data.service';
 import { SideNavigationParentItemDto } from '../workflow-extension/workflow-extension.model';
 import { WorkflowSalesComponent } from '../workflow-sales/workflow-sales.component';
-import { AddConsultantDto, ChangeWorkflowDto, ExtendConsultantDto, ExtendWorkflowDto, TerminateConsultantDto, TerminateWorkflowDto, WorkflowSideSections, WorkflowSteps } from '../workflow.model';
+import { WorkflowSideSections, WorkflowSteps } from '../workflow.model';
 
 @Component({
     selector: 'app-primary-workflow',
@@ -51,11 +51,6 @@ export class PrimaryWorkflowComponent implements OnInit, AfterViewInit {
         this.changeSideSection(this.sideNavigation[0] , 0);
     }
 
-    makeFirstSectionActive() {
-        this.changeSideSection(this.sideNavigation[0] , 0);
-        // TODO: scroll to top on newly added section?
-    }
-
     ngAfterViewInit(): void {
         // this.workflowSideNavigation = new Array<SideNavigationParentItemDto>(...this._workflowDataService.workflowSideNavigation);
         this.changeSideSection(this.sideNavigation[0] , 0);
@@ -63,6 +58,11 @@ export class PrimaryWorkflowComponent implements OnInit, AfterViewInit {
 
     get sideNavigation() {
         return this.workflowSideNavigation = new Array<SideNavigationParentItemDto>(...this._workflowDataService.workflowSideNavigation);
+    }
+    
+    makeFirstSectionActive() {
+        this.changeSideSection(this.sideNavigation[0] , 0);
+        // TODO: scroll to top on newly added section?
     }
 
     changeStepSelection(stepName: string, stepId: any, stepEnum: number) {
@@ -77,31 +77,6 @@ export class PrimaryWorkflowComponent implements OnInit, AfterViewInit {
         this._workflowDataService.updateWorkflowProgressStatus({currentlyActiveSideSection: item.sectionEnumValue});
         const firstitemInSection = this.workflowSideNavigation.find(x => x.displayName === item.displayName)?.subItems[0];
         this.changeStepSelection(firstitemInSection!.name, firstitemInSection!.id, firstitemInSection!.enumStepValue);
-    }
-
-    addConsultantToPrimaryWorkflow() {
-        // this.workflowSideNavigation.push(AddConsultantDto);
-        this._workflowDataService.workflowSideNavigation.push(AddConsultantDto);
-    }
-
-    extendWorkflow() {
-        this.workflowSideNavigation.push(ExtendWorkflowDto);
-    }
-
-    terminateWorkflow() {
-        this.workflowSideNavigation.push(TerminateWorkflowDto);
-    }
-
-    editWorkflow() {
-        this.workflowSideNavigation.push(ChangeWorkflowDto);
-    }
-
-    extendConsultant() {
-        this.workflowSideNavigation.push(ExtendConsultantDto);
-    }
-
-    terminateConsultant() {
-        this.workflowSideNavigation.push(TerminateConsultantDto);
     }
 
     deleteSideSection(item: SideNavigationParentItemDto) {
@@ -132,7 +107,6 @@ export class PrimaryWorkflowComponent implements OnInit, AfterViewInit {
         dialogRef.componentInstance.onRejected.subscribe(() => {
             // nthng
         });
-
     }
 
     changeAnchorSelection(anchorName: string) {
