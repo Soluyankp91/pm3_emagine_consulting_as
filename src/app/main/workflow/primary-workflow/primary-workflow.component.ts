@@ -40,7 +40,6 @@ export class PrimaryWorkflowComponent implements OnInit, AfterViewInit {
 
 
     sideMenuItms: WorkflowProcessDto[] = [];
-    // WAIT A SEC, MAMA ZAISHLA!!!
 
     private _unsubscribe = new Subject();
     constructor(

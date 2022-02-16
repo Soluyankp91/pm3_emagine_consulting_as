@@ -70,7 +70,7 @@
     <div fxFlex="80%" id="step-container">
         <ng-container [ngSwitch]="selectedStepEnum">
             <ng-container *ngSwitchCase="workflowSteps.Sales">
-                <app-workflow-sales #workflowSales [workflowId]="workflowId" [activeSideSection]="selectedSideSection"></app-workflow-sales>
+                <app-workflow-sales #workflowSales [workflowId]="workflowId" [clientPeriodId]="clientPeriodId" [activeSideSection]="selectedSideSection"></app-workflow-sales>
             </ng-container>
             <ng-container *ngSwitchCase="workflowSteps.Contracts">
                 <app-workflow-contracts #workflowContracts [workflowId]="workflowId" [activeSideSection]="selectedSideSection"></app-workflow-contracts>

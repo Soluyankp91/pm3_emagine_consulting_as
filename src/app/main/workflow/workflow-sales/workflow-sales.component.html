@@ -242,11 +242,21 @@
                                 <div fxLayout="row" fxLayoutAlign="start start" class="u-w--100 u-mb--10">
                                     <mat-form-field appearance="outline" class="u-w--100  filter-select u-mr--16" fxFlex="33%">
                                         <mat-label>Contract expiration notification</mat-label>
-                                        <mat-select formControlName="contractExpirationNotification" [disableOptionCentering]="true">
-                                            <mat-option *ngFor="let item of [0,1,2,3]" [value]="item">
-                                                {{ item }}
+                                        <mat-select formControlName="contractExpirationNotification" [disableOptionCentering]="true" [multiple]="true">
+                                            <mat-option *ngFor="let item of contractExpirationNotificationDuration" [value]="item.id">
+                                                {{ item.name }}
                                             </mat-option>
                                         </mat-select>
+                                    </mat-form-field>
+                                    <mat-form-field appearance="outline" fxFlex="33%">
+                                        <mat-label>Contract expiration notification date</mat-label>
+                                        <input autocomplete="off" matInput
+                                                [matDatepicker]="customContractExpirationNotificationDatePicker"
+                                                name="customContractExpirationNotificationDate" formControlName="customContractExpirationNotificationDate"
+                                                (focus)="customContractExpirationNotificationDatePicker.open()"
+                                                (click)="customContractExpirationNotificationDatePicker.open()" readonly>
+                                        <mat-icon class="calendar-icon" matSuffix svgIcon="calendar"></mat-icon>
+                                        <mat-datepicker #customContractExpirationNotificationDatePicker></mat-datepicker>
                                     </mat-form-field>
                                 </div>
 
@@ -865,38 +875,45 @@
                                 </div>
                                 <div fxFlex="80%">
                                     <h3 class="workflow-gray--header u-mb--10">Workplace</h3>
-                                    <div fxLayout="row" fxLayoutAlign="start start" class="u-w--100 u-mb--20">
-                                        <mat-button-toggle-group class="workflow-toggle-buttons" formControlName="consultantWorkplace">
-                                            <mat-button-toggle *ngFor="let item of ['Onsite', 'Remote', 'Mix']" [value]="item">
-                                                {{ item }}
-                                            </mat-button-toggle>
-                                        </mat-button-toggle-group>
-                                    </div>
 
-                                    <div fxLayout="row" fxLayoutAlign="start center" class="u-w--100 u-mb--10"
-                                        *ngIf="consultantsForm.consultantData.at(i).get('consultantWorkplace')?.value === 'Onsite' || consultantsForm.consultantData.at(i).get('consultantWorkplace')?.value === 'Mix'">
-                                        <mat-form-field appearance="outline" class="u-w--100 mat-elevation-z0 " fxFlex="0 0 calc(66% + 16px)">
-                                            <mat-label>Main onsite address</mat-label>
-                                            <input autocomplete="off" matInput formControlName="consultantWorkplaceOnsite" type="text">
-                                        </mat-form-field>
-                                    </div>
+                                    <div fxLayout="column" fxLayoutAlign="start start" class="u-w--100">
+                                        <div fxLayout="row" fxLayoutAlign="start center" class="u-w--100 u-mb--10">
+                                            <mat-checkbox color="accent" formControlName="consultantIsOnsiteWorkplace" name="consultantIsOnsiteWorkplace" class="black-checkbox u-mr--16" fxFlex="0 0 calc(16.5% - 8px)">
+                                                Onsite
+                                            </mat-checkbox>
+                                            <ng-container *ngIf="consultantsForm.consultantData.at(i).get('consultantIsOnsiteWorkplace')?.value">
+                                                <mat-form-field appearance="outline" class="u-w--100 mat-elevation-z0 u-mr--16" fxFlex="0 0 calc(33% + 16px)">
+                                                    <mat-label>Client address</mat-label>
+                                                    <input autocomplete="off" matInput formControlName="consultantWorkplaceCliendAddress" type="text">
+                                                </mat-form-field>
 
-                                    <div fxLayout="row" fxLayoutAlign="start center" class="u-w--100 u-mb--10"
-                                        *ngIf="consultantsForm.consultantData.at(i).get('consultantWorkplace')?.value === 'Remote' || consultantsForm.consultantData.at(i).get('consultantWorkplace')?.value === 'Mix'">
-                                        <mat-form-field appearance="outline" class="u-w--100 mat-elevation-z0 "  fxFlex="0 0 calc(66% + 16px)">
-                                            <mat-label>Main remote country</mat-label>
+                                                <mat-form-field appearance="outline" class="u-w--100 mat-elevation-z0 " fxFlex="0 0 calc(16% - 8px)">
+                                                    <mat-label>Add value %</mat-label>
+                                                    <input autocomplete="off" matInput formControlName="consultantWorkplacePercentageOnSite" type="text">
+                                                </mat-form-field>
+                                            </ng-container>
+                                        </div>
+
+                                        <div fxLayout="row" fxLayoutAlign="start center" class="u-w--100 u-mb--10">
+                                            <mat-checkbox color="accent" formControlName="consultantIsEmagineOfficeWorkplace" name="consultantIsEmagineOfficeWorkplace" class="black-checkbox u-mr--16" fxFlex="0 0 calc(16.5% - 8px)">
+                                                PDC Office
+                                            </mat-checkbox>
+                                            <mat-form-field appearance="outline" class="u-w--100 mat-elevation-z0 " fxFlex="0 0 calc(33% + 16px)" *ngIf="consultantsForm.consultantData.at(i).get('consultantIsEmagineOfficeWorkplace')?.value">
+                                                <mat-label>PDC Office address</mat-label>
+                                                <input autocomplete="off" matInput formControlName="consultantWorkplaceEmagineOffice" type="text">
+                                            </mat-form-field>
+                                        </div>
+
+                                        <div fxLayout="row" fxLayoutAlign="start center" class="u-w--100 u-mb--10">
+                                            <mat-checkbox color="accent" formControlName="consultantIsRemoteWorkplace" name="consultantIsRemoteWorkplace" class="black-checkbox u-mr--16" fxFlex="0 0 calc(16.5% - 8px)">
+                                                Remote
+                                            </mat-checkbox>
+                                            <mat-form-field appearance="outline" class="u-w--100 mat-elevation-z0 " fxFlex="0 0 calc(33% + 16px)" *ngIf="consultantsForm.consultantData.at(i).get('consultantIsRemoteWorkplace')?.value">
+                                                <mat-label>Remote country</mat-label>
                                             <input autocomplete="off" matInput formControlName="consultantWorkplaceRemote" type="text">
-                                        </mat-form-field>
+                                            </mat-form-field>
+                                        </div>
                                     </div>
-
-                                    <div fxLayout="row" fxLayoutAlign="start center" class="u-w--100 u-mb--10"
-                                        *ngIf="consultantsForm.consultantData.at(i).get('consultantWorkplace')?.value === 'Mix'">
-                                        <mat-form-field appearance="outline" class="u-w--100 mat-elevation-z0 " fxFlex="0 0 calc(16% - 8px)">
-                                            <mat-label>Percentage onsite</mat-label>
-                                            <input autocomplete="off" matInput formControlName="consultantWorkplaceMixPercentage" type="text">
-                                        </mat-form-field>
-                                    </div>
-
                                     <h3 class="workflow-gray--header u-mb--10">Expected Workload</h3>
                                     <div fxLayout="row" fxLayoutAlign="start center" class="u-w--100 u-mb--10">
                                         <mat-form-field appearance="outline" class="u-w--100 mat-elevation-z0  u-mr--16" fxFlex="0 0 calc(16.5% - 8px)">
@@ -1182,11 +1199,21 @@
                             <div fxLayout="row" fxLayoutAlign="start start" class="u-w--100 u-mb--10">
                                 <mat-form-field appearance="outline" class="u-w--100  filter-select u-mr--16" fxFlex="33%">
                                     <mat-label>Contract expiration notification</mat-label>
-                                    <mat-select formControlName="contractExpirationNotification" [disableOptionCentering]="true">
-                                        <mat-option *ngFor="let item of [0,1,2,3]" [value]="item">
-                                            {{ item }}
+                                    <mat-select formControlName="contractExpirationNotification" [disableOptionCentering]="true"  [multiple]="true">
+                                        <mat-option *ngFor="let item of contractExpirationNotificationDuration" [value]="item.id">
+                                            {{ item.name }}
                                         </mat-option>
                                     </mat-select>
+                                </mat-form-field>
+                                <mat-form-field appearance="outline" fxFlex="33%">
+                                    <mat-label>Contract expiration notification date</mat-label>
+                                    <input autocomplete="off" matInput
+                                            [matDatepicker]="customContractExpirationNotificationDatePicker"
+                                            name="customContractExpirationNotificationDate" formControlName="customContractExpirationNotificationDate"
+                                            (focus)="customContractExpirationNotificationDatePicker.open()"
+                                            (click)="customContractExpirationNotificationDatePicker.open()" readonly>
+                                    <mat-icon class="calendar-icon" matSuffix svgIcon="calendar"></mat-icon>
+                                    <mat-datepicker #customContractExpirationNotificationDatePicker></mat-datepicker>
                                 </mat-form-field>
                             </div>
 
@@ -1791,38 +1818,44 @@
                                 </div>
                                 <div fxFlex="80%">
                                     <h3 class="workflow-gray--header u-mb--10">Workplace</h3>
-                                    <div fxLayout="row" fxLayoutAlign="start start" class="u-w--100 u-mb--20">
-                                        <mat-button-toggle-group class="workflow-toggle-buttons" formControlName="consultantWorkplace">
-                                            <mat-button-toggle *ngFor="let item of ['Onsite', 'Remote', 'Mix']" [value]="item">
-                                                {{ item }}
-                                            </mat-button-toggle>
-                                        </mat-button-toggle-group>
-                                    </div>
+                                    <div fxLayout="column" fxLayoutAlign="start start" class="u-w--100">
+                                        <div fxLayout="row" fxLayoutAlign="start center" class="u-w--100 u-mb--10">
+                                            <mat-checkbox color="accent" formControlName="consultantIsOnsiteWorkplace" name="consultantIsOnsiteWorkplace" class="black-checkbox u-mr--16" fxFlex="0 0 calc(16.5% - 8px)">
+                                                Onsite
+                                            </mat-checkbox>
+                                            <ng-container *ngIf="consultantsForm.consultantData.at(i).get('consultantIsOnsiteWorkplace')?.value">
+                                                <mat-form-field appearance="outline" class="u-w--100 mat-elevation-z0 u-mr--16" fxFlex="0 0 calc(33% + 16px)">
+                                                    <mat-label>Client address</mat-label>
+                                                    <input autocomplete="off" matInput formControlName="consultantWorkplaceCliendAddress" type="text">
+                                                </mat-form-field>
 
-                                    <div fxLayout="row" fxLayoutAlign="start center" class="u-w--100 u-mb--10"
-                                        *ngIf="consultantsForm.consultantData.at(i).get('consultantWorkplace')?.value === 'Onsite' || consultantsForm.consultantData.at(i).get('consultantWorkplace')?.value === 'Mix'">
-                                        <mat-form-field appearance="outline" class="u-w--100 mat-elevation-z0 " fxFlex="0 0 calc(66% + 16px)">
-                                            <mat-label>Main onsite address</mat-label>
-                                            <input autocomplete="off" matInput formControlName="consultantWorkplaceOnsite" type="text">
-                                        </mat-form-field>
-                                    </div>
+                                                <mat-form-field appearance="outline" class="u-w--100 mat-elevation-z0 " fxFlex="0 0 calc(16% - 8px)">
+                                                    <mat-label>Add value %</mat-label>
+                                                    <input autocomplete="off" matInput formControlName="consultantWorkplacePercentageOnSite" type="text">
+                                                </mat-form-field>
+                                            </ng-container>
+                                        </div>
 
-                                    <div fxLayout="row" fxLayoutAlign="start center" class="u-w--100 u-mb--10"
-                                        *ngIf="consultantsForm.consultantData.at(i).get('consultantWorkplace')?.value === 'Remote' || consultantsForm.consultantData.at(i).get('consultantWorkplace')?.value === 'Mix'">
-                                        <mat-form-field appearance="outline" class="u-w--100 mat-elevation-z0 "  fxFlex="0 0 calc(66% + 16px)">
-                                            <mat-label>Main remote country</mat-label>
+                                        <div fxLayout="row" fxLayoutAlign="start center" class="u-w--100 u-mb--10">
+                                            <mat-checkbox color="accent" formControlName="consultantIsEmagineOfficeWorkplace" name="consultantIsEmagineOfficeWorkplace" class="black-checkbox u-mr--16" fxFlex="0 0 calc(16.5% - 8px)">
+                                                PDC Office
+                                            </mat-checkbox>
+                                            <mat-form-field appearance="outline" class="u-w--100 mat-elevation-z0 " fxFlex="0 0 calc(33% + 16px)" *ngIf="consultantsForm.consultantData.at(i).get('consultantIsEmagineOfficeWorkplace')?.value">
+                                                <mat-label>PDC Office address</mat-label>
+                                                <input autocomplete="off" matInput formControlName="consultantWorkplaceEmagineOffice" type="text">
+                                            </mat-form-field>
+                                        </div>
+
+                                        <div fxLayout="row" fxLayoutAlign="start center" class="u-w--100 u-mb--10">
+                                            <mat-checkbox color="accent" formControlName="consultantIsRemoteWorkplace" name="consultantIsRemoteWorkplace" class="black-checkbox u-mr--16" fxFlex="0 0 calc(16.5% - 8px)">
+                                                Remote
+                                            </mat-checkbox>
+                                            <mat-form-field appearance="outline" class="u-w--100 mat-elevation-z0 " fxFlex="0 0 calc(33% + 16px)" *ngIf="consultantsForm.consultantData.at(i).get('consultantIsRemoteWorkplace')?.value">
+                                                <mat-label>Remote country</mat-label>
                                             <input autocomplete="off" matInput formControlName="consultantWorkplaceRemote" type="text">
-                                        </mat-form-field>
+                                            </mat-form-field>
+                                        </div>
                                     </div>
-
-                                    <div fxLayout="row" fxLayoutAlign="start center" class="u-w--100 u-mb--10"
-                                        *ngIf="consultantsForm.consultantData.at(i).get('consultantWorkplace')?.value === 'Mix'">
-                                        <mat-form-field appearance="outline" class="u-w--100 mat-elevation-z0 " fxFlex="0 0 calc(16% - 8px)">
-                                            <mat-label>Percentage onsite</mat-label>
-                                            <input autocomplete="off" matInput formControlName="consultantWorkplaceMixPercentage" type="text">
-                                        </mat-form-field>
-                                    </div>
-
                                     <h3 class="workflow-gray--header u-mb--10">Expected Workload</h3>
                                     <div fxLayout="row" fxLayoutAlign="start center" class="u-w--100 u-mb--10">
                                         <mat-form-field appearance="outline" class="u-w--100 mat-elevation-z0  u-mr--16" fxFlex="0 0 calc(16.5% - 8px)">
@@ -2163,36 +2196,44 @@
                                 </div>
                                 <div fxFlex="80%">
                                     <h3 class="workflow-gray--header u-mb--10">Workplace</h3>
-                                    <div fxLayout="row" fxLayoutAlign="start start" class="u-w--100 u-mb--20">
-                                        <mat-button-toggle-group class="workflow-toggle-buttons" formControlName="consultantWorkplace">
-                                            <mat-button-toggle *ngFor="let item of ['Onsite', 'Remote', 'Mix']" [value]="item">
-                                                {{ item }}
-                                            </mat-button-toggle>
-                                        </mat-button-toggle-group>
-                                    </div>
 
-                                    <div fxLayout="row" fxLayoutAlign="start center" class="u-w--100 u-mb--10"
-                                        *ngIf="consultantsForm.consultantData.at(i).get('consultantWorkplace')?.value === 'Onsite' || consultantsForm.consultantData.at(i).get('consultantWorkplace')?.value === 'Mix'">
-                                        <mat-form-field appearance="outline" class="u-w--100 mat-elevation-z0 " fxFlex="0 0 calc(66% + 16px)">
-                                            <mat-label>Main onsite address</mat-label>
-                                            <input autocomplete="off" matInput formControlName="consultantWorkplaceOnsite" type="text">
-                                        </mat-form-field>
-                                    </div>
+                                    <div fxLayout="column" fxLayoutAlign="start start" class="u-w--100">
+                                        <div fxLayout="row" fxLayoutAlign="start center" class="u-w--100 u-mb--10">
+                                            <mat-checkbox color="accent" formControlName="consultantIsOnsiteWorkplace" name="consultantIsOnsiteWorkplace" class="black-checkbox u-mr--16" fxFlex="0 0 calc(16.5% - 8px)">
+                                                Onsite
+                                            </mat-checkbox>
+                                            <ng-container *ngIf="consultantsForm.consultantData.at(i).get('consultantIsOnsiteWorkplace')?.value">
+                                                <mat-form-field appearance="outline" class="u-w--100 mat-elevation-z0 u-mr--16" fxFlex="0 0 calc(33% + 16px)">
+                                                    <mat-label>Client address</mat-label>
+                                                    <input autocomplete="off" matInput formControlName="consultantWorkplaceCliendAddress" type="text">
+                                                </mat-form-field>
 
-                                    <div fxLayout="row" fxLayoutAlign="start center" class="u-w--100 u-mb--10"
-                                        *ngIf="consultantsForm.consultantData.at(i).get('consultantWorkplace')?.value === 'Remote' || consultantsForm.consultantData.at(i).get('consultantWorkplace')?.value === 'Mix'">
-                                        <mat-form-field appearance="outline" class="u-w--100 mat-elevation-z0 "  fxFlex="0 0 calc(66% + 16px)">
-                                            <mat-label>Main remote country</mat-label>
+                                                <mat-form-field appearance="outline" class="u-w--100 mat-elevation-z0 " fxFlex="0 0 calc(16% - 8px)">
+                                                    <mat-label>Add value %</mat-label>
+                                                    <input autocomplete="off" matInput formControlName="consultantWorkplacePercentageOnSite" type="text">
+                                                </mat-form-field>
+                                            </ng-container>
+                                        </div>
+
+                                        <div fxLayout="row" fxLayoutAlign="start center" class="u-w--100 u-mb--10">
+                                            <mat-checkbox color="accent" formControlName="consultantIsEmagineOfficeWorkplace" name="consultantIsEmagineOfficeWorkplace" class="black-checkbox u-mr--16" fxFlex="0 0 calc(16.5% - 8px)">
+                                                PDC Office
+                                            </mat-checkbox>
+                                            <mat-form-field appearance="outline" class="u-w--100 mat-elevation-z0 " fxFlex="0 0 calc(33% + 16px)" *ngIf="consultantsForm.consultantData.at(i).get('consultantIsEmagineOfficeWorkplace')?.value">
+                                                <mat-label>PDC Office address</mat-label>
+                                                <input autocomplete="off" matInput formControlName="consultantWorkplaceEmagineOffice" type="text">
+                                            </mat-form-field>
+                                        </div>
+
+                                        <div fxLayout="row" fxLayoutAlign="start center" class="u-w--100 u-mb--10">
+                                            <mat-checkbox color="accent" formControlName="consultantIsRemoteWorkplace" name="consultantIsRemoteWorkplace" class="black-checkbox u-mr--16" fxFlex="0 0 calc(16.5% - 8px)">
+                                                Remote
+                                            </mat-checkbox>
+                                            <mat-form-field appearance="outline" class="u-w--100 mat-elevation-z0 " fxFlex="0 0 calc(33% + 16px)" *ngIf="consultantsForm.consultantData.at(i).get('consultantIsRemoteWorkplace')?.value">
+                                                <mat-label>Remote country</mat-label>
                                             <input autocomplete="off" matInput formControlName="consultantWorkplaceRemote" type="text">
-                                        </mat-form-field>
-                                    </div>
-
-                                    <div fxLayout="row" fxLayoutAlign="start center" class="u-w--100 u-mb--10"
-                                        *ngIf="consultantsForm.consultantData.at(i).get('consultantWorkplace')?.value === 'Mix'">
-                                        <mat-form-field appearance="outline" class="u-w--100 mat-elevation-z0 " fxFlex="0 0 calc(16% - 8px)">
-                                            <mat-label>Percentage onsite</mat-label>
-                                            <input autocomplete="off" matInput formControlName="consultantWorkplaceMixPercentage" type="text">
-                                        </mat-form-field>
+                                            </mat-form-field>
+                                        </div>
                                     </div>
 
                                     <h3 class="workflow-gray--header u-mb--10">Expected Workload</h3>
@@ -2549,11 +2590,21 @@
                             <div fxLayout="row" fxLayoutAlign="start start" class="u-w--100 u-mb--10">
                                 <mat-form-field appearance="outline" class="u-w--100  filter-select u-mr--16" fxFlex="33%">
                                     <mat-label>Contract expiration notification</mat-label>
-                                    <mat-select formControlName="contractExpirationNotification" [disableOptionCentering]="true">
-                                        <mat-option *ngFor="let item of [0,1,2,3]" [value]="item">
-                                            {{ item }}
+                                    <mat-select formControlName="contractExpirationNotification" [disableOptionCentering]="true" [multiple]="true">
+                                        <mat-option *ngFor="let item of contractExpirationNotificationDuration" [value]="item.id">
+                                            {{ item.name }}
                                         </mat-option>
                                     </mat-select>
+                                </mat-form-field>
+                                <mat-form-field appearance="outline" fxFlex="33%">
+                                    <mat-label>Contract expiration notification date</mat-label>
+                                    <input autocomplete="off" matInput
+                                            [matDatepicker]="customContractExpirationNotificationDatePicker"
+                                            name="customContractExpirationNotificationDate" formControlName="customContractExpirationNotificationDate"
+                                            (focus)="customContractExpirationNotificationDatePicker.open()"
+                                            (click)="customContractExpirationNotificationDatePicker.open()" readonly>
+                                    <mat-icon class="calendar-icon" matSuffix svgIcon="calendar"></mat-icon>
+                                    <mat-datepicker #customContractExpirationNotificationDatePicker></mat-datepicker>
                                 </mat-form-field>
                             </div>
 
@@ -3220,36 +3271,44 @@
                                 </div>
                                 <div fxFlex="80%">
                                     <h3 class="workflow-gray--header u-mb--10">Workplace</h3>
-                                    <div fxLayout="row" fxLayoutAlign="start start" class="u-w--100 u-mb--20">
-                                        <mat-button-toggle-group class="workflow-toggle-buttons" formControlName="consultantWorkplace">
-                                            <mat-button-toggle *ngFor="let item of ['Onsite', 'Remote', 'Mix']" [value]="item">
-                                                {{ item }}
-                                            </mat-button-toggle>
-                                        </mat-button-toggle-group>
-                                    </div>
 
-                                    <div fxLayout="row" fxLayoutAlign="start center" class="u-w--100 u-mb--10"
-                                        *ngIf="consultantsForm.consultantData.at(i).get('consultantWorkplace')?.value === 'Onsite' || consultantsForm.consultantData.at(i).get('consultantWorkplace')?.value === 'Mix'">
-                                        <mat-form-field appearance="outline" class="u-w--100 mat-elevation-z0 " fxFlex="0 0 calc(66% + 16px)">
-                                            <mat-label>Main onsite address</mat-label>
-                                            <input autocomplete="off" matInput formControlName="consultantWorkplaceOnsite" type="text">
-                                        </mat-form-field>
-                                    </div>
+                                    <div fxLayout="column" fxLayoutAlign="start start" class="u-w--100">
+                                        <div fxLayout="row" fxLayoutAlign="start center" class="u-w--100 u-mb--10">
+                                            <mat-checkbox color="accent" formControlName="consultantIsOnsiteWorkplace" name="consultantIsOnsiteWorkplace" class="black-checkbox u-mr--16" fxFlex="0 0 calc(16.5% - 8px)">
+                                                Onsite
+                                            </mat-checkbox>
+                                            <ng-container *ngIf="consultantsForm.consultantData.at(i).get('consultantIsOnsiteWorkplace')?.value">
+                                                <mat-form-field appearance="outline" class="u-w--100 mat-elevation-z0 u-mr--16" fxFlex="0 0 calc(33% + 16px)">
+                                                    <mat-label>Client address</mat-label>
+                                                    <input autocomplete="off" matInput formControlName="consultantWorkplaceCliendAddress" type="text">
+                                                </mat-form-field>
 
-                                    <div fxLayout="row" fxLayoutAlign="start center" class="u-w--100 u-mb--10"
-                                        *ngIf="consultantsForm.consultantData.at(i).get('consultantWorkplace')?.value === 'Remote' || consultantsForm.consultantData.at(i).get('consultantWorkplace')?.value === 'Mix'">
-                                        <mat-form-field appearance="outline" class="u-w--100 mat-elevation-z0 "  fxFlex="0 0 calc(66% + 16px)">
-                                            <mat-label>Main remote country</mat-label>
+                                                <mat-form-field appearance="outline" class="u-w--100 mat-elevation-z0 " fxFlex="0 0 calc(16% - 8px)">
+                                                    <mat-label>Add value %</mat-label>
+                                                    <input autocomplete="off" matInput formControlName="consultantWorkplacePercentageOnSite" type="text">
+                                                </mat-form-field>
+                                            </ng-container>
+                                        </div>
+
+                                        <div fxLayout="row" fxLayoutAlign="start center" class="u-w--100 u-mb--10">
+                                            <mat-checkbox color="accent" formControlName="consultantIsEmagineOfficeWorkplace" name="consultantIsEmagineOfficeWorkplace" class="black-checkbox u-mr--16" fxFlex="0 0 calc(16.5% - 8px)">
+                                                PDC Office
+                                            </mat-checkbox>
+                                            <mat-form-field appearance="outline" class="u-w--100 mat-elevation-z0 " fxFlex="0 0 calc(33% + 16px)" *ngIf="consultantsForm.consultantData.at(i).get('consultantIsEmagineOfficeWorkplace')?.value">
+                                                <mat-label>PDC Office address</mat-label>
+                                                <input autocomplete="off" matInput formControlName="consultantWorkplaceEmagineOffice" type="text">
+                                            </mat-form-field>
+                                        </div>
+
+                                        <div fxLayout="row" fxLayoutAlign="start center" class="u-w--100 u-mb--10">
+                                            <mat-checkbox color="accent" formControlName="consultantIsRemoteWorkplace" name="consultantIsRemoteWorkplace" class="black-checkbox u-mr--16" fxFlex="0 0 calc(16.5% - 8px)">
+                                                Remote
+                                            </mat-checkbox>
+                                            <mat-form-field appearance="outline" class="u-w--100 mat-elevation-z0 " fxFlex="0 0 calc(33% + 16px)" *ngIf="consultantsForm.consultantData.at(i).get('consultantIsRemoteWorkplace')?.value">
+                                                <mat-label>Remote country</mat-label>
                                             <input autocomplete="off" matInput formControlName="consultantWorkplaceRemote" type="text">
-                                        </mat-form-field>
-                                    </div>
-
-                                    <div fxLayout="row" fxLayoutAlign="start center" class="u-w--100 u-mb--10"
-                                        *ngIf="consultantsForm.consultantData.at(i).get('consultantWorkplace')?.value === 'Mix'">
-                                        <mat-form-field appearance="outline" class="u-w--100 mat-elevation-z0 " fxFlex="0 0 calc(16% - 8px)">
-                                            <mat-label>Percentage onsite</mat-label>
-                                            <input autocomplete="off" matInput formControlName="consultantWorkplaceMixPercentage" type="text">
-                                        </mat-form-field>
+                                            </mat-form-field>
+                                        </div>
                                     </div>
 
                                     <h3 class="workflow-gray--header u-mb--10">Expected Workload</h3>

@@ -17,6 +17,7 @@ export class WorkflowSalesMainForm extends FormGroup {
             salesAccountManagerIdValue: new FormControl(null),
             commissionAccountManagerIdValue: new FormControl(null),
             contractExpirationNotification: new FormControl(null),
+            customContractExpirationNotificationDate: new FormControl(null),
 
             remarks: new FormControl(null),
             isRemarks: new FormControl(false)
@@ -55,6 +56,9 @@ export class WorkflowSalesMainForm extends FormGroup {
     }
     get contractExpirationNotification() {
         return this.get('contractExpirationNotification');
+    }
+    get customContractExpirationNotificationDate() {
+        return this.get('customContractExpirationNotificationDate');
     }
 
     get remarks() {

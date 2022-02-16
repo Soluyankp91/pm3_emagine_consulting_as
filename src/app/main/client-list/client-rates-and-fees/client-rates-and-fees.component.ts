@@ -133,8 +133,8 @@ export class ClientRatesAndFeesComponent implements OnInit, OnDestroy {
     addSpecialRate(clientRate?: ClientSpecialRateDto) {
         const form = this._fb.group({
             id: new FormControl(clientRate?.id ?? null),
-            rateName: new FormControl(clientRate?.internalRateName ?? null),
-            nameForInvoices: new FormControl(clientRate?.publicRateName ?? null),
+            rateName: new FormControl(clientRate?.internalName ?? null),
+            nameForInvoices: new FormControl(clientRate?.publicName ?? null),
             rateDirection: new FormControl(clientRate?.specialRateOrFeeDirection ?? null),
             reportingUnit: new FormControl(clientRate?.specialRateReportingUnit ?? null),
             rateSpecifiedAs: new FormControl(clientRate?.specialRateSpecifiedAs ?? null),
@@ -167,8 +167,8 @@ export class ClientRatesAndFeesComponent implements OnInit, OnDestroy {
     saveOrUpdateSpecialRate(index: number) {
         const clientRate = this.specialRates.at(index).value;
         let input = new AddClientSpecialRateDto();
-        input.internalRateName = clientRate.rateName;
-        input.publicRateName = clientRate.nameForInvoices;
+        input.internalName = clientRate.rateName;
+        input.publicName = clientRate.nameForInvoices;
         input.specialRateOrFeeDirectionId = clientRate.rateDirection?.id;
         input.specialRateReportingUnitId = clientRate.reportingUnit?.id;
         input.specialRateSpecifiedAsId = clientRate.rateSpecifiedAs?.id;
@@ -206,8 +206,8 @@ export class ClientRatesAndFeesComponent implements OnInit, OnDestroy {
     addClientFee(clientFee?: ClientSpecialFeeDto) {
         const form = this._fb.group({
             id: new FormControl(clientFee?.id ?? null),
-            rateName: new FormControl(clientFee?.name ?? null),
-            nameForInvoices: new FormControl(clientFee?.invoiceName ?? null),
+            rateName: new FormControl(clientFee?.internalName ?? null),
+            nameForInvoices: new FormControl(clientFee?.publicName ?? null),
             rateDirection: new FormControl(clientFee?.specialRateOrFeeDirection ?? null),
             reportingUnit: new FormControl(clientFee?.clientSpecialFeeFrequency ?? null),
             rateSpecifiedAs: new FormControl(clientFee?.clientSpecialFeeSpecifiedAs ?? null),
@@ -240,8 +240,8 @@ export class ClientRatesAndFeesComponent implements OnInit, OnDestroy {
     saveOrUpdateSpecialFee(index: number) {
         const clientRate = this.clientFees.at(index).value;
         let input = new AddClientSpecialFeeDto();
-        input.name = clientRate.rateName;
-        input.invoiceName = clientRate.nameForInvoices;
+        input.internalName = clientRate.rateName;
+        input.publicName = clientRate.nameForInvoices;
         input.specialRateOrFeeDirectionId = clientRate.rateDirection?.id;
         input.clientSpecialFeeFrequencyId = clientRate.reportingUnit?.id;
         input.clientSpecialFeeSpecifiedAsId = clientRate.rateSpecifiedAs?.id;

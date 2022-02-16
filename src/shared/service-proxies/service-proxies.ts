@@ -2375,6 +2375,64 @@ export class EnumServiceProxy {
         }
         return _observableOf<EnumEntityTypeDto[]>(<any>null);
     }
+
+    /**
+     * @return Success
+     */
+    contractExpirationNotificationInterval(): Observable<EnumEntityTypeDto[]> {
+        let url_ = this.baseUrl + "/api/Enum/contract-expiration-notification-interval";
+        url_ = url_.replace(/[?&]$/, "");
+
+        let options_ : any = {
+            observe: "response",
+            responseType: "blob",
+            headers: new HttpHeaders({
+                "Accept": "text/plain"
+            })
+        };
+
+        return this.http.request("get", url_, options_).pipe(_observableMergeMap((response_ : any) => {
+            return this.processContractExpirationNotificationInterval(response_);
+        })).pipe(_observableCatch((response_: any) => {
+            if (response_ instanceof HttpResponseBase) {
+                try {
+                    return this.processContractExpirationNotificationInterval(<any>response_);
+                } catch (e) {
+                    return <Observable<EnumEntityTypeDto[]>><any>_observableThrow(e);
+                }
+            } else
+                return <Observable<EnumEntityTypeDto[]>><any>_observableThrow(response_);
+        }));
+    }
+
+    protected processContractExpirationNotificationInterval(response: HttpResponseBase): Observable<EnumEntityTypeDto[]> {
+        const status = response.status;
+        const responseBlob =
+            response instanceof HttpResponse ? response.body :
+            (<any>response).error instanceof Blob ? (<any>response).error : undefined;
+
+        let _headers: any = {}; if (response.headers) { for (let key of response.headers.keys()) { _headers[key] = response.headers.get(key); }}
+        if (status === 200) {
+            return blobToText(responseBlob).pipe(_observableMergeMap(_responseText => {
+            let result200: any = null;
+            let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
+            if (Array.isArray(resultData200)) {
+                result200 = [] as any;
+                for (let item of resultData200)
+                    result200!.push(EnumEntityTypeDto.fromJS(item));
+            }
+            else {
+                result200 = <any>null;
+            }
+            return _observableOf(result200);
+            }));
+        } else if (status !== 200 && status !== 204) {
+            return blobToText(responseBlob).pipe(_observableMergeMap(_responseText => {
+            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+            }));
+        }
+        return _observableOf<EnumEntityTypeDto[]>(<any>null);
+    }
 }
 
 @Injectable()
@@ -3191,8 +3249,8 @@ export class WorkflowServiceProxy {
 }
 
 export class AddClientSpecialFeeDto implements IAddClientSpecialFeeDto {
-    name?: string | undefined;
-    invoiceName?: string | undefined;
+    internalName?: string | undefined;
+    publicName?: string | undefined;
     specialRateOrFeeDirectionId?: number;
     clientSpecialFeeFrequencyId?: number;
     clientSpecialFeeSpecifiedAsId?: number;
@@ -3215,8 +3273,8 @@ export class AddClientSpecialFeeDto implements IAddClientSpecialFeeDto {
 
     init(_data?: any) {
         if (_data) {
-            this.name = _data["name"];
-            this.invoiceName = _data["invoiceName"];
+            this.internalName = _data["internalName"];
+            this.publicName = _data["publicName"];
             this.specialRateOrFeeDirectionId = _data["specialRateOrFeeDirectionId"];
             this.clientSpecialFeeFrequencyId = _data["clientSpecialFeeFrequencyId"];
             this.clientSpecialFeeSpecifiedAsId = _data["clientSpecialFeeSpecifiedAsId"];
@@ -3239,8 +3297,8 @@ export class AddClientSpecialFeeDto implements IAddClientSpecialFeeDto {
 
     toJSON(data?: any) {
         data = typeof data === 'object' ? data : {};
-        data["name"] = this.name;
-        data["invoiceName"] = this.invoiceName;
+        data["internalName"] = this.internalName;
+        data["publicName"] = this.publicName;
         data["specialRateOrFeeDirectionId"] = this.specialRateOrFeeDirectionId;
         data["clientSpecialFeeFrequencyId"] = this.clientSpecialFeeFrequencyId;
         data["clientSpecialFeeSpecifiedAsId"] = this.clientSpecialFeeSpecifiedAsId;
@@ -3256,8 +3314,8 @@ export class AddClientSpecialFeeDto implements IAddClientSpecialFeeDto {
 }
 
 export interface IAddClientSpecialFeeDto {
-    name?: string | undefined;
-    invoiceName?: string | undefined;
+    internalName?: string | undefined;
+    publicName?: string | undefined;
     specialRateOrFeeDirectionId?: number;
     clientSpecialFeeFrequencyId?: number;
     clientSpecialFeeSpecifiedAsId?: number;
@@ -3271,8 +3329,8 @@ export interface IAddClientSpecialFeeDto {
 }
 
 export class AddClientSpecialRateDto implements IAddClientSpecialRateDto {
-    internalRateName?: string | undefined;
-    publicRateName?: string | undefined;
+    internalName?: string | undefined;
+    publicName?: string | undefined;
     specialRateOrFeeDirectionId?: number;
     specialRateReportingUnitId?: number;
     specialRateSpecifiedAsId?: number | undefined;
@@ -3296,8 +3354,8 @@ export class AddClientSpecialRateDto implements IAddClientSpecialRateDto {
 
     init(_data?: any) {
         if (_data) {
-            this.internalRateName = _data["internalRateName"];
-            this.publicRateName = _data["publicRateName"];
+            this.internalName = _data["internalName"];
+            this.publicName = _data["publicName"];
             this.specialRateOrFeeDirectionId = _data["specialRateOrFeeDirectionId"];
             this.specialRateReportingUnitId = _data["specialRateReportingUnitId"];
             this.specialRateSpecifiedAsId = _data["specialRateSpecifiedAsId"];
@@ -3321,8 +3379,8 @@ export class AddClientSpecialRateDto implements IAddClientSpecialRateDto {
 
     toJSON(data?: any) {
         data = typeof data === 'object' ? data : {};
-        data["internalRateName"] = this.internalRateName;
-        data["publicRateName"] = this.publicRateName;
+        data["internalName"] = this.internalName;
+        data["publicName"] = this.publicName;
         data["specialRateOrFeeDirectionId"] = this.specialRateOrFeeDirectionId;
         data["specialRateReportingUnitId"] = this.specialRateReportingUnitId;
         data["specialRateSpecifiedAsId"] = this.specialRateSpecifiedAsId;
@@ -3339,8 +3397,8 @@ export class AddClientSpecialRateDto implements IAddClientSpecialRateDto {
 }
 
 export interface IAddClientSpecialRateDto {
-    internalRateName?: string | undefined;
-    publicRateName?: string | undefined;
+    internalName?: string | undefined;
+    publicName?: string | undefined;
     specialRateOrFeeDirectionId?: number;
     specialRateReportingUnitId?: number;
     specialRateSpecifiedAsId?: number | undefined;
@@ -3996,8 +4054,8 @@ export interface IClientRequestTrackDtoPaginatedList {
 
 export class ClientSpecialFeeDto implements IClientSpecialFeeDto {
     id?: number;
-    name?: string | undefined;
-    invoiceName?: string | undefined;
+    internalName?: string | undefined;
+    publicName?: string | undefined;
     specialRateOrFeeDirection?: EnumEntityTypeDto;
     clientSpecialFeeFrequency?: EnumEntityTypeDto;
     clientSpecialFeeSpecifiedAs?: EnumEntityTypeDto;
@@ -4022,8 +4080,8 @@ export class ClientSpecialFeeDto implements IClientSpecialFeeDto {
     init(_data?: any) {
         if (_data) {
             this.id = _data["id"];
-            this.name = _data["name"];
-            this.invoiceName = _data["invoiceName"];
+            this.internalName = _data["internalName"];
+            this.publicName = _data["publicName"];
             this.specialRateOrFeeDirection = _data["specialRateOrFeeDirection"] ? EnumEntityTypeDto.fromJS(_data["specialRateOrFeeDirection"]) : <any>undefined;
             this.clientSpecialFeeFrequency = _data["clientSpecialFeeFrequency"] ? EnumEntityTypeDto.fromJS(_data["clientSpecialFeeFrequency"]) : <any>undefined;
             this.clientSpecialFeeSpecifiedAs = _data["clientSpecialFeeSpecifiedAs"] ? EnumEntityTypeDto.fromJS(_data["clientSpecialFeeSpecifiedAs"]) : <any>undefined;
@@ -4048,8 +4106,8 @@ export class ClientSpecialFeeDto implements IClientSpecialFeeDto {
     toJSON(data?: any) {
         data = typeof data === 'object' ? data : {};
         data["id"] = this.id;
-        data["name"] = this.name;
-        data["invoiceName"] = this.invoiceName;
+        data["internalName"] = this.internalName;
+        data["publicName"] = this.publicName;
         data["specialRateOrFeeDirection"] = this.specialRateOrFeeDirection ? this.specialRateOrFeeDirection.toJSON() : <any>undefined;
         data["clientSpecialFeeFrequency"] = this.clientSpecialFeeFrequency ? this.clientSpecialFeeFrequency.toJSON() : <any>undefined;
         data["clientSpecialFeeSpecifiedAs"] = this.clientSpecialFeeSpecifiedAs ? this.clientSpecialFeeSpecifiedAs.toJSON() : <any>undefined;
@@ -4067,8 +4125,8 @@ export class ClientSpecialFeeDto implements IClientSpecialFeeDto {
 
 export interface IClientSpecialFeeDto {
     id?: number;
-    name?: string | undefined;
-    invoiceName?: string | undefined;
+    internalName?: string | undefined;
+    publicName?: string | undefined;
     specialRateOrFeeDirection?: EnumEntityTypeDto;
     clientSpecialFeeFrequency?: EnumEntityTypeDto;
     clientSpecialFeeSpecifiedAs?: EnumEntityTypeDto;
@@ -4084,8 +4142,8 @@ export interface IClientSpecialFeeDto {
 
 export class ClientSpecialRateDto implements IClientSpecialRateDto {
     id?: number;
-    internalRateName?: string | undefined;
-    publicRateName?: string | undefined;
+    internalName?: string | undefined;
+    publicName?: string | undefined;
     specialRateOrFeeDirection?: EnumEntityTypeDto;
     specialRateReportingUnit?: SpecialRateReportingUnit;
     specialRateSpecifiedAs?: SpecialRateSpecifiedAs;
@@ -4111,8 +4169,8 @@ export class ClientSpecialRateDto implements IClientSpecialRateDto {
     init(_data?: any) {
         if (_data) {
             this.id = _data["id"];
-            this.internalRateName = _data["internalRateName"];
-            this.publicRateName = _data["publicRateName"];
+            this.internalName = _data["internalName"];
+            this.publicName = _data["publicName"];
             this.specialRateOrFeeDirection = _data["specialRateOrFeeDirection"] ? EnumEntityTypeDto.fromJS(_data["specialRateOrFeeDirection"]) : <any>undefined;
             this.specialRateReportingUnit = _data["specialRateReportingUnit"] ? SpecialRateReportingUnit.fromJS(_data["specialRateReportingUnit"]) : <any>undefined;
             this.specialRateSpecifiedAs = _data["specialRateSpecifiedAs"] ? SpecialRateSpecifiedAs.fromJS(_data["specialRateSpecifiedAs"]) : <any>undefined;
@@ -4138,8 +4196,8 @@ export class ClientSpecialRateDto implements IClientSpecialRateDto {
     toJSON(data?: any) {
         data = typeof data === 'object' ? data : {};
         data["id"] = this.id;
-        data["internalRateName"] = this.internalRateName;
-        data["publicRateName"] = this.publicRateName;
+        data["internalName"] = this.internalName;
+        data["publicName"] = this.publicName;
         data["specialRateOrFeeDirection"] = this.specialRateOrFeeDirection ? this.specialRateOrFeeDirection.toJSON() : <any>undefined;
         data["specialRateReportingUnit"] = this.specialRateReportingUnit ? this.specialRateReportingUnit.toJSON() : <any>undefined;
         data["specialRateSpecifiedAs"] = this.specialRateSpecifiedAs ? this.specialRateSpecifiedAs.toJSON() : <any>undefined;
@@ -4158,8 +4216,8 @@ export class ClientSpecialRateDto implements IClientSpecialRateDto {
 
 export interface IClientSpecialRateDto {
     id?: number;
-    internalRateName?: string | undefined;
-    publicRateName?: string | undefined;
+    internalName?: string | undefined;
+    publicName?: string | undefined;
     specialRateOrFeeDirection?: EnumEntityTypeDto;
     specialRateReportingUnit?: SpecialRateReportingUnit;
     specialRateSpecifiedAs?: SpecialRateSpecifiedAs;
@@ -4271,6 +4329,10 @@ export class ConsultantSalesDataDto implements IConsultantSalesDataDto {
     consultantTimeReportingCapMaxValue?: number | undefined;
     pdcPaymentEntityId?: number | undefined;
     consultantRate?: ConsultantRateDto;
+    noSpecialRate?: boolean;
+    periodConsultantSpecialRates?: PeriodConsultantSpecialRateDto[] | undefined;
+    noSpecialFee?: boolean;
+    periodConsultantSpecialFees?: PeriodConsultantSpecialFeeDto[] | undefined;
     noSpecialContractTerms?: boolean;
     specialContractTerms?: string | undefined;
     deliveryManagerSameAsAccountManager?: boolean;
@@ -4307,6 +4369,18 @@ export class ConsultantSalesDataDto implements IConsultantSalesDataDto {
             this.consultantTimeReportingCapMaxValue = _data["consultantTimeReportingCapMaxValue"];
             this.pdcPaymentEntityId = _data["pdcPaymentEntityId"];
             this.consultantRate = _data["consultantRate"] ? ConsultantRateDto.fromJS(_data["consultantRate"]) : <any>undefined;
+            this.noSpecialRate = _data["noSpecialRate"];
+            if (Array.isArray(_data["periodConsultantSpecialRates"])) {
+                this.periodConsultantSpecialRates = [] as any;
+                for (let item of _data["periodConsultantSpecialRates"])
+                    this.periodConsultantSpecialRates!.push(PeriodConsultantSpecialRateDto.fromJS(item));
+            }
+            this.noSpecialFee = _data["noSpecialFee"];
+            if (Array.isArray(_data["periodConsultantSpecialFees"])) {
+                this.periodConsultantSpecialFees = [] as any;
+                for (let item of _data["periodConsultantSpecialFees"])
+                    this.periodConsultantSpecialFees!.push(PeriodConsultantSpecialFeeDto.fromJS(item));
+            }
             this.noSpecialContractTerms = _data["noSpecialContractTerms"];
             this.specialContractTerms = _data["specialContractTerms"];
             this.deliveryManagerSameAsAccountManager = _data["deliveryManagerSameAsAccountManager"];
@@ -4343,6 +4417,18 @@ export class ConsultantSalesDataDto implements IConsultantSalesDataDto {
         data["consultantTimeReportingCapMaxValue"] = this.consultantTimeReportingCapMaxValue;
         data["pdcPaymentEntityId"] = this.pdcPaymentEntityId;
         data["consultantRate"] = this.consultantRate ? this.consultantRate.toJSON() : <any>undefined;
+        data["noSpecialRate"] = this.noSpecialRate;
+        if (Array.isArray(this.periodConsultantSpecialRates)) {
+            data["periodConsultantSpecialRates"] = [];
+            for (let item of this.periodConsultantSpecialRates)
+                data["periodConsultantSpecialRates"].push(item.toJSON());
+        }
+        data["noSpecialFee"] = this.noSpecialFee;
+        if (Array.isArray(this.periodConsultantSpecialFees)) {
+            data["periodConsultantSpecialFees"] = [];
+            for (let item of this.periodConsultantSpecialFees)
+                data["periodConsultantSpecialFees"].push(item.toJSON());
+        }
         data["noSpecialContractTerms"] = this.noSpecialContractTerms;
         data["specialContractTerms"] = this.specialContractTerms;
         data["deliveryManagerSameAsAccountManager"] = this.deliveryManagerSameAsAccountManager;
@@ -4372,6 +4458,10 @@ export interface IConsultantSalesDataDto {
     consultantTimeReportingCapMaxValue?: number | undefined;
     pdcPaymentEntityId?: number | undefined;
     consultantRate?: ConsultantRateDto;
+    noSpecialRate?: boolean;
+    periodConsultantSpecialRates?: PeriodConsultantSpecialRateDto[] | undefined;
+    noSpecialFee?: boolean;
+    periodConsultantSpecialFees?: PeriodConsultantSpecialFeeDto[] | undefined;
     noSpecialContractTerms?: boolean;
     specialContractTerms?: string | undefined;
     deliveryManagerSameAsAccountManager?: boolean;
@@ -4622,6 +4712,262 @@ export interface INewWorkflowCreatedDto {
     workflowId?: string;
 }
 
+export class PeriodClientSpecialFeeDto implements IPeriodClientSpecialFeeDto {
+    id?: number | undefined;
+    clientSpecialFeeId?: number;
+    feeName?: string | undefined;
+    feeDirection?: EnumEntityTypeDto;
+    frequency?: EnumEntityTypeDto;
+    clientRate?: number | undefined;
+    clientRateCurrencyId?: number | undefined;
+
+    constructor(data?: IPeriodClientSpecialFeeDto) {
+        if (data) {
+            for (var property in data) {
+                if (data.hasOwnProperty(property))
+                    (<any>this)[property] = (<any>data)[property];
+            }
+        }
+    }
+
+    init(_data?: any) {
+        if (_data) {
+            this.id = _data["id"];
+            this.clientSpecialFeeId = _data["clientSpecialFeeId"];
+            this.feeName = _data["feeName"];
+            this.feeDirection = _data["feeDirection"] ? EnumEntityTypeDto.fromJS(_data["feeDirection"]) : <any>undefined;
+            this.frequency = _data["frequency"] ? EnumEntityTypeDto.fromJS(_data["frequency"]) : <any>undefined;
+            this.clientRate = _data["clientRate"];
+            this.clientRateCurrencyId = _data["clientRateCurrencyId"];
+        }
+    }
+
+    static fromJS(data: any): PeriodClientSpecialFeeDto {
+        data = typeof data === 'object' ? data : {};
+        let result = new PeriodClientSpecialFeeDto();
+        result.init(data);
+        return result;
+    }
+
+    toJSON(data?: any) {
+        data = typeof data === 'object' ? data : {};
+        data["id"] = this.id;
+        data["clientSpecialFeeId"] = this.clientSpecialFeeId;
+        data["feeName"] = this.feeName;
+        data["feeDirection"] = this.feeDirection ? this.feeDirection.toJSON() : <any>undefined;
+        data["frequency"] = this.frequency ? this.frequency.toJSON() : <any>undefined;
+        data["clientRate"] = this.clientRate;
+        data["clientRateCurrencyId"] = this.clientRateCurrencyId;
+        return data;
+    }
+}
+
+export interface IPeriodClientSpecialFeeDto {
+    id?: number | undefined;
+    clientSpecialFeeId?: number;
+    feeName?: string | undefined;
+    feeDirection?: EnumEntityTypeDto;
+    frequency?: EnumEntityTypeDto;
+    clientRate?: number | undefined;
+    clientRateCurrencyId?: number | undefined;
+}
+
+export class PeriodClientSpecialRateDto implements IPeriodClientSpecialRateDto {
+    id?: number | undefined;
+    clientSpecialRateId?: number;
+    rateName?: string | undefined;
+    rateDirection?: EnumEntityTypeDto;
+    reportingUnit?: EnumEntityTypeDto;
+    clientRate?: number | undefined;
+    clientRateCurrencyId?: number | undefined;
+
+    constructor(data?: IPeriodClientSpecialRateDto) {
+        if (data) {
+            for (var property in data) {
+                if (data.hasOwnProperty(property))
+                    (<any>this)[property] = (<any>data)[property];
+            }
+        }
+    }
+
+    init(_data?: any) {
+        if (_data) {
+            this.id = _data["id"];
+            this.clientSpecialRateId = _data["clientSpecialRateId"];
+            this.rateName = _data["rateName"];
+            this.rateDirection = _data["rateDirection"] ? EnumEntityTypeDto.fromJS(_data["rateDirection"]) : <any>undefined;
+            this.reportingUnit = _data["reportingUnit"] ? EnumEntityTypeDto.fromJS(_data["reportingUnit"]) : <any>undefined;
+            this.clientRate = _data["clientRate"];
+            this.clientRateCurrencyId = _data["clientRateCurrencyId"];
+        }
+    }
+
+    static fromJS(data: any): PeriodClientSpecialRateDto {
+        data = typeof data === 'object' ? data : {};
+        let result = new PeriodClientSpecialRateDto();
+        result.init(data);
+        return result;
+    }
+
+    toJSON(data?: any) {
+        data = typeof data === 'object' ? data : {};
+        data["id"] = this.id;
+        data["clientSpecialRateId"] = this.clientSpecialRateId;
+        data["rateName"] = this.rateName;
+        data["rateDirection"] = this.rateDirection ? this.rateDirection.toJSON() : <any>undefined;
+        data["reportingUnit"] = this.reportingUnit ? this.reportingUnit.toJSON() : <any>undefined;
+        data["clientRate"] = this.clientRate;
+        data["clientRateCurrencyId"] = this.clientRateCurrencyId;
+        return data;
+    }
+}
+
+export interface IPeriodClientSpecialRateDto {
+    id?: number | undefined;
+    clientSpecialRateId?: number;
+    rateName?: string | undefined;
+    rateDirection?: EnumEntityTypeDto;
+    reportingUnit?: EnumEntityTypeDto;
+    clientRate?: number | undefined;
+    clientRateCurrencyId?: number | undefined;
+}
+
+export class PeriodConsultantSpecialFeeDto implements IPeriodConsultantSpecialFeeDto {
+    id?: number | undefined;
+    clientSpecialFeeId?: number;
+    feeName?: string | undefined;
+    feeDirection?: EnumEntityTypeDto;
+    frequency?: EnumEntityTypeDto;
+    prodataToProdataRate?: number | undefined;
+    prodataToProdataRateCurrencyId?: number | undefined;
+    consultantRate?: number | undefined;
+    consultantRateCurrencyId?: number | undefined;
+
+    constructor(data?: IPeriodConsultantSpecialFeeDto) {
+        if (data) {
+            for (var property in data) {
+                if (data.hasOwnProperty(property))
+                    (<any>this)[property] = (<any>data)[property];
+            }
+        }
+    }
+
+    init(_data?: any) {
+        if (_data) {
+            this.id = _data["id"];
+            this.clientSpecialFeeId = _data["clientSpecialFeeId"];
+            this.feeName = _data["feeName"];
+            this.feeDirection = _data["feeDirection"] ? EnumEntityTypeDto.fromJS(_data["feeDirection"]) : <any>undefined;
+            this.frequency = _data["frequency"] ? EnumEntityTypeDto.fromJS(_data["frequency"]) : <any>undefined;
+            this.prodataToProdataRate = _data["prodataToProdataRate"];
+            this.prodataToProdataRateCurrencyId = _data["prodataToProdataRateCurrencyId"];
+            this.consultantRate = _data["consultantRate"];
+            this.consultantRateCurrencyId = _data["consultantRateCurrencyId"];
+        }
+    }
+
+    static fromJS(data: any): PeriodConsultantSpecialFeeDto {
+        data = typeof data === 'object' ? data : {};
+        let result = new PeriodConsultantSpecialFeeDto();
+        result.init(data);
+        return result;
+    }
+
+    toJSON(data?: any) {
+        data = typeof data === 'object' ? data : {};
+        data["id"] = this.id;
+        data["clientSpecialFeeId"] = this.clientSpecialFeeId;
+        data["feeName"] = this.feeName;
+        data["feeDirection"] = this.feeDirection ? this.feeDirection.toJSON() : <any>undefined;
+        data["frequency"] = this.frequency ? this.frequency.toJSON() : <any>undefined;
+        data["prodataToProdataRate"] = this.prodataToProdataRate;
+        data["prodataToProdataRateCurrencyId"] = this.prodataToProdataRateCurrencyId;
+        data["consultantRate"] = this.consultantRate;
+        data["consultantRateCurrencyId"] = this.consultantRateCurrencyId;
+        return data;
+    }
+}
+
+export interface IPeriodConsultantSpecialFeeDto {
+    id?: number | undefined;
+    clientSpecialFeeId?: number;
+    feeName?: string | undefined;
+    feeDirection?: EnumEntityTypeDto;
+    frequency?: EnumEntityTypeDto;
+    prodataToProdataRate?: number | undefined;
+    prodataToProdataRateCurrencyId?: number | undefined;
+    consultantRate?: number | undefined;
+    consultantRateCurrencyId?: number | undefined;
+}
+
+export class PeriodConsultantSpecialRateDto implements IPeriodConsultantSpecialRateDto {
+    id?: number | undefined;
+    clientSpecialRateId?: number;
+    rateName?: string | undefined;
+    rateDirection?: EnumEntityTypeDto;
+    reportingUnit?: EnumEntityTypeDto;
+    prodataToProdataRate?: number | undefined;
+    prodataToProdataRateCurrencyId?: number | undefined;
+    consultantRate?: number | undefined;
+    consultantRateCurrencyId?: number | undefined;
+
+    constructor(data?: IPeriodConsultantSpecialRateDto) {
+        if (data) {
+            for (var property in data) {
+                if (data.hasOwnProperty(property))
+                    (<any>this)[property] = (<any>data)[property];
+            }
+        }
+    }
+
+    init(_data?: any) {
+        if (_data) {
+            this.id = _data["id"];
+            this.clientSpecialRateId = _data["clientSpecialRateId"];
+            this.rateName = _data["rateName"];
+            this.rateDirection = _data["rateDirection"] ? EnumEntityTypeDto.fromJS(_data["rateDirection"]) : <any>undefined;
+            this.reportingUnit = _data["reportingUnit"] ? EnumEntityTypeDto.fromJS(_data["reportingUnit"]) : <any>undefined;
+            this.prodataToProdataRate = _data["prodataToProdataRate"];
+            this.prodataToProdataRateCurrencyId = _data["prodataToProdataRateCurrencyId"];
+            this.consultantRate = _data["consultantRate"];
+            this.consultantRateCurrencyId = _data["consultantRateCurrencyId"];
+        }
+    }
+
+    static fromJS(data: any): PeriodConsultantSpecialRateDto {
+        data = typeof data === 'object' ? data : {};
+        let result = new PeriodConsultantSpecialRateDto();
+        result.init(data);
+        return result;
+    }
+
+    toJSON(data?: any) {
+        data = typeof data === 'object' ? data : {};
+        data["id"] = this.id;
+        data["clientSpecialRateId"] = this.clientSpecialRateId;
+        data["rateName"] = this.rateName;
+        data["rateDirection"] = this.rateDirection ? this.rateDirection.toJSON() : <any>undefined;
+        data["reportingUnit"] = this.reportingUnit ? this.reportingUnit.toJSON() : <any>undefined;
+        data["prodataToProdataRate"] = this.prodataToProdataRate;
+        data["prodataToProdataRateCurrencyId"] = this.prodataToProdataRateCurrencyId;
+        data["consultantRate"] = this.consultantRate;
+        data["consultantRateCurrencyId"] = this.consultantRateCurrencyId;
+        return data;
+    }
+}
+
+export interface IPeriodConsultantSpecialRateDto {
+    id?: number | undefined;
+    clientSpecialRateId?: number;
+    rateName?: string | undefined;
+    rateDirection?: EnumEntityTypeDto;
+    reportingUnit?: EnumEntityTypeDto;
+    prodataToProdataRate?: number | undefined;
+    prodataToProdataRateCurrencyId?: number | undefined;
+    consultantRate?: number | undefined;
+    consultantRateCurrencyId?: number | undefined;
+}
+
 export class PeriodStepDto implements IPeriodStepDto {
     name?: string | undefined;
     typeId?: number;
@@ -4807,10 +5153,10 @@ export class SalesClientDataDto implements ISalesClientDataDto {
     clientInvoicingRecipientIdValue?: number | undefined;
     noInvoicingReferencePerson?: boolean | undefined;
     invoicingReferencePersonIdValue?: number | undefined;
-    noClientSpecialRate?: boolean;
-    clientSpecialRates?: number[] | undefined;
-    noClientSpecialFee?: boolean;
-    clientSpecialFees?: number[] | undefined;
+    noSpecialRate?: boolean;
+    periodClientSpecialRates?: PeriodClientSpecialRateDto[] | undefined;
+    noSpecialFee?: boolean;
+    periodClientSpecialFees?: PeriodClientSpecialFeeDto[] | undefined;
     evaluationsReferencePersonIdValue?: number | undefined;
     evaluationsDisabled?: boolean;
     evaluationsDisabledReason?: string | undefined;
@@ -4849,17 +5195,17 @@ export class SalesClientDataDto implements ISalesClientDataDto {
             this.clientInvoicingRecipientIdValue = _data["clientInvoicingRecipientIdValue"];
             this.noInvoicingReferencePerson = _data["noInvoicingReferencePerson"];
             this.invoicingReferencePersonIdValue = _data["invoicingReferencePersonIdValue"];
-            this.noClientSpecialRate = _data["noClientSpecialRate"];
-            if (Array.isArray(_data["clientSpecialRates"])) {
-                this.clientSpecialRates = [] as any;
-                for (let item of _data["clientSpecialRates"])
-                    this.clientSpecialRates!.push(item);
+            this.noSpecialRate = _data["noSpecialRate"];
+            if (Array.isArray(_data["periodClientSpecialRates"])) {
+                this.periodClientSpecialRates = [] as any;
+                for (let item of _data["periodClientSpecialRates"])
+                    this.periodClientSpecialRates!.push(PeriodClientSpecialRateDto.fromJS(item));
             }
-            this.noClientSpecialFee = _data["noClientSpecialFee"];
-            if (Array.isArray(_data["clientSpecialFees"])) {
-                this.clientSpecialFees = [] as any;
-                for (let item of _data["clientSpecialFees"])
-                    this.clientSpecialFees!.push(item);
+            this.noSpecialFee = _data["noSpecialFee"];
+            if (Array.isArray(_data["periodClientSpecialFees"])) {
+                this.periodClientSpecialFees = [] as any;
+                for (let item of _data["periodClientSpecialFees"])
+                    this.periodClientSpecialFees!.push(PeriodClientSpecialFeeDto.fromJS(item));
             }
             this.evaluationsReferencePersonIdValue = _data["evaluationsReferencePersonIdValue"];
             this.evaluationsDisabled = _data["evaluationsDisabled"];
@@ -4903,17 +5249,17 @@ export class SalesClientDataDto implements ISalesClientDataDto {
         data["clientInvoicingRecipientIdValue"] = this.clientInvoicingRecipientIdValue;
         data["noInvoicingReferencePerson"] = this.noInvoicingReferencePerson;
         data["invoicingReferencePersonIdValue"] = this.invoicingReferencePersonIdValue;
-        data["noClientSpecialRate"] = this.noClientSpecialRate;
-        if (Array.isArray(this.clientSpecialRates)) {
-            data["clientSpecialRates"] = [];
-            for (let item of this.clientSpecialRates)
-                data["clientSpecialRates"].push(item);
+        data["noSpecialRate"] = this.noSpecialRate;
+        if (Array.isArray(this.periodClientSpecialRates)) {
+            data["periodClientSpecialRates"] = [];
+            for (let item of this.periodClientSpecialRates)
+                data["periodClientSpecialRates"].push(item.toJSON());
         }
-        data["noClientSpecialFee"] = this.noClientSpecialFee;
-        if (Array.isArray(this.clientSpecialFees)) {
-            data["clientSpecialFees"] = [];
-            for (let item of this.clientSpecialFees)
-                data["clientSpecialFees"].push(item);
+        data["noSpecialFee"] = this.noSpecialFee;
+        if (Array.isArray(this.periodClientSpecialFees)) {
+            data["periodClientSpecialFees"] = [];
+            for (let item of this.periodClientSpecialFees)
+                data["periodClientSpecialFees"].push(item.toJSON());
         }
         data["evaluationsReferencePersonIdValue"] = this.evaluationsReferencePersonIdValue;
         data["evaluationsDisabled"] = this.evaluationsDisabled;
@@ -4950,10 +5296,10 @@ export interface ISalesClientDataDto {
     clientInvoicingRecipientIdValue?: number | undefined;
     noInvoicingReferencePerson?: boolean | undefined;
     invoicingReferencePersonIdValue?: number | undefined;
-    noClientSpecialRate?: boolean;
-    clientSpecialRates?: number[] | undefined;
-    noClientSpecialFee?: boolean;
-    clientSpecialFees?: number[] | undefined;
+    noSpecialRate?: boolean;
+    periodClientSpecialRates?: PeriodClientSpecialRateDto[] | undefined;
+    noSpecialFee?: boolean;
+    periodClientSpecialFees?: PeriodClientSpecialFeeDto[] | undefined;
     evaluationsReferencePersonIdValue?: number | undefined;
     evaluationsDisabled?: boolean;
     evaluationsDisabledReason?: string | undefined;
@@ -4972,7 +5318,7 @@ export class SalesMainDataDto implements ISalesMainDataDto {
     discountId?: number | undefined;
     salesAccountManagerIdValue?: number | undefined;
     commissionAccountManagerIdValue?: number | undefined;
-    readonly predefinedContractExpirationNotificationDates?: number[] | undefined;
+    contractExpirationNotificationIntervalIds?: number[] | undefined;
     customContractExpirationNotificationDate?: moment.Moment | undefined;
     remarks?: string | undefined;
     noRemarks?: boolean | undefined;
@@ -4997,10 +5343,10 @@ export class SalesMainDataDto implements ISalesMainDataDto {
             this.discountId = _data["discountId"];
             this.salesAccountManagerIdValue = _data["salesAccountManagerIdValue"];
             this.commissionAccountManagerIdValue = _data["commissionAccountManagerIdValue"];
-            if (Array.isArray(_data["predefinedContractExpirationNotificationDates"])) {
-                (<any>this).predefinedContractExpirationNotificationDates = [] as any;
-                for (let item of _data["predefinedContractExpirationNotificationDates"])
-                    (<any>this).predefinedContractExpirationNotificationDates!.push(item);
+            if (Array.isArray(_data["contractExpirationNotificationIntervalIds"])) {
+                this.contractExpirationNotificationIntervalIds = [] as any;
+                for (let item of _data["contractExpirationNotificationIntervalIds"])
+                    this.contractExpirationNotificationIntervalIds!.push(item);
             }
             this.customContractExpirationNotificationDate = _data["customContractExpirationNotificationDate"] ? moment(_data["customContractExpirationNotificationDate"].toString()) : <any>undefined;
             this.remarks = _data["remarks"];
@@ -5026,10 +5372,10 @@ export class SalesMainDataDto implements ISalesMainDataDto {
         data["discountId"] = this.discountId;
         data["salesAccountManagerIdValue"] = this.salesAccountManagerIdValue;
         data["commissionAccountManagerIdValue"] = this.commissionAccountManagerIdValue;
-        if (Array.isArray(this.predefinedContractExpirationNotificationDates)) {
-            data["predefinedContractExpirationNotificationDates"] = [];
-            for (let item of this.predefinedContractExpirationNotificationDates)
-                data["predefinedContractExpirationNotificationDates"].push(item);
+        if (Array.isArray(this.contractExpirationNotificationIntervalIds)) {
+            data["contractExpirationNotificationIntervalIds"] = [];
+            for (let item of this.contractExpirationNotificationIntervalIds)
+                data["contractExpirationNotificationIntervalIds"].push(item);
         }
         data["customContractExpirationNotificationDate"] = this.customContractExpirationNotificationDate ? this.customContractExpirationNotificationDate.format('YYYY-MM-DD') : <any>undefined;
         data["remarks"] = this.remarks;
@@ -5048,7 +5394,7 @@ export interface ISalesMainDataDto {
     discountId?: number | undefined;
     salesAccountManagerIdValue?: number | undefined;
     commissionAccountManagerIdValue?: number | undefined;
-    predefinedContractExpirationNotificationDates?: number[] | undefined;
+    contractExpirationNotificationIntervalIds?: number[] | undefined;
     customContractExpirationNotificationDate?: moment.Moment | undefined;
     remarks?: string | undefined;
     noRemarks?: boolean | undefined;
@@ -5434,8 +5780,8 @@ export interface IStepDataItemDto {
 }
 
 export class UpdateClientSpecialFeeDto implements IUpdateClientSpecialFeeDto {
-    name?: string | undefined;
-    invoiceName?: string | undefined;
+    internalName?: string | undefined;
+    publicName?: string | undefined;
     specialRateOrFeeDirectionId?: number;
     clientSpecialFeeFrequencyId?: number;
     clientSpecialFeeSpecifiedAsId?: number;
@@ -5459,8 +5805,8 @@ export class UpdateClientSpecialFeeDto implements IUpdateClientSpecialFeeDto {
 
     init(_data?: any) {
         if (_data) {
-            this.name = _data["name"];
-            this.invoiceName = _data["invoiceName"];
+            this.internalName = _data["internalName"];
+            this.publicName = _data["publicName"];
             this.specialRateOrFeeDirectionId = _data["specialRateOrFeeDirectionId"];
             this.clientSpecialFeeFrequencyId = _data["clientSpecialFeeFrequencyId"];
             this.clientSpecialFeeSpecifiedAsId = _data["clientSpecialFeeSpecifiedAsId"];
@@ -5484,8 +5830,8 @@ export class UpdateClientSpecialFeeDto implements IUpdateClientSpecialFeeDto {
 
     toJSON(data?: any) {
         data = typeof data === 'object' ? data : {};
-        data["name"] = this.name;
-        data["invoiceName"] = this.invoiceName;
+        data["internalName"] = this.internalName;
+        data["publicName"] = this.publicName;
         data["specialRateOrFeeDirectionId"] = this.specialRateOrFeeDirectionId;
         data["clientSpecialFeeFrequencyId"] = this.clientSpecialFeeFrequencyId;
         data["clientSpecialFeeSpecifiedAsId"] = this.clientSpecialFeeSpecifiedAsId;
@@ -5502,8 +5848,8 @@ export class UpdateClientSpecialFeeDto implements IUpdateClientSpecialFeeDto {
 }
 
 export interface IUpdateClientSpecialFeeDto {
-    name?: string | undefined;
-    invoiceName?: string | undefined;
+    internalName?: string | undefined;
+    publicName?: string | undefined;
     specialRateOrFeeDirectionId?: number;
     clientSpecialFeeFrequencyId?: number;
     clientSpecialFeeSpecifiedAsId?: number;
@@ -5518,8 +5864,8 @@ export interface IUpdateClientSpecialFeeDto {
 }
 
 export class UpdateClientSpecialRateDto implements IUpdateClientSpecialRateDto {
-    internalRateName?: string | undefined;
-    publicRateName?: string | undefined;
+    internalName?: string | undefined;
+    publicName?: string | undefined;
     specialRateOrFeeDirectionId?: number;
     specialRateReportingUnitId?: number;
     specialRateSpecifiedAsId?: number | undefined;
@@ -5544,8 +5890,8 @@ export class UpdateClientSpecialRateDto implements IUpdateClientSpecialRateDto {
 
     init(_data?: any) {
         if (_data) {
-            this.internalRateName = _data["internalRateName"];
-            this.publicRateName = _data["publicRateName"];
+            this.internalName = _data["internalName"];
+            this.publicName = _data["publicName"];
             this.specialRateOrFeeDirectionId = _data["specialRateOrFeeDirectionId"];
             this.specialRateReportingUnitId = _data["specialRateReportingUnitId"];
             this.specialRateSpecifiedAsId = _data["specialRateSpecifiedAsId"];
@@ -5570,8 +5916,8 @@ export class UpdateClientSpecialRateDto implements IUpdateClientSpecialRateDto {
 
     toJSON(data?: any) {
         data = typeof data === 'object' ? data : {};
-        data["internalRateName"] = this.internalRateName;
-        data["publicRateName"] = this.publicRateName;
+        data["internalName"] = this.internalName;
+        data["publicName"] = this.publicName;
         data["specialRateOrFeeDirectionId"] = this.specialRateOrFeeDirectionId;
         data["specialRateReportingUnitId"] = this.specialRateReportingUnitId;
         data["specialRateSpecifiedAsId"] = this.specialRateSpecifiedAsId;
@@ -5589,8 +5935,8 @@ export class UpdateClientSpecialRateDto implements IUpdateClientSpecialRateDto {
 }
 
 export interface IUpdateClientSpecialRateDto {
-    internalRateName?: string | undefined;
-    publicRateName?: string | undefined;
+    internalName?: string | undefined;
+    publicName?: string | undefined;
     specialRateOrFeeDirectionId?: number;
     specialRateReportingUnitId?: number;
     specialRateSpecifiedAsId?: number | undefined;

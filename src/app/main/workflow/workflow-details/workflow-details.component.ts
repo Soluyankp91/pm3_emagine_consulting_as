@@ -248,21 +248,35 @@ export class WorkflowDetailsComponent implements OnInit, OnDestroy, AfterViewIni
     tabChanged(event: MatTabChangeEvent) {
         console.log('change tab PW');
         this.selectedTabIndex = event.index;
-        this.selectedTabName = this.formatStepLabel(event.tab.textLabel);
+        // this.selectedTabName = this.formatStepLabel(event.tab.textLabel);
+        this.selectedTabName = event.tab.textLabel;
         this.extensionIndex = this.selectedTabName.startsWith('Extension') ? parseInt(event.tab.textLabel.match(/\d/g)!.join('')) : null;
         let newStatus = new WorkflowProgressStatus();
-        newStatus.currentlyActiveSection = this.mapSelectedTabNameToEnum(this.selectedTabName);
 
         newStatus.currentlyActiveExtensionIndex = this.extensionIndex;
         // FIXME: just for test
         newStatus.currentlyActiveStep = WorkflowSteps.Sales;
-        if (this.selectedTabName === 'Workflow') {
-            newStatus.currentlyActiveSideSection = WorkflowSideSections.StartWorkflow;
-        } else if (this.selectedTabName.startsWith('Extension')) {
-            newStatus.currentlyActiveSideSection = WorkflowSideSections.ExtendWorkflow;
+        if (this.selectedTabName === 'Overview') {
+            newStatus.currentlyActiveSection = WorkflowTopSections.Overview;
+        } else {
+            newStatus.currentlyActiveSection = this.detectTopLevelMenu(this.selectedTabName);
         }
 
         this._workflowDataService.updateWorkflowProgressStatus(newStatus);
+    }
+
+    detectTopLevelMenu(clientPeriodName: string) {
+        const selectedTopMenu = this.clientPeriods?.find(x => x.name === clientPeriodName);
+        const clientPeriodType = this.workflowClientPeriodTypes.find(type => type.id === selectedTopMenu?.typeId);
+        // FIXME: change after BE updates
+        switch (clientPeriodType?.name) {
+            case 'Start Client Period':
+                return WorkflowTopSections.Workflow;
+            case 'Extend Client Period':
+                return WorkflowTopSections.Extension;
+            case 'Change Client Period':
+                return WorkflowTopSections.ChangesInWF;
+        }
     }
 
     mapSideSectionName(value: number | undefined) {

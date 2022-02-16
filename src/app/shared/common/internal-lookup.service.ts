@@ -19,6 +19,7 @@ export class InternalLookupService {
     clientSpecialRateOrFeeDirections: EnumEntityTypeDto[] = [];
     clientSpecialRateReportUnits: EnumEntityTypeDto[] = [];
     clientSpecialRateSpecifications: EnumEntityTypeDto[] = [];
+    contractExpirationNotificationDuration: EnumEntityTypeDto[] = [];
 
     workflowClientPeriodTypes: EnumEntityTypeDto[] = [];
     workflowConsultantPeriodTypes: EnumEntityTypeDto[] = [];
@@ -365,6 +366,24 @@ export class InternalLookupService {
                     .subscribe(response => {
                         this.workflowPeriodStepTypes = response;
                         observer.next(this.workflowPeriodStepTypes);
+                        observer.complete();
+                    }, error => {
+                        observer.error(error);
+                    });
+            }
+        });
+    }
+
+    getContractExpirationNotificationInterval(): Observable<EnumEntityTypeDto[]> {
+        return new Observable<EnumEntityTypeDto[]>((observer) => {
+            if (this.contractExpirationNotificationDuration.length) {
+                observer.next(this.contractExpirationNotificationDuration);
+                observer.complete();
+            } else {
+                this._enumService.clientPeriodType()
+                    .subscribe(response => {
+                        this.contractExpirationNotificationDuration = response;
+                        observer.next(this.contractExpirationNotificationDuration);
                         observer.complete();
                     }, error => {
                         observer.error(error);
