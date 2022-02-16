@@ -317,7 +317,8 @@ export enum WorkflowSideSections {
 export enum WorkflowSteps {
     Sales = 1,
     Contracts = 2,
-    Finance = 3
+    Finance = 3,
+    Sourcing = 4
 }
 
 //#region side sections to Add
@@ -451,20 +452,7 @@ export const TerminateWorkflowDto: SideNavigationParentItemDto = {
             enumStepValue: WorkflowSteps.Sales,
             isCompleted: false,
             assignedPerson: 'Roberto Olberto',
-            menuAnchors: [
-                {
-                    name: 'Main data',
-                    value: 'mainData'
-                },
-                {
-                    name: 'Client data',
-                    value: 'clientData'
-                },
-                {
-                    name: 'Consultant data',
-                    value: 'consultantData'
-                }
-            ]
+            menuAnchors: []
         },
         {
             id: 2,
@@ -473,24 +461,16 @@ export const TerminateWorkflowDto: SideNavigationParentItemDto = {
             enumStepValue: WorkflowSteps.Contracts,
             isCompleted: false,
             assignedPerson: 'Roberto Olberto',
-            menuAnchors: [
-                {
-                    name: 'Main data',
-                    value: 'mainData'
-                },
-                {
-                    name: 'Client data',
-                    value: 'clientData'
-                },
-                {
-                    name: 'Consultant data',
-                    value: 'consultantData'
-                },
-                {
-                    name: 'Sync & legal contracts',
-                    value: 'legalContracts'
-                }
-            ]
+            menuAnchors: []
+        },
+        {
+            id: 3,
+            name: "TerminateWorkflowSourcing",
+            displayName: "Sourcing",
+            enumStepValue: WorkflowSteps.Sourcing,
+            isCompleted: false,
+            assignedPerson: 'Roberto Olberto',
+            menuAnchors: []
         }
     ]
 };
@@ -669,20 +649,7 @@ export const TerminateConsultantDto: SideNavigationParentItemDto = {
             enumStepValue: WorkflowSteps.Sales,
             isCompleted: false,
             assignedPerson: 'Roberto Olberto',
-            menuAnchors: [
-                {
-                    name: 'Main data',
-                    value: 'mainData'
-                },
-                {
-                    name: 'Client data',
-                    value: 'clientData'
-                },
-                {
-                    name: 'Consultant data',
-                    value: 'consultantData'
-                }
-            ]
+            menuAnchors: []
         },
         {
             id: 2,
@@ -691,24 +658,16 @@ export const TerminateConsultantDto: SideNavigationParentItemDto = {
             enumStepValue: WorkflowSteps.Contracts,
             isCompleted: false,
             assignedPerson: 'Roberto Olberto',
-            menuAnchors: [
-                {
-                    name: 'Main data',
-                    value: 'mainData'
-                },
-                {
-                    name: 'Client data',
-                    value: 'clientData'
-                },
-                {
-                    name: 'Consultant data',
-                    value: 'consultantData'
-                },
-                {
-                    name: 'Sync & legal contracts',
-                    value: 'legalContracts'
-                }
-            ]
+            menuAnchors: []
+        },
+        {
+            id: 3,
+            name: "TerminateConsultantSourcing",
+            displayName: "Sourcing",
+            enumStepValue: WorkflowSteps.Sourcing,
+            isCompleted: false,
+            assignedPerson: 'Roberto Olberto',
+            menuAnchors: []
         }
     ]
 };
