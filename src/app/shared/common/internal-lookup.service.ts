@@ -344,7 +344,7 @@ export class InternalLookupService {
                 observer.next(this.workflowConsultantPeriodTypes);
                 observer.complete();
             } else {
-                this._enumService.clientPeriodType()
+                this._enumService.consultantPeriodType()
                     .subscribe(response => {
                         this.workflowConsultantPeriodTypes = response;
                         observer.next(this.workflowConsultantPeriodTypes);
@@ -362,7 +362,7 @@ export class InternalLookupService {
                 observer.next(this.workflowPeriodStepTypes);
                 observer.complete();
             } else {
-                this._enumService.clientPeriodType()
+                this._enumService.periodStepType()
                     .subscribe(response => {
                         this.workflowPeriodStepTypes = response;
                         observer.next(this.workflowPeriodStepTypes);

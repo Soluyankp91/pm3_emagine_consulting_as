@@ -2,24 +2,25 @@
     <div fxFlex="20%" class="workflow-navigation--wrapper">
         <ng-scrollbar>
             <mat-accordion class="workflow-sidenav--expansion" [togglePosition]="'before'">
-                <mat-expansion-panel class="mat-elevation-z0" *ngFor="let item of sideNavigation; index as i" [expanded]="sectionIndex === i" (click)="sectionIndex === i ? $event.preventDefault() : ''" (opened)="changeSideSection(item, i)">
+                <mat-expansion-panel class="mat-elevation-z0" *ngFor="let item of sideMenuItems; index as i" [expanded]="sectionIndex === i" (click)="sectionIndex === i ? $event.preventDefault() : ''" (opened)="changeSideSection(item, i)">
                     <mat-expansion-panel-header [collapsedHeight]="'80px'" [expandedHeight]="'80px'">
                         <div fxLayout="row" fxLayoutAlign="space-between start" class="u-w--100">
                             <div class="sidenav-expansion--header">
                                 <span class="flex-row">
-                                    <mat-icon [svgIcon]="item.name"></mat-icon>
+                                    <mat-icon [svgIcon]="mapIconFromMenuItem(item.typeId!)!"></mat-icon>
                                     <span class="sidenav-expansion--header__name">
-                                        {{item.displayName}}
+                                        {{item.name}}
                                     </span>
                                 </span>
                                 <span class="sidenav-expansion--header__person">
-                                    {{item.responsiblePerson}}
+                                    <!-- {{item.responsiblePerson}} --> TBD
                                 </span>
                                 <span class="sidenav-expansion--header__date">
-                                    {{item.dateRange}}
+                                    {{item.additionalInfo}}
                                 </span>
                             </div>
-                            <div *ngIf="item.name === 'workflowEdit' || item.name === 'workflowTerminate'">
+                            <!-- Change WF || terminate WF || terminateConsultant when BE will have termination -->
+                            <div *ngIf="item.typeId === workflowProcessTypes.ChangeClientPeriod">
                                 <button mat-icon-button [matMenuTriggerFor]="consultantMenu" type="button" (click)="$event.stopPropagation();" class="workflow-icon--actions-treedot u-mr--16"><mat-icon>more_horiz</mat-icon></button>
                                 <mat-menu #consultantMenu>
                                     <button
@@ -35,23 +36,23 @@
                         </div>
                     </mat-expansion-panel-header>
                     <div class="workflow-navigation">
-                        <div class="workflow-navigation--step u-mb--10" *ngFor="let step of item.subItems; let i = index;"
-                            (click)="changeStepSelection(step.name, step.id, step.enumStepValue)"
+                        <div class="workflow-navigation--step u-mb--10" *ngFor="let step of item.periodSteps; let i = index;"
+                            (click)="changeStepSelection(step)"
                             [ngClass]="{'active-step': step.name === selectedStep, 'completed-step': step.isCompleted}">
                             <div fxLayout="column" fxLayoutAlign="start start">
                                 <div fxLayout="row" fxLayoutAlign="start center">
                                     <app-manager-search
                                         (click)="$event.stopPropagation()"
                                         [formFieldLabel]="step.name + ' Manager'"
-                                        [managerSearchType]="step.enumStepValue"
                                         [managerStatus]="i % 2 === 0 ? managerStatus.Pending : managerStatus.Completed">
                                     </app-manager-search>
 
                                     <span class="workflow-navigation--step__name">
-                                        {{step.displayName}}
+                                        {{step.name}}
                                     </span>
                                 </div>
-                                <div fxLayout="column" fxLayoutAlign="start start" class="u-ml--55" *ngIf="step.name === selectedStep">
+                                <!-- TODO: add when BE will be ready -->
+                                <!-- <div fxLayout="column" fxLayoutAlign="start start" class="u-ml--55" *ngIf="step.name === selectedStep">
                                     <div *ngFor="let anchor of step.menuAnchors"
                                          class="workflow-navigation--step__anchor u-mb--10"
                                          (click)="changeAnchorSelection(anchor.name)"
@@ -59,7 +60,7 @@
                                          [ngClass]="{'active-anchor': anchor.name === selectedAnchor}">
                                         {{anchor.name}}
                                     </div>
-                                </div>
+                                </div> -->
                             </div>
                         </div>
                     </div>

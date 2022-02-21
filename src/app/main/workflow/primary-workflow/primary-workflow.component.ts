@@ -4,13 +4,14 @@ import { MatDialog } from '@angular/material/dialog';
 import { ScrollToConfigOptions, ScrollToService } from '@nicky-lenaers/ngx-scroll-to';
 import { Subject } from 'rxjs';
 import { finalize, takeUntil } from 'rxjs/operators';
+import { InternalLookupService } from 'src/app/shared/common/internal-lookup.service';
 import { ConfirmationDialogComponent } from 'src/app/shared/components/confirmation-dialog/confirmation-dialog.component';
 import { ManagerStatus } from 'src/app/shared/components/manager-search/manager-search.model';
-import { WorkflowProcessDto, WorkflowServiceProxy } from 'src/shared/service-proxies/service-proxies';
+import { EnumEntityTypeDto, PeriodStepDto, WorkflowProcessDto, WorkflowServiceProxy } from 'src/shared/service-proxies/service-proxies';
 import { WorkflowDataService } from '../workflow-data.service';
 import { SideNavigationParentItemDto } from '../workflow-extension/workflow-extension.model';
 import { WorkflowSalesComponent } from '../workflow-sales/workflow-sales.component';
-import { WorkflowSideSections, WorkflowSteps } from '../workflow.model';
+import { WorkflowProcessType, WorkflowSideSections, WorkflowSteps } from '../workflow.model';
 
 @Component({
     selector: 'app-primary-workflow',
@@ -34,32 +35,46 @@ export class PrimaryWorkflowComponent implements OnInit, AfterViewInit {
 
     workflowSideNavigation: SideNavigationParentItemDto[];
 
-    sectionIndex: number;
+    sectionIndex = 0;
 
     managerStatus = ManagerStatus;
 
 
-    sideMenuItms: WorkflowProcessDto[] = [];
+    sideMenuItems: WorkflowProcessDto[] = [];
 
+    workflowProcessTypes = WorkflowProcessType;
+    workflowPeriodStepTypes: EnumEntityTypeDto[] = [];
     private _unsubscribe = new Subject();
     constructor(
         public _workflowDataService: WorkflowDataService,
         private _workflowService: WorkflowServiceProxy,
         private overlay: Overlay,
         private dialog: MatDialog,
+        private _lookupService: InternalLookupService
     ) { }
 
     ngOnInit(): void {
-        this._workflowDataService.workflowSideSectionAdded
-            .pipe(takeUntil(this._unsubscribe))
-            .subscribe((value: boolean) => {
-                // NB: SAVE DRAFT or COMPLETE
-                this.makeFirstSectionActive();
-            });
+        // this._workflowDataService.workflowSideSectionAdded
+        //     .pipe(takeUntil(this._unsubscribe))
+        //     .subscribe((value: boolean) => {
+        //         this.makeFirstSectionActive();
+        //     });
         // this.workflowSideNavigation = new Array<SideNavigationParentItemDto>(...this._workflowDataService.workflowSideNavigation);
-        this.changeSideSection(this.sideNavigation[0] , 0);
+        // this.changeSideSection(this.sideMenuItems[0] , 0);
 
+        this.getPeriodStepTypes();
         this.getSideMenu();
+    }
+
+    getPeriodStepTypes() {
+        this._lookupService.getWorkflowPeriodStepTypes()
+            .pipe(finalize(() => {
+
+            }))
+            .subscribe(result => {
+                this.workflowPeriodStepTypes = result;
+                // this.changeSideSection(this.sideMenuItems[0] , 0);
+            });
     }
 
     getSideMenu() {
@@ -68,40 +83,81 @@ export class PrimaryWorkflowComponent implements OnInit, AfterViewInit {
 
             }))
             .subscribe(result => {
-                this.sideMenuItms = result?.clientPeriods![0].workflowProcesses!;
+                this.sideMenuItems = result?.clientPeriods![0].workflowProcesses!;
+                // this.getPeriodStepTypes();
+                // this.changeSideSection(this.sideMenuItems[0] , 0);
                 console.log(result);
+                console.log('side lvl ', this.sideMenuItems);
             });
+    }
+
+    mapIconFromMenuItem(typeId: number) {
+        switch (typeId) {
+            case WorkflowProcessType.StartClientPeriod:
+                return 'workflowAdd'
+            case WorkflowProcessType.ChangeClientPeriod:
+                return 'workflowEdit'
+            case WorkflowProcessType.ExtendClientPeriod:
+                return 'workflowStartOrExtend'
+            case WorkflowProcessType.StartConsultantPeriod:
+                return 'workflowAdd'
+            case WorkflowProcessType.ChangeConsultantPeriod:
+                return 'workflowEdit'
+            case WorkflowProcessType.ExtendConsultantPeriod:
+                return 'workflowStartOrExtend'
+        }
     }
 
     ngAfterViewInit(): void {
         // this.workflowSideNavigation = new Array<SideNavigationParentItemDto>(...this._workflowDataService.workflowSideNavigation);
-        this.changeSideSection(this.sideNavigation[0] , 0);
+        // this.changeSideSection(this.sideMenuItems[0] , 0);
     }
 
     get sideNavigation() {
         return this.workflowSideNavigation = new Array<SideNavigationParentItemDto>(...this._workflowDataService.workflowSideNavigation);
     }
 
-    makeFirstSectionActive() {
-        this.changeSideSection(this.sideNavigation[0] , 0);
-        // TODO: scroll to top on newly added section?
+    // makeFirstSectionActive() {
+    //     this.changeSideSection(this.sideMenuItems[0] , 0);
+    //     // TODO: scroll to top on newly added section?
+    // }
+
+    changeStepSelection(step: PeriodStepDto) {
+        this.selectedStepEnum = this.mapStepType(this.workflowPeriodStepTypes?.find(x => x.id === step.typeId)!)!;
+        this.selectedStep = step.name!;
+        this._workflowDataService.workflowProgress.currentlyActiveStep = step.typeId! * 1;
     }
 
-    changeStepSelection(stepName: string, stepId: any, stepEnum: number) {
+    mapStepType(stepType: EnumEntityTypeDto) {
+        switch (stepType.name) {
+            case 'Sales':
+                return WorkflowSteps.Sales;
+            case 'Contract':
+                return WorkflowSteps.Contracts;
+            case 'Finance':
+                return WorkflowSteps.Finance;
+            case 'Sourcing':
+                return WorkflowSteps.Sourcing;
+        }
+    }
+
+    changeStepSelectionOld(stepName: string, stepEnum: number, stepId?: any,) {
         this.selectedStep = stepName;
         this.selectedStepEnum = stepEnum;
-        this._workflowDataService.workflowProgress.currentlyActiveStep = stepId * 1;
+
+        // this._workflowDataService.workflowProgress.currentlyActiveStep = stepId * 1;
     }
 
-    changeSideSection(item: SideNavigationParentItemDto, index: number) {
+    changeSideSection(item: WorkflowProcessDto, index: number) {
         this.sectionIndex = index;
-        this.selectedSideSection = item.sectionEnumValue;
-        this._workflowDataService.updateWorkflowProgressStatus({currentlyActiveSideSection: item.sectionEnumValue});
-        const firstitemInSection = this.workflowSideNavigation.find(x => x.displayName === item.displayName)?.subItems[0];
-        this.changeStepSelection(firstitemInSection!.name, firstitemInSection!.id, firstitemInSection!.enumStepValue);
+        this.selectedSideSection = item.typeId!;
+        this._workflowDataService.updateWorkflowProgressStatus({currentlyActiveSideSection: item.typeId!});
+        const firstitemInSection = this.sideMenuItems.find(x => x.name === item.name)?.periodSteps![0];
+        this.changeStepSelection(firstitemInSection!);
     }
 
-    deleteSideSection(item: SideNavigationParentItemDto) {
+    // deleteSideSection(item: SideNavigationParentItemDto) {
+    deleteSideSection(item: WorkflowProcessDto) {
         const scrollStrategy = this.overlay.scrollStrategies.reposition();
         const dialogRef = this.dialog.open(ConfirmationDialogComponent, {
             minWidth: '450px',
@@ -113,7 +169,7 @@ export class PrimaryWorkflowComponent implements OnInit, AfterViewInit {
             autoFocus: false,
             panelClass: 'confirmation-modal',
             data: {
-                confirmationMessageTitle: `Are you sure you want to delete ${item.displayName} ?`,
+                confirmationMessageTitle: `Are you sure you want to delete ${item.name} ?`,
                 confirmationMessage: 'The data, which has been filled until now - will be removed.',
                 rejectButtonText: 'Cancel',
                 confirmButtonText: 'Yes',

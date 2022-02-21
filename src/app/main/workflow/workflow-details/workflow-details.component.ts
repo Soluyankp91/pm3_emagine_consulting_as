@@ -128,7 +128,7 @@ export class WorkflowDetailsComponent implements OnInit, OnDestroy, AfterViewIni
 
             }))
             .subscribe(result => {
-                this.workflowClientPeriodTypes = result;
+                this.workflowPeriodStepTypes = result;
             });
     }
 
@@ -268,6 +268,7 @@ export class WorkflowDetailsComponent implements OnInit, OnDestroy, AfterViewIni
     detectTopLevelMenu(clientPeriodName: string) {
         const selectedTopMenu = this.clientPeriods?.find(x => x.name === clientPeriodName);
         const clientPeriodType = this.workflowClientPeriodTypes.find(type => type.id === selectedTopMenu?.typeId);
+        console.log(clientPeriodType);
         // FIXME: change after BE updates
         switch (clientPeriodType?.name) {
             case 'Start Client Period':
@@ -287,8 +288,24 @@ export class WorkflowDetailsComponent implements OnInit, OnDestroy, AfterViewIni
         return value ? WorkflowTopSections[value] : '';
     }
 
+    mapStepType(stepType: EnumEntityTypeDto) {
+        switch (stepType?.name) {
+            case 'Sales':
+                return WorkflowSteps.Sales;
+            case 'Contract':
+                return WorkflowSteps.Contracts;
+            case 'Finance':
+                return WorkflowSteps.Finance;
+            case 'Sourcing':
+                return WorkflowSteps.Sourcing;
+            default:
+                return null;
+        }
+    }
+
     mapStepName(value: number | undefined) {
-        return value ? WorkflowSteps[value] : '';
+        let selectedStepEnum = this.mapStepType(this.workflowPeriodStepTypes?.find(x => x.id === value)!)!;
+        return value ? WorkflowSteps[selectedStepEnum] : '';
     }
 
     mapSelectedTabNameToEnum(tabName: string) {

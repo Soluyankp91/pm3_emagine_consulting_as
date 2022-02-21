@@ -28,7 +28,7 @@ export class AccountServiceProxy {
     }
 
     /**
-     * @param redirectUri (optional) 
+     * @param redirectUri (optional)
      * @return Success
      */
     signIn(scheme: string, redirectUri?: string | undefined): Observable<void> {
@@ -83,12 +83,12 @@ export class AccountServiceProxy {
     }
 
     /**
-     * @param redirectUri (optional) 
-     * @param scope (optional) 
-     * @param loginHint (optional) 
-     * @param domainHint (optional) 
-     * @param claims (optional) 
-     * @param policy (optional) 
+     * @param redirectUri (optional)
+     * @param scope (optional)
+     * @param loginHint (optional)
+     * @param domainHint (optional)
+     * @param claims (optional)
+     * @param policy (optional)
      * @return Success
      */
     challenge(scheme: string, redirectUri?: string | undefined, scope?: string | undefined, loginHint?: string | undefined, domainHint?: string | undefined, claims?: string | undefined, policy?: string | undefined): Observable<void> {
@@ -325,10 +325,10 @@ export class ClientPeriodServiceProxy {
     }
 
     /**
-     * @param body (optional) 
+     * @param body (optional)
      * @return Success
      */
-    sales(clientPeriodId: string, body?: ClientPeriodSalesDataDto | undefined): Observable<void> {
+    salesPut(clientPeriodId: string, body?: ClientPeriodSalesDataDto | undefined): Observable<void> {
         let url_ = this.baseUrl + "/api/ClientPeriod/{clientPeriodId}/sales";
         if (clientPeriodId === undefined || clientPeriodId === null)
             throw new Error("The parameter 'clientPeriodId' must be defined.");
@@ -347,11 +347,11 @@ export class ClientPeriodServiceProxy {
         };
 
         return this.http.request("put", url_, options_).pipe(_observableMergeMap((response_ : any) => {
-            return this.processSales(response_);
+            return this.processSalesPut(response_);
         })).pipe(_observableCatch((response_: any) => {
             if (response_ instanceof HttpResponseBase) {
                 try {
-                    return this.processSales(<any>response_);
+                    return this.processSalesPut(<any>response_);
                 } catch (e) {
                     return <Observable<void>><any>_observableThrow(e);
                 }
@@ -360,7 +360,7 @@ export class ClientPeriodServiceProxy {
         }));
     }
 
-    protected processSales(response: HttpResponseBase): Observable<void> {
+    protected processSalesPut(response: HttpResponseBase): Observable<void> {
         const status = response.status;
         const responseBlob =
             response instanceof HttpResponse ? response.body :
@@ -378,6 +378,60 @@ export class ClientPeriodServiceProxy {
         }
         return _observableOf<void>(<any>null);
     }
+
+    /**
+     * @return Success
+     */
+    salesGet(clientPeriodId: string): Observable<ClientPeriodSalesDataDto> {
+        let url_ = this.baseUrl + "/api/ClientPeriod/{clientPeriodId}/sales";
+        if (clientPeriodId === undefined || clientPeriodId === null)
+            throw new Error("The parameter 'clientPeriodId' must be defined.");
+        url_ = url_.replace("{clientPeriodId}", encodeURIComponent("" + clientPeriodId));
+        url_ = url_.replace(/[?&]$/, "");
+
+        let options_ : any = {
+            observe: "response",
+            responseType: "blob",
+            headers: new HttpHeaders({
+                "Accept": "text/plain"
+            })
+        };
+
+        return this.http.request("get", url_, options_).pipe(_observableMergeMap((response_ : any) => {
+            return this.processSalesGet(response_);
+        })).pipe(_observableCatch((response_: any) => {
+            if (response_ instanceof HttpResponseBase) {
+                try {
+                    return this.processSalesGet(<any>response_);
+                } catch (e) {
+                    return <Observable<ClientPeriodSalesDataDto>><any>_observableThrow(e);
+                }
+            } else
+                return <Observable<ClientPeriodSalesDataDto>><any>_observableThrow(response_);
+        }));
+    }
+
+    protected processSalesGet(response: HttpResponseBase): Observable<ClientPeriodSalesDataDto> {
+        const status = response.status;
+        const responseBlob =
+            response instanceof HttpResponse ? response.body :
+            (<any>response).error instanceof Blob ? (<any>response).error : undefined;
+
+        let _headers: any = {}; if (response.headers) { for (let key of response.headers.keys()) { _headers[key] = response.headers.get(key); }}
+        if (status === 200) {
+            return blobToText(responseBlob).pipe(_observableMergeMap(_responseText => {
+            let result200: any = null;
+            let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
+            result200 = ClientPeriodSalesDataDto.fromJS(resultData200);
+            return _observableOf(result200);
+            }));
+        } else if (status !== 200 && status !== 204) {
+            return blobToText(responseBlob).pipe(_observableMergeMap(_responseText => {
+            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+            }));
+        }
+        return _observableOf<ClientPeriodSalesDataDto>(<any>null);
+    }
 }
 
 @Injectable()
@@ -392,14 +446,18 @@ export class ApiServiceProxy {
     }
 
     /**
-     * @param search (optional) 
-     * @param countryFilter (optional) 
-     * @param pageNumber (optional) 
-     * @param pageSize (optional) 
-     * @param sort (optional) 
+     * @param search (optional)
+     * @param countryFilter (optional)
+     * @param ownerFilter (optional)
+     * @param isActive (optional)
+     * @param excludeDeleted (optional)
+     * @param onlyWrongfullyDeletedInHubspot (optional)
+     * @param pageNumber (optional)
+     * @param pageSize (optional)
+     * @param sort (optional)
      * @return Success
      */
-    clients(search?: string | undefined, countryFilter?: number[] | undefined, pageNumber?: number | undefined, pageSize?: number | undefined, sort?: string | undefined): Observable<ClientListItemDtoPaginatedList> {
+    clients(search?: string | undefined, countryFilter?: number[] | undefined, ownerFilter?: number[] | undefined, isActive?: boolean | undefined, excludeDeleted?: boolean | undefined, onlyWrongfullyDeletedInHubspot?: boolean | undefined, pageNumber?: number | undefined, pageSize?: number | undefined, sort?: string | undefined): Observable<ClientListItemDtoPaginatedList> {
         let url_ = this.baseUrl + "/api/Clients?";
         if (search === null)
             throw new Error("The parameter 'search' cannot be null.");
@@ -409,6 +467,22 @@ export class ApiServiceProxy {
             throw new Error("The parameter 'countryFilter' cannot be null.");
         else if (countryFilter !== undefined)
             countryFilter && countryFilter.forEach(item => { url_ += "countryFilter=" + encodeURIComponent("" + item) + "&"; });
+        if (ownerFilter === null)
+            throw new Error("The parameter 'ownerFilter' cannot be null.");
+        else if (ownerFilter !== undefined)
+            ownerFilter && ownerFilter.forEach(item => { url_ += "ownerFilter=" + encodeURIComponent("" + item) + "&"; });
+        if (isActive === null)
+            throw new Error("The parameter 'isActive' cannot be null.");
+        else if (isActive !== undefined)
+            url_ += "isActive=" + encodeURIComponent("" + isActive) + "&";
+        if (excludeDeleted === null)
+            throw new Error("The parameter 'excludeDeleted' cannot be null.");
+        else if (excludeDeleted !== undefined)
+            url_ += "excludeDeleted=" + encodeURIComponent("" + excludeDeleted) + "&";
+        if (onlyWrongfullyDeletedInHubspot === null)
+            throw new Error("The parameter 'onlyWrongfullyDeletedInHubspot' cannot be null.");
+        else if (onlyWrongfullyDeletedInHubspot !== undefined)
+            url_ += "onlyWrongfullyDeletedInHubspot=" + encodeURIComponent("" + onlyWrongfullyDeletedInHubspot) + "&";
         if (pageNumber === null)
             throw new Error("The parameter 'pageNumber' cannot be null.");
         else if (pageNumber !== undefined)
@@ -480,11 +554,11 @@ export class ClientsServiceProxy {
     }
 
     /**
-     * @param search (optional) 
-     * @param projectTypeFilter (optional) 
-     * @param pageNumber (optional) 
-     * @param pageSize (optional) 
-     * @param sort (optional) 
+     * @param search (optional)
+     * @param projectTypeFilter (optional)
+     * @param pageNumber (optional)
+     * @param pageSize (optional)
+     * @param sort (optional)
      * @return Success
      */
     clientOverview(search?: string | undefined, projectTypeFilter?: string[] | undefined, pageNumber?: number | undefined, pageSize?: number | undefined, sort?: string | undefined): Observable<ClientOverviewListItemDtoPaginatedList> {
@@ -620,7 +694,7 @@ export class ClientsServiceProxy {
     }
 
     /**
-     * @param body (optional) 
+     * @param body (optional)
      * @return Success
      */
     specialRatesPost(clientId: number, body?: AddClientSpecialRateDto | undefined): Observable<void> {
@@ -675,7 +749,7 @@ export class ClientsServiceProxy {
     }
 
     /**
-     * @param body (optional) 
+     * @param body (optional)
      * @return Success
      */
     specialRatesPut(clientId: number, body?: UpdateClientSpecialRateDto | undefined): Observable<void> {
@@ -794,7 +868,7 @@ export class ClientsServiceProxy {
     }
 
     /**
-     * @param body (optional) 
+     * @param body (optional)
      * @return Success
      */
     specialFeesPost(clientId: number, body?: AddClientSpecialFeeDto | undefined): Observable<void> {
@@ -849,7 +923,7 @@ export class ClientsServiceProxy {
     }
 
     /**
-     * @param body (optional) 
+     * @param body (optional)
      * @return Success
      */
     specialFeesPut(clientId: number, body?: UpdateClientSpecialFeeDto | undefined): Observable<void> {
@@ -904,9 +978,9 @@ export class ClientsServiceProxy {
     }
 
     /**
-     * @param pageNumber (optional) 
-     * @param pageSize (optional) 
-     * @param sort (optional) 
+     * @param pageNumber (optional)
+     * @param pageSize (optional)
+     * @param sort (optional)
      * @return Success
      */
     requestTrack(legacyClientId: number, pageNumber?: number | undefined, pageSize?: number | undefined, sort?: string | undefined): Observable<ClientRequestTrackDtoPaginatedList> {
@@ -2433,6 +2507,180 @@ export class EnumServiceProxy {
         }
         return _observableOf<EnumEntityTypeDto[]>(<any>null);
     }
+
+    /**
+     * @return Success
+     */
+    commissionFrequency(): Observable<EnumEntityTypeDto[]> {
+        let url_ = this.baseUrl + "/api/Enum/commission-frequency";
+        url_ = url_.replace(/[?&]$/, "");
+
+        let options_ : any = {
+            observe: "response",
+            responseType: "blob",
+            headers: new HttpHeaders({
+                "Accept": "text/plain"
+            })
+        };
+
+        return this.http.request("get", url_, options_).pipe(_observableMergeMap((response_ : any) => {
+            return this.processCommissionFrequency(response_);
+        })).pipe(_observableCatch((response_: any) => {
+            if (response_ instanceof HttpResponseBase) {
+                try {
+                    return this.processCommissionFrequency(<any>response_);
+                } catch (e) {
+                    return <Observable<EnumEntityTypeDto[]>><any>_observableThrow(e);
+                }
+            } else
+                return <Observable<EnumEntityTypeDto[]>><any>_observableThrow(response_);
+        }));
+    }
+
+    protected processCommissionFrequency(response: HttpResponseBase): Observable<EnumEntityTypeDto[]> {
+        const status = response.status;
+        const responseBlob =
+            response instanceof HttpResponse ? response.body :
+            (<any>response).error instanceof Blob ? (<any>response).error : undefined;
+
+        let _headers: any = {}; if (response.headers) { for (let key of response.headers.keys()) { _headers[key] = response.headers.get(key); }}
+        if (status === 200) {
+            return blobToText(responseBlob).pipe(_observableMergeMap(_responseText => {
+            let result200: any = null;
+            let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
+            if (Array.isArray(resultData200)) {
+                result200 = [] as any;
+                for (let item of resultData200)
+                    result200!.push(EnumEntityTypeDto.fromJS(item));
+            }
+            else {
+                result200 = <any>null;
+            }
+            return _observableOf(result200);
+            }));
+        } else if (status !== 200 && status !== 204) {
+            return blobToText(responseBlob).pipe(_observableMergeMap(_responseText => {
+            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+            }));
+        }
+        return _observableOf<EnumEntityTypeDto[]>(<any>null);
+    }
+
+    /**
+     * @return Success
+     */
+    commissionTypes(): Observable<EnumEntityTypeDto[]> {
+        let url_ = this.baseUrl + "/api/Enum/commission-types";
+        url_ = url_.replace(/[?&]$/, "");
+
+        let options_ : any = {
+            observe: "response",
+            responseType: "blob",
+            headers: new HttpHeaders({
+                "Accept": "text/plain"
+            })
+        };
+
+        return this.http.request("get", url_, options_).pipe(_observableMergeMap((response_ : any) => {
+            return this.processCommissionTypes(response_);
+        })).pipe(_observableCatch((response_: any) => {
+            if (response_ instanceof HttpResponseBase) {
+                try {
+                    return this.processCommissionTypes(<any>response_);
+                } catch (e) {
+                    return <Observable<EnumEntityTypeDto[]>><any>_observableThrow(e);
+                }
+            } else
+                return <Observable<EnumEntityTypeDto[]>><any>_observableThrow(response_);
+        }));
+    }
+
+    protected processCommissionTypes(response: HttpResponseBase): Observable<EnumEntityTypeDto[]> {
+        const status = response.status;
+        const responseBlob =
+            response instanceof HttpResponse ? response.body :
+            (<any>response).error instanceof Blob ? (<any>response).error : undefined;
+
+        let _headers: any = {}; if (response.headers) { for (let key of response.headers.keys()) { _headers[key] = response.headers.get(key); }}
+        if (status === 200) {
+            return blobToText(responseBlob).pipe(_observableMergeMap(_responseText => {
+            let result200: any = null;
+            let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
+            if (Array.isArray(resultData200)) {
+                result200 = [] as any;
+                for (let item of resultData200)
+                    result200!.push(EnumEntityTypeDto.fromJS(item));
+            }
+            else {
+                result200 = <any>null;
+            }
+            return _observableOf(result200);
+            }));
+        } else if (status !== 200 && status !== 204) {
+            return blobToText(responseBlob).pipe(_observableMergeMap(_responseText => {
+            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+            }));
+        }
+        return _observableOf<EnumEntityTypeDto[]>(<any>null);
+    }
+
+    /**
+     * @return Success
+     */
+    recipientTypes(): Observable<EnumEntityTypeDto[]> {
+        let url_ = this.baseUrl + "/api/Enum/recipient-types";
+        url_ = url_.replace(/[?&]$/, "");
+
+        let options_ : any = {
+            observe: "response",
+            responseType: "blob",
+            headers: new HttpHeaders({
+                "Accept": "text/plain"
+            })
+        };
+
+        return this.http.request("get", url_, options_).pipe(_observableMergeMap((response_ : any) => {
+            return this.processRecipientTypes(response_);
+        })).pipe(_observableCatch((response_: any) => {
+            if (response_ instanceof HttpResponseBase) {
+                try {
+                    return this.processRecipientTypes(<any>response_);
+                } catch (e) {
+                    return <Observable<EnumEntityTypeDto[]>><any>_observableThrow(e);
+                }
+            } else
+                return <Observable<EnumEntityTypeDto[]>><any>_observableThrow(response_);
+        }));
+    }
+
+    protected processRecipientTypes(response: HttpResponseBase): Observable<EnumEntityTypeDto[]> {
+        const status = response.status;
+        const responseBlob =
+            response instanceof HttpResponse ? response.body :
+            (<any>response).error instanceof Blob ? (<any>response).error : undefined;
+
+        let _headers: any = {}; if (response.headers) { for (let key of response.headers.keys()) { _headers[key] = response.headers.get(key); }}
+        if (status === 200) {
+            return blobToText(responseBlob).pipe(_observableMergeMap(_responseText => {
+            let result200: any = null;
+            let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
+            if (Array.isArray(resultData200)) {
+                result200 = [] as any;
+                for (let item of resultData200)
+                    result200!.push(EnumEntityTypeDto.fromJS(item));
+            }
+            else {
+                result200 = <any>null;
+            }
+            return _observableOf(result200);
+            }));
+        } else if (status !== 200 && status !== 204) {
+            return blobToText(responseBlob).pipe(_observableMergeMap(_responseText => {
+            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+            }));
+        }
+        return _observableOf<EnumEntityTypeDto[]>(<any>null);
+    }
 }
 
 @Injectable()
@@ -2447,8 +2695,8 @@ export class HubSpotContractFetchServiceProxy {
     }
 
     /**
-     * @param userId (optional) 
-     * @param userEmail (optional) 
+     * @param userId (optional)
+     * @param userEmail (optional)
      * @return Success
      */
     listContracts(userId?: string | undefined, userEmail?: string | undefined): Observable<string> {
@@ -2497,7 +2745,7 @@ export class HubSpotContractFetchServiceProxy {
             let result200: any = null;
             let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
                 result200 = resultData200 !== undefined ? resultData200 : <any>null;
-    
+
             return _observableOf(result200);
             }));
         } else if (status !== 200 && status !== 204) {
@@ -2521,7 +2769,7 @@ export class HubSpotInstallServiceProxy {
     }
 
     /**
-     * @param code (optional) 
+     * @param code (optional)
      * @return Success
      */
     auth(code?: string | undefined): Observable<string> {
@@ -2566,7 +2814,7 @@ export class HubSpotInstallServiceProxy {
             let result200: any = null;
             let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
                 result200 = resultData200 !== undefined ? resultData200 : <any>null;
-    
+
             return _observableOf(result200);
             }));
         } else if (status !== 200 && status !== 204) {
@@ -2994,8 +3242,8 @@ export class LookupServiceProxy {
     }
 
     /**
-     * @param nameFilter (optional) 
-     * @param idsToExclude (optional) 
+     * @param nameFilter (optional)
+     * @param idsToExclude (optional)
      * @return Success
      */
     employees(nameFilter?: string | undefined, idsToExclude?: number[] | undefined): Observable<EmployeeDto[]> {
@@ -3074,7 +3322,7 @@ export class WorkflowServiceProxy {
     }
 
     /**
-     * @param body (optional) 
+     * @param body (optional)
      * @return Success
      */
     start(body?: StartNewWorkflowInputDto | undefined): Observable<NewWorkflowCreatedDto> {
@@ -3184,8 +3432,8 @@ export class WorkflowServiceProxy {
     }
 
     /**
-     * @param clientPeriodId (optional) 
-     * @param includeProcesses (optional) 
+     * @param clientPeriodId (optional)
+     * @param includeProcesses (optional)
      * @return Success
      */
     clientPeriods(workflowId: string, clientPeriodId?: string | undefined, includeProcesses?: boolean | undefined): Observable<WorkflowDto> {
@@ -3421,12 +3669,16 @@ export class ClientListItemDto implements IClientListItemDto {
     clientAddress_Address2?: string | undefined;
     clientAddress_PostCode?: string | undefined;
     clientAddress_City?: string | undefined;
-    clientAddress_Country_Id?: number;
+    clientAddress_Country_Id?: number | undefined;
     clientAddress_Country_Name?: string | undefined;
     clientAddress_Country_Code?: string | undefined;
     phone?: string | undefined;
+    owner_Id?: number | undefined;
     owner_Name?: string | undefined;
     tenant_Id?: number;
+    readonly isDeleted?: boolean;
+    readonly isWrongfullyDeletedInHubspot?: boolean;
+    readonly isActive?: boolean;
 
     constructor(data?: IClientListItemDto) {
         if (data) {
@@ -3451,8 +3703,12 @@ export class ClientListItemDto implements IClientListItemDto {
             this.clientAddress_Country_Name = _data["clientAddress_Country_Name"];
             this.clientAddress_Country_Code = _data["clientAddress_Country_Code"];
             this.phone = _data["phone"];
+            this.owner_Id = _data["owner_Id"];
             this.owner_Name = _data["owner_Name"];
             this.tenant_Id = _data["tenant_Id"];
+            (<any>this).isDeleted = _data["isDeleted"];
+            (<any>this).isWrongfullyDeletedInHubspot = _data["isWrongfullyDeletedInHubspot"];
+            (<any>this).isActive = _data["isActive"];
         }
     }
 
@@ -3477,8 +3733,12 @@ export class ClientListItemDto implements IClientListItemDto {
         data["clientAddress_Country_Name"] = this.clientAddress_Country_Name;
         data["clientAddress_Country_Code"] = this.clientAddress_Country_Code;
         data["phone"] = this.phone;
+        data["owner_Id"] = this.owner_Id;
         data["owner_Name"] = this.owner_Name;
         data["tenant_Id"] = this.tenant_Id;
+        data["isDeleted"] = this.isDeleted;
+        data["isWrongfullyDeletedInHubspot"] = this.isWrongfullyDeletedInHubspot;
+        data["isActive"] = this.isActive;
         return data;
     }
 }
@@ -3492,12 +3752,16 @@ export interface IClientListItemDto {
     clientAddress_Address2?: string | undefined;
     clientAddress_PostCode?: string | undefined;
     clientAddress_City?: string | undefined;
-    clientAddress_Country_Id?: number;
+    clientAddress_Country_Id?: number | undefined;
     clientAddress_Country_Name?: string | undefined;
     clientAddress_Country_Code?: string | undefined;
     phone?: string | undefined;
+    owner_Id?: number | undefined;
     owner_Name?: string | undefined;
     tenant_Id?: number;
+    isDeleted?: boolean;
+    isWrongfullyDeletedInHubspot?: boolean;
+    isActive?: boolean;
 }
 
 export class ClientListItemDtoPaginatedList implements IClientListItemDtoPaginatedList {
@@ -4230,6 +4494,82 @@ export interface IClientSpecialRateDto {
     specialRateCategory?: EnumEntityTypeDto;
     inUse?: boolean;
     isHidden?: boolean;
+}
+
+export class CommissionDto implements ICommissionDto {
+    id?: number | undefined;
+    commissionTypeId?: number;
+    amount?: number;
+    currencyId?: number;
+    commissionFrequencyId?: number;
+    oneTimeDate?: moment.Moment | undefined;
+    recipientTypeId?: number;
+    supplierId?: number | undefined;
+    tenantId?: number | undefined;
+    consultantId?: number | undefined;
+    clientId?: number | undefined;
+
+    constructor(data?: ICommissionDto) {
+        if (data) {
+            for (var property in data) {
+                if (data.hasOwnProperty(property))
+                    (<any>this)[property] = (<any>data)[property];
+            }
+        }
+    }
+
+    init(_data?: any) {
+        if (_data) {
+            this.id = _data["id"];
+            this.commissionTypeId = _data["commissionTypeId"];
+            this.amount = _data["amount"];
+            this.currencyId = _data["currencyId"];
+            this.commissionFrequencyId = _data["commissionFrequencyId"];
+            this.oneTimeDate = _data["oneTimeDate"] ? moment(_data["oneTimeDate"].toString()) : <any>undefined;
+            this.recipientTypeId = _data["recipientTypeId"];
+            this.supplierId = _data["supplierId"];
+            this.tenantId = _data["tenantId"];
+            this.consultantId = _data["consultantId"];
+            this.clientId = _data["clientId"];
+        }
+    }
+
+    static fromJS(data: any): CommissionDto {
+        data = typeof data === 'object' ? data : {};
+        let result = new CommissionDto();
+        result.init(data);
+        return result;
+    }
+
+    toJSON(data?: any) {
+        data = typeof data === 'object' ? data : {};
+        data["id"] = this.id;
+        data["commissionTypeId"] = this.commissionTypeId;
+        data["amount"] = this.amount;
+        data["currencyId"] = this.currencyId;
+        data["commissionFrequencyId"] = this.commissionFrequencyId;
+        data["oneTimeDate"] = this.oneTimeDate ? this.oneTimeDate.format('YYYY-MM-DD') : <any>undefined;
+        data["recipientTypeId"] = this.recipientTypeId;
+        data["supplierId"] = this.supplierId;
+        data["tenantId"] = this.tenantId;
+        data["consultantId"] = this.consultantId;
+        data["clientId"] = this.clientId;
+        return data;
+    }
+}
+
+export interface ICommissionDto {
+    id?: number | undefined;
+    commissionTypeId?: number;
+    amount?: number;
+    currencyId?: number;
+    commissionFrequencyId?: number;
+    oneTimeDate?: moment.Moment | undefined;
+    recipientTypeId?: number;
+    supplierId?: number | undefined;
+    tenantId?: number | undefined;
+    consultantId?: number | undefined;
+    clientId?: number | undefined;
 }
 
 export class ConsultantRateDto implements IConsultantRateDto {
@@ -4973,7 +5313,6 @@ export class PeriodStepDto implements IPeriodStepDto {
     typeId?: number;
     isCompleted?: boolean | undefined;
     responsiblePerson?: EmployeeDto;
-    stepDataItems?: StepDataItemDto[] | undefined;
 
     constructor(data?: IPeriodStepDto) {
         if (data) {
@@ -4990,11 +5329,6 @@ export class PeriodStepDto implements IPeriodStepDto {
             this.typeId = _data["typeId"];
             this.isCompleted = _data["isCompleted"];
             this.responsiblePerson = _data["responsiblePerson"] ? EmployeeDto.fromJS(_data["responsiblePerson"]) : <any>undefined;
-            if (Array.isArray(_data["stepDataItems"])) {
-                this.stepDataItems = [] as any;
-                for (let item of _data["stepDataItems"])
-                    this.stepDataItems!.push(StepDataItemDto.fromJS(item));
-            }
         }
     }
 
@@ -5011,11 +5345,6 @@ export class PeriodStepDto implements IPeriodStepDto {
         data["typeId"] = this.typeId;
         data["isCompleted"] = this.isCompleted;
         data["responsiblePerson"] = this.responsiblePerson ? this.responsiblePerson.toJSON() : <any>undefined;
-        if (Array.isArray(this.stepDataItems)) {
-            data["stepDataItems"] = [];
-            for (let item of this.stepDataItems)
-                data["stepDataItems"].push(item.toJSON());
-        }
         return data;
     }
 }
@@ -5025,7 +5354,6 @@ export interface IPeriodStepDto {
     typeId?: number;
     isCompleted?: boolean | undefined;
     responsiblePerson?: EmployeeDto;
-    stepDataItems?: StepDataItemDto[] | undefined;
 }
 
 export enum RequestProjectTypeValue {
@@ -5316,6 +5644,7 @@ export class SalesMainDataDto implements ISalesMainDataDto {
     projectCategoryId?: number | undefined;
     projectDescription?: string | undefined;
     discountId?: number | undefined;
+    commissions?: CommissionDto[] | undefined;
     salesAccountManagerIdValue?: number | undefined;
     commissionAccountManagerIdValue?: number | undefined;
     contractExpirationNotificationIntervalIds?: number[] | undefined;
@@ -5341,6 +5670,11 @@ export class SalesMainDataDto implements ISalesMainDataDto {
             this.projectCategoryId = _data["projectCategoryId"];
             this.projectDescription = _data["projectDescription"];
             this.discountId = _data["discountId"];
+            if (Array.isArray(_data["commissions"])) {
+                this.commissions = [] as any;
+                for (let item of _data["commissions"])
+                    this.commissions!.push(CommissionDto.fromJS(item));
+            }
             this.salesAccountManagerIdValue = _data["salesAccountManagerIdValue"];
             this.commissionAccountManagerIdValue = _data["commissionAccountManagerIdValue"];
             if (Array.isArray(_data["contractExpirationNotificationIntervalIds"])) {
@@ -5370,6 +5704,11 @@ export class SalesMainDataDto implements ISalesMainDataDto {
         data["projectCategoryId"] = this.projectCategoryId;
         data["projectDescription"] = this.projectDescription;
         data["discountId"] = this.discountId;
+        if (Array.isArray(this.commissions)) {
+            data["commissions"] = [];
+            for (let item of this.commissions)
+                data["commissions"].push(item.toJSON());
+        }
         data["salesAccountManagerIdValue"] = this.salesAccountManagerIdValue;
         data["commissionAccountManagerIdValue"] = this.commissionAccountManagerIdValue;
         if (Array.isArray(this.contractExpirationNotificationIntervalIds)) {
@@ -5392,6 +5731,7 @@ export interface ISalesMainDataDto {
     projectCategoryId?: number | undefined;
     projectDescription?: string | undefined;
     discountId?: number | undefined;
+    commissions?: CommissionDto[] | undefined;
     salesAccountManagerIdValue?: number | undefined;
     commissionAccountManagerIdValue?: number | undefined;
     contractExpirationNotificationIntervalIds?: number[] | undefined;
@@ -5735,50 +6075,6 @@ export interface IStartNewWorkflowInputDto {
     soldRequestConsultantId?: number | undefined;
 }
 
-export class StepDataItemDto implements IStepDataItemDto {
-    name?: string | undefined;
-    consultantPeriodId?: number | undefined;
-    additionalInfo?: string | undefined;
-
-    constructor(data?: IStepDataItemDto) {
-        if (data) {
-            for (var property in data) {
-                if (data.hasOwnProperty(property))
-                    (<any>this)[property] = (<any>data)[property];
-            }
-        }
-    }
-
-    init(_data?: any) {
-        if (_data) {
-            this.name = _data["name"];
-            this.consultantPeriodId = _data["consultantPeriodId"];
-            this.additionalInfo = _data["additionalInfo"];
-        }
-    }
-
-    static fromJS(data: any): StepDataItemDto {
-        data = typeof data === 'object' ? data : {};
-        let result = new StepDataItemDto();
-        result.init(data);
-        return result;
-    }
-
-    toJSON(data?: any) {
-        data = typeof data === 'object' ? data : {};
-        data["name"] = this.name;
-        data["consultantPeriodId"] = this.consultantPeriodId;
-        data["additionalInfo"] = this.additionalInfo;
-        return data;
-    }
-}
-
-export interface IStepDataItemDto {
-    name?: string | undefined;
-    consultantPeriodId?: number | undefined;
-    additionalInfo?: string | undefined;
-}
-
 export class UpdateClientSpecialFeeDto implements IUpdateClientSpecialFeeDto {
     internalName?: string | undefined;
     publicName?: string | undefined;
@@ -6041,6 +6337,7 @@ export interface IWorkflowDto {
 
 export class WorkflowProcessDto implements IWorkflowProcessDto {
     name?: string | undefined;
+    typeId?: number;
     additionalInfo?: string | undefined;
     periodSteps?: PeriodStepDto[] | undefined;
 
@@ -6056,6 +6353,7 @@ export class WorkflowProcessDto implements IWorkflowProcessDto {
     init(_data?: any) {
         if (_data) {
             this.name = _data["name"];
+            this.typeId = _data["typeId"];
             this.additionalInfo = _data["additionalInfo"];
             if (Array.isArray(_data["periodSteps"])) {
                 this.periodSteps = [] as any;
@@ -6075,6 +6373,7 @@ export class WorkflowProcessDto implements IWorkflowProcessDto {
     toJSON(data?: any) {
         data = typeof data === 'object' ? data : {};
         data["name"] = this.name;
+        data["typeId"] = this.typeId;
         data["additionalInfo"] = this.additionalInfo;
         if (Array.isArray(this.periodSteps)) {
             data["periodSteps"] = [];
@@ -6087,6 +6386,7 @@ export class WorkflowProcessDto implements IWorkflowProcessDto {
 
 export interface IWorkflowProcessDto {
     name?: string | undefined;
+    typeId?: number;
     additionalInfo?: string | undefined;
     periodSteps?: PeriodStepDto[] | undefined;
 }

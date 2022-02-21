@@ -11,7 +11,7 @@ import { AppComopnentBase } from 'src/shared/app-component-base';
 import { ClientPeriodSalesDataDto, ClientPeriodServiceProxy, ClientRateDto, ConsultantRateDto, ConsultantSalesDataDto, ContractSignerDto, EnumEntityTypeDto, EnumServiceProxy, SalesClientDataDto, SalesMainDataDto, SignerRole } from 'src/shared/service-proxies/service-proxies';
 import { WorkflowConsultantActionsDialogComponent } from '../workflow-consultant-actions-dialog/workflow-consultant-actions-dialog.component';
 import { WorkflowDataService } from '../workflow-data.service';
-import { ChangeConsultantDto, ExtendConsultantDto, TerminateConsultantDto, WorkflowSideSections, WorkflowTopSections } from '../workflow.model';
+import { ChangeConsultantDto, ExtendConsultantDto, TerminateConsultantDto, WorkflowProcessType, WorkflowSideSections, WorkflowTopSections } from '../workflow.model';
 import { ConsultantDiallogAction, ConsultantTypes, InputReadonlyState, InputReadonlyStates, WorkflowSalesAdditionalDataForm, WorkflowSalesClientDataForm, WorkflowSalesConsultantsForm, WorkflowSalesMainForm } from './workflow-sales.model';
 @Component({
     selector: 'app-workflow-sales',
@@ -31,7 +31,8 @@ export class WorkflowSalesComponent extends AppComopnentBase implements OnInit {
     // Changed all above to enum
     @Input() activeSideSection: number;
 
-    workflowSideSections = WorkflowSideSections;
+    // workflowSideSections = WorkflowSideSections;
+    workflowSideSections = WorkflowProcessType;
     // SalesStep
     intracompanyActive = false;
     salesMainClientDataForm: WorkflowSalesClientDataForm;
@@ -482,7 +483,7 @@ export class WorkflowSalesComponent extends AppComopnentBase implements OnInit {
         input.salesMainData.remarks = this.salesMainDataForm.remarks?.value;
         input.salesMainData.noRemarks = !this.salesMainDataForm.isRemarks?.value;
 
-        input.salesClientData.differentEndClient = this.salesMainClientDataForm.endClientIdValue?.value;
+        input.salesClientData.differentEndClient = this.salesMainClientDataForm.isDirectClient?.value;
         input.salesClientData.directClientIdValue = this.salesMainClientDataForm.directClientIdValue?.value;
         input.salesClientData.endClientIdValue = this.salesMainClientDataForm.endClientIdValue?.value;
         input.salesClientData.startDate = this.salesMainClientDataForm.clientContractStartDate?.value;
@@ -587,7 +588,7 @@ export class WorkflowSalesComponent extends AppComopnentBase implements OnInit {
             input.consultantSalesData!.push(consultantInput);
         });
 
-        this._clientPeriodService.sales(this.clientPeriodId!, input)
+        this._clientPeriodService.salesPut(this.clientPeriodId!, input)
             .pipe(finalize(() => {
 
             }))
@@ -597,25 +598,25 @@ export class WorkflowSalesComponent extends AppComopnentBase implements OnInit {
     }
 
     getWorkflowSalesStep() {
-        // this._startWorkflowService.salesGet(this.workflowId)
-        //     .pipe(finalize(() => {
+        this._clientPeriodService.salesGet(this.clientPeriodId!)
+            .pipe(finalize(() => {
 
-        //     }))
-        //     .subscribe(result => {
-        //         this.salesMainDataForm.salesType?.setValue(this.findItemById(this.saleTypes, result?.salesMainData?.salesTypeId), {emitEvent: false});
-        //         this.salesMainDataForm.deliveryType?.setValue(this.findItemById(this.deliveryTypes, result?.salesMainData?.deliveryTypeId), {emitEvent: false});
-        //         this.salesMainDataForm.margin?.setValue(result?.salesAdditionalData?.marginId, {emitEvent: false});
-        //         this.salesMainDataForm.projectDescription?.setValue(result?.salesMainData?.projectDescription, {emitEvent: false});
-        //         this.salesMainDataForm.remarks?.setValue(result?.salesAdditionalData?.remarks, {emitEvent: false});
-        //         this.salesMainDataForm.salesAccountManagerIdValue?.setValue(result?.salesMainData?.salesAccountManagerIdValue, {emitEvent: false});
-        //         this.salesMainDataForm.commissionAccountManagerIdValue?.setValue(result?.salesMainData?.commissionAccountManagerIdValue, {emitEvent: false});
+            }))
+            .subscribe(result => {
+                this.salesMainDataForm.salesType?.setValue(this.findItemById(this.saleTypes, result?.salesMainData?.salesTypeId), {emitEvent: false});
+                this.salesMainDataForm.deliveryType?.setValue(this.findItemById(this.deliveryTypes, result?.salesMainData?.deliveryTypeId), {emitEvent: false});
+                this.salesMainDataForm.margin?.setValue(result?.salesMainData?.marginId, {emitEvent: false});
+                this.salesMainDataForm.projectDescription?.setValue(result?.salesMainData?.projectDescription, {emitEvent: false});
+                this.salesMainDataForm.remarks?.setValue(result?.salesMainData?.remarks, {emitEvent: false});
+                this.salesMainDataForm.salesAccountManagerIdValue?.setValue(result?.salesMainData?.salesAccountManagerIdValue, {emitEvent: false});
+                this.salesMainDataForm.commissionAccountManagerIdValue?.setValue(result?.salesMainData?.commissionAccountManagerIdValue, {emitEvent: false});
 
-        //         this.salesMainClientDataForm.directClientIdValue?.setValue(result?.salesClientData?.directClientIdValue, {emitEvent: false});
-        //         this.salesMainClientDataForm.pdcInvoicingEntityId?.setValue(result?.salesClientData?.pdcInvoicingEntityId, {emitEvent: false});
-        //         this.salesMainClientDataForm.invoicingReferencePersonIdValue?.setValue(result?.salesClientData?.invoicingReferencePersonIdValue, {emitEvent: false});
-        //         this.salesMainClientDataForm.clientInvoicingRecipientSameAsDirectClient?.setValue(result?.salesClientData?.clientInvoicingRecipientSameAsDirectClient, {emitEvent: false});
+                this.salesMainClientDataForm.directClientIdValue?.setValue(result?.salesClientData?.directClientIdValue, {emitEvent: false});
+                this.salesMainClientDataForm.pdcInvoicingEntityId?.setValue(result?.salesClientData?.pdcInvoicingEntityId, {emitEvent: false});
+                this.salesMainClientDataForm.invoicingReferencePersonIdValue?.setValue(result?.salesClientData?.invoicingReferencePersonIdValue, {emitEvent: false});
+                this.salesMainClientDataForm.clientInvoicingRecipientSameAsDirectClient?.setValue(result?.salesClientData?.clientInvoicingRecipientSameAsDirectClient, {emitEvent: false});
 
-        //     });
+            });
     }
 
     toggleClientFees() {

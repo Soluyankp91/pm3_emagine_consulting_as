@@ -81,7 +81,11 @@ export class ClientListComponent extends AppComopnentBase implements OnInit, OnD
             switchMap((value: any) => {
                 let input = value ? value : '';
                 this.isDataLoading = true;
-                return this._apiService.clients(input, this.selectedCountryIds, this.pageNumber, this.deafultPageSize, this.sorting);
+                let isActive = this.selecedStatuses.findIndex(x => x.name === 'Active') > -1;
+                let excludeDeleted = this.selecedStatuses.findIndex(x => x.name === 'Deleted') < 0;
+                let onlyWrongfullyDeletedInHubspot = this.selecedStatuses.findIndex(x => x.name === 'Wrongfully deleted') > -1;
+                let ownerIds = this.selectedAccountManagers.map(x => +x.id);
+                return this._apiService.clients(input, this.selectedCountryIds, ownerIds, isActive, excludeDeleted, onlyWrongfullyDeletedInHubspot, this.pageNumber, this.deafultPageSize, this.sorting);
             }),
         ).subscribe((list: any) => {
             if (list.length) {
@@ -207,7 +211,11 @@ export class ClientListComponent extends AppComopnentBase implements OnInit, OnD
     getClientsGrid(filter: string, selectedCountires: number[], pageNumber: number, pageSize: number, sort: string) {
         let searchFilter = filter ? filter : '';
         this.isDataLoading = true;
-        this._apiService.clients(searchFilter, selectedCountires, pageNumber, pageSize, sort)
+        let isActive = this.selecedStatuses.findIndex(x => x.name === 'Active') > -1;
+        let excludeDeleted = this.selecedStatuses.findIndex(x => x.name === 'Deleted') < 0;
+        let onlyWrongfullyDeletedInHubspot = this.selecedStatuses.findIndex(x => x.name === 'Wrongfully deleted') > -1;
+        let ownerIds = this.selectedAccountManagers.map(x => +x.id);
+        this._apiService.clients(searchFilter, selectedCountires, ownerIds, isActive, excludeDeleted, onlyWrongfullyDeletedInHubspot, pageNumber, pageSize, sort)
             .pipe(finalize(() => {
                 this.isDataLoading = false;
             }))

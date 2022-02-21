@@ -4,7 +4,7 @@
     </ng-container>
     <ng-template #editMode> -->
         <ng-container [ngSwitch]="true">
-            <ng-container *ngSwitchCase="activeSideSection === workflowSideSections.StartWorkflow">
+            <ng-container *ngSwitchCase="activeSideSection === workflowSideSections.StartClientPeriod">
                 StartWorkflow
                 <form [formGroup]="salesMainDataForm" id="mainData" class="workflow-form workflow-form--main u-mb--20 u-mt--20 u-w--100">
                     <ng-container *ngIf="readOnlyMode; else editMode">
@@ -1085,7 +1085,7 @@
                     </ng-container>
                 </form>
             </ng-container>
-            <ng-container *ngSwitchCase="activeSideSection === workflowSideSections.ExtendWorkflow || activeSideSection === workflowSideSections.ChangeWorkflow">
+            <ng-container *ngSwitchCase="activeSideSection === workflowSideSections.ExtendClientPeriod || activeSideSection === workflowSideSections.ChangeClientPeriod">
                 ExtendWorkflow or ChangeWorkflow
                 <form [formGroup]="salesMainDataForm" id="mainData" class="workflow-form workflow-form--main u-mb--20 u-mt--20 u-w--100">
                     <div fxLayout="row" fxLayoutAlign="start start" fxLayoutGap="30px">
@@ -2027,10 +2027,11 @@
                     </ng-container>
                 </form>
             </ng-container>
-            <ng-container *ngSwitchCase="activeSideSection === workflowSideSections.TerminateWorkflow || activeSideSection === workflowSideSections.TerminateConsultant">
+            <!-- TODO: add when BE will provide termination block -->
+            <!-- <ng-container *ngSwitchCase="activeSideSection === workflowSideSections.TerminateWorkflow || activeSideSection === workflowSideSections.TerminateConsultant">
                 TerminateWorkflow or TerminateConsultant
-            </ng-container>
-            <ng-container *ngSwitchCase="(activeSideSection === workflowSideSections.AddConsultant) || (activeSideSection === workflowSideSections.ChangeConsultant) || (activeSideSection === workflowSideSections.ExtendConsultant)">
+            </ng-container> -->
+            <ng-container *ngSwitchCase="(activeSideSection === workflowSideSections.StartConsultantPeriod) || (activeSideSection === workflowSideSections.ChangeConsultantPeriod) || (activeSideSection === workflowSideSections.ExtendConsultantPeriod)">
                 AddConsultant or ChangeConsultant or ExtendConsultant
                 <form [formGroup]="salesMainDataForm" id="mainData" class="workflow-form workflow-form--main u-mb--20 u-mt--20 u-w--100">
                     <div fxLayout="row" fxLayoutAlign="start start" fxLayoutGap="30px">
@@ -2625,7 +2626,7 @@
                     </div>
                 </form>
 
-                <div *ngIf="activeSideSection !== workflowSideSections.ChangeConsultant">
+                <div *ngIf="activeSideSection !== workflowSideSections.ChangeConsultantPeriod">
                     <form [formGroup]="salesMainClientDataForm" id="clientData" class="workflow-form workflow-form--client u-mb--20 u-w--100">
                         <div fxLayout="row" fxLayoutAlign="start start" fxLayoutGap="30px">
                             <div class="text-end" fxFlex="20%">
