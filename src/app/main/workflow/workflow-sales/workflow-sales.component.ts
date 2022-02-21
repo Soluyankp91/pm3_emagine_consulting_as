@@ -1,6 +1,6 @@
 import { Overlay } from '@angular/cdk/overlay';
-import { Component, Injector, Input, OnDestroy, OnInit } from '@angular/core';
-import { AbstractControl, FormArray, FormBuilder, FormControl } from '@angular/forms';
+import { Component, Injector, Input, OnInit } from '@angular/core';
+import { FormArray, FormBuilder, FormControl } from '@angular/forms';
 import { MatDialog } from '@angular/material/dialog';
 import { ActivatedRoute } from '@angular/router';
 import { Subject } from 'rxjs';
@@ -8,11 +8,11 @@ import { finalize, takeUntil } from 'rxjs/operators';
 import { InternalLookupService } from 'src/app/shared/common/internal-lookup.service';
 import { ConfirmationDialogComponent } from 'src/app/shared/components/confirmation-dialog/confirmation-dialog.component';
 import { AppComopnentBase } from 'src/shared/app-component-base';
-import { ClientPeriodSalesDataDto, ClientPeriodServiceProxy, ClientRateDto, ConsultantRateDto, ConsultantSalesDataDto, ContractSignerDto, EnumEntityTypeDto, EnumServiceProxy, SalesClientDataDto, SalesMainDataDto, SignerRole } from 'src/shared/service-proxies/service-proxies';
+import { ClientPeriodSalesDataDto, ClientPeriodServiceProxy, ClientRateDto, ConsultantRateDto, ConsultantSalesDataDto, ContractSignerDto, EnumEntityTypeDto, EnumServiceProxy, SalesClientDataDto, SalesMainDataDto, WorkflowProcessType } from 'src/shared/service-proxies/service-proxies';
 import { WorkflowConsultantActionsDialogComponent } from '../workflow-consultant-actions-dialog/workflow-consultant-actions-dialog.component';
 import { WorkflowDataService } from '../workflow-data.service';
-import { ChangeConsultantDto, ExtendConsultantDto, TerminateConsultantDto, WorkflowProcessType, WorkflowSideSections, WorkflowTopSections } from '../workflow.model';
-import { ConsultantDiallogAction, ConsultantTypes, InputReadonlyState, InputReadonlyStates, WorkflowSalesAdditionalDataForm, WorkflowSalesClientDataForm, WorkflowSalesConsultantsForm, WorkflowSalesMainForm } from './workflow-sales.model';
+import { ChangeConsultantDto, ExtendConsultantDto, TerminateConsultantDto, WorkflowTopSections } from '../workflow.model';
+import { ConsultantDiallogAction, ConsultantTypes, InputReadonlyStates, WorkflowSalesAdditionalDataForm, WorkflowSalesClientDataForm, WorkflowSalesConsultantsForm, WorkflowSalesMainForm } from './workflow-sales.model';
 @Component({
     selector: 'app-workflow-sales',
     templateUrl: './workflow-sales.component.html',

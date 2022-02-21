@@ -1,17 +1,16 @@
 import { Overlay } from '@angular/cdk/overlay';
 import { AfterViewInit, Component, Input, OnInit, ViewChild } from '@angular/core';
 import { MatDialog } from '@angular/material/dialog';
-import { ScrollToConfigOptions, ScrollToService } from '@nicky-lenaers/ngx-scroll-to';
 import { Subject } from 'rxjs';
-import { finalize, takeUntil } from 'rxjs/operators';
+import { finalize } from 'rxjs/operators';
 import { InternalLookupService } from 'src/app/shared/common/internal-lookup.service';
 import { ConfirmationDialogComponent } from 'src/app/shared/components/confirmation-dialog/confirmation-dialog.component';
 import { ManagerStatus } from 'src/app/shared/components/manager-search/manager-search.model';
-import { EnumEntityTypeDto, PeriodStepDto, WorkflowProcessDto, WorkflowServiceProxy } from 'src/shared/service-proxies/service-proxies';
+import { EnumEntityTypeDto, PeriodStepDto, WorkflowProcessDto, WorkflowProcessType, WorkflowServiceProxy } from 'src/shared/service-proxies/service-proxies';
 import { WorkflowDataService } from '../workflow-data.service';
 import { SideNavigationParentItemDto } from '../workflow-extension/workflow-extension.model';
 import { WorkflowSalesComponent } from '../workflow-sales/workflow-sales.component';
-import { WorkflowProcessType, WorkflowSideSections, WorkflowSteps } from '../workflow.model';
+import { WorkflowSideSections, WorkflowSteps } from '../workflow.model';
 
 @Component({
     selector: 'app-primary-workflow',

@@ -303,15 +303,6 @@ export enum WorkflowTopSections {
     ChangesInWF = 5
 }
 
-export enum WorkflowProcessType {
-    StartClientPeriod = 1,
-    ChangeClientPeriod = 2,
-    ExtendClientPeriod = 3,
-    StartConsultantPeriod = 4,
-    ChangeConsultantPeriod = 5,
-    ExtendConsultantPeriod = 6
-}
-
 export enum WorkflowSideSections {
     StartWorkflow = 1,
     ExtendWorkflow = 2,

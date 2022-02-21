@@ -28,7 +28,7 @@ export class AccountServiceProxy {
     }
 
     /**
-     * @param redirectUri (optional)
+     * @param redirectUri (optional) 
      * @return Success
      */
     signIn(scheme: string, redirectUri?: string | undefined): Observable<void> {
@@ -83,12 +83,12 @@ export class AccountServiceProxy {
     }
 
     /**
-     * @param redirectUri (optional)
-     * @param scope (optional)
-     * @param loginHint (optional)
-     * @param domainHint (optional)
-     * @param claims (optional)
-     * @param policy (optional)
+     * @param redirectUri (optional) 
+     * @param scope (optional) 
+     * @param loginHint (optional) 
+     * @param domainHint (optional) 
+     * @param claims (optional) 
+     * @param policy (optional) 
      * @return Success
      */
     challenge(scheme: string, redirectUri?: string | undefined, scope?: string | undefined, loginHint?: string | undefined, domainHint?: string | undefined, claims?: string | undefined, policy?: string | undefined): Observable<void> {
@@ -325,7 +325,7 @@ export class ClientPeriodServiceProxy {
     }
 
     /**
-     * @param body (optional)
+     * @param body (optional) 
      * @return Success
      */
     salesPut(clientPeriodId: string, body?: ClientPeriodSalesDataDto | undefined): Observable<void> {
@@ -446,15 +446,15 @@ export class ApiServiceProxy {
     }
 
     /**
-     * @param search (optional)
-     * @param countryFilter (optional)
-     * @param ownerFilter (optional)
-     * @param isActive (optional)
-     * @param excludeDeleted (optional)
-     * @param onlyWrongfullyDeletedInHubspot (optional)
-     * @param pageNumber (optional)
-     * @param pageSize (optional)
-     * @param sort (optional)
+     * @param search (optional) 
+     * @param countryFilter (optional) 
+     * @param ownerFilter (optional) 
+     * @param isActive (optional) 
+     * @param excludeDeleted (optional) 
+     * @param onlyWrongfullyDeletedInHubspot (optional) 
+     * @param pageNumber (optional) 
+     * @param pageSize (optional) 
+     * @param sort (optional) 
      * @return Success
      */
     clients(search?: string | undefined, countryFilter?: number[] | undefined, ownerFilter?: number[] | undefined, isActive?: boolean | undefined, excludeDeleted?: boolean | undefined, onlyWrongfullyDeletedInHubspot?: boolean | undefined, pageNumber?: number | undefined, pageSize?: number | undefined, sort?: string | undefined): Observable<ClientListItemDtoPaginatedList> {
@@ -554,11 +554,11 @@ export class ClientsServiceProxy {
     }
 
     /**
-     * @param search (optional)
-     * @param projectTypeFilter (optional)
-     * @param pageNumber (optional)
-     * @param pageSize (optional)
-     * @param sort (optional)
+     * @param search (optional) 
+     * @param projectTypeFilter (optional) 
+     * @param pageNumber (optional) 
+     * @param pageSize (optional) 
+     * @param sort (optional) 
      * @return Success
      */
     clientOverview(search?: string | undefined, projectTypeFilter?: string[] | undefined, pageNumber?: number | undefined, pageSize?: number | undefined, sort?: string | undefined): Observable<ClientOverviewListItemDtoPaginatedList> {
@@ -694,7 +694,7 @@ export class ClientsServiceProxy {
     }
 
     /**
-     * @param body (optional)
+     * @param body (optional) 
      * @return Success
      */
     specialRatesPost(clientId: number, body?: AddClientSpecialRateDto | undefined): Observable<void> {
@@ -749,7 +749,7 @@ export class ClientsServiceProxy {
     }
 
     /**
-     * @param body (optional)
+     * @param body (optional) 
      * @return Success
      */
     specialRatesPut(clientId: number, body?: UpdateClientSpecialRateDto | undefined): Observable<void> {
@@ -868,7 +868,7 @@ export class ClientsServiceProxy {
     }
 
     /**
-     * @param body (optional)
+     * @param body (optional) 
      * @return Success
      */
     specialFeesPost(clientId: number, body?: AddClientSpecialFeeDto | undefined): Observable<void> {
@@ -923,7 +923,7 @@ export class ClientsServiceProxy {
     }
 
     /**
-     * @param body (optional)
+     * @param body (optional) 
      * @return Success
      */
     specialFeesPut(clientId: number, body?: UpdateClientSpecialFeeDto | undefined): Observable<void> {
@@ -978,9 +978,9 @@ export class ClientsServiceProxy {
     }
 
     /**
-     * @param pageNumber (optional)
-     * @param pageSize (optional)
-     * @param sort (optional)
+     * @param pageNumber (optional) 
+     * @param pageSize (optional) 
+     * @param sort (optional) 
      * @return Success
      */
     requestTrack(legacyClientId: number, pageNumber?: number | undefined, pageSize?: number | undefined, sort?: string | undefined): Observable<ClientRequestTrackDtoPaginatedList> {
@@ -2695,8 +2695,8 @@ export class HubSpotContractFetchServiceProxy {
     }
 
     /**
-     * @param userId (optional)
-     * @param userEmail (optional)
+     * @param userId (optional) 
+     * @param userEmail (optional) 
      * @return Success
      */
     listContracts(userId?: string | undefined, userEmail?: string | undefined): Observable<string> {
@@ -2745,7 +2745,7 @@ export class HubSpotContractFetchServiceProxy {
             let result200: any = null;
             let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
                 result200 = resultData200 !== undefined ? resultData200 : <any>null;
-
+    
             return _observableOf(result200);
             }));
         } else if (status !== 200 && status !== 204) {
@@ -2769,7 +2769,7 @@ export class HubSpotInstallServiceProxy {
     }
 
     /**
-     * @param code (optional)
+     * @param code (optional) 
      * @return Success
      */
     auth(code?: string | undefined): Observable<string> {
@@ -2814,7 +2814,7 @@ export class HubSpotInstallServiceProxy {
             let result200: any = null;
             let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
                 result200 = resultData200 !== undefined ? resultData200 : <any>null;
-
+    
             return _observableOf(result200);
             }));
         } else if (status !== 200 && status !== 204) {
@@ -3242,8 +3242,8 @@ export class LookupServiceProxy {
     }
 
     /**
-     * @param nameFilter (optional)
-     * @param idsToExclude (optional)
+     * @param nameFilter (optional) 
+     * @param idsToExclude (optional) 
      * @return Success
      */
     employees(nameFilter?: string | undefined, idsToExclude?: number[] | undefined): Observable<EmployeeDto[]> {
@@ -3322,7 +3322,7 @@ export class WorkflowServiceProxy {
     }
 
     /**
-     * @param body (optional)
+     * @param body (optional) 
      * @return Success
      */
     start(body?: StartNewWorkflowInputDto | undefined): Observable<NewWorkflowCreatedDto> {
@@ -3432,8 +3432,8 @@ export class WorkflowServiceProxy {
     }
 
     /**
-     * @param clientPeriodId (optional)
-     * @param includeProcesses (optional)
+     * @param clientPeriodId (optional) 
+     * @param includeProcesses (optional) 
      * @return Success
      */
     clientPeriods(workflowId: string, clientPeriodId?: string | undefined, includeProcesses?: boolean | undefined): Observable<WorkflowDto> {
@@ -5357,16 +5357,16 @@ export interface IPeriodStepDto {
 }
 
 export enum RequestProjectTypeValue {
-    _1 = 1,
-    _2 = 2,
-    _3 = 3,
-    _4 = 4,
-    _5 = 5,
-    _6 = 6,
-    _7 = 7,
-    _8 = 8,
-    _9 = 9,
-    _10 = 10,
+    NormalHighMargin = 1,
+    NormalLowMargin = 2,
+    NearShoreHighMargin = 3,
+    NearShoreLowMargin = 4,
+    VMSReferredHighMargin = 5,
+    VMSReferredLowMargin = 6,
+    NearShoreVMSReferredHighMargin = 7,
+    NearShoreVMSReferredLowMargin = 8,
+    OtherHighMargin = 9,
+    OtherLowMargin = 10,
 }
 
 export class RequestProjectTypeValueValueNameDto implements IRequestProjectTypeValueValueNameDto {
@@ -5410,14 +5410,14 @@ export interface IRequestProjectTypeValueValueNameDto {
 }
 
 export enum RequestStatusValue {
-    _1 = 1,
-    _2 = 2,
-    _3 = 3,
-    _4 = 4,
-    _7 = 7,
-    _8 = 8,
-    _9 = 9,
-    _10 = 10,
+    Open = 1,
+    Sold = 2,
+    Stop = 3,
+    Closed = 4,
+    Potential = 7,
+    AdRunning = 8,
+    TenderSent = 9,
+    Cancelled = 10,
 }
 
 export class RequestStatusValueValueNameDto implements IRequestStatusValueValueNameDto {
@@ -6337,7 +6337,7 @@ export interface IWorkflowDto {
 
 export class WorkflowProcessDto implements IWorkflowProcessDto {
     name?: string | undefined;
-    typeId?: number;
+    typeId?: WorkflowProcessType;
     additionalInfo?: string | undefined;
     periodSteps?: PeriodStepDto[] | undefined;
 
@@ -6386,9 +6386,18 @@ export class WorkflowProcessDto implements IWorkflowProcessDto {
 
 export interface IWorkflowProcessDto {
     name?: string | undefined;
-    typeId?: number;
+    typeId?: WorkflowProcessType;
     additionalInfo?: string | undefined;
     periodSteps?: PeriodStepDto[] | undefined;
+}
+
+export enum WorkflowProcessType {
+    StartClientPeriod = 1,
+    ChangeClientPeriod = 2,
+    ExtendClientPeriod = 3,
+    StartConsultantPeriod = 4,
+    ChangeConsultantPeriod = 5,
+    ExtendConsultantPeriod = 6,
 }
 
 export class ApiException extends Error {

@@ -41,6 +41,7 @@
       "markOptionalProperties": true,
       "generateCloneMethod": false,
       "typeStyle": "Class",
+      "enumStyle": "Enum",
       "classTypes": [],
       "extendedClasses": [],
       "extensionCode": "service.extensions.ts",
