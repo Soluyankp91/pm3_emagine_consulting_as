@@ -120,7 +120,8 @@
                 </ng-template>
                 <!-- <div class="workflow-form--panel u-w--100" [ngStyle]="{'height': isExpandedAndToolbarVisible()}"> -->
                 <div class="workflow-form--panel u-w--100">
-                    <app-primary-workflow *ngIf="selectedIndex === i + 1" [clientPeriodId]="tab.id" [workflowId]="workflowId"></app-primary-workflow>
+                    <app-workflow-period *ngIf="selectedIndex === i + 1" [clientPeriodId]="tab.id" [workflowId]="workflowId"></app-workflow-period>
+                    <!-- <app-primary-workflow *ngIf="selectedIndex === i + 1" [clientPeriodId]="tab.id" [workflowId]="workflowId"></app-primary-workflow> -->
 
                     <!-- <dynamic-component-loader
                         *ngIf="componentInitalized"
