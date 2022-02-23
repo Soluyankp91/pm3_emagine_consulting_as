@@ -1045,6 +1045,72 @@ export class ClientsServiceProxy {
         }
         return _observableOf<ClientRequestTrackDtoPaginatedList>(<any>null);
     }
+
+    /**
+     * @param excludeDeleted (optional) 
+     * @return Success
+     */
+    contacts(clientId: number, excludeDeleted?: boolean | undefined): Observable<ContactDto[]> {
+        let url_ = this.baseUrl + "/api/Clients/{clientId}/contacts?";
+        if (clientId === undefined || clientId === null)
+            throw new Error("The parameter 'clientId' must be defined.");
+        url_ = url_.replace("{clientId}", encodeURIComponent("" + clientId));
+        if (excludeDeleted === null)
+            throw new Error("The parameter 'excludeDeleted' cannot be null.");
+        else if (excludeDeleted !== undefined)
+            url_ += "excludeDeleted=" + encodeURIComponent("" + excludeDeleted) + "&";
+        url_ = url_.replace(/[?&]$/, "");
+
+        let options_ : any = {
+            observe: "response",
+            responseType: "blob",
+            headers: new HttpHeaders({
+                "Accept": "text/plain"
+            })
+        };
+
+        return this.http.request("get", url_, options_).pipe(_observableMergeMap((response_ : any) => {
+            return this.processContacts(response_);
+        })).pipe(_observableCatch((response_: any) => {
+            if (response_ instanceof HttpResponseBase) {
+                try {
+                    return this.processContacts(<any>response_);
+                } catch (e) {
+                    return <Observable<ContactDto[]>><any>_observableThrow(e);
+                }
+            } else
+                return <Observable<ContactDto[]>><any>_observableThrow(response_);
+        }));
+    }
+
+    protected processContacts(response: HttpResponseBase): Observable<ContactDto[]> {
+        const status = response.status;
+        const responseBlob =
+            response instanceof HttpResponse ? response.body :
+            (<any>response).error instanceof Blob ? (<any>response).error : undefined;
+
+        let _headers: any = {}; if (response.headers) { for (let key of response.headers.keys()) { _headers[key] = response.headers.get(key); }}
+        if (status === 200) {
+            return blobToText(responseBlob).pipe(_observableMergeMap(_responseText => {
+            let result200: any = null;
+            let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
+            if (Array.isArray(resultData200)) {
+                result200 = [] as any;
+                for (let item of resultData200)
+                    result200!.push(ContactDto.fromJS(item));
+            }
+            else {
+                result200 = <any>null;
+            }
+            return _observableOf(result200);
+            }));
+        } else if (status !== 200 && status !== 204) {
+            return blobToText(responseBlob).pipe(_observableMergeMap(_responseText => {
+            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+            }));
+        }
+        return _observableOf<ContactDto[]>(<any>null);
+    }
 }
 
 @Injectable()
@@ -4806,6 +4872,82 @@ export interface IConsultantSalesDataDto {
     specialContractTerms?: string | undefined;
     deliveryManagerSameAsAccountManager?: boolean;
     deliveryAccountManagerIdValue?: number | undefined;
+}
+
+export class ContactDto implements IContactDto {
+    id?: number;
+    owner?: EmployeeDto;
+    email?: string | undefined;
+    firstName?: string | undefined;
+    lastName?: string | undefined;
+    jobTitle?: string | undefined;
+    mobilePhone?: string | undefined;
+    phone?: string | undefined;
+    isDeleted?: boolean;
+    isWrongfullyDeletedInHubspot?: boolean;
+    lastCamLogin?: moment.Moment | undefined;
+
+    constructor(data?: IContactDto) {
+        if (data) {
+            for (var property in data) {
+                if (data.hasOwnProperty(property))
+                    (<any>this)[property] = (<any>data)[property];
+            }
+        }
+    }
+
+    init(_data?: any) {
+        if (_data) {
+            this.id = _data["id"];
+            this.owner = _data["owner"] ? EmployeeDto.fromJS(_data["owner"]) : <any>undefined;
+            this.email = _data["email"];
+            this.firstName = _data["firstName"];
+            this.lastName = _data["lastName"];
+            this.jobTitle = _data["jobTitle"];
+            this.mobilePhone = _data["mobilePhone"];
+            this.phone = _data["phone"];
+            this.isDeleted = _data["isDeleted"];
+            this.isWrongfullyDeletedInHubspot = _data["isWrongfullyDeletedInHubspot"];
+            this.lastCamLogin = _data["lastCamLogin"] ? moment(_data["lastCamLogin"].toString()) : <any>undefined;
+        }
+    }
+
+    static fromJS(data: any): ContactDto {
+        data = typeof data === 'object' ? data : {};
+        let result = new ContactDto();
+        result.init(data);
+        return result;
+    }
+
+    toJSON(data?: any) {
+        data = typeof data === 'object' ? data : {};
+        data["id"] = this.id;
+        data["owner"] = this.owner ? this.owner.toJSON() : <any>undefined;
+        data["email"] = this.email;
+        data["firstName"] = this.firstName;
+        data["lastName"] = this.lastName;
+        data["jobTitle"] = this.jobTitle;
+        data["mobilePhone"] = this.mobilePhone;
+        data["phone"] = this.phone;
+        data["isDeleted"] = this.isDeleted;
+        data["isWrongfullyDeletedInHubspot"] = this.isWrongfullyDeletedInHubspot;
+        data["lastCamLogin"] = this.lastCamLogin ? this.lastCamLogin.toISOString() : <any>undefined;
+        return data;
+    }
+}
+
+export interface IContactDto {
+    id?: number;
+    owner?: EmployeeDto;
+    email?: string | undefined;
+    firstName?: string | undefined;
+    lastName?: string | undefined;
+    jobTitle?: string | undefined;
+    mobilePhone?: string | undefined;
+    phone?: string | undefined;
+    isDeleted?: boolean;
+    isWrongfullyDeletedInHubspot?: boolean;
+    lastCamLogin?: moment.Moment | undefined;
 }
 
 export class ContractSignerDto implements IContractSignerDto {

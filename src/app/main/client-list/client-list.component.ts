@@ -65,6 +65,12 @@ export class ClientListComponent extends AppComopnentBase implements OnInit, OnD
     statusList = StatusList;
     selecedStatuses: SelectableIdNameDto[] = [];
 
+    nonActiveClient = false;
+    isActiveClients = false;
+    includeDeleted = false;
+    // hardccoded as BE developers asked
+    onlyWrongfullyDeletedInHubspot = false;
+
     clientDataSource: MatTableDataSource<ClientListItemDto> = new MatTableDataSource<ClientListItemDto>();
     private _unsubscribe = new Subject();
     constructor(
@@ -77,24 +83,11 @@ export class ClientListComponent extends AppComopnentBase implements OnInit, OnD
         super(injector);
         this.clientFilter.valueChanges.pipe(
             takeUntil(this._unsubscribe),
-            debounceTime(300),
-            switchMap((value: any) => {
-                let input = value ? value : '';
-                this.isDataLoading = true;
-                let isActive = this.selecedStatuses.findIndex(x => x.name === 'Active') > -1;
-                let excludeDeleted = this.selecedStatuses.findIndex(x => x.name === 'Deleted') < 0;
-                let onlyWrongfullyDeletedInHubspot = this.selecedStatuses.findIndex(x => x.name === 'Wrongfully deleted') > -1;
-                let ownerIds = this.selectedAccountManagers.map(x => +x.id);
-                return this._apiService.clients(input, this.selectedCountryIds, ownerIds, isActive, excludeDeleted, onlyWrongfullyDeletedInHubspot, this.pageNumber, this.deafultPageSize, this.sorting);
-            }),
-        ).subscribe((list: any) => {
-            if (list.length) {
-                this.clientsList = list;
-            } else {
-                this.clientsList = [];
-            }
-            this.isDataLoading = false;
+            debounceTime(500)
+        ).subscribe(() => {
+            this.getClientsGrid();
         });
+
 
         this.accountManagerFilter.valueChanges.pipe(
             takeUntil(this._unsubscribe),
@@ -109,7 +102,6 @@ export class ClientListComponent extends AppComopnentBase implements OnInit, OnD
                         ? value.name
                         : value;
                 }
-
                 return this._lookupService.employees(value);
             }),
         ).subscribe((list: EmployeeDto[]) => {
@@ -126,7 +118,6 @@ export class ClientListComponent extends AppComopnentBase implements OnInit, OnD
                 this.filteredAccountManagers = [{ name: 'No managers found', externalId: '', id: 'no-data', selected: false }];
             }
         });
-
     }
 
     ngOnInit(): void {
@@ -139,7 +130,7 @@ export class ClientListComponent extends AppComopnentBase implements OnInit, OnD
                 }
             })
         );
-        this.getClientsGrid(this.clientFilter.value, this.selectedCountryIds, this.pageNumber, this.deafultPageSize, this.sorting);
+        this.getClientsGrid();
     }
 
     private _filterCountries(value: string): SelectableCountry[] {
@@ -165,12 +156,11 @@ export class ClientListComponent extends AppComopnentBase implements OnInit, OnD
             if (!list.includes(item)) {
                 list.push(item);
             }
-
         } else {
             const i = list.findIndex((value: any) => value.name === item.name);
             list.splice(i, 1);
         }
-
+        this.getClientsGrid();
     }
 
     toggleStatusSelection(event: Event, status: SelectableIdNameDto) {
@@ -208,14 +198,11 @@ export class ClientListComponent extends AppComopnentBase implements OnInit, OnD
             });
     }
 
-    getClientsGrid(filter: string, selectedCountires: number[], pageNumber: number, pageSize: number, sort: string) {
-        let searchFilter = filter ? filter : '';
+    getClientsGrid() {
+        let searchFilter = this.clientFilter.value ? this.clientFilter.value : '';
         this.isDataLoading = true;
-        let isActive = this.selecedStatuses.findIndex(x => x.name === 'Active') > -1;
-        let excludeDeleted = this.selecedStatuses.findIndex(x => x.name === 'Deleted') < 0;
-        let onlyWrongfullyDeletedInHubspot = this.selecedStatuses.findIndex(x => x.name === 'Wrongfully deleted') > -1;
         let ownerIds = this.selectedAccountManagers.map(x => +x.id);
-        this._apiService.clients(searchFilter, selectedCountires, ownerIds, isActive, excludeDeleted, onlyWrongfullyDeletedInHubspot, pageNumber, pageSize, sort)
+        this._apiService.clients(searchFilter, this.selectedCountryIds, ownerIds, this.isActiveClients, !this.includeDeleted, this.onlyWrongfullyDeletedInHubspot, this.pageNumber, this.deafultPageSize, this.sorting)
             .pipe(finalize(() => {
                 this.isDataLoading = false;
             }))
@@ -235,18 +222,18 @@ export class ClientListComponent extends AppComopnentBase implements OnInit, OnD
                 this.selectedCountryIds.splice(index, 1);
             }
         }
-        this.getClientsGrid(this.clientFilter.value, this.selectedCountryIds, this.pageNumber, this.deafultPageSize, this.sorting);
+        this.getClientsGrid();
     }
 
     pageChanged(event?: any): void {
-        this.pageNumber = event.pageIndex;
+        this.pageNumber = event.pageIndex === 0 ? 1 : event.pageIndex;
         this.deafultPageSize = event.pageSize;
-        this.getClientsGrid(this.clientFilter.value, this.selectedCountryIds, this.pageNumber, this.deafultPageSize, this.sorting);
+        this.getClientsGrid();
     }
 
     sortChanged(event?: any): void {
         this.sorting = event.active.concat(' ', event.direction);
-        this.getClientsGrid(this.clientFilter.value, this.selectedCountryIds, this.pageNumber, this.deafultPageSize, this.sorting);
+        this.getClientsGrid();
     }
 
     navigateToClientDetails(clientId: number): void {
