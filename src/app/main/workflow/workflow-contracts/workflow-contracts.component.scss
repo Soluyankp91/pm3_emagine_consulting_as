@@ -141,20 +141,9 @@
         padding-bottom: 2px;
     }
     &-done {
-        width: 13px;
-        height: 13px;
-        border-radius: 50%;
-        align-items: center;
-        background-color: #B0FD5A;
-        justify-content: center;
-        display: flex;
         mat-icon {
-            color: #4A4E60;
-            font-size: 10px;
-            height: 13px;
-            width: 13px;
-            padding-top: 1px;
-            padding-left: 1px;
+            height: 14px;
+            width: 14px;
         }
     }
     &-in-progress {
