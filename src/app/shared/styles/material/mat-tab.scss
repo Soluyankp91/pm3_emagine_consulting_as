@@ -193,6 +193,7 @@ mat-tab-group.client-documents--tabs {
     }
      /* Needed in order to allow the sticky content  */
     .mat-tab-body-wrapper .mat-tab-body.mat-tab-body-active {
+        width: 100%;
         overflow: visible !important;
     }
 
