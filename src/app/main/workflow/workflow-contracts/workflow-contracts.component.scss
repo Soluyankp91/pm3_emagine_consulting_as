@@ -2,8 +2,10 @@
 
 .workflow {
     &-contracts {
-        padding-left: 8px;
 
+        &--process-data {
+            padding: 30px;
+        }
         &--consultant {
             &-name {
                 font-weight: 800;
@@ -21,21 +23,22 @@
             }
         }
         &--list {
-            height: 50px;
+            height: 60px;
             background-color: #fff;
-            box-shadow: 0px 0px 20px rgba(26, 35, 126, 0.15);
+            border: solid 1px #e7e3e8;
 
             &-item {
-                font-family: 'Open Sans';
+                font-family: "Open Sans", sans-serif;
                 font-weight: 700;
-                font-size: 12px;
+                font-size: 14px;
                 line-height: 140%;
+                color: #4a4e60;
             }
 
             &-header {
-                font-family: 'Open Sans';
-                font-weight: 600;
-                font-size: 10px;
+                font-family: "Open Sans", sans-serif;
+                font-weight: 700;
+                font-size: 12px;
                 line-height: 14px;
                 color: #898785;
             }
@@ -47,6 +50,8 @@
         &--sales,
         &--consultants,
         &--summary {
+
+            border-bottom: 1px solid #E7E3E8;
             .workflow-darkblue--text {
                 margin-bottom: 8px !important;
                 font-weight: bold;
@@ -61,14 +66,40 @@
                 line-height: 14px;
                 color: #B6B4B2
             }
+
+            &__name,
+            &__period {
+                font-weight: 600;
+                font-size: 16px;
+                font-family: 'Open Sans';
+                line-height: 120%;
+                color: #4A4E60;
+            }
+            &__payment-price-text {
+                font-family: 'Open Sans';
+                font-weight: bold;
+                font-size: 14px;
+                line-height: 16px;
+                color: rgba(56, 72, 83, 0.87);
+            }
         }
     }
     &-section--header {
         color: $light-grey-color;
+        font-family: "Open Sans", sans-serif;
         letter-spacing: 1px;
         text-transform: uppercase;
         font-size: 18px;
         margin-bottom: 20px;
+        &-main {
+            font-family: "Open Sans", sans-serif;
+            font-weight: 700;
+            font-size: 20px;
+            line-height: 120%;
+            letter-spacing: 1px;
+            text-transform: uppercase;
+            color: #4A4E60;
+        }
     }
 
     &--termination {
