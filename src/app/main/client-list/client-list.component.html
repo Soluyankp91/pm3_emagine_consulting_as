@@ -85,7 +85,10 @@
                                             color="primary"
                                             (change)="toggleSelection(country,selectedCountries)"
                                             (click)="$event.stopPropagation()">
-                                            <mat-icon svgIcon="{{country.flag}}-flag-selected"></mat-icon>
+                                            <mat-icon svgIcon="{{country.flag}}-flag-selected" *ngIf="country.id !== 0; else unkownCountry"></mat-icon>
+                                            <ng-template #unkownCountry>
+                                                <mat-icon svgIcon="Country-filter-flag"></mat-icon>
+                                            </ng-template>
                                             <span>{{ country.name }}</span>
                                         </mat-checkbox>
                                         <span *ngIf="country.id === 'no-data'"
@@ -105,7 +108,10 @@
                                             color="primary"
                                             (change)="toggleSelection(country,selectedCountries)"
                                             (click)="$event.stopPropagation()">
-                                            <mat-icon svgIcon="{{country.flag}}-flag-selected"></mat-icon>
+                                            <mat-icon svgIcon="{{country.flag}}-flag-selected" *ngIf="country.id !== 0; else unkownCountry"></mat-icon>
+                                            <ng-template #unkownCountry>
+                                                <mat-icon svgIcon="Country-filter-flag"></mat-icon>
+                                            </ng-template>
                                             <span>{{ country.name }}</span>
                                         </mat-checkbox>
                                         <span *ngIf="country.id === 'no-data'"
@@ -181,24 +187,24 @@
                     </mat-cell>
                 </ng-container>
                 <ng-container matColumnDef="status">
-                    <mat-header-cell *matHeaderCellDef mat-sort-header fxFlex="10%"> Status </mat-header-cell>
-                    <mat-cell *matCellDef="let row" fxFlex="10%">
+                    <mat-header-cell *matHeaderCellDef mat-sort-header fxFlex="17%"> Status </mat-header-cell>
+                    <mat-cell *matCellDef="let row" fxFlex="17%">
                         <span class="text-truncate-ellipsis" [matTooltip]="row.status">
                             {{row.status}}
                         </span>
                     </mat-cell>
                 </ng-container>
                 <ng-container matColumnDef="owner_Name">
-                    <mat-header-cell *matHeaderCellDef mat-sort-header fxFlex="15%"> Account manager </mat-header-cell>
-                    <mat-cell *matCellDef="let row" fxFlex="15%">
+                    <mat-header-cell *matHeaderCellDef mat-sort-header fxFlex="10%"> Account manager </mat-header-cell>
+                    <mat-cell *matCellDef="let row" fxFlex="10%">
                         <span class="text-truncate-ellipsis" [matTooltip]="row.owner_Name">
-                            {{row.owner_Name}}
+                            <img class="manager-search--photo" src="../../../../assets/common/images/no-img.svg" [alt]="row?.owner?.name" />
                         </span>
                     </mat-cell>
                 </ng-container>
                 <ng-container matColumnDef="action">
-                    <mat-header-cell *matHeaderCellDef fxFlex="5%"> </mat-header-cell>
-                    <mat-cell *matCellDef="let row" fxFlex="5%">
+                    <mat-header-cell *matHeaderCellDef fxFlex="3%"> </mat-header-cell>
+                    <mat-cell *matCellDef="let row" fxFlex="3%">
                         <button mat-icon-button (click)="$event.stopPropagation();" [matMenuTriggerFor]="clientListMenu" class="three-dots-actions-btn">
                             <mat-icon>more_horiz</mat-icon>
                         </button>

@@ -198,7 +198,7 @@
                             <div class="text-end" fxFlex="20%">
                                 <h2 class="workflow-section--header">Invoicing</h2>
                             </div>
-                            <div fxFlex="80%">
+                            <div fxFlex="80%" class="u-pr--16">
                                 <h3 class="workflow-gray--header">Discounts</h3>
                                 <div fxLayout="row" fxLayoutAlign="start start" class="u-w--100 u-mb--20">
                                     <mat-button-toggle-group class="workflow-toggle-buttons u-mt--10" formControlName="discounts">
@@ -211,8 +211,124 @@
                                 </div>
 
                                 <h3 class="workflow-gray--header">Commission</h3>
+
+                                <div fxLayout="row" fxLayoutAlign="space-between start" fxLayoutGap="10px" class="workflow-sales-commission--form__header-container u-w--100" *ngIf="salesMainDataForm.commissions?.controls?.length">
+                                    <span fxFlex="15%" class="workflow-sales-commission--form__header u-w--100">
+                                        Type
+                                    </span>
+                                    <span fxFlex="10%" class="workflow-sales-commission--form__header u-w--100">
+                                        Value
+                                    </span>
+                                    <span fxFlex="10%" class="workflow-sales-commission--form__header u-w--100">
+                                        Currency
+                                    </span>
+                                    <span fxFlex="15%" class="workflow-sales-commission--form__header u-w--100">
+                                        Recipient type
+                                    </span>
+                                    <span fxFlex="25%" class="workflow-sales-commission--form__header u-w--100">
+                                        Recipient
+                                    </span>
+                                    <span fxFlex="15%" class="workflow-sales-commission--form__header u-w--100">
+                                        Frequency
+                                    </span>
+                                    <span fxFlex="10%" class="workflow-sales-commission--form__header u-w--100">
+
+                                    </span>
+                                </div>
+                                <ng-container formArrayName="commissions" class="u-w--100">
+                                    <div fxLayout="row" fxLayoutAlign="space-between center" fxLayoutGap="10px" class="inline-edit-form workflow-sales-commission--form__row u-w--100"
+                                        *ngFor="let rate of salesMainDataForm.commissions.controls; index as i"
+                                        [formArrayName]="i">
+                                        <ng-container *ngIf="salesMainDataForm.commissions.at(i).get('editable')?.value">
+                                            <mat-form-field appearance="fill" class="u-w--100 formFieldNoMarginPadding filter-select" fxFlex="15%">
+                                                <input matInput type="text" formControlName="type" placeholder="Type" />
+                                            </mat-form-field>
+                                            <mat-form-field appearance="fill" class="u-w--100 formFieldNoMarginPadding filter-select" fxFlex="10%">
+                                                <input matInput type="text" formControlName="value" placeholder="Value" />
+                                            </mat-form-field>
+                                            <mat-form-field appearance="fill" class="u-w--100 formFieldNoMarginPadding filter-select" fxFlex="10%">
+                                                <mat-select formControlName="currency" placeholder="Currency" [disableOptionCentering]="true" [compareWith]="compareWithFn">
+                                                    <mat-option *ngFor="let item of currencies" [value]="item">
+                                                        {{ item.name }}
+                                                    </mat-option>
+                                                </mat-select>
+                                            </mat-form-field>
+                                            <mat-form-field appearance="fill" class="u-w--100 formFieldNoMarginPadding filter-select" fxFlex="15%">
+                                                <mat-select formControlName="recipientType" placeholder="Recipient type" [disableOptionCentering]="true" [compareWith]="compareWithFn">
+                                                    <mat-option *ngFor="let item of clientSpecialRateReportUnits" [value]="item">
+                                                        {{ item.name }}
+                                                    </mat-option>
+                                                </mat-select>
+                                            </mat-form-field>
+                                            <mat-form-field appearance="fill" class="u-w--100 formFieldNoMarginPadding filter-select" fxFlex="25%">
+                                                <mat-select formControlName="recipient" placeholder="Recipient" [disableOptionCentering]="true" [compareWith]="compareWithFn">
+                                                    <mat-option *ngFor="let item of clientSpecialRateSpecifications" [value]="item">
+                                                        {{ item.name }}
+                                                    </mat-option>
+                                                </mat-select>
+                                            </mat-form-field>
+                                            <mat-form-field appearance="fill" class="u-w--100 formFieldNoMarginPadding filter-select" fxFlex="15%">
+                                                <mat-select formControlName="frequency" placeholder="Frequency" [disableOptionCentering]="true" [compareWith]="compareWithFn">
+                                                    <mat-option *ngFor="let item of currencies" [value]="item">
+                                                        {{ item.name }}
+                                                    </mat-option>
+                                                </mat-select>
+                                            </mat-form-field>
+                                            <div fxFlex="10%" class="u-w--100 text-truncate-ellipsis flex-items-center">
+                                                <button mat-flat-button (click)="toggleEditCommissionRow(i)" class="inline-edit-form--btn__save">
+                                                    Save
+                                                </button>
+                                                <button mat-icon-button (click)="removeCommission(i)">
+                                                    <mat-icon>clear</mat-icon>
+                                                </button>
+                                            </div>
+                                        </ng-container>
+                                        <ng-container *ngIf="!salesMainDataForm.commissions.at(i).get('editable')?.value">
+                                            <span fxFlex="15%" class="u-w--100 text-truncate-ellipsis" [matTooltip]="salesMainDataForm.commissions.at(i).get('type')?.value">
+                                                {{salesMainDataForm.commissions.at(i).get('type')?.value}}
+                                            </span>
+                                            <span fxFlex="10%" class="u-w--100 text-truncate-ellipsis" [matTooltip]="salesMainDataForm.commissions.at(i).get('value')?.value">
+                                                {{salesMainDataForm.commissions.at(i).get('value')?.value}}
+                                            </span>
+                                            <span fxFlex="10%" class="u-w--100 text-truncate-ellipsis" [matTooltip]="salesMainDataForm.commissions.at(i).get('currency')?.value?.name">
+                                                {{salesMainDataForm.commissions.at(i).get('currency')?.value?.name}}
+                                            </span>
+                                            <span fxFlex="15%" class="u-w--100 text-truncate-ellipsis" [matTooltip]="salesMainDataForm.commissions.at(i).get('recipientType')?.value?.name">
+                                                {{salesMainDataForm.commissions.at(i).get('recipientType')?.value?.name}}
+                                            </span>
+                                            <span fxFlex="25%" class="u-w--100 text-truncate-ellipsis" [matTooltip]="salesMainDataForm.commissions.at(i).get('recipient')?.value?.name">
+                                                {{salesMainDataForm.commissions.at(i).get('recipient')?.value?.name}}
+                                            </span>
+                                            <span fxFlex="15%" class="u-w--100 text-truncate-ellipsis" [matTooltip]="salesMainDataForm.commissions.at(i).get('frequency')?.value?.name">
+                                                {{salesMainDataForm.commissions.at(i).get('frequency')?.value?.name}}
+                                            </span>
+                                            <div fxFlex="10%" fxLayoutAlign="center center" class="u-w--100">
+                                                <button mat-icon-button [matMenuTriggerFor]="clientRateMenu" class="client-rates-icon--actions"><mat-icon>more_horiz</mat-icon></button>
+                                                <mat-menu #clientRateMenu>
+                                                    <button
+                                                        class="menu-item"
+                                                        [ngClass]="salesMainDataForm.commissions.at(i).get('editable')?.value ? 'menu-item--add': 'menu-item--edit'"
+                                                        mat-menu-item
+                                                        [disabled]="false"
+                                                        (click)="toggleEditCommissionRow(i)">
+                                                        <mat-icon>{{salesMainDataForm.commissions.at(i).get('editable')?.value ? 'save' : 'create'}}</mat-icon>
+                                                        {{salesMainDataForm.commissions.at(i).get('editable')?.value ? 'Save' : 'Edit'}}
+                                                    </button>
+                                                    <button
+                                                        class="menu-item menu-item--cancel"
+                                                        mat-menu-item
+                                                        (click)="removeCommission(i)">
+                                                        <mat-icon>clear</mat-icon>
+                                                        Remove
+                                                    </button>
+                                                </mat-menu>
+                                            </div>
+                                        </ng-container>
+                                    </div>
+                                </ng-container>
+
                                 <div fxLayout="row" fxLayoutAlign="start start" class="u-w--100 u-mb--20">
-                                    <button color="primary" class="u-mt--10 button-outlined" mat-flat-button>Add commission</button>
+                                    <button color="primary" class="u-mt--10 button-outlined" mat-flat-button (click)="addCommission()">Add commission</button>
                                 </div>
                             </div>
                         </div>

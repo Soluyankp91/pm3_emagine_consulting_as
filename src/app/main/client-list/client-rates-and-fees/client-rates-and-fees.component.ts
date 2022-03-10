@@ -25,6 +25,7 @@ export class ClientRatesAndFeesComponent implements OnInit, OnDestroy {
     clientSpecialFeeSpecifications: EnumEntityTypeDto[];
     clientSpecialRateSpecifications: EnumEntityTypeDto[];
     clientSpecialRateOrFeeDirections: EnumEntityTypeDto[];
+    clientSpecialFeeFrequencies: EnumEntityTypeDto[];
 
     showHiddenSpecialRates = true;
     showHiddenSpecialFees = true;
@@ -54,6 +55,7 @@ export class ClientRatesAndFeesComponent implements OnInit, OnDestroy {
         this.getSpecialFeeSpecifications();
         this.getSpecialRateSpecifications();
         this.getSpecialRateOrFeeDirections();
+        this.getSpecialFeeFrequencies();
 
         this.getClientRates();
         this.getClientFees();
@@ -106,12 +108,20 @@ export class ClientRatesAndFeesComponent implements OnInit, OnDestroy {
             });
     }
 
+    getSpecialFeeFrequencies() {
+        this._lookupService.getSpecialFeeFrequencies()
+            .subscribe(response => {
+                this.clientSpecialFeeFrequencies = response;
+            });
+    }
+
     getClientRates() {
         this._clientService.specialRatesGet(this.clientId, this.showHiddenSpecialRates)
             .pipe(finalize(() => {
 
             }))
             .subscribe(result => {
+                this.clientSpecailRateForm = new ClientSpecailRateForm();
                 result.forEach(item => {
                     this.addSpecialRate(item);
                 });
@@ -124,6 +134,7 @@ export class ClientRatesAndFeesComponent implements OnInit, OnDestroy {
 
             }))
             .subscribe(result => {
+                this.clientFeesForm = new ClientFeesForm();
                 result.forEach(item => {
                     this.addClientFee(item);
                 });
@@ -186,7 +197,7 @@ export class ClientRatesAndFeesComponent implements OnInit, OnDestroy {
 
                 }))
                 .subscribe(result => {
-
+                    this.getClientRates();
                 });
         } else {
             this._clientService.specialRatesPut(this.clientId, input)
@@ -194,13 +205,14 @@ export class ClientRatesAndFeesComponent implements OnInit, OnDestroy {
 
                 }))
                 .subscribe(result => {
-
+                    this.getClientRates();
                 });
         }
     }
 
     toggleSpecialRateHiddenState(index: number) {
         this.specialRates.at(index).get('hidden')?.setValue(!this.specialRates.at(index).get('hidden')?.value);
+        this.saveOrUpdateSpecialRate(index);
     }
 
     addClientFee(clientFee?: ClientSpecialFeeDto) {
@@ -208,9 +220,9 @@ export class ClientRatesAndFeesComponent implements OnInit, OnDestroy {
             id: new FormControl(clientFee?.id ?? null),
             rateName: new FormControl(clientFee?.internalName ?? null),
             nameForInvoices: new FormControl(clientFee?.publicName ?? null),
-            rateDirection: new FormControl(clientFee?.specialRateOrFeeDirection ?? null),
+            feeDirection: new FormControl(clientFee?.specialRateOrFeeDirection ?? null),
             reportingUnit: new FormControl(clientFee?.clientSpecialFeeFrequency ?? null),
-            rateSpecifiedAs: new FormControl(clientFee?.clientSpecialFeeSpecifiedAs ?? null),
+            feeSpecifiedAs: new FormControl(clientFee?.clientSpecialFeeSpecifiedAs ?? null),
             clientRateValue: new FormControl(clientFee?.clientRate ?? null),
             clientRateCurrency: new FormControl(clientFee?.clientRateCurrency ?? null),
             proDataRate: new FormControl(clientFee?.prodataToProdataRate ?? null),
@@ -243,8 +255,8 @@ export class ClientRatesAndFeesComponent implements OnInit, OnDestroy {
         input.internalName = clientRate.rateName;
         input.publicName = clientRate.nameForInvoices;
         input.specialRateOrFeeDirectionId = clientRate.rateDirection?.id;
-        input.clientSpecialFeeFrequencyId = clientRate.reportingUnit?.id;
-        input.clientSpecialFeeSpecifiedAsId = clientRate.rateSpecifiedAs?.id;
+        input.clientSpecialFeeFrequencyId = clientRate.feeFrequency?.id;
+        input.clientSpecialFeeSpecifiedAsId = clientRate.feeSpecifiedAs?.id;
         // input.specialRateCategoryId = clientRate.category?.id;
         input.clientRate = clientRate.clientRateValue;
         input.clientRateCurrencyId = clientRate.clientRateCurrency?.id;
@@ -259,7 +271,7 @@ export class ClientRatesAndFeesComponent implements OnInit, OnDestroy {
 
                 }))
                 .subscribe(result => {
-
+                    this.getClientFees();
                 });
         } else {
             this._clientService.specialFeesPut(this.clientId, input)
@@ -267,13 +279,14 @@ export class ClientRatesAndFeesComponent implements OnInit, OnDestroy {
 
                 }))
                 .subscribe(result => {
-
+                    this.getClientFees();
                 });
         }
     }
 
     toggleSpecialFeeHiddenState(index: number) {
         this.clientFees.at(index).get('hidden')?.setValue(!this.clientFees.at(index).get('hidden')?.value);
+        this.saveOrUpdateSpecialFee(index);
     }
 
     showHideSpecialRatesToggle(event: MatSlideToggleChange) {

@@ -763,10 +763,11 @@ export class WorkflowSalesComponent extends AppComopnentBase implements OnInit {
         const form = this._fb.group({
             type: new FormControl(null),
             value: new FormControl(''),
+            currency: new FormControl(''),
             recipientType: new FormControl(null),
             recipient: new FormControl(null),
             frequency: new FormControl(null),
-            editable: new FormControl(false)
+            editable: new FormControl(true)
         });
         this.salesMainDataForm.commissions.push(form);
     }
@@ -779,8 +780,12 @@ export class WorkflowSalesComponent extends AppComopnentBase implements OnInit {
         this.commissions.removeAt(index);
     }
 
-    editCommissionRow(index: number) {
+    toggleEditCommissionRow(index: number) {
         const isEditable = this.commissions.at(index).get('editable')?.value;
         this.commissions.at(index).get('editable')?.setValue(!isEditable);
+    }
+
+    compareWithFn(listOfItems: any, selectedItem: any) {
+        return listOfItems && selectedItem && listOfItems.id === selectedItem.id;;
     }
 }

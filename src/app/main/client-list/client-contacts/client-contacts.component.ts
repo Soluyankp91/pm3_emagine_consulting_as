@@ -4,7 +4,7 @@ import { ActivatedRoute } from '@angular/router';
 import { Subject } from 'rxjs';
 import { finalize, takeUntil } from 'rxjs/operators';
 import { AppConsts } from 'src/shared/AppConsts';
-import { ClientsServiceProxy } from 'src/shared/service-proxies/service-proxies';
+import { ClientsServiceProxy, ContactDto } from 'src/shared/service-proxies/service-proxies';
 
 const DATA_SOURCE = [
     {
@@ -59,10 +59,11 @@ export class ClientContactsComponent implements OnInit, OnDestroy {
         'title',
         'email',
         'phone',
+        'lastCamLogin',
         'owner',
         'action'
     ];
-    clientContractsDataSource: MatTableDataSource<any> = new MatTableDataSource<any>();
+    clientContactsDataSource: MatTableDataSource<ContactDto> = new MatTableDataSource<ContactDto>();
 
     private _unsubscribe = new Subject();
     constructor(
@@ -75,7 +76,7 @@ export class ClientContactsComponent implements OnInit, OnDestroy {
             takeUntil(this._unsubscribe)
         ).subscribe(params => {
             this.clientId = +params.get('id')!;
-            this.getRequestTrack();
+            this.getClientContacts();
         });
     }
 
@@ -84,28 +85,33 @@ export class ClientContactsComponent implements OnInit, OnDestroy {
         this._unsubscribe.complete();
     }
 
-    getRequestTrack() {
-        this.clientContractsDataSource = new MatTableDataSource<any>(DATA_SOURCE);
+    getClientContacts() {
+        // this.clientContractsDataSource = new MatTableDataSource<any>(DATA_SOURCE);
+        this.isDataLoading = true;
+        this._clientService.contacts(this.clientId, false)
+                .pipe(finalize(() => {
+                    this.isDataLoading = false;
+                }))
+                .subscribe(result => {
+                    this.clientContactsDataSource = new MatTableDataSource<ContactDto>(result);
+                    this.totalCount = result.length;
+                });
         // let legacyClientIdQuery = this.clientId;
         // let pageNumber = 1;
         // let pageSize = 20;
         // let sort = undefined;
         // this._clientService.requestTrack(legacyClientIdQuery, pageNumber, pageSize, sort)
-        //     .pipe(finalize(() => {
-
-        //     }))
-        //     .subscribe(result => {
-        //         this.clientContractsDataSource = new MatTableDataSource<any>(DATA_SOURCE);
-        //     });
     }
 
     pageChanged(event?: any): void {
-        this.pageNumber = event.pageIndex;
+        this.pageNumber = event.pageIndex === 0 ? 1 : event.pageIndex;
         this.deafultPageSize = event.pageSize;
+        this.getClientContacts();
     }
 
     sortChanged(event?: any): void {
         this.sorting = event.active.concat(' ', event.direction);
+        this.getClientContacts();
     }
 
     mapArrayByName(list: any): string {

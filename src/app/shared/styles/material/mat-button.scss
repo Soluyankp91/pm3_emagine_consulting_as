@@ -188,3 +188,10 @@
         }
     }
 }
+
+.inline-edit-form {
+    &--btn__save {
+        color: $green-color;
+        font-weight: 700;
+    }
+}

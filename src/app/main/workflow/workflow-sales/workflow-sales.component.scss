@@ -66,6 +66,25 @@
     // }
     &-sales {
         padding-left: 8px;
+
+        &-commission {
+            &--form {
+                padding: 0;
+                &__header {
+                    font-weight: 600;
+                    color: $medium-grey-color;
+                    &-container {
+                        padding: 8px;
+                    }
+                }
+                &__row  {
+                    background-color: #fff;
+                    padding: 0 8px;
+                    box-shadow: 0px 0px 20px rgba(26, 35, 126, 0.15);
+                    margin-bottom: 10px;
+                }
+            }
+        }
     }
 
     &-extension {

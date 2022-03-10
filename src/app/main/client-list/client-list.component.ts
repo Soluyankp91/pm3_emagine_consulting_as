@@ -22,7 +22,6 @@ export class ClientListComponent extends AppComopnentBase implements OnInit, OnD
     clientsList: any[] = [];
     isDataLoading = false;
     countryList: SelectableCountry[] = [];
-    selectedCountryIds: number[] = [];
     pageNumber = 1;
     deafultPageSize = AppConsts.grid.defaultPageSize;
     pageSizeOptions = [5, 10, 20, 50, 100];
@@ -194,6 +193,14 @@ export class ClientListComponent extends AppComopnentBase implements OnInit, OnD
                         flag: x.name!
                     });
                 });
+                this.countryList.unshift(
+                    new SelectableCountry({
+                        id: 0,
+                        name: 'Unknown country',
+                        selected: false,
+                        flag: ''
+                    })
+                );
                 console.log(this.countryList);
             });
     }
@@ -202,7 +209,8 @@ export class ClientListComponent extends AppComopnentBase implements OnInit, OnD
         let searchFilter = this.clientFilter.value ? this.clientFilter.value : '';
         this.isDataLoading = true;
         let ownerIds = this.selectedAccountManagers.map(x => +x.id);
-        this._apiService.clients(searchFilter, this.selectedCountryIds, ownerIds, this.isActiveClients, !this.includeDeleted, this.onlyWrongfullyDeletedInHubspot, this.pageNumber, this.deafultPageSize, this.sorting)
+        let selectedCountryIds = this.selectedCountries.map(x => +x.id);
+        this._apiService.clients(searchFilter, selectedCountryIds, ownerIds, this.isActiveClients, !this.includeDeleted, this.onlyWrongfullyDeletedInHubspot, this.pageNumber, this.deafultPageSize, this.sorting)
             .pipe(finalize(() => {
                 this.isDataLoading = false;
             }))
@@ -210,19 +218,6 @@ export class ClientListComponent extends AppComopnentBase implements OnInit, OnD
                 this.clientDataSource = new MatTableDataSource<ClientListItemDto>(result.items);
                 this.totalCount = result.totalCount;
             });
-    }
-
-    selectLookupCountry(country: SelectableCountry) {
-        country.selected = !country.selected;
-        if (country.selected) {
-            this.selectedCountryIds.push(+country.id);
-        } else {
-            const index = this.selectedCountryIds.indexOf(+country.id);
-            if (index > -1) {
-                this.selectedCountryIds.splice(index, 1);
-            }
-        }
-        this.getClientsGrid();
     }
 
     pageChanged(event?: any): void {
