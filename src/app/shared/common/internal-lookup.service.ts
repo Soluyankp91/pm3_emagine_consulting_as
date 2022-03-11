@@ -7,6 +7,7 @@ export class InternalLookupService {
     deliveryTypes: EnumEntityTypeDto[] = [];
     currencies: EnumEntityTypeDto[] = [];
     saleTypes: EnumEntityTypeDto[] = [];
+    projectTypes: EnumEntityTypeDto[] = [];
     invoicingTimes: EnumEntityTypeDto[] = [];
     rateUnitTypes: EnumEntityTypeDto[] = [];
     invoiceFrequencies: EnumEntityTypeDto[] = [];
@@ -34,6 +35,7 @@ export class InternalLookupService {
         this.getDeliveryTypes();
         this.getInvoicingTimes();
         this.getSaleTypes();
+        this.getProjectTypes();
         this.getUnitTypes();
         this.getInvoiceFrequencies();
         this.getSignerRoles();
@@ -114,6 +116,24 @@ export class InternalLookupService {
                     .subscribe(response => {
                         this.saleTypes = response;
                         observer.next(this.saleTypes);
+                        observer.complete();
+                    }, error => {
+                        observer.error(error);
+                    });
+            }
+        });
+    }
+
+    getProjectTypes(): Observable<EnumEntityTypeDto[]> {
+        return new Observable<EnumEntityTypeDto[]>((observer) => {
+            if (this.projectTypes.length) {
+                observer.next(this.projectTypes);
+                observer.complete();
+            } else {
+                this._enumService.projectType()
+                    .subscribe(response => {
+                        this.projectTypes = response;
+                        observer.next(this.projectTypes);
                         observer.complete();
                     }, error => {
                         observer.error(error);
