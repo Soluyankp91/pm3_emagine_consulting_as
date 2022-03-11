@@ -72,6 +72,7 @@
         display: flex;
         flex-flow: wrap;
         gap: 10px 0;
+        padding: 5px 0;
         .mat-button-toggle {
             margin-right: 10px;
             color: #384853;
@@ -129,7 +130,7 @@
 }
 
 .three-dots-actions-btn {
-    &.with-bg {
+    &:hover {
         background: rgba($color: $green-color, $alpha: .2);
     }
     mat-icon {
@@ -186,5 +187,12 @@
             box-sizing: border-box;
             border-radius: 5px;
         }
+    }
+}
+
+.inline-edit-form {
+    &--btn__save {
+        color: $green-color;
+        font-weight: 700;
     }
 }

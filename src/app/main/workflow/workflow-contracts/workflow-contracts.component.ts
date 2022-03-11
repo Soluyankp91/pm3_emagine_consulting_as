@@ -1,7 +1,9 @@
 import { Overlay } from '@angular/cdk/overlay';
 import { Component, Input, OnInit } from '@angular/core';
-import { AbstractControl, FormArray, FormBuilder, FormControl, FormGroup } from '@angular/forms';
+import { AbstractControl, FormArray, FormBuilder, FormControl } from '@angular/forms';
 import { MatDialog } from '@angular/material/dialog';
+import { finalize } from 'rxjs/operators';
+import { ClientPeriodContractsDataDto, ClientPeriodServiceProxy, ConsultantContractsDataDto, ContractsClientDataDto, ContractsMainDataDto, PeriodClientSpecialFeeDto, PeriodClientSpecialRateDto, PeriodConsultantSpecialFeeDto, PeriodConsultantSpecialRateDto } from 'src/shared/service-proxies/service-proxies';
 import { WorkflowConsultantActionsDialogComponent } from '../workflow-consultant-actions-dialog/workflow-consultant-actions-dialog.component';
 import { WorkflowDataService } from '../workflow-data.service';
 import { ConsultantDiallogAction } from '../workflow-sales/workflow-sales.model';
@@ -15,12 +17,7 @@ import { WorkflowContractsClientDataForm, WorkflowContractsConsultantsDataForm, 
 })
 export class WorkflowContractsComponent implements OnInit {
     @Input() workflowId: string;
-
-    @Input() primaryWorkflow: boolean;
-    @Input() changeWorkflow: boolean;
-    @Input() extendWorkflow: boolean;
-    @Input() addConsultant: boolean;
-    @Input() changeConsultant: boolean;
+    @Input() clientPeriodId: string | undefined;
 
     // Changed all above to enum
     @Input() activeSideSection: number;
@@ -43,6 +40,7 @@ export class WorkflowContractsComponent implements OnInit {
         private _fb: FormBuilder,
         private overlay: Overlay,
         private dialog: MatDialog,
+        private _clientPeriodService: ClientPeriodServiceProxy,
         private _workflowDataService: WorkflowDataService
 
     ) {
@@ -53,10 +51,81 @@ export class WorkflowContractsComponent implements OnInit {
     }
 
     ngOnInit(): void {
-        console.log('init', this.changeWorkflow);
         this.addSpecialRateToForm();
         this.addClientFeeToForm();
         this.consultantList.forEach(item =>this.addConsultantDataToForm(item));
+        this.getSalesInfo();
+    }
+
+    getSalesInfo() {
+        this._clientPeriodService.salesGet(this.clientPeriodId!)
+            .pipe(finalize(() => {
+
+            }))
+            .subscribe(result => {
+                console.log('s ', result);
+            });
+    }
+
+    saveContractsStep() {
+        let input = new ClientPeriodContractsDataDto();
+        input.clientData = new ContractsClientDataDto();
+
+        input.clientData.specialContractTerms = undefined;
+        input.clientData.noSpecialContractTerms = undefined;
+        input.clientData.clientTimeReportingCapId = undefined;
+        input.clientData.clientTimeReportingCapMaxValue = undefined;
+        input.clientData.clientTimeReportingCapCurrencyId = undefined;
+        input.clientData.noSpecialRate = undefined;
+        input.clientData.noSpecialFee = undefined;
+        input.clientData.periodClientSpecialRates = new Array<PeriodClientSpecialRateDto>();
+        for (let specialRate of this.contractsClientDataForm.clientSpecialRates.value) {
+            let clientSpecialRate = new PeriodClientSpecialRateDto();
+            input.clientData.periodClientSpecialRates.push(clientSpecialRate);
+        }
+        input.clientData.periodClientSpecialFees = new Array<PeriodClientSpecialFeeDto>();
+        for (let specialFee of this.contractsClientDataForm.clientFees.value) {
+            let clientSpecialFee = new PeriodClientSpecialFeeDto();
+            input.clientData.periodClientSpecialFees.push(clientSpecialFee);
+        }
+        input.contractLinesDoneManuallyInOldPm = this.contractsSyncDataForm.manualCheckbox?.value ?? false;
+
+        input.mainData = new ContractsMainDataDto();
+        input.consultantData = new Array<ConsultantContractsDataDto>();
+        for (let consultant of this.consultantData.value) {
+            let consultantData = new ConsultantContractsDataDto();
+            consultantData.consultantPeriodId = consultant.consultantPeriodId;
+            consultantData.employmentTypeId = consultant.consultantPeriodId;
+            consultantData.consultantId = consultant.consultantPeriodId;
+            consultantData.nameOnly = consultant.consultantName;
+            consultantData.consultantTimeReportingCapId = consultant.consultantPeriodId;
+            consultantData.consultantTimeReportingCapMaxValue = consultant.consultantPeriodId;
+            consultantData.consultantTimeReportingCapCurrencyId = consultant.consultantPeriodId;
+            consultantData.noSpecialContractTerms = consultant.isSpecialContractTermsNone;
+            consultantData.specialContractTerms = consultant.specialContractTerms;
+            consultantData.noSpecialRate = consultant.consultantPeriodId;
+            consultantData.noSpecialFee = consultant.consultantPeriodId;
+
+            consultantData.periodConsultantSpecialFees = new Array<PeriodConsultantSpecialFeeDto>();
+            for (let specialFee of consultant.clientFees) {
+                let consultantFee = new PeriodConsultantSpecialFeeDto();
+                consultantData.periodConsultantSpecialFees.push(consultantFee);
+            }
+            consultantData.periodConsultantSpecialRates = new Array<PeriodConsultantSpecialRateDto>();
+            for (let specialFee of consultant.clientSpecialRates) {
+                let consultantRate = new PeriodConsultantSpecialRateDto();
+                consultantData.periodConsultantSpecialRates.push(consultantRate);
+            }
+            input.consultantData.push(consultantData);
+        }
+
+        this._clientPeriodService.contractsPut(this.clientPeriodId!, input)
+            .pipe(finalize(() => {
+
+            }))
+            .subscribe(result => {
+
+            });
     }
 
     get readOnlyMode() {
@@ -65,6 +134,7 @@ export class WorkflowContractsComponent implements OnInit {
 
     // #region CHANGE NAMING
     addSpecialRateToForm() {
+        // TODO: add missing properties like on rate&fees
         const form = this._fb.group({
             rateName: new FormControl(null),
             rateDirection: new FormControl(null),
@@ -84,6 +154,7 @@ export class WorkflowContractsComponent implements OnInit {
 
     addClientFeeToForm() {
         const form = this._fb.group({
+            // TODO: add missing properties like on rate&fees
             feeName: new FormControl(null),
             feeDirection: new FormControl(null),
             frequency: new FormControl(null)
@@ -101,6 +172,7 @@ export class WorkflowContractsComponent implements OnInit {
     // #endregion CHANGE NAMING
 
     addConsultantDataToForm(consultant: any) {
+        // TODO: add missing properties, id, employmentType, etc.
         const form = this._fb.group({
             consultantName: new FormControl(consultant.name),
             specialContractTerms: new FormControl(null),

@@ -1,49 +1,37 @@
 import { Overlay } from '@angular/cdk/overlay';
-import { AfterViewInit, Component, Input, OnInit, ViewChild } from '@angular/core';
+import { Component, Input, OnInit } from '@angular/core';
 import { MatDialog } from '@angular/material/dialog';
-import { Subject } from 'rxjs';
 import { finalize } from 'rxjs/operators';
 import { InternalLookupService } from 'src/app/shared/common/internal-lookup.service';
 import { ConfirmationDialogComponent } from 'src/app/shared/components/confirmation-dialog/confirmation-dialog.component';
 import { ManagerStatus } from 'src/app/shared/components/manager-search/manager-search.model';
-import { EnumEntityTypeDto, PeriodStepDto, WorkflowProcessDto, WorkflowProcessType, WorkflowServiceProxy } from 'src/shared/service-proxies/service-proxies';
+import { WorkflowProcessDto, WorkflowProcessType, EnumEntityTypeDto, WorkflowServiceProxy, PeriodStepDto } from 'src/shared/service-proxies/service-proxies';
 import { WorkflowDataService } from '../workflow-data.service';
-import { SideNavigationParentItemDto } from '../workflow-extension/workflow-extension.model';
-import { WorkflowSalesComponent } from '../workflow-sales/workflow-sales.component';
-import { WorkflowSideSections, WorkflowSteps } from '../workflow.model';
+import { WorkflowSteps } from '../workflow.model';
 
 @Component({
-    selector: 'app-primary-workflow',
-    templateUrl: './primary-workflow.component.html',
-    styleUrls: ['./primary-workflow.component.scss']
+    selector: 'app-workflow-period',
+    templateUrl: './workflow-period.component.html',
+    styleUrls: ['./workflow-period.component.scss']
 })
-export class PrimaryWorkflowComponent implements OnInit, AfterViewInit {
+export class WorkflowPeriodComponent implements OnInit {
     @Input() workflowId: string;
     @Input() clientPeriodId: string | undefined;
 
-    @Input() componentTypeId: number;
-
-    @ViewChild('workflowSales', {static: false}) workflowSales: WorkflowSalesComponent;
+    sideMenuItems: WorkflowProcessDto[] = [];
+    workflowProcessTypes = WorkflowProcessType;
+    workflowPeriodStepTypes: EnumEntityTypeDto[] = [];
     selectedStep: string;
     selectedAnchor: string;
 
-    workflowSideSections = WorkflowSideSections;
     workflowSteps = WorkflowSteps;
     selectedStepEnum: number;
     selectedSideSection: number;
-
-    workflowSideNavigation: SideNavigationParentItemDto[];
-
     sectionIndex = 0;
 
+    // hardcoded status
     managerStatus = ManagerStatus;
 
-
-    sideMenuItems: WorkflowProcessDto[] = [];
-
-    workflowProcessTypes = WorkflowProcessType;
-    workflowPeriodStepTypes: EnumEntityTypeDto[] = [];
-    private _unsubscribe = new Subject();
     constructor(
         public _workflowDataService: WorkflowDataService,
         private _workflowService: WorkflowServiceProxy,
@@ -53,14 +41,6 @@ export class PrimaryWorkflowComponent implements OnInit, AfterViewInit {
     ) { }
 
     ngOnInit(): void {
-        // this._workflowDataService.workflowSideSectionAdded
-        //     .pipe(takeUntil(this._unsubscribe))
-        //     .subscribe((value: boolean) => {
-        //         this.makeFirstSectionActive();
-        //     });
-        // this.workflowSideNavigation = new Array<SideNavigationParentItemDto>(...this._workflowDataService.workflowSideNavigation);
-        // this.changeSideSection(this.sideMenuItems[0] , 0);
-
         this.getPeriodStepTypes();
         this.getSideMenu();
     }
@@ -83,10 +63,7 @@ export class PrimaryWorkflowComponent implements OnInit, AfterViewInit {
             }))
             .subscribe(result => {
                 this.sideMenuItems = result?.clientPeriods![0].workflowProcesses!;
-                // this.getPeriodStepTypes();
-                // this.changeSideSection(this.sideMenuItems[0] , 0);
-                console.log(result);
-                console.log('side lvl ', this.sideMenuItems);
+                console.log('PERIOD SIDE');
             });
     }
 
@@ -107,26 +84,6 @@ export class PrimaryWorkflowComponent implements OnInit, AfterViewInit {
         }
     }
 
-    ngAfterViewInit(): void {
-        // this.workflowSideNavigation = new Array<SideNavigationParentItemDto>(...this._workflowDataService.workflowSideNavigation);
-        // this.changeSideSection(this.sideMenuItems[0] , 0);
-    }
-
-    get sideNavigation() {
-        return this.workflowSideNavigation = new Array<SideNavigationParentItemDto>(...this._workflowDataService.workflowSideNavigation);
-    }
-
-    // makeFirstSectionActive() {
-    //     this.changeSideSection(this.sideMenuItems[0] , 0);
-    //     // TODO: scroll to top on newly added section?
-    // }
-
-    changeStepSelection(step: PeriodStepDto) {
-        this.selectedStepEnum = this.mapStepType(this.workflowPeriodStepTypes?.find(x => x.id === step.typeId)!)!;
-        this.selectedStep = step.name!;
-        this._workflowDataService.workflowProgress.currentlyActiveStep = step.typeId! * 1;
-    }
-
     mapStepType(stepType: EnumEntityTypeDto) {
         switch (stepType.name) {
             case 'Sales':
@@ -140,11 +97,11 @@ export class PrimaryWorkflowComponent implements OnInit, AfterViewInit {
         }
     }
 
-    changeStepSelectionOld(stepName: string, stepEnum: number, stepId?: any,) {
-        this.selectedStep = stepName;
-        this.selectedStepEnum = stepEnum;
 
-        // this._workflowDataService.workflowProgress.currentlyActiveStep = stepId * 1;
+    changeStepSelection(step: PeriodStepDto) {
+        this.selectedStepEnum = this.mapStepType(this.workflowPeriodStepTypes?.find(x => x.id === step.typeId)!)!;
+        this.selectedStep = step.name!;
+        this._workflowDataService.workflowProgress.currentlyActiveStep = step.typeId! * 1;
     }
 
     changeSideSection(item: WorkflowProcessDto, index: number) {
@@ -155,7 +112,6 @@ export class PrimaryWorkflowComponent implements OnInit, AfterViewInit {
         this.changeStepSelection(firstitemInSection!);
     }
 
-    // deleteSideSection(item: SideNavigationParentItemDto) {
     deleteSideSection(item: WorkflowProcessDto) {
         const scrollStrategy = this.overlay.scrollStrategies.reposition();
         const dialogRef = this.dialog.open(ConfirmationDialogComponent, {
@@ -189,4 +145,6 @@ export class PrimaryWorkflowComponent implements OnInit, AfterViewInit {
     changeAnchorSelection(anchorName: string) {
         this.selectedAnchor = anchorName;
     }
+
+
 }

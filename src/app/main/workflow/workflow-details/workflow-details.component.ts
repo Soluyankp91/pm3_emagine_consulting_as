@@ -5,13 +5,11 @@ import { MatDialog } from '@angular/material/dialog';
 import { MatTabChangeEvent } from '@angular/material/tabs';
 import { ActivatedRoute } from '@angular/router';
 import { NgScrollbar } from 'ngx-scrollbar';
-import { Subject } from 'rxjs';
-import { takeUntil } from 'rxjs/operators';
-import { EnumEntityTypeDto } from 'src/shared/service-proxies/service-proxies';
-import { ExtendWorkflowDialogComponent } from '../extend-workflow-dialog/extend-workflow-dialog.component';
+import { Observable, Subject } from 'rxjs';
+import { finalize, takeUntil } from 'rxjs/operators';
+import { ClientPeriodDto, EnumEntityTypeDto, WorkflowDto, WorkflowServiceProxy } from 'src/shared/service-proxies/service-proxies';
 import { WorkflowExtensionComponent } from '../workflow-extension/workflow-extension.component';
 import { PrimaryWorkflowComponent } from '../primary-workflow/primary-workflow.component';
-import { WorkflowChangeDialogComponent } from '../workflow-change-dialog/workflow-change-dialog.component';
 import { WorkflowDataService } from '../workflow-data.service';
 import { WorkflowOverviewComponent } from '../workflow-overview/workflow-overview.component';
 import { WorkflowSalesComponent } from '../workflow-sales/workflow-sales.component';
@@ -58,6 +56,13 @@ export class WorkflowDetailsComponent implements OnInit, OnDestroy, AfterViewIni
 
     sectionIndex: number;
 
+    workflowResponse: WorkflowDto;
+    clientPeriods: ClientPeriodDto[] | undefined = [];
+
+    workflowClientPeriodTypes: EnumEntityTypeDto[] = [];
+    workflowConsultantPeriodTypes: EnumEntityTypeDto[] = [];
+    workflowPeriodStepTypes: EnumEntityTypeDto[] = [];
+
     private _unsubscribe = new Subject();
     constructor(
         public _workflowDataService: WorkflowDataService,
@@ -66,7 +71,8 @@ export class WorkflowDetailsComponent implements OnInit, OnDestroy, AfterViewIni
         private dialog: MatDialog,
         private scrollDispatcher: ScrollDispatcher,
         private zone: NgZone,
-        private _lookupService: InternalLookupService
+        private _lookupService: InternalLookupService,
+        private _workflowService: WorkflowServiceProxy
     ) {
         this.salesExtensionForm = new WorkflowSalesExtensionForm();
         this.terminationSalesForm = new WorkflowTerminationSalesForm();
@@ -81,6 +87,49 @@ export class WorkflowDetailsComponent implements OnInit, OnDestroy, AfterViewIni
         this.topMenuTabs = new Array<TopMenuTabsDto>(...this._workflowDataService.topMenuTabs);
         this.componentInitalized = true;
         this._lookupService.getData();
+        this.getTopLevelMenu();
+        this.getClientPeriodTypes();
+        this.getConsultantPeriodTypes();
+        this.getPeriodStepTypes();
+    }
+
+    detectClientPeriodType(clietPeriod: string) {
+        // const detectedType = this.workflowClientPeriodTypes.find(x => x.name === clietPeriod);
+        // if (detectedType) {
+        //     return detectedType.id;
+        // }
+
+        return this.workflowClientPeriodTypes.find(x => x.name === clietPeriod)?.id ?? null;
+    }
+
+    getClientPeriodTypes() {
+        this._lookupService.getWorkflowClientPeriodTypes()
+            .pipe(finalize(() => {
+
+            }))
+            .subscribe(result => {
+                this.workflowClientPeriodTypes = result;
+            });
+    }
+
+    getConsultantPeriodTypes() {
+        this._lookupService.getWorkflowConsultantPeriodTypes()
+            .pipe(finalize(() => {
+
+            }))
+            .subscribe(result => {
+                this.workflowConsultantPeriodTypes = result;
+            });
+    }
+
+    getPeriodStepTypes() {
+        this._lookupService.getWorkflowPeriodStepTypes()
+            .pipe(finalize(() => {
+
+            }))
+            .subscribe(result => {
+                this.workflowPeriodStepTypes = result;
+            });
     }
 
     ngAfterViewInit(): void {
@@ -103,6 +152,16 @@ export class WorkflowDetailsComponent implements OnInit, OnDestroy, AfterViewIni
     ngOnDestroy(): void {
         this._unsubscribe.next();
         this._unsubscribe.complete();
+    }
+
+    getTopLevelMenu() {
+        this._workflowService.clientPeriods(this.workflowId)
+            .pipe(finalize(() => {
+
+            }))
+            .subscribe(result => {
+                this.clientPeriods = result.clientPeriods;
+            });
     }
 
     detectComponentToRender(tab: TopMenuTabsDto): ComponentType<any> {
@@ -189,21 +248,36 @@ export class WorkflowDetailsComponent implements OnInit, OnDestroy, AfterViewIni
     tabChanged(event: MatTabChangeEvent) {
         console.log('change tab PW');
         this.selectedTabIndex = event.index;
-        this.selectedTabName = this.formatStepLabel(event.tab.textLabel);
+        // this.selectedTabName = this.formatStepLabel(event.tab.textLabel);
+        this.selectedTabName = event.tab.textLabel;
         this.extensionIndex = this.selectedTabName.startsWith('Extension') ? parseInt(event.tab.textLabel.match(/\d/g)!.join('')) : null;
         let newStatus = new WorkflowProgressStatus();
-        newStatus.currentlyActiveSection = this.mapSelectedTabNameToEnum(this.selectedTabName);
 
         newStatus.currentlyActiveExtensionIndex = this.extensionIndex;
         // FIXME: just for test
         newStatus.currentlyActiveStep = WorkflowSteps.Sales;
-        if (this.selectedTabName === 'Workflow') {
-            newStatus.currentlyActiveSideSection = WorkflowSideSections.StartWorkflow;
-        } else if (this.selectedTabName.startsWith('Extension')) {
-            newStatus.currentlyActiveSideSection = WorkflowSideSections.ExtendWorkflow;
+        if (this.selectedTabName === 'Overview') {
+            newStatus.currentlyActiveSection = WorkflowTopSections.Overview;
+        } else {
+            newStatus.currentlyActiveSection = this.detectTopLevelMenu(this.selectedTabName);
         }
 
         this._workflowDataService.updateWorkflowProgressStatus(newStatus);
+    }
+
+    detectTopLevelMenu(clientPeriodName: string) {
+        const selectedTopMenu = this.clientPeriods?.find(x => x.name === clientPeriodName);
+        const clientPeriodType = this.workflowClientPeriodTypes.find(type => type.id === selectedTopMenu?.typeId);
+        console.log(clientPeriodType);
+        // FIXME: change after BE updates
+        switch (clientPeriodType?.name) {
+            case 'Start Client Period':
+                return WorkflowTopSections.Workflow;
+            case 'Extend Client Period':
+                return WorkflowTopSections.Extension;
+            case 'Change Client Period':
+                return WorkflowTopSections.ChangesInWF;
+        }
     }
 
     mapSideSectionName(value: number | undefined) {
@@ -214,8 +288,24 @@ export class WorkflowDetailsComponent implements OnInit, OnDestroy, AfterViewIni
         return value ? WorkflowTopSections[value] : '';
     }
 
+    mapStepType(stepType: EnumEntityTypeDto) {
+        switch (stepType?.name) {
+            case 'Sales':
+                return WorkflowSteps.Sales;
+            case 'Contract':
+                return WorkflowSteps.Contracts;
+            case 'Finance':
+                return WorkflowSteps.Finance;
+            case 'Sourcing':
+                return WorkflowSteps.Sourcing;
+            default:
+                return null;
+        }
+    }
+
     mapStepName(value: number | undefined) {
-        return value ? WorkflowSteps[value] : '';
+        let selectedStepEnum = this.mapStepType(this.workflowPeriodStepTypes?.find(x => x.id === value)!)!;
+        return value ? WorkflowSteps[selectedStepEnum] : '';
     }
 
     mapSelectedTabNameToEnum(tabName: string) {

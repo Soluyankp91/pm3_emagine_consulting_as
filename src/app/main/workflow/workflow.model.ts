@@ -691,7 +691,8 @@ export enum WorkflowFlag {
 export const WorkflowList = [
     {
         flag: WorkflowFlag.NewSales,
-        id: 'e7fe2c30-d443-4a2e-b2b6-5460610f6409',
+        id: '75ced0e8-dd26-4fd4-bb76-bdd9deed41b5',
+
         client: 'Martha Marikel',
         consultants: [
             { name: 'Martha Marikel' },
@@ -709,7 +710,7 @@ export const WorkflowList = [
     },
     {
         flag: WorkflowFlag.NewSales,
-        id: 'e7fe2c30-d443-4a2e-b2b6-5460610f6409',
+        id: '75ced0e8-dd26-4fd4-bb76-bdd9deed41b5',
         client: 'Martha Marikel',
         consultants: [
             { name: 'Martha Marikel'}
@@ -726,7 +727,7 @@ export const WorkflowList = [
     },
     {
         flag: WorkflowFlag.Extension,
-        id: 'e7fe2c30-d443-4a2e-b2b6-5460610f6409',
+        id: '75ced0e8-dd26-4fd4-bb76-bdd9deed41b5',
         client: 'Martha Marikel',
         consultants: [
             { name: 'Martha Marikel' },
@@ -745,7 +746,7 @@ export const WorkflowList = [
     },
     {
         flag: WorkflowFlag.Extension,
-        id: 'e7fe2c30-d443-4a2e-b2b6-5460610f6409',
+        id: '75ced0e8-dd26-4fd4-bb76-bdd9deed41b5',
         client: 'Martha Marikel',
         consultants: [
             { name: 'Martha Marikel' },
@@ -764,7 +765,7 @@ export const WorkflowList = [
     },
     {
         flag: WorkflowFlag.NewSales,
-        id: 'e7fe2c30-d443-4a2e-b2b6-5460610f6409',
+        id: '75ced0e8-dd26-4fd4-bb76-bdd9deed41b5',
         client: 'Martha Marikel',
         consultants: [
             { name: 'Martha Marikel' },
@@ -783,7 +784,7 @@ export const WorkflowList = [
     },
     {
         flag: WorkflowFlag.NewSales,
-        id: 'e7fe2c30-d443-4a2e-b2b6-5460610f6409',
+        id: '75ced0e8-dd26-4fd4-bb76-bdd9deed41b5',
         client: 'Martha Marikel',
         consultants: [
             { name: 'Martha Marikel' },
@@ -802,7 +803,7 @@ export const WorkflowList = [
     },
     {
         flag: WorkflowFlag.Extension,
-        id: 'e7fe2c30-d443-4a2e-b2b6-5460610f6409',
+        id: '75ced0e8-dd26-4fd4-bb76-bdd9deed41b5',
         client: 'Martha Marikel',
         consultants: [
             { name: 'Martha Marikel' },

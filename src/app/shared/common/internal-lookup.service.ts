@@ -7,6 +7,7 @@ export class InternalLookupService {
     deliveryTypes: EnumEntityTypeDto[] = [];
     currencies: EnumEntityTypeDto[] = [];
     saleTypes: EnumEntityTypeDto[] = [];
+    projectTypes: EnumEntityTypeDto[] = [];
     invoicingTimes: EnumEntityTypeDto[] = [];
     rateUnitTypes: EnumEntityTypeDto[] = [];
     invoiceFrequencies: EnumEntityTypeDto[] = [];
@@ -19,6 +20,11 @@ export class InternalLookupService {
     clientSpecialRateOrFeeDirections: EnumEntityTypeDto[] = [];
     clientSpecialRateReportUnits: EnumEntityTypeDto[] = [];
     clientSpecialRateSpecifications: EnumEntityTypeDto[] = [];
+    contractExpirationNotificationDuration: EnumEntityTypeDto[] = [];
+
+    workflowClientPeriodTypes: EnumEntityTypeDto[] = [];
+    workflowConsultantPeriodTypes: EnumEntityTypeDto[] = [];
+    workflowPeriodStepTypes: EnumEntityTypeDto[] = [];
 
     constructor(private _enumService: EnumServiceProxy) {
 
@@ -29,6 +35,7 @@ export class InternalLookupService {
         this.getDeliveryTypes();
         this.getInvoicingTimes();
         this.getSaleTypes();
+        this.getProjectTypes();
         this.getUnitTypes();
         this.getInvoiceFrequencies();
         this.getSignerRoles();
@@ -40,6 +47,9 @@ export class InternalLookupService {
         this.getSpecialRateOrFeeDirections();
         this.getSpecialRateReportUnits();
         this.getSpecialRateSpecifications();
+        this.getWorkflowClientPeriodTypes();
+        this.getWorkflowConsultantPeriodTypes();
+        this.getWorkflowPeriodStepTypes();
     }
 
     getCurrencies(): Observable<EnumEntityTypeDto[]> {
@@ -106,6 +116,24 @@ export class InternalLookupService {
                     .subscribe(response => {
                         this.saleTypes = response;
                         observer.next(this.saleTypes);
+                        observer.complete();
+                    }, error => {
+                        observer.error(error);
+                    });
+            }
+        });
+    }
+
+    getProjectTypes(): Observable<EnumEntityTypeDto[]> {
+        return new Observable<EnumEntityTypeDto[]>((observer) => {
+            if (this.projectTypes.length) {
+                observer.next(this.projectTypes);
+                observer.complete();
+            } else {
+                this._enumService.projectType()
+                    .subscribe(response => {
+                        this.projectTypes = response;
+                        observer.next(this.projectTypes);
                         observer.complete();
                     }, error => {
                         observer.error(error);
@@ -304,6 +332,78 @@ export class InternalLookupService {
                     .subscribe(response => {
                         this.clientSpecialRateSpecifications = response;
                         observer.next(this.clientSpecialRateSpecifications);
+                        observer.complete();
+                    }, error => {
+                        observer.error(error);
+                    });
+            }
+        });
+    }
+
+    getWorkflowClientPeriodTypes(): Observable<EnumEntityTypeDto[]> {
+        return new Observable<EnumEntityTypeDto[]>((observer) => {
+            if (this.workflowClientPeriodTypes.length) {
+                observer.next(this.workflowClientPeriodTypes);
+                observer.complete();
+            } else {
+                this._enumService.clientPeriodType()
+                    .subscribe(response => {
+                        this.workflowClientPeriodTypes = response;
+                        observer.next(this.workflowClientPeriodTypes);
+                        observer.complete();
+                    }, error => {
+                        observer.error(error);
+                    });
+            }
+        });
+    }
+
+    getWorkflowConsultantPeriodTypes(): Observable<EnumEntityTypeDto[]> {
+        return new Observable<EnumEntityTypeDto[]>((observer) => {
+            if (this.workflowConsultantPeriodTypes.length) {
+                observer.next(this.workflowConsultantPeriodTypes);
+                observer.complete();
+            } else {
+                this._enumService.consultantPeriodType()
+                    .subscribe(response => {
+                        this.workflowConsultantPeriodTypes = response;
+                        observer.next(this.workflowConsultantPeriodTypes);
+                        observer.complete();
+                    }, error => {
+                        observer.error(error);
+                    });
+            }
+        });
+    }
+
+    getWorkflowPeriodStepTypes(): Observable<EnumEntityTypeDto[]> {
+        return new Observable<EnumEntityTypeDto[]>((observer) => {
+            if (this.workflowPeriodStepTypes.length) {
+                observer.next(this.workflowPeriodStepTypes);
+                observer.complete();
+            } else {
+                this._enumService.periodStepType()
+                    .subscribe(response => {
+                        this.workflowPeriodStepTypes = response;
+                        observer.next(this.workflowPeriodStepTypes);
+                        observer.complete();
+                    }, error => {
+                        observer.error(error);
+                    });
+            }
+        });
+    }
+
+    getContractExpirationNotificationInterval(): Observable<EnumEntityTypeDto[]> {
+        return new Observable<EnumEntityTypeDto[]>((observer) => {
+            if (this.contractExpirationNotificationDuration.length) {
+                observer.next(this.contractExpirationNotificationDuration);
+                observer.complete();
+            } else {
+                this._enumService.clientPeriodType()
+                    .subscribe(response => {
+                        this.contractExpirationNotificationDuration = response;
+                        observer.next(this.contractExpirationNotificationDuration);
                         observer.complete();
                     }, error => {
                         observer.error(error);

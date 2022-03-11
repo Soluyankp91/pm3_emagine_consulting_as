@@ -22,7 +22,6 @@ export class ClientListComponent extends AppComopnentBase implements OnInit, OnD
     clientsList: any[] = [];
     isDataLoading = false;
     countryList: SelectableCountry[] = [];
-    selectedCountryIds: number[] = [];
     pageNumber = 1;
     deafultPageSize = AppConsts.grid.defaultPageSize;
     pageSizeOptions = [5, 10, 20, 50, 100];
@@ -65,6 +64,12 @@ export class ClientListComponent extends AppComopnentBase implements OnInit, OnD
     statusList = StatusList;
     selecedStatuses: SelectableIdNameDto[] = [];
 
+    nonActiveClient = false;
+    isActiveClients = false;
+    includeDeleted = false;
+    // hardccoded as BE developers asked
+    onlyWrongfullyDeletedInHubspot = false;
+
     clientDataSource: MatTableDataSource<ClientListItemDto> = new MatTableDataSource<ClientListItemDto>();
     private _unsubscribe = new Subject();
     constructor(
@@ -77,20 +82,11 @@ export class ClientListComponent extends AppComopnentBase implements OnInit, OnD
         super(injector);
         this.clientFilter.valueChanges.pipe(
             takeUntil(this._unsubscribe),
-            debounceTime(300),
-            switchMap((value: any) => {
-                let input = value ? value : '';
-                this.isDataLoading = true;
-                return this._apiService.clients(input, this.selectedCountryIds, this.pageNumber, this.deafultPageSize, this.sorting);
-            }),
-        ).subscribe((list: any) => {
-            if (list.length) {
-                this.clientsList = list;
-            } else {
-                this.clientsList = [];
-            }
-            this.isDataLoading = false;
+            debounceTime(500)
+        ).subscribe(() => {
+            this.getClientsGrid();
         });
+
 
         this.accountManagerFilter.valueChanges.pipe(
             takeUntil(this._unsubscribe),
@@ -105,7 +101,6 @@ export class ClientListComponent extends AppComopnentBase implements OnInit, OnD
                         ? value.name
                         : value;
                 }
-
                 return this._lookupService.employees(value);
             }),
         ).subscribe((list: EmployeeDto[]) => {
@@ -122,7 +117,6 @@ export class ClientListComponent extends AppComopnentBase implements OnInit, OnD
                 this.filteredAccountManagers = [{ name: 'No managers found', externalId: '', id: 'no-data', selected: false }];
             }
         });
-
     }
 
     ngOnInit(): void {
@@ -135,7 +129,7 @@ export class ClientListComponent extends AppComopnentBase implements OnInit, OnD
                 }
             })
         );
-        this.getClientsGrid(this.clientFilter.value, this.selectedCountryIds, this.pageNumber, this.deafultPageSize, this.sorting);
+        this.getClientsGrid();
     }
 
     private _filterCountries(value: string): SelectableCountry[] {
@@ -161,12 +155,11 @@ export class ClientListComponent extends AppComopnentBase implements OnInit, OnD
             if (!list.includes(item)) {
                 list.push(item);
             }
-
         } else {
             const i = list.findIndex((value: any) => value.name === item.name);
             list.splice(i, 1);
         }
-
+        this.getClientsGrid();
     }
 
     toggleStatusSelection(event: Event, status: SelectableIdNameDto) {
@@ -200,14 +193,24 @@ export class ClientListComponent extends AppComopnentBase implements OnInit, OnD
                         flag: x.name!
                     });
                 });
+                this.countryList.unshift(
+                    new SelectableCountry({
+                        id: 0,
+                        name: 'Unknown country',
+                        selected: false,
+                        flag: ''
+                    })
+                );
                 console.log(this.countryList);
             });
     }
 
-    getClientsGrid(filter: string, selectedCountires: number[], pageNumber: number, pageSize: number, sort: string) {
-        let searchFilter = filter ? filter : '';
+    getClientsGrid() {
+        let searchFilter = this.clientFilter.value ? this.clientFilter.value : '';
         this.isDataLoading = true;
-        this._apiService.clients(searchFilter, selectedCountires, pageNumber, pageSize, sort)
+        let ownerIds = this.selectedAccountManagers.map(x => +x.id);
+        let selectedCountryIds = this.selectedCountries.map(x => +x.id);
+        this._apiService.clients(searchFilter, selectedCountryIds, ownerIds, this.isActiveClients, !this.includeDeleted, this.onlyWrongfullyDeletedInHubspot, this.pageNumber, this.deafultPageSize, this.sorting)
             .pipe(finalize(() => {
                 this.isDataLoading = false;
             }))
@@ -217,28 +220,15 @@ export class ClientListComponent extends AppComopnentBase implements OnInit, OnD
             });
     }
 
-    selectLookupCountry(country: SelectableCountry) {
-        country.selected = !country.selected;
-        if (country.selected) {
-            this.selectedCountryIds.push(+country.id);
-        } else {
-            const index = this.selectedCountryIds.indexOf(+country.id);
-            if (index > -1) {
-                this.selectedCountryIds.splice(index, 1);
-            }
-        }
-        this.getClientsGrid(this.clientFilter.value, this.selectedCountryIds, this.pageNumber, this.deafultPageSize, this.sorting);
-    }
-
     pageChanged(event?: any): void {
-        this.pageNumber = event.pageIndex;
+        this.pageNumber = event.pageIndex === 0 ? 1 : event.pageIndex;
         this.deafultPageSize = event.pageSize;
-        this.getClientsGrid(this.clientFilter.value, this.selectedCountryIds, this.pageNumber, this.deafultPageSize, this.sorting);
+        this.getClientsGrid();
     }
 
     sortChanged(event?: any): void {
         this.sorting = event.active.concat(' ', event.direction);
-        this.getClientsGrid(this.clientFilter.value, this.selectedCountryIds, this.pageNumber, this.deafultPageSize, this.sorting);
+        this.getClientsGrid();
     }
 
     navigateToClientDetails(clientId: number): void {

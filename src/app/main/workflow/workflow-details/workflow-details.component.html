@@ -99,23 +99,35 @@
 
     <div class="workflow-content u-w--100" id="workflowDetails">
         <mat-tab-group class="workflow-content--tabs u-w--100" (selectedTabChange)="tabChanged($event)" [(selectedIndex)]="selectedIndex">
-            <mat-tab *ngFor="let tab of topMenuTabs; let i = index;" [label]="tab.displayName" class="u-w--100">
+            <mat-tab label="Overview">
                 <ng-template mat-tab-label>
                     <div fxLayout="row" fxLayoutAlign="center center">
-                        <mat-icon *ngIf="tab.displayName === 'Overview'" class="u-mr--5" svgIcon="overview-icon"></mat-icon>
-                        <span class="tab-header">{{tab.displayName}}</span>
+                        <mat-icon class="u-mr--5" svgIcon="overview-icon"></mat-icon>
+                        <span class="tab-header">Overview</span>
+                    </div>
+                </ng-template>
+                <div class="workflow-form--panel u-w--100">
+                    <app-workflow-overview></app-workflow-overview>
+                </div>
+            </mat-tab>
+            <mat-tab *ngFor="let tab of clientPeriods; let i = index;" [label]="tab.name!">
+                <ng-template mat-tab-label>
+                    <div fxLayout="row" fxLayoutAlign="center center">
+                        <!-- <mat-icon *ngIf="tab.name === 'Overview'" class="u-mr--5" svgIcon="overview-icon"></mat-icon> -->
+                        <span class="tab-header">{{tab.name}}</span>
                     </div>
                     <span class="tab-subheader">{{tab.additionalInfo}}</span>
                 </ng-template>
                 <!-- <div class="workflow-form--panel u-w--100" [ngStyle]="{'height': isExpandedAndToolbarVisible()}"> -->
                 <div class="workflow-form--panel u-w--100">
-                    <!-- <ng-scrollbar #salesScrollbar> -->
-                        <dynamic-component-loader
-                            *ngIf="componentInitalized"
-                            [type]="detectComponentToRender(tab)"
-                            [index]="detectExtensionIndex(tab)">
-                        </dynamic-component-loader>
-                    <!-- </ng-scrollbar> -->
+                    <app-workflow-period *ngIf="selectedIndex === i + 1" [clientPeriodId]="tab.id" [workflowId]="workflowId"></app-workflow-period>
+                    <!-- <app-primary-workflow *ngIf="selectedIndex === i + 1" [clientPeriodId]="tab.id" [workflowId]="workflowId"></app-primary-workflow> -->
+
+                    <!-- <dynamic-component-loader
+                        *ngIf="componentInitalized"
+                        [type]="detectComponentToRender(tab)"
+                        [index]="detectExtensionIndex(tab)">
+                    </dynamic-component-loader> -->
                 </div>
             </mat-tab>
         </mat-tab-group>

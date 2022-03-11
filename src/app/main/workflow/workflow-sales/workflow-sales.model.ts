@@ -12,9 +12,12 @@ export class WorkflowSalesMainForm extends FormGroup {
 
             discounts: new FormControl(null),
 
+            commissions: new FormArray([]),
+
             salesAccountManagerIdValue: new FormControl(null),
             commissionAccountManagerIdValue: new FormControl(null),
             contractExpirationNotification: new FormControl(null),
+            customContractExpirationNotificationDate: new FormControl(null),
 
             remarks: new FormControl(null),
             isRemarks: new FormControl(false)
@@ -42,6 +45,9 @@ export class WorkflowSalesMainForm extends FormGroup {
     get discounts() {
         return this.get('discounts');
     }
+    get commissions() {
+        return this.get('commissions') as FormArray;
+    }
     get salesAccountManagerIdValue () {
         return this.get('salesAccountManagerIdValue');
     }
@@ -50,6 +56,9 @@ export class WorkflowSalesMainForm extends FormGroup {
     }
     get contractExpirationNotification() {
         return this.get('contractExpirationNotification');
+    }
+    get customContractExpirationNotificationDate() {
+        return this.get('customContractExpirationNotificationDate');
     }
 
     get remarks() {
@@ -114,7 +123,7 @@ export class WorkflowSalesClientDataForm extends FormGroup {
             clientContractNoEndDate: new FormControl(false),
 
             // Client Extension Option
-            clientExtensionStartDate: new FormControl(null),
+            clientExtensionDuration: new FormControl(null),
             clientExtensionEndDate: new FormControl(null),
             clientExtensionDeadline: new FormControl(null),
             clientExtensionNoEndDate: new FormControl(false),
@@ -224,8 +233,8 @@ export class WorkflowSalesClientDataForm extends FormGroup {
     }
 
     // Client Extension Option
-    get clientExtensionStartDate() {
-        return this.get('clientExtensionStartDate');
+    get clientExtensionDuration() {
+        return this.get('clientExtensionDuration');
     }
     get clientExtensionEndDate() {
         return this.get('clientExtensionEndDate');
