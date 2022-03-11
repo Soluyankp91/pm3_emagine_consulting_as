@@ -38,6 +38,7 @@ import { WorkflowActionsDialogComponent } from './workflow/workflow-actions-dial
 import { ClientWorkflowTrackComponent } from './client-list/client-workflow-track/client-workflow-track.component';
 import { ClientContactsComponent } from './client-list/client-contacts/client-contacts.component';
 import { CreateWorkflowDialogComponent } from './workflow/create-workflow-dialog/create-workflow-dialog.component';
+import { WorkflowSourcingComponent } from './workflow/workflow-sourcing/workflow-sourcing.component';
 
 
 @NgModule({
@@ -78,7 +79,8 @@ import { CreateWorkflowDialogComponent } from './workflow/create-workflow-dialog
         WorkflowActionsDialogComponent,
         ClientWorkflowTrackComponent,
         ClientContactsComponent,
-        CreateWorkflowDialogComponent
+        CreateWorkflowDialogComponent,
+        WorkflowSourcingComponent
     ],
     imports: [
         CommonModule,

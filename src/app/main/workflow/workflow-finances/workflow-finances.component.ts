@@ -1,5 +1,6 @@
 import { Component, Input, OnInit } from '@angular/core';
 import { FormArray, FormBuilder, FormControl } from '@angular/forms';
+import { WorkflowDataService } from '../workflow-data.service';
 import { WorkflowSideSections } from '../workflow.model';
 import { FinancesClientForm, FinancesConsultantsForm } from './workflow-finances.model';
 
@@ -31,7 +32,8 @@ export class WorkflowFinancesComponent implements OnInit {
         }
     ]
     constructor(
-        private _fb: FormBuilder
+        private _fb: FormBuilder,
+        private _workflowDataService: WorkflowDataService
     ) {
         this.financesClientForm = new FinancesClientForm();
         this.financesConsultantsForm = new FinancesConsultantsForm();
@@ -42,6 +44,10 @@ export class WorkflowFinancesComponent implements OnInit {
         this.consultantList.forEach(consultant => {
             this.addConsultantToForm(consultant);
         });
+    }
+
+    get readOnlyMode() {
+        return this._workflowDataService.getWorkflowProgress.isWorkflowAccountsSaved;
     }
 
     addConsultantToForm(consultant: any) {

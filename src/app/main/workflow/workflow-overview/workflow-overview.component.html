@@ -1,45 +1,35 @@
 <div class="workflow-overview" *ngIf="componentInitalized">
-    <div class="workflow-overview--team" fxLayout="row" fxLayoutAlign="start start">
-        <!-- TODO: move each block to card component-->
-        <div class="workflow-overview--team__user column u-mr--20" fxFlex="20%">
-            <div fxLayout="column" fxLayoutAlign="start start" class="u-mb--20">
-                <h2 class="workflow-overview--team__user-block">Sales</h2>
-                <div class="workflow-overview--team__user-progress u-w--100" [ngClass]="{'finished': finished}" [matTooltip]="'Finished'">
-                </div>
+    <div *ngFor="let item of workflowProcesses">
+        <div class="workflow-overview--team" fxLayout="row" fxLayoutAlign="start start" fxLayoutGap="60px">
+            <!-- TODO: move each block to card component-->
+            <div fxLayout="column" fxLayoutAlign="start start" fxFlex="15%">
+                <span class="flex-row flex-items-center u-mb--10">
+                    <mat-icon svgIcon="{{item.name}}"></mat-icon>
+                    <span class="workflow-overview--process">
+                        {{item.displayName}}
+                    </span>
+                </span>
+                <span class="workflow-overview--process-daterange u-ml--5">{{item.dateRange}}</span>
             </div>
-            <div fxLayout="row" fxLayoutAlign="start center">
-                <img class="workflow-overview--team__user-img" src="https://placekitten.com/64/64" alt="">
-                <div class="column">
-                    <h2 class="workflow-overview--team__user-position">Sales</h2>
-                    <p class="workflow-overview--team__user-name">Anna Kowalski</p>
-                </div>
-            </div>
-        </div>
-        <div class="workflow-overview--team__user column u-mr--20" fxFlex="20%">
-            <div fxLayout="column" fxLayoutAlign="start start" class="u-mb--20">
-                <h2 class="workflow-overview--team__user-block">Contracts</h2>
-                <div class="workflow-overview--team__user-progress u-w--100" [ngClass]="{'in-progress': inPorgress}" [matTooltip]="'In progress'">
-                </div>
-            </div>
-            <div fxLayout="row" fxLayoutAlign="start center">
-                <img class="workflow-overview--team__user-img" src="https://placekitten.com/64/64" alt="">
-                <div class="column">
-                    <h2 class="workflow-overview--team__user-position">Contracts</h2>
-                    <p class="workflow-overview--team__user-name">Tim Robertsen</p>
-                </div>
-            </div>
-        </div>
-        <div class="workflow-overview--team__user column u-mr--20" fxFlex="20%">
-            <div fxLayout="column" fxLayoutAlign="start start" class="u-mb--20">
-                <h2 class="workflow-overview--team__user-block">Finance</h2>
-                <div class="workflow-overview--team__user-progress u-w--100" [ngClass]="{'not-started': notStarted}" [matTooltip]="'Not yet started'">
-                </div>
-            </div>
-            <div fxLayout="row" fxLayoutAlign="start center">
-                <img class="workflow-overview--team__user-img" src="https://placekitten.com/64/64" alt="">
-                <div class="column">
-                    <h2 class="workflow-overview--team__user-position">Finance</h2>
-                    <p class="workflow-overview--team__user-name">Mia Van Trier</p>
+            <div *ngFor="let item of item.processSteps" fxFlex="20%">
+                <div class="workflow-overview--team__user column">
+                    <div fxLayout="row" fxLayoutAlign="start center">
+                        <img class="workflow-overview--team__user-img" src="https://placekitten.com/64/64" alt="">
+                        <div class="column">
+                            <h2 class="workflow-overview--team__user-position">{{item.displayName}}</h2>
+                            <p class="workflow-overview--team__user-name">{{item.assignedPerson}}</p>
+                        </div>
+                    </div>
+                    <div class="workflow-overview--team__user-progress u-w--100" [ngClass]="{'finished': item.isCompleted, 'in-progress': item.isInProgress}" [matTooltip]="displayStepActionTooltip(item)">
+                    </div>
+                    <div fxLayout="row" fxLayoutAlign="end center" class="u-w--100">
+                        <span class="icon-in-progress u-mr--5">
+                            <mat-icon svgIcon="{{item.isCompleted ? 'completed-icon' : 'in-progress-icon'}}"></mat-icon>
+                        </span>
+                        <span class="workflow-overview--team__user-status" [ngClass]="{'finished': item.canStartSetup || item.isInProgress}">
+                            {{displayStepAction(item)}}
+                        </span>
+                    </div>
                 </div>
             </div>
         </div>

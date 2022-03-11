@@ -405,3 +405,35 @@ export enum ConsultantDiallogAction {
     Extend = 2,
     Terminate = 3
 }
+
+export class SalesTerminateConsultantForm extends FormGroup {
+    constructor() {
+        super({
+            finalEvaluationReferencePerson: new FormControl(null),
+            isEvaluation: new FormControl(null),
+            finalEvaluationCause: new FormControl(null),
+            endOfContract: new FormControl(null),
+            endClientContractEndDate: new FormControl(null),
+            endClientContractCause: new FormControl(null)
+        });
+    }
+
+    get finalEvaluationReferencePerson() {
+        return this.get('finalEvaluationReferencePerson');
+    }
+    get isEvaluation() {
+        return this.get('isEvaluation');
+    }
+    get finalEvaluationCause() {
+        return this.get('finalEvaluationCause');
+    }
+    get endOfContract() {
+        return this.get('endOfContract');
+    }
+    get endClientContractEndDate() {
+        return this.get('endClientContractEndDate');
+    }
+    get endClientContractCause() {
+        return this.get('endClientContractCause');
+    }
+}

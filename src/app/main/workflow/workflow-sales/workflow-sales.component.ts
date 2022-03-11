@@ -12,7 +12,7 @@ import { ClientRateDto, ConsultantSalesDataDto, ContractSignerDto, EnumEntityTyp
 import { WorkflowConsultantActionsDialogComponent } from '../workflow-consultant-actions-dialog/workflow-consultant-actions-dialog.component';
 import { WorkflowDataService } from '../workflow-data.service';
 import { ChangeConsultantDto, ExtendConsultantDto, TerminateConsultantDto, WorkflowSideSections, WorkflowTopSections } from '../workflow.model';
-import { ConsultantDiallogAction, ConsultantTypes, InputReadonlyState, InputReadonlyStates, WorkflowSalesAdditionalDataForm, WorkflowSalesClientDataForm, WorkflowSalesConsultantsForm, WorkflowSalesMainForm } from './workflow-sales.model';
+import { ConsultantDiallogAction, ConsultantTypes, InputReadonlyState, InputReadonlyStates, SalesTerminateConsultantForm, WorkflowSalesAdditionalDataForm, WorkflowSalesClientDataForm, WorkflowSalesConsultantsForm, WorkflowSalesMainForm } from './workflow-sales.model';
 @Component({
     selector: 'app-workflow-sales',
     templateUrl: './workflow-sales.component.html',
@@ -37,6 +37,7 @@ export class WorkflowSalesComponent extends AppComopnentBase implements OnInit {
     salesMainDataForm: WorkflowSalesMainForm;
     consultantsForm: WorkflowSalesConsultantsForm;
     additionalDataForm: WorkflowSalesAdditionalDataForm;
+    salesTerminateConsultantForm: SalesTerminateConsultantForm;
 
     clientSpecialRateActive = false;
     clientSpecialFeesActive = false;
@@ -102,6 +103,7 @@ export class WorkflowSalesComponent extends AppComopnentBase implements OnInit {
         this.salesMainDataForm = new WorkflowSalesMainForm();
         this.consultantsForm = new WorkflowSalesConsultantsForm();
         this.additionalDataForm = new WorkflowSalesAdditionalDataForm();
+        this.salesTerminateConsultantForm = new SalesTerminateConsultantForm();
     }
 
     ngOnInit(): void {

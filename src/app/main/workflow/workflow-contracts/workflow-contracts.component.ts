@@ -3,6 +3,7 @@ import { Component, Input, OnInit } from '@angular/core';
 import { AbstractControl, FormArray, FormBuilder, FormControl, FormGroup } from '@angular/forms';
 import { MatDialog } from '@angular/material/dialog';
 import { WorkflowConsultantActionsDialogComponent } from '../workflow-consultant-actions-dialog/workflow-consultant-actions-dialog.component';
+import { WorkflowDataService } from '../workflow-data.service';
 import { ConsultantDiallogAction } from '../workflow-sales/workflow-sales.model';
 import { WorkflowSideSections } from '../workflow.model';
 import { WorkflowContractsClientDataForm, WorkflowContractsConsultantsDataForm, WorkflowContractsMainForm, WorkflowContractsSyncForm } from './workflow-contracts.model';
@@ -41,7 +42,9 @@ export class WorkflowContractsComponent implements OnInit {
     constructor(
         private _fb: FormBuilder,
         private overlay: Overlay,
-        private dialog: MatDialog
+        private dialog: MatDialog,
+        private _workflowDataService: WorkflowDataService
+
     ) {
         this.contractsMainDataForm = new WorkflowContractsMainForm();
         this.contractsClientDataForm = new WorkflowContractsClientDataForm();
@@ -54,6 +57,10 @@ export class WorkflowContractsComponent implements OnInit {
         this.addSpecialRateToForm();
         this.addClientFeeToForm();
         this.consultantList.forEach(item =>this.addConsultantDataToForm(item));
+    }
+
+    get readOnlyMode() {
+        return this._workflowDataService.getWorkflowProgress.isWorkflowContractsSaved;
     }
 
     // #region CHANGE NAMING
