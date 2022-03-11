@@ -486,7 +486,7 @@
                             <div fxLayout="row" fxLayoutAlign="start center" class="u-w--100 u-mb--10" *ngIf="salesMainClientDataForm?.clientExtensionNoEndDate?.value">
                                 <mat-form-field appearance="outline" class="filter-select u-mr--16">
                                     <mat-label> Duration</mat-label>
-                                    <mat-select formControlName="clientExtensionStartDate" [disableOptionCentering]="true">
+                                    <mat-select formControlName="clientExtensionDuration" [disableOptionCentering]="true">
                                         <mat-option *ngFor="let item of invoicingTimes" [value]="item.id">
                                             {{ item.name }}
                                         </mat-option>
@@ -1435,7 +1435,7 @@
                             <div fxLayout="row" fxLayoutAlign="start center" class="u-w--100 u-mb--10" *ngIf="salesMainClientDataForm?.clientExtensionNoEndDate?.value">
                                 <mat-form-field appearance="outline" class="filter-select u-mr--16">
                                     <mat-label> Duration</mat-label>
-                                    <mat-select formControlName="clientExtensionStartDate" [disableOptionCentering]="true">
+                                    <mat-select formControlName="clientExtensionDuration" [disableOptionCentering]="true">
                                         <mat-option *ngFor="let item of invoicingTimes" [value]="item.id">
                                             {{ item.name }}
                                         </mat-option>
@@ -2858,7 +2858,7 @@
                                 <div fxLayout="row" fxLayoutAlign="start center" class="u-w--100 u-mb--10" *ngIf="salesMainClientDataForm?.clientExtensionNoEndDate?.value">
                                     <mat-form-field appearance="outline" class="filter-select u-mr--16">
                                         <mat-label> Duration</mat-label>
-                                        <mat-select formControlName="clientExtensionStartDate" [disableOptionCentering]="true">
+                                        <mat-select formControlName="clientExtensionDuration" [disableOptionCentering]="true">
                                             <mat-option *ngFor="let item of invoicingTimes" [value]="item.id">
                                                 {{ item.name }}
                                             </mat-option>

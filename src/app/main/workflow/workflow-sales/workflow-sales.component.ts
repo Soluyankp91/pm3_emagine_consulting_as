@@ -504,13 +504,13 @@ export class WorkflowSalesComponent extends AppComopnentBase implements OnInit {
         input.salesClientData.clientRate.invoiceCurrencyId = this.salesMainClientDataForm.clientInvoiceCurrency?.value;
         input.salesClientData.clientRate.normalRate = this.salesMainClientDataForm.clientPrice?.value;
         input.salesClientData.clientRate.rateUnitTypeId = this.salesMainClientDataForm.rateUnitTypeId?.value;
-        input.salesClientData.clientRate.invoiceFrequencyId = this.salesMainClientDataForm.clientInvoicingTime?.value;
+        input.salesClientData.clientRate.invoiceFrequencyId = this.salesMainClientDataForm.clientInvoicingTime?.value?.id;
         input.salesClientData.clientRate.manualDate = this.salesMainClientDataForm.clientInvoicingDate?.value;
         // input.salesClientData.clientRate.invoicingTimeId = this.salesMainClientDataForm.clientInvoicingDate?.value;
         // input.salesClientData.clientRate.price =
         // input.salesClientData.clientRate.invoicingTimeId =
 
-        input.salesClientData.noInvoicingReferenceNumber = this.salesMainClientDataForm.invoicingReferenceNumber?.value ?? false;
+        input.salesClientData.noInvoicingReferenceNumber = this.salesMainClientDataForm.invoicingReferenceNumber?.value ? true : false;
         input.salesClientData.invoicingReferenceNumber = this.salesMainClientDataForm.invoicingReferenceNumber?.value;
         input.salesClientData.clientInvoicingRecipientSameAsDirectClient = this.salesMainClientDataForm.clientInvoicingRecipientSameAsDirectClient?.value;
         input.salesClientData.clientInvoicingRecipientIdValue = this.salesMainClientDataForm.clientInvoicingRecipientIdValue?.value;
@@ -540,10 +540,10 @@ export class WorkflowSalesComponent extends AppComopnentBase implements OnInit {
         this.consultantsForm.consultantData.value.forEach((consultant: any) => {
             let consultantInput = new ConsultantSalesDataDto();
             consultantInput.employmentTypeId = consultant.consultantType;
-            consultantInput.consultantId = consultant.consultantName;
+            // consultantInput.consultantId = consultant.consultantName;
 
             // ??
-            // consultantInput.nameOnly = consultant.nameOnly;
+            consultantInput.nameOnly = consultant.consultantName;
             // ??
 
             consultantInput.startDate = consultant.consultantProjectStartDate;
