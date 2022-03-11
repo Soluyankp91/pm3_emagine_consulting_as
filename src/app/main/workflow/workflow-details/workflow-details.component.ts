@@ -352,6 +352,7 @@ export class WorkflowDetailsComponent implements OnInit, OnDestroy, AfterViewIni
                         break;
                     case WorkflowSteps.Contracts:
                         console.log('Complete WF Contracts');
+                        this._workflowDataService.updateWorkflowProgressStatus({isWorkflowContractsSaved: true});
                         break;
                     case WorkflowSteps.Finance:
                         console.log('Complete WF Finance');
