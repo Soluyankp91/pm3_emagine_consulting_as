@@ -4,27 +4,55 @@
             <div class="workflow-finances--block">
                 <div fxLayout="column" fxLayoutAlign="start start" class="u-w--100">
                     <h2 class="workflow-section--header">Client</h2>
-                    <div fxLayout="row" fxLayoutAlign="start center" class="u-w--100 u-mb--20">
-                        <mat-checkbox color="accent" formControlName="clientCreatedInNavision" name="clientCreatedInNavision" class="black-checkbox u-mr--10">
-                            Client (debitor) created in Navision
-                        </mat-checkbox>
-                    </div>
 
-                    <h3 class="workflow-gray--header">Client (debitor) number for invoicing</h3>
-                    <div fxLayout="row" fxLayoutAlign="start start" class="u-w--100 u-mb--20">
-                        <mat-button-toggle-group class="workflow-toggle-buttons u-mt--10" formControlName="clientNumberTypeForInvoicing">
-                            <mat-button-toggle [value]="item" *ngFor="let item of ['Same as client', 'Custom']">
-                                {{ item }}
-                            </mat-button-toggle>
-                        </mat-button-toggle-group>
-                    </div>
+                    <ng-container *ngIf="readOnlyMode; else clientDebitorInput">
+                        <div fxLayout="row" fxLayoutAlign="start center" class="u-mb--20">
+                            <span class="icon-done u-mr--5">
+                                <mat-icon svgIcon="completed-icon"></mat-icon>
+                            </span>
+                            <div fxLayout="column" fxLayoutAlign="start start">
+                                <span class="workflow-readonly--blue-text-bold">Client (debitor) created in Navision</span>
+                            </div>
+                        </div>
+                    </ng-container>
+                    <ng-template #clientDebitorInput>
+                        <div fxLayout="row" fxLayoutAlign="start center" class="u-w--100 u-mb--20">
+                            <mat-checkbox color="accent" formControlName="clientCreatedInNavision" name="clientCreatedInNavision" class="black-checkbox u-mr--10">
+                                Client (debitor) created in Navision
+                            </mat-checkbox>
+                        </div>
+                    </ng-template>
 
-                    <div fxLayout="row" fxLayoutAlign="start start" class="u-w--100" *ngIf="financesClientForm?.clientNumberTypeForInvoicing?.value === 'Custom'">
-                        <mat-form-field appearance="outline" class="u-w--100  u-mr--16" fxFlex="33%">
-                            <mat-label>Debitor number</mat-label>
-                            <input autocomplete="off" matInput formControlName="clientNumberForInvoicing" type="text">
-                        </mat-form-field>
-                    </div>
+                    <h3 [ngClass]="{'workflow-readonly--gray-header': readOnlyMode, 'workflow-blue--header': !readOnlyMode}">Client (debitor) number for invoicing</h3>
+                    <ng-container *ngIf="readOnlyMode; else clientDebitorNumberInput">
+                        <div fxLayout="column" fxLayoutAlign="start start" class="u-mb--20">
+                            <span class="workflow-readonly--blue-text-bold">{{financesClientForm?.clientNumberTypeForInvoicing?.value}}</span>
+                        </div>
+                    </ng-container>
+                    <ng-template #clientDebitorNumberInput>
+                        <div fxLayout="row" fxLayoutAlign="start start" class="u-w--100 u-mb--20">
+                            <mat-button-toggle-group class="workflow-toggle-buttons u-mt--10" formControlName="clientNumberTypeForInvoicing">
+                                <mat-button-toggle [value]="item" *ngFor="let item of ['Same as client', 'Custom']">
+                                    {{ item }}
+                                </mat-button-toggle>
+                            </mat-button-toggle-group>
+                        </div>
+                    </ng-template>
+
+                    <ng-container *ngIf="readOnlyMode; else debitorNumberInput">
+                        <h3 [ngClass]="{'workflow-readonly--gray-header': readOnlyMode, 'workflow-blue--header': !readOnlyMode}">Debitor number</h3>
+                        <div fxLayout="column" fxLayoutAlign="start start">
+                            <span class="workflow-readonly--blue-text-bold">{{financesClientForm?.clientNumberForInvoicing?.value}}</span>
+                        </div>
+                    </ng-container>
+                    <ng-template #debitorNumberInput>
+                        <div fxLayout="row" fxLayoutAlign="start start" class="u-w--100" *ngIf="financesClientForm?.clientNumberTypeForInvoicing?.value === 'Custom'">
+                            <mat-form-field appearance="outline" class="u-w--100  u-mr--16" fxFlex="33%">
+                                <mat-label>Debitor number</mat-label>
+                                <input autocomplete="off" matInput formControlName="clientNumberForInvoicing" type="text">
+                            </mat-form-field>
+                        </div>
+                    </ng-template>
                 </div>
             </div>
         </form>
@@ -43,17 +71,41 @@
                             </p>
                         </div>
 
-                        <div fxLayout="row" fxLayoutAlign="start center" class="u-w--100 u-mb--10">
-                            <mat-checkbox color="accent" formControlName="checkConsualtantInvoicingSettings" name="checkConsualtantInvoicingSettings" class="black-checkbox u-mr--10">
-                                Check invoicing settings on consultant
-                            </mat-checkbox>
-                        </div>
+                        <ng-container *ngIf="readOnlyMode; else checkboxInvoicingInput">
+                            <div fxLayout="row" fxLayoutAlign="start center" class="u-mb--10">
+                                <span class="icon-done u-mr--5">
+                                    <mat-icon svgIcon="completed-icon"></mat-icon>
+                                </span>
+                                <div fxLayout="column" fxLayoutAlign="start start">
+                                    <span class="workflow-readonly--blue-text-bold">Checked invoicing settings on consultant</span>
+                                </div>
+                            </div>
+                        </ng-container>
+                        <ng-template #checkboxInvoicingInput>
+                            <div fxLayout="row" fxLayoutAlign="start center" class="u-w--100 u-mb--10">
+                                <mat-checkbox color="accent" formControlName="checkConsualtantInvoicingSettings" name="checkConsualtantInvoicingSettings" class="black-checkbox u-mr--10">
+                                    Check invoicing settings on consultant
+                                </mat-checkbox>
+                            </div>
+                        </ng-template>
 
-                        <div fxLayout="row" fxLayoutAlign="start center" class="u-w--100 u-mb--20">
-                            <mat-checkbox color="accent" formControlName="consultantCreatedInNavision" name="consultantCreatedInNavision" class="black-checkbox u-mr--10">
-                                Consultant company (creditor) created in Navision
-                            </mat-checkbox>
-                        </div>
+                        <ng-container *ngIf="readOnlyMode; else checkboxCompanyCreatedInput">
+                            <div fxLayout="row" fxLayoutAlign="start center" class="u-mb--20">
+                                <span class="icon-done u-mr--5">
+                                    <mat-icon svgIcon="completed-icon"></mat-icon>
+                                </span>
+                                <div fxLayout="column" fxLayoutAlign="start start">
+                                    <span class="workflow-readonly--blue-text-bold">Consultant company (creditor) created in Navision</span>
+                                </div>
+                            </div>
+                        </ng-container>
+                        <ng-template #checkboxCompanyCreatedInput>
+                            <div fxLayout="row" fxLayoutAlign="start center" class="u-w--100 u-mb--20">
+                                <mat-checkbox color="accent" formControlName="consultantCreatedInNavision" name="consultantCreatedInNavision" class="black-checkbox u-mr--10">
+                                    Consultant company (creditor) created in Navision
+                                </mat-checkbox>
+                            </div>
+                        </ng-template>
                     </div>
                 </div>
             </div>
