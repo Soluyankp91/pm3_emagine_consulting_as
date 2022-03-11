@@ -432,6 +432,244 @@ export class ClientPeriodServiceProxy {
         }
         return _observableOf<ClientPeriodSalesDataDto>(<any>null);
     }
+
+    /**
+     * @param body (optional) 
+     * @return Success
+     */
+    contractsPut(clientPeriodId: string, body?: ClientPeriodContractsDataDto | undefined): Observable<void> {
+        let url_ = this.baseUrl + "/api/ClientPeriod/{clientPeriodId}/contracts";
+        if (clientPeriodId === undefined || clientPeriodId === null)
+            throw new Error("The parameter 'clientPeriodId' must be defined.");
+        url_ = url_.replace("{clientPeriodId}", encodeURIComponent("" + clientPeriodId));
+        url_ = url_.replace(/[?&]$/, "");
+
+        const content_ = JSON.stringify(body);
+
+        let options_ : any = {
+            body: content_,
+            observe: "response",
+            responseType: "blob",
+            headers: new HttpHeaders({
+                "Content-Type": "application/json",
+            })
+        };
+
+        return this.http.request("put", url_, options_).pipe(_observableMergeMap((response_ : any) => {
+            return this.processContractsPut(response_);
+        })).pipe(_observableCatch((response_: any) => {
+            if (response_ instanceof HttpResponseBase) {
+                try {
+                    return this.processContractsPut(<any>response_);
+                } catch (e) {
+                    return <Observable<void>><any>_observableThrow(e);
+                }
+            } else
+                return <Observable<void>><any>_observableThrow(response_);
+        }));
+    }
+
+    protected processContractsPut(response: HttpResponseBase): Observable<void> {
+        const status = response.status;
+        const responseBlob =
+            response instanceof HttpResponse ? response.body :
+            (<any>response).error instanceof Blob ? (<any>response).error : undefined;
+
+        let _headers: any = {}; if (response.headers) { for (let key of response.headers.keys()) { _headers[key] = response.headers.get(key); }}
+        if (status === 200) {
+            return blobToText(responseBlob).pipe(_observableMergeMap(_responseText => {
+            return _observableOf<void>(<any>null);
+            }));
+        } else if (status !== 200 && status !== 204) {
+            return blobToText(responseBlob).pipe(_observableMergeMap(_responseText => {
+            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+            }));
+        }
+        return _observableOf<void>(<any>null);
+    }
+
+    /**
+     * @return Success
+     */
+    contractsGet(clientPeriodId: string): Observable<ClientPeriodContractsDataDto> {
+        let url_ = this.baseUrl + "/api/ClientPeriod/{clientPeriodId}/contracts";
+        if (clientPeriodId === undefined || clientPeriodId === null)
+            throw new Error("The parameter 'clientPeriodId' must be defined.");
+        url_ = url_.replace("{clientPeriodId}", encodeURIComponent("" + clientPeriodId));
+        url_ = url_.replace(/[?&]$/, "");
+
+        let options_ : any = {
+            observe: "response",
+            responseType: "blob",
+            headers: new HttpHeaders({
+                "Accept": "text/plain"
+            })
+        };
+
+        return this.http.request("get", url_, options_).pipe(_observableMergeMap((response_ : any) => {
+            return this.processContractsGet(response_);
+        })).pipe(_observableCatch((response_: any) => {
+            if (response_ instanceof HttpResponseBase) {
+                try {
+                    return this.processContractsGet(<any>response_);
+                } catch (e) {
+                    return <Observable<ClientPeriodContractsDataDto>><any>_observableThrow(e);
+                }
+            } else
+                return <Observable<ClientPeriodContractsDataDto>><any>_observableThrow(response_);
+        }));
+    }
+
+    protected processContractsGet(response: HttpResponseBase): Observable<ClientPeriodContractsDataDto> {
+        const status = response.status;
+        const responseBlob =
+            response instanceof HttpResponse ? response.body :
+            (<any>response).error instanceof Blob ? (<any>response).error : undefined;
+
+        let _headers: any = {}; if (response.headers) { for (let key of response.headers.keys()) { _headers[key] = response.headers.get(key); }}
+        if (status === 200) {
+            return blobToText(responseBlob).pipe(_observableMergeMap(_responseText => {
+            let result200: any = null;
+            let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
+            result200 = ClientPeriodContractsDataDto.fromJS(resultData200);
+            return _observableOf(result200);
+            }));
+        } else if (status !== 200 && status !== 204) {
+            return blobToText(responseBlob).pipe(_observableMergeMap(_responseText => {
+            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+            }));
+        }
+        return _observableOf<ClientPeriodContractsDataDto>(<any>null);
+    }
+}
+
+@Injectable()
+export class SalesServiceProxy {
+    private http: HttpClient;
+    private baseUrl: string;
+    protected jsonParseReviver: ((key: string, value: any) => any) | undefined = undefined;
+
+    constructor(@Inject(HttpClient) http: HttpClient, @Optional() @Inject(API_BASE_URL) baseUrl?: string) {
+        this.http = http;
+        this.baseUrl = baseUrl !== undefined && baseUrl !== null ? baseUrl : "";
+    }
+
+    /**
+     * @param body (optional) 
+     * @return Success
+     */
+    accountManagerEditFinish(clientPeriodId: string, body?: ClientPeriodSalesDataDto | undefined): Observable<void> {
+        let url_ = this.baseUrl + "/api/ClientPeriod/{clientPeriodId}/sales/account-manager-edit-finish";
+        if (clientPeriodId === undefined || clientPeriodId === null)
+            throw new Error("The parameter 'clientPeriodId' must be defined.");
+        url_ = url_.replace("{clientPeriodId}", encodeURIComponent("" + clientPeriodId));
+        url_ = url_.replace(/[?&]$/, "");
+
+        const content_ = JSON.stringify(body);
+
+        let options_ : any = {
+            body: content_,
+            observe: "response",
+            responseType: "blob",
+            headers: new HttpHeaders({
+                "Content-Type": "application/json",
+            })
+        };
+
+        return this.http.request("post", url_, options_).pipe(_observableMergeMap((response_ : any) => {
+            return this.processAccountManagerEditFinish(response_);
+        })).pipe(_observableCatch((response_: any) => {
+            if (response_ instanceof HttpResponseBase) {
+                try {
+                    return this.processAccountManagerEditFinish(<any>response_);
+                } catch (e) {
+                    return <Observable<void>><any>_observableThrow(e);
+                }
+            } else
+                return <Observable<void>><any>_observableThrow(response_);
+        }));
+    }
+
+    protected processAccountManagerEditFinish(response: HttpResponseBase): Observable<void> {
+        const status = response.status;
+        const responseBlob =
+            response instanceof HttpResponse ? response.body :
+            (<any>response).error instanceof Blob ? (<any>response).error : undefined;
+
+        let _headers: any = {}; if (response.headers) { for (let key of response.headers.keys()) { _headers[key] = response.headers.get(key); }}
+        if (status === 200) {
+            return blobToText(responseBlob).pipe(_observableMergeMap(_responseText => {
+            return _observableOf<void>(<any>null);
+            }));
+        } else if (status !== 200 && status !== 204) {
+            return blobToText(responseBlob).pipe(_observableMergeMap(_responseText => {
+            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+            }));
+        }
+        return _observableOf<void>(<any>null);
+    }
+}
+
+@Injectable()
+export class ContractsServiceProxy {
+    private http: HttpClient;
+    private baseUrl: string;
+    protected jsonParseReviver: ((key: string, value: any) => any) | undefined = undefined;
+
+    constructor(@Inject(HttpClient) http: HttpClient, @Optional() @Inject(API_BASE_URL) baseUrl?: string) {
+        this.http = http;
+        this.baseUrl = baseUrl !== undefined && baseUrl !== null ? baseUrl : "";
+    }
+
+    /**
+     * @return Success
+     */
+    contractManagerEdit(clientPeriodId: string): Observable<void> {
+        let url_ = this.baseUrl + "/api/ClientPeriod/{clientPeriodId}/contracts/contract-manager-edit";
+        if (clientPeriodId === undefined || clientPeriodId === null)
+            throw new Error("The parameter 'clientPeriodId' must be defined.");
+        url_ = url_.replace("{clientPeriodId}", encodeURIComponent("" + clientPeriodId));
+        url_ = url_.replace(/[?&]$/, "");
+
+        let options_ : any = {
+            observe: "response",
+            responseType: "blob",
+            headers: new HttpHeaders({
+            })
+        };
+
+        return this.http.request("post", url_, options_).pipe(_observableMergeMap((response_ : any) => {
+            return this.processContractManagerEdit(response_);
+        })).pipe(_observableCatch((response_: any) => {
+            if (response_ instanceof HttpResponseBase) {
+                try {
+                    return this.processContractManagerEdit(<any>response_);
+                } catch (e) {
+                    return <Observable<void>><any>_observableThrow(e);
+                }
+            } else
+                return <Observable<void>><any>_observableThrow(response_);
+        }));
+    }
+
+    protected processContractManagerEdit(response: HttpResponseBase): Observable<void> {
+        const status = response.status;
+        const responseBlob =
+            response instanceof HttpResponse ? response.body :
+            (<any>response).error instanceof Blob ? (<any>response).error : undefined;
+
+        let _headers: any = {}; if (response.headers) { for (let key of response.headers.keys()) { _headers[key] = response.headers.get(key); }}
+        if (status === 200) {
+            return blobToText(responseBlob).pipe(_observableMergeMap(_responseText => {
+            return _observableOf<void>(<any>null);
+            }));
+        } else if (status !== 200 && status !== 204) {
+            return blobToText(responseBlob).pipe(_observableMergeMap(_responseText => {
+            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+            }));
+        }
+        return _observableOf<void>(<any>null);
+    }
 }
 
 @Injectable()
@@ -4030,6 +4268,62 @@ export interface IClientOverviewListItemDtoPaginatedList {
     hasNextPage?: boolean;
 }
 
+export class ClientPeriodContractsDataDto implements IClientPeriodContractsDataDto {
+    mainData?: ContractsMainDataDto;
+    clientData?: ContractsClientDataDto;
+    consultantData?: ConsultantContractsDataDto[] | undefined;
+    contractLinesDoneManuallyInOldPm?: boolean | undefined;
+
+    constructor(data?: IClientPeriodContractsDataDto) {
+        if (data) {
+            for (var property in data) {
+                if (data.hasOwnProperty(property))
+                    (<any>this)[property] = (<any>data)[property];
+            }
+        }
+    }
+
+    init(_data?: any) {
+        if (_data) {
+            this.mainData = _data["mainData"] ? ContractsMainDataDto.fromJS(_data["mainData"]) : <any>undefined;
+            this.clientData = _data["clientData"] ? ContractsClientDataDto.fromJS(_data["clientData"]) : <any>undefined;
+            if (Array.isArray(_data["consultantData"])) {
+                this.consultantData = [] as any;
+                for (let item of _data["consultantData"])
+                    this.consultantData!.push(ConsultantContractsDataDto.fromJS(item));
+            }
+            this.contractLinesDoneManuallyInOldPm = _data["contractLinesDoneManuallyInOldPm"];
+        }
+    }
+
+    static fromJS(data: any): ClientPeriodContractsDataDto {
+        data = typeof data === 'object' ? data : {};
+        let result = new ClientPeriodContractsDataDto();
+        result.init(data);
+        return result;
+    }
+
+    toJSON(data?: any) {
+        data = typeof data === 'object' ? data : {};
+        data["mainData"] = this.mainData ? this.mainData.toJSON() : <any>undefined;
+        data["clientData"] = this.clientData ? this.clientData.toJSON() : <any>undefined;
+        if (Array.isArray(this.consultantData)) {
+            data["consultantData"] = [];
+            for (let item of this.consultantData)
+                data["consultantData"].push(item.toJSON());
+        }
+        data["contractLinesDoneManuallyInOldPm"] = this.contractLinesDoneManuallyInOldPm;
+        return data;
+    }
+}
+
+export interface IClientPeriodContractsDataDto {
+    mainData?: ContractsMainDataDto;
+    clientData?: ContractsClientDataDto;
+    consultantData?: ConsultantContractsDataDto[] | undefined;
+    contractLinesDoneManuallyInOldPm?: boolean | undefined;
+}
+
 export class ClientPeriodDto implements IClientPeriodDto {
     id?: string;
     name?: string | undefined;
@@ -4638,6 +4932,118 @@ export interface ICommissionDto {
     clientId?: number | undefined;
 }
 
+export class ConsultantContractsDataDto implements IConsultantContractsDataDto {
+    consultantPeriodId?: string;
+    employmentTypeId?: number | undefined;
+    consultantId?: number | undefined;
+    nameOnly?: string | undefined;
+    consultantTimeReportingCapId?: number | undefined;
+    consultantTimeReportingCapMaxValue?: number | undefined;
+    consultantTimeReportingCapCurrencyId?: number | undefined;
+    noSpecialContractTerms?: boolean;
+    specialContractTerms?: string | undefined;
+    noSpecialRate?: boolean;
+    periodConsultantSpecialRates?: PeriodConsultantSpecialRateDto[] | undefined;
+    noSpecialFee?: boolean;
+    periodConsultantSpecialFees?: PeriodConsultantSpecialFeeDto[] | undefined;
+    projectLines?: ProjectLineDto[] | undefined;
+
+    constructor(data?: IConsultantContractsDataDto) {
+        if (data) {
+            for (var property in data) {
+                if (data.hasOwnProperty(property))
+                    (<any>this)[property] = (<any>data)[property];
+            }
+        }
+    }
+
+    init(_data?: any) {
+        if (_data) {
+            this.consultantPeriodId = _data["consultantPeriodId"];
+            this.employmentTypeId = _data["employmentTypeId"];
+            this.consultantId = _data["consultantId"];
+            this.nameOnly = _data["nameOnly"];
+            this.consultantTimeReportingCapId = _data["consultantTimeReportingCapId"];
+            this.consultantTimeReportingCapMaxValue = _data["consultantTimeReportingCapMaxValue"];
+            this.consultantTimeReportingCapCurrencyId = _data["consultantTimeReportingCapCurrencyId"];
+            this.noSpecialContractTerms = _data["noSpecialContractTerms"];
+            this.specialContractTerms = _data["specialContractTerms"];
+            this.noSpecialRate = _data["noSpecialRate"];
+            if (Array.isArray(_data["periodConsultantSpecialRates"])) {
+                this.periodConsultantSpecialRates = [] as any;
+                for (let item of _data["periodConsultantSpecialRates"])
+                    this.periodConsultantSpecialRates!.push(PeriodConsultantSpecialRateDto.fromJS(item));
+            }
+            this.noSpecialFee = _data["noSpecialFee"];
+            if (Array.isArray(_data["periodConsultantSpecialFees"])) {
+                this.periodConsultantSpecialFees = [] as any;
+                for (let item of _data["periodConsultantSpecialFees"])
+                    this.periodConsultantSpecialFees!.push(PeriodConsultantSpecialFeeDto.fromJS(item));
+            }
+            if (Array.isArray(_data["projectLines"])) {
+                this.projectLines = [] as any;
+                for (let item of _data["projectLines"])
+                    this.projectLines!.push(ProjectLineDto.fromJS(item));
+            }
+        }
+    }
+
+    static fromJS(data: any): ConsultantContractsDataDto {
+        data = typeof data === 'object' ? data : {};
+        let result = new ConsultantContractsDataDto();
+        result.init(data);
+        return result;
+    }
+
+    toJSON(data?: any) {
+        data = typeof data === 'object' ? data : {};
+        data["consultantPeriodId"] = this.consultantPeriodId;
+        data["employmentTypeId"] = this.employmentTypeId;
+        data["consultantId"] = this.consultantId;
+        data["nameOnly"] = this.nameOnly;
+        data["consultantTimeReportingCapId"] = this.consultantTimeReportingCapId;
+        data["consultantTimeReportingCapMaxValue"] = this.consultantTimeReportingCapMaxValue;
+        data["consultantTimeReportingCapCurrencyId"] = this.consultantTimeReportingCapCurrencyId;
+        data["noSpecialContractTerms"] = this.noSpecialContractTerms;
+        data["specialContractTerms"] = this.specialContractTerms;
+        data["noSpecialRate"] = this.noSpecialRate;
+        if (Array.isArray(this.periodConsultantSpecialRates)) {
+            data["periodConsultantSpecialRates"] = [];
+            for (let item of this.periodConsultantSpecialRates)
+                data["periodConsultantSpecialRates"].push(item.toJSON());
+        }
+        data["noSpecialFee"] = this.noSpecialFee;
+        if (Array.isArray(this.periodConsultantSpecialFees)) {
+            data["periodConsultantSpecialFees"] = [];
+            for (let item of this.periodConsultantSpecialFees)
+                data["periodConsultantSpecialFees"].push(item.toJSON());
+        }
+        if (Array.isArray(this.projectLines)) {
+            data["projectLines"] = [];
+            for (let item of this.projectLines)
+                data["projectLines"].push(item.toJSON());
+        }
+        return data;
+    }
+}
+
+export interface IConsultantContractsDataDto {
+    consultantPeriodId?: string;
+    employmentTypeId?: number | undefined;
+    consultantId?: number | undefined;
+    nameOnly?: string | undefined;
+    consultantTimeReportingCapId?: number | undefined;
+    consultantTimeReportingCapMaxValue?: number | undefined;
+    consultantTimeReportingCapCurrencyId?: number | undefined;
+    noSpecialContractTerms?: boolean;
+    specialContractTerms?: string | undefined;
+    noSpecialRate?: boolean;
+    periodConsultantSpecialRates?: PeriodConsultantSpecialRateDto[] | undefined;
+    noSpecialFee?: boolean;
+    periodConsultantSpecialFees?: PeriodConsultantSpecialFeeDto[] | undefined;
+    projectLines?: ProjectLineDto[] | undefined;
+}
+
 export class ConsultantRateDto implements IConsultantRateDto {
     isTimeBasedRate?: boolean;
     isFixedRate?: boolean;
@@ -4950,6 +5356,90 @@ export interface IContactDto {
     lastCamLogin?: moment.Moment | undefined;
 }
 
+export class ContractsClientDataDto implements IContractsClientDataDto {
+    specialContractTerms?: string | undefined;
+    noSpecialContractTerms?: boolean;
+    clientTimeReportingCapId?: number | undefined;
+    clientTimeReportingCapMaxValue?: number | undefined;
+    clientTimeReportingCapCurrencyId?: number | undefined;
+    noSpecialRate?: boolean;
+    periodClientSpecialRates?: PeriodClientSpecialRateDto[] | undefined;
+    noSpecialFee?: boolean;
+    periodClientSpecialFees?: PeriodClientSpecialFeeDto[] | undefined;
+
+    constructor(data?: IContractsClientDataDto) {
+        if (data) {
+            for (var property in data) {
+                if (data.hasOwnProperty(property))
+                    (<any>this)[property] = (<any>data)[property];
+            }
+        }
+    }
+
+    init(_data?: any) {
+        if (_data) {
+            this.specialContractTerms = _data["specialContractTerms"];
+            this.noSpecialContractTerms = _data["noSpecialContractTerms"];
+            this.clientTimeReportingCapId = _data["clientTimeReportingCapId"];
+            this.clientTimeReportingCapMaxValue = _data["clientTimeReportingCapMaxValue"];
+            this.clientTimeReportingCapCurrencyId = _data["clientTimeReportingCapCurrencyId"];
+            this.noSpecialRate = _data["noSpecialRate"];
+            if (Array.isArray(_data["periodClientSpecialRates"])) {
+                this.periodClientSpecialRates = [] as any;
+                for (let item of _data["periodClientSpecialRates"])
+                    this.periodClientSpecialRates!.push(PeriodClientSpecialRateDto.fromJS(item));
+            }
+            this.noSpecialFee = _data["noSpecialFee"];
+            if (Array.isArray(_data["periodClientSpecialFees"])) {
+                this.periodClientSpecialFees = [] as any;
+                for (let item of _data["periodClientSpecialFees"])
+                    this.periodClientSpecialFees!.push(PeriodClientSpecialFeeDto.fromJS(item));
+            }
+        }
+    }
+
+    static fromJS(data: any): ContractsClientDataDto {
+        data = typeof data === 'object' ? data : {};
+        let result = new ContractsClientDataDto();
+        result.init(data);
+        return result;
+    }
+
+    toJSON(data?: any) {
+        data = typeof data === 'object' ? data : {};
+        data["specialContractTerms"] = this.specialContractTerms;
+        data["noSpecialContractTerms"] = this.noSpecialContractTerms;
+        data["clientTimeReportingCapId"] = this.clientTimeReportingCapId;
+        data["clientTimeReportingCapMaxValue"] = this.clientTimeReportingCapMaxValue;
+        data["clientTimeReportingCapCurrencyId"] = this.clientTimeReportingCapCurrencyId;
+        data["noSpecialRate"] = this.noSpecialRate;
+        if (Array.isArray(this.periodClientSpecialRates)) {
+            data["periodClientSpecialRates"] = [];
+            for (let item of this.periodClientSpecialRates)
+                data["periodClientSpecialRates"].push(item.toJSON());
+        }
+        data["noSpecialFee"] = this.noSpecialFee;
+        if (Array.isArray(this.periodClientSpecialFees)) {
+            data["periodClientSpecialFees"] = [];
+            for (let item of this.periodClientSpecialFees)
+                data["periodClientSpecialFees"].push(item.toJSON());
+        }
+        return data;
+    }
+}
+
+export interface IContractsClientDataDto {
+    specialContractTerms?: string | undefined;
+    noSpecialContractTerms?: boolean;
+    clientTimeReportingCapId?: number | undefined;
+    clientTimeReportingCapMaxValue?: number | undefined;
+    clientTimeReportingCapCurrencyId?: number | undefined;
+    noSpecialRate?: boolean;
+    periodClientSpecialRates?: PeriodClientSpecialRateDto[] | undefined;
+    noSpecialFee?: boolean;
+    periodClientSpecialFees?: PeriodClientSpecialFeeDto[] | undefined;
+}
+
 export class ContractSignerDto implements IContractSignerDto {
     signOrder?: number;
     contactId?: number;
@@ -4992,6 +5482,70 @@ export interface IContractSignerDto {
     signOrder?: number;
     contactId?: number;
     signerRole?: SignerRole;
+}
+
+export class ContractsMainDataDto implements IContractsMainDataDto {
+    projectTypeId?: number | undefined;
+    salesTypeId?: number | undefined;
+    deliveryTypeId?: number | undefined;
+    marginId?: number | undefined;
+    projectDescription?: string | undefined;
+    discountId?: number | undefined;
+    remarks?: string | undefined;
+    noRemarks?: boolean;
+
+    constructor(data?: IContractsMainDataDto) {
+        if (data) {
+            for (var property in data) {
+                if (data.hasOwnProperty(property))
+                    (<any>this)[property] = (<any>data)[property];
+            }
+        }
+    }
+
+    init(_data?: any) {
+        if (_data) {
+            this.projectTypeId = _data["projectTypeId"];
+            this.salesTypeId = _data["salesTypeId"];
+            this.deliveryTypeId = _data["deliveryTypeId"];
+            this.marginId = _data["marginId"];
+            this.projectDescription = _data["projectDescription"];
+            this.discountId = _data["discountId"];
+            this.remarks = _data["remarks"];
+            this.noRemarks = _data["noRemarks"];
+        }
+    }
+
+    static fromJS(data: any): ContractsMainDataDto {
+        data = typeof data === 'object' ? data : {};
+        let result = new ContractsMainDataDto();
+        result.init(data);
+        return result;
+    }
+
+    toJSON(data?: any) {
+        data = typeof data === 'object' ? data : {};
+        data["projectTypeId"] = this.projectTypeId;
+        data["salesTypeId"] = this.salesTypeId;
+        data["deliveryTypeId"] = this.deliveryTypeId;
+        data["marginId"] = this.marginId;
+        data["projectDescription"] = this.projectDescription;
+        data["discountId"] = this.discountId;
+        data["remarks"] = this.remarks;
+        data["noRemarks"] = this.noRemarks;
+        return data;
+    }
+}
+
+export interface IContractsMainDataDto {
+    projectTypeId?: number | undefined;
+    salesTypeId?: number | undefined;
+    deliveryTypeId?: number | undefined;
+    marginId?: number | undefined;
+    projectDescription?: string | undefined;
+    discountId?: number | undefined;
+    remarks?: string | undefined;
+    noRemarks?: boolean;
 }
 
 export class DomainEventBase implements IDomainEventBase {
@@ -5496,6 +6050,90 @@ export interface IPeriodStepDto {
     typeId?: number;
     isCompleted?: boolean | undefined;
     responsiblePerson?: EmployeeDto;
+}
+
+export class ProjectLineDto implements IProjectLineDto {
+    id?: number | undefined;
+    projectName?: string | undefined;
+    startDate?: moment.Moment;
+    endDate?: moment.Moment;
+    invoicingReferenceNumber?: string | undefined;
+    invoicingReferencePersonId?: number | undefined;
+    optionalInvoicingInfo?: string | undefined;
+    differentDebtorNumber?: boolean;
+    debtorNumber?: string | undefined;
+    differentInvoiceRecipient?: boolean;
+    invoiceRecipientId?: number | undefined;
+    modifiedById?: number | undefined;
+    modificationDate?: moment.Moment | undefined;
+
+    constructor(data?: IProjectLineDto) {
+        if (data) {
+            for (var property in data) {
+                if (data.hasOwnProperty(property))
+                    (<any>this)[property] = (<any>data)[property];
+            }
+        }
+    }
+
+    init(_data?: any) {
+        if (_data) {
+            this.id = _data["id"];
+            this.projectName = _data["projectName"];
+            this.startDate = _data["startDate"] ? moment(_data["startDate"].toString()) : <any>undefined;
+            this.endDate = _data["endDate"] ? moment(_data["endDate"].toString()) : <any>undefined;
+            this.invoicingReferenceNumber = _data["invoicingReferenceNumber"];
+            this.invoicingReferencePersonId = _data["invoicingReferencePersonId"];
+            this.optionalInvoicingInfo = _data["optionalInvoicingInfo"];
+            this.differentDebtorNumber = _data["differentDebtorNumber"];
+            this.debtorNumber = _data["debtorNumber"];
+            this.differentInvoiceRecipient = _data["differentInvoiceRecipient"];
+            this.invoiceRecipientId = _data["invoiceRecipientId"];
+            this.modifiedById = _data["modifiedById"];
+            this.modificationDate = _data["modificationDate"] ? moment(_data["modificationDate"].toString()) : <any>undefined;
+        }
+    }
+
+    static fromJS(data: any): ProjectLineDto {
+        data = typeof data === 'object' ? data : {};
+        let result = new ProjectLineDto();
+        result.init(data);
+        return result;
+    }
+
+    toJSON(data?: any) {
+        data = typeof data === 'object' ? data : {};
+        data["id"] = this.id;
+        data["projectName"] = this.projectName;
+        data["startDate"] = this.startDate ? this.startDate.format('YYYY-MM-DD') : <any>undefined;
+        data["endDate"] = this.endDate ? this.endDate.format('YYYY-MM-DD') : <any>undefined;
+        data["invoicingReferenceNumber"] = this.invoicingReferenceNumber;
+        data["invoicingReferencePersonId"] = this.invoicingReferencePersonId;
+        data["optionalInvoicingInfo"] = this.optionalInvoicingInfo;
+        data["differentDebtorNumber"] = this.differentDebtorNumber;
+        data["debtorNumber"] = this.debtorNumber;
+        data["differentInvoiceRecipient"] = this.differentInvoiceRecipient;
+        data["invoiceRecipientId"] = this.invoiceRecipientId;
+        data["modifiedById"] = this.modifiedById;
+        data["modificationDate"] = this.modificationDate ? this.modificationDate.format('YYYY-MM-DD') : <any>undefined;
+        return data;
+    }
+}
+
+export interface IProjectLineDto {
+    id?: number | undefined;
+    projectName?: string | undefined;
+    startDate?: moment.Moment;
+    endDate?: moment.Moment;
+    invoicingReferenceNumber?: string | undefined;
+    invoicingReferencePersonId?: number | undefined;
+    optionalInvoicingInfo?: string | undefined;
+    differentDebtorNumber?: boolean;
+    debtorNumber?: string | undefined;
+    differentInvoiceRecipient?: boolean;
+    invoiceRecipientId?: number | undefined;
+    modifiedById?: number | undefined;
+    modificationDate?: moment.Moment | undefined;
 }
 
 export enum RequestProjectTypeValue {
@@ -6427,7 +7065,6 @@ export interface IWorkflowAlreadyExistsDto {
 
 export class WorkflowDto implements IWorkflowDto {
     workflowId?: string;
-    workflowCurrentState?: string | undefined;
     clientPeriods?: ClientPeriodDto[] | undefined;
 
     constructor(data?: IWorkflowDto) {
@@ -6442,7 +7079,6 @@ export class WorkflowDto implements IWorkflowDto {
     init(_data?: any) {
         if (_data) {
             this.workflowId = _data["workflowId"];
-            this.workflowCurrentState = _data["workflowCurrentState"];
             if (Array.isArray(_data["clientPeriods"])) {
                 this.clientPeriods = [] as any;
                 for (let item of _data["clientPeriods"])
@@ -6461,7 +7097,6 @@ export class WorkflowDto implements IWorkflowDto {
     toJSON(data?: any) {
         data = typeof data === 'object' ? data : {};
         data["workflowId"] = this.workflowId;
-        data["workflowCurrentState"] = this.workflowCurrentState;
         if (Array.isArray(this.clientPeriods)) {
             data["clientPeriods"] = [];
             for (let item of this.clientPeriods)
@@ -6473,7 +7108,6 @@ export class WorkflowDto implements IWorkflowDto {
 
 export interface IWorkflowDto {
     workflowId?: string;
-    workflowCurrentState?: string | undefined;
     clientPeriods?: ClientPeriodDto[] | undefined;
 }
 
