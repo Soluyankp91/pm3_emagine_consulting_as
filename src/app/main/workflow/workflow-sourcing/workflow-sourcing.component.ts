@@ -1,6 +1,6 @@
 import { Component, Input, OnInit } from '@angular/core';
-import { FormBuilder, FormControl } from '@angular/forms';
-import { WorkflowSourcingConsultantsForm } from './workflow-sourcing.model';
+import { FormArray, FormBuilder, FormControl } from '@angular/forms';
+import { WorkflowSourcingConsultantsDataForm } from './workflow-sourcing.model';
 
 @Component({
     selector: 'app-workflow-sourcing',
@@ -9,36 +9,38 @@ import { WorkflowSourcingConsultantsForm } from './workflow-sourcing.model';
 })
 export class WorkflowSourcingComponent implements OnInit {
     @Input() activeSideSection: number;
-    workflowSourcingConsultantsForm: WorkflowSourcingConsultantsForm;
+    @Input() workflowId: string;
+
+    sourcingConsultantsDataForm: WorkflowSourcingConsultantsDataForm;
+    consultantList = [
+        {
+            name: 'Robertsen Oscar'
+        },
+        {
+            name: 'Van Trier Mia'
+        }];
+
     constructor(
-        private _fb: FormBuilder
+        private _fb: FormBuilder,
+
     ) {
-        this.workflowSourcingConsultantsForm = new WorkflowSourcingConsultantsForm();
+        this.sourcingConsultantsDataForm = new WorkflowSourcingConsultantsDataForm();
+
     }
 
     ngOnInit(): void {
-        let consultants = [
-            {
-                pictureId: 'https://placekitten.com/50/50',
-                name: 'Robert Oscar'
-            },
-            {
-                pictureId: 'https://placekitten.com/50/50',
-                name: 'Robert Oscar22'
-            }
-        ];
-        consultants.forEach(consultant => {
-            this.addConsultantToForm(consultant);
-        });
+        this.consultantList.forEach(item => this.addConsultantDataToForm(item));
     }
 
-    addConsultantToForm(consultantData: any) {
+    addConsultantDataToForm(consultant: any) {
         const form = this._fb.group({
-            pictureId: new FormControl(consultantData.pictureId),
-            name: new FormControl(consultantData.name),
-            isCvUpdated: new FormControl(false),
+            consultantName: new FormControl(consultant.name)
         });
-        this.workflowSourcingConsultantsForm.consultantData.push(form);
+        this.sourcingConsultantsDataForm.consultantData.push(form);
+    }
+
+    get consultantData(): FormArray {
+        return this.sourcingConsultantsDataForm.get('consultantData') as FormArray;
     }
 
 }

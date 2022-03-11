@@ -12,7 +12,7 @@ import { ClientPeriodSalesDataDto, ClientPeriodServiceProxy, ClientRateDto, Cons
 import { WorkflowConsultantActionsDialogComponent } from '../workflow-consultant-actions-dialog/workflow-consultant-actions-dialog.component';
 import { WorkflowDataService } from '../workflow-data.service';
 import { ChangeConsultantDto, ExtendConsultantDto, TerminateConsultantDto, WorkflowTopSections } from '../workflow.model';
-import { ConsultantDiallogAction, ConsultantTypes, InputReadonlyStates, WorkflowSalesAdditionalDataForm, WorkflowSalesClientDataForm, WorkflowSalesConsultantsForm, WorkflowSalesMainForm } from './workflow-sales.model';
+import { ConsultantDiallogAction, ConsultantTypes, InputReadonlyStates, SalesTerminateConsultantForm, WorkflowSalesAdditionalDataForm, WorkflowSalesClientDataForm, WorkflowSalesConsultantsForm, WorkflowSalesMainForm } from './workflow-sales.model';
 @Component({
     selector: 'app-workflow-sales',
     templateUrl: './workflow-sales.component.html',
@@ -39,6 +39,7 @@ export class WorkflowSalesComponent extends AppComopnentBase implements OnInit {
     salesMainDataForm: WorkflowSalesMainForm;
     consultantsForm: WorkflowSalesConsultantsForm;
     additionalDataForm: WorkflowSalesAdditionalDataForm;
+    salesTerminateConsultantForm: SalesTerminateConsultantForm;
 
     clientSpecialRateActive = false;
     clientSpecialFeesActive = false;
@@ -46,6 +47,7 @@ export class WorkflowSalesComponent extends AppComopnentBase implements OnInit {
     deliveryTypes: EnumEntityTypeDto[] = [];
     currencies: EnumEntityTypeDto[] = [];
     saleTypes: EnumEntityTypeDto[] = [];
+    projectTypes: EnumEntityTypeDto[] = [];
     invoicingTimes: EnumEntityTypeDto[] = [];
     rateUnitTypes: EnumEntityTypeDto[] = [];
     invoiceFrequencies: EnumEntityTypeDto[] = [];
@@ -106,6 +108,7 @@ export class WorkflowSalesComponent extends AppComopnentBase implements OnInit {
         this.salesMainDataForm = new WorkflowSalesMainForm();
         this.consultantsForm = new WorkflowSalesConsultantsForm();
         this.additionalDataForm = new WorkflowSalesAdditionalDataForm();
+        this.salesTerminateConsultantForm = new SalesTerminateConsultantForm();
     }
 
     ngOnInit(): void {
@@ -118,6 +121,7 @@ export class WorkflowSalesComponent extends AppComopnentBase implements OnInit {
         this.getCurrencies();
         this.getDeliveryTypes();
         this.getSaleTypes();
+        this.getProjectTypes();
         this.getInvoicingTimes();
         this.getUnitTypes();
         this.getInvoiceFrequencies();
@@ -219,6 +223,16 @@ export class WorkflowSalesComponent extends AppComopnentBase implements OnInit {
             }))
             .subscribe(result => {
                 this.saleTypes = result;
+            });
+    }
+
+    getProjectTypes() {
+        this._lookupService.getProjectTypes()
+            .pipe(finalize(() => {
+
+            }))
+            .subscribe(result => {
+                this.projectTypes = result;
             });
     }
 

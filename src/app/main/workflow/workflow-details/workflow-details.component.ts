@@ -13,7 +13,7 @@ import { PrimaryWorkflowComponent } from '../primary-workflow/primary-workflow.c
 import { WorkflowDataService } from '../workflow-data.service';
 import { WorkflowOverviewComponent } from '../workflow-overview/workflow-overview.component';
 import { WorkflowSalesComponent } from '../workflow-sales/workflow-sales.component';
-import { WorkflowSalesExtensionForm, WorkflowTerminationSalesForm, TopMenuTabsDto, WorkflowProgressStatus, WorkflowTopSections, WorkflowSteps, WorkflowSideSections, WorkflowDiallogAction, AddConsultantDto, ChangeWorkflowDto, ExtendWorkflowDto } from '../workflow.model';
+import { WorkflowSalesExtensionForm, WorkflowTerminationSalesForm, TopMenuTabsDto, WorkflowProgressStatus, WorkflowTopSections, WorkflowSteps, WorkflowSideSections, WorkflowDiallogAction, AddConsultantDto, ChangeWorkflowDto, ExtendWorkflowDto, TerminateWorkflowDto } from '../workflow.model';
 import { InternalLookupService } from 'src/app/shared/common/internal-lookup.service';
 import { SideNavigationParentItemDto } from '../workflow-extension/workflow-extension.model';
 import { WorkflowActionsDialogComponent } from '../workflow-actions-dialog/workflow-actions-dialog.component';
@@ -442,6 +442,7 @@ export class WorkflowDetailsComponent implements OnInit, OnDestroy, AfterViewIni
                         break;
                     case WorkflowSteps.Contracts:
                         console.log('Complete WF Contracts');
+                        this._workflowDataService.updateWorkflowProgressStatus({isWorkflowContractsSaved: true});
                         break;
                     case WorkflowSteps.Finance:
                         console.log('Complete WF Finance');
@@ -495,6 +496,12 @@ export class WorkflowDetailsComponent implements OnInit, OnDestroy, AfterViewIni
         // let newStatus = new WorkflowProgressStatus();
         // newStatus.isTerminationAdded = true;
         // this._workflowDataService.updateWorkflowProgressStatus({isTerminationAdded: true});
+        if (this._workflowDataService.getWorkflowProgress.currentlyActiveSection === WorkflowTopSections.Workflow) {
+            this._workflowDataService.workflowSideNavigation.unshift(TerminateWorkflowDto);
+        } else if (this._workflowDataService.getWorkflowProgress.currentlyActiveSection === WorkflowTopSections.Extension) {
+            const currentExtension = this._workflowDataService.extensionSideNavigation.find(x => x.index === this._workflowDataService.getWorkflowProgress.currentlyActiveExtensionIndex);
+            currentExtension!.sideNav.unshift(TerminateWorkflowDto);
+        }
     }
 
     addExtension() {

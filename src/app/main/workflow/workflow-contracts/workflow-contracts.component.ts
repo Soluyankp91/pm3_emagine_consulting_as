@@ -5,6 +5,7 @@ import { MatDialog } from '@angular/material/dialog';
 import { finalize } from 'rxjs/operators';
 import { ClientPeriodContractsDataDto, ClientPeriodServiceProxy, ConsultantContractsDataDto, ContractsClientDataDto, ContractsMainDataDto, PeriodClientSpecialFeeDto, PeriodClientSpecialRateDto, PeriodConsultantSpecialFeeDto, PeriodConsultantSpecialRateDto } from 'src/shared/service-proxies/service-proxies';
 import { WorkflowConsultantActionsDialogComponent } from '../workflow-consultant-actions-dialog/workflow-consultant-actions-dialog.component';
+import { WorkflowDataService } from '../workflow-data.service';
 import { ConsultantDiallogAction } from '../workflow-sales/workflow-sales.model';
 import { WorkflowSideSections } from '../workflow.model';
 import { WorkflowContractsClientDataForm, WorkflowContractsConsultantsDataForm, WorkflowContractsMainForm, WorkflowContractsSyncForm } from './workflow-contracts.model';
@@ -39,7 +40,9 @@ export class WorkflowContractsComponent implements OnInit {
         private _fb: FormBuilder,
         private overlay: Overlay,
         private dialog: MatDialog,
-        private _clientPeriodService: ClientPeriodServiceProxy
+        private _clientPeriodService: ClientPeriodServiceProxy,
+        private _workflowDataService: WorkflowDataService
+
     ) {
         this.contractsMainDataForm = new WorkflowContractsMainForm();
         this.contractsClientDataForm = new WorkflowContractsClientDataForm();
@@ -123,6 +126,10 @@ export class WorkflowContractsComponent implements OnInit {
             .subscribe(result => {
 
             });
+    }
+
+    get readOnlyMode() {
+        return this._workflowDataService.getWorkflowProgress.isWorkflowContractsSaved;
     }
 
     // #region CHANGE NAMING

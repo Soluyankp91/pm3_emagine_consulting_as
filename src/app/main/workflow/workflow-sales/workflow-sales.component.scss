@@ -65,8 +65,6 @@
     //     }
     // }
     &-sales {
-        padding-left: 8px;
-
         &-commission {
             &--form {
                 padding: 0;
@@ -84,6 +82,9 @@
                     margin-bottom: 10px;
                 }
             }
+        }
+        &--process-data {
+            padding: 30px;
         }
     }
 
@@ -121,6 +122,66 @@
                 }
             }
 
+        }
+    }
+    &--termination {
+        padding: 10px 24px;
+    }
+
+    &-readonly {
+        &--header {
+            font-family: "Open Sans", sans-serif;
+            font-size: 16px;
+            font-weight: 700;
+            line-height: 1.2;
+            letter-spacing: 1px;
+            text-transform: uppercase;
+            color: #b6b4b2;
+
+            &-main {
+                font-family: "Open Sans", sans-serif;
+                font-size: 18px;
+                font-weight: 700;
+                line-height: 1.2;
+                letter-spacing: 1px;
+                text-transform: uppercase;
+
+                .process-name {
+                    font-weight: 800;
+                    color: #17a297;
+                }
+                .anchor-name {
+                    color: #4a4e60;
+                }
+            }
+        }
+        &--gray {
+            &-header {
+                font-family: "Open Sans", sans-serif;
+                font-size: 12px;
+                font-weight: 700;
+                color: #898785;
+            }
+        }
+        &--blue {
+            &-header {
+                font-family: "Open Sans", sans-serif;
+                font-size: 12px;
+                font-weight: 700;
+                color: #4a4e60;
+            }
+            &-text {
+                font-family: "Open Sans", sans-serif;
+                font-size: 14px;
+                font-weight: 600;
+                color: #4a4e60;
+                &-bold {
+                    font-family: "Open Sans", sans-serif;
+                    font-size: 14px;
+                    font-weight: 800;
+                    color: rgba(56, 72, 83, 0.87);
+                }
+            }
         }
     }
 }

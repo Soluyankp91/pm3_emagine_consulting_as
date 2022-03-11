@@ -1,6 +1,7 @@
 import { FormArray, FormGroup } from "@angular/forms";
 
-export class WorkflowSourcingConsultantsForm extends FormGroup {
+
+export class WorkflowSourcingConsultantsDataForm extends FormGroup {
     constructor() {
         super({
             consultantData: new FormArray([])
