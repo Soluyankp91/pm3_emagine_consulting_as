@@ -691,7 +691,7 @@ export enum WorkflowFlag {
 export const WorkflowList = [
     {
         flag: WorkflowFlag.NewSales,
-        id: '75ced0e8-dd26-4fd4-bb76-bdd9deed41b5',
+        id: 'afde1b8e-a51f-4509-a6ad-ef7168138960',
 
         client: 'Martha Marikel',
         consultants: [
@@ -710,7 +710,7 @@ export const WorkflowList = [
     },
     {
         flag: WorkflowFlag.NewSales,
-        id: '75ced0e8-dd26-4fd4-bb76-bdd9deed41b5',
+        id: 'afde1b8e-a51f-4509-a6ad-ef7168138960',
         client: 'Martha Marikel',
         consultants: [
             { name: 'Martha Marikel'}
@@ -727,7 +727,7 @@ export const WorkflowList = [
     },
     {
         flag: WorkflowFlag.Extension,
-        id: '75ced0e8-dd26-4fd4-bb76-bdd9deed41b5',
+        id: 'afde1b8e-a51f-4509-a6ad-ef7168138960',
         client: 'Martha Marikel',
         consultants: [
             { name: 'Martha Marikel' },
@@ -746,7 +746,7 @@ export const WorkflowList = [
     },
     {
         flag: WorkflowFlag.Extension,
-        id: '75ced0e8-dd26-4fd4-bb76-bdd9deed41b5',
+        id: 'afde1b8e-a51f-4509-a6ad-ef7168138960',
         client: 'Martha Marikel',
         consultants: [
             { name: 'Martha Marikel' },
@@ -765,7 +765,7 @@ export const WorkflowList = [
     },
     {
         flag: WorkflowFlag.NewSales,
-        id: '75ced0e8-dd26-4fd4-bb76-bdd9deed41b5',
+        id: 'afde1b8e-a51f-4509-a6ad-ef7168138960',
         client: 'Martha Marikel',
         consultants: [
             { name: 'Martha Marikel' },
@@ -784,7 +784,7 @@ export const WorkflowList = [
     },
     {
         flag: WorkflowFlag.NewSales,
-        id: '75ced0e8-dd26-4fd4-bb76-bdd9deed41b5',
+        id: 'afde1b8e-a51f-4509-a6ad-ef7168138960',
         client: 'Martha Marikel',
         consultants: [
             { name: 'Martha Marikel' },
@@ -803,7 +803,7 @@ export const WorkflowList = [
     },
     {
         flag: WorkflowFlag.Extension,
-        id: '75ced0e8-dd26-4fd4-bb76-bdd9deed41b5',
+        id: 'afde1b8e-a51f-4509-a6ad-ef7168138960',
         client: 'Martha Marikel',
         consultants: [
             { name: 'Martha Marikel' },
@@ -823,3 +823,42 @@ export const WorkflowList = [
 ];
 
 // #endrefion hardcoded grid
+
+export const ConsultantTypes = [
+    {
+        id: 1,
+        name: 'Freelance'
+    },
+    {
+        id: 2,
+        name: 'Freelance low margin'
+    },
+    {
+        id: 3,
+        name: 'Project employment'
+    },
+    {
+        id: 4,
+        name: 'Temporary worker'
+    },
+    {
+        id: 5,
+        name: 'Nearshore'
+    },
+    {
+        id: 6,
+        name: 'VMS/Referred'
+    },
+    {
+        id: 7,
+        name: 'Permanent employee'
+    },
+    {
+        id: 8,
+        name: '48E consultant'
+    },
+    {
+        id: 9,
+        name: 'Fee only'
+    }
+];

@@ -36,7 +36,7 @@
                         </div>
                     </mat-expansion-panel-header>
                     <div class="workflow-navigation">
-                        <div class="workflow-navigation--step u-mb--10" *ngFor="let step of item.periodSteps; let i = index;"
+                        <div class="workflow-navigation--step u-mb--10" *ngFor="let step of item.steps; let i = index;"
                             (click)="changeStepSelection(step)"
                             [ngClass]="{'active-step': step.name === selectedStep, 'completed-step': step.isCompleted}">
                             <div fxLayout="column" fxLayoutAlign="start start">
@@ -44,7 +44,8 @@
                                     <app-manager-search
                                         (click)="$event.stopPropagation()"
                                         [formFieldLabel]="step.name + ' Manager'"
-                                        [managerStatus]="i % 2 === 0 ? managerStatus.Pending : managerStatus.Completed">
+                                        (managerSelected)="selectedManager()"
+                                        [managerStatus]="step.isCompleted ? managerStatus.Completed : managerStatus.Pending">
                                     </app-manager-search>
 
                                     <span class="workflow-navigation--step__name">

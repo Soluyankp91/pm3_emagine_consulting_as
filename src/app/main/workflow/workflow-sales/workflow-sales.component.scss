@@ -65,7 +65,10 @@
     //     }
     // }
     &-sales {
-        &-commission {
+        .rates-and-fees--btn {
+            width: 180px;
+        }
+        &-inline {
             &--form {
                 padding: 0;
                 &__header {

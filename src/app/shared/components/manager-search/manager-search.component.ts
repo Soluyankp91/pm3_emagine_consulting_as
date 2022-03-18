@@ -1,8 +1,9 @@
-import { Component, Input, OnDestroy, OnInit } from '@angular/core';
+import { Component, EventEmitter, Input, OnDestroy, OnInit, Output, ViewChild } from '@angular/core';
 import { FormControl } from '@angular/forms';
+import { MatMenuTrigger } from '@angular/material/menu';
 import { Observable, Subject } from 'rxjs';
 import { debounceTime, switchMap, takeUntil } from 'rxjs/operators';
-import { IdNameDto } from 'src/shared/service-proxies/service-proxies';
+import { EmployeeDto, IdNameDto, LookupServiceProxy } from 'src/shared/service-proxies/service-proxies';
 import { ManagerStatus } from './manager-search.model';
 
 @Component({
@@ -11,16 +12,20 @@ import { ManagerStatus } from './manager-search.model';
     styleUrls: ['./manager-search.component.scss']
 })
 export class ManagerSearchComponent implements OnInit, OnDestroy {
+    @ViewChild(MatMenuTrigger) managerSearchMenu: MatMenuTrigger;
     @Input() formFieldLabel: string;
     @Input() managerSearchType: number;
     @Input() managerStatus: number;
+    @Output() managerSelected: EventEmitter<number> = new EventEmitter<number>();
 
     managerStatuses = ManagerStatus;
 
     managerFilter = new FormControl('');
     filteredManagers: IdNameDto[] = [];
     private _unsubscribe = new Subject();
-    constructor() {
+    constructor(
+        private _lookupService: LookupServiceProxy
+    ) {
         this.managerFilter.valueChanges.pipe(
             takeUntil(this._unsubscribe),
             debounceTime(300),
@@ -35,10 +40,8 @@ export class ManagerSearchComponent implements OnInit, OnDestroy {
                         : value;
                 }
 
-                // const dataToSend = new SearchNameInputDtoOfInt64(toSend);
-
-                // return this._managerService.search(dataToSend);
-                return new Observable();
+                return this._lookupService.employees(value);
+                // return new Observable();
             }),
         ).subscribe((list: any) => {
             if (list.length) {
@@ -58,9 +61,11 @@ export class ManagerSearchComponent implements OnInit, OnDestroy {
         this._unsubscribe.complete();
     }
 
-    selectOption(event: Event, option: any) {
+    selectOption(event: Event, option: EmployeeDto) {
         event.stopPropagation();
         console.log(option);
+        this.managerSelected.emit(option.id);
+        this.managerSearchMenu.closeMenu();
     }
 
     detectManagerStatus(status: number) {
@@ -83,6 +88,10 @@ export class ManagerSearchComponent implements OnInit, OnDestroy {
             default:
                 return '';
         }
+    }
+
+    displayNameFn(option: any) {
+        return option?.name;
     }
 
 }

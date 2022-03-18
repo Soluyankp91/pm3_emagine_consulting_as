@@ -36,7 +36,7 @@
                         </div>
                     </mat-expansion-panel-header>
                     <div class="workflow-navigation">
-                        <div class="workflow-navigation--step u-mb--10" *ngFor="let step of item.periodSteps; let i = index;"
+                        <div class="workflow-navigation--step u-mb--10" *ngFor="let step of item.steps; let i = index;"
                             (click)="changeStepSelection(step)"
                             [ngClass]="{'active-step': step.name === selectedStep, 'completed-step': step.isCompleted}">
                             <div fxLayout="column" fxLayoutAlign="start start">

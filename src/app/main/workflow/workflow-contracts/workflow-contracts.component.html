@@ -7,6 +7,7 @@
                 <button class="button-accept u-mb--10" mat-flat-button>
                     Sync to legacy system
                 </button>
+
                 <div fxLayout="row" fxLayoutAlign="start center" class="u-mb--10">
                     <span class="icon-cancel u-mr--5">
                         x
@@ -59,11 +60,13 @@
                     <div fxLayout="row" fxLayoutAlign="start start" class="u-w--100 u-mb--20 u-mt--20">
                         <div fxLayout="column" fxFlex="25%">
                             <h3 class="workflow-gray--header">Sales Type</h3>
-                            <span class="workflow-darkblue--text">Managed Service</span>
+                            <span class="workflow-darkblue--text">{{contractsMainDataForm?.salesType?.value?.name}}</span>
+                            <!-- <span class="workflow-darkblue--text">Managed Service</span> -->
                         </div>
                         <div fxLayout="column" fxFlex="25%">
                             <h3 class="workflow-gray--header">Delivery Type</h3>
-                            <span class="workflow-darkblue--text">Managed Service</span>
+                            <span class="workflow-darkblue--text">{{contractsMainDataForm?.deliveryType?.value?.name}}</span>
+                            <!-- <span class="workflow-darkblue--text">Managed Service</span> -->
                         </div>
                     </div>
                     <h3 class="workflow-gray--header">Project Description</h3>
@@ -83,7 +86,8 @@
                     </div>
                     <div fxLayout="column" fxLayoutAlign="start start" class="u-w--100 u-mb--20">
                         <h3 class="workflow-gray--header">Discounts</h3>
-                        <span class="workflow-darkblue--text">SKI 02.17</span>
+                        <span class="workflow-darkblue--text">{{contractsMainDataForm?.discounts?.value}}</span>
+                        <!-- <span class="workflow-darkblue--text">SKI 02.17</span> -->
                     </div>
                     <h3 class="workflow-gray--header">Remarks</h3>
                     <div fxLayout="row" fxLayoutAlign="start start" class="u-w--100">
@@ -118,7 +122,8 @@
                         </h1>
                         <div fxLayout="column" class="u-mb--20 u-mt--20">
                             <h3 class="workflow-gray--header">Shared Cap on Hour Reporting</h3>
-                            <span class="workflow-darkblue--text">Cap on units</span>
+                            <span class="workflow-darkblue--text">{{contractsClientDataForm?.capOnTimeReporting?.value}}</span>
+                            <!-- <span class="workflow-darkblue--text">Cap on units</span> -->
                         </div>
 
                         <h3 class="workflow-gray--header">Special Contract Terms</h3>
@@ -256,7 +261,11 @@
                                     </span>
                                     <div fxFlex="50%" fxLayoutAlign="end center" *ngIf="!readOnlyMode">
                                         <span class="workflow-form--consultants__period u-mr--8">
-                                            24.10.2021 - 24.11.2021
+                                            <!-- TODO: add real data -->
+                                            <!-- 24.10.2021 - 24.11.2021 -->
+                                            {{contractsConsultantsDataForm.consultantData.at(consultantIndex).get('consultantProjectStartDate')?.value | momentFormat: 'DD.MM.YYYY'}}
+                                            -
+                                            {{contractsConsultantsDataForm.consultantData.at(consultantIndex).get('consultantProjectEndDate')?.value | momentFormat: 'DD.MM.YYYY'}}
                                         </span>
                                         <button mat-icon-button [matMenuTriggerFor]="consultantMenu" type="button" (click)="$event.stopPropagation();" class="workflow-icon--actions u-mr--16"><mat-icon>more_horiz</mat-icon></button>
                                         <mat-menu #consultantMenu>
@@ -291,11 +300,15 @@
                             <div fxLayout="row" fxLayoutAlign="start start" class="u-w--100">
                                 <div fxLayout="column" class="u-mb--20" fxFlex="25%">
                                     <h3 class="workflow-gray--header">Consultant type</h3>
-                                    <span class="workflow-darkblue--text">Temporary Worker</span>
+                                    <span class="workflow-darkblue--text">{{contractsConsultantsDataForm.consultantData.at(consultantIndex).get('consultantType')?.value?.name}}</span>
+                                    <!-- <span class="workflow-darkblue--text">Temporary Worker</span> -->
                                 </div>
                                 <div fxLayout="column" class="u-mb--20" fxFlex="25%">
                                     <h3 class="workflow-gray--header">Cap on Time Reporting</h3>
-                                    <span class="workflow-darkblue--text">100 000 DKK</span>
+                                    <span class="workflow-darkblue--text">
+                                        {{contractsConsultantsDataForm.consultantData.at(consultantIndex).get('consultantCapOnTimeReportingValue')?.value}} &nbsp; {{contractsConsultantsDataForm.consultantData.at(consultantIndex).get('consultantCapOnTimeReportingCurrency')?.value?.name}}
+                                    </span>
+                                    <!-- <span class="workflow-darkblue--text">100 000 DKK</span> -->
                                 </div>
                             </div>
 

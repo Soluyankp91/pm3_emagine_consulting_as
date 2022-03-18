@@ -7,7 +7,7 @@ import { ClientPeriodContractsDataDto, ClientPeriodServiceProxy, ConsultantContr
 import { WorkflowConsultantActionsDialogComponent } from '../workflow-consultant-actions-dialog/workflow-consultant-actions-dialog.component';
 import { WorkflowDataService } from '../workflow-data.service';
 import { ConsultantDiallogAction } from '../workflow-sales/workflow-sales.model';
-import { WorkflowSideSections } from '../workflow.model';
+import { ConsultantTypes, WorkflowSideSections } from '../workflow.model';
 import { WorkflowContractsClientDataForm, WorkflowContractsConsultantsDataForm, WorkflowContractsMainForm, WorkflowContractsSyncForm } from './workflow-contracts.model';
 
 @Component({
@@ -31,11 +31,25 @@ export class WorkflowContractsComponent implements OnInit {
 
 
     consultantList = [{
-        name: 'Robertsen Oscar'
+        id: 123,
+        name: 'Robertsen Oscar',
+        consultantProjectStartDate: new Date(2021, 4, 2),
+        consultantProjectEndDate: new Date(2022, 4, 2),
+        employmentTypeId: 1,
+        consultantCapOnTimeReportingValue: null,
+        consultantCapOnTimeReportingCurrency: null
     },
     {
-        name: 'Van Trier Mia'
+        id: 1234,
+        name: 'Van Trier Mia',
+        consultantProjectStartDate: new Date(2021, 5, 3),
+        consultantProjectEndDate: new Date(2022, 6, 3),
+        employmentTypeId: 2,
+        consultantCapOnTimeReportingValue: null,
+        consultantCapOnTimeReportingCurrency: null
     }];
+
+    consultantTypes = ConsultantTypes;
     constructor(
         private _fb: FormBuilder,
         private overlay: Overlay,
@@ -175,6 +189,11 @@ export class WorkflowContractsComponent implements OnInit {
         // TODO: add missing properties, id, employmentType, etc.
         const form = this._fb.group({
             consultantName: new FormControl(consultant.name),
+            consultantProjectStartDate: new FormControl(consultant.consultantProjectStartDate),
+            consultantProjectEndDate: new FormControl(consultant.consultantProjectEndDate),
+            consultantType: new FormControl(this.displayConsultantEmploymentType(consultant.employmentTypeId)),
+            consultantCapOnTimeReportingValue: new FormControl(consultant.consultantCapOnTimeReportingValue),
+            consultantCapOnTimeReportingCurrency: new FormControl(consultant.consultantCapOnTimeReportingCurrency),
             specialContractTerms: new FormControl(null),
             isSpecialContractTermsNone: new FormControl(null),
             specialRates: new FormArray([this.initSpecialRateToConsultantData()]),
@@ -186,6 +205,10 @@ export class WorkflowContractsComponent implements OnInit {
 
     get consultantData(): FormArray {
         return this.contractsConsultantsDataForm.get('consultantData') as FormArray;
+    }
+
+    displayConsultantEmploymentType(employmentTypeId: number) {
+        return this.consultantTypes.find(x => x.id === employmentTypeId)?.name!;
     }
 
     // #region Consultant data Special Rates

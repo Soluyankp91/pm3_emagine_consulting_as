@@ -190,7 +190,7 @@
             <form [formGroup]="clientFeesForm" class="client-rates--form u-w--100">
                 <div fxLayout="row" fxLayoutAlign="space-between start" fxLayoutGap="10px" class="client-rates--form__header-container u-w--100" *ngIf="clientFeesForm.clientFees?.controls?.length">
                     <span fxFlex="10%" class="client-rates--form__header u-w--100">
-                        Rate name
+                        Fee name
                     </span>
                     <span fxFlex="10%" class="client-rates--form__header u-w--100">
                         Name for invoices
@@ -224,7 +224,7 @@
                         [formArrayName]="i">
                         <ng-container *ngIf="clientFeesForm.clientFees.at(i).get('editable')?.value">
                             <mat-form-field appearance="fill" class="u-w--100 formFieldNoMarginPadding filter-select" fxFlex="10%">
-                                <input matInput type="text" formControlName="rateName" placeholder="Rate name" />
+                                <input matInput type="text" formControlName="feeName" placeholder="Fee name" />
                             </mat-form-field>
                             <mat-form-field appearance="fill" class="u-w--100 formFieldNoMarginPadding filter-select" fxFlex="10%">
                                 <input matInput type="text" formControlName="nameForInvoices" placeholder="Name for invoicing" />
@@ -278,8 +278,8 @@
                             </div>
                         </ng-container>
                         <ng-container *ngIf="!clientFeesForm.clientFees.at(i).get('editable')?.value">
-                            <span fxFlex="10%" class="u-w--100 text-truncate-ellipsis" [matTooltip]="clientFeesForm.clientFees.at(i).get('rateName')?.value ?? '-'">
-                                {{clientFeesForm.clientFees.at(i).get('rateName')?.value ?? '-'}}
+                            <span fxFlex="10%" class="u-w--100 text-truncate-ellipsis" [matTooltip]="clientFeesForm.clientFees.at(i).get('feeName')?.value ?? '-'">
+                                {{clientFeesForm.clientFees.at(i).get('feeName')?.value ?? '-'}}
                             </span>
                             <span fxFlex="10%" class="u-w--100 text-truncate-ellipsis" [matTooltip]="clientFeesForm.clientFees.at(i).get('nameForInvoices')?.value ?? '-'">
                                 {{clientFeesForm.clientFees.at(i).get('nameForInvoices')?.value ?? '-'}}

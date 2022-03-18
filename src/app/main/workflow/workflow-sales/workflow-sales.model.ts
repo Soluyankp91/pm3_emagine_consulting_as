@@ -20,7 +20,7 @@ export class WorkflowSalesMainForm extends FormGroup {
             customContractExpirationNotificationDate: new FormControl(null),
 
             remarks: new FormControl(null),
-            isRemarks: new FormControl(false)
+            noRemarks: new FormControl(false)
         });
     }
 
@@ -64,8 +64,8 @@ export class WorkflowSalesMainForm extends FormGroup {
     get remarks() {
         return this.get('remarks');
     }
-    get isRemarks() {
-        return this.get('isRemarks');
+    get noRemarks() {
+        return this.get('noRemarks');
     }
 }
 
@@ -73,7 +73,7 @@ export class WorkflowSalesClientDataForm extends FormGroup {
     constructor() {
         super({
             // Client
-            isDirectClient: new FormControl(true),
+            differentEndClient: new FormControl(true),
             directClientIdValue: new FormControl(null),
             endClientIdValue: new FormControl(null),
 
@@ -107,15 +107,15 @@ export class WorkflowSalesClientDataForm extends FormGroup {
             clientCurrency: new FormControl(null),
             rateUnitTypeId: new FormControl(null),
             clientInvoiceCurrency: new FormControl(null),
-            clientInvoicingTime: new FormControl(null),
+            clientInvoiceFrequency: new FormControl(null),
             clientInvoicingDate: new FormControl(null),
             //client special rates
             clientSpecialRatePrice: new FormControl(null),
             clientSpecialRateCurrency: new FormControl(null),
 
             // clientFees
-            clientFees: new FormControl(null),
-            clientFeesCurrency: new FormControl(null),
+            clientFees: new FormArray([]),
+            clientRates: new FormArray([]),
 
             // Client Contract Duration
             clientContractStartDate: new FormControl(null),
@@ -126,7 +126,7 @@ export class WorkflowSalesClientDataForm extends FormGroup {
             clientExtensionDuration: new FormControl(null),
             clientExtensionEndDate: new FormControl(null),
             clientExtensionDeadline: new FormControl(null),
-            clientExtensionNoEndDate: new FormControl(false),
+            noClientExtensionOption: new FormControl(false),
 
             // Client project
             capOnTimeReporting: new FormControl(false),
@@ -135,8 +135,8 @@ export class WorkflowSalesClientDataForm extends FormGroup {
     }
 
     // Client
-    get isDirectClient() {
-        return this.get('isDirectClient');
+    get differentEndClient() {
+        return this.get('differentEndClient');
     }
     get directClientIdValue() {
         return this.get('directClientIdValue');
@@ -199,8 +199,8 @@ export class WorkflowSalesClientDataForm extends FormGroup {
     get clientInvoiceCurrency() {
         return this.get('clientInvoiceCurrency');
     }
-    get clientInvoicingTime() {
-        return this.get('clientInvoicingTime');
+    get clientInvoiceFrequency() {
+        return this.get('clientInvoiceFrequency');
     }
     get clientInvoicingDate() {
         return this.get('clientInvoicingDate');
@@ -215,10 +215,11 @@ export class WorkflowSalesClientDataForm extends FormGroup {
     //clientFees
 
     get clientFees() {
-        return this.get('clientFees');
+        return this.get('clientFees') as FormArray;
     }
-    get clientFeesCurrency() {
-        return this.get('clientFeesCurrency');
+
+    get clientRates() {
+        return this.get('clientRates') as FormArray;
     }
 
     // Client Contract Duration
@@ -242,8 +243,8 @@ export class WorkflowSalesClientDataForm extends FormGroup {
     get clientExtensionDeadline() {
         return this.get('clientExtensionDeadline');
     }
-    get clientExtensionNoEndDate() {
-        return this.get('clientExtensionNoEndDate');
+    get noClientExtensionOption() {
+        return this.get('noClientExtensionOption');
     }
 
     // Client Porject
@@ -289,7 +290,7 @@ export class WorkflowSalesAdditionalDataForm extends FormGroup {
             comission: new FormControl(null),
             isComission: new FormControl(false),
             remarks: new FormControl(null),
-            isRemarks: new FormControl(false),
+            noRemarks: new FormControl(false),
         })
 
     }
@@ -344,51 +345,10 @@ export class WorkflowSalesAdditionalDataForm extends FormGroup {
     get remarks() {
         return this.get('remarks');
     }
-    get isRemarks() {
-        return this.get('isRemarks');
+    get noRemarks() {
+        return this.get('noRemarks');
     }
 }
-
-export const ConsultantTypes = [
-    {
-        id: 1,
-        name: 'Freelance'
-    },
-    {
-        id: 2,
-        name: 'Freelance low margin'
-    },
-    {
-        id: 3,
-        name: 'Project employment'
-    },
-    {
-        id: 4,
-        name: 'Temporary worker'
-    },
-    {
-        id: 5,
-        name: 'Nearshore'
-    },
-    {
-        id: 6,
-        name: 'VMS/Referred'
-    },
-    {
-        id: 7,
-        name: 'Permanent employee'
-    },
-    {
-        id: 8,
-        name: '48E consultant'
-    },
-    {
-        id: 9,
-        name: 'Fee only'
-    }
-];
-
-
 
 export const InputReadonlyState = {
     deliveryType: true,

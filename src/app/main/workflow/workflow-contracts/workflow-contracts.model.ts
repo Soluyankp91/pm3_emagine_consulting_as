@@ -67,6 +67,8 @@ export class WorkflowContractsSyncForm extends FormGroup {
 export class WorkflowContractsClientDataForm extends FormGroup {
     constructor() {
         super({
+            capOnTimeReporting: new FormControl(null),
+
             specialContractTerms: new FormControl(null),
             isSpecialContractTermsNone: new FormControl(null),
             clientSpecialRates: new FormArray([]),
@@ -79,6 +81,9 @@ export class WorkflowContractsClientDataForm extends FormGroup {
         });
     }
 
+    get capOnTimeReporting() {
+        return this.get('capOnTimeReporting');
+    }
     get specialContractTerms() {
         return this.get('specialContractTerms');
     }

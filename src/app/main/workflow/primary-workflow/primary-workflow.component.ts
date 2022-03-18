@@ -6,7 +6,7 @@ import { finalize } from 'rxjs/operators';
 import { InternalLookupService } from 'src/app/shared/common/internal-lookup.service';
 import { ConfirmationDialogComponent } from 'src/app/shared/components/confirmation-dialog/confirmation-dialog.component';
 import { ManagerStatus } from 'src/app/shared/components/manager-search/manager-search.model';
-import { EnumEntityTypeDto, PeriodStepDto, WorkflowProcessDto, WorkflowProcessType, WorkflowServiceProxy } from 'src/shared/service-proxies/service-proxies';
+import { EnumEntityTypeDto, StepDto, WorkflowProcessDto, WorkflowProcessType, WorkflowServiceProxy } from 'src/shared/service-proxies/service-proxies';
 import { WorkflowDataService } from '../workflow-data.service';
 import { SideNavigationParentItemDto } from '../workflow-extension/workflow-extension.model';
 import { WorkflowSalesComponent } from '../workflow-sales/workflow-sales.component';
@@ -121,7 +121,7 @@ export class PrimaryWorkflowComponent implements OnInit, AfterViewInit {
     //     // TODO: scroll to top on newly added section?
     // }
 
-    changeStepSelection(step: PeriodStepDto) {
+    changeStepSelection(step: StepDto) {
         this.selectedStepEnum = this.mapStepType(this.workflowPeriodStepTypes?.find(x => x.id === step.typeId)!)!;
         this.selectedStep = step.name!;
         this._workflowDataService.workflowProgress.currentlyActiveStep = step.typeId! * 1;
@@ -151,7 +151,7 @@ export class PrimaryWorkflowComponent implements OnInit, AfterViewInit {
         this.sectionIndex = index;
         this.selectedSideSection = item.typeId!;
         this._workflowDataService.updateWorkflowProgressStatus({currentlyActiveSideSection: item.typeId!});
-        const firstitemInSection = this.sideMenuItems.find(x => x.name === item.name)?.periodSteps![0];
+        const firstitemInSection = this.sideMenuItems.find(x => x.name === item.name)?.steps![0];
         this.changeStepSelection(firstitemInSection!);
     }
 
