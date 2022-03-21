@@ -53,6 +53,7 @@ export class WorkflowSalesComponent extends AppComopnentBase implements OnInit {
     invoiceFrequencies: EnumEntityTypeDto[] = [];
     signerRoles: EnumEntityTypeDto[] = [];
     margins: EnumEntityTypeDto[] = [];
+    emagineOffices: EnumEntityTypeDto[] = [];
     clientExtensionDeadlines: EnumEntityTypeDto[] = [];
     clientExtensionDurations: EnumEntityTypeDto[] = [];
     clientSpecialFeeFrequencies: EnumEntityTypeDto[] = [];
@@ -104,7 +105,6 @@ export class WorkflowSalesComponent extends AppComopnentBase implements OnInit {
         private dialog: MatDialog,
         private _internalLookupService: InternalLookupService,
         private _lookupService: LookupServiceProxy,
-        // private _startWorkflowService: StartWorkflowControllerServiceProxy
         private _clientPeriodService: ClientPeriodServiceProxy
     ) {
         super(injector);
@@ -215,9 +215,10 @@ export class WorkflowSalesComponent extends AppComopnentBase implements OnInit {
         this.getSpecialRateSpecifications();
         this.getContractExpirationNotificationInterval();
         this.getClientTimeReportingCap();
+        this.getEmagineOfficeList();
         // init form arrays ?
-        // this.addSignerToForm();
-        // this.addConsultantForm();
+        this.addSignerToForm();
+        this.addConsultantForm();
 
         this.getWorkflowSalesStep();
 
@@ -345,6 +346,16 @@ export class WorkflowSalesComponent extends AppComopnentBase implements OnInit {
             });
     }
 
+    getEmagineOfficeList() {
+        this._internalLookupService.getEmagineOfficeList()
+            .pipe(finalize(() => {
+
+            }))
+            .subscribe(result => {
+                this.emagineOffices = result;
+            });
+    }
+
 
     getMargins() {
         this._internalLookupService.getMargins()
@@ -453,15 +464,10 @@ export class WorkflowSalesComponent extends AppComopnentBase implements OnInit {
             id: new FormControl(clientRate?.id ?? null),
             clientSpecialRateId: new FormControl(clientRate?.clientSpecialRateId ?? null),
             rateName: new FormControl(clientRate?.rateName ?? null),
-            // nameForInvoices: new FormControl(clientRate?.rateName ?? null),
             rateDirection: new FormControl(clientRate?.rateDirection?.id ?? null),
             reportingUnit: new FormControl(clientRate?.reportingUnit?.id ?? null),
-            // rateSpecifiedAs: new FormControl(clientRate?.clientSpecialRateId ?? null),
             clientRateValue: new FormControl(clientRate?.clientRate ?? null),
             clientRateCurrency: new FormControl(clientRate?.clientRateCurrencyId ?? null),
-            // proDataRate: new FormControl(clientRate?.proDataToProDataRate ?? null),
-            // consultantRate: new FormControl(clientRate?.consultantRate ?? null),
-            // category: new FormControl(clientRate?.specialRateCategory ?? null),
             editable: new FormControl(clientRate ? false : true)
         });
         this.salesClientDataForm.clientRates.push(form);
@@ -484,15 +490,10 @@ export class WorkflowSalesComponent extends AppComopnentBase implements OnInit {
             id: new FormControl(clientFee?.id ?? null),
             clientSpecialFeeId: new FormControl(clientFee?.clientSpecialFeeId ?? null),
             feeName: new FormControl(clientFee?.feeName ?? null),
-            // nameForInvoices: new FormControl(clientFee?.publicName ?? null),
             feeDirection: new FormControl(clientFee?.feeDirection ?? null),
             feeFrequency: new FormControl(clientFee?.frequency ?? null),
-            // feeSpecifiedAs: new FormControl(clientFee?.clientSpecialFeeSpecifiedAs ?? null),
             clientRateValue: new FormControl(clientFee?.clientRate ?? null),
             clientRateCurrency: new FormControl(clientFee?.clientRateCurrencyId ?? null),
-            // proDataRate: new FormControl(clientFee?.prodataToProdataRate ?? null),
-            // consultantRate: new FormControl(clientFee?.consultantRate ?? null),
-            // category: new FormControl(null),
             editable: new FormControl(clientFee ? false : true)
         });
         this.salesClientDataForm.clientFees.push(form);

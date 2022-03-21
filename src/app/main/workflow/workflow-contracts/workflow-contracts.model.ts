@@ -71,7 +71,7 @@ export class WorkflowContractsClientDataForm extends FormGroup {
 
             specialContractTerms: new FormControl(null),
             isSpecialContractTermsNone: new FormControl(null),
-            clientSpecialRates: new FormArray([]),
+            clientRates: new FormArray([]),
             clientFees: new FormArray([]),
 
             projectDescription: new FormControl(null),
@@ -90,8 +90,8 @@ export class WorkflowContractsClientDataForm extends FormGroup {
     get isSpecialContractTermsNone() {
         return this.get('isSpecialContractTermsNone');
     }
-    get clientSpecialRates() {
-        return this.get('clientSpecialRates') as FormArray;
+    get clientRates() {
+        return this.get('clientRates') as FormArray;
     }
     get clientFees() {
         return this.get('clientFees') as FormArray;

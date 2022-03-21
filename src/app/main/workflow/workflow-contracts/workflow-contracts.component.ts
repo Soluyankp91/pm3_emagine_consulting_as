@@ -3,7 +3,8 @@ import { Component, Input, OnInit } from '@angular/core';
 import { AbstractControl, FormArray, FormBuilder, FormControl } from '@angular/forms';
 import { MatDialog } from '@angular/material/dialog';
 import { finalize } from 'rxjs/operators';
-import { ClientPeriodContractsDataDto, ClientPeriodServiceProxy, ConsultantContractsDataDto, ContractsClientDataDto, ContractsMainDataDto, PeriodClientSpecialFeeDto, PeriodClientSpecialRateDto, PeriodConsultantSpecialFeeDto, PeriodConsultantSpecialRateDto } from 'src/shared/service-proxies/service-proxies';
+import { InternalLookupService } from 'src/app/shared/common/internal-lookup.service';
+import { ClientPeriodContractsDataDto, ClientPeriodServiceProxy, ConsultantContractsDataDto, ContractsClientDataDto, ContractsMainDataDto, EnumEntityTypeDto, PeriodClientSpecialFeeDto, PeriodClientSpecialRateDto, PeriodConsultantSpecialFeeDto, PeriodConsultantSpecialRateDto } from 'src/shared/service-proxies/service-proxies';
 import { WorkflowConsultantActionsDialogComponent } from '../workflow-consultant-actions-dialog/workflow-consultant-actions-dialog.component';
 import { WorkflowDataService } from '../workflow-data.service';
 import { ConsultantDiallogAction } from '../workflow-sales/workflow-sales.model';
@@ -29,13 +30,18 @@ export class WorkflowContractsComponent implements OnInit {
     contractsConsultantsDataForm: WorkflowContractsConsultantsDataForm;
     contractsSyncDataForm: WorkflowContractsSyncForm;
 
+    currencies: EnumEntityTypeDto[] = [];
+    clientSpecialRateOrFeeDirections: EnumEntityTypeDto[] = [];
+    clientSpecialRateReportUnits: EnumEntityTypeDto[] = [];
+    clientSpecialFeeFrequencies: EnumEntityTypeDto[] = [];
+
 
     consultantList = [{
         id: 123,
         name: 'Robertsen Oscar',
         consultantProjectStartDate: new Date(2021, 4, 2),
         consultantProjectEndDate: new Date(2022, 4, 2),
-        employmentTypeId: 1,
+        employmentTypeId: {id: 1, name: 'Employee'},
         consultantCapOnTimeReportingValue: null,
         consultantCapOnTimeReportingCurrency: null
     },
@@ -44,7 +50,7 @@ export class WorkflowContractsComponent implements OnInit {
         name: 'Van Trier Mia',
         consultantProjectStartDate: new Date(2021, 5, 3),
         consultantProjectEndDate: new Date(2022, 6, 3),
-        employmentTypeId: 2,
+        employmentTypeId: {id: 2, name: 'Freelance'},
         consultantCapOnTimeReportingValue: null,
         consultantCapOnTimeReportingCurrency: null
     }];
@@ -55,8 +61,8 @@ export class WorkflowContractsComponent implements OnInit {
         private overlay: Overlay,
         private dialog: MatDialog,
         private _clientPeriodService: ClientPeriodServiceProxy,
-        private _workflowDataService: WorkflowDataService
-
+        private _workflowDataService: WorkflowDataService,
+        private _internalLookupService: InternalLookupService
     ) {
         this.contractsMainDataForm = new WorkflowContractsMainForm();
         this.contractsClientDataForm = new WorkflowContractsClientDataForm();
@@ -65,10 +71,51 @@ export class WorkflowContractsComponent implements OnInit {
     }
 
     ngOnInit(): void {
-        this.addSpecialRateToForm();
-        this.addClientFeeToForm();
         this.consultantList.forEach(item =>this.addConsultantDataToForm(item));
         this.getSalesInfo();
+        this.getCurrencies();
+        this.getSpecialRateOrFeeDirections();
+        this.getSpecialRateReportUnits();
+    }
+
+    getCurrencies() {
+        this._internalLookupService.getCurrencies()
+            .pipe(finalize(() => {
+
+            }))
+            .subscribe(result => {
+                this.currencies = result;
+            });
+    }
+
+    getSpecialRateOrFeeDirections() {
+        this._internalLookupService.getSpecialRateOrFeeDirections()
+            .pipe(finalize(() => {
+
+            }))
+            .subscribe(result => {
+                this.clientSpecialRateOrFeeDirections = result;
+            });
+    }
+
+    getSpecialRateReportUnits() {
+        this._internalLookupService.getSpecialRateReportUnits()
+            .pipe(finalize(() => {
+
+            }))
+            .subscribe(result => {
+                this.clientSpecialRateReportUnits = result;
+            });
+    }
+
+    getSpecialFeeFrequencies() {
+        this._internalLookupService.getSpecialFeeFrequencies()
+            .pipe(finalize(() => {
+
+            }))
+            .subscribe(result => {
+                this.clientSpecialFeeFrequencies = result;
+            });
     }
 
     getSalesInfo() {
@@ -93,7 +140,7 @@ export class WorkflowContractsComponent implements OnInit {
         input.clientData.noSpecialRate = undefined;
         input.clientData.noSpecialFee = undefined;
         input.clientData.periodClientSpecialRates = new Array<PeriodClientSpecialRateDto>();
-        for (let specialRate of this.contractsClientDataForm.clientSpecialRates.value) {
+        for (let specialRate of this.contractsClientDataForm.clientRates.value) {
             let clientSpecialRate = new PeriodClientSpecialRateDto();
             input.clientData.periodClientSpecialRates.push(clientSpecialRate);
         }
@@ -147,31 +194,43 @@ export class WorkflowContractsComponent implements OnInit {
     }
 
     // #region CHANGE NAMING
-    addSpecialRateToForm() {
-        // TODO: add missing properties like on rate&fees
+    addSpecialRate(clientRate?: PeriodClientSpecialRateDto) {
         const form = this._fb.group({
-            rateName: new FormControl(null),
-            rateDirection: new FormControl(null),
-            reportingUnit: new FormControl(null)
-
+            id: new FormControl(clientRate?.id ?? null),
+            clientSpecialRateId: new FormControl(clientRate?.clientSpecialRateId ?? null),
+            rateName: new FormControl(clientRate?.rateName ?? null),
+            rateDirection: new FormControl(clientRate?.rateDirection?.id ?? null),
+            reportingUnit: new FormControl(clientRate?.reportingUnit?.id ?? null),
+            clientRateValue: new FormControl(clientRate?.clientRate ?? null),
+            clientRateCurrency: new FormControl(clientRate?.clientRateCurrencyId ?? null),
+            editable: new FormControl(clientRate ? false : true)
         });
-        this.contractsClientDataForm.clientSpecialRates.push(form);
+        this.contractsClientDataForm.clientRates.push(form);
     }
 
-    get clientSpecialRates(): FormArray {
-        return this.contractsClientDataForm.get('clientSpecialRates') as FormArray;
+    get clientRates(): FormArray {
+        return this.contractsClientDataForm.get('clientRates') as FormArray;
     }
 
-    removeSpecialRate(index: number) {
-        this.clientSpecialRates.removeAt(index);
+    removeClientRate(index: number) {
+        this.clientRates.removeAt(index);
     }
 
-    addClientFeeToForm() {
+    editOrSaveSpecialRate(isEditMode: boolean, index: number) {
+        this.clientRates.at(index).get('editable')?.setValue(!isEditMode, {emitEvent: false});
+    }
+
+    addClientFee(clientFee?: PeriodClientSpecialFeeDto) {
         const form = this._fb.group({
-            // TODO: add missing properties like on rate&fees
-            feeName: new FormControl(null),
-            feeDirection: new FormControl(null),
-            frequency: new FormControl(null)
+            id: new FormControl(clientFee?.id ?? null),
+            clientSpecialFeeId: new FormControl(clientFee?.clientSpecialFeeId ?? null),
+            feeName: new FormControl(clientFee?.feeName ?? null),
+            feeDirection: new FormControl(clientFee?.feeDirection ?? null),
+            feeFrequency: new FormControl(clientFee?.frequency ?? null),
+            clientRateValue: new FormControl(clientFee?.clientRate ?? null),
+            clientRateCurrency: new FormControl(clientFee?.clientRateCurrencyId ?? null),
+
+            editable: new FormControl(clientFee ? false : true)
         });
         this.contractsClientDataForm.clientFees.push(form);
     }
@@ -180,8 +239,12 @@ export class WorkflowContractsComponent implements OnInit {
         return this.contractsClientDataForm.get('clientFees') as FormArray;
     }
 
-    removeFee(index: number) {
+    removeClientFee(index: number) {
         this.clientFees.removeAt(index);
+    }
+
+    editOrSaveClientFee(isEditMode: boolean, index: number) {
+        this.clientFees.at(index).get('editable')?.setValue(!isEditMode, {emitEvent: false});
     }
     // #endregion CHANGE NAMING
 
@@ -214,24 +277,39 @@ export class WorkflowContractsComponent implements OnInit {
     // #region Consultant data Special Rates
     initSpecialRateToConsultantData() {
         const form = this._fb.group({
+            id: new FormControl(null),
+            clientSpecialRateId: new FormControl(null),
             rateName: new FormControl(null),
             rateDirection: new FormControl(null),
-            reportingUnit: new FormControl(null)
+            reportingUnit: new FormControl(null),
+            clientRateValue: new FormControl(null),
+            clientRateCurrency: new FormControl(null),
+            editable: new FormControl(true)
         });
         return form;
     }
 
-    addSpecialRateToConsultantData(index: number) {
+    addSpecialRateToConsultantData(index: number, clientRate?: PeriodClientSpecialRateDto) {
         const form = this._fb.group({
-            rateName: new FormControl(null),
-            rateDirection: new FormControl(null),
-            reportingUnit: new FormControl(null)
+            id: new FormControl(clientRate?.id ?? null),
+            clientSpecialRateId: new FormControl(clientRate?.clientSpecialRateId ?? null),
+            rateName: new FormControl(clientRate?.rateName ?? null),
+            rateDirection: new FormControl(clientRate?.rateDirection?.id ?? null),
+            reportingUnit: new FormControl(clientRate?.reportingUnit?.id ?? null),
+            clientRateValue: new FormControl(clientRate?.clientRate ?? null),
+            clientRateCurrency: new FormControl(clientRate?.clientRateCurrencyId ?? null),
+            editable: new FormControl(clientRate ? false : true)
         });
+
         (this.contractsConsultantsDataForm.consultantData.at(index).get('specialRates') as FormArray).push(form);
     }
 
     removeConsultantDataSpecialRate(consultantIndex: number, rateIndex: number) {
         (this.contractsConsultantsDataForm.consultantData.at(consultantIndex).get('specialRates') as FormArray).removeAt(rateIndex);
+    }
+
+    editOrSaveConsultantSpecialRate(isEditMode: boolean, consultantIndex: number, rateIndex: number) {
+        (this.consultantData.at(consultantIndex).get('specialRates') as FormArray).at(rateIndex).get('editable')?.setValue(!isEditMode, {emitEvent: false});
     }
 
     getConsultantSpecialRateControls(index: number): AbstractControl[] | null {
@@ -261,6 +339,10 @@ export class WorkflowContractsComponent implements OnInit {
 
     removeConsultantDataClientFees(consultantIndex: number, rateIndex: number) {
         (this.contractsConsultantsDataForm.consultantData.at(consultantIndex).get('clientFees') as FormArray).removeAt(rateIndex);
+    }
+
+    editOrSaveConsultantSpecialFee(isEditMode: boolean, consultantIndex: number, rateIndex: number) {
+        (this.contractsConsultantsDataForm.consultantData.at(consultantIndex).get('clientFees') as FormArray).at(rateIndex).get('editable')?.setValue(!isEditMode, {emitEvent: false});
     }
 
     getConsultantClientFeesControls(index: number): AbstractControl[] | null {
@@ -380,4 +462,12 @@ export class WorkflowContractsComponent implements OnInit {
     }
 
     //#endregion Consultant menu actions
+
+    compareWithFn(listOfItems: any, selectedItem: any) {
+        return listOfItems && selectedItem && listOfItems.id === selectedItem.id;;
+    }
+
+    displayNameFn(option: any) {
+        return option?.name;
+    }
 }
