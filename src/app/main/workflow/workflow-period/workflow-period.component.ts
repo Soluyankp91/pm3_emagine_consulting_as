@@ -5,7 +5,7 @@ import { finalize } from 'rxjs/operators';
 import { InternalLookupService } from 'src/app/shared/common/internal-lookup.service';
 import { ConfirmationDialogComponent } from 'src/app/shared/components/confirmation-dialog/confirmation-dialog.component';
 import { ManagerStatus } from 'src/app/shared/components/manager-search/manager-search.model';
-import { WorkflowProcessDto, WorkflowProcessType, EnumEntityTypeDto, WorkflowServiceProxy, PeriodStepDto } from 'src/shared/service-proxies/service-proxies';
+import { WorkflowProcessDto, WorkflowProcessType, EnumEntityTypeDto, WorkflowServiceProxy, StepDto } from 'src/shared/service-proxies/service-proxies';
 import { WorkflowDataService } from '../workflow-data.service';
 import { WorkflowSteps } from '../workflow.model';
 
@@ -43,6 +43,10 @@ export class WorkflowPeriodComponent implements OnInit {
     ngOnInit(): void {
         this.getPeriodStepTypes();
         this.getSideMenu();
+    }
+
+    selectedManager() {
+
     }
 
     getPeriodStepTypes() {
@@ -98,7 +102,7 @@ export class WorkflowPeriodComponent implements OnInit {
     }
 
 
-    changeStepSelection(step: PeriodStepDto) {
+    changeStepSelection(step: StepDto) {
         this.selectedStepEnum = this.mapStepType(this.workflowPeriodStepTypes?.find(x => x.id === step.typeId)!)!;
         this.selectedStep = step.name!;
         this._workflowDataService.workflowProgress.currentlyActiveStep = step.typeId! * 1;
@@ -108,7 +112,7 @@ export class WorkflowPeriodComponent implements OnInit {
         this.sectionIndex = index;
         this.selectedSideSection = item.typeId!;
         this._workflowDataService.updateWorkflowProgressStatus({currentlyActiveSideSection: item.typeId!});
-        const firstitemInSection = this.sideMenuItems.find(x => x.name === item.name)?.periodSteps![0];
+        const firstitemInSection = this.sideMenuItems.find(x => x.name === item.name)?.steps![0];
         this.changeStepSelection(firstitemInSection!);
     }
 
