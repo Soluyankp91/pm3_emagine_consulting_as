@@ -108,7 +108,7 @@
                                 <button mat-flat-button (click)="editOrSaveSpecialRate(rate.value.editable, i)" class="inline-edit-form--btn__save">
                                     Save
                                 </button>
-                                <button mat-icon-button (click)="removeSpecialRate(i)">
+                                <button mat-icon-button (click)="removeSpecialRate(rate.value.id, rate.value.inUse, i)">
                                     <mat-icon>clear</mat-icon>
                                 </button>
                             </div>
@@ -163,7 +163,7 @@
                                     <button
                                         class="menu-item menu-item--cancel"
                                         mat-menu-item
-                                        (click)="removeSpecialRate(i)">
+                                        (click)="removeSpecialRate(rate.value.id, rate.value.inUse, i)">
                                         <mat-icon>clear</mat-icon>
                                         Remove
                                     </button>
@@ -270,7 +270,7 @@
                                 <button mat-flat-button (click)="editOrSaveClientFee(fee.value.editable, i)" class="inline-edit-form--btn__save">
                                     Save
                                 </button>
-                                <button mat-icon-button (click)="removeClientFee(i)">
+                                <button mat-icon-button (click)="removeClientFee(fee.value.id, fee.value.inUse, i)">
                                     <mat-icon>clear</mat-icon>
                                 </button>
                             </div>
@@ -323,7 +323,7 @@
                                     <button
                                         class="menu-item menu-item--cancel"
                                         mat-menu-item
-                                        (click)="removeClientFee(i)">
+                                        (click)="removeClientFee(fee.value.id, fee.value.inUse, i)">
                                         <mat-icon>clear</mat-icon>
                                         Remove
                                     </button>

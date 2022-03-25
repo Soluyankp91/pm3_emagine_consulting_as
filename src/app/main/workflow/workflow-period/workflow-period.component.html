@@ -44,7 +44,7 @@
                                     <app-manager-search
                                         (click)="$event.stopPropagation()"
                                         [formFieldLabel]="step.name + ' Manager'"
-                                        (managerSelected)="selectedManager()"
+                                        (managerSelected)="selectedManager($event)"
                                         [managerStatus]="step.isCompleted ? managerStatus.Completed : managerStatus.Pending">
                                     </app-manager-search>
 

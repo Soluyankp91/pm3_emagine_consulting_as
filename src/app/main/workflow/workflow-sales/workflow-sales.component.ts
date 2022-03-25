@@ -2,17 +2,18 @@ import { Overlay } from '@angular/cdk/overlay';
 import { Component, Injector, Input, OnInit } from '@angular/core';
 import { FormArray, FormBuilder, FormControl } from '@angular/forms';
 import { MatDialog } from '@angular/material/dialog';
+import { MatSelectChange } from '@angular/material/select';
 import { ActivatedRoute } from '@angular/router';
-import { Subject } from 'rxjs';
+import { Observable, of, Subject } from 'rxjs';
 import { debounceTime, finalize, switchMap, takeUntil } from 'rxjs/operators';
 import { InternalLookupService } from 'src/app/shared/common/internal-lookup.service';
 import { ConfirmationDialogComponent } from 'src/app/shared/components/confirmation-dialog/confirmation-dialog.component';
 import { AppComopnentBase } from 'src/shared/app-component-base';
-import { ClientPeriodSalesDataDto, ClientPeriodServiceProxy, ClientRateDto, ClientSpecialFeeDto, ClientSpecialRateDto, CommissionDto, ConsultantRateDto, ConsultantSalesDataDto, ContractSignerDto, EmployeeDto, EnumEntityTypeDto, EnumServiceProxy, LookupServiceProxy, PeriodClientSpecialFeeDto, PeriodClientSpecialRateDto, SalesClientDataDto, SalesMainDataDto, WorkflowProcessType } from 'src/shared/service-proxies/service-proxies';
+import { ClientPeriodSalesDataDto, ClientPeriodServiceProxy, ClientRateDto, ClientSearchResultDto, ClientSpecialFeeDto, ClientSpecialRateDto, CommissionDto, ConsultantDisplayDataDto, ConsultantRateDto, ConsultantSalesDataDto, ContactSearchResultDto, ContractSignerDto, EmployeeDto, EnumEntityTypeDto, EnumServiceProxy, LookupServiceProxy, PeriodClientSpecialFeeDto, PeriodClientSpecialRateDto, SalesClientDataDto, SalesMainDataDto, SupplierSearchResultDto, WorkflowProcessType } from 'src/shared/service-proxies/service-proxies';
 import { WorkflowConsultantActionsDialogComponent } from '../workflow-consultant-actions-dialog/workflow-consultant-actions-dialog.component';
 import { WorkflowDataService } from '../workflow-data.service';
 import { ChangeConsultantDto, ConsultantTypes, ExtendConsultantDto, TerminateConsultantDto, WorkflowTopSections } from '../workflow.model';
-import { ConsultantDiallogAction, InputReadonlyStates, SalesTerminateConsultantForm, WorkflowSalesAdditionalDataForm, WorkflowSalesClientDataForm, WorkflowSalesConsultantsForm, WorkflowSalesMainForm } from './workflow-sales.model';
+import { ConsultantDiallogAction, InputReadonlyStates, SalesTerminateConsultantForm, TenantList, WorkflowSalesAdditionalDataForm, WorkflowSalesClientDataForm, WorkflowSalesConsultantsForm, WorkflowSalesMainForm } from './workflow-sales.model';
 @Component({
     selector: 'app-workflow-sales',
     templateUrl: './workflow-sales.component.html',
@@ -63,6 +64,11 @@ export class WorkflowSalesComponent extends AppComopnentBase implements OnInit {
     clientSpecialRateSpecifications: EnumEntityTypeDto[] = [];
     contractExpirationNotificationDuration: EnumEntityTypeDto[] = [];
     clientTimeReportingCap: EnumEntityTypeDto[] = [];
+    commissionFrequencies: EnumEntityTypeDto[] = [];
+    commissionTypes: EnumEntityTypeDto[] = [];
+    commissionRecipientTypeList: EnumEntityTypeDto[] = [];
+    tenants: EnumEntityTypeDto[] = [];
+
     // new UI
     clientRateTypes: EnumEntityTypeDto[] = new Array<EnumEntityTypeDto>(
         new EnumEntityTypeDto({
@@ -90,6 +96,12 @@ export class WorkflowSalesComponent extends AppComopnentBase implements OnInit {
     filteredAccountManagers: any[] = [];
     filteredSalesAccountManagers: any[] = [];
     filteredCommisionAccountManagers: any[] = [];
+    filteredDirectClients: any[] = [];
+    filteredEndClients: any[] = []
+    filteredConsultants: any[] = [];
+    filteredRecipients: any[] = [];
+    filteredReferencePersons: any[] = [];
+    filteredClientInvoicingRecipients: any[] = [];
     private _unsubscribe = new Subject();
 
     // Read-onluy state for inputs
@@ -161,6 +173,103 @@ export class WorkflowSalesComponent extends AppComopnentBase implements OnInit {
                     this.filteredCommisionAccountManagers = [{ name: 'No managers found', externalId: '', id: 'no-data', selected: false }];
                 }
             });
+
+        this.salesClientDataForm.directClientIdValue?.valueChanges
+            .pipe(
+                takeUntil(this._unsubscribe),
+                debounceTime(300),
+                switchMap((value: any) => {
+                    let toSend = {
+                        name: value,
+                        maxRecordsCount: 1000,
+                    };
+                    if (value?.id) {
+                        toSend.name = value.id
+                            ? value.clientName.trim()
+                            : value.trim();
+                    }
+                    return this._lookupService.clients(toSend.name, toSend.maxRecordsCount);
+                }),
+            ).subscribe((list: ClientSearchResultDto[]) => {
+                if (list.length) {
+                    this.filteredDirectClients = list;
+                } else {
+                    this.filteredDirectClients = [{ clientName: 'No records found', externalId: '', id: 'no-data', selected: false }];
+                }
+            });
+
+        this.salesClientDataForm.endClientIdValue?.valueChanges
+            .pipe(
+                takeUntil(this._unsubscribe),
+                debounceTime(300),
+                switchMap((value: any) => {
+                    let toSend = {
+                        name: value,
+                        maxRecordsCount: 1000,
+                    };
+                    if (value?.id) {
+                        toSend.name = value.id
+                            ? value.clientName.trim()
+                            : value.trim();
+                    }
+                    return this._lookupService.clients(toSend.name, toSend.maxRecordsCount);
+                }),
+            ).subscribe((list: ClientSearchResultDto[]) => {
+                if (list.length) {
+                    this.filteredEndClients = list;
+                } else {
+                    this.filteredEndClients = [{ clientName: 'No records found', externalId: '', id: 'no-data', selected: false }];
+                }
+            });
+
+        this.salesClientDataForm.invoicingReferencePersonIdValue?.valueChanges
+            .pipe(
+                takeUntil(this._unsubscribe),
+                debounceTime(300),
+                switchMap((value: any) => {
+                    let toSend = {
+                        clientId: undefined,
+                        name: value,
+                        maxRecordsCount: 1000,
+                    };
+                    if (value?.id) {
+                        toSend.name = value.id
+                            ? value.firstName
+                            : value;
+                    }
+                    return this._lookupService.contacts(toSend.clientId, toSend.name, toSend.maxRecordsCount);
+                }),
+            ).subscribe((list: ContactSearchResultDto[]) => {
+                if (list.length) {
+                    this.filteredReferencePersons = list;
+                } else {
+                    this.filteredReferencePersons = [{ firstName: 'No records found', id: 'no-data' }];
+                }
+            });
+
+        this.salesClientDataForm.clientInvoicingRecipientIdValue?.valueChanges
+            .pipe(
+                takeUntil(this._unsubscribe),
+                debounceTime(300),
+                switchMap((value: any) => {
+                    let toSend = {
+                        name: value,
+                        maxRecordsCount: 1000,
+                    };
+                    if (value?.id) {
+                        toSend.name = value.id
+                            ? value.clientName
+                            : value;
+                    }
+                    return this._lookupService.clients(toSend.name, toSend.maxRecordsCount);
+                }),
+            ).subscribe((list: ClientSearchResultDto[]) => {
+                if (list.length) {
+                    this.filteredClientInvoicingRecipients = list;
+                } else {
+                    this.filteredClientInvoicingRecipients = [{ clientName: 'No records found', id: 'no-data' }];
+                }
+            });
     }
 
     manageManagerAutocomplete(consultantIndex: number) {
@@ -216,9 +325,14 @@ export class WorkflowSalesComponent extends AppComopnentBase implements OnInit {
         this.getContractExpirationNotificationInterval();
         this.getClientTimeReportingCap();
         this.getEmagineOfficeList();
+        this.getCommissionFrequency();
+        this.getCommissionTypes();
+        this.getCommissionRecipientTypes();
+        this.getTenants();
+
         // init form arrays ?
-        this.addSignerToForm();
-        this.addConsultantForm();
+        // this.addSignerToForm();
+        // this.addConsultantForm();
 
         this.getWorkflowSalesStep();
 
@@ -457,6 +571,46 @@ export class WorkflowSalesComponent extends AppComopnentBase implements OnInit {
             });
     }
 
+    getCommissionFrequency() {
+        this._internalLookupService.getCommissionFrequency()
+            .pipe(finalize(() => {
+
+            }))
+            .subscribe(result => {
+                this.commissionFrequencies = result;
+            });
+    }
+
+    getCommissionTypes() {
+        this._internalLookupService.getCommissionTypes()
+            .pipe(finalize(() => {
+
+            }))
+            .subscribe(result => {
+                this.commissionTypes = result;
+            });
+    }
+
+    getCommissionRecipientTypes() {
+        this._internalLookupService.getCommissionRecipientTypes()
+            .pipe(finalize(() => {
+
+            }))
+            .subscribe(result => {
+                this.commissionRecipientTypeList = result;
+            });
+    }
+
+    getTenants() {
+        this._internalLookupService.getTenants()
+            .pipe(finalize(() => {
+
+            }))
+            .subscribe(result => {
+                this.tenants = result;
+            });
+    }
+
     //#endregion dataFetch
 
     addSpecialRate(clientRate?: PeriodClientSpecialRateDto) {
@@ -531,45 +685,75 @@ export class WorkflowSalesComponent extends AppComopnentBase implements OnInit {
     addConsultantForm(consultant?: ConsultantSalesDataDto) {
         const form = this._fb.group({
             consultantType: new FormControl(consultant?.employmentTypeId ?? null),
-            consultantName: new FormControl(consultant?.nameOnly ?? null),
+            consultantName: new FormControl(consultant?.consultantData ?? null),
 
             consultantProjectDuration: new FormControl(null),
-            consultantProjectStartDate: new FormControl(null),
-            consultantProjectEndDate: new FormControl(null),
-            consultantProjectNoEndDate: new FormControl(false),
+            consultantProjectStartDate: new FormControl(consultant?.startDate ?? null),
+            consultantProjectEndDate: new FormControl(consultant?.endDate ?? null),
+            consultantProjectNoEndDate: new FormControl(consultant?.noEndDate ?? false),
 
             consultantWorkplace: new FormControl(null),
-            consultantWorkplaceCliendAddress: new FormControl(null),
-            consultantWorkplaceEmagineOffice: new FormControl(null),
-            consultantWorkplaceRemote: new FormControl(null),
-            consultantWorkplacePercentageOnSite: new FormControl(null),
+            consultantWorkplaceCliendAddress: new FormControl(consultant?.onsiteClientId ?? null),
+            consultantWorkplaceEmagineOffice: new FormControl(consultant?.emagineOfficeId ?? null),
+            consultantWorkplaceRemote: new FormControl(consultant?.remoteAddressCountryId ?? null),
+            consultantWorkplacePercentageOnSite: new FormControl(consultant?.percentageOnSite ?? null),
 
-            consultantIsOnsiteWorkplace: new FormControl(false),
-            consultantIsEmagineOfficeWorkplace: new FormControl(false),
-            consultantIsRemoteWorkplace: new FormControl(false),
+            consultantIsOnsiteWorkplace: new FormControl(consultant?.isOnsiteWorkplace ?? false),
+            consultantIsEmagineOfficeWorkplace: new FormControl(consultant?.isEmagineOfficeWorkplace ?? false),
+            consultantIsRemoteWorkplace: new FormControl(consultant?.isRemoteWorkplace ?? false),
 
-            consultantExpectedWorkloadHours: new FormControl(null),
+            consultantExpectedWorkloadHours: new FormControl(null), // ?
             consultantExpectedWorkloadPeriod: new FormControl(null),
             consultantCapOnTimeReporting: new FormControl(null),
             consultantCapOnTimeReportingValue: new FormControl(null),
             consultantCapOnTimeReportingCurrency: new FormControl(null),
-            consultantProdataEntity: new FormControl(null),
-            consultantPrice: new FormControl(null),
-            consultantRate: new FormControl(null),
-            consultantRateUnitType: new FormControl(null),
-            consultantRateCurrency: new FormControl(null),
-            consultantPDCRate: new FormControl(null),
-            consultantPDCRateUnitType: new FormControl(null),
-            consultantPDCRateCurrency: new FormControl(null),
+            consultantProdataEntity: new FormControl(consultant?.pdcPaymentEntityId ?? null),
+            consultantPrice: new FormControl(consultant?.consultantRate?.isTimeBasedRate ? 'Time based' : 'Fixed'),
+            consultantRate: new FormControl(consultant?.consultantRate?.normalRate ?? null),
+            consultantRateUnitType: new FormControl(consultant?.consultantRate?.rateUnitTypeId ?? null),
+            consultantRateCurrency: new FormControl(consultant?.consultantRate?.currencyId ?? null),
+            consultantPDCRate: new FormControl(consultant?.consultantRate?.prodataToProdataRate ?? null),
+            consultantPDCRateUnitType: new FormControl(null), // ??
+            consultantPDCRateCurrency: new FormControl(consultant?.consultantRate?.prodataToProdataCurrencyId ?? null),
 
-            consultantSpecialContractTerms: new FormControl(null),
-            consultantSpecialContractTermsNone: new FormControl(false),
+            consultantSpecialContractTerms: new FormControl(consultant?.specialContractTerms ?? null),
+            consultantSpecialContractTermsNone: new FormControl(consultant?.noSpecialContractTerms ?? false),
 
-            consultantAccountManager: new FormControl('')
+            consultantAccountManager: new FormControl(consultant?.deliveryAccountManagerIdValue ?? '')
         });
         this.consultantsForm.consultantData.push(form);
         this.manageManagerAutocomplete(this.consultantsForm.consultantData.length - 1);
+        this.manageConsultantAutocomplete(this.consultantsForm.consultantData.length - 1);
     }
+
+    manageConsultantAutocomplete(consultantIndex: number) {
+        let arrayControl = this.consultantsForm.consultantData.at(consultantIndex);
+        arrayControl!.get('consultantName')!.valueChanges
+            .pipe(
+                takeUntil(this._unsubscribe),
+                debounceTime(300),
+                switchMap((value: any) => {
+                    let toSend = {
+                        name: value,
+                        maxRecordsCount: 1000,
+                    };
+                    if (value?.id) {
+                        toSend.name = value.id
+                            ? value.name
+                            : value;
+                    }
+                    return this._lookupService.consultants(toSend.name, toSend.maxRecordsCount);
+                }),
+            ).subscribe((list: ConsultantDisplayDataDto[]) => {
+                if (list.length) {
+                    this.filteredConsultants = list;
+                } else {
+                    this.filteredConsultants = [{ name: 'No consultant found', externalId: '', id: 'no-data' }];
+                }
+            });
+
+    }
+
 
     confirmRemoveConsultant(index: number) {
         const consultant = this.consultantsForm.consultantData.at(index).value;
@@ -648,20 +832,18 @@ export class WorkflowSalesComponent extends AppComopnentBase implements OnInit {
         input.salesMainData.customContractExpirationNotificationDate = this.salesMainDataForm.customContractExpirationNotificationDate?.value;
 
         input.salesMainData.remarks = this.salesMainDataForm.remarks?.value;
-        input.salesMainData.noRemarks = !this.salesMainDataForm.noRemarks?.value;
+        input.salesMainData.noRemarks = this.salesMainDataForm.noRemarks?.value;
 
         input.salesMainData.commissions = new Array<CommissionDto>();
         if (this.salesMainDataForm.commissions.value?.length) {
             this.salesMainDataForm.commissions.value.forEach((commission: any) => {
                 let commissionInput = new CommissionDto();
                 commissionInput.id = commission.id;
-                commissionInput.commissionTypeId = commission.type;
+                commissionInput.commissionTypeId = commission.type.id;
                 commissionInput.amount = commission.value;
                 commissionInput.currencyId = commission.currency;
                 commissionInput.commissionFrequencyId = commission.frequency;
                 commissionInput.recipientTypeId = commission.recipientType;
-                // TODO: BE MISSING
-                // commissionInput.recipientTypeId = commission.recipient;
                 // TODO: DESIGN MISSING
                 // commissionInput.oneTimeDate = commission.oneTimeDate;
                 // commissionInput.supplierId = commission.supplierId;
@@ -674,21 +856,21 @@ export class WorkflowSalesComponent extends AppComopnentBase implements OnInit {
         }
 
         input.salesClientData.differentEndClient = this.salesClientDataForm.differentEndClient?.value;
-        input.salesClientData.directClientIdValue = this.salesClientDataForm.directClientIdValue?.value;
-        input.salesClientData.endClientIdValue = this.salesClientDataForm.endClientIdValue?.value;
+        input.salesClientData.directClientIdValue = this.salesClientDataForm.directClientIdValue?.value?.clientId;
+        input.salesClientData.endClientIdValue = this.salesClientDataForm.endClientIdValue?.value?.clientId;
         input.salesClientData.startDate = this.salesClientDataForm.clientContractStartDate?.value;
         input.salesClientData.noEndDate = this.salesClientDataForm.clientContractNoEndDate?.value;
         input.salesClientData.endDate = this.salesClientDataForm.clientContractEndDate?.value;
         input.salesClientData.noClientExtensionOption = this.salesClientDataForm.noClientExtensionOption?.value;
         input.salesClientData.clientExtensionDurationId = this.salesClientDataForm.clientExtensionDuration?.value;
-        input.salesClientData.clientExtensionDeadlineId = this.salesClientDataForm.clientExtensionDeadline?.value;
+        input.salesClientData.clientExtensionDeadlineId = this.salesClientDataForm.clientExtensionDeadline?.value?.id;
         input.salesClientData.clientExtensionSpecificDate = this.salesClientDataForm.clientExtensionEndDate?.value;
         input.salesClientData.clientTimeReportingCapId = this.salesClientDataForm.capOnTimeReporting?.value?.id;
         input.salesClientData.clientTimeReportingCapMaxValue = this.salesClientDataForm.capOnTimeReportingValue?.value;
         input.salesClientData.pdcInvoicingEntityId = this.salesClientDataForm.pdcInvoicingEntityId?.value;
 
         input.salesClientData.clientRate = new ClientRateDto();
-        input.salesClientData.clientRate.isTimeBasedRate = this.salesClientDataForm.clientRateAndInvoicing?.value?.name === 'Time base';
+        input.salesClientData.clientRate.isTimeBasedRate = this.salesClientDataForm.clientRateAndInvoicing?.value?.name === 'Time based';
         input.salesClientData.clientRate.isFixedRate = this.salesClientDataForm.clientRateAndInvoicing?.value?.name === 'Fixed';
         input.salesClientData.clientRate.currencyId = this.salesClientDataForm.clientCurrency?.value
         input.salesClientData.clientRate.invoiceCurrencyId = this.salesClientDataForm.clientInvoiceCurrency?.value;
@@ -700,7 +882,7 @@ export class WorkflowSalesComponent extends AppComopnentBase implements OnInit {
         // input.salesClientData.clientRate.price =
         // input.salesClientData.clientRate.invoicingTimeId =
 
-        input.salesClientData.noInvoicingReferenceNumber = this.salesClientDataForm.invoicingReferenceNumber?.value ? true : false;
+        input.salesClientData.noInvoicingReferenceNumber = this.salesClientDataForm.invoicingReferenceNumber?.value ? false : true;
         input.salesClientData.invoicingReferenceNumber = this.salesClientDataForm.invoicingReferenceNumber?.value;
         input.salesClientData.clientInvoicingRecipientSameAsDirectClient = this.salesClientDataForm.clientInvoicingRecipientSameAsDirectClient?.value;
         input.salesClientData.clientInvoicingRecipientIdValue = this.salesClientDataForm.clientInvoicingRecipientIdValue?.value;
@@ -733,11 +915,18 @@ export class WorkflowSalesComponent extends AppComopnentBase implements OnInit {
             this.consultantsForm.consultantData.value.forEach((consultant: any) => {
                 let consultantInput = new ConsultantSalesDataDto();
                 consultantInput.employmentTypeId = consultant.consultantType;
-                // consultantInput.consultantId = consultant.consultantName;
+                consultantInput.consultantId = consultant.consultantName?.id
+                consultantInput.nameOnly = consultant.consultantName?.name;
+                consultantInput.consultantData = new ConsultantDisplayDataDto();
 
-                // ??
-                consultantInput.nameOnly = consultant.consultantName;
-                // ??
+                consultantInput.consultantData.id = consultant.consultantName?.id
+                consultantInput.consultantData.name = consultant.consultantName?.name;
+                consultantInput.consultantData.legacyId = consultant.consultantName?.legacyId;
+                consultantInput.consultantData.companyName = consultant.consultantName?.companyName;
+                consultantInput.consultantData.tenantId = consultant.consultantName?.tenantId;
+                consultantInput.consultantData.externalId = consultant.consultantName?.externalId;
+                consultantInput.consultantData.city = consultant.consultantName?.city;
+                consultantInput.consultantData.countryId = consultant.consultantName?.contryId;
 
                 consultantInput.startDate = consultant.consultantProjectStartDate;
                 consultantInput.noEndDate = consultant.consultantProjectNoEndDate;
@@ -761,22 +950,22 @@ export class WorkflowSalesComponent extends AppComopnentBase implements OnInit {
                 consultantInput.pdcPaymentEntityId = consultant.consultantProdataEntity;
 
                 consultantInput.consultantRate = new ConsultantRateDto();
-                consultantInput.consultantRate.isTimeBasedRate = consultant.isTimeBasedRate;
-                consultantInput.consultantRate.isFixedRate = consultant.isFixedRate;
-                consultantInput.consultantRate.normalRate = consultant.normalRate;
-                consultantInput.consultantRate.currencyId = consultant.currencyId;
-                consultantInput.consultantRate.prodataToProdataRate = consultant.prodataToProdataRate;
-                consultantInput.consultantRate.prodataToProdataCurrencyId = consultant.prodataToProdataCurrencyId;
+                consultantInput.consultantRate.isTimeBasedRate = consultant.consultantPrice === 'Time based';
+                consultantInput.consultantRate.isFixedRate = consultant.consultantPrice === 'Fixed';
+                consultantInput.consultantRate.normalRate = consultant.consultantRate;
+                consultantInput.consultantRate.currencyId = consultant.consultantRateCurrency;
+                consultantInput.consultantRate.rateUnitTypeId = consultant.consultantRateUnitType;
+                consultantInput.consultantRate.prodataToProdataRate = consultant.consultantPDCRate;
+                consultantInput.consultantRate.prodataToProdataCurrencyId = consultant.consultantPDCRateCurrency;
                 consultantInput.consultantRate.prodataToProdataInvoiceCurrencyId = consultant.prodataToProdataInvoiceCurrencyId;
                 consultantInput.consultantRate.manualDate = consultant.manualDate;
-                consultantInput.consultantRate.rateUnitTypeId = consultant.rateUnitTypeId;
                 consultantInput.consultantRate.invoiceFrequencyId = consultant.invoiceFrequencyId;
                 consultantInput.consultantRate.invoicingTimeId = consultant.invoicingTimeId;
 
-                consultantInput.noSpecialContractTerms = consultant.noSpecialContractTerms;
-                consultantInput.specialContractTerms = consultant.specialContractTerms;
+                consultantInput.noSpecialContractTerms = consultant.consultantSpecialContractTermsNone;
+                consultantInput.specialContractTerms = consultant.consultantSpecialContractTerms;
                 consultantInput.deliveryManagerSameAsAccountManager = consultant.deliveryManagerSameAsAccountManager;
-                consultantInput.deliveryAccountManagerIdValue = consultant.deliveryAccountManagerIdValue;
+                consultantInput.deliveryAccountManagerIdValue = consultant.consultantAccountManager?.id;
 
                 input.consultantSalesData!.push(consultantInput);
             });
@@ -829,7 +1018,7 @@ export class WorkflowSalesComponent extends AppComopnentBase implements OnInit {
                 this.salesClientDataForm.clientContractNoEndDate?.setValue(result?.salesClientData?.noEndDate, {emitEvent: false});
                 this.salesClientDataForm.noClientExtensionOption?.setValue(result?.salesClientData?.noClientExtensionOption, {emitEvent: false});
                 this.salesClientDataForm.clientExtensionDuration?.setValue(result?.salesClientData?.clientExtensionDurationId, {emitEvent: false});
-                this.salesClientDataForm.clientExtensionDeadline?.setValue(result?.salesClientData?.clientExtensionDeadlineId, {emitEvent: false});
+                this.salesClientDataForm.clientExtensionDeadline?.setValue(this.findItemById(this.clientExtensionDeadlines, result?.salesClientData?.clientExtensionDeadlineId), {emitEvent: false});
                 // Project
                 this.salesClientDataForm.capOnTimeReporting?.setValue(this.findItemById(this.clientTimeReportingCap, result?.salesClientData?.clientTimeReportingCapId), {emitEvent: false});
                 this.salesClientDataForm.capOnTimeReportingValue?.setValue(result?.salesClientData?.clientTimeReportingCapMaxValue, {emitEvent: false});
@@ -1010,6 +1199,11 @@ export class WorkflowSalesComponent extends AppComopnentBase implements OnInit {
 
     //#endregion Consultant menu actions
 
+    commissionRecipientTypeChanged(event: MatSelectChange, index: number) {
+        console.log(event);
+        this.commissions.at(index).get('recipient')?.setValue(null, {emitEvent: false});
+        this.filteredRecipients = [];
+    }
 
     addCommission(commission?: CommissionDto) {
         const form = this._fb.group({
@@ -1023,6 +1217,56 @@ export class WorkflowSalesComponent extends AppComopnentBase implements OnInit {
             editable: new FormControl(commission?.id ? false : true)
         });
         this.salesMainDataForm.commissions.push(form);
+        this.manageCommissionAutocomplete(this.salesMainDataForm.commissions.length - 1);
+    }
+
+    manageCommissionAutocomplete(commissionIndex: number) {
+        let arrayControl = this.salesMainDataForm.commissions.at(commissionIndex);
+        arrayControl!.get('recipient')!.valueChanges
+            .pipe(
+                takeUntil(this._unsubscribe),
+                debounceTime(300),
+                switchMap((value: any) => {
+                    let toSend = {
+                        name: value,
+                        maxRecordsCount: 1000,
+                    };
+                    switch (arrayControl.value.recipientType.name) {
+                        case 'Client':
+                            // client api
+                            if (value?.id) {
+                                toSend.name = value.id
+                                    ? value.clientName
+                                    : value;
+                            }
+                            return this._lookupService.clients(toSend.name, toSend.maxRecordsCount);
+                        case 'Consultant':
+                            // Consultant api
+                            if (value?.id) {
+                                toSend.name = value.id
+                                    ? value.name
+                                    : value;
+                            }
+                            return this._lookupService.consultants(toSend.name, toSend.maxRecordsCount);
+                        case 'Supplier':
+                            // Supplier api
+                            if (value?.id) {
+                                toSend.name = value.id
+                                    ? value.supplierName
+                                    : value;
+                            }
+                            return this._lookupService.suppliers(toSend.name, toSend.maxRecordsCount);
+                        default:
+                            return of([]);
+                    }
+                }),
+            ).subscribe((list: any[]) => {
+                if (list.length) {
+                    this.filteredRecipients = list;
+                } else {
+                    this.filteredRecipients = [{ name: 'No records found', id: 'no-data' }];
+                }
+            });
     }
 
     get commissions() {
@@ -1045,4 +1289,35 @@ export class WorkflowSalesComponent extends AppComopnentBase implements OnInit {
     displayNameFn(option: any) {
         return option?.name;
     }
+
+    displayClientNameFn(option: any) {
+        return option?.clientName.trim();
+    }
+
+    displayRecipient(recipientTypeName: string) {
+        if (recipientTypeName === 'Client') {
+            return
+        }
+    }
+
+    displayRecipientFn(option: any) {
+        if (option?.name) {
+            return option?.name;
+        } else if (option?.clientName) {
+            return option?.clientName;
+        } else if (option?.supplierName) {
+            return option?.supplierName;
+        }
+    }
+
+    displayFullNameFn(option: any) {
+        return option?.firstName + ' ' + option?.lastName;
+    }
+
+    getTenantCodeFromId(tenantId: number) {
+        const tenant = TenantList.find(x => x.id === tenantId);
+        return tenant?.code;
+    }
 }
+
+

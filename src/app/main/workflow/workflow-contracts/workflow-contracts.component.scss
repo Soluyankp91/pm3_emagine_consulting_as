@@ -2,7 +2,9 @@
 
 .workflow {
     &-contracts {
-
+        .rates-and-fees--btn {
+            width: 180px;
+        }
         &--process-data {
             padding: 30px;
         }
@@ -23,7 +25,8 @@
             }
         }
         &--list {
-            height: 60px;
+            // height: 40px;
+            padding: 0 8px;
             background-color: #fff;
             border: solid 1px #e7e3e8;
 

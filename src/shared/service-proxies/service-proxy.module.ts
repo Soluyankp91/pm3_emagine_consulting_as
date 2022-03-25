@@ -18,6 +18,8 @@ import * as ApiServiceProxies from './service-proxies';
         ApiServiceProxies.LookupServiceProxy,
         ApiServiceProxies.WorkflowServiceProxy,
         ApiServiceProxies.ClientPeriodServiceProxy,
+        ApiServiceProxies.SpecialRatesServiceProxy,
+        ApiServiceProxies.SpecialFeesServiceProxy,
         {
             provide: HTTP_INTERCEPTORS,
             useClass: GlobalHttpInterceptorService,
