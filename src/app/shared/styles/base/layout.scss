@@ -246,3 +246,8 @@ html {
 .text-end {
     text-align: end;
 }
+
+.disabled-autocomplete {
+    pointer-events: none;
+    opacity: .5;
+}

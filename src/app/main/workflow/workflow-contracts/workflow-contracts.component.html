@@ -105,7 +105,7 @@
                         </ng-template>
                     </div>
                     <div fxLayout="row" fxLayoutAlign="start start" class="u-w--100" *ngIf="!readOnlyMode">
-                        <mat-checkbox color="accent" formControlName="isRemarks" name="isRemarks" class="black-checkbox" (change)="disableOrEnableInput(contractsMainDataForm?.isRemarks?.value, contractsMainDataForm?.remarks)">
+                        <mat-checkbox color="accent" formControlName="noRemarks" name="noRemarks" class="black-checkbox" (change)="disableOrEnableInput(contractsMainDataForm?.noRemarks?.value, contractsMainDataForm?.remarks)">
                             None
                         </mat-checkbox>
                     </div>
@@ -150,25 +150,25 @@
 
                         <h2 class="workflow-section--header u-mt--20">Client Special Rates</h2>
                         <div class="inline-edit-form u-w--100">
-                            <div fxLayout="row" fxLayoutAlign="space-between start" fxLayoutGap="10px" class="workflow-sales-inline--form__header-container u-w--100" *ngIf="contractsClientDataForm.clientRates?.controls?.length">
-                                <span fxFlex="25%" class="workflow-sales-inline--form__header u-w--100">
+                            <div fxLayout="row" fxLayoutAlign="space-between start" fxLayoutGap="10px" class="u-w--100 u-pl--16 u-pr--16" *ngIf="contractsClientDataForm.clientRates?.controls?.length">
+                                <span fxFlex="25%" class="workflow-contracts--list-header u-w--100">
                                     Rate name
                                 </span>
-                                <span fxFlex="25%" class="workflow-sales-inline--form__header u-w--100">
+                                <span fxFlex="25%" class="workflow-contracts--list-header u-w--100">
                                     Rate direction
                                 </span>
-                                <span fxFlex="20%" class="workflow-sales-inline--form__header u-w--100">
+                                <span fxFlex="20%" class="workflow-contracts--list-header u-w--100">
                                     Reporting unit
                                 </span>
-                                <span fxFlex="20%" class="workflow-sales-inline--form__header u-w--100">
+                                <span fxFlex="20%" class="workflow-contracts--list-header u-w--100">
                                     Client rate
                                 </span>
-                                <span fxFlex="10%" class="workflow-sales-inline--form__header u-w--100">
+                                <span fxFlex="10%" class="workflow-contracts--list-header u-w--100">
 
                                 </span>
                             </div>
                             <ng-container formArrayName="clientRates" class="u-w--100">
-                                <div fxLayout="row" fxLayoutAlign="space-between center" fxLayoutGap="10px" class="workflow-sales-inline--form__row u-w--100"
+                                <div fxLayout="row" fxLayoutAlign="space-between center" fxLayoutGap="10px" class="workflow-contracts--list u-w--100 u-pl--16 u-pr--16"
                                     *ngFor="let rate of contractsClientDataForm.clientRates.controls; index as i"
                                     [formArrayName]="i">
                                     <ng-container *ngIf="rate.value.editable">
@@ -258,25 +258,25 @@
 
                         <h2 class="workflow-section--header">Client Fees</h2>
                         <div class="inline-edit-form u-w--100">
-                            <div fxLayout="row" fxLayoutAlign="space-between start" fxLayoutGap="10px" class="workflow-sales-inline--form__header-container u-w--100" *ngIf="contractsClientDataForm.clientFees?.controls?.length">
-                                <span fxFlex="25%" class="workflow-sales-inline--form__header u-w--100">
+                            <div fxLayout="row" fxLayoutAlign="space-between start" fxLayoutGap="10px" class="u-w--100 u-pl--16 u-pr--16" *ngIf="contractsClientDataForm.clientFees?.controls?.length">
+                                <span fxFlex="25%" class="workflow-contracts--list-header u-w--100">
                                     Fee name
                                 </span>
-                                <span fxFlex="25%" class="workflow-sales-inline--form__header u-w--100">
+                                <span fxFlex="25%" class="workflow-contracts--list-header u-w--100">
                                     Fee direction
                                 </span>
-                                <span fxFlex="20%" class="workflow-sales-inline--form__header u-w--100">
+                                <span fxFlex="20%" class="workflow-contracts--list-header u-w--100">
                                     Frequency
                                 </span>
-                                <span fxFlex="20%" class="workflow-sales-inline--form__header u-w--100">
+                                <span fxFlex="20%" class="workflow-contracts--list-header u-w--100">
                                     Client fee
                                 </span>
-                                <span fxFlex="10%" class="workflow-sales-inline--form__header u-w--100">
+                                <span fxFlex="10%" class="workflow-contracts--list-header u-w--100">
 
                                 </span>
                             </div>
                             <ng-container formArrayName="clientFees" class="u-w--100">
-                                <div fxLayout="row" fxLayoutAlign="space-between center" fxLayoutGap="10px" class="workflow-sales-inline--form__row u-w--100"
+                                <div fxLayout="row" fxLayoutAlign="space-between center" fxLayoutGap="10px" class="workflow-contracts--list u-w--100 u-pl--16 u-pr--16"
                                     *ngFor="let fee of contractsClientDataForm.clientFees.controls; index as i"
                                     [formArrayName]="i">
                                     <ng-container *ngIf="fee.value.editable">
@@ -319,8 +319,8 @@
                                         </div>
                                     </ng-container>
                                     <ng-container *ngIf="!fee.value.editable">
-                                        <span fxFlex="25%" class="u-w--100 text-truncate-ellipsis" [matTooltip]="contractsClientDataForm.clientFees.at(i).get('rateName')?.value ?? '-'">
-                                            {{fee.value.rateName ?? '-'}}
+                                        <span fxFlex="25%" class="u-w--100 text-truncate-ellipsis" [matTooltip]="contractsClientDataForm.clientFees.at(i).get('feeName')?.value ?? '-'">
+                                            {{fee.value.feeName ?? '-'}}
                                         </span>
                                         <span fxFlex="25%" class="u-w--100 text-truncate-ellipsis" [matTooltip]="contractsClientDataForm.clientFees.at(i).get('feeDirection')?.value?.name ?? '-'">
                                             {{fee.value.feeDirection?.name ?? '-'}}
@@ -469,31 +469,34 @@
                             <h2 class="workflow-section--header u-mt--20">Special Rates</h2>
 
                             <div class="inline-edit-form u-w--100">
-                                <div fxLayout="row" fxLayoutAlign="space-between start" fxLayoutGap="10px" class="workflow-sales-inline--form__header-container u-w--100">
-                                    <span fxFlex="25%" class="workflow-sales-inline--form__header u-w--100">
+                                <div fxLayout="row" fxLayoutAlign="space-between start" fxLayoutGap="10px" class="u-w--100 u-pl--16 u-pr--16" *ngIf="consultant.value.specialRates?.length">
+                                    <span fxFlex="20%" class="workflow-contracts--list-header u-w--100">
                                         Rate name
                                     </span>
-                                    <span fxFlex="25%" class="workflow-sales-inline--form__header u-w--100">
+                                    <span fxFlex="20%" class="workflow-contracts--list-header u-w--100">
                                         Rate direction
                                     </span>
-                                    <span fxFlex="20%" class="workflow-sales-inline--form__header u-w--100">
+                                    <span fxFlex="20%" class="workflow-contracts--list-header u-w--100">
                                         Reporting unit
                                     </span>
-                                    <span fxFlex="20%" class="workflow-sales-inline--form__header u-w--100">
-                                        Client rate
+                                    <span fxFlex="15%" class="workflow-contracts--list-header u-w--100">
+                                        ProData rate
                                     </span>
-                                    <span fxFlex="10%" class="workflow-sales-inline--form__header u-w--100">
+                                    <span fxFlex="15%" class="workflow-contracts--list-header u-w--100">
+                                        Consultant rate
+                                    </span>
+                                    <span fxFlex="10%" class="workflow-contracts--list-header u-w--100">
 
                                     </span>
                                 </div>
-                                <ng-container formArrayName="specialRates" class="u-w--100">
-                                    <div fxLayout="row" fxLayoutAlign="space-between center" fxLayoutGap="10px" class="workflow-sales-inline--form__row u-w--100"
+                                <ng-container formArrayName="specialRates" class="u-w--100 u-pl--16 u-pr--16">
+                                    <div fxLayout="row" fxLayoutAlign="space-between center" fxLayoutGap="10px" class="workflow-contracts--list u-w--100 u-pl--16 u-pr--16"
                                         *ngFor="let rate of getConsultantSpecialRateControls(consultantIndex); let specialRateIndex = index" [formGroupName]="specialRateIndex">
                                         <ng-container *ngIf="rate.value.editable">
-                                            <mat-form-field appearance="fill" class="u-w--100 formFieldNoMarginPadding filter-select" fxFlex="25%">
+                                            <mat-form-field appearance="fill" class="u-w--100 formFieldNoMarginPadding filter-select" fxFlex="20%">
                                                 <input matInput type="text" formControlName="rateName" placeholder="Rate name" />
                                             </mat-form-field>
-                                            <mat-form-field appearance="fill" class="u-w--100 formFieldNoMarginPadding filter-select" fxFlex="25%">
+                                            <mat-form-field appearance="fill" class="u-w--100 formFieldNoMarginPadding filter-select" fxFlex="20%">
                                                 <mat-select formControlName="rateDirection" placeholder="Rate direction" [disableOptionCentering]="true" [compareWith]="compareWithFn">
                                                     <mat-option *ngFor="let item of clientSpecialRateOrFeeDirections" [value]="item">
                                                         {{ item.name }}
@@ -507,12 +510,24 @@
                                                     </mat-option>
                                                 </mat-select>
                                             </mat-form-field>
-                                            <div fxFlex="20%" fxLayout="row" fxLayoutAlign="start start">
+                                            <div fxFlex="15%" fxLayout="row" fxLayoutAlign="start start">
                                                 <mat-form-field appearance="fill" class="u-w--100 formFieldNoMarginPadding filter-select" fxFlex="40%">
-                                                    <input matInput type="text" placeholder="Rate" formControlName="clientRateValue">
+                                                    <input matInput type="text" placeholder="Rate" formControlName="proDataRateValue">
                                                 </mat-form-field>
                                                 <mat-form-field appearance="fill" class="u-w--100 formFieldNoMarginPadding filter-select" fxFlex="60%">
-                                                    <mat-select formControlName="clientRateCurrency" placeholder="Currency" [disableOptionCentering]="true" [compareWith]="compareWithFn">
+                                                    <mat-select formControlName="proDataRateCurrency" placeholder="Currency" [disableOptionCentering]="true" [compareWith]="compareWithFn">
+                                                        <mat-option *ngFor="let item of currencies" [value]="item">
+                                                            {{ item.name }}
+                                                        </mat-option>
+                                                    </mat-select>
+                                                </mat-form-field>
+                                            </div>
+                                            <div fxFlex="15%" fxLayout="row" fxLayoutAlign="start start">
+                                                <mat-form-field appearance="fill" class="u-w--100 formFieldNoMarginPadding filter-select" fxFlex="40%">
+                                                    <input matInput type="text" placeholder="Rate" formControlName="consultantRateValue">
+                                                </mat-form-field>
+                                                <mat-form-field appearance="fill" class="u-w--100 formFieldNoMarginPadding filter-select" fxFlex="60%">
+                                                    <mat-select formControlName="consultantRateCurrency" placeholder="Currency" [disableOptionCentering]="true" [compareWith]="compareWithFn">
                                                         <mat-option *ngFor="let item of currencies" [value]="item">
                                                             {{ item.name }}
                                                         </mat-option>
@@ -529,19 +544,22 @@
                                             </div>
                                         </ng-container>
                                         <ng-container *ngIf="!rate.value.editable">
-                                            <span fxFlex="25%" class="u-w--100 text-truncate-ellipsis" [matTooltip]="rate.value.rateName">
+                                            <span fxFlex="20%" class="u-w--100 text-truncate-ellipsis workflow-contracts--list-item" [matTooltip]="rate.value.rateName">
                                                 {{rate.value.rateName}}
                                             </span>
-                                            <span fxFlex="25%" class="u-w--100 text-truncate-ellipsis" [matTooltip]="rate.value.rateDirection?.name">
+                                            <span fxFlex="20%" class="u-w--100 text-truncate-ellipsis workflow-contracts--list-item" [matTooltip]="rate.value.rateDirection?.name">
                                                 {{rate.value.rateDirection?.name}}
                                             </span>
-                                            <span fxFlex="20%" class="u-w--100 text-truncate-ellipsis" [matTooltip]="rate.value.reportingUnit?.name">
+                                            <span fxFlex="20%" class="u-w--100 text-truncate-ellipsis workflow-contracts--list-item" [matTooltip]="rate.value.reportingUnit?.name">
                                                 {{rate.value.reportingUnit?.name}}
                                             </span>
-                                            <span fxFlex="20%" class="u-w--100 text-truncate-ellipsis" [matTooltip]="rate.value.clientRateValue + ' ' + rate.value.clientRateCurrency?.name">
-                                                {{rate.value.clientRateValue || rate.value.clientRateCurrency?.name ? rate.value.clientRateValue + ' ' + rate.value.clientRateCurrency?.name : '-'}}
+                                            <span fxFlex="15%" class="u-w--100 text-truncate-ellipsis workflow-contracts--list-item" [matTooltip]="rate.value.proDataRateValue + ' ' + rate.value.proDataRateCurrency?.name">
+                                                {{rate.value.proDataRateValue || rate.value.proDataRateCurrency?.name ? rate.value.proDataRateValue + ' ' + rate.value.proDataRateCurrency?.name : '-'}}
                                             </span>
-                                            <div fxFlex="10%" fxLayoutAlign="center center" class="u-w--100">
+                                            <span fxFlex="15%" class="u-w--100 text-truncate-ellipsis workflow-contracts--list-item" [matTooltip]="rate.value.consultantRateValue + ' ' + rate.value.consultantRateCurrency?.name">
+                                                {{rate.value.consultantRateValue || rate.value.consultantRateCurrency?.name ? rate.value.consultantRateValue + ' ' + rate.value.consultantRateCurrency?.name : '-'}}
+                                            </span>
+                                            <div fxFlex="10%" fxLayoutAlign="center center" class="u-w--100 workflow-contracts--list-item">
                                                 <button mat-icon-button (click)="$event.stopPropagation();" [matMenuTriggerFor]="clientRateMenu" class="three-dots-actions-btn">
                                                     <mat-icon>more_horiz</mat-icon>
                                                 </button>
@@ -568,59 +586,8 @@
                                 </ng-container>
                             </div>
                             <div fxLayout="row" fxLayoutAlign="start start" class="u-mb--10">
-                                <button [ngClass]="contractsClientDataForm!.clientRates!.controls!.length > 0 ? 'button-add' : 'button-outlined'" class="rates-and-fees--btn" mat-flat-button (click)="addSpecialRateToConsultantData(consultantIndex)" *ngIf="!readOnlyMode">
-                                    <mat-icon *ngIf="contractsClientDataForm.clientRates?.controls?.length">add</mat-icon>
-                                    Add special rates
-                                </button>
-                            </div>
-
-                            <div fxLayout="row" fxLayoutAlign="start center" class="u-w--100 u-mb--10">
-                                <div class="u-ml--20" fxFlex="35%">
-                                    <span class="workflow-contracts--list-header">Rate name</span>
-                                </div>
-                                <div fxFlex="20%">
-                                    <span class="workflow-contracts--list-header">Rate direction</span>
-                                </div>
-                                <div fxFlex="12.5%">
-                                    <span class="workflow-contracts--list-header">Reporting unit</span>
-                                </div>
-                                <div fxFlex="12.5%">
-                                    <span class="workflow-contracts--list-header">ProData rate</span>
-                                </div>
-                                <div fxFlex="20%">
-                                    <span class="workflow-contracts--list-header">Consultant rate</span>
-                                </div>
-                            </div>
-                            <div formArrayName="specialRates" class="u-w--100 u-mb--20">
-                                <div fxLayout="row" fxLayoutAlign="start center" class="workflow-contracts--list u-w--100" *ngFor="let rate of getConsultantSpecialRateControls(consultantIndex); let specialRateIndex = index" [formGroupName]="specialRateIndex">
-                                    <div class="u-ml--20" fxFlex="35%">
-                                        <span class="workflow-contracts--list-item">Onsite rate</span>
-                                    </div>
-                                    <div fxFlex="20%">
-                                        <span class="workflow-contracts--list-item">Consultant / Pay</span>
-                                    </div>
-                                    <div fxFlex="12.5%">
-                                        <span class="workflow-contracts--list-item">Months</span>
-                                    </div>
-                                    <div fxFlex="12.5%">
-                                        <span class="workflow-contracts--list-item">2500 DKK</span>
-                                    </div>
-                                    <div fxFlex="12.5%">
-                                        <span class="workflow-contracts--list-item">2500 DKK</span>
-                                    </div>
-                                    <div fxFlex="7.5%">
-                                        <button class="form-icon--delete-row u-mt--5"  mat-icon-button [matMenuTriggerFor]="contractActions" [matMenuTriggerData]="{elem: specialRateIndex}" (click)="$event.stopPropagation()"><mat-icon>more_horiz</mat-icon></button>
-                                    </div>
-                                    <mat-menu #contractActions="matMenu" [overlapTrigger]="false" (click)="$event.stopPropagation();">
-                                        <ng-template matMenuContent let-elem="elem">
-                                            <button mat-menu-item (click)="removeConsultantDataSpecialRate(consultantIndex, elem)">
-                                                Delete
-                                            </button>
-                                        </ng-template>
-                                    </mat-menu>
-                                </div>
-                                <button class="button-add u-mt--10" mat-flat-button (click)="addSpecialRateToConsultantData(consultantIndex)" *ngIf="!readOnlyMode">
-                                    <mat-icon>add</mat-icon>
+                                <button [ngClass]="consultant.value.specialRates?.length > 0 ? 'button-add' : 'button-outlined'" class="rates-and-fees--btn" mat-flat-button (click)="addSpecialRateToConsultantData(consultantIndex)" *ngIf="!readOnlyMode">
+                                    <mat-icon *ngIf="consultant.value.specialRates?.length">add</mat-icon>
                                     Add special rates
                                 </button>
                             </div>
@@ -628,31 +595,34 @@
                             <h2 class="workflow-section--header">Client Fees</h2>
 
                             <div class="inline-edit-form u-w--100">
-                                <div fxLayout="row" fxLayoutAlign="space-between start" fxLayoutGap="10px" class="workflow-sales-inline--form__header-container u-w--100" *ngIf="contractsClientDataForm.clientFees?.controls?.length">
-                                    <span fxFlex="25%" class="workflow-sales-inline--form__header u-w--100">
+                                <div fxLayout="row" fxLayoutAlign="space-between start" fxLayoutGap="10px" class="u-w--100 u-pl--16 u-pr--16" *ngIf="consultant.value.clientFees?.length">
+                                    <span fxFlex="20%" class="workflow-contracts--list-header u-w--100">
                                         Fee name
                                     </span>
-                                    <span fxFlex="25%" class="workflow-sales-inline--form__header u-w--100">
+                                    <span fxFlex="20%" class="workflow-contracts--list-header u-w--100">
                                         Fee direction
                                     </span>
-                                    <span fxFlex="20%" class="workflow-sales-inline--form__header u-w--100">
+                                    <span fxFlex="20%" class="workflow-contracts--list-header u-w--100">
                                         Frequency
                                     </span>
-                                    <span fxFlex="20%" class="workflow-sales-inline--form__header u-w--100">
-                                        Client fee
+                                    <span fxFlex="15%" class="workflow-contracts--list-header u-w--100">
+                                        ProData fee
                                     </span>
-                                    <span fxFlex="10%" class="workflow-sales-inline--form__header u-w--100">
+                                    <span fxFlex="15%" class="workflow-contracts--list-header u-w--100">
+                                        Consultant fee
+                                    </span>
+                                    <span fxFlex="10%" class="workflow-contracts--list-header u-w--100">
 
                                     </span>
                                 </div>
                                 <ng-container formArrayName="clientFees" class="u-w--100">
-                                    <div fxLayout="row" fxLayoutAlign="space-between center" fxLayoutGap="10px" class="workflow-sales-inline--form__row u-w--100"
+                                    <div fxLayout="row" fxLayoutAlign="space-between center" fxLayoutGap="10px" class="workflow-contracts--list u-w--100 u-pl--16 u-pr--16"
                                         *ngFor="let fee of getConsultantClientFeesControls(consultantIndex); let clientFeeIndex = index" [formGroupName]="clientFeeIndex">
                                         <ng-container *ngIf="fee.value.editable">
-                                            <mat-form-field appearance="fill" class="u-w--100 formFieldNoMarginPadding filter-select" fxFlex="25%">
+                                            <mat-form-field appearance="fill" class="u-w--100 formFieldNoMarginPadding filter-select" fxFlex="20%">
                                                 <input matInput type="text" formControlName="feeName" placeholder="Fee name" />
                                             </mat-form-field>
-                                            <mat-form-field appearance="fill" class="u-w--100 formFieldNoMarginPadding filter-select" fxFlex="25%">
+                                            <mat-form-field appearance="fill" class="u-w--100 formFieldNoMarginPadding filter-select" fxFlex="20%">
                                                 <mat-select formControlName="feeDirection" placeholder="Fee direction" [disableOptionCentering]="true" [compareWith]="compareWithFn">
                                                     <mat-option *ngFor="let item of clientSpecialRateOrFeeDirections" [value]="item">
                                                         {{ item.name }}
@@ -666,12 +636,24 @@
                                                     </mat-option>
                                                 </mat-select>
                                             </mat-form-field>
-                                            <div fxFlex="20%" fxLayout="row" fxLayoutAlign="start start">
+                                            <div fxFlex="15%" fxLayout="row" fxLayoutAlign="start start">
                                                 <mat-form-field appearance="fill" class="u-w--100 formFieldNoMarginPadding filter-select" fxFlex="40%">
-                                                    <input matInput type="text" placeholder="Rate" formControlName="clientRateValue">
+                                                    <input matInput type="text" placeholder="Rate" formControlName="proDataRateValue">
                                                 </mat-form-field>
                                                 <mat-form-field appearance="fill" class="u-w--100 formFieldNoMarginPadding filter-select" fxFlex="60%">
-                                                    <mat-select formControlName="clientRateCurrency" placeholder="Currency" [disableOptionCentering]="true" [compareWith]="compareWithFn">
+                                                    <mat-select formControlName="proDataRateCurrency" placeholder="Currency" [disableOptionCentering]="true" [compareWith]="compareWithFn">
+                                                        <mat-option *ngFor="let item of currencies" [value]="item">
+                                                            {{ item.name }}
+                                                        </mat-option>
+                                                    </mat-select>
+                                                </mat-form-field>
+                                            </div>
+                                            <div fxFlex="15%" fxLayout="row" fxLayoutAlign="start start">
+                                                <mat-form-field appearance="fill" class="u-w--100 formFieldNoMarginPadding filter-select" fxFlex="40%">
+                                                    <input matInput type="text" placeholder="Rate" formControlName="consultantRateValue">
+                                                </mat-form-field>
+                                                <mat-form-field appearance="fill" class="u-w--100 formFieldNoMarginPadding filter-select" fxFlex="60%">
+                                                    <mat-select formControlName="consultantRateCurrency" placeholder="Currency" [disableOptionCentering]="true" [compareWith]="compareWithFn">
                                                         <mat-option *ngFor="let item of currencies" [value]="item">
                                                             {{ item.name }}
                                                         </mat-option>
@@ -688,19 +670,22 @@
                                             </div>
                                         </ng-container>
                                         <ng-container *ngIf="!fee.value.editable">
-                                            <span fxFlex="25%" class="u-w--100 text-truncate-ellipsis" [matTooltip]="fee.value.rateName ?? '-'">
-                                                {{fee.value.rateName ?? '-'}}
+                                            <span fxFlex="20%" class="u-w--100 text-truncate-ellipsis workflow-contracts--list-item" [matTooltip]="fee.value.feeName ?? '-'">
+                                                {{fee.value.feeName ?? '-'}}
                                             </span>
-                                            <span fxFlex="25%" class="u-w--100 text-truncate-ellipsis" [matTooltip]="fee.value.feeDirection?.name ?? '-'">
+                                            <span fxFlex="20%" class="u-w--100 text-truncate-ellipsis workflow-contracts--list-item" [matTooltip]="fee.value.feeDirection?.name ?? '-'">
                                                 {{fee.value.feeDirection?.name ?? '-'}}
                                             </span>
-                                            <span fxFlex="20%" class="u-w--100 text-truncate-ellipsis" [matTooltip]="fee.value.feeFrequency?.name ?? '-'">
+                                            <span fxFlex="20%" class="u-w--100 text-truncate-ellipsis workflow-contracts--list-item" [matTooltip]="fee.value.feeFrequency?.name ?? '-'">
                                                 {{fee.value.feeFrequency?.name ?? '-'}}
                                             </span>
-                                            <span fxFlex="20%" class="u-w--100 text-truncate-ellipsis" [matTooltip]="fee.value.clientRateValue + ' ' + fee.value.clientRateCurrency?.name">
-                                                {{fee.value.clientRateValue || fee.value.clientRateCurrency?.name ? fee.value.clientRateValue + ' ' + fee.value.clientRateCurrency?.name : '-'}}
+                                            <span fxFlex="15%" class="u-w--100 text-truncate-ellipsis workflow-contracts--list-item" [matTooltip]="fee.value.proDataRateValue + ' ' + fee.value.proDataRateCurrency?.name">
+                                                {{fee.value.proDataRateValue || fee.value.proDataRateCurrency?.name ? fee.value.proDataRateValue + ' ' + fee.value.proDataRateCurrency?.name : '-'}}
                                             </span>
-                                            <div fxFlex="10%" fxLayoutAlign="center center" class="u-w--100">
+                                            <span fxFlex="15%" class="u-w--100 text-truncate-ellipsis workflow-contracts--list-item" [matTooltip]="fee.value.consultantRateValue + ' ' + fee.value.consultantRateCurrency?.name">
+                                                {{fee.value.consultantRateValue || fee.value.consultantRateCurrency?.name ? fee.value.consultantRateValue + ' ' + fee.value.consultantRateCurrency?.name : '-'}}
+                                            </span>
+                                            <div fxFlex="10%" fxLayoutAlign="center center" class="u-w--100 workflow-contracts--list-item">
                                                 <button mat-icon-button (click)="$event.stopPropagation();" [matMenuTriggerFor]="clientFeeMenu" class="three-dots-actions-btn">
                                                     <mat-icon>more_horiz</mat-icon>
                                                 </button>
@@ -718,138 +703,153 @@
                                     </div>
                                 </ng-container>
                             </div>
-
-                            <div fxLayout="row" fxLayoutAlign="start center" class="u-w--100 u-mb--10">
-                                <div class="u-ml--20" fxFlex="35%">
-                                    <span class="workflow-contracts--list-header">Fee name</span>
-                                </div>
-                                <div fxFlex="20%">
-                                    <span class="workflow-contracts--list-header">Fee direction</span>
-                                </div>
-                                <div fxFlex="12.5%">
-                                    <span class="workflow-contracts--list-header">Frequency</span>
-                                </div>
-                                <div fxFlex="12.5%">
-                                    <span class="workflow-contracts--list-header">ProData rate</span>
-                                </div>
-                                <div fxFlex="20%">
-                                    <span class="workflow-contracts--list-header">Consultant rate</span>
-                                </div>
-                            </div>
-                            <div formArrayName="clientFees" class="u-w--100 u-mb--20">
-                                <div fxLayout="row" fxLayoutAlign="start center" class="workflow-contracts--list u-w--100" *ngFor="let fee of getConsultantClientFeesControls(consultantIndex); let clientFeeIndex = index" [formGroupName]="clientFeeIndex">
-                                    <div class="u-ml--20" fxFlex="35%">
-                                        <span class="workflow-contracts--list-item">Desk fee</span>
-                                    </div>
-                                    <div fxFlex="20%">
-                                        <span class="workflow-contracts--list-item">Consultant / Pay</span>
-                                    </div>
-                                    <div fxFlex="12.5%">
-                                        <span class="workflow-contracts--list-item">Every invoice</span>
-                                    </div>
-                                    <div fxFlex="12.5%">
-                                        <span class="workflow-contracts--list-item">2500 DKK</span>
-                                    </div>
-                                    <div fxFlex="12.5%">
-                                        <span class="workflow-contracts--list-item">2500 DKK</span>
-                                    </div>
-                                    <div fxFlex="7.5%">
-                                        <button class="form-icon--delete-row u-mt--5"  mat-icon-button [matMenuTriggerFor]="contractClientFeesActions" [matMenuTriggerData]="{elem: clientFeeIndex}" (click)="$event.stopPropagation()"><mat-icon>more_horiz</mat-icon></button>
-                                    </div>
-                                    <mat-menu #contractClientFeesActions="matMenu" [overlapTrigger]="false" (click)="$event.stopPropagation();">
-                                        <ng-template matMenuContent let-elem="elem">
-                                            <button mat-menu-item (click)="removeConsultantDataClientFees(consultantIndex, elem)">
-                                                Delete
-                                            </button>
-                                        </ng-template>
-                                    </mat-menu>
-                                    <!-- <button class="form-icon--delete-row u-mt--5"  mat-icon-button (click)="removeConsultantDataClientFees(consultantIndex, clientFeeIndex)"><mat-icon svgIcon="remove-icon"></mat-icon></button> -->
-                                </div>
-                                <button class="button-add u-mt--10" mat-flat-button (click)="addClientFeesToConsultantData(consultantIndex)" *ngIf="!readOnlyMode">
-                                    <mat-icon>add</mat-icon>
+                            <div fxLayout="row" fxLayoutAlign="start start" class="u-mb--10">
+                                <button [ngClass]="consultant.value.clientFees?.length > 0 ? 'button-add' : 'button-outlined'" class="rates-and-fees--btn" mat-flat-button (click)="addClientFeesToConsultantData(consultantIndex)" *ngIf="!readOnlyMode">
+                                    <mat-icon *ngIf="consultant.value.clientFees?.length">add</mat-icon>
                                     Add special fees
                                 </button>
                             </div>
 
                             <h2 class="workflow-section--header">Project Lines</h2>
-                            <div fxLayout="row" fxLayoutAlign="start center" class="u-w--100 u-mb--10">
-                                <div class="u-ml--20" fxFlex="10%">
-                                    <span class="workflow-contracts--list-header">Unique id</span>
-                                </div>
-                                <div fxFlex="16%">
-                                    <span class="workflow-contracts--list-header">Project name</span>
-                                </div>
-                                <div fxFlex="10%">
-                                    <span class="workflow-contracts--list-header">Assignment ID/PO No</span>
-                                </div>
-                                <div fxFlex="7%">
-                                    <span class="workflow-contracts--list-header">Start date</span>
-                                </div>
-                                <div fxFlex="7%">
-                                    <span class="workflow-contracts--list-header">End date</span>
-                                </div>
-                                <div fxFlex="10%">
-                                    <span class="workflow-contracts--list-header">Invoice ref</span>
-                                </div>
-                                <div fxFlex="10%">
-                                    <span class="workflow-contracts--list-header">Last changed</span>
-                                </div>
-                                <div fxFlex="15%">
-                                    <span class="workflow-contracts--list-header">Optional Invoicing Info</span>
-                                </div>
-                                <div fxFlex="15%">
-                                    <span class="workflow-contracts--list-header">Cap on hour reporting</span>
-                                </div>
-                            </div>
-                            <div formArrayName="projectLines" class="u-w--100 u-mb--20">
-                                <div fxLayout="row" fxLayoutAlign="start center" class="workflow-contracts--list u-w--100" *ngFor="let projectLine of getConsultantProjectLinesControls(consultantIndex); let projectLinesIndex = index" [formGroupName]="projectLinesIndex">
-                                    <div class="u-ml--20" fxFlex="10%">
-                                        <span class="workflow-contracts--list-item">34535334</span>
-                                    </div>
-                                    <div fxFlex="16%">
-                                        <span class="workflow-contracts--list-item">System Center Operations manager (SCOM) consultant</span>
-                                    </div>
-                                    <div fxFlex="10%">
-                                        <span class="workflow-contracts--list-item">Andrzej Walewski - CTR04464</span>
-                                    </div>
-                                    <div fxFlex="7%">
-                                        <span class="workflow-contracts--list-item">24.12.2020</span>
-                                    </div>
-                                    <div fxFlex="7%">
-                                        <span class="workflow-contracts--list-item">24.12.2020</span>
-                                    </div>
-                                    <div fxFlex="10%">
-                                        <span class="workflow-contracts--list-item">Lars Larsen</span>
-                                    </div>
-                                    <div fxFlex="10%">
-                                        <span class="workflow-contracts--list-item">24.12.2020 (by mk)</span>
-                                    </div>
-                                    <div fxFlex="15%">
-                                        <span class="workflow-contracts--list-item">System Center Operations manager (SCOM) consultant..</span>
-                                    </div>
-                                    <div fxFlex="10%">
-                                        <span class="workflow-contracts--list-item">0.18</span>
-                                    </div>
+                            <div class="inline-edit-form u-w--100">
+                                <div fxLayout="row" fxLayoutAlign="space-between start" fxLayoutGap="10px" class="u-w--100 u-pl--16 u-pr--16" *ngIf="consultant.value.projectLines?.length">
                                     <div fxFlex="5%">
-                                        <button class="form-icon--delete-row u-mt--5"  mat-icon-button [matMenuTriggerFor]="contractProjectLinesActions" [matMenuTriggerData]="{elem: projectLinesIndex}" (click)="$event.stopPropagation()"><mat-icon>more_horiz</mat-icon></button>
+                                        <span class="workflow-contracts--list-header">Unique id</span>
                                     </div>
-                                    <mat-menu #contractProjectLinesActions="matMenu" [overlapTrigger]="false" (click)="$event.stopPropagation();">
-                                        <ng-template matMenuContent let-elem="elem">
-                                            <button mat-menu-item (click)="removeConsultantDataSpecialRate(consultantIndex, elem)">
-                                                Duplicate
-                                            </button>
-                                            <button mat-menu-item (click)="removeConsultantDataSpecialRate(consultantIndex, elem)">
-                                                Edit
-                                            </button>
-                                            <button mat-menu-item (click)="removeConsultantDataProjectLines(consultantIndex, elem)">
-                                                Delete
-                                            </button>
-                                        </ng-template>
-                                    </mat-menu>
-                                    <!-- <button class="form-icon--delete-row u-mt--5"  mat-icon-button (click)="removeConsultantDataProjectLines(consultantIndex, projectLinesIndex)"><mat-icon svgIcon="remove-icon"></mat-icon></button> -->
+                                    <div fxFlex="17%">
+                                        <span class="workflow-contracts--list-header">Project name</span>
+                                    </div>
+                                    <div fxFlex="17%">
+                                        <span class="workflow-contracts--list-header">Assignment ID/PO No</span>
+                                    </div>
+                                    <div fxFlex="7%">
+                                        <span class="workflow-contracts--list-header">Start date</span>
+                                    </div>
+                                    <div fxFlex="7%">
+                                        <span class="workflow-contracts--list-header">End date</span>
+                                    </div>
+                                    <div fxFlex="10%">
+                                        <span class="workflow-contracts--list-header">Invoice ref</span>
+                                    </div>
+                                    <div fxFlex="7%">
+                                        <span class="workflow-contracts--list-header">Last changed</span>
+                                    </div>
+                                    <div fxFlex="20%">
+                                        <span class="workflow-contracts--list-header">Optional Invoicing Info</span>
+                                    </div>
+                                    <div fxFlex="10%">
+                                    </div>
                                 </div>
-                                <button class="button-add u-mt--10" mat-flat-button (click)="addProjectLinesToConsultantData(consultantIndex)" *ngIf="!readOnlyMode">
-                                    <mat-icon>add</mat-icon>
+                                <ng-container formArrayName="projectLines" class="u-w--100">
+                                    <div fxLayout="row" fxLayoutAlign="space-between center" fxLayoutGap="10px"
+                                        class="workflow-contracts--list u-w--100 u-pl--16 u-pr--16" *ngFor="let projectLine of getConsultantProjectLinesControls(consultantIndex); let projectLinesIndex = index" [formGroupName]="projectLinesIndex">
+                                        <ng-container *ngIf="projectLine.value.editable">
+                                            <div fxFlex="5%">
+                                                <!-- empty space for unique id in edit mode -->
+                                            </div>
+                                            <mat-form-field appearance="fill" class="u-w--100 formFieldNoMarginPadding filter-select" fxFlex="17%">
+                                                <input matInput type="text" placeholder="Project name" formControlName="projectName">
+                                            </mat-form-field>
+                                            <mat-form-field appearance="fill" class="u-w--100 formFieldNoMarginPadding filter-select" fxFlex="17%">
+                                                <mat-select formControlName="invoiceRecipientId" placeholder="Assignment ID/PO No" [disableOptionCentering]="true" [compareWith]="compareWithFn">
+                                                    <mat-option *ngFor="let item of [0, 1, 2]" [value]="item">
+                                                        {{ item }}
+                                                    </mat-option>
+                                                </mat-select>
+                                            </mat-form-field>
+                                            <mat-form-field appearance="fill" class="u-w--100 formFieldNoMarginPadding filter-select formFieldDatePicker" fxFlex="7%">
+                                                <input autocomplete="off" matInput
+                                                        [matDatepicker]="projectLineStartDatePicker"
+                                                        name="projectLineStartDate" formControlName="startDate"
+                                                        palceholder="Start date"
+                                                        (focus)="projectLineStartDatePicker.open()"
+                                                        (click)="projectLineStartDatePicker.open()" readonly>
+                                                <mat-icon class="calendar-icon" matSuffix svgIcon="calendar"></mat-icon>
+                                                <mat-datepicker #projectLineStartDatePicker></mat-datepicker>
+                                            </mat-form-field>
+                                            <mat-form-field appearance="fill" class="u-w--100 formFieldNoMarginPadding filter-select formFieldDatePicker" fxFlex="7%">
+                                                <input autocomplete="off" matInput
+                                                        [matDatepicker]="projectLineEndDatePicker"
+                                                        name="projectLineEndDate" formControlName="endDate"
+                                                        palceholder="End date"
+                                                        (focus)="projectLineEndDatePicker.open()"
+                                                        (click)="projectLineEndDatePicker.open()" readonly>
+                                                <mat-icon class="calendar-icon" matSuffix svgIcon="calendar"></mat-icon>
+                                                <mat-datepicker #projectLineEndDatePicker></mat-datepicker>
+                                            </mat-form-field>
+                                            <mat-form-field appearance="fill" class="u-w--100 formFieldNoMarginPadding filter-select" fxFlex="10%">
+                                                <input matInput type="text" placeholder="Invoice ref." formControlName="invoicingReferenceNumber">
+                                            </mat-form-field>
+                                            <mat-form-field appearance="fill" class="u-w--100 formFieldNoMarginPadding filter-select formFieldDatePicker" fxFlex="7%">
+                                                <input autocomplete="off" matInput
+                                                        [matDatepicker]="modificationDatePicker"
+                                                        name="modificationDate" formControlName="modificationDate"
+                                                        palceholder="Last changed"
+                                                        (focus)="modificationDatePicker.open()"
+                                                        (click)="modificationDatePicker.open()" readonly>
+                                                <mat-icon class="calendar-icon" matSuffix svgIcon="calendar"></mat-icon>
+                                                <mat-datepicker #modificationDatePicker></mat-datepicker>
+                                            </mat-form-field>
+                                            <mat-form-field appearance="fill" class="u-w--100 formFieldNoMarginPadding filter-select" fxFlex="20%">
+                                                <input matInput type="text" placeholder="Optional invoicing info" formControlName="optionalInvoicingInfo">
+                                            </mat-form-field>
+                                            <div fxFlex="10%" class="u-w--100 text-truncate-ellipsis flex-items-center">
+                                                <button mat-flat-button (click)="editOrSaveConsultantProjectLine(projectLine.value.editable, consultantIndex, projectLinesIndex)" class="inline-edit-form--btn__save">
+                                                    Save
+                                                </button>
+                                                <button mat-icon-button (click)="removeConsultantDataProjectLines(consultantIndex, projectLinesIndex)">
+                                                    <mat-icon>clear</mat-icon>
+                                                </button>
+                                            </div>
+                                        </ng-container>
+                                        <ng-container *ngIf="!projectLine.value.editable">
+                                            <span fxFlex="5%" class="u-w--100 text-truncate-ellipsis workflow-contracts--list-item" [matTooltip]="projectLine.value.id ?? '-'">
+                                                {{projectLine.value.id ?? '-'}}
+                                            </span>
+                                            <span fxFlex="17%" class="u-w--100 text-truncate-ellipsis workflow-contracts--list-item" [matTooltip]="projectLine.value.projectName ?? '-'">
+                                                {{projectLine.value.projectName ?? '-'}}
+                                            </span>
+                                            <span fxFlex="17%" class="u-w--100 text-truncate-ellipsis workflow-contracts--list-item" [matTooltip]="projectLine.value.invoiceRecipientId?.name ?? '-'">
+                                                {{projectLine.value.invoiceRecipientId?.name ?? '-'}}
+                                            </span>
+                                            <span fxFlex="7%" class="u-w--100 text-truncate-ellipsis workflow-contracts--list-item" [matTooltip]="projectLine.value.startDate ? (projectLine.value.startDate | momentFormat: 'DD.MM.YYYY') : '-'">
+                                                {{projectLine.value.startDate ? (projectLine.value.startDate | momentFormat: 'DD.MM.YYYY') : '-'}}
+                                            </span>
+                                            <span fxFlex="7%" class="u-w--100 text-truncate-ellipsis workflow-contracts--list-item" [matTooltip]="projectLine.value.endDate ? (projectLine.value.endDate | momentFormat: 'DD.MM.YYYY') : '-'">
+                                                {{projectLine.value.endDate ? (projectLine.value.endDate | momentFormat: 'DD.MM.YYYY') : '-'}}
+                                            </span>
+                                            <span fxFlex="10%" class="u-w--100 text-truncate-ellipsis workflow-contracts--list-item" [matTooltip]="projectLine.value.invoicingReferenceNumber ?? '-'">
+                                                {{projectLine.value.invoicingReferenceNumber ?? '-'}}
+                                            </span>
+                                            <span fxFlex="7%" class="u-w--100 text-truncate-ellipsis workflow-contracts--list-item" [matTooltip]="projectLine.value.modificationDate ? (projectLine.value.modificationDate | momentFormat: 'DD.MM.YYYY') : '-'">
+                                                {{projectLine.value.modificationDate ? (projectLine.value.modificationDate | momentFormat: 'DD.MM.YYYY') : '-'}}
+                                            </span>
+                                            <span fxFlex="20%" class="u-w--100 text-truncate-ellipsis workflow-contracts--list-item" [matTooltip]="projectLine.value.optionalInvoicingInfo ?? '-'">
+                                                {{projectLine.value.optionalInvoicingInfo ?? '-'}}
+                                            </span>
+                                            <div fxFlex="10%" fxLayoutAlign="center center" class="u-w--100 workflow-contracts--list-item">
+                                                <button mat-icon-button (click)="$event.stopPropagation();" [matMenuTriggerFor]="clientFeeMenu" class="three-dots-actions-btn">
+                                                    <mat-icon>more_horiz</mat-icon>
+                                                </button>
+                                                <mat-menu #clientFeeMenu>
+                                                    <button
+                                                        class="menu-item menu-item--cancel"
+                                                        mat-menu-item
+                                                        (click)="removeConsultantDataClientFees(consultantIndex, projectLinesIndex)">
+                                                        <mat-icon>clear</mat-icon>
+                                                        Remove
+                                                    </button>
+                                                </mat-menu>
+                                            </div>
+                                        </ng-container>
+                                    </div>
+                                </ng-container>
+                            </div>
+
+
+                            <div fxLayout="row" fxLayoutAlign="start start" class="u-mb--10">
+                                <button [ngClass]="consultant.value.projectLines?.length > 0 ? 'button-add' : 'button-outlined'" class="rates-and-fees--btn" mat-flat-button (click)="addProjectLinesToConsultantData(consultantIndex)" *ngIf="!readOnlyMode">
+                                    <mat-icon *ngIf="consultant.value.projectLines?.length">add</mat-icon>
                                     Add project line
                                 </button>
                             </div>

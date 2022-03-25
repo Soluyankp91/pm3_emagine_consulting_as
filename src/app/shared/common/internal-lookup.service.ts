@@ -23,6 +23,10 @@ export class InternalLookupService {
     contractExpirationNotificationDuration: EnumEntityTypeDto[] = [];
     clientTimeReportingCap: EnumEntityTypeDto[] = [];
     emagineOffices: EnumEntityTypeDto[] = [];
+    commissionFrequencies: EnumEntityTypeDto[] = [];
+    commissionTypes: EnumEntityTypeDto[] = [];
+    commissionRecipientTypeList: EnumEntityTypeDto[] = [];
+    tenants: EnumEntityTypeDto[] = [];
 
     workflowClientPeriodTypes: EnumEntityTypeDto[] = [];
     workflowConsultantPeriodTypes: EnumEntityTypeDto[] = [];
@@ -442,6 +446,78 @@ export class InternalLookupService {
                     .subscribe(response => {
                         this.emagineOffices = response;
                         observer.next(this.emagineOffices);
+                        observer.complete();
+                    }, error => {
+                        observer.error(error);
+                    });
+            }
+        });
+    }
+
+    getCommissionFrequency(): Observable<EnumEntityTypeDto[]> {
+        return new Observable<EnumEntityTypeDto[]>((observer) => {
+            if (this.emagineOffices.length) {
+                observer.next(this.commissionFrequencies);
+                observer.complete();
+            } else {
+                this._enumService.commissionFrequency()
+                    .subscribe(response => {
+                        this.commissionFrequencies = response;
+                        observer.next(this.commissionFrequencies);
+                        observer.complete();
+                    }, error => {
+                        observer.error(error);
+                    });
+            }
+        });
+    }
+
+    getCommissionTypes(): Observable<EnumEntityTypeDto[]> {
+        return new Observable<EnumEntityTypeDto[]>((observer) => {
+            if (this.commissionTypes.length) {
+                observer.next(this.commissionTypes);
+                observer.complete();
+            } else {
+                this._enumService.commissionTypes()
+                    .subscribe(response => {
+                        this.commissionTypes = response;
+                        observer.next(this.commissionTypes);
+                        observer.complete();
+                    }, error => {
+                        observer.error(error);
+                    });
+            }
+        });
+    }
+
+    getCommissionRecipientTypes(): Observable<EnumEntityTypeDto[]> {
+        return new Observable<EnumEntityTypeDto[]>((observer) => {
+            if (this.commissionRecipientTypeList.length) {
+                observer.next(this.commissionRecipientTypeList);
+                observer.complete();
+            } else {
+                this._enumService.recipientTypes()
+                    .subscribe(response => {
+                        this.commissionRecipientTypeList = response;
+                        observer.next(this.commissionRecipientTypeList);
+                        observer.complete();
+                    }, error => {
+                        observer.error(error);
+                    });
+            }
+        });
+    }
+
+    getTenants(): Observable<EnumEntityTypeDto[]> {
+        return new Observable<EnumEntityTypeDto[]>((observer) => {
+            if (this.tenants.length) {
+                observer.next(this.tenants);
+                observer.complete();
+            } else {
+                this._enumService.tenants()
+                    .subscribe(response => {
+                        this.tenants = response;
+                        observer.next(this.tenants);
                         observer.complete();
                     }, error => {
                         observer.error(error);

@@ -5,10 +5,12 @@ export class WorkflowContractsMainForm extends FormGroup {
         super({
             salesType: new FormControl(null),
             deliveryType: new FormControl(null),
+            projectType: new FormControl(null),
+            margin: new FormControl(null),
             projectDescription: new FormControl(null),
             discounts: new FormControl(null),
             remarks: new FormControl(null),
-            isRemarks: new FormControl(false)
+            noRemarks: new FormControl(false)
         });
     }
 
@@ -17,6 +19,12 @@ export class WorkflowContractsMainForm extends FormGroup {
     }
     get deliveryType() {
         return this.get('deliveryType');
+    }
+    get projectType() {
+        return this.get('projectType');
+    }
+    get margin() {
+        return this.get('margin');
     }
     get projectDescription() {
         return this.get('projectDescription');
@@ -27,8 +35,8 @@ export class WorkflowContractsMainForm extends FormGroup {
     get remarks() {
         return this.get('remarks');
     }
-    get isRemarks() {
-        return this.get('isRemarks');
+    get noRemarks() {
+        return this.get('noRemarks');
     }
 }
 
@@ -74,10 +82,6 @@ export class WorkflowContractsClientDataForm extends FormGroup {
             clientRates: new FormArray([]),
             clientFees: new FormArray([]),
 
-            projectDescription: new FormControl(null),
-            discounts: new FormControl(null),
-            remarks: new FormControl(null),
-            isRemarks: new FormControl(false)
         });
     }
 
@@ -95,19 +99,6 @@ export class WorkflowContractsClientDataForm extends FormGroup {
     }
     get clientFees() {
         return this.get('clientFees') as FormArray;
-    }
-
-    get projectDescription() {
-        return this.get('projectDescription');
-    }
-    get discounts() {
-        return this.get('discounts');
-    }
-    get remarks() {
-        return this.get('remarks');
-    }
-    get isRemarks() {
-        return this.get('isRemarks');
     }
 }
 
