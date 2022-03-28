@@ -378,31 +378,39 @@ export enum ConsultantDiallogAction {
 export class SalesTerminateConsultantForm extends FormGroup {
     constructor() {
         super({
-            finalEvaluationReferencePerson: new FormControl(null),
-            isEvaluation: new FormControl(null),
-            finalEvaluationCause: new FormControl(null),
-            endOfContract: new FormControl(null),
-            endClientContractEndDate: new FormControl(null),
-            endClientContractCause: new FormControl(null)
+            finalEvaluationReferencePersonId: new FormControl(null),
+            noEvaluation: new FormControl(null),
+            causeOfNoEvaluation: new FormControl(null),
+            terminationBeforeEndOfContract: new FormControl(null),
+            endDate: new FormControl(null),
+            terminationReason: new FormControl(null),
+            causeOfTerminationBeforeEndOfContract: new FormControl(null),
+            additionalComments: new FormControl(null)
         });
     }
 
-    get finalEvaluationReferencePerson() {
-        return this.get('finalEvaluationReferencePerson');
+    get finalEvaluationReferencePersonId() {
+        return this.get('finalEvaluationReferencePersonId');
     }
-    get isEvaluation() {
-        return this.get('isEvaluation');
+    get noEvaluation() {
+        return this.get('noEvaluation');
     }
-    get finalEvaluationCause() {
-        return this.get('finalEvaluationCause');
+    get causeOfNoEvaluation() {
+        return this.get('causeOfNoEvaluation');
     }
-    get endOfContract() {
-        return this.get('endOfContract');
+    get terminationBeforeEndOfContract() {
+        return this.get('terminationBeforeEndOfContract');
     }
-    get endClientContractEndDate() {
-        return this.get('endClientContractEndDate');
+    get endDate() {
+        return this.get('endDate');
     }
-    get endClientContractCause() {
-        return this.get('endClientContractCause');
+    get terminationReason() {
+        return this.get('terminationReason');
+    }
+    get causeOfTerminationBeforeEndOfContract() {
+        return this.get('causeOfTerminationBeforeEndOfContract');
+    }
+    get additionalComments() {
+        return this.get('additionalComments');
     }
 }

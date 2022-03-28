@@ -8,7 +8,7 @@ import { debounceTime, finalize, switchMap, takeUntil } from 'rxjs/operators';
 import { InternalLookupService } from 'src/app/shared/common/internal-lookup.service';
 import { ConfirmationDialogComponent } from 'src/app/shared/components/confirmation-dialog/confirmation-dialog.component';
 import { AppComopnentBase } from 'src/shared/app-component-base';
-import { ClientPeriodSalesDataDto, ClientPeriodServiceProxy, ClientRateDto, ClientSpecialFeeDto, ClientSpecialRateDto, CommissionDto, ConsultantRateDto, ConsultantSalesDataDto, ContractSignerDto, EmployeeDto, EnumEntityTypeDto, EnumServiceProxy, LookupServiceProxy, PeriodClientSpecialFeeDto, PeriodClientSpecialRateDto, SalesClientDataDto, SalesMainDataDto, WorkflowProcessType } from 'src/shared/service-proxies/service-proxies';
+import { ClientPeriodSalesDataDto, ClientPeriodServiceProxy, ClientRateDto, ClientSpecialFeeDto, ClientSpecialRateDto, CommissionDto, ConsultantRateDto, ConsultantSalesDataDto, ConsultantTerminationSalesDataDto, ContractSignerDto, EmployeeDto, EnumEntityTypeDto, EnumServiceProxy, LookupServiceProxy, PeriodClientSpecialFeeDto, PeriodClientSpecialRateDto, SalesClientDataDto, SalesMainDataDto, WorkflowProcessType, WorkflowServiceProxy, WorkflowTerminationSalesDataDto } from 'src/shared/service-proxies/service-proxies';
 import { WorkflowConsultantActionsDialogComponent } from '../workflow-consultant-actions-dialog/workflow-consultant-actions-dialog.component';
 import { WorkflowDataService } from '../workflow-data.service';
 import { ChangeConsultantDto, ConsultantTypes, ExtendConsultantDto, TerminateConsultantDto, WorkflowTopSections } from '../workflow.model';
@@ -31,6 +31,7 @@ export class WorkflowSalesComponent extends AppComopnentBase implements OnInit {
     // Changed all above to enum
     @Input() activeSideSection: number;
 
+    consultantId = 1;
     // workflowSideSections = WorkflowSideSections;
     workflowSideSections = WorkflowProcessType;
     // SalesStep
@@ -105,7 +106,8 @@ export class WorkflowSalesComponent extends AppComopnentBase implements OnInit {
         private dialog: MatDialog,
         private _internalLookupService: InternalLookupService,
         private _lookupService: LookupServiceProxy,
-        private _clientPeriodService: ClientPeriodServiceProxy
+        private _clientPeriodService: ClientPeriodServiceProxy,
+        private _workflowServiceProxy: WorkflowServiceProxy
     ) {
         super(injector);
         this.salesClientDataForm = new WorkflowSalesClientDataForm();
@@ -1044,5 +1046,138 @@ export class WorkflowSalesComponent extends AppComopnentBase implements OnInit {
 
     displayNameFn(option: any) {
         return option?.name;
+    }
+
+    // Termination
+
+    getWorkflowSalesStepConsultantTermination() {
+        this._workflowServiceProxy.terminationConsultantSalesGet(this.workflowId!, this.consultantId!)
+            .pipe(finalize(() => {
+
+            }))
+            .subscribe(result => {
+                // End of Consultant Contract
+                this.salesTerminateConsultantForm.terminationBeforeEndOfContract?.setValue(result?.terminationBeforeEndOfContract, {emitEvent: false});
+                this.salesTerminateConsultantForm.endDate?.setValue(result?.endDate, {emitEvent: false});
+                this.salesTerminateConsultantForm.terminationReason?.setValue(result?.terminationReason, {emitEvent: false}); // add findItemById function
+                this.salesTerminateConsultantForm.causeOfTerminationBeforeEndOfContract?.setValue(result?.causeOfTerminationBeforeEndOfContract, {emitEvent: false});
+                this.salesTerminateConsultantForm.additionalComments?.setValue(result?.additionalComments, {emitEvent: false});
+
+                //Final Evaluation
+                this.salesTerminateConsultantForm.finalEvaluationReferencePersonId?.setValue(result?.finalEvaluationReferencePersonId, {emitEvent: false}); // add findItemById function
+                this.salesTerminateConsultantForm.noEvaluation?.setValue(result?.noEvaluation, {emitEvent: false});
+                this.salesTerminateConsultantForm.causeOfNoEvaluation?.setValue(result?.causeOfNoEvaluation, {emitEvent: false});
+
+                // example with findItemById
+                // this.salesMainDataForm.projectType?.setValue(this.findItemById(this.projectTypes, result?.salesMainData?.projectTypeId), {emitEvent: false});
+            });
+    }
+
+    updateTerminationConsultantSalesStep() {
+        let input = new ConsultantTerminationSalesDataDto();
+        input.terminationBeforeEndOfContract =  this.salesTerminateConsultantForm?.terminationBeforeEndOfContract?.value;
+        input.endDate = this.salesTerminateConsultantForm?.endDate?.value;
+        input.terminationReason = this.salesTerminateConsultantForm?.terminationReason?.value;
+        input.causeOfTerminationBeforeEndOfContract = this.salesTerminateConsultantForm?.causeOfTerminationBeforeEndOfContract?.value;
+        input.additionalComments = this.salesTerminateConsultantForm?.additionalComments?.value;
+
+        input.finalEvaluationReferencePersonId = this.salesTerminateConsultantForm?.finalEvaluationReferencePersonId?.value.id;
+        input.noEvaluation = this.salesTerminateConsultantForm?.noEvaluation?.value;
+        input.causeOfNoEvaluation =  this.salesTerminateConsultantForm.causeOfNoEvaluation?.value;
+
+        this._workflowServiceProxy.terminationConsultantSalesPut(this.workflowId!, this.consultantId, input)
+            .pipe(finalize(() => {
+
+            }))
+            .subscribe(result => {
+
+            })
+    }
+
+    completeTerminationConsultantSalesStep() {
+        let input = new ConsultantTerminationSalesDataDto();
+
+        input.terminationBeforeEndOfContract =  this.salesTerminateConsultantForm?.terminationBeforeEndOfContract?.value;
+        input.endDate = this.salesTerminateConsultantForm?.endDate?.value;
+        input.terminationReason = this.salesTerminateConsultantForm?.terminationReason?.value;
+        input.causeOfTerminationBeforeEndOfContract = this.salesTerminateConsultantForm?.causeOfTerminationBeforeEndOfContract?.value;
+        input.additionalComments = this.salesTerminateConsultantForm?.additionalComments?.value;
+
+        input.finalEvaluationReferencePersonId = this.salesTerminateConsultantForm?.finalEvaluationReferencePersonId?.value.id;
+        input.noEvaluation = this.salesTerminateConsultantForm?.noEvaluation?.value;
+        input.causeOfNoEvaluation =  this.salesTerminateConsultantForm.causeOfNoEvaluation?.value;
+
+        this._workflowServiceProxy.terminationConsultantSalesComplete(this.workflowId!, this.consultantId, input)
+            .pipe(finalize(() => {
+
+            }))
+            .subscribe(result => {
+
+            })
+    }
+
+    getWorkflowSalesStepTermination() {
+        this._workflowServiceProxy.terminationSalesGet(this.workflowId!)
+            .pipe(finalize(() => {
+
+            }))
+            .subscribe(result => {
+                // End of Consultant Contract
+                this.salesTerminateConsultantForm.terminationBeforeEndOfContract?.setValue(result?.terminationBeforeEndOfContract, {emitEvent: false});
+                this.salesTerminateConsultantForm.endDate?.setValue(result?.endDate, {emitEvent: false});
+                this.salesTerminateConsultantForm.terminationReason?.setValue(result?.terminationReason, {emitEvent: false}); // add findItemById function
+                this.salesTerminateConsultantForm.causeOfTerminationBeforeEndOfContract?.setValue(result?.causeOfTerminationBeforeEndOfContract, {emitEvent: false});
+                this.salesTerminateConsultantForm.additionalComments?.setValue(result?.additionalComments, {emitEvent: false});
+
+                //Final Evaluation
+                this.salesTerminateConsultantForm.finalEvaluationReferencePersonId?.setValue(result?.finalEvaluationReferencePersonId, {emitEvent: false}); // add findItemById function
+                this.salesTerminateConsultantForm.noEvaluation?.setValue(result?.noEvaluation, {emitEvent: false});
+                this.salesTerminateConsultantForm.causeOfNoEvaluation?.setValue(result?.causeOfNoEvaluation, {emitEvent: false});
+
+                // example with findItemById
+                // this.salesMainDataForm.projectType?.setValue(this.findItemById(this.projectTypes, result?.salesMainData?.projectTypeId), {emitEvent: false});
+            });
+    }
+
+    updateTerminationSalesStep() {
+        let input = new WorkflowTerminationSalesDataDto();
+        input.terminationBeforeEndOfContract =  this.salesTerminateConsultantForm?.terminationBeforeEndOfContract?.value;
+        input.endDate = this.salesTerminateConsultantForm?.endDate?.value;
+        input.terminationReason = this.salesTerminateConsultantForm?.terminationReason?.value;
+        input.causeOfTerminationBeforeEndOfContract = this.salesTerminateConsultantForm?.causeOfTerminationBeforeEndOfContract?.value;
+        input.additionalComments = this.salesTerminateConsultantForm?.additionalComments?.value;
+
+        input.finalEvaluationReferencePersonId = this.salesTerminateConsultantForm?.finalEvaluationReferencePersonId?.value.id;
+        input.noEvaluation = this.salesTerminateConsultantForm?.noEvaluation?.value;
+        input.causeOfNoEvaluation =  this.salesTerminateConsultantForm.causeOfNoEvaluation?.value;
+
+        this._workflowServiceProxy.terminationSalesPut(this.workflowId!, input)
+            .pipe(finalize(() => {
+
+            }))
+            .subscribe(result => {
+
+            })
+    }
+
+    completeTerminationSalesStep() {
+        let input = new WorkflowTerminationSalesDataDto();
+        input.terminationBeforeEndOfContract =  this.salesTerminateConsultantForm?.terminationBeforeEndOfContract?.value;
+        input.endDate = this.salesTerminateConsultantForm?.endDate?.value;
+        input.terminationReason = this.salesTerminateConsultantForm?.terminationReason?.value;
+        input.causeOfTerminationBeforeEndOfContract = this.salesTerminateConsultantForm?.causeOfTerminationBeforeEndOfContract?.value;
+        input.additionalComments = this.salesTerminateConsultantForm?.additionalComments?.value;
+
+        input.finalEvaluationReferencePersonId = this.salesTerminateConsultantForm?.finalEvaluationReferencePersonId?.value.id;
+        input.noEvaluation = this.salesTerminateConsultantForm?.noEvaluation?.value;
+        input.causeOfNoEvaluation =  this.salesTerminateConsultantForm.causeOfNoEvaluation?.value;
+
+        this._workflowServiceProxy.terminationSalesPut(this.workflowId!, input)
+            .pipe(finalize(() => {
+
+            }))
+            .subscribe(result => {
+
+            })
     }
 }
