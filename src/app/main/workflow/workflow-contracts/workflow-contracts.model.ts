@@ -122,3 +122,16 @@ export class WorkflowContractsConsultantsDataForm extends FormGroup {
         return this.get('consultantData') as FormArray;
     }
 }
+
+
+export class WorkflowContractsTerminationConsultantsDataForm extends FormGroup {
+    constructor() {
+        super({
+            consultantTerminationContractData: new FormArray([])
+        })
+
+    }
+    get consultantTerminationContractData() {
+        return this.get('consultantTerminationContractData') as FormArray;
+    }
+}
