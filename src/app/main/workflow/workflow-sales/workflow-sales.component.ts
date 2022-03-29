@@ -864,7 +864,7 @@ export class WorkflowSalesComponent extends AppComopnentBase implements OnInit {
                 commissionInput.id = commission.id;
                 commissionInput.commissionTypeId = commission.type?.id;
                 commissionInput.amount = commission.value;
-                commissionInput.currencyId = commission.currencyId?.id;
+                commissionInput.currencyId = commission.currency?.id;
                 commissionInput.commissionFrequencyId = commission.frequency?.id;
                 commissionInput.recipientTypeId = commission.recipientType?.id;
 
