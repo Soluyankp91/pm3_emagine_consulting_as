@@ -569,9 +569,9 @@
                                 <div fxLayout="row" fxLayoutAlign="start start" class="u-w--100 u-mb--10">
                                     <mat-form-field appearance="outline" class="u-w--100  filter-select u-mr--16" fxFlex="33%">
                                         <mat-label>Project Category</mat-label>
-                                        <mat-select formControlName="projectCategory" [disableOptionCentering]="false">
-                                            <mat-option *ngFor="let item of [0]" [value]="item">
-                                                {{ item }}
+                                        <mat-select formControlName="projectCategory" [disableOptionCentering]="false" [compareWith]="compareWithFn">
+                                            <mat-option *ngFor="let item of projectCategories" [value]="item">
+                                                {{ item.name }}
                                             </mat-option>
                                         </mat-select>
                                     </mat-form-field>
@@ -636,9 +636,7 @@
                             <h3 class="workflow-gray--header">Discounts</h3>
                             <div fxLayout="row" fxLayoutAlign="start start" class="u-w--100 u-mb--20">
                                 <mat-button-toggle-group class="workflow-toggle-buttons u-mt--10" formControlName="discounts">
-                                    <mat-button-toggle
-                                        [value]="item.value"
-                                        *ngFor="let item of [{name: 'None', value: null}, {name: 'SKI 02.17', value: 'SKI-02-17'}]">
+                                    <mat-button-toggle [value]="item.id" *ngFor="let item of discounts">
                                         {{ item.name }}
                                     </mat-button-toggle>
                                 </mat-button-toggle-group>
@@ -659,10 +657,10 @@
                                     <span fxFlex="10%" class="workflow-sales-inline--form__header u-w--100">
                                         Recipient type
                                     </span>
-                                    <span fxFlex="35%" class="workflow-sales-inline--form__header u-w--100">
+                                    <span fxFlex="30%" class="workflow-sales-inline--form__header u-w--100">
                                         Recipient
                                     </span>
-                                    <span fxFlex="15%" class="workflow-sales-inline--form__header u-w--100">
+                                    <span fxFlex="20%" class="workflow-sales-inline--form__header u-w--100">
                                         Frequency
                                     </span>
                                     <span fxFlex="10%" class="workflow-sales-inline--form__header u-w--100">
@@ -698,7 +696,7 @@
                                                     </mat-option>
                                                 </mat-select>
                                             </mat-form-field>
-                                            <mat-form-field appearance="fill" class="u-w--100 formFieldNoMarginPadding filter-select" fxFlex="35%" [ngClass]="{'disabled-autocomplete': commission.value.recipientType === null || commission.value.recipientType === ''}">
+                                            <mat-form-field appearance="fill" class="u-w--100 formFieldNoMarginPadding filter-select" fxFlex="30%" [ngClass]="{'disabled-autocomplete': commission.value.recipientType === null || commission.value.recipientType === ''}">
                                                 <ng-container *ngIf="commission.value.recipientType?.name === 'PDC entity'; else commissionRecipientAutocomplete">
                                                     <mat-select formControlName="recipient" placeholder="Recipient" [disableOptionCentering]="true" [compareWith]="compareWithFn">
                                                         <mat-option *ngFor="let item of tenants" [value]="item">
@@ -727,13 +725,24 @@
                                                     </mat-autocomplete>
                                                 </ng-template>
                                             </mat-form-field>
-                                            <mat-form-field appearance="fill" class="u-w--100 formFieldNoMarginPadding filter-select" fxFlex="15%">
-                                                <mat-select formControlName="frequency" placeholder="Frequency" [disableOptionCentering]="true" [compareWith]="compareWithFn">
-                                                    <mat-option *ngFor="let item of commissionFrequencies" [value]="item">
-                                                        {{ item.name }}
-                                                    </mat-option>
-                                                </mat-select>
-                                            </mat-form-field>
+                                            <div fxFlex="20%">
+                                                <mat-form-field appearance="fill" class="u-w--100 formFieldNoMarginPadding filter-select" fxFlex="1 0 40%">
+                                                    <mat-select formControlName="frequency" placeholder="Frequency" [disableOptionCentering]="true" [compareWith]="compareWithFn">
+                                                        <mat-option *ngFor="let item of commissionFrequencies" [value]="item">
+                                                            {{ item.name }}
+                                                        </mat-option>
+                                                    </mat-select>
+                                                </mat-form-field>
+                                                <mat-form-field appearance="fill" class="u-w--100 formFieldNoMarginPadding filter-select formFieldDatePicker" fxFlex="0 0 60%" *ngIf="commission.value.frequency?.name === 'One time'">
+                                                    <input autocomplete="off" matInput
+                                                            [matDatepicker]="oneTimeDatePicker"
+                                                            name="oneTimeDate" formControlName="oneTimeDate"
+                                                            (focus)="oneTimeDatePicker.open()"
+                                                            (click)="oneTimeDatePicker.open()" readonly>
+                                                    <mat-icon class="calendar-icon" matSuffix svgIcon="calendar"></mat-icon>
+                                                    <mat-datepicker #oneTimeDatePicker></mat-datepicker>
+                                                </mat-form-field>
+                                            </div>
                                             <div fxFlex="10%" class="u-w--100 text-truncate-ellipsis flex-items-center">
                                                 <button mat-flat-button (click)="toggleEditCommissionRow(i)" class="inline-edit-form--btn__save">
                                                     Save
@@ -756,7 +765,7 @@
                                             <span fxFlex="10%" class="u-w--100 text-truncate-ellipsis" [matTooltip]="salesMainDataForm.commissions.at(i).get('recipientType')?.value?.name">
                                                 {{commission.value.recipientType?.name}}
                                             </span>
-                                            <span fxFlex="35%" class="u-w--100 text-truncate-ellipsis" [matTooltip]="salesMainDataForm.commissions.at(i).get('recipient')?.value?.name">
+                                            <span fxFlex="30%" class="u-w--100 text-truncate-ellipsis" [matTooltip]="salesMainDataForm.commissions.at(i).get('recipient')?.value?.name">
                                                 <ng-container [ngSwitch]="commission.value.recipientType?.name">
                                                     <ng-container *ngSwitchCase="'Client'">
                                                         <div fxLayout="row" fxLayoutAlign="start center">
@@ -797,8 +806,13 @@
                                                     </ng-container>
                                                 </ng-container>
                                             </span>
-                                            <span fxFlex="15%" class="u-w--100 text-truncate-ellipsis" [matTooltip]="salesMainDataForm.commissions.at(i).get('frequency')?.value?.name">
-                                                {{salesMainDataForm.commissions.at(i).get('frequency')?.value?.name}}
+                                            <span fxFlex="20%" class="u-w--100 text-truncate-ellipsis" [matTooltip]="salesMainDataForm.commissions.at(i).get('frequency')?.value?.name">
+                                                <ng-container *ngIf="salesMainDataForm.commissions.at(i).get('frequency')?.value?.name === 'One time'; else commissionFrequency">
+                                                    {{salesMainDataForm.commissions.at(i).get('frequency')?.value?.name}} {{salesMainDataForm.commissions.at(i).get('oneTimeDate')?.value | momentFormat: 'DD.MM.YYYY'}}
+                                                </ng-container>
+                                                <ng-template #commissionFrequency>
+                                                    {{salesMainDataForm.commissions.at(i).get('frequency')?.value?.name}}
+                                                </ng-template>
                                             </span>
                                             <div fxFlex="10%" fxLayoutAlign="center center" class="u-w--100">
                                                 <button mat-icon-button (click)="$event.stopPropagation();" [matMenuTriggerFor]="commissionMenu" class="three-dots-actions-btn">
