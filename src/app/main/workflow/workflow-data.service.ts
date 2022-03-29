@@ -19,6 +19,20 @@ export class WorkflowDataService {
     workflowSalesSaved = new EventEmitter<boolean>();
     workflowSideSectionAdded = new EventEmitter<boolean>();
 
+    //Termination
+    workflowConsultantTerminationSalesSaved = new EventEmitter<boolean>();
+    workflowTerminationSalesSaved = new EventEmitter<boolean>();
+    workflowConsultantTerminationContractsSaved = new EventEmitter<boolean>();
+    workflowTerminationContractsSaved = new EventEmitter<boolean>();
+    workflowConsultantTerminationSourcingSaved = new EventEmitter<boolean>();
+    workflowTerminationSourcingSaved = new EventEmitter<boolean>();
+    workflowConsultantTerminationSalesCompleted = new EventEmitter<boolean>();
+    workflowTerminationSalesCompleted = new EventEmitter<boolean>();
+    workflowConsultantTerminationContractsCompleted = new EventEmitter<boolean>();
+    workflowTerminationContractsCompleted = new EventEmitter<boolean>();
+    workflowConsultantTerminationSourcingCompleted = new EventEmitter<boolean>();
+    workflowTerminationSourcingCompleted = new EventEmitter<boolean>();
+
     collapseHeader = false;
     clientName = 'Test';
     constructor(

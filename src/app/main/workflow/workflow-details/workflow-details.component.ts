@@ -7,7 +7,7 @@ import { ActivatedRoute } from '@angular/router';
 import { NgScrollbar } from 'ngx-scrollbar';
 import { Observable, Subject } from 'rxjs';
 import { finalize, takeUntil } from 'rxjs/operators';
-import { ClientPeriodDto, EnumEntityTypeDto, WorkflowDto, WorkflowServiceProxy } from 'src/shared/service-proxies/service-proxies';
+import { ClientPeriodDto, EnumEntityTypeDto, WorkflowDto, WorkflowProcessType, WorkflowServiceProxy } from 'src/shared/service-proxies/service-proxies';
 import { WorkflowExtensionComponent } from '../workflow-extension/workflow-extension.component';
 import { PrimaryWorkflowComponent } from '../primary-workflow/primary-workflow.component';
 import { WorkflowDataService } from '../workflow-data.service';
@@ -235,6 +235,10 @@ export class WorkflowDetailsComponent implements OnInit, OnDestroy, AfterViewIni
 
     }
 
+    saveSalesConsultantTerminationStep(isDraft = false) {
+        this._workflowDataService.workflowSalesSaved.emit(isDraft);
+    }
+
     saveContractTerminationStep() {
 
     }
@@ -354,7 +358,7 @@ export class WorkflowDetailsComponent implements OnInit, OnDestroy, AfterViewIni
                 break;
             case WorkflowTopSections.Workflow:
                 switch (this._workflowDataService.workflowProgress.currentlyActiveSideSection) {
-                    case WorkflowSideSections.StartWorkflow:
+                    case WorkflowProcessType.StartClientPeriod:
                         switch (this._workflowDataService.workflowProgress.currentlyActiveStep) {
                             case WorkflowSteps.Sales:
                                 // TODO: update event triggers\handlers  - tool for detection from where and what we want to save
@@ -370,34 +374,24 @@ export class WorkflowDetailsComponent implements OnInit, OnDestroy, AfterViewIni
                                 break;
                         }
                     break;
-                    case WorkflowSideSections.AddConsultant:
+                    case WorkflowProcessType.TerminateConsultant:
                         switch (this._workflowDataService.workflowProgress.currentlyActiveStep) {
                             case WorkflowSteps.Sales:
-                                // this.saveSalesStep(true);
-                                console.log('save WF AddConsSales');
+                                // TODO: update event triggers\handlers  - tool for detection from where and what we want to save
+                                // this.saveSalesStep(SaveOptions.Draft, WorkflowSideSections.StartWorkflow);
+                                this.saveSalesStep(true);
+                                console.log('save draft WF Sales');
                                 break;
                             case WorkflowSteps.Contracts:
-                                console.log('save WF AddConsContracts');
+                                console.log('save draft WF Contracts');
                                 break;
-                            case WorkflowSteps.Finance:
-                                console.log('save WF AddConsFinance');
+                            case WorkflowSteps.Sourcing:
+                                console.log('save draft WF Sourcing');
                                 break;
                         }
                     break;
-                    case WorkflowSideSections.ChangeWorkflow:
-                        switch (this._workflowDataService.workflowProgress.currentlyActiveStep) {
-                            case WorkflowSteps.Sales:
-                                // this.saveSalesStep(true);
-                                console.log('save WF ChnageWFSales');
-                                break;
-                            case WorkflowSteps.Contracts:
-                                console.log('save WF ChnageWFContracts');
-                                break;
-                            case WorkflowSteps.Finance:
-                                console.log('save WF ChnageWFFinance');
-                                break;
-                        }
-                    break;
+
+
                 }
                 break;
             case WorkflowTopSections.Extension:

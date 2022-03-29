@@ -80,17 +80,17 @@ export class WorkflowPeriodComponent implements OnInit {
     mapIconFromMenuItem(typeId: number) {
         switch (typeId) {
             case WorkflowProcessType.StartClientPeriod:
-                return 'workflowAdd'
-            case WorkflowProcessType.ChangeClientPeriod:
-                return 'workflowEdit'
-            case WorkflowProcessType.ExtendClientPeriod:
-                return 'workflowStartOrExtend'
             case WorkflowProcessType.StartConsultantPeriod:
                 return 'workflowAdd'
+            case WorkflowProcessType.ChangeClientPeriod:
             case WorkflowProcessType.ChangeConsultantPeriod:
                 return 'workflowEdit'
-            case WorkflowProcessType.ExtendConsultantPeriod:
+            case WorkflowProcessType.ExtendClientPeriod:
+                case WorkflowProcessType.ExtendConsultantPeriod:
                 return 'workflowStartOrExtend'
+            case WorkflowProcessType.TerminateConsultant:
+            case WorkflowProcessType.TerminateWorkflow:
+                return 'workflowTerminate'
         }
     }
 

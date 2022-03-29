@@ -349,6 +349,45 @@ export class WorkflowSalesComponent extends AppComopnentBase implements OnInit {
             });
 
         // this.updateReadonlyState();
+
+        // Termination
+
+        switch (this.activeSideSection) {
+            case this.workflowSideSections.TerminateWorkflow:
+                this.getWorkflowSalesStepTermination();
+                break;
+            case this.workflowSideSections.TerminateConsultant:
+                this.getWorkflowSalesStepConsultantTermination();
+                break;
+        }
+
+        this._workflowDataService.workflowConsultantTerminationSalesSaved
+            .pipe(takeUntil(this._unsubscribe))
+            .subscribe((value: boolean) => {
+                // NB: boolean SAVE DRAFT or COMPLETE in future
+                this.updateTerminationConsultantSalesStep();
+            });
+
+        this._workflowDataService.workflowConsultantTerminationSalesCompleted
+            .pipe(takeUntil(this._unsubscribe))
+            .subscribe((value: boolean) => {
+                // NB: boolean SAVE DRAFT or COMPLETE in future
+                this.completeTerminationConsultantSalesStep();
+            });
+
+        this._workflowDataService.workflowTerminationSalesSaved
+            .pipe(takeUntil(this._unsubscribe))
+            .subscribe((value: boolean) => {
+                // NB: boolean SAVE DRAFT or COMPLETE in future
+                this.updateTerminationSalesStep();
+            });
+
+        this._workflowDataService.workflowTerminationSalesCompleted
+            .pipe(takeUntil(this._unsubscribe))
+            .subscribe((value: boolean) => {
+                // NB: boolean SAVE DRAFT or COMPLETE in future
+                this.completeTerminationSalesStep();
+            });
     }
     get readOnlyMode() {
         return this._workflowDataService.getWorkflowProgress.isWorkflowSalesSaved;
@@ -1227,15 +1266,13 @@ export class WorkflowSalesComponent extends AppComopnentBase implements OnInit {
 
     terminateConsultant(index: number) {
         const consultantData = this.consultantsForm.consultantData.at(index).value;
-        console.log('terminate consultant ', consultantData);
-        if (this._workflowDataService.getWorkflowProgress.currentlyActiveSection === WorkflowTopSections.Workflow) {
-            this._workflowDataService.workflowSideNavigation.unshift(TerminateConsultantDto);
-        } else if (this._workflowDataService.getWorkflowProgress.currentlyActiveSection === WorkflowTopSections.Extension) {
-            const currentExtension = this._workflowDataService.extensionSideNavigation.find(x => x.index === this._workflowDataService.getWorkflowProgress.currentlyActiveExtensionIndex);
-            currentExtension!.sideNav.unshift(TerminateConsultantDto);
-        }
-        this._workflowDataService.workflowSideSectionAdded.emit(true);
+        this._workflowServiceProxy.terminationConsultantStart(this.workflowId!, consultantData.consultantName.id)
+        .pipe(finalize(() => {
 
+        }))
+        .subscribe(result => {
+            this._workflowDataService.workflowSideSectionAdded.emit(true);
+        });
     }
 
     //#endregion Consultant menu actions
@@ -1500,7 +1537,7 @@ export class WorkflowSalesComponent extends AppComopnentBase implements OnInit {
         input.noEvaluation = this.salesTerminateConsultantForm?.noEvaluation?.value;
         input.causeOfNoEvaluation =  this.salesTerminateConsultantForm.causeOfNoEvaluation?.value;
 
-        this._workflowServiceProxy.terminationSalesPut(this.workflowId!, input)
+        this._workflowServiceProxy.terminationSalesComplete(this.workflowId!, input)
             .pipe(finalize(() => {
 
             }))
@@ -1510,5 +1547,3 @@ export class WorkflowSalesComponent extends AppComopnentBase implements OnInit {
     }
 
 }
-
-
