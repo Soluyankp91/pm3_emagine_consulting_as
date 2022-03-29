@@ -27,7 +27,8 @@ export class InternalLookupService {
     commissionTypes: EnumEntityTypeDto[] = [];
     commissionRecipientTypeList: EnumEntityTypeDto[] = [];
     tenants: EnumEntityTypeDto[] = [];
-
+    projectCategories: EnumEntityTypeDto[] = [];
+    discounts: EnumEntityTypeDto[] = [];
     workflowClientPeriodTypes: EnumEntityTypeDto[] = [];
     workflowConsultantPeriodTypes: EnumEntityTypeDto[] = [];
     workflowPeriodStepTypes: EnumEntityTypeDto[] = [];
@@ -526,4 +527,40 @@ export class InternalLookupService {
         });
     }
 
+    getProjectCategory(): Observable<EnumEntityTypeDto[]> {
+        return new Observable<EnumEntityTypeDto[]>((observer) => {
+            if (this.projectCategories.length) {
+                observer.next(this.projectCategories);
+                observer.complete();
+            } else {
+                this._enumService.projectCategory()
+                    .subscribe(response => {
+                        this.projectCategories = response;
+                        observer.next(this.projectCategories);
+                        observer.complete();
+                    }, error => {
+                        observer.error(error);
+                    });
+            }
+        });
+    }
+
+
+    getDiscounts(): Observable<EnumEntityTypeDto[]> {
+        return new Observable<EnumEntityTypeDto[]>((observer) => {
+            if (this.discounts.length) {
+                observer.next(this.discounts);
+                observer.complete();
+            } else {
+                this._enumService.discount()
+                    .subscribe(response => {
+                        this.discounts = response;
+                        observer.next(this.discounts);
+                        observer.complete();
+                    }, error => {
+                        observer.error(error);
+                    });
+            }
+        });
+    }
 }

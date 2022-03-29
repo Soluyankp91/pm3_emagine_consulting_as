@@ -68,7 +68,8 @@ export class WorkflowSalesComponent extends AppComopnentBase implements OnInit {
     commissionTypes: EnumEntityTypeDto[] = [];
     commissionRecipientTypeList: EnumEntityTypeDto[] = [];
     tenants: EnumEntityTypeDto[] = [];
-
+    projectCategories: EnumEntityTypeDto[] = [];
+    discounts: EnumEntityTypeDto[] = [];
     // new UI
     clientRateTypes: EnumEntityTypeDto[] = new Array<EnumEntityTypeDto>(
         new EnumEntityTypeDto({
@@ -185,8 +186,8 @@ export class WorkflowSalesComponent extends AppComopnentBase implements OnInit {
                     };
                     if (value?.id) {
                         toSend.name = value.id
-                            ? value.clientName.trim()
-                            : value.trim();
+                            ? value.clientNam?.trim()
+                            : value?.trim();
                     }
                     return this._lookupService.clients(toSend.name, toSend.maxRecordsCount);
                 }),
@@ -209,8 +210,8 @@ export class WorkflowSalesComponent extends AppComopnentBase implements OnInit {
                     };
                     if (value?.id) {
                         toSend.name = value.id
-                            ? value.clientName.trim()
-                            : value.trim();
+                            ? value.clientName?.trim()
+                            : value?.trim();
                     }
                     return this._lookupService.clients(toSend.name, toSend.maxRecordsCount);
                 }),
@@ -329,6 +330,8 @@ export class WorkflowSalesComponent extends AppComopnentBase implements OnInit {
         this.getCommissionTypes();
         this.getCommissionRecipientTypes();
         this.getTenants();
+        this.getProjectCategory();
+        this.getDiscounts();
 
         // init form arrays ?
         // this.addSignerToForm();
@@ -611,6 +614,26 @@ export class WorkflowSalesComponent extends AppComopnentBase implements OnInit {
             });
     }
 
+    getProjectCategory() {
+        this._internalLookupService.getProjectCategory()
+            .pipe(finalize(() => {
+
+            }))
+            .subscribe(result => {
+                this.projectCategories = result;
+            });
+    }
+
+    getDiscounts() {
+        this._internalLookupService.getDiscounts()
+            .pipe(finalize(() => {
+
+            }))
+            .subscribe(result => {
+                this.discounts = result;
+            });
+    }
+
     //#endregion dataFetch
 
     addSpecialRate(clientRate?: PeriodClientSpecialRateDto) {
@@ -618,10 +641,10 @@ export class WorkflowSalesComponent extends AppComopnentBase implements OnInit {
             id: new FormControl(clientRate?.id ?? null),
             clientSpecialRateId: new FormControl(clientRate?.clientSpecialRateId ?? null),
             rateName: new FormControl(clientRate?.rateName ?? null),
-            rateDirection: new FormControl(clientRate?.rateDirection?.id ?? null),
-            reportingUnit: new FormControl(clientRate?.reportingUnit?.id ?? null),
+            rateDirection: new FormControl(clientRate?.rateDirection ?? null),
+            reportingUnit: new FormControl(clientRate?.reportingUnit ?? null),
             clientRateValue: new FormControl(clientRate?.clientRate ?? null),
-            clientRateCurrency: new FormControl(clientRate?.clientRateCurrencyId ?? null),
+            clientRateCurrency: new FormControl(this.findItemById(this.currencies, clientRate?.clientRateCurrencyId) ?? null),
             editable: new FormControl(clientRate ? false : true)
         });
         this.salesClientDataForm.clientRates.push(form);
@@ -647,7 +670,7 @@ export class WorkflowSalesComponent extends AppComopnentBase implements OnInit {
             feeDirection: new FormControl(clientFee?.feeDirection ?? null),
             feeFrequency: new FormControl(clientFee?.frequency ?? null),
             clientRateValue: new FormControl(clientFee?.clientRate ?? null),
-            clientRateCurrency: new FormControl(clientFee?.clientRateCurrencyId ?? null),
+            clientRateCurrency: new FormControl(this.findItemById(this.currencies, clientFee?.clientRateCurrencyId) ?? null),
             editable: new FormControl(clientFee ? false : true)
         });
         this.salesClientDataForm.clientFees.push(form);
@@ -767,7 +790,7 @@ export class WorkflowSalesComponent extends AppComopnentBase implements OnInit {
             autoFocus: false,
             panelClass: 'confirmation-modal',
             data: {
-                confirmationMessageTitle: `Are you sure you want to delete consultant ${consultant.consultantName ?? ''}?`,
+                confirmationMessageTitle: `Are you sure you want to delete consultant ${consultant.consultantName?.name ?? ''}?`,
                 confirmationMessage: 'When you confirm the deletion, all the info contained inside this block will disappear.',
                 rejectButtonText: 'Cancel',
                 confirmButtonText: 'Delete',
@@ -839,17 +862,30 @@ export class WorkflowSalesComponent extends AppComopnentBase implements OnInit {
             this.salesMainDataForm.commissions.value.forEach((commission: any) => {
                 let commissionInput = new CommissionDto();
                 commissionInput.id = commission.id;
-                commissionInput.commissionTypeId = commission.type.id;
+                commissionInput.commissionTypeId = commission.type?.id;
                 commissionInput.amount = commission.value;
-                commissionInput.currencyId = commission.currency;
-                commissionInput.commissionFrequencyId = commission.frequency;
-                commissionInput.recipientTypeId = commission.recipientType;
+                commissionInput.currencyId = commission.currencyId?.id;
+                commissionInput.commissionFrequencyId = commission.frequency?.id;
+                commissionInput.recipientTypeId = commission.recipientType?.id;
+
                 // TODO: DESIGN MISSING
-                // commissionInput.oneTimeDate = commission.oneTimeDate;
-                // commissionInput.supplierId = commission.supplierId;
-                // commissionInput.tenantId = commission.tenantId;
-                // commissionInput.consultantId = commission.consultantId;
-                // commissionInput.clientId = commission.clientId;
+                switch (commission.recipientType?.name) {
+                    case 'Client':
+                        commissionInput.clientId = commission.recipient?.clientId;
+                        break;
+                    case 'Supplier':
+                        commissionInput.supplierId = commission.recipient?.supplierId;
+                        break;
+                    case 'Consultant':
+                        commissionInput.consultantId = commission.recipient?.consutlantId;
+                        break;
+                    case 'PDC entity':
+                        commissionInput.tenantId = commission.recipient?.tenantId;
+                        break;
+                }
+                if (commission.frequency?.name === 'One time') {
+                    commissionInput.oneTimeDate = commission.oneTimeDate;
+                }
 
                 input.salesMainData!.commissions?.push(commissionInput);
             });
@@ -1066,9 +1102,12 @@ export class WorkflowSalesComponent extends AppComopnentBase implements OnInit {
                 });
 
                 // Consultant
-                result.consultantSalesData?.forEach(consultant => {
-                    this.addConsultantForm(consultant);
-                });
+                // console.log('s');
+                if (result.consultantSalesData?.length) {
+                    result.consultantSalesData?.forEach(consultant => {
+                        this.addConsultantForm(consultant);
+                    });
+                }
             });
     }
 
@@ -1206,14 +1245,30 @@ export class WorkflowSalesComponent extends AppComopnentBase implements OnInit {
     }
 
     addCommission(commission?: CommissionDto) {
+        let commissionRecipient;
+        switch (commission?.recipientTypeId) {
+            case 1: // Supplier
+                commissionRecipient = commission.supplierId;
+                break;
+            case 2: // Consultant
+                commissionRecipient = commission.consultantId;
+                break;
+            case 3: // Client
+                commissionRecipient = commission.clientId;
+                break;
+            case 4: // PDC entity
+                commissionRecipient = this.findItemById(this.tenants, commission.tenantId);
+                break;
+        }
         const form = this._fb.group({
             id: new FormControl(commission?.id ?? null),
-            type: new FormControl(commission?.commissionTypeId ?? null),
+            type: new FormControl(this.findItemById(this.commissionTypes, commission?.commissionTypeId) ?? null),
             value: new FormControl(commission?.amount ?? null),
-            currency: new FormControl(commission?.currencyId ?? null),
-            recipientType: new FormControl(commission?.recipientTypeId ?? null),
-            recipient: new FormControl(null),
-            frequency: new FormControl(commission?.commissionFrequencyId ?? null),
+            currency: new FormControl(this.findItemById(this.currencies, commission?.currencyId) ?? null),
+            recipientType: new FormControl(this.findItemById(this.commissionRecipientTypeList, commission?.recipientTypeId) ?? null),
+            recipient: new FormControl(commissionRecipient ?? null),
+            frequency: new FormControl(this.findItemById(this.commissionFrequencies, commission?.commissionFrequencyId) ?? null),
+            oneTimeDate: new FormControl(commission?.oneTimeDate ?? null),
             editable: new FormControl(commission?.id ? false : true)
         });
         this.salesMainDataForm.commissions.push(form);
@@ -1291,7 +1346,7 @@ export class WorkflowSalesComponent extends AppComopnentBase implements OnInit {
     }
 
     displayClientNameFn(option: any) {
-        return option?.clientName.trim();
+        return option?.clientName?.trim();
     }
 
     displayRecipient(recipientTypeName: string) {
