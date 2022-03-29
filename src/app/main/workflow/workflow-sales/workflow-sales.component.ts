@@ -32,7 +32,7 @@ export class WorkflowSalesComponent extends AppComopnentBase implements OnInit {
     // Changed all above to enum
     @Input() activeSideSection: number;
 
-    consultantId = 1;
+    consultantInformation: ConsultantDisplayDataDto;
     // workflowSideSections = WorkflowSideSections;
     workflowSideSections = WorkflowProcessType;
     // SalesStep
@@ -1264,9 +1264,20 @@ export class WorkflowSalesComponent extends AppComopnentBase implements OnInit {
         });
     }
 
+    // Termination
     terminateConsultant(index: number) {
-        const consultantData = this.consultantsForm.consultantData.at(index).value;
-        this._workflowServiceProxy.terminationConsultantStart(this.workflowId!, consultantData.consultantName.id)
+        this.consultantInformation = this.consultantsForm.consultantData.at(index).value.consultantName;
+        this._workflowServiceProxy.terminationConsultantStart(this.workflowId!, this.consultantInformation.id)
+        .pipe(finalize(() => {
+
+        }))
+        .subscribe(result => {
+            this._workflowDataService.workflowSideSectionAdded.emit(true);
+        });
+    }
+
+    terminateWorkflow() {
+        this._workflowServiceProxy.terminationStart(this.workflowId!)
         .pipe(finalize(() => {
 
         }))

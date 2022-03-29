@@ -207,7 +207,7 @@ export class WorkflowDetailsComponent implements OnInit, OnDestroy, AfterViewIni
             this.saveSalesTerminationStep();
         }
         if (this.selectedStep.startsWith('TerminationContracts')) {
-            this.saveContractTerminationStep();
+            this.saveContractsTerminationStep();
         }
     }
 
@@ -231,16 +231,53 @@ export class WorkflowDetailsComponent implements OnInit, OnDestroy, AfterViewIni
 
     }
 
-    saveSalesTerminationStep() {
-
+    // Termination
+    saveSalesTerminationStep(isDraft = false) {
+        this._workflowDataService.workflowTerminationSalesSaved.emit(isDraft);
     }
 
     saveSalesConsultantTerminationStep(isDraft = false) {
-        this._workflowDataService.workflowSalesSaved.emit(isDraft);
+        this._workflowDataService.workflowConsultantTerminationSalesSaved.emit(isDraft);
     }
 
-    saveContractTerminationStep() {
+    saveContractsTerminationStep(isDraft = false) {
+        this._workflowDataService.workflowTerminationContractsSaved.emit(isDraft);
+    }
 
+    saveContractsConsultantTerminationStep(isDraft = false) {
+        this._workflowDataService.workflowConsultantTerminationContractsSaved.emit(isDraft);
+    }
+
+    saveSourcingTerminationStep(isDraft = false) {
+        this._workflowDataService.workflowTerminationSourcingSaved.emit(isDraft);
+    }
+
+    saveSourcingConsultantTerminationStep(isDraft = false) {
+        this._workflowDataService.workflowConsultantTerminationSourcingSaved.emit(isDraft);
+    }
+
+    completeSalesTerminationStep(isDraft = false) {
+        this._workflowDataService.workflowTerminationSalesCompleted.emit(isDraft);
+    }
+
+    completeSalesConsultantTerminationStep(isDraft = false) {
+        this._workflowDataService.workflowConsultantTerminationSalesCompleted.emit(isDraft);
+    }
+
+    completeContractsTerminationStep(isDraft = false) {
+        this._workflowDataService.workflowTerminationContractsCompleted.emit(isDraft);
+    }
+
+    completeContractsConsultantTerminationStep(isDraft = false) {
+        this._workflowDataService.workflowConsultantTerminationContractsCompleted.emit(isDraft);
+    }
+
+    completeSourcingTerminationStep(isDraft = false) {
+        this._workflowDataService.workflowTerminationSourcingCompleted.emit(isDraft);
+    }
+
+    completeSourcingConsultantTerminationStep(isDraft = false) {
+        this._workflowDataService.workflowConsultantTerminationSourcingCompleted.emit(isDraft);
     }
 
     // new
@@ -377,21 +414,35 @@ export class WorkflowDetailsComponent implements OnInit, OnDestroy, AfterViewIni
                     case WorkflowProcessType.TerminateConsultant:
                         switch (this._workflowDataService.workflowProgress.currentlyActiveStep) {
                             case WorkflowSteps.Sales:
-                                // TODO: update event triggers\handlers  - tool for detection from where and what we want to save
-                                // this.saveSalesStep(SaveOptions.Draft, WorkflowSideSections.StartWorkflow);
-                                this.saveSalesStep(true);
-                                console.log('save draft WF Sales');
+                                this.saveSalesConsultantTerminationStep(true);
+                                console.log('save draft WF Term Cons Sales');
                                 break;
                             case WorkflowSteps.Contracts:
-                                console.log('save draft WF Contracts');
+                                this.saveContractsConsultantTerminationStep(true);
+                                console.log('save draft WF Term Cons Contracts');
                                 break;
                             case WorkflowSteps.Sourcing:
-                                console.log('save draft WF Sourcing');
+                                this.saveSourcingConsultantTerminationStep(true);
+                                console.log('save draft WF Term Cons Sourcing');
                                 break;
                         }
                     break;
-
-
+                    case WorkflowProcessType.TerminateWorkflow:
+                        switch (this._workflowDataService.workflowProgress.currentlyActiveStep) {
+                            case WorkflowSteps.Sales:
+                                this.saveSalesTerminationStep(true);
+                                console.log('save draft WF Term Sales');
+                                break;
+                            case WorkflowSteps.Contracts:
+                                this.saveContractsTerminationStep(true);
+                                console.log('save draft WF Term Contracts');
+                                break;
+                            case WorkflowSteps.Sourcing:
+                                this.saveSourcingTerminationStep(true);
+                                console.log('save draft WF Term Sourcing');
+                                break;
+                        }
+                    break;
                 }
                 break;
             case WorkflowTopSections.Extension:
@@ -429,19 +480,52 @@ export class WorkflowDetailsComponent implements OnInit, OnDestroy, AfterViewIni
                 console.log('Complete Overview');
                 break;
             case WorkflowTopSections.Workflow:
-                switch (this._workflowDataService.workflowProgress.currentlyActiveStep) {
-                    case WorkflowSteps.Sales:
-                        console.log('Complete WF Sales');
-                        this._workflowDataService.updateWorkflowProgressStatus({isWorkflowSalesSaved: true});
-                        break;
-                    case WorkflowSteps.Contracts:
-                        console.log('Complete WF Contracts');
-                        this._workflowDataService.updateWorkflowProgressStatus({isWorkflowContractsSaved: true});
-                        break;
-                    case WorkflowSteps.Finance:
-                        console.log('Complete WF Finance');
-                        this._workflowDataService.updateWorkflowProgressStatus({isWorkflowAccountsSaved: true, isPrimaryWorkflowCompleted: true});
-                        break;
+                // switch (this._workflowDataService.workflowProgress.currentlyActiveStep) {
+                    switch(this._workflowDataService.workflowProgress.currentlyActiveSideSection) {
+                    // case WorkflowSteps.Sales:
+                    //     console.log('Complete WF Sales');
+                    //     this._workflowDataService.updateWorkflowProgressStatus({isWorkflowSalesSaved: true});
+                    // break;
+                    // case WorkflowSteps.Contracts:
+                    //     console.log('Complete WF Contracts');
+                    //     this._workflowDataService.updateWorkflowProgressStatus({isWorkflowContractsSaved: true});
+                    // break;
+                    // case WorkflowSteps.Finance:
+                    //     console.log('Complete WF Finance');
+                    //     this._workflowDataService.updateWorkflowProgressStatus({isWorkflowAccountsSaved: true, isPrimaryWorkflowCompleted: true});
+                    // break;
+                    case WorkflowProcessType.TerminateConsultant:
+                        switch (this._workflowDataService.workflowProgress.currentlyActiveStep) {
+                            case WorkflowSteps.Sales:
+                                this.completeSalesConsultantTerminationStep(true);
+                                console.log('complete WF Term Cons Sales');
+                                break;
+                            case WorkflowSteps.Contracts:
+                                this.completeContractsConsultantTerminationStep(true);
+                                console.log('complete WF Term Cons Contracts');
+                                break;
+                            case WorkflowSteps.Sourcing:
+                                this.completeSourcingConsultantTerminationStep(true);
+                                console.log('complete WF Term Cons Sourcing');
+                                break;
+                        }
+                    break;
+                    case WorkflowProcessType.TerminateWorkflow:
+                        switch (this._workflowDataService.workflowProgress.currentlyActiveStep) {
+                            case WorkflowSteps.Sales:
+                                this.completeSalesTerminationStep(true);
+                                console.log('complete WF Term Sales');
+                                break;
+                            case WorkflowSteps.Contracts:
+                                this.completeContractsTerminationStep(true);
+                                console.log('complete WF Term Contracts');
+                                break;
+                            case WorkflowSteps.Sourcing:
+                                this.completeSourcingTerminationStep(true);
+                                console.log('complete WF Term Sourcing');
+                                break;
+                        }
+                    break;
                 }
                 break;
             case WorkflowTopSections.Extension:
