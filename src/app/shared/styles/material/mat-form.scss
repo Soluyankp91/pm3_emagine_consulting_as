@@ -348,6 +348,7 @@
         &.disabled-input {
             .mat-form-field-flex {
                 background-color: transparent !important;
+                pointer-events: none;
             }
         }
 
@@ -458,6 +459,7 @@
         &.disabled-input {
             .mat-form-field-flex {
                 background-color: transparent !important;
+                pointer-events: none;
             }
         }
 
@@ -468,6 +470,21 @@
             .mat-form-field-label {
                 color: #FF7A78 !important;
             }
+        }
+    }
+}
+
+.multilineDropdown {
+    &-option {
+        &--row {
+            display: flex;
+            flex-direction: row;
+            line-height: 1 !important;
+        }
+        &--column {
+            display: flex;
+            flex-direction: column;
+            line-height: 1 !important;
         }
     }
 }

@@ -39,7 +39,7 @@
 
 .button-add {
     background-color: transparent !important;
-    color: #17A297 !important;
+    color: #17A297;
     font-weight: 700;
     padding-left: 0px !important;
     font-size: 16px;
@@ -48,7 +48,7 @@
         align-items: center;
     }
     mat-icon {
-        background-color: rgba($color: #17A297, $alpha: .2) !important;
+        background-color: rgba($color: #17A297, $alpha: .2);
         border-radius: 50% !important;
         margin-right: 5px;
     }
@@ -191,8 +191,14 @@
 }
 
 .inline-edit-form {
-    &--btn__save {
-        color: $green-color;
-        font-weight: 700;
+    &--btn {
+        &__save {
+            color: $green-color;
+            font-weight: 700;
+        }
+        &__cancel {
+            color: $dark-grey-color;
+            font-weight: 700;
+        }
     }
 }

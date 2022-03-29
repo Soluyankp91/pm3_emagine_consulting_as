@@ -414,3 +414,46 @@ export class SalesTerminateConsultantForm extends FormGroup {
         return this.get('additionalComments');
     }
 }
+
+export const TenantList = [
+    {
+        id: 1,
+        name: "Denmark",
+        code: 'DK'
+    },
+    {
+        id: 27,
+        name: "France",
+        code: 'FR'
+    },
+    {
+        id: 10,
+        name: "Germany",
+        code: 'DE'
+    },
+    {
+        id: 25,
+        name: "International",
+        code: 'EU'
+    },
+    {
+        id: 8,
+        name: "Netherlands",
+        code: 'NL'
+    },
+    {
+        id: 17,
+        name: "Norway",
+        code: 'NO'
+    },
+    {
+        id: 4,
+        name: "Poland",
+        code: 'PL'
+    },
+    {
+        id: 2,
+        name: "Sweden",
+        code: 'SE'
+    }
+];

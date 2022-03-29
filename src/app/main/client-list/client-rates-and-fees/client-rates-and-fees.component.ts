@@ -1,11 +1,12 @@
 import { Component, OnDestroy, OnInit } from '@angular/core';
 import { FormArray, FormBuilder, FormControl } from '@angular/forms';
 import { MatSlideToggleChange } from '@angular/material/slide-toggle';
+import { MatSnackBar } from '@angular/material/snack-bar';
 import { ActivatedRoute } from '@angular/router';
 import { Subject } from 'rxjs';
 import { finalize, takeUntil } from 'rxjs/operators';
 import { InternalLookupService } from 'src/app/shared/common/internal-lookup.service';
-import { AddClientSpecialFeeDto, AddClientSpecialRateDto, ClientSpecialFeeDto, ClientSpecialRateDto, ClientsServiceProxy, EnumEntityTypeDto, EnumServiceProxy } from 'src/shared/service-proxies/service-proxies';
+import { AddClientSpecialFeeDto, AddClientSpecialRateDto, ClientSpecialFeeDto, ClientSpecialRateDto, ClientsServiceProxy, EnumEntityTypeDto, EnumServiceProxy, SpecialFeesServiceProxy, SpecialRatesServiceProxy } from 'src/shared/service-proxies/service-proxies';
 import { ClientFeesForm, ClientSpecailRateForm } from './client-rates-and-fees.model';
 
 @Component({
@@ -37,7 +38,10 @@ export class ClientRatesAndFeesComponent implements OnInit, OnDestroy {
         private _fb: FormBuilder,
         private _lookupService: InternalLookupService,
         private _clientService: ClientsServiceProxy,
-        private _activatedSnapshot: ActivatedRoute
+        private _specialRatesService: SpecialRatesServiceProxy,
+        private _specialFeesService: SpecialFeesServiceProxy,
+        private _activatedSnapshot: ActivatedRoute,
+        private _snackBar: MatSnackBar
     ) {
         this.clientSpecailRateForm = new ClientSpecailRateForm();
         this.clientFeesForm = new ClientFeesForm();
@@ -154,7 +158,8 @@ export class ClientRatesAndFeesComponent implements OnInit, OnDestroy {
             proDataRate: new FormControl(clientRate?.proDataToProDataRate ?? null),
             consultantRate: new FormControl(clientRate?.consultantRate ?? null),
             category: new FormControl(clientRate?.specialRateCategory ?? null),
-            editable: new FormControl(clientRate ? false : true),
+            editable: new FormControl(clientRate?.id ? false : true),
+            inUse: new FormControl(clientRate?.inUse ? clientRate?.inUse : false),
             hidden: new FormControl(clientRate?.isHidden ?? false)
         });
         this.clientSpecailRateForm.specialRates.push(form);
@@ -164,8 +169,28 @@ export class ClientRatesAndFeesComponent implements OnInit, OnDestroy {
         return this.clientSpecailRateForm.get('specialRates') as FormArray;
     }
 
-    removeSpecialRate(index: number) {
-        this.specialRates.removeAt(index);
+    removeSpecialRate(rateId: number, isUsed: boolean, index: number) {
+        if (rateId) {
+            this.deleteClientRate(rateId, isUsed);
+        } else {
+            this.specialRates.removeAt(index);
+        }
+    }
+
+    deleteClientRate(rateId: number, isUsed: boolean) {
+        if (!isUsed) {
+            this._snackBar.open(('This special client fee cannot be deleted and be will hidden instead.'), 'Dismiss', {
+                panelClass: ['warning-snackbar'],
+                duration: 5000
+            });
+        }
+        this._specialRatesService.delete(this.clientId, rateId)
+            .pipe(finalize(() => {
+
+            }))
+            .subscribe(result => {
+                this.getClientRates();
+            });
     }
 
     editOrSaveSpecialRate(isEditMode: boolean, index: number) {
@@ -229,6 +254,7 @@ export class ClientRatesAndFeesComponent implements OnInit, OnDestroy {
             consultantRate: new FormControl(clientFee?.consultantRate ?? null),
             category: new FormControl(null), // missing category in a response
             editable: new FormControl(clientFee ? false : true),
+            inUse: new FormControl(clientFee?.inUse ? clientFee?.inUse : false),
             hidden: new FormControl(clientFee?.isHidden ?? false)
         });
         this.clientFeesForm.clientFees.push(form);
@@ -238,8 +264,28 @@ export class ClientRatesAndFeesComponent implements OnInit, OnDestroy {
         return this.clientFeesForm.get('clientFees') as FormArray;
     }
 
-    removeClientFee(index: number) {
-        this.clientFees.removeAt(index);
+    removeClientFee(feeId: number, isUsed: boolean, index: number) {
+        if (feeId) {
+            this.deleteClientFee(feeId, isUsed);
+        } else {
+            this.clientFees.removeAt(index);
+        }
+    }
+
+    deleteClientFee(feeId: number, isUsed: boolean) {
+        if (!isUsed) {
+            this._snackBar.open(('This special client fee cannot be deleted and be will hidden instead.'), 'Dismiss', {
+                panelClass: ['warning-snackbar'],
+                duration: 5000
+            });
+        }
+        this._specialFeesService.delete(this.clientId, feeId)
+            .pipe(finalize(() => {
+
+            }))
+            .subscribe(result => {
+                this.getClientFees();
+            });
     }
 
     editOrSaveClientFee(isEditMode: boolean, index: number) {
@@ -254,7 +300,7 @@ export class ClientRatesAndFeesComponent implements OnInit, OnDestroy {
         let input = new AddClientSpecialFeeDto();
         input.internalName = clientRate.feeName;
         input.publicName = clientRate.nameForInvoices;
-        input.specialRateOrFeeDirectionId = clientRate.rateDirection?.id;
+        input.specialRateOrFeeDirectionId = clientRate.feeDirection?.id;
         input.clientSpecialFeeFrequencyId = clientRate.feeFrequency?.id;
         input.clientSpecialFeeSpecifiedAsId = clientRate.feeSpecifiedAs?.id;
         // input.specialRateCategoryId = clientRate.category?.id;

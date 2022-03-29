@@ -4,7 +4,7 @@ import { AbstractControl, FormArray, FormBuilder, FormControl } from '@angular/f
 import { MatDialog } from '@angular/material/dialog';
 import { finalize } from 'rxjs/operators';
 import { InternalLookupService } from 'src/app/shared/common/internal-lookup.service';
-import { ClientPeriodContractsDataDto, ClientPeriodServiceProxy, ConsultantContractsDataDto, ConsultantTerminationContractDataDto, ContractsClientDataDto, ContractsMainDataDto, EnumEntityTypeDto, PeriodClientSpecialFeeDto, PeriodClientSpecialRateDto, PeriodConsultantSpecialFeeDto, PeriodConsultantSpecialRateDto, WorkflowProcessType, WorkflowServiceProxy, WorkflowTerminationContractDataDto } from 'src/shared/service-proxies/service-proxies';
+import { ClientPeriodContractsDataDto, ClientPeriodServiceProxy, ConsultantContractsDataDto, ConsultantTerminationContractDataDto, ContractsClientDataDto, ContractsMainDataDto, EnumEntityTypeDto, PeriodClientSpecialFeeDto, PeriodClientSpecialRateDto, PeriodConsultantSpecialFeeDto, PeriodConsultantSpecialRateDto, WorkflowProcessType, WorkflowServiceProxy, WorkflowTerminationContractDataDto, ProjectLineDto } from 'src/shared/service-proxies/service-proxies';
 import { WorkflowConsultantActionsDialogComponent } from '../workflow-consultant-actions-dialog/workflow-consultant-actions-dialog.component';
 import { WorkflowDataService } from '../workflow-data.service';
 import { ConsultantDiallogAction } from '../workflow-sales/workflow-sales.model';
@@ -82,6 +82,7 @@ export class WorkflowContractsComponent implements OnInit {
         this.getCurrencies();
         this.getSpecialRateOrFeeDirections();
         this.getSpecialRateReportUnits();
+        this.getSpecialFeeFrequencies();
 
         // Termination
         this.getWorkflowContractsStepConsultantTermination();
@@ -134,7 +135,7 @@ export class WorkflowContractsComponent implements OnInit {
 
             }))
             .subscribe(result => {
-                console.log('s ', result);
+
             });
     }
 
@@ -162,6 +163,15 @@ export class WorkflowContractsComponent implements OnInit {
         input.contractLinesDoneManuallyInOldPm = this.contractsSyncDataForm.manualCheckbox?.value ?? false;
 
         input.mainData = new ContractsMainDataDto();
+        input.mainData.projectDescription = this.contractsMainDataForm.projectDescription?.value;
+        input.mainData.projectTypeId = this.contractsMainDataForm.projectType?.value?.id;
+        input.mainData.salesTypeId = this.contractsMainDataForm.salesType?.value?.id;
+        input.mainData.deliveryTypeId = this.contractsMainDataForm.deliveryType?.value?.id;
+        input.mainData.marginId = this.contractsMainDataForm.margin?.value?.id;
+        input.mainData.discountId = this.contractsMainDataForm.discounts?.value?.id;
+        input.mainData.remarks = this.contractsMainDataForm.remarks?.value;
+        input.mainData.noRemarks = this.contractsMainDataForm.noRemarks?.value;
+
         input.consultantData = new Array<ConsultantContractsDataDto>();
         for (let consultant of this.consultantData.value) {
             let consultantData = new ConsultantContractsDataDto();
@@ -197,6 +207,10 @@ export class WorkflowContractsComponent implements OnInit {
             .subscribe(result => {
 
             });
+    }
+
+    getContractsStep() {
+
     }
 
     get readOnlyMode() {
@@ -269,9 +283,9 @@ export class WorkflowContractsComponent implements OnInit {
             consultantCapOnTimeReportingCurrency: new FormControl(consultant.consultantCapOnTimeReportingCurrency),
             specialContractTerms: new FormControl(null),
             isSpecialContractTermsNone: new FormControl(null),
-            specialRates: new FormArray([this.initSpecialRateToConsultantData()]),
-            clientFees: new FormArray([this.initClientFeesToConsultantData()]),
-            projectLines: new FormArray([this.initProjectLinesToConsultantData()])
+            specialRates: new FormArray([]),
+            clientFees: new FormArray([]),
+            projectLines: new FormArray([])
         });
         this.contractsConsultantsDataForm.consultantData.push(form);
     }
@@ -284,30 +298,17 @@ export class WorkflowContractsComponent implements OnInit {
         return this.consultantTypes.find(x => x.id === employmentTypeId)?.name!;
     }
 
-    // #region Consultant data Special Rates
-    initSpecialRateToConsultantData() {
-        const form = this._fb.group({
-            id: new FormControl(null),
-            clientSpecialRateId: new FormControl(null),
-            rateName: new FormControl(null),
-            rateDirection: new FormControl(null),
-            reportingUnit: new FormControl(null),
-            clientRateValue: new FormControl(null),
-            clientRateCurrency: new FormControl(null),
-            editable: new FormControl(true)
-        });
-        return form;
-    }
-
-    addSpecialRateToConsultantData(index: number, clientRate?: PeriodClientSpecialRateDto) {
+    addSpecialRateToConsultantData(index: number, clientRate?: PeriodConsultantSpecialRateDto) {
         const form = this._fb.group({
             id: new FormControl(clientRate?.id ?? null),
             clientSpecialRateId: new FormControl(clientRate?.clientSpecialRateId ?? null),
             rateName: new FormControl(clientRate?.rateName ?? null),
             rateDirection: new FormControl(clientRate?.rateDirection?.id ?? null),
             reportingUnit: new FormControl(clientRate?.reportingUnit?.id ?? null),
-            clientRateValue: new FormControl(clientRate?.clientRate ?? null),
-            clientRateCurrency: new FormControl(clientRate?.clientRateCurrencyId ?? null),
+            proDataRateValue: new FormControl(clientRate?.prodataToProdataRate ?? null),
+            proDataRateCurrency: new FormControl(clientRate?.prodataToProdataRateCurrencyId ?? null),
+            consultantRateValue: new FormControl(clientRate?.consultantRate ?? null),
+            consultantRateCurrency: new FormControl(clientRate?.consultantRateCurrencyId ?? null),
             editable: new FormControl(clientRate ? false : true)
         });
 
@@ -326,23 +327,23 @@ export class WorkflowContractsComponent implements OnInit {
         return (this.contractsConsultantsDataForm.consultantData.at(index).get('specialRates') as FormArray).controls;
 
     }
+
     // #endregion Consultant data Special Rates
 
     // Consultant data Client fees START REGION
-    initClientFeesToConsultantData() {
-        const form = this._fb.group({
-            feeName: new FormControl(null),
-            feeDirection: new FormControl(null),
-            frequency: new FormControl(null)
-        });
-        return form;
-    }
 
-    addClientFeesToConsultantData(index: number) {
+    addClientFeesToConsultantData(index: number, clientFee?: PeriodConsultantSpecialFeeDto) {
         const form = this._fb.group({
-            feeName: new FormControl(null),
-            feeDirection: new FormControl(null),
-            frequency: new FormControl(null)
+            id: new FormControl(clientFee?.id ?? null),
+            clientSpecialFeeId: new FormControl(clientFee?.clientSpecialFeeId ?? null),
+            feeName: new FormControl(clientFee?.feeName ?? null),
+            feeDirection: new FormControl(clientFee?.feeDirection ?? null),
+            frequency: new FormControl(clientFee?.frequency ?? null),
+            proDataRateValue: new FormControl(clientFee?.prodataToProdataRate ?? null),
+            proDataRateCurrency: new FormControl(clientFee?.prodataToProdataRateCurrencyId ?? null),
+            consultantRateValue: new FormControl(clientFee?.consultantRate ?? null),
+            consultantRateCurrency: new FormControl(clientFee?.consultantRateCurrencyId ?? null),
+            editable: new FormControl(true)
         });
         (this.contractsConsultantsDataForm.consultantData.at(index).get('clientFees') as FormArray).push(form);
     }
@@ -361,26 +362,32 @@ export class WorkflowContractsComponent implements OnInit {
     // Consultant data Client fees END REGION
 
     // Consultant data Project Lines START REGION
-    initProjectLinesToConsultantData() {
+    addProjectLinesToConsultantData(index: number, projectLine?: ProjectLineDto) {
         const form = this._fb.group({
-            feeName: new FormControl(null),
-            feeDirection: new FormControl(null),
-            frequency: new FormControl(null)
-        });
-        return form;
-    }
-
-    addProjectLinesToConsultantData(index: number) {
-        const form = this._fb.group({
-            feeName: new FormControl(null),
-            feeDirection: new FormControl(null),
-            frequency: new FormControl(null)
+            id: new FormControl(projectLine?.id ?? null),
+            projectName: new FormControl(projectLine?.projectName ?? null),
+            startDate: new FormControl(projectLine?.startDate ?? null),
+            endDate: new FormControl(projectLine?.endDate ?? null),
+            invoicingReferenceNumber: new FormControl(projectLine?.invoicingReferenceNumber ?? null),
+            invoicingReferencePersonId: new FormControl(projectLine?.invoicingReferencePersonId ?? null),
+            optionalInvoicingInfo: new FormControl(projectLine?.optionalInvoicingInfo ?? null),
+            differentDebtorNumber: new FormControl(projectLine?.differentDebtorNumber ?? null),
+            debtorNumber: new FormControl(projectLine?.debtorNumber ?? null),
+            differentInvoiceRecipient: new FormControl(projectLine?.differentInvoiceRecipient ?? null),
+            invoiceRecipientId: new FormControl(projectLine?.invoiceRecipientId ?? null),
+            modifiedById: new FormControl(projectLine?.modifiedById ?? null),
+            modificationDate: new FormControl(projectLine?.modificationDate ?? null),
+            editable: new FormControl(projectLine?.id ? false : true)
         });
         (this.contractsConsultantsDataForm.consultantData.at(index).get('projectLines') as FormArray).push(form);
     }
 
     removeConsultantDataProjectLines(consultantIndex: number, rateIndex: number) {
         (this.contractsConsultantsDataForm.consultantData.at(consultantIndex).get('projectLines') as FormArray).removeAt(rateIndex);
+    }
+
+    editOrSaveConsultantProjectLine(isEditMode: boolean, consultantIndex: number, rateIndex: number) {
+        (this.contractsConsultantsDataForm.consultantData.at(consultantIndex).get('projectLines') as FormArray).at(rateIndex).get('editable')?.setValue(!isEditMode, {emitEvent: false});
     }
 
     getConsultantProjectLinesControls(index: number): AbstractControl[] | null {

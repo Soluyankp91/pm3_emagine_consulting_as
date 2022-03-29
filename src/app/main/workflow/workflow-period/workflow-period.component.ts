@@ -1,11 +1,12 @@
 import { Overlay } from '@angular/cdk/overlay';
 import { Component, Input, OnInit } from '@angular/core';
 import { MatDialog } from '@angular/material/dialog';
-import { finalize } from 'rxjs/operators';
+import { Subject } from 'rxjs';
+import { finalize, takeUntil } from 'rxjs/operators';
 import { InternalLookupService } from 'src/app/shared/common/internal-lookup.service';
 import { ConfirmationDialogComponent } from 'src/app/shared/components/confirmation-dialog/confirmation-dialog.component';
 import { ManagerStatus } from 'src/app/shared/components/manager-search/manager-search.model';
-import { WorkflowProcessDto, WorkflowProcessType, EnumEntityTypeDto, WorkflowServiceProxy, StepDto } from 'src/shared/service-proxies/service-proxies';
+import { WorkflowProcessDto, WorkflowProcessType, EnumEntityTypeDto, WorkflowServiceProxy, StepDto, EmployeeDto } from 'src/shared/service-proxies/service-proxies';
 import { WorkflowDataService } from '../workflow-data.service';
 import { WorkflowSteps } from '../workflow.model';
 
@@ -31,7 +32,7 @@ export class WorkflowPeriodComponent implements OnInit {
 
     // hardcoded status
     managerStatus = ManagerStatus;
-
+    private _unsubscribe = new Subject();
     constructor(
         public _workflowDataService: WorkflowDataService,
         private _workflowService: WorkflowServiceProxy,
@@ -43,10 +44,15 @@ export class WorkflowPeriodComponent implements OnInit {
     ngOnInit(): void {
         this.getPeriodStepTypes();
         this.getSideMenu();
+        this._workflowDataService.workflowSideSectionAdded
+            .pipe(takeUntil(this._unsubscribe))
+            .subscribe((value: boolean) => {
+                this.getSideMenu();
+            });
     }
 
-    selectedManager() {
-
+    selectedManager(event: any) {
+        console.log(event);
     }
 
     getPeriodStepTypes() {

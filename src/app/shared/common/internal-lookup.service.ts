@@ -23,7 +23,12 @@ export class InternalLookupService {
     contractExpirationNotificationDuration: EnumEntityTypeDto[] = [];
     clientTimeReportingCap: EnumEntityTypeDto[] = [];
     emagineOffices: EnumEntityTypeDto[] = [];
-
+    commissionFrequencies: EnumEntityTypeDto[] = [];
+    commissionTypes: EnumEntityTypeDto[] = [];
+    commissionRecipientTypeList: EnumEntityTypeDto[] = [];
+    tenants: EnumEntityTypeDto[] = [];
+    projectCategories: EnumEntityTypeDto[] = [];
+    discounts: EnumEntityTypeDto[] = [];
     workflowClientPeriodTypes: EnumEntityTypeDto[] = [];
     workflowConsultantPeriodTypes: EnumEntityTypeDto[] = [];
     workflowPeriodStepTypes: EnumEntityTypeDto[] = [];
@@ -450,4 +455,112 @@ export class InternalLookupService {
         });
     }
 
+    getCommissionFrequency(): Observable<EnumEntityTypeDto[]> {
+        return new Observable<EnumEntityTypeDto[]>((observer) => {
+            if (this.emagineOffices.length) {
+                observer.next(this.commissionFrequencies);
+                observer.complete();
+            } else {
+                this._enumService.commissionFrequency()
+                    .subscribe(response => {
+                        this.commissionFrequencies = response;
+                        observer.next(this.commissionFrequencies);
+                        observer.complete();
+                    }, error => {
+                        observer.error(error);
+                    });
+            }
+        });
+    }
+
+    getCommissionTypes(): Observable<EnumEntityTypeDto[]> {
+        return new Observable<EnumEntityTypeDto[]>((observer) => {
+            if (this.commissionTypes.length) {
+                observer.next(this.commissionTypes);
+                observer.complete();
+            } else {
+                this._enumService.commissionTypes()
+                    .subscribe(response => {
+                        this.commissionTypes = response;
+                        observer.next(this.commissionTypes);
+                        observer.complete();
+                    }, error => {
+                        observer.error(error);
+                    });
+            }
+        });
+    }
+
+    getCommissionRecipientTypes(): Observable<EnumEntityTypeDto[]> {
+        return new Observable<EnumEntityTypeDto[]>((observer) => {
+            if (this.commissionRecipientTypeList.length) {
+                observer.next(this.commissionRecipientTypeList);
+                observer.complete();
+            } else {
+                this._enumService.recipientTypes()
+                    .subscribe(response => {
+                        this.commissionRecipientTypeList = response;
+                        observer.next(this.commissionRecipientTypeList);
+                        observer.complete();
+                    }, error => {
+                        observer.error(error);
+                    });
+            }
+        });
+    }
+
+    getTenants(): Observable<EnumEntityTypeDto[]> {
+        return new Observable<EnumEntityTypeDto[]>((observer) => {
+            if (this.tenants.length) {
+                observer.next(this.tenants);
+                observer.complete();
+            } else {
+                this._enumService.tenants()
+                    .subscribe(response => {
+                        this.tenants = response;
+                        observer.next(this.tenants);
+                        observer.complete();
+                    }, error => {
+                        observer.error(error);
+                    });
+            }
+        });
+    }
+
+    getProjectCategory(): Observable<EnumEntityTypeDto[]> {
+        return new Observable<EnumEntityTypeDto[]>((observer) => {
+            if (this.projectCategories.length) {
+                observer.next(this.projectCategories);
+                observer.complete();
+            } else {
+                this._enumService.projectCategory()
+                    .subscribe(response => {
+                        this.projectCategories = response;
+                        observer.next(this.projectCategories);
+                        observer.complete();
+                    }, error => {
+                        observer.error(error);
+                    });
+            }
+        });
+    }
+
+
+    getDiscounts(): Observable<EnumEntityTypeDto[]> {
+        return new Observable<EnumEntityTypeDto[]>((observer) => {
+            if (this.discounts.length) {
+                observer.next(this.discounts);
+                observer.complete();
+            } else {
+                this._enumService.discount()
+                    .subscribe(response => {
+                        this.discounts = response;
+                        observer.next(this.discounts);
+                        observer.complete();
+                    }, error => {
+                        observer.error(error);
+                    });
+            }
+        });
+    }
 }
