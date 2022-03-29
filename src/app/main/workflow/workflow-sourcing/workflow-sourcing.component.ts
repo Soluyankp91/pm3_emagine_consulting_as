@@ -1,5 +1,7 @@
 import { Component, Input, OnInit } from '@angular/core';
 import { FormArray, FormBuilder, FormControl } from '@angular/forms';
+import { finalize } from 'rxjs/operators';
+import { ConsultantTerminationSourcingDataDto, WorkflowServiceProxy, WorkflowTerminationSourcingDataDto } from 'src/shared/service-proxies/service-proxies';
 import { WorkflowSourcingConsultantsDataForm } from './workflow-sourcing.model';
 
 @Component({
@@ -10,6 +12,8 @@ import { WorkflowSourcingConsultantsDataForm } from './workflow-sourcing.model';
 export class WorkflowSourcingComponent implements OnInit {
     @Input() activeSideSection: number;
     @Input() workflowId: string;
+
+    consultantId = 1;
 
     sourcingConsultantsDataForm: WorkflowSourcingConsultantsDataForm;
     consultantList = [
@@ -22,25 +26,127 @@ export class WorkflowSourcingComponent implements OnInit {
 
     constructor(
         private _fb: FormBuilder,
+        private _workflowServiceProxy: WorkflowServiceProxy
 
     ) {
         this.sourcingConsultantsDataForm = new WorkflowSourcingConsultantsDataForm();
-
     }
 
     ngOnInit(): void {
-        this.consultantList.forEach(item => this.addConsultantDataToForm(item));
+        this.getWorkflowSourcingStepConsultantTermination();
+        this.getWorkflowSourcingStepTermination();
     }
 
-    addConsultantDataToForm(consultant: any) {
+    // Termination
+
+    addConsultantDataToTerminationForm(consultant: ConsultantTerminationSourcingDataDto) {
         const form = this._fb.group({
-            consultantName: new FormControl(consultant.name)
+            consultantId: new FormControl(consultant.consultantId),
+            // consultantName: new FormControl(consultant.name),
+            cvUpdated: new FormControl(consultant.cvUpdated)
         });
-        this.sourcingConsultantsDataForm.consultantData.push(form);
+        this.sourcingConsultantsDataForm.consultantTerminationSourcingData.push(form);
     }
 
-    get consultantData(): FormArray {
-        return this.sourcingConsultantsDataForm.get('consultantData') as FormArray;
+    get consultantTerminationSourcingData(): FormArray {
+        return this.sourcingConsultantsDataForm.get('consultantTerminationSourcingData') as FormArray;
+    }
+
+    getWorkflowSourcingStepConsultantTermination() {
+        this._workflowServiceProxy.terminationConsultantSourcingGet(this.workflowId!, this.consultantId!)
+            .pipe(finalize(() => {
+
+            }))
+            .subscribe(result => {
+                this.addConsultantDataToTerminationForm(result);
+            });
+    }
+
+    updateTerminationConsultantSourcingStep() {
+        let input = new ConsultantTerminationSourcingDataDto();
+        input.consultantId = this.sourcingConsultantsDataForm.consultantTerminationSourcingData?.at(0).value.consultantId;
+        input.cvUpdated = this.sourcingConsultantsDataForm.consultantTerminationSourcingData?.at(0).value.cvUpdated;
+
+        this._workflowServiceProxy.terminationConsultantSourcingPut(this.workflowId!, input)
+            .pipe(finalize(() => {
+
+            }))
+            .subscribe(result => {
+
+            })
+    }
+
+    completeTerminationConsultantSourcingStep() {
+        let input = new ConsultantTerminationSourcingDataDto();
+        input.consultantId = this.sourcingConsultantsDataForm.consultantTerminationSourcingData?.at(0).value.consultantId;
+        input.cvUpdated = this.sourcingConsultantsDataForm.consultantTerminationSourcingData?.at(0).value.cvUpdated;
+
+        this._workflowServiceProxy.terminationConsultantSourcingComplete(this.workflowId!, input)
+            .pipe(finalize(() => {
+
+            }))
+            .subscribe(result => {
+
+            })
+    }
+
+    getWorkflowSourcingStepTermination() {
+        this._workflowServiceProxy.terminationSourcingGet(this.workflowId!)
+            .pipe(finalize(() => {
+
+            }))
+            .subscribe(result => {
+                result.consultantTerminationSourcingData?.forEach(data => {
+                    this.addConsultantDataToTerminationForm(data);
+                })
+            });
+    }
+
+    updateTerminationSourcingStep() {
+        let input = new WorkflowTerminationSourcingDataDto();
+
+        input.consultantTerminationSourcingData = new Array<ConsultantTerminationSourcingDataDto>();
+        if (this.sourcingConsultantsDataForm.consultantTerminationSourcingData?.value?.length) {
+            this.sourcingConsultantsDataForm.consultantTerminationSourcingData.value.forEach((consultant: any) => {
+                let consultantInput = new ConsultantTerminationSourcingDataDto();
+                consultantInput.consultantId = consultant.consultantId;
+                consultantInput.cvUpdated = consultant.cvUpdated;
+
+                input.consultantTerminationSourcingData!.push(consultantInput);
+            });
+        }
+
+        this._workflowServiceProxy.terminationSourcingPut(this.workflowId!, input)
+            .pipe(finalize(() => {
+
+            }))
+            .subscribe(result => {
+
+            })
+    }
+
+    completeTerminationSourcingStep() {
+        let input = new WorkflowTerminationSourcingDataDto();
+
+        input.consultantTerminationSourcingData = new Array<ConsultantTerminationSourcingDataDto>();
+        if (this.sourcingConsultantsDataForm.consultantTerminationSourcingData?.value?.length) {
+            this.sourcingConsultantsDataForm.consultantTerminationSourcingData.value.forEach((consultant: any) => {
+                let consultantInput = new ConsultantTerminationSourcingDataDto();
+                consultantInput.consultantId = consultant.consultantId;
+                consultantInput.cvUpdated = consultant.cvUpdated;
+
+                input.consultantTerminationSourcingData!.push(consultantInput);
+            });
+        }
+
+
+        this._workflowServiceProxy.terminationSourcingComplete(this.workflowId!, input)
+            .pipe(finalize(() => {
+
+            }))
+            .subscribe(result => {
+
+            })
     }
 
 }
