@@ -869,17 +869,17 @@ export class WorkflowSalesComponent extends AppComopnentBase implements OnInit {
                 commissionInput.recipientTypeId = commission.recipientType?.id;
 
                 // TODO: DESIGN MISSING
-                switch (commission.recipientType?.name) {
-                    case 'Client':
-                        commissionInput.clientId = commission.recipient?.clientId;
-                        break;
-                    case 'Supplier':
+                switch (commission.recipientType?.id) {
+                    case 1: // Supplier
                         commissionInput.supplierId = commission.recipient?.supplierId;
                         break;
-                    case 'Consultant':
-                        commissionInput.consultantId = commission.recipient?.consutlantId;
+                    case 2: //Consultant
+                        commissionInput.consultantId = commission.recipient?.consultantId;
                         break;
-                    case 'PDC entity':
+                    case 3: // client
+                        commissionInput.clientId = commission.recipient?.clientId;
+                        break;
+                    case 4: // PDC entity
                         commissionInput.tenantId = commission.recipient?.tenantId;
                         break;
                 }
