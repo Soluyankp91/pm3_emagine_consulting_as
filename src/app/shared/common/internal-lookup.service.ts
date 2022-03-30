@@ -407,7 +407,7 @@ export class InternalLookupService {
                 observer.next(this.contractExpirationNotificationDuration);
                 observer.complete();
             } else {
-                this._enumService.clientPeriodType()
+                this._enumService.contractExpirationNotificationInterval()
                     .subscribe(response => {
                         this.contractExpirationNotificationDuration = response;
                         observer.next(this.contractExpirationNotificationDuration);

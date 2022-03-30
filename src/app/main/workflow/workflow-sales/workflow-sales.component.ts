@@ -82,12 +82,6 @@ export class WorkflowSalesComponent extends AppComopnentBase implements OnInit {
                 id: 2,
                 name: 'Fixed'
             }
-        ),
-        new EnumEntityTypeDto(
-            {
-                id: 3,
-                name: 'Milestones'
-            }
         )
     );
 
@@ -716,7 +710,7 @@ export class WorkflowSalesComponent extends AppComopnentBase implements OnInit {
             consultantType: new FormControl(consultant?.employmentTypeId ?? null),
             consultantName: new FormControl(consultant?.consultantData ?? null),
 
-            consultantProjectDuration: new FormControl(null),
+            consultantProjectDurationSameAsClient: new FormControl(true),
             consultantProjectStartDate: new FormControl(consultant?.startDate ?? null),
             consultantProjectEndDate: new FormControl({value: consultant?.endDate ?? null, disabled: consultant?.noEndDate}),
             consultantProjectNoEndDate: new FormControl(consultant?.noEndDate ?? false),
@@ -733,17 +727,17 @@ export class WorkflowSalesComponent extends AppComopnentBase implements OnInit {
 
             consultantExpectedWorkloadHours: new FormControl(null), // ?
             consultantExpectedWorkloadPeriod: new FormControl(null),
-            consultantCapOnTimeReporting: new FormControl(null),
+            consultantCapOnTimeReporting: new FormControl('No cap'), // ?? default value = no cap
             consultantCapOnTimeReportingValue: new FormControl(null),
-            consultantCapOnTimeReportingCurrency: new FormControl(null),
+            consultantCapOnTimeReportingCurrency: new FormControl(null), // remove
             consultantProdataEntity: new FormControl(consultant?.pdcPaymentEntityId ?? null),
-            consultantPrice: new FormControl(consultant?.consultantRate?.isTimeBasedRate ? 'Time based' : 'Fixed'),
+            consultantPaymentType: new FormControl(consultant?.consultantRate?.isTimeBasedRate ? 'Time based' : 'Fixed'),
             consultantRate: new FormControl(consultant?.consultantRate?.normalRate ?? null),
-            consultantRateUnitType: new FormControl(consultant?.consultantRate?.rateUnitTypeId ?? null),
-            consultantRateCurrency: new FormControl(consultant?.consultantRate?.currencyId ?? null),
+            consultantRateUnitType: new FormControl(this.findItemById(this.rateUnitTypes, consultant?.consultantRate?.rateUnitTypeId) ?? null),
+            consultantRateCurrency: new FormControl(this.findItemById(this.currencies, consultant?.consultantRate?.currencyId) ?? null),
             consultantPDCRate: new FormControl(consultant?.consultantRate?.prodataToProdataRate ?? null),
             consultantPDCRateUnitType: new FormControl(null), // ??
-            consultantPDCRateCurrency: new FormControl(consultant?.consultantRate?.prodataToProdataCurrencyId ?? null),
+            consultantPDCRateCurrency: new FormControl(this.findItemById(this.currencies, consultant?.consultantRate?.prodataToProdataCurrencyId) ?? null),
 
             consultantSpecialContractTerms: new FormControl(consultant?.specialContractTerms ?? null),
             consultantSpecialContractTermsNone: new FormControl(consultant?.noSpecialContractTerms ?? false),
@@ -873,8 +867,6 @@ export class WorkflowSalesComponent extends AppComopnentBase implements OnInit {
                 commissionInput.currencyId = commission.currency?.id;
                 commissionInput.commissionFrequencyId = commission.frequency?.id;
                 commissionInput.recipientTypeId = commission.recipientType?.id;
-
-                // TODO: DESIGN MISSING
                 switch (commission.recipientType?.id) {
                     case 1: // Supplier
                         commissionInput.supplierId = commission.recipient?.supplierId;
@@ -889,7 +881,8 @@ export class WorkflowSalesComponent extends AppComopnentBase implements OnInit {
                         commissionInput.tenantId = commission.recipient?.id;
                         break;
                 }
-                if (commission.frequency?.name === 'One time') {
+                // id = 2 == 'One time'
+                if (commission.frequency?.id === 2) {
                     commissionInput.oneTimeDate = commission.oneTimeDate;
                 }
 
@@ -912,8 +905,8 @@ export class WorkflowSalesComponent extends AppComopnentBase implements OnInit {
         input.salesClientData.pdcInvoicingEntityId = this.salesClientDataForm.pdcInvoicingEntityId?.value;
 
         input.salesClientData.clientRate = new ClientRateDto();
-        input.salesClientData.clientRate.isTimeBasedRate = this.salesClientDataForm.clientRateAndInvoicing?.value?.name === 'Time based';
-        input.salesClientData.clientRate.isFixedRate = this.salesClientDataForm.clientRateAndInvoicing?.value?.name === 'Fixed';
+        input.salesClientData.clientRate.isTimeBasedRate = this.salesClientDataForm.clientRateAndInvoicing?.value === 'Time based';
+        input.salesClientData.clientRate.isFixedRate = this.salesClientDataForm.clientRateAndInvoicing?.value === 'Fixed';
         input.salesClientData.clientRate.currencyId = this.salesClientDataForm.clientCurrency?.value
         input.salesClientData.clientRate.invoiceCurrencyId = this.salesClientDataForm.clientInvoiceCurrency?.value;
         input.salesClientData.clientRate.normalRate = this.salesClientDataForm.clientPrice?.value;
@@ -992,13 +985,13 @@ export class WorkflowSalesComponent extends AppComopnentBase implements OnInit {
                 consultantInput.pdcPaymentEntityId = consultant.consultantProdataEntity;
 
                 consultantInput.consultantRate = new ConsultantRateDto();
-                consultantInput.consultantRate.isTimeBasedRate = consultant.consultantPrice === 'Time based';
-                consultantInput.consultantRate.isFixedRate = consultant.consultantPrice === 'Fixed';
+                consultantInput.consultantRate.isTimeBasedRate = consultant.consultantPaymentType === 'Time based';
+                consultantInput.consultantRate.isFixedRate = consultant.consultantPaymentType === 'Fixed';
                 consultantInput.consultantRate.normalRate = consultant.consultantRate;
-                consultantInput.consultantRate.currencyId = consultant.consultantRateCurrency;
-                consultantInput.consultantRate.rateUnitTypeId = consultant.consultantRateUnitType;
+                consultantInput.consultantRate.currencyId = consultant.consultantRateCurrency?.id;
+                consultantInput.consultantRate.rateUnitTypeId = consultant.consultantRateUnitType?.id;
                 consultantInput.consultantRate.prodataToProdataRate = consultant.consultantPDCRate;
-                consultantInput.consultantRate.prodataToProdataCurrencyId = consultant.consultantPDCRateCurrency;
+                consultantInput.consultantRate.prodataToProdataCurrencyId = consultant.consultantPDCRateCurrency?.id;
                 consultantInput.consultantRate.prodataToProdataInvoiceCurrencyId = consultant.prodataToProdataInvoiceCurrencyId;
                 consultantInput.consultantRate.manualDate = consultant.manualDate;
                 consultantInput.consultantRate.invoiceFrequencyId = consultant.invoiceFrequencyId;
@@ -1032,15 +1025,15 @@ export class WorkflowSalesComponent extends AppComopnentBase implements OnInit {
                 this.salesMainDataForm.projectType?.setValue(this.findItemById(this.projectTypes, result?.salesMainData?.projectTypeId), {emitEvent: false});
                 this.salesMainDataForm.salesType?.setValue(this.findItemById(this.saleTypes, result?.salesMainData?.salesTypeId), {emitEvent: false});
                 this.salesMainDataForm.deliveryType?.setValue(this.findItemById(this.deliveryTypes, result?.salesMainData?.deliveryTypeId), {emitEvent: false});
-                this.salesMainDataForm.projectCategory?.setValue(result?.salesMainData?.projectCategoryId, {emitEvent: false});
+                this.salesMainDataForm.projectCategory?.setValue(this.findItemById(this.projectCategories, result?.salesMainData?.projectCategoryId), {emitEvent: false});
                 this.salesMainDataForm.margin?.setValue(result?.salesMainData?.marginId, {emitEvent: false});
                 this.salesMainDataForm.projectDescription?.setValue(result?.salesMainData?.projectDescription, {emitEvent: false});
 
                 // Invoicing
-                // add discounts
                 result.salesMainData?.commissions?.forEach(commission => {
                     this.addCommission(commission);
                 })
+                this.salesMainDataForm.discounts?.setValue(result?.salesMainData?.discountId ?? 1, {emitEvent: false}); // 1 - default value 'None'
 
                 // Account Manager
                 this.salesMainDataForm.salesAccountManagerIdValue?.setValue(result?.salesMainData?.salesAccountManagerIdValue, {emitEvent: false});
@@ -1054,7 +1047,7 @@ export class WorkflowSalesComponent extends AppComopnentBase implements OnInit {
                 }
 
                 // Client
-                this.salesClientDataForm.differentEndClient?.setValue(result.salesClientData?.differentEndClient, {emitEvent: false});
+                this.salesClientDataForm.differentEndClient?.setValue(result.salesClientData?.differentEndClient ?? false, {emitEvent: false}); // default value if false
                 this.salesClientDataForm.directClientIdValue?.setValue(result?.salesClientData?.directClientIdValue, {emitEvent: false});
                 this.salesClientDataForm.endClientIdValue?.setValue(result?.salesClientData?.endClientIdValue, {emitEvent: false});
                 //Duration
@@ -1068,17 +1061,17 @@ export class WorkflowSalesComponent extends AppComopnentBase implements OnInit {
                 this.salesClientDataForm.clientExtensionDuration?.setValue(result?.salesClientData?.clientExtensionDurationId, {emitEvent: false});
                 this.salesClientDataForm.clientExtensionDeadline?.setValue(this.findItemById(this.clientExtensionDeadlines, result?.salesClientData?.clientExtensionDeadlineId), {emitEvent: false});
                 // Project
-                this.salesClientDataForm.capOnTimeReporting?.setValue(result?.salesClientData?.clientTimeReportingCapId);
+                this.salesClientDataForm.capOnTimeReporting?.setValue(result?.salesClientData?.clientTimeReportingCapId ?? 1, {emitEvent: false}); // default idValue = 1
                 this.salesClientDataForm.capOnTimeReportingValue?.setValue(result?.salesClientData?.clientTimeReportingCapMaxValue, {emitEvent: false});
                 // Invoicing
                 this.salesClientDataForm.pdcInvoicingEntityId?.setValue(result?.salesClientData?.pdcInvoicingEntityId, {emitEvent: false});
-                let clientRateType = '';
+                let clientRateType = 'Fixed'; // default value
                 if (result.salesClientData?.clientRate?.isFixedRate) {
                     clientRateType = 'Fixed';
-                } else if (result.salesClientData?.clientRate?.isFixedRate) {
+                } else if (result.salesClientData?.clientRate?.isTimeBasedRate) {
                     clientRateType = 'Time based';
                 }
-                this.salesClientDataForm.clientRateAndInvoicing?.setValue(clientRateType, {emitEVent: false});
+                this.salesClientDataForm.clientRateAndInvoicing?.setValue(clientRateType, {emitEVent: false}); // default value is 'Fixed'
 
                 this.salesClientDataForm.clientPrice?.setValue(result.salesClientData?.clientRate?.normalRate, {emitEVent: false});
                 this.salesClientDataForm.rateUnitTypeId?.setValue(result.salesClientData?.clientRate?.rateUnitTypeId, {emitEVent: false});
@@ -1138,25 +1131,9 @@ export class WorkflowSalesComponent extends AppComopnentBase implements OnInit {
     }
 
     salesTypeChange(value: EnumEntityTypeDto) {
-        if (value.name === 'ManagedService') {
-            const itemToPreselct = this.deliveryTypes.find(x => x.name === 'ManagedService')
+        if (value.id === 3) { // Managed Service
+            const itemToPreselct = this.deliveryTypes.find(x => x.id === 1); // Managed Service
             this.salesMainDataForm.deliveryType?.setValue(itemToPreselct, {emitEvent: false});
-        }
-    }
-
-    findItemById(list: EnumEntityTypeDto[], id?: number) {
-        if (id) {
-            return list.find((x: any) => x.id === id);
-        } else {
-            return null;
-        }
-    }
-
-    findItemByName(list: EnumEntityTypeDto[], name?: string) {
-        if (name) {
-            return list.find((x: any) => x.name === name);
-        } else {
-            return null;
         }
     }
 
@@ -1304,26 +1281,22 @@ export class WorkflowSalesComponent extends AppComopnentBase implements OnInit {
                         name: value,
                         maxRecordsCount: 1000,
                     };
-                    switch (arrayControl.value.recipientType.name) {
-                        case 'Client':
-                            // client api
+                    switch (arrayControl.value.recipientType.id) {
+                        case 3: // Client
                             if (value?.id) {
                                 toSend.name = value.id
                                     ? value.clientName
                                     : value;
                             }
-                            console.log('s4');
                             return this._lookupService.clients(toSend.name, toSend.maxRecordsCount);
-                        case 'Consultant':
-                            // Consultant api
+                        case 2: // Consultant
                             if (value?.id) {
                                 toSend.name = value.id
                                     ? value.name
                                     : value;
                             }
                             return this._lookupService.consultants(toSend.name, toSend.maxRecordsCount);
-                        case 'Supplier':
-                            // Supplier api
+                        case 1: // Supplier
                             if (value?.id) {
                                 toSend.name = value.id
                                     ? value.supplierName

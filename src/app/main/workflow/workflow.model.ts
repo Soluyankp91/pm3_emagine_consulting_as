@@ -1,4 +1,5 @@
 import { FormArray, FormControl, FormGroup } from "@angular/forms";
+import { EnumEntityTypeDto } from "src/shared/service-proxies/service-proxies";
 import { SideNavigationParentItemDto } from "./workflow-extension/workflow-extension.model";
 
 export class WorkflowSalesExtensionForm extends FormGroup {
@@ -710,8 +711,8 @@ export const WorkflowList = [
     },
     {
         flag: WorkflowFlag.NewSales,
-        id: 'afde1b8e-a51f-4509-a6ad-ef7168138960',
-        client: 'Martha Marikel',
+        id: 'FA6E1A07-0CBF-41FF-BFCB-065177173F86',
+        client: 'Many extend periods',
         consultants: [
             { name: 'Martha Marikel'}
         ],
@@ -824,41 +825,59 @@ export const WorkflowList = [
 
 // #endrefion hardcoded grid
 
-export const ConsultantTypes = [
-    {
-        id: 1,
-        name: 'Freelance'
-    },
-    {
-        id: 2,
-        name: 'Freelance low margin'
-    },
-    {
-        id: 3,
-        name: 'Project employment'
-    },
-    {
-        id: 4,
-        name: 'Temporary worker'
-    },
-    {
-        id: 5,
-        name: 'Nearshore'
-    },
-    {
-        id: 6,
-        name: 'VMS/Referred'
-    },
-    {
-        id: 7,
-        name: 'Permanent employee'
-    },
-    {
-        id: 8,
-        name: '48E consultant'
-    },
-    {
-        id: 9,
-        name: 'Fee only'
-    }
+export const ConsultantTypes: EnumEntityTypeDto[] = [
+    new EnumEntityTypeDto(
+        {
+            id: 1,
+            name: 'Freelance'
+        }
+    ),
+    new EnumEntityTypeDto(
+        {
+            id: 2,
+            name: 'Freelance low margin'
+        }
+    ),
+    new EnumEntityTypeDto(
+        {
+            id: 3,
+            name: 'Project employment'
+        }
+    ),
+    new EnumEntityTypeDto(
+        {
+            id: 4,
+            name: 'Temporary worker'
+        }
+    ),
+    new EnumEntityTypeDto(
+        {
+            id: 5,
+            name: 'Nearshore'
+        }
+    ),
+    new EnumEntityTypeDto(
+        {
+            id: 6,
+            name: 'VMS/Referred'
+        }
+    ),
+    new EnumEntityTypeDto(
+        {
+            id: 7,
+            name: 'Permanent employee'
+        }
+    ),
+    new EnumEntityTypeDto(
+        {
+            id: 8,
+            name: '48E consultant'
+        }
+    ),
+    new EnumEntityTypeDto(
+        {
+            id: 9,
+            name: 'Fee only'
+        }
+    )
 ];
