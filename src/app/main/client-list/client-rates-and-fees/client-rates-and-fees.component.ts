@@ -6,7 +6,7 @@ import { ActivatedRoute } from '@angular/router';
 import { Subject } from 'rxjs';
 import { finalize, takeUntil } from 'rxjs/operators';
 import { InternalLookupService } from 'src/app/shared/common/internal-lookup.service';
-import { AddClientSpecialFeeDto, AddClientSpecialRateDto, ClientSpecialFeeDto, ClientSpecialRateDto, ClientsServiceProxy, EnumEntityTypeDto, EnumServiceProxy, SpecialFeesServiceProxy, SpecialRatesServiceProxy } from 'src/shared/service-proxies/service-proxies';
+import { AddClientSpecialFeeDto, AddClientSpecialRateDto, ClientSpecialFeeDto, ClientSpecialRateDto, ClientsServiceProxy, EnumEntityTypeDto, EnumServiceProxy, SpecialFeesServiceProxy, SpecialRatesServiceProxy, UpdateClientSpecialFeeDto, UpdateClientSpecialRateDto } from 'src/shared/service-proxies/service-proxies';
 import { ClientFeesForm, ClientSpecailRateForm } from './client-rates-and-fees.model';
 
 @Component({
@@ -32,6 +32,9 @@ export class ClientRatesAndFeesComponent implements OnInit, OnDestroy {
     showHiddenSpecialFees = true;
 
     clientId: number;
+
+    feeIsEditing = false;
+    rateIsEditing = false;
 
     private _unsubscribe = new Subject();
     constructor(
@@ -156,12 +159,17 @@ export class ClientRatesAndFeesComponent implements OnInit, OnDestroy {
             clientRateValue: new FormControl(clientRate?.clientRate ?? null),
             clientRateCurrency: new FormControl(clientRate?.clientRateCurrency ?? null),
             proDataRate: new FormControl(clientRate?.proDataToProDataRate ?? null),
+            proDataRateCurrency: new FormControl(clientRate?.proDataToProDataRateCurrency ?? null),
             consultantRate: new FormControl(clientRate?.consultantRate ?? null),
+            consultantRateCurrency: new FormControl(clientRate?.consultantCurrency ?? null),
             category: new FormControl(clientRate?.specialRateCategory ?? null),
             editable: new FormControl(clientRate?.id ? false : true),
             inUse: new FormControl(clientRate?.inUse ? clientRate?.inUse : false),
             hidden: new FormControl(clientRate?.isHidden ?? false)
         });
+        if (!clientRate?.id) {
+            this.rateIsEditing = true;
+        }
         this.clientSpecailRateForm.specialRates.push(form);
     }
 
@@ -170,6 +178,9 @@ export class ClientRatesAndFeesComponent implements OnInit, OnDestroy {
     }
 
     removeSpecialRate(rateId: number, isUsed: boolean, index: number) {
+        if (this.specialRates.at(index).get('editable')?.value) {
+            this.rateIsEditing = false;
+        }
         if (rateId) {
             this.deleteClientRate(rateId, isUsed);
         } else {
@@ -178,7 +189,7 @@ export class ClientRatesAndFeesComponent implements OnInit, OnDestroy {
     }
 
     deleteClientRate(rateId: number, isUsed: boolean) {
-        if (!isUsed) {
+        if (isUsed) {
             this._snackBar.open(('This special client fee cannot be deleted and be will hidden instead.'), 'Dismiss', {
                 panelClass: ['warning-snackbar'],
                 duration: 5000
@@ -193,11 +204,15 @@ export class ClientRatesAndFeesComponent implements OnInit, OnDestroy {
             });
     }
 
-    editOrSaveSpecialRate(isEditMode: boolean, index: number) {
+    startEditSpecialRate(isEditMode: boolean, index: number) {
         this.specialRates.at(index).get('editable')?.setValue(!isEditMode, {emitEvent: false});
-        if (isEditMode) {
-            this.saveOrUpdateSpecialRate(index);
-        }
+        this.rateIsEditing = !isEditMode;
+    }
+
+    cancelRateEdit(index: number) {
+        this.specialRates.at(index).get('editable')?.setValue(false, {emitEvent: false});
+        this.rateIsEditing = false;
+        this.getClientRates();
     }
 
     saveOrUpdateSpecialRate(index: number) {
@@ -212,9 +227,9 @@ export class ClientRatesAndFeesComponent implements OnInit, OnDestroy {
         input.clientRate = clientRate.clientRateValue;
         input.clientRateCurrencyId = clientRate.clientRateCurrency?.id;
         input.prodataToProdataRate = clientRate.proDataRate;
-        input.prodataToProdataRateCurrencyId = clientRate.clientRateCurrency?.id;
+        input.prodataToProdataRateCurrencyId = clientRate.proDataRateCurrency?.id;
         input.consultantRate = clientRate.consultantRate;
-        input.consultantCurrencyId = clientRate.clientRateCurrency?.id;
+        input.consultantCurrencyId = clientRate.consultantRateCurrency?.id;
         input.isHidden = clientRate.hidden ?? false;
         if (clientRate?.id === null || clientRate?.id === undefined) {
             this._clientService.specialRatesPost(this.clientId, input)
@@ -222,14 +237,18 @@ export class ClientRatesAndFeesComponent implements OnInit, OnDestroy {
 
                 }))
                 .subscribe(result => {
+                    this.rateIsEditing = false;
                     this.getClientRates();
                 });
         } else {
-            this._clientService.specialRatesPut(this.clientId, input)
+            let updateInput = new UpdateClientSpecialRateDto(input);
+            updateInput.id = clientRate.id;
+            this._clientService.specialRatesPut(this.clientId, updateInput)
                 .pipe(finalize(() => {
 
                 }))
                 .subscribe(result => {
+                    this.rateIsEditing = false;
                     this.getClientRates();
                 });
         }
@@ -251,12 +270,17 @@ export class ClientRatesAndFeesComponent implements OnInit, OnDestroy {
             clientRateValue: new FormControl(clientFee?.clientRate ?? null),
             clientRateCurrency: new FormControl(clientFee?.clientRateCurrency ?? null),
             proDataRate: new FormControl(clientFee?.prodataToProdataRate ?? null),
+            proDataRateCurrency: new FormControl(clientFee?.prodataToProdataRateCurrency ?? null),
             consultantRate: new FormControl(clientFee?.consultantRate ?? null),
+            consultantRateCurrency: new FormControl(clientFee?.consultantCurrency ?? null),
             category: new FormControl(null), // missing category in a response
             editable: new FormControl(clientFee ? false : true),
             inUse: new FormControl(clientFee?.inUse ? clientFee?.inUse : false),
             hidden: new FormControl(clientFee?.isHidden ?? false)
         });
+        if (!clientFee?.id) {
+            this.feeIsEditing = true;
+        }
         this.clientFeesForm.clientFees.push(form);
     }
 
@@ -265,15 +289,18 @@ export class ClientRatesAndFeesComponent implements OnInit, OnDestroy {
     }
 
     removeClientFee(feeId: number, isUsed: boolean, index: number) {
+        if (this.clientFees.at(index).get('editable')?.value) {
+            this.feeIsEditing = false;
+        }
         if (feeId) {
-            this.deleteClientFee(feeId, isUsed);
+            this.deleteClientFee(feeId, isUsed, index);
         } else {
             this.clientFees.removeAt(index);
         }
     }
 
-    deleteClientFee(feeId: number, isUsed: boolean) {
-        if (!isUsed) {
+    deleteClientFee(feeId: number, isUsed: boolean, index: number) {
+        if (isUsed) {
             this._snackBar.open(('This special client fee cannot be deleted and be will hidden instead.'), 'Dismiss', {
                 panelClass: ['warning-snackbar'],
                 duration: 5000
@@ -284,51 +311,59 @@ export class ClientRatesAndFeesComponent implements OnInit, OnDestroy {
 
             }))
             .subscribe(result => {
-                this.getClientFees();
+                this.clientFees.removeAt(index);
             });
     }
 
-    editOrSaveClientFee(isEditMode: boolean, index: number) {
+    startEditSpecialFee(isEditMode: boolean, index: number) {
         this.clientFees.at(index).get('editable')?.setValue(!isEditMode, {emitEvent: false});
-        if (isEditMode) {
-            this.saveOrUpdateSpecialFee(index);
-        }
+        this.feeIsEditing = !isEditMode;
+    }
+
+    cancelFeeEdit(index: number) {
+        this.clientFees.at(index).get('editable')?.setValue(false, {emitEvent: false});
+        this.feeIsEditing = false;
+        this.getClientFees();
     }
 
     saveOrUpdateSpecialFee(index: number) {
-        const clientRate = this.clientFees.at(index).value;
+        const clientFee = this.clientFees.at(index).value;
         let input = new AddClientSpecialFeeDto();
-        input.internalName = clientRate.feeName;
-        input.publicName = clientRate.nameForInvoices;
-        input.specialRateOrFeeDirectionId = clientRate.feeDirection?.id;
-        input.clientSpecialFeeFrequencyId = clientRate.feeFrequency?.id;
-        input.clientSpecialFeeSpecifiedAsId = clientRate.feeSpecifiedAs?.id;
-        // input.specialRateCategoryId = clientRate.category?.id;
-        input.clientRate = clientRate.clientRateValue;
-        input.clientRateCurrencyId = clientRate.clientRateCurrency?.id;
-        input.prodataToProdataRate = clientRate.proDataRate;
-        input.prodataToProdataRateCurrencyId = clientRate.clientRateCurrency?.id;
-        input.consultantRate = clientRate.consultantRate;
-        input.consultantCurrencyId = clientRate.clientRateCurrency?.id;
-        input.isHidden = clientRate.hidden ?? false;
-        if (clientRate.id === null || clientRate.id === undefined) {
+        input.internalName = clientFee.feeName;
+        input.publicName = clientFee.nameForInvoices;
+        input.specialRateOrFeeDirectionId = clientFee.feeDirection?.id;
+        input.clientSpecialFeeFrequencyId = clientFee.feeFrequency?.id;
+        input.clientSpecialFeeSpecifiedAsId = clientFee.feeSpecifiedAs?.id;
+        input.clientRate = clientFee.clientRateValue;
+        input.clientRateCurrencyId = clientFee.clientRateCurrency?.id;
+        input.prodataToProdataRate = clientFee.proDataRate;
+        input.prodataToProdataRateCurrencyId = clientFee.proDataRateCurrency?.id;
+        input.consultantRate = clientFee.consultantRate;
+        input.consultantCurrencyId = clientFee.consultantRateCurrency?.id;
+        input.isHidden = clientFee.hidden ?? false;
+        if (clientFee.id === null || clientFee.id === undefined) {
             this._clientService.specialFeesPost(this.clientId, input)
                 .pipe(finalize(() => {
 
                 }))
                 .subscribe(result => {
+                    this.feeIsEditing = false;
                     this.getClientFees();
                 });
         } else {
-            this._clientService.specialFeesPut(this.clientId, input)
+            let updateInput = new UpdateClientSpecialFeeDto(input);
+            updateInput.id = clientFee.id;
+            this._clientService.specialFeesPut(this.clientId, updateInput)
                 .pipe(finalize(() => {
 
                 }))
                 .subscribe(result => {
+                    this.feeIsEditing = false;
                     this.getClientFees();
                 });
         }
     }
+
 
     toggleSpecialFeeHiddenState(index: number) {
         this.clientFees.at(index).get('hidden')?.setValue(!this.clientFees.at(index).get('hidden')?.value);

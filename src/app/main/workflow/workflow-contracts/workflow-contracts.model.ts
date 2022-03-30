@@ -78,7 +78,7 @@ export class WorkflowContractsClientDataForm extends FormGroup {
             capOnTimeReporting: new FormControl(null),
 
             specialContractTerms: new FormControl(null),
-            isSpecialContractTermsNone: new FormControl(null),
+            noSpecialContractTerms: new FormControl(null),
             clientRates: new FormArray([]),
             clientFees: new FormArray([]),
 
@@ -91,8 +91,8 @@ export class WorkflowContractsClientDataForm extends FormGroup {
     get specialContractTerms() {
         return this.get('specialContractTerms');
     }
-    get isSpecialContractTermsNone() {
-        return this.get('isSpecialContractTermsNone');
+    get noSpecialContractTerms() {
+        return this.get('noSpecialContractTerms');
     }
     get clientRates() {
         return this.get('clientRates') as FormArray;
@@ -105,11 +105,11 @@ export class WorkflowContractsClientDataForm extends FormGroup {
 export class WorkflowContractsConsultantsDataForm extends FormGroup {
     constructor() {
         super({
-            consultantData: new FormArray([])
+            consultants: new FormArray([])
         })
 
     }
-    get consultantData() {
-        return this.get('consultantData') as FormArray;
+    get consultants() {
+        return this.get('consultants') as FormArray;
     }
 }

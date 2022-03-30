@@ -1,6 +1,6 @@
 import { Injector } from "@angular/core";
 import { AbstractControl } from "@angular/forms";
-import { API_BASE_URL } from "./service-proxies/service-proxies";
+import { API_BASE_URL, EnumEntityTypeDto } from "./service-proxies/service-proxies";
 
 export abstract class AppComopnentBase {
     apiUrl: string;
@@ -66,4 +66,21 @@ export abstract class AppComopnentBase {
             control!.enable();
         }
     }
+
+    findItemById(list: EnumEntityTypeDto[], id?: number) {
+        if (id) {
+            return list.find((x: any) => x.id === id);
+        } else {
+            return null;
+        }
+    }
+
+    findItemByName(list: EnumEntityTypeDto[], name?: string) {
+        if (name) {
+            return list.find((x: any) => x.name === name);
+        } else {
+            return null;
+        }
+    }
+
 }
