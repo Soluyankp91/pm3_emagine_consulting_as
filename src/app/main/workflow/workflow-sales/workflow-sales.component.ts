@@ -181,7 +181,7 @@ export class WorkflowSalesComponent extends AppComopnentBase implements OnInit {
                 debounceTime(300),
                 switchMap((value: any) => {
                     let toSend = {
-                        name: value,
+                        name: value ?? '',
                         maxRecordsCount: 1000,
                     };
                     if (value?.id) {
@@ -189,6 +189,7 @@ export class WorkflowSalesComponent extends AppComopnentBase implements OnInit {
                             ? value.clientNam?.trim()
                             : value?.trim();
                     }
+                    console.log('s');
                     return this._lookupService.clients(toSend.name, toSend.maxRecordsCount);
                 }),
             ).subscribe((list: ClientSearchResultDto[]) => {
@@ -213,6 +214,7 @@ export class WorkflowSalesComponent extends AppComopnentBase implements OnInit {
                             ? value.clientName?.trim()
                             : value?.trim();
                     }
+                    console.log('s2');
                     return this._lookupService.clients(toSend.name, toSend.maxRecordsCount);
                 }),
             ).subscribe((list: ClientSearchResultDto[]) => {
@@ -253,16 +255,20 @@ export class WorkflowSalesComponent extends AppComopnentBase implements OnInit {
                 takeUntil(this._unsubscribe),
                 debounceTime(300),
                 switchMap((value: any) => {
-                    let toSend = {
-                        name: value,
-                        maxRecordsCount: 1000,
-                    };
-                    if (value?.id) {
-                        toSend.name = value.id
-                            ? value.clientName
-                            : value;
+                    if (value) {
+                        let toSend = {
+                            name: value,
+                            maxRecordsCount: 1000,
+                        };
+                        if (value?.id) {
+                            toSend.name = value.id
+                                ? value.clientName
+                                : value;
+                        }
+                        return this._lookupService.clients(toSend.name, toSend.maxRecordsCount);
+                    } else {
+                        return of([]);
                     }
-                    return this._lookupService.clients(toSend.name, toSend.maxRecordsCount);
                 }),
             ).subscribe((list: ClientSearchResultDto[]) => {
                 if (list.length) {
@@ -712,7 +718,7 @@ export class WorkflowSalesComponent extends AppComopnentBase implements OnInit {
 
             consultantProjectDuration: new FormControl(null),
             consultantProjectStartDate: new FormControl(consultant?.startDate ?? null),
-            consultantProjectEndDate: new FormControl(consultant?.endDate ?? null),
+            consultantProjectEndDate: new FormControl({value: consultant?.endDate ?? null, disabled: consultant?.noEndDate}),
             consultantProjectNoEndDate: new FormControl(consultant?.noEndDate ?? false),
 
             consultantWorkplace: new FormControl(null),
@@ -874,13 +880,13 @@ export class WorkflowSalesComponent extends AppComopnentBase implements OnInit {
                         commissionInput.supplierId = commission.recipient?.supplierId;
                         break;
                     case 2: //Consultant
-                        commissionInput.consultantId = commission.recipient?.consultantId;
+                        commissionInput.consultantId = commission.recipient?.id;
                         break;
                     case 3: // client
                         commissionInput.clientId = commission.recipient?.clientId;
                         break;
                     case 4: // PDC entity
-                        commissionInput.tenantId = commission.recipient?.tenantId;
+                        commissionInput.tenantId = commission.recipient?.id;
                         break;
                 }
                 if (commission.frequency?.name === 'One time') {
@@ -901,7 +907,7 @@ export class WorkflowSalesComponent extends AppComopnentBase implements OnInit {
         input.salesClientData.clientExtensionDurationId = this.salesClientDataForm.clientExtensionDuration?.value;
         input.salesClientData.clientExtensionDeadlineId = this.salesClientDataForm.clientExtensionDeadline?.value?.id;
         input.salesClientData.clientExtensionSpecificDate = this.salesClientDataForm.clientExtensionEndDate?.value;
-        input.salesClientData.clientTimeReportingCapId = this.salesClientDataForm.capOnTimeReporting?.value?.id;
+        input.salesClientData.clientTimeReportingCapId = this.salesClientDataForm.capOnTimeReporting?.value;
         input.salesClientData.clientTimeReportingCapMaxValue = this.salesClientDataForm.capOnTimeReportingValue?.value;
         input.salesClientData.pdcInvoicingEntityId = this.salesClientDataForm.pdcInvoicingEntityId?.value;
 
@@ -1043,6 +1049,9 @@ export class WorkflowSalesComponent extends AppComopnentBase implements OnInit {
                 this.salesMainDataForm.customContractExpirationNotificationDate?.setValue(result?.salesMainData?.customContractExpirationNotificationDate, {emitEvent: false});
                 this.salesMainDataForm.remarks?.setValue(result?.salesMainData?.remarks, {emitEvent: false});
                 this.salesMainDataForm.noRemarks?.setValue(result?.salesMainData?.noRemarks, {emitEVent: false});
+                if (result?.salesMainData?.noRemarks) {
+                    this.salesMainDataForm.remarks?.disable({emitEvent: false});
+                }
 
                 // Client
                 this.salesClientDataForm.differentEndClient?.setValue(result.salesClientData?.differentEndClient, {emitEvent: false});
@@ -1052,11 +1061,14 @@ export class WorkflowSalesComponent extends AppComopnentBase implements OnInit {
                 this.salesClientDataForm.clientContractStartDate?.setValue(result?.salesClientData?.startDate, {emitEvent: false});
                 this.salesClientDataForm.clientContractEndDate?.setValue(result?.salesClientData?.endDate, {emitEvent: false});
                 this.salesClientDataForm.clientContractNoEndDate?.setValue(result?.salesClientData?.noEndDate, {emitEvent: false});
+                if (result?.salesClientData?.noEndDate) {
+                    this.salesClientDataForm.clientContractEndDate?.disable({emitEvent: false});
+                }
                 this.salesClientDataForm.noClientExtensionOption?.setValue(result?.salesClientData?.noClientExtensionOption, {emitEvent: false});
                 this.salesClientDataForm.clientExtensionDuration?.setValue(result?.salesClientData?.clientExtensionDurationId, {emitEvent: false});
                 this.salesClientDataForm.clientExtensionDeadline?.setValue(this.findItemById(this.clientExtensionDeadlines, result?.salesClientData?.clientExtensionDeadlineId), {emitEvent: false});
                 // Project
-                this.salesClientDataForm.capOnTimeReporting?.setValue(this.findItemById(this.clientTimeReportingCap, result?.salesClientData?.clientTimeReportingCapId), {emitEvent: false});
+                this.salesClientDataForm.capOnTimeReporting?.setValue(result?.salesClientData?.clientTimeReportingCapId);
                 this.salesClientDataForm.capOnTimeReportingValue?.setValue(result?.salesClientData?.clientTimeReportingCapMaxValue, {emitEvent: false});
                 // Invoicing
                 this.salesClientDataForm.pdcInvoicingEntityId?.setValue(result?.salesClientData?.pdcInvoicingEntityId, {emitEvent: false});
@@ -1078,8 +1090,14 @@ export class WorkflowSalesComponent extends AppComopnentBase implements OnInit {
                 this.salesClientDataForm.invoicingReferenceNumber?.setValue(result.salesClientData?.invoicingReferenceNumber, {emitEVent: false});
                 this.salesClientDataForm.clientInvoicingRecipientIdValue?.setValue(result.salesClientData?.clientInvoicingRecipientIdValue, {emitEVent: false});
                 this.salesClientDataForm.clientInvoicingRecipientSameAsDirectClient?.setValue(result?.salesClientData?.clientInvoicingRecipientSameAsDirectClient, {emitEvent: false});
+                if (result?.salesClientData?.clientInvoicingRecipientSameAsDirectClient) {
+                    this.salesClientDataForm.clientInvoicingRecipientIdValue?.disable({emitEvent: false});
+                }
                 this.salesClientDataForm.invoicingReferencePersonIdValue?.setValue(result?.salesClientData?.invoicingReferencePersonIdValue, {emitEvent: false});
                 this.salesClientDataForm.noInvoicingReferencePerson?.setValue(result?.salesClientData?.noInvoicingReferencePerson, {emitEvent: false});
+                if (result?.salesClientData?.noInvoicingReferencePerson) {
+                    this.salesClientDataForm.invoicingReferencePersonIdValue?.disable({emitEvent: false});
+                }
 
                 // Rates & Fees
                 result.salesClientData?.periodClientSpecialRates?.forEach(specialRate => {
@@ -1294,6 +1312,7 @@ export class WorkflowSalesComponent extends AppComopnentBase implements OnInit {
                                     ? value.clientName
                                     : value;
                             }
+                            console.log('s4');
                             return this._lookupService.clients(toSend.name, toSend.maxRecordsCount);
                         case 'Consultant':
                             // Consultant api
@@ -1366,7 +1385,7 @@ export class WorkflowSalesComponent extends AppComopnentBase implements OnInit {
     }
 
     displayFullNameFn(option: any) {
-        return option?.firstName + ' ' + option?.lastName;
+        return option ? option?.firstName + ' ' + option?.lastName : '';
     }
 
     getTenantCodeFromId(tenantId: number) {

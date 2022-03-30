@@ -241,9 +241,11 @@
             }
         }
 
-        &.mat-form-field-disabled {
+        &.mat-form-field-disabled,
+        &.disabled-input {
             .mat-form-field-outline {
                 background-color: $sand-25-color !important;
+                pointer-events: none !important;
             }
         }
         .mat-form-field-suffix {
@@ -345,12 +347,12 @@
             top: calc(100% - 0.5em) !important;
         }
 
-        &.disabled-input {
-            .mat-form-field-flex {
-                background-color: transparent !important;
-                pointer-events: none;
-            }
-        }
+        // &.disabled-input {
+            // .mat-form-field-flex {
+            //     background-color: transparent !important;
+            //     pointer-events: none;
+            // }
+        // }
 
         &.mat-form-field-invalid {
             .mat-input-element {
@@ -458,8 +460,8 @@
 
         &.disabled-input {
             .mat-form-field-flex {
-                background-color: transparent !important;
-                pointer-events: none;
+                background-color: $sand-25-color !important;
+                pointer-events: none !important;
             }
         }
 
