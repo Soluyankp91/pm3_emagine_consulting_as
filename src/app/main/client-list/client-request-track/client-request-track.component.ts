@@ -117,8 +117,7 @@ export class ClientRequestTrackComponent implements OnInit, OnDestroy {
 
             }))
             .subscribe(result => {
-                // this.clientDataSource = new MatTableDataSource<ClientRequestTrackDto>(result.items);
-                this.clientDataSource = new MatTableDataSource<ClientRequestTrackDto>(DATA_SOURCE);
+                this.clientDataSource = new MatTableDataSource<ClientRequestTrackDto>(result.items);
             });
     }
 
