@@ -51,7 +51,7 @@
             </div>
         </ng-container>
         <ng-container *ngSwitchDefault>
-            <form [formGroup]="contractsMainDataForm" id="mainData" class="workflow-form workflow-form--main u-w--100">
+            <form [formGroup]="contractsMainForm" id="mainData" class="workflow-form workflow-form--main u-w--100">
                 <div fxLayout="column" fxLayoutAlign="start start" class="workflow-contracts--process-data u-w--100">
                     <h1 class="workflow-readonly--header-main">
                         <span class="process-name" *ngIf="readOnlyMode">Contracts.</span>
@@ -60,12 +60,12 @@
                     <div fxLayout="row" fxLayoutAlign="start start" class="u-w--100 u-mb--20 u-mt--20">
                         <div fxLayout="column" fxFlex="25%">
                             <h3 class="workflow-gray--header">Sales Type</h3>
-                            <span class="workflow-darkblue--text">{{contractsMainDataForm?.salesType?.value?.name}}</span>
+                            <span class="workflow-darkblue--text">{{contractsMainForm?.salesType?.value?.name}}</span>
                             <!-- <span class="workflow-darkblue--text">Managed Service</span> -->
                         </div>
                         <div fxLayout="column" fxFlex="25%">
                             <h3 class="workflow-gray--header">Delivery Type</h3>
-                            <span class="workflow-darkblue--text">{{contractsMainDataForm?.deliveryType?.value?.name}}</span>
+                            <span class="workflow-darkblue--text">{{contractsMainForm?.deliveryType?.value?.name}}</span>
                             <!-- <span class="workflow-darkblue--text">Managed Service</span> -->
                         </div>
                     </div>
@@ -73,7 +73,7 @@
                     <div fxLayout="row" fxLayoutAlign="start start" class="u-w--100 u-mb--20">
                         <ng-container *ngIf="readOnlyMode; else projectDescriptionInput">
                             <span class="workflow-readonly--blue-text">
-                                {{contractsMainDataForm?.projectDescription?.value}}
+                                {{contractsMainForm?.projectDescription?.value}}
                             </span>
                         </ng-container>
                         <ng-template #projectDescriptionInput>
@@ -86,14 +86,14 @@
                     </div>
                     <div fxLayout="column" fxLayoutAlign="start start" class="u-w--100 u-mb--20">
                         <h3 class="workflow-gray--header">Discounts</h3>
-                        <span class="workflow-darkblue--text">{{contractsMainDataForm?.discounts?.value}}</span>
+                        <span class="workflow-darkblue--text">{{contractsMainForm?.discounts?.value?.name}}</span>
                         <!-- <span class="workflow-darkblue--text">SKI 02.17</span> -->
                     </div>
                     <h3 class="workflow-gray--header">Remarks</h3>
                     <div fxLayout="row" fxLayoutAlign="start start" class="u-w--100">
                         <ng-container *ngIf="readOnlyMode; else remarksInput">
                             <span class="workflow-readonly--blue-text">
-                                {{contractsMainDataForm?.remarks?.value}}
+                                {{contractsMainForm?.remarks?.value}}
                             </span>
                         </ng-container>
                         <ng-template #remarksInput>
@@ -105,7 +105,7 @@
                         </ng-template>
                     </div>
                     <div fxLayout="row" fxLayoutAlign="start start" class="u-w--100" *ngIf="!readOnlyMode">
-                        <mat-checkbox color="accent" formControlName="noRemarks" name="noRemarks" class="black-checkbox" (change)="disableOrEnableInput(contractsMainDataForm?.noRemarks?.value, contractsMainDataForm?.remarks)">
+                        <mat-checkbox color="accent" formControlName="noRemarks" name="noRemarks" class="black-checkbox" (change)="disableOrEnableInput(contractsMainForm?.noRemarks?.value, contractsMainForm?.remarks)">
                             None
                         </mat-checkbox>
                     </div>
@@ -114,7 +114,7 @@
 
             <!-- hidden on AddConsultant, ChangeConsultant, Extend Consultant -->
             <ng-container *ngIf="activeSideSection === workflowSideSections.StartClientPeriod || activeSideSection === workflowSideSections.ExtendClientPeriod || activeSideSection === workflowSideSections.ChangeClientPeriod">
-                <form fxLayout="column" fxLayoutAlign="start start" id="clientData" [formGroup]="contractsClientDataForm" class="workflow-form workflow-form--sales u-w--100">
+                <form fxLayout="column" fxLayoutAlign="start start" id="clientData" [formGroup]="contractClientForm" class="workflow-form workflow-form--sales u-w--100">
                     <div fxLayout="column" fxLayoutAlign="start start" class="workflow-contracts--process-data u-w--100">
                         <h1 class="workflow-readonly--header-main">
                             <span class="process-name" *ngIf="readOnlyMode">Contracts.</span>
@@ -122,7 +122,7 @@
                         </h1>
                         <div fxLayout="column" class="u-mb--20 u-mt--20">
                             <h3 class="workflow-gray--header">Shared Cap on Hour Reporting</h3>
-                            <span class="workflow-darkblue--text">{{contractsClientDataForm?.capOnTimeReporting?.value}}</span>
+                            <span class="workflow-darkblue--text">{{contractClientForm?.capOnTimeReporting?.value}}</span>
                             <!-- <span class="workflow-darkblue--text">Cap on units</span> -->
                         </div>
 
@@ -130,7 +130,7 @@
                         <div fxLayout="row" fxLayoutAlign="start start" class="u-w--100">
                             <ng-container *ngIf="readOnlyMode; else specialContractTermsInput">
                                 <span class="workflow-readonly--blue-text">
-                                    {{contractsClientDataForm?.specialContractTerms?.value}}
+                                    {{contractClientForm?.specialContractTerms?.value}}
                                 </span>
                             </ng-container>
                             <ng-template #specialContractTermsInput>
@@ -143,14 +143,14 @@
                         </div>
 
                         <div fxLayout="row" fxLayoutAlign="start start" class="u-w--100 u-mb--20" *ngIf="!readOnlyMode">
-                            <mat-checkbox color="accent" formControlName="isSpecialContractTermsNone" name="isSpecialContractTermsNone" class="black-checkbox u-mt--10" (change)="disableOrEnableInput(contractsClientDataForm?.isSpecialContractTermsNone?.value, contractsClientDataForm?.specialContractTerms)">
+                            <mat-checkbox color="accent" formControlName="noSpecialContractTerms" name="noSpecialContractTerms" class="black-checkbox u-mt--10" (change)="disableOrEnableInput(contractClientForm?.noSpecialContractTerms?.value, contractClientForm?.specialContractTerms)">
                                 None
                             </mat-checkbox>
                         </div>
 
                         <h2 class="workflow-section--header u-mt--20">Client Special Rates</h2>
                         <div class="inline-edit-form u-w--100">
-                            <div fxLayout="row" fxLayoutAlign="space-between start" fxLayoutGap="10px" class="u-w--100 u-pl--16 u-pr--16" *ngIf="contractsClientDataForm.clientRates?.controls?.length">
+                            <div fxLayout="row" fxLayoutAlign="space-between start" fxLayoutGap="10px" class="u-w--100 u-pl--16 u-pr--16" *ngIf="contractClientForm.clientRates?.controls?.length">
                                 <span fxFlex="25%" class="workflow-contracts--list-header u-w--100">
                                     Rate name
                                 </span>
@@ -169,7 +169,7 @@
                             </div>
                             <ng-container formArrayName="clientRates" class="u-w--100">
                                 <div fxLayout="row" fxLayoutAlign="space-between center" fxLayoutGap="10px" class="workflow-contracts--list u-w--100 u-pl--16 u-pr--16"
-                                    *ngFor="let rate of contractsClientDataForm.clientRates.controls; index as i"
+                                    *ngFor="let rate of contractClientForm.clientRates.controls; index as i"
                                     [formArrayName]="i">
                                     <ng-container *ngIf="rate.value.editable">
                                         <mat-form-field appearance="fill" class="u-w--100 formFieldNoMarginPadding filter-select" fxFlex="25%">
@@ -202,7 +202,7 @@
                                             </mat-form-field>
                                         </div>
                                         <div fxFlex="10%" class="u-w--100 text-truncate-ellipsis flex-items-center">
-                                            <button mat-flat-button (click)="editOrSaveSpecialRate(contractsClientDataForm?.clientRates?.at(i)?.get('editable')?.value, i)" class="inline-edit-form--btn__save">
+                                            <button mat-flat-button (click)="editOrSaveSpecialRate(contractClientForm?.clientRates?.at(i)?.get('editable')?.value, i)" class="inline-edit-form--btn__save">
                                                 Save
                                             </button>
                                             <button mat-icon-button (click)="removeClientRate(i)">
@@ -211,16 +211,16 @@
                                         </div>
                                     </ng-container>
                                     <ng-container *ngIf="!rate.value.editable">
-                                        <span fxFlex="25%" class="u-w--100 text-truncate-ellipsis" [matTooltip]="contractsClientDataForm.clientRates.at(i).get('rateName')?.value">
+                                        <span fxFlex="25%" class="u-w--100 text-truncate-ellipsis" [matTooltip]="contractClientForm.clientRates.at(i).get('rateName')?.value">
                                             {{rate.value.rateName}}
                                         </span>
-                                        <span fxFlex="25%" class="u-w--100 text-truncate-ellipsis" [matTooltip]="contractsClientDataForm.clientRates.at(i).get('rateDirection')?.value?.name">
+                                        <span fxFlex="25%" class="u-w--100 text-truncate-ellipsis" [matTooltip]="contractClientForm.clientRates.at(i).get('rateDirection')?.value?.name">
                                             {{rate.value.rateDirection?.name}}
                                         </span>
-                                        <span fxFlex="20%" class="u-w--100 text-truncate-ellipsis" [matTooltip]="contractsClientDataForm.clientRates.at(i).get('reportingUnit')?.value?.name">
+                                        <span fxFlex="20%" class="u-w--100 text-truncate-ellipsis" [matTooltip]="contractClientForm.clientRates.at(i).get('reportingUnit')?.value?.name">
                                             {{rate.value.reportingUnit?.name}}
                                         </span>
-                                        <span fxFlex="20%" class="u-w--100 text-truncate-ellipsis" [matTooltip]="contractsClientDataForm.clientRates.at(i).get('clientRateValue')?.value + ' ' + contractsClientDataForm.clientRates.at(i).get('clientRateCurrency')?.value?.name">
+                                        <span fxFlex="20%" class="u-w--100 text-truncate-ellipsis" [matTooltip]="contractClientForm.clientRates.at(i).get('clientRateValue')?.value + ' ' + contractClientForm.clientRates.at(i).get('clientRateCurrency')?.value?.name">
                                             {{rate.value.clientRateValue || rate.value.clientRateCurrency?.name ? rate.value.clientRateValue + ' ' + rate.value.clientRateCurrency?.name : '-'}}
                                         </span>
                                         <div fxFlex="10%" fxLayoutAlign="center center" class="u-w--100">
@@ -250,15 +250,15 @@
                             </ng-container>
                         </div>
                         <div fxLayout="row" fxLayoutAlign="start start" class="u-mb--10">
-                            <button [ngClass]="contractsClientDataForm!.clientRates!.controls!.length > 0 ? 'button-add' : 'button-outlined'" class="rates-and-fees--btn" mat-flat-button (click)="addSpecialRate()">
-                                <mat-icon *ngIf="contractsClientDataForm.clientRates?.controls?.length">add</mat-icon>
+                            <button [ngClass]="contractClientForm!.clientRates!.controls!.length > 0 ? 'button-add' : 'button-outlined'" class="rates-and-fees--btn" mat-flat-button (click)="addSpecialRate()">
+                                <mat-icon *ngIf="contractClientForm.clientRates?.controls?.length">add</mat-icon>
                                 Add special rates
                             </button>
                         </div>
 
                         <h2 class="workflow-section--header">Client Fees</h2>
                         <div class="inline-edit-form u-w--100">
-                            <div fxLayout="row" fxLayoutAlign="space-between start" fxLayoutGap="10px" class="u-w--100 u-pl--16 u-pr--16" *ngIf="contractsClientDataForm.clientFees?.controls?.length">
+                            <div fxLayout="row" fxLayoutAlign="space-between start" fxLayoutGap="10px" class="u-w--100 u-pl--16 u-pr--16" *ngIf="contractClientForm.clientFees?.controls?.length">
                                 <span fxFlex="25%" class="workflow-contracts--list-header u-w--100">
                                     Fee name
                                 </span>
@@ -277,7 +277,7 @@
                             </div>
                             <ng-container formArrayName="clientFees" class="u-w--100">
                                 <div fxLayout="row" fxLayoutAlign="space-between center" fxLayoutGap="10px" class="workflow-contracts--list u-w--100 u-pl--16 u-pr--16"
-                                    *ngFor="let fee of contractsClientDataForm.clientFees.controls; index as i"
+                                    *ngFor="let fee of contractClientForm.clientFees.controls; index as i"
                                     [formArrayName]="i">
                                     <ng-container *ngIf="fee.value.editable">
                                         <mat-form-field appearance="fill" class="u-w--100 formFieldNoMarginPadding filter-select" fxFlex="25%">
@@ -310,7 +310,7 @@
                                             </mat-form-field>
                                         </div>
                                         <div fxFlex="10%" class="u-w--100 text-truncate-ellipsis flex-items-center">
-                                            <button mat-flat-button (click)="editOrSaveClientFee(contractsClientDataForm.clientFees.at(i).get('editable')?.value, i)" class="inline-edit-form--btn__save">
+                                            <button mat-flat-button (click)="editOrSaveClientFee(contractClientForm.clientFees.at(i).get('editable')?.value, i)" class="inline-edit-form--btn__save">
                                                 Save
                                             </button>
                                             <button mat-icon-button (click)="removeClientFee(i)">
@@ -319,16 +319,16 @@
                                         </div>
                                     </ng-container>
                                     <ng-container *ngIf="!fee.value.editable">
-                                        <span fxFlex="25%" class="u-w--100 text-truncate-ellipsis" [matTooltip]="contractsClientDataForm.clientFees.at(i).get('feeName')?.value ?? '-'">
+                                        <span fxFlex="25%" class="u-w--100 text-truncate-ellipsis" [matTooltip]="contractClientForm.clientFees.at(i).get('feeName')?.value ?? '-'">
                                             {{fee.value.feeName ?? '-'}}
                                         </span>
-                                        <span fxFlex="25%" class="u-w--100 text-truncate-ellipsis" [matTooltip]="contractsClientDataForm.clientFees.at(i).get('feeDirection')?.value?.name ?? '-'">
+                                        <span fxFlex="25%" class="u-w--100 text-truncate-ellipsis" [matTooltip]="contractClientForm.clientFees.at(i).get('feeDirection')?.value?.name ?? '-'">
                                             {{fee.value.feeDirection?.name ?? '-'}}
                                         </span>
-                                        <span fxFlex="20%" class="u-w--100 text-truncate-ellipsis" [matTooltip]="contractsClientDataForm.clientFees.at(i).get('feeFrequency')?.value?.name ?? '-'">
+                                        <span fxFlex="20%" class="u-w--100 text-truncate-ellipsis" [matTooltip]="contractClientForm.clientFees.at(i).get('feeFrequency')?.value?.name ?? '-'">
                                             {{fee.value.feeFrequency?.name ?? '-'}}
                                         </span>
-                                        <span fxFlex="20%" class="u-w--100 text-truncate-ellipsis" [matTooltip]="contractsClientDataForm.clientFees.at(i).get('clientRateValue')?.value + ' ' + contractsClientDataForm.clientFees.at(i).get('clientRateCurrency')?.value?.name">
+                                        <span fxFlex="20%" class="u-w--100 text-truncate-ellipsis" [matTooltip]="contractClientForm.clientFees.at(i).get('clientRateValue')?.value + ' ' + contractClientForm.clientFees.at(i).get('clientRateCurrency')?.value?.name">
                                             {{fee.value.clientRateValue || fee.value.clientRateCurrency?.name ? fee.value.clientRateValue + ' ' + fee.value.clientRateCurrency?.name : '-'}}
                                         </span>
                                         <div fxFlex="10%" fxLayoutAlign="center center" class="u-w--100">
@@ -365,8 +365,8 @@
                             </ng-container>
                         </div>
                         <div fxLayout="row" fxLayoutAlign="start start" class="u-mb--10">
-                            <button [ngClass]="contractsClientDataForm!.clientFees!.controls!.length > 0 ? 'button-add' : 'button-outlined'" class="rates-and-fees--btn" mat-flat-button (click)="addClientFee()">
-                                <mat-icon *ngIf="contractsClientDataForm.clientFees?.controls?.length">add</mat-icon>
+                            <button [ngClass]="contractClientForm!.clientFees!.controls!.length > 0 ? 'button-add' : 'button-outlined'" class="rates-and-fees--btn" mat-flat-button (click)="addClientFee()">
+                                <mat-icon *ngIf="contractClientForm.clientFees?.controls?.length">add</mat-icon>
                                 Add special fee
                             </button>
                         </div>
@@ -375,8 +375,8 @@
             </ng-container>
 
             <form [formGroup]="contractsConsultantsDataForm" class="u-w--100" id="consultantData">
-                <ng-container formArrayName="consultantData">
-                    <div *ngFor="let consultant of contractsConsultantsDataForm.consultantData.controls; let consultantIndex = index" [formGroupName]="consultantIndex" class="workflow-form--consultants u-w--100">
+                <ng-container formArrayName="consultants">
+                    <div *ngFor="let consultant of contractsConsultantsDataForm.consultants.controls; let consultantIndex = index" [formGroupName]="consultantIndex" class="workflow-form--consultants u-w--100">
                         <div fxLayout="column" fxLayoutAlign="start start" class="workflow-contracts--process-data u-w--100">
                             <div fxLayout="row" fxLayoutAlign="start center" class="u-w--100 u-mb--20">
                                 <h1 class="workflow-readonly--header-main" fxFlex="{{readOnlyMode ? '25%' : '15%'}}">
@@ -387,14 +387,14 @@
                                     <span fxFlex="50%" fxLayout="row" fxLayoutAlign="start center">
                                         <img class="border-rounded-50 u-ml--16 u-mr--16" src="https://picsum.photos/35/35" />
                                         <span class="workflow-form--consultants__name u-mr--16">
-                                            {{ contractsConsultantsDataForm.consultantData.at(consultantIndex).get('consultantName')?.value}}
+                                            {{ consultant.value.consultantData?.name}}
                                         </span>
                                     </span>
                                     <div fxFlex="50%" fxLayoutAlign="end center" *ngIf="!readOnlyMode">
                                         <span class="workflow-form--consultants__period u-mr--8">
-                                            {{contractsConsultantsDataForm.consultantData.at(consultantIndex).get('consultantProjectStartDate')?.value | momentFormat: 'DD.MM.YYYY'}}
+                                            {{consultant.value.startDate | momentFormat: 'DD.MM.YYYY'}}
                                             -
-                                            {{contractsConsultantsDataForm.consultantData.at(consultantIndex).get('consultantProjectEndDate')?.value | momentFormat: 'DD.MM.YYYY'}}
+                                            {{consultant.value.endDate | momentFormat: 'DD.MM.YYYY'}}
                                         </span>
                                         <button mat-icon-button [matMenuTriggerFor]="consultantMenu" type="button" (click)="$event.stopPropagation();" class="workflow-icon--actions u-mr--16"><mat-icon>more_horiz</mat-icon></button>
                                         <mat-menu #consultantMenu>
@@ -429,12 +429,12 @@
                             <div fxLayout="row" fxLayoutAlign="start start" class="u-w--100">
                                 <div fxLayout="column" class="u-mb--20" fxFlex="25%">
                                     <h3 class="workflow-gray--header">Consultant type</h3>
-                                    <span class="workflow-darkblue--text">{{consultant.get('employmentTypeId')?.value?.name}}</span>
+                                    <span class="workflow-darkblue--text">{{consultant.value.consultantType?.name}}</span>
                                 </div>
                                 <div fxLayout="column" class="u-mb--20" fxFlex="25%">
                                     <h3 class="workflow-gray--header">Cap on Time Reporting</h3>
                                     <span class="workflow-darkblue--text">
-                                        {{contractsConsultantsDataForm.consultantData.at(consultantIndex).get('consultantCapOnTimeReportingValue')?.value}} &nbsp; {{contractsConsultantsDataForm.consultantData.at(consultantIndex).get('consultantCapOnTimeReportingCurrency')?.value?.name}}
+                                        {{consultant.value.consultantCapOnTimeReportingValue}} {{consultant.value.consultantCapOnTimeReportingCurrency?.name}}
                                     </span>
                                 </div>
                             </div>
@@ -443,7 +443,7 @@
                             <div fxLayout="row" fxLayoutAlign="start start" class="u-w--100">
                                 <ng-container *ngIf="readOnlyMode; else consultantsSpecialContractTermsInput">
                                     <span class="workflow-readonly--blue-text">
-                                        {{contractsConsultantsDataForm.consultantData.at(consultantIndex).get('specialContractTerms')?.value}}
+                                        {{consultant.value.specialContractTerms}}
                                     </span>
                                 </ng-container>
                                 <ng-template #consultantsSpecialContractTermsInput>
@@ -458,10 +458,10 @@
                             <div fxLayout="row" fxLayoutAlign="start start" class="u-w--100 u-mb--20" *ngIf="!readOnlyMode">
                                 <mat-checkbox
                                     color="accent"
-                                    formControlName="isSpecialContractTermsNone"
-                                    name="isSpecialContractTermsNone"
+                                    formControlName="noSpecialContractTerms"
+                                    name="noSpecialContractTerms"
                                     class="black-checkbox u-mt--10"
-                                    (change)="disableOrEnableInput(contractsConsultantsDataForm?.consultantData?.at(consultantIndex)?.get('isSpecialContractTermsNone')?.value, contractsConsultantsDataForm?.consultantData?.at(consultantIndex)?.get('specialContractTerms'))">
+                                    (change)="disableOrEnableInput(contractsConsultantsDataForm?.consultants?.at(consultantIndex)?.get('noSpecialContractTerms')?.value, contractsConsultantsDataForm?.consultants?.at(consultantIndex)?.get('specialContractTerms'))">
                                     None
                                 </mat-checkbox>
                             </div>
@@ -894,7 +894,7 @@
                             </div>
 
                             <div fxLayout="row" fxLayoutAlign="start start" class="u-w--100 u-mb--20">
-                                <mat-checkbox color="accent" formControlName="manualCheckbox" name="isSpecialContractTermsNone" class="black-checkbox u-mt--10">
+                                <mat-checkbox color="accent" formControlName="manualCheckbox" name="manualCheckbox" class="black-checkbox u-mt--10">
                                     Contract lines done manually in old PM
                                 </mat-checkbox>
                             </div>
@@ -928,7 +928,7 @@
                                     <button class="button-accept u-mr--20" disabled mat-flat-button>
                                         Open contract module for client
                                     </button>
-                                    <mat-checkbox *ngIf="activeSideSection === workflowSideSections.ChangeClientPeriod" color="accent" formControlName="newLegalContract" name="isSpecialContractTermsNone" class="black-checkbox u-mt--10">
+                                    <mat-checkbox *ngIf="activeSideSection === workflowSideSections.ChangeClientPeriod" color="accent" formControlName="newLegalContract" name="newLegalContract" class="black-checkbox u-mt--10">
                                         New legal contract needed
                                     </mat-checkbox>
                                 </div>
@@ -950,7 +950,7 @@
                             <img class="workflow-contracts--consultant-img u-mr--16" src="https://placekitten.com/50/50">
                             <div fxLayout="column" fxLayoutAlign="start start" class="u-w--100">
                                 <p class="workflow-contracts--consultant-name">
-                                    <!-- {{contractsConsultantsDataForm.consultantData.at(i).get('consultantName')?.value}} -->
+                                    <!-- {{contractsConsultantsDataForm.consultants.at(i).get('consultantName')?.value}} -->
                                     Robertsen Oscar
                                 </p>
                                 <div fxLayout="row" fxLayoutAlign="start center" *ngIf="readOnlyMode">
@@ -967,7 +967,7 @@
                             <button class="button-outlined  u-mr--20" disabled mat-flat-button>
                                 Open contract module for consultant
                             </button>
-                            <mat-checkbox *ngIf="activeSideSection === workflowSideSections.ChangeClientPeriod" color="accent" formControlName="newLegalContract" name="isSpecialContractTermsNone" class="black-checkbox u-mt--10">
+                            <mat-checkbox *ngIf="activeSideSection === workflowSideSections.ChangeClientPeriod" color="accent" formControlName="newLegalContract" name="newLegalContract" class="black-checkbox u-mt--10">
                                 New legal contract needed
                             </mat-checkbox>
                         </div>
@@ -985,7 +985,7 @@
                             <img class="workflow-contracts--consultant-img u-mr--16" src="https://placekitten.com/50/50">
                             <div fxLayout="column" fxLayoutAlign="start start" class="u-w--100">
                                 <p class="workflow-contracts--consultant-name">
-                                    <!-- {{contractsConsultantsDataForm.consultantData.at(i).get('consultantName')?.value}} -->
+                                    <!-- {{contractsConsultantsDataForm.consultants.at(i).get('consultantName')?.value}} -->
                                     Van Trier Mia
                                 </p>
                                 <div fxLayout="row" fxLayoutAlign="start center" *ngIf="readOnlyMode">
@@ -1003,7 +1003,7 @@
                             <button class="button-outlined  u-mr--20" disabled mat-flat-button>
                                 Open contract module for client
                             </button>
-                            <mat-checkbox *ngIf="activeSideSection === workflowSideSections.ChangeClientPeriod" color="accent" formControlName="newLegalContract" name="isSpecialContractTermsNone" class="black-checkbox u-mt--10">
+                            <mat-checkbox *ngIf="activeSideSection === workflowSideSections.ChangeClientPeriod" color="accent" formControlName="newLegalContract" name="newLegalContract" class="black-checkbox u-mt--10">
                                 New legal contract needed
                             </mat-checkbox>
                         </div>
