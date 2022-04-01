@@ -81,7 +81,7 @@
                 <app-workflow-finances #workflowFinances [workflowId]="workflowId" [activeSideSection]="selectedSideSection"></app-workflow-finances>
             </ng-container>
             <ng-container *ngSwitchCase="workflowSteps.Sourcing">
-                <app-workflow-sourcing #workflowSourcing [activeSideSection]="selectedSideSection"></app-workflow-sourcing>
+                <app-workflow-sourcing #workflowSourcing [workflowId]="workflowId" [activeSideSection]="selectedSideSection"></app-workflow-sourcing>
             </ng-container>
         </ng-container>
     </div>

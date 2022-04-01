@@ -72,7 +72,8 @@ export class WorkflowDetailsComponent implements OnInit, OnDestroy, AfterViewIni
         private scrollDispatcher: ScrollDispatcher,
         private zone: NgZone,
         private _lookupService: InternalLookupService,
-        private _workflowService: WorkflowServiceProxy
+        private _workflowServiceProxy: WorkflowServiceProxy
+
     ) {
         this.salesExtensionForm = new WorkflowSalesExtensionForm();
         this.terminationSalesForm = new WorkflowTerminationSalesForm();
@@ -155,7 +156,7 @@ export class WorkflowDetailsComponent implements OnInit, OnDestroy, AfterViewIni
     }
 
     getTopLevelMenu() {
-        this._workflowService.clientPeriods(this.workflowId)
+        this._workflowServiceProxy.clientPeriods(this.workflowId)
             .pipe(finalize(() => {
 
             }))
@@ -312,17 +313,17 @@ export class WorkflowDetailsComponent implements OnInit, OnDestroy, AfterViewIni
         console.log(clientPeriodType);
         // FIXME: change after BE updates
         switch (clientPeriodType?.name) {
-            case 'Start Client Period':
+            case 'Start period':
                 return WorkflowTopSections.Workflow;
-            case 'Extend Client Period':
+            case 'Extend period':
                 return WorkflowTopSections.Extension;
-            case 'Change Client Period':
+            case 'Change period':
                 return WorkflowTopSections.ChangesInWF;
         }
     }
 
     mapSideSectionName(value: number | undefined) {
-        return value ? WorkflowSideSections[value] : '';
+        return value ? WorkflowProcessType[value] : '';
     }
 
     mapSectionName(value: number | undefined) {
@@ -355,7 +356,7 @@ export class WorkflowDetailsComponent implements OnInit, OnDestroy, AfterViewIni
                 return WorkflowTopSections.Extension;
             case 'Workflow':
                 return WorkflowTopSections.Workflow;
-            case 'Workflow':
+            case 'Overview':
                 return WorkflowTopSections.Overview;
             case 'ChangeInWF':
                 return WorkflowTopSections.ChangesInWF;
@@ -481,7 +482,6 @@ export class WorkflowDetailsComponent implements OnInit, OnDestroy, AfterViewIni
                 break;
             case WorkflowTopSections.Workflow:
                 // switch (this._workflowDataService.workflowProgress.currentlyActiveStep) {
-                    switch(this._workflowDataService.workflowProgress.currentlyActiveSideSection) {
                     // case WorkflowSteps.Sales:
                     //     console.log('Complete WF Sales');
                     //     this._workflowDataService.updateWorkflowProgressStatus({isWorkflowSalesSaved: true});
@@ -494,6 +494,7 @@ export class WorkflowDetailsComponent implements OnInit, OnDestroy, AfterViewIni
                     //     console.log('Complete WF Finance');
                     //     this._workflowDataService.updateWorkflowProgressStatus({isWorkflowAccountsSaved: true, isPrimaryWorkflowCompleted: true});
                     // break;
+                switch(this._workflowDataService.workflowProgress.currentlyActiveSideSection) {
                     case WorkflowProcessType.TerminateConsultant:
                         switch (this._workflowDataService.workflowProgress.currentlyActiveStep) {
                             case WorkflowSteps.Sales:
@@ -561,25 +562,13 @@ export class WorkflowDetailsComponent implements OnInit, OnDestroy, AfterViewIni
 
     // add Termiantion
     addTermination() {
-        // TODO: change new tab to side section
-        // this.topMenuTabs.push(
-        //     {
-        //         name: `Termination`,
-        //         displayName: `Termination`,
-        //         index: 0,
-        //         additionalInfo: 'New'
-        //     }
-        // )
+        this._workflowServiceProxy.terminationStart(this.workflowId!)
+        .pipe(finalize(() => {
 
-        // let newStatus = new WorkflowProgressStatus();
-        // newStatus.isTerminationAdded = true;
-        // this._workflowDataService.updateWorkflowProgressStatus({isTerminationAdded: true});
-        if (this._workflowDataService.getWorkflowProgress.currentlyActiveSection === WorkflowTopSections.Workflow) {
-            this._workflowDataService.workflowSideNavigation.unshift(TerminateWorkflowDto);
-        } else if (this._workflowDataService.getWorkflowProgress.currentlyActiveSection === WorkflowTopSections.Extension) {
-            const currentExtension = this._workflowDataService.extensionSideNavigation.find(x => x.index === this._workflowDataService.getWorkflowProgress.currentlyActiveExtensionIndex);
-            currentExtension!.sideNav.unshift(TerminateWorkflowDto);
-        }
+        }))
+        .subscribe(result => {
+            this._workflowDataService.workflowSideSectionAdded.emit(true);
+        });
     }
 
     addExtension() {

@@ -25,7 +25,7 @@
 
                 <mat-divider class="u-w--100"></mat-divider>
                 <form fxLayout="column" fxLayoutAlign="start start" [formGroup]="contractsTerminationConsultantForm" class="workflow-form u-w--100" id="consultantData">
-                    <ng-container formArrayName="consultantData">
+                    <ng-container formArrayName="consultantTerminationContractData">
                         <div *ngFor="let consultant of contractsTerminationConsultantForm.consultantTerminationContractData.controls; index as i; last as last" [formGroupName]="i" class="workflow-contracts--block-consultants u-mt--20" [ngClass]="{'last-block': last}">
                             <div fxLayout="row" fxLayoutAlign="start center" class="u-mb--20">
                                 <img class="workflow-contracts--consultant-img u-mr--16" src="https://placekitten.com/50/50">
