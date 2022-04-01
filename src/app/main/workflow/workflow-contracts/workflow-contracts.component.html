@@ -18,31 +18,31 @@
                 </div>
 
                 <div fxLayout="row" fxLayoutAlign="start start" class="u-w--100 u-mb--20">
-                    <mat-checkbox color="accent" name="contractLinesManuallyDone" class="black-checkbox u-mt--10">
+                    <mat-checkbox color="accent" name="contractLinesDoneManuallyInOldPM" [formControl]="contractLinesDoneManuallyInOldPMControl" class="black-checkbox u-mt--10">
                         Contract lines done manually in old PM
                     </mat-checkbox>
                 </div>
 
                 <mat-divider class="u-w--100"></mat-divider>
-                <form fxLayout="column" fxLayoutAlign="start start" [formGroup]="contractsConsultantsDataForm" class="workflow-form u-w--100" id="consultants">
-                    <ng-container formArrayName="consultants">
-                        <div *ngFor="let consultant of contractsConsultantsDataForm.consultants.controls; let i = index; last as last" [formGroupName]="i" class="workflow-contracts--block-consultants u-mt--20" [ngClass]="{'last-block': last}">
+                <form fxLayout="column" fxLayoutAlign="start start" [formGroup]="contractsTerminationConsultantForm" class="workflow-form u-w--100" id="consultantData">
+                    <ng-container formArrayName="consultantTerminationContractData">
+                        <div *ngFor="let consultant of contractsTerminationConsultantForm.consultantTerminationContractData.controls; index as i; last as last" [formGroupName]="i" class="workflow-contracts--block-consultants u-mt--20" [ngClass]="{'last-block': last}">
                             <div fxLayout="row" fxLayoutAlign="start center" class="u-mb--20">
                                 <img class="workflow-contracts--consultant-img u-mr--16" src="https://placekitten.com/50/50">
                                 <p class="workflow-contracts--consultant-name">
-                                    {{contractsConsultantsDataForm.consultants.at(i).get('consultantName')?.value}}
+                                    {{contractsTerminationConsultantForm.consultantTerminationContractData.at(i).get('consultantId')?.value}}
                                 </p>
                             </div>
 
                             <div fxLayout="row" fxLayoutAlign="start center" class="u-w--100 u-mb--10">
-                                <mat-checkbox color="accent" name="checkConsualtantInvoicingSettings" class="black-checkbox u-mr--10">
-                                    Check invoicing settings on consultant
+                                <mat-checkbox color="accent" name="removedConsultantFromAnyManualChecklists" formControlName="removedConsultantFromAnyManualChecklists" class="black-checkbox u-mr--10">
+                                    Removed Consultant from any manual checklists
                                 </mat-checkbox>
                             </div>
 
                             <div fxLayout="row" fxLayoutAlign="start center" class="u-w--100 u-mb--20">
-                                <mat-checkbox color="accent" name="consultantCreatedInNavision" class="black-checkbox u-mr--10">
-                                    Consultant company (creditor) created in Navision
+                                <mat-checkbox color="accent" name="deletedAnySensitiveDocumentsForGDPR" formControlName="deletedAnySensitiveDocumentsForGDPR" class="black-checkbox u-mr--10">
+                                    Deleted any sensitive documents (GDPR)
                                 </mat-checkbox>
                             </div>
                         </div>
@@ -113,7 +113,7 @@
             </form>
 
             <!-- hidden on AddConsultant, ChangeConsultant, Extend Consultant -->
-            <ng-container *ngIf="activeSideSection === workflowSideSections.StartWorkflow || activeSideSection === workflowSideSections.ExtendWorkflow || activeSideSection === workflowSideSections.ChangeWorkflow">
+            <ng-container *ngIf="activeSideSection === workflowSideSections.StartClientPeriod || activeSideSection === workflowSideSections.ExtendClientPeriod || activeSideSection === workflowSideSections.ChangeClientPeriod">
                 <form fxLayout="column" fxLayoutAlign="start start" id="clientData" [formGroup]="contractClientForm" class="workflow-form workflow-form--sales u-w--100">
                     <div fxLayout="column" fxLayoutAlign="start start" class="workflow-contracts--process-data u-w--100">
                         <h1 class="workflow-readonly--header-main">
@@ -906,7 +906,7 @@
                     <h2 class="workflow-section--header u-mb--20 u-mt--20">Legal contracts</h2>
 
                     <!-- hidden on Add Consultant -->
-                    <ng-container *ngIf="activeSideSection !== workflowSideSections.AddConsultant">
+                    <ng-container *ngIf="activeSideSection !== workflowSideSections.StartConsultantPeriod">
                         <ng-container *ngIf="readOnlyMode; else legalContractsInput">
                             <h3 class="workflow-gray--header u-mb--10">Client legal contracts</h3>
                             <div fxLayout="row" fxLayoutAlign="start start" class="u-mb--20">
@@ -928,7 +928,7 @@
                                     <button class="button-accept u-mr--20" disabled mat-flat-button>
                                         Open contract module for client
                                     </button>
-                                    <mat-checkbox *ngIf="activeSideSection === workflowSideSections.ChangeWorkflow" color="accent" formControlName="newLegalContract" name="newLegalContract" class="black-checkbox u-mt--10">
+                                    <mat-checkbox *ngIf="activeSideSection === workflowSideSections.ChangeClientPeriod" color="accent" formControlName="newLegalContract" name="newLegalContract" class="black-checkbox u-mt--10">
                                         New legal contract needed
                                     </mat-checkbox>
                                 </div>
@@ -967,7 +967,7 @@
                             <button class="button-outlined  u-mr--20" disabled mat-flat-button>
                                 Open contract module for consultant
                             </button>
-                            <mat-checkbox *ngIf="activeSideSection === workflowSideSections.ChangeWorkflow" color="accent" formControlName="newLegalContract" name="newLegalContract" class="black-checkbox u-mt--10">
+                            <mat-checkbox *ngIf="activeSideSection === workflowSideSections.ChangeClientPeriod" color="accent" formControlName="newLegalContract" name="newLegalContract" class="black-checkbox u-mt--10">
                                 New legal contract needed
                             </mat-checkbox>
                         </div>
@@ -1003,7 +1003,7 @@
                             <button class="button-outlined  u-mr--20" disabled mat-flat-button>
                                 Open contract module for client
                             </button>
-                            <mat-checkbox *ngIf="activeSideSection === workflowSideSections.ChangeWorkflow" color="accent" formControlName="newLegalContract" name="newLegalContract" class="black-checkbox u-mt--10">
+                            <mat-checkbox *ngIf="activeSideSection === workflowSideSections.ChangeClientPeriod" color="accent" formControlName="newLegalContract" name="newLegalContract" class="black-checkbox u-mt--10">
                                 New legal contract needed
                             </mat-checkbox>
                         </div>

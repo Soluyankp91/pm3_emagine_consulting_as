@@ -22,7 +22,7 @@ export class WorkflowPeriodComponent implements OnInit {
     sideMenuItems: WorkflowProcessDto[] = [];
     workflowProcessTypes = WorkflowProcessType;
     workflowPeriodStepTypes: EnumEntityTypeDto[] = [];
-    selectedStep: string;
+    selectedStep: StepDto;
     selectedAnchor: string;
 
     workflowSteps = WorkflowSteps;
@@ -80,17 +80,17 @@ export class WorkflowPeriodComponent implements OnInit {
     mapIconFromMenuItem(typeId: number) {
         switch (typeId) {
             case WorkflowProcessType.StartClientPeriod:
-                return 'workflowAdd'
-            case WorkflowProcessType.ChangeClientPeriod:
-                return 'workflowEdit'
-            case WorkflowProcessType.ExtendClientPeriod:
-                return 'workflowStartOrExtend'
             case WorkflowProcessType.StartConsultantPeriod:
                 return 'workflowAdd'
+            case WorkflowProcessType.ChangeClientPeriod:
             case WorkflowProcessType.ChangeConsultantPeriod:
                 return 'workflowEdit'
-            case WorkflowProcessType.ExtendConsultantPeriod:
+            case WorkflowProcessType.ExtendClientPeriod:
+                case WorkflowProcessType.ExtendConsultantPeriod:
                 return 'workflowStartOrExtend'
+            case WorkflowProcessType.TerminateConsultant:
+            case WorkflowProcessType.TerminateWorkflow:
+                return 'workflowTerminate'
         }
     }
 
@@ -107,10 +107,9 @@ export class WorkflowPeriodComponent implements OnInit {
         }
     }
 
-
     changeStepSelection(step: StepDto) {
         this.selectedStepEnum = this.mapStepType(this.workflowPeriodStepTypes?.find(x => x.id === step.typeId)!)!;
-        this.selectedStep = step.name!;
+        this.selectedStep = step;
         this._workflowDataService.workflowProgress.currentlyActiveStep = step.typeId! * 1;
     }
 
@@ -120,6 +119,7 @@ export class WorkflowPeriodComponent implements OnInit {
         this._workflowDataService.updateWorkflowProgressStatus({currentlyActiveSideSection: item.typeId!});
         const firstitemInSection = this.sideMenuItems.find(x => x.name === item.name)?.steps![0];
         this.changeStepSelection(firstitemInSection!);
+        this._workflowDataService.workflowSideSectionChanged.emit(true);
     }
 
     deleteSideSection(item: WorkflowProcessDto) {
@@ -143,8 +143,7 @@ export class WorkflowPeriodComponent implements OnInit {
         });
 
         dialogRef.componentInstance.onConfirmed.subscribe((result) => {
-            let sideNavToDelete = this._workflowDataService.workflowSideNavigation.findIndex(x => x.name === item.name);
-            this._workflowDataService.workflowSideNavigation.splice(sideNavToDelete, 1)
+
         });
 
         dialogRef.componentInstance.onRejected.subscribe(() => {

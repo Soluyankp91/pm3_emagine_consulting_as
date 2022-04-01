@@ -1,30 +1,32 @@
 import { Overlay } from '@angular/cdk/overlay';
-import { Component, Injector, Input, OnInit } from '@angular/core';
+import { Component, Injector, Input, OnDestroy, OnInit } from '@angular/core';
 import { AbstractControl, FormArray, FormBuilder, FormControl } from '@angular/forms';
 import { MatDialog } from '@angular/material/dialog';
-import { finalize } from 'rxjs/operators';
+import { Subject } from 'rxjs';
+import { finalize, takeUntil } from 'rxjs/operators';
 import { InternalLookupService } from 'src/app/shared/common/internal-lookup.service';
 import { AppComopnentBase } from 'src/shared/app-component-base';
-import { ClientPeriodContractsDataDto, ClientPeriodServiceProxy, ConsultantContractsDataDto, ConsultantSalesDataDto, ContractsClientDataDto, ContractsMainDataDto, EnumEntityTypeDto, PeriodClientSpecialFeeDto, PeriodClientSpecialRateDto, PeriodConsultantSpecialFeeDto, PeriodConsultantSpecialRateDto, ProjectLineDto } from 'src/shared/service-proxies/service-proxies';
+import { ClientPeriodContractsDataDto, ConsultantTerminationContractDataDto, WorkflowProcessType, WorkflowTerminationContractDataDto, WorkflowServiceProxy, ClientPeriodServiceProxy, ConsultantContractsDataDto, ConsultantSalesDataDto, ContractsClientDataDto, ContractsMainDataDto, EnumEntityTypeDto, PeriodClientSpecialFeeDto, PeriodClientSpecialRateDto, PeriodConsultantSpecialFeeDto, PeriodConsultantSpecialRateDto, ProjectLineDto } from 'src/shared/service-proxies/service-proxies';
 import { WorkflowConsultantActionsDialogComponent } from '../workflow-consultant-actions-dialog/workflow-consultant-actions-dialog.component';
 import { WorkflowDataService } from '../workflow-data.service';
 import { ConsultantDiallogAction } from '../workflow-sales/workflow-sales.model';
-import { ConsultantTypes, WorkflowSideSections } from '../workflow.model';
-import { WorkflowContractsClientDataForm, WorkflowContractsConsultantsDataForm, WorkflowContractsMainForm, WorkflowContractsSyncForm } from './workflow-contracts.model';
+import { ConsultantTypes } from '../workflow.model';
+import { WorkflowContractsClientDataForm, WorkflowContractsConsultantsDataForm, WorkflowContractsMainForm, WorkflowContractsSyncForm, WorkflowContractsTerminationConsultantsDataForm } from './workflow-contracts.model';
 
 @Component({
     selector: 'app-workflow-contracts',
     templateUrl: './workflow-contracts.component.html',
     styleUrls: ['./workflow-contracts.component.scss']
 })
-export class WorkflowContractsComponent extends AppComopnentBase implements OnInit {
+export class WorkflowContractsComponent extends AppComopnentBase implements OnInit, OnDestroy {
     @Input() workflowId: string;
     @Input() clientPeriodId: string | undefined;
 
     // Changed all above to enum
     @Input() activeSideSection: number;
+    @Input() isCompleted: boolean;
 
-    workflowSideSections = WorkflowSideSections;
+    workflowSideSections = WorkflowProcessType;
 
     contractsMainForm: WorkflowContractsMainForm;
     contractClientForm: WorkflowContractsClientDataForm;
@@ -39,6 +41,10 @@ export class WorkflowContractsComponent extends AppComopnentBase implements OnIn
     clientSpecialRateOrFeeDirections: EnumEntityTypeDto[] = [];
     clientSpecialRateReportUnits: EnumEntityTypeDto[] = [];
     clientSpecialFeeFrequencies: EnumEntityTypeDto[] = [];
+
+    contractLinesDoneManuallyInOldPMControl = new FormControl();
+    contractsTerminationConsultantForm: WorkflowContractsTerminationConsultantsDataForm;
+    consultantId = 1;
 
 
     consultantList = [{
@@ -61,6 +67,8 @@ export class WorkflowContractsComponent extends AppComopnentBase implements OnIn
     }];
 
     consultantTypes = ConsultantTypes;
+    private _unsubscribe = new Subject();
+
     constructor(
         injector: Injector,
         private _fb: FormBuilder,
@@ -68,13 +76,15 @@ export class WorkflowContractsComponent extends AppComopnentBase implements OnIn
         private dialog: MatDialog,
         private _clientPeriodService: ClientPeriodServiceProxy,
         private _workflowDataService: WorkflowDataService,
-        private _internalLookupService: InternalLookupService
+        private _internalLookupService: InternalLookupService,
+        private _workflowServiceProxy: WorkflowServiceProxy
     ) {
         super(injector);
         this.contractsMainForm = new WorkflowContractsMainForm();
         this.contractClientForm = new WorkflowContractsClientDataForm();
         this.contractsConsultantsDataForm = new WorkflowContractsConsultantsDataForm();
         this.contractsSyncDataForm = new WorkflowContractsSyncForm();
+        this.contractsTerminationConsultantForm = new WorkflowContractsTerminationConsultantsDataForm();
     }
 
     ngOnInit(): void {
@@ -82,12 +92,53 @@ export class WorkflowContractsComponent extends AppComopnentBase implements OnIn
         this.getSpecialRateOrFeeDirections();
         this.getSpecialRateReportUnits();
         this.getSpecialFeeFrequencies();
+
         this.getDiscounts();
         this.getDeliveryTypes();
         this.getSaleTypes();
         this.getClientTimeReportingCap();
 
         this.getSalesInfo();
+
+        // Termination
+
+        switch (this.activeSideSection) {
+            case this.workflowSideSections.TerminateWorkflow:
+                this.getWorkflowContractStepTermination();
+                break;
+            case this.workflowSideSections.TerminateConsultant:
+                this.getWorkflowContractsStepConsultantTermination();
+                break;
+        }
+
+        this._workflowDataService.workflowConsultantTerminationContractsSaved
+            .pipe(takeUntil(this._unsubscribe))
+            .subscribe((value: boolean) => {
+                this.updateTerminationConsultantContractStep();
+            });
+
+        this._workflowDataService.workflowConsultantTerminationContractsCompleted
+            .pipe(takeUntil(this._unsubscribe))
+            .subscribe((value: boolean) => {
+                this.completeTerminationConsultantContractStep();
+            });
+
+        this._workflowDataService.workflowTerminationContractsSaved
+            .pipe(takeUntil(this._unsubscribe))
+            .subscribe((value: boolean) => {
+                this.updateTerminationContractStep();
+            });
+
+        this._workflowDataService.workflowTerminationContractsCompleted
+            .pipe(takeUntil(this._unsubscribe))
+            .subscribe((value: boolean) => {
+                this.completeTerminationContractStep();
+            });
+    }
+
+    ngOnDestroy(): void {
+        this._unsubscribe.next();
+        this._unsubscribe.complete();
     }
 
     getCurrencies() {
@@ -269,7 +320,7 @@ export class WorkflowContractsComponent extends AppComopnentBase implements OnIn
     }
 
     get readOnlyMode() {
-        return this._workflowDataService.getWorkflowProgress.isWorkflowContractsSaved;
+        return this.isCompleted;
     }
 
     // #region CHANGE NAMING
@@ -461,8 +512,8 @@ export class WorkflowContractsComponent extends AppComopnentBase implements OnIn
         }
     }
 
-       //#region Consultant menu actions
-       changeConsultantData(index: number) {
+    //#region Consultant menu actions
+    changeConsultantData(index: number) {
         const consultantData = this.contractsConsultantsDataForm.consultants.at(index).value;
         console.log('change consultant ', consultantData);
         const scrollStrategy = this.overlay.scrollStrategies.reposition();
@@ -541,5 +592,135 @@ export class WorkflowContractsComponent extends AppComopnentBase implements OnIn
 
     displayNameFn(option: any) {
         return option?.name;
+    }
+
+    // Termination
+
+    addConsultantDataToTerminationForm(consultant: ConsultantTerminationContractDataDto) {
+        const form = this._fb.group({
+            consultantId: new FormControl(consultant.consultantId),
+            // consultantName: new FormControl(consultant.name),
+            removedConsultantFromAnyManualChecklists: new FormControl(consultant.removedConsultantFromAnyManualChecklists),
+            deletedAnySensitiveDocumentsForGDPR: new FormControl(consultant.deletedAnySensitiveDocumentsForGDPR),
+
+        });
+        this.contractsTerminationConsultantForm.consultantTerminationContractData.push(form);
+    }
+
+    get consultantTerminationContractData(): FormArray {
+        return this.contractsTerminationConsultantForm.get('consultantTerminationContractData') as FormArray;
+    }
+
+    getWorkflowContractsStepConsultantTermination() {
+        this._workflowServiceProxy.terminationConsultantContractGet(this.workflowId!, this.consultantId!)
+            .pipe(finalize(() => {
+
+            }))
+            .subscribe(result => {
+                // End of Consultant Contract
+                this.contractLinesDoneManuallyInOldPMControl?.setValue(result?.contractLinesDoneManuallyInOldPM, {emitEvent: false});
+                this.addConsultantDataToTerminationForm(result);
+            });
+    }
+
+    updateTerminationConsultantContractStep() {
+        let input = new ConsultantTerminationContractDataDto();
+        input.consultantId = this.contractsTerminationConsultantForm.consultantTerminationContractData?.value.consultantId;
+        input.contractLinesDoneManuallyInOldPM = this.contractLinesDoneManuallyInOldPMControl?.value;
+        input.removedConsultantFromAnyManualChecklists = this.contractsTerminationConsultantForm.consultantTerminationContractData?.value.removedConsultantFromAnyManualChecklists;
+        input.deletedAnySensitiveDocumentsForGDPR = this.contractsTerminationConsultantForm.consultantTerminationContractData?.value.deletedAnySensitiveDocumentsForGDPR;
+
+        this._workflowServiceProxy.terminationConsultantContractPut(this.workflowId!, input)
+            .pipe(finalize(() => {
+
+            }))
+            .subscribe(result => {
+
+            })
+    }
+
+    completeTerminationConsultantContractStep() {
+        let input = new ConsultantTerminationContractDataDto();
+
+        input.consultantId = this.contractsTerminationConsultantForm.consultantTerminationContractData?.value.consultantId;
+        input.contractLinesDoneManuallyInOldPM = this.contractLinesDoneManuallyInOldPMControl?.value;
+        input.removedConsultantFromAnyManualChecklists = this.contractsTerminationConsultantForm.consultantTerminationContractData?.value.removedConsultantFromAnyManualChecklists;
+        input.deletedAnySensitiveDocumentsForGDPR = this.contractsTerminationConsultantForm.consultantTerminationContractData?.value.deletedAnySensitiveDocumentsForGDPR;
+
+        this._workflowServiceProxy.terminationConsultantContractComplete(this.workflowId!, input)
+            .pipe(finalize(() => {
+
+            }))
+            .subscribe(result => {
+
+            })
+    }
+
+    getWorkflowContractStepTermination() {
+        this._workflowServiceProxy.terminationContractGet(this.workflowId!)
+            .pipe(finalize(() => {
+
+            }))
+            .subscribe(result => {
+                // End of Consultant Contract
+                this.contractLinesDoneManuallyInOldPMControl?.setValue(result?.contractLinesDoneManuallyInOldPM, {emitEvent: false});
+                result.consultantTerminationContractData?.forEach(data => {
+                    this.addConsultantDataToTerminationForm(data);
+                })
+            });
+    }
+
+    updateTerminationContractStep() {
+        let input = new WorkflowTerminationContractDataDto();
+        input.contractLinesDoneManuallyInOldPM = this.contractLinesDoneManuallyInOldPMControl?.value;
+        input.consultantTerminationContractData = this.contractsTerminationConsultantForm.consultantTerminationContractData?.value
+
+        input.consultantTerminationContractData = new Array<ConsultantTerminationContractDataDto>();
+        if (this.contractsTerminationConsultantForm.consultantTerminationContractData.value?.length) {
+            this.contractsTerminationConsultantForm.consultantTerminationContractData.value.forEach((consultant: any) => {
+                let consultantInput = new ConsultantTerminationContractDataDto();
+                consultantInput.consultantId = consultant.consultantId;
+                consultantInput.contractLinesDoneManuallyInOldPM = consultant.contractLinesDoneManuallyInOldPM;
+                consultantInput.removedConsultantFromAnyManualChecklists = consultant.removedConsultantFromAnyManualChecklists;
+                consultantInput.deletedAnySensitiveDocumentsForGDPR = consultant.deletedAnySensitiveDocumentsForGDPR;
+
+                input.consultantTerminationContractData!.push(consultantInput);
+            });
+        }
+
+        this._workflowServiceProxy.terminationContractPut(this.workflowId!, input)
+            .pipe(finalize(() => {
+
+            }))
+            .subscribe(result => {
+
+            })
+    }
+
+    completeTerminationContractStep() {
+        let input = new WorkflowTerminationContractDataDto();
+        input.contractLinesDoneManuallyInOldPM = this.contractLinesDoneManuallyInOldPMControl?.value;
+        input.consultantTerminationContractData = this.contractsTerminationConsultantForm.consultantTerminationContractData?.value
+
+        input.consultantTerminationContractData = new Array<ConsultantTerminationContractDataDto>();
+        if (this.contractsTerminationConsultantForm.consultantTerminationContractData.value?.length) {
+            this.contractsTerminationConsultantForm.consultantTerminationContractData.value.forEach((consultant: any) => {
+                let consultantInput = new ConsultantTerminationContractDataDto();
+                consultantInput.consultantId = consultant.consultantId;
+                consultantInput.contractLinesDoneManuallyInOldPM = consultant.contractLinesDoneManuallyInOldPM;
+                consultantInput.removedConsultantFromAnyManualChecklists = consultant.removedConsultantFromAnyManualChecklists;
+                consultantInput.deletedAnySensitiveDocumentsForGDPR = consultant.deletedAnySensitiveDocumentsForGDPR;
+
+                input.consultantTerminationContractData!.push(consultantInput);
+            });
+        }
+
+        this._workflowServiceProxy.terminationContractComplete(this.workflowId!, input)
+            .pipe(finalize(() => {
+
+            }))
+            .subscribe(result => {
+
+            })
     }
 }

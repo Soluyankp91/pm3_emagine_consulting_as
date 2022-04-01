@@ -4,14 +4,13 @@ import { FormControl } from '@angular/forms';
 import { MatDialog } from '@angular/material/dialog';
 import { MatTableDataSource } from '@angular/material/table';
 import { Router } from '@angular/router';
-import * as moment from 'moment';
 import { Subject } from 'rxjs';
 import { finalize } from 'rxjs/operators';
 import { AppComopnentBase } from 'src/shared/app-component-base';
 import { AppConsts } from 'src/shared/AppConsts';
-import { ApiServiceProxy, StartNewWorkflowInputDto, WorkflowServiceProxy } from 'src/shared/service-proxies/service-proxies';
+import { ApiServiceProxy, StartNewWorkflowInputDto, WorkflowProcessType, WorkflowServiceProxy } from 'src/shared/service-proxies/service-proxies';
 import { CreateWorkflowDialogComponent } from './create-workflow-dialog/create-workflow-dialog.component';
-import { WorkflowFlag, WorkflowList, WorkflowSideSections } from './workflow.model';
+import { WorkflowFlag, WorkflowList } from './workflow.model';
 
 @Component({
     selector: 'app-workflow',
@@ -45,7 +44,7 @@ export class WorkflowComponent extends AppComopnentBase implements OnInit, OnDes
     ];
 
     workflowDataSource: MatTableDataSource<any> = new MatTableDataSource<any>(WorkflowList);
-    workflowProcess = WorkflowSideSections;
+    workflowProcess = WorkflowProcessType;
 
     selectedTypes = [
         {

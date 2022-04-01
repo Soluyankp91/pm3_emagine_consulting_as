@@ -20,26 +20,6 @@
                     Started: {{_workflowDataService.getWorkflowProgress?.started}}
                 </span>
                 <span>
-                    isExtensionAdded: {{_workflowDataService.getWorkflowProgress?.isExtensionAdded}}
-                </span>
-                <span>
-                    isExtensionCompleted: {{_workflowDataService.getWorkflowProgress?.isExtensionCompleted}}
-                </span>
-                <span>
-                    isWorkflowSalesSaved: {{_workflowDataService.getWorkflowProgress?.isWorkflowSalesSaved}}
-                </span>
-                <span>
-                    isWorkflowContractsSaved: {{_workflowDataService.getWorkflowProgress?.isWorkflowContractsSaved}}
-                </span>
-                <span>
-                    isWorkflowAccountsSaved: {{_workflowDataService.getWorkflowProgress?.isWorkflowAccountsSaved}}
-                </span>
-            </div>
-            <div fxFlex="50%" fxLayout="column wrap" style="font-size: 12px;">
-                <span>
-                    isPrimaryWorkflowCompleted: {{_workflowDataService.getWorkflowProgress?.isPrimaryWorkflowCompleted}}
-                </span>
-                <span>
                     currentlyActiveSection: {{mapSectionName(_workflowDataService.getWorkflowProgress?.currentlyActiveSection)}}
                 </span>
                 <span>
@@ -47,9 +27,6 @@
                 </span>
                 <span>
                     currentlyActiveSideSection: {{mapSideSectionName(_workflowDataService.getWorkflowProgress?.currentlyActiveSideSection)}}
-                </span>
-                <span>
-                    currentlyActiveExtensionIndex: {{_workflowDataService.getWorkflowProgress?.currentlyActiveExtensionIndex}}
                 </span>
             </div>
         </div>
@@ -75,7 +52,6 @@
                 <button
                     class="menu-item menu-item--add"
                     mat-menu-item
-                    [disabled]="disableAddExtension()"
                     (click)="addExtension()">
                     <mat-icon>add</mat-icon>
                     Extend Workflow
@@ -83,7 +59,6 @@
                 <button
                     class="menu-item menu-item--cancel"
                     mat-menu-item
-                    [disabled]="_workflowDataService.getWorkflowProgress?.isTerminationAdded"
                     (click)="addTermination()">
                     <mat-icon>clear</mat-icon>
                     Terminate Workflow
@@ -113,21 +88,12 @@
             <mat-tab *ngFor="let tab of clientPeriods; let i = index;" [label]="tab.name!">
                 <ng-template mat-tab-label>
                     <div fxLayout="row" fxLayoutAlign="center center">
-                        <!-- <mat-icon *ngIf="tab.name === 'Overview'" class="u-mr--5" svgIcon="overview-icon"></mat-icon> -->
                         <span class="tab-header">{{tab.name}}</span>
                     </div>
                     <span class="tab-subheader">{{tab.additionalInfo}}</span>
                 </ng-template>
-                <!-- <div class="workflow-form--panel u-w--100" [ngStyle]="{'height': isExpandedAndToolbarVisible()}"> -->
                 <div class="workflow-form--panel u-w--100">
                     <app-workflow-period *ngIf="selectedIndex === i + 1" [clientPeriodId]="tab.id" [workflowId]="workflowId"></app-workflow-period>
-                    <!-- <app-primary-workflow *ngIf="selectedIndex === i + 1" [clientPeriodId]="tab.id" [workflowId]="workflowId"></app-primary-workflow> -->
-
-                    <!-- <dynamic-component-loader
-                        *ngIf="componentInitalized"
-                        [type]="detectComponentToRender(tab)"
-                        [index]="detectExtensionIndex(tab)">
-                    </dynamic-component-loader> -->
                 </div>
             </mat-tab>
         </mat-tab-group>
