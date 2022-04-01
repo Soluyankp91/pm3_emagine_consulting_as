@@ -120,6 +120,7 @@ export class WorkflowPeriodComponent implements OnInit {
         this._workflowDataService.updateWorkflowProgressStatus({currentlyActiveSideSection: item.typeId!});
         const firstitemInSection = this.sideMenuItems.find(x => x.name === item.name)?.steps![0];
         this.changeStepSelection(firstitemInSection!);
+        this._workflowDataService.workflowSideSectionChanged.emit(true);
     }
 
     deleteSideSection(item: WorkflowProcessDto) {

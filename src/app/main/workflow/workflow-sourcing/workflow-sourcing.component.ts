@@ -1,7 +1,9 @@
-import { Component, Input, OnInit } from '@angular/core';
+import { Component, Input, OnDestroy, OnInit } from '@angular/core';
 import { FormArray, FormBuilder, FormControl } from '@angular/forms';
-import { finalize } from 'rxjs/operators';
-import { ConsultantTerminationSourcingDataDto, WorkflowServiceProxy, WorkflowTerminationSourcingDataDto } from 'src/shared/service-proxies/service-proxies';
+import { Subject } from 'rxjs';
+import { finalize, takeUntil } from 'rxjs/operators';
+import { ConsultantTerminationSourcingDataDto, WorkflowProcessType, WorkflowServiceProxy, WorkflowTerminationSourcingDataDto } from 'src/shared/service-proxies/service-proxies';
+import { WorkflowDataService } from '../workflow-data.service';
 import { WorkflowSourcingConsultantsDataForm } from './workflow-sourcing.model';
 
 @Component({
@@ -9,11 +11,12 @@ import { WorkflowSourcingConsultantsDataForm } from './workflow-sourcing.model';
     templateUrl: './workflow-sourcing.component.html',
     styleUrls: ['./workflow-sourcing.component.scss']
 })
-export class WorkflowSourcingComponent implements OnInit {
+export class WorkflowSourcingComponent implements OnInit, OnDestroy {
     @Input() activeSideSection: number;
     @Input() workflowId: string;
 
     consultantId = 1;
+    workflowSideSections = WorkflowProcessType;
 
     sourcingConsultantsDataForm: WorkflowSourcingConsultantsDataForm;
     consultantList = [
@@ -24,17 +27,58 @@ export class WorkflowSourcingComponent implements OnInit {
             name: 'Van Trier Mia'
         }];
 
+    private _unsubscribe = new Subject();
+
     constructor(
         private _fb: FormBuilder,
-        private _workflowServiceProxy: WorkflowServiceProxy
-
+        private _workflowServiceProxy: WorkflowServiceProxy,
+        private _workflowDataService: WorkflowDataService
     ) {
         this.sourcingConsultantsDataForm = new WorkflowSourcingConsultantsDataForm();
     }
 
     ngOnInit(): void {
-        this.getWorkflowSourcingStepConsultantTermination();
-        this.getWorkflowSourcingStepTermination();
+        switch (this.activeSideSection) {
+            case this.workflowSideSections.TerminateWorkflow:
+                this.getWorkflowSourcingStepTermination();
+                break;
+            case this.workflowSideSections.TerminateConsultant:
+                this.getWorkflowSourcingStepConsultantTermination();
+                break;
+        }
+
+        this._workflowDataService.workflowConsultantTerminationSourcingSaved
+            .pipe(takeUntil(this._unsubscribe))
+            .subscribe((value: boolean) => {
+                // NB: boolean SAVE DRAFT or COMPLETE in future
+                this.updateTerminationConsultantSourcingStep();
+            });
+
+        this._workflowDataService.workflowConsultantTerminationSourcingCompleted
+            .pipe(takeUntil(this._unsubscribe))
+            .subscribe((value: boolean) => {
+                // NB: boolean SAVE DRAFT or COMPLETE in future
+                this.completeTerminationConsultantSourcingStep();
+            });
+
+        this._workflowDataService.workflowTerminationSourcingSaved
+            .pipe(takeUntil(this._unsubscribe))
+            .subscribe((value: boolean) => {
+                // NB: boolean SAVE DRAFT or COMPLETE in future
+                this.updateTerminationSourcingStep();
+            });
+
+        this._workflowDataService.workflowTerminationSourcingCompleted
+            .pipe(takeUntil(this._unsubscribe))
+            .subscribe((value: boolean) => {
+                // NB: boolean SAVE DRAFT or COMPLETE in future
+                this.completeTerminationSourcingStep();
+            });
+    }
+
+    ngOnDestroy(): void {
+        this._unsubscribe.next();
+        this._unsubscribe.complete();
     }
 
     // Termination

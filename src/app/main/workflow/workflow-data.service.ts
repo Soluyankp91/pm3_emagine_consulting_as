@@ -33,6 +33,8 @@ export class WorkflowDataService {
     workflowConsultantTerminationSourcingCompleted = new EventEmitter<boolean>();
     workflowTerminationSourcingCompleted = new EventEmitter<boolean>();
 
+    workflowSideSectionChanged = new EventEmitter<boolean>();
+
     collapseHeader = false;
     clientName = 'Test';
     constructor(

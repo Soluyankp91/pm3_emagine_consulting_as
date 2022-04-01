@@ -1,8 +1,9 @@
 import { Overlay } from '@angular/cdk/overlay';
-import { Component, Injector, Input, OnInit } from '@angular/core';
+import { Component, Injector, Input, OnDestroy, OnInit } from '@angular/core';
 import { AbstractControl, FormArray, FormBuilder, FormControl } from '@angular/forms';
 import { MatDialog } from '@angular/material/dialog';
-import { finalize } from 'rxjs/operators';
+import { Subject } from 'rxjs';
+import { finalize, takeUntil } from 'rxjs/operators';
 import { InternalLookupService } from 'src/app/shared/common/internal-lookup.service';
 import { AppComopnentBase } from 'src/shared/app-component-base';
 import { ClientPeriodContractsDataDto, ConsultantTerminationContractDataDto, WorkflowProcessType, WorkflowTerminationContractDataDto, WorkflowServiceProxy, ClientPeriodServiceProxy, ConsultantContractsDataDto, ConsultantSalesDataDto, ContractsClientDataDto, ContractsMainDataDto, EnumEntityTypeDto, PeriodClientSpecialFeeDto, PeriodClientSpecialRateDto, PeriodConsultantSpecialFeeDto, PeriodConsultantSpecialRateDto, ProjectLineDto } from 'src/shared/service-proxies/service-proxies';
@@ -17,7 +18,7 @@ import { WorkflowContractsClientDataForm, WorkflowContractsConsultantsDataForm, 
     templateUrl: './workflow-contracts.component.html',
     styleUrls: ['./workflow-contracts.component.scss']
 })
-export class WorkflowContractsComponent extends AppComopnentBase implements OnInit {
+export class WorkflowContractsComponent extends AppComopnentBase implements OnInit, OnDestroy {
     @Input() workflowId: string;
     @Input() clientPeriodId: string | undefined;
 
@@ -65,6 +66,8 @@ export class WorkflowContractsComponent extends AppComopnentBase implements OnIn
     }];
 
     consultantTypes = ConsultantTypes;
+    private _unsubscribe = new Subject();
+
     constructor(
         injector: Injector,
         private _fb: FormBuilder,
@@ -97,8 +100,44 @@ export class WorkflowContractsComponent extends AppComopnentBase implements OnIn
         this.getSalesInfo();
 
         // Termination
-        this.getWorkflowContractsStepConsultantTermination();
-        this.getWorkflowContractStepTermination();
+
+        switch (this.activeSideSection) {
+            case this.workflowSideSections.TerminateWorkflow:
+                this.getWorkflowContractStepTermination();
+                break;
+            case this.workflowSideSections.TerminateConsultant:
+                this.getWorkflowContractsStepConsultantTermination();
+                break;
+        }
+
+        this._workflowDataService.workflowConsultantTerminationContractsSaved
+            .pipe(takeUntil(this._unsubscribe))
+            .subscribe((value: boolean) => {
+                this.updateTerminationConsultantContractStep();
+            });
+
+        this._workflowDataService.workflowConsultantTerminationContractsCompleted
+            .pipe(takeUntil(this._unsubscribe))
+            .subscribe((value: boolean) => {
+                this.completeTerminationConsultantContractStep();
+            });
+
+        this._workflowDataService.workflowTerminationContractsSaved
+            .pipe(takeUntil(this._unsubscribe))
+            .subscribe((value: boolean) => {
+                this.updateTerminationContractStep();
+            });
+
+        this._workflowDataService.workflowTerminationContractsCompleted
+            .pipe(takeUntil(this._unsubscribe))
+            .subscribe((value: boolean) => {
+                this.completeTerminationContractStep();
+            });
+    }
+
+    ngOnDestroy(): void {
+        this._unsubscribe.next();
+        this._unsubscribe.complete();
     }
 
     getCurrencies() {

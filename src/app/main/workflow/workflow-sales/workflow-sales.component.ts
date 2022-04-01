@@ -32,7 +32,8 @@ export class WorkflowSalesComponent extends AppComopnentBase implements OnInit {
     // Changed all above to enum
     @Input() activeSideSection: number;
 
-    consultantInformation: ConsultantDisplayDataDto;
+    consultantId = 1; // FIXME: fix after be changes
+    consultantInformation: ConsultantDisplayDataDto; // FIXME: fix after be changes
     // workflowSideSections = WorkflowSideSections;
     workflowSideSections = WorkflowProcessType;
     // SalesStep
@@ -351,8 +352,45 @@ export class WorkflowSalesComponent extends AppComopnentBase implements OnInit {
         // this.updateReadonlyState();
 
         // Termination
+        this._workflowDataService.workflowConsultantTerminationSalesSaved
+            .pipe(takeUntil(this._unsubscribe))
+            .subscribe((value: boolean) => {
+                this.updateTerminationConsultantSalesStep();
+            });
 
-        switch (this.activeSideSection) {
+        this._workflowDataService.workflowConsultantTerminationSalesCompleted
+            .pipe(takeUntil(this._unsubscribe))
+            .subscribe((value: boolean) => {
+                this.completeTerminationConsultantSalesStep();
+            });
+
+        this._workflowDataService.workflowTerminationSalesSaved
+            .pipe(takeUntil(this._unsubscribe))
+            .subscribe((value: boolean) => {
+                this.updateTerminationSalesStep();
+            });
+
+        this._workflowDataService.workflowTerminationSalesCompleted
+            .pipe(takeUntil(this._unsubscribe))
+            .subscribe((value: boolean) => {
+                this.completeTerminationSalesStep();
+            });
+
+        this._workflowDataService.workflowSideSectionChanged
+            .pipe(takeUntil(this._unsubscribe))
+            .subscribe((value: boolean) => {
+                //TODO: add all side sections
+                switch (this._workflowDataService.getWorkflowProgress.currentlyActiveSideSection) {
+                    case this.workflowSideSections.TerminateWorkflow:
+                        this.getWorkflowSalesStepTermination();
+                        break;
+                    case this.workflowSideSections.TerminateConsultant:
+                        this.getWorkflowSalesStepConsultantTermination();
+                        break;
+                }
+            });
+        switch (this._workflowDataService.getWorkflowProgress.currentlyActiveSideSection) {
+            //TODO: add all side sections
             case this.workflowSideSections.TerminateWorkflow:
                 this.getWorkflowSalesStepTermination();
                 break;
@@ -360,34 +398,6 @@ export class WorkflowSalesComponent extends AppComopnentBase implements OnInit {
                 this.getWorkflowSalesStepConsultantTermination();
                 break;
         }
-
-        this._workflowDataService.workflowConsultantTerminationSalesSaved
-            .pipe(takeUntil(this._unsubscribe))
-            .subscribe((value: boolean) => {
-                // NB: boolean SAVE DRAFT or COMPLETE in future
-                this.updateTerminationConsultantSalesStep();
-            });
-
-        this._workflowDataService.workflowConsultantTerminationSalesCompleted
-            .pipe(takeUntil(this._unsubscribe))
-            .subscribe((value: boolean) => {
-                // NB: boolean SAVE DRAFT or COMPLETE in future
-                this.completeTerminationConsultantSalesStep();
-            });
-
-        this._workflowDataService.workflowTerminationSalesSaved
-            .pipe(takeUntil(this._unsubscribe))
-            .subscribe((value: boolean) => {
-                // NB: boolean SAVE DRAFT or COMPLETE in future
-                this.updateTerminationSalesStep();
-            });
-
-        this._workflowDataService.workflowTerminationSalesCompleted
-            .pipe(takeUntil(this._unsubscribe))
-            .subscribe((value: boolean) => {
-                // NB: boolean SAVE DRAFT or COMPLETE in future
-                this.completeTerminationSalesStep();
-            });
     }
     get readOnlyMode() {
         return this._workflowDataService.getWorkflowProgress.isWorkflowSalesSaved;
@@ -1449,7 +1459,7 @@ export class WorkflowSalesComponent extends AppComopnentBase implements OnInit {
         input.causeOfTerminationBeforeEndOfContract = this.salesTerminateConsultantForm?.causeOfTerminationBeforeEndOfContract?.value;
         input.additionalComments = this.salesTerminateConsultantForm?.additionalComments?.value;
 
-        input.finalEvaluationReferencePersonId = this.salesTerminateConsultantForm?.finalEvaluationReferencePersonId?.value.id;
+        input.finalEvaluationReferencePersonId = this.salesTerminateConsultantForm?.finalEvaluationReferencePersonId?.value; // FIXME: fix after be changes add .id
         input.noEvaluation = this.salesTerminateConsultantForm?.noEvaluation?.value;
         input.causeOfNoEvaluation =  this.salesTerminateConsultantForm.causeOfNoEvaluation?.value;
 
@@ -1471,7 +1481,7 @@ export class WorkflowSalesComponent extends AppComopnentBase implements OnInit {
         input.causeOfTerminationBeforeEndOfContract = this.salesTerminateConsultantForm?.causeOfTerminationBeforeEndOfContract?.value;
         input.additionalComments = this.salesTerminateConsultantForm?.additionalComments?.value;
 
-        input.finalEvaluationReferencePersonId = this.salesTerminateConsultantForm?.finalEvaluationReferencePersonId?.value.id;
+        input.finalEvaluationReferencePersonId = this.salesTerminateConsultantForm?.finalEvaluationReferencePersonId?.value; // FIXME: fix after be changes add .id
         input.noEvaluation = this.salesTerminateConsultantForm?.noEvaluation?.value;
         input.causeOfNoEvaluation =  this.salesTerminateConsultantForm.causeOfNoEvaluation?.value;
 
@@ -1515,7 +1525,7 @@ export class WorkflowSalesComponent extends AppComopnentBase implements OnInit {
         input.causeOfTerminationBeforeEndOfContract = this.salesTerminateConsultantForm?.causeOfTerminationBeforeEndOfContract?.value;
         input.additionalComments = this.salesTerminateConsultantForm?.additionalComments?.value;
 
-        input.finalEvaluationReferencePersonId = this.salesTerminateConsultantForm?.finalEvaluationReferencePersonId?.value.id;
+        input.finalEvaluationReferencePersonId = this.salesTerminateConsultantForm?.finalEvaluationReferencePersonId?.value; // FIXME: fix after be changes add .id
         input.noEvaluation = this.salesTerminateConsultantForm?.noEvaluation?.value;
         input.causeOfNoEvaluation =  this.salesTerminateConsultantForm.causeOfNoEvaluation?.value;
 
@@ -1536,7 +1546,7 @@ export class WorkflowSalesComponent extends AppComopnentBase implements OnInit {
         input.causeOfTerminationBeforeEndOfContract = this.salesTerminateConsultantForm?.causeOfTerminationBeforeEndOfContract?.value;
         input.additionalComments = this.salesTerminateConsultantForm?.additionalComments?.value;
 
-        input.finalEvaluationReferencePersonId = this.salesTerminateConsultantForm?.finalEvaluationReferencePersonId?.value.id;
+        input.finalEvaluationReferencePersonId = this.salesTerminateConsultantForm?.finalEvaluationReferencePersonId?.value; // FIXME: fix after be changes add .id
         input.noEvaluation = this.salesTerminateConsultantForm?.noEvaluation?.value;
         input.causeOfNoEvaluation =  this.salesTerminateConsultantForm.causeOfNoEvaluation?.value;
 
