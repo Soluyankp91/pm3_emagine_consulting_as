@@ -1,4 +1,5 @@
-import { WorkflowSideSections, WorkflowSteps } from "../workflow.model";
+import { WorkflowProcessType } from "src/shared/service-proxies/service-proxies";
+import { WorkflowSteps } from "../workflow.model";
 
 export class ProcessSubItemDto {
     id: number;
@@ -22,7 +23,7 @@ export class ProcessParentItemDto {
 export const StartWorkflowProcessDto: ProcessParentItemDto = {
     displayName: 'Start Workflow',
     name: 'workflowAdd',
-    sectionEnumValue: WorkflowSideSections.StartWorkflow,
+    sectionEnumValue: WorkflowProcessType.StartClientPeriod,
     dateRange: '02.01.2021 - 31.12.2021',
     processSteps: [
         {
@@ -61,7 +62,7 @@ export const StartWorkflowProcessDto: ProcessParentItemDto = {
 export const ExtendWorkflowProcessDto: ProcessParentItemDto = {
     displayName: 'Extend Workflow',
     name: 'workflowStartOrExtend',
-    sectionEnumValue: WorkflowSideSections.ExtendWorkflow,
+    sectionEnumValue: WorkflowProcessType.ExtendClientPeriod,
     dateRange: '02.01.2021 - 31.12.2021',
     processSteps: [
         {

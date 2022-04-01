@@ -1,7 +1,7 @@
 import { Component, Input, OnInit } from '@angular/core';
 import { FormArray, FormBuilder, FormControl } from '@angular/forms';
+import { WorkflowProcessType } from 'src/shared/service-proxies/service-proxies';
 import { WorkflowDataService } from '../workflow-data.service';
-import { WorkflowSideSections } from '../workflow.model';
 import { FinancesClientForm, FinancesConsultantsForm } from './workflow-finances.model';
 
 @Component({
@@ -12,13 +12,11 @@ import { FinancesClientForm, FinancesConsultantsForm } from './workflow-finances
 export class WorkflowFinancesComponent implements OnInit {
     @Input() workflowId: string;
 
-    @Input() primaryWorkflow: boolean;
-    @Input() editWorfklow: boolean;
-    @Input() addConsultant: boolean;
-
     // Changed all above to enum
     @Input() activeSideSection: number;
-    workflowSideSections = WorkflowSideSections;
+    @Input() isCompleted: boolean;
+
+    workflowSideSections = WorkflowProcessType;
 
     financesClientForm: FinancesClientForm;
     financesConsultantsForm: FinancesConsultantsForm;
@@ -40,14 +38,13 @@ export class WorkflowFinancesComponent implements OnInit {
     }
 
     ngOnInit(): void {
-        console.log('init', this.editWorfklow);
         this.consultantList.forEach(consultant => {
             this.addConsultantToForm(consultant);
         });
     }
 
     get readOnlyMode() {
-        return this._workflowDataService.getWorkflowProgress.isWorkflowAccountsSaved;
+        return this.isCompleted;
     }
 
     addConsultantToForm(consultant: any) {

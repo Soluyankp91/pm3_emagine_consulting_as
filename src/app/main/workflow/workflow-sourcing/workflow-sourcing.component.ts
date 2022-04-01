@@ -14,6 +14,7 @@ import { WorkflowSourcingConsultantsDataForm } from './workflow-sourcing.model';
 export class WorkflowSourcingComponent implements OnInit, OnDestroy {
     @Input() activeSideSection: number;
     @Input() workflowId: string;
+    @Input() isCompleted: boolean;
 
     consultantId = 1;
     workflowSideSections = WorkflowProcessType;

@@ -1,6 +1,5 @@
 import { FormArray, FormControl, FormGroup } from "@angular/forms";
-import { EnumEntityTypeDto } from "src/shared/service-proxies/service-proxies";
-import { SideNavigationParentItemDto } from "./workflow-extension/workflow-extension.model";
+import { EnumEntityTypeDto, WorkflowProcessType } from "src/shared/service-proxies/service-proxies";
 
 export class WorkflowSalesExtensionForm extends FormGroup {
     constructor() {
@@ -89,57 +88,6 @@ export class WorkflowTerminationSalesForm extends FormGroup {
     }
 }
 
-// Sales step data
-export class TopMenuTabsDto {
-    name: string;
-    displayName: string;
-    index: number;
-    additionalInfo: string | null;
-}
-
-// export const SideMenuTabs: TopMenuTabsDto[] = [
-//     {
-//         name: 'Workflow',
-//         displayName: 'Workflow',
-//         index: 1
-//     }
-// ];
-
-export const TopMenuTabs: TopMenuTabsDto[] = [
-    {
-        name: 'Overview',
-        displayName: 'Overview',
-        index: 0,
-        additionalInfo: null
-    },
-    {
-        name: 'Workflow',
-        displayName: 'Workflow',
-        index: 0,
-        additionalInfo: 'New'
-    },
-    // {
-    //     name: 'Extension1',
-    //     displayName: 'Extension 1',
-    //     index: 0
-    // },
-    // {
-    //     name: 'Extension2',
-    //     displayName: 'Extension 2',
-    //     index: 1
-    // },
-    // {
-    //     name: 'Contracts',
-    //     displayName: 'Contracts',
-    //     index:
-    // },
-    // {
-    //     name: 'Accounts',
-    //     displayName: 'Accounts',
-    //     index: 1
-    // }
-];
-
 export interface IWorkflowNavigationStep {
     id: number;
     name: string;
@@ -212,21 +160,6 @@ export const WorkflowNavigation: IWorkflowNavigationStep[] = [
 export class WorkflowProgressStatus implements IWorkflowProgressStatus {
     started: boolean | undefined;
 
-    isExtensionAdded: boolean | undefined;
-    currentlyActiveExtensionIndex: number | undefined | null;
-    numberOfAddedExtensions: number | undefined | null;
-    lastSavedExtensionIndex: number | undefined | null;
-
-    isExtensionCompleted: boolean | undefined;
-    isExtensionSalesSaved: boolean | undefined;
-    isExtensionContractsSaved: boolean | undefined;
-
-    isWorkflowSalesSaved: boolean | undefined;
-    isWorkflowContractsSaved: boolean | undefined;
-    isWorkflowAccountsSaved: boolean | undefined;
-    isPrimaryWorkflowCompleted: boolean | undefined;
-
-    isTerminationAdded: boolean | undefined;
     currentlyActiveSection: number | undefined;
     currentlyActiveStep: number | undefined;
     currentlyActiveSideSection: number | undefined;
@@ -234,39 +167,11 @@ export class WorkflowProgressStatus implements IWorkflowProgressStatus {
     constructor(
         started?: boolean,
 
-        isExtensionAdded?: boolean,
-        currentlyActiveExtensionIndex?: number,
-        numberOfAddedExtensions?: number,
-        lastSavedExtensionIndex?: number,
-        isExtensionCompleted?: boolean,
-        isExtensionSalesSaved?: boolean,
-        isExtensionContractsSaved?: boolean,
-
-        isWorkflowSalesSaved?: boolean,
-        isWorkflowContractsSaved?: boolean,
-        isWorkflowAccountsSaved?: boolean,
-        isPrimaryWorkflowCompleted?: boolean,
-
-        isTerminationAdded?: boolean,
         currentlyActiveSection?: number,
         currentlyActiveStep?: number,
         currentlyActiveSideSection?: number) {
             this.started = started;
 
-            this.isExtensionAdded = isExtensionAdded;
-            this.currentlyActiveExtensionIndex = currentlyActiveExtensionIndex;
-            this.numberOfAddedExtensions = numberOfAddedExtensions;
-            this.lastSavedExtensionIndex = lastSavedExtensionIndex;
-            this.isExtensionCompleted = isExtensionCompleted;
-            this.isExtensionSalesSaved = isExtensionSalesSaved;
-            this.isExtensionContractsSaved = isExtensionContractsSaved;
-
-            this.isWorkflowSalesSaved = isWorkflowSalesSaved;
-            this.isWorkflowContractsSaved = isWorkflowContractsSaved;
-            this.isWorkflowAccountsSaved = isWorkflowAccountsSaved;
-            this.isPrimaryWorkflowCompleted = isPrimaryWorkflowCompleted;
-
-            this.isTerminationAdded = isTerminationAdded;
             this.currentlyActiveSection = currentlyActiveSection;
             this.currentlyActiveStep = currentlyActiveStep;
             this.currentlyActiveSideSection = currentlyActiveSideSection;
@@ -276,21 +181,6 @@ export class WorkflowProgressStatus implements IWorkflowProgressStatus {
 export interface IWorkflowProgressStatus {
     started: boolean | undefined,
 
-    isExtensionAdded: boolean | undefined;
-    currentlyActiveExtensionIndex: number | undefined | null;
-    numberOfAddedExtensions: number | undefined | null;
-    lastSavedExtensionIndex: number | undefined | null;
-
-    isExtensionCompleted: boolean | undefined;
-    isExtensionSalesSaved: boolean | undefined;
-    isExtensionContractsSaved: boolean | undefined;
-
-    isWorkflowSalesSaved: boolean | undefined;
-    isWorkflowContractsSaved: boolean | undefined;
-    isWorkflowAccountsSaved: boolean | undefined;
-    isPrimaryWorkflowCompleted: boolean | undefined;
-
-    isTerminationAdded: boolean | undefined;
     currentlyActiveSection: number | undefined;
     currentlyActiveStep: number | undefined;
     currentlyActiveSideSection: number | undefined;
@@ -304,17 +194,6 @@ export enum WorkflowTopSections {
     ChangesInWF = 5
 }
 
-export enum WorkflowSideSections {
-    StartWorkflow = 1,
-    ExtendWorkflow = 2,
-    TerminateWorkflow = 3,
-    ChangeWorkflow = 4,
-    AddConsultant = 5,
-    TerminateConsultant = 6,
-    ChangeConsultant = 7,
-    ExtendConsultant = 8
-}
-
 export enum WorkflowSteps {
     Sales = 1,
     Contracts = 2,
@@ -322,366 +201,12 @@ export enum WorkflowSteps {
     Sourcing = 4
 }
 
-//#region side sections to Add
-export const ExtendWorkflowDto: SideNavigationParentItemDto = {
-    displayName: 'Extend Workflow',
-    name: 'workflowStartOrExtend',
-    sectionEnumValue: WorkflowSideSections.ExtendWorkflow,
-    responsiblePerson: 'Andersen Rasmus2',
-    dateRange: '02.01.2021 - 31.12.2021',
-    subItems: [
-        {
-            id: 1,
-            name: "ExtendSales",
-            displayName: "Sales",
-            enumStepValue: WorkflowSteps.Sales,
-            isCompleted: false,
-            assignedPerson: 'Roberto Olberto',
-            menuAnchors: [
-                {
-                    name: 'Main data',
-                    value: 'mainData'
-                },
-                {
-                    name: 'Client data',
-                    value: 'clientData'
-                },
-                {
-                    name: 'Consultant data',
-                    value: 'consultantData'
-                }
-            ]
-        },
-        {
-            id: 2,
-            name: "ExtendContracts",
-            displayName: "Contracts",
-            enumStepValue: WorkflowSteps.Contracts,
-            isCompleted: false,
-            assignedPerson: 'Roberto Olberto',
-            menuAnchors: [
-                {
-                    name: 'Main data',
-                    value: 'mainData'
-                },
-                {
-                    name: 'Client data',
-                    value: 'clientData'
-                },
-                {
-                    name: 'Consultant data',
-                    value: 'consultantData'
-                },
-                {
-                    name: 'Sync & legal contracts',
-                    value: 'legalContracts'
-                }
-            ]
-        }
-    ]
-};
-
-export const ChangeWorkflowDto: SideNavigationParentItemDto = {
-    displayName: 'Change Workflow',
-    name: 'workflowEdit',
-    sectionEnumValue: WorkflowSideSections.ChangeWorkflow,
-    responsiblePerson: 'Andersen Rasmus2',
-    dateRange: '02.01.2021 - 31.12.2021',
-    subItems: [
-        {
-            id: 1,
-            name: "EditWorkflowSales",
-            displayName: "Sales",
-            enumStepValue: WorkflowSteps.Sales,
-            isCompleted: false,
-            assignedPerson: 'Roberto Olberto',
-            menuAnchors: [
-                {
-                    name: 'Main data',
-                    value: 'mainData'
-                },
-                {
-                    name: 'Client data',
-                    value: 'clientData'
-                },
-                {
-                    name: 'Consultant data',
-                    value: 'consultantData'
-                }
-            ]
-        },
-        {
-            id: 2,
-            name: "EditWorkflowContracts",
-            displayName: "Contracts",
-            enumStepValue: WorkflowSteps.Contracts,
-            isCompleted: false,
-            assignedPerson: 'Roberto Olberto',
-            menuAnchors: [
-                {
-                    name: 'Main data',
-                    value: 'mainData'
-                },
-                {
-                    name: 'Client data',
-                    value: 'clientData'
-                },
-                {
-                    name: 'Consultant data',
-                    value: 'consultantData'
-                },
-                {
-                    name: 'Sync & legal contracts',
-                    value: 'legalContracts'
-                }
-            ]
-        }
-    ]
-};
-
-export const TerminateWorkflowDto: SideNavigationParentItemDto = {
-    displayName: 'Terminate Workflow',
-    name: 'workflowTerminate',
-    sectionEnumValue: WorkflowSideSections.TerminateWorkflow,
-    responsiblePerson: 'Andersen Rasmus2',
-    dateRange: '02.01.2021 - 31.12.2021',
-    subItems: [
-        {
-            id: 1,
-            name: "TerminateWorkflowSales",
-            displayName: "Sales",
-            enumStepValue: WorkflowSteps.Sales,
-            isCompleted: false,
-            assignedPerson: 'Roberto Olberto',
-            menuAnchors: []
-        },
-        {
-            id: 2,
-            name: "TerminateWorkflowContracts",
-            displayName: "Contracts",
-            enumStepValue: WorkflowSteps.Contracts,
-            isCompleted: false,
-            assignedPerson: 'Roberto Olberto',
-            menuAnchors: []
-        },
-        {
-            id: 3,
-            name: "TerminateWorkflowSourcing",
-            displayName: "Sourcing",
-            enumStepValue: WorkflowSteps.Sourcing,
-            isCompleted: false,
-            assignedPerson: 'Roberto Olberto',
-            menuAnchors: []
-        }
-    ]
-};
-
-
-export const AddConsultantDto: SideNavigationParentItemDto = {
-    displayName: 'Add Consultant',
-    name: 'workflowAdd',
-    sectionEnumValue: WorkflowSideSections.AddConsultant,
-    responsiblePerson: 'Andersen Rasmus2',
-    dateRange: '02.01.2021 - 31.12.2021',
-    subItems: [
-        {
-            id: 1,
-            name: "AddConsultantSales",
-            displayName: "Sales",
-            enumStepValue: WorkflowSteps.Sales,
-            isCompleted: false,
-            assignedPerson: 'Roberto Olberto',
-            menuAnchors: [
-                {
-                    name: 'Main data',
-                    value: 'mainData'
-                },
-                {
-                    name: 'Consultant data',
-                    value: 'consultantData'
-                }
-            ]
-        },
-        {
-            id: 2,
-            name: "AddConsultantContracts",
-            displayName: "Contracts",
-            enumStepValue: WorkflowSteps.Contracts,
-            isCompleted: false,
-            assignedPerson: 'Roberto Olberto',
-            menuAnchors: [
-                {
-                    name: 'Main data',
-                    value: 'mainData'
-                },
-                {
-                    name: 'Consultant data',
-                    value: 'consultantData'
-                },
-                {
-                    name: 'Sync & legal contracts',
-                    value: 'legalContracts'
-                }
-            ]
-        },
-        {
-            id: 3,
-            name: "AddConsultantFinance",
-            displayName: "Finance",
-            enumStepValue: WorkflowSteps.Finance,
-            isCompleted: false,
-            assignedPerson: 'Roberto Olberto',
-            menuAnchors: []
-        }
-    ]
-};
-
-export const ChangeConsultantDto: SideNavigationParentItemDto = {
-    displayName: 'Change Consultant',
-    name: 'workflowEdit',
-    sectionEnumValue: WorkflowSideSections.ChangeConsultant,
-    responsiblePerson: 'Andersen Rasmus2',
-    dateRange: '02.01.2021 - 31.12.2021',
-    subItems: [
-        {
-            id: 1,
-            name: "ChangeConsultantSales",
-            displayName: "Sales",
-            enumStepValue: WorkflowSteps.Sales,
-            isCompleted: false,
-            assignedPerson: 'Roberto Olberto',
-            menuAnchors: [
-                {
-                    name: 'Main data',
-                    value: 'mainData'
-                },
-                {
-                    name: 'Consultant data',
-                    value: 'consultantData'
-                }
-            ]
-        },
-        {
-            id: 2,
-            name: "ChangeConsultantContracts",
-            displayName: "Contracts",
-            enumStepValue: WorkflowSteps.Contracts,
-            isCompleted: false,
-            assignedPerson: 'Roberto Olberto',
-            menuAnchors: [
-                {
-                    name: 'Main data',
-                    value: 'mainData'
-                },
-                {
-                    name: 'Consultant data',
-                    value: 'consultantData'
-                },
-                {
-                    name: 'Sync & legal contracts',
-                    value: 'legalContracts'
-                }
-            ]
-        }
-    ]
-};
-
-export const ExtendConsultantDto: SideNavigationParentItemDto = {
-    displayName: 'Extend Consultant',
-    name: 'workflowStartOrExtend',
-    sectionEnumValue: WorkflowSideSections.ExtendConsultant,
-    responsiblePerson: 'Andersen Rasmus2',
-    dateRange: '02.01.2021 - 31.12.2021',
-    subItems: [
-        {
-            id: 1,
-            name: "ExtendConsultantSales",
-            displayName: "Sales",
-            enumStepValue: WorkflowSteps.Sales,
-            isCompleted: false,
-            assignedPerson: 'Roberto Olberto',
-            menuAnchors: [
-                {
-                    name: 'Main data',
-                    value: 'mainData'
-                },
-                {
-                    name: 'Consultant data',
-                    value: 'consultantData'
-                }
-            ]
-        },
-        {
-            id: 2,
-            name: "ExtendConsultantContracts",
-            displayName: "Contracts",
-            enumStepValue: WorkflowSteps.Contracts,
-            isCompleted: false,
-            assignedPerson: 'Roberto Olberto',
-            menuAnchors: [
-                {
-                    name: 'Main data',
-                    value: 'mainData'
-                },
-                {
-                    name: 'Consultant data',
-                    value: 'consultantData'
-                },
-                {
-                    name: 'Sync & legal contracts',
-                    value: 'legalContracts'
-                }
-            ]
-        }
-    ]
-};
-
-export const TerminateConsultantDto: SideNavigationParentItemDto = {
-    displayName: 'Terminate Consultant',
-    name: 'workflowTerminate',
-    sectionEnumValue: WorkflowSideSections.TerminateConsultant,
-    responsiblePerson: 'Andersen Rasmus2',
-    dateRange: '02.01.2021 - 31.12.2021',
-    subItems: [
-        {
-            id: 1,
-            name: "TerminateConsultantSales",
-            displayName: "Sales",
-            enumStepValue: WorkflowSteps.Sales,
-            isCompleted: false,
-            assignedPerson: 'Roberto Olberto',
-            menuAnchors: []
-        },
-        {
-            id: 2,
-            name: "TerminateConsultantContracts",
-            displayName: "Contracts",
-            enumStepValue: WorkflowSteps.Contracts,
-            isCompleted: false,
-            assignedPerson: 'Roberto Olberto',
-            menuAnchors: []
-        },
-        {
-            id: 3,
-            name: "TerminateConsultantSourcing",
-            displayName: "Sourcing",
-            enumStepValue: WorkflowSteps.Sourcing,
-            isCompleted: false,
-            assignedPerson: 'Roberto Olberto',
-            menuAnchors: []
-        }
-    ]
-};
-
-//#endregion side section to add
-
 export enum WorkflowDiallogAction {
     Add = 1,
     Change = 2,
     Extend = 3,
     Terminate = 4
 }
-
 
 // #region hardcoded grid
 export enum WorkflowFlag {
@@ -704,7 +229,7 @@ export const WorkflowList = [
         startDate: new Date(2021, 4, 2),
         endDate: new Date(2021, 5, 3),
         step: 'Sales',
-        openProcess: [null, WorkflowSideSections.StartWorkflow],
+        openProcess: [null, WorkflowProcessType.StartClientPeriod],
         status: 'In progress',
         managers: [1,2],
         isDeleted: false
@@ -721,7 +246,7 @@ export const WorkflowList = [
         startDate: new Date(2021, 2, 1),
         endDate: new Date(2021, 5, 3),
         step: 'Sales',
-        openProcess: [WorkflowSideSections.ExtendWorkflow, null],
+        openProcess: [WorkflowProcessType.ExtendClientPeriod, null],
         status: 'In progress',
         managers: [1,2],
         isDeleted: false
@@ -740,7 +265,7 @@ export const WorkflowList = [
         startDate: new Date(2021, 2, 15),
         endDate: new Date(2022, 11, 25),
         step: 'Contracts',
-        openProcess: [WorkflowSideSections.TerminateWorkflow],
+        openProcess: [WorkflowProcessType.TerminateWorkflow],
         status: 'In progress',
         managers: [1,2],
         isDeleted: true
@@ -759,7 +284,7 @@ export const WorkflowList = [
         startDate: new Date(2021, 2, 15),
         endDate: new Date(2022, 11, 25),
         step: 'Contracts',
-        openProcess: [WorkflowSideSections.ChangeWorkflow],
+        openProcess: [WorkflowProcessType.ChangeClientPeriod],
         status: 'In progress',
         managers: [1,2],
         isDeleted: true
@@ -778,7 +303,7 @@ export const WorkflowList = [
         startDate: new Date(2021, 2, 15),
         endDate: new Date(2022, 11, 25),
         step: 'Contracts',
-        openProcess: [WorkflowSideSections.AddConsultant, WorkflowSideSections.ChangeWorkflow],
+        openProcess: [WorkflowProcessType.StartConsultantPeriod, WorkflowProcessType.ChangeClientPeriod],
         status: 'In progress',
         managers: [1,2],
         isDeleted: true
@@ -797,7 +322,7 @@ export const WorkflowList = [
         startDate: new Date(2021, 2, 15),
         endDate: new Date(2022, 11, 25),
         step: 'Contracts',
-        openProcess: [WorkflowSideSections.TerminateConsultant],
+        openProcess: [WorkflowProcessType.TerminateConsultant],
         status: 'In progress',
         managers: [1,2],
         isDeleted: true

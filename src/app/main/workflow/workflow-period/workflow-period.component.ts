@@ -22,7 +22,7 @@ export class WorkflowPeriodComponent implements OnInit {
     sideMenuItems: WorkflowProcessDto[] = [];
     workflowProcessTypes = WorkflowProcessType;
     workflowPeriodStepTypes: EnumEntityTypeDto[] = [];
-    selectedStep: string;
+    selectedStep: StepDto;
     selectedAnchor: string;
 
     workflowSteps = WorkflowSteps;
@@ -107,10 +107,9 @@ export class WorkflowPeriodComponent implements OnInit {
         }
     }
 
-
     changeStepSelection(step: StepDto) {
         this.selectedStepEnum = this.mapStepType(this.workflowPeriodStepTypes?.find(x => x.id === step.typeId)!)!;
-        this.selectedStep = step.name!;
+        this.selectedStep = step;
         this._workflowDataService.workflowProgress.currentlyActiveStep = step.typeId! * 1;
     }
 
@@ -144,8 +143,7 @@ export class WorkflowPeriodComponent implements OnInit {
         });
 
         dialogRef.componentInstance.onConfirmed.subscribe((result) => {
-            let sideNavToDelete = this._workflowDataService.workflowSideNavigation.findIndex(x => x.name === item.name);
-            this._workflowDataService.workflowSideNavigation.splice(sideNavToDelete, 1)
+
         });
 
         dialogRef.componentInstance.onRejected.subscribe(() => {

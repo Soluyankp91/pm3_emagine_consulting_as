@@ -109,7 +109,7 @@
                                  class="flex-justify-center column"
                                  [ngStyle]="{'border-bottom' : last ? '0' : '1px solid #E7E3E8'}">
                                 <ng-container [ngSwitch]="item">
-                                    <ng-container *ngSwitchCase="workflowProcess.StartWorkflow">
+                                    <ng-container *ngSwitchCase="workflowProcess.StartClientPeriod">
                                         <span class="flex-row flex-items-center">
                                             <mat-icon svgIcon="workflowStartOrExtend"></mat-icon>
                                             <span class="sidenav-expansion--header__name">
@@ -117,7 +117,7 @@
                                             </span>
                                         </span>
                                     </ng-container>
-                                    <ng-container *ngSwitchCase="workflowProcess.ExtendWorkflow">
+                                    <ng-container *ngSwitchCase="workflowProcess.ExtendClientPeriod">
                                         <span class="flex-row flex-items-center">
                                             <mat-icon svgIcon="workflowStartOrExtend"></mat-icon>
                                             <span class="sidenav-expansion--header__name">
@@ -133,7 +133,7 @@
                                             </span>
                                         </span>
                                     </ng-container>
-                                    <ng-container *ngSwitchCase="workflowProcess.ChangeWorkflow">
+                                    <ng-container *ngSwitchCase="workflowProcess.ChangeClientPeriod">
                                         <span class="flex-row flex-items-center">
                                             <mat-icon svgIcon="workflowStartOrExtend"></mat-icon>
                                             <span class="sidenav-expansion--header__name">
@@ -141,7 +141,7 @@
                                             </span>
                                         </span>
                                     </ng-container>
-                                    <ng-container *ngSwitchCase="workflowProcess.AddConsultant">
+                                    <ng-container *ngSwitchCase="workflowProcess.StartConsultantPeriod">
                                         <span class="flex-row flex-items-center">
                                             <mat-icon svgIcon="workflowAdd"></mat-icon>
                                             <span class="sidenav-expansion--header__name">

@@ -24,6 +24,7 @@ export class WorkflowContractsComponent extends AppComopnentBase implements OnIn
 
     // Changed all above to enum
     @Input() activeSideSection: number;
+    @Input() isCompleted: boolean;
 
     workflowSideSections = WorkflowProcessType;
 
@@ -319,7 +320,7 @@ export class WorkflowContractsComponent extends AppComopnentBase implements OnIn
     }
 
     get readOnlyMode() {
-        return this._workflowDataService.getWorkflowProgress.isWorkflowContractsSaved;
+        return this.isCompleted;
     }
 
     // #region CHANGE NAMING
