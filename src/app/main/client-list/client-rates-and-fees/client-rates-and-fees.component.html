@@ -13,7 +13,7 @@
     <div fxFlex="90%" fxLayout="column" fxLayoutAlign="start start" class="u-w--100">
         <div fxLayout="column" fxLayoutAlign="start start" class="u-w--100 u-mb--40">
             <h3 class="client-rates--section__header u-mb--15">Client Special Rates</h3>
-            <form [formGroup]="clientSpecailRateForm" class="client-rates--form u-w--100">
+            <form [formGroup]="clientSpecailRateForm" class="client-rates--form inline-edit-form u-w--100">
                 <div fxLayout="row" fxLayoutAlign="space-between start" fxLayoutGap="10px" class="client-rates--form__header-container u-w--100" *ngIf="clientSpecailRateForm.specialRates?.controls?.length">
                     <span fxFlex="10%" class="client-rates--form__header u-w--100">
                         Rate name
@@ -218,7 +218,7 @@
         </div>
         <div fxLayout="column" fxLayoutAlign="start start" class="u-w--100">
             <h3 class="client-rates--section__header u-mb--15">Client Fees</h3>
-            <form [formGroup]="clientFeesForm" class="client-rates--form u-w--100">
+            <form [formGroup]="clientFeesForm" class="client-rates--form inline-edit-form u-w--100">
                 <div fxLayout="row" fxLayoutAlign="space-between start" fxLayoutGap="10px" class="client-rates--form__header-container u-w--100" *ngIf="clientFeesForm.clientFees?.controls?.length">
                     <span fxFlex="10%" class="client-rates--form__header u-w--100">
                         Fee name

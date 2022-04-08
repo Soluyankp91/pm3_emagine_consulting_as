@@ -9,7 +9,7 @@ import { debounceTime, finalize, switchMap, takeUntil } from 'rxjs/operators';
 import { InternalLookupService } from 'src/app/shared/common/internal-lookup.service';
 import { ConfirmationDialogComponent } from 'src/app/shared/components/confirmation-dialog/confirmation-dialog.component';
 import { AppComopnentBase } from 'src/shared/app-component-base';
-import { ClientPeriodSalesDataDto, ClientPeriodServiceProxy, ClientRateDto, ClientSearchResultDto, CommissionDto, ConsultantRateDto, ConsultantDisplayDataDto, ConsultantSalesDataDto, ConsultantTerminationSalesDataDto, ContactSearchResultDto, ContractSignerDto, EmployeeDto, EnumEntityTypeDto, EnumServiceProxy, LookupServiceProxy, PeriodClientSpecialFeeDto, PeriodClientSpecialRateDto, SalesClientDataDto, SalesMainDataDto, WorkflowProcessType, WorkflowServiceProxy, WorkflowTerminationSalesDataDto } from 'src/shared/service-proxies/service-proxies';
+import { ClientPeriodSalesDataDto, ClientPeriodServiceProxy, ClientRateDto, CommissionDto, ConsultantRateDto, ConsultantSalesDataDto, ConsultantTerminationSalesDataDto, ContractSignerDto, EmployeeDto, EnumEntityTypeDto, EnumServiceProxy, LookupServiceProxy, PeriodClientSpecialFeeDto, PeriodClientSpecialRateDto, SalesClientDataDto, SalesMainDataDto, WorkflowProcessType, WorkflowServiceProxy, WorkflowTerminationSalesDataDto, ConsultantResultDto, ClientResultDto, ContactResultDto } from 'src/shared/service-proxies/service-proxies';
 import { WorkflowConsultantActionsDialogComponent } from '../workflow-consultant-actions-dialog/workflow-consultant-actions-dialog.component';
 import { WorkflowDataService } from '../workflow-data.service';
 import { ConsultantTypes } from '../workflow.model';
@@ -27,7 +27,7 @@ export class WorkflowSalesComponent extends AppComopnentBase implements OnInit {
     @Input() isCompleted: boolean;
 
     consultantId = 1; // FIXME: fix after be changes
-    consultantInformation: ConsultantDisplayDataDto; // FIXME: fix after be changes
+    consultantInformation: ConsultantResultDto; // FIXME: fix after be changes
     // workflowSideSections = WorkflowSideSections;
     workflowSideSections = WorkflowProcessType;
     // SalesStep
@@ -183,7 +183,7 @@ export class WorkflowSalesComponent extends AppComopnentBase implements OnInit {
                     console.log('s');
                     return this._lookupService.clients(toSend.name, toSend.maxRecordsCount);
                 }),
-            ).subscribe((list: ClientSearchResultDto[]) => {
+            ).subscribe((list: ClientResultDto[]) => {
                 if (list.length) {
                     this.filteredDirectClients = list;
                 } else {
@@ -208,7 +208,7 @@ export class WorkflowSalesComponent extends AppComopnentBase implements OnInit {
                     console.log('s2');
                     return this._lookupService.clients(toSend.name, toSend.maxRecordsCount);
                 }),
-            ).subscribe((list: ClientSearchResultDto[]) => {
+            ).subscribe((list: ClientResultDto[]) => {
                 if (list.length) {
                     this.filteredEndClients = list;
                 } else {
@@ -233,7 +233,7 @@ export class WorkflowSalesComponent extends AppComopnentBase implements OnInit {
                     }
                     return this._lookupService.contacts(toSend.clientId, toSend.name, toSend.maxRecordsCount);
                 }),
-            ).subscribe((list: ContactSearchResultDto[]) => {
+            ).subscribe((list: ContactResultDto[]) => {
                 if (list.length) {
                     this.filteredReferencePersons = list;
                 } else {
@@ -261,7 +261,7 @@ export class WorkflowSalesComponent extends AppComopnentBase implements OnInit {
                         return of([]);
                     }
                 }),
-            ).subscribe((list: ClientSearchResultDto[]) => {
+            ).subscribe((list: ClientResultDto[]) => {
                 if (list.length) {
                     this.filteredClientInvoicingRecipients = list;
                 } else {
@@ -740,7 +740,7 @@ export class WorkflowSalesComponent extends AppComopnentBase implements OnInit {
     addConsultantForm(consultant?: ConsultantSalesDataDto) {
         const form = this._fb.group({
             consultantType: new FormControl(consultant?.employmentTypeId ?? null),
-            consultantName: new FormControl(consultant?.consultantData ?? null),
+            consultantName: new FormControl(consultant?.consultant ?? null),
 
             consultantProjectDurationSameAsClient: new FormControl(true),
             consultantProjectStartDate: new FormControl(consultant?.startDate ?? null),
@@ -774,7 +774,7 @@ export class WorkflowSalesComponent extends AppComopnentBase implements OnInit {
             consultantSpecialContractTerms: new FormControl(consultant?.specialContractTerms ?? null),
             consultantSpecialContractTermsNone: new FormControl(consultant?.noSpecialContractTerms ?? false),
 
-            consultantAccountManager: new FormControl(consultant?.deliveryAccountManagerIdValue ?? '')
+            consultantAccountManager: new FormControl(consultant?.deliveryAccountManager ?? '')
         });
         this.consultantsForm.consultantData.push(form);
         this.manageManagerAutocomplete(this.consultantsForm.consultantData.length - 1);
@@ -799,7 +799,7 @@ export class WorkflowSalesComponent extends AppComopnentBase implements OnInit {
                     }
                     return this._lookupService.consultants(toSend.name, toSend.maxRecordsCount);
                 }),
-            ).subscribe((list: ConsultantDisplayDataDto[]) => {
+            ).subscribe((list: ConsultantResultDto[]) => {
                 if (list.length) {
                     this.filteredConsultants = list;
                 } else {
@@ -974,7 +974,8 @@ export class WorkflowSalesComponent extends AppComopnentBase implements OnInit {
                 let signerInput = new ContractSignerDto();
                 signerInput.signOrder = signer.clientSequence;
                 signerInput.contactId = signer.clientName;
-                signerInput.signerRole = signer.clientRole;
+                // signerInput.contact = signer.client;
+                signerInput.signerRoleId = signer.clientRole;
             });
         }
         input.consultantSalesData = new Array<ConsultantSalesDataDto>();
@@ -984,16 +985,16 @@ export class WorkflowSalesComponent extends AppComopnentBase implements OnInit {
                 consultantInput.employmentTypeId = consultant.consultantType;
                 consultantInput.consultantId = consultant.consultantName?.id
                 consultantInput.nameOnly = consultant.consultantName?.name;
-                consultantInput.consultantData = new ConsultantDisplayDataDto();
+                consultantInput.consultant = new ConsultantResultDto();
 
-                consultantInput.consultantData.id = consultant.consultantName?.id
-                consultantInput.consultantData.name = consultant.consultantName?.name;
-                consultantInput.consultantData.legacyId = consultant.consultantName?.legacyId;
-                consultantInput.consultantData.companyName = consultant.consultantName?.companyName;
-                consultantInput.consultantData.tenantId = consultant.consultantName?.tenantId;
-                consultantInput.consultantData.externalId = consultant.consultantName?.externalId;
-                consultantInput.consultantData.city = consultant.consultantName?.city;
-                consultantInput.consultantData.countryId = consultant.consultantName?.contryId;
+                consultantInput.consultant.id = consultant.consultantName?.id
+                consultantInput.consultant.name = consultant.consultantName?.name;
+                consultantInput.consultant.legacyId = consultant.consultantName?.legacyId;
+                consultantInput.consultant.companyName = consultant.consultantName?.companyName;
+                consultantInput.consultant.tenantId = consultant.consultantName?.tenantId;
+                consultantInput.consultant.externalId = consultant.consultantName?.externalId;
+                consultantInput.consultant.city = consultant.consultantName?.city;
+                consultantInput.consultant.countryId = consultant.consultantName?.contryId;
 
                 consultantInput.startDate = consultant.consultantProjectStartDate;
                 consultantInput.noEndDate = consultant.consultantProjectNoEndDate;
@@ -1068,8 +1069,8 @@ export class WorkflowSalesComponent extends AppComopnentBase implements OnInit {
                 this.salesMainDataForm.discounts?.setValue(result?.salesMainData?.discountId ?? 1, {emitEvent: false}); // 1 - default value 'None'
 
                 // Account Manager
-                this.salesMainDataForm.salesAccountManagerIdValue?.setValue(result?.salesMainData?.salesAccountManagerIdValue, {emitEvent: false});
-                this.salesMainDataForm.commissionAccountManagerIdValue?.setValue(result?.salesMainData?.commissionAccountManagerIdValue, {emitEvent: false});
+                this.salesMainDataForm.salesAccountManagerIdValue?.setValue(result?.salesMainData?.salesAccountManagerData, {emitEvent: false});
+                this.salesMainDataForm.commissionAccountManagerIdValue?.setValue(result?.salesMainData?.commissionAccountManagerData, {emitEvent: false});
                 this.salesMainDataForm.contractExpirationNotification?.setValue(result?.salesMainData?.contractExpirationNotificationIntervalIds, {emitEvent: false});
                 this.salesMainDataForm.customContractExpirationNotificationDate?.setValue(result?.salesMainData?.customContractExpirationNotificationDate, {emitEvent: false});
                 this.salesMainDataForm.remarks?.setValue(result?.salesMainData?.remarks, {emitEvent: false});
@@ -1080,8 +1081,8 @@ export class WorkflowSalesComponent extends AppComopnentBase implements OnInit {
 
                 // Client
                 this.salesClientDataForm.differentEndClient?.setValue(result.salesClientData?.differentEndClient ?? false, {emitEvent: false}); // default value if false
-                this.salesClientDataForm.directClientIdValue?.setValue(result?.salesClientData?.directClientIdValue, {emitEvent: false});
-                this.salesClientDataForm.endClientIdValue?.setValue(result?.salesClientData?.endClientIdValue, {emitEvent: false});
+                this.salesClientDataForm.directClientIdValue?.setValue(result?.salesClientData?.directClient, {emitEvent: false});
+                this.salesClientDataForm.endClientIdValue?.setValue(result?.salesClientData?.endClient, {emitEvent: false});
                 //Duration
                 this.salesClientDataForm.clientContractStartDate?.setValue(result?.salesClientData?.startDate, {emitEvent: false});
                 this.salesClientDataForm.clientContractEndDate?.setValue(result?.salesClientData?.endDate, {emitEvent: false});
@@ -1118,7 +1119,7 @@ export class WorkflowSalesComponent extends AppComopnentBase implements OnInit {
                 if (result?.salesClientData?.clientInvoicingRecipientSameAsDirectClient) {
                     this.salesClientDataForm.clientInvoicingRecipientIdValue?.disable({emitEvent: false});
                 }
-                this.salesClientDataForm.invoicingReferencePersonIdValue?.setValue(result?.salesClientData?.invoicingReferencePersonIdValue, {emitEvent: false});
+                this.salesClientDataForm.invoicingReferencePersonIdValue?.setValue(result?.salesClientData?.invoicingReferencePerson, {emitEvent: false});
                 this.salesClientDataForm.noInvoicingReferencePerson?.setValue(result?.salesClientData?.noInvoicingReferencePerson, {emitEvent: false});
                 if (result?.salesClientData?.noInvoicingReferencePerson) {
                     this.salesClientDataForm.invoicingReferencePersonIdValue?.disable({emitEvent: false});
@@ -1270,13 +1271,13 @@ export class WorkflowSalesComponent extends AppComopnentBase implements OnInit {
         let commissionRecipient;
         switch (commission?.recipientTypeId) {
             case 1: // Supplier
-                commissionRecipient = commission.supplierId;
+                commissionRecipient = commission.supplier;
                 break;
             case 2: // Consultant
-                commissionRecipient = commission.consultantId;
+                commissionRecipient = commission.consultant;
                 break;
             case 3: // Client
-                commissionRecipient = commission.clientId;
+                commissionRecipient = commission.client;
                 break;
             case 4: // PDC entity
                 commissionRecipient = this.findItemById(this.tenants, commission.tenantId);

@@ -122,7 +122,7 @@
                         </h1>
                         <div fxLayout="column" class="u-mb--20 u-mt--20">
                             <h3 class="workflow-gray--header">Shared Cap on Hour Reporting</h3>
-                            <span class="workflow-darkblue--text">{{contractClientForm?.capOnTimeReporting?.value}}</span>
+                            <span class="workflow-darkblue--text">{{contractClientForm?.capOnTimeReporting?.value?.name}}</span>
                             <!-- <span class="workflow-darkblue--text">Cap on units</span> -->
                         </div>
 
@@ -387,15 +387,15 @@
                                     <span fxFlex="50%" fxLayout="row" fxLayoutAlign="start center">
                                         <img class="border-rounded-50 u-ml--16 u-mr--16" src="https://picsum.photos/35/35" />
                                         <span class="workflow-form--consultants__name u-mr--16">
-                                            {{ consultant.value.consultantData?.name}}
+                                            {{ consultant.value?.nameOnly}}
                                         </span>
                                     </span>
                                     <div fxFlex="50%" fxLayoutAlign="end center" *ngIf="!readOnlyMode">
-                                        <span class="workflow-form--consultants__period u-mr--8">
+                                        <!-- <span class="workflow-form--consultants__period u-mr--8">
                                             {{consultant.value.startDate | momentFormat: 'DD.MM.YYYY'}}
                                             -
                                             {{consultant.value.endDate | momentFormat: 'DD.MM.YYYY'}}
-                                        </span>
+                                        </span> -->
                                         <button mat-icon-button [matMenuTriggerFor]="consultantMenu" type="button" (click)="$event.stopPropagation();" class="workflow-icon--actions u-mr--16"><mat-icon>more_horiz</mat-icon></button>
                                         <mat-menu #consultantMenu>
                                             <button
@@ -743,9 +743,8 @@
                                 <ng-container formArrayName="projectLines" class="u-w--100">
                                     <div fxLayout="row" fxLayoutAlign="space-between center" fxLayoutGap="10px"
                                         class="workflow-contracts--list u-w--100 u-pl--16 u-pr--16" *ngFor="let projectLine of getConsultantProjectLinesControls(consultantIndex); let projectLinesIndex = index" [formGroupName]="projectLinesIndex">
-                                        <ng-container *ngIf="projectLine.value.editable">
+                                        <!-- <ng-container *ngIf="projectLine.value.editable">
                                             <div fxFlex="5%">
-                                                <!-- empty space for unique id in edit mode -->
                                             </div>
                                             <mat-form-field appearance="fill" class="u-w--100 formFieldNoMarginPadding filter-select" fxFlex="17%">
                                                 <input matInput type="text" placeholder="Project name" formControlName="projectName">
@@ -801,8 +800,8 @@
                                                     <mat-icon>clear</mat-icon>
                                                 </button>
                                             </div>
-                                        </ng-container>
-                                        <ng-container *ngIf="!projectLine.value.editable">
+                                        </ng-container> -->
+                                        <!-- <ng-container *ngIf="!projectLine.value.editable"> -->
                                             <span fxFlex="5%" class="u-w--100 text-truncate-ellipsis workflow-contracts--list-item" [matTooltip]="projectLine.value.id ?? '-'">
                                                 {{projectLine.value.id ?? '-'}}
                                             </span>
@@ -833,6 +832,13 @@
                                                 </button>
                                                 <mat-menu #clientFeeMenu>
                                                     <button
+                                                        class="menu-item menu-item--edit"
+                                                        mat-menu-item
+                                                        (click)="createOrEditProjectLine(consultantIndex, projectLinesIndex)">
+                                                        <mat-icon>create</mat-icon>
+                                                        Edit
+                                                    </button>
+                                                    <button
                                                         class="menu-item menu-item--cancel"
                                                         mat-menu-item
                                                         (click)="removeConsultantDataClientFees(consultantIndex, projectLinesIndex)">
@@ -841,14 +847,14 @@
                                                     </button>
                                                 </mat-menu>
                                             </div>
-                                        </ng-container>
+                                        <!-- </ng-container> -->
                                     </div>
                                 </ng-container>
                             </div>
 
 
                             <div fxLayout="row" fxLayoutAlign="start start" class="u-mb--10">
-                                <button [ngClass]="consultant.value.projectLines?.length > 0 ? 'button-add' : 'button-outlined'" class="rates-and-fees--btn" mat-flat-button (click)="addProjectLinesToConsultantData(consultantIndex)" *ngIf="!readOnlyMode">
+                                <button [ngClass]="consultant.value.projectLines?.length > 0 ? 'button-add' : 'button-outlined'" class="rates-and-fees--btn" mat-flat-button (click)="createOrEditProjectLine(consultantIndex)" *ngIf="!readOnlyMode">
                                     <mat-icon *ngIf="consultant.value.projectLines?.length">add</mat-icon>
                                     Add project line
                                 </button>

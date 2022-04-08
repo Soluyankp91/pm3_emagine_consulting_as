@@ -208,6 +208,11 @@ export enum WorkflowDiallogAction {
     Terminate = 4
 }
 
+export enum ProjectLineDiallogMode {
+    Create = 1,
+    Edit = 2
+}
+
 // #region hardcoded grid
 export enum WorkflowFlag {
     NewSales = 1,

@@ -148,7 +148,6 @@
 }
 
 .client-rates,
-.inline-edit-form,
 .client-documents--form {
     .mat-select-arrow {
         border: solid #4A4E60;
@@ -159,6 +158,31 @@
         width: 8px;
         height: 8px;
         margin-top: 16px;
+        transition: all .3s ease-in-out;
+    }
+    &.mat-form-field-invalid {
+        .mat-select-arrow {
+            border-color: #FF7A78 !important;
+        }
+    }
+    mat-select[aria-expanded="true"] {
+        .mat-select-arrow {
+            transform: rotate(225deg);
+            margin-top: 25px;
+        }
+    }
+}
+
+.inline-edit-form {
+    .mat-select-arrow {
+        border: solid #4A4E60;
+        border-width: 0 2px 2px 0;
+        display: inline-block;
+        padding: 4px;
+        transform: rotate(45deg);
+        width: 8px;
+        height: 8px;
+        margin-top: 11px;
         transition: all .3s ease-in-out;
     }
     &.mat-form-field-invalid {

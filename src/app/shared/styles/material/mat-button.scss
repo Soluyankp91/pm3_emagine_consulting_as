@@ -192,13 +192,17 @@
 
 .inline-edit-form {
     &--btn {
-        &__save {
+        &__save.mat-flat-button {
             color: $green-color;
             font-weight: 700;
+            line-height: 40px;
+            height: 37px;
         }
-        &__cancel {
+        &__cancel.mat-flat-button {
             color: $dark-grey-color;
             font-weight: 700;
+            line-height: 40px;
+            height: 37px;
         }
     }
 }
