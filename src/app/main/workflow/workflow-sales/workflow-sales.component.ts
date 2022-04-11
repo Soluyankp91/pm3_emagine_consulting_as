@@ -1049,9 +1049,10 @@ export class WorkflowSalesComponent extends AppComopnentBase implements OnInit {
     }
 
     getWorkflowSalesStep() {
+        this.showMainSpinner();
         this._clientPeriodService.salesGet(this.clientPeriodId!)
             .pipe(finalize(() => {
-
+                this.hideMainSpinner();
             }))
             .subscribe(result => {
                 // Project

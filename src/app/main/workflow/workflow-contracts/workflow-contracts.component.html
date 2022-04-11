@@ -743,111 +743,58 @@
                                 <ng-container formArrayName="projectLines" class="u-w--100">
                                     <div fxLayout="row" fxLayoutAlign="space-between center" fxLayoutGap="10px"
                                         class="workflow-contracts--list u-w--100 u-pl--16 u-pr--16" *ngFor="let projectLine of getConsultantProjectLinesControls(consultantIndex); let projectLinesIndex = index" [formGroupName]="projectLinesIndex">
-                                        <!-- <ng-container *ngIf="projectLine.value.editable">
-                                            <div fxFlex="5%">
-                                            </div>
-                                            <mat-form-field appearance="fill" class="u-w--100 formFieldNoMarginPadding filter-select" fxFlex="17%">
-                                                <input matInput type="text" placeholder="Project name" formControlName="projectName">
-                                            </mat-form-field>
-                                            <mat-form-field appearance="fill" class="u-w--100 formFieldNoMarginPadding filter-select" fxFlex="17%">
-                                                <mat-select formControlName="invoiceRecipientId" placeholder="Assignment ID/PO No" [disableOptionCentering]="true" [compareWith]="compareWithFn">
-                                                    <mat-option *ngFor="let item of [0, 1, 2]" [value]="item">
-                                                        {{ item }}
-                                                    </mat-option>
-                                                </mat-select>
-                                            </mat-form-field>
-                                            <mat-form-field appearance="fill" class="u-w--100 formFieldNoMarginPadding filter-select formFieldDatePicker" fxFlex="7%">
-                                                <input autocomplete="off" matInput
-                                                        [matDatepicker]="projectLineStartDatePicker"
-                                                        name="projectLineStartDate" formControlName="startDate"
-                                                        palceholder="Start date"
-                                                        (focus)="projectLineStartDatePicker.open()"
-                                                        (click)="projectLineStartDatePicker.open()" readonly>
-                                                <mat-icon class="calendar-icon" matSuffix svgIcon="calendar"></mat-icon>
-                                                <mat-datepicker #projectLineStartDatePicker></mat-datepicker>
-                                            </mat-form-field>
-                                            <mat-form-field appearance="fill" class="u-w--100 formFieldNoMarginPadding filter-select formFieldDatePicker" fxFlex="7%">
-                                                <input autocomplete="off" matInput
-                                                        [matDatepicker]="projectLineEndDatePicker"
-                                                        name="projectLineEndDate" formControlName="endDate"
-                                                        palceholder="End date"
-                                                        (focus)="projectLineEndDatePicker.open()"
-                                                        (click)="projectLineEndDatePicker.open()" readonly>
-                                                <mat-icon class="calendar-icon" matSuffix svgIcon="calendar"></mat-icon>
-                                                <mat-datepicker #projectLineEndDatePicker></mat-datepicker>
-                                            </mat-form-field>
-                                            <mat-form-field appearance="fill" class="u-w--100 formFieldNoMarginPadding filter-select" fxFlex="10%">
-                                                <input matInput type="text" placeholder="Invoice ref." formControlName="invoicingReferenceNumber">
-                                            </mat-form-field>
-                                            <mat-form-field appearance="fill" class="u-w--100 formFieldNoMarginPadding filter-select formFieldDatePicker" fxFlex="7%">
-                                                <input autocomplete="off" matInput
-                                                        [matDatepicker]="modificationDatePicker"
-                                                        name="modificationDate" formControlName="modificationDate"
-                                                        palceholder="Last changed"
-                                                        (focus)="modificationDatePicker.open()"
-                                                        (click)="modificationDatePicker.open()" readonly>
-                                                <mat-icon class="calendar-icon" matSuffix svgIcon="calendar"></mat-icon>
-                                                <mat-datepicker #modificationDatePicker></mat-datepicker>
-                                            </mat-form-field>
-                                            <mat-form-field appearance="fill" class="u-w--100 formFieldNoMarginPadding filter-select" fxFlex="20%">
-                                                <input matInput type="text" placeholder="Optional invoicing info" formControlName="optionalInvoicingInfo">
-                                            </mat-form-field>
-                                            <div fxFlex="10%" class="u-w--100 text-truncate-ellipsis flex-items-center">
-                                                <button mat-flat-button (click)="editOrSaveConsultantProjectLine(projectLine.value.editable, consultantIndex, projectLinesIndex)" class="inline-edit-form--btn__save">
-                                                    Save
+                                        <span fxFlex="5%" class="u-w--100 text-truncate-ellipsis workflow-contracts--list-item" [matTooltip]="projectLine.value.id ?? '-'">
+                                            {{projectLine.value.id ?? '-'}}
+                                        </span>
+                                        <span fxFlex="17%" class="u-w--100 text-truncate-ellipsis__multilne workflow-contracts--list-item" [matTooltip]="projectLine.value.projectName ?? '-'">
+                                            {{projectLine.value.projectName ?? '-'}}
+                                        </span>
+                                        <span fxFlex="17%" class="u-w--100 text-truncate-ellipsis workflow-contracts--list-item" [matTooltip]="projectLine.value.invoiceRecipientId?.name ?? '-'">
+                                            {{projectLine.value.invoiceRecipientId?.name ?? '-'}}
+                                        </span>
+                                        <span fxFlex="7%" class="u-w--100 text-truncate-ellipsis workflow-contracts--list-item" [matTooltip]="projectLine.value.startDate ? (projectLine.value.startDate | momentFormat: 'DD.MM.YYYY') : '-'">
+                                            {{projectLine.value.startDate ? (projectLine.value.startDate | momentFormat: 'DD.MM.YYYY') : '-'}}
+                                        </span>
+                                        <span fxFlex="7%" class="u-w--100 text-truncate-ellipsis workflow-contracts--list-item" [matTooltip]="projectLine.value.endDate ? (projectLine.value.endDate | momentFormat: 'DD.MM.YYYY') : '-'">
+                                            {{projectLine.value.endDate ? (projectLine.value.endDate | momentFormat: 'DD.MM.YYYY') : '-'}}
+                                        </span>
+                                        <span fxFlex="10%" class="u-w--100 text-truncate-ellipsis workflow-contracts--list-item" [matTooltip]="projectLine.value.invoicingReferenceNumber ?? '-'">
+                                            {{projectLine.value.invoicingReferenceNumber ?? '-'}}
+                                        </span>
+                                        <span fxFlex="7%" class="u-w--100 text-truncate-ellipsis workflow-contracts--list-item" [matTooltip]="projectLine.value.modificationDate ? (projectLine.value.modificationDate | momentFormat: 'DD.MM.YYYY') : '-'">
+                                            {{projectLine.value.modificationDate ? (projectLine.value.modificationDate | momentFormat: 'DD.MM.YYYY') : '-'}}
+                                        </span>
+                                        <span fxFlex="20%" class="u-w--100 text-truncate-ellipsis__multilne workflow-contracts--list-item" [matTooltip]="projectLine.value.optionalInvoicingInfo ?? '-'">
+                                            {{projectLine.value.optionalInvoicingInfo ?? '-'}}
+                                        </span>
+                                        <div fxFlex="10%" fxLayoutAlign="center center" class="u-w--100 workflow-contracts--list-item">
+                                            <button mat-icon-button (click)="$event.stopPropagation();" [matMenuTriggerFor]="clientFeeMenu" class="three-dots-actions-btn">
+                                                <mat-icon>more_horiz</mat-icon>
+                                            </button>
+                                            <mat-menu #clientFeeMenu>
+                                                <button
+                                                    class="menu-item menu-item--edit"
+                                                    mat-menu-item
+                                                    (click)="duplicateProjectLine(consultantIndex, projectLinesIndex)">
+                                                    <mat-icon>content_copy</mat-icon>
+                                                    Duplicate
                                                 </button>
-                                                <button mat-icon-button (click)="removeConsultantDataProjectLines(consultantIndex, projectLinesIndex)">
+                                                <button
+                                                    class="menu-item menu-item--edit"
+                                                    mat-menu-item
+                                                    (click)="createOrEditProjectLine(consultantIndex, projectLinesIndex)">
+                                                    <mat-icon>create</mat-icon>
+                                                    Edit
+                                                </button>
+                                                <button
+                                                    class="menu-item menu-item--cancel"
+                                                    mat-menu-item
+                                                    (click)="removeConsultantDataClientFees(consultantIndex, projectLinesIndex)">
                                                     <mat-icon>clear</mat-icon>
+                                                    Remove
                                                 </button>
-                                            </div>
-                                        </ng-container> -->
-                                        <!-- <ng-container *ngIf="!projectLine.value.editable"> -->
-                                            <span fxFlex="5%" class="u-w--100 text-truncate-ellipsis workflow-contracts--list-item" [matTooltip]="projectLine.value.id ?? '-'">
-                                                {{projectLine.value.id ?? '-'}}
-                                            </span>
-                                            <span fxFlex="17%" class="u-w--100 text-truncate-ellipsis workflow-contracts--list-item" [matTooltip]="projectLine.value.projectName ?? '-'">
-                                                {{projectLine.value.projectName ?? '-'}}
-                                            </span>
-                                            <span fxFlex="17%" class="u-w--100 text-truncate-ellipsis workflow-contracts--list-item" [matTooltip]="projectLine.value.invoiceRecipientId?.name ?? '-'">
-                                                {{projectLine.value.invoiceRecipientId?.name ?? '-'}}
-                                            </span>
-                                            <span fxFlex="7%" class="u-w--100 text-truncate-ellipsis workflow-contracts--list-item" [matTooltip]="projectLine.value.startDate ? (projectLine.value.startDate | momentFormat: 'DD.MM.YYYY') : '-'">
-                                                {{projectLine.value.startDate ? (projectLine.value.startDate | momentFormat: 'DD.MM.YYYY') : '-'}}
-                                            </span>
-                                            <span fxFlex="7%" class="u-w--100 text-truncate-ellipsis workflow-contracts--list-item" [matTooltip]="projectLine.value.endDate ? (projectLine.value.endDate | momentFormat: 'DD.MM.YYYY') : '-'">
-                                                {{projectLine.value.endDate ? (projectLine.value.endDate | momentFormat: 'DD.MM.YYYY') : '-'}}
-                                            </span>
-                                            <span fxFlex="10%" class="u-w--100 text-truncate-ellipsis workflow-contracts--list-item" [matTooltip]="projectLine.value.invoicingReferenceNumber ?? '-'">
-                                                {{projectLine.value.invoicingReferenceNumber ?? '-'}}
-                                            </span>
-                                            <span fxFlex="7%" class="u-w--100 text-truncate-ellipsis workflow-contracts--list-item" [matTooltip]="projectLine.value.modificationDate ? (projectLine.value.modificationDate | momentFormat: 'DD.MM.YYYY') : '-'">
-                                                {{projectLine.value.modificationDate ? (projectLine.value.modificationDate | momentFormat: 'DD.MM.YYYY') : '-'}}
-                                            </span>
-                                            <span fxFlex="20%" class="u-w--100 text-truncate-ellipsis workflow-contracts--list-item" [matTooltip]="projectLine.value.optionalInvoicingInfo ?? '-'">
-                                                {{projectLine.value.optionalInvoicingInfo ?? '-'}}
-                                            </span>
-                                            <div fxFlex="10%" fxLayoutAlign="center center" class="u-w--100 workflow-contracts--list-item">
-                                                <button mat-icon-button (click)="$event.stopPropagation();" [matMenuTriggerFor]="clientFeeMenu" class="three-dots-actions-btn">
-                                                    <mat-icon>more_horiz</mat-icon>
-                                                </button>
-                                                <mat-menu #clientFeeMenu>
-                                                    <button
-                                                        class="menu-item menu-item--edit"
-                                                        mat-menu-item
-                                                        (click)="createOrEditProjectLine(consultantIndex, projectLinesIndex)">
-                                                        <mat-icon>create</mat-icon>
-                                                        Edit
-                                                    </button>
-                                                    <button
-                                                        class="menu-item menu-item--cancel"
-                                                        mat-menu-item
-                                                        (click)="removeConsultantDataClientFees(consultantIndex, projectLinesIndex)">
-                                                        <mat-icon>clear</mat-icon>
-                                                        Remove
-                                                    </button>
-                                                </mat-menu>
-                                            </div>
-                                        <!-- </ng-container> -->
+                                            </mat-menu>
+                                        </div>
                                     </div>
                                 </ng-container>
                             </div>

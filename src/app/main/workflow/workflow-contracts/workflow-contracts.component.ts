@@ -1,6 +1,6 @@
 import { Overlay } from '@angular/cdk/overlay';
 import { Component, Injector, Input, OnDestroy, OnInit } from '@angular/core';
-import { AbstractControl, FormArray, FormBuilder, FormControl } from '@angular/forms';
+import { AbstractControl, FormArray, FormBuilder, FormControl, FormGroup } from '@angular/forms';
 import { MatDialog } from '@angular/material/dialog';
 import { Subject } from 'rxjs';
 import { finalize, takeUntil } from 'rxjs/operators';
@@ -99,7 +99,7 @@ export class WorkflowContractsComponent extends AppComopnentBase implements OnIn
         this.getSaleTypes();
         this.getClientTimeReportingCap();
 
-        this.getSalesInfo();
+        this.getContractsStep();
 
         // Termination
 
@@ -222,10 +222,11 @@ export class WorkflowContractsComponent extends AppComopnentBase implements OnIn
             });
     }
 
-    getSalesInfo() {
+    getContractsStep() {
+        this.showMainSpinner();
         this._clientPeriodService.contractsGet(this.clientPeriodId!)
             .pipe(finalize(() => {
-
+                this.hideMainSpinner();
             }))
             .subscribe(result => {
                 // Main data
@@ -283,12 +284,12 @@ export class WorkflowContractsComponent extends AppComopnentBase implements OnIn
         for (let consultant of this.consultants.value) {
             let consultantData = new ConsultantContractsDataDto();
             consultantData.consultantPeriodId = consultant.consultantPeriodId;
-            consultantData.employmentTypeId = consultant.consultantPeriodId;
-            consultantData.consultantId = consultant.consultantPeriodId;
-            consultantData.nameOnly = consultant.consultantName;
-            consultantData.consultantTimeReportingCapId = consultant.consultantPeriodId;
-            consultantData.consultantTimeReportingCapMaxValue = consultant.consultantPeriodId;
-            consultantData.consultantTimeReportingCapCurrencyId = consultant.consultantPeriodId;
+            consultantData.employmentTypeId = consultant.consultantType?.id;
+            consultantData.consultantId = consultant.consultnatId;
+            consultantData.nameOnly = consultant.nameOnly;
+            consultantData.consultantTimeReportingCapId = consultant.consultantCapOnTimeReportingValue;
+            consultantData.consultantTimeReportingCapMaxValue = consultant.consultantCapOnTimeReportingValue;
+            consultantData.consultantTimeReportingCapCurrencyId = consultant.consultantCapOnTimeReportingCurrency?.id;
             consultantData.noSpecialContractTerms = consultant.noSpecialContractTerms;
             consultantData.specialContractTerms = consultant.specialContractTerms;
             consultantData.noSpecialRate = consultant.consultantPeriodId;
@@ -297,14 +298,52 @@ export class WorkflowContractsComponent extends AppComopnentBase implements OnIn
             consultantData.periodConsultantSpecialFees = new Array<PeriodConsultantSpecialFeeDto>();
             for (let specialFee of consultant.clientFees) {
                 let consultantFee = new PeriodConsultantSpecialFeeDto();
+                consultantFee.id = specialFee.id;
+                consultantFee.clientSpecialFeeId = specialFee.clientSpecialFeeId;
+                consultantFee.feeName = specialFee.feeName;
+                consultantFee.feeDirection = specialFee.feeDirection;
+                consultantFee.frequency = specialFee.frequency;
+                consultantFee.prodataToProdataRate = specialFee.proDataRateValue;
+                consultantFee.prodataToProdataRateCurrencyId = specialFee.proDataRateCurrency?.id;
+                consultantFee.consultantRate = specialFee.consultantRateValue;
+                consultantFee.consultantRateCurrencyId = specialFee.consultantRateCurrency?.id;
                 consultantData.periodConsultantSpecialFees.push(consultantFee);
             }
             consultantData.periodConsultantSpecialRates = new Array<PeriodConsultantSpecialRateDto>();
-            for (let specialFee of consultant.clientSpecialRates) {
+            for (let specialRate of consultant.clientSpecialRates) {
                 let consultantRate = new PeriodConsultantSpecialRateDto();
+                consultantRate.id = specialRate.id;
+                consultantRate.clientSpecialRateId = specialRate.clientSpecialRateId;
+                consultantRate.rateName = specialRate.rateName;
+                consultantRate.rateDirection = specialRate.rateDirection;
+                consultantRate.reportingUnit = specialRate.reportingUnit;
+                consultantRate.prodataToProdataRate = specialRate.proDataRateValue;
+                consultantRate.prodataToProdataRateCurrencyId = specialRate.proDataRateCurrency?.id;
+                consultantRate.consultantRate = specialRate.consultantRateValue;
+                consultantRate.consultantRateCurrencyId = specialRate.consultantRateCurrency?.id;
                 consultantData.periodConsultantSpecialRates.push(consultantRate);
             }
             input.consultantData.push(consultantData);
+            consultantData.projectLines = new Array<ProjectLineDto>();
+            for (let projectLine of consultant.projectLines) {
+                let projectLineInput = new ProjectLineDto();
+                projectLineInput.id = projectLine.id;
+                projectLineInput.projectName = projectLine.projectName;
+                projectLineInput.startDate = projectLine.startDate;
+                projectLineInput.endDate = projectLine.endDate;
+                projectLineInput.invoicingReferenceNumber = projectLine.invoicingReferenceNumber;
+                projectLineInput.invoicingReferencePersonId = projectLine.invoicingReferencePersonId;
+                projectLineInput.optionalInvoicingInfo = projectLine.optionalInvoicingInfo;
+                projectLineInput.differentDebtorNumber = projectLine.differentDebtorNumber;
+                projectLineInput.debtorNumber = projectLine.debtorNumber;
+                projectLineInput.differentInvoiceRecipient = projectLine.differentInvoiceRecipient;
+                projectLineInput.invoiceRecipientId = projectLine.invoiceRecipientId;
+                projectLineInput.modifiedById = projectLine.modifiedById;
+                projectLineInput.modificationDate = projectLine.modificationDate;
+
+                consultantData.projectLines.push(projectLineInput);
+            }
+
         }
 
         this._clientPeriodService.contractsPut(this.clientPeriodId!, input)
@@ -314,10 +353,6 @@ export class WorkflowContractsComponent extends AppComopnentBase implements OnIn
             .subscribe(result => {
 
             });
-    }
-
-    getContractsStep() {
-
     }
 
     get readOnlyMode() {
@@ -382,6 +417,7 @@ export class WorkflowContractsComponent extends AppComopnentBase implements OnIn
     addConsultantDataToForm(consultant: ConsultantContractsDataDto, index: number) {
         // TODO: add missing properties, id, employmentType, etc.
         const form = this._fb.group({
+            consultnatId: new FormControl(consultant.consultantId),
             nameOnly: new FormControl(consultant.nameOnly),
             consultantType: new FormControl(this.findItemById(this.consultantTypes, consultant.employmentTypeId)),
             consultantCapOnTimeReportingValue: new FormControl(consultant.consultantTimeReportingCapMaxValue),
@@ -536,8 +572,8 @@ export class WorkflowContractsComponent extends AppComopnentBase implements OnIn
         (this.contractsConsultantsDataForm.consultants.at(index).get('projectLines') as FormArray).push(form);
     }
 
-    editProjectLineValue(consultantIndex: number, projectLInesIndex: number, projectLineData: any) {
-        const projectLineRow = (this.contractsConsultantsDataForm.consultants.at(consultantIndex).get('projectLines') as FormArray).at(projectLInesIndex);
+    editProjectLineValue(consultantIndex: number, projectLinesIndex: number, projectLineData: any) {
+        const projectLineRow = (this.contractsConsultantsDataForm.consultants.at(consultantIndex).get('projectLines') as FormArray).at(projectLinesIndex);
         projectLineRow.get('id')?.setValue(projectLineData.id, {emitEvent: false});
         projectLineRow.get('projectName')?.setValue(projectLineData.projectName, {emitEvent: false});
         projectLineRow.get('startDate')?.setValue(projectLineData.startDate, {emitEvent: false});
@@ -549,7 +585,11 @@ export class WorkflowContractsComponent extends AppComopnentBase implements OnIn
         projectLineRow.get('debtorNumber')?.setValue(projectLineData.debtorNumber, {emitEvent: false});
         projectLineRow.get('differentInvoiceRecipient')?.setValue(projectLineData.differentInvoiceRecipient, {emitEvent: false});
         projectLineRow.get('invoiceRecipientId')?.setValue(projectLineData.invoiceRecipientId, {emitEvent: false});
+    }
 
+    duplicateProjectLine(consultantIndex: number, projectLinesIndex: number) {
+        const projectLineRow = (this.contractsConsultantsDataForm.consultants.at(consultantIndex).get('projectLines') as FormArray).at(projectLinesIndex) as FormGroup;
+        (this.contractsConsultantsDataForm.consultants.at(consultantIndex).get('projectLines') as FormArray).push(projectLineRow);
     }
 
     removeConsultantDataProjectLines(consultantIndex: number, projectLineIndex: number) {

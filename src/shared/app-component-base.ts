@@ -1,12 +1,15 @@
 import { Injector } from "@angular/core";
 import { AbstractControl } from "@angular/forms";
+import { NgxSpinnerService } from "ngx-spinner";
 import { API_BASE_URL, EnumEntityTypeDto } from "./service-proxies/service-proxies";
 
 export abstract class AppComopnentBase {
     apiUrl: string;
-
+    spinnerService: NgxSpinnerService;
     constructor(injector: Injector) {
         this.apiUrl = injector.get(API_BASE_URL);
+        this.spinnerService = injector.get(NgxSpinnerService);
+        
     }
 
     mapListByProperty(list: any[], prop: string) {
@@ -81,6 +84,14 @@ export abstract class AppComopnentBase {
         } else {
             return null;
         }
+    }
+
+    showMainSpinner(): void {
+        this.spinnerService.show();
+    }
+
+    hideMainSpinner(): void {
+        this.spinnerService.hide();
     }
 
 }

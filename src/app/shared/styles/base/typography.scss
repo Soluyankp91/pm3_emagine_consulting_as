@@ -36,4 +36,12 @@ label {
     text-overflow: ellipsis;
     overflow: hidden;
     white-space: nowrap;
+    &__multilne {
+        -webkit-line-clamp: 2;
+        -webkit-box-orient: vertical;
+        display: -webkit-box;
+        white-space: break-spaces;
+        text-overflow: ellipsis;
+        overflow: hidden;
+    }
 }
