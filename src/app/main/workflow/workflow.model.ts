@@ -222,7 +222,7 @@ export enum WorkflowFlag {
 export const WorkflowList = [
     {
         flag: WorkflowFlag.NewSales,
-        id: '98e92457-0af8-4ef3-95cd-9f8f8bc6ca3d',
+        id: 'b5cd880a-c94e-4dee-a5b0-de7184582a31',
 
         client: 'Martha Marikel',
         consultants: [
@@ -241,7 +241,7 @@ export const WorkflowList = [
     },
     {
         flag: WorkflowFlag.NewSales,
-        id: 'FA6E1A07-0CBF-41FF-BFCB-065177173F86',
+        id: 'b5cd880a-c94e-4dee-a5b0-de7184582a31',
         client: 'Many extend periods',
         consultants: [
             { name: 'Martha Marikel'}
@@ -258,7 +258,7 @@ export const WorkflowList = [
     },
     {
         flag: WorkflowFlag.Extension,
-        id: 'afde1b8e-a51f-4509-a6ad-ef7168138960',
+        id: 'b5cd880a-c94e-4dee-a5b0-de7184582a31',
         client: 'Martha Marikel',
         consultants: [
             { name: 'Martha Marikel' },
@@ -277,7 +277,7 @@ export const WorkflowList = [
     },
     {
         flag: WorkflowFlag.Extension,
-        id: 'afde1b8e-a51f-4509-a6ad-ef7168138960',
+        id: 'b5cd880a-c94e-4dee-a5b0-de7184582a31',
         client: 'Martha Marikel',
         consultants: [
             { name: 'Martha Marikel' },
@@ -296,7 +296,7 @@ export const WorkflowList = [
     },
     {
         flag: WorkflowFlag.NewSales,
-        id: 'afde1b8e-a51f-4509-a6ad-ef7168138960',
+        id: 'b5cd880a-c94e-4dee-a5b0-de7184582a31',
         client: 'Martha Marikel',
         consultants: [
             { name: 'Martha Marikel' },
@@ -315,7 +315,7 @@ export const WorkflowList = [
     },
     {
         flag: WorkflowFlag.NewSales,
-        id: 'afde1b8e-a51f-4509-a6ad-ef7168138960',
+        id: 'b5cd880a-c94e-4dee-a5b0-de7184582a31',
         client: 'Martha Marikel',
         consultants: [
             { name: 'Martha Marikel' },
@@ -334,7 +334,7 @@ export const WorkflowList = [
     },
     {
         flag: WorkflowFlag.Extension,
-        id: 'afde1b8e-a51f-4509-a6ad-ef7168138960',
+        id: 'b5cd880a-c94e-4dee-a5b0-de7184582a31',
         client: 'Martha Marikel',
         consultants: [
             { name: 'Martha Marikel' },

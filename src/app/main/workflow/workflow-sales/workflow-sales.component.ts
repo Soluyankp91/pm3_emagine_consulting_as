@@ -1,6 +1,7 @@
 import { Overlay } from '@angular/cdk/overlay';
+import { NumberSymbol } from '@angular/common';
 import { Component, Injector, Input, OnInit } from '@angular/core';
-import { FormArray, FormBuilder, FormControl } from '@angular/forms';
+import { AbstractControl, FormArray, FormBuilder, FormControl } from '@angular/forms';
 import { MatDialog } from '@angular/material/dialog';
 import { MatSelectChange } from '@angular/material/select';
 import { ActivatedRoute } from '@angular/router';
@@ -9,7 +10,7 @@ import { debounceTime, finalize, switchMap, takeUntil } from 'rxjs/operators';
 import { InternalLookupService } from 'src/app/shared/common/internal-lookup.service';
 import { ConfirmationDialogComponent } from 'src/app/shared/components/confirmation-dialog/confirmation-dialog.component';
 import { AppComopnentBase } from 'src/shared/app-component-base';
-import { ClientPeriodSalesDataDto, ClientPeriodServiceProxy, ClientRateDto, CommissionDto, ConsultantRateDto, ConsultantSalesDataDto, ConsultantTerminationSalesDataDto, ContractSignerDto, EmployeeDto, EnumEntityTypeDto, EnumServiceProxy, LookupServiceProxy, PeriodClientSpecialFeeDto, PeriodClientSpecialRateDto, SalesClientDataDto, SalesMainDataDto, WorkflowProcessType, WorkflowServiceProxy, WorkflowTerminationSalesDataDto, ConsultantResultDto, ClientResultDto, ContactResultDto } from 'src/shared/service-proxies/service-proxies';
+import { ClientPeriodSalesDataDto, ClientPeriodServiceProxy, ClientRateDto, CommissionDto, ConsultantRateDto, ConsultantSalesDataDto, ConsultantTerminationSalesDataDto, ContractSignerDto, EmployeeDto, EnumEntityTypeDto, EnumServiceProxy, LookupServiceProxy, PeriodClientSpecialFeeDto, PeriodClientSpecialRateDto, SalesClientDataDto, SalesMainDataDto, WorkflowProcessType, WorkflowServiceProxy, WorkflowTerminationSalesDataDto, ConsultantResultDto, ClientResultDto, ContactResultDto, PeriodConsultantSpecialFeeDto, PeriodConsultantSpecialRateDto } from 'src/shared/service-proxies/service-proxies';
 import { WorkflowConsultantActionsDialogComponent } from '../workflow-consultant-actions-dialog/workflow-consultant-actions-dialog.component';
 import { WorkflowDataService } from '../workflow-data.service';
 import { ConsultantTypes } from '../workflow.model';
@@ -93,6 +94,12 @@ export class WorkflowSalesComponent extends AppComopnentBase implements OnInit {
     filteredRecipients: any[] = [];
     filteredReferencePersons: any[] = [];
     filteredClientInvoicingRecipients: any[] = [];
+
+    consultantRateToEdit: PeriodConsultantSpecialRateDto;
+    isConsultantRateEditing = false;
+    consultantFeeToEdit: PeriodConsultantSpecialFeeDto;
+    isConsultantFeeEditing = false;
+
     private _unsubscribe = new Subject();
 
     // Read-onluy state for inputs
@@ -771,6 +778,9 @@ export class WorkflowSalesComponent extends AppComopnentBase implements OnInit {
             consultantPDCRateUnitType: new FormControl(null), // ??
             consultantPDCRateCurrency: new FormControl(this.findItemById(this.currencies, consultant?.consultantRate?.prodataToProdataCurrencyId) ?? null),
 
+            specialRates: new FormArray([]),
+            specialFees: new FormArray([]),
+
             consultantSpecialContractTerms: new FormControl(consultant?.specialContractTerms ?? null),
             consultantSpecialContractTermsNone: new FormControl(consultant?.noSpecialContractTerms ?? false),
 
@@ -779,6 +789,122 @@ export class WorkflowSalesComponent extends AppComopnentBase implements OnInit {
         this.consultantsForm.consultantData.push(form);
         this.manageManagerAutocomplete(this.consultantsForm.consultantData.length - 1);
         this.manageConsultantAutocomplete(this.consultantsForm.consultantData.length - 1);
+    }
+
+    getConsultantRateControls(consultantIndex: number): AbstractControl[] | null {
+        return (this.consultantsForm.consultantData.at(consultantIndex).get('specialRates') as FormArray).controls;
+    }
+
+    removeConsutlantRate(consultantIndex: number, specialRateIndex: number) {
+        (this.consultantsForm.consultantData.at(consultantIndex).get('specialRates') as FormArray).removeAt(specialRateIndex);
+    }
+
+    editOrSaveConsultantRate(consultantIndex: number, specialRateIndex: number, isEditable: boolean) {
+        if (isEditable) {
+            // save
+            this.consultantRateToEdit = new PeriodConsultantSpecialRateDto();
+            this.isConsultantRateEditing = false;
+        } else {
+            // make editable
+            const consultantRateValue = (this.consultantsForm.consultantData.at(consultantIndex).get('specialRates') as FormArray).at(specialRateIndex).value;
+            this.consultantRateToEdit = new PeriodConsultantSpecialRateDto({
+                id: consultantRateValue.id,
+                clientSpecialRateId: consultantRateValue.clientSpecialRateId,
+                rateName: consultantRateValue.rateName,
+                rateDirection: consultantRateValue.rateDirection,
+                reportingUnit: consultantRateValue.reportingUnit,
+                prodataToProdataRate: consultantRateValue.prodataToProdataRate,
+                prodataToProdataRateCurrencyId: consultantRateValue.prodataToProdataRateCurrency?.id,
+                consultantRate: consultantRateValue.consultantRate,
+                consultantRateCurrencyId: consultantRateValue.consultantRateCurrency?.id
+            });
+            this.isConsultantRateEditing = true;
+        }
+        (this.consultantsForm.consultantData.at(consultantIndex).get('specialRates') as FormArray).at(specialRateIndex).get('editable')?.setValue(!isEditable, {emitEvent: false});
+    }
+
+    cancelEditConsultantRate(consultantIndex: number, specialRateIndex: number) {
+        const rateRow = (this.consultantsForm.consultantData.at(consultantIndex).get('specialRates') as FormArray).at(specialRateIndex);
+        rateRow.get('prodataToProdataRate')?.setValue(this.consultantRateToEdit.prodataToProdataRate, {emitEvent: false});
+        rateRow.get('prodataToProdataRateCurrency')?.setValue(this.findItemById(this.currencies, this.consultantRateToEdit.prodataToProdataRateCurrencyId), {emitEvent: false});
+        rateRow.get('consultantRate')?.setValue(this.consultantRateToEdit.consultantRate, {emitEvent: false});
+        rateRow.get('consultantRateCurrency')?.setValue(this.findItemById(this.currencies, this.consultantRateToEdit.consultantRateCurrencyId), {emitEvent: false});
+        this.isConsultantRateEditing = false;
+        (this.consultantsForm.consultantData.at(consultantIndex).get('specialRates') as FormArray).at(specialRateIndex).get('editable')?.setValue(false, {emitEvent: false});
+    }
+
+    addConsultantSpecialRate(consultantIndex: NumberSymbol, consultantRate?: PeriodConsultantSpecialRateDto) {
+        const form = this._fb.group({
+            id: new FormControl(consultantRate?.id ?? null),
+            clientSpecialRateId: new FormControl(consultantRate?.clientSpecialRateId ?? null),
+            rateName: new FormControl(consultantRate?.rateName ?? null),
+            rateDirection: new FormControl(consultantRate?.rateDirection ?? null),
+            reportingUnit: new FormControl(consultantRate?.reportingUnit ?? null),
+            prodataToProdataRate: new FormControl(consultantRate?.prodataToProdataRate ?? null),
+            prodataToProdataRateCurrency: new FormControl(this.findItemById(this.currencies, consultantRate?.prodataToProdataRateCurrencyId) ?? null),
+            consultantRate: new FormControl(consultantRate?.consultantRate ?? null),
+            consultantRateCurrency: new FormControl(this.findItemById(this.currencies, consultantRate?.consultantRateCurrencyId) ?? null),
+            editable: new FormControl(false)
+        });
+        (this.consultantsForm.consultantData.at(consultantIndex).get('specialRates') as FormArray).push(form);
+    }
+
+    getConsultantFeeControls(consultantIndex: number): AbstractControl[] | null {
+        return (this.consultantsForm.consultantData.at(consultantIndex).get('specialFees') as FormArray).controls;
+    }
+
+    removeConsutlantFee(consultantIndex: number, specialFeeIndex: number) {
+        (this.consultantsForm.consultantData.at(consultantIndex).get('specialFees') as FormArray).removeAt(specialFeeIndex);
+    }
+
+    editOrSaveConsultantFee(consultantIndex: number, specialFeeIndex: number, isEditable: boolean) {
+        if (isEditable) {
+            // save
+            this.consultantFeeToEdit = new PeriodConsultantSpecialRateDto();
+            this.isConsultantFeeEditing = false;
+        } else {
+            // make editable
+            const consultantFeeValue = (this.consultantsForm.consultantData.at(consultantIndex).get('specialFees') as FormArray).at(specialFeeIndex).value;
+            this.consultantFeeToEdit = new PeriodConsultantSpecialFeeDto({
+                id: consultantFeeValue.id,
+                clientSpecialFeeId: consultantFeeValue.clientSpecialFeeId,
+                feeName: consultantFeeValue.feeName,
+                feeDirection: consultantFeeValue.feeDirection,
+                frequency: consultantFeeValue.frequency,
+                prodataToProdataRate: consultantFeeValue.prodataToProdataRate,
+                prodataToProdataRateCurrencyId: consultantFeeValue.prodataToProdataRateCurrency?.id,
+                consultantRate: consultantFeeValue.consultantRate,
+                consultantRateCurrencyId: consultantFeeValue.consultantRateCurrency?.id
+            });
+            this.isConsultantFeeEditing = true;
+        }
+        (this.consultantsForm.consultantData.at(consultantIndex).get('specialFees') as FormArray).at(specialFeeIndex).get('editable')?.setValue(!isEditable, {emitEvent: false});
+    }
+
+    cancelEditConsultantFee(consultantIndex: number, specialFeeIndex: number) {
+        const rateRow = (this.consultantsForm.consultantData.at(consultantIndex).get('specialFees') as FormArray).at(specialFeeIndex);
+        rateRow.get('prodataToProdataRate')?.setValue(this.consultantFeeToEdit.prodataToProdataRate, {emitEvent: false});
+        rateRow.get('prodataToProdataRateCurrency')?.setValue(this.findItemById(this.currencies, this.consultantFeeToEdit.prodataToProdataRateCurrencyId), {emitEvent: false});
+        rateRow.get('consultantRate')?.setValue(this.consultantFeeToEdit.consultantRate, {emitEvent: false});
+        rateRow.get('consultantRateCurrency')?.setValue(this.findItemById(this.currencies, this.consultantFeeToEdit.consultantRateCurrencyId), {emitEvent: false});
+        this.isConsultantFeeEditing = false;
+        (this.consultantsForm.consultantData.at(consultantIndex).get('specialRates') as FormArray).at(specialFeeIndex).get('editable')?.setValue(false, {emitEvent: false});
+    }
+
+    addConsultantSpecialFee(consultantIndex: number, consultantFee?: PeriodConsultantSpecialFeeDto) {
+        const form = this._fb.group({
+            id: new FormControl(consultantFee?.id ?? null),
+            clientSpecialFeeId: new FormControl(consultantFee?.clientSpecialFeeId ?? null),
+            feeName: new FormControl(consultantFee?.feeName ?? null),
+            feeDirection: new FormControl(consultantFee?.feeDirection ?? null),
+            frequency: new FormControl(consultantFee?.frequency ?? null),
+            prodataToProdataRate: new FormControl(consultantFee?.prodataToProdataRate ?? null),
+            prodataToProdataRateCurrency: new FormControl(this.findItemById(this.currencies, consultantFee?.prodataToProdataRateCurrencyId) ?? null),
+            consultantRate: new FormControl(consultantFee?.consultantRate ?? null),
+            consultantRateCurrency: new FormControl(this.findItemById(this.currencies, consultantFee?.consultantRateCurrencyId) ?? null),
+            editable: new FormControl(false)
+        });
+        (this.consultantsForm.consultantData.at(consultantIndex).get('specialFees') as FormArray).push(form);
     }
 
     manageConsultantAutocomplete(consultantIndex: number) {
