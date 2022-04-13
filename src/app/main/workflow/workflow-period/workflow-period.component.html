@@ -74,7 +74,7 @@
             <ng-container *ngSwitchCase="workflowSteps.Sales">
                 <app-workflow-sales #workflowSales [workflowId]="workflowId" [clientPeriodId]="clientPeriodId" [activeSideSection]="selectedSideSection" [isCompleted]="selectedStep.isCompleted!"></app-workflow-sales>
             </ng-container>
-            <ng-container *ngSwitchCase="workflowSteps.Contracts">
+            <ng-container *ngSwitchCase="workflowSteps.Contract">
                 <app-workflow-contracts #workflowContracts [workflowId]="workflowId" [clientPeriodId]="clientPeriodId" [activeSideSection]="selectedSideSection" [isCompleted]="selectedStep.isCompleted!"></app-workflow-contracts>
             </ng-container>
             <ng-container *ngSwitchCase="workflowSteps.Finance">

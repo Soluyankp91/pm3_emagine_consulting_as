@@ -10,7 +10,7 @@ import { debounceTime, finalize, switchMap, takeUntil } from 'rxjs/operators';
 import { InternalLookupService } from 'src/app/shared/common/internal-lookup.service';
 import { ConfirmationDialogComponent } from 'src/app/shared/components/confirmation-dialog/confirmation-dialog.component';
 import { AppComopnentBase } from 'src/shared/app-component-base';
-import { ClientPeriodSalesDataDto, ClientPeriodServiceProxy, ClientRateDto, CommissionDto, ConsultantRateDto, ConsultantSalesDataDto, ConsultantTerminationSalesDataDto, ContractSignerDto, EmployeeDto, EnumEntityTypeDto, EnumServiceProxy, LookupServiceProxy, PeriodClientSpecialFeeDto, PeriodClientSpecialRateDto, SalesClientDataDto, SalesMainDataDto, WorkflowProcessType, WorkflowServiceProxy, WorkflowTerminationSalesDataDto, ConsultantResultDto, ClientResultDto, ContactResultDto, PeriodConsultantSpecialFeeDto, PeriodConsultantSpecialRateDto } from 'src/shared/service-proxies/service-proxies';
+import { ClientPeriodSalesDataDto, ClientPeriodServiceProxy, ClientRateDto, CommissionDto, ConsultantRateDto, ConsultantSalesDataDto, ContractSignerDto, EmployeeDto, EnumEntityTypeDto, EnumServiceProxy, LookupServiceProxy, PeriodClientSpecialFeeDto, PeriodClientSpecialRateDto, SalesClientDataDto, SalesMainDataDto, WorkflowProcessType, WorkflowServiceProxy, ConsultantResultDto, ClientResultDto, ContactResultDto, ConsultantTerminationSalesDataCommandDto, WorkflowTerminationSalesDataCommandDto, PeriodConsultantSpecialFeeDto, PeriodConsultantSpecialRateDto } from 'src/shared/service-proxies/service-proxies';
 import { WorkflowConsultantActionsDialogComponent } from '../workflow-consultant-actions-dialog/workflow-consultant-actions-dialog.component';
 import { WorkflowDataService } from '../workflow-data.service';
 import { ConsultantTypes } from '../workflow.model';
@@ -67,6 +67,8 @@ export class WorkflowSalesComponent extends AppComopnentBase implements OnInit {
     tenants: EnumEntityTypeDto[] = [];
     projectCategories: EnumEntityTypeDto[] = [];
     discounts: EnumEntityTypeDto[] = [];
+    nonStandartTerminationTimes: { [key: string]: string; };
+
     // new UI
     clientRateTypes: EnumEntityTypeDto[] = new Array<EnumEntityTypeDto>(
         new EnumEntityTypeDto({
@@ -670,6 +672,16 @@ export class WorkflowSalesComponent extends AppComopnentBase implements OnInit {
             }))
             .subscribe(result => {
                 this.discounts = result;
+            });
+    }
+
+    getNonStandartTerminationTimes() {
+        this._internalLookupService.getNonStandartTerminationTimes()
+            .pipe(finalize(() => {
+
+            }))
+            .subscribe(result => {
+                this.nonStandartTerminationTimes = result;
             });
     }
 
@@ -1530,14 +1542,14 @@ export class WorkflowSalesComponent extends AppComopnentBase implements OnInit {
             }))
             .subscribe(result => {
                 // End of Consultant Contract
-                this.salesTerminateConsultantForm.terminationBeforeEndOfContract?.setValue(result?.terminationBeforeEndOfContract, {emitEvent: false});
+                this.salesTerminateConsultantForm.nonStandardTerminationTime?.setValue(result?.nonStandardTerminationTime, {emitEvent: false});
                 this.salesTerminateConsultantForm.endDate?.setValue(result?.endDate, {emitEvent: false});
                 this.salesTerminateConsultantForm.terminationReason?.setValue(result?.terminationReason, {emitEvent: false}); // add findItemById function
-                this.salesTerminateConsultantForm.causeOfTerminationBeforeEndOfContract?.setValue(result?.causeOfTerminationBeforeEndOfContract, {emitEvent: false});
+                this.salesTerminateConsultantForm.causeOfNonStandardTerminationTime?.setValue(result?.causeOfNonStandardTerminationTime, {emitEvent: false});
                 this.salesTerminateConsultantForm.additionalComments?.setValue(result?.additionalComments, {emitEvent: false});
 
                 //Final Evaluation
-                this.salesTerminateConsultantForm.finalEvaluationReferencePersonId?.setValue(result?.finalEvaluationReferencePersonId, {emitEvent: false}); // add findItemById function
+                this.salesTerminateConsultantForm.finalEvaluationReferencePerson?.setValue(result?.finalEvaluationReferencePerson, {emitEvent: false}); // add findItemById function
                 this.salesTerminateConsultantForm.noEvaluation?.setValue(result?.noEvaluation, {emitEvent: false});
                 this.salesTerminateConsultantForm.causeOfNoEvaluation?.setValue(result?.causeOfNoEvaluation, {emitEvent: false});
 
@@ -1547,14 +1559,14 @@ export class WorkflowSalesComponent extends AppComopnentBase implements OnInit {
     }
 
     updateTerminationConsultantSalesStep() {
-        let input = new ConsultantTerminationSalesDataDto();
-        input.terminationBeforeEndOfContract =  this.salesTerminateConsultantForm?.terminationBeforeEndOfContract?.value;
+        let input = new ConsultantTerminationSalesDataCommandDto();
+        input.nonStandardTerminationTime =  this.salesTerminateConsultantForm?.nonStandardTerminationTime?.value;
         input.endDate = this.salesTerminateConsultantForm?.endDate?.value;
         input.terminationReason = this.salesTerminateConsultantForm?.terminationReason?.value;
-        input.causeOfTerminationBeforeEndOfContract = this.salesTerminateConsultantForm?.causeOfTerminationBeforeEndOfContract?.value;
+        input.causeOfNonStandardTerminationTime = this.salesTerminateConsultantForm?.causeOfNonStandardTerminationTime?.value;
         input.additionalComments = this.salesTerminateConsultantForm?.additionalComments?.value;
 
-        input.finalEvaluationReferencePersonId = this.salesTerminateConsultantForm?.finalEvaluationReferencePersonId?.value; // FIXME: fix after be changes add .id
+        input.finalEvaluationReferencePersonId = this.salesTerminateConsultantForm?.finalEvaluationReferencePerson?.value; // FIXME: fix after be changes add .id
         input.noEvaluation = this.salesTerminateConsultantForm?.noEvaluation?.value;
         input.causeOfNoEvaluation =  this.salesTerminateConsultantForm.causeOfNoEvaluation?.value;
 
@@ -1568,15 +1580,15 @@ export class WorkflowSalesComponent extends AppComopnentBase implements OnInit {
     }
 
     completeTerminationConsultantSalesStep() {
-        let input = new ConsultantTerminationSalesDataDto();
+        let input = new ConsultantTerminationSalesDataCommandDto();
 
-        input.terminationBeforeEndOfContract =  this.salesTerminateConsultantForm?.terminationBeforeEndOfContract?.value;
+        input.nonStandardTerminationTime =  this.salesTerminateConsultantForm?.nonStandardTerminationTime?.value;
         input.endDate = this.salesTerminateConsultantForm?.endDate?.value;
         input.terminationReason = this.salesTerminateConsultantForm?.terminationReason?.value;
-        input.causeOfTerminationBeforeEndOfContract = this.salesTerminateConsultantForm?.causeOfTerminationBeforeEndOfContract?.value;
+        input.causeOfNonStandardTerminationTime = this.salesTerminateConsultantForm?.causeOfNonStandardTerminationTime?.value;
         input.additionalComments = this.salesTerminateConsultantForm?.additionalComments?.value;
 
-        input.finalEvaluationReferencePersonId = this.salesTerminateConsultantForm?.finalEvaluationReferencePersonId?.value; // FIXME: fix after be changes add .id
+        input.finalEvaluationReferencePersonId = this.salesTerminateConsultantForm?.finalEvaluationReferencePerson?.value; // FIXME: fix after be changes add .id
         input.noEvaluation = this.salesTerminateConsultantForm?.noEvaluation?.value;
         input.causeOfNoEvaluation =  this.salesTerminateConsultantForm.causeOfNoEvaluation?.value;
 
@@ -1596,14 +1608,14 @@ export class WorkflowSalesComponent extends AppComopnentBase implements OnInit {
             }))
             .subscribe(result => {
                 // End of Consultant Contract
-                this.salesTerminateConsultantForm.terminationBeforeEndOfContract?.setValue(result?.terminationBeforeEndOfContract, {emitEvent: false});
+                this.salesTerminateConsultantForm.nonStandardTerminationTime?.setValue(result?.nonStandardTerminationTime, {emitEvent: false});
                 this.salesTerminateConsultantForm.endDate?.setValue(result?.endDate, {emitEvent: false});
                 this.salesTerminateConsultantForm.terminationReason?.setValue(result?.terminationReason, {emitEvent: false}); // add findItemById function
-                this.salesTerminateConsultantForm.causeOfTerminationBeforeEndOfContract?.setValue(result?.causeOfTerminationBeforeEndOfContract, {emitEvent: false});
+                this.salesTerminateConsultantForm.causeOfNonStandardTerminationTime?.setValue(result?.causeOfNonStandardTerminationTime, {emitEvent: false});
                 this.salesTerminateConsultantForm.additionalComments?.setValue(result?.additionalComments, {emitEvent: false});
 
                 //Final Evaluation
-                this.salesTerminateConsultantForm.finalEvaluationReferencePersonId?.setValue(result?.finalEvaluationReferencePersonId, {emitEvent: false}); // add findItemById function
+                this.salesTerminateConsultantForm.finalEvaluationReferencePerson?.setValue(result?.finalEvaluationReferencePerson, {emitEvent: false}); // add findItemById function
                 this.salesTerminateConsultantForm.noEvaluation?.setValue(result?.noEvaluation, {emitEvent: false});
                 this.salesTerminateConsultantForm.causeOfNoEvaluation?.setValue(result?.causeOfNoEvaluation, {emitEvent: false});
 
@@ -1613,14 +1625,14 @@ export class WorkflowSalesComponent extends AppComopnentBase implements OnInit {
     }
 
     updateTerminationSalesStep() {
-        let input = new WorkflowTerminationSalesDataDto();
-        input.terminationBeforeEndOfContract =  this.salesTerminateConsultantForm?.terminationBeforeEndOfContract?.value;
+        let input = new WorkflowTerminationSalesDataCommandDto();
+        input.nonStandardTerminationTime =  this.salesTerminateConsultantForm?.nonStandardTerminationTime?.value;
         input.endDate = this.salesTerminateConsultantForm?.endDate?.value;
         input.terminationReason = this.salesTerminateConsultantForm?.terminationReason?.value;
-        input.causeOfTerminationBeforeEndOfContract = this.salesTerminateConsultantForm?.causeOfTerminationBeforeEndOfContract?.value;
+        input.causeOfNonStandardTerminationTime = this.salesTerminateConsultantForm?.causeOfNonStandardTerminationTime?.value;
         input.additionalComments = this.salesTerminateConsultantForm?.additionalComments?.value;
 
-        input.finalEvaluationReferencePersonId = this.salesTerminateConsultantForm?.finalEvaluationReferencePersonId?.value; // FIXME: fix after be changes add .id
+        input.finalEvaluationReferencePersonId = this.salesTerminateConsultantForm?.finalEvaluationReferencePerson?.value; // FIXME: fix after be changes add .id
         input.noEvaluation = this.salesTerminateConsultantForm?.noEvaluation?.value;
         input.causeOfNoEvaluation =  this.salesTerminateConsultantForm.causeOfNoEvaluation?.value;
 
@@ -1634,14 +1646,14 @@ export class WorkflowSalesComponent extends AppComopnentBase implements OnInit {
     }
 
     completeTerminationSalesStep() {
-        let input = new WorkflowTerminationSalesDataDto();
-        input.terminationBeforeEndOfContract =  this.salesTerminateConsultantForm?.terminationBeforeEndOfContract?.value;
+        let input = new WorkflowTerminationSalesDataCommandDto();
+        input.nonStandardTerminationTime =  this.salesTerminateConsultantForm?.nonStandardTerminationTime?.value;
         input.endDate = this.salesTerminateConsultantForm?.endDate?.value;
         input.terminationReason = this.salesTerminateConsultantForm?.terminationReason?.value;
-        input.causeOfTerminationBeforeEndOfContract = this.salesTerminateConsultantForm?.causeOfTerminationBeforeEndOfContract?.value;
+        input.causeOfNonStandardTerminationTime = this.salesTerminateConsultantForm?.causeOfNonStandardTerminationTime?.value;
         input.additionalComments = this.salesTerminateConsultantForm?.additionalComments?.value;
 
-        input.finalEvaluationReferencePersonId = this.salesTerminateConsultantForm?.finalEvaluationReferencePersonId?.value; // FIXME: fix after be changes add .id
+        input.finalEvaluationReferencePersonId = this.salesTerminateConsultantForm?.finalEvaluationReferencePerson?.value; // FIXME: fix after be changes add .id
         input.noEvaluation = this.salesTerminateConsultantForm?.noEvaluation?.value;
         input.causeOfNoEvaluation =  this.salesTerminateConsultantForm.causeOfNoEvaluation?.value;
 

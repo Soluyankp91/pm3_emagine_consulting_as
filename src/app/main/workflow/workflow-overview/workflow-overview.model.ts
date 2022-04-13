@@ -1,4 +1,4 @@
-import { WorkflowProcessType } from "src/shared/service-proxies/service-proxies";
+import { StepType, WorkflowProcessType } from "src/shared/service-proxies/service-proxies";
 import { WorkflowSteps } from "../workflow.model";
 
 export class ProcessSubItemDto {
@@ -30,7 +30,7 @@ export const StartWorkflowProcessDto: ProcessParentItemDto = {
             id: 1,
             name: "StartWorkflowSales",
             displayName: "Sales",
-            enumStepValue: WorkflowSteps.Sales,
+            enumStepValue: StepType.Sales,
             assignedPerson: 'Roberto Olberto',
             isCompleted: false,
             isInProgress: false,
@@ -40,7 +40,7 @@ export const StartWorkflowProcessDto: ProcessParentItemDto = {
             id: 2,
             name: "StartWorkflowContracts",
             displayName: "Contracts",
-            enumStepValue: WorkflowSteps.Contracts,
+            enumStepValue: StepType.Contract,
             assignedPerson: 'Roberto Olberto',
             isCompleted: false,
             isInProgress: false,
@@ -50,7 +50,7 @@ export const StartWorkflowProcessDto: ProcessParentItemDto = {
             id: 3,
             name: "StartWorkflowFinances",
             displayName: "Finances",
-            enumStepValue: WorkflowSteps.Finance,
+            enumStepValue: StepType.Finance,
             assignedPerson: 'Roberto Olberto',
             isCompleted: false,
             isInProgress: false,
@@ -69,7 +69,7 @@ export const ExtendWorkflowProcessDto: ProcessParentItemDto = {
             id: 1,
             name: "ExtendWorkflowSales",
             displayName: "Sales",
-            enumStepValue: WorkflowSteps.Sales,
+            enumStepValue: StepType.Sales,
             assignedPerson: 'Roberto Olberto',
             isCompleted: true,
             isInProgress: false,
@@ -79,7 +79,7 @@ export const ExtendWorkflowProcessDto: ProcessParentItemDto = {
             id: 2,
             name: "ExtendWorkflowContracts",
             displayName: "Contracts",
-            enumStepValue: WorkflowSteps.Contracts,
+            enumStepValue: StepType.Contract,
             assignedPerson: 'Roberto Olberto',
             isCompleted: false,
             isInProgress: true,

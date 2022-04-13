@@ -2,7 +2,7 @@ import { Component, Input, OnDestroy, OnInit } from '@angular/core';
 import { FormArray, FormBuilder, FormControl } from '@angular/forms';
 import { Subject } from 'rxjs';
 import { finalize, takeUntil } from 'rxjs/operators';
-import { ConsultantTerminationSourcingDataDto, WorkflowProcessType, WorkflowServiceProxy, WorkflowTerminationSourcingDataDto } from 'src/shared/service-proxies/service-proxies';
+import { ConsultantTerminationSourcingDataCommandDto, WorkflowProcessType, WorkflowServiceProxy, WorkflowTerminationSourcingDataCommandDto } from 'src/shared/service-proxies/service-proxies';
 import { WorkflowDataService } from '../workflow-data.service';
 import { WorkflowSourcingConsultantsDataForm } from './workflow-sourcing.model';
 
@@ -84,7 +84,7 @@ export class WorkflowSourcingComponent implements OnInit, OnDestroy {
 
     // Termination
 
-    addConsultantDataToTerminationForm(consultant: ConsultantTerminationSourcingDataDto) {
+    addConsultantDataToTerminationForm(consultant: ConsultantTerminationSourcingDataCommandDto) {
         const form = this._fb.group({
             consultantId: new FormControl(consultant.consultantId),
             // consultantName: new FormControl(consultant.name),
@@ -108,7 +108,7 @@ export class WorkflowSourcingComponent implements OnInit, OnDestroy {
     }
 
     updateTerminationConsultantSourcingStep() {
-        let input = new ConsultantTerminationSourcingDataDto();
+        let input = new ConsultantTerminationSourcingDataCommandDto();
         input.consultantId = this.sourcingConsultantsDataForm.consultantTerminationSourcingData?.at(0).value.consultantId;
         input.cvUpdated = this.sourcingConsultantsDataForm.consultantTerminationSourcingData?.at(0).value.cvUpdated;
 
@@ -122,7 +122,7 @@ export class WorkflowSourcingComponent implements OnInit, OnDestroy {
     }
 
     completeTerminationConsultantSourcingStep() {
-        let input = new ConsultantTerminationSourcingDataDto();
+        let input = new ConsultantTerminationSourcingDataCommandDto();
         input.consultantId = this.sourcingConsultantsDataForm.consultantTerminationSourcingData?.at(0).value.consultantId;
         input.cvUpdated = this.sourcingConsultantsDataForm.consultantTerminationSourcingData?.at(0).value.cvUpdated;
 
@@ -148,12 +148,12 @@ export class WorkflowSourcingComponent implements OnInit, OnDestroy {
     }
 
     updateTerminationSourcingStep() {
-        let input = new WorkflowTerminationSourcingDataDto();
+        let input = new WorkflowTerminationSourcingDataCommandDto();
 
-        input.consultantTerminationSourcingData = new Array<ConsultantTerminationSourcingDataDto>();
+        input.consultantTerminationSourcingData = new Array<ConsultantTerminationSourcingDataCommandDto>();
         if (this.sourcingConsultantsDataForm.consultantTerminationSourcingData?.value?.length) {
             this.sourcingConsultantsDataForm.consultantTerminationSourcingData.value.forEach((consultant: any) => {
-                let consultantInput = new ConsultantTerminationSourcingDataDto();
+                let consultantInput = new ConsultantTerminationSourcingDataCommandDto();
                 consultantInput.consultantId = consultant.consultantId;
                 consultantInput.cvUpdated = consultant.cvUpdated;
 
@@ -171,12 +171,12 @@ export class WorkflowSourcingComponent implements OnInit, OnDestroy {
     }
 
     completeTerminationSourcingStep() {
-        let input = new WorkflowTerminationSourcingDataDto();
+        let input = new WorkflowTerminationSourcingDataCommandDto();
 
-        input.consultantTerminationSourcingData = new Array<ConsultantTerminationSourcingDataDto>();
+        input.consultantTerminationSourcingData = new Array<ConsultantTerminationSourcingDataCommandDto>();
         if (this.sourcingConsultantsDataForm.consultantTerminationSourcingData?.value?.length) {
             this.sourcingConsultantsDataForm.consultantTerminationSourcingData.value.forEach((consultant: any) => {
-                let consultantInput = new ConsultantTerminationSourcingDataDto();
+                let consultantInput = new ConsultantTerminationSourcingDataCommandDto();
                 consultantInput.consultantId = consultant.consultantId;
                 consultantInput.cvUpdated = consultant.cvUpdated;
 

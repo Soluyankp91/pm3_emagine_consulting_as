@@ -41,7 +41,7 @@
                 <div fxLayout="column" class="u-w--100 u-mb--20">
                     <h3 class="workflow-readonly--gray-header">Project Category</h3>
                     <span class="workflow-readonly--blue-text-bold">
-                        {{salesMainDataForm?.projectCategory?.value}}
+                        {{salesMainDataForm?.projectCategory?.value?.name}}
                     </span>
                 </div>
 
@@ -58,14 +58,126 @@
                 <div fxLayout="column" fxLayoutAlign="start start" class="u-w--100 u-mb--10">
                     <h3 class="workflow-readonly--gray-header">Discounts</h3>
                     <span class="workflow-readonly--blue-text-bold">
-                        {{salesMainDataForm?.discounts?.value}}
+                        {{salesMainDataForm?.discounts?.value?.name}}
                     </span>
                 </div>
                 <div fxLayout="column" fxLayoutAlign="start start" class="u-w--100 u-mb--10">
                     <h3 class="workflow-readonly--blue-header">Commission</h3>
                     <span class="workflow-extension--blue-text">
-                        <!-- {{salesMainDataForm?.discounts?.value?.name}} -->
-                        -
+                        <div fxLayout="row" fxLayoutAlign="space-between start" fxLayoutGap="10px" class="workflow-sales-inline--form__header-container u-w--100" *ngIf="salesMainDataForm.commissions?.controls?.length">
+                            <span fxFlex="10%" class="workflow-sales-inline--form__header u-w--100">
+                                Type
+                            </span>
+                            <span fxFlex="10%" class="workflow-sales-inline--form__header u-w--100">
+                                Value
+                            </span>
+                            <span fxFlex="10%" class="workflow-sales-inline--form__header u-w--100">
+                                Currency
+                            </span>
+                            <span fxFlex="10%" class="workflow-sales-inline--form__header u-w--100">
+                                Recipient type
+                            </span>
+                            <span fxFlex="30%" class="workflow-sales-inline--form__header u-w--100">
+                                Recipient
+                            </span>
+                            <span fxFlex="20%" class="workflow-sales-inline--form__header u-w--100">
+                                Frequency
+                            </span>
+                            <span fxFlex="10%" class="workflow-sales-inline--form__header u-w--100">
+
+                            </span>
+                        </div>
+                        <ng-container class="u-w--100">
+                            <div fxLayout="row" fxLayoutAlign="space-between center" fxLayoutGap="10px" class="inline-edit-form workflow-sales-inline--form__row u-w--100"
+                                *ngFor="let commission of salesMainDataForm.commissions.controls; index as i">
+                                <ng-container *ngIf="!commission.value.editable">
+                                    <span fxFlex="10%" class="u-w--100 text-truncate-ellipsis" [matTooltip]="salesMainDataForm.commissions.at(i).get('type')?.value?.name">
+                                        {{commission.value.type?.name}}
+                                    </span>
+                                    <span fxFlex="10%" class="u-w--100 text-truncate-ellipsis" [matTooltip]="salesMainDataForm.commissions.at(i).get('value')?.value">
+                                        {{commission.value.value}}
+                                    </span>
+                                    <span fxFlex="10%" class="u-w--100 text-truncate-ellipsis" [matTooltip]="salesMainDataForm.commissions.at(i).get('currency')?.value?.name">
+                                        {{commission.value.currency?.name}}
+                                    </span>
+                                    <span fxFlex="10%" class="u-w--100 text-truncate-ellipsis" [matTooltip]="salesMainDataForm.commissions.at(i).get('recipientType')?.value?.name">
+                                        {{commission.value.recipientType?.name}}
+                                    </span>
+                                    <span fxFlex="30%" class="u-w--100 text-truncate-ellipsis" [matTooltip]="salesMainDataForm.commissions.at(i).get('recipient')?.value?.name">
+                                        <ng-container [ngSwitch]="commission.value.recipientType?.name">
+                                            <ng-container *ngSwitchCase="'Client'">
+                                                <div fxLayout="row" fxLayoutAlign="start center">
+                                                    <img class="border-rounded-50 u-mr--16" src="https://picsum.photos/35/35" />
+                                                    <div fxLayout="column" fxLayoutAlign="start start">
+                                                        <span>
+                                                            {{commission.value.recipient?.clientName}}
+                                                        </span>
+                                                        <span>
+                                                            {{commission.value.recipient?.city ? commission.value.recipient?.city + ' | ' : ''}}
+                                                            {{commission.value.recipient?.address ? commission.value.recipient?.address + ' | ' : ''}}
+                                                            {{commission.value.recipient?.address2 ? commission.value.recipient?.address2 + ' | ' : ''}}
+                                                            {{commission.value.recipient?.postCode}}
+                                                        </span>
+                                                    </div>
+                                                </div>
+                                            </ng-container>
+                                            <ng-container *ngSwitchCase="'Consultant'">
+                                                <div fxLayout="row" fxLayoutAlign="start center">
+                                                    <img class="border-rounded-50 u-mr--16" src="https://picsum.photos/35/35" />
+                                                    <div fxLayout="column" fxLayoutAlign="start start">
+                                                        <span>
+                                                            {{commission.value.recipient?.name}}
+                                                        </span>
+                                                        <span>
+                                                            {{commission.value.recipient?.companyName ? commission.value.recipient?.companyName + ' | ' : ''}}
+                                                            {{commission.value.recipient?.city ? commission.value.recipient?.city + ' | ' : ''}}
+                                                            #{{commission.value.recipient?.id}} / {{getTenantCodeFromId(commission.value.recipient?.tenantId) + '-' +commission.value.recipient?.legacyId}}
+                                                        </span>
+                                                    </div>
+                                                </div>
+                                            </ng-container>
+                                            <ng-container *ngSwitchCase="'Supplier'">
+                                                {{commission.value.recipient?.supplierName}}
+                                            </ng-container>
+                                            <ng-container *ngSwitchCase="'PDC entity'">
+                                                {{commission.value.recipient?.name}}
+                                            </ng-container>
+                                        </ng-container>
+                                    </span>
+                                    <span fxFlex="20%" class="u-w--100 text-truncate-ellipsis" [matTooltip]="salesMainDataForm.commissions.at(i).get('frequency')?.value?.name">
+                                        <!-- frequency id === 2 -- 'One time' -->
+                                        <ng-container *ngIf="salesMainDataForm.commissions.at(i).get('frequency')?.value?.id === 2; else commissionFrequency">
+                                            {{salesMainDataForm.commissions.at(i).get('frequency')?.value?.name}} {{salesMainDataForm.commissions.at(i).get('oneTimeDate')?.value | momentFormat: 'DD.MM.YYYY'}}
+                                        </ng-container>
+                                        <ng-template #commissionFrequency>
+                                            {{salesMainDataForm.commissions.at(i).get('frequency')?.value?.name}}
+                                        </ng-template>
+                                    </span>
+                                    <div fxFlex="10%" fxLayoutAlign="center center" class="u-w--100">
+                                        <button mat-icon-button (click)="$event.stopPropagation();" [matMenuTriggerFor]="commissionMenu" class="three-dots-actions-btn">
+                                            <mat-icon>more_horiz</mat-icon>
+                                        </button>
+                                        <mat-menu #commissionMenu>
+                                            <button
+                                                class="menu-item"
+                                                [ngClass]="salesMainDataForm.commissions.at(i).get('editable')?.value ? 'menu-item--add': 'menu-item--edit'"
+                                                mat-menu-item
+                                                (click)="toggleEditCommissionRow(i)">
+                                                <mat-icon>{{salesMainDataForm.commissions.at(i).get('editable')?.value ? 'save' : 'create'}}</mat-icon>
+                                                {{salesMainDataForm.commissions.at(i).get('editable')?.value ? 'Save' : 'Edit'}}
+                                            </button>
+                                            <button
+                                                class="menu-item menu-item--cancel"
+                                                mat-menu-item
+                                                (click)="removeCommission(i)">
+                                                <mat-icon>clear</mat-icon>
+                                                Remove
+                                            </button>
+                                        </mat-menu>
+                                    </div>
+                                </ng-container>
+                            </div>
+                        </ng-container>
                     </span>
                 </div>
             </div>
@@ -76,13 +188,13 @@
                     <div fxLayout="column" fxLayoutAlign="start start" class="u-mb--10" fxFlex="25%">
                         <h3 class="workflow-readonly--gray-header">Sales Account Manager</h3>
                         <span class="workflow-readonly--blue-text-bold">
-                            {{salesMainDataForm?.salesAccountManagerIdValue?.value}}
+                            {{salesMainDataForm?.salesAccountManagerIdValue?.value?.name}}
                         </span>
                     </div>
                     <div fxLayout="column" fxLayoutAlign="start start" class="u-mb--10" fxFlex="25%">
                         <h3 class="workflow-readonly--gray-header">Commission Manager Type</h3>
                         <span class="workflow-readonly--blue-text-bold">
-                            {{salesMainDataForm?.commissionAccountManagerIdValue?.value}}
+                            {{salesMainDataForm?.commissionAccountManagerIdValue?.value?.name}}
                         </span>
                     </div>
                 </div>
@@ -90,7 +202,7 @@
                     <div fxLayout="column" fxLayoutAlign="start start" class="u-w--100 u-mb--10">
                         <h3 class="workflow-readonly--gray-header">Contract Expiration Notification</h3>
                         <span class="workflow-readonly--blue-text-bold">
-                            {{salesMainDataForm?.contractExpirationNotification?.value}}
+                            {{salesMainDataForm?.contractExpirationNotification?.value?.name}}
                         </span>
                     </div>
                 </div>
@@ -98,8 +210,7 @@
                     <div fxLayout="column" fxLayoutAlign="start start" class="u-w--100 u-mb--10">
                         <h3 class="workflow-readonly--gray-header">Remarks</h3>
                         <span class="workflow-readonly--blue-text-bold">
-                            <!-- {{salesMainDataForm?.discounts?.value?.name}} -->
-                            None
+                            {{salesMainDataForm?.remarks?.value}}
                         </span>
                     </div>
                 </div>
@@ -117,7 +228,7 @@
                 <div fxLayout="column" class="u-w--100 u-mb--20">
                     <h3 class="workflow-readonly--gray-header">Client relation</h3>
                     <span class="workflow-readonly--blue-text-bold">
-                        {{salesMainDataForm?.projectCategory?.value}}
+                        {{salesClientDataForm?.differentEndClient?.value}}
                     </span>
                 </div>
 
@@ -125,13 +236,13 @@
                     <div fxLayout="column" fxFlex="50%">
                         <h3 class="workflow-readonly--gray-header">Direct client</h3>
                         <span class="workflow-readonly--blue-text-bold">
-                            {{salesMainDataForm?.projectType?.value?.name}}
+                            {{salesClientDataForm?.directClientIdValue?.value?.name}}
                         </span>
                     </div>
                     <div fxLayout="column" fxFlex="50%">
                         <h3 class="workflow-readonly--gray-header">End client</h3>
                         <span class="workflow-readonly--blue-text-bold">
-                            {{salesMainDataForm?.salesType?.value?.name}}
+                            {{salesClientDataForm?.endClientIdValue?.value?.name}}
                         </span>
                     </div>
                 </div>
@@ -143,13 +254,13 @@
                     <div fxLayout="column" fxFlex="25%">
                         <h3 class="workflow-readonly--gray-header">Start date</h3>
                         <span class="workflow-readonly--blue-text-bold">
-                            {{salesMainDataForm?.projectType?.value?.name}}
+                            {{salesClientDataForm?.clientContractStartDate?.value}}
                         </span>
                     </div>
                     <div fxLayout="column" fxFlex="25%">
                         <h3 class="workflow-readonly--gray-header">End date</h3>
                         <span class="workflow-readonly--blue-text-bold">
-                            {{salesMainDataForm?.salesType?.value?.name}}
+                            {{salesClientDataForm?.clientContractNoEndDate?.value ? 'No end date' : salesClientDataForm?.clientContractEndDate?.value}}
                         </span>
                     </div>
                 </div>
@@ -157,19 +268,19 @@
                     <div fxLayout="column" fxFlex="25%">
                         <h3 class="workflow-readonly--gray-header">Option to extend</h3>
                         <span class="workflow-readonly--blue-text-bold">
-                            {{salesMainDataForm?.projectType?.value?.name}}
+                            {{salesClientDataForm?.noClientExtensionOption?.value ? 'No option' : 'Option to extend'}}
                         </span>
                     </div>
                     <div fxLayout="column" fxFlex="25%">
                         <h3 class="workflow-readonly--gray-header">Duration</h3>
                         <span class="workflow-readonly--blue-text-bold">
-                            {{salesMainDataForm?.salesType?.value?.name}}
+                            {{salesClientDataForm?.clientExtensionDuration?.value?.name}}
                         </span>
                     </div>
                     <div fxLayout="column" fxFlex="25%">
                         <h3 class="workflow-readonly--gray-header">Deadline</h3>
                         <span class="workflow-readonly--blue-text-bold">
-                            {{salesMainDataForm?.deliveryType?.value?.name}}
+                            {{salesClientDataForm?.clientExtensionDeadline?.value?.name}}
                         </span>
                     </div>
                 </div>
@@ -181,13 +292,13 @@
                     <div fxLayout="column" fxFlex="25%">
                         <h3 class="workflow-readonly--gray-header">Shared Cap on Time Reportion</h3>
                         <span class="workflow-readonly--blue-text-bold">
-                            {{salesMainDataForm?.projectType?.value?.name}}
+                            {{salesClientDataForm?.capOnTimeReporting?.value?.name}}
                         </span>
                     </div>
                     <div fxLayout="column" fxFlex="25%">
                         <h3 class="workflow-readonly--gray-header">Max. value</h3>
                         <span class="workflow-readonly--blue-text-bold">
-                            {{salesMainDataForm?.salesType?.value?.name}}
+                            {{salesClientDataForm?.capOnTimeReportingValue?.value}}
                         </span>
                     </div>
                 </div>
@@ -198,32 +309,32 @@
                 <div fxLayout="column" class="u-w--100 u-mb--20">
                     <h3 class="workflow-readonly--gray-header">Invoicing Entity</h3>
                     <span class="workflow-readonly--blue-text-bold">
-                        {{salesMainDataForm?.projectCategory?.value}}
+                        {{salesClientDataForm?.pdcInvoicingEntityId?.value?.name}}
                     </span>
                 </div>
                 <div fxLayout="column" class="u-w--100 u-mb--20">
                     <h3 class="workflow-readonly--gray-header">Price</h3>
                     <span class="workflow-readonly--blue-text-bold">
-                        {{salesMainDataForm?.projectCategory?.value}}
+                        {{salesClientDataForm?.clientPrice?.value}}
                     </span>
                 </div>
                 <div fxLayout="row" fxLayoutAlign="start start" class="u-w--100 u-mb--20">
                     <div fxLayout="column" fxFlex="25%">
                         <h3 class="workflow-readonly--gray-header">Rate</h3>
                         <span class="workflow-readonly--blue-text-bold">
-                            {{salesMainDataForm?.projectType?.value?.name}}
+                            {{salesClientDataForm?.clientRateAndInvoicing?.value?.name}}
                         </span>
                     </div>
                     <div fxLayout="column" fxFlex="25%">
                         <h3 class="workflow-readonly--gray-header">Unit type</h3>
                         <span class="workflow-readonly--blue-text-bold">
-                            {{salesMainDataForm?.salesType?.value?.name}}
+                            {{salesClientDataForm?.rateUnitTypeId?.value?.name}}
                         </span>
                     </div>
                     <div fxLayout="column" fxFlex="25%">
                         <h3 class="workflow-readonly--gray-header">Currency</h3>
                         <span class="workflow-readonly--blue-text-bold">
-                            {{salesMainDataForm?.salesType?.value?.name}}
+                            {{salesClientDataForm?.clientCurrency?.value?.name}}
                         </span>
                     </div>
                 </div>
@@ -231,19 +342,19 @@
                     <div fxLayout="column" fxFlex="25%">
                         <h3 class="workflow-readonly--gray-header">Invoicing ref. no.</h3>
                         <span class="workflow-readonly--blue-text-bold">
-                            {{salesMainDataForm?.projectType?.value?.name}}
+                            {{salesClientDataForm?.invoicingReferenceNumber?.value}}
                         </span>
                     </div>
                     <div fxLayout="column" fxFlex="25%">
                         <h3 class="workflow-readonly--gray-header">Invoice currency</h3>
                         <span class="workflow-readonly--blue-text-bold">
-                            {{salesMainDataForm?.salesType?.value?.name}}
+                            {{salesClientDataForm?.clientInvoiceCurrency?.value?.name}}
                         </span>
                     </div>
                     <div fxLayout="column" fxFlex="25%">
                         <h3 class="workflow-readonly--gray-header">Invoicing frequency</h3>
                         <span class="workflow-readonly--blue-text-bold">
-                            {{salesMainDataForm?.salesType?.value?.name}}
+                            {{salesClientDataForm?.clientInvoiceFrequency?.value?.name}}
                         </span>
                     </div>
                 </div>
@@ -251,21 +362,90 @@
                     <div fxLayout="column" fxFlex="25%">
                         <h3 class="workflow-readonly--gray-header">Client Invoicing recipient</h3>
                         <span class="workflow-readonly--blue-text-bold">
-                            {{salesMainDataForm?.projectType?.value?.name}}
+                            {{salesClientDataForm?.clientInvoicingRecipientIdValue?.value?.name}}
                         </span>
                     </div>
                     <div fxLayout="column" fxFlex="25%">
                         <h3 class="workflow-readonly--gray-header">Invoicing reference person</h3>
                         <span class="workflow-readonly--blue-text-bold">
-                            {{salesMainDataForm?.salesType?.value?.name}}
+                            {{salesClientDataForm?.invoicingReferencePersonIdValue?.value?.name}}
                         </span>
                     </div>
                 </div>
             </div>
             <mat-divider class="u-w--100 u-mt--20 u-mb--20"></mat-divider>
             <div fxLayout="column" fxLayoutAlign="start start" class="u-w--100">
-                <h2 class="workflow-readonly--header u-mb--20">Client invoicing</h2>
-                add table here
+                <h2 class="workflow-readonly--header u-mb--20">CLIENT RATES AND FEES</h2>
+                <div class="inline-edit-form u-w--100 u-mb--20">
+                    <div fxLayout="row" fxLayoutAlign="space-between start" fxLayoutGap="10px" class="workflow-sales-inline--form__header-container u-w--100" *ngIf="salesClientDataForm.clientRates?.controls?.length">
+                        <span fxFlex="25%" class="workflow-sales-inline--form__header u-w--100">
+                            Rate name
+                        </span>
+                        <span fxFlex="25%" class="workflow-sales-inline--form__header u-w--100">
+                            Rate direction
+                        </span>
+                        <span fxFlex="20%" class="workflow-sales-inline--form__header u-w--100">
+                            Reporting unit
+                        </span>
+                        <span fxFlex="20%" class="workflow-sales-inline--form__header u-w--100">
+                            Client rate
+                        </span>
+                    </div>
+                    <ng-container class="u-w--100">
+                        <div fxLayout="row" fxLayoutAlign="space-between center" fxLayoutGap="10px" class="workflow-sales-inline--form__row u-w--100"
+                            *ngFor="let rate of salesClientDataForm.clientRates.controls; index as i">
+                            <ng-container>
+                                <span fxFlex="25%" class="u-w--100 text-truncate-ellipsis" [matTooltip]="rate.value.rateName">
+                                    {{rate.value.rateName ?? '-'}}
+                                </span>
+                                <span fxFlex="25%" class="u-w--100 text-truncate-ellipsis" [matTooltip]="rate.value.rateDirection?.name">
+                                    {{rate.value.rateDirection?.name ?? '-'}}
+                                </span>
+                                <span fxFlex="20%" class="u-w--100 text-truncate-ellipsis" [matTooltip]="rate.value.reportingUnit?.name">
+                                    {{rate.value.reportingUnit?.name ?? '-'}}
+                                </span>
+                                <span fxFlex="20%" class="u-w--100 text-truncate-ellipsis" [matTooltip]="rate.value.clientRateValue + ' ' + rate.value.clientRateCurrency?.name">
+                                    {{rate.value.clientRateValue || rate.value.clientRateCurrency?.name ? rate.value.clientRateValue + ' ' + rate.value.clientRateCurrency?.name : '-'}}
+                                </span>
+                            </ng-container>
+                        </div>
+                    </ng-container>
+                </div>
+                <div class="inline-edit-form u-w--100">
+                    <div fxLayout="row" fxLayoutAlign="space-between start" fxLayoutGap="10px" class="workflow-sales-inline--form__header-container u-w--100" *ngIf="salesClientDataForm.clientFees?.controls?.length">
+                        <span fxFlex="25%" class="workflow-sales-inline--form__header u-w--100">
+                            Fee name
+                        </span>
+                        <span fxFlex="25%" class="workflow-sales-inline--form__header u-w--100">
+                            Fee direction
+                        </span>
+                        <span fxFlex="20%" class="workflow-sales-inline--form__header u-w--100">
+                            Frequency
+                        </span>
+                        <span fxFlex="20%" class="workflow-sales-inline--form__header u-w--100">
+                            Client fee
+                        </span>
+                    </div>
+                    <ng-container class="u-w--100">
+                        <div fxLayout="row" fxLayoutAlign="space-between center" fxLayoutGap="10px" class="workflow-sales-inline--form__row u-w--100"
+                            *ngFor="let fee of salesClientDataForm.clientFees.controls; index as i">
+                            <ng-container>
+                                <span fxFlex="25%" class="u-w--100 text-truncate-ellipsis" [matTooltip]="fee.value.rateName ?? '-'">
+                                    {{fee.value.rateName ?? '-'}}
+                                </span>
+                                <span fxFlex="25%" class="u-w--100 text-truncate-ellipsis" [matTooltip]="fee.value.feeDirection?.name ?? '-'">
+                                    {{fee.value.feeDirection?.name ?? '-'}}
+                                </span>
+                                <span fxFlex="20%" class="u-w--100 text-truncate-ellipsis" [matTooltip]="fee.value.feeFrequency?.name ?? '-'">
+                                    {{fee.value.feeFrequency?.name ?? '-'}}
+                                </span>
+                                <span fxFlex="20%" class="u-w--100 text-truncate-ellipsis" [matTooltip]="fee.value.clientRateValue + ' ' + fee.value.clientRateCurrency?.name">
+                                    {{fee.value.clientRateValue || fee.value.clientRateCurrency?.name ? fee.value.clientRateValue + ' ' + fee.value.clientRateCurrency?.name : '-'}}
+                                </span>
+                            </ng-container>
+                        </div>
+                    </ng-container>
+                </div>
             </div>
             <mat-divider class="u-w--100 u-mt--20 u-mb--20"></mat-divider>
             <div fxLayout="column" fxLayoutAlign="start start" class="u-w--100">
@@ -274,13 +454,13 @@
                     <div fxLayout="column" fxFlex="25%">
                         <h3 class="workflow-readonly--gray-header">Evaluations</h3>
                         <span class="workflow-readonly--blue-text-bold">
-                            {{salesMainDataForm?.projectType?.value?.name}}
+                            {{salesClientDataForm?.evaluationsDisabled?.value ? 'Disabled' : 'Enabled'}}
                         </span>
                     </div>
                     <div fxLayout="column" fxFlex="25%">
                         <h3 class="workflow-readonly--gray-header">Evaluations Reference Person</h3>
                         <span class="workflow-readonly--blue-text-bold">
-                            {{salesMainDataForm?.salesType?.value?.name}}
+                            {{salesClientDataForm?.evaluationsReferencePersonIdValue?.value}}
                         </span>
                     </div>
                 </div>
@@ -291,20 +471,28 @@
                 <div fxLayout="column" class="u-w--100 u-mb--20">
                     <h3 class="workflow-readonly--gray-header">Special Contract Terms</h3>
                     <span class="workflow-readonly--blue-text">
-                        {{salesMainDataForm?.projectType?.value?.name}}
+                        {{salesClientDataForm?.specialContractTerms?.value}}
                     </span>
                 </div>
                 <div fxLayout="column" class="u-w--100 u-mb--20">
                     <h3 class="workflow-readonly--gray-header">Contract Signers</h3>
-                    <span class="workflow-readonly--blue-text-bold">
-                        {{salesMainDataForm?.salesType?.value?.name}}
-                    </span>
+                    <div fxLayout="row" fxLayoutAlign="start start" fxLayoutGap="25px" *ngFor="let item of salesClientDataForm?.contractSigners?.controls">
+                        <span class="workflow-readonly--blue-text-bold">
+                            {{item?.value?.clientName}}
+                        </span>
+                        <span class="workflow-readonly--blue-text-bold">
+                            {{item?.value?.clientRole}}
+                        </span>
+                        <span class="workflow-readonly--blue-text-bold">
+                            {{item?.value?.clientSequence}}
+                        </span>
+                    </div>
                 </div>
             </div>
         </div>
         <mat-divider class="u-mt--20 u-mb--20"></mat-divider>
         <!-- Consultant data -->
-        <ng-container *ngFor="let item of [1,2]">
+        <ng-container *ngFor="let item of consultantsForm.consultantData.controls">
             <div fxLayout="column" fxLayoutAlign="start start" class="workflow-sales--process-data u-w--100">
                 <div fxLayout="column" fxLayoutAlign="start start" class="u-w--100">
                     <h1 class="workflow-readonly--header-main u-mb--10">
@@ -316,7 +504,7 @@
                         <div fxLayout="column" fxFlex="25%">
                             <h3 class="workflow-readonly--gray-header">Employment type</h3>
                             <span class="workflow-readonly--blue-text-bold">
-                                {{salesMainDataForm?.projectType?.value?.name}}
+                                {{item?.value?.consultantType}}
                             </span>
                         </div>
                         <div fxLayout="column">
@@ -326,10 +514,10 @@
                                 <div fxLayout="column">
                                     <p class="workflow-extension--consultant-data--consultant-name">
                                         <!-- {{contractsConsultantsDataForm.consultantData.at(i).get('consultantName')?.value}} -->
-                                        Robertsen Oscar
+                                        Robertsen Oscar HC
                                     </p>
                                     <span class="workflow-extension--consultant-data--consultant-text">
-                                        Just Do IT | Warsaw, PL | #9876 / PL-06281
+                                        Just Do IT | Warsaw, PL | #9876 / PL-06281 HC
                                     </span>
                                 </div>
                             </div>
@@ -342,20 +530,20 @@
                     <div fxLayout="row" fxLayoutAlign="start start" class="u-w--100 u-mb--20">
                         <h3 class="workflow-readonly--gray-header">Project Duration</h3>
                         <span class="workflow-readonly--blue-text-bold">
-                            {{salesMainDataForm?.projectType?.value?.name}}
+                            {{item?.value?.consultantProjectDurationSameAsClient ? ' Same as client' : 'Different from client'}}
                         </span>
                     </div>
                     <div fxLayout="row" fxLayoutAlign="start start" class="u-w--100 u-mb--20">
                         <div fxLayout="column" fxFlex="25%">
                             <h3 class="workflow-readonly--gray-header">Start date</h3>
                             <span class="workflow-readonly--blue-text-bold">
-                                {{salesMainDataForm?.projectType?.value?.name}}
+                                {{item?.value?.consultantProjectStartDate}}
                             </span>
                         </div>
                         <div fxLayout="column" fxFlex="25%">
                             <h3 class="workflow-readonly--gray-header">End date</h3>
                             <span class="workflow-readonly--blue-text-bold">
-                                {{salesMainDataForm?.salesType?.value?.name}}
+                                {{item?.value?.consultantProjectEndDate}}
                             </span>
                         </div>
                     </div>
@@ -366,61 +554,64 @@
                     <div fxLayout="row" fxLayoutAlign="start start" class="u-w--100 u-mb--20">
                         <div fxLayout="column" fxFlex="50%">
                             <h3 class="workflow-readonly--gray-header">Workplace</h3>
-                            <div fxLayout="row" class="u-w--10">
+                            <div fxLayout="row" class="u-w--10" *ngIf="item?.value?.consultantIsOnsiteWorkplace">
                                 <span class="workflow-readonly--blue-text-bold" fxFlex="50%">
                                     <!-- {{salesMainDataForm?.projectType?.value?.name}} -->Onsite
                                 </span>
                                 <span class="workflow-readonly--blue-text-bold" fxFlex="50%">
-                                    <!-- {{salesMainDataForm?.projectType?.value?.name}} -->Marszałkowska 123, Warsaw
+                                    <!-- {{salesMainDataForm?.projectType?.value?.name}}Marszałkowska 123, Warsaw -->
+                                    {{item?.value?.consultantWorkplaceCliendAddress}}
                                 </span>
                             </div>
-                            <div fxLayout="row" class="u-w--10">
+                            <div fxLayout="row" class="u-w--10" *ngIf="item?.value?.consultantIsEmagineOfficeWorkplace">
                                 <span class="workflow-readonly--blue-text-bold" fxFlex="50%">
                                     <!-- {{salesMainDataForm?.projectType?.value?.name}} -->PDC Office
                                 </span>
                                 <span class="workflow-readonly--blue-text-bold" fxFlex="50%">
-                                    <!-- {{salesMainDataForm?.projectType?.value?.name}} -->Domaniewska 39a, Warsaw
+                                    <!-- {{salesMainDataForm?.projectType?.value?.name}}Domaniewska 39a, Warsaw -->
+                                    {{item?.value?.consultantWorkplaceEmagineOffice?.name}}
                                 </span>
                             </div>
-                            <div fxLayout="row" class="u-w--10">
+                            <div fxLayout="row" class="u-w--10" *ngIf="item?.value?.consultantIsRemoteWorkplace">
                                 <span class="workflow-readonly--blue-text-bold" fxFlex="50%">
                                     <!-- {{salesMainDataForm?.projectType?.value?.name}} -->Remote
                                 </span>
                                 <span class="workflow-readonly--blue-text-bold" fxFlex="50%">
-                                    <!-- {{salesMainDataForm?.projectType?.value?.name}} -->Poland
+                                    <!-- {{salesMainDataForm?.projectType?.value?.name}}Poland -->
+                                    {{item?.value?.consultantWorkplaceRemote}}
                                 </span>
                             </div>
                         </div>
                         <div fxLayout="column" fxFlex="50%">
                             <h3 class="workflow-readonly--gray-header">Percentage onsite</h3>
                             <span class="workflow-readonly--blue-text-bold">
-                                {{salesMainDataForm?.salesType?.value?.name}}
+                                {{item?.value?.consultantWorkplacePercentageOnSite}}
                             </span>
                         </div>
                     </div>
                     <div fxLayout="column" class="u-w--100 u-mb--20">
                         <h3 class="workflow-readonly--gray-header">Expected workload</h3>
                         <span class="workflow-readonly--blue-text-bold">
-                            {{salesMainDataForm?.projectCategory?.value}}
+                            {{item?.value?.consultantExpectedWorkloadHours}} {{item?.value?.consultantExpectedWorkloadPeriod}}
                         </span>
                     </div>
                     <div fxLayout="column" class="u-w--100 u-mb--20">
                         <h3 class="workflow-readonly--gray-header">Cap on Time Reporting</h3>
                         <span class="workflow-readonly--blue-text-bold">
-                            {{salesMainDataForm?.projectCategory?.value}}
+                            {{item?.value?.consultantCapOnTimeReporting}}
                         </span>
                     </div>
                     <div fxLayout="row" fxLayoutAlign="start start" class="u-w--100 u-mb--20">
                         <div fxLayout="column" fxFlex="25%">
                             <h3 class="workflow-readonly--gray-header">Max. value</h3>
                             <span class="workflow-readonly--blue-text-bold">
-                                {{salesMainDataForm?.projectType?.value?.name}}
+                                {{item?.value?.consultantCapOnTimeReportingValue}}
                             </span>
                         </div>
                         <div fxLayout="column" fxFlex="25%">
                             <h3 class="workflow-readonly--gray-header">Currency</h3>
                             <span class="workflow-readonly--blue-text-bold">
-                                {{salesMainDataForm?.salesType?.value?.name}}
+                                {{item?.value?.consultantRateCurrency?.name}}
                             </span>
                         </div>
                     </div>
@@ -431,32 +622,32 @@
                     <div fxLayout="column" class="u-w--100 u-mb--20">
                         <h3 class="workflow-readonly--gray-header">ProData Entity</h3>
                         <span class="workflow-readonly--blue-text-bold">
-                            {{salesMainDataForm?.projectCategory?.value}}
+                            {{item?.value?.consultantProdataEntity?.name}}
                         </span>
                     </div>
                     <div fxLayout="column" class="u-w--100 u-mb--20">
                         <h3 class="workflow-readonly--gray-header">Price</h3>
                         <span class="workflow-readonly--blue-text-bold">
-                            {{salesMainDataForm?.projectCategory?.value}}
+                            {{item?.value?.consultantPaymentType?.name}}
                         </span>
                     </div>
                     <div fxLayout="row" fxLayoutAlign="start start" class="u-w--100 u-mb--20">
                         <div fxLayout="column" fxFlex="25%">
                             <h3 class="workflow-readonly--gray-header">Rate</h3>
                             <span class="workflow-readonly--blue-text-bold">
-                                {{salesMainDataForm?.projectType?.value?.name}}
+                                {{item?.value?.consultantRate}}
                             </span>
                         </div>
                         <div fxLayout="column" fxFlex="25%">
                             <h3 class="workflow-readonly--gray-header">Unit type</h3>
                             <span class="workflow-readonly--blue-text-bold">
-                                {{salesMainDataForm?.salesType?.value?.name}}
+                                {{item?.value?.consultantRateUnitType?.name}}
                             </span>
                         </div>
                         <div fxLayout="column" fxFlex="25%">
                             <h3 class="workflow-readonly--gray-header">Currency</h3>
                             <span class="workflow-readonly--blue-text-bold">
-                                {{salesMainDataForm?.salesType?.value?.name}}
+                                {{item?.value?.consultantRateCurrency?.name}}
                             </span>
                         </div>
                     </div>
@@ -464,19 +655,19 @@
                         <div fxLayout="column" fxFlex="25%">
                             <h3 class="workflow-readonly--gray-header">PDC-to-PDC rate</h3>
                             <span class="workflow-readonly--blue-text-bold">
-                                {{salesMainDataForm?.projectType?.value?.name}}
+                                {{item?.value?.consultantPDCRate}}
                             </span>
                         </div>
                         <div fxLayout="column" fxFlex="25%">
                             <h3 class="workflow-readonly--gray-header">Unit type</h3>
                             <span class="workflow-readonly--blue-text-bold">
-                                {{salesMainDataForm?.salesType?.value?.name}}
+                                {{item?.value?.consultantPDCRateUnitType?.name}}
                             </span>
                         </div>
                         <div fxLayout="column" fxFlex="25%">
                             <h3 class="workflow-readonly--gray-header">Currency</h3>
                             <span class="workflow-readonly--blue-text-bold">
-                                {{salesMainDataForm?.salesType?.value?.name}}
+                                {{item?.value?.consultantPDCRateCurrency?.name}}
                             </span>
                         </div>
                     </div>
@@ -487,7 +678,7 @@
                     <div fxLayout="column" class="u-w--100 u-mb--20">
                         <h3 class="workflow-readonly--gray-header">Special Contract Terms</h3>
                         <span class="workflow-readonly--blue-text">
-                            {{salesMainDataForm?.projectCategory?.value}}
+                            {{item?.value?.consultantSpecialContractTerms}}
                         </span>
                     </div>
                 </div>
@@ -497,7 +688,7 @@
                     <div fxLayout="column" class="u-w--100 u-mb--20">
                         <h3 class="workflow-readonly--gray-header">Delivery Account Manager</h3>
                         <span class="workflow-readonly--blue-text-bold">
-                            {{salesMainDataForm?.projectCategory?.value}}
+                            {{item?.value?.consultantAccountManager}}
                         </span>
                     </div>
                 </div>
@@ -2280,14 +2471,14 @@
                 <div fxLayout="row" fxLayoutAlign="start start" class="u-w--100 u-mb--10">
                     <mat-button-toggle-group class="workflow-toggle-buttons u-mt--10" formControlName="terminationBeforeEndOfContract">
                         <mat-button-toggle
-                            [value]="item.value"
-                            *ngFor="let item of [{name: 'According to Contract', value: false}, {name: 'Before the end of Contract', value: true}]">
-                            {{ item.name }}
+                        *ngFor="let item of nonStandartTerminationTimes | keyvalue"
+                        [value]="item.key">
+                            {{ item.value }}
                         </mat-button-toggle>
                     </mat-button-toggle-group>
                 </div>
 
-                <div fxLayout="column" fxLayoutAlign="start start" class="u-w--100 u-mb--20" *ngIf="salesTerminateConsultantForm?.terminationBeforeEndOfContract?.value === true">
+                <div fxLayout="column" fxLayoutAlign="start start" class="u-w--100 u-mb--20" *ngIf="salesTerminateConsultantForm?.nonStandardTerminationTime?.value === '1'">
                     <div>
                         <mat-form-field appearance="outline">
                             <mat-label>End date</mat-label>
@@ -2320,7 +2511,7 @@
                     </div>
                 </div>
 
-                <div fxLayout="row" fxLayoutAlign="start start" class="u-w--100 u-mb--20 u-mt--10" *ngIf="salesTerminateConsultantForm?.terminationBeforeEndOfContract?.value === false">
+                <div fxLayout="row" fxLayoutAlign="start start" class="u-w--100 u-mb--20 u-mt--10" *ngIf="salesTerminateConsultantForm?.nonStandardTerminationTime?.value === '1'">
                     <mat-form-field appearance="outline" class="u-w--100 textarea-input " fxFlex="0 0 calc(66% + 16px)">
                         <mat-label>Additional comments</mat-label>
                         <textarea matInput autocomplete="new-password" name="additionalComments" formControlName="additionalComments">
@@ -2340,7 +2531,7 @@
                     </mat-form-field>
                 </div>
                 <div fxLayout="row" fxLayoutAlign="start start" class="u-w--100 u-mb--20">
-                    <mat-checkbox color="accent" formControlName="noEvaluation" name="noEvaluation" class="black-checkbox" (change)="disableOrEnableInput(!salesTerminateConsultantForm?.noEvaluation?.value, salesTerminateConsultantForm?.finalEvaluationReferencePersonId)">
+                    <mat-checkbox color="accent" formControlName="noEvaluation" name="noEvaluation" class="black-checkbox" (change)="disableOrEnableInput(!salesTerminateConsultantForm?.noEvaluation?.value, salesTerminateConsultantForm?.finalEvaluationReferencePerson)">
                         No evaluation
                     </mat-checkbox>
                 </div>
