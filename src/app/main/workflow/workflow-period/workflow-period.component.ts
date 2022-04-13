@@ -25,7 +25,7 @@ export class WorkflowPeriodComponent implements OnInit {
     selectedStep: StepDto;
     selectedAnchor: string;
 
-    workflowSteps = WorkflowSteps;
+    workflowSteps = StepType;
     selectedStepEnum: StepType;
     selectedSideSection: number;
     sectionIndex = 0;
@@ -62,7 +62,6 @@ export class WorkflowPeriodComponent implements OnInit {
             }))
             .subscribe(result => {
                 this.workflowPeriodStepTypes = result;
-                // this.changeSideSection(this.sideMenuItems[0] , 0);
             });
     }
 
@@ -94,24 +93,10 @@ export class WorkflowPeriodComponent implements OnInit {
         }
     }
 
-    mapStepType(stepType: EnumEntityTypeDto) {
-        switch (stepType.name) {
-            case 'Sales':
-                return WorkflowSteps.Sales;
-            case 'Contract':
-                return WorkflowSteps.Contracts;
-            case 'Finance':
-                return WorkflowSteps.Finance;
-            case 'Sourcing':
-                return WorkflowSteps.Sourcing;
-        }
-    }
-
     changeStepSelection(step: StepDto) {
-        // let keyArray = Object.keys(this.workflowPeriodStepTypes).map(x => +x);
         this.selectedStepEnum = step.typeId!;
         this.selectedStep = step;
-        this._workflowDataService.workflowProgress.currentlyActiveStep = step.typeId! * 1;
+        this._workflowDataService.workflowProgress.currentlyActiveStep = step.typeId!;
     }
 
     changeSideSection(item: WorkflowProcessDto, index: number) {

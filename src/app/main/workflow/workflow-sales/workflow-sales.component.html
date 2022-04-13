@@ -478,7 +478,7 @@
                     <h3 class="workflow-readonly--gray-header">Contract Signers</h3>
                     <div fxLayout="row" fxLayoutAlign="start start" fxLayoutGap="25px" *ngFor="let item of salesClientDataForm?.contractSigners?.controls">
                         <span class="workflow-readonly--blue-text-bold">
-                            {{item.value?.clientName}}
+                            {{item?.value?.clientName}}
                         </span>
                         <span class="workflow-readonly--blue-text-bold">
                             {{item?.value?.clientRole}}
@@ -504,7 +504,7 @@
                         <div fxLayout="column" fxFlex="25%">
                             <h3 class="workflow-readonly--gray-header">Employment type</h3>
                             <span class="workflow-readonly--blue-text-bold">
-                                {{item.value.consultantType}}
+                                {{item?.value?.consultantType}}
                             </span>
                         </div>
                         <div fxLayout="column">
@@ -569,7 +569,7 @@
                                 </span>
                                 <span class="workflow-readonly--blue-text-bold" fxFlex="50%">
                                     <!-- {{salesMainDataForm?.projectType?.value?.name}}Domaniewska 39a, Warsaw -->
-                                    {{item?.value?.consultantWorkplaceEmagineOffice.name}}
+                                    {{item?.value?.consultantWorkplaceEmagineOffice?.name}}
                                 </span>
                             </div>
                             <div fxLayout="row" class="u-w--10" *ngIf="item?.value?.consultantIsRemoteWorkplace">
@@ -628,7 +628,7 @@
                     <div fxLayout="column" class="u-w--100 u-mb--20">
                         <h3 class="workflow-readonly--gray-header">Price</h3>
                         <span class="workflow-readonly--blue-text-bold">
-                            {{item?.value?.consultantPaymentType.name}}
+                            {{item?.value?.consultantPaymentType?.name}}
                         </span>
                     </div>
                     <div fxLayout="row" fxLayoutAlign="start start" class="u-w--100 u-mb--20">
@@ -641,13 +641,13 @@
                         <div fxLayout="column" fxFlex="25%">
                             <h3 class="workflow-readonly--gray-header">Unit type</h3>
                             <span class="workflow-readonly--blue-text-bold">
-                                {{item?.value?.consultantRateUnitType.name}}
+                                {{item?.value?.consultantRateUnitType?.name}}
                             </span>
                         </div>
                         <div fxLayout="column" fxFlex="25%">
                             <h3 class="workflow-readonly--gray-header">Currency</h3>
                             <span class="workflow-readonly--blue-text-bold">
-                                {{item?.value?.consultantRateCurrency.name}}
+                                {{item?.value?.consultantRateCurrency?.name}}
                             </span>
                         </div>
                     </div>
@@ -661,13 +661,13 @@
                         <div fxLayout="column" fxFlex="25%">
                             <h3 class="workflow-readonly--gray-header">Unit type</h3>
                             <span class="workflow-readonly--blue-text-bold">
-                                {{item?.value?.consultantPDCRateUnitType.name}}
+                                {{item?.value?.consultantPDCRateUnitType?.name}}
                             </span>
                         </div>
                         <div fxLayout="column" fxFlex="25%">
                             <h3 class="workflow-readonly--gray-header">Currency</h3>
                             <span class="workflow-readonly--blue-text-bold">
-                                {{item?.value?.consultantPDCRateCurrency.name}}
+                                {{item?.value?.consultantPDCRateCurrency?.name}}
                             </span>
                         </div>
                     </div>
