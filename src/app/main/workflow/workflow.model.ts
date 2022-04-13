@@ -208,6 +208,11 @@ export enum WorkflowDiallogAction {
     Terminate = 4
 }
 
+export enum ProjectLineDiallogMode {
+    Create = 1,
+    Edit = 2
+}
+
 // #region hardcoded grid
 export enum WorkflowFlag {
     NewSales = 1,
@@ -217,9 +222,9 @@ export enum WorkflowFlag {
 export const WorkflowList = [
     {
         flag: WorkflowFlag.NewSales,
-        id: '98e92457-0af8-4ef3-95cd-9f8f8bc6ca3d',
+        id: '297896A7-63B5-4B66-A4C8-E14E1FE1DDB7',
 
-        client: 'Martha Marikel',
+        client: '7 periods test',
         consultants: [
             { name: 'Martha Marikel' },
             { name: 'John Doe'}
@@ -236,8 +241,8 @@ export const WorkflowList = [
     },
     {
         flag: WorkflowFlag.NewSales,
-        id: 'FA6E1A07-0CBF-41FF-BFCB-065177173F86',
-        client: 'Many extend periods',
+        id: 'E469E5E0-E0D8-425B-8FEF-47CC6148C319',
+        client: 'start + 2 extend',
         consultants: [
             { name: 'Martha Marikel'}
         ],
@@ -253,8 +258,8 @@ export const WorkflowList = [
     },
     {
         flag: WorkflowFlag.Extension,
-        id: 'afde1b8e-a51f-4509-a6ad-ef7168138960',
-        client: 'Martha Marikel',
+        id: 'FFDBABC6-B7A9-4169-8C03-023063EB3E3C',
+        client: 'Terminated wf test',
         consultants: [
             { name: 'Martha Marikel' },
             { name: 'Van Trier Mia' },
@@ -272,8 +277,8 @@ export const WorkflowList = [
     },
     {
         flag: WorkflowFlag.Extension,
-        id: 'afde1b8e-a51f-4509-a6ad-ef7168138960',
-        client: 'Martha Marikel',
+        id: '71A3D92E-7A51-4B49-A702-02877B34144B',
+        client: 'terminated test2',
         consultants: [
             { name: 'Martha Marikel' },
             { name: 'Van Trier Mia' },
@@ -291,7 +296,7 @@ export const WorkflowList = [
     },
     {
         flag: WorkflowFlag.NewSales,
-        id: 'afde1b8e-a51f-4509-a6ad-ef7168138960',
+        id: 'b5cd880a-c94e-4dee-a5b0-de7184582a31',
         client: 'Martha Marikel',
         consultants: [
             { name: 'Martha Marikel' },
@@ -310,7 +315,7 @@ export const WorkflowList = [
     },
     {
         flag: WorkflowFlag.NewSales,
-        id: 'afde1b8e-a51f-4509-a6ad-ef7168138960',
+        id: 'b5cd880a-c94e-4dee-a5b0-de7184582a31',
         client: 'Martha Marikel',
         consultants: [
             { name: 'Martha Marikel' },
@@ -329,7 +334,7 @@ export const WorkflowList = [
     },
     {
         flag: WorkflowFlag.Extension,
-        id: 'afde1b8e-a51f-4509-a6ad-ef7168138960',
+        id: 'b5cd880a-c94e-4dee-a5b0-de7184582a31',
         client: 'Martha Marikel',
         consultants: [
             { name: 'Martha Marikel' },

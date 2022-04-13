@@ -44,7 +44,7 @@ import { MomentFormatPipe } from 'src/shared/common/pipes/moment-format.pipe';
     ],
     providers: [
         ErrorDialogService,
-        InternalLookupService
+        InternalLookupService,
     ],
     entryComponents: [
         ErrorDialogComponent

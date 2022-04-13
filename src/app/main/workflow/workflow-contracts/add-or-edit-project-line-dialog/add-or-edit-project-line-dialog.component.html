@@ -1,0 +1,86 @@
+<mat-dialog-content class="confiramtion-dialog">
+    <div mat-dialog-title class="confiramtion-dialog--header" align="center">
+        <ng-container [ngSwitch]="data.dialogType">
+            <ng-container *ngSwitchCase="dialogType.Create">
+                Create project line
+            </ng-container>
+            <ng-container *ngSwitchCase="dialogType.Edit">
+                Edit project line
+            </ng-container>
+        </ng-container>
+    </div>
+    <form [formGroup]="projectLineForm">
+        <div fxLayout="column" fxLayoutAlign="start start" class="u-w--100">
+            <mat-form-field appearance="outline" class="u-w--100 textarea-input textarea-with-hint" fxFlex="100%" [hintLabel]="(projectLineForm.value.projectName?.length ?? 0 ) + '/150'">
+                <mat-label>Project name</mat-label>
+                <textarea matInput autocomplete="new-password" maxlength="150" [matTextareaAutosize]="true" [matAutosizeMinRows]="2" [matAutosizeMaxRows]="5" name="projectName" formControlName="projectName">
+                </textarea>
+            </mat-form-field>
+            <div fxLayout="row" fxLayoutAlign="start start" class="u-w--100 u-mt--10">
+                <mat-form-field appearance="outline" class="u-mr--16" fxFlex="0 0 calc(50% - 8px)">
+                    <mat-label>Start date</mat-label>
+                    <input autocomplete="off" placeholder="New end date" matInput
+                            [matDatepicker]="startDatePicker"
+                            name="startDate"
+                            formControlName="startDate"
+                            (focus)="startDatePicker.open()"
+                            (click)="startDatePicker.open()" readonly>
+                    <mat-icon class="calendar-icon" matSuffix svgIcon="calendar"></mat-icon>
+                    <mat-datepicker #startDatePicker></mat-datepicker>
+                </mat-form-field>
+
+                <mat-form-field appearance="outline" fxFlex="0 0 calc(50% - 8px)">
+                    <mat-label>End date</mat-label>
+                    <input autocomplete="off" placeholder="New end date" matInput
+                            [matDatepicker]="endDatePicker"
+                            name="saleDate"
+                            formControlName="endDate"
+                            (focus)="endDatePicker.open()"
+                            (click)="endDatePicker.open()" readonly>
+                    <mat-icon class="calendar-icon" matSuffix svgIcon="calendar"></mat-icon>
+                    <mat-datepicker #endDatePicker></mat-datepicker>
+                </mat-form-field>
+            </div>
+            <mat-form-field appearance="outline" class="u-w--100 u-mt--10 filter-select">
+                <mat-label>Invoice reference</mat-label>
+                <mat-select formControlName="invoiceReference" [disableOptionCentering]="true">
+                    <mat-option *ngFor="let item of [0,1,2,3]" [value]="item">
+                        {{ item }}
+                    </mat-option>
+                </mat-select>
+            </mat-form-field>
+
+            <mat-form-field appearance="outline" class="u-w--100 u-mt--10 textarea-input">
+                <mat-label>Optional invoicing info</mat-label>
+                <textarea matInput autocomplete="new-password" [matAutosizeMinRows]="5" [matTextareaAutosize]="true" name="optionalInvoicingInfo" formControlName="optionalInvoicingInfo">
+                </textarea>
+            </mat-form-field>
+
+            <mat-form-field appearance="outline" class="u-w--100 u-mt--10 formFieldNoMarginPadding">
+                <mat-label>Debitor number</mat-label>
+                <input matInput type="text" formControlName="debitorNumber">
+            </mat-form-field>
+
+            <mat-checkbox color="accent" name="diffrentDebitorNumber" formControlName="diffrentDebitorNumber" class="green-checkbox u-mt--10">
+                Different debitor number
+            </mat-checkbox>
+
+            <mat-form-field appearance="outline" class="u-w--100 u-mt--10 formFieldNoMarginPadding">
+                <mat-label>Invoice recipient</mat-label>
+                <input matInput type="text" formControlName="invoiceRecipient">
+            </mat-form-field>
+            <mat-checkbox color="accent" name="differentInvoiceRecipient" formControlName="differentInvoiceRecipient" class="green-checkbox u-mt--10">
+                Different invoice recipient
+            </mat-checkbox>
+        </div>
+    </form>
+</mat-dialog-content>
+<mat-dialog-actions align="start" class="confiramtion-dialog--actions">
+    <button mat-flat-button class="dialog-btn dialog-btn__outlined" (click)="reject()">
+        Cancel
+    </button>
+    <button mat-flat-button class="dialog-btn dialog-btn__positive" (click)="confirm()">
+        Save
+    </button>
+</mat-dialog-actions>
+

@@ -131,9 +131,10 @@ export class WorkflowComponent extends AppComopnentBase implements OnInit, OnDes
                 let input = new StartNewWorkflowInputDto();
                 input.startDate = result.startDate;
                 input.endDate = result.endDate;
+                this.showMainSpinner();
                 this._workflowService.start(input)
                     .pipe(finalize(() => {
-
+                        this.hideMainSpinner();
                     }))
                     .subscribe(result => {
                         this.router.navigate(['/main/workflow', result.workflowId]);
