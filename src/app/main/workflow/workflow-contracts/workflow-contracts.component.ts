@@ -86,6 +86,12 @@ export class WorkflowContractsComponent extends AppComopnentBase implements OnIn
         this.contractsConsultantsDataForm = new WorkflowContractsConsultantsDataForm();
         this.contractsSyncDataForm = new WorkflowContractsSyncForm();
         this.contractsTerminationConsultantForm = new WorkflowContractsTerminationConsultantsDataForm();
+        this._workflowDataService.workflowContractsSaved
+            .pipe(takeUntil(this._unsubscribe))
+            .subscribe((value: boolean) => {
+                // NB: boolean SAVE DRAFT or COMPLETE in future
+                this.saveContractsStep();
+            });
     }
 
     ngOnInit(): void {

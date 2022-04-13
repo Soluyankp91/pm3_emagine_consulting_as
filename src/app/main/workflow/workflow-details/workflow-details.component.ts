@@ -268,6 +268,7 @@ export class WorkflowDetailsComponent extends AppComopnentBase implements OnInit
                                 console.log('save WF Sales');
                                 break;
                             case StepType.Contract:
+                                this._workflowDataService.workflowContractsSaved.emit(true);
                                 console.log('save WF Contracts');
                                 break;
                             case StepType.Finance:
