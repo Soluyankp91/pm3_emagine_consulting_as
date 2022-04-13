@@ -385,10 +385,6 @@ export class InternalLookupService {
     }
 
     getWorkflowPeriodStepTypes(): Observable<{ [key: string]: string; }> {
-        // console.log(!this.isEmptyObject(this.workflowPeriodStepTypes));
-        console.log(this.workflowPeriodStepTypes !== null);
-
-
         return new Observable<{ [key: string]: string; }>((observer) => {
             if (this.workflowPeriodStepTypes !== undefined && this.workflowPeriodStepTypes !== null) {
                 observer.next(this.workflowPeriodStepTypes);
@@ -587,7 +583,4 @@ export class InternalLookupService {
         });
     }
 
-    isEmptyObject(obj: any) {
-        return Object.keys(obj).length === 0;
-    }
 }

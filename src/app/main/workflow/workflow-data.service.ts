@@ -7,8 +7,10 @@ import { WorkflowProgressStatus } from './workflow.model';
 export class WorkflowDataService {
     workflowProgress: WorkflowProgressStatus = new WorkflowProgressStatus();
 
-    workflowSalesSaved = new EventEmitter<boolean>();
     workflowSideSectionAdded = new EventEmitter<boolean>();
+    // Start Clinet period
+    workflowSalesSaved = new EventEmitter<boolean>();
+    workflowContractsSaved = new EventEmitter<boolean>();
 
     //Termination
     workflowConsultantTerminationSalesSaved = new EventEmitter<boolean>();

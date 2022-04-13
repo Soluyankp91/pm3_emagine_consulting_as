@@ -195,7 +195,6 @@ export class WorkflowDetailsComponent extends AppComopnentBase implements OnInit
     }
 
     tabChanged(event: MatTabChangeEvent) {
-        console.log('change tab PW');
         this.selectedTabIndex = event.index;
         this.selectedTabName = event.tab.textLabel;
         let newStatus = new WorkflowProgressStatus();
@@ -268,6 +267,7 @@ export class WorkflowDetailsComponent extends AppComopnentBase implements OnInit
                                 console.log('save WF Sales');
                                 break;
                             case StepType.Contract:
+                                this._workflowDataService.workflowContractsSaved.emit(true);
                                 console.log('save WF Contracts');
                                 break;
                             case StepType.Finance:

@@ -86,6 +86,12 @@ export class WorkflowContractsComponent extends AppComopnentBase implements OnIn
         this.contractsConsultantsDataForm = new WorkflowContractsConsultantsDataForm();
         this.contractsSyncDataForm = new WorkflowContractsSyncForm();
         this.contractsTerminationConsultantForm = new WorkflowContractsTerminationConsultantsDataForm();
+        this._workflowDataService.workflowContractsSaved
+            .pipe(takeUntil(this._unsubscribe))
+            .subscribe((value: boolean) => {
+                // NB: boolean SAVE DRAFT or COMPLETE in future
+                this.saveContractsStep();
+            });
     }
 
     ngOnInit(): void {
@@ -519,7 +525,6 @@ export class WorkflowContractsComponent extends AppComopnentBase implements OnIn
         if (projectLinesIndex !== null && projectLinesIndex !== undefined) {
             projectLine = (this.contractsConsultantsDataForm.consultants.at(index).get('projectLines') as FormArray).at(projectLinesIndex!).value;
         }
-        console.log('ss');
         const dialogRef = this.dialog.open(AddOrEditProjectLineDialogComponent, {
             width: '450px',
             minHeight: '180px',
