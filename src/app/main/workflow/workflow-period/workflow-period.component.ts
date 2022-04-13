@@ -6,7 +6,7 @@ import { finalize, takeUntil } from 'rxjs/operators';
 import { InternalLookupService } from 'src/app/shared/common/internal-lookup.service';
 import { ConfirmationDialogComponent } from 'src/app/shared/components/confirmation-dialog/confirmation-dialog.component';
 import { ManagerStatus } from 'src/app/shared/components/manager-search/manager-search.model';
-import { WorkflowProcessDto, WorkflowProcessType, EnumEntityTypeDto, WorkflowServiceProxy, StepDto, EmployeeDto } from 'src/shared/service-proxies/service-proxies';
+import { WorkflowProcessDto, WorkflowProcessType, EnumEntityTypeDto, WorkflowServiceProxy, StepDto, EmployeeDto, StepType } from 'src/shared/service-proxies/service-proxies';
 import { WorkflowDataService } from '../workflow-data.service';
 import { WorkflowSteps } from '../workflow.model';
 
@@ -21,12 +21,12 @@ export class WorkflowPeriodComponent implements OnInit {
 
     sideMenuItems: WorkflowProcessDto[] = [];
     workflowProcessTypes = WorkflowProcessType;
-    workflowPeriodStepTypes: EnumEntityTypeDto[] = [];
+    workflowPeriodStepTypes: { [key: string]: string };
     selectedStep: StepDto;
     selectedAnchor: string;
 
-    workflowSteps = WorkflowSteps;
-    selectedStepEnum: number;
+    workflowSteps = StepType;
+    selectedStepEnum: StepType;
     selectedSideSection: number;
     sectionIndex = 0;
 
@@ -62,7 +62,6 @@ export class WorkflowPeriodComponent implements OnInit {
             }))
             .subscribe(result => {
                 this.workflowPeriodStepTypes = result;
-                // this.changeSideSection(this.sideMenuItems[0] , 0);
             });
     }
 
@@ -94,23 +93,10 @@ export class WorkflowPeriodComponent implements OnInit {
         }
     }
 
-    mapStepType(stepType: EnumEntityTypeDto) {
-        switch (stepType.name) {
-            case 'Sales':
-                return WorkflowSteps.Sales;
-            case 'Contract':
-                return WorkflowSteps.Contracts;
-            case 'Finance':
-                return WorkflowSteps.Finance;
-            case 'Sourcing':
-                return WorkflowSteps.Sourcing;
-        }
-    }
-
     changeStepSelection(step: StepDto) {
-        this.selectedStepEnum = this.mapStepType(this.workflowPeriodStepTypes?.find(x => x.id === step.typeId)!)!;
+        this.selectedStepEnum = step.typeId!;
         this.selectedStep = step;
-        this._workflowDataService.workflowProgress.currentlyActiveStep = step.typeId! * 1;
+        this._workflowDataService.workflowProgress.currentlyActiveStep = step.typeId!;
     }
 
     changeSideSection(item: WorkflowProcessDto, index: number) {
@@ -154,6 +140,5 @@ export class WorkflowPeriodComponent implements OnInit {
     changeAnchorSelection(anchorName: string) {
         this.selectedAnchor = anchorName;
     }
-
 
 }

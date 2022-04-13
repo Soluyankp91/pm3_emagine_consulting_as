@@ -31,7 +31,8 @@ export class InternalLookupService {
     discounts: EnumEntityTypeDto[] = [];
     workflowClientPeriodTypes: EnumEntityTypeDto[] = [];
     workflowConsultantPeriodTypes: EnumEntityTypeDto[] = [];
-    workflowPeriodStepTypes: EnumEntityTypeDto[] = [];
+    workflowPeriodStepTypes: { [key: string]: string; };
+    nonStandartTerminationTimes: { [key: string]: string; };
 
     constructor(private _enumService: EnumServiceProxy) {
 
@@ -383,13 +384,17 @@ export class InternalLookupService {
         });
     }
 
-    getWorkflowPeriodStepTypes(): Observable<EnumEntityTypeDto[]> {
-        return new Observable<EnumEntityTypeDto[]>((observer) => {
-            if (this.workflowPeriodStepTypes.length) {
+    getWorkflowPeriodStepTypes(): Observable<{ [key: string]: string; }> {
+        // console.log(!this.isEmptyObject(this.workflowPeriodStepTypes));
+        console.log(this.workflowPeriodStepTypes !== null);
+
+
+        return new Observable<{ [key: string]: string; }>((observer) => {
+            if (this.workflowPeriodStepTypes !== undefined && this.workflowPeriodStepTypes !== null) {
                 observer.next(this.workflowPeriodStepTypes);
                 observer.complete();
             } else {
-                this._enumService.stepType()
+                this._enumService.stepTypes()
                     .subscribe(response => {
                         this.workflowPeriodStepTypes = response;
                         observer.next(this.workflowPeriodStepTypes);
@@ -562,5 +567,27 @@ export class InternalLookupService {
                     });
             }
         });
+    }
+
+    getNonStandartTerminationTimes(): Observable<{ [key: string]: string; }> {
+        return new Observable<{ [key: string]: string; }>((observer) => {
+            if (this.nonStandartTerminationTimes.length) {
+                observer.next(this.nonStandartTerminationTimes);
+                observer.complete();
+            } else {
+                this._enumService.stepTypes()
+                    .subscribe(response => {
+                        this.nonStandartTerminationTimes = response;
+                        observer.next(this.nonStandartTerminationTimes);
+                        observer.complete();
+                    }, error => {
+                        observer.error(error);
+                    });
+            }
+        });
+    }
+
+    isEmptyObject(obj: any) {
+        return Object.keys(obj).length === 0;
     }
 }

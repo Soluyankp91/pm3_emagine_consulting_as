@@ -6,7 +6,7 @@ import { ActivatedRoute } from '@angular/router';
 import { NgScrollbar } from 'ngx-scrollbar';
 import { Subject } from 'rxjs';
 import { finalize, takeUntil } from 'rxjs/operators';
-import { ClientPeriodDto, EnumEntityTypeDto, WorkflowDto, WorkflowProcessType, WorkflowServiceProxy } from 'src/shared/service-proxies/service-proxies';
+import { ClientPeriodDto, EnumEntityTypeDto, StepType, WorkflowDto, WorkflowProcessType, WorkflowServiceProxy } from 'src/shared/service-proxies/service-proxies';
 import { WorkflowDataService } from '../workflow-data.service';
 import { WorkflowSalesComponent } from '../workflow-sales/workflow-sales.component';
 import { WorkflowProgressStatus, WorkflowTopSections, WorkflowSteps, WorkflowDiallogAction } from '../workflow.model';
@@ -47,7 +47,7 @@ export class WorkflowDetailsComponent implements OnInit, OnDestroy, AfterViewIni
 
     workflowClientPeriodTypes: EnumEntityTypeDto[] = [];
     workflowConsultantPeriodTypes: EnumEntityTypeDto[] = [];
-    workflowPeriodStepTypes: EnumEntityTypeDto[] = [];
+    workflowPeriodStepTypes: { [key: string]: string };
 
     private _unsubscribe = new Subject();
     constructor(
@@ -229,24 +229,8 @@ export class WorkflowDetailsComponent implements OnInit, OnDestroy, AfterViewIni
         return value ? WorkflowTopSections[value] : '';
     }
 
-    mapStepType(stepType: EnumEntityTypeDto) {
-        switch (stepType?.name) {
-            case 'Sales':
-                return WorkflowSteps.Sales;
-            case 'Contract':
-                return WorkflowSteps.Contracts;
-            case 'Finance':
-                return WorkflowSteps.Finance;
-            case 'Sourcing':
-                return WorkflowSteps.Sourcing;
-            default:
-                return null;
-        }
-    }
-
     mapStepName(value: number | undefined) {
-        let selectedStepEnum = this.mapStepType(this.workflowPeriodStepTypes?.find(x => x.id === value)!)!;
-        return value ? WorkflowSteps[selectedStepEnum] : '';
+        return value ? StepType[value] : '';
     }
 
     mapSelectedTabNameToEnum(tabName: string) {
@@ -275,29 +259,29 @@ export class WorkflowDetailsComponent implements OnInit, OnDestroy, AfterViewIni
                 switch (this._workflowDataService.workflowProgress.currentlyActiveSideSection) {
                     case WorkflowProcessType.StartClientPeriod:
                         switch (this._workflowDataService.workflowProgress.currentlyActiveStep) {
-                            case WorkflowSteps.Sales:
+                            case StepType.Sales:
                                 this.saveSalesStep(true);
                                 console.log('save WF Sales');
                                 break;
-                            case WorkflowSteps.Contracts:
+                            case StepType.Contract:
                                 console.log('save WF Contracts');
                                 break;
-                            case WorkflowSteps.Finance:
+                            case StepType.Finance:
                                 console.log('save WF Finance');
                                 break;
                         }
                     break;
                     case WorkflowProcessType.TerminateConsultant:
                         switch (this._workflowDataService.workflowProgress.currentlyActiveStep) {
-                            case WorkflowSteps.Sales:
+                            case StepType.Sales:
                                 this.saveSalesConsultantTerminationStep(true);
                                 console.log('save draft WF Term Cons Sales');
                                 break;
-                            case WorkflowSteps.Contracts:
+                            case StepType.Contract:
                                 this.saveContractsConsultantTerminationStep(true);
                                 console.log('save draft WF Term Cons Contracts');
                                 break;
-                            case WorkflowSteps.Sourcing:
+                            case StepType.Sourcing:
                                 this.saveSourcingConsultantTerminationStep(true);
                                 console.log('save draft WF Term Cons Sourcing');
                                 break;
@@ -305,15 +289,15 @@ export class WorkflowDetailsComponent implements OnInit, OnDestroy, AfterViewIni
                     break;
                     case WorkflowProcessType.TerminateWorkflow:
                         switch (this._workflowDataService.workflowProgress.currentlyActiveStep) {
-                            case WorkflowSteps.Sales:
+                            case StepType.Sales:
                                 this.saveSalesTerminationStep(true);
                                 console.log('save draft WF Term Sales');
                                 break;
-                            case WorkflowSteps.Contracts:
+                            case StepType.Contract:
                                 this.saveContractsTerminationStep(true);
                                 console.log('save draft WF Term Contracts');
                                 break;
-                            case WorkflowSteps.Sourcing:
+                            case StepType.Sourcing:
                                 this.saveSourcingTerminationStep(true);
                                 console.log('save draft WF Term Sourcing');
                                 break;
@@ -323,26 +307,26 @@ export class WorkflowDetailsComponent implements OnInit, OnDestroy, AfterViewIni
                 break;
             case WorkflowTopSections.Extension:
                 switch (this._workflowDataService.workflowProgress.currentlyActiveStep) {
-                    case WorkflowSteps.Sales:
+                    case StepType.Sales:
                         console.log('save Extension Sales');
                         break;
-                    case WorkflowSteps.Contracts:
+                    case StepType.Contract:
                         console.log('save Extension Contracts');
                         break;
-                    case WorkflowSteps.Finance:
+                    case StepType.Finance:
                         console.log('save Extension Finance');
                         break;
                 }
                 break;
             case WorkflowTopSections.Termination:
                 switch (this._workflowDataService.workflowProgress.currentlyActiveStep) {
-                    case WorkflowSteps.Sales:
+                    case StepType.Sales:
                         console.log('save Termination Sales');
                         break;
-                    case WorkflowSteps.Contracts:
+                    case StepType.Contract:
                         console.log('save Termination Contracts');
                         break;
-                    case WorkflowSteps.Finance:
+                    case StepType.Finance:
                         console.log('save Termination Finance');
                         break;
                 }
@@ -357,30 +341,30 @@ export class WorkflowDetailsComponent implements OnInit, OnDestroy, AfterViewIni
                 break;
             case WorkflowTopSections.Workflow:
                 // switch (this._workflowDataService.workflowProgress.currentlyActiveStep) {
-                    // case WorkflowSteps.Sales:
+                    // case StepType.Sales:
                     //     console.log('Complete WF Sales');
                     //     this._workflowDataService.updateWorkflowProgressStatus({isWorkflowSalesSaved: true});
                     // break;
-                    // case WorkflowSteps.Contracts:
+                    // case StepType.Contracts:
                     //     console.log('Complete WF Contracts');
                     //     this._workflowDataService.updateWorkflowProgressStatus({isWorkflowContractsSaved: true});
                     // break;
-                    // case WorkflowSteps.Finance:
+                    // case StepType.Finance:
                     //     console.log('Complete WF Finance');
                     //     this._workflowDataService.updateWorkflowProgressStatus({isWorkflowAccountsSaved: true, isPrimaryWorkflowCompleted: true});
                     // break;
                 switch(this._workflowDataService.workflowProgress.currentlyActiveSideSection) {
                     case WorkflowProcessType.TerminateConsultant:
                         switch (this._workflowDataService.workflowProgress.currentlyActiveStep) {
-                            case WorkflowSteps.Sales:
+                            case StepType.Sales:
                                 this.completeSalesConsultantTerminationStep(true);
                                 console.log('complete WF Term Cons Sales');
                                 break;
-                            case WorkflowSteps.Contracts:
+                            case StepType.Contract:
                                 this.completeContractsConsultantTerminationStep(true);
                                 console.log('complete WF Term Cons Contracts');
                                 break;
-                            case WorkflowSteps.Sourcing:
+                            case StepType.Sourcing:
                                 this.completeSourcingConsultantTerminationStep(true);
                                 console.log('complete WF Term Cons Sourcing');
                                 break;
@@ -388,15 +372,15 @@ export class WorkflowDetailsComponent implements OnInit, OnDestroy, AfterViewIni
                     break;
                     case WorkflowProcessType.TerminateWorkflow:
                         switch (this._workflowDataService.workflowProgress.currentlyActiveStep) {
-                            case WorkflowSteps.Sales:
+                            case StepType.Sales:
                                 this.completeSalesTerminationStep(true);
                                 console.log('complete WF Term Sales');
                                 break;
-                            case WorkflowSteps.Contracts:
+                            case StepType.Contract:
                                 this.completeContractsTerminationStep(true);
                                 console.log('complete WF Term Contracts');
                                 break;
-                            case WorkflowSteps.Sourcing:
+                            case StepType.Sourcing:
                                 this.completeSourcingTerminationStep(true);
                                 console.log('complete WF Term Sourcing');
                                 break;
@@ -406,26 +390,26 @@ export class WorkflowDetailsComponent implements OnInit, OnDestroy, AfterViewIni
                 break;
             case WorkflowTopSections.Extension:
                 switch (this._workflowDataService.workflowProgress.currentlyActiveStep) {
-                    case WorkflowSteps.Sales:
+                    case StepType.Sales:
                         console.log('Complete Extension Sales');
                         break;
-                    case WorkflowSteps.Contracts:
+                    case StepType.Contract:
                         console.log('Complete Extension Contracts');
                         break;
-                    case WorkflowSteps.Finance:
+                    case StepType.Finance:
                         console.log('Complete Extension Finance');
                         break;
                 }
                 break;
             case WorkflowTopSections.Termination:
                 switch (this._workflowDataService.workflowProgress.currentlyActiveStep) {
-                    case WorkflowSteps.Sales:
+                    case StepType.Sales:
                         console.log('Complete Termination Sales');
                         break;
-                    case WorkflowSteps.Contracts:
+                    case StepType.Contract:
                         console.log('Complete Termination Contracts');
                         break;
-                    case WorkflowSteps.Finance:
+                    case StepType.Finance:
                         console.log('Complete Termination Finance');
                         break;
                 }

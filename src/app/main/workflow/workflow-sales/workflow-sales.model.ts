@@ -378,19 +378,19 @@ export enum ConsultantDiallogAction {
 export class SalesTerminateConsultantForm extends FormGroup {
     constructor() {
         super({
-            finalEvaluationReferencePersonId: new FormControl(null),
+            finalEvaluationReferencePerson: new FormControl(null),
             noEvaluation: new FormControl(null),
             causeOfNoEvaluation: new FormControl(null),
-            terminationBeforeEndOfContract: new FormControl(null),
+            nonStandardTerminationTime: new FormControl(null),
             endDate: new FormControl(null),
             terminationReason: new FormControl(null),
-            causeOfTerminationBeforeEndOfContract: new FormControl(null),
+            causeOfNonStandardTerminationTime: new FormControl(null),
             additionalComments: new FormControl(null)
         });
     }
 
-    get finalEvaluationReferencePersonId() {
-        return this.get('finalEvaluationReferencePersonId');
+    get finalEvaluationReferencePerson() {
+        return this.get('finalEvaluationReferencePerson');
     }
     get noEvaluation() {
         return this.get('noEvaluation');
@@ -398,8 +398,8 @@ export class SalesTerminateConsultantForm extends FormGroup {
     get causeOfNoEvaluation() {
         return this.get('causeOfNoEvaluation');
     }
-    get terminationBeforeEndOfContract() {
-        return this.get('terminationBeforeEndOfContract');
+    get nonStandardTerminationTime() {
+        return this.get('nonStandardTerminationTime');
     }
     get endDate() {
         return this.get('endDate');
@@ -407,8 +407,8 @@ export class SalesTerminateConsultantForm extends FormGroup {
     get terminationReason() {
         return this.get('terminationReason');
     }
-    get causeOfTerminationBeforeEndOfContract() {
-        return this.get('causeOfTerminationBeforeEndOfContract');
+    get causeOfNonStandardTerminationTime() {
+        return this.get('causeOfNonStandardTerminationTime');
     }
     get additionalComments() {
         return this.get('additionalComments');

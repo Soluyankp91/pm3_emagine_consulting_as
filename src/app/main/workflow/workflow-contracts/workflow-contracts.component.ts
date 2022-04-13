@@ -6,7 +6,7 @@ import { Subject } from 'rxjs';
 import { finalize, takeUntil } from 'rxjs/operators';
 import { InternalLookupService } from 'src/app/shared/common/internal-lookup.service';
 import { AppComopnentBase } from 'src/shared/app-component-base';
-import { ClientPeriodContractsDataDto, ConsultantTerminationContractDataDto, WorkflowProcessType, WorkflowTerminationContractDataDto, WorkflowServiceProxy, ClientPeriodServiceProxy, ConsultantContractsDataDto, ConsultantSalesDataDto, ContractsClientDataDto, ContractsMainDataDto, EnumEntityTypeDto, PeriodClientSpecialFeeDto, PeriodClientSpecialRateDto, PeriodConsultantSpecialFeeDto, PeriodConsultantSpecialRateDto, ProjectLineDto } from 'src/shared/service-proxies/service-proxies';
+import { ClientPeriodContractsDataDto, WorkflowProcessType, WorkflowServiceProxy, ClientPeriodServiceProxy, ConsultantContractsDataDto, ConsultantSalesDataDto, ContractsClientDataDto, ContractsMainDataDto, EnumEntityTypeDto, PeriodClientSpecialFeeDto, PeriodClientSpecialRateDto, PeriodConsultantSpecialFeeDto, PeriodConsultantSpecialRateDto, ProjectLineDto, ConsultantTerminationContractDataCommandDto, WorkflowTerminationContractDataCommandDto } from 'src/shared/service-proxies/service-proxies';
 import { WorkflowConsultantActionsDialogComponent } from '../workflow-consultant-actions-dialog/workflow-consultant-actions-dialog.component';
 import { WorkflowDataService } from '../workflow-data.service';
 import { ConsultantDiallogAction } from '../workflow-sales/workflow-sales.model';
@@ -381,7 +381,7 @@ export class WorkflowContractsComponent extends AppComopnentBase implements OnIn
     addConsultantDataToForm(consultant: ConsultantSalesDataDto) {
         // TODO: add missing properties, id, employmentType, etc.
         const form = this._fb.group({
-            consultantData: new FormControl(consultant.consultantData),
+            consultantData: new FormControl(consultant.consultant),
             startDate: new FormControl(consultant.startDate),
             endDate: new FormControl(consultant.endDate),
             consultantType: new FormControl(this.findItemById(this.consultantTypes, consultant.employmentTypeId)),
@@ -596,7 +596,7 @@ export class WorkflowContractsComponent extends AppComopnentBase implements OnIn
 
     // Termination
 
-    addConsultantDataToTerminationForm(consultant: ConsultantTerminationContractDataDto) {
+    addConsultantDataToTerminationForm(consultant: ConsultantTerminationContractDataCommandDto) {
         const form = this._fb.group({
             consultantId: new FormControl(consultant.consultantId),
             // consultantName: new FormControl(consultant.name),
@@ -624,7 +624,7 @@ export class WorkflowContractsComponent extends AppComopnentBase implements OnIn
     }
 
     updateTerminationConsultantContractStep() {
-        let input = new ConsultantTerminationContractDataDto();
+        let input = new ConsultantTerminationContractDataCommandDto();
         input.consultantId = this.contractsTerminationConsultantForm.consultantTerminationContractData?.value.consultantId;
         input.contractLinesDoneManuallyInOldPM = this.contractLinesDoneManuallyInOldPMControl?.value;
         input.removedConsultantFromAnyManualChecklists = this.contractsTerminationConsultantForm.consultantTerminationContractData?.value.removedConsultantFromAnyManualChecklists;
@@ -640,7 +640,7 @@ export class WorkflowContractsComponent extends AppComopnentBase implements OnIn
     }
 
     completeTerminationConsultantContractStep() {
-        let input = new ConsultantTerminationContractDataDto();
+        let input = new ConsultantTerminationContractDataCommandDto();
 
         input.consultantId = this.contractsTerminationConsultantForm.consultantTerminationContractData?.value.consultantId;
         input.contractLinesDoneManuallyInOldPM = this.contractLinesDoneManuallyInOldPMControl?.value;
@@ -671,14 +671,14 @@ export class WorkflowContractsComponent extends AppComopnentBase implements OnIn
     }
 
     updateTerminationContractStep() {
-        let input = new WorkflowTerminationContractDataDto();
+        let input = new WorkflowTerminationContractDataCommandDto();
         input.contractLinesDoneManuallyInOldPM = this.contractLinesDoneManuallyInOldPMControl?.value;
         input.consultantTerminationContractData = this.contractsTerminationConsultantForm.consultantTerminationContractData?.value
 
-        input.consultantTerminationContractData = new Array<ConsultantTerminationContractDataDto>();
+        input.consultantTerminationContractData = new Array<ConsultantTerminationContractDataCommandDto>();
         if (this.contractsTerminationConsultantForm.consultantTerminationContractData.value?.length) {
             this.contractsTerminationConsultantForm.consultantTerminationContractData.value.forEach((consultant: any) => {
-                let consultantInput = new ConsultantTerminationContractDataDto();
+                let consultantInput = new ConsultantTerminationContractDataCommandDto();
                 consultantInput.consultantId = consultant.consultantId;
                 consultantInput.contractLinesDoneManuallyInOldPM = consultant.contractLinesDoneManuallyInOldPM;
                 consultantInput.removedConsultantFromAnyManualChecklists = consultant.removedConsultantFromAnyManualChecklists;
@@ -698,14 +698,14 @@ export class WorkflowContractsComponent extends AppComopnentBase implements OnIn
     }
 
     completeTerminationContractStep() {
-        let input = new WorkflowTerminationContractDataDto();
+        let input = new WorkflowTerminationContractDataCommandDto();
         input.contractLinesDoneManuallyInOldPM = this.contractLinesDoneManuallyInOldPMControl?.value;
         input.consultantTerminationContractData = this.contractsTerminationConsultantForm.consultantTerminationContractData?.value
 
-        input.consultantTerminationContractData = new Array<ConsultantTerminationContractDataDto>();
+        input.consultantTerminationContractData = new Array<ConsultantTerminationContractDataCommandDto>();
         if (this.contractsTerminationConsultantForm.consultantTerminationContractData.value?.length) {
             this.contractsTerminationConsultantForm.consultantTerminationContractData.value.forEach((consultant: any) => {
-                let consultantInput = new ConsultantTerminationContractDataDto();
+                let consultantInput = new ConsultantTerminationContractDataCommandDto();
                 consultantInput.consultantId = consultant.consultantId;
                 consultantInput.contractLinesDoneManuallyInOldPM = consultant.contractLinesDoneManuallyInOldPM;
                 consultantInput.removedConsultantFromAnyManualChecklists = consultant.removedConsultantFromAnyManualChecklists;
