@@ -63,7 +63,6 @@ export class ManagerSearchComponent implements OnInit, OnDestroy {
 
     selectOption(event: Event, option: EmployeeDto) {
         event.stopPropagation();
-        console.log(option);
         this.managerSelected.emit(option.id);
         this.managerSearchMenu.closeMenu();
     }

@@ -201,7 +201,6 @@ export class ClientListComponent extends AppComopnentBase implements OnInit, OnD
                         flag: ''
                     })
                 );
-                console.log(this.countryList);
             });
     }
 

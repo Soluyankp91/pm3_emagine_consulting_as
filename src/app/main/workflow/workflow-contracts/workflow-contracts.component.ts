@@ -525,7 +525,6 @@ export class WorkflowContractsComponent extends AppComopnentBase implements OnIn
         if (projectLinesIndex !== null && projectLinesIndex !== undefined) {
             projectLine = (this.contractsConsultantsDataForm.consultants.at(index).get('projectLines') as FormArray).at(projectLinesIndex!).value;
         }
-        console.log('ss');
         const dialogRef = this.dialog.open(AddOrEditProjectLineDialogComponent, {
             width: '450px',
             minHeight: '180px',

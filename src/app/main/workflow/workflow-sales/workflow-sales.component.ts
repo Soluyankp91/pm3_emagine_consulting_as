@@ -189,7 +189,6 @@ export class WorkflowSalesComponent extends AppComopnentBase implements OnInit {
                             ? value.clientNam?.trim()
                             : value?.trim();
                     }
-                    console.log('s');
                     return this._lookupService.clients(toSend.name, toSend.maxRecordsCount);
                 }),
             ).subscribe((list: ClientResultDto[]) => {
@@ -214,7 +213,6 @@ export class WorkflowSalesComponent extends AppComopnentBase implements OnInit {
                             ? value.clientName?.trim()
                             : value?.trim();
                     }
-                    console.log('s2');
                     return this._lookupService.clients(toSend.name, toSend.maxRecordsCount);
                 }),
             ).subscribe((list: ClientResultDto[]) => {
@@ -1292,7 +1290,6 @@ export class WorkflowSalesComponent extends AppComopnentBase implements OnInit {
                 });
 
                 // Consultant
-                // console.log('s');
                 if (result.consultantSalesData?.length) {
                     result.consultantSalesData?.forEach(consultant => {
                         this.addConsultantForm(consultant);
@@ -1408,7 +1405,6 @@ export class WorkflowSalesComponent extends AppComopnentBase implements OnInit {
     //#endregion Consultant menu actions
 
     commissionRecipientTypeChanged(event: MatSelectChange, index: number) {
-        console.log(event);
         this.commissions.at(index).get('recipient')?.setValue(null, {emitEvent: false});
         this.filteredRecipients = [];
     }

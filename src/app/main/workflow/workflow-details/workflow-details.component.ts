@@ -195,7 +195,6 @@ export class WorkflowDetailsComponent extends AppComopnentBase implements OnInit
     }
 
     tabChanged(event: MatTabChangeEvent) {
-        console.log('change tab PW');
         this.selectedTabIndex = event.index;
         this.selectedTabName = event.tab.textLabel;
         let newStatus = new WorkflowProgressStatus();

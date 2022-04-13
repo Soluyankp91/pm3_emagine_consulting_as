@@ -72,7 +72,6 @@ export class WorkflowPeriodComponent implements OnInit {
             }))
             .subscribe(result => {
                 this.sideMenuItems = result?.clientPeriods![0].workflowProcesses!;
-                console.log('PERIOD SIDE');
             });
     }
 
