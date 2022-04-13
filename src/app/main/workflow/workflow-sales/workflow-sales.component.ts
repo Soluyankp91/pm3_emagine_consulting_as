@@ -1021,6 +1021,10 @@ export class WorkflowSalesComponent extends AppComopnentBase implements OnInit {
         input.salesMainData.discountId = this.salesMainDataForm.discounts?.value;
         input.salesMainData.salesAccountManagerIdValue = this.salesMainDataForm.salesAccountManagerIdValue?.value?.id;
         input.salesMainData.commissionAccountManagerIdValue = this.salesMainDataForm.commissionAccountManagerIdValue?.value?.id;
+        if (this.salesMainDataForm.contractExpirationNotification?.value.includes(999)) { // hardcoded ID for manual date
+            const index = this.salesMainDataForm.contractExpirationNotification?.value.indexOf(999);
+            this.salesMainDataForm.contractExpirationNotification?.value.splice(index, 1);
+        }
         input.salesMainData.contractExpirationNotificationIntervalIds = this.salesMainDataForm.contractExpirationNotification?.value;
         input.salesMainData.customContractExpirationNotificationDate = this.salesMainDataForm.customContractExpirationNotificationDate?.value;
 
@@ -1210,6 +1214,9 @@ export class WorkflowSalesComponent extends AppComopnentBase implements OnInit {
                 // Account Manager
                 this.salesMainDataForm.salesAccountManagerIdValue?.setValue(result?.salesMainData?.salesAccountManagerData, {emitEvent: false});
                 this.salesMainDataForm.commissionAccountManagerIdValue?.setValue(result?.salesMainData?.commissionAccountManagerData, {emitEvent: false});
+                if (result?.salesMainData?.customContractExpirationNotificationDate !== null || result?.salesMainData?.customContractExpirationNotificationDate !== undefined) {
+                    result?.salesMainData?.contractExpirationNotificationIntervalIds!.push(999);
+                }
                 this.salesMainDataForm.contractExpirationNotification?.setValue(result?.salesMainData?.contractExpirationNotificationIntervalIds, {emitEvent: false});
                 this.salesMainDataForm.customContractExpirationNotificationDate?.setValue(result?.salesMainData?.customContractExpirationNotificationDate, {emitEvent: false});
                 this.salesMainDataForm.remarks?.setValue(result?.salesMainData?.remarks, {emitEvent: false});
