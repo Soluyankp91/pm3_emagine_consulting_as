@@ -222,9 +222,9 @@ export enum WorkflowFlag {
 export const WorkflowList = [
     {
         flag: WorkflowFlag.NewSales,
-        id: 'b5cd880a-c94e-4dee-a5b0-de7184582a31',
+        id: '297896A7-63B5-4B66-A4C8-E14E1FE1DDB7',
 
-        client: 'Martha Marikel',
+        client: '7 periods test',
         consultants: [
             { name: 'Martha Marikel' },
             { name: 'John Doe'}
@@ -241,8 +241,8 @@ export const WorkflowList = [
     },
     {
         flag: WorkflowFlag.NewSales,
-        id: 'b5cd880a-c94e-4dee-a5b0-de7184582a31',
-        client: 'Many extend periods',
+        id: 'E469E5E0-E0D8-425B-8FEF-47CC6148C319',
+        client: 'start + 2 extend',
         consultants: [
             { name: 'Martha Marikel'}
         ],
@@ -258,8 +258,8 @@ export const WorkflowList = [
     },
     {
         flag: WorkflowFlag.Extension,
-        id: 'b5cd880a-c94e-4dee-a5b0-de7184582a31',
-        client: 'Martha Marikel',
+        id: 'FFDBABC6-B7A9-4169-8C03-023063EB3E3C',
+        client: 'Terminated wf test',
         consultants: [
             { name: 'Martha Marikel' },
             { name: 'Van Trier Mia' },
@@ -277,8 +277,8 @@ export const WorkflowList = [
     },
     {
         flag: WorkflowFlag.Extension,
-        id: 'b5cd880a-c94e-4dee-a5b0-de7184582a31',
-        client: 'Martha Marikel',
+        id: '71A3D92E-7A51-4B49-A702-02877B34144B',
+        client: 'terminated test2',
         consultants: [
             { name: 'Martha Marikel' },
             { name: 'Van Trier Mia' },
