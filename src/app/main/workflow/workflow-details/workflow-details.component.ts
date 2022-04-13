@@ -47,7 +47,7 @@ export class WorkflowDetailsComponent implements OnInit, OnDestroy, AfterViewIni
 
     workflowClientPeriodTypes: EnumEntityTypeDto[] = [];
     workflowConsultantPeriodTypes: EnumEntityTypeDto[] = [];
-    workflowPeriodStepTypes: EnumEntityTypeDto[] = [];
+    workflowPeriodStepTypes: { [key: string]: string };
 
     private _unsubscribe = new Subject();
     constructor(
@@ -229,8 +229,8 @@ export class WorkflowDetailsComponent implements OnInit, OnDestroy, AfterViewIni
         return value ? WorkflowTopSections[value] : '';
     }
 
-    mapStepType(stepType: EnumEntityTypeDto) {
-        switch (stepType?.name) {
+    mapStepType(stepType: string) {
+        switch (stepType) {
             case 'Sales':
                 return WorkflowSteps.Sales;
             case 'Contract':
@@ -244,8 +244,9 @@ export class WorkflowDetailsComponent implements OnInit, OnDestroy, AfterViewIni
         }
     }
 
-    mapStepName(value: number | undefined) {
-        let selectedStepEnum = this.mapStepType(this.workflowPeriodStepTypes?.find(x => x.id === value)!)!;
+    mapStepName(value: string | undefined) {
+        // Object.keys(this.workflowPeriodStepTypes).find(x => x === value)
+        let selectedStepEnum = this.mapStepType(Object.keys(this.workflowPeriodStepTypes).find(x => x === value)!)!;
         return value ? WorkflowSteps[selectedStepEnum] : '';
     }
 
