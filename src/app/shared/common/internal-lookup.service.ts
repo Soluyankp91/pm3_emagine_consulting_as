@@ -33,6 +33,7 @@ export class InternalLookupService {
     workflowConsultantPeriodTypes: EnumEntityTypeDto[] = [];
     workflowPeriodStepTypes: { [key: string]: string; };
     nonStandartTerminationTimes: { [key: string]: string; };
+    terminationReasons: { [key: string]: string; };
 
     constructor(private _enumService: EnumServiceProxy) {
 
@@ -567,11 +568,11 @@ export class InternalLookupService {
 
     getNonStandartTerminationTimes(): Observable<{ [key: string]: string; }> {
         return new Observable<{ [key: string]: string; }>((observer) => {
-            if (this.nonStandartTerminationTimes.length) {
+            if (this.nonStandartTerminationTimes !== undefined && this.nonStandartTerminationTimes !== null) {
                 observer.next(this.nonStandartTerminationTimes);
                 observer.complete();
             } else {
-                this._enumService.stepTypes()
+                this._enumService.nonStandardTerminationTimes()
                     .subscribe(response => {
                         this.nonStandartTerminationTimes = response;
                         observer.next(this.nonStandartTerminationTimes);
@@ -582,5 +583,25 @@ export class InternalLookupService {
             }
         });
     }
+
+    getTerminationReasons(): Observable<{ [key: string]: string; }> {
+        return new Observable<{ [key: string]: string; }>((observer) => {
+            if (this.terminationReasons !== undefined && this.terminationReasons !== null) {
+                observer.next(this.terminationReasons);
+                observer.complete();
+            } else {
+                this._enumService.terminationReasons()
+                    .subscribe(response => {
+                        this.terminationReasons = response;
+                        observer.next(this.terminationReasons);
+                        observer.complete();
+                    }, error => {
+                        observer.error(error);
+                    });
+            }
+        });
+    }
+
+
 
 }

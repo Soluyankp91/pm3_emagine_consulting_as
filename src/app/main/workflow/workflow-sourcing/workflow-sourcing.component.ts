@@ -2,7 +2,7 @@ import { Component, Input, OnDestroy, OnInit } from '@angular/core';
 import { FormArray, FormBuilder, FormControl } from '@angular/forms';
 import { Subject } from 'rxjs';
 import { finalize, takeUntil } from 'rxjs/operators';
-import { ConsultantTerminationSourcingDataCommandDto, WorkflowProcessType, WorkflowServiceProxy, WorkflowTerminationSourcingDataCommandDto } from 'src/shared/service-proxies/service-proxies';
+import { ConsultantTerminationSourcingDataCommandDto, ConsultantTerminationSourcingDataQueryDto, WorkflowProcessType, WorkflowServiceProxy, WorkflowTerminationSourcingDataCommandDto } from 'src/shared/service-proxies/service-proxies';
 import { WorkflowDataService } from '../workflow-data.service';
 import { WorkflowSourcingConsultantsDataForm } from './workflow-sourcing.model';
 
@@ -84,10 +84,10 @@ export class WorkflowSourcingComponent implements OnInit, OnDestroy {
 
     // Termination
 
-    addConsultantDataToTerminationForm(consultant: ConsultantTerminationSourcingDataCommandDto) {
+    addConsultantDataToTerminationForm(consultant: ConsultantTerminationSourcingDataQueryDto) {
         const form = this._fb.group({
-            consultantId: new FormControl(consultant.consultantId),
-            // consultantName: new FormControl(consultant.name),
+            consultantId: new FormControl(consultant?.consultant?.id),
+            consultantData: new FormControl(consultant?.consultant),
             cvUpdated: new FormControl(consultant.cvUpdated)
         });
         this.sourcingConsultantsDataForm.consultantTerminationSourcingData.push(form);
