@@ -59,7 +59,7 @@
                     <div fxLayout="column" fxLayoutAlign="start start" class="u-w--100 u-mb--10">
                         <h3 class="workflow-readonly--gray-header">Discounts</h3>
                         <span class="workflow-readonly--blue-text-bold">
-                            {{salesMainDataForm?.discounts?.value?.name ? salesMainDataForm?.discounts?.value?.name : '-'}}
+                            {{salesMainDataForm?.discounts?.value ? salesMainDataForm?.discounts?.value?.name : '-'}}
                         </span>
                     </div>
                     <div fxLayout="column" fxLayoutAlign="start start" class="u-w--100 u-mb--10">
@@ -173,10 +173,16 @@
                         </div>
                     </div>
                     <div fxLayout="row" fxLayoutAlign="start start" class="u-w--100 u-mb--10">
-                        <div fxLayout="column" fxLayoutAlign="start start" class="u-w--100 u-mb--10">
+                        <div fxLayout="column" fxLayoutAlign="start start" class="u-mb--10" fxFlex="25%">
                             <h3 class="workflow-readonly--gray-header">Contract Expiration Notification</h3>
                             <span class="workflow-readonly--blue-text-bold">
-                                {{salesMainDataForm?.contractExpirationNotification?.value?.name ? salesMainDataForm?.contractExpirationNotification?.value?.name : '-'}}
+                                {{contractExpirationNotificationDisplay}}
+                            </span>
+                        </div>
+                        <div fxLayout="column" fxLayoutAlign="start start" class="u-w--100 u-mb--10" fxFlex="25%" *ngIf="salesMainDataForm.contractExpirationNotification?.value?.includes(999)">
+                            <h3 class="workflow-readonly--gray-header">Manual date</h3>
+                            <span class="workflow-readonly--blue-text-bold">
+                                {{salesMainDataForm?.customContractExpirationNotificationDate?.value | momentFormat: 'DD.MM.YYYY'}}
                             </span>
                         </div>
                     </div>
@@ -184,7 +190,7 @@
                         <div fxLayout="column" fxLayoutAlign="start start" class="u-w--100 u-mb--10">
                             <h3 class="workflow-readonly--gray-header">Remarks</h3>
                             <span class="workflow-readonly--blue-text-bold">
-                                {{salesMainDataForm?.noRemarks?.value ? '-' : salesMainDataForm?.remarks?.value}}
+                                {{salesMainDataForm?.noRemarks?.value ? 'No remarks' : salesMainDataForm?.remarks?.value}}
                             </span>
                         </div>
                     </div>
@@ -209,15 +215,48 @@
                     <div fxLayout="row" fxLayoutAlign="start start" class="u-w--100 u-mb--20">
                         <div fxLayout="column" fxFlex="50%">
                             <h3 class="workflow-readonly--gray-header">Direct client</h3>
-                            <span class="workflow-readonly--blue-text-bold">
-                                {{salesClientDataForm?.directClientIdValue?.value?.name ? salesClientDataForm?.directClientIdValue?.value?.name : '-'}}
-                            </span>
+                            <div fxLayout="row" fxLayoutAlign="start center" *ngIf="salesClientDataForm?.directClientIdValue?.value; else noDataTemplate">
+                                <img class="border-rounded-50 u-mr--16" src="https://picsum.photos/35/35" />
+                                <div fxLayout="column" fxLayoutAlign="start start">
+                                    <span class="workflow-readonly--blue-text-bold">
+                                        {{salesClientDataForm?.directClientIdValue?.value?.clientName}}
+                                    </span>
+                                    <span class="workflow-readonly--blue-text-bold">
+                                        {{salesClientDataForm?.directClientIdValue?.value?.city ? salesClientDataForm?.directClientIdValue?.value?.city + ' | ' : ''}}
+                                        {{salesClientDataForm?.directClientIdValue?.value?.address ? salesClientDataForm?.directClientIdValue?.value?.address + ' | ' : ''}}
+                                        {{salesClientDataForm?.directClientIdValue?.value?.address2 ? salesClientDataForm?.directClientIdValue?.value?.address2 + ' | ' : ''}}
+                                        {{salesClientDataForm?.directClientIdValue?.value?.postCode}}
+                                    </span>
+                                </div>
+                            </div>
+                            <ng-template #noDataTemplate>
+                                <span class="workflow-readonly--blue-text-bold">
+                                    -
+                                </span>
+                            </ng-template>
+                            <!-- <span class="workflow-readonly--blue-text-bold">
+                                {{salesClientDataForm?.directClientIdValue?.value?.clientName ? salesClientDataForm?.directClientIdValue?.value?.clientName : '-'}}
+                            </span> -->
                         </div>
                         <div fxLayout="column" fxFlex="50%">
                             <h3 class="workflow-readonly--gray-header">End client</h3>
-                            <span class="workflow-readonly--blue-text-bold">
+                            <div fxLayout="row" fxLayoutAlign="start center">
+                                <img class="border-rounded-50 u-mr--16" src="https://picsum.photos/35/35" />
+                                <div fxLayout="column" fxLayoutAlign="start start" *ngIf="salesClientDataForm?.endClientIdValue?.value; else noDataTemplate">
+                                    <span class="workflow-readonly--blue-text-bold">
+                                        {{salesClientDataForm?.endClientIdValue?.value?.clientName}}
+                                    </span>
+                                    <span class="workflow-readonly--blue-text-bold">
+                                        {{salesClientDataForm?.endClientIdValue?.value?.city ? salesClientDataForm?.endClientIdValue?.value?.city + ' | ' : ''}}
+                                        {{salesClientDataForm?.endClientIdValue?.value?.address ? salesClientDataForm?.endClientIdValue?.value?.address + ' | ' : ''}}
+                                        {{salesClientDataForm?.endClientIdValue?.value?.address2 ? salesClientDataForm?.endClientIdValue?.value?.address2 + ' | ' : ''}}
+                                        {{salesClientDataForm?.endClientIdValue?.value?.postCode}}
+                                    </span>
+                                </div>
+                            </div>
+                            <!-- <span class="workflow-readonly--blue-text-bold">
                                 {{salesClientDataForm?.endClientIdValue?.value?.name ? salesClientDataForm?.endClientIdValue?.value?.name : '-'}}
-                            </span>
+                            </span> -->
                         </div>
                     </div>
                 </div>
@@ -228,13 +267,13 @@
                         <div fxLayout="column" fxFlex="25%">
                             <h3 class="workflow-readonly--gray-header">Start date</h3>
                             <span class="workflow-readonly--blue-text-bold">
-                                {{salesClientDataForm?.clientContractStartDate?.value ? (salesClientDataForm?.clientContractStartDate?.value | momentFormat: 'DD/MM/YYYY') : '-'}}
+                                {{salesClientDataForm?.clientContractStartDate?.value ? (salesClientDataForm?.clientContractStartDate?.value | momentFormat: 'DD.MM.YYYY') : '-'}}
                             </span>
                         </div>
                         <div fxLayout="column" fxFlex="25%">
                             <h3 class="workflow-readonly--gray-header">End date</h3>
                             <span class="workflow-readonly--blue-text-bold">
-                                {{salesClientDataForm?.clientContractNoEndDate?.value ? 'No end date' : (salesClientDataForm?.clientContractEndDate?.value ? (salesClientDataForm?.clientContractEndDate?.value | momentFormat: 'DD/MM/YYYY') : '-')}}
+                                {{salesClientDataForm?.clientContractNoEndDate?.value ? 'No end date' : (salesClientDataForm?.clientContractEndDate?.value ? (salesClientDataForm?.clientContractEndDate?.value | momentFormat: 'DD.MM.YYYY') : '-')}}
                             </span>
                         </div>
                     </div>
@@ -335,14 +374,30 @@
                     <div fxLayout="row" fxLayoutAlign="start start" class="u-w--100 u-mb--20">
                         <div fxLayout="column" fxFlex="25%">
                             <h3 class="workflow-readonly--gray-header">Client Invoicing recipient</h3>
-                            <span class="workflow-readonly--blue-text-bold">
-                                {{salesClientDataForm?.clientInvoicingRecipientIdValue?.value?.name ? salesClientDataForm?.clientInvoicingRecipientIdValue?.value?.name : '-'}}
+                            <span class="workflow-readonly--blue-text-bold" *ngIf="salesClientDataForm?.clientInvoicingRecipientSameAsDirectClient?.value === true; else clientInvoicingRecipientTemplate">
+                                Same as client
                             </span>
+                            <ng-template #clientInvoicingRecipientTemplate>
+                                <div fxLayout="row" fxLayoutAlign="start center">
+                                    <img class="border-rounded-50 u-mr--16" src="https://picsum.photos/35/35" />
+                                    <div fxLayout="column" fxLayoutAlign="start start" *ngIf="salesClientDataForm?.clientInvoicingRecipientIdValue?.value">
+                                        <span class="workflow-readonly--blue-text-bold">
+                                            {{salesClientDataForm?.clientInvoicingRecipientIdValue?.value?.clientName}}
+                                        </span>
+                                        <span class="workflow-readonly--blue-text-bold">
+                                            {{salesClientDataForm?.clientInvoicingRecipientIdValue?.value?.city ? salesClientDataForm?.clientInvoicingRecipientIdValue?.value?.city + ' | ' : ''}}
+                                            {{salesClientDataForm?.clientInvoicingRecipientIdValue?.value?.address ? salesClientDataForm?.clientInvoicingRecipientIdValue?.value?.address + ' | ' : ''}}
+                                            {{salesClientDataForm?.clientInvoicingRecipientIdValue?.value?.address2 ? salesClientDataForm?.clientInvoicingRecipientIdValue?.value?.address2 + ' | ' : ''}}
+                                            {{salesClientDataForm?.clientInvoicingRecipientIdValue?.value?.postCode}}
+                                        </span>
+                                    </div>
+                                </div>
+                            </ng-template>
                         </div>
                         <div fxLayout="column" fxFlex="25%">
                             <h3 class="workflow-readonly--gray-header">Invoicing reference person</h3>
-                            <span class="workflow-readonly--blue-text-bold">
-                                {{salesClientDataForm?.invoicingReferencePersonIdValue?.value?.name ? salesClientDataForm?.invoicingReferencePersonIdValue?.value?.name : '-'}}
+                            <span class="workflow-readonly--blue-text-bold" *ngIf="salesClientDataForm?.invoicingReferencePersonIdValue?.value; else noDataTemplate">
+                                {{salesClientDataForm?.invoicingReferencePersonIdValue?.value?.firstName + ' ' + salesClientDataForm?.invoicingReferencePersonIdValue?.value?.lastName }}
                             </span>
                         </div>
                     </div>
@@ -481,7 +536,7 @@
                             <div fxLayout="column" fxFlex="25%">
                                 <h3 class="workflow-readonly--gray-header">Employment type</h3>
                                 <span class="workflow-readonly--blue-text-bold">
-                                    {{item?.value?.consultantType ? item?.value?.consultantType : '-'}}
+                                    {{item?.value?.employmentType?.name ? item?.value?.employmentType?.name : '-'}}
                                 </span>
                             </div>
                             <div fxLayout="column">
@@ -494,7 +549,7 @@
                                             {{item?.value?.consultantName?.name}}
                                         </p>
                                         <span class="workflow-extension--consultant-data--consultant-text">
-                                            {{item?.value?.consultantName?.companyName}} | {{item?.value?.consultantName?.city}}, {{item?.value?.consultantName?.countryId}} | #{{item?.value?.consultantName?.id}} / {{item?.value?.consultantName?.countryId}}-{{item?.value?.consultantName?.legacyId}}
+                                            {{item?.value?.consultantName?.companyName}} | {{item?.value?.consultantName?.city}}, {{getTenantCodeFromId(item?.value?.consultantName?.countryId)}} | #{{item?.value?.consultantName?.id}} / {{getTenantCodeFromId(item?.value?.consultantName?.countryId)}}-{{item?.value?.consultantName?.legacyId}}
                                         </span>
                                     </div>
                                 </div>
@@ -514,17 +569,19 @@
                             <div fxLayout="column" fxFlex="25%">
                                 <h3 class="workflow-readonly--gray-header">Start date</h3>
                                 <span class="workflow-readonly--blue-text-bold">
-                                    {{item?.value?.consultantProjectStartDate ? (item?.value?.consultantProjectStartDate | momentFormat: 'DD/MM/YYYY') : '-'}}
+                                    {{item?.value?.consultantProjectStartDate ? (item?.value?.consultantProjectStartDate | momentFormat: 'DD.MM.YYYY') : '-'}}
                                 </span>
                             </div>
                             <div fxLayout="column" fxFlex="25%">
                                 <h3 class="workflow-readonly--gray-header">End date</h3>
-                                <span class="workflow-readonly--blue-text-bold" *ngIf="item?.value?.consultantProjectNoEndDate">
+                                <span class="workflow-readonly--blue-text-bold" *ngIf="item?.value?.consultantProjectNoEndDate; else consultantProjectEndDateTemplate">
                                     No end date
                                 </span>
-                                <span class="workflow-readonly--blue-text-bold" *ngIf="item?.value?.consultantProjectEndDate">
-                                    {{item?.value?.consultantProjectEndDate | momentFormat: 'DD/MM/YYYY'}}
-                                </span>
+                                <ng-template #consultantProjectEndDateTemplate>
+                                    <span class="workflow-readonly--blue-text-bold">
+                                        {{item?.value?.consultantProjectEndDate ? (item?.value?.consultantProjectEndDate | momentFormat: 'DD.MM.YYYY') : '-'}}
+                                    </span>
+                                </ng-template>
                             </div>
                         </div>
                     </div>
@@ -536,28 +593,25 @@
                                 <h3 class="workflow-readonly--gray-header">Workplace</h3>
                                 <div fxLayout="row" class="u-w--10" *ngIf="item?.value?.consultantIsOnsiteWorkplace">
                                     <span class="workflow-readonly--blue-text-bold" fxFlex="50%">
-                                        <!-- {{salesMainDataForm?.projectType?.value?.name}} -->Onsite
+                                        Onsite
                                     </span>
                                     <span class="workflow-readonly--blue-text-bold" fxFlex="50%">
-                                        <!-- {{salesMainDataForm?.projectType?.value?.name}}Marszałkowska 123, Warsaw -->
                                         {{item?.value?.consultantWorkplaceCliendAddress}}
                                     </span>
                                 </div>
                                 <div fxLayout="row" class="u-w--10" *ngIf="item?.value?.consultantIsEmagineOfficeWorkplace">
                                     <span class="workflow-readonly--blue-text-bold" fxFlex="50%">
-                                        <!-- {{salesMainDataForm?.projectType?.value?.name}} -->PDC Office
+                                        PDC Office
                                     </span>
                                     <span class="workflow-readonly--blue-text-bold" fxFlex="50%">
-                                        <!-- {{salesMainDataForm?.projectType?.value?.name}}Domaniewska 39a, Warsaw -->
                                         {{item?.value?.consultantWorkplaceEmagineOffice?.name}}
                                     </span>
                                 </div>
                                 <div fxLayout="row" class="u-w--10" *ngIf="item?.value?.consultantIsRemoteWorkplace">
                                     <span class="workflow-readonly--blue-text-bold" fxFlex="50%">
-                                        <!-- {{salesMainDataForm?.projectType?.value?.name}} -->Remote
+                                        Remote
                                     </span>
                                     <span class="workflow-readonly--blue-text-bold" fxFlex="50%">
-                                        <!-- {{salesMainDataForm?.projectType?.value?.name}}Poland -->
                                         {{item?.value?.consultantWorkplaceRemote}}
                                     </span>
                                 </div>
@@ -873,11 +927,11 @@
                             <div fxLayout="row" fxLayoutAlign="start start" class="u-w--100 u-mb--10">
                                 <mat-form-field appearance="outline" class="u-w--100  filter-select u-mr--16" fxFlex="33%">
                                     <mat-label>Margin</mat-label>
-                                    <mat-select formControlName="margin" [disableOptionCentering]="true" required>
+                                    <mat-select formControlName="margin" [disableOptionCentering]="true" [compareWith]="compareWithFn" required>
                                         <mat-option class="mat-select-clear-option">
                                             Clear
                                         </mat-option>
-                                        <mat-option *ngFor="let item of margins" [value]="item.id">
+                                        <mat-option *ngFor="let item of margins" [value]="item">
                                             {{ item.name }}
                                         </mat-option>
                                     </mat-select>
@@ -899,7 +953,7 @@
                             <h3 class="workflow-gray--header">Discounts</h3>
                             <div fxLayout="row" fxLayoutAlign="start start" class="u-w--100 u-mb--20">
                                 <mat-button-toggle-group class="workflow-toggle-buttons u-mt--10" formControlName="discounts">
-                                    <mat-button-toggle [value]="item.id" *ngFor="let item of discounts">
+                                    <mat-button-toggle [value]="item" *ngFor="let item of discounts">
                                         {{ item.name }}
                                     </mat-button-toggle>
                                 </mat-button-toggle-group>
@@ -1309,8 +1363,8 @@
                             <div fxLayout="row" fxLayoutAlign="start center" class="u-w--100 u-mb--10" *ngIf="!salesClientDataForm?.noClientExtensionOption?.value">
                                 <mat-form-field appearance="outline" class="filter-select u-mr--16">
                                     <mat-label> Duration</mat-label>
-                                    <mat-select formControlName="clientExtensionDuration" [disableOptionCentering]="true">
-                                        <mat-option *ngFor="let item of clientExtensionDurations" [value]="item.id">
+                                    <mat-select formControlName="clientExtensionDuration" [disableOptionCentering]="true" [compareWith]="compareWithFn">
+                                        <mat-option *ngFor="let item of clientExtensionDurations" [value]="item">
                                             {{ item.name }}
                                         </mat-option>
                                     </mat-select>
@@ -1364,8 +1418,8 @@
                             <div fxLayout="row" fxLayoutAlign="start center" class="u-w--100 u-mb--10">
                                 <mat-form-field appearance="outline" class="u-w--100  filter-select" fxFlex="33%">
                                     <mat-label>ProData entity</mat-label>
-                                    <mat-select formControlName="pdcInvoicingEntityId" [disableOptionCentering]="true">
-                                        <mat-option *ngFor="let item of tenants" [value]="item.id">
+                                    <mat-select formControlName="pdcInvoicingEntityId" [disableOptionCentering]="true" [compareWith]="compareWithFn">
+                                        <mat-option *ngFor="let item of tenants" [value]="item">
                                             {{ item.name }}
                                         </mat-option>
                                     </mat-select>
@@ -1941,8 +1995,8 @@
                                 <ng-container *ngIf="activeSideSection === workflowSideSections.StartClientPeriod">
                                     <h3 class="workflow-gray--header u-mb--10">Employment type</h3>
                                     <div fxLayout="row" fxLayoutAlign="start start" class="u-w--100 u-mb--20">
-                                        <mat-button-toggle-group class="workflow-toggle-buttons" formControlName="consultantType">
-                                            <mat-button-toggle *ngFor="let item of consultantTypes" [value]="item.id">
+                                        <mat-button-toggle-group class="workflow-toggle-buttons" formControlName="employmentType">
+                                            <mat-button-toggle *ngFor="let item of employmentTypes" [value]="item">
                                                 {{ item.name }}
                                             </mat-button-toggle>
                                         </mat-button-toggle-group>
@@ -2041,8 +2095,8 @@
                                 <div fxLayout="row" fxLayoutAlign="start start" class="u-w--100 u-mb--10">
                                     <mat-form-field appearance="outline" class="u-w--100  filter-select" fxFlex="33%">
                                         <mat-label>ProData Entity</mat-label>
-                                        <mat-select formControlName="consultantProdataEntity" [disableOptionCentering]="true">
-                                            <mat-option *ngFor="let item of tenants" [value]="item.id">
+                                        <mat-select formControlName="consultantProdataEntity" [disableOptionCentering]="true" [compareWith]="compareWithFn">
+                                            <mat-option *ngFor="let item of tenants" [value]="item">
                                                 {{ item.name }}
                                             </mat-option>
                                         </mat-select>
@@ -2183,7 +2237,7 @@
                                         <mat-form-field appearance="outline" class="u-w--100  filter-select" fxFlex="0 0 calc(33% + 16px)" *ngIf="consultantsForm.consultantData.at(consultantIndex).get('consultantIsEmagineOfficeWorkplace')?.value">
                                             <mat-label>PDC Office address</mat-label>
                                             <mat-select formControlName="consultantWorkplaceEmagineOffice" [disableOptionCentering]="true">
-                                                <mat-option *ngFor="let item of emagineOffices" [value]="item.id">
+                                                <mat-option *ngFor="let item of emagineOffices" [value]="item">
                                                     {{ item.name }}
                                                 </mat-option>
                                             </mat-select>
