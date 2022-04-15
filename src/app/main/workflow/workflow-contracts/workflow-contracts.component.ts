@@ -6,7 +6,7 @@ import { Subject } from 'rxjs';
 import { finalize, takeUntil } from 'rxjs/operators';
 import { InternalLookupService } from 'src/app/shared/common/internal-lookup.service';
 import { AppComopnentBase } from 'src/shared/app-component-base';
-import { ClientPeriodContractsDataDto, WorkflowProcessType, WorkflowServiceProxy, ClientPeriodServiceProxy, ConsultantContractsDataDto, ConsultantSalesDataDto, ContractsClientDataDto, ContractsMainDataDto, EnumEntityTypeDto, PeriodClientSpecialFeeDto, PeriodClientSpecialRateDto, PeriodConsultantSpecialFeeDto, PeriodConsultantSpecialRateDto, ProjectLineDto, ConsultantTerminationContractDataCommandDto, WorkflowTerminationContractDataCommandDto } from 'src/shared/service-proxies/service-proxies';
+import { ClientPeriodContractsDataDto, WorkflowProcessType, WorkflowServiceProxy, ClientPeriodServiceProxy, ConsultantContractsDataDto, ConsultantSalesDataDto, ContractsClientDataDto, ContractsMainDataDto, EnumEntityTypeDto, PeriodClientSpecialFeeDto, PeriodClientSpecialRateDto, PeriodConsultantSpecialFeeDto, PeriodConsultantSpecialRateDto, ProjectLineDto, ConsultantTerminationContractDataCommandDto, WorkflowTerminationContractDataCommandDto, ConsultantTerminationContractDataQueryDto } from 'src/shared/service-proxies/service-proxies';
 import { WorkflowConsultantActionsDialogComponent } from '../workflow-consultant-actions-dialog/workflow-consultant-actions-dialog.component';
 import { WorkflowDataService } from '../workflow-data.service';
 import { ConsultantDiallogAction } from '../workflow-sales/workflow-sales.model';
@@ -38,6 +38,8 @@ export class WorkflowContractsComponent extends AppComopnentBase implements OnIn
     discounts: EnumEntityTypeDto[] = [];
     deliveryTypes: EnumEntityTypeDto[] = [];
     saleTypes: EnumEntityTypeDto[] = [];
+    projectTypes: EnumEntityTypeDto[] = [];
+    margins: EnumEntityTypeDto[] = [];
     clientTimeReportingCap: EnumEntityTypeDto[] = [];
     clientSpecialRateOrFeeDirections: EnumEntityTypeDto[] = [];
     clientSpecialRateReportUnits: EnumEntityTypeDto[] = [];
@@ -104,6 +106,8 @@ export class WorkflowContractsComponent extends AppComopnentBase implements OnIn
         this.getDeliveryTypes();
         this.getSaleTypes();
         this.getClientTimeReportingCap();
+        this.getProjectTypes();
+        this.getMargins();
 
         this.getContractsStep();
 
@@ -218,6 +222,26 @@ export class WorkflowContractsComponent extends AppComopnentBase implements OnIn
             });
     }
 
+    getProjectTypes() {
+        this._internalLookupService.getProjectTypes()
+            .pipe(finalize(() => {
+
+            }))
+            .subscribe(result => {
+                this.projectTypes = result;
+            });
+    }
+
+    getMargins() {
+        this._internalLookupService.getMargins()
+            .pipe(finalize(() => {
+
+            }))
+            .subscribe(result => {
+                this.margins = result;
+            });
+    }
+
     getClientTimeReportingCap() {
         this._internalLookupService.getClientTimeReportingCap()
             .pipe(finalize(() => {
@@ -239,9 +263,17 @@ export class WorkflowContractsComponent extends AppComopnentBase implements OnIn
                 this.contractsMainForm.salesType?.setValue(this.findItemById(this.saleTypes, result.mainData?.salesTypeId), {emitEvent: false});
                 this.contractsMainForm.deliveryType?.setValue(this.findItemById(this.deliveryTypes, result.mainData?.deliveryTypeId), {emitEvent: false});
                 this.contractsMainForm.discounts?.setValue(this.findItemById(this.discounts, result.mainData?.discountId), {emitEvent: false});
+                this.contractsMainForm.projectType?.setValue(this.findItemById(this.projectTypes, result.mainData?.projectTypeId), {emitEvent: false});
+                this.contractsMainForm.margin?.setValue(this.findItemById(this.margins, result.mainData?.marginId), {emitEvent: false});
+                this.contractsMainForm.projectDescription?.setValue(result.mainData?.projectDescription, {emitEvent: false});
+                this.contractsMainForm.remarks?.setValue(result.mainData?.projectTypeId, {emitEvent: false});
+                this.contractsMainForm.noRemarks?.setValue(result.mainData?.noRemarks, {emitEvent: false});
 
                 // Client data
                 this.contractClientForm.capOnTimeReporting?.setValue(this.findItemById(this.clientTimeReportingCap, result.clientData?.clientTimeReportingCapId), {emitEvent: false});
+                this.contractClientForm.specialContractTerms?.setValue(result.clientData?.specialContractTerms, {emitEvent: false});
+                this.contractClientForm.noSpecialContractTerms?.setValue(result.clientData?.noSpecialContractTerms, {emitEvent: false})
+
                 // add rates
                 // add fees
 
@@ -705,10 +737,10 @@ export class WorkflowContractsComponent extends AppComopnentBase implements OnIn
 
     // Termination
 
-    addConsultantDataToTerminationForm(consultant: ConsultantTerminationContractDataCommandDto) {
+    addConsultantDataToTerminationForm(consultant: ConsultantTerminationContractDataQueryDto) {
         const form = this._fb.group({
-            consultantId: new FormControl(consultant.consultantId),
-            // consultantName: new FormControl(consultant.name),
+            consultantId: new FormControl(consultant?.consultant?.id),
+            consultantData: new FormControl(consultant?.consultant),
             removedConsultantFromAnyManualChecklists: new FormControl(consultant.removedConsultantFromAnyManualChecklists),
             deletedAnySensitiveDocumentsForGDPR: new FormControl(consultant.deletedAnySensitiveDocumentsForGDPR),
 

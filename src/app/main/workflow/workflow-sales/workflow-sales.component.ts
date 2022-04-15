@@ -68,6 +68,7 @@ export class WorkflowSalesComponent extends AppComopnentBase implements OnInit {
     projectCategories: EnumEntityTypeDto[] = [];
     discounts: EnumEntityTypeDto[] = [];
     nonStandartTerminationTimes: { [key: string]: string; };
+    terminationReasons: { [key: string]: string; };
 
     // new UI
     clientRateTypes: EnumEntityTypeDto[] = new Array<EnumEntityTypeDto>(
@@ -336,6 +337,8 @@ export class WorkflowSalesComponent extends AppComopnentBase implements OnInit {
         this.getTenants();
         this.getProjectCategory();
         this.getDiscounts();
+        this.getNonStandartTerminationTimes();
+        this.getTerminationReasons();
 
         // init form arrays ?
         // this.addSignerToForm();
@@ -680,6 +683,16 @@ export class WorkflowSalesComponent extends AppComopnentBase implements OnInit {
             }))
             .subscribe(result => {
                 this.nonStandartTerminationTimes = result;
+            });
+    }
+
+    getTerminationReasons() {
+        this._internalLookupService.getTerminationReasons()
+            .pipe(finalize(() => {
+
+            }))
+            .subscribe(result => {
+                this.terminationReasons = result;
             });
     }
 
@@ -1569,7 +1582,7 @@ export class WorkflowSalesComponent extends AppComopnentBase implements OnInit {
         input.causeOfNonStandardTerminationTime = this.salesTerminateConsultantForm?.causeOfNonStandardTerminationTime?.value;
         input.additionalComments = this.salesTerminateConsultantForm?.additionalComments?.value;
 
-        input.finalEvaluationReferencePersonId = this.salesTerminateConsultantForm?.finalEvaluationReferencePerson?.value; // FIXME: fix after be changes add .id
+        input.finalEvaluationReferencePersonId = this.salesTerminateConsultantForm?.finalEvaluationReferencePerson?.value.id; // FIXME: fix after be changes add .id
         input.noEvaluation = this.salesTerminateConsultantForm?.noEvaluation?.value;
         input.causeOfNoEvaluation =  this.salesTerminateConsultantForm.causeOfNoEvaluation?.value;
 
@@ -1591,7 +1604,7 @@ export class WorkflowSalesComponent extends AppComopnentBase implements OnInit {
         input.causeOfNonStandardTerminationTime = this.salesTerminateConsultantForm?.causeOfNonStandardTerminationTime?.value;
         input.additionalComments = this.salesTerminateConsultantForm?.additionalComments?.value;
 
-        input.finalEvaluationReferencePersonId = this.salesTerminateConsultantForm?.finalEvaluationReferencePerson?.value; // FIXME: fix after be changes add .id
+        input.finalEvaluationReferencePersonId = this.salesTerminateConsultantForm?.finalEvaluationReferencePerson?.value.id; // FIXME: fix after be changes add .id
         input.noEvaluation = this.salesTerminateConsultantForm?.noEvaluation?.value;
         input.causeOfNoEvaluation =  this.salesTerminateConsultantForm.causeOfNoEvaluation?.value;
 
@@ -1635,7 +1648,7 @@ export class WorkflowSalesComponent extends AppComopnentBase implements OnInit {
         input.causeOfNonStandardTerminationTime = this.salesTerminateConsultantForm?.causeOfNonStandardTerminationTime?.value;
         input.additionalComments = this.salesTerminateConsultantForm?.additionalComments?.value;
 
-        input.finalEvaluationReferencePersonId = this.salesTerminateConsultantForm?.finalEvaluationReferencePerson?.value; // FIXME: fix after be changes add .id
+        input.finalEvaluationReferencePersonId = this.salesTerminateConsultantForm?.finalEvaluationReferencePerson?.value.id; // FIXME: fix after be changes add .id
         input.noEvaluation = this.salesTerminateConsultantForm?.noEvaluation?.value;
         input.causeOfNoEvaluation =  this.salesTerminateConsultantForm.causeOfNoEvaluation?.value;
 
@@ -1656,7 +1669,7 @@ export class WorkflowSalesComponent extends AppComopnentBase implements OnInit {
         input.causeOfNonStandardTerminationTime = this.salesTerminateConsultantForm?.causeOfNonStandardTerminationTime?.value;
         input.additionalComments = this.salesTerminateConsultantForm?.additionalComments?.value;
 
-        input.finalEvaluationReferencePersonId = this.salesTerminateConsultantForm?.finalEvaluationReferencePerson?.value; // FIXME: fix after be changes add .id
+        input.finalEvaluationReferencePersonId = this.salesTerminateConsultantForm?.finalEvaluationReferencePerson?.value.id; // FIXME: fix after be changes add .id
         input.noEvaluation = this.salesTerminateConsultantForm?.noEvaluation?.value;
         input.causeOfNoEvaluation =  this.salesTerminateConsultantForm.causeOfNoEvaluation?.value;
 
