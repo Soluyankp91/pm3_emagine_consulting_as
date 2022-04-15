@@ -1,6 +1,8 @@
-import { Component, Input, OnInit } from '@angular/core';
+import { Component, Injector, Input, OnInit } from '@angular/core';
 import { FormArray, FormBuilder, FormControl } from '@angular/forms';
-import { WorkflowProcessType } from 'src/shared/service-proxies/service-proxies';
+import { finalize } from 'rxjs/operators';
+import { AppComopnentBase } from 'src/shared/app-component-base';
+import { ClientPeriodServiceProxy, ConsultantPeriodFinanceDataDto, WorkflowProcessType } from 'src/shared/service-proxies/service-proxies';
 import { WorkflowDataService } from '../workflow-data.service';
 import { FinancesClientForm, FinancesConsultantsForm } from './workflow-finances.model';
 
@@ -9,8 +11,9 @@ import { FinancesClientForm, FinancesConsultantsForm } from './workflow-finances
     templateUrl: './workflow-finances.component.html',
     styleUrls: ['./workflow-finances.component.scss']
 })
-export class WorkflowFinancesComponent implements OnInit {
+export class WorkflowFinancesComponent extends AppComopnentBase implements OnInit {
     @Input() workflowId: string;
+    @Input() clientPeriodId: string | undefined;
 
     // Changed all above to enum
     @Input() activeSideSection: number;
@@ -30,28 +33,45 @@ export class WorkflowFinancesComponent implements OnInit {
         }
     ]
     constructor(
+        injector: Injector,
         private _fb: FormBuilder,
-        private _workflowDataService: WorkflowDataService
+        private _workflowDataService: WorkflowDataService,
+        private _clientPeriodSerivce: ClientPeriodServiceProxy
     ) {
+        super(injector);
         this.financesClientForm = new FinancesClientForm();
         this.financesConsultantsForm = new FinancesConsultantsForm();
     }
 
     ngOnInit(): void {
-        this.consultantList.forEach(consultant => {
-            this.addConsultantToForm(consultant);
-        });
+        // this.consultantList.forEach(consultant => {
+        //     this.addConsultantToForm(consultant);
+        // });
+        this.getFinancesStep();
     }
 
     get readOnlyMode() {
         return this.isCompleted;
     }
 
-    addConsultantToForm(consultant: any) {
+    getFinancesStep() {
+        this.showMainSpinner();
+        this._clientPeriodSerivce.financeGet(this.clientPeriodId!)
+            .pipe(finalize(() => this.hideMainSpinner()))
+            .subscribe(result => {
+                this.financesClientForm.clientCreatedInNavision?.setValue(result.debtorCreatedInNavision, {emitEvent: false});
+                this.financesClientForm.differentDebtorNumberForInvoicing?.setValue(result.differentDebtorNumberForInvoicing, {emitEvent: false});
+                this.financesClientForm.customDebtorNumber?.setValue(result.customDebtorNumber, {emitEvent: false});
+                result?.consultantFinanceData?.forEach(consultant => this.addConsultantToForm(consultant));
+            });
+    }
+    
+    addConsultantToForm(consultant: ConsultantPeriodFinanceDataDto) {
         const form = this._fb.group({
-            consultantName: new FormControl(consultant.consultantName),
-            checkConsualtantInvoicingSettings: new FormControl(false),
-            consultantCreatedInNavision: new FormControl(false)
+            id: new FormControl(consultant.consultantId),
+            checkInvoicingSettingsOnConsultant: new FormControl(consultant.checkInvoicingSettingsOnConsultant),
+            creditorCreatedInNavision: new FormControl(consultant.creditorCreatedInNavision),
+            // consultantName: new FormControl(consultant.consultantName)
         });
         this.financesConsultantsForm.consultants.push(form);
     }
