@@ -1764,6 +1764,190 @@ export class SpecialFeesServiceProxy {
 }
 
 @Injectable()
+export class EmployeeNotificationServiceProxy {
+    private http: HttpClient;
+    private baseUrl: string;
+    protected jsonParseReviver: ((key: string, value: any) => any) | undefined = undefined;
+
+    constructor(@Inject(HttpClient) http: HttpClient, @Optional() @Inject(API_BASE_URL) baseUrl?: string) {
+        this.http = http;
+        this.baseUrl = baseUrl !== undefined && baseUrl !== null ? baseUrl : "";
+    }
+
+    /**
+     * @return Success
+     */
+    enabledNotifications(): Observable<EmployeeNotificationDto[]> {
+        let url_ = this.baseUrl + "/api/EmployeeNotification/enabled-notifications";
+        url_ = url_.replace(/[?&]$/, "");
+
+        let options_ : any = {
+            observe: "response",
+            responseType: "blob",
+            headers: new HttpHeaders({
+                "Accept": "text/plain"
+            })
+        };
+
+        return this.http.request("get", url_, options_).pipe(_observableMergeMap((response_ : any) => {
+            return this.processEnabledNotifications(response_);
+        })).pipe(_observableCatch((response_: any) => {
+            if (response_ instanceof HttpResponseBase) {
+                try {
+                    return this.processEnabledNotifications(response_ as any);
+                } catch (e) {
+                    return _observableThrow(e) as any as Observable<EmployeeNotificationDto[]>;
+                }
+            } else
+                return _observableThrow(response_) as any as Observable<EmployeeNotificationDto[]>;
+        }));
+    }
+
+    protected processEnabledNotifications(response: HttpResponseBase): Observable<EmployeeNotificationDto[]> {
+        const status = response.status;
+        const responseBlob =
+            response instanceof HttpResponse ? response.body :
+            (response as any).error instanceof Blob ? (response as any).error : undefined;
+
+        let _headers: any = {}; if (response.headers) { for (let key of response.headers.keys()) { _headers[key] = response.headers.get(key); }}
+        if (status === 200) {
+            return blobToText(responseBlob).pipe(_observableMergeMap(_responseText => {
+            let result200: any = null;
+            let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
+            if (Array.isArray(resultData200)) {
+                result200 = [] as any;
+                for (let item of resultData200)
+                    result200!.push(EmployeeNotificationDto.fromJS(item));
+            }
+            else {
+                result200 = <any>null;
+            }
+            return _observableOf(result200);
+            }));
+        } else if (status !== 200 && status !== 204) {
+            return blobToText(responseBlob).pipe(_observableMergeMap(_responseText => {
+            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+            }));
+        }
+        return _observableOf<EmployeeNotificationDto[]>(null as any);
+    }
+
+    /**
+     * @param notification (optional) 
+     * @param tenantId (optional) 
+     * @return Success
+     */
+    addNotification(notification?: Notification | undefined, tenantId?: number | undefined): Observable<void> {
+        let url_ = this.baseUrl + "/api/EmployeeNotification/add-notification?";
+        if (notification === null)
+            throw new Error("The parameter 'notification' cannot be null.");
+        else if (notification !== undefined)
+            url_ += "notification=" + encodeURIComponent("" + notification) + "&";
+        if (tenantId === null)
+            throw new Error("The parameter 'tenantId' cannot be null.");
+        else if (tenantId !== undefined)
+            url_ += "tenantId=" + encodeURIComponent("" + tenantId) + "&";
+        url_ = url_.replace(/[?&]$/, "");
+
+        let options_ : any = {
+            observe: "response",
+            responseType: "blob",
+            headers: new HttpHeaders({
+            })
+        };
+
+        return this.http.request("put", url_, options_).pipe(_observableMergeMap((response_ : any) => {
+            return this.processAddNotification(response_);
+        })).pipe(_observableCatch((response_: any) => {
+            if (response_ instanceof HttpResponseBase) {
+                try {
+                    return this.processAddNotification(response_ as any);
+                } catch (e) {
+                    return _observableThrow(e) as any as Observable<void>;
+                }
+            } else
+                return _observableThrow(response_) as any as Observable<void>;
+        }));
+    }
+
+    protected processAddNotification(response: HttpResponseBase): Observable<void> {
+        const status = response.status;
+        const responseBlob =
+            response instanceof HttpResponse ? response.body :
+            (response as any).error instanceof Blob ? (response as any).error : undefined;
+
+        let _headers: any = {}; if (response.headers) { for (let key of response.headers.keys()) { _headers[key] = response.headers.get(key); }}
+        if (status === 200) {
+            return blobToText(responseBlob).pipe(_observableMergeMap(_responseText => {
+            return _observableOf<void>(null as any);
+            }));
+        } else if (status !== 200 && status !== 204) {
+            return blobToText(responseBlob).pipe(_observableMergeMap(_responseText => {
+            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+            }));
+        }
+        return _observableOf<void>(null as any);
+    }
+
+    /**
+     * @param notification (optional) 
+     * @param tenantId (optional) 
+     * @return Success
+     */
+    removeNotification(notification?: Notification | undefined, tenantId?: number | undefined): Observable<void> {
+        let url_ = this.baseUrl + "/api/EmployeeNotification/remove-notification?";
+        if (notification === null)
+            throw new Error("The parameter 'notification' cannot be null.");
+        else if (notification !== undefined)
+            url_ += "notification=" + encodeURIComponent("" + notification) + "&";
+        if (tenantId === null)
+            throw new Error("The parameter 'tenantId' cannot be null.");
+        else if (tenantId !== undefined)
+            url_ += "tenantId=" + encodeURIComponent("" + tenantId) + "&";
+        url_ = url_.replace(/[?&]$/, "");
+
+        let options_ : any = {
+            observe: "response",
+            responseType: "blob",
+            headers: new HttpHeaders({
+            })
+        };
+
+        return this.http.request("delete", url_, options_).pipe(_observableMergeMap((response_ : any) => {
+            return this.processRemoveNotification(response_);
+        })).pipe(_observableCatch((response_: any) => {
+            if (response_ instanceof HttpResponseBase) {
+                try {
+                    return this.processRemoveNotification(response_ as any);
+                } catch (e) {
+                    return _observableThrow(e) as any as Observable<void>;
+                }
+            } else
+                return _observableThrow(response_) as any as Observable<void>;
+        }));
+    }
+
+    protected processRemoveNotification(response: HttpResponseBase): Observable<void> {
+        const status = response.status;
+        const responseBlob =
+            response instanceof HttpResponse ? response.body :
+            (response as any).error instanceof Blob ? (response as any).error : undefined;
+
+        let _headers: any = {}; if (response.headers) { for (let key of response.headers.keys()) { _headers[key] = response.headers.get(key); }}
+        if (status === 200) {
+            return blobToText(responseBlob).pipe(_observableMergeMap(_responseText => {
+            return _observableOf<void>(null as any);
+            }));
+        } else if (status !== 200 && status !== 204) {
+            return blobToText(responseBlob).pipe(_observableMergeMap(_responseText => {
+            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+            }));
+        }
+        return _observableOf<void>(null as any);
+    }
+}
+
+@Injectable()
 export class EnumServiceProxy {
     private http: HttpClient;
     private baseUrl: string;
@@ -3752,6 +3936,124 @@ export class EnumServiceProxy {
             }));
         }
         return _observableOf<EnumEntityTypeDto[]>(null as any);
+    }
+
+    /**
+     * @return Success
+     */
+    expectedWorkloadUnit(): Observable<EnumEntityTypeDto[]> {
+        let url_ = this.baseUrl + "/api/Enum/expected-workload-unit";
+        url_ = url_.replace(/[?&]$/, "");
+
+        let options_ : any = {
+            observe: "response",
+            responseType: "blob",
+            headers: new HttpHeaders({
+                "Accept": "text/plain"
+            })
+        };
+
+        return this.http.request("get", url_, options_).pipe(_observableMergeMap((response_ : any) => {
+            return this.processExpectedWorkloadUnit(response_);
+        })).pipe(_observableCatch((response_: any) => {
+            if (response_ instanceof HttpResponseBase) {
+                try {
+                    return this.processExpectedWorkloadUnit(response_ as any);
+                } catch (e) {
+                    return _observableThrow(e) as any as Observable<EnumEntityTypeDto[]>;
+                }
+            } else
+                return _observableThrow(response_) as any as Observable<EnumEntityTypeDto[]>;
+        }));
+    }
+
+    protected processExpectedWorkloadUnit(response: HttpResponseBase): Observable<EnumEntityTypeDto[]> {
+        const status = response.status;
+        const responseBlob =
+            response instanceof HttpResponse ? response.body :
+            (response as any).error instanceof Blob ? (response as any).error : undefined;
+
+        let _headers: any = {}; if (response.headers) { for (let key of response.headers.keys()) { _headers[key] = response.headers.get(key); }}
+        if (status === 200) {
+            return blobToText(responseBlob).pipe(_observableMergeMap(_responseText => {
+            let result200: any = null;
+            let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
+            if (Array.isArray(resultData200)) {
+                result200 = [] as any;
+                for (let item of resultData200)
+                    result200!.push(EnumEntityTypeDto.fromJS(item));
+            }
+            else {
+                result200 = <any>null;
+            }
+            return _observableOf(result200);
+            }));
+        } else if (status !== 200 && status !== 204) {
+            return blobToText(responseBlob).pipe(_observableMergeMap(_responseText => {
+            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+            }));
+        }
+        return _observableOf<EnumEntityTypeDto[]>(null as any);
+    }
+
+    /**
+     * @return Success
+     */
+    notification(): Observable<{ [key: string]: string; }> {
+        let url_ = this.baseUrl + "/api/Enum/notification";
+        url_ = url_.replace(/[?&]$/, "");
+
+        let options_ : any = {
+            observe: "response",
+            responseType: "blob",
+            headers: new HttpHeaders({
+                "Accept": "text/plain"
+            })
+        };
+
+        return this.http.request("get", url_, options_).pipe(_observableMergeMap((response_ : any) => {
+            return this.processNotification(response_);
+        })).pipe(_observableCatch((response_: any) => {
+            if (response_ instanceof HttpResponseBase) {
+                try {
+                    return this.processNotification(response_ as any);
+                } catch (e) {
+                    return _observableThrow(e) as any as Observable<{ [key: string]: string; }>;
+                }
+            } else
+                return _observableThrow(response_) as any as Observable<{ [key: string]: string; }>;
+        }));
+    }
+
+    protected processNotification(response: HttpResponseBase): Observable<{ [key: string]: string; }> {
+        const status = response.status;
+        const responseBlob =
+            response instanceof HttpResponse ? response.body :
+            (response as any).error instanceof Blob ? (response as any).error : undefined;
+
+        let _headers: any = {}; if (response.headers) { for (let key of response.headers.keys()) { _headers[key] = response.headers.get(key); }}
+        if (status === 200) {
+            return blobToText(responseBlob).pipe(_observableMergeMap(_responseText => {
+            let result200: any = null;
+            let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
+            if (resultData200) {
+                result200 = {} as any;
+                for (let key in resultData200) {
+                    if (resultData200.hasOwnProperty(key))
+                        (<any>result200)![key] = resultData200[key] !== undefined ? resultData200[key] : <any>null;
+                }
+            }
+            else {
+                result200 = <any>null;
+            }
+            return _observableOf(result200);
+            }));
+        } else if (status !== 200 && status !== 204) {
+            return blobToText(responseBlob).pipe(_observableMergeMap(_responseText => {
+            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+            }));
+        }
+        return _observableOf<{ [key: string]: string; }>(null as any);
     }
 }
 
@@ -7793,6 +8095,7 @@ export class ConsultantContractsDataDto implements IConsultantContractsDataDto {
     consultantPeriodId?: string;
     employmentTypeId?: number | undefined;
     consultantId?: number | undefined;
+    consultant?: ConsultantResultDto;
     nameOnly?: string | undefined;
     consultantTimeReportingCapId?: number | undefined;
     consultantTimeReportingCapMaxValue?: number | undefined;
@@ -7819,6 +8122,7 @@ export class ConsultantContractsDataDto implements IConsultantContractsDataDto {
             this.consultantPeriodId = _data["consultantPeriodId"];
             this.employmentTypeId = _data["employmentTypeId"];
             this.consultantId = _data["consultantId"];
+            this.consultant = _data["consultant"] ? ConsultantResultDto.fromJS(_data["consultant"]) : <any>undefined;
             this.nameOnly = _data["nameOnly"];
             this.consultantTimeReportingCapId = _data["consultantTimeReportingCapId"];
             this.consultantTimeReportingCapMaxValue = _data["consultantTimeReportingCapMaxValue"];
@@ -7857,6 +8161,7 @@ export class ConsultantContractsDataDto implements IConsultantContractsDataDto {
         data["consultantPeriodId"] = this.consultantPeriodId;
         data["employmentTypeId"] = this.employmentTypeId;
         data["consultantId"] = this.consultantId;
+        data["consultant"] = this.consultant ? this.consultant.toJSON() : <any>undefined;
         data["nameOnly"] = this.nameOnly;
         data["consultantTimeReportingCapId"] = this.consultantTimeReportingCapId;
         data["consultantTimeReportingCapMaxValue"] = this.consultantTimeReportingCapMaxValue;
@@ -7888,6 +8193,7 @@ export interface IConsultantContractsDataDto {
     consultantPeriodId?: string;
     employmentTypeId?: number | undefined;
     consultantId?: number | undefined;
+    consultant?: ConsultantResultDto;
     nameOnly?: string | undefined;
     consultantTimeReportingCapId?: number | undefined;
     consultantTimeReportingCapMaxValue?: number | undefined;
@@ -7903,6 +8209,7 @@ export interface IConsultantContractsDataDto {
 
 export class ConsultantPeriodFinanceDataDto implements IConsultantPeriodFinanceDataDto {
     consultantId?: number;
+    consultant?: ConsultantResultDto;
     checkInvoicingSettingsOnConsultant?: boolean;
     creditorCreatedInNavision?: boolean;
 
@@ -7918,6 +8225,7 @@ export class ConsultantPeriodFinanceDataDto implements IConsultantPeriodFinanceD
     init(_data?: any) {
         if (_data) {
             this.consultantId = _data["consultantId"];
+            this.consultant = _data["consultant"] ? ConsultantResultDto.fromJS(_data["consultant"]) : <any>undefined;
             this.checkInvoicingSettingsOnConsultant = _data["checkInvoicingSettingsOnConsultant"];
             this.creditorCreatedInNavision = _data["creditorCreatedInNavision"];
         }
@@ -7933,6 +8241,7 @@ export class ConsultantPeriodFinanceDataDto implements IConsultantPeriodFinanceD
     toJSON(data?: any) {
         data = typeof data === 'object' ? data : {};
         data["consultantId"] = this.consultantId;
+        data["consultant"] = this.consultant ? this.consultant.toJSON() : <any>undefined;
         data["checkInvoicingSettingsOnConsultant"] = this.checkInvoicingSettingsOnConsultant;
         data["creditorCreatedInNavision"] = this.creditorCreatedInNavision;
         return data;
@@ -7941,6 +8250,7 @@ export class ConsultantPeriodFinanceDataDto implements IConsultantPeriodFinanceD
 
 export interface IConsultantPeriodFinanceDataDto {
     consultantId?: number;
+    consultant?: ConsultantResultDto;
     checkInvoicingSettingsOnConsultant?: boolean;
     creditorCreatedInNavision?: boolean;
 }
@@ -8973,6 +9283,46 @@ export interface IEmployeeDto {
     name?: string | undefined;
 }
 
+export class EmployeeNotificationDto implements IEmployeeNotificationDto {
+    notification?: Notification;
+    tenantId?: number | undefined;
+
+    constructor(data?: IEmployeeNotificationDto) {
+        if (data) {
+            for (var property in data) {
+                if (data.hasOwnProperty(property))
+                    (<any>this)[property] = (<any>data)[property];
+            }
+        }
+    }
+
+    init(_data?: any) {
+        if (_data) {
+            this.notification = _data["notification"];
+            this.tenantId = _data["tenantId"];
+        }
+    }
+
+    static fromJS(data: any): EmployeeNotificationDto {
+        data = typeof data === 'object' ? data : {};
+        let result = new EmployeeNotificationDto();
+        result.init(data);
+        return result;
+    }
+
+    toJSON(data?: any) {
+        data = typeof data === 'object' ? data : {};
+        data["notification"] = this.notification;
+        data["tenantId"] = this.tenantId;
+        return data;
+    }
+}
+
+export interface IEmployeeNotificationDto {
+    notification?: Notification;
+    tenantId?: number | undefined;
+}
+
 export class EnumEntityTypeDto implements IEnumEntityTypeDto {
     id?: number;
     name?: string | undefined;
@@ -9092,6 +9442,11 @@ export interface INewWorkflowCreatedDto {
 export enum NonStandardTerminationTime {
     BeforeEndOfContract = 1,
     ContractDidNotStart = 2,
+}
+
+export enum Notification {
+    ConsultantStart = 1,
+    ConsultantExtension = 2,
 }
 
 export class PeriodClientSpecialFeeDto implements IPeriodClientSpecialFeeDto {

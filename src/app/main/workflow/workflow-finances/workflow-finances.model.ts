@@ -3,20 +3,20 @@ import { FormArray, FormControl, FormGroup } from "@angular/forms";
 export class FinancesClientForm extends FormGroup {
     constructor() {
         super({
-            clientCreatedInNavision: new FormControl(null),
-            clientNumberTypeForInvoicing: new FormControl('Custom'),
-            clientNumberForInvoicing: new FormControl(null)
+            clientCreatedInNavision: new FormControl(false),
+            differentDebtorNumberForInvoicing: new FormControl(false),
+            customDebtorNumber: new FormControl(null)
         });
     }
 
     get clientCreatedInNavision() {
         return this.get('clientCreatedInNavision');
     }
-    get clientNumberTypeForInvoicing() {
-        return this.get('clientNumberTypeForInvoicing');
+    get differentDebtorNumberForInvoicing() {
+        return this.get('differentDebtorNumberForInvoicing');
     }
-    get clientNumberForInvoicing() {
-        return this.get('clientNumberForInvoicing');
+    get customDebtorNumber() {
+        return this.get('customDebtorNumber');
     }
 }
 

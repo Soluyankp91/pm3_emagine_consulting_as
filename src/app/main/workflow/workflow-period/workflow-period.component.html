@@ -78,7 +78,7 @@
                 <app-workflow-contracts #workflowContracts [workflowId]="workflowId" [clientPeriodId]="clientPeriodId" [activeSideSection]="selectedSideSection" [isCompleted]="selectedStep.isCompleted!"></app-workflow-contracts>
             </ng-container>
             <ng-container *ngSwitchCase="workflowSteps.Finance">
-                <app-workflow-finances #workflowFinances [workflowId]="workflowId" [activeSideSection]="selectedSideSection" [isCompleted]="selectedStep.isCompleted!"></app-workflow-finances>
+                <app-workflow-finances #workflowFinances [workflowId]="workflowId" [clientPeriodId]="clientPeriodId" [activeSideSection]="selectedSideSection" [isCompleted]="selectedStep.isCompleted!"></app-workflow-finances>
             </ng-container>
             <ng-container *ngSwitchCase="workflowSteps.Sourcing">
                 <app-workflow-sourcing #workflowSourcing [workflowId]="workflowId" [activeSideSection]="selectedSideSection" [isCompleted]="selectedStep.isCompleted!"></app-workflow-sourcing>

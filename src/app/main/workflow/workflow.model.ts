@@ -296,8 +296,8 @@ export const WorkflowList = [
     },
     {
         flag: WorkflowFlag.NewSales,
-        id: 'b5cd880a-c94e-4dee-a5b0-de7184582a31',
-        client: 'Martha Marikel',
+        id: 'da2a75fe-2607-42de-a129-b341d927e45f',
+        client: 'My WF',
         consultants: [
             { name: 'Martha Marikel' },
             { name: 'Van Trier Mia' },
