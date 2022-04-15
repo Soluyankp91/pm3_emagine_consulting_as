@@ -1,6 +1,6 @@
 <div class="workflow-sales">
     <ng-container *ngIf="readOnlyMode; else editMode">
-        <ng-container *ngIf="(activeSideSection !== workflowSideSections.TerminateWorkflow) && (activeSideSection !== workflowSideSections.TerminateConsultant); else terminationTemplate">
+        <ng-container *ngIf="(activeSideSection !== workflowSideSections.TerminateWorkflow) && (activeSideSection !== workflowSideSections.TerminateConsultant); else editTerminationTemplate">
             <!-- Main data -->
             <div fxLayout="column" fxLayoutAlign="start start" class="workflow-sales--process-data u-w--100">
                 <div fxLayout="column" fxLayoutAlign="start start" class="u-w--100">
@@ -681,7 +681,7 @@
                 <mat-divider class="u-mt--20 u-mb--20"></mat-divider>
             </ng-container>
         </ng-container>
-        <ng-template #terminationTemplate>
+        <ng-template #editTerminationTemplate>
             <form [formGroup]="salesTerminateConsultantForm" class="workflow-form--consultants workflow--termination u-mb--20 u-w--100">
                 <h3 class="workflow-gray--header u-mt--20" *ngIf="activeSideSection === workflowSideSections.TerminateConsultant">End of Consultant Contract</h3>
                 <h3 class="workflow-gray--header u-mt--20" *ngIf="activeSideSection === workflowSideSections.TerminateWorkflow">End of Client Contract</h3>
@@ -1004,6 +1004,7 @@
                                                 <mat-form-field appearance="fill" class="u-w--100 formFieldNoMarginPadding filter-select formFieldDatePicker" fxFlex="0 0 60%" *ngIf="commission.value.frequency?.id === 2">
                                                     <input autocomplete="off" matInput
                                                             [matDatepicker]="oneTimeDatePicker"
+                                                            placeholder="Date"
                                                             name="oneTimeDate" formControlName="oneTimeDate"
                                                             (focus)="oneTimeDatePicker.open()"
                                                             (click)="oneTimeDatePicker.open()" readonly>
@@ -1471,7 +1472,7 @@
 
                             <div fxLayout="row" fxLayoutAlign="start center" class="u-w--100 u-mb--10">
                                 <mat-form-field appearance="outline" class="u-w--100 filter-select u-mr--16" fxFlex="33%">
-                                    <mat-label>Direct client</mat-label>
+                                    <mat-label>Client invoicing recipient</mat-label>
                                     <input #clientInvoicingRecipientInput type="text" matInput [matAutocomplete]="clientInvoicingRecipientAutocomplete" formControlName="clientInvoicingRecipientIdValue" (click)="$event.stopPropagation()" placeholder="Client invoicing recipient">
                                     <mat-autocomplete #clientInvoicingRecipientAutocomplete="matAutocomplete" [displayWith]="displayClientNameFn">
                                         <ng-container>
@@ -1494,7 +1495,7 @@
                             <div fxLayout="row" fxLayoutAlign="start center" class="u-w--100 u-mb--10">
                                 <mat-form-field appearance="outline" class="u-w--100 filter-select u-mr--16" fxFlex="33%">
                                     <mat-label>Invoicing Reference Person</mat-label>
-                                    <input #invoicingReferencePersonInput type="text" matInput [matAutocomplete]="invoicingReferencePersonAutocomplete" formControlName="invoicingReferencePersonIdValue" (click)="$event.stopPropagation()" placeholder="Direct client name + address">
+                                    <input #invoicingReferencePersonInput type="text" matInput [matAutocomplete]="invoicingReferencePersonAutocomplete" formControlName="invoicingReferencePersonIdValue" (click)="$event.stopPropagation()" placeholder="Invoicing Reference Person">
                                     <mat-autocomplete #invoicingReferencePersonAutocomplete="matAutocomplete" [displayWith]="displayFullNameFn">
                                         <ng-container>
                                             <mat-option *ngFor="let contact of filteredReferencePersons" [value]="contact" [ngClass]="{ 'no-data': contact.id === 'no-data' }">
@@ -1805,14 +1806,26 @@
                             </div>
 
                             <div fxLayout="row" fxLayoutAlign="start start" class="u-w--100 u-mb--10">
-                                <mat-form-field *ngIf="!salesClientDataForm?.value?.evaluationsDisabled" appearance="outline" class="u-w--100  filter-select" fxFlex="33%">
+                                <mat-form-field *ngIf="!salesClientDataForm?.value?.evaluationsDisabled" appearance="outline" class="u-w--100  filter-select u-mr--16" fxFlex="33%">
+                                    <mat-label>Evaluation Reference Person</mat-label>
+                                    <input #evaluationReferencePersonInput type="text" matInput [matAutocomplete]="evaluationReferencePersonAutocomplete" formControlName="evaluationsReferencePersonIdValue" (click)="$event.stopPropagation()" placeholder="Final Evaluation Reference Person">
+                                    <mat-autocomplete #evaluationReferencePersonAutocomplete="matAutocomplete" [displayWith]="displayFullNameFn">
+                                        <ng-container>
+                                            <mat-option *ngFor="let contact of filteredEvaluationReferencePersons" [value]="contact" [ngClass]="{ 'no-data': contact.id === 'no-data' }">
+                                                    <b>{{ contact.firstName + ' ' + contact.lastName }}</b>
+                                            </mat-option>
+                                        </ng-container>
+                                    </mat-autocomplete>
+                                </mat-form-field>
+
+                                <!-- <mat-form-field *ngIf="!salesClientDataForm?.value?.evaluationsDisabled" appearance="outline" class="u-w--100  filter-select" fxFlex="33%">
                                     <mat-label>Evaluation Reference Person</mat-label>
                                     <mat-select formControlName="evaluationsReferencePersonIdValue" [disableOptionCentering]="true">
                                         <mat-option *ngFor="let item of [0,1,2,3]" [value]="item">
                                             {{ item }}
                                         </mat-option>
                                     </mat-select>
-                                </mat-form-field>
+                                </mat-form-field> -->
 
                                 <mat-form-field *ngIf="salesClientDataForm?.value?.evaluationsDisabled" appearance="outline" class="u-w--100 textarea-input " fxFlex="0 0 calc(66% + 16px)">
                                     <mat-label>Disable Evaluations Reason</mat-label>
@@ -1938,7 +1951,7 @@
                                     <div fxLayout="row" fxLayoutAlign="start start" class="u-w--100 u-mb--10">
                                         <mat-form-field appearance="outline" class="u-w--100 filter-select" fxFlex="33%">
                                             <mat-label>Consultant Name</mat-label>
-                                            <input #consultantNameFilterInput type="text" matInput [matAutocomplete]="consultantAutocomplete" formControlName="consultantName" (click)="$event.stopPropagation()" placeholder="Direct client name + address">
+                                            <input #consultantNameFilterInput type="text" matInput [matAutocomplete]="consultantAutocomplete" formControlName="consultantName" (click)="$event.stopPropagation()" placeholder="Consultant name">
                                             <mat-autocomplete #consultantAutocomplete="matAutocomplete" [displayWith]="displayNameFn">
                                                 <ng-container>
                                                     <mat-option *ngFor="let consultant of filteredConsultants" [value]="consultant" [ngClass]="{ 'no-data': consultant.id === 'no-data' }">
@@ -2196,8 +2209,8 @@
                                     <mat-form-field appearance="outline" class="u-w--100  filter-select" fxFlex="0 0 calc(16.5% - 8px)">
                                         <mat-label>Period</mat-label>
                                         <mat-select formControlName="consultantExpectedWorkloadPeriod" [disableOptionCentering]="true">
-                                            <mat-option *ngFor="let item of [0,1,2,3]" [value]="item">
-                                                {{ item }}
+                                            <mat-option *ngFor="let item of expectedWorkloadUnits" [value]="item.id">
+                                                {{ item.name }}
                                             </mat-option>
                                         </mat-select>
                                     </mat-form-field>
@@ -2362,7 +2375,7 @@
                                 </div>
 
                                 <div class="inline-edit-form u-w--100">
-                                    <div fxLayout="row" fxLayoutAlign="space-between start" fxLayoutGap="10px" class="workflow-sales-inline--form__header-container u-w--100" *ngIf="salesClientDataForm.clientFees?.controls?.length">
+                                    <div fxLayout="row" fxLayoutAlign="space-between start" fxLayoutGap="10px" class="workflow-sales-inline--form__header-container u-w--100" *ngIf="consultant.value.specialFees?.length">
                                         <span fxFlex="20%" class="workflow-sales-inline--form__header u-w--100">
                                             Fee name
                                         </span>
@@ -2382,7 +2395,7 @@
 
                                         </span>
                                     </div>
-                                    <ng-container formArrayName="clientFees" class="u-w--100">
+                                    <ng-container formArrayName="specialFees" class="u-w--100">
                                         <div fxLayout="row" fxLayoutAlign="space-between center" fxLayoutGap="10px" class="workflow-sales-inline--form__row u-w--100"
                                             *ngFor="let fee of getConsultantFeeControls(consultantIndex); let specialFeeIndex = index;"
                                             [formArrayName]="specialFeeIndex">

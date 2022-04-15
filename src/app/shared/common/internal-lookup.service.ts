@@ -31,6 +31,7 @@ export class InternalLookupService {
     discounts: EnumEntityTypeDto[] = [];
     workflowClientPeriodTypes: EnumEntityTypeDto[] = [];
     workflowConsultantPeriodTypes: EnumEntityTypeDto[] = [];
+    expectedWorkloadUnits: EnumEntityTypeDto[] = [];
     workflowPeriodStepTypes: { [key: string]: string; };
     nonStandartTerminationTimes: { [key: string]: string; };
     terminationReasons: { [key: string]: string; };
@@ -547,7 +548,6 @@ export class InternalLookupService {
         });
     }
 
-
     getDiscounts(): Observable<EnumEntityTypeDto[]> {
         return new Observable<EnumEntityTypeDto[]>((observer) => {
             if (this.discounts.length) {
@@ -602,6 +602,22 @@ export class InternalLookupService {
         });
     }
 
-
+    getExpectedWorkloadUnit(): Observable<EnumEntityTypeDto[]> {
+        return new Observable<EnumEntityTypeDto[]>((observer) => {
+            if (this.expectedWorkloadUnits.length) {
+                observer.next(this.expectedWorkloadUnits);
+                observer.complete();
+            } else {
+                this._enumService.expectedWorkloadUnit()
+                    .subscribe(response => {
+                        this.expectedWorkloadUnits = response;
+                        observer.next(this.expectedWorkloadUnits);
+                        observer.complete();
+                    }, error => {
+                        observer.error(error);
+                    });
+            }
+        });
+    }
 
 }

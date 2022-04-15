@@ -340,24 +340,23 @@ export class WorkflowDetailsComponent extends AppComopnentBase implements OnInit
 
     completeStep() {
         switch (this._workflowDataService.workflowProgress.currentlyActiveSection) {
-            case WorkflowTopSections.Overview:
-                console.log('Complete Overview');
-                break;
             case WorkflowTopSections.Workflow:
-                // switch (this._workflowDataService.workflowProgress.currentlyActiveStep) {
-                    // case StepType.Sales:
-                    //     console.log('Complete WF Sales');
-                    //     this._workflowDataService.updateWorkflowProgressStatus({isWorkflowSalesSaved: true});
-                    // break;
-                    // case StepType.Contracts:
-                    //     console.log('Complete WF Contracts');
-                    //     this._workflowDataService.updateWorkflowProgressStatus({isWorkflowContractsSaved: true});
-                    // break;
-                    // case StepType.Finance:
-                    //     console.log('Complete WF Finance');
-                    //     this._workflowDataService.updateWorkflowProgressStatus({isWorkflowAccountsSaved: true, isPrimaryWorkflowCompleted: true});
-                    // break;
                 switch(this._workflowDataService.workflowProgress.currentlyActiveSideSection) {
+                    case WorkflowProcessType.StartClientPeriod:
+                        switch (this._workflowDataService.workflowProgress.currentlyActiveStep) {
+                            case StepType.Sales:
+                                this.saveSalesStep(false);
+                                console.log('complete WF Sales');
+                                break;
+                            case StepType.Contract:
+                                this._workflowDataService.workflowContractsSaved.emit(false);
+                                console.log('complete WF Contracts');
+                                break;
+                            case StepType.Finance:
+                                console.log('complete WF Finance');
+                                break;
+                        }
+                    break;
                     case WorkflowProcessType.TerminateConsultant:
                         switch (this._workflowDataService.workflowProgress.currentlyActiveStep) {
                             case StepType.Sales:

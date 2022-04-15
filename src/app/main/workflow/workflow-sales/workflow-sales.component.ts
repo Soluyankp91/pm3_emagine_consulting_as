@@ -10,7 +10,7 @@ import { debounceTime, finalize, switchMap, takeUntil } from 'rxjs/operators';
 import { InternalLookupService } from 'src/app/shared/common/internal-lookup.service';
 import { ConfirmationDialogComponent } from 'src/app/shared/components/confirmation-dialog/confirmation-dialog.component';
 import { AppComopnentBase } from 'src/shared/app-component-base';
-import { ClientPeriodSalesDataDto, ClientPeriodServiceProxy, ClientRateDto, CommissionDto, ConsultantRateDto, ConsultantSalesDataDto, ContractSignerDto, EmployeeDto, EnumEntityTypeDto, EnumServiceProxy, LookupServiceProxy, PeriodClientSpecialFeeDto, PeriodClientSpecialRateDto, SalesClientDataDto, SalesMainDataDto, WorkflowProcessType, WorkflowServiceProxy, ConsultantResultDto, ClientResultDto, ContactResultDto, ConsultantTerminationSalesDataCommandDto, WorkflowTerminationSalesDataCommandDto, PeriodConsultantSpecialFeeDto, PeriodConsultantSpecialRateDto } from 'src/shared/service-proxies/service-proxies';
+import { ClientPeriodSalesDataDto, ClientPeriodServiceProxy, ClientRateDto, CommissionDto, ConsultantRateDto, ConsultantSalesDataDto, ContractSignerDto, EmployeeDto, EnumEntityTypeDto, EnumServiceProxy, LookupServiceProxy, PeriodClientSpecialFeeDto, PeriodClientSpecialRateDto, SalesClientDataDto, SalesMainDataDto, WorkflowProcessType, WorkflowServiceProxy, ConsultantResultDto, ClientResultDto, ContactResultDto, ConsultantTerminationSalesDataCommandDto, WorkflowTerminationSalesDataCommandDto, PeriodConsultantSpecialFeeDto, PeriodConsultantSpecialRateDto, SalesServiceProxy } from 'src/shared/service-proxies/service-proxies';
 import { WorkflowConsultantActionsDialogComponent } from '../workflow-consultant-actions-dialog/workflow-consultant-actions-dialog.component';
 import { WorkflowDataService } from '../workflow-data.service';
 import { ConsultantTypes } from '../workflow.model';
@@ -67,6 +67,7 @@ export class WorkflowSalesComponent extends AppComopnentBase implements OnInit {
     tenants: EnumEntityTypeDto[] = [];
     projectCategories: EnumEntityTypeDto[] = [];
     discounts: EnumEntityTypeDto[] = [];
+    expectedWorkloadUnits: EnumEntityTypeDto[] = [];
     nonStandartTerminationTimes: { [key: string]: string; };
     terminationReasons: { [key: string]: string; };
 
@@ -96,6 +97,7 @@ export class WorkflowSalesComponent extends AppComopnentBase implements OnInit {
     filteredConsultants: any[] = [];
     filteredRecipients: any[] = [];
     filteredReferencePersons: any[] = [];
+    filteredEvaluationReferencePersons: any[] = [];
     filteredClientInvoicingRecipients: any[] = [];
 
     consultantRateToEdit: PeriodConsultantSpecialRateDto;
@@ -119,7 +121,8 @@ export class WorkflowSalesComponent extends AppComopnentBase implements OnInit {
         private _internalLookupService: InternalLookupService,
         private _lookupService: LookupServiceProxy,
         private _clientPeriodService: ClientPeriodServiceProxy,
-        private _workflowServiceProxy: WorkflowServiceProxy
+        private _workflowServiceProxy: WorkflowServiceProxy,
+        private _salesService: SalesServiceProxy
     ) {
         super(injector);
         this.salesClientDataForm = new WorkflowSalesClientDataForm();
@@ -230,7 +233,7 @@ export class WorkflowSalesComponent extends AppComopnentBase implements OnInit {
                 debounceTime(300),
                 switchMap((value: any) => {
                     let toSend = {
-                        clientId: undefined,
+                        clientId: this.salesClientDataForm.directClientIdValue?.value?.clientId,
                         name: value,
                         maxRecordsCount: 1000,
                     };
@@ -245,7 +248,7 @@ export class WorkflowSalesComponent extends AppComopnentBase implements OnInit {
                 if (list.length) {
                     this.filteredReferencePersons = list;
                 } else {
-                    this.filteredReferencePersons = [{ firstName: 'No records found', id: 'no-data' }];
+                    this.filteredReferencePersons = [{ firstName: 'No records found', lastName: '', id: 'no-data' }];
                 }
             });
 
@@ -274,6 +277,32 @@ export class WorkflowSalesComponent extends AppComopnentBase implements OnInit {
                     this.filteredClientInvoicingRecipients = list;
                 } else {
                     this.filteredClientInvoicingRecipients = [{ clientName: 'No records found', id: 'no-data' }];
+                }
+            });
+
+            this.salesClientDataForm.evaluationsReferencePersonIdValue?.valueChanges
+            .pipe(
+                takeUntil(this._unsubscribe),
+                debounceTime(300),
+                switchMap((value: any) => {
+                    let toSend = {
+                        clientId: this.salesClientDataForm.directClientIdValue?.value?.clientId,
+                        name: value,
+                        maxRecordsCount: 1000,
+                    };
+                    if (value?.id) {
+                        toSend.name = value.id
+                            ? value.firstName
+                            : value;
+                    }
+                    console.log(toSend);
+                    return this._lookupService.contacts(toSend.clientId, toSend.name, toSend.maxRecordsCount);
+                }),
+            ).subscribe((list: ContactResultDto[]) => {
+                if (list.length) {
+                    this.filteredEvaluationReferencePersons = list;
+                } else {
+                    this.filteredEvaluationReferencePersons = [{ firstName: 'No records found', lastName: '', id: 'no-data' }];
                 }
             });
     }
@@ -339,9 +368,8 @@ export class WorkflowSalesComponent extends AppComopnentBase implements OnInit {
         this.getDiscounts();
         this.getNonStandartTerminationTimes();
         this.getTerminationReasons();
+        this.getExpectedWorkloadUnit();
 
-        // init form arrays ?
-        // this.addSignerToForm();
         // this.addConsultantForm();
 
         this.getWorkflowSalesStep();
@@ -350,7 +378,7 @@ export class WorkflowSalesComponent extends AppComopnentBase implements OnInit {
             .pipe(takeUntil(this._unsubscribe))
             .subscribe((value: boolean) => {
                 // NB: boolean SAVE DRAFT or COMPLETE in future
-                this.saveSalesStep();
+                this.saveSalesStep(value);
             });
 
         // this.updateReadonlyState();
@@ -696,6 +724,16 @@ export class WorkflowSalesComponent extends AppComopnentBase implements OnInit {
             });
     }
 
+    getExpectedWorkloadUnit() {
+        this._internalLookupService.getExpectedWorkloadUnit()
+            .pipe(finalize(() => {
+
+            }))
+            .subscribe(result => {
+                this.expectedWorkloadUnits = result;
+            });
+    }
+
     //#endregion dataFetch
 
     addSpecialRate(clientRate?: PeriodClientSpecialRateDto) {
@@ -1017,7 +1055,7 @@ export class WorkflowSalesComponent extends AppComopnentBase implements OnInit {
         return this.consultantsForm.get('consultantData') as FormArray;
     }
 
-    saveSalesStep() {
+    saveSalesStep(isDraft: boolean) {
         let input = new ClientPeriodSalesDataDto();
         input.salesMainData = new SalesMainDataDto();
         input.salesClientData = new SalesClientDataDto();
@@ -1105,7 +1143,7 @@ export class WorkflowSalesComponent extends AppComopnentBase implements OnInit {
         input.salesClientData.noInvoicingReferenceNumber = this.salesClientDataForm.invoicingReferenceNumber?.value ? false : true;
         input.salesClientData.invoicingReferenceNumber = this.salesClientDataForm.invoicingReferenceNumber?.value;
         input.salesClientData.clientInvoicingRecipientSameAsDirectClient = this.salesClientDataForm.clientInvoicingRecipientSameAsDirectClient?.value;
-        input.salesClientData.clientInvoicingRecipientIdValue = this.salesClientDataForm.clientInvoicingRecipientIdValue?.value;
+        input.salesClientData.clientInvoicingRecipientIdValue = this.salesClientDataForm.clientInvoicingRecipientIdValue?.value?.clientId;
         input.salesClientData.noInvoicingReferencePerson = this.salesClientDataForm.noInvoicingReferencePerson?.value;
         input.salesClientData.invoicingReferencePersonIdValue = this.salesClientDataForm.invoicingReferencePersonIdValue?.value?.id;
 
@@ -1192,13 +1230,24 @@ export class WorkflowSalesComponent extends AppComopnentBase implements OnInit {
             });
         }
 
-        this._clientPeriodService.salesPut(this.clientPeriodId!, input)
-            .pipe(finalize(() => {
+        if (isDraft) {
+            this._clientPeriodService.salesPut(this.clientPeriodId!, input)
+                .pipe(finalize(() => {
+    
+                }))
+                .subscribe(result => {
+    
+                })
+        } else {
+            this._salesService.editFinish(this.clientPeriodId!, input)
+                .pipe(finalize(() => {
+    
+                }))
+                .subscribe(result => {
+    
+                })
+        }
 
-            }))
-            .subscribe(result => {
-
-            })
     }
 
     getWorkflowSalesStep() {
@@ -1271,7 +1320,7 @@ export class WorkflowSalesComponent extends AppComopnentBase implements OnInit {
                 this.salesClientDataForm.clientInvoicingDate?.setValue(result.salesClientData?.clientRate?.manualDate, {emitEVent: false});
 
                 this.salesClientDataForm.invoicingReferenceNumber?.setValue(result.salesClientData?.invoicingReferenceNumber, {emitEVent: false});
-                this.salesClientDataForm.clientInvoicingRecipientIdValue?.setValue(result.salesClientData?.clientInvoicingRecipientIdValue, {emitEVent: false});
+                this.salesClientDataForm.clientInvoicingRecipientIdValue?.setValue(result.salesClientData?.clientInvoicingRecipient, {emitEVent: false});
                 this.salesClientDataForm.clientInvoicingRecipientSameAsDirectClient?.setValue(result?.salesClientData?.clientInvoicingRecipientSameAsDirectClient, {emitEvent: false});
                 if (result?.salesClientData?.clientInvoicingRecipientSameAsDirectClient) {
                     this.salesClientDataForm.clientInvoicingRecipientIdValue?.disable({emitEvent: false});
