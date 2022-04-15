@@ -34,6 +34,7 @@ export class InternalLookupService {
     workflowPeriodStepTypes: { [key: string]: string; };
     nonStandartTerminationTimes: { [key: string]: string; };
     terminationReasons: { [key: string]: string; };
+    employmentTypes: EnumEntityTypeDto[] = [];
 
     constructor(private _enumService: EnumServiceProxy) {
 
@@ -602,6 +603,22 @@ export class InternalLookupService {
         });
     }
 
-
+    getEmploymentTypes(): Observable<EnumEntityTypeDto[]> {
+        return new Observable<EnumEntityTypeDto[]>((observer) => {
+            if (this.employmentTypes.length) {
+                observer.next(this.employmentTypes);
+                observer.complete();
+            } else {
+                this._enumService.employmentType()
+                    .subscribe(response => {
+                        this.employmentTypes = response;
+                        observer.next(this.employmentTypes);
+                        observer.complete();
+                    }, error => {
+                        observer.error(error);
+                    });
+            }
+        });
+    }
 
 }

@@ -222,6 +222,25 @@ export enum WorkflowFlag {
 export const WorkflowList = [
     {
         flag: WorkflowFlag.NewSales,
+        id: 'da2a75fe-2607-42de-a129-b341d927e45f',
+
+        client: 'saved sales',
+        consultants: [
+            { name: 'Martha Marikel' },
+            { name: 'John Doe'}
+        ],
+        salesType: 'T&M',
+        deliveryType: 'Offshore',
+        startDate: new Date(2021, 4, 2),
+        endDate: new Date(2021, 5, 3),
+        step: 'Sales',
+        openProcess: [null, WorkflowProcessType.StartClientPeriod],
+        status: 'In progress',
+        managers: [1,2],
+        isDeleted: false
+    },
+    {
+        flag: WorkflowFlag.NewSales,
         id: '297896A7-63B5-4B66-A4C8-E14E1FE1DDB7',
 
         client: '7 periods test',
@@ -354,60 +373,3 @@ export const WorkflowList = [
 ];
 
 // #endrefion hardcoded grid
-
-export const ConsultantTypes: EnumEntityTypeDto[] = [
-    new EnumEntityTypeDto(
-        {
-            id: 1,
-            name: 'Freelance'
-        }
-    ),
-    new EnumEntityTypeDto(
-        {
-            id: 2,
-            name: 'Freelance low margin'
-        }
-    ),
-    new EnumEntityTypeDto(
-        {
-            id: 3,
-            name: 'Project employment'
-        }
-    ),
-    new EnumEntityTypeDto(
-        {
-            id: 4,
-            name: 'Temporary worker'
-        }
-    ),
-    new EnumEntityTypeDto(
-        {
-            id: 5,
-            name: 'Nearshore'
-        }
-    ),
-    new EnumEntityTypeDto(
-        {
-            id: 6,
-            name: 'VMS/Referred'
-        }
-    ),
-    new EnumEntityTypeDto(
-        {
-            id: 7,
-            name: 'Permanent employee'
-        }
-    ),
-    new EnumEntityTypeDto(
-        {
-            id: 8,
-            name: '48E consultant'
-        }
-    ),
-    new EnumEntityTypeDto(
-        {
-            id: 9,
-            name: 'Fee only'
-        }
-    )
-];
