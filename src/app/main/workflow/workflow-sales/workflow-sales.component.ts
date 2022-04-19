@@ -401,7 +401,6 @@ export class WorkflowSalesComponent extends AppComopnentBase implements OnInit {
         this.getEmploymentTypes();
         this.getExpectedWorkloadUnit();
 
-        this.addConsultantForm();
 
         this.getWorkflowSalesStep();
 
@@ -1572,7 +1571,7 @@ export class WorkflowSalesComponent extends AppComopnentBase implements OnInit {
                 });
 
                 // Evaluations
-                this.salesClientDataForm.evaluationsReferencePersonIdValue?.setValue(result?.salesClientData?.evaluationsReferencePersonIdValue, {emitEvent: false});
+                this.salesClientDataForm.evaluationsReferencePersonIdValue?.setValue(result?.salesClientData?.evaluationsReferencePerson, {emitEvent: false});
                 this.salesClientDataForm.evaluationsDisabled?.setValue(result?.salesClientData?.evaluationsDisabled, {emitEvent: false});
                 this.salesClientDataForm.evaluationsDisabledReason?.setValue(result?.salesClientData?.evaluationsDisabledReason, {emitEvent: false});
                 // Contract

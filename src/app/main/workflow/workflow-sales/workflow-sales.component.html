@@ -1860,15 +1860,6 @@
                                     </mat-autocomplete>
                                 </mat-form-field>
 
-                                <!-- <mat-form-field *ngIf="!salesClientDataForm?.value?.evaluationsDisabled" appearance="outline" class="u-w--100  filter-select" fxFlex="33%">
-                                    <mat-label>Evaluation Reference Person</mat-label>
-                                    <mat-select formControlName="evaluationsReferencePersonIdValue" [disableOptionCentering]="true">
-                                        <mat-option *ngFor="let item of [0,1,2,3]" [value]="item">
-                                            {{ item }}
-                                        </mat-option>
-                                    </mat-select>
-                                </mat-form-field> -->
-
                                 <mat-form-field *ngIf="salesClientDataForm?.value?.evaluationsDisabled" appearance="outline" class="u-w--100 textarea-input " fxFlex="0 0 calc(66% + 16px)">
                                     <mat-label>Disable Evaluations Reason</mat-label>
                                     <textarea matInput autocomplete="new-password" name="evaluationsDisabledReason" formControlName="evaluationsDisabledReason">
@@ -2610,8 +2601,8 @@
                                     </mat-autocomplete>
                                 </div>
                             </div>
+                            <mat-divider class="u-w--100 u-mt--20 u-mb--20"></mat-divider>
                         </div>
-
                         <div fxLayout="row" fxLayoutAlign="start start" class="u-w--100">
                             <button class="button-add mat-elevation-z0 u-mt--10 u-mb--10" mat-flat-button (click)="addConsultantForm()">
                                 <mat-icon>add</mat-icon>
