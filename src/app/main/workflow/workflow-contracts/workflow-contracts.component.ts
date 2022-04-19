@@ -10,7 +10,7 @@ import { ClientPeriodContractsDataDto, WorkflowProcessType, WorkflowServiceProxy
 import { WorkflowConsultantActionsDialogComponent } from '../workflow-consultant-actions-dialog/workflow-consultant-actions-dialog.component';
 import { WorkflowDataService } from '../workflow-data.service';
 import { ConsultantDiallogAction } from '../workflow-sales/workflow-sales.model';
-import { ConsultantTypes, ProjectLineDiallogMode } from '../workflow.model';
+import { ProjectLineDiallogMode } from '../workflow.model';
 import { AddOrEditProjectLineDialogComponent } from './add-or-edit-project-line-dialog/add-or-edit-project-line-dialog.component';
 import { WorkflowContractsClientDataForm, WorkflowContractsConsultantsDataForm, WorkflowContractsMainForm, WorkflowContractsSyncForm, WorkflowContractsTerminationConsultantsDataForm } from './workflow-contracts.model';
 
@@ -44,6 +44,7 @@ export class WorkflowContractsComponent extends AppComopnentBase implements OnIn
     clientSpecialRateOrFeeDirections: EnumEntityTypeDto[] = [];
     clientSpecialRateReportUnits: EnumEntityTypeDto[] = [];
     clientSpecialFeeFrequencies: EnumEntityTypeDto[] = [];
+    employmentTypes: EnumEntityTypeDto[] = [];
 
     contractLinesDoneManuallyInOldPMControl = new FormControl();
     contractsTerminationConsultantForm: WorkflowContractsTerminationConsultantsDataForm;
@@ -69,7 +70,6 @@ export class WorkflowContractsComponent extends AppComopnentBase implements OnIn
         consultantCapOnTimeReportingCurrency: null
     }];
 
-    consultantTypes = ConsultantTypes;
     private _unsubscribe = new Subject();
 
     constructor(
@@ -108,6 +108,7 @@ export class WorkflowContractsComponent extends AppComopnentBase implements OnIn
         this.getClientTimeReportingCap();
         this.getProjectTypes();
         this.getMargins();
+        this.getEmploymentTypes();
 
         this.getContractsStep();
 
@@ -249,6 +250,16 @@ export class WorkflowContractsComponent extends AppComopnentBase implements OnIn
             }))
             .subscribe(result => {
                 this.clientTimeReportingCap = result;
+            });
+    }
+
+    getEmploymentTypes() {
+        this._internalLookupService.getEmploymentTypes()
+            .pipe(finalize(() => {
+
+            }))
+            .subscribe(result => {
+                this.employmentTypes = result;
             });
     }
 
@@ -466,7 +477,7 @@ export class WorkflowContractsComponent extends AppComopnentBase implements OnIn
         const form = this._fb.group({
             consultnatId: new FormControl(consultant.consultantId),
             nameOnly: new FormControl(consultant.nameOnly),
-            consultantType: new FormControl(this.findItemById(this.consultantTypes, consultant.employmentTypeId)),
+            consultantType: new FormControl(this.findItemById(this.employmentTypes, consultant.employmentTypeId)),
             consultantCapOnTimeReportingValue: new FormControl(consultant.consultantTimeReportingCapMaxValue),
             consultantCapOnTimeReportingCurrency: new FormControl(this.findItemById(this.currencies, consultant.consultantTimeReportingCapCurrencyId)),
             noSpecialContractTerms: new FormControl(consultant.noSpecialContractTerms),
@@ -492,7 +503,7 @@ export class WorkflowContractsComponent extends AppComopnentBase implements OnIn
     }
 
     displayConsultantEmploymentType(employmentTypeId: number) {
-        return this.consultantTypes.find(x => x.id === employmentTypeId)?.name!;
+        return this.employmentTypes.find(x => x.id === employmentTypeId)?.name!;
     }
 
     addSpecialRateToConsultantData(index: number, clientRate?: PeriodConsultantSpecialRateDto) {
