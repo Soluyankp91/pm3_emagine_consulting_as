@@ -274,8 +274,17 @@ export class WorkflowContractsComponent extends AppComopnentBase implements OnIn
                 this.contractClientForm.specialContractTerms?.setValue(result.clientData?.specialContractTerms, {emitEvent: false});
                 this.contractClientForm.noSpecialContractTerms?.setValue(result.clientData?.noSpecialContractTerms, {emitEvent: false})
 
-                // add rates
-                // add fees
+                if (result.clientData?.periodClientSpecialRates?.length) {
+                    result.clientData.periodClientSpecialRates.forEach((rate: PeriodClientSpecialRateDto) => {
+                        this.addSpecialRate(rate);
+                    });
+                }
+
+                if (result.clientData?.periodClientSpecialFees?.length) {
+                    result.clientData.periodClientSpecialFees.forEach((fee: PeriodClientSpecialFeeDto) => {
+                        this.addClientFee(fee);
+                    });
+                }
 
                 if (result.consultantData?.length) {
                     result.consultantData.forEach((consultant: ConsultantContractsDataDto, index) => {
@@ -406,7 +415,7 @@ export class WorkflowContractsComponent extends AppComopnentBase implements OnIn
             rateDirection: new FormControl(clientRate?.rateDirection?.id ?? null),
             reportingUnit: new FormControl(clientRate?.reportingUnit?.id ?? null),
             clientRateValue: new FormControl(clientRate?.clientRate ?? null),
-            clientRateCurrency: new FormControl(clientRate?.clientRateCurrencyId ?? null),
+            clientRateCurrency: new FormControl(this.findItemById(this.currencies, clientRate?.clientRateCurrencyId) ?? null),
             editable: new FormControl(clientRate ? false : true)
         });
         this.contractClientForm.clientRates.push(form);
@@ -432,7 +441,7 @@ export class WorkflowContractsComponent extends AppComopnentBase implements OnIn
             feeDirection: new FormControl(clientFee?.feeDirection ?? null),
             feeFrequency: new FormControl(clientFee?.frequency ?? null),
             clientRateValue: new FormControl(clientFee?.clientRate ?? null),
-            clientRateCurrency: new FormControl(clientFee?.clientRateCurrencyId ?? null),
+            clientRateCurrency: new FormControl(this.findItemById(this.currencies, clientFee?.clientRateCurrencyId) ?? null),
 
             editable: new FormControl(clientFee ? false : true)
         });
