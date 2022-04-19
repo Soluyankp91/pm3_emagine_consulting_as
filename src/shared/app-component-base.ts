@@ -13,7 +13,11 @@ export abstract class AppComopnentBase {
     }
 
     mapListByProperty(list: any[], prop: string) {
-        return list.map(x =>  x[prop]).join(', ');
+        if (list?.length) {
+            return list.map(x =>  x[prop]).join(', ');
+        } else {
+            return '-';
+        }
     }
 
     employeePhoto(externalId: string): string {

@@ -1503,11 +1503,11 @@ export class ClientsServiceProxy {
      * @param sort (optional) 
      * @return Success
      */
-    requestTrack(legacyClientId: number, pageNumber?: number | undefined, pageSize?: number | undefined, sort?: string | undefined): Observable<ClientRequestTrackDtoPaginatedList> {
-        let url_ = this.baseUrl + "/api/Clients/{legacyClientId}/request-track?";
-        if (legacyClientId === undefined || legacyClientId === null)
-            throw new Error("The parameter 'legacyClientId' must be defined.");
-        url_ = url_.replace("{legacyClientId}", encodeURIComponent("" + legacyClientId));
+    requestTrack(clientId: number, pageNumber?: number | undefined, pageSize?: number | undefined, sort?: string | undefined): Observable<ClientRequestTrackDtoPaginatedList> {
+        let url_ = this.baseUrl + "/api/Clients/{clientId}/request-track?";
+        if (clientId === undefined || clientId === null)
+            throw new Error("The parameter 'clientId' must be defined.");
+        url_ = url_.replace("{clientId}", encodeURIComponent("" + clientId));
         if (pageNumber === null)
             throw new Error("The parameter 'pageNumber' cannot be null.");
         else if (pageNumber !== undefined)
@@ -9923,6 +9923,7 @@ export class SalesClientDataDto implements ISalesClientDataDto {
     noSpecialFee?: boolean;
     periodClientSpecialFees?: PeriodClientSpecialFeeDto[] | undefined;
     evaluationsReferencePersonIdValue?: number | undefined;
+    evaluationsReferencePerson?: ContactResultDto;
     evaluationsDisabled?: boolean;
     evaluationsDisabledReason?: string | undefined;
     noSpecialContractTerms?: boolean;
@@ -9977,6 +9978,7 @@ export class SalesClientDataDto implements ISalesClientDataDto {
                     this.periodClientSpecialFees!.push(PeriodClientSpecialFeeDto.fromJS(item));
             }
             this.evaluationsReferencePersonIdValue = _data["evaluationsReferencePersonIdValue"];
+            this.evaluationsReferencePerson = _data["evaluationsReferencePerson"] ? ContactResultDto.fromJS(_data["evaluationsReferencePerson"]) : <any>undefined;
             this.evaluationsDisabled = _data["evaluationsDisabled"];
             this.evaluationsDisabledReason = _data["evaluationsDisabledReason"];
             this.noSpecialContractTerms = _data["noSpecialContractTerms"];
@@ -10035,6 +10037,7 @@ export class SalesClientDataDto implements ISalesClientDataDto {
                 data["periodClientSpecialFees"].push(item.toJSON());
         }
         data["evaluationsReferencePersonIdValue"] = this.evaluationsReferencePersonIdValue;
+        data["evaluationsReferencePerson"] = this.evaluationsReferencePerson ? this.evaluationsReferencePerson.toJSON() : <any>undefined;
         data["evaluationsDisabled"] = this.evaluationsDisabled;
         data["evaluationsDisabledReason"] = this.evaluationsDisabledReason;
         data["noSpecialContractTerms"] = this.noSpecialContractTerms;
@@ -10078,6 +10081,7 @@ export interface ISalesClientDataDto {
     noSpecialFee?: boolean;
     periodClientSpecialFees?: PeriodClientSpecialFeeDto[] | undefined;
     evaluationsReferencePersonIdValue?: number | undefined;
+    evaluationsReferencePerson?: ContactResultDto;
     evaluationsDisabled?: boolean;
     evaluationsDisabledReason?: string | undefined;
     noSpecialContractTerms?: boolean;

@@ -1259,7 +1259,7 @@
                                     <mat-form-field appearance="outline" class="u-w--100 filter-select" fxFlex="33%">
                                         <mat-label>Direct client</mat-label>
                                         <input #directClientFilterInput type="text" matInput [matAutocomplete]="directClientAutocomplete" formControlName="directClientIdValue" (click)="$event.stopPropagation()" placeholder="Direct client name + address">
-                                        <mat-autocomplete #directClientAutocomplete="matAutocomplete" [displayWith]="displayClientNameFn">
+                                        <mat-autocomplete #directClientAutocomplete="matAutocomplete" [displayWith]="displayClientNameFn" (optionSelected)="directClientSelected($event)">
                                             <ng-container>
                                                 <mat-option *ngFor="let client of filteredDirectClients" [value]="client" [ngClass]="{ 'no-data': client.id === 'no-data' }">
                                                     <div>
@@ -1700,10 +1700,22 @@
                             </div>
 
                             <div fxLayout="row" fxLayoutAlign="start start" class="u-mb--10">
-                                <button [ngClass]="salesClientDataForm!.clientRates!.controls!.length > 0 ? 'button-add' : 'button-outlined'" class="rates-and-fees--btn" mat-flat-button (click)="addSpecialRate()">
+                                <button [ngClass]="salesClientDataForm!.clientRates!.controls!.length > 0 ? 'button-add' : 'button-outlined'" class="rates-and-fees--btn" mat-flat-button
+                                    [matMenuTriggerFor]="clientSpecialRateMenu"
+                                    (menuOpened)="clientSpecialRateFilter.setValue('')">
                                     <mat-icon *ngIf="salesClientDataForm.clientRates?.controls?.length">add</mat-icon>
                                     Add special rates
                                 </button>
+                                <mat-menu #clientSpecialRateMenu>
+                                    <mat-form-field appearance="outline" class="">
+                                        <input type="text" matInput [matAutocomplete]="auto" [formControl]="clientSpecialRateFilter" (click)="$event.stopPropagation()" placeholder="Search speical rate">
+                                        <mat-autocomplete #auto="matAutocomplete" [displayWith]="displayPublicNameFn">
+                                            <mat-option *ngFor="let option of filteredClientSpecialRates | async" [value]="option" (click)="selectClientSpecialRate($event, option)">
+                                                {{option.publicName}}
+                                            </mat-option>
+                                        </mat-autocomplete>
+                                    </mat-form-field>
+                                </mat-menu>
                             </div>
 
                             <div class="inline-edit-form u-w--100">
@@ -1728,49 +1740,9 @@
                                     <div fxLayout="row" fxLayoutAlign="space-between center" fxLayoutGap="10px" class="workflow-sales-inline--form__row u-w--100"
                                         *ngFor="let fee of salesClientDataForm.clientFees.controls; index as i"
                                         [formArrayName]="i">
-                                        <!-- <ng-container *ngIf="fee.value.editable">
-                                            <mat-form-field appearance="fill" class="u-w--100 formFieldNoMarginPadding filter-select" fxFlex="25%">
-                                                <input matInput type="text" formControlName="feeName" placeholder="Fee name" />
-                                            </mat-form-field>
-                                            <mat-form-field appearance="fill" class="u-w--100 formFieldNoMarginPadding filter-select" fxFlex="25%">
-                                                <mat-select formControlName="feeDirection" placeholder="Fee direction" [disableOptionCentering]="true" [compareWith]="compareWithFn">
-                                                    <mat-option *ngFor="let item of clientSpecialRateOrFeeDirections" [value]="item">
-                                                        {{ item.name }}
-                                                    </mat-option>
-                                                </mat-select>
-                                            </mat-form-field>
-                                            <mat-form-field appearance="fill" class="u-w--100 formFieldNoMarginPadding filter-select" fxFlex="20%">
-                                                <mat-select formControlName="feeFrequency" placeholder="Frequency" [disableOptionCentering]="true" [compareWith]="compareWithFn">
-                                                    <mat-option *ngFor="let item of clientSpecialFeeFrequencies" [value]="item">
-                                                        {{ item.name }}
-                                                    </mat-option>
-                                                </mat-select>
-                                            </mat-form-field>
-                                            <div fxFlex="20%" fxLayout="row" fxLayoutAlign="start start">
-                                                <mat-form-field appearance="fill" class="u-w--100 formFieldNoMarginPadding filter-select" fxFlex="40%">
-                                                    <input matInput type="text" placeholder="Rate" formControlName="clientRateValue">
-                                                </mat-form-field>
-                                                <mat-form-field appearance="fill" class="u-w--100 formFieldNoMarginPadding filter-select" fxFlex="60%">
-                                                    <mat-select formControlName="clientRateCurrency" placeholder="Currency" [disableOptionCentering]="true" [compareWith]="compareWithFn">
-                                                        <mat-option *ngFor="let item of currencies" [value]="item">
-                                                            {{ item.name }}
-                                                        </mat-option>
-                                                    </mat-select>
-                                                </mat-form-field>
-                                            </div>
-                                            <div fxFlex="10%" class="u-w--100 text-truncate-ellipsis flex-items-center">
-                                                <button mat-flat-button (click)="editOrSaveClientFee(fee.value.editable, i)" class="inline-edit-form--btn__save">
-                                                    Save
-                                                </button>
-                                                <button mat-icon-button (click)="removeClientFee(i)">
-                                                    <mat-icon>clear</mat-icon>
-                                                </button>
-                                            </div>
-                                        </ng-container> -->
-                                        <!-- <ng-container *ngIf="!fee.value.editable"> -->
                                         <ng-container>
-                                            <span fxFlex="25%" class="u-w--100 text-truncate-ellipsis" [matTooltip]="fee.value.rateName ?? '-'">
-                                                {{fee.value.rateName ?? '-'}}
+                                            <span fxFlex="25%" class="u-w--100 text-truncate-ellipsis" [matTooltip]="fee.value.feeName ?? '-'">
+                                                {{fee.value.feeName ?? '-'}}
                                             </span>
                                             <span fxFlex="25%" class="u-w--100 text-truncate-ellipsis" [matTooltip]="fee.value.feeDirection?.name ?? '-'">
                                                 {{fee.value.feeDirection?.name ?? '-'}}
@@ -1838,10 +1810,26 @@
                             </div>
 
                             <div fxLayout="row" fxLayoutAlign="start start" class="u-mb--20">
-                                <button [ngClass]="salesClientDataForm!.clientFees!.controls!.length > 0 ? 'button-add' : 'button-outlined'" class="rates-and-fees--btn" mat-flat-button (click)="addClientFee()">
+                                <!-- <button [ngClass]="salesClientDataForm!.clientFees!.controls!.length > 0 ? 'button-add' : 'button-outlined'" class="rates-and-fees--btn" mat-flat-button (click)="addClientFee()">
                                     <mat-icon *ngIf="salesClientDataForm?.clientFees?.controls?.length">add</mat-icon>
                                     Add special fees
+                                </button> -->
+                                <button [ngClass]="salesClientDataForm!.clientFees!.controls!.length > 0 ? 'button-add' : 'button-outlined'" class="rates-and-fees--btn" mat-flat-button
+                                    [matMenuTriggerFor]="clientSpecialFeeMenu"
+                                    (menuOpened)="clientSpecialFeeFilter.setValue('')">
+                                    <mat-icon *ngIf="salesClientDataForm.clientFees?.controls?.length">add</mat-icon>
+                                    Add special fees
                                 </button>
+                                <mat-menu #clientSpecialFeeMenu>
+                                    <mat-form-field appearance="outline" class="">
+                                        <input type="text" matInput [matAutocomplete]="clientSpecialFeeAuto" [formControl]="clientSpecialFeeFilter" (click)="$event.stopPropagation()" placeholder="Search speical fee">
+                                        <mat-autocomplete #clientSpecialFeeAuto="matAutocomplete" [displayWith]="displayPublicNameFn">
+                                            <mat-option *ngFor="let option of filteredClientSpecialFees | async" [value]="option" (click)="selectClientSpecialFee($event, option)">
+                                                {{option.publicName}}
+                                            </mat-option>
+                                        </mat-autocomplete>
+                                    </mat-form-field>
+                                </mat-menu>
                             </div>
                         </div>
                         <mat-divider class="u-w--100 u-mt--20 u-mb--20"></mat-divider>
@@ -1871,15 +1859,6 @@
                                         </ng-container>
                                     </mat-autocomplete>
                                 </mat-form-field>
-
-                                <!-- <mat-form-field *ngIf="!salesClientDataForm?.value?.evaluationsDisabled" appearance="outline" class="u-w--100  filter-select" fxFlex="33%">
-                                    <mat-label>Evaluation Reference Person</mat-label>
-                                    <mat-select formControlName="evaluationsReferencePersonIdValue" [disableOptionCentering]="true">
-                                        <mat-option *ngFor="let item of [0,1,2,3]" [value]="item">
-                                            {{ item }}
-                                        </mat-option>
-                                    </mat-select>
-                                </mat-form-field> -->
 
                                 <mat-form-field *ngIf="salesClientDataForm?.value?.evaluationsDisabled" appearance="outline" class="u-w--100 textarea-input " fxFlex="0 0 calc(66% + 16px)">
                                     <mat-label>Disable Evaluations Reason</mat-label>
@@ -2422,10 +2401,27 @@
                                 </div>
 
                                 <div fxLayout="row" fxLayoutAlign="start start" class="u-mb--10">
-                                    <button [disabled]="isConsultantRateEditing" [ngClass]="consultant.value.specialRates?.length ? 'button-add' : 'button-outlined'" class="rates-and-fees--btn" mat-flat-button (click)="addConsultantSpecialRate(consultantIndex)">
+                                    <button [matMenuTriggerFor]="consultantSpecialRateMenu"
+                                            [matMenuTriggerData]="{consultantIndex: consultantIndex}"
+                                            (menuOpened)="consultantsForm.consultantData.at(consultantIndex).get('consultantSpecialRateFilter')!.setValue('')" [disabled]="isConsultantRateEditing"
+                                            [ngClass]="consultant.value.specialRates?.length > 0 ? 'button-add' : 'button-outlined'"
+                                            class="rates-and-fees--btn"
+                                            mat-flat-button>
                                         <mat-icon *ngIf="consultant.value.specialRates?.length">add</mat-icon>
                                         Add special rates
                                     </button>
+                                    <mat-menu #consultantSpecialRateMenu>
+                                        <ng-template matMenuContent let-consultantIndex="consultantIndex">
+                                            <mat-form-field appearance="outline" class="">
+                                                <input type="text" matInput [matAutocomplete]="consultantSpecialRateAuto" formControlName="consultantSpecialRateFilter" (click)="$event.stopPropagation()" placeholder="Search speical fee">
+                                                <mat-autocomplete #consultantSpecialRateAuto="matAutocomplete" [displayWith]="displayPublicNameFn">
+                                                    <mat-option *ngFor="let option of filteredConsultantSpecialRates" [value]="option" (click)="selectConsultantSpecialRate($event, consultantIndex, option)">
+                                                        {{option.publicName}}
+                                                    </mat-option>
+                                                </mat-autocomplete>
+                                            </mat-form-field>
+                                        </ng-template>
+                                    </mat-menu>
                                 </div>
 
                                 <div class="inline-edit-form u-w--100">
@@ -2454,8 +2450,8 @@
                                             *ngFor="let fee of getConsultantFeeControls(consultantIndex); let specialFeeIndex = index;"
                                             [formArrayName]="specialFeeIndex">
                                             <ng-container>
-                                                <span fxFlex="20%" class="u-w--100 text-truncate-ellipsis" [matTooltip]="fee.value.rateName ?? '-'">
-                                                    {{fee.value.rateName ?? '-'}}
+                                                <span fxFlex="20%" class="u-w--100 text-truncate-ellipsis" [matTooltip]="fee.value.feeName ?? '-'">
+                                                    {{fee.value.feeName ?? '-'}}
                                                 </span>
                                                 <span fxFlex="15%" class="u-w--100 text-truncate-ellipsis" [matTooltip]="fee.value.feeDirection?.name ?? '-'">
                                                     {{fee.value.feeDirection?.name ?? '-'}}
@@ -2543,10 +2539,27 @@
                                 </div>
 
                                 <div fxLayout="row" fxLayoutAlign="start start" class="u-mb--20">
-                                    <button [disabled]="isConsultantFeeEditing" [ngClass]="consultant.value.specialFees?.length > 0 ? 'button-add' : 'button-outlined'" class="rates-and-fees--btn" mat-flat-button (click)="addClientFee()">
+                                    <button [matMenuTriggerFor]="consultantSpecialFeeMenu"
+                                            [matMenuTriggerData]="{consultantIndex: consultantIndex}"
+                                            (menuOpened)="consultantsForm.consultantData.at(consultantIndex).get('consultantSpecialFeeFilter')!.setValue('')" [disabled]="isConsultantFeeEditing"
+                                            [ngClass]="consultant.value.specialFees?.length > 0 ? 'button-add' : 'button-outlined'"
+                                            class="rates-and-fees--btn"
+                                            mat-flat-button>
                                         <mat-icon *ngIf="consultant.value.specialFees?.length">add</mat-icon>
                                         Add special fees
                                     </button>
+                                    <mat-menu #consultantSpecialFeeMenu>
+                                        <ng-template matMenuContent let-consultantIndex="consultantIndex">
+                                            <mat-form-field appearance="outline" class="">
+                                                <input type="text" matInput [matAutocomplete]="consultantSpecialFeeAuto" formControlName="consultantSpecialFeeFilter" (click)="$event.stopPropagation()" placeholder="Search speical fee">
+                                                <mat-autocomplete #consultantSpecialFeeAuto="matAutocomplete" [displayWith]="displayPublicNameFn">
+                                                    <mat-option *ngFor="let option of filteredConsultantSpecialFees" [value]="option" (click)="selectConsultantSpecialFee($event, consultantIndex, option)">
+                                                        {{option.publicName}}
+                                                    </mat-option>
+                                                </mat-autocomplete>
+                                            </mat-form-field>
+                                        </ng-template>
+                                    </mat-menu>
                                 </div>
                             </div>
 
@@ -2588,8 +2601,8 @@
                                     </mat-autocomplete>
                                 </div>
                             </div>
+                            <mat-divider class="u-w--100 u-mt--20 u-mb--20"></mat-divider>
                         </div>
-
                         <div fxLayout="row" fxLayoutAlign="start start" class="u-w--100">
                             <button class="button-add mat-elevation-z0 u-mt--10 u-mb--10" mat-flat-button (click)="addConsultantForm()">
                                 <mat-icon>add</mat-icon>

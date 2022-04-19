@@ -242,16 +242,16 @@
                                         </div>
                                     </ng-container>
                                     <ng-container *ngIf="!rate.value.editable">
-                                        <span fxFlex="25%" class="u-w--100 text-truncate-ellipsis" [matTooltip]="contractClientForm.clientRates.at(i).get('rateName')?.value">
+                                        <span fxFlex="25%" class="workflow-contracts--list-itemu-w--100 text-truncate-ellipsis" [matTooltip]="contractClientForm.clientRates.at(i).get('rateName')?.value">
                                             {{rate.value.rateName}}
                                         </span>
-                                        <span fxFlex="25%" class="u-w--100 text-truncate-ellipsis" [matTooltip]="contractClientForm.clientRates.at(i).get('rateDirection')?.value?.name">
+                                        <span fxFlex="25%" class="workflow-contracts--list-itemu-w--100 text-truncate-ellipsis" [matTooltip]="contractClientForm.clientRates.at(i).get('rateDirection')?.value?.name">
                                             {{rate.value.rateDirection?.name}}
                                         </span>
-                                        <span fxFlex="20%" class="u-w--100 text-truncate-ellipsis" [matTooltip]="contractClientForm.clientRates.at(i).get('reportingUnit')?.value?.name">
+                                        <span fxFlex="20%" class="workflow-contracts--list-itemu-w--100 text-truncate-ellipsis" [matTooltip]="contractClientForm.clientRates.at(i).get('reportingUnit')?.value?.name">
                                             {{rate.value.reportingUnit?.name}}
                                         </span>
-                                        <span fxFlex="20%" class="u-w--100 text-truncate-ellipsis" [matTooltip]="contractClientForm.clientRates.at(i).get('clientRateValue')?.value + ' ' + contractClientForm.clientRates.at(i).get('clientRateCurrency')?.value?.name">
+                                        <span fxFlex="20%" class="workflow-contracts--list-itemu-w--100 text-truncate-ellipsis" [matTooltip]="contractClientForm.clientRates.at(i).get('clientRateValue')?.value + ' ' + contractClientForm.clientRates.at(i).get('clientRateCurrency')?.value?.name">
                                             {{rate.value.clientRateValue || rate.value.clientRateCurrency?.name ? rate.value.clientRateValue + ' ' + rate.value.clientRateCurrency?.name : '-'}}
                                         </span>
                                         <div fxFlex="10%" fxLayoutAlign="center center" class="u-w--100">
@@ -350,16 +350,16 @@
                                         </div>
                                     </ng-container>
                                     <ng-container *ngIf="!fee.value.editable">
-                                        <span fxFlex="25%" class="u-w--100 text-truncate-ellipsis" [matTooltip]="contractClientForm.clientFees.at(i).get('feeName')?.value ?? '-'">
+                                        <span fxFlex="25%" class="workflow-contracts--list-item u-w--100 text-truncate-ellipsis" [matTooltip]="contractClientForm.clientFees.at(i).get('feeName')?.value ?? '-'">
                                             {{fee.value.feeName ?? '-'}}
                                         </span>
-                                        <span fxFlex="25%" class="u-w--100 text-truncate-ellipsis" [matTooltip]="contractClientForm.clientFees.at(i).get('feeDirection')?.value?.name ?? '-'">
+                                        <span fxFlex="25%" class="workflow-contracts--list-item u-w--100 text-truncate-ellipsis" [matTooltip]="contractClientForm.clientFees.at(i).get('feeDirection')?.value?.name ?? '-'">
                                             {{fee.value.feeDirection?.name ?? '-'}}
                                         </span>
-                                        <span fxFlex="20%" class="u-w--100 text-truncate-ellipsis" [matTooltip]="contractClientForm.clientFees.at(i).get('feeFrequency')?.value?.name ?? '-'">
+                                        <span fxFlex="20%" class="workflow-contracts--list-item u-w--100 text-truncate-ellipsis" [matTooltip]="contractClientForm.clientFees.at(i).get('feeFrequency')?.value?.name ?? '-'">
                                             {{fee.value.feeFrequency?.name ?? '-'}}
                                         </span>
-                                        <span fxFlex="20%" class="u-w--100 text-truncate-ellipsis" [matTooltip]="contractClientForm.clientFees.at(i).get('clientRateValue')?.value + ' ' + contractClientForm.clientFees.at(i).get('clientRateCurrency')?.value?.name">
+                                        <span fxFlex="20%" class="workflow-contracts--list-item u-w--100 text-truncate-ellipsis" [matTooltip]="contractClientForm.clientFees.at(i).get('clientRateValue')?.value + ' ' + contractClientForm.clientFees.at(i).get('clientRateCurrency')?.value?.name">
                                             {{fee.value.clientRateValue || fee.value.clientRateCurrency?.name ? fee.value.clientRateValue + ' ' + fee.value.clientRateCurrency?.name : '-'}}
                                         </span>
                                         <div fxFlex="10%" fxLayoutAlign="center center" class="u-w--100">
