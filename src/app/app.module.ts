@@ -16,6 +16,7 @@ import { LoginGuard } from './login/login.guard';
 import { LoginComponent } from './login/login.component';
 import { environment } from 'src/environments/environment';
 import { NgxSpinnerModule, NgxSpinnerService } from 'ngx-spinner';
+import { NgxGanttModule } from '@worktile/gantt';
 
 const isIE = window.navigator.userAgent.indexOf("MSIE ") > -1 || window.navigator.userAgent.indexOf("Trident/") > -1; // Remove this line to use Angular Universal
 
@@ -91,7 +92,8 @@ export function getRemoteServiceBaseUrl(): string {
         AppCommonModule,
         ServiceProxyModule,
         MsalModule,
-        NgxSpinnerModule
+        NgxSpinnerModule,
+        NgxGanttModule
     ],
     providers: [
         LoginGuard,

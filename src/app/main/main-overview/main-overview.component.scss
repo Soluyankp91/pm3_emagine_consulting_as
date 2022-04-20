@@ -1,0 +1,108 @@
+@import "/src/app/shared/styles/config/_colors";
+@import "/src/app/shared/styles/config/_sizes";
+@import "/src/app/shared/styles/config/_mixins";
+@import '~@worktile/gantt/main.bundle.scss';
+
+.main-overview {
+    &--filter {
+        padding: 14px 20px;
+        height: $white-header-height;
+        background-color: $white-color;
+        &-country__flag {
+            line-height: 40px;
+            height: 40px;
+            width: 40px;
+            font-size: 40px;
+        }
+        &__add-btn mat-icon {
+            width: 34px;
+            height: 34px;
+        }
+        &-type {
+            @include flexCentered;
+            // display: flex;
+            // justify-content: center;
+            // align-items: center;
+            height: 40px;
+            padding: 8px 16px;
+            border: 1px solid $light-grey-color;
+            border-radius: 40px;
+            &__name {
+                font-weight: 700;
+                color: #384853;
+                margin-left: 16px;
+            }
+        }
+        &-manager {
+            img {
+                width: 40px;
+                height: 40px;
+            }
+        }
+    }
+
+    &--header {
+        color: $dark-grey-color;
+        font-size: 56px;
+        font-weight: 700;
+        font-size: 36px;
+        line-height: 120%;
+    }
+    &--content {
+        background-color: $sand-25-color;
+        // flex-grow: 1;
+        margin: 20px;
+        // padding: 14px 20px;
+    }
+    &--table {
+        position: relative;
+        min-height: 120px;
+    }
+}
+
+.workflow-flag {
+    height: 14px;
+    width: 14px;
+    line-height: 14px;
+    font-size: 14px;
+    &--sales {
+        color: rgba($color: $green-color, $alpha: .5);
+    }
+    &--extension {
+        color: rgba($color: #6A47B8, $alpha: .5);
+    }
+}
+
+.inactive-status {
+    color: #ffda44;
+}
+
+.active-status {
+    color: #17a297;
+}
+
+.deleted-status {
+    color: rgba($color: #ff7a78, $alpha: .5);
+}
+
+.icon-arrow-rotate180 {
+    transform: rotateY(180deg);
+    height: 16px;
+    width: 16px;
+    line-height: 16px;
+}
+
+.gant-chart-container {
+    // flex: auto;
+    // height: 100%;
+    // min-height: 0;
+    // max-width: 100%;
+    width: calc(100vw - 65px);
+    &-wrapper {
+        // flex: auto;
+    //     display: flex;
+    //     flex-direction: column;
+        padding: 15px;
+        overflow-y: auto;
+    }
+}

@@ -131,3 +131,131 @@ mat-table.white-table {
         }
     }
 }
+
+.main-overview--consultants-table {
+    mat-table {
+        mat-row {
+            mat-cell.mat-column-salesManager {
+                justify-content: center;
+            }
+        }
+    }
+}
+
+.gant-chart-container {
+    .gantt {
+        background: transparent !important;
+        &-side {
+            border-right: none !important;
+            box-shadow: none !important;
+            &-container {
+                background: transparent !important;
+
+                gantt-table.gantt-table {
+                    background: transparent !important;
+                    box-shadow: none !important;
+                    font-weight: 400 !important;
+                    line-height: 19px !important;
+                    font-size: 16px !important;
+                    .gantt-table-header {
+                        // height: 50px;
+                        border: 0 !important;
+                        font-size: 18px;
+                        // min-height: 35px;
+                        padding: 0 16px;
+                        background: transparent !important;
+                        .gantt-table-column {
+                            font-family: 'OpenSansWeb', sans-serif !important;
+                            color: $medium-grey-color !important;
+                            font-weight: 600;
+                            font-size: 12px;
+                            display: flex;
+                            justify-content: flex-start;
+                            // &:first-of-type {
+                            //     padding-left: 16px;
+                            // }
+                            &:last-of-type {
+                                padding-right: 16px;
+                            }
+                        }
+                    }
+                    .gantt-table-body {
+                        .gantt-table-item {
+                            // height: auto;
+                            // min-height: 50px;
+                            border-radius: 0;
+                            border: 1px solid $sand-color;
+                            margin-bottom: 0;
+                            padding-left: 16px;
+                            background-color: $white-color;
+                            display: flex;
+                            align-items: center;
+                            width: 100%;
+                            &:hover {
+                                transition: background-color .7s ease;
+                                background-color: rgba(102, 140, 164, .17);
+                            }
+                            .gantt-table-column {
+                                border-right: none;
+                                padding: 0 !important;
+                                &:first-of-type {
+                                    padding-left: 16px;
+                                }
+
+                                &:last-of-type {
+                                    padding-right: 16px;
+                                }
+                                .gantt-table-column-content {
+                                    color: $dark-grey-color !important;
+                                    font-size: 16px;
+                                    // padding-right: 15px;
+                                    // padding-left: 0;
+                                    // padding-right: 0;
+                                }
+                            }
+                            .gantt-expand-icon {
+                                display: none;
+                            }
+                        }
+                    }
+                }
+            }
+        }
+        &-container {
+            .gantt-main .gantt-main-container .gantt-main-items .gantt-item {
+                border: none !important;
+                // height: 50px;
+            }
+            .gantt-calendar-overlay {
+                .gantt-calendar-overlay-main {
+                    background-color: transparent !important;
+                    // $gantt-date-secondary-color: #333 !important;
+                    // $gantt-date-secondary-font-size: 20px !important;
+
+                    .secondary-text {
+                        font-family: 'OpenSansWeb', sans-serif !important;
+                        fill: $medium-grey-color !important;
+                        font-weight: 600;
+                        font-size: 12px;
+                    }
+
+                    .primary-line {
+                        stroke: #ddd !important;
+                    }
+                    .line {
+                        shape-rendering: crispEdges !important;
+                    }
+                    .secondary-line {
+                        stroke-dasharray: none !important;
+                        stroke: #ddd !important;
+                    }
+                }
+            }
+        }
+    }
+    gantt-bar {
+        .gantt-bar-content {
+            background: #8bd1cb !important;
+        }
+    }
+}

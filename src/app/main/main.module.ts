@@ -38,6 +38,7 @@ import { CreateWorkflowDialogComponent } from './workflow/create-workflow-dialog
 import { WorkflowSourcingComponent } from './workflow/workflow-sourcing/workflow-sourcing.component';
 import { WorkflowPeriodComponent } from './workflow/workflow-period/workflow-period.component';
 import { AddOrEditProjectLineDialogComponent } from './workflow/workflow-contracts/add-or-edit-project-line-dialog/add-or-edit-project-line-dialog.component';
+import { NgxGanttModule } from '@worktile/gantt';
 
 
 @NgModule({
@@ -85,7 +86,9 @@ import { AddOrEditProjectLineDialogComponent } from './workflow/workflow-contrac
         MainRoutingModule,
         AppCommonModule,
         FormsModule,
-        ReactiveFormsModule
+        ReactiveFormsModule,
+        NgxGanttModule
+
     ]
 })
 export class MainModule { }
