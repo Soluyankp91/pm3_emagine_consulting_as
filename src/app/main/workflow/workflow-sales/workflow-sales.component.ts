@@ -1426,9 +1426,11 @@ export class WorkflowSalesComponent extends AppComopnentBase implements OnInit {
                 let signerInput = new ContractSignerDto();
                 signerInput.signOrder = signer.clientSequence;
                 signerInput.contactId = signer.clientContact?.id;
-                // signerInput.contact = signer.client;
+                signerInput.contact = signer.clientContact;
                 signerInput.signerRoleId = signer.clientRole;
+                input.salesClientData!.contractSigners?.push(signerInput);
             });
+
         }
         input.consultantSalesData = new Array<ConsultantSalesDataDto>();
         if (this.consultantsForm.consultantData.value?.length) {
@@ -1453,7 +1455,7 @@ export class WorkflowSalesComponent extends AppComopnentBase implements OnInit {
                 consultantInput.endDate = consultant.consultantProjectEndDate;
 
                 consultantInput.isOnsiteWorkplace = consultant.consultantIsOnsiteWorkplace;
-                consultantInput.onsiteClientId = consultant.consultantWorkplaceClientAddress?.id;
+                consultantInput.onsiteClientId = consultant.consultantWorkplaceClientAddress?.clientId;
                 consultantInput.percentageOnSite = consultant.consultantWorkplacePercentageOnSite;
 
                 consultantInput.isEmagineOfficeWorkplace = consultant.consultantIsEmagineOfficeWorkplace;
