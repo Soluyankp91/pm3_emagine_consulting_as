@@ -112,9 +112,10 @@ export class ClientRequestTrackComponent implements OnInit, OnDestroy {
         let pageNumber = 1;
         let pageSize = 20;
         let sort = undefined;
+        this.isDataLoading = true;
         this._clientService.requestTrack(legacyClientIdQuery, pageNumber, pageSize, sort)
             .pipe(finalize(() => {
-
+                this.isDataLoading = false;
             }))
             .subscribe(result => {
                 this.clientDataSource = new MatTableDataSource<ClientRequestTrackDto>(result.items);

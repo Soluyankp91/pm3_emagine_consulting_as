@@ -592,40 +592,49 @@
                             <div fxLayout="column" fxFlex="50%">
                                 <h3 class="workflow-readonly--gray-header">Workplace</h3>
                                 <div fxLayout="row" class="u-w--10" *ngIf="item?.value?.consultantIsOnsiteWorkplace">
-                                    <span class="workflow-readonly--blue-text-bold" fxFlex="50%">
+                                    <span class="workflow-readonly--blue-text-bold" fxFlex="30%">
                                         Onsite
                                     </span>
-                                    <span class="workflow-readonly--blue-text-bold" fxFlex="50%">
-                                        {{item?.value?.consultantWorkplaceCliendAddress}}
-                                    </span>
+                                    <div fxLayout="column" fxFlex="40%">
+                                        <h3 class="workflow-readonly--gray-header">Client address</h3>
+                                        <span class="workflow-readonly--blue-text-bold">
+                                            {{item.value.consultantWorkplaceClientAddress?.countryName}} | {{item.value.consultantWorkplaceClientAddress?.address}} | {{item.value.consultantWorkplaceClientAddress?.address2}} | {{item.value.consultantWorkplaceClientAddress?.postCode}}
+                                        </span>
+                                    </div>
+                                    <div fxLayout="column" fxFlex="30%">
+                                        <h3 class="workflow-readonly--gray-header">Percentage onsite</h3>
+                                        <span class="workflow-readonly--blue-text-bold">
+                                            {{item?.value?.consultantWorkplacePercentageOnSite ? item?.value?.consultantWorkplacePercentageOnSite : '-'}}
+                                        </span>
+                                    </div>
                                 </div>
                                 <div fxLayout="row" class="u-w--10" *ngIf="item?.value?.consultantIsEmagineOfficeWorkplace">
                                     <span class="workflow-readonly--blue-text-bold" fxFlex="50%">
                                         PDC Office
                                     </span>
-                                    <span class="workflow-readonly--blue-text-bold" fxFlex="50%">
-                                        {{item?.value?.consultantWorkplaceEmagineOffice?.name}}
-                                    </span>
+                                    <div fxLayout="column" fxFlex="50%">
+                                        <h3 class="workflow-readonly--gray-header">Office location</h3>
+                                        <span class="workflow-readonly--blue-text-bold">
+                                            {{item?.value?.consultantWorkplaceEmagineOffice?.name}}
+                                        </span>
+                                    </div>
                                 </div>
                                 <div fxLayout="row" class="u-w--10" *ngIf="item?.value?.consultantIsRemoteWorkplace">
                                     <span class="workflow-readonly--blue-text-bold" fxFlex="50%">
                                         Remote
                                     </span>
-                                    <span class="workflow-readonly--blue-text-bold" fxFlex="50%">
-                                        {{item?.value?.consultantWorkplaceRemote}}
-                                    </span>
+                                    <div fxLayout="column" fxFlex="50%">
+                                        <h3 class="workflow-readonly--gray-header">Office location</h3>
+                                        <span class="workflow-readonly--blue-text-bold">
+                                            {{item?.value?.consultantWorkplaceRemote}}
+                                        </span>
+                                    </div>
                                 </div>
-                                <div fxLayout="row" class="u-w--10" *ngIf="!item?.value?.consultantIsOnsiteWorkplace && !item?.value?.consultantIsEmagineOfficeWorkplace && !item?.value?.consultantIsRemoteWorkplace">
+                                <!-- <div fxLayout="row" class="u-w--10" *ngIf="!item?.value?.consultantIsOnsiteWorkplace && !item?.value?.consultantIsEmagineOfficeWorkplace && !item?.value?.consultantIsRemoteWorkplace">
                                     <span class="workflow-readonly--blue-text-bold" fxFlex="50%">
                                         -
                                     </span>
-                                </div>
-                            </div>
-                            <div fxLayout="column" fxFlex="50%">
-                                <h3 class="workflow-readonly--gray-header">Percentage onsite</h3>
-                                <span class="workflow-readonly--blue-text-bold">
-                                    {{item?.value?.consultantWorkplacePercentageOnSite ? item?.value?.consultantWorkplacePercentageOnSite : '-'}}
-                                </span>
+                                </div> -->
                             </div>
                         </div>
                         <div fxLayout="column" class="u-w--100 u-mb--20">
@@ -2199,8 +2208,8 @@
                                 <h2 class="workflow-section--header">Consultant Project</h2>
                                 <h3 class="workflow-gray--header u-mb--10">Workplace</h3>
                                 <div fxLayout="column" fxLayoutAlign="start start" class="u-w--100">
-                                    <div fxLayout="row" fxLayoutAlign="start start" class="u-w--100 u-mb--10">
-                                        <mat-checkbox color="accent" formControlName="consultantIsOnsiteWorkplace" name="consultantIsOnsiteWorkplace" class="black-checkbox u-mr--16" fxFlex="0 0 calc(16.5% - 8px)">
+                                    <div fxLayout="row" fxLayoutAlign="start start" class="u-w--100 u-mb--20">
+                                        <mat-checkbox color="accent" formControlName="consultantIsOnsiteWorkplace" name="consultantIsOnsiteWorkplace" class="black-checkbox u-mr--16 u-mt--10" fxFlex="0 0 calc(16.5% - 8px)">
                                             Onsite
                                         </mat-checkbox>
                                         <ng-container *ngIf="consultantsForm.consultantData.at(consultantIndex).get('consultantIsOnsiteWorkplace')?.value">
@@ -2224,12 +2233,11 @@
 
                                             <mat-form-field appearance="outline" class="u-w--100 u-mr--16" fxFlex="0 0 calc(16% - 8px)">
                                                 <mat-label>Add value %</mat-label>
-                                                <input autocomplete="off" class="text-right" matInput formControlName="consultantWorkplacePercentageOnSite" type="text">
-                                                <span matSuffix>%</span>
+                                                <input autocomplete="off" matInput formControlName="consultantWorkplacePercentageOnSite" type="text">
                                             </mat-form-field>
                                         </ng-container>
                                     </div>
-                                    <div fxLayout="row" fxLayoutAlign="start center" class="u-w--100 u-mb--10">
+                                    <div fxLayout="row" fxLayoutAlign="start center" class="u-w--100 u-mb--20">
                                         <mat-checkbox color="accent" formControlName="consultantIsEmagineOfficeWorkplace" name="consultantIsEmagineOfficeWorkplace" class="black-checkbox u-mr--16" fxFlex="0 0 calc(16.5% - 8px)">
                                             PDC Office
                                         </mat-checkbox>
@@ -2243,7 +2251,7 @@
                                             </mat-select>
                                         </mat-form-field>
                                     </div>
-                                    <div fxLayout="row" fxLayoutAlign="start center" class="u-w--100 u-mb--10">
+                                    <div fxLayout="row" fxLayoutAlign="start center" class="u-w--100 u-mb--20">
                                         <mat-checkbox color="accent" formControlName="consultantIsRemoteWorkplace" name="consultantIsRemoteWorkplace" class="black-checkbox u-mr--16" fxFlex="0 0 calc(16.5% - 8px)">
                                             Remote
                                         </mat-checkbox>

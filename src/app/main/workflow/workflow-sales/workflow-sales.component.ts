@@ -909,7 +909,7 @@ export class WorkflowSalesComponent extends AppComopnentBase implements OnInit {
             consultantProjectNoEndDate: new FormControl(consultant?.noEndDate ?? false),
 
             consultantWorkplace: new FormControl(null),
-            consultantWorkplaceClientAddress: new FormControl(consultant?.onsiteClientId ?? null),
+            consultantWorkplaceClientAddress: new FormControl(consultant?.onsiteClient ?? null),
             consultantWorkplaceEmagineOffice: new FormControl(this.findItemById(this.emagineOffices, consultant?.emagineOfficeId) ?? null),
             consultantWorkplaceRemote: new FormControl(this.findItemById(this.countries, consultant?.remoteAddressCountryId) ?? null),
             consultantWorkplacePercentageOnSite: new FormControl(consultant?.percentageOnSite ?? null),
