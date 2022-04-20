@@ -1,116 +1,10 @@
 import { Component, OnInit, ViewChild } from '@angular/core';
 import { FormControl } from '@angular/forms';
 import { MatTableDataSource } from '@angular/material/table';
-import { GanttItem, GanttViewOptions, GanttViewType, NgxGanttComponent } from '@worktile/gantt';
+import { GanttDate, GanttViewOptions, GanttViewType, NgxGanttComponent } from '@worktile/gantt';
 import { AppConsts } from 'src/shared/AppConsts';
 import { WorkflowFlag } from '../workflow/workflow.model';
-
-const DATA_SOURCE = [
-    {
-        id: 12,
-        status: {name: 'Wrongfully deleted in HubSpot', value: 1},
-        firstName: 'Frederick',
-        lastName: 'Rikke',
-        client: 'Leadership support',
-        owner: 'Some guy'
-    },
-    {
-        id: 12,
-        status: {name: 'Wrongfully deleted in HubSpot', value: 1},
-        firstName: 'Frederick',
-        lastName: 'Rikke',
-        client: 'Leadership support',
-        owner: 'Some guy'
-    },
-    {
-        id: 12,
-        status: {name: 'Wrongfully deleted in HubSpot', value: 1},
-        firstName: 'Frederick',
-        lastName: 'Rikke',
-        client: 'Leadership support',
-        owner: 'Some guy'
-    },
-    {
-        id: 12,
-        status: {name: 'Wrongfully deleted in HubSpot', value: 1},
-        firstName: 'Frederick',
-        lastName: 'Rikke',
-        client: 'Leadership support',
-        owner: 'Some guy'
-    },
-    {
-        id: 12,
-        status: {name: 'Wrongfully deleted in HubSpot', value: 1},
-        firstName: 'Frederick',
-        lastName: 'Rikke',
-        client: 'Leadership support',
-        owner: 'Some guy'
-    },
-    {
-        id: 12,
-        status: {name: 'Wrongfully deleted in HubSpot', value: 1},
-        firstName: 'Frederick',
-        lastName: 'Rikke',
-        client: 'Leadership support',
-        owner: 'Some guy'
-    },
-    {
-        id: 12,
-        status: {name: 'Wrongfully deleted in HubSpot', value: 1},
-        firstName: 'Frederick',
-        lastName: 'Rikke',
-        client: 'Leadership support',
-        owner: 'Some guy'
-    },
-    {
-        id: 12,
-        status: {name: 'Wrongfully deleted in HubSpot', value: 1},
-        firstName: 'Frederick',
-        lastName: 'Rikke',
-        client: 'Leadership support',
-        owner: 'Some guy'
-    },
-    {
-        id: 12,
-        status: {name: 'Wrongfully deleted in HubSpot', value: 1},
-        firstName: 'Frederick',
-        lastName: 'Rikke',
-        client: 'Leadership support',
-        owner: 'Some guy'
-    },
-    {
-        id: 12,
-        status: {name: 'Wrongfully deleted in HubSpot', value: 1},
-        firstName: 'Frederick',
-        lastName: 'Rikke',
-        client: 'Leadership support',
-        owner: 'Some guy'
-    },
-    {
-        id: 12,
-        status: {name: 'Wrongfully deleted in HubSpot', value: 1},
-        firstName: 'Frederick',
-        lastName: 'Rikke',
-        client: 'Leadership support',
-        owner: 'Some guy'
-    },
-    {
-        id: 12,
-        status: {name: 'Wrongfully deleted in HubSpot', value: 1},
-        firstName: 'Frederick',
-        lastName: 'Rikke',
-        client: 'Leadership support',
-        owner: 'Some guy'
-    },
-    {
-        id: 12,
-        status: {name: 'Wrongfully deleted in HubSpot', value: 1},
-        firstName: 'Frederick',
-        lastName: 'Rikke',
-        client: 'Leadership support',
-        owner: 'Some guy'
-    }
-]
+import { getUnixTime } from 'date-fns';
 
 @Component({
     selector: 'app-main-overview',
@@ -152,11 +46,15 @@ export class MainOverviewComponent implements OnInit {
 
     // gant
     items = [
-        { id: '000000', title: 'Task 0', status: {name: 'Wrongfully deleted in HubSpot', value: 1}, firstName: 'Frederick', lastName: 'Rikke', client: 'Leadership support', owner: 'Some guy', start: this.convertDateToTimestamp("01-02-2022"), end: this.convertDateToTimestamp("31-03-2022")},
-        { id: '000001', title: 'Task 1', status: {name: 'Wrongfully deleted in HubSpot', value: 1}, firstName: 'Frederick', lastName: 'Rikke', client: 'Leadership support', owner: 'Some guy', start: this.convertDateToTimestamp("02-02-2022"), end: this.convertDateToTimestamp("02-03-2022")},
-        { id: '000002', title: 'Task 2', status: {name: 'Wrongfully deleted in HubSpot', value: 1}, firstName: 'Frederick', lastName: 'Rikke', client: 'Leadership support', owner: 'Some guy',  start: this.convertDateToTimestamp("01-02-2022"), end: this.convertDateToTimestamp("31-03-2022")},
-        { id: '000003', title: 'Task 3', status: {name: 'Wrongfully deleted in HubSpot', value: 1}, firstName: 'Frederick', lastName: 'Rikke', client: 'Leadership support', owner: 'Some guy',  start: this.convertDateToTimestamp("01-03-2022"), end: this.convertDateToTimestamp("31-07-2022")}
-      ];
+        // { id: '000000', title: 'Task 0', status: {name: 'Wrongfully deleted in HubSpot', value: 1}, firstName: 'Frederick', lastName: 'Rikke', client: 'Leadership support', owner: 'Some guy', start: this.convertDateToTimestamp("01-02-2022"), end: this.convertDateToTimestamp("31-03-2022")},
+        // { id: '000001', title: 'Task 1', status: {name: 'Wrongfully deleted in HubSpot', value: 1}, firstName: 'Frederick', lastName: 'Rikke', client: 'Leadership support', owner: 'Some guy', start: this.convertDateToTimestamp("02-02-2022"), end: this.convertDateToTimestamp("02-03-2022")},
+        // { id: '000002', title: 'Task 2', status: {name: 'Wrongfully deleted in HubSpot', value: 1}, firstName: 'Frederick', lastName: 'Rikke', client: 'Leadership support', owner: 'Some guy',  start: this.convertDateToTimestamp("01-02-2022"), end: this.convertDateToTimestamp("31-03-2022")},
+        // { id: '000003', title: 'Task 3', status: {name: 'Wrongfully deleted in HubSpot', value: 1}, firstName: 'Frederick', lastName: 'Rikke', client: 'Leadership support', owner: 'Some guy',  start: this.convertDateToTimestamp("01-03-2022"), end: this.convertDateToTimestamp("31-07-2022")}
+        { id: '000000', title: 'Leadership support', firstName: 'Frederick', lastName: 'Rikke', start: getUnixTime(new Date(2022, 1, 1)), end: getUnixTime(new Date(2022, 2, 31))},
+        { id: '000001', title: 'Leadership support', firstName: 'Frederick', lastName: 'Rikke', start: getUnixTime(new Date(2022, 1, 2)), end: getUnixTime(new Date(2022, 2, 2))},
+        { id: '000002', title: 'Leadership support', firstName: 'Frederick', lastName: 'Rikke', start: getUnixTime(new Date(2022, 1, 1)), end: getUnixTime(new Date(2022, 2, 31))},
+        { id: '000003', title: 'Leadership support', firstName: 'Frederick', lastName: 'Rikke', start: getUnixTime(new Date(2022, 2, 1)), end: getUnixTime(new Date(2022, 2, 31))}
+    ];
 
     //   items: GanttItem[] = [
     //     { id: '000000', title: 'Task 0', start: 1627729997, end: 1628421197, expandable: true },
@@ -192,6 +90,8 @@ export class MainOverviewComponent implements OnInit {
     // ];
 
     viewOptions: GanttViewOptions = {
+        min: new GanttDate(new Date(2022, 1, 1)),
+        max: new GanttDate(new Date(2022, 3, 10)),
         dateFormat: {
             yearQuarter: `QQQ 'of' yyyy`,
             month: 'LLL yy',
@@ -279,7 +179,6 @@ export class MainOverviewComponent implements OnInit {
     }
 
     getClients() {
-        this.clientsDataSource = new MatTableDataSource<any>(DATA_SOURCE);
         // this.isDataLoading = true;
         // this._clientService.contacts(this.clientId, false)
         //         .pipe(finalize(() => {
@@ -290,9 +189,9 @@ export class MainOverviewComponent implements OnInit {
         //             this.totalCount = result.length;
         //         });
         // let legacyClientIdQuery = this.clientId;
-        let pageNumber = 1;
-        let pageSize = 20;
-        let sort = undefined;
+        // let pageNumber = 1;
+        // let pageSize = 20;
+        // let sort = undefined;
         // this._clientService.requestTrack(legacyClientIdQuery, pageNumber, pageSize, sort)
     }
 
@@ -301,7 +200,6 @@ export class MainOverviewComponent implements OnInit {
         myDate = myDate.split("-");
         var newDate = new Date( myDate[2], myDate[1] - 1, myDate[0]);
         return newDate.getTime()/1000;
-        // console.log(newDate.getTime());
     }
 
 }

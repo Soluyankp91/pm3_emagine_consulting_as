@@ -90,14 +90,14 @@
                 </mat-paginator>
             </div>
         </div> -->
-        <div fxLayout="column" fxLayoutAlign="start center" class="gant-chart-container">
-            <mat-select placeholder="Placeholder" name="item" class="u-mt--20" style="max-width: 100px;">
-                <mat-option *ngFor="let view of views" [class.active]="view.value === viewType"
-                    (click)="viewType = view.value" [value]="view.value">
-                    {{view.name}}
-                </mat-option>
-            </mat-select>
-            <div class="gant-chart-container-wrapper">
+        <mat-select placeholder="Placeholder" name="item" class="u-mt--20" style="max-width: 100px;">
+            <mat-option *ngFor="let view of views" [class.active]="view.value === viewType"
+                (click)="viewType = view.value" [value]="view.value">
+                {{view.name}}
+            </mat-option>
+        </mat-select>
+        <div fxLayout="row" fxLayoutAlign="start center" class="gant-chart-container" fxFlexFill>
+            <!-- <div class="gant-chart-container-wrapper"> -->
                 <ngx-gantt #gantt [items]="items" [viewOptions]="viewOptions" [viewType]="viewType">
                     <ngx-gantt-table>
                         <ngx-gantt-column name="" width="30px">
@@ -133,7 +133,7 @@
                         </ngx-gantt-column>
                     </ngx-gantt-table>
                 </ngx-gantt>
-            </div>
+            <!-- </div> -->
         </div>
     </div>
 </div>
