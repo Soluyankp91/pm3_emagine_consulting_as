@@ -72,6 +72,7 @@ export class WorkflowSalesComponent extends AppComopnentBase implements OnInit {
     nonStandartTerminationTimes: { [key: string]: string; };
     terminationReasons: { [key: string]: string; };
     employmentTypes: EnumEntityTypeDto[] = [];
+    countries: EnumEntityTypeDto[] = [];
 
     // new UI
     clientRateTypes: EnumEntityTypeDto[] = new Array<EnumEntityTypeDto>(
@@ -117,6 +118,10 @@ export class WorkflowSalesComponent extends AppComopnentBase implements OnInit {
     filteredConsultantSpecialRates: ClientSpecialFeeDto[];
     filteredConsultantSpecialFees: ClientSpecialFeeDto[];
     contractExpirationNotificationDisplay: string;
+
+    filteredConsultantCountries: EnumEntityTypeDto[];
+    filteredConsultantClientAddresses: any[] = [];
+    filteredContractSigners: any[] = [];
 
     private _unsubscribe = new Subject();
 
@@ -318,33 +323,6 @@ export class WorkflowSalesComponent extends AppComopnentBase implements OnInit {
             });
     }
 
-    manageManagerAutocomplete(consultantIndex: number) {
-        let arrayControl = this.consultantsForm.consultantData.at(consultantIndex);
-        arrayControl!.get('consultantAccountManager')!.valueChanges
-            .pipe(
-                takeUntil(this._unsubscribe),
-                debounceTime(300),
-                switchMap((value: any) => {
-                    let toSend = {
-                        name: value,
-                        maxRecordsCount: 1000,
-                    };
-                    if (value?.id) {
-                        toSend.name = value.id
-                            ? value.name
-                            : value;
-                    }
-                    return this._lookupService.employees(value);
-                }),
-            ).subscribe((list: EmployeeDto[]) => {
-                if (list.length) {
-                    this.filteredAccountManagers = list;
-                } else {
-                    this.filteredAccountManagers = [{ name: 'No managers found', externalId: '', id: 'no-data', selected: false }];
-                }
-            });
-    }
-
     ngOnInit(): void {
         this.activatedRoute.paramMap.pipe(
             takeUntil(this._unsubscribe)
@@ -400,7 +378,7 @@ export class WorkflowSalesComponent extends AppComopnentBase implements OnInit {
         this.getTerminationReasons();
         this.getEmploymentTypes();
         this.getExpectedWorkloadUnit();
-
+        this.getCountries();
 
         this.getWorkflowSalesStep();
 
@@ -786,6 +764,16 @@ export class WorkflowSalesComponent extends AppComopnentBase implements OnInit {
             });
     }
 
+    getCountries() {
+        this._internalLookupService.getCountries()
+            .pipe(finalize(() => {
+
+            }))
+            .subscribe(result => {
+                this.countries = result;
+            });
+    }
+
     //#endregion dataFetch
 
     selectClientSpecialRate(event: any, rate: ClientSpecialRateDto) {
@@ -866,11 +854,40 @@ export class WorkflowSalesComponent extends AppComopnentBase implements OnInit {
 
     addSignerToForm(signer?: ContractSignerDto) {
         const form = this._fb.group({
-            clientName: new FormControl(null),
-            clientRole: new FormControl(null),
-            clientSequence: new FormControl(null)
+            clientContact: new FormControl(signer?.contact ?? null),
+            clientRole: new FormControl(signer?.signerRoleId ?? null),
+            clientSequence: new FormControl(signer?.signOrder ?? null)
         });
         this.salesClientDataForm.contractSigners.push(form);
+        this.manageSignersContactAutocomplete(this.salesClientDataForm.contractSigners.length - 1);
+    }
+
+    manageSignersContactAutocomplete(signerIndex: number) {
+        let arrayControl = this.salesClientDataForm.contractSigners.at(signerIndex);
+        arrayControl!.get('clientContact')!.valueChanges
+            .pipe(
+                takeUntil(this._unsubscribe),
+                debounceTime(300),
+                switchMap((value: any) => {
+                    let toSend = {
+                        clientId: this.salesClientDataForm.directClientIdValue?.value?.clientId,
+                        name: value,
+                        maxRecordsCount: 1000,
+                    };
+                    if (value?.id) {
+                        toSend.name = value.id
+                            ? value.firstName
+                            : value;
+                    }
+                    return this._lookupService.contacts(toSend.clientId, toSend.name, toSend.maxRecordsCount);
+                }),
+            ).subscribe((list: ContactResultDto[]) => {
+                if (list.length) {
+                    this.filteredContractSigners = list;
+                } else {
+                    this.filteredContractSigners = [{ firstName: 'No records found', lastName: '', id: 'no-data' }];
+                }
+            });
     }
 
     get contractSigners(): FormArray {
@@ -892,9 +909,9 @@ export class WorkflowSalesComponent extends AppComopnentBase implements OnInit {
             consultantProjectNoEndDate: new FormControl(consultant?.noEndDate ?? false),
 
             consultantWorkplace: new FormControl(null),
-            consultantWorkplaceCliendAddress: new FormControl(consultant?.onsiteClientId ?? null),
+            consultantWorkplaceClientAddress: new FormControl(consultant?.onsiteClient ?? null),
             consultantWorkplaceEmagineOffice: new FormControl(this.findItemById(this.emagineOffices, consultant?.emagineOfficeId) ?? null),
-            consultantWorkplaceRemote: new FormControl(consultant?.remoteAddressCountryId ?? null),
+            consultantWorkplaceRemote: new FormControl(this.findItemById(this.countries, consultant?.remoteAddressCountryId) ?? null),
             consultantWorkplacePercentageOnSite: new FormControl(consultant?.percentageOnSite ?? null),
 
             consultantIsOnsiteWorkplace: new FormControl(consultant?.isOnsiteWorkplace ?? false),
@@ -940,23 +957,83 @@ export class WorkflowSalesComponent extends AppComopnentBase implements OnInit {
         this.manageConsultantAutocomplete(this.consultantsForm.consultantData.length - 1);
         this.manageConsultantRateAutocomplete(this.consultantsForm.consultantData.length - 1);
         this.manageConsultantFeeAutocomplete(this.consultantsForm.consultantData.length - 1);
+        this.manageConsultantClientAddressAutocomplete(this.consultantsForm.consultantData.length - 1);
+        this.manageConsultantCountryAutocomplete(this.consultantsForm.consultantData.length - 1);
     }
 
-    private _filterConsultantRates(value: string, consultantIndex: number): ClientSpecialFeeDto[] {
-        const filterValue = value.toLowerCase();
-        // FIXME: do we need to have only 1 entrance for rate/fees ?
-        // const selectedIds: number[] = this.consultantsForm.consultantData.at(consultantIndex).get('specialRates')!.value.map((x: any) => x.id);
-        // const result = this.clientSpecialRateList.filter(option => option.publicName!.toLowerCase().includes(filterValue)).filter(x =>  !selectedIds.includes(x.id!));
-        const result = this.clientSpecialRateList.filter(option => option.publicName!.toLowerCase().includes(filterValue));
-        return result;
+    manageManagerAutocomplete(consultantIndex: number) {
+        let arrayControl = this.consultantsForm.consultantData.at(consultantIndex);
+        arrayControl!.get('consultantAccountManager')!.valueChanges
+            .pipe(
+                takeUntil(this._unsubscribe),
+                debounceTime(300),
+                switchMap((value: any) => {
+                    let toSend = {
+                        name: value,
+                        maxRecordsCount: 1000,
+                    };
+                    if (value?.id) {
+                        toSend.name = value.id
+                            ? value.name
+                            : value;
+                    }
+                    return this._lookupService.employees(value);
+                }),
+            ).subscribe((list: EmployeeDto[]) => {
+                if (list.length) {
+                    this.filteredAccountManagers = list;
+                } else {
+                    this.filteredAccountManagers = [{ name: 'No managers found', externalId: '', id: 'no-data', selected: false }];
+                }
+            });
     }
 
-    private _filterConsultantFees(value: string, consultantIndex: number): ClientSpecialFeeDto[] {
+    manageConsultantClientAddressAutocomplete(consultantIndex: number) {
+        let arrayControl = this.consultantsForm.consultantData.at(consultantIndex);
+        arrayControl!.get('consultantWorkplaceClientAddress')!.valueChanges
+            .pipe(
+                takeUntil(this._unsubscribe),
+                debounceTime(300),
+                switchMap((value: any) => {
+                    if (value) {
+                        let toSend = {
+                            name: value,
+                            maxRecordsCount: 1000,
+                        };
+                        if (value?.id) {
+                            toSend.name = value.id
+                                ? value.clientName
+                                : value;
+                        }
+                        return this._lookupService.clients(toSend.name, toSend.maxRecordsCount);
+                    } else {
+                        return of([]);
+                    }
+                }),
+            ).subscribe((list: EmployeeDto[]) => {
+                if (list.length) {
+                    this.filteredConsultantClientAddresses = list;
+                } else {
+                    this.filteredConsultantClientAddresses = [{ clientName: 'No records found', id: 'no-data' }];
+                }
+            });
+    }
+
+    manageConsultantCountryAutocomplete(consultantIndex: number) {
+        let arrayControl = this.consultantsForm.consultantData.at(consultantIndex);
+        arrayControl!.get('consultantWorkplaceRemote')!.valueChanges
+        .pipe(takeUntil(this._unsubscribe))
+        .subscribe(value => {
+                if (typeof value === 'string') {
+                    this.filteredConsultantCountries = this._filterConsultantCountry(value);
+                }
+            }
+        );
+    }
+
+    private _filterConsultantCountry(value: string): EnumEntityTypeDto[] {
         const filterValue = value.toLowerCase();
-        // FIXME: do we need to have only 1 entrance for rate/fees ?
-        // const selectedIds: number[] = this.consultantsForm.consultantData.at(consultantIndex).get('specialFees')!.value.map((x: any) => x.id);
-        // const result = this.clientSpecialFeeList.filter(option => option.publicName!.toLowerCase().includes(filterValue)).filter(x =>  !selectedIds.includes(x.id!));
-        const result = this.clientSpecialFeeList.filter(option => option.publicName!.toLowerCase().includes(filterValue));
+        const result = this.countries.filter(option => option.name!.toLowerCase().includes(filterValue));
         return result;
     }
 
@@ -971,6 +1048,15 @@ export class WorkflowSalesComponent extends AppComopnentBase implements OnInit {
         });
     }
 
+    private _filterConsultantRates(value: string, consultantIndex: number): ClientSpecialFeeDto[] {
+        const filterValue = value.toLowerCase();
+        // FIXME: do we need to have only 1 entrance for rate/fees ?
+        // const selectedIds: number[] = this.consultantsForm.consultantData.at(consultantIndex).get('specialRates')!.value.map((x: any) => x.id);
+        // const result = this.clientSpecialRateList.filter(option => option.publicName!.toLowerCase().includes(filterValue)).filter(x =>  !selectedIds.includes(x.id!));
+        const result = this.clientSpecialRateList.filter(option => option.publicName!.toLowerCase().includes(filterValue));
+        return result;
+    }
+
     manageConsultantFeeAutocomplete(consultantIndex: number) {
         let arrayControl = this.consultantsForm.consultantData.at(consultantIndex);
         arrayControl!.get('consultantSpecialFeeFilter')!.valueChanges
@@ -981,6 +1067,16 @@ export class WorkflowSalesComponent extends AppComopnentBase implements OnInit {
             }
         });
     }
+
+    private _filterConsultantFees(value: string, consultantIndex: number): ClientSpecialFeeDto[] {
+        const filterValue = value.toLowerCase();
+        // FIXME: do we need to have only 1 entrance for rate/fees ?
+        // const selectedIds: number[] = this.consultantsForm.consultantData.at(consultantIndex).get('specialFees')!.value.map((x: any) => x.id);
+        // const result = this.clientSpecialFeeList.filter(option => option.publicName!.toLowerCase().includes(filterValue)).filter(x =>  !selectedIds.includes(x.id!));
+        const result = this.clientSpecialFeeList.filter(option => option.publicName!.toLowerCase().includes(filterValue));
+        return result;
+    }
+
 
     getConsultantRateControls(consultantIndex: number): AbstractControl[] | null {
         return (this.consultantsForm.consultantData.at(consultantIndex).get('specialRates') as FormArray).controls;
@@ -1188,27 +1284,6 @@ export class WorkflowSalesComponent extends AppComopnentBase implements OnInit {
         this.consultantsForm.consultantData.removeAt(index);
     }
 
-    removeConsultantSigner(consultantIndex: number, signerIndex: number) {
-        (this.consultantsForm.consultantData.at(consultantIndex).get('consultantContractSigners') as FormArray).removeAt(signerIndex);
-    }
-
-    addConsultantSigner(consultantIndex: number) {
-        const form = this._fb.group({
-            clientName: new FormControl(null),
-            clientRole: new FormControl(null),
-            clientSigvens: new FormControl(null)
-        });
-        (this.consultantsForm.consultantData.at(consultantIndex).get('consultantContractSigners') as FormArray).push(form);
-    }
-
-    removeConsulant(index: number) {
-        this.consultantsForm.consultantData.removeAt(index);
-    }
-
-    getConsultantContractSignersControls(index: number) {
-        return (this.consultantsForm.consultantData.at(index).get('consultantContractSigners') as FormArray).controls;
-    }
-
     get consultantData(): FormArray {
         return this.consultantsForm.get('consultantData') as FormArray;
     }
@@ -1350,7 +1425,7 @@ export class WorkflowSalesComponent extends AppComopnentBase implements OnInit {
             this.salesClientDataForm.contractSigners.value.forEach((signer: any) => {
                 let signerInput = new ContractSignerDto();
                 signerInput.signOrder = signer.clientSequence;
-                signerInput.contactId = signer.clientName;
+                signerInput.contactId = signer.clientContact?.id;
                 // signerInput.contact = signer.client;
                 signerInput.signerRoleId = signer.clientRole;
             });
@@ -1378,14 +1453,14 @@ export class WorkflowSalesComponent extends AppComopnentBase implements OnInit {
                 consultantInput.endDate = consultant.consultantProjectEndDate;
 
                 consultantInput.isOnsiteWorkplace = consultant.consultantIsOnsiteWorkplace;
-                consultantInput.onsiteClientId = consultant.consultantWorkplaceCliendAddress;
+                consultantInput.onsiteClientId = consultant.consultantWorkplaceClientAddress?.id;
+                consultantInput.percentageOnSite = consultant.consultantWorkplacePercentageOnSite;
 
                 consultantInput.isEmagineOfficeWorkplace = consultant.consultantIsEmagineOfficeWorkplace;
                 consultantInput.emagineOfficeId = consultant.consultantWorkplaceEmagineOffice?.id;
 
                 consultantInput.isRemoteWorkplace = consultant.consultantIsRemoteWorkplace;
-                consultantInput.remoteAddressCountryId = consultant.consultantWorkplaceRemote;
-                consultantInput.percentageOnSite = consultant.consultantWorkplacePercentageOnSite;
+                consultantInput.remoteAddressCountryId = consultant.consultantWorkplaceRemote?.id;
 
                 consultantInput.noExpectedWorkload = consultant.noExpectedWorkload;
                 consultantInput.expectedWorkloadHours = consultant.expectedWorkloadHours;
@@ -1979,7 +2054,7 @@ export class WorkflowSalesComponent extends AppComopnentBase implements OnInit {
     formatExpirationNotificationsForDisplay(data: number[] | undefined): string {
         let contractExpirationNotificationDisplay: any[] = [];
         if (data?.length) {
-            data?.forEach(x => contractExpirationNotificationDisplay.push(this.findItemById(this.contractExpirationNotificationDuration, x)));
+            contractExpirationNotificationDisplay = data?.map(x => this.findItemById(this.contractExpirationNotificationDuration, x));
             return this.mapListByProperty(contractExpirationNotificationDisplay, 'name');
         } else {
             return '-';

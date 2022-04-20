@@ -1,12 +1,11 @@
-import { HttpClient } from '@angular/common/http';
 import { Component, Injector, OnDestroy, OnInit } from '@angular/core';
-import { AbstractControl, FormControl } from '@angular/forms';
+import { FormControl } from '@angular/forms';
 import { MatTableDataSource } from '@angular/material/table';
 import { Router } from '@angular/router';
 import { Observable, Subject } from 'rxjs';
 import { takeUntil, debounceTime, switchMap, finalize, map } from 'rxjs/operators';
 import { AppConsts } from 'src/shared/AppConsts';
-import { ApiServiceProxy, ClientListItemDto, EmployeeDto, EnumServiceProxy, IdNameDto, LookupServiceProxy } from 'src/shared/service-proxies/service-proxies';
+import { ClientListItemDto, ClientsServiceProxy, EmployeeDto, EnumServiceProxy, LookupServiceProxy } from 'src/shared/service-proxies/service-proxies';
 import { SelectableCountry, SelectableEmployeeDto, SelectableIdNameDto, StatusList } from './client-list.model';
 import { AppComopnentBase } from 'src/shared/app-component-base';
 
@@ -74,10 +73,10 @@ export class ClientListComponent extends AppComopnentBase implements OnInit, OnD
     private _unsubscribe = new Subject();
     constructor(
         injector: Injector,
-        private _apiService: ApiServiceProxy,
         private router: Router,
         private _enumService: EnumServiceProxy,
-        private _lookupService: LookupServiceProxy
+        private _lookupService: LookupServiceProxy,
+        private _clientService: ClientsServiceProxy
     ) {
         super(injector);
         this.clientFilter.valueChanges.pipe(
@@ -209,7 +208,7 @@ export class ClientListComponent extends AppComopnentBase implements OnInit, OnD
         this.isDataLoading = true;
         let ownerIds = this.selectedAccountManagers.map(x => +x.id);
         let selectedCountryIds = this.selectedCountries.map(x => +x.id);
-        this._apiService.clients(searchFilter, selectedCountryIds, ownerIds, this.isActiveClients, !this.includeDeleted, this.onlyWrongfullyDeletedInHubspot, this.pageNumber, this.deafultPageSize, this.sorting)
+        this._clientService.list(searchFilter, selectedCountryIds, ownerIds, this.isActiveClients, !this.includeDeleted, this.onlyWrongfullyDeletedInHubspot, this.pageNumber, this.deafultPageSize, this.sorting)
             .pipe(finalize(() => {
                 this.isDataLoading = false;
             }))

@@ -50,6 +50,12 @@ mat-table.rounded-table {
     }
 }
 
+.pagination-container {
+    .mat-paginator {
+        background-color: transparent;
+    }
+}
+
 .mat-paginator-container {
     .mat-focus-indicator.mat-paginator-navigation-previous.mat-icon-button.mat-button-base:not([disabled]),
     .mat-focus-indicator.mat-paginator-navigation-next.mat-icon-button.mat-button-base:not([disabled]) {
