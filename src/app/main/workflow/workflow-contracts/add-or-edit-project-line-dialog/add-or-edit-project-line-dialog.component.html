@@ -43,7 +43,7 @@
             </div>
             <mat-form-field appearance="outline" class="u-w--100 u-mt--10 filter-select">
                 <mat-label>Invoice reference</mat-label>
-                <mat-select formControlName="invoiceReference" [disableOptionCentering]="true">
+                <mat-select formControlName="invoicingReferenceNumber" [disableOptionCentering]="true">
                     <mat-option *ngFor="let item of [0,1,2,3]" [value]="item">
                         {{ item }}
                     </mat-option>
@@ -58,16 +58,16 @@
 
             <mat-form-field appearance="outline" class="u-w--100 u-mt--10 formFieldNoMarginPadding">
                 <mat-label>Debitor number</mat-label>
-                <input matInput type="text" formControlName="debitorNumber">
+                <input matInput type="text" formControlName="debtorNumber">
             </mat-form-field>
 
-            <mat-checkbox color="accent" name="diffrentDebitorNumber" formControlName="diffrentDebitorNumber" class="green-checkbox u-mt--10">
+            <mat-checkbox color="accent" name="differentDebtorNumber" formControlName="differentDebtorNumber" class="green-checkbox u-mt--10">
                 Different debitor number
             </mat-checkbox>
 
             <mat-form-field appearance="outline" class="u-w--100 u-mt--10 formFieldNoMarginPadding">
                 <mat-label>Invoice recipient</mat-label>
-                <input matInput type="text" formControlName="invoiceRecipient">
+                <input matInput type="text" formControlName="invoiceRecipientId">
             </mat-form-field>
             <mat-checkbox color="accent" name="differentInvoiceRecipient" formControlName="differentInvoiceRecipient" class="green-checkbox u-mt--10">
                 Different invoice recipient

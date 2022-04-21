@@ -8,11 +8,11 @@ export class ProjectLineForm extends FormGroup {
             assignmentID: new FormControl(null),
             startDate: new FormControl(null),
             endDate: new FormControl(null),
-            invoiceReference: new FormControl(null),
+            invoicingReferenceNumber: new FormControl(null),
             optionalInvoicingInfo: new FormControl(null),
-            debitorNumber: new FormControl(null),
-            diffrentDebitorNumber: new FormControl(false),
-            invoiceRecipient: new FormControl(null),
+            debtorNumber: new FormControl(null),
+            differentDebtorNumber: new FormControl(false),
+            invoiceRecipientId: new FormControl(null),
             differentInvoiceRecipient: new FormControl(false)
         })
 
@@ -32,20 +32,20 @@ export class ProjectLineForm extends FormGroup {
     get endDate() {
         return this.get('endDate');
     }
-    get invoiceReference() {
-        return this.get('invoiceReference');
+    get invoicingReferenceNumber() {
+        return this.get('invoicingReferenceNumber');
     }
     get optionalInvoicingInfo() {
         return this.get('optionalInvoicingInfo');
     }
-    get debitorNumber() {
-        return this.get('debitorNumber');
+    get debtorNumber() {
+        return this.get('debtorNumber');
     }
-    get diffrentDebitorNumber() {
-        return this.get('diffrentDebitorNumber');
+    get differentDebtorNumber() {
+        return this.get('differentDebtorNumber');
     }
-    get invoiceRecipient() {
-        return this.get('invoiceRecipient');
+    get invoiceRecipientId() {
+        return this.get('invoiceRecipientId');
     }
     get differentInvoiceRecipient() {
         return this.get('differentInvoiceRecipient');
