@@ -357,17 +357,6 @@ export const InputReadonlyState = {
     // all inputs
 }
 
-export const InputReadonlyStates = [
-    {
-        name: "deliveryType",
-        readonly: true,
-    },
-    {
-        name: "salesType",
-        readonly: true,
-    }
-];
-
 
 export enum ConsultantDiallogAction {
     Change = 1,

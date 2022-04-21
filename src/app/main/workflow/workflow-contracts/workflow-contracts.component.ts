@@ -277,7 +277,7 @@ export class WorkflowContractsComponent extends AppComopnentBase implements OnIn
                 this.contractsMainForm.projectType?.setValue(this.findItemById(this.projectTypes, result.mainData?.projectTypeId), {emitEvent: false});
                 this.contractsMainForm.margin?.setValue(this.findItemById(this.margins, result.mainData?.marginId), {emitEvent: false});
                 this.contractsMainForm.projectDescription?.setValue(result.mainData?.projectDescription, {emitEvent: false});
-                this.contractsMainForm.remarks?.setValue(result.mainData?.projectTypeId, {emitEvent: false});
+                this.contractsMainForm.remarks?.setValue(result.mainData?.remarks, {emitEvent: false});
                 this.contractsMainForm.noRemarks?.setValue(result.mainData?.noRemarks, {emitEvent: false});
 
                 // Client data
@@ -285,8 +285,17 @@ export class WorkflowContractsComponent extends AppComopnentBase implements OnIn
                 this.contractClientForm.specialContractTerms?.setValue(result.clientData?.specialContractTerms, {emitEvent: false});
                 this.contractClientForm.noSpecialContractTerms?.setValue(result.clientData?.noSpecialContractTerms, {emitEvent: false})
 
-                // add rates
-                // add fees
+                if (result.clientData?.periodClientSpecialRates?.length) {
+                    result.clientData.periodClientSpecialRates.forEach((rate: PeriodClientSpecialRateDto) => {
+                        this.addSpecialRate(rate);
+                    });
+                }
+
+                if (result.clientData?.periodClientSpecialFees?.length) {
+                    result.clientData.periodClientSpecialFees.forEach((fee: PeriodClientSpecialFeeDto) => {
+                        this.addClientFee(fee);
+                    });
+                }
 
                 if (result.consultantData?.length) {
                     result.consultantData.forEach((consultant: ConsultantContractsDataDto, index) => {
@@ -309,12 +318,26 @@ export class WorkflowContractsComponent extends AppComopnentBase implements OnIn
         input.clientData.noSpecialFee = this.contractClientForm.specialContractTerms?.value;;
         input.clientData.periodClientSpecialRates = new Array<PeriodClientSpecialRateDto>();
         for (let specialRate of this.contractClientForm.clientRates.value) {
-            let clientSpecialRate = new PeriodClientSpecialRateDto();
+            const clientSpecialRate = new PeriodClientSpecialRateDto();
+            clientSpecialRate.id = specialRate.id;
+            clientSpecialRate.clientSpecialRateId = specialRate.clientSpecialRateId;
+            clientSpecialRate.rateName = specialRate.rateName;
+            clientSpecialRate.rateDirection = specialRate.rateDirection;
+            clientSpecialRate.reportingUnit = specialRate.reportingUnit;
+            clientSpecialRate.clientRate = specialRate.clientRateValue;
+            clientSpecialRate.clientRateCurrencyId = specialRate.clientRateCurrency?.id;
             input.clientData.periodClientSpecialRates.push(clientSpecialRate);
         }
         input.clientData.periodClientSpecialFees = new Array<PeriodClientSpecialFeeDto>();
         for (let specialFee of this.contractClientForm.clientFees.value) {
-            let clientSpecialFee = new PeriodClientSpecialFeeDto();
+            const clientSpecialFee = new PeriodClientSpecialFeeDto();
+            clientSpecialFee.id = specialFee.id;
+            clientSpecialFee.clientSpecialFeeId = specialFee.clientSpecialFeeId;
+            clientSpecialFee.feeName = specialFee.feeName;
+            clientSpecialFee.feeDirection = specialFee.feeDirection;
+            clientSpecialFee.frequency = specialFee.feeFrequency;
+            clientSpecialFee.clientRate = specialFee.clientRateValue;
+            clientSpecialFee.clientRateCurrencyId = specialFee.clientRateCurrency?.id;
             input.clientData.periodClientSpecialFees.push(clientSpecialFee);
         }
         input.contractLinesDoneManuallyInOldPm = this.contractsSyncDataForm.manualCheckbox?.value ?? false;
@@ -351,7 +374,7 @@ export class WorkflowContractsComponent extends AppComopnentBase implements OnIn
                 consultantFee.clientSpecialFeeId = specialFee.clientSpecialFeeId;
                 consultantFee.feeName = specialFee.feeName;
                 consultantFee.feeDirection = specialFee.feeDirection;
-                consultantFee.frequency = specialFee.frequency;
+                consultantFee.frequency = specialFee.feeFrequency;
                 consultantFee.prodataToProdataRate = specialFee.proDataRateValue;
                 consultantFee.prodataToProdataRateCurrencyId = specialFee.proDataRateCurrency?.id;
                 consultantFee.consultantRate = specialFee.consultantRateValue;
@@ -414,10 +437,10 @@ export class WorkflowContractsComponent extends AppComopnentBase implements OnIn
             id: new FormControl(clientRate?.id ?? null),
             clientSpecialRateId: new FormControl(clientRate?.clientSpecialRateId ?? null),
             rateName: new FormControl(clientRate?.rateName ?? null),
-            rateDirection: new FormControl(clientRate?.rateDirection?.id ?? null),
-            reportingUnit: new FormControl(clientRate?.reportingUnit?.id ?? null),
+            rateDirection: new FormControl(clientRate?.rateDirection ?? null),
+            reportingUnit: new FormControl(clientRate?.reportingUnit ?? null),
             clientRateValue: new FormControl(clientRate?.clientRate ?? null),
-            clientRateCurrency: new FormControl(clientRate?.clientRateCurrencyId ?? null),
+            clientRateCurrency: new FormControl(this.findItemById(this.currencies, clientRate?.clientRateCurrencyId) ?? null),
             editable: new FormControl(clientRate ? false : true)
         });
         this.contractClientForm.clientRates.push(form);
@@ -443,7 +466,7 @@ export class WorkflowContractsComponent extends AppComopnentBase implements OnIn
             feeDirection: new FormControl(clientFee?.feeDirection ?? null),
             feeFrequency: new FormControl(clientFee?.frequency ?? null),
             clientRateValue: new FormControl(clientFee?.clientRate ?? null),
-            clientRateCurrency: new FormControl(clientFee?.clientRateCurrencyId ?? null),
+            clientRateCurrency: new FormControl(this.findItemById(this.currencies, clientFee?.clientRateCurrencyId) ?? null),
 
             editable: new FormControl(clientFee ? false : true)
         });
@@ -537,12 +560,12 @@ export class WorkflowContractsComponent extends AppComopnentBase implements OnIn
             clientSpecialFeeId: new FormControl(clientFee?.clientSpecialFeeId ?? null),
             feeName: new FormControl(clientFee?.feeName ?? null),
             feeDirection: new FormControl(clientFee?.feeDirection ?? null),
-            frequency: new FormControl(clientFee?.frequency ?? null),
+            feeFrequency: new FormControl(clientFee?.frequency ?? null),
             proDataRateValue: new FormControl(clientFee?.prodataToProdataRate ?? null),
             proDataRateCurrency: new FormControl(this.findItemById(this.currencies,clientFee?.prodataToProdataRateCurrencyId) ?? null),
             consultantRateValue: new FormControl(clientFee?.consultantRate ?? null),
             consultantRateCurrency: new FormControl(this.findItemById(this.currencies, clientFee?.consultantRateCurrencyId) ?? null),
-            editable: new FormControl(true)
+            editable: new FormControl(false)
         });
         (this.contractsConsultantsDataForm.consultants.at(index).get('clientFees') as FormArray).push(form);
     }
@@ -556,7 +579,7 @@ export class WorkflowContractsComponent extends AppComopnentBase implements OnIn
     }
 
     getConsultantClientFeesControls(index: number): AbstractControl[] | null {
-        return (this.contractsConsultantsDataForm.consultants.at(index).get('clientFees') as FormArray).controls
+        return (this.contractsConsultantsDataForm.consultants.at(index).get('clientFees') as FormArray).controls;
     }
     // Consultant data Client fees END REGION
 

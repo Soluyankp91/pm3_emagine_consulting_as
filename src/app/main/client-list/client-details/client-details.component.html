@@ -4,21 +4,25 @@
             <div fxLayout="column" fxLayoutAlign="start start">
                 <div fxLayout="row" fxLayoutAlign="start center">
                     <button class="back-arrow--btn u-pl--0" (click)="navigateBack()" mat-icon-button><mat-icon svgIcon="arrow"></mat-icon></button>
-                    <span class="client-details--header__client-name">{{selectedClient.name}}</span>
+                    <span class="client-details--header__client-name">{{client.name}}</span>
                 </div>
                 <div fxLayout="row" fxLayoutAlign="start center" class="client-details--client-info u-mt--10">
                     <span class="client-details--client-info__header client-id">
-                        #{{selectedClient.id}}
+                        #{{client.clientId}}
                     </span>
-                    <span class="flag-icon flag-icon-{{selectedClient.countryCode | lowercase }} u-mr--10"></span>
-                    <span class="client-details--client-info__header">
-                        {{selectedClient.address}}
+                    <!-- FIXME: add country flag after mapping countryName -> countryCode -->
+                    <!-- <span class="flag-icon flag-icon-{{selectedClient.countryCode | lowercase }} u-mr--10"></span> -->
+                    <span class="client-details--client-info__header" *ngIf="client.address?.length">
+                        {{client.address}}
                     </span>
-                    <span class="client-details--client-info__header headerWithDot">
-                        {{selectedClient.phone}}
+                    <span class="client-details--client-info__header" *ngIf="client.address2?.length">
+                        {{client.address2}}
                     </span>
-                    <span class="client-details--client-info__header headerWithDot">
-                        {{selectedClient.website}}
+                    <span class="client-details--client-info__header headerWithDot" *ngIf="client.phone?.length">
+                        {{client.phone}}
+                    </span>
+                    <span class="client-details--client-info__header headerWithDot" *ngIf="client.website?.length">
+                        {{client.website}}
                     </span>
                 </div>
             </div>
@@ -32,80 +36,6 @@
                 <button mat-icon-button color="primary" class="mat-elevation-z0"><mat-icon svgIcon="CAM-icon"></mat-icon></button>
             </div>
         </div>
-        <!-- <div fxLayout="row" fxLayoutAlign="start start" class="u-w--100 u-mt--20">
-            <div fxLayout="row" fxLayoutAlign="start start" fxFlex="20%">
-                <div fxLayout="column" class="client-details--client-info">
-                    <span class="client-details--client-info__header u-mb--10">
-                        Address
-                    </span>
-                    <span class="client-details--client-info__header">
-                        Address2
-                    </span>
-                </div>
-                <div fxLayout="column" class="client-details--client-info">
-                    <span class="client-details--client-info__value u-mb--10">
-                        {{ selectedClient.address }}
-                    </span>
-                    <span class="client-details--client-info__value">
-                        {{ selectedClient.address2 }}
-                    </span>
-                </div>
-            </div>
-            <div fxLayout="row" fxLayoutAlign="start start" fxFlex="20%">
-                <div fxLayout="column" class="client-details--client-info">
-                    <span class="client-details--client-info__header u-mb--10">
-                        Postcode
-                    </span>
-                    <span class="client-details--client-info__header">
-                        Country
-                    </span>
-                </div>
-                <div fxLayout="column" class="client-details--client-info">
-                    <span class="client-details--client-info__value u-mb--10">
-                        {{ selectedClient.postcode }}
-                    </span>
-                    <span class="client-details--client-info__value">
-                        {{ selectedClient.country }}
-                    </span>
-                </div>
-            </div>
-            <div fxLayout="row" fxLayoutAlign="start start" fxFlex="20%">
-                <div fxLayout="column" class="client-details--client-info">
-                    <span class="client-details--client-info__header u-mb--10">
-                        Phone
-                    </span>
-                    <span class="client-details--client-info__header">
-                        Website
-                    </span>
-                </div>
-                <div fxLayout="column" class="client-details--client-info">
-                    <span class="client-details--client-info__value u-mb--10">
-                        {{ selectedClient.phone }}
-                    </span>
-                    <span class="client-details--client-info__value">
-                        {{ selectedClient.website }}
-                    </span>
-                </div>
-            </div>
-            <div fxLayout="row" fxLayoutAlign="start start" fxFlex="20%">
-                <div fxLayout="column" class="client-details--client-info">
-                    <span class="client-details--client-info__header u-mb--10">
-                        Type
-                    </span>
-                    <span class="client-details--client-info__header">
-                        Account manager
-                    </span>
-                </div>
-                <div fxLayout="column" class="client-details--client-info">
-                    <span class="client-details--client-info__value u-mb--10">
-                        {{ selectedClient.type }}
-                    </span>
-                    <span class="client-details--client-info__value">
-                        {{ selectedClient.accountManager }}
-                    </span>
-                </div>
-            </div>
-        </div> -->
     </div>
     <div fxLayout="row" fxLayoutAlign="start start"class="client-details--content">
         <mat-tab-group class="client-details--tabs u-w--100" #clientDetailsTabs>
@@ -119,16 +49,6 @@
                     <app-client-workflow-track [clientInfo]="selectedClient"></app-client-workflow-track>
                 </ng-scrollbar>
             </mat-tab>
-            <!-- <mat-tab label="Consultant track">
-                <ng-scrollbar>
-                    <app-client-consultant-track></app-client-consultant-track>
-                </ng-scrollbar>
-            </mat-tab> -->
-            <!-- <mat-tab label="Invoicing">
-                <ng-scrollbar>
-                    <app-client-invoicing></app-client-invoicing>
-                </ng-scrollbar>
-            </mat-tab> -->
             <mat-tab label="Rates and Fees">
                 <ng-scrollbar>
                     <app-client-rates-and-fees></app-client-rates-and-fees>
@@ -144,11 +64,6 @@
                     <app-client-contacts [clientInfo]="selectedClient"></app-client-contacts>
                 </ng-scrollbar>
             </mat-tab>
-            <!-- <mat-tab label="Consultants">
-                <ng-scrollbar>
-                    <app-client-consultants></app-client-consultants>
-                </ng-scrollbar>
-            </mat-tab> -->
         </mat-tab-group>
     </div>
 </div>
