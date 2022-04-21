@@ -1430,7 +1430,6 @@ export class WorkflowSalesComponent extends AppComopnentBase implements OnInit {
                 signerInput.signerRoleId = signer.clientRole;
                 input.salesClientData!.contractSigners?.push(signerInput);
             });
-
         }
         input.consultantSalesData = new Array<ConsultantSalesDataDto>();
         if (this.consultantsForm.consultantData.value?.length) {
@@ -1531,11 +1530,11 @@ export class WorkflowSalesComponent extends AppComopnentBase implements OnInit {
                 input.consultantSalesData!.push(consultantInput);
             });
         }
-
+        this.showMainSpinner();
         if (isDraft) {
             this._clientPeriodService.salesPut(this.clientPeriodId!, input)
                 .pipe(finalize(() => {
-
+                    this.hideMainSpinner();
                 }))
                 .subscribe(result => {
 
@@ -1543,7 +1542,7 @@ export class WorkflowSalesComponent extends AppComopnentBase implements OnInit {
         } else {
             this._salesService.editFinish(this.clientPeriodId!, input)
                 .pipe(finalize(() => {
-
+                    this.hideMainSpinner();
                 }))
                 .subscribe(result => {
 

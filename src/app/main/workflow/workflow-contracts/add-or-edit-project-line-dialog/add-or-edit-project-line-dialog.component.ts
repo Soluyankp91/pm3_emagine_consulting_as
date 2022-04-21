@@ -39,11 +39,11 @@ export class AddOrEditProjectLineDialogComponent implements OnInit {
         this.projectLineForm.assignmentID?.setValue(data.id, {emitEvent: false}); // asignmentID ?
         this.projectLineForm.startDate?.setValue(data.startDate, {emitEvent: false});
         this.projectLineForm.endDate?.setValue(data.endDate, {emitEvent: false});
-        this.projectLineForm.invoiceReference?.setValue(data.invoicingReferenceNumber, {emitEvent: false});
+        this.projectLineForm.invoicingReferenceNumber?.setValue(data.invoicingReferenceNumber, {emitEvent: false});
         this.projectLineForm.optionalInvoicingInfo?.setValue(data.optionalInvoicingInfo, {emitEvent: false});
-        this.projectLineForm.debitorNumber?.setValue(data.debtorNumber, {emitEvent: false});
-        this.projectLineForm.diffrentDebitorNumber?.setValue(data.differentDebtorNumber, {emitEvent: false});
-        this.projectLineForm.invoiceRecipient?.setValue(data.invoiceRecipientId, {emitEvent: false});
+        this.projectLineForm.debtorNumber?.setValue(data.debtorNumber, {emitEvent: false});
+        this.projectLineForm.differentDebtorNumber?.setValue(data.differentDebtorNumber, {emitEvent: false});
+        this.projectLineForm.invoiceRecipientId?.setValue(data.invoiceRecipientId, {emitEvent: false});
         this.projectLineForm.differentInvoiceRecipient?.setValue(data.differentInvoiceRecipient, {emitEvent: false});
     }
 
@@ -53,7 +53,8 @@ export class AddOrEditProjectLineDialogComponent implements OnInit {
     }
 
     confirm(): void {
-        this.onConfirmed.emit(this.projectLineForm.value);
+        let result = new ProjectLineDto(this.projectLineForm.value);
+        this.onConfirmed.emit(result);
         this.closeInternal();
     }
 
