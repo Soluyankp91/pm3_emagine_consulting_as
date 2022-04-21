@@ -6,7 +6,8 @@ export const environment = {
   production: false,
   dev: false,
   qa: true,
-  apiUrl: 'https://pm3-qa-app.azurewebsites.net'
+  apiUrl: 'https://pm3-qa-app.azurewebsites.net',
+  sourcingUrl: 'https://web-sourcing-qa-env.prodataconsult.com'
 };
 
 /*

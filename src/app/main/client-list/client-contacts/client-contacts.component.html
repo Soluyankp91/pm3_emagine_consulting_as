@@ -26,8 +26,8 @@
                     </mat-cell>
                 </ng-container>
                 <ng-container matColumnDef="title">
-                    <mat-header-cell *matHeaderCellDef mat-sort-header fxFlex="15%"> Title </mat-header-cell>
-                    <mat-cell *matCellDef="let row" fxFlex="15%">
+                    <mat-header-cell *matHeaderCellDef mat-sort-header fxFlex="20%"> Title </mat-header-cell>
+                    <mat-cell *matCellDef="let row" fxFlex="20%">
                         <span class="text-truncate-ellipsis" [matTooltip]="row?.jobTitle">
                             {{row?.jobTitle}}
                         </span>
@@ -66,14 +66,14 @@
                     </mat-cell>
                 </ng-container>
 
-                <ng-container matColumnDef="action">
+                <!-- <ng-container matColumnDef="action">
                     <mat-header-cell *matHeaderCellDef mat-sort-header fxFlex="5%"></mat-header-cell>
                     <mat-cell *matCellDef="let row" fxFlex="5%">
                         <button mat-icon-button matTooltip="Go to workflow">
                             <mat-icon class="icon-arrow-rotate180" svgIcon="arrow"></mat-icon>
                         </button>
                     </mat-cell>
-                </ng-container>
+                </ng-container> -->
                 <mat-header-row *matHeaderRowDef="clientDisplayColumns"></mat-header-row>
                 <mat-row *matRowDef="let row; columns: clientDisplayColumns;" class="mat-elevation-z0"></mat-row>
             </mat-table>

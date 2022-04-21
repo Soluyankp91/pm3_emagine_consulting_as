@@ -418,7 +418,7 @@
                                     <span fxFlex="50%" fxLayout="row" fxLayoutAlign="start center">
                                         <img class="border-rounded-50 u-ml--16 u-mr--16" src="https://picsum.photos/35/35" />
                                         <span class="workflow-form--consultants__name u-mr--16">
-                                            {{ consultant.value?.nameOnly}}
+                                            {{ consultant.value?.consultant?.name }}
                                         </span>
                                     </span>
                                     <div fxFlex="50%" fxLayoutAlign="end center" *ngIf="!readOnlyMode">

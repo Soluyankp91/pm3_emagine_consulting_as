@@ -60,8 +60,8 @@ export class ClientContactsComponent implements OnInit, OnDestroy {
         'email',
         'phone',
         'lastCamLogin',
-        'owner',
-        'action'
+        'owner'
+        // 'action'
     ];
     clientContactsDataSource: MatTableDataSource<ContactDto> = new MatTableDataSource<ContactDto>();
 

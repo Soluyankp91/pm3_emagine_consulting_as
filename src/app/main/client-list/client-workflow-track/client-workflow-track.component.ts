@@ -110,7 +110,7 @@ export class ClientWorkflowTrackComponent implements OnInit {
         this.sorting = event.active.concat(' ', event.direction);
     }
 
-    mapArrayByName(list: any): string {
+    mapLocationArrayByName(list: any): string {
         if (list?.length) {
             return list.map((x: any) => x.country?.name + ' ' + x?.city?.name).join(', ');
         } else {
