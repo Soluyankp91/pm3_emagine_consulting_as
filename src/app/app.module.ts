@@ -540,5 +540,42 @@ export class AppModule {
             )
         );
 
+        iconRegistry.addSvgIcon(
+            'check-circle',
+            sanitizer.bypassSecurityTrustResourceUrl(
+                'assets/common/images/check-circle.svg'
+            )
+        );
+        iconRegistry.addSvgIcon(
+            'check-circle-fill',
+            sanitizer.bypassSecurityTrustResourceUrl(
+                'assets/common/images/check-circle-fill.svg'
+            )
+        );
+        iconRegistry.addSvgIcon(
+            'cancel',
+            sanitizer.bypassSecurityTrustResourceUrl(
+                'assets/common/images/cancel.svg'
+            )
+        );
+        iconRegistry.addSvgIcon(
+            'cancel-fill',
+            sanitizer.bypassSecurityTrustResourceUrl(
+                'assets/common/images/cancel-fill.svg'
+            )
+        );
+        iconRegistry.addSvgIcon(
+            'schedule',
+            sanitizer.bypassSecurityTrustResourceUrl(
+                'assets/common/images/schedule.svg'
+            )
+        );
+        iconRegistry.addSvgIcon(
+            'warning',
+            sanitizer.bypassSecurityTrustResourceUrl(
+                'assets/common/images/warning.svg'
+            )
+        );
+
     }
 }

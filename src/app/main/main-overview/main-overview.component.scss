@@ -6,7 +6,6 @@
 .main-overview {
     &--filter {
         padding: 14px 20px;
-        height: $white-header-height;
         background-color: $white-color;
         &-country__flag {
             line-height: 40px;
@@ -20,9 +19,6 @@
         }
         &-type {
             @include flexCentered;
-            // display: flex;
-            // justify-content: center;
-            // align-items: center;
             height: 40px;
             padding: 8px 16px;
             border: 1px solid $light-grey-color;
@@ -30,7 +26,12 @@
             &__name {
                 font-weight: 700;
                 color: #384853;
-                margin-left: 16px;
+                font-size: 14px;
+            }
+            &__quantity {
+                font-weight: 800;
+                color: #384853;
+                font-size: 14px;
             }
         }
         &-manager {
@@ -50,13 +51,27 @@
     }
     &--content {
         background-color: $sand-25-color;
-        // flex-grow: 1;
-        margin: 20px;
-        // padding: 14px 20px;
+        padding: 20px;
     }
     &--table {
         position: relative;
         min-height: 120px;
+    }
+    &-icon {
+        font-size: 12px;
+        &-type {
+            line-height: 40px;
+        }
+    }
+    &-search-button {
+        min-width: 155px;
+        &-text {
+            font-size: 14px;
+            font-weight: 700;
+            line-height: 1.4;
+            letter-spacing: normal;
+            color: #17a297;
+        }
     }
 }
 
@@ -73,16 +88,20 @@
     }
 }
 
-.inactive-status {
-    color: #ffda44;
+.overview-extensions-icon {
+    color: #6bc87a;
 }
 
-.active-status {
-    color: #17a297;
+.overview-termination-icon {
+    color: #ff7a78;
 }
 
-.deleted-status {
-    color: rgba($color: #ff7a78, $alpha: .5);
+.overview-negotiation-icon {
+    color: #2d9cdb
+}
+
+.overview-attention-icon {
+    color: #f8b025;
 }
 
 .icon-arrow-rotate180 {
@@ -90,18 +109,4 @@
     height: 16px;
     width: 16px;
     line-height: 16px;
-}
-
-.gant-chart-container {
-    // flex: auto;
-    // height: 100%;
-    // min-height: 0;
-    // max-width: 100%;
-    // &-wrapper {
-    //     flex: auto;
-    //     display: flex;
-    //     flex-direction: column;
-    //     padding: 15px;
-    //     overflow-y: auto;
-    // }
 }

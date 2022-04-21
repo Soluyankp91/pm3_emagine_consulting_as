@@ -197,3 +197,13 @@
         }
     }
 }
+
+.main-overview--filter-select.mat-form-field-appearance-fill {
+    .mat-form-field-flex {
+        background-color: transparent !important;
+    }
+    .mat-form-field-underline {
+        display: none !important;
+    }
+}
+

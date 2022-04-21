@@ -1,30 +1,33 @@
 <div class="main-overview" fxFlexFill>
     <div fxLayout="column" fxLayoutAlign="start start" class="main-overview--filter">
-        <h2 class="main-overview--header">Overview</h2>
-        <div fxLayout="row" fxLayoutAlign="space-between center" class="u-w--100">
+        <h2 class="main-overview--header u-mb--20">Overview</h2>
+        <div fxLayout="row" fxLayoutAlign="space-between start" class="u-w--100">
             <div fxFlex fxLayout="row" fxLayoutAlign="start center" class="u-w--100">
                 <span class="main-overview--filter-manager u-mr--16">
                     <img src="../../../assets/common/images/no-img.svg">
                 </span>
-                <div class="main-overview--filter-type" *ngFor="let type of selectedTypes">
-                    <mat-icon class="workflow-flag" [ngClass]="getFlagColor(type.flag)"
-                        [matTooltip]="mapFlagTooltip(type.flag)">fiber_manual_record</mat-icon>
+                <div class="main-overview--filter-type u-mr--10" *ngFor="let type of selectedTypes">
+                    <mat-icon class="main-overview-icon-type" svgIcon="{{detectIcon(type.flag)}}" [ngClass]="detectProcessColor(type.flag)"></mat-icon>
+                    <span class="main-overview--filter-type__quantity u-mr--5">
+                        {{type.quantity}}
+                    </span>
                     <span class="main-overview--filter-type__name">
                         {{type.name}}
                     </span>
                 </div>
             </div>
             <div fxFlex="25%" fxLayout="column" fxLayoutAlign="start end">
-                <div fxLayout="row" fxLayoutAlign="space-between center" fxLayoutGap="16px" class="u-w--100 u-mb--20">
-                    <button mat-icon-button>
-                        <mat-icon svgIcon="filter-icon"></mat-icon>
-                    </button>
+                <div fxLayout="column" fxLayoutAlign="space-between end" fxLayoutGap="16px" class="u-w--100">
                     <mat-form-field appearance="outline" class="u-w--100 mat-elevation-z0 formFieldNoMarginPadding">
                         <mat-label>Search</mat-label>
                         <input autocomplete="off" matInput [formControl]="workflowFilter" placeholder="Search"
-                            type="text">
+                        type="text">
                         <mat-icon matSuffix>search</mat-icon>
                     </mat-form-field>
+                    <button class="main-overview-search-button" mat-icon-button>
+                        <mat-icon svgIcon="filter-icon"></mat-icon>
+                        <span class="main-overview-search-button-text u-ml--5">Advanced filters</span>
+                    </button>
                 </div>
             </div>
         </div>
@@ -90,50 +93,52 @@
                 </mat-paginator>
             </div>
         </div> -->
-        <mat-select placeholder="Placeholder" name="item" class="u-mt--20" style="max-width: 100px;">
-            <mat-option *ngFor="let view of views" [class.active]="view.value === viewType"
-                (click)="viewType = view.value" [value]="view.value">
-                {{view.name}}
-            </mat-option>
-        </mat-select>
+        <div fxLayout="row" fxLayoutAlign="flex-end start" class="u-w--100">
+            <mat-form-field appearance="fill" class="main-overview--filter-select formFieldNoMarginPadding filter-select">
+                <mat-select [formControl]="viewType" name="item">
+                    <mat-option *ngFor="let view of views" [class.active]="view.value === viewType.value"
+                        (click)="changeViewType(view.value)" [value]="view.value">
+                        {{view.name}}
+                    </mat-option>
+                </mat-select>
+            </mat-form-field>
+        </div>
         <div fxLayout="row" fxLayoutAlign="start center" class="gant-chart-container" fxFlexFill>
-            <!-- <div class="gant-chart-container-wrapper"> -->
-                <ngx-gantt #gantt [items]="items" [viewOptions]="viewOptions" [viewType]="viewType">
-                    <ngx-gantt-table>
-                        <ngx-gantt-column name="" width="30px">
-                            <ng-template #cell let-item="item">
-                                <span class="text-bold">
-                                    <!-- {{ item.title }} -->
-                                    <div fxLayout="row" fxLayoutAlign="start center" class="u-w-100">
-                                        <mat-icon [ngClass]="detectStatusColor(item?.status?.value)">fiber_manual_record</mat-icon>
-                                    </div>
-                                </span>
-                            </ng-template>
-                        </ngx-gantt-column>
-                        <ngx-gantt-column name="Client" width="300px">
-                            <ng-template #cell let-item="item">
-                                <span class="text-bold">
-                                    {{ item.title }}
-                                </span>
-                            </ng-template>
-                        </ngx-gantt-column>
-                        <ngx-gantt-column name="Consultants" width="250px">
-                            <ng-template #cell let-item="item"> {{ item.start*1000 | date: 'dd-MM-yyyy' }} </ng-template>
-                        </ngx-gantt-column>
-                        <ngx-gantt-column name="SalesManager" width="100px">
-                            <ng-template #cell let-item="item">
-                                 <!-- {{ item.end*1000 | date: 'dd-MM-yyyy' }} -->
-                                 <div fxLayout="row" fxLayoutAlign="flex-end center" fxLayoutGap="15px" class="u-w-100">
-                                     <img class="manager-search--photo" src="../../../../assets/common/images/no-img.svg"/>
-                                     <button mat-icon-button matTooltip="Go to workflow">
-                                        <mat-icon class="icon-arrow-rotate180" svgIcon="arrow"></mat-icon>
-                                    </button>
-                                 </div>
-                                </ng-template>
-                        </ngx-gantt-column>
-                    </ngx-gantt-table>
-                </ngx-gantt>
-            <!-- </div> -->
+            <ngx-gantt #gantt [items]="items" [viewOptions]="viewOptions" [viewType]="viewType.value">
+                <ngx-gantt-table>
+                    <ngx-gantt-column name="" width="30px">
+                        <ng-template #cell let-item="item">
+                            <span class="text-bold">
+                                <div fxLayout="row" fxLayoutAlign="start center" class="u-w-100">
+                                    <mat-icon class="main-overview-icon" svgIcon="{{detectIcon(item.process)}}" [ngClass]="detectProcessColor(item?.process)"></mat-icon>
+                                </div>
+                            </span>
+                        </ng-template>
+                    </ngx-gantt-column>
+                    <ngx-gantt-column name="Client" width="300px">
+                        <ng-template #cell let-item="item">
+                            <span class="text-bold">
+                                {{ item.title }}
+                            </span>
+                        </ng-template>
+                    </ngx-gantt-column>
+                    <ngx-gantt-column name="Consultants" width="250px">
+                        <ng-template #cell let-item="item">
+                            {{item?.firstName + ' ' + item?.lastName}}
+                        </ng-template>
+                    </ngx-gantt-column>
+                    <ngx-gantt-column name="SalesManager" width="100px">
+                        <ng-template #cell let-item="item">
+                            <div fxLayout="row" fxLayoutAlign="flex-end center" fxLayoutGap="15px" class="u-w-100">
+                                <img class="manager-search--photo" src="../../../../assets/common/images/no-img.svg"/>
+                                <button mat-icon-button matTooltip="Go to workflow">
+                                    <mat-icon class="icon-arrow-rotate180" svgIcon="arrow"></mat-icon>
+                                </button>
+                            </div>
+                        </ng-template>
+                    </ngx-gantt-column>
+                </ngx-gantt-table>
+            </ngx-gantt>
         </div>
     </div>
 </div>
