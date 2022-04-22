@@ -2817,10 +2817,10 @@ date-fns@^2.28.0:
   resolved "https://registry.yarnpkg.com/date-fns/-/date-fns-2.28.0.tgz#9570d656f5fc13143e50c975a3b6bbeb46cd08b2"
   integrity sha512-8d35hViGYx/QH0icHYCeLmsLmMUheMmTyV9Fcm6gvNwdw31yXXH+O85sOBJ+OLnLQMKZowvpKb6FgMIQjcpvQw==
 
-date-format@^4.0.6:
-  version "4.0.6"
-  resolved "https://registry.yarnpkg.com/date-format/-/date-format-4.0.6.tgz#f6138b8f17968df9815b3d101fc06b0523f066c5"
-  integrity sha512-B9vvg5rHuQ8cbUXE/RMWMyX2YA5TecT3jKF5fLtGNlzPlU7zblSPmAm2OImDbWL+LDOQ6pUm+4LOFz+ywS41Zw==
+date-format@^4.0.7:
+  version "4.0.7"
+  resolved "https://registry.yarnpkg.com/date-format/-/date-format-4.0.7.tgz#aa1cf4400badfe693c8462bbfcba43ab821d7d14"
+  integrity sha512-k5xqlzDGIfv2N/DHR/BR8Kc4N9CRy9ReuDkmdxeX/jNfit94QXd36emWMm40ZOEDKNm/c91yV9EO3uGPkR7wWQ==
 
 debug@2.6.9, debug@^2.2.0, debug@^2.3.3:
   version "2.6.9"
