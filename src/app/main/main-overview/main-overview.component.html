@@ -1,1 +1,144 @@
-<p>main-overview works!</p>
+<div class="main-overview" fxFlexFill>
+    <div fxLayout="column" fxLayoutAlign="start start" class="main-overview--filter">
+        <h2 class="main-overview--header u-mb--20">Overview</h2>
+        <div fxLayout="row" fxLayoutAlign="space-between start" class="u-w--100">
+            <div fxFlex fxLayout="row" fxLayoutAlign="start center" class="u-w--100">
+                <span class="main-overview--filter-manager u-mr--16">
+                    <img src="../../../assets/common/images/no-img.svg">
+                </span>
+                <div class="main-overview--filter-type u-mr--10" *ngFor="let type of selectedTypes">
+                    <mat-icon class="main-overview-icon-type" svgIcon="{{detectIcon(type.flag)}}" [ngClass]="detectProcessColor(type.flag)"></mat-icon>
+                    <span class="main-overview--filter-type__quantity u-mr--5">
+                        {{type.quantity}}
+                    </span>
+                    <span class="main-overview--filter-type__name">
+                        {{type.name}}
+                    </span>
+                </div>
+            </div>
+            <div fxFlex="25%" fxLayout="column" fxLayoutAlign="start end">
+                <div fxLayout="column" fxLayoutAlign="space-between end" fxLayoutGap="16px" class="u-w--100">
+                    <mat-form-field appearance="outline" class="u-w--100 mat-elevation-z0 formFieldNoMarginPadding">
+                        <mat-label>Search</mat-label>
+                        <input autocomplete="off" matInput [formControl]="workflowFilter" placeholder="Search"
+                        type="text">
+                        <mat-icon matSuffix>search</mat-icon>
+                    </mat-form-field>
+                    <button class="main-overview-search-button" mat-icon-button>
+                        <mat-icon svgIcon="filter-icon"></mat-icon>
+                        <span class="main-overview-search-button-text u-ml--5">Advanced filters</span>
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div fxLayout="column" fxLayoutAlign="start start" class="main-overview--content">
+        <!-- <div fxLayout="column" fxLayoutAlign="start start" fxFlex="50%"
+            class="main-overview--consultants-table u-w--100">
+            <mat-table #table [dataSource]="clientsDataSource" class="white-table u-w--100" matSort matSortStart="asc"
+                (matSortChange)="sortChanged($event)">
+                <ng-container matColumnDef="process">
+                    <mat-header-cell *matHeaderCellDef mat-sort-header fxFlex="10%"></mat-header-cell>
+                    <mat-cell *matCellDef="let row" fxFlex="10%">
+                        <mat-icon [ngClass]="detectStatusColor(row?.status?.value)">fiber_manual_record</mat-icon>
+                        <span class="text-truncate-ellipsis" [matTooltip]="row?.status?.name">
+                        </span>
+                    </mat-cell>
+                </ng-container>
+                <ng-container matColumnDef="client">
+                    <mat-header-cell *matHeaderCellDef mat-sort-header fxFlex="40%"> Client </mat-header-cell>
+                    <mat-cell *matCellDef="let row" fxFlex="40%">
+                        <span class="text-truncate-ellipsis text-bold" [matTooltip]="row?.client">
+                            {{row?.client}}
+                        </span>
+                    </mat-cell>
+                </ng-container>
+                <ng-container matColumnDef="consultants">
+                    <mat-header-cell *matHeaderCellDef mat-sort-header fxFlex="35%"> Consultants </mat-header-cell>
+                    <mat-cell *matCellDef="let row" fxFlex="35%">
+                        <span class="text-truncate-ellipsis" [matTooltip]="row?.firstName + ' ' + row?.lastName">
+                            {{row?.firstName + ' ' + row?.lastName}}
+                        </span>
+                    </mat-cell>
+                </ng-container>
+                <ng-container matColumnDef="salesManager">
+                    <mat-header-cell *matHeaderCellDef mat-sort-header fxFlex="12%"> Sales manager </mat-header-cell>
+                    <mat-cell *matCellDef="let row" fxFlex="12%">
+                        <span class="text-truncate-ellipsis" [matTooltip]="row?.salesManager">
+                            <img class="manager-search--photo" src="../../../../assets/common/images/no-img.svg"
+                                [alt]="row?.salesManager" />
+                        </span>
+                    </mat-cell>
+                </ng-container>
+                <ng-container matColumnDef="action">
+                    <mat-header-cell *matHeaderCellDef mat-sort-header fxFlex="3%"></mat-header-cell>
+                    <mat-cell *matCellDef="let row" fxFlex="3%">
+                        <button mat-icon-button matTooltip="Go to workflow">
+                            <mat-icon class="icon-arrow-rotate180" svgIcon="arrow"></mat-icon>
+                        </button>
+                    </mat-cell>
+                </ng-container>
+                <mat-header-row *matHeaderRowDef="clientDisplayColumns"></mat-header-row>
+                <mat-row *matRowDef="let row; columns: clientDisplayColumns;" class="mat-elevation-z0"></mat-row>
+            </mat-table>
+            <div class="spinner-container" *ngIf="isDataLoading">
+                <mat-spinner [diameter]="50"></mat-spinner>
+            </div>
+            <div class="results-not-found" *ngIf="totalCount === 0 && !isDataLoading">
+                RESULTS NOT FOUND
+            </div>
+            <div class="pagination-contaier">
+                <mat-paginator #clientsPaginator [length]="totalCount" [pageSize]="deafultPageSize"
+                    [pageSizeOptions]="pageSizeOptions" [showFirstLastButtons]="true" (page)="pageChanged($event)">
+                </mat-paginator>
+            </div>
+        </div> -->
+        <div fxLayout="row" fxLayoutAlign="flex-end start" class="u-w--100">
+            <mat-form-field appearance="fill" class="main-overview--filter-select formFieldNoMarginPadding filter-select">
+                <mat-select [formControl]="viewType" name="item">
+                    <mat-option *ngFor="let view of views" [class.active]="view.value === viewType.value"
+                        (click)="changeViewType(view.value)" [value]="view.value">
+                        {{view.name}}
+                    </mat-option>
+                </mat-select>
+            </mat-form-field>
+        </div>
+        <div fxLayout="row" fxLayoutAlign="start center" class="gant-chart-container" fxFlexFill>
+            <ngx-gantt #gantt [items]="items" [viewOptions]="viewOptions" [viewType]="viewType.value">
+                <ngx-gantt-table>
+                    <ngx-gantt-column name="" width="30px">
+                        <ng-template #cell let-item="item">
+                            <span class="text-bold">
+                                <div fxLayout="row" fxLayoutAlign="start center" class="u-w-100">
+                                    <mat-icon class="main-overview-icon" svgIcon="{{detectIcon(item.process)}}" [ngClass]="detectProcessColor(item?.process)"></mat-icon>
+                                </div>
+                            </span>
+                        </ng-template>
+                    </ngx-gantt-column>
+                    <ngx-gantt-column name="Client" width="300px">
+                        <ng-template #cell let-item="item">
+                            <span class="text-bold">
+                                {{ item.title }}
+                            </span>
+                        </ng-template>
+                    </ngx-gantt-column>
+                    <ngx-gantt-column name="Consultants" width="250px">
+                        <ng-template #cell let-item="item">
+                            {{item?.firstName + ' ' + item?.lastName}}
+                        </ng-template>
+                    </ngx-gantt-column>
+                    <ngx-gantt-column name="SalesManager" width="100px">
+                        <ng-template #cell let-item="item">
+                            <div fxLayout="row" fxLayoutAlign="flex-end center" fxLayoutGap="15px" class="u-w-100">
+                                <img class="manager-search--photo" src="../../../../assets/common/images/no-img.svg"/>
+                                <button mat-icon-button matTooltip="Go to workflow">
+                                    <mat-icon class="icon-arrow-rotate180" svgIcon="arrow"></mat-icon>
+                                </button>
+                            </div>
+                        </ng-template>
+                    </ngx-gantt-column>
+                </ngx-gantt-table>
+            </ngx-gantt>
+        </div>
+    </div>
+</div>
