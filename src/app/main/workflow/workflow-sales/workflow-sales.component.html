@@ -1549,7 +1549,7 @@
                                     </mat-autocomplete>
                                 </mat-form-field>
                                 <!-- <div fxLayout="row" fxLayoutAlign="start center" class="u-w--100 u-mb--10"> -->
-                                <mat-checkbox color="accent" formControlName="clientInvoicingRecipientSameAsDirectClient" name="clientInvoicingRecipientSameAsDirectClient" class="black-checkbox u-mr--10"  (change)="disableOrEnableInput(salesClientDataForm?.clientInvoicingRecipientSameAsDirectClient?.value, salesClientDataForm?.clientInvoicingRecipientIdValue)">
+                                <mat-checkbox color="accent" formControlName="clientInvoicingRecipientSameAsDirectClient" name="clientInvoicingRecipientSameAsDirectClient" class="black-checkbox u-mr--10" (change)="disableOrEnableInput(salesClientDataForm?.clientInvoicingRecipientSameAsDirectClient?.value, salesClientDataForm?.clientInvoicingRecipientIdValue)">
                                     Same as direct client
                                 </mat-checkbox>
                                 <!-- </div> -->
@@ -1886,7 +1886,7 @@
                                     <textarea matInput autocomplete="new-password" name="specialContractTerms" formControlName="specialContractTerms">
                                     </textarea>
                                 </mat-form-field>
-                                <mat-checkbox color="accent" formControlName="noSpecialContractTerms" name="noSpecialContractTerms" class="black-checkbox u-mt--10">
+                                <mat-checkbox color="accent" formControlName="noSpecialContractTerms" name="noSpecialContractTerms" class="black-checkbox u-mt--10" (change)="disableOrEnableInput(salesClientDataForm?.noSpecialContractTerms?.value, salesClientDataForm?.specialContractTerms)" >
                                     None
                                 </mat-checkbox>
                             </div>
@@ -2610,7 +2610,7 @@
                                     </mat-form-field>
                                 </div>
                                 <div fxLayout="row" fxLayoutAlign="start center" class="u-w--100 u-mb--10">
-                                    <mat-checkbox color="accent" formControlName="consultantSpecialContractTermsNone" name="consultantSpecialContractTermsNone" class="black-checkbox u-mr--16">
+                                    <mat-checkbox color="accent" formControlName="consultantSpecialContractTermsNone" name="consultantSpecialContractTermsNone" class="black-checkbox u-mr--16" (change)="disableOrEnableInput(consultant?.value?.consultantSpecialContractTermsNone, consultant?.get('consultantSpecialContractTerms'))">
                                         None
                                     </mat-checkbox>
                                 </div>

@@ -4,24 +4,24 @@
             <div fxLayout="column" fxLayoutAlign="start start">
                 <div fxLayout="row" fxLayoutAlign="start center">
                     <button class="back-arrow--btn u-pl--0" (click)="navigateBack()" mat-icon-button><mat-icon svgIcon="arrow"></mat-icon></button>
-                    <span class="client-details--header__client-name">{{client.name}}</span>
+                    <span class="client-details--header__client-name">{{client?.name}}</span>
                 </div>
                 <div fxLayout="row" fxLayoutAlign="start center" class="client-details--client-info u-mt--10">
                     <span class="client-details--client-info__header client-id">
-                        #{{client.clientId}}
+                        #{{client?.clientId}}
                     </span>
                     <!-- FIXME: add country flag after mapping countryName -> countryCode -->
                     <!-- <span class="flag-icon flag-icon-{{selectedClient.countryCode | lowercase }} u-mr--10"></span> -->
-                    <span class="client-details--client-info__header" *ngIf="client.address?.length">
+                    <span class="client-details--client-info__header" *ngIf="client?.address?.length">
                         {{client.address}}
                     </span>
-                    <span class="client-details--client-info__header" *ngIf="client.address2?.length">
+                    <span class="client-details--client-info__header" *ngIf="client?.address2?.length">
                         {{client.address2}}
                     </span>
-                    <span class="client-details--client-info__header headerWithDot" *ngIf="client.phone?.length">
+                    <span class="client-details--client-info__header headerWithDot" *ngIf="client?.phone?.length">
                         {{client.phone}}
                     </span>
-                    <span class="client-details--client-info__header headerWithDot" *ngIf="client.website?.length">
+                    <span class="client-details--client-info__header headerWithDot" *ngIf="client?.website?.length">
                         {{client.website}}
                     </span>
                 </div>
@@ -40,29 +40,29 @@
     <div fxLayout="row" fxLayoutAlign="start start"class="client-details--content">
         <mat-tab-group class="client-details--tabs u-w--100" #clientDetailsTabs>
             <mat-tab label="Request track">
-                <ng-scrollbar>
+                <!-- <ng-scrollbar> -->
                     <app-client-request-track [clientInfo]="selectedClient"></app-client-request-track>
-                </ng-scrollbar>
+                <!-- </ng-scrollbar> -->
             </mat-tab>
             <mat-tab label="Workflow track">
-                <ng-scrollbar>
+                <!-- <ng-scrollbar> -->
                     <app-client-workflow-track [clientInfo]="selectedClient"></app-client-workflow-track>
-                </ng-scrollbar>
+                <!-- </ng-scrollbar> -->
             </mat-tab>
             <mat-tab label="Rates and Fees">
-                <ng-scrollbar>
+                <!-- <ng-scrollbar> -->
                     <app-client-rates-and-fees></app-client-rates-and-fees>
-                </ng-scrollbar>
+                <!-- </ng-scrollbar> -->
             </mat-tab>
             <mat-tab label="Documents">
-                <ng-scrollbar>
+                <!-- <ng-scrollbar> -->
                     <app-client-documents #documentsTab></app-client-documents>
-                </ng-scrollbar>
+                <!-- </ng-scrollbar> -->
             </mat-tab>
             <mat-tab label="Contacts">
-                <ng-scrollbar>
+                <!-- <ng-scrollbar> -->
                     <app-client-contacts [clientInfo]="selectedClient"></app-client-contacts>
-                </ng-scrollbar>
+                <!-- </ng-scrollbar> -->
             </mat-tab>
         </mat-tab-group>
     </div>

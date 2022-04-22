@@ -22,7 +22,8 @@
                             Client list
                         </span>
                     </li>
-                    <li class="main-navigation--list-item" routerLink="/main/sourcing-shortcut" routerLinkActive="active">
+                    <!-- <li class="main-navigation--list-item" routerLink="/main/sourcing-shortcut" routerLinkActive="active"> -->
+                    <li class="main-navigation--list-item" (click)="openSourcingApp()">
                         <mat-icon svgIcon="sourcing-shortcut-menu"></mat-icon>
                         <span class="main-navigation--list-item__name">
                             Sourcing 3.0 shortcut
@@ -34,7 +35,8 @@
                             Workflow / RF
                         </span>
                     </li>
-                    <li class="main-navigation--list-item" routerLink="/main/statistics" routerLinkActive="active">
+                    <!-- FIXME: COMMENTED OUT FOR PRESENTATION -->
+                    <!-- <li class="main-navigation--list-item" routerLink="/main/statistics" routerLinkActive="active">
                         <mat-icon svgIcon="statistic-menu"></mat-icon>
                         <span class="main-navigation--list-item__name">
                             Statistics
@@ -63,7 +65,7 @@
                         <span class="main-navigation--list-item__name">
                             Contracts
                         </span>
-                    </li>
+                    </li> -->
                 </ul>
             </nav>
         </mat-drawer>

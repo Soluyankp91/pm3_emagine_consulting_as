@@ -1,4 +1,5 @@
 import { Component, OnInit } from '@angular/core';
+import { environment } from 'src/environments/environment';
 import { WorkflowDataService } from './workflow/workflow-data.service';
 
 @Component({
@@ -13,6 +14,10 @@ export class MainComponent implements OnInit {
     ) { }
 
     ngOnInit(): void {
+    }
+
+    openSourcingApp() {
+        window.open(environment.sourcingUrl, '_blank');
     }
 
 }

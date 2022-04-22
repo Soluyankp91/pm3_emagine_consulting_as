@@ -937,8 +937,8 @@ export class WorkflowSalesComponent extends AppComopnentBase implements OnInit {
             consultantSpecialFeeFilter: new FormControl(''),
             specialFees: new FormArray([]),
 
-            consultantSpecialContractTerms: new FormControl(consultant?.specialContractTerms ?? null),
             consultantSpecialContractTermsNone: new FormControl(consultant?.noSpecialContractTerms ?? false),
+            consultantSpecialContractTerms: new FormControl({value: consultant?.specialContractTerms ?? null, disabled: consultant?.noSpecialContractTerms}),
 
             consultantAccountManager: new FormControl(consultant?.deliveryAccountManager ?? '')
         });
@@ -1653,6 +1653,9 @@ export class WorkflowSalesComponent extends AppComopnentBase implements OnInit {
                 // Contract
                 this.salesClientDataForm.noSpecialContractTerms?.setValue(result?.salesClientData?.noSpecialContractTerms, {emitEvent: false});
                 this.salesClientDataForm.specialContractTerms?.setValue(result?.salesClientData?.specialContractTerms, {emitEvent: false});
+                if (result?.salesClientData?.noSpecialContractTerms) {
+                    this.salesClientDataForm.specialContractTerms?.disable();
+                }
                 result?.salesClientData?.contractSigners?.forEach(signer => {
                     this.addSignerToForm(signer);
                 });

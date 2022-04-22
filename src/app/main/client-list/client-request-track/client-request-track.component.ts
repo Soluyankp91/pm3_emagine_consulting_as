@@ -4,6 +4,7 @@ import { ActivatedRoute } from '@angular/router';
 import * as moment from 'moment';
 import { Subject } from 'rxjs';
 import { finalize, takeUntil } from 'rxjs/operators';
+import { environment } from 'src/environments/environment';
 import { AppConsts } from 'src/shared/AppConsts';
 import { ClientRequestTrackDto, ClientsServiceProxy, EmployeeDto } from 'src/shared/service-proxies/service-proxies';
 
@@ -119,6 +120,7 @@ export class ClientRequestTrackComponent implements OnInit, OnDestroy {
             }))
             .subscribe(result => {
                 this.clientDataSource = new MatTableDataSource<ClientRequestTrackDto>(result.items);
+                this.totalCount = result.items?.length;
             });
     }
 
@@ -131,9 +133,21 @@ export class ClientRequestTrackComponent implements OnInit, OnDestroy {
         this.sorting = event.active.concat(' ', event.direction);
     }
 
-    mapArrayByName(list: any): string {
+    mapLocationArrayByName(list: any): string {
         if (list?.length) {
             return list.map((x: any) => x.country?.name + ' ' + x?.city?.name).join(', ');
+        } else {
+            return '-';
+        }
+    }
+
+    redirectToSourcingBoard(requestId: number) {
+        window.open(`${environment.sourcingUrl}/app/request-hub/${requestId}/board`, '_blank');
+    }
+
+    mapEmployeeArrayByName(list: EmployeeDto[]): string {
+        if (list?.length) {
+            return list.map((x: EmployeeDto) => x.name).join(', ');
         } else {
             return '-';
         }
