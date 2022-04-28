@@ -87,3 +87,9 @@ export const ExtendWorkflowProcessDto: ProcessParentItemDto = {
         }
     ]
 };
+
+export class OverviewData {
+    firstName: string;
+    lastName: string;
+}
+

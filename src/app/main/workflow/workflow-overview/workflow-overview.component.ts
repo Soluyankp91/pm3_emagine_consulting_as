@@ -1,10 +1,13 @@
-import { AfterViewInit, Component, Input, OnInit } from '@angular/core';
+import { AfterViewInit, Component, Input, OnInit, ViewChild } from '@angular/core';
+import { FormControl } from '@angular/forms';
 import { ActivatedRoute } from '@angular/router';
+import { GanttDate, GanttItem, GanttViewOptions, GanttViewType, NgxGanttComponent } from '@worktile/gantt';
+import { getUnixTime } from 'date-fns';
 import { Subject } from 'rxjs';
 import { takeUntil } from 'rxjs/operators';
 import { WorkflowDataService } from '../workflow-data.service';
 import { WorkflowSteps } from '../workflow.model';
-import { ExtendWorkflowProcessDto, ProcessParentItemDto, ProcessSubItemDto, StartWorkflowProcessDto } from './workflow-overview.model';
+import { ExtendWorkflowProcessDto, OverviewData, ProcessParentItemDto, ProcessSubItemDto, StartWorkflowProcessDto } from './workflow-overview.model';
 
 @Component({
     selector: 'app-workflow-overview',
@@ -12,6 +15,8 @@ import { ExtendWorkflowProcessDto, ProcessParentItemDto, ProcessSubItemDto, Star
     styleUrls: ['./workflow-overview.component.scss']
 })
 export class WorkflowOverviewComponent implements OnInit {
+    @ViewChild('gantt') ganttComponent: NgxGanttComponent;
+
     @Input() workflowId: string;
     finished = true;
     inPorgress = true;
@@ -19,6 +24,27 @@ export class WorkflowOverviewComponent implements OnInit {
     componentInitalized = false;
 
     workflowProcesses: ProcessParentItemDto[] = [];
+
+    // gant
+    items: GanttItem<OverviewData>[] = [
+        { id: '000000', title: 'Leadership support', color: 'rgb(250, 173, 25)', origin: { firstName: 'Frederick', lastName: 'Rikke' }, start: getUnixTime(new Date(2022, 1, 1)), end: getUnixTime(new Date(2022, 2, 31))},
+        { id: '000001', title: 'Leadership support', color: 'rgb(250, 173, 25)', origin: {  firstName: 'Frederick', lastName: 'Rikke' }, start: getUnixTime(new Date(2022, 1, 2)), end: getUnixTime(new Date(2022, 2, 2))},
+        { id: '000002', title: 'Leadership support', color: 'rgb(23, 162, 151)', origin: { firstName: 'Frederick', lastName: 'Rikke' }, start: getUnixTime(new Date(2022, 1, 1)), end: getUnixTime(new Date(2022, 2, 31))},
+        { id: '000003', title: 'Leadership support', color: 'rgb(139, 209, 203)', origin: { firstName: 'Frederick', lastName: 'Rikke' }, start: getUnixTime(new Date(2022, 2, 1)), end: getUnixTime(new Date(2022, 2, 31))},
+        { id: '000004', title: 'Leadership support', color: 'rgb(139, 209, 203)', origin: { firstName: 'Frederick', lastName: 'Rikke' }, start: getUnixTime(new Date(2022, 2, 1)), end: getUnixTime(new Date(2022, 2, 31))},
+        { id: '000005', title: 'Leadership support', color: 'rgb(23, 162, 151)', origin: { firstName: 'Frederick', lastName: 'Rikke' }, start: getUnixTime(new Date(2022, 2, 1)), end: getUnixTime(new Date(2022, 2, 31))}
+    ];
+
+    viewType = GanttViewType.month;
+
+    viewOptions: GanttViewOptions = {
+        min: new GanttDate(new Date(2022, 1, 1)),
+        max: new GanttDate(new Date(2022, 3, 10)),
+        dateFormat: {
+            month: 'MM yyyy'
+        },
+        cellWidth: 115
+    }
 
     private _unsubscribe = new Subject();
     constructor(
