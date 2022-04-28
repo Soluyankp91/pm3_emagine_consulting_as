@@ -6,3 +6,9 @@ export enum OverviewFlag {
     Negotiation = 5,
     AtterntionRequired = 6
 }
+
+export class OverviewData {
+    firstName: string;
+    lastName: string;
+    process: OverviewFlag;
+}
