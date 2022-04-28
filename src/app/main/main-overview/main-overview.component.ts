@@ -1,11 +1,8 @@
 import { Component, OnInit, ViewChild } from '@angular/core';
 import { FormControl } from '@angular/forms';
-import { MatTableDataSource } from '@angular/material/table';
-import { GanttDate, GanttViewOptions, GanttViewType, NgxGanttComponent } from '@worktile/gantt';
-import { AppConsts } from 'src/shared/AppConsts';
-import { WorkflowFlag } from '../workflow/workflow.model';
+import { GanttDate, GanttItem, GanttViewOptions, GanttViewType, NgxGanttComponent } from '@worktile/gantt';
 import { getUnixTime } from 'date-fns';
-import { OverviewFlag } from './main-overview.model';
+import { OverviewData, OverviewFlag } from './main-overview.model';
 
 @Component({
     selector: 'app-main-overview',
@@ -51,15 +48,16 @@ export class MainOverviewComponent implements OnInit {
     ];
 
     // gant
-    items = [
-        { id: '000000', title: 'Leadership support', firstName: 'Frederick', lastName: 'Rikke', process: OverviewFlag.Extension, start: getUnixTime(new Date(2022, 1, 1)), end: getUnixTime(new Date(2022, 2, 31))},
-        { id: '000001', title: 'Leadership support', firstName: 'Frederick', lastName: 'Rikke', process: OverviewFlag.ExtensionExpected, start: getUnixTime(new Date(2022, 1, 2)), end: getUnixTime(new Date(2022, 2, 2))},
-        { id: '000002', title: 'Leadership support', firstName: 'Frederick', lastName: 'Rikke', process: OverviewFlag.Terminated, start: getUnixTime(new Date(2022, 1, 1)), end: getUnixTime(new Date(2022, 2, 31))},
-        { id: '000003', title: 'Leadership support', firstName: 'Frederick', lastName: 'Rikke', process: OverviewFlag.TerminationExpected, start: getUnixTime(new Date(2022, 2, 1)), end: getUnixTime(new Date(2022, 2, 31))},
-        { id: '000004', title: 'Leadership support', firstName: 'Frederick', lastName: 'Rikke', process: OverviewFlag.Negotiation, start: getUnixTime(new Date(2022, 2, 1)), end: getUnixTime(new Date(2022, 2, 31))},
-        { id: '000005', title: 'Leadership support', firstName: 'Frederick', lastName: 'Rikke', process: OverviewFlag.AtterntionRequired, start: getUnixTime(new Date(2022, 2, 1)), end: getUnixTime(new Date(2022, 2, 31))}
-
+    items: GanttItem<OverviewData>[] = [
+        { id: '000000', title: 'Leadership support', color: 'rgb(250, 173, 25)', origin: { firstName: 'Frederick', lastName: 'Rikke', process: OverviewFlag.Extension }, start: getUnixTime(new Date(2022, 1, 1)), end: getUnixTime(new Date(2022, 2, 31))},
+        { id: '000001', title: 'Leadership support', color: 'rgb(250, 173, 25)', origin: {  firstName: 'Frederick', lastName: 'Rikke', process: OverviewFlag.ExtensionExpected }, start: getUnixTime(new Date(2022, 1, 2)), end: getUnixTime(new Date(2022, 2, 2))},
+        { id: '000002', title: 'Leadership support', color: 'rgb(23, 162, 151)', origin: { firstName: 'Frederick', lastName: 'Rikke', process: OverviewFlag.Terminated }, start: getUnixTime(new Date(2022, 1, 1)), end: getUnixTime(new Date(2022, 2, 31))},
+        { id: '000003', title: 'Leadership support', color: 'rgb(139, 209, 203)', origin: { firstName: 'Frederick', lastName: 'Rikke', process: OverviewFlag.TerminationExpected }, start: getUnixTime(new Date(2022, 2, 1)), end: getUnixTime(new Date(2022, 2, 31))},
+        { id: '000004', title: 'Leadership support', color: 'rgb(139, 209, 203)', origin: { firstName: 'Frederick', lastName: 'Rikke', process: OverviewFlag.Negotiation }, start: getUnixTime(new Date(2022, 2, 1)), end: getUnixTime(new Date(2022, 2, 31))},
+        { id: '000005', title: 'Leadership support', color: 'rgb(23, 162, 151)', origin: { firstName: 'Frederick', lastName: 'Rikke', process: OverviewFlag.AtterntionRequired }, start: getUnixTime(new Date(2022, 2, 1)), end: getUnixTime(new Date(2022, 2, 31))}
     ];
+
+    viewType: FormControl = new FormControl(GanttViewType.month);
 
     viewOptions: GanttViewOptions = {
         min: new GanttDate(new Date(2022, 1, 1)),
@@ -70,7 +68,8 @@ export class MainOverviewComponent implements OnInit {
             week: 'w',
             year: 'yyyy'
             // quarter: 'Q',
-        }
+        },
+        cellWidth: 75
     }
 
     views = [
@@ -96,11 +95,11 @@ export class MainOverviewComponent implements OnInit {
         // }
     ];
 
-    viewType: FormControl = new FormControl(GanttViewType.month);
 
     constructor() { }
 
-    ngOnInit(): void {}
+    ngOnInit(): void {
+    }
 
     detectProcessColor(process: OverviewFlag) {
         switch (process) {
@@ -147,6 +146,13 @@ export class MainOverviewComponent implements OnInit {
 
     changeViewType(type: any) {
         this.viewType.setValue(type);
+        switch (type) {
+            case 'week':
+                this.viewOptions.cellWidth = 50;
+                break;
+            case 'month':
+                this.viewOptions.cellWidth = 75;
+        }
     }
 
 }

@@ -110,21 +110,21 @@
                         <ng-template #cell let-item="item">
                             <span class="text-bold">
                                 <div fxLayout="row" fxLayoutAlign="start center" class="u-w-100">
-                                    <mat-icon class="main-overview-icon" svgIcon="{{detectIcon(item.process)}}" [ngClass]="detectProcessColor(item?.process)"></mat-icon>
+                                    <mat-icon class="main-overview-icon" svgIcon="{{detectIcon(item?.origin?.process)}}" [ngClass]="detectProcessColor(item?.origin?.process)"></mat-icon>
                                 </div>
                             </span>
                         </ng-template>
                     </ngx-gantt-column>
-                    <ngx-gantt-column name="Client" width="300px">
+                    <ngx-gantt-column name="Client" width="375px">
                         <ng-template #cell let-item="item">
                             <span class="text-bold">
                                 {{ item.title }}
                             </span>
                         </ng-template>
                     </ngx-gantt-column>
-                    <ngx-gantt-column name="Consultants" width="250px">
+                    <ngx-gantt-column name="Consultants" width="325px">
                         <ng-template #cell let-item="item">
-                            {{item?.firstName + ' ' + item?.lastName}}
+                            {{item?.origin?.firstName + ' ' + item?.origin?.lastName}}
                         </ng-template>
                     </ngx-gantt-column>
                     <ngx-gantt-column name="SalesManager" width="100px">
