@@ -35,7 +35,21 @@
         </div>
     </div>
     <div class="workflow-overview--timeline" fxLayout="row" fxLayoutAlign="start start">
-        <!-- TODO: move tiomeline to component-->
-        // gantt chart (timeline)
+        <div fxLayout="row" fxLayoutAlign="start center" class="workflow-overview--chart-container" fxFlexFill>
+            <ngx-gantt #gantt [items]="items" [viewOptions]="viewOptions" [viewType]="viewType">
+                <ngx-gantt-table>
+                    <ngx-gantt-column name="{{'Client' + ' ' + 'name'}}" width="250px">
+                        <ng-template #cell let-item="item">
+                            <div fxLayout="row" fxLayoutAlign="start center" fxLayoutGap="15px" class="u-w-100">
+                                <img class="manager-search--photo" src="../../../../assets/common/images/no-img.svg"/>
+                                <span>
+                                    {{item?.origin?.firstName + ' ' + item?.origin?.lastName}}
+                                </span>
+                            </div>
+                        </ng-template>
+                    </ngx-gantt-column>
+                </ngx-gantt-table>
+            </ngx-gantt>
+        </div>
     </div>
 </div>
