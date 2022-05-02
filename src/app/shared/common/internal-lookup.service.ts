@@ -37,6 +37,7 @@ export class InternalLookupService {
     terminationReasons: { [key: string]: string; };
     employmentTypes: EnumEntityTypeDto[] = [];
     countries: EnumEntityTypeDto[] = [];
+    consultantTimeReportingCapList: EnumEntityTypeDto[] = [];
 
     constructor(private _enumService: EnumServiceProxy) {
 
@@ -650,6 +651,24 @@ export class InternalLookupService {
                     .subscribe(response => {
                         this.countries = response;
                         observer.next(this.countries);
+                        observer.complete();
+                    }, error => {
+                        observer.error(error);
+                    });
+            }
+        });
+    }
+
+    getConsultantTimeReportingCap(): Observable<EnumEntityTypeDto[]> {
+        return new Observable<EnumEntityTypeDto[]>((observer) => {
+            if (this.consultantTimeReportingCapList.length) {
+                observer.next(this.consultantTimeReportingCapList);
+                observer.complete();
+            } else {
+                this._enumService.consultantTimeReportingCap()
+                    .subscribe(response => {
+                        this.consultantTimeReportingCapList = response;
+                        observer.next(this.consultantTimeReportingCapList);
                         observer.complete();
                     }, error => {
                         observer.error(error);

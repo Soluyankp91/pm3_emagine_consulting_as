@@ -108,6 +108,7 @@ export class WorkflowSalesClientDataForm extends FormGroup {
             rateUnitTypeId: new FormControl(null),
             clientInvoiceCurrency: new FormControl(null),
             clientInvoiceFrequency: new FormControl(null),
+            clientInvoiceTime: new FormControl(null),
             clientInvoicingDate: new FormControl(null),
             //client special rates
             clientSpecialRatePrice: new FormControl(null),
@@ -201,6 +202,9 @@ export class WorkflowSalesClientDataForm extends FormGroup {
     }
     get clientInvoiceFrequency() {
         return this.get('clientInvoiceFrequency');
+    }
+    get clientInvoiceTime() {
+        return this.get('clientInvoiceTime');
     }
     get clientInvoicingDate() {
         return this.get('clientInvoicingDate');
