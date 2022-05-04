@@ -71,7 +71,7 @@ export class WorkflowFinancesComponent extends AppComopnentBase implements OnIni
             id: new FormControl(consultant.consultantId),
             checkInvoicingSettingsOnConsultant: new FormControl(consultant.checkInvoicingSettingsOnConsultant),
             creditorCreatedInNavision: new FormControl(consultant.creditorCreatedInNavision),
-            // consultantName: new FormControl(consultant.consultantName)
+            consultant: new FormControl(consultant?.consultant)
         });
         this.financesConsultantsForm.consultants.push(form);
     }

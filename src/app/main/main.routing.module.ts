@@ -19,18 +19,18 @@ import { WorkflowComponent } from './workflow/workflow.component';
   imports: [RouterModule.forChild(
     [
         { path: '', component: MainComponent, children: [
-            { path: 'dashboard', component: DashboardComponent, canActivate: [MsalGuard] },
-            { path: 'overview', component: MainOverviewComponent, canActivate: [MsalGuard] },
-            { path: 'clients', component: ClientListComponent, canActivate: [MsalGuard] },
-            { path: 'clients/:id', component: ClientDetailsComponent, canActivate: [MsalGuard] },
-            { path: 'sourcing-shortcut', component: SourcingShortcutComponent, canActivate: [MsalGuard] },
-            { path: 'workflow', component: WorkflowComponent, canActivate: [MsalGuard] },
-            { path: 'workflow/:id', component: WorkflowDetailsComponent, canActivate: [MsalGuard] },
-            { path: 'statistics', component: StatisticsComponent, canActivate: [MsalGuard] },
-            { path: 'time-tracking', component: TimeTrackingComponent, canActivate: [MsalGuard] },
-            { path: 'evaluation', component: EvaluationComponent, canActivate: [MsalGuard] },
-            { path: 'invoicing', component: InvoicingComponent, canActivate: [MsalGuard] },
-            { path: 'contracts', component: ContractsComponent, canActivate: [MsalGuard] },
+            { path: 'dashboard', component: DashboardComponent },
+            { path: 'overview', component: MainOverviewComponent },
+            { path: 'clients', component: ClientListComponent },
+            { path: 'clients/:id', component: ClientDetailsComponent },
+            { path: 'sourcing-shortcut', component: SourcingShortcutComponent },
+            { path: 'workflow', component: WorkflowComponent },
+            { path: 'workflow/:id', component: WorkflowDetailsComponent },
+            { path: 'statistics', component: StatisticsComponent },
+            { path: 'time-tracking', component: TimeTrackingComponent },
+            { path: 'evaluation', component: EvaluationComponent },
+            { path: 'invoicing', component: InvoicingComponent },
+            { path: 'contracts', component: ContractsComponent },
             { path: '**', redirectTo: 'dashboard' }
         ]},
     ]

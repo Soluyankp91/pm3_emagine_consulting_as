@@ -12,7 +12,7 @@ import { WorkflowDataService } from '../workflow-data.service';
 import { ConsultantDiallogAction } from '../workflow-sales/workflow-sales.model';
 import { ProjectLineDiallogMode } from '../workflow.model';
 import { AddOrEditProjectLineDialogComponent } from './add-or-edit-project-line-dialog/add-or-edit-project-line-dialog.component';
-import { WorkflowContractsClientDataForm, WorkflowContractsConsultantsDataForm, WorkflowContractsMainForm, WorkflowContractsSyncForm, WorkflowContractsTerminationConsultantsDataForm } from './workflow-contracts.model';
+import { WorkflowConsultantsLegalContractForm, WorkflowContractsClientDataForm, WorkflowContractsConsultantsDataForm, WorkflowContractsMainForm, WorkflowContractsSyncForm, WorkflowContractsTerminationConsultantsDataForm } from './workflow-contracts.model';
 
 @Component({
     selector: 'app-workflow-contracts',
@@ -33,6 +33,7 @@ export class WorkflowContractsComponent extends AppComopnentBase implements OnIn
     contractClientForm: WorkflowContractsClientDataForm;
     contractsConsultantsDataForm: WorkflowContractsConsultantsDataForm;
     contractsSyncDataForm: WorkflowContractsSyncForm;
+    consultantLegalContractsForm: WorkflowConsultantsLegalContractForm;
 
     currencies: EnumEntityTypeDto[] = [];
     discounts: EnumEntityTypeDto[] = [];
@@ -45,6 +46,7 @@ export class WorkflowContractsComponent extends AppComopnentBase implements OnIn
     clientSpecialRateReportUnits: EnumEntityTypeDto[] = [];
     clientSpecialFeeFrequencies: EnumEntityTypeDto[] = [];
     employmentTypes: EnumEntityTypeDto[] = [];
+    consultantTimeReportingCapList: EnumEntityTypeDto[] = [];
 
     contractLinesDoneManuallyInOldPMControl = new FormControl();
     contractsTerminationConsultantForm: WorkflowContractsTerminationConsultantsDataForm;
@@ -88,6 +90,7 @@ export class WorkflowContractsComponent extends AppComopnentBase implements OnIn
         this.contractsConsultantsDataForm = new WorkflowContractsConsultantsDataForm();
         this.contractsSyncDataForm = new WorkflowContractsSyncForm();
         this.contractsTerminationConsultantForm = new WorkflowContractsTerminationConsultantsDataForm();
+        this.consultantLegalContractsForm = new WorkflowConsultantsLegalContractForm();
         this._workflowDataService.workflowContractsSaved
             .pipe(takeUntil(this._unsubscribe))
             .subscribe((value: boolean) => {
@@ -109,6 +112,7 @@ export class WorkflowContractsComponent extends AppComopnentBase implements OnIn
         this.getProjectTypes();
         this.getMargins();
         this.getEmploymentTypes();
+        this.getConsultantTimeReportingCap();
 
         this.getContractsStep();
 
@@ -263,6 +267,16 @@ export class WorkflowContractsComponent extends AppComopnentBase implements OnIn
             });
     }
 
+    getConsultantTimeReportingCap() {
+        this._internalLookupService.getConsultantTimeReportingCap()
+            .pipe(finalize(() => {
+
+            }))
+            .subscribe(result => {
+                this.consultantTimeReportingCapList = result;
+            });
+    }
+
     getContractsStep() {
         this.showMainSpinner();
         this._clientPeriodService.contractsGet(this.clientPeriodId!)
@@ -281,7 +295,11 @@ export class WorkflowContractsComponent extends AppComopnentBase implements OnIn
                 this.contractsMainForm.noRemarks?.setValue(result.mainData?.noRemarks, {emitEvent: false});
 
                 // Client data
-                this.contractClientForm.capOnTimeReporting?.setValue(this.findItemById(this.clientTimeReportingCap, result.clientData?.clientTimeReportingCapId), {emitEvent: false});
+                // this.contractClientForm.capOnTimeReporting?.setValue(this.findItemById(this.clientTimeReportingCap, result.clientData?.clientTimeReportingCapId), {emitEvent: false});
+                this.contractClientForm.clientTimeReportingCapId?.setValue(this.findItemById(this.clientTimeReportingCap, result.clientData?.clientTimeReportingCapId), {emitEvent: false});
+                this.contractClientForm.clientTimeReportingCapMaxValue?.setValue(result.clientData?.clientTimeReportingCapMaxValue, {emitEvent: false});
+                this.contractClientForm.clientTimeReportingCapCurrencyId?.setValue(this.findItemById(this.currencies, result.clientData?.clientTimeReportingCapCurrencyId), {emitEvent: false});
+
                 this.contractClientForm.specialContractTerms?.setValue(result.clientData?.specialContractTerms, {emitEvent: false});
                 this.contractClientForm.noSpecialContractTerms?.setValue(result.clientData?.noSpecialContractTerms, {emitEvent: false})
 
@@ -300,6 +318,7 @@ export class WorkflowContractsComponent extends AppComopnentBase implements OnIn
                 if (result.consultantData?.length) {
                     result.consultantData.forEach((consultant: ConsultantContractsDataDto, index) => {
                         this.addConsultantDataToForm(consultant, index);
+                        this.addConsultantLegalContract(consultant);
                     })
                 }
             });
@@ -309,13 +328,11 @@ export class WorkflowContractsComponent extends AppComopnentBase implements OnIn
         let input = new ClientPeriodContractsDataDto();
         input.clientData = new ContractsClientDataDto();
 
-        input.clientData.specialContractTerms = this.contractClientForm.specialContractTerms?.value;;
-        input.clientData.noSpecialContractTerms = this.contractClientForm.noSpecialContractTerms?.value;;
-        input.clientData.clientTimeReportingCapId = this.contractClientForm.specialContractTerms?.value;;
-        input.clientData.clientTimeReportingCapMaxValue = this.contractClientForm.specialContractTerms?.value;;
-        input.clientData.clientTimeReportingCapCurrencyId = this.contractClientForm.specialContractTerms?.value;;
-        input.clientData.noSpecialRate = this.contractClientForm.specialContractTerms?.value;;
-        input.clientData.noSpecialFee = this.contractClientForm.specialContractTerms?.value;;
+        input.clientData.specialContractTerms = this.contractClientForm.specialContractTerms?.value;
+        input.clientData.noSpecialContractTerms = this.contractClientForm.noSpecialContractTerms?.value;
+        input.clientData.clientTimeReportingCapId = this.contractClientForm.clientTimeReportingCapId?.value?.id;
+        input.clientData.clientTimeReportingCapMaxValue = this.contractClientForm.clientTimeReportingCapMaxValue?.value;
+        input.clientData.clientTimeReportingCapCurrencyId = this.contractClientForm.clientTimeReportingCapCurrencyId?.value?.id;
         input.clientData.periodClientSpecialRates = new Array<PeriodClientSpecialRateDto>();
         if (this.contractClientForm.clientRates.value?.length) {
             for (let specialRate of this.contractClientForm.clientRates.value) {
@@ -330,6 +347,7 @@ export class WorkflowContractsComponent extends AppComopnentBase implements OnIn
                 input.clientData.periodClientSpecialRates.push(clientSpecialRate);
             }
         }
+        input.clientData.noSpecialRate = this.contractClientForm.clientRates.value?.length === 0;
         input.clientData.periodClientSpecialFees = new Array<PeriodClientSpecialFeeDto>();
         if (this.contractClientForm.clientFees.value?.length) {
             for (let specialFee of this.contractClientForm.clientFees.value) {
@@ -344,6 +362,7 @@ export class WorkflowContractsComponent extends AppComopnentBase implements OnIn
                 input.clientData.periodClientSpecialFees.push(clientSpecialFee);
             }
         }
+        input.clientData.noSpecialFee = this.contractClientForm.clientFees.value?.length === 0;
         input.contractLinesDoneManuallyInOldPm = this.contractsSyncDataForm.manualCheckbox?.value ?? false;
 
         input.mainData = new ContractsMainDataDto();
@@ -364,7 +383,7 @@ export class WorkflowContractsComponent extends AppComopnentBase implements OnIn
                 consultantData.employmentTypeId = consultant.consultantType?.id;
                 consultantData.consultantId = consultant.consultnatId;
                 consultantData.nameOnly = consultant.nameOnly;
-                consultantData.consultantTimeReportingCapId = consultant.consultantCapOnTimeReportingValue;
+                consultantData.consultantTimeReportingCapId = consultant.consultantCapOnTimeReporting?.id;
                 consultantData.consultantTimeReportingCapMaxValue = consultant.consultantCapOnTimeReportingValue;
                 consultantData.consultantTimeReportingCapCurrencyId = consultant.consultantCapOnTimeReportingCurrency?.id;
                 consultantData.noSpecialContractTerms = consultant.noSpecialContractTerms;
@@ -502,8 +521,10 @@ export class WorkflowContractsComponent extends AppComopnentBase implements OnIn
         // TODO: add missing properties, id, employmentType, etc.
         const form = this._fb.group({
             consultnatId: new FormControl(consultant.consultantId),
+            consultant: new FormControl(consultant.consultant),
             nameOnly: new FormControl(consultant.nameOnly),
             consultantType: new FormControl(this.findItemById(this.employmentTypes, consultant.employmentTypeId)),
+            consultantCapOnTimeReporting: new FormControl(this.findItemById(this.consultantTimeReportingCapList, consultant.consultantTimeReportingCapId)),
             consultantCapOnTimeReportingValue: new FormControl(consultant.consultantTimeReportingCapMaxValue),
             consultantCapOnTimeReportingCurrency: new FormControl(this.findItemById(this.currencies, consultant.consultantTimeReportingCapCurrencyId)),
             noSpecialContractTerms: new FormControl(consultant.noSpecialContractTerms),
@@ -526,6 +547,14 @@ export class WorkflowContractsComponent extends AppComopnentBase implements OnIn
 
     get consultants(): FormArray {
         return this.contractsConsultantsDataForm.get('consultants') as FormArray;
+    }
+
+    addConsultantLegalContract(consultant: ConsultantContractsDataDto) {
+        const form = this._fb.group({
+            consultnatId: new FormControl(consultant.consultantId),
+            consultant: new FormControl(consultant.consultant)
+        });
+        this.contractsSyncDataForm.consultants.push(form);
     }
 
     displayConsultantEmploymentType(employmentTypeId: number) {

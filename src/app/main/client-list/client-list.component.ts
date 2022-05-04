@@ -179,7 +179,7 @@ export class ClientListComponent extends AppComopnentBase implements OnInit, OnD
     }
 
     getCountries() {
-        this._enumService.tenants()
+        this._enumService.countries()
             .pipe(finalize(() => {
 
             }))

@@ -147,8 +147,11 @@
                         </h1>
                         <div fxLayout="column" class="u-mb--20 u-mt--20">
                             <h3 class="workflow-gray--header">Shared Cap on Hour Reporting</h3>
-                            <span class="workflow-darkblue--text">{{contractClientForm?.capOnTimeReporting?.value?.name ? contractClientForm?.capOnTimeReporting?.value?.name : '-'}}</span>
-                            <!-- <span class="workflow-darkblue--text">Cap on units</span> -->
+                            <span class="workflow-darkblue--text">{{contractClientForm?.clientTimeReportingCapId?.value?.name ? contractClientForm?.clientTimeReportingCapId?.value?.name : '-'}}</span>
+                            <span class="workflow-darkblue--text">
+                                {{contractClientForm?.clientTimeReportingCapMaxValue?.value ? contractClientForm?.clientTimeReportingCapMaxValue?.value : '-'}}
+                                {{contractClientForm?.clientTimeReportingCapCurrencyId?.value?.name ? contractClientForm?.clientTimeReportingCapCurrencyId?.value?.name : '-'}}
+                            </span>
                         </div>
 
                         <h3 class="workflow-gray--header">Special Contract Terms</h3>
@@ -416,7 +419,8 @@
                                 </h1>
                                 <div fxLayout="row" fxLayoutAlign="start start" class="u-w--100">
                                     <span fxFlex="50%" fxLayout="row" fxLayoutAlign="start center">
-                                        <img class="border-rounded-50 u-ml--16 u-mr--16" src="https://picsum.photos/35/35" />
+                                        <!-- <img class="border-rounded-50 u-ml--16 u-mr--16" src="https://picsum.photos/35/35" /> -->
+                                        <img class="border-rounded-50 u-ml--16 u-mr--16 image-thumbnail" [src]="consultantProfileUrl(consultant.value?.consultant?.externalId)" />
                                         <span class="workflow-form--consultants__name u-mr--16">
                                             {{ consultant.value?.consultant?.name }}
                                         </span>
@@ -464,12 +468,12 @@
                                 </div>
                                 <div fxLayout="column" class="u-mb--20" fxFlex="25%">
                                     <h3 class="workflow-gray--header">Cap on Time Reporting</h3>
-                                    <span class="workflow-darkblue--text" *ngIf="!consultant.value.consultantCapOnTimeReportingValue && !consultant.value.consultantCapOnTimeReportingCurrency?.name; else consultantCapOnTimeTemplate">
+                                    <span class="workflow-darkblue--text" *ngIf="!consultant.value.consultantCapOnTimeReporting?.id && !consultant.value.consultantCapOnTimeReportingValue && !consultant.value.consultantCapOnTimeReportingCurrency?.name; else consultantCapOnTimeTemplate">
                                         -
                                     </span>
                                     <ng-template #consultantCapOnTimeTemplate>
                                         <span class="workflow-darkblue--text">
-                                            {{consultant.value.consultantCapOnTimeReportingValue}} {{consultant.value.consultantCapOnTimeReportingCurrency?.name}}
+                                            {{consultant.value.consultantCapOnTimeReporting?.name}} {{consultant.value.consultantCapOnTimeReportingValue}} {{consultant.value.consultantCapOnTimeReportingCurrency?.name}}
                                         </span>
                                     </ng-template>
                                 </div>
@@ -1032,9 +1036,12 @@
                                 Sync to legacy system
                             </button>
                             <div fxLayout="row" fxLayoutAlign="start center" class="u-mb--10">
-                                <span class="icon-cancel u-mr--5">
-                                    x
+                                <span class="icon-done u-mr--5">
+                                    <mat-icon svgIcon="cancel-fill"></mat-icon>
                                 </span>
+                                <!-- <span class="icon-cancel u-mr--5">
+                                    x
+                                </span> -->
                                 <span class="sync-hint-text">
                                     Sync not possible
                                 </span>
@@ -1092,47 +1099,50 @@
                     </ng-container>
 
                     <div fxLayout="column" fxLayoutAlign="start start" class="u-mb--20">
-                        <span class="u-mt--20" [ngClass]="{'workflow-gray--header': readOnlyMode, 'workflow-darkblue--text': !readOnlyMode}">Consultant legal contracts</span>
-                        <div fxLayout="row" fxLayoutAlign="start center" class="u-mb--20 u-mt--10">
-                            <img class="workflow-contracts--consultant-img u-mr--16" src="https://placekitten.com/50/50">
-                            <div fxLayout="column" fxLayoutAlign="start start" class="u-w--100">
-                                <p class="workflow-contracts--consultant-name">
-                                    <!-- {{contractsConsultantsDataForm.consultants.at(i).get('consultantName')?.value}} -->
-                                    Robertsen Oscar
-                                </p>
-                                <div fxLayout="row" fxLayoutAlign="start center" *ngIf="readOnlyMode">
+                        <ng-container formArrayName="consultants">
+                            <div *ngFor="let consultant of contractsSyncDataForm.consultants.controls; let consultantIndex = index" [formGroupName]="consultantIndex" class="workflow-form--consultants u-w--100">
+                                <span class="u-mt--20" [ngClass]="{'workflow-gray--header': readOnlyMode, 'workflow-darkblue--text': !readOnlyMode}">Consultant legal contracts</span>
+                                <div fxLayout="row" fxLayoutAlign="start center" class="u-mb--20 u-mt--10">
+                                    <img class="workflow-contracts--consultant-img u-mr--16" src="https://placekitten.com/50/50">
+                                    <div fxLayout="column" fxLayoutAlign="start start" class="u-w--100">
+                                        <p class="workflow-contracts--consultant-name">
+                                            {{consultant.value?.consultant?.name}}
+                                            <!-- Robertsen Oscar -->
+                                        </p>
+                                        <div fxLayout="row" fxLayoutAlign="start center" *ngIf="readOnlyMode">
+                                            <span class="icon-done u-mr--5">
+                                                <mat-icon svgIcon="completed-icon"></mat-icon>
+                                            </span>
+                                            <div fxLayout="column" fxLayoutAlign="start start">
+                                                <span class="workflow-darkblue--text">Contract module for consultant - complete</span>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div fxlayout="row" fxLayoutAlign="start center" class="u-mb--10" *ngIf="!readOnlyMode">
+                                    <button class="button-outlined  u-mr--20" disabled mat-flat-button>
+                                        Open contract module for consultant
+                                    </button>
+                                    <mat-checkbox *ngIf="activeSideSection === workflowSideSections.ChangeClientPeriod" color="accent" formControlName="newLegalContract" name="newLegalContract" class="black-checkbox u-mt--10">
+                                        New legal contract needed
+                                    </mat-checkbox>
+                                </div>
+        
+                                <div fxLayout="row" fxLayoutAlign="start center" class="u-mb--20" *ngIf="!readOnlyMode">
                                     <span class="icon-done u-mr--5">
                                         <mat-icon svgIcon="completed-icon"></mat-icon>
                                     </span>
-                                    <div fxLayout="column" fxLayoutAlign="start start">
-                                        <span class="workflow-darkblue--text">Contract module for consultant - complete</span>
-                                    </div>
+                                    <span class="sync-hint-text">
+                                        Complete
+                                    </span>
                                 </div>
                             </div>
-                        </div>
-                        <div fxlayout="row" fxLayoutAlign="start center" class="u-mb--10" *ngIf="!readOnlyMode">
-                            <button class="button-outlined  u-mr--20" disabled mat-flat-button>
-                                Open contract module for consultant
-                            </button>
-                            <mat-checkbox *ngIf="activeSideSection === workflowSideSections.ChangeClientPeriod" color="accent" formControlName="newLegalContract" name="newLegalContract" class="black-checkbox u-mt--10">
-                                New legal contract needed
-                            </mat-checkbox>
-                        </div>
+                        </ng-container>
 
-                        <div fxLayout="row" fxLayoutAlign="start center" class="u-mb--20" *ngIf="!readOnlyMode">
-                            <span class="icon-done u-mr--5">
-                                <mat-icon svgIcon="completed-icon"></mat-icon>
-                            </span>
-                            <span class="sync-hint-text">
-                                Complete
-                            </span>
-                        </div>
-
-                        <div fxLayout="row" fxLayoutAlign="start center" class="u-mb--20">
+                        <!-- <div fxLayout="row" fxLayoutAlign="start center" class="u-mb--20">
                             <img class="workflow-contracts--consultant-img u-mr--16" src="https://placekitten.com/50/50">
                             <div fxLayout="column" fxLayoutAlign="start start" class="u-w--100">
                                 <p class="workflow-contracts--consultant-name">
-                                    <!-- {{contractsConsultantsDataForm.consultants.at(i).get('consultantName')?.value}} -->
                                     Van Trier Mia
                                 </p>
                                 <div fxLayout="row" fxLayoutAlign="start center" *ngIf="readOnlyMode">
@@ -1161,7 +1171,8 @@
                             <span class="sync-hint-text">
                                 In progress
                             </span>
-                        </div>
+                        </div> -->
+
                     </div>
                 </div>
             </form>

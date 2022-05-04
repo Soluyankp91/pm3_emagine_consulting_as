@@ -789,6 +789,20 @@ export class WorkflowSalesComponent extends AppComopnentBase implements OnInit {
 
     //#endregion dataFetch
 
+    getDataBasedOnProjectType(event: MatSelectChange) {
+        const projectTypeId = event.value.id;
+        this.showMainSpinner();
+        this._clientPeriodService.projectType(projectTypeId)
+            .pipe(finalize(() => {
+                this.hideMainSpinner();
+            }))
+            .subscribe(result => {
+                this.salesMainDataForm.deliveryType?.setValue(this.findItemById(this.deliveryTypes, result.deliveryTypeId), {emitEvent: false});
+                this.salesMainDataForm.salesType?.setValue(this.findItemById(this.saleTypes, result.salesTypeId), {emitEvent: false});
+                this.salesMainDataForm.margin?.setValue(this.findItemById(this.margins, result.marginId), {emitEvent: false});
+            });
+    }
+
     selectClientSpecialRate(event: any, rate: ClientSpecialRateDto, clientRateMenuTrigger: MatMenuTrigger) {
         event.stopPropagation();
         const formattedRate = new PeriodClientSpecialRateDto();

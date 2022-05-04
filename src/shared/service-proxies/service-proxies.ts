@@ -711,6 +711,60 @@ export class ClientPeriodServiceProxy {
         }
         return _observableOf<string>(null as any);
     }
+
+    /**
+     * @return Success
+     */
+    projectType(projectTypeId: number): Observable<ProjectTypeConfigurationDto> {
+        let url_ = this.baseUrl + "/api/ClientPeriod/project-type/{projectTypeId}";
+        if (projectTypeId === undefined || projectTypeId === null)
+            throw new Error("The parameter 'projectTypeId' must be defined.");
+        url_ = url_.replace("{projectTypeId}", encodeURIComponent("" + projectTypeId));
+        url_ = url_.replace(/[?&]$/, "");
+
+        let options_ : any = {
+            observe: "response",
+            responseType: "blob",
+            headers: new HttpHeaders({
+                "Accept": "text/plain"
+            })
+        };
+
+        return this.http.request("get", url_, options_).pipe(_observableMergeMap((response_ : any) => {
+            return this.processProjectType(response_);
+        })).pipe(_observableCatch((response_: any) => {
+            if (response_ instanceof HttpResponseBase) {
+                try {
+                    return this.processProjectType(response_ as any);
+                } catch (e) {
+                    return _observableThrow(e) as any as Observable<ProjectTypeConfigurationDto>;
+                }
+            } else
+                return _observableThrow(response_) as any as Observable<ProjectTypeConfigurationDto>;
+        }));
+    }
+
+    protected processProjectType(response: HttpResponseBase): Observable<ProjectTypeConfigurationDto> {
+        const status = response.status;
+        const responseBlob =
+            response instanceof HttpResponse ? response.body :
+            (response as any).error instanceof Blob ? (response as any).error : undefined;
+
+        let _headers: any = {}; if (response.headers) { for (let key of response.headers.keys()) { _headers[key] = response.headers.get(key); }}
+        if (status === 200) {
+            return blobToText(responseBlob).pipe(_observableMergeMap(_responseText => {
+            let result200: any = null;
+            let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
+            result200 = ProjectTypeConfigurationDto.fromJS(resultData200);
+            return _observableOf(result200);
+            }));
+        } else if (status !== 200 && status !== 204) {
+            return blobToText(responseBlob).pipe(_observableMergeMap(_responseText => {
+            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+            }));
+        }
+        return _observableOf<ProjectTypeConfigurationDto>(null as any);
+    }
 }
 
 @Injectable()
@@ -10420,7 +10474,10 @@ export class ProjectLineDto implements IProjectLineDto {
     projectName?: string | undefined;
     startDate?: moment.Moment;
     endDate?: moment.Moment;
+    noEndDate?: boolean;
+    differentInvoicingReferenceNumber?: boolean;
     invoicingReferenceNumber?: string | undefined;
+    differentInvoicingReferencePerson?: boolean;
     invoicingReferencePersonId?: number | undefined;
     optionalInvoicingInfo?: string | undefined;
     differentDebtorNumber?: boolean;
@@ -10446,7 +10503,10 @@ export class ProjectLineDto implements IProjectLineDto {
             this.projectName = _data["projectName"];
             this.startDate = _data["startDate"] ? moment(_data["startDate"].toString()) : <any>undefined;
             this.endDate = _data["endDate"] ? moment(_data["endDate"].toString()) : <any>undefined;
+            this.noEndDate = _data["noEndDate"];
+            this.differentInvoicingReferenceNumber = _data["differentInvoicingReferenceNumber"];
             this.invoicingReferenceNumber = _data["invoicingReferenceNumber"];
+            this.differentInvoicingReferencePerson = _data["differentInvoicingReferencePerson"];
             this.invoicingReferencePersonId = _data["invoicingReferencePersonId"];
             this.optionalInvoicingInfo = _data["optionalInvoicingInfo"];
             this.differentDebtorNumber = _data["differentDebtorNumber"];
@@ -10472,7 +10532,10 @@ export class ProjectLineDto implements IProjectLineDto {
         data["projectName"] = this.projectName;
         data["startDate"] = this.startDate ? this.startDate.format('YYYY-MM-DD') : <any>undefined;
         data["endDate"] = this.endDate ? this.endDate.format('YYYY-MM-DD') : <any>undefined;
+        data["noEndDate"] = this.noEndDate;
+        data["differentInvoicingReferenceNumber"] = this.differentInvoicingReferenceNumber;
         data["invoicingReferenceNumber"] = this.invoicingReferenceNumber;
+        data["differentInvoicingReferencePerson"] = this.differentInvoicingReferencePerson;
         data["invoicingReferencePersonId"] = this.invoicingReferencePersonId;
         data["optionalInvoicingInfo"] = this.optionalInvoicingInfo;
         data["differentDebtorNumber"] = this.differentDebtorNumber;
@@ -10491,7 +10554,10 @@ export interface IProjectLineDto {
     projectName?: string | undefined;
     startDate?: moment.Moment;
     endDate?: moment.Moment;
+    noEndDate?: boolean;
+    differentInvoicingReferenceNumber?: boolean;
     invoicingReferenceNumber?: string | undefined;
+    differentInvoicingReferencePerson?: boolean;
     invoicingReferencePersonId?: number | undefined;
     optionalInvoicingInfo?: string | undefined;
     differentDebtorNumber?: boolean;
@@ -10501,6 +10567,50 @@ export interface IProjectLineDto {
     modifiedById?: number | undefined;
     modificationDate?: moment.Moment | undefined;
     consultantInsuranceOptionId?: number | undefined;
+}
+
+export class ProjectTypeConfigurationDto implements IProjectTypeConfigurationDto {
+    salesTypeId?: number;
+    deliveryTypeId?: number;
+    marginId?: number;
+
+    constructor(data?: IProjectTypeConfigurationDto) {
+        if (data) {
+            for (var property in data) {
+                if (data.hasOwnProperty(property))
+                    (<any>this)[property] = (<any>data)[property];
+            }
+        }
+    }
+
+    init(_data?: any) {
+        if (_data) {
+            this.salesTypeId = _data["salesTypeId"];
+            this.deliveryTypeId = _data["deliveryTypeId"];
+            this.marginId = _data["marginId"];
+        }
+    }
+
+    static fromJS(data: any): ProjectTypeConfigurationDto {
+        data = typeof data === 'object' ? data : {};
+        let result = new ProjectTypeConfigurationDto();
+        result.init(data);
+        return result;
+    }
+
+    toJSON(data?: any) {
+        data = typeof data === 'object' ? data : {};
+        data["salesTypeId"] = this.salesTypeId;
+        data["deliveryTypeId"] = this.deliveryTypeId;
+        data["marginId"] = this.marginId;
+        return data;
+    }
+}
+
+export interface IProjectTypeConfigurationDto {
+    salesTypeId?: number;
+    deliveryTypeId?: number;
+    marginId?: number;
 }
 
 export enum RequestProjectTypeValue {

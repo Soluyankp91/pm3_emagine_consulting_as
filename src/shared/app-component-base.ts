@@ -1,6 +1,7 @@
 import { Injector } from "@angular/core";
 import { AbstractControl } from "@angular/forms";
 import { NgxSpinnerService } from "ngx-spinner";
+import { environment } from "src/environments/environment";
 import { API_BASE_URL, EnumEntityTypeDto } from "./service-proxies/service-proxies";
 
 export abstract class AppComopnentBase {
@@ -96,6 +97,13 @@ export abstract class AppComopnentBase {
 
     hideMainSpinner(): void {
         this.spinnerService.hide();
+    }
+
+    consultantProfileUrl(fileToken: string): string {
+        if (!fileToken) {
+            return 'assets/common/images/no-img-uploaded.svg';
+        }
+        return `${environment.blobStorageUrl}/api/Consultant/ProfilePicture/${fileToken}`;
     }
 
 }

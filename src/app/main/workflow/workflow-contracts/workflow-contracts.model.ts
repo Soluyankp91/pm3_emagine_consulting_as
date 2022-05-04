@@ -48,7 +48,8 @@ export class WorkflowContractsSyncForm extends FormGroup {
             projectDescription: new FormControl(null),
             discounts: new FormControl(null),
             remarks: new FormControl(null),
-            manualCheckbox: new FormControl(false)
+            manualCheckbox: new FormControl(false),
+            consultants: new FormArray([])
         });
     }
 
@@ -70,12 +71,18 @@ export class WorkflowContractsSyncForm extends FormGroup {
     get manualCheckbox() {
         return this.get('manualCheckbox');
     }
+    get consultants() {
+        return this.get('consultants') as FormArray;
+    }
 }
 
 export class WorkflowContractsClientDataForm extends FormGroup {
     constructor() {
         super({
-            capOnTimeReporting: new FormControl(null),
+            // capOnTimeReporting: new FormControl(null),
+            clientTimeReportingCapId: new FormControl(null),
+            clientTimeReportingCapMaxValue: new FormControl(null),
+            clientTimeReportingCapCurrencyId: new FormControl(null),
 
             specialContractTerms: new FormControl(null),
             noSpecialContractTerms: new FormControl(null),
@@ -85,8 +92,17 @@ export class WorkflowContractsClientDataForm extends FormGroup {
         });
     }
 
-    get capOnTimeReporting() {
-        return this.get('capOnTimeReporting');
+    // get capOnTimeReporting() {
+    //     return this.get('capOnTimeReporting');
+    // }
+    get clientTimeReportingCapId() {
+        return this.get('clientTimeReportingCapId');
+    }
+    get clientTimeReportingCapMaxValue() {
+        return this.get('clientTimeReportingCapMaxValue');
+    }
+    get clientTimeReportingCapCurrencyId() {
+        return this.get('clientTimeReportingCapCurrencyId');
     }
     get specialContractTerms() {
         return this.get('specialContractTerms');
@@ -103,6 +119,18 @@ export class WorkflowContractsClientDataForm extends FormGroup {
 }
 
 export class WorkflowContractsConsultantsDataForm extends FormGroup {
+    constructor() {
+        super({
+            consultants: new FormArray([])
+        })
+
+    }
+    get consultants() {
+        return this.get('consultants') as FormArray;
+    }
+}
+
+export class WorkflowConsultantsLegalContractForm extends FormGroup {
     constructor() {
         super({
             consultants: new FormArray([])

@@ -72,14 +72,14 @@
                         <div fxLayout="row" fxLayoutAlign="start center" class="u-mb--20">
                             <img class="workflow-finances--consultant-img u-mr--16" src="https://placekitten.com/50/50">
                             <p class="workflow-finances--consultant-name">
-                                {{financesConsultantsForm.consultants.at(i).get('consultantName')?.value}}
+                                {{consultant.value?.consultant?.name}}
                             </p>
                         </div>
 
                         <ng-container *ngIf="readOnlyMode; else checkboxInvoicingInput">
                             <div fxLayout="row" fxLayoutAlign="start center" class="u-mb--10">
                                 <span class="icon-done u-mr--5">
-                                    <mat-icon [svgIcon]="consultant.value?.checkInvoicingSettingsOnConsultant ? 'completed-icon' : 'in-progress-icon'"></mat-icon>
+                                    <mat-icon [svgIcon]="consultant.value?.checkInvoicingSettingsOnConsultant ? 'completed-icon' : 'cancel-fill'"></mat-icon>
                                 </span>
                                 <div fxLayout="column" fxLayoutAlign="start start">
                                     <span class="workflow-readonly--blue-text-bold">Checked invoicing settings on consultant</span>
