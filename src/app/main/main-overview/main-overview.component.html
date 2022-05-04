@@ -127,7 +127,7 @@
                             {{item?.origin?.firstName + ' ' + item?.origin?.lastName}}
                         </ng-template>
                     </ngx-gantt-column>
-                    <ngx-gantt-column name="SalesManager" width="100px">
+                    <ngx-gantt-column name="{{'Sales' + ' ' + 'manager'}}" width="110px">
                         <ng-template #cell let-item="item">
                             <div fxLayout="row" fxLayoutAlign="flex-end center" fxLayoutGap="15px" class="u-w-100">
                                 <img class="manager-search--photo" src="../../../../assets/common/images/no-img.svg"/>

@@ -38,13 +38,21 @@
         <div fxLayout="row" fxLayoutAlign="start center" class="workflow-overview--chart-container" fxFlexFill>
             <ngx-gantt #gantt [items]="items" [viewOptions]="viewOptions" [viewType]="viewType">
                 <ngx-gantt-table>
-                    <ngx-gantt-column name="{{'Client' + ' ' + 'name'}}" width="250px">
+                    <ngx-gantt-column name="" width="250px">
                         <ng-template #cell let-item="item">
                             <div fxLayout="row" fxLayoutAlign="start center" fxLayoutGap="15px" class="u-w-100">
-                                <img class="manager-search--photo" src="../../../../assets/common/images/no-img.svg"/>
-                                <span>
-                                    {{item?.origin?.firstName + ' ' + item?.origin?.lastName}}
-                                </span>
+                                <ng-container *ngIf="item.title !== ''; else childTemplate">
+                                    <img class="manager-search--photo" src="../../../../assets/common/images/no-img.svg"/>
+                                    <span class="text-truncate-ellipsis workflow-overview--client-name" [matTooltip]="item?.title">
+                                        {{item?.title}}
+                                    </span>
+                                </ng-container>
+                                <ng-template #childTemplate>
+                                    <img class="manager-search--photo" src="../../../../assets/common/images/no-img.svg"/>
+                                    <span>
+                                        {{item?.origin?.firstName + ' ' + item?.origin?.lastName}}
+                                    </span>
+                                </ng-template>
                             </div>
                         </ng-template>
                     </ngx-gantt-column>
