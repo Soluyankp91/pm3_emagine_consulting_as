@@ -14,3 +14,29 @@
         }
     }
 }
+
+.general-snackbar {
+    color: $white-color !important;
+    word-break: break-all;
+    border-radius: 15px !important;
+    min-width: 22vw !important;
+
+    .mat-simple-snackbar-action {
+        color: $dark-grey-color;
+        span {
+            text-transform: uppercase;
+        }
+    }
+    &-info {
+        background-color: $medium-grey-color !important;
+    }
+    &-warning {
+        background-color: $yellow-color !important;
+    }
+    &-success {
+        background-color: $green-color !important;
+    }
+    &-error {
+        background-color: $red-color !important;
+    }
+}

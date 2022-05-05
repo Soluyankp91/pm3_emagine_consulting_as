@@ -6,7 +6,7 @@ import { Subject } from 'rxjs';
 import { finalize, takeUntil } from 'rxjs/operators';
 import { InternalLookupService } from 'src/app/shared/common/internal-lookup.service';
 import { AppComopnentBase } from 'src/shared/app-component-base';
-import { ClientPeriodContractsDataDto, WorkflowProcessType, WorkflowServiceProxy, ClientPeriodServiceProxy, ConsultantContractsDataDto, ConsultantSalesDataDto, ContractsClientDataDto, ContractsMainDataDto, EnumEntityTypeDto, PeriodClientSpecialFeeDto, PeriodClientSpecialRateDto, PeriodConsultantSpecialFeeDto, PeriodConsultantSpecialRateDto, ProjectLineDto, ConsultantTerminationContractDataCommandDto, WorkflowTerminationContractDataCommandDto, ConsultantTerminationContractDataQueryDto } from 'src/shared/service-proxies/service-proxies';
+import { ClientPeriodContractsDataDto, WorkflowProcessType, WorkflowServiceProxy, ClientPeriodServiceProxy, ConsultantContractsDataDto, ConsultantSalesDataDto, ContractsClientDataDto, ContractsMainDataDto, EnumEntityTypeDto, PeriodClientSpecialFeeDto, PeriodClientSpecialRateDto, PeriodConsultantSpecialFeeDto, PeriodConsultantSpecialRateDto, ProjectLineDto, ConsultantTerminationContractDataCommandDto, WorkflowTerminationContractDataCommandDto, ConsultantTerminationContractDataQueryDto, ContractsServiceProxy } from 'src/shared/service-proxies/service-proxies';
 import { WorkflowConsultantActionsDialogComponent } from '../workflow-consultant-actions-dialog/workflow-consultant-actions-dialog.component';
 import { WorkflowDataService } from '../workflow-data.service';
 import { ConsultantDiallogAction } from '../workflow-sales/workflow-sales.model';
@@ -82,7 +82,8 @@ export class WorkflowContractsComponent extends AppComopnentBase implements OnIn
         private _clientPeriodService: ClientPeriodServiceProxy,
         private _workflowDataService: WorkflowDataService,
         private _internalLookupService: InternalLookupService,
-        private _workflowServiceProxy: WorkflowServiceProxy
+        private _workflowServiceProxy: WorkflowServiceProxy,
+        private _contractsService: ContractsServiceProxy
     ) {
         super(injector);
         this.contractsMainForm = new WorkflowContractsMainForm();
@@ -95,7 +96,7 @@ export class WorkflowContractsComponent extends AppComopnentBase implements OnIn
             .pipe(takeUntil(this._unsubscribe))
             .subscribe((value: boolean) => {
                 // NB: boolean SAVE DRAFT or COMPLETE in future
-                this.saveContractsStep();
+                this.saveContractsStep(value);
             });
     }
 
@@ -324,7 +325,7 @@ export class WorkflowContractsComponent extends AppComopnentBase implements OnIn
             });
     }
 
-    saveContractsStep() {
+    saveContractsStep(isDraft: boolean) {
         let input = new ClientPeriodContractsDataDto();
         input.clientData = new ContractsClientDataDto();
 
@@ -449,13 +450,23 @@ export class WorkflowContractsComponent extends AppComopnentBase implements OnIn
             }
         }
         this.showMainSpinner();
-        this._clientPeriodService.contractsPut(this.clientPeriodId!, input)
-            .pipe(finalize(() => {
-                this.hideMainSpinner();
-            }))
-            .subscribe(result => {
+        if (isDraft) {
+            this._clientPeriodService.contractsPut(this.clientPeriodId!, input)
+                .pipe(finalize(() => {
+                    this.hideMainSpinner();
+                }))
+                .subscribe(result => {
+    
+                });
+        } else {
+            this._contractsService.editFinish(this.clientPeriodId!, input)
+                .pipe(finalize(() => {
+                    this.hideMainSpinner();
+                }))
+                .subscribe(result => {
 
-            });
+                })
+        }
     }
 
     get readOnlyMode() {
