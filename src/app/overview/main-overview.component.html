@@ -33,66 +33,6 @@
         </div>
     </div>
     <div fxLayout="column" fxLayoutAlign="start start" class="main-overview--content">
-        <!-- <div fxLayout="column" fxLayoutAlign="start start" fxFlex="50%"
-            class="main-overview--consultants-table u-w--100">
-            <mat-table #table [dataSource]="clientsDataSource" class="white-table u-w--100" matSort matSortStart="asc"
-                (matSortChange)="sortChanged($event)">
-                <ng-container matColumnDef="process">
-                    <mat-header-cell *matHeaderCellDef mat-sort-header fxFlex="10%"></mat-header-cell>
-                    <mat-cell *matCellDef="let row" fxFlex="10%">
-                        <mat-icon [ngClass]="detectStatusColor(row?.status?.value)">fiber_manual_record</mat-icon>
-                        <span class="text-truncate-ellipsis" [matTooltip]="row?.status?.name">
-                        </span>
-                    </mat-cell>
-                </ng-container>
-                <ng-container matColumnDef="client">
-                    <mat-header-cell *matHeaderCellDef mat-sort-header fxFlex="40%"> Client </mat-header-cell>
-                    <mat-cell *matCellDef="let row" fxFlex="40%">
-                        <span class="text-truncate-ellipsis text-bold" [matTooltip]="row?.client">
-                            {{row?.client}}
-                        </span>
-                    </mat-cell>
-                </ng-container>
-                <ng-container matColumnDef="consultants">
-                    <mat-header-cell *matHeaderCellDef mat-sort-header fxFlex="35%"> Consultants </mat-header-cell>
-                    <mat-cell *matCellDef="let row" fxFlex="35%">
-                        <span class="text-truncate-ellipsis" [matTooltip]="row?.firstName + ' ' + row?.lastName">
-                            {{row?.firstName + ' ' + row?.lastName}}
-                        </span>
-                    </mat-cell>
-                </ng-container>
-                <ng-container matColumnDef="salesManager">
-                    <mat-header-cell *matHeaderCellDef mat-sort-header fxFlex="12%"> Sales manager </mat-header-cell>
-                    <mat-cell *matCellDef="let row" fxFlex="12%">
-                        <span class="text-truncate-ellipsis" [matTooltip]="row?.salesManager">
-                            <img class="manager-search--photo" src="../../../../assets/common/images/no-img.svg"
-                                [alt]="row?.salesManager" />
-                        </span>
-                    </mat-cell>
-                </ng-container>
-                <ng-container matColumnDef="action">
-                    <mat-header-cell *matHeaderCellDef mat-sort-header fxFlex="3%"></mat-header-cell>
-                    <mat-cell *matCellDef="let row" fxFlex="3%">
-                        <button mat-icon-button matTooltip="Go to workflow">
-                            <mat-icon class="icon-arrow-rotate180" svgIcon="arrow"></mat-icon>
-                        </button>
-                    </mat-cell>
-                </ng-container>
-                <mat-header-row *matHeaderRowDef="clientDisplayColumns"></mat-header-row>
-                <mat-row *matRowDef="let row; columns: clientDisplayColumns;" class="mat-elevation-z0"></mat-row>
-            </mat-table>
-            <div class="spinner-container" *ngIf="isDataLoading">
-                <mat-spinner [diameter]="50"></mat-spinner>
-            </div>
-            <div class="results-not-found" *ngIf="totalCount === 0 && !isDataLoading">
-                RESULTS NOT FOUND
-            </div>
-            <div class="pagination-contaier">
-                <mat-paginator #clientsPaginator [length]="totalCount" [pageSize]="deafultPageSize"
-                    [pageSizeOptions]="pageSizeOptions" [showFirstLastButtons]="true" (page)="pageChanged($event)">
-                </mat-paginator>
-            </div>
-        </div> -->
         <div fxLayout="row" fxLayoutAlign="flex-end start" class="u-w--100">
             <mat-form-field appearance="fill" class="main-overview--filter-select formFieldNoMarginPadding filter-select">
                 <mat-select [formControl]="viewType" name="item">
