@@ -1,21 +1,53 @@
 import { NgModule } from '@angular/core';
-import { RouterModule, Routes } from '@angular/router';
-import { MsalGuard, MsalRedirectComponent } from '@azure/msal-angular';
-import { LoginComponent } from './login/login.component';
-import { LoginGuard } from './login/login.guard';
+import { RouterModule } from '@angular/router';
+import { AppComponent } from './app.component';
+import { DashboardComponent } from './dashboard/dashboard.component';
 
 @NgModule({
-  imports: [RouterModule.forRoot(
+  imports: [RouterModule.forChild(
     [
-        { path: '', redirectTo: 'login', pathMatch: 'full' },
-        { path: 'login', component: LoginComponent, canActivate: [LoginGuard] },
-        {
-            path: 'main',
-            loadChildren: () => import('../app/main/main.module').then(m => m.MainModule),
-            data: { preload: true },
-            canLoad: [MsalGuard]
-        },
-        { path: '**', redirectTo: 'login' }
+      {
+        path: '',
+        component: AppComponent,
+        // canActivate: [MsalGuard],
+        // canActivateChild: [MsalGuard],
+        children: [
+          {
+            path: '', redirectTo: 'dashboard', pathMatch: 'full'
+          },
+          {
+            path: 'dashboard', component: DashboardComponent
+          },
+          {
+            path: 'overview',
+            loadChildren:() => import('../app/overview/overview.module').then(m => m.OverviewModule),
+            data: {preload: true},
+            // canLoad: [MsalGuard]
+          },
+          {
+            path: 'clients',
+            loadChildren:() => import('../app/client/client.module').then(m => m.ClientModule),
+            data: {preload: true},
+            // canLoad: [MsalGuard]
+          },
+          {
+            path: 'workflow',
+            loadChildren:() => import('../app/workflow/workflow.module').then(m => m.WorkflowModule),
+            data: {preload: true},
+            // canLoad: [MsalGuard]
+          },
+          {
+            path: '',
+            children: [
+                { path: '', redirectTo: '/app/dashboard', pathMatch: 'full' }
+
+            ]
+          },
+          {
+              path: '**', redirectTo: ''
+          }
+        ]
+      }
     ]
   )],
   exports: [RouterModule]

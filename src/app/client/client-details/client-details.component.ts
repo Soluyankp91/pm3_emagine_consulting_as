@@ -68,6 +68,6 @@ export class ClientDetailsComponent extends AppComopnentBase implements OnInit {
     }
 
     navigateBack() {
-        this.router.navigate(['/main/clients']);
+        this.router.navigate(['/app/clients']);
     }
 }

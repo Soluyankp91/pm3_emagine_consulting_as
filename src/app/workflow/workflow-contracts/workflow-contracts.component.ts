@@ -381,15 +381,13 @@ export class WorkflowContractsComponent extends AppComopnentBase implements OnIn
                 let consultantData = new ConsultantContractsDataDto();
                 consultantData.consultantPeriodId = consultant.consultantPeriodId;
                 consultantData.employmentTypeId = consultant.consultantType?.id;
-                consultantData.consultantId = consultant.consultnatId;
+                consultantData.consultantId = consultant.consultantId;
                 consultantData.nameOnly = consultant.nameOnly;
                 consultantData.consultantTimeReportingCapId = consultant.consultantCapOnTimeReporting?.id;
                 consultantData.consultantTimeReportingCapMaxValue = consultant.consultantCapOnTimeReportingValue;
                 consultantData.consultantTimeReportingCapCurrencyId = consultant.consultantCapOnTimeReportingCurrency?.id;
                 consultantData.noSpecialContractTerms = consultant.noSpecialContractTerms;
                 consultantData.specialContractTerms = consultant.specialContractTerms;
-                consultantData.noSpecialRate = consultant.consultantPeriodId;
-                consultantData.noSpecialFee = consultant.consultantPeriodId;
     
                 consultantData.periodConsultantSpecialFees = new Array<PeriodConsultantSpecialFeeDto>();
                 if (consultant.clientFees?.length) {
@@ -407,6 +405,7 @@ export class WorkflowContractsComponent extends AppComopnentBase implements OnIn
                         consultantData.periodConsultantSpecialFees.push(consultantFee);
                     }
                 }
+                consultantData.noSpecialFee = consultant.clientFees?.length === 0;
                 consultantData.periodConsultantSpecialRates = new Array<PeriodConsultantSpecialRateDto>();
                 if (consultant.clientSpecialRates?.length) {
                     for (let specialRate of consultant.clientSpecialRates) {
@@ -423,6 +422,7 @@ export class WorkflowContractsComponent extends AppComopnentBase implements OnIn
                         consultantData.periodConsultantSpecialRates.push(consultantRate);
                     }
                 }
+                consultantData.noSpecialRate = consultant.clientSpecialRates?.length === 0;
                 consultantData.projectLines = new Array<ProjectLineDto>();
                 if (consultant.projectLines?.length) {
                     for (let projectLine of consultant.projectLines) {
@@ -520,7 +520,8 @@ export class WorkflowContractsComponent extends AppComopnentBase implements OnIn
     addConsultantDataToForm(consultant: ConsultantContractsDataDto, index: number) {
         // TODO: add missing properties, id, employmentType, etc.
         const form = this._fb.group({
-            consultnatId: new FormControl(consultant.consultantId),
+            consultantPeriodId: new FormControl(consultant.consultantPeriodId),
+            consultantId: new FormControl(consultant.consultantId),
             consultant: new FormControl(consultant.consultant),
             nameOnly: new FormControl(consultant.nameOnly),
             consultantType: new FormControl(this.findItemById(this.employmentTypes, consultant.employmentTypeId)),
@@ -551,7 +552,7 @@ export class WorkflowContractsComponent extends AppComopnentBase implements OnIn
 
     addConsultantLegalContract(consultant: ConsultantContractsDataDto) {
         const form = this._fb.group({
-            consultnatId: new FormControl(consultant.consultantId),
+            consultantId: new FormControl(consultant.consultantId),
             consultant: new FormControl(consultant.consultant)
         });
         this.contractsSyncDataForm.consultants.push(form);

@@ -6,16 +6,16 @@ import { Observable, Subject } from 'rxjs';
 import { takeUntil, debounceTime, switchMap, finalize, map } from 'rxjs/operators';
 import { AppConsts } from 'src/shared/AppConsts';
 import { ClientListItemDto, ClientsServiceProxy, EmployeeDto, EnumServiceProxy, LookupServiceProxy } from 'src/shared/service-proxies/service-proxies';
-import { SelectableCountry, SelectableEmployeeDto, SelectableIdNameDto, StatusList } from './client-list.model';
+import { SelectableCountry, SelectableEmployeeDto, SelectableIdNameDto, StatusList } from './client.model';
 import { AppComopnentBase } from 'src/shared/app-component-base';
 
 @Component({
-    selector: 'app-client-list',
-    templateUrl: './client-list.component.html',
-    styleUrls: ['./client-list.component.scss']
+    selector: 'app-client',
+    templateUrl: './client.component.html',
+    styleUrls: ['./client.component.scss']
 })
 
-export class ClientListComponent extends AppComopnentBase implements OnInit, OnDestroy {
+export class ClientComponent extends AppComopnentBase implements OnInit, OnDestroy {
     clientFilter = new FormControl();
     accountManagerFilter = new FormControl();
     clientsList: any[] = [];
@@ -230,7 +230,7 @@ export class ClientListComponent extends AppComopnentBase implements OnInit, OnD
     }
 
     navigateToClientDetails(clientId: number): void {
-        this.router.navigate(['/main/clients', clientId]);
+        this.router.navigate(['/app/clients', clientId]);
     }
 
     restoreWrongfullyDeleted(item: ClientListItemDto) {

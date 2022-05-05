@@ -1,9 +1,9 @@
 import { APP_INITIALIZER, NgModule } from '@angular/core';
-import { BrowserModule, DomSanitizer } from '@angular/platform-browser';
+import { DomSanitizer } from '@angular/platform-browser';
 
 import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
-import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
+// import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { AppCommonModule } from './shared/common/app-common.module';
 import { MatIconRegistry } from '@angular/material/icon';
 import { HttpClientModule, HTTP_INTERCEPTORS } from '@angular/common/http';
@@ -16,7 +16,8 @@ import { LoginGuard } from './login/login.guard';
 import { LoginComponent } from './login/login.component';
 import { environment } from 'src/environments/environment';
 import { NgxSpinnerModule, NgxSpinnerService } from 'ngx-spinner';
-import { NgxGanttModule } from '@worktile/gantt';
+// import { NgxGanttModule } from '@worktile/gantt';
+import { CommonModule } from '@angular/common';
 
 const isIE = window.navigator.userAgent.indexOf("MSIE ") > -1 || window.navigator.userAgent.indexOf("Trident/") > -1; // Remove this line to use Angular Universal
 
@@ -85,15 +86,15 @@ export function getRemoteServiceBaseUrl(): string {
         LoginComponent
     ],
     imports: [
-        BrowserModule,
+        CommonModule,
         AppRoutingModule,
-        BrowserAnimationsModule,
+        // BrowserAnimationsModule,
         HttpClientModule,
         AppCommonModule,
         ServiceProxyModule,
         MsalModule,
         NgxSpinnerModule,
-        NgxGanttModule
+        // NgxGanttModule
     ],
     providers: [
         LoginGuard,

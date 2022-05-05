@@ -77,6 +77,89 @@
     </mat-drawer-container>
 </mat-sidenav-container> -->
 
-<router-outlet></router-outlet>
+<!-- <router-outlet></router-outlet> -->
+
+
+<mat-sidenav-container class="main-sidenav-container" fxFlexFill fixedInViewport="true">
+    <mat-drawer-container class="main-drawer-container" fxLayout="row">
+        <mat-drawer mode="side" opened class="main-drawer-sidebar" fxLayout="column" fxLayoutAlign="end center">
+            <nav class="main-navigation">
+                <ul class="main-navigation--list">
+                    <li class="main-navigation--list-item" routerLink="/app/dashboard" routerLinkActive="active"
+                        [routerLinkActiveOptions]="{exact: true}">
+                        <mat-icon svgIcon="dashboard-menu"></mat-icon>
+                        <span class="main-navigation--list-item__name">
+                            Home
+                        </span>
+                    </li>
+                    <li class="main-navigation--list-item" routerLink="/app/overview" routerLinkActive="active">
+                        <mat-icon svgIcon="overview-menu"></mat-icon>
+                        <span class="main-navigation--list-item__name">
+                            Main overview
+                        </span>
+                    </li>
+                    <li class="main-navigation--list-item" routerLink="/app/clients" routerLinkActive="active">
+                        <mat-icon svgIcon="client-list-menu"></mat-icon>
+                        <span class="main-navigation--list-item__name">
+                            Client list
+                        </span>
+                    </li>
+                    <!-- <li class="main-navigation--list-item" routerLink="/main/sourcing-shortcut" routerLinkActive="active"> -->
+                    <li class="main-navigation--list-item" (click)="openSourcingApp()">
+                        <mat-icon svgIcon="sourcing-shortcut-menu"></mat-icon>
+                        <span class="main-navigation--list-item__name">
+                            Sourcing 3.0 shortcut
+                        </span>
+                    </li>
+                    <li class="main-navigation--list-item" routerLink="/app/workflow" routerLinkActive="active">
+                        <mat-icon svgIcon="workflow-menu"></mat-icon>
+                        <span class="main-navigation--list-item__name">
+                            Workflow / RF
+                        </span>
+                    </li>
+                    <!-- FIXME: COMMENTED OUT FOR PRESENTATION -->
+                    <!-- <li class="main-navigation--list-item" routerLink="/main/statistics" routerLinkActive="active">
+                        <mat-icon svgIcon="statistic-menu"></mat-icon>
+                        <span class="main-navigation--list-item__name">
+                            Statistics
+                        </span>
+                    </li>
+                    <li class="main-navigation--list-item" routerLink="/main/time-tracking" routerLinkActive="active">
+                        <mat-icon svgIcon="time-tracking-menu"></mat-icon>
+                        <span class="main-navigation--list-item__name">
+                            Time tracking
+                        </span>
+                    </li>
+                    <li class="main-navigation--list-item" routerLink="/main/evaluation" routerLinkActive="active">
+                        <mat-icon svgIcon="evaluation-menu"></mat-icon>
+                        <span class="main-navigation--list-item__name">
+                            QA / Eval
+                        </span>
+                    </li>
+                    <li class="main-navigation--list-item" routerLink="/main/invoicing" routerLinkActive="active">
+                        <mat-icon svgIcon="invoicing-menu"></mat-icon>
+                        <span class="main-navigation--list-item__name">
+                            Invoicing
+                        </span>
+                    </li>
+                    <li class="main-navigation--list-item" routerLink="/main/contracts" routerLinkActive="active">
+                        <mat-icon svgIcon="contracts-menu"></mat-icon>
+                        <span class="main-navigation--list-item__name">
+                            Contracts
+                        </span>
+                    </li> -->
+                </ul>
+            </nav>
+        </mat-drawer>
+        <mat-drawer-content class="main-drawer-content" fxLayout="column">
+            <div class="main-content">
+                <div class="full-height router-content">
+                    <router-outlet></router-outlet>
+                </div>
+            </div>
+        </mat-drawer-content>
+    </mat-drawer-container>
+</mat-sidenav-container>
+
 <ngx-spinner type="ball-clip-rotate" size="medium" color="#17A297">
 </ngx-spinner>

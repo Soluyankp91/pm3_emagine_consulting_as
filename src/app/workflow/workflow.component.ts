@@ -111,7 +111,7 @@ export class WorkflowComponent extends AppComopnentBase implements OnInit, OnDes
     }
 
     navigateToWorkflowDetails(workflowId: string): void {
-        this.router.navigate(['/main/workflow', workflowId]);
+        this.router.navigate(['/app/workflow', workflowId]);
     }
 
     createWorkflow() {
