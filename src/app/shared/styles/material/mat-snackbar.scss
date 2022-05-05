@@ -16,8 +16,7 @@
 }
 
 .general-snackbar {
-    color: $dark-grey-color !important;
-    background-color: $yellow-color !important;
+    color: $white-color !important;
     word-break: break-all;
     border-radius: 15px !important;
     min-width: 22vw !important;
@@ -29,15 +28,15 @@
         }
     }
     &-info {
-
+        background-color: $medium-grey-color !important;
     }
     &-warning {
-        
+        background-color: $yellow-color !important;
     }
     &-success {
-        
+        background-color: $green-color !important;
     }
     &-error {
-        
+        background-color: $red-color !important;
     }
 }
