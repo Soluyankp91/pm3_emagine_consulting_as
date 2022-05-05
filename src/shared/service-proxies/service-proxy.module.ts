@@ -18,6 +18,7 @@ import * as ApiServiceProxies from './service-proxies';
         ApiServiceProxies.SpecialRatesServiceProxy,
         ApiServiceProxies.SpecialFeesServiceProxy,
         ApiServiceProxies.SalesServiceProxy,
+        ApiServiceProxies.ContractsServiceProxy,
         {
             provide: HTTP_INTERCEPTORS,
             useClass: GlobalHttpInterceptorService,

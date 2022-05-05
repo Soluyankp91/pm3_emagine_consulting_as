@@ -1,16 +1,45 @@
 import { Injector } from "@angular/core";
 import { AbstractControl } from "@angular/forms";
+import { MatSnackBar } from "@angular/material/snack-bar";
 import { NgxSpinnerService } from "ngx-spinner";
 import { environment } from "src/environments/environment";
 import { API_BASE_URL, EnumEntityTypeDto } from "./service-proxies/service-proxies";
 
+export enum NotifySeverity {
+    Info = 1,
+    Warning = 2,
+    Success = 3,
+    Error = 4
+}
+
 export abstract class AppComopnentBase {
     apiUrl: string;
     spinnerService: NgxSpinnerService;
+    matSnackbar: MatSnackBar;
     constructor(injector: Injector) {
         this.apiUrl = injector.get(API_BASE_URL);
         this.spinnerService = injector.get(NgxSpinnerService);
-        
+        this.matSnackbar = injector.get(MatSnackBar);
+    }
+
+    showNotify(severity: number, text: string, buttonText: string) {
+        const className = this.mapSeverity(severity);
+        this.matSnackbar.open(text, buttonText, { duration: 20000, panelClass: [className, 'general-snackbar'] });
+    }
+
+    mapSeverity(severity: number) {
+        switch (severity) {
+            case NotifySeverity.Info:
+                return 'general-snackbar-info';
+            case NotifySeverity.Warning:
+                return 'general-snackbar-warning';
+            case NotifySeverity.Success:
+                return 'general-snackbar-success';
+            case NotifySeverity.Error:
+                return 'general-snackbar-error';
+            default:
+                return '';
+        }
     }
 
     mapListByProperty(list: any[], prop: string) {

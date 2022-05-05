@@ -11,7 +11,7 @@ import { Observable, of, Subject } from 'rxjs';
 import { debounceTime, finalize, map, switchMap, takeUntil } from 'rxjs/operators';
 import { InternalLookupService } from 'src/app/shared/common/internal-lookup.service';
 import { ConfirmationDialogComponent } from 'src/app/shared/components/confirmation-dialog/confirmation-dialog.component';
-import { AppComopnentBase } from 'src/shared/app-component-base';
+import { AppComopnentBase, NotifySeverity } from 'src/shared/app-component-base';
 import { ClientPeriodSalesDataDto, ClientPeriodServiceProxy, ClientRateDto, CommissionDto, ConsultantRateDto, ConsultantSalesDataDto, ContractSignerDto, EmployeeDto, EnumEntityTypeDto, EnumServiceProxy, LookupServiceProxy, PeriodClientSpecialFeeDto, PeriodClientSpecialRateDto, SalesClientDataDto, SalesMainDataDto, WorkflowProcessType, WorkflowServiceProxy, ConsultantResultDto, ClientResultDto, ContactResultDto, ConsultantTerminationSalesDataCommandDto, WorkflowTerminationSalesDataCommandDto, PeriodConsultantSpecialFeeDto, PeriodConsultantSpecialRateDto, SalesServiceProxy, ClientSpecialRateDto, ClientsServiceProxy, ClientSpecialFeeDto } from 'src/shared/service-proxies/service-proxies';
 import { WorkflowConsultantActionsDialogComponent } from '../workflow-consultant-actions-dialog/workflow-consultant-actions-dialog.component';
 import { WorkflowDataService } from '../workflow-data.service';
@@ -1400,8 +1400,8 @@ export class WorkflowSalesComponent extends AppComopnentBase implements OnInit {
         input.salesClientData.pdcInvoicingEntityId = this.salesClientDataForm.pdcInvoicingEntityId?.value?.id;
 
         input.salesClientData.clientRate = new ClientRateDto();
-        input.salesClientData.clientRate.isTimeBasedRate = this.salesClientDataForm.clientRateAndInvoicing?.value?.id === 2; // 2: 'Time based';
-        input.salesClientData.clientRate.isFixedRate = this.salesClientDataForm.clientRateAndInvoicing?.value?.id === 1; // 1: 'Fixed';
+        input.salesClientData.clientRate.isTimeBasedRate = this.salesClientDataForm.clientRateAndInvoicing?.value?.id === 1; // 1: 'Time based';
+        input.salesClientData.clientRate.isFixedRate = this.salesClientDataForm.clientRateAndInvoicing?.value?.id === 2; // 2: 'Fixed';
         input.salesClientData.clientRate.currencyId = this.salesClientDataForm.clientCurrency?.value
         input.salesClientData.clientRate.invoiceCurrencyId = this.salesClientDataForm.clientInvoiceCurrency?.value;
         input.salesClientData.clientRate.normalRate = this.salesClientDataForm.clientPrice?.value;
@@ -1580,7 +1580,7 @@ export class WorkflowSalesComponent extends AppComopnentBase implements OnInit {
                     this.hideMainSpinner();
                 }))
                 .subscribe(result => {
-
+                    this.showNotify(NotifySeverity.Success, 'Saved sales step', 'Okay');
                 })
         } else {
             this._salesService.editFinish(this.clientPeriodId!, input)
