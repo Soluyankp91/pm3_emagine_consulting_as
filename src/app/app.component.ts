@@ -3,9 +3,10 @@ import { MSAL_GUARD_CONFIG, MsalGuardConfiguration, MsalService, MsalBroadcastSe
 import { InteractionStatus, RedirectRequest, PopupRequest, AuthenticationResult } from '@azure/msal-browser';
 import { Subject } from 'rxjs';
 import { filter, takeUntil } from 'rxjs/operators';
+import { environment } from 'src/environments/environment';
 
 @Component({
-    selector: 'app-root',
+    // selector: 'app-root',
     templateUrl: './app.component.html',
     styleUrls: ['./app.component.scss']
 })
@@ -15,6 +16,10 @@ export class AppComponent implements OnInit {
 
     ngOnInit(): void {
 
+    }
+
+    openSourcingApp() {
+        window.open(environment.sourcingUrl, '_blank');
     }
 
 }

@@ -4,5 +4,6 @@ export const environment = {
     qa: false,
     apiUrl: 'https://pm3-prod-app.azurewebsites.net',
     // TODO: change to PROD url later
-    sourcingUrl: 'https://web-sourcing-qa-env.prodataconsult.com'
+    sourcingUrl: 'https://web-sourcing-qa-env.prodataconsult.com',
+    blobStorageUrl: 'https://web-sourcing-qa-env.prodataconsult.com/api/sourcing'
 };

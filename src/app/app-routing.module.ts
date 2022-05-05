@@ -1,32 +1,53 @@
 import { NgModule } from '@angular/core';
-import { RouterModule, Routes } from '@angular/router';
-import { MsalGuard } from '@azure/msal-angular';
-import { LoginComponent } from './login/login.component';
-import { LoginGuard } from './login/login.guard';
+import { RouterModule } from '@angular/router';
+import { AppComponent } from './app.component';
+import { DashboardComponent } from './dashboard/dashboard.component';
 
 @NgModule({
-  imports: [RouterModule.forRoot(
+  imports: [RouterModule.forChild(
     [
-        { path: '', redirectTo: 'login', pathMatch: 'full' },
-        { path: 'login', component: LoginComponent, canActivate: [LoginGuard] },
-        {
-            path: 'main',
-            loadChildren: () => import('../app/main/main.module').then(m => m.MainModule), // Lazy load of main module
-            data: { preload: true },
-            canLoad: [MsalGuard]
-        },
-        // { path: 'dashboard', component: DashboardComponent, canActivate: [MsalGuard] },
-        // { path: 'overview', component: MainOverviewComponent, canActivate: [MsalGuard] },
-        // { path: 'clients', component: ClientListComponent, canActivate: [MsalGuard] },
-        // { path: 'clients/:id', component: ClientDetailsComponent, canActivate: [MsalGuard] },
-        // { path: 'sourcing-shortcut', component: SourcingShortcutComponent, canActivate: [MsalGuard] },
-        // { path: 'workflow', component: WorkflowComponent, canActivate: [MsalGuard] },
-        // { path: 'statistics', component: StatisticsComponent, canActivate: [MsalGuard] },
-        // { path: 'time-tracking', component: TimeTrackingComponent, canActivate: [MsalGuard] },
-        // { path: 'evaluation', component: EvaluationComponent, canActivate: [MsalGuard] },
-        // { path: 'invoicing', component: InvoicingComponent, canActivate: [MsalGuard] },
-        // { path: 'contracts', component: ContractsComponent, canActivate: [MsalGuard] },
-        { path: '**', redirectTo: 'login' }
+      {
+        path: '',
+        component: AppComponent,
+        // canActivate: [MsalGuard],
+        // canActivateChild: [MsalGuard],
+        children: [
+          {
+            path: '', redirectTo: 'dashboard', pathMatch: 'full'
+          },
+          {
+            path: 'dashboard', component: DashboardComponent
+          },
+          {
+            path: 'overview',
+            loadChildren:() => import('../app/overview/overview.module').then(m => m.OverviewModule),
+            data: {preload: true},
+            // canLoad: [MsalGuard]
+          },
+          {
+            path: 'clients',
+            loadChildren:() => import('../app/client/client.module').then(m => m.ClientModule),
+            data: {preload: true},
+            // canLoad: [MsalGuard]
+          },
+          {
+            path: 'workflow',
+            loadChildren:() => import('../app/workflow/workflow.module').then(m => m.WorkflowModule),
+            data: {preload: true},
+            // canLoad: [MsalGuard]
+          },
+          {
+            path: '',
+            children: [
+                { path: '', redirectTo: '/app/dashboard', pathMatch: 'full' }
+
+            ]
+          },
+          {
+              path: '**', redirectTo: ''
+          }
+        ]
+      }
     ]
   )],
   exports: [RouterModule]

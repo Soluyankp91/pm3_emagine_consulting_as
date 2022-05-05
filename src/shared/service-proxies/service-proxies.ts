@@ -711,6 +711,60 @@ export class ClientPeriodServiceProxy {
         }
         return _observableOf<string>(null as any);
     }
+
+    /**
+     * @return Success
+     */
+    projectType(projectTypeId: number): Observable<ProjectTypeConfigurationDto> {
+        let url_ = this.baseUrl + "/api/ClientPeriod/project-type/{projectTypeId}";
+        if (projectTypeId === undefined || projectTypeId === null)
+            throw new Error("The parameter 'projectTypeId' must be defined.");
+        url_ = url_.replace("{projectTypeId}", encodeURIComponent("" + projectTypeId));
+        url_ = url_.replace(/[?&]$/, "");
+
+        let options_ : any = {
+            observe: "response",
+            responseType: "blob",
+            headers: new HttpHeaders({
+                "Accept": "text/plain"
+            })
+        };
+
+        return this.http.request("get", url_, options_).pipe(_observableMergeMap((response_ : any) => {
+            return this.processProjectType(response_);
+        })).pipe(_observableCatch((response_: any) => {
+            if (response_ instanceof HttpResponseBase) {
+                try {
+                    return this.processProjectType(response_ as any);
+                } catch (e) {
+                    return _observableThrow(e) as any as Observable<ProjectTypeConfigurationDto>;
+                }
+            } else
+                return _observableThrow(response_) as any as Observable<ProjectTypeConfigurationDto>;
+        }));
+    }
+
+    protected processProjectType(response: HttpResponseBase): Observable<ProjectTypeConfigurationDto> {
+        const status = response.status;
+        const responseBlob =
+            response instanceof HttpResponse ? response.body :
+            (response as any).error instanceof Blob ? (response as any).error : undefined;
+
+        let _headers: any = {}; if (response.headers) { for (let key of response.headers.keys()) { _headers[key] = response.headers.get(key); }}
+        if (status === 200) {
+            return blobToText(responseBlob).pipe(_observableMergeMap(_responseText => {
+            let result200: any = null;
+            let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
+            result200 = ProjectTypeConfigurationDto.fromJS(resultData200);
+            return _observableOf(result200);
+            }));
+        } else if (status !== 200 && status !== 204) {
+            return blobToText(responseBlob).pipe(_observableMergeMap(_responseText => {
+            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+            }));
+        }
+        return _observableOf<ProjectTypeConfigurationDto>(null as any);
+    }
 }
 
 @Injectable()
@@ -4282,6 +4336,66 @@ export class EnumServiceProxy {
         }
         return _observableOf<{ [key: string]: string; }>(null as any);
     }
+
+    /**
+     * @return Success
+     */
+    consultantInsuranceOption(): Observable<{ [key: string]: string; }> {
+        let url_ = this.baseUrl + "/api/Enum/consultant-insurance-option";
+        url_ = url_.replace(/[?&]$/, "");
+
+        let options_ : any = {
+            observe: "response",
+            responseType: "blob",
+            headers: new HttpHeaders({
+                "Accept": "text/plain"
+            })
+        };
+
+        return this.http.request("get", url_, options_).pipe(_observableMergeMap((response_ : any) => {
+            return this.processConsultantInsuranceOption(response_);
+        })).pipe(_observableCatch((response_: any) => {
+            if (response_ instanceof HttpResponseBase) {
+                try {
+                    return this.processConsultantInsuranceOption(response_ as any);
+                } catch (e) {
+                    return _observableThrow(e) as any as Observable<{ [key: string]: string; }>;
+                }
+            } else
+                return _observableThrow(response_) as any as Observable<{ [key: string]: string; }>;
+        }));
+    }
+
+    protected processConsultantInsuranceOption(response: HttpResponseBase): Observable<{ [key: string]: string; }> {
+        const status = response.status;
+        const responseBlob =
+            response instanceof HttpResponse ? response.body :
+            (response as any).error instanceof Blob ? (response as any).error : undefined;
+
+        let _headers: any = {}; if (response.headers) { for (let key of response.headers.keys()) { _headers[key] = response.headers.get(key); }}
+        if (status === 200) {
+            return blobToText(responseBlob).pipe(_observableMergeMap(_responseText => {
+            let result200: any = null;
+            let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
+            if (resultData200) {
+                result200 = {} as any;
+                for (let key in resultData200) {
+                    if (resultData200.hasOwnProperty(key))
+                        (<any>result200)![key] = resultData200[key] !== undefined ? resultData200[key] : <any>null;
+                }
+            }
+            else {
+                result200 = <any>null;
+            }
+            return _observableOf(result200);
+            }));
+        } else if (status !== 200 && status !== 204) {
+            return blobToText(responseBlob).pipe(_observableMergeMap(_responseText => {
+            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+            }));
+        }
+        return _observableOf<{ [key: string]: string; }>(null as any);
+    }
 }
 
 @Injectable()
@@ -4459,6 +4573,68 @@ export class HubSpotCardDataFetchServiceProxy {
     }
 
     protected processContactPerson(response: HttpResponseBase): Observable<string> {
+        const status = response.status;
+        const responseBlob =
+            response instanceof HttpResponse ? response.body :
+            (response as any).error instanceof Blob ? (response as any).error : undefined;
+
+        let _headers: any = {}; if (response.headers) { for (let key of response.headers.keys()) { _headers[key] = response.headers.get(key); }}
+        if (status === 200) {
+            return blobToText(responseBlob).pipe(_observableMergeMap(_responseText => {
+            let result200: any = null;
+            let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
+                result200 = resultData200 !== undefined ? resultData200 : <any>null;
+    
+            return _observableOf(result200);
+            }));
+        } else if (status !== 200 && status !== 204) {
+            return blobToText(responseBlob).pipe(_observableMergeMap(_responseText => {
+            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+            }));
+        }
+        return _observableOf<string>(null as any);
+    }
+
+    /**
+     * @param hs_object_id (optional) 
+     * @param userEmail (optional) 
+     * @return Success
+     */
+    camLoginLink(hs_object_id?: string | undefined, userEmail?: string | undefined): Observable<string> {
+        let url_ = this.baseUrl + "/api/HubSpotCardDataFetch/CamLoginLink?";
+        if (hs_object_id === null)
+            throw new Error("The parameter 'hs_object_id' cannot be null.");
+        else if (hs_object_id !== undefined)
+            url_ += "hs_object_id=" + encodeURIComponent("" + hs_object_id) + "&";
+        if (userEmail === null)
+            throw new Error("The parameter 'userEmail' cannot be null.");
+        else if (userEmail !== undefined)
+            url_ += "userEmail=" + encodeURIComponent("" + userEmail) + "&";
+        url_ = url_.replace(/[?&]$/, "");
+
+        let options_ : any = {
+            observe: "response",
+            responseType: "blob",
+            headers: new HttpHeaders({
+                "Accept": "text/plain"
+            })
+        };
+
+        return this.http.request("get", url_, options_).pipe(_observableMergeMap((response_ : any) => {
+            return this.processCamLoginLink(response_);
+        })).pipe(_observableCatch((response_: any) => {
+            if (response_ instanceof HttpResponseBase) {
+                try {
+                    return this.processCamLoginLink(response_ as any);
+                } catch (e) {
+                    return _observableThrow(e) as any as Observable<string>;
+                }
+            } else
+                return _observableThrow(response_) as any as Observable<string>;
+        }));
+    }
+
+    protected processCamLoginLink(response: HttpResponseBase): Observable<string> {
         const status = response.status;
         const responseBlob =
             response instanceof HttpResponse ? response.body :
@@ -5442,6 +5618,59 @@ export class NotificationTestServiceProxy {
     }
 
     protected processSend(response: HttpResponseBase): Observable<void> {
+        const status = response.status;
+        const responseBlob =
+            response instanceof HttpResponse ? response.body :
+            (response as any).error instanceof Blob ? (response as any).error : undefined;
+
+        let _headers: any = {}; if (response.headers) { for (let key of response.headers.keys()) { _headers[key] = response.headers.get(key); }}
+        if (status === 200) {
+            return blobToText(responseBlob).pipe(_observableMergeMap(_responseText => {
+            return _observableOf<void>(null as any);
+            }));
+        } else if (status !== 200 && status !== 204) {
+            return blobToText(responseBlob).pipe(_observableMergeMap(_responseText => {
+            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+            }));
+        }
+        return _observableOf<void>(null as any);
+    }
+
+    /**
+     * @param email (optional) 
+     * @return Success
+     * @deprecated
+     */
+    sendContractExpiration(email?: string | undefined): Observable<void> {
+        let url_ = this.baseUrl + "/api/NotificationTest/send-contract-expiration?";
+        if (email === null)
+            throw new Error("The parameter 'email' cannot be null.");
+        else if (email !== undefined)
+            url_ += "email=" + encodeURIComponent("" + email) + "&";
+        url_ = url_.replace(/[?&]$/, "");
+
+        let options_ : any = {
+            observe: "response",
+            responseType: "blob",
+            headers: new HttpHeaders({
+            })
+        };
+
+        return this.http.request("post", url_, options_).pipe(_observableMergeMap((response_ : any) => {
+            return this.processSendContractExpiration(response_);
+        })).pipe(_observableCatch((response_: any) => {
+            if (response_ instanceof HttpResponseBase) {
+                try {
+                    return this.processSendContractExpiration(response_ as any);
+                } catch (e) {
+                    return _observableThrow(e) as any as Observable<void>;
+                }
+            } else
+                return _observableThrow(response_) as any as Observable<void>;
+        }));
+    }
+
+    protected processSendContractExpiration(response: HttpResponseBase): Observable<void> {
         const status = response.status;
         const responseBlob =
             response instanceof HttpResponse ? response.body :
@@ -7890,6 +8119,9 @@ export class ClientPeriodSalesDataDto implements IClientPeriodSalesDataDto {
     salesMainData?: SalesMainDataDto;
     salesClientData?: SalesClientDataDto;
     consultantSalesData?: ConsultantSalesDataDto[] | undefined;
+    startDate?: moment.Moment | undefined;
+    noEndDate?: boolean;
+    endDate?: moment.Moment | undefined;
 
     constructor(data?: IClientPeriodSalesDataDto) {
         if (data) {
@@ -7909,6 +8141,9 @@ export class ClientPeriodSalesDataDto implements IClientPeriodSalesDataDto {
                 for (let item of _data["consultantSalesData"])
                     this.consultantSalesData!.push(ConsultantSalesDataDto.fromJS(item));
             }
+            this.startDate = _data["startDate"] ? moment(_data["startDate"].toString()) : <any>undefined;
+            this.noEndDate = _data["noEndDate"];
+            this.endDate = _data["endDate"] ? moment(_data["endDate"].toString()) : <any>undefined;
         }
     }
 
@@ -7928,6 +8163,9 @@ export class ClientPeriodSalesDataDto implements IClientPeriodSalesDataDto {
             for (let item of this.consultantSalesData)
                 data["consultantSalesData"].push(item.toJSON());
         }
+        data["startDate"] = this.startDate ? this.startDate.format('YYYY-MM-DD') : <any>undefined;
+        data["noEndDate"] = this.noEndDate;
+        data["endDate"] = this.endDate ? this.endDate.format('YYYY-MM-DD') : <any>undefined;
         return data;
     }
 }
@@ -7936,6 +8174,9 @@ export interface IClientPeriodSalesDataDto {
     salesMainData?: SalesMainDataDto;
     salesClientData?: SalesClientDataDto;
     consultantSalesData?: ConsultantSalesDataDto[] | undefined;
+    startDate?: moment.Moment | undefined;
+    noEndDate?: boolean;
+    endDate?: moment.Moment | undefined;
 }
 
 export class ClientRateDto implements IClientRateDto {
@@ -10233,7 +10474,10 @@ export class ProjectLineDto implements IProjectLineDto {
     projectName?: string | undefined;
     startDate?: moment.Moment;
     endDate?: moment.Moment;
+    noEndDate?: boolean;
+    differentInvoicingReferenceNumber?: boolean;
     invoicingReferenceNumber?: string | undefined;
+    differentInvoicingReferencePerson?: boolean;
     invoicingReferencePersonId?: number | undefined;
     optionalInvoicingInfo?: string | undefined;
     differentDebtorNumber?: boolean;
@@ -10242,6 +10486,7 @@ export class ProjectLineDto implements IProjectLineDto {
     invoiceRecipientId?: number | undefined;
     modifiedById?: number | undefined;
     modificationDate?: moment.Moment | undefined;
+    consultantInsuranceOptionId?: number | undefined;
 
     constructor(data?: IProjectLineDto) {
         if (data) {
@@ -10258,7 +10503,10 @@ export class ProjectLineDto implements IProjectLineDto {
             this.projectName = _data["projectName"];
             this.startDate = _data["startDate"] ? moment(_data["startDate"].toString()) : <any>undefined;
             this.endDate = _data["endDate"] ? moment(_data["endDate"].toString()) : <any>undefined;
+            this.noEndDate = _data["noEndDate"];
+            this.differentInvoicingReferenceNumber = _data["differentInvoicingReferenceNumber"];
             this.invoicingReferenceNumber = _data["invoicingReferenceNumber"];
+            this.differentInvoicingReferencePerson = _data["differentInvoicingReferencePerson"];
             this.invoicingReferencePersonId = _data["invoicingReferencePersonId"];
             this.optionalInvoicingInfo = _data["optionalInvoicingInfo"];
             this.differentDebtorNumber = _data["differentDebtorNumber"];
@@ -10267,6 +10515,7 @@ export class ProjectLineDto implements IProjectLineDto {
             this.invoiceRecipientId = _data["invoiceRecipientId"];
             this.modifiedById = _data["modifiedById"];
             this.modificationDate = _data["modificationDate"] ? moment(_data["modificationDate"].toString()) : <any>undefined;
+            this.consultantInsuranceOptionId = _data["consultantInsuranceOptionId"];
         }
     }
 
@@ -10283,7 +10532,10 @@ export class ProjectLineDto implements IProjectLineDto {
         data["projectName"] = this.projectName;
         data["startDate"] = this.startDate ? this.startDate.format('YYYY-MM-DD') : <any>undefined;
         data["endDate"] = this.endDate ? this.endDate.format('YYYY-MM-DD') : <any>undefined;
+        data["noEndDate"] = this.noEndDate;
+        data["differentInvoicingReferenceNumber"] = this.differentInvoicingReferenceNumber;
         data["invoicingReferenceNumber"] = this.invoicingReferenceNumber;
+        data["differentInvoicingReferencePerson"] = this.differentInvoicingReferencePerson;
         data["invoicingReferencePersonId"] = this.invoicingReferencePersonId;
         data["optionalInvoicingInfo"] = this.optionalInvoicingInfo;
         data["differentDebtorNumber"] = this.differentDebtorNumber;
@@ -10292,6 +10544,7 @@ export class ProjectLineDto implements IProjectLineDto {
         data["invoiceRecipientId"] = this.invoiceRecipientId;
         data["modifiedById"] = this.modifiedById;
         data["modificationDate"] = this.modificationDate ? this.modificationDate.format('YYYY-MM-DD') : <any>undefined;
+        data["consultantInsuranceOptionId"] = this.consultantInsuranceOptionId;
         return data;
     }
 }
@@ -10301,7 +10554,10 @@ export interface IProjectLineDto {
     projectName?: string | undefined;
     startDate?: moment.Moment;
     endDate?: moment.Moment;
+    noEndDate?: boolean;
+    differentInvoicingReferenceNumber?: boolean;
     invoicingReferenceNumber?: string | undefined;
+    differentInvoicingReferencePerson?: boolean;
     invoicingReferencePersonId?: number | undefined;
     optionalInvoicingInfo?: string | undefined;
     differentDebtorNumber?: boolean;
@@ -10310,6 +10566,51 @@ export interface IProjectLineDto {
     invoiceRecipientId?: number | undefined;
     modifiedById?: number | undefined;
     modificationDate?: moment.Moment | undefined;
+    consultantInsuranceOptionId?: number | undefined;
+}
+
+export class ProjectTypeConfigurationDto implements IProjectTypeConfigurationDto {
+    salesTypeId?: number;
+    deliveryTypeId?: number;
+    marginId?: number;
+
+    constructor(data?: IProjectTypeConfigurationDto) {
+        if (data) {
+            for (var property in data) {
+                if (data.hasOwnProperty(property))
+                    (<any>this)[property] = (<any>data)[property];
+            }
+        }
+    }
+
+    init(_data?: any) {
+        if (_data) {
+            this.salesTypeId = _data["salesTypeId"];
+            this.deliveryTypeId = _data["deliveryTypeId"];
+            this.marginId = _data["marginId"];
+        }
+    }
+
+    static fromJS(data: any): ProjectTypeConfigurationDto {
+        data = typeof data === 'object' ? data : {};
+        let result = new ProjectTypeConfigurationDto();
+        result.init(data);
+        return result;
+    }
+
+    toJSON(data?: any) {
+        data = typeof data === 'object' ? data : {};
+        data["salesTypeId"] = this.salesTypeId;
+        data["deliveryTypeId"] = this.deliveryTypeId;
+        data["marginId"] = this.marginId;
+        return data;
+    }
+}
+
+export interface IProjectTypeConfigurationDto {
+    salesTypeId?: number;
+    deliveryTypeId?: number;
+    marginId?: number;
 }
 
 export enum RequestProjectTypeValue {
@@ -10422,9 +10723,6 @@ export class SalesClientDataDto implements ISalesClientDataDto {
     directClient?: ClientResultDto;
     endClientIdValue?: number | undefined;
     endClient?: ClientResultDto;
-    startDate?: moment.Moment | undefined;
-    noEndDate?: boolean;
-    endDate?: moment.Moment | undefined;
     noClientExtensionOption?: boolean;
     clientExtensionDurationId?: number | undefined;
     clientExtensionDeadlineId?: number | undefined;
@@ -10469,9 +10767,6 @@ export class SalesClientDataDto implements ISalesClientDataDto {
             this.directClient = _data["directClient"] ? ClientResultDto.fromJS(_data["directClient"]) : <any>undefined;
             this.endClientIdValue = _data["endClientIdValue"];
             this.endClient = _data["endClient"] ? ClientResultDto.fromJS(_data["endClient"]) : <any>undefined;
-            this.startDate = _data["startDate"] ? moment(_data["startDate"].toString()) : <any>undefined;
-            this.noEndDate = _data["noEndDate"];
-            this.endDate = _data["endDate"] ? moment(_data["endDate"].toString()) : <any>undefined;
             this.noClientExtensionOption = _data["noClientExtensionOption"];
             this.clientExtensionDurationId = _data["clientExtensionDurationId"];
             this.clientExtensionDeadlineId = _data["clientExtensionDeadlineId"];
@@ -10528,9 +10823,6 @@ export class SalesClientDataDto implements ISalesClientDataDto {
         data["directClient"] = this.directClient ? this.directClient.toJSON() : <any>undefined;
         data["endClientIdValue"] = this.endClientIdValue;
         data["endClient"] = this.endClient ? this.endClient.toJSON() : <any>undefined;
-        data["startDate"] = this.startDate ? this.startDate.format('YYYY-MM-DD') : <any>undefined;
-        data["noEndDate"] = this.noEndDate;
-        data["endDate"] = this.endDate ? this.endDate.format('YYYY-MM-DD') : <any>undefined;
         data["noClientExtensionOption"] = this.noClientExtensionOption;
         data["clientExtensionDurationId"] = this.clientExtensionDurationId;
         data["clientExtensionDeadlineId"] = this.clientExtensionDeadlineId;
@@ -10580,9 +10872,6 @@ export interface ISalesClientDataDto {
     directClient?: ClientResultDto;
     endClientIdValue?: number | undefined;
     endClient?: ClientResultDto;
-    startDate?: moment.Moment | undefined;
-    noEndDate?: boolean;
-    endDate?: moment.Moment | undefined;
     noClientExtensionOption?: boolean;
     clientExtensionDurationId?: number | undefined;
     clientExtensionDeadlineId?: number | undefined;

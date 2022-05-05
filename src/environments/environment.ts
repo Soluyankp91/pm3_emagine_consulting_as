@@ -7,7 +7,8 @@ export const environment = {
     dev: true,
     qa: false,
     apiUrl: 'https://pm3-dev-app.azurewebsites.net',
-    sourcingUrl: 'https://web-sourcing-dev.azurewebsites.net'
+    sourcingUrl: 'https://web-sourcing-dev.azurewebsites.net',
+    blobStorageUrl: 'https://web-sourcing-dev.azurewebsites.net/server'
 };
 
 /*
