@@ -23,7 +23,7 @@ steps:
 - task: Bash@3
   inputs:
     targetType: 'inline'
-    script: 'npm run build'
+    script: 'npm run dev'
     workingDirectory: '$(Build.SourcesDirectory)'
   displayName: 'angular build'
 
