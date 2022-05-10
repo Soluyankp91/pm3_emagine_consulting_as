@@ -116,7 +116,7 @@ export class WorkflowSalesComponent extends AppComopnentBase implements OnInit {
     clientSpecialFeeFilter = new FormControl('');
     clientSpecialFeeList: ClientSpecialFeeDto[] = [];
     filteredClientSpecialFees: Observable<ClientSpecialFeeDto[] | undefined>;
-    
+
     filteredConsultantSpecialRates: ClientSpecialFeeDto[];
     filteredConsultantSpecialFees: ClientSpecialFeeDto[];
     contractExpirationNotificationDisplay: string;
@@ -382,7 +382,7 @@ export class WorkflowSalesComponent extends AppComopnentBase implements OnInit {
         this.getExpectedWorkloadUnit();
         this.getCountries();
         this.getConsultantTimeReportingCap();
-    
+
         this.getWorkflowSalesStep();
 
         this._workflowDataService.workflowSalesSaved
@@ -1583,7 +1583,7 @@ export class WorkflowSalesComponent extends AppComopnentBase implements OnInit {
                     this.showNotify(NotifySeverity.Success, 'Saved sales step', 'Okay');
                 })
         } else {
-            this._salesService.editFinish(this.clientPeriodId!, input)
+            this._salesService.editFinishPost1(this.clientPeriodId!, input)
                 .pipe(finalize(() => {
                     this.hideMainSpinner();
                 }))
