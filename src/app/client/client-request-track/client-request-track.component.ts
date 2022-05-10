@@ -6,55 +6,8 @@ import { Subject } from 'rxjs';
 import { finalize, takeUntil } from 'rxjs/operators';
 import { environment } from 'src/environments/environment';
 import { AppConsts } from 'src/shared/AppConsts';
-import { ClientRequestTrackDto, ClientsServiceProxy, EmployeeDto } from 'src/shared/service-proxies/service-proxies';
+import { ClientRequestTrackItemDto, ClientsServiceProxy, EmployeeDto } from 'src/shared/service-proxies/service-proxies';
 
-const DATA_SOURCE: ClientRequestTrackDto[] = [
-    new ClientRequestTrackDto(
-        {
-            requestId: 12,
-            headline: 'Test',
-            status: undefined,
-            clientDeadline: moment(),
-            dateAdded: moment(),
-            projectType: undefined,
-            priority: 1,
-            numberOfConsultants: 2,
-            locations: [],
-            requestSourcers: [new EmployeeDto({id: 1, name: 'Ron Weasley', externalId: ''})],
-            accountManagers: [new EmployeeDto({id: 1, name: 'Ron Weasley', externalId: ''})],
-        }
-    ),
-    new ClientRequestTrackDto(
-        {
-            requestId: 1222,
-            headline: 'Test2',
-            status: undefined,
-            clientDeadline: moment(),
-            dateAdded: moment(),
-            projectType: undefined,
-            priority: 1,
-            numberOfConsultants: 2,
-            locations: [],
-            requestSourcers: [new EmployeeDto({id: 1, name: 'Ron Weasley', externalId: ''})],
-            accountManagers: [new EmployeeDto({id: 1, name: 'Ron Weasley', externalId: ''})],
-        }
-    ),
-    new ClientRequestTrackDto(
-        {
-            requestId: 123,
-            headline: 'Test3',
-            status: undefined,
-            clientDeadline: moment(),
-            dateAdded: moment(),
-            projectType: undefined,
-            priority: 1,
-            numberOfConsultants: 2,
-            locations: [],
-            requestSourcers: [new EmployeeDto({id: 1, name: 'Ron Weasley', externalId: ''})],
-            accountManagers: [new EmployeeDto({id: 1, name: 'Ron Weasley', externalId: ''})],
-        }
-    )
-]
 @Component({
     selector: 'app-client-request-track',
     templateUrl: './client-request-track.component.html',
@@ -86,7 +39,7 @@ export class ClientRequestTrackComponent implements OnInit, OnDestroy {
         'salesManager',
         'sourcer'
     ];
-    clientDataSource: MatTableDataSource<ClientRequestTrackDto> = new MatTableDataSource<ClientRequestTrackDto>();
+    clientDataSource: MatTableDataSource<ClientRequestTrackItemDto> = new MatTableDataSource<ClientRequestTrackItemDto>();
 
     private _unsubscribe = new Subject();
     constructor(
@@ -119,7 +72,7 @@ export class ClientRequestTrackComponent implements OnInit, OnDestroy {
                 this.isDataLoading = false;
             }))
             .subscribe(result => {
-                this.clientDataSource = new MatTableDataSource<ClientRequestTrackDto>(result.items);
+                this.clientDataSource = new MatTableDataSource<ClientRequestTrackItemDto>(result.items);
                 this.totalCount = result.items?.length;
             });
     }

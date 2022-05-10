@@ -6,7 +6,7 @@ import { finalize, takeUntil } from 'rxjs/operators';
 import { InternalLookupService } from 'src/app/shared/common/internal-lookup.service';
 import { ConfirmationDialogComponent } from 'src/app/shared/components/confirmation-dialog/confirmation-dialog.component';
 import { ManagerStatus } from 'src/app/shared/components/manager-search/manager-search.model';
-import { WorkflowProcessDto, WorkflowProcessType, EnumEntityTypeDto, WorkflowServiceProxy, StepDto, EmployeeDto, StepType } from 'src/shared/service-proxies/service-proxies';
+import { WorkflowProcessDto, WorkflowProcessType, EnumEntityTypeDto, WorkflowServiceProxy, StepDto, EmployeeDto, StepType, WorkflowStepStatus } from 'src/shared/service-proxies/service-proxies';
 import { WorkflowDataService } from '../workflow-data.service';
 import { WorkflowSteps } from '../workflow.model';
 
@@ -32,6 +32,8 @@ export class WorkflowPeriodComponent implements OnInit {
 
     // hardcoded status
     managerStatus = ManagerStatus;
+
+    workflowStatuses = WorkflowStepStatus;
     private _unsubscribe = new Subject();
     constructor(
         public _workflowDataService: WorkflowDataService,
