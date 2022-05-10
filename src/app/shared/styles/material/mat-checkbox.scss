@@ -39,7 +39,8 @@
         color: #384853DE;
         font-weight: 700;
     }
-    &.mat-checkbox-checked {
+    &.mat-checkbox-checked,
+    &.mat-checkbox-indeterminate {
         .mat-checkbox-frame {
             border: 2px solid $dark-grey-color !important;
         }
