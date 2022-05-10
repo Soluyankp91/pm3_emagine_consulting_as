@@ -5,38 +5,7 @@ import * as moment from 'moment';
 import { Subject } from 'rxjs';
 import { finalize, takeUntil } from 'rxjs/operators';
 import { AppConsts } from 'src/shared/AppConsts';
-import { ClientRequestTrackDto, ClientsServiceProxy, EmployeeDto } from 'src/shared/service-proxies/service-proxies';
-
-
-const DATA_SOURCE = [
-    {
-        id: 12,
-        consultant: 'Frederick Rikke',
-        salesType: 'Managed Service',
-        deliveryType: 'Managed Service',
-        dateStart: moment(),
-        dateEnd: moment(),
-        status: {name: 'In Progress', value: 1}
-    },
-    {
-        id: 12,
-        consultant: 'Frederick Rikke',
-        salesType: 'T&M',
-        deliveryType: 'Offshore',
-        dateStart: moment(),
-        dateEnd: moment(),
-        status: {name: 'Running', value: 2}
-    },
-    {
-        id: 12,
-        consultant: 'Frederick Rikke',
-        salesType: 'Fee only',
-        deliveryType: 'Normal',
-        dateStart: moment(),
-        dateEnd: moment(),
-        status: {name: 'Terminated', value: 3}
-    }
-]
+import { ClientWorkflowTrackItemDto, ClientsServiceProxy, EmployeeDto } from 'src/shared/service-proxies/service-proxies';
 
 @Component({
     selector: 'app-client-workflow-track',
@@ -78,7 +47,7 @@ export class ClientWorkflowTrackComponent implements OnInit {
             takeUntil(this._unsubscribe)
         ).subscribe(params => {
             this.clientId = +params.get('id')!;
-            this.getRequestTrack();
+            this.getWorkflowTrack();
         });
     }
 
@@ -87,17 +56,17 @@ export class ClientWorkflowTrackComponent implements OnInit {
         this._unsubscribe.complete();
     }
 
-    getRequestTrack() {
+    getWorkflowTrack() {
         let legacyClientIdQuery = this.clientId;
         let pageNumber = 1;
         let pageSize = 20;
         let sort = undefined;
-        this._clientService.requestTrack(legacyClientIdQuery, pageNumber, pageSize, sort)
+        this._clientService.workflowTrack(legacyClientIdQuery, pageNumber, pageSize, sort)
             .pipe(finalize(() => {
 
             }))
             .subscribe(result => {
-                this.workflowTrackDataSource = new MatTableDataSource<any>(DATA_SOURCE);
+                this.workflowTrackDataSource = new MatTableDataSource<ClientWorkflowTrackItemDto>(result.items);
             });
     }
 

@@ -38,14 +38,14 @@
                     <div class="workflow-navigation">
                         <div class="workflow-navigation--step u-mb--10" *ngFor="let step of item.steps; let i = index;"
                             (click)="changeStepSelection(step)"
-                            [ngClass]="{'active-step': step.name === selectedStep.name, 'completed-step': step.isCompleted}">
+                            [ngClass]="{'active-step': step.name === selectedStep.name, 'completed-step': step.status === workflowStatuses.Completed}">
                             <div fxLayout="column" fxLayoutAlign="start start">
                                 <div fxLayout="row" fxLayoutAlign="start center">
                                     <app-manager-search
                                         (click)="$event.stopPropagation()"
                                         [formFieldLabel]="step.name + ' Manager'"
                                         (managerSelected)="selectedManager($event)"
-                                        [managerStatus]="step.isCompleted ? managerStatus.Completed : managerStatus.Pending">
+                                        [managerStatus]="step.status === workflowStatuses.Completed ? managerStatus.Completed : managerStatus.Pending">
                                     </app-manager-search>
 
                                     <span class="workflow-navigation--step__name">
@@ -72,16 +72,16 @@
     <div fxFlex="80%" id="step-container">
         <ng-container [ngSwitch]="selectedStepEnum">
             <ng-container *ngSwitchCase="workflowSteps.Sales">
-                <app-workflow-sales #workflowSales [workflowId]="workflowId" [clientPeriodId]="clientPeriodId" [activeSideSection]="selectedSideSection" [isCompleted]="selectedStep.isCompleted!"></app-workflow-sales>
+                <app-workflow-sales #workflowSales [workflowId]="workflowId" [clientPeriodId]="clientPeriodId" [activeSideSection]="selectedSideSection" [isCompleted]="selectedStep.status === workflowStatuses.Completed"></app-workflow-sales>
             </ng-container>
             <ng-container *ngSwitchCase="workflowSteps.Contract">
-                <app-workflow-contracts #workflowContracts [workflowId]="workflowId" [clientPeriodId]="clientPeriodId" [activeSideSection]="selectedSideSection" [isCompleted]="selectedStep.isCompleted!"></app-workflow-contracts>
+                <app-workflow-contracts #workflowContracts [workflowId]="workflowId" [clientPeriodId]="clientPeriodId" [activeSideSection]="selectedSideSection" [isCompleted]="selectedStep.status === workflowStatuses.Completed"></app-workflow-contracts>
             </ng-container>
             <ng-container *ngSwitchCase="workflowSteps.Finance">
-                <app-workflow-finances #workflowFinances [workflowId]="workflowId" [clientPeriodId]="clientPeriodId" [activeSideSection]="selectedSideSection" [isCompleted]="selectedStep.isCompleted!"></app-workflow-finances>
+                <app-workflow-finances #workflowFinances [workflowId]="workflowId" [clientPeriodId]="clientPeriodId" [activeSideSection]="selectedSideSection" [isCompleted]="selectedStep.status === workflowStatuses.Completed"></app-workflow-finances>
             </ng-container>
             <ng-container *ngSwitchCase="workflowSteps.Sourcing">
-                <app-workflow-sourcing #workflowSourcing [workflowId]="workflowId" [activeSideSection]="selectedSideSection" [isCompleted]="selectedStep.isCompleted!"></app-workflow-sourcing>
+                <app-workflow-sourcing #workflowSourcing [workflowId]="workflowId" [activeSideSection]="selectedSideSection" [isCompleted]="selectedStep.status === workflowStatuses.Completed"></app-workflow-sourcing>
             </ng-container>
         </ng-container>
     </div>

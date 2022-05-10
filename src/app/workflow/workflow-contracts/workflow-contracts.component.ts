@@ -389,7 +389,7 @@ export class WorkflowContractsComponent extends AppComopnentBase implements OnIn
                 consultantData.consultantTimeReportingCapCurrencyId = consultant.consultantCapOnTimeReportingCurrency?.id;
                 consultantData.noSpecialContractTerms = consultant.noSpecialContractTerms;
                 consultantData.specialContractTerms = consultant.specialContractTerms;
-    
+
                 consultantData.periodConsultantSpecialFees = new Array<PeriodConsultantSpecialFeeDto>();
                 if (consultant.clientFees?.length) {
                     for (let specialFee of consultant.clientFees) {
@@ -441,12 +441,12 @@ export class WorkflowContractsComponent extends AppComopnentBase implements OnIn
                         projectLineInput.invoiceRecipientId = projectLine.invoiceRecipientId;
                         projectLineInput.modifiedById = projectLine.modifiedById;
                         projectLineInput.modificationDate = projectLine.modificationDate;
-        
+
                         consultantData.projectLines.push(projectLineInput);
                     }
                 }
                 input.consultantData.push(consultantData);
-    
+
             }
         }
         this.showMainSpinner();
@@ -456,10 +456,10 @@ export class WorkflowContractsComponent extends AppComopnentBase implements OnIn
                     this.hideMainSpinner();
                 }))
                 .subscribe(result => {
-    
+
                 });
         } else {
-            this._contractsService.editFinish(this.clientPeriodId!, input)
+            this._contractsService.editFinishPost3(this.clientPeriodId!, input)
                 .pipe(finalize(() => {
                     this.hideMainSpinner();
                 }))
