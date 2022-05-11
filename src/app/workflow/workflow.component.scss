@@ -5,7 +5,7 @@
 .workflow-list {
     &--filter {
         padding: 14px 20px;
-        height: $white-header-height;
+        // height: $white-header-height;
         background-color: $white-color;
         &-country__flag {
             line-height: 40px;
@@ -29,7 +29,11 @@
             &__name {
                 font-weight: 700;
                 color: #384853;
-                margin-left: 16px;
+            }
+            &.selected-status {
+                background-color: rgba(42, 194, 167, 0.13);
+                // color: $white-color;
+                border-color: $green-color;
             }
         }
         &-manager {
@@ -38,13 +42,20 @@
                 height: 40px;
             }
         }
+        &-additional {
+            padding: 14px 20px;
+            background-color: #fff;
+            position: absolute;
+            z-index: 9999;
+            box-shadow: 0 10px 10px 0 rgb(26, 35, 126, 15%);
+            transition: all .3s ease-in-out;
+        }
     }
 
     &--header {
         color: $dark-grey-color;
-        font-size: 56px;
-        font-weight: 700;
-        font-size: 36px;
+        font-weight: 800;
+        font-size: 48px;
         line-height: 120%;
     }
     &--content {
@@ -55,6 +66,24 @@
     &--table {
         position: relative;
         min-height: 120px;
+    }
+    &--search-button {
+        min-width: 155px;
+        &-text {
+            font-size: 14px;
+            font-weight: 700;
+            line-height: 1.4;
+            letter-spacing: normal;
+            color: #17a297;
+        }
+    }
+
+    &--step {
+        display: flex;
+        cursor: pointer;
+        &:hover {
+            background-color: rgba($color: $sand-color, $alpha: 0.5);
+        }
     }
 }
 
@@ -68,5 +97,20 @@
     }
     &--extension {
         color: rgba($color: #6A47B8, $alpha: .5);
+    }
+}
+
+.status-dot {
+    width: 24px;
+    height: 24px;
+    font-size: 24px;
+    line-height: 24px;
+    &.purple-dot {
+        color: $purple-color;
+        opacity: 0.5;
+    }
+    &.green-dot {
+        color: $green-color;
+        opacity: 0.5;
     }
 }
