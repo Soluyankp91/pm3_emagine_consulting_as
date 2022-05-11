@@ -1,5 +1,6 @@
-import { Component, EventEmitter, Inject, OnInit, Output } from '@angular/core';
+import { Component, EventEmitter, Inject, Injector, OnInit, Output } from '@angular/core';
 import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
+import { AppComopnentBase } from 'src/shared/app-component-base';
 import { ProjectLineDto } from 'src/shared/service-proxies/service-proxies';
 import { ProjectLineDiallogMode } from '../../workflow.model';
 import { ProjectLineForm } from './add-or-edit-project-line-dialog.model';
@@ -9,13 +10,15 @@ import { ProjectLineForm } from './add-or-edit-project-line-dialog.model';
     templateUrl: './add-or-edit-project-line-dialog.component.html',
     styleUrls: ['./add-or-edit-project-line-dialog.component.scss']
 })
-export class AddOrEditProjectLineDialogComponent implements OnInit {
+
+export class AddOrEditProjectLineDialogComponent extends AppComopnentBase implements OnInit {
     @Output() onConfirmed: EventEmitter<any> = new EventEmitter<any>();
     @Output() onRejected: EventEmitter<any> = new EventEmitter<any>();
     dialogType = ProjectLineDiallogMode;
     projectLineForm: ProjectLineForm;
     projectLine: ProjectLineDto;
     constructor(
+        injector: Injector,
         @Inject(MAT_DIALOG_DATA)
         public data: {
             dialogType: number,
@@ -23,6 +26,7 @@ export class AddOrEditProjectLineDialogComponent implements OnInit {
         },
         private dialogRef: MatDialogRef<AddOrEditProjectLineDialogComponent>
     ) {
+        super(injector);
         this.projectLineForm = new ProjectLineForm();
     }
 

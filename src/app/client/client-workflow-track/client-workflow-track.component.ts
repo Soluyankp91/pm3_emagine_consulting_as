@@ -1,18 +1,20 @@
-import { Component, Input, OnInit } from '@angular/core';
+import { Component, Injector, Input, OnInit } from '@angular/core';
 import { MatTableDataSource } from '@angular/material/table';
 import { ActivatedRoute } from '@angular/router';
 import * as moment from 'moment';
 import { Subject } from 'rxjs';
 import { finalize, takeUntil } from 'rxjs/operators';
+import { InternalLookupService } from 'src/app/shared/common/internal-lookup.service';
+import { AppComopnentBase } from 'src/shared/app-component-base';
 import { AppConsts } from 'src/shared/AppConsts';
-import { ClientWorkflowTrackItemDto, ClientsServiceProxy, EmployeeDto } from 'src/shared/service-proxies/service-proxies';
+import { ClientWorkflowTrackItemDto, ClientsServiceProxy, EmployeeDto, EnumEntityTypeDto } from 'src/shared/service-proxies/service-proxies';
 
 @Component({
     selector: 'app-client-workflow-track',
     templateUrl: './client-workflow-track.component.html',
     styleUrls: ['./client-workflow-track.component.scss']
 })
-export class ClientWorkflowTrackComponent implements OnInit {
+export class ClientWorkflowTrackComponent extends AppComopnentBase implements OnInit {
     @Input() clientInfo: any;
     clientId: number;
 
@@ -36,11 +38,17 @@ export class ClientWorkflowTrackComponent implements OnInit {
     ];
     workflowTrackDataSource: MatTableDataSource<any> = new MatTableDataSource<any>();
 
+    deliveryTypes: EnumEntityTypeDto[];
+    saleTypes: EnumEntityTypeDto[];
     private _unsubscribe = new Subject();
     constructor(
+        injector: Injector,
         private _clientService: ClientsServiceProxy,
-        private activatedRoute: ActivatedRoute
-    ) { }
+        private activatedRoute: ActivatedRoute,
+        private _internalLookupService: InternalLookupService
+    ) {
+        super(injector);
+    }
 
     ngOnInit(): void {
         this.activatedRoute.paramMap.pipe(
@@ -49,6 +57,28 @@ export class ClientWorkflowTrackComponent implements OnInit {
             this.clientId = +params.get('id')!;
             this.getWorkflowTrack();
         });
+        this.getDeliveryTypes();
+        this.getSaleTypes();
+    }
+
+    getDeliveryTypes() {
+        this._internalLookupService.getDeliveryTypes()
+            .pipe(finalize(() => {
+
+            }))
+            .subscribe(result => {
+                this.deliveryTypes = result;
+            });
+    }
+
+    getSaleTypes() {
+        this._internalLookupService.getSaleTypes()
+            .pipe(finalize(() => {
+
+            }))
+            .subscribe(result => {
+                this.saleTypes = result;
+            });
     }
 
     ngOnDestroy(): void {

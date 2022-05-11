@@ -29,21 +29,35 @@
                     <mat-datepicker #startDatePicker></mat-datepicker>
                 </mat-form-field>
 
-                <mat-form-field appearance="outline" fxFlex="0 0 calc(50% - 8px)">
-                    <mat-label>End date</mat-label>
-                    <input autocomplete="off" placeholder="New end date" matInput
-                            [matDatepicker]="endDatePicker"
-                            name="saleDate"
-                            formControlName="endDate"
-                            (focus)="endDatePicker.open()"
-                            (click)="endDatePicker.open()" readonly>
-                    <mat-icon class="calendar-icon" matSuffix svgIcon="calendar"></mat-icon>
-                    <mat-datepicker #endDatePicker></mat-datepicker>
-                </mat-form-field>
+                <div fxLayout="column" fxLayoutAlign="start start" fxFlex="0 0 calc(50% - 8px)">
+                    <mat-form-field appearance="outline" class="u-w--100">
+                        <mat-label>End date</mat-label>
+                        <input autocomplete="off" placeholder="New end date" matInput
+                                [matDatepicker]="endDatePicker"
+                                name="saleDate"
+                                formControlName="endDate"
+                                (focus)="endDatePicker.open()"
+                                (click)="endDatePicker.open()" readonly>
+                        <mat-icon class="calendar-icon" matSuffix svgIcon="calendar"></mat-icon>
+                        <mat-datepicker #endDatePicker></mat-datepicker>
+                    </mat-form-field>
+                    <mat-checkbox color="accent" formControlName="noEndDate" name="noEndDate" class="black-checkbox u-mr--10" (change)="disableOrEnableInput(projectLineForm.noEndDate!.value, projectLineForm.endDate)">
+                        No end date
+                    </mat-checkbox>
+                </div>
             </div>
             <mat-form-field appearance="outline" class="u-w--100 u-mt--10 filter-select">
-                <mat-label>Invoice reference</mat-label>
+                <mat-label>Assignment ID / PO no</mat-label>
                 <mat-select formControlName="invoicingReferenceNumber" [disableOptionCentering]="true">
+                    <mat-option *ngFor="let item of [0,1,2,3]" [value]="item">
+                        {{ item }}
+                    </mat-option>
+                </mat-select>
+            </mat-form-field>
+
+            <mat-form-field appearance="outline" class="u-w--100 u-mt--10 filter-select">
+                <mat-label>Invoicing reference</mat-label>
+                <mat-select formControlName="invoicingReferencePersonId" [disableOptionCentering]="true">
                     <mat-option *ngFor="let item of [0,1,2,3]" [value]="item">
                         {{ item }}
                     </mat-option>
