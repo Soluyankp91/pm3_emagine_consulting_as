@@ -3608,16 +3608,16 @@ export class EmployeeNotificationServiceProxy {
     }
 
     /**
-     * @param notification (optional) 
+     * @param notificationId (optional) 
      * @param tenantId (optional) 
      * @return Success
      */
-    addNotification(notification?: Notification | undefined, tenantId?: number | undefined): Observable<void> {
+    addNotification(notificationId?: number | undefined, tenantId?: number | undefined): Observable<void> {
         let url_ = this.baseUrl + "/api/EmployeeNotification/add-notification?";
-        if (notification === null)
-            throw new Error("The parameter 'notification' cannot be null.");
-        else if (notification !== undefined)
-            url_ += "notification=" + encodeURIComponent("" + notification) + "&";
+        if (notificationId === null)
+            throw new Error("The parameter 'notificationId' cannot be null.");
+        else if (notificationId !== undefined)
+            url_ += "notificationId=" + encodeURIComponent("" + notificationId) + "&";
         if (tenantId === null)
             throw new Error("The parameter 'tenantId' cannot be null.");
         else if (tenantId !== undefined)
@@ -3665,16 +3665,16 @@ export class EmployeeNotificationServiceProxy {
     }
 
     /**
-     * @param notification (optional) 
+     * @param notificationId (optional) 
      * @param tenantId (optional) 
      * @return Success
      */
-    removeNotification(notification?: Notification | undefined, tenantId?: number | undefined): Observable<void> {
+    removeNotification(notificationId?: number | undefined, tenantId?: number | undefined): Observable<void> {
         let url_ = this.baseUrl + "/api/EmployeeNotification/remove-notification?";
-        if (notification === null)
-            throw new Error("The parameter 'notification' cannot be null.");
-        else if (notification !== undefined)
-            url_ += "notification=" + encodeURIComponent("" + notification) + "&";
+        if (notificationId === null)
+            throw new Error("The parameter 'notificationId' cannot be null.");
+        else if (notificationId !== undefined)
+            url_ += "notificationId=" + encodeURIComponent("" + notificationId) + "&";
         if (tenantId === null)
             throw new Error("The parameter 'tenantId' cannot be null.");
         else if (tenantId !== undefined)
@@ -5829,66 +5829,6 @@ export class EnumServiceProxy {
             }));
         }
         return _observableOf<EnumEntityTypeDto[]>(null as any);
-    }
-
-    /**
-     * @return Success
-     */
-    notification(): Observable<{ [key: string]: string; }> {
-        let url_ = this.baseUrl + "/api/Enum/notification";
-        url_ = url_.replace(/[?&]$/, "");
-
-        let options_ : any = {
-            observe: "response",
-            responseType: "blob",
-            headers: new HttpHeaders({
-                "Accept": "text/plain"
-            })
-        };
-
-        return this.http.request("get", url_, options_).pipe(_observableMergeMap((response_ : any) => {
-            return this.processNotification(response_);
-        })).pipe(_observableCatch((response_: any) => {
-            if (response_ instanceof HttpResponseBase) {
-                try {
-                    return this.processNotification(response_ as any);
-                } catch (e) {
-                    return _observableThrow(e) as any as Observable<{ [key: string]: string; }>;
-                }
-            } else
-                return _observableThrow(response_) as any as Observable<{ [key: string]: string; }>;
-        }));
-    }
-
-    protected processNotification(response: HttpResponseBase): Observable<{ [key: string]: string; }> {
-        const status = response.status;
-        const responseBlob =
-            response instanceof HttpResponse ? response.body :
-            (response as any).error instanceof Blob ? (response as any).error : undefined;
-
-        let _headers: any = {}; if (response.headers) { for (let key of response.headers.keys()) { _headers[key] = response.headers.get(key); }}
-        if (status === 200) {
-            return blobToText(responseBlob).pipe(_observableMergeMap(_responseText => {
-            let result200: any = null;
-            let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
-            if (resultData200) {
-                result200 = {} as any;
-                for (let key in resultData200) {
-                    if (resultData200.hasOwnProperty(key))
-                        (<any>result200)![key] = resultData200[key] !== undefined ? resultData200[key] : <any>null;
-                }
-            }
-            else {
-                result200 = <any>null;
-            }
-            return _observableOf(result200);
-            }));
-        } else if (status !== 200 && status !== 204) {
-            return blobToText(responseBlob).pipe(_observableMergeMap(_responseText => {
-            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
-            }));
-        }
-        return _observableOf<{ [key: string]: string; }>(null as any);
     }
 
     /**
@@ -12127,8 +12067,8 @@ export interface IEmployeeDto {
 }
 
 export class EmployeeNotificationDto implements IEmployeeNotificationDto {
-    notification?: Notification;
     tenantId?: number | undefined;
+    notifications?: EmployeeTenantNotificationItem[] | undefined;
 
     constructor(data?: IEmployeeNotificationDto) {
         if (data) {
@@ -12141,8 +12081,12 @@ export class EmployeeNotificationDto implements IEmployeeNotificationDto {
 
     init(_data?: any) {
         if (_data) {
-            this.notification = _data["notification"];
             this.tenantId = _data["tenantId"];
+            if (Array.isArray(_data["notifications"])) {
+                this.notifications = [] as any;
+                for (let item of _data["notifications"])
+                    this.notifications!.push(EmployeeTenantNotificationItem.fromJS(item));
+            }
         }
     }
 
@@ -12155,15 +12099,63 @@ export class EmployeeNotificationDto implements IEmployeeNotificationDto {
 
     toJSON(data?: any) {
         data = typeof data === 'object' ? data : {};
-        data["notification"] = this.notification;
         data["tenantId"] = this.tenantId;
+        if (Array.isArray(this.notifications)) {
+            data["notifications"] = [];
+            for (let item of this.notifications)
+                data["notifications"].push(item.toJSON());
+        }
         return data;
     }
 }
 
 export interface IEmployeeNotificationDto {
-    notification?: Notification;
     tenantId?: number | undefined;
+    notifications?: EmployeeTenantNotificationItem[] | undefined;
+}
+
+export class EmployeeTenantNotificationItem implements IEmployeeTenantNotificationItem {
+    notificationId?: number;
+    notificationName?: string | undefined;
+    enabled?: boolean;
+
+    constructor(data?: IEmployeeTenantNotificationItem) {
+        if (data) {
+            for (var property in data) {
+                if (data.hasOwnProperty(property))
+                    (<any>this)[property] = (<any>data)[property];
+            }
+        }
+    }
+
+    init(_data?: any) {
+        if (_data) {
+            this.notificationId = _data["notificationId"];
+            this.notificationName = _data["notificationName"];
+            this.enabled = _data["enabled"];
+        }
+    }
+
+    static fromJS(data: any): EmployeeTenantNotificationItem {
+        data = typeof data === 'object' ? data : {};
+        let result = new EmployeeTenantNotificationItem();
+        result.init(data);
+        return result;
+    }
+
+    toJSON(data?: any) {
+        data = typeof data === 'object' ? data : {};
+        data["notificationId"] = this.notificationId;
+        data["notificationName"] = this.notificationName;
+        data["enabled"] = this.enabled;
+        return data;
+    }
+}
+
+export interface IEmployeeTenantNotificationItem {
+    notificationId?: number;
+    notificationName?: string | undefined;
+    enabled?: boolean;
 }
 
 export class EnumEntityTypeDto implements IEnumEntityTypeDto {
@@ -12423,11 +12415,6 @@ export interface INewWorkflowCreatedDto {
 export enum NonStandardTerminationTime {
     BeforeEndOfContract = 1,
     ContractDidNotStart = 2,
-}
-
-export enum Notification {
-    ConsultantStart = 1,
-    ConsultantExtension = 2,
 }
 
 export class PeriodClientSpecialFeeDto implements IPeriodClientSpecialFeeDto {
