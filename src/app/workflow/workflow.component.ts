@@ -137,7 +137,7 @@ export class WorkflowComponent extends AppComopnentBase implements OnInit, OnDes
                         this.hideMainSpinner();
                     }))
                     .subscribe(result => {
-                        this.router.navigate(['/main/workflow', result.workflowId]);
+                        this.router.navigate(['/app/workflow', result.workflowId]);
                     });
             }
         });

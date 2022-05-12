@@ -17,8 +17,8 @@ import * as ApiServiceProxies from './service-proxies';
         ApiServiceProxies.ClientPeriodServiceProxy,
         ApiServiceProxies.SpecialRatesServiceProxy,
         ApiServiceProxies.SpecialFeesServiceProxy,
-        ApiServiceProxies.SalesServiceProxy,
-        ApiServiceProxies.ContractsServiceProxy,
+        ApiServiceProxies.ClientSalesServiceProxy,
+        ApiServiceProxies.ClientContractsServiceProxy,
         ApiServiceProxies.EmployeeNotificationServiceProxy,
         {
             provide: HTTP_INTERCEPTORS,

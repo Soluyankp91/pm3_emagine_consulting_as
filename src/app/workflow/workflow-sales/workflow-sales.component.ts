@@ -12,7 +12,7 @@ import { debounceTime, finalize, map, switchMap, takeUntil } from 'rxjs/operator
 import { InternalLookupService } from 'src/app/shared/common/internal-lookup.service';
 import { ConfirmationDialogComponent } from 'src/app/shared/components/confirmation-dialog/confirmation-dialog.component';
 import { AppComopnentBase, NotifySeverity } from 'src/shared/app-component-base';
-import { ClientPeriodSalesDataDto, ClientPeriodServiceProxy, ClientRateDto, CommissionDto, ConsultantRateDto, ConsultantSalesDataDto, ContractSignerDto, EmployeeDto, EnumEntityTypeDto, EnumServiceProxy, LookupServiceProxy, PeriodClientSpecialFeeDto, PeriodClientSpecialRateDto, SalesClientDataDto, SalesMainDataDto, WorkflowProcessType, WorkflowServiceProxy, ConsultantResultDto, ClientResultDto, ContactResultDto, ConsultantTerminationSalesDataCommandDto, WorkflowTerminationSalesDataCommandDto, PeriodConsultantSpecialFeeDto, PeriodConsultantSpecialRateDto, SalesServiceProxy, ClientSpecialRateDto, ClientsServiceProxy, ClientSpecialFeeDto } from 'src/shared/service-proxies/service-proxies';
+import { ClientPeriodSalesDataDto, ClientPeriodServiceProxy, ClientRateDto, CommissionDto, ConsultantRateDto, ConsultantSalesDataDto, ContractSignerDto, EmployeeDto, EnumEntityTypeDto, EnumServiceProxy, LookupServiceProxy, PeriodClientSpecialFeeDto, PeriodClientSpecialRateDto, SalesClientDataDto, SalesMainDataDto, WorkflowProcessType, WorkflowServiceProxy, ConsultantResultDto, ClientResultDto, ContactResultDto, ConsultantTerminationSalesDataCommandDto, WorkflowTerminationSalesDataCommandDto, PeriodConsultantSpecialFeeDto, PeriodConsultantSpecialRateDto, ClientSpecialRateDto, ClientsServiceProxy, ClientSpecialFeeDto, ClientSalesServiceProxy } from 'src/shared/service-proxies/service-proxies';
 import { WorkflowConsultantActionsDialogComponent } from '../workflow-consultant-actions-dialog/workflow-consultant-actions-dialog.component';
 import { WorkflowDataService } from '../workflow-data.service';
 import { ConsultantDiallogAction, SalesTerminateConsultantForm, TenantList, WorkflowSalesAdditionalDataForm, WorkflowSalesClientDataForm, WorkflowSalesConsultantsForm, WorkflowSalesMainForm } from './workflow-sales.model';
@@ -140,7 +140,7 @@ export class WorkflowSalesComponent extends AppComopnentBase implements OnInit {
         private _lookupService: LookupServiceProxy,
         private _clientPeriodService: ClientPeriodServiceProxy,
         private _workflowServiceProxy: WorkflowServiceProxy,
-        private _salesService: SalesServiceProxy,
+        private _clientSalesService: ClientSalesServiceProxy,
         private _clientService: ClientsServiceProxy
     ) {
         super(injector);
@@ -1575,7 +1575,7 @@ export class WorkflowSalesComponent extends AppComopnentBase implements OnInit {
         }
         this.showMainSpinner();
         if (isDraft) {
-            this._clientPeriodService.salesPut(this.clientPeriodId!, input)
+            this._clientPeriodService.clientSalesPut(this.clientPeriodId!, input)
                 .pipe(finalize(() => {
                     this.hideMainSpinner();
                 }))
@@ -1583,7 +1583,7 @@ export class WorkflowSalesComponent extends AppComopnentBase implements OnInit {
                     this.showNotify(NotifySeverity.Success, 'Saved sales step', 'Okay');
                 })
         } else {
-            this._salesService.editFinishPost1(this.clientPeriodId!, input)
+            this._clientSalesService.editFinish(this.clientPeriodId!, input)
                 .pipe(finalize(() => {
                     this.hideMainSpinner();
                 }))
@@ -1596,7 +1596,7 @@ export class WorkflowSalesComponent extends AppComopnentBase implements OnInit {
 
     getWorkflowSalesStep() {
         this.showMainSpinner();
-        this._clientPeriodService.salesGet(this.clientPeriodId!)
+        this._clientPeriodService.clientSalesGet(this.clientPeriodId!)
             .pipe(finalize(() => {
                 this.hideMainSpinner();
             }))
@@ -1610,7 +1610,7 @@ export class WorkflowSalesComponent extends AppComopnentBase implements OnInit {
                 this.salesMainDataForm.projectDescription?.setValue(result?.salesMainData?.projectDescription, {emitEvent: false});
 
                 // Invoicing
-                result.salesMainData?.commissions?.forEach(commission => {
+                result.salesMainData?.commissions?.forEach((commission: CommissionDto) => {
                     this.addCommission(commission);
                 })
                 this.salesMainDataForm.discounts?.setValue(this.findItemById(this.discounts, result?.salesMainData?.discountId ?? 1), {emitEvent: false}); // 1 - default value 'None'
@@ -1686,11 +1686,11 @@ export class WorkflowSalesComponent extends AppComopnentBase implements OnInit {
                 }
 
                 // Rates & Fees
-                result.salesClientData?.periodClientSpecialRates?.forEach(specialRate => {
+                result.salesClientData?.periodClientSpecialRates?.forEach((specialRate: PeriodClientSpecialRateDto) => {
                     this.addSpecialRate(specialRate);
                 });
 
-                result.salesClientData?.periodClientSpecialFees?.forEach(specialFee => {
+                result.salesClientData?.periodClientSpecialFees?.forEach((specialFee: PeriodClientSpecialFeeDto) => {
                     this.addClientFee(specialFee);
                 });
 
@@ -1704,7 +1704,7 @@ export class WorkflowSalesComponent extends AppComopnentBase implements OnInit {
                 if (result?.salesClientData?.noSpecialContractTerms) {
                     this.salesClientDataForm.specialContractTerms?.disable();
                 }
-                result?.salesClientData?.contractSigners?.forEach(signer => {
+                result?.salesClientData?.contractSigners?.forEach((signer: ContractSignerDto) => {
                     this.addSignerToForm(signer);
                 });
 

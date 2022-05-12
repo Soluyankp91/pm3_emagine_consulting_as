@@ -15,7 +15,7 @@ export class NotificationComponent implements OnInit {
     notificationTenantsForm: NotificationTenantsForm;
     tenantWithNotifications = NotificationResponse;
     constructor(
-        private _lookupService: InternalLookupService,
+        private _internalLookupService: InternalLookupService,
         private _fb: FormBuilder,
         private _notificationService: EmployeeNotificationServiceProxy
     ) {
@@ -38,7 +38,7 @@ export class NotificationComponent implements OnInit {
     }
 
     getTenants() {
-        this._lookupService.getTenants()
+        this._internalLookupService.getTenants()
             .pipe(finalize(() => {
 
             }))

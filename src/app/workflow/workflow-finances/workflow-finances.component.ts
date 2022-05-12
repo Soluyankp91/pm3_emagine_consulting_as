@@ -56,13 +56,13 @@ export class WorkflowFinancesComponent extends AppComopnentBase implements OnIni
 
     getFinancesStep() {
         this.showMainSpinner();
-        this._clientPeriodSerivce.financeGet(this.clientPeriodId!)
+        this._clientPeriodSerivce.clientFinanceGet(this.clientPeriodId!)
             .pipe(finalize(() => this.hideMainSpinner()))
             .subscribe(result => {
                 this.financesClientForm.clientCreatedInNavision?.setValue(result.debtorCreatedInNavision, {emitEvent: false});
                 this.financesClientForm.differentDebtorNumberForInvoicing?.setValue(result.differentDebtorNumberForInvoicing, {emitEvent: false});
                 this.financesClientForm.customDebtorNumber?.setValue(result.customDebtorNumber, {emitEvent: false});
-                result?.consultantFinanceData?.forEach(consultant => this.addConsultantToForm(consultant));
+                result?.consultantFinanceData?.forEach((consultant: ConsultantPeriodFinanceDataDto) => this.addConsultantToForm(consultant));
             });
     }
     
