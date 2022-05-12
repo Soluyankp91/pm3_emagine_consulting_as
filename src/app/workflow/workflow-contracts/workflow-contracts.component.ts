@@ -641,8 +641,7 @@ export class WorkflowContractsComponent extends AppComopnentBase implements OnIn
     createOrEditProjectLine(index: number, projectLinesIndex?: number) {
         const scrollStrategy = this.overlay.scrollStrategies.reposition();
         let projectLine = {
-            // projectName: this.contractsMainForm.projectDescription!.value,
-            projectName: 'this.contractsMainForm.projectDescription!.value this.contractsMainForm.projectDescription!.value this.contractsMainForm.projectDescription!.value this.contractsMainForm.projectDescription!.value this.contractsMainForm.projectDescription!.value this.contractsMainForm.projectDescription!.value this.contractsMainForm.projectDescription!.value',
+            projectName: this.contractsMainForm.projectDescription!.value,
             // startDate: this.contractsConsultantsDataForm.consultants.at(index).get('startDate')?.value,
             // endDate: this.contractsConsultantsDataForm.consultants.at(index).get('endDate')?.value
         };
