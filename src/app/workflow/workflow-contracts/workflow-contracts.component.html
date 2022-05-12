@@ -1119,12 +1119,11 @@
                                         </div>
                                     </div>
                                 </div>
-                                <!-- TODO: ADD WHEN paymentTypeId will be added on BE -->
-                                <!-- <div fxlayout="row" fxLayoutAlign="start center" class="u-mb--10" *ngIf="!readOnlyMode">
+                                <div fxlayout="row" fxLayoutAlign="start center" class="u-mb--10" *ngIf="!readOnlyMode && (contractClientForm.pdcInvoicingEntityId?.value !== consultant?.value?.pdcPaymentEntityId)">
                                     <button class="button-outlined  u-mr--20" mat-flat-button>
                                         Open contract module for internal contract
                                     </button>
-                                </div> -->
+                                </div>
                                 <div fxlayout="row" fxLayoutAlign="start center" class="u-mb--10" *ngIf="!readOnlyMode">
                                     <button class="button-outlined  u-mr--20" disabled mat-flat-button>
                                         Open contract module for consultant
