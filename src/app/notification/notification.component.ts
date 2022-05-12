@@ -77,6 +77,7 @@ export class NotificationComponent extends AppComopnentBase implements OnInit {
     }
 
     checkAll(value: boolean, tenantId: number) {
+        console.log('ss');
         const tenant = this.tenantWithNotifications.find(x => x.tenantId === tenantId);
         tenant?.notifications?.forEach(x => {
             x.enabled = value
@@ -99,16 +100,14 @@ export class NotificationComponent extends AppComopnentBase implements OnInit {
 
     addNotification(notificationId: number, tenantId: number | undefined) {
         this._notificationService.addNotification(notificationId, tenantId)
-            .pipe(finalize(() => {
-
-            }));
+            .pipe(finalize(() => {}))
+            .subscribe();
     }
 
     deleteNotification(notificationId: number, tenantId: number | undefined) {
         this._notificationService.removeNotification(notificationId, tenantId)
-            .pipe(finalize(() => {
-
-            }));
+            .pipe(finalize(() => {}))
+            .subscribe();
     }
 
 }
