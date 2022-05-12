@@ -222,9 +222,9 @@ export enum WorkflowFlag {
 export const WorkflowList = [
     {
         flag: WorkflowFlag.NewSales,
-        id: 'da2a75fe-2607-42de-a129-b341d927e45f',
+        id: '0f1ad118-d1fb-4232-af24-aca0c6f89bac',
 
-        client: 'saved sales',
+        client: 'new WF',
         consultants: [
             { name: 'Martha Marikel' },
             { name: 'John Doe'}

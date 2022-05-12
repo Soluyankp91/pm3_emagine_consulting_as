@@ -59,7 +59,7 @@ export class WorkflowDetailsComponent extends AppComopnentBase implements OnInit
         private dialog: MatDialog,
         private scrollDispatcher: ScrollDispatcher,
         private zone: NgZone,
-        private _lookupService: InternalLookupService,
+        private _internalLookupService: InternalLookupService,
         private _workflowServiceProxy: WorkflowServiceProxy
     ) {
         super(injector);
@@ -71,7 +71,7 @@ export class WorkflowDetailsComponent extends AppComopnentBase implements OnInit
         ).subscribe(params => {
             this.workflowId = params.get('id')!;
         });
-        this._lookupService.getData();
+        this._internalLookupService.getData();
         this.getTopLevelMenu();
         this.getClientPeriodTypes();
         this.getConsultantPeriodTypes();
@@ -79,7 +79,7 @@ export class WorkflowDetailsComponent extends AppComopnentBase implements OnInit
     }
 
     getClientPeriodTypes() {
-        this._lookupService.getWorkflowClientPeriodTypes()
+        this._internalLookupService.getWorkflowClientPeriodTypes()
             .pipe(finalize(() => {
 
             }))
@@ -89,7 +89,7 @@ export class WorkflowDetailsComponent extends AppComopnentBase implements OnInit
     }
 
     getConsultantPeriodTypes() {
-        this._lookupService.getWorkflowConsultantPeriodTypes()
+        this._internalLookupService.getWorkflowConsultantPeriodTypes()
             .pipe(finalize(() => {
 
             }))
@@ -99,7 +99,7 @@ export class WorkflowDetailsComponent extends AppComopnentBase implements OnInit
     }
 
     getPeriodStepTypes() {
-        this._lookupService.getWorkflowPeriodStepTypes()
+        this._internalLookupService.getWorkflowPeriodStepTypes()
             .pipe(finalize(() => {
 
             }))
