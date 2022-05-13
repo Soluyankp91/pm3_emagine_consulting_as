@@ -378,6 +378,66 @@ export class ClientDocumentsServiceProxy {
     /**
      * @return Success
      */
+    contractDocuments(clientId: number, includeLinkedClients: boolean, includeExpired: boolean): Observable<ClientContractViewRootDto> {
+        let url_ = this.baseUrl + "/api/ClientDocuments/{clientId}/ContractDocuments/{includeLinkedClients}/{includeExpired}";
+        if (clientId === undefined || clientId === null)
+            throw new Error("The parameter 'clientId' must be defined.");
+        url_ = url_.replace("{clientId}", encodeURIComponent("" + clientId));
+        if (includeLinkedClients === undefined || includeLinkedClients === null)
+            throw new Error("The parameter 'includeLinkedClients' must be defined.");
+        url_ = url_.replace("{includeLinkedClients}", encodeURIComponent("" + includeLinkedClients));
+        if (includeExpired === undefined || includeExpired === null)
+            throw new Error("The parameter 'includeExpired' must be defined.");
+        url_ = url_.replace("{includeExpired}", encodeURIComponent("" + includeExpired));
+        url_ = url_.replace(/[?&]$/, "");
+
+        let options_ : any = {
+            observe: "response",
+            responseType: "blob",
+            headers: new HttpHeaders({
+                "Accept": "text/plain"
+            })
+        };
+
+        return this.http.request("get", url_, options_).pipe(_observableMergeMap((response_ : any) => {
+            return this.processContractDocuments(response_);
+        })).pipe(_observableCatch((response_: any) => {
+            if (response_ instanceof HttpResponseBase) {
+                try {
+                    return this.processContractDocuments(response_ as any);
+                } catch (e) {
+                    return _observableThrow(e) as any as Observable<ClientContractViewRootDto>;
+                }
+            } else
+                return _observableThrow(response_) as any as Observable<ClientContractViewRootDto>;
+        }));
+    }
+
+    protected processContractDocuments(response: HttpResponseBase): Observable<ClientContractViewRootDto> {
+        const status = response.status;
+        const responseBlob =
+            response instanceof HttpResponse ? response.body :
+            (response as any).error instanceof Blob ? (response as any).error : undefined;
+
+        let _headers: any = {}; if (response.headers) { for (let key of response.headers.keys()) { _headers[key] = response.headers.get(key); }}
+        if (status === 200) {
+            return blobToText(responseBlob).pipe(_observableMergeMap(_responseText => {
+            let result200: any = null;
+            let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
+            result200 = ClientContractViewRootDto.fromJS(resultData200);
+            return _observableOf(result200);
+            }));
+        } else if (status !== 200 && status !== 204) {
+            return blobToText(responseBlob).pipe(_observableMergeMap(_responseText => {
+            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+            }));
+        }
+        return _observableOf<ClientContractViewRootDto>(null as any);
+    }
+
+    /**
+     * @return Success
+     */
     generalAttachments(clientId: number, includeLinkedClients: boolean): Observable<ClientAttachmentInfoOutputDto[]> {
         let url_ = this.baseUrl + "/api/ClientDocuments/{clientId}/GeneralAttachments/{includeLinkedClients}";
         if (clientId === undefined || clientId === null)
@@ -2519,6 +2579,117 @@ export class ApiServiceProxy {
             }));
         }
         return _observableOf<ClientDetailsDto>(null as any);
+    }
+
+    /**
+     * @param lastPeriodMainOverviewStatusForSales (optional) 
+     * @param accountManagers (optional) 
+     * @param invoicingEntity (optional) 
+     * @param paymentEntity (optional) 
+     * @param salesTypes (optional) 
+     * @param deliveryTypes (optional) 
+     * @param margins (optional) 
+     * @param search (optional) 
+     * @param cutOffDate (optional) 
+     * @param pageNumber (optional) 
+     * @param pageSize (optional) 
+     * @param sort (optional) 
+     * @return Success
+     */
+    mainOverview(lastPeriodMainOverviewStatusForSales?: MainOverviewStatus | undefined, accountManagers?: number[] | undefined, invoicingEntity?: number | undefined, paymentEntity?: number | undefined, salesTypes?: number[] | undefined, deliveryTypes?: number[] | undefined, margins?: number[] | undefined, search?: string | undefined, cutOffDate?: moment.Moment | undefined, pageNumber?: number | undefined, pageSize?: number | undefined, sort?: string | undefined): Observable<MainOverviewItemDtoPaginatedList> {
+        let url_ = this.baseUrl + "/api/MainOverview?";
+        if (lastPeriodMainOverviewStatusForSales === null)
+            throw new Error("The parameter 'lastPeriodMainOverviewStatusForSales' cannot be null.");
+        else if (lastPeriodMainOverviewStatusForSales !== undefined)
+            url_ += "LastPeriodMainOverviewStatusForSales=" + encodeURIComponent("" + lastPeriodMainOverviewStatusForSales) + "&";
+        if (accountManagers === null)
+            throw new Error("The parameter 'accountManagers' cannot be null.");
+        else if (accountManagers !== undefined)
+            accountManagers && accountManagers.forEach(item => { url_ += "AccountManagers=" + encodeURIComponent("" + item) + "&"; });
+        if (invoicingEntity === null)
+            throw new Error("The parameter 'invoicingEntity' cannot be null.");
+        else if (invoicingEntity !== undefined)
+            url_ += "InvoicingEntity=" + encodeURIComponent("" + invoicingEntity) + "&";
+        if (paymentEntity === null)
+            throw new Error("The parameter 'paymentEntity' cannot be null.");
+        else if (paymentEntity !== undefined)
+            url_ += "PaymentEntity=" + encodeURIComponent("" + paymentEntity) + "&";
+        if (salesTypes === null)
+            throw new Error("The parameter 'salesTypes' cannot be null.");
+        else if (salesTypes !== undefined)
+            salesTypes && salesTypes.forEach(item => { url_ += "SalesTypes=" + encodeURIComponent("" + item) + "&"; });
+        if (deliveryTypes === null)
+            throw new Error("The parameter 'deliveryTypes' cannot be null.");
+        else if (deliveryTypes !== undefined)
+            deliveryTypes && deliveryTypes.forEach(item => { url_ += "DeliveryTypes=" + encodeURIComponent("" + item) + "&"; });
+        if (margins === null)
+            throw new Error("The parameter 'margins' cannot be null.");
+        else if (margins !== undefined)
+            margins && margins.forEach(item => { url_ += "Margins=" + encodeURIComponent("" + item) + "&"; });
+        if (search === null)
+            throw new Error("The parameter 'search' cannot be null.");
+        else if (search !== undefined)
+            url_ += "Search=" + encodeURIComponent("" + search) + "&";
+        if (cutOffDate === null)
+            throw new Error("The parameter 'cutOffDate' cannot be null.");
+        else if (cutOffDate !== undefined)
+            url_ += "CutOffDate=" + encodeURIComponent(cutOffDate ? "" + cutOffDate.toISOString() : "") + "&";
+        if (pageNumber === null)
+            throw new Error("The parameter 'pageNumber' cannot be null.");
+        else if (pageNumber !== undefined)
+            url_ += "PageNumber=" + encodeURIComponent("" + pageNumber) + "&";
+        if (pageSize === null)
+            throw new Error("The parameter 'pageSize' cannot be null.");
+        else if (pageSize !== undefined)
+            url_ += "PageSize=" + encodeURIComponent("" + pageSize) + "&";
+        if (sort === null)
+            throw new Error("The parameter 'sort' cannot be null.");
+        else if (sort !== undefined)
+            url_ += "Sort=" + encodeURIComponent("" + sort) + "&";
+        url_ = url_.replace(/[?&]$/, "");
+
+        let options_ : any = {
+            observe: "response",
+            responseType: "blob",
+            headers: new HttpHeaders({
+                "Accept": "text/plain"
+            })
+        };
+
+        return this.http.request("get", url_, options_).pipe(_observableMergeMap((response_ : any) => {
+            return this.processMainOverview(response_);
+        })).pipe(_observableCatch((response_: any) => {
+            if (response_ instanceof HttpResponseBase) {
+                try {
+                    return this.processMainOverview(response_ as any);
+                } catch (e) {
+                    return _observableThrow(e) as any as Observable<MainOverviewItemDtoPaginatedList>;
+                }
+            } else
+                return _observableThrow(response_) as any as Observable<MainOverviewItemDtoPaginatedList>;
+        }));
+    }
+
+    protected processMainOverview(response: HttpResponseBase): Observable<MainOverviewItemDtoPaginatedList> {
+        const status = response.status;
+        const responseBlob =
+            response instanceof HttpResponse ? response.body :
+            (response as any).error instanceof Blob ? (response as any).error : undefined;
+
+        let _headers: any = {}; if (response.headers) { for (let key of response.headers.keys()) { _headers[key] = response.headers.get(key); }}
+        if (status === 200) {
+            return blobToText(responseBlob).pipe(_observableMergeMap(_responseText => {
+            let result200: any = null;
+            let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
+            result200 = MainOverviewItemDtoPaginatedList.fromJS(resultData200);
+            return _observableOf(result200);
+            }));
+        } else if (status !== 200 && status !== 204) {
+            return blobToText(responseBlob).pipe(_observableMergeMap(_responseText => {
+            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+            }));
+        }
+        return _observableOf<MainOverviewItemDtoPaginatedList>(null as any);
     }
 
     /**
@@ -5072,6 +5243,186 @@ export class EnumServiceProxy {
     /**
      * @return Success
      */
+    mainOverviewUserSelectedStatuses(): Observable<{ [key: string]: string; }> {
+        let url_ = this.baseUrl + "/api/Enum/main-overview-user-selected-statuses";
+        url_ = url_.replace(/[?&]$/, "");
+
+        let options_ : any = {
+            observe: "response",
+            responseType: "blob",
+            headers: new HttpHeaders({
+                "Accept": "text/plain"
+            })
+        };
+
+        return this.http.request("get", url_, options_).pipe(_observableMergeMap((response_ : any) => {
+            return this.processMainOverviewUserSelectedStatuses(response_);
+        })).pipe(_observableCatch((response_: any) => {
+            if (response_ instanceof HttpResponseBase) {
+                try {
+                    return this.processMainOverviewUserSelectedStatuses(response_ as any);
+                } catch (e) {
+                    return _observableThrow(e) as any as Observable<{ [key: string]: string; }>;
+                }
+            } else
+                return _observableThrow(response_) as any as Observable<{ [key: string]: string; }>;
+        }));
+    }
+
+    protected processMainOverviewUserSelectedStatuses(response: HttpResponseBase): Observable<{ [key: string]: string; }> {
+        const status = response.status;
+        const responseBlob =
+            response instanceof HttpResponse ? response.body :
+            (response as any).error instanceof Blob ? (response as any).error : undefined;
+
+        let _headers: any = {}; if (response.headers) { for (let key of response.headers.keys()) { _headers[key] = response.headers.get(key); }}
+        if (status === 200) {
+            return blobToText(responseBlob).pipe(_observableMergeMap(_responseText => {
+            let result200: any = null;
+            let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
+            if (resultData200) {
+                result200 = {} as any;
+                for (let key in resultData200) {
+                    if (resultData200.hasOwnProperty(key))
+                        (<any>result200)![key] = resultData200[key] !== undefined ? resultData200[key] : <any>null;
+                }
+            }
+            else {
+                result200 = <any>null;
+            }
+            return _observableOf(result200);
+            }));
+        } else if (status !== 200 && status !== 204) {
+            return blobToText(responseBlob).pipe(_observableMergeMap(_responseText => {
+            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+            }));
+        }
+        return _observableOf<{ [key: string]: string; }>(null as any);
+    }
+
+    /**
+     * @return Success
+     */
+    mainOverviewAutomaticStatuses(): Observable<{ [key: string]: string; }> {
+        let url_ = this.baseUrl + "/api/Enum/main-overview-automatic-statuses";
+        url_ = url_.replace(/[?&]$/, "");
+
+        let options_ : any = {
+            observe: "response",
+            responseType: "blob",
+            headers: new HttpHeaders({
+                "Accept": "text/plain"
+            })
+        };
+
+        return this.http.request("get", url_, options_).pipe(_observableMergeMap((response_ : any) => {
+            return this.processMainOverviewAutomaticStatuses(response_);
+        })).pipe(_observableCatch((response_: any) => {
+            if (response_ instanceof HttpResponseBase) {
+                try {
+                    return this.processMainOverviewAutomaticStatuses(response_ as any);
+                } catch (e) {
+                    return _observableThrow(e) as any as Observable<{ [key: string]: string; }>;
+                }
+            } else
+                return _observableThrow(response_) as any as Observable<{ [key: string]: string; }>;
+        }));
+    }
+
+    protected processMainOverviewAutomaticStatuses(response: HttpResponseBase): Observable<{ [key: string]: string; }> {
+        const status = response.status;
+        const responseBlob =
+            response instanceof HttpResponse ? response.body :
+            (response as any).error instanceof Blob ? (response as any).error : undefined;
+
+        let _headers: any = {}; if (response.headers) { for (let key of response.headers.keys()) { _headers[key] = response.headers.get(key); }}
+        if (status === 200) {
+            return blobToText(responseBlob).pipe(_observableMergeMap(_responseText => {
+            let result200: any = null;
+            let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
+            if (resultData200) {
+                result200 = {} as any;
+                for (let key in resultData200) {
+                    if (resultData200.hasOwnProperty(key))
+                        (<any>result200)![key] = resultData200[key] !== undefined ? resultData200[key] : <any>null;
+                }
+            }
+            else {
+                result200 = <any>null;
+            }
+            return _observableOf(result200);
+            }));
+        } else if (status !== 200 && status !== 204) {
+            return blobToText(responseBlob).pipe(_observableMergeMap(_responseText => {
+            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+            }));
+        }
+        return _observableOf<{ [key: string]: string; }>(null as any);
+    }
+
+    /**
+     * @return Success
+     */
+    mainOverviewStatuses(): Observable<{ [key: string]: string; }> {
+        let url_ = this.baseUrl + "/api/Enum/main-overview-statuses";
+        url_ = url_.replace(/[?&]$/, "");
+
+        let options_ : any = {
+            observe: "response",
+            responseType: "blob",
+            headers: new HttpHeaders({
+                "Accept": "text/plain"
+            })
+        };
+
+        return this.http.request("get", url_, options_).pipe(_observableMergeMap((response_ : any) => {
+            return this.processMainOverviewStatuses(response_);
+        })).pipe(_observableCatch((response_: any) => {
+            if (response_ instanceof HttpResponseBase) {
+                try {
+                    return this.processMainOverviewStatuses(response_ as any);
+                } catch (e) {
+                    return _observableThrow(e) as any as Observable<{ [key: string]: string; }>;
+                }
+            } else
+                return _observableThrow(response_) as any as Observable<{ [key: string]: string; }>;
+        }));
+    }
+
+    protected processMainOverviewStatuses(response: HttpResponseBase): Observable<{ [key: string]: string; }> {
+        const status = response.status;
+        const responseBlob =
+            response instanceof HttpResponse ? response.body :
+            (response as any).error instanceof Blob ? (response as any).error : undefined;
+
+        let _headers: any = {}; if (response.headers) { for (let key of response.headers.keys()) { _headers[key] = response.headers.get(key); }}
+        if (status === 200) {
+            return blobToText(responseBlob).pipe(_observableMergeMap(_responseText => {
+            let result200: any = null;
+            let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
+            if (resultData200) {
+                result200 = {} as any;
+                for (let key in resultData200) {
+                    if (resultData200.hasOwnProperty(key))
+                        (<any>result200)![key] = resultData200[key] !== undefined ? resultData200[key] : <any>null;
+                }
+            }
+            else {
+                result200 = <any>null;
+            }
+            return _observableOf(result200);
+            }));
+        } else if (status !== 200 && status !== 204) {
+            return blobToText(responseBlob).pipe(_observableMergeMap(_responseText => {
+            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+            }));
+        }
+        return _observableOf<{ [key: string]: string; }>(null as any);
+    }
+
+    /**
+     * @return Success
+     */
     stepTypes(): Observable<{ [key: string]: string; }> {
         let url_ = this.baseUrl + "/api/Enum/step-types";
         url_ = url_.replace(/[?&]$/, "");
@@ -7063,6 +7414,75 @@ export class LookupServiceProxy {
             }));
         }
         return _observableOf<ContactResultDto[]>(null as any);
+    }
+}
+
+@Injectable()
+export class MainOverviewServiceProxy {
+    private http: HttpClient;
+    private baseUrl: string;
+    protected jsonParseReviver: ((key: string, value: any) => any) | undefined = undefined;
+
+    constructor(@Inject(HttpClient) http: HttpClient, @Optional() @Inject(API_BASE_URL) baseUrl?: string) {
+        this.http = http;
+        this.baseUrl = baseUrl !== undefined && baseUrl !== null ? baseUrl : "";
+    }
+
+    /**
+     * @return Success
+     */
+    setUserSelectedStatus(workflowId: string, mainOverviewUserSelectedStatus: MainOverviewUserSelectedStatus): Observable<MainOverviewItemDtoPaginatedList> {
+        let url_ = this.baseUrl + "/api/MainOverview/{workflowId}/setUserSelectedStatus/{mainOverviewUserSelectedStatus}";
+        if (workflowId === undefined || workflowId === null)
+            throw new Error("The parameter 'workflowId' must be defined.");
+        url_ = url_.replace("{workflowId}", encodeURIComponent("" + workflowId));
+        if (mainOverviewUserSelectedStatus === undefined || mainOverviewUserSelectedStatus === null)
+            throw new Error("The parameter 'mainOverviewUserSelectedStatus' must be defined.");
+        url_ = url_.replace("{mainOverviewUserSelectedStatus}", encodeURIComponent("" + mainOverviewUserSelectedStatus));
+        url_ = url_.replace(/[?&]$/, "");
+
+        let options_ : any = {
+            observe: "response",
+            responseType: "blob",
+            headers: new HttpHeaders({
+                "Accept": "text/plain"
+            })
+        };
+
+        return this.http.request("post", url_, options_).pipe(_observableMergeMap((response_ : any) => {
+            return this.processSetUserSelectedStatus(response_);
+        })).pipe(_observableCatch((response_: any) => {
+            if (response_ instanceof HttpResponseBase) {
+                try {
+                    return this.processSetUserSelectedStatus(response_ as any);
+                } catch (e) {
+                    return _observableThrow(e) as any as Observable<MainOverviewItemDtoPaginatedList>;
+                }
+            } else
+                return _observableThrow(response_) as any as Observable<MainOverviewItemDtoPaginatedList>;
+        }));
+    }
+
+    protected processSetUserSelectedStatus(response: HttpResponseBase): Observable<MainOverviewItemDtoPaginatedList> {
+        const status = response.status;
+        const responseBlob =
+            response instanceof HttpResponse ? response.body :
+            (response as any).error instanceof Blob ? (response as any).error : undefined;
+
+        let _headers: any = {}; if (response.headers) { for (let key of response.headers.keys()) { _headers[key] = response.headers.get(key); }}
+        if (status === 200) {
+            return blobToText(responseBlob).pipe(_observableMergeMap(_responseText => {
+            let result200: any = null;
+            let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
+            result200 = MainOverviewItemDtoPaginatedList.fromJS(resultData200);
+            return _observableOf(result200);
+            }));
+        } else if (status !== 200 && status !== 204) {
+            return blobToText(responseBlob).pipe(_observableMergeMap(_responseText => {
+            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+            }));
+        }
+        return _observableOf<MainOverviewItemDtoPaginatedList>(null as any);
     }
 }
 
@@ -9214,6 +9634,126 @@ export enum ClientAttachmentTypeEnum {
     BiddingMaterials = 290,
 }
 
+export class ClientContractBaseDto implements IClientContractBaseDto {
+    id?: string;
+    name?: string | undefined;
+    startDate?: moment.Moment | undefined;
+    endDate?: string | undefined;
+    statusColorEnum?: ContractPaperStatusColorEnum;
+    documents?: ContractDocumentInfoDto[] | undefined;
+
+    constructor(data?: IClientContractBaseDto) {
+        if (data) {
+            for (var property in data) {
+                if (data.hasOwnProperty(property))
+                    (<any>this)[property] = (<any>data)[property];
+            }
+        }
+    }
+
+    init(_data?: any) {
+        if (_data) {
+            this.id = _data["id"];
+            this.name = _data["name"];
+            this.startDate = _data["startDate"] ? moment(_data["startDate"].toString()) : <any>undefined;
+            this.endDate = _data["endDate"];
+            this.statusColorEnum = _data["statusColorEnum"];
+            if (Array.isArray(_data["documents"])) {
+                this.documents = [] as any;
+                for (let item of _data["documents"])
+                    this.documents!.push(ContractDocumentInfoDto.fromJS(item));
+            }
+        }
+    }
+
+    static fromJS(data: any): ClientContractBaseDto {
+        data = typeof data === 'object' ? data : {};
+        let result = new ClientContractBaseDto();
+        result.init(data);
+        return result;
+    }
+
+    toJSON(data?: any) {
+        data = typeof data === 'object' ? data : {};
+        data["id"] = this.id;
+        data["name"] = this.name;
+        data["startDate"] = this.startDate ? this.startDate.format('YYYY-MM-DD') : <any>undefined;
+        data["endDate"] = this.endDate;
+        data["statusColorEnum"] = this.statusColorEnum;
+        if (Array.isArray(this.documents)) {
+            data["documents"] = [];
+            for (let item of this.documents)
+                data["documents"].push(item.toJSON());
+        }
+        return data;
+    }
+}
+
+export interface IClientContractBaseDto {
+    id?: string;
+    name?: string | undefined;
+    startDate?: moment.Moment | undefined;
+    endDate?: string | undefined;
+    statusColorEnum?: ContractPaperStatusColorEnum;
+    documents?: ContractDocumentInfoDto[] | undefined;
+}
+
+export class ClientContractViewRootDto implements IClientContractViewRootDto {
+    frameAgreements?: ClientContractBaseDto[] | undefined;
+    workflows?: ClientWorkflowTreeItemDto[] | undefined;
+
+    constructor(data?: IClientContractViewRootDto) {
+        if (data) {
+            for (var property in data) {
+                if (data.hasOwnProperty(property))
+                    (<any>this)[property] = (<any>data)[property];
+            }
+        }
+    }
+
+    init(_data?: any) {
+        if (_data) {
+            if (Array.isArray(_data["frameAgreements"])) {
+                this.frameAgreements = [] as any;
+                for (let item of _data["frameAgreements"])
+                    this.frameAgreements!.push(ClientContractBaseDto.fromJS(item));
+            }
+            if (Array.isArray(_data["workflows"])) {
+                this.workflows = [] as any;
+                for (let item of _data["workflows"])
+                    this.workflows!.push(ClientWorkflowTreeItemDto.fromJS(item));
+            }
+        }
+    }
+
+    static fromJS(data: any): ClientContractViewRootDto {
+        data = typeof data === 'object' ? data : {};
+        let result = new ClientContractViewRootDto();
+        result.init(data);
+        return result;
+    }
+
+    toJSON(data?: any) {
+        data = typeof data === 'object' ? data : {};
+        if (Array.isArray(this.frameAgreements)) {
+            data["frameAgreements"] = [];
+            for (let item of this.frameAgreements)
+                data["frameAgreements"].push(item.toJSON());
+        }
+        if (Array.isArray(this.workflows)) {
+            data["workflows"] = [];
+            for (let item of this.workflows)
+                data["workflows"].push(item.toJSON());
+        }
+        return data;
+    }
+}
+
+export interface IClientContractViewRootDto {
+    frameAgreements?: ClientContractBaseDto[] | undefined;
+    workflows?: ClientWorkflowTreeItemDto[] | undefined;
+}
+
 export class ClientDetailsDto implements IClientDetailsDto {
     clientId?: number;
     name?: string | undefined;
@@ -10558,6 +11098,94 @@ export interface IClientWorkflowTrackItemDtoPaginatedList {
     hasNextPage?: boolean;
 }
 
+export class ClientWorkflowTreeItemDto implements IClientWorkflowTreeItemDto {
+    id?: string;
+    name?: string | undefined;
+    startDate?: moment.Moment | undefined;
+    endDate?: string | undefined;
+    statusColorEnum?: ContractPaperStatusColorEnum;
+    clientContracts?: ClientContractBaseDto[] | undefined;
+    consultantContracts?: ClientContractBaseDto[] | undefined;
+    internalContracts?: ClientContractBaseDto[] | undefined;
+
+    constructor(data?: IClientWorkflowTreeItemDto) {
+        if (data) {
+            for (var property in data) {
+                if (data.hasOwnProperty(property))
+                    (<any>this)[property] = (<any>data)[property];
+            }
+        }
+    }
+
+    init(_data?: any) {
+        if (_data) {
+            this.id = _data["id"];
+            this.name = _data["name"];
+            this.startDate = _data["startDate"] ? moment(_data["startDate"].toString()) : <any>undefined;
+            this.endDate = _data["endDate"];
+            this.statusColorEnum = _data["statusColorEnum"];
+            if (Array.isArray(_data["clientContracts"])) {
+                this.clientContracts = [] as any;
+                for (let item of _data["clientContracts"])
+                    this.clientContracts!.push(ClientContractBaseDto.fromJS(item));
+            }
+            if (Array.isArray(_data["consultantContracts"])) {
+                this.consultantContracts = [] as any;
+                for (let item of _data["consultantContracts"])
+                    this.consultantContracts!.push(ClientContractBaseDto.fromJS(item));
+            }
+            if (Array.isArray(_data["internalContracts"])) {
+                this.internalContracts = [] as any;
+                for (let item of _data["internalContracts"])
+                    this.internalContracts!.push(ClientContractBaseDto.fromJS(item));
+            }
+        }
+    }
+
+    static fromJS(data: any): ClientWorkflowTreeItemDto {
+        data = typeof data === 'object' ? data : {};
+        let result = new ClientWorkflowTreeItemDto();
+        result.init(data);
+        return result;
+    }
+
+    toJSON(data?: any) {
+        data = typeof data === 'object' ? data : {};
+        data["id"] = this.id;
+        data["name"] = this.name;
+        data["startDate"] = this.startDate ? this.startDate.format('YYYY-MM-DD') : <any>undefined;
+        data["endDate"] = this.endDate;
+        data["statusColorEnum"] = this.statusColorEnum;
+        if (Array.isArray(this.clientContracts)) {
+            data["clientContracts"] = [];
+            for (let item of this.clientContracts)
+                data["clientContracts"].push(item.toJSON());
+        }
+        if (Array.isArray(this.consultantContracts)) {
+            data["consultantContracts"] = [];
+            for (let item of this.consultantContracts)
+                data["consultantContracts"].push(item.toJSON());
+        }
+        if (Array.isArray(this.internalContracts)) {
+            data["internalContracts"] = [];
+            for (let item of this.internalContracts)
+                data["internalContracts"].push(item.toJSON());
+        }
+        return data;
+    }
+}
+
+export interface IClientWorkflowTreeItemDto {
+    id?: string;
+    name?: string | undefined;
+    startDate?: moment.Moment | undefined;
+    endDate?: string | undefined;
+    statusColorEnum?: ContractPaperStatusColorEnum;
+    clientContracts?: ClientContractBaseDto[] | undefined;
+    consultantContracts?: ClientContractBaseDto[] | undefined;
+    internalContracts?: ClientContractBaseDto[] | undefined;
+}
+
 export class CommissionDto implements ICommissionDto {
     id?: number | undefined;
     commissionTypeId?: number;
@@ -10664,6 +11292,10 @@ export class ConsultantContractsDataDto implements IConsultantContractsDataDto {
     projectLines?: ProjectLineDto[] | undefined;
     readonly internalLegalContractDoneStatusId?: number;
     readonly consultantLegalContractDoneStatusId?: number;
+    startDate?: moment.Moment;
+    noEndDate?: boolean;
+    endDate?: moment.Moment | undefined;
+    pdcPaymentEntityId?: number | undefined;
 
     constructor(data?: IConsultantContractsDataDto) {
         if (data) {
@@ -10705,6 +11337,10 @@ export class ConsultantContractsDataDto implements IConsultantContractsDataDto {
             }
             (<any>this).internalLegalContractDoneStatusId = _data["internalLegalContractDoneStatusId"];
             (<any>this).consultantLegalContractDoneStatusId = _data["consultantLegalContractDoneStatusId"];
+            this.startDate = _data["startDate"] ? moment(_data["startDate"].toString()) : <any>undefined;
+            this.noEndDate = _data["noEndDate"];
+            this.endDate = _data["endDate"] ? moment(_data["endDate"].toString()) : <any>undefined;
+            this.pdcPaymentEntityId = _data["pdcPaymentEntityId"];
         }
     }
 
@@ -10746,6 +11382,10 @@ export class ConsultantContractsDataDto implements IConsultantContractsDataDto {
         }
         data["internalLegalContractDoneStatusId"] = this.internalLegalContractDoneStatusId;
         data["consultantLegalContractDoneStatusId"] = this.consultantLegalContractDoneStatusId;
+        data["startDate"] = this.startDate ? this.startDate.format('YYYY-MM-DD') : <any>undefined;
+        data["noEndDate"] = this.noEndDate;
+        data["endDate"] = this.endDate ? this.endDate.format('YYYY-MM-DD') : <any>undefined;
+        data["pdcPaymentEntityId"] = this.pdcPaymentEntityId;
         return data;
     }
 }
@@ -10768,6 +11408,10 @@ export interface IConsultantContractsDataDto {
     projectLines?: ProjectLineDto[] | undefined;
     internalLegalContractDoneStatusId?: number;
     consultantLegalContractDoneStatusId?: number;
+    startDate?: moment.Moment;
+    noEndDate?: boolean;
+    endDate?: moment.Moment | undefined;
+    pdcPaymentEntityId?: number | undefined;
 }
 
 export class ConsultantPeriodAddDto implements IConsultantPeriodAddDto {
@@ -11734,6 +12378,66 @@ export interface IContactResultDto {
     phone?: string | undefined;
 }
 
+export class ContractDocumentInfoDto implements IContractDocumentInfoDto {
+    documentStorageGuid?: string;
+    name?: string | undefined;
+    type?: ContractDocumentTypeEnum;
+
+    constructor(data?: IContractDocumentInfoDto) {
+        if (data) {
+            for (var property in data) {
+                if (data.hasOwnProperty(property))
+                    (<any>this)[property] = (<any>data)[property];
+            }
+        }
+    }
+
+    init(_data?: any) {
+        if (_data) {
+            this.documentStorageGuid = _data["documentStorageGuid"];
+            this.name = _data["name"];
+            this.type = _data["type"];
+        }
+    }
+
+    static fromJS(data: any): ContractDocumentInfoDto {
+        data = typeof data === 'object' ? data : {};
+        let result = new ContractDocumentInfoDto();
+        result.init(data);
+        return result;
+    }
+
+    toJSON(data?: any) {
+        data = typeof data === 'object' ? data : {};
+        data["documentStorageGuid"] = this.documentStorageGuid;
+        data["name"] = this.name;
+        data["type"] = this.type;
+        return data;
+    }
+}
+
+export interface IContractDocumentInfoDto {
+    documentStorageGuid?: string;
+    name?: string | undefined;
+    type?: ContractDocumentTypeEnum;
+}
+
+export enum ContractDocumentTypeEnum {
+    Misc = 0,
+    Pdf = 1,
+    Word = 2,
+    Image = 3,
+    Excel = 4,
+}
+
+export enum ContractPaperStatusColorEnum {
+    Grey = 0,
+    Green = 1,
+    Yellow = 2,
+    Red = 3,
+    Black = 10,
+}
+
 export class ContractsClientDataDto implements IContractsClientDataDto {
     specialContractTerms?: string | undefined;
     noSpecialContractTerms?: boolean;
@@ -11745,6 +12449,7 @@ export class ContractsClientDataDto implements IContractsClientDataDto {
     noSpecialFee?: boolean;
     periodClientSpecialFees?: PeriodClientSpecialFeeDto[] | undefined;
     directClientId?: number | undefined;
+    pdcInvoicingEntityId?: number | undefined;
 
     constructor(data?: IContractsClientDataDto) {
         if (data) {
@@ -11775,6 +12480,7 @@ export class ContractsClientDataDto implements IContractsClientDataDto {
                     this.periodClientSpecialFees!.push(PeriodClientSpecialFeeDto.fromJS(item));
             }
             this.directClientId = _data["directClientId"];
+            this.pdcInvoicingEntityId = _data["pdcInvoicingEntityId"];
         }
     }
 
@@ -11805,6 +12511,7 @@ export class ContractsClientDataDto implements IContractsClientDataDto {
                 data["periodClientSpecialFees"].push(item.toJSON());
         }
         data["directClientId"] = this.directClientId;
+        data["pdcInvoicingEntityId"] = this.pdcInvoicingEntityId;
         return data;
     }
 }
@@ -11820,6 +12527,7 @@ export interface IContractsClientDataDto {
     noSpecialFee?: boolean;
     periodClientSpecialFees?: PeriodClientSpecialFeeDto[] | undefined;
     directClientId?: number | undefined;
+    pdcInvoicingEntityId?: number | undefined;
 }
 
 export class ContractSignerDto implements IContractSignerDto {
@@ -12374,6 +13082,255 @@ export class LegacyContactId implements ILegacyContactId {
 
 export interface ILegacyContactId {
     value?: number;
+}
+
+export class MainOverviewItemClientPeriodDto implements IMainOverviewItemClientPeriodDto {
+    id?: string;
+    periodType?: string | undefined;
+    salesStepStatus?: WorkflowStepStatus;
+    readonly title?: string | undefined;
+    startDate?: moment.Moment;
+    endDate?: moment.Moment | undefined;
+    readonly additionalInfo?: string | undefined;
+    mainOverviewStatusForSales?: MainOverviewStatus;
+    isSyncedAndSalesDataApproved?: boolean;
+
+    constructor(data?: IMainOverviewItemClientPeriodDto) {
+        if (data) {
+            for (var property in data) {
+                if (data.hasOwnProperty(property))
+                    (<any>this)[property] = (<any>data)[property];
+            }
+        }
+    }
+
+    init(_data?: any) {
+        if (_data) {
+            this.id = _data["id"];
+            this.periodType = _data["periodType"];
+            this.salesStepStatus = _data["salesStepStatus"];
+            (<any>this).title = _data["title"];
+            this.startDate = _data["startDate"] ? moment(_data["startDate"].toString()) : <any>undefined;
+            this.endDate = _data["endDate"] ? moment(_data["endDate"].toString()) : <any>undefined;
+            (<any>this).additionalInfo = _data["additionalInfo"];
+            this.mainOverviewStatusForSales = _data["mainOverviewStatusForSales"];
+            this.isSyncedAndSalesDataApproved = _data["isSyncedAndSalesDataApproved"];
+        }
+    }
+
+    static fromJS(data: any): MainOverviewItemClientPeriodDto {
+        data = typeof data === 'object' ? data : {};
+        let result = new MainOverviewItemClientPeriodDto();
+        result.init(data);
+        return result;
+    }
+
+    toJSON(data?: any) {
+        data = typeof data === 'object' ? data : {};
+        data["id"] = this.id;
+        data["periodType"] = this.periodType;
+        data["salesStepStatus"] = this.salesStepStatus;
+        data["title"] = this.title;
+        data["startDate"] = this.startDate ? this.startDate.format('YYYY-MM-DD') : <any>undefined;
+        data["endDate"] = this.endDate ? this.endDate.format('YYYY-MM-DD') : <any>undefined;
+        data["additionalInfo"] = this.additionalInfo;
+        data["mainOverviewStatusForSales"] = this.mainOverviewStatusForSales;
+        data["isSyncedAndSalesDataApproved"] = this.isSyncedAndSalesDataApproved;
+        return data;
+    }
+}
+
+export interface IMainOverviewItemClientPeriodDto {
+    id?: string;
+    periodType?: string | undefined;
+    salesStepStatus?: WorkflowStepStatus;
+    title?: string | undefined;
+    startDate?: moment.Moment;
+    endDate?: moment.Moment | undefined;
+    additionalInfo?: string | undefined;
+    mainOverviewStatusForSales?: MainOverviewStatus;
+    isSyncedAndSalesDataApproved?: boolean;
+}
+
+export class MainOverviewItemDto implements IMainOverviewItemDto {
+    workflowId?: string;
+    directClientId?: number;
+    directClientName?: string | undefined;
+    endClientId?: number | undefined;
+    endClientName?: string | undefined;
+    readonly clientDisplayName?: string | undefined;
+    consultants?: ConsultantResultDto[] | undefined;
+    salesManager?: EmployeeDto;
+    clientPeriods?: MainOverviewItemClientPeriodDto[] | undefined;
+    lastPeriodMainOverviewStatusForSales?: MainOverviewStatus;
+    readonly isLastPeriodSyncedAndSalesDataApproved?: boolean;
+    readonly lastEndDate?: moment.Moment | undefined;
+
+    constructor(data?: IMainOverviewItemDto) {
+        if (data) {
+            for (var property in data) {
+                if (data.hasOwnProperty(property))
+                    (<any>this)[property] = (<any>data)[property];
+            }
+        }
+    }
+
+    init(_data?: any) {
+        if (_data) {
+            this.workflowId = _data["workflowId"];
+            this.directClientId = _data["directClientId"];
+            this.directClientName = _data["directClientName"];
+            this.endClientId = _data["endClientId"];
+            this.endClientName = _data["endClientName"];
+            (<any>this).clientDisplayName = _data["clientDisplayName"];
+            if (Array.isArray(_data["consultants"])) {
+                this.consultants = [] as any;
+                for (let item of _data["consultants"])
+                    this.consultants!.push(ConsultantResultDto.fromJS(item));
+            }
+            this.salesManager = _data["salesManager"] ? EmployeeDto.fromJS(_data["salesManager"]) : <any>undefined;
+            if (Array.isArray(_data["clientPeriods"])) {
+                this.clientPeriods = [] as any;
+                for (let item of _data["clientPeriods"])
+                    this.clientPeriods!.push(MainOverviewItemClientPeriodDto.fromJS(item));
+            }
+            this.lastPeriodMainOverviewStatusForSales = _data["lastPeriodMainOverviewStatusForSales"];
+            (<any>this).isLastPeriodSyncedAndSalesDataApproved = _data["isLastPeriodSyncedAndSalesDataApproved"];
+            (<any>this).lastEndDate = _data["lastEndDate"] ? moment(_data["lastEndDate"].toString()) : <any>undefined;
+        }
+    }
+
+    static fromJS(data: any): MainOverviewItemDto {
+        data = typeof data === 'object' ? data : {};
+        let result = new MainOverviewItemDto();
+        result.init(data);
+        return result;
+    }
+
+    toJSON(data?: any) {
+        data = typeof data === 'object' ? data : {};
+        data["workflowId"] = this.workflowId;
+        data["directClientId"] = this.directClientId;
+        data["directClientName"] = this.directClientName;
+        data["endClientId"] = this.endClientId;
+        data["endClientName"] = this.endClientName;
+        data["clientDisplayName"] = this.clientDisplayName;
+        if (Array.isArray(this.consultants)) {
+            data["consultants"] = [];
+            for (let item of this.consultants)
+                data["consultants"].push(item.toJSON());
+        }
+        data["salesManager"] = this.salesManager ? this.salesManager.toJSON() : <any>undefined;
+        if (Array.isArray(this.clientPeriods)) {
+            data["clientPeriods"] = [];
+            for (let item of this.clientPeriods)
+                data["clientPeriods"].push(item.toJSON());
+        }
+        data["lastPeriodMainOverviewStatusForSales"] = this.lastPeriodMainOverviewStatusForSales;
+        data["isLastPeriodSyncedAndSalesDataApproved"] = this.isLastPeriodSyncedAndSalesDataApproved;
+        data["lastEndDate"] = this.lastEndDate ? this.lastEndDate.format('YYYY-MM-DD') : <any>undefined;
+        return data;
+    }
+}
+
+export interface IMainOverviewItemDto {
+    workflowId?: string;
+    directClientId?: number;
+    directClientName?: string | undefined;
+    endClientId?: number | undefined;
+    endClientName?: string | undefined;
+    clientDisplayName?: string | undefined;
+    consultants?: ConsultantResultDto[] | undefined;
+    salesManager?: EmployeeDto;
+    clientPeriods?: MainOverviewItemClientPeriodDto[] | undefined;
+    lastPeriodMainOverviewStatusForSales?: MainOverviewStatus;
+    isLastPeriodSyncedAndSalesDataApproved?: boolean;
+    lastEndDate?: moment.Moment | undefined;
+}
+
+export class MainOverviewItemDtoPaginatedList implements IMainOverviewItemDtoPaginatedList {
+    items?: MainOverviewItemDto[] | undefined;
+    pageIndex?: number;
+    readonly totalPages?: number;
+    totalCount?: number;
+    pageSize?: number;
+    readonly hasPreviousPage?: boolean;
+    readonly hasNextPage?: boolean;
+
+    constructor(data?: IMainOverviewItemDtoPaginatedList) {
+        if (data) {
+            for (var property in data) {
+                if (data.hasOwnProperty(property))
+                    (<any>this)[property] = (<any>data)[property];
+            }
+        }
+    }
+
+    init(_data?: any) {
+        if (_data) {
+            if (Array.isArray(_data["items"])) {
+                this.items = [] as any;
+                for (let item of _data["items"])
+                    this.items!.push(MainOverviewItemDto.fromJS(item));
+            }
+            this.pageIndex = _data["pageIndex"];
+            (<any>this).totalPages = _data["totalPages"];
+            this.totalCount = _data["totalCount"];
+            this.pageSize = _data["pageSize"];
+            (<any>this).hasPreviousPage = _data["hasPreviousPage"];
+            (<any>this).hasNextPage = _data["hasNextPage"];
+        }
+    }
+
+    static fromJS(data: any): MainOverviewItemDtoPaginatedList {
+        data = typeof data === 'object' ? data : {};
+        let result = new MainOverviewItemDtoPaginatedList();
+        result.init(data);
+        return result;
+    }
+
+    toJSON(data?: any) {
+        data = typeof data === 'object' ? data : {};
+        if (Array.isArray(this.items)) {
+            data["items"] = [];
+            for (let item of this.items)
+                data["items"].push(item.toJSON());
+        }
+        data["pageIndex"] = this.pageIndex;
+        data["totalPages"] = this.totalPages;
+        data["totalCount"] = this.totalCount;
+        data["pageSize"] = this.pageSize;
+        data["hasPreviousPage"] = this.hasPreviousPage;
+        data["hasNextPage"] = this.hasNextPage;
+        return data;
+    }
+}
+
+export interface IMainOverviewItemDtoPaginatedList {
+    items?: MainOverviewItemDto[] | undefined;
+    pageIndex?: number;
+    totalPages?: number;
+    totalCount?: number;
+    pageSize?: number;
+    hasPreviousPage?: boolean;
+    hasNextPage?: boolean;
+}
+
+export enum MainOverviewStatus {
+    ExtensionExpected = 1,
+    ExtensionInNegotiation = 2,
+    RequiresAttention = 3,
+    ExpectedToTerminate = 4,
+    Started = 10,
+    Extended = 11,
+    Terminated = 12,
+}
+
+export enum MainOverviewUserSelectedStatus {
+    ExtensionExpected = 1,
+    ExtensionInNegotiation = 2,
+    RequiresAttention = 3,
+    ExpectedToTerminate = 4,
 }
 
 export class NewWorkflowCreatedDto implements INewWorkflowCreatedDto {

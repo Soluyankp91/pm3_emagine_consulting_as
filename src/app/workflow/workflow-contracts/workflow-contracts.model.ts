@@ -80,6 +80,8 @@ export class WorkflowContractsClientDataForm extends FormGroup {
     constructor() {
         super({
             // capOnTimeReporting: new FormControl(null),
+            directClientId: new FormControl(null),
+            pdcInvoicingEntityId: new FormControl(null),
             clientTimeReportingCapId: new FormControl(null),
             clientTimeReportingCapMaxValue: new FormControl(null),
             clientTimeReportingCapCurrencyId: new FormControl(null),
@@ -95,6 +97,12 @@ export class WorkflowContractsClientDataForm extends FormGroup {
     // get capOnTimeReporting() {
     //     return this.get('capOnTimeReporting');
     // }
+    get directClientId() {
+        return this.get('directClientId');
+    }
+    get pdcInvoicingEntityId() {
+        return this.get('pdcInvoicingEntityId');
+    }
     get clientTimeReportingCapId() {
         return this.get('clientTimeReportingCapId');
     }

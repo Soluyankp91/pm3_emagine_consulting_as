@@ -297,6 +297,8 @@ export class WorkflowContractsComponent extends AppComopnentBase implements OnIn
 
                 // Client data
                 // this.contractClientForm.capOnTimeReporting?.setValue(this.findItemById(this.clientTimeReportingCap, result.clientData?.clientTimeReportingCapId), {emitEvent: false});
+                this.contractClientForm.directClientId?.setValue(result.clientData?.directClientId);
+                this.contractClientForm.pdcInvoicingEntityId?.setValue(result.clientData?.pdcInvoicingEntityId);
                 this.contractClientForm.clientTimeReportingCapId?.setValue(this.findItemById(this.clientTimeReportingCap, result.clientData?.clientTimeReportingCapId), {emitEvent: false});
                 this.contractClientForm.clientTimeReportingCapMaxValue?.setValue(result.clientData?.clientTimeReportingCapMaxValue, {emitEvent: false});
                 this.contractClientForm.clientTimeReportingCapCurrencyId?.setValue(this.findItemById(this.currencies, result.clientData?.clientTimeReportingCapCurrencyId), {emitEvent: false});
@@ -535,12 +537,16 @@ export class WorkflowContractsComponent extends AppComopnentBase implements OnIn
             consultantId: new FormControl(consultant.consultantId),
             consultant: new FormControl(consultant.consultant),
             nameOnly: new FormControl(consultant.nameOnly),
+            startDate: new FormControl(consultant.startDate),
+            endDate: new FormControl(consultant.endDate),
+            noEndDate: new FormControl(consultant.noEndDate),
             consultantType: new FormControl(this.findItemById(this.employmentTypes, consultant.employmentTypeId)),
             consultantCapOnTimeReporting: new FormControl(this.findItemById(this.consultantTimeReportingCapList, consultant.consultantTimeReportingCapId)),
             consultantCapOnTimeReportingValue: new FormControl(consultant.consultantTimeReportingCapMaxValue),
             consultantCapOnTimeReportingCurrency: new FormControl(this.findItemById(this.currencies, consultant.consultantTimeReportingCapCurrencyId)),
             noSpecialContractTerms: new FormControl(consultant.noSpecialContractTerms),
             specialContractTerms: new FormControl({value: consultant.specialContractTerms, disabled: consultant.noSpecialContractTerms}),
+            pdcPaymentEntityId: new FormControl(consultant.pdcPaymentEntityId),
             specialRates: new FormArray([]),
             clientFees: new FormArray([]),
             projectLines: new FormArray([])
@@ -642,8 +648,9 @@ export class WorkflowContractsComponent extends AppComopnentBase implements OnIn
         const scrollStrategy = this.overlay.scrollStrategies.reposition();
         let projectLine = {
             projectName: this.contractsMainForm.projectDescription!.value,
-            // startDate: this.contractsConsultantsDataForm.consultants.at(index).get('startDate')?.value,
-            // endDate: this.contractsConsultantsDataForm.consultants.at(index).get('endDate')?.value
+            startDate: this.contractsConsultantsDataForm.consultants.at(index).get('startDate')?.value,
+            endDate: this.contractsConsultantsDataForm.consultants.at(index).get('endDate')?.value,
+            noEndDate: this.contractsConsultantsDataForm.consultants.at(index).get('noEndDate')?.value,
         };
         if (projectLinesIndex !== null && projectLinesIndex !== undefined) {
             projectLine = (this.contractsConsultantsDataForm.consultants.at(index).get('projectLines') as FormArray).at(projectLinesIndex!).value;
@@ -657,10 +664,9 @@ export class WorkflowContractsComponent extends AppComopnentBase implements OnIn
             autoFocus: false,
             panelClass: 'confirmation-modal',
             data: {
-                // NB: index for testing - in real world if id !== null ? ProjectLineDiallogMode.Create : ProjectLineDiallogMode.Edit
                 dialogType: projectLinesIndex !== null && projectLinesIndex !== undefined ? ProjectLineDiallogMode.Edit : ProjectLineDiallogMode.Create,
                 projectLineData: projectLine,
-                // clientId: this.contractsMainForm.clientId.value
+                clientId: this.contractClientForm.directClientId?.value
             }
         });
 
