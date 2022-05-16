@@ -2698,64 +2698,73 @@ export class ApiServiceProxy {
      * @param salesType (optional) 
      * @param deliveryType (optional) 
      * @param workflowStatus (optional) 
+     * @param responsibleEmployees (optional) 
      * @param showOnlyWorkflowsWithNewSales (optional) 
      * @param showOnlyWorkflowsWithExtensions (optional) 
      * @param showOnlyWorkflowsWithPendingStepsForSelectedEmployees (optional) 
      * @param showOnlyWorkflowsWithUpcomingStepsForSelectedEmployees (optional) 
      * @param includeTerminated (optional) 
      * @param includeDeleted (optional) 
+     * @param search (optional) 
      * @param pageNumber (optional) 
      * @param pageSize (optional) 
      * @param sort (optional) 
-     * @param body (optional) 
      * @return Success
      */
-    workflow(invoicingEntity?: number | undefined, paymentEntity?: number | undefined, salesType?: number | undefined, deliveryType?: number | undefined, workflowStatus?: number | undefined, showOnlyWorkflowsWithNewSales?: boolean | undefined, showOnlyWorkflowsWithExtensions?: boolean | undefined, showOnlyWorkflowsWithPendingStepsForSelectedEmployees?: boolean | undefined, showOnlyWorkflowsWithUpcomingStepsForSelectedEmployees?: boolean | undefined, includeTerminated?: boolean | undefined, includeDeleted?: boolean | undefined, pageNumber?: number | undefined, pageSize?: number | undefined, sort?: string | undefined, body?: number[] | undefined): Observable<WorkflowListItemDtoPaginatedList> {
+    workflow(invoicingEntity?: number | undefined, paymentEntity?: number | undefined, salesType?: number | undefined, deliveryType?: number | undefined, workflowStatus?: number | undefined, responsibleEmployees?: number[] | undefined, showOnlyWorkflowsWithNewSales?: boolean | undefined, showOnlyWorkflowsWithExtensions?: boolean | undefined, showOnlyWorkflowsWithPendingStepsForSelectedEmployees?: boolean | undefined, showOnlyWorkflowsWithUpcomingStepsForSelectedEmployees?: boolean | undefined, includeTerminated?: boolean | undefined, includeDeleted?: boolean | undefined, search?: string | undefined, pageNumber?: number | undefined, pageSize?: number | undefined, sort?: string | undefined): Observable<WorkflowListItemDtoPaginatedList> {
         let url_ = this.baseUrl + "/api/Workflow?";
         if (invoicingEntity === null)
             throw new Error("The parameter 'invoicingEntity' cannot be null.");
         else if (invoicingEntity !== undefined)
-            url_ += "invoicingEntity=" + encodeURIComponent("" + invoicingEntity) + "&";
+            url_ += "InvoicingEntity=" + encodeURIComponent("" + invoicingEntity) + "&";
         if (paymentEntity === null)
             throw new Error("The parameter 'paymentEntity' cannot be null.");
         else if (paymentEntity !== undefined)
-            url_ += "paymentEntity=" + encodeURIComponent("" + paymentEntity) + "&";
+            url_ += "PaymentEntity=" + encodeURIComponent("" + paymentEntity) + "&";
         if (salesType === null)
             throw new Error("The parameter 'salesType' cannot be null.");
         else if (salesType !== undefined)
-            url_ += "salesType=" + encodeURIComponent("" + salesType) + "&";
+            url_ += "SalesType=" + encodeURIComponent("" + salesType) + "&";
         if (deliveryType === null)
             throw new Error("The parameter 'deliveryType' cannot be null.");
         else if (deliveryType !== undefined)
-            url_ += "deliveryType=" + encodeURIComponent("" + deliveryType) + "&";
+            url_ += "DeliveryType=" + encodeURIComponent("" + deliveryType) + "&";
         if (workflowStatus === null)
             throw new Error("The parameter 'workflowStatus' cannot be null.");
         else if (workflowStatus !== undefined)
-            url_ += "workflowStatus=" + encodeURIComponent("" + workflowStatus) + "&";
+            url_ += "WorkflowStatus=" + encodeURIComponent("" + workflowStatus) + "&";
+        if (responsibleEmployees === null)
+            throw new Error("The parameter 'responsibleEmployees' cannot be null.");
+        else if (responsibleEmployees !== undefined)
+            responsibleEmployees && responsibleEmployees.forEach(item => { url_ += "ResponsibleEmployees=" + encodeURIComponent("" + item) + "&"; });
         if (showOnlyWorkflowsWithNewSales === null)
             throw new Error("The parameter 'showOnlyWorkflowsWithNewSales' cannot be null.");
         else if (showOnlyWorkflowsWithNewSales !== undefined)
-            url_ += "showOnlyWorkflowsWithNewSales=" + encodeURIComponent("" + showOnlyWorkflowsWithNewSales) + "&";
+            url_ += "ShowOnlyWorkflowsWithNewSales=" + encodeURIComponent("" + showOnlyWorkflowsWithNewSales) + "&";
         if (showOnlyWorkflowsWithExtensions === null)
             throw new Error("The parameter 'showOnlyWorkflowsWithExtensions' cannot be null.");
         else if (showOnlyWorkflowsWithExtensions !== undefined)
-            url_ += "showOnlyWorkflowsWithExtensions=" + encodeURIComponent("" + showOnlyWorkflowsWithExtensions) + "&";
+            url_ += "ShowOnlyWorkflowsWithExtensions=" + encodeURIComponent("" + showOnlyWorkflowsWithExtensions) + "&";
         if (showOnlyWorkflowsWithPendingStepsForSelectedEmployees === null)
             throw new Error("The parameter 'showOnlyWorkflowsWithPendingStepsForSelectedEmployees' cannot be null.");
         else if (showOnlyWorkflowsWithPendingStepsForSelectedEmployees !== undefined)
-            url_ += "showOnlyWorkflowsWithPendingStepsForSelectedEmployees=" + encodeURIComponent("" + showOnlyWorkflowsWithPendingStepsForSelectedEmployees) + "&";
+            url_ += "ShowOnlyWorkflowsWithPendingStepsForSelectedEmployees=" + encodeURIComponent("" + showOnlyWorkflowsWithPendingStepsForSelectedEmployees) + "&";
         if (showOnlyWorkflowsWithUpcomingStepsForSelectedEmployees === null)
             throw new Error("The parameter 'showOnlyWorkflowsWithUpcomingStepsForSelectedEmployees' cannot be null.");
         else if (showOnlyWorkflowsWithUpcomingStepsForSelectedEmployees !== undefined)
-            url_ += "showOnlyWorkflowsWithUpcomingStepsForSelectedEmployees=" + encodeURIComponent("" + showOnlyWorkflowsWithUpcomingStepsForSelectedEmployees) + "&";
+            url_ += "ShowOnlyWorkflowsWithUpcomingStepsForSelectedEmployees=" + encodeURIComponent("" + showOnlyWorkflowsWithUpcomingStepsForSelectedEmployees) + "&";
         if (includeTerminated === null)
             throw new Error("The parameter 'includeTerminated' cannot be null.");
         else if (includeTerminated !== undefined)
-            url_ += "includeTerminated=" + encodeURIComponent("" + includeTerminated) + "&";
+            url_ += "IncludeTerminated=" + encodeURIComponent("" + includeTerminated) + "&";
         if (includeDeleted === null)
             throw new Error("The parameter 'includeDeleted' cannot be null.");
         else if (includeDeleted !== undefined)
-            url_ += "includeDeleted=" + encodeURIComponent("" + includeDeleted) + "&";
+            url_ += "IncludeDeleted=" + encodeURIComponent("" + includeDeleted) + "&";
+        if (search === null)
+            throw new Error("The parameter 'search' cannot be null.");
+        else if (search !== undefined)
+            url_ += "Search=" + encodeURIComponent("" + search) + "&";
         if (pageNumber === null)
             throw new Error("The parameter 'pageNumber' cannot be null.");
         else if (pageNumber !== undefined)
@@ -2770,14 +2779,10 @@ export class ApiServiceProxy {
             url_ += "Sort=" + encodeURIComponent("" + sort) + "&";
         url_ = url_.replace(/[?&]$/, "");
 
-        const content_ = JSON.stringify(body);
-
         let options_ : any = {
-            body: content_,
             observe: "response",
             responseType: "blob",
             headers: new HttpHeaders({
-                "Content-Type": "application/json",
                 "Accept": "text/plain"
             })
         };
@@ -3285,6 +3290,126 @@ export class ConsultantPeriodServiceProxy {
             }));
         }
         return _observableOf<void>(null as any);
+    }
+
+    /**
+     * @param body (optional) 
+     * @return Success
+     */
+    extend(consultantPeriodId: string, body?: ExtendConsultantPeriodDto | undefined): Observable<string> {
+        let url_ = this.baseUrl + "/api/ConsultantPeriod/{consultantPeriodId}/extend";
+        if (consultantPeriodId === undefined || consultantPeriodId === null)
+            throw new Error("The parameter 'consultantPeriodId' must be defined.");
+        url_ = url_.replace("{consultantPeriodId}", encodeURIComponent("" + consultantPeriodId));
+        url_ = url_.replace(/[?&]$/, "");
+
+        const content_ = JSON.stringify(body);
+
+        let options_ : any = {
+            body: content_,
+            observe: "response",
+            responseType: "blob",
+            headers: new HttpHeaders({
+                "Content-Type": "application/json",
+                "Accept": "text/plain"
+            })
+        };
+
+        return this.http.request("post", url_, options_).pipe(_observableMergeMap((response_ : any) => {
+            return this.processExtend(response_);
+        })).pipe(_observableCatch((response_: any) => {
+            if (response_ instanceof HttpResponseBase) {
+                try {
+                    return this.processExtend(response_ as any);
+                } catch (e) {
+                    return _observableThrow(e) as any as Observable<string>;
+                }
+            } else
+                return _observableThrow(response_) as any as Observable<string>;
+        }));
+    }
+
+    protected processExtend(response: HttpResponseBase): Observable<string> {
+        const status = response.status;
+        const responseBlob =
+            response instanceof HttpResponse ? response.body :
+            (response as any).error instanceof Blob ? (response as any).error : undefined;
+
+        let _headers: any = {}; if (response.headers) { for (let key of response.headers.keys()) { _headers[key] = response.headers.get(key); }}
+        if (status === 200) {
+            return blobToText(responseBlob).pipe(_observableMergeMap(_responseText => {
+            let result200: any = null;
+            let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
+                result200 = resultData200 !== undefined ? resultData200 : <any>null;
+    
+            return _observableOf(result200);
+            }));
+        } else if (status !== 200 && status !== 204) {
+            return blobToText(responseBlob).pipe(_observableMergeMap(_responseText => {
+            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+            }));
+        }
+        return _observableOf<string>(null as any);
+    }
+
+    /**
+     * @param body (optional) 
+     * @return Success
+     */
+    change(consultantPeriodId: string, body?: ChangeConsultantPeriodDto | undefined): Observable<string> {
+        let url_ = this.baseUrl + "/api/ConsultantPeriod/{consultantPeriodId}/change";
+        if (consultantPeriodId === undefined || consultantPeriodId === null)
+            throw new Error("The parameter 'consultantPeriodId' must be defined.");
+        url_ = url_.replace("{consultantPeriodId}", encodeURIComponent("" + consultantPeriodId));
+        url_ = url_.replace(/[?&]$/, "");
+
+        const content_ = JSON.stringify(body);
+
+        let options_ : any = {
+            body: content_,
+            observe: "response",
+            responseType: "blob",
+            headers: new HttpHeaders({
+                "Content-Type": "application/json",
+                "Accept": "text/plain"
+            })
+        };
+
+        return this.http.request("post", url_, options_).pipe(_observableMergeMap((response_ : any) => {
+            return this.processChange(response_);
+        })).pipe(_observableCatch((response_: any) => {
+            if (response_ instanceof HttpResponseBase) {
+                try {
+                    return this.processChange(response_ as any);
+                } catch (e) {
+                    return _observableThrow(e) as any as Observable<string>;
+                }
+            } else
+                return _observableThrow(response_) as any as Observable<string>;
+        }));
+    }
+
+    protected processChange(response: HttpResponseBase): Observable<string> {
+        const status = response.status;
+        const responseBlob =
+            response instanceof HttpResponse ? response.body :
+            (response as any).error instanceof Blob ? (response as any).error : undefined;
+
+        let _headers: any = {}; if (response.headers) { for (let key of response.headers.keys()) { _headers[key] = response.headers.get(key); }}
+        if (status === 200) {
+            return blobToText(responseBlob).pipe(_observableMergeMap(_responseText => {
+            let result200: any = null;
+            let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
+                result200 = resultData200 !== undefined ? resultData200 : <any>null;
+    
+            return _observableOf(result200);
+            }));
+        } else if (status !== 200 && status !== 204) {
+            return blobToText(responseBlob).pipe(_observableMergeMap(_responseText => {
+            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+            }));
+        }
+        return _observableOf<string>(null as any);
     }
 }
 
@@ -7429,41 +7554,44 @@ export class MainOverviewServiceProxy {
     }
 
     /**
+     * @param workflowId (optional) 
+     * @param mainOverviewUserSelectedStatusForSales (optional) 
      * @return Success
      */
-    setUserSelectedStatus(workflowId: string, mainOverviewUserSelectedStatus: MainOverviewUserSelectedStatus): Observable<MainOverviewItemDtoPaginatedList> {
-        let url_ = this.baseUrl + "/api/MainOverview/{workflowId}/setUserSelectedStatus/{mainOverviewUserSelectedStatus}";
-        if (workflowId === undefined || workflowId === null)
-            throw new Error("The parameter 'workflowId' must be defined.");
-        url_ = url_.replace("{workflowId}", encodeURIComponent("" + workflowId));
-        if (mainOverviewUserSelectedStatus === undefined || mainOverviewUserSelectedStatus === null)
-            throw new Error("The parameter 'mainOverviewUserSelectedStatus' must be defined.");
-        url_ = url_.replace("{mainOverviewUserSelectedStatus}", encodeURIComponent("" + mainOverviewUserSelectedStatus));
+    setUserSelectedStatusForClientPeriod(workflowId?: string | undefined, mainOverviewUserSelectedStatusForSales?: MainOverviewUserSelectedStatus | undefined): Observable<void> {
+        let url_ = this.baseUrl + "/api/MainOverview/setUserSelectedStatusForClientPeriod?";
+        if (workflowId === null)
+            throw new Error("The parameter 'workflowId' cannot be null.");
+        else if (workflowId !== undefined)
+            url_ += "WorkflowId=" + encodeURIComponent("" + workflowId) + "&";
+        if (mainOverviewUserSelectedStatusForSales === null)
+            throw new Error("The parameter 'mainOverviewUserSelectedStatusForSales' cannot be null.");
+        else if (mainOverviewUserSelectedStatusForSales !== undefined)
+            url_ += "MainOverviewUserSelectedStatusForSales=" + encodeURIComponent("" + mainOverviewUserSelectedStatusForSales) + "&";
         url_ = url_.replace(/[?&]$/, "");
 
         let options_ : any = {
             observe: "response",
             responseType: "blob",
             headers: new HttpHeaders({
-                "Accept": "text/plain"
             })
         };
 
         return this.http.request("post", url_, options_).pipe(_observableMergeMap((response_ : any) => {
-            return this.processSetUserSelectedStatus(response_);
+            return this.processSetUserSelectedStatusForClientPeriod(response_);
         })).pipe(_observableCatch((response_: any) => {
             if (response_ instanceof HttpResponseBase) {
                 try {
-                    return this.processSetUserSelectedStatus(response_ as any);
+                    return this.processSetUserSelectedStatusForClientPeriod(response_ as any);
                 } catch (e) {
-                    return _observableThrow(e) as any as Observable<MainOverviewItemDtoPaginatedList>;
+                    return _observableThrow(e) as any as Observable<void>;
                 }
             } else
-                return _observableThrow(response_) as any as Observable<MainOverviewItemDtoPaginatedList>;
+                return _observableThrow(response_) as any as Observable<void>;
         }));
     }
 
-    protected processSetUserSelectedStatus(response: HttpResponseBase): Observable<MainOverviewItemDtoPaginatedList> {
+    protected processSetUserSelectedStatusForClientPeriod(response: HttpResponseBase): Observable<void> {
         const status = response.status;
         const responseBlob =
             response instanceof HttpResponse ? response.body :
@@ -7472,17 +7600,76 @@ export class MainOverviewServiceProxy {
         let _headers: any = {}; if (response.headers) { for (let key of response.headers.keys()) { _headers[key] = response.headers.get(key); }}
         if (status === 200) {
             return blobToText(responseBlob).pipe(_observableMergeMap(_responseText => {
-            let result200: any = null;
-            let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
-            result200 = MainOverviewItemDtoPaginatedList.fromJS(resultData200);
-            return _observableOf(result200);
+            return _observableOf<void>(null as any);
             }));
         } else if (status !== 200 && status !== 204) {
             return blobToText(responseBlob).pipe(_observableMergeMap(_responseText => {
             return throwException("An unexpected server error occurred.", status, _responseText, _headers);
             }));
         }
-        return _observableOf<MainOverviewItemDtoPaginatedList>(null as any);
+        return _observableOf<void>(null as any);
+    }
+
+    /**
+     * @param workflowId (optional) 
+     * @param consultantId (optional) 
+     * @param mainOverviewUserSelectedStatusForSales (optional) 
+     * @return Success
+     */
+    setUserSelectedStatusForConsultantPeriod(workflowId?: string | undefined, consultantId?: number | undefined, mainOverviewUserSelectedStatusForSales?: MainOverviewUserSelectedStatus | undefined): Observable<void> {
+        let url_ = this.baseUrl + "/api/MainOverview/setUserSelectedStatusForConsultantPeriod?";
+        if (workflowId === null)
+            throw new Error("The parameter 'workflowId' cannot be null.");
+        else if (workflowId !== undefined)
+            url_ += "WorkflowId=" + encodeURIComponent("" + workflowId) + "&";
+        if (consultantId === null)
+            throw new Error("The parameter 'consultantId' cannot be null.");
+        else if (consultantId !== undefined)
+            url_ += "ConsultantId=" + encodeURIComponent("" + consultantId) + "&";
+        if (mainOverviewUserSelectedStatusForSales === null)
+            throw new Error("The parameter 'mainOverviewUserSelectedStatusForSales' cannot be null.");
+        else if (mainOverviewUserSelectedStatusForSales !== undefined)
+            url_ += "MainOverviewUserSelectedStatusForSales=" + encodeURIComponent("" + mainOverviewUserSelectedStatusForSales) + "&";
+        url_ = url_.replace(/[?&]$/, "");
+
+        let options_ : any = {
+            observe: "response",
+            responseType: "blob",
+            headers: new HttpHeaders({
+            })
+        };
+
+        return this.http.request("post", url_, options_).pipe(_observableMergeMap((response_ : any) => {
+            return this.processSetUserSelectedStatusForConsultantPeriod(response_);
+        })).pipe(_observableCatch((response_: any) => {
+            if (response_ instanceof HttpResponseBase) {
+                try {
+                    return this.processSetUserSelectedStatusForConsultantPeriod(response_ as any);
+                } catch (e) {
+                    return _observableThrow(e) as any as Observable<void>;
+                }
+            } else
+                return _observableThrow(response_) as any as Observable<void>;
+        }));
+    }
+
+    protected processSetUserSelectedStatusForConsultantPeriod(response: HttpResponseBase): Observable<void> {
+        const status = response.status;
+        const responseBlob =
+            response instanceof HttpResponse ? response.body :
+            (response as any).error instanceof Blob ? (response as any).error : undefined;
+
+        let _headers: any = {}; if (response.headers) { for (let key of response.headers.keys()) { _headers[key] = response.headers.get(key); }}
+        if (status === 200) {
+            return blobToText(responseBlob).pipe(_observableMergeMap(_responseText => {
+            return _observableOf<void>(null as any);
+            }));
+        } else if (status !== 200 && status !== 204) {
+            return blobToText(responseBlob).pipe(_observableMergeMap(_responseText => {
+            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+            }));
+        }
+        return _observableOf<void>(null as any);
     }
 }
 
@@ -9566,6 +9753,46 @@ export interface IAttachmentFileDto {
     fileBytes?: string | undefined;
 }
 
+export class ChangeConsultantPeriodDto implements IChangeConsultantPeriodDto {
+    cutoverDate?: moment.Moment;
+    newLegalContractRequired?: boolean;
+
+    constructor(data?: IChangeConsultantPeriodDto) {
+        if (data) {
+            for (var property in data) {
+                if (data.hasOwnProperty(property))
+                    (<any>this)[property] = (<any>data)[property];
+            }
+        }
+    }
+
+    init(_data?: any) {
+        if (_data) {
+            this.cutoverDate = _data["cutoverDate"] ? moment(_data["cutoverDate"].toString()) : <any>undefined;
+            this.newLegalContractRequired = _data["newLegalContractRequired"];
+        }
+    }
+
+    static fromJS(data: any): ChangeConsultantPeriodDto {
+        data = typeof data === 'object' ? data : {};
+        let result = new ChangeConsultantPeriodDto();
+        result.init(data);
+        return result;
+    }
+
+    toJSON(data?: any) {
+        data = typeof data === 'object' ? data : {};
+        data["cutoverDate"] = this.cutoverDate ? this.cutoverDate.format('YYYY-MM-DD') : <any>undefined;
+        data["newLegalContractRequired"] = this.newLegalContractRequired;
+        return data;
+    }
+}
+
+export interface IChangeConsultantPeriodDto {
+    cutoverDate?: moment.Moment;
+    newLegalContractRequired?: boolean;
+}
+
 export class ClientAttachmentInfoOutputDto implements IClientAttachmentInfoOutputDto {
     clientAttachmentGuid?: string;
     documentStorageGuid?: string;
@@ -11465,6 +11692,7 @@ export class ConsultantPeriodContractsDataDto implements IConsultantPeriodContra
     mainData?: ContractsMainDataDto;
     consultantData?: ConsultantContractsDataDto;
     contractLinesDoneManuallyInOldPm?: boolean | undefined;
+    newLegalContractRequired?: boolean | undefined;
 
     constructor(data?: IConsultantPeriodContractsDataDto) {
         if (data) {
@@ -11483,6 +11711,7 @@ export class ConsultantPeriodContractsDataDto implements IConsultantPeriodContra
             this.mainData = _data["mainData"] ? ContractsMainDataDto.fromJS(_data["mainData"]) : <any>undefined;
             this.consultantData = _data["consultantData"] ? ConsultantContractsDataDto.fromJS(_data["consultantData"]) : <any>undefined;
             this.contractLinesDoneManuallyInOldPm = _data["contractLinesDoneManuallyInOldPm"];
+            this.newLegalContractRequired = _data["newLegalContractRequired"];
         }
     }
 
@@ -11501,6 +11730,7 @@ export class ConsultantPeriodContractsDataDto implements IConsultantPeriodContra
         data["mainData"] = this.mainData ? this.mainData.toJSON() : <any>undefined;
         data["consultantData"] = this.consultantData ? this.consultantData.toJSON() : <any>undefined;
         data["contractLinesDoneManuallyInOldPm"] = this.contractLinesDoneManuallyInOldPm;
+        data["newLegalContractRequired"] = this.newLegalContractRequired;
         return data;
     }
 }
@@ -11512,6 +11742,7 @@ export interface IConsultantPeriodContractsDataDto {
     mainData?: ContractsMainDataDto;
     consultantData?: ConsultantContractsDataDto;
     contractLinesDoneManuallyInOldPm?: boolean | undefined;
+    newLegalContractRequired?: boolean | undefined;
 }
 
 export class ConsultantPeriodFinanceDataDto implements IConsultantPeriodFinanceDataDto {
@@ -12966,6 +13197,50 @@ export interface IExtendClientPeriodDto {
     noEndDate?: boolean;
     endDate?: moment.Moment | undefined;
     extendConsultantPeriodIds?: string[] | undefined;
+}
+
+export class ExtendConsultantPeriodDto implements IExtendConsultantPeriodDto {
+    startDate?: moment.Moment;
+    noEndDate?: boolean;
+    endDate?: moment.Moment | undefined;
+
+    constructor(data?: IExtendConsultantPeriodDto) {
+        if (data) {
+            for (var property in data) {
+                if (data.hasOwnProperty(property))
+                    (<any>this)[property] = (<any>data)[property];
+            }
+        }
+    }
+
+    init(_data?: any) {
+        if (_data) {
+            this.startDate = _data["startDate"] ? moment(_data["startDate"].toString()) : <any>undefined;
+            this.noEndDate = _data["noEndDate"];
+            this.endDate = _data["endDate"] ? moment(_data["endDate"].toString()) : <any>undefined;
+        }
+    }
+
+    static fromJS(data: any): ExtendConsultantPeriodDto {
+        data = typeof data === 'object' ? data : {};
+        let result = new ExtendConsultantPeriodDto();
+        result.init(data);
+        return result;
+    }
+
+    toJSON(data?: any) {
+        data = typeof data === 'object' ? data : {};
+        data["startDate"] = this.startDate ? this.startDate.format('YYYY-MM-DD') : <any>undefined;
+        data["noEndDate"] = this.noEndDate;
+        data["endDate"] = this.endDate ? this.endDate.format('YYYY-MM-DD') : <any>undefined;
+        return data;
+    }
+}
+
+export interface IExtendConsultantPeriodDto {
+    startDate?: moment.Moment;
+    noEndDate?: boolean;
+    endDate?: moment.Moment | undefined;
 }
 
 export class FileDto implements IFileDto {
