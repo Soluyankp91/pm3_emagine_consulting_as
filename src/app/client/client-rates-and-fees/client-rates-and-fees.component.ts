@@ -39,7 +39,7 @@ export class ClientRatesAndFeesComponent implements OnInit, OnDestroy {
     private _unsubscribe = new Subject();
     constructor(
         private _fb: FormBuilder,
-        private _lookupService: InternalLookupService,
+        private _internalLookupService: InternalLookupService,
         private _clientService: ClientsServiceProxy,
         private _specialRatesService: SpecialRatesServiceProxy,
         private _specialFeesService: SpecialFeesServiceProxy,
@@ -74,49 +74,49 @@ export class ClientRatesAndFeesComponent implements OnInit, OnDestroy {
     }
 
     getCurrencies() {
-        this._lookupService.getCurrencies()
+        this._internalLookupService.getCurrencies()
             .subscribe(response => {
                 this.currencies = response;
             });
     }
 
     getUnitTypes() {
-        this._lookupService.getUnitTypes()
+        this._internalLookupService.getUnitTypes()
             .subscribe(response => {
                 this.rateUnitTypes = response;
             });
     }
 
     getSpecialRatesReportingUnits() {
-        this._lookupService.getSpecialRateReportUnits()
+        this._internalLookupService.getSpecialRateReportUnits()
             .subscribe(response => {
                 this.clientSpecialRateReportUnits = response;
             });
     }
 
     getSpecialFeeSpecifications() {
-        this._lookupService.getSpecialFeeSpecifications()
+        this._internalLookupService.getSpecialFeeSpecifications()
             .subscribe(response => {
                 this.clientSpecialFeeSpecifications = response;
             });
     }
 
     getSpecialRateSpecifications() {
-        this._lookupService.getSpecialRateSpecifications()
+        this._internalLookupService.getSpecialRateSpecifications()
             .subscribe(response => {
                 this.clientSpecialRateSpecifications = response;
             });
     }
 
     getSpecialRateOrFeeDirections() {
-        this._lookupService.getSpecialRateOrFeeDirections()
+        this._internalLookupService.getSpecialRateOrFeeDirections()
             .subscribe(response => {
                 this.clientSpecialRateOrFeeDirections = response;
             });
     }
 
     getSpecialFeeFrequencies() {
-        this._lookupService.getSpecialFeeFrequencies()
+        this._internalLookupService.getSpecialFeeFrequencies()
             .subscribe(response => {
                 this.clientSpecialFeeFrequencies = response;
             });

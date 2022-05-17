@@ -1,0 +1,23 @@
+@import "/src/app/shared/styles/config/_sizes";
+@import "/src/app/shared/styles/config/_colors";
+
+.notification-settings {
+    &--top {
+        height: $white-header-height;
+        padding: 16px 75px;
+        &__header {
+            font-size: 32px;
+            font-weight: 700;
+            color: $dark-grey-color;
+        }
+    }
+    &--content {
+        height: calc(100vh - 150px);
+    }
+
+    &--tabs {
+        &__content {
+            margin-left: 45px;
+        }
+    }
+}

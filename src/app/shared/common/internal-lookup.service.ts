@@ -39,6 +39,7 @@ export class InternalLookupService {
     countries: EnumEntityTypeDto[] = [];
     consultantTimeReportingCapList: EnumEntityTypeDto[] = [];
     workflowStatuses: { [key: string]: string; };
+    consultantInsuranceOptions: { [key: string]: string; };
 
     constructor(private _enumService: EnumServiceProxy) {
 
@@ -688,6 +689,23 @@ export class InternalLookupService {
                     .subscribe(response => {
                         this.workflowStatuses = response;
                         observer.next(this.workflowStatuses);
+                        observer.complete();
+                    }, error => {
+                        observer.error(error);
+                    });
+            }
+        });
+    }
+    getConsultantInsuranceOptions(): Observable<{ [key: string]: string; }> {
+        return new Observable<{ [key: string]: string; }>((observer) => {
+            if (this.consultantInsuranceOptions !== undefined && this.consultantInsuranceOptions !== null) {
+                observer.next(this.consultantInsuranceOptions);
+                observer.complete();
+            } else {
+                this._enumService.consultantInsuranceOption()
+                    .subscribe(response => {
+                        this.consultantInsuranceOptions = response;
+                        observer.next(this.consultantInsuranceOptions);
                         observer.complete();
                     }, error => {
                         observer.error(error);

@@ -40,7 +40,7 @@ export class WorkflowPeriodComponent implements OnInit {
         private _workflowService: WorkflowServiceProxy,
         private overlay: Overlay,
         private dialog: MatDialog,
-        private _lookupService: InternalLookupService
+        private _internalLookupService: InternalLookupService
     ) { }
 
     ngOnInit(): void {
@@ -58,7 +58,7 @@ export class WorkflowPeriodComponent implements OnInit {
     }
 
     getPeriodStepTypes() {
-        this._lookupService.getWorkflowPeriodStepTypes()
+        this._internalLookupService.getWorkflowPeriodStepTypes()
             .pipe(finalize(() => {
 
             }))

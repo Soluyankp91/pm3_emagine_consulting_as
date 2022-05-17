@@ -6,7 +6,7 @@ import { Subject } from 'rxjs';
 import { finalize, takeUntil } from 'rxjs/operators';
 import { InternalLookupService } from 'src/app/shared/common/internal-lookup.service';
 import { AppComopnentBase } from 'src/shared/app-component-base';
-import { ClientPeriodContractsDataDto, WorkflowProcessType, WorkflowServiceProxy, ClientPeriodServiceProxy, ConsultantContractsDataDto, ConsultantSalesDataDto, ContractsClientDataDto, ContractsMainDataDto, EnumEntityTypeDto, PeriodClientSpecialFeeDto, PeriodClientSpecialRateDto, PeriodConsultantSpecialFeeDto, PeriodConsultantSpecialRateDto, ProjectLineDto, ConsultantTerminationContractDataCommandDto, WorkflowTerminationContractDataCommandDto, ConsultantTerminationContractDataQueryDto, ContractsServiceProxy } from 'src/shared/service-proxies/service-proxies';
+import { ClientPeriodContractsDataDto, WorkflowProcessType, WorkflowServiceProxy, ClientPeriodServiceProxy, ConsultantContractsDataDto, ConsultantSalesDataDto, ContractsClientDataDto, ContractsMainDataDto, EnumEntityTypeDto, PeriodClientSpecialFeeDto, PeriodClientSpecialRateDto, PeriodConsultantSpecialFeeDto, PeriodConsultantSpecialRateDto, ProjectLineDto, ConsultantTerminationContractDataCommandDto, WorkflowTerminationContractDataCommandDto, ConsultantTerminationContractDataQueryDto, ClientContractsServiceProxy } from 'src/shared/service-proxies/service-proxies';
 import { WorkflowConsultantActionsDialogComponent } from '../workflow-consultant-actions-dialog/workflow-consultant-actions-dialog.component';
 import { WorkflowDataService } from '../workflow-data.service';
 import { ConsultantDiallogAction } from '../workflow-sales/workflow-sales.model';
@@ -83,7 +83,7 @@ export class WorkflowContractsComponent extends AppComopnentBase implements OnIn
         private _workflowDataService: WorkflowDataService,
         private _internalLookupService: InternalLookupService,
         private _workflowServiceProxy: WorkflowServiceProxy,
-        private _contractsService: ContractsServiceProxy
+        private _clientContractsService: ClientContractsServiceProxy
     ) {
         super(injector);
         this.contractsMainForm = new WorkflowContractsMainForm();
@@ -280,7 +280,7 @@ export class WorkflowContractsComponent extends AppComopnentBase implements OnIn
 
     getContractsStep() {
         this.showMainSpinner();
-        this._clientPeriodService.contractsGet(this.clientPeriodId!)
+        this._clientPeriodService.clientContractsGet(this.clientPeriodId!)
             .pipe(finalize(() => {
                 this.hideMainSpinner();
             }))
@@ -297,6 +297,8 @@ export class WorkflowContractsComponent extends AppComopnentBase implements OnIn
 
                 // Client data
                 // this.contractClientForm.capOnTimeReporting?.setValue(this.findItemById(this.clientTimeReportingCap, result.clientData?.clientTimeReportingCapId), {emitEvent: false});
+                this.contractClientForm.directClientId?.setValue(result.clientData?.directClientId);
+                this.contractClientForm.pdcInvoicingEntityId?.setValue(result.clientData?.pdcInvoicingEntityId);
                 this.contractClientForm.clientTimeReportingCapId?.setValue(this.findItemById(this.clientTimeReportingCap, result.clientData?.clientTimeReportingCapId), {emitEvent: false});
                 this.contractClientForm.clientTimeReportingCapMaxValue?.setValue(result.clientData?.clientTimeReportingCapMaxValue, {emitEvent: false});
                 this.contractClientForm.clientTimeReportingCapCurrencyId?.setValue(this.findItemById(this.currencies, result.clientData?.clientTimeReportingCapCurrencyId), {emitEvent: false});
@@ -451,7 +453,7 @@ export class WorkflowContractsComponent extends AppComopnentBase implements OnIn
         }
         this.showMainSpinner();
         if (isDraft) {
-            this._clientPeriodService.contractsPut(this.clientPeriodId!, input)
+            this._clientPeriodService.clientContractsPut(this.clientPeriodId!, input)
                 .pipe(finalize(() => {
                     this.hideMainSpinner();
                 }))
@@ -459,7 +461,7 @@ export class WorkflowContractsComponent extends AppComopnentBase implements OnIn
 
                 });
         } else {
-            this._contractsService.editFinishPost3(this.clientPeriodId!, input)
+            this._clientContractsService.editFinish(this.clientPeriodId!, input)
                 .pipe(finalize(() => {
                     this.hideMainSpinner();
                 }))
@@ -535,12 +537,16 @@ export class WorkflowContractsComponent extends AppComopnentBase implements OnIn
             consultantId: new FormControl(consultant.consultantId),
             consultant: new FormControl(consultant.consultant),
             nameOnly: new FormControl(consultant.nameOnly),
+            startDate: new FormControl(consultant.startDate),
+            endDate: new FormControl(consultant.endDate),
+            noEndDate: new FormControl(consultant.noEndDate),
             consultantType: new FormControl(this.findItemById(this.employmentTypes, consultant.employmentTypeId)),
             consultantCapOnTimeReporting: new FormControl(this.findItemById(this.consultantTimeReportingCapList, consultant.consultantTimeReportingCapId)),
             consultantCapOnTimeReportingValue: new FormControl(consultant.consultantTimeReportingCapMaxValue),
             consultantCapOnTimeReportingCurrency: new FormControl(this.findItemById(this.currencies, consultant.consultantTimeReportingCapCurrencyId)),
             noSpecialContractTerms: new FormControl(consultant.noSpecialContractTerms),
             specialContractTerms: new FormControl({value: consultant.specialContractTerms, disabled: consultant.noSpecialContractTerms}),
+            pdcPaymentEntityId: new FormControl(consultant.pdcPaymentEntityId),
             specialRates: new FormArray([]),
             clientFees: new FormArray([]),
             projectLines: new FormArray([])
@@ -640,7 +646,12 @@ export class WorkflowContractsComponent extends AppComopnentBase implements OnIn
 
     createOrEditProjectLine(index: number, projectLinesIndex?: number) {
         const scrollStrategy = this.overlay.scrollStrategies.reposition();
-        let projectLine = null;
+        let projectLine = {
+            projectName: this.contractsMainForm.projectDescription!.value,
+            startDate: this.contractsConsultantsDataForm.consultants.at(index).get('startDate')?.value,
+            endDate: this.contractsConsultantsDataForm.consultants.at(index).get('endDate')?.value,
+            noEndDate: this.contractsConsultantsDataForm.consultants.at(index).get('noEndDate')?.value,
+        };
         if (projectLinesIndex !== null && projectLinesIndex !== undefined) {
             projectLine = (this.contractsConsultantsDataForm.consultants.at(index).get('projectLines') as FormArray).at(projectLinesIndex!).value;
         }
@@ -653,9 +664,9 @@ export class WorkflowContractsComponent extends AppComopnentBase implements OnIn
             autoFocus: false,
             panelClass: 'confirmation-modal',
             data: {
-                // NB: index for testing - in real world if id !== null ? ProjectLineDiallogMode.Create : ProjectLineDiallogMode.Edit
                 dialogType: projectLinesIndex !== null && projectLinesIndex !== undefined ? ProjectLineDiallogMode.Edit : ProjectLineDiallogMode.Create,
-                projectLineData: projectLine
+                projectLineData: projectLine,
+                clientId: this.contractClientForm.directClientId?.value
             }
         });
 

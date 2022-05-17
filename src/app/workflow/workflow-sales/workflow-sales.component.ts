@@ -12,7 +12,7 @@ import { debounceTime, finalize, map, switchMap, takeUntil } from 'rxjs/operator
 import { InternalLookupService } from 'src/app/shared/common/internal-lookup.service';
 import { ConfirmationDialogComponent } from 'src/app/shared/components/confirmation-dialog/confirmation-dialog.component';
 import { AppComopnentBase, NotifySeverity } from 'src/shared/app-component-base';
-import { ClientPeriodSalesDataDto, ClientPeriodServiceProxy, ClientRateDto, CommissionDto, ConsultantRateDto, ConsultantSalesDataDto, ContractSignerDto, EmployeeDto, EnumEntityTypeDto, EnumServiceProxy, LookupServiceProxy, PeriodClientSpecialFeeDto, PeriodClientSpecialRateDto, SalesClientDataDto, SalesMainDataDto, WorkflowProcessType, WorkflowServiceProxy, ConsultantResultDto, ClientResultDto, ContactResultDto, ConsultantTerminationSalesDataCommandDto, WorkflowTerminationSalesDataCommandDto, PeriodConsultantSpecialFeeDto, PeriodConsultantSpecialRateDto, SalesServiceProxy, ClientSpecialRateDto, ClientsServiceProxy, ClientSpecialFeeDto } from 'src/shared/service-proxies/service-proxies';
+import { ClientPeriodSalesDataDto, ClientPeriodServiceProxy, ClientRateDto, CommissionDto, ConsultantRateDto, ConsultantSalesDataDto, ContractSignerDto, EmployeeDto, EnumEntityTypeDto, EnumServiceProxy, LookupServiceProxy, PeriodClientSpecialFeeDto, PeriodClientSpecialRateDto, SalesClientDataDto, SalesMainDataDto, WorkflowProcessType, WorkflowServiceProxy, ConsultantResultDto, ClientResultDto, ContactResultDto, ConsultantTerminationSalesDataCommandDto, WorkflowTerminationSalesDataCommandDto, PeriodConsultantSpecialFeeDto, PeriodConsultantSpecialRateDto, ClientSpecialRateDto, ClientsServiceProxy, ClientSpecialFeeDto, ClientSalesServiceProxy } from 'src/shared/service-proxies/service-proxies';
 import { WorkflowConsultantActionsDialogComponent } from '../workflow-consultant-actions-dialog/workflow-consultant-actions-dialog.component';
 import { WorkflowDataService } from '../workflow-data.service';
 import { ConsultantDiallogAction, SalesTerminateConsultantForm, TenantList, WorkflowSalesAdditionalDataForm, WorkflowSalesClientDataForm, WorkflowSalesConsultantsForm, WorkflowSalesMainForm } from './workflow-sales.model';
@@ -140,7 +140,7 @@ export class WorkflowSalesComponent extends AppComopnentBase implements OnInit {
         private _lookupService: LookupServiceProxy,
         private _clientPeriodService: ClientPeriodServiceProxy,
         private _workflowServiceProxy: WorkflowServiceProxy,
-        private _salesService: SalesServiceProxy,
+        private _clientSalesService: ClientSalesServiceProxy,
         private _clientService: ClientsServiceProxy
     ) {
         super(injector);
@@ -934,6 +934,7 @@ export class WorkflowSalesComponent extends AppComopnentBase implements OnInit {
         const form = this._fb.group({
             employmentType: new FormControl(this.findItemById(this.employmentTypes, consultant?.employmentTypeId) ?? null),
             consultantName: new FormControl(consultant?.consultant ?? null),
+            consultantNameOnly: new FormControl(consultant?.nameOnly ?? null),
 
             consultantProjectDurationSameAsClient: new FormControl(true),
             consultantProjectStartDate: new FormControl(consultant?.startDate ?? null),
@@ -1227,7 +1228,7 @@ export class WorkflowSalesComponent extends AppComopnentBase implements OnInit {
         rateRow.get('consultantRate')?.setValue(this.consultantFeeToEdit.consultantRate, {emitEvent: false});
         rateRow.get('consultantRateCurrency')?.setValue(this.findItemById(this.currencies, this.consultantFeeToEdit.consultantRateCurrencyId), {emitEvent: false});
         this.isConsultantFeeEditing = false;
-        (this.consultantsForm.consultantData.at(consultantIndex).get('specialRates') as FormArray).at(specialFeeIndex).get('editable')?.setValue(false, {emitEvent: false});
+        (this.consultantsForm.consultantData.at(consultantIndex).get('specialFees') as FormArray).at(specialFeeIndex).get('editable')?.setValue(false, {emitEvent: false});
     }
 
     selectConsultantSpecialFee(event: any, consultantIndex: number, fee: ClientSpecialFeeDto, consultantFeeMenuTrigger: MatMenuTrigger) {
@@ -1476,106 +1477,110 @@ export class WorkflowSalesComponent extends AppComopnentBase implements OnInit {
             this.consultantsForm.consultantData.value.forEach((consultant: any) => {
                 let consultantInput = new ConsultantSalesDataDto();
                 consultantInput.employmentTypeId = consultant.employmentType?.id;
-                consultantInput.consultantId = consultant.consultantName?.id
-                consultantInput.nameOnly = consultant.consultantName?.name;
-                consultantInput.consultant = new ConsultantResultDto();
-
-                consultantInput.consultant.id = consultant.consultantName?.id
-                consultantInput.consultant.name = consultant.consultantName?.name;
-                consultantInput.consultant.legacyId = consultant.consultantName?.legacyId;
-                consultantInput.consultant.companyName = consultant.consultantName?.companyName;
-                consultantInput.consultant.tenantId = consultant.consultantName?.tenantId;
-                consultantInput.consultant.externalId = consultant.consultantName?.externalId;
-                consultantInput.consultant.city = consultant.consultantName?.city;
-                consultantInput.consultant.countryId = consultant.consultantName?.contryId;
-
-                consultantInput.startDate = consultant.consultantProjectStartDate;
-                consultantInput.noEndDate = consultant.consultantProjectNoEndDate;
-                consultantInput.endDate = consultant.consultantProjectEndDate;
-
-                consultantInput.isOnsiteWorkplace = consultant.consultantIsOnsiteWorkplace;
-                consultantInput.onsiteClientId = consultant.consultantWorkplaceClientAddress?.clientId;
-                consultantInput.percentageOnSite = consultant.consultantWorkplacePercentageOnSite;
-
-                consultantInput.isEmagineOfficeWorkplace = consultant.consultantIsEmagineOfficeWorkplace;
-                consultantInput.emagineOfficeId = consultant.consultantWorkplaceEmagineOffice?.id;
-
-                consultantInput.isRemoteWorkplace = consultant.consultantIsRemoteWorkplace;
-                consultantInput.remoteAddressCountryId = consultant.consultantWorkplaceRemote?.id;
-
-                consultantInput.noExpectedWorkload = consultant.noExpectedWorkload;
-                consultantInput.expectedWorkloadHours = consultant.expectedWorkloadHours;
-                consultantInput.expectedWorkloadUnitId = consultant.expectedWorkloadUnitId;
-                consultantInput.consultantTimeReportingCapId = consultant.consultantCapOnTimeReporting?.id;
-                consultantInput.consultantTimeReportingCapMaxValue = consultant.consultantTimeReportingCapMaxValue;
-                consultantInput.pdcPaymentEntityId = consultant.consultantProdataEntity?.id;
-
-                consultantInput.consultantRate = new ConsultantRateDto();
-                consultantInput.consultantRate.isTimeBasedRate = consultant.consultantPaymentType?.id === 1; // 1: 'Time based';
-                consultantInput.consultantRate.isFixedRate = consultant.consultantPaymentType?.id === 2;  // 2: 'Fixed';
-                consultantInput.consultantRate.normalRate = consultant.consultantRate;
-                consultantInput.consultantRate.currencyId = consultant.consultantRateCurrency?.id;
-                consultantInput.consultantRate.rateUnitTypeId = consultant.consultantRateUnitType?.id;
-                consultantInput.consultantRate.prodataToProdataRate = consultant.consultantPDCRate;
-                consultantInput.consultantRate.prodataToProdataCurrencyId = consultant.consultantPDCRateCurrency?.id;
-                consultantInput.consultantRate.prodataToProdataInvoiceCurrencyId = consultant.prodataToProdataInvoiceCurrencyId;
-                if (consultantInput.consultantRate.isTimeBasedRate) {
-                    consultantInput.consultantRate.invoiceFrequencyId = consultant.consultantInvoicingFrequency?.id;
-                }
-                if (consultantInput.consultantRate.isFixedRate) {
-                    consultantInput.consultantRate.invoicingTimeId = consultant.consultantInvoicingTime?.id;
-                }
-                consultantInput.consultantRate.manualDate = consultant.manualDate;
-
-                if (consultant.specialRates.length) {
-                    consultantInput.periodConsultantSpecialRates = new Array<PeriodConsultantSpecialRateDto>();
-                    for (let rate of consultant.specialRates) {
-                        const consultantSpecialRate = new PeriodConsultantSpecialRateDto();
-                        consultantSpecialRate.id = rate.id;
-                        consultantSpecialRate.clientSpecialRateId = rate.clientSpecialRateId;
-                        consultantSpecialRate.rateName = rate.rateName;
-                        consultantSpecialRate.rateDirection = rate.rateDirection;
-                        consultantSpecialRate.reportingUnit = rate.reportingUnit;
-                        consultantSpecialRate.prodataToProdataRate = rate.prodataToProdataRate;
-                        consultantSpecialRate.prodataToProdataRateCurrencyId = rate.prodataToProdataRateCurrency?.id;
-                        consultantSpecialRate.consultantRate = rate.consultantRate;
-                        consultantSpecialRate.consultantRateCurrencyId = rate.consultantRateCurrency?.id;
-                        consultantInput.periodConsultantSpecialRates.push(consultantSpecialRate);
-                    }
+                //  IF employment type is 'Fee only' - id: 10 or 'Recruitment' - id:11 only name is stored
+                if (consultant.employmentType?.id === 10 || consultant.employmentType?.id === 11) {
+                    consultantInput.nameOnly = consultant.consultantNameOnly;
                 } else {
-                    consultantInput.noSpecialRate = true;
-                }
-
-                if (consultant.specialFees.length) {
-                    consultantInput.periodConsultantSpecialFees = new Array<PeriodConsultantSpecialFeeDto>();
-                    for (let fee of consultant.specialFees) {
-                        const consultantSpecialFee = new PeriodConsultantSpecialFeeDto();
-                        consultantSpecialFee.id = fee.id;
-                        consultantSpecialFee.clientSpecialFeeId = fee.clientSpecialFeeId;
-                        consultantSpecialFee.feeName = fee.feeName;
-                        consultantSpecialFee.feeDirection = fee.feeDirection;
-                        consultantSpecialFee.frequency = fee.frequency;
-                        consultantSpecialFee.prodataToProdataRate = fee.prodataToProdataRate;
-                        consultantSpecialFee.prodataToProdataRateCurrencyId = fee.prodataToProdataRateCurrency?.id;
-                        consultantSpecialFee.consultantRate = fee.consultantRate;
-                        consultantSpecialFee.consultantRateCurrencyId = fee.consultantRateCurrency?.id;
-                        consultantInput.periodConsultantSpecialFees.push(consultantSpecialFee);
+                    consultantInput.consultantId = consultant.consultantName?.id
+                    consultantInput.consultant = new ConsultantResultDto();
+    
+                    consultantInput.consultant.id = consultant.consultantName?.id
+                    consultantInput.consultant.name = consultant.consultantName?.name;
+                    consultantInput.consultant.legacyId = consultant.consultantName?.legacyId;
+                    consultantInput.consultant.companyName = consultant.consultantName?.companyName;
+                    consultantInput.consultant.tenantId = consultant.consultantName?.tenantId;
+                    consultantInput.consultant.externalId = consultant.consultantName?.externalId;
+                    consultantInput.consultant.city = consultant.consultantName?.city;
+                    consultantInput.consultant.countryId = consultant.consultantName?.contryId;
+    
+                    consultantInput.startDate = consultant.consultantProjectStartDate;
+                    consultantInput.noEndDate = consultant.consultantProjectNoEndDate;
+                    consultantInput.endDate = consultant.consultantProjectEndDate;
+    
+                    consultantInput.isOnsiteWorkplace = consultant.consultantIsOnsiteWorkplace;
+                    consultantInput.onsiteClientId = consultant.consultantWorkplaceClientAddress?.clientId;
+                    consultantInput.percentageOnSite = consultant.consultantWorkplacePercentageOnSite;
+    
+                    consultantInput.isEmagineOfficeWorkplace = consultant.consultantIsEmagineOfficeWorkplace;
+                    consultantInput.emagineOfficeId = consultant.consultantWorkplaceEmagineOffice?.id;
+    
+                    consultantInput.isRemoteWorkplace = consultant.consultantIsRemoteWorkplace;
+                    consultantInput.remoteAddressCountryId = consultant.consultantWorkplaceRemote?.id;
+    
+                    consultantInput.noExpectedWorkload = consultant.noExpectedWorkload;
+                    consultantInput.expectedWorkloadHours = consultant.expectedWorkloadHours;
+                    consultantInput.expectedWorkloadUnitId = consultant.expectedWorkloadUnitId;
+                    consultantInput.consultantTimeReportingCapId = consultant.consultantCapOnTimeReporting?.id;
+                    consultantInput.consultantTimeReportingCapMaxValue = consultant.consultantTimeReportingCapMaxValue;
+                    consultantInput.pdcPaymentEntityId = consultant.consultantProdataEntity?.id;
+    
+                    consultantInput.consultantRate = new ConsultantRateDto();
+                    consultantInput.consultantRate.isTimeBasedRate = consultant.consultantPaymentType?.id === 1; // 1: 'Time based';
+                    consultantInput.consultantRate.isFixedRate = consultant.consultantPaymentType?.id === 2;  // 2: 'Fixed';
+                    consultantInput.consultantRate.normalRate = consultant.consultantRate;
+                    consultantInput.consultantRate.currencyId = consultant.consultantRateCurrency?.id;
+                    consultantInput.consultantRate.rateUnitTypeId = consultant.consultantRateUnitType?.id;
+                    consultantInput.consultantRate.prodataToProdataRate = consultant.consultantPDCRate;
+                    consultantInput.consultantRate.prodataToProdataCurrencyId = consultant.consultantPDCRateCurrency?.id;
+                    consultantInput.consultantRate.prodataToProdataInvoiceCurrencyId = consultant.prodataToProdataInvoiceCurrencyId;
+                    if (consultantInput.consultantRate.isTimeBasedRate) {
+                        consultantInput.consultantRate.invoiceFrequencyId = consultant.consultantInvoicingFrequency?.id;
                     }
-                } else {
-                    consultantInput.noSpecialFee = true;
+                    if (consultantInput.consultantRate.isFixedRate) {
+                        consultantInput.consultantRate.invoicingTimeId = consultant.consultantInvoicingTime?.id;
+                    }
+                    consultantInput.consultantRate.manualDate = consultant.manualDate;
+    
+                    if (consultant.specialRates.length) {
+                        consultantInput.periodConsultantSpecialRates = new Array<PeriodConsultantSpecialRateDto>();
+                        for (let rate of consultant.specialRates) {
+                            const consultantSpecialRate = new PeriodConsultantSpecialRateDto();
+                            consultantSpecialRate.id = rate.id;
+                            consultantSpecialRate.clientSpecialRateId = rate.clientSpecialRateId;
+                            consultantSpecialRate.rateName = rate.rateName;
+                            consultantSpecialRate.rateDirection = rate.rateDirection;
+                            consultantSpecialRate.reportingUnit = rate.reportingUnit;
+                            consultantSpecialRate.prodataToProdataRate = rate.prodataToProdataRate;
+                            consultantSpecialRate.prodataToProdataRateCurrencyId = rate.prodataToProdataRateCurrency?.id;
+                            consultantSpecialRate.consultantRate = rate.consultantRate;
+                            consultantSpecialRate.consultantRateCurrencyId = rate.consultantRateCurrency?.id;
+                            consultantInput.periodConsultantSpecialRates.push(consultantSpecialRate);
+                        }
+                    } else {
+                        consultantInput.noSpecialRate = true;
+                    }
+    
+                    if (consultant.specialFees.length) {
+                        consultantInput.periodConsultantSpecialFees = new Array<PeriodConsultantSpecialFeeDto>();
+                        for (let fee of consultant.specialFees) {
+                            const consultantSpecialFee = new PeriodConsultantSpecialFeeDto();
+                            consultantSpecialFee.id = fee.id;
+                            consultantSpecialFee.clientSpecialFeeId = fee.clientSpecialFeeId;
+                            consultantSpecialFee.feeName = fee.feeName;
+                            consultantSpecialFee.feeDirection = fee.feeDirection;
+                            consultantSpecialFee.frequency = fee.frequency;
+                            consultantSpecialFee.prodataToProdataRate = fee.prodataToProdataRate;
+                            consultantSpecialFee.prodataToProdataRateCurrencyId = fee.prodataToProdataRateCurrency?.id;
+                            consultantSpecialFee.consultantRate = fee.consultantRate;
+                            consultantSpecialFee.consultantRateCurrencyId = fee.consultantRateCurrency?.id;
+                            consultantInput.periodConsultantSpecialFees.push(consultantSpecialFee);
+                        }
+                    } else {
+                        consultantInput.noSpecialFee = true;
+                    }
+    
+                    consultantInput.noSpecialContractTerms = consultant.consultantSpecialContractTermsNone;
+                    consultantInput.specialContractTerms = consultant.consultantSpecialContractTerms;
+                    consultantInput.deliveryManagerSameAsAccountManager = consultant.deliveryManagerSameAsAccountManager;
+                    consultantInput.deliveryAccountManagerIdValue = consultant.deliveryAccountManager?.id;
                 }
-
-                consultantInput.noSpecialContractTerms = consultant.consultantSpecialContractTermsNone;
-                consultantInput.specialContractTerms = consultant.consultantSpecialContractTerms;
-                consultantInput.deliveryManagerSameAsAccountManager = consultant.deliveryManagerSameAsAccountManager;
-                consultantInput.deliveryAccountManagerIdValue = consultant.deliveryAccountManager?.id;
 
                 input.consultantSalesData!.push(consultantInput);
             });
         }
         this.showMainSpinner();
         if (isDraft) {
-            this._clientPeriodService.salesPut(this.clientPeriodId!, input)
+            this._clientPeriodService.clientSalesPut(this.clientPeriodId!, input)
                 .pipe(finalize(() => {
                     this.hideMainSpinner();
                 }))
@@ -1583,7 +1588,7 @@ export class WorkflowSalesComponent extends AppComopnentBase implements OnInit {
                     this.showNotify(NotifySeverity.Success, 'Saved sales step', 'Okay');
                 })
         } else {
-            this._salesService.editFinishPost1(this.clientPeriodId!, input)
+            this._clientSalesService.editFinish(this.clientPeriodId!, input)
                 .pipe(finalize(() => {
                     this.hideMainSpinner();
                 }))
@@ -1596,7 +1601,7 @@ export class WorkflowSalesComponent extends AppComopnentBase implements OnInit {
 
     getWorkflowSalesStep() {
         this.showMainSpinner();
-        this._clientPeriodService.salesGet(this.clientPeriodId!)
+        this._clientPeriodService.clientSalesGet(this.clientPeriodId!)
             .pipe(finalize(() => {
                 this.hideMainSpinner();
             }))
@@ -1610,7 +1615,7 @@ export class WorkflowSalesComponent extends AppComopnentBase implements OnInit {
                 this.salesMainDataForm.projectDescription?.setValue(result?.salesMainData?.projectDescription, {emitEvent: false});
 
                 // Invoicing
-                result.salesMainData?.commissions?.forEach(commission => {
+                result.salesMainData?.commissions?.forEach((commission: CommissionDto) => {
                     this.addCommission(commission);
                 })
                 this.salesMainDataForm.discounts?.setValue(this.findItemById(this.discounts, result?.salesMainData?.discountId ?? 1), {emitEvent: false}); // 1 - default value 'None'
@@ -1686,11 +1691,11 @@ export class WorkflowSalesComponent extends AppComopnentBase implements OnInit {
                 }
 
                 // Rates & Fees
-                result.salesClientData?.periodClientSpecialRates?.forEach(specialRate => {
+                result.salesClientData?.periodClientSpecialRates?.forEach((specialRate: PeriodClientSpecialRateDto) => {
                     this.addSpecialRate(specialRate);
                 });
 
-                result.salesClientData?.periodClientSpecialFees?.forEach(specialFee => {
+                result.salesClientData?.periodClientSpecialFees?.forEach((specialFee: PeriodClientSpecialFeeDto) => {
                     this.addClientFee(specialFee);
                 });
 
@@ -1704,7 +1709,7 @@ export class WorkflowSalesComponent extends AppComopnentBase implements OnInit {
                 if (result?.salesClientData?.noSpecialContractTerms) {
                     this.salesClientDataForm.specialContractTerms?.disable();
                 }
-                result?.salesClientData?.contractSigners?.forEach(signer => {
+                result?.salesClientData?.contractSigners?.forEach((signer: ContractSignerDto) => {
                     this.addSignerToForm(signer);
                 });
 

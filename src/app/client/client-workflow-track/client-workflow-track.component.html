@@ -20,7 +20,7 @@
                     <mat-header-cell *matHeaderCellDef mat-sort-header fxFlex="15%"> Sales Type </mat-header-cell>
                     <mat-cell *matCellDef="let row" fxFlex="15%">
                         <span class="text-truncate-ellipsis" [matTooltip]="row?.salesType">
-                            {{row?.salesType}}
+                            {{findItemById(saleTypes, row?.salesTypeId)?.name}}
                         </span>
                     </mat-cell>
                 </ng-container>
@@ -28,23 +28,23 @@
                     <mat-header-cell *matHeaderCellDef mat-sort-header fxFlex="15%"> Delivery Type </mat-header-cell>
                     <mat-cell *matCellDef="let row" fxFlex="15%">
                         <span class="text-truncate-ellipsis" matTooltipClass="white-bg-tooltip" [matTooltip]="row?.deliveryType">
-                            {{row?.deliveryType}}
+                            {{findItemById(deliveryTypes, row?.deliveryTypeId)?.name}}
                         </span>
                     </mat-cell>
                 </ng-container>
                 <ng-container matColumnDef="dateStart">
                     <mat-header-cell *matHeaderCellDef mat-sort-header fxFlex="10%"> Start </mat-header-cell>
                     <mat-cell *matCellDef="let row" fxFlex="10%">
-                        <span class="text-truncate-ellipsis" [matTooltip]="row.dateStart | momentFormat: 'DD.MM.YYYY'">
-                            {{row.dateStart | momentFormat: 'DD.MM.YYYY'}}
+                        <span class="text-truncate-ellipsis" [matTooltip]="row.startDate | momentFormat: 'DD.MM.YYYY'">
+                            {{row.startDate | momentFormat: 'DD.MM.YYYY'}}
                         </span>
                     </mat-cell>
                 </ng-container>
                 <ng-container matColumnDef="dateEnd">
                     <mat-header-cell *matHeaderCellDef mat-sort-header fxFlex="10%"> End </mat-header-cell>
                     <mat-cell *matCellDef="let row" fxFlex="10%">
-                        <span class="text-truncate-ellipsis" [matTooltip]="row?.dateEnd | momentFormat: 'DD.MM.YYYY'">
-                            {{row?.dateEnd | momentFormat: 'DD.MM.YYYY'}}
+                        <span class="text-truncate-ellipsis" [matTooltip]="row?.endDate | momentFormat: 'DD.MM.YYYY'">
+                            {{row?.endDate | momentFormat: 'DD.MM.YYYY'}}
                         </span>
                     </mat-cell>
                 </ng-container>

@@ -37,6 +37,12 @@ import { DashboardComponent } from './dashboard/dashboard.component';
             // canLoad: [MsalGuard]
           },
           {
+            path: 'notifications',
+            loadChildren:() => import('../app/notification/notifications.module').then(m => m.NotificationsModule),
+            data: {preload: true},
+            // canLoad: [MsalGuard]
+          },
+          {
             path: '',
             children: [
                 { path: '', redirectTo: '/app/dashboard', pathMatch: 'full' }

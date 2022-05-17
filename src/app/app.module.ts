@@ -83,7 +83,7 @@ export function getRemoteServiceBaseUrl(): string {
 @NgModule({
     declarations: [
         AppComponent,
-        LoginComponent
+        LoginComponent,
     ],
     imports: [
         CommonModule,
@@ -198,6 +198,13 @@ export class AppModule {
             'workflow-menu',
             sanitizer.bypassSecurityTrustResourceUrl(
                 'assets/common/images/menu/value-chain-menu.svg'
+            )
+        );
+
+        iconRegistry.addSvgIcon(
+            'notification-menu',
+            sanitizer.bypassSecurityTrustResourceUrl(
+                'assets/common/images/menu/notification-menu.svg'
             )
         );
 
