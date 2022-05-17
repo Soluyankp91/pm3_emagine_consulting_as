@@ -5,14 +5,15 @@ import { MatDialog } from '@angular/material/dialog';
 import { MatTableDataSource } from '@angular/material/table';
 import { Router } from '@angular/router';
 import { Subject } from 'rxjs';
-import { debounceTime, finalize, takeUntil } from 'rxjs/operators';
+import { debounceTime, finalize, switchMap, takeUntil } from 'rxjs/operators';
 import { AppComopnentBase } from 'src/shared/app-component-base';
 import { AppConsts } from 'src/shared/AppConsts';
-import { ApiServiceProxy, EnumEntityTypeDto, StartNewWorkflowInputDto, WorkflowListItemDto, WorkflowProcessType, WorkflowServiceProxy } from 'src/shared/service-proxies/service-proxies';
+import { ApiServiceProxy, EmployeeDto, EnumEntityTypeDto, LookupServiceProxy, StartNewWorkflowInputDto, WorkflowListItemDto, WorkflowProcessType, WorkflowServiceProxy } from 'src/shared/service-proxies/service-proxies';
+import { SelectableCountry, SelectableIdNameDto } from '../client/client.model';
 import { InternalLookupService } from '../shared/common/internal-lookup.service';
 import { ManagerStatus } from '../shared/components/manager-search/manager-search.model';
 import { CreateWorkflowDialogComponent } from './create-workflow-dialog/create-workflow-dialog.component';
-import { WorkflowFlag, WorkflowList } from './workflow.model';
+import { SelectableEmployeeDto, WorkflowFlag, WorkflowList } from './workflow.model';
 
 @Component({
     selector: 'app-workflow',
@@ -77,7 +78,9 @@ export class WorkflowComponent extends AppComopnentBase implements OnInit, OnDes
     workflowStatusControl = new FormControl();
 
     managerStatus = ManagerStatus;
-
+    selectedAccountManagers: SelectableEmployeeDto[] = [];
+    filteredAccountManagers: SelectableEmployeeDto[] = [];
+    accountManagerFilter = new FormControl();
 
     private _unsubscribe = new Subject();
     constructor(
@@ -87,7 +90,8 @@ export class WorkflowComponent extends AppComopnentBase implements OnInit, OnDes
         private _workflowService: WorkflowServiceProxy,
         private overlay: Overlay,
         private dialog: MatDialog,
-        private _internalLookupService: InternalLookupService
+        private _internalLookupService: InternalLookupService,
+        private _lookupService: LookupServiceProxy,
     ) {
         super(injector);
         // this.workflowFilter.valueChanges.pipe(
@@ -140,6 +144,36 @@ export class WorkflowComponent extends AppComopnentBase implements OnInit, OnDes
             debounceTime(500)
         ).subscribe(() => {
             this.getWorkflowList();
+        });
+
+        this.accountManagerFilter.valueChanges.pipe(
+            takeUntil(this._unsubscribe),
+            debounceTime(300),
+            switchMap((value: any) => {
+                let toSend = {
+                    name: value,
+                    maxRecordsCount: 1000,
+                };
+                if (value?.id) {
+                    toSend.name = value.id
+                        ? value.name
+                        : value;
+                }
+                return this._lookupService.employees(value);
+            }),
+        ).subscribe((list: EmployeeDto[]) => {
+            if (list.length) {
+                this.filteredAccountManagers = list.map(x => {
+                    return new SelectableEmployeeDto({
+                        id: x.id!,
+                        name: x.name!,
+                        externalId: x.externalId!,
+                        selected: false
+                    })
+                });
+            } else {
+                this.filteredAccountManagers = [{ name: 'No managers found', externalId: '', id: 'no-data', selected: false }];
+            }
         });
     }
 
@@ -258,27 +292,29 @@ export class WorkflowComponent extends AppComopnentBase implements OnInit, OnDes
     }
 
     getWorkflowList() {
-        // let searchFilter = this.workflowFilter.value ? this.workflowFilter.value : '';
+        let searchFilter = this.workflowFilter.value ? this.workflowFilter.value : '';
         this.isDataLoading = true;
         let invoicingEntity = this.invoicingEntityControl.value ? this.invoicingEntityControl.value : undefined;
         let paymentEntity = this.paymentEntityControl.value ? this.paymentEntityControl.value : undefined;
         let salesType = this.salesTypeControl.value ? this.salesTypeControl.value : undefined;
         let projectType = this.projectTypeControl.value ? this.projectTypeControl.value : undefined;
         let workflowStatus = this.workflowStatusControl.value ? this.workflowStatusControl.value : undefined;
+        let ownerIds = this.selectedAccountManagers.map(x => +x.id);
 
         this._apiService.workflow(
-            // searchFilter,
             invoicingEntity,
             paymentEntity,
             salesType,
             projectType,
             workflowStatus,
+            ownerIds,
             this.showOnlyWorkflowsWithNewSales,
             this.showOnlyWorkflowsWithExtensions,
             this.showOnlyWorkflowsWithPendingStepsForSelectedEmployees,
             this.showOnlyWorkflowsWithUpcomingStepsForSelectedEmployees,
             this.includeTerminated,
             this.includeDeleted,
+            searchFilter,
             this.pageNumber,
             this.deafultPageSize,
             this.sorting)
@@ -305,6 +341,24 @@ export class WorkflowComponent extends AppComopnentBase implements OnInit, OnDes
 
     selectedManager(event: any) {
         console.log(event);
+    }
+
+    optionClicked(event: Event, item: SelectableIdNameDto | SelectableCountry | SelectableEmployeeDto, list: SelectableIdNameDto[] | SelectableCountry[] | SelectableEmployeeDto[]) {
+        event.stopPropagation();
+        this.toggleSelection(item, list);
+      }
+
+    toggleSelection(item: any, list: any) {
+        item.selected = !item.selected;
+        if (item.selected) {
+            if (!list.includes(item)) {
+                list.push(item);
+            }
+        } else {
+            const i = list.findIndex((value: any) => value.name === item.name);
+            list.splice(i, 1);
+        }
+        this.getWorkflowList();
     }
 
 }
