@@ -51,7 +51,7 @@ export class ClientRatesAndFeesComponent implements OnInit, OnDestroy {
     }
 
     ngOnInit(): void {
-        this._activatedSnapshot.paramMap.pipe(
+        this._activatedSnapshot.parent!.paramMap.pipe(
             takeUntil(this._unsubscribe)
         ).subscribe(params => {
             this.clientId = +params.get('id')!;

@@ -42,7 +42,6 @@ const DATA_SOURCE = [
     styleUrls: ['./client-contacts.component.scss']
 })
 export class ClientContactsComponent implements OnInit, OnDestroy {
-    @Input() clientInfo: any;
     clientId: number;
     isDataLoading = false;
     selectedCountries: string[] = [];
@@ -69,10 +68,11 @@ export class ClientContactsComponent implements OnInit, OnDestroy {
     constructor(
         private _clientService: ClientsServiceProxy,
         private activatedRoute: ActivatedRoute
-    ) { }
+    ) {
+    }
 
     ngOnInit(): void {
-        this.activatedRoute.paramMap.pipe(
+        this.activatedRoute.parent!.paramMap.pipe(
             takeUntil(this._unsubscribe)
         ).subscribe(params => {
             this.clientId = +params.get('id')!;
