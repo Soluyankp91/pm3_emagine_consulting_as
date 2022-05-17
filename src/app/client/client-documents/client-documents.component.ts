@@ -1,4 +1,4 @@
-import { Component, Input, OnInit, ViewChild } from '@angular/core';
+import { Component, Input, OnDestroy, OnInit, ViewChild } from '@angular/core';
 import { FormArray, FormBuilder, FormControl } from '@angular/forms';
 import { MatTableDataSource } from '@angular/material/table';
 import { AppConsts } from 'src/shared/AppConsts';
@@ -10,6 +10,10 @@ import { ConfirmationDialogComponent } from 'src/app/shared/components/confirmat
 import { MatTabGroup } from '@angular/material/tabs';
 import { AddFolderDialogComponent } from './add-folder-dialog/add-folder-dialog.component';
 import * as moment from 'moment';
+import { ClientAttachmentInfoOutputDto, ClientDocumentsServiceProxy } from 'src/shared/service-proxies/service-proxies';
+import { finalize, takeUntil } from 'rxjs/operators';
+import { Subject } from 'rxjs';
+import { ActivatedRoute } from '@angular/router';
 
 const GENERAL_DATA_SOURCE = [
     {
@@ -72,9 +76,10 @@ const generalFileTypes = [
     templateUrl: './client-documents.component.html',
     styleUrls: ['./client-documents.component.scss']
 })
-export class ClientDocumentsComponent implements OnInit {
+export class ClientDocumentsComponent implements OnInit, OnDestroy {
     @ViewChild('documentsTabs', {static: false}) documentsTabs: MatTabGroup;
-    @Input() clientInfo: any;
+
+    clientId: number;
 
     //General tab
     generalDocumentsDataSource: MatTableDataSource<any> = new MatTableDataSource<any>();
@@ -130,10 +135,21 @@ export class ClientDocumentsComponent implements OnInit {
     selectedItem = DocumentSideNavItem.General;
 
     generalFiles = GENERAL_DATA_SOURCE;
+
+    generalDocumentsIncludeLinked = new FormControl();
+    generalDocumentsIncludeExpired = new FormControl();
+    contractDocumentsIncludeLinked = new FormControl();
+    contractDocumentsIncludeExpired = new FormControl();
+    evaluationDocumentDate = new FormControl();
+    evaluationDocumentsIncludeLinked = new FormControl();
+
+    private _unsubscribe = new Subject();
     constructor(
         private overlay: Overlay,
         private dialog: MatDialog,
-        private _fb: FormBuilder
+        private _fb: FormBuilder,
+        private _clientDocumentsService: ClientDocumentsServiceProxy,
+        private activatedRoute: ActivatedRoute
     ) {
         this.generalDocumentForm = new GeneralDocumentForm();
     }
@@ -145,46 +161,46 @@ export class ClientDocumentsComponent implements OnInit {
     }
 
     ngOnInit(): void {
+        this.activatedRoute.parent!.paramMap.pipe(
+            takeUntil(this._unsubscribe)
+        ).subscribe(params => {
+            this.clientId = +params.get('id')!;
+            this.getGeneralDocuments();
+            this.getContracts(true, true);
+            this.getEvaluations(true, moment());
+        });
         this.generalDocumentsDataSource = new MatTableDataSource<any>(GENERAL_DATA_SOURCE);
+    }
 
-        // documentTitle: 'General document',
-        // file: {
-        //     name: 'General document #123/7891562.pdf',
-        //     type: {
-        //         id: 1,
-        //         name: 'General'
-        //     },
-        //     icon: 'pdf'
-        // },
-        // date: moment(),
-        // uploadedBy: 'Roberto Mancini'
-        GENERAL_DATA_SOURCE.forEach(item => {
-            let generalDoc = {
-                id: null,
-                documentTitle: item.documentTitle,
-                fileName: item.file.name,
-                type: item.file.type,
-                icon: item.file.icon,
-                date: item.date,
-                uploadedBy: item.uploadedBy
-            }
-            this.addGeneralDocument(generalDoc);
-        })
+    ngOnDestroy(): void {
+        this._unsubscribe.next();
+        this._unsubscribe.complete();
+    }
+
+    getGeneralDocuments() {
+        this._clientDocumentsService.generalAttachments(this.clientId, true)
+            .pipe(finalize(() => {}))
+            .subscribe(result => {
+                console.log(result);
+                result.forEach((generalDocument: ClientAttachmentInfoOutputDto) => {
+                    this.addGeneralDocument(generalDocument)
+                });
+            });
     }
 
     compareWithFn(listOfItems: any, selectedItem: any) {
         return listOfItems && selectedItem && listOfItems.id === selectedItem.id;;
     }
 
-    addGeneralDocument(generalDocument?: any) {
+    addGeneralDocument(generalDocument?: ClientAttachmentInfoOutputDto | any) {
         const form = this._fb.group({
-            id: new FormControl(generalDocument?.id ?? null),
+            clientAttachmentGuid: new FormControl(generalDocument?.clientAttachmentGuid ?? null),
             icon: new FormControl(generalDocument?.icon ?? null),
             documentTitle: new FormControl(generalDocument?.documentTitle ?? null),
-            fileName: new FormControl(generalDocument?.fileName ?? null),
+            filename: new FormControl(generalDocument?.filename ?? null),
             type: new FormControl(generalDocument?.type ?? null),
-            date: new FormControl(generalDocument?.date ?? null),
-            uploadedBy: new FormControl(generalDocument?.uploadedBy ?? null),
+            dateUpdated: new FormControl(generalDocument?.dateUpdated ?? null),
+            updatedBy: new FormControl(generalDocument?.updatedBy ?? null),
             editable: new FormControl(generalDocument ? false : true)
         });
         this.generalDocumentForm.documents.push(form);
@@ -197,6 +213,16 @@ export class ClientDocumentsComponent implements OnInit {
     deleteGeneralDocument(index: number) {
         this.documents.removeAt(index);
     }
+
+    
+    deleteGeneralFile(clientAttachmentGuid: string) {
+        this._clientDocumentsService.generalFileDelete(this.clientId, clientAttachmentGuid)
+            .pipe(finalize(() => {}))
+            .subscribe(result => {
+
+            });
+    }
+
 
     editOrSaveGeneralDocument(isEditMode: boolean, index: number) {
         this.documents.at(index).get('editable')?.setValue(!isEditMode, {emitEvent: false});
@@ -356,8 +382,20 @@ export class ClientDocumentsComponent implements OnInit {
         // API TO DELETE FOLDER
     }
 
-    calculateStyleForFolders(level: number) {
-        return `u-ml--${16 + level*16}`;
+    getContracts(includeLinkedClients: boolean, includeExpired: boolean) {
+        this._clientDocumentsService.contractDocuments(this.clientId, includeLinkedClients, includeExpired)
+            .pipe(finalize(() => {}))
+            .subscribe(result => {
+                console.log(result);
+            })
+    }
+
+    getEvaluations(includeLinkedClients: boolean, maxAnsweDate: moment.Moment) {
+        this._clientDocumentsService.evaluations(this.clientId, includeLinkedClients, maxAnsweDate)
+            .pipe(finalize(() => {}))
+            .subscribe(result => {
+                console.log(result);
+            });
     }
 
 }

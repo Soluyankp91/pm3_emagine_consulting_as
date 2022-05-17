@@ -6,7 +6,7 @@ import { Subject } from 'rxjs';
 import { finalize, takeUntil } from 'rxjs/operators';
 import { environment } from 'src/environments/environment';
 import { AppConsts } from 'src/shared/AppConsts';
-import { ClientRequestTrackItemDto, ClientsServiceProxy, EmployeeDto } from 'src/shared/service-proxies/service-proxies';
+import { ClientDetailsDto, ClientRequestTrackItemDto, ClientsServiceProxy, EmployeeDto } from 'src/shared/service-proxies/service-proxies';
 
 @Component({
     selector: 'app-client-request-track',
@@ -14,7 +14,6 @@ import { ClientRequestTrackItemDto, ClientsServiceProxy, EmployeeDto } from 'src
     styleUrls: ['./client-request-track.component.scss']
 })
 export class ClientRequestTrackComponent implements OnInit, OnDestroy {
-    @Input() clientInfo: any;
     clientId: number;
 
     isDataLoading = false;
@@ -48,7 +47,7 @@ export class ClientRequestTrackComponent implements OnInit, OnDestroy {
     ) { }
 
     ngOnInit(): void {
-        this.activatedRoute.paramMap.pipe(
+        this.activatedRoute.parent!.paramMap.pipe(
             takeUntil(this._unsubscribe)
         ).subscribe(params => {
             this.clientId = +params.get('id')!;
