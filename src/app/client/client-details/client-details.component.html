@@ -37,33 +37,31 @@
             </div>
         </div>
     </div>
-    <div fxLayout="row" fxLayoutAlign="start start"class="client-details--content">
-        <mat-tab-group class="client-details--tabs u-w--100" #clientDetailsTabs>
-            <mat-tab label="Request track">
-                <!-- <ng-scrollbar> -->
-                    <app-client-request-track [clientInfo]="selectedClient"></app-client-request-track>
-                <!-- </ng-scrollbar> -->
-            </mat-tab>
-            <mat-tab label="Workflow track">
-                <!-- <ng-scrollbar> -->
-                    <app-client-workflow-track [clientInfo]="selectedClient"></app-client-workflow-track>
-                <!-- </ng-scrollbar> -->
-            </mat-tab>
-            <mat-tab label="Rates and Fees">
-                <!-- <ng-scrollbar> -->
-                    <app-client-rates-and-fees></app-client-rates-and-fees>
-                <!-- </ng-scrollbar> -->
-            </mat-tab>
-            <mat-tab label="Documents">
-                <!-- <ng-scrollbar> -->
-                    <app-client-documents #documentsTab></app-client-documents>
-                <!-- </ng-scrollbar> -->
-            </mat-tab>
-            <mat-tab label="Contacts">
-                <!-- <ng-scrollbar> -->
-                    <app-client-contacts [clientInfo]="selectedClient"></app-client-contacts>
-                <!-- </ng-scrollbar> -->
-            </mat-tab>
-        </mat-tab-group>
+    <div fxLayout="column" fxLayoutAlign="start start" class="client-details--content u-w--100">
+        <nav mat-tab-nav-bar mat-align-tabs="start" class="client-details--tabs u-w--100">
+            <a mat-tab-link routerLink="request-track" [active]="rlaRequestTrack.isActive" routerLinkActive
+                #rlaRequestTrack="routerLinkActive">
+                Request track
+            </a>
+            <a mat-tab-link routerLink="workflow-track" [active]="rlaWorkflowTrack.isActive" routerLinkActive
+                #rlaWorkflowTrack="routerLinkActive">
+                Workflow track
+            </a>
+            <a mat-tab-link routerLink="rates-and-fees" [active]="rlaRatesFees.isActive" routerLinkActive
+                #rlaRatesFees="routerLinkActive">
+                Rates and Fees
+            </a>
+            <a mat-tab-link routerLink="documents" [active]="rlaDocuments.isActive" routerLinkActive
+                #rlaDocuments="routerLinkActive">
+                Documents
+            </a>
+            <a mat-tab-link routerLink="contacts" [active]="rlaContacts.isActive" routerLinkActive
+                #rlaContacts="routerLinkActive">
+                Contacts
+            </a>
+        </nav>
+        <div class="nav-tab--content u-w--100">
+            <router-outlet></router-outlet>
+        </div>
     </div>
 </div>

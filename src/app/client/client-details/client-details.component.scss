@@ -25,8 +25,17 @@
             color: $dark-grey-color;
         }
     }
+    .absolute-filter {
+        position: absolute;
+        right: 60px;
+        z-index: 999;
+    }
     &--content {
         height: calc(100vh - 150px);
+        .nav-tab--content {
+            height: calc(100vh - 200px);
+            padding: 16px 60px;
+        }
     }
     &--search {
         mat-icon {

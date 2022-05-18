@@ -15,7 +15,6 @@ import { ClientWorkflowTrackItemDto, ClientsServiceProxy, EmployeeDto, EnumEntit
     styleUrls: ['./client-workflow-track.component.scss']
 })
 export class ClientWorkflowTrackComponent extends AppComopnentBase implements OnInit {
-    @Input() clientInfo: any;
     clientId: number;
 
     isDataLoading = false;
@@ -51,7 +50,7 @@ export class ClientWorkflowTrackComponent extends AppComopnentBase implements On
     }
 
     ngOnInit(): void {
-        this.activatedRoute.paramMap.pipe(
+        this.activatedRoute.parent!.paramMap.pipe(
             takeUntil(this._unsubscribe)
         ).subscribe(params => {
             this.clientId = +params.get('id')!;
