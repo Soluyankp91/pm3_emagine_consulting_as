@@ -111,10 +111,6 @@ mat-tab-group.client-documents--tabs {
         top: 0;
     }
 
-    .mat-tab-body-wrapper {
-        // box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.15);
-    }
-
     .mat-tab-labels {
         padding-top: 5px;
     }
@@ -183,9 +179,6 @@ mat-tab-group.client-documents--tabs {
         // }
     }
 
-    .mat-tab-body-wrapper {
-        // min-height: calc(100vh - 250px); // 65 tab header + 120 header + 5 margins
-    }
      /* Needed in order to allow the sticky content  */
     .mat-tab-body-wrapper .mat-tab-body.mat-tab-body-active {
         width: 100%;

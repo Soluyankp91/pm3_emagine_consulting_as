@@ -163,18 +163,20 @@ export class WorkflowProgressStatus implements IWorkflowProgressStatus {
     currentlyActiveSection: number | undefined;
     currentlyActiveStep: number | undefined;
     currentlyActiveSideSection: number | undefined;
+    currentlyActivePeriodId: string | undefined;
 
     constructor(
         started?: boolean,
-
         currentlyActiveSection?: number,
         currentlyActiveStep?: number,
-        currentlyActiveSideSection?: number) {
+        currentlyActiveSideSection?: number,
+        currentlyActivePeriodId?: string) {
             this.started = started;
 
             this.currentlyActiveSection = currentlyActiveSection;
             this.currentlyActiveStep = currentlyActiveStep;
             this.currentlyActiveSideSection = currentlyActiveSideSection;
+            this.currentlyActivePeriodId = currentlyActivePeriodId;
     }
 }
 

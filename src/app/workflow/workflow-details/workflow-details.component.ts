@@ -6,13 +6,14 @@ import { ActivatedRoute } from '@angular/router';
 import { NgScrollbar } from 'ngx-scrollbar';
 import { Subject } from 'rxjs';
 import { finalize, takeUntil } from 'rxjs/operators';
-import { ClientPeriodDto, EnumEntityTypeDto, StepType, WorkflowDto, WorkflowProcessType, WorkflowServiceProxy } from 'src/shared/service-proxies/service-proxies';
+import { ClientPeriodDto, ClientPeriodServiceProxy, ConsultantPeriodAddDto, EnumEntityTypeDto, StepType, WorkflowDto, WorkflowProcessType, WorkflowServiceProxy } from 'src/shared/service-proxies/service-proxies';
 import { WorkflowDataService } from '../workflow-data.service';
 import { WorkflowSalesComponent } from '../workflow-sales/workflow-sales.component';
 import { WorkflowProgressStatus, WorkflowTopSections, WorkflowSteps, WorkflowDiallogAction } from '../workflow.model';
 import { InternalLookupService } from 'src/app/shared/common/internal-lookup.service';
 import { WorkflowActionsDialogComponent } from '../workflow-actions-dialog/workflow-actions-dialog.component';
 import { AppComopnentBase } from 'src/shared/app-component-base';
+import * as moment from 'moment';
 
 @Component({
   selector: 'app-workflow-details',
@@ -60,7 +61,8 @@ export class WorkflowDetailsComponent extends AppComopnentBase implements OnInit
         private scrollDispatcher: ScrollDispatcher,
         private zone: NgZone,
         private _internalLookupService: InternalLookupService,
-        private _workflowServiceProxy: WorkflowServiceProxy
+        private _workflowServiceProxy: WorkflowServiceProxy,
+        private _clientPeriodService: ClientPeriodServiceProxy
     ) {
         super(injector);
     }
@@ -198,8 +200,8 @@ export class WorkflowDetailsComponent extends AppComopnentBase implements OnInit
         this.selectedTabIndex = event.index;
         this.selectedTabName = event.tab.textLabel;
         let newStatus = new WorkflowProgressStatus();
-        // FIXME: just for test
         newStatus.currentlyActiveStep = WorkflowSteps.Sales;
+        newStatus.currentlyActivePeriodId = this.clientPeriods![event.index - 1].id;
         if (this.selectedTabName === 'Overview') {
             newStatus.currentlyActiveSection = WorkflowTopSections.Overview;
         } else {
@@ -357,6 +359,54 @@ export class WorkflowDetailsComponent extends AppComopnentBase implements OnInit
                                 break;
                         }
                     break;
+                    case WorkflowProcessType.StartConsultantPeriod:
+                        switch (this._workflowDataService.workflowProgress.currentlyActiveStep) {
+                            case StepType.Sales:
+                                this._workflowDataService.consultantStartSalesSaved.emit(false);
+                                console.log('start consultant Sales');
+                                break;
+                            case StepType.Contract:
+                                this._workflowDataService.consultantStartContractsSaved.emit(false);
+                                console.log('start consultant  Contracts');
+                                break;
+                            case StepType.Finance:
+                                this._workflowDataService.consultantStartFinanceSaved.emit(false);
+                                console.log('start consultant  Finance');
+                                break;
+                        }
+                    break;
+                    case WorkflowProcessType.ChangeConsultantPeriod:
+                        switch (this._workflowDataService.workflowProgress.currentlyActiveStep) {
+                            case StepType.Sales:
+                                this._workflowDataService.consultantChangeSalesSaved.emit(false);
+                                console.log('change consultant Sales');
+                                break;
+                            case StepType.Contract:
+                                this._workflowDataService.consultantChangeContractsSaved.emit(false);
+                                console.log('change consultant Contracts');
+                                break;
+                            case StepType.Finance:
+                                this._workflowDataService.consultantChangeFinanceSaved.emit(false);
+                                console.log('change consultant Finance');
+                                break;
+                        }
+                    break;
+                    case WorkflowProcessType.ExtendConsultantPeriod:
+                        switch (this._workflowDataService.workflowProgress.currentlyActiveStep) {
+                            case StepType.Sales:
+                                this._workflowDataService.consultantExtendSalesSaved.emit(false);
+                                console.log('extend consultant Sales');
+                                break;
+                            case StepType.Contract:
+                                this._workflowDataService.consultantExtendContractsSaved.emit(false);
+                                console.log('extend consultant Contracts');
+                                break;
+                            case StepType.Finance:
+                                this._workflowDataService.consultantExtendFinanceSaved.emit(false);
+                                console.log('extend consultant Finance');
+                                break;
+                        }
+                    break;
                     case WorkflowProcessType.TerminateConsultant:
                         switch (this._workflowDataService.workflowProgress.currentlyActiveStep) {
                             case StepType.Sales:
@@ -509,8 +559,19 @@ export class WorkflowDetailsComponent extends AppComopnentBase implements OnInit
             }
         });
 
-        dialogRef.componentInstance.onConfirmed.subscribe(() => {
-            // confirmed
+        dialogRef.componentInstance.onConfirmed.subscribe((result) => {
+            if (result) {
+                this.showMainSpinner();
+                let input = new ConsultantPeriodAddDto();
+                input.startDate = result.startDate
+                input.endDate = result.endDate;
+                input.noEndDate = result.noEndDate;
+                this._clientPeriodService.addConsultantPeriod(this._workflowDataService.getWorkflowProgress.currentlyActivePeriodId!, input)
+                    .pipe(finalize(() => this.hideMainSpinner()))
+                    .subscribe(result => {
+                        this._workflowDataService.workflowSideSectionAdded.emit(true);
+                    });
+            }
         });
 
         dialogRef.componentInstance.onRejected.subscribe(() => {
