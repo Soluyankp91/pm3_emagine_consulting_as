@@ -1,6 +1,7 @@
-import { Component, Injector, Input, OnInit } from '@angular/core';
+import { Component, Injector, Input, OnDestroy, OnInit } from '@angular/core';
 import { FormArray, FormBuilder, FormControl } from '@angular/forms';
-import { finalize } from 'rxjs/operators';
+import { Subject } from 'rxjs';
+import { finalize, takeUntil } from 'rxjs/operators';
 import { AppComopnentBase } from 'src/shared/app-component-base';
 import { ClientPeriodServiceProxy, ConsultantPeriodFinanceDataDto, WorkflowProcessType } from 'src/shared/service-proxies/service-proxies';
 import { WorkflowDataService } from '../workflow-data.service';
@@ -11,9 +12,9 @@ import { FinancesClientForm, FinancesConsultantsForm } from './workflow-finances
     templateUrl: './workflow-finances.component.html',
     styleUrls: ['./workflow-finances.component.scss']
 })
-export class WorkflowFinancesComponent extends AppComopnentBase implements OnInit {
+export class WorkflowFinancesComponent extends AppComopnentBase implements OnInit, OnDestroy {
     @Input() workflowId: string;
-    @Input() clientPeriodId: string | undefined;
+    @Input() periodId: string | undefined;
 
     // Changed all above to enum
     @Input() activeSideSection: number;
@@ -32,6 +33,8 @@ export class WorkflowFinancesComponent extends AppComopnentBase implements OnIni
             consultantName: 'Van Trier Mia'
         }
     ]
+
+    private _unsubscribe = new Subject();
     constructor(
         injector: Injector,
         private _fb: FormBuilder,
@@ -48,6 +51,27 @@ export class WorkflowFinancesComponent extends AppComopnentBase implements OnIni
         //     this.addConsultantToForm(consultant);
         // });
         this.getFinancesStep();
+
+        this._workflowDataService.consultantStartFinanceSaved
+            .pipe(takeUntil(this._unsubscribe))
+            .subscribe((value: boolean) => {
+                
+            });
+        this._workflowDataService.consultantChangeFinanceSaved
+            .pipe(takeUntil(this._unsubscribe))
+            .subscribe((value: boolean) => {
+                
+            });
+        this._workflowDataService.consultantExtendFinanceSaved
+            .pipe(takeUntil(this._unsubscribe))
+            .subscribe((value: boolean) => {
+                
+            });
+    }
+
+    ngOnDestroy(): void {
+        this._unsubscribe.next();
+        this._unsubscribe.complete();
     }
 
     get readOnlyMode() {
@@ -56,7 +80,7 @@ export class WorkflowFinancesComponent extends AppComopnentBase implements OnIni
 
     getFinancesStep() {
         this.showMainSpinner();
-        this._clientPeriodSerivce.clientFinanceGet(this.clientPeriodId!)
+        this._clientPeriodSerivce.clientFinanceGet(this.periodId!)
             .pipe(finalize(() => this.hideMainSpinner()))
             .subscribe(result => {
                 this.financesClientForm.clientCreatedInNavision?.setValue(result.debtorCreatedInNavision, {emitEvent: false});

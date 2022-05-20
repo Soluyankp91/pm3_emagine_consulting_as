@@ -1255,6 +1255,66 @@ export class ClientPeriodServiceProxy {
      * @param body (optional) 
      * @return Success
      */
+    clientChange(clientPeriodId: string, body?: ChangeClientPeriodDto | undefined): Observable<string> {
+        let url_ = this.baseUrl + "/api/ClientPeriod/{clientPeriodId}/client-change";
+        if (clientPeriodId === undefined || clientPeriodId === null)
+            throw new Error("The parameter 'clientPeriodId' must be defined.");
+        url_ = url_.replace("{clientPeriodId}", encodeURIComponent("" + clientPeriodId));
+        url_ = url_.replace(/[?&]$/, "");
+
+        const content_ = JSON.stringify(body);
+
+        let options_ : any = {
+            body: content_,
+            observe: "response",
+            responseType: "blob",
+            headers: new HttpHeaders({
+                "Content-Type": "application/json",
+                "Accept": "text/plain"
+            })
+        };
+
+        return this.http.request("post", url_, options_).pipe(_observableMergeMap((response_ : any) => {
+            return this.processClientChange(response_);
+        })).pipe(_observableCatch((response_: any) => {
+            if (response_ instanceof HttpResponseBase) {
+                try {
+                    return this.processClientChange(response_ as any);
+                } catch (e) {
+                    return _observableThrow(e) as any as Observable<string>;
+                }
+            } else
+                return _observableThrow(response_) as any as Observable<string>;
+        }));
+    }
+
+    protected processClientChange(response: HttpResponseBase): Observable<string> {
+        const status = response.status;
+        const responseBlob =
+            response instanceof HttpResponse ? response.body :
+            (response as any).error instanceof Blob ? (response as any).error : undefined;
+
+        let _headers: any = {}; if (response.headers) { for (let key of response.headers.keys()) { _headers[key] = response.headers.get(key); }}
+        if (status === 200) {
+            return blobToText(responseBlob).pipe(_observableMergeMap(_responseText => {
+            let result200: any = null;
+            let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
+                result200 = resultData200 !== undefined ? resultData200 : <any>null;
+    
+            return _observableOf(result200);
+            }));
+        } else if (status !== 200 && status !== 204) {
+            return blobToText(responseBlob).pipe(_observableMergeMap(_responseText => {
+            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+            }));
+        }
+        return _observableOf<string>(null as any);
+    }
+
+    /**
+     * @param body (optional) 
+     * @return Success
+     */
     addConsultantPeriod(clientPeriodId: string, body?: ConsultantPeriodAddDto | undefined): Observable<string> {
         let url_ = this.baseUrl + "/api/ClientPeriod/{clientPeriodId}/add-consultant-period";
         if (clientPeriodId === undefined || clientPeriodId === null)
@@ -3812,6 +3872,119 @@ export class ContractSyncServiceProxy {
     }
 
     protected processConsultantPeriodSync(response: HttpResponseBase): Observable<ContractSyncResultDto> {
+        const status = response.status;
+        const responseBlob =
+            response instanceof HttpResponse ? response.body :
+            (response as any).error instanceof Blob ? (response as any).error : undefined;
+
+        let _headers: any = {}; if (response.headers) { for (let key of response.headers.keys()) { _headers[key] = response.headers.get(key); }}
+        if (status === 200) {
+            return blobToText(responseBlob).pipe(_observableMergeMap(_responseText => {
+            let result200: any = null;
+            let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
+            result200 = ContractSyncResultDto.fromJS(resultData200);
+            return _observableOf(result200);
+            }));
+        } else if (status !== 200 && status !== 204) {
+            return blobToText(responseBlob).pipe(_observableMergeMap(_responseText => {
+            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+            }));
+        }
+        return _observableOf<ContractSyncResultDto>(null as any);
+    }
+
+    /**
+     * @return Success
+     */
+    workflowTerminationSync(workflowTerminationId: string): Observable<ContractSyncResultDto> {
+        let url_ = this.baseUrl + "/api/ContractSync/{workflowTerminationId}/WorkflowTerminationSync";
+        if (workflowTerminationId === undefined || workflowTerminationId === null)
+            throw new Error("The parameter 'workflowTerminationId' must be defined.");
+        url_ = url_.replace("{workflowTerminationId}", encodeURIComponent("" + workflowTerminationId));
+        url_ = url_.replace(/[?&]$/, "");
+
+        let options_ : any = {
+            observe: "response",
+            responseType: "blob",
+            headers: new HttpHeaders({
+                "Accept": "text/plain"
+            })
+        };
+
+        return this.http.request("post", url_, options_).pipe(_observableMergeMap((response_ : any) => {
+            return this.processWorkflowTerminationSync(response_);
+        })).pipe(_observableCatch((response_: any) => {
+            if (response_ instanceof HttpResponseBase) {
+                try {
+                    return this.processWorkflowTerminationSync(response_ as any);
+                } catch (e) {
+                    return _observableThrow(e) as any as Observable<ContractSyncResultDto>;
+                }
+            } else
+                return _observableThrow(response_) as any as Observable<ContractSyncResultDto>;
+        }));
+    }
+
+    protected processWorkflowTerminationSync(response: HttpResponseBase): Observable<ContractSyncResultDto> {
+        const status = response.status;
+        const responseBlob =
+            response instanceof HttpResponse ? response.body :
+            (response as any).error instanceof Blob ? (response as any).error : undefined;
+
+        let _headers: any = {}; if (response.headers) { for (let key of response.headers.keys()) { _headers[key] = response.headers.get(key); }}
+        if (status === 200) {
+            return blobToText(responseBlob).pipe(_observableMergeMap(_responseText => {
+            let result200: any = null;
+            let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
+            result200 = ContractSyncResultDto.fromJS(resultData200);
+            return _observableOf(result200);
+            }));
+        } else if (status !== 200 && status !== 204) {
+            return blobToText(responseBlob).pipe(_observableMergeMap(_responseText => {
+            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+            }));
+        }
+        return _observableOf<ContractSyncResultDto>(null as any);
+    }
+
+    /**
+     * @param workflowTerminationId (optional) 
+     * @return Success
+     */
+    consultantTerminationSync(consultantTerminationId: string, workflowTerminationId?: string | undefined): Observable<ContractSyncResultDto> {
+        let url_ = this.baseUrl + "/api/ContractSync/{consultantTerminationId}/ConsultantTerminationSync?";
+        if (consultantTerminationId === undefined || consultantTerminationId === null)
+            throw new Error("The parameter 'consultantTerminationId' must be defined.");
+        url_ = url_.replace("{consultantTerminationId}", encodeURIComponent("" + consultantTerminationId));
+        if (workflowTerminationId === null)
+            throw new Error("The parameter 'workflowTerminationId' cannot be null.");
+        else if (workflowTerminationId !== undefined)
+            url_ += "workflowTerminationId=" + encodeURIComponent("" + workflowTerminationId) + "&";
+        url_ = url_.replace(/[?&]$/, "");
+
+        let options_ : any = {
+            observe: "response",
+            responseType: "blob",
+            headers: new HttpHeaders({
+                "Accept": "text/plain"
+            })
+        };
+
+        return this.http.request("post", url_, options_).pipe(_observableMergeMap((response_ : any) => {
+            return this.processConsultantTerminationSync(response_);
+        })).pipe(_observableCatch((response_: any) => {
+            if (response_ instanceof HttpResponseBase) {
+                try {
+                    return this.processConsultantTerminationSync(response_ as any);
+                } catch (e) {
+                    return _observableThrow(e) as any as Observable<ContractSyncResultDto>;
+                }
+            } else
+                return _observableThrow(response_) as any as Observable<ContractSyncResultDto>;
+        }));
+    }
+
+    protected processConsultantTerminationSync(response: HttpResponseBase): Observable<ContractSyncResultDto> {
         const status = response.status;
         const responseBlob =
             response instanceof HttpResponse ? response.body :
@@ -9753,6 +9926,58 @@ export interface IAttachmentFileDto {
     fileBytes?: string | undefined;
 }
 
+export class ChangeClientPeriodDto implements IChangeClientPeriodDto {
+    cutoverDate?: moment.Moment;
+    clientNewLegalContractRequired?: boolean;
+    consultantPeriods?: NewContractRequiredConsultantPeriodDto[] | undefined;
+
+    constructor(data?: IChangeClientPeriodDto) {
+        if (data) {
+            for (var property in data) {
+                if (data.hasOwnProperty(property))
+                    (<any>this)[property] = (<any>data)[property];
+            }
+        }
+    }
+
+    init(_data?: any) {
+        if (_data) {
+            this.cutoverDate = _data["cutoverDate"] ? moment(_data["cutoverDate"].toString()) : <any>undefined;
+            this.clientNewLegalContractRequired = _data["clientNewLegalContractRequired"];
+            if (Array.isArray(_data["consultantPeriods"])) {
+                this.consultantPeriods = [] as any;
+                for (let item of _data["consultantPeriods"])
+                    this.consultantPeriods!.push(NewContractRequiredConsultantPeriodDto.fromJS(item));
+            }
+        }
+    }
+
+    static fromJS(data: any): ChangeClientPeriodDto {
+        data = typeof data === 'object' ? data : {};
+        let result = new ChangeClientPeriodDto();
+        result.init(data);
+        return result;
+    }
+
+    toJSON(data?: any) {
+        data = typeof data === 'object' ? data : {};
+        data["cutoverDate"] = this.cutoverDate ? this.cutoverDate.format('YYYY-MM-DD') : <any>undefined;
+        data["clientNewLegalContractRequired"] = this.clientNewLegalContractRequired;
+        if (Array.isArray(this.consultantPeriods)) {
+            data["consultantPeriods"] = [];
+            for (let item of this.consultantPeriods)
+                data["consultantPeriods"].push(item.toJSON());
+        }
+        return data;
+    }
+}
+
+export interface IChangeClientPeriodDto {
+    cutoverDate?: moment.Moment;
+    clientNewLegalContractRequired?: boolean;
+    consultantPeriods?: NewContractRequiredConsultantPeriodDto[] | undefined;
+}
+
 export class ChangeConsultantPeriodDto implements IChangeConsultantPeriodDto {
     cutoverDate?: moment.Moment;
     newLegalContractRequired?: boolean;
@@ -13606,6 +13831,46 @@ export enum MainOverviewUserSelectedStatus {
     ExtensionInNegotiation = 2,
     RequiresAttention = 3,
     ExpectedToTerminate = 4,
+}
+
+export class NewContractRequiredConsultantPeriodDto implements INewContractRequiredConsultantPeriodDto {
+    consultantId?: number;
+    consultantNewLegalContractRequired?: boolean;
+
+    constructor(data?: INewContractRequiredConsultantPeriodDto) {
+        if (data) {
+            for (var property in data) {
+                if (data.hasOwnProperty(property))
+                    (<any>this)[property] = (<any>data)[property];
+            }
+        }
+    }
+
+    init(_data?: any) {
+        if (_data) {
+            this.consultantId = _data["consultantId"];
+            this.consultantNewLegalContractRequired = _data["consultantNewLegalContractRequired"];
+        }
+    }
+
+    static fromJS(data: any): NewContractRequiredConsultantPeriodDto {
+        data = typeof data === 'object' ? data : {};
+        let result = new NewContractRequiredConsultantPeriodDto();
+        result.init(data);
+        return result;
+    }
+
+    toJSON(data?: any) {
+        data = typeof data === 'object' ? data : {};
+        data["consultantId"] = this.consultantId;
+        data["consultantNewLegalContractRequired"] = this.consultantNewLegalContractRequired;
+        return data;
+    }
+}
+
+export interface INewContractRequiredConsultantPeriodDto {
+    consultantId?: number;
+    consultantNewLegalContractRequired?: boolean;
 }
 
 export class NewWorkflowCreatedDto implements INewWorkflowCreatedDto {

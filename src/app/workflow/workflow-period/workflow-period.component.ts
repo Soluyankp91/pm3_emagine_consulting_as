@@ -17,7 +17,7 @@ import { WorkflowSteps } from '../workflow.model';
 })
 export class WorkflowPeriodComponent implements OnInit {
     @Input() workflowId: string;
-    @Input() clientPeriodId: string | undefined;
+    @Input() periodId: string | undefined;
 
     sideMenuItems: WorkflowProcessDto[] = [];
     workflowProcessTypes = WorkflowProcessType;
@@ -68,7 +68,7 @@ export class WorkflowPeriodComponent implements OnInit {
     }
 
     getSideMenu() {
-        this._workflowService.clientPeriods(this.workflowId, this.clientPeriodId, true)
+        this._workflowService.clientPeriods(this.workflowId, this.periodId, true)
             .pipe(finalize(() => {
 
             }))
