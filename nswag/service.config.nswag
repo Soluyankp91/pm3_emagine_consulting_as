@@ -3,7 +3,7 @@
   "defaultVariables": null,
   "documentGenerator": {
     "fromDocument": {
-      "url": "https://pm3-dev-app.azurewebsites.net/swagger/v1/swagger.json",
+      "url": "https://pm3-dev-api.prodataconsult.com/swagger/v1/swagger.json",
       "output": null
     }
   },
