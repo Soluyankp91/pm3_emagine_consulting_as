@@ -551,7 +551,7 @@ export class WorkflowDetailsComponent extends AppComopnentBase implements OnInit
             autoFocus: false,
             panelClass: 'confirmation-modal',
             data: {
-                dialogType: WorkflowDiallogAction.Add,
+                dialogType: WorkflowDiallogAction.AddConsultant,
                 dialogTitle: 'Add consultant',
                 rejectButtonText: 'Cancel',
                 confirmButtonText: 'Create',

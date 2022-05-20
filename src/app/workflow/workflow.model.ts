@@ -204,7 +204,7 @@ export enum WorkflowSteps {
 }
 
 export enum WorkflowDiallogAction {
-    Add = 1,
+    AddConsultant = 1,
     Change = 2,
     Extend = 3,
     Terminate = 4

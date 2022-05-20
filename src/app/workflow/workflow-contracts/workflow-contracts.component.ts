@@ -151,24 +151,22 @@ export class WorkflowContractsComponent extends AppComopnentBase implements OnIn
             .pipe(takeUntil(this._unsubscribe))
             .subscribe((value: boolean) => {
                 // NB: boolean SAVE DRAFT or COMPLETE in future
-                this.saveStartConsultantPeriodContracts(value);
+                this.saveStartChangeOrExtendConsultantPeriodContracts(value);
             });
 
         this._workflowDataService.consultantExtendContractsSaved
             .pipe(takeUntil(this._unsubscribe))
             .subscribe((value: boolean) => {
                 // NB: boolean SAVE DRAFT or COMPLETE in future
-                this.saveStartClientPeriodContracts(value);
+                this.saveStartChangeOrExtendConsultantPeriodContracts(value);
             });
 
         this._workflowDataService.consultantChangeContractsSaved
             .pipe(takeUntil(this._unsubscribe))
             .subscribe((value: boolean) => {
                 // NB: boolean SAVE DRAFT or COMPLETE in future
-                this.saveStartClientPeriodContracts(value);
+                this.saveStartChangeOrExtendConsultantPeriodContracts(value);
             });
-            
-            
 
         // Termination
 
@@ -893,7 +891,7 @@ export class WorkflowContractsComponent extends AppComopnentBase implements OnIn
             });
     }
 
-    saveStartConsultantPeriodContracts(isDraft: boolean) {
+    saveStartChangeOrExtendConsultantPeriodContracts(isDraft: boolean) {
         let input = new ConsultantPeriodContractsDataDto();
         input.remarks =  this.contractsMainForm.remarks?.value;
         input.noRemarks =  this.contractsMainForm.noRemarks?.value
