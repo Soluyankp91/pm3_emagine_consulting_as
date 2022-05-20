@@ -3,34 +3,124 @@
         <h2 class="main-overview--header u-mb--20">Overview</h2>
         <div fxLayout="row" fxLayoutAlign="space-between start" class="u-w--100">
             <div fxFlex fxLayout="row" fxLayoutAlign="start center" class="u-w--100">
-                <span class="main-overview--filter-manager u-mr--16">
+                <div class="main-overview--filter-manager cursor-pointer u-mr--16" [matTooltip]="mapListByProperty(selectedAccountManagers, 'name')" [matMenuTriggerFor]="managerMenu" (menuOpened)="accountManagerFilter.setValue(''); accountManagerFilterInput.click()">
                     <img src="../../../assets/common/images/no-img.svg">
-                </span>
-                <div class="main-overview--filter-type u-mr--10" *ngFor="let type of selectedTypes">
-                    <mat-icon class="main-overview-icon-type" svgIcon="{{detectIcon(type.flag)}}" [ngClass]="detectProcessColor(type.flag)"></mat-icon>
-                    <span class="main-overview--filter-type__quantity u-mr--5">
-                        {{type.quantity}}
-                    </span>
+                    <mat-menu #managerMenu>
+                        <div mat-menu-item (click)="$event.stopPropagation()" class="u-pg--0">
+                            <mat-form-field appearance="outline" (click)="$event.stopPropagation()">
+                                <input #accountManagerFilterInput type="text" matInput [matAutocomplete]="managerAutocomplete" [formControl]="accountManagerFilter" (click)="$event.stopPropagation()" placeholder="Select account manager(s)">
+                            </mat-form-field>
+                            <mat-autocomplete #managerAutocomplete="matAutocomplete">
+                                <mat-option *ngFor="let manager of selectedAccountManagers"
+                                    class="u-pg--5"
+                                    [value]="manager">
+                                    <div class="u-w--100"
+                                        (click)="optionClicked($event, manager, selectedAccountManagers)">
+                                        <mat-checkbox [checked]="manager.selected"
+                                            *ngIf="manager.id !== 'no-data'"
+                                            color="primary"
+                                            (change)="toggleSelection(manager,selectedAccountManagers)"
+                                            (click)="$event.stopPropagation()">
+                                            <span>{{ manager.name }}</span>
+                                        </mat-checkbox>
+                                        <span *ngIf="manager.id === 'no-data'"
+                                            (click)="$event.stopPropagation()">
+                                            {{ manager.name }}
+                                        </span>
+                                    </div>
+                                </mat-option>
+                                <mat-option *ngFor="let manager of filteredAccountManagers"
+                                    class="u-pg--5"
+                                    [ngClass]="{ 'no-data': manager.id === 'no-data', 'hidden-option': selectedAccountManagers.includes(manager)}"
+                                    [value]="selectedAccountManagers">
+                                    <div
+                                        (click)="optionClicked($event, manager, selectedAccountManagers)">
+                                        <mat-checkbox [checked]="manager.selected"
+                                            *ngIf="manager.id !== 'no-data'"
+                                            color="primary"
+                                            (change)="toggleSelection(manager,selectedAccountManagers)"
+                                            (click)="$event.stopPropagation()">
+                                            <span>{{ manager.name }}</span>
+                                        </mat-checkbox>
+                                        <span *ngIf="manager.id === 'no-data'"
+                                            (click)="$event.stopPropagation()">{{ manager.name }}
+                                        </span>
+                                    </div>
+                                </mat-option>
+                            </mat-autocomplete>
+                        </div>
+                    </mat-menu>
+                </div>
+                <div class="main-overview--filter-type cursor-pointer u-mr--10" [ngClass]="{'selected-status': status.selected}" *ngFor="let status of filteredMainOverviewStatuses; trackBy: statusesTrackBy"
+                    (click)="changeOverviewStatus(status)">
+                    <mat-icon class="main-overview-icon-type" svgIcon="{{status.flag}}" [ngClass]="detectProcessColor(status.id)"></mat-icon>
+                    <!-- <span class="main-overview--filter-type__quantity u-mr--5">
+                        {{status.quantity}}
+                    </span> -->
                     <span class="main-overview--filter-type__name">
-                        {{type.name}}
+                        {{status.name}}
                     </span>
                 </div>
             </div>
             <div fxFlex="25%" fxLayout="column" fxLayoutAlign="start end">
                 <div fxLayout="column" fxLayoutAlign="space-between end" fxLayoutGap="16px" class="u-w--100">
-                    <mat-form-field appearance="outline" class="u-w--100 mat-elevation-z0 formFieldNoMarginPadding">
-                        <mat-label>Search</mat-label>
-                        <input autocomplete="off" matInput [formControl]="workflowFilter" placeholder="Search"
-                        type="text">
-                        <mat-icon matSuffix>search</mat-icon>
+                    <mat-form-field appearance="fill" class="search-filter-input u-w--100 mat-elevation-z0 formFieldNoMarginPadding">
+                        <input autocomplete="off" matInput [formControl]="workflowFilter" placeholder="Search" type="text">
+                        <mat-icon matPrefix class="search-icon u-ml--10">search</mat-icon>
                     </mat-form-field>
-                    <button class="main-overview-search-button" mat-icon-button>
+                    <button class="main-overview-search-button" mat-icon-button (click)="isAdvancedFilters = !isAdvancedFilters">
                         <mat-icon svgIcon="filter-icon"></mat-icon>
                         <span class="main-overview-search-button-text u-ml--5">Advanced filters</span>
                     </button>
                 </div>
             </div>
         </div>
+    </div>
+    <div fxLayout="row" fxLayoutAlign="start center" class="main-overview--filter-additional u-w--100 u-mb--20" *ngIf="isAdvancedFilters">
+        <mat-form-field appearance="outline" class="filter-select u-mr--16" fxFlex="20%">
+            <mat-label>Invoicing entity</mat-label>
+            <mat-select [formControl]="invoicingEntityControl" [disableOptionCentering]="true">
+                <mat-option *ngFor="let item of tenants" [value]="item.id">
+                    {{ item.name }}
+                </mat-option>
+            </mat-select>
+        </mat-form-field>
+
+        <mat-form-field appearance="outline" class="filter-select u-mr--16" fxFlex="20%">
+            <mat-label> Payment entity</mat-label>
+            <mat-select [formControl]="paymentEntityControl" [disableOptionCentering]="true">
+                <mat-option *ngFor="let item of tenants" [value]="item.id">
+                    {{ item.name }}
+                </mat-option>
+            </mat-select>
+        </mat-form-field>
+
+        <mat-form-field appearance="outline" class="filter-select u-mr--16" fxFlex="20%">
+            <mat-label> Sales types</mat-label>
+            <mat-select [formControl]="salesTypeControl" [disableOptionCentering]="true" [multiple]="true">
+                <mat-option *ngFor="let item of saleTypes" [value]="item.id">
+                    {{ item.name }}
+                </mat-option>
+            </mat-select>
+        </mat-form-field>
+
+        <mat-form-field appearance="outline" class="filter-select u-mr--16" fxFlex="20%">
+            <mat-label> Project types</mat-label>
+            <mat-select [formControl]="projectTypeControl" [disableOptionCentering]="true" [multiple]="true">
+                <mat-option *ngFor="let item of projectTypes" [value]="item.id">
+                    {{ item.name }}
+                </mat-option>
+            </mat-select>
+        </mat-form-field>
+
+        <mat-form-field appearance="outline" class="filter-select u-mr--16" fxFlex="20%">
+            <mat-label> Margins</mat-label>
+            <mat-select [formControl]="marginsControl" [disableOptionCentering]="true" [multiple]="true">
+                <mat-option *ngFor="let item of margins" [value]="item.id">
+                    {{ item.name }}
+                </mat-option>
+            </mat-select>
+        </mat-form-field>
     </div>
     <div fxLayout="column" fxLayoutAlign="start start" class="main-overview--content">
         <div fxLayout="row" fxLayoutAlign="flex-end start" class="u-w--100">
