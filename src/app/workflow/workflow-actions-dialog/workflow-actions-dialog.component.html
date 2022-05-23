@@ -87,7 +87,14 @@
                     <div class="u-mr--10" fxFlex="50%">
                         <mat-form-field appearance="outline" class="u-w--100">
                             <mat-label>Start date</mat-label>
-                            <input autocomplete="off" matInput formControlName="startDate" placeholder="Start date" type="text">
+                            <input autocomplete="off" placeholder="New end date" matInput
+                                    [matDatepicker]="startDatePicker"
+                                    name="startDate"
+                                    formControlName="startDate"
+                                    (focus)="startDatePicker.open()"
+                                    (click)="startDatePicker.open()" readonly>
+                            <mat-icon class="calendar-icon" matSuffix svgIcon="calendar"></mat-icon>
+                            <mat-datepicker #startDatePicker></mat-datepicker>
                         </mat-form-field>
                     </div>
                     <div fxLayout="column" fxLayoutAlign="center start" fxFlex="50%" class="u-mb--20">

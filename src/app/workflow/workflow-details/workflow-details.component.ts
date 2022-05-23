@@ -46,6 +46,7 @@ export class WorkflowDetailsComponent extends AppComopnentBase implements OnInit
 
     workflowResponse: WorkflowDto;
     clientPeriods: ClientPeriodDto[] | undefined = [];
+    workflowClient: string | undefined;
 
     workflowClientPeriodTypes: EnumEntityTypeDto[] = [];
     workflowConsultantPeriodTypes: EnumEntityTypeDto[] = [];
@@ -140,6 +141,7 @@ export class WorkflowDetailsComponent extends AppComopnentBase implements OnInit
             }))
             .subscribe(result => {
                 this.clientPeriods = result.clientPeriods;
+                this.workflowClient = result.clientName;
             });
     }
 

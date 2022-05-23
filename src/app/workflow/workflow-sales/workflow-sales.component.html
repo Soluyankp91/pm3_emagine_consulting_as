@@ -9,9 +9,6 @@
                         <span class="anchor-name">Main data</span>
                     </h1>
                     <h2 class="workflow-readonly--header u-mt--10 u-mb--20">Project</h2>
-                        <!-- <button mat-button (click)="changeReadonly()">Change</button> -->
-                        <!-- EDIT -->
-                        <!-- NB: uncomment for readonly\edit -->
                     <div fxLayout="row" fxLayoutAlign="start start" class="u-w--100 u-mb--20">
                         <div fxLayout="column" fxFlex="25%">
                             <h3 class="workflow-readonly--gray-header">Project Type (Legacy)</h3>
@@ -234,15 +231,12 @@
                                     -
                                 </span>
                             </ng-template>
-                            <!-- <span class="workflow-readonly--blue-text-bold">
-                                {{salesClientDataForm?.directClientIdValue?.value?.clientName ? salesClientDataForm?.directClientIdValue?.value?.clientName : '-'}}
-                            </span> -->
                         </div>
-                        <div fxLayout="column" fxFlex="50%">
+                        <div fxLayout="column" fxFlex="50%" *ngIf="salesClientDataForm?.endClientIdValue?.value">
                             <h3 class="workflow-readonly--gray-header">End client</h3>
                             <div fxLayout="row" fxLayoutAlign="start center">
                                 <img class="border-rounded-50 u-mr--16" src="https://picsum.photos/35/35" />
-                                <div fxLayout="column" fxLayoutAlign="start start" *ngIf="salesClientDataForm?.endClientIdValue?.value; else noDataTemplate">
+                                <div fxLayout="column" fxLayoutAlign="start start">
                                     <span class="workflow-readonly--blue-text-bold">
                                         {{salesClientDataForm?.endClientIdValue?.value?.clientName}}
                                     </span>
@@ -254,9 +248,6 @@
                                     </span>
                                 </div>
                             </div>
-                            <!-- <span class="workflow-readonly--blue-text-bold">
-                                {{salesClientDataForm?.endClientIdValue?.value?.name ? salesClientDataForm?.endClientIdValue?.value?.name : '-'}}
-                            </span> -->
                         </div>
                     </div>
                 </div>
@@ -524,13 +515,43 @@
             </div>
             <mat-divider class="u-mt--20 u-mb--20"></mat-divider>
             <!-- Consultant data -->
-            <ng-container *ngFor="let item of consultantsForm.consultantData.controls">
+            <ng-container *ngFor="let item of consultantsForm.consultantData.controls; index as consultantIndex">
                 <div fxLayout="column" fxLayoutAlign="start start" class="workflow-sales--process-data u-w--100">
                     <div fxLayout="column" fxLayoutAlign="start start" class="u-w--100">
-                        <h1 class="workflow-readonly--header-main u-mb--10">
-                            <span class="process-name">Sales.</span>
-                            <span class="anchor-name">Consultant data</span>
-                        </h1>
+                        <div fxLayout="row" fxLayoutAlign="start center" class="u-w--100 u-mb--10">
+                            <h1 class="workflow-readonly--header-main" fxFlex="50%">
+                                <span class="process-name">Sales.</span>
+                                <span class="anchor-name">Consultant data</span>
+                            </h1>
+                            <div fxFlex="50%" fxLayoutAlign="end center">
+                                <button mat-icon-button (click)="$event.stopPropagation();" [matMenuTriggerFor]="consultantMenu" class="three-dots-actions-btn">
+                                    <mat-icon>more_horiz</mat-icon>
+                                </button>
+                                <mat-menu #consultantMenu>
+                                    <button
+                                        class="menu-item menu-item--edit"
+                                        mat-menu-item
+                                        (click)="changeConsultantData(consultantIndex)">
+                                        <mat-icon>create</mat-icon>
+                                        Change consultant data
+                                    </button>
+                                    <button
+                                        class="menu-item menu-item--edit"
+                                        mat-menu-item
+                                        (click)="extendConsultant(consultantIndex)">
+                                        <mat-icon>add</mat-icon>
+                                        Extend consultant
+                                    </button>
+                                    <button
+                                        class="menu-item menu-item--cancel"
+                                        mat-menu-item
+                                        (click)="terminateConsultant(consultantIndex)">
+                                        <mat-icon>clear</mat-icon>
+                                        Terminate consultant
+                                    </button>
+                                </mat-menu>
+                            </div>
+                        </div>
 
                         <div fxLayout="row" fxLayoutAlign="start start" class="u-w--100 u-mb--20">
                             <div fxLayout="column" fxFlex="25%">
@@ -545,7 +566,6 @@
                                     <img class="workflow-extension--consultant-data--consultant-img u-mr--16" src="https://placekitten.com/50/50">
                                     <div fxLayout="column">
                                         <p class="workflow-extension--consultant-data--consultant-name">
-                                            <!-- {{contractsConsultantsDataForm.consultantData.at(i).get('consultantName')?.value}} -->
                                             {{item?.value?.consultantName?.name}}
                                         </p>
                                         <span class="workflow-extension--consultant-data--consultant-text">
@@ -1311,23 +1331,49 @@
                                     <div fxLayout="column">
                                         <h3 class="workflow-extension--gray-header">Client relation</h3>
                                         <span class="workflow-extension--blue-text">
-                                            <!-- {{salesMainDataForm?.projectType?.value?.name}} -->
-                                            Different end-client
+                                            {{salesClientDataForm?.differentEndClient?.value ? 'Different end-client' : 'Direct Client'}}
                                         </span>
                                     </div>
-                                    <div fxLayout="column">
-                                        <h3 class="workflow-extension--gray-header">Direct client - name + address</h3>
-                                        <span class="workflow-extension--blue-text">
-                                            <!-- {{salesMainDataForm?.salesType?.value?.name}} -->
-                                            Some Client Name (Address 210/53)
-                                        </span>
-                                    </div>
-                                    <div fxLayout="column">
-                                        <h3 class="workflow-extension--gray-header">End-client  - name + address</h3>
-                                        <span class="workflow-extension--blue-text">
-                                            <!-- {{salesMainDataForm?.deliveryType?.value?.name}} -->
-                                            Some Client Name (Address 210/53)
-                                        </span>
+                                    <div fxLayout="row" fxLayoutAlign="start start" class="u-w--100 u-mb--20">
+                                        <div fxLayout="column" fxFlex="50%">
+                                            <h3 class="workflow-readonly--gray-header">Direct client</h3>
+                                            <div fxLayout="row" fxLayoutAlign="start center" *ngIf="salesClientDataForm?.directClientIdValue?.value; else noDataTemplate">
+                                                <img class="border-rounded-50 u-mr--16" src="https://picsum.photos/35/35" />
+                                                <div fxLayout="column" fxLayoutAlign="start start">
+                                                    <span class="workflow-readonly--blue-text-bold">
+                                                        {{salesClientDataForm?.directClientIdValue?.value?.clientName}}
+                                                    </span>
+                                                    <span class="workflow-readonly--blue-text-bold">
+                                                        {{salesClientDataForm?.directClientIdValue?.value?.city ? salesClientDataForm?.directClientIdValue?.value?.city + ' | ' : ''}}
+                                                        {{salesClientDataForm?.directClientIdValue?.value?.address ? salesClientDataForm?.directClientIdValue?.value?.address + ' | ' : ''}}
+                                                        {{salesClientDataForm?.directClientIdValue?.value?.address2 ? salesClientDataForm?.directClientIdValue?.value?.address2 + ' | ' : ''}}
+                                                        {{salesClientDataForm?.directClientIdValue?.value?.postCode}}
+                                                    </span>
+                                                </div>
+                                            </div>
+                                            <ng-template #noDataTemplate>
+                                                <span class="workflow-readonly--blue-text-bold">
+                                                    -
+                                                </span>
+                                            </ng-template>
+                                        </div>
+                                        <div fxLayout="column" fxFlex="50%" *ngIf="salesClientDataForm?.endClientIdValue?.value">
+                                            <h3 class="workflow-readonly--gray-header">End client</h3>
+                                            <div fxLayout="row" fxLayoutAlign="start center">
+                                                <img class="border-rounded-50 u-mr--16" src="https://picsum.photos/35/35" />
+                                                <div fxLayout="column" fxLayoutAlign="start start">
+                                                    <span class="workflow-readonly--blue-text-bold">
+                                                        {{salesClientDataForm?.endClientIdValue?.value?.clientName}}
+                                                    </span>
+                                                    <span class="workflow-readonly--blue-text-bold">
+                                                        {{salesClientDataForm?.endClientIdValue?.value?.city ? salesClientDataForm?.endClientIdValue?.value?.city + ' | ' : ''}}
+                                                        {{salesClientDataForm?.endClientIdValue?.value?.address ? salesClientDataForm?.endClientIdValue?.value?.address + ' | ' : ''}}
+                                                        {{salesClientDataForm?.endClientIdValue?.value?.address2 ? salesClientDataForm?.endClientIdValue?.value?.address2 + ' | ' : ''}}
+                                                        {{salesClientDataForm?.endClientIdValue?.value?.postCode}}
+                                                    </span>
+                                                </div>
+                                            </div>
+                                        </div>
                                     </div>
                                 </div>
                             </ng-container>
@@ -1357,12 +1403,9 @@
                                     <mat-icon class="calendar-icon" matSuffix svgIcon="calendar"></mat-icon>
                                     <mat-datepicker #clientContractEndDatePicker></mat-datepicker>
                                 </mat-form-field>
-
-                                <!-- <div fxLayout="row" fxLayoutAlign="start start" class="u-w--100 u-mb--10"> -->
-                                    <mat-checkbox color="accent" formControlName="clientContractNoEndDate" name="clientContractNoEndDate" class="black-checkbox" (change)="disableOrEnableInput(salesClientDataForm?.clientContractNoEndDate?.value, salesClientDataForm?.clientContractEndDate)">
-                                        No end date
-                                    </mat-checkbox>
-                                <!-- </div> -->
+                                <mat-checkbox color="accent" formControlName="clientContractNoEndDate" name="clientContractNoEndDate" class="black-checkbox" (change)="disableOrEnableInput(salesClientDataForm?.clientContractNoEndDate?.value, salesClientDataForm?.clientContractEndDate)">
+                                    No end date
+                                </mat-checkbox>
                             </div>
 
                             <h3 class="workflow-gray--header u-mb--10">Option to extend</h3>
@@ -1968,11 +2011,11 @@
                                             <span class="workflow-form--consultants__name u-mr--16">
                                                 {{consultant.value?.consultantName?.name}}
                                             </span>
-                                            <button class="form-icon--delete-row" *ngIf="consultantsForm.consultantData?.controls?.length"
-                                                mat-icon-button (click)="$event.stopPropagation();confirmRemoveConsultant(consultantIndex)">
-                                                <mat-icon svgIcon="remove-icon"></mat-icon>
-                                            </button>
                                         </ng-container>
+                                        <button class="form-icon--delete-row" *ngIf="consultantsForm.consultantData?.controls?.length"
+                                            mat-icon-button (click)="$event.stopPropagation();confirmRemoveConsultant(consultantIndex)">
+                                            <mat-icon svgIcon="remove-icon"></mat-icon>
+                                        </button>
                                     </span>
 
                                     <div fxFlex="50%" fxLayoutAlign="end center">
@@ -2049,25 +2092,26 @@
 
                                 </ng-container>
                                 <ng-container *ngIf="activeSideSection === workflowSideSections.ExtendClientPeriod || activeSideSection === workflowSideSections.ChangeClientPeriod">
-                                    <div fxLayout="column" class="u-mb--20">
-                                        <h3 class="workflow-extension--gray-header">Consultant type</h3>
-                                        <span class="workflow-extension--blue-text">
-                                            <!-- {{salesMainDataForm?.deliveryType?.value?.name}} -->
-                                            Freelance
-                                        </span>
-                                    </div>
-
-                                    <h3 class="workflow-extension--gray-header">Consultant</h3>
-                                    <div fxLayout="row" fxLayoutAlign="start center" class="u-mb--20">
-                                        <img class="workflow-extension--consultant-data--consultant-img u-mr--16" src="https://placekitten.com/50/50">
-                                        <div fxLayout="column">
-                                            <p class="workflow-extension--consultant-data--consultant-name">
-                                                <!-- {{contractsConsultantsDataForm.consultantData.at(i).get('consultantName')?.value}} -->
-                                                Robertsen Oscar
-                                            </p>
-                                            <span class="workflow-extension--consultant-data--consultant-text">
-                                                Just Do IT | Warsaw, PL | #9876 / PL-06281
+                                    <div fxLayout="row" fxLayoutAlign="start start" class="u-w--100 u-mb--20">
+                                        <div fxLayout="column" fxFlex="25%">
+                                            <h3 class="workflow-readonly--gray-header">Employment type</h3>
+                                            <span class="workflow-readonly--blue-text-bold">
+                                                {{consultant?.value?.employmentType?.name ? consultant?.value?.employmentType?.name : '-'}}
                                             </span>
+                                        </div>
+                                        <div fxLayout="column">
+                                            <h3 class="workflow-readonly--gray-header">Consultant</h3>
+                                            <div fxLayout="row" fxLayoutAlign="start center" class="u-mb--20">
+                                                <img class="workflow-extension--consultant-data--consultant-img u-mr--16" src="https://placekitten.com/50/50">
+                                                <div fxLayout="column">
+                                                    <p class="workflow-extension--consultant-data--consultant-name">
+                                                        {{consultant?.value?.consultantName?.name}}
+                                                    </p>
+                                                    <span class="workflow-extension--consultant-data--consultant-text">
+                                                        {{consultant?.value?.consultantName?.companyName}} | {{consultant?.value?.consultantName?.city}}, {{getTenantCodeFromId(consultant?.value?.consultantName?.countryId)}} | #{{consultant?.value?.consultantName?.id}} / {{getTenantCodeFromId(consultant?.value?.consultantName?.countryId)}}-{{consultant?.value?.consultantName?.legacyId}}
+                                                    </span>
+                                                </div>
+                                            </div>
                                         </div>
                                     </div>
                                 </ng-container>

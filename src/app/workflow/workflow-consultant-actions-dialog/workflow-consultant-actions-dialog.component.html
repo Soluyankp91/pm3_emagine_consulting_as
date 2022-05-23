@@ -4,13 +4,13 @@
     </div>
     <div fxLayout="row" fxLayoutAlign="start center">
         <img class="border-rounded-50 u-mr--16" src="https://picsum.photos/35/35" />
-        <p>{{consultant.consultantName ?? 'N/A'}}</p>
+        <p class="consultant-name">{{consultant.consultantName?.name ?? consultant?.consultantNameOnly}}</p>
     </div>
     <ng-container [ngSwitch]="data.dialogType">
         <ng-container *ngSwitchCase="dialogTypes.Change">
             <h3>Select new cutover date</h3>
-            <div fxLayout="column" fxLayoutAlign="start start">
-                <mat-form-field appearance="outline" class="u-w--50">
+            <div fxLayout="row" fxLayoutAlign="start center">
+                <mat-form-field appearance="outline" class="u-mr--10">
                     <mat-label>Specific date</mat-label>
                     <input autocomplete="off" matInput
                             [matDatepicker]="consultantCutoverDatePicker"
