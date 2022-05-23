@@ -117,7 +117,7 @@ export class WorkflowActionsDialogComponent extends AppComopnentBase implements 
                 extendWorkflowOutput.startDate = this.extendWorkflowForm.startDate?.value,
                 extendWorkflowOutput.endDate = this.extendWorkflowForm.endDate?.value,
                 extendWorkflowOutput.noEndDate = this.extendWorkflowForm.noEndDate?.value,
-                extendWorkflowOutput.extendConsultantPeriodIds = [];
+                extendWorkflowOutput.extendConsultantIds = [];
                 this.onConfirmed.emit(extendWorkflowOutput);
                 break;
             case WorkflowDiallogAction.Terminate:

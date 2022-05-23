@@ -758,7 +758,7 @@
                 <h3 class="workflow-gray--header u-mt--20" *ngIf="activeSideSection === workflowSideSections.TerminateWorkflow">End of Client Contract</h3>
 
                 <div fxLayout="row" fxLayoutAlign="start start" class="u-w--100 u-mb--10">
-                    <mat-button-toggle-group class="workflow-toggle-buttons u-mt--10" formControlName="nonStandardTerminationTime">
+                    <mat-button-toggle-group class="workflow-toggle-buttons u-mt--10" formControlName="terminationTime">
                         <mat-button-toggle
                             *ngFor="let item of nonStandartTerminationTimes | keyvalue"
                             [value]="item.key">
@@ -767,7 +767,7 @@
                     </mat-button-toggle-group>
                 </div>
 
-                <div fxLayout="column" fxLayoutAlign="start start" class="u-w--100 u-mb--20" *ngIf="salesTerminateConsultantForm?.nonStandardTerminationTime?.value === '1'">
+                <div fxLayout="column" fxLayoutAlign="start start" class="u-w--100 u-mb--20" *ngIf="salesTerminateConsultantForm?.terminationTime?.value === '1'">
                     <div>
                         <mat-form-field appearance="outline">
                             <mat-label>End date</mat-label>
@@ -800,7 +800,7 @@
                     </div>
                 </div>
 
-                <div fxLayout="row" fxLayoutAlign="start start" class="u-w--100 u-mb--20 u-mt--10" *ngIf="salesTerminateConsultantForm?.nonStandardTerminationTime?.value === '2'">
+                <div fxLayout="row" fxLayoutAlign="start start" class="u-w--100 u-mb--20 u-mt--10" *ngIf="salesTerminateConsultantForm?.terminationTime?.value === '2'">
                     <mat-form-field appearance="outline" class="u-w--100 textarea-input " fxFlex="0 0 calc(66% + 16px)">
                         <mat-label>Additional comments</mat-label>
                         <textarea matInput autocomplete="new-password" name="additionalComments" formControlName="additionalComments">
@@ -2739,7 +2739,7 @@
                 <h3 class="workflow-gray--header u-mt--20" *ngIf="activeSideSection === workflowSideSections.TerminateWorkflow">End of Client Contract</h3>
 
                 <div fxLayout="row" fxLayoutAlign="start start" class="u-w--100 u-mb--10">
-                    <mat-button-toggle-group class="workflow-toggle-buttons u-mt--10" formControlName="nonStandardTerminationTime">
+                    <mat-button-toggle-group class="workflow-toggle-buttons u-mt--10" formControlName="terminationTime">
                         <mat-button-toggle
                         *ngFor="let item of nonStandartTerminationTimes | keyvalue"
                         [value]="item.key">
@@ -2748,7 +2748,7 @@
                     </mat-button-toggle-group>
                 </div>
 
-                <div fxLayout="column" fxLayoutAlign="start start" class="u-w--100 u-mb--20" *ngIf="salesTerminateConsultantForm?.nonStandardTerminationTime?.value === '1'">
+                <div fxLayout="column" fxLayoutAlign="start start" class="u-w--100 u-mb--20" *ngIf="salesTerminateConsultantForm?.terminationTime?.value === '1'">
                     <div>
                         <mat-form-field appearance="outline">
                             <mat-label>End date</mat-label>
@@ -2781,7 +2781,7 @@
                     </div>
                 </div>
 
-                <div fxLayout="row" fxLayoutAlign="start start" class="u-w--100 u-mb--20 u-mt--10" *ngIf="salesTerminateConsultantForm?.nonStandardTerminationTime?.value === '1'">
+                <div fxLayout="row" fxLayoutAlign="start start" class="u-w--100 u-mb--20 u-mt--10" *ngIf="salesTerminateConsultantForm?.terminationTime?.value === '1'">
                     <mat-form-field appearance="outline" class="u-w--100 textarea-input " fxFlex="0 0 calc(66% + 16px)">
                         <mat-label>Additional comments</mat-label>
                         <textarea matInput autocomplete="new-password" name="additionalComments" formControlName="additionalComments">
