@@ -946,10 +946,10 @@ export class WorkflowSalesComponent extends AppComopnentBase implements OnInit {
     }
 
     addConsultantForm(consultant?: ConsultantSalesDataDto) {
-        console.log('s');
         const form = this._fb.group({
             employmentType: new FormControl(this.findItemById(this.employmentTypes, consultant?.employmentTypeId) ?? null),
             consultantName: new FormControl(consultant?.consultant ?? null),
+            consultantPeriodId: new FormControl(consultant?.consultantPeriodId ?? null),
             consultantNameOnly: new FormControl(consultant?.nameOnly ?? null),
 
             consultantProjectDurationSameAsClient: new FormControl(true),
@@ -1781,7 +1781,7 @@ export class WorkflowSalesComponent extends AppComopnentBase implements OnInit {
             let input = new ChangeConsultantPeriodDto();
             input.cutoverDate = result.cutoverDate;
             input.newLegalContractRequired = result.newLegalContractRequired;
-            this._consultantPeriodSerivce.change(this.periodId!, input)
+            this._consultantPeriodSerivce.change(consultantData.consultantPeriodId, input)
                 .pipe(finalize(() => {}))
                 .subscribe(result => {
                     this._workflowDataService.workflowSideSectionAdded.emit(true);
@@ -1821,7 +1821,11 @@ export class WorkflowSalesComponent extends AppComopnentBase implements OnInit {
             input.startDate = result.startDate;
             input.endDate = result.endDate;
             input.noEndDate = result.noEndDate;
-            this._consultantPeriodSerivce.extend(consultantData.consultantId, input)
+            this._consultantPeriodSerivce.extend(consultantData.consultantPeriodId, input)
+                .pipe(finalize(() => {}))
+                .subscribe(result => {
+                    this._workflowDataService.workflowSideSectionAdded.emit(true);
+                });
             this._workflowDataService.workflowSideSectionAdded.emit(true);
         });
 

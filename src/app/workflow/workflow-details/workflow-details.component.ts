@@ -6,7 +6,7 @@ import { ActivatedRoute } from '@angular/router';
 import { NgScrollbar } from 'ngx-scrollbar';
 import { Subject } from 'rxjs';
 import { finalize, takeUntil } from 'rxjs/operators';
-import { ClientPeriodDto, ClientPeriodServiceProxy, ConsultantPeriodAddDto, EnumEntityTypeDto, StepType, WorkflowDto, WorkflowProcessType, WorkflowServiceProxy } from 'src/shared/service-proxies/service-proxies';
+import { ChangeClientPeriodDto, ClientPeriodDto, ClientPeriodServiceProxy, ConsultantPeriodAddDto, EnumEntityTypeDto, ExtendClientPeriodDto, NewContractRequiredConsultantPeriodDto, StepType, WorkflowDto, WorkflowProcessType, WorkflowServiceProxy } from 'src/shared/service-proxies/service-proxies';
 import { WorkflowDataService } from '../workflow-data.service';
 import { WorkflowSalesComponent } from '../workflow-sales/workflow-sales.component';
 import { WorkflowProgressStatus, WorkflowTopSections, WorkflowSteps, WorkflowDiallogAction } from '../workflow.model';
@@ -485,6 +485,7 @@ export class WorkflowDetailsComponent extends AppComopnentBase implements OnInit
 
     addExtension() {
         const scrollStrategy = this.overlay.scrollStrategies.reposition();
+        let consultants = this.clientPeriods![this.selectedIndex - 1].consultantIds;
         const dialogRef = this.dialog.open(WorkflowActionsDialogComponent, {
             width: '450px',
             minHeight: '180px',
@@ -498,12 +499,22 @@ export class WorkflowDetailsComponent extends AppComopnentBase implements OnInit
                 dialogTitle: 'Extend Workflow',
                 rejectButtonText: 'Cancel',
                 confirmButtonText: 'Create',
-                isNegative: false
+                isNegative: false,
+                consultantData: consultants
             }
         });
 
-        dialogRef.componentInstance.onConfirmed.subscribe(() => {
-            // confirmed
+        dialogRef.componentInstance.onConfirmed.subscribe((result) => {
+            let input = new ExtendClientPeriodDto();
+            input.startDate = result.startDate;
+            input.endDate = result.endDate;
+            input.noEndDate = result.noEndDate;
+            input.extendConsultantIds = result.noEndDate;
+            this._clientPeriodService.clientExtend(this._workflowDataService.getWorkflowProgress.currentlyActivePeriodId!, input)
+                .pipe(finalize(() => {}))
+                .subscribe(result => {
+                    this._workflowDataService.workflowSideSectionAdded.emit(true);
+                });
         });
 
         dialogRef.componentInstance.onRejected.subscribe(() => {
@@ -514,6 +525,7 @@ export class WorkflowDetailsComponent extends AppComopnentBase implements OnInit
 
     changeWorkflow() {
         const scrollStrategy = this.overlay.scrollStrategies.reposition();
+        let consultants = this.clientPeriods![this.selectedIndex - 1].consultantIds;
         const dialogRef = this.dialog.open(WorkflowActionsDialogComponent, {
             width: '500px',
             minWidth: '450px',
@@ -528,12 +540,27 @@ export class WorkflowDetailsComponent extends AppComopnentBase implements OnInit
                 dialogTitle: 'Change Workflow data',
                 rejectButtonText: 'Cancel',
                 confirmButtonText: 'Create',
-                isNegative: false
+                isNegative: false,
+                consultantData: consultants
             }
         });
 
-        dialogRef.componentInstance.onConfirmed.subscribe(() => {
-            // confirmed
+        dialogRef.componentInstance.onConfirmed.subscribe((result) => {
+            let input = new ChangeClientPeriodDto();
+            input.clientNewLegalContractRequired = result.clientNewLegalContractRequired;
+            input.cutoverDate = result.cutoverDate;
+            input.consultantPeriods = new Array<NewContractRequiredConsultantPeriodDto>();
+            result.consultants?.forEach((consultant: any) => {
+                let consultantInput = new NewContractRequiredConsultantPeriodDto();
+                consultantInput.consultantId = consultant.consutlantId,
+                consultantInput.consultantNewLegalContractRequired = consultant.extendConsutlant;
+                input.consultantPeriods?.push(consultantInput);
+            })
+            this._clientPeriodService.clientChange(this._workflowDataService.getWorkflowProgress.currentlyActivePeriodId!, input)
+                .pipe(finalize(() => {}))
+                .subscribe(result => {
+                    this._workflowDataService.workflowSideSectionAdded.emit(true);
+                });
         });
 
         dialogRef.componentInstance.onRejected.subscribe(() => {

@@ -4,7 +4,7 @@
     </div>
     <div fxLayout="row" fxLayoutAlign="start center">
         <img class="border-rounded-50 u-mr--16" src="https://picsum.photos/35/35" />
-        <p class="consultant-name">{{consultant.consultantName?.name ?? consultant?.consultantNameOnly}}</p>
+        <p class="consultant-name">{{consultant.consultantName?.name}}</p>
     </div>
     <ng-container [ngSwitch]="data.dialogType">
         <ng-container *ngSwitchCase="dialogTypes.Change">
