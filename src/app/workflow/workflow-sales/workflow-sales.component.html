@@ -590,40 +590,48 @@
                         <h2 class="workflow-readonly--header u-mb--20">Consultant project</h2>
                         <div fxLayout="row" fxLayoutAlign="start start" class="u-w--100 u-mb--20">
                             <div fxLayout="column" fxFlex="50%">
-                                <h3 class="workflow-readonly--gray-header">Workplace</h3>
-                                <div fxLayout="row" class="u-w--10" *ngIf="item?.value?.consultantIsOnsiteWorkplace">
-                                    <span class="workflow-readonly--blue-text-bold" fxFlex="30%">
-                                        Onsite
-                                    </span>
+                                <div fxLayout="row" class="u-w--100 u-mb--10" *ngIf="item?.value?.consultantIsOnsiteWorkplace">
+                                    <div fxLayout="column" fxFlex="30%">
+                                        <h3 class="workflow-readonly--gray-header">Workplace</h3>
+                                        <span class="workflow-readonly--blue-text-bold">
+                                            Onsite
+                                        </span>
+                                    </div>
                                     <div fxLayout="column" fxFlex="40%">
                                         <h3 class="workflow-readonly--gray-header">Client address</h3>
                                         <span class="workflow-readonly--blue-text-bold">
                                             {{item.value.consultantWorkplaceClientAddress?.countryName}} | {{item.value.consultantWorkplaceClientAddress?.address}} | {{item.value.consultantWorkplaceClientAddress?.address2}} | {{item.value.consultantWorkplaceClientAddress?.postCode}}
                                         </span>
                                     </div>
-                                    <div fxLayout="column" fxFlex="30%">
+                                    <div fxLayout="column" fxFlex="30%" *ngIf="item?.value?.consultantWorkplacePercentageOnSite">
                                         <h3 class="workflow-readonly--gray-header">Percentage onsite</h3>
                                         <span class="workflow-readonly--blue-text-bold">
                                             {{item?.value?.consultantWorkplacePercentageOnSite ? item?.value?.consultantWorkplacePercentageOnSite : '-'}}
                                         </span>
                                     </div>
                                 </div>
-                                <div fxLayout="row" class="u-w--10" *ngIf="item?.value?.consultantIsEmagineOfficeWorkplace">
-                                    <span class="workflow-readonly--blue-text-bold" fxFlex="50%">
-                                        PDC Office
-                                    </span>
-                                    <div fxLayout="column" fxFlex="50%">
+                                <div fxLayout="row" class="u-w--100 u-mb--10" *ngIf="item?.value?.consultantIsEmagineOfficeWorkplace">
+                                    <div fxLayout="column" fxFlex="30%">
+                                        <h3 class="workflow-readonly--gray-header">Workplace</h3>
+                                        <span class="workflow-readonly--blue-text-bold">
+                                            PDC Office
+                                        </span>
+                                    </div>
+                                    <div fxLayout="column" fxFlex="40%">
                                         <h3 class="workflow-readonly--gray-header">Office location</h3>
                                         <span class="workflow-readonly--blue-text-bold">
                                             {{item?.value?.consultantWorkplaceEmagineOffice?.name}}
                                         </span>
                                     </div>
                                 </div>
-                                <div fxLayout="row" class="u-w--10" *ngIf="item?.value?.consultantIsRemoteWorkplace">
-                                    <span class="workflow-readonly--blue-text-bold" fxFlex="50%">
-                                        Remote
-                                    </span>
-                                    <div fxLayout="column" fxFlex="50%">
+                                <div fxLayout="row" class="u-w--100" *ngIf="item?.value?.consultantIsRemoteWorkplace">
+                                    <div fxLayout="column" fxFlex="30%">
+                                        <h3 class="workflow-readonly--gray-header">Workplace</h3>
+                                        <span class="workflow-readonly--blue-text-bold">
+                                            Remote
+                                        </span>
+                                    </div>
+                                    <div fxLayout="column" fxFlex="40%">
                                         <h3 class="workflow-readonly--gray-header">Office location</h3>
                                         <span class="workflow-readonly--blue-text-bold">
                                             {{item?.value?.consultantWorkplaceRemote}}
@@ -736,7 +744,7 @@
                         <div fxLayout="column" class="u-w--100 u-mb--20">
                             <h3 class="workflow-readonly--gray-header">Delivery Account Manager</h3>
                             <span class="workflow-readonly--blue-text-bold">
-                                {{item?.value?.deliveryAccountManager ? item?.value?.deliveryAccountManager : '-'}}
+                                {{item?.value?.deliveryAccountManager ? item?.value?.deliveryAccountManager?.name : '-'}}
                             </span>
                         </div>
                     </div>
@@ -750,7 +758,7 @@
                 <h3 class="workflow-gray--header u-mt--20" *ngIf="activeSideSection === workflowSideSections.TerminateWorkflow">End of Client Contract</h3>
 
                 <div fxLayout="row" fxLayoutAlign="start start" class="u-w--100 u-mb--10">
-                    <mat-button-toggle-group class="workflow-toggle-buttons u-mt--10" formControlName="nonStandardTerminationTime">
+                    <mat-button-toggle-group class="workflow-toggle-buttons u-mt--10" formControlName="terminationTime">
                         <mat-button-toggle
                             *ngFor="let item of nonStandartTerminationTimes | keyvalue"
                             [value]="item.key">
@@ -759,7 +767,7 @@
                     </mat-button-toggle-group>
                 </div>
 
-                <div fxLayout="column" fxLayoutAlign="start start" class="u-w--100 u-mb--20" *ngIf="salesTerminateConsultantForm?.nonStandardTerminationTime?.value === '1'">
+                <div fxLayout="column" fxLayoutAlign="start start" class="u-w--100 u-mb--20" *ngIf="salesTerminateConsultantForm?.terminationTime?.value === '1'">
                     <div>
                         <mat-form-field appearance="outline">
                             <mat-label>End date</mat-label>
@@ -792,7 +800,7 @@
                     </div>
                 </div>
 
-                <div fxLayout="row" fxLayoutAlign="start start" class="u-w--100 u-mb--20 u-mt--10" *ngIf="salesTerminateConsultantForm?.nonStandardTerminationTime?.value === '2'">
+                <div fxLayout="row" fxLayoutAlign="start start" class="u-w--100 u-mb--20 u-mt--10" *ngIf="salesTerminateConsultantForm?.terminationTime?.value === '2'">
                     <mat-form-field appearance="outline" class="u-w--100 textarea-input " fxFlex="0 0 calc(66% + 16px)">
                         <mat-label>Additional comments</mat-label>
                         <textarea matInput autocomplete="new-password" name="additionalComments" formControlName="additionalComments">
@@ -835,7 +843,7 @@
                 <ng-container *ngIf="(activeSideSection === workflowSideSections.StartConsultantPeriod) || (activeSideSection === workflowSideSections.ChangeConsultantPeriod) || (activeSideSection === workflowSideSections.ExtendConsultantPeriod); else startClientPeriodTemplate">
                     <div fxLayout="column" fxLayoutAlign="start start" class="workflow-sales--process-data u-w--100">
                         <h1 class="workflow-section--header-main">Main data</h1>
-                        <div fxLayout="row" fxLayoutAlign="start start" class="u-w--100 u-mb--10">
+                        <div fxLayout="row" fxLayoutAlign="start start" class="u-w--100 u-mb--10  u-mt--10">
                             <mat-form-field appearance="outline" class="u-w--100 textarea-input " fxFlex="0 0 calc(66% + 16px)">
                                 <mat-label>Remarks</mat-label>
                                 <textarea matInput autocomplete="new-password" name="remarks" formControlName="remarks">
@@ -1955,7 +1963,7 @@
                                 <h1 class="workflow-section--header-main" fxFlex="15%">Consultant data</h1>
                                 <div fxLayout="row" fxLayoutAlign="start start" class="u-w--100 u-mb--20">
                                     <span fxFlex="50%" fxLayout="row" fxLayoutAlign="start center">
-                                        <ng-container  *ngIf="consultant.value?.consultantName?.id">
+                                        <ng-container  *ngIf="consultant.value?.consultantName?.id || consultant.value?.consultantNameOnly">
                                             <img class="border-rounded-50 u-ml--16 u-mr--16" src="https://picsum.photos/35/35" />
                                             <span class="workflow-form--consultants__name u-mr--16">
                                                 {{consultant.value?.consultantName?.name}}
@@ -2002,7 +2010,7 @@
                             </div>
 
                             <div fxLayout="column" fxLayoutAlign="start start" class="u-w--100">
-                                <ng-container *ngIf="activeSideSection === workflowSideSections.StartClientPeriod">
+                                <ng-container *ngIf="activeSideSection === workflowSideSections.StartClientPeriod || activeSideSection === workflowSideSections.StartConsultantPeriod">
                                     <h3 class="workflow-gray--header u-mb--10">Employment type</h3>
                                     <div fxLayout="row" fxLayoutAlign="start start" class="u-w--100 u-mb--20">
                                         <mat-button-toggle-group class="workflow-toggle-buttons" formControlName="employmentType">
@@ -2715,7 +2723,7 @@
                                 <mat-divider class="u-w--100 u-mt--20 u-mb--20"></mat-divider>
                             </ng-container>
                         </div>
-                        <div fxLayout="row" fxLayoutAlign="start start" class="u-w--100">
+                        <div fxLayout="row" fxLayoutAlign="start start" class="u-w--100" *ngIf="activeSideSection === workflowSideSections.StartClientPeriod">
                             <button class="button-add mat-elevation-z0 u-mt--10 u-mb--10" mat-flat-button (click)="addConsultantForm()">
                                 <mat-icon>add</mat-icon>
                                 Add consultant
@@ -2733,17 +2741,17 @@
         <h3 class="workflow-gray--header u-mt--20" *ngIf="activeSideSection === workflowSideSections.TerminateWorkflow">End of Client Contract</h3>
 
         <div fxLayout="row" fxLayoutAlign="start start" class="u-w--100 u-mb--10">
-            <mat-button-toggle-group class="workflow-toggle-buttons u-mt--10" formControlName="nonStandardTerminationTime">
+            <mat-button-toggle-group class="workflow-toggle-buttons u-mt--10" formControlName="terminationTime">
                 <mat-button-toggle
                     *ngFor="let item of nonStandartTerminationTimes | keyvalue"
-                    [value]="item.key">
+                    [value]="+item.key">
                         {{ item.value }}
                 </mat-button-toggle>
             </mat-button-toggle-group>
         </div>
 
-        {{salesTerminateConsultantForm.nonStandardTerminationTime?.value | json}}
-        <div fxLayout="column" fxLayoutAlign="start start" class="u-w--100 u-mb--20" *ngIf="salesTerminateConsultantForm?.nonStandardTerminationTime?.value === 1">
+        {{salesTerminateConsultantForm.terminationTime?.value | json}}
+        <div fxLayout="column" fxLayoutAlign="start start" class="u-w--100 u-mb--20" *ngIf="salesTerminateConsultantForm?.terminationTime?.value === 1">
             <div>
                 <mat-form-field appearance="outline">
                     <mat-label>End date</mat-label>
@@ -2776,7 +2784,7 @@
             </div>
         </div>
 
-        <div fxLayout="row" fxLayoutAlign="start start" class="u-w--100 u-mb--20 u-mt--10" *ngIf="salesTerminateConsultantForm?.nonStandardTerminationTime?.value === 2">
+        <div fxLayout="row" fxLayoutAlign="start start" class="u-w--100 u-mb--20 u-mt--10" *ngIf="salesTerminateConsultantForm?.terminationTime?.value === 2">
             <mat-form-field appearance="outline" class="u-w--100 textarea-input " fxFlex="0 0 calc(66% + 16px)">
                 <mat-label>Additional comments</mat-label>
                 <textarea matInput autocomplete="new-password" name="additionalComments" formControlName="additionalComments">

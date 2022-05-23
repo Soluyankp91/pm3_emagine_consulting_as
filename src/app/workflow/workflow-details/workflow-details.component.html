@@ -93,7 +93,7 @@
                     <span class="tab-subheader">{{tab.additionalInfo}}</span>
                 </ng-template>
                 <div class="workflow-form--panel u-w--100">
-                    <app-workflow-period *ngIf="selectedIndex === i + 1" [clientPeriodId]="tab.id" [workflowId]="workflowId"></app-workflow-period>
+                    <app-workflow-period *ngIf="selectedIndex === i + 1" [periodId]="tab.id" [workflowId]="workflowId"></app-workflow-period>
                 </div>
             </mat-tab>
         </mat-tab-group>

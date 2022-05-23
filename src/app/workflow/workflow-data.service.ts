@@ -11,6 +11,20 @@ export class WorkflowDataService {
     // Start Clinet period
     workflowSalesSaved = new EventEmitter<boolean>();
     workflowContractsSaved = new EventEmitter<boolean>();
+    workflowFinanceSaved = new EventEmitter<boolean>();
+
+    // Start consultant period
+    consultantStartSalesSaved = new EventEmitter<boolean>();
+    consultantStartContractsSaved = new EventEmitter<boolean>();
+    consultantStartFinanceSaved = new EventEmitter<boolean>();
+    // Extend consultant period
+    consultantExtendSalesSaved = new EventEmitter<boolean>();
+    consultantExtendContractsSaved = new EventEmitter<boolean>();
+    consultantExtendFinanceSaved = new EventEmitter<boolean>();
+    // Change consultant period
+    consultantChangeSalesSaved = new EventEmitter<boolean>();
+    consultantChangeContractsSaved = new EventEmitter<boolean>();
+    consultantChangeFinanceSaved = new EventEmitter<boolean>();
 
     //Termination
     workflowConsultantTerminationSalesSaved = new EventEmitter<boolean>();

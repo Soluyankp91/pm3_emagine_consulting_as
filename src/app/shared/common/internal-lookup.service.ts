@@ -570,13 +570,13 @@ export class InternalLookupService {
         });
     }
 
-    getNonStandartTerminationTimes(): Observable<{ [key: string]: string; }> {
+    getTerminationTimes(): Observable<{ [key: string]: string; }> {
         return new Observable<{ [key: string]: string; }>((observer) => {
             if (this.nonStandartTerminationTimes !== undefined && this.nonStandartTerminationTimes !== null) {
                 observer.next(this.nonStandartTerminationTimes);
                 observer.complete();
             } else {
-                this._enumService.nonStandardTerminationTimes()
+                this._enumService.terminationTimes()
                     .subscribe(response => {
                         this.nonStandartTerminationTimes = response;
                         observer.next(this.nonStandartTerminationTimes);

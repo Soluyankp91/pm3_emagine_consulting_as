@@ -1,8 +1,10 @@
 import { Component, EventEmitter, Inject, Injector, OnInit, Output } from '@angular/core';
-import { FormControl } from '@angular/forms';
+import { FormBuilder, FormControl } from '@angular/forms';
 import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
 import { AppComopnentBase } from 'src/shared/app-component-base';
+import { ChangeClientPeriodDto, ConsultantPeriodAddDto, ExtendClientPeriodDto, NewContractRequiredConsultantPeriodDto } from 'src/shared/service-proxies/service-proxies';
 import { WorkflowDiallogAction } from '../workflow.model';
+import { ChangeWorkflowForm, ExtendWorkflowForm } from './workflow-actions-dialog.model';
 
 @Component({
   selector: 'app-workflow-actions-dialog',
@@ -12,20 +14,21 @@ import { WorkflowDiallogAction } from '../workflow.model';
 export class WorkflowActionsDialogComponent extends AppComopnentBase implements OnInit {
     @Output() onConfirmed: EventEmitter<any> = new EventEmitter<any>();
     @Output() onRejected: EventEmitter<any> = new EventEmitter<any>();
-    // Change consultant
+    // Change workflow
     newCutoverDate = new FormControl(null);
     newLegalContractRequired = new FormControl(false);
-    // Extend consultant
+    // Extend workflow
     workflowChangesForm = new FormControl();
     startDate = new FormControl(null);
     endDate = new FormControl(null);
     noEndDate = new FormControl(false);
-    // Terminate consultant
+    // Terminate workflow
     // TBD
-
+    changeWorkflowForm: ChangeWorkflowForm;
+    extendWorkflowForm: ExtendWorkflowForm;
     // Dialog data
     dialogTypes = WorkflowDiallogAction;
-    consultant: any;
+    consultants: any;
     constructor(
         injector: Injector,
         @Inject(MAT_DIALOG_DATA)
@@ -37,13 +40,48 @@ export class WorkflowActionsDialogComponent extends AppComopnentBase implements 
             confirmButtonText: string,
             isNegative: boolean
         },
-        private dialogRef: MatDialogRef<WorkflowActionsDialogComponent>
+        private dialogRef: MatDialogRef<WorkflowActionsDialogComponent>,
+        private _fb: FormBuilder
         ) {
             super(injector);
-            this.consultant = data.consultantData;
+            this.changeWorkflowForm = new ChangeWorkflowForm();
+            this.extendWorkflowForm = new ExtendWorkflowForm();
+            this.consultants = data.consultantData;
         }
 
     ngOnInit(): void {
+        switch (this.data.dialogType) {
+            case WorkflowDiallogAction.AddConsultant:
+                break;
+            case WorkflowDiallogAction.Change:
+                this.consultants.forEach((consultant: any) => {
+                    this.addConsutlantToChangeForm(consultant);
+                });
+                break;
+            case WorkflowDiallogAction.Extend:
+                this.consultants.forEach((consultant: any) => {
+                    this.addConsutlantToExtendForm(consultant);
+                })
+                break;
+        }
+    }
+
+    addConsutlantToChangeForm(consultant: any) {
+        const form = this._fb.group({
+            consulantName: new FormControl(consultant.consultant),
+            consutlantId: new FormControl(consultant.consultantId),
+            newLegalContractRequired: new FormControl(false)
+        });
+        this.changeWorkflowForm.consultants.push(form);
+    }
+
+    addConsutlantToExtendForm(consultant: any) {
+        const form = this._fb.group({
+            consulantName: new FormControl(consultant.consultant),
+            consutlantId: new FormControl(consultant.consultantId),
+            extendConsutlant: new FormControl(false)
+        });
+        this.extendWorkflowForm.consultants.push(form);
     }
 
     close(): void {
@@ -52,33 +90,41 @@ export class WorkflowActionsDialogComponent extends AppComopnentBase implements 
     }
 
     confirm(): void {
-        let outputData = {};
         switch (this.data.dialogType) {
-            case WorkflowDiallogAction.Add:
-                outputData = {
-                    startDate: this.startDate.value,
-                    endDate: this.endDate.value,
-                    noEndDate: this.noEndDate.value
-                }
+            case WorkflowDiallogAction.AddConsultant:
+                let addConsultantOutput = new ConsultantPeriodAddDto();
+                addConsultantOutput.startDate = this.startDate.value;
+                addConsultantOutput.noEndDate = this.noEndDate.value;
+                addConsultantOutput.endDate = this.endDate.value;
+                this.onConfirmed.emit(addConsultantOutput);
                 break;
             case WorkflowDiallogAction.Change:
-                outputData = {
-                    newCutoverDate: this.newCutoverDate.value,
-                    newLegalContractRequired: this.newLegalContractRequired.value
-                }
+                const consutlants = this.changeWorkflowForm.value.consultants;
+                let changeWorkflowOutput = new ChangeClientPeriodDto();
+                changeWorkflowOutput.clientNewLegalContractRequired = this.changeWorkflowForm.newLegalContractRequired?.value;
+                changeWorkflowOutput.cutoverDate = this.changeWorkflowForm.cutoverDate?.value;
+                changeWorkflowOutput.consultantPeriods = new Array<NewContractRequiredConsultantPeriodDto>();
+                consutlants.forEach((consultant: any) => {
+                    let consultantInput = new NewContractRequiredConsultantPeriodDto();
+                    consultantInput.consultantNewLegalContractRequired = consultant.newLegalContractRequired,
+                    consultantInput.consultantId = consultant.consultantId;
+                    changeWorkflowOutput.consultantPeriods?.push(consultantInput);
+                });
+                this.onConfirmed.emit(changeWorkflowOutput);
                 break;
             case WorkflowDiallogAction.Extend:
-                outputData = {
-                    startDate: this.startDate.value,
-                    endDate: this.endDate.value,
-                    noEndDate: this.noEndDate.value
-                }
+                let extendWorkflowOutput = new ExtendClientPeriodDto();
+                extendWorkflowOutput.startDate = this.extendWorkflowForm.startDate?.value,
+                extendWorkflowOutput.endDate = this.extendWorkflowForm.endDate?.value,
+                extendWorkflowOutput.noEndDate = this.extendWorkflowForm.noEndDate?.value,
+                extendWorkflowOutput.extendConsultantIds = [];
+                this.onConfirmed.emit(extendWorkflowOutput);
                 break;
             case WorkflowDiallogAction.Terminate:
 
                 break;
         }
-        this.onConfirmed.emit(outputData);
+        // this.onConfirmed.emit(outputData);
         this.closeInternal();
     }
 
