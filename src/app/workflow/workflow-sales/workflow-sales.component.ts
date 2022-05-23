@@ -1951,7 +1951,7 @@ export class WorkflowSalesComponent extends AppComopnentBase implements OnInit {
             }))
             .subscribe(result => {
                 // End of Consultant Contract
-                this.salesTerminateConsultantForm.nonStandardTerminationTime?.setValue(result?.terminationTime, {emitEvent: false});
+                this.salesTerminateConsultantForm.terminationTime?.setValue(result?.terminationTime, {emitEvent: false});
                 this.salesTerminateConsultantForm.endDate?.setValue(result?.endDate, {emitEvent: false});
                 this.salesTerminateConsultantForm.terminationReason?.setValue(result?.terminationReason, {emitEvent: false}); // add findItemById function
                 this.salesTerminateConsultantForm.causeOfNonStandardTerminationTime?.setValue(result?.causeOfNonStandardTerminationTime, {emitEvent: false});
@@ -1969,7 +1969,7 @@ export class WorkflowSalesComponent extends AppComopnentBase implements OnInit {
 
     updateTerminationConsultantSalesStep() {
         let input = new ConsultantTerminationSalesDataCommandDto();
-        input.terminationTime =  this.salesTerminateConsultantForm?.nonStandardTerminationTime?.value;
+        input.terminationTime =  this.salesTerminateConsultantForm?.terminationTime?.value;
         input.endDate = this.salesTerminateConsultantForm?.endDate?.value;
         input.terminationReason = this.salesTerminateConsultantForm?.terminationReason?.value;
         input.causeOfNonStandardTerminationTime = this.salesTerminateConsultantForm?.causeOfNonStandardTerminationTime?.value;
@@ -1991,7 +1991,7 @@ export class WorkflowSalesComponent extends AppComopnentBase implements OnInit {
     completeTerminationConsultantSalesStep() {
         let input = new ConsultantTerminationSalesDataCommandDto();
 
-        input.terminationTime =  this.salesTerminateConsultantForm?.nonStandardTerminationTime?.value;
+        input.terminationTime =  this.salesTerminateConsultantForm?.terminationTime?.value;
         input.endDate = this.salesTerminateConsultantForm?.endDate?.value;
         input.terminationReason = this.salesTerminateConsultantForm?.terminationReason?.value;
         input.causeOfNonStandardTerminationTime = this.salesTerminateConsultantForm?.causeOfNonStandardTerminationTime?.value;
@@ -2017,7 +2017,7 @@ export class WorkflowSalesComponent extends AppComopnentBase implements OnInit {
             }))
             .subscribe(result => {
                 // End of Consultant Contract
-                this.salesTerminateConsultantForm.nonStandardTerminationTime?.setValue(result?.terminationTime, {emitEvent: false});
+                this.salesTerminateConsultantForm.terminationTime?.setValue(result?.terminationTime, {emitEvent: false});
                 this.salesTerminateConsultantForm.endDate?.setValue(result?.endDate, {emitEvent: false});
                 this.salesTerminateConsultantForm.terminationReason?.setValue(result?.terminationReason, {emitEvent: false}); // add findItemById function
                 this.salesTerminateConsultantForm.causeOfNonStandardTerminationTime?.setValue(result?.causeOfNonStandardTerminationTime, {emitEvent: false});
@@ -2035,7 +2035,7 @@ export class WorkflowSalesComponent extends AppComopnentBase implements OnInit {
 
     updateTerminationSalesStep() {
         let input = new WorkflowTerminationSalesDataCommandDto();
-        input.terminationTime =  this.salesTerminateConsultantForm?.nonStandardTerminationTime?.value;
+        input.terminationTime =  this.salesTerminateConsultantForm?.terminationTime?.value;
         input.endDate = this.salesTerminateConsultantForm?.endDate?.value;
         input.terminationReason = this.salesTerminateConsultantForm?.terminationReason?.value;
         input.causeOfNonStandardTerminationTime = this.salesTerminateConsultantForm?.causeOfNonStandardTerminationTime?.value;
@@ -2056,7 +2056,7 @@ export class WorkflowSalesComponent extends AppComopnentBase implements OnInit {
 
     completeTerminationSalesStep() {
         let input = new WorkflowTerminationSalesDataCommandDto();
-        input.terminationTime =  this.salesTerminateConsultantForm?.nonStandardTerminationTime?.value;
+        input.terminationTime =  this.salesTerminateConsultantForm?.terminationTime?.value;
         input.endDate = this.salesTerminateConsultantForm?.endDate?.value;
         input.terminationReason = this.salesTerminateConsultantForm?.terminationReason?.value;
         input.causeOfNonStandardTerminationTime = this.salesTerminateConsultantForm?.causeOfNonStandardTerminationTime?.value;

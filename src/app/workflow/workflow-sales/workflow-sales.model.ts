@@ -374,7 +374,7 @@ export class SalesTerminateConsultantForm extends FormGroup {
             finalEvaluationReferencePerson: new FormControl(null),
             noEvaluation: new FormControl(null),
             causeOfNoEvaluation: new FormControl(null),
-            nonStandardTerminationTime: new FormControl(null),
+            terminationTime: new FormControl(null),
             endDate: new FormControl(null),
             terminationReason: new FormControl(null),
             causeOfNonStandardTerminationTime: new FormControl(null),
@@ -391,8 +391,8 @@ export class SalesTerminateConsultantForm extends FormGroup {
     get causeOfNoEvaluation() {
         return this.get('causeOfNoEvaluation');
     }
-    get nonStandardTerminationTime() {
-        return this.get('nonStandardTerminationTime');
+    get terminationTime() {
+        return this.get('terminationTime');
     }
     get endDate() {
         return this.get('endDate');
