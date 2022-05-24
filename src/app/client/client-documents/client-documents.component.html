@@ -11,7 +11,7 @@
         <ng-container [ngSwitch]="selectedItem">
             <ng-container *ngSwitchCase="documentSideItems.General">
                 <div fxLayout="column" fxLayoutAlign="start center" class="client-documents--form u-w--100">
-                    <div fxLayout="row" fxLayoutAlign="end center" class="u-mb--15">
+                    <div fxLayout="row" fxLayoutAlign="end center" class="u-mb--15 u-w--100">
                         <mat-checkbox color="accent" name="generalDocumentsIncludeLinked" [formControl]="generalDocumentsIncludeLinked" class="black-checkbox u-w--100 u-mr--15">
                             Include linked clients
                         </mat-checkbox>
@@ -135,7 +135,7 @@
             </ng-container>
             <ng-container *ngSwitchCase="documentSideItems.Contracts">
                 <div class="client-documents--contract u-w--100">
-                    <div fxLayout="row" fxLayoutAlign="space-between center" class="u-w--100 client-documents--contract-filter">
+                    <div fxLayout="row" fxLayoutAlign="end center" class="u-w--100 u-mb--15 client-documents--contract-filter">
                         <mat-checkbox color="accent" name="contractDocumentsIncludeLinked" [formControl]="contractDocumentsIncludeLinked" class="black-checkbox u-w--100 u-mr--15">
                             Include linked clients
                         </mat-checkbox>
@@ -220,7 +220,7 @@
             </ng-container>
             <ng-container *ngSwitchCase="documentSideItems.Evaluations">
                 <div fxLayout="column" fxLayoutAlign="start center" class="documents-documents--table u-w--100">
-                    <div fxLayout="row" fxLayoutAlign="end center">
+                    <div fxLayout="row" fxLayoutAlign="end center"class="u-w--100 u-mb--15">
                         <mat-form-field appearance="outline" class="u-w--100 u-mr--16" fxFlex="45%">
                             <mat-label>Max answer date</mat-label>
                             <input autocomplete="off" placeholder="New end date" matInput

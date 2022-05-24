@@ -1,11 +1,15 @@
+import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { Component, Injector, OnInit, ViewChild } from '@angular/core';
 import { FormControl } from '@angular/forms';
 import { MatSelectChange } from '@angular/material/select';
 import { ActivatedRoute, Router } from '@angular/router';
+import { MsalService } from '@azure/msal-angular';
+import { AuthenticationResult } from '@azure/msal-browser';
 import { Subject } from 'rxjs';
 import { finalize, takeUntil } from 'rxjs/operators';
 import { AppComopnentBase } from 'src/shared/app-component-base';
-import { ApiServiceProxy, ClientDetailsDto } from 'src/shared/service-proxies/service-proxies';
+import { LocalHttpService } from 'src/shared/service-proxies/local-http.service';
+import { ApiServiceProxy, ClientDetailsDto, ClientsServiceProxy } from 'src/shared/service-proxies/service-proxies';
 import { ClientDocumentsComponent } from '../client-documents/client-documents.component';
 @Component({
     selector: 'app-client-details',
@@ -38,7 +42,11 @@ export class ClientDetailsComponent extends AppComopnentBase implements OnInit {
         injector: Injector,
         private router: Router,
         private activatedRoute: ActivatedRoute,
-        private _apiService: ApiServiceProxy
+        private _apiService: ApiServiceProxy,
+        private _clientService: ClientsServiceProxy,
+        private httpClient: HttpClient,
+        private _authService: MsalService,
+        private localHttpService: LocalHttpService
     ) {
         super(injector);
     }
@@ -63,8 +71,73 @@ export class ClientDetailsComponent extends AppComopnentBase implements OnInit {
             .pipe(finalize(() => this.hideMainSpinner()))
             .subscribe(result => {
                 this.client = result;
-                // console.log(countryLookup.byCountry(result.countryName!));
             });
+    }
+
+    impersonateHubspot() {
+        // this._clientService.hubspotClientUrl(this.client.clientId!)
+        // .pipe(finalize(() => {}))
+        // .subscribe(result => {
+        //     console.log(result);
+        //     window.open(result, '_blank');
+        // });
+        this.localHttpService.getToken().then((response: AuthenticationResult) => {
+            this.httpClient.get(`${this.apiUrl}/api/Clients/${this.client.clientId!}/HubspotClientUrlAsync`, {
+                    headers: new HttpHeaders({
+                        'Authorization': `Bearer ${response.accessToken}`
+                    }),
+                    responseType: 'text'
+                }).subscribe((result: any) => {
+                    window.open(result, '_blank');
+            })
+        });
+    }
+
+    impersonateCAM() {
+        // const params = {
+        //     scopes: ['openid', 'profile', 'api://5f63a91e-8bfd-40ea-b562-3dad54244ff7/access_as_user'],
+        //     redirectUri: '',
+        //     extraQueryParameters: undefined,
+        //     authority: 'https://login.microsoftonline.com/0749517d-d788-4fc5-b761-0cb1a1112694/',
+        //     account: this._authService.instance.getActiveAccount()!,
+        //     correlationId: '',
+        //     forceRefresh: false
+        // }
+        // let bearerToken: string;
+        // this._authService.instance.acquireTokenSilent(params)
+        //     .then((result: AuthenticationResult) => {
+        //         console.log(result);
+        //         bearerToken = result.accessToken;
+        //         this.httpClient.get(`${this.apiUrl}/api/Clients/${this.client.clientId!}/CamImpersonationUrl`,
+        //             {
+        //                 headers: new HttpHeaders({
+        //                     'Authorization': `Bearer ${bearerToken}`
+        //                 }),
+        //                 responseType: 'text'
+        //             }
+        //             ).subscribe((result: any) => {
+        //             window.open(result, '_blank');
+        //         })
+        //     });
+        
+        this.localHttpService.getToken().then((response: AuthenticationResult) => {
+            this.httpClient.get(`${this.apiUrl}/api/Clients/${this.client.clientId!}/CamImpersonationUrl`, {
+                    headers: new HttpHeaders({
+                        'Authorization': `Bearer ${response.accessToken}`
+                    }),
+                    responseType: 'text'
+                }).subscribe((result: any) => {
+                    window.open(result, '_blank');
+            })
+        });
+
+
+        // this._clientService.camImpersonationUrl(this.client.clientId!)
+        //     .pipe(finalize(() => {}))
+        //     .subscribe(result => {
+        //         console.log(result);
+        //         window.open(result, '_blank');
+        //     });
     }
 
     navigateBack() {
