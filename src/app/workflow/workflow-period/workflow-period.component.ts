@@ -51,6 +51,11 @@ export class WorkflowPeriodComponent implements OnInit {
             .subscribe((value: boolean) => {
                 this.getSideMenu();
             });
+        this._workflowDataService.workflowSideSectionUpdated
+            .pipe(takeUntil(this._unsubscribe))
+                .subscribe((value: boolean) => {
+                    this.getSideMenu();
+                });
     }
 
     selectedManager(event: any) {
@@ -130,7 +135,14 @@ export class WorkflowPeriodComponent implements OnInit {
         });
 
         dialogRef.componentInstance.onConfirmed.subscribe((result) => {
-
+            switch (item.typeId) {
+                case WorkflowProcessType.ChangeClientPeriod:
+                return;
+                case WorkflowProcessType.TerminateConsultant:
+                    return this.deleteConsultantTermination(1); // change to item.consultant.id when BE will be ready
+                case WorkflowProcessType.TerminateWorkflow:
+                    return this.deleteWorkflow();
+            }
         });
 
         dialogRef.componentInstance.onRejected.subscribe(() => {
@@ -142,4 +154,15 @@ export class WorkflowPeriodComponent implements OnInit {
         this.selectedAnchor = anchorName;
     }
 
+    deleteWorkflow() {
+        this._workflowService.terminationDelete(this.workflowId).subscribe(result => {
+            this._workflowDataService.workflowSideSectionUpdated.emit(true);
+        });
+    }
+
+    deleteConsultantTermination(consultantId: number) { //change type to number when BE will be ready
+        this._workflowService.terminationConsultantDelete(this.workflowId, consultantId).subscribe(result => {
+            this._workflowDataService.workflowSideSectionUpdated.emit(true);
+        })
+    }
 }

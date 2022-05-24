@@ -1637,7 +1637,7 @@ export class WorkflowSalesComponent extends AppComopnentBase implements OnInit {
                     this.hideMainSpinner();
                 }))
                 .subscribe(result => {
-
+                    this._workflowDataService.workflowSideSectionUpdated.emit(true);
                 })
         }
 
@@ -1862,28 +1862,6 @@ export class WorkflowSalesComponent extends AppComopnentBase implements OnInit {
         });
     }
 
-    // Termination
-    terminateConsultant(index: number) {
-        this.consultantInformation = this.consultantsForm.consultantData.at(index).value.consultantName;
-        this._workflowServiceProxy.terminationConsultantStart(this.workflowId!, this.consultantInformation.id)
-        .pipe(finalize(() => {
-
-        }))
-        .subscribe(result => {
-            this._workflowDataService.workflowSideSectionAdded.emit(true);
-        });
-    }
-
-    terminateWorkflow() {
-        this._workflowServiceProxy.terminationStart(this.workflowId!)
-        .pipe(finalize(() => {
-
-        }))
-        .subscribe(result => {
-            this._workflowDataService.workflowSideSectionAdded.emit(true);
-        });
-    }
-
     //#endregion Consultant menu actions
 
     //#region commissions form array
@@ -2048,7 +2026,7 @@ export class WorkflowSalesComponent extends AppComopnentBase implements OnInit {
 
             }))
             .subscribe(result => {
-
+                this._workflowDataService.workflowSideSectionUpdated.emit(true);
             })
     }
 
@@ -2114,8 +2092,49 @@ export class WorkflowSalesComponent extends AppComopnentBase implements OnInit {
 
             }))
             .subscribe(result => {
-
+                this._workflowDataService.workflowSideSectionUpdated.emit(true);
             })
+    }
+
+    terminateConsultant(index: number) {
+        this.consultantInformation = this.consultantsForm.consultantData.at(index).value.consultantName;
+
+        console.log('terminate consultant ',  this.consultantInformation.id);
+        const scrollStrategy = this.overlay.scrollStrategies.reposition();
+        const dialogRef = this.dialog.open(ConfirmationDialogComponent, {
+            width: '450px',
+            minHeight: '180px',
+            height: 'auto',
+            scrollStrategy,
+            backdropClass: 'backdrop-modal--wrapper',
+            autoFocus: false,
+            panelClass: 'confirmation-modal',
+            data: {
+                confirmationMessageTitle: `Are you sure you want to terminate consultant ${this.consultantInformation?.name ?? ''}?`,
+                // confirmationMessage: 'When you confirm the termination, all the info contained inside this block will disappear.',
+                rejectButtonText: 'Cancel',
+                confirmButtonText: 'Terminate',
+                isNegative: true
+            }
+        });
+
+        dialogRef.componentInstance.onConfirmed.subscribe(() => {
+            this.terminateConsultantStart(this.consultantInformation?.id!);
+        });
+
+        dialogRef.componentInstance.onRejected.subscribe(() => {
+            // nthng
+        });
+    }
+
+    terminateConsultantStart(index: number) {
+        this._workflowServiceProxy.terminationConsultantStart(this.workflowId!, index)
+            .pipe(finalize(() => {
+
+            }))
+            .subscribe(result => {
+                this._workflowDataService.workflowSideSectionAdded.emit(true);
+            });
     }
 
     //#endregion termination
@@ -2284,7 +2303,7 @@ export class WorkflowSalesComponent extends AppComopnentBase implements OnInit {
             this._consultantSalesSerivce.editFinish(this.periodId!, input)
                 .pipe(finalize(() => this.hideMainSpinner()))
                 .subscribe(result => {
-
+                    this._workflowDataService.workflowSideSectionUpdated.emit(true);
                 });
         }
     }
