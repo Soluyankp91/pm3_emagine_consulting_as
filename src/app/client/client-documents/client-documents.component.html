@@ -101,7 +101,7 @@
                                                 class="menu-item"
                                                 mat-menu-item
                                                 (click)="editGeneralDocument(documents?.at(i)?.get('editable')?.value, i)">
-                                                Edit
+                                                {{documents?.at(i)?.get('editable')?.value ? 'Save' : 'Edit'}}
                                             </button>
                                             <button
                                                 class="menu-item"
@@ -112,7 +112,7 @@
                                             <button
                                                 class="menu-item"
                                                 mat-menu-item
-                                                (click)="deleteGeneralDocument(i)">
+                                                (click)="deleteGeneralDocument(document.value?.clientAttachmentGuid)">
                                                 Delete document
                                             </button>
                                         </mat-menu>
