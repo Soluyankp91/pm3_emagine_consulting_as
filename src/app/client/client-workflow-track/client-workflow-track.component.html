@@ -2,33 +2,32 @@
     <div fxLayout="column" fxLayoutAlign="start center" class="client-workflow--table u-w--100">
         <div fxLayout="column" fxFlexFill>
             <mat-table #table [dataSource]="workflowTrackDataSource" class="white-table u-w--100" matSort matSortStart="asc" (matSortChange)="sortChanged($event)">
-                <ng-container matColumnDef="id">
-                    <mat-header-cell *matHeaderCellDef mat-sort-header fxFlex="5%"> ID </mat-header-cell>
-                    <mat-cell *matCellDef="let row" fxFlex="5%">
-                        {{row.id}}
-                    </mat-cell>
-                </ng-container>
                 <ng-container matColumnDef="consultant">
-                    <mat-header-cell *matHeaderCellDef mat-sort-header fxFlex="30%"> Consultant </mat-header-cell>
-                    <mat-cell *matCellDef="let row" fxFlex="30%">
-                        <span class="text-truncate-ellipsis text-bold" [matTooltip]="row.consultant">
-                            {{row.consultant}}
+                    <mat-header-cell *matHeaderCellDef mat-sort-header fxFlex="25%"> Consultant </mat-header-cell>
+                    <mat-cell *matCellDef="let row" fxFlex="25%">
+                        <span class="text-truncate-ellipsis text-bold" [matTooltip]="mapListByProperty(row.consultants, 'name')">
+                            <ng-container *ngIf="row.consultants?.length > 1; else singleConsultantDisplay">
+                                {{row.consultants?.length + 'Consultants'}}
+                            </ng-container>
+                            <ng-template #singleConsultantDisplay>
+                                <img *ngIf="row.consultants[0]?.name" class="border-rounded-50 image-thumbnail u-mr--10" [src]="consultantProfileUrl(row?.consultants[0]?.externalId)" /> {{row.consultants[0]?.name ?? '-'}}
+                            </ng-template>
                         </span>
                     </mat-cell>
                 </ng-container>
                 <ng-container matColumnDef="salesType">
-                    <mat-header-cell *matHeaderCellDef mat-sort-header fxFlex="15%"> Sales Type </mat-header-cell>
-                    <mat-cell *matCellDef="let row" fxFlex="15%">
-                        <span class="text-truncate-ellipsis" [matTooltip]="row?.salesType">
-                            {{findItemById(saleTypes, row?.salesTypeId)?.name}}
+                    <mat-header-cell *matHeaderCellDef mat-sort-header fxFlex="10%"> Sales Type </mat-header-cell>
+                    <mat-cell *matCellDef="let row" fxFlex="10%">
+                        <span class="text-truncate-ellipsis" [matTooltip]="row?.salesTypeId?.name">
+                            {{row?.salesTypeId?.name}}
                         </span>
                     </mat-cell>
                 </ng-container>
                 <ng-container matColumnDef="deliveryType">
-                    <mat-header-cell *matHeaderCellDef mat-sort-header fxFlex="15%"> Delivery Type </mat-header-cell>
-                    <mat-cell *matCellDef="let row" fxFlex="15%">
-                        <span class="text-truncate-ellipsis" matTooltipClass="white-bg-tooltip" [matTooltip]="row?.deliveryType">
-                            {{findItemById(deliveryTypes, row?.deliveryTypeId)?.name}}
+                    <mat-header-cell *matHeaderCellDef mat-sort-header fxFlex="10%"> Delivery Type </mat-header-cell>
+                    <mat-cell *matCellDef="let row" fxFlex="10%">
+                        <span class="text-truncate-ellipsis" matTooltipClass="white-bg-tooltip" [matTooltip]="row?.deliveryTypeId?.name">
+                            {{row?.deliveryTypeId?.name}}
                         </span>
                     </mat-cell>
                 </ng-container>
@@ -48,12 +47,28 @@
                         </span>
                     </mat-cell>
                 </ng-container>
+                <ng-container matColumnDef="invoicing">
+                    <mat-header-cell *matHeaderCellDef mat-sort-header fxFlex="10%"> Invoicing </mat-header-cell>
+                    <mat-cell *matCellDef="let row" fxFlex="10%">
+                        <span class="text-truncate-ellipsis flex-items-center" [matTooltip]="row?.invoicingReferencePerson?.firstName + ' ' + row?.invoicingReferencePerson?.lastName">
+                            <img class="border-rounded-50 image-thumbnail" [src]="employeeProfileUrl(row?.invoicingReferencePerson?.id)" />
+                        </span>
+                    </mat-cell>
+                </ng-container>
+                <ng-container matColumnDef="manager">
+                    <mat-header-cell *matHeaderCellDef mat-sort-header fxFlex="10%"> Manager </mat-header-cell>
+                    <mat-cell *matCellDef="let row" fxFlex="10%">
+                        <span class="text-truncate-ellipsis flex-items-center" [matTooltip]="row?.workflowEmployee?.name">
+                            <img class="border-rounded-50 image-thumbnail" [src]="employeeProfileUrl(row?.workflowEmployee?.externalId)" />
+                        </span>
+                    </mat-cell>
+                </ng-container>
                 <ng-container matColumnDef="status">
                     <mat-header-cell *matHeaderCellDef mat-sort-header fxFlex="10%"> Status </mat-header-cell>
                     <mat-cell *matCellDef="let row" fxFlex="10%">
-                        <span class="text-truncate-ellipsis flex-items-center" [matTooltip]="row?.status?.name">
-                            <mat-icon [ngClass]="detectStatusColor(row?.status?.value)">fiber_manual_record</mat-icon>
-                            {{row?.status?.name}}
+                        <span class="text-truncate-ellipsis flex-items-center" [matTooltip]="row?.workflowStatusName">
+                            <mat-icon [ngClass]="row?.workflowStatus">fiber_manual_record</mat-icon>
+                            {{row?.workflowStatusName}}
                         </span>
                     </mat-cell>
                 </ng-container>

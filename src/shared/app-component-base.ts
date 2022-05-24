@@ -50,14 +50,6 @@ export abstract class AppComponentBase {
         }
     }
 
-    employeePhoto(externalId: string): string {
-        if (externalId) {
-            return `${this.apiUrl}/api/Employee/ProfilePicture/${externalId}`;
-        } else {
-            return '';
-        }
-    }
-
     // form validations
     getValidationMessage(formControl: AbstractControl | null): string | string[] | undefined {
         if (formControl) {
@@ -133,6 +125,13 @@ export abstract class AppComponentBase {
             return 'assets/common/images/no-img-uploaded.svg';
         }
         return `${environment.blobStorageUrl}/api/Consultant/ProfilePicture/${fileToken}`;
+    }
+
+    employeeProfileUrl(fileToken: string): string {
+        if (!fileToken) {
+            return 'assets/common/images/no-img-uploaded.svg';
+        }
+        return environment.sharedAssets + `/EmployeePicture/${fileToken}.jpg`;
     }
 
 }
