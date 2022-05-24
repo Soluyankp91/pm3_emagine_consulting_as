@@ -12,7 +12,7 @@ import { debounceTime, finalize, map, switchMap, takeUntil } from 'rxjs/operator
 import { InternalLookupService } from 'src/app/shared/common/internal-lookup.service';
 import { ConfirmationDialogComponent } from 'src/app/shared/components/confirmation-dialog/confirmation-dialog.component';
 import { AppComopnentBase, NotifySeverity } from 'src/shared/app-component-base';
-import { ClientPeriodSalesDataDto, ClientPeriodServiceProxy, ClientRateDto, CommissionDto, ConsultantRateDto, ConsultantSalesDataDto, ContractSignerDto, EmployeeDto, EnumEntityTypeDto, EnumServiceProxy, LookupServiceProxy, PeriodClientSpecialFeeDto, PeriodClientSpecialRateDto, SalesClientDataDto, SalesMainDataDto, WorkflowProcessType, WorkflowServiceProxy, ConsultantResultDto, ClientResultDto, ContactResultDto, ConsultantTerminationSalesDataCommandDto, WorkflowTerminationSalesDataCommandDto, PeriodConsultantSpecialFeeDto, PeriodConsultantSpecialRateDto, ClientSpecialRateDto, ClientsServiceProxy, ClientSpecialFeeDto, ClientSalesServiceProxy, ConsultantPeriodServiceProxy, ConsultantPeriodSalesDataDto, ConsultantSalesServiceProxy } from 'src/shared/service-proxies/service-proxies';
+import { ClientPeriodSalesDataDto, ClientPeriodServiceProxy, ClientRateDto, CommissionDto, ConsultantRateDto, ConsultantSalesDataDto, ContractSignerDto, EmployeeDto, EnumEntityTypeDto, EnumServiceProxy, LookupServiceProxy, PeriodClientSpecialFeeDto, PeriodClientSpecialRateDto, SalesClientDataDto, SalesMainDataDto, WorkflowProcessType, WorkflowServiceProxy, ConsultantResultDto, ClientResultDto, ContactResultDto, ConsultantTerminationSalesDataCommandDto, WorkflowTerminationSalesDataCommandDto, PeriodConsultantSpecialFeeDto, PeriodConsultantSpecialRateDto, ClientSpecialRateDto, ClientsServiceProxy, ClientSpecialFeeDto, ClientSalesServiceProxy, ConsultantPeriodServiceProxy, ConsultantPeriodSalesDataDto, ConsultantSalesServiceProxy, ExtendConsultantPeriodDto, ChangeConsultantPeriodDto } from 'src/shared/service-proxies/service-proxies';
 import { WorkflowConsultantActionsDialogComponent } from '../workflow-consultant-actions-dialog/workflow-consultant-actions-dialog.component';
 import { WorkflowDataService } from '../workflow-data.service';
 import { ConsultantDiallogAction, SalesTerminateConsultantForm, TenantList, WorkflowSalesAdditionalDataForm, WorkflowSalesClientDataForm, WorkflowSalesConsultantsForm, WorkflowSalesMainForm } from './workflow-sales.model';
@@ -946,10 +946,10 @@ export class WorkflowSalesComponent extends AppComopnentBase implements OnInit {
     }
 
     addConsultantForm(consultant?: ConsultantSalesDataDto) {
-        console.log('s');
         const form = this._fb.group({
             employmentType: new FormControl(this.findItemById(this.employmentTypes, consultant?.employmentTypeId) ?? null),
             consultantName: new FormControl(consultant?.consultant ?? null),
+            consultantPeriodId: new FormControl(consultant?.consultantPeriodId ?? null),
             consultantNameOnly: new FormControl(consultant?.nameOnly ?? null),
 
             consultantProjectDurationSameAsClient: new FormControl(true),
@@ -1778,8 +1778,14 @@ export class WorkflowSalesComponent extends AppComopnentBase implements OnInit {
         });
 
         dialogRef.componentInstance.onConfirmed.subscribe((result) => {
-            //  TODO: call API to change consultant
-            this._workflowDataService.workflowSideSectionAdded.emit(true);
+            let input = new ChangeConsultantPeriodDto();
+            input.cutoverDate = result.cutoverDate;
+            input.newLegalContractRequired = result.newLegalContractRequired;
+            this._consultantPeriodSerivce.change(consultantData.consultantPeriodId, input)
+                .pipe(finalize(() => {}))
+                .subscribe(result => {
+                    this._workflowDataService.workflowSideSectionAdded.emit(true);
+                });
         });
 
         dialogRef.componentInstance.onRejected.subscribe(() => {
@@ -1811,7 +1817,15 @@ export class WorkflowSalesComponent extends AppComopnentBase implements OnInit {
         });
 
         dialogRef.componentInstance.onConfirmed.subscribe((result) => {
-            // TODO: call API to change consultant
+            let input = new ExtendConsultantPeriodDto();
+            input.startDate = result.startDate;
+            input.endDate = result.endDate;
+            input.noEndDate = result.noEndDate;
+            this._consultantPeriodSerivce.extend(consultantData.consultantPeriodId, input)
+                .pipe(finalize(() => {}))
+                .subscribe(result => {
+                    this._workflowDataService.workflowSideSectionAdded.emit(true);
+                });
             this._workflowDataService.workflowSideSectionAdded.emit(true);
         });
 
@@ -2084,10 +2098,10 @@ export class WorkflowSalesComponent extends AppComopnentBase implements OnInit {
                 this.getStartClientPeriodSales();
                 break;
             case WorkflowProcessType.ExtendClientPeriod:
-                this.getExtendClientPeriodSales();
+                this.getStartClientPeriodSales();
                 break;
             case WorkflowProcessType.ChangeClientPeriod:
-                this.getChangeClientPeriodSales();
+                this.getStartClientPeriodSales();
                 break;
             case WorkflowProcessType.TerminateWorkflow:
                 this.getWorkflowSalesStepTermination();
@@ -2097,23 +2111,15 @@ export class WorkflowSalesComponent extends AppComopnentBase implements OnInit {
                 this.getStartConsutlantPeriodSales();
                 break;
             case WorkflowProcessType.ExtendConsultantPeriod:
-                this.getExtendConsutlantExtendSales();
+                this.getStartConsutlantPeriodSales();
                 break;
             case WorkflowProcessType.ChangeConsultantPeriod:
-                this.getChangeConsutlantPeriodSales();
+                this.getStartConsutlantPeriodSales();
                 break;
             case WorkflowProcessType.TerminateConsultant:
                 this.getWorkflowSalesStepConsultantTermination();
                 break;
         }
-    }
-
-    getExtendClientPeriodSales() {
-
-    }
-
-    getChangeClientPeriodSales() {
-
     }
 
     getStartConsutlantPeriodSales() {
@@ -2252,14 +2258,6 @@ export class WorkflowSalesComponent extends AppComopnentBase implements OnInit {
     
                 });
         }
-    }
-
-    getExtendConsutlantExtendSales() {
-
-    }
-
-    getChangeConsutlantPeriodSales() {
-
     }
 
     resetForms() {

@@ -1,37 +1,16 @@
 @import "/src/app/shared/styles/config/_colors";
 
 .confiramtion-dialog {
+    .consultant-name {
+        font-weight: 800;
+        font-size: 16px;
+        color: $dark-grey-color;
+    }
     &--content {
         padding: 30px;
     }
     &--actions{
         justify-content: space-between;
         border-top: 1px solid $sand-color;
-        // button {
-        //     width: 150px;
-        //     font-weight: 700;
-        //     // text-transform: uppercase;
-        // }
-        // &-btn {
-        //     &-negative {
-        //         color: #FFF !important;
-        //         background-color: $red-color !important;
-        //         border: 2px solid $red-color !important;
-        //         box-sizing: border-box;
-        //         border-radius: 5px;
-        //     }
-        //     &-outlined {
-        //         color: $green-color !important;
-        //         background-color: transparent;
-        //         // border: 2px solid #CDFF96;
-        //         border: 0;
-        //         border-radius: 5px;
-        //     }
-        //     &-positive {
-        //         color: $white-color !important;
-        //         background: $green-color;
-        //         border-radius: 5px;
-        //     }
-        // }
     }
 }

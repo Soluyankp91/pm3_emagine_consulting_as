@@ -3,15 +3,15 @@
     <div fxLayout="row" fxLayoutAlign="start start" class="workflow-header u-w--100">
         <div fxFlex="40%" fxLayout="column">
             <h2 class="workflow-header--title u-mb--10">Workflow</h2>
-            <p class="workflow-header--client u-mb--20">Flack Danmark A/S</p>
-            <div class="flex-row">
+            <p class="workflow-header--client u-mb--20">{{workflowClient?.length ? workflowClient : 'New workflow'}}</p>
+            <!-- <div class="flex-row">
                 <span class="workflow-header--status__icon"></span>
                 <span class="workflow-header--status__icon"></span>
                 <span class="workflow-header--status__icon"></span>
                 <span class="workflow-header--status u-ml--10">
                     New workflow
                 </span>
-            </div>
+            </div> -->
         </div>
 
         <div fxFlex="50%" fxLayout="row">
@@ -68,8 +68,8 @@
     </div>
 
     <div *ngIf="showToolbar" fxLayout="row" fxLayoutAlign="start center" class="workflow-toolbar u-w--100">
-        <h2 class="workflow-toolbar--title u-mr--10">Workflow ID: 1234</h2>
-        <p class="workflow-toolbar--client u-mr--20">Flack Danmark A/S</p>
+        <!-- <h2 class="workflow-toolbar--title u-mr--10">Workflow ID: 1234</h2> -->
+        <p class="workflow-toolbar--client u-mr--20">{{workflowClient?.length ? workflowClient : 'New workflow'}}</p>
     </div>
 
     <div class="workflow-content u-w--100" id="workflowDetails">

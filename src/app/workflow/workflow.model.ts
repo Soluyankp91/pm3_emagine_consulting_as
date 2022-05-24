@@ -243,9 +243,9 @@ export const WorkflowList = [
     },
     {
         flag: WorkflowFlag.NewSales,
-        id: '297896A7-63B5-4B66-A4C8-E14E1FE1DDB7',
+        id: 'B54D53F1-3514-48F8-98FA-0523B5AE1F14',
 
-        client: '7 periods test',
+        client: 'many extensions',
         consultants: [
             { name: 'Martha Marikel' },
             { name: 'John Doe'}
