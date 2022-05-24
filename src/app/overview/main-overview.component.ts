@@ -5,7 +5,7 @@ import { getUnixTime } from 'date-fns';
 import { Subject } from 'rxjs';
 import { debounceTime, finalize, switchMap, takeUntil } from 'rxjs/operators';
 import { AppConsts } from 'src/shared/AppConsts';
-import { ApiServiceProxy, EmployeeDto, EnumEntityTypeDto, LookupServiceProxy, MainOverviewStatus } from 'src/shared/service-proxies/service-proxies';
+import { ApiServiceProxy, EmployeeDto, EnumEntityTypeDto, LookupServiceProxy, MainOverviewServiceProxy, MainOverviewStatus, MainOverviewStatusDto } from 'src/shared/service-proxies/service-proxies';
 import { SelectableCountry, SelectableIdNameDto } from '../client/client.model';
 import { InternalLookupService } from '../shared/common/internal-lookup.service';
 import { ManagerStatus } from '../shared/components/manager-search/manager-search.model';
@@ -50,7 +50,7 @@ export class MainOverviewComponent implements OnInit {
     marginsControl = new FormControl();
 
     managerStatus = ManagerStatus;
-    mainOverviewStatuses = MainOverviewStatuses;
+    mainOverviewStatuses: MainOverviewStatusDto;
     filteredMainOverviewStatuses: SelectableStatusesDto[] = [];
 
     // gant
@@ -93,7 +93,8 @@ export class MainOverviewComponent implements OnInit {
     constructor(
         private _lookupService: LookupServiceProxy,
         private _apiService: ApiServiceProxy,
-        private _internalLookupService: InternalLookupService
+        private _internalLookupService: InternalLookupService,
+        private _mainOverviewService: MainOverviewServiceProxy
 
     ) {
         this.accountManagerFilter.valueChanges.pipe(
@@ -334,16 +335,19 @@ export class MainOverviewComponent implements OnInit {
     }
 
     getMainOverviewStatuses() {
-        this.filteredMainOverviewStatuses = this.mainOverviewStatuses.map(x => {
-            return new SelectableStatusesDto({
-                id: x.id,
-                name: x.name,
-                canBeSetAutomatically: x.canBeSetAutomatically,
-                canBeSetByUser: x.canBeSetByUser,
-                selected: false,
-                flag: this.detectIcon(x.id)
-            })
-        });
+        this._mainOverviewService.statuses().subscribe(result => {
+            this.filteredMainOverviewStatuses = result.map(x => {
+                return new SelectableStatusesDto({
+                    id: x.id!,
+                    name: x.name!,
+                    canBeSetAutomatically: x.canBeSetAutomatically!,
+                    canBeSetByUser: x.canBeSetByUser!,
+                    selected: false,
+                    flag: this.detectIcon(x.id!)
+                })
+            });
+
+        })
     }
 
     changeOverviewStatus(status: SelectableStatusesDto) {
