@@ -5,7 +5,7 @@ import * as moment from 'moment';
 import { Subject } from 'rxjs';
 import { finalize, takeUntil } from 'rxjs/operators';
 import { InternalLookupService } from 'src/app/shared/common/internal-lookup.service';
-import { AppComopnentBase } from 'src/shared/app-component-base';
+import { AppComponentBase } from 'src/shared/app-component-base';
 import { AppConsts } from 'src/shared/AppConsts';
 import { ClientWorkflowTrackItemDto, ClientsServiceProxy, EmployeeDto, EnumEntityTypeDto } from 'src/shared/service-proxies/service-proxies';
 
@@ -14,7 +14,7 @@ import { ClientWorkflowTrackItemDto, ClientsServiceProxy, EmployeeDto, EnumEntit
     templateUrl: './client-workflow-track.component.html',
     styleUrls: ['./client-workflow-track.component.scss']
 })
-export class ClientWorkflowTrackComponent extends AppComopnentBase implements OnInit {
+export class ClientWorkflowTrackComponent extends AppComponentBase implements OnInit {
     clientId: number;
 
     isDataLoading = false;

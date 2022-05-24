@@ -1,7 +1,7 @@
 import { Component, EventEmitter, Inject, Injector, OnInit, Output } from '@angular/core';
 import { FormControl } from '@angular/forms';
 import { MAT_DIALOG_DATA, MatDialogRef } from '@angular/material/dialog';
-import { AppComopnentBase } from 'src/shared/app-component-base';
+import { AppComponentBase } from 'src/shared/app-component-base';
 import { ConsultantDiallogAction } from '../workflow-sales/workflow-sales.model';
 
 @Component({
@@ -9,7 +9,7 @@ import { ConsultantDiallogAction } from '../workflow-sales/workflow-sales.model'
     templateUrl: './workflow-consultant-actions-dialog.component.html',
     styleUrls: ['./workflow-consultant-actions-dialog.component.scss']
 })
-export class WorkflowConsultantActionsDialogComponent extends AppComopnentBase implements OnInit {
+export class WorkflowConsultantActionsDialogComponent extends AppComponentBase implements OnInit {
     @Output() onConfirmed: EventEmitter<any> = new EventEmitter<any>();
     @Output() onRejected: EventEmitter<any> = new EventEmitter<any>();
     // Change consultant

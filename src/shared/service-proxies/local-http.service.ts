@@ -10,7 +10,7 @@ export class LocalHttpService {
         private _authService: MsalService
     ) { }
 
-    getToken(): Promise<AuthenticationResult> {
+    getTokenPromise(): Promise<AuthenticationResult> {
         const params = {
             scopes: ['openid', 'profile', 'api://5f63a91e-8bfd-40ea-b562-3dad54244ff7/access_as_user'],
             redirectUri: '',
@@ -20,8 +20,26 @@ export class LocalHttpService {
             correlationId: '',
             forceRefresh: false
         }
-        let bearerToken: string;
         return this._authService.instance.acquireTokenSilent(params);
+    }
+
+    getToken(): string | any {
+        const params = {
+            scopes: ['openid', 'profile', 'api://5f63a91e-8bfd-40ea-b562-3dad54244ff7/access_as_user'],
+            redirectUri: '',
+            extraQueryParameters: undefined,
+            authority: 'https://login.microsoftonline.com/0749517d-d788-4fc5-b761-0cb1a1112694/',
+            account: this._authService.instance.getActiveAccount()!,
+            correlationId: '',
+            forceRefresh: false
+        }
+        this._authService.instance.acquireTokenSilent(params)
+            .then((result: AuthenticationResult) => {
+                return result.accessToken;
+            })
+            .catch(e => {
+                return 'error'
+            });
     }
 
 }

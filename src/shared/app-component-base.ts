@@ -12,7 +12,7 @@ export enum NotifySeverity {
     Error = 4
 }
 
-export abstract class AppComopnentBase {
+export abstract class AppComponentBase {
     apiUrl: string;
     spinnerService: NgxSpinnerService;
     matSnackbar: MatSnackBar;

@@ -7,7 +7,7 @@ import { MsalService } from '@azure/msal-angular';
 import { AuthenticationResult } from '@azure/msal-browser';
 import { Subject } from 'rxjs';
 import { finalize, takeUntil } from 'rxjs/operators';
-import { AppComopnentBase } from 'src/shared/app-component-base';
+import { AppComponentBase } from 'src/shared/app-component-base';
 import { LocalHttpService } from 'src/shared/service-proxies/local-http.service';
 import { ApiServiceProxy, ClientDetailsDto, ClientsServiceProxy } from 'src/shared/service-proxies/service-proxies';
 import { ClientDocumentsComponent } from '../client-documents/client-documents.component';
@@ -16,7 +16,7 @@ import { ClientDocumentsComponent } from '../client-documents/client-documents.c
     templateUrl: './client-details.component.html',
     styleUrls: ['./client-details.component.scss']
 })
-export class ClientDetailsComponent extends AppComopnentBase implements OnInit {
+export class ClientDetailsComponent extends AppComponentBase implements OnInit {
     @ViewChild('documentsTab', {static: true}) documentsTab: ClientDocumentsComponent;
     selectedClient = {
         name: 'Volkswagen Financial Services',
@@ -75,13 +75,7 @@ export class ClientDetailsComponent extends AppComopnentBase implements OnInit {
     }
 
     impersonateHubspot() {
-        // this._clientService.hubspotClientUrl(this.client.clientId!)
-        // .pipe(finalize(() => {}))
-        // .subscribe(result => {
-        //     console.log(result);
-        //     window.open(result, '_blank');
-        // });
-        this.localHttpService.getToken().then((response: AuthenticationResult) => {
+        this.localHttpService.getTokenPromise().then((response: AuthenticationResult) => {
             this.httpClient.get(`${this.apiUrl}/api/Clients/${this.client.clientId!}/HubspotClientUrlAsync`, {
                     headers: new HttpHeaders({
                         'Authorization': `Bearer ${response.accessToken}`
@@ -94,33 +88,7 @@ export class ClientDetailsComponent extends AppComopnentBase implements OnInit {
     }
 
     impersonateCAM() {
-        // const params = {
-        //     scopes: ['openid', 'profile', 'api://5f63a91e-8bfd-40ea-b562-3dad54244ff7/access_as_user'],
-        //     redirectUri: '',
-        //     extraQueryParameters: undefined,
-        //     authority: 'https://login.microsoftonline.com/0749517d-d788-4fc5-b761-0cb1a1112694/',
-        //     account: this._authService.instance.getActiveAccount()!,
-        //     correlationId: '',
-        //     forceRefresh: false
-        // }
-        // let bearerToken: string;
-        // this._authService.instance.acquireTokenSilent(params)
-        //     .then((result: AuthenticationResult) => {
-        //         console.log(result);
-        //         bearerToken = result.accessToken;
-        //         this.httpClient.get(`${this.apiUrl}/api/Clients/${this.client.clientId!}/CamImpersonationUrl`,
-        //             {
-        //                 headers: new HttpHeaders({
-        //                     'Authorization': `Bearer ${bearerToken}`
-        //                 }),
-        //                 responseType: 'text'
-        //             }
-        //             ).subscribe((result: any) => {
-        //             window.open(result, '_blank');
-        //         })
-        //     });
-        
-        this.localHttpService.getToken().then((response: AuthenticationResult) => {
+        this.localHttpService.getTokenPromise().then((response: AuthenticationResult) => {
             this.httpClient.get(`${this.apiUrl}/api/Clients/${this.client.clientId!}/CamImpersonationUrl`, {
                     headers: new HttpHeaders({
                         'Authorization': `Bearer ${response.accessToken}`
@@ -130,14 +98,6 @@ export class ClientDetailsComponent extends AppComopnentBase implements OnInit {
                     window.open(result, '_blank');
             })
         });
-
-
-        // this._clientService.camImpersonationUrl(this.client.clientId!)
-        //     .pipe(finalize(() => {}))
-        //     .subscribe(result => {
-        //         console.log(result);
-        //         window.open(result, '_blank');
-        //     });
     }
 
     navigateBack() {

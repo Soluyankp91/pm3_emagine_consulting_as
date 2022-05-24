@@ -29,9 +29,9 @@
                     transform: rotate(225deg);
                 }
             }
-            &.odd-folder {
+            // &.odd-folder {
                 background: #FFFFFF;
-            }
+            // }
         }
         .contract-parent--folder.mat-expansion-panel {
             border: solid 1px #e7e3e8;
@@ -45,15 +45,15 @@
         .mat-expansion-panel-header {
             padding: 0 16px !important;
         }
-        &__subfolder {
-            .mat-expansion-panel-body {
-                padding: 0 8px 16px;
-            }
-            .mat-expansion-panel {
-                background: #FFFFFF;
-                border-radius: 5px;
-            }
-        }
+        // &__subfolder {
+        //     .mat-expansion-panel-body {
+        //         padding: 0 8px 16px;
+        //     }
+        //     .mat-expansion-panel {
+        //         background: #FFFFFF;
+        //         border-radius: 5px;
+        //     }
+        // }
     }
 }
 

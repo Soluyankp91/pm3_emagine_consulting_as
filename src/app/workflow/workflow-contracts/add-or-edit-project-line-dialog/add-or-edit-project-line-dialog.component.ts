@@ -3,7 +3,7 @@ import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
 import { Subject } from 'rxjs';
 import { debounceTime, finalize, switchMap, takeUntil } from 'rxjs/operators';
 import { InternalLookupService } from 'src/app/shared/common/internal-lookup.service';
-import { AppComopnentBase } from 'src/shared/app-component-base';
+import { AppComponentBase } from 'src/shared/app-component-base';
 import { ContactResultDto, EnumEntityTypeDto, LookupServiceProxy, ProjectLineDto } from 'src/shared/service-proxies/service-proxies';
 import { ProjectLineDiallogMode } from '../../workflow.model';
 import { ProjectLineForm } from './add-or-edit-project-line-dialog.model';
@@ -14,7 +14,7 @@ import { ProjectLineForm } from './add-or-edit-project-line-dialog.model';
     styleUrls: ['./add-or-edit-project-line-dialog.component.scss']
 })
 
-export class AddOrEditProjectLineDialogComponent extends AppComopnentBase implements OnInit, OnDestroy {
+export class AddOrEditProjectLineDialogComponent extends AppComponentBase implements OnInit, OnDestroy {
     @Output() onConfirmed: EventEmitter<any> = new EventEmitter<any>();
     @Output() onRejected: EventEmitter<any> = new EventEmitter<any>();
     dialogType = ProjectLineDiallogMode;
