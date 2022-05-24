@@ -78,7 +78,8 @@ export class WorkflowActionsDialogComponent extends AppComopnentBase implements 
     addConsutlantToExtendForm(consultant: any) {
         const form = this._fb.group({
             consulantName: new FormControl(consultant.consultant),
-            consutlantId: new FormControl(consultant.consultantId),
+            // consutlantId: new FormControl(consultant.consultantId),
+            consutlantId: new FormControl(consultant), // tmp cos only ids are present
             extendConsutlant: new FormControl(false)
         });
         this.extendWorkflowForm.consultants.push(form);

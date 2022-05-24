@@ -12137,6 +12137,7 @@ export interface IConsultantResultDto {
 
 export class ConsultantSalesDataDto implements IConsultantSalesDataDto {
     employmentTypeId?: number | undefined;
+    consultantPeriodId?: string | undefined;
     consultantId?: number | undefined;
     consultant?: ConsultantResultDto;
     nameOnly?: string | undefined;
@@ -12180,6 +12181,7 @@ export class ConsultantSalesDataDto implements IConsultantSalesDataDto {
     init(_data?: any) {
         if (_data) {
             this.employmentTypeId = _data["employmentTypeId"];
+            this.consultantPeriodId = _data["consultantPeriodId"];
             this.consultantId = _data["consultantId"];
             this.consultant = _data["consultant"] ? ConsultantResultDto.fromJS(_data["consultant"]) : <any>undefined;
             this.nameOnly = _data["nameOnly"];
@@ -12231,6 +12233,7 @@ export class ConsultantSalesDataDto implements IConsultantSalesDataDto {
     toJSON(data?: any) {
         data = typeof data === 'object' ? data : {};
         data["employmentTypeId"] = this.employmentTypeId;
+        data["consultantPeriodId"] = this.consultantPeriodId;
         data["consultantId"] = this.consultantId;
         data["consultant"] = this.consultant ? this.consultant.toJSON() : <any>undefined;
         data["nameOnly"] = this.nameOnly;
@@ -12275,6 +12278,7 @@ export class ConsultantSalesDataDto implements IConsultantSalesDataDto {
 
 export interface IConsultantSalesDataDto {
     employmentTypeId?: number | undefined;
+    consultantPeriodId?: string | undefined;
     consultantId?: number | undefined;
     consultant?: ConsultantResultDto;
     nameOnly?: string | undefined;
