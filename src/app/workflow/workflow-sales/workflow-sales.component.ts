@@ -336,7 +336,7 @@ export class WorkflowSalesComponent extends AppComopnentBase implements OnInit {
                 switchMap((value: any) => {
                     let toSend = {
                         clientId: this.clientIdFromTerminationSales,
-                        name: value,
+                        name: value ?? '',
                         maxRecordsCount: 1000,
                     };
                     if (value?.id) {
