@@ -24,6 +24,7 @@
         .nav-tab--content {
             height: calc(100vh - 200px);
             padding: 16px 60px;
+            background-color: #faf9fb;
         }
     }
     &--search {
@@ -56,4 +57,5 @@
             }
         }
     }
+
 }

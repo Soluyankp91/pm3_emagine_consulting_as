@@ -6,7 +6,7 @@ import { MatTableDataSource } from '@angular/material/table';
 import { Router } from '@angular/router';
 import { Subject } from 'rxjs';
 import { finalize } from 'rxjs/operators';
-import { AppComopnentBase } from 'src/shared/app-component-base';
+import { AppComponentBase } from 'src/shared/app-component-base';
 import { AppConsts } from 'src/shared/AppConsts';
 import { ApiServiceProxy, StartNewWorkflowInputDto, WorkflowProcessType, WorkflowServiceProxy } from 'src/shared/service-proxies/service-proxies';
 import { CreateWorkflowDialogComponent } from './create-workflow-dialog/create-workflow-dialog.component';
@@ -18,7 +18,7 @@ import { WorkflowFlag, WorkflowList } from './workflow.model';
     styleUrls: ['./workflow.component.scss']
 })
 
-export class WorkflowComponent extends AppComopnentBase implements OnInit, OnDestroy {
+export class WorkflowComponent extends AppComponentBase implements OnInit, OnDestroy {
     workflowFilter = new FormControl(null);
 
     pageNumber = 1;

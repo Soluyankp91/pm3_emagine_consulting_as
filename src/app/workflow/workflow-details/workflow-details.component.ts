@@ -12,7 +12,7 @@ import { WorkflowSalesComponent } from '../workflow-sales/workflow-sales.compone
 import { WorkflowProgressStatus, WorkflowTopSections, WorkflowSteps, WorkflowDiallogAction } from '../workflow.model';
 import { InternalLookupService } from 'src/app/shared/common/internal-lookup.service';
 import { WorkflowActionsDialogComponent } from '../workflow-actions-dialog/workflow-actions-dialog.component';
-import { AppComopnentBase } from 'src/shared/app-component-base';
+import { AppComponentBase } from 'src/shared/app-component-base';
 import * as moment from 'moment';
 
 @Component({
@@ -21,7 +21,7 @@ import * as moment from 'moment';
   styleUrls: ['./workflow-details.component.scss']
 })
 
-export class WorkflowDetailsComponent extends AppComopnentBase implements OnInit, OnDestroy, AfterViewInit {
+export class WorkflowDetailsComponent extends AppComponentBase implements OnInit, OnDestroy, AfterViewInit {
     @ViewChild('scroller', {static: true}) scroller: ElementRef<HTMLElement>;
     @ViewChild('scrollable', {static: true}) scrollBar: NgScrollbar;
     @ViewChild('workflowSales', {static: false}) workflowSales: WorkflowSalesComponent;

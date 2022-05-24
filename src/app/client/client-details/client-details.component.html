@@ -32,8 +32,8 @@
                     <input autocomplete="off" matInput [formControl]="clientFilterInput" placeholder="Search" type="text">
                     <mat-icon matPrefix>search</mat-icon>
                 </mat-form-field>
-                <button mat-icon-button color="primary" class="u-mr--10 mat-elevation-z0"><mat-icon svgIcon="HUBSPOT-icon"></mat-icon></button>
-                <button mat-icon-button color="primary" class="mat-elevation-z0"><mat-icon svgIcon="CAM-icon"></mat-icon></button>
+                <button mat-icon-button color="primary" class="u-mr--10 mat-elevation-z0" (click)="impersonateHubspot()"><mat-icon svgIcon="HUBSPOT-icon"></mat-icon></button>
+                <button mat-icon-button color="primary" class="mat-elevation-z0" (click)="impersonateCAM()"><mat-icon svgIcon="CAM-icon"></mat-icon></button>
             </div>
         </div>
     </div>

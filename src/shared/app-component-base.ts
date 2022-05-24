@@ -12,7 +12,7 @@ export enum NotifySeverity {
     Error = 4
 }
 
-export abstract class AppComopnentBase {
+export abstract class AppComponentBase {
     apiUrl: string;
     spinnerService: NgxSpinnerService;
     matSnackbar: MatSnackBar;
@@ -47,14 +47,6 @@ export abstract class AppComopnentBase {
             return list.map(x =>  x[prop]).join(', ');
         } else {
             return '-';
-        }
-    }
-
-    employeePhoto(externalId: string): string {
-        if (externalId) {
-            return `${this.apiUrl}/api/Employee/ProfilePicture/${externalId}`;
-        } else {
-            return '';
         }
     }
 
@@ -133,6 +125,13 @@ export abstract class AppComopnentBase {
             return 'assets/common/images/no-img-uploaded.svg';
         }
         return `${environment.blobStorageUrl}/api/Consultant/ProfilePicture/${fileToken}`;
+    }
+
+    employeeProfileUrl(fileToken: string): string {
+        if (!fileToken) {
+            return 'assets/common/images/no-img-uploaded.svg';
+        }
+        return environment.sharedAssets + `/EmployeePicture/${fileToken}.jpg`;
     }
 
 }

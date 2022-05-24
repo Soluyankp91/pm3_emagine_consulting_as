@@ -4,6 +4,7 @@ import { MatIconRegistry } from '@angular/material/icon';
 import { DomSanitizer } from '@angular/platform-browser';
 import { FileUploaderFile, FileUploaderHelper } from './file-uploader.model';
 import { FileDragAndDropEvent } from './file-drag-and-drop.directive';
+import { LocalHttpService } from 'src/shared/service-proxies/local-http.service';
 
 @Component({
   selector: 'app-file-uploader',
@@ -19,6 +20,7 @@ export class FileUploaderComponent implements OnInit {
     @ViewChild('fileInput', { static: false }) public _fileInput: ElementRef;
     @Input() acceptOnlyOneFile: boolean = false;
     @Input() isCreationMode: boolean = true;
+    @Input() withoutDisplay: boolean = true;
     public _files: FileUploaderFile[] = [];
     public maxFileSize = false;
     public acceptedFileType = true;
@@ -26,7 +28,8 @@ export class FileUploaderComponent implements OnInit {
     public acceptedTypes: string[] = [];
     constructor(
         private _iconRegistry: MatIconRegistry,
-        private _sanitizer: DomSanitizer
+        private _sanitizer: DomSanitizer,
+        private _tokenService: LocalHttpService
     ) {}
 
     ngOnInit() {
@@ -44,8 +47,7 @@ export class FileUploaderComponent implements OnInit {
         let uploader: any = url;
         let uploaderOptions: any = {};
         uploaderOptions.autoUpload = false;
-        // uploaderOptions.authToken = 'Bearer ' + this._tokenService.getToken();
-        uploaderOptions.authToken = 'Bearer ' + 'MSAL TOKEN';
+        uploaderOptions.authToken = 'Bearer ' + this._tokenService.getToken();
         uploaderOptions.removeAfterUpload = true;
         uploader.onAfterAddingFile = (file: any) => {
             file.withCredentials = false;

@@ -11,7 +11,7 @@ import { Observable, of, Subject } from 'rxjs';
 import { debounceTime, finalize, map, switchMap, takeUntil } from 'rxjs/operators';
 import { InternalLookupService } from 'src/app/shared/common/internal-lookup.service';
 import { ConfirmationDialogComponent } from 'src/app/shared/components/confirmation-dialog/confirmation-dialog.component';
-import { AppComopnentBase, NotifySeverity } from 'src/shared/app-component-base';
+import { AppComponentBase, NotifySeverity } from 'src/shared/app-component-base';
 import { ClientPeriodSalesDataDto, ClientPeriodServiceProxy, ClientRateDto, CommissionDto, ConsultantRateDto, ConsultantSalesDataDto, ContractSignerDto, EmployeeDto, EnumEntityTypeDto, EnumServiceProxy, LookupServiceProxy, PeriodClientSpecialFeeDto, PeriodClientSpecialRateDto, SalesClientDataDto, SalesMainDataDto, WorkflowProcessType, WorkflowServiceProxy, ConsultantResultDto, ClientResultDto, ContactResultDto, ConsultantTerminationSalesDataCommandDto, WorkflowTerminationSalesDataCommandDto, PeriodConsultantSpecialFeeDto, PeriodConsultantSpecialRateDto, ClientSpecialRateDto, ClientsServiceProxy, ClientSpecialFeeDto, ClientSalesServiceProxy, ConsultantPeriodServiceProxy, ConsultantPeriodSalesDataDto, ConsultantSalesServiceProxy, ExtendConsultantPeriodDto, ChangeConsultantPeriodDto } from 'src/shared/service-proxies/service-proxies';
 import { WorkflowConsultantActionsDialogComponent } from '../workflow-consultant-actions-dialog/workflow-consultant-actions-dialog.component';
 import { WorkflowDataService } from '../workflow-data.service';
@@ -22,7 +22,7 @@ import { ConsultantDiallogAction, SalesTerminateConsultantForm, TenantList, Work
     templateUrl: './workflow-sales.component.html',
     styleUrls: ['./workflow-sales.component.scss']
 })
-export class WorkflowSalesComponent extends AppComopnentBase implements OnInit {
+export class WorkflowSalesComponent extends AppComponentBase implements OnInit {
     @Input() workflowId: string;
     @Input() periodId: string | undefined;
     // Changed all above to enum

@@ -1,7 +1,7 @@
 import { Component, EventEmitter, Inject, Injector, OnInit, Output } from '@angular/core';
 import { FormBuilder, FormControl } from '@angular/forms';
 import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
-import { AppComopnentBase } from 'src/shared/app-component-base';
+import { AppComponentBase } from 'src/shared/app-component-base';
 import { ChangeClientPeriodDto, ConsultantPeriodAddDto, ExtendClientPeriodDto, NewContractRequiredConsultantPeriodDto } from 'src/shared/service-proxies/service-proxies';
 import { WorkflowDiallogAction } from '../workflow.model';
 import { ChangeWorkflowForm, ExtendWorkflowForm } from './workflow-actions-dialog.model';
@@ -11,7 +11,7 @@ import { ChangeWorkflowForm, ExtendWorkflowForm } from './workflow-actions-dialo
   templateUrl: './workflow-actions-dialog.component.html',
   styleUrls: ['./workflow-actions-dialog.component.scss']
 })
-export class WorkflowActionsDialogComponent extends AppComopnentBase implements OnInit {
+export class WorkflowActionsDialogComponent extends AppComponentBase implements OnInit {
     @Output() onConfirmed: EventEmitter<any> = new EventEmitter<any>();
     @Output() onRejected: EventEmitter<any> = new EventEmitter<any>();
     // Change workflow

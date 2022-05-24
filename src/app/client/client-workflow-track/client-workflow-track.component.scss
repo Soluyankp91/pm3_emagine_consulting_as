@@ -2,15 +2,15 @@
 //     padding: 10px 16px;
 // }
 
-.progress-status {
+.pending-status {
     color: #ffda44;
 }
 
-.running-status {
+.active-status {
     color: #17a297;
 }
 
-.termianted-status {
+.finished-status {
     color: rgba($color: #ff7a78, $alpha: .5);
 }
 
