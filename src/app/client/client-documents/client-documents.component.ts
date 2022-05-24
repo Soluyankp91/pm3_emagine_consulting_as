@@ -206,16 +206,12 @@ export class ClientDocumentsComponent extends AppComponentBase implements OnInit
         return this.generalDocumentForm.get('documents') as FormArray;
     }
 
-    deleteGeneralDocument(index: number) {
-        this.documents.removeAt(index);
-    }
-
-    
-    deleteGeneralFile(clientAttachmentGuid: string) {
+    deleteGeneralDocument(clientAttachmentGuid: string) {
+        this.showMainSpinner();
         this._clientDocumentsService.generalFileDelete(this.clientId, clientAttachmentGuid)
-            .pipe(finalize(() => {}))
+            .pipe(finalize(() => this.hideMainSpinner()))
             .subscribe(result => {
-
+                this.getGeneralDocuments();
             });
     }
 
