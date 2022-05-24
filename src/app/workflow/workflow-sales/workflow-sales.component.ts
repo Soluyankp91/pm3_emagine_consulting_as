@@ -12,7 +12,7 @@ import { debounceTime, finalize, map, switchMap, takeUntil } from 'rxjs/operator
 import { InternalLookupService } from 'src/app/shared/common/internal-lookup.service';
 import { ConfirmationDialogComponent } from 'src/app/shared/components/confirmation-dialog/confirmation-dialog.component';
 import { AppComopnentBase, NotifySeverity } from 'src/shared/app-component-base';
-import { ClientPeriodSalesDataDto, ClientPeriodServiceProxy, ClientRateDto, CommissionDto, ConsultantRateDto, ConsultantSalesDataDto, ContractSignerDto, EmployeeDto, EnumEntityTypeDto, EnumServiceProxy, LookupServiceProxy, PeriodClientSpecialFeeDto, PeriodClientSpecialRateDto, SalesClientDataDto, SalesMainDataDto, WorkflowProcessType, WorkflowServiceProxy, ConsultantResultDto, ClientResultDto, ContactResultDto, ConsultantTerminationSalesDataCommandDto, WorkflowTerminationSalesDataCommandDto, PeriodConsultantSpecialFeeDto, PeriodConsultantSpecialRateDto, ClientSpecialRateDto, ClientsServiceProxy, ClientSpecialFeeDto, ClientSalesServiceProxy, ConsultantPeriodServiceProxy, ConsultantPeriodSalesDataDto, ConsultantSalesServiceProxy } from 'src/shared/service-proxies/service-proxies';
+import { ClientPeriodSalesDataDto, ClientPeriodServiceProxy, ClientRateDto, CommissionDto, ConsultantRateDto, ConsultantSalesDataDto, ContractSignerDto, EmployeeDto, EnumEntityTypeDto, EnumServiceProxy, LookupServiceProxy, PeriodClientSpecialFeeDto, PeriodClientSpecialRateDto, SalesClientDataDto, SalesMainDataDto, WorkflowProcessType, WorkflowServiceProxy, ConsultantResultDto, ClientResultDto, ContactResultDto, ConsultantTerminationSalesDataCommandDto, WorkflowTerminationSalesDataCommandDto, PeriodConsultantSpecialFeeDto, PeriodConsultantSpecialRateDto, ClientSpecialRateDto, ClientsServiceProxy, ClientSpecialFeeDto, ClientSalesServiceProxy, ConsultantPeriodServiceProxy, ConsultantPeriodSalesDataDto, ConsultantSalesServiceProxy, ExtendConsultantPeriodDto, ChangeConsultantPeriodDto } from 'src/shared/service-proxies/service-proxies';
 import { WorkflowConsultantActionsDialogComponent } from '../workflow-consultant-actions-dialog/workflow-consultant-actions-dialog.component';
 import { WorkflowDataService } from '../workflow-data.service';
 import { ConsultantDiallogAction, SalesTerminateConsultantForm, TenantList, WorkflowSalesAdditionalDataForm, WorkflowSalesClientDataForm, WorkflowSalesConsultantsForm, WorkflowSalesMainForm } from './workflow-sales.model';
@@ -380,7 +380,7 @@ export class WorkflowSalesComponent extends AppComopnentBase implements OnInit {
         this.getTenants();
         this.getProjectCategory();
         this.getDiscounts();
-        this.getNonStandartTerminationTimes();
+        this.getTerminationTimes();
         this.getTerminationReasons();
         this.getEmploymentTypes();
         this.getExpectedWorkloadUnit();
@@ -742,8 +742,8 @@ export class WorkflowSalesComponent extends AppComopnentBase implements OnInit {
             });
     }
 
-    getNonStandartTerminationTimes() {
-        this._internalLookupService.getNonStandartTerminationTimes()
+    getTerminationTimes() {
+        this._internalLookupService.getTerminationTimes()
             .pipe(finalize(() => {
 
             }))
@@ -946,10 +946,10 @@ export class WorkflowSalesComponent extends AppComopnentBase implements OnInit {
     }
 
     addConsultantForm(consultant?: ConsultantSalesDataDto) {
-        console.log('s');
         const form = this._fb.group({
             employmentType: new FormControl(this.findItemById(this.employmentTypes, consultant?.employmentTypeId) ?? null),
             consultantName: new FormControl(consultant?.consultant ?? null),
+            consultantPeriodId: new FormControl(consultant?.consultantPeriodId ?? null),
             consultantNameOnly: new FormControl(consultant?.nameOnly ?? null),
 
             consultantProjectDurationSameAsClient: new FormControl(true),
@@ -1359,9 +1359,9 @@ export class WorkflowSalesComponent extends AppComopnentBase implements OnInit {
         input.salesMainData.discountId = this.salesMainDataForm.discounts?.value?.id;
         input.salesMainData.salesAccountManagerIdValue = this.salesMainDataForm.salesAccountManagerIdValue?.value?.id;
         input.salesMainData.commissionAccountManagerIdValue = this.salesMainDataForm.commissionAccountManagerIdValue?.value?.id;
-        if (this.salesMainDataForm.contractExpirationNotification?.value.includes(999)) { // hardcoded ID for manual date
-            const index = this.salesMainDataForm.contractExpirationNotification?.value.indexOf(999);
-            this.salesMainDataForm.contractExpirationNotification?.value.splice(index, 1);
+        if (this.salesMainDataForm.contractExpirationNotification?.value?.includes(999)) { // hardcoded ID for manual date
+            const index = this.salesMainDataForm.contractExpirationNotification?.value?.indexOf(999);
+            this.salesMainDataForm.contractExpirationNotification?.value?.splice(index, 1);
         }
         input.salesMainData.contractExpirationNotificationIntervalIds = this.salesMainDataForm.contractExpirationNotification?.value;
         input.salesMainData.customContractExpirationNotificationDate = this.salesMainDataForm.customContractExpirationNotificationDate?.value;
@@ -1778,8 +1778,14 @@ export class WorkflowSalesComponent extends AppComopnentBase implements OnInit {
         });
 
         dialogRef.componentInstance.onConfirmed.subscribe((result) => {
-            //  TODO: call API to change consultant
-            this._workflowDataService.workflowSideSectionAdded.emit(true);
+            let input = new ChangeConsultantPeriodDto();
+            input.cutoverDate = result.cutoverDate;
+            input.newLegalContractRequired = result.newLegalContractRequired;
+            this._consultantPeriodSerivce.change(consultantData.consultantPeriodId, input)
+                .pipe(finalize(() => {}))
+                .subscribe(result => {
+                    this._workflowDataService.workflowSideSectionAdded.emit(true);
+                });
         });
 
         dialogRef.componentInstance.onRejected.subscribe(() => {
@@ -1811,7 +1817,15 @@ export class WorkflowSalesComponent extends AppComopnentBase implements OnInit {
         });
 
         dialogRef.componentInstance.onConfirmed.subscribe((result) => {
-            // TODO: call API to change consultant
+            let input = new ExtendConsultantPeriodDto();
+            input.startDate = result.startDate;
+            input.endDate = result.endDate;
+            input.noEndDate = result.noEndDate;
+            this._consultantPeriodSerivce.extend(consultantData.consultantPeriodId, input)
+                .pipe(finalize(() => {}))
+                .subscribe(result => {
+                    this._workflowDataService.workflowSideSectionAdded.emit(true);
+                });
             this._workflowDataService.workflowSideSectionAdded.emit(true);
         });
 
@@ -1951,7 +1965,7 @@ export class WorkflowSalesComponent extends AppComopnentBase implements OnInit {
             }))
             .subscribe(result => {
                 // End of Consultant Contract
-                this.salesTerminateConsultantForm.nonStandardTerminationTime?.setValue(result?.nonStandardTerminationTime, {emitEvent: false});
+                this.salesTerminateConsultantForm.terminationTime?.setValue(result?.terminationTime, {emitEvent: false});
                 this.salesTerminateConsultantForm.endDate?.setValue(result?.endDate, {emitEvent: false});
                 this.salesTerminateConsultantForm.terminationReason?.setValue(result?.terminationReason, {emitEvent: false}); // add findItemById function
                 this.salesTerminateConsultantForm.causeOfNonStandardTerminationTime?.setValue(result?.causeOfNonStandardTerminationTime, {emitEvent: false});
@@ -1969,7 +1983,7 @@ export class WorkflowSalesComponent extends AppComopnentBase implements OnInit {
 
     updateTerminationConsultantSalesStep() {
         let input = new ConsultantTerminationSalesDataCommandDto();
-        input.nonStandardTerminationTime =  this.salesTerminateConsultantForm?.nonStandardTerminationTime?.value;
+        input.terminationTime =  this.salesTerminateConsultantForm?.terminationTime?.value;
         input.endDate = this.salesTerminateConsultantForm?.endDate?.value;
         input.terminationReason = this.salesTerminateConsultantForm?.terminationReason?.value;
         input.causeOfNonStandardTerminationTime = this.salesTerminateConsultantForm?.causeOfNonStandardTerminationTime?.value;
@@ -1991,7 +2005,7 @@ export class WorkflowSalesComponent extends AppComopnentBase implements OnInit {
     completeTerminationConsultantSalesStep() {
         let input = new ConsultantTerminationSalesDataCommandDto();
 
-        input.nonStandardTerminationTime =  this.salesTerminateConsultantForm?.nonStandardTerminationTime?.value;
+        input.terminationTime =  this.salesTerminateConsultantForm?.terminationTime?.value;
         input.endDate = this.salesTerminateConsultantForm?.endDate?.value;
         input.terminationReason = this.salesTerminateConsultantForm?.terminationReason?.value;
         input.causeOfNonStandardTerminationTime = this.salesTerminateConsultantForm?.causeOfNonStandardTerminationTime?.value;
@@ -2017,7 +2031,7 @@ export class WorkflowSalesComponent extends AppComopnentBase implements OnInit {
             }))
             .subscribe(result => {
                 // End of Consultant Contract
-                this.salesTerminateConsultantForm.nonStandardTerminationTime?.setValue(result?.nonStandardTerminationTime, {emitEvent: false});
+                this.salesTerminateConsultantForm.terminationTime?.setValue(result?.terminationTime, {emitEvent: false});
                 this.salesTerminateConsultantForm.endDate?.setValue(result?.endDate, {emitEvent: false});
                 this.salesTerminateConsultantForm.terminationReason?.setValue(result?.terminationReason, {emitEvent: false}); // add findItemById function
                 this.salesTerminateConsultantForm.causeOfNonStandardTerminationTime?.setValue(result?.causeOfNonStandardTerminationTime, {emitEvent: false});
@@ -2035,7 +2049,7 @@ export class WorkflowSalesComponent extends AppComopnentBase implements OnInit {
 
     updateTerminationSalesStep() {
         let input = new WorkflowTerminationSalesDataCommandDto();
-        input.nonStandardTerminationTime =  this.salesTerminateConsultantForm?.nonStandardTerminationTime?.value;
+        input.terminationTime =  this.salesTerminateConsultantForm?.terminationTime?.value;
         input.endDate = this.salesTerminateConsultantForm?.endDate?.value;
         input.terminationReason = this.salesTerminateConsultantForm?.terminationReason?.value;
         input.causeOfNonStandardTerminationTime = this.salesTerminateConsultantForm?.causeOfNonStandardTerminationTime?.value;
@@ -2056,7 +2070,7 @@ export class WorkflowSalesComponent extends AppComopnentBase implements OnInit {
 
     completeTerminationSalesStep() {
         let input = new WorkflowTerminationSalesDataCommandDto();
-        input.nonStandardTerminationTime =  this.salesTerminateConsultantForm?.nonStandardTerminationTime?.value;
+        input.terminationTime =  this.salesTerminateConsultantForm?.terminationTime?.value;
         input.endDate = this.salesTerminateConsultantForm?.endDate?.value;
         input.terminationReason = this.salesTerminateConsultantForm?.terminationReason?.value;
         input.causeOfNonStandardTerminationTime = this.salesTerminateConsultantForm?.causeOfNonStandardTerminationTime?.value;
@@ -2084,10 +2098,10 @@ export class WorkflowSalesComponent extends AppComopnentBase implements OnInit {
                 this.getStartClientPeriodSales();
                 break;
             case WorkflowProcessType.ExtendClientPeriod:
-                this.getExtendClientPeriodSales();
+                this.getStartClientPeriodSales();
                 break;
             case WorkflowProcessType.ChangeClientPeriod:
-                this.getChangeClientPeriodSales();
+                this.getStartClientPeriodSales();
                 break;
             case WorkflowProcessType.TerminateWorkflow:
                 this.getWorkflowSalesStepTermination();
@@ -2097,23 +2111,15 @@ export class WorkflowSalesComponent extends AppComopnentBase implements OnInit {
                 this.getStartConsutlantPeriodSales();
                 break;
             case WorkflowProcessType.ExtendConsultantPeriod:
-                this.getExtendConsutlantExtendSales();
+                this.getStartConsutlantPeriodSales();
                 break;
             case WorkflowProcessType.ChangeConsultantPeriod:
-                this.getChangeConsutlantPeriodSales();
+                this.getStartConsutlantPeriodSales();
                 break;
             case WorkflowProcessType.TerminateConsultant:
                 this.getWorkflowSalesStepConsultantTermination();
                 break;
         }
-    }
-
-    getExtendClientPeriodSales() {
-
-    }
-
-    getChangeClientPeriodSales() {
-
     }
 
     getStartConsutlantPeriodSales() {
@@ -2252,14 +2258,6 @@ export class WorkflowSalesComponent extends AppComopnentBase implements OnInit {
     
                 });
         }
-    }
-
-    getExtendConsutlantExtendSales() {
-
-    }
-
-    getChangeConsutlantPeriodSales() {
-
     }
 
     resetForms() {

@@ -78,7 +78,8 @@ export class WorkflowActionsDialogComponent extends AppComopnentBase implements 
     addConsutlantToExtendForm(consultant: any) {
         const form = this._fb.group({
             consulantName: new FormControl(consultant.consultant),
-            consutlantId: new FormControl(consultant.consultantId),
+            // consutlantId: new FormControl(consultant.consultantId),
+            consutlantId: new FormControl(consultant), // tmp cos only ids are present
             extendConsutlant: new FormControl(false)
         });
         this.extendWorkflowForm.consultants.push(form);
@@ -117,7 +118,7 @@ export class WorkflowActionsDialogComponent extends AppComopnentBase implements 
                 extendWorkflowOutput.startDate = this.extendWorkflowForm.startDate?.value,
                 extendWorkflowOutput.endDate = this.extendWorkflowForm.endDate?.value,
                 extendWorkflowOutput.noEndDate = this.extendWorkflowForm.noEndDate?.value,
-                extendWorkflowOutput.extendConsultantPeriodIds = [];
+                extendWorkflowOutput.extendConsultantIds = [];
                 this.onConfirmed.emit(extendWorkflowOutput);
                 break;
             case WorkflowDiallogAction.Terminate:
