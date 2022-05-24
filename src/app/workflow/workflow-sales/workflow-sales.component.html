@@ -523,7 +523,8 @@
                                 <span class="process-name">Sales.</span>
                                 <span class="anchor-name">Consultant data</span>
                             </h1>
-                            <div fxFlex="50%" fxLayoutAlign="end center">
+                            <!-- Only visible when employment type is selected and it is not 'Fee only' - id: 10 nd not 'Recruitment' - id:11 -->
+                            <div fxFlex="50%" fxLayoutAlign="end center" *ngIf="item.value?.employmentType?.id !== 10 && item.value?.employmentType?.id !== 11;">
                                 <button mat-icon-button (click)="$event.stopPropagation();" [matMenuTriggerFor]="consultantMenu" class="three-dots-actions-btn">
                                     <mat-icon>more_horiz</mat-icon>
                                 </button>
@@ -1463,8 +1464,8 @@
                                     </mat-button-toggle>
                                 </mat-button-toggle-group>
                             </div>
-
-                            <div fxLayout="row" fxLayoutAlign="start start" class="u-w--100 u-mb--10">
+                            <!--not visible if 'Individual cap' Id = 3 'No cap' id = 4 -->
+                            <div fxLayout="row" fxLayoutAlign="start start" class="u-w--100 u-mb--10" *ngIf="salesClientDataForm.capOnTimeReporting?.value !== 3 && salesClientDataForm.capOnTimeReporting?.value !== 4">
                                 <mat-form-field appearance="outline" class="u-w--100  u-mr--16" fxFlex="0 0 calc(16.5% - 8px)">
                                     <mat-label>Max value</mat-label>
                                     <input autocomplete="off" matInput formControlName="capOnTimeReportingValue" type="text">
@@ -2022,7 +2023,8 @@
                                         <span class="workflow-form--consultants__period u-mr--8" *ngIf="consultant.value?.consultantProjectStartDate">
                                             {{consultant.value?.consultantProjectStartDate | momentFormat: 'DD.MM.YYYY'}} - {{consultant.value?.consultantProjectEndDate | momentFormat: 'DD.MM.YYYY'}}
                                         </span>
-                                        <button mat-icon-button (click)="$event.stopPropagation();" [matMenuTriggerFor]="consultantMenu" class="three-dots-actions-btn">
+                                        <!-- FIXME: do we need this actions on creation ?? -->
+                                        <!-- <button mat-icon-button (click)="$event.stopPropagation();" [matMenuTriggerFor]="consultantMenu" class="three-dots-actions-btn">
                                             <mat-icon>more_horiz</mat-icon>
                                         </button>
                                         <mat-menu #consultantMenu>
@@ -2047,7 +2049,7 @@
                                                 <mat-icon>clear</mat-icon>
                                                 Terminate consultant
                                             </button>
-                                        </mat-menu>
+                                        </mat-menu> -->
                                     </div>
                                 </div>
                             </div>
@@ -2062,7 +2064,6 @@
                                             </mat-button-toggle>
                                         </mat-button-toggle-group>
                                     </div>
-
                                     <!-- Only visible when employment type is selected and it is not 'Fee only' - id: 10 nd not 'Recruitment' - id:11 -->
                                     <div fxLayout="row" fxLayoutAlign="start start" class="u-w--100 u-mb--10" *ngIf="consultant.value?.employmentType?.id">
                                         <mat-form-field appearance="outline" class="u-w--100 filter-select" fxFlex="33%" *ngIf="consultant.value?.employmentType?.id !== 10 && consultant.value?.employmentType?.id !== 11; else nameOnlyConsultant">
@@ -2406,38 +2407,42 @@
                                         </mat-form-field>
                                     </div>
 
-                                    <h3 class="workflow-gray--header u-mb--10">Cap on Time Reporting</h3>
-                                    <div fxLayout="row" fxLayoutAlign="start start" class="u-w--100 u-mb--20">
-                                        <mat-button-toggle-group class="workflow-toggle-buttons" formControlName="consultantCapOnTimeReporting">
-                                            <mat-button-toggle *ngFor="let item of consultantTimeReportingCapList" [value]="item">
-                                                {{ item.name }}
-                                            </mat-button-toggle>
-                                        </mat-button-toggle-group>
-                                    </div>
-                                    <div fxLayout="row" fxLayoutAlign="start center" class="u-w--100 u-mb--20">
-                                        <ng-container [ngSwitch]="consultant.value?.consultantCapOnTimeReporting.id">
-                                            <ng-container *ngSwitchCase="1">  <!-- 'Cap on units' -->
-                                                <mat-form-field appearance="outline" class="u-w--100  u-mr--16" fxFlex="0 0 calc(16.5% - 8px)">
-                                                    <mat-label>Max value</mat-label>
-                                                    <input autocomplete="off" matInput formControlName="consultantTimeReportingCapMaxValue" type="text">
-                                                </mat-form-field>
-                                                <div fxFlex="0 0 calc(16.5% - 8px)" fxLayoutAlign="start center" class="workflow-form--consultants__payment-price-text">
-                                                    {{consultant.value.consultantRateUnitType?.name}}
-                                                </div>
+                                    <!-- 'Individual cap' Id = 3 -->
+                                    <ng-container *ngIf="salesClientDataForm.capOnTimeReporting?.value === 3">
+                                        <h3 class="workflow-gray--header u-mb--10">Cap on Time Reporting</h3>
+                                        <div fxLayout="row" fxLayoutAlign="start start" class="u-w--100 u-mb--20">
+                                            <mat-button-toggle-group class="workflow-toggle-buttons" formControlName="consultantCapOnTimeReporting">
+                                                <mat-button-toggle *ngFor="let item of consultantTimeReportingCapList" [value]="item">
+                                                    {{ item.name }}
+                                                </mat-button-toggle>
+                                            </mat-button-toggle-group>
+                                        </div>
+                                        <div fxLayout="row" fxLayoutAlign="start center" class="u-w--100 u-mb--20">
+                                            <ng-container [ngSwitch]="consultant.value?.consultantCapOnTimeReporting.id">
+                                                <ng-container *ngSwitchCase="1">  <!-- 'Cap on units' -->
+                                                    <mat-form-field appearance="outline" class="u-w--100  u-mr--16" fxFlex="0 0 calc(16.5% - 8px)">
+                                                        <mat-label>Max value</mat-label>
+                                                        <input autocomplete="off" matInput formControlName="consultantTimeReportingCapMaxValue" type="text">
+                                                    </mat-form-field>
+                                                    <div fxFlex="0 0 calc(16.5% - 8px)" fxLayoutAlign="start center" class="workflow-form--consultants__payment-price-text">
+                                                        {{consultant.value.consultantRateUnitType?.name}}
+                                                    </div>
+                                                </ng-container>
+                                                <ng-container *ngSwitchCase="2"> <!-- 'Cap on value' -->
+                                                    <mat-form-field appearance="outline" class="u-w--100  u-mr--16" fxFlex="0 0 calc(16.5% - 8px)">
+                                                        <mat-label>Max value</mat-label>
+                                                        <input autocomplete="off" matInput formControlName="consultantTimeReportingCapMaxValue" type="text">
+                                                    </mat-form-field>
+                                                    <div fxFlex="0 0 calc(16.5% - 8px)" fxLayoutAlign="start center" class="workflow-form--consultants__payment-price-text">
+                                                        {{consultant.value.consultantRateCurrency?.name}}
+                                                    </div>
+                                                </ng-container>
+                                                <ng-container *ngSwitchCase="4"> <!-- 'No cap' -->
+                                                </ng-container>
                                             </ng-container>
-                                            <ng-container *ngSwitchCase="2"> <!-- 'Cap on value' -->
-                                                <mat-form-field appearance="outline" class="u-w--100  u-mr--16" fxFlex="0 0 calc(16.5% - 8px)">
-                                                    <mat-label>Max value</mat-label>
-                                                    <input autocomplete="off" matInput formControlName="consultantTimeReportingCapMaxValue" type="text">
-                                                </mat-form-field>
-                                                <div fxFlex="0 0 calc(16.5% - 8px)" fxLayoutAlign="start center" class="workflow-form--consultants__payment-price-text">
-                                                    {{consultant.value.consultantRateCurrency?.name}}
-                                                </div>
-                                            </ng-container>
-                                            <ng-container *ngSwitchCase="4"> <!-- 'No cap' -->
-                                            </ng-container>
-                                        </ng-container>
-                                    </div>
+                                        </div>
+                                    </ng-container>
+                                    
                                 </div>
                                 <mat-divider class="u-w--100 u-mt--20 u-mb--20"></mat-divider>
 
