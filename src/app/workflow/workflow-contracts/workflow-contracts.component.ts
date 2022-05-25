@@ -114,85 +114,49 @@ export class WorkflowContractsComponent extends AppComponentBase implements OnIn
 
         switch (this.activeSideSection) {
             case this.workflowSideSections.StartClientPeriod:
-                this.getStartClientPeriodContracts();
-                break;
             case this.workflowSideSections.ChangeClientPeriod:
-                // this.getContractsStep();
-                break;
             case this.workflowSideSections.ExtendClientPeriod:
-                // this.getContractsStep();
+                this.getStartChangeOrExtendClientPeriodContracts();
                 break;
             case this.workflowSideSections.TerminateWorkflow:
                 this.getWorkflowContractStepTermination();
                 break;
 
             case this.workflowSideSections.StartConsultantPeriod:
-                // this.getContractsStep();
-                break;
             case this.workflowSideSections.ChangeConsultantPeriod:
-                // this.getContractsStep();
-                break;
             case this.workflowSideSections.ExtendConsultantPeriod:
-                // this.getContractsStep();
+                this.getStartChangeOrExtendConsultantPeriodContracts();
                 break;
             case this.workflowSideSections.TerminateConsultant:
                 this.getWorkflowContractsStepConsultantTermination();
                 break;
         }
 
-
-        this._workflowDataService.workflowContractsSaved
+        // Client start, extend and change periods
+        this._workflowDataService.startClientPeriodContractsSaved
             .pipe(takeUntil(this._unsubscribe))
             .subscribe((value: boolean) => {
-                // NB: boolean SAVE DRAFT or COMPLETE in future
-                this.saveStartClientPeriodContracts(value);
+                this.saveStartChangeOrExtendClientPeriodContracts(value);
             });
 
-        this._workflowDataService.consultantStartContractsSaved
+        // Consultant start, extend and change periods
+        this._workflowDataService.consultantStartChangeOrExtendContractsSaved
             .pipe(takeUntil(this._unsubscribe))
             .subscribe((value: boolean) => {
-                // NB: boolean SAVE DRAFT or COMPLETE in future
                 this.saveStartChangeOrExtendConsultantPeriodContracts(value);
             });
 
-        this._workflowDataService.consultantExtendContractsSaved
-            .pipe(takeUntil(this._unsubscribe))
-            .subscribe((value: boolean) => {
-                // NB: boolean SAVE DRAFT or COMPLETE in future
-                this.saveStartChangeOrExtendConsultantPeriodContracts(value);
-            });
-
-        this._workflowDataService.consultantChangeContractsSaved
-            .pipe(takeUntil(this._unsubscribe))
-            .subscribe((value: boolean) => {
-                // NB: boolean SAVE DRAFT or COMPLETE in future
-                this.saveStartChangeOrExtendConsultantPeriodContracts(value);
-            });
-
-        // Termination
-
+        // Terminations
         this._workflowDataService.workflowConsultantTerminationContractsSaved
             .pipe(takeUntil(this._unsubscribe))
             .subscribe((value: boolean) => {
-                this.updateTerminationConsultantContractStep();
-            });
-
-        this._workflowDataService.workflowConsultantTerminationContractsCompleted
-            .pipe(takeUntil(this._unsubscribe))
-            .subscribe((value: boolean) => {
-                this.completeTerminationConsultantContractStep();
+                this.saveTerminationConsultantContractStep(value);
             });
 
         this._workflowDataService.workflowTerminationContractsSaved
             .pipe(takeUntil(this._unsubscribe))
             .subscribe((value: boolean) => {
-                this.updateTerminationContractStep();
-            });
-
-        this._workflowDataService.workflowTerminationContractsCompleted
-            .pipe(takeUntil(this._unsubscribe))
-            .subscribe((value: boolean) => {
-                this.completeTerminationContractStep();
+                this.saveWorkflowTerminationContractStep(value);
             });
     }
 
@@ -700,7 +664,7 @@ export class WorkflowContractsComponent extends AppComponentBase implements OnIn
     }
 
     //#region Start client period
-    getStartClientPeriodContracts() {
+    getStartChangeOrExtendClientPeriodContracts() {
         this.showMainSpinner();
         this._clientPeriodService.clientContractsGet(this.periodId!)
             .pipe(finalize(() => {
@@ -749,7 +713,7 @@ export class WorkflowContractsComponent extends AppComponentBase implements OnIn
             });
     }
 
-    saveStartClientPeriodContracts(isDraft: boolean) {
+    saveStartChangeOrExtendClientPeriodContracts(isDraft: boolean) {
         let input = new ClientPeriodContractsDataDto();
         input.clientData = new ContractsClientDataDto();
 
@@ -895,7 +859,7 @@ export class WorkflowContractsComponent extends AppComponentBase implements OnIn
     //#endregion Start client period
 
     //#region Start consultant period
-    getStartConsultantPeriodContracts() {
+    getStartChangeOrExtendConsultantPeriodContracts() {
         this.showMainSpinner();
         this._consultantPeriodService.consultantContractsGet(this.periodId!)
             .pipe(finalize(() => this.hideMainSpinner()))
@@ -1047,37 +1011,27 @@ export class WorkflowContractsComponent extends AppComponentBase implements OnIn
             });
     }
 
-    updateTerminationConsultantContractStep() {
+    saveTerminationConsultantContractStep(isDraft: boolean) {
         let input = new ConsultantTerminationContractDataCommandDto();
         input.consultantId = this.contractsTerminationConsultantForm.consultantTerminationContractData?.value.consultantId;
         input.contractLinesDoneManuallyInOldPM = this.contractLinesDoneManuallyInOldPMControl?.value;
         input.removedConsultantFromAnyManualChecklists = this.contractsTerminationConsultantForm.consultantTerminationContractData?.value.removedConsultantFromAnyManualChecklists;
         input.deletedAnySensitiveDocumentsForGDPR = this.contractsTerminationConsultantForm.consultantTerminationContractData?.value.deletedAnySensitiveDocumentsForGDPR;
 
-        this._workflowServiceProxy.terminationConsultantContractPut(this.workflowId!, input)
-            .pipe(finalize(() => {
-
-            }))
-            .subscribe(result => {
-
-            })
-    }
-
-    completeTerminationConsultantContractStep() {
-        let input = new ConsultantTerminationContractDataCommandDto();
-
-        input.consultantId = this.contractsTerminationConsultantForm.consultantTerminationContractData?.value.consultantId;
-        input.contractLinesDoneManuallyInOldPM = this.contractLinesDoneManuallyInOldPMControl?.value;
-        input.removedConsultantFromAnyManualChecklists = this.contractsTerminationConsultantForm.consultantTerminationContractData?.value.removedConsultantFromAnyManualChecklists;
-        input.deletedAnySensitiveDocumentsForGDPR = this.contractsTerminationConsultantForm.consultantTerminationContractData?.value.deletedAnySensitiveDocumentsForGDPR;
-
-        this._workflowServiceProxy.terminationConsultantContractComplete(this.workflowId!, input)
-            .pipe(finalize(() => {
-
-            }))
+        this.showMainSpinner();
+        if (isDraft) {
+            this._workflowServiceProxy.terminationConsultantContractPut(this.workflowId!, input)
+                .pipe(finalize(() => this.hideMainSpinner()))
+                .subscribe(result => {
+    
+                })
+        } else {
+            this._workflowServiceProxy.terminationConsultantContractComplete(this.workflowId!, input)
+            .pipe(finalize(() => this.hideMainSpinner()))
             .subscribe(result => {
                 this._workflowDataService.workflowSideSectionUpdated.emit(true);
             })
+        }
     }
 
     getWorkflowContractStepTermination() {
@@ -1094,7 +1048,7 @@ export class WorkflowContractsComponent extends AppComponentBase implements OnIn
             });
     }
 
-    updateTerminationContractStep() {
+    saveWorkflowTerminationContractStep(isDraft: boolean) {
         let input = new WorkflowTerminationContractDataCommandDto();
         input.contractLinesDoneManuallyInOldPM = this.contractLinesDoneManuallyInOldPMControl?.value;
         input.consultantTerminationContractData = this.contractsTerminationConsultantForm.consultantTerminationContractData?.value
@@ -1111,41 +1065,20 @@ export class WorkflowContractsComponent extends AppComponentBase implements OnIn
                 input.consultantTerminationContractData!.push(consultantInput);
             });
         }
-
-        this._workflowServiceProxy.terminationContractPut(this.workflowId!, input)
-            .pipe(finalize(() => {
-
-            }))
-            .subscribe(result => {
-
-            })
-    }
-
-    completeTerminationContractStep() {
-        let input = new WorkflowTerminationContractDataCommandDto();
-        input.contractLinesDoneManuallyInOldPM = this.contractLinesDoneManuallyInOldPMControl?.value;
-        input.consultantTerminationContractData = this.contractsTerminationConsultantForm.consultantTerminationContractData?.value
-
-        input.consultantTerminationContractData = new Array<ConsultantTerminationContractDataCommandDto>();
-        if (this.contractsTerminationConsultantForm.consultantTerminationContractData.value?.length) {
-            this.contractsTerminationConsultantForm.consultantTerminationContractData.value.forEach((consultant: any) => {
-                let consultantInput = new ConsultantTerminationContractDataCommandDto();
-                consultantInput.consultantId = consultant.consultantId;
-                consultantInput.contractLinesDoneManuallyInOldPM = consultant.contractLinesDoneManuallyInOldPM;
-                consultantInput.removedConsultantFromAnyManualChecklists = consultant.removedConsultantFromAnyManualChecklists;
-                consultantInput.deletedAnySensitiveDocumentsForGDPR = consultant.deletedAnySensitiveDocumentsForGDPR;
-
-                input.consultantTerminationContractData!.push(consultantInput);
-            });
-        }
-
-        this._workflowServiceProxy.terminationContractComplete(this.workflowId!, input)
-            .pipe(finalize(() => {
-
-            }))
+        this.showMainSpinner();
+        if (isDraft) {
+            this._workflowServiceProxy.terminationContractPut(this.workflowId!, input)
+                .pipe(finalize(() => this.hideMainSpinner()))
+                .subscribe(result => {
+    
+                })
+        } else {
+            this._workflowServiceProxy.terminationContractComplete(this.workflowId!, input)
+            .pipe(finalize(() => this.hideMainSpinner()))
             .subscribe(result => {
                 this._workflowDataService.workflowSideSectionUpdated.emit(true);
             })
+        }
     }
 
     terminateConsultantStart(index: number) {

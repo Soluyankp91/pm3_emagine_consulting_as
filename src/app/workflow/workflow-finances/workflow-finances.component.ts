@@ -47,22 +47,9 @@ export class WorkflowFinancesComponent extends AppComponentBase implements OnIni
     }
 
     ngOnInit(): void {
-        // this.consultantList.forEach(consultant => {
-        //     this.addConsultantToForm(consultant);
-        // });
-        this.getFinancesStep();
+        this.getStartChangeOrExtendClientPeriodFinances();
 
-        this._workflowDataService.consultantStartFinanceSaved
-            .pipe(takeUntil(this._unsubscribe))
-            .subscribe((value: boolean) => {
-                
-            });
-        this._workflowDataService.consultantChangeFinanceSaved
-            .pipe(takeUntil(this._unsubscribe))
-            .subscribe((value: boolean) => {
-                
-            });
-        this._workflowDataService.consultantExtendFinanceSaved
+        this._workflowDataService.consultantStartChangeOrExtendFinanceSaved
             .pipe(takeUntil(this._unsubscribe))
             .subscribe((value: boolean) => {
                 
@@ -78,7 +65,7 @@ export class WorkflowFinancesComponent extends AppComponentBase implements OnIni
         return this.isCompleted;
     }
 
-    getFinancesStep() {
+    getStartChangeOrExtendClientPeriodFinances() {
         this.showMainSpinner();
         this._clientPeriodSerivce.clientFinanceGet(this.periodId!)
             .pipe(finalize(() => this.hideMainSpinner()))

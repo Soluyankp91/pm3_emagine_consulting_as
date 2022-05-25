@@ -416,50 +416,28 @@ export class WorkflowSalesComponent extends AppComponentBase implements OnInit {
 
         this.detectActiveSideSection();
 
-        this._workflowDataService.workflowSalesSaved
+        this._workflowDataService.startClientPeriodSalesSaved
             .pipe(takeUntil(this._unsubscribe))
             .subscribe((value: boolean) => {
-                this.saveSalesStep(value);
+                this.saveStartChangeOrExtendClientPeriodSales(value);
             });
-        this._workflowDataService.consultantStartSalesSaved
+        this._workflowDataService.consultantStartChangeOrExtendSalesSaved
             .pipe(takeUntil(this._unsubscribe))
             .subscribe((value: boolean) => {
-                this.saveConsultantPeriodSales(value);
-            });
-        this._workflowDataService.consultantChangeSalesSaved
-            .pipe(takeUntil(this._unsubscribe))
-            .subscribe((value: boolean) => {
-                // this.saveSalesStep(value);
-            });
-        this._workflowDataService.consultantExtendSalesSaved
-            .pipe(takeUntil(this._unsubscribe))
-            .subscribe((value: boolean) => {
-                // this.saveSalesStep(value);
+                this.saveStartChangeOrExtendConsultantPeriodSales(value);
             });
 
         // Termination
-        this._workflowDataService.workflowConsultantTerminationSalesSaved
+        this._workflowDataService.consultantTerminationSalesSaved
             .pipe(takeUntil(this._unsubscribe))
             .subscribe((value: boolean) => {
-                this.updateTerminationConsultantSalesStep();
-            });
-
-        this._workflowDataService.workflowConsultantTerminationSalesCompleted
-            .pipe(takeUntil(this._unsubscribe))
-            .subscribe((value: boolean) => {
-                this.completeTerminationConsultantSalesStep();
+                this.saveTerminationConsultantSalesStep(value);
             });
 
         this._workflowDataService.workflowTerminationSalesSaved
             .pipe(takeUntil(this._unsubscribe))
             .subscribe((value: boolean) => {
-                this.updateTerminationSalesStep();
-            });
-
-        this._workflowDataService.workflowTerminationSalesCompleted
-            .pipe(takeUntil(this._unsubscribe))
-            .subscribe((value: boolean) => {
-                this.completeTerminationSalesStep();
+                this.saveWorkflowTerminationSalesStep(value);
             });
 
         this._workflowDataService.workflowSideSectionChanged
@@ -1370,7 +1348,7 @@ export class WorkflowSalesComponent extends AppComponentBase implements OnInit {
         return this.consultantsForm.get('consultantData') as FormArray;
     }
 
-    saveSalesStep(isDraft: boolean) {
+    saveStartChangeOrExtendClientPeriodSales(isDraft: boolean) {
         let input = new ClientPeriodSalesDataDto();
         input.salesMainData = new SalesMainDataDto();
         input.salesClientData = new SalesClientDataDto();
@@ -1641,7 +1619,7 @@ export class WorkflowSalesComponent extends AppComponentBase implements OnInit {
 
     }
 
-    getStartClientPeriodSales() {
+    getStartChangeOrExtendClientPeriodSales() {
         this.showMainSpinner();
         this._clientPeriodService.clientSalesGet(this.periodId!)
             .pipe(finalize(() => {
@@ -1985,7 +1963,7 @@ export class WorkflowSalesComponent extends AppComponentBase implements OnInit {
             });
     }
 
-    updateTerminationConsultantSalesStep() {
+    saveTerminationConsultantSalesStep(isDraft: boolean) {
         let input = new ConsultantTerminationSalesDataCommandDto();
         input.terminationTime =  this.salesTerminateConsultantForm?.terminationTime?.value;
         input.endDate = this.salesTerminateConsultantForm?.endDate?.value;
@@ -1997,35 +1975,20 @@ export class WorkflowSalesComponent extends AppComponentBase implements OnInit {
         input.noEvaluation = this.salesTerminateConsultantForm?.noEvaluation?.value;
         input.causeOfNoEvaluation =  this.salesTerminateConsultantForm.causeOfNoEvaluation?.value;
 
-        this._workflowServiceProxy.terminationConsultantSalesPut(this.workflowId!, this.consultantId, input)
-            .pipe(finalize(() => {
-
-            }))
-            .subscribe(result => {
-
-            })
-    }
-
-    completeTerminationConsultantSalesStep() {
-        let input = new ConsultantTerminationSalesDataCommandDto();
-
-        input.terminationTime =  this.salesTerminateConsultantForm?.terminationTime?.value;
-        input.endDate = this.salesTerminateConsultantForm?.endDate?.value;
-        input.terminationReason = this.salesTerminateConsultantForm?.terminationReason?.value;
-        input.causeOfNonStandardTerminationTime = this.salesTerminateConsultantForm?.causeOfNonStandardTerminationTime?.value;
-        input.additionalComments = this.salesTerminateConsultantForm?.additionalComments?.value;
-
-        input.finalEvaluationReferencePersonId = this.salesTerminateConsultantForm?.finalEvaluationReferencePerson?.value.id; // FIXME: fix after be changes add .id
-        input.noEvaluation = this.salesTerminateConsultantForm?.noEvaluation?.value;
-        input.causeOfNoEvaluation =  this.salesTerminateConsultantForm.causeOfNoEvaluation?.value;
-
-        this._workflowServiceProxy.terminationConsultantSalesComplete(this.workflowId!, this.consultantId, input)
-            .pipe(finalize(() => {
-
-            }))
+        this.showMainSpinner();
+        if (isDraft) {
+            this._workflowServiceProxy.terminationConsultantSalesPut(this.workflowId!, this.consultantId, input)
+                .pipe(finalize(() => this.hideMainSpinner()))
+                .subscribe(result => {
+    
+                })
+        } else {
+            this._workflowServiceProxy.terminationConsultantSalesComplete(this.workflowId!, this.consultantId, input)
+            .pipe(finalize(() => this.hideMainSpinner()))
             .subscribe(result => {
                 this._workflowDataService.workflowSideSectionUpdated.emit(true);
             })
+        }
     }
 
     getWorkflowSalesStepTermination() {
@@ -2052,7 +2015,7 @@ export class WorkflowSalesComponent extends AppComponentBase implements OnInit {
             });
     }
 
-    updateTerminationSalesStep() {
+    saveWorkflowTerminationSalesStep(isDraft: boolean) {
         let input = new WorkflowTerminationSalesDataCommandDto();
         input.terminationTime =  this.salesTerminateConsultantForm?.terminationTime?.value;
         input.endDate = this.salesTerminateConsultantForm?.endDate?.value;
@@ -2063,35 +2026,20 @@ export class WorkflowSalesComponent extends AppComponentBase implements OnInit {
         input.finalEvaluationReferencePersonId = this.salesTerminateConsultantForm?.finalEvaluationReferencePerson?.value.id; // FIXME: fix after be changes add .id
         input.noEvaluation = this.salesTerminateConsultantForm?.noEvaluation?.value;
         input.causeOfNoEvaluation =  this.salesTerminateConsultantForm.causeOfNoEvaluation?.value;
-
-        this._workflowServiceProxy.terminationSalesPut(this.workflowId!, input)
-            .pipe(finalize(() => {
-
-            }))
-            .subscribe(result => {
-
-            })
-    }
-
-    completeTerminationSalesStep() {
-        let input = new WorkflowTerminationSalesDataCommandDto();
-        input.terminationTime =  this.salesTerminateConsultantForm?.terminationTime?.value;
-        input.endDate = this.salesTerminateConsultantForm?.endDate?.value;
-        input.terminationReason = this.salesTerminateConsultantForm?.terminationReason?.value;
-        input.causeOfNonStandardTerminationTime = this.salesTerminateConsultantForm?.causeOfNonStandardTerminationTime?.value;
-        input.additionalComments = this.salesTerminateConsultantForm?.additionalComments?.value;
-
-        input.finalEvaluationReferencePersonId = this.salesTerminateConsultantForm?.finalEvaluationReferencePerson?.value.id; // FIXME: fix after be changes add .id
-        input.noEvaluation = this.salesTerminateConsultantForm?.noEvaluation?.value;
-        input.causeOfNoEvaluation =  this.salesTerminateConsultantForm.causeOfNoEvaluation?.value;
-
-        this._workflowServiceProxy.terminationSalesComplete(this.workflowId!, input)
-            .pipe(finalize(() => {
-
-            }))
+        this.showMainSpinner();
+        if (isDraft) {
+            this._workflowServiceProxy.terminationSalesPut(this.workflowId!, input)
+                .pipe(finalize(() => this.showMainSpinner()))
+                .subscribe(result => {
+    
+                })
+        } else {
+            this._workflowServiceProxy.terminationSalesComplete(this.workflowId!, input)
+            .pipe(finalize(() => this.showMainSpinner()))
             .subscribe(result => {
                 this._workflowDataService.workflowSideSectionUpdated.emit(true);
             })
+        }
     }
 
     terminateConsultant(index: number) {
@@ -2141,26 +2089,18 @@ export class WorkflowSalesComponent extends AppComponentBase implements OnInit {
         switch (this._workflowDataService.getWorkflowProgress.currentlyActiveSideSection) {
             // Client period
             case WorkflowProcessType.StartClientPeriod:
-                this.getStartClientPeriodSales();
-                break;
             case WorkflowProcessType.ExtendClientPeriod:
-                this.getStartClientPeriodSales();
-                break;
             case WorkflowProcessType.ChangeClientPeriod:
-                this.getStartClientPeriodSales();
+                this.getStartChangeOrExtendClientPeriodSales();
                 break;
             case WorkflowProcessType.TerminateWorkflow:
                 this.getWorkflowSalesStepTermination();
                 break;
             // Consultant period
             case WorkflowProcessType.StartConsultantPeriod:
-                this.getStartConsutlantPeriodSales();
-                break;
             case WorkflowProcessType.ExtendConsultantPeriod:
-                this.getStartConsutlantPeriodSales();
-                break;
             case WorkflowProcessType.ChangeConsultantPeriod:
-                this.getStartConsutlantPeriodSales();
+                this.getStartChangeOrExtendConsutlantPeriodSales();
                 break;
             case WorkflowProcessType.TerminateConsultant:
                 this.getWorkflowSalesStepConsultantTermination();
@@ -2168,7 +2108,7 @@ export class WorkflowSalesComponent extends AppComponentBase implements OnInit {
         }
     }
 
-    getStartConsutlantPeriodSales() {
+    getStartChangeOrExtendConsutlantPeriodSales() {
         this._consultantPeriodSerivce.consultantSalesGet(this.periodId!)
             .pipe(finalize(() => {}))
             .subscribe(result => {
@@ -2183,7 +2123,7 @@ export class WorkflowSalesComponent extends AppComponentBase implements OnInit {
             });
     }
 
-    saveConsultantPeriodSales(isDraft: boolean) {
+    saveStartChangeOrExtendConsultantPeriodSales(isDraft: boolean) {
         let input = new ConsultantPeriodSalesDataDto();
         input.remarks = this.salesMainDataForm.remarks?.value;
         input.noRemarks = this.salesMainDataForm.noRemarks?.value;

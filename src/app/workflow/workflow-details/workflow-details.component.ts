@@ -150,59 +150,6 @@ export class WorkflowDetailsComponent extends AppComponentBase implements OnInit
             });
     }
 
-    saveSalesStep(isDraft = false) {
-        this._workflowDataService.workflowSalesSaved.emit(isDraft);
-    }
-
-    // Termination
-    saveSalesTerminationStep(isDraft = false) {
-        this._workflowDataService.workflowTerminationSalesSaved.emit(isDraft);
-    }
-
-    saveSalesConsultantTerminationStep(isDraft = false) {
-        this._workflowDataService.workflowConsultantTerminationSalesSaved.emit(isDraft);
-    }
-
-    saveContractsTerminationStep(isDraft = false) {
-        this._workflowDataService.workflowTerminationContractsSaved.emit(isDraft);
-    }
-
-    saveContractsConsultantTerminationStep(isDraft = false) {
-        this._workflowDataService.workflowConsultantTerminationContractsSaved.emit(isDraft);
-    }
-
-    saveSourcingTerminationStep(isDraft = false) {
-        this._workflowDataService.workflowTerminationSourcingSaved.emit(isDraft);
-    }
-
-    saveSourcingConsultantTerminationStep(isDraft = false) {
-        this._workflowDataService.workflowConsultantTerminationSourcingSaved.emit(isDraft);
-    }
-
-    completeSalesTerminationStep(isDraft = false) {
-        this._workflowDataService.workflowTerminationSalesCompleted.emit(isDraft);
-    }
-
-    completeSalesConsultantTerminationStep(isDraft = false) {
-        this._workflowDataService.workflowConsultantTerminationSalesCompleted.emit(isDraft);
-    }
-
-    completeContractsTerminationStep(isDraft = false) {
-        this._workflowDataService.workflowTerminationContractsCompleted.emit(isDraft);
-    }
-
-    completeContractsConsultantTerminationStep(isDraft = false) {
-        this._workflowDataService.workflowConsultantTerminationContractsCompleted.emit(isDraft);
-    }
-
-    completeSourcingTerminationStep(isDraft = false) {
-        this._workflowDataService.workflowTerminationSourcingCompleted.emit(isDraft);
-    }
-
-    completeSourcingConsultantTerminationStep(isDraft = false) {
-        this._workflowDataService.workflowConsultantTerminationSourcingCompleted.emit(isDraft);
-    }
-
     tabChanged(event: MatTabChangeEvent) {
         this.selectedTabIndex = event.index;
         this.selectedTabName = event.tab.textLabel;
@@ -252,269 +199,271 @@ export class WorkflowDetailsComponent extends AppComponentBase implements OnInit
     }
 
     saveOrCompleteStep(isDraft: boolean) {
-        switch (this._workflowDataService.workflowProgress.currentlyActiveSection) {
-            case WorkflowTopSections.StartPeriod:
-                switch (this._workflowDataService.workflowProgress.currentlyActiveSideSection) {
-                    case WorkflowProcessType.StartClientPeriod:
-                        switch (this._workflowDataService.workflowProgress.currentlyActiveStep) {
-                            case StepType.Sales:
-                                this.saveSalesStep(isDraft);
-                                console.log('save WF Sales');
-                                break;
-                            case StepType.Contract:
-                                this._workflowDataService.workflowContractsSaved.emit(isDraft);
-                                console.log('save WF Contracts');
-                                break;
-                            case StepType.Finance:
-                                console.log('save WF Finance');
-                                break;
-                        }
-                    break;
-                    case WorkflowProcessType.TerminateWorkflow:
-                        switch (this._workflowDataService.workflowProgress.currentlyActiveStep) {
-                            case StepType.Sales:
-                                this.saveSalesTerminationStep(isDraft);
-                                console.log('save draft WF Term Sales');
-                                break;
-                            case StepType.Contract:
-                                this.saveContractsTerminationStep(isDraft);
-                                console.log('save draft WF Term Contracts');
-                                break;
-                            case StepType.Sourcing:
-                                this.saveSourcingTerminationStep(isDraft);
-                                console.log('save draft WF Term Sourcing');
-                                break;
-                        }
-                    break;
-                    case WorkflowProcessType.StartConsultantPeriod:
-                        switch (this._workflowDataService.workflowProgress.currentlyActiveStep) {
-                            case StepType.Sales:
-                                this.saveSalesStep(isDraft);
-                                console.log('save WF Sales');
-                                break;
-                            case StepType.Contract:
-                                this._workflowDataService.workflowContractsSaved.emit(isDraft);
-                                console.log('save WF Contracts');
-                                break;
-                            case StepType.Finance:
-                                console.log('save WF Finance');
-                                break;
-                        }
-                    break;
-                    case WorkflowProcessType.ChangeConsultantPeriod:
-                        switch (this._workflowDataService.workflowProgress.currentlyActiveStep) {
-                            case StepType.Sales:
-                                this.saveSalesStep(isDraft);
-                                console.log('save WF Sales');
-                                break;
-                            case StepType.Contract:
-                                this._workflowDataService.workflowContractsSaved.emit(isDraft);
-                                console.log('save WF Contracts');
-                                break;
-                            case StepType.Finance:
-                                console.log('save WF Finance');
-                                break;
-                        }
-                    break;
-                    case WorkflowProcessType.ExtendConsultantPeriod:
-                        switch (this._workflowDataService.workflowProgress.currentlyActiveStep) {
-                            case StepType.Sales:
-                                this.saveSalesStep(isDraft);
-                                console.log('save WF Sales');
-                                break;
-                            case StepType.Contract:
-                                this._workflowDataService.workflowContractsSaved.emit(isDraft);
-                                console.log('save WF Contracts');
-                                break;
-                            case StepType.Finance:
-                                console.log('save WF Finance');
-                                break;
-                        }
-                    break;
-                    case WorkflowProcessType.TerminateConsultant:
-                        switch (this._workflowDataService.workflowProgress.currentlyActiveStep) {
-                            case StepType.Sales:
-                                this._workflowDataService.workflowConsultantTerminationSalesSaved.emit(isDraft);
-                                console.log('save draft WF Term Cons Sales');
-                                break;
-                            case StepType.Contract:
-                                this.saveContractsConsultantTerminationStep(isDraft);
-                                console.log('save draft WF Term Cons Contracts');
-                                break;
-                            case StepType.Sourcing:
-                                this.saveSourcingConsultantTerminationStep(isDraft);
-                                console.log('save draft WF Term Cons Sourcing');
-                                break;
-                        }
-                    break;
-                }
-                break;
-            case WorkflowTopSections.ExtendPeriod:
-                switch (this._workflowDataService.workflowProgress.currentlyActiveSideSection) {
-                    case WorkflowProcessType.ExtendClientPeriod:
-                        switch (this._workflowDataService.workflowProgress.currentlyActiveStep) {
-                            case StepType.Sales:
-                                console.log('save Extension Sales');
-                                break;
-                            case StepType.Contract:
-                                console.log('save Extension Contracts');
-                                break;
-                            case StepType.Finance:
-                                console.log('save Extension Finance');
-                                break;
-                        }
+        switch (this._workflowDataService.workflowProgress.currentlyActiveSideSection) {
+            case WorkflowProcessType.StartClientPeriod:
+                switch (this._workflowDataService.workflowProgress.currentlyActiveStep) {
+                    case StepType.Sales:
+                        this._workflowDataService.startClientPeriodSalesSaved.emit(isDraft);
                         break;
-                    case WorkflowProcessType.TerminateWorkflow:
-                        switch (this._workflowDataService.workflowProgress.currentlyActiveStep) {
-                            case StepType.Sales:
-                                console.log('save Extension Sales');
-                                break;
-                            case StepType.Contract:
-                                console.log('save Extension Contracts');
-                                break;
-                            case StepType.Finance:
-                                console.log('save Extension Finance');
-                                break;
-                        }
+                    case StepType.Contract:
+                        this._workflowDataService.startClientPeriodContractsSaved.emit(isDraft);
                         break;
-                    case WorkflowProcessType.StartConsultantPeriod:
-                        switch (this._workflowDataService.workflowProgress.currentlyActiveStep) {
-                            case StepType.Sales:
-                                console.log('save Extension Sales');
-                                break;
-                            case StepType.Contract:
-                                console.log('save Extension Contracts');
-                                break;
-                            case StepType.Finance:
-                                console.log('save Extension Finance');
-                                break;
-                        }
-                        break;
-                    case WorkflowProcessType.ChangeConsultantPeriod:
-                        switch (this._workflowDataService.workflowProgress.currentlyActiveStep) {
-                            case StepType.Sales:
-                                console.log('save Extension Sales');
-                                break;
-                            case StepType.Contract:
-                                console.log('save Extension Contracts');
-                                break;
-                            case StepType.Finance:
-                                console.log('save Extension Finance');
-                                break;
-                        }
-                        break;
-                    case WorkflowProcessType.ExtendConsultantPeriod:
-                        switch (this._workflowDataService.workflowProgress.currentlyActiveStep) {
-                            case StepType.Sales:
-                                console.log('save Extension Sales');
-                                break;
-                            case StepType.Contract:
-                                console.log('save Extension Contracts');
-                                break;
-                            case StepType.Finance:
-                                console.log('save Extension Finance');
-                                break;
-                        }
-                        break;
-                    case WorkflowProcessType.TerminateConsultant:
-                        switch (this._workflowDataService.workflowProgress.currentlyActiveStep) {
-                            case StepType.Sales:
-                                console.log('save Extension Sales');
-                                break;
-                            case StepType.Contract:
-                                console.log('save Extension Contracts');
-                                break;
-                            case StepType.Finance:
-                                console.log('save Extension Finance');
-                                break;
-                        }
+                    case StepType.Finance:
+                        this._workflowDataService.startClientPeriodFinanceSaved.emit(isDraft);
                         break;
                 }
                 break;
-            case WorkflowTopSections.ChangePeriod:
-                switch (this._workflowDataService.workflowProgress.currentlyActiveSideSection) {
-                    case WorkflowProcessType.ChangeClientPeriod:
-                        switch (this._workflowDataService.workflowProgress.currentlyActiveStep) {
-                            case StepType.Sales:
-                                console.log('save Extension Sales');
-                                break;
-                            case StepType.Contract:
-                                console.log('save Extension Contracts');
-                                break;
-                            case StepType.Finance:
-                                console.log('save Extension Finance');
-                                break;
-                        }
+
+            case WorkflowProcessType.TerminateWorkflow:
+                switch (this._workflowDataService.workflowProgress.currentlyActiveStep) {
+                    case StepType.Sales:
+                        this._workflowDataService.workflowTerminationSalesSaved.emit(isDraft);
                         break;
-                    case WorkflowProcessType.TerminateWorkflow:
-                        switch (this._workflowDataService.workflowProgress.currentlyActiveStep) {
-                            case StepType.Sales:
-                                console.log('save Extension Sales');
-                                break;
-                            case StepType.Contract:
-                                console.log('save Extension Contracts');
-                                break;
-                            case StepType.Finance:
-                                console.log('save Extension Finance');
-                                break;
-                        }
+                    case StepType.Contract:
+                        this._workflowDataService.workflowTerminationContractsSaved.emit(isDraft);
                         break;
-                    case WorkflowProcessType.StartConsultantPeriod:
-                        switch (this._workflowDataService.workflowProgress.currentlyActiveStep) {
-                            case StepType.Sales:
-                                console.log('save Extension Sales');
-                                break;
-                            case StepType.Contract:
-                                console.log('save Extension Contracts');
-                                break;
-                            case StepType.Finance:
-                                console.log('save Extension Finance');
-                                break;
-                        }
+                    case StepType.Sourcing:
+                        this._workflowDataService.workflowTerminationSourcingSaved.emit(isDraft);
                         break;
-                    case WorkflowProcessType.ChangeConsultantPeriod:
-                        switch (this._workflowDataService.workflowProgress.currentlyActiveStep) {
-                            case StepType.Sales:
-                                console.log('save Extension Sales');
-                                break;
-                            case StepType.Contract:
-                                console.log('save Extension Contracts');
-                                break;
-                            case StepType.Finance:
-                                console.log('save Extension Finance');
-                                break;
-                        }
+                }
+                break;
+
+            case WorkflowProcessType.TerminateConsultant:
+                switch (this._workflowDataService.workflowProgress.currentlyActiveStep) {
+                    case StepType.Sales:
+                        this._workflowDataService.consultantTerminationSalesSaved.emit(isDraft);
                         break;
-                    case WorkflowProcessType.ExtendConsultantPeriod:
-                        switch (this._workflowDataService.workflowProgress.currentlyActiveStep) {
-                            case StepType.Sales:
-                                console.log('save Extension Sales');
-                                break;
-                            case StepType.Contract:
-                                console.log('save Extension Contracts');
-                                break;
-                            case StepType.Finance:
-                                console.log('save Extension Finance');
-                                break;
-                        }
+                    case StepType.Contract:
+                        this._workflowDataService.workflowConsultantTerminationContractsSaved.emit(isDraft);
                         break;
-                    case WorkflowProcessType.TerminateConsultant:
-                        switch (this._workflowDataService.workflowProgress.currentlyActiveStep) {
-                            case StepType.Sales:
-                                console.log('save Extension Sales');
-                                break;
-                            case StepType.Contract:
-                                console.log('save Extension Contracts');
-                                break;
-                            case StepType.Finance:
-                                console.log('save Extension Finance');
-                                break;
-                        }
+                    case StepType.Sourcing:
+                        this._workflowDataService.workflowConsultantTerminationSourcingSaved.emit(isDraft);
                         break;
-                    
+                }
+                break;
+
+            case WorkflowProcessType.StartConsultantPeriod:
+            case WorkflowProcessType.ChangeConsultantPeriod:
+            case WorkflowProcessType.ExtendConsultantPeriod:
+                switch (this._workflowDataService.workflowProgress.currentlyActiveStep) {
+                    case StepType.Sales:
+                        this._workflowDataService.consultantStartChangeOrExtendSalesSaved.emit(isDraft);
+                        break;
+                    case StepType.Contract:
+                        this._workflowDataService.consultantStartChangeOrExtendContractsSaved.emit(isDraft);
+                        break;
+                    case StepType.Finance:
+                        this._workflowDataService.consultantStartChangeOrExtendFinanceSaved.emit(isDraft);
+                        break;
                 }
                 break;
         }
+        // break;
+
+        // switch (this._workflowDataService.workflowProgress.currentlyActiveSection) {
+        //     case WorkflowTopSections.StartPeriod:
+        //         switch (this._workflowDataService.workflowProgress.currentlyActiveSideSection) {
+        //             case WorkflowProcessType.StartClientPeriod:
+        //                 switch (this._workflowDataService.workflowProgress.currentlyActiveStep) {
+        //                     case StepType.Sales:
+        //                         this._workflowDataService.startClientPeriodSalesSaved.emit(isDraft);
+        //                         break;
+        //                     case StepType.Contract:
+        //                         this._workflowDataService.startClientPeriodContractsSaved.emit(isDraft);
+        //                         break;
+        //                     case StepType.Finance:
+        //                         this._workflowDataService.startClientPeriodFinanceSaved.emit(isDraft);
+        //                         break;
+        //                 }
+        //             break;
+        //             case WorkflowProcessType.TerminateWorkflow:
+        //                 switch (this._workflowDataService.workflowProgress.currentlyActiveStep) {
+        //                     case StepType.Sales:
+        //                         this._workflowDataService.workflowTerminationSalesSaved.emit(isDraft);
+        //                         break;
+        //                     case StepType.Contract:
+        //                         this._workflowDataService.workflowTerminationContractsSaved.emit(isDraft);
+        //                         break;
+        //                     case StepType.Sourcing:
+        //                         this._workflowDataService.workflowTerminationSourcingSaved.emit(isDraft);
+        //                         break;
+        //                 }
+        //             break;
+        //             case WorkflowProcessType.StartConsultantPeriod:
+        //             case WorkflowProcessType.ChangeConsultantPeriod:
+        //             case WorkflowProcessType.ExtendConsultantPeriod:
+        //                 switch (this._workflowDataService.workflowProgress.currentlyActiveStep) {
+        //                     case StepType.Sales:
+        //                         this._workflowDataService.consultantStartChangeOrExtendSalesSaved.emit(isDraft);
+        //                         break;
+        //                     case StepType.Contract:
+        //                         this._workflowDataService.consultantStartChangeOrExtendContractsSaved.emit(isDraft);
+        //                         break;
+        //                     case StepType.Finance:
+        //                         this._workflowDataService.consultantStartChangeOrExtendFinanceSaved.emit(isDraft);
+        //                         break;
+        //                 }
+        //             break;
+        //             case WorkflowProcessType.TerminateConsultant:
+        //                 switch (this._workflowDataService.workflowProgress.currentlyActiveStep) {
+        //                     case StepType.Sales:
+        //                         this._workflowDataService.consultantTerminationSalesSaved.emit(isDraft);
+        //                         console.log('save draft WF Term Cons Sales');
+        //                         break;
+        //                     case StepType.Contract:
+        //                         this.saveContractsConsultantTerminationStep(isDraft);
+        //                         console.log('save draft WF Term Cons Contracts');
+        //                         break;
+        //                     case StepType.Sourcing:
+        //                         this.saveSourcingConsultantTerminationStep(isDraft);
+        //                         console.log('save draft WF Term Cons Sourcing');
+        //                         break;
+        //                 }
+        //             break;
+        //         }
+        //         break;
+        //     case WorkflowTopSections.ExtendPeriod:
+        //         switch (this._workflowDataService.workflowProgress.currentlyActiveSideSection) {
+        //             case WorkflowProcessType.ExtendClientPeriod:
+        //                 switch (this._workflowDataService.workflowProgress.currentlyActiveStep) {
+        //                     case StepType.Sales:
+        //                         console.log('save Extension Sales');
+        //                         break;
+        //                     case StepType.Contract:
+        //                         console.log('save Extension Contracts');
+        //                         break;
+        //                     case StepType.Finance:
+        //                         console.log('save Extension Finance');
+        //                         break;
+        //                 }
+        //                 break;
+        //             case WorkflowProcessType.TerminateWorkflow:
+        //                 switch (this._workflowDataService.workflowProgress.currentlyActiveStep) {
+        //                     case StepType.Sales:
+        //                         console.log('save Extension Sales');
+        //                         break;
+        //                     case StepType.Contract:
+        //                         console.log('save Extension Contracts');
+        //                         break;
+        //                     case StepType.Finance:
+        //                         console.log('save Extension Finance');
+        //                         break;
+        //                 }
+        //                 break;
+        //             case WorkflowProcessType.StartConsultantPeriod:
+        //             case WorkflowProcessType.ChangeConsultantPeriod:
+        //             case WorkflowProcessType.ExtendConsultantPeriod:
+        //                 switch (this._workflowDataService.workflowProgress.currentlyActiveStep) {
+        //                     case StepType.Sales:
+        //                         this._workflowDataService.consultantStartChangeOrExtendSalesSaved.emit(isDraft);
+        //                         break;
+        //                     case StepType.Contract:
+        //                         this._workflowDataService.consultantStartChangeOrExtendContractsSaved.emit(isDraft);
+        //                         break;
+        //                     case StepType.Finance:
+        //                         this._workflowDataService.consultantStartChangeOrExtendFinanceSaved.emit(isDraft);
+        //                         break;
+        //                 }
+        //                 break;
+        //             case WorkflowProcessType.TerminateConsultant:
+        //                 switch (this._workflowDataService.workflowProgress.currentlyActiveStep) {
+        //                     case StepType.Sales:
+        //                         console.log('save Extension Sales');
+        //                         break;
+        //                     case StepType.Contract:
+        //                         console.log('save Extension Contracts');
+        //                         break;
+        //                     case StepType.Finance:
+        //                         console.log('save Extension Finance');
+        //                         break;
+        //                 }
+        //                 break;
+        //         }
+        //         break;
+        //     case WorkflowTopSections.ChangePeriod:
+        //         switch (this._workflowDataService.workflowProgress.currentlyActiveSideSection) {
+        //             case WorkflowProcessType.ChangeClientPeriod:
+        //                 switch (this._workflowDataService.workflowProgress.currentlyActiveStep) {
+        //                     case StepType.Sales:
+        //                         console.log('save Extension Sales');
+        //                         break;
+        //                     case StepType.Contract:
+        //                         console.log('save Extension Contracts');
+        //                         break;
+        //                     case StepType.Finance:
+        //                         console.log('save Extension Finance');
+        //                         break;
+        //                 }
+        //                 break;
+        //             case WorkflowProcessType.TerminateWorkflow:
+        //                 switch (this._workflowDataService.workflowProgress.currentlyActiveStep) {
+        //                     case StepType.Sales:
+        //                         console.log('save Extension Sales');
+        //                         break;
+        //                     case StepType.Contract:
+        //                         console.log('save Extension Contracts');
+        //                         break;
+        //                     case StepType.Finance:
+        //                         console.log('save Extension Finance');
+        //                         break;
+        //                 }
+        //                 break;
+        //             case WorkflowProcessType.StartConsultantPeriod:
+        //                 switch (this._workflowDataService.workflowProgress.currentlyActiveStep) {
+        //                     case StepType.Sales:
+        //                         console.log('save Extension Sales');
+        //                         break;
+        //                     case StepType.Contract:
+        //                         console.log('save Extension Contracts');
+        //                         break;
+        //                     case StepType.Finance:
+        //                         console.log('save Extension Finance');
+        //                         break;
+        //                 }
+        //                 break;
+        //             case WorkflowProcessType.ChangeConsultantPeriod:
+        //                 switch (this._workflowDataService.workflowProgress.currentlyActiveStep) {
+        //                     case StepType.Sales:
+        //                         console.log('save Extension Sales');
+        //                         break;
+        //                     case StepType.Contract:
+        //                         console.log('save Extension Contracts');
+        //                         break;
+        //                     case StepType.Finance:
+        //                         console.log('save Extension Finance');
+        //                         break;
+        //                 }
+        //                 break;
+        //             case WorkflowProcessType.ExtendConsultantPeriod:
+        //                 switch (this._workflowDataService.workflowProgress.currentlyActiveStep) {
+        //                     case StepType.Sales:
+        //                         console.log('save Extension Sales');
+        //                         break;
+        //                     case StepType.Contract:
+        //                         console.log('save Extension Contracts');
+        //                         break;
+        //                     case StepType.Finance:
+        //                         console.log('save Extension Finance');
+        //                         break;
+        //                 }
+        //                 break;
+        //             case WorkflowProcessType.TerminateConsultant:
+        //                 switch (this._workflowDataService.workflowProgress.currentlyActiveStep) {
+        //                     case StepType.Sales:
+        //                         console.log('save Extension Sales');
+        //                         break;
+        //                     case StepType.Contract:
+        //                         console.log('save Extension Contracts');
+        //                         break;
+        //                     case StepType.Finance:
+        //                         console.log('save Extension Finance');
+        //                         break;
+        //                 }
+        //                 break;
+                    
+        //         }
+        //         break;
+        // }
     }
 
 
