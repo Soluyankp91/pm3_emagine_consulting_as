@@ -1131,7 +1131,6 @@ export class WorkflowSalesComponent extends AppComponentBase implements OnInit {
         return result;
     }
 
-
     getConsultantRateControls(consultantIndex: number): AbstractControl[] | null {
         return (this.consultantsForm.consultantData.at(consultantIndex).get('specialRates') as FormArray).controls;
     }
@@ -1305,7 +1304,6 @@ export class WorkflowSalesComponent extends AppComponentBase implements OnInit {
             });
 
     }
-
 
     confirmRemoveConsultant(index: number) {
         const consultant = this.consultantsForm.consultantData.at(index).value;
