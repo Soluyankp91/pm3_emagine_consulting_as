@@ -5,6 +5,7 @@ import { MatDialog } from '@angular/material/dialog';
 import { Subject } from 'rxjs';
 import { finalize, takeUntil } from 'rxjs/operators';
 import { InternalLookupService } from 'src/app/shared/common/internal-lookup.service';
+import { ConfirmationDialogComponent } from 'src/app/shared/components/confirmation-dialog/confirmation-dialog.component';
 import { AppComponentBase } from 'src/shared/app-component-base';
 import { ClientPeriodContractsDataDto, WorkflowProcessType, WorkflowServiceProxy, ClientPeriodServiceProxy, ConsultantContractsDataDto, ConsultantSalesDataDto, ContractsClientDataDto, ContractsMainDataDto, EnumEntityTypeDto, PeriodClientSpecialFeeDto, PeriodClientSpecialRateDto, PeriodConsultantSpecialFeeDto, PeriodConsultantSpecialRateDto, ProjectLineDto, ConsultantTerminationContractDataCommandDto, WorkflowTerminationContractDataCommandDto, ConsultantTerminationContractDataQueryDto, ClientContractsServiceProxy, ConsultantPeriodServiceProxy, ConsultantContractsServiceProxy, ConsultantPeriodContractsDataDto } from 'src/shared/service-proxies/service-proxies';
 import { WorkflowConsultantActionsDialogComponent } from '../workflow-consultant-actions-dialog/workflow-consultant-actions-dialog.component';
@@ -661,6 +662,31 @@ export class WorkflowContractsComponent extends AppComponentBase implements OnIn
     terminateConsultant(index: number) {
         const consultantData = this.contractsConsultantsDataForm.consultants.at(index).value;
         console.log('terminate consultant ', consultantData);
+        const scrollStrategy = this.overlay.scrollStrategies.reposition();
+        const dialogRef = this.dialog.open(ConfirmationDialogComponent, {
+            width: '450px',
+            minHeight: '180px',
+            height: 'auto',
+            scrollStrategy,
+            backdropClass: 'backdrop-modal--wrapper',
+            autoFocus: false,
+            panelClass: 'confirmation-modal',
+            data: {
+                confirmationMessageTitle: `Are you sure you want to terminate consultant ${consultantData.consultant?.name ?? ''}?`,
+                // confirmationMessage: 'When you confirm the termination, all the info contained inside this block will disappear.',
+                rejectButtonText: 'Cancel',
+                confirmButtonText: 'Delete',
+                isNegative: true
+            }
+        });
+
+        dialogRef.componentInstance.onConfirmed.subscribe(() => {
+            this.terminateConsultantStart(consultantData.consultant?.id);
+        });
+
+        dialogRef.componentInstance.onRejected.subscribe(() => {
+            // nthng
+        });
     }
 
     //#endregion Consultant menu actions
@@ -898,7 +924,7 @@ export class WorkflowContractsComponent extends AppComponentBase implements OnIn
         input.projectDescription =  this.contractsMainForm.projectDescription?.value;
         input.mainData!.projectTypeId = this.contractsMainForm.projectType?.value?.id;;
         input.mainData!.salesTypeId =  this.contractsMainForm.salesType?.value?.id;
-        input.mainData!.deliveryTypeId =this.contractsMainForm.deliveryType?.value?.id; 
+        input.mainData!.deliveryTypeId =this.contractsMainForm.deliveryType?.value?.id;
         input.mainData!.marginId = this.contractsMainForm.margin?.value?.id;
         input.mainData!.discountId = this.contractsMainForm.discounts?.value?.id;
 
@@ -915,7 +941,7 @@ export class WorkflowContractsComponent extends AppComponentBase implements OnIn
             consultantData.consultantTimeReportingCapCurrencyId = consultantInput.consultantCapOnTimeReportingCurrency?.id;
             consultantData.noSpecialContractTerms = consultantInput.noSpecialContractTerms;
             consultantData.specialContractTerms = consultantInput.specialContractTerms;
-    
+
             consultantData.periodConsultantSpecialFees = new Array<PeriodConsultantSpecialFeeDto>();
             if (consultantInput.clientFees?.length) {
                 for (let specialFee of consultantInput.clientFees) {
@@ -967,7 +993,7 @@ export class WorkflowContractsComponent extends AppComponentBase implements OnIn
                     projectLineInput.invoiceRecipientId = projectLine.invoiceRecipientId;
                     projectLineInput.modifiedById = projectLine.modifiedById;
                     projectLineInput.modificationDate = projectLine.modificationDate;
-    
+
                     consultantData.projectLines.push(projectLineInput);
                 }
             }
@@ -980,13 +1006,13 @@ export class WorkflowContractsComponent extends AppComponentBase implements OnIn
             this._consultantPeriodService.consultantContractsPut(this.periodId!, input)
                 .pipe(finalize(() => this.hideMainSpinner()))
                 .subscribe(result => {
-    
+
                 });
         } else {
             this._consultantContractsService.editFinish(this.periodId!, input)
                 .pipe(finalize(() => this.hideMainSpinner()))
                 .subscribe(result => {
-    
+                    this._workflowDataService.workflowSideSectionUpdated.emit(true);
                 });
         }
     }
@@ -1050,7 +1076,7 @@ export class WorkflowContractsComponent extends AppComponentBase implements OnIn
 
             }))
             .subscribe(result => {
-
+                this._workflowDataService.workflowSideSectionUpdated.emit(true);
             })
     }
 
@@ -1118,7 +1144,18 @@ export class WorkflowContractsComponent extends AppComponentBase implements OnIn
 
             }))
             .subscribe(result => {
-
+                this._workflowDataService.workflowSideSectionUpdated.emit(true);
             })
+    }
+
+    terminateConsultantStart(index: number) {
+        // this.consultantInformation = this.consultantsForm.consultantData.at(index).value.consultantName;
+        this._workflowServiceProxy.terminationConsultantStart(this.workflowId!, index)
+        .pipe(finalize(() => {
+
+        }))
+        .subscribe(result => {
+            this._workflowDataService.workflowSideSectionAdded.emit(true);
+        });
     }
 }

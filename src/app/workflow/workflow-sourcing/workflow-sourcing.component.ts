@@ -131,7 +131,7 @@ export class WorkflowSourcingComponent implements OnInit, OnDestroy {
 
             }))
             .subscribe(result => {
-
+                this._workflowDataService.workflowSideSectionUpdated.emit(true);
             })
     }
 
@@ -190,7 +190,7 @@ export class WorkflowSourcingComponent implements OnInit, OnDestroy {
 
             }))
             .subscribe(result => {
-
+                this._workflowDataService.workflowSideSectionUpdated.emit(true);
             })
     }
 
