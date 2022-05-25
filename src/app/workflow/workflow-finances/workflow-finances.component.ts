@@ -2,7 +2,7 @@ import { Component, Injector, Input, OnDestroy, OnInit } from '@angular/core';
 import { FormArray, FormBuilder, FormControl } from '@angular/forms';
 import { Subject } from 'rxjs';
 import { finalize, takeUntil } from 'rxjs/operators';
-import { AppComopnentBase } from 'src/shared/app-component-base';
+import { AppComponentBase } from 'src/shared/app-component-base';
 import { ClientPeriodServiceProxy, ConsultantPeriodFinanceDataDto, WorkflowProcessType } from 'src/shared/service-proxies/service-proxies';
 import { WorkflowDataService } from '../workflow-data.service';
 import { FinancesClientForm, FinancesConsultantsForm } from './workflow-finances.model';
@@ -12,7 +12,7 @@ import { FinancesClientForm, FinancesConsultantsForm } from './workflow-finances
     templateUrl: './workflow-finances.component.html',
     styleUrls: ['./workflow-finances.component.scss']
 })
-export class WorkflowFinancesComponent extends AppComopnentBase implements OnInit, OnDestroy {
+export class WorkflowFinancesComponent extends AppComponentBase implements OnInit, OnDestroy {
     @Input() workflowId: string;
     @Input() periodId: string | undefined;
 

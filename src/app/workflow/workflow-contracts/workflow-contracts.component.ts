@@ -6,7 +6,7 @@ import { Subject } from 'rxjs';
 import { finalize, takeUntil } from 'rxjs/operators';
 import { InternalLookupService } from 'src/app/shared/common/internal-lookup.service';
 import { ConfirmationDialogComponent } from 'src/app/shared/components/confirmation-dialog/confirmation-dialog.component';
-import { AppComopnentBase } from 'src/shared/app-component-base';
+import { AppComponentBase } from 'src/shared/app-component-base';
 import { ClientPeriodContractsDataDto, WorkflowProcessType, WorkflowServiceProxy, ClientPeriodServiceProxy, ConsultantContractsDataDto, ConsultantSalesDataDto, ContractsClientDataDto, ContractsMainDataDto, EnumEntityTypeDto, PeriodClientSpecialFeeDto, PeriodClientSpecialRateDto, PeriodConsultantSpecialFeeDto, PeriodConsultantSpecialRateDto, ProjectLineDto, ConsultantTerminationContractDataCommandDto, WorkflowTerminationContractDataCommandDto, ConsultantTerminationContractDataQueryDto, ClientContractsServiceProxy, ConsultantPeriodServiceProxy, ConsultantContractsServiceProxy, ConsultantPeriodContractsDataDto } from 'src/shared/service-proxies/service-proxies';
 import { WorkflowConsultantActionsDialogComponent } from '../workflow-consultant-actions-dialog/workflow-consultant-actions-dialog.component';
 import { WorkflowDataService } from '../workflow-data.service';
@@ -20,7 +20,7 @@ import { WorkflowConsultantsLegalContractForm, WorkflowContractsClientDataForm, 
     templateUrl: './workflow-contracts.component.html',
     styleUrls: ['./workflow-contracts.component.scss']
 })
-export class WorkflowContractsComponent extends AppComopnentBase implements OnInit, OnDestroy {
+export class WorkflowContractsComponent extends AppComponentBase implements OnInit, OnDestroy {
     @Input() workflowId: string;
     @Input() periodId: string | undefined;
 
