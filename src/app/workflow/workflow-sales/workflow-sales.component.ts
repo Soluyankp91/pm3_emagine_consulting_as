@@ -103,7 +103,7 @@ export class WorkflowSalesComponent extends AppComponentBase implements OnInit {
     filteredReferencePersons: any[] = [];
     filteredEvaluationReferencePersons: any[] = [];
     filteredClientInvoicingRecipients: any[] = [];
-
+    filteredFinalEvaluationReferencePersons: any[] = [];
     consultantRateToEdit: PeriodConsultantSpecialRateDto;
     isConsultantRateEditing = false;
     consultantFeeToEdit: PeriodConsultantSpecialFeeDto;
@@ -124,6 +124,8 @@ export class WorkflowSalesComponent extends AppComponentBase implements OnInit {
     filteredConsultantCountries: EnumEntityTypeDto[];
     filteredConsultantClientAddresses: any[] = [];
     filteredContractSigners: any[] = [];
+
+    clientIdFromTerminationSales: number;
 
     private _unsubscribe = new Subject();
 
@@ -326,7 +328,32 @@ export class WorkflowSalesComponent extends AppComponentBase implements OnInit {
                     this.filteredEvaluationReferencePersons = [{ firstName: 'No records found', lastName: '', id: 'no-data' }];
                 }
             });
-        //#endregion form subscriptions
+
+            this.salesTerminateConsultantForm.finalEvaluationReferencePerson?.valueChanges
+            .pipe(
+                takeUntil(this._unsubscribe),
+                debounceTime(300),
+                switchMap((value: any) => {
+                    let toSend = {
+                        clientId: this.clientIdFromTerminationSales,
+                        name: value ?? '',
+                        maxRecordsCount: 1000,
+                    };
+                    if (value?.id) {
+                        toSend.name = value.id
+                            ? value.firstName
+                            : value;
+                    }
+                    return this._lookupService.contacts(toSend.clientId, toSend.name, toSend.maxRecordsCount);
+                }),
+            ).subscribe((list: ContactResultDto[]) => {
+                if (list.length) {
+                    this.filteredFinalEvaluationReferencePersons = list;
+                } else {
+                    this.filteredFinalEvaluationReferencePersons = [{ firstName: 'No records found', lastName: '', id: 'no-data' }];
+                }
+            });
+
     }
 
     ngOnInit(): void {
@@ -749,6 +776,7 @@ export class WorkflowSalesComponent extends AppComponentBase implements OnInit {
             }))
             .subscribe(result => {
                 this.nonStandartTerminationTimes = result;
+                console.log(this.nonStandartTerminationTimes['Before end of contract'])
             });
     }
 
@@ -1499,7 +1527,7 @@ export class WorkflowSalesComponent extends AppComponentBase implements OnInit {
                 } else {
                     consultantInput.consultantId = consultant.consultantName?.id
                     consultantInput.consultant = new ConsultantResultDto();
-    
+
                     consultantInput.consultant.id = consultant.consultantName?.id
                     consultantInput.consultant.name = consultant.consultantName?.name;
                     consultantInput.consultant.legacyId = consultant.consultantName?.legacyId;
@@ -1508,28 +1536,28 @@ export class WorkflowSalesComponent extends AppComponentBase implements OnInit {
                     consultantInput.consultant.externalId = consultant.consultantName?.externalId;
                     consultantInput.consultant.city = consultant.consultantName?.city;
                     consultantInput.consultant.countryId = consultant.consultantName?.contryId;
-    
+
                     consultantInput.startDate = consultant.consultantProjectStartDate;
                     consultantInput.noEndDate = consultant.consultantProjectNoEndDate;
                     consultantInput.endDate = consultant.consultantProjectEndDate;
-    
+
                     consultantInput.isOnsiteWorkplace = consultant.consultantIsOnsiteWorkplace;
                     consultantInput.onsiteClientId = consultant.consultantWorkplaceClientAddress?.clientId;
                     consultantInput.percentageOnSite = consultant.consultantWorkplacePercentageOnSite;
-    
+
                     consultantInput.isEmagineOfficeWorkplace = consultant.consultantIsEmagineOfficeWorkplace;
                     consultantInput.emagineOfficeId = consultant.consultantWorkplaceEmagineOffice?.id;
-    
+
                     consultantInput.isRemoteWorkplace = consultant.consultantIsRemoteWorkplace;
                     consultantInput.remoteAddressCountryId = consultant.consultantWorkplaceRemote?.id;
-    
+
                     consultantInput.noExpectedWorkload = consultant.noExpectedWorkload;
                     consultantInput.expectedWorkloadHours = consultant.expectedWorkloadHours;
                     consultantInput.expectedWorkloadUnitId = consultant.expectedWorkloadUnitId;
                     consultantInput.consultantTimeReportingCapId = consultant.consultantCapOnTimeReporting?.id;
                     consultantInput.consultantTimeReportingCapMaxValue = consultant.consultantTimeReportingCapMaxValue;
                     consultantInput.pdcPaymentEntityId = consultant.consultantProdataEntity?.id;
-    
+
                     consultantInput.consultantRate = new ConsultantRateDto();
                     consultantInput.consultantRate.isTimeBasedRate = consultant.consultantPaymentType?.id === 1; // 1: 'Time based';
                     consultantInput.consultantRate.isFixedRate = consultant.consultantPaymentType?.id === 2;  // 2: 'Fixed';
@@ -1546,7 +1574,7 @@ export class WorkflowSalesComponent extends AppComponentBase implements OnInit {
                         consultantInput.consultantRate.invoicingTimeId = consultant.consultantInvoicingTime?.id;
                     }
                     consultantInput.consultantRate.manualDate = consultant.manualDate;
-    
+
                     if (consultant.specialRates.length) {
                         consultantInput.periodConsultantSpecialRates = new Array<PeriodConsultantSpecialRateDto>();
                         for (let rate of consultant.specialRates) {
@@ -1565,7 +1593,7 @@ export class WorkflowSalesComponent extends AppComponentBase implements OnInit {
                     } else {
                         consultantInput.noSpecialRate = true;
                     }
-    
+
                     if (consultant.specialFees.length) {
                         consultantInput.periodConsultantSpecialFees = new Array<PeriodConsultantSpecialFeeDto>();
                         for (let fee of consultant.specialFees) {
@@ -1584,7 +1612,7 @@ export class WorkflowSalesComponent extends AppComponentBase implements OnInit {
                     } else {
                         consultantInput.noSpecialFee = true;
                     }
-    
+
                     consultantInput.noSpecialContractTerms = consultant.consultantSpecialContractTermsNone;
                     consultantInput.specialContractTerms = consultant.consultantSpecialContractTerms;
                     consultantInput.deliveryManagerSameAsAccountManager = consultant.deliveryManagerSameAsAccountManager;
@@ -1609,7 +1637,7 @@ export class WorkflowSalesComponent extends AppComponentBase implements OnInit {
                     this.hideMainSpinner();
                 }))
                 .subscribe(result => {
-
+                    this._workflowDataService.workflowSideSectionUpdated.emit(true);
                 })
         }
 
@@ -1834,28 +1862,6 @@ export class WorkflowSalesComponent extends AppComponentBase implements OnInit {
         });
     }
 
-    // Termination
-    terminateConsultant(index: number) {
-        this.consultantInformation = this.consultantsForm.consultantData.at(index).value.consultantName;
-        this._workflowServiceProxy.terminationConsultantStart(this.workflowId!, this.consultantInformation.id)
-        .pipe(finalize(() => {
-
-        }))
-        .subscribe(result => {
-            this._workflowDataService.workflowSideSectionAdded.emit(true);
-        });
-    }
-
-    terminateWorkflow() {
-        this._workflowServiceProxy.terminationStart(this.workflowId!)
-        .pipe(finalize(() => {
-
-        }))
-        .subscribe(result => {
-            this._workflowDataService.workflowSideSectionAdded.emit(true);
-        });
-    }
-
     //#endregion Consultant menu actions
 
     //#region commissions form array
@@ -1985,7 +1991,7 @@ export class WorkflowSalesComponent extends AppComponentBase implements OnInit {
         let input = new ConsultantTerminationSalesDataCommandDto();
         input.terminationTime =  this.salesTerminateConsultantForm?.terminationTime?.value;
         input.endDate = this.salesTerminateConsultantForm?.endDate?.value;
-        input.terminationReason = this.salesTerminateConsultantForm?.terminationReason?.value;
+        input.terminationReason = +this.salesTerminateConsultantForm?.terminationReason?.value;
         input.causeOfNonStandardTerminationTime = this.salesTerminateConsultantForm?.causeOfNonStandardTerminationTime?.value;
         input.additionalComments = this.salesTerminateConsultantForm?.additionalComments?.value;
 
@@ -2020,7 +2026,7 @@ export class WorkflowSalesComponent extends AppComponentBase implements OnInit {
 
             }))
             .subscribe(result => {
-
+                this._workflowDataService.workflowSideSectionUpdated.emit(true);
             })
     }
 
@@ -2038,6 +2044,7 @@ export class WorkflowSalesComponent extends AppComponentBase implements OnInit {
                 this.salesTerminateConsultantForm.additionalComments?.setValue(result?.additionalComments, {emitEvent: false});
 
                 //Final Evaluation
+                this.clientIdFromTerminationSales = result.clientId!;
                 this.salesTerminateConsultantForm.finalEvaluationReferencePerson?.setValue(result?.finalEvaluationReferencePerson, {emitEvent: false}); // add findItemById function
                 this.salesTerminateConsultantForm.noEvaluation?.setValue(result?.noEvaluation, {emitEvent: false});
                 this.salesTerminateConsultantForm.causeOfNoEvaluation?.setValue(result?.causeOfNoEvaluation, {emitEvent: false});
@@ -2051,7 +2058,7 @@ export class WorkflowSalesComponent extends AppComponentBase implements OnInit {
         let input = new WorkflowTerminationSalesDataCommandDto();
         input.terminationTime =  this.salesTerminateConsultantForm?.terminationTime?.value;
         input.endDate = this.salesTerminateConsultantForm?.endDate?.value;
-        input.terminationReason = this.salesTerminateConsultantForm?.terminationReason?.value;
+        input.terminationReason = +this.salesTerminateConsultantForm?.terminationReason?.value;
         input.causeOfNonStandardTerminationTime = this.salesTerminateConsultantForm?.causeOfNonStandardTerminationTime?.value;
         input.additionalComments = this.salesTerminateConsultantForm?.additionalComments?.value;
 
@@ -2085,8 +2092,49 @@ export class WorkflowSalesComponent extends AppComponentBase implements OnInit {
 
             }))
             .subscribe(result => {
-
+                this._workflowDataService.workflowSideSectionUpdated.emit(true);
             })
+    }
+
+    terminateConsultant(index: number) {
+        this.consultantInformation = this.consultantsForm.consultantData.at(index).value.consultantName;
+
+        console.log('terminate consultant ',  this.consultantInformation.id);
+        const scrollStrategy = this.overlay.scrollStrategies.reposition();
+        const dialogRef = this.dialog.open(ConfirmationDialogComponent, {
+            width: '450px',
+            minHeight: '180px',
+            height: 'auto',
+            scrollStrategy,
+            backdropClass: 'backdrop-modal--wrapper',
+            autoFocus: false,
+            panelClass: 'confirmation-modal',
+            data: {
+                confirmationMessageTitle: `Are you sure you want to terminate consultant ${this.consultantInformation?.name ?? ''}?`,
+                // confirmationMessage: 'When you confirm the termination, all the info contained inside this block will disappear.',
+                rejectButtonText: 'Cancel',
+                confirmButtonText: 'Terminate',
+                isNegative: true
+            }
+        });
+
+        dialogRef.componentInstance.onConfirmed.subscribe(() => {
+            this.terminateConsultantStart(this.consultantInformation?.id!);
+        });
+
+        dialogRef.componentInstance.onRejected.subscribe(() => {
+            // nthng
+        });
+    }
+
+    terminateConsultantStart(index: number) {
+        this._workflowServiceProxy.terminationConsultantStart(this.workflowId!, index)
+            .pipe(finalize(() => {
+
+            }))
+            .subscribe(result => {
+                this._workflowDataService.workflowSideSectionAdded.emit(true);
+            });
     }
 
     //#endregion termination
@@ -2249,13 +2297,13 @@ export class WorkflowSalesComponent extends AppComponentBase implements OnInit {
             this._consultantPeriodSerivce.consultantSalesPut(this.periodId!, input)
                 .pipe(finalize(() => this.hideMainSpinner()))
                 .subscribe(result => {
-    
+
                 });
         } else {
             this._consultantSalesSerivce.editFinish(this.periodId!, input)
                 .pipe(finalize(() => this.hideMainSpinner()))
                 .subscribe(result => {
-    
+                    this._workflowDataService.workflowSideSectionUpdated.emit(true);
                 });
         }
     }

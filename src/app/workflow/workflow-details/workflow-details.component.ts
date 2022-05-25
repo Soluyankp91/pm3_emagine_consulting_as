@@ -14,6 +14,7 @@ import { InternalLookupService } from 'src/app/shared/common/internal-lookup.ser
 import { WorkflowActionsDialogComponent } from '../workflow-actions-dialog/workflow-actions-dialog.component';
 import { AppComponentBase } from 'src/shared/app-component-base';
 import * as moment from 'moment';
+import { ConfirmationDialogComponent } from 'src/app/shared/components/confirmation-dialog/confirmation-dialog.component';
 
 @Component({
   selector: 'app-workflow-details',
@@ -473,7 +474,36 @@ export class WorkflowDetailsComponent extends AppComponentBase implements OnInit
     }
 
     // add Termiantion
+
     addTermination() {
+        const scrollStrategy = this.overlay.scrollStrategies.reposition();
+        const dialogRef = this.dialog.open(ConfirmationDialogComponent, {
+            width: '450px',
+            minHeight: '180px',
+            height: 'auto',
+            scrollStrategy,
+            backdropClass: 'backdrop-modal--wrapper',
+            autoFocus: false,
+            panelClass: 'confirmation-modal',
+            data: {
+                confirmationMessageTitle: `Are you sure you want to terminate workflow?`,
+                // confirmationMessage: 'When you confirm the termination, all the info contained inside this block will disappear.',
+                rejectButtonText: 'Cancel',
+                confirmButtonText: 'Terminate',
+                isNegative: true
+            }
+        });
+
+        dialogRef.componentInstance.onConfirmed.subscribe(() => {
+            this.terminateWorkflowStart();
+        });
+
+        dialogRef.componentInstance.onRejected.subscribe(() => {
+            // nthng
+        });
+    }
+
+    terminateWorkflowStart() {
         this._workflowServiceProxy.terminationStart(this.workflowId!)
         .pipe(finalize(() => {
 

@@ -41,6 +41,8 @@ export class WorkflowDataService {
     workflowTerminationSourcingCompleted = new EventEmitter<boolean>();
 
     workflowSideSectionChanged = new EventEmitter<boolean>();
+    workflowSideSectionUpdated = new EventEmitter<boolean>();
+
 
     constructor() { }
 
