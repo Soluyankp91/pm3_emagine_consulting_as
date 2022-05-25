@@ -13,7 +13,6 @@ import { WorkflowProgressStatus, WorkflowTopSections, WorkflowSteps, WorkflowDia
 import { InternalLookupService } from 'src/app/shared/common/internal-lookup.service';
 import { WorkflowActionsDialogComponent } from '../workflow-actions-dialog/workflow-actions-dialog.component';
 import { AppComponentBase, NotifySeverity } from 'src/shared/app-component-base';
-import { MsalService } from '@azure/msal-angular';
 import { ConfirmationDialogComponent } from 'src/app/shared/components/confirmation-dialog/confirmation-dialog.component';
 
 @Component({
@@ -67,7 +66,6 @@ export class WorkflowDetailsComponent extends AppComponentBase implements OnInit
         private _internalLookupService: InternalLookupService,
         private _workflowServiceProxy: WorkflowServiceProxy,
         private _clientPeriodService: ClientPeriodServiceProxy,
-        private _authService: MsalService
     ) {
         super(injector);
     }
@@ -560,8 +558,9 @@ export class WorkflowDetailsComponent extends AppComponentBase implements OnInit
                 // input.endDate = result.endDate;
                 // input.noEndDate = result.noEndDate;
                 // input.extendConsultantIds = result.noEndDate;
+                this.showMainSpinner();
                 this._clientPeriodService.clientExtend(this._workflowDataService.getWorkflowProgress.currentlyActivePeriodId!, result)
-                    .pipe(finalize(() => {}))
+                    .pipe(finalize(() => this.hideMainSpinner()))
                     .subscribe(result => {
                         this._workflowDataService.workflowSideSectionAdded.emit(true);
                     });
@@ -607,8 +606,9 @@ export class WorkflowDetailsComponent extends AppComponentBase implements OnInit
             //     input.consultantPeriods?.push(consultantInput);
             // })
             if (result) {
+                this.showMainSpinner();
                 this._clientPeriodService.clientChange(this._workflowDataService.getWorkflowProgress.currentlyActivePeriodId!, result)
-                    .pipe(finalize(() => {}))
+                    .pipe(finalize(() => this.hideMainSpinner()))
                     .subscribe(result => {
                         this._workflowDataService.workflowSideSectionAdded.emit(true);
                     });

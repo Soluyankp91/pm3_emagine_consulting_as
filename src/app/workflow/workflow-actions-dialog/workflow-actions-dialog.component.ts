@@ -115,11 +115,13 @@ export class WorkflowActionsDialogComponent extends AppComponentBase implements 
                 this.onConfirmed.emit(changeWorkflowOutput);
                 break;
             case WorkflowDiallogAction.Extend:
+                const consutlantsToExtend = this.extendWorkflowForm.value.consultants;
                 let extendWorkflowOutput = new ExtendClientPeriodDto();
                 extendWorkflowOutput.startDate = this.extendWorkflowForm.startDate?.value,
                 extendWorkflowOutput.endDate = this.extendWorkflowForm.endDate?.value,
                 extendWorkflowOutput.noEndDate = this.extendWorkflowForm.noEndDate?.value,
-                extendWorkflowOutput.extendConsultantIds = [];
+                extendWorkflowOutput.extendConsultantIds = consutlantsToExtend.filter((x: any) => x.extendConsutlant).map((y: any) => y.consutlantId);
+                console.log(extendWorkflowOutput.extendConsultantIds);
                 this.onConfirmed.emit(extendWorkflowOutput);
                 break;
             case WorkflowDiallogAction.Terminate:

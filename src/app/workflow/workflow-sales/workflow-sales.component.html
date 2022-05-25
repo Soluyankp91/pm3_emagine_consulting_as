@@ -1,4 +1,5 @@
 <div class="workflow-sales">
+    <button class="absolute-edit-toggle" mat-icon-button *ngIf="canToggleEditMode" (click)="toggleEditMode()"><mat-icon>{{readOnlyMode ? 'create' : 'save'}}</mat-icon></button>
     <ng-container *ngIf="readOnlyMode; else editMode">
         <ng-container *ngIf="(activeSideSection !== workflowSideSections.TerminateWorkflow) && (activeSideSection !== workflowSideSections.TerminateConsultant); else terminationTemplate">
             <!-- Main data -->

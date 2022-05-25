@@ -29,6 +29,8 @@ export class WorkflowSalesComponent extends AppComponentBase implements OnInit {
     @Input() activeSideSection: number;
     @Input() isCompleted: boolean;
 
+    @Input() permissionsForCurrentUser: { [key: string]: boolean; } | undefined;
+    editEnabledForcefuly = false;
     consultantId = 1; // FIXME: fix after be changes
     consultantInformation: ConsultantResultDto; // FIXME: fix after be changes
     // workflowSideSections = WorkflowSideSections;
@@ -363,6 +365,8 @@ export class WorkflowSalesComponent extends AppComponentBase implements OnInit {
             this.workflowId = params.get('id')!;
         });
 
+        console.log(this.permissionsForCurrentUser!["Edit"]);
+
         this.filteredClientSpecialRates = this.clientSpecialRateFilter.valueChanges
             .pipe(
             map(value => {
@@ -447,6 +451,15 @@ export class WorkflowSalesComponent extends AppComponentBase implements OnInit {
                 //TODO: add all side sections
                 this.detectActiveSideSection();
             });
+    }
+
+    toggleEditMode() {
+        this.isCompleted = !this.isCompleted;
+        this.editEnabledForcefuly = !this.editEnabledForcefuly;
+    }
+
+    get canToggleEditMode() {
+        return this.permissionsForCurrentUser!["Edit"] && (this.isCompleted || this.editEnabledForcefuly);
     }
 
     get readOnlyMode() {
