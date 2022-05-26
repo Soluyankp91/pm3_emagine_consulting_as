@@ -1,4 +1,4 @@
-import { Component, OnInit, ViewChild } from '@angular/core';
+import { AfterViewInit, Component, OnInit, ViewChild } from '@angular/core';
 import { FormControl } from '@angular/forms';
 import { GanttDate, GanttItem, GanttViewOptions, GanttViewType, NgxGanttComponent } from '@worktile/gantt';
 import { getUnixTime } from 'date-fns';
@@ -11,13 +11,14 @@ import { InternalLookupService } from '../shared/common/internal-lookup.service'
 import { ManagerStatus } from '../shared/components/manager-search/manager-search.model';
 import { MainOverviewStatuses, OverviewData, OverviewFlag, SelectableEmployeeDto, SelectableStatusesDto } from './main-overview.model';
 import * as moment from 'moment';
+import { MsalService } from '@azure/msal-angular';
 
 @Component({
     selector: 'app-main-overview',
     templateUrl: './main-overview.component.html',
     styleUrls: ['./main-overview.component.scss']
 })
-export class MainOverviewComponent implements OnInit {
+export class MainOverviewComponent implements OnInit, AfterViewInit {
     @ViewChild('gantt') ganttComponent: NgxGanttComponent;
 
     workflowFilter = new FormControl(null);
@@ -55,19 +56,19 @@ export class MainOverviewComponent implements OnInit {
 
     // gant
     items: GanttItem<OverviewData>[] = [
-        { id: '000000', title: 'Leadership support', color: 'rgb(250, 173, 25)', origin: { firstName: 'Frederick', lastName: 'Rikke', process: OverviewFlag.Extended }, start: getUnixTime(new Date(2022, 1, 1)), end: getUnixTime(new Date(2022, 2, 31))},
-        { id: '000001', title: 'Leadership support', color: 'rgb(250, 173, 25)', origin: {  firstName: 'Frederick', lastName: 'Rikke', process: OverviewFlag.ExtensionExpected }, start: getUnixTime(new Date(2022, 1, 2)), end: getUnixTime(new Date(2022, 2, 2))},
-        { id: '000002', title: 'Leadership support', color: 'rgb(23, 162, 151)', origin: { firstName: 'Frederick', lastName: 'Rikke', process: OverviewFlag.Terminated }, start: getUnixTime(new Date(2022, 1, 1)), end: getUnixTime(new Date(2022, 2, 31))},
-        { id: '000003', title: 'Leadership support', color: 'rgb(139, 209, 203)', origin: { firstName: 'Frederick', lastName: 'Rikke', process: OverviewFlag.ExpectedToTerminate }, start: getUnixTime(new Date(2022, 2, 1)), end: getUnixTime(new Date(2022, 2, 31))},
-        { id: '000004', title: 'Leadership support', color: 'rgb(139, 209, 203)', origin: { firstName: 'Frederick', lastName: 'Rikke', process: OverviewFlag.ExtensionInNegotiation }, start: getUnixTime(new Date(2022, 2, 1)), end: getUnixTime(new Date(2022, 2, 31))},
-        { id: '000005', title: 'Leadership support', color: 'rgb(23, 162, 151)', origin: { firstName: 'Frederick', lastName: 'Rikke', process: OverviewFlag.RequiresAttention }, start: getUnixTime(new Date(2022, 2, 1)), end: getUnixTime(new Date(2022, 2, 31))}
+        { id: '000000', title: 'Leadership support', color: 'rgb(250, 173, 25)', origin: { firstName: 'Frederick', lastName: 'Rikke', process: OverviewFlag.Extended }, start: getUnixTime(new Date(2022, 5, 1)), end: getUnixTime(new Date(2022, 8, 3))},
+        { id: '000001', title: 'Leadership support', color: 'rgb(250, 173, 25)', origin: {  firstName: 'Frederick', lastName: 'Rikke', process: OverviewFlag.ExtensionExpected }, start: getUnixTime(new Date(2022, 5, 2)), end: getUnixTime(new Date(2022, 9, 2))},
+        { id: '000002', title: 'Leadership support', color: 'rgb(23, 162, 151)', origin: { firstName: 'Frederick', lastName: 'Rikke', process: OverviewFlag.Terminated }, start: getUnixTime(new Date(2022, 5, 1)), end: getUnixTime(new Date(2022, 9, 3))},
+        { id: '000003', title: 'Leadership support', color: 'rgb(139, 209, 203)', origin: { firstName: 'Frederick', lastName: 'Rikke', process: OverviewFlag.ExpectedToTerminate }, start: getUnixTime(new Date(2022, 6, 1)), end: getUnixTime(new Date(2022, 8, 25))},
+        { id: '000004', title: 'Leadership support', color: 'rgb(139, 209, 203)', origin: { firstName: 'Frederick', lastName: 'Rikke', process: OverviewFlag.ExtensionInNegotiation }, start: getUnixTime(new Date(2022, 7, 1)), end: getUnixTime(new Date(2022, 11, 30))},
+        { id: '000005', title: 'Leadership support', color: 'rgb(23, 162, 151)', origin: { firstName: 'Frederick', lastName: 'Rikke', process: OverviewFlag.RequiresAttention }, start: getUnixTime(new Date(2022, 6, 1)), end: getUnixTime(new Date(2022, 10, 6))}
     ];
 
     viewType: FormControl = new FormControl(GanttViewType.month);
 
     viewOptions: GanttViewOptions = {
-        min: new GanttDate(new Date(2022, 1, 1)),
-        max: new GanttDate(new Date(2022, 3, 10)),
+        // min: new GanttDate(new Date(2022, 1, 1)),
+        // max: new GanttDate(new Date(2022, 11, 31)),
         dateFormat: {
             yearQuarter: `QQQ 'of' yyyy`,
             month: 'LLL yy',
@@ -79,11 +80,11 @@ export class MainOverviewComponent implements OnInit {
 
     views = [
         {
-            name: 'Week',
+            name: 'Week view',
             value: GanttViewType.week
         },
         {
-            name: 'Month',
+            name: 'Month view',
             value: GanttViewType.month
         }
     ];
@@ -94,7 +95,8 @@ export class MainOverviewComponent implements OnInit {
         private _lookupService: LookupServiceProxy,
         private _apiService: ApiServiceProxy,
         private _internalLookupService: InternalLookupService,
-        private _mainOverviewService: MainOverviewServiceProxy
+        private _mainOverviewService: MainOverviewServiceProxy,
+        private _auth: MsalService
 
     ) {
         this.accountManagerFilter.valueChanges.pipe(
@@ -164,12 +166,21 @@ export class MainOverviewComponent implements OnInit {
      }
 
     ngOnInit(): void {
-        this.getMainOverview();
+        // this.getMainOverview();
         this.getTenants();
         this.getSalesType();
         this.getProjectType();
         this.getMargins();
         this.getMainOverviewStatuses();
+        this.getCurrentUser();
+        // this.changeViewType(GanttViewType.month);
+    }
+
+    ngAfterViewInit(): void {
+        //Called after ngAfterContentInit when the component's view has been initialized. Applies to components only.
+        //Add 'implements AfterViewInit' to the class.
+        this.changeViewType(GanttViewType.month);
+
     }
 
     ngOnDestroy(): void {
@@ -181,6 +192,7 @@ export class MainOverviewComponent implements OnInit {
         switch (process) {
             case OverviewFlag.ExtensionExpected:
             case OverviewFlag.Extended:
+            case OverviewFlag.Started:
                 return 'overview-extensions-icon';
             case OverviewFlag.Terminated:
             case OverviewFlag.ExpectedToTerminate:
@@ -199,6 +211,7 @@ export class MainOverviewComponent implements OnInit {
             case OverviewFlag.Extended:
                 return 'check-circle';
             case OverviewFlag.ExtensionExpected:
+            case OverviewFlag.Started:
                 return 'check-circle-fill';
             case OverviewFlag.Terminated:
                 return 'cancel';
@@ -213,22 +226,58 @@ export class MainOverviewComponent implements OnInit {
         }
     }
 
-    convertDateToTimestamp(value: any) {
-        var myDate = value;
-        myDate = myDate.split("-");
-        var newDate = new Date( myDate[2], myDate[1] - 1, myDate[0]);
-        return newDate.getTime()/1000;
-    }
+    // convertDateToTimestamp(value: any) {
+    //     var myDate = value;
+    //     myDate = myDate.split("-");
+    //     var newDate = new Date( myDate[2], myDate[1] - 1, myDate[0]);
+    //     return newDate.getTime()/1000;
+    // }
 
     changeViewType(type: any) {
         this.viewType.setValue(type);
         switch (type) {
             case 'week':
                 this.viewOptions.cellWidth = 50;
+                let cutOffDateWeek = new Date();
+                // let maxDate = new Date();
+                cutOffDateWeek.setDate(cutOffDateWeek.getDate() - 35)
+                // maxDate.setDate(364 - maxDate.getDate() + 35);
+                this.ganttComponent.viewOptions.start = new GanttDate(getUnixTime(new Date(this.formatDate(cutOffDateWeek))));
+                // this.ganttComponent.viewOptions.end = new GanttDate(getUnixTime(new Date(maxDate.getFullYear(), 11, 31)));
+                this.ganttComponent.viewChange.emit();
+                console.log(this.formatDate(cutOffDateWeek));
+                // console.log(this.formatDate(maxDate));
+                this.getMainOverview(cutOffDateWeek);
                 break;
             case 'month':
                 this.viewOptions.cellWidth = 75;
+                let cutOffDateMonth = new Date();
+                let maxMonth = new Date();
+                cutOffDateMonth.setMonth(cutOffDateMonth.getMonth() - 1)
+                // maxMonth.setMonth(12 + maxMonth.getMonth() + 1);
+                this.ganttComponent.viewOptions.start = new GanttDate(getUnixTime(new Date(this.formatDate(cutOffDateMonth))));
+                this.ganttComponent.viewOptions.end = new GanttDate(getUnixTime(new Date(maxMonth.getFullYear(), 11, 31)))
+                this.ganttComponent.viewChange.emit();
+                console.log(this.formatDate(cutOffDateMonth));
+                console.log(this.formatDate(maxMonth));
+                this.getMainOverview(cutOffDateMonth);
+
+                break;
         }
+    }
+
+    formatDate(date: any) {
+        var d = new Date(date),
+            month = (d.getMonth() + 1),
+            day = d.getDate(),
+            year = d.getFullYear();
+
+        // if (month.length < 2)
+        //     month = '0' + month;
+        // if (day.length < 2)
+        //     day = '0' + day;
+
+        return [year, month, day].join(',');
     }
 
     mapListByProperty(list: any[], prop: string) {
@@ -239,7 +288,7 @@ export class MainOverviewComponent implements OnInit {
         }
     }
 
-    getMainOverview() {
+    getMainOverview(date?: any) {
         this.isDataLoading = true;
         let searchFilter = this.workflowFilter.value ? this.workflowFilter.value : '';
         let ownerIds = this.selectedAccountManagers.map(x => +x.id);
@@ -249,7 +298,7 @@ export class MainOverviewComponent implements OnInit {
         let projectType = this.projectTypeControl.value ?? undefined;
         let margins = this.marginsControl.value ?? undefined;
         let mainOverviewStatus = this.filteredMainOverviewStatuses.find(x => x.selected);
-        let cutOffDate = moment(moment().format('YYYY-mm-dd')); // add after clarification with backend
+        let cutOffDate = date;
 
         this._apiService.mainOverview(
             mainOverviewStatus?.id,
@@ -363,4 +412,38 @@ export class MainOverviewComponent implements OnInit {
     statusesTrackBy(index: number, item: SelectableStatusesDto) {
         return item.id;
     }
+
+    getCurrentUser() {
+        let currentLoggedUser = this._auth.instance.getActiveAccount();
+        console.log(currentLoggedUser);
+
+        let toSend = {
+            name: currentLoggedUser!.name,
+            maxRecordsCount: 1000,
+        };
+
+        this._lookupService.employees(toSend.name)
+            .pipe(finalize(()=> this.getMainOverview()))
+            .subscribe(result => {
+                this.selectedAccountManagers = result.map(x => {
+                    return new SelectableEmployeeDto({
+                        id: x.id!,
+                        name: x.name!,
+                        externalId: x.externalId!,
+                        selected: true
+                    })
+                });
+            });
+    }
+
+    // calculateCutoffDate() {
+    //     switch (this.viewType) {
+    //         case value:
+
+    //             break;
+
+    //         default:
+    //             break;
+
+    // }
 }

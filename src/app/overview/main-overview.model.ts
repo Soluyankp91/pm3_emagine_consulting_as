@@ -7,11 +7,11 @@ export enum OverviewFlag {
     // AtterntionRequired = 6
     ExtensionExpected = 1,
     ExtensionInNegotiation = 2,
-    RequiresAttention = 3,
-    ExpectedToTerminate = 4,
+    ExpectedToTerminate = 3,
     Started = 10,
     Extended = 11,
     Terminated = 12,
+    RequiresAttention = 20,
 }
 
 export class OverviewData {
