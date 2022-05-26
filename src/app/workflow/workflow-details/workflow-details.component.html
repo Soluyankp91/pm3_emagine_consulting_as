@@ -93,7 +93,7 @@
                     <div fxLayout="row" fxLayoutAlign="center center">
                         <span class="tab-header">{{tab.name}}</span>
                     </div>
-                    <span class="tab-subheader">{{tab.additionalInfo}}</span>
+                    <span class="tab-subheader">{{tab.startDate | momentFormat: 'DD.MM.YYYY'}} - {{tab.endDate ? (tab.endDate | momentFormat: 'DD.MM.YYYY') : '...'}}</span>
                 </ng-template>
                 <div class="workflow-form--panel u-w--100">
                     <app-workflow-period *ngIf="selectedIndex === i + 1" [periodId]="tab.id" [workflowId]="workflowId"></app-workflow-period>
