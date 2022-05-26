@@ -9,36 +9,24 @@ export class WorkflowDataService {
 
     workflowSideSectionAdded = new EventEmitter<boolean>();
     // Start Clinet period
-    workflowSalesSaved = new EventEmitter<boolean>();
-    workflowContractsSaved = new EventEmitter<boolean>();
-    workflowFinanceSaved = new EventEmitter<boolean>();
+    startClientPeriodSalesSaved = new EventEmitter<boolean>();
+    startClientPeriodContractsSaved = new EventEmitter<boolean>();
+    startClientPeriodFinanceSaved = new EventEmitter<boolean>();
 
-    // Start consultant period
-    consultantStartSalesSaved = new EventEmitter<boolean>();
-    consultantStartContractsSaved = new EventEmitter<boolean>();
-    consultantStartFinanceSaved = new EventEmitter<boolean>();
-    // Extend consultant period
-    consultantExtendSalesSaved = new EventEmitter<boolean>();
-    consultantExtendContractsSaved = new EventEmitter<boolean>();
-    consultantExtendFinanceSaved = new EventEmitter<boolean>();
+    // Consultant start, extend and change periods
+    consultantStartChangeOrExtendSalesSaved = new EventEmitter<boolean>();
+    consultantStartChangeOrExtendContractsSaved = new EventEmitter<boolean>();
+    consultantStartChangeOrExtendFinanceSaved = new EventEmitter<boolean>();
+
     // Change consultant period
-    consultantChangeSalesSaved = new EventEmitter<boolean>();
-    consultantChangeContractsSaved = new EventEmitter<boolean>();
-    consultantChangeFinanceSaved = new EventEmitter<boolean>();
 
     //Termination
-    workflowConsultantTerminationSalesSaved = new EventEmitter<boolean>();
+    consultantTerminationSalesSaved = new EventEmitter<boolean>();
     workflowTerminationSalesSaved = new EventEmitter<boolean>();
     workflowConsultantTerminationContractsSaved = new EventEmitter<boolean>();
     workflowTerminationContractsSaved = new EventEmitter<boolean>();
     workflowConsultantTerminationSourcingSaved = new EventEmitter<boolean>();
     workflowTerminationSourcingSaved = new EventEmitter<boolean>();
-    workflowConsultantTerminationSalesCompleted = new EventEmitter<boolean>();
-    workflowTerminationSalesCompleted = new EventEmitter<boolean>();
-    workflowConsultantTerminationContractsCompleted = new EventEmitter<boolean>();
-    workflowTerminationContractsCompleted = new EventEmitter<boolean>();
-    workflowConsultantTerminationSourcingCompleted = new EventEmitter<boolean>();
-    workflowTerminationSourcingCompleted = new EventEmitter<boolean>();
 
     workflowSideSectionChanged = new EventEmitter<boolean>();
     workflowSideSectionUpdated = new EventEmitter<boolean>();

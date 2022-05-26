@@ -91,7 +91,7 @@ export class WorkflowPeriodComponent implements OnInit {
             case WorkflowProcessType.ChangeConsultantPeriod:
                 return 'workflowEdit'
             case WorkflowProcessType.ExtendClientPeriod:
-                case WorkflowProcessType.ExtendConsultantPeriod:
+            case WorkflowProcessType.ExtendConsultantPeriod:
                 return 'workflowStartOrExtend'
             case WorkflowProcessType.TerminateConsultant:
             case WorkflowProcessType.TerminateWorkflow:

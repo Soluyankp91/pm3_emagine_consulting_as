@@ -28,6 +28,9 @@
                 <span>
                     currentlyActiveSideSection: {{mapSideSectionName(_workflowDataService.getWorkflowProgress?.currentlyActiveSideSection)}}
                 </span>
+                <span>
+                    periodId: {{_workflowDataService.getWorkflowProgress?.currentlyActivePeriodId}}
+                </span>
             </div>
         </div>
         <div fxFlex="10%" fxLayoutAlign="end center">
@@ -45,14 +48,14 @@
                     class="menu-item menu-item--edit"
                     mat-menu-item
                     [disabled]="false"
-                    (click)="changeWorkflow()">
+                    (click)="getAvailableConsultantForChangeOrExtend(workflowDiallogActions.Change)">
                     <mat-icon>create</mat-icon>
                     Change Workflow Data
                 </button>
                 <button
                     class="menu-item menu-item--add"
                     mat-menu-item
-                    (click)="addExtension()">
+                    (click)="getAvailableConsultantForChangeOrExtend(workflowDiallogActions.Extend)">
                     <mat-icon>add</mat-icon>
                     Extend Workflow
                 </button>
@@ -98,8 +101,8 @@
             </mat-tab>
         </mat-tab-group>
         <div fxLayout="row" fxLayoutAlign="end center" class="workflow-controls" *ngIf="selectedTabName !== 'Overview'">
-            <button mat-flat-button class="button-outlined mat-elevation-z0 u-mr--16" (click)="saveDraft()">Save draft</button>
-            <button color="primary" class="button-accept mat-elevation-z0" mat-flat-button  (click)="completeStep()">Complete step</button>
+            <button mat-flat-button class="button-outlined mat-elevation-z0 u-mr--16" (click)="saveOrCompleteStep(true)">Save draft</button>
+            <button color="primary" class="button-accept mat-elevation-z0" mat-flat-button  (click)="saveOrCompleteStep(false)">Complete step</button>
         </div>
     </div>
 </div>

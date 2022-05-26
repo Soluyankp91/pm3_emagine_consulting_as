@@ -72,7 +72,13 @@
     <div fxFlex="80%" id="step-container">
         <ng-container [ngSwitch]="selectedStepEnum">
             <ng-container *ngSwitchCase="workflowSteps.Sales">
-                <app-workflow-sales #workflowSales [workflowId]="workflowId" [periodId]="periodId" [activeSideSection]="selectedSideSection" [isCompleted]="selectedStep.status === workflowStatuses.Completed"></app-workflow-sales>
+                <app-workflow-sales #workflowSales
+                                    [workflowId]="workflowId"
+                                    [periodId]="periodId"
+                                    [activeSideSection]="selectedSideSection"
+                                    [isCompleted]="selectedStep.status === workflowStatuses.Completed"
+                                    [permissionsForCurrentUser]="selectedStep.actionsPermissionsForCurrentUser">
+                </app-workflow-sales>
             </ng-container>
             <ng-container *ngSwitchCase="workflowSteps.Contract">
                 <app-workflow-contracts #workflowContracts [workflowId]="workflowId" [periodId]="periodId" [activeSideSection]="selectedSideSection" [isCompleted]="selectedStep.status === workflowStatuses.Completed"></app-workflow-contracts>

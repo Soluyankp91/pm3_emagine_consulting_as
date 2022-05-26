@@ -1424,6 +1424,67 @@ export class ClientPeriodServiceProxy {
         }
         return _observableOf<ProjectTypeConfigurationDto>(null as any);
     }
+
+    /**
+     * @return Success
+     */
+    availableConsultants(clientPeriodId: string): Observable<AvailableConsultantDto[]> {
+        let url_ = this.baseUrl + "/api/ClientPeriod/{clientPeriodId}/available-consultants";
+        if (clientPeriodId === undefined || clientPeriodId === null)
+            throw new Error("The parameter 'clientPeriodId' must be defined.");
+        url_ = url_.replace("{clientPeriodId}", encodeURIComponent("" + clientPeriodId));
+        url_ = url_.replace(/[?&]$/, "");
+
+        let options_ : any = {
+            observe: "response",
+            responseType: "blob",
+            headers: new HttpHeaders({
+                "Accept": "text/plain"
+            })
+        };
+
+        return this.http.request("get", url_, options_).pipe(_observableMergeMap((response_ : any) => {
+            return this.processAvailableConsultants(response_);
+        })).pipe(_observableCatch((response_: any) => {
+            if (response_ instanceof HttpResponseBase) {
+                try {
+                    return this.processAvailableConsultants(response_ as any);
+                } catch (e) {
+                    return _observableThrow(e) as any as Observable<AvailableConsultantDto[]>;
+                }
+            } else
+                return _observableThrow(response_) as any as Observable<AvailableConsultantDto[]>;
+        }));
+    }
+
+    protected processAvailableConsultants(response: HttpResponseBase): Observable<AvailableConsultantDto[]> {
+        const status = response.status;
+        const responseBlob =
+            response instanceof HttpResponse ? response.body :
+            (response as any).error instanceof Blob ? (response as any).error : undefined;
+
+        let _headers: any = {}; if (response.headers) { for (let key of response.headers.keys()) { _headers[key] = response.headers.get(key); }}
+        if (status === 200) {
+            return blobToText(responseBlob).pipe(_observableMergeMap(_responseText => {
+            let result200: any = null;
+            let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
+            if (Array.isArray(resultData200)) {
+                result200 = [] as any;
+                for (let item of resultData200)
+                    result200!.push(AvailableConsultantDto.fromJS(item));
+            }
+            else {
+                result200 = <any>null;
+            }
+            return _observableOf(result200);
+            }));
+        } else if (status !== 200 && status !== 204) {
+            return blobToText(responseBlob).pipe(_observableMergeMap(_responseText => {
+            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+            }));
+        }
+        return _observableOf<AvailableConsultantDto[]>(null as any);
+    }
 }
 
 @Injectable()
@@ -9615,46 +9676,6 @@ export class WorkflowServiceProxy {
     }
 }
 
-export class ActionPermissionDto implements IActionPermissionDto {
-    isAllowed?: boolean;
-    error?: string | undefined;
-
-    constructor(data?: IActionPermissionDto) {
-        if (data) {
-            for (var property in data) {
-                if (data.hasOwnProperty(property))
-                    (<any>this)[property] = (<any>data)[property];
-            }
-        }
-    }
-
-    init(_data?: any) {
-        if (_data) {
-            this.isAllowed = _data["isAllowed"];
-            this.error = _data["error"];
-        }
-    }
-
-    static fromJS(data: any): ActionPermissionDto {
-        data = typeof data === 'object' ? data : {};
-        let result = new ActionPermissionDto();
-        result.init(data);
-        return result;
-    }
-
-    toJSON(data?: any) {
-        data = typeof data === 'object' ? data : {};
-        data["isAllowed"] = this.isAllowed;
-        data["error"] = this.error;
-        return data;
-    }
-}
-
-export interface IActionPermissionDto {
-    isAllowed?: boolean;
-    error?: string | undefined;
-}
-
 export class AddClientSpecialFeeDto implements IAddClientSpecialFeeDto {
     internalName?: string | undefined;
     publicName?: string | undefined;
@@ -9857,6 +9878,50 @@ export class AttachmentFileDto implements IAttachmentFileDto {
 export interface IAttachmentFileDto {
     filename?: string | undefined;
     fileBytes?: string | undefined;
+}
+
+export class AvailableConsultantDto implements IAvailableConsultantDto {
+    consultantName?: string | undefined;
+    consultantId?: number;
+    externalId?: string;
+
+    constructor(data?: IAvailableConsultantDto) {
+        if (data) {
+            for (var property in data) {
+                if (data.hasOwnProperty(property))
+                    (<any>this)[property] = (<any>data)[property];
+            }
+        }
+    }
+
+    init(_data?: any) {
+        if (_data) {
+            this.consultantName = _data["consultantName"];
+            this.consultantId = _data["consultantId"];
+            this.externalId = _data["externalId"];
+        }
+    }
+
+    static fromJS(data: any): AvailableConsultantDto {
+        data = typeof data === 'object' ? data : {};
+        let result = new AvailableConsultantDto();
+        result.init(data);
+        return result;
+    }
+
+    toJSON(data?: any) {
+        data = typeof data === 'object' ? data : {};
+        data["consultantName"] = this.consultantName;
+        data["consultantId"] = this.consultantId;
+        data["externalId"] = this.externalId;
+        return data;
+    }
+}
+
+export interface IAvailableConsultantDto {
+    consultantName?: string | undefined;
+    consultantId?: number;
+    externalId?: string;
 }
 
 export class ChangeClientPeriodDto implements IChangeClientPeriodDto {
@@ -10668,7 +10733,6 @@ export class ClientPeriodDto implements IClientPeriodDto {
     name?: string | undefined;
     typeId?: number;
     additionalInfo?: string | undefined;
-    isCompleted?: boolean;
     workflowProcesses?: WorkflowProcessDto[] | undefined;
     consultantIds?: number[] | undefined;
 
@@ -10687,7 +10751,6 @@ export class ClientPeriodDto implements IClientPeriodDto {
             this.name = _data["name"];
             this.typeId = _data["typeId"];
             this.additionalInfo = _data["additionalInfo"];
-            this.isCompleted = _data["isCompleted"];
             if (Array.isArray(_data["workflowProcesses"])) {
                 this.workflowProcesses = [] as any;
                 for (let item of _data["workflowProcesses"])
@@ -10714,7 +10777,6 @@ export class ClientPeriodDto implements IClientPeriodDto {
         data["name"] = this.name;
         data["typeId"] = this.typeId;
         data["additionalInfo"] = this.additionalInfo;
-        data["isCompleted"] = this.isCompleted;
         if (Array.isArray(this.workflowProcesses)) {
             data["workflowProcesses"] = [];
             for (let item of this.workflowProcesses)
@@ -10734,7 +10796,6 @@ export interface IClientPeriodDto {
     name?: string | undefined;
     typeId?: number;
     additionalInfo?: string | undefined;
-    isCompleted?: boolean;
     workflowProcesses?: WorkflowProcessDto[] | undefined;
     consultantIds?: number[] | undefined;
 }
@@ -14973,7 +15034,7 @@ export class StepDto implements IStepDto {
     readonly name?: string | undefined;
     status?: WorkflowStepStatus;
     responsiblePerson?: EmployeeDto;
-    actionsPermissionsForCurrentUser?: { [key: string]: ActionPermissionDto; } | undefined;
+    actionsPermissionsForCurrentUser?: { [key: string]: boolean; } | undefined;
 
     constructor(data?: IStepDto) {
         if (data) {
@@ -14994,7 +15055,7 @@ export class StepDto implements IStepDto {
                 this.actionsPermissionsForCurrentUser = {} as any;
                 for (let key in _data["actionsPermissionsForCurrentUser"]) {
                     if (_data["actionsPermissionsForCurrentUser"].hasOwnProperty(key))
-                        (<any>this.actionsPermissionsForCurrentUser)![key] = _data["actionsPermissionsForCurrentUser"][key] ? ActionPermissionDto.fromJS(_data["actionsPermissionsForCurrentUser"][key]) : new ActionPermissionDto();
+                        (<any>this.actionsPermissionsForCurrentUser)![key] = _data["actionsPermissionsForCurrentUser"][key];
                 }
             }
         }
@@ -15017,7 +15078,7 @@ export class StepDto implements IStepDto {
             data["actionsPermissionsForCurrentUser"] = {};
             for (let key in this.actionsPermissionsForCurrentUser) {
                 if (this.actionsPermissionsForCurrentUser.hasOwnProperty(key))
-                    (<any>data["actionsPermissionsForCurrentUser"])[key] = this.actionsPermissionsForCurrentUser[key] ? this.actionsPermissionsForCurrentUser[key].toJSON() : <any>undefined;
+                    (<any>data["actionsPermissionsForCurrentUser"])[key] = this.actionsPermissionsForCurrentUser[key];
             }
         }
         return data;
@@ -15029,7 +15090,7 @@ export interface IStepDto {
     name?: string | undefined;
     status?: WorkflowStepStatus;
     responsiblePerson?: EmployeeDto;
-    actionsPermissionsForCurrentUser?: { [key: string]: ActionPermissionDto; } | undefined;
+    actionsPermissionsForCurrentUser?: { [key: string]: boolean; } | undefined;
 }
 
 export enum StepType {

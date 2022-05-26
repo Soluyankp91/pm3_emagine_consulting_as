@@ -3,7 +3,7 @@ import { FormArray, FormBuilder, FormControl } from '@angular/forms';
 import { Subject } from 'rxjs';
 import { finalize, takeUntil } from 'rxjs/operators';
 import { AppComponentBase } from 'src/shared/app-component-base';
-import { ClientPeriodServiceProxy, ConsultantPeriodFinanceDataDto, WorkflowProcessType } from 'src/shared/service-proxies/service-proxies';
+import { ClientFinanceServiceProxy, ClientPeriodFinanceDataDto, ClientPeriodServiceProxy, ConsultantFinanceServiceProxy, ConsultantPeriodFinanceDataDto, ConsultantPeriodServiceProxy, WorkflowProcessType } from 'src/shared/service-proxies/service-proxies';
 import { WorkflowDataService } from '../workflow-data.service';
 import { FinancesClientForm, FinancesConsultantsForm } from './workflow-finances.model';
 
@@ -39,7 +39,10 @@ export class WorkflowFinancesComponent extends AppComponentBase implements OnIni
         injector: Injector,
         private _fb: FormBuilder,
         private _workflowDataService: WorkflowDataService,
-        private _clientPeriodSerivce: ClientPeriodServiceProxy
+        private _clientPeriodSerivce: ClientPeriodServiceProxy,
+        private _consultantPeriodSerivce: ConsultantPeriodServiceProxy,
+        private _financeService: ClientFinanceServiceProxy,
+        private _consutlantFinanceService: ConsultantFinanceServiceProxy
     ) {
         super(injector);
         this.financesClientForm = new FinancesClientForm();
@@ -47,25 +50,27 @@ export class WorkflowFinancesComponent extends AppComponentBase implements OnIni
     }
 
     ngOnInit(): void {
-        // this.consultantList.forEach(consultant => {
-        //     this.addConsultantToForm(consultant);
-        // });
-        this.getFinancesStep();
+        switch (this._workflowDataService.getWorkflowProgress.currentlyActiveSideSection) {
+            case WorkflowProcessType.StartClientPeriod:
+                this.getStartConsultantPeriodFinance()
+                break;
+            case WorkflowProcessType.StartClientPeriod:
+            case WorkflowProcessType.ChangeClientPeriod:
+            case WorkflowProcessType.ExtendClientPeriod:
+                this.getStartChangeOrExtendClientPeriodFinances();
+                break;
+        }
 
-        this._workflowDataService.consultantStartFinanceSaved
+        this._workflowDataService.startClientPeriodFinanceSaved
             .pipe(takeUntil(this._unsubscribe))
             .subscribe((value: boolean) => {
-                
+                this.saveStartChangeOrExtendClientPeriodFinance(value);
             });
-        this._workflowDataService.consultantChangeFinanceSaved
+
+        this._workflowDataService.consultantStartChangeOrExtendFinanceSaved
             .pipe(takeUntil(this._unsubscribe))
             .subscribe((value: boolean) => {
-                
-            });
-        this._workflowDataService.consultantExtendFinanceSaved
-            .pipe(takeUntil(this._unsubscribe))
-            .subscribe((value: boolean) => {
-                
+                this.saveStartChangeOrExtendConsultantPeriodFinance(value);
             });
     }
 
@@ -78,7 +83,7 @@ export class WorkflowFinancesComponent extends AppComponentBase implements OnIni
         return this.isCompleted;
     }
 
-    getFinancesStep() {
+    getStartChangeOrExtendClientPeriodFinances() {
         this.showMainSpinner();
         this._clientPeriodSerivce.clientFinanceGet(this.periodId!)
             .pipe(finalize(() => this.hideMainSpinner()))
@@ -88,6 +93,67 @@ export class WorkflowFinancesComponent extends AppComponentBase implements OnIni
                 this.financesClientForm.customDebtorNumber?.setValue(result.customDebtorNumber, {emitEvent: false});
                 result?.consultantFinanceData?.forEach((consultant: ConsultantPeriodFinanceDataDto) => this.addConsultantToForm(consultant));
             });
+    }
+
+    saveStartChangeOrExtendClientPeriodFinance(isDraft: boolean) {
+        let input = new ClientPeriodFinanceDataDto();
+        input.differentDebtorNumberForInvoicing = this.financesClientForm.differentDebtorNumberForInvoicing?.value;
+        input.customDebtorNumber = this.financesClientForm.customDebtorNumber?.value;
+        input.debtorCreatedInNavision = this.financesClientForm.clientCreatedInNavision?.value;
+        input.consultantFinanceData = new Array<ConsultantPeriodFinanceDataDto>();
+        this.financesConsultantsForm.consultants.value.forEach((consultant: any) => {
+            let consultantInput = new ConsultantPeriodFinanceDataDto();
+            consultantInput.consultantId = consultant.id;
+            consultantInput.checkInvoicingSettingsOnConsultant = consultant.checkInvoicingSettingsOnConsultant;
+            consultantInput.creditorCreatedInNavision = consultant.creditorCreatedInNavision;
+            consultantInput.consultant = consultant.consultant;
+            input.consultantFinanceData?.push(consultantInput);
+        });
+        this.showMainSpinner();
+        if (isDraft) {
+            this._clientPeriodSerivce.clientFinancePut(this.periodId!, input)
+                .pipe(finalize(() => this.hideMainSpinner()))
+                .subscribe(result => {
+    
+                });
+        } else {
+            this._financeService.editFinish(this.periodId!, input)
+                .pipe(finalize(() => this.hideMainSpinner()))
+                .subscribe(result => {
+
+                });
+        }
+    }
+
+    getStartConsultantPeriodFinance() {
+        this.showMainSpinner();
+        this._consultantPeriodSerivce.consultantFinanceGet(this.periodId!)
+            .pipe(finalize(() => this.hideMainSpinner()))
+            .subscribe(result => {
+                this.addConsultantToForm(result);
+            });
+    }
+
+    saveStartChangeOrExtendConsultantPeriodFinance(isDraft: boolean) {
+        let input = new ConsultantPeriodFinanceDataDto();
+        input.checkInvoicingSettingsOnConsultant = this.consultants.at(0).value.get('checkInvoicingSettingsOnConsultant').value;
+        input.consultantId = this.consultants.at(0).value.get('id').value;
+        input.creditorCreatedInNavision = this.consultants.at(0).value.get('creditorCreatedInNavision').value;
+        input.consultant = this.consultants.at(0).value.get('consultant').value;
+        this.showMainSpinner();
+        if (isDraft) {
+            this._consultantPeriodSerivce.consultantFinancePut(this.periodId!, input)
+                .pipe(finalize(() => this.hideMainSpinner()))
+                .subscribe(result => {
+
+                });
+        } else {
+            this._consutlantFinanceService.editFinish(this.periodId!, input)
+                .pipe(finalize(() => this.hideMainSpinner()))
+                .subscribe(result => {
+
+                });
+        }
     }
     
     addConsultantToForm(consultant: ConsultantPeriodFinanceDataDto) {
