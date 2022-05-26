@@ -1,0 +1,76 @@
+<div class="client-consultant-track">
+    <div fxLayout="column" fxLayoutAlign="start center" class="client-consultant-track--table u-w--100">
+        <div fxLayout="column" fxFlexFill>
+            <mat-table #table [dataSource]="consultantTrackDataSource" class="rounded-table u-w--100" matSort matSortStart="asc" (matSortChange)="sortChanged($event)">
+                <ng-container matColumnDef="consultant">
+                    <mat-header-cell *matHeaderCellDef mat-sort-header fxFlex="25%"> Consultant </mat-header-cell>
+                    <mat-cell *matCellDef="let row" fxFlex="25%">
+                        <span class="text-truncate-ellipsis" [matTooltip]="row.consultant">
+                            {{row.consultant}}
+                        </span>
+                    </mat-cell>
+                </ng-container>
+
+                <ng-container matColumnDef="workflowsStart">
+                    <mat-header-cell *matHeaderCellDef mat-sort-header fxFlex="15%"> Workflows start </mat-header-cell>
+                    <mat-cell *matCellDef="let row" fxFlex="15%">
+                        <span class="text-truncate-ellipsis" [matTooltip]="row?.workflowsStart">
+                            {{row?.workflowsStart}}
+                        </span>
+                    </mat-cell>
+                </ng-container>
+
+                <ng-container matColumnDef="workflowsEnd">
+                    <mat-header-cell *matHeaderCellDef mat-sort-header fxFlex="15%"> Workflows end </mat-header-cell>
+                    <mat-cell *matCellDef="let row" fxFlex="15%">
+                        <span class="text-truncate-ellipsis" [matTooltip]="row.workflowsEnd">
+                            {{row.workflowsEnd}}
+                        </span>
+                    </mat-cell>
+                </ng-container>
+
+                <ng-container matColumnDef="consultantPrice">
+                    <mat-header-cell *matHeaderCellDef mat-sort-header fxFlex="15%"> Consultant price </mat-header-cell>
+                    <mat-cell *matCellDef="let row" fxFlex="15%">
+                        <span class="text-truncate-ellipsis" [matTooltip]="row?.consultantPrice">
+                            {{row?.consultantPrice}}
+                        </span>
+                    </mat-cell>
+                </ng-container>
+
+                <ng-container matColumnDef="clientPrice">
+                    <mat-header-cell *matHeaderCellDef mat-sort-header fxFlex="15%"> Client price </mat-header-cell>
+                    <mat-cell *matCellDef="let row" fxFlex="15%">
+                        <span class="text-truncate-ellipsis" [matTooltip]="row?.clientPrice">
+                            {{row?.clientPrice}}
+                        </span>
+                    </mat-cell>
+                </ng-container>
+
+                <ng-container matColumnDef="margin">
+                    <mat-header-cell *matHeaderCellDef mat-sort-header fxFlex="15%"> Margin </mat-header-cell>
+                    <mat-cell *matCellDef="let row" fxFlex="15%">
+                        <span class="text-truncate-ellipsis" [matTooltip]="row.margin">
+                            {{row.margin}}
+                        </span>
+                    </mat-cell>
+                </ng-container>
+
+
+                <mat-header-row *matHeaderRowDef="clientDisplayColumns"></mat-header-row>
+                <mat-row *matRowDef="let row; columns: clientDisplayColumns;" class="mat-elevation-z0"></mat-row>
+            </mat-table>
+            <div class="spinner-container" *ngIf="isDataLoading">
+                <mat-spinner [diameter]="50"></mat-spinner>
+            </div>
+            <div class="results-not-found" *ngIf="totalCount === 0 && !isDataLoading">
+                RESULTS NOT FOUND
+            </div>
+        </div>
+        <div class="pagination-container">
+            <mat-paginator #clientsPaginator [length]="totalCount" [pageSize]="deafultPageSize"
+                [pageSizeOptions]="pageSizeOptions" [showFirstLastButtons]="true" (page)="pageChanged($event)">
+            </mat-paginator>
+        </div>
+    </div>
+</div>

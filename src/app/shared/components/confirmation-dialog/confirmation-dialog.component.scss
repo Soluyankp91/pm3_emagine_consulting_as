@@ -1,29 +1,37 @@
+@import "/src/app/shared/styles/config/_colors";
+
 .confiramtion-dialog {
+    &--content {
+        padding: 30px;
+    }
     &--actions{
-        button {
-            width: 150px;
-            text-transform: uppercase;
-        }
-        &-btn {
-            &-negative {
-                color: #FFF !important;
-                background-color: #FF7A78 !important;
-                border: 2px solid #FF7A78 !important;
-                box-sizing: border-box;
-                border-radius: 5px;
-            }
-            &-outlined {
-                color: #89838D !important;
-                background-color: #fff;
-                border: 2px solid #CDFF96;
-                border-radius: 5px;
-            }
-            &-positive {
-                background-color: #668CA4;
-                color: #89838D !important;
-                background: #CDFF96;
-                border-radius: 5px;
-            }
-        }
+        justify-content: space-between;
+        border-top: 1px solid $sand-color;
+        // button {
+        //     width: 150px;
+        //     font-weight: 700;
+        //     // text-transform: uppercase;
+        // }
+        // &-btn {
+        //     &-negative {
+        //         color: #FFF !important;
+        //         background-color: $red-color !important;
+        //         border: 2px solid $red-color !important;
+        //         box-sizing: border-box;
+        //         border-radius: 5px;
+        //     }
+        //     &-outlined {
+        //         color: $green-color !important;
+        //         background-color: transparent;
+        //         // border: 2px solid #CDFF96;
+        //         border: 0;
+        //         border-radius: 5px;
+        //     }
+        //     &-positive {
+        //         color: $white-color !important;
+        //         background: $green-color;
+        //         border-radius: 5px;
+        //     }
+        // }
     }
 }

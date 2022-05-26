@@ -1,0 +1,116 @@
+<div class="client-request-track">
+    <div fxLayout="column" fxLayoutAlign="start center" class="client-list--table u-w--100">
+        <div fxLayout="column" fxFlexFill>
+            <mat-table #table [dataSource]="clientDataSource" class="white-table u-w--100" matSort matSortStart="asc" (matSortChange)="sortChanged($event)">
+                <ng-container matColumnDef="countryFlag">
+                    <mat-header-cell *matHeaderCellDef fxFlex="2%"></mat-header-cell>
+                    <mat-cell *matCellDef="let row" fxFlex="2%">
+                        <!-- <mat-icon class="country-lookup--btn__flag selected-country" svgIcon="{{row.clientAddress_Country_Name}}-flag-selected"></mat-icon> -->
+                    </mat-cell>
+                </ng-container>
+                <ng-container matColumnDef="id">
+                    <mat-header-cell *matHeaderCellDef mat-sort-header fxFlex="3%"> # </mat-header-cell>
+                    <mat-cell *matCellDef="let row" fxFlex="3%">
+                        {{row.requestId}}
+                    </mat-cell>
+                </ng-container>
+                <ng-container matColumnDef="headline">
+                    <mat-header-cell *matHeaderCellDef mat-sort-header fxFlex="15%"> Request name </mat-header-cell>
+                    <mat-cell *matCellDef="let row" fxFlex="15%">
+                        <span class="text-truncate-ellipsis" [matTooltip]="row.headline">
+                            {{row.headline}}
+                        </span>
+                    </mat-cell>
+                </ng-container>
+                <ng-container matColumnDef="status.value">
+                    <mat-header-cell *matHeaderCellDef mat-sort-header fxFlex="10%"> Request status </mat-header-cell>
+                    <mat-cell *matCellDef="let row" fxFlex="10%">
+                        <span class="text-truncate-ellipsis" [matTooltip]="row?.status?.name">
+                            {{row?.status?.name}}
+                        </span>
+                    </mat-cell>
+                </ng-container>
+                <ng-container matColumnDef="clientDeadline">
+                    <mat-header-cell *matHeaderCellDef mat-sort-header fxFlex="8%"> Client deadline </mat-header-cell>
+                    <mat-cell *matCellDef="let row" fxFlex="8%">
+                        <span class="text-truncate-ellipsis" [matTooltip]="row.clientDeadline | momentFormat: 'DD.MM.YYYY'">
+                            {{row.clientDeadline | momentFormat: 'DD.MM.YYYY'}}
+                        </span>
+                    </mat-cell>
+                </ng-container>
+                <ng-container matColumnDef="dateAdded">
+                    <mat-header-cell *matHeaderCellDef mat-sort-header fxFlex="8%"> Date added </mat-header-cell>
+                    <mat-cell *matCellDef="let row" fxFlex="8%">
+                        <span class="text-truncate-ellipsis" [matTooltip]="row?.dateAdded | momentFormat: 'DD.MM.YYYY'">
+                            {{row?.dateAdded | momentFormat: 'DD.MM.YYYY'}}
+                        </span>
+                    </mat-cell>
+                </ng-container>
+                <ng-container matColumnDef="projectType.value">
+                    <mat-header-cell *matHeaderCellDef mat-sort-header fxFlex="10%"> Project type </mat-header-cell>
+                    <mat-cell *matCellDef="let row" fxFlex="10%">
+                        <span class="text-truncate-ellipsis" [matTooltip]="row?.projectType?.name">
+                            {{row?.projectType?.name}}
+                        </span>
+                    </mat-cell>
+                </ng-container>
+                <ng-container matColumnDef="priority">
+                    <mat-header-cell *matHeaderCellDef mat-sort-header fxFlex="5%"> Priority </mat-header-cell>
+                    <mat-cell *matCellDef="let row" fxFlex="5%">
+                        <span class="text-truncate-ellipsis" [matTooltip]="row.priority">
+                            {{row.priority}}
+                        </span>
+                    </mat-cell>
+                </ng-container>
+                <ng-container matColumnDef="numberOfConsultants">
+                    <mat-header-cell *matHeaderCellDef mat-sort-header fxFlex="5%"> Consultants </mat-header-cell>
+                    <mat-cell *matCellDef="let row" fxFlex="5%">
+                        <span class="text-truncate-ellipsis" [matTooltip]="row.numberOfConsultants">
+                            {{row.numberOfConsultants}}
+                        </span>
+                    </mat-cell>
+                    </ng-container>
+                <ng-container matColumnDef="locations">
+                    <mat-header-cell *matHeaderCellDef fxFlex="10%"> Area </mat-header-cell>
+                    <mat-cell *matCellDef="let row" fxFlex="10%">
+                        <span class="text-truncate-ellipsis" [matTooltip]="mapLocationArrayByName(row.locations)">
+                            {{mapLocationArrayByName(row.locations)}}
+                        </span>
+                    </mat-cell>
+                </ng-container>
+
+                <ng-container matColumnDef="salesManager">
+                    <mat-header-cell *matHeaderCellDef fxFlex="12%"> Sales manager </mat-header-cell>
+                    <mat-cell *matCellDef="let row" fxFlex="12%">
+                        <span class="text-truncate-ellipsis" [matTooltip]="mapEmployeeArrayByName(row.accountManagers)">
+                            {{mapEmployeeArrayByName(row.accountManagers)}}
+                        </span>
+                    </mat-cell>
+                </ng-container>
+
+                <ng-container matColumnDef="sourcer">
+                    <mat-header-cell *matHeaderCellDef fxFlex="12%"> Sourcer </mat-header-cell>
+                    <mat-cell *matCellDef="let row" fxFlex="12%">
+                        <span class="text-truncate-ellipsis" [matTooltip]="mapEmployeeArrayByName(row.requestSourcers)">
+                            {{mapEmployeeArrayByName(row.requestSourcers)}}
+                        </span>
+                    </mat-cell>
+                </ng-container>
+
+                <mat-header-row *matHeaderRowDef="clientDisplayColumns"></mat-header-row>
+                <mat-row *matRowDef="let row; columns: clientDisplayColumns;" class="mat-elevation-z0" (click)="redirectToSourcingBoard(row.requestId)"></mat-row>
+            </mat-table>
+            <div class="spinner-container" *ngIf="isDataLoading">
+                <mat-spinner [diameter]="50"></mat-spinner>
+            </div>
+            <div class="results-not-found" *ngIf="totalCount === 0 && !isDataLoading">
+                RESULTS NOT FOUND
+            </div>
+        </div>
+        <div class="pagination-container u-w--100">
+            <mat-paginator #clientsPaginator [length]="totalCount" [pageSize]="deafultPageSize"
+                [pageSizeOptions]="pageSizeOptions" [showFirstLastButtons]="true" (page)="pageChanged($event)">
+            </mat-paginator>
+        </div>
+    </div>
+</div>

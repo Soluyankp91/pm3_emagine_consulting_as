@@ -7,13 +7,13 @@
     <p>
         {{ data.confirmationMessage }}
     </p>
-    <mat-dialog-actions align="center" class="confiramtion-dialog--actions">
-        <button mat-raised-button color="primary" class="confiramtion-dialog--actions-btn-outlined mat-elevation-z0" (click)="reject()">
-            {{ data.rejectButtonText }}
-        </button>
-        <button mat-raised-button class="mat-elevation-z0" [ngClass]="data.isNegative ? 'confiramtion-dialog--actions-btn-negative' : 'confiramtion-dialog--actions-btn-positive'" (click)="confirm()">
-            {{ data.confirmButtonText }}
-        </button>
-    </mat-dialog-actions>
 </mat-dialog-content>
+<mat-dialog-actions class="confiramtion-dialog--actions flex-justify-between">
+    <button mat-flat-button class="confiramtion-dialog--actions-btn dialog-btn dialog-btn__outlined" (click)="reject()">
+        {{ data.rejectButtonText }}
+    </button>
+    <button mat-flat-button class="dialog-btn" [ngClass]="data.isNegative ? 'dialog-btn__negative' : 'dialog-btn__positive'" (click)="confirm()">
+        {{ data.confirmButtonText }}
+    </button>
+</mat-dialog-actions>
 

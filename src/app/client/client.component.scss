@@ -1,0 +1,94 @@
+@import "/src/app/shared/styles/config/_sizes";
+@import "/src/app/shared/styles/config/_mixins";
+@import "/src/app/shared/styles/config/_colors";
+
+.client-list {
+    &--filter {
+        // height: 150px;
+        height: $white-header-height;
+        padding: 16px 75px;
+        &-country {
+            width: 40px;
+            height: 40px;
+            &__btn {
+                background-color: #4a4e60;
+                color: $white-color;
+                font-weight: 700;
+            }
+        }
+        &-status {
+            // @include flexCentered;
+            // // display: flex;
+            // // justify-content: center;
+            // // align-items: center;
+            // height: 40px;
+            // padding: 8px 16px;
+            // border: 1px solid $light-grey-color;
+            // border-radius: 40px;
+            // &.selected-status {
+            //     background-color: rgba(42, 194, 167, 0.13);
+            //     // color: $white-color;
+            //     border-color: $green-color;
+            // }
+            // &__selected {
+            //     font-weight: 700;
+            //     color: #384853;
+            // }
+
+            &__badge {
+                height: 40px;
+                padding: 8px 16px;
+                border: 1px solid $light-grey-color;
+                border-radius: 40px;
+                font-weight: 700;
+                font-size: 14px;
+                color: rgba(56, 72, 83, 0.87);
+                &.selected-status {
+                    background-color: rgba(42, 194, 167, 0.13);
+                    // color: $white-color;
+                    border-color: $green-color;
+                }
+            }
+        }
+        &-manager {
+            width: 40px;
+            height: 40px;
+            img {
+                width: 40px;
+                height: 40px;
+            }
+        }
+    }
+
+    &--header {
+        color: $dark-grey-color;
+        font-size: 56px;
+        font-weight: 700;
+        font-size: 36px;
+        line-height: 120%;
+    }
+
+    &--content {
+        padding: 16px 75px;
+        background-color: #faf9fb;
+        min-height: calc(100vh - 150px);
+    }
+
+    &--table {
+        position: relative;
+        min-height: 120px;
+    }
+}
+
+.status-dot {
+    width: 14px;
+    height: 14px;
+    font-size: 14px;
+    line-height: 14px;
+    &.grey-dot {
+        color: $light-grey-color;
+    }
+    &.green-dot {
+        color: $green-color;
+    }
+}

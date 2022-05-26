@@ -1,0 +1,112 @@
+@import "/src/app/shared/styles/config/_colors";
+@import "/src/app/shared/styles/config/_sizes";
+@import "/src/app/shared/styles/config/_mixins";
+@import '~@worktile/gantt/main.bundle.scss';
+
+.main-overview {
+    &--filter {
+        padding: 14px 20px;
+        background-color: $white-color;
+        &-country__flag {
+            line-height: 40px;
+            height: 40px;
+            width: 40px;
+            font-size: 40px;
+        }
+        &__add-btn mat-icon {
+            width: 34px;
+            height: 34px;
+        }
+        &-type {
+            @include flexCentered;
+            height: 40px;
+            padding: 8px 16px;
+            border: 1px solid $light-grey-color;
+            border-radius: 40px;
+            &__name {
+                font-weight: 700;
+                color: #384853;
+                font-size: 14px;
+            }
+            &__quantity {
+                font-weight: 800;
+                color: #384853;
+                font-size: 14px;
+            }
+        }
+        &-manager {
+            img {
+                width: 40px;
+                height: 40px;
+            }
+        }
+    }
+
+    &--header {
+        color: $dark-grey-color;
+        font-size: 56px;
+        font-weight: 700;
+        font-size: 36px;
+        line-height: 120%;
+    }
+    &--content {
+        background-color: $sand-25-color;
+        padding: 20px;
+    }
+    &--table {
+        position: relative;
+        min-height: 120px;
+    }
+    &-icon {
+        font-size: 12px;
+        &-type {
+            line-height: 40px;
+        }
+    }
+    &-search-button {
+        min-width: 155px;
+        &-text {
+            font-size: 14px;
+            font-weight: 700;
+            line-height: 1.4;
+            letter-spacing: normal;
+            color: #17a297;
+        }
+    }
+}
+
+.workflow-flag {
+    height: 14px;
+    width: 14px;
+    line-height: 14px;
+    font-size: 14px;
+    &--sales {
+        color: rgba($color: $green-color, $alpha: .5);
+    }
+    &--extension {
+        color: rgba($color: #6A47B8, $alpha: .5);
+    }
+}
+
+.overview-extensions-icon {
+    color: #6bc87a;
+}
+
+.overview-termination-icon {
+    color: #ff7a78;
+}
+
+.overview-negotiation-icon {
+    color: #2d9cdb
+}
+
+.overview-attention-icon {
+    color: #f8b025;
+}
+
+.icon-arrow-rotate180 {
+    transform: rotateY(180deg);
+    height: 16px;
+    width: 16px;
+    line-height: 16px;
+}

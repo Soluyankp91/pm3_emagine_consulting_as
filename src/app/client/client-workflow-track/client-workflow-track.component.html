@@ -1,0 +1,102 @@
+<div class="client-workflow-track">
+    <div fxLayout="column" fxLayoutAlign="start center" class="client-workflow--table u-w--100">
+        <div fxLayout="column" fxFlexFill>
+            <mat-table #table [dataSource]="workflowTrackDataSource" class="white-table u-w--100" matSort matSortStart="asc" (matSortChange)="sortChanged($event)">
+                <ng-container matColumnDef="consultant">
+                    <mat-header-cell *matHeaderCellDef mat-sort-header fxFlex="25%"> Consultant </mat-header-cell>
+                    <mat-cell *matCellDef="let row" fxFlex="25%">
+                        <span class="text-truncate-ellipsis text-bold" [matTooltip]="mapListByProperty(row.consultants, 'name')">
+                            <ng-container *ngIf="row.consultants?.length > 1; else singleConsultantDisplay">
+                                {{row.consultants?.length + 'Consultants'}}
+                            </ng-container>
+                            <ng-template #singleConsultantDisplay>
+                                <span class="flex-items-center">
+                                    <img *ngIf="row.consultants[0]?.name" class="border-rounded-50 image-thumbnail-small u-mr--10" [src]="consultantProfileUrl(row?.consultants[0]?.externalId)" />
+                                    {{row.consultants[0]?.name ?? '-'}}
+                                </span>
+                            </ng-template>
+                        </span>
+                    </mat-cell>
+                </ng-container>
+                <ng-container matColumnDef="salesType">
+                    <mat-header-cell *matHeaderCellDef mat-sort-header fxFlex="10%"> Sales Type </mat-header-cell>
+                    <mat-cell *matCellDef="let row" fxFlex="10%">
+                        <span class="text-truncate-ellipsis" [matTooltip]="row?.salesTypeId?.name">
+                            {{row?.salesTypeId?.name}}
+                        </span>
+                    </mat-cell>
+                </ng-container>
+                <ng-container matColumnDef="deliveryType">
+                    <mat-header-cell *matHeaderCellDef mat-sort-header fxFlex="10%"> Delivery Type </mat-header-cell>
+                    <mat-cell *matCellDef="let row" fxFlex="10%">
+                        <span class="text-truncate-ellipsis" matTooltipClass="white-bg-tooltip" [matTooltip]="row?.deliveryTypeId?.name">
+                            {{row?.deliveryTypeId?.name}}
+                        </span>
+                    </mat-cell>
+                </ng-container>
+                <ng-container matColumnDef="dateStart">
+                    <mat-header-cell *matHeaderCellDef mat-sort-header fxFlex="10%"> Start </mat-header-cell>
+                    <mat-cell *matCellDef="let row" fxFlex="10%">
+                        <span class="text-truncate-ellipsis" [matTooltip]="row.startDate | momentFormat: 'DD.MM.YYYY'">
+                            {{row.startDate | momentFormat: 'DD.MM.YYYY'}}
+                        </span>
+                    </mat-cell>
+                </ng-container>
+                <ng-container matColumnDef="dateEnd">
+                    <mat-header-cell *matHeaderCellDef mat-sort-header fxFlex="10%"> End </mat-header-cell>
+                    <mat-cell *matCellDef="let row" fxFlex="10%">
+                        <span class="text-truncate-ellipsis" [matTooltip]="row?.endDate | momentFormat: 'DD.MM.YYYY'">
+                            {{row?.endDate | momentFormat: 'DD.MM.YYYY'}}
+                        </span>
+                    </mat-cell>
+                </ng-container>
+                <ng-container matColumnDef="invoicing">
+                    <mat-header-cell *matHeaderCellDef mat-sort-header fxFlex="10%"> Invoicing </mat-header-cell>
+                    <mat-cell *matCellDef="let row" fxFlex="10%">
+                        <span class="text-truncate-ellipsis flex-items-center" [matTooltip]="row?.invoicingReferencePerson?.firstName + ' ' + row?.invoicingReferencePerson?.lastName">
+                            <img class="border-rounded-50 image-thumbnail-small" [src]="employeeProfileUrl(row?.invoicingReferencePerson?.id)" />
+                        </span>
+                    </mat-cell>
+                </ng-container>
+                <ng-container matColumnDef="manager">
+                    <mat-header-cell *matHeaderCellDef mat-sort-header fxFlex="10%"> Manager </mat-header-cell>
+                    <mat-cell *matCellDef="let row" fxFlex="10%">
+                        <span class="text-truncate-ellipsis flex-items-center" [matTooltip]="row?.workflowEmployee?.name">
+                            <img class="border-rounded-50 image-thumbnail-small" [src]="employeeProfileUrl(row?.workflowEmployee?.externalId)" />
+                        </span>
+                    </mat-cell>
+                </ng-container>
+                <ng-container matColumnDef="status">
+                    <mat-header-cell *matHeaderCellDef mat-sort-header fxFlex="10%"> Status </mat-header-cell>
+                    <mat-cell *matCellDef="let row" fxFlex="10%">
+                        <span class="text-truncate-ellipsis flex-items-center" [matTooltip]="row?.workflowStatusName">
+                            <mat-icon [ngClass]="row?.workflowStatus">fiber_manual_record</mat-icon>
+                            {{row?.workflowStatusName}}
+                        </span>
+                    </mat-cell>
+                </ng-container>
+                <ng-container matColumnDef="action">
+                    <mat-header-cell *matHeaderCellDef mat-sort-header fxFlex="5%"></mat-header-cell>
+                    <mat-cell *matCellDef="let row" fxFlex="5%">
+                        <button mat-icon-button matTooltip="Go to workflow">
+                            <mat-icon class="icon-arrow-rotate180" svgIcon="arrow"></mat-icon>
+                        </button>
+                    </mat-cell>
+                </ng-container>
+                <mat-header-row *matHeaderRowDef="clientDisplayColumns"></mat-header-row>
+                <mat-row *matRowDef="let row; columns: clientDisplayColumns;" class="mat-elevation-z0"></mat-row>
+            </mat-table>
+            <div class="spinner-container" *ngIf="isDataLoading">
+                <mat-spinner [diameter]="50"></mat-spinner>
+            </div>
+            <div class="results-not-found" *ngIf="totalCount === 0 && !isDataLoading">
+                RESULTS NOT FOUND
+            </div>
+        </div>
+        <div class="pagination-container">
+            <mat-paginator #clientsPaginator [length]="totalCount" [pageSize]="deafultPageSize"
+                [pageSizeOptions]="pageSizeOptions" [showFirstLastButtons]="true" (page)="pageChanged($event)">
+            </mat-paginator>
+        </div>
+    </div>
+</div>

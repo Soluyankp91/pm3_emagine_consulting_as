@@ -1,0 +1,408 @@
+<div class="client-documents u-w--100" fxLayout="row">
+    <div class="client-documents--sidenav" fxFlex="15%">
+        <div class="client-documents--sidenav__item cursor-pointer flex-items-center"
+             *ngFor="let item of documentSideNavigation"
+             [ngClass]="{'selected-sidenav': item.selected}"
+             (click)="selectSideNav(item)">
+            {{item.name}}
+        </div>
+    </div>
+    <div class="client-documents--content" fxFlex="85%">
+        <ng-container [ngSwitch]="selectedItem">
+            <ng-container *ngSwitchCase="documentSideItems.General">
+                <div fxLayout="column" fxLayoutAlign="start end" class="client-documents--form u-w--100">
+                    <div fxLayout="row" fxLayoutAlign="space-between center" class="u-mb--15">
+                        <mat-checkbox color="accent" name="generalDocumentsIncludeLinked" [formControl]="generalDocumentsIncludeLinked" class="black-checkbox u-w--100 u-mr--16">
+                            Include linked clients
+                        </mat-checkbox>
+                    </div>
+                    <div fxLayout="column" fxFlexFill>
+                        <form [formGroup]="generalDocumentForm" class="u-w--100">
+                            <div fxLayout="row" fxLayoutAlign="space-between center" fxLayoutGap="10px" class="client-documents--form__header">
+                                <div fxFlex="5%">
+                                </div>
+                                <div fxFlex="25%">
+                                    Document title
+                                </div>
+                                <div fxFlex="25%">
+                                    Filename
+                                </div>
+                                <div fxFlex="15%">
+                                    Type
+                                </div>
+                                <div fxFlex="20%">
+                                    Date
+                                </div>
+                                <div fxFlex="7%">
+                                    Uploaded by
+                                </div>
+                                <div fxFlex="3%">
+                                </div>
+                            </div>
+                            <ng-container formArrayName="documents" class="u-w--100">
+                                <div fxLayout="row" fxLayoutAlign="space-between center" fxLayoutGap="10px" class="client-documents--form__row u-w--100"
+                                    *ngFor="let document of generalDocumentForm.documents.controls; index as i"
+                                    [formArrayName]="i">
+                                    <ng-container *ngIf="generalDocumentForm.documents.at(i).get('editable')?.value">
+                                        <div fxFlex="5%">
+                                            <mat-icon [matTooltip]="generalDocumentForm.documents.at(i).get('icon')?.value" class="icon" [svgIcon]="generalDocumentForm.documents.at(i).get('icon')?.value"></mat-icon>
+                                        </div>
+                                        <mat-form-field appearance="fill" class="u-w--100 formFieldNoMarginPadding filter-select" fxFlex="25%">
+                                            <input matInput type="text" formControlName="headline" placeholder="Headline" />
+                                        </mat-form-field>
+                                        <mat-form-field appearance="fill" class="u-w--100 formFieldNoMarginPadding filter-select" fxFlex="25%">
+                                            <input matInput type="text" formControlName="filename" placeholder="Filename" />
+                                        </mat-form-field>
+                                        <mat-form-field appearance="fill" class="u-w--100 formFieldNoMarginPadding filter-select" fxFlex="15%">
+                                            <mat-select formControlName="attachmentTypeId" placeholder="File type" [disableOptionCentering]="true" [compareWith]="compareWithFn">
+                                                <mat-option *ngFor="let item of generalFileTypes | keyvalue" [value]="+item.key">
+                                                    {{ item.value }}
+                                                </mat-option>
+                                            </mat-select>
+                                        </mat-form-field>
+                                        <mat-form-field appearance="fill" class="u-w--100 formFieldNoMarginPadding filter-select formFieldDatePicker" fxFlex="20%">
+                                            <input autocomplete="off" placeholder="Date" matInput
+                                                    [matDatepicker]="generalDocumentDatePicker"
+                                                    name="date"
+                                                    formControlName="dateUpdated"
+                                                    (focus)="generalDocumentDatePicker.open()"
+                                                    (click)="generalDocumentDatePicker.open()" readonly>
+                                            <mat-icon class="calendar-icon" matSuffix svgIcon="calendar"></mat-icon>
+                                            <mat-datepicker #generalDocumentDatePicker></mat-datepicker>
+                                        </mat-form-field>
+                                        <div fxFlex="7%" class="text-truncate-ellipsis" [matTooltip]="generalDocumentForm.documents.at(i).get('uploadedBy')?.value">
+                                            {{generalDocumentForm.documents.at(i).get('uploadedBy')?.value}}
+                                        </div>
+                                    </ng-container>
+                                    <ng-container *ngIf="!generalDocumentForm.documents.at(i).get('editable')?.value">
+                                        <div fxFlex="5%">
+                                            <mat-icon [matTooltip]="generalDocumentForm.documents.at(i).get('icon')?.value" class="icon" [svgIcon]="generalDocumentForm.documents.at(i).get('icon')?.value"></mat-icon>
+                                        </div>
+                                        <div fxFlex="25%" class="text-truncate-ellipsis" [matTooltip]="generalDocumentForm.documents.at(i).get('headline')?.value">
+                                            {{generalDocumentForm.documents.at(i).get('headline')?.value}}
+                                        </div>
+                                        <div fxFlex="25%" class="text-truncate-ellipsis" [matTooltip]="generalDocumentForm.documents.at(i).get('filename')?.value">
+                                            {{generalDocumentForm.documents.at(i).get('filename')?.value}}
+                                        </div>
+                                        <div fxFlex="15%" class="text-truncate-ellipsis" [matTooltip]="parseTypeName(generalDocumentForm.documents.at(i).get('attachmentTypeId')?.value * 1)">
+                                            {{parseTypeName(generalDocumentForm.documents.at(i).get('attachmentTypeId')?.value * 1)}}
+                                        </div>
+                                        <div fxFlex="20%" class="text-truncate-ellipsis" [matTooltip]="generalDocumentForm.documents.at(i).get('dateUpdated')?.value | momentFormat: 'DD.MM.YYYY'">
+                                            {{generalDocumentForm.documents.at(i).get('dateUpdated')?.value | momentFormat: 'DD.MM.YYYY'}}
+                                        </div>
+                                        <div fxFlex="7%" class="text-truncate-ellipsis" [matTooltip]="generalDocumentForm.documents.at(i).get('uploadedBy')?.value">
+                                            {{generalDocumentForm.documents.at(i).get('uploadedBy')?.value}}
+                                        </div>
+                                    </ng-container>
+                                    <div fxFlex="3%">
+                                        <button mat-icon-button [matMenuTriggerFor]="generalDocumentMenu" class="client-documents-icon--actions"><mat-icon>more_horiz</mat-icon></button>
+                                        <mat-menu #generalDocumentMenu>
+                                            <button
+                                                class="menu-item"
+                                                mat-menu-item
+                                                (click)="editGeneralDocument(documents?.at(i)?.get('editable')?.value, i)">
+                                                {{documents?.at(i)?.get('editable')?.value ? 'Save' : 'Edit'}}
+                                            </button>
+                                            <button
+                                                class="menu-item"
+                                                mat-menu-item
+                                                (click)="downloadGeneralDocument(document.value?.clientAttachmentGuid)">
+                                                Download
+                                            </button>
+                                            <button
+                                                class="menu-item"
+                                                mat-menu-item
+                                                (click)="deleteGeneralDocument(document.value?.clientAttachmentGuid)">
+                                                Delete document
+                                            </button>
+                                        </mat-menu>
+                                    </div>
+                                </div>
+                            </ng-container>
+                        </form>
+                        <div fxLayout="row" fxLayoutAlign="center center">
+                            <app-file-uploader (filesAdded)="uploadFile($event)" [withoutDisplay]="true" [acceptOnlyOneFile]="true" class="u-w--100" #fileUploader></app-file-uploader>
+                        </div>
+                    </div>
+                </div>
+            </ng-container>
+            <ng-container *ngSwitchCase="documentSideItems.Contracts">
+                <div fxLayout="column" fxLayoutAlign="start end" class="client-documents--contract u-w--100">
+                    <div fxLayout="row" fxLayoutAlign="space-between center" class="u-mb--15 client-documents--contract-filter">
+                        <mat-checkbox color="accent" name="contractDocumentsIncludeLinked" [formControl]="contractDocumentsIncludeLinked" class="black-checkbox u-w--100 u-mr--16">
+                            Include linked clients
+                        </mat-checkbox>
+                        <mat-checkbox color="accent" name="contractDocumentsIncludeExpired" [formControl]="contractDocumentsIncludeExpired" class="black-checkbox u-w--100">
+                            Include expired
+                        </mat-checkbox>
+                    </div>
+                    <div fxLayout="column" fxLayoutAlign="center center" class="u-mt--20 client-documents--contract-folders u-w--100">
+                      
+                        <!-- Frame agreements -->
+                        <mat-accordion [multi]="true" togglePosition="before" class="mat-elevation-z0">
+                            <mat-expansion-panel class="mat-elevation-z0 contract-parent--folder">
+                                <mat-expansion-panel-header
+                                    [collapsedHeight]="'44px'"
+                                    [expandedHeight]="'44px'">
+                                    <h4 class="u-mb--0">
+                                        Frame agreements
+                                    </h4>
+                                </mat-expansion-panel-header>
+                                <mat-accordion [multi]="true" togglePosition="before" class="mat-elevation-z0">
+                                    <ng-container *ngIf="contractsDocuments.frameAgreements?.length; else noFilesTemplate">
+                                        <mat-expansion-panel *ngFor="let frame of contractsDocuments.frameAgreements" class="mat-elevation-z0">
+                                            <mat-expansion-panel-header
+                                                [collapsedHeight]="'44px'"
+                                                [expandedHeight]="'44px'">
+                                                <h4 class="u-mb--0">
+                                                    {{frame.name}} {{frame.startDate | momentFormat: 'DD.MM.YYYY'}}
+                                                </h4>
+                                            </mat-expansion-panel-header>
+                                            <div *ngIf="frame.documents?.length" class="column u-ml--32">
+                                                <div *ngFor="let file of frame.documents; last as last" class="flex-items-center" [ngClass]="{'u-mb--20': !last}">
+                                                    <mat-icon class="icon" svgIcon="pdf"></mat-icon>
+                                                    <span class="text-bold">
+                                                        {{ file.name }}
+                                                    </span>
+                                                </div>
+                                            </div>
+                                        </mat-expansion-panel>
+                                    </ng-container>
+                                </mat-accordion>
+                            </mat-expansion-panel>
+                        </mat-accordion>
+
+                        <!-- Workflows -->
+                        <mat-accordion [multi]="true" togglePosition="before" class="mat-elevation-z0">
+                            <mat-expansion-panel class="mat-elevation-z0 contract-parent--folder">
+                                <mat-expansion-panel-header
+                                    [collapsedHeight]="'44px'"
+                                    [expandedHeight]="'44px'">
+                                    <h4 class="u-mb--0">
+                                        Workflows
+                                    </h4>
+                                </mat-expansion-panel-header>
+                                <mat-accordion [multi]="true" togglePosition="before" class="mat-elevation-z0">
+                                    <ng-container *ngIf="contractsDocuments.workflows?.length; else noFilesTemplate">
+                                        <mat-expansion-panel *ngFor="let workflow of contractsDocuments.workflows" class="mat-elevation-z0">
+                                            <mat-expansion-panel-header
+                                                [collapsedHeight]="'44px'"
+                                                [expandedHeight]="'44px'">
+                                                <h4 class="u-mb--0">
+                                                    {{workflow.name}} {{workflow.startDate | momentFormat: 'DD.MM.YYYY'}}
+                                                </h4> 
+                                            </mat-expansion-panel-header>
+                                            <!-- client contracts -->
+                                            <mat-accordion [multi]="true" togglePosition="before" class="mat-elevation-z0">
+                                                <mat-expansion-panel class="mat-elevation-z0">
+                                                    <mat-expansion-panel-header
+                                                        [collapsedHeight]="'44px'"
+                                                        [expandedHeight]="'44px'">
+                                                        <div class="flex-row flex-justify-between flex-items-center u-w--100">
+                                                            <h4 class="u-mb--0">
+                                                                Client contracts
+                                                            </h4>
+                                                        </div>
+                                                    </mat-expansion-panel-header>
+                                                    <mat-accordion [multi]="true" togglePosition="before" class="mat-elevation-z0">
+                                                        <ng-container *ngIf="workflow.clientContracts?.length; else noFilesTemplate">
+                                                            <mat-expansion-panel *ngFor="let clientContract of workflow.clientContracts" class="mat-elevation-z0">
+                                                                <mat-expansion-panel-header
+                                                                    [collapsedHeight]="'44px'"
+                                                                    [expandedHeight]="'44px'">
+                                                                    <div class="flex-row flex-justify-between flex-items-center u-w--100">
+                                                                        <h4 class="u-mb--0">
+                                                                            {{clientContract.name}} {{clientContract.startDate | momentFormat: 'DD.MM.YYYY'}}
+                                                                        </h4>
+                                                                    </div>
+                                                                </mat-expansion-panel-header>
+                                                                <div *ngIf="clientContract.documents?.length; else noFilesTemplate" class="column u-ml--32">
+                                                                    <div *ngFor="let file of clientContract.documents; last as last" class="flex-items-center" [ngClass]="{'u-mb--20': !last}">
+                                                                        <mat-icon class="icon" svgIcon="pdf"></mat-icon>
+                                                                        <span class="text-bold">
+                                                                            {{ file.name }}
+                                                                        </span>
+                                                                    </div>
+                                                                </div>
+                                                            </mat-expansion-panel>
+                                                        </ng-container>
+                                                    </mat-accordion>
+                                                </mat-expansion-panel>
+                                            </mat-accordion>
+                                            <!-- consultant contracts -->
+                                            <mat-accordion [multi]="true" togglePosition="before" class="mat-elevation-z0">
+                                                <mat-expansion-panel class="mat-elevation-z0">
+                                                    <mat-expansion-panel-header
+                                                        [collapsedHeight]="'44px'"
+                                                        [expandedHeight]="'44px'">
+                                                        <div class="flex-row flex-justify-between flex-items-center u-w--100">
+                                                            <h4 class="u-mb--0">
+                                                                Consultant contracts
+                                                            </h4>
+                                                        </div>
+                                                    </mat-expansion-panel-header>
+                                                    <mat-accordion [multi]="true" togglePosition="before" class="mat-elevation-z0">
+                                                        <ng-container *ngIf="workflow.consultantContracts?.length; else noFilesTemplate">
+                                                            <mat-expansion-panel *ngFor="let consultantContract of workflow.consultantContracts" class="mat-elevation-z0">
+                                                                <mat-expansion-panel-header
+                                                                    [collapsedHeight]="'44px'"
+                                                                    [expandedHeight]="'44px'">
+                                                                    <div class="flex-row flex-justify-between flex-items-center u-w--100">
+                                                                        <h4 class="u-mb--0">
+                                                                            {{consultantContract.name}} {{consultantContract.startDate | momentFormat: 'DD.MM.YYYY'}}
+                                                                        </h4>
+                                                                    </div>
+                                                                </mat-expansion-panel-header>
+                                                                <div *ngIf="consultantContract.documents?.length; else noFilesTemplate" class="column u-ml--32">
+                                                                    <div *ngFor="let file of consultantContract.documents; last as last" class="flex-items-center" [ngClass]="{'u-mb--20': !last}">
+                                                                        <mat-icon class="icon" svgIcon="pdf"></mat-icon>
+                                                                        <span class="text-bold">
+                                                                            {{ file.name }}
+                                                                        </span>
+                                                                    </div>
+                                                                </div>
+                                                            </mat-expansion-panel>
+                                                        </ng-container>
+                                                    </mat-accordion>
+                                                </mat-expansion-panel>
+                                            </mat-accordion>
+                                            <!-- internal contracts -->
+                                            <mat-accordion [multi]="true" togglePosition="before" class="mat-elevation-z0">
+                                                <mat-expansion-panel class="mat-elevation-z0">
+                                                    <mat-expansion-panel-header
+                                                        [collapsedHeight]="'44px'"
+                                                        [expandedHeight]="'44px'">
+                                                        <div class="flex-row flex-justify-between flex-items-center u-w--100">
+                                                            <h4 class="u-mb--0">
+                                                                Internal contracts
+                                                            </h4>
+                                                        </div>
+                                                    </mat-expansion-panel-header>
+                                                    <mat-accordion [multi]="true" togglePosition="before" class="mat-elevation-z0">
+                                                        <ng-container *ngIf="workflow.internalContracts?.length; else noFilesTemplate">
+                                                            <mat-expansion-panel *ngFor="let internalContract of workflow.internalContracts" class="mat-elevation-z0">
+                                                                <mat-expansion-panel-header
+                                                                    [collapsedHeight]="'44px'"
+                                                                    [expandedHeight]="'44px'">
+                                                                    <div class="flex-row flex-justify-between flex-items-center u-w--100">
+                                                                        <h4 class="u-mb--0">
+                                                                            {{internalContract.name}} {{internalContract.startDate | momentFormat: 'DD.MM.YYYY'}}
+                                                                        </h4>
+                                                                    </div>
+                                                                </mat-expansion-panel-header>
+                                                                <div *ngIf="internalContract.documents?.length; else noFilesTemplate" class="column u-ml--32">
+                                                                    <div *ngFor="let file of internalContract.documents; last as last" class="flex-items-center" [ngClass]="{'u-mb--20': !last}">
+                                                                        <mat-icon class="icon" svgIcon="pdf"></mat-icon>
+                                                                        <span class="text-bold">
+                                                                            {{ file.name }}
+                                                                        </span>
+                                                                    </div>
+                                                                </div>
+                                                            </mat-expansion-panel>
+                                                        </ng-container>
+                                                    </mat-accordion>
+                                                </mat-expansion-panel>
+                                            </mat-accordion>
+                                        </mat-expansion-panel>
+                                    </ng-container>
+                                </mat-accordion>
+                            </mat-expansion-panel>
+                        </mat-accordion>
+                        <ng-template #noFilesTemplate>
+                            No files
+                        </ng-template>
+                    </div>
+                </div>
+            </ng-container>
+            <ng-container *ngSwitchCase="documentSideItems.Evaluations">
+                <div fxLayout="column" fxLayoutAlign="start end" class="documents-documents--table u-w--100">
+                    <div fxLayout="row" fxLayoutAlign="space-between center"class=" u-mb--15">
+                        <mat-form-field appearance="outline" class="u-w--100 u-mr--16">
+                            <mat-label>Max answer date</mat-label>
+                            <input autocomplete="off" placeholder="New end date" matInput
+                                    [matDatepicker]="evaluationDocumentDatePicker"
+                                    name="evaluationDocumentDate"
+                                    [formControl]="evaluationDocumentDate"
+                                    (focus)="evaluationDocumentDatePicker.open()"
+                                    (click)="evaluationDocumentDatePicker.open()" readonly>
+                            <mat-icon class="calendar-icon" matSuffix svgIcon="calendar"></mat-icon>
+                            <mat-datepicker #evaluationDocumentDatePicker></mat-datepicker>
+                        </mat-form-field>
+            
+                        <mat-checkbox  color="accent" name="contractDocumentsIncludeLinked" [formControl]="evaluationDocumentsIncludeLinked" class="black-checkbox u-w--100 u-mr--15">
+                            Include linked clients
+                        </mat-checkbox>
+                    </div>
+                    <div fxLayout="column" fxFlexFill>
+                        <mat-table #table [dataSource]="evalsDocumentsDataSource" class="white-table u-w--100" matSort
+                            matSortStart="asc" (matSortChange)="sortChanged($event)">
+                            <ng-container matColumnDef="local">
+                                <mat-header-cell *matHeaderCellDef fxFlex="15%"> Local </mat-header-cell>
+                                <mat-cell *matCellDef="let row" fxFlex="15%">
+                                    <span class="text-truncate-ellipsis" [matTooltip]="row.headline">
+                                        {{row.headline}}
+                                    </span>
+                                </mat-cell>
+                            </ng-container>
+                            <ng-container matColumnDef="english">
+                                <mat-header-cell *matHeaderCellDef fxFlex="15%"> English </mat-header-cell>
+                                <mat-cell *matCellDef="let row" fxFlex="15%">
+                                    <span class="text-truncate-ellipsis" [matTooltip]="row?.status?.name">
+                                        {{row?.status?.name}}
+                                    </span>
+                                </mat-cell>
+                            </ng-container>
+                            <ng-container matColumnDef="averageScore">
+                                <mat-header-cell *matHeaderCellDef fxFlex="10%"> Average score </mat-header-cell>
+                                <mat-cell *matCellDef="let row" fxFlex="10%">
+                                    <span class="text-truncate-ellipsis" [matTooltip]="row.clientDeadline">
+                                        {{row.clientDeadline}}
+                                    </span>
+                                </mat-cell>
+                            </ng-container>
+                            <ng-container matColumnDef="consultantName">
+                                <mat-header-cell *matHeaderCellDef fxFlex="20%"> Consultant name </mat-header-cell>
+                                <mat-cell *matCellDef="let row" fxFlex="20%">
+                                    <span class="text-truncate-ellipsis" [matTooltip]="row?.dateAdded">
+                                        {{row?.dateAdded}}
+                                    </span>
+                                </mat-cell>
+                            </ng-container>
+                            <ng-container matColumnDef="evaluator">
+                                <mat-header-cell *matHeaderCellDef fxFlex="20%"> Evaluator </mat-header-cell>
+                                <mat-cell *matCellDef="let row" fxFlex="20%">
+                                    <span class="text-truncate-ellipsis" [matTooltip]="row?.projectType?.name">
+                                        {{row?.projectType?.name}}
+                                    </span>
+                                </mat-cell>
+                            </ng-container>
+                            <ng-container matColumnDef="evaluationDate">
+                                <mat-header-cell *matHeaderCellDef fxFlex="20%"> Date of evaluation </mat-header-cell>
+                                <mat-cell *matCellDef="let row" fxFlex="20%">
+                                    <span class="text-truncate-ellipsis" [matTooltip]="row.priority">
+                                        {{row.priority}}
+                                    </span>
+                                </mat-cell>
+                            </ng-container>
+
+                            <mat-header-row *matHeaderRowDef="evalsDocsDisplayColumns"></mat-header-row>
+                            <mat-row *matRowDef="let row; columns: evalsDocsDisplayColumns;" class="mat-elevation-z0">
+                            </mat-row>
+                        </mat-table>
+                        <div class="spinner-container" *ngIf="isDataLoading">
+                            <mat-spinner [diameter]="50"></mat-spinner>
+                        </div>
+                        <div class="results-not-found" *ngIf="totalCount === 0 && !isDataLoading">
+                            RESULTS NOT FOUND
+                        </div>
+                    </div>
+                    <div class="pagination-container">
+                        <mat-paginator #clientsPaginator [length]="totalCount" [pageSize]="deafultPageSize"
+                            [pageSizeOptions]="pageSizeOptions" [showFirstLastButtons]="true" (page)="pageChanged($event)">
+                        </mat-paginator>
+                    </div>
+                </div>
+            </ng-container>
+        </ng-container>
+    </div>
+</div>

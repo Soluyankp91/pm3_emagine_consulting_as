@@ -1,0 +1,249 @@
+<div class="client-list">
+    <div fxLayout="column" fxLayoutAlign="start start" class="client-list--filter u-w--100">
+        <div fxLayout="row" fxLayoutAlign="start center" class="u-w--100 u-mb--10">
+            <h2 class="client-list--header">
+                Client list
+            </h2>
+        </div>
+        <div fxLayout="row" fxLayoutAlign="space-between start" class="u-w--100">
+            <div fxFlex="30%" fxLayout="row" fxLayoutAlign="start center" class="u-w--100">
+                <div class="client-list--filter-manager cursor-pointer u-mr--16" [matTooltip]="mapListByProperty(selectedAccountManagers, 'name')" [matMenuTriggerFor]="managerMenu" (menuOpened)="accountManagerFilter.setValue(''); accountManagerFilterInput.click()">
+                    <img src="../../../assets/common/images/no-img.svg">
+                    <mat-menu #managerMenu>
+                        <div mat-menu-item (click)="$event.stopPropagation()" class="u-pg--0">
+                            <mat-form-field appearance="outline" (click)="$event.stopPropagation()">
+                                <input #accountManagerFilterInput type="text" matInput [matAutocomplete]="managerAutocomplete" [formControl]="accountManagerFilter" (click)="$event.stopPropagation()" placeholder="Select account manager(s)">
+                            </mat-form-field>
+                            <mat-autocomplete #managerAutocomplete="matAutocomplete">
+                                <mat-option *ngFor="let manager of selectedAccountManagers"
+                                    class="u-pg--5"
+                                    [value]="manager">
+                                    <div class="u-w--100"
+                                        (click)="optionClicked($event, manager, selectedAccountManagers)">
+                                        <mat-checkbox [checked]="manager.selected"
+                                            *ngIf="manager.id !== 'no-data'"
+                                            color="primary"
+                                            (change)="toggleSelection(manager,selectedAccountManagers)"
+                                            (click)="$event.stopPropagation()">
+                                            <span>{{ manager.name }}</span>
+                                        </mat-checkbox>
+                                        <span *ngIf="manager.id === 'no-data'"
+                                            (click)="$event.stopPropagation()">
+                                            {{ manager.name }}
+                                        </span>
+                                    </div>
+                                </mat-option>
+                                <mat-option *ngFor="let manager of filteredAccountManagers"
+                                    class="u-pg--5"
+                                    [ngClass]="{ 'no-data': manager.id === 'no-data', 'hidden-option': selectedAccountManagers.includes(manager)}"
+                                    [value]="selectedAccountManagers">
+                                    <div
+                                        (click)="optionClicked($event, manager, selectedAccountManagers)">
+                                        <mat-checkbox [checked]="manager.selected"
+                                            *ngIf="manager.id !== 'no-data'"
+                                            color="primary"
+                                            (change)="toggleSelection(manager,selectedAccountManagers)"
+                                            (click)="$event.stopPropagation()">
+                                            <span>{{ manager.name }}</span>
+                                        </mat-checkbox>
+                                        <span *ngIf="manager.id === 'no-data'"
+                                            (click)="$event.stopPropagation()">{{ manager.name }}
+                                        </span>
+                                    </div>
+                                </mat-option>
+                            </mat-autocomplete>
+                        </div>
+                    </mat-menu>
+                </div>
+                <div class="u-mr--16">
+                    <button
+                        mat-icon-button
+                        [matMenuTriggerFor]="countryMenu"
+                        (menuOpened)="countryFilter.setValue('')"
+                        [ngClass]="{ 'client-list--filter-country__btn': selectedCountries.length > 1 }"
+                        [matTooltip]="mapListByProperty(selectedCountries, 'name')">
+                            <span *ngIf="selectedCountries.length > 1; else singleCountry" class="client-list--filter-country__badge">
+                                {{selectedCountries.length}}
+                            </span>
+                            <ng-template #singleCountry>
+                                <mat-icon class="client-list--filter-country u-mr--16" [svgIcon]="selectedCountries.length ? selectedCountries[0]?.name + '-flag-selected' : 'Country-filter-flag'"></mat-icon>
+                            </ng-template>
+                    </button>
+                    <mat-menu #countryMenu class="autocomplete-menu">
+                        <div mat-menu-item (click)="$event.stopPropagation()" class="u-pg--0">
+                            <mat-form-field appearance="outline" (click)="$event.stopPropagation()">
+                                <input type="text" matInput [matAutocomplete]="countryAutocomplete" [formControl]="countryFilter" (click)="$event.stopPropagation()" placeholder="Select client country">
+                            </mat-form-field>
+                            <mat-autocomplete #countryAutocomplete="matAutocomplete">
+                                <mat-option *ngFor="let country of selectedCountries"
+                                    class="u-pg--5"
+                                    [value]="selectedCountries">
+                                    <div class="u-w--100"
+                                        (click)="optionClicked($event, country, selectedCountries)">
+                                        <mat-checkbox [checked]="country.selected"
+                                            *ngIf="country.id !== 'no-data'"
+                                            color="primary"
+                                            (change)="toggleSelection(country,selectedCountries)"
+                                            (click)="$event.stopPropagation()">
+                                            <mat-icon svgIcon="{{country.flag}}-flag-selected" *ngIf="country.id !== 0; else unkownCountry"></mat-icon>
+                                            <ng-template #unkownCountry>
+                                                <mat-icon svgIcon="Country-filter-flag"></mat-icon>
+                                            </ng-template>
+                                            <span>{{ country.name }}</span>
+                                        </mat-checkbox>
+                                        <span *ngIf="country.id === 'no-data'"
+                                            (click)="$event.stopPropagation()">
+                                            {{ country.name }}
+                                        </span>
+                                    </div>
+                                </mat-option>
+                                <mat-option *ngFor="let country of filteredCountries | async"
+                                    class="u-pg--5"
+                                    [ngClass]="{ 'no-data': country.id === 'no-data', 'hidden-option': selectedCountries.includes(country)}"
+                                    [value]="selectedCountries">
+                                    <div class="u-w--100"
+                                        (click)="optionClicked($event, country, selectedCountries)">
+                                        <mat-checkbox [checked]="country.selected"
+                                            *ngIf="country.id !== 'no-data'"
+                                            color="primary"
+                                            (change)="toggleSelection(country,selectedCountries)"
+                                            (click)="$event.stopPropagation()">
+                                            <mat-icon svgIcon="{{country.flag}}-flag-selected" *ngIf="country.id !== 0; else unkownCountry"></mat-icon>
+                                            <ng-template #unkownCountry>
+                                                <mat-icon svgIcon="Country-filter-flag"></mat-icon>
+                                            </ng-template>
+                                            <span>{{ country.name }}</span>
+                                        </mat-checkbox>
+                                        <span *ngIf="country.id === 'no-data'"
+                                            (click)="$event.stopPropagation()">
+                                            {{ country.name }}
+                                        </span>
+                                    </div>
+                                </mat-option>
+                            </mat-autocomplete>
+                        </div>
+                    </mat-menu>
+                </div>
+                <span class="client-list--filter-status__badge flex-items-center cursor-pointer u-mr--16" [ngClass]="{'selected-status': isActiveClients}" (click)="isActiveClients = !isActiveClients; getClientsGrid()">
+                    <mat-icon class="status-dot green-dot u-mr--5">fiber_manual_record</mat-icon>
+                    Active clients
+                </span>
+                <span class="client-list--filter-status__badge flex-items-center cursor-pointer" [ngClass]="{'selected-status': nonActiveClient}" (click)="nonActiveClient = !nonActiveClient; getClientsGrid()">
+                    <mat-icon class="status-dot grey-dot u-mr--5">fiber_manual_record</mat-icon>
+                    Non-active clients
+                </span>
+            </div>
+            <div fxFlex="25%" fxLayout="column" fxLayoutAlign="start end" fxLayoutGap="16px" class="u-w--100">
+                <mat-form-field appearance="fill" class="search-filter-input u-w--100 formFieldNoMarginPadding u-mb--10">
+                    <input autocomplete="off" matInput [formControl]="clientFilter" placeholder="Search" type="text">
+                    <mat-icon matPrefix>search</mat-icon>
+                </mat-form-field>
+                <mat-slide-toggle color="primary" labelPosition="before" (change)="getClientsGrid()" [(ngModel)]="includeDeleted">Show deleted</mat-slide-toggle>
+            </div>
+        </div>
+    </div>
+    <div fxLayout="column" fxLayoutAlign="start center" class="client-list--content u-w--100">
+        <div class="client-list--table u-w--100">
+            <mat-table #table [dataSource]="clientDataSource" class="white-table u-w--100" matSort matSortStart="asc" (matSortChange)="sortChanged($event)">
+                <ng-container matColumnDef="id">
+                    <mat-header-cell *matHeaderCellDef mat-sort-header fxFlex="5%"> ID </mat-header-cell>
+                    <mat-cell *matCellDef="let row" fxFlex="5%">
+                        {{row.id}}
+                    </mat-cell>
+                </ng-container>
+                <ng-container matColumnDef="name">
+                    <mat-header-cell *matHeaderCellDef mat-sort-header fxFlex="25%"> Client </mat-header-cell>
+                    <mat-cell *matCellDef="let row" fxFlex="25%">
+                        <span class="text-truncate-ellipsis text-bold" [matTooltip]="row.name">
+                            {{row.name}}
+                        </span>
+                    </mat-cell>
+                </ng-container>
+                <ng-container matColumnDef="clientAddress_Country_Name">
+                    <mat-header-cell *matHeaderCellDef mat-sort-header fxFlex="10%"> Country </mat-header-cell>
+                    <mat-cell *matCellDef="let row" fxFlex="10%">
+                        <span class="text-truncate-ellipsis text-bold" [matTooltip]="row.clientAddress_Country_Name">
+                            <span class="flag-icon flag-icon-{{row.clientAddress_Country_Code | lowercase }}"></span>
+                            <span>
+                                {{row.clientAddress_Country_Code}}
+                            </span>
+                        </span>
+                    </mat-cell>
+                </ng-container>
+                <ng-container matColumnDef="clientAddress_City">
+                    <mat-header-cell *matHeaderCellDef mat-sort-header fxFlex="15%"> City </mat-header-cell>
+                    <mat-cell *matCellDef="let row" fxFlex="15%">
+                        <span class="text-truncate-ellipsis" [matTooltip]="row.clientAddress_PostCode + ' ' + row.clientAddress_City">
+                            {{row.clientAddress_PostCode + ' ' + row.clientAddress_City}}
+                        </span>
+                    </mat-cell>
+                </ng-container>
+                <ng-container matColumnDef="clientAddress_Address">
+                    <mat-header-cell *matHeaderCellDef mat-sort-header fxFlex="15%"> Address </mat-header-cell>
+                    <mat-cell *matCellDef="let row" fxFlex="15%">
+                        <span class="text-truncate-ellipsis" [matTooltip]="row.clientAddress_Address">
+                            {{row.clientAddress_Address}}
+                        </span>
+                    </mat-cell>
+                </ng-container>
+                <ng-container matColumnDef="status">
+                    <mat-header-cell *matHeaderCellDef mat-sort-header fxFlex="17%"> Status </mat-header-cell>
+                    <mat-cell *matCellDef="let row" fxFlex="17%">
+                        <span class="text-truncate-ellipsis" [matTooltip]="row.status">
+                            {{row.status}}
+                        </span>
+                    </mat-cell>
+                </ng-container>
+                <ng-container matColumnDef="owner_Name">
+                    <mat-header-cell *matHeaderCellDef mat-sort-header fxFlex="10%"> Account manager </mat-header-cell>
+                    <mat-cell *matCellDef="let row" fxFlex="10%">
+                        <span class="text-truncate-ellipsis" [matTooltip]="row.owner_Name">
+                            <img class="manager-search--photo" src="../../../../assets/common/images/no-img.svg" [alt]="row?.owner?.name" />
+                        </span>
+                    </mat-cell>
+                </ng-container>
+                <ng-container matColumnDef="action">
+                    <mat-header-cell *matHeaderCellDef fxFlex="3%"> </mat-header-cell>
+                    <mat-cell *matCellDef="let row" fxFlex="3%">
+                        <button mat-icon-button (click)="$event.stopPropagation();" [matMenuTriggerFor]="clientListMenu" class="three-dots-actions-btn">
+                            <mat-icon>more_horiz</mat-icon>
+                        </button>
+                        <mat-menu #clientListMenu>
+                            <button
+                                class="menu-item menu-item--delete"
+                                mat-menu-item
+                                (click)="restoreWrongfullyDeleted(row)">
+                                Restore wrongfully deleted
+                            </button>
+                            <button
+                                class="menu-item menu-item--add"
+                                mat-menu-item
+                                (click)="openInHubspot(row)">
+                                Open in Hubspot
+                            </button>
+                            <button
+                                class="menu-item menu-item--add"
+                                mat-menu-item
+                                (click)="openInCAM(row)">
+                                Open in CAM
+                            </button>
+                        </mat-menu>
+                    </mat-cell>
+                </ng-container>
+                <mat-header-row *matHeaderRowDef="clientDisplayColumns"></mat-header-row>
+                <mat-row *matRowDef="let row; columns: clientDisplayColumns;" class="mat-elevation-z0 cursor-pointer" (click)="navigateToClientDetails(row.id)"></mat-row>
+            </mat-table>
+            <div class="spinner-container" *ngIf="isDataLoading">
+                <mat-spinner [diameter]="50"></mat-spinner>
+            </div>
+            <div class="results-not-found" *ngIf="totalCount === 0 && !isDataLoading">
+                RESULTS NOT FOUND
+            </div>
+        </div>
+        <div class="pagination-container u-w--100">
+            <mat-paginator #clientsPaginator [length]="totalCount" [pageSize]="deafultPageSize"
+                [pageSizeOptions]="pageSizeOptions" [showFirstLastButtons]="true" (page)="pageChanged($event)">
+            </mat-paginator>
+        </div>
+    </div>
+</div>

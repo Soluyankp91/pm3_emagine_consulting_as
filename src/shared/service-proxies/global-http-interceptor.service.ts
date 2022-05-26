@@ -1,10 +1,11 @@
 import { Injectable, NgZone } from "@angular/core";
-import { HttpEvent, HttpHandler, HttpInterceptor, HttpRequest, HttpErrorResponse } from '@angular/common/http';
+import { HttpEvent, HttpHandler, HttpInterceptor, HttpRequest, HttpErrorResponse, HttpResponseBase, HttpResponse } from '@angular/common/http';
 import { Observable, of, throwError } from "rxjs";
-import { catchError, map } from 'rxjs/operators';
+import { catchError, map, mergeMap, tap } from 'rxjs/operators';
 import { Router } from '@angular/router';
 import { ErrorDialogService } from "src/app/shared/common/errors/error-dialog.service";
 import { MsalService } from "@azure/msal-angular";
+import { ApiException } from "./service-proxies";
 
 @Injectable()
 export class GlobalHttpInterceptorService implements HttpInterceptor {
@@ -18,13 +19,9 @@ export class GlobalHttpInterceptorService implements HttpInterceptor {
     }
 
     intercept(req: HttpRequest<any>, next: HttpHandler): Observable<HttpEvent<any>> {
-
-        const token: string = 'invald token';
-        req = req.clone({ headers: req.headers.set('Authorization', 'Bearer ' + token) });
-
         return next.handle(req).pipe(
             catchError((error) => {
-
+                console.log(error);
                 let handled: boolean = false;
                 let message: string = '';
                 let header: string = '';
@@ -34,10 +31,19 @@ export class GlobalHttpInterceptorService implements HttpInterceptor {
                     } else {
                         console.log(`error status : ${error.status} ${error.statusText}`);
                         switch (error.status) {
+                            case 400:
+                                return this.transformBlobToJson(error)
+                                    .then(response => {
+                                        // console.log(JSON.stringify(response));
+                                        message = response?.error?.message ?? 'Invalid input';
+                                        header = 'Bad request!';
+                                        handled = true;
+                                        this.showDialog(message, header);
+                                    });;
                             case 401:      //login
                                 // this.router.navigateByUrl("/login");
                                 header = 'Current user did not login to the application!';
-                                message = 'You will redirected to login page.';
+                                message = 'You will be redirected to login page.';
                                 console.log(`redirect to login`);
                                 handled = true;
                                 this.authService.logout();
@@ -56,7 +62,6 @@ export class GlobalHttpInterceptorService implements HttpInterceptor {
                                 this.showDialog(message, header);
                                 handled = true;
                         }
-                        this.showDialog(message, header);
                     }
                 }
                 else {
@@ -72,10 +77,47 @@ export class GlobalHttpInterceptorService implements HttpInterceptor {
                     this.showDialog(message, header);
                     return throwError(error);
                 }
-
             })
         )
     }
+
+
+    transformBlobToJson(response: HttpErrorResponse): Promise<any> {
+        return new Promise(resolve => {
+            const responseBlob = response instanceof HttpResponse ? response.body : (<any>response).error instanceof Blob ? (<any>response).error : undefined;
+
+            blobToText(responseBlob)
+                .pipe(
+                    map(responseText => {
+                        if (responseText !== null) {
+                            const responseObject = JSON.parse(responseText);
+                            return responseObject;
+                        }
+                        return null;
+                    })
+                )
+                .subscribe(res => {
+                    return resolve(res);
+                });
+        });
+
+        function blobToText(blob: any): Observable<any> {
+            return new Observable<any>((observer: any) => {
+                if (!blob) {
+                    observer.next('');
+                    observer.complete();
+                } else {
+                    const reader = new FileReader();
+                    reader.onload = event => {
+                        observer.next((<any>event.target).result);
+                        observer.complete();
+                    };
+                    reader.readAsText(blob);
+                }
+            });
+        }
+    }
+
 
     showDialog(errorMessage: string, header: string) {
         this.zone.run(() =>

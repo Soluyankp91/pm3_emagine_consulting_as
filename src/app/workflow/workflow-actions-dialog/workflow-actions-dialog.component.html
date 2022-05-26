@@ -1,0 +1,150 @@
+<mat-dialog-content class="confiramtion-dialog">
+    <div mat-dialog-title class="confiramtion-dialog--header" align="center">
+        {{ data.dialogTitle }}
+    </div>
+    <!-- <div fxLayout="row" fxLayoutAlign="start center">
+        <img class="border-rounded-50 u-mr--16" src="https://picsum.photos/35/35" />
+        <p>{{consultant.consultantName ?? 'N/A'}}</p>
+    </div> -->
+    <ng-container [ngSwitch]="data.dialogType">
+        <ng-container *ngSwitchCase="dialogTypes.AddConsultant">
+            <h3>Select start and end dates</h3>
+            <div fxLayout="row" fxLayoutAlign="space-between start" fxLayoutGap="16px" class="u-w--100">
+                <mat-form-field appearance="outline" fxFlex="50%">
+                    <mat-label>Start date</mat-label>
+                    <input autocomplete="off" matInput
+                            [matDatepicker]="startDatePicker"
+                            name="clientExtensionEndDate" [formControl]="startDate"
+                            (focus)="startDatePicker.open()"
+                            (click)="startDatePicker.open()" readonly>
+                    <mat-icon class="calendar-icon" matSuffix svgIcon="calendar"></mat-icon>
+                    <mat-datepicker #startDatePicker></mat-datepicker>
+                </mat-form-field>
+
+                <div fxLayout="column" fxLayoutAlign="start start" fxFlex="50%">
+                    <mat-form-field appearance="outline">
+                        <mat-label>End date</mat-label>
+                        <input autocomplete="off" matInput
+                                [matDatepicker]="endDatePicker"
+                                name="clientExtensionEndDate" [formControl]="endDate"
+                                (focus)="endDatePicker.open()"
+                                (click)="endDatePicker.open()" readonly>
+                        <mat-icon class="calendar-icon" matSuffix svgIcon="calendar"></mat-icon>
+                        <mat-datepicker #endDatePicker></mat-datepicker>
+                    </mat-form-field>
+                    <mat-checkbox color="accent" [formControl]="noEndDate" name="noEndDate" class="black-checkbox u-mr--10" (change)="disableOrEnableInput(noEndDate.value, endDate)">
+                        No end date
+                    </mat-checkbox>
+                </div>
+            </div>
+        </ng-container>
+        <ng-container *ngSwitchCase="dialogTypes.Change">
+            <form [formGroup]="changeWorkflowForm">
+                <h2 class="workflow-change-dialog--label">Select new cutover date</h2>
+                <div fxLayout="row" fxLayoutAlign="space-between center" class="u-w--100 u-mt--10">
+                    <mat-form-field appearance="outline" class="u-w--100 u-mr--16" fxFlex="45%">
+                        <mat-label>Cutover date</mat-label>
+                        <input autocomplete="off" placeholder="New end date" matInput
+                                [matDatepicker]="cutoverDatePicker"
+                                name="cutoverDate"
+                                formControlName="cutoverDate"
+                                (focus)="cutoverDatePicker.open()"
+                                (click)="cutoverDatePicker.open()" readonly>
+                        <mat-icon class="calendar-icon" matSuffix svgIcon="calendar"></mat-icon>
+                        <mat-datepicker #cutoverDatePicker></mat-datepicker>
+                    </mat-form-field>
+
+                    <mat-checkbox color="accent" name="newLegalContractRequired" formControlName="newLegalContractRequired" class="workflow-change-dialog--checkbox black-checkbox u-w--100" fxFlex="50%">
+                        New legal contract required
+                    </mat-checkbox>
+                </div>
+
+                <mat-divider class="u-mb--15">
+                </mat-divider>
+
+                <h2 class="workflow-change-dialog--label">Select consultants the change applies to</h2>
+                <ng-container formArrayName="consultants">
+                    <div fxLayout="row" fxLayoutAlign="space-between center" class="u-w--100" *ngFor="let consultant of changeWorkflowForm.consultants.controls; index as i" [formGroupName]="i">
+                        <div fxLayout="row" fxLayoutAlign="start center" class="text-truncate-ellipsis u-mr--16">
+                            <img class="border-rounded-50 u-mr--16 image-thumbnail" [src]="consultantProfileUrl(consultant.value?.externalId)">
+                            <p class="workflow-change-dialog--consultant-name text-truncate-ellipsis" fxFlex="75%">
+                                {{consultant?.value?.consulantName}}
+                            </p>
+                        </div>
+                        <mat-checkbox color="accent" name="newLegalContractRequired" formControlName="newLegalContractRequired" class="workflow-change-dialog--checkbox black-checkbox u-w--100" fxFlex="50%">
+                            New legal contract required
+                        </mat-checkbox>
+                    </div>
+                </ng-container>
+            </form>
+        </ng-container>
+        <ng-container *ngSwitchCase="dialogTypes.Extend">
+            <form [formGroup]="extendWorkflowForm">
+                <h3>Select extension end date</h3>
+                <div fxLayout="row" fxLayoutAlign="start start" class="u-w--100 u-mt--10">
+                    <div class="u-mr--10" fxFlex="50%">
+                        <mat-form-field appearance="outline" class="u-w--100">
+                            <mat-label>Start date</mat-label>
+                            <input autocomplete="off" placeholder="New end date" matInput
+                                    [matDatepicker]="startDatePicker"
+                                    name="startDate"
+                                    formControlName="startDate"
+                                    (focus)="startDatePicker.open()"
+                                    (click)="startDatePicker.open()" readonly>
+                            <mat-icon class="calendar-icon" matSuffix svgIcon="calendar"></mat-icon>
+                            <mat-datepicker #startDatePicker></mat-datepicker>
+                        </mat-form-field>
+                    </div>
+                    <div fxLayout="column" fxLayoutAlign="center start" fxFlex="50%" class="u-mb--20">
+                        <mat-form-field appearance="outline" class="u-w--100">
+                            <mat-label>New end date</mat-label>
+                            <input autocomplete="off" placeholder="New end date" matInput
+                                    [matDatepicker]="extensionDatePicker"
+                                    name="endDate"
+                                    formControlName="endDate"
+                                    (focus)="extensionDatePicker.open()"
+                                    (click)="extensionDatePicker.open()" readonly>
+                            <mat-icon class="calendar-icon" matSuffix svgIcon="calendar"></mat-icon>
+                            <mat-datepicker #extensionDatePicker></mat-datepicker>
+                        </mat-form-field>
+
+                        <mat-checkbox color="accent" name="noExtensionEndDate" formControlName="noEndDate" class="green-checkbox u-mr--16">
+                            No end date
+                        </mat-checkbox>
+                    </div>
+                </div>
+                <mat-divider class="u-mb--15">
+                </mat-divider>
+
+                <h2>Select consultants to be extended</h2>
+                <div fxLayout="column" fxLayoutAlign="center start" fxLayoutGap="10px" class="u-mt--10" formArrayName="consultants">
+                    <div fxLayout="row" fxLayoutAlign="start center" class="u-w--100" *ngFor="let consultant of extendWorkflowForm.consultants.controls; index as i" [formGroupName]="i">
+                        <mat-checkbox color="accent" name="extendConsutlant" formControlName="extendConsutlant" class="green-checkbox u-mr--16">
+                            <div fxLayout="row" fxLayoutAlign="start center" class="text-truncate-ellipsis u-mr--16">
+                                <img class="border-rounded-50 u-mr--16 image-thumbnail" [src]="consultantProfileUrl(consultant.value?.externalId)">
+                                <p class="workflow-change-dialog--consultant-name text-truncate-ellipsis" fxFlex="75%">
+                                    {{consultant?.value?.consulantName}}
+                                </p>
+                            </div>
+                        </mat-checkbox>
+                    </div>
+                </div>
+            </form>
+        </ng-container>
+        <ng-container *ngSwitchCase="dialogTypes.Terminate">
+            // TBD
+        </ng-container>
+        <ng-container *ngSwitchDefault>
+
+        </ng-container>
+    </ng-container>
+</mat-dialog-content>
+<mat-dialog-actions align="start" class="confiramtion-dialog--actions">
+    <button mat-flat-button class="dialog-btn dialog-btn__outlined" (click)="reject()">
+        {{ data.rejectButtonText }}
+    </button>
+    <button mat-flat-button class="dialog-btn" [ngClass]="data.isNegative ? 'dialog-btn__negative' : 'dialog-btn__positive'" (click)="confirm()">
+        {{ data.confirmButtonText }}
+    </button>
+</mat-dialog-actions>
+

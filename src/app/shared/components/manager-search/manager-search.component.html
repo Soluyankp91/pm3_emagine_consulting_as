@@ -1,0 +1,16 @@
+<div class="manager-search">
+    <div class="manager-search--image-wrapper" [matMenuTriggerFor]="managerSearch">
+        <img class="manager-search--photo" src="../../../../assets/common/images/no-img.svg" alt="Search manger" />
+        <mat-icon class="manager-search--status" [svgIcon]="detectManagerStatus(managerStatus)" [matTooltip]="detectStatusTooltip(managerStatus)"></mat-icon>
+    </div>
+    <mat-menu #managerSearch="matMenu">
+        <mat-form-field appearance="outline" class="">
+            <input type="text" matInput [matAutocomplete]="auto" [formControl]="managerFilter" (click)="$event.stopPropagation()" [placeholder]="formFieldLabel">
+            <mat-autocomplete #auto="matAutocomplete" [displayWith]="displayNameFn">
+                <mat-option *ngFor="let option of filteredManagers" [value]="option" (click)="selectOption($event, option)">
+                    {{option.name}}
+                </mat-option>
+            </mat-autocomplete>
+        </mat-form-field>
+    </mat-menu>
+</div>

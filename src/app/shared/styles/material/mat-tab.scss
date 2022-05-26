@@ -1,43 +1,47 @@
-mat-tab-group.client-details--tabs {
+@import "/src/app/shared/styles/config/_colors";
+@import "/src/app/shared/styles/config/_sizes";
+
+nav.client-details--tabs {
     .mat-tab-body-wrapper {
         box-shadow: 0px 0px 20px rgba(26, 35, 126, 0.15);
+        background-color: #FAF9FB !important;
     }
     mat-ink-bar {
-        display: none;
+        background-color: #17A297 !important;
+        height: 4px;
     }
 
     .mat-tab-header {
         border: 0 !important;
     }
 
-    .mat-tab-label-container {
-        padding-top: 25px;
-    }
-    .mat-tab-label {
-        min-width: 115px;
-        font-weight: 400;
-        font-size: 12px;
-        background-color: #00000005;
-        box-shadow: 0px 0px 20px rgb(26 35 126 / 15%);
-        border-radius: 5px 5px 0px 0px;
+    .mat-tab-link {
+        background-color: transparent !important;
+        padding: 0 24px !important;
+        min-width: 160px !important;
+        font-weight: 700 !important;
+        font-size: 16px !important;
+        line-height: 16px !important;
         opacity: 1;
-        height: 27px;
+        height: 50px;
         margin-right: 5px;
 
-        &-active,
+        &.mat-tab-link-active,
         &:hover {
-            background-color: #ffffff;
-            box-shadow: 0px 0px 20px rgba(26, 35, 126, 0.15);
+            background-color: transparent !important;
         }
 
-        &:last-of-type {
-            margin-left: auto;
-            margin-right: 0;
+        &:first-of-type {
+            margin-left: 60px;
         }
+    }
+    .mat-tab-body-content {
+        height: calc(100vh - 200px);
+        padding: 16px 60px;
     }
 }
 
-.client-documents {
+mat-tab-group.client-documents--tabs {
     .mat-tab-body-wrapper {
         box-shadow: unset !important;
     }
@@ -54,25 +58,184 @@ mat-tab-group.client-details--tabs {
 
     .mat-tab-label-container {
         padding-top: 0 !important;
+        margin: 0 !important;
     }
     .mat-tab-label {
         height: 48px !important;
         padding: 0 24px !important;
         min-width: 160px !important;
         font-weight: 700 !important;
-        font-size: 12px !important;
+        font-size: 16px !important;
         line-height: 16px !important;
-        color: #384853 !important;
+        color: $dark-grey-color !important;
         box-shadow: unset !important;
-        background-color: #ffffff !important;
+        background-color: transparent !important;
         &-active,
         &:hover {
-            background-color: #ffffff;
+            // background-color: #ffffff;
             box-shadow: unset !important;
         }
 
         &:last-of-type {
             margin-left: 0 !important;
         }
+    }
+    .mat-tab-body-content {
+        height: unset !important;
+        padding: 16px 0 !important;
+    }
+}
+
+
+.header-less-tabs.mat-tab-group .mat-tab-header {
+    display: none;
+}
+
+.workflow-content--tabs {
+    .mat-tab-header {
+        top: 50px;
+        z-index: 1000;
+        position: sticky;
+        position: -webkit-sticky;
+        border-bottom: 0;
+        background-color: #fff;
+    }
+
+    .mat-tab-label-container {
+        padding-top: 0 !important;
+    }
+
+    mat-ink-bar {
+        background-color: #17A297 !important;
+        height: 4px;
+        top: 0;
+    }
+
+    .mat-tab-labels {
+        padding-top: 5px;
+    }
+
+    .mat-tab-label {
+        position: relative;
+        font-family: 'IBM Plex Mono', monospace !important;
+        opacity: 1 !important;
+        height: 60px;
+        padding: 8px 24px 0 24px;
+        min-width: 150px;
+        font-weight: 700;
+        font-size: 16px;
+        line-height: 16px;
+        color: $dark-grey-color;
+        box-shadow: unset;
+        background-color: #fff;
+        margin-right: 5px;
+        box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.15);
+        &:first-of-type {
+            justify-content: flex-start;
+            padding: 8px 24px 0 36px;
+        }
+        .mat-tab-label-content {
+            flex-direction: column;
+            align-items: flex-start;
+        }
+        .tab-header {
+            font-size: 16px;
+            line-height: 16px;
+        }
+        .tab-subheader {
+            font-size: 14px;
+            line-height: 14px;
+            color: $medium-grey-color;
+        }
+        &::before {
+            content: "";
+            display: block;
+            position: absolute;
+            top: 60px;
+            right: 0px;
+            height: 30px;
+            width: 100%;
+            padding: 0;
+            background-color: #fff;
+            box-shadow: 1px -6px 20px rgb(0 0 0 / 15%);
+        }
+        &-active,
+        &:hover {
+            background-color: #FAF9FB;
+            color: $dark-grey-color;
+            box-shadow: 0px 0px 15px rgba(0, 0, 0, 0.15);
+            &::before {
+                content: unset;
+            }
+        }
+
+        &:first-of-type {
+            // margin-left: 75px !important;
+            width: 20%;
+        }
+
+        // &:last-of-type {
+        //     margin-left: 0 !important;
+        // }
+    }
+
+     /* Needed in order to allow the sticky content  */
+    .mat-tab-body-wrapper .mat-tab-body.mat-tab-body-active {
+        width: 100%;
+        overflow: visible !important;
+    }
+
+    .mat-tab-body-wrapper {
+        overflow: visible !important;
+    }
+
+    .mat-tab-body-wrapper .mat-tab-body-content {
+        overflow: visible !important;
+    }
+}
+
+
+mat-tab-group.notification-settings--tabs {
+    .mat-tab-body-wrapper {
+        box-shadow: 0px 0px 20px rgba(26, 35, 126, 0.15);
+        background-color: #FAF9FB !important;
+    }
+    mat-ink-bar {
+        background-color: #17A297 !important;
+        height: 4px;
+    }
+
+    .mat-tab-header {
+        border: 0 !important;
+    }
+
+    .mat-tab-label-container {
+        padding-top: 0 !important;
+        margin: 0 75px;
+    }
+    .mat-tab-label {
+        background-color: transparent !important;
+        padding: 0 24px !important;
+        min-width: 160px !important;
+        font-weight: 700 !important;
+        font-size: 16px !important;
+        line-height: 16px !important;
+        opacity: 1;
+        height: 50px;
+        margin-right: 5px;
+
+        &-active,
+        &:hover {
+            background-color: transparent !important;
+        }
+
+        // &:last-of-type {
+        //     margin-left: auto;
+        //     margin-right: 0;
+        // }
+    }
+    .mat-tab-body-content {
+        height: calc(100vh - 200px);
+        padding: 16px 60px;
     }
 }

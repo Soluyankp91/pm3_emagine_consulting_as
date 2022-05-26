@@ -1,9 +1,9 @@
 import { APP_INITIALIZER, NgModule } from '@angular/core';
-import { BrowserModule, DomSanitizer } from '@angular/platform-browser';
+import { DomSanitizer } from '@angular/platform-browser';
 
 import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
-import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
+// import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { AppCommonModule } from './shared/common/app-common.module';
 import { MatIconRegistry } from '@angular/material/icon';
 import { HttpClientModule, HTTP_INTERCEPTORS } from '@angular/common/http';
@@ -15,11 +15,15 @@ import { BrowserCacheLocation, InteractionType, IPublicClientApplication, LogLev
 import { LoginGuard } from './login/login.guard';
 import { LoginComponent } from './login/login.component';
 import { environment } from 'src/environments/environment';
+import { NgxSpinnerModule, NgxSpinnerService } from 'ngx-spinner';
+// import { NgxGanttModule } from '@worktile/gantt';
+import { CommonModule } from '@angular/common';
+import { LocalHttpService } from 'src/shared/service-proxies/local-http.service';
 
 const isIE = window.navigator.userAgent.indexOf("MSIE ") > -1 || window.navigator.userAgent.indexOf("Trident/") > -1; // Remove this line to use Angular Universal
 
 export function loggerCallback(logLevel: LogLevel, message: string) {
-    console.log(message);
+    // console.log(message);
 }
 
 export function MSALInstanceFactory(): IPublicClientApplication {
@@ -47,15 +51,6 @@ export function MSALInstanceFactory(): IPublicClientApplication {
 export function MSALInterceptorConfigFactory(): MsalInterceptorConfiguration {
     const protectedResourceMap = new Map<string, Array<string>>();
     protectedResourceMap.set(environment.apiUrl, ['openid', 'profile', 'api://5f63a91e-8bfd-40ea-b562-3dad54244ff7/access_as_user']);
-    // if (environment.dev) {
-    //     protectedResourceMap.set('https://pm3-dev-app.azurewebsites.net', ['openid', 'profile', 'api://5f63a91e-8bfd-40ea-b562-3dad54244ff7/access_as_user']);
-    // }
-    // if (environment.qa) {
-    //     protectedResourceMap.set('https://pm3-dev-app.azurewebsites.net', ['openid', 'profile', 'api://5f63a91e-8bfd-40ea-b562-3dad54244ff7/access_as_user']);
-    // }
-    // if (environment.production) {
-    //     protectedResourceMap.set('https://pm3-dev-app.azurewebsites.net', ['openid', 'profile', 'api://5f63a91e-8bfd-40ea-b562-3dad54244ff7/access_as_user']);
-    // }
 
     return {
         interactionType: InteractionType.Redirect,
@@ -80,16 +75,18 @@ export function getRemoteServiceBaseUrl(): string {
 @NgModule({
     declarations: [
         AppComponent,
-        LoginComponent
+        LoginComponent,
     ],
     imports: [
-        BrowserModule,
+        CommonModule,
         AppRoutingModule,
-        BrowserAnimationsModule,
+        // BrowserAnimationsModule,
         HttpClientModule,
         AppCommonModule,
         ServiceProxyModule,
         MsalModule,
+        NgxSpinnerModule,
+        // NgxGanttModule
     ],
     providers: [
         LoginGuard,
@@ -116,7 +113,9 @@ export function getRemoteServiceBaseUrl(): string {
         },
         MsalService,
         MsalGuard,
-        MsalBroadcastService
+        MsalBroadcastService,
+        NgxSpinnerService,
+        LocalHttpService
     ],
     bootstrap: [
         AppComponent
@@ -195,101 +194,122 @@ export class AppModule {
             )
         );
 
+        iconRegistry.addSvgIcon(
+            'notification-menu',
+            sanitizer.bypassSecurityTrustResourceUrl(
+                'assets/common/images/menu/notification-menu.svg'
+            )
+        );
+
         // COUNTRY FLAGS ICON REGISTRY
 
         iconRegistry.addSvgIcon(
-            'dk-flag',
+            'Denmark-flag',
             sanitizer.bypassSecurityTrustResourceUrl(
                 'assets/common/images/country-flags/dk-flag.svg'
             )
         );
 
         iconRegistry.addSvgIcon(
-            'dk-flag-selected',
+            'Denmark-flag-selected',
             sanitizer.bypassSecurityTrustResourceUrl(
                 'assets/common/images/country-flags/dk-flag-selected.svg'
             )
         );
 
         iconRegistry.addSvgIcon(
-            'de-flag',
+            'Germany-flag',
             sanitizer.bypassSecurityTrustResourceUrl(
                 'assets/common/images/country-flags/de-flag.svg'
             )
         );
 
         iconRegistry.addSvgIcon(
-            'de-flag-selected',
+            'Germany-flag-selected',
             sanitizer.bypassSecurityTrustResourceUrl(
                 'assets/common/images/country-flags/de-flag-selected.svg'
             )
         );
 
         iconRegistry.addSvgIcon(
-            'en-flag',
+            'International-flag',
             sanitizer.bypassSecurityTrustResourceUrl(
                 'assets/common/images/country-flags/en-flag.svg'
             )
         );
 
         iconRegistry.addSvgIcon(
-            'en-flag-selected',
+            'International-flag-selected',
             sanitizer.bypassSecurityTrustResourceUrl(
                 'assets/common/images/country-flags/en-flag-selected.svg'
             )
         );
 
         iconRegistry.addSvgIcon(
-            'ne-flag',
+            'Netherlands-flag',
             sanitizer.bypassSecurityTrustResourceUrl(
                 'assets/common/images/country-flags/ne-flag.svg'
             )
         );
 
         iconRegistry.addSvgIcon(
-            'ne-flag-selected',
+            'Netherlands-flag-selected',
             sanitizer.bypassSecurityTrustResourceUrl(
                 'assets/common/images/country-flags/ne-flag-selected.svg'
             )
         );
 
         iconRegistry.addSvgIcon(
-            'no-flag',
+            'Norway-flag',
             sanitizer.bypassSecurityTrustResourceUrl(
                 'assets/common/images/country-flags/no-flag.svg'
             )
         );
 
         iconRegistry.addSvgIcon(
-            'no-flag-selected',
+            'Norway-flag-selected',
             sanitizer.bypassSecurityTrustResourceUrl(
                 'assets/common/images/country-flags/no-flag-selected.svg'
             )
         );
 
         iconRegistry.addSvgIcon(
-            'pl-flag',
+            'France-flag',
+            sanitizer.bypassSecurityTrustResourceUrl(
+                'assets/common/images/country-flags/fr-flag.svg'
+            )
+        );
+
+        iconRegistry.addSvgIcon(
+            'France-flag-selected',
+            sanitizer.bypassSecurityTrustResourceUrl(
+                'assets/common/images/country-flags/fr-flag-selected.svg'
+            )
+        );
+
+        iconRegistry.addSvgIcon(
+            'Poland-flag',
             sanitizer.bypassSecurityTrustResourceUrl(
                 'assets/common/images/country-flags/pl-flag.svg'
             )
         );
 
         iconRegistry.addSvgIcon(
-            'pl-flag-selected',
+            'Poland-flag-selected',
             sanitizer.bypassSecurityTrustResourceUrl(
                 'assets/common/images/country-flags/pl-flag-selected.svg'
             )
         );
 
         iconRegistry.addSvgIcon(
-            'se-flag',
+            'Sweden-flag',
             sanitizer.bypassSecurityTrustResourceUrl(
                 'assets/common/images/country-flags/se-flag.svg'
             )
         );
 
         iconRegistry.addSvgIcon(
-            'se-flag-selected',
+            'Sweden-flag-selected',
             sanitizer.bypassSecurityTrustResourceUrl(
                 'assets/common/images/country-flags/se-flag-selected.svg'
             )
@@ -405,6 +425,156 @@ export class AppModule {
             'workflow-direct-company',
             sanitizer.bypassSecurityTrustResourceUrl(
                 'assets/common/images/workflow-direct-company.svg'
+            )
+        );
+
+        iconRegistry.addSvgIcon(
+            'overview-icon',
+            sanitizer.bypassSecurityTrustResourceUrl(
+                'assets/common/images/overview-icon.svg'
+            )
+        );
+
+        iconRegistry.addSvgIcon(
+            'remove-icon',
+            sanitizer.bypassSecurityTrustResourceUrl(
+                'assets/common/images/remove-icon.svg'
+            )
+        );
+
+        // WORKFLOW ICONS
+        iconRegistry.addSvgIcon(
+            'workflowAdd',
+            sanitizer.bypassSecurityTrustResourceUrl(
+                'assets/common/images/workflow-icons/add-workflow.svg'
+            )
+        );
+
+        iconRegistry.addSvgIcon(
+            'workflowEdit',
+            sanitizer.bypassSecurityTrustResourceUrl(
+                'assets/common/images/workflow-icons/edit-workflow.svg'
+            )
+        );
+
+        iconRegistry.addSvgIcon(
+            'workflowStartOrExtend',
+            sanitizer.bypassSecurityTrustResourceUrl(
+                'assets/common/images/workflow-icons/start-workflow.svg'
+            )
+        );
+
+        iconRegistry.addSvgIcon(
+            'workflowTerminate',
+            sanitizer.bypassSecurityTrustResourceUrl(
+                'assets/common/images/workflow-icons/terminate-workflow.svg'
+            )
+        );
+
+        iconRegistry.addSvgIcon(
+            'in-progress-icon',
+            sanitizer.bypassSecurityTrustResourceUrl(
+                'assets/common/images/in-progress-icon.svg'
+            )
+        );
+
+        iconRegistry.addSvgIcon(
+            'completed-icon',
+            sanitizer.bypassSecurityTrustResourceUrl(
+                'assets/common/images/completed-icon.svg'
+            )
+        );
+
+        iconRegistry.addSvgIcon(
+            'info_icon',
+            sanitizer.bypassSecurityTrustResourceUrl(
+                'assets/common/images/info_icon.svg'
+            )
+        );
+
+        iconRegistry.addSvgIcon(
+            'icon-show',
+            sanitizer.bypassSecurityTrustResourceUrl(
+                'assets/common/images/icon-show.svg'
+            )
+        );
+
+        iconRegistry.addSvgIcon(
+            'icon-hide',
+            sanitizer.bypassSecurityTrustResourceUrl(
+                'assets/common/images/icon-hide.svg'
+            )
+        );
+
+        iconRegistry.addSvgIcon(
+            'plus-button-icon',
+            sanitizer.bypassSecurityTrustResourceUrl(
+                'assets/common/images/plus-button-icon.svg'
+            )
+        );
+
+        iconRegistry.addSvgIcon(
+            'filter-icon',
+            sanitizer.bypassSecurityTrustResourceUrl(
+                'assets/common/images/filter-icon.svg'
+            )
+        );
+
+        iconRegistry.addSvgIcon(
+            'Country-filter-flag',
+            sanitizer.bypassSecurityTrustResourceUrl(
+                'assets/common/images/country-filter-flag.svg'
+            )
+        );
+
+        iconRegistry.addSvgIcon(
+            'CAM-icon',
+            sanitizer.bypassSecurityTrustResourceUrl(
+                'assets/common/images/CAM-icon.svg'
+            )
+        );
+
+        iconRegistry.addSvgIcon(
+            'HUBSPOT-icon',
+            sanitizer.bypassSecurityTrustResourceUrl(
+                'assets/common/images/HUBSPOT-icon.svg'
+            )
+        );
+
+        iconRegistry.addSvgIcon(
+            'check-circle',
+            sanitizer.bypassSecurityTrustResourceUrl(
+                'assets/common/images/check-circle.svg'
+            )
+        );
+        iconRegistry.addSvgIcon(
+            'check-circle-fill',
+            sanitizer.bypassSecurityTrustResourceUrl(
+                'assets/common/images/check-circle-fill.svg'
+            )
+        );
+        iconRegistry.addSvgIcon(
+            'cancel',
+            sanitizer.bypassSecurityTrustResourceUrl(
+                'assets/common/images/cancel.svg'
+            )
+        );
+        iconRegistry.addSvgIcon(
+            'cancel-fill',
+            sanitizer.bypassSecurityTrustResourceUrl(
+                'assets/common/images/cancel-fill.svg'
+            )
+        );
+        iconRegistry.addSvgIcon(
+            'schedule',
+            sanitizer.bypassSecurityTrustResourceUrl(
+                'assets/common/images/schedule.svg'
+            )
+        );
+        iconRegistry.addSvgIcon(
+            'warning',
+            sanitizer.bypassSecurityTrustResourceUrl(
+                'assets/common/images/warning.svg'
             )
         );
 

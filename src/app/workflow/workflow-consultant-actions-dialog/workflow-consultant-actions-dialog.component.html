@@ -1,0 +1,75 @@
+<mat-dialog-content class="confiramtion-dialog">
+    <div mat-dialog-title class="confiramtion-dialog--header" align="center">
+        {{ data.dialogTitle }}
+    </div>
+    <div fxLayout="row" fxLayoutAlign="start center">
+        <img class="border-rounded-50 u-mr--16" src="https://picsum.photos/35/35" />
+        <p class="consultant-name">{{consultant.consultantName?.name}}</p>
+    </div>
+    <ng-container [ngSwitch]="data.dialogType">
+        <ng-container *ngSwitchCase="dialogTypes.Change">
+            <h3>Select new cutover date</h3>
+            <div fxLayout="row" fxLayoutAlign="start center">
+                <mat-form-field appearance="outline" class="u-mr--10">
+                    <mat-label>Specific date</mat-label>
+                    <input autocomplete="off" matInput
+                            [matDatepicker]="consultantCutoverDatePicker"
+                            name="clientExtensionEndDate" [formControl]="newCutoverDate"
+                            (focus)="consultantCutoverDatePicker.open()"
+                            (click)="consultantCutoverDatePicker.open()" readonly>
+                    <mat-icon class="calendar-icon" matSuffix svgIcon="calendar"></mat-icon>
+                    <mat-datepicker #consultantCutoverDatePicker></mat-datepicker>
+                </mat-form-field>
+                <mat-checkbox color="accent" [formControl]="newLegalContractRequired" name="newLegalContractRequired" class="black-checkbox u-mr--10">
+                    New legal contract contract required
+                </mat-checkbox>
+            </div>
+        </ng-container>
+        <ng-container *ngSwitchCase="dialogTypes.Extend">
+            <h3>Select extension end date</h3>
+            <div fxLayout="row" fxLayoutAlign="space-between start" fxLayoutGap="16px" class="u-w--100">
+                <mat-form-field appearance="outline" fxFlex="50%">
+                    <mat-label>Start date</mat-label>
+                    <input autocomplete="off" matInput
+                            [matDatepicker]="startDatePicker"
+                            name="clientExtensionEndDate" [formControl]="startDate"
+                            (focus)="startDatePicker.open()"
+                            (click)="startDatePicker.open()" readonly>
+                    <mat-icon class="calendar-icon" matSuffix svgIcon="calendar"></mat-icon>
+                    <mat-datepicker #startDatePicker></mat-datepicker>
+                </mat-form-field>
+
+                <div fxLayout="column" fxLayoutAlign="start start" fxFlex="50%">
+                    <mat-form-field appearance="outline">
+                        <mat-label>End date</mat-label>
+                        <input autocomplete="off" matInput
+                                [matDatepicker]="endDatePicker"
+                                name="clientExtensionEndDate" [formControl]="endDate"
+                                (focus)="endDatePicker.open()"
+                                (click)="endDatePicker.open()" readonly>
+                        <mat-icon class="calendar-icon" matSuffix svgIcon="calendar"></mat-icon>
+                        <mat-datepicker #endDatePicker></mat-datepicker>
+                    </mat-form-field>
+                    <mat-checkbox color="accent" [formControl]="noEndDate" name="noEndDate" class="black-checkbox u-mr--10" (change)="disableOrEnableInput(noEndDate.value, endDate)">
+                        No end date
+                    </mat-checkbox>
+                </div>
+            </div>
+        </ng-container>
+        <ng-container *ngSwitchCase="dialogTypes.Terminate">
+            // TBD
+        </ng-container>
+        <ng-container *ngSwitchDefault>
+
+        </ng-container>
+    </ng-container>
+</mat-dialog-content>
+<mat-dialog-actions align="start" class="confiramtion-dialog--actions">
+    <button mat-flat-button class="dialog-btn dialog-btn__outlined" (click)="reject()">
+        {{ data.rejectButtonText }}
+    </button>
+    <button mat-flat-button class="dialog-btn" [ngClass]="data.isNegative ? 'dialog-btn__negative' : 'dialog-btn__positive'" (click)="confirm()">
+        {{ data.confirmButtonText }}
+    </button>
+</mat-dialog-actions>
+

@@ -1,0 +1,19 @@
+<mat-dialog-content class="add-file--modal">
+    <div mat-dialog-title class="add-file--modal-header">
+        <h1>
+            Add file
+        </h1>
+    </div>
+    <div fxLayout="row" fxLayoutAlign="center center">
+        <app-file-uploader></app-file-uploader>
+    </div>
+</mat-dialog-content>
+<mat-dialog-actions class="add-file--actions flex-justify-between">
+    <button [mat-dialog-close]="true" mat-flat-button class="add-file--actions-btn dialog-btn dialog-btn__outlined">
+        Cancel
+    </button>
+    <button mat-flat-button class="add-file--actions-btn dialog-btn dialog-btn__positive" (click)="save()">
+        Upload
+    </button>
+</mat-dialog-actions>
+

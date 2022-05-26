@@ -1,0 +1,47 @@
+@import "/src/app/shared/styles/config/_colors";
+
+.menu-item {
+    padding: 0 16px;
+    font-weight: 700;
+    mat-icon {
+        margin-right: 8px !important;
+        border-radius: 50%;
+        line-height: 20px;
+        font-size: 20px;
+        align-items: center;
+        display: inline-flex;
+        justify-content: center;
+    }
+    &--cancel {
+        color: $red-color;
+        mat-icon {
+            background: rgba($color: $red-color, $alpha: 0.2);
+            color: $red-color !important;
+        }
+    }
+    &--edit {
+        color: $green-color;
+        mat-icon {
+            background: rgba($color: $green-color, $alpha: 0.2);
+            color: $green-color !important;
+        }
+    }
+    &--add {
+        color: $green-color;
+        mat-icon {
+            background: rgba($color: $green-color, $alpha: 0.2);
+            color: $green-color !important;
+        }
+    }
+
+    &--delete {
+        color: $darkred-color !important;
+        mat-icon {
+            color: $darkred-color !important;
+        }
+    }
+}
+
+.autocomplete-menu {
+    width: 100%;
+}

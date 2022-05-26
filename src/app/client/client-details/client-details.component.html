@@ -1,0 +1,67 @@
+<div class="client-details">
+    <div fxLayout="column" fxLayoutAlign="space-between center" class="client-details--header">
+        <div fxLayout="row" fxLayoutAlign="space-between start" class="u-w--100">
+            <div fxLayout="column" fxLayoutAlign="start start">
+                <div fxLayout="row" fxLayoutAlign="start center">
+                    <button class="back-arrow--btn u-pl--0" (click)="navigateBack()" mat-icon-button><mat-icon svgIcon="arrow"></mat-icon></button>
+                    <span class="client-details--header__client-name">{{client?.name}}</span>
+                </div>
+                <div fxLayout="row" fxLayoutAlign="start center" class="client-details--client-info u-mt--10">
+                    <span class="client-details--client-info__header client-id">
+                        #{{client?.clientId}}
+                    </span>
+                    <!-- FIXME: add country flag after mapping countryName -> countryCode -->
+                    <!-- <span class="flag-icon flag-icon-{{selectedClient.countryCode | lowercase }} u-mr--10"></span> -->
+                    <span class="client-details--client-info__header" *ngIf="client?.address?.length">
+                        {{client.address}}
+                    </span>
+                    <span class="client-details--client-info__header" *ngIf="client?.address2?.length">
+                        {{client.address2}}
+                    </span>
+                    <span class="client-details--client-info__header headerWithDot" *ngIf="client?.phone?.length">
+                        {{client.phone}}
+                    </span>
+                    <span class="client-details--client-info__header headerWithDot" *ngIf="client?.website?.length">
+                        {{client.website}}
+                    </span>
+                </div>
+            </div>
+            <div fxLayout="row" fxLayoutAlign="start center" class="client-details--search">
+                <mat-form-field appearance="outline" class="u-w--100 mat-elevation-z0 formFieldNoMarginPadding u-mr--10">
+                    <mat-label>Search</mat-label>
+                    <input autocomplete="off" matInput [formControl]="clientFilterInput" placeholder="Search" type="text">
+                    <mat-icon matPrefix>search</mat-icon>
+                </mat-form-field>
+                <button mat-icon-button color="primary" class="u-mr--10 mat-elevation-z0" (click)="impersonateHubspot()"><mat-icon svgIcon="HUBSPOT-icon"></mat-icon></button>
+                <button mat-icon-button color="primary" class="mat-elevation-z0" (click)="impersonateCAM()"><mat-icon svgIcon="CAM-icon"></mat-icon></button>
+            </div>
+        </div>
+    </div>
+    <div fxLayout="column" fxLayoutAlign="start start" class="client-details--content u-w--100">
+        <nav mat-tab-nav-bar mat-align-tabs="start" class="client-details--tabs u-w--100">
+            <a mat-tab-link routerLink="request-track" [active]="rlaRequestTrack.isActive" routerLinkActive
+                #rlaRequestTrack="routerLinkActive">
+                Request track
+            </a>
+            <a mat-tab-link routerLink="workflow-track" [active]="rlaWorkflowTrack.isActive" routerLinkActive
+                #rlaWorkflowTrack="routerLinkActive">
+                Workflow track
+            </a>
+            <a mat-tab-link routerLink="rates-and-fees" [active]="rlaRatesFees.isActive" routerLinkActive
+                #rlaRatesFees="routerLinkActive">
+                Rates and Fees
+            </a>
+            <a mat-tab-link routerLink="documents" [active]="rlaDocuments.isActive" routerLinkActive
+                #rlaDocuments="routerLinkActive">
+                Documents
+            </a>
+            <a mat-tab-link routerLink="contacts" [active]="rlaContacts.isActive" routerLinkActive
+                #rlaContacts="routerLinkActive">
+                Contacts
+            </a>
+        </nav>
+        <div class="nav-tab--content u-w--100">
+            <router-outlet></router-outlet>
+        </div>
+    </div>
+</div>

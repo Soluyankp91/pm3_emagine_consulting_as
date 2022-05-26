@@ -10,6 +10,7 @@ import { MatMenuModule } from '@angular/material/menu';
 import { MatCheckboxModule } from '@angular/material/checkbox';
 import { MatInputModule } from '@angular/material/input';
 import { MatButtonModule } from '@angular/material/button';
+import { MatButtonToggleModule } from '@angular/material/button-toggle';
 import { MatTableModule } from '@angular/material/table';
 import { MatPaginatorModule } from '@angular/material/paginator';
 import { MatDatepickerModule } from '@angular/material/datepicker';
@@ -26,12 +27,14 @@ import { MatTooltipModule } from '@angular/material/tooltip';
 import { MatSnackBarModule } from '@angular/material/snack-bar';
 import { MatSlideToggleModule } from '@angular/material/slide-toggle';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
-import { MatNativeDateModule } from '@angular/material/core';
+import { DateAdapter, MatNativeDateModule, MAT_DATE_FORMATS, MAT_DATE_LOCALE } from '@angular/material/core';
+import { MAT_MOMENT_DATE_ADAPTER_OPTIONS, MAT_MOMENT_DATE_FORMATS, MomentDateAdapter } from '@angular/material-moment-adapter';
 import { MatChipsModule } from '@angular/material/chips';
 import { MatSliderModule } from '@angular/material/slider';
 import { MatBottomSheetModule } from '@angular/material/bottom-sheet';
 import { MatStepperModule } from '@angular/material/stepper';
 import { FlexLayoutModule } from '@angular/flex-layout';
+import { CustomDateAdapter } from './custom-date-adapter';
 
 @NgModule({
     imports: [
@@ -42,6 +45,7 @@ import { FlexLayoutModule } from '@angular/flex-layout';
         MatSelectModule,
         MatMenuModule,
         MatButtonModule,
+        MatButtonToggleModule,
         MatInputModule,
         MatCheckboxModule,
         MatTableModule,
@@ -76,6 +80,7 @@ import { FlexLayoutModule } from '@angular/flex-layout';
         MatSelectModule,
         MatMenuModule,
         MatButtonModule,
+        MatButtonToggleModule,
         MatInputModule,
         MatCheckboxModule,
         MatTableModule,
@@ -104,6 +109,22 @@ import { FlexLayoutModule } from '@angular/flex-layout';
         FlexLayoutModule
     ],
     providers: [
+        {
+            provide: MAT_DATE_LOCALE,
+            useValue: 'en-GB'
+        },
+        { provide: MAT_MOMENT_DATE_ADAPTER_OPTIONS, useValue: { useUtc: true } },
+        {
+            provide: DateAdapter,
+            useClass: CustomDateAdapter,
+            deps: [MAT_DATE_LOCALE, MAT_MOMENT_DATE_ADAPTER_OPTIONS]
+        },
+        {
+            provide: DateAdapter,
+            useClass: MomentDateAdapter,
+            deps: [MAT_DATE_LOCALE]
+        },
+        { provide: MAT_DATE_FORMATS, useValue: MAT_MOMENT_DATE_FORMATS },
         { provide: MatDialogRef, useValue: {} }
     ]
 })

@@ -1,0 +1,112 @@
+<div class="client-invoicing">
+    <div class="client-invoicing--wrapper" fxLayout="row" fxLayoutAlign="start start">
+        <div fxFlex="25%" fxLayout="column" class="u-mr--20">
+            <form class="client-invoicing--form" [formGroup]="invoicingForm" fxLayout="column" fxLayoutAlign="start start">
+                <h2>Invoicing</h2>
+                <div fxLayout="row" fxLayoutAlign="space-between start" class="u-mb--10">
+                    <mat-checkbox color="accent" formControlName="monthly" name="monthly" class="green-checkbox u-mr--10">
+                        Monthly
+                    </mat-checkbox>
+                    <mat-checkbox color="accent" formControlName="period" name="period" class="green-checkbox">
+                        Period
+                    </mat-checkbox>
+                </div>
+                <div fxLayout="column" fxLayoutAlign="space-between start" fxLayoutGap="10px" class="u-mb--10">
+                    <mat-checkbox color="accent" formControlName="mandatoryNumberOnContracts" name="mandatoryNumberOnContracts" class="green-checkbox">
+                        Req. number mandatory on contracts
+                    </mat-checkbox>
+                    <mat-checkbox color="accent" formControlName="showInRefList" name="showInRefList" class="green-checkbox">
+                        Show in ref. list in RF and contract
+                    </mat-checkbox>
+                    <mat-checkbox color="accent" formControlName="specialRebate" name="specialRebate" class="green-checkbox">
+                        Special Rebate
+                    </mat-checkbox>
+                </div>
+                <mat-form-field appearance="outline" class="u-w--100 mat-elevation-z0  u-mb--10">
+                    <mat-label>Debtor No.</mat-label>
+                    <input autocomplete="off" matInput formControlName="debtorNumber" placeholder="Debtor No." type="text">
+                </mat-form-field>
+
+                <mat-form-field appearance="outline" class="u-w--100 mat-elevation-z0  u-mb--10">
+                    <mat-label>VAT number</mat-label>
+                    <input autocomplete="off" matInput formControlName="vatNumber" placeholder="VAT number" type="text">
+                </mat-form-field>
+                <div class="flex-row u-mb--10">
+                    <mat-checkbox color="accent" formControlName="hourReportRequireVerification" name="hourReportRequireVerification" class="green-checkbox">
+                    </mat-checkbox>
+                    <label class="u-ml--8" for="hourReportRequireVerification">
+                        Consultant Hour Report requires verification by Production (select to enable manual verification step to all hour reports done on this client)
+                    </label>
+                </div>
+                <mat-form-field appearance="outline" class="u-w--100  textarea-input">
+                    <mat-label>Special Invoicing Comments</mat-label>
+                    <textarea matInput autocomplete="new-password" required name="specialInvoicingComments" formControlName="specialInvoicingComments">
+                    </textarea>
+                </mat-form-field>
+            </form>
+        </div>
+        <div fxFlex="75%" fxLayout="column" fxLayoutAlign="start center" class="client-invoicing--table u-w--100">
+            <div fxLayout="column" fxFlexFill>
+                <mat-table #table [dataSource]="invoiceDataSource" class="rounded-table u-w--100" matSort matSortStart="asc" (matSortChange)="sortChanged($event)">
+                    <ng-container matColumnDef="id">
+                        <mat-header-cell *matHeaderCellDef mat-sort-header fxFlex="10%"> ID </mat-header-cell>
+                        <mat-cell *matCellDef="let row" fxFlex="10%">
+                            {{row.id}}
+                        </mat-cell>
+                    </ng-container>
+
+                    <ng-container matColumnDef="profile">
+                        <mat-header-cell *matHeaderCellDef mat-sort-header fxFlex="20%"> Profile </mat-header-cell>
+                        <mat-cell *matCellDef="let row" fxFlex="20%">
+                            {{row.profile}}
+                        </mat-cell>
+                    </ng-container>
+
+                    <ng-container matColumnDef="subId">
+                        <mat-header-cell *matHeaderCellDef mat-sort-header fxFlex="10%"> Sub ID </mat-header-cell>
+                        <mat-cell *matCellDef="let row" fxFlex="10%">
+                            {{row.subId}}
+                        </mat-cell>
+                    </ng-container>
+
+                    <ng-container matColumnDef="subProfile">
+                        <mat-header-cell *matHeaderCellDef mat-sort-header fxFlex="20%"> Sub Profile </mat-header-cell>
+                        <mat-cell *matCellDef="let row" fxFlex="20%">
+                            {{row.subProfile}}
+                        </mat-cell>
+                    </ng-container>
+
+                    <ng-container matColumnDef="contactPerson">
+                        <mat-header-cell *matHeaderCellDef mat-sort-header fxFlex="25%"> Contact person(s) </mat-header-cell>
+                        <mat-cell *matCellDef="let row" fxFlex="25%">
+                            {{row.contactPerson}}
+                        </mat-cell>
+                    </ng-container>
+
+                    <ng-container matColumnDef="contract">
+                        <mat-header-cell *matHeaderCellDef mat-sort-header fxFlex="15%"> Contract </mat-header-cell>
+                        <mat-cell *matCellDef="let row" fxFlex="15%">
+                            {{row.contract}}
+                        </mat-cell>
+                    </ng-container>
+
+                    <mat-header-row *matHeaderRowDef="clientDisplayColumns"></mat-header-row>
+                    <mat-row *matRowDef="let row; columns: clientDisplayColumns;" class="mat-elevation-z0"></mat-row>
+                </mat-table>
+                <div class="spinner-container" *ngIf="isDataLoading">
+                    <mat-spinner [diameter]="50"></mat-spinner>
+                </div>
+                <div class="results-not-found" *ngIf="totalCount === 0 && !isDataLoading">
+                    RESULTS NOT FOUND
+                </div>
+            </div>
+            <div class="pagination-container">
+                <mat-paginator #clientsPaginator [length]="totalCount" [pageSize]="deafultPageSize"
+                    [pageSizeOptions]="pageSizeOptions" [showFirstLastButtons]="true" (page)="pageChanged($event)">
+                </mat-paginator>
+            </div>
+        </div>
+    </div>
+</div>
+
+

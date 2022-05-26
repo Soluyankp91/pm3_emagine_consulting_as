@@ -1,0 +1,108 @@
+<div class="workflow" fxLayout="column" fxLayoutAlign="start start" #scroller>
+
+    <div fxLayout="row" fxLayoutAlign="start start" class="workflow-header u-w--100">
+        <div fxFlex="40%" fxLayout="column">
+            <h2 class="workflow-header--title u-mb--10">Workflow</h2>
+            <p class="workflow-header--client u-mb--20">{{workflowClient?.length ? workflowClient : 'New workflow'}}</p>
+            <!-- <div class="flex-row">
+                <span class="workflow-header--status__icon"></span>
+                <span class="workflow-header--status__icon"></span>
+                <span class="workflow-header--status__icon"></span>
+                <span class="workflow-header--status u-ml--10">
+                    New workflow
+                </span>
+            </div> -->
+        </div>
+
+        <div fxFlex="50%" fxLayout="row">
+            <div fxFlex="50%" fxLayout="column wrap" style="font-size: 12px;">
+                <span>
+                    Started: {{_workflowDataService.getWorkflowProgress?.started}}
+                </span>
+                <span>
+                    currentlyActiveSection: {{mapSectionName(_workflowDataService.getWorkflowProgress?.currentlyActiveSection)}}
+                </span>
+                <span>
+                    currentlyActiveStep: {{mapStepName(_workflowDataService.getWorkflowProgress?.currentlyActiveStep)}}
+                </span>
+                <span>
+                    currentlyActiveSideSection: {{mapSideSectionName(_workflowDataService.getWorkflowProgress?.currentlyActiveSideSection)}}
+                </span>
+                <span>
+                    periodId: {{_workflowDataService.getWorkflowProgress?.currentlyActivePeriodId}}
+                </span>
+            </div>
+        </div>
+        <div fxFlex="10%" fxLayoutAlign="end center">
+            <button mat-icon-button [matMenuTriggerFor]="workflowMenu" class="workflow-icon--actions"><mat-icon>more_horiz</mat-icon></button>
+            <mat-menu #workflowMenu>
+                <button
+                    class="menu-item menu-item--edit"
+                    mat-menu-item
+                    [disabled]="false"
+                    (click)="addConsultant()">
+                    <mat-icon>add</mat-icon>
+                    Add consultant
+                </button>
+                <button
+                    class="menu-item menu-item--edit"
+                    mat-menu-item
+                    [disabled]="false"
+                    (click)="getAvailableConsultantForChangeOrExtend(workflowDiallogActions.Change)">
+                    <mat-icon>create</mat-icon>
+                    Change Workflow Data
+                </button>
+                <button
+                    class="menu-item menu-item--add"
+                    mat-menu-item
+                    (click)="getAvailableConsultantForChangeOrExtend(workflowDiallogActions.Extend)">
+                    <mat-icon>add</mat-icon>
+                    Extend Workflow
+                </button>
+                <button
+                    class="menu-item menu-item--cancel"
+                    mat-menu-item
+                    (click)="addTermination()">
+                    <mat-icon>clear</mat-icon>
+                    Terminate Workflow
+                </button>
+            </mat-menu>
+        </div>
+    </div>
+
+    <div *ngIf="showToolbar" fxLayout="row" fxLayoutAlign="start center" class="workflow-toolbar u-w--100">
+        <!-- <h2 class="workflow-toolbar--title u-mr--10">Workflow ID: 1234</h2> -->
+        <p class="workflow-toolbar--client u-mr--20">{{workflowClient?.length ? workflowClient : 'New workflow'}}</p>
+    </div>
+
+    <div class="workflow-content u-w--100" id="workflowDetails">
+        <mat-tab-group class="workflow-content--tabs u-w--100" (selectedTabChange)="tabChanged($event)" [(selectedIndex)]="selectedIndex">
+            <mat-tab label="Overview">
+                <ng-template mat-tab-label>
+                    <div fxLayout="row" fxLayoutAlign="center center">
+                        <mat-icon class="u-mr--5" svgIcon="overview-icon"></mat-icon>
+                        <span class="tab-header">Overview</span>
+                    </div>
+                </ng-template>
+                <div class="workflow-form--panel u-w--100">
+                    <app-workflow-overview></app-workflow-overview>
+                </div>
+            </mat-tab>
+            <mat-tab *ngFor="let tab of clientPeriods; let i = index;" [label]="tab.name!">
+                <ng-template mat-tab-label>
+                    <div fxLayout="row" fxLayoutAlign="center center">
+                        <span class="tab-header">{{tab.name}}</span>
+                    </div>
+                    <span class="tab-subheader">{{tab.additionalInfo}}</span>
+                </ng-template>
+                <div class="workflow-form--panel u-w--100">
+                    <app-workflow-period *ngIf="selectedIndex === i + 1" [periodId]="tab.id" [workflowId]="workflowId"></app-workflow-period>
+                </div>
+            </mat-tab>
+        </mat-tab-group>
+        <div fxLayout="row" fxLayoutAlign="end center" class="workflow-controls" *ngIf="selectedTabName !== 'Overview'">
+            <button mat-flat-button class="button-outlined mat-elevation-z0 u-mr--16" (click)="saveOrCompleteStep(true)">Save draft</button>
+            <button color="primary" class="button-accept mat-elevation-z0" mat-flat-button  (click)="saveOrCompleteStep(false)">Complete step</button>
+        </div>
+    </div>
+</div>

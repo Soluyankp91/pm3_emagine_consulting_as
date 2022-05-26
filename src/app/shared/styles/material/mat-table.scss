@@ -1,3 +1,5 @@
+@import "/src/app/shared/styles/config/_colors";
+
 mat-table.rounded-table {
     background: transparent !important;
     box-shadow: none;
@@ -48,6 +50,12 @@ mat-table.rounded-table {
     }
 }
 
+.pagination-container {
+    .mat-paginator {
+        background-color: transparent;
+    }
+}
+
 .mat-paginator-container {
     .mat-focus-indicator.mat-paginator-navigation-previous.mat-icon-button.mat-button-base:not([disabled]),
     .mat-focus-indicator.mat-paginator-navigation-next.mat-icon-button.mat-button-base:not([disabled]) {
@@ -76,4 +84,301 @@ mat-table.rounded-table {
     justify-content: center;
     padding: 24px;
     color: rgba(0, 0, 0, 0.38);
+}
+
+
+mat-table.white-table {
+    background: transparent !important;
+    box-shadow: none;
+    font-weight: 400;
+    line-height: 19px;
+    font-size: 16px;
+    mat-header-row {
+        border: 0 !important;
+        font-size: 18px;
+        min-height: 35px;
+        mat-header-cell {
+            font-family: 'OpenSansWeb', sans-serif !important;
+            color: $medium-grey-color !important;
+            font-weight: 600;
+            &:first-of-type {
+                padding-left: 16px;
+            }
+            &:last-of-type {
+                padding-right: 16px;
+            }
+        }
+        padding: 0 16px;
+    }
+    mat-row {
+        height: auto;
+        min-height: 50px;
+        border-radius: 0;
+        border: 1px solid $sand-color;
+        margin-bottom: 0;
+        padding: 0 16px;
+        background-color: $white-color;
+        &:hover {
+            transition: background-color .7s ease;
+            background-color: rgba(102, 140, 164, .17);
+        }
+        mat-cell {
+            color: $dark-grey-color !important;
+            font-size: 16px;
+            padding-right: 15px;
+
+            &:first-of-type {
+                padding-left: 16px;
+            }
+
+            &:last-of-type {
+                padding-right: 16px;
+            }
+        }
+    }
+}
+
+.main-overview--consultants-table {
+    mat-table {
+        mat-row {
+            mat-cell.mat-column-salesManager {
+                justify-content: center;
+            }
+        }
+    }
+}
+
+.gant-chart-container {
+    .gantt {
+        background: transparent !important;
+        &-side {
+            border-right: none !important;
+            box-shadow: none !important;
+            margin-right: 30px;
+            &-container {
+                background: transparent !important;
+
+                gantt-table.gantt-table {
+                    background: transparent !important;
+                    box-shadow: none !important;
+                    font-weight: 400 !important;
+                    line-height: 19px !important;
+                    font-size: 16px !important;
+                    .gantt-table-header {
+                        border: 0 !important;
+                        font-size: 18px;
+                        padding: 0 16px;
+                        background: transparent !important;
+                        .gantt-table-column {
+                            font-family: 'OpenSansWeb', sans-serif !important;
+                            color: $medium-grey-color !important;
+                            font-weight: 600;
+                            font-size: 12px;
+                            display: flex;
+                            justify-content: flex-start;
+                            &:last-of-type {
+                                padding-right: 16px;
+                            }
+                        }
+                    }
+                    .gantt-table-body {
+                        .gantt-table-item {
+                            border-radius: 0;
+                            border: 1px solid $sand-color;
+                            margin-bottom: 0;
+                            padding-left: 16px;
+                            background-color: $white-color;
+                            display: flex;
+                            align-items: center;
+                            width: 100%;
+                            &:hover {
+                                transition: background-color .7s ease;
+                                background-color: rgba(102, 140, 164, .17);
+                            }
+                            .gantt-table-column {
+                                border-right: none;
+                                padding: 0 !important;
+                                &:first-of-type {
+                                    padding-left: 16px;
+                                }
+
+                                &:last-of-type {
+                                    padding-right: 16px;
+                                }
+                                .gantt-table-column-content {
+                                    color: $dark-grey-color !important;
+                                    font-size: 16px;
+                                }
+                            }
+                            .gantt-expand-icon {
+                                display: none;
+                            }
+                        }
+                    }
+                }
+            }
+        }
+        &-container {
+            .gantt-main .gantt-main-container .gantt-main-items .gantt-item {
+                border: none !important;
+            }
+            .gantt-calendar-overlay {
+                .gantt-calendar-overlay-main {
+                    background-color: transparent !important;
+                    .primary-text {
+                        display: none;
+                    }
+                    .secondary-text {
+                        font-family: 'OpenSansWeb', sans-serif !important;
+                        fill: $medium-grey-color !important;
+                        font-weight: 600;
+                        font-size: 12px;
+                        transform: translateY(-10px);
+                    }
+
+                    .primary-line {
+                        stroke: #ddd !important;
+                    }
+                    .line {
+                        shape-rendering: crispEdges !important;
+                    }
+                    .secondary-line {
+                        stroke-dasharray: none !important;
+                        stroke: #ddd !important;
+                        transform: translateY(-44px);
+                        height: calc(100% + 44px);
+                    }
+                    .header-line {
+                        stroke: none !important;
+                    }
+                }
+                .today-line {
+                    top: 0 !important;
+                    background: #8bd1cb !important;
+                    width: 5px;
+                }
+            }
+        }
+    }
+    gantt-bar {
+        .gantt-bar-content {
+            border-radius: 10px;
+        }
+    }
+}
+
+.workflow-overview--chart-container {
+    .gantt {
+        background: transparent !important;
+        &-side {
+            border-right: none !important;
+            box-shadow: none !important;
+            margin-right: 30px;
+            &-container {
+                background: transparent !important;
+
+                gantt-table.gantt-table {
+                    background: transparent !important;
+                    box-shadow: none !important;
+                    font-weight: 400 !important;
+                    line-height: 19px !important;
+                    font-size: 16px !important;
+                    .gantt-table-header {
+                        border: 0 !important;
+                        font-size: 18px;
+                        padding: 0 16px;
+                        background: transparent !important;
+                        .gantt-table-column {
+                            font-family: "OpenSansWeb", sans-serif !important;
+                            color: #4a4e60 !important;
+                            font-weight: 800;
+                            font-size: 16px;
+                            display: flex;
+                            justify-content: flex-start;
+                            &:last-of-type {
+                                padding-right: 16px;
+                            }
+                        }
+                    }
+                    .gantt-table-body {
+                        .gantt-table-item {
+                            padding-left: 16px;
+                            border: 0;
+                            display: flex;
+                            align-items: center;
+                            width: 100%;
+                            &:hover {
+                                transition: background-color .7s ease;
+                                background-color: rgba(102, 140, 164, .17);
+                            }
+                            .gantt-table-column {
+                                border-right: none;
+                                padding: 0 !important;
+                                &:first-of-type {
+                                    padding-left: 16px;
+                                }
+
+                                &:last-of-type {
+                                    padding-right: 16px;
+                                }
+                                .gantt-table-column-content {
+                                    color: $dark-grey-color !important;
+                                    font-size: 16px;
+                                }
+                            }
+                            .gantt-expand-icon {
+                                display: none;
+                            }
+                        }
+                    }
+                }
+            }
+        }
+        &-container {
+            .gantt-main .gantt-main-container .gantt-main-items .gantt-item {
+                border: none !important;
+            }
+            .gantt-calendar-overlay {
+                .gantt-calendar-overlay-main {
+                    background-color: transparent !important;
+                    .primary-text {
+                        display: none;
+                    }
+                    .secondary-text {
+                        font-family: 'OpenSansWeb', sans-serif !important;
+                        fill: $medium-grey-color !important;
+                        font-weight: 600;
+                        font-size: 12px;
+                        transform: translateY(-10px);
+                    }
+
+                    .primary-line {
+                        stroke: #ddd !important;
+                    }
+                    .line {
+                        shape-rendering: crispEdges !important;
+                    }
+                    .secondary-line {
+                        stroke-dasharray: none !important;
+                        stroke: #ddd !important;
+                        transform: translateY(-44px);
+                        height: calc(100% + 44px);
+                    }
+                    .header-line {
+                        stroke: none !important;
+                    }
+                }
+                .today-line {
+                    top: 0 !important;
+                    background: #8bd1cb !important;
+                    width: 5px;
+                }
+            }
+        }
+    }
+    gantt-bar {
+        .gantt-bar-content {
+            border-radius: 10px;
+        }
+    }
 }

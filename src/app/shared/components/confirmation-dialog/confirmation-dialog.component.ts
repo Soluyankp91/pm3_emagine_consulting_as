@@ -7,7 +7,7 @@ import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
     styleUrls: ['./confirmation-dialog.component.scss']
 })
 export class ConfirmationDialogComponent implements OnInit {
-    @Output() onConfimrmed: EventEmitter<any> = new EventEmitter<any>();
+    @Output() onConfirmed: EventEmitter<any> = new EventEmitter<any>();
     @Output() onRejected: EventEmitter<any> = new EventEmitter<any>();
     constructor(
         @Inject(MAT_DIALOG_DATA)
@@ -30,7 +30,7 @@ export class ConfirmationDialogComponent implements OnInit {
     }
 
     confirm(): void {
-        this.onConfimrmed.emit();
+        this.onConfirmed.emit();
         this.closeInternal();
     }
 

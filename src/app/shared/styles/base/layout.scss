@@ -214,7 +214,8 @@ html {
     background: rgba(23, 162, 151, .5);
         &~ .cdk-global-overlay-wrapper {
         pointer-events: auto !important;
-        position: relative !important;
+        // Commented out for dialog over dialog
+        // position: relative !important;
         overflow: auto !important;
         &::before {
             content: '' !important;
@@ -227,5 +228,35 @@ html {
                 white-space: normal !important;
             }
         }
+    }
+}
+
+.pointerEventsNone {
+    pointer-events: none;
+}
+
+.border-rounded-50 {
+    border-radius: 50%;
+}
+
+.hidden-option {
+    display: none !important;
+}
+
+.text-end {
+    text-align: end;
+}
+
+.disabled-autocomplete {
+    pointer-events: none;
+    opacity: .5;
+}
+
+.image-thumbnail {
+    width: 50px;
+    height: 50px;
+    &-small {
+        width: 35px;
+        height: 35px;
     }
 }
