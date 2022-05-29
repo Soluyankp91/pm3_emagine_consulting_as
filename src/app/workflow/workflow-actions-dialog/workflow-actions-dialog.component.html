@@ -64,15 +64,13 @@
 
                 <h2 class="workflow-change-dialog--label">Select consultants the change applies to</h2>
                 <ng-container formArrayName="consultants">
-                    <div fxLayout="row" fxLayoutAlign="start center" class="u-w--100" *ngFor="let consultant of changeWorkflowForm.consultants.controls; index as i" [formGroupName]="i">
-                        <mat-checkbox color="accent" name="noExtensionEndDate" class="black-checkbox u-mr--16" fxFlex="45%">
-                            <div fxLayout="row" fxLayoutAlign="start center" class="text-truncate-ellipsis">
-                                <img class="workflow-change-dialog--consultant-img u-mr--8" src="https://placekitten.com/50/50">
-                                <p class="workflow-change-dialog--consultant-name text-truncate-ellipsis" fxFlex="75%">
-                                    # {{consultant?.value?.consutlantId}} - {{consultant?.value?.consulantName}}
-                                </p>
-                            </div>
-                        </mat-checkbox>
+                    <div fxLayout="row" fxLayoutAlign="space-between center" class="u-w--100" *ngFor="let consultant of changeWorkflowForm.consultants.controls; index as i" [formGroupName]="i">
+                        <div fxLayout="row" fxLayoutAlign="start center" class="text-truncate-ellipsis u-mr--16">
+                            <img class="border-rounded-50 u-mr--16 image-thumbnail" [src]="consultantProfileUrl(consultant.value?.externalId)">
+                            <p class="workflow-change-dialog--consultant-name text-truncate-ellipsis" fxFlex="75%">
+                                {{consultant?.value?.consulantName}}
+                            </p>
+                        </div>
                         <mat-checkbox color="accent" name="newLegalContractRequired" formControlName="newLegalContractRequired" class="workflow-change-dialog--checkbox black-checkbox u-w--100" fxFlex="50%">
                             New legal contract required
                         </mat-checkbox>
@@ -122,7 +120,12 @@
                 <div fxLayout="column" fxLayoutAlign="center start" fxLayoutGap="10px" class="u-mt--10" formArrayName="consultants">
                     <div fxLayout="row" fxLayoutAlign="start center" class="u-w--100" *ngFor="let consultant of extendWorkflowForm.consultants.controls; index as i" [formGroupName]="i">
                         <mat-checkbox color="accent" name="extendConsutlant" formControlName="extendConsutlant" class="green-checkbox u-mr--16">
-                            # {{consultant?.value?.consutlantId}} - {{consultant?.value?.consulantName}}
+                            <div fxLayout="row" fxLayoutAlign="start center" class="text-truncate-ellipsis u-mr--16">
+                                <img class="border-rounded-50 u-mr--16 image-thumbnail" [src]="consultantProfileUrl(consultant.value?.externalId)">
+                                <p class="workflow-change-dialog--consultant-name text-truncate-ellipsis" fxFlex="75%">
+                                    {{consultant?.value?.consulantName}}
+                                </p>
+                            </div>
                         </mat-checkbox>
                     </div>
                 </div>

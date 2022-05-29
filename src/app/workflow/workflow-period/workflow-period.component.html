@@ -13,14 +13,14 @@
                                     </span>
                                 </span>
                                 <span class="sidenav-expansion--header__person">
-                                    <!-- {{item.responsiblePerson}} --> TBD
+                                    {{item.consultant?.name ?? ''}}
                                 </span>
                                 <span class="sidenav-expansion--header__date">
-                                    {{item.additionalInfo}}
+                                    {{item.periodStartDate | momentFormat: 'DD.MM.YYYY'}} - {{item.periodEndDate ? (item.periodEndDate | momentFormat: 'DD.MM.YYYY') : '...'}}
                                 </span>
                             </div>
                             <!-- Change WF || terminate WF || terminateConsultant when BE will have termination -->
-                            <div *ngIf="item.typeId === workflowProcessTypes.ChangeClientPeriod">
+                            <div *ngIf="item.typeId === workflowProcessTypes.ChangeClientPeriod || item.typeId === workflowProcessTypes.TerminateWorkflow || item.typeId === workflowProcessTypes.TerminateConsultant">
                                 <button mat-icon-button [matMenuTriggerFor]="consultantMenu" type="button" (click)="$event.stopPropagation();" class="workflow-icon--actions-treedot u-mr--16"><mat-icon>more_horiz</mat-icon></button>
                                 <mat-menu #consultantMenu>
                                     <button
@@ -72,7 +72,14 @@
     <div fxFlex="80%" id="step-container">
         <ng-container [ngSwitch]="selectedStepEnum">
             <ng-container *ngSwitchCase="workflowSteps.Sales">
-                <app-workflow-sales #workflowSales [workflowId]="workflowId" [periodId]="periodId" [activeSideSection]="selectedSideSection" [isCompleted]="selectedStep.status === workflowStatuses.Completed"></app-workflow-sales>
+                <app-workflow-sales #workflowSales
+                                    [workflowId]="workflowId"
+                                    [periodId]="periodId"
+                                    [activeSideSection]="selectedSideSection"
+                                    [consultant]="consultant"
+                                    [isCompleted]="selectedStep.status === workflowStatuses.Completed"
+                                    [permissionsForCurrentUser]="selectedStep.actionsPermissionsForCurrentUser">
+                </app-workflow-sales>
             </ng-container>
             <ng-container *ngSwitchCase="workflowSteps.Contract">
                 <app-workflow-contracts #workflowContracts [workflowId]="workflowId" [periodId]="periodId" [activeSideSection]="selectedSideSection" [isCompleted]="selectedStep.status === workflowStatuses.Completed"></app-workflow-contracts>

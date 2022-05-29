@@ -7,7 +7,7 @@ import { takeUntil, debounceTime, switchMap, finalize, map } from 'rxjs/operator
 import { AppConsts } from 'src/shared/AppConsts';
 import { ClientListItemDto, ClientsServiceProxy, EmployeeDto, EnumServiceProxy, LookupServiceProxy } from 'src/shared/service-proxies/service-proxies';
 import { SelectableCountry, SelectableEmployeeDto, SelectableIdNameDto, StatusList } from './client.model';
-import { AppComopnentBase } from 'src/shared/app-component-base';
+import { AppComponentBase } from 'src/shared/app-component-base';
 
 @Component({
     selector: 'app-client',
@@ -15,7 +15,7 @@ import { AppComopnentBase } from 'src/shared/app-component-base';
     styleUrls: ['./client.component.scss']
 })
 
-export class ClientComponent extends AppComopnentBase implements OnInit, OnDestroy {
+export class ClientComponent extends AppComponentBase implements OnInit, OnDestroy {
     clientFilter = new FormControl();
     accountManagerFilter = new FormControl();
     clientsList: any[] = [];

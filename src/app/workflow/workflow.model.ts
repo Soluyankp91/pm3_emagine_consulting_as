@@ -190,10 +190,9 @@ export interface IWorkflowProgressStatus {
 
 export enum WorkflowTopSections {
     Overview = 1,
-    Workflow = 2,
-    Extension = 3,
-    Termination = 4,
-    ChangesInWF = 5
+    StartPeriod = 2,
+    ExtendPeriod = 3,
+    ChangePeriod = 5
 }
 
 export enum WorkflowSteps {

@@ -6,7 +6,7 @@ import { finalize, takeUntil } from 'rxjs/operators';
 import { InternalLookupService } from 'src/app/shared/common/internal-lookup.service';
 import { ConfirmationDialogComponent } from 'src/app/shared/components/confirmation-dialog/confirmation-dialog.component';
 import { ManagerStatus } from 'src/app/shared/components/manager-search/manager-search.model';
-import { WorkflowProcessDto, WorkflowProcessType, EnumEntityTypeDto, WorkflowServiceProxy, StepDto, EmployeeDto, StepType, WorkflowStepStatus } from 'src/shared/service-proxies/service-proxies';
+import { WorkflowProcessDto, WorkflowProcessType, EnumEntityTypeDto, WorkflowServiceProxy, StepDto, EmployeeDto, StepType, WorkflowStepStatus, ConsultantResultDto } from 'src/shared/service-proxies/service-proxies';
 import { WorkflowDataService } from '../workflow-data.service';
 import { WorkflowSteps } from '../workflow.model';
 
@@ -29,6 +29,7 @@ export class WorkflowPeriodComponent implements OnInit {
     selectedStepEnum: StepType;
     selectedSideSection: number;
     sectionIndex = 0;
+    consultant: ConsultantResultDto;
 
     // hardcoded status
     managerStatus = ManagerStatus;
@@ -51,6 +52,11 @@ export class WorkflowPeriodComponent implements OnInit {
             .subscribe((value: boolean) => {
                 this.getSideMenu();
             });
+        this._workflowDataService.workflowSideSectionUpdated
+            .pipe(takeUntil(this._unsubscribe))
+                .subscribe((value: boolean) => {
+                    this.getSideMenu();
+                });
     }
 
     selectedManager(event: any) {
@@ -86,7 +92,7 @@ export class WorkflowPeriodComponent implements OnInit {
             case WorkflowProcessType.ChangeConsultantPeriod:
                 return 'workflowEdit'
             case WorkflowProcessType.ExtendClientPeriod:
-                case WorkflowProcessType.ExtendConsultantPeriod:
+            case WorkflowProcessType.ExtendConsultantPeriod:
                 return 'workflowStartOrExtend'
             case WorkflowProcessType.TerminateConsultant:
             case WorkflowProcessType.TerminateWorkflow:
@@ -103,6 +109,7 @@ export class WorkflowPeriodComponent implements OnInit {
     changeSideSection(item: WorkflowProcessDto, index: number) {
         this.sectionIndex = index;
         this.selectedSideSection = item.typeId!;
+        this.consultant = item.consultant!;
         this._workflowDataService.updateWorkflowProgressStatus({currentlyActiveSideSection: item.typeId!});
         const firstitemInSection = this.sideMenuItems.find(x => x.name === item.name)?.steps![0];
         this.changeStepSelection(firstitemInSection!);
@@ -130,7 +137,14 @@ export class WorkflowPeriodComponent implements OnInit {
         });
 
         dialogRef.componentInstance.onConfirmed.subscribe((result) => {
-
+            switch (item.typeId) {
+                case WorkflowProcessType.ChangeClientPeriod:
+                return;
+                case WorkflowProcessType.TerminateConsultant:
+                    return this.deleteConsultantTermination(1); // change to item.consultant.id when BE will be ready
+                case WorkflowProcessType.TerminateWorkflow:
+                    return this.deleteWorkflow();
+            }
         });
 
         dialogRef.componentInstance.onRejected.subscribe(() => {
@@ -142,4 +156,15 @@ export class WorkflowPeriodComponent implements OnInit {
         this.selectedAnchor = anchorName;
     }
 
+    deleteWorkflow() {
+        this._workflowService.terminationDelete(this.workflowId).subscribe(result => {
+            this._workflowDataService.workflowSideSectionUpdated.emit(true);
+        });
+    }
+
+    deleteConsultantTermination(consultantId: number) { //change type to number when BE will be ready
+        this._workflowService.terminationConsultantDelete(this.workflowId, consultantId).subscribe(result => {
+            this._workflowDataService.workflowSideSectionUpdated.emit(true);
+        })
+    }
 }

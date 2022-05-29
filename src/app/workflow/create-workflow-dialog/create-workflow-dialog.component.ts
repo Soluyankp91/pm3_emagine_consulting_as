@@ -1,14 +1,14 @@
 import { Component, EventEmitter, Injector, OnInit, Output } from '@angular/core';
 import { FormControl } from '@angular/forms';
 import { MatDialogRef } from '@angular/material/dialog';
-import { AppComopnentBase } from 'src/shared/app-component-base';
+import { AppComponentBase } from 'src/shared/app-component-base';
 
 @Component({
     selector: 'app-create-workflow-dialog',
     templateUrl: './create-workflow-dialog.component.html',
     styleUrls: ['./create-workflow-dialog.component.scss']
 })
-export class CreateWorkflowDialogComponent extends AppComopnentBase implements OnInit {
+export class CreateWorkflowDialogComponent extends AppComponentBase implements OnInit {
     @Output() onConfirmed: EventEmitter<any> = new EventEmitter<any>();
     @Output() onRejected: EventEmitter<any> = new EventEmitter<any>();
 
