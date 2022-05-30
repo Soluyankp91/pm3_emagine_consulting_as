@@ -58,6 +58,7 @@ export class MainOverviewComponent implements OnInit, AfterViewInit {
     cutOffDate = moment();
     cutOffDateWeek = new Date();
     cutOffDateMonth = new Date();
+    userSelectedStatuses: any;
 
     // gant
     items: GanttItem<OverviewData>[] = [
@@ -315,7 +316,6 @@ export class MainOverviewComponent implements OnInit, AfterViewInit {
         }
         // let cutOffDateWeek = this.cutOffDateWeek.toISOString().split('T')[0];
         // let cutOffDateMonth = this.cutOffDateMonth.toISOString().split('T')[0];
-        debugger;
         switch (this.overviewViewTypeControl.value) {
             case 1: // 'Client periods':
                 this._mainOverviewService.workflows(
@@ -438,7 +438,8 @@ export class MainOverviewComponent implements OnInit, AfterViewInit {
                     flag: this.detectIcon(x.id!)
                 })
             });
-
+            this.userSelectedStatuses = result.filter(x => x.canBeSetByUser);
+            console.log(this.userSelectedStatuses);
         })
     }
 
@@ -483,5 +484,11 @@ export class MainOverviewComponent implements OnInit, AfterViewInit {
         this._mainOverviewService.viewTypes().subscribe(result => {
             this.overviewViewTypes = result;
         });
+    }
+
+    setUserSelectedStatusForWorflow() {
+        this._mainOverviewService.setUserSelectedStatusForWorkflow().subscribe(result => {
+
+        })
     }
 }

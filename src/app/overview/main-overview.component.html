@@ -150,6 +150,72 @@
                         <ng-template #cell let-item="item">
                             <span class="text-bold">
                                 <div fxLayout="row" fxLayoutAlign="start center" class="u-w-100">
+                                    <mat-icon class="main-overview-icon" [matMenuTriggerFor]="workflowMenu" svgIcon="{{detectIcon(item?.origin?.process)}}" [ngClass]="detectProcessColor(item?.origin?.process)"></mat-icon>
+                                    <mat-menu #workflowMenu>
+                                        <button *ngFor="let item of userSelectedStatuses"
+                                            class="menu-item menu-item--edit"
+                                            mat-menu-item
+                                            (click)="setUserSelectedStatusForWorflow()">
+                                            <mat-icon class="main-overview-icon" svgIcon="{{detectIcon(item?.id)}}" [ngClass]="detectProcessColor(item?.origin?.process)"></mat-icon>
+                                            Add consultant
+                                        </button>
+                                        <!-- <button
+                                            class="menu-item menu-item--edit"
+                                            mat-menu-item
+                                            [disabled]="false"
+                                            (click)="getAvailableConsultantForChangeOrExtend(workflowDiallogActions.Change)">
+                                            <mat-icon>create</mat-icon>
+                                            Change Workflow Data
+                                        </button>
+                                        <button
+                                            class="menu-item menu-item--add"
+                                            mat-menu-item
+                                            (click)="getAvailableConsultantForChangeOrExtend(workflowDiallogActions.Extend)">
+                                            <mat-icon>add</mat-icon>
+                                            Extend Workflow
+                                        </button>
+                                        <button
+                                            class="menu-item menu-item--cancel"
+                                            mat-menu-item
+                                            (click)="addTermination()">
+                                            <mat-icon>clear</mat-icon>
+                                            Terminate Workflow
+                                        </button> -->
+                                    </mat-menu>
+                                </div>
+                            </span>
+                        </ng-template>
+                    </ngx-gantt-column>
+                    <ngx-gantt-column name="Client" width="375px">
+                        <ng-template #cell let-item="item">
+                            <span class="text-bold">
+                                {{ item.title }}
+                            </span>
+                        </ng-template>
+                    </ngx-gantt-column>
+                    <ngx-gantt-column name="Consultants" width="325px">
+                        <ng-template #cell let-item="item">
+                            {{item?.origin?.firstName + ' ' + item?.origin?.lastName}}
+                        </ng-template>
+                    </ngx-gantt-column>
+                    <ngx-gantt-column name="Sales manager" width="110px">
+                        <ng-template #cell let-item="item">
+                            <div fxLayout="row" fxLayoutAlign="flex-end center" fxLayoutGap="15px" class="u-w-100">
+                                <img class="manager-search--photo" src="../../../../assets/common/images/no-img.svg"/>
+                                <button mat-icon-button matTooltip="Go to workflow">
+                                    <mat-icon class="icon-arrow-rotate180" svgIcon="arrow"></mat-icon>
+                                </button>
+                            </div>
+                        </ng-template>
+                    </ngx-gantt-column>
+                </ngx-gantt-table>
+            </ngx-gantt>
+            <ngx-gantt #gantt [items]="items" [viewOptions]="viewOptions" [viewType]="viewType.value">
+                <ngx-gantt-table>
+                    <ngx-gantt-column name="" width="30px">
+                        <ng-template #cell let-item="item">
+                            <span class="text-bold">
+                                <div fxLayout="row" fxLayoutAlign="start center" class="u-w-100">
                                     <mat-icon class="main-overview-icon" svgIcon="{{detectIcon(item?.origin?.process)}}" [ngClass]="detectProcessColor(item?.origin?.process)"></mat-icon>
                                 </div>
                             </span>
