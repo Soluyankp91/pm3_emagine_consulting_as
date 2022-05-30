@@ -42,6 +42,7 @@ export class WorkflowSourcingComponent extends AppComponentBase implements OnIni
     }
 
     ngOnInit(): void {
+        this._workflowDataService.updateWorkflowProgressStatus({currentStepIsCompleted: this.isCompleted, currentStepIsForcefullyEditing: false});
         switch (this.activeSideSection) {
             case this.workflowSideSections.TerminateWorkflow:
                 this.getWorkflowSourcingStepTermination();
@@ -110,7 +111,7 @@ export class WorkflowSourcingComponent extends AppComponentBase implements OnIni
             this._workflowServiceProxy.terminationConsultantSourcingComplete(this.workflowId!, input)
             .pipe(finalize(() => this.hideMainSpinner()))
             .subscribe(result => {
-                this._workflowDataService.workflowSideSectionUpdated.emit(true);
+                this._workflowDataService.workflowSideSectionUpdated.emit({isStatusUpdate: true});
             })
         }
     }
@@ -152,7 +153,7 @@ export class WorkflowSourcingComponent extends AppComponentBase implements OnIni
             this._workflowServiceProxy.terminationSourcingComplete(this.workflowId!, input)
             .pipe(finalize(() => this.hideMainSpinner()))
             .subscribe(result => {
-                this._workflowDataService.workflowSideSectionUpdated.emit(true);
+                this._workflowDataService.workflowSideSectionUpdated.emit({isStatusUpdate: true});
             })
         }
     }

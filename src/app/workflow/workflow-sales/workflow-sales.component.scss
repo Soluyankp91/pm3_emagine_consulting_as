@@ -73,6 +73,9 @@
             position: fixed;
             right: 50px;
             top: 250px;
+            border-radius: 50%;
+            background-color: rgba($color: #72a0f8, $alpha: 0.2);
+            color: #72a0f8;
         }
         &-inline {
             &--form {

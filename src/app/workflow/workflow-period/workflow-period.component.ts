@@ -35,6 +35,8 @@ export class WorkflowPeriodComponent implements OnInit {
     managerStatus = ManagerStatus;
 
     workflowStatuses = WorkflowStepStatus;
+
+    isStatusUpdate = false;
     private _unsubscribe = new Subject();
     constructor(
         public _workflowDataService: WorkflowDataService,
@@ -54,7 +56,8 @@ export class WorkflowPeriodComponent implements OnInit {
             });
         this._workflowDataService.workflowSideSectionUpdated
             .pipe(takeUntil(this._unsubscribe))
-                .subscribe((value: boolean) => {
+                .subscribe((value: {isStatusUpdate: boolean}) => {
+                    this.isStatusUpdate = value.isStatusUpdate;
                     this.getSideMenu();
                 });
     }
@@ -73,7 +76,7 @@ export class WorkflowPeriodComponent implements OnInit {
             });
     }
 
-    getSideMenu() {
+    getSideMenu(autoUpdate?: boolean) {
         this._workflowService.clientPeriods(this.workflowId, this.periodId, true)
             .pipe(finalize(() => {
 
@@ -82,6 +85,7 @@ export class WorkflowPeriodComponent implements OnInit {
                 this.sideMenuItems = result?.clientPeriods![0].workflowProcesses!;
             });
     }
+
 
     mapIconFromMenuItem(typeId: number) {
         switch (typeId) {
@@ -111,8 +115,14 @@ export class WorkflowPeriodComponent implements OnInit {
         this.selectedSideSection = item.typeId!;
         this.consultant = item.consultant!;
         this._workflowDataService.updateWorkflowProgressStatus({currentlyActiveSideSection: item.typeId!});
-        const firstitemInSection = this.sideMenuItems.find(x => x.name === item.name)?.steps![0];
-        this.changeStepSelection(firstitemInSection!);
+        if (!this.isStatusUpdate) {
+            const firstitemInSection = this.sideMenuItems.find(x => x.name === item.name)?.steps![0];
+            this.changeStepSelection(firstitemInSection!);
+        } else {
+            const stepToSelect = this.sideMenuItems.find(x => x.name === item.name)?.steps!.find(x => x.name === this.selectedStep.name);
+            this.changeStepSelection(stepToSelect!);
+        }
+        this.isStatusUpdate = false;
         this._workflowDataService.workflowSideSectionChanged.emit(true);
     }
 
@@ -158,13 +168,13 @@ export class WorkflowPeriodComponent implements OnInit {
 
     deleteWorkflow() {
         this._workflowService.terminationDelete(this.workflowId).subscribe(result => {
-            this._workflowDataService.workflowSideSectionUpdated.emit(true);
+            this._workflowDataService.workflowSideSectionUpdated.emit({isStatusUpdate: true});
         });
     }
 
     deleteConsultantTermination(consultantId: number) { //change type to number when BE will be ready
         this._workflowService.terminationConsultantDelete(this.workflowId, consultantId).subscribe(result => {
-            this._workflowDataService.workflowSideSectionUpdated.emit(true);
+            this._workflowDataService.workflowSideSectionUpdated.emit({isStatusUpdate: true});
         })
     }
 }

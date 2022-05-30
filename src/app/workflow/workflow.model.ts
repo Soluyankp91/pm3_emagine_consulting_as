@@ -160,6 +160,9 @@ export const WorkflowNavigation: IWorkflowNavigationStep[] = [
 export class WorkflowProgressStatus implements IWorkflowProgressStatus {
     started: boolean | undefined;
 
+    currentStepIsCompleted: boolean | undefined;
+    currentStepIsForcefullyEditing: boolean | undefined;
+
     currentlyActiveSection: number | undefined;
     currentlyActiveStep: number | undefined;
     currentlyActiveSideSection: number | undefined;
@@ -167,11 +170,16 @@ export class WorkflowProgressStatus implements IWorkflowProgressStatus {
 
     constructor(
         started?: boolean,
+        currentStepIsCompleted?: boolean,
+        currentStepIsForcefullyEditing?: boolean,
         currentlyActiveSection?: number,
         currentlyActiveStep?: number,
         currentlyActiveSideSection?: number,
         currentlyActivePeriodId?: string) {
             this.started = started;
+
+            this.currentStepIsCompleted = currentStepIsCompleted;
+            this.currentStepIsForcefullyEditing = currentStepIsForcefullyEditing;
 
             this.currentlyActiveSection = currentlyActiveSection;
             this.currentlyActiveStep = currentlyActiveStep;
@@ -223,9 +231,28 @@ export enum WorkflowFlag {
 export const WorkflowList = [
     {
         flag: WorkflowFlag.NewSales,
-        id: '37c3da55-1242-4940-ba42-f990712be7b1',
+        id: 'bb028a73-4a3c-4088-9722-53511b30c0f5',
 
         client: 'new WF',
+        consultants: [
+            { name: 'Martha Marikel' },
+            { name: 'John Doe'}
+        ],
+        salesType: 'T&M',
+        deliveryType: 'Offshore',
+        startDate: new Date(2021, 4, 2),
+        endDate: new Date(2021, 5, 3),
+        step: 'Sales',
+        openProcess: [null, WorkflowProcessType.StartClientPeriod],
+        status: 'In progress',
+        managers: [1,2],
+        isDeleted: false
+    },
+    {
+        flag: WorkflowFlag.NewSales,
+        id: '37c3da55-1242-4940-ba42-f990712be7b1',
+
+        client: 'completed WF',
         consultants: [
             { name: 'Martha Marikel' },
             { name: 'John Doe'}
