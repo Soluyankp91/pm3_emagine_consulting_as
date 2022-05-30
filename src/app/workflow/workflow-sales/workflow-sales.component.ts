@@ -25,13 +25,13 @@ import { ConsultantDiallogAction, SalesTerminateConsultantForm, TenantList, Work
 export class WorkflowSalesComponent extends AppComponentBase implements OnInit {
     @Input() workflowId: string;
     @Input() periodId: string | undefined;
+    @Input() consultant: ConsultantResultDto;
     // Changed all above to enum
     @Input() activeSideSection: number;
     @Input() isCompleted: boolean;
 
     @Input() permissionsForCurrentUser: { [key: string]: boolean; } | undefined;
     editEnabledForcefuly = false;
-    consultantId = 1; // FIXME: fix after be changes
     consultantInformation: ConsultantResultDto; // FIXME: fix after be changes
     // workflowSideSections = WorkflowSideSections;
     workflowSideSections = WorkflowProcessType;
@@ -2004,7 +2004,7 @@ export class WorkflowSalesComponent extends AppComponentBase implements OnInit {
     //#region termination
 
     getWorkflowSalesStepConsultantTermination() {
-        this._workflowServiceProxy.terminationConsultantSalesGet(this.workflowId!, this.consultantId!)
+        this._workflowServiceProxy.terminationConsultantSalesGet(this.workflowId!, this.consultant.id!)
             .pipe(finalize(() => {
 
             }))
@@ -2034,19 +2034,19 @@ export class WorkflowSalesComponent extends AppComponentBase implements OnInit {
         input.causeOfNonStandardTerminationTime = this.salesTerminateConsultantForm?.causeOfNonStandardTerminationTime?.value;
         input.additionalComments = this.salesTerminateConsultantForm?.additionalComments?.value;
 
-        input.finalEvaluationReferencePersonId = this.salesTerminateConsultantForm?.finalEvaluationReferencePerson?.value.id; // FIXME: fix after be changes add .id
+        input.finalEvaluationReferencePersonId = !this.salesTerminateConsultantForm?.noEvaluation?.value ? this.salesTerminateConsultantForm?.finalEvaluationReferencePerson?.value.id : null; // FIXME: fix after be changes add .id
         input.noEvaluation = this.salesTerminateConsultantForm?.noEvaluation?.value;
         input.causeOfNoEvaluation =  this.salesTerminateConsultantForm.causeOfNoEvaluation?.value;
 
         this.showMainSpinner();
         if (isDraft) {
-            this._workflowServiceProxy.terminationConsultantSalesPut(this.workflowId!, this.consultantId, input)
+            this._workflowServiceProxy.terminationConsultantSalesPut(this.workflowId!, this.consultant.id, input)
                 .pipe(finalize(() => this.hideMainSpinner()))
                 .subscribe(result => {
-    
+
                 })
         } else {
-            this._workflowServiceProxy.terminationConsultantSalesComplete(this.workflowId!, this.consultantId, input)
+            this._workflowServiceProxy.terminationConsultantSalesComplete(this.workflowId!, this.consultant.id, input)
             .pipe(finalize(() => this.hideMainSpinner()))
             .subscribe(result => {
                 this._workflowDataService.workflowSideSectionUpdated.emit(true);
@@ -2094,7 +2094,7 @@ export class WorkflowSalesComponent extends AppComponentBase implements OnInit {
             this._workflowServiceProxy.terminationSalesPut(this.workflowId!, input)
                 .pipe(finalize(() => this.showMainSpinner()))
                 .subscribe(result => {
-    
+
                 })
         } else {
             this._workflowServiceProxy.terminationSalesComplete(this.workflowId!, input)

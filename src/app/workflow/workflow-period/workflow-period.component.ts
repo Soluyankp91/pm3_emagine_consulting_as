@@ -6,7 +6,7 @@ import { finalize, takeUntil } from 'rxjs/operators';
 import { InternalLookupService } from 'src/app/shared/common/internal-lookup.service';
 import { ConfirmationDialogComponent } from 'src/app/shared/components/confirmation-dialog/confirmation-dialog.component';
 import { ManagerStatus } from 'src/app/shared/components/manager-search/manager-search.model';
-import { WorkflowProcessDto, WorkflowProcessType, EnumEntityTypeDto, WorkflowServiceProxy, StepDto, EmployeeDto, StepType, WorkflowStepStatus } from 'src/shared/service-proxies/service-proxies';
+import { WorkflowProcessDto, WorkflowProcessType, EnumEntityTypeDto, WorkflowServiceProxy, StepDto, EmployeeDto, StepType, WorkflowStepStatus, ConsultantResultDto } from 'src/shared/service-proxies/service-proxies';
 import { WorkflowDataService } from '../workflow-data.service';
 import { WorkflowSteps } from '../workflow.model';
 
@@ -29,6 +29,7 @@ export class WorkflowPeriodComponent implements OnInit {
     selectedStepEnum: StepType;
     selectedSideSection: number;
     sectionIndex = 0;
+    consultant: ConsultantResultDto;
 
     // hardcoded status
     managerStatus = ManagerStatus;
@@ -108,6 +109,7 @@ export class WorkflowPeriodComponent implements OnInit {
     changeSideSection(item: WorkflowProcessDto, index: number) {
         this.sectionIndex = index;
         this.selectedSideSection = item.typeId!;
+        this.consultant = item.consultant!;
         this._workflowDataService.updateWorkflowProgressStatus({currentlyActiveSideSection: item.typeId!});
         const firstitemInSection = this.sideMenuItems.find(x => x.name === item.name)?.steps![0];
         this.changeStepSelection(firstitemInSection!);
