@@ -1,5 +1,5 @@
 <div class="workflow-sales">
-    <button class="absolute-edit-toggle" mat-icon-button *ngIf="canToggleEditMode" (click)="toggleEditMode()"><mat-icon>{{readOnlyMode ? 'create' : 'save'}}</mat-icon></button>
+    <button class="absolute-edit-toggle" mat-icon-button *ngIf="canToggleEditMode" (click)="toggleEditMode()"><mat-icon>{{readOnlyMode ? 'create' : 'close'}}</mat-icon></button>
     <ng-container *ngIf="readOnlyMode; else editMode">
         <ng-container *ngIf="(activeSideSection !== workflowSideSections.TerminateWorkflow) && (activeSideSection !== workflowSideSections.TerminateConsultant); else terminationTemplate">
             <!-- Main data -->
@@ -2113,7 +2113,7 @@
                                                 {{consultant.value?.consultantName?.name}}
                                             </span>
                                         </ng-container>
-                                        <button class="form-icon--delete-row" *ngIf="consultantsForm.consultantData?.controls?.length"
+                                        <button class="form-icon--delete-row" *ngIf="consultantsForm.consultantData?.controls?.length && (activeSideSection === workflowSideSections.StartClientPeriod || activeSideSection === workflowSideSections.ExtendClientPeriod)"
                                             mat-icon-button (click)="$event.stopPropagation();confirmRemoveConsultant(consultantIndex)">
                                             <mat-icon svgIcon="remove-icon"></mat-icon>
                                         </button>
@@ -2357,7 +2357,7 @@
                                                 </div>
                                             </div>
 
-                                            <div fxLayout="row" fxLayoutAlign="start center" class="u-w--100 u-mb--10" *ngIf="consultant.value?.consultantProdataEntity?.id !== salesClientDataForm.value?.pdcInvoicingEntityId?.id">
+                                            <div fxLayout="row" fxLayoutAlign="start center" class="u-w--100 u-mb--10" *ngIf="consultant.value?.consultantProdataEntity?.id && (consultant.value?.consultantProdataEntity?.id !== salesClientDataForm.value?.pdcInvoicingEntityId?.id)">
                                                 <mat-form-field appearance="outline" class="u-w--100  u-mr--16" fxFlex="33%">
                                                     <mat-label>PDC-to-PDC rate</mat-label>
                                                     <input autocomplete="off" matInput formControlName="consultantPDCRate" type="text">
@@ -2847,7 +2847,7 @@
                                 </div>
                                 <mat-divider class="u-w--100 u-mt--20 u-mb--20"></mat-divider>
 
-                                <div fxLayout="column" fxLayoutAlign="start start" class="u-w--100">
+                                <div fxLayout="column" fxLayoutAlign="start start" class="u-w--100" *ngIf="consultant.value?.consultantProdataEntity?.id && (consultant.value?.consultantProdataEntity?.id !== salesClientDataForm.value?.pdcInvoicingEntityId?.id)">
                                     <h2 class="workflow-section--header">Account manager</h2>
                                     <div fxLayout="row" fxLayoutAlign="start center" class="u-w--100 u-mb--10">
                                         <mat-form-field appearance="outline" class="u-w--100  filter-select u-mr--16" fxFlex="33%">

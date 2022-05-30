@@ -183,7 +183,7 @@
                         </div>
 
                         <h2 class="workflow-section--header u-mt--20">Client Special Rates</h2>
-                        <div class="inline-edit-form u-w--100">
+                        <div class="inline-edit-form u-w--100 u-mb--20">
                             <div fxLayout="row" fxLayoutAlign="space-between start" fxLayoutGap="10px" class="u-w--100 u-pl--16 u-pr--16" *ngIf="contractClientForm.clientRates?.controls?.length">
                                 <span fxFlex="25%" class="workflow-contracts--list-header u-w--100">
                                     Rate name
@@ -243,7 +243,7 @@
                                         </div>
                                     </ng-container>
                                     <ng-template #clientRatesActions>
-                                        <div fxFlex="10%" fxLayoutAlign="center center" class="u-w--100">
+                                        <div fxFlex="10%" fxLayoutAlign="center center" class="u-w--100" *ngIf="!readOnlyMode">
                                             <button mat-icon-button (click)="$event.stopPropagation();" [matMenuTriggerFor]="clientRateMenu" class="three-dots-actions-btn">
                                                 <mat-icon>more_horiz</mat-icon>
                                             </button>
@@ -269,7 +269,7 @@
                                 </div>
                             </ng-container>
                         </div>
-                        <div fxLayout="row" fxLayoutAlign="start start" class="u-mb--10" *ngIf="!readOnlyMode">
+                        <div fxLayout="row" fxLayoutAlign="start start" *ngIf="!readOnlyMode">
                             <button
                                 [ngClass]="contractClientForm!.clientRates!.controls!.length > 0 ? 'button-add' : 'button-outlined'"
                                 class="rates-and-fees--btn"
@@ -295,8 +295,8 @@
                             </mat-menu>
                         </div>
 
-                        <h2 class="workflow-section--header">Client Fees</h2>
-                        <div class="inline-edit-form u-w--100">
+                        <h2 class="workflow-section--header u-mt--20">Client Fees</h2>
+                        <div class="inline-edit-form u-w--100 u-mb--20">
                             <div fxLayout="row" fxLayoutAlign="space-between start" fxLayoutGap="10px" class="u-w--100 u-pl--16 u-pr--16" *ngIf="contractClientForm.clientFees?.controls?.length">
                                 <span fxFlex="25%" class="workflow-contracts--list-header u-w--100">
                                     Fee name
@@ -357,7 +357,7 @@
                                         </div>
                                     </ng-container>
                                     <ng-template #clientFeeActions>
-                                        <div fxFlex="10%" fxLayoutAlign="center center" class="u-w--100">
+                                        <div fxFlex="10%" fxLayoutAlign="center center" class="u-w--100" *ngIf="!readOnlyMode">
                                             <button *ngIf="fee.value.editable"
                                                     mat-icon-button
                                                     [disabled]="false"
@@ -705,9 +705,9 @@
                                 </div>
                             </ng-template>
 
-                            <h2 class="workflow-section--header">Client Fees</h2>
+                            <h2 class="workflow-section--header">Special Fees</h2>
                             <ng-container *ngIf="readOnlyMode; else clientFeesInput">
-                                <div class="inline-edit-form u-w--100 u-mb--10">
+                                <div class="inline-edit-form u-w--100 u-mb--20">
                                     <div fxLayout="row" fxLayoutAlign="space-between start" fxLayoutGap="10px" class="u-w--100 u-pl--16 u-pr--16" *ngIf="consultant.value.clientFees?.length">
                                         <span fxFlex="20%" class="workflow-contracts--list-header u-w--100">
                                             Fee name
@@ -882,11 +882,6 @@
                                             </mat-form-field>
                                         </ng-template>
                                     </mat-menu>
-
-                                    <!-- <button [ngClass]="consultant.value.clientFees?.length > 0 ? 'button-add' : 'button-outlined'" class="rates-and-fees--btn" mat-flat-button (click)="addClientFeesToConsultantData(consultantIndex)" *ngIf="!readOnlyMode">
-                                        <mat-icon *ngIf="consultant.value.clientFees?.length">add</mat-icon>
-                                        Add special fees
-                                    </button> -->
                                 </div>
                             </ng-template>
 

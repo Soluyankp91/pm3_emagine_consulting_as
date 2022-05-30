@@ -128,6 +128,7 @@ export class WorkflowContractsComponent extends AppComponentBase implements OnIn
         this.getEmploymentTypes();
         this.getConsultantTimeReportingCap();
 
+        this._workflowDataService.updateWorkflowProgressStatus({currentStepIsCompleted: this.isCompleted, currentStepIsForcefullyEditing: false});
         if (this.permissionsForCurrentUser!["StartEdit"]) {
             this.startEditContractStep();
         } else {
@@ -211,7 +212,8 @@ export class WorkflowContractsComponent extends AppComponentBase implements OnIn
         this._clientContractsService.editStart(this.periodId!)
             .pipe(finalize(() => this.hideMainSpinner()))
             .subscribe(result => {
-                this._workflowDataService.workflowSideSectionUpdated.emit(true);
+                this._workflowDataService.workflowSideSectionUpdated.emit({isStatusUpdate: true});
+                this.getContractStepData();
             });
     }
 
@@ -220,7 +222,8 @@ export class WorkflowContractsComponent extends AppComponentBase implements OnIn
         this._workflowServiceProxy.terminationContractStartEdit(this.periodId!)
             .pipe(finalize(() => this.hideMainSpinner()))
             .subscribe(result => {
-                this._workflowDataService.workflowSideSectionUpdated.emit(true);
+                this._workflowDataService.workflowSideSectionUpdated.emit({isStatusUpdate: true});
+                this.getContractStepData();
             });
     }
 
@@ -229,7 +232,8 @@ export class WorkflowContractsComponent extends AppComponentBase implements OnIn
         this._consultantContractsService.editStart(this.periodId!)
             .pipe(finalize(() => this.hideMainSpinner()))
             .subscribe(result => {
-                this._workflowDataService.workflowSideSectionUpdated.emit(true);
+                this._workflowDataService.workflowSideSectionUpdated.emit({isStatusUpdate: true});
+                this.getContractStepData();
             });
     }
 
@@ -238,7 +242,8 @@ export class WorkflowContractsComponent extends AppComponentBase implements OnIn
         this._workflowServiceProxy.terminationConsultantContractStartEdit(this.periodId!)
             .pipe(finalize(() => this.hideMainSpinner()))
             .subscribe(result => {
-                this._workflowDataService.workflowSideSectionUpdated.emit(true);
+                this._workflowDataService.workflowSideSectionUpdated.emit({isStatusUpdate: true});
+                this.getContractStepData();
             });
     }
 
@@ -368,6 +373,7 @@ export class WorkflowContractsComponent extends AppComponentBase implements OnIn
     }
 
     get readOnlyMode() {
+        // return !this.permissionsForCurrentUser!["Edit"] && !this.permissionsForCurrentUser!["StartEdit"];
         return this.isCompleted;
     }
 
@@ -1165,7 +1171,7 @@ export class WorkflowContractsComponent extends AppComponentBase implements OnIn
                     this.hideMainSpinner();
                 }))
                 .subscribe(result => {
-                    this._workflowDataService.workflowSideSectionUpdated.emit(true);
+                    this._workflowDataService.workflowSideSectionUpdated.emit({isStatusUpdate: true});
                 });
         }
     }
@@ -1289,7 +1295,7 @@ export class WorkflowContractsComponent extends AppComponentBase implements OnIn
             this._consultantContractsService.editFinish(this.periodId!, input)
                 .pipe(finalize(() => this.hideMainSpinner()))
                 .subscribe(result => {
-                    this._workflowDataService.workflowSideSectionUpdated.emit(true);
+                    this._workflowDataService.workflowSideSectionUpdated.emit({isStatusUpdate: true});
                 });
         }
     }
@@ -1342,7 +1348,7 @@ export class WorkflowContractsComponent extends AppComponentBase implements OnIn
             this._workflowServiceProxy.terminationConsultantContractComplete(this.workflowId!, input)
             .pipe(finalize(() => this.hideMainSpinner()))
             .subscribe(result => {
-                this._workflowDataService.workflowSideSectionUpdated.emit(true);
+                this._workflowDataService.workflowSideSectionUpdated.emit({isStatusUpdate: true});
             })
         }
     }
@@ -1389,7 +1395,7 @@ export class WorkflowContractsComponent extends AppComponentBase implements OnIn
             this._workflowServiceProxy.terminationContractComplete(this.workflowId!, input)
             .pipe(finalize(() => this.hideMainSpinner()))
             .subscribe(result => {
-                this._workflowDataService.workflowSideSectionUpdated.emit(true);
+                this._workflowDataService.workflowSideSectionUpdated.emit({isStatusUpdate: true});
             })
         }
     }

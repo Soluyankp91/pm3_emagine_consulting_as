@@ -166,16 +166,20 @@ export class WorkflowSalesComponent extends AppComponentBase implements OnInit {
                 takeUntil(this._unsubscribe),
                 debounceTime(300),
                 switchMap((value: any) => {
-                    let toSend = {
-                        name: value,
-                        maxRecordsCount: 1000,
-                    };
-                    if (value?.id) {
-                        toSend.name = value.id
-                            ? value.name
-                            : value;
+                    if (value) {
+                        let toSend = {
+                            name: value,
+                            maxRecordsCount: 1000,
+                        };
+                        if (value?.id) {
+                            toSend.name = value.id
+                                ? value.name
+                                : value;
+                        }
+                        return this._lookupService.employees(value);
+                    } else {
+                        return of([]);
                     }
-                    return this._lookupService.employees(value);
                 }),
             ).subscribe((list: EmployeeDto[]) => {
                 if (list.length) {
@@ -369,6 +373,8 @@ export class WorkflowSalesComponent extends AppComponentBase implements OnInit {
             this.workflowId = params.get('id')!;
         });
 
+        this._workflowDataService.updateWorkflowProgressStatus({currentStepIsCompleted: this.isCompleted, currentStepIsForcefullyEditing: this.editEnabledForcefuly});
+
         this.filteredClientSpecialRates = this.clientSpecialRateFilter.valueChanges
             .pipe(
             map(value => {
@@ -458,6 +464,8 @@ export class WorkflowSalesComponent extends AppComponentBase implements OnInit {
     toggleEditMode() {
         this.isCompleted = !this.isCompleted;
         this.editEnabledForcefuly = !this.editEnabledForcefuly;
+        this._workflowDataService.updateWorkflowProgressStatus({currentStepIsCompleted: this.isCompleted, currentStepIsForcefullyEditing: this.editEnabledForcefuly});
+        this.detectActiveSideSection();
     }
 
     get canToggleEditMode() {
@@ -505,6 +513,7 @@ export class WorkflowSalesComponent extends AppComponentBase implements OnInit {
 
 
     ngOnDestroy(): void {
+        console.log('destroy sales');
         this._unsubscribe.next();
         this._unsubscribe.complete();
     }
@@ -1668,7 +1677,10 @@ export class WorkflowSalesComponent extends AppComponentBase implements OnInit {
                     this.hideMainSpinner();
                 }))
                 .subscribe(result => {
-                    this.showNotify(NotifySeverity.Success, 'Saved sales step', 'Okay');
+                    this.showNotify(NotifySeverity.Success, 'Saved sales step', 'Ok');
+                    if (this.editEnabledForcefuly) {
+                        this.toggleEditMode();
+                    }
                 })
         } else {
             this._clientSalesService.editFinish(this.periodId!, input)
@@ -1676,7 +1688,7 @@ export class WorkflowSalesComponent extends AppComponentBase implements OnInit {
                     this.hideMainSpinner();
                 }))
                 .subscribe(result => {
-                    this._workflowDataService.workflowSideSectionUpdated.emit(true);
+                    this._workflowDataService.workflowSideSectionUpdated.emit({isStatusUpdate: true});
                 })
         }
 
@@ -1708,7 +1720,7 @@ export class WorkflowSalesComponent extends AppComponentBase implements OnInit {
                 this.salesMainDataForm.commissionAccountManagerIdValue?.setValue(result?.salesMainData?.commissionAccountManagerData, {emitEvent: false});
                 this.contractExpirationNotificationDisplay = this.formatExpirationNotificationsForDisplay(result?.salesMainData?.contractExpirationNotificationIntervalIds);
 
-                if (result?.salesMainData?.customContractExpirationNotificationDate !== null || result?.salesMainData?.customContractExpirationNotificationDate !== undefined) {
+                if (result?.salesMainData?.customContractExpirationNotificationDate !== null && result?.salesMainData?.customContractExpirationNotificationDate !== undefined) {
                     result?.salesMainData?.contractExpirationNotificationIntervalIds!.push(999);
                 }
                 this.salesMainDataForm.contractExpirationNotification?.setValue(result?.salesMainData?.contractExpirationNotificationIntervalIds, {emitEvent: false});
@@ -2049,7 +2061,7 @@ export class WorkflowSalesComponent extends AppComponentBase implements OnInit {
             this._workflowServiceProxy.terminationConsultantSalesComplete(this.workflowId!, this.consultant.id, input)
             .pipe(finalize(() => this.hideMainSpinner()))
             .subscribe(result => {
-                this._workflowDataService.workflowSideSectionUpdated.emit(true);
+                this._workflowDataService.workflowSideSectionUpdated.emit({isStatusUpdate: true});
             })
         }
     }
@@ -2100,7 +2112,7 @@ export class WorkflowSalesComponent extends AppComponentBase implements OnInit {
             this._workflowServiceProxy.terminationSalesComplete(this.workflowId!, input)
             .pipe(finalize(() => this.showMainSpinner()))
             .subscribe(result => {
-                this._workflowDataService.workflowSideSectionUpdated.emit(true);
+                this._workflowDataService.workflowSideSectionUpdated.emit({isStatusUpdate: true});
             })
         }
     }
@@ -2304,7 +2316,7 @@ export class WorkflowSalesComponent extends AppComponentBase implements OnInit {
             this._consultantSalesSerivce.editFinish(this.periodId!, input)
                 .pipe(finalize(() => this.hideMainSpinner()))
                 .subscribe(result => {
-                    this._workflowDataService.workflowSideSectionUpdated.emit(true);
+                    this._workflowDataService.workflowSideSectionUpdated.emit({isStatusUpdate: true});
                 });
         }
     }

@@ -49,15 +49,11 @@ export class WorkflowFinancesComponent extends AppComponentBase implements OnIni
     }
 
     ngOnInit(): void {
-        switch (this._workflowDataService.getWorkflowProgress.currentlyActiveSideSection) {
-            case WorkflowProcessType.StartClientPeriod:
-            case WorkflowProcessType.ChangeClientPeriod:
-            case WorkflowProcessType.ExtendClientPeriod:
-                this.getStartChangeOrExtendClientPeriodFinances();
-                break;
-            case WorkflowProcessType.StartConsultantPeriod:
-                this.getStartConsultantPeriodFinance()
-                break;
+        this._workflowDataService.updateWorkflowProgressStatus({currentStepIsCompleted: this.isCompleted, currentStepIsForcefullyEditing: false});
+        if (this.permissionsForCurrentUser!["StartEdit"]) {
+            this.startEditFinanceStep();
+        } else {
+            this.getFinanceStepData();
         }
 
         this._workflowDataService.startClientPeriodFinanceSaved
@@ -79,7 +75,54 @@ export class WorkflowFinancesComponent extends AppComponentBase implements OnIni
     }
 
     get readOnlyMode() {
+        // return !this.permissionsForCurrentUser!["Edit"] && !this.permissionsForCurrentUser!["StartEdit"];
         return this.isCompleted;
+    }
+
+    startEditFinanceStep() {
+        switch (this._workflowDataService.getWorkflowProgress.currentlyActiveSideSection) {
+            case WorkflowProcessType.StartClientPeriod:
+            case WorkflowProcessType.ChangeClientPeriod:
+            case WorkflowProcessType.ExtendClientPeriod:
+                this.startEditClientPeriodFinance();
+                break;
+            case WorkflowProcessType.StartConsultantPeriod:
+                this.startEditConsultantPeriodFinance()
+                break;
+        }
+    }
+
+    getFinanceStepData() {
+        switch (this._workflowDataService.getWorkflowProgress.currentlyActiveSideSection) {
+            case WorkflowProcessType.StartClientPeriod:
+            case WorkflowProcessType.ChangeClientPeriod:
+            case WorkflowProcessType.ExtendClientPeriod:
+                this.getStartChangeOrExtendClientPeriodFinances();
+                break;
+            case WorkflowProcessType.StartConsultantPeriod:
+                this.getStartConsultantPeriodFinance()
+                break;
+        }
+    }
+
+    startEditClientPeriodFinance() {
+        this.showMainSpinner();
+        this._financeService.editStart(this.periodId!)
+            .pipe(finalize(() => this.hideMainSpinner()))
+            .subscribe(result => {
+                this._workflowDataService.workflowSideSectionUpdated.emit({isStatusUpdate: true});
+                this.getFinanceStepData();
+            });
+    }
+
+    startEditConsultantPeriodFinance() {
+        this.showMainSpinner();
+        this._consutlantFinanceService.editStart(this.periodId!)
+            .pipe(finalize(() => this.hideMainSpinner()))
+            .subscribe(result => {
+                this._workflowDataService.workflowSideSectionUpdated.emit({isStatusUpdate: true});
+                this.getFinanceStepData();
+            });
     }
 
     getStartChangeOrExtendClientPeriodFinances() {
@@ -119,7 +162,7 @@ export class WorkflowFinancesComponent extends AppComponentBase implements OnIni
             this._financeService.editFinish(this.periodId!, input)
                 .pipe(finalize(() => this.hideMainSpinner()))
                 .subscribe(result => {
-                    this._workflowDataService.workflowSideSectionUpdated.emit(true);
+                    this._workflowDataService.workflowSideSectionUpdated.emit({isStatusUpdate: true});
                 });
         }
     }
@@ -150,7 +193,7 @@ export class WorkflowFinancesComponent extends AppComponentBase implements OnIni
             this._consutlantFinanceService.editFinish(this.periodId!, input)
                 .pipe(finalize(() => this.hideMainSpinner()))
                 .subscribe(result => {
-                    this._workflowDataService.workflowSideSectionUpdated.emit(true);
+                    this._workflowDataService.workflowSideSectionUpdated.emit({isStatusUpdate: true});
                 });
         }
     }
