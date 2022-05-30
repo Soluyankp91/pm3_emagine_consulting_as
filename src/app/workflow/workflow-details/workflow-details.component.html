@@ -100,11 +100,26 @@
                 </div>
             </mat-tab>
         </mat-tab-group>
-        <div fxLayout="row" fxLayoutAlign="end center" class="workflow-controls" *ngIf="selectedTabName !== 'Overview' && !_workflowDataService.getWorkflowProgress?.currentStepIsCompleted">
-            <button mat-flat-button class="button-outlined mat-elevation-z0 u-mr--16" (click)="saveOrCompleteStep(true)">
+        <div fxLayout="row" fxLayoutAlign="end center" class="workflow-controls" *ngIf="toolbarVisible">
+            <button mat-flat-button
+                    class="button-outlined mat-elevation-z0 u-mr--16"
+                    *ngIf="_workflowDataService.getWorkflowProgress?.currentStepIsForcefullyEditing"
+                    (click)="cancelForceEdit()">
+                Cancel
+            </button>
+            <button mat-flat-button
+                    class="button-outlined mat-elevation-z0 u-mr--16"
+                    *ngIf="_workflowDataService.getWorkflowProgress?.stepSpecificPermissions!['Edit']"
+                    (click)="saveOrCompleteStep(true)">
                 {{_workflowDataService.getWorkflowProgress?.currentStepIsForcefullyEditing ? 'Save' : 'Save draft'}}
             </button>
-            <button color="primary" class="button-accept mat-elevation-z0" mat-flat-button *ngIf="!_workflowDataService.getWorkflowProgress?.currentStepIsForcefullyEditing" (click)="saveOrCompleteStep(false)">Complete step</button>
+            <button color="primary"
+                    class="button-accept mat-elevation-z0"
+                    mat-flat-button
+                    *ngIf="_workflowDataService.getWorkflowProgress?.stepSpecificPermissions!['Complete']"
+                    (click)="saveOrCompleteStep(false)">
+                    Complete step
+            </button>
         </div>
     </div>
 </div>

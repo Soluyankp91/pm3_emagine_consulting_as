@@ -162,6 +162,7 @@ export class WorkflowProgressStatus implements IWorkflowProgressStatus {
 
     currentStepIsCompleted: boolean | undefined;
     currentStepIsForcefullyEditing: boolean | undefined;
+    stepSpecificPermissions: { [key: string]: boolean } | undefined;
 
     currentlyActiveSection: number | undefined;
     currentlyActiveStep: number | undefined;
@@ -172,6 +173,7 @@ export class WorkflowProgressStatus implements IWorkflowProgressStatus {
         started?: boolean,
         currentStepIsCompleted?: boolean,
         currentStepIsForcefullyEditing?: boolean,
+        stepSpecificPermissions?: { [key: string]: boolean } | undefined,
         currentlyActiveSection?: number,
         currentlyActiveStep?: number,
         currentlyActiveSideSection?: number,
@@ -180,7 +182,7 @@ export class WorkflowProgressStatus implements IWorkflowProgressStatus {
 
             this.currentStepIsCompleted = currentStepIsCompleted;
             this.currentStepIsForcefullyEditing = currentStepIsForcefullyEditing;
-
+            this.stepSpecificPermissions = stepSpecificPermissions;
             this.currentlyActiveSection = currentlyActiveSection;
             this.currentlyActiveStep = currentlyActiveStep;
             this.currentlyActiveSideSection = currentlyActiveSideSection;
