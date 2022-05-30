@@ -3,7 +3,7 @@ import { FormArray, FormBuilder, FormControl } from '@angular/forms';
 import { Subject } from 'rxjs';
 import { finalize, takeUntil } from 'rxjs/operators';
 import { AppComponentBase } from 'src/shared/app-component-base';
-import { ConsultantTerminationSourcingDataCommandDto, ConsultantTerminationSourcingDataQueryDto, WorkflowProcessType, WorkflowServiceProxy, WorkflowTerminationSourcingDataCommandDto } from 'src/shared/service-proxies/service-proxies';
+import { ConsultantResultDto, ConsultantTerminationSourcingDataCommandDto, ConsultantTerminationSourcingDataQueryDto, WorkflowProcessType, WorkflowServiceProxy, WorkflowTerminationSourcingDataCommandDto } from 'src/shared/service-proxies/service-proxies';
 import { WorkflowDataService } from '../workflow-data.service';
 import { WorkflowSourcingConsultantsDataForm } from './workflow-sourcing.model';
 
@@ -16,8 +16,8 @@ export class WorkflowSourcingComponent extends AppComponentBase implements OnIni
     @Input() activeSideSection: number;
     @Input() workflowId: string;
     @Input() isCompleted: boolean;
+    @Input() consultant: ConsultantResultDto;
 
-    consultantId = 1;
     workflowSideSections = WorkflowProcessType;
 
     sourcingConsultantsDataForm: WorkflowSourcingConsultantsDataForm;
@@ -86,7 +86,7 @@ export class WorkflowSourcingComponent extends AppComponentBase implements OnIni
     }
 
     getWorkflowSourcingStepConsultantTermination() {
-        this._workflowServiceProxy.terminationConsultantSourcingGet(this.workflowId!, this.consultantId!)
+        this._workflowServiceProxy.terminationConsultantSourcingGet(this.workflowId!, this.consultant.id!)
             .pipe(finalize(() => {
 
             }))
@@ -105,7 +105,7 @@ export class WorkflowSourcingComponent extends AppComponentBase implements OnIni
             this._workflowServiceProxy.terminationConsultantSourcingPut(this.workflowId!, input)
                 .pipe(finalize(() => this.hideMainSpinner()))
                 .subscribe(result => {
-    
+
                 })
         } else {
             this._workflowServiceProxy.terminationConsultantSourcingComplete(this.workflowId!, input)
@@ -147,7 +147,7 @@ export class WorkflowSourcingComponent extends AppComponentBase implements OnIni
             this._workflowServiceProxy.terminationSourcingPut(this.workflowId!, input)
                 .pipe(finalize(() => this.hideMainSpinner()))
                 .subscribe(result => {
-    
+
                 })
         } else {
             this._workflowServiceProxy.terminationSourcingComplete(this.workflowId!, input)
