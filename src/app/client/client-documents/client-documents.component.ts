@@ -9,7 +9,7 @@ import { MatDialog } from '@angular/material/dialog';
 import { ConfirmationDialogComponent } from 'src/app/shared/components/confirmation-dialog/confirmation-dialog.component';
 import { MatTabGroup } from '@angular/material/tabs';
 import { AddFolderDialogComponent } from './add-folder-dialog/add-folder-dialog.component';
-import { AttachmentFileDto, ClientAttachmentInfoOutputDto, ClientAttachmentTypeEnum, ClientContractViewRootDto, ClientDocumentsServiceProxy, ClientEvaluationOutputDto, DocumentTypeEnum, EnumEntityTypeDto, FileDto, UpdateClientAttachmentFileInfoInputDto } from 'src/shared/service-proxies/service-proxies';
+import { ClientAttachmentInfoOutputDto, ClientAttachmentTypeEnum, ClientContractViewRootDto, ClientDocumentsServiceProxy, ClientEvaluationOutputDto, DocumentTypeEnum, EnumEntityTypeDto, UpdateClientAttachmentFileInfoInputDto } from 'src/shared/service-proxies/service-proxies';
 import { finalize, takeUntil } from 'rxjs/operators';
 import { merge, Subject } from 'rxjs';
 import { ActivatedRoute } from '@angular/router';
@@ -110,8 +110,8 @@ export class ClientDocumentsComponent extends AppComponentBase implements OnInit
             .pipe(
                 takeUntil(this._unsubscribe)
             ).subscribe(() => this.getContracts());
-            
-            
+
+
         merge(this.evaluationDocumentDate.valueChanges, this.evaluationDocumentsIncludeLinked.valueChanges)
             .pipe(
                 takeUntil(this._unsubscribe)
@@ -231,13 +231,13 @@ export class ClientDocumentsComponent extends AppComponentBase implements OnInit
             input.clientAttachmentGuid = form.clientAttachmentGuid;
             input.headline = form.headline;
             input.fileType = form.attachmentTypeId;
-            input.file = new AttachmentFileDto();
-            input.file.filename = form.filename;
-            input.file!.fileBytes = result!;
+            // input.file = new AttachmentFileDto();
+            // input.file.filename = form.filename;
+            // input.file!.fileBytes = result!;
             this._clientDocumentsService.generalFilePut(this.clientId!, input)
                 .pipe(finalize(() => {}))
                 .subscribe(result => {
-    
+
                 });
         });
 
@@ -246,7 +246,7 @@ export class ClientDocumentsComponent extends AppComponentBase implements OnInit
     uploadFile(files: FileUploaderFile[]) {
         const fileToUpload = files[0];
         this.getBase64(fileToUpload.internalFile!).then((result: any) => {
-            let inputFile = new FileDto();
+            let inputFile: any;
             inputFile.filename = fileToUpload.name;
             inputFile!.fileBytes = result!;
             let attachmentTypeId = 256; // ??

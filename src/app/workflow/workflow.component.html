@@ -190,16 +190,16 @@
                 <ng-container matColumnDef="SalesType">
                     <mat-header-cell *matHeaderCellDef mat-sort-header fxFlex="10%"> Sales type </mat-header-cell>
                     <mat-cell *matCellDef="let row" fxFlex="10%">
-                        <span class="text-truncate-ellipsis" [matTooltip]="row.salesTypeId">
-                            {{this.findItemById(this.saleTypes, row.salesTypeId)}}
+                        <span class="text-truncate-ellipsis" [matTooltip]="row.salesType?.name">
+                            {{row.salesType?.name}}
                         </span>
                     </mat-cell>
                 </ng-container>
                 <ng-container matColumnDef="DeliveryType">
                     <mat-header-cell *matHeaderCellDef mat-sort-header fxFlex="10%"> Delivery type </mat-header-cell>
                     <mat-cell *matCellDef="let row" fxFlex="10%">
-                        <span class="text-truncate-ellipsis" [matTooltip]="row.deliveryTypeId">
-                            {{this.findItemById(this.projectTypes, row.deliveryTypeId)}}
+                        <span class="text-truncate-ellipsis" [matTooltip]="row.deliveryType?.name">
+                            {{row.deliveryType?.name}}
                         </span>
                     </mat-cell>
                 </ng-container>
@@ -225,7 +225,7 @@
                     <!-- TODO: maybe additional property as 'additionalOpenProcess' and 'additional steps' -->
                     <mat-cell *matCellDef="let row" fxFlex="13%">
                         <div class="column">
-                            <div *ngFor="let item of row.openProcess; last as last"
+                            <div *ngFor="let item of row.openProcesses; last as last"
                                  style="height: 50px;"
                                  class="flex-justify-center column"
                                  [ngStyle]="{'border-bottom' : last ? '0' : '1px solid #E7E3E8'}">
@@ -290,25 +290,21 @@
                     <mat-header-cell *matHeaderCellDef mat-sort-header fxFlex="13%"> Steps </mat-header-cell>
                     <mat-cell *matCellDef="let row" fxFlex="13%">
                         <div class="column">
-                            <div *ngFor="let item of row.openProcess; last as last"
+                            <div *ngFor="let item of row.openProcesses; last as last"
                                  style="height: 50px;"
-                                 class="flex-justify-center column"
+                                 class="flex-items-center flex-row"
                                  [ngStyle]="{'border-bottom' : last ? '0' : '1px solid #E7E3E8'}">
-                                 <div class="column">
-                                     <div class="workflow-list--step u-mr--10" *ngFor="let step of item.steps; let i = index;"
-                                         [ngClass]="{'completed-step': step.status === workflowStatuses.Completed}">
-                                         <div fxLayout="column" fxLayoutAlign="start start">
-                                             <div fxLayout="row" fxLayoutAlign="start center">
-                                                 <app-manager-search
-                                                     (click)="$event.stopPropagation()"
-                                                     [formFieldLabel]="step.name + ' Manager'"
-                                                     (managerSelected)="selectedManager($event)"
-                                                     [managerStatus]="step.status === workflowStatuses.Completed ? managerStatus.Completed : managerStatus.Pending">
-                                                 </app-manager-search>
-                                             </div>
-                                         </div>
-                                     </div>
-                                 </div>
+                                <ng-container *ngFor="let step of item.steps; let i = index;">
+                                    <div class="workflow-list--step u-mr--16" [ngClass]="{'completed-step': step.status === workflowStatuses.Completed}">
+                                        <app-manager-search
+                                            (click)="$event.stopPropagation()"
+                                            [formFieldLabel]="step.name + ' Manager'"
+                                            (managerSelected)="selectedManager($event)"
+                                            [managerStatus]="step.status === workflowStatuses.Completed ? managerStatus.Completed : managerStatus.Pending"
+                                            [readonly]="true">
+                                        </app-manager-search>
+                                    </div>
+                                </ng-container>
                             </div>
                         </div>
                     </mat-cell>
@@ -339,7 +335,7 @@
                 </ng-container>
 
                 <mat-header-row *matHeaderRowDef="workflowDisplayColumns"></mat-header-row>
-                <mat-row *matRowDef="let row; columns: workflowDisplayColumns;" class="mat-elevation-z0 cursor-pointer flex-items-start" (click)="navigateToWorkflowDetails(row.id)"></mat-row>
+                <mat-row *matRowDef="let row; columns: workflowDisplayColumns;" class="mat-elevation-z0 cursor-pointer flex-items-start" (click)="navigateToWorkflowDetails(row.workflowId)"></mat-row>
             </mat-table>
             <div class="spinner-container" *ngIf="isDataLoading">
                 <mat-spinner [diameter]="50"></mat-spinner>

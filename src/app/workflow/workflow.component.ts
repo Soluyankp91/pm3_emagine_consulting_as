@@ -300,8 +300,10 @@ export class WorkflowComponent extends AppComponentBase implements OnInit, OnDes
         let projectType = this.projectTypeControl.value ? this.projectTypeControl.value : undefined;
         let workflowStatus = this.workflowStatusControl.value ? this.workflowStatusControl.value : undefined;
         let ownerIds = this.selectedAccountManagers.map(x => +x.id);
+        let cutOffDate = undefined;
 
         this._apiService.workflow(
+            cutOffDate,
             invoicingEntity,
             paymentEntity,
             salesType,
@@ -322,7 +324,22 @@ export class WorkflowComponent extends AppComponentBase implements OnInit, OnDes
                 this.isDataLoading = false;
             }))
             .subscribe(result => {
-                this.workflowDataSource = new MatTableDataSource<WorkflowListItemDto>(result.items);
+                let formattedData = result?.items!.map(x => {
+                    return {
+                        workflowId: x.workflowId,
+                        clientName: x.clientName,
+                        startDate: x.startDate,
+                        endDate: x.endDate,
+                        salesType: this.findItemById(this.saleTypes, x.salesTypeId),
+                        deliveryType: this.findItemById(this.projectTypes, x.deliveryTypeId),
+                        workflowStatusWithEmployee: x.workflowStatusWithEmployee,
+                        isDeleted: x.isDeleted,
+                        consultants: x.consultants,
+                        openProcesses: x.openProcesses,
+                        accountManager: x.accountManager
+                    }
+                })
+                this.workflowDataSource = new MatTableDataSource<any>(formattedData);
                 this.totalCount = result.totalCount;
             });
     }
