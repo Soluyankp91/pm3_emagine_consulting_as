@@ -2029,6 +2029,7 @@ export class WorkflowSalesComponent extends AppComponentBase implements OnInit {
                 this.salesTerminateConsultantForm.additionalComments?.setValue(result?.additionalComments, {emitEvent: false});
 
                 //Final Evaluation
+                this.clientIdFromTerminationSales = result.clientId!;
                 this.salesTerminateConsultantForm.finalEvaluationReferencePerson?.setValue(result?.finalEvaluationReferencePerson, {emitEvent: false}); // add findItemById function
                 this.salesTerminateConsultantForm.noEvaluation?.setValue(result?.noEvaluation, {emitEvent: false});
                 this.salesTerminateConsultantForm.causeOfNoEvaluation?.setValue(result?.causeOfNoEvaluation, {emitEvent: false});
@@ -2178,7 +2179,16 @@ export class WorkflowSalesComponent extends AppComponentBase implements OnInit {
                 this.getStartChangeOrExtendConsutlantPeriodSales();
                 break;
             case WorkflowProcessType.TerminateConsultant:
-                this.getWorkflowSalesStepConsultantTermination();
+                if (!this.consultant?.id) {
+                    let interval = setInterval(() => {
+                        if (this.consultant?.id) {
+                            clearInterval(interval);
+                            this.getWorkflowSalesStepConsultantTermination();
+                        }
+                    }, 100);
+                } else {
+                    this.getWorkflowSalesStepConsultantTermination();
+                }
                 break;
         }
     }
