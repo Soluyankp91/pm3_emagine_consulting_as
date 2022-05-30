@@ -7,7 +7,7 @@ import { finalize, takeUntil } from 'rxjs/operators';
 import { InternalLookupService } from 'src/app/shared/common/internal-lookup.service';
 import { ConfirmationDialogComponent } from 'src/app/shared/components/confirmation-dialog/confirmation-dialog.component';
 import { AppComponentBase } from 'src/shared/app-component-base';
-import { ClientPeriodContractsDataDto, WorkflowProcessType, WorkflowServiceProxy, ClientPeriodServiceProxy, ConsultantContractsDataDto, ConsultantSalesDataDto, ContractsClientDataDto, ContractsMainDataDto, EnumEntityTypeDto, PeriodClientSpecialFeeDto, PeriodClientSpecialRateDto, PeriodConsultantSpecialFeeDto, PeriodConsultantSpecialRateDto, ProjectLineDto, ConsultantTerminationContractDataCommandDto, WorkflowTerminationContractDataCommandDto, ConsultantTerminationContractDataQueryDto, ClientContractsServiceProxy, ConsultantPeriodServiceProxy, ConsultantContractsServiceProxy, ConsultantPeriodContractsDataDto } from 'src/shared/service-proxies/service-proxies';
+import { ClientPeriodContractsDataDto, WorkflowProcessType, WorkflowServiceProxy, ClientPeriodServiceProxy, ConsultantContractsDataDto, ConsultantSalesDataDto, ContractsClientDataDto, ContractsMainDataDto, EnumEntityTypeDto, PeriodClientSpecialFeeDto, PeriodClientSpecialRateDto, PeriodConsultantSpecialFeeDto, PeriodConsultantSpecialRateDto, ProjectLineDto, ConsultantTerminationContractDataCommandDto, WorkflowTerminationContractDataCommandDto, ConsultantTerminationContractDataQueryDto, ClientContractsServiceProxy, ConsultantPeriodServiceProxy, ConsultantContractsServiceProxy, ConsultantPeriodContractsDataDto, ConsultantResultDto } from 'src/shared/service-proxies/service-proxies';
 import { WorkflowConsultantActionsDialogComponent } from '../workflow-consultant-actions-dialog/workflow-consultant-actions-dialog.component';
 import { WorkflowDataService } from '../workflow-data.service';
 import { ConsultantDiallogAction } from '../workflow-sales/workflow-sales.model';
@@ -23,6 +23,7 @@ import { WorkflowConsultantsLegalContractForm, WorkflowContractsClientDataForm, 
 export class WorkflowContractsComponent extends AppComponentBase implements OnInit, OnDestroy {
     @Input() workflowId: string;
     @Input() periodId: string | undefined;
+    @Input() consultant: ConsultantResultDto;
 
     // Changed all above to enum
     @Input() activeSideSection: number;
@@ -51,8 +52,6 @@ export class WorkflowContractsComponent extends AppComponentBase implements OnIn
 
     contractLinesDoneManuallyInOldPMControl = new FormControl();
     contractsTerminationConsultantForm: WorkflowContractsTerminationConsultantsDataForm;
-    consultantId = 1;
-
 
     consultantList = [{
         id: 123,
@@ -1000,7 +999,7 @@ export class WorkflowContractsComponent extends AppComponentBase implements OnIn
     }
 
     getWorkflowContractsStepConsultantTermination() {
-        this._workflowServiceProxy.terminationConsultantContractGet(this.workflowId!, this.consultantId!)
+        this._workflowServiceProxy.terminationConsultantContractGet(this.workflowId!, this.consultant.id!)
             .pipe(finalize(() => {
 
             }))
@@ -1023,7 +1022,7 @@ export class WorkflowContractsComponent extends AppComponentBase implements OnIn
             this._workflowServiceProxy.terminationConsultantContractPut(this.workflowId!, input)
                 .pipe(finalize(() => this.hideMainSpinner()))
                 .subscribe(result => {
-    
+
                 })
         } else {
             this._workflowServiceProxy.terminationConsultantContractComplete(this.workflowId!, input)
@@ -1070,7 +1069,7 @@ export class WorkflowContractsComponent extends AppComponentBase implements OnIn
             this._workflowServiceProxy.terminationContractPut(this.workflowId!, input)
                 .pipe(finalize(() => this.hideMainSpinner()))
                 .subscribe(result => {
-    
+
                 })
         } else {
             this._workflowServiceProxy.terminationContractComplete(this.workflowId!, input)
