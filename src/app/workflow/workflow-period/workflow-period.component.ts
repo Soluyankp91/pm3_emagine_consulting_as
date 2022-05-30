@@ -107,7 +107,7 @@ export class WorkflowPeriodComponent implements OnInit {
     changeStepSelection(step: StepDto) {
         this.selectedStepEnum = step.typeId!;
         this.selectedStep = step;
-        this._workflowDataService.workflowProgress.currentlyActiveStep = step.typeId!;
+        this._workflowDataService.updateWorkflowProgressStatus({currentlyActiveStep: step.typeId, stepSpecificPermissions: step.actionsPermissionsForCurrentUser});
     }
 
     changeSideSection(item: WorkflowProcessDto, index: number) {

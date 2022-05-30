@@ -32,7 +32,7 @@ export class WorkflowDataService {
     workflowSideSectionUpdated = new EventEmitter<{isStatusUpdate: boolean}>();
     workflowTopSectionUpdated = new EventEmitter<any>();
 
-
+    cancelForceEdit =  new EventEmitter<any>();
     constructor() { }
 
     updateWorkflowProgressStatus(status: Partial<WorkflowProgressStatus>) {

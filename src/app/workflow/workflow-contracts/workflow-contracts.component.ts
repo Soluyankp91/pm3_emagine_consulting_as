@@ -69,24 +69,7 @@ export class WorkflowContractsComponent extends AppComponentBase implements OnIn
     clientFeeToEdit: PeriodClientSpecialFeeDto;
     isClientFeeEditing = false;
 
-    consultantList = [{
-        id: 123,
-        name: 'Robertsen Oscar',
-        consultantProjectStartDate: new Date(2021, 4, 2),
-        consultantProjectEndDate: new Date(2022, 4, 2),
-        employmentTypeId: {id: 1, name: 'Employee'},
-        consultantCapOnTimeReportingValue: null,
-        consultantCapOnTimeReportingCurrency: null
-    },
-    {
-        id: 1234,
-        name: 'Van Trier Mia',
-        consultantProjectStartDate: new Date(2021, 5, 3),
-        consultantProjectEndDate: new Date(2022, 6, 3),
-        employmentTypeId: {id: 2, name: 'Freelance'},
-        consultantCapOnTimeReportingValue: null,
-        consultantCapOnTimeReportingCurrency: null
-    }];
+    editEnabledForcefuly = false;
 
     private _unsubscribe = new Subject();
 
@@ -160,6 +143,15 @@ export class WorkflowContractsComponent extends AppComponentBase implements OnIn
             .pipe(takeUntil(this._unsubscribe))
             .subscribe((value: boolean) => {
                 this.saveWorkflowTerminationContractStep(value);
+            });
+
+        this._workflowDataService.cancelForceEdit
+            .pipe(takeUntil(this._unsubscribe))
+            .subscribe((value: boolean) => {
+                this.isCompleted = true;
+                this.editEnabledForcefuly = false;
+                this._workflowDataService.updateWorkflowProgressStatus({currentStepIsCompleted: this.isCompleted, currentStepIsForcefullyEditing: this.editEnabledForcefuly});
+                this.getContractStepData();
             });
     }
 
@@ -370,6 +362,18 @@ export class WorkflowContractsComponent extends AppComponentBase implements OnIn
             .subscribe(result => {
                 this.consultantTimeReportingCapList = result;
             });
+    }
+
+    toggleEditMode() {
+        this.isCompleted = !this.isCompleted;
+        this.editEnabledForcefuly = !this.editEnabledForcefuly;
+        this._workflowDataService.updateWorkflowProgressStatus({currentStepIsCompleted: this.isCompleted, currentStepIsForcefullyEditing: this.editEnabledForcefuly});
+        this.getContractStepData();
+    }
+
+    get canToggleEditMode() {
+        // return this.permissionsForCurrentUser!["Edit"] && (this.isCompleted || this.editEnabledForcefuly);
+        return this.permissionsForCurrentUser!["Edit"] && this.isCompleted;
     }
 
     get readOnlyMode() {
@@ -1163,7 +1167,9 @@ export class WorkflowContractsComponent extends AppComponentBase implements OnIn
                     this.hideMainSpinner();
                 }))
                 .subscribe(result => {
-
+                    if (this.editEnabledForcefuly) {
+                        this.toggleEditMode();
+                    }
                 });
         } else {
             this._clientContractsService.editFinish(this.periodId!, input)
@@ -1289,7 +1295,9 @@ export class WorkflowContractsComponent extends AppComponentBase implements OnIn
             this._consultantPeriodService.consultantContractsPut(this.periodId!, input)
                 .pipe(finalize(() => this.hideMainSpinner()))
                 .subscribe(result => {
-
+                    if (this.editEnabledForcefuly) {
+                        this.toggleEditMode();
+                    }
                 });
         } else {
             this._consultantContractsService.editFinish(this.periodId!, input)
@@ -1342,7 +1350,9 @@ export class WorkflowContractsComponent extends AppComponentBase implements OnIn
             this._workflowServiceProxy.terminationConsultantContractPut(this.workflowId!, input)
                 .pipe(finalize(() => this.hideMainSpinner()))
                 .subscribe(result => {
-    
+                    if (this.editEnabledForcefuly) {
+                        this.toggleEditMode();
+                    }
                 })
         } else {
             this._workflowServiceProxy.terminationConsultantContractComplete(this.workflowId!, input)
