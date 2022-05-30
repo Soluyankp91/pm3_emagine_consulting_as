@@ -6,9 +6,10 @@ export const environment = {
     production: false,
     dev: true,
     qa: false,
-    apiUrl: 'https://pm3-dev-app.azurewebsites.net',
+    apiUrl: 'https://pm3-dev-api.prodataconsult.com',
     sourcingUrl: 'https://web-sourcing-dev.azurewebsites.net',
-    blobStorageUrl: 'https://web-sourcing-dev.azurewebsites.net/server'
+    blobStorageUrl: 'https://web-sourcing-dev.azurewebsites.net/server',
+    sharedAssets: "https://pdcweb.z6.web.core.windows.net/shared-assets/dev"
 };
 
 /*

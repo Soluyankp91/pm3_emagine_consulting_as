@@ -160,21 +160,33 @@ export const WorkflowNavigation: IWorkflowNavigationStep[] = [
 export class WorkflowProgressStatus implements IWorkflowProgressStatus {
     started: boolean | undefined;
 
+    currentStepIsCompleted: boolean | undefined;
+    currentStepIsForcefullyEditing: boolean | undefined;
+    stepSpecificPermissions: { [key: string]: boolean } | undefined;
+
     currentlyActiveSection: number | undefined;
     currentlyActiveStep: number | undefined;
     currentlyActiveSideSection: number | undefined;
+    currentlyActivePeriodId: string | undefined;
 
     constructor(
         started?: boolean,
-
+        currentStepIsCompleted?: boolean,
+        currentStepIsForcefullyEditing?: boolean,
+        stepSpecificPermissions?: { [key: string]: boolean } | undefined,
         currentlyActiveSection?: number,
         currentlyActiveStep?: number,
-        currentlyActiveSideSection?: number) {
+        currentlyActiveSideSection?: number,
+        currentlyActivePeriodId?: string) {
             this.started = started;
 
+            this.currentStepIsCompleted = currentStepIsCompleted;
+            this.currentStepIsForcefullyEditing = currentStepIsForcefullyEditing;
+            this.stepSpecificPermissions = stepSpecificPermissions;
             this.currentlyActiveSection = currentlyActiveSection;
             this.currentlyActiveStep = currentlyActiveStep;
             this.currentlyActiveSideSection = currentlyActiveSideSection;
+            this.currentlyActivePeriodId = currentlyActivePeriodId;
     }
 }
 
@@ -188,10 +200,9 @@ export interface IWorkflowProgressStatus {
 
 export enum WorkflowTopSections {
     Overview = 1,
-    Workflow = 2,
-    Extension = 3,
-    Termination = 4,
-    ChangesInWF = 5
+    StartPeriod = 2,
+    ExtendPeriod = 3,
+    ChangePeriod = 5
 }
 
 export enum WorkflowSteps {
@@ -202,7 +213,7 @@ export enum WorkflowSteps {
 }
 
 export enum WorkflowDiallogAction {
-    Add = 1,
+    AddConsultant = 1,
     Change = 2,
     Extend = 3,
     Terminate = 4
@@ -222,7 +233,7 @@ export enum WorkflowFlag {
 export const WorkflowList = [
     {
         flag: WorkflowFlag.NewSales,
-        id: '37c3da55-1242-4940-ba42-f990712be7b1',
+        id: 'bb028a73-4a3c-4088-9722-53511b30c0f5',
 
         client: 'new WF',
         consultants: [
@@ -241,9 +252,28 @@ export const WorkflowList = [
     },
     {
         flag: WorkflowFlag.NewSales,
-        id: '297896A7-63B5-4B66-A4C8-E14E1FE1DDB7',
+        id: '37c3da55-1242-4940-ba42-f990712be7b1',
 
-        client: '7 periods test',
+        client: 'completed WF',
+        consultants: [
+            { name: 'Martha Marikel' },
+            { name: 'John Doe'}
+        ],
+        salesType: 'T&M',
+        deliveryType: 'Offshore',
+        startDate: new Date(2021, 4, 2),
+        endDate: new Date(2021, 5, 3),
+        step: 'Sales',
+        openProcess: [null, WorkflowProcessType.StartClientPeriod],
+        status: 'In progress',
+        managers: [1,2],
+        isDeleted: false
+    },
+    {
+        flag: WorkflowFlag.NewSales,
+        id: 'B54D53F1-3514-48F8-98FA-0523B5AE1F14',
+
+        client: 'many extensions',
         consultants: [
             { name: 'Martha Marikel' },
             { name: 'John Doe'}

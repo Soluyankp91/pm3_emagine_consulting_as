@@ -1,17 +1,6 @@
 @import "/src/app/shared/styles/config/_sizes";
 @import "/src/app/shared/styles/config/_colors";
 
-.arrow-container--btn {
-    // font-family: 'Barlow', sans-serif;
-    // font-style: normal;
-    // font-weight: 500;
-    // font-size: 24px;
-    // line-height: 24px;
-    // text-transform: uppercase;
-    // color: rgba(43, 53, 59, 0.87);
-    // cursor: pointer;
-}
-
 .client-details {
     // min-height: 100%;
     // padding: 14px 20px;
@@ -35,6 +24,7 @@
         .nav-tab--content {
             height: calc(100vh - 200px);
             padding: 16px 60px;
+            background-color: #faf9fb;
         }
     }
     &--search {
@@ -67,4 +57,5 @@
             }
         }
     }
+
 }

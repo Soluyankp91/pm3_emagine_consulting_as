@@ -1,8 +1,9 @@
-import { Component, Input, OnDestroy, OnInit } from '@angular/core';
+import { Component, Injector, Input, OnDestroy, OnInit } from '@angular/core';
 import { FormArray, FormBuilder, FormControl } from '@angular/forms';
 import { Subject } from 'rxjs';
 import { finalize, takeUntil } from 'rxjs/operators';
-import { ConsultantTerminationSourcingDataCommandDto, ConsultantTerminationSourcingDataQueryDto, WorkflowProcessType, WorkflowServiceProxy, WorkflowTerminationSourcingDataCommandDto } from 'src/shared/service-proxies/service-proxies';
+import { AppComponentBase } from 'src/shared/app-component-base';
+import { ConsultantResultDto, ConsultantTerminationSourcingDataCommandDto, ConsultantTerminationSourcingDataQueryDto, WorkflowProcessType, WorkflowServiceProxy, WorkflowTerminationSourcingDataCommandDto } from 'src/shared/service-proxies/service-proxies';
 import { WorkflowDataService } from '../workflow-data.service';
 import { WorkflowSourcingConsultantsDataForm } from './workflow-sourcing.model';
 
@@ -11,12 +12,12 @@ import { WorkflowSourcingConsultantsDataForm } from './workflow-sourcing.model';
     templateUrl: './workflow-sourcing.component.html',
     styleUrls: ['./workflow-sourcing.component.scss']
 })
-export class WorkflowSourcingComponent implements OnInit, OnDestroy {
+export class WorkflowSourcingComponent extends AppComponentBase implements OnInit, OnDestroy {
     @Input() activeSideSection: number;
     @Input() workflowId: string;
     @Input() isCompleted: boolean;
+    @Input() consultant: ConsultantResultDto;
 
-    consultantId = 1;
     workflowSideSections = WorkflowProcessType;
 
     sourcingConsultantsDataForm: WorkflowSourcingConsultantsDataForm;
@@ -31,14 +32,17 @@ export class WorkflowSourcingComponent implements OnInit, OnDestroy {
     private _unsubscribe = new Subject();
 
     constructor(
+        injector: Injector,
         private _fb: FormBuilder,
         private _workflowServiceProxy: WorkflowServiceProxy,
         private _workflowDataService: WorkflowDataService
     ) {
+        super(injector);
         this.sourcingConsultantsDataForm = new WorkflowSourcingConsultantsDataForm();
     }
 
     ngOnInit(): void {
+        this._workflowDataService.updateWorkflowProgressStatus({currentStepIsCompleted: this.isCompleted, currentStepIsForcefullyEditing: false});
         switch (this.activeSideSection) {
             case this.workflowSideSections.TerminateWorkflow:
                 this.getWorkflowSourcingStepTermination();
@@ -51,29 +55,13 @@ export class WorkflowSourcingComponent implements OnInit, OnDestroy {
         this._workflowDataService.workflowConsultantTerminationSourcingSaved
             .pipe(takeUntil(this._unsubscribe))
             .subscribe((value: boolean) => {
-                // NB: boolean SAVE DRAFT or COMPLETE in future
-                this.updateTerminationConsultantSourcingStep();
-            });
-
-        this._workflowDataService.workflowConsultantTerminationSourcingCompleted
-            .pipe(takeUntil(this._unsubscribe))
-            .subscribe((value: boolean) => {
-                // NB: boolean SAVE DRAFT or COMPLETE in future
-                this.completeTerminationConsultantSourcingStep();
+                this.saveTerminationConsultantSourcingStep(value);
             });
 
         this._workflowDataService.workflowTerminationSourcingSaved
             .pipe(takeUntil(this._unsubscribe))
             .subscribe((value: boolean) => {
-                // NB: boolean SAVE DRAFT or COMPLETE in future
-                this.updateTerminationSourcingStep();
-            });
-
-        this._workflowDataService.workflowTerminationSourcingCompleted
-            .pipe(takeUntil(this._unsubscribe))
-            .subscribe((value: boolean) => {
-                // NB: boolean SAVE DRAFT or COMPLETE in future
-                this.completeTerminationSourcingStep();
+                this.saveWorkflowTerminationSourcingStep(value);
             });
     }
 
@@ -98,7 +86,7 @@ export class WorkflowSourcingComponent implements OnInit, OnDestroy {
     }
 
     getWorkflowSourcingStepConsultantTermination() {
-        this._workflowServiceProxy.terminationConsultantSourcingGet(this.workflowId!, this.consultantId!)
+        this._workflowServiceProxy.terminationConsultantSourcingGet(this.workflowId!, this.consultant.id!)
             .pipe(finalize(() => {
 
             }))
@@ -107,32 +95,25 @@ export class WorkflowSourcingComponent implements OnInit, OnDestroy {
             });
     }
 
-    updateTerminationConsultantSourcingStep() {
+    saveTerminationConsultantSourcingStep(isDraft: boolean) {
         let input = new ConsultantTerminationSourcingDataCommandDto();
         input.consultantId = this.sourcingConsultantsDataForm.consultantTerminationSourcingData?.at(0).value.consultantId;
         input.cvUpdated = this.sourcingConsultantsDataForm.consultantTerminationSourcingData?.at(0).value.cvUpdated;
 
-        this._workflowServiceProxy.terminationConsultantSourcingPut(this.workflowId!, input)
-            .pipe(finalize(() => {
+        this.showMainSpinner();
+        if (isDraft) {
+            this._workflowServiceProxy.terminationConsultantSourcingPut(this.workflowId!, input)
+                .pipe(finalize(() => this.hideMainSpinner()))
+                .subscribe(result => {
 
-            }))
+                })
+        } else {
+            this._workflowServiceProxy.terminationConsultantSourcingComplete(this.workflowId!, input)
+            .pipe(finalize(() => this.hideMainSpinner()))
             .subscribe(result => {
-
+                this._workflowDataService.workflowSideSectionUpdated.emit({isStatusUpdate: true});
             })
-    }
-
-    completeTerminationConsultantSourcingStep() {
-        let input = new ConsultantTerminationSourcingDataCommandDto();
-        input.consultantId = this.sourcingConsultantsDataForm.consultantTerminationSourcingData?.at(0).value.consultantId;
-        input.cvUpdated = this.sourcingConsultantsDataForm.consultantTerminationSourcingData?.at(0).value.cvUpdated;
-
-        this._workflowServiceProxy.terminationConsultantSourcingComplete(this.workflowId!, input)
-            .pipe(finalize(() => {
-
-            }))
-            .subscribe(result => {
-
-            })
+        }
     }
 
     getWorkflowSourcingStepTermination() {
@@ -147,7 +128,7 @@ export class WorkflowSourcingComponent implements OnInit, OnDestroy {
             });
     }
 
-    updateTerminationSourcingStep() {
+    saveWorkflowTerminationSourcingStep(isDraft: boolean) {
         let input = new WorkflowTerminationSourcingDataCommandDto();
 
         input.consultantTerminationSourcingData = new Array<ConsultantTerminationSourcingDataCommandDto>();
@@ -161,37 +142,20 @@ export class WorkflowSourcingComponent implements OnInit, OnDestroy {
             });
         }
 
-        this._workflowServiceProxy.terminationSourcingPut(this.workflowId!, input)
-            .pipe(finalize(() => {
+        this.showMainSpinner();
+        if (isDraft) {
+            this._workflowServiceProxy.terminationSourcingPut(this.workflowId!, input)
+                .pipe(finalize(() => this.hideMainSpinner()))
+                .subscribe(result => {
 
-            }))
+                })
+        } else {
+            this._workflowServiceProxy.terminationSourcingComplete(this.workflowId!, input)
+            .pipe(finalize(() => this.hideMainSpinner()))
             .subscribe(result => {
-
+                this._workflowDataService.workflowSideSectionUpdated.emit({isStatusUpdate: true});
             })
-    }
-
-    completeTerminationSourcingStep() {
-        let input = new WorkflowTerminationSourcingDataCommandDto();
-
-        input.consultantTerminationSourcingData = new Array<ConsultantTerminationSourcingDataCommandDto>();
-        if (this.sourcingConsultantsDataForm.consultantTerminationSourcingData?.value?.length) {
-            this.sourcingConsultantsDataForm.consultantTerminationSourcingData.value.forEach((consultant: any) => {
-                let consultantInput = new ConsultantTerminationSourcingDataCommandDto();
-                consultantInput.consultantId = consultant.consultantId;
-                consultantInput.cvUpdated = consultant.cvUpdated;
-
-                input.consultantTerminationSourcingData!.push(consultantInput);
-            });
         }
-
-
-        this._workflowServiceProxy.terminationSourcingComplete(this.workflowId!, input)
-            .pipe(finalize(() => {
-
-            }))
-            .subscribe(result => {
-
-            })
     }
 
 }

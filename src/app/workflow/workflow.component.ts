@@ -6,7 +6,7 @@ import { MatTableDataSource } from '@angular/material/table';
 import { Router } from '@angular/router';
 import { Subject } from 'rxjs';
 import { debounceTime, finalize, switchMap, takeUntil } from 'rxjs/operators';
-import { AppComopnentBase } from 'src/shared/app-component-base';
+import { AppComponentBase } from 'src/shared/app-component-base';
 import { AppConsts } from 'src/shared/AppConsts';
 import { ApiServiceProxy, EmployeeDto, EnumEntityTypeDto, LookupServiceProxy, StartNewWorkflowInputDto, WorkflowListItemDto, WorkflowProcessType, WorkflowServiceProxy } from 'src/shared/service-proxies/service-proxies';
 import { SelectableCountry, SelectableIdNameDto } from '../client/client.model';
@@ -21,7 +21,7 @@ import { SelectableEmployeeDto, WorkflowFlag, WorkflowList } from './workflow.mo
     styleUrls: ['./workflow.component.scss']
 })
 
-export class WorkflowComponent extends AppComopnentBase implements OnInit, OnDestroy {
+export class WorkflowComponent extends AppComponentBase implements OnInit, OnDestroy {
     workflowFilter = new FormControl(null);
 
     pageNumber = 1;

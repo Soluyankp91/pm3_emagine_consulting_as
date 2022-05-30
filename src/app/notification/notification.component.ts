@@ -1,6 +1,6 @@
 import { Component, Injector, OnInit } from '@angular/core';
 import { finalize } from 'rxjs/operators';
-import { AppComopnentBase } from 'src/shared/app-component-base';
+import { AppComponentBase } from 'src/shared/app-component-base';
 import { EmployeeNotificationServiceProxy, EmployeeTenantNotificationItem, EnumEntityTypeDto } from 'src/shared/service-proxies/service-proxies';
 import { EmployeeNotifications } from './notification.model';
 
@@ -9,7 +9,7 @@ import { EmployeeNotifications } from './notification.model';
     templateUrl: './notification.component.html',
     styleUrls: ['./notification.component.scss']
 })
-export class NotificationComponent extends AppComopnentBase implements OnInit {
+export class NotificationComponent extends AppComponentBase implements OnInit {
     tenantWithNotifications: EmployeeNotifications[] = [];
     constructor(
         injector: Injector,

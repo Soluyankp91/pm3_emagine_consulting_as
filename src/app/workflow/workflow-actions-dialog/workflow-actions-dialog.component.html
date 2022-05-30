@@ -7,7 +7,7 @@
         <p>{{consultant.consultantName ?? 'N/A'}}</p>
     </div> -->
     <ng-container [ngSwitch]="data.dialogType">
-        <ng-container *ngSwitchCase="dialogTypes.Add">
+        <ng-container *ngSwitchCase="dialogTypes.AddConsultant">
             <h3>Select start and end dates</h3>
             <div fxLayout="row" fxLayoutAlign="space-between start" fxLayoutGap="16px" class="u-w--100">
                 <mat-form-field appearance="outline" fxFlex="50%">
@@ -39,113 +39,97 @@
             </div>
         </ng-container>
         <ng-container *ngSwitchCase="dialogTypes.Change">
-            <!-- <h3>Select new cutover date</h3>
-            <div fxLayout="column" fxLayoutAlign="start start">
-                <mat-form-field appearance="outline" class="u-w--50">
-                    <mat-label>Specific date</mat-label>
-                    <input autocomplete="off" matInput
-                            [matDatepicker]="consultantCutoverDatePicker"
-                            name="clientExtensionEndDate" [formControl]="newCutoverDate"
-                            (focus)="consultantCutoverDatePicker.open()"
-                            (click)="consultantCutoverDatePicker.open()" readonly>
-                    <mat-icon class="calendar-icon" matSuffix svgIcon="calendar"></mat-icon>
-                    <mat-datepicker #consultantCutoverDatePicker></mat-datepicker>
-                </mat-form-field>
-                <mat-checkbox color="accent" [formControl]="newLegalContractRequired" name="newLegalContractRequired" class="black-checkbox u-mr--10">
-                    New legal contract contract required
-                </mat-checkbox>
-            </div> -->
-            <h2 class="workflow-change-dialog--label">Select new cutover date</h2>
-            <div fxLayout="row" fxLayoutAlign="space-between center" class="u-w--100 u-mt--10">
-                <mat-form-field appearance="outline" class="u-w--100 u-mr--16" fxFlex="45%">
-                    <mat-label>Cutover date</mat-label>
-                    <input autocomplete="off" placeholder="New end date" matInput
-                            [matDatepicker]="extensionDatePicker"
-                            name="saleDate"
-                            (focus)="extensionDatePicker.open()"
-                            (click)="extensionDatePicker.open()" readonly>
-                    <mat-icon class="calendar-icon" matSuffix svgIcon="calendar"></mat-icon>
-                    <mat-datepicker #extensionDatePicker></mat-datepicker>
-                </mat-form-field>
+            <form [formGroup]="changeWorkflowForm">
+                <h2 class="workflow-change-dialog--label">Select new cutover date</h2>
+                <div fxLayout="row" fxLayoutAlign="space-between center" class="u-w--100 u-mt--10">
+                    <mat-form-field appearance="outline" class="u-w--100 u-mr--16" fxFlex="45%">
+                        <mat-label>Cutover date</mat-label>
+                        <input autocomplete="off" placeholder="New end date" matInput
+                                [matDatepicker]="cutoverDatePicker"
+                                name="cutoverDate"
+                                formControlName="cutoverDate"
+                                (focus)="cutoverDatePicker.open()"
+                                (click)="cutoverDatePicker.open()" readonly>
+                        <mat-icon class="calendar-icon" matSuffix svgIcon="calendar"></mat-icon>
+                        <mat-datepicker #cutoverDatePicker></mat-datepicker>
+                    </mat-form-field>
 
-                <mat-checkbox color="accent" name="newLegalContractRequired" class="workflow-change-dialog--checkbox black-checkbox u-w--100 u-mb--15" fxFlex="50%">
-                    New legal contract required
-                </mat-checkbox>
-            </div>
-
-            <mat-divider class="u-mb--15">
-            </mat-divider>
-
-            <h2 class="workflow-change-dialog--label">Select consultants the change applies to</h2>
-            <div fxLayout="column" fxLayoutAlign="center start" fxLayoutGap="15px" class="u-w--100 u-mt--10">
-                <div fxLayout="row" fxLayoutAlign="start center" class="u-w--100">
-                    <mat-checkbox color="accent" name="noExtensionEndDate" class="black-checkbox u-mr--16" fxFlex="45%">
-                        <div fxLayout="row" fxLayoutAlign="start center" class="text-truncate-ellipsis">
-                            <img class="workflow-change-dialog--consultant-img u-mr--8" src="https://placekitten.com/50/50">
-                            <p class="workflow-change-dialog--consultant-name text-truncate-ellipsis" fxFlex="75%">
-                                <!-- {{financesConsultantsForm.consultants.at(i).get('consultantName')?.value}} -->
-                                Robertsen Oscar
-                            </p>
-                        </div>
-                    </mat-checkbox>
-                    <mat-checkbox color="accent" name="newLegalContractRequired" class="workflow-change-dialog--checkbox black-checkbox u-w--100" fxFlex="50%">
+                    <mat-checkbox color="accent" name="newLegalContractRequired" formControlName="newLegalContractRequired" class="workflow-change-dialog--checkbox black-checkbox u-w--100" fxFlex="50%">
                         New legal contract required
                     </mat-checkbox>
                 </div>
-                <div fxLayout="row" fxLayoutAlign="start center" class="u-w--100">
-                    <mat-checkbox color="accent" name="noExtensionEndDate" class="black-checkbox u-mr--16" fxFlex="45%">
-                        <div fxLayout="row" fxLayoutAlign="start center">
-                            <img class="workflow-change-dialog--consultant-img u-mr--8" src="https://placekitten.com/50/50">
+
+                <mat-divider class="u-mb--15">
+                </mat-divider>
+
+                <h2 class="workflow-change-dialog--label">Select consultants the change applies to</h2>
+                <ng-container formArrayName="consultants">
+                    <div fxLayout="row" fxLayoutAlign="space-between center" class="u-w--100" *ngFor="let consultant of changeWorkflowForm.consultants.controls; index as i" [formGroupName]="i">
+                        <div fxLayout="row" fxLayoutAlign="start center" class="text-truncate-ellipsis u-mr--16">
+                            <img class="border-rounded-50 u-mr--16 image-thumbnail" [src]="consultantProfileUrl(consultant.value?.externalId)">
                             <p class="workflow-change-dialog--consultant-name text-truncate-ellipsis" fxFlex="75%">
-                                <!-- {{financesConsultantsForm.consultants.at(i).get('consultantName')?.value}} -->
-                                Van Trier Mia
+                                {{consultant?.value?.consulantName}}
                             </p>
                         </div>
-                    </mat-checkbox>
-                    <mat-checkbox color="accent" name="newLegalContractRequired" class="workflow-change-dialog--checkbox black-checkbox u-w--100" fxFlex="50%">
-                        New legal contract required
-                    </mat-checkbox>
-                </div>
-            </div>
+                        <mat-checkbox color="accent" name="newLegalContractRequired" formControlName="newLegalContractRequired" class="workflow-change-dialog--checkbox black-checkbox u-w--100" fxFlex="50%">
+                            New legal contract required
+                        </mat-checkbox>
+                    </div>
+                </ng-container>
+            </form>
         </ng-container>
         <ng-container *ngSwitchCase="dialogTypes.Extend">
-            <h3>Select extension end date</h3>
-            <div fxLayout="row" fxLayoutAlign="start start" class="u-w--100 u-mt--10">
-                <div class="u-mr--10" fxFlex="50%">
-                    <mat-form-field appearance="outline" class="u-w--100">
-                        <mat-label>Start date</mat-label>
-                        <input autocomplete="off" matInput [formControl]="workflowChangesForm" [placeholder]="'Start date'" type="text">
-                    </mat-form-field>
-                </div>
-                <div fxLayout="column" fxLayoutAlign="center start" fxFlex="50%" class="u-mb--20">
-                    <mat-form-field appearance="outline" class="u-w--100">
-                        <mat-label>New end date</mat-label>
-                        <input autocomplete="off" placeholder="New end date" matInput
-                                [matDatepicker]="extensionDatePicker"
-                                name="saleDate"
-                                (focus)="extensionDatePicker.open()"
-                                (click)="extensionDatePicker.open()" readonly>
-                        <mat-icon class="calendar-icon" matSuffix svgIcon="calendar"></mat-icon>
-                        <mat-datepicker #extensionDatePicker></mat-datepicker>
-                    </mat-form-field>
+            <form [formGroup]="extendWorkflowForm">
+                <h3>Select extension end date</h3>
+                <div fxLayout="row" fxLayoutAlign="start start" class="u-w--100 u-mt--10">
+                    <div class="u-mr--10" fxFlex="50%">
+                        <mat-form-field appearance="outline" class="u-w--100">
+                            <mat-label>Start date</mat-label>
+                            <input autocomplete="off" placeholder="New end date" matInput
+                                    [matDatepicker]="startDatePicker"
+                                    name="startDate"
+                                    formControlName="startDate"
+                                    (focus)="startDatePicker.open()"
+                                    (click)="startDatePicker.open()" readonly>
+                            <mat-icon class="calendar-icon" matSuffix svgIcon="calendar"></mat-icon>
+                            <mat-datepicker #startDatePicker></mat-datepicker>
+                        </mat-form-field>
+                    </div>
+                    <div fxLayout="column" fxLayoutAlign="center start" fxFlex="50%" class="u-mb--20">
+                        <mat-form-field appearance="outline" class="u-w--100">
+                            <mat-label>New end date</mat-label>
+                            <input autocomplete="off" placeholder="New end date" matInput
+                                    [matDatepicker]="extensionDatePicker"
+                                    name="endDate"
+                                    formControlName="endDate"
+                                    (focus)="extensionDatePicker.open()"
+                                    (click)="extensionDatePicker.open()" readonly>
+                            <mat-icon class="calendar-icon" matSuffix svgIcon="calendar"></mat-icon>
+                            <mat-datepicker #extensionDatePicker></mat-datepicker>
+                        </mat-form-field>
 
-                    <mat-checkbox color="accent" name="noExtensionEndDate" class="green-checkbox u-mr--16">
-                        No end date
-                    </mat-checkbox>
+                        <mat-checkbox color="accent" name="noExtensionEndDate" formControlName="noEndDate" class="green-checkbox u-mr--16">
+                            No end date
+                        </mat-checkbox>
+                    </div>
                 </div>
-            </div>
-            <mat-divider class="u-mb--15">
-            </mat-divider>
+                <mat-divider class="u-mb--15">
+                </mat-divider>
 
-            <h2>Select consultants to be extended</h2>
-            <div fxLayout="column" fxLayoutAlign="center start" fxLayoutGap="10px" class="u-mt--10">
-                <mat-checkbox color="accent" name="noExtensionEndDate" class="green-checkbox u-mr--16">
-                    Robertsen Oscar
-                </mat-checkbox>
-                <mat-checkbox color="accent" name="noExtensionEndDate" class="green-checkbox u-mr--16">
-                    Van Trier Mia
-                </mat-checkbox>
-            </div>
+                <h2>Select consultants to be extended</h2>
+                <div fxLayout="column" fxLayoutAlign="center start" fxLayoutGap="10px" class="u-mt--10" formArrayName="consultants">
+                    <div fxLayout="row" fxLayoutAlign="start center" class="u-w--100" *ngFor="let consultant of extendWorkflowForm.consultants.controls; index as i" [formGroupName]="i">
+                        <mat-checkbox color="accent" name="extendConsutlant" formControlName="extendConsutlant" class="green-checkbox u-mr--16">
+                            <div fxLayout="row" fxLayoutAlign="start center" class="text-truncate-ellipsis u-mr--16">
+                                <img class="border-rounded-50 u-mr--16 image-thumbnail" [src]="consultantProfileUrl(consultant.value?.externalId)">
+                                <p class="workflow-change-dialog--consultant-name text-truncate-ellipsis" fxFlex="75%">
+                                    {{consultant?.value?.consulantName}}
+                                </p>
+                            </div>
+                        </mat-checkbox>
+                    </div>
+                </div>
+            </form>
         </ng-container>
         <ng-container *ngSwitchCase="dialogTypes.Terminate">
             // TBD

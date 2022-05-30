@@ -49,6 +49,7 @@ export class WorkflowContractsSyncForm extends FormGroup {
             discounts: new FormControl(null),
             remarks: new FormControl(null),
             manualCheckbox: new FormControl(false),
+            newLegalContract: new FormControl(false),
             consultants: new FormArray([])
         });
     }
@@ -70,6 +71,9 @@ export class WorkflowContractsSyncForm extends FormGroup {
     }
     get manualCheckbox() {
         return this.get('manualCheckbox');
+    }
+    get newLegalContract() {
+        return this.get('newLegalContract');
     }
     get consultants() {
         return this.get('consultants') as FormArray;
