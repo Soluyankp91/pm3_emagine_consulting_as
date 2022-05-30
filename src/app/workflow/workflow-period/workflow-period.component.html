@@ -13,10 +13,10 @@
                                     </span>
                                 </span>
                                 <span class="sidenav-expansion--header__person">
-                                    {{item.consultantName ?? ''}}
+                                    {{item.consultant?.name ?? ''}}
                                 </span>
                                 <span class="sidenav-expansion--header__date">
-                                    {{item.additionalInfo}}
+                                    {{item.periodStartDate | momentFormat: 'DD.MM.YYYY'}} - {{item.periodEndDate ? (item.periodEndDate | momentFormat: 'DD.MM.YYYY') : '...'}}
                                 </span>
                             </div>
                             <!-- Change WF || terminate WF || terminateConsultant when BE will have termination -->
@@ -76,15 +76,16 @@
                                     [workflowId]="workflowId"
                                     [periodId]="periodId"
                                     [activeSideSection]="selectedSideSection"
+                                    [consultant]="consultant"
                                     [isCompleted]="selectedStep.status === workflowStatuses.Completed"
                                     [permissionsForCurrentUser]="selectedStep.actionsPermissionsForCurrentUser">
                 </app-workflow-sales>
             </ng-container>
             <ng-container *ngSwitchCase="workflowSteps.Contract">
-                <app-workflow-contracts #workflowContracts [workflowId]="workflowId" [periodId]="periodId" [activeSideSection]="selectedSideSection" [isCompleted]="selectedStep.status === workflowStatuses.Completed"></app-workflow-contracts>
+                <app-workflow-contracts #workflowContracts [workflowId]="workflowId" [periodId]="periodId" [activeSideSection]="selectedSideSection" [isCompleted]="selectedStep.status === workflowStatuses.Completed" [permissionsForCurrentUser]="selectedStep.actionsPermissionsForCurrentUser"></app-workflow-contracts>
             </ng-container>
             <ng-container *ngSwitchCase="workflowSteps.Finance">
-                <app-workflow-finances #workflowFinances [workflowId]="workflowId" [periodId]="periodId" [activeSideSection]="selectedSideSection" [isCompleted]="selectedStep.status === workflowStatuses.Completed"></app-workflow-finances>
+                <app-workflow-finances #workflowFinances [workflowId]="workflowId" [periodId]="periodId" [activeSideSection]="selectedSideSection" [isCompleted]="selectedStep.status === workflowStatuses.Completed" [permissionsForCurrentUser]="selectedStep.actionsPermissionsForCurrentUser"></app-workflow-finances>
             </ng-container>
             <ng-container *ngSwitchCase="workflowSteps.Sourcing">
                 <app-workflow-sourcing #workflowSourcing [workflowId]="workflowId" [activeSideSection]="selectedSideSection" [isCompleted]="selectedStep.status === workflowStatuses.Completed"></app-workflow-sourcing>
