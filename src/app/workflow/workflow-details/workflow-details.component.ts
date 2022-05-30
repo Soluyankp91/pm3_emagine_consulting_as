@@ -14,6 +14,7 @@ import { InternalLookupService } from 'src/app/shared/common/internal-lookup.ser
 import { WorkflowActionsDialogComponent } from '../workflow-actions-dialog/workflow-actions-dialog.component';
 import { AppComponentBase, NotifySeverity } from 'src/shared/app-component-base';
 import { ConfirmationDialogComponent } from 'src/app/shared/components/confirmation-dialog/confirmation-dialog.component';
+import * as moment from 'moment';
 
 @Component({
   selector: 'app-workflow-details',
@@ -76,12 +77,30 @@ export class WorkflowDetailsComponent extends AppComponentBase implements OnInit
         ).subscribe(params => {
             this.workflowId = params.get('id')!;
         });
-        this._workflowDataService.updateWorkflowProgressStatus({currentlyActivePeriodId: ''});
+        this.resetWorkflowProgress();
         this._internalLookupService.getData();
         this.getTopLevelMenu();
         this.getClientPeriodTypes();
         this.getConsultantPeriodTypes();
         this.getPeriodStepTypes();
+
+        this._workflowDataService.workflowTopSectionUpdated
+            .pipe(takeUntil(this._unsubscribe))
+            .subscribe((value: boolean) => {
+                this.getTopLevelMenu();
+            });
+    }
+
+    resetWorkflowProgress() {
+        let newStatus = new WorkflowProgressStatus();
+        newStatus.started = true;
+        newStatus.currentStepIsCompleted = false;
+        newStatus.currentStepIsForcefullyEditing = false;
+        newStatus.currentlyActivePeriodId = '';
+        newStatus.currentlyActiveSection = 0;
+        newStatus.currentlyActiveSideSection = 0;
+        newStatus.currentlyActiveStep = 0;
+        this._workflowDataService.updateWorkflowProgressStatus(newStatus);
     }
 
     getClientPeriodTypes() {
@@ -199,6 +218,8 @@ export class WorkflowDetailsComponent extends AppComponentBase implements OnInit
     saveOrCompleteStep(isDraft: boolean) {
         switch (this._workflowDataService.workflowProgress.currentlyActiveSideSection) {
             case WorkflowProcessType.StartClientPeriod:
+            case WorkflowProcessType.ChangeClientPeriod:
+            case WorkflowProcessType.ExtendClientPeriod:
                 switch (this._workflowDataService.workflowProgress.currentlyActiveStep) {
                     case StepType.Sales:
                         this._workflowDataService.startClientPeriodSalesSaved.emit(isDraft);
@@ -610,7 +631,7 @@ export class WorkflowDetailsComponent extends AppComponentBase implements OnInit
                 this._clientPeriodService.clientChange(this._workflowDataService.getWorkflowProgress.currentlyActivePeriodId!, result)
                     .pipe(finalize(() => this.hideMainSpinner()))
                     .subscribe(result => {
-                        this._workflowDataService.workflowSideSectionAdded.emit(true);
+                        this._workflowDataService.workflowTopSectionUpdated.emit();
                     });
             }
         });
@@ -650,7 +671,7 @@ export class WorkflowDetailsComponent extends AppComponentBase implements OnInit
                 this._clientPeriodService.addConsultantPeriod(this._workflowDataService.getWorkflowProgress.currentlyActivePeriodId!, input)
                     .pipe(finalize(() => this.hideMainSpinner()))
                     .subscribe(result => {
-                        this._workflowDataService.workflowSideSectionAdded.emit(true);
+                        this._workflowDataService.workflowTopSectionUpdated.emit();
                     });
             }
         });

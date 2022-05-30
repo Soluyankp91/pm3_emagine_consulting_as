@@ -87,14 +87,16 @@
                                         [periodId]="periodId"
                                         [consultant]="consultant"
                                         [activeSideSection]="selectedSideSection"
-                                        [isCompleted]="selectedStep.status === workflowStatuses.Completed"></app-workflow-contracts>
+                                        [isCompleted]="selectedStep.status === workflowStatuses.Completed"
+                                        [permissionsForCurrentUser]="selectedStep.actionsPermissionsForCurrentUser"></app-workflow-contracts>
             </ng-container>
             <ng-container *ngSwitchCase="workflowSteps.Finance">
                 <app-workflow-finances #workflowFinances
                                         [workflowId]="workflowId"
                                         [periodId]="periodId"
                                         [activeSideSection]="selectedSideSection"
-                                        [isCompleted]="selectedStep.status === workflowStatuses.Completed"></app-workflow-finances>
+                                        [isCompleted]="selectedStep.status === workflowStatuses.Completed"
+                                        [permissionsForCurrentUser]="selectedStep.actionsPermissionsForCurrentUser"></app-workflow-finances>
             </ng-container>
             <ng-container *ngSwitchCase="workflowSteps.Sourcing">
                 <app-workflow-sourcing #workflowSourcing
