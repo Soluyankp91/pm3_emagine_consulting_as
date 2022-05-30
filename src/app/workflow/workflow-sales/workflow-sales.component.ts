@@ -459,6 +459,15 @@ export class WorkflowSalesComponent extends AppComponentBase implements OnInit {
                 //TODO: add all side sections
                 this.detectActiveSideSection();
             });
+
+        this._workflowDataService.cancelForceEdit
+            .pipe(takeUntil(this._unsubscribe))
+            .subscribe((value: boolean) => {
+                this.isCompleted = true;
+                this.editEnabledForcefuly = false;
+                this._workflowDataService.updateWorkflowProgressStatus({currentStepIsCompleted: this.isCompleted, currentStepIsForcefullyEditing: this.editEnabledForcefuly});
+                this.detectActiveSideSection();
+            });
     }
 
     toggleEditMode() {
@@ -469,11 +478,15 @@ export class WorkflowSalesComponent extends AppComponentBase implements OnInit {
     }
 
     get canToggleEditMode() {
-        return this.permissionsForCurrentUser!["Edit"] && (this.isCompleted || this.editEnabledForcefuly);
+        // return this.permissionsForCurrentUser!["Edit"] && (this.isCompleted || this.editEnabledForcefuly);
+        return this.permissionsForCurrentUser!["Edit"] && this.isCompleted;
     }
 
     get readOnlyMode() {
-        return this.isCompleted;
+        return this.isCompleted ||
+            (!this.permissionsForCurrentUser!['StartEdit'] &&
+            !this.permissionsForCurrentUser!['Edit'] &&
+            !this.permissionsForCurrentUser!['Completion']);
     }
 
     private _filterClientRates(value: string): ClientSpecialRateDto[] {
@@ -2029,6 +2042,7 @@ export class WorkflowSalesComponent extends AppComponentBase implements OnInit {
                 this.salesTerminateConsultantForm.additionalComments?.setValue(result?.additionalComments, {emitEvent: false});
 
                 //Final Evaluation
+                this.clientIdFromTerminationSales = result.clientId!;
                 this.salesTerminateConsultantForm.finalEvaluationReferencePerson?.setValue(result?.finalEvaluationReferencePerson, {emitEvent: false}); // add findItemById function
                 this.salesTerminateConsultantForm.noEvaluation?.setValue(result?.noEvaluation, {emitEvent: false});
                 this.salesTerminateConsultantForm.causeOfNoEvaluation?.setValue(result?.causeOfNoEvaluation, {emitEvent: false});
@@ -2178,7 +2192,16 @@ export class WorkflowSalesComponent extends AppComponentBase implements OnInit {
                 this.getStartChangeOrExtendConsutlantPeriodSales();
                 break;
             case WorkflowProcessType.TerminateConsultant:
-                this.getWorkflowSalesStepConsultantTermination();
+                if (!this.consultant?.id) {
+                    let interval = setInterval(() => {
+                        if (this.consultant?.id) {
+                            clearInterval(interval);
+                            this.getWorkflowSalesStepConsultantTermination();
+                        }
+                    }, 100);
+                } else {
+                    this.getWorkflowSalesStepConsultantTermination();
+                }
                 break;
         }
     }

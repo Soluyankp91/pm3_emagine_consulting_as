@@ -8,7 +8,7 @@ import { finalize, takeUntil } from 'rxjs/operators';
 import { InternalLookupService } from 'src/app/shared/common/internal-lookup.service';
 import { ConfirmationDialogComponent } from 'src/app/shared/components/confirmation-dialog/confirmation-dialog.component';
 import { AppComponentBase } from 'src/shared/app-component-base';
-import { ClientPeriodContractsDataDto, WorkflowProcessType, WorkflowServiceProxy, ClientPeriodServiceProxy, ConsultantContractsDataDto, ConsultantSalesDataDto, ContractsClientDataDto, ContractsMainDataDto, EnumEntityTypeDto, PeriodClientSpecialFeeDto, PeriodClientSpecialRateDto, PeriodConsultantSpecialFeeDto, PeriodConsultantSpecialRateDto, ProjectLineDto, ConsultantTerminationContractDataCommandDto, WorkflowTerminationContractDataCommandDto, ConsultantTerminationContractDataQueryDto, ClientContractsServiceProxy, ConsultantPeriodServiceProxy, ConsultantContractsServiceProxy, ConsultantPeriodContractsDataDto, ClientsServiceProxy, ClientSpecialRateDto, ClientSpecialFeeDto } from 'src/shared/service-proxies/service-proxies';
+import { ClientPeriodContractsDataDto, WorkflowProcessType, WorkflowServiceProxy, ClientPeriodServiceProxy, ConsultantContractsDataDto, ConsultantSalesDataDto, ContractsClientDataDto, ContractsMainDataDto, EnumEntityTypeDto, PeriodClientSpecialFeeDto, PeriodClientSpecialRateDto, PeriodConsultantSpecialFeeDto, PeriodConsultantSpecialRateDto, ProjectLineDto, ConsultantTerminationContractDataCommandDto, WorkflowTerminationContractDataCommandDto, ConsultantTerminationContractDataQueryDto, ClientContractsServiceProxy, ConsultantPeriodServiceProxy, ConsultantContractsServiceProxy, ConsultantPeriodContractsDataDto, ClientsServiceProxy, ClientSpecialRateDto, ClientSpecialFeeDto, ConsultantResultDto } from 'src/shared/service-proxies/service-proxies';
 import { WorkflowConsultantActionsDialogComponent } from '../workflow-consultant-actions-dialog/workflow-consultant-actions-dialog.component';
 import { WorkflowDataService } from '../workflow-data.service';
 import { ConsultantDiallogAction } from '../workflow-sales/workflow-sales.model';
@@ -24,6 +24,9 @@ import { WorkflowConsultantsLegalContractForm, WorkflowContractsClientDataForm, 
 export class WorkflowContractsComponent extends AppComponentBase implements OnInit, OnDestroy {
     @Input() workflowId: string;
     @Input() periodId: string | undefined;
+    @Input() consultant: ConsultantResultDto;
+
+    // Changed all above to enum
     @Input() activeSideSection: number;
     @Input() isCompleted: boolean;
     @Input() permissionsForCurrentUser: { [key: string]: boolean; } | undefined;
@@ -51,7 +54,6 @@ export class WorkflowContractsComponent extends AppComponentBase implements OnIn
 
     contractLinesDoneManuallyInOldPMControl = new FormControl();
     contractsTerminationConsultantForm: WorkflowContractsTerminationConsultantsDataForm;
-    consultantId = 1;
 
     consultantRateToEdit: PeriodConsultantSpecialRateDto;
     isConsultantRateEditing = false;
@@ -69,24 +71,7 @@ export class WorkflowContractsComponent extends AppComponentBase implements OnIn
     clientFeeToEdit: PeriodClientSpecialFeeDto;
     isClientFeeEditing = false;
 
-    consultantList = [{
-        id: 123,
-        name: 'Robertsen Oscar',
-        consultantProjectStartDate: new Date(2021, 4, 2),
-        consultantProjectEndDate: new Date(2022, 4, 2),
-        employmentTypeId: {id: 1, name: 'Employee'},
-        consultantCapOnTimeReportingValue: null,
-        consultantCapOnTimeReportingCurrency: null
-    },
-    {
-        id: 1234,
-        name: 'Van Trier Mia',
-        consultantProjectStartDate: new Date(2021, 5, 3),
-        consultantProjectEndDate: new Date(2022, 6, 3),
-        employmentTypeId: {id: 2, name: 'Freelance'},
-        consultantCapOnTimeReportingValue: null,
-        consultantCapOnTimeReportingCurrency: null
-    }];
+    editEnabledForcefuly = false;
 
     private _unsubscribe = new Subject();
 
@@ -160,6 +145,15 @@ export class WorkflowContractsComponent extends AppComponentBase implements OnIn
             .pipe(takeUntil(this._unsubscribe))
             .subscribe((value: boolean) => {
                 this.saveWorkflowTerminationContractStep(value);
+            });
+
+        this._workflowDataService.cancelForceEdit
+            .pipe(takeUntil(this._unsubscribe))
+            .subscribe((value: boolean) => {
+                this.isCompleted = true;
+                this.editEnabledForcefuly = false;
+                this._workflowDataService.updateWorkflowProgressStatus({currentStepIsCompleted: this.isCompleted, currentStepIsForcefullyEditing: this.editEnabledForcefuly});
+                this.getContractStepData();
             });
     }
 
@@ -370,6 +364,18 @@ export class WorkflowContractsComponent extends AppComponentBase implements OnIn
             .subscribe(result => {
                 this.consultantTimeReportingCapList = result;
             });
+    }
+
+    toggleEditMode() {
+        this.isCompleted = !this.isCompleted;
+        this.editEnabledForcefuly = !this.editEnabledForcefuly;
+        this._workflowDataService.updateWorkflowProgressStatus({currentStepIsCompleted: this.isCompleted, currentStepIsForcefullyEditing: this.editEnabledForcefuly});
+        this.getContractStepData();
+    }
+
+    get canToggleEditMode() {
+        // return this.permissionsForCurrentUser!["Edit"] && (this.isCompleted || this.editEnabledForcefuly);
+        return this.permissionsForCurrentUser!["Edit"] && this.isCompleted;
     }
 
     get readOnlyMode() {
@@ -1163,7 +1169,9 @@ export class WorkflowContractsComponent extends AppComponentBase implements OnIn
                     this.hideMainSpinner();
                 }))
                 .subscribe(result => {
-
+                    if (this.editEnabledForcefuly) {
+                        this.toggleEditMode();
+                    }
                 });
         } else {
             this._clientContractsService.editFinish(this.periodId!, input)
@@ -1289,7 +1297,9 @@ export class WorkflowContractsComponent extends AppComponentBase implements OnIn
             this._consultantPeriodService.consultantContractsPut(this.periodId!, input)
                 .pipe(finalize(() => this.hideMainSpinner()))
                 .subscribe(result => {
-
+                    if (this.editEnabledForcefuly) {
+                        this.toggleEditMode();
+                    }
                 });
         } else {
             this._consultantContractsService.editFinish(this.periodId!, input)
@@ -1319,7 +1329,7 @@ export class WorkflowContractsComponent extends AppComponentBase implements OnIn
     }
 
     getWorkflowContractsStepConsultantTermination() {
-        this._workflowServiceProxy.terminationConsultantContractGet(this.workflowId!, this.consultantId!)
+        this._workflowServiceProxy.terminationConsultantContractGet(this.workflowId!, this.consultant.id!)
             .pipe(finalize(() => {
 
             }))
@@ -1342,7 +1352,9 @@ export class WorkflowContractsComponent extends AppComponentBase implements OnIn
             this._workflowServiceProxy.terminationConsultantContractPut(this.workflowId!, input)
                 .pipe(finalize(() => this.hideMainSpinner()))
                 .subscribe(result => {
-    
+                    if (this.editEnabledForcefuly) {
+                        this.toggleEditMode();
+                    }
                 })
         } else {
             this._workflowServiceProxy.terminationConsultantContractComplete(this.workflowId!, input)
@@ -1389,7 +1401,7 @@ export class WorkflowContractsComponent extends AppComponentBase implements OnIn
             this._workflowServiceProxy.terminationContractPut(this.workflowId!, input)
                 .pipe(finalize(() => this.hideMainSpinner()))
                 .subscribe(result => {
-    
+
                 })
         } else {
             this._workflowServiceProxy.terminationContractComplete(this.workflowId!, input)
