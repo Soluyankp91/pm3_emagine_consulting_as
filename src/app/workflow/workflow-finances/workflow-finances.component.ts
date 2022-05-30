@@ -15,10 +15,9 @@ import { FinancesClientForm, FinancesConsultantsForm } from './workflow-finances
 export class WorkflowFinancesComponent extends AppComponentBase implements OnInit, OnDestroy {
     @Input() workflowId: string;
     @Input() periodId: string | undefined;
-
-    // Changed all above to enum
     @Input() activeSideSection: number;
     @Input() isCompleted: boolean;
+    @Input() permissionsForCurrentUser: { [key: string]: boolean; } | undefined;
 
     workflowSideSections = WorkflowProcessType;
 
@@ -52,12 +51,12 @@ export class WorkflowFinancesComponent extends AppComponentBase implements OnIni
     ngOnInit(): void {
         switch (this._workflowDataService.getWorkflowProgress.currentlyActiveSideSection) {
             case WorkflowProcessType.StartClientPeriod:
-                this.getStartConsultantPeriodFinance()
-                break;
-            case WorkflowProcessType.StartClientPeriod:
             case WorkflowProcessType.ChangeClientPeriod:
             case WorkflowProcessType.ExtendClientPeriod:
                 this.getStartChangeOrExtendClientPeriodFinances();
+                break;
+            case WorkflowProcessType.StartConsultantPeriod:
+                this.getStartConsultantPeriodFinance()
                 break;
         }
 
@@ -120,7 +119,7 @@ export class WorkflowFinancesComponent extends AppComponentBase implements OnIni
             this._financeService.editFinish(this.periodId!, input)
                 .pipe(finalize(() => this.hideMainSpinner()))
                 .subscribe(result => {
-
+                    this._workflowDataService.workflowSideSectionUpdated.emit(true);
                 });
         }
     }
@@ -151,7 +150,7 @@ export class WorkflowFinancesComponent extends AppComponentBase implements OnIni
             this._consutlantFinanceService.editFinish(this.periodId!, input)
                 .pipe(finalize(() => this.hideMainSpinner()))
                 .subscribe(result => {
-
+                    this._workflowDataService.workflowSideSectionUpdated.emit(true);
                 });
         }
     }

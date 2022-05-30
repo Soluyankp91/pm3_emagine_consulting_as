@@ -516,263 +516,355 @@
             </div>
             <mat-divider class="u-mt--20 u-mb--20"></mat-divider>
             <!-- Consultant data -->
-            <ng-container *ngFor="let item of consultantsForm.consultantData.controls; index as consultantIndex">
-                <div fxLayout="column" fxLayoutAlign="start start" class="workflow-sales--process-data u-w--100">
-                    <div fxLayout="column" fxLayoutAlign="start start" class="u-w--100">
-                        <div fxLayout="row" fxLayoutAlign="start center" class="u-w--100 u-mb--10">
-                            <h1 class="workflow-readonly--header-main" fxFlex="50%">
-                                <span class="process-name">Sales.</span>
-                                <span class="anchor-name">Consultant data</span>
-                            </h1>
-                            <!-- Only visible when employment type is selected and it is not 'Fee only' - id: 10 nd not 'Recruitment' - id:11 -->
-                            <div fxFlex="50%" fxLayoutAlign="end center" *ngIf="item.value?.employmentType?.id !== 10 && item.value?.employmentType?.id !== 11;">
-                                <button mat-icon-button (click)="$event.stopPropagation();" [matMenuTriggerFor]="consultantMenu" class="three-dots-actions-btn">
-                                    <mat-icon>more_horiz</mat-icon>
-                                </button>
-                                <mat-menu #consultantMenu>
-                                    <button
-                                        class="menu-item menu-item--edit"
-                                        mat-menu-item
-                                        (click)="changeConsultantData(consultantIndex)">
-                                        <mat-icon>create</mat-icon>
-                                        Change consultant data
-                                    </button>
-                                    <button
-                                        class="menu-item menu-item--edit"
-                                        mat-menu-item
-                                        (click)="extendConsultant(consultantIndex)">
-                                        <mat-icon>add</mat-icon>
-                                        Extend consultant
-                                    </button>
-                                    <button
-                                        class="menu-item menu-item--cancel"
-                                        mat-menu-item
-                                        (click)="terminateConsultant(consultantIndex)">
-                                        <mat-icon>clear</mat-icon>
-                                        Terminate consultant
-                                    </button>
-                                </mat-menu>
-                            </div>
-                        </div>
-
-                        <div fxLayout="row" fxLayoutAlign="start start" class="u-w--100 u-mb--20">
-                            <div fxLayout="column" fxFlex="25%">
-                                <h3 class="workflow-readonly--gray-header">Employment type</h3>
-                                <span class="workflow-readonly--blue-text-bold">
-                                    {{item?.value?.employmentType?.name ? item?.value?.employmentType?.name : '-'}}
-                                </span>
-                            </div>
-                            <div fxLayout="column">
-                                <h3 class="workflow-readonly--gray-header">Consultant</h3>
-                                <div fxLayout="row" fxLayoutAlign="start center" class="u-mb--20">
-                                    <img class="workflow-extension--consultant-data--consultant-img u-mr--16" src="https://placekitten.com/50/50">
+            <form [formGroup]="consultantsForm">
+                <ng-container formArrayName="consultantData" class="u-mb--20">
+                    <ng-container *ngFor="let item of consultantsForm.consultantData.controls; index as consultantIndex" [formGroupName]="consultantIndex">
+                        <div fxLayout="column" fxLayoutAlign="start start" class="workflow-sales--process-data u-w--100">
+                            <div fxLayout="column" fxLayoutAlign="start start" class="u-w--100">
+                                <div fxLayout="row" fxLayoutAlign="start center" class="u-w--100 u-mb--10">
+                                    <h1 class="workflow-readonly--header-main" fxFlex="50%">
+                                        <span class="process-name">Sales.</span>
+                                        <span class="anchor-name">Consultant data</span>
+                                    </h1>
+                                    <!-- Only visible when employment type is selected and it is not 'Fee only' - id: 10 nd not 'Recruitment' - id:11 -->
+                                    <div fxFlex="50%" fxLayoutAlign="end center" *ngIf="item.value?.employmentType?.id !== 10 && item.value?.employmentType?.id !== 11;">
+                                        <button mat-icon-button (click)="$event.stopPropagation();" [matMenuTriggerFor]="consultantMenu" class="three-dots-actions-btn">
+                                            <mat-icon>more_horiz</mat-icon>
+                                        </button>
+                                        <mat-menu #consultantMenu>
+                                            <button
+                                                class="menu-item menu-item--edit"
+                                                mat-menu-item
+                                                (click)="changeConsultantData(consultantIndex)">
+                                                <mat-icon>create</mat-icon>
+                                                Change consultant data
+                                            </button>
+                                            <button
+                                                class="menu-item menu-item--edit"
+                                                mat-menu-item
+                                                (click)="extendConsultant(consultantIndex)">
+                                                <mat-icon>add</mat-icon>
+                                                Extend consultant
+                                            </button>
+                                            <button
+                                                class="menu-item menu-item--cancel"
+                                                mat-menu-item
+                                                (click)="terminateConsultant(consultantIndex)">
+                                                <mat-icon>clear</mat-icon>
+                                                Terminate consultant
+                                            </button>
+                                        </mat-menu>
+                                    </div>
+                                </div>
+    
+                                <div fxLayout="row" fxLayoutAlign="start start" class="u-w--100 u-mb--20">
+                                    <div fxLayout="column" fxFlex="25%">
+                                        <h3 class="workflow-readonly--gray-header">Employment type</h3>
+                                        <span class="workflow-readonly--blue-text-bold">
+                                            {{item?.value?.employmentType?.name ? item?.value?.employmentType?.name : '-'}}
+                                        </span>
+                                    </div>
                                     <div fxLayout="column">
-                                        <p class="workflow-extension--consultant-data--consultant-name">
-                                            {{item?.value?.consultantName?.name}}
-                                        </p>
-                                        <span class="workflow-extension--consultant-data--consultant-text">
-                                            {{item?.value?.consultantName?.companyName}} | {{item?.value?.consultantName?.city}}, {{getTenantCodeFromId(item?.value?.consultantName?.countryId)}} | #{{item?.value?.consultantName?.id}} / {{getTenantCodeFromId(item?.value?.consultantName?.countryId)}}-{{item?.value?.consultantName?.legacyId}}
-                                        </span>
+                                        <h3 class="workflow-readonly--gray-header">Consultant</h3>
+                                        <div fxLayout="row" fxLayoutAlign="start center" class="u-mb--20">
+                                            <img class="workflow-extension--consultant-data--consultant-img u-mr--16" src="https://placekitten.com/50/50">
+                                            <div fxLayout="column">
+                                                <p class="workflow-extension--consultant-data--consultant-name">
+                                                    {{item?.value?.consultantName?.name}}
+                                                </p>
+                                                <span class="workflow-extension--consultant-data--consultant-text">
+                                                    {{item?.value?.consultantName?.companyName}} | {{item?.value?.consultantName?.city}}, {{getTenantCodeFromId(item?.value?.consultantName?.countryId)}} | #{{item?.value?.consultantName?.id}} / {{getTenantCodeFromId(item?.value?.consultantName?.countryId)}}-{{item?.value?.consultantName?.legacyId}}
+                                                </span>
+                                            </div>
+                                        </div>
                                     </div>
                                 </div>
                             </div>
-                        </div>
-                    </div>
-                    <mat-divider class="u-w--100 u-mt--20 u-mb--20"></mat-divider>
-                    <div fxLayout="column" fxLayoutAlign="start start" class="u-w--100">
-                        <h2 class="workflow-readonly--header u-mb--20">Consultant contract duration</h2>
-                        <div fxLayout="column" fxLayoutAlign="start start" class="u-w--100 u-mb--20">
-                            <h3 class="workflow-readonly--gray-header">Project Duration</h3>
-                            <span class="workflow-readonly--blue-text-bold">
-                                {{item?.value?.consultantProjectDurationSameAsClient ? ' Same as client' : 'Different from client'}}
-                            </span>
-                        </div>
-                        <div fxLayout="row" fxLayoutAlign="start start" class="u-w--100 u-mb--20">
-                            <div fxLayout="column" fxFlex="25%">
-                                <h3 class="workflow-readonly--gray-header">Start date</h3>
-                                <span class="workflow-readonly--blue-text-bold">
-                                    {{item?.value?.consultantProjectStartDate ? (item?.value?.consultantProjectStartDate | momentFormat: 'DD.MM.YYYY') : '-'}}
-                                </span>
-                            </div>
-                            <div fxLayout="column" fxFlex="25%">
-                                <h3 class="workflow-readonly--gray-header">End date</h3>
-                                <span class="workflow-readonly--blue-text-bold" *ngIf="item?.value?.consultantProjectNoEndDate; else consultantProjectEndDateTemplate">
-                                    No end date
-                                </span>
-                                <ng-template #consultantProjectEndDateTemplate>
+                            <mat-divider class="u-w--100 u-mt--20 u-mb--20"></mat-divider>
+                            <div fxLayout="column" fxLayoutAlign="start start" class="u-w--100">
+                                <h2 class="workflow-readonly--header u-mb--20">Consultant contract duration</h2>
+                                <div fxLayout="column" fxLayoutAlign="start start" class="u-w--100 u-mb--20">
+                                    <h3 class="workflow-readonly--gray-header">Project Duration</h3>
                                     <span class="workflow-readonly--blue-text-bold">
-                                        {{item?.value?.consultantProjectEndDate ? (item?.value?.consultantProjectEndDate | momentFormat: 'DD.MM.YYYY') : '-'}}
+                                        {{item?.value?.consultantProjectDurationSameAsClient ? ' Same as client' : 'Different from client'}}
                                     </span>
-                                </ng-template>
+                                </div>
+                                <div fxLayout="row" fxLayoutAlign="start start" class="u-w--100 u-mb--20">
+                                    <div fxLayout="column" fxFlex="25%">
+                                        <h3 class="workflow-readonly--gray-header">Start date</h3>
+                                        <span class="workflow-readonly--blue-text-bold">
+                                            {{item?.value?.consultantProjectStartDate ? (item?.value?.consultantProjectStartDate | momentFormat: 'DD.MM.YYYY') : '-'}}
+                                        </span>
+                                    </div>
+                                    <div fxLayout="column" fxFlex="25%">
+                                        <h3 class="workflow-readonly--gray-header">End date</h3>
+                                        <span class="workflow-readonly--blue-text-bold" *ngIf="item?.value?.consultantProjectNoEndDate; else consultantProjectEndDateTemplate">
+                                            No end date
+                                        </span>
+                                        <ng-template #consultantProjectEndDateTemplate>
+                                            <span class="workflow-readonly--blue-text-bold">
+                                                {{item?.value?.consultantProjectEndDate ? (item?.value?.consultantProjectEndDate | momentFormat: 'DD.MM.YYYY') : '-'}}
+                                            </span>
+                                        </ng-template>
+                                    </div>
+                                </div>
                             </div>
-                        </div>
-                    </div>
-                    <mat-divider class="u-w--100 u-mt--20 u-mb--20"></mat-divider>
-                    <div fxLayout="column" fxLayoutAlign="start start" class="u-w--100">
-                        <h2 class="workflow-readonly--header u-mb--20">Consultant project</h2>
-                        <div fxLayout="row" fxLayoutAlign="start start" class="u-w--100 u-mb--20">
-                            <div fxLayout="column" fxFlex="50%">
-                                <div fxLayout="row" class="u-w--100 u-mb--10" *ngIf="item?.value?.consultantIsOnsiteWorkplace">
-                                    <div fxLayout="column" fxFlex="30%">
-                                        <h3 class="workflow-readonly--gray-header">Workplace</h3>
-                                        <span class="workflow-readonly--blue-text-bold">
-                                            Onsite
-                                        </span>
-                                    </div>
-                                    <div fxLayout="column" fxFlex="40%">
-                                        <h3 class="workflow-readonly--gray-header">Client address</h3>
-                                        <span class="workflow-readonly--blue-text-bold">
-                                            {{item.value.consultantWorkplaceClientAddress?.countryName}} | {{item.value.consultantWorkplaceClientAddress?.address}} | {{item.value.consultantWorkplaceClientAddress?.address2}} | {{item.value.consultantWorkplaceClientAddress?.postCode}}
-                                        </span>
-                                    </div>
-                                    <div fxLayout="column" fxFlex="30%" *ngIf="item?.value?.consultantWorkplacePercentageOnSite">
-                                        <h3 class="workflow-readonly--gray-header">Percentage onsite</h3>
-                                        <span class="workflow-readonly--blue-text-bold">
-                                            {{item?.value?.consultantWorkplacePercentageOnSite ? item?.value?.consultantWorkplacePercentageOnSite : '-'}}
-                                        </span>
-                                    </div>
-                                </div>
-                                <div fxLayout="row" class="u-w--100 u-mb--10" *ngIf="item?.value?.consultantIsEmagineOfficeWorkplace">
-                                    <div fxLayout="column" fxFlex="30%">
-                                        <h3 class="workflow-readonly--gray-header">Workplace</h3>
-                                        <span class="workflow-readonly--blue-text-bold">
-                                            PDC Office
-                                        </span>
-                                    </div>
-                                    <div fxLayout="column" fxFlex="40%">
-                                        <h3 class="workflow-readonly--gray-header">Office location</h3>
-                                        <span class="workflow-readonly--blue-text-bold">
-                                            {{item?.value?.consultantWorkplaceEmagineOffice?.name}}
-                                        </span>
-                                    </div>
-                                </div>
-                                <div fxLayout="row" class="u-w--100" *ngIf="item?.value?.consultantIsRemoteWorkplace">
-                                    <div fxLayout="column" fxFlex="30%">
-                                        <h3 class="workflow-readonly--gray-header">Workplace</h3>
-                                        <span class="workflow-readonly--blue-text-bold">
-                                            Remote
-                                        </span>
-                                    </div>
-                                    <div fxLayout="column" fxFlex="40%">
-                                        <h3 class="workflow-readonly--gray-header">Office location</h3>
-                                        <span class="workflow-readonly--blue-text-bold">
-                                            {{item?.value?.consultantWorkplaceRemote}}
-                                        </span>
-                                    </div>
-                                </div>
-                                <!-- <div fxLayout="row" class="u-w--10" *ngIf="!item?.value?.consultantIsOnsiteWorkplace && !item?.value?.consultantIsEmagineOfficeWorkplace && !item?.value?.consultantIsRemoteWorkplace">
-                                    <span class="workflow-readonly--blue-text-bold" fxFlex="50%">
-                                        -
+                            <mat-divider class="u-w--100 u-mt--20 u-mb--20"></mat-divider>
+                            <div fxLayout="column" fxLayoutAlign="start start" class="u-w--100">
+                                <h2 class="workflow-readonly--header u-mb--20">Consultant payment</h2>
+                                <div fxLayout="column" class="u-w--100 u-mb--20">
+                                    <h3 class="workflow-readonly--gray-header">ProData Entity</h3>
+                                    <span class="workflow-readonly--blue-text-bold">
+                                        {{item?.value?.consultantProdataEntity?.name ? item?.value?.consultantProdataEntity?.name : '-'}}
                                     </span>
-                                </div> -->
+                                </div>
+                                <div fxLayout="column" class="u-w--100 u-mb--20">
+                                    <h3 class="workflow-readonly--gray-header">Price</h3>
+                                    <span class="workflow-readonly--blue-text-bold">
+                                        {{item?.value?.consultantPaymentType?.name ? item?.value?.consultantPaymentType?.name : '-'}}
+                                    </span>
+                                </div>
+                                <div fxLayout="row" fxLayoutAlign="start start" class="u-w--100 u-mb--20">
+                                    <div fxLayout="column" fxFlex="25%">
+                                        <h3 class="workflow-readonly--gray-header">Rate</h3>
+                                        <span class="workflow-readonly--blue-text-bold">
+                                            {{item?.value?.consultantRate ? item?.value?.consultantRate : '-'}}
+                                        </span>
+                                    </div>
+                                    <div fxLayout="column" fxFlex="25%">
+                                        <h3 class="workflow-readonly--gray-header">Unit type</h3>
+                                        <span class="workflow-readonly--blue-text-bold">
+                                            {{item?.value?.consultantRateUnitType?.name ? item?.value?.consultantRateUnitType?.name : '-'}}
+                                        </span>
+                                    </div>
+                                    <div fxLayout="column" fxFlex="25%">
+                                        <h3 class="workflow-readonly--gray-header">Currency</h3>
+                                        <span class="workflow-readonly--blue-text-bold">
+                                            {{item?.value?.consultantRateCurrency?.name ? item?.value?.consultantRateCurrency?.name : '-'}}
+                                        </span>
+                                    </div>
+                                </div>
+                                <div fxLayout="row" fxLayoutAlign="start start" class="u-w--100 u-mb--20">
+                                    <div fxLayout="column" fxFlex="25%">
+                                        <h3 class="workflow-readonly--gray-header">PDC-to-PDC rate</h3>
+                                        <span class="workflow-readonly--blue-text-bold">
+                                            {{item?.value?.consultantPDCRate ? item?.value?.consultantPDCRate : '-'}}
+                                        </span>
+                                    </div>
+                                    <div fxLayout="column" fxFlex="25%">
+                                        <h3 class="workflow-readonly--gray-header">Unit type</h3>
+                                        <span class="workflow-readonly--blue-text-bold">
+                                            {{item?.value?.consultantPDCRateUnitType?.name ? item?.value?.consultantPDCRateUnitType?.name : '-'}}
+                                        </span>
+                                    </div>
+                                    <div fxLayout="column" fxFlex="25%">
+                                        <h3 class="workflow-readonly--gray-header">Currency</h3>
+                                        <span class="workflow-readonly--blue-text-bold">
+                                            {{item?.value?.consultantPDCRateCurrency?.name ? item?.value?.consultantPDCRateCurrency?.name : '-'}}
+                                        </span>
+                                    </div>
+                                </div>
+                            </div>
+                            <mat-divider class="u-w--100 u-mt--20 u-mb--20"></mat-divider>
+                            <div fxLayout="column" fxLayoutAlign="start start" class="u-w--100">
+                                <h2 class="workflow-readonly--header u-mb--20">Consultant project</h2>
+                                <div fxLayout="row" fxLayoutAlign="start start" class="u-w--100 u-mb--20">
+                                    <div fxLayout="column" fxFlex="50%">
+                                        <div fxLayout="row" class="u-w--100 u-mb--10" *ngIf="item?.value?.consultantIsOnsiteWorkplace">
+                                            <div fxLayout="column" fxFlex="30%">
+                                                <h3 class="workflow-readonly--gray-header">Workplace</h3>
+                                                <span class="workflow-readonly--blue-text-bold">
+                                                    Onsite
+                                                </span>
+                                            </div>
+                                            <div fxLayout="column" fxFlex="40%">
+                                                <h3 class="workflow-readonly--gray-header">Client address</h3>
+                                                <span class="workflow-readonly--blue-text-bold">
+                                                    {{item.value.consultantWorkplaceClientAddress?.countryName}} | {{item.value.consultantWorkplaceClientAddress?.address}} | {{item.value.consultantWorkplaceClientAddress?.address2}} | {{item.value.consultantWorkplaceClientAddress?.postCode}}
+                                                </span>
+                                            </div>
+                                            <div fxLayout="column" fxFlex="30%" *ngIf="item?.value?.consultantWorkplacePercentageOnSite">
+                                                <h3 class="workflow-readonly--gray-header">Percentage onsite</h3>
+                                                <span class="workflow-readonly--blue-text-bold">
+                                                    {{item?.value?.consultantWorkplacePercentageOnSite ? item?.value?.consultantWorkplacePercentageOnSite : '-'}}
+                                                </span>
+                                            </div>
+                                        </div>
+                                        <div fxLayout="row" class="u-w--100 u-mb--10" *ngIf="item?.value?.consultantIsEmagineOfficeWorkplace">
+                                            <div fxLayout="column" fxFlex="30%">
+                                                <h3 class="workflow-readonly--gray-header">Workplace</h3>
+                                                <span class="workflow-readonly--blue-text-bold">
+                                                    PDC Office
+                                                </span>
+                                            </div>
+                                            <div fxLayout="column" fxFlex="40%">
+                                                <h3 class="workflow-readonly--gray-header">Office location</h3>
+                                                <span class="workflow-readonly--blue-text-bold">
+                                                    {{item?.value?.consultantWorkplaceEmagineOffice?.name}}
+                                                </span>
+                                            </div>
+                                        </div>
+                                        <div fxLayout="row" class="u-w--100" *ngIf="item?.value?.consultantIsRemoteWorkplace">
+                                            <div fxLayout="column" fxFlex="30%">
+                                                <h3 class="workflow-readonly--gray-header">Workplace</h3>
+                                                <span class="workflow-readonly--blue-text-bold">
+                                                    Remote
+                                                </span>
+                                            </div>
+                                            <div fxLayout="column" fxFlex="40%">
+                                                <h3 class="workflow-readonly--gray-header">Office location</h3>
+                                                <span class="workflow-readonly--blue-text-bold">
+                                                    {{item?.value?.consultantWorkplaceRemote}}
+                                                </span>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div fxLayout="column" class="u-w--100 u-mb--20">
+                                    <h3 class="workflow-readonly--gray-header">Expected workload</h3>
+                                    <span class="workflow-readonly--blue-text-bold">
+                                        {{item?.value?.consultantExpectedWorkloadHours ? item?.value?.consultantExpectedWorkloadHours : '-'}} {{item?.value?.consultantExpectedWorkloadPeriod}}
+                                    </span>
+                                </div>
+                                <div fxLayout="column" class="u-w--100 u-mb--20">
+                                    <h3 class="workflow-readonly--gray-header">Cap on Time Reporting</h3>
+                                    <span class="workflow-readonly--blue-text-bold">
+                                        {{item?.value?.consultantCapOnTimeReporting ? item?.value?.consultantCapOnTimeReporting?.name : '-'}}
+                                    </span>
+                                </div>
+                                <div fxLayout="row" fxLayoutAlign="start start" class="u-w--100 u-mb--20">
+                                    <div fxLayout="column" fxFlex="25%">
+                                        <h3 class="workflow-readonly--gray-header">Max. value</h3>
+                                        <span class="workflow-readonly--blue-text-bold">
+                                            {{item?.value?.consultantCapOnTimeReportingValue ? item?.value?.consultantCapOnTimeReportingValue : '-'}}
+                                        </span>
+                                    </div>
+                                    <div fxLayout="column" fxFlex="25%">
+                                        <h3 class="workflow-readonly--gray-header">Currency</h3>
+                                        <span class="workflow-readonly--blue-text-bold">
+                                            {{item?.value?.consultantRateCurrency?.name ? item?.value?.consultantRateCurrency?.name : '-'}}
+                                        </span>
+                                    </div>
+                                </div>
+                            </div>
+                            <mat-divider class="u-w--100 u-mt--20 u-mb--20"></mat-divider>
+                            <div fxLayout="column" fxLayoutAlign="start start" class="u-w--100">
+                                <h2 class="workflow-section--header">Rates and fees</h2>
+    
+                                <div class="inline-edit-form u-w--100">
+                                    <div fxLayout="row" fxLayoutAlign="space-between start" fxLayoutGap="10px" class="workflow-sales-inline--form__header-container u-w--100" *ngIf="item.value.specialRates?.length">
+                                        <span fxFlex="1 1 20%" class="workflow-sales-inline--form__header u-w--100">
+                                            Rate name
+                                        </span>
+                                        <span fxFlex="20%" class="workflow-sales-inline--form__header u-w--100">
+                                            Rate direction
+                                        </span>
+                                        <span fxFlex="20%" class="workflow-sales-inline--form__header u-w--100">
+                                            Reporting unit
+                                        </span>
+                                        <span fxFlex="20%" class="workflow-sales-inline--form__header u-w--100" *ngIf="item.value?.consultantProdataEntity?.id !== salesClientDataForm.value?.pdcInvoicingEntityId?.id">
+                                            ProData rate
+                                        </span>
+                                        <span fxFlex="20%" class="workflow-sales-inline--form__header u-w--100">
+                                            Consultant rate
+                                        </span>
+                                    </div>
+                                    <ng-container formArrayName="specialRates" class="u-w--100">
+                                        <div fxLayout="row" fxLayoutAlign="space-between center" fxLayoutGap="10px" class="workflow-sales-inline--form__row u-w--100"
+                                            *ngFor="let rate of getConsultantRateControls(consultantIndex); let specialRateIndex = index;"
+                                            [formArrayName]="specialRateIndex">
+                                            <ng-container>
+                                                <span fxFlex="1 1 20%" class="u-w--100 text-truncate-ellipsis" [matTooltip]="rate.value.rateName">
+                                                    {{rate.value.rateName ?? '-'}}
+                                                </span>
+                                                <span fxFlex="20%" class="u-w--100 text-truncate-ellipsis" [matTooltip]="rate.value.rateDirection?.name">
+                                                    {{rate.value.rateDirection?.name ?? '-'}}
+                                                </span>
+                                                <span fxFlex="20%" class="u-w--100 text-truncate-ellipsis" [matTooltip]="rate.value.reportingUnit?.name">
+                                                    {{rate.value.reportingUnit?.name ?? '-'}}
+                                                </span>
+                                                <ng-container *ngIf="item.value?.consultantProdataEntity?.id !== salesClientDataForm.value?.pdcInvoicingEntityId?.id">
+                                                    <span fxFlex="20%" class="u-w--100 text-truncate-ellipsis" [matTooltip]="rate.value.prodataToProdataRate + ' ' + rate.value.prodataToProdataRateCurrency?.name">
+                                                        {{rate.value.prodataToProdataRate || rate.value.prodataToProdataRateCurrency?.name ? rate.value.prodataToProdataRate + ' ' + rate.value.prodataToProdataRateCurrency?.name : '-'}}
+                                                    </span>
+                                                </ng-container>
+                                                <span fxFlex="20%" class="u-w--100 text-truncate-ellipsis" [matTooltip]="rate.value.consultantRate + ' ' + rate.value.consultantRateCurrency?.name">
+                                                    {{rate.value.consultantRate || rate.value.consultantRateCurrency?.name ? rate.value.consultantRate + ' ' + rate.value.consultantRateCurrency?.name : '-'}}
+                                                </span>
+                                            </ng-container>
+                                        </div>
+                                    </ng-container>
+                                </div>
+    
+                                <div class="inline-edit-form u-w--100">
+                                    <div fxLayout="row" fxLayoutAlign="space-between start" fxLayoutGap="10px" class="workflow-sales-inline--form__header-container u-w--100" *ngIf="item.value.specialFees?.length">
+                                        <span fxFlex="1 1 20%" class="workflow-sales-inline--form__header u-w--100">
+                                            Fee name
+                                        </span>
+                                        <span fxFlex="20%" class="workflow-sales-inline--form__header u-w--100">
+                                            Fee direction
+                                        </span>
+                                        <span fxFlex="20%" class="workflow-sales-inline--form__header u-w--100">
+                                            Frequency
+                                        </span>
+                                        <span fxFlex="20%" class="workflow-sales-inline--form__header u-w--100" *ngIf="item.value?.consultantProdataEntity?.id !== salesClientDataForm.value?.pdcInvoicingEntityId?.id">
+                                            ProData fee
+                                        </span>
+                                        <span fxFlex="20%" class="workflow-sales-inline--form__header u-w--100">
+                                            Consultant fee
+                                        </span>
+                                    </div>
+                                    <ng-container formArrayName="specialFees" class="u-w--100">
+                                        <div fxLayout="row" fxLayoutAlign="space-between center" fxLayoutGap="10px" class="workflow-sales-inline--form__row u-w--100"
+                                            *ngFor="let fee of getConsultantFeeControls(consultantIndex); let specialFeeIndex = index;"
+                                            [formArrayName]="specialFeeIndex">
+                                            <ng-container>
+                                                <span fxFlex="1 1 20%" class="u-w--100 text-truncate-ellipsis" [matTooltip]="fee.value.feeName ?? '-'">
+                                                    {{fee.value.feeName ?? '-'}}
+                                                </span>
+                                                <span fxFlex="20%" class="u-w--100 text-truncate-ellipsis" [matTooltip]="fee.value.feeDirection?.name ?? '-'">
+                                                    {{fee.value.feeDirection?.name ?? '-'}}
+                                                </span>
+                                                <span fxFlex="20%" class="u-w--100 text-truncate-ellipsis" [matTooltip]="fee.value.frequency?.name ?? '-'">
+                                                    {{fee.value.frequency?.name ?? '-'}}
+                                                </span>
+                                                <span fxFlex="20%" class="u-w--100 text-truncate-ellipsis" [matTooltip]="fee.value.prodataToProdataRate + ' ' + fee.value.prodataToProdataRateCurrency?.name">
+                                                    {{fee.value.prodataToProdataRate || fee.value.prodataToProdataRateCurrency?.name ? fee.value.prodataToProdataRate + ' ' + fee.value.prodataToProdataRateCurrency?.name : '-'}}
+                                                </span>
+                                                <span fxFlex="20%" class="u-w--100 text-truncate-ellipsis" [matTooltip]="fee.value.consultantRate + ' ' + fee.value.consultantRateCurrency?.name">
+                                                    {{fee.value.consultantRate || fee.value.consultantRateCurrency?.name ? fee.value.consultantRate + ' ' + fee.value.consultantRateCurrency?.name : '-'}}
+                                                </span>
+                                            </ng-container>
+                                        </div>
+                                    </ng-container>
+                                </div>
+                            </div>
+    
+                            <mat-divider class="u-w--100 u-mt--20 u-mb--20"></mat-divider>
+                            <div fxLayout="column" fxLayoutAlign="start start" class="u-w--100">
+                                <h2 class="workflow-readonly--header u-mb--20">Consultant contract</h2>
+                                <div fxLayout="column" class="u-w--100 u-mb--20">
+                                    <h3 class="workflow-readonly--gray-header">Special Contract Terms</h3>
+                                    <span class="workflow-readonly--blue-text">
+                                        {{item?.value?.consultantSpecialContractTerms ? item?.value?.consultantSpecialContractTerms : '-'}}
+                                    </span>
+                                </div>
+                            </div>
+                            <mat-divider class="u-w--100 u-mt--20 u-mb--20"></mat-divider>
+                            <div fxLayout="column" fxLayoutAlign="start start" class="u-w--100">
+                                <h2 class="workflow-readonly--header u-mb--20">Account manager</h2>
+                                <div fxLayout="column" class="u-w--100 u-mb--20">
+                                    <h3 class="workflow-readonly--gray-header">Delivery Account Manager</h3>
+                                    <span class="workflow-readonly--blue-text-bold">
+                                        {{item?.value?.deliveryAccountManager ? item?.value?.deliveryAccountManager?.name : '-'}}
+                                    </span>
+                                </div>
                             </div>
                         </div>
-                        <div fxLayout="column" class="u-w--100 u-mb--20">
-                            <h3 class="workflow-readonly--gray-header">Expected workload</h3>
-                            <span class="workflow-readonly--blue-text-bold">
-                                {{item?.value?.consultantExpectedWorkloadHours ? item?.value?.consultantExpectedWorkloadHours : '-'}} {{item?.value?.consultantExpectedWorkloadPeriod}}
-                            </span>
-                        </div>
-                        <div fxLayout="column" class="u-w--100 u-mb--20">
-                            <h3 class="workflow-readonly--gray-header">Cap on Time Reporting</h3>
-                            <span class="workflow-readonly--blue-text-bold">
-                                {{item?.value?.consultantCapOnTimeReporting ? item?.value?.consultantCapOnTimeReporting : '-'}}
-                            </span>
-                        </div>
-                        <div fxLayout="row" fxLayoutAlign="start start" class="u-w--100 u-mb--20">
-                            <div fxLayout="column" fxFlex="25%">
-                                <h3 class="workflow-readonly--gray-header">Max. value</h3>
-                                <span class="workflow-readonly--blue-text-bold">
-                                    {{item?.value?.consultantCapOnTimeReportingValue ? item?.value?.consultantCapOnTimeReportingValue : '-'}}
-                                </span>
-                            </div>
-                            <div fxLayout="column" fxFlex="25%">
-                                <h3 class="workflow-readonly--gray-header">Currency</h3>
-                                <span class="workflow-readonly--blue-text-bold">
-                                    {{item?.value?.consultantRateCurrency?.name ? item?.value?.consultantRateCurrency?.name : '-'}}
-                                </span>
-                            </div>
-                        </div>
-                    </div>
-                    <mat-divider class="u-w--100 u-mt--20 u-mb--20"></mat-divider>
-                    <div fxLayout="column" fxLayoutAlign="start start" class="u-w--100">
-                        <h2 class="workflow-readonly--header u-mb--20">CONSULTANT PAYMENT</h2>
-                        <div fxLayout="column" class="u-w--100 u-mb--20">
-                            <h3 class="workflow-readonly--gray-header">ProData Entity</h3>
-                            <span class="workflow-readonly--blue-text-bold">
-                                {{item?.value?.consultantProdataEntity?.name ? item?.value?.consultantProdataEntity?.name : '-'}}
-                            </span>
-                        </div>
-                        <div fxLayout="column" class="u-w--100 u-mb--20">
-                            <h3 class="workflow-readonly--gray-header">Price</h3>
-                            <span class="workflow-readonly--blue-text-bold">
-                                {{item?.value?.consultantPaymentType?.name ? item?.value?.consultantPaymentType?.name : '-'}}
-                            </span>
-                        </div>
-                        <div fxLayout="row" fxLayoutAlign="start start" class="u-w--100 u-mb--20">
-                            <div fxLayout="column" fxFlex="25%">
-                                <h3 class="workflow-readonly--gray-header">Rate</h3>
-                                <span class="workflow-readonly--blue-text-bold">
-                                    {{item?.value?.consultantRate ? item?.value?.consultantRate : '-'}}
-                                </span>
-                            </div>
-                            <div fxLayout="column" fxFlex="25%">
-                                <h3 class="workflow-readonly--gray-header">Unit type</h3>
-                                <span class="workflow-readonly--blue-text-bold">
-                                    {{item?.value?.consultantRateUnitType?.name ? item?.value?.consultantRateUnitType?.name : '-'}}
-                                </span>
-                            </div>
-                            <div fxLayout="column" fxFlex="25%">
-                                <h3 class="workflow-readonly--gray-header">Currency</h3>
-                                <span class="workflow-readonly--blue-text-bold">
-                                    {{item?.value?.consultantRateCurrency?.name ? item?.value?.consultantRateCurrency?.name : '-'}}
-                                </span>
-                            </div>
-                        </div>
-                        <div fxLayout="row" fxLayoutAlign="start start" class="u-w--100 u-mb--20">
-                            <div fxLayout="column" fxFlex="25%">
-                                <h3 class="workflow-readonly--gray-header">PDC-to-PDC rate</h3>
-                                <span class="workflow-readonly--blue-text-bold">
-                                    {{item?.value?.consultantPDCRate ? item?.value?.consultantPDCRate : '-'}}
-                                </span>
-                            </div>
-                            <div fxLayout="column" fxFlex="25%">
-                                <h3 class="workflow-readonly--gray-header">Unit type</h3>
-                                <span class="workflow-readonly--blue-text-bold">
-                                    {{item?.value?.consultantPDCRateUnitType?.name ? item?.value?.consultantPDCRateUnitType?.name : '-'}}
-                                </span>
-                            </div>
-                            <div fxLayout="column" fxFlex="25%">
-                                <h3 class="workflow-readonly--gray-header">Currency</h3>
-                                <span class="workflow-readonly--blue-text-bold">
-                                    {{item?.value?.consultantPDCRateCurrency?.name ? item?.value?.consultantPDCRateCurrency?.name : '-'}}
-                                </span>
-                            </div>
-                        </div>
-                    </div>
-                    <mat-divider class="u-w--100 u-mt--20 u-mb--20"></mat-divider>
-                    <div fxLayout="column" fxLayoutAlign="start start" class="u-w--100">
-                        <h2 class="workflow-readonly--header u-mb--20">Consultant contract</h2>
-                        <div fxLayout="column" class="u-w--100 u-mb--20">
-                            <h3 class="workflow-readonly--gray-header">Special Contract Terms</h3>
-                            <span class="workflow-readonly--blue-text">
-                                {{item?.value?.consultantSpecialContractTerms ? item?.value?.consultantSpecialContractTerms : '-'}}
-                            </span>
-                        </div>
-                    </div>
-                    <mat-divider class="u-w--100 u-mt--20 u-mb--20"></mat-divider>
-                    <div fxLayout="column" fxLayoutAlign="start start" class="u-w--100">
-                        <h2 class="workflow-readonly--header u-mb--20">Account manager</h2>
-                        <div fxLayout="column" class="u-w--100 u-mb--20">
-                            <h3 class="workflow-readonly--gray-header">Delivery Account Manager</h3>
-                            <span class="workflow-readonly--blue-text-bold">
-                                {{item?.value?.deliveryAccountManager ? item?.value?.deliveryAccountManager?.name : '-'}}
-                            </span>
-                        </div>
-                    </div>
-                </div>
-                <mat-divider class="u-mt--20 u-mb--20"></mat-divider>
-            </ng-container>
+                        <mat-divider class="u-mt--20 u-mb--20"></mat-divider>
+                    </ng-container>    
+                </ng-container>
+            </form>
         </ng-container>
         <!-- <ng-template #editTerminationTemplate>
             <form [formGroup]="salesTerminateConsultantForm" class="workflow-form--consultants workflow--termination u-mb--20 u-w--100">
@@ -1856,8 +1948,8 @@
                                                     <button mat-flat-button (click)="editOrSaveClientFee(fee.value.editable, i)" class="inline-edit-form--btn__save">
                                                         Save
                                                     </button>
-                                                    <button mat-icon-button (click)="removeClientFee(i)">
-                                                        <mat-icon>clear</mat-icon>
+                                                    <button mat-flat-button (click)="cancelEditClientFee(i)" class="inline-edit-form--btn__cancel">
+                                                        Cancel
                                                     </button>
                                                 </div>
                                             </ng-container>
@@ -1870,6 +1962,7 @@
                                                         <button
                                                             class="menu-item menu-item--edit"
                                                             mat-menu-item
+                                                            [disabled]="isClientFeeEditing"
                                                             (click)="editOrSaveClientFee(fee.value.editable, i)">
                                                             <mat-icon>create</mat-icon>
                                                             Edit
@@ -1890,8 +1983,14 @@
                             </div>
 
                             <div fxLayout="row" fxLayoutAlign="start start" class="u-mb--20">
-                                <button [ngClass]="salesClientDataForm!.clientFees!.controls!.length > 0 ? 'button-add' : 'button-outlined'" class="rates-and-fees--btn" mat-flat-button
-                                    [matMenuTriggerFor]="clientSpecialFeeMenu" #clientFeeMenuTrigger="matMenuTrigger">
+                                <button
+                                    [ngClass]="salesClientDataForm!.clientFees!.controls!.length > 0 ? 'button-add' : 'button-outlined'"
+                                    class="rates-and-fees--btn"
+                                    mat-flat-button
+                                    [disabled]="isClientFeeEditing"
+                                    [matMenuTriggerFor]="clientSpecialFeeMenu"
+                                    (menuOpened)="clientSpecialFeeFilter.setValue('')"
+                                    #clientFeeMenuTrigger="matMenuTrigger">
                                     <mat-icon *ngIf="salesClientDataForm.clientFees?.controls?.length">add</mat-icon>
                                     Add special fees
                                 </button>
