@@ -1,60 +1,181 @@
 <div class="workflow-list" fxFlexFill>
     <div fxLayout="column" fxLayoutAlign="start start" class="workflow-list--filter">
         <!-- <div fxLayout="row" fxLayoutAlign="start start"> -->
-            <h2 class="workflow-list--header">Workflows</h2>
+            <h2 class="workflow-list--header u-mb--20">Workflows</h2>
         <!-- </div> -->
-        <div fxLayout="row" fxLayoutAlign="space-between center" class="u-w--100">
+        <div fxLayout="row" fxLayoutAlign="space-between start" class="u-w--100">
             <div fxFlex fxLayout="row" fxLayoutAlign="start center" class="u-w--100">
-                <mat-icon class="workflow-list--filter-country__flag u-mr--16" svgIcon="International-flag"></mat-icon>
-                <div class="workflow-list--filter-type u-mr--16" *ngFor="let type of selectedTypes">
+                <!-- <mat-icon class="workflow-list--filter-country__flag u-mr--16" svgIcon="International-flag"></mat-icon> -->
+                <!-- <div class="workflow-list--filter-type u-mr--16" *ngFor="let type of selectedTypes">
                     <mat-icon class="workflow-flag" [ngClass]="getFlagColor(type.flag)" [matTooltip]="mapFlagTooltip(type.flag)">fiber_manual_record</mat-icon>
                     <span class="workflow-list--filter-type__name">
                         {{type.name}}
                     </span>
-                </div>
-                <span class="workflow-list--filter-manager">
+                </div> -->
+                <div class="workflow-list--filter-manager cursor-pointer u-mr--16" [matTooltip]="mapListByProperty(selectedAccountManagers, 'name')" [matMenuTriggerFor]="managerMenu" (menuOpened)="accountManagerFilter.setValue(''); accountManagerFilterInput.click()">
                     <img src="../../../assets/common/images/no-img.svg">
+                    <mat-menu #managerMenu>
+                        <div mat-menu-item (click)="$event.stopPropagation()" class="u-pg--0">
+                            <mat-form-field appearance="outline" (click)="$event.stopPropagation()">
+                                <input #accountManagerFilterInput type="text" matInput [matAutocomplete]="managerAutocomplete" [formControl]="accountManagerFilter" (click)="$event.stopPropagation()" placeholder="Select account manager(s)">
+                            </mat-form-field>
+                            <mat-autocomplete #managerAutocomplete="matAutocomplete">
+                                <mat-option *ngFor="let manager of selectedAccountManagers"
+                                    class="u-pg--5"
+                                    [value]="manager">
+                                    <div class="u-w--100"
+                                        (click)="optionClicked($event, manager, selectedAccountManagers)">
+                                        <mat-checkbox [checked]="manager.selected"
+                                            *ngIf="manager.id !== 'no-data'"
+                                            color="primary"
+                                            (change)="toggleSelection(manager,selectedAccountManagers)"
+                                            (click)="$event.stopPropagation()">
+                                            <span>{{ manager.name }}</span>
+                                        </mat-checkbox>
+                                        <span *ngIf="manager.id === 'no-data'"
+                                            (click)="$event.stopPropagation()">
+                                            {{ manager.name }}
+                                        </span>
+                                    </div>
+                                </mat-option>
+                                <mat-option *ngFor="let manager of filteredAccountManagers"
+                                    class="u-pg--5"
+                                    [ngClass]="{ 'no-data': manager.id === 'no-data', 'hidden-option': selectedAccountManagers.includes(manager)}"
+                                    [value]="selectedAccountManagers">
+                                    <div
+                                        (click)="optionClicked($event, manager, selectedAccountManagers)">
+                                        <mat-checkbox [checked]="manager.selected"
+                                            *ngIf="manager.id !== 'no-data'"
+                                            color="primary"
+                                            (change)="toggleSelection(manager,selectedAccountManagers)"
+                                            (click)="$event.stopPropagation()">
+                                            <span>{{ manager.name }}</span>
+                                        </mat-checkbox>
+                                        <span *ngIf="manager.id === 'no-data'"
+                                            (click)="$event.stopPropagation()">{{ manager.name }}
+                                        </span>
+                                    </div>
+                                </mat-option>
+                            </mat-autocomplete>
+                        </div>
+                    </mat-menu>
+                </div>
+                <span class="workflow-list--filter-type flex-items-center cursor-pointer u-mr--16" [ngClass]="{'selected-status': showOnlyWorkflowsWithNewSales}" (click)="showOnlyWorkflowsWithNewSales = !showOnlyWorkflowsWithNewSales; getWorkflowList()">
+                    <mat-icon class="status-dot green-dot u-mr--5">fiber_manual_record</mat-icon>
+                    <span class="workflow-list--filter-type__name">
+                        New sales
+                    </span>
                 </span>
+                <span class="workflow-list--filter-type flex-items-center cursor-pointer u-mr--16" [ngClass]="{'selected-status': showOnlyWorkflowsWithExtensions}" (click)="showOnlyWorkflowsWithExtensions = !showOnlyWorkflowsWithExtensions; getWorkflowList()">
+                    <mat-icon class="status-dot purple-dot u-mr--5">fiber_manual_record</mat-icon>
+                    <span class="workflow-list--filter-type__name">
+                        Extensions
+                    </span>
+                </span>
+                <mat-divider class="u-mr--16" [vertical]="true" style="height: 40px;"></mat-divider>
+                <span class="workflow-list--filter-type flex-items-center cursor-pointer u-mr--16" [ngClass]="{'selected-status': showOnlyWorkflowsWithPendingStepsForSelectedEmployees}" (click)="showOnlyWorkflowsWithPendingStepsForSelectedEmployees = !showOnlyWorkflowsWithPendingStepsForSelectedEmployees; getWorkflowList()">
+                    <span class="workflow-list--filter-type__name">
+                        Pending steps
+                    </span>
+                </span>
+                <span class="workflow-list--filter-type flex-items-center cursor-pointer" [ngClass]="{'selected-status': showOnlyWorkflowsWithUpcomingStepsForSelectedEmployees}" (click)="showOnlyWorkflowsWithUpcomingStepsForSelectedEmployees = !showOnlyWorkflowsWithUpcomingStepsForSelectedEmployees; getWorkflowList()">
+                    <span class="workflow-list--filter-type__name">
+                        Upcoming steps
+                    </span>
+                </span>
+                <!-- <span class="workflow-list--filter-manager">
+                    <img src="../../../assets/common/images/no-img.svg">
+                </span> -->
             </div>
             <div fxFlex="25%" fxLayout="column" fxLayoutAlign="start end">
                 <div fxLayout="row" fxLayoutAlign="space-between center" fxLayoutGap="16px" class="u-w--100 u-mb--20">
-                    <button mat-icon-button><mat-icon svgIcon="filter-icon"></mat-icon></button>
-
-                    <mat-form-field appearance="outline" class="u-w--100 mat-elevation-z0 formFieldNoMarginPadding">
-                        <mat-label>Search</mat-label>
+                    <mat-form-field appearance="fill" class="search-filter-input u-w--100 mat-elevation-z0 formFieldNoMarginPadding">
                         <input autocomplete="off" matInput [formControl]="workflowFilter" placeholder="Search" type="text">
-                        <mat-icon matSuffix>search</mat-icon>
+                        <mat-icon class="search-icon u-ml--10" matPrefix>search</mat-icon>
                     </mat-form-field>
                     <button mat-icon-button (click)="createWorkflow()" class="workflow-list--filter__add-btn">
                         <mat-icon svgIcon="plus-button-icon"></mat-icon>
                     </button>
                 </div>
-                <mat-slide-toggle color="primary" labelPosition="before">Show terminated</mat-slide-toggle>
+                <button class="workflow-list--search-button" mat-icon-button (click)="isAdvancedFilters = !isAdvancedFilters">
+                    <mat-icon svgIcon="filter-icon"></mat-icon>
+                    <span class="workflow-list--search-button-text u-ml--5">Advanced filters</span>
+                </button>
             </div>
         </div>
     </div>
+    <div fxLayout="row" fxLayoutAlign="start center" class="workflow-list--filter-additional u-w--100 u-mb--20" *ngIf="isAdvancedFilters">
+        <mat-form-field appearance="outline" class="filter-select u-mr--16" fxFlex="20%">
+            <mat-label>Invoicing entity</mat-label>
+            <mat-select [formControl]="invoicingEntityControl" [disableOptionCentering]="true">
+                <mat-option *ngFor="let item of tenants" [value]="item.id">
+                    {{ item.name }}
+                </mat-option>
+            </mat-select>
+        </mat-form-field>
+
+        <mat-form-field appearance="outline" class="filter-select u-mr--16" fxFlex="20%">
+            <mat-label> Payment entity</mat-label>
+            <mat-select [formControl]="paymentEntityControl" [disableOptionCentering]="true">
+                <mat-option *ngFor="let item of tenants" [value]="item.id">
+                    {{ item.name }}
+                </mat-option>
+            </mat-select>
+        </mat-form-field>
+
+        <mat-form-field appearance="outline" class="filter-select u-mr--16" fxFlex="20%">
+            <mat-label> Sales type</mat-label>
+            <mat-select [formControl]="salesTypeControl" [disableOptionCentering]="true">
+                <mat-option *ngFor="let item of saleTypes" [value]="item.id">
+                    {{ item.name }}
+                </mat-option>
+            </mat-select>
+        </mat-form-field>
+
+        <mat-form-field appearance="outline" class="filter-select u-mr--16" fxFlex="20%">
+            <mat-label> Project type</mat-label>
+            <mat-select [formControl]="projectTypeControl" [disableOptionCentering]="true">
+                <mat-option *ngFor="let item of projectTypes" [value]="item.id">
+                    {{ item.name }}
+                </mat-option>
+            </mat-select>
+        </mat-form-field>
+
+        <mat-form-field appearance="outline" class="filter-select u-mr--16" fxFlex="20%">
+            <mat-label> Workflow status</mat-label>
+            <mat-select [formControl]="workflowStatusControl" [disableOptionCentering]="true">
+                <mat-option *ngFor="let item of workflowStatuses | keyvalue" [value]="item.key">
+                    {{ item.value }}
+                </mat-option>
+            </mat-select>
+        </mat-form-field>
+    </div>
     <div fxLayout="column" fxLayoutAlign="start center" class="workflow-list--content u-w--100">
+        <div fxLayout="row" fxLayoutAlign="end start" fxLayoutGap="25px" class="u-w--100">
+            <mat-slide-toggle color="primary" labelPosition="before" (change)="getWorkflowList()" [(ngModel)]="includeDeleted">Show deleted</mat-slide-toggle>
+            <mat-slide-toggle color="primary" labelPosition="before" (change)="getWorkflowList()" [(ngModel)]="includeTerminated">Show terminated</mat-slide-toggle>
+        </div>
         <div fxLayout="column" class="u-w--100">
             <mat-table #table [dataSource]="workflowDataSource" class="workflow-list--table white-table u-w--100" matSort matSortStart="asc" (matSortChange)="sortChanged($event)">
                 <ng-container matColumnDef="flag">
                     <mat-header-cell *matHeaderCellDef fxFlex="3%"></mat-header-cell>
                     <mat-cell *matCellDef="let row" fxFlex="3%">
-                        <mat-icon class="workflow-flag" [ngClass]="getFlagColor(row.flag)" [matTooltip]="mapFlagTooltip(row.flag)">fiber_manual_record</mat-icon>
+                        <mat-icon class="workflow-flag" [ngClass]="getFlagColor(row.openProcesses?.typeId)" [matTooltip]="mapFlagTooltip(row.openProcesses?.typeId)">fiber_manual_record</mat-icon>
                     </mat-cell>
                 </ng-container>
                 <ng-container matColumnDef="id">
                     <mat-header-cell *matHeaderCellDef fxFlex="3%">ID</mat-header-cell>
                     <mat-cell *matCellDef="let row" fxFlex="3%">
-                        <span class="text-truncate-ellipsis" [matTooltip]="row.id">
-                            {{row.id}}
+                        <span class="text-truncate-ellipsis" [matTooltip]="row.workflowId">
+                            {{row.workflowId}}
                         </span>
                     </mat-cell>
                 </ng-container>
                 <ng-container matColumnDef="Client">
                     <mat-header-cell *matHeaderCellDef fxFlex="10%">Client</mat-header-cell>
                     <mat-cell *matCellDef="let row" fxFlex="10%">
-                        <span class="text-truncate-ellipsis text-bold" [matTooltip]="row.client">
-                            {{row.client}}
+                        <span class="text-truncate-ellipsis text-bold" [matTooltip]="row.clientName">
+                            {{row.clientName}}
                         </span>
                     </mat-cell>
                 </ng-container>
@@ -69,16 +190,16 @@
                 <ng-container matColumnDef="SalesType">
                     <mat-header-cell *matHeaderCellDef mat-sort-header fxFlex="10%"> Sales type </mat-header-cell>
                     <mat-cell *matCellDef="let row" fxFlex="10%">
-                        <span class="text-truncate-ellipsis" [matTooltip]="row.salesType">
-                            {{row.salesType}}
+                        <span class="text-truncate-ellipsis" [matTooltip]="row.salesType?.name">
+                            {{row.salesType?.name}}
                         </span>
                     </mat-cell>
                 </ng-container>
                 <ng-container matColumnDef="DeliveryType">
                     <mat-header-cell *matHeaderCellDef mat-sort-header fxFlex="10%"> Delivery type </mat-header-cell>
                     <mat-cell *matCellDef="let row" fxFlex="10%">
-                        <span class="text-truncate-ellipsis" [matTooltip]="row.deliveryType">
-                            {{row.deliveryType}}
+                        <span class="text-truncate-ellipsis" [matTooltip]="row.deliveryType?.name">
+                            {{row.deliveryType?.name}}
                         </span>
                     </mat-cell>
                 </ng-container>
@@ -104,11 +225,11 @@
                     <!-- TODO: maybe additional property as 'additionalOpenProcess' and 'additional steps' -->
                     <mat-cell *matCellDef="let row" fxFlex="13%">
                         <div class="column">
-                            <div *ngFor="let item of row.openProcess; last as last"
+                            <div *ngFor="let item of row.openProcesses; last as last"
                                  style="height: 50px;"
                                  class="flex-justify-center column"
                                  [ngStyle]="{'border-bottom' : last ? '0' : '1px solid #E7E3E8'}">
-                                <ng-container [ngSwitch]="item">
+                                <ng-container [ngSwitch]="item.typeId">
                                     <ng-container *ngSwitchCase="workflowProcess.StartClientPeriod">
                                         <span class="flex-row flex-items-center">
                                             <mat-icon svgIcon="workflowStartOrExtend"></mat-icon>
@@ -157,7 +278,6 @@
                                             </span>
                                         </span>
                                     </ng-container>
-
                                     <ng-container *ngSwitchDefault>
                                         -
                                     </ng-container>
@@ -169,16 +289,31 @@
                 <ng-container matColumnDef="Steps">
                     <mat-header-cell *matHeaderCellDef mat-sort-header fxFlex="13%"> Steps </mat-header-cell>
                     <mat-cell *matCellDef="let row" fxFlex="13%">
-                        <span class="text-truncate-ellipsis" [matTooltip]="row.step">
-                            {{row.step}}
-                        </span>
+                        <div class="column">
+                            <div *ngFor="let item of row.openProcesses; last as last"
+                                 style="height: 50px;"
+                                 class="flex-items-center flex-row"
+                                 [ngStyle]="{'border-bottom' : last ? '0' : '1px solid #E7E3E8'}">
+                                <ng-container *ngFor="let step of item.steps; let i = index;">
+                                    <div class="workflow-list--step u-mr--16" [ngClass]="{'completed-step': step.status === workflowStatuses.Completed}">
+                                        <app-manager-search
+                                            (click)="$event.stopPropagation()"
+                                            [formFieldLabel]="step.name + ' Manager'"
+                                            (managerSelected)="selectedManager($event)"
+                                            [managerStatus]="step.status === workflowStatuses.Completed ? managerStatus.Completed : managerStatus.Pending"
+                                            [readonly]="true">
+                                        </app-manager-search>
+                                    </div>
+                                </ng-container>
+                            </div>
+                        </div>
                     </mat-cell>
                 </ng-container>
                 <ng-container matColumnDef="Status">
                     <mat-header-cell *matHeaderCellDef mat-sort-header fxFlex="10%"> Status </mat-header-cell>
                     <mat-cell *matCellDef="let row" fxFlex="10%">
                         <span class="text-truncate-ellipsis" [matTooltip]="row.status">
-                            {{row.status}}
+                            {{workflowStatuses[row.workflowStatusWithEmployee?.workflowStatus]}}
                         </span>
                     </mat-cell>
                 </ng-container>
@@ -200,7 +335,7 @@
                 </ng-container>
 
                 <mat-header-row *matHeaderRowDef="workflowDisplayColumns"></mat-header-row>
-                <mat-row *matRowDef="let row; columns: workflowDisplayColumns;" class="mat-elevation-z0 cursor-pointer flex-items-start" (click)="navigateToWorkflowDetails(row.id)"></mat-row>
+                <mat-row *matRowDef="let row; columns: workflowDisplayColumns;" class="mat-elevation-z0 cursor-pointer flex-items-start" (click)="navigateToWorkflowDetails(row.workflowId)"></mat-row>
             </mat-table>
             <div class="spinner-container" *ngIf="isDataLoading">
                 <mat-spinner [diameter]="50"></mat-spinner>

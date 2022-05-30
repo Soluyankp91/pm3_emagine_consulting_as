@@ -561,7 +561,7 @@ export class ClientDocumentsServiceProxy {
      * @param body (optional) 
      * @return Success
      */
-    generalFilePost(clientId: number, attachmentFileTypeId: number, body?: FileDto | undefined): Observable<void> {
+    generalFilePost(clientId: number, attachmentFileTypeId: number, body?: Blob | undefined): Observable<void> {
         let url_ = this.baseUrl + "/api/ClientDocuments/{clientId}/GeneralFile/{attachmentFileTypeId}";
         if (clientId === undefined || clientId === null)
             throw new Error("The parameter 'clientId' must be defined.");
@@ -571,7 +571,7 @@ export class ClientDocumentsServiceProxy {
         url_ = url_.replace("{attachmentFileTypeId}", encodeURIComponent("" + attachmentFileTypeId));
         url_ = url_.replace(/[?&]$/, "");
 
-        const content_ = JSON.stringify(body);
+        const content_ = body;
 
         let options_ : any = {
             body: content_,
@@ -10016,46 +10016,6 @@ export interface IAddClientSpecialRateDto {
     isHidden?: boolean;
 }
 
-export class AttachmentFileDto implements IAttachmentFileDto {
-    filename?: string | undefined;
-    fileBytes?: string | undefined;
-
-    constructor(data?: IAttachmentFileDto) {
-        if (data) {
-            for (var property in data) {
-                if (data.hasOwnProperty(property))
-                    (<any>this)[property] = (<any>data)[property];
-            }
-        }
-    }
-
-    init(_data?: any) {
-        if (_data) {
-            this.filename = _data["filename"];
-            this.fileBytes = _data["fileBytes"];
-        }
-    }
-
-    static fromJS(data: any): AttachmentFileDto {
-        data = typeof data === 'object' ? data : {};
-        let result = new AttachmentFileDto();
-        result.init(data);
-        return result;
-    }
-
-    toJSON(data?: any) {
-        data = typeof data === 'object' ? data : {};
-        data["filename"] = this.filename;
-        data["fileBytes"] = this.fileBytes;
-        return data;
-    }
-}
-
-export interface IAttachmentFileDto {
-    filename?: string | undefined;
-    fileBytes?: string | undefined;
-}
-
 export class AvailableConsultantDto implements IAvailableConsultantDto {
     consultantName?: string | undefined;
     consultantId?: number;
@@ -13636,46 +13596,6 @@ export interface IExtendConsultantPeriodDto {
     endDate?: moment.Moment | undefined;
 }
 
-export class FileDto implements IFileDto {
-    filename?: string | undefined;
-    fileBytes?: string | undefined;
-
-    constructor(data?: IFileDto) {
-        if (data) {
-            for (var property in data) {
-                if (data.hasOwnProperty(property))
-                    (<any>this)[property] = (<any>data)[property];
-            }
-        }
-    }
-
-    init(_data?: any) {
-        if (_data) {
-            this.filename = _data["filename"];
-            this.fileBytes = _data["fileBytes"];
-        }
-    }
-
-    static fromJS(data: any): FileDto {
-        data = typeof data === 'object' ? data : {};
-        let result = new FileDto();
-        result.init(data);
-        return result;
-    }
-
-    toJSON(data?: any) {
-        data = typeof data === 'object' ? data : {};
-        data["filename"] = this.filename;
-        data["fileBytes"] = this.fileBytes;
-        return data;
-    }
-}
-
-export interface IFileDto {
-    filename?: string | undefined;
-    fileBytes?: string | undefined;
-}
-
 export class IdNameDto implements IIdNameDto {
     id?: number;
     name?: string | undefined;
@@ -15507,7 +15427,7 @@ export class UpdateClientAttachmentFileInfoInputDto implements IUpdateClientAtta
     clientAttachmentGuid?: string;
     headline?: string | undefined;
     fileType?: ClientAttachmentTypeEnum;
-    file?: AttachmentFileDto;
+    file?: string | undefined;
 
     constructor(data?: IUpdateClientAttachmentFileInfoInputDto) {
         if (data) {
@@ -15523,7 +15443,7 @@ export class UpdateClientAttachmentFileInfoInputDto implements IUpdateClientAtta
             this.clientAttachmentGuid = _data["clientAttachmentGuid"];
             this.headline = _data["headline"];
             this.fileType = _data["fileType"];
-            this.file = _data["file"] ? AttachmentFileDto.fromJS(_data["file"]) : <any>undefined;
+            this.file = _data["file"];
         }
     }
 
@@ -15539,7 +15459,7 @@ export class UpdateClientAttachmentFileInfoInputDto implements IUpdateClientAtta
         data["clientAttachmentGuid"] = this.clientAttachmentGuid;
         data["headline"] = this.headline;
         data["fileType"] = this.fileType;
-        data["file"] = this.file ? this.file.toJSON() : <any>undefined;
+        data["file"] = this.file;
         return data;
     }
 }
@@ -15548,7 +15468,7 @@ export interface IUpdateClientAttachmentFileInfoInputDto {
     clientAttachmentGuid?: string;
     headline?: string | undefined;
     fileType?: ClientAttachmentTypeEnum;
-    file?: AttachmentFileDto;
+    file?: string | undefined;
 }
 
 export class UpdateClientSpecialFeeDto implements IUpdateClientSpecialFeeDto {
@@ -16416,6 +16336,11 @@ export class WorkflowTerminationSourcingDataQueryDto implements IWorkflowTermina
 
 export interface IWorkflowTerminationSourcingDataQueryDto {
     consultantTerminationSourcingData?: ConsultantTerminationSourcingDataQueryDto[] | undefined;
+}
+
+export interface FileParameter {
+    data: any;
+    fileName: string;
 }
 
 export class ApiException extends Error {

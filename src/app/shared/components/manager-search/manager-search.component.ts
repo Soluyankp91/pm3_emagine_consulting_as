@@ -16,6 +16,7 @@ export class ManagerSearchComponent implements OnInit, OnDestroy {
     @Input() formFieldLabel: string;
     @Input() managerSearchType: number;
     @Input() managerStatus: number;
+    @Input() readonly: boolean;
     @Output() managerSelected: EventEmitter<number> = new EventEmitter<number>();
 
     managerStatuses = ManagerStatus;

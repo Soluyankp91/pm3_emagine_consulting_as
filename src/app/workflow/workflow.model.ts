@@ -403,3 +403,23 @@ export const WorkflowList = [
 ];
 
 // #endrefion hardcoded grid
+
+export interface ISelectableEmployeeDto {
+    id: number | string;
+    name: string;
+    externalId: string;
+    selected: boolean;
+}
+
+export class SelectableEmployeeDto implements ISelectableEmployeeDto {
+    id: number | string;
+    name: string;
+    externalId: string;
+    selected: boolean;
+    constructor(data?: ISelectableEmployeeDto) {
+        this.id = data?.id!;
+        this.name = data?.name!;
+        this.externalId = data?.externalId!;
+        this.selected = data?.selected!;
+    }
+}

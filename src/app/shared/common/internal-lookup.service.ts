@@ -38,6 +38,7 @@ export class InternalLookupService {
     employmentTypes: EnumEntityTypeDto[] = [];
     countries: EnumEntityTypeDto[] = [];
     consultantTimeReportingCapList: EnumEntityTypeDto[] = [];
+    workflowStatuses: { [key: string]: string; };
     consultantInsuranceOptions: { [key: string]: string; };
 
     constructor(private _enumService: EnumServiceProxy) {
@@ -678,6 +679,23 @@ export class InternalLookupService {
         });
     }
 
+    getWorkflowStatuses(): Observable<{ [key: string]: string; }> {
+        return new Observable<{ [key: string]: string; }>((observer) => {
+            if (this.workflowStatuses !== undefined && this.workflowStatuses !== null) {
+                observer.next(this.workflowStatuses);
+                observer.complete();
+            } else {
+                this._enumService.workflowStatuses()
+                    .subscribe(response => {
+                        this.workflowStatuses = response;
+                        observer.next(this.workflowStatuses);
+                        observer.complete();
+                    }, error => {
+                        observer.error(error);
+                    });
+            }
+        });
+    }
     getConsultantInsuranceOptions(): Observable<{ [key: string]: string; }> {
         return new Observable<{ [key: string]: string; }>((observer) => {
             if (this.consultantInsuranceOptions !== undefined && this.consultantInsuranceOptions !== null) {
@@ -695,5 +713,4 @@ export class InternalLookupService {
             }
         });
     }
-
 }
