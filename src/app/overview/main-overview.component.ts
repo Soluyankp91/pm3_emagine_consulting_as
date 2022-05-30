@@ -5,13 +5,13 @@ import { getUnixTime } from 'date-fns';
 import { Subject } from 'rxjs';
 import { debounceTime, finalize, switchMap, takeUntil } from 'rxjs/operators';
 import { AppConsts } from 'src/shared/AppConsts';
-import { ApiServiceProxy, EmployeeDto, EnumEntityTypeDto, LookupServiceProxy, MainOverviewServiceProxy, MainOverviewStatus, MainOverviewStatusDto } from 'src/shared/service-proxies/service-proxies';
+import { ApiServiceProxy, EmployeeDto, EnumEntityTypeDto, LookupServiceProxy, MainOverviewServiceProxy, MainOverviewStatusDto } from 'src/shared/service-proxies/service-proxies';
 import { SelectableCountry, SelectableIdNameDto } from '../client/client.model';
 import { InternalLookupService } from '../shared/common/internal-lookup.service';
 import { ManagerStatus } from '../shared/components/manager-search/manager-search.model';
-import { MainOverviewStatuses, OverviewData, OverviewFlag, SelectableEmployeeDto, SelectableStatusesDto } from './main-overview.model';
-import * as moment from 'moment';
+import { OverviewData, OverviewFlag, SelectableEmployeeDto, SelectableStatusesDto } from './main-overview.model';
 import { MsalService } from '@azure/msal-angular';
+import * as moment from 'moment';
 
 @Component({
     selector: 'app-main-overview',
@@ -49,10 +49,15 @@ export class MainOverviewComponent implements OnInit, AfterViewInit {
     salesTypeControl = new FormControl();
     projectTypeControl = new FormControl();
     marginsControl = new FormControl();
+    overviewViewTypeControl = new FormControl(1);
 
     managerStatus = ManagerStatus;
     mainOverviewStatuses: MainOverviewStatusDto;
     filteredMainOverviewStatuses: SelectableStatusesDto[] = [];
+    overviewViewTypes: { [key: string]: string };
+    cutOffDate = moment();
+    cutOffDateWeek = new Date();
+    cutOffDateMonth = new Date();
 
     // gant
     items: GanttItem<OverviewData>[] = [
@@ -163,6 +168,13 @@ export class MainOverviewComponent implements OnInit, AfterViewInit {
         ).subscribe(() => {
             this.getMainOverview();
         });
+
+        this.overviewViewTypeControl.valueChanges.pipe(
+            takeUntil(this._unsubscribe),
+            debounceTime(500)
+        ).subscribe(() => {
+            this.getMainOverview();
+        });
      }
 
     ngOnInit(): void {
@@ -172,6 +184,7 @@ export class MainOverviewComponent implements OnInit, AfterViewInit {
         this.getProjectType();
         this.getMargins();
         this.getMainOverviewStatuses();
+        this.getOverviewViewTypes();
         this.getCurrentUser();
         // this.changeViewType(GanttViewType.month);
     }
@@ -238,29 +251,21 @@ export class MainOverviewComponent implements OnInit, AfterViewInit {
         switch (type) {
             case 'week':
                 this.viewOptions.cellWidth = 50;
-                let cutOffDateWeek = new Date();
-                // let maxDate = new Date();
-                cutOffDateWeek.setDate(cutOffDateWeek.getDate() - 35)
-                // maxDate.setDate(364 - maxDate.getDate() + 35);
-                this.ganttComponent.viewOptions.start = new GanttDate(getUnixTime(new Date(this.formatDate(cutOffDateWeek))));
-                // this.ganttComponent.viewOptions.end = new GanttDate(getUnixTime(new Date(maxDate.getFullYear(), 11, 31)));
+                // let cutOffDateWeek = new Date();
+                this.cutOffDateWeek.setDate(this.cutOffDateWeek.getDate() - 35)
+                this.ganttComponent.viewOptions.start = new GanttDate(getUnixTime(new Date(this.formatDate(this.cutOffDateWeek))));
                 this.ganttComponent.viewChange.emit();
-                console.log(this.formatDate(cutOffDateWeek));
-                // console.log(this.formatDate(maxDate));
-                this.getMainOverview(cutOffDateWeek);
+                console.log(this.formatDate(this.cutOffDateWeek));
+                this.getMainOverview(this.cutOffDateWeek);
                 break;
             case 'month':
                 this.viewOptions.cellWidth = 75;
-                let cutOffDateMonth = new Date();
-                let maxMonth = new Date();
-                cutOffDateMonth.setMonth(cutOffDateMonth.getMonth() - 1)
-                // maxMonth.setMonth(12 + maxMonth.getMonth() + 1);
-                this.ganttComponent.viewOptions.start = new GanttDate(getUnixTime(new Date(this.formatDate(cutOffDateMonth))));
-                this.ganttComponent.viewOptions.end = new GanttDate(getUnixTime(new Date(maxMonth.getFullYear(), 11, 31)))
+                // let cutOffDateMonth = new Date();
+                this.cutOffDateMonth.setMonth(this.cutOffDateMonth.getMonth() - 1)
+                this.ganttComponent.viewOptions.start = new GanttDate(getUnixTime(new Date(this.formatDate(this.cutOffDateMonth))));
                 this.ganttComponent.viewChange.emit();
-                console.log(this.formatDate(cutOffDateMonth));
-                console.log(this.formatDate(maxMonth));
-                this.getMainOverview(cutOffDateMonth);
+                console.log(this.formatDate(this.cutOffDateMonth));
+                this.getMainOverview(this.cutOffDateMonth);
 
                 break;
         }
@@ -272,13 +277,17 @@ export class MainOverviewComponent implements OnInit, AfterViewInit {
             day = d.getDate(),
             year = d.getFullYear();
 
-        // if (month.length < 2)
-        //     month = '0' + month;
-        // if (day.length < 2)
-        //     day = '0' + day;
-
         return [year, month, day].join(',');
     }
+
+    // formatDateToSend(date: any) {
+    //     var d = new Date(date),
+    //         month = (d.getMonth() + 1),
+    //         day = d.getDate(),
+    //         year = d.getFullYear();
+
+    //     return [year, month, day].join('-');
+    // }
 
     mapListByProperty(list: any[], prop: string) {
         if (list?.length) {
@@ -298,31 +307,65 @@ export class MainOverviewComponent implements OnInit, AfterViewInit {
         let projectType = this.projectTypeControl.value ?? undefined;
         let margins = this.marginsControl.value ?? undefined;
         let mainOverviewStatus = this.filteredMainOverviewStatuses.find(x => x.selected);
-        let cutOffDate = date;
 
-        this._apiService.mainOverview(
-            mainOverviewStatus?.id,
-            // MainOverviewStatus[mainOverviewStatus?.id!],
-            ownerIds,
-            invoicingEntity,
-            paymentEntity,
-            salesType,
-            projectType,
-            margins,
-            searchFilter,
-            cutOffDate,
-            this.pageNumber,
-            this.deafultPageSize,
-            this.sorting)
-            .pipe(finalize(() => {
-                this.isDataLoading = false;
-            }))
-            .subscribe(result => {
-                console.log(result);
+        if (date) {
+            // this.cutOffDate = moment(date).format('YYYY-MM-DD')
+            // this.cutOffDate = date
 
-                // this.clientDataSource = new MatTableDataSource<ClientListItemDto>(result.items);
-                this.totalCount = result.totalCount;
-            });
+        }
+        // let cutOffDateWeek = this.cutOffDateWeek.toISOString().split('T')[0];
+        // let cutOffDateMonth = this.cutOffDateMonth.toISOString().split('T')[0];
+        debugger;
+        switch (this.overviewViewTypeControl.value) {
+            case 1: // 'Client periods':
+                this._mainOverviewService.workflows(
+                    mainOverviewStatus?.id,
+                    ownerIds,
+                    invoicingEntity,
+                    paymentEntity,
+                    salesType,
+                    projectType,
+                    margins,
+                    searchFilter,
+                    this.cutOffDate.startOf('day'),
+                    this.pageNumber,
+                    this.deafultPageSize,
+                    this.sorting)
+                    .pipe(finalize(() => {
+                        this.isDataLoading = false;
+                    }))
+                    .subscribe(result => {
+                        console.log(result);
+
+                        // this.clientDataSource = new MatTableDataSource<ClientListItemDto>(result.items);
+                        this.totalCount = result.totalCount;
+                    });
+                break;
+            case 2: //'Consultant periods':
+                this._mainOverviewService.consultants(
+                    mainOverviewStatus?.id,
+                    ownerIds,
+                    invoicingEntity,
+                    paymentEntity,
+                    salesType,
+                    projectType,
+                    margins,
+                    searchFilter,
+                    this.cutOffDate,
+                    this.pageNumber,
+                    this.deafultPageSize,
+                    this.sorting)
+                    .pipe(finalize(() => {
+                        this.isDataLoading = false;
+                    }))
+                    .subscribe(result => {
+                        console.log(result);
+
+                        // this.clientDataSource = new MatTableDataSource<ClientListItemDto>(result.items);
+                        this.totalCount = result.totalCount;
+                    });
+                break
+        }
     }
 
     optionClicked(event: Event, item: SelectableIdNameDto | SelectableCountry | SelectableEmployeeDto, list: SelectableIdNameDto[] | SelectableCountry[] | SelectableEmployeeDto[]) {
@@ -423,7 +466,7 @@ export class MainOverviewComponent implements OnInit, AfterViewInit {
         };
 
         this._lookupService.employees(toSend.name)
-            .pipe(finalize(()=> this.getMainOverview()))
+            .pipe(finalize(()=> {}))
             .subscribe(result => {
                 this.selectedAccountManagers = result.map(x => {
                     return new SelectableEmployeeDto({
@@ -436,14 +479,9 @@ export class MainOverviewComponent implements OnInit, AfterViewInit {
             });
     }
 
-    // calculateCutoffDate() {
-    //     switch (this.viewType) {
-    //         case value:
-
-    //             break;
-
-    //         default:
-    //             break;
-
-    // }
+    getOverviewViewTypes() {
+        this._mainOverviewService.viewTypes().subscribe(result => {
+            this.overviewViewTypes = result;
+        });
+    }
 }

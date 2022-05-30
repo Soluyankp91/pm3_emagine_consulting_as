@@ -123,7 +123,15 @@
         </mat-form-field>
     </div>
     <div fxLayout="column" fxLayoutAlign="start start" class="main-overview--content">
-        <div fxLayout="row" fxLayoutAlign="flex-end start" class="u-w--100">
+        <div fxLayout="row" fxLayoutAlign="flex-end start" class="u-w--100 u-mr--10">
+            <mat-form-field appearance="fill" class="main-overview--filter-select formFieldNoMarginPadding filter-select u-mr--10">
+                <mat-select [formControl]="overviewViewTypeControl" name="item">
+                    <mat-option *ngFor="let view of overviewViewTypes | keyvalue"
+                        [value]="+view.key">
+                        {{view.value}}
+                    </mat-option>
+                </mat-select>
+            </mat-form-field>
             <mat-form-field appearance="fill" class="main-overview--filter-select formFieldNoMarginPadding filter-select">
                 <mat-select [formControl]="viewType" name="item">
                     <mat-option *ngFor="let view of views" [class.active]="view.value === viewType.value"
@@ -133,6 +141,8 @@
                 </mat-select>
             </mat-form-field>
         </div>
+        <!-- <div fxLayout="row" fxLayoutAlign="flex-end start" class="u-w--100">
+        </div> -->
         <div fxLayout="row" fxLayoutAlign="start center" class="gant-chart-container" fxFlexFill>
             <ngx-gantt #gantt [items]="items" [viewOptions]="viewOptions" [viewType]="viewType.value">
                 <ngx-gantt-table>
