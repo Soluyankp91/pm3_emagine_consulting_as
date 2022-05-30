@@ -8,6 +8,9 @@ import { AppConsts } from 'src/shared/AppConsts';
 import { ClientListItemDto, ClientsServiceProxy, EmployeeDto, EnumServiceProxy, LookupServiceProxy } from 'src/shared/service-proxies/service-proxies';
 import { SelectableCountry, SelectableEmployeeDto, SelectableIdNameDto, StatusList } from './client.model';
 import { AppComponentBase } from 'src/shared/app-component-base';
+import { LocalHttpService } from 'src/shared/service-proxies/local-http.service';
+import { HttpClient, HttpHeaders } from '@angular/common/http';
+import { AuthenticationResult } from '@azure/msal-browser';
 
 @Component({
     selector: 'app-client',
@@ -76,7 +79,9 @@ export class ClientComponent extends AppComponentBase implements OnInit, OnDestr
         private router: Router,
         private _enumService: EnumServiceProxy,
         private _lookupService: LookupServiceProxy,
-        private _clientService: ClientsServiceProxy
+        private _clientService: ClientsServiceProxy,
+        private httpClient: HttpClient,
+        private localHttpService: LocalHttpService
     ) {
         super(injector);
         this.clientFilter.valueChanges.pipe(
@@ -238,12 +243,29 @@ export class ClientComponent extends AppComponentBase implements OnInit, OnDestr
     }
 
     openInHubspot(item: ClientListItemDto) {
-
+        this.localHttpService.getTokenPromise().then((response: AuthenticationResult) => {
+            this.httpClient.get(`${this.apiUrl}/api/Clients/${item.id!}/HubspotClientUrlAsync`, {
+                    headers: new HttpHeaders({
+                        'Authorization': `Bearer ${response.accessToken}`
+                    }),
+                    responseType: 'text'
+                }).subscribe((result: any) => {
+                    window.open(result, '_blank');
+            })
+        });
     }
 
     openInCAM(item: ClientListItemDto) {
-
+        this.localHttpService.getTokenPromise().then((response: AuthenticationResult) => {
+            this.httpClient.get(`${this.apiUrl}/api/Clients/${item.id!}/CamImpersonationUrl`, {
+                    headers: new HttpHeaders({
+                        'Authorization': `Bearer ${response.accessToken}`
+                    }),
+                    responseType: 'text'
+                }).subscribe((result: any) => {
+                    window.open(result, '_blank');
+            })
+        });
     }
-
 
 }
