@@ -71,6 +71,21 @@ export class WorkflowDetailsComponent extends AppComponentBase implements OnInit
         super(injector);
     }
 
+    get toolbarVisible() {
+        if (this.selectedTabName === 'Overview' ||
+            (!this._workflowDataService.getWorkflowProgress.stepSpecificPermissions!['StartEdit'] &&
+            !this._workflowDataService.getWorkflowProgress.stepSpecificPermissions!['Edit'] &&
+            !this._workflowDataService.getWorkflowProgress.stepSpecificPermissions!['Completion'])
+            ) {
+            return false;
+        } else {
+            return (this._workflowDataService.getWorkflowProgress.stepSpecificPermissions!['Edit'] ||
+                    this._workflowDataService.getWorkflowProgress.stepSpecificPermissions!['Completion']) &&
+                    !this._workflowDataService.getWorkflowProgress.currentStepIsCompleted
+            // return  this._workflowDataService.getWorkflowProgress.stepSpecificPermissions!["Edit"] && this._workflowDataService.getWorkflowProgress.stepSpecificPermissions!["Complete"];
+        }
+    }
+
     ngOnInit(): void {
         this.activatedRoute.paramMap.pipe(
             takeUntil(this._unsubscribe)
@@ -100,7 +115,12 @@ export class WorkflowDetailsComponent extends AppComponentBase implements OnInit
         newStatus.currentlyActiveSection = 0;
         newStatus.currentlyActiveSideSection = 0;
         newStatus.currentlyActiveStep = 0;
+        newStatus.stepSpecificPermissions = {StartEdit: false, Edit: false, Completion: false};
         this._workflowDataService.updateWorkflowProgressStatus(newStatus);
+    }
+
+    cancelForceEdit() {
+        this._workflowDataService.cancelForceEdit.emit();
     }
 
     getClientPeriodTypes() {

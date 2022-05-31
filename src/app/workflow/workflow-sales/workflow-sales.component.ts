@@ -459,6 +459,15 @@ export class WorkflowSalesComponent extends AppComponentBase implements OnInit {
                 //TODO: add all side sections
                 this.detectActiveSideSection();
             });
+
+        this._workflowDataService.cancelForceEdit
+            .pipe(takeUntil(this._unsubscribe))
+            .subscribe((value: boolean) => {
+                this.isCompleted = true;
+                this.editEnabledForcefuly = false;
+                this._workflowDataService.updateWorkflowProgressStatus({currentStepIsCompleted: this.isCompleted, currentStepIsForcefullyEditing: this.editEnabledForcefuly});
+                this.detectActiveSideSection();
+            });
     }
 
     toggleEditMode() {
@@ -469,11 +478,15 @@ export class WorkflowSalesComponent extends AppComponentBase implements OnInit {
     }
 
     get canToggleEditMode() {
-        return this.permissionsForCurrentUser!["Edit"] && (this.isCompleted || this.editEnabledForcefuly);
+        // return this.permissionsForCurrentUser!["Edit"] && (this.isCompleted || this.editEnabledForcefuly);
+        return this.permissionsForCurrentUser!["Edit"] && this.isCompleted;
     }
 
     get readOnlyMode() {
-        return this.isCompleted;
+        return this.isCompleted ||
+            (!this.permissionsForCurrentUser!['StartEdit'] &&
+            !this.permissionsForCurrentUser!['Edit'] &&
+            !this.permissionsForCurrentUser!['Completion']);
     }
 
     private _filterClientRates(value: string): ClientSpecialRateDto[] {
