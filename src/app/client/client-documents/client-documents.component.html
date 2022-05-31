@@ -44,7 +44,7 @@
                                     *ngFor="let document of generalDocumentForm.documents.controls; index as i"
                                     [formArrayName]="i">
                                     <div fxFlex="5%">
-                                        <mat-icon [matTooltip]="document.value.icon" class="icon" [svgIcon]="document.value.icon"></mat-icon>
+                                        <mat-icon [matTooltip]="document.value.icon" class="icon u-ml--5" [svgIcon]="document.value.icon"></mat-icon>
                                     </div>
                                     <ng-container *ngIf="document.value.editable; else generalDocumentHeadlineDisplay">
                                         <mat-form-field appearance="fill" class="u-w--100 formFieldNoMarginPadding filter-select" fxFlex="25%">
