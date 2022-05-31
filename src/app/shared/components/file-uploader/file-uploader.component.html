@@ -1,12 +1,12 @@
-<div class="file-uploader" file-drag-and-drop (click)="fileInput.click()"
-    (onFileDropped)="fileDropped($event)">
+<div class="file-uploader" file-drag-and-drop (click)="fileInput.click()" (onFileDropped)="fileDropped($event)">
     <input #fileInput type="file" [accept]="'.pdf,.doc,.docx,.xls,.xlsx,.txt,.jpg,.jpeg,.png,.svg'" style="display: none"
         (change)="onFilesAdded()">
     <div class="content">
-        <div class="watermark">
-            <mat-icon class="icon" svgIcon="folderCustom"></mat-icon>
-            <span class="label">Drag & drop File</span>
-        </div>
+        <button class="button-add" mat-flat-button>
+            <mat-icon>add</mat-icon>
+            Add file
+        </button>
+        <span class="content-instructions">Upload or simply drag and drop file here</span>
     </div>
 </div>
 <div class="d-flex flex-column uploader-hint">

@@ -2,7 +2,7 @@ import { Injectable } from '@angular/core';
 import { HttpClient, HttpResponseBase, HttpResponse } from '@angular/common/http';
 import { mergeMap as _observableMergeMap, catchError as _observableCatch } from 'rxjs/operators';
 import { Observable, throwError as _observableThrow, of as _observableOf } from 'rxjs';
-import { ApiException } from './service-proxies';
+import { ApiException, FileParameter } from './service-proxies';
 import { AppConsts } from '../AppConsts';
 
 @Injectable()
@@ -14,15 +14,18 @@ export class FileUploadService {
     constructor(private _httpClient: HttpClient) {
     }
 
-    public AddClienttGeneralFile(clientId: number, file: File) : Observable<void> {
+    public AddClienttGeneralFile(clientId: number, attachmentFileTypeId: number, file: FileParameter) : Observable<void> {
         if (clientId === null || clientId === undefined) {
-            throw new Error("The parameter 'consultantId' cannot be null.");
+            throw new Error("The parameter 'clientId' cannot be null.");
+        }
+        if (clientId === null || clientId === undefined) {
+            throw new Error("The parameter 'clientId' cannot be null.");
         }
 
-        let url = this.API_BASE_URL + `/api/ClientDocuments/${clientId}/GeneralFile`;
+        let url = this.API_BASE_URL + `/api/ClientDocuments/${clientId}/GeneralFile/${attachmentFileTypeId}`;
         // url = this.addParameter(url, 'consultantId', consultantId);
 
-        return this.uploadFile<void>(url, file);
+        return this.uploadFile<void>(url, file.data);
     }
 
     //#region Private

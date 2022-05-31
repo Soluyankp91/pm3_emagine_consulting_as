@@ -224,7 +224,7 @@ export class ClientComponent extends AppComponentBase implements OnInit, OnDestr
     }
 
     pageChanged(event?: any): void {
-        this.pageNumber = event.pageIndex === 0 ? 1 : event.pageIndex;
+        this.pageNumber = event.pageIndex + 1;
         this.deafultPageSize = event.pageSize;
         this.getClientsGrid();
     }

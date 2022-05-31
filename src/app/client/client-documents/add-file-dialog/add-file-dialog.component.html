@@ -1,18 +1,33 @@
 <mat-dialog-content class="add-file--modal">
     <div mat-dialog-title class="add-file--modal-header">
         <h1>
-            Add file
+            Upload file
         </h1>
     </div>
-    <div fxLayout="row" fxLayoutAlign="center center">
-        <app-file-uploader></app-file-uploader>
+    <div fxLayout="column" fxLayoutAlign="start center">
+        <mat-form-field appearance="outline" class="u-w--100 filter-select u-mb--20" fxFlex="15%">
+            <mat-select [formControl]="attachmentTypeId" required placeholder="File type" [disableOptionCentering]="true" [compareWith]="compareWithFn">
+                <mat-option *ngFor="let item of generalFileTypes" [value]="item.id">
+                    {{ item.name }}
+                </mat-option>
+            </mat-select>
+            <mat-error>
+                {{getValidationMessage(attachmentTypeId)}}
+            </mat-error>
+        </mat-form-field>
+        <div class="file">
+            <span class="flex-row flex-items-center">
+                <mat-icon class="icon" svgIcon="{{ file.icon }}"></mat-icon>
+                <span (click)="$event.stopPropagation()" class="label">{{ file.name }}</span>
+            </span>
+        </div>
     </div>
 </mat-dialog-content>
 <mat-dialog-actions class="add-file--actions flex-justify-between">
-    <button [mat-dialog-close]="true" mat-flat-button class="add-file--actions-btn dialog-btn dialog-btn__outlined">
+    <button (click)="reject()" mat-flat-button class="add-file--actions-btn dialog-btn dialog-btn__outlined">
         Cancel
     </button>
-    <button mat-flat-button class="add-file--actions-btn dialog-btn dialog-btn__positive" (click)="save()">
+    <button mat-flat-button class="add-file--actions-btn dialog-btn dialog-btn__positive" (click)="upload()" [disabled]="!attachmentTypeId.valid">
         Upload
     </button>
 </mat-dialog-actions>

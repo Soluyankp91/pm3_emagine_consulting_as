@@ -69,7 +69,7 @@ export class ClientInvoicingComponent implements OnInit {
     }
 
     pageChanged(event?: any): void {
-        this.pageNumber = event.pageIndex;
+        this.pageNumber = event.pageIndex + 1;
         this.deafultPageSize = event.pageSize;
     }
 

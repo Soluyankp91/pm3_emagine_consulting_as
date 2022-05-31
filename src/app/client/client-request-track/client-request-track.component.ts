@@ -77,12 +77,14 @@ export class ClientRequestTrackComponent implements OnInit, OnDestroy {
     }
 
     pageChanged(event?: any): void {
-        this.pageNumber = event.pageIndex;
+        this.pageNumber = event.pageIndex + 1;
         this.deafultPageSize = event.pageSize;
+        this.getRequestTrack();
     }
 
     sortChanged(event?: any): void {
         this.sorting = event.active.concat(' ', event.direction);
+        this.getRequestTrack();
     }
 
     mapLocationArrayByName(list: any): string {
