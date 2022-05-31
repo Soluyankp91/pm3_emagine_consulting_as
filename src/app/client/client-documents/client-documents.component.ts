@@ -9,7 +9,7 @@ import { MatDialog } from '@angular/material/dialog';
 import { ConfirmationDialogComponent } from 'src/app/shared/components/confirmation-dialog/confirmation-dialog.component';
 import { MatTabGroup } from '@angular/material/tabs';
 import { AddFolderDialogComponent } from './add-folder-dialog/add-folder-dialog.component';
-import { ClientAttachmentInfoOutputDto, ClientAttachmentTypeEnum, ClientContractViewRootDto, ClientDocumentsServiceProxy, ClientEvaluationOutputDto, DocumentTypeEnum, EnumEntityTypeDto, UpdateClientAttachmentFileInfoInputDto } from 'src/shared/service-proxies/service-proxies';
+import { ClientAttachmentInfoOutputDto, ClientAttachmentTypeEnum, ClientContractViewRootDto, ClientDocumentsServiceProxy, ClientEvaluationOutputDto, DocumentTypeEnum, EnumEntityTypeDto, UpdateClientAttachmentFileInfoInputDto, FileParameter, IdNameDto } from 'src/shared/service-proxies/service-proxies';
 import { finalize, takeUntil } from 'rxjs/operators';
 import { merge, Subject } from 'rxjs';
 import { ActivatedRoute } from '@angular/router';
@@ -17,21 +17,6 @@ import { AppComponentBase } from 'src/shared/app-component-base';
 import * as moment from 'moment';
 import { FileUploaderComponent } from 'src/app/shared/components/file-uploader/file-uploader.component';
 import { FileUploaderFile } from 'src/app/shared/components/file-uploader/file-uploader.model';
-
-const generalFileTypes: EnumEntityTypeDto[] = [
-    new EnumEntityTypeDto({
-        id: 1,
-        name: 'General'
-    }),
-    new EnumEntityTypeDto({
-        id: 2,
-        name: 'Invoicing'
-    }),
-    new EnumEntityTypeDto({
-        id: 3,
-        name: 'Tender'
-    })
-];
 
 @Component({
     selector: 'app-client-documents',
@@ -44,11 +29,14 @@ export class ClientDocumentsComponent extends AppComponentBase implements OnInit
     clientId: number;
 
     //General tab
-    // generalFileTypes = generalFileTypes;
-    generalFileTypes = ClientAttachmentTypeEnum;
+    generalFileTypes: IdNameDto[];
     generalDocumentForm: GeneralDocumentForm;
     isGeneralDocumentsLoading = true;
     generalDocumensNoData = false;
+
+    generalDocumentToEdit: any;
+
+    isGeneralDocumentEditing = false;
 
     // Evals tab
     evalsDocumentsDataSource: MatTableDataSource<any> = new MatTableDataSource<any>();
@@ -78,7 +66,7 @@ export class ClientDocumentsComponent extends AppComponentBase implements OnInit
     documentSideNavigation = DocumentSideNavigation;
     documentSideItems = DocumentSideNavItem;
     selectedItem = DocumentSideNavItem.General;
-
+    isContractsLoading = false;
 
     generalDocumentsIncludeLinked = new FormControl(false);
     contractDocumentsIncludeLinked = new FormControl(false);
@@ -125,19 +113,15 @@ export class ClientDocumentsComponent extends AppComponentBase implements OnInit
     }
 
     ngOnInit(): void {
-        this.getFileTypes();
         this.activatedRoute.parent!.paramMap.pipe(
             takeUntil(this._unsubscribe)
-        ).subscribe(params => {
-            this.clientId = +params.get('id')!;
-            this.getGeneralDocuments();
-            this.getContracts();
-            this.getEvaluations();
+            ).subscribe(params => {
+                this.clientId = +params.get('id')!;
+                this.getGeneralFileTypes();
+                // this.getGeneralDocuments();
+                this.getContracts();
+                this.getEvaluations();
         });
-    }
-
-    getFileTypes() {
-
     }
 
     ngOnDestroy(): void {
@@ -145,24 +129,24 @@ export class ClientDocumentsComponent extends AppComponentBase implements OnInit
         this._unsubscribe.complete();
     }
 
+    getGeneralFileTypes() {
+        this._clientDocumentsService.getAvailableStatusForClientAttachments()
+            .pipe(finalize(() => {}))
+            .subscribe(result => {
+                this.generalFileTypes = result;
+                this.getGeneralDocuments();
+            });
+    }
+
     getGeneralDocuments() {
         this.isGeneralDocumentsLoading = true;
         this._clientDocumentsService.generalAttachments(this.clientId, this.generalDocumentsIncludeLinked.value)
             .pipe(finalize(() => this.isGeneralDocumentsLoading = false))
             .subscribe(result => {
-                this.generalDocumentForm.documents.controls = [];
+                this.generalDocumentForm.documents.clear();
                 result.forEach((generalDocument: ClientAttachmentInfoOutputDto) => {
                     this.addGeneralDocument(generalDocument)
                 });
-                let hardccodedDoc = new ClientAttachmentInfoOutputDto();
-                hardccodedDoc.attachmentTypeId = ClientAttachmentTypeEnum.BiddingMaterials;
-                hardccodedDoc.clientAttachmentGuid = 'B54D53F1-3514-48F8-98FA-0523B5AE1F14';
-                hardccodedDoc.dateUpdated = moment();
-                hardccodedDoc.documentStorageGuid = 'B54D53F1-3514-48F8-98FA-0523B5AE1F14';
-                hardccodedDoc.documentType = DocumentTypeEnum.Misc;
-                hardccodedDoc.filename = 'filename';
-                hardccodedDoc.headline = 'headline';
-                this.addGeneralDocument(hardccodedDoc);
                 this.generalDocumensNoData = result?.length === 0;
             });
     }
@@ -194,7 +178,7 @@ export class ClientDocumentsComponent extends AppComponentBase implements OnInit
             icon: new FormControl(this.getFileTypeIcon(generalDocument?.documentType!) ?? null),
             headline: new FormControl(generalDocument?.headline ?? null),
             filename: new FormControl(generalDocument?.filename ?? null),
-            attachmentTypeId: new FormControl(generalDocument?.attachmentTypeId ?? null),
+            attachmentTypeId: new FormControl(this.findItemById(this.generalFileTypes, generalDocument?.attachmentTypeId) ?? null),
             dateUpdated: new FormControl(generalDocument?.dateUpdated ?? null),
             updatedBy: new FormControl(generalDocument?.updatedBy ?? null),
             editable: new FormControl(generalDocument ? false : true)
@@ -215,32 +199,86 @@ export class ClientDocumentsComponent extends AppComponentBase implements OnInit
             });
     }
 
-
     editOrSaveGeneralDocument(isEditMode: boolean, index: number) {
-        this.documents.at(index).get('editable')?.setValue(!isEditMode, {emitEvent: false});
         if (isEditMode) {
+            // save
+            this.generalDocumentToEdit = {};
             this.saveOrUpdateGeneralDocument(index);
+        } else {
+            // start edit
+            const formRow = this.documents.at(index).value;
+            this.generalDocumentToEdit = {
+                headline: formRow.headline,
+                fileType: formRow.attachmentTypeId
+            };
         }
+        this.isGeneralDocumentEditing = !this.isGeneralDocumentEditing;
+        this.documents.at(index).get('editable')?.setValue(!isEditMode, {emitEvent: false});
+    }
+
+    cancelEditGeneralDocument(index: number) {
+        const formRow = this.documents.at(index);
+        formRow!.get('headline')!.setValue(this.generalDocumentToEdit.headline, {emitEvent: false});
+        formRow!.get('attachmentTypeId')!.setValue(this.generalDocumentToEdit.fileType, {emitEvent: false});
+        formRow!.get('editable')!.setValue(false, {emitEvent: false});
+        this.generalDocumentToEdit = {};
+        this.isGeneralDocumentEditing = false;
     }
 
     saveOrUpdateGeneralDocument(index: number) {
-        const file = this.fileUploader._files[0].internalFile!;
-        this.getBase64(file).then((result: any) => {
-            const form = this.generalDocumentForm.documents.at(index).value;
-            let input = new UpdateClientAttachmentFileInfoInputDto();
-            input.clientAttachmentGuid = form.clientAttachmentGuid;
-            input.headline = form.headline;
-            input.fileType = form.attachmentTypeId;
-            // input.file = new AttachmentFileDto();
-            // input.file.filename = form.filename;
-            // input.file!.fileBytes = result!;
-            this._clientDocumentsService.generalFilePut(this.clientId!, input)
-                .pipe(finalize(() => {}))
-                .subscribe(result => {
+        const form = this.generalDocumentForm.documents.at(index).value;
+        let input = new UpdateClientAttachmentFileInfoInputDto();
+        input.clientAttachmentGuid = form.clientAttachmentGuid;
+        input.headline = form.headline;
+        input.fileType = form.attachmentTypeId?.id;
+        this.showMainSpinner();
+        this._clientDocumentsService.generalFilePut(this.clientId!, input)
+            .pipe(finalize(() => {
+                this.hideMainSpinner();
+                this.getGeneralDocuments();
+            }))
+            .subscribe(result => {
 
-                });
+            });
+    }
+
+    openDialogToAddFile(files: FileUploaderFile[]) {
+        const fileToUpload = files[0];
+        const scrollStrategy = this.overlay.scrollStrategies.reposition();
+        const dialogRef = this.dialog.open(AddFileDialogComponent, {
+            width: '525px',
+            minHeight: '150px',
+            height: 'auto',
+            scrollStrategy,
+            backdropClass: 'backdrop-modal--wrapper',
+            data: {
+                fileToUpload
+            }
         });
 
+        dialogRef.componentInstance.onConfirmed.subscribe((result: {attachmentTypeId: number, file: FileUploaderFile}) => {
+            if (result?.attachmentTypeId) {
+                console.log(result);
+                let fileInput: FileParameter;
+                fileInput = {
+                    fileName: result.file.name,
+                    data: result.file.internalFile                    
+                }
+                this.showMainSpinner();
+                this._clientDocumentsService.generalFilePost(this.clientId!, result.attachmentTypeId, fileInput)
+                    .pipe(finalize(() => {
+                        this.hideMainSpinner();
+                        this.fileUploader.clear();
+                    }))
+                    .subscribe(response => {
+                        this.getGeneralDocuments();
+                    });
+            }
+        });
+
+        dialogRef.componentInstance.onRejected.subscribe(() => {
+            this.fileUploader.clear();
+        });
     }
 
     uploadFile(files: FileUploaderFile[]) {
@@ -308,12 +346,14 @@ export class ClientDocumentsComponent extends AppComponentBase implements OnInit
     }
 
     pageChanged(event?: any): void {
-        this.pageNumber = event.pageIndex;
+        this.pageNumber = event.pageIndex + 1;
         this.deafultPageSize = event.pageSize;
+        this.getEvaluations();
     }
 
     sortChanged(event?: any): void {
         this.sorting = event.active.concat(' ', event.direction);
+        this.getEvaluations();
     }
 
 
@@ -401,8 +441,9 @@ export class ClientDocumentsComponent extends AppComponentBase implements OnInit
     }
 
     getContracts() {
+        this.isContractsLoading = true;
         this._clientDocumentsService.contractDocuments(this.clientId, this.contractDocumentsIncludeLinked.value, this.contractDocumentsIncludeExpired.value)
-            .pipe(finalize(() => {}))
+            .pipe(finalize(() => this.isContractsLoading = false))
             .subscribe(result => {
                 console.log(result);
                 this.contractsDocuments = result;

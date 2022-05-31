@@ -3,7 +3,7 @@ import { AbstractControl } from "@angular/forms";
 import { MatSnackBar } from "@angular/material/snack-bar";
 import { NgxSpinnerService } from "ngx-spinner";
 import { environment } from "src/environments/environment";
-import { API_BASE_URL, EnumEntityTypeDto } from "./service-proxies/service-proxies";
+import { API_BASE_URL, EnumEntityTypeDto, IdNameDto } from "./service-proxies/service-proxies";
 
 export enum NotifySeverity {
     Info = 1,
@@ -96,7 +96,7 @@ export abstract class AppComponentBase {
         }
     }
 
-    findItemById(list: EnumEntityTypeDto[], id?: number) {
+    findItemById(list: EnumEntityTypeDto[] | IdNameDto[], id?: number) {
         if (id) {
             return list.find((x: any) => x.id === id);
         } else {
