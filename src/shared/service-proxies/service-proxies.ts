@@ -328,7 +328,7 @@ export class ClientDocumentsServiceProxy {
     /**
      * @return Success
      */
-    document(documentGuid: string): Observable<void> {
+    document(documentGuid: string): Observable<FileResponse> {
         let url_ = this.baseUrl + "/api/ClientDocuments/Document/{documentGuid}";
         if (documentGuid === undefined || documentGuid === null)
             throw new Error("The parameter 'documentGuid' must be defined.");
@@ -339,6 +339,7 @@ export class ClientDocumentsServiceProxy {
             observe: "response",
             responseType: "blob",
             headers: new HttpHeaders({
+                "Accept": "text/plain"
             })
         };
 
@@ -349,30 +350,31 @@ export class ClientDocumentsServiceProxy {
                 try {
                     return this.processDocument(response_ as any);
                 } catch (e) {
-                    return _observableThrow(e) as any as Observable<void>;
+                    return _observableThrow(e) as any as Observable<FileResponse>;
                 }
             } else
-                return _observableThrow(response_) as any as Observable<void>;
+                return _observableThrow(response_) as any as Observable<FileResponse>;
         }));
     }
 
-    protected processDocument(response: HttpResponseBase): Observable<void> {
+    protected processDocument(response: HttpResponseBase): Observable<FileResponse> {
         const status = response.status;
         const responseBlob =
             response instanceof HttpResponse ? response.body :
             (response as any).error instanceof Blob ? (response as any).error : undefined;
 
         let _headers: any = {}; if (response.headers) { for (let key of response.headers.keys()) { _headers[key] = response.headers.get(key); }}
-        if (status === 200) {
-            return blobToText(responseBlob).pipe(_observableMergeMap(_responseText => {
-            return _observableOf<void>(null as any);
-            }));
+        if (status === 200 || status === 206) {
+            const contentDisposition = response.headers ? response.headers.get("content-disposition") : undefined;
+            const fileNameMatch = contentDisposition ? /filename="?([^"]*?)"?(;|$)/g.exec(contentDisposition) : undefined;
+            const fileName = fileNameMatch && fileNameMatch.length > 1 ? fileNameMatch[1] : undefined;
+            return _observableOf({ fileName: fileName, data: responseBlob as any, status: status, headers: _headers });
         } else if (status !== 200 && status !== 204) {
             return blobToText(responseBlob).pipe(_observableMergeMap(_responseText => {
             return throwException("An unexpected server error occurred.", status, _responseText, _headers);
             }));
         }
-        return _observableOf<void>(null as any);
+        return _observableOf<FileResponse>(null as any);
     }
 
     /**
@@ -796,7 +798,7 @@ export class ClientDocumentsServiceProxy {
     /**
      * @return Success
      */
-    evaluation(legacyConsultantId: number, evalTenantId: number, evalGuid: string, useLocalLanguage: boolean, forcePdf: boolean): Observable<void> {
+    evaluation(legacyConsultantId: number, evalTenantId: number, evalGuid: string, useLocalLanguage: boolean, forcePdf: boolean): Observable<FileResponse> {
         let url_ = this.baseUrl + "/api/ClientDocuments/{legacyConsultantId}/Evaluation/{evalTenantId}/{evalGuid}/{useLocalLanguage}/{forcePdf}";
         if (legacyConsultantId === undefined || legacyConsultantId === null)
             throw new Error("The parameter 'legacyConsultantId' must be defined.");
@@ -819,6 +821,7 @@ export class ClientDocumentsServiceProxy {
             observe: "response",
             responseType: "blob",
             headers: new HttpHeaders({
+                "Accept": "text/plain"
             })
         };
 
@@ -829,30 +832,31 @@ export class ClientDocumentsServiceProxy {
                 try {
                     return this.processEvaluation(response_ as any);
                 } catch (e) {
-                    return _observableThrow(e) as any as Observable<void>;
+                    return _observableThrow(e) as any as Observable<FileResponse>;
                 }
             } else
-                return _observableThrow(response_) as any as Observable<void>;
+                return _observableThrow(response_) as any as Observable<FileResponse>;
         }));
     }
 
-    protected processEvaluation(response: HttpResponseBase): Observable<void> {
+    protected processEvaluation(response: HttpResponseBase): Observable<FileResponse> {
         const status = response.status;
         const responseBlob =
             response instanceof HttpResponse ? response.body :
             (response as any).error instanceof Blob ? (response as any).error : undefined;
 
         let _headers: any = {}; if (response.headers) { for (let key of response.headers.keys()) { _headers[key] = response.headers.get(key); }}
-        if (status === 200) {
-            return blobToText(responseBlob).pipe(_observableMergeMap(_responseText => {
-            return _observableOf<void>(null as any);
-            }));
+        if (status === 200 || status === 206) {
+            const contentDisposition = response.headers ? response.headers.get("content-disposition") : undefined;
+            const fileNameMatch = contentDisposition ? /filename="?([^"]*?)"?(;|$)/g.exec(contentDisposition) : undefined;
+            const fileName = fileNameMatch && fileNameMatch.length > 1 ? fileNameMatch[1] : undefined;
+            return _observableOf({ fileName: fileName, data: responseBlob as any, status: status, headers: _headers });
         } else if (status !== 200 && status !== 204) {
             return blobToText(responseBlob).pipe(_observableMergeMap(_responseText => {
             return throwException("An unexpected server error occurred.", status, _responseText, _headers);
             }));
         }
-        return _observableOf<void>(null as any);
+        return _observableOf<FileResponse>(null as any);
     }
 }
 
@@ -13285,7 +13289,7 @@ export enum DocumentTypeEnum {
 
 export class DomainEventBase implements IDomainEventBase {
     readonly id?: string;
-    readonly dateOccurred?: moment.Moment;
+    readonly dateOccurredUtc?: moment.Moment;
 
     constructor(data?: IDomainEventBase) {
         if (data) {
@@ -13299,7 +13303,7 @@ export class DomainEventBase implements IDomainEventBase {
     init(_data?: any) {
         if (_data) {
             (<any>this).id = _data["id"];
-            (<any>this).dateOccurred = _data["dateOccurred"] ? moment(_data["dateOccurred"].toString()) : <any>undefined;
+            (<any>this).dateOccurredUtc = _data["dateOccurredUtc"] ? moment(_data["dateOccurredUtc"].toString()) : <any>undefined;
         }
     }
 
@@ -13313,14 +13317,14 @@ export class DomainEventBase implements IDomainEventBase {
     toJSON(data?: any) {
         data = typeof data === 'object' ? data : {};
         data["id"] = this.id;
-        data["dateOccurred"] = this.dateOccurred ? this.dateOccurred.toISOString() : <any>undefined;
+        data["dateOccurredUtc"] = this.dateOccurredUtc ? this.dateOccurredUtc.toISOString() : <any>undefined;
         return data;
     }
 }
 
 export interface IDomainEventBase {
     id?: string;
-    dateOccurred?: moment.Moment;
+    dateOccurredUtc?: moment.Moment;
 }
 
 export class EmployeeDto implements IEmployeeDto {
@@ -15367,6 +15371,8 @@ export class Tenant implements ITenant {
     readonly domainEvents?: DomainEventBase[] | undefined;
     readonly id?: number;
     readonly name?: string | undefined;
+    timeZone?: string | undefined;
+    timeZoneInfo?: TimeZoneInfo;
 
     constructor(data?: ITenant) {
         if (data) {
@@ -15386,6 +15392,8 @@ export class Tenant implements ITenant {
             }
             (<any>this).id = _data["id"];
             (<any>this).name = _data["name"];
+            this.timeZone = _data["timeZone"];
+            this.timeZoneInfo = _data["timeZoneInfo"] ? TimeZoneInfo.fromJS(_data["timeZoneInfo"]) : <any>undefined;
         }
     }
 
@@ -15405,6 +15413,8 @@ export class Tenant implements ITenant {
         }
         data["id"] = this.id;
         data["name"] = this.name;
+        data["timeZone"] = this.timeZone;
+        data["timeZoneInfo"] = this.timeZoneInfo ? this.timeZoneInfo.toJSON() : <any>undefined;
         return data;
     }
 }
@@ -15413,6 +15423,8 @@ export interface ITenant {
     domainEvents?: DomainEventBase[] | undefined;
     id?: number;
     name?: string | undefined;
+    timeZone?: string | undefined;
+    timeZoneInfo?: TimeZoneInfo;
 }
 
 export enum TerminationReason {
@@ -15424,6 +15436,142 @@ export enum TerminationTime {
     AccordingToContract = 1,
     BeforeEndOfContract = 2,
     ContractDidNotStart = 3,
+}
+
+export class TimeSpan implements ITimeSpan {
+    ticks?: number;
+    days?: number;
+    hours?: number;
+    milliseconds?: number;
+    minutes?: number;
+    seconds?: number;
+    readonly totalDays?: number;
+    readonly totalHours?: number;
+    readonly totalMilliseconds?: number;
+    readonly totalMinutes?: number;
+    readonly totalSeconds?: number;
+
+    constructor(data?: ITimeSpan) {
+        if (data) {
+            for (var property in data) {
+                if (data.hasOwnProperty(property))
+                    (<any>this)[property] = (<any>data)[property];
+            }
+        }
+    }
+
+    init(_data?: any) {
+        if (_data) {
+            this.ticks = _data["ticks"];
+            this.days = _data["days"];
+            this.hours = _data["hours"];
+            this.milliseconds = _data["milliseconds"];
+            this.minutes = _data["minutes"];
+            this.seconds = _data["seconds"];
+            (<any>this).totalDays = _data["totalDays"];
+            (<any>this).totalHours = _data["totalHours"];
+            (<any>this).totalMilliseconds = _data["totalMilliseconds"];
+            (<any>this).totalMinutes = _data["totalMinutes"];
+            (<any>this).totalSeconds = _data["totalSeconds"];
+        }
+    }
+
+    static fromJS(data: any): TimeSpan {
+        data = typeof data === 'object' ? data : {};
+        let result = new TimeSpan();
+        result.init(data);
+        return result;
+    }
+
+    toJSON(data?: any) {
+        data = typeof data === 'object' ? data : {};
+        data["ticks"] = this.ticks;
+        data["days"] = this.days;
+        data["hours"] = this.hours;
+        data["milliseconds"] = this.milliseconds;
+        data["minutes"] = this.minutes;
+        data["seconds"] = this.seconds;
+        data["totalDays"] = this.totalDays;
+        data["totalHours"] = this.totalHours;
+        data["totalMilliseconds"] = this.totalMilliseconds;
+        data["totalMinutes"] = this.totalMinutes;
+        data["totalSeconds"] = this.totalSeconds;
+        return data;
+    }
+}
+
+export interface ITimeSpan {
+    ticks?: number;
+    days?: number;
+    hours?: number;
+    milliseconds?: number;
+    minutes?: number;
+    seconds?: number;
+    totalDays?: number;
+    totalHours?: number;
+    totalMilliseconds?: number;
+    totalMinutes?: number;
+    totalSeconds?: number;
+}
+
+export class TimeZoneInfo implements ITimeZoneInfo {
+    readonly id?: string | undefined;
+    readonly hasIanaId?: boolean;
+    readonly displayName?: string | undefined;
+    readonly standardName?: string | undefined;
+    readonly daylightName?: string | undefined;
+    baseUtcOffset?: TimeSpan;
+    readonly supportsDaylightSavingTime?: boolean;
+
+    constructor(data?: ITimeZoneInfo) {
+        if (data) {
+            for (var property in data) {
+                if (data.hasOwnProperty(property))
+                    (<any>this)[property] = (<any>data)[property];
+            }
+        }
+    }
+
+    init(_data?: any) {
+        if (_data) {
+            (<any>this).id = _data["id"];
+            (<any>this).hasIanaId = _data["hasIanaId"];
+            (<any>this).displayName = _data["displayName"];
+            (<any>this).standardName = _data["standardName"];
+            (<any>this).daylightName = _data["daylightName"];
+            this.baseUtcOffset = _data["baseUtcOffset"] ? TimeSpan.fromJS(_data["baseUtcOffset"]) : <any>undefined;
+            (<any>this).supportsDaylightSavingTime = _data["supportsDaylightSavingTime"];
+        }
+    }
+
+    static fromJS(data: any): TimeZoneInfo {
+        data = typeof data === 'object' ? data : {};
+        let result = new TimeZoneInfo();
+        result.init(data);
+        return result;
+    }
+
+    toJSON(data?: any) {
+        data = typeof data === 'object' ? data : {};
+        data["id"] = this.id;
+        data["hasIanaId"] = this.hasIanaId;
+        data["displayName"] = this.displayName;
+        data["standardName"] = this.standardName;
+        data["daylightName"] = this.daylightName;
+        data["baseUtcOffset"] = this.baseUtcOffset ? this.baseUtcOffset.toJSON() : <any>undefined;
+        data["supportsDaylightSavingTime"] = this.supportsDaylightSavingTime;
+        return data;
+    }
+}
+
+export interface ITimeZoneInfo {
+    id?: string | undefined;
+    hasIanaId?: boolean;
+    displayName?: string | undefined;
+    standardName?: string | undefined;
+    daylightName?: string | undefined;
+    baseUtcOffset?: TimeSpan;
+    supportsDaylightSavingTime?: boolean;
 }
 
 export class UpdateClientAttachmentFileInfoInputDto implements IUpdateClientAttachmentFileInfoInputDto {
@@ -16344,6 +16492,13 @@ export interface IWorkflowTerminationSourcingDataQueryDto {
 export interface FileParameter {
     data: any;
     fileName: string;
+}
+
+export interface FileResponse {
+    data: Blob;
+    status: number;
+    fileName?: string;
+    headers?: { [name: string]: any };
 }
 
 export class ApiException extends Error {

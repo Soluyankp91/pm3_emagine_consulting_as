@@ -1,9 +1,7 @@
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { Component, Injector, OnInit, ViewChild } from '@angular/core';
 import { FormControl } from '@angular/forms';
-import { MatSelectChange } from '@angular/material/select';
 import { ActivatedRoute, Router } from '@angular/router';
-import { MsalService } from '@azure/msal-angular';
 import { AuthenticationResult } from '@azure/msal-browser';
 import { Subject } from 'rxjs';
 import { finalize, takeUntil } from 'rxjs/operators';
@@ -11,6 +9,7 @@ import { AppComponentBase } from 'src/shared/app-component-base';
 import { LocalHttpService } from 'src/shared/service-proxies/local-http.service';
 import { ApiServiceProxy, ClientDetailsDto, ClientsServiceProxy } from 'src/shared/service-proxies/service-proxies';
 import { ClientDocumentsComponent } from '../client-documents/client-documents.component';
+
 @Component({
     selector: 'app-client-details',
     templateUrl: './client-details.component.html',
@@ -45,7 +44,6 @@ export class ClientDetailsComponent extends AppComponentBase implements OnInit {
         private _apiService: ApiServiceProxy,
         private _clientService: ClientsServiceProxy,
         private httpClient: HttpClient,
-        private _authService: MsalService,
         private localHttpService: LocalHttpService
     ) {
         super(injector);
