@@ -10434,6 +10434,8 @@ export class ClientEvaluationOutputDto implements IClientEvaluationOutputDto {
     legacyConsultantId?: number;
     clientName?: string | undefined;
     clientContactName?: string | undefined;
+    consultantName?: string | undefined;
+    externalId?: string;
     averageScore?: number;
     evaluationDate?: moment.Moment;
     evaluationFormName?: string | undefined;
@@ -10456,6 +10458,8 @@ export class ClientEvaluationOutputDto implements IClientEvaluationOutputDto {
             this.legacyConsultantId = _data["legacyConsultantId"];
             this.clientName = _data["clientName"];
             this.clientContactName = _data["clientContactName"];
+            this.consultantName = _data["consultantName"];
+            this.externalId = _data["externalId"];
             this.averageScore = _data["averageScore"];
             this.evaluationDate = _data["evaluationDate"] ? moment(_data["evaluationDate"].toString()) : <any>undefined;
             this.evaluationFormName = _data["evaluationFormName"];
@@ -10478,6 +10482,8 @@ export class ClientEvaluationOutputDto implements IClientEvaluationOutputDto {
         data["legacyConsultantId"] = this.legacyConsultantId;
         data["clientName"] = this.clientName;
         data["clientContactName"] = this.clientContactName;
+        data["consultantName"] = this.consultantName;
+        data["externalId"] = this.externalId;
         data["averageScore"] = this.averageScore;
         data["evaluationDate"] = this.evaluationDate ? this.evaluationDate.format('YYYY-MM-DD') : <any>undefined;
         data["evaluationFormName"] = this.evaluationFormName;
@@ -10493,6 +10499,8 @@ export interface IClientEvaluationOutputDto {
     legacyConsultantId?: number;
     clientName?: string | undefined;
     clientContactName?: string | undefined;
+    consultantName?: string | undefined;
+    externalId?: string;
     averageScore?: number;
     evaluationDate?: moment.Moment;
     evaluationFormName?: string | undefined;
