@@ -53,12 +53,14 @@ export class ClientDocumentsComponent extends AppComponentBase implements OnInit
     sorting = '';
 
     evalsDocsDisplayColumns = [
-        'local',
-        'english',
-        'averageScore',
+        'evaluationDate',
         'consultantName',
+        'evaluationType',
+        'averageScore',
         'evaluator',
-        'evaluationDate'
+        'comments',
+        'local',
+        'english'
     ];
 
     // Contracts tab
@@ -494,8 +496,43 @@ export class ClientDocumentsComponent extends AppComponentBase implements OnInit
         this._clientDocumentsService.evaluations(this.clientId, this.evaluationDocumentsIncludeLinked.value, this.evaluationDocumentDate.value)
             .pipe(finalize(() => this.isDataLoading = false))
             .subscribe(result => {
+                // const data: ClientEvaluationOutputDto[] = [
+                //     new ClientEvaluationOutputDto({
+                //         evaluationGuid: "3fa85f64-5717-4562-b3fc-2c963f66afa6",
+                //         evaluationTenantId: 0,
+                //         consultantTenant: 0,
+                //         legacyConsultantId: 0,
+                //         clientName: "string",
+                //         clientContactName: "string",
+                //         averageScore: 0,
+                //         evaluationDate: moment(),
+                //         evaluationFormName: "string",
+                //         comment: "string"
+                //     }),
+                //     new ClientEvaluationOutputDto({
+                //         evaluationGuid: "3fa85f64-5717-4562-b3fc-2c963f66afa6",
+                //         evaluationTenantId: 0,
+                //         consultantTenant: 0,
+                //         legacyConsultantId: 0,
+                //         clientName: "string",
+                //         clientContactName: "string",
+                //         averageScore: 0,
+                //         evaluationDate: moment(),
+                //         evaluationFormName: "string",
+                //         comment: "string"
+                //     })
+
+                // ];
                 this.evalsDocumentsDataSource = new MatTableDataSource<ClientEvaluationOutputDto>(result);
                 this.totalCount = result.length;
+            });
+    }
+
+    downloadEvaluationDocument(row: ClientEvaluationOutputDto, useLocalLanguage: boolean, forcePdf: boolean) {
+        this._clientDocumentsService.evaluation(row.legacyConsultantId!, row.evaluationTenantId!, row.evaluationGuid!, useLocalLanguage, forcePdf)
+            .pipe(finalize(() => {}))
+            .subscribe(result => {
+                console.log(result);
             });
     }
 

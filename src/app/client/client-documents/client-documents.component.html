@@ -43,8 +43,8 @@
                                 <div fxLayout="row" fxLayoutAlign="space-between center" fxLayoutGap="10px" class="client-documents--form__row u-w--100"
                                     *ngFor="let document of generalDocumentForm.documents.controls; index as i"
                                     [formArrayName]="i">
-                                    <div fxFlex="5%">
-                                        <mat-icon [matTooltip]="document.value.icon" class="icon u-ml--5" [svgIcon]="document.value.icon"></mat-icon>
+                                    <div fxFlex="5%" fxLayoutAlign="center center">
+                                        <mat-icon [matTooltip]="document.value.icon" class="icon" [svgIcon]="document.value.icon"></mat-icon>
                                     </div>
                                     <ng-container *ngIf="document.value.editable; else generalDocumentHeadlineDisplay">
                                         <mat-form-field appearance="fill" class="u-w--100 formFieldNoMarginPadding filter-select" fxFlex="25%">
@@ -343,55 +343,66 @@
                     <div fxLayout="column" fxFlexFill>
                         <mat-table #table [dataSource]="evalsDocumentsDataSource" class="white-table u-w--100" matSort
                             matSortStart="asc" (matSortChange)="sortChanged($event)">
-                            <ng-container matColumnDef="local">
-                                <mat-header-cell *matHeaderCellDef fxFlex="15%"> Local </mat-header-cell>
-                                <mat-cell *matCellDef="let row" fxFlex="15%">
-                                    <span class="text-truncate-ellipsis" [matTooltip]="row.headline">
-                                        {{row.headline}}
-                                    </span>
-                                </mat-cell>
-                            </ng-container>
-                            <ng-container matColumnDef="english">
-                                <mat-header-cell *matHeaderCellDef fxFlex="15%"> English </mat-header-cell>
-                                <mat-cell *matCellDef="let row" fxFlex="15%">
-                                    <span class="text-truncate-ellipsis" [matTooltip]="row?.status?.name">
-                                        {{row?.status?.name}}
-                                    </span>
-                                </mat-cell>
-                            </ng-container>
-                            <ng-container matColumnDef="averageScore">
-                                <mat-header-cell *matHeaderCellDef fxFlex="10%"> Average score </mat-header-cell>
+                            <ng-container matColumnDef="evaluationDate">
+                                <mat-header-cell *matHeaderCellDef fxFlex="10%"> Date</mat-header-cell>
                                 <mat-cell *matCellDef="let row" fxFlex="10%">
-                                    <span class="text-truncate-ellipsis" [matTooltip]="row.clientDeadline">
-                                        {{row.clientDeadline}}
+                                    <span class="text-truncate-ellipsis" [matTooltip]="row.evaluationDate | momentFormat: 'DD.MM.YYYY'">
+                                        {{row.evaluationDate | momentFormat: 'DD.MM.YYYY'}}
                                     </span>
                                 </mat-cell>
                             </ng-container>
                             <ng-container matColumnDef="consultantName">
                                 <mat-header-cell *matHeaderCellDef fxFlex="20%"> Consultant name </mat-header-cell>
                                 <mat-cell *matCellDef="let row" fxFlex="20%">
-                                    <span class="text-truncate-ellipsis" [matTooltip]="row?.dateAdded">
-                                        {{row?.dateAdded}}
+                                    <span class="text-truncate-ellipsis" [matTooltip]="row?.consultantTenant">
+                                        {{row?.consultantTenant}}
+                                    </span>
+                                </mat-cell>
+                            </ng-container>
+                            <ng-container matColumnDef="evaluationType">
+                                <mat-header-cell *matHeaderCellDef fxFlex="15%"> Evaluation type </mat-header-cell>
+                                <mat-cell *matCellDef="let row" fxFlex="15%">
+                                    <span class="text-truncate-ellipsis" [matTooltip]="row?.evaluationFormName">
+                                        {{row?.evaluationFormName}}
+                                    </span>
+                                </mat-cell>
+                            </ng-container>
+                            <ng-container matColumnDef="averageScore">
+                                <mat-header-cell *matHeaderCellDef fxFlex="10%"> Average score </mat-header-cell>
+                                <mat-cell *matCellDef="let row" fxFlex="10%" fxLayoutAlign="center center">
+                                    <span class="text-truncate-ellipsis" [matTooltip]="row.averageScore">
+                                        {{row.averageScore}}
                                     </span>
                                 </mat-cell>
                             </ng-container>
                             <ng-container matColumnDef="evaluator">
                                 <mat-header-cell *matHeaderCellDef fxFlex="20%"> Evaluator </mat-header-cell>
                                 <mat-cell *matCellDef="let row" fxFlex="20%">
-                                    <span class="text-truncate-ellipsis" [matTooltip]="row?.projectType?.name">
-                                        {{row?.projectType?.name}}
+                                    <span class="text-truncate-ellipsis" [matTooltip]="row.clientContactName">
+                                        {{row.clientContactName}}
                                     </span>
                                 </mat-cell>
                             </ng-container>
-                            <ng-container matColumnDef="evaluationDate">
-                                <mat-header-cell *matHeaderCellDef fxFlex="20%"> Date of evaluation </mat-header-cell>
-                                <mat-cell *matCellDef="let row" fxFlex="20%">
-                                    <span class="text-truncate-ellipsis" [matTooltip]="row.priority">
-                                        {{row.priority}}
-                                    </span>
+                            <ng-container matColumnDef="comments">
+                                <mat-header-cell *matHeaderCellDef fxFlex="5%"> Comments </mat-header-cell>
+                                <mat-cell *matCellDef="let row" fxFlex="5%" fxLayoutAlign="center center">
+                                    <mat-icon [matTooltip]="row.comment" svgIcon="info_icon"></mat-icon>
                                 </mat-cell>
                             </ng-container>
-
+                            <ng-container matColumnDef="local">
+                                <mat-header-cell *matHeaderCellDef fxFlex="10%" fxLayoutAlign="center center"> Local </mat-header-cell>
+                                <mat-cell *matCellDef="let row" fxFlex="10%" fxLayoutAlign="center center">
+                                    <button mat-icon-button (click)="downloadEvaluationDocument(row, true, false)"><mat-icon svgIcon="doc"></mat-icon></button>
+                                    <button mat-icon-button (click)="downloadEvaluationDocument(row, true, true)"><mat-icon svgIcon="pdf"></mat-icon></button>
+                                </mat-cell>
+                            </ng-container>
+                            <ng-container matColumnDef="english">
+                                <mat-header-cell *matHeaderCellDef fxFlex="10%" fxLayoutAlign="center center"> English </mat-header-cell>
+                                <mat-cell *matCellDef="let row" fxFlex="10%" fxLayoutAlign="center center">
+                                    <button mat-icon-button (click)="downloadEvaluationDocument(row, false, false)"><mat-icon svgIcon="doc"></mat-icon></button>
+                                    <button mat-icon-button (click)="downloadEvaluationDocument(row, false, true)"><mat-icon svgIcon="pdf"></mat-icon></button>
+                                </mat-cell>
+                            </ng-container>
                             <mat-header-row *matHeaderRowDef="evalsDocsDisplayColumns"></mat-header-row>
                             <mat-row *matRowDef="let row; columns: evalsDocsDisplayColumns;" class="mat-elevation-z0">
                             </mat-row>
