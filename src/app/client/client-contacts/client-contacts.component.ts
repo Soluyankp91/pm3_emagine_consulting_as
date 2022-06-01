@@ -104,7 +104,7 @@ export class ClientContactsComponent implements OnInit, OnDestroy {
     }
 
     pageChanged(event?: any): void {
-        this.pageNumber = event.pageIndex === 0 ? 1 : event.pageIndex;
+        this.pageNumber = event.pageIndex + 1;
         this.deafultPageSize = event.pageSize;
         this.getClientContacts();
     }

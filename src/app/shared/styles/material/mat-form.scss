@@ -472,6 +472,14 @@
                 color: #FF7A78 !important;
             }
         }
+        .mat-form-field-prefix {
+            .mat-icon.search-icon {
+                color: #999 !important;
+                width: 24px;
+                height: 24px;
+                transition: all .3s ease-in-out;
+            }
+        }
     }
 }
 

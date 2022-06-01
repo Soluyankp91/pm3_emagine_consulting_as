@@ -30,98 +30,102 @@
                                 <div fxFlex="15%">
                                     Type
                                 </div>
-                                <div fxFlex="20%">
+                                <div fxFlex="10%">
                                     Date
                                 </div>
-                                <div fxFlex="7%">
+                                <div fxFlex="10%">
                                     Uploaded by
                                 </div>
-                                <div fxFlex="3%">
+                                <div fxFlex="10%">
                                 </div>
                             </div>
                             <ng-container formArrayName="documents" class="u-w--100">
                                 <div fxLayout="row" fxLayoutAlign="space-between center" fxLayoutGap="10px" class="client-documents--form__row u-w--100"
                                     *ngFor="let document of generalDocumentForm.documents.controls; index as i"
                                     [formArrayName]="i">
-                                    <ng-container *ngIf="generalDocumentForm.documents.at(i).get('editable')?.value">
-                                        <div fxFlex="5%">
-                                            <mat-icon [matTooltip]="generalDocumentForm.documents.at(i).get('icon')?.value" class="icon" [svgIcon]="generalDocumentForm.documents.at(i).get('icon')?.value"></mat-icon>
-                                        </div>
+                                    <div fxFlex="5%" fxLayoutAlign="center center">
+                                        <mat-icon [matTooltip]="document.value.icon" class="icon" [svgIcon]="document.value.icon"></mat-icon>
+                                    </div>
+                                    <ng-container *ngIf="document.value.editable; else generalDocumentHeadlineDisplay">
                                         <mat-form-field appearance="fill" class="u-w--100 formFieldNoMarginPadding filter-select" fxFlex="25%">
                                             <input matInput type="text" formControlName="headline" placeholder="Headline" />
                                         </mat-form-field>
-                                        <mat-form-field appearance="fill" class="u-w--100 formFieldNoMarginPadding filter-select" fxFlex="25%">
-                                            <input matInput type="text" formControlName="filename" placeholder="Filename" />
-                                        </mat-form-field>
+                                    </ng-container>
+                                    <ng-template #generalDocumentHeadlineDisplay>
+                                        <div fxFlex="25%" class="text-truncate-ellipsis" [matTooltip]="document.value.headline">
+                                            {{document.value.headline}}
+                                        </div>
+                                    </ng-template>
+                                    <div fxFlex="25%" class="text-truncate-ellipsis" [matTooltip]="document.value.filename">
+                                        {{document.value.filename}}
+                                    </div>
+                                    <ng-container *ngIf="document.value.editable; else generalDocumentFileTypeDisplay">
                                         <mat-form-field appearance="fill" class="u-w--100 formFieldNoMarginPadding filter-select" fxFlex="15%">
                                             <mat-select formControlName="attachmentTypeId" placeholder="File type" [disableOptionCentering]="true" [compareWith]="compareWithFn">
-                                                <mat-option *ngFor="let item of generalFileTypes | keyvalue" [value]="+item.key">
-                                                    {{ item.value }}
+                                                <mat-option *ngFor="let item of generalFileTypes" [value]="item">
+                                                    {{ item.name }}
                                                 </mat-option>
                                             </mat-select>
                                         </mat-form-field>
-                                        <mat-form-field appearance="fill" class="u-w--100 formFieldNoMarginPadding filter-select formFieldDatePicker" fxFlex="20%">
-                                            <input autocomplete="off" placeholder="Date" matInput
-                                                    [matDatepicker]="generalDocumentDatePicker"
-                                                    name="date"
-                                                    formControlName="dateUpdated"
-                                                    (focus)="generalDocumentDatePicker.open()"
-                                                    (click)="generalDocumentDatePicker.open()" readonly>
-                                            <mat-icon class="calendar-icon" matSuffix svgIcon="calendar"></mat-icon>
-                                            <mat-datepicker #generalDocumentDatePicker></mat-datepicker>
-                                        </mat-form-field>
-                                        <div fxFlex="7%" class="text-truncate-ellipsis" [matTooltip]="generalDocumentForm.documents.at(i).get('uploadedBy')?.value">
-                                            {{generalDocumentForm.documents.at(i).get('uploadedBy')?.value}}
-                                        </div>
                                     </ng-container>
-                                    <ng-container *ngIf="!generalDocumentForm.documents.at(i).get('editable')?.value">
-                                        <div fxFlex="5%">
-                                            <mat-icon [matTooltip]="generalDocumentForm.documents.at(i).get('icon')?.value" class="icon" [svgIcon]="generalDocumentForm.documents.at(i).get('icon')?.value"></mat-icon>
+                                    <ng-template #generalDocumentFileTypeDisplay>
+                                        <div fxFlex="15%" class="text-truncate-ellipsis" [matTooltip]="document.value.attachmentTypeId?.name">
+                                            {{document.value.attachmentTypeId?.name}}
                                         </div>
-                                        <div fxFlex="25%" class="text-truncate-ellipsis" [matTooltip]="generalDocumentForm.documents.at(i).get('headline')?.value">
-                                            {{generalDocumentForm.documents.at(i).get('headline')?.value}}
-                                        </div>
-                                        <div fxFlex="25%" class="text-truncate-ellipsis" [matTooltip]="generalDocumentForm.documents.at(i).get('filename')?.value">
-                                            {{generalDocumentForm.documents.at(i).get('filename')?.value}}
-                                        </div>
-                                        <div fxFlex="15%" class="text-truncate-ellipsis" [matTooltip]="parseTypeName(generalDocumentForm.documents.at(i).get('attachmentTypeId')?.value * 1)">
-                                            {{parseTypeName(generalDocumentForm.documents.at(i).get('attachmentTypeId')?.value * 1)}}
-                                        </div>
-                                        <div fxFlex="20%" class="text-truncate-ellipsis" [matTooltip]="generalDocumentForm.documents.at(i).get('dateUpdated')?.value | momentFormat: 'DD.MM.YYYY'">
-                                            {{generalDocumentForm.documents.at(i).get('dateUpdated')?.value | momentFormat: 'DD.MM.YYYY'}}
-                                        </div>
-                                        <div fxFlex="7%" class="text-truncate-ellipsis" [matTooltip]="generalDocumentForm.documents.at(i).get('uploadedBy')?.value">
-                                            {{generalDocumentForm.documents.at(i).get('uploadedBy')?.value}}
-                                        </div>
-                                    </ng-container>
-                                    <div fxFlex="3%">
-                                        <button mat-icon-button [matMenuTriggerFor]="generalDocumentMenu" class="client-documents-icon--actions"><mat-icon>more_horiz</mat-icon></button>
-                                        <mat-menu #generalDocumentMenu>
-                                            <button
-                                                class="menu-item"
-                                                mat-menu-item
-                                                (click)="editGeneralDocument(documents?.at(i)?.get('editable')?.value, i)">
-                                                {{documents?.at(i)?.get('editable')?.value ? 'Save' : 'Edit'}}
-                                            </button>
-                                            <button
-                                                class="menu-item"
-                                                mat-menu-item
-                                                (click)="downloadGeneralDocument(document.value?.clientAttachmentGuid)">
-                                                Download
-                                            </button>
-                                            <button
-                                                class="menu-item"
-                                                mat-menu-item
-                                                (click)="deleteGeneralDocument(document.value?.clientAttachmentGuid)">
-                                                Delete document
-                                            </button>
-                                        </mat-menu>
+                                    </ng-template>
+                                    <div fxFlex="10%" class="text-truncate-ellipsis" [matTooltip]="document.value.dateUpdated | momentFormat: 'DD.MM.YYYY'">
+                                        {{document.value.dateUpdated | momentFormat: 'DD.MM.YYYY'}}
                                     </div>
+                                    <div fxFlex="10%" class="text-truncate-ellipsis" [matTooltip]="document.value.updatedBy">
+                                        {{document.value.updatedBy}}
+                                    </div>
+                                    <ng-container *ngIf="document.value.editable; else generalDocumentActionsDisplay">
+                                        <div fxFlex="10%" class="u-w--100 text-truncate-ellipsis flex-items-center">
+                                            <button mat-flat-button (click)="editOrSaveGeneralDocument(document.value.editable, i)" class="inline-edit-form--btn__save">
+                                                Save
+                                            </button>
+                                            <button mat-flat-button (click)="cancelEditGeneralDocument(i)" class="inline-edit-form--btn__cancel">
+                                                Cancel
+                                            </button>
+                                        </div>
+                                    </ng-container>
+                                    <ng-template #generalDocumentActionsDisplay>
+                                        <div fxFlex="10%" fxLayoutAlign="end center">
+                                            <button mat-icon-button [matMenuTriggerFor]="generalDocumentMenu" class="three-dots-actions-btn"><mat-icon>more_horiz</mat-icon></button>
+                                            <mat-menu #generalDocumentMenu>
+                                                <button
+                                                    class="menu-item menu-item--edit"
+                                                    mat-menu-item
+                                                    [disabled]="isGeneralDocumentEditing"
+                                                    (click)="editOrSaveGeneralDocument(document.value.editable, i)">
+                                                    <mat-icon>create</mat-icon>
+                                                    Edit
+                                                </button>
+                                                <button
+                                                    class="menu-item menu-item--edit"
+                                                    mat-menu-item
+                                                    (click)="downloadGeneralDocument(document.value?.documentStorageGuid)">
+                                                    <mat-icon>download</mat-icon>
+                                                    Download
+                                                </button>
+                                                <button
+                                                    class="menu-item menu-item--cancel"
+                                                    mat-menu-item
+                                                    (click)="deleteGeneralDocument(document.value?.clientAttachmentGuid)">
+                                                    <mat-icon>clear</mat-icon>
+                                                    Delete document
+                                                </button>
+                                            </mat-menu>
+                                        </div>
+                                    </ng-template>
                                 </div>
                             </ng-container>
                         </form>
                         <div fxLayout="row" fxLayoutAlign="center center">
-                            <app-file-uploader (filesAdded)="uploadFile($event)" [withoutDisplay]="true" [acceptOnlyOneFile]="true" class="u-w--100" #fileUploader></app-file-uploader>
+                            <app-file-uploader (filesAdded)="openDialogToAddFile($event)" [withoutDisplay]="true" [acceptOnlyOneFile]="true" class="u-w--100" #fileUploader></app-file-uploader>
+                        </div>
+                        <div class="spinner-container" *ngIf="isGeneralDocumentsLoading">
+                            <mat-spinner [diameter]="50"></mat-spinner>
                         </div>
                     </div>
                 </div>
@@ -312,10 +316,13 @@
                             No files
                         </ng-template>
                     </div>
+                    <div class="spinner-container" *ngIf="isContractsLoading">
+                        <mat-spinner [diameter]="50"></mat-spinner>
+                    </div>
                 </div>
             </ng-container>
             <ng-container *ngSwitchCase="documentSideItems.Evaluations">
-                <div fxLayout="column" fxLayoutAlign="start end" class="documents-documents--table u-w--100">
+                <div fxLayout="column" fxLayoutAlign="start end" class="client-documents--table u-w--100">
                     <div fxLayout="row" fxLayoutAlign="space-between center"class=" u-mb--15">
                         <mat-form-field appearance="outline" class="u-w--100 u-mr--16">
                             <mat-label>Max answer date</mat-label>
@@ -336,55 +343,66 @@
                     <div fxLayout="column" fxFlexFill>
                         <mat-table #table [dataSource]="evalsDocumentsDataSource" class="white-table u-w--100" matSort
                             matSortStart="asc" (matSortChange)="sortChanged($event)">
-                            <ng-container matColumnDef="local">
-                                <mat-header-cell *matHeaderCellDef fxFlex="15%"> Local </mat-header-cell>
-                                <mat-cell *matCellDef="let row" fxFlex="15%">
-                                    <span class="text-truncate-ellipsis" [matTooltip]="row.headline">
-                                        {{row.headline}}
-                                    </span>
-                                </mat-cell>
-                            </ng-container>
-                            <ng-container matColumnDef="english">
-                                <mat-header-cell *matHeaderCellDef fxFlex="15%"> English </mat-header-cell>
-                                <mat-cell *matCellDef="let row" fxFlex="15%">
-                                    <span class="text-truncate-ellipsis" [matTooltip]="row?.status?.name">
-                                        {{row?.status?.name}}
-                                    </span>
-                                </mat-cell>
-                            </ng-container>
-                            <ng-container matColumnDef="averageScore">
-                                <mat-header-cell *matHeaderCellDef fxFlex="10%"> Average score </mat-header-cell>
+                            <ng-container matColumnDef="evaluationDate">
+                                <mat-header-cell *matHeaderCellDef fxFlex="10%"> Date</mat-header-cell>
                                 <mat-cell *matCellDef="let row" fxFlex="10%">
-                                    <span class="text-truncate-ellipsis" [matTooltip]="row.clientDeadline">
-                                        {{row.clientDeadline}}
+                                    <span class="text-truncate-ellipsis" [matTooltip]="row.evaluationDate | momentFormat: 'DD.MM.YYYY'">
+                                        {{row.evaluationDate | momentFormat: 'DD.MM.YYYY'}}
                                     </span>
                                 </mat-cell>
                             </ng-container>
                             <ng-container matColumnDef="consultantName">
                                 <mat-header-cell *matHeaderCellDef fxFlex="20%"> Consultant name </mat-header-cell>
                                 <mat-cell *matCellDef="let row" fxFlex="20%">
-                                    <span class="text-truncate-ellipsis" [matTooltip]="row?.dateAdded">
-                                        {{row?.dateAdded}}
+                                    <span class="text-truncate-ellipsis" [matTooltip]="row?.consultantTenant">
+                                        {{row?.consultantTenant}}
+                                    </span>
+                                </mat-cell>
+                            </ng-container>
+                            <ng-container matColumnDef="evaluationType">
+                                <mat-header-cell *matHeaderCellDef fxFlex="15%"> Evaluation type </mat-header-cell>
+                                <mat-cell *matCellDef="let row" fxFlex="15%">
+                                    <span class="text-truncate-ellipsis" [matTooltip]="row?.evaluationFormName">
+                                        {{row?.evaluationFormName}}
+                                    </span>
+                                </mat-cell>
+                            </ng-container>
+                            <ng-container matColumnDef="averageScore">
+                                <mat-header-cell *matHeaderCellDef fxFlex="10%"> Average score </mat-header-cell>
+                                <mat-cell *matCellDef="let row" fxFlex="10%" fxLayoutAlign="center center">
+                                    <span class="text-truncate-ellipsis" [matTooltip]="row.averageScore">
+                                        {{row.averageScore}}
                                     </span>
                                 </mat-cell>
                             </ng-container>
                             <ng-container matColumnDef="evaluator">
                                 <mat-header-cell *matHeaderCellDef fxFlex="20%"> Evaluator </mat-header-cell>
                                 <mat-cell *matCellDef="let row" fxFlex="20%">
-                                    <span class="text-truncate-ellipsis" [matTooltip]="row?.projectType?.name">
-                                        {{row?.projectType?.name}}
+                                    <span class="text-truncate-ellipsis" [matTooltip]="row.clientContactName">
+                                        {{row.clientContactName}}
                                     </span>
                                 </mat-cell>
                             </ng-container>
-                            <ng-container matColumnDef="evaluationDate">
-                                <mat-header-cell *matHeaderCellDef fxFlex="20%"> Date of evaluation </mat-header-cell>
-                                <mat-cell *matCellDef="let row" fxFlex="20%">
-                                    <span class="text-truncate-ellipsis" [matTooltip]="row.priority">
-                                        {{row.priority}}
-                                    </span>
+                            <ng-container matColumnDef="comments">
+                                <mat-header-cell *matHeaderCellDef fxFlex="5%"> Comments </mat-header-cell>
+                                <mat-cell *matCellDef="let row" fxFlex="5%" fxLayoutAlign="center center">
+                                    <mat-icon [matTooltip]="row.comment" svgIcon="info_icon"></mat-icon>
                                 </mat-cell>
                             </ng-container>
-
+                            <ng-container matColumnDef="local">
+                                <mat-header-cell *matHeaderCellDef fxFlex="10%" fxLayoutAlign="center center"> Local </mat-header-cell>
+                                <mat-cell *matCellDef="let row" fxFlex="10%" fxLayoutAlign="center center">
+                                    <button mat-icon-button (click)="downloadEvaluationDocument(row, true, false)"><mat-icon svgIcon="doc"></mat-icon></button>
+                                    <button mat-icon-button (click)="downloadEvaluationDocument(row, true, true)"><mat-icon svgIcon="pdf"></mat-icon></button>
+                                </mat-cell>
+                            </ng-container>
+                            <ng-container matColumnDef="english">
+                                <mat-header-cell *matHeaderCellDef fxFlex="10%" fxLayoutAlign="center center"> English </mat-header-cell>
+                                <mat-cell *matCellDef="let row" fxFlex="10%" fxLayoutAlign="center center">
+                                    <button mat-icon-button (click)="downloadEvaluationDocument(row, false, false)"><mat-icon svgIcon="doc"></mat-icon></button>
+                                    <button mat-icon-button (click)="downloadEvaluationDocument(row, false, true)"><mat-icon svgIcon="pdf"></mat-icon></button>
+                                </mat-cell>
+                            </ng-container>
                             <mat-header-row *matHeaderRowDef="evalsDocsDisplayColumns"></mat-header-row>
                             <mat-row *matRowDef="let row; columns: evalsDocsDisplayColumns;" class="mat-elevation-z0">
                             </mat-row>
