@@ -117,12 +117,14 @@ export class ClientWorkflowTrackComponent extends AppComponentBase implements On
     }
 
     pageChanged(event?: any): void {
-        this.pageNumber = event.pageIndex;
+        this.pageNumber = event.pageIndex + 1;
         this.deafultPageSize = event.pageSize;
+        this.getWorkflowTrack();
     }
 
     sortChanged(event?: any): void {
         this.sorting = event.active.concat(' ', event.direction);
+        this.getWorkflowTrack();
     }
 
     mapLocationArrayByName(list: any): string {

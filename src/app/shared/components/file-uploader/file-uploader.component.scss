@@ -1,17 +1,27 @@
+@import "/src/app/shared/styles/config/_colors";
+
 .file-uploader {
-    height: 230px;
+    height: 60px;
     padding: 10px;
-    background-color: #fff;
-    border: 2px dashed #17A297;
+    background-color: transparent;
+    border: 1px dashed #e7e3e8;;
     // outline: 2px dashed #17A297;
-    border-radius: 10px;
+    border-radius: 0;
 
     .content {
         overflow: auto;
         height: 100%;
         display: flex;
-        justify-content: center;
+        justify-content: space-between;
         align-items: center;
+
+        &-instructions {
+            color: $light-grey-color;
+            font-family: 'Open Sans';
+            font-weight: 600;
+            font-size: 12px;
+            line-height: 140%;
+        }
 
         .files {
             display: flex;
@@ -40,46 +50,46 @@
             }
         }
 
-        .watermark {
-            width: 100%;
-            max-width: 250px;
-            z-index: 0;
-            display: flex;
-            flex-direction: column;
-            justify-content: center;
-            position: absolute;
+        // .watermark {
+        //     width: 100%;
+        //     max-width: 250px;
+        //     z-index: 0;
+        //     display: flex;
+        //     flex-direction: column;
+        //     justify-content: center;
+        //     position: absolute;
 
-            .icon {
-                height: 61px;
-                width: auto;
-            }
+        //     .icon {
+        //         height: 61px;
+        //         width: auto;
+        //     }
 
-            .label {
-                color: #89838D;
-                font-size: 14px;
-                font-weight: 500;
-                margin-top: 22px;
-                text-align: center;
-            }
-        }
+        //     .label {
+        //         color: #89838D;
+        //         font-size: 14px;
+        //         font-weight: 500;
+        //         margin-top: 22px;
+        //         text-align: center;
+        //     }
+        // }
 
-        &::-webkit-scrollbar {
-            width: 5px;
-            height: 5px;
-        }
+        // &::-webkit-scrollbar {
+        //     width: 5px;
+        //     height: 5px;
+        // }
 
-        &::-webkit-scrollbar-track {
-            background: #303b43;
-        }
+        // &::-webkit-scrollbar-track {
+        //     background: #303b43;
+        // }
 
-        &::-webkit-scrollbar-thumb {
-            background: #566874;
-            border-radius: 50px;
-        }
+        // &::-webkit-scrollbar-thumb {
+        //     background: #566874;
+        //     border-radius: 50px;
+        // }
 
-        &::-webkit-scrollbar-thumb:hover {
-            background: #566874;
-        }
+        // &::-webkit-scrollbar-thumb:hover {
+        //     background: #566874;
+        // }
     }
 }
 
