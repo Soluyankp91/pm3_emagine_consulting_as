@@ -213,7 +213,13 @@ export class ClientComponent extends AppComponentBase implements OnInit, OnDestr
         this.isDataLoading = true;
         let ownerIds = this.selectedAccountManagers.map(x => +x.id);
         let selectedCountryIds = this.selectedCountries.map(x => +x.id);
-        this._clientService.list(searchFilter, selectedCountryIds, ownerIds, this.isActiveClients, !this.includeDeleted, this.onlyWrongfullyDeletedInHubspot, this.pageNumber, this.deafultPageSize, this.sorting)
+        let isActiveFlag;
+        if ((this.isActiveClients && this.nonActiveClient) || (!this.isActiveClients && !this.nonActiveClient)) {
+            isActiveFlag = undefined;
+        } else {
+            isActiveFlag = this.isActiveClients;
+        }
+        this._clientService.list(searchFilter, selectedCountryIds, ownerIds, isActiveFlag, !this.includeDeleted, this.onlyWrongfullyDeletedInHubspot, this.pageNumber, this.deafultPageSize, this.sorting)
             .pipe(finalize(() => {
                 this.isDataLoading = false;
             }))
