@@ -354,8 +354,9 @@
                             <ng-container matColumnDef="consultantName">
                                 <mat-header-cell *matHeaderCellDef fxFlex="20%"> Consultant name </mat-header-cell>
                                 <mat-cell *matCellDef="let row" fxFlex="20%">
-                                    <span class="text-truncate-ellipsis" [matTooltip]="row?.consultantTenant">
-                                        {{row?.consultantTenant}}
+                                    <img [src]="consultantProfileUrl(row?.externalId)" />
+                                    <span class="text-truncate-ellipsis" [matTooltip]="row?.consultantName">
+                                        {{row?.consultantName}}
                                     </span>
                                 </mat-cell>
                             </ng-container>

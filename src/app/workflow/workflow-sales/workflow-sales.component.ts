@@ -1708,6 +1708,7 @@ export class WorkflowSalesComponent extends AppComponentBase implements OnInit {
     }
 
     getStartChangeOrExtendClientPeriodSales() {
+        this.resetForms();
         this.showMainSpinner();
         this._clientPeriodService.clientSalesGet(this.periodId!)
             .pipe(finalize(() => {
@@ -2029,6 +2030,7 @@ export class WorkflowSalesComponent extends AppComponentBase implements OnInit {
     //#region termination
 
     getWorkflowSalesStepConsultantTermination() {
+        this.resetForms();
         this._workflowServiceProxy.terminationConsultantSalesGet(this.workflowId!, this.consultant.id!)
             .pipe(finalize(() => {
 
@@ -2081,6 +2083,7 @@ export class WorkflowSalesComponent extends AppComponentBase implements OnInit {
     }
 
     getWorkflowSalesStepTermination() {
+        this.resetForms();
         this._workflowServiceProxy.terminationSalesGet(this.workflowId!)
             .pipe(finalize(() => {
 
@@ -2207,6 +2210,7 @@ export class WorkflowSalesComponent extends AppComponentBase implements OnInit {
     }
 
     getStartChangeOrExtendConsutlantPeriodSales() {
+        this.resetForms();
         this._consultantPeriodSerivce.consultantSalesGet(this.periodId!)
             .pipe(finalize(() => {}))
             .subscribe(result => {

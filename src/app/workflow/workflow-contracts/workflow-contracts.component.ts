@@ -951,8 +951,16 @@ export class WorkflowContractsComponent extends AppComponentBase implements OnIn
         return option?.name;
     }
 
+    resetForms() {
+        this.contractsMainForm.reset('', {emitEvent: false});
+        this.contractClientForm.reset('', {emitEvent: false});
+        this.contractsConsultantsDataForm.consultants.controls = [];
+        this.contractsSyncDataForm.consultants.controls = [];
+    }
+
     //#region Start client period
     getStartChangeOrExtendClientPeriodContracts() {
+        this.resetForms();
         this.showMainSpinner();
         this._clientPeriodService.clientContractsGet(this.periodId!)
             .pipe(finalize(() => {
@@ -1187,6 +1195,7 @@ export class WorkflowContractsComponent extends AppComponentBase implements OnIn
 
     //#region Start consultant period
     getStartChangeOrExtendConsultantPeriodContracts() {
+        this.resetForms();
         this.showMainSpinner();
         this._consultantPeriodService.consultantContractsGet(this.periodId!)
             .pipe(finalize(() => this.hideMainSpinner()))
@@ -1329,6 +1338,7 @@ export class WorkflowContractsComponent extends AppComponentBase implements OnIn
     }
 
     getWorkflowContractsStepConsultantTermination() {
+        this.resetForms();
         this._workflowServiceProxy.terminationConsultantContractGet(this.workflowId!, this.consultant.id!)
             .pipe(finalize(() => {
 
@@ -1366,6 +1376,7 @@ export class WorkflowContractsComponent extends AppComponentBase implements OnIn
     }
 
     getWorkflowContractStepTermination() {
+        this.resetForms();
         this._workflowServiceProxy.terminationContractGet(this.workflowId!)
             .pipe(finalize(() => {
 
