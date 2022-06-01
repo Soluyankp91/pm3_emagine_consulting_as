@@ -1,11 +1,11 @@
 import { AfterViewInit, Component, OnInit, ViewChild } from '@angular/core';
 import { FormControl } from '@angular/forms';
-import { GanttDate, GanttItem, GanttViewOptions, GanttViewType, NgxGanttComponent } from '@worktile/gantt';
+import { GanttDate, GanttItem, GanttItemInternal, GanttViewOptions, GanttViewType, NgxGanttComponent } from '@worktile/gantt';
 import { getUnixTime } from 'date-fns';
 import { Subject } from 'rxjs';
 import { debounceTime, finalize, switchMap, takeUntil } from 'rxjs/operators';
 import { AppConsts } from 'src/shared/AppConsts';
-import { ApiServiceProxy, EmployeeDto, EnumEntityTypeDto, LookupServiceProxy, MainOverviewServiceProxy, MainOverviewStatusDto } from 'src/shared/service-proxies/service-proxies';
+import { ApiServiceProxy, EmployeeDto, EnumEntityTypeDto, LookupServiceProxy, MainOverviewItemForConsultantDto, MainOverviewItemForWorkflowDto, MainOverviewServiceProxy, MainOverviewStatusDto } from 'src/shared/service-proxies/service-proxies';
 import { SelectableCountry, SelectableIdNameDto } from '../client/client.model';
 import { InternalLookupService } from '../shared/common/internal-lookup.service';
 import { ManagerStatus } from '../shared/components/manager-search/manager-search.model';
@@ -69,6 +69,11 @@ export class MainOverviewComponent implements OnInit, AfterViewInit {
         { id: '000004', title: 'Leadership support', color: 'rgb(139, 209, 203)', origin: { firstName: 'Frederick', lastName: 'Rikke', process: OverviewFlag.ExtensionInNegotiation }, start: getUnixTime(new Date(2022, 7, 1)), end: getUnixTime(new Date(2022, 11, 30))},
         { id: '000005', title: 'Leadership support', color: 'rgb(23, 162, 151)', origin: { firstName: 'Frederick', lastName: 'Rikke', process: OverviewFlag.RequiresAttention }, start: getUnixTime(new Date(2022, 6, 1)), end: getUnixTime(new Date(2022, 10, 6))}
     ];
+
+    workflowsData: any[] = [];
+    consultantsData: any[] = [];
+    // consultantsData: GanttItem<MainOverviewItemForConsultantDto>[] = [];
+
 
     viewType: FormControl = new FormControl(GanttViewType.month);
 
@@ -191,10 +196,7 @@ export class MainOverviewComponent implements OnInit, AfterViewInit {
     }
 
     ngAfterViewInit(): void {
-        //Called after ngAfterContentInit when the component's view has been initialized. Applies to components only.
-        //Add 'implements AfterViewInit' to the class.
         this.changeViewType(GanttViewType.month);
-
     }
 
     ngOnDestroy(): void {
@@ -222,14 +224,14 @@ export class MainOverviewComponent implements OnInit, AfterViewInit {
 
     detectIcon(process: number) {
         switch (process) {
-            case OverviewFlag.Extended:
-                return 'check-circle';
             case OverviewFlag.ExtensionExpected:
+                return 'check-circle';
+            case OverviewFlag.Extended:
             case OverviewFlag.Started:
                 return 'check-circle-fill';
-            case OverviewFlag.Terminated:
-                return 'cancel';
             case OverviewFlag.ExpectedToTerminate:
+                return 'cancel';
+            case OverviewFlag.Terminated:
                 return 'cancel-fill';
             case OverviewFlag.ExtensionInNegotiation:
                 return 'schedule';
@@ -251,21 +253,24 @@ export class MainOverviewComponent implements OnInit, AfterViewInit {
         this.viewType.setValue(type);
         switch (type) {
             case 'week':
-                this.viewOptions.cellWidth = 50;
-                // let cutOffDateWeek = new Date();
-                this.cutOffDateWeek.setDate(this.cutOffDateWeek.getDate() - 35)
-                this.ganttComponent.viewOptions.start = new GanttDate(getUnixTime(new Date(this.formatDate(this.cutOffDateWeek))));
-                this.ganttComponent.viewChange.emit();
-                console.log(this.formatDate(this.cutOffDateWeek));
+                this.cutOffDateWeek.setDate(this.cutOffDateWeek.getDate() - 35);
+                if (this.ganttComponent) {
+                    this.viewOptions.cellWidth = 50;
+                    this.ganttComponent.viewOptions.start = new GanttDate(getUnixTime(new Date(this.formatDate(this.cutOffDateWeek))));
+                    this.ganttComponent.viewChange.emit();
+                }
+                // console.log(this.formatDate(this.cutOffDateWeek));
                 this.getMainOverview(this.cutOffDateWeek);
+
                 break;
             case 'month':
-                this.viewOptions.cellWidth = 75;
-                // let cutOffDateMonth = new Date();
                 this.cutOffDateMonth.setMonth(this.cutOffDateMonth.getMonth() - 1)
-                this.ganttComponent.viewOptions.start = new GanttDate(getUnixTime(new Date(this.formatDate(this.cutOffDateMonth))));
-                this.ganttComponent.viewChange.emit();
-                console.log(this.formatDate(this.cutOffDateMonth));
+                if (this.ganttComponent) {
+                    this.viewOptions.cellWidth = 75;
+                    this.ganttComponent.viewOptions.start = new GanttDate(getUnixTime(new Date(this.formatDate(this.cutOffDateMonth))));
+                    this.ganttComponent.viewChange.emit();
+                }
+                // console.log(this.formatDate(this.cutOffDateMonth));
                 this.getMainOverview(this.cutOffDateMonth);
 
                 break;
@@ -280,15 +285,6 @@ export class MainOverviewComponent implements OnInit, AfterViewInit {
 
         return [year, month, day].join(',');
     }
-
-    // formatDateToSend(date: any) {
-    //     var d = new Date(date),
-    //         month = (d.getMonth() + 1),
-    //         day = d.getDate(),
-    //         year = d.getFullYear();
-
-    //     return [year, month, day].join('-');
-    // }
 
     mapListByProperty(list: any[], prop: string) {
         if (list?.length) {
@@ -336,7 +332,15 @@ export class MainOverviewComponent implements OnInit, AfterViewInit {
                     }))
                     .subscribe(result => {
                         console.log(result);
-
+                        this.workflowsData = result.items!.map(x => {
+                            return new Array({
+                                id: x.workflowId,
+                                title: x.clientDisplayName,
+                                start: x.clientPeriods![0].startDate,
+                                end: x.clientPeriods![0].endDate,
+                                origin: x
+                            })
+                        })
                         // this.clientDataSource = new MatTableDataSource<ClientListItemDto>(result.items);
                         this.totalCount = result.totalCount;
                     });
@@ -360,7 +364,15 @@ export class MainOverviewComponent implements OnInit, AfterViewInit {
                     }))
                     .subscribe(result => {
                         console.log(result);
-
+                        this.consultantsData = result.items!.map(x => {
+                            return new Array({
+                                id: x.workflowId,
+                                title: x.clientDisplayName,
+                                start: x.consultantPeriods![0].startDate,
+                                end: x.consultantPeriods![0].endDate,
+                                origin: x
+                            })
+                        })
                         // this.clientDataSource = new MatTableDataSource<ClientListItemDto>(result.items);
                         this.totalCount = result.totalCount;
                     });
@@ -439,7 +451,7 @@ export class MainOverviewComponent implements OnInit, AfterViewInit {
                 })
             });
             this.userSelectedStatuses = result.filter(x => x.canBeSetByUser);
-            console.log(this.userSelectedStatuses);
+            // console.log(this.userSelectedStatuses);
         })
     }
 
@@ -459,7 +471,7 @@ export class MainOverviewComponent implements OnInit, AfterViewInit {
 
     getCurrentUser() {
         let currentLoggedUser = this._auth.instance.getActiveAccount();
-        console.log(currentLoggedUser);
+        // console.log(currentLoggedUser);
 
         let toSend = {
             name: currentLoggedUser!.name,
@@ -486,8 +498,13 @@ export class MainOverviewComponent implements OnInit, AfterViewInit {
         });
     }
 
-    setUserSelectedStatusForWorflow() {
-        this._mainOverviewService.setUserSelectedStatusForWorkflow().subscribe(result => {
+    setUserSelectedStatusForWorflow(workflowId: string, userSelectedStatus: number) {
+        this._mainOverviewService.setUserSelectedStatusForWorkflow(workflowId, userSelectedStatus).subscribe(result => {
+
+        })
+    }
+    setUserSelectedStatusForConsultant(workflowId: string, consultantId: number, userSelectedStatus: number) {
+        this._mainOverviewService.setUserSelectedStatusForConsultant(workflowId, consultantId, userSelectedStatus).subscribe(result => {
 
         })
     }

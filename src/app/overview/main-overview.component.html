@@ -143,7 +143,8 @@
         </div>
         <!-- <div fxLayout="row" fxLayoutAlign="flex-end start" class="u-w--100">
         </div> -->
-        <div fxLayout="row" fxLayoutAlign="start center" class="gant-chart-container" fxFlexFill>
+        <!-- WORKFLOWS -->
+        <div fxLayout="row" fxLayoutAlign="start center" class="gant-chart-container" *ngIf="workflowsData.length" fxFlexFill>
             <ngx-gantt #gantt [items]="items" [viewOptions]="viewOptions" [viewType]="viewType.value">
                 <ngx-gantt-table>
                     <ngx-gantt-column name="" width="30px">
@@ -152,35 +153,13 @@
                                 <div fxLayout="row" fxLayoutAlign="start center" class="u-w-100">
                                     <mat-icon class="main-overview-icon" [matMenuTriggerFor]="workflowMenu" svgIcon="{{detectIcon(item?.origin?.process)}}" [ngClass]="detectProcessColor(item?.origin?.process)"></mat-icon>
                                     <mat-menu #workflowMenu>
-                                        <button *ngFor="let item of userSelectedStatuses"
-                                            class="menu-item menu-item--edit"
+                                        <button *ngFor="let status of userSelectedStatuses"
+                                            class="menu-item"
                                             mat-menu-item
-                                            (click)="setUserSelectedStatusForWorflow()">
-                                            <mat-icon class="main-overview-icon" svgIcon="{{detectIcon(item?.id)}}" [ngClass]="detectProcessColor(item?.origin?.process)"></mat-icon>
-                                            Add consultant
+                                            (click)="setUserSelectedStatusForWorflow(item?.workflowId, status?.id)">
+                                            <mat-icon class="main-overview-icon" svgIcon="{{detectIcon(status?.id)}}" [ngClass]="detectProcessColor(status?.id)"></mat-icon>
+                                            {{item.name}}
                                         </button>
-                                        <!-- <button
-                                            class="menu-item menu-item--edit"
-                                            mat-menu-item
-                                            [disabled]="false"
-                                            (click)="getAvailableConsultantForChangeOrExtend(workflowDiallogActions.Change)">
-                                            <mat-icon>create</mat-icon>
-                                            Change Workflow Data
-                                        </button>
-                                        <button
-                                            class="menu-item menu-item--add"
-                                            mat-menu-item
-                                            (click)="getAvailableConsultantForChangeOrExtend(workflowDiallogActions.Extend)">
-                                            <mat-icon>add</mat-icon>
-                                            Extend Workflow
-                                        </button>
-                                        <button
-                                            class="menu-item menu-item--cancel"
-                                            mat-menu-item
-                                            (click)="addTermination()">
-                                            <mat-icon>clear</mat-icon>
-                                            Terminate Workflow
-                                        </button> -->
                                     </mat-menu>
                                 </div>
                             </span>
@@ -195,7 +174,15 @@
                     </ngx-gantt-column>
                     <ngx-gantt-column name="Consultants" width="325px">
                         <ng-template #cell let-item="item">
-                            {{item?.origin?.firstName + ' ' + item?.origin?.lastName}}
+                            <span class="text-truncate-ellipsis text-bold" [matTooltip]="mapListByProperty(item.consultants, 'name')">
+                                <ng-container *ngIf="item.consultants?.length > 1; else singleConsultantDisplay">
+                                    {{item.consultants?.length + 'Consultants'}}
+                                </ng-container>
+                                <ng-template #singleConsultantDisplay>
+                                    {{item.consultants[0].name}}
+                                </ng-template>
+                            </span>
+                            <!-- {{item?.origin?.firstName + ' ' + item?.origin?.lastName}} -->
                         </ng-template>
                     </ngx-gantt-column>
                     <ngx-gantt-column name="Sales manager" width="110px">
@@ -210,13 +197,24 @@
                     </ngx-gantt-column>
                 </ngx-gantt-table>
             </ngx-gantt>
+        </div>
+        <div fxLayout="row" fxLayoutAlign="start center" class="gant-chart-container" *ngIf="consultantsData.length" fxFlexFill>
             <ngx-gantt #gantt [items]="items" [viewOptions]="viewOptions" [viewType]="viewType.value">
                 <ngx-gantt-table>
                     <ngx-gantt-column name="" width="30px">
                         <ng-template #cell let-item="item">
                             <span class="text-bold">
                                 <div fxLayout="row" fxLayoutAlign="start center" class="u-w-100">
-                                    <mat-icon class="main-overview-icon" svgIcon="{{detectIcon(item?.origin?.process)}}" [ngClass]="detectProcessColor(item?.origin?.process)"></mat-icon>
+                                    <mat-icon class="main-overview-icon" [matMenuTriggerFor]="consultantsMenu" svgIcon="{{detectIcon(item?.origin?.process)}}" [ngClass]="detectProcessColor(item?.origin?.process)"></mat-icon>
+                                    <mat-menu #consultantsMenu>
+                                        <button *ngFor="let status of userSelectedStatuses"
+                                            class="menu-item"
+                                            mat-menu-item
+                                            (click)="setUserSelectedStatusForConsultant(item?.workflowId, item?.consultant?.id, status?.id)">
+                                            <mat-icon class="main-overview-icon" svgIcon="{{detectIcon(status?.id)}}" [ngClass]="detectProcessColor(status?.id)"></mat-icon>
+                                            {{item.name}}
+                                        </button>
+                                    </mat-menu>
                                 </div>
                             </span>
                         </ng-template>
@@ -230,7 +228,7 @@
                     </ngx-gantt-column>
                     <ngx-gantt-column name="Consultants" width="325px">
                         <ng-template #cell let-item="item">
-                            {{item?.origin?.firstName + ' ' + item?.origin?.lastName}}
+                            {{item?.consultant?.name}}
                         </ng-template>
                     </ngx-gantt-column>
                     <ngx-gantt-column name="Sales manager" width="110px">
