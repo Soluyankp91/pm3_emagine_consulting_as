@@ -17,6 +17,9 @@ import { AppComponentBase } from 'src/shared/app-component-base';
 import * as moment from 'moment';
 import { FileUploaderComponent } from 'src/app/shared/components/file-uploader/file-uploader.component';
 import { FileUploaderFile } from 'src/app/shared/components/file-uploader/file-uploader.model';
+import { LocalHttpService } from 'src/shared/service-proxies/local-http.service';
+import { HttpClient, HttpHeaders, HttpResponse } from '@angular/common/http';
+import { AuthenticationResult } from '@azure/msal-browser';
 
 @Component({
     selector: 'app-client-documents',
@@ -85,7 +88,9 @@ export class ClientDocumentsComponent extends AppComponentBase implements OnInit
         private dialog: MatDialog,
         private _fb: FormBuilder,
         private _clientDocumentsService: ClientDocumentsServiceProxy,
-        private activatedRoute: ActivatedRoute
+        private activatedRoute: ActivatedRoute,
+        private httpClient: HttpClient,
+        private localHttpService: LocalHttpService
     ) {
         super(injector);
         this.generalDocumentForm = new GeneralDocumentForm();
@@ -175,6 +180,7 @@ export class ClientDocumentsComponent extends AppComponentBase implements OnInit
     addGeneralDocument(generalDocument?: ClientAttachmentInfoOutputDto) {
         const form = this._fb.group({
             clientAttachmentGuid: new FormControl(generalDocument?.clientAttachmentGuid ?? null),
+            documentStorageGuid: new FormControl(generalDocument?.documentStorageGuid ?? null),
             icon: new FormControl(this.getFileTypeIcon(generalDocument?.documentType!) ?? null),
             headline: new FormControl(generalDocument?.headline ?? null),
             filename: new FormControl(generalDocument?.filename ?? null),
@@ -262,7 +268,7 @@ export class ClientDocumentsComponent extends AppComponentBase implements OnInit
                 let fileInput: FileParameter;
                 fileInput = {
                     fileName: result.file.name,
-                    data: result.file.internalFile                    
+                    data: result.file.internalFile
                 }
                 this.showMainSpinner();
                 this._clientDocumentsService.generalFilePost(this.clientId!, result.attachmentTypeId, fileInput)
@@ -326,17 +332,50 @@ export class ClientDocumentsComponent extends AppComponentBase implements OnInit
         }
     }
 
-    getAvailableStatuses() {
-        this._clientDocumentsService.getAvailableStatusForClientAttachments()
-            .pipe(finalize(() => {}))
-            .subscribe(result => {
-                // this.generalFileTypes = result;
+    downloadGeneralDocument(clientAttachmentGuid: string) {
+        this.localHttpService.getTokenPromise().then((response: AuthenticationResult) => {
+            const fileUrl = `${this.apiUrl}/api/ClientDocuments/Document/${clientAttachmentGuid}`;
+            this.httpClient.get(fileUrl, {
+                headers: new HttpHeaders({
+                    'Authorization': `Bearer ${response.accessToken}`,
+                }), responseType: 'blob',
+                observe: 'response'
+            }).subscribe((data: HttpResponse<Blob>) => {
+                const blob = new Blob([data.body!], { type: data.body!.type });
+                console.log(data);
+                const contentDispositionHeader = data.headers.get('Content-Disposition');
+                console.log(contentDispositionHeader);
+                if (contentDispositionHeader !== null) {
+                    const contentDispositionHeaderResult = contentDispositionHeader.split(';')[1].trim().split('=')[1];
+                    const contentDispositionFileName = contentDispositionHeaderResult.replace(/"/g, '');
+                    const downloadlink = document.createElement('a');
+                    downloadlink.href = window.URL.createObjectURL(blob);
+                    downloadlink.download = contentDispositionFileName;
+                    const nav = (window.navigator as any);
+                    console.log(blob);
+                    console.log(contentDispositionFileName);
+                    
+                    if (nav.msSaveOrOpenBlob) {
+                        nav.msSaveBlob(blob, contentDispositionFileName);
+                    } else {
+                        downloadlink.click();
+                    }
+                }
             });
+        });
+        // window.open(`${this.apiUrl}/api/ClientDocuments/Document/${clientAttachmentGuid}`);
+        // this._clientDocumentsService.document(clientAttachmentGuid)
+        //     .subscribe(result => {
+        //         this.downloadFile(result.data)
+        //         console.log(result);
+        //     })
     }
 
-    downloadGeneralDocument(clientAttachmentGuid: string) {
-        window.open(`${this.apiUrl}/api/ClientDocuments/Document/${clientAttachmentGuid}`);
-    }
+    downloadFile(data: any) {
+        // const blob = new Blob([data]);
+        const url= window.URL.createObjectURL(data);
+        window.open(url);
+      }
 
     editGeneralDocument(isEditMode: boolean, index: number) {
         this.documents.at(index).get('editable')?.setValue(!isEditMode, {emitEvent: false});
