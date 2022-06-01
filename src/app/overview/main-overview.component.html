@@ -145,7 +145,7 @@
         </div> -->
         <!-- WORKFLOWS -->
         <div fxLayout="row" fxLayoutAlign="start center" class="gant-chart-container" *ngIf="workflowsData.length" fxFlexFill>
-            <ngx-gantt #gantt [items]="items" [viewOptions]="viewOptions" [viewType]="viewType.value">
+            <ngx-gantt #gantt [items]="workflowsData" [viewOptions]="viewOptions" [viewType]="viewType.value">
                 <ngx-gantt-table>
                     <ngx-gantt-column name="" width="30px">
                         <ng-template #cell let-item="item">
@@ -189,7 +189,7 @@
                         <ng-template #cell let-item="item">
                             <div fxLayout="row" fxLayoutAlign="flex-end center" fxLayoutGap="15px" class="u-w-100">
                                 <img class="manager-search--photo" src="../../../../assets/common/images/no-img.svg"/>
-                                <button mat-icon-button matTooltip="Go to workflow">
+                                <button mat-icon-button matTooltip="Go to workflow" (click)="redirectToWorkflow(item.workflowId)">
                                     <mat-icon class="icon-arrow-rotate180" svgIcon="arrow"></mat-icon>
                                 </button>
                             </div>
@@ -199,7 +199,7 @@
             </ngx-gantt>
         </div>
         <div fxLayout="row" fxLayoutAlign="start center" class="gant-chart-container" *ngIf="consultantsData.length" fxFlexFill>
-            <ngx-gantt #gantt [items]="items" [viewOptions]="viewOptions" [viewType]="viewType.value">
+            <ngx-gantt #gantt [items]="consultantsData" [viewOptions]="viewOptions" [viewType]="viewType.value">
                 <ngx-gantt-table>
                     <ngx-gantt-column name="" width="30px">
                         <ng-template #cell let-item="item">

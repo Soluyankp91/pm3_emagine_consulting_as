@@ -12,6 +12,7 @@ import { ManagerStatus } from '../shared/components/manager-search/manager-searc
 import { OverviewData, OverviewFlag, SelectableEmployeeDto, SelectableStatusesDto } from './main-overview.model';
 import { MsalService } from '@azure/msal-angular';
 import * as moment from 'moment';
+import { Router } from '@angular/router';
 
 @Component({
     selector: 'app-main-overview',
@@ -107,7 +108,8 @@ export class MainOverviewComponent implements OnInit, AfterViewInit {
         private _apiService: ApiServiceProxy,
         private _internalLookupService: InternalLookupService,
         private _mainOverviewService: MainOverviewServiceProxy,
-        private _auth: MsalService
+        private _auth: MsalService,
+        private router: Router
 
     ) {
         this.accountManagerFilter.valueChanges.pipe(
@@ -333,14 +335,17 @@ export class MainOverviewComponent implements OnInit, AfterViewInit {
                     .subscribe(result => {
                         console.log(result);
                         this.workflowsData = result.items!.map(x => {
-                            return new Array({
-                                id: x.workflowId,
-                                title: x.clientDisplayName,
-                                start: x.clientPeriods![0].startDate,
-                                end: x.clientPeriods![0].endDate,
+                            let formattedData: GanttItem<MainOverviewItemForWorkflowDto>;
+                            formattedData = {
+                                id: x.workflowId!,
+                                title: x.clientDisplayName!,
+                                start: getUnixTime(x.clientPeriods![0].startDate!.toDate()),
+                                end: getUnixTime(x.clientPeriods![0].endDate!.toDate()),
                                 origin: x
-                            })
+                            }
+                            return formattedData;
                         })
+                        console.log(this.workflowsData)
                         // this.clientDataSource = new MatTableDataSource<ClientListItemDto>(result.items);
                         this.totalCount = result.totalCount;
                     });
@@ -365,14 +370,17 @@ export class MainOverviewComponent implements OnInit, AfterViewInit {
                     .subscribe(result => {
                         console.log(result);
                         this.consultantsData = result.items!.map(x => {
-                            return new Array({
-                                id: x.workflowId,
-                                title: x.clientDisplayName,
-                                start: x.consultantPeriods![0].startDate,
-                                end: x.consultantPeriods![0].endDate,
+                            let formattedData: GanttItem<MainOverviewItemForConsultantDto>;
+                            formattedData = {
+                                id: x.workflowId!,
+                                title: x.clientDisplayName!,
+                                start: getUnixTime(x.consultantPeriods![0].startDate!.toDate()),
+                                end: getUnixTime(x.consultantPeriods![0].endDate!.toDate()),
                                 origin: x
-                            })
+                            }
+                            return formattedData;
                         })
+                        console.log(this.consultantsData)
                         // this.clientDataSource = new MatTableDataSource<ClientListItemDto>(result.items);
                         this.totalCount = result.totalCount;
                     });
@@ -507,5 +515,9 @@ export class MainOverviewComponent implements OnInit, AfterViewInit {
         this._mainOverviewService.setUserSelectedStatusForConsultant(workflowId, consultantId, userSelectedStatus).subscribe(result => {
 
         })
+    }
+
+    redirectToWorkflow(id: string) {
+        this.router.navigate(['app/workflow', id]);
     }
 }
