@@ -188,7 +188,7 @@
                     <ngx-gantt-column name="Sales manager" width="110px">
                         <ng-template #cell let-item="item">
                             <div fxLayout="row" fxLayoutAlign="flex-end center" fxLayoutGap="15px" class="u-w-100">
-                                <img class="manager-search--photo" src="../../../../assets/common/images/no-img.svg"/>
+                                <img class="manager-search--photo" [matTooltip]="item?.salesManager?.name" [src]="employeeProfileUrl(item?.salesManager?.externalId)"/>
                                 <button mat-icon-button matTooltip="Go to workflow" (click)="redirectToWorkflow(item.workflowId)">
                                     <mat-icon class="icon-arrow-rotate180" svgIcon="arrow"></mat-icon>
                                 </button>
@@ -234,7 +234,7 @@
                     <ngx-gantt-column name="Sales manager" width="110px">
                         <ng-template #cell let-item="item">
                             <div fxLayout="row" fxLayoutAlign="flex-end center" fxLayoutGap="15px" class="u-w-100">
-                                <img class="manager-search--photo" src="../../../../assets/common/images/no-img.svg"/>
+                                <img class="manager-search--photo" [matTooltip]="item?.salesManager?.name" [src]="employeeProfileUrl(item?.salesManager?.externalId)"/>
                                 <button mat-icon-button matTooltip="Go to workflow">
                                     <mat-icon class="icon-arrow-rotate180" svgIcon="arrow"></mat-icon>
                                 </button>

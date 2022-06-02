@@ -1,4 +1,4 @@
-import { AfterViewInit, Component, OnInit, ViewChild } from '@angular/core';
+import { AfterViewInit, Component, Injector, OnInit, ViewChild } from '@angular/core';
 import { FormControl } from '@angular/forms';
 import { GanttDate, GanttItem, GanttItemInternal, GanttViewOptions, GanttViewType, NgxGanttComponent } from '@worktile/gantt';
 import { getUnixTime } from 'date-fns';
@@ -13,13 +13,14 @@ import { OverviewData, OverviewFlag, SelectableEmployeeDto, SelectableStatusesDt
 import { MsalService } from '@azure/msal-angular';
 import * as moment from 'moment';
 import { Router } from '@angular/router';
+import { AppComponentBase } from 'src/shared/app-component-base';
 
 @Component({
     selector: 'app-main-overview',
     templateUrl: './main-overview.component.html',
     styleUrls: ['./main-overview.component.scss']
 })
-export class MainOverviewComponent implements OnInit, AfterViewInit {
+export class MainOverviewComponent extends AppComponentBase implements OnInit, AfterViewInit {
     @ViewChild('gantt') ganttComponent: NgxGanttComponent;
 
     workflowFilter = new FormControl(null);
@@ -104,6 +105,7 @@ export class MainOverviewComponent implements OnInit, AfterViewInit {
     private _unsubscribe = new Subject();
 
     constructor(
+        injector: Injector,
         private _lookupService: LookupServiceProxy,
         private _apiService: ApiServiceProxy,
         private _internalLookupService: InternalLookupService,
@@ -112,6 +114,7 @@ export class MainOverviewComponent implements OnInit, AfterViewInit {
         private router: Router
 
     ) {
+        super(injector);
         this.accountManagerFilter.valueChanges.pipe(
             takeUntil(this._unsubscribe),
             debounceTime(300),
