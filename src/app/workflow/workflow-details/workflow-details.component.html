@@ -116,7 +116,7 @@
             <button color="primary"
                     class="button-accept mat-elevation-z0"
                     mat-flat-button
-                    *ngIf="_workflowDataService.getWorkflowProgress?.stepSpecificPermissions!['Complete']"
+                    *ngIf="_workflowDataService.getWorkflowProgress?.stepSpecificPermissions!['Completion']"
                     (click)="saveOrCompleteStep(false)">
                     Complete step
             </button>
