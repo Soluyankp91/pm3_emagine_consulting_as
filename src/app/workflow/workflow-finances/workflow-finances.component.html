@@ -1,4 +1,5 @@
 <div class="workflow-finances u-w--100">
+    <button class="absolute-edit-toggle" mat-icon-button *ngIf="canToggleEditMode" (click)="toggleEditMode()"><mat-icon>{{readOnlyMode ? 'create' : 'close'}}</mat-icon></button>
     <ng-container *ngIf="activeSideSection !== workflowSideSections.StartConsultantPeriod">
         <form fxLayout="column" fxLayoutAlign="start start" [formGroup]="financesClientForm" class="workflow-form u-w--100">
             <div class="workflow-finances--block">

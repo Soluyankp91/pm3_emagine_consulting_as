@@ -1,6 +1,6 @@
 import { Component, Injector, Input, OnInit } from '@angular/core';
 import { MatTableDataSource } from '@angular/material/table';
-import { ActivatedRoute } from '@angular/router';
+import { ActivatedRoute, Router } from '@angular/router';
 import * as moment from 'moment';
 import { Subject } from 'rxjs';
 import { finalize, takeUntil } from 'rxjs/operators';
@@ -45,7 +45,8 @@ export class ClientWorkflowTrackComponent extends AppComponentBase implements On
         injector: Injector,
         private _clientService: ClientsServiceProxy,
         private activatedRoute: ActivatedRoute,
-        private _internalLookupService: InternalLookupService
+        private _internalLookupService: InternalLookupService,
+        private router: Router
     ) {
         super(injector);
     }
@@ -125,6 +126,10 @@ export class ClientWorkflowTrackComponent extends AppComponentBase implements On
     sortChanged(event?: any): void {
         this.sorting = event.active.concat(' ', event.direction);
         this.getWorkflowTrack();
+    }
+
+    openWorkflow(workflowId: string) {
+        this.router.navigate(['/app/workflow', workflowId]);
     }
 
     mapLocationArrayByName(list: any): string {
