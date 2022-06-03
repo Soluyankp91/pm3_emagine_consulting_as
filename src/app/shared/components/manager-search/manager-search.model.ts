@@ -5,6 +5,7 @@ export enum ManagerSearchType {
 }
 
 export enum ManagerStatus {
-    Pending = 1,
-    Completed = 2
+    Upcoming = 1,
+    Pending = 2,
+    Completed = 3,
 }

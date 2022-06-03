@@ -45,7 +45,8 @@
                                         (click)="$event.stopPropagation()"
                                         [formFieldLabel]="step.name + ' Manager'"
                                         (managerSelected)="selectedManager($event)"
-                                        [managerStatus]="step.status === workflowStatuses.Completed ? managerStatus.Completed : managerStatus.Pending">
+                                        [managerStatus]="step.status === workflowStatuses.Completed ? managerStatus.Completed : managerStatus.Pending"
+                                        [responsiblePerson]="step.responsiblePerson!">
                                     </app-manager-search>
 
                                     <span class="workflow-navigation--step__name">

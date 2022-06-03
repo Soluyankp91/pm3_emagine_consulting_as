@@ -87,8 +87,10 @@
 }
 
 .icon-in-progress {
+    display: flex;
     mat-icon.mat-icon {
         width: 16px !important;
         height: 16px !important;
+        line-height: 16px;
     }
 }
