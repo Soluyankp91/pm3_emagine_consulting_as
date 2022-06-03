@@ -146,9 +146,12 @@ export class ClientComponent extends AppComponentBase implements OnInit, OnDestr
             name: currentLoggedUser!.name,
             maxRecordsCount: 1000,
         };
-
+        this.showMainSpinner();
         this._lookupService.employees(toSend.name)
-            .pipe(finalize(()=> {}))
+            .pipe(finalize(()=>  {
+                this.hideMainSpinner();
+                this.getClientsGrid()
+            }))
             .subscribe(result => {
                 this.selectedAccountManagers = result.map(x => {
                     return new SelectableEmployeeDto({
@@ -158,7 +161,6 @@ export class ClientComponent extends AppComponentBase implements OnInit, OnDestr
                         selected: true
                     })
                 });
-                this.getClientsGrid();
             });
     }
 

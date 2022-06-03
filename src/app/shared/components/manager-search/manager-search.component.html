@@ -1,10 +1,10 @@
 <div class="manager-search">
     <div class="manager-search--image-wrapper" *ngIf="readonly">
-        <img class="manager-search--photo" [src]="employeeProfileUrl(responsiblePerson?.externalId!)" [matTooltip]="responsiblePerson?.name!" alt="Search manger" />
+        <img class="manager-search--photo border-rounded-50" [src]="employeeProfileUrl(responsiblePerson?.externalId!)" [matTooltip]="responsiblePerson?.name!" alt="" />
         <mat-icon class="manager-search--status" [svgIcon]="detectManagerStatus(managerStatus)" [matTooltip]="detectStatusTooltip(managerStatus)"></mat-icon>
     </div>
     <div class="manager-search--image-wrapper" [matMenuTriggerFor]="managerSearch" *ngIf="!readonly">
-        <img class="manager-search--photo" [src]="employeeProfileUrl(responsiblePerson?.externalId!)" [matTooltip]="responsiblePerson?.name!" alt="Search manger" />
+        <img class="manager-search--photo border-rounded-50" [src]="employeeProfileUrl(responsiblePerson?.externalId!)" [matTooltip]="responsiblePerson?.name!" alt="" />
         <mat-icon class="manager-search--status" [svgIcon]="detectManagerStatus(managerStatus)" [matTooltip]="detectStatusTooltip(managerStatus)"></mat-icon>
     </div>
     <mat-menu #managerSearch="matMenu">
