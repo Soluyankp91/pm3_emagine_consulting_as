@@ -1,12 +1,10 @@
-import { AfterViewInit, Component, Input, OnInit, ViewChild } from '@angular/core';
-import { FormControl } from '@angular/forms';
+import { Component, Input, OnInit, ViewChild } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
-import { GanttDate, GanttGroup, GanttItem, GanttItemType, GanttViewOptions, GanttViewType, NgxGanttComponent } from '@worktile/gantt';
+import { GanttDate, GanttItem, GanttViewOptions, GanttViewType, NgxGanttComponent } from '@worktile/gantt';
 import { getUnixTime } from 'date-fns';
 import { Subject } from 'rxjs';
 import { takeUntil } from 'rxjs/operators';
 import { WorkflowDataService } from '../workflow-data.service';
-import { WorkflowSteps } from '../workflow.model';
 import { ExtendWorkflowProcessDto, OverviewData, ProcessParentItemDto, ProcessSubItemDto, StartWorkflowProcessDto } from './workflow-overview.model';
 
 @Component({
@@ -83,7 +81,6 @@ export class WorkflowOverviewComponent implements OnInit {
         },
         cellWidth: 115
     }
-
     private _unsubscribe = new Subject();
     constructor(
         public _workflowDataService: WorkflowDataService,
