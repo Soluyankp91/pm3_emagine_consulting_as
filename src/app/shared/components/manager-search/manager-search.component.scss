@@ -1,12 +1,17 @@
 .manager-search {
     &--image-wrapper {
         position: relative;
+        height: 24px;
     }
     &--status {
         position: absolute;
-        top: -6px;
-        right: -6px;
+        top: -3px;
+        right: -9px;
         height: 16px;
         width: 16px;
+    }
+    &--photo {
+        height: 24px;
+        width: 24px;
     }
 }

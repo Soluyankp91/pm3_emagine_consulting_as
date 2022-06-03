@@ -4,11 +4,12 @@ import { FormControl } from '@angular/forms';
 import { MatDialog } from '@angular/material/dialog';
 import { MatTableDataSource } from '@angular/material/table';
 import { Router } from '@angular/router';
+import { MsalService } from '@azure/msal-angular';
 import { Subject } from 'rxjs';
 import { debounceTime, finalize, switchMap, takeUntil } from 'rxjs/operators';
 import { AppComponentBase } from 'src/shared/app-component-base';
 import { AppConsts } from 'src/shared/AppConsts';
-import { ApiServiceProxy, EmployeeDto, EnumEntityTypeDto, LookupServiceProxy, StartNewWorkflowInputDto, WorkflowListItemDto, WorkflowProcessType, WorkflowServiceProxy } from 'src/shared/service-proxies/service-proxies';
+import { ApiServiceProxy, EmployeeDto, EnumEntityTypeDto, LookupServiceProxy, StartNewWorkflowInputDto, WorkflowListItemDto, WorkflowProcessType, WorkflowServiceProxy, WorkflowStepStatus } from 'src/shared/service-proxies/service-proxies';
 import { SelectableCountry, SelectableIdNameDto } from '../client/client.model';
 import { InternalLookupService } from '../shared/common/internal-lookup.service';
 import { ManagerStatus } from '../shared/components/manager-search/manager-search.model';
@@ -64,6 +65,7 @@ export class WorkflowComponent extends AppComponentBase implements OnInit, OnDes
     saleTypes: EnumEntityTypeDto[] = [];
     projectTypes: EnumEntityTypeDto[] = [];
     workflowStatuses: { [key: string]: string; };
+    workflowStepStatuses = WorkflowStepStatus;
     isAdvancedFilters = false;
     showOnlyWorkflowsWithNewSales = false;
     showOnlyWorkflowsWithExtensions = false;
@@ -92,6 +94,7 @@ export class WorkflowComponent extends AppComponentBase implements OnInit, OnDes
         private dialog: MatDialog,
         private _internalLookupService: InternalLookupService,
         private _lookupService: LookupServiceProxy,
+        private _auth: MsalService,
     ) {
         super(injector);
         // this.workflowFilter.valueChanges.pipe(
@@ -111,6 +114,14 @@ export class WorkflowComponent extends AppComponentBase implements OnInit, OnDes
         //     }
         //     this.isDataLoading = false;
         // });
+
+        this.workflowFilter.valueChanges.pipe(
+            takeUntil(this._unsubscribe),
+            debounceTime(500)
+        ).subscribe(() => {
+            this.getWorkflowList();
+        });
+
         this.invoicingEntityControl.valueChanges.pipe(
             takeUntil(this._unsubscribe),
             debounceTime(500)
@@ -178,7 +189,8 @@ export class WorkflowComponent extends AppComponentBase implements OnInit, OnDes
     }
 
     ngOnInit(): void {
-        this.getWorkflowList();
+        this.getCurrentUser();
+        // this.getWorkflowList();
         this.getTenants();
         this.getSalesType();
         this.getProjectType();
@@ -377,4 +389,26 @@ export class WorkflowComponent extends AppComponentBase implements OnInit, OnDes
         this.getWorkflowList();
     }
 
+    getCurrentUser() {
+        let currentLoggedUser = this._auth.instance.getActiveAccount();
+        // console.log(currentLoggedUser);
+
+        let toSend = {
+            name: currentLoggedUser!.name,
+            maxRecordsCount: 1000,
+        };
+
+        this._lookupService.employees(toSend.name)
+            .pipe(finalize(()=> {this.getWorkflowList();}))
+            .subscribe(result => {
+                this.selectedAccountManagers = result.map(x => {
+                    return new SelectableEmployeeDto({
+                        id: x.id!,
+                        name: x.name!,
+                        externalId: x.externalId!,
+                        selected: true
+                    })
+                });
+            });
+    }
 }
