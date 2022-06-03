@@ -33,6 +33,11 @@
                 color: #384853;
                 font-size: 14px;
             }
+            &.selected-status {
+                background-color: rgba(42, 194, 167, 0.13);
+                // color: $white-color;
+                border-color: $green-color;
+            }
         }
         &-manager {
             img {
@@ -40,13 +45,21 @@
                 height: 40px;
             }
         }
+        &-additional {
+            padding: 14px 20px;
+            background-color: #fff;
+            position: absolute;
+            z-index: 9999;
+            box-shadow: 0 10px 10px 0 rgb(26, 35, 126, 15%);
+            transition: all .3s ease-in-out;
+        }
     }
 
     &--header {
         color: $dark-grey-color;
         font-size: 56px;
-        font-weight: 700;
-        font-size: 36px;
+        font-weight: 800;
+        font-size: 48px;
         line-height: 120%;
     }
     &--content {
