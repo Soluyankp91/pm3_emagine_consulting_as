@@ -1,6 +1,6 @@
-import { AfterViewInit, Component, Injector, OnInit, ViewChild } from '@angular/core';
+import { Component, Injector, OnInit, ViewChild } from '@angular/core';
 import { FormControl } from '@angular/forms';
-import { GanttDate, GanttItem, GanttItemInternal, GanttViewOptions, GanttViewType, NgxGanttComponent } from '@worktile/gantt';
+import { GanttDate, GanttItem, GanttViewOptions, GanttViewType, NgxGanttComponent } from '@worktile/gantt';
 import { getUnixTime } from 'date-fns';
 import { Subject } from 'rxjs';
 import { debounceTime, finalize, switchMap, takeUntil } from 'rxjs/operators';
@@ -20,8 +20,9 @@ import { AppComponentBase } from 'src/shared/app-component-base';
     templateUrl: './main-overview.component.html',
     styleUrls: ['./main-overview.component.scss']
 })
-export class MainOverviewComponent extends AppComponentBase implements OnInit, AfterViewInit {
-    @ViewChild('gantt') ganttComponent: NgxGanttComponent;
+export class MainOverviewComponent extends AppComponentBase implements OnInit {
+    @ViewChild('ganttWorkflows', {static: false}) ganttWorkflows: NgxGanttComponent;
+    @ViewChild('ganttConsultants', {static: false}) ganttConsultants: NgxGanttComponent;
 
     workflowFilter = new FormControl(null);
     accountManagerFilter = new FormControl();
@@ -75,7 +76,6 @@ export class MainOverviewComponent extends AppComponentBase implements OnInit, A
     workflowsData: any[] = [];
     consultantsData: any[] = [];
     // consultantsData: GanttItem<MainOverviewItemForConsultantDto>[] = [];
-
 
     viewType: FormControl = new FormControl(GanttViewType.month);
 
@@ -189,7 +189,6 @@ export class MainOverviewComponent extends AppComponentBase implements OnInit, A
      }
 
     ngOnInit(): void {
-        // this.getMainOverview();
         this.getTenants();
         this.getSalesType();
         this.getProjectType();
@@ -197,11 +196,6 @@ export class MainOverviewComponent extends AppComponentBase implements OnInit, A
         this.getMainOverviewStatuses();
         this.getOverviewViewTypes();
         this.getCurrentUser();
-        // this.changeViewType(GanttViewType.month);
-    }
-
-    ngAfterViewInit(): void {
-        this.changeViewType(GanttViewType.month);
     }
 
     ngOnDestroy(): void {
@@ -259,22 +253,22 @@ export class MainOverviewComponent extends AppComponentBase implements OnInit, A
         switch (type) {
             case 'week':
                 this.cutOffDateWeek.setDate(this.cutOffDateWeek.getDate() - 35);
-                if (this.ganttComponent) {
+                // if (this.ganttWorkflows) {
                     this.viewOptions.cellWidth = 50;
-                    this.ganttComponent.viewOptions.start = new GanttDate(getUnixTime(new Date(this.formatDate(this.cutOffDateWeek))));
-                    this.ganttComponent.viewChange.emit();
-                }
+                    // this.ganttWorkflows.viewOptions.start = new GanttDate(getUnixTime(new Date(this.formatDate(this.cutOffDateWeek))));
+                    // this.ganttWorkflows.viewChange.emit();
+                // }
                 // console.log(this.formatDate(this.cutOffDateWeek));
                 this.getMainOverview(this.cutOffDateWeek);
 
                 break;
             case 'month':
                 this.cutOffDateMonth.setMonth(this.cutOffDateMonth.getMonth() - 1)
-                if (this.ganttComponent) {
+                // if (this.ganttWorkflows) {
                     this.viewOptions.cellWidth = 75;
-                    this.ganttComponent.viewOptions.start = new GanttDate(getUnixTime(new Date(this.formatDate(this.cutOffDateMonth))));
-                    this.ganttComponent.viewChange.emit();
-                }
+                    // this.ganttWorkflows.viewOptions.start = new GanttDate(getUnixTime(new Date(this.formatDate(this.cutOffDateMonth))));
+                    // this.ganttWorkflows.viewChange.emit();
+                // }
                 // console.log(this.formatDate(this.cutOffDateMonth));
                 this.getMainOverview(this.cutOffDateMonth);
 
@@ -312,9 +306,12 @@ export class MainOverviewComponent extends AppComponentBase implements OnInit, A
 
         if (date) {
             // this.cutOffDate = moment(date).format('YYYY-MM-DD')
-            // this.cutOffDate = date
+            this.cutOffDate = date;
 
         }
+        this.workflowsData = [];
+        this.consultantsData = [];
+        this.showMainSpinner();
         // let cutOffDateWeek = this.cutOffDateWeek.toISOString().split('T')[0];
         // let cutOffDateMonth = this.cutOffDateMonth.toISOString().split('T')[0];
         switch (this.overviewViewTypeControl.value) {
@@ -328,15 +325,15 @@ export class MainOverviewComponent extends AppComponentBase implements OnInit, A
                     projectType,
                     margins,
                     searchFilter,
-                    this.cutOffDate.startOf('day'),
+                    this.cutOffDate,
                     this.pageNumber,
                     this.deafultPageSize,
                     this.sorting)
                     .pipe(finalize(() => {
                         this.isDataLoading = false;
+                        this.hideMainSpinner();
                     }))
                     .subscribe(result => {
-                        console.log(result);
                         this.workflowsData = result.items!.map(x => {
                             let formattedData: GanttItem<MainOverviewItemForWorkflowDto>;
                             formattedData = {
@@ -344,12 +341,17 @@ export class MainOverviewComponent extends AppComponentBase implements OnInit, A
                                 title: x.clientDisplayName!,
                                 start: getUnixTime(x.clientPeriods![0].startDate!.toDate()),
                                 end: getUnixTime(x.clientPeriods![0].endDate!.toDate()),
-                                origin: x
+                                origin: x,
+                                color: 'rgb(23, 162, 151)'
                             }
                             return formattedData;
                         })
-                        console.log(this.workflowsData)
-                        // this.clientDataSource = new MatTableDataSource<ClientListItemDto>(result.items);
+                        let oldestDateArray = this.workflowsData.reduce((r, o) => o.origin?.lastClientPeriodEndDate > r.origin?.lastClientPeriodEndDate ? o : r);
+                        this.ganttWorkflows.viewOptions.start = new GanttDate(getUnixTime(new Date(this.formatDate(date))));
+                        this.ganttWorkflows.viewOptions.end = new GanttDate(getUnixTime(new Date(this.formatDate(oldestDateArray))));
+                        this.ganttWorkflows.viewOptions.max = new GanttDate(getUnixTime(new Date(this.formatDate(oldestDateArray))));
+                        this.ganttWorkflows.viewChange.emit();
+
                         this.totalCount = result.totalCount;
                     });
                 break;
@@ -369,9 +371,9 @@ export class MainOverviewComponent extends AppComponentBase implements OnInit, A
                     this.sorting)
                     .pipe(finalize(() => {
                         this.isDataLoading = false;
+                        this.hideMainSpinner();
                     }))
                     .subscribe(result => {
-                        console.log(result);
                         this.consultantsData = result.items!.map(x => {
                             let formattedData: GanttItem<MainOverviewItemForConsultantDto>;
                             formattedData = {
@@ -379,12 +381,17 @@ export class MainOverviewComponent extends AppComponentBase implements OnInit, A
                                 title: x.clientDisplayName!,
                                 start: getUnixTime(x.consultantPeriods![0].startDate!.toDate()),
                                 end: getUnixTime(x.consultantPeriods![0].endDate!.toDate()),
-                                origin: x
+                                origin: x,
+                                color: 'rgb(250, 173, 25)'
                             }
                             return formattedData;
                         })
-                        console.log(this.consultantsData)
-                        // this.clientDataSource = new MatTableDataSource<ClientListItemDto>(result.items);
+                        let oldestDateArray = this.consultantsData.reduce((r, o) => o.origin?.lastClientPeriodEndDate > r.origin?.lastClientPeriodEndDate ? o : r);
+                        this.ganttConsultants.viewOptions.start = new GanttDate(getUnixTime(new Date(this.formatDate(date))));
+                        this.ganttConsultants.viewOptions.end = new GanttDate(getUnixTime(new Date(this.formatDate(oldestDateArray))));
+                        this.ganttConsultants.viewOptions.max = new GanttDate(getUnixTime(new Date(this.formatDate(oldestDateArray))));
+                        this.ganttConsultants.viewChange.emit();
+
                         this.totalCount = result.totalCount;
                     });
                 break
@@ -462,7 +469,6 @@ export class MainOverviewComponent extends AppComponentBase implements OnInit, A
                 })
             });
             this.userSelectedStatuses = result.filter(x => x.canBeSetByUser);
-            // console.log(this.userSelectedStatuses);
         })
     }
 
@@ -482,7 +488,6 @@ export class MainOverviewComponent extends AppComponentBase implements OnInit, A
 
     getCurrentUser() {
         let currentLoggedUser = this._auth.instance.getActiveAccount();
-        // console.log(currentLoggedUser);
 
         let toSend = {
             name: currentLoggedUser!.name,
@@ -490,7 +495,9 @@ export class MainOverviewComponent extends AppComponentBase implements OnInit, A
         };
 
         this._lookupService.employees(toSend.name)
-            .pipe(finalize(()=> {}))
+            .pipe(finalize(()=> {
+                this.changeViewType(GanttViewType.month);
+            }))
             .subscribe(result => {
                 this.selectedAccountManagers = result.map(x => {
                     return new SelectableEmployeeDto({
@@ -510,17 +517,39 @@ export class MainOverviewComponent extends AppComponentBase implements OnInit, A
     }
 
     setUserSelectedStatusForWorflow(workflowId: string, userSelectedStatus: number) {
-        this._mainOverviewService.setUserSelectedStatusForWorkflow(workflowId, userSelectedStatus).subscribe(result => {
-
-        })
+        this.showMainSpinner();
+        this._mainOverviewService.setUserSelectedStatusForWorkflow(workflowId, userSelectedStatus)
+            .pipe(finalize(() => {
+                this.hideMainSpinner();
+            }))
+            .subscribe(result => {
+                this.getMainOverview();
+            })
     }
     setUserSelectedStatusForConsultant(workflowId: string, consultantId: number, userSelectedStatus: number) {
-        this._mainOverviewService.setUserSelectedStatusForConsultant(workflowId, consultantId, userSelectedStatus).subscribe(result => {
-
-        })
+        this.showMainSpinner();
+        this._mainOverviewService.setUserSelectedStatusForConsultant(workflowId, consultantId, userSelectedStatus)
+            .pipe(finalize(() => {
+                this.hideMainSpinner();
+            }))
+            .subscribe(result => {
+                this.getMainOverview();
+            })
     }
 
     redirectToWorkflow(id: string) {
         this.router.navigate(['app/workflow', id]);
+    }
+
+    workflowsPageChanged(event?: any): void {
+        this.pageNumber = event.pageIndex + 1;
+        this.deafultPageSize = event.pageSize;
+        this.getMainOverview();
+    }
+
+    consultantsPageChanged(event?: any): void {
+        this.pageNumber = event.pageIndex + 1;
+        this.deafultPageSize = event.pageSize;
+        this.getMainOverview();
     }
 }
