@@ -24,6 +24,7 @@ import * as ApiServiceProxies from './service-proxies';
         ApiServiceProxies.ConsultantPeriodServiceProxy,
         ApiServiceProxies.ConsultantSalesServiceProxy,
         ApiServiceProxies.ConsultantContractsServiceProxy,
+        ApiServiceProxies.MainOverviewServiceProxy,
         ApiServiceProxies.ClientFinanceServiceProxy,
         ApiServiceProxies.ConsultantFinanceServiceProxy,
         {
