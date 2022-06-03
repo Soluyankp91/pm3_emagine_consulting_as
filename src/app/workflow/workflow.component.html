@@ -300,7 +300,8 @@
                                             (click)="$event.stopPropagation()"
                                             [formFieldLabel]="step.name + ' Manager'"
                                             (managerSelected)="selectedManager($event)"
-                                            [managerStatus]="step.status === workflowStatuses.Completed ? managerStatus.Completed : managerStatus.Pending"
+                                            [managerStatus]="step.status"
+                                            [responsiblePerson]="step.responsiblePerson"
                                             [readonly]="true">
                                         </app-manager-search>
                                     </div>
