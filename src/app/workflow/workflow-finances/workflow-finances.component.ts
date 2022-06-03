@@ -24,14 +24,7 @@ export class WorkflowFinancesComponent extends AppComponentBase implements OnIni
     financesClientForm: FinancesClientForm;
     financesConsultantsForm: FinancesConsultantsForm;
 
-    consultantList = [
-        {
-            consultantName: 'Robertsen Oscar'
-        },
-        {
-            consultantName: 'Van Trier Mia'
-        }
-    ]
+    editEnabledForcefuly = false;
 
     private _unsubscribe = new Subject();
     constructor(
@@ -75,8 +68,18 @@ export class WorkflowFinancesComponent extends AppComponentBase implements OnIni
     }
 
     get readOnlyMode() {
-        // return !this.permissionsForCurrentUser!["Edit"] && !this.permissionsForCurrentUser!["StartEdit"];
         return this.isCompleted;
+    }
+
+    toggleEditMode() {
+        this.isCompleted = !this.isCompleted;
+        this.editEnabledForcefuly = !this.editEnabledForcefuly;
+        this._workflowDataService.updateWorkflowProgressStatus({currentStepIsCompleted: this.isCompleted, currentStepIsForcefullyEditing: this.editEnabledForcefuly});
+        this.getFinanceStepData();
+    }
+
+    get canToggleEditMode() {
+        return this.permissionsForCurrentUser!["Edit"] && this.isCompleted;
     }
 
     startEditFinanceStep() {
@@ -126,6 +129,7 @@ export class WorkflowFinancesComponent extends AppComponentBase implements OnIni
     }
 
     getStartChangeOrExtendClientPeriodFinances() {
+        this.resetForms();
         this.showMainSpinner();
         this._clientPeriodSerivce.clientFinanceGet(this.periodId!)
             .pipe(finalize(() => this.hideMainSpinner()))
@@ -168,6 +172,7 @@ export class WorkflowFinancesComponent extends AppComponentBase implements OnIni
     }
 
     getStartConsultantPeriodFinance() {
+        this.resetForms();
         this.showMainSpinner();
         this._consultantPeriodSerivce.consultantFinanceGet(this.periodId!)
             .pipe(finalize(() => this.hideMainSpinner()))
@@ -196,6 +201,11 @@ export class WorkflowFinancesComponent extends AppComponentBase implements OnIni
                     this._workflowDataService.workflowSideSectionUpdated.emit({isStatusUpdate: true});
                 });
         }
+    }
+
+    resetForms() {
+        this.financesConsultantsForm.consultants.controls = [];
+        this.financesClientForm.reset('', {emitEvent: false});
     }
     
     addConsultantToForm(consultant: ConsultantPeriodFinanceDataDto) {
