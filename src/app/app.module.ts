@@ -486,6 +486,13 @@ export class AppModule {
         );
 
         iconRegistry.addSvgIcon(
+            'upcoming-icon',
+            sanitizer.bypassSecurityTrustResourceUrl(
+                'assets/common/images/upcoming-icon.svg'
+            )
+        );
+
+        iconRegistry.addSvgIcon(
             'info_icon',
             sanitizer.bypassSecurityTrustResourceUrl(
                 'assets/common/images/info_icon.svg'

@@ -1,8 +1,9 @@
-import { Component, EventEmitter, Input, OnDestroy, OnInit, Output, ViewChild } from '@angular/core';
+import { Component, EventEmitter, Injector, Input, OnDestroy, OnInit, Output, ViewChild } from '@angular/core';
 import { FormControl } from '@angular/forms';
 import { MatMenuTrigger } from '@angular/material/menu';
 import { Observable, Subject } from 'rxjs';
 import { debounceTime, switchMap, takeUntil } from 'rxjs/operators';
+import { AppComponentBase } from 'src/shared/app-component-base';
 import { EmployeeDto, IdNameDto, LookupServiceProxy } from 'src/shared/service-proxies/service-proxies';
 import { ManagerStatus } from './manager-search.model';
 
@@ -11,12 +12,13 @@ import { ManagerStatus } from './manager-search.model';
     templateUrl: './manager-search.component.html',
     styleUrls: ['./manager-search.component.scss']
 })
-export class ManagerSearchComponent implements OnInit, OnDestroy {
+export class ManagerSearchComponent extends AppComponentBase implements OnInit, OnDestroy {
     @ViewChild(MatMenuTrigger) managerSearchMenu: MatMenuTrigger;
     @Input() formFieldLabel: string;
     @Input() managerSearchType: number;
     @Input() managerStatus: number;
     @Input() readonly: boolean;
+    @Input() responsiblePerson: EmployeeDto;
     @Output() managerSelected: EventEmitter<number> = new EventEmitter<number>();
 
     managerStatuses = ManagerStatus;
@@ -25,8 +27,10 @@ export class ManagerSearchComponent implements OnInit, OnDestroy {
     filteredManagers: IdNameDto[] = [];
     private _unsubscribe = new Subject();
     constructor(
+        injector: Injector,
         private _lookupService: LookupServiceProxy
     ) {
+        super(injector);
         this.managerFilter.valueChanges.pipe(
             takeUntil(this._unsubscribe),
             debounceTime(300),
@@ -70,6 +74,8 @@ export class ManagerSearchComponent implements OnInit, OnDestroy {
 
     detectManagerStatus(status: number) {
         switch (status) {
+            case ManagerStatus.Upcoming:
+                return 'upcoming-icon';
             case ManagerStatus.Pending:
                 return 'in-progress-icon';
             case ManagerStatus.Completed:
@@ -81,6 +87,8 @@ export class ManagerSearchComponent implements OnInit, OnDestroy {
 
     detectStatusTooltip(status: number) {
         switch (status) {
+            case ManagerStatus.Upcoming:
+                return 'Upcoming';
             case ManagerStatus.Pending:
                 return 'Pending';
             case ManagerStatus.Completed:
