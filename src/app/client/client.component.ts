@@ -11,6 +11,7 @@ import { AppComponentBase } from 'src/shared/app-component-base';
 import { LocalHttpService } from 'src/shared/service-proxies/local-http.service';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { AuthenticationResult } from '@azure/msal-browser';
+import { MsalService } from '@azure/msal-angular';
 
 @Component({
     selector: 'app-client',
@@ -81,7 +82,8 @@ export class ClientComponent extends AppComponentBase implements OnInit, OnDestr
         private _lookupService: LookupServiceProxy,
         private _clientService: ClientsServiceProxy,
         private httpClient: HttpClient,
-        private localHttpService: LocalHttpService
+        private localHttpService: LocalHttpService,
+        private _authService: MsalService
     ) {
         super(injector);
         this.clientFilter.valueChanges.pipe(
@@ -133,7 +135,33 @@ export class ClientComponent extends AppComponentBase implements OnInit, OnDestr
                 }
             })
         );
-        this.getClientsGrid();
+        this.getCurrentUser();
+    }
+
+    getCurrentUser() {
+        let currentLoggedUser = this._authService.instance.getActiveAccount();
+        // console.log(currentLoggedUser);
+
+        let toSend = {
+            name: currentLoggedUser!.name,
+            maxRecordsCount: 1000,
+        };
+        this.showMainSpinner();
+        this._lookupService.employees(toSend.name)
+            .pipe(finalize(()=>  {
+                this.hideMainSpinner();
+                this.getClientsGrid()
+            }))
+            .subscribe(result => {
+                this.selectedAccountManagers = result.map(x => {
+                    return new SelectableEmployeeDto({
+                        id: x.id!,
+                        name: x.name!,
+                        externalId: x.externalId!,
+                        selected: true
+                    })
+                });
+            });
     }
 
     private _filterCountries(value: string): SelectableCountry[] {
