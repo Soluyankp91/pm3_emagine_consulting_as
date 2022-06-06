@@ -318,16 +318,16 @@
                         </span>
                     </div>
                     <div fxLayout="column" class="u-w--100 u-mb--20">
-                        <h3 class="workflow-readonly--gray-header">Price</h3>
+                        <h3 class="workflow-readonly--gray-header">Rate</h3>
                         <span class="workflow-readonly--blue-text-bold">
-                            {{salesClientDataForm?.clientPrice?.value ? salesClientDataForm?.clientPrice?.value : '-'}}
+                            {{salesClientDataForm?.clientRateAndInvoicing?.value?.name ? salesClientDataForm?.clientRateAndInvoicing?.value?.name : '-'}}
                         </span>
                     </div>
                     <div fxLayout="row" fxLayoutAlign="start start" class="u-w--100 u-mb--20">
                         <div fxLayout="column" fxFlex="25%">
-                            <h3 class="workflow-readonly--gray-header">Rate</h3>
+                            <h3 class="workflow-readonly--gray-header">Price</h3>
                             <span class="workflow-readonly--blue-text-bold">
-                                {{salesClientDataForm?.clientRateAndInvoicing?.value?.name ? salesClientDataForm?.clientRateAndInvoicing?.value?.name : '-'}}
+                                {{salesClientDataForm?.clientPrice?.value ? salesClientDataForm?.clientPrice?.value : '-'}}
                             </span>
                         </div>
                         <div fxLayout="column" fxFlex="25%">
@@ -398,7 +398,7 @@
                 <div fxLayout="column" fxLayoutAlign="start start" class="u-w--100">
                     <h2 class="workflow-readonly--header u-mb--20">CLIENT RATES AND FEES</h2>
                     <div class="inline-edit-form u-w--100 u-mb--20">
-                        <div fxLayout="row" fxLayoutAlign="space-between start" fxLayoutGap="10px" class="workflow-sales-inline--form__header-container u-w--100" *ngIf="salesClientDataForm.clientRates?.controls?.length">
+                        <div fxLayout="row" fxLayoutAlign="space-between start" fxLayoutGap="10px" class="workflow-sales-inline--form__header-container u-w--100" *ngIf="salesClientDataForm.clientRates?.controls?.length; else noDataTemplate">
                             <span fxFlex="25%" class="workflow-sales-inline--form__header u-w--100">
                                 Rate name
                             </span>
@@ -433,7 +433,7 @@
                         </ng-container>
                     </div>
                     <div class="inline-edit-form u-w--100">
-                        <div fxLayout="row" fxLayoutAlign="space-between start" fxLayoutGap="10px" class="workflow-sales-inline--form__header-container u-w--100" *ngIf="salesClientDataForm.clientFees?.controls?.length">
+                        <div fxLayout="row" fxLayoutAlign="space-between start" fxLayoutGap="10px" class="workflow-sales-inline--form__header-container u-w--100" *ngIf="salesClientDataForm.clientFees?.controls?.length; else noDataTemplate">
                             <span fxFlex="25%" class="workflow-sales-inline--form__header u-w--100">
                                 Fee name
                             </span>
@@ -498,14 +498,25 @@
                     <div fxLayout="column" class="u-w--100 u-mb--20">
                         <h3 class="workflow-readonly--gray-header">Contract Signers</h3>
                         <ng-container *ngIf="salesClientDataForm?.contractSigners?.controls?.length; else noDataTemplate">
+                            <div fxLayout="row" fxLayoutAlign="start start" fxLayoutGap="25px">
+                                <h3 class="workflow-readonly--gray-header" fxFlex="25%">
+                                    Name
+                                </h3>
+                                <h3 class="workflow-readonly--gray-header" fxFlex="25%">
+                                    Client role
+                                </h3>
+                                <h3 class="workflow-readonly--gray-header" fxFlex="25%">
+                                    Sequence
+                                </h3>
+                            </div>
                             <div fxLayout="row" fxLayoutAlign="start start" fxLayoutGap="25px" *ngFor="let item of salesClientDataForm?.contractSigners?.controls">
-                                <span class="workflow-readonly--blue-text-bold">
-                                    {{item?.value?.clientName}}
+                                <span class="workflow-readonly--blue-text-bold" fxFlex="25%">
+                                    {{item?.value?.clientContact?.firstName + ' ' + item?.value?.clientContact?.lastName}}
                                 </span>
-                                <span class="workflow-readonly--blue-text-bold">
-                                    {{item?.value?.clientRole}}
+                                <span class="workflow-readonly--blue-text-bold" fxFlex="25%">
+                                    {{item?.value?.clientRole?.name}}
                                 </span>
-                                <span class="workflow-readonly--blue-text-bold">
+                                <span class="workflow-readonly--blue-text-bold" fxFlex="25%">
                                     {{item?.value?.clientSequence}}
                                 </span>
                             </div>
@@ -1551,13 +1562,13 @@
                             <h3 class="workflow-gray--header u-mb--10">Shared Cap on Time Reporting</h3>
                             <div fxLayout="row" fxLayoutAlign="start start" class="u-w--100 u-mb--20">
                                 <mat-button-toggle-group class="workflow-toggle-buttons" formControlName="capOnTimeReporting">
-                                    <mat-button-toggle *ngFor="let item of clientTimeReportingCap" [value]="item.id">
+                                    <mat-button-toggle *ngFor="let item of clientTimeReportingCap" [value]="item">
                                         {{ item.name }}
                                     </mat-button-toggle>
                                 </mat-button-toggle-group>
                             </div>
                             <!--not visible if 'Individual cap' Id = 3 'No cap' id = 4 -->
-                            <div fxLayout="row" fxLayoutAlign="start start" class="u-w--100 u-mb--10" *ngIf="salesClientDataForm.capOnTimeReporting?.value !== 3 && salesClientDataForm.capOnTimeReporting?.value !== 4">
+                            <div fxLayout="row" fxLayoutAlign="start start" class="u-w--100 u-mb--10" *ngIf="salesClientDataForm.capOnTimeReporting?.value?.id !== 3 && salesClientDataForm.capOnTimeReporting?.value?.id !== 4">
                                 <mat-form-field appearance="outline" class="u-w--100  u-mr--16" fxFlex="0 0 calc(16.5% - 8px)">
                                     <mat-label>Max value</mat-label>
                                     <input autocomplete="off" matInput formControlName="capOnTimeReportingValue" type="text">
@@ -1597,8 +1608,8 @@
 
                                         <mat-form-field appearance="outline" class="u-w--100  filter-select u-mr--16" fxFlex="0 0 calc(16.5% - 8px)">
                                             <mat-label>Unit type</mat-label>
-                                            <mat-select formControlName="rateUnitTypeId" [disableOptionCentering]="true">
-                                                <mat-option *ngFor="let item of rateUnitTypes" [value]="item.id">
+                                            <mat-select formControlName="rateUnitTypeId" [disableOptionCentering]="true" [compareWith]="compareWithFn">
+                                                <mat-option *ngFor="let item of rateUnitTypes" [value]="item">
                                                     {{ item.name }}
                                                 </mat-option>
                                             </mat-select>
@@ -1606,8 +1617,8 @@
 
                                         <mat-form-field appearance="outline" class="u-w--100  filter-select" fxFlex="0 0 calc(16.5% - 8px)">
                                             <mat-label>Currency</mat-label>
-                                            <mat-select formControlName="clientCurrency" [disableOptionCentering]="true">
-                                                <mat-option *ngFor="let item of currencies" [value]="item.id">
+                                            <mat-select formControlName="clientCurrency" [disableOptionCentering]="true" [compareWith]="compareWithFn">
+                                                <mat-option *ngFor="let item of currencies" [value]="item">
                                                     {{ item.name }}
                                                 </mat-option>
                                             </mat-select>
@@ -1623,8 +1634,8 @@
 
                                         <mat-form-field appearance="outline" class="u-w--100  filter-select" fxFlex="33%">
                                             <mat-label>Currency</mat-label>
-                                            <mat-select formControlName="clientCurrency" [disableOptionCentering]="true">
-                                                <mat-option *ngFor="let item of currencies" [value]="item.id">
+                                            <mat-select formControlName="clientCurrency" [disableOptionCentering]="true" [compareWith]="compareWithFn">
+                                                <mat-option *ngFor="let item of currencies" [value]="item">
                                                     {{ item.name }}
                                                 </mat-option>
                                             </mat-select>
@@ -1639,8 +1650,8 @@
                             <div fxLayout="row" fxLayoutAlign="start center" class="u-w--100 u-mb--10">
                                 <mat-form-field appearance="outline" class="filter-select u-mr--16" fxFlex="33%">
                                     <mat-label>Invoicing currency</mat-label>
-                                    <mat-select formControlName="clientInvoiceCurrency" [disableOptionCentering]="true">
-                                        <mat-option *ngFor="let item of currencies" [value]="item.id">
+                                    <mat-select formControlName="clientInvoiceCurrency" [disableOptionCentering]="true" [compareWith]="compareWithFn">
+                                        <mat-option *ngFor="let item of currencies" [value]="item">
                                             {{ item.name }}
                                         </mat-option>
                                     </mat-select>
@@ -2072,8 +2083,8 @@
 
                                     <mat-form-field appearance="outline" class="u-w--100  filter-select u-mr--16" fxFlex="33%">
                                         <mat-label>Client Role</mat-label>
-                                        <mat-select formControlName="clientRole" [disableOptionCentering]="true">
-                                            <mat-option *ngFor="let item of signerRoles" [value]="item.id">
+                                        <mat-select formControlName="clientRole" [disableOptionCentering]="true" [compareWith]="compareWithFn">
+                                            <mat-option *ngFor="let item of signerRoles" [value]="item">
                                                 {{ item.name }}
                                             </mat-option>
                                         </mat-select>
@@ -2846,7 +2857,7 @@
                                 </div>
                                 <mat-divider class="u-w--100 u-mt--20 u-mb--20"></mat-divider>
 
-                                <div fxLayout="column" fxLayoutAlign="start start" class="u-w--100" *ngIf="consultant.value?.consultantProdataEntity?.id && (consultant.value?.consultantProdataEntity?.id !== salesClientDataForm.value?.pdcInvoicingEntityId?.id)">
+                                <div fxLayout="column" fxLayoutAlign="start start" class="u-w--100" *ngIf="(consultant.value?.consultantProdataEntity?.id && salesClientDataForm.value?.pdcInvoicingEntityId?.id) && (consultant.value?.consultantProdataEntity?.id !== salesClientDataForm.value?.pdcInvoicingEntityId?.id)">
                                     <h2 class="workflow-section--header">Account manager</h2>
                                     <div fxLayout="row" fxLayoutAlign="start center" class="u-w--100 u-mb--10">
                                         <mat-form-field appearance="outline" class="u-w--100  filter-select u-mr--16" fxFlex="33%">
