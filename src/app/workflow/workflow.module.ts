@@ -5,9 +5,7 @@ import { AppCommonModule } from '../shared/common/app-common.module';
 import { NgxGanttModule } from '@worktile/gantt';
 import { WorkflowRoutingModule } from './workflow-routing.module';
 import { CreateWorkflowDialogComponent } from './create-workflow-dialog/create-workflow-dialog.component';
-import { ExtendWorkflowDialogComponent } from './extend-workflow-dialog/extend-workflow-dialog.component';
 import { WorkflowActionsDialogComponent } from './workflow-actions-dialog/workflow-actions-dialog.component';
-import { WorkflowChangeDialogComponent } from './workflow-change-dialog/workflow-change-dialog.component';
 import { WorkflowConsultantActionsDialogComponent } from './workflow-consultant-actions-dialog/workflow-consultant-actions-dialog.component';
 import { AddOrEditProjectLineDialogComponent } from './workflow-contracts/add-or-edit-project-line-dialog/add-or-edit-project-line-dialog.component';
 import { WorkflowContractsComponent } from './workflow-contracts/workflow-contracts.component';
@@ -27,8 +25,6 @@ import { WorkflowComponent } from './workflow.component';
         WorkflowContractsComponent,
         WorkflowOverviewComponent,
         WorkflowFinancesComponent,
-        WorkflowChangeDialogComponent,
-        ExtendWorkflowDialogComponent,
         WorkflowConsultantActionsDialogComponent,
         WorkflowActionsDialogComponent,
         CreateWorkflowDialogComponent,

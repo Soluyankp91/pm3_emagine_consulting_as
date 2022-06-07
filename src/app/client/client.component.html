@@ -140,7 +140,7 @@
             <div fxFlex="25%" fxLayout="column" fxLayoutAlign="start end" fxLayoutGap="16px" class="u-w--100">
                 <mat-form-field appearance="fill" class="search-filter-input u-w--100 formFieldNoMarginPadding u-mb--10">
                     <input autocomplete="off" matInput [formControl]="clientFilter" placeholder="Search" type="text">
-                    <mat-icon matPrefix>search</mat-icon>
+                    <mat-icon matPrefix class="search-icon u-ml--10">search</mat-icon>
                 </mat-form-field>
                 <mat-slide-toggle color="primary" labelPosition="before" (change)="getClientsGrid()" [(ngModel)]="includeDeleted">Show deleted</mat-slide-toggle>
             </div>
