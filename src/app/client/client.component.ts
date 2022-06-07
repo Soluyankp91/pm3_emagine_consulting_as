@@ -5,7 +5,7 @@ import { Router } from '@angular/router';
 import { Observable, Subject } from 'rxjs';
 import { takeUntil, debounceTime, switchMap, finalize, map } from 'rxjs/operators';
 import { AppConsts } from 'src/shared/AppConsts';
-import { ClientListItemDto, ClientsServiceProxy, EmployeeDto, EnumServiceProxy, LookupServiceProxy } from 'src/shared/service-proxies/service-proxies';
+import { ClientListItemDto, ClientsServiceProxy, EmployeeDto, EmployeeServiceProxy, EnumServiceProxy, LookupServiceProxy } from 'src/shared/service-proxies/service-proxies';
 import { SelectableCountry, SelectableEmployeeDto, SelectableIdNameDto, StatusList } from './client.model';
 import { AppComponentBase } from 'src/shared/app-component-base';
 import { LocalHttpService } from 'src/shared/service-proxies/local-http.service';
@@ -83,7 +83,7 @@ export class ClientComponent extends AppComponentBase implements OnInit, OnDestr
         private _clientService: ClientsServiceProxy,
         private httpClient: HttpClient,
         private localHttpService: LocalHttpService,
-        private _authService: MsalService
+        private _employeeService: EmployeeServiceProxy
     ) {
         super(injector);
         this.clientFilter.valueChanges.pipe(
@@ -139,28 +139,21 @@ export class ClientComponent extends AppComponentBase implements OnInit, OnDestr
     }
 
     getCurrentUser() {
-        let currentLoggedUser = this._authService.instance.getActiveAccount();
-        // console.log(currentLoggedUser);
-
-        let toSend = {
-            name: currentLoggedUser!.name,
-            maxRecordsCount: 1000,
-        };
         this.showMainSpinner();
-        this._lookupService.employees(toSend.name)
-            .pipe(finalize(()=>  {
+        this._employeeService.current()
+            .pipe(finalize(()=> {
                 this.hideMainSpinner();
-                this.getClientsGrid()
+                this.getClientsGrid();
             }))
             .subscribe(result => {
-                this.selectedAccountManagers = result.map(x => {
-                    return new SelectableEmployeeDto({
-                        id: x.id!,
-                        name: x.name!,
-                        externalId: x.externalId!,
+                this.selectedAccountManagers.push(
+                    new SelectableEmployeeDto({
+                        id: result.id!,
+                        name: result.name!,
+                        externalId: result.externalId!,
                         selected: true
                     })
-                });
+                );
             });
     }
 
