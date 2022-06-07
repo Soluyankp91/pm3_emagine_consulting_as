@@ -510,14 +510,14 @@ export class WorkflowSalesComponent extends AppComponentBase implements OnInit {
 
             }))
             .subscribe(result => {
-                this.clientSpecialRateList = result;
+                this.clientSpecialRateList = result.filter(x => !x.isHidden);
             });
         this._clientService.specialFeesGet(clientId, true)
             .pipe(finalize(() => {
 
             }))
             .subscribe(result => {
-                this.clientSpecialFeeList = result;
+                this.clientSpecialFeeList = result.filter(x => !x.isHidden);
             });
     }
 
