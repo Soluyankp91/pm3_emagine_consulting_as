@@ -455,9 +455,6 @@ export class WorkflowSalesComponent extends AppComponentBase implements OnInit {
         this._workflowDataService.workflowSideSectionChanged
             .pipe(takeUntil(this._unsubscribe))
             .subscribe((value: boolean) => {
-                console.log(value);
-                //TODO: add all side sections
-                this._workflowDataService.updateWorkflowProgressStatus({currentStepIsCompleted: this.isCompleted, currentStepIsForcefullyEditing: this.editEnabledForcefuly});
                 this.detectActiveSideSection();
             });
 
@@ -479,7 +476,6 @@ export class WorkflowSalesComponent extends AppComponentBase implements OnInit {
     }
 
     get canToggleEditMode() {
-        // return this.permissionsForCurrentUser!["Edit"] && (this.isCompleted || this.editEnabledForcefuly);
         return this.permissionsForCurrentUser!["Edit"] && this.isCompleted;
     }
 
@@ -527,7 +523,6 @@ export class WorkflowSalesComponent extends AppComponentBase implements OnInit {
 
 
     ngOnDestroy(): void {
-        console.log('destroy sales');
         this._unsubscribe.next();
         this._unsubscribe.complete();
     }
