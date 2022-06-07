@@ -1580,8 +1580,8 @@ export class WorkflowSalesComponent extends AppComponentBase implements OnInit {
                     consultantInput.nameOnly = consultant.consultantNameOnly;
                 } else {
                     consultantInput.consultantId = consultant.consultantName?.id
+                    consultantInput.consultantPeriodId = consultant.consultantPeriodId;
                     consultantInput.consultant = new ConsultantResultDto();
-
                     consultantInput.consultant.id = consultant.consultantName?.id
                     consultantInput.consultant.name = consultant.consultantName?.name;
                     consultantInput.consultant.legacyId = consultant.consultantName?.legacyId;
