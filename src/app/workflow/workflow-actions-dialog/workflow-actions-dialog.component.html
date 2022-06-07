@@ -108,7 +108,7 @@
                             <mat-datepicker #extensionDatePicker></mat-datepicker>
                         </mat-form-field>
 
-                        <mat-checkbox color="accent" name="noExtensionEndDate" formControlName="noEndDate" class="green-checkbox u-mr--16">
+                        <mat-checkbox color="accent" name="noExtensionEndDate" formControlName="noEndDate" class="green-checkbox u-mr--16" (change)="disableOrEnableInput(extendWorkflowForm?.noEndDate?.value, extendWorkflowForm?.endDate)">
                             No end date
                         </mat-checkbox>
                     </div>
