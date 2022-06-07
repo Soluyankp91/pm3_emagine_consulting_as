@@ -457,6 +457,7 @@ export class WorkflowSalesComponent extends AppComponentBase implements OnInit {
             .subscribe((value: boolean) => {
                 console.log(value);
                 //TODO: add all side sections
+                this._workflowDataService.updateWorkflowProgressStatus({currentStepIsCompleted: this.isCompleted, currentStepIsForcefullyEditing: this.editEnabledForcefuly});
                 this.detectActiveSideSection();
             });
 
