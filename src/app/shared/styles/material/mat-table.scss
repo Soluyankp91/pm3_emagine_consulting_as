@@ -219,8 +219,11 @@ mat-table.white-table {
             }
         }
         &-container {
-            .gantt-main .gantt-main-container .gantt-main-items .gantt-item {
-                border: none !important;
+            .gantt-main .gantt-main-container {
+                overflow-y: hidden;
+                .gantt-main-items .gantt-item {
+                    border: none !important;
+                }
             }
             .gantt-calendar-overlay {
                 .gantt-calendar-overlay-main {

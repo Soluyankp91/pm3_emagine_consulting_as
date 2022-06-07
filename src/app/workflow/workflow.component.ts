@@ -9,7 +9,7 @@ import { Subject } from 'rxjs';
 import { debounceTime, finalize, switchMap, takeUntil } from 'rxjs/operators';
 import { AppComponentBase } from 'src/shared/app-component-base';
 import { AppConsts } from 'src/shared/AppConsts';
-import { ApiServiceProxy, EmployeeDto, EnumEntityTypeDto, LookupServiceProxy, StartNewWorkflowInputDto, WorkflowListItemDto, WorkflowProcessType, WorkflowServiceProxy, WorkflowStepStatus } from 'src/shared/service-proxies/service-proxies';
+import { ApiServiceProxy, EmployeeDto, EmployeeServiceProxy, EnumEntityTypeDto, LookupServiceProxy, StartNewWorkflowInputDto, WorkflowListItemDto, WorkflowProcessType, WorkflowServiceProxy, WorkflowStepStatus } from 'src/shared/service-proxies/service-proxies';
 import { SelectableCountry, SelectableIdNameDto } from '../client/client.model';
 import { InternalLookupService } from '../shared/common/internal-lookup.service';
 import { ManagerStatus } from '../shared/components/manager-search/manager-search.model';
@@ -63,7 +63,7 @@ export class WorkflowComponent extends AppComponentBase implements OnInit, OnDes
 
     tenants: EnumEntityTypeDto[] = [];
     saleTypes: EnumEntityTypeDto[] = [];
-    projectTypes: EnumEntityTypeDto[] = [];
+    deliveryTypes: EnumEntityTypeDto[] = [];
     workflowStatuses: { [key: string]: string; };
     workflowStepStatuses = WorkflowStepStatus;
     isAdvancedFilters = false;
@@ -76,7 +76,7 @@ export class WorkflowComponent extends AppComponentBase implements OnInit, OnDes
     invoicingEntityControl = new FormControl();
     paymentEntityControl = new FormControl();
     salesTypeControl = new FormControl();
-    projectTypeControl = new FormControl();
+    deliveryTypesControl = new FormControl();
     workflowStatusControl = new FormControl();
 
     managerStatus = ManagerStatus;
@@ -95,6 +95,7 @@ export class WorkflowComponent extends AppComponentBase implements OnInit, OnDes
         private _internalLookupService: InternalLookupService,
         private _lookupService: LookupServiceProxy,
         private _auth: MsalService,
+        private _employeeService: EmployeeServiceProxy,
     ) {
         super(injector);
         // this.workflowFilter.valueChanges.pipe(
@@ -143,7 +144,7 @@ export class WorkflowComponent extends AppComponentBase implements OnInit, OnDes
             this.getWorkflowList();
         });
 
-        this.projectTypeControl.valueChanges.pipe(
+        this.deliveryTypesControl.valueChanges.pipe(
             takeUntil(this._unsubscribe),
             debounceTime(500)
         ).subscribe(() => {
@@ -193,7 +194,7 @@ export class WorkflowComponent extends AppComponentBase implements OnInit, OnDes
         // this.getWorkflowList();
         this.getTenants();
         this.getSalesType();
-        this.getProjectType();
+        this.getDeliveryTypes();
         this.getWorkflowStatuses();
     }
 
@@ -283,13 +284,13 @@ export class WorkflowComponent extends AppComponentBase implements OnInit, OnDes
             });
     }
 
-    getProjectType() {
-        this._internalLookupService.getProjectTypes()
+    getDeliveryTypes() {
+        this._internalLookupService.getDeliveryTypes()
             .pipe(finalize(() => {
 
             }))
             .subscribe(result => {
-                this.projectTypes = result;
+                this.deliveryTypes = result;
             });
     }
 
@@ -309,7 +310,7 @@ export class WorkflowComponent extends AppComponentBase implements OnInit, OnDes
         let invoicingEntity = this.invoicingEntityControl.value ? this.invoicingEntityControl.value : undefined;
         let paymentEntity = this.paymentEntityControl.value ? this.paymentEntityControl.value : undefined;
         let salesType = this.salesTypeControl.value ? this.salesTypeControl.value : undefined;
-        let projectType = this.projectTypeControl.value ? this.projectTypeControl.value : undefined;
+        let deliveryTypes = this.deliveryTypesControl.value ? this.deliveryTypesControl.value : undefined;
         let workflowStatus = this.workflowStatusControl.value ? this.workflowStatusControl.value : undefined;
         let ownerIds = this.selectedAccountManagers.map(x => +x.id);
         let cutOffDate = undefined;
@@ -319,7 +320,7 @@ export class WorkflowComponent extends AppComponentBase implements OnInit, OnDes
             invoicingEntity,
             paymentEntity,
             salesType,
-            projectType,
+            deliveryTypes,
             workflowStatus,
             ownerIds,
             this.showOnlyWorkflowsWithNewSales,
@@ -343,7 +344,7 @@ export class WorkflowComponent extends AppComponentBase implements OnInit, OnDes
                         startDate: x.startDate,
                         endDate: x.endDate,
                         salesType: this.findItemById(this.saleTypes, x.salesTypeId),
-                        deliveryType: this.findItemById(this.projectTypes, x.deliveryTypeId),
+                        deliveryType: this.findItemById(this.deliveryTypes, x.deliveryTypeId),
                         workflowStatusWithEmployee: x.workflowStatusWithEmployee,
                         isDeleted: x.isDeleted,
                         consultants: x.consultants,
@@ -390,25 +391,37 @@ export class WorkflowComponent extends AppComponentBase implements OnInit, OnDes
     }
 
     getCurrentUser() {
-        let currentLoggedUser = this._auth.instance.getActiveAccount();
-        // console.log(currentLoggedUser);
+        this.selectedAccountManagers = [];
 
-        let toSend = {
-            name: currentLoggedUser!.name,
-            maxRecordsCount: 1000,
-        };
-
-        this._lookupService.employees(toSend.name)
-            .pipe(finalize(()=> {this.getWorkflowList();}))
+        this._employeeService.current()
+            .pipe(finalize(()=> {
+                this.getWorkflowList();
+            }))
             .subscribe(result => {
-                this.selectedAccountManagers = result.map(x => {
-                    return new SelectableEmployeeDto({
-                        id: x.id!,
-                        name: x.name!,
-                        externalId: x.externalId!,
+                this.selectedAccountManagers.push(
+                    new SelectableEmployeeDto({
+                        id: result.id!,
+                        name: result.name!,
+                        externalId: result.externalId!,
                         selected: true
                     })
-                });
+                );
             });
+    }
+
+    clearAllFilters() {
+        this.workflowFilter.setValue(null, {emitEvent: false});
+        this.invoicingEntityControl.setValue(null, {emitEvent: false});
+        this.paymentEntityControl.setValue(null, {emitEvent: false});
+        this.salesTypeControl.setValue(null, {emitEvent: false});
+        this.deliveryTypesControl.setValue(null, {emitEvent: false});
+        this.workflowStatusControl.setValue(null, {emitEvent: false});
+        this.showOnlyWorkflowsWithNewSales = false;
+        this.showOnlyWorkflowsWithExtensions = false;
+        this.showOnlyWorkflowsWithPendingStepsForSelectedEmployees = false;
+        this.showOnlyWorkflowsWithUpcomingStepsForSelectedEmployees = false;
+        this.includeTerminated = false;
+        this.includeDeleted = false;
+        this.getCurrentUser();
     }
 }
