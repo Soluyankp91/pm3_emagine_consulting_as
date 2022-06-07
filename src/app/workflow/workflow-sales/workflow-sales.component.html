@@ -566,7 +566,7 @@
                                         </mat-menu>
                                     </div>
                                 </div>
-    
+
                                 <div fxLayout="row" fxLayoutAlign="start start" class="u-w--100 u-mb--20">
                                     <div fxLayout="column" fxFlex="25%">
                                         <h3 class="workflow-readonly--gray-header">Employment type</h3>
@@ -760,7 +760,7 @@
                             <mat-divider class="u-w--100 u-mt--20 u-mb--20"></mat-divider>
                             <div fxLayout="column" fxLayoutAlign="start start" class="u-w--100">
                                 <h2 class="workflow-section--header">Rates and fees</h2>
-    
+
                                 <div class="inline-edit-form u-w--100">
                                     <div fxLayout="row" fxLayoutAlign="space-between start" fxLayoutGap="10px" class="workflow-sales-inline--form__header-container u-w--100" *ngIf="item.value.specialRates?.length">
                                         <span fxFlex="1 1 20%" class="workflow-sales-inline--form__header u-w--100">
@@ -805,7 +805,7 @@
                                         </div>
                                     </ng-container>
                                 </div>
-    
+
                                 <div class="inline-edit-form u-w--100">
                                     <div fxLayout="row" fxLayoutAlign="space-between start" fxLayoutGap="10px" class="workflow-sales-inline--form__header-container u-w--100" *ngIf="item.value.specialFees?.length">
                                         <span fxFlex="1 1 20%" class="workflow-sales-inline--form__header u-w--100">
@@ -849,7 +849,7 @@
                                     </ng-container>
                                 </div>
                             </div>
-    
+
                             <mat-divider class="u-w--100 u-mt--20 u-mb--20"></mat-divider>
                             <div fxLayout="column" fxLayoutAlign="start start" class="u-w--100">
                                 <h2 class="workflow-readonly--header u-mb--20">Consultant contract</h2>
@@ -872,7 +872,7 @@
                             </div>
                         </div>
                         <mat-divider class="u-mt--20 u-mb--20"></mat-divider>
-                    </ng-container>    
+                    </ng-container>
                 </ng-container>
             </form>
         </ng-container>
@@ -2070,7 +2070,7 @@
                                 <div fxLayout="row" fxLayoutAlign="start start" class="u-w--100 u-mb--10" *ngFor="let signer of contractSigners.controls; let i = index" [formGroupName]="i">
                                     <mat-form-field appearance="outline" class="u-w--100  filter-select u-mr--16" fxFlex="33%">
                                         <mat-label>Name</mat-label>
-                                        <input type="text" matInput [matAutocomplete]="contactSignerAutocomplete" formControlName="clientContact" (click)="$event.stopPropagation()" placeholder="Final Evaluation Reference Person">
+                                        <input type="text" matInput [matAutocomplete]="contactSignerAutocomplete" formControlName="clientContact" (click)="$event.stopPropagation()" placeholder="Name">
                                         <mat-autocomplete #contactSignerAutocomplete="matAutocomplete" [displayWith]="displayFullNameFn">
                                             <ng-container>
                                                 <mat-option *ngFor="let contact of filteredContractSigners" [value]="contact" [ngClass]="{ 'no-data': contact.id === 'no-data' }">
@@ -2601,7 +2601,7 @@
                                             </ng-container>
                                         </div>
                                     </ng-container>
-                                    
+
                                 </div>
                                 <mat-divider class="u-w--100 u-mt--20 u-mb--20"></mat-divider>
 

@@ -4,7 +4,12 @@
         <div fxLayout="row" fxLayoutAlign="space-between start" class="u-w--100">
             <div fxFlex fxLayout="row" fxLayoutAlign="start center" class="u-w--100" fxFlex="75%">
                 <div class="main-overview--filter-manager cursor-pointer u-mr--16" [matTooltip]="mapListByProperty(selectedAccountManagers, 'name')" [matMenuTriggerFor]="managerMenu" (menuOpened)="accountManagerFilter.setValue(''); accountManagerFilterInput.click()">
-                    <img src="../../../assets/common/images/no-img.svg">
+                    <!-- <img src="../../../assets/common/images/no-img.svg"> -->
+                    <img *ngIf="selectedAccountManagers.length === 1" class="border-rounded-50 image-thumbnail-small" [src]="employeeProfileUrl(selectedAccountManagers[0]?.externalId!)" />
+                    <img *ngIf="selectedAccountManagers.length === 0" src="../../../assets/common/images/no-img.svg">
+                    <div *ngIf="selectedAccountManagers.length > 1" class="main-overview--filter__badge">
+                        {{selectedAccountManagers.length}}
+                    </div>
                     <mat-menu #managerMenu>
                         <div mat-menu-item (click)="$event.stopPropagation()" class="u-pg--0">
                             <mat-form-field appearance="outline" (click)="$event.stopPropagation()">
