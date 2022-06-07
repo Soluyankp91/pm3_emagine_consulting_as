@@ -1026,6 +1026,20 @@
                                 </div>
                                 <div fxLayout="row" fxLayoutAlign="start start" class="u-w--100 u-mb--10">
                                     <mat-form-field appearance="outline" class="u-w--100  filter-select u-mr--16" fxFlex="33%">
+                                        <mat-label>Margin</mat-label>
+                                        <mat-select formControlName="margin" [disableOptionCentering]="true" [compareWith]="compareWithFn" required>
+                                            <mat-option class="mat-select-clear-option">
+                                                Clear
+                                            </mat-option>
+                                            <mat-option *ngFor="let item of margins" [value]="item">
+                                                {{ item.name }}
+                                            </mat-option>
+                                        </mat-select>
+                                        <mat-error>{{getValidationMessage(salesMainDataForm.margin)}}</mat-error>
+                                    </mat-form-field>
+                                </div>
+                                <div fxLayout="row" fxLayoutAlign="start start" class="u-w--100 u-mb--10">
+                                    <mat-form-field appearance="outline" class="u-w--100  filter-select u-mr--16" fxFlex="33%">
                                         <mat-label>Project Category</mat-label>
                                         <mat-select formControlName="projectCategory" [disableOptionCentering]="false" [compareWith]="compareWithFn">
                                             <mat-option *ngFor="let item of projectCategories" [value]="item">
@@ -1064,21 +1078,6 @@
                                     </span>
                                 </div>
                             </ng-container>
-
-                            <div fxLayout="row" fxLayoutAlign="start start" class="u-w--100 u-mb--10">
-                                <mat-form-field appearance="outline" class="u-w--100  filter-select u-mr--16" fxFlex="33%">
-                                    <mat-label>Margin</mat-label>
-                                    <mat-select formControlName="margin" [disableOptionCentering]="true" [compareWith]="compareWithFn" required>
-                                        <mat-option class="mat-select-clear-option">
-                                            Clear
-                                        </mat-option>
-                                        <mat-option *ngFor="let item of margins" [value]="item">
-                                            {{ item.name }}
-                                        </mat-option>
-                                    </mat-select>
-                                    <mat-error>{{getValidationMessage(salesMainDataForm.margin)}}</mat-error>
-                                </mat-form-field>
-                            </div>
 
                             <div fxLayout="row" fxLayoutAlign="start start" class="u-w--100 u-mb--10">
                                 <mat-form-field appearance="outline" class="u-w--100 textarea-input " fxFlex="0 0 calc(66% + 16px)">
