@@ -96,7 +96,7 @@ export class WorkflowActionsDialogComponent extends AppComponentBase implements 
             case WorkflowDiallogAction.AddConsultant:
                 let addConsultantOutput = new ConsultantPeriodAddDto();
                 addConsultantOutput.startDate = this.startDate.value;
-                addConsultantOutput.noEndDate = this.noEndDate.value;
+                addConsultantOutput.noEndDate = this.noEndDate.value ?? false;
                 addConsultantOutput.endDate = this.endDate.value;
                 this.onConfirmed.emit(addConsultantOutput);
                 break;
@@ -119,7 +119,7 @@ export class WorkflowActionsDialogComponent extends AppComponentBase implements 
                 let extendWorkflowOutput = new ExtendClientPeriodDto();
                 extendWorkflowOutput.startDate = this.extendWorkflowForm.startDate?.value,
                 extendWorkflowOutput.endDate = this.extendWorkflowForm.endDate?.value,
-                extendWorkflowOutput.noEndDate = this.extendWorkflowForm.noEndDate?.value,
+                extendWorkflowOutput.noEndDate = this.extendWorkflowForm.noEndDate?.value ?? false,
                 extendWorkflowOutput.extendConsultantIds = consutlantsToExtend.filter((x: any) => x.extendConsutlant).map((y: any) => y.consutlantId);
                 console.log(extendWorkflowOutput.extendConsultantIds);
                 this.onConfirmed.emit(extendWorkflowOutput);

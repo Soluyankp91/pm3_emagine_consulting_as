@@ -60,7 +60,6 @@ export class WorkflowSalesComponent extends AppComponentBase implements OnInit {
     clientExtensionDurations: EnumEntityTypeDto[] = [];
     clientSpecialFeeFrequencies: EnumEntityTypeDto[] = [];
     clientSpecialFeeSpecifications: EnumEntityTypeDto[] = [];
-    clientSpecialRateOrFeeDirections: EnumEntityTypeDto[] = [];
     clientSpecialRateReportUnits: EnumEntityTypeDto[] = [];
     clientSpecialRateSpecifications: EnumEntityTypeDto[] = [];
     contractExpirationNotificationDuration: EnumEntityTypeDto[] = [];
@@ -407,7 +406,6 @@ export class WorkflowSalesComponent extends AppComponentBase implements OnInit {
         this.getExtensionDurations();
         this.getSpecialFeeFrequencies();
         this.getSpecialFeeSpecifications();
-        this.getSpecialRateOrFeeDirections();
         this.getSpecialRateReportUnits();
         this.getSpecialRateSpecifications();
         this.getContractExpirationNotificationInterval();
@@ -455,8 +453,6 @@ export class WorkflowSalesComponent extends AppComponentBase implements OnInit {
         this._workflowDataService.workflowSideSectionChanged
             .pipe(takeUntil(this._unsubscribe))
             .subscribe((value: boolean) => {
-                console.log(value);
-                //TODO: add all side sections
                 this.detectActiveSideSection();
             });
 
@@ -478,7 +474,6 @@ export class WorkflowSalesComponent extends AppComponentBase implements OnInit {
     }
 
     get canToggleEditMode() {
-        // return this.permissionsForCurrentUser!["Edit"] && (this.isCompleted || this.editEnabledForcefuly);
         return this.permissionsForCurrentUser!["Edit"] && this.isCompleted;
     }
 
@@ -513,20 +508,19 @@ export class WorkflowSalesComponent extends AppComponentBase implements OnInit {
 
             }))
             .subscribe(result => {
-                this.clientSpecialRateList = result;
+                this.clientSpecialRateList = result.filter(x => !x.isHidden);
             });
         this._clientService.specialFeesGet(clientId, true)
             .pipe(finalize(() => {
 
             }))
             .subscribe(result => {
-                this.clientSpecialFeeList = result;
+                this.clientSpecialFeeList = result.filter(x => !x.isHidden);
             });
     }
 
 
     ngOnDestroy(): void {
-        console.log('destroy sales');
         this._unsubscribe.next();
         this._unsubscribe.complete();
     }
@@ -671,16 +665,6 @@ export class WorkflowSalesComponent extends AppComponentBase implements OnInit {
             }))
             .subscribe(result => {
                 this.clientSpecialFeeSpecifications = result;
-            });
-    }
-
-    getSpecialRateOrFeeDirections() {
-        this._internalLookupService.getSpecialRateOrFeeDirections()
-            .pipe(finalize(() => {
-
-            }))
-            .subscribe(result => {
-                this.clientSpecialRateOrFeeDirections = result;
             });
     }
 
@@ -867,7 +851,6 @@ export class WorkflowSalesComponent extends AppComponentBase implements OnInit {
         formattedRate.id = undefined;
         formattedRate.clientSpecialRateId = rate.id;
         formattedRate.rateName = rate.publicName;
-        formattedRate.rateDirection = rate.specialRateOrFeeDirection;
         formattedRate.reportingUnit = rate.specialRateReportingUnit;
         formattedRate.clientRate = rate.clientRate;
         formattedRate.clientRateCurrencyId = rate.clientRateCurrency?.id;
@@ -881,7 +864,6 @@ export class WorkflowSalesComponent extends AppComponentBase implements OnInit {
             id: new FormControl(clientRate?.id ?? null),
             clientSpecialRateId: new FormControl(clientRate?.clientSpecialRateId ?? null),
             rateName: new FormControl(clientRate?.rateName ?? null),
-            rateDirection: new FormControl(clientRate?.rateDirection ?? null),
             reportingUnit: new FormControl(clientRate?.reportingUnit ?? null),
             clientRateValue: new FormControl(clientRate?.clientRate ?? null),
             clientRateCurrency: new FormControl(this.findItemById(this.currencies, clientRate?.clientRateCurrencyId) ?? null),
@@ -910,7 +892,6 @@ export class WorkflowSalesComponent extends AppComponentBase implements OnInit {
                 id: clientRateValue.id,
                 clientSpecialRateId: clientRateValue.clientSpecialRateId,
                 rateName: clientRateValue.rateName,
-                rateDirection: clientRateValue.rateDirection,
                 reportingUnit: clientRateValue.reportingUnit,
                 clientRate: clientRateValue.clientRateValue,
                 clientRateCurrencyId: clientRateValue.clientRateCurrency?.id
@@ -921,12 +902,12 @@ export class WorkflowSalesComponent extends AppComponentBase implements OnInit {
     }
 
     cancelEditClientRate(rateIndex: number) {
-        const rateRow = this.clientRates.at(rateIndex).value;
+        const rateRow = this.clientRates.at(rateIndex);
         rateRow.get('clientRateValue')?.setValue(this.clientRateToEdit.clientRate, {emitEvent: false});
         rateRow.get('clientRateCurrency')?.setValue(this.findItemById(this.currencies, this.clientRateToEdit.clientRateCurrencyId), {emitEvent: false});
         this.clientRateToEdit = new PeriodClientSpecialFeeDto();
         this.isClientRateEditing = false;
-        this.clientFees.at(rateIndex).get('editable')?.setValue(false, {emitEvent: false});
+        this.clientRates.at(rateIndex).get('editable')?.setValue(false, {emitEvent: false});
     }
 
     selectClientSpecialFee(event: any, fee: ClientSpecialFeeDto, clientFeeMenuTrigger: MatMenuTrigger) {
@@ -934,7 +915,6 @@ export class WorkflowSalesComponent extends AppComponentBase implements OnInit {
         formattedFee.id = undefined;
         formattedFee.clientSpecialFeeId = fee.id;
         formattedFee.feeName = fee.publicName;
-        formattedFee.feeDirection = fee.specialRateOrFeeDirection;
         formattedFee.frequency = fee.clientSpecialFeeFrequency;
         formattedFee.clientRate = fee.clientRate;
         formattedFee.clientRateCurrencyId = fee.clientRateCurrency?.id;
@@ -948,7 +928,6 @@ export class WorkflowSalesComponent extends AppComponentBase implements OnInit {
             id: new FormControl(clientFee?.id ?? null),
             clientSpecialFeeId: new FormControl(clientFee?.clientSpecialFeeId ?? null),
             feeName: new FormControl(clientFee?.feeName ?? null),
-            feeDirection: new FormControl(clientFee?.feeDirection ?? null),
             feeFrequency: new FormControl(clientFee?.frequency ?? null),
             clientRateValue: new FormControl(clientFee?.clientRate ?? null),
             clientRateCurrency: new FormControl(this.findItemById(this.currencies, clientFee?.clientRateCurrencyId) ?? null),
@@ -977,7 +956,6 @@ export class WorkflowSalesComponent extends AppComponentBase implements OnInit {
                 id: consultantFeeValue.id,
                 clientSpecialFeeId: consultantFeeValue.clientSpecialRateId,
                 feeName: consultantFeeValue.rateName,
-                feeDirection: consultantFeeValue.rateDirection,
                 frequency: consultantFeeValue.reportingUnit,
                 clientRate: consultantFeeValue.proDataRateValue,
                 clientRateCurrencyId: consultantFeeValue.proDataRateCurrency?.id
@@ -988,7 +966,7 @@ export class WorkflowSalesComponent extends AppComponentBase implements OnInit {
     }
 
     cancelEditClientFee(feeIndex: number) {
-        const feeRow = this.clientFees.at(feeIndex).value;
+        const feeRow = this.clientFees.at(feeIndex);
         feeRow.get('clientRate')?.setValue(this.clientFeeToEdit.clientRate, {emitEvent: false});
         feeRow.get('clientRateCurrencyId')?.setValue(this.findItemById(this.currencies, this.clientFeeToEdit.clientRateCurrencyId), {emitEvent: false});
         this.clientFeeToEdit = new PeriodClientSpecialFeeDto();
@@ -999,7 +977,7 @@ export class WorkflowSalesComponent extends AppComponentBase implements OnInit {
     addSignerToForm(signer?: ContractSignerDto) {
         const form = this._fb.group({
             clientContact: new FormControl(signer?.contact ?? null),
-            clientRole: new FormControl(signer?.signerRoleId ?? null),
+            clientRole: new FormControl(this.findItemById(this.signerRoles, signer?.signerRoleId) ?? null),
             clientSequence: new FormControl(signer?.signOrder ?? null)
         });
         this.salesClientDataForm.contractSigners.push(form);
@@ -1242,7 +1220,6 @@ export class WorkflowSalesComponent extends AppComponentBase implements OnInit {
                 id: consultantRateValue.id,
                 clientSpecialRateId: consultantRateValue.clientSpecialRateId,
                 rateName: consultantRateValue.rateName,
-                rateDirection: consultantRateValue.rateDirection,
                 reportingUnit: consultantRateValue.reportingUnit,
                 prodataToProdataRate: consultantRateValue.prodataToProdataRate,
                 prodataToProdataRateCurrencyId: consultantRateValue.prodataToProdataRateCurrency?.id,
@@ -1269,7 +1246,6 @@ export class WorkflowSalesComponent extends AppComponentBase implements OnInit {
         consultantRate.id = undefined;
         consultantRate.clientSpecialRateId = rate.id;
         consultantRate.rateName = rate.publicName;
-        consultantRate.rateDirection = rate.specialRateOrFeeDirection;
         consultantRate.reportingUnit = rate.specialRateReportingUnit;
         consultantRate.prodataToProdataRate = rate.proDataToProDataRate;
         consultantRate.prodataToProdataRateCurrencyId = rate.proDataToProDataRateCurrency?.id;
@@ -1284,7 +1260,6 @@ export class WorkflowSalesComponent extends AppComponentBase implements OnInit {
             id: new FormControl(consultantRate?.id ?? null),
             clientSpecialRateId: new FormControl(consultantRate?.clientSpecialRateId ?? null),
             rateName: new FormControl(consultantRate?.rateName ?? null),
-            rateDirection: new FormControl(consultantRate?.rateDirection ?? null),
             reportingUnit: new FormControl(consultantRate?.reportingUnit ?? null),
             prodataToProdataRate: new FormControl(consultantRate?.prodataToProdataRate ?? null),
             prodataToProdataRateCurrency: new FormControl(this.findItemById(this.currencies, consultantRate?.prodataToProdataRateCurrencyId) ?? null),
@@ -1315,7 +1290,6 @@ export class WorkflowSalesComponent extends AppComponentBase implements OnInit {
                 id: consultantFeeValue.id,
                 clientSpecialFeeId: consultantFeeValue.clientSpecialFeeId,
                 feeName: consultantFeeValue.feeName,
-                feeDirection: consultantFeeValue.feeDirection,
                 frequency: consultantFeeValue.frequency,
                 prodataToProdataRate: consultantFeeValue.prodataToProdataRate,
                 prodataToProdataRateCurrencyId: consultantFeeValue.prodataToProdataRateCurrency?.id,
@@ -1342,7 +1316,6 @@ export class WorkflowSalesComponent extends AppComponentBase implements OnInit {
         consultantFee.id = undefined;
         consultantFee.clientSpecialFeeId = fee.id;
         consultantFee.feeName = fee.publicName;
-        consultantFee.feeDirection = fee.specialRateOrFeeDirection;
         consultantFee.frequency = fee.clientSpecialFeeFrequency;
         consultantFee.prodataToProdataRate = fee.prodataToProdataRate;
         consultantFee.prodataToProdataRateCurrencyId = fee.prodataToProdataRateCurrency?.id;
@@ -1357,7 +1330,6 @@ export class WorkflowSalesComponent extends AppComponentBase implements OnInit {
             id: new FormControl(consultantFee?.id ?? null),
             clientSpecialFeeId: new FormControl(consultantFee?.clientSpecialFeeId ?? null),
             feeName: new FormControl(consultantFee?.feeName ?? null),
-            feeDirection: new FormControl(consultantFee?.feeDirection ?? null),
             frequency: new FormControl(consultantFee?.frequency ?? null),
             prodataToProdataRate: new FormControl(consultantFee?.prodataToProdataRate ?? null),
             prodataToProdataRateCurrency: new FormControl(this.findItemById(this.currencies, consultantFee?.prodataToProdataRateCurrencyId) ?? null),
@@ -1501,23 +1473,20 @@ export class WorkflowSalesComponent extends AppComponentBase implements OnInit {
         input.salesClientData.clientExtensionDurationId = this.salesClientDataForm.clientExtensionDuration?.value?.id;
         input.salesClientData.clientExtensionDeadlineId = this.salesClientDataForm.clientExtensionDeadline?.value?.id;
         input.salesClientData.clientExtensionSpecificDate = this.salesClientDataForm.clientExtensionEndDate?.value;
-        input.salesClientData.clientTimeReportingCapId = this.salesClientDataForm.capOnTimeReporting?.value;
+        input.salesClientData.clientTimeReportingCapId = this.salesClientDataForm.capOnTimeReporting?.value?.id;
         input.salesClientData.clientTimeReportingCapMaxValue = this.salesClientDataForm.capOnTimeReportingValue?.value;
         input.salesClientData.pdcInvoicingEntityId = this.salesClientDataForm.pdcInvoicingEntityId?.value?.id;
 
         input.salesClientData.clientRate = new ClientRateDto();
         input.salesClientData.clientRate.isTimeBasedRate = this.salesClientDataForm.clientRateAndInvoicing?.value?.id === 1; // 1: 'Time based';
         input.salesClientData.clientRate.isFixedRate = this.salesClientDataForm.clientRateAndInvoicing?.value?.id === 2; // 2: 'Fixed';
-        input.salesClientData.clientRate.currencyId = this.salesClientDataForm.clientCurrency?.value
-        input.salesClientData.clientRate.invoiceCurrencyId = this.salesClientDataForm.clientInvoiceCurrency?.value;
+        input.salesClientData.clientRate.currencyId = this.salesClientDataForm.clientCurrency?.value?.id
+        input.salesClientData.clientRate.invoiceCurrencyId = this.salesClientDataForm.clientInvoiceCurrency?.value?.id;
         input.salesClientData.clientRate.normalRate = this.salesClientDataForm.clientPrice?.value;
-        input.salesClientData.clientRate.rateUnitTypeId = this.salesClientDataForm.rateUnitTypeId?.value;
+        input.salesClientData.clientRate.rateUnitTypeId = this.salesClientDataForm.rateUnitTypeId?.value?.id;
         input.salesClientData.clientRate.invoiceFrequencyId = this.salesClientDataForm.clientInvoiceFrequency?.value?.id;
         input.salesClientData.clientRate.invoicingTimeId = this.salesClientDataForm.clientInvoiceTime?.value?.id;
         input.salesClientData.clientRate.manualDate = this.salesClientDataForm.clientInvoicingDate?.value;
-        // input.salesClientData.clientRate.invoicingTimeId = this.salesClientDataForm.clientInvoicingDate?.value;
-        // input.salesClientData.clientRate.price =
-        // input.salesClientData.clientRate.invoicingTimeId =
 
         input.salesClientData.noInvoicingReferenceNumber = this.salesClientDataForm.invoicingReferenceNumber?.value ? false : true;
         input.salesClientData.invoicingReferenceNumber = this.salesClientDataForm.invoicingReferenceNumber?.value;
@@ -1533,7 +1502,6 @@ export class WorkflowSalesComponent extends AppComponentBase implements OnInit {
                 clientRate.id = rate.id;
                 clientRate.clientSpecialRateId = rate.clientSpecialRateId;
                 clientRate.rateName = rate.rateName;
-                clientRate.rateDirection = rate.rateDirection;
                 clientRate.reportingUnit = rate.reportingUnit;
                 clientRate.clientRate = rate.clientRateValue;
                 clientRate.clientRateCurrencyId = rate.clientRateCurrency?.id;
@@ -1550,7 +1518,6 @@ export class WorkflowSalesComponent extends AppComponentBase implements OnInit {
                 clientFee.id = fee.id;
                 clientFee.clientSpecialFeeId = fee.clientSpecialFeeId;
                 clientFee.feeName = fee.feeName;
-                clientFee.feeDirection = fee.feeDirection;
                 clientFee.frequency = fee.feeFrequency;
                 clientFee.clientRate = fee.clientRateValue;
                 clientFee.clientRateCurrencyId = fee.clientRateCurrency?.id;
@@ -1573,7 +1540,7 @@ export class WorkflowSalesComponent extends AppComponentBase implements OnInit {
                 signerInput.signOrder = signer.clientSequence;
                 signerInput.contactId = signer.clientContact?.id;
                 signerInput.contact = signer.clientContact;
-                signerInput.signerRoleId = signer.clientRole;
+                signerInput.signerRoleId = signer.clientRole?.id;
                 input.salesClientData!.contractSigners?.push(signerInput);
             });
         }
@@ -1587,8 +1554,8 @@ export class WorkflowSalesComponent extends AppComponentBase implements OnInit {
                     consultantInput.nameOnly = consultant.consultantNameOnly;
                 } else {
                     consultantInput.consultantId = consultant.consultantName?.id
+                    consultantInput.consultantPeriodId = consultant.consultantPeriodId;
                     consultantInput.consultant = new ConsultantResultDto();
-
                     consultantInput.consultant.id = consultant.consultantName?.id
                     consultantInput.consultant.name = consultant.consultantName?.name;
                     consultantInput.consultant.legacyId = consultant.consultantName?.legacyId;
@@ -1643,7 +1610,6 @@ export class WorkflowSalesComponent extends AppComponentBase implements OnInit {
                             consultantSpecialRate.id = rate.id;
                             consultantSpecialRate.clientSpecialRateId = rate.clientSpecialRateId;
                             consultantSpecialRate.rateName = rate.rateName;
-                            consultantSpecialRate.rateDirection = rate.rateDirection;
                             consultantSpecialRate.reportingUnit = rate.reportingUnit;
                             consultantSpecialRate.prodataToProdataRate = rate.prodataToProdataRate;
                             consultantSpecialRate.prodataToProdataRateCurrencyId = rate.prodataToProdataRateCurrency?.id;
@@ -1662,7 +1628,6 @@ export class WorkflowSalesComponent extends AppComponentBase implements OnInit {
                             consultantSpecialFee.id = fee.id;
                             consultantSpecialFee.clientSpecialFeeId = fee.clientSpecialFeeId;
                             consultantSpecialFee.feeName = fee.feeName;
-                            consultantSpecialFee.feeDirection = fee.feeDirection;
                             consultantSpecialFee.frequency = fee.frequency;
                             consultantSpecialFee.prodataToProdataRate = fee.prodataToProdataRate;
                             consultantSpecialFee.prodataToProdataRateCurrencyId = fee.prodataToProdataRateCurrency?.id;
@@ -1763,7 +1728,7 @@ export class WorkflowSalesComponent extends AppComponentBase implements OnInit {
                 this.salesClientDataForm.clientExtensionDuration?.setValue(this.findItemById(this.clientExtensionDurations, result?.salesClientData?.clientExtensionDurationId), {emitEvent: false});
                 this.salesClientDataForm.clientExtensionDeadline?.setValue(this.findItemById(this.clientExtensionDeadlines, result?.salesClientData?.clientExtensionDeadlineId), {emitEvent: false});
                 // Project
-                this.salesClientDataForm.capOnTimeReporting?.setValue(result?.salesClientData?.clientTimeReportingCapId ?? 1, {emitEvent: false}); // default idValue = 1
+                this.salesClientDataForm.capOnTimeReporting?.setValue(this.findItemById(this.clientTimeReportingCap, result?.salesClientData?.clientTimeReportingCapId ?? 1), {emitEvent: false}); // default idValue = 1
                 this.salesClientDataForm.capOnTimeReportingValue?.setValue(result?.salesClientData?.clientTimeReportingCapMaxValue, {emitEvent: false});
                 // Invoicing
                 this.salesClientDataForm.pdcInvoicingEntityId?.setValue(this.findItemById(this.tenants, result?.salesClientData?.pdcInvoicingEntityId), {emitEvent: false});
@@ -1776,9 +1741,9 @@ export class WorkflowSalesComponent extends AppComponentBase implements OnInit {
                 this.salesClientDataForm.clientRateAndInvoicing?.setValue(clientRateType, {emitEVent: false});
 
                 this.salesClientDataForm.clientPrice?.setValue(result.salesClientData?.clientRate?.normalRate, {emitEVent: false});
-                this.salesClientDataForm.rateUnitTypeId?.setValue(result.salesClientData?.clientRate?.rateUnitTypeId, {emitEVent: false});
-                this.salesClientDataForm.clientCurrency?.setValue(result.salesClientData?.clientRate?.currencyId, {emitEVent: false});
-                this.salesClientDataForm.clientInvoiceCurrency?.setValue(result.salesClientData?.clientRate?.invoiceCurrencyId, {emitEVent: false});
+                this.salesClientDataForm.rateUnitTypeId?.setValue(this.findItemById(this.rateUnitTypes, result.salesClientData?.clientRate?.rateUnitTypeId), {emitEVent: false});
+                this.salesClientDataForm.clientCurrency?.setValue(this.findItemById(this.currencies, result.salesClientData?.clientRate?.currencyId), {emitEVent: false});
+                this.salesClientDataForm.clientInvoiceCurrency?.setValue(this.findItemById(this.currencies, result.salesClientData?.clientRate?.invoiceCurrencyId), {emitEVent: false});
                 if (this.salesClientDataForm.clientRateAndInvoicing?.value?.id === 1) { // Time based
                     this.salesClientDataForm.clientInvoiceFrequency?.setValue(this.findItemById(this.invoiceFrequencies, result.salesClientData?.clientRate?.invoiceFrequencyId), {emitEVent: false});
                 }
@@ -2295,7 +2260,6 @@ export class WorkflowSalesComponent extends AppComponentBase implements OnInit {
                     consultantSpecialRate.id = rate.id;
                     consultantSpecialRate.clientSpecialRateId = rate.clientSpecialRateId;
                     consultantSpecialRate.rateName = rate.rateName;
-                    consultantSpecialRate.rateDirection = rate.rateDirection;
                     consultantSpecialRate.reportingUnit = rate.reportingUnit;
                     consultantSpecialRate.prodataToProdataRate = rate.prodataToProdataRate;
                     consultantSpecialRate.prodataToProdataRateCurrencyId = rate.prodataToProdataRateCurrency?.id;
@@ -2314,7 +2278,6 @@ export class WorkflowSalesComponent extends AppComponentBase implements OnInit {
                     consultantSpecialFee.id = fee.id;
                     consultantSpecialFee.clientSpecialFeeId = fee.clientSpecialFeeId;
                     consultantSpecialFee.feeName = fee.feeName;
-                    consultantSpecialFee.feeDirection = fee.feeDirection;
                     consultantSpecialFee.frequency = fee.frequency;
                     consultantSpecialFee.prodataToProdataRate = fee.prodataToProdataRate;
                     consultantSpecialFee.prodataToProdataRateCurrencyId = fee.prodataToProdataRateCurrency?.id;
@@ -2352,6 +2315,8 @@ export class WorkflowSalesComponent extends AppComponentBase implements OnInit {
         this.salesMainDataForm.reset('', {emitEvent: false});
         this.salesClientDataForm.clientRates.controls = [];
         this.salesClientDataForm.clientFees.controls = [];
+        this.salesClientDataForm.contractSigners.controls = [];
+        this.salesMainDataForm.commissions.controls = [];
         this.salesClientDataForm.reset('', {emitEvent: false});
         this.consultantsForm.consultantData.controls = [];
     }

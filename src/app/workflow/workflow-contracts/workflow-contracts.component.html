@@ -189,16 +189,16 @@
                                 <span fxFlex="25%" class="workflow-contracts--list-header u-w--100">
                                     Rate name
                                 </span>
-                                <span fxFlex="25%" class="workflow-contracts--list-header u-w--100">
+                                <!-- <span fxFlex="25%" class="workflow-contracts--list-header u-w--100">
                                     Rate direction
-                                </span>
-                                <span fxFlex="20%" class="workflow-contracts--list-header u-w--100">
+                                </span> -->
+                                <span fxFlex="25%" class="workflow-contracts--list-header u-w--100">
                                     Reporting unit
                                 </span>
-                                <span fxFlex="20%" class="workflow-contracts--list-header u-w--100">
+                                <span fxFlex="30%" class="workflow-contracts--list-header u-w--100">
                                     Client rate
                                 </span>
-                                <span fxFlex="10%" class="workflow-contracts--list-header u-w--100" *ngIf="!readOnlyMode">
+                                <span fxFlex="20%" class="workflow-contracts--list-header u-w--100" *ngIf="!readOnlyMode">
                                 </span>
                             </div>
                             <ng-container formArrayName="clientRates" class="u-w--100">
@@ -208,14 +208,14 @@
                                     <span fxFlex="25%" class="workflow-contracts--list-item u-w--100 text-truncate-ellipsis" [matTooltip]="contractClientForm.clientRates.at(i).get('rateName')?.value">
                                         {{rate.value.rateName}}
                                     </span>
-                                    <span fxFlex="25%" class="workflow-contracts--list-item u-w--100 text-truncate-ellipsis" [matTooltip]="contractClientForm.clientRates.at(i).get('rateDirection')?.value?.name">
+                                    <!-- <span fxFlex="25%" class="workflow-contracts--list-item u-w--100 text-truncate-ellipsis" [matTooltip]="contractClientForm.clientRates.at(i).get('rateDirection')?.value?.name">
                                         {{rate.value.rateDirection?.name}}
-                                    </span>
-                                    <span fxFlex="20%" class="workflow-contracts--list-item u-w--100 text-truncate-ellipsis" [matTooltip]="contractClientForm.clientRates.at(i).get('reportingUnit')?.value?.name">
+                                    </span> -->
+                                    <span fxFlex="25%" class="workflow-contracts--list-item u-w--100 text-truncate-ellipsis" [matTooltip]="contractClientForm.clientRates.at(i).get('reportingUnit')?.value?.name">
                                         {{rate.value.reportingUnit?.name}}
                                     </span>
                                     <ng-container *ngIf="rate.value.editable; else clientRatesDisplay">
-                                        <div fxFlex="20%" fxLayout="row" fxLayoutAlign="start start">
+                                        <div fxFlex="30%" fxLayout="row" fxLayoutAlign="start start">
                                             <mat-form-field appearance="fill" class="u-w--100 formFieldNoMarginPadding filter-select" fxFlex="40%">
                                                 <input matInput type="text" placeholder="Rate" formControlName="clientRateValue">
                                             </mat-form-field>
@@ -229,12 +229,12 @@
                                         </div>
                                     </ng-container>
                                     <ng-template #clientRatesDisplay>
-                                        <span fxFlex="20%" class="workflow-contracts--list-item u-w--100 text-truncate-ellipsis" [matTooltip]="contractClientForm.clientRates.at(i).get('clientRateValue')?.value + ' ' + contractClientForm.clientRates.at(i).get('clientRateCurrency')?.value?.name">
+                                        <span fxFlex="30%" class="workflow-contracts--list-item u-w--100 text-truncate-ellipsis" [matTooltip]="contractClientForm.clientRates.at(i).get('clientRateValue')?.value + ' ' + contractClientForm.clientRates.at(i).get('clientRateCurrency')?.value?.name">
                                             {{rate.value.clientRateValue || rate.value.clientRateCurrency?.name ? rate.value.clientRateValue + ' ' + rate.value.clientRateCurrency?.name : '-'}}
                                         </span>
                                     </ng-template>
                                     <ng-container *ngIf="rate.value.editable && !readOnlyMode; else clientRatesActions">
-                                        <div fxFlex="10%" class="u-w--100 text-truncate-ellipsis flex-items-center">
+                                        <div fxFlex="20%" class="u-w--100 text-truncate-ellipsis" fxLayoutAlign="end center">
                                             <button mat-flat-button (click)="editOrSaveSpecialRate(contractClientForm?.clientRates?.at(i)?.get('editable')?.value, i)" class="inline-edit-form--btn__save">
                                                 Save
                                             </button>
@@ -244,7 +244,7 @@
                                         </div>
                                     </ng-container>
                                     <ng-template #clientRatesActions>
-                                        <div fxFlex="10%" fxLayoutAlign="center center" class="u-w--100" *ngIf="!readOnlyMode">
+                                        <div fxFlex="20%" fxLayoutAlign="end center" class="u-w--100" *ngIf="!readOnlyMode">
                                             <button mat-icon-button (click)="$event.stopPropagation();" [matMenuTriggerFor]="clientRateMenu" class="three-dots-actions-btn">
                                                 <mat-icon>more_horiz</mat-icon>
                                             </button>
@@ -302,16 +302,16 @@
                                 <span fxFlex="25%" class="workflow-contracts--list-header u-w--100">
                                     Fee name
                                 </span>
-                                <span fxFlex="25%" class="workflow-contracts--list-header u-w--100">
+                                <!-- <span fxFlex="25%" class="workflow-contracts--list-header u-w--100">
                                     Fee direction
-                                </span>
-                                <span fxFlex="20%" class="workflow-contracts--list-header u-w--100">
+                                </span> -->
+                                <span fxFlex="25%" class="workflow-contracts--list-header u-w--100">
                                     Frequency
                                 </span>
-                                <span fxFlex="20%" class="workflow-contracts--list-header u-w--100">
+                                <span fxFlex="30%" class="workflow-contracts--list-header u-w--100">
                                     Client fee
                                 </span>
-                                <span fxFlex="10%" class="workflow-contracts--list-header u-w--100" *ngIf="!readOnlyMode">
+                                <span fxFlex="20%" class="workflow-contracts--list-header u-w--100" *ngIf="!readOnlyMode">
                                 </span>
                             </div>
                             <ng-container formArrayName="clientFees" class="u-w--100">
@@ -321,14 +321,14 @@
                                     <span fxFlex="25%" class="workflow-contracts--list-item u-w--100 text-truncate-ellipsis" [matTooltip]="contractClientForm.clientFees.at(i).get('feeName')?.value ?? '-'">
                                         {{fee.value.feeName ?? '-'}}
                                     </span>
-                                    <span fxFlex="25%" class="workflow-contracts--list-item u-w--100 text-truncate-ellipsis" [matTooltip]="contractClientForm.clientFees.at(i).get('feeDirection')?.value?.name ?? '-'">
+                                    <!-- <span fxFlex="25%" class="workflow-contracts--list-item u-w--100 text-truncate-ellipsis" [matTooltip]="contractClientForm.clientFees.at(i).get('feeDirection')?.value?.name ?? '-'">
                                         {{fee.value.feeDirection?.name ?? '-'}}
-                                    </span>
-                                    <span fxFlex="20%" class="workflow-contracts--list-item u-w--100 text-truncate-ellipsis" [matTooltip]="contractClientForm.clientFees.at(i).get('feeFrequency')?.value?.name ?? '-'">
+                                    </span> -->
+                                    <span fxFlex="25%" class="workflow-contracts--list-item u-w--100 text-truncate-ellipsis" [matTooltip]="contractClientForm.clientFees.at(i).get('feeFrequency')?.value?.name ?? '-'">
                                         {{fee.value.feeFrequency?.name ?? '-'}}
                                     </span>
                                     <ng-container *ngIf="fee.value.editable; else clientFeeRateDisplay">
-                                        <div fxFlex="20%" fxLayout="row" fxLayoutAlign="start start">
+                                        <div fxFlex="30%" fxLayout="row" fxLayoutAlign="start start">
                                             <mat-form-field appearance="fill" class="u-w--100 formFieldNoMarginPadding filter-select" fxFlex="40%">
                                                 <input matInput type="text" placeholder="Rate" formControlName="clientRateValue">
                                             </mat-form-field>
@@ -342,13 +342,13 @@
                                         </div>
                                     </ng-container>
                                     <ng-template #clientFeeRateDisplay>
-                                        <span fxFlex="20%" class="workflow-contracts--list-item u-w--100 text-truncate-ellipsis" [matTooltip]="contractClientForm.clientFees.at(i).get('clientRateValue')?.value + ' ' + contractClientForm.clientFees.at(i).get('clientRateCurrency')?.value?.name">
+                                        <span fxFlex="30%" class="workflow-contracts--list-item u-w--100 text-truncate-ellipsis" [matTooltip]="contractClientForm.clientFees.at(i).get('clientRateValue')?.value + ' ' + contractClientForm.clientFees.at(i).get('clientRateCurrency')?.value?.name">
                                             {{fee.value.clientRateValue || fee.value.clientRateCurrency?.name ? fee.value.clientRateValue + ' ' + fee.value.clientRateCurrency?.name : '-'}}
                                         </span>
                                     </ng-template>
 
                                     <ng-container *ngIf="fee.value.editable && !readOnlyMode; else clientFeeActions">
-                                        <div fxFlex="10%" class="u-w--100 text-truncate-ellipsis flex-items-center">
+                                        <div fxFlex="20%" class="u-w--100 text-truncate-ellipsis" fxLayoutAlign="end center">
                                             <button mat-flat-button (click)="editOrSaveClientFee(contractClientForm.clientFees.at(i).get('editable')?.value, i)" class="inline-edit-form--btn__save">
                                                 Save
                                             </button>
@@ -358,7 +358,7 @@
                                         </div>
                                     </ng-container>
                                     <ng-template #clientFeeActions>
-                                        <div fxFlex="10%" fxLayoutAlign="center center" class="u-w--100" *ngIf="!readOnlyMode">
+                                        <div fxFlex="20%" fxLayoutAlign="end center" class="u-w--100" *ngIf="!readOnlyMode">
                                             <button *ngIf="fee.value.editable"
                                                     mat-icon-button
                                                     [disabled]="false"
@@ -529,16 +529,16 @@
                                         <span fxFlex="20%" class="workflow-contracts--list-header u-w--100">
                                             Rate name
                                         </span>
-                                        <span fxFlex="20%" class="workflow-contracts--list-header u-w--100">
+                                        <!-- <span fxFlex="20%" class="workflow-contracts--list-header u-w--100">
                                             Rate direction
-                                        </span>
+                                        </span> -->
                                         <span fxFlex="20%" class="workflow-contracts--list-header u-w--100">
                                             Reporting unit
                                         </span>
-                                        <span fxFlex="15%" class="workflow-contracts--list-header u-w--100">
+                                        <span fxFlex="25%" class="workflow-contracts--list-header u-w--100">
                                             ProData rate
                                         </span>
-                                        <span fxFlex="15%" class="workflow-contracts--list-header u-w--100">
+                                        <span fxFlex="25%" class="workflow-contracts--list-header u-w--100">
                                             Consultant rate
                                         </span>
                                     </div>
@@ -549,16 +549,16 @@
                                                 <span fxFlex="20%" class="u-w--100 text-truncate-ellipsis workflow-contracts--list-item" [matTooltip]="rate.value.rateName">
                                                     {{rate.value.rateName}}
                                                 </span>
-                                                <span fxFlex="20%" class="u-w--100 text-truncate-ellipsis workflow-contracts--list-item" [matTooltip]="rate.value.rateDirection?.name">
+                                                <!-- <span fxFlex="20%" class="u-w--100 text-truncate-ellipsis workflow-contracts--list-item" [matTooltip]="rate.value.rateDirection?.name">
                                                     {{rate.value.rateDirection?.name}}
-                                                </span>
+                                                </span> -->
                                                 <span fxFlex="20%" class="u-w--100 text-truncate-ellipsis workflow-contracts--list-item" [matTooltip]="rate.value.reportingUnit?.name">
                                                     {{rate.value.reportingUnit?.name}}
                                                 </span>
-                                                <span fxFlex="15%" class="u-w--100 text-truncate-ellipsis workflow-contracts--list-item" [matTooltip]="rate.value.proDataRateValue + ' ' + rate.value.proDataRateCurrency?.name">
+                                                <span fxFlex="25%" class="u-w--100 text-truncate-ellipsis workflow-contracts--list-item" [matTooltip]="rate.value.proDataRateValue + ' ' + rate.value.proDataRateCurrency?.name">
                                                     {{rate.value.proDataRateValue || rate.value.proDataRateCurrency?.name ? rate.value.proDataRateValue + ' ' + rate.value.proDataRateCurrency?.name : '-'}}
                                                 </span>
-                                                <span fxFlex="15%" class="u-w--100 text-truncate-ellipsis workflow-contracts--list-item" [matTooltip]="rate.value.consultantRateValue + ' ' + rate.value.consultantRateCurrency?.name">
+                                                <span fxFlex="25%" class="u-w--100 text-truncate-ellipsis workflow-contracts--list-item" [matTooltip]="rate.value.consultantRateValue + ' ' + rate.value.consultantRateCurrency?.name">
                                                     {{rate.value.consultantRateValue || rate.value.consultantRateCurrency?.name ? rate.value.consultantRateValue + ' ' + rate.value.consultantRateCurrency?.name : '-'}}
                                                 </span>
                                             </ng-container>
@@ -572,16 +572,16 @@
                                         <span fxFlex="20%" class="workflow-contracts--list-header u-w--100">
                                             Rate name
                                         </span>
-                                        <span fxFlex="20%" class="workflow-contracts--list-header u-w--100">
+                                        <!-- <span fxFlex="20%" class="workflow-contracts--list-header u-w--100">
                                             Rate direction
-                                        </span>
+                                        </span> -->
                                         <span fxFlex="20%" class="workflow-contracts--list-header u-w--100">
                                             Reporting unit
                                         </span>
-                                        <span fxFlex="15%" class="workflow-contracts--list-header u-w--100">
+                                        <span fxFlex="25%" class="workflow-contracts--list-header u-w--100">
                                             ProData rate
                                         </span>
-                                        <span fxFlex="15%" class="workflow-contracts--list-header u-w--100">
+                                        <span fxFlex="25%" class="workflow-contracts--list-header u-w--100">
                                             Consultant rate
                                         </span>
                                         <span fxFlex="10%" class="workflow-contracts--list-header u-w--100">
@@ -594,15 +594,15 @@
                                             <span fxFlex="20%" class="u-w--100 text-truncate-ellipsis workflow-contracts--list-item" [matTooltip]="rate.value.rateName">
                                                 {{rate.value.rateName}}
                                             </span>
-                                            <span fxFlex="20%" class="u-w--100 text-truncate-ellipsis workflow-contracts--list-item" [matTooltip]="rate.value.rateDirection?.name">
+                                            <!-- <span fxFlex="20%" class="u-w--100 text-truncate-ellipsis workflow-contracts--list-item" [matTooltip]="rate.value.rateDirection?.name">
                                                 {{rate.value.rateDirection?.name}}
-                                            </span>
+                                            </span> -->
                                             <span fxFlex="20%" class="u-w--100 text-truncate-ellipsis workflow-contracts--list-item" [matTooltip]="rate.value.reportingUnit?.name">
                                                 {{rate.value.reportingUnit?.name}}
                                             </span>
 
                                             <ng-container *ngIf="rate.value.editable; else consutlantProDataRateCurrencyDisplay">
-                                                <div fxFlex="15%" fxLayout="row" fxLayoutAlign="start start">
+                                                <div fxFlex="25%" fxLayout="row" fxLayoutAlign="start start">
                                                     <mat-form-field appearance="fill" class="u-w--100 formFieldNoMarginPadding filter-select" fxFlex="40%">
                                                         <input matInput type="text" placeholder="Rate" formControlName="proDataRateValue">
                                                     </mat-form-field>
@@ -616,13 +616,13 @@
                                                 </div>
                                             </ng-container>
                                             <ng-template #consutlantProDataRateCurrencyDisplay>
-                                                <span fxFlex="15%" class="u-w--100 text-truncate-ellipsis workflow-contracts--list-item" [matTooltip]="rate.value.proDataRateValue + ' ' + rate.value.proDataRateCurrency?.name">
+                                                <span fxFlex="25%" class="u-w--100 text-truncate-ellipsis workflow-contracts--list-item" [matTooltip]="rate.value.proDataRateValue + ' ' + rate.value.proDataRateCurrency?.name">
                                                     {{rate.value.proDataRateValue || rate.value.proDataRateCurrency?.name ? rate.value.proDataRateValue + ' ' + rate.value.proDataRateCurrency?.name : '-'}}
                                                 </span>
                                             </ng-template>
 
                                             <ng-container *ngIf="rate.value.editable; else consutlantRateCurrencyDisplay">
-                                                <div fxFlex="15%" fxLayout="row" fxLayoutAlign="start start">
+                                                <div fxFlex="25%" fxLayout="row" fxLayoutAlign="start start">
                                                     <mat-form-field appearance="fill" class="u-w--100 formFieldNoMarginPadding filter-select" fxFlex="40%">
                                                         <input matInput type="text" placeholder="Rate" formControlName="consultantRateValue">
                                                     </mat-form-field>
@@ -637,7 +637,7 @@
                                             </ng-container>
 
                                             <ng-template #consutlantRateCurrencyDisplay>
-                                                <span fxFlex="15%" class="u-w--100 text-truncate-ellipsis workflow-contracts--list-item" [matTooltip]="rate.value.consultantRateValue + ' ' + rate.value.consultantRateCurrency?.name">
+                                                <span fxFlex="25%" class="u-w--100 text-truncate-ellipsis workflow-contracts--list-item" [matTooltip]="rate.value.consultantRateValue + ' ' + rate.value.consultantRateCurrency?.name">
                                                     {{rate.value.consultantRateValue || rate.value.consultantRateCurrency?.name ? rate.value.consultantRateValue + ' ' + rate.value.consultantRateCurrency?.name : '-'}}
                                                 </span>
                                             </ng-template>
@@ -713,16 +713,16 @@
                                         <span fxFlex="20%" class="workflow-contracts--list-header u-w--100">
                                             Fee name
                                         </span>
-                                        <span fxFlex="20%" class="workflow-contracts--list-header u-w--100">
+                                        <!-- <span fxFlex="20%" class="workflow-contracts--list-header u-w--100">
                                             Fee direction
-                                        </span>
+                                        </span> -->
                                         <span fxFlex="20%" class="workflow-contracts--list-header u-w--100">
                                             Frequency
                                         </span>
-                                        <span fxFlex="15%" class="workflow-contracts--list-header u-w--100">
+                                        <span fxFlex="25%" class="workflow-contracts--list-header u-w--100">
                                             ProData fee
                                         </span>
-                                        <span fxFlex="15%" class="workflow-contracts--list-header u-w--100">
+                                        <span fxFlex="25%" class="workflow-contracts--list-header u-w--100">
                                             Consultant fee
                                         </span>
                                     </div>
@@ -732,16 +732,16 @@
                                             <span fxFlex="20%" class="u-w--100 text-truncate-ellipsis workflow-contracts--list-item" [matTooltip]="fee.value.feeName ?? '-'">
                                                 {{fee.value.feeName ?? '-'}}
                                             </span>
-                                            <span fxFlex="20%" class="u-w--100 text-truncate-ellipsis workflow-contracts--list-item" [matTooltip]="fee.value.feeDirection?.name ?? '-'">
+                                            <!-- <span fxFlex="20%" class="u-w--100 text-truncate-ellipsis workflow-contracts--list-item" [matTooltip]="fee.value.feeDirection?.name ?? '-'">
                                                 {{fee.value.feeDirection?.name ?? '-'}}
-                                            </span>
+                                            </span> -->
                                             <span fxFlex="20%" class="u-w--100 text-truncate-ellipsis workflow-contracts--list-item" [matTooltip]="fee.value.feeFrequency?.name ?? '-'">
                                                 {{fee.value.feeFrequency?.name ?? '-'}}
                                             </span>
-                                            <span fxFlex="15%" class="u-w--100 text-truncate-ellipsis workflow-contracts--list-item" [matTooltip]="fee.value.proDataRateValue + ' ' + fee.value.proDataRateCurrency?.name">
+                                            <span fxFlex="25%" class="u-w--100 text-truncate-ellipsis workflow-contracts--list-item" [matTooltip]="fee.value.proDataRateValue + ' ' + fee.value.proDataRateCurrency?.name">
                                                 {{fee.value.proDataRateValue || fee.value.proDataRateCurrency?.name ? fee.value.proDataRateValue + ' ' + fee.value.proDataRateCurrency?.name : '-'}}
                                             </span>
-                                            <span fxFlex="15%" class="u-w--100 text-truncate-ellipsis workflow-contracts--list-item" [matTooltip]="fee.value.consultantRateValue + ' ' + fee.value.consultantRateCurrency?.name">
+                                            <span fxFlex="25%" class="u-w--100 text-truncate-ellipsis workflow-contracts--list-item" [matTooltip]="fee.value.consultantRateValue + ' ' + fee.value.consultantRateCurrency?.name">
                                                 {{fee.value.consultantRateValue || fee.value.consultantRateCurrency?.name ? fee.value.consultantRateValue + ' ' + fee.value.consultantRateCurrency?.name : '-'}}
                                             </span>
                                         </div>
@@ -754,16 +754,16 @@
                                         <span fxFlex="20%" class="workflow-contracts--list-header u-w--100">
                                             Fee name
                                         </span>
-                                        <span fxFlex="20%" class="workflow-contracts--list-header u-w--100">
+                                        <!-- <span fxFlex="20%" class="workflow-contracts--list-header u-w--100">
                                             Fee direction
-                                        </span>
+                                        </span> -->
                                         <span fxFlex="20%" class="workflow-contracts--list-header u-w--100">
                                             Frequency
                                         </span>
-                                        <span fxFlex="15%" class="workflow-contracts--list-header u-w--100">
+                                        <span fxFlex="25%" class="workflow-contracts--list-header u-w--100">
                                             ProData fee
                                         </span>
-                                        <span fxFlex="15%" class="workflow-contracts--list-header u-w--100">
+                                        <span fxFlex="25%" class="workflow-contracts--list-header u-w--100">
                                             Consultant fee
                                         </span>
                                         <span fxFlex="10%" class="workflow-contracts--list-header u-w--100">
@@ -776,14 +776,14 @@
                                             <span fxFlex="20%" class="u-w--100 text-truncate-ellipsis workflow-contracts--list-item" [matTooltip]="fee.value.feeName ?? '-'">
                                                 {{fee.value.feeName ?? '-'}}
                                             </span>
-                                            <span fxFlex="20%" class="u-w--100 text-truncate-ellipsis workflow-contracts--list-item" [matTooltip]="fee.value.feeDirection?.name ?? '-'">
+                                            <!-- <span fxFlex="20%" class="u-w--100 text-truncate-ellipsis workflow-contracts--list-item" [matTooltip]="fee.value.feeDirection?.name ?? '-'">
                                                 {{fee.value.feeDirection?.name ?? '-'}}
-                                            </span>
+                                            </span> -->
                                             <span fxFlex="20%" class="u-w--100 text-truncate-ellipsis workflow-contracts--list-item" [matTooltip]="fee.value.feeFrequency?.name ?? '-'">
                                                 {{fee.value.feeFrequency?.name ?? '-'}}
                                             </span>
                                             <ng-container *ngIf="fee.value.editable; else consultantFeeProDataRateDisplay">
-                                                <div fxFlex="15%" fxLayout="row" fxLayoutAlign="start start">
+                                                <div fxFlex="25%" fxLayout="row" fxLayoutAlign="start start">
                                                     <mat-form-field appearance="fill" class="u-w--100 formFieldNoMarginPadding filter-select" fxFlex="40%">
                                                         <input matInput type="text" placeholder="Rate" formControlName="proDataRateValue">
                                                     </mat-form-field>
@@ -797,12 +797,12 @@
                                                 </div>
                                             </ng-container>
                                             <ng-template #consultantFeeProDataRateDisplay>
-                                                <span fxFlex="15%" class="u-w--100 text-truncate-ellipsis workflow-contracts--list-item" [matTooltip]="fee.value.proDataRateValue + ' ' + fee.value.proDataRateCurrency?.name">
+                                                <span fxFlex="25%" class="u-w--100 text-truncate-ellipsis workflow-contracts--list-item" [matTooltip]="fee.value.proDataRateValue + ' ' + fee.value.proDataRateCurrency?.name">
                                                     {{fee.value.proDataRateValue || fee.value.proDataRateCurrency?.name ? fee.value.proDataRateValue + ' ' + fee.value.proDataRateCurrency?.name : '-'}}
                                                 </span>
                                             </ng-template>
                                             <ng-container *ngIf="fee.value.editable; else consultantFeeRateDisplay">
-                                                <div fxFlex="15%" fxLayout="row" fxLayoutAlign="start start">
+                                                <div fxFlex="25%" fxLayout="row" fxLayoutAlign="start start">
                                                     <mat-form-field appearance="fill" class="u-w--100 formFieldNoMarginPadding filter-select" fxFlex="40%">
                                                         <input matInput type="text" placeholder="Rate" formControlName="consultantRateValue">
                                                     </mat-form-field>
@@ -816,7 +816,7 @@
                                                 </div>
                                             </ng-container>
                                             <ng-template #consultantFeeRateDisplay>
-                                                <span fxFlex="15%" class="u-w--100 text-truncate-ellipsis workflow-contracts--list-item" [matTooltip]="fee.value.consultantRateValue + ' ' + fee.value.consultantRateCurrency?.name">
+                                                <span fxFlex="25%" class="u-w--100 text-truncate-ellipsis workflow-contracts--list-item" [matTooltip]="fee.value.consultantRateValue + ' ' + fee.value.consultantRateCurrency?.name">
                                                     {{fee.value.consultantRateValue || fee.value.consultantRateCurrency?.name ? fee.value.consultantRateValue + ' ' + fee.value.consultantRateCurrency?.name : '-'}}
                                                 </span>
                                             </ng-template>
@@ -985,7 +985,7 @@
                                             <span fxFlex="17%" class="u-w--100 text-truncate-ellipsis__multilne workflow-contracts--list-item" [matTooltip]="projectLine.value.projectName ?? '-'">
                                                 {{projectLine.value.projectName ?? '-'}}
                                             </span>
-                                            <span fxFlex="10%" class="u-w--100 text-truncate-ellipsis workflow-contracts--list-item" [matTooltip]="projectLine.value.invoicingReferenceNumber ?? '-'">
+                                            <span fxFlex="17%" class="u-w--100 text-truncate-ellipsis workflow-contracts--list-item" [matTooltip]="projectLine.value.invoicingReferenceNumber ?? '-'">
                                                 {{projectLine.value.invoicingReferenceNumber ?? '-'}}
                                             </span>
                                             <span fxFlex="7%" class="u-w--100 text-truncate-ellipsis workflow-contracts--list-item" [matTooltip]="projectLine.value.startDate ? (projectLine.value.startDate | momentFormat: 'DD.MM.YYYY') : '-'">
@@ -994,7 +994,7 @@
                                             <span fxFlex="7%" class="u-w--100 text-truncate-ellipsis workflow-contracts--list-item" [matTooltip]="projectLine.value.endDate ? (projectLine.value.endDate | momentFormat: 'DD.MM.YYYY') : '-'">
                                                 {{projectLine.value.endDate ? (projectLine.value.endDate | momentFormat: 'DD.MM.YYYY') : '-'}}
                                             </span>
-                                            <span fxFlex="17%" class="u-w--100 text-truncate-ellipsis workflow-contracts--list-item" [matTooltip]="projectLine.value.invoiceRecipientId?.name ?? '-'">
+                                            <span fxFlex="10%" class="u-w--100 text-truncate-ellipsis workflow-contracts--list-item" [matTooltip]="projectLine.value.invoiceRecipientId?.name ?? '-'">
                                                 {{projectLine.value.invoiceRecipientId?.name ?? '-'}}
                                             </span>
                                             <span fxFlex="7%" class="u-w--100 text-truncate-ellipsis workflow-contracts--list-item" [matTooltip]="projectLine.value.modificationDate ? (projectLine.value.modificationDate | momentFormat: 'DD.MM.YYYY') : '-'">

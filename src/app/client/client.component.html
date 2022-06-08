@@ -8,7 +8,11 @@
         <div fxLayout="row" fxLayoutAlign="space-between start" class="u-w--100">
             <div fxFlex="30%" fxLayout="row" fxLayoutAlign="start center" class="u-w--100">
                 <div class="client-list--filter-manager cursor-pointer u-mr--16" [matTooltip]="mapListByProperty(selectedAccountManagers, 'name')" [matMenuTriggerFor]="managerMenu" (menuOpened)="accountManagerFilter.setValue(''); accountManagerFilterInput.click()">
-                    <img src="../../../assets/common/images/no-img.svg">
+                    <img *ngIf="selectedAccountManagers.length === 1" class="border-rounded-50 image-thumbnail-small" [src]="employeeProfileUrl(selectedAccountManagers[0]?.externalId!)" />
+                    <img *ngIf="selectedAccountManagers.length === 0" src="../../../assets/common/images/no-img.svg">
+                    <div *ngIf="selectedAccountManagers.length > 1" class="client-list--filter__badge">
+                        {{selectedAccountManagers.length}}
+                    </div>
                     <mat-menu #managerMenu>
                         <div mat-menu-item (click)="$event.stopPropagation()" class="u-pg--0">
                             <mat-form-field appearance="outline" (click)="$event.stopPropagation()">
@@ -136,7 +140,7 @@
             <div fxFlex="25%" fxLayout="column" fxLayoutAlign="start end" fxLayoutGap="16px" class="u-w--100">
                 <mat-form-field appearance="fill" class="search-filter-input u-w--100 formFieldNoMarginPadding u-mb--10">
                     <input autocomplete="off" matInput [formControl]="clientFilter" placeholder="Search" type="text">
-                    <mat-icon matPrefix>search</mat-icon>
+                    <mat-icon matPrefix class="search-icon u-ml--10">search</mat-icon>
                 </mat-form-field>
                 <mat-slide-toggle color="primary" labelPosition="before" (change)="getClientsGrid()" [(ngModel)]="includeDeleted">Show deleted</mat-slide-toggle>
             </div>
