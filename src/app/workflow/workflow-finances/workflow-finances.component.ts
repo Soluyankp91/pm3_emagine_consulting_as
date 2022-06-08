@@ -3,7 +3,7 @@ import { FormArray, FormBuilder, FormControl } from '@angular/forms';
 import { Subject } from 'rxjs';
 import { finalize, takeUntil } from 'rxjs/operators';
 import { AppComponentBase } from 'src/shared/app-component-base';
-import { ClientFinanceServiceProxy, ClientPeriodFinanceDataDto, ClientPeriodServiceProxy, ConsultantFinanceServiceProxy, ConsultantPeriodFinanceDataDto, ConsultantPeriodServiceProxy, WorkflowProcessType } from 'src/shared/service-proxies/service-proxies';
+import { ClientFinanceServiceProxy, ClientPeriodFinanceDataDto, ClientPeriodServiceProxy, ConsultantFinanceServiceProxy, ConsultantPeriodFinanceDataDto, ConsultantPeriodServiceProxy, WorkflowProcessDto, WorkflowProcessType } from 'src/shared/service-proxies/service-proxies';
 import { WorkflowDataService } from '../workflow-data.service';
 import { FinancesClientForm, FinancesConsultantsForm } from './workflow-finances.model';
 
@@ -15,7 +15,7 @@ import { FinancesClientForm, FinancesConsultantsForm } from './workflow-finances
 export class WorkflowFinancesComponent extends AppComponentBase implements OnInit, OnDestroy {
     @Input() workflowId: string;
     @Input() periodId: string | undefined;
-    @Input() activeSideSection: number;
+    @Input() activeSideSection: WorkflowProcessDto;
     @Input() isCompleted: boolean;
     @Input() permissionsForCurrentUser: { [key: string]: boolean; } | undefined;
 

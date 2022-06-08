@@ -1,7 +1,7 @@
 <div class="workflow-sales">
     <button class="absolute-edit-toggle" mat-icon-button *ngIf="canToggleEditMode" (click)="toggleEditMode()"><mat-icon>{{readOnlyMode ? 'create' : 'close'}}</mat-icon></button>
     <ng-container *ngIf="readOnlyMode; else editMode">
-        <ng-container *ngIf="(activeSideSection !== workflowSideSections.TerminateWorkflow) && (activeSideSection !== workflowSideSections.TerminateConsultant); else terminationTemplate">
+        <ng-container *ngIf="(activeSideSection.typeId !== workflowSideSections.TerminateWorkflow) && (activeSideSection.typeId !== workflowSideSections.TerminateConsultant); else terminationTemplate">
             <!-- Main data -->
             <div fxLayout="column" fxLayoutAlign="start start" class="workflow-sales--process-data u-w--100">
                 <div fxLayout="column" fxLayoutAlign="start start" class="u-w--100">
@@ -856,8 +856,8 @@
         </ng-container>
         <!-- <ng-template #editTerminationTemplate>
             <form [formGroup]="salesTerminateConsultantForm" class="workflow-form--consultants workflow--termination u-mb--20 u-w--100">
-                <h3 class="workflow-gray--header u-mt--20" *ngIf="activeSideSection === workflowSideSections.TerminateConsultant">End of Consultant Contract</h3>
-                <h3 class="workflow-gray--header u-mt--20" *ngIf="activeSideSection === workflowSideSections.TerminateWorkflow">End of Client Contract</h3>
+                <h3 class="workflow-gray--header u-mt--20" *ngIf="activeSideSection.typeId === workflowSideSections.TerminateConsultant">End of Consultant Contract</h3>
+                <h3 class="workflow-gray--header u-mt--20" *ngIf="activeSideSection.typeId === workflowSideSections.TerminateWorkflow">End of Client Contract</h3>
 
                 <div fxLayout="row" fxLayoutAlign="start start" class="u-w--100 u-mb--10">
                     <mat-button-toggle-group class="workflow-toggle-buttons u-mt--10" formControlName="terminationTime">
@@ -940,9 +940,9 @@
         </ng-template> -->
     </ng-container>
     <ng-template #editMode>
-        <ng-container *ngIf="(activeSideSection !== workflowSideSections.TerminateWorkflow) && (activeSideSection !== workflowSideSections.TerminateConsultant); else terminationTemplate">
+        <ng-container *ngIf="(activeSideSection.typeId !== workflowSideSections.TerminateWorkflow) && (activeSideSection.typeId !== workflowSideSections.TerminateConsultant); else terminationTemplate">
             <form [formGroup]="salesMainDataForm" id="mainData" class="workflow-form workflow-form--main u-w--100">
-                <ng-container *ngIf="(activeSideSection === workflowSideSections.StartConsultantPeriod) || (activeSideSection === workflowSideSections.ChangeConsultantPeriod) || (activeSideSection === workflowSideSections.ExtendConsultantPeriod); else startClientPeriodTemplate">
+                <ng-container *ngIf="(activeSideSection.typeId === workflowSideSections.StartConsultantPeriod) || (activeSideSection.typeId === workflowSideSections.ChangeConsultantPeriod) || (activeSideSection.typeId === workflowSideSections.ExtendConsultantPeriod); else startClientPeriodTemplate">
                     <div fxLayout="column" fxLayoutAlign="start start" class="workflow-sales--process-data u-w--100">
                         <h1 class="workflow-section--header-main">Main data</h1>
                         <div fxLayout="row" fxLayoutAlign="start start" class="u-w--100 u-mb--10  u-mt--10">
@@ -964,7 +964,7 @@
                         <div fxLayout="column" fxLayoutAlign="start start" class="u-w--100">
                             <h1 class="workflow-section--header-main">Main data</h1>
                             <h2 class="workflow-section--header">Project</h2>
-                            <ng-container *ngIf="activeSideSection === workflowSideSections.StartClientPeriod">
+                            <ng-container *ngIf="activeSideSection.typeId === workflowSideSections.StartClientPeriod">
                                 <h3 class="workflow-gray--header">Project Type (Legacy)</h3>
                                 <div fxLayout="row" fxLayoutAlign="start start" class="u-w--100 u-mb--10 u-mt--10">
                                     <mat-form-field appearance="outline" class="u-w--100  filter-select" fxFlex="33%">
@@ -1027,7 +1027,7 @@
                                     </mat-form-field>
                                 </div>
                             </ng-container>
-                            <ng-container *ngIf="activeSideSection === workflowSideSections.ExtendClientPeriod || activeSideSection === workflowSideSections.ChangeClientPeriod">
+                            <ng-container *ngIf="activeSideSection.typeId === workflowSideSections.ExtendClientPeriod || activeSideSection.typeId === workflowSideSections.ChangeClientPeriod">
                                 <div fxLayout="row" fxLayoutAlign="start start" fxLayoutGap="120px" class="u-w--100 u-mb--20">
                                     <div fxLayout="column">
                                         <h3 class="workflow-extension--gray-header">Project Type (Legacy)</h3>
@@ -1358,13 +1358,13 @@
                     </div>
                 </ng-template>
             </form>
-            <ng-container *ngIf="(activeSideSection !== workflowSideSections.StartConsultantPeriod) && (activeSideSection !== workflowSideSections.ChangeConsultantPeriod) && (activeSideSection !== workflowSideSections.ExtendConsultantPeriod)">
+            <ng-container *ngIf="(activeSideSection.typeId !== workflowSideSections.StartConsultantPeriod) && (activeSideSection.typeId !== workflowSideSections.ChangeConsultantPeriod) && (activeSideSection.typeId !== workflowSideSections.ExtendConsultantPeriod)">
                 <form [formGroup]="salesClientDataForm" id="clientData" class="workflow-form workflow-form--client u-w--100">
                     <div fxLayout="column" fxLayoutAlign="start start" class="workflow-sales--process-data u-w--100">
                         <div fxLayout="column" fxLayoutAlign="start start" class="u-w--100">
                             <h1 class="workflow-section--header-main">Client data</h1>
                             <h2 class="workflow-section--header">Client</h2>
-                            <ng-container *ngIf="activeSideSection === workflowSideSections.StartClientPeriod">
+                            <ng-container *ngIf="activeSideSection.typeId === workflowSideSections.StartClientPeriod">
                                 <h3 class="workflow-gray--header u-mb--10">Client relation</h3>
                                 <div fxLayout="row" fxLayoutAlign="start start" class="u-w--100 u-mb--20">
                                     <mat-button-toggle-group class="workflow-toggle-buttons" formControlName="differentEndClient">
@@ -1407,7 +1407,7 @@
                                 </div>
                             </ng-container>
 
-                            <ng-container *ngIf="activeSideSection === workflowSideSections.ExtendClientPeriod || activeSideSection === workflowSideSections.ChangeClientPeriod">
+                            <ng-container *ngIf="activeSideSection.typeId === workflowSideSections.ExtendClientPeriod || activeSideSection.typeId === workflowSideSections.ChangeClientPeriod">
                                 <div fxLayout="column" fxLayoutAlign="start start" fxLayoutGap="20px" class="u-w--100 u-mb--20" fxFlex="80%">
                                     <div fxLayout="column">
                                         <h3 class="workflow-extension--gray-header">Client relation</h3>
@@ -2049,7 +2049,7 @@
                                                 {{consultant.value?.consultantName?.name}}
                                             </span>
                                         </ng-container>
-                                        <button class="form-icon--delete-row" *ngIf="consultantsForm.consultantData?.controls?.length && (activeSideSection === workflowSideSections.StartClientPeriod || activeSideSection === workflowSideSections.ExtendClientPeriod)"
+                                        <button class="form-icon--delete-row" *ngIf="consultantsForm.consultantData?.controls?.length && (activeSideSection.typeId === workflowSideSections.StartClientPeriod || activeSideSection.typeId === workflowSideSections.ExtendClientPeriod)"
                                             mat-icon-button (click)="$event.stopPropagation();confirmRemoveConsultant(consultantIndex)">
                                             <mat-icon svgIcon="remove-icon"></mat-icon>
                                         </button>
@@ -2091,7 +2091,7 @@
                             </div>
 
                             <div fxLayout="column" fxLayoutAlign="start start" class="u-w--100">
-                                <ng-container *ngIf="activeSideSection === workflowSideSections.StartClientPeriod || activeSideSection === workflowSideSections.StartConsultantPeriod">
+                                <ng-container *ngIf="activeSideSection.typeId === workflowSideSections.StartClientPeriod || activeSideSection.typeId === workflowSideSections.StartConsultantPeriod">
                                     <h3 class="workflow-gray--header u-mb--10">Employment type</h3>
                                     <div fxLayout="row" fxLayoutAlign="start start" class="u-w--100 u-mb--20">
                                         <mat-button-toggle-group class="workflow-toggle-buttons" formControlName="employmentType">
@@ -2128,7 +2128,7 @@
                                     </ng-template>
 
                                 </ng-container>
-                                <ng-container *ngIf="activeSideSection === workflowSideSections.ExtendClientPeriod || activeSideSection === workflowSideSections.ChangeClientPeriod">
+                                <ng-container *ngIf="activeSideSection.typeId === workflowSideSections.ExtendClientPeriod || activeSideSection.typeId === workflowSideSections.ChangeClientPeriod">
                                     <div fxLayout="row" fxLayoutAlign="start start" class="u-w--100 u-mb--20">
                                         <div fxLayout="column" fxFlex="25%">
                                             <h3 class="workflow-readonly--gray-header">Employment type</h3>
@@ -2845,7 +2845,7 @@
                                 <mat-divider class="u-w--100 u-mt--20 u-mb--20"></mat-divider>
                             </ng-container>
                         </div>
-                        <div fxLayout="row" fxLayoutAlign="start start" class="u-w--100" *ngIf="activeSideSection === workflowSideSections.StartClientPeriod">
+                        <div fxLayout="row" fxLayoutAlign="start start" class="u-w--100" *ngIf="activeSideSection.typeId === workflowSideSections.StartClientPeriod">
                             <button class="button-add mat-elevation-z0 u-mt--10 u-mb--10" mat-flat-button (click)="addConsultantForm()">
                                 <mat-icon>add</mat-icon>
                                 Add consultant
@@ -2859,8 +2859,8 @@
 </div>
 <ng-template #terminationTemplate>
     <form [formGroup]="salesTerminateConsultantForm" class="workflow-form--consultants workflow--termination u-mb--20 u-w--100">
-        <h3 class="workflow-gray--header u-mt--20" *ngIf="activeSideSection === workflowSideSections.TerminateConsultant">End of Consultant Contract</h3>
-        <h3 class="workflow-gray--header u-mt--20" *ngIf="activeSideSection === workflowSideSections.TerminateWorkflow">End of Client Contract</h3>
+        <h3 class="workflow-gray--header u-mt--20" *ngIf="activeSideSection.typeId === workflowSideSections.TerminateConsultant">End of Consultant Contract</h3>
+        <h3 class="workflow-gray--header u-mt--20" *ngIf="activeSideSection.typeId === workflowSideSections.TerminateWorkflow">End of Client Contract</h3>
 
         <div fxLayout="row" fxLayoutAlign="start start" class="u-w--100 u-mb--10">
             <mat-button-toggle-group class="workflow-toggle-buttons u-mt--10" formControlName="terminationTime">

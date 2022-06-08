@@ -27,7 +27,7 @@ export class WorkflowPeriodComponent implements OnInit {
 
     workflowSteps = StepType;
     selectedStepEnum: StepType;
-    selectedSideSection: number;
+    selectedSideSection: WorkflowProcessDto;
     sectionIndex = 0;
     consultant: ConsultantResultDto;
 
@@ -112,7 +112,7 @@ export class WorkflowPeriodComponent implements OnInit {
 
     changeSideSection(item: WorkflowProcessDto, index: number) {
         this.sectionIndex = index;
-        this.selectedSideSection = item.typeId!;
+        this.selectedSideSection = item;
         this.consultant = item.consultant!;
         this._workflowDataService.updateWorkflowProgressStatus({currentlyActiveSideSection: item.typeId!});
         if (!this.isStatusUpdate) {
