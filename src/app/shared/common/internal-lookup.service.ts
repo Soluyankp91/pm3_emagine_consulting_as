@@ -17,7 +17,6 @@ export class InternalLookupService {
     clientExtensionDurations: EnumEntityTypeDto[] = [];
     clientSpecialFeeFrequencies: EnumEntityTypeDto[] = [];
     clientSpecialFeeSpecifications: EnumEntityTypeDto[] = [];
-    clientSpecialRateOrFeeDirections: EnumEntityTypeDto[] = [];
     clientSpecialRateReportUnits: EnumEntityTypeDto[] = [];
     clientSpecialRateSpecifications: EnumEntityTypeDto[] = [];
     contractExpirationNotificationDuration: EnumEntityTypeDto[] = [];
@@ -59,7 +58,6 @@ export class InternalLookupService {
         this.getExtensionDurations();
         this.getSpecialFeeFrequencies();
         this.getSpecialFeeSpecifications();
-        this.getSpecialRateOrFeeDirections();
         this.getSpecialRateReportUnits();
         this.getSpecialRateSpecifications();
         this.getWorkflowClientPeriodTypes();
@@ -293,24 +291,6 @@ export class InternalLookupService {
                     .subscribe(response => {
                         this.clientSpecialFeeSpecifications = response;
                         observer.next(this.clientSpecialFeeSpecifications);
-                        observer.complete();
-                    }, error => {
-                        observer.error(error);
-                    });
-            }
-        });
-    }
-
-    getSpecialRateOrFeeDirections(): Observable<EnumEntityTypeDto[]> {
-        return new Observable<EnumEntityTypeDto[]>((observer) => {
-            if (this.clientSpecialRateOrFeeDirections.length) {
-                observer.next(this.clientSpecialRateOrFeeDirections);
-                observer.complete();
-            } else {
-                this._enumService.clientSpecialRateOrFeeDirections()
-                    .subscribe(response => {
-                        this.clientSpecialRateOrFeeDirections = response;
-                        observer.next(this.clientSpecialRateOrFeeDirections);
                         observer.complete();
                     }, error => {
                         observer.error(error);

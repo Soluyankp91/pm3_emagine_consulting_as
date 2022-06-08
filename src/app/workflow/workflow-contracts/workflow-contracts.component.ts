@@ -46,7 +46,6 @@ export class WorkflowContractsComponent extends AppComponentBase implements OnIn
     projectTypes: EnumEntityTypeDto[] = [];
     margins: EnumEntityTypeDto[] = [];
     clientTimeReportingCap: EnumEntityTypeDto[] = [];
-    clientSpecialRateOrFeeDirections: EnumEntityTypeDto[] = [];
     clientSpecialRateReportUnits: EnumEntityTypeDto[] = [];
     clientSpecialFeeFrequencies: EnumEntityTypeDto[] = [];
     employmentTypes: EnumEntityTypeDto[] = [];
@@ -100,7 +99,6 @@ export class WorkflowContractsComponent extends AppComponentBase implements OnIn
 
     ngOnInit(): void {
         this.getCurrencies();
-        this.getSpecialRateOrFeeDirections();
         this.getSpecialRateReportUnits();
         this.getSpecialFeeFrequencies();
 
@@ -256,16 +254,6 @@ export class WorkflowContractsComponent extends AppComponentBase implements OnIn
             });
     }
 
-    getSpecialRateOrFeeDirections() {
-        this._internalLookupService.getSpecialRateOrFeeDirections()
-            .pipe(finalize(() => {
-
-            }))
-            .subscribe(result => {
-                this.clientSpecialRateOrFeeDirections = result;
-            });
-    }
-
     getSpecialRateReportUnits() {
         this._internalLookupService.getSpecialRateReportUnits()
             .pipe(finalize(() => {
@@ -389,7 +377,6 @@ export class WorkflowContractsComponent extends AppComponentBase implements OnIn
         clientRate.id = undefined;
         clientRate.clientSpecialRateId = rate.id;
         clientRate.rateName = rate.publicName;
-        clientRate.rateDirection = rate.specialRateOrFeeDirection;
         clientRate.reportingUnit = rate.specialRateReportingUnit;
         clientRate.clientRate = rate.clientRate;
         clientRate.clientRateCurrencyId = rate.clientRateCurrency?.id;
@@ -402,7 +389,6 @@ export class WorkflowContractsComponent extends AppComponentBase implements OnIn
             id: new FormControl(clientRate?.id ?? null),
             clientSpecialRateId: new FormControl(clientRate?.clientSpecialRateId ?? null),
             rateName: new FormControl(clientRate?.rateName ?? null),
-            rateDirection: new FormControl(clientRate?.rateDirection ?? null),
             reportingUnit: new FormControl(clientRate?.reportingUnit ?? null),
             clientRateValue: new FormControl(clientRate?.clientRate ?? null),
             clientRateCurrency: new FormControl(this.findItemById(this.currencies, clientRate?.clientRateCurrencyId) ?? null),
@@ -431,7 +417,6 @@ export class WorkflowContractsComponent extends AppComponentBase implements OnIn
                 id: clientFeeValue.id,
                 clientSpecialRateId: clientFeeValue.clientSpecialRateId,
                 rateName: clientFeeValue.rateName,
-                rateDirection: clientFeeValue.rateDirection,
                 reportingUnit: clientFeeValue.reportingUnit,
                 clientRate: clientFeeValue.clientRateValue,
                 clientRateCurrencyId: clientFeeValue.clientRateCurrency?.id
@@ -455,7 +440,6 @@ export class WorkflowContractsComponent extends AppComponentBase implements OnIn
         clientFee.id = undefined;
         clientFee.clientSpecialFeeId = fee.id;
         clientFee.feeName = fee.publicName;
-        clientFee.feeDirection = fee.specialRateOrFeeDirection;
         clientFee.frequency = fee.clientSpecialFeeFrequency;
         clientFee.clientRate = fee.clientRate;
         clientFee.clientRateCurrencyId = fee.clientRateCurrency?.id;
@@ -468,7 +452,6 @@ export class WorkflowContractsComponent extends AppComponentBase implements OnIn
             id: new FormControl(clientFee?.id ?? null),
             clientSpecialFeeId: new FormControl(clientFee?.clientSpecialFeeId ?? null),
             feeName: new FormControl(clientFee?.feeName ?? null),
-            feeDirection: new FormControl(clientFee?.feeDirection ?? null),
             feeFrequency: new FormControl(clientFee?.frequency ?? null),
             clientRateValue: new FormControl(clientFee?.clientRate ?? null),
             clientRateCurrency: new FormControl(this.findItemById(this.currencies, clientFee?.clientRateCurrencyId) ?? null),
@@ -498,7 +481,6 @@ export class WorkflowContractsComponent extends AppComponentBase implements OnIn
                 id: clientFeeValue.id,
                 clientSpecialFeeId: clientFeeValue.clientSpecialFeeId,
                 feeName: clientFeeValue.feeName,
-                feeDirection: clientFeeValue.feeDirection,
                 frequency: clientFeeValue.feeFrequency,
                 clientRate: clientFeeValue.clientRateValue,
                 clientRateCurrencyId: clientFeeValue.clientRateCurrency?.id
@@ -595,7 +577,6 @@ export class WorkflowContractsComponent extends AppComponentBase implements OnIn
         consultantRate.id = undefined;
         consultantRate.clientSpecialRateId = rate.id;
         consultantRate.rateName = rate.publicName;
-        consultantRate.rateDirection = rate.specialRateOrFeeDirection;
         consultantRate.reportingUnit = rate.specialRateReportingUnit;
         consultantRate.prodataToProdataRate = rate.proDataToProDataRate;
         consultantRate.prodataToProdataRateCurrencyId = rate.proDataToProDataRateCurrency?.id;
@@ -610,7 +591,6 @@ export class WorkflowContractsComponent extends AppComponentBase implements OnIn
             id: new FormControl(clientRate?.id ?? null),
             clientSpecialRateId: new FormControl(clientRate?.clientSpecialRateId ?? null),
             rateName: new FormControl(clientRate?.rateName ?? null),
-            rateDirection: new FormControl(clientRate?.rateDirection ?? null),
             reportingUnit: new FormControl(clientRate?.reportingUnit ?? null),
             proDataRateValue: new FormControl(clientRate?.prodataToProdataRate ?? null),
             proDataRateCurrency: new FormControl(this.findItemById(this.currencies, clientRate?.prodataToProdataRateCurrencyId) ?? null),
@@ -638,7 +618,6 @@ export class WorkflowContractsComponent extends AppComponentBase implements OnIn
                 id: consultantRateValue.id,
                 clientSpecialRateId: consultantRateValue.clientSpecialRateId,
                 rateName: consultantRateValue.rateName,
-                rateDirection: consultantRateValue.rateDirection,
                 reportingUnit: consultantRateValue.reportingUnit,
                 prodataToProdataRate: consultantRateValue.proDataRateValue,
                 prodataToProdataRateCurrencyId: consultantRateValue.proDataRateCurrency?.id,
@@ -674,7 +653,6 @@ export class WorkflowContractsComponent extends AppComponentBase implements OnIn
         consultantFee.id = undefined;
         consultantFee.clientSpecialFeeId = fee.id;
         consultantFee.feeName = fee.publicName;
-        consultantFee.feeDirection = fee.specialRateOrFeeDirection;
         consultantFee.frequency = fee.clientSpecialFeeFrequency;
         consultantFee.prodataToProdataRate = fee.prodataToProdataRate;
         consultantFee.prodataToProdataRateCurrencyId = fee.prodataToProdataRateCurrency?.id;
@@ -689,7 +667,6 @@ export class WorkflowContractsComponent extends AppComponentBase implements OnIn
             id: new FormControl(clientFee?.id ?? null),
             clientSpecialFeeId: new FormControl(clientFee?.clientSpecialFeeId ?? null),
             feeName: new FormControl(clientFee?.feeName ?? null),
-            feeDirection: new FormControl(clientFee?.feeDirection ?? null),
             feeFrequency: new FormControl(clientFee?.frequency ?? null),
             proDataRateValue: new FormControl(clientFee?.prodataToProdataRate ?? null),
             proDataRateCurrency: new FormControl(this.findItemById(this.currencies,clientFee?.prodataToProdataRateCurrencyId) ?? null),
@@ -716,7 +693,6 @@ export class WorkflowContractsComponent extends AppComponentBase implements OnIn
                 id: consultantFeeValue.id,
                 clientSpecialFeeId: consultantFeeValue.clientSpecialFeeId,
                 feeName: consultantFeeValue.feeName,
-                feeDirection: consultantFeeValue.feeDirection,
                 frequency: consultantFeeValue.feeFrequency,
                 prodataToProdataRate: consultantFeeValue.proDataRateValue,
                 prodataToProdataRateCurrencyId: consultantFeeValue.proDataRateCurrency?.id,
@@ -1062,7 +1038,6 @@ export class WorkflowContractsComponent extends AppComponentBase implements OnIn
                 clientSpecialRate.id = specialRate.id;
                 clientSpecialRate.clientSpecialRateId = specialRate.clientSpecialRateId;
                 clientSpecialRate.rateName = specialRate.rateName;
-                clientSpecialRate.rateDirection = specialRate.rateDirection;
                 clientSpecialRate.reportingUnit = specialRate.reportingUnit;
                 clientSpecialRate.clientRate = specialRate.clientRateValue;
                 clientSpecialRate.clientRateCurrencyId = specialRate.clientRateCurrency?.id;
@@ -1077,7 +1052,6 @@ export class WorkflowContractsComponent extends AppComponentBase implements OnIn
                 clientSpecialFee.id = specialFee.id;
                 clientSpecialFee.clientSpecialFeeId = specialFee.clientSpecialFeeId;
                 clientSpecialFee.feeName = specialFee.feeName;
-                clientSpecialFee.feeDirection = specialFee.feeDirection;
                 clientSpecialFee.frequency = specialFee.feeFrequency;
                 clientSpecialFee.clientRate = specialFee.clientRateValue;
                 clientSpecialFee.clientRateCurrencyId = specialFee.clientRateCurrency?.id;
@@ -1118,7 +1092,6 @@ export class WorkflowContractsComponent extends AppComponentBase implements OnIn
                         consultantFee.id = specialFee.id;
                         consultantFee.clientSpecialFeeId = specialFee.clientSpecialFeeId;
                         consultantFee.feeName = specialFee.feeName;
-                        consultantFee.feeDirection = specialFee.feeDirection;
                         consultantFee.frequency = specialFee.feeFrequency;
                         consultantFee.prodataToProdataRate = specialFee.proDataRateValue;
                         consultantFee.prodataToProdataRateCurrencyId = specialFee.proDataRateCurrency?.id;
@@ -1135,7 +1108,6 @@ export class WorkflowContractsComponent extends AppComponentBase implements OnIn
                         consultantRate.id = specialRate.id;
                         consultantRate.clientSpecialRateId = specialRate.clientSpecialRateId;
                         consultantRate.rateName = specialRate.rateName;
-                        consultantRate.rateDirection = specialRate.rateDirection;
                         consultantRate.reportingUnit = specialRate.reportingUnit;
                         consultantRate.prodataToProdataRate = specialRate.proDataRateValue;
                         consultantRate.prodataToProdataRateCurrencyId = specialRate.proDataRateCurrency?.id;
@@ -1249,7 +1221,6 @@ export class WorkflowContractsComponent extends AppComponentBase implements OnIn
                     consultantFee.id = specialFee.id;
                     consultantFee.clientSpecialFeeId = specialFee.clientSpecialFeeId;
                     consultantFee.feeName = specialFee.feeName;
-                    consultantFee.feeDirection = specialFee.feeDirection;
                     consultantFee.frequency = specialFee.feeFrequency;
                     consultantFee.prodataToProdataRate = specialFee.proDataRateValue;
                     consultantFee.prodataToProdataRateCurrencyId = specialFee.proDataRateCurrency?.id;
@@ -1266,7 +1237,6 @@ export class WorkflowContractsComponent extends AppComponentBase implements OnIn
                     consultantRate.id = specialRate.id;
                     consultantRate.clientSpecialRateId = specialRate.clientSpecialRateId;
                     consultantRate.rateName = specialRate.rateName;
-                    consultantRate.rateDirection = specialRate.rateDirection;
                     consultantRate.reportingUnit = specialRate.reportingUnit;
                     consultantRate.prodataToProdataRate = specialRate.proDataRateValue;
                     consultantRate.prodataToProdataRateCurrencyId = specialRate.proDataRateCurrency?.id;
