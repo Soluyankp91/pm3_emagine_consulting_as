@@ -1,7 +1,7 @@
 <div class="workflow-contracts">
     <button class="absolute-edit-toggle" mat-icon-button *ngIf="canToggleEditMode" (click)="toggleEditMode()"><mat-icon>{{readOnlyMode ? 'create' : 'close'}}</mat-icon></button>
     <ng-container [ngSwitch]="true">
-        <ng-container *ngSwitchCase="activeSideSection === workflowSideSections.TerminateWorkflow || activeSideSection === workflowSideSections.TerminateConsultant">
+        <ng-container *ngSwitchCase="activeSideSection.typeId === workflowSideSections.TerminateWorkflow || activeSideSection.typeId === workflowSideSections.TerminateConsultant">
             <div class="workflow--termination">
                 <h2 class="workflow-section--header">Finish contract in PM</h2>
 
@@ -139,7 +139,7 @@
             </form>
 
             <!-- hidden on AddConsultant, ChangeConsultant, Extend Consultant -->
-            <ng-container *ngIf="activeSideSection === workflowSideSections.StartClientPeriod || activeSideSection === workflowSideSections.ExtendClientPeriod || activeSideSection === workflowSideSections.ChangeClientPeriod">
+            <ng-container *ngIf="activeSideSection.typeId === workflowSideSections.StartClientPeriod || activeSideSection.typeId === workflowSideSections.ExtendClientPeriod || activeSideSection.typeId === workflowSideSections.ChangeClientPeriod">
                 <form fxLayout="column" fxLayoutAlign="start start" id="clientData" [formGroup]="contractClientForm" class="workflow-form workflow-form--sales u-w--100">
                     <div fxLayout="column" fxLayoutAlign="start start" class="workflow-contracts--process-data u-w--100">
                         <h1 class="workflow-readonly--header-main">
@@ -1097,7 +1097,7 @@
                     <h2 class="workflow-section--header u-mb--20 u-mt--20">Legal contracts</h2>
 
                     <!-- hidden on Add Consultant -->
-                    <ng-container *ngIf="activeSideSection !== workflowSideSections.StartConsultantPeriod">
+                    <ng-container *ngIf="activeSideSection.typeId !== workflowSideSections.StartConsultantPeriod">
                         <ng-container *ngIf="readOnlyMode; else legalContractsInput">
                             <h3 class="workflow-gray--header u-mb--10">Client legal contracts</h3>
                             <div fxLayout="row" fxLayoutAlign="start start" class="u-mb--20">
@@ -1119,7 +1119,7 @@
                                     <button class="button-accept u-mr--20" disabled mat-flat-button>
                                         Open contract module for client
                                     </button>
-                                    <mat-checkbox *ngIf="activeSideSection === workflowSideSections.ChangeClientPeriod" color="accent" formControlName="newLegalContract" name="newLegalContract" class="black-checkbox u-mt--10">
+                                    <mat-checkbox *ngIf="activeSideSection.typeId === workflowSideSections.ChangeClientPeriod" color="accent" formControlName="newLegalContract" name="newLegalContract" class="black-checkbox u-mt--10">
                                         New legal contract needed
                                     </mat-checkbox>
                                 </div>
@@ -1165,7 +1165,7 @@
                                     <button class="button-outlined  u-mr--20" disabled mat-flat-button>
                                         Open contract module for consultant
                                     </button>
-                                    <mat-checkbox *ngIf="activeSideSection === workflowSideSections.ChangeClientPeriod" color="accent" formControlName="newLegalContract" name="newLegalContract" class="black-checkbox u-mt--10">
+                                    <mat-checkbox *ngIf="activeSideSection.typeId === workflowSideSections.ChangeClientPeriod" color="accent" formControlName="newLegalContract" name="newLegalContract" class="black-checkbox u-mt--10">
                                         New legal contract needed
                                     </mat-checkbox>
                                 </div>
@@ -1202,7 +1202,7 @@
                             <button class="button-outlined  u-mr--20" disabled mat-flat-button>
                                 Open contract module for client
                             </button>
-                            <mat-checkbox *ngIf="activeSideSection === workflowSideSections.ChangeClientPeriod" color="accent" formControlName="newLegalContract" name="newLegalContract" class="black-checkbox u-mt--10">
+                            <mat-checkbox *ngIf="activeSideSection.typeId === workflowSideSections.ChangeClientPeriod" color="accent" formControlName="newLegalContract" name="newLegalContract" class="black-checkbox u-mt--10">
                                 New legal contract needed
                             </mat-checkbox>
                         </div>

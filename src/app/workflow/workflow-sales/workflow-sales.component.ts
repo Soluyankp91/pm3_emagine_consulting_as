@@ -12,7 +12,7 @@ import { debounceTime, finalize, map, switchMap, takeUntil } from 'rxjs/operator
 import { InternalLookupService } from 'src/app/shared/common/internal-lookup.service';
 import { ConfirmationDialogComponent } from 'src/app/shared/components/confirmation-dialog/confirmation-dialog.component';
 import { AppComponentBase, NotifySeverity } from 'src/shared/app-component-base';
-import { ClientPeriodSalesDataDto, ClientPeriodServiceProxy, ClientRateDto, CommissionDto, ConsultantRateDto, ConsultantSalesDataDto, ContractSignerDto, EmployeeDto, EnumEntityTypeDto, EnumServiceProxy, LookupServiceProxy, PeriodClientSpecialFeeDto, PeriodClientSpecialRateDto, SalesClientDataDto, SalesMainDataDto, WorkflowProcessType, WorkflowServiceProxy, ConsultantResultDto, ClientResultDto, ContactResultDto, ConsultantTerminationSalesDataCommandDto, WorkflowTerminationSalesDataCommandDto, PeriodConsultantSpecialFeeDto, PeriodConsultantSpecialRateDto, ClientSpecialRateDto, ClientsServiceProxy, ClientSpecialFeeDto, ClientSalesServiceProxy, ConsultantPeriodServiceProxy, ConsultantPeriodSalesDataDto, ConsultantSalesServiceProxy, ExtendConsultantPeriodDto, ChangeConsultantPeriodDto } from 'src/shared/service-proxies/service-proxies';
+import { ClientPeriodSalesDataDto, ClientPeriodServiceProxy, ClientRateDto, CommissionDto, ConsultantRateDto, ConsultantSalesDataDto, ContractSignerDto, EmployeeDto, EnumEntityTypeDto, EnumServiceProxy, LookupServiceProxy, PeriodClientSpecialFeeDto, PeriodClientSpecialRateDto, SalesClientDataDto, SalesMainDataDto, WorkflowProcessType, WorkflowServiceProxy, ConsultantResultDto, ClientResultDto, ContactResultDto, ConsultantTerminationSalesDataCommandDto, WorkflowTerminationSalesDataCommandDto, PeriodConsultantSpecialFeeDto, PeriodConsultantSpecialRateDto, ClientSpecialRateDto, ClientsServiceProxy, ClientSpecialFeeDto, ClientSalesServiceProxy, ConsultantPeriodServiceProxy, ConsultantPeriodSalesDataDto, ConsultantSalesServiceProxy, ExtendConsultantPeriodDto, ChangeConsultantPeriodDto, WorkflowProcessDto } from 'src/shared/service-proxies/service-proxies';
 import { WorkflowConsultantActionsDialogComponent } from '../workflow-consultant-actions-dialog/workflow-consultant-actions-dialog.component';
 import { WorkflowDataService } from '../workflow-data.service';
 import { ConsultantDiallogAction, SalesTerminateConsultantForm, TenantList, WorkflowSalesAdditionalDataForm, WorkflowSalesClientDataForm, WorkflowSalesConsultantsForm, WorkflowSalesMainForm } from './workflow-sales.model';
@@ -27,7 +27,7 @@ export class WorkflowSalesComponent extends AppComponentBase implements OnInit {
     @Input() periodId: string | undefined;
     @Input() consultant: ConsultantResultDto;
     // Changed all above to enum
-    @Input() activeSideSection: number;
+    @Input() activeSideSection: WorkflowProcessDto;
     @Input() isCompleted: boolean;
 
     @Input() permissionsForCurrentUser: { [key: string]: boolean; } | undefined;
@@ -2171,7 +2171,16 @@ export class WorkflowSalesComponent extends AppComponentBase implements OnInit {
             case WorkflowProcessType.StartConsultantPeriod:
             case WorkflowProcessType.ExtendConsultantPeriod:
             case WorkflowProcessType.ChangeConsultantPeriod:
-                this.getStartChangeOrExtendConsutlantPeriodSales();
+                if (!this.activeSideSection.consultantPeriodId) {
+                    let interval = setInterval(() => {
+                        if (this.activeSideSection.consultantPeriodId) {
+                            clearInterval(interval);
+                            this.getStartChangeOrExtendConsutlantPeriodSales();
+                        }
+                    }, 100);
+                } else {
+                    this.getStartChangeOrExtendConsutlantPeriodSales();
+                }
                 break;
             case WorkflowProcessType.TerminateConsultant:
                 if (!this.consultant?.id) {
@@ -2190,7 +2199,7 @@ export class WorkflowSalesComponent extends AppComponentBase implements OnInit {
 
     getStartChangeOrExtendConsutlantPeriodSales() {
         this.resetForms();
-        this._consultantPeriodSerivce.consultantSalesGet(this.periodId!)
+        this._consultantPeriodSerivce.consultantSalesGet(this.activeSideSection.consultantPeriodId!)
             .pipe(finalize(() => {}))
             .subscribe(result => {
                 this.resetForms();
@@ -2311,13 +2320,13 @@ export class WorkflowSalesComponent extends AppComponentBase implements OnInit {
         input.consultantSalesData = consultantInput;
         this.showMainSpinner();
         if (isDraft) {
-            this._consultantPeriodSerivce.consultantSalesPut(this.periodId!, input)
+            this._consultantPeriodSerivce.consultantSalesPut(this.activeSideSection.consultantPeriodId!, input)
                 .pipe(finalize(() => this.hideMainSpinner()))
                 .subscribe(result => {
 
                 });
         } else {
-            this._consultantSalesSerivce.editFinish(this.periodId!, input)
+            this._consultantSalesSerivce.editFinish(this.activeSideSection.consultantPeriodId!, input)
                 .pipe(finalize(() => this.hideMainSpinner()))
                 .subscribe(result => {
                     this._workflowDataService.workflowSideSectionUpdated.emit({isStatusUpdate: true});
