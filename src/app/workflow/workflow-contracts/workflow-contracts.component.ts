@@ -582,6 +582,17 @@ export class WorkflowContractsComponent extends AppComponentBase implements OnIn
         consultantRate.prodataToProdataRateCurrencyId = rate.proDataToProDataRateCurrency?.id;
         consultantRate.consultantRate = rate.consultantRate;
         consultantRate.consultantRateCurrencyId = rate.consultantCurrency?.id;
+        // if (consultantRate.rateSpecifiedAs?.id === 1) {
+        //     consultantRate.prodataToProdataRate = +(this.contractsConsultantsDataForm.consultants.at(consultantIndex)!.get('consultantRate')!.value * rate.proDataToProDataRate! / 100).toFixed(2);
+        //     consultantRate.prodataToProdataRateCurrencyId = this.contractsConsultantsDataForm.consultants.at(consultantIndex)!.get('consultantRateCurrency')!.value?.id;
+        //     consultantRate.consultantRate = +(this.contractsConsultantsDataForm.consultants.at(consultantIndex)!.get('consultantRate')!.value * rate.consultantRate! / 100).toFixed(2);
+        //     consultantRate.consultantRateCurrencyId = this.contractsConsultantsDataForm.consultants.at(consultantIndex)!.get('consultantRateCurrency')!.value?.id;
+        // } else {
+        //     consultantRate.prodataToProdataRate = rate.proDataToProDataRate;
+        //     consultantRate.prodataToProdataRateCurrencyId = rate.proDataToProDataRateCurrency?.id;
+        //     consultantRate.consultantRate = rate.consultantRate;
+        //     consultantRate.consultantRateCurrencyId = rate.consultantCurrency?.id;
+        // }
         consultantRateMenuTrigger.closeMenu();
         this.addSpecialRateToConsultantData(consultantIndex, consultantRate);
     }
