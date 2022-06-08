@@ -25,8 +25,8 @@ export class ClientRatesAndFeesComponent implements OnInit, OnDestroy {
     clientSpecialRateReportUnits: EnumEntityTypeDto[];
     clientSpecialFeeSpecifications: EnumEntityTypeDto[];
     clientSpecialRateSpecifications: EnumEntityTypeDto[];
-    clientSpecialRateOrFeeDirections: EnumEntityTypeDto[];
     clientSpecialFeeFrequencies: EnumEntityTypeDto[];
+    rateCategories: EnumEntityTypeDto[] = [];
 
     showHiddenSpecialRates = true;
     showHiddenSpecialFees = true;
@@ -61,7 +61,6 @@ export class ClientRatesAndFeesComponent implements OnInit, OnDestroy {
         this.getSpecialRatesReportingUnits();
         this.getSpecialFeeSpecifications();
         this.getSpecialRateSpecifications();
-        this.getSpecialRateOrFeeDirections();
         this.getSpecialFeeFrequencies();
 
         this.getClientRates();
@@ -108,13 +107,6 @@ export class ClientRatesAndFeesComponent implements OnInit, OnDestroy {
             });
     }
 
-    getSpecialRateOrFeeDirections() {
-        this._internalLookupService.getSpecialRateOrFeeDirections()
-            .subscribe(response => {
-                this.clientSpecialRateOrFeeDirections = response;
-            });
-    }
-
     getSpecialFeeFrequencies() {
         this._internalLookupService.getSpecialFeeFrequencies()
             .subscribe(response => {
@@ -153,7 +145,6 @@ export class ClientRatesAndFeesComponent implements OnInit, OnDestroy {
             id: new FormControl(clientRate?.id ?? null),
             rateName: new FormControl(clientRate?.internalName ?? null),
             nameForInvoices: new FormControl(clientRate?.publicName ?? null),
-            rateDirection: new FormControl(clientRate?.specialRateOrFeeDirection ?? null),
             reportingUnit: new FormControl(clientRate?.specialRateReportingUnit ?? null),
             rateSpecifiedAs: new FormControl(clientRate?.specialRateSpecifiedAs ?? null),
             clientRateValue: new FormControl(clientRate?.clientRate ?? null),
@@ -162,7 +153,6 @@ export class ClientRatesAndFeesComponent implements OnInit, OnDestroy {
             proDataRateCurrency: new FormControl(clientRate?.proDataToProDataRateCurrency ?? null),
             consultantRate: new FormControl(clientRate?.consultantRate ?? null),
             consultantRateCurrency: new FormControl(clientRate?.consultantCurrency ?? null),
-            category: new FormControl(clientRate?.specialRateCategory ?? null),
             editable: new FormControl(clientRate?.id ? false : true),
             inUse: new FormControl(clientRate?.inUse ? clientRate?.inUse : false),
             hidden: new FormControl(clientRate?.isHidden ?? false)
@@ -220,10 +210,8 @@ export class ClientRatesAndFeesComponent implements OnInit, OnDestroy {
         let input = new AddClientSpecialRateDto();
         input.internalName = clientRate.rateName;
         input.publicName = clientRate.nameForInvoices;
-        input.specialRateOrFeeDirectionId = clientRate.rateDirection?.id;
         input.specialRateReportingUnitId = clientRate.reportingUnit?.id;
         input.specialRateSpecifiedAsId = clientRate.rateSpecifiedAs?.id;
-        input.specialRateCategoryId = clientRate.category?.id;
         input.clientRate = clientRate.clientRateValue;
         input.clientRateCurrencyId = clientRate.clientRateCurrency?.id;
         input.prodataToProdataRate = clientRate.proDataRate;
@@ -264,7 +252,6 @@ export class ClientRatesAndFeesComponent implements OnInit, OnDestroy {
             id: new FormControl(clientFee?.id ?? null),
             feeName: new FormControl(clientFee?.internalName ?? null),
             nameForInvoices: new FormControl(clientFee?.publicName ?? null),
-            feeDirection: new FormControl(clientFee?.specialRateOrFeeDirection ?? null),
             feeFrequency: new FormControl(clientFee?.clientSpecialFeeFrequency ?? null),
             feeSpecifiedAs: new FormControl(clientFee?.clientSpecialFeeSpecifiedAs ?? null),
             clientRateValue: new FormControl(clientFee?.clientRate ?? null),
@@ -331,7 +318,6 @@ export class ClientRatesAndFeesComponent implements OnInit, OnDestroy {
         let input = new AddClientSpecialFeeDto();
         input.internalName = clientFee.feeName;
         input.publicName = clientFee.nameForInvoices;
-        input.specialRateOrFeeDirectionId = clientFee.feeDirection?.id;
         input.clientSpecialFeeFrequencyId = clientFee.feeFrequency?.id;
         input.clientSpecialFeeSpecifiedAsId = clientFee.feeSpecifiedAs?.id;
         input.clientRate = clientFee.clientRateValue;

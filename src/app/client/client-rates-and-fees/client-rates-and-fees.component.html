@@ -22,25 +22,19 @@
                         Name for invoices
                     </span>
                     <span fxFlex="10%" class="client-rates--form__header u-w--100">
-                        Rate direction
-                    </span>
-                    <span fxFlex="10%" class="client-rates--form__header u-w--100">
                         Reporting unit
                     </span>
-                    <span fxFlex="10%" class="client-rates--form__header u-w--100">
+                    <span fxFlex="15%" class="client-rates--form__header u-w--100">
                         Rate specified as
                     </span>
-                    <span fxFlex="10%" class="client-rates--form__header u-w--100">
+                    <span fxFlex="15%" class="client-rates--form__header u-w--100">
                         Client rate
                     </span>
-                    <span fxFlex="10%" class="client-rates--form__header u-w--100">
+                    <span fxFlex="15%" class="client-rates--form__header u-w--100">
                         ProData rate
                     </span>
-                    <span fxFlex="10%" class="client-rates--form__header u-w--100">
+                    <span fxFlex="15%" class="client-rates--form__header u-w--100">
                         Consultant rate
-                    </span>
-                    <span fxFlex="10%" class="client-rates--form__header u-w--100">
-                        Category
                     </span>
                     <span fxFlex="10%" class="client-rates--form__header u-w--100">
 
@@ -59,31 +53,25 @@
                                 <input matInput type="text" formControlName="nameForInvoices" placeholder="Name for invoicing" />
                             </mat-form-field>
                             <mat-form-field appearance="fill" class="u-w--100 formFieldNoMarginPadding filter-select" fxFlex="10%">
-                                <mat-select formControlName="rateDirection" placeholder="Rate direction" [disableOptionCentering]="true" [compareWith]="compareWithFn">
-                                    <mat-option *ngFor="let item of clientSpecialRateOrFeeDirections" [value]="item">
-                                        {{ item.name }}
-                                    </mat-option>
-                                </mat-select>
-                            </mat-form-field>
-                            <mat-form-field appearance="fill" class="u-w--100 formFieldNoMarginPadding filter-select" fxFlex="10%">
                                 <mat-select formControlName="reportingUnit" placeholder="Reporting Unit" [disableOptionCentering]="true" [compareWith]="compareWithFn">
                                     <mat-option *ngFor="let item of clientSpecialRateReportUnits" [value]="item">
                                         {{ item.name }}
                                     </mat-option>
                                 </mat-select>
                             </mat-form-field>
-                            <mat-form-field appearance="fill" class="u-w--100 formFieldNoMarginPadding filter-select" fxFlex="10%">
+                            <mat-form-field appearance="fill" class="u-w--100 formFieldNoMarginPadding filter-select" fxFlex="15%">
                                 <mat-select formControlName="rateSpecifiedAs" placeholder="Rate specified as" [disableOptionCentering]="true" [compareWith]="compareWithFn">
                                     <mat-option *ngFor="let item of clientSpecialRateSpecifications" [value]="item">
                                         {{ item.name }}
                                     </mat-option>
                                 </mat-select>
                             </mat-form-field>
-                            <div fxFlex="10%" fxLayout="row" fxLayoutAlign="start start">
-                                <mat-form-field appearance="fill" class="u-w--100 formFieldNoMarginPadding filter-select" fxFlex="40%">
-                                    <input matInput type="text" placeholder="Rate" formControlName="clientRateValue">
+                            <div fxFlex="15%" fxLayout="row" fxLayoutAlign="start start">
+                                <mat-form-field appearance="fill" class="u-w--100 formFieldNoMarginPadding filter-select" [ngClass]="{'text-right': rate.value.rateSpecifiedAs?.id === 1}" fxFlex="1 0 40%">
+                                    <input matInput type="number" [placeholder]="rate.value.rateSpecifiedAs?.id === 1 ? 'Percentage' : 'Rate'" formControlName="clientRateValue">
+                                    <span *ngIf="rate.value.rateSpecifiedAs?.id === 1" matSuffix>%</span>
                                 </mat-form-field>
-                                <mat-form-field appearance="fill" class="u-w--100 formFieldNoMarginPadding filter-select" fxFlex="60%">
+                                <mat-form-field appearance="fill" class="u-w--100 formFieldNoMarginPadding filter-select" fxFlex="60%" *ngIf="rate.value.rateSpecifiedAs?.id !== 1">
                                     <mat-select formControlName="clientRateCurrency" placeholder="Currency" [disableOptionCentering]="true" [compareWith]="compareWithFn">
                                         <mat-option *ngFor="let item of currencies" [value]="item">
                                             {{ item.name }}
@@ -91,11 +79,12 @@
                                     </mat-select>
                                 </mat-form-field>
                             </div>
-                            <div fxFlex="10%" fxLayout="row" fxLayoutAlign="start start">
-                                <mat-form-field appearance="fill" class="u-w--100 formFieldNoMarginPadding filter-select" fxFlex="40%">
-                                    <input matInput type="text" placeholder="Rate" formControlName="proDataRate">
+                            <div fxFlex="15%" fxLayout="row" fxLayoutAlign="start start">
+                                <mat-form-field appearance="fill" class="u-w--100 formFieldNoMarginPadding filter-select" [ngClass]="{'text-right': rate.value.rateSpecifiedAs?.id === 1}" fxFlex="1 0 40%">
+                                    <input matInput type="number" [placeholder]="rate.value.rateSpecifiedAs?.id === 1 ? 'Percentage' : 'Rate'" formControlName="proDataRate">
+                                    <span *ngIf="rate.value.rateSpecifiedAs?.id === 1" matSuffix>%</span>
                                 </mat-form-field>
-                                <mat-form-field appearance="fill" class="u-w--100 formFieldNoMarginPadding filter-select" fxFlex="60%">
+                                <mat-form-field appearance="fill" class="u-w--100 formFieldNoMarginPadding filter-select" fxFlex="60%" *ngIf="rate.value.rateSpecifiedAs?.id !== 1">
                                     <mat-select formControlName="proDataRateCurrency" placeholder="Currency" [disableOptionCentering]="true" [compareWith]="compareWithFn">
                                         <mat-option *ngFor="let item of currencies" [value]="item">
                                             {{ item.name }}
@@ -103,11 +92,12 @@
                                     </mat-select>
                                 </mat-form-field>
                             </div>
-                            <div fxFlex="10%" fxLayout="row" fxLayoutAlign="start start">
-                                <mat-form-field appearance="fill" class="u-w--100 formFieldNoMarginPadding filter-select" fxFlex="40%">
-                                    <input matInput type="text" placeholder="Rate" formControlName="consultantRate">
+                            <div fxFlex="15%" fxLayout="row" fxLayoutAlign="start start">
+                                <mat-form-field appearance="fill" class="u-w--100 formFieldNoMarginPadding filter-select" [ngClass]="{'text-right': rate.value.rateSpecifiedAs?.id === 1}" fxFlex="1 0 40%">
+                                    <input matInput type="number" [placeholder]="rate.value.rateSpecifiedAs?.id === 1 ? 'Percentage' : 'Rate'" formControlName="consultantRate">
+                                    <span *ngIf="rate.value.rateSpecifiedAs?.id === 1" matSuffix>%</span>
                                 </mat-form-field>
-                                <mat-form-field appearance="fill" class="u-w--100 formFieldNoMarginPadding filter-select" fxFlex="60%">
+                                <mat-form-field appearance="fill" class="u-w--100 formFieldNoMarginPadding filter-select" fxFlex="60%" *ngIf="rate.value.rateSpecifiedAs?.id !== 1">
                                     <mat-select formControlName="consultantRateCurrency" placeholder="Currency" [disableOptionCentering]="true" [compareWith]="compareWithFn">
                                         <mat-option *ngFor="let item of currencies" [value]="item">
                                             {{ item.name }}
@@ -115,19 +105,6 @@
                                     </mat-select>
                                 </mat-form-field>
                             </div>
-                            <!-- <mat-form-field appearance="fill" class="u-w--100 formFieldNoMarginPadding filter-select" fxFlex="10%">
-                                <input matInput type="text" formControlName="proDataRate" placeholder="ProData rate" />
-                            </mat-form-field>
-                            <mat-form-field appearance="fill" class="u-w--100 formFieldNoMarginPadding filter-select" fxFlex="10%">
-                                <input matInput type="text" formControlName="consultantRate" placeholder="Consultant rate" />
-                            </mat-form-field> -->
-                            <mat-form-field appearance="fill" class="u-w--100 formFieldNoMarginPadding filter-select" fxFlex="10%">
-                                <mat-select formControlName="category" placeholder="Category" [disableOptionCentering]="true">
-                                    <mat-option *ngFor="let item of [0,1,2,3]" [value]="item">
-                                        {{ item }}
-                                    </mat-option>
-                                </mat-select>
-                            </mat-form-field>
                             <div fxFlex="10%" class="u-w--100 text-truncate-ellipsis flex-items-center">
                                 <button mat-flat-button (click)="saveOrUpdateSpecialRate(i)" class="inline-edit-form--btn__save">
                                     Save
@@ -147,33 +124,44 @@
                             <span fxFlex="10%" class="u-w--100 text-truncate-ellipsis" [matTooltip]="rate.value.nameForInvoices ?? ''">
                                 {{rate.value.nameForInvoices ?? '-'}}
                             </span>
-                            <span fxFlex="10%" class="u-w--100 text-truncate-ellipsis" [matTooltip]="rate.value.rateDirection?.name ?? ''">
-                                {{rate.value.rateDirection?.name ?? '-'}}
-                            </span>
                             <span fxFlex="10%" class="u-w--100 text-truncate-ellipsis" [matTooltip]="rate.value.reportingUnit?.name ?? ''">
                                 {{rate.value.reportingUnit?.name ?? '-'}}
                             </span>
-                            <span fxFlex="10%" class="u-w--100 text-truncate-ellipsis" [matTooltip]="rate.value.rateSpecifiedAs?.name ?? ''">
+                            <span fxFlex="15%" class="u-w--100 text-truncate-ellipsis" [matTooltip]="rate.value.rateSpecifiedAs?.name ?? ''">
                                 {{rate.value.rateSpecifiedAs?.name ?? '-'}}
                             </span>
-                            <span fxFlex="10%" class="u-w--100 text-truncate-ellipsis" [matTooltip]="rate.value.clientRateValue + ' ' + rate.value.clientRateCurrency?.name">
-                                {{rate.value.clientRateValue || rate.value.clientRateCurrency?.name ? rate.value.clientRateValue + ' ' + rate.value.clientRateCurrency?.name : '-'}}
-                            </span>
-                            <span fxFlex="10%" class="u-w--100 text-truncate-ellipsis" [matTooltip]="rate.value.proDataRate + ' ' + rate.value.proDataRateCurrency?.name">
-                                {{rate.value.proDataRate || rate.value.proDataRateCurrency?.name ? rate.value.proDataRate + ' ' + rate.value.proDataRateCurrency?.name : '-'}}
-                            </span>
-                            <span fxFlex="10%" class="u-w--100 text-truncate-ellipsis" [matTooltip]="rate.value.consultantRate + ' ' + rate.value.consultantRateCurrency?.name">
-                                {{rate.value.consultantRate || rate.value.consultantRateCurrency?.name ? rate.value.consultantRate + ' ' + rate.value.consultantRateCurrency?.name : '-'}}
-                            </span>
-                            <!-- <span fxFlex="10%" class="u-w--100 text-truncate-ellipsis" [matTooltip]="rate.value.proDataRate ?? ''">
-                                {{rate.value.proDataRate ?? '-'}}
-                            </span>
-                            <span fxFlex="10%" class="u-w--100 text-truncate-ellipsis" [matTooltip]="rate.value.consultantRate ?? ''">
-                                {{rate.value.consultantRate ?? '-'}}
-                            </span> -->
-                            <span fxFlex="10%" class="u-w--100 text-truncate-ellipsis" [matTooltip]="rate.value.category?.name ?? ''">
-                                {{rate.value.category?.name ?? '-'}}
-                            </span>
+                            <ng-container *ngIf="rate.value.rateSpecifiedAs?.id === 1; else clientRateValue">
+                                <span fxFlex="15%" class="u-w--100 text-truncate-ellipsis" [matTooltip]="rate.value.clientRateValue + '%'">
+                                    {{rate.value.clientRateValue ? rate.value.clientRateValue + '%' : '-'}}
+                                </span>
+                            </ng-container>
+                            <ng-template #clientRateValue>
+                                <span fxFlex="15%" class="u-w--100 text-truncate-ellipsis" [matTooltip]="rate.value.clientRateValue + ' ' + rate.value.clientRateCurrency?.name">
+                                    {{rate.value.clientRateValue || rate.value.clientRateCurrency?.name ? rate.value.clientRateValue + ' ' + rate.value.clientRateCurrency?.name : '-'}}
+                                </span>
+                            </ng-template>
+
+                            <ng-container *ngIf="rate.value.rateSpecifiedAs?.id === 1; else proDataRateValue">
+                                <span fxFlex="15%" class="u-w--100 text-truncate-ellipsis" [matTooltip]="rate.value.proDataRate + '%'">
+                                    {{rate.value.proDataRate ? rate.value.proDataRate + '%' : '-'}}
+                                </span>
+                            </ng-container>
+                            <ng-template #proDataRateValue>
+                                <span fxFlex="15%" class="u-w--100 text-truncate-ellipsis" [matTooltip]="rate.value.proDataRate + ' ' + rate.value.proDataRateCurrency?.name">
+                                    {{rate.value.proDataRate || rate.value.proDataRateCurrency?.name ? rate.value.proDataRate + ' ' + rate.value.proDataRateCurrency?.name : '-'}}
+                                </span>
+                            </ng-template>
+
+                            <ng-container *ngIf="rate.value.rateSpecifiedAs?.id === 1; else consultantRateValue">
+                                <span fxFlex="15%" class="u-w--100 text-truncate-ellipsis" [matTooltip]="rate.value.consultantRate + '%'">
+                                    {{rate.value.consultantRate ? rate.value.consultantRate + '%' : '-'}}
+                                </span>
+                            </ng-container>
+                            <ng-template #consultantRateValue>
+                                <span fxFlex="15%" class="u-w--100 text-truncate-ellipsis" [matTooltip]="rate.value.consultantRate + ' ' + rate.value.consultantRateCurrency?.name">
+                                    {{rate.value.consultantRate || rate.value.consultantRateCurrency?.name ? rate.value.consultantRate + ' ' + rate.value.consultantRateCurrency?.name : '-'}}
+                                </span>
+                            </ng-template>
                             <div fxFlex="10%" fxLayoutAlign="center center" class="u-w--100">
                                 <button mat-icon-button [matMenuTriggerFor]="clientRateMenu" class="client-rates-icon--actions"><mat-icon>more_horiz</mat-icon></button>
                                 <mat-menu #clientRateMenu>
@@ -226,22 +214,19 @@
                     <span fxFlex="10%" class="client-rates--form__header u-w--100">
                         Name for invoices
                     </span>
-                    <span fxFlex="10%" class="client-rates--form__header u-w--100">
-                        Fee direction
-                    </span>
-                    <span fxFlex="12%" class="client-rates--form__header u-w--100">
+                    <span fxFlex="14%" class="client-rates--form__header u-w--100">
                         Frequency
                     </span>
-                    <span fxFlex="12%" class="client-rates--form__header u-w--100">
+                    <span fxFlex="14%" class="client-rates--form__header u-w--100">
                         Fee specified as
                     </span>
-                    <span fxFlex="12%" class="client-rates--form__header u-w--100">
+                    <span fxFlex="14%" class="client-rates--form__header u-w--100">
                         Client fee
                     </span>
-                    <span fxFlex="12%" class="client-rates--form__header u-w--100">
+                    <span fxFlex="14%" class="client-rates--form__header u-w--100">
                         ProData fee
                     </span>
-                    <span fxFlex="12%" class="client-rates--form__header u-w--100">
+                    <span fxFlex="14%" class="client-rates--form__header u-w--100">
                         Consultant fee
                     </span>
                     <span fxFlex="10%" class="client-rates--form__header u-w--100">
@@ -260,14 +245,7 @@
                             <mat-form-field appearance="fill" class="u-w--100 formFieldNoMarginPadding filter-select" fxFlex="10%">
                                 <input matInput type="text" formControlName="nameForInvoices" placeholder="Name for invoicing" />
                             </mat-form-field>
-                            <mat-form-field appearance="fill" class="u-w--100 formFieldNoMarginPadding filter-select" fxFlex="10%">
-                                <mat-select formControlName="feeDirection" placeholder="Fee direction" [disableOptionCentering]="true" [compareWith]="compareWithFn">
-                                    <mat-option *ngFor="let item of clientSpecialRateOrFeeDirections" [value]="item">
-                                        {{ item.name }}
-                                    </mat-option>
-                                </mat-select>
-                            </mat-form-field>
-                            <mat-form-field appearance="fill" class="u-w--100 formFieldNoMarginPadding filter-select" fxFlex="12%">
+                            <mat-form-field appearance="fill" class="u-w--100 formFieldNoMarginPadding filter-select" fxFlex="14%">
                                 <mat-select formControlName="feeFrequency" placeholder="Frequency" [disableOptionCentering]="true" [compareWith]="compareWithFn">
                                     <mat-option *ngFor="let item of clientSpecialFeeFrequencies" [value]="item">
                                         {{ item.name }}
@@ -281,7 +259,7 @@
                                     </mat-option>
                                 </mat-select>
                             </mat-form-field>
-                            <div fxFlex="12%" fxLayout="row" fxLayoutAlign="start start">
+                            <div fxFlex="14%" fxLayout="row" fxLayoutAlign="start start">
                                 <mat-form-field appearance="fill" class="u-w--100 formFieldNoMarginPadding filter-select" fxFlex="40%">
                                     <input matInput type="text" placeholder="Rate" formControlName="clientRateValue">
                                 </mat-form-field>
@@ -293,7 +271,7 @@
                                     </mat-select>
                                 </mat-form-field>
                             </div>
-                            <div fxFlex="12%" fxLayout="row" fxLayoutAlign="start start">
+                            <div fxFlex="14%" fxLayout="row" fxLayoutAlign="start start">
                                 <mat-form-field appearance="fill" class="u-w--100 formFieldNoMarginPadding filter-select" fxFlex="40%">
                                     <input matInput type="text" placeholder="Rate" formControlName="proDataRate">
                                 </mat-form-field>
@@ -305,7 +283,7 @@
                                     </mat-select>
                                 </mat-form-field>
                             </div>
-                            <div fxFlex="12%" fxLayout="row" fxLayoutAlign="start start">
+                            <div fxFlex="14%" fxLayout="row" fxLayoutAlign="start start">
                                 <mat-form-field appearance="fill" class="u-w--100 formFieldNoMarginPadding filter-select" fxFlex="40%">
                                     <input matInput type="text" placeholder="Rate" formControlName="consultantRate">
                                 </mat-form-field>
@@ -336,22 +314,19 @@
                             <span fxFlex="10%" class="u-w--100 text-truncate-ellipsis" [matTooltip]="fee.value.nameForInvoices ?? ''">
                                 {{fee.value.nameForInvoices ?? '-'}}
                             </span>
-                            <span fxFlex="10%" class="u-w--100 text-truncate-ellipsis" [matTooltip]="fee.value.feeDirection?.name ?? ''">
-                                {{fee.value.feeDirection?.name ?? '-'}}
-                            </span>
-                            <span fxFlex="12%" class="u-w--100 text-truncate-ellipsis" [matTooltip]="fee.value.feeFrequency?.name ?? ''">
+                            <span fxFlex="14%" class="u-w--100 text-truncate-ellipsis" [matTooltip]="fee.value.feeFrequency?.name ?? ''">
                                 {{fee.value.feeFrequency?.name ?? '-'}}
                             </span>
-                            <span fxFlex="12%" class="u-w--100 text-truncate-ellipsis" [matTooltip]="fee.value.feeSpecifiedAs?.name ?? ''">
+                            <span fxFlex="14%" class="u-w--100 text-truncate-ellipsis" [matTooltip]="fee.value.feeSpecifiedAs?.name ?? ''">
                                 {{fee.value.feeSpecifiedAs?.name ?? '-'}}
                             </span>
-                            <span fxFlex="12%" class="u-w--100 text-truncate-ellipsis" [matTooltip]="fee.value.clientRateValue + ' ' + fee.value.clientRateCurrency?.name">
+                            <span fxFlex="14%" class="u-w--100 text-truncate-ellipsis" [matTooltip]="fee.value.clientRateValue + ' ' + fee.value.clientRateCurrency?.name">
                                 {{fee.value.clientRateValue || fee.value.clientRateCurrency?.name ? fee.value.clientRateValue + ' ' + fee.value.clientRateCurrency?.name : ''}}
                             </span>
-                            <span fxFlex="12%" class="u-w--100 text-truncate-ellipsis" [matTooltip]="fee.value.proDataRate + ' ' + fee.value.proDataRateCurrency?.name">
+                            <span fxFlex="14%" class="u-w--100 text-truncate-ellipsis" [matTooltip]="fee.value.proDataRate + ' ' + fee.value.proDataRateCurrency?.name">
                                 {{fee.value.proDataRate || fee.value.proDataRateCurrency?.name ? fee.value.proDataRate + ' ' + fee.value.proDataRateCurrency?.name : ''}}
                             </span>
-                            <span fxFlex="12%" class="u-w--100 text-truncate-ellipsis" [matTooltip]="fee.value.consultantRate + ' ' + fee.value.consultantRateCurrency?.name">
+                            <span fxFlex="14%" class="u-w--100 text-truncate-ellipsis" [matTooltip]="fee.value.consultantRate + ' ' + fee.value.consultantRateCurrency?.name">
                                 {{fee.value.consultantRate || fee.value.consultantRateCurrency?.name ? fee.value.consultantRate + ' ' + fee.value.consultantRateCurrency?.name : ''}}
                             </span>
                             <div fxFlex="10%" fxLayoutAlign="center center" class="u-w--100">
