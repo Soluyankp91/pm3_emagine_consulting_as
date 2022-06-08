@@ -1759,7 +1759,7 @@
                                             <ng-container *ngIf="rate.value.editable; else clientRateCurrencyDisplay">
                                                 <div fxFlex="30%" fxLayout="row" fxLayoutAlign="start start">
                                                     <mat-form-field appearance="fill" class="u-w--100 formFieldNoMarginPadding filter-select" fxFlex="40%">
-                                                        <input matInput type="text" placeholder="Rate" formControlName="clientRateValue">
+                                                        <input matInput type="number" placeholder="Rate" formControlName="clientRateValue">
                                                     </mat-form-field>
                                                     <mat-form-field appearance="fill" class="u-w--100 formFieldNoMarginPadding filter-select" fxFlex="60%">
                                                         <mat-select formControlName="clientRateCurrency" placeholder="Currency" [disableOptionCentering]="true" [compareWith]="compareWithFn">
@@ -1862,7 +1862,7 @@
                                             <ng-container *ngIf="fee.value.editable; else clientFeeCurrencyDisplay">
                                                 <div fxFlex="30%" fxLayout="row" fxLayoutAlign="start start">
                                                     <mat-form-field appearance="fill" class="u-w--100 formFieldNoMarginPadding filter-select" fxFlex="40%">
-                                                        <input matInput type="text" placeholder="Rate" formControlName="clientRateValue">
+                                                        <input matInput type="number" placeholder="Rate" formControlName="clientRateValue">
                                                     </mat-form-field>
                                                     <mat-form-field appearance="fill" class="u-w--100 formFieldNoMarginPadding filter-select" fxFlex="60%">
                                                         <mat-select formControlName="clientRateCurrency" placeholder="Currency" [disableOptionCentering]="true" [compareWith]="compareWithFn">
@@ -2567,7 +2567,7 @@
                                                         <ng-container *ngIf="rate.value.editable; else consutlantProDataRateCurrencyDisplay">
                                                             <div fxFlex="25%" fxLayout="row" fxLayoutAlign="start start">
                                                                 <mat-form-field appearance="fill" class="u-w--100 formFieldNoMarginPadding filter-select" fxFlex="40%">
-                                                                    <input matInput type="text" placeholder="Rate" formControlName="prodataToProdataRate">
+                                                                    <input matInput type="number" placeholder="Rate" formControlName="prodataToProdataRate">
                                                                 </mat-form-field>
                                                                 <mat-form-field appearance="fill" class="u-w--100 formFieldNoMarginPadding filter-select" fxFlex="60%">
                                                                     <mat-select formControlName="prodataToProdataRateCurrency" placeholder="Currency" [disableOptionCentering]="true" [compareWith]="compareWithFn">
@@ -2588,7 +2588,7 @@
                                                     <ng-container *ngIf="rate.value.editable; else consutlantRateCurrencyDisplay">
                                                         <div fxFlex="25%" fxLayout="row" fxLayoutAlign="start start">
                                                             <mat-form-field appearance="fill" class="u-w--100 formFieldNoMarginPadding filter-select" fxFlex="40%">
-                                                                <input matInput type="text" placeholder="Rate" formControlName="consultantRate">
+                                                                <input matInput type="number" placeholder="Rate" formControlName="consultantRate">
                                                             </mat-form-field>
                                                             <mat-form-field appearance="fill" class="u-w--100 formFieldNoMarginPadding filter-select" fxFlex="60%">
                                                                 <mat-select formControlName="consultantRateCurrency" placeholder="Currency" [disableOptionCentering]="true" [compareWith]="compareWithFn">
@@ -2700,7 +2700,7 @@
                                                         <ng-container *ngIf="fee.value.editable; else proDataFeeCurrencyDisplay">
                                                             <div fxFlex="25%" fxLayout="row" fxLayoutAlign="start start">
                                                                 <mat-form-field appearance="fill" class="u-w--100 formFieldNoMarginPadding filter-select" fxFlex="40%">
-                                                                    <input matInput type="text" placeholder="Rate" formControlName="prodataToProdataRate">
+                                                                    <input matInput type="number" placeholder="Rate" formControlName="prodataToProdataRate">
                                                                 </mat-form-field>
                                                                 <mat-form-field appearance="fill" class="u-w--100 formFieldNoMarginPadding filter-select" fxFlex="60%">
                                                                     <mat-select formControlName="prodataToProdataRateCurrency" placeholder="Currency" [disableOptionCentering]="true" [compareWith]="compareWithFn">
@@ -2721,7 +2721,7 @@
                                                     <ng-container *ngIf="fee.value.editable; else consultantFeeCurrencyDisplay">
                                                         <div fxFlex="25%" fxLayout="row" fxLayoutAlign="start start">
                                                             <mat-form-field appearance="fill" class="u-w--100 formFieldNoMarginPadding filter-select" fxFlex="40%">
-                                                                <input matInput type="text" placeholder="Rate" formControlName="consultantRate">
+                                                                <input matInput type="number" placeholder="Rate" formControlName="consultantRate">
                                                             </mat-form-field>
                                                             <mat-form-field appearance="fill" class="u-w--100 formFieldNoMarginPadding filter-select" fxFlex="60%">
                                                                 <mat-select formControlName="consultantRateCurrency" placeholder="Currency" [disableOptionCentering]="true" [compareWith]="compareWithFn">

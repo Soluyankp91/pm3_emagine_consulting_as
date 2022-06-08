@@ -852,8 +852,14 @@ export class WorkflowSalesComponent extends AppComponentBase implements OnInit {
         formattedRate.clientSpecialRateId = rate.id;
         formattedRate.rateName = rate.publicName;
         formattedRate.reportingUnit = rate.specialRateReportingUnit;
-        formattedRate.clientRate = rate.clientRate;
-        formattedRate.clientRateCurrencyId = rate.clientRateCurrency?.id;
+        formattedRate.rateSpecifiedAs = rate.specialRateSpecifiedAs;
+        if (formattedRate.rateSpecifiedAs?.id === 1) {
+            formattedRate.clientRate = +(this.salesClientDataForm?.clientPrice?.value * rate.clientRate! / 100).toFixed(2);
+            formattedRate.clientRateCurrencyId = this.salesClientDataForm.clientCurrency?.value?.id;
+        } else {
+            formattedRate.clientRate = rate.clientRate;
+            formattedRate.clientRateCurrencyId = rate.clientRateCurrency?.id;
+        }
         this.clientSpecialRateFilter.setValue('');
         clientRateMenuTrigger.closeMenu();
         this.addSpecialRate(formattedRate);
@@ -865,6 +871,7 @@ export class WorkflowSalesComponent extends AppComponentBase implements OnInit {
             clientSpecialRateId: new FormControl(clientRate?.clientSpecialRateId ?? null),
             rateName: new FormControl(clientRate?.rateName ?? null),
             reportingUnit: new FormControl(clientRate?.reportingUnit ?? null),
+            rateSpecifiedAs: new FormControl(clientRate?.rateSpecifiedAs ?? null),
             clientRateValue: new FormControl(clientRate?.clientRate ?? null),
             clientRateCurrency: new FormControl(this.findItemById(this.currencies, clientRate?.clientRateCurrencyId) ?? null),
             editable: new FormControl(clientRate ? false : true)
@@ -1247,10 +1254,17 @@ export class WorkflowSalesComponent extends AppComponentBase implements OnInit {
         consultantRate.clientSpecialRateId = rate.id;
         consultantRate.rateName = rate.publicName;
         consultantRate.reportingUnit = rate.specialRateReportingUnit;
-        consultantRate.prodataToProdataRate = rate.proDataToProDataRate;
-        consultantRate.prodataToProdataRateCurrencyId = rate.proDataToProDataRateCurrency?.id;
-        consultantRate.consultantRate = rate.consultantRate;
-        consultantRate.consultantRateCurrencyId = rate.consultantCurrency?.id;
+        if (consultantRate.rateSpecifiedAs?.id === 1) {
+            consultantRate.prodataToProdataRate = +(this.consultantsForm.consultantData.at(consultantIndex)!.get('consultantRate')!.value * rate.proDataToProDataRate! / 100).toFixed(2);
+            consultantRate.prodataToProdataRateCurrencyId = this.consultantsForm.consultantData.at(consultantIndex)!.get('consultantRateCurrency')!.value?.id;
+            consultantRate.consultantRate = +(this.consultantsForm.consultantData.at(consultantIndex)!.get('consultantRate')!.value * rate.consultantRate! / 100).toFixed(2);
+            consultantRate.consultantRateCurrencyId = this.consultantsForm.consultantData.at(consultantIndex)!.get('consultantRateCurrency')!.value?.id;
+        } else {
+            consultantRate.prodataToProdataRate = rate.proDataToProDataRate;
+            consultantRate.prodataToProdataRateCurrencyId = rate.proDataToProDataRateCurrency?.id;
+            consultantRate.consultantRate = rate.consultantRate;
+            consultantRate.consultantRateCurrencyId = rate.consultantCurrency?.id;
+        }
         consultantRateMenuTrigger.closeMenu();
         this.addConsultantSpecialRate(consultantIndex, consultantRate);
     }
