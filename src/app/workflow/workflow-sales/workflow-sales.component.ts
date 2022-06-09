@@ -452,8 +452,8 @@ export class WorkflowSalesComponent extends AppComponentBase implements OnInit {
 
         this._workflowDataService.workflowSideSectionChanged
             .pipe(takeUntil(this._unsubscribe))
-            .subscribe((value: boolean) => {
-                this.detectActiveSideSection();
+            .subscribe((value: {consultant?: ConsultantResultDto | undefined, consultantPeriodId?: string | undefined}) => {
+                this.detectActiveSideSection(value?.consultant, value?.consultantPeriodId);
             });
 
         this._workflowDataService.cancelForceEdit
@@ -2008,9 +2008,9 @@ export class WorkflowSalesComponent extends AppComponentBase implements OnInit {
 
     //#region termination
 
-    getWorkflowSalesStepConsultantTermination() {
+    getWorkflowSalesStepConsultantTermination(consultant: ConsultantResultDto) {
         this.resetForms();
-        this._workflowServiceProxy.terminationConsultantSalesGet(this.workflowId!, this.consultant.id!)
+        this._workflowServiceProxy.terminationConsultantSalesGet(this.workflowId!, consultant.id!)
             .pipe(finalize(() => {
 
             }))
@@ -2156,7 +2156,7 @@ export class WorkflowSalesComponent extends AppComponentBase implements OnInit {
 
     //#endregion termination
 
-    detectActiveSideSection() {
+    detectActiveSideSection(consultant?: ConsultantResultDto, consultantPeriodId?: string) {
         switch (this._workflowDataService.getWorkflowProgress.currentlyActiveSideSection) {
             // Client period
             case WorkflowProcessType.StartClientPeriod:
@@ -2171,35 +2171,19 @@ export class WorkflowSalesComponent extends AppComponentBase implements OnInit {
             case WorkflowProcessType.StartConsultantPeriod:
             case WorkflowProcessType.ExtendConsultantPeriod:
             case WorkflowProcessType.ChangeConsultantPeriod:
-                if (!this.activeSideSection.consultantPeriodId) {
-                    let interval = setInterval(() => {
-                        if (this.activeSideSection.consultantPeriodId) {
-                            clearInterval(interval);
-                            this.getStartChangeOrExtendConsutlantPeriodSales();
-                        }
-                    }, 100);
-                } else {
-                    this.getStartChangeOrExtendConsutlantPeriodSales();
-                }
+                let consultantPeriodIdParameter = consultantPeriodId ?? this.activeSideSection.consultantPeriodId;
+                this.getStartChangeOrExtendConsutlantPeriodSales(consultantPeriodIdParameter!);
                 break;
             case WorkflowProcessType.TerminateConsultant:
-                if (!this.consultant?.id) {
-                    let interval = setInterval(() => {
-                        if (this.consultant?.id) {
-                            clearInterval(interval);
-                            this.getWorkflowSalesStepConsultantTermination();
-                        }
-                    }, 100);
-                } else {
-                    this.getWorkflowSalesStepConsultantTermination();
-                }
+                let consultantParameter = consultant ?? this.consultant; 
+                this.getWorkflowSalesStepConsultantTermination(consultantParameter!);
                 break;
         }
     }
 
-    getStartChangeOrExtendConsutlantPeriodSales() {
+    getStartChangeOrExtendConsutlantPeriodSales(consultantPeriodId: string) {
         this.resetForms();
-        this._consultantPeriodSerivce.consultantSalesGet(this.activeSideSection.consultantPeriodId!)
+        this._consultantPeriodSerivce.consultantSalesGet(consultantPeriodId)
             .pipe(finalize(() => {}))
             .subscribe(result => {
                 this.resetForms();

@@ -1,4 +1,5 @@
 import { EventEmitter, Injectable } from '@angular/core';
+import { ConsultantResultDto } from 'src/shared/service-proxies/service-proxies';
 import { WorkflowProgressStatus } from './workflow.model';
 
 @Injectable({
@@ -28,7 +29,7 @@ export class WorkflowDataService {
     workflowConsultantTerminationSourcingSaved = new EventEmitter<boolean>();
     workflowTerminationSourcingSaved = new EventEmitter<boolean>();
 
-    workflowSideSectionChanged = new EventEmitter<boolean>();
+    workflowSideSectionChanged = new EventEmitter<{consultant?: ConsultantResultDto | undefined,  consultantPeriodId?: string | undefined}>();
     workflowSideSectionUpdated = new EventEmitter<{isStatusUpdate: boolean}>();
     workflowTopSectionUpdated = new EventEmitter<any>();
 

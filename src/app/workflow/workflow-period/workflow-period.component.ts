@@ -123,7 +123,7 @@ export class WorkflowPeriodComponent implements OnInit {
             this.changeStepSelection(stepToSelect!);
         }
         this.isStatusUpdate = false;
-        this._workflowDataService.workflowSideSectionChanged.emit(true);
+        this._workflowDataService.workflowSideSectionChanged.emit({consultant: item.consultant, consultantPeriodId: item.consultantPeriodId});
     }
 
     deleteSideSection(item: WorkflowProcessDto) {
