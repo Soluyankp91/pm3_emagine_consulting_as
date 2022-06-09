@@ -168,16 +168,16 @@ export class WorkflowContractsComponent extends AppComponentBase implements OnIn
             case this.workflowSideSections.StartConsultantPeriod:
             case this.workflowSideSections.ChangeConsultantPeriod:
             case this.workflowSideSections.ExtendConsultantPeriod:
-                if (!this.activeSideSection.consultantPeriodId) {
-                    let interval = setInterval(() => {
-                        if (this.activeSideSection.consultantPeriodId) {
-                            clearInterval(interval);
+                // if (!this.activeSideSection.consultantPeriodId) {
+                //     let interval = setInterval(() => {
+                //         if (this.activeSideSection.consultantPeriodId) {
+                //             clearInterval(interval);
                             this.getStartChangeOrExtendConsultantPeriodContracts();
-                        }
-                    }, 100);
-                } else {
-                    this.getStartChangeOrExtendConsultantPeriodContracts();
-                }
+                //         }
+                //     }, 100);
+                // } else {
+                //     this.getStartChangeOrExtendConsultantPeriodContracts();
+                // }
                 break;
             case this.workflowSideSections.TerminateConsultant:
                 this.getWorkflowContractsStepConsultantTermination();
@@ -199,16 +199,16 @@ export class WorkflowContractsComponent extends AppComponentBase implements OnIn
             case this.workflowSideSections.StartConsultantPeriod:
             case this.workflowSideSections.ChangeConsultantPeriod:
             case this.workflowSideSections.ExtendConsultantPeriod:
-                if (!this.activeSideSection.consultantPeriodId) {
-                    let interval = setInterval(() => {
-                        if (this.activeSideSection.consultantPeriodId) {
-                            clearInterval(interval);
+                // if (!this.activeSideSection.consultantPeriodId) {
+                //     let interval = setInterval(() => {
+                //         if (this.activeSideSection.consultantPeriodId) {
+                //             clearInterval(interval);
                             this.startEditConsultantPeriod();
-                        }
-                    }, 100);
-                } else {
-                    this.startEditConsultantPeriod();
-                }
+                //         }
+                //     }, 100);
+                // } else {
+                //     this.startEditConsultantPeriod();
+                // }
                 break;
             case this.workflowSideSections.TerminateConsultant:
                 this.startEditTerminateConsultant();
