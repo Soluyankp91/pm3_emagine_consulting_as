@@ -168,16 +168,7 @@ export class WorkflowContractsComponent extends AppComponentBase implements OnIn
             case this.workflowSideSections.StartConsultantPeriod:
             case this.workflowSideSections.ChangeConsultantPeriod:
             case this.workflowSideSections.ExtendConsultantPeriod:
-                // if (!this.activeSideSection.consultantPeriodId) {
-                //     let interval = setInterval(() => {
-                //         if (this.activeSideSection.consultantPeriodId) {
-                //             clearInterval(interval);
-                            this.getStartChangeOrExtendConsultantPeriodContracts();
-                //         }
-                //     }, 100);
-                // } else {
-                //     this.getStartChangeOrExtendConsultantPeriodContracts();
-                // }
+                this.getStartChangeOrExtendConsultantPeriodContracts();
                 break;
             case this.workflowSideSections.TerminateConsultant:
                 this.getWorkflowContractsStepConsultantTermination();
@@ -982,7 +973,6 @@ export class WorkflowContractsComponent extends AppComponentBase implements OnIn
                 this.contractsMainForm.noRemarks?.setValue(result.mainData?.noRemarks, {emitEvent: false});
 
                 // Client data
-                // this.contractClientForm.capOnTimeReporting?.setValue(this.findItemById(this.clientTimeReportingCap, result.clientData?.clientTimeReportingCapId), {emitEvent: false});
                 this.contractClientForm.directClientId?.setValue(result.clientData?.directClientId);
                 if (result?.clientData?.directClientId) {
                     this.getRatesAndFees(result?.clientData?.directClientId);
