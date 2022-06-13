@@ -151,6 +151,30 @@
                             <span class="workflow-darkblue--text">{{contractClientForm?.clientTimeReportingCapId?.value?.name ? contractClientForm?.clientTimeReportingCapId?.value?.name : '-'}}</span>
                             <span class="workflow-darkblue--text">
                                 {{contractClientForm?.clientTimeReportingCapMaxValue?.value ? contractClientForm?.clientTimeReportingCapMaxValue?.value : '-'}}
+                                <!-- FIXME: uncomment after BE changes -->
+                                <!-- <ng-container [ngSwitch]="contractClientForm?.clientTimeReportingCapId?.value?.id">
+                                    <ng-container *ngSwitchCase="1">
+                                        Cap on units
+                                        <ng-container [ngSwitch]="contractClientForm?.rateUnitTypeId?.value?.id">
+                                            <ng-container *ngSwitchCase="1"> 
+                                                Per hour
+                                                hours
+                                            </ng-container>
+                                            <ng-container *ngSwitchCase="2"> 
+                                                Per day
+                                                days
+                                            </ng-container>
+                                            <ng-container *ngSwitchCase="3"> 
+                                                Per month
+                                                months
+                                            </ng-container>
+                                        </ng-container>
+                                    </ng-container>
+                                    <ng-container *ngSwitchCase="2"> 
+                                        Cap on value
+                                        {{contractClientForm?.clientCurrency?.value?.name ? salesClientDataForm?.clientCurrency?.value?.name : '-'}}
+                                    </ng-container>
+                                </ng-container> -->
                                 {{contractClientForm?.clientTimeReportingCapCurrencyId?.value?.name ? contractClientForm?.clientTimeReportingCapCurrencyId?.value?.name : '-'}}
                             </span>
                         </div>
@@ -478,14 +502,38 @@
                                     <h3 class="workflow-gray--header">Consultant type</h3>
                                     <span class="workflow-darkblue--text">{{consultant.value.consultantType?.name ? consultant.value.consultantType?.name : '-'}}</span>
                                 </div>
-                                <div fxLayout="column" class="u-mb--20" fxFlex="25%">
+                                <div fxLayout="column" class="u-mb--20" fxFlex="25%" *ngIf="">
                                     <h3 class="workflow-gray--header">Cap on Time Reporting</h3>
                                     <span class="workflow-darkblue--text" *ngIf="!consultant.value.consultantCapOnTimeReporting?.id && !consultant.value.consultantCapOnTimeReportingValue && !consultant.value.consultantCapOnTimeReportingCurrency?.name; else consultantCapOnTimeTemplate">
                                         -
                                     </span>
                                     <ng-template #consultantCapOnTimeTemplate>
                                         <span class="workflow-darkblue--text">
-                                            {{consultant.value.consultantCapOnTimeReporting?.name}} {{consultant.value.consultantCapOnTimeReportingValue}} {{consultant.value.consultantCapOnTimeReportingCurrency?.name}}
+                                            {{consultant.value.consultantCapOnTimeReporting?.name}} {{consultant.value.consultantCapOnTimeReportingValue}}
+                                            <!-- FIXME: uncomment after BE changes -->
+                                            <!-- <ng-container [ngSwitch]="consultant.value.consultantCapOnTimeReporting?.id">
+                                                <ng-container *ngSwitchCase="1">
+                                                    Cap on units
+                                                    <ng-container [ngSwitch]="consultant.value.consultantRateUnitType?.id">
+                                                        <ng-container *ngSwitchCase="1">
+                                                            Per hour
+                                                            hours
+                                                        </ng-container>
+                                                        <ng-container *ngSwitchCase="2">
+                                                            Per day
+                                                            days
+                                                        </ng-container>
+                                                        <ng-container *ngSwitchCase="3">
+                                                            Per month
+                                                            months
+                                                        </ng-container>
+                                                    </ng-container>
+                                                </ng-container>
+                                                <ng-container *ngSwitchCase="2">
+                                                    {{consultant.value.consultantCapOnTimeReportingCurrency?.name}}
+                                                </ng-container>
+                                            </ng-container> -->
+                                            {{consultant.value.consultantCapOnTimeReportingCurrency?.name}}
                                         </span>
                                     </ng-template>
                                 </div>
