@@ -162,7 +162,7 @@
         </div>
         <!-- WORKFLOWS -->
         <div fxLayout="column" fxLayoutAlign="start center" class="gant-chart-container" [fxHide]="workflowsData?.length === 0" fxFlexFill>
-            <ngx-gantt #ganttWorkflows [items]="workflowsData" [viewOptions]="viewOptions" [viewType]="viewType.value">
+            <ngx-gantt #ganttWorkflows [items]="workflowsData" [viewOptions]="viewOptions" [async]="true" [viewType]="viewType.value">
                 <ngx-gantt-table>
                     <ngx-gantt-column name="" width="30px">
                         <ng-template #cell let-item="item">
