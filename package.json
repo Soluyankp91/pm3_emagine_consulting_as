@@ -6,7 +6,7 @@
     "start": "ng serve --host 0.0.0.0 --port 4200",
     "qa": "ng build --configuration=qa",
     "dev": "ng build --configuration=development",
-    "prod": "ng build --configuration=prod",
+    "prod": "ng build --configuration=production",
     "publish": "ng build --prod",
     "build": "ng build",
     "watch": "ng build --watch --configuration development",
