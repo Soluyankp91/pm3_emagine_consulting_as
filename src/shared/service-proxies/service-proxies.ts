@@ -14207,6 +14207,7 @@ export class PeriodClientSpecialRateDto implements IPeriodClientSpecialRateDto {
     clientSpecialRateId?: number;
     rateName?: string | undefined;
     reportingUnit?: EnumEntityTypeDto;
+    rateSpecifiedAs?: EnumEntityTypeDto;
     clientRate?: number | undefined;
     clientRateCurrencyId?: number | undefined;
 
@@ -14225,6 +14226,7 @@ export class PeriodClientSpecialRateDto implements IPeriodClientSpecialRateDto {
             this.clientSpecialRateId = _data["clientSpecialRateId"];
             this.rateName = _data["rateName"];
             this.reportingUnit = _data["reportingUnit"] ? EnumEntityTypeDto.fromJS(_data["reportingUnit"]) : <any>undefined;
+            this.rateSpecifiedAs = _data["rateSpecifiedAs"] ? EnumEntityTypeDto.fromJS(_data["rateSpecifiedAs"]) : <any>undefined;
             this.clientRate = _data["clientRate"];
             this.clientRateCurrencyId = _data["clientRateCurrencyId"];
         }
@@ -14243,6 +14245,7 @@ export class PeriodClientSpecialRateDto implements IPeriodClientSpecialRateDto {
         data["clientSpecialRateId"] = this.clientSpecialRateId;
         data["rateName"] = this.rateName;
         data["reportingUnit"] = this.reportingUnit ? this.reportingUnit.toJSON() : <any>undefined;
+        data["rateSpecifiedAs"] = this.rateSpecifiedAs ? this.rateSpecifiedAs.toJSON() : <any>undefined;
         data["clientRate"] = this.clientRate;
         data["clientRateCurrencyId"] = this.clientRateCurrencyId;
         return data;
@@ -14254,6 +14257,7 @@ export interface IPeriodClientSpecialRateDto {
     clientSpecialRateId?: number;
     rateName?: string | undefined;
     reportingUnit?: EnumEntityTypeDto;
+    rateSpecifiedAs?: EnumEntityTypeDto;
     clientRate?: number | undefined;
     clientRateCurrencyId?: number | undefined;
 }
@@ -14329,6 +14333,7 @@ export class PeriodConsultantSpecialRateDto implements IPeriodConsultantSpecialR
     reportingUnit?: EnumEntityTypeDto;
     prodataToProdataRate?: number | undefined;
     prodataToProdataRateCurrencyId?: number | undefined;
+    rateSpecifiedAs?: EnumEntityTypeDto;
     consultantRate?: number | undefined;
     consultantRateCurrencyId?: number | undefined;
 
@@ -14349,6 +14354,7 @@ export class PeriodConsultantSpecialRateDto implements IPeriodConsultantSpecialR
             this.reportingUnit = _data["reportingUnit"] ? EnumEntityTypeDto.fromJS(_data["reportingUnit"]) : <any>undefined;
             this.prodataToProdataRate = _data["prodataToProdataRate"];
             this.prodataToProdataRateCurrencyId = _data["prodataToProdataRateCurrencyId"];
+            this.rateSpecifiedAs = _data["rateSpecifiedAs"] ? EnumEntityTypeDto.fromJS(_data["rateSpecifiedAs"]) : <any>undefined;
             this.consultantRate = _data["consultantRate"];
             this.consultantRateCurrencyId = _data["consultantRateCurrencyId"];
         }
@@ -14369,6 +14375,7 @@ export class PeriodConsultantSpecialRateDto implements IPeriodConsultantSpecialR
         data["reportingUnit"] = this.reportingUnit ? this.reportingUnit.toJSON() : <any>undefined;
         data["prodataToProdataRate"] = this.prodataToProdataRate;
         data["prodataToProdataRateCurrencyId"] = this.prodataToProdataRateCurrencyId;
+        data["rateSpecifiedAs"] = this.rateSpecifiedAs ? this.rateSpecifiedAs.toJSON() : <any>undefined;
         data["consultantRate"] = this.consultantRate;
         data["consultantRateCurrencyId"] = this.consultantRateCurrencyId;
         return data;
@@ -14382,6 +14389,7 @@ export interface IPeriodConsultantSpecialRateDto {
     reportingUnit?: EnumEntityTypeDto;
     prodataToProdataRate?: number | undefined;
     prodataToProdataRateCurrencyId?: number | undefined;
+    rateSpecifiedAs?: EnumEntityTypeDto;
     consultantRate?: number | undefined;
     consultantRateCurrencyId?: number | undefined;
 }

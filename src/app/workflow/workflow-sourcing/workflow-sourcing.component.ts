@@ -3,7 +3,7 @@ import { FormArray, FormBuilder, FormControl } from '@angular/forms';
 import { Subject } from 'rxjs';
 import { finalize, takeUntil } from 'rxjs/operators';
 import { AppComponentBase } from 'src/shared/app-component-base';
-import { ConsultantResultDto, ConsultantTerminationSourcingDataCommandDto, ConsultantTerminationSourcingDataQueryDto, WorkflowProcessType, WorkflowServiceProxy, WorkflowTerminationSourcingDataCommandDto } from 'src/shared/service-proxies/service-proxies';
+import { ConsultantResultDto, ConsultantTerminationSourcingDataCommandDto, ConsultantTerminationSourcingDataQueryDto, WorkflowProcessDto, WorkflowProcessType, WorkflowServiceProxy, WorkflowTerminationSourcingDataCommandDto } from 'src/shared/service-proxies/service-proxies';
 import { WorkflowDataService } from '../workflow-data.service';
 import { WorkflowSourcingConsultantsDataForm } from './workflow-sourcing.model';
 
@@ -13,7 +13,7 @@ import { WorkflowSourcingConsultantsDataForm } from './workflow-sourcing.model';
     styleUrls: ['./workflow-sourcing.component.scss']
 })
 export class WorkflowSourcingComponent extends AppComponentBase implements OnInit, OnDestroy {
-    @Input() activeSideSection: number;
+    @Input() activeSideSection: WorkflowProcessDto;
     @Input() workflowId: string;
     @Input() isCompleted: boolean;
     @Input() consultant: ConsultantResultDto;
@@ -43,7 +43,7 @@ export class WorkflowSourcingComponent extends AppComponentBase implements OnIni
 
     ngOnInit(): void {
         this._workflowDataService.updateWorkflowProgressStatus({currentStepIsCompleted: this.isCompleted, currentStepIsForcefullyEditing: false});
-        switch (this.activeSideSection) {
+        switch (this.activeSideSection.typeId) {
             case this.workflowSideSections.TerminateWorkflow:
                 this.getWorkflowSourcingStepTermination();
                 break;

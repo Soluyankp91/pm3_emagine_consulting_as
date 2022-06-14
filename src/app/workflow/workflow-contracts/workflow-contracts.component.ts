@@ -8,7 +8,7 @@ import { finalize, takeUntil } from 'rxjs/operators';
 import { InternalLookupService } from 'src/app/shared/common/internal-lookup.service';
 import { ConfirmationDialogComponent } from 'src/app/shared/components/confirmation-dialog/confirmation-dialog.component';
 import { AppComponentBase } from 'src/shared/app-component-base';
-import { ClientPeriodContractsDataDto, WorkflowProcessType, WorkflowServiceProxy, ClientPeriodServiceProxy, ConsultantContractsDataDto, ConsultantSalesDataDto, ContractsClientDataDto, ContractsMainDataDto, EnumEntityTypeDto, PeriodClientSpecialFeeDto, PeriodClientSpecialRateDto, PeriodConsultantSpecialFeeDto, PeriodConsultantSpecialRateDto, ProjectLineDto, ConsultantTerminationContractDataCommandDto, WorkflowTerminationContractDataCommandDto, ConsultantTerminationContractDataQueryDto, ClientContractsServiceProxy, ConsultantPeriodServiceProxy, ConsultantContractsServiceProxy, ConsultantPeriodContractsDataDto, ClientsServiceProxy, ClientSpecialRateDto, ClientSpecialFeeDto, ConsultantResultDto } from 'src/shared/service-proxies/service-proxies';
+import { ClientPeriodContractsDataDto, WorkflowProcessType, WorkflowServiceProxy, ClientPeriodServiceProxy, ConsultantContractsDataDto, ConsultantSalesDataDto, ContractsClientDataDto, ContractsMainDataDto, EnumEntityTypeDto, PeriodClientSpecialFeeDto, PeriodClientSpecialRateDto, PeriodConsultantSpecialFeeDto, PeriodConsultantSpecialRateDto, ProjectLineDto, ConsultantTerminationContractDataCommandDto, WorkflowTerminationContractDataCommandDto, ConsultantTerminationContractDataQueryDto, ClientContractsServiceProxy, ConsultantPeriodServiceProxy, ConsultantContractsServiceProxy, ConsultantPeriodContractsDataDto, ClientsServiceProxy, ClientSpecialRateDto, ClientSpecialFeeDto, ConsultantResultDto, WorkflowProcessDto } from 'src/shared/service-proxies/service-proxies';
 import { WorkflowConsultantActionsDialogComponent } from '../workflow-consultant-actions-dialog/workflow-consultant-actions-dialog.component';
 import { WorkflowDataService } from '../workflow-data.service';
 import { ConsultantDiallogAction } from '../workflow-sales/workflow-sales.model';
@@ -27,7 +27,7 @@ export class WorkflowContractsComponent extends AppComponentBase implements OnIn
     @Input() consultant: ConsultantResultDto;
 
     // Changed all above to enum
-    @Input() activeSideSection: number;
+    @Input() activeSideSection: WorkflowProcessDto;
     @Input() isCompleted: boolean;
     @Input() permissionsForCurrentUser: { [key: string]: boolean; } | undefined;
 
@@ -156,7 +156,7 @@ export class WorkflowContractsComponent extends AppComponentBase implements OnIn
     }
 
     getContractStepData() {
-        switch (this.activeSideSection) {
+        switch (this.activeSideSection.typeId) {
             case this.workflowSideSections.StartClientPeriod:
             case this.workflowSideSections.ChangeClientPeriod:
             case this.workflowSideSections.ExtendClientPeriod:
@@ -165,7 +165,6 @@ export class WorkflowContractsComponent extends AppComponentBase implements OnIn
             case this.workflowSideSections.TerminateWorkflow:
                 this.getWorkflowContractStepTermination();
                 break;
-
             case this.workflowSideSections.StartConsultantPeriod:
             case this.workflowSideSections.ChangeConsultantPeriod:
             case this.workflowSideSections.ExtendConsultantPeriod:
@@ -178,7 +177,7 @@ export class WorkflowContractsComponent extends AppComponentBase implements OnIn
     }
 
     startEditContractStep() {
-        switch (this.activeSideSection) {
+        switch (this.activeSideSection.typeId) {
             case this.workflowSideSections.StartClientPeriod:
             case this.workflowSideSections.ChangeClientPeriod:
             case this.workflowSideSections.ExtendClientPeriod:
@@ -191,7 +190,16 @@ export class WorkflowContractsComponent extends AppComponentBase implements OnIn
             case this.workflowSideSections.StartConsultantPeriod:
             case this.workflowSideSections.ChangeConsultantPeriod:
             case this.workflowSideSections.ExtendConsultantPeriod:
-                this.startEditConsultantPeriod();
+                // if (!this.activeSideSection.consultantPeriodId) {
+                //     let interval = setInterval(() => {
+                //         if (this.activeSideSection.consultantPeriodId) {
+                //             clearInterval(interval);
+                            this.startEditConsultantPeriod();
+                //         }
+                //     }, 100);
+                // } else {
+                //     this.startEditConsultantPeriod();
+                // }
                 break;
             case this.workflowSideSections.TerminateConsultant:
                 this.startEditTerminateConsultant();
@@ -221,7 +229,7 @@ export class WorkflowContractsComponent extends AppComponentBase implements OnIn
 
     startEditConsultantPeriod() {
         this.showMainSpinner();
-        this._consultantContractsService.editStart(this.periodId!)
+        this._consultantContractsService.editStart(this.activeSideSection.consultantPeriodId!)
             .pipe(finalize(() => this.hideMainSpinner()))
             .subscribe(result => {
                 this._workflowDataService.workflowSideSectionUpdated.emit({isStatusUpdate: true});
@@ -582,6 +590,17 @@ export class WorkflowContractsComponent extends AppComponentBase implements OnIn
         consultantRate.prodataToProdataRateCurrencyId = rate.proDataToProDataRateCurrency?.id;
         consultantRate.consultantRate = rate.consultantRate;
         consultantRate.consultantRateCurrencyId = rate.consultantCurrency?.id;
+        // if (consultantRate.rateSpecifiedAs?.id === 1) {
+        //     consultantRate.prodataToProdataRate = +(this.contractsConsultantsDataForm.consultants.at(consultantIndex)!.get('consultantRate')!.value * rate.proDataToProDataRate! / 100).toFixed(2);
+        //     consultantRate.prodataToProdataRateCurrencyId = this.contractsConsultantsDataForm.consultants.at(consultantIndex)!.get('consultantRateCurrency')!.value?.id;
+        //     consultantRate.consultantRate = +(this.contractsConsultantsDataForm.consultants.at(consultantIndex)!.get('consultantRate')!.value * rate.consultantRate! / 100).toFixed(2);
+        //     consultantRate.consultantRateCurrencyId = this.contractsConsultantsDataForm.consultants.at(consultantIndex)!.get('consultantRateCurrency')!.value?.id;
+        // } else {
+        //     consultantRate.prodataToProdataRate = rate.proDataToProDataRate;
+        //     consultantRate.prodataToProdataRateCurrencyId = rate.proDataToProDataRateCurrency?.id;
+        //     consultantRate.consultantRate = rate.consultantRate;
+        //     consultantRate.consultantRateCurrencyId = rate.consultantCurrency?.id;
+        // }
         consultantRateMenuTrigger.closeMenu();
         this.addSpecialRateToConsultantData(consultantIndex, consultantRate);
     }
@@ -954,7 +973,6 @@ export class WorkflowContractsComponent extends AppComponentBase implements OnIn
                 this.contractsMainForm.noRemarks?.setValue(result.mainData?.noRemarks, {emitEvent: false});
 
                 // Client data
-                // this.contractClientForm.capOnTimeReporting?.setValue(this.findItemById(this.clientTimeReportingCap, result.clientData?.clientTimeReportingCapId), {emitEvent: false});
                 this.contractClientForm.directClientId?.setValue(result.clientData?.directClientId);
                 if (result?.clientData?.directClientId) {
                     this.getRatesAndFees(result?.clientData?.directClientId);
@@ -1169,7 +1187,7 @@ export class WorkflowContractsComponent extends AppComponentBase implements OnIn
     getStartChangeOrExtendConsultantPeriodContracts() {
         this.resetForms();
         this.showMainSpinner();
-        this._consultantPeriodService.consultantContractsGet(this.periodId!)
+        this._consultantPeriodService.consultantContractsGet(this.activeSideSection.consultantPeriodId!)
             .pipe(finalize(() => this.hideMainSpinner()))
             .subscribe(result => {
                 this.contractsMainForm.remarks?.setValue(result?.remarks, {emitEvent: false});
@@ -1273,7 +1291,7 @@ export class WorkflowContractsComponent extends AppComponentBase implements OnIn
         input.newLegalContractRequired = this.contractsSyncDataForm.newLegalContract?.value;
         this.showMainSpinner();
         if (isDraft) {
-            this._consultantPeriodService.consultantContractsPut(this.periodId!, input)
+            this._consultantPeriodService.consultantContractsPut(this.activeSideSection.consultantPeriodId!, input)
                 .pipe(finalize(() => this.hideMainSpinner()))
                 .subscribe(result => {
                     if (this.editEnabledForcefuly) {
@@ -1281,7 +1299,7 @@ export class WorkflowContractsComponent extends AppComponentBase implements OnIn
                     }
                 });
         } else {
-            this._consultantContractsService.editFinish(this.periodId!, input)
+            this._consultantContractsService.editFinish(this.activeSideSection.consultantPeriodId!, input)
                 .pipe(finalize(() => this.hideMainSpinner()))
                 .subscribe(result => {
                     this._workflowDataService.workflowSideSectionUpdated.emit({isStatusUpdate: true});
