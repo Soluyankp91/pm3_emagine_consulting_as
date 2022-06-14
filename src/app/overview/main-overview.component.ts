@@ -72,6 +72,7 @@ export class MainOverviewComponent extends AppComponentBase implements OnInit {
 
     viewType: FormControl = new FormControl(GanttViewType.month);
 
+    startDate = new Date();
     viewOptions: GanttViewOptions = {
         // min: new GanttDate(new Date(2022, 1, 1)),
         // max: new GanttDate(new Date(2022, 11, 31)),
@@ -81,7 +82,8 @@ export class MainOverviewComponent extends AppComponentBase implements OnInit {
             week: 'w',
             year: 'yyyy'
         },
-        cellWidth: 75
+        cellWidth: 75,
+        start: new GanttDate(getUnixTime(new Date(this.startDate.setMonth(this.startDate.getMonth() - 1))))
     }
 
     views = [
@@ -242,16 +244,18 @@ export class MainOverviewComponent extends AppComponentBase implements OnInit {
 
     changeViewType() {
         switch (this.viewType.value) {
-            case 'week':
+            case GanttViewType.week:
                 let cutOffDateWeek = new Date();
                 cutOffDateWeek.setDate(cutOffDateWeek.getDate() - 35);
                 this.viewOptions.cellWidth = 50;
+                // this.viewOptions.start = new GanttDate(getUnixTime(new Date(cutOffDateWeek)));
                 this.getMainOverview(cutOffDateWeek);
                 break;
-            case 'month':
+            case GanttViewType.month:
                 let cutOffDateMonth = new Date();
                 cutOffDateMonth.setMonth(cutOffDateMonth.getMonth() - 1)
                 this.viewOptions.cellWidth = 75;
+                // this.viewOptions.start = new GanttDate(getUnixTime(new Date(cutOffDateMonth)));
                 this.getMainOverview(cutOffDateMonth);
                 break;
         }
@@ -327,11 +331,21 @@ export class MainOverviewComponent extends AppComponentBase implements OnInit {
                                 return formattedData;
                             })
                             let oldestDateArray = this.workflowsData.reduce((r, o) => o.origin?.lastClientPeriodEndDate > r.origin?.lastClientPeriodEndDate ? o : r);
-                            this.ganttWorkflows.viewOptions.start = new GanttDate(getUnixTime(new Date(this.formatDate(date))));
-                            this.ganttWorkflows.viewOptions.min = new GanttDate(getUnixTime(new Date(this.formatDate(date))));
-                            this.ganttWorkflows.viewOptions.end = new GanttDate(getUnixTime(new Date(this.formatDate(oldestDateArray.origin.lastClientPeriodEndDate))));
-                            this.ganttWorkflows.viewOptions.max = new GanttDate(getUnixTime(new Date(this.formatDate(oldestDateArray.origin.lastClientPeriodEndDate))));
-                            this.ganttWorkflows.viewChange.emit();
+                            this.ganttWorkflows.view.options.start = new GanttDate(getUnixTime(new Date(date)));
+                            this.ganttWorkflows.viewOptions.start = new GanttDate(getUnixTime(new Date(date)));
+                            this.ganttWorkflows.view.options.end = new GanttDate(getUnixTime(new Date(oldestDateArray.origin.lastClientPeriodEndDate)));
+                            this.ganttWorkflows.view.end$.next(new GanttDate(getUnixTime(new Date(oldestDateArray.origin.lastClientPeriodEndDate))));
+                            this.ganttWorkflows.viewOptions.end = new GanttDate(getUnixTime(new Date(oldestDateArray.origin.lastClientPeriodEndDate)));
+
+                            this.ganttWorkflows.view.options.min = new GanttDate(getUnixTime(new Date(date)));
+                            this.ganttWorkflows.view.options.max = new GanttDate(getUnixTime(new Date(oldestDateArray.origin.lastClientPeriodEndDate)));
+
+                            this.ganttWorkflows.viewOptions.min = new GanttDate(getUnixTime(new Date(date)));
+                            this.ganttWorkflows.viewOptions.max = new GanttDate(getUnixTime(new Date(oldestDateArray.origin.lastClientPeriodEndDate)));
+                            // if endDate.getYear() ===
+                            // endDate = if (11 === (startdDate.getMonth() === 5) )
+                            // this.ganttWorkflows.viewChange.emit(this.ganttWorkflows.view);
+                            // this.ganttWorkflows.detectChanges();
                         }
                         this.totalCount = result.totalCount;
                     });
@@ -369,10 +383,10 @@ export class MainOverviewComponent extends AppComponentBase implements OnInit {
                                 return formattedData;
                             })
                             let oldestDateArray = this.consultantsData.reduce((r, o) => o.origin?.lastConsultantPeriodEndDate > r.origin?.lastConsultantPeriodEndDate ? o : r);
-                            this.ganttConsultants.viewOptions.start = new GanttDate(getUnixTime(new Date(this.formatDate(date))));
-                            this.ganttConsultants.viewOptions.min = new GanttDate(getUnixTime(new Date(this.formatDate(date))));
-                            this.ganttConsultants.viewOptions.end = new GanttDate(getUnixTime(new Date(this.formatDate(oldestDateArray.origin.lastConsultantPeriodEndDate))));
-                            this.ganttConsultants.viewOptions.max = new GanttDate(getUnixTime(new Date(this.formatDate(oldestDateArray.origin.lastConsultantPeriodEndDate))));
+                            // this.ganttConsultants.viewOptions.start = new GanttDate(getUnixTime(new Date(this.formatDate(date))));
+                            this.ganttConsultants.view.options.min = new GanttDate(getUnixTime(new Date(this.formatDate(date))));
+                            // this.ganttConsultants.viewOptions.end = new GanttDate(getUnixTime(new Date(this.formatDate(oldestDateArray.origin.lastConsultantPeriodEndDate))));
+                            this.ganttConsultants.view.options.max = new GanttDate(getUnixTime(new Date(this.formatDate(oldestDateArray.origin.lastConsultantPeriodEndDate))));
                             this.ganttConsultants.viewChange.emit();
                         }
                         this.totalCount = result.totalCount;
@@ -533,7 +547,6 @@ export class MainOverviewComponent extends AppComponentBase implements OnInit {
 
     clearAllFilters() {
         this.workflowFilter.setValue(null, {emitEvent: false});
-        // this.accountManagerFilter.setValue(null, {emitEvent: false});
         this.invoicingEntityControl.setValue(null, {emitEvent: false});
         this.paymentEntityControl.setValue(null, {emitEvent: false});
         this.salesTypeControl.setValue(null, {emitEvent: false});
