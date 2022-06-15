@@ -1157,7 +1157,7 @@
                             <div fxLayout="column" fxLayoutAlign="start start" class="u-mb--20">
                                 <span [ngClass]="{'workflow-gray--header': readOnlyMode, 'workflow-darkblue--text': !readOnlyMode}">Client legal contracts</span>
                                 <div fxlayout="row" fxLayoutAlign="start center" class="u-mb--10 u-mt--10">
-                                    <button class="button-accept u-mr--20" mat-flat-button [disabled]="!enableLegalContractsButtons || !contractsSyncDataForm.enableLegalContractsButtons?.value">
+                                    <button class="button-accept u-mr--20" (click)="openContractModule(contractsSyncDataForm.clientLegalContractDoneStatusId?.value, false, contractClientForm.pdcInvoicingEntityId?.value)" mat-flat-button [disabled]="!enableLegalContractsButtons && !contractsSyncDataForm.enableLegalContractsButtons?.value">
                                         Open contract module for client
                                     </button>
                                     <mat-checkbox *ngIf="activeSideSection.typeId === workflowSideSections.ChangeClientPeriod" color="accent" formControlName="newLegalContract" name="newLegalContract" class="black-checkbox u-mt--10">
@@ -1196,8 +1196,8 @@
                                         </div>
                                     </div>
                                     <div fxLayout="row" fxLayoutAlign="start center">
-                                        <mat-icon [ngClass]="{'icon-cancel': consultant.value?.internalLegalContractDoneStatusId === 0}" class="u-mr--5"
-                                            [svgIcon]="consultant.value?.internalLegalContractDoneStatusId === 10 ? 'completed-icon' :'cancel-fill'"></mat-icon>
+                                        <mat-icon [ngClass]="{'icon-cancel': consultant.value?.consultantLegalContractDoneStatusId === 0}" class="u-mr--5"
+                                            [svgIcon]="consultant.value?.consultantLegalContractDoneStatusId === 10 ? 'completed-icon' :'cancel-fill'"></mat-icon>
                                         <div fxLayout="column" fxLayoutAlign="start start">
                                             <span class="workflow-darkblue--text">Legal contract module for consultant</span>
                                             <span class="sync-hint-text">
@@ -1207,12 +1207,13 @@
                                     </div>
                                 </div>
                                 <div fxlayout="row" fxLayoutAlign="start center" class="u-mb--10" *ngIf="!readOnlyMode && (contractClientForm.pdcInvoicingEntityId?.value !== consultant?.value?.pdcPaymentEntityId)">
-                                    <button class="button-outlined  u-mr--20" mat-flat-button [disabled]="!enableLegalContractsButtons">
+                                    <button class="button-outlined  u-mr--20" mat-flat-button [disabled]="!enableLegalContractsButtons" (click)="openContractModule(consultant.value?.internalLegalContractDoneStatusId, true, consultant?.value?.pdcPaymentEntityId, consultant.value.consultant)">
                                         Open contract module for internal contract
                                     </button>
                                 </div>
                                 <div fxlayout="row" fxLayoutAlign="start center" class="u-mb--10" *ngIf="!readOnlyMode">
-                                    <button class="button-outlined  u-mr--20" mat-flat-button [disabled]="!enableLegalContractsButtons">
+                                    {{consultant?.value?.pdcPaymentEntityId}}
+                                    <button class="button-outlined  u-mr--20" mat-flat-button [disabled]="!enableLegalContractsButtons" (click)="openContractModule(consultant.value?.consultantLegalContractDoneStatusId, false, consultant?.value?.pdcPaymentEntityId, consultant.value.consultant)">
                                         Open contract module for consultant
                                     </button>
                                     <mat-checkbox *ngIf="activeSideSection.typeId === workflowSideSections.ChangeClientPeriod" color="accent" formControlName="newLegalContract" name="newLegalContract" class="black-checkbox u-mt--10">
