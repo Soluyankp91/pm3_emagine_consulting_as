@@ -14398,7 +14398,7 @@ export class ProjectLineDto implements IProjectLineDto {
     id?: number | undefined;
     projectName?: string | undefined;
     startDate?: moment.Moment;
-    endDate?: moment.Moment;
+    endDate?: moment.Moment | undefined;
     noEndDate?: boolean;
     differentInvoicingReferenceNumber?: boolean;
     invoicingReferenceNumber?: string | undefined;
@@ -14487,7 +14487,7 @@ export interface IProjectLineDto {
     id?: number | undefined;
     projectName?: string | undefined;
     startDate?: moment.Moment;
-    endDate?: moment.Moment;
+    endDate?: moment.Moment | undefined;
     noEndDate?: boolean;
     differentInvoicingReferenceNumber?: boolean;
     invoicingReferenceNumber?: string | undefined;

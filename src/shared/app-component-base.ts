@@ -122,14 +122,14 @@ export abstract class AppComponentBase {
 
     consultantProfileUrl(fileToken: string): string {
         if (!fileToken) {
-            return 'assets/common/images/no-img-uploaded.svg';
+            return 'assets/common/images//no-img.svg';
         }
-        return `${environment.blobStorageUrl}/api/Consultant/ProfilePicture/${fileToken}`;
+        return `${environment.sharedAssets}/ProfilePicture/${fileToken}.jpg`;
     }
 
     employeeProfileUrl(fileToken: string): string {
         if (!fileToken) {
-            return 'assets/common/images/no-img-uploaded.svg';
+            return 'assets/common/images//no-img.svg';
         }
         return environment.sharedAssets + `/EmployeePicture/${fileToken}.jpg`;
     }
