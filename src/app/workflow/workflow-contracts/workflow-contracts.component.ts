@@ -560,7 +560,8 @@ export class WorkflowContractsComponent extends AppComponentBase implements OnIn
             consultantId: new FormControl(consultant.consultantId),
             consultant: new FormControl(consultant.consultant),
             internalLegalContractDoneStatusId: new FormControl(consultant.internalLegalContractDoneStatusId),
-            consultantLegalContractDoneStatusId: new FormControl(consultant.consultantLegalContractDoneStatusId)
+            consultantLegalContractDoneStatusId: new FormControl(consultant.consultantLegalContractDoneStatusId),
+            pdcPaymentEntityId: new FormControl(consultant.pdcPaymentEntityId)
         });
         this.contractsSyncDataForm.consultants.push(form);
     }
@@ -1509,5 +1510,11 @@ export class WorkflowContractsComponent extends AppComponentBase implements OnIn
                 this.showManualOption = result.showManualOption!;
                 this.syncMessage = result.message!;
             });
+    }
+
+    
+    openContractModule(legalContractStatus: number, isInternal: boolean, tenantId: number, consultant?: ConsultantResultDto) {
+        let isFrameworkAgreement = false;
+        window.open(`pmpapercontractpm3:${this.periodId}/${isInternal ? 'True' : 'False'}/${legalContractStatus === 0 ? 'False' : 'True'}/${isFrameworkAgreement ? 'True' : 'False'}/${tenantId}${consultant?.id ? '/' + consultant.id : ''}`);
     }
 }

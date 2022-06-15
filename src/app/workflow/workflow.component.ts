@@ -313,10 +313,8 @@ export class WorkflowComponent extends AppComponentBase implements OnInit, OnDes
         let deliveryTypes = this.deliveryTypesControl.value ? this.deliveryTypesControl.value : undefined;
         let workflowStatus = this.workflowStatusControl.value ? this.workflowStatusControl.value : undefined;
         let ownerIds = this.selectedAccountManagers.map(x => +x.id);
-        let cutOffDate = undefined;
 
         this._apiService.workflow(
-            cutOffDate,
             invoicingEntity,
             paymentEntity,
             salesType,

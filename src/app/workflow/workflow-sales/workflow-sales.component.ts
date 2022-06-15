@@ -63,7 +63,7 @@ export class WorkflowSalesComponent extends AppComponentBase implements OnInit {
     clientSpecialFeeSpecifications: EnumEntityTypeDto[] = [];
     clientSpecialRateReportUnits: EnumEntityTypeDto[] = [];
     clientSpecialRateSpecifications: EnumEntityTypeDto[] = [];
-    contractExpirationNotificationDuration: EnumEntityTypeDto[] = [];
+    contractExpirationNotificationDuration: { [key: string]: string; };
     clientTimeReportingCap: EnumEntityTypeDto[] = [];
     commissionFrequencies: EnumEntityTypeDto[] = [];
     commissionTypes: EnumEntityTypeDto[] = [];
@@ -1443,11 +1443,7 @@ export class WorkflowSalesComponent extends AppComponentBase implements OnInit {
         input.salesMainData.discountId = this.salesMainDataForm.discounts?.value?.id;
         input.salesMainData.salesAccountManagerIdValue = this.salesMainDataForm.salesAccountManagerIdValue?.value?.id;
         input.salesMainData.commissionAccountManagerIdValue = this.salesMainDataForm.commissionAccountManagerIdValue?.value?.id;
-        if (this.salesMainDataForm.contractExpirationNotification?.value?.includes(999)) { // hardcoded ID for manual date
-            const index = this.salesMainDataForm.contractExpirationNotification?.value?.indexOf(999);
-            this.salesMainDataForm.contractExpirationNotification?.value?.splice(index, 1);
-        }
-        input.salesMainData.contractExpirationNotificationIntervalIds = this.salesMainDataForm.contractExpirationNotification?.value;
+        input.salesMainData.contractExpirationNotificationIntervalIds = this.salesMainDataForm.contractExpirationNotification?.value?.filter((x: number) => x !== 999);
         input.salesMainData.customContractExpirationNotificationDate = this.salesMainDataForm.customContractExpirationNotificationDate?.value;
 
         input.salesMainData.remarks = this.salesMainDataForm.remarks?.value;
@@ -2383,8 +2379,8 @@ export class WorkflowSalesComponent extends AppComponentBase implements OnInit {
     formatExpirationNotificationsForDisplay(data: number[] | undefined): string {
         let contractExpirationNotificationDisplay: any[] = [];
         if (data?.length) {
-            contractExpirationNotificationDisplay = data?.map(x => this.findItemById(this.contractExpirationNotificationDuration, x));
-            return contractExpirationNotificationDisplay?.length ? this.mapListByProperty(contractExpirationNotificationDisplay, 'name') : '-';
+            contractExpirationNotificationDisplay = data?.map(x => this.contractExpirationNotificationDuration[x]);
+            return contractExpirationNotificationDisplay?.length ? contractExpirationNotificationDisplay.join(', ') : '-';
         } else {
             return '-';
         }

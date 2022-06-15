@@ -2765,7 +2765,6 @@ export class ApiServiceProxy {
     }
 
     /**
-     * @param cutOffDate (optional) 
      * @param invoicingEntity (optional) 
      * @param paymentEntity (optional) 
      * @param salesType (optional) 
@@ -2784,12 +2783,8 @@ export class ApiServiceProxy {
      * @param sort (optional) 
      * @return Success
      */
-    workflow(cutOffDate?: moment.Moment | undefined, invoicingEntity?: number | undefined, paymentEntity?: number | undefined, salesType?: number | undefined, deliveryType?: number | undefined, workflowStatus?: number | undefined, responsibleEmployees?: number[] | undefined, showOnlyWorkflowsWithNewSales?: boolean | undefined, showOnlyWorkflowsWithExtensions?: boolean | undefined, showOnlyWorkflowsWithPendingStepsForSelectedEmployees?: boolean | undefined, showOnlyWorkflowsWithUpcomingStepsForSelectedEmployees?: boolean | undefined, includeTerminated?: boolean | undefined, includeDeleted?: boolean | undefined, search?: string | undefined, pageNumber?: number | undefined, pageSize?: number | undefined, sort?: string | undefined): Observable<WorkflowListItemDtoPaginatedList> {
+    workflow(invoicingEntity?: number | undefined, paymentEntity?: number | undefined, salesType?: number | undefined, deliveryType?: number | undefined, workflowStatus?: WorkflowStatus | undefined, responsibleEmployees?: number[] | undefined, showOnlyWorkflowsWithNewSales?: boolean | undefined, showOnlyWorkflowsWithExtensions?: boolean | undefined, showOnlyWorkflowsWithPendingStepsForSelectedEmployees?: boolean | undefined, showOnlyWorkflowsWithUpcomingStepsForSelectedEmployees?: boolean | undefined, includeTerminated?: boolean | undefined, includeDeleted?: boolean | undefined, search?: string | undefined, pageNumber?: number | undefined, pageSize?: number | undefined, sort?: string | undefined): Observable<WorkflowListItemDtoPaginatedList> {
         let url_ = this.baseUrl + "/api/Workflow?";
-        if (cutOffDate === null)
-            throw new Error("The parameter 'cutOffDate' cannot be null.");
-        else if (cutOffDate !== undefined)
-            url_ += "CutOffDate=" + encodeURIComponent(cutOffDate ? "" + cutOffDate.toISOString() : "") + "&";
         if (invoicingEntity === null)
             throw new Error("The parameter 'invoicingEntity' cannot be null.");
         else if (invoicingEntity !== undefined)
@@ -2898,6 +2893,74 @@ export class ApiServiceProxy {
             }));
         }
         return _observableOf<WorkflowListItemDtoPaginatedList>(null as any);
+    }
+
+    /**
+     * @param isInternalContract (optional) 
+     * @param pm3ConsultantId (optional) 
+     * @return Success
+     */
+    workflowIntegration(periodId: string, isInternalContract?: boolean | undefined, pm3ConsultantId?: number | undefined): Observable<WorkflowPeriodForLegacyContractDto> {
+        let url_ = this.baseUrl + "/api/WorkflowIntegration/{periodId}?";
+        if (periodId === undefined || periodId === null)
+            throw new Error("The parameter 'periodId' must be defined.");
+        url_ = url_.replace("{periodId}", encodeURIComponent("" + periodId));
+        if (isInternalContract === null)
+            throw new Error("The parameter 'isInternalContract' cannot be null.");
+        else if (isInternalContract !== undefined)
+            url_ += "isInternalContract=" + encodeURIComponent("" + isInternalContract) + "&";
+        if (pm3ConsultantId === null)
+            throw new Error("The parameter 'pm3ConsultantId' cannot be null.");
+        else if (pm3ConsultantId !== undefined)
+            url_ += "pm3ConsultantId=" + encodeURIComponent("" + pm3ConsultantId) + "&";
+        url_ = url_.replace(/[?&]$/, "");
+
+        let options_ : any = {
+            observe: "response",
+            responseType: "blob",
+            headers: new HttpHeaders({
+                "Accept": "text/plain"
+            })
+        };
+
+        return this.http.request("get", url_, options_).pipe(_observableMergeMap((response_ : any) => {
+            return this.processWorkflowIntegration(response_);
+        })).pipe(_observableCatch((response_: any) => {
+            if (response_ instanceof HttpResponseBase) {
+                try {
+                    return this.processWorkflowIntegration(response_ as any);
+                } catch (e) {
+                    return _observableThrow(e) as any as Observable<WorkflowPeriodForLegacyContractDto>;
+                }
+            } else
+                return _observableThrow(response_) as any as Observable<WorkflowPeriodForLegacyContractDto>;
+        }));
+    }
+
+    protected processWorkflowIntegration(response: HttpResponseBase): Observable<WorkflowPeriodForLegacyContractDto> {
+        const status = response.status;
+        const responseBlob =
+            response instanceof HttpResponse ? response.body :
+            (response as any).error instanceof Blob ? (response as any).error : undefined;
+
+        let _headers: any = {}; if (response.headers) { for (let key of response.headers.keys()) { _headers[key] = response.headers.get(key); }}
+        if (status === 200) {
+            return blobToText(responseBlob).pipe(_observableMergeMap(_responseText => {
+            let result200: any = null;
+            let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
+            result200 = WorkflowPeriodForLegacyContractDto.fromJS(resultData200);
+            return _observableOf(result200);
+            }));
+        } else if (status === 401) {
+            return blobToText(responseBlob).pipe(_observableMergeMap(_responseText => {
+            return throwException("Unauthorized", status, _responseText, _headers);
+            }));
+        } else if (status !== 200 && status !== 204) {
+            return blobToText(responseBlob).pipe(_observableMergeMap(_responseText => {
+            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+            }));
+        }
+        return _observableOf<WorkflowPeriodForLegacyContractDto>(null as any);
     }
 }
 
@@ -5861,7 +5924,7 @@ export class EnumServiceProxy {
     /**
      * @return Success
      */
-    contractExpirationNotificationInterval(): Observable<EnumEntityTypeDto[]> {
+    contractExpirationNotificationInterval(): Observable<{ [key: string]: string; }> {
         let url_ = this.baseUrl + "/api/Enum/contract-expiration-notification-interval";
         url_ = url_.replace(/[?&]$/, "");
 
@@ -5880,14 +5943,14 @@ export class EnumServiceProxy {
                 try {
                     return this.processContractExpirationNotificationInterval(response_ as any);
                 } catch (e) {
-                    return _observableThrow(e) as any as Observable<EnumEntityTypeDto[]>;
+                    return _observableThrow(e) as any as Observable<{ [key: string]: string; }>;
                 }
             } else
-                return _observableThrow(response_) as any as Observable<EnumEntityTypeDto[]>;
+                return _observableThrow(response_) as any as Observable<{ [key: string]: string; }>;
         }));
     }
 
-    protected processContractExpirationNotificationInterval(response: HttpResponseBase): Observable<EnumEntityTypeDto[]> {
+    protected processContractExpirationNotificationInterval(response: HttpResponseBase): Observable<{ [key: string]: string; }> {
         const status = response.status;
         const responseBlob =
             response instanceof HttpResponse ? response.body :
@@ -5898,10 +5961,12 @@ export class EnumServiceProxy {
             return blobToText(responseBlob).pipe(_observableMergeMap(_responseText => {
             let result200: any = null;
             let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
-            if (Array.isArray(resultData200)) {
-                result200 = [] as any;
-                for (let item of resultData200)
-                    result200!.push(EnumEntityTypeDto.fromJS(item));
+            if (resultData200) {
+                result200 = {} as any;
+                for (let key in resultData200) {
+                    if (resultData200.hasOwnProperty(key))
+                        (<any>result200)![key] = resultData200[key] !== undefined ? resultData200[key] : <any>null;
+                }
             }
             else {
                 result200 = <any>null;
@@ -5913,7 +5978,7 @@ export class EnumServiceProxy {
             return throwException("An unexpected server error occurred.", status, _responseText, _headers);
             }));
         }
-        return _observableOf<EnumEntityTypeDto[]>(null as any);
+        return _observableOf<{ [key: string]: string; }>(null as any);
     }
 
     /**
@@ -6352,6 +6417,66 @@ export class EnumServiceProxy {
     }
 
     protected processConsultantInsuranceOption(response: HttpResponseBase): Observable<{ [key: string]: string; }> {
+        const status = response.status;
+        const responseBlob =
+            response instanceof HttpResponse ? response.body :
+            (response as any).error instanceof Blob ? (response as any).error : undefined;
+
+        let _headers: any = {}; if (response.headers) { for (let key of response.headers.keys()) { _headers[key] = response.headers.get(key); }}
+        if (status === 200) {
+            return blobToText(responseBlob).pipe(_observableMergeMap(_responseText => {
+            let result200: any = null;
+            let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
+            if (resultData200) {
+                result200 = {} as any;
+                for (let key in resultData200) {
+                    if (resultData200.hasOwnProperty(key))
+                        (<any>result200)![key] = resultData200[key] !== undefined ? resultData200[key] : <any>null;
+                }
+            }
+            else {
+                result200 = <any>null;
+            }
+            return _observableOf(result200);
+            }));
+        } else if (status !== 200 && status !== 204) {
+            return blobToText(responseBlob).pipe(_observableMergeMap(_responseText => {
+            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+            }));
+        }
+        return _observableOf<{ [key: string]: string; }>(null as any);
+    }
+
+    /**
+     * @return Success
+     */
+    legalContractStatuses(): Observable<{ [key: string]: string; }> {
+        let url_ = this.baseUrl + "/api/Enum/legal-contract-statuses";
+        url_ = url_.replace(/[?&]$/, "");
+
+        let options_ : any = {
+            observe: "response",
+            responseType: "blob",
+            headers: new HttpHeaders({
+                "Accept": "text/plain"
+            })
+        };
+
+        return this.http.request("get", url_, options_).pipe(_observableMergeMap((response_ : any) => {
+            return this.processLegalContractStatuses(response_);
+        })).pipe(_observableCatch((response_: any) => {
+            if (response_ instanceof HttpResponseBase) {
+                try {
+                    return this.processLegalContractStatuses(response_ as any);
+                } catch (e) {
+                    return _observableThrow(e) as any as Observable<{ [key: string]: string; }>;
+                }
+            } else
+                return _observableThrow(response_) as any as Observable<{ [key: string]: string; }>;
+        }));
+    }
+
+    protected processLegalContractStatuses(response: HttpResponseBase): Observable<{ [key: string]: string; }> {
         const status = response.status;
         const responseBlob =
             response instanceof HttpResponse ? response.body :
@@ -10152,6 +10277,62 @@ export interface IChangeConsultantPeriodDto {
     newLegalContractRequired?: boolean;
 }
 
+export class ClientAddressDto implements IClientAddressDto {
+    address?: string | undefined;
+    address2?: string | undefined;
+    postCode?: string | undefined;
+    city?: string | undefined;
+    countryCode?: string | undefined;
+    countryName?: string | undefined;
+
+    constructor(data?: IClientAddressDto) {
+        if (data) {
+            for (var property in data) {
+                if (data.hasOwnProperty(property))
+                    (<any>this)[property] = (<any>data)[property];
+            }
+        }
+    }
+
+    init(_data?: any) {
+        if (_data) {
+            this.address = _data["address"];
+            this.address2 = _data["address2"];
+            this.postCode = _data["postCode"];
+            this.city = _data["city"];
+            this.countryCode = _data["countryCode"];
+            this.countryName = _data["countryName"];
+        }
+    }
+
+    static fromJS(data: any): ClientAddressDto {
+        data = typeof data === 'object' ? data : {};
+        let result = new ClientAddressDto();
+        result.init(data);
+        return result;
+    }
+
+    toJSON(data?: any) {
+        data = typeof data === 'object' ? data : {};
+        data["address"] = this.address;
+        data["address2"] = this.address2;
+        data["postCode"] = this.postCode;
+        data["city"] = this.city;
+        data["countryCode"] = this.countryCode;
+        data["countryName"] = this.countryName;
+        return data;
+    }
+}
+
+export interface IClientAddressDto {
+    address?: string | undefined;
+    address2?: string | undefined;
+    postCode?: string | undefined;
+    city?: string | undefined;
+    countryCode?: string | undefined;
+    countryName?: string | undefined;
+}
+
 export class ClientAttachmentInfoOutputDto implements IClientAttachmentInfoOutputDto {
     clientAttachmentGuid?: string;
     documentStorageGuid?: string;
@@ -11863,6 +12044,7 @@ export class ConsultantContractsDataDto implements IConsultantContractsDataDto {
     consultantTimeReportingCapCurrencyId?: number | undefined;
     noSpecialContractTerms?: boolean;
     specialContractTerms?: string | undefined;
+    consultantRate?: ConsultantRateDto;
     noSpecialRate?: boolean;
     periodConsultantSpecialRates?: PeriodConsultantSpecialRateDto[] | undefined;
     noSpecialFee?: boolean;
@@ -11896,6 +12078,7 @@ export class ConsultantContractsDataDto implements IConsultantContractsDataDto {
             this.consultantTimeReportingCapCurrencyId = _data["consultantTimeReportingCapCurrencyId"];
             this.noSpecialContractTerms = _data["noSpecialContractTerms"];
             this.specialContractTerms = _data["specialContractTerms"];
+            this.consultantRate = _data["consultantRate"] ? ConsultantRateDto.fromJS(_data["consultantRate"]) : <any>undefined;
             this.noSpecialRate = _data["noSpecialRate"];
             if (Array.isArray(_data["periodConsultantSpecialRates"])) {
                 this.periodConsultantSpecialRates = [] as any;
@@ -11941,6 +12124,7 @@ export class ConsultantContractsDataDto implements IConsultantContractsDataDto {
         data["consultantTimeReportingCapCurrencyId"] = this.consultantTimeReportingCapCurrencyId;
         data["noSpecialContractTerms"] = this.noSpecialContractTerms;
         data["specialContractTerms"] = this.specialContractTerms;
+        data["consultantRate"] = this.consultantRate ? this.consultantRate.toJSON() : <any>undefined;
         data["noSpecialRate"] = this.noSpecialRate;
         if (Array.isArray(this.periodConsultantSpecialRates)) {
             data["periodConsultantSpecialRates"] = [];
@@ -11979,6 +12163,7 @@ export interface IConsultantContractsDataDto {
     consultantTimeReportingCapCurrencyId?: number | undefined;
     noSpecialContractTerms?: boolean;
     specialContractTerms?: string | undefined;
+    consultantRate?: ConsultantRateDto;
     noSpecialRate?: boolean;
     periodConsultantSpecialRates?: PeriodConsultantSpecialRateDto[] | undefined;
     noSpecialFee?: boolean;
@@ -12338,8 +12523,9 @@ export class ConsultantSalesDataDto implements IConsultantSalesDataDto {
     consultantId?: number | undefined;
     consultant?: ConsultantResultDto;
     nameOnly?: string | undefined;
+    durationSameAsClientPeriod?: boolean;
     startDate?: moment.Moment | undefined;
-    noEndDate?: boolean;
+    noEndDate?: boolean | undefined;
     endDate?: moment.Moment | undefined;
     isOnsiteWorkplace?: boolean | undefined;
     onsiteClientId?: number | undefined;
@@ -12382,6 +12568,7 @@ export class ConsultantSalesDataDto implements IConsultantSalesDataDto {
             this.consultantId = _data["consultantId"];
             this.consultant = _data["consultant"] ? ConsultantResultDto.fromJS(_data["consultant"]) : <any>undefined;
             this.nameOnly = _data["nameOnly"];
+            this.durationSameAsClientPeriod = _data["durationSameAsClientPeriod"];
             this.startDate = _data["startDate"] ? moment(_data["startDate"].toString()) : <any>undefined;
             this.noEndDate = _data["noEndDate"];
             this.endDate = _data["endDate"] ? moment(_data["endDate"].toString()) : <any>undefined;
@@ -12434,6 +12621,7 @@ export class ConsultantSalesDataDto implements IConsultantSalesDataDto {
         data["consultantId"] = this.consultantId;
         data["consultant"] = this.consultant ? this.consultant.toJSON() : <any>undefined;
         data["nameOnly"] = this.nameOnly;
+        data["durationSameAsClientPeriod"] = this.durationSameAsClientPeriod;
         data["startDate"] = this.startDate ? this.startDate.format('YYYY-MM-DD') : <any>undefined;
         data["noEndDate"] = this.noEndDate;
         data["endDate"] = this.endDate ? this.endDate.format('YYYY-MM-DD') : <any>undefined;
@@ -12479,8 +12667,9 @@ export interface IConsultantSalesDataDto {
     consultantId?: number | undefined;
     consultant?: ConsultantResultDto;
     nameOnly?: string | undefined;
+    durationSameAsClientPeriod?: boolean;
     startDate?: moment.Moment | undefined;
-    noEndDate?: boolean;
+    noEndDate?: boolean | undefined;
     endDate?: moment.Moment | undefined;
     isOnsiteWorkplace?: boolean | undefined;
     onsiteClientId?: number | undefined;
@@ -12912,6 +13101,7 @@ export class ContactResultDto implements IContactResultDto {
     jobTitle?: string | undefined;
     mobilePhone?: string | undefined;
     phone?: string | undefined;
+    email?: string | undefined;
 
     constructor(data?: IContactResultDto) {
         if (data) {
@@ -12931,6 +13121,7 @@ export class ContactResultDto implements IContactResultDto {
             this.jobTitle = _data["jobTitle"];
             this.mobilePhone = _data["mobilePhone"];
             this.phone = _data["phone"];
+            this.email = _data["email"];
         }
     }
 
@@ -12950,6 +13141,7 @@ export class ContactResultDto implements IContactResultDto {
         data["jobTitle"] = this.jobTitle;
         data["mobilePhone"] = this.mobilePhone;
         data["phone"] = this.phone;
+        data["email"] = this.email;
         return data;
     }
 }
@@ -12962,6 +13154,7 @@ export interface IContactResultDto {
     jobTitle?: string | undefined;
     mobilePhone?: string | undefined;
     phone?: string | undefined;
+    email?: string | undefined;
 }
 
 export class ContractDocumentInfoDto implements IContractDocumentInfoDto {
@@ -13008,6 +13201,17 @@ export interface IContractDocumentInfoDto {
     type?: DocumentTypeEnum;
 }
 
+export enum ContractExpirationNotificationInterval {
+    OneWeekBefore = 1,
+    TwoWeeksBefore = 2,
+    ThreeWeeksBefore = 3,
+    FourWeeksBefore = 4,
+    FiveWeeksBefore = 5,
+    SixWeeksBefore = 6,
+    OneMonthBefore = 7,
+    TwoMonthsBefore = 8,
+}
+
 export enum ContractPaperStatusColorEnum {
     Grey = 0,
     Green = 1,
@@ -13022,6 +13226,7 @@ export class ContractsClientDataDto implements IContractsClientDataDto {
     clientTimeReportingCapId?: number | undefined;
     clientTimeReportingCapMaxValue?: number | undefined;
     clientTimeReportingCapCurrencyId?: number | undefined;
+    clientRate?: ClientRateDto;
     noSpecialRate?: boolean;
     periodClientSpecialRates?: PeriodClientSpecialRateDto[] | undefined;
     noSpecialFee?: boolean;
@@ -13045,6 +13250,7 @@ export class ContractsClientDataDto implements IContractsClientDataDto {
             this.clientTimeReportingCapId = _data["clientTimeReportingCapId"];
             this.clientTimeReportingCapMaxValue = _data["clientTimeReportingCapMaxValue"];
             this.clientTimeReportingCapCurrencyId = _data["clientTimeReportingCapCurrencyId"];
+            this.clientRate = _data["clientRate"] ? ClientRateDto.fromJS(_data["clientRate"]) : <any>undefined;
             this.noSpecialRate = _data["noSpecialRate"];
             if (Array.isArray(_data["periodClientSpecialRates"])) {
                 this.periodClientSpecialRates = [] as any;
@@ -13076,6 +13282,7 @@ export class ContractsClientDataDto implements IContractsClientDataDto {
         data["clientTimeReportingCapId"] = this.clientTimeReportingCapId;
         data["clientTimeReportingCapMaxValue"] = this.clientTimeReportingCapMaxValue;
         data["clientTimeReportingCapCurrencyId"] = this.clientTimeReportingCapCurrencyId;
+        data["clientRate"] = this.clientRate ? this.clientRate.toJSON() : <any>undefined;
         data["noSpecialRate"] = this.noSpecialRate;
         if (Array.isArray(this.periodClientSpecialRates)) {
             data["periodClientSpecialRates"] = [];
@@ -13100,6 +13307,7 @@ export interface IContractsClientDataDto {
     clientTimeReportingCapId?: number | undefined;
     clientTimeReportingCapMaxValue?: number | undefined;
     clientTimeReportingCapCurrencyId?: number | undefined;
+    clientRate?: ClientRateDto;
     noSpecialRate?: boolean;
     periodClientSpecialRates?: PeriodClientSpecialRateDto[] | undefined;
     noSpecialFee?: boolean;
@@ -13316,6 +13524,66 @@ export interface IDomainEventBase {
     dateOccurredUtc?: moment.Moment;
 }
 
+export class EmagineOfficeDto implements IEmagineOfficeDto {
+    id?: number;
+    name?: string | undefined;
+    tenantId?: number;
+    address?: string | undefined;
+    postCode?: string | undefined;
+    city?: string | undefined;
+    countryName?: string | undefined;
+
+    constructor(data?: IEmagineOfficeDto) {
+        if (data) {
+            for (var property in data) {
+                if (data.hasOwnProperty(property))
+                    (<any>this)[property] = (<any>data)[property];
+            }
+        }
+    }
+
+    init(_data?: any) {
+        if (_data) {
+            this.id = _data["id"];
+            this.name = _data["name"];
+            this.tenantId = _data["tenantId"];
+            this.address = _data["address"];
+            this.postCode = _data["postCode"];
+            this.city = _data["city"];
+            this.countryName = _data["countryName"];
+        }
+    }
+
+    static fromJS(data: any): EmagineOfficeDto {
+        data = typeof data === 'object' ? data : {};
+        let result = new EmagineOfficeDto();
+        result.init(data);
+        return result;
+    }
+
+    toJSON(data?: any) {
+        data = typeof data === 'object' ? data : {};
+        data["id"] = this.id;
+        data["name"] = this.name;
+        data["tenantId"] = this.tenantId;
+        data["address"] = this.address;
+        data["postCode"] = this.postCode;
+        data["city"] = this.city;
+        data["countryName"] = this.countryName;
+        return data;
+    }
+}
+
+export interface IEmagineOfficeDto {
+    id?: number;
+    name?: string | undefined;
+    tenantId?: number;
+    address?: string | undefined;
+    postCode?: string | undefined;
+    city?: string | undefined;
+    countryName?: string | undefined;
+}
+
 export class EmployeeDto implements IEmployeeDto {
     id?: number;
     externalId?: string;
@@ -13452,6 +13720,58 @@ export interface IEmployeeTenantNotificationItem {
     enabled?: boolean;
 }
 
+export class EmploymentType implements IEmploymentType {
+    readonly domainEvents?: DomainEventBase[] | undefined;
+    readonly id?: number;
+    readonly name?: string | undefined;
+
+    constructor(data?: IEmploymentType) {
+        if (data) {
+            for (var property in data) {
+                if (data.hasOwnProperty(property))
+                    (<any>this)[property] = (<any>data)[property];
+            }
+        }
+    }
+
+    init(_data?: any) {
+        if (_data) {
+            if (Array.isArray(_data["domainEvents"])) {
+                (<any>this).domainEvents = [] as any;
+                for (let item of _data["domainEvents"])
+                    (<any>this).domainEvents!.push(DomainEventBase.fromJS(item));
+            }
+            (<any>this).id = _data["id"];
+            (<any>this).name = _data["name"];
+        }
+    }
+
+    static fromJS(data: any): EmploymentType {
+        data = typeof data === 'object' ? data : {};
+        let result = new EmploymentType();
+        result.init(data);
+        return result;
+    }
+
+    toJSON(data?: any) {
+        data = typeof data === 'object' ? data : {};
+        if (Array.isArray(this.domainEvents)) {
+            data["domainEvents"] = [];
+            for (let item of this.domainEvents)
+                data["domainEvents"].push(item.toJSON());
+        }
+        data["id"] = this.id;
+        data["name"] = this.name;
+        return data;
+    }
+}
+
+export interface IEmploymentType {
+    domainEvents?: DomainEventBase[] | undefined;
+    id?: number;
+    name?: string | undefined;
+}
+
 export class EnumEntityTypeDto implements IEnumEntityTypeDto {
     id?: number;
     name?: string | undefined;
@@ -13488,6 +13808,98 @@ export class EnumEntityTypeDto implements IEnumEntityTypeDto {
 }
 
 export interface IEnumEntityTypeDto {
+    id?: number;
+    name?: string | undefined;
+}
+
+export class ExpectedWorkload implements IExpectedWorkload {
+    hours?: number;
+    expectedWorkloadUnit?: ExpectedWorkloadUnit;
+
+    constructor(data?: IExpectedWorkload) {
+        if (data) {
+            for (var property in data) {
+                if (data.hasOwnProperty(property))
+                    (<any>this)[property] = (<any>data)[property];
+            }
+        }
+    }
+
+    init(_data?: any) {
+        if (_data) {
+            this.hours = _data["hours"];
+            this.expectedWorkloadUnit = _data["expectedWorkloadUnit"] ? ExpectedWorkloadUnit.fromJS(_data["expectedWorkloadUnit"]) : <any>undefined;
+        }
+    }
+
+    static fromJS(data: any): ExpectedWorkload {
+        data = typeof data === 'object' ? data : {};
+        let result = new ExpectedWorkload();
+        result.init(data);
+        return result;
+    }
+
+    toJSON(data?: any) {
+        data = typeof data === 'object' ? data : {};
+        data["hours"] = this.hours;
+        data["expectedWorkloadUnit"] = this.expectedWorkloadUnit ? this.expectedWorkloadUnit.toJSON() : <any>undefined;
+        return data;
+    }
+}
+
+export interface IExpectedWorkload {
+    hours?: number;
+    expectedWorkloadUnit?: ExpectedWorkloadUnit;
+}
+
+export class ExpectedWorkloadUnit implements IExpectedWorkloadUnit {
+    readonly domainEvents?: DomainEventBase[] | undefined;
+    readonly id?: number;
+    readonly name?: string | undefined;
+
+    constructor(data?: IExpectedWorkloadUnit) {
+        if (data) {
+            for (var property in data) {
+                if (data.hasOwnProperty(property))
+                    (<any>this)[property] = (<any>data)[property];
+            }
+        }
+    }
+
+    init(_data?: any) {
+        if (_data) {
+            if (Array.isArray(_data["domainEvents"])) {
+                (<any>this).domainEvents = [] as any;
+                for (let item of _data["domainEvents"])
+                    (<any>this).domainEvents!.push(DomainEventBase.fromJS(item));
+            }
+            (<any>this).id = _data["id"];
+            (<any>this).name = _data["name"];
+        }
+    }
+
+    static fromJS(data: any): ExpectedWorkloadUnit {
+        data = typeof data === 'object' ? data : {};
+        let result = new ExpectedWorkloadUnit();
+        result.init(data);
+        return result;
+    }
+
+    toJSON(data?: any) {
+        data = typeof data === 'object' ? data : {};
+        if (Array.isArray(this.domainEvents)) {
+            data["domainEvents"] = [];
+            for (let item of this.domainEvents)
+                data["domainEvents"].push(item.toJSON());
+        }
+        data["id"] = this.id;
+        data["name"] = this.name;
+        return data;
+    }
+}
+
+export interface IExpectedWorkloadUnit {
+    domainEvents?: DomainEventBase[] | undefined;
     id?: number;
     name?: string | undefined;
 }
@@ -13630,6 +14042,58 @@ export class IdNameDto implements IIdNameDto {
 export interface IIdNameDto {
     id?: number;
     name?: string | undefined;
+}
+
+export class LegacyClientDto implements ILegacyClientDto {
+    legacyClientId?: number | undefined;
+    clientTenantId?: number | undefined;
+    name?: string | undefined;
+    ownerInitials?: string | undefined;
+    clientAddress?: ClientAddressDto;
+
+    constructor(data?: ILegacyClientDto) {
+        if (data) {
+            for (var property in data) {
+                if (data.hasOwnProperty(property))
+                    (<any>this)[property] = (<any>data)[property];
+            }
+        }
+    }
+
+    init(_data?: any) {
+        if (_data) {
+            this.legacyClientId = _data["legacyClientId"];
+            this.clientTenantId = _data["clientTenantId"];
+            this.name = _data["name"];
+            this.ownerInitials = _data["ownerInitials"];
+            this.clientAddress = _data["clientAddress"] ? ClientAddressDto.fromJS(_data["clientAddress"]) : <any>undefined;
+        }
+    }
+
+    static fromJS(data: any): LegacyClientDto {
+        data = typeof data === 'object' ? data : {};
+        let result = new LegacyClientDto();
+        result.init(data);
+        return result;
+    }
+
+    toJSON(data?: any) {
+        data = typeof data === 'object' ? data : {};
+        data["legacyClientId"] = this.legacyClientId;
+        data["clientTenantId"] = this.clientTenantId;
+        data["name"] = this.name;
+        data["ownerInitials"] = this.ownerInitials;
+        data["clientAddress"] = this.clientAddress ? this.clientAddress.toJSON() : <any>undefined;
+        return data;
+    }
+}
+
+export interface ILegacyClientDto {
+    legacyClientId?: number | undefined;
+    clientTenantId?: number | undefined;
+    name?: string | undefined;
+    ownerInitials?: string | undefined;
+    clientAddress?: ClientAddressDto;
 }
 
 export class LegacyContactId implements ILegacyContactId {
@@ -14394,6 +14858,62 @@ export interface IPeriodConsultantSpecialRateDto {
     consultantRateCurrencyId?: number | undefined;
 }
 
+export class Pm3EmployeeDto implements IPm3EmployeeDto {
+    id?: number;
+    externalId?: string;
+    name?: string | undefined;
+    primaryPhoneNumber?: string | undefined;
+    emailAddress?: string | undefined;
+    lowerCaseInitials?: string | undefined;
+
+    constructor(data?: IPm3EmployeeDto) {
+        if (data) {
+            for (var property in data) {
+                if (data.hasOwnProperty(property))
+                    (<any>this)[property] = (<any>data)[property];
+            }
+        }
+    }
+
+    init(_data?: any) {
+        if (_data) {
+            this.id = _data["id"];
+            this.externalId = _data["externalId"];
+            this.name = _data["name"];
+            this.primaryPhoneNumber = _data["primaryPhoneNumber"];
+            this.emailAddress = _data["emailAddress"];
+            this.lowerCaseInitials = _data["lowerCaseInitials"];
+        }
+    }
+
+    static fromJS(data: any): Pm3EmployeeDto {
+        data = typeof data === 'object' ? data : {};
+        let result = new Pm3EmployeeDto();
+        result.init(data);
+        return result;
+    }
+
+    toJSON(data?: any) {
+        data = typeof data === 'object' ? data : {};
+        data["id"] = this.id;
+        data["externalId"] = this.externalId;
+        data["name"] = this.name;
+        data["primaryPhoneNumber"] = this.primaryPhoneNumber;
+        data["emailAddress"] = this.emailAddress;
+        data["lowerCaseInitials"] = this.lowerCaseInitials;
+        return data;
+    }
+}
+
+export interface IPm3EmployeeDto {
+    id?: number;
+    externalId?: string;
+    name?: string | undefined;
+    primaryPhoneNumber?: string | undefined;
+    emailAddress?: string | undefined;
+    lowerCaseInitials?: string | undefined;
+}
+
 export class ProjectLineDto implements IProjectLineDto {
     id?: number | undefined;
     projectName?: string | undefined;
@@ -14548,6 +15068,46 @@ export interface IProjectTypeConfigurationDto {
     salesTypeId?: number;
     deliveryTypeId?: number;
     marginId?: number;
+}
+
+export class ProjectTypeDto implements IProjectTypeDto {
+    id?: number;
+    name?: string | undefined;
+
+    constructor(data?: IProjectTypeDto) {
+        if (data) {
+            for (var property in data) {
+                if (data.hasOwnProperty(property))
+                    (<any>this)[property] = (<any>data)[property];
+            }
+        }
+    }
+
+    init(_data?: any) {
+        if (_data) {
+            this.id = _data["id"];
+            this.name = _data["name"];
+        }
+    }
+
+    static fromJS(data: any): ProjectTypeDto {
+        data = typeof data === 'object' ? data : {};
+        let result = new ProjectTypeDto();
+        result.init(data);
+        return result;
+    }
+
+    toJSON(data?: any) {
+        data = typeof data === 'object' ? data : {};
+        data["id"] = this.id;
+        data["name"] = this.name;
+        return data;
+    }
+}
+
+export interface IProjectTypeDto {
+    id?: number;
+    name?: string | undefined;
 }
 
 export enum RequestProjectTypeValue {
@@ -14851,7 +15411,7 @@ export class SalesMainDataDto implements ISalesMainDataDto {
     salesAccountManagerData?: EmployeeDto;
     commissionAccountManagerIdValue?: number | undefined;
     commissionAccountManagerData?: EmployeeDto;
-    contractExpirationNotificationIntervalIds?: number[] | undefined;
+    contractExpirationNotificationIntervalIds?: ContractExpirationNotificationInterval[] | undefined;
     customContractExpirationNotificationDate?: moment.Moment | undefined;
     remarks?: string | undefined;
     noRemarks?: boolean | undefined;
@@ -14944,7 +15504,7 @@ export interface ISalesMainDataDto {
     salesAccountManagerData?: EmployeeDto;
     commissionAccountManagerIdValue?: number | undefined;
     commissionAccountManagerData?: EmployeeDto;
-    contractExpirationNotificationIntervalIds?: number[] | undefined;
+    contractExpirationNotificationIntervalIds?: ContractExpirationNotificationInterval[] | undefined;
     customContractExpirationNotificationDate?: moment.Moment | undefined;
     remarks?: string | undefined;
     noRemarks?: boolean | undefined;
@@ -16011,6 +16571,158 @@ export interface IWorkflowListItemDtoPaginatedList {
     hasNextPage?: boolean;
 }
 
+export class WorkflowPeriodForLegacyContractDto implements IWorkflowPeriodForLegacyContractDto {
+    workflowId?: string;
+    client?: LegacyClientDto;
+    endClient?: LegacyClientDto;
+    clientInvoicingRecipient?: LegacyClientDto;
+    legacyConsultantId?: number | undefined;
+    consultantTenantId?: number | undefined;
+    isFirstPeriod?: boolean;
+    isClientPeriod?: boolean;
+    firstWorkflowPeriodStartDate?: moment.Moment | undefined;
+    periodStartDate?: moment.Moment | undefined;
+    periodEndDate?: moment.Moment | undefined;
+    clientRateDto?: ClientRateDto;
+    consultantRateDto?: ConsultantRateDto;
+    noClientExtensionOption?: boolean;
+    clientExtensionSpecificDate?: moment.Moment | undefined;
+    clientExtensionDeadlineName?: string | undefined;
+    clientExtensionDurationName?: string | undefined;
+    clientSpecialContractTerms?: string | undefined;
+    consultantSpecialContractTerms?: string | undefined;
+    clientProjectDescription?: string | undefined;
+    consultantProjectDescription?: string | undefined;
+    contractSigners?: ContractSignerDto[] | undefined;
+    projectType?: ProjectTypeDto;
+    employmentType?: EmploymentType;
+    expectedWorkload?: ExpectedWorkload;
+    workplace?: WorkplaceDto;
+    salesManager?: Pm3EmployeeDto;
+    invoicingReferenceContactDto?: ContactResultDto;
+
+    constructor(data?: IWorkflowPeriodForLegacyContractDto) {
+        if (data) {
+            for (var property in data) {
+                if (data.hasOwnProperty(property))
+                    (<any>this)[property] = (<any>data)[property];
+            }
+        }
+    }
+
+    init(_data?: any) {
+        if (_data) {
+            this.workflowId = _data["workflowId"];
+            this.client = _data["client"] ? LegacyClientDto.fromJS(_data["client"]) : <any>undefined;
+            this.endClient = _data["endClient"] ? LegacyClientDto.fromJS(_data["endClient"]) : <any>undefined;
+            this.clientInvoicingRecipient = _data["clientInvoicingRecipient"] ? LegacyClientDto.fromJS(_data["clientInvoicingRecipient"]) : <any>undefined;
+            this.legacyConsultantId = _data["legacyConsultantId"];
+            this.consultantTenantId = _data["consultantTenantId"];
+            this.isFirstPeriod = _data["isFirstPeriod"];
+            this.isClientPeriod = _data["isClientPeriod"];
+            this.firstWorkflowPeriodStartDate = _data["firstWorkflowPeriodStartDate"] ? moment(_data["firstWorkflowPeriodStartDate"].toString()) : <any>undefined;
+            this.periodStartDate = _data["periodStartDate"] ? moment(_data["periodStartDate"].toString()) : <any>undefined;
+            this.periodEndDate = _data["periodEndDate"] ? moment(_data["periodEndDate"].toString()) : <any>undefined;
+            this.clientRateDto = _data["clientRateDto"] ? ClientRateDto.fromJS(_data["clientRateDto"]) : <any>undefined;
+            this.consultantRateDto = _data["consultantRateDto"] ? ConsultantRateDto.fromJS(_data["consultantRateDto"]) : <any>undefined;
+            this.noClientExtensionOption = _data["noClientExtensionOption"];
+            this.clientExtensionSpecificDate = _data["clientExtensionSpecificDate"] ? moment(_data["clientExtensionSpecificDate"].toString()) : <any>undefined;
+            this.clientExtensionDeadlineName = _data["clientExtensionDeadlineName"];
+            this.clientExtensionDurationName = _data["clientExtensionDurationName"];
+            this.clientSpecialContractTerms = _data["clientSpecialContractTerms"];
+            this.consultantSpecialContractTerms = _data["consultantSpecialContractTerms"];
+            this.clientProjectDescription = _data["clientProjectDescription"];
+            this.consultantProjectDescription = _data["consultantProjectDescription"];
+            if (Array.isArray(_data["contractSigners"])) {
+                this.contractSigners = [] as any;
+                for (let item of _data["contractSigners"])
+                    this.contractSigners!.push(ContractSignerDto.fromJS(item));
+            }
+            this.projectType = _data["projectType"] ? ProjectTypeDto.fromJS(_data["projectType"]) : <any>undefined;
+            this.employmentType = _data["employmentType"] ? EmploymentType.fromJS(_data["employmentType"]) : <any>undefined;
+            this.expectedWorkload = _data["expectedWorkload"] ? ExpectedWorkload.fromJS(_data["expectedWorkload"]) : <any>undefined;
+            this.workplace = _data["workplace"] ? WorkplaceDto.fromJS(_data["workplace"]) : <any>undefined;
+            this.salesManager = _data["salesManager"] ? Pm3EmployeeDto.fromJS(_data["salesManager"]) : <any>undefined;
+            this.invoicingReferenceContactDto = _data["invoicingReferenceContactDto"] ? ContactResultDto.fromJS(_data["invoicingReferenceContactDto"]) : <any>undefined;
+        }
+    }
+
+    static fromJS(data: any): WorkflowPeriodForLegacyContractDto {
+        data = typeof data === 'object' ? data : {};
+        let result = new WorkflowPeriodForLegacyContractDto();
+        result.init(data);
+        return result;
+    }
+
+    toJSON(data?: any) {
+        data = typeof data === 'object' ? data : {};
+        data["workflowId"] = this.workflowId;
+        data["client"] = this.client ? this.client.toJSON() : <any>undefined;
+        data["endClient"] = this.endClient ? this.endClient.toJSON() : <any>undefined;
+        data["clientInvoicingRecipient"] = this.clientInvoicingRecipient ? this.clientInvoicingRecipient.toJSON() : <any>undefined;
+        data["legacyConsultantId"] = this.legacyConsultantId;
+        data["consultantTenantId"] = this.consultantTenantId;
+        data["isFirstPeriod"] = this.isFirstPeriod;
+        data["isClientPeriod"] = this.isClientPeriod;
+        data["firstWorkflowPeriodStartDate"] = this.firstWorkflowPeriodStartDate ? this.firstWorkflowPeriodStartDate.format('YYYY-MM-DD') : <any>undefined;
+        data["periodStartDate"] = this.periodStartDate ? this.periodStartDate.format('YYYY-MM-DD') : <any>undefined;
+        data["periodEndDate"] = this.periodEndDate ? this.periodEndDate.format('YYYY-MM-DD') : <any>undefined;
+        data["clientRateDto"] = this.clientRateDto ? this.clientRateDto.toJSON() : <any>undefined;
+        data["consultantRateDto"] = this.consultantRateDto ? this.consultantRateDto.toJSON() : <any>undefined;
+        data["noClientExtensionOption"] = this.noClientExtensionOption;
+        data["clientExtensionSpecificDate"] = this.clientExtensionSpecificDate ? this.clientExtensionSpecificDate.toISOString() : <any>undefined;
+        data["clientExtensionDeadlineName"] = this.clientExtensionDeadlineName;
+        data["clientExtensionDurationName"] = this.clientExtensionDurationName;
+        data["clientSpecialContractTerms"] = this.clientSpecialContractTerms;
+        data["consultantSpecialContractTerms"] = this.consultantSpecialContractTerms;
+        data["clientProjectDescription"] = this.clientProjectDescription;
+        data["consultantProjectDescription"] = this.consultantProjectDescription;
+        if (Array.isArray(this.contractSigners)) {
+            data["contractSigners"] = [];
+            for (let item of this.contractSigners)
+                data["contractSigners"].push(item.toJSON());
+        }
+        data["projectType"] = this.projectType ? this.projectType.toJSON() : <any>undefined;
+        data["employmentType"] = this.employmentType ? this.employmentType.toJSON() : <any>undefined;
+        data["expectedWorkload"] = this.expectedWorkload ? this.expectedWorkload.toJSON() : <any>undefined;
+        data["workplace"] = this.workplace ? this.workplace.toJSON() : <any>undefined;
+        data["salesManager"] = this.salesManager ? this.salesManager.toJSON() : <any>undefined;
+        data["invoicingReferenceContactDto"] = this.invoicingReferenceContactDto ? this.invoicingReferenceContactDto.toJSON() : <any>undefined;
+        return data;
+    }
+}
+
+export interface IWorkflowPeriodForLegacyContractDto {
+    workflowId?: string;
+    client?: LegacyClientDto;
+    endClient?: LegacyClientDto;
+    clientInvoicingRecipient?: LegacyClientDto;
+    legacyConsultantId?: number | undefined;
+    consultantTenantId?: number | undefined;
+    isFirstPeriod?: boolean;
+    isClientPeriod?: boolean;
+    firstWorkflowPeriodStartDate?: moment.Moment | undefined;
+    periodStartDate?: moment.Moment | undefined;
+    periodEndDate?: moment.Moment | undefined;
+    clientRateDto?: ClientRateDto;
+    consultantRateDto?: ConsultantRateDto;
+    noClientExtensionOption?: boolean;
+    clientExtensionSpecificDate?: moment.Moment | undefined;
+    clientExtensionDeadlineName?: string | undefined;
+    clientExtensionDurationName?: string | undefined;
+    clientSpecialContractTerms?: string | undefined;
+    consultantSpecialContractTerms?: string | undefined;
+    clientProjectDescription?: string | undefined;
+    consultantProjectDescription?: string | undefined;
+    contractSigners?: ContractSignerDto[] | undefined;
+    projectType?: ProjectTypeDto;
+    employmentType?: EmploymentType;
+    expectedWorkload?: ExpectedWorkload;
+    workplace?: WorkplaceDto;
+    salesManager?: Pm3EmployeeDto;
+    invoicingReferenceContactDto?: ContactResultDto;
+}
+
 export class WorkflowProcessDto implements IWorkflowProcessDto {
     typeId?: WorkflowProcessType;
     readonly name?: string | undefined;
@@ -16101,8 +16813,9 @@ export enum WorkflowStatus {
 }
 
 export class WorkflowStatusWithEmployeeDto implements IWorkflowStatusWithEmployeeDto {
-    workflowStatus?: WorkflowStatus;
+    status?: WorkflowStatus;
     responsibleEmployee?: EmployeeDto;
+    processType?: WorkflowProcessType;
 
     constructor(data?: IWorkflowStatusWithEmployeeDto) {
         if (data) {
@@ -16115,8 +16828,9 @@ export class WorkflowStatusWithEmployeeDto implements IWorkflowStatusWithEmploye
 
     init(_data?: any) {
         if (_data) {
-            this.workflowStatus = _data["workflowStatus"];
+            this.status = _data["status"];
             this.responsibleEmployee = _data["responsibleEmployee"] ? EmployeeDto.fromJS(_data["responsibleEmployee"]) : <any>undefined;
+            this.processType = _data["processType"];
         }
     }
 
@@ -16129,15 +16843,17 @@ export class WorkflowStatusWithEmployeeDto implements IWorkflowStatusWithEmploye
 
     toJSON(data?: any) {
         data = typeof data === 'object' ? data : {};
-        data["workflowStatus"] = this.workflowStatus;
+        data["status"] = this.status;
         data["responsibleEmployee"] = this.responsibleEmployee ? this.responsibleEmployee.toJSON() : <any>undefined;
+        data["processType"] = this.processType;
         return data;
     }
 }
 
 export interface IWorkflowStatusWithEmployeeDto {
-    workflowStatus?: WorkflowStatus;
+    status?: WorkflowStatus;
     responsibleEmployee?: EmployeeDto;
+    processType?: WorkflowProcessType;
 }
 
 export enum WorkflowStepStatus {
@@ -16460,6 +17176,70 @@ export class WorkflowTerminationSourcingDataQueryDto implements IWorkflowTermina
 
 export interface IWorkflowTerminationSourcingDataQueryDto {
     consultantTerminationSourcingData?: ConsultantTerminationSourcingDataQueryDto[] | undefined;
+}
+
+export class WorkplaceDto implements IWorkplaceDto {
+    isOnsite?: boolean;
+    percentageOnSite?: number | undefined;
+    onSiteClientAddress?: ClientAddressDto;
+    onSiteClientName?: string | undefined;
+    isRemote?: boolean;
+    remoteCountryName?: string | undefined;
+    isEmagineOffice?: boolean;
+    emagineOffice?: EmagineOfficeDto;
+
+    constructor(data?: IWorkplaceDto) {
+        if (data) {
+            for (var property in data) {
+                if (data.hasOwnProperty(property))
+                    (<any>this)[property] = (<any>data)[property];
+            }
+        }
+    }
+
+    init(_data?: any) {
+        if (_data) {
+            this.isOnsite = _data["isOnsite"];
+            this.percentageOnSite = _data["percentageOnSite"];
+            this.onSiteClientAddress = _data["onSiteClientAddress"] ? ClientAddressDto.fromJS(_data["onSiteClientAddress"]) : <any>undefined;
+            this.onSiteClientName = _data["onSiteClientName"];
+            this.isRemote = _data["isRemote"];
+            this.remoteCountryName = _data["remoteCountryName"];
+            this.isEmagineOffice = _data["isEmagineOffice"];
+            this.emagineOffice = _data["emagineOffice"] ? EmagineOfficeDto.fromJS(_data["emagineOffice"]) : <any>undefined;
+        }
+    }
+
+    static fromJS(data: any): WorkplaceDto {
+        data = typeof data === 'object' ? data : {};
+        let result = new WorkplaceDto();
+        result.init(data);
+        return result;
+    }
+
+    toJSON(data?: any) {
+        data = typeof data === 'object' ? data : {};
+        data["isOnsite"] = this.isOnsite;
+        data["percentageOnSite"] = this.percentageOnSite;
+        data["onSiteClientAddress"] = this.onSiteClientAddress ? this.onSiteClientAddress.toJSON() : <any>undefined;
+        data["onSiteClientName"] = this.onSiteClientName;
+        data["isRemote"] = this.isRemote;
+        data["remoteCountryName"] = this.remoteCountryName;
+        data["isEmagineOffice"] = this.isEmagineOffice;
+        data["emagineOffice"] = this.emagineOffice ? this.emagineOffice.toJSON() : <any>undefined;
+        return data;
+    }
+}
+
+export interface IWorkplaceDto {
+    isOnsite?: boolean;
+    percentageOnSite?: number | undefined;
+    onSiteClientAddress?: ClientAddressDto;
+    onSiteClientName?: string | undefined;
+    isRemote?: boolean;
+    remoteCountryName?: string | undefined;
+    isEmagineOffice?: boolean;
+    emagineOffice?: EmagineOfficeDto;
 }
 
 export interface FileParameter {

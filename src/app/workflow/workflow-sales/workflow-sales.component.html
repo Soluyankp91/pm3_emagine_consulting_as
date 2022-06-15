@@ -1358,8 +1358,11 @@
                                         <mat-option [value]="999">
                                             Manual date
                                         </mat-option>
-                                        <mat-option *ngFor="let item of contractExpirationNotificationDuration" [value]="item.id">
+                                        <!-- <mat-option *ngFor="let item of contractExpirationNotificationDuration" [value]="item.id">
                                             {{ item.name }}
+                                        </mat-option> -->
+                                        <mat-option [value]="+item.key" *ngFor="let item of contractExpirationNotificationDuration | keyvalue">
+                                            {{ item.value }}
                                         </mat-option>
                                     </mat-select>
                                 </mat-form-field>
