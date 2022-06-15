@@ -69,7 +69,7 @@ export class WorkflowActionsDialogComponent extends AppComponentBase implements 
     addConsutlantToChangeForm(consultant: AvailableConsultantDto) {
         const form = this._fb.group({
             consulantName: new FormControl(consultant.consultantName),
-            consutlantId: new FormControl(consultant.consultantId),
+            consultantId: new FormControl(consultant.consultantId),
             externalId: new FormControl(consultant.externalId),
             newLegalContractRequired: new FormControl(false)
         });
@@ -79,7 +79,7 @@ export class WorkflowActionsDialogComponent extends AppComponentBase implements 
     addConsutlantToExtendForm(consultant: AvailableConsultantDto) {
         const form = this._fb.group({
             consulantName: new FormControl(consultant.consultantName),
-            consutlantId: new FormControl(consultant.consultantId),
+            consultantId: new FormControl(consultant.consultantId),
             externalId: new FormControl(consultant.externalId),
             extendConsutlant: new FormControl(false)
         });
@@ -120,8 +120,7 @@ export class WorkflowActionsDialogComponent extends AppComponentBase implements 
                 extendWorkflowOutput.startDate = this.extendWorkflowForm.startDate?.value,
                 extendWorkflowOutput.endDate = this.extendWorkflowForm.endDate?.value,
                 extendWorkflowOutput.noEndDate = this.extendWorkflowForm.noEndDate?.value ?? false,
-                extendWorkflowOutput.extendConsultantIds = consutlantsToExtend.filter((x: any) => x.extendConsutlant).map((y: any) => y.consutlantId);
-                console.log(extendWorkflowOutput.extendConsultantIds);
+                extendWorkflowOutput.extendConsultantIds = consutlantsToExtend.filter((x: any) => x.extendConsutlant).map((y: any) => y.consultantId);
                 this.onConfirmed.emit(extendWorkflowOutput);
                 break;
             case WorkflowDiallogAction.Terminate:
