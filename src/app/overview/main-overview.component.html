@@ -272,5 +272,10 @@
                 </mat-paginator>
             </div>
         </div>
+        <div fxLayout="column" fxLayoutAlign="start center" class="gant-chart-container" *ngIf="consultantsData?.length === 0 && workflowsData?.length === 0" fxFlexFill>
+            <div class="results-not-found">
+                No data
+            </div>
+        </div>
     </div>
 </div>

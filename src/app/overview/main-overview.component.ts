@@ -30,7 +30,6 @@ export class MainOverviewComponent extends AppComponentBase implements OnInit {
     deafultPageSize = AppConsts.grid.defaultPageSize;
     pageSizeOptions = [5, 10, 20, 50, 100];
     totalCount: number | undefined = 0;
-    workflowTotalCount: number | undefined = 0;
     sorting = '';
     isDataLoading = false;
 
@@ -74,11 +73,8 @@ export class MainOverviewComponent extends AppComponentBase implements OnInit {
 
     viewType: FormControl = new FormControl(GanttViewType.week);
 
-    isGanttWorkflowsExist = false;
     startDate = new Date();
     viewOptions: GanttViewOptions = {
-        // min: new GanttDate(new Date(2022, 1, 1)),
-        // max: new GanttDate(new Date(2022, 11, 31)),
         dateFormat: {
             yearQuarter: `QQQ 'of' yyyy`,
             month: 'LLL yy',
@@ -246,8 +242,6 @@ export class MainOverviewComponent extends AppComponentBase implements OnInit {
     }
 
     changeViewType() {
-        // this.viewType.setValue(GanttViewType.month);
-        debugger;
         switch (this.viewType.value) {
             case GanttViewType.week:
                 let cutOffDateWeek = new Date();
@@ -257,29 +251,23 @@ export class MainOverviewComponent extends AppComponentBase implements OnInit {
                 this.getMainOverview(cutOffDateWeek);
                 break;
             case GanttViewType.month:
-                // this.viewType.setValue(GanttViewType.week);
-                // setTimeout(() => {
-                //     this.viewType.setValue(GanttViewType.month);
-                // }, 0);
                 let cutOffDateMonth = new Date();
                 cutOffDateMonth.setMonth(cutOffDateMonth.getMonth() - 1)
                 this.viewOptions.cellWidth = 75;
                 // this.viewOptions.start = new GanttDate(getUnixTime(new Date(cutOffDateMonth)));
                 this.getMainOverview(cutOffDateMonth);
-
                 break;
-
         }
     }
 
-    formatDate(date: any) {
-        var d = new Date(date),
-            month = (d.getMonth() + 1),
-            day = d.getDate(),
-            year = d.getFullYear();
+    // formatDate(date: any) {
+    //     var d = new Date(date),
+    //         month = (d.getMonth() + 1),
+    //         day = d.getDate(),
+    //         year = d.getFullYear();
 
-        return [year, month, day].join(',');
-    }
+    //     return [year, month, day].join(',');
+    // }
 
     mapListByProperty(list: any[], prop: string) {
         if (list?.length) {
@@ -299,15 +287,11 @@ export class MainOverviewComponent extends AppComponentBase implements OnInit {
         let deliveryType = this.deliveryTypesControl.value ?? undefined;
         let margins = this.marginsControl.value ?? undefined;
         let mainOverviewStatus = this.filteredMainOverviewStatuses.find(x => x.selected);
-
         if (date) {
-            // this.cutOffDate = moment(date).format('YYYY-MM-DD')
             this.cutOffDate = date;
-
         }
         this.workflowsData = [];
         this.consultantsData = [];
-        this.isGanttWorkflowsExist = false;
         this.showMainSpinner();
         switch (this.overviewViewTypeControl.value) {
             case 1: // 'Client periods':
@@ -330,11 +314,7 @@ export class MainOverviewComponent extends AppComponentBase implements OnInit {
                     }))
                     .subscribe(result => {
                         if (result.items?.length) {
-                            // this.viewType.setValue(GanttViewType.week);
-                            // this.viewType.setValue(GanttViewType.month);
-                            // this.ganttWorkflows.viewChange.emit();
                             let oldestDateArray = result.items.reduce((r, o) => o.lastClientPeriodEndDate! > r.lastClientPeriodEndDate! ? o : r);
-
                             this.viewOptions = {
                                 dateFormat: {
                                     yearQuarter: `QQQ 'of' yyyy`,
@@ -362,28 +342,17 @@ export class MainOverviewComponent extends AppComponentBase implements OnInit {
                             })
                             let oldestDateArray1 = this.workflowsData.reduce((r, o) => o?.origin.lastClientPeriodEndDate! > r?.origin.lastClientPeriodEndDate! ? o : r);
 
-                            // this.viewType.setValue(GanttViewType.week);
+                            // this.ganttWorkflows.viewOptions.start = new GanttDate(getUnixTime(new Date(date)));
+                            this.ganttWorkflows.viewOptions.end = new GanttDate(getUnixTime(new Date(oldestDateArray1.origin.lastClientPeriodEndDate)));
+                            this.ganttWorkflows.viewOptions.min = new GanttDate(getUnixTime(new Date(date)));
+                            this.ganttWorkflows.viewOptions.max = new GanttDate(getUnixTime(new Date(oldestDateArray1.origin.lastClientPeriodEndDate)));
 
-                            // setTimeout(() => {
-                            //     this.viewType.setValue(GanttViewType.month);
-                                // поки не спрацює нгІф шоб відрендерити чарт, ми не можемо все що знизу присвоїти
-                                // this.ganttWorkflows.viewOptions.start = new GanttDate(getUnixTime(new Date(date)));
-                                this.ganttWorkflows.viewOptions.end = new GanttDate(getUnixTime(new Date(oldestDateArray1.origin.lastClientPeriodEndDate)));
-                                this.ganttWorkflows.viewOptions.min = new GanttDate(getUnixTime(new Date(date)));
-                                this.ganttWorkflows.viewOptions.max = new GanttDate(getUnixTime(new Date(oldestDateArray1.origin.lastClientPeriodEndDate)));
-                                
-                                // this.ganttWorkflows.view.options.start = new GanttDate(getUnixTime(new Date(date)));
-                                this.ganttWorkflows.view.options.min = new GanttDate(getUnixTime(new Date(date)));
-                                this.ganttWorkflows.view.options.max = new GanttDate(getUnixTime(new Date(oldestDateArray1.origin.lastClientPeriodEndDate)));
-                                this.ganttWorkflows.view.options.end = new GanttDate(getUnixTime(new Date(oldestDateArray1.origin.lastClientPeriodEndDate)));
-                                this.ganttWorkflows.view.end$.next(new GanttDate(getUnixTime(new Date(oldestDateArray1.origin.lastClientPeriodEndDate))));
-                            // }, 1000);
+                            // this.ganttWorkflows.view.options.start = new GanttDate(getUnixTime(new Date(date)));
+                            this.ganttWorkflows.view.options.min = new GanttDate(getUnixTime(new Date(date)));
+                            this.ganttWorkflows.view.options.max = new GanttDate(getUnixTime(new Date(oldestDateArray1.origin.lastClientPeriodEndDate)));
+                            this.ganttWorkflows.view.options.end = new GanttDate(getUnixTime(new Date(oldestDateArray1.origin.lastClientPeriodEndDate)));
+                            this.ganttWorkflows.view.end$.next(new GanttDate(getUnixTime(new Date(oldestDateArray1.origin.lastClientPeriodEndDate))));
 
-                            // if endDate.getYear() ===
-                            
-                            // endDate = if (11 === (startdDate.getMonth() === 5) )
-                            // this.ganttWorkflows.detectChanges();
-                            this.isGanttWorkflowsExist = true;
                             if (this.isInitial) {
                                 this.viewType.setValue(GanttViewType.month);
                                 console.log('repeat');
@@ -391,7 +360,7 @@ export class MainOverviewComponent extends AppComponentBase implements OnInit {
                                 this.changeViewType();
                             }
                         }
-                        this.workflowTotalCount = result.totalCount;
+                        this.totalCount = result.totalCount;
                     });
                 break;
             case 2: //'Consultant periods':
@@ -414,6 +383,19 @@ export class MainOverviewComponent extends AppComponentBase implements OnInit {
                     }))
                     .subscribe(result => {
                         if (result.items?.length) {
+                            let oldestDateArray = result.items.reduce((r, o) => o?.lastConsultantPeriodEndDate! > r?.lastConsultantPeriodEndDate! ? o : r);
+                            this.viewOptions = {
+                                dateFormat: {
+                                    yearQuarter: `QQQ 'of' yyyy`,
+                                    month: 'LLL yy',
+                                    week: 'w',
+                                    year: 'yyyy'
+                                },
+                                start: new GanttDate(getUnixTime(new Date(date))),
+                                end: new GanttDate(getUnixTime(new Date(oldestDateArray.lastConsultantPeriodEndDate?.toDate()!))),
+                                min: new GanttDate(getUnixTime(new Date(date))),
+                                max: new GanttDate(getUnixTime(new Date(oldestDateArray.lastConsultantPeriodEndDate?.toDate()!)))
+                            }
                             this.consultantsData = result.items!.map(x => {
                                 let formattedData: GanttItem<MainOverviewItemForConsultantDto>;
                                 formattedData = {
@@ -426,19 +408,29 @@ export class MainOverviewComponent extends AppComponentBase implements OnInit {
                                 }
                                 return formattedData;
                             })
-                            let oldestDateArray = this.consultantsData.reduce((r, o) => o.origin?.lastConsultantPeriodEndDate > r.origin?.lastConsultantPeriodEndDate ? o : r);
                             // this.ganttConsultants.viewOptions.start = new GanttDate(getUnixTime(new Date(this.formatDate(date))));
-                            this.ganttConsultants.view.options.min = new GanttDate(getUnixTime(new Date(this.formatDate(date))));
-                            // this.ganttConsultants.viewOptions.end = new GanttDate(getUnixTime(new Date(this.formatDate(oldestDateArray.origin.lastConsultantPeriodEndDate))));
-                            this.ganttConsultants.view.options.max = new GanttDate(getUnixTime(new Date(this.formatDate(oldestDateArray.origin.lastConsultantPeriodEndDate))));
-                            this.ganttConsultants.viewChange.emit();
+                            this.ganttConsultants.viewOptions.end = new GanttDate(getUnixTime(new Date(oldestDateArray.lastConsultantPeriodEndDate?.toDate()!)));
+                            this.ganttConsultants.viewOptions.min = new GanttDate(getUnixTime(new Date(date)));
+                            this.ganttConsultants.viewOptions.max = new GanttDate(getUnixTime(new Date(oldestDateArray.lastConsultantPeriodEndDate?.toDate()!)));
+
+                            this.ganttConsultants.view.options.min = new GanttDate(getUnixTime(new Date(date)));
+                            this.ganttConsultants.view.options.max = new GanttDate(getUnixTime(new Date(oldestDateArray.lastConsultantPeriodEndDate?.toDate()!)));
+                            this.ganttConsultants.view.options.end = new GanttDate(getUnixTime(new Date(oldestDateArray.lastConsultantPeriodEndDate?.toDate()!)));
+                            this.ganttConsultants.view.end$.next(new GanttDate(getUnixTime(new Date(oldestDateArray.lastConsultantPeriodEndDate?.toDate()!))));
+
+                            if (this.isInitial) {
+                                this.viewType.setValue(GanttViewType.month);
+                                console.log('repeat');
+                                this.isInitial = false;
+                                this.changeViewType();
+                            }
                         }
                         this.totalCount = result.totalCount;
                     });
                 break
         }
 
-        
+
     }
 
     optionClicked(event: Event, item: SelectableIdNameDto | SelectableCountry | SelectableEmployeeDto, list: SelectableIdNameDto[] | SelectableCountry[] | SelectableEmployeeDto[]) {
