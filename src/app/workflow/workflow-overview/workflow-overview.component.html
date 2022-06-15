@@ -34,7 +34,8 @@
             </div>
         </div>
     </div>
-    <div class="workflow-overview--timeline" fxLayout="row" fxLayoutAlign="start start">
+    <!-- FIXME: hidden for the 1st release -->
+    <div class="workflow-overview--timeline" fxLayout="row" fxLayoutAlign="start start" [fxHide]="true">
         <div fxLayout="row" fxLayoutAlign="start center" class="workflow-overview--chart-container" fxFlexFill>
             <ngx-gantt #gantt [items]="items" [viewOptions]="viewOptions" [viewType]="viewType">
                 <ngx-gantt-table>
