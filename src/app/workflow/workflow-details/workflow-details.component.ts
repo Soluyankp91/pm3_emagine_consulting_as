@@ -15,6 +15,7 @@ import { WorkflowActionsDialogComponent } from '../workflow-actions-dialog/workf
 import { AppComponentBase, NotifySeverity } from 'src/shared/app-component-base';
 import { ConfirmationDialogComponent } from 'src/app/shared/components/confirmation-dialog/confirmation-dialog.component';
 import * as moment from 'moment';
+import { environment } from 'src/environments/environment';
 
 @Component({
   selector: 'app-workflow-details',
@@ -54,7 +55,7 @@ export class WorkflowDetailsComponent extends AppComponentBase implements OnInit
     workflowClientPeriodTypes: EnumEntityTypeDto[] = [];
     workflowConsultantPeriodTypes: EnumEntityTypeDto[] = [];
     workflowPeriodStepTypes: { [key: string]: string };
-
+    individualConsultantActionsAvailable: boolean;
     private _unsubscribe = new Subject();
     constructor(
         injector: Injector,
@@ -104,6 +105,7 @@ export class WorkflowDetailsComponent extends AppComponentBase implements OnInit
             .subscribe((value: boolean) => {
                 this.getTopLevelMenu();
             });
+        this.individualConsultantActionsAvailable = environment.dev;
     }
 
     resetWorkflowProgress() {

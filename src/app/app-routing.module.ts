@@ -13,11 +13,11 @@ import { DashboardComponent } from './dashboard/dashboard.component';
         // canActivateChild: [MsalGuard],
         children: [
           {
-            path: '', redirectTo: 'dashboard', pathMatch: 'full'
+            path: '', redirectTo: 'overview', pathMatch: 'full'
           },
-          {
-            path: 'dashboard', component: DashboardComponent
-          },
+          // {
+          //   path: 'dashboard', component: DashboardComponent
+          // },
           {
             path: 'overview',
             loadChildren:() => import('../app/overview/overview.module').then(m => m.OverviewModule),
@@ -45,7 +45,7 @@ import { DashboardComponent } from './dashboard/dashboard.component';
           {
             path: '',
             children: [
-                { path: '', redirectTo: '/app/dashboard', pathMatch: 'full' }
+                { path: '', redirectTo: '/app/overview', pathMatch: 'full' }
 
             ]
           },

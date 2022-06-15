@@ -22,4 +22,8 @@ export class AppComponent implements OnInit {
         window.open(environment.sourcingUrl, '_blank');
     }
 
+    openHubspot() {
+        window.open('https://app.hubspot.com/login', '_blank');
+    }
+
 }
