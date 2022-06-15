@@ -19,7 +19,6 @@ export class InternalLookupService {
     clientSpecialFeeSpecifications: EnumEntityTypeDto[] = [];
     clientSpecialRateReportUnits: EnumEntityTypeDto[] = [];
     clientSpecialRateSpecifications: EnumEntityTypeDto[] = [];
-    contractExpirationNotificationDuration: EnumEntityTypeDto[] = [];
     clientTimeReportingCap: EnumEntityTypeDto[] = [];
     emagineOffices: EnumEntityTypeDto[] = [];
     commissionFrequencies: EnumEntityTypeDto[] = [];
@@ -39,6 +38,7 @@ export class InternalLookupService {
     consultantTimeReportingCapList: EnumEntityTypeDto[] = [];
     workflowStatuses: { [key: string]: string; };
     consultantInsuranceOptions: { [key: string]: string; };
+    contractExpirationNotificationDuration: { [key: string]: string; };
 
     constructor(private _enumService: EnumServiceProxy) {
 
@@ -389,9 +389,9 @@ export class InternalLookupService {
         });
     }
 
-    getContractExpirationNotificationInterval(): Observable<EnumEntityTypeDto[]> {
-        return new Observable<EnumEntityTypeDto[]>((observer) => {
-            if (this.contractExpirationNotificationDuration.length) {
+    getContractExpirationNotificationInterval(): Observable<{ [key: string]: string; }> {
+        return new Observable<{ [key: string]: string; }>((observer) => {
+            if (this.contractExpirationNotificationDuration !== undefined && this.contractExpirationNotificationDuration !== null) {
                 observer.next(this.contractExpirationNotificationDuration);
                 observer.complete();
             } else {
