@@ -146,39 +146,38 @@
                             <span class="process-name" *ngIf="readOnlyMode">Contracts.</span>
                             <span class="anchor-name">Client data</span>
                         </h1>
-                        <div fxLayout="column" class="u-mb--20 u-mt--20">
-                            <h3 class="workflow-gray--header">Shared Cap on Hour Reporting</h3>
-                            <span class="workflow-darkblue--text">
-                                {{contractClientForm?.clientTimeReportingCapId?.value?.name ? contractClientForm?.clientTimeReportingCapId?.value?.name : '-'}}
-                            </span>
-                            <span class="workflow-darkblue--text" *ngIf="contractClientForm?.clientTimeReportingCapId?.value?.id !== 4"> <!-- id: 4 - no cap -->
-                                {{contractClientForm?.clientTimeReportingCapMaxValue?.value ? contractClientForm?.clientTimeReportingCapMaxValue?.value : '-'}}
-                                <!-- FIXME: uncomment after BE changes -->
-                                <!-- <ng-container [ngSwitch]="contractClientForm?.clientTimeReportingCapId?.value?.id">
-                                    <ng-container *ngSwitchCase="1">
-                                        Cap on units
-                                        <ng-container [ngSwitch]="contractClientForm?.rateUnitTypeId?.value?.id">
-                                            <ng-container *ngSwitchCase="1"> 
-                                                Per hour
-                                                hours
-                                            </ng-container>
-                                            <ng-container *ngSwitchCase="2"> 
-                                                Per day
-                                                days
-                                            </ng-container>
-                                            <ng-container *ngSwitchCase="3"> 
-                                                Per month
-                                                months
+                        <div fxLayout="row" fxLayoutAlign="start start" class="u-w--100 u-mb--20 u-mt--20">
+                            <div fxLayout="column" fxFlex="25%">
+                                <h3 class="workflow-gray--header">Shared Cap on Hour Reporting</h3>
+                                <span class="workflow-darkblue--text">
+                                    {{contractClientForm?.clientTimeReportingCapId?.value?.name ? contractClientForm?.clientTimeReportingCapId?.value?.name : '-'}}
+                                </span>
+                            </div>
+                            <div fxLayout="column" fxFlex="25%" *ngIf="contractClientForm.clientTimeReportingCapId?.value?.id !== 3 && contractClientForm.clientTimeReportingCapId?.value?.id !== 4">
+                                <h3 class="workflow-gray--header">Max. value</h3>
+                                <span class="workflow-darkblue--text" *ngIf="contractClientForm?.clientTimeReportingCapId?.value?.id !== 4"> <!-- id: 4 - no cap -->
+                                    {{contractClientForm?.clientTimeReportingCapMaxValue?.value ? contractClientForm?.clientTimeReportingCapMaxValue?.value : '-'}}
+                                    <ng-container [ngSwitch]="contractClientForm?.clientTimeReportingCapId?.value?.id">
+                                        <ng-container *ngSwitchCase="1"> <!-- Cap on units -->
+                                            <ng-container [ngSwitch]="contractClientForm?.rateUnitType?.value?.id">
+                                                <ng-container *ngSwitchCase="1">  <!-- Per hour -->
+                                                    hours
+                                                </ng-container>
+                                                <ng-container *ngSwitchCase="2">  <!-- Per day -->
+                                                    days
+                                                </ng-container>
+                                                <ng-container *ngSwitchCase="3">  <!-- Per month -->
+                                                    months
+                                                </ng-container>
                                             </ng-container>
                                         </ng-container>
+                                        <ng-container *ngSwitchCase="2">  <!-- Cap on value -->
+                                            {{contractClientForm?.currency?.value?.name ? contractClientForm?.currency?.value?.name : '-'}}
+                                        </ng-container>
                                     </ng-container>
-                                    <ng-container *ngSwitchCase="2"> 
-                                        Cap on value
-                                        {{contractClientForm?.clientCurrency?.value?.name ? salesClientDataForm?.clientCurrency?.value?.name : '-'}}
-                                    </ng-container>
-                                </ng-container> -->
-                                {{contractClientForm?.clientTimeReportingCapCurrencyId?.value?.name ? contractClientForm?.clientTimeReportingCapCurrencyId?.value?.name : '-'}}
-                            </span>
+                                </span>
+                            </div>
+
                         </div>
 
                         <h3 class="workflow-gray--header">Special Contract Terms</h3>
@@ -314,7 +313,7 @@
                                         <mat-label>Choose special rate</mat-label>
                                         <mat-select [formControl]="clientSpecialRateFilter" [disableOptionCentering]="true">
                                             <mat-option *ngFor="let item of clientSpecialRateList" [value]="item.id" (click)="selectClientRate($event, item, clientRateMenuTrigger)">
-                                                {{ item.publicName }}
+                                                {{ item.internalName }}
                                             </mat-option>
                                         </mat-select>
                                     </mat-form-field>
@@ -435,7 +434,7 @@
                                         <mat-label>Choose special fee</mat-label>
                                         <mat-select [formControl]="clientSpecialFeeFilter" [disableOptionCentering]="true">
                                             <mat-option *ngFor="let item of clientSpecialFeeList" [value]="item.id" (click)="selectClientFee($event, item, clientFeeMenuTrigger)">
-                                                {{ item.publicName }}
+                                                {{ item.internalName }}
                                             </mat-option>
                                         </mat-select>
                                     </mat-form-field>
@@ -504,40 +503,35 @@
                                     <h3 class="workflow-gray--header">Consultant type</h3>
                                     <span class="workflow-darkblue--text">{{consultant.value.consultantType?.name ? consultant.value.consultantType?.name : '-'}}</span>
                                 </div>
-                                <div fxLayout="column" class="u-mb--20" fxFlex="25%" *ngIf="">
+                                <div fxLayout="column" class="u-mb--20" fxFlex="25%" *ngIf="contractClientForm.clientTimeReportingCapId?.value?.id === 3">
                                     <h3 class="workflow-gray--header">Cap on Time Reporting</h3>
-                                    <span class="workflow-darkblue--text" *ngIf="!consultant.value.consultantCapOnTimeReporting?.id && !consultant.value.consultantCapOnTimeReportingValue && !consultant.value.consultantCapOnTimeReportingCurrency?.name; else consultantCapOnTimeTemplate">
-                                        -
+                                    <span class="workflow-darkblue--text">
+                                        {{consultant.value.consultantCapOnTimeReporting?.name ?? '-'}}
                                     </span>
-                                    <ng-template #consultantCapOnTimeTemplate>
-                                        <span class="workflow-darkblue--text">
-                                            {{consultant.value.consultantCapOnTimeReporting?.name}} {{consultant.value.consultantCapOnTimeReportingValue}}
-                                            <!-- FIXME: uncomment after BE changes -->
-                                            <!-- <ng-container [ngSwitch]="consultant.value.consultantCapOnTimeReporting?.id">
-                                                <ng-container *ngSwitchCase="1">
-                                                    Cap on units
-                                                    <ng-container [ngSwitch]="consultant.value.consultantRateUnitType?.id">
-                                                        <ng-container *ngSwitchCase="1">
-                                                            Per hour
-                                                            hours
-                                                        </ng-container>
-                                                        <ng-container *ngSwitchCase="2">
-                                                            Per day
-                                                            days
-                                                        </ng-container>
-                                                        <ng-container *ngSwitchCase="3">
-                                                            Per month
-                                                            months
-                                                        </ng-container>
+                                </div>
+                                <div fxLayout="column" fxFlex="25%" *ngIf="consultant?.value?.consultantCapOnTimeReporting?.id !== 4">
+                                    <h3 class="workflow-gray--header">Max. value</h3>
+                                    <span class="workflow-darkblue--text"  *ngIf="consultant?.value?.consultantCapOnTimeReporting?.id !== 4">
+                                        {{consultant.value.consultantCapOnTimeReportingValue}}
+                                        <ng-container [ngSwitch]="consultant.value.consultantCapOnTimeReporting?.id">
+                                            <ng-container *ngSwitchCase="1"> <!-- Cap on units -->
+                                                <ng-container [ngSwitch]="consultant.value.consultantRateUnitType?.id">
+                                                    <ng-container *ngSwitchCase="1"> <!-- Per hour -->
+                                                        hours
+                                                    </ng-container>
+                                                    <ng-container *ngSwitchCase="2"> <!-- Per day -->
+                                                        days
+                                                    </ng-container>
+                                                    <ng-container *ngSwitchCase="3"> <!-- Per month -->
+                                                        months
                                                     </ng-container>
                                                 </ng-container>
-                                                <ng-container *ngSwitchCase="2">
-                                                    {{consultant.value.consultantCapOnTimeReportingCurrency?.name}}
-                                                </ng-container>
-                                            </ng-container> -->
-                                            {{consultant.value.consultantCapOnTimeReportingCurrency?.name}}
-                                        </span>
-                                    </ng-template>
+                                            </ng-container>
+                                            <ng-container *ngSwitchCase="2"> <!-- Cap on value -->
+                                                {{consultant.value.consultantRateCurrency?.name}}
+                                            </ng-container>
+                                        </ng-container>
+                                    </span>
                                 </div>
                             </div>
 
@@ -747,7 +741,7 @@
                                                 <mat-label>Choose special rate</mat-label>
                                                 <mat-select formControlName="consultantSpecialRateFilter" [disableOptionCentering]="true">
                                                     <mat-option *ngFor="let item of clientSpecialRateList" [value]="item.id" (click)="selectConsultantSpecialRate($event, consultantIndex, item, consultantRateMenuTrigger)">
-                                                        {{ item.publicName }}
+                                                        {{ item.internalName }}
                                                     </mat-option>
                                                 </mat-select>
                                             </mat-form-field>
@@ -927,7 +921,7 @@
                                                 <mat-label>Choose special fee</mat-label>
                                                 <mat-select formControlName="consultantSpecialFeeFilter" [disableOptionCentering]="true">
                                                     <mat-option *ngFor="let item of clientSpecialFeeList" [value]="item.id" (click)="selectConsultantSpecialFee($event, consultantIndex, item, consultantFeeMenuTrigger)">
-                                                        {{ item.publicName }}
+                                                        {{ item.internalName }}
                                                     </mat-option>
                                                 </mat-select>
                                             </mat-form-field>
@@ -1035,8 +1029,8 @@
                                             <span fxFlex="17%" class="u-w--100 text-truncate-ellipsis__multilne workflow-contracts--list-item" [matTooltip]="projectLine.value.projectName ?? '-'">
                                                 {{projectLine.value.projectName ?? '-'}}
                                             </span>
-                                            <span fxFlex="17%" class="u-w--100 text-truncate-ellipsis workflow-contracts--list-item" [matTooltip]="projectLine.value.invoicingReferenceNumber ?? '-'">
-                                                {{projectLine.value.invoicingReferenceNumber ?? '-'}}
+                                            <span fxFlex="17%" class="u-w--100 text-truncate-ellipsis workflow-contracts--list-item" [matTooltip]="projectLine.value.invoiceRecipientId?.name ?? '-'">
+                                                {{projectLine.value.invoiceRecipientId?.name ?? '-'}}
                                             </span>
                                             <span fxFlex="7%" class="u-w--100 text-truncate-ellipsis workflow-contracts--list-item" [matTooltip]="projectLine.value.startDate ? (projectLine.value.startDate | momentFormat: 'DD.MM.YYYY') : '-'">
                                                 {{projectLine.value.startDate ? (projectLine.value.startDate | momentFormat: 'DD.MM.YYYY') : '-'}}
@@ -1044,8 +1038,8 @@
                                             <span fxFlex="7%" class="u-w--100 text-truncate-ellipsis workflow-contracts--list-item" [matTooltip]="projectLine.value.endDate ? (projectLine.value.endDate | momentFormat: 'DD.MM.YYYY') : '-'">
                                                 {{projectLine.value.endDate ? (projectLine.value.endDate | momentFormat: 'DD.MM.YYYY') : '-'}}
                                             </span>
-                                            <span fxFlex="10%" class="u-w--100 text-truncate-ellipsis workflow-contracts--list-item" [matTooltip]="projectLine.value.invoiceRecipientId?.name ?? '-'">
-                                                {{projectLine.value.invoiceRecipientId?.name ?? '-'}}
+                                            <span fxFlex="10%" class="u-w--100 text-truncate-ellipsis workflow-contracts--list-item" [matTooltip]="projectLine.value.invoicingReferenceNumber ?? '-'">
+                                                {{projectLine.value.invoicingReferenceNumber ?? '-'}}
                                             </span>
                                             <span fxFlex="7%" class="u-w--100 text-truncate-ellipsis workflow-contracts--list-item" [matTooltip]="projectLine.value.modificationDate ? (projectLine.value.modificationDate | momentFormat: 'DD.MM.YYYY') : '-'">
                                                 {{projectLine.value.modificationDate ? (projectLine.value.modificationDate | momentFormat: 'DD.MM.YYYY') : '-'}}
