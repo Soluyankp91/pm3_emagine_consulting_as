@@ -400,7 +400,7 @@ export class WorkflowContractsComponent extends AppComponentBase implements OnIn
         const clientRate = new PeriodClientSpecialRateDto();
         clientRate.id = undefined;
         clientRate.clientSpecialRateId = rate.id;
-        clientRate.rateName = rate.publicName;
+        clientRate.rateName = rate.internalName;
         clientRate.reportingUnit = rate.specialRateReportingUnit;
         clientRate.clientRate = rate.clientRate;
         clientRate.clientRateCurrencyId = rate.clientRateCurrency?.id;
@@ -463,7 +463,7 @@ export class WorkflowContractsComponent extends AppComponentBase implements OnIn
         const clientFee = new PeriodClientSpecialFeeDto();
         clientFee.id = undefined;
         clientFee.clientSpecialFeeId = fee.id;
-        clientFee.feeName = fee.publicName;
+        clientFee.feeName = fee.internalName;
         clientFee.frequency = fee.clientSpecialFeeFrequency;
         clientFee.clientRate = fee.clientRate;
         clientFee.clientRateCurrencyId = fee.clientRateCurrency?.id;
@@ -606,7 +606,7 @@ export class WorkflowContractsComponent extends AppComponentBase implements OnIn
         const consultantRate = new PeriodConsultantSpecialRateDto();
         consultantRate.id = undefined;
         consultantRate.clientSpecialRateId = rate.id;
-        consultantRate.rateName = rate.publicName;
+        consultantRate.rateName = rate.internalName;
         consultantRate.reportingUnit = rate.specialRateReportingUnit;
         consultantRate.prodataToProdataRate = rate.proDataToProDataRate;
         consultantRate.prodataToProdataRateCurrencyId = rate.proDataToProDataRateCurrency?.id;
@@ -693,7 +693,7 @@ export class WorkflowContractsComponent extends AppComponentBase implements OnIn
         const consultantFee = new PeriodConsultantSpecialFeeDto();
         consultantFee.id = undefined;
         consultantFee.clientSpecialFeeId = fee.id;
-        consultantFee.feeName = fee.publicName;
+        consultantFee.feeName = fee.internalName;
         consultantFee.frequency = fee.clientSpecialFeeFrequency;
         consultantFee.prodataToProdataRate = fee.prodataToProdataRate;
         consultantFee.prodataToProdataRateCurrencyId = fee.prodataToProdataRateCurrency?.id;
@@ -1052,7 +1052,7 @@ export class WorkflowContractsComponent extends AppComponentBase implements OnIn
 
     private _filterConsultantRates(value: string, consultantIndex: number): ClientSpecialFeeDto[] {
         const filterValue = value.toLowerCase();
-        const result = this.clientSpecialRateList.filter(option => option.publicName!.toLowerCase().includes(filterValue));
+        const result = this.clientSpecialRateList.filter(option => option.internalName!.toLowerCase().includes(filterValue));
         return result;
     }
 
@@ -1069,7 +1069,7 @@ export class WorkflowContractsComponent extends AppComponentBase implements OnIn
 
     private _filterConsultantFees(value: string, consultantIndex: number): ClientSpecialFeeDto[] {
         const filterValue = value.toLowerCase();
-        const result = this.clientSpecialFeeList.filter(option => option.publicName!.toLowerCase().includes(filterValue));
+        const result = this.clientSpecialFeeList.filter(option => option.internalName!.toLowerCase().includes(filterValue));
         return result;
     }
 

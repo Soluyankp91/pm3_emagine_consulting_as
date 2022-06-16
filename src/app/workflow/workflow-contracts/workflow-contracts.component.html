@@ -313,7 +313,7 @@
                                         <mat-label>Choose special rate</mat-label>
                                         <mat-select [formControl]="clientSpecialRateFilter" [disableOptionCentering]="true">
                                             <mat-option *ngFor="let item of clientSpecialRateList" [value]="item.id" (click)="selectClientRate($event, item, clientRateMenuTrigger)">
-                                                {{ item.publicName }}
+                                                {{ item.internalName }}
                                             </mat-option>
                                         </mat-select>
                                     </mat-form-field>
@@ -434,7 +434,7 @@
                                         <mat-label>Choose special fee</mat-label>
                                         <mat-select [formControl]="clientSpecialFeeFilter" [disableOptionCentering]="true">
                                             <mat-option *ngFor="let item of clientSpecialFeeList" [value]="item.id" (click)="selectClientFee($event, item, clientFeeMenuTrigger)">
-                                                {{ item.publicName }}
+                                                {{ item.internalName }}
                                             </mat-option>
                                         </mat-select>
                                     </mat-form-field>
@@ -741,7 +741,7 @@
                                                 <mat-label>Choose special rate</mat-label>
                                                 <mat-select formControlName="consultantSpecialRateFilter" [disableOptionCentering]="true">
                                                     <mat-option *ngFor="let item of clientSpecialRateList" [value]="item.id" (click)="selectConsultantSpecialRate($event, consultantIndex, item, consultantRateMenuTrigger)">
-                                                        {{ item.publicName }}
+                                                        {{ item.internalName }}
                                                     </mat-option>
                                                 </mat-select>
                                             </mat-form-field>
@@ -921,7 +921,7 @@
                                                 <mat-label>Choose special fee</mat-label>
                                                 <mat-select formControlName="consultantSpecialFeeFilter" [disableOptionCentering]="true">
                                                     <mat-option *ngFor="let item of clientSpecialFeeList" [value]="item.id" (click)="selectConsultantSpecialFee($event, consultantIndex, item, consultantFeeMenuTrigger)">
-                                                        {{ item.publicName }}
+                                                        {{ item.internalName }}
                                                     </mat-option>
                                                 </mat-select>
                                             </mat-form-field>
