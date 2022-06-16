@@ -101,6 +101,9 @@ export class WorkflowContractsClientDataForm extends FormGroup {
             clientTimeReportingCapId: new FormControl(null),
             clientTimeReportingCapMaxValue: new FormControl(null),
             clientTimeReportingCapCurrencyId: new FormControl(null),
+            rateUnitType: new FormControl(null),
+            currency: new FormControl(null),
+            clientRate: new FormControl(null),
 
             specialContractTerms: new FormControl(null),
             noSpecialContractTerms: new FormControl(null),
@@ -127,6 +130,15 @@ export class WorkflowContractsClientDataForm extends FormGroup {
     }
     get clientTimeReportingCapCurrencyId() {
         return this.get('clientTimeReportingCapCurrencyId');
+    }
+    get rateUnitType() {
+        return this.get('rateUnitType');
+    }
+    get currency() {
+        return this.get('currency');
+    }
+    get clientRate() {
+        return this.get('clientRate');
     }
     get specialContractTerms() {
         return this.get('specialContractTerms');
