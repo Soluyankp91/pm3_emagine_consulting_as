@@ -974,6 +974,8 @@ export class WorkflowContractsComponent extends AppComponentBase implements OnIn
     resetForms() {
         this.contractsMainForm.reset('', {emitEvent: false});
         this.contractClientForm.reset('', {emitEvent: false});
+        this.contractClientForm.clientRates.controls = [];
+        this.contractClientForm.clientFees.controls = [];
         this.contractsConsultantsDataForm.consultants.controls = [];
         this.contractsSyncDataForm.consultants.controls = [];
     }
