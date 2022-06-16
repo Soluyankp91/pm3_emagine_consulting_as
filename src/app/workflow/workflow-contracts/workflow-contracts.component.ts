@@ -798,12 +798,13 @@ export class WorkflowContractsComponent extends AppComponentBase implements OnIn
             projectName: new FormControl(projectLine?.projectName ?? null),
             startDate: new FormControl(projectLine?.startDate ?? null),
             endDate: new FormControl(projectLine?.endDate ?? null),
+            noEndDate: new FormControl(projectLine?.noEndDate ?? false),
             invoicingReferenceNumber: new FormControl(projectLine?.invoicingReferenceNumber ?? null),
             invoicingReferencePersonId: new FormControl(projectLine?.invoicingReferencePersonId ?? null),
             optionalInvoicingInfo: new FormControl(projectLine?.optionalInvoicingInfo ?? null),
-            differentDebtorNumber: new FormControl(projectLine?.differentDebtorNumber ?? null),
+            differentDebtorNumber: new FormControl(projectLine?.differentDebtorNumber ?? false),
             debtorNumber: new FormControl(projectLine?.debtorNumber ?? null),
-            differentInvoiceRecipient: new FormControl(projectLine?.differentInvoiceRecipient ?? null),
+            differentInvoiceRecipient: new FormControl(projectLine?.differentInvoiceRecipient ?? false),
             invoiceRecipientId: new FormControl(projectLine?.invoiceRecipientId ?? null),
             modifiedById: new FormControl(projectLine?.modifiedById ?? null),
             modificationDate: new FormControl(projectLine?.modificationDate ?? null)
@@ -817,6 +818,7 @@ export class WorkflowContractsComponent extends AppComponentBase implements OnIn
         projectLineRow.get('projectName')?.setValue(projectLineData.projectName, {emitEvent: false});
         projectLineRow.get('startDate')?.setValue(projectLineData.startDate, {emitEvent: false});
         projectLineRow.get('endDate')?.setValue(projectLineData.endDate, {emitEvent: false});
+        projectLineRow.get('noEndDate')?.setValue(projectLineData.noEndDate, {emitEvent: false});
         projectLineRow.get('invoicingReferenceNumber')?.setValue(projectLineData.invoicingReferenceNumber, {emitEvent: false});
         projectLineRow.get('invoicingReferencePersonId')?.setValue(projectLineData.invoicingReferencePersonId, {emitEvent: false});
         projectLineRow.get('optionalInvoicingInfo')?.setValue(projectLineData.optionalInvoicingInfo, {emitEvent: false});
@@ -828,6 +830,7 @@ export class WorkflowContractsComponent extends AppComponentBase implements OnIn
 
     duplicateProjectLine(consultantIndex: number, projectLinesIndex: number) {
         const projectLineRowValue: ProjectLineDto = new ProjectLineDto((this.contractsConsultantsDataForm.consultants.at(consultantIndex).get('projectLines') as FormArray).at(projectLinesIndex).value);
+        projectLineRowValue.id = undefined; // to create a new instance of project line
         console.log(projectLineRowValue);
         this.addProjectLinesToConsultantData(consultantIndex, projectLineRowValue);
         // (this.contractsConsultantsDataForm.consultants.at(consultantIndex).get('projectLines') as FormArray).push(projectLineRow);
@@ -1153,6 +1156,7 @@ export class WorkflowContractsComponent extends AppComponentBase implements OnIn
                         projectLineInput.projectName = projectLine.projectName;
                         projectLineInput.startDate = projectLine.startDate;
                         projectLineInput.endDate = projectLine.endDate;
+                        projectLineInput.noEndDate = projectLine.noEndDate;
                         projectLineInput.invoicingReferenceNumber = projectLine.invoicingReferenceNumber;
                         projectLineInput.invoicingReferencePersonId = projectLine.invoicingReferencePersonId;
                         projectLineInput.optionalInvoicingInfo = projectLine.optionalInvoicingInfo;
