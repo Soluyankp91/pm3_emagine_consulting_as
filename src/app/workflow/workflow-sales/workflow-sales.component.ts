@@ -1043,7 +1043,7 @@ export class WorkflowSalesComponent extends AppComponentBase implements OnInit {
             consultantPeriodId: new FormControl(consultant?.consultantPeriodId ?? null),
             consultantNameOnly: new FormControl(consultant?.nameOnly ?? null),
 
-            consultantProjectDurationSameAsClient: new FormControl(true),
+            consultantProjectDurationSameAsClient: new FormControl(consultant?.durationSameAsClientPeriod ?? true),
             consultantProjectStartDate: new FormControl(consultant?.startDate ?? null),
             consultantProjectEndDate: new FormControl({value: consultant?.endDate ?? null, disabled: consultant?.noEndDate}),
             consultantProjectNoEndDate: new FormControl(consultant?.noEndDate ?? false),
@@ -1584,6 +1584,7 @@ export class WorkflowSalesComponent extends AppComponentBase implements OnInit {
                     consultantInput.consultant.city = consultant.consultantName?.city;
                     consultantInput.consultant.countryId = consultant.consultantName?.contryId;
 
+                    consultantInput.durationSameAsClientPeriod = consultant.consultantProjectDurationSameAsClient;
                     consultantInput.startDate = consultant.consultantProjectStartDate;
                     consultantInput.noEndDate = consultant.consultantProjectNoEndDate;
                     consultantInput.endDate = consultant.consultantProjectEndDate;
