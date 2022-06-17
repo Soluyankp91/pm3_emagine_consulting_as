@@ -1059,7 +1059,7 @@ export class WorkflowSalesComponent extends AppComponentBase implements OnInit {
             consultantIsRemoteWorkplace: new FormControl(consultant?.isRemoteWorkplace ?? false),
 
             expectedWorkloadHours: new FormControl(consultant?.expectedWorkloadHours ?? null),
-            expectedWorkloadUnitId: new FormControl(consultant?.expectedWorkloadUnitId ?? null),
+            expectedWorkloadUnitId: new FormControl(this.findItemById(this.expectedWorkloadUnits ,consultant?.expectedWorkloadUnitId) ?? null),
             consultantCapOnTimeReporting: new FormControl(this.findItemById(this.consultantTimeReportingCapList, consultant?.consultantTimeReportingCapId ?? 4)), // ?? default value = no cap - id:4
             consultantTimeReportingCapMaxValue: new FormControl(consultant?.consultantTimeReportingCapMaxValue ?? null),
             consultantCapOnTimeReportingCurrency: new FormControl(null), // remove
@@ -1601,7 +1601,7 @@ export class WorkflowSalesComponent extends AppComponentBase implements OnInit {
 
                     consultantInput.noExpectedWorkload = consultant.noExpectedWorkload;
                     consultantInput.expectedWorkloadHours = consultant.expectedWorkloadHours;
-                    consultantInput.expectedWorkloadUnitId = consultant.expectedWorkloadUnitId;
+                    consultantInput.expectedWorkloadUnitId = consultant.expectedWorkloadUnitId?.id;
                     consultantInput.consultantTimeReportingCapId = consultant.consultantCapOnTimeReporting?.id;
                     consultantInput.consultantTimeReportingCapMaxValue = consultant.consultantTimeReportingCapMaxValue;
                     consultantInput.pdcPaymentEntityId = consultant.consultantProdataEntity?.id;
@@ -2181,7 +2181,7 @@ export class WorkflowSalesComponent extends AppComponentBase implements OnInit {
                 this.getStartChangeOrExtendConsutlantPeriodSales(consultantPeriodIdParameter!);
                 break;
             case WorkflowProcessType.TerminateConsultant:
-                let consultantParameter = consultant ?? this.consultant; 
+                let consultantParameter = consultant ?? this.consultant;
                 this.getWorkflowSalesStepConsultantTermination(consultantParameter!);
                 break;
         }
@@ -2244,7 +2244,7 @@ export class WorkflowSalesComponent extends AppComponentBase implements OnInit {
 
             consultantInput.noExpectedWorkload = consultant.noExpectedWorkload;
             consultantInput.expectedWorkloadHours = consultant.expectedWorkloadHours;
-            consultantInput.expectedWorkloadUnitId = consultant.expectedWorkloadUnitId;
+            consultantInput.expectedWorkloadUnitId = consultant.expectedWorkloadUnitId?.id;
             consultantInput.consultantTimeReportingCapId = consultant.consultantCapOnTimeReporting?.id;
             consultantInput.consultantTimeReportingCapMaxValue = consultant.consultantTimeReportingCapMaxValue;
             consultantInput.pdcPaymentEntityId = consultant.consultantProdataEntity?.id;
