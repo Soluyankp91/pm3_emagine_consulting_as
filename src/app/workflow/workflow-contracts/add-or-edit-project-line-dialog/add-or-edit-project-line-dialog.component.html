@@ -97,7 +97,7 @@
 
             <mat-form-field appearance="outline" class="u-w--100 formFieldNoMarginPadding filter-select u-mt--10" fxFlex="20%">
                 <mat-select formControlName="consultantInsuranceOptionId" placeholder="Consultant insurance option" [disableOptionCentering]="true">
-                    <mat-option *ngFor="let item of consultantInsuranceOptions | keyvalue" [value]="item.key">
+                    <mat-option *ngFor="let item of consultantInsuranceOptions | keyvalue" [value]="+item.key">
                         {{ item.value }}
                     </mat-option>
                 </mat-select>

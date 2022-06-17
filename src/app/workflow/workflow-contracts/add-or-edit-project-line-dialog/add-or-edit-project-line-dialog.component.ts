@@ -99,7 +99,7 @@ export class AddOrEditProjectLineDialogComponent extends AppComponentBase implem
             this.projectLineForm.invoicingReferenceNumber?.disable();
         }
 
-        this.projectLineForm.invoicingReferencePersonId?.setValue(data.invoicingReferencePersonId, {emitEvent: false});
+        this.projectLineForm.invoicingReferencePersonId?.setValue(data.invoicingReferencePersonId ?? '', {emitEvent: false});
         this.projectLineForm.differentInvoicingReferencePerson?.setValue(data.differentInvoicingReferencePerson ?? false, {emitEvent: false});
         if (!data.differentInvoicingReferencePerson) {
             this.projectLineForm.invoicingReferencePersonId?.disable();

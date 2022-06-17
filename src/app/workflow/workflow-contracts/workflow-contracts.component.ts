@@ -822,7 +822,8 @@ export class WorkflowContractsComponent extends AppComponentBase implements OnIn
             differentInvoiceRecipient: new FormControl(projectLine?.differentInvoiceRecipient ?? false),
             invoiceRecipientId: new FormControl(projectLine?.invoiceRecipientId ?? null),
             modifiedById: new FormControl(projectLine?.modifiedById ?? null),
-            modificationDate: new FormControl(projectLine?.modificationDate ?? null)
+            modificationDate: new FormControl(projectLine?.modificationDate ?? null),
+            consultantInsuranceOptionId: new FormControl(projectLine?.consultantInsuranceOptionId)
         });
         (this.contractsConsultantsDataForm.consultants.at(index).get('projectLines') as FormArray).push(form);
     }
@@ -841,6 +842,7 @@ export class WorkflowContractsComponent extends AppComponentBase implements OnIn
         projectLineRow.get('debtorNumber')?.setValue(projectLineData.debtorNumber, {emitEvent: false});
         projectLineRow.get('differentInvoiceRecipient')?.setValue(projectLineData.differentInvoiceRecipient, {emitEvent: false});
         projectLineRow.get('invoiceRecipientId')?.setValue(projectLineData.invoiceRecipientId, {emitEvent: false});
+        projectLineRow.get('consultantInsuranceOptionId')?.setValue(projectLineData.consultantInsuranceOptionId, {emitEvent: false});
     }
 
     duplicateProjectLine(consultantIndex: number, projectLinesIndex: number) {
@@ -1188,6 +1190,7 @@ export class WorkflowContractsComponent extends AppComponentBase implements OnIn
                         projectLineInput.invoiceRecipientId = projectLine.invoiceRecipientId;
                         projectLineInput.modifiedById = projectLine.modifiedById;
                         projectLineInput.modificationDate = projectLine.modificationDate;
+                        projectLineInput.consultantInsuranceOptionId = projectLine.consultantInsuranceOptionId;
 
                         consultantData.projectLines.push(projectLineInput);
                     }
@@ -1319,6 +1322,7 @@ export class WorkflowContractsComponent extends AppComponentBase implements OnIn
                     projectLineInput.invoiceRecipientId = projectLine.invoiceRecipientId;
                     projectLineInput.modifiedById = projectLine.modifiedById;
                     projectLineInput.modificationDate = projectLine.modificationDate;
+                    projectLineInput.consultantInsuranceOptionId = projectLine.consultantInsuranceOptionId;
 
                     consultantData.projectLines.push(projectLineInput);
                 }
