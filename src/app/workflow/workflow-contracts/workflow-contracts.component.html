@@ -29,7 +29,7 @@
                     <ng-container formArrayName="consultantTerminationContractData">
                         <div *ngFor="let consultant of contractsTerminationConsultantForm.consultantTerminationContractData.controls; index as i; last as last" [formGroupName]="i" class="workflow-contracts--block-consultants u-mt--20" [ngClass]="{'last-block': last}">
                             <div fxLayout="row" fxLayoutAlign="start center" class="u-mb--20">
-                                <img class="workflow-contracts--consultant-img u-mr--16" src="https://placekitten.com/50/50">
+                                <img class="border-rounded-50 u-mr--16 image-thumbnail" [src]="consultantProfileUrl(consultant.value?.consultantData?.externalId)">
                                 <p class="workflow-contracts--consultant-name">
                                     {{contractsTerminationConsultantForm.consultantTerminationContractData.at(i).get('consultantData')?.value?.name}}
                                 </p>

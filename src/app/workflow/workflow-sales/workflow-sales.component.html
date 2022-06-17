@@ -102,7 +102,6 @@
                                         <ng-container [ngSwitch]="commission.value.recipientType?.name">
                                             <ng-container *ngSwitchCase="'Client'">
                                                 <div fxLayout="row" fxLayoutAlign="start center">
-                                                    <img class="border-rounded-50 u-mr--16" src="https://picsum.photos/35/35" />
                                                     <div fxLayout="column" fxLayoutAlign="start start">
                                                         <span>
                                                             {{commission.value.recipient?.clientName}}
@@ -118,7 +117,6 @@
                                             </ng-container>
                                             <ng-container *ngSwitchCase="'Consultant'">
                                                 <div fxLayout="row" fxLayoutAlign="start center">
-                                                    <img class="border-rounded-50 u-mr--16" src="https://picsum.photos/35/35" />
                                                     <div fxLayout="column" fxLayoutAlign="start start">
                                                         <span>
                                                             {{commission.value.recipient?.name}}
@@ -580,7 +578,7 @@
                                     <div fxLayout="column">
                                         <h3 class="workflow-readonly--gray-header">Consultant</h3>
                                         <div fxLayout="row" fxLayoutAlign="start center" class="u-mb--20">
-                                            <img class="workflow-extension--consultant-data--consultant-img u-mr--16" src="https://placekitten.com/50/50">
+                                            <img class="workflow-extension--consultant-data--consultant-img u-mr--16" [src]="consultantProfileUrl(item.value.consultantName?.externalId)" >
                                             <div fxLayout="column">
                                                 <p class="workflow-extension--consultant-data--consultant-name">
                                                     {{item?.value?.consultantName?.name}}
@@ -1193,7 +1191,6 @@
                                                 <ng-container [ngSwitch]="commission.value.recipientType?.name">
                                                     <ng-container *ngSwitchCase="'Client'">
                                                         <div fxLayout="row" fxLayoutAlign="start center">
-                                                            <img class="border-rounded-50 u-mr--16" src="https://picsum.photos/35/35" />
                                                             <div fxLayout="column" fxLayoutAlign="start start">
                                                                 <span>
                                                                     {{commission.value.recipient?.clientName}}
@@ -1209,7 +1206,7 @@
                                                     </ng-container>
                                                     <ng-container *ngSwitchCase="'Consultant'">
                                                         <div fxLayout="row" fxLayoutAlign="start center">
-                                                            <img class="border-rounded-50 u-mr--16" src="https://picsum.photos/35/35" />
+                                                            class="border-rounded-50 u-mr--16" src="https://picsum.photos/35/35" />
                                                             <div fxLayout="column" fxLayoutAlign="start start">
                                                                 <span>
                                                                     {{commission.value.recipient?.name}}
@@ -2047,7 +2044,7 @@
                                 <div fxLayout="row" fxLayoutAlign="start start" class="u-w--100 u-mb--20">
                                     <span fxFlex="50%" fxLayout="row" fxLayoutAlign="start center">
                                         <ng-container  *ngIf="consultant.value?.consultantName?.id || consultant.value?.consultantNameOnly">
-                                            <img class="border-rounded-50 u-ml--16 u-mr--16" src="https://picsum.photos/35/35" />
+                                            <img *ngIf="consultant.value?.consultantName?.id" class="border-rounded-50 u-ml--16 u-mr--16" [src]="consultantProfileUrl(consultant.value?.consultantName?.externalId)" />
                                             <span class="workflow-form--consultants__name u-mr--16">
                                                 {{consultant.value?.consultantName?.name}}
                                             </span>
@@ -2085,7 +2082,7 @@
                                                 <ng-container>
                                                     <mat-option *ngFor="let consultant of filteredConsultants" [value]="consultant" [ngClass]="{ 'no-data': consultant.id === 'no-data' }">
                                                         <div class="multilineDropdown-option--row">
-                                                            <img *ngIf="consultant.id !== 'no-data'" class="border-rounded-50 u-ml--16 u-mr--16" src="https://picsum.photos/35/35" />
+                                                            <img *ngIf="consultant.id !== 'no-data'" class="border-rounded-50 u-ml--16 u-mr--16" [src]="consultantProfileUrl(consultant.externalId)" />
                                                             <div class="multilineDropdown-option--column">
                                                                 <b>{{ consultant.name }}</b>
                                                                 <span *ngIf="consultant.id !== 'no-data'"> | {{consultant.companyName}} | {{consultant.city}} | #{{consultant.id}} / {{consultant.legacyId}}</span>
@@ -2115,7 +2112,7 @@
                                         <div fxLayout="column">
                                             <h3 class="workflow-readonly--gray-header">Consultant</h3>
                                             <div fxLayout="row" fxLayoutAlign="start center" class="u-mb--20">
-                                                <img class="workflow-extension--consultant-data--consultant-img u-mr--16" src="https://placekitten.com/50/50">
+                                                <img class="workflow-extension--consultant-data--consultant-img u-mr--16" [src]="consultantProfileUrl(consultant.value.consultantName?.externalId)">
                                                 <div fxLayout="column">
                                                     <p class="workflow-extension--consultant-data--consultant-name">
                                                         {{consultant?.value?.consultantName?.name}}
