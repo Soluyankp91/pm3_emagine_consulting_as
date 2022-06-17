@@ -28,7 +28,7 @@
                     <ng-container *ngIf="readOnlyMode; else clientDebitorNumberInput">
                         <div fxLayout="column" fxLayoutAlign="start start" class="u-mb--20">
                             <span class="workflow-readonly--blue-text-bold">
-                                {{financesClientForm?.differentDebtorNumberForInvoicing?.value ? 'Same as client' : 'Custom'}}
+                                {{financesClientForm?.differentDebtorNumberForInvoicing?.value ? 'Custom' : 'Same as client'}}
                             </span>
                         </div>
                     </ng-container>
@@ -48,7 +48,7 @@
                     <ng-container *ngIf="readOnlyMode; else debitorNumberInput">
                         <h3 [ngClass]="{'workflow-readonly--gray-header': readOnlyMode, 'workflow-blue--header': !readOnlyMode}">Debitor number</h3>
                         <div fxLayout="column" fxLayoutAlign="start start">
-                            <span class="workflow-readonly--blue-text-bold">{{financesClientForm?.customDebtorNumber?.value}}</span>
+                            <span class="workflow-readonly--blue-text-bold">{{financesClientForm?.customDebtorNumber?.value ? financesClientForm?.customDebtorNumber?.value : '-'}}</span>
                         </div>
                     </ng-container>
                     <ng-template #debitorNumberInput>
