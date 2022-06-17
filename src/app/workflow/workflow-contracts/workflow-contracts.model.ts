@@ -50,6 +50,9 @@ export class WorkflowContractsSyncForm extends FormGroup {
             remarks: new FormControl(null),
             manualCheckbox: new FormControl(false),
             newLegalContract: new FormControl(false),
+            clientLegalContractDoneStatusId: new FormControl(null),
+            enableLegalContractsButtons: new FormControl(false),
+            showManualOption: new FormControl(false),
             consultants: new FormArray([])
         });
     }
@@ -75,6 +78,15 @@ export class WorkflowContractsSyncForm extends FormGroup {
     get newLegalContract() {
         return this.get('newLegalContract');
     }
+    get clientLegalContractDoneStatusId() {
+        return this.get('clientLegalContractDoneStatusId');
+    }
+    get enableLegalContractsButtons() {
+        return this.get('enableLegalContractsButtons');
+    }
+    get showManualOption() {
+        return this.get('showManualOption');
+    }
     get consultants() {
         return this.get('consultants') as FormArray;
     }
@@ -89,6 +101,9 @@ export class WorkflowContractsClientDataForm extends FormGroup {
             clientTimeReportingCapId: new FormControl(null),
             clientTimeReportingCapMaxValue: new FormControl(null),
             clientTimeReportingCapCurrencyId: new FormControl(null),
+            rateUnitType: new FormControl(null),
+            currency: new FormControl(null),
+            clientRate: new FormControl(null),
 
             specialContractTerms: new FormControl(null),
             noSpecialContractTerms: new FormControl(null),
@@ -115,6 +130,15 @@ export class WorkflowContractsClientDataForm extends FormGroup {
     }
     get clientTimeReportingCapCurrencyId() {
         return this.get('clientTimeReportingCapCurrencyId');
+    }
+    get rateUnitType() {
+        return this.get('rateUnitType');
+    }
+    get currency() {
+        return this.get('currency');
+    }
+    get clientRate() {
+        return this.get('clientRate');
     }
     get specialContractTerms() {
         return this.get('specialContractTerms');
@@ -165,4 +189,12 @@ export class WorkflowContractsTerminationConsultantsDataForm extends FormGroup {
     get consultantTerminationContractData() {
         return this.get('consultantTerminationContractData') as FormArray;
     }
+}
+
+
+export enum LegalContractStatus {
+    NotAcceessible = 0,
+    NotYetCreated = 1,
+    SavedButNotGenerated = 2,
+    Done = 10
 }

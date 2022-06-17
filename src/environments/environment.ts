@@ -8,8 +8,7 @@ export const environment = {
     qa: false,
     apiUrl: 'https://pm3-dev-api.prodataconsult.com',
     sourcingUrl: 'https://web-sourcing-dev.azurewebsites.net',
-    blobStorageUrl: 'https://web-sourcing-dev.azurewebsites.net/server',
-    sharedAssets: "https://pdcweb.z6.web.core.windows.net/shared-assets/dev"
+    sharedAssets: "https://web-sourcing-qa-env.prodataconsult.com/api/shared-assets/qa"
 };
 
 /*

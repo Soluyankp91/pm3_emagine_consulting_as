@@ -1,10 +1,10 @@
 import { Component, EventEmitter, Inject, Injector, OnDestroy, OnInit, Output } from '@angular/core';
 import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
-import { Subject } from 'rxjs';
+import { of, Subject } from 'rxjs';
 import { debounceTime, finalize, switchMap, takeUntil } from 'rxjs/operators';
 import { InternalLookupService } from 'src/app/shared/common/internal-lookup.service';
 import { AppComponentBase } from 'src/shared/app-component-base';
-import { ContactResultDto, EnumEntityTypeDto, LookupServiceProxy, ProjectLineDto } from 'src/shared/service-proxies/service-proxies';
+import { ClientResultDto, ContactResultDto, EnumEntityTypeDto, LookupServiceProxy, ProjectLineDto } from 'src/shared/service-proxies/service-proxies';
 import { ProjectLineDiallogMode } from '../../workflow.model';
 import { ProjectLineForm } from './add-or-edit-project-line-dialog.model';
 
@@ -21,6 +21,7 @@ export class AddOrEditProjectLineDialogComponent extends AppComponentBase implem
     projectLineForm: ProjectLineForm;
     projectLine: ProjectLineDto;
     filteredReferencePersons: any[] = [];
+    filteredClientInvoicingRecipients: any[] = [];
     consultantInsuranceOptions: { [key: string]: string; };
     private _unsubscribe = new Subject();
     constructor(
@@ -61,6 +62,34 @@ export class AddOrEditProjectLineDialogComponent extends AppComponentBase implem
                     this.filteredReferencePersons = [{ firstName: 'No records found', lastName: '', id: 'no-data' }];
                 }
             });
+
+        this.projectLineForm.invoiceRecipientId?.valueChanges
+            .pipe(
+                takeUntil(this._unsubscribe),
+                debounceTime(300),
+                switchMap((value: any) => {
+                    if (value) {
+                        let toSend = {
+                            name: value ?? '',
+                            maxRecordsCount: 1000,
+                        };
+                        if (value?.id) {
+                            toSend.name = value.id
+                                ? value.clientName
+                                : value;
+                        }
+                        return this._lookupService.clients(toSend.name, toSend.maxRecordsCount);
+                    } else {
+                        return of([]);
+                    }
+                }),
+            ).subscribe((list: ClientResultDto[]) => {
+                if (list.length) {
+                    this.filteredClientInvoicingRecipients = list;
+                } else {
+                    this.filteredClientInvoicingRecipients = [{ clientName: 'No records found', id: 'no-data' }];
+                }
+            });
     }
 
     ngOnInit(): void {
@@ -99,7 +128,7 @@ export class AddOrEditProjectLineDialogComponent extends AppComponentBase implem
             this.projectLineForm.invoicingReferenceNumber?.disable();
         }
 
-        this.projectLineForm.invoicingReferencePersonId?.setValue(data.invoicingReferencePersonId, {emitEvent: false});
+        this.projectLineForm.invoicingReferencePersonId?.setValue(data.invoicingReferencePerson ?? '', {emitEvent: false});
         this.projectLineForm.differentInvoicingReferencePerson?.setValue(data.differentInvoicingReferencePerson ?? false, {emitEvent: false});
         if (!data.differentInvoicingReferencePerson) {
             this.projectLineForm.invoicingReferencePersonId?.disable();
@@ -112,12 +141,14 @@ export class AddOrEditProjectLineDialogComponent extends AppComponentBase implem
             this.projectLineForm.debtorNumber?.disable();
         }
 
-        this.projectLineForm.invoiceRecipientId?.setValue(data.invoiceRecipientId, {emitEvent: false});
+        this.projectLineForm.invoiceRecipientId?.setValue(data.invoiceRecipient, {emitEvent: false});
         this.projectLineForm.differentInvoiceRecipient?.setValue(data.differentInvoiceRecipient ?? false, {emitEvent: false});
         if (!data.differentInvoiceRecipient) {
             this.projectLineForm.invoiceRecipientId?.disable();
         }
         this.projectLineForm.consultantInsuranceOptionId?.setValue(data.consultantInsuranceOptionId ?? 0, {emitEvent: false});
+        this.projectLineForm.modificationDate?.setValue(data.modificationDate, {emitEvent: false});
+        this.projectLineForm.modifiedById?.setValue(data.modifiedBy, {emitEvent: false});
 
         this.projectLineForm.markAsDirty();
         this.projectLineForm.markAllAsTouched();
@@ -129,7 +160,28 @@ export class AddOrEditProjectLineDialogComponent extends AppComponentBase implem
     }
 
     confirm(): void {
-        let result = new ProjectLineDto(this.projectLineForm.value);
+        let result = new ProjectLineDto();
+        console.log(this.projectLineForm.value);
+        result.id = this.projectLineForm.id?.value;
+        result.projectName = this.projectLineForm.projectName?.value;
+        result.startDate = this.projectLineForm.startDate?.value;
+        result.endDate = this.projectLineForm.endDate?.value;
+        result.noEndDate = this.projectLineForm.noEndDate?.value;
+        result.differentInvoicingReferenceNumber = this.projectLineForm.differentInvoicingReferenceNumber?.value;
+        result.invoicingReferenceNumber = this.projectLineForm.invoicingReferenceNumber?.value;
+        result.differentInvoicingReferencePerson = this.projectLineForm.differentInvoicingReferencePerson?.value;
+        result.invoicingReferencePersonId = this.projectLineForm.invoicingReferencePersonId?.value?.id;
+        result.invoicingReferencePerson = this.projectLineForm.invoicingReferencePersonId?.value;
+        result.optionalInvoicingInfo = this.projectLineForm.optionalInvoicingInfo?.value;
+        result.differentDebtorNumber = this.projectLineForm.differentDebtorNumber?.value;
+        result.debtorNumber = this.projectLineForm.debtorNumber?.value;
+        result.differentInvoiceRecipient = this.projectLineForm.differentInvoiceRecipient?.value;
+        result.invoiceRecipientId = this.projectLineForm.invoiceRecipientId?.value?.clientId;
+        result.invoiceRecipient = this.projectLineForm.invoiceRecipientId?.value;
+        result.modifiedById = this.projectLineForm.modifiedById?.value?.id;
+        result.modifiedBy = this.projectLineForm.modifiedById?.value;
+        result.modificationDate = this.projectLineForm.modificationDate?.value;
+        result.consultantInsuranceOptionId = this.projectLineForm.consultantInsuranceOptionId?.value;
         this.onConfirmed.emit(result);
         this.closeInternal();
     }
@@ -141,6 +193,10 @@ export class AddOrEditProjectLineDialogComponent extends AppComponentBase implem
 
     displayFullNameFn(option: any) {
         return option ? option?.firstName + ' ' + option?.lastName : '';
+    }
+
+    displayClientNameFn(option: any) {
+        return option?.clientName?.trim();
     }
 
     private closeInternal(): void {
