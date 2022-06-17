@@ -947,7 +947,7 @@
                                             <span class="workflow-contracts--list-header">End date</span>
                                         </div>
                                         <div fxFlex="10%">
-                                            <span class="workflow-contracts--list-header">Invoice ref</span>
+                                            <span class="workflow-contracts--list-header">Invoice ref person</span>
                                         </div>
                                         <div fxFlex="7%">
                                             <span class="workflow-contracts--list-header">Last changed</span>
@@ -965,8 +965,8 @@
                                             <span fxFlex="17%" class="u-w--100 text-truncate-ellipsis__multilne workflow-contracts--list-item" [matTooltip]="projectLine.value.projectName ?? '-'">
                                                 {{projectLine.value.projectName ?? '-'}}
                                             </span>
-                                            <span fxFlex="17%" class="u-w--100 text-truncate-ellipsis workflow-contracts--list-item" [matTooltip]="projectLine.value.invoiceRecipientId?.name ?? '-'">
-                                                {{projectLine.value.invoiceRecipientId?.name ?? '-'}}
+                                            <span fxFlex="17%" class="u-w--100 text-truncate-ellipsis workflow-contracts--list-item" [matTooltip]="projectLine.value.invoicingReferenceNumber ?? '-'">
+                                                {{projectLine.value.invoicingReferenceNumber ?? '-'}}
                                             </span>
                                             <span fxFlex="7%" class="u-w--100 text-truncate-ellipsis workflow-contracts--list-item" [matTooltip]="projectLine.value.startDate ? (projectLine.value.startDate | momentFormat: 'DD.MM.YYYY') : '-'">
                                                 {{projectLine.value.startDate ? (projectLine.value.startDate | momentFormat: 'DD.MM.YYYY') : '-'}}
@@ -974,8 +974,8 @@
                                             <span fxFlex="7%" class="u-w--100 text-truncate-ellipsis workflow-contracts--list-item" [matTooltip]="projectLine.value.endDate ? (projectLine.value.endDate | momentFormat: 'DD.MM.YYYY') : '-'">
                                                 {{projectLine.value.endDate ? (projectLine.value.endDate | momentFormat: 'DD.MM.YYYY') : '-'}}
                                             </span>
-                                            <span fxFlex="10%" class="u-w--100 text-truncate-ellipsis workflow-contracts--list-item" [matTooltip]="projectLine.value.invoicingReferenceNumber ?? '-'">
-                                                {{projectLine.value.invoicingReferenceNumber ?? '-'}}
+                                            <span fxFlex="10%" class="u-w--100 text-truncate-ellipsis workflow-contracts--list-item" [matTooltip]="projectLine.value.invoicingReferencePerson?.firstName ? (projectLine.value.invoicingReferencePerson?.firstName + ' ' + projectLine.value.invoicingReferencePerson?.lastName) : '-'">
+                                                {{projectLine.value.invoicingReferencePerson?.firstName ? (projectLine.value.invoicingReferencePerson?.firstName + ' ' + projectLine.value.invoicingReferencePerson?.lastName) : '-'}}
                                             </span>
                                             <span fxFlex="7%" class="u-w--100 text-truncate-ellipsis workflow-contracts--list-item" [matTooltip]="projectLine.value.modificationDate ? (projectLine.value.modificationDate | momentFormat: 'DD.MM.YYYY') : '-'">
                                                 {{projectLine.value.modificationDate ? (projectLine.value.modificationDate | momentFormat: 'DD.MM.YYYY') : '-'}}
@@ -1006,7 +1006,7 @@
                                             <span class="workflow-contracts--list-header">End date</span>
                                         </div>
                                         <div fxFlex="10%">
-                                            <span class="workflow-contracts--list-header">Invoice ref</span>
+                                            <span class="workflow-contracts--list-header">Invoice ref person</span>
                                         </div>
                                         <div fxFlex="7%">
                                             <span class="workflow-contracts--list-header">Last changed</span>
@@ -1026,8 +1026,8 @@
                                             <span fxFlex="17%" class="u-w--100 text-truncate-ellipsis__multilne workflow-contracts--list-item" [matTooltip]="projectLine.value.projectName ?? '-'">
                                                 {{projectLine.value.projectName ?? '-'}}
                                             </span>
-                                            <span fxFlex="17%" class="u-w--100 text-truncate-ellipsis workflow-contracts--list-item" [matTooltip]="projectLine.value.invoiceRecipientId?.name ?? '-'">
-                                                {{projectLine.value.invoiceRecipientId?.name ?? '-'}}
+                                            <span fxFlex="17%" class="u-w--100 text-truncate-ellipsis workflow-contracts--list-item" [matTooltip]="projectLine.value.invoicingReferenceNumber ?? '-'">
+                                                {{projectLine.value.invoicingReferenceNumber ?? '-'}}
                                             </span>
                                             <span fxFlex="7%" class="u-w--100 text-truncate-ellipsis workflow-contracts--list-item" [matTooltip]="projectLine.value.startDate ? (projectLine.value.startDate | momentFormat: 'DD.MM.YYYY') : '-'">
                                                 {{projectLine.value.startDate ? (projectLine.value.startDate | momentFormat: 'DD.MM.YYYY') : '-'}}
@@ -1035,8 +1035,8 @@
                                             <span fxFlex="7%" class="u-w--100 text-truncate-ellipsis workflow-contracts--list-item" [matTooltip]="projectLine.value.endDate ? (projectLine.value.endDate | momentFormat: 'DD.MM.YYYY') : '-'">
                                                 {{projectLine.value.endDate ? (projectLine.value.endDate | momentFormat: 'DD.MM.YYYY') : '-'}}
                                             </span>
-                                            <span fxFlex="10%" class="u-w--100 text-truncate-ellipsis workflow-contracts--list-item" [matTooltip]="projectLine.value.invoicingReferenceNumber ?? '-'">
-                                                {{projectLine.value.invoicingReferenceNumber ?? '-'}}
+                                            <span fxFlex="10%" class="u-w--100 text-truncate-ellipsis workflow-contracts--list-item" [matTooltip]="projectLine.value.invoicingReferencePerson?.firstName ? (projectLine.value.invoicingReferencePerson?.firstName + ' ' + projectLine.value.invoicingReferencePerson?.lastName) : '-'">
+                                                {{projectLine.value.invoicingReferencePerson?.firstName ? (projectLine.value.invoicingReferencePerson?.firstName + ' ' + projectLine.value.invoicingReferencePerson?.lastName) : '-'}}
                                             </span>
                                             <span fxFlex="7%" class="u-w--100 text-truncate-ellipsis workflow-contracts--list-item" [matTooltip]="projectLine.value.modificationDate ? (projectLine.value.modificationDate | momentFormat: 'DD.MM.YYYY') : '-'">
                                                 {{projectLine.value.modificationDate ? (projectLine.value.modificationDate | momentFormat: 'DD.MM.YYYY') : '-'}}
@@ -1093,10 +1093,10 @@
                         <span class="process-name" *ngIf="readOnlyMode">Contracts.</span>
                         <span class="anchor-name">Sync & legal contracts</span>
                     </h1>
-                    <h2 class="workflow-section--header u-mt--20">Sync</h2>
 
                     <ng-container *ngIf="readOnlyMode; else syncInput">
                         <!-- FIXME: add readonly when BE will return status of sync -->
+                        <!-- <h2 class="workflow-section--header u-mt--20">Sync</h2> -->
                         <!-- <div fxLayout="row" fxLayoutAlign="start start" class="u-mb--20">
                             <span class="icon-done u-mr--5">
                                 <mat-icon svgIcon="completed-icon"></mat-icon>
@@ -1104,9 +1104,11 @@
                             <div fxLayout="column" fxLayoutAlign="start start">
                                 <span class="workflow-darkblue--text">Synced to legacy system</span>
                             </div>
+                            <mat-divider class="u-w--100"></mat-divider>
                         </div> -->
                     </ng-container>
                     <ng-template #syncInput>
+                        <h2 class="workflow-section--header u-mt--20">Sync</h2>
                         <div fxLayout="column" fxLayoutAlign="start start" class="u-w--100">
                             <button class="button-accept u-mb--10" mat-flat-button (click)="processSyncToLegacySystem()">
                                 Sync to legacy system
@@ -1118,15 +1120,15 @@
                                 </span>
                             </div>
 
-                            <div fxLayout="row" fxLayoutAlign="start start" class="u-w--100 u-mb--20" *ngIf="showManualOption || contractsSyncDataForm.showManualOption?.value">
+                            <div fxLayout="row" fxLayoutAlign="start start" class="u-w--100 u-mb--20" *ngIf="contractsSyncDataForm.showManualOption?.value">
                                 <mat-checkbox color="accent" formControlName="manualCheckbox" name="manualCheckbox" class="black-checkbox u-mt--10">
                                     Contract lines done manually in old PM
                                 </mat-checkbox>
                             </div>
                         </div>
+                        <mat-divider class="u-w--100"></mat-divider>
                     </ng-template>
 
-                    <mat-divider class="u-w--100"></mat-divider>
 
                     <h2 class="workflow-section--header u-mb--20 u-mt--20">Legal contracts</h2>
 
@@ -1135,11 +1137,11 @@
                         <ng-container *ngIf="readOnlyMode; else legalContractsInput">
                             <h3 class="workflow-gray--header u-mb--10">Client legal contracts</h3>
                             <div fxLayout="row" fxLayoutAlign="start start" class="u-mb--20">
-                                <mat-icon class="u-mr--5"  [ngClass]="{'icon-cancel': contractsSyncDataForm.clientLegalContractDoneStatusId?.value === 0}" [svgIcon]="contractsSyncDataForm.clientLegalContractDoneStatusId?.value === 10 ? 'completed-icon' : 'cancel-fill'"></mat-icon>
+                                <mat-icon class="u-mr--5" [ngClass]="{'icon-cancel': contractsSyncDataForm.clientLegalContractDoneStatusId?.value === 0}" [svgIcon]="detectContractModuleIcon(contractsSyncDataForm.clientLegalContractDoneStatusId?.value)"></mat-icon>
                                 <div fxLayout="column" fxLayoutAlign="start start">
                                     <span class="workflow-darkblue--text">Contract module for client</span>
-                                    <span class="sync-hint-text">
-                                        {{contractsSyncDataForm.clientLegalContractDoneStatusId?.value === 10 ? 'Complete' : 'Not completed' }}
+                                    <span class="sync-hint-text"*ngIf="legalContractStatuses !== undefined && legalContractStatuses !== null">
+                                        {{legalContractStatuses[contractsSyncDataForm.clientLegalContractDoneStatusId?.value]}}
                                     </span>
                                 </div>
                             </div>
@@ -1148,17 +1150,17 @@
                             <div fxLayout="column" fxLayoutAlign="start start" class="u-mb--20">
                                 <span [ngClass]="{'workflow-gray--header': readOnlyMode, 'workflow-darkblue--text': !readOnlyMode}">Client legal contracts</span>
                                 <div fxlayout="row" fxLayoutAlign="start center" class="u-mb--10 u-mt--10">
-                                    <button class="button-accept u-mr--20" (click)="openContractModule(contractsSyncDataForm.clientLegalContractDoneStatusId?.value, false, contractClientForm.pdcInvoicingEntityId?.value)" mat-flat-button [disabled]="!enableLegalContractsButtons && !contractsSyncDataForm.enableLegalContractsButtons?.value">
+                                    <button class="button-accept u-mr--20" (click)="openContractModule(contractsSyncDataForm.clientLegalContractDoneStatusId?.value, false, contractClientForm.pdcInvoicingEntityId?.value)" mat-flat-button [disabled]="!contractsSyncDataForm.enableLegalContractsButtons?.value">
                                         Open contract module for client
                                     </button>
                                     <mat-checkbox *ngIf="activeSideSection.typeId === workflowSideSections.ChangeClientPeriod" color="accent" formControlName="newLegalContract" name="newLegalContract" class="black-checkbox u-mt--10">
                                         New legal contract needed
                                     </mat-checkbox>
                                 </div>
-                                <div fxLayout="row" fxLayoutAlign="start center" class="u-mb--20">
-                                    <mat-icon [ngClass]="{'icon-cancel': contractsSyncDataForm.clientLegalContractDoneStatusId?.value === 0}" class="u-mr--5" [svgIcon]="contractsSyncDataForm.clientLegalContractDoneStatusId?.value === 10 ? 'completed-icon' : 'cancel-fill'"></mat-icon>
-                                    <span class="sync-hint-text">
-                                        {{contractsSyncDataForm.clientLegalContractDoneStatusId?.value === 10 ? 'Complete' : ' Not accesible' }}
+                                <div fxLayout="row" fxLayoutAlign="start center" class="u-mb--20" *ngIf="contractsSyncDataForm.clientLegalContractDoneStatusId?.value !== 0">
+                                    <mat-icon class="u-mr--5" [ngClass]="{'icon-cancel': contractsSyncDataForm.clientLegalContractDoneStatusId?.value === 0}" [svgIcon]="detectContractModuleIcon(contractsSyncDataForm.clientLegalContractDoneStatusId?.value)"></mat-icon>
+                                    <span class="sync-hint-text" *ngIf="legalContractStatuses !== undefined && legalContractStatuses !== null">
+                                        {{legalContractStatuses[contractsSyncDataForm.clientLegalContractDoneStatusId?.value]}}
                                     </span>
                                 </div>
                             </div>
@@ -1177,85 +1179,56 @@
                                 </div>
                                 <div fxLayout="column" fxLayoutAlign="start start" class="u-w--100" *ngIf="readOnlyMode">
                                     <div fxLayout="row" fxLayoutAlign="start center" *ngIf="(contractClientForm.pdcInvoicingEntityId?.value !== consultant?.value?.pdcPaymentEntityId)">
-                                        <mat-icon [ngClass]="{'icon-cancel': consultant.value?.internalLegalContractDoneStatusId === 0}" class="u-mr--5"
-                                            [svgIcon]="consultant.value?.internalLegalContractDoneStatusId === 10 ? 'completed-icon' :'cancel-fill'"></mat-icon>
+                                        <mat-icon class="u-mr--5" [ngClass]="{'icon-cancel': consultant.value?.internalLegalContractDoneStatusId === 0}" [svgIcon]="detectContractModuleIcon(consultant.value?.internalLegalContractDoneStatusId)"></mat-icon>
                                         <div fxLayout="column" fxLayoutAlign="start start">
                                             <span class="workflow-darkblue--text">Internal legal contract module for consultant</span>
-                                            <span class="sync-hint-text">
-                                                {{consultant.value?.internalLegalContractDoneStatusId === 10 ? 'Complete' : 'Not completed'}}
+                                            <span class="sync-hint-text" *ngIf="legalContractStatuses !== undefined && legalContractStatuses !== null">
+                                                {{legalContractStatuses[consultant.value?.internalLegalContractDoneStatusId]}}
                                             </span>
                                         </div>
                                     </div>
                                     <div fxLayout="row" fxLayoutAlign="start center">
-                                        <mat-icon [ngClass]="{'icon-cancel': consultant.value?.consultantLegalContractDoneStatusId === 0}" class="u-mr--5"
-                                            [svgIcon]="consultant.value?.consultantLegalContractDoneStatusId === 10 ? 'completed-icon' :'cancel-fill'"></mat-icon>
+                                        <mat-icon class="u-mr--5" [ngClass]="{'icon-cancel': consultant.value?.consultantLegalContractDoneStatusId === 0}" [svgIcon]="detectContractModuleIcon(consultant.value?.consultantLegalContractDoneStatusId)"></mat-icon>
                                         <div fxLayout="column" fxLayoutAlign="start start">
                                             <span class="workflow-darkblue--text">Legal contract module for consultant</span>
-                                            <span class="sync-hint-text">
-                                                {{consultant.value?.consultantLegalContractDoneStatusId === 10 ? 'Complete' : 'Not completed'}}
+                                            <span class="sync-hint-text" *ngIf="legalContractStatuses !== undefined && legalContractStatuses !== null">
+                                                {{legalContractStatuses[consultant?.value?.consultantLegalContractDoneStatusId]}}
                                             </span>
                                         </div>
                                     </div>
                                 </div>
                                 <div fxlayout="row" fxLayoutAlign="start center" class="u-mb--10" *ngIf="!readOnlyMode && (contractClientForm.pdcInvoicingEntityId?.value !== consultant?.value?.pdcPaymentEntityId)">
-                                    <button class="button-outlined  u-mr--20" mat-flat-button [disabled]="!enableLegalContractsButtons" (click)="openContractModule(consultant.value?.internalLegalContractDoneStatusId, true, consultant?.value?.pdcPaymentEntityId, consultant.value.consultant)">
+                                    <button class="button-outlined  u-mr--20" mat-flat-button [disabled]="!contractsSyncDataForm.enableLegalContractsButtons?.value" (click)="openContractModule(consultant.value?.internalLegalContractDoneStatusId, true, consultant?.value?.pdcPaymentEntityId, consultant.value.consultant)">
                                         Open contract module for internal contract
                                     </button>
                                 </div>
+                                <div fxLayout="row" fxLayoutAlign="start center" class="u-mb--20" *ngIf="!readOnlyMode && consultant.value?.internalLegalContractDoneStatusId !== 0">
+                                    <mat-icon class="u-mr--5" [ngClass]="{'icon-cancel': consultant.value?.internalLegalContractDoneStatusId === 0}" [svgIcon]="detectContractModuleIcon(consultant.value?.internalLegalContractDoneStatusId)"></mat-icon>
+                                    <div fxLayout="column" fxLayoutAlign="start start">
+                                        <span class="sync-hint-text" *ngIf="legalContractStatuses !== undefined && legalContractStatuses !== null">
+                                            {{legalContractStatuses[consultant?.value?.internalLegalContractDoneStatusId]}}
+                                        </span>
+                                    </div>
+                                </div>
                                 <div fxlayout="row" fxLayoutAlign="start center" class="u-mb--10" *ngIf="!readOnlyMode">
-                                    <button class="button-outlined  u-mr--20" mat-flat-button [disabled]="!enableLegalContractsButtons" (click)="openContractModule(consultant.value?.consultantLegalContractDoneStatusId, false, consultant?.value?.pdcPaymentEntityId, consultant.value.consultant)">
+                                    <button class="button-outlined  u-mr--20" mat-flat-button [disabled]="!contractsSyncDataForm.enableLegalContractsButtons?.value" (click)="openContractModule(consultant.value?.consultantLegalContractDoneStatusId, false, consultant?.value?.pdcPaymentEntityId, consultant.value.consultant)">
                                         Open contract module for consultant
                                     </button>
                                     <mat-checkbox *ngIf="activeSideSection.typeId === workflowSideSections.ChangeClientPeriod" color="accent" formControlName="newLegalContract" name="newLegalContract" class="black-checkbox u-mt--10">
                                         New legal contract needed
                                     </mat-checkbox>
                                 </div>
-
-                                <div fxLayout="row" fxLayoutAlign="start center" class="u-mb--20" *ngIf="!readOnlyMode">
-                                    <span class="icon-done u-mr--5">
-                                        <mat-icon svgIcon="completed-icon"></mat-icon>
-                                    </span>
-                                    <span class="sync-hint-text">
-                                        Complete
-                                    </span>
-                                </div>
-                            </div>
-                        </ng-container>
-
-                        <!-- <div fxLayout="row" fxLayoutAlign="start center" class="u-mb--20">
-                            <img class="workflow-contracts--consultant-img u-mr--16" src="https://placekitten.com/50/50">
-                            <div fxLayout="column" fxLayoutAlign="start start" class="u-w--100">
-                                <p class="workflow-contracts--consultant-name">
-                                    Van Trier Mia
-                                </p>
-                                <div fxLayout="row" fxLayoutAlign="start center" *ngIf="readOnlyMode">
-                                    <span class="icon-done u-mr--5">
-                                        <mat-icon svgIcon="completed-icon"></mat-icon>
-                                    </span>
+        
+                                <div fxLayout="row" fxLayoutAlign="start center" class="u-mb--20" *ngIf="!readOnlyMode && consultant.value?.consultantLegalContractDoneStatusId !== 0">
+                                    <mat-icon class="u-mr--5" [ngClass]="{'icon-cancel': consultant.value?.consultantLegalContractDoneStatusId === 0}" [svgIcon]="detectContractModuleIcon(consultant.value?.consultantLegalContractDoneStatusId)"></mat-icon>
                                     <div fxLayout="column" fxLayoutAlign="start start">
-                                        <span class="workflow-darkblue--text">Contract module for consultant - complete</span>
+                                        <span class="sync-hint-text" *ngIf="legalContractStatuses !== undefined && legalContractStatuses !== null">
+                                            {{legalContractStatuses[consultant?.value?.consultantLegalContractDoneStatusId]}}
+                                        </span>
                                     </div>
                                 </div>
                             </div>
-                        </div>
-
-                        <div fxlayout="row" fxLayoutAlign="start center" class="u-mb--10" *ngIf="!readOnlyMode">
-                            <button class="button-outlined  u-mr--20" disabled mat-flat-button>
-                                Open contract module for client
-                            </button>
-                            <mat-checkbox *ngIf="activeSideSection.typeId === workflowSideSections.ChangeClientPeriod" color="accent" formControlName="newLegalContract" name="newLegalContract" class="black-checkbox u-mt--10">
-                                New legal contract needed
-                            </mat-checkbox>
-                        </div>
-                        <div fxLayout="row" fxLayoutAlign="start center" class="u-mb--20" *ngIf="!readOnlyMode">
-                            <span class="icon-in-progress u-mr--5">
-                                <mat-icon svgIcon="in-progress-icon"></mat-icon>
-                            </span>
-                            <span class="sync-hint-text">
-                                In progress
-                            </span>
-                        </div> -->
-
+                        </ng-container>
                     </div>
                 </div>
             </form>

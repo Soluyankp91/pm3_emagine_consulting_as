@@ -14,7 +14,7 @@ import { WorkflowDataService } from '../workflow-data.service';
 import { ConsultantDiallogAction } from '../workflow-sales/workflow-sales.model';
 import { ProjectLineDiallogMode } from '../workflow.model';
 import { AddOrEditProjectLineDialogComponent } from './add-or-edit-project-line-dialog/add-or-edit-project-line-dialog.component';
-import { WorkflowConsultantsLegalContractForm, WorkflowContractsClientDataForm, WorkflowContractsConsultantsDataForm, WorkflowContractsMainForm, WorkflowContractsSyncForm, WorkflowContractsTerminationConsultantsDataForm } from './workflow-contracts.model';
+import { LegalContractStatus, WorkflowConsultantsLegalContractForm, WorkflowContractsClientDataForm, WorkflowContractsConsultantsDataForm, WorkflowContractsMainForm, WorkflowContractsSyncForm, WorkflowContractsTerminationConsultantsDataForm } from './workflow-contracts.model';
 
 @Component({
     selector: 'app-workflow-contracts',
@@ -51,6 +51,7 @@ export class WorkflowContractsComponent extends AppComponentBase implements OnIn
     employmentTypes: EnumEntityTypeDto[] = [];
     consultantTimeReportingCapList: EnumEntityTypeDto[] = [];
     rateUnitTypes: EnumEntityTypeDto[] = [];
+    legalContractStatuses: { [key: string]: string; };
 
     contractLinesDoneManuallyInOldPMControl = new FormControl();
     contractsTerminationConsultantForm: WorkflowContractsTerminationConsultantsDataForm;
@@ -73,9 +74,8 @@ export class WorkflowContractsComponent extends AppComponentBase implements OnIn
 
     editEnabledForcefuly = false;
     syncNotPossible = false;
-    enableLegalContractsButtons = false;
-    showManualOption = false;
     syncMessage = '';
+    legalContractModuleStatuses = LegalContractStatus;
     private _unsubscribe = new Subject();
 
     constructor(
@@ -116,6 +116,7 @@ export class WorkflowContractsComponent extends AppComponentBase implements OnIn
         this.getEmploymentTypes();
         this.getConsultantTimeReportingCap();
         this.getUnitTypes();
+        this.getLegalContractStatuses();
 
         this._workflowDataService.updateWorkflowProgressStatus({currentStepIsCompleted: this.isCompleted, currentStepIsForcefullyEditing: false});
         if (this.permissionsForCurrentUser!["StartEdit"]) {
@@ -376,6 +377,16 @@ export class WorkflowContractsComponent extends AppComponentBase implements OnIn
             .subscribe(result => {
                 this.rateUnitTypes = result;
             });
+    }
+
+    getLegalContractStatuses() {
+        this._internalLookupService.getLegalContractStatuses()
+        .pipe(finalize(() => {
+
+        }))
+        .subscribe(result => {
+            this.legalContractStatuses = result;
+        });
     }
 
     toggleEditMode() {
@@ -815,14 +826,20 @@ export class WorkflowContractsComponent extends AppComponentBase implements OnIn
             endDate: new FormControl(projectLine?.endDate ?? null),
             noEndDate: new FormControl(projectLine?.noEndDate ?? false),
             invoicingReferenceNumber: new FormControl(projectLine?.invoicingReferenceNumber ?? null),
+            differentInvoicingReferenceNumber: new FormControl(projectLine?.differentInvoicingReferenceNumber ?? null),
             invoicingReferencePersonId: new FormControl(projectLine?.invoicingReferencePersonId ?? null),
+            invoicingReferencePerson: new FormControl(projectLine?.invoicingReferencePerson ?? null),
+            differentInvoicingReferencePerson: new FormControl(projectLine?.differentInvoicingReferencePerson ?? false),
             optionalInvoicingInfo: new FormControl(projectLine?.optionalInvoicingInfo ?? null),
             differentDebtorNumber: new FormControl(projectLine?.differentDebtorNumber ?? false),
             debtorNumber: new FormControl(projectLine?.debtorNumber ?? null),
             differentInvoiceRecipient: new FormControl(projectLine?.differentInvoiceRecipient ?? false),
             invoiceRecipientId: new FormControl(projectLine?.invoiceRecipientId ?? null),
+            invoiceRecipient: new FormControl(projectLine?.invoiceRecipient ?? null),
             modifiedById: new FormControl(projectLine?.modifiedById ?? null),
-            modificationDate: new FormControl(projectLine?.modificationDate ?? null)
+            modifiedBy: new FormControl(projectLine?.modifiedBy ?? null),
+            modificationDate: new FormControl(projectLine?.modificationDate ?? null),
+            consultantInsuranceOptionId: new FormControl(projectLine?.consultantInsuranceOptionId)
         });
         (this.contractsConsultantsDataForm.consultants.at(index).get('projectLines') as FormArray).push(form);
     }
@@ -835,12 +852,20 @@ export class WorkflowContractsComponent extends AppComponentBase implements OnIn
         projectLineRow.get('endDate')?.setValue(projectLineData.endDate, {emitEvent: false});
         projectLineRow.get('noEndDate')?.setValue(projectLineData.noEndDate, {emitEvent: false});
         projectLineRow.get('invoicingReferenceNumber')?.setValue(projectLineData.invoicingReferenceNumber, {emitEvent: false});
+        projectLineRow.get('differentInvoicingReferenceNumber')?.setValue(projectLineData.differentInvoicingReferenceNumber, {emitEvent: false});
         projectLineRow.get('invoicingReferencePersonId')?.setValue(projectLineData.invoicingReferencePersonId, {emitEvent: false});
+        projectLineRow.get('invoicingReferencePerson')?.setValue(projectLineData.invoicingReferencePerson, {emitEvent: false});
+        projectLineRow.get('differentInvoicingReferencePerson')?.setValue(projectLineData.differentInvoicingReferencePerson, {emitEvent: false});
         projectLineRow.get('optionalInvoicingInfo')?.setValue(projectLineData.optionalInvoicingInfo, {emitEvent: false});
         projectLineRow.get('differentDebtorNumber')?.setValue(projectLineData.differentDebtorNumber, {emitEvent: false});
         projectLineRow.get('debtorNumber')?.setValue(projectLineData.debtorNumber, {emitEvent: false});
         projectLineRow.get('differentInvoiceRecipient')?.setValue(projectLineData.differentInvoiceRecipient, {emitEvent: false});
         projectLineRow.get('invoiceRecipientId')?.setValue(projectLineData.invoiceRecipientId, {emitEvent: false});
+        projectLineRow.get('invoiceRecipient')?.setValue(projectLineData.invoiceRecipient, {emitEvent: false});
+        projectLineRow.get('modifiedById')?.setValue(projectLineData.modifiedById, {emitEvent: false});
+        projectLineRow.get('modifiedBy')?.setValue(projectLineData.modifiedBy, {emitEvent: false});
+        projectLineRow.get('modificationDate')?.setValue(projectLineData.modificationDate, {emitEvent: false});
+        projectLineRow.get('consultantInsuranceOptionId')?.setValue(projectLineData.consultantInsuranceOptionId, {emitEvent: false});
     }
 
     duplicateProjectLine(consultantIndex: number, projectLinesIndex: number) {
@@ -1179,15 +1204,21 @@ export class WorkflowContractsComponent extends AppComponentBase implements OnIn
                         projectLineInput.startDate = projectLine.startDate;
                         projectLineInput.endDate = projectLine.endDate;
                         projectLineInput.noEndDate = projectLine.noEndDate;
+                        projectLineInput.differentInvoicingReferenceNumber = projectLine.differentInvoicingReferenceNumber;
                         projectLineInput.invoicingReferenceNumber = projectLine.invoicingReferenceNumber;
+                        projectLineInput.differentInvoicingReferencePerson = projectLine.differentInvoicingReferencePerson;
                         projectLineInput.invoicingReferencePersonId = projectLine.invoicingReferencePersonId;
+                        projectLineInput.invoicingReferencePerson = projectLine.invoicingReferencePerson;
                         projectLineInput.optionalInvoicingInfo = projectLine.optionalInvoicingInfo;
                         projectLineInput.differentDebtorNumber = projectLine.differentDebtorNumber;
                         projectLineInput.debtorNumber = projectLine.debtorNumber;
                         projectLineInput.differentInvoiceRecipient = projectLine.differentInvoiceRecipient;
                         projectLineInput.invoiceRecipientId = projectLine.invoiceRecipientId;
+                        projectLineInput.invoiceRecipient = projectLine.invoiceRecipient;
                         projectLineInput.modifiedById = projectLine.modifiedById;
+                        projectLineInput.modifiedBy = projectLine.modifiedBy;
                         projectLineInput.modificationDate = projectLine.modificationDate;
+                        projectLineInput.consultantInsuranceOptionId = projectLine.consultantInsuranceOptionId;
 
                         consultantData.projectLines.push(projectLineInput);
                     }
@@ -1310,15 +1341,22 @@ export class WorkflowContractsComponent extends AppComponentBase implements OnIn
                     projectLineInput.projectName = projectLine.projectName;
                     projectLineInput.startDate = projectLine.startDate;
                     projectLineInput.endDate = projectLine.endDate;
+                    projectLineInput.noEndDate = projectLine.noEndDate;
+                    projectLineInput.differentInvoicingReferenceNumber = projectLine.differentInvoicingReferenceNumber;
                     projectLineInput.invoicingReferenceNumber = projectLine.invoicingReferenceNumber;
+                    projectLineInput.differentInvoicingReferencePerson = projectLine.differentInvoicingReferencePerson;
                     projectLineInput.invoicingReferencePersonId = projectLine.invoicingReferencePersonId;
+                    projectLineInput.invoicingReferencePerson = projectLine.invoicingReferencePerson;
                     projectLineInput.optionalInvoicingInfo = projectLine.optionalInvoicingInfo;
                     projectLineInput.differentDebtorNumber = projectLine.differentDebtorNumber;
                     projectLineInput.debtorNumber = projectLine.debtorNumber;
                     projectLineInput.differentInvoiceRecipient = projectLine.differentInvoiceRecipient;
                     projectLineInput.invoiceRecipientId = projectLine.invoiceRecipientId;
+                    projectLineInput.invoiceRecipient = projectLine.invoiceRecipient;
                     projectLineInput.modifiedById = projectLine.modifiedById;
+                    projectLineInput.modifiedBy = projectLine.modifiedBy;
                     projectLineInput.modificationDate = projectLine.modificationDate;
+                    projectLineInput.consultantInsuranceOptionId = projectLine.consultantInsuranceOptionId;
 
                     consultantData.projectLines.push(projectLineInput);
                 }
@@ -1492,11 +1530,14 @@ export class WorkflowContractsComponent extends AppComponentBase implements OnIn
     syncClientPeriodToLegacySystem() {
         this.showMainSpinner();
         this._contractSyncService.clientPeriodSync(this.periodId!)
-            .pipe(finalize(() => this.hideMainSpinner()))
+            .pipe(finalize(() => {
+                this.hideMainSpinner();
+                this.getContractStepData();
+            }))
             .subscribe(result => {
                 this.syncNotPossible = !result.success!;
-                this.enableLegalContractsButtons = result.enableLegalContractsButtons!;
-                this.showManualOption = result.showManualOption!;
+                this.contractsSyncDataForm.enableLegalContractsButtons?.setValue(result.enableLegalContractsButtons!);
+                this.contractsSyncDataForm.showManualOption?.setValue(result?.showManualOption, {emitEvent: false});
                 this.syncMessage = result.message!;
             });
     }
@@ -1504,11 +1545,14 @@ export class WorkflowContractsComponent extends AppComponentBase implements OnIn
     syncConsultantPeriodToLegacySystem() {
         this.showMainSpinner();
         this._contractSyncService.consultantPeriodSync(this.activeSideSection.consultantPeriodId!)
-            .pipe(finalize(() => {}))
+            .pipe(finalize(() => {
+                this.hideMainSpinner();
+                this.getContractStepData();
+            }))
             .subscribe(result => {
                 this.syncNotPossible = !result.success!;
-                this.enableLegalContractsButtons = result.enableLegalContractsButtons!;
-                this.showManualOption = result.showManualOption!;
+                this.contractsSyncDataForm.enableLegalContractsButtons?.setValue(result.enableLegalContractsButtons!);
+                this.contractsSyncDataForm.showManualOption?.setValue(result?.showManualOption, {emitEvent: false});
                 this.syncMessage = result.message!;
             });
     }
@@ -1516,11 +1560,14 @@ export class WorkflowContractsComponent extends AppComponentBase implements OnIn
     syncWorkflowTerminationToLegacySystem() {
         this.showMainSpinner();
         this._contractSyncService.workflowTerminationSync(this.workflowId!)
-            .pipe(finalize(() => {}))
+            .pipe(finalize(() => {
+                this.hideMainSpinner();
+                this.getContractStepData();
+            }))
             .subscribe(result => {
                 this.syncNotPossible = !result.success!;
-                this.enableLegalContractsButtons = result.enableLegalContractsButtons!;
-                this.showManualOption = result.showManualOption!;
+                this.contractsSyncDataForm.enableLegalContractsButtons?.setValue(result.enableLegalContractsButtons!);
+                this.contractsSyncDataForm.showManualOption?.setValue(result?.showManualOption, {emitEvent: false});
                 this.syncMessage = result.message!;
             });
     }
@@ -1529,18 +1576,35 @@ export class WorkflowContractsComponent extends AppComponentBase implements OnIn
         this.showMainSpinner();
         this.activeSideSection.consultantPeriodId
         this._contractSyncService.consultantTerminationSync(this.activeSideSection.consultantPeriodId!)
-            .pipe(finalize(() => {}))
+            .pipe(finalize(() => {
+                this.hideMainSpinner();
+                this.getContractStepData();
+            }))
             .subscribe(result => {
                 this.syncNotPossible = !result.success!;
-                this.enableLegalContractsButtons = result.enableLegalContractsButtons!;
-                this.showManualOption = result.showManualOption!;
+                this.contractsSyncDataForm.enableLegalContractsButtons?.setValue(result.enableLegalContractsButtons!);
+                this.contractsSyncDataForm.showManualOption?.setValue(result?.showManualOption, {emitEvent: false});
                 this.syncMessage = result.message!;
             });
     }
 
-    
     openContractModule(legalContractStatus: number, isInternal: boolean, tenantId: number, consultant?: ConsultantResultDto) {
         let isFrameworkAgreement = false;
         window.open(`pmpapercontractpm3:${this.periodId}/${isInternal ? 'True' : 'False'}/${legalContractStatus <= 1 ? 'True' : 'False'}/${isFrameworkAgreement ? 'True' : 'False'}/${tenantId}${consultant?.id ? '/' + consultant.id : ''}`);
+    }
+
+    detectContractModuleIcon(legalContractStatus: number | string): string {
+        switch (legalContractStatus) {
+            case LegalContractStatus.NotAcceessible: // Not accessible
+                return 'cancel-fill';
+            case LegalContractStatus.NotYetCreated: // Not yet created
+                return 'in-progress-icon';
+            case LegalContractStatus.SavedButNotGenerated: // Saved but not generated
+                return 'completed-icon';
+            case LegalContractStatus.Done: // Done (generated or bypassed)
+                return 'completed-icon';
+            default:
+                return '';
+        }
     }
 }

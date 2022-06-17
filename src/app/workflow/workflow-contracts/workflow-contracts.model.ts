@@ -190,3 +190,11 @@ export class WorkflowContractsTerminationConsultantsDataForm extends FormGroup {
         return this.get('consultantTerminationContractData') as FormArray;
     }
 }
+
+
+export enum LegalContractStatus {
+    NotAcceessible = 0,
+    NotYetCreated = 1,
+    SavedButNotGenerated = 2,
+    Done = 10
+}
