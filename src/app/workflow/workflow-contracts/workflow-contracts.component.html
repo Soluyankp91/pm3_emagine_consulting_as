@@ -183,10 +183,6 @@
                         <h3 class="workflow-gray--header">Special Contract Terms</h3>
                         <div fxLayout="row" fxLayoutAlign="start start" class="u-w--100">
                             <ng-container *ngIf="readOnlyMode; else specialContractTermsInput">
-                                <!-- <span class="workflow-readonly--blue-text">
-                                    {{contractClientForm?.specialContractTerms?.value}}
-                                </span> --> 
-                                <!--TODO: remove comment-->
                                 <span class="workflow-readonly--blue-text" *ngIf="contractClientForm?.noSpecialContractTerms?.value">
                                     No special contract terms
                                 </span>
@@ -1214,7 +1210,7 @@
                                         New legal contract needed
                                     </mat-checkbox>
                                 </div>
-        
+
                                 <div fxLayout="row" fxLayoutAlign="start center" class="u-mb--20" *ngIf="!readOnlyMode">
                                     <span class="icon-done u-mr--5">
                                         <mat-icon svgIcon="completed-icon"></mat-icon>
