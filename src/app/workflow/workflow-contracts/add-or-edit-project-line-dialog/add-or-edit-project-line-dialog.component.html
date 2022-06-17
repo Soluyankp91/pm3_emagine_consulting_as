@@ -58,8 +58,8 @@
             </mat-checkbox>
 
             <mat-form-field appearance="outline" class="u-w--100 u-mt--10 filter-select">
-                <mat-label>Invoice reference</mat-label>
-                <input #invoicingReferencePersonAutocompleteInput type="text" matInput [matAutocomplete]="invoicingReferencePersonAutocomplete" formControlName="invoicingReferencePersonId" (click)="$event.stopPropagation()" placeholder="Invoice reference">
+                <mat-label>Invoice reference person</mat-label>
+                <input #invoicingReferencePersonAutocompleteInput type="text" matInput [matAutocomplete]="invoicingReferencePersonAutocomplete" formControlName="invoicingReferencePersonId" (click)="$event.stopPropagation()" placeholder="Invoice reference person">
                 <mat-autocomplete #invoicingReferencePersonAutocomplete="matAutocomplete" [displayWith]="displayFullNameFn">
                     <ng-container>
                         <mat-option *ngFor="let contact of filteredReferencePersons" [value]="contact" [ngClass]="{ 'no-data': contact.id === 'no-data' }">
@@ -89,7 +89,17 @@
 
             <mat-form-field appearance="outline" class="u-w--100 u-mt--10 formFieldNoMarginPadding">
                 <mat-label>Invoice recipient</mat-label>
-                <input matInput type="text" formControlName="invoiceRecipientId">
+                <input #clientInvoicingRecipientInput type="text" matInput [matAutocomplete]="clientInvoicingRecipientAutocomplete" formControlName="invoiceRecipientId" (click)="$event.stopPropagation()" placeholder="Invoice recipient">
+                <mat-autocomplete #clientInvoicingRecipientAutocomplete="matAutocomplete" [displayWith]="displayClientNameFn">
+                    <ng-container>
+                        <mat-option *ngFor="let client of filteredClientInvoicingRecipients" [value]="client" [ngClass]="{ 'no-data': client.id === 'no-data' }">
+                            <div>
+                                <b>{{ client.clientName }}</b>
+                                <span *ngIf="client.id !== 'no-data'"> | {{client.address}} | {{client.address2}} | {{client.postCode}}</span>
+                            </div>
+                        </mat-option>
+                    </ng-container>
+                </mat-autocomplete>
             </mat-form-field>
             <mat-checkbox color="accent" name="differentInvoiceRecipient" formControlName="differentInvoiceRecipient" class="green-checkbox" (change)="disableOrEnableInput(!projectLineForm.differentInvoiceRecipient!.value, projectLineForm.invoiceRecipientId)">
                 Different invoice recipient
