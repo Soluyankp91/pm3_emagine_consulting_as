@@ -492,14 +492,14 @@ export class WorkflowSalesComponent extends AppComponentBase implements OnInit {
     private _filterClientRates(value: string): ClientSpecialRateDto[] {
         const filterValue = value.toLowerCase();
         const selectedIds: number[] = this.salesClientDataForm.clientRates.value.map((x: any) => x.id);
-        const result = this.clientSpecialRateList.filter(option => option.publicName!.toLowerCase().includes(filterValue)).filter(x =>  !selectedIds.includes(x.id!));
+        const result = this.clientSpecialRateList.filter(option => option.internalName!.toLowerCase().includes(filterValue)).filter(x =>  !selectedIds.includes(x.id!));
         return result;
     }
 
     private _filterClientFees(value: string): ClientSpecialFeeDto[] {
         const filterValue = value.toLowerCase();
         const selectedIds: number[] = this.salesClientDataForm.clientFees.value.map((x: any) => x.id);
-        const result = this.clientSpecialFeeList.filter(option => option.publicName!.toLowerCase().includes(filterValue)).filter(x =>  !selectedIds.includes(x.id!));
+        const result = this.clientSpecialFeeList.filter(option => option.internalName!.toLowerCase().includes(filterValue)).filter(x =>  !selectedIds.includes(x.id!));
         return result;
     }
 
@@ -855,7 +855,7 @@ export class WorkflowSalesComponent extends AppComponentBase implements OnInit {
         const formattedRate = new PeriodClientSpecialRateDto();
         formattedRate.id = undefined;
         formattedRate.clientSpecialRateId = rate.id;
-        formattedRate.rateName = rate.publicName;
+        formattedRate.rateName = rate.internalName;
         formattedRate.reportingUnit = rate.specialRateReportingUnit;
         formattedRate.rateSpecifiedAs = rate.specialRateSpecifiedAs;
         if (formattedRate.rateSpecifiedAs?.id === 1) {
@@ -926,7 +926,7 @@ export class WorkflowSalesComponent extends AppComponentBase implements OnInit {
         const formattedFee = new PeriodClientSpecialFeeDto();
         formattedFee.id = undefined;
         formattedFee.clientSpecialFeeId = fee.id;
-        formattedFee.feeName = fee.publicName;
+        formattedFee.feeName = fee.internalName;
         formattedFee.frequency = fee.clientSpecialFeeFrequency;
         formattedFee.clientRate = fee.clientRate;
         formattedFee.clientRateCurrencyId = fee.clientRateCurrency?.id;
@@ -1043,7 +1043,7 @@ export class WorkflowSalesComponent extends AppComponentBase implements OnInit {
             consultantPeriodId: new FormControl(consultant?.consultantPeriodId ?? null),
             consultantNameOnly: new FormControl(consultant?.nameOnly ?? null),
 
-            consultantProjectDurationSameAsClient: new FormControl(true),
+            consultantProjectDurationSameAsClient: new FormControl(consultant?.durationSameAsClientPeriod ?? true),
             consultantProjectStartDate: new FormControl(consultant?.startDate ?? null),
             consultantProjectEndDate: new FormControl({value: consultant?.endDate ?? null, disabled: consultant?.noEndDate}),
             consultantProjectNoEndDate: new FormControl(consultant?.noEndDate ?? false),
@@ -1195,7 +1195,7 @@ export class WorkflowSalesComponent extends AppComponentBase implements OnInit {
 
     private _filterConsultantRates(value: string, consultantIndex: number): ClientSpecialFeeDto[] {
         const filterValue = value.toLowerCase();
-        const result = this.clientSpecialRateList.filter(option => option.publicName!.toLowerCase().includes(filterValue));
+        const result = this.clientSpecialRateList.filter(option => option.internalName!.toLowerCase().includes(filterValue));
         return result;
     }
 
@@ -1212,7 +1212,7 @@ export class WorkflowSalesComponent extends AppComponentBase implements OnInit {
 
     private _filterConsultantFees(value: string, consultantIndex: number): ClientSpecialFeeDto[] {
         const filterValue = value.toLowerCase();
-        const result = this.clientSpecialFeeList.filter(option => option.publicName!.toLowerCase().includes(filterValue));
+        const result = this.clientSpecialFeeList.filter(option => option.internalName!.toLowerCase().includes(filterValue));
         return result;
     }
 
@@ -1261,7 +1261,7 @@ export class WorkflowSalesComponent extends AppComponentBase implements OnInit {
         const consultantRate = new PeriodConsultantSpecialRateDto();
         consultantRate.id = undefined;
         consultantRate.clientSpecialRateId = rate.id;
-        consultantRate.rateName = rate.publicName;
+        consultantRate.rateName = rate.internalName;
         consultantRate.reportingUnit = rate.specialRateReportingUnit;
         if (consultantRate.rateSpecifiedAs?.id === 1) {
             consultantRate.prodataToProdataRate = +(this.consultantsForm.consultantData.at(consultantIndex)!.get('consultantRate')!.value * rate.proDataToProDataRate! / 100).toFixed(2);
@@ -1338,7 +1338,7 @@ export class WorkflowSalesComponent extends AppComponentBase implements OnInit {
         const consultantFee = new PeriodConsultantSpecialFeeDto();
         consultantFee.id = undefined;
         consultantFee.clientSpecialFeeId = fee.id;
-        consultantFee.feeName = fee.publicName;
+        consultantFee.feeName = fee.internalName;
         consultantFee.frequency = fee.clientSpecialFeeFrequency;
         consultantFee.prodataToProdataRate = fee.prodataToProdataRate;
         consultantFee.prodataToProdataRateCurrencyId = fee.prodataToProdataRateCurrency?.id;
@@ -1584,6 +1584,7 @@ export class WorkflowSalesComponent extends AppComponentBase implements OnInit {
                     consultantInput.consultant.city = consultant.consultantName?.city;
                     consultantInput.consultant.countryId = consultant.consultantName?.contryId;
 
+                    consultantInput.durationSameAsClientPeriod = consultant.consultantProjectDurationSameAsClient;
                     consultantInput.startDate = consultant.consultantProjectStartDate;
                     consultantInput.noEndDate = consultant.consultantProjectNoEndDate;
                     consultantInput.endDate = consultant.consultantProjectEndDate;
@@ -2343,8 +2344,8 @@ export class WorkflowSalesComponent extends AppComponentBase implements OnInit {
         return option?.name;
     }
 
-    displayPublicNameFn(option: any) {
-        return option?.publicName;
+    displayInternalNameFn(option: any) {
+        return option?.internalName;
     }
 
     displayClientNameFn(option: any) {
