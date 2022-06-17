@@ -329,6 +329,7 @@
                         <div fxLayout="column" fxFlex="25%">
                             <h3 class="workflow-readonly--gray-header">Invoicing ref. no.</h3>
                             <span class="workflow-readonly--blue-text-bold">
+                                <!-- FIXME: check why we don't have this value. UPD: Already told this to Sergii -->
                                 {{salesClientDataForm?.invoicingReferenceNumber?.value ? salesClientDataForm?.invoicingReferenceNumber?.value : '-'}}
                             </span>
                         </div>
@@ -498,6 +499,7 @@
                     <div fxLayout="column" class="u-w--100 u-mb--20">
                         <h3 class="workflow-readonly--gray-header">Special Contract Terms</h3>
                         <span class="workflow-readonly--blue-text">
+                            <!-- FIXME: check why we don't have this value. UPD: now it's visible. will check later -->
                             {{salesClientDataForm?.specialContractTerms?.value ? salesClientDataForm?.specialContractTerms?.value : '-'}}
                         </span>
                     </div>
@@ -635,14 +637,14 @@
                                     </span>
                                 </div>
                                 <div fxLayout="column" class="u-w--100 u-mb--20">
-                                    <h3 class="workflow-readonly--gray-header">Price</h3>
+                                    <h3 class="workflow-readonly--gray-header">Rate</h3> 
                                     <span class="workflow-readonly--blue-text-bold">
                                         {{item?.value?.consultantPaymentType?.name ? item?.value?.consultantPaymentType?.name : '-'}}
                                     </span>
                                 </div>
                                 <div fxLayout="row" fxLayoutAlign="start start" class="u-w--100 u-mb--20">
                                     <div fxLayout="column" fxFlex="25%">
-                                        <h3 class="workflow-readonly--gray-header">Rate</h3>
+                                        <h3 class="workflow-readonly--gray-header">Price</h3>
                                         <span class="workflow-readonly--blue-text-bold">
                                             {{item?.value?.consultantRate ? item?.value?.consultantRate : '-'}}
                                         </span>
@@ -680,6 +682,7 @@
                                         </span>
                                     </div>
                                 </div>
+                                <!-- FIXME: missing Invoicing information(header) -> Infoicing frequency (field) -->
                             </div>
                             <mat-divider class="u-w--100 u-mt--20 u-mb--20"></mat-divider>
                             <div fxLayout="column" fxLayoutAlign="start start" class="u-w--100">
@@ -739,9 +742,11 @@
                                 <div fxLayout="column" class="u-w--100 u-mb--20">
                                     <h3 class="workflow-readonly--gray-header">Expected workload</h3>
                                     <span class="workflow-readonly--blue-text-bold">
+                                        <!-- FIXME: check why we don't have this value -->
                                         {{item?.value?.consultantExpectedWorkloadHours ? item?.value?.consultantExpectedWorkloadHours : '-'}} {{item?.value?.consultantExpectedWorkloadPeriod}}
                                     </span>
                                 </div>
+                                <!-- FIXME: check what it is? on edit we don't have this value -->
                                 <div fxLayout="row" fxLayoutAlign="start start" class="u-w--100 u-mb--20">
                                     <div fxLayout="column" class="u-w--100 u-mb--20" fxFlex="25%">
                                         <h3 class="workflow-readonly--gray-header">Cap on Time Reporting</h3>
@@ -2300,6 +2305,7 @@
                                                         </mat-option>
                                                     </mat-select>
                                                 </mat-form-field>
+                                                <!-- FIXME: Add the same calculation to readonly mode -->
                                                 <div fxFlex="0 0 calc(16.5% - 8px)" fxLayoutAlign="start center" class="workflow-form--consultants__payment-price-text">
                                                     <span *ngIf="(salesClientDataForm.clientRateAndInvoicing?.value?.id === consultant.value?.consultantPaymentType?.id) &&
                                                             (salesClientDataForm.clientCurrency?.value?.id === consultant.value?.consultantRateCurrency?.id) &&
@@ -2342,6 +2348,7 @@
                                                         </mat-option>
                                                     </mat-select>
                                                 </mat-form-field>
+                                                <!-- FIXME: Add the same calculation to readonly mode -->
                                                 <div fxFlex="0 0 calc(16.5% - 8px)" fxLayoutAlign="start center" class="workflow-form--consultants__payment-price-text">
                                                     <span *ngIf="(salesClientDataForm.clientRateAndInvoicing?.value?.id === consultant.value?.consultantPaymentType?.id) &&
                                                             (salesClientDataForm.clientCurrency?.value?.id === consultant.value?.consultantPDCRateCurrency?.id) &&

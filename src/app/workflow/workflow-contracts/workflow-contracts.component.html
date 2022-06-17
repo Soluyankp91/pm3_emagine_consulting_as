@@ -184,9 +184,10 @@
                         <h3 class="workflow-gray--header">Special Contract Terms</h3>
                         <div fxLayout="row" fxLayoutAlign="start start" class="u-w--100">
                             <ng-container *ngIf="readOnlyMode; else specialContractTermsInput">
-                                <span class="workflow-readonly--blue-text">
+                                <!-- <span class="workflow-readonly--blue-text">
                                     {{contractClientForm?.specialContractTerms?.value}}
-                                </span>
+                                </span> --> 
+                                <!--TODO: remove comment-->
                                 <span class="workflow-readonly--blue-text" *ngIf="contractClientForm?.noSpecialContractTerms?.value">
                                     No special contract terms
                                 </span>
@@ -1212,7 +1213,6 @@
                                     </button>
                                 </div>
                                 <div fxlayout="row" fxLayoutAlign="start center" class="u-mb--10" *ngIf="!readOnlyMode">
-                                    {{consultant?.value?.pdcPaymentEntityId}}
                                     <button class="button-outlined  u-mr--20" mat-flat-button [disabled]="!enableLegalContractsButtons" (click)="openContractModule(consultant.value?.consultantLegalContractDoneStatusId, false, consultant?.value?.pdcPaymentEntityId, consultant.value.consultant)">
                                         Open contract module for consultant
                                     </button>
