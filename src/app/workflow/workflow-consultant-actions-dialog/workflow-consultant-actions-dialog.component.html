@@ -3,7 +3,7 @@
         {{ data.dialogTitle }}
     </div>
     <div fxLayout="row" fxLayoutAlign="start center">
-        <img class="border-rounded-50 u-mr--16" src="https://picsum.photos/35/35" />
+        <img class="border-rounded-50 u-mr--16 image-thumbnail" [src]="consultantProfileUrl(consultant.consultantName?.externalId)">
         <p class="consultant-name">{{consultant.consultantName?.name}}</p>
     </div>
     <ng-container [ngSwitch]="data.dialogType">

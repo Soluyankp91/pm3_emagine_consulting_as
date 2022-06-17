@@ -2,7 +2,7 @@
     <ng-container formArrayName="consultantTerminationSourcingData">
         <div *ngFor="let consultant of sourcingConsultantsDataForm.consultantTerminationSourcingData.controls; let i = index; last as last" [formGroupName]="i" class="workflow-contracts--block-consultants u-mt--20" [ngClass]="{'last-block': last}">
             <div fxLayout="row" fxLayoutAlign="start center" class="u-mb--20">
-                <img class="workflow-sourcing--consultant-img u-mr--16" src="https://placekitten.com/50/50">
+                <img class="workflow-sourcing--consultant-img u-mr--16" [src]="consultantProfileUrl(consultant.value.consultantData?.externalId)">
                 <p class="workflow-sourcing--consultant-name">
                     {{sourcingConsultantsDataForm.consultantTerminationSourcingData.at(i).get('consultantData')?.value?.name}}
                 </p>
