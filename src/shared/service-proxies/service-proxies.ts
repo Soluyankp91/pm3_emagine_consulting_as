@@ -8512,6 +8512,60 @@ export class WorkflowServiceProxy {
     /**
      * @return Success
      */
+    overview(workflowId: string): Observable<WorkflowOverviewDto> {
+        let url_ = this.baseUrl + "/api/Workflow/{workflowId}/overview";
+        if (workflowId === undefined || workflowId === null)
+            throw new Error("The parameter 'workflowId' must be defined.");
+        url_ = url_.replace("{workflowId}", encodeURIComponent("" + workflowId));
+        url_ = url_.replace(/[?&]$/, "");
+
+        let options_ : any = {
+            observe: "response",
+            responseType: "blob",
+            headers: new HttpHeaders({
+                "Accept": "text/plain"
+            })
+        };
+
+        return this.http.request("get", url_, options_).pipe(_observableMergeMap((response_ : any) => {
+            return this.processOverview(response_);
+        })).pipe(_observableCatch((response_: any) => {
+            if (response_ instanceof HttpResponseBase) {
+                try {
+                    return this.processOverview(response_ as any);
+                } catch (e) {
+                    return _observableThrow(e) as any as Observable<WorkflowOverviewDto>;
+                }
+            } else
+                return _observableThrow(response_) as any as Observable<WorkflowOverviewDto>;
+        }));
+    }
+
+    protected processOverview(response: HttpResponseBase): Observable<WorkflowOverviewDto> {
+        const status = response.status;
+        const responseBlob =
+            response instanceof HttpResponse ? response.body :
+            (response as any).error instanceof Blob ? (response as any).error : undefined;
+
+        let _headers: any = {}; if (response.headers) { for (let key of response.headers.keys()) { _headers[key] = response.headers.get(key); }}
+        if (status === 200) {
+            return blobToText(responseBlob).pipe(_observableMergeMap(_responseText => {
+            let result200: any = null;
+            let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
+            result200 = WorkflowOverviewDto.fromJS(resultData200);
+            return _observableOf(result200);
+            }));
+        } else if (status !== 200 && status !== 204) {
+            return blobToText(responseBlob).pipe(_observableMergeMap(_responseText => {
+            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+            }));
+        }
+        return _observableOf<WorkflowOverviewDto>(null as any);
+    }
+
+    /**
+     * @return Success
+     */
     terminationStart(workflowId: string): Observable<void> {
         let url_ = this.baseUrl + "/api/Workflow/{workflowId}/termination-start";
         if (workflowId === undefined || workflowId === null)
@@ -9989,6 +10043,74 @@ export class WorkflowServiceProxy {
     }
 }
 
+@Injectable()
+export class WorkflowIntegrationServiceProxy {
+    private http: HttpClient;
+    private baseUrl: string;
+    protected jsonParseReviver: ((key: string, value: any) => any) | undefined = undefined;
+
+    constructor(@Inject(HttpClient) http: HttpClient, @Optional() @Inject(API_BASE_URL) baseUrl?: string) {
+        this.http = http;
+        this.baseUrl = baseUrl !== undefined && baseUrl !== null ? baseUrl : "";
+    }
+
+    /**
+     * @param body (optional) 
+     * @return Success
+     */
+    workflowPeriodLegalContractStatus(body?: WorkflowPeriodLegalContractStatusUpdateInputDto | undefined): Observable<void> {
+        let url_ = this.baseUrl + "/api/WorkflowIntegration/WorkflowPeriodLegalContractStatus";
+        url_ = url_.replace(/[?&]$/, "");
+
+        const content_ = JSON.stringify(body);
+
+        let options_ : any = {
+            body: content_,
+            observe: "response",
+            responseType: "blob",
+            headers: new HttpHeaders({
+                "Content-Type": "application/json",
+            })
+        };
+
+        return this.http.request("put", url_, options_).pipe(_observableMergeMap((response_ : any) => {
+            return this.processWorkflowPeriodLegalContractStatus(response_);
+        })).pipe(_observableCatch((response_: any) => {
+            if (response_ instanceof HttpResponseBase) {
+                try {
+                    return this.processWorkflowPeriodLegalContractStatus(response_ as any);
+                } catch (e) {
+                    return _observableThrow(e) as any as Observable<void>;
+                }
+            } else
+                return _observableThrow(response_) as any as Observable<void>;
+        }));
+    }
+
+    protected processWorkflowPeriodLegalContractStatus(response: HttpResponseBase): Observable<void> {
+        const status = response.status;
+        const responseBlob =
+            response instanceof HttpResponse ? response.body :
+            (response as any).error instanceof Blob ? (response as any).error : undefined;
+
+        let _headers: any = {}; if (response.headers) { for (let key of response.headers.keys()) { _headers[key] = response.headers.get(key); }}
+        if (status === 200) {
+            return blobToText(responseBlob).pipe(_observableMergeMap(_responseText => {
+            return _observableOf<void>(null as any);
+            }));
+        } else if (status === 401) {
+            return blobToText(responseBlob).pipe(_observableMergeMap(_responseText => {
+            return throwException("Unauthorized", status, _responseText, _headers);
+            }));
+        } else if (status !== 200 && status !== 204) {
+            return blobToText(responseBlob).pipe(_observableMergeMap(_responseText => {
+            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+            }));
+        }
+        return _observableOf<void>(null as any);
+    }
+}
+
 export class AddClientSpecialFeeDto implements IAddClientSpecialFeeDto {
     internalName?: string | undefined;
     publicName?: string | undefined;
@@ -10679,6 +10801,54 @@ export interface IClientEvaluationOutputDto {
     evaluationDate?: moment.Moment;
     evaluationFormName?: string | undefined;
     comment?: string | undefined;
+}
+
+export class ClientGanttRow implements IClientGanttRow {
+    name?: string | undefined;
+    ganttRowItems?: GanttRowItem[] | undefined;
+
+    constructor(data?: IClientGanttRow) {
+        if (data) {
+            for (var property in data) {
+                if (data.hasOwnProperty(property))
+                    (<any>this)[property] = (<any>data)[property];
+            }
+        }
+    }
+
+    init(_data?: any) {
+        if (_data) {
+            this.name = _data["name"];
+            if (Array.isArray(_data["ganttRowItems"])) {
+                this.ganttRowItems = [] as any;
+                for (let item of _data["ganttRowItems"])
+                    this.ganttRowItems!.push(GanttRowItem.fromJS(item));
+            }
+        }
+    }
+
+    static fromJS(data: any): ClientGanttRow {
+        data = typeof data === 'object' ? data : {};
+        let result = new ClientGanttRow();
+        result.init(data);
+        return result;
+    }
+
+    toJSON(data?: any) {
+        data = typeof data === 'object' ? data : {};
+        data["name"] = this.name;
+        if (Array.isArray(this.ganttRowItems)) {
+            data["ganttRowItems"] = [];
+            for (let item of this.ganttRowItems)
+                data["ganttRowItems"].push(item.toJSON());
+        }
+        return data;
+    }
+}
+
+export interface IClientGanttRow {
+    name?: string | undefined;
+    ganttRowItems?: GanttRowItem[] | undefined;
 }
 
 export class ClientListItemDto implements IClientListItemDto {
@@ -12175,6 +12345,58 @@ export interface IConsultantContractsDataDto {
     noEndDate?: boolean;
     endDate?: moment.Moment | undefined;
     pdcPaymentEntityId?: number | undefined;
+}
+
+export class ConsultantGanttRow implements IConsultantGanttRow {
+    name?: string | undefined;
+    consultantExternalId?: string | undefined;
+    ganttRowItems?: GanttRowItem[] | undefined;
+
+    constructor(data?: IConsultantGanttRow) {
+        if (data) {
+            for (var property in data) {
+                if (data.hasOwnProperty(property))
+                    (<any>this)[property] = (<any>data)[property];
+            }
+        }
+    }
+
+    init(_data?: any) {
+        if (_data) {
+            this.name = _data["name"];
+            this.consultantExternalId = _data["consultantExternalId"];
+            if (Array.isArray(_data["ganttRowItems"])) {
+                this.ganttRowItems = [] as any;
+                for (let item of _data["ganttRowItems"])
+                    this.ganttRowItems!.push(GanttRowItem.fromJS(item));
+            }
+        }
+    }
+
+    static fromJS(data: any): ConsultantGanttRow {
+        data = typeof data === 'object' ? data : {};
+        let result = new ConsultantGanttRow();
+        result.init(data);
+        return result;
+    }
+
+    toJSON(data?: any) {
+        data = typeof data === 'object' ? data : {};
+        data["name"] = this.name;
+        data["consultantExternalId"] = this.consultantExternalId;
+        if (Array.isArray(this.ganttRowItems)) {
+            data["ganttRowItems"] = [];
+            for (let item of this.ganttRowItems)
+                data["ganttRowItems"].push(item.toJSON());
+        }
+        return data;
+    }
+}
+
+export interface IConsultantGanttRow {
+    name?: string | undefined;
+    consultantExternalId?: string | undefined;
+    ganttRowItems?: GanttRowItem[] | undefined;
 }
 
 export class ConsultantPeriodAddDto implements IConsultantPeriodAddDto {
@@ -14004,6 +14226,54 @@ export interface IExtendConsultantPeriodDto {
     endDate?: moment.Moment | undefined;
 }
 
+export class GanttRowItem implements IGanttRowItem {
+    id?: string;
+    processTypeId?: WorkflowProcessType;
+    startDate?: moment.Moment | undefined;
+    endDate?: moment.Moment | undefined;
+
+    constructor(data?: IGanttRowItem) {
+        if (data) {
+            for (var property in data) {
+                if (data.hasOwnProperty(property))
+                    (<any>this)[property] = (<any>data)[property];
+            }
+        }
+    }
+
+    init(_data?: any) {
+        if (_data) {
+            this.id = _data["id"];
+            this.processTypeId = _data["processTypeId"];
+            this.startDate = _data["startDate"] ? moment(_data["startDate"].toString()) : <any>undefined;
+            this.endDate = _data["endDate"] ? moment(_data["endDate"].toString()) : <any>undefined;
+        }
+    }
+
+    static fromJS(data: any): GanttRowItem {
+        data = typeof data === 'object' ? data : {};
+        let result = new GanttRowItem();
+        result.init(data);
+        return result;
+    }
+
+    toJSON(data?: any) {
+        data = typeof data === 'object' ? data : {};
+        data["id"] = this.id;
+        data["processTypeId"] = this.processTypeId;
+        data["startDate"] = this.startDate ? this.startDate.format('YYYY-MM-DD') : <any>undefined;
+        data["endDate"] = this.endDate ? this.endDate.format('YYYY-MM-DD') : <any>undefined;
+        return data;
+    }
+}
+
+export interface IGanttRowItem {
+    id?: string;
+    processTypeId?: WorkflowProcessType;
+    startDate?: moment.Moment | undefined;
+    endDate?: moment.Moment | undefined;
+}
+
 export class IdNameDto implements IIdNameDto {
     id?: number;
     name?: string | undefined;
@@ -14130,6 +14400,13 @@ export class LegacyContactId implements ILegacyContactId {
 
 export interface ILegacyContactId {
     value?: number;
+}
+
+export enum LegalContractStatus {
+    NotAccessible = 0,
+    NotYetCreated = 1,
+    SavedNotGenerated = 2,
+    Done = 10,
 }
 
 export class MainOverviewItemForConsultantDto implements IMainOverviewItemForConsultantDto {
@@ -14925,6 +15202,7 @@ export class ProjectLineDto implements IProjectLineDto {
     differentInvoicingReferencePerson?: boolean;
     invoicingReferencePersonId?: number | undefined;
     invoicingReferencePerson?: ContactResultDto;
+    invoicingReferenceString?: string | undefined;
     optionalInvoicingInfo?: string | undefined;
     differentDebtorNumber?: boolean;
     debtorNumber?: string | undefined;
@@ -14957,6 +15235,7 @@ export class ProjectLineDto implements IProjectLineDto {
             this.differentInvoicingReferencePerson = _data["differentInvoicingReferencePerson"];
             this.invoicingReferencePersonId = _data["invoicingReferencePersonId"];
             this.invoicingReferencePerson = _data["invoicingReferencePerson"] ? ContactResultDto.fromJS(_data["invoicingReferencePerson"]) : <any>undefined;
+            this.invoicingReferenceString = _data["invoicingReferenceString"];
             this.optionalInvoicingInfo = _data["optionalInvoicingInfo"];
             this.differentDebtorNumber = _data["differentDebtorNumber"];
             this.debtorNumber = _data["debtorNumber"];
@@ -14989,6 +15268,7 @@ export class ProjectLineDto implements IProjectLineDto {
         data["differentInvoicingReferencePerson"] = this.differentInvoicingReferencePerson;
         data["invoicingReferencePersonId"] = this.invoicingReferencePersonId;
         data["invoicingReferencePerson"] = this.invoicingReferencePerson ? this.invoicingReferencePerson.toJSON() : <any>undefined;
+        data["invoicingReferenceString"] = this.invoicingReferenceString;
         data["optionalInvoicingInfo"] = this.optionalInvoicingInfo;
         data["differentDebtorNumber"] = this.differentDebtorNumber;
         data["debtorNumber"] = this.debtorNumber;
@@ -15014,6 +15294,7 @@ export interface IProjectLineDto {
     differentInvoicingReferencePerson?: boolean;
     invoicingReferencePersonId?: number | undefined;
     invoicingReferencePerson?: ContactResultDto;
+    invoicingReferenceString?: string | undefined;
     optionalInvoicingInfo?: string | undefined;
     differentDebtorNumber?: boolean;
     debtorNumber?: string | undefined;
@@ -16571,6 +16852,74 @@ export interface IWorkflowListItemDtoPaginatedList {
     hasNextPage?: boolean;
 }
 
+export class WorkflowOverviewDto implements IWorkflowOverviewDto {
+    incompleteWorkflowProcesses?: WorkflowProcessDto[] | undefined;
+    clientGanntRows?: ClientGanttRow[] | undefined;
+    consultantGanntRows?: ConsultantGanttRow[] | undefined;
+
+    constructor(data?: IWorkflowOverviewDto) {
+        if (data) {
+            for (var property in data) {
+                if (data.hasOwnProperty(property))
+                    (<any>this)[property] = (<any>data)[property];
+            }
+        }
+    }
+
+    init(_data?: any) {
+        if (_data) {
+            if (Array.isArray(_data["incompleteWorkflowProcesses"])) {
+                this.incompleteWorkflowProcesses = [] as any;
+                for (let item of _data["incompleteWorkflowProcesses"])
+                    this.incompleteWorkflowProcesses!.push(WorkflowProcessDto.fromJS(item));
+            }
+            if (Array.isArray(_data["clientGanntRows"])) {
+                this.clientGanntRows = [] as any;
+                for (let item of _data["clientGanntRows"])
+                    this.clientGanntRows!.push(ClientGanttRow.fromJS(item));
+            }
+            if (Array.isArray(_data["consultantGanntRows"])) {
+                this.consultantGanntRows = [] as any;
+                for (let item of _data["consultantGanntRows"])
+                    this.consultantGanntRows!.push(ConsultantGanttRow.fromJS(item));
+            }
+        }
+    }
+
+    static fromJS(data: any): WorkflowOverviewDto {
+        data = typeof data === 'object' ? data : {};
+        let result = new WorkflowOverviewDto();
+        result.init(data);
+        return result;
+    }
+
+    toJSON(data?: any) {
+        data = typeof data === 'object' ? data : {};
+        if (Array.isArray(this.incompleteWorkflowProcesses)) {
+            data["incompleteWorkflowProcesses"] = [];
+            for (let item of this.incompleteWorkflowProcesses)
+                data["incompleteWorkflowProcesses"].push(item.toJSON());
+        }
+        if (Array.isArray(this.clientGanntRows)) {
+            data["clientGanntRows"] = [];
+            for (let item of this.clientGanntRows)
+                data["clientGanntRows"].push(item.toJSON());
+        }
+        if (Array.isArray(this.consultantGanntRows)) {
+            data["consultantGanntRows"] = [];
+            for (let item of this.consultantGanntRows)
+                data["consultantGanntRows"].push(item.toJSON());
+        }
+        return data;
+    }
+}
+
+export interface IWorkflowOverviewDto {
+    incompleteWorkflowProcesses?: WorkflowProcessDto[] | undefined;
+    clientGanntRows?: ClientGanttRow[] | undefined;
+    consultantGanntRows?: ConsultantGanttRow[] | undefined;
+}
+
 export class WorkflowPeriodForLegacyContractDto implements IWorkflowPeriodForLegacyContractDto {
     workflowId?: string;
     client?: LegacyClientDto;
@@ -16721,6 +17070,50 @@ export interface IWorkflowPeriodForLegacyContractDto {
     workplace?: WorkplaceDto;
     salesManager?: Pm3EmployeeDto;
     invoicingReferenceContactDto?: ContactResultDto;
+}
+
+export class WorkflowPeriodLegalContractStatusUpdateInputDto implements IWorkflowPeriodLegalContractStatusUpdateInputDto {
+    periodId?: string;
+    legalContractStatus?: LegalContractStatus;
+    isInternalContract?: boolean;
+
+    constructor(data?: IWorkflowPeriodLegalContractStatusUpdateInputDto) {
+        if (data) {
+            for (var property in data) {
+                if (data.hasOwnProperty(property))
+                    (<any>this)[property] = (<any>data)[property];
+            }
+        }
+    }
+
+    init(_data?: any) {
+        if (_data) {
+            this.periodId = _data["periodId"];
+            this.legalContractStatus = _data["legalContractStatus"];
+            this.isInternalContract = _data["isInternalContract"];
+        }
+    }
+
+    static fromJS(data: any): WorkflowPeriodLegalContractStatusUpdateInputDto {
+        data = typeof data === 'object' ? data : {};
+        let result = new WorkflowPeriodLegalContractStatusUpdateInputDto();
+        result.init(data);
+        return result;
+    }
+
+    toJSON(data?: any) {
+        data = typeof data === 'object' ? data : {};
+        data["periodId"] = this.periodId;
+        data["legalContractStatus"] = this.legalContractStatus;
+        data["isInternalContract"] = this.isInternalContract;
+        return data;
+    }
+}
+
+export interface IWorkflowPeriodLegalContractStatusUpdateInputDto {
+    periodId?: string;
+    legalContractStatus?: LegalContractStatus;
+    isInternalContract?: boolean;
 }
 
 export class WorkflowProcessDto implements IWorkflowProcessDto {
