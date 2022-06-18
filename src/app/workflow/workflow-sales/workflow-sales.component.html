@@ -707,7 +707,52 @@
                                         </ng-template>
                                     </div>
                                 </div>
-                                <!-- FIXME: missing Invoicing information(header) -> Infoicing frequency (field) -->
+                                <ng-container *ngIf="item.value?.consultantPaymentType?.id === 2 ||
+                                            ((salesClientDataForm.value?.pdcInvoicingEntityId?.id && item.value?.consultantProdataEntity?.id) &&
+                                            (item.value?.consultantProdataEntity?.id !== salesClientDataForm.value?.pdcInvoicingEntityId?.id)) ||
+                                            (salesClientDataForm.clientRateAndInvoicing?.value?.id !== item.value?.consultantPaymentType?.id)">
+                                            <h3 class="workflow-readonly--gray-header">Invoicing information</h3>
+                                </ng-container>
+                                <div fxLayout="row" fxLayoutAlign="start center" class="u-w--100 u-mb--10">
+                                    <ng-container [ngSwitch]="item.value?.consultantPaymentType?.id">
+                                        <ng-container *ngSwitchCase="1"> <!-- Time based -->
+                                            <div fxLayout="column" fxFlex="25%" *ngIf="salesClientDataForm.clientRateAndInvoicing?.value?.id === 2">
+                                                <h3 class="workflow-readonly--gray-header">Invoicing frequency</h3>
+                                                <span class="workflow-readonly--blue-text-bold">
+                                                    {{item?.value?.consultantInvoicingFrequency ? item?.value?.consultantInvoicingFrequency?.name : '-'}}
+                                                </span>
+                                            </div>
+                                            <div fxLayout="column" fxFlex="25%" *ngIf="item.value.consultantInvoicingFrequency?.name === 'Manual date'">
+                                                <h3 class="workflow-readonly--gray-header">Date</h3>
+                                                <span class="workflow-readonly--blue-text-bold">
+                                                    {{item?.value?.consultantInvoicingManualDate ? (item?.value?.consultantInvoicingManualDate | momentFormat: 'DD.MM.YYYY') : '-'}}
+                                                </span>
+                                            </div>
+                                        </ng-container>
+                                        <ng-container *ngSwitchCase="2"> <!-- Fixed -->
+                                            <div fxLayout="column" fxFlex="25%" *ngIf="salesClientDataForm.clientRateAndInvoicing?.value?.id === 2">
+                                                <h3 class="workflow-readonly--gray-header">Invoicing time</h3>
+                                                <span class="workflow-readonly--blue-text-bold">
+                                                    {{item?.value?.consultantInvoicingTime ? item?.value?.consultantInvoicingTime?.name : '-'}}
+                                                </span>
+                                            </div>
+                                            <div fxLayout="column" fxFlex="25%" *ngIf="item.value?.consultantInvoicingTime?.name === 'Manual date'">
+                                                <h3 class="workflow-readonly--gray-header">Date</h3>
+                                                <span class="workflow-readonly--blue-text-bold">
+                                                    {{item?.value?.consultantInvoicingManualDate ? (item?.value?.consultantInvoicingManualDate | momentFormat: 'DD.MM.YYYY') : '-'}}
+                                                </span>
+                                            </div>
+                                        </ng-container>
+                                    </ng-container>
+                                </div>
+                                <div fxLayout="row" fxLayoutAlign="start center" class="u-w--100 u-mb--10" >
+                                    <div fxLayout="column" fxFlex="25%"*ngIf="(salesClientDataForm.value?.pdcInvoicingEntityId?.id && item.value?.consultantProdataEntity?.id) && (item.value?.consultantProdataEntity?.id !== salesClientDataForm.value?.pdcInvoicingEntityId?.id)">
+                                        <h3 class="workflow-readonly--gray-header">PDC invoicing currency</h3>
+                                        <span class="workflow-readonly--blue-text-bold">
+                                            {{item?.value?.prodataToProdataInvoiceCurrency ? item?.value?.prodataToProdataInvoiceCurrency?.name : '-'}}
+                                        </span>
+                                    </div>
+                                </div>
                             </div>
                             <mat-divider class="u-w--100 u-mt--20 u-mb--20"></mat-divider>
                             <div fxLayout="column" fxLayoutAlign="start start" class="u-w--100">
@@ -2203,7 +2248,7 @@
                                                 </mat-form-field>
                                                 <mat-form-field appearance="outline" class="u-w--100  filter-select u-mr--16" fxFlex="0 0 calc(16.5% - 8px)">
                                                     <mat-label>Unit type</mat-label>
-                                                    <mat-select formControlName="consultantRateUnitType" [disableOptionCentering]="true">
+                                                    <mat-select formControlName="consultantRateUnitType" [disableOptionCentering]="true" (selectionChange)="updateProdataUnitType($event, consultantIndex)">
                                                         <mat-option *ngFor="let item of rateUnitTypes" [value]="item">
                                                             {{ item.name }}
                                                         </mat-option>
@@ -2245,7 +2290,7 @@
                                                 </mat-form-field>
                                                 <mat-form-field appearance="outline" class="u-w--100  filter-select u-mr--16" fxFlex="0 0 calc(16.5% - 8px)">
                                                     <mat-label>Unit type</mat-label>
-                                                    <mat-select formControlName="consultantPDCRateUnitType" [disableOptionCentering]="true">
+                                                    <mat-select formControlName="consultantPDCRateUnitType" [disableOptionCentering]="true" [disabled]="true">
                                                         <mat-option *ngFor="let item of rateUnitTypes" [value]="item">
                                                             {{ item.name }}
                                                         </mat-option>
@@ -2337,19 +2382,25 @@
                                         <ng-container *ngSwitchDefault>
                                         </ng-container>
                                     </ng-container>
-
-                                    <h3 class="workflow-gray--header u-mb--10">Invoicing information</h3>
+                                    <ng-container *ngIf="consultant.value?.consultantPaymentType?.id === 2 ||
+                                                ((salesClientDataForm.value?.pdcInvoicingEntityId?.id && consultant.value?.consultantProdataEntity?.id) &&
+                                                (consultant.value?.consultantProdataEntity?.id !== salesClientDataForm.value?.pdcInvoicingEntityId?.id)) ||
+                                                (salesClientDataForm.clientRateAndInvoicing?.value?.id !== consultant.value?.consultantPaymentType?.id)">
+                                        <h3 class="workflow-gray--header u-mb--10">Invoicing information</h3>
+                                    </ng-container>
                                     <div fxLayout="row" fxLayoutAlign="start center" class="u-w--100 u-mb--10">
                                         <ng-container [ngSwitch]="consultant.value?.consultantPaymentType?.id">
                                             <ng-container *ngSwitchCase="1"> <!-- Time based -->
-                                                <mat-form-field appearance="outline" class="u-w--100  filter-select" fxFlex="33%" [ngClass]="{'u-mr--16': consultant.value.consultantInvoicingFrequency?.name === 'Manual date'}">
-                                                    <mat-label>Invoicing frequency</mat-label>
-                                                    <mat-select formControlName="consultantInvoicingFrequency" [disableOptionCentering]="true" [compareWith]="compareWithFn">
-                                                        <mat-option *ngFor="let item of invoiceFrequencies" [value]="item">
-                                                            {{ item.name }}
-                                                        </mat-option>
-                                                    </mat-select>
-                                                </mat-form-field>
+                                                <ng-container *ngIf="salesClientDataForm.clientRateAndInvoicing?.value?.id === 2">
+                                                    <mat-form-field appearance="outline" class="u-w--100  filter-select" fxFlex="33%" [ngClass]="{'u-mr--16': consultant.value.consultantInvoicingFrequency?.name === 'Manual date'}">
+                                                        <mat-label>Invoicing frequency</mat-label>
+                                                        <mat-select formControlName="consultantInvoicingFrequency" [disableOptionCentering]="true" [compareWith]="compareWithFn">
+                                                            <mat-option *ngFor="let item of invoiceFrequencies" [value]="item">
+                                                                {{ item.name }}
+                                                            </mat-option>
+                                                        </mat-select>
+                                                    </mat-form-field>
+                                                </ng-container>
                                                 <mat-form-field *ngIf="consultant.value.consultantInvoicingFrequency?.name === 'Manual date'" appearance="outline" fxFlex="0 0 calc(33% - 16px)">
                                                     <mat-label>Date</mat-label>
                                                     <input autocomplete="off" matInput
@@ -2382,6 +2433,16 @@
                                                 </mat-form-field>
                                             </ng-container>
                                         </ng-container>
+                                    </div>
+                                    <div fxLayout="row" fxLayoutAlign="start center" class="u-w--100 u-mb--10" *ngIf="(salesClientDataForm.value?.pdcInvoicingEntityId?.id && consultant.value?.consultantProdataEntity?.id) && (consultant.value?.consultantProdataEntity?.id !== salesClientDataForm.value?.pdcInvoicingEntityId?.id)">
+                                        <mat-form-field appearance="outline" class="u-w--100  filter-select" fxFlex="33%">
+                                            <mat-label>PDC invoicing currency</mat-label>
+                                            <mat-select formControlName="prodataToProdataInvoiceCurrency" [disableOptionCentering]="true" [compareWith]="compareWithFn">
+                                                <mat-option *ngFor="let item of currencies" [value]="item">
+                                                    {{ item.name }}
+                                                </mat-option>
+                                            </mat-select>
+                                        </mat-form-field>
                                     </div>
 
                                 </div>
