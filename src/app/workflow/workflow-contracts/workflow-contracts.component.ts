@@ -811,7 +811,7 @@ export class WorkflowContractsComponent extends AppComponentBase implements OnIn
         });
 
         dialogRef.componentInstance.onConfirmed.subscribe((projectLine) => {
-            // NB: index for testing - in real world if id !== null ? ProjectLineDiallogMode.Create : ProjectLineDiallogMode.Edit
+            console.log(projectLine);
             if (projectLinesIndex !== null && projectLinesIndex !== undefined) {
                 // Edit
                 this.editProjectLineValue(index, projectLinesIndex, projectLine);
@@ -837,8 +837,8 @@ export class WorkflowContractsComponent extends AppComponentBase implements OnIn
             noEndDate: new FormControl(projectLine?.noEndDate ?? false),
             invoicingReferenceNumber: new FormControl(projectLine?.invoicingReferenceNumber ?? null),
             differentInvoicingReferenceNumber: new FormControl(projectLine?.differentInvoicingReferenceNumber ?? null),
-            invoicingReferencePersonId: new FormControl(projectLine?.invoicingReferencePersonId ?? null),
-            invoicingReferencePerson: new FormControl(projectLine?.invoicingReferencePerson ?? null),
+            invoicingReferencePersonId: new FormControl(projectLine?.invoicingReferencePersonId ?? projectLine?.invoicingReferenceString),
+            invoicingReferencePerson: new FormControl(projectLine?.invoicingReferencePerson?.id ? projectLine?.invoicingReferencePerson : projectLine?.invoicingReferenceString),
             differentInvoicingReferencePerson: new FormControl(projectLine?.differentInvoicingReferencePerson ?? false),
             optionalInvoicingInfo: new FormControl(projectLine?.optionalInvoicingInfo ?? null),
             differentDebtorNumber: new FormControl(projectLine?.differentDebtorNumber ?? false),
@@ -863,8 +863,8 @@ export class WorkflowContractsComponent extends AppComponentBase implements OnIn
         projectLineRow.get('noEndDate')?.setValue(projectLineData.noEndDate, {emitEvent: false});
         projectLineRow.get('invoicingReferenceNumber')?.setValue(projectLineData.invoicingReferenceNumber, {emitEvent: false});
         projectLineRow.get('differentInvoicingReferenceNumber')?.setValue(projectLineData.differentInvoicingReferenceNumber, {emitEvent: false});
-        projectLineRow.get('invoicingReferencePersonId')?.setValue(projectLineData.invoicingReferencePersonId, {emitEvent: false});
-        projectLineRow.get('invoicingReferencePerson')?.setValue(projectLineData.invoicingReferencePerson, {emitEvent: false});
+        projectLineRow.get('invoicingReferencePersonId')?.setValue(projectLineData.invoicingReferencePersonId ?? projectLineData.invoicingReferenceString, {emitEvent: false});
+        projectLineRow.get('invoicingReferencePerson')?.setValue(projectLineData.invoicingReferencePerson?.id  ? projectLineData.invoicingReferencePerson : projectLineData.invoicingReferenceString, {emitEvent: false});
         projectLineRow.get('differentInvoicingReferencePerson')?.setValue(projectLineData.differentInvoicingReferencePerson, {emitEvent: false});
         projectLineRow.get('optionalInvoicingInfo')?.setValue(projectLineData.optionalInvoicingInfo, {emitEvent: false});
         projectLineRow.get('differentDebtorNumber')?.setValue(projectLineData.differentDebtorNumber, {emitEvent: false});
@@ -876,6 +876,7 @@ export class WorkflowContractsComponent extends AppComponentBase implements OnIn
         projectLineRow.get('modifiedBy')?.setValue(projectLineData.modifiedBy, {emitEvent: false});
         projectLineRow.get('modificationDate')?.setValue(projectLineData.modificationDate, {emitEvent: false});
         projectLineRow.get('consultantInsuranceOptionId')?.setValue(projectLineData.consultantInsuranceOptionId, {emitEvent: false});
+        console.log(projectLineRow.value);
     }
 
     duplicateProjectLine(consultantIndex: number, projectLinesIndex: number) {
@@ -1217,8 +1218,12 @@ export class WorkflowContractsComponent extends AppComponentBase implements OnIn
                         projectLineInput.differentInvoicingReferenceNumber = projectLine.differentInvoicingReferenceNumber;
                         projectLineInput.invoicingReferenceNumber = projectLine.invoicingReferenceNumber;
                         projectLineInput.differentInvoicingReferencePerson = projectLine.differentInvoicingReferencePerson;
-                        projectLineInput.invoicingReferencePersonId = projectLine.invoicingReferencePersonId;
-                        projectLineInput.invoicingReferencePerson = projectLine.invoicingReferencePerson;
+                        if (projectLine.invoicingReferencePerson?.id) {
+                            projectLineInput.invoicingReferencePersonId = projectLine.invoicingReferencePersonId;
+                            projectLineInput.invoicingReferencePerson = projectLine.invoicingReferencePerson;
+                        } else {
+                            projectLineInput.invoicingReferenceString = projectLine.invoicingReferencePersonId;
+                        }
                         projectLineInput.optionalInvoicingInfo = projectLine.optionalInvoicingInfo;
                         projectLineInput.differentDebtorNumber = projectLine.differentDebtorNumber;
                         projectLineInput.debtorNumber = projectLine.debtorNumber;
@@ -1357,7 +1362,12 @@ export class WorkflowContractsComponent extends AppComponentBase implements OnIn
                     projectLineInput.differentInvoicingReferenceNumber = projectLine.differentInvoicingReferenceNumber;
                     projectLineInput.invoicingReferenceNumber = projectLine.invoicingReferenceNumber;
                     projectLineInput.differentInvoicingReferencePerson = projectLine.differentInvoicingReferencePerson;
-                    projectLineInput.invoicingReferencePersonId = projectLine.invoicingReferencePersonId;
+                    if (projectLine.invoicingReferencePerson?.id) {
+                        projectLineInput.invoicingReferencePersonId = projectLine.invoicingReferencePersonId;
+                        projectLineInput.invoicingReferencePerson = projectLine.invoicingReferencePerson;
+                    } else {
+                        projectLineInput.invoicingReferenceString = projectLine.invoicingReferencePersonId;
+                    }
                     projectLineInput.invoicingReferencePerson = projectLine.invoicingReferencePerson;
                     projectLineInput.optionalInvoicingInfo = projectLine.optionalInvoicingInfo;
                     projectLineInput.differentDebtorNumber = projectLine.differentDebtorNumber;
