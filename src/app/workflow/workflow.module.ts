@@ -15,7 +15,7 @@ import { WorkflowOverviewComponent } from './workflow-overview/workflow-overview
 import { WorkflowPeriodComponent } from './workflow-period/workflow-period.component';
 import { WorkflowSalesComponent } from './workflow-sales/workflow-sales.component';
 import { WorkflowSourcingComponent } from './workflow-sourcing/workflow-sourcing.component';
-import { WorkflowComponent } from './workflow.component';
+import { WorkflowComponent, WorkflowCreateResolver } from './workflow.component';
 
 @NgModule({
     declarations: [
@@ -41,6 +41,8 @@ import { WorkflowComponent } from './workflow.component';
         NgxGanttModule
     ],
     exports: [],
-    providers: [],
+    providers: [
+        WorkflowCreateResolver
+    ],
 })
 export class WorkflowModule {}
