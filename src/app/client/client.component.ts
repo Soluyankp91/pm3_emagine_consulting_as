@@ -140,6 +140,7 @@ export class ClientComponent extends AppComponentBase implements OnInit, OnDestr
 
     getCurrentUser() {
         this.showMainSpinner();
+        this.selectedAccountManagers = [];
         this._employeeService.current()
             .pipe(finalize(()=> {
                 this.hideMainSpinner();
@@ -293,6 +294,16 @@ export class ClientComponent extends AppComponentBase implements OnInit, OnDestr
                     window.open(result, '_blank');
             })
         });
+    }
+
+    clearAllFilters() {
+        this.clientFilter.setValue(null, {emitEvent: false});
+        this.nonActiveClient = false;
+        this.isActiveClients = false;
+        this.includeDeleted = false;
+        this.selectedCountries = [];
+        this.countryList.map(x => x.selected = false);
+        this.getCurrentUser();
     }
 
 }
