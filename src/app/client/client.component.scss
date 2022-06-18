@@ -74,8 +74,8 @@
     &--header {
         color: $dark-grey-color;
         font-size: 56px;
-        font-weight: 700;
-        font-size: 36px;
+        font-weight: 800;
+        font-size: 48px;
         line-height: 120%;
     }
 
@@ -102,4 +102,11 @@
     &.green-dot {
         color: $green-color;
     }
+}
+
+.clear-all-button {
+    font-weight: 700;
+    font-size: 14px;
+    line-height: 140%;
+    color: #B6B4B2;
 }

@@ -6,7 +6,7 @@
             </h2>
         </div>
         <div fxLayout="row" fxLayoutAlign="space-between start" class="u-w--100">
-            <div fxFlex="30%" fxLayout="row" fxLayoutAlign="start center" class="u-w--100">
+            <div fxFlex="40%" fxLayout="row" fxLayoutAlign="start center" class="u-w--100">
                 <div class="client-list--filter-manager cursor-pointer u-mr--16" [matTooltip]="mapListByProperty(selectedAccountManagers, 'name')" [matMenuTriggerFor]="managerMenu" (menuOpened)="accountManagerFilter.setValue(''); accountManagerFilterInput.click()">
                     <img *ngIf="selectedAccountManagers.length === 1" class="border-rounded-50 image-thumbnail-small" [src]="employeeProfileUrl(selectedAccountManagers[0]?.externalId!)" />
                     <img *ngIf="selectedAccountManagers.length === 0" src="../../../assets/common/images/no-img.svg">
@@ -132,10 +132,18 @@
                     <mat-icon class="status-dot green-dot u-mr--5">fiber_manual_record</mat-icon>
                     Active clients
                 </span>
-                <span class="client-list--filter-status__badge flex-items-center cursor-pointer" [ngClass]="{'selected-status': nonActiveClient}" (click)="nonActiveClient = !nonActiveClient; getClientsGrid()">
+                <span class="client-list--filter-status__badge flex-items-center cursor-pointer u-mr--16" [ngClass]="{'selected-status': nonActiveClient}" (click)="nonActiveClient = !nonActiveClient; getClientsGrid()">
                     <mat-icon class="status-dot grey-dot u-mr--5">fiber_manual_record</mat-icon>
                     Non-active clients
                 </span>
+                <div fxLayout="row" fxLayoutAlign="start center" class="u-ml--10">
+                    <mat-divider class="u-mr--10" [vertical]="true" style="height: 46px;"></mat-divider>
+                    <button mat-button (click)="clearAllFilters()">
+                        <span class="clear-all-button" >
+                            Clear all
+                        </span>
+                    </button>
+                </div>
             </div>
             <div fxFlex="25%" fxLayout="column" fxLayoutAlign="start end" fxLayoutGap="16px" class="u-w--100">
                 <mat-form-field appearance="fill" class="search-filter-input u-w--100 formFieldNoMarginPadding u-mb--10">
