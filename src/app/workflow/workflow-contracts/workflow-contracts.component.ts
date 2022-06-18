@@ -408,13 +408,20 @@ export class WorkflowContractsComponent extends AppComponentBase implements OnIn
 
     // #region CHANGE NAMING
     selectClientRate(event: any, rate: ClientSpecialRateDto, clientRateMenuTrigger: MatMenuTrigger) {
+        console.log('ss');
         const clientRate = new PeriodClientSpecialRateDto();
         clientRate.id = undefined;
         clientRate.clientSpecialRateId = rate.id;
         clientRate.rateName = rate.internalName;
         clientRate.reportingUnit = rate.specialRateReportingUnit;
-        clientRate.clientRate = rate.clientRate;
-        clientRate.clientRateCurrencyId = rate.clientRateCurrency?.id;
+        clientRate.rateSpecifiedAs = rate.specialRateSpecifiedAs;
+        if (clientRate.rateSpecifiedAs?.id === 1) {
+            clientRate.clientRate = +(this.contractClientForm.clientRate?.value?.normalRate * rate.clientRate! / 100).toFixed(2);
+            clientRate.clientRateCurrencyId = this.contractClientForm.currency?.value?.id;
+        } else {
+            clientRate.clientRate = rate.clientRate;
+            clientRate.clientRateCurrencyId = rate.clientRateCurrency?.id;
+        }
         clientRateMenuTrigger.closeMenu();
         this.addSpecialRate(clientRate);
     }
@@ -623,17 +630,18 @@ export class WorkflowContractsComponent extends AppComponentBase implements OnIn
         consultantRate.prodataToProdataRateCurrencyId = rate.proDataToProDataRateCurrency?.id;
         consultantRate.consultantRate = rate.consultantRate;
         consultantRate.consultantRateCurrencyId = rate.consultantCurrency?.id;
-        // if (consultantRate.rateSpecifiedAs?.id === 1) {
-        //     consultantRate.prodataToProdataRate = +(this.contractsConsultantsDataForm.consultants.at(consultantIndex)!.get('consultantRate')!.value * rate.proDataToProDataRate! / 100).toFixed(2);
-        //     consultantRate.prodataToProdataRateCurrencyId = this.contractsConsultantsDataForm.consultants.at(consultantIndex)!.get('consultantRateCurrency')!.value?.id;
-        //     consultantRate.consultantRate = +(this.contractsConsultantsDataForm.consultants.at(consultantIndex)!.get('consultantRate')!.value * rate.consultantRate! / 100).toFixed(2);
-        //     consultantRate.consultantRateCurrencyId = this.contractsConsultantsDataForm.consultants.at(consultantIndex)!.get('consultantRateCurrency')!.value?.id;
-        // } else {
-        //     consultantRate.prodataToProdataRate = rate.proDataToProDataRate;
-        //     consultantRate.prodataToProdataRateCurrencyId = rate.proDataToProDataRateCurrency?.id;
-        //     consultantRate.consultantRate = rate.consultantRate;
-        //     consultantRate.consultantRateCurrencyId = rate.consultantCurrency?.id;
-        // }
+        consultantRate.rateSpecifiedAs = rate.specialRateSpecifiedAs;
+        if (consultantRate.rateSpecifiedAs?.id === 1) {
+            consultantRate.prodataToProdataRate = +(this.contractsConsultantsDataForm.consultants.at(consultantIndex)!.get('consultantRate')!.value?.normalRate * rate.proDataToProDataRate! / 100).toFixed(2);
+            consultantRate.prodataToProdataRateCurrencyId = this.contractsConsultantsDataForm.consultants.at(consultantIndex)!.get('consultantRateCurrency')!.value?.id;
+            consultantRate.consultantRate = +(this.contractsConsultantsDataForm.consultants.at(consultantIndex)!.get('consultantRate')!.value?.normalRate * rate.consultantRate! / 100).toFixed(2);
+            consultantRate.consultantRateCurrencyId = this.contractsConsultantsDataForm.consultants.at(consultantIndex)!.get('consultantRateCurrency')!.value?.id;
+        } else {
+            consultantRate.prodataToProdataRate = rate.proDataToProDataRate;
+            consultantRate.prodataToProdataRateCurrencyId = rate.proDataToProDataRateCurrency?.id;
+            consultantRate.consultantRate = rate.consultantRate;
+            consultantRate.consultantRateCurrencyId = rate.consultantCurrency?.id;
+        }
         consultantRateMenuTrigger.closeMenu();
         this.addSpecialRateToConsultantData(consultantIndex, consultantRate);
     }

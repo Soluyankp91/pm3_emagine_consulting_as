@@ -211,9 +211,6 @@
                                 <span fxFlex="25%" class="workflow-contracts--list-header u-w--100">
                                     Rate name
                                 </span>
-                                <!-- <span fxFlex="25%" class="workflow-contracts--list-header u-w--100">
-                                    Rate direction
-                                </span> -->
                                 <span fxFlex="25%" class="workflow-contracts--list-header u-w--100">
                                     Reporting unit
                                 </span>
@@ -230,9 +227,6 @@
                                     <span fxFlex="25%" class="workflow-contracts--list-item u-w--100 text-truncate-ellipsis" [matTooltip]="contractClientForm.clientRates.at(i).get('rateName')?.value">
                                         {{rate.value.rateName}}
                                     </span>
-                                    <!-- <span fxFlex="25%" class="workflow-contracts--list-item u-w--100 text-truncate-ellipsis" [matTooltip]="contractClientForm.clientRates.at(i).get('rateDirection')?.value?.name">
-                                        {{rate.value.rateDirection?.name}}
-                                    </span> -->
                                     <span fxFlex="25%" class="workflow-contracts--list-item u-w--100 text-truncate-ellipsis" [matTooltip]="contractClientForm.clientRates.at(i).get('reportingUnit')?.value?.name">
                                         {{rate.value.reportingUnit?.name}}
                                     </span>
@@ -324,9 +318,6 @@
                                 <span fxFlex="25%" class="workflow-contracts--list-header u-w--100">
                                     Fee name
                                 </span>
-                                <!-- <span fxFlex="25%" class="workflow-contracts--list-header u-w--100">
-                                    Fee direction
-                                </span> -->
                                 <span fxFlex="25%" class="workflow-contracts--list-header u-w--100">
                                     Frequency
                                 </span>
@@ -343,9 +334,6 @@
                                     <span fxFlex="25%" class="workflow-contracts--list-item u-w--100 text-truncate-ellipsis" [matTooltip]="contractClientForm.clientFees.at(i).get('feeName')?.value ?? '-'">
                                         {{fee.value.feeName ?? '-'}}
                                     </span>
-                                    <!-- <span fxFlex="25%" class="workflow-contracts--list-item u-w--100 text-truncate-ellipsis" [matTooltip]="contractClientForm.clientFees.at(i).get('feeDirection')?.value?.name ?? '-'">
-                                        {{fee.value.feeDirection?.name ?? '-'}}
-                                    </span> -->
                                     <span fxFlex="25%" class="workflow-contracts--list-item u-w--100 text-truncate-ellipsis" [matTooltip]="contractClientForm.clientFees.at(i).get('feeFrequency')?.value?.name ?? '-'">
                                         {{fee.value.feeFrequency?.name ?? '-'}}
                                     </span>
