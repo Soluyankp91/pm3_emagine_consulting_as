@@ -134,6 +134,17 @@ export class WorkflowSalesComponent extends AppComponentBase implements OnInit {
     clientIdFromTerminationSales: number;
 
     individualConsultantActionsAvailable: boolean;
+    isCommissionEditing = false;
+    isCommissionInitialAdd = false;
+    commissionToEdit: {
+        id: number | undefined,
+        commissionType: any,
+        amount: any,
+        currency: any,
+        commissionFrequency: any,
+        recipientType: any,
+        recipient: any
+    };
 
     private _unsubscribe = new Subject();
 
@@ -196,16 +207,20 @@ export class WorkflowSalesComponent extends AppComponentBase implements OnInit {
                 takeUntil(this._unsubscribe),
                 debounceTime(300),
                 switchMap((value: any) => {
-                    let toSend = {
-                        name: value,
-                        maxRecordsCount: 1000,
-                    };
-                    if (value?.id) {
-                        toSend.name = value.id
-                            ? value.name
-                            : value;
+                    if (value) {
+                        let toSend = {
+                            name: value,
+                            maxRecordsCount: 1000,
+                        };
+                        if (value?.id) {
+                            toSend.name = value.id
+                                ? value.name
+                                : value;
+                        }
+                        return this._lookupService.employees(value);
+                    } else {
+                        return of([]);
                     }
-                    return this._lookupService.employees(value);
                 }),
             ).subscribe((list: EmployeeDto[]) => {
                 if (list.length) {
@@ -220,16 +235,20 @@ export class WorkflowSalesComponent extends AppComponentBase implements OnInit {
                 takeUntil(this._unsubscribe),
                 debounceTime(300),
                 switchMap((value: any) => {
-                    let toSend = {
-                        name: value ?? '',
-                        maxRecordsCount: 1000,
-                    };
-                    if (value?.id) {
-                        toSend.name = value.id
-                            ? value.clientNam?.trim()
-                            : value?.trim();
+                    if (value) {
+                        let toSend = {
+                            name: value ?? '',
+                            maxRecordsCount: 1000,
+                        };
+                        if (value?.id) {
+                            toSend.name = value.id
+                                ? value.clientNam?.trim()
+                                : value?.trim();
+                        }
+                        return this._lookupService.clients(toSend.name, toSend.maxRecordsCount);
+                    } else {
+                        return of([]);
                     }
-                    return this._lookupService.clients(toSend.name, toSend.maxRecordsCount);
                 }),
             ).subscribe((list: ClientResultDto[]) => {
                 if (list.length) {
@@ -244,16 +263,20 @@ export class WorkflowSalesComponent extends AppComponentBase implements OnInit {
                 takeUntil(this._unsubscribe),
                 debounceTime(300),
                 switchMap((value: any) => {
-                    let toSend = {
-                        name: value,
-                        maxRecordsCount: 1000,
-                    };
-                    if (value?.id) {
-                        toSend.name = value.id
-                            ? value.clientName?.trim()
-                            : value?.trim();
+                    if (value) {
+                        let toSend = {
+                            name: value,
+                            maxRecordsCount: 1000,
+                        };
+                        if (value?.id) {
+                            toSend.name = value.id
+                                ? value.clientName?.trim()
+                                : value?.trim();
+                        }
+                        return this._lookupService.clients(toSend.name, toSend.maxRecordsCount);
+                    } else {
+                        return of([]);
                     }
-                    return this._lookupService.clients(toSend.name, toSend.maxRecordsCount);
                 }),
             ).subscribe((list: ClientResultDto[]) => {
                 if (list.length) {
@@ -321,17 +344,21 @@ export class WorkflowSalesComponent extends AppComponentBase implements OnInit {
                 takeUntil(this._unsubscribe),
                 debounceTime(300),
                 switchMap((value: any) => {
-                    let toSend = {
-                        clientId: this.salesClientDataForm.directClientIdValue?.value?.clientId,
-                        name: value,
-                        maxRecordsCount: 1000,
-                    };
-                    if (value?.id) {
-                        toSend.name = value.id
-                            ? value.firstName
-                            : value;
+                    if (value) {
+                        let toSend = {
+                            clientId: this.salesClientDataForm.directClientIdValue?.value?.clientId,
+                            name: value,
+                            maxRecordsCount: 1000,
+                        };
+                        if (value?.id) {
+                            toSend.name = value.id
+                                ? value.firstName
+                                : value;
+                        }
+                        return this._lookupService.contacts(toSend.clientId, toSend.name, toSend.maxRecordsCount);
+                    } else {
+                        return of([]);
                     }
-                    return this._lookupService.contacts(toSend.clientId, toSend.name, toSend.maxRecordsCount);
                 }),
             ).subscribe((list: ContactResultDto[]) => {
                 if (list.length) {
@@ -346,17 +373,21 @@ export class WorkflowSalesComponent extends AppComponentBase implements OnInit {
                 takeUntil(this._unsubscribe),
                 debounceTime(300),
                 switchMap((value: any) => {
-                    let toSend = {
-                        clientId: this.clientIdFromTerminationSales,
-                        name: value ?? '',
-                        maxRecordsCount: 1000,
-                    };
-                    if (value?.id) {
-                        toSend.name = value.id
-                            ? value.firstName
-                            : value;
+                    if (value) {
+                        let toSend = {
+                            clientId: this.clientIdFromTerminationSales,
+                            name: value ?? '',
+                            maxRecordsCount: 1000,
+                        };
+                        if (value?.id) {
+                            toSend.name = value.id
+                                ? value.firstName
+                                : value;
+                        }
+                        return this._lookupService.contacts(toSend.clientId, toSend.name, toSend.maxRecordsCount);
+                    } else {
+                        return of([]);
                     }
-                    return this._lookupService.contacts(toSend.clientId, toSend.name, toSend.maxRecordsCount);
                 }),
             ).subscribe((list: ContactResultDto[]) => {
                 if (list.length) {
@@ -1460,7 +1491,7 @@ export class WorkflowSalesComponent extends AppComponentBase implements OnInit {
                 let commissionInput = new CommissionDto();
                 commissionInput.id = commission.id;
                 commissionInput.commissionTypeId = commission.type?.id;
-                commissionInput.amount = commission.value;
+                commissionInput.amount = commission.amount;
                 commissionInput.currencyId = commission.currency?.id;
                 commissionInput.commissionFrequencyId = commission.frequency?.id;
                 commissionInput.recipientTypeId = commission.recipientType?.id;
@@ -1715,7 +1746,7 @@ export class WorkflowSalesComponent extends AppComponentBase implements OnInit {
 
                 // Invoicing
                 result.salesMainData?.commissions?.forEach((commission: CommissionDto) => {
-                    this.addCommission(commission);
+                    this.addCommission(false, commission);
                 })
                 this.salesMainDataForm.discounts?.setValue(this.findItemById(this.discounts, result?.salesMainData?.discountId ?? 1), {emitEvent: false}); // 1 - default value 'None'
 
@@ -1925,7 +1956,7 @@ export class WorkflowSalesComponent extends AppComponentBase implements OnInit {
         this.filteredRecipients = [];
     }
 
-    addCommission(commission?: CommissionDto) {
+    addCommission(isInitial?: boolean, commission?: CommissionDto) {
         let commissionRecipient;
         switch (commission?.recipientTypeId) {
             case 1: // Supplier
@@ -1944,7 +1975,7 @@ export class WorkflowSalesComponent extends AppComponentBase implements OnInit {
         const form = this._fb.group({
             id: new FormControl(commission?.id ?? null),
             type: new FormControl(this.findItemById(this.commissionTypes, commission?.commissionTypeId) ?? null),
-            value: new FormControl(commission?.amount ?? null),
+            amount: new FormControl(commission?.amount ?? null),
             currency: new FormControl(this.findItemById(this.currencies, commission?.currencyId) ?? null),
             recipientType: new FormControl(this.findItemById(this.commissionRecipientTypeList, commission?.recipientTypeId) ?? null),
             recipient: new FormControl(commissionRecipient ?? null),
@@ -1953,6 +1984,10 @@ export class WorkflowSalesComponent extends AppComponentBase implements OnInit {
             editable: new FormControl(commission?.id ? false : true)
         });
         this.salesMainDataForm.commissions.push(form);
+        if (isInitial) {
+            this.isCommissionEditing = true;
+            this.isCommissionInitialAdd = true;
+        }
         this.manageCommissionAutocomplete(this.salesMainDataForm.commissions.length - 1);
     }
 
@@ -1969,26 +2004,38 @@ export class WorkflowSalesComponent extends AppComponentBase implements OnInit {
                     };
                     switch (arrayControl.value.recipientType.id) {
                         case 3: // Client
-                            if (value?.id) {
-                                toSend.name = value.id
-                                    ? value.clientName
-                                    : value;
+                            if (value) {
+                                if (value?.id) {
+                                    toSend.name = value.id
+                                        ? value.clientName
+                                        : value;
+                                }
+                                return this._lookupService.clients(toSend.name, toSend.maxRecordsCount);
+                            } else {
+                                return of([]);
                             }
-                            return this._lookupService.clients(toSend.name, toSend.maxRecordsCount);
                         case 2: // Consultant
-                            if (value?.id) {
-                                toSend.name = value.id
-                                    ? value.name
-                                    : value;
+                            if (value) {
+                                if (value?.id) {
+                                    toSend.name = value.id
+                                        ? value.name
+                                        : value;
+                                }
+                                return this._lookupService.consultants(toSend.name, toSend.maxRecordsCount);
+                            } else {
+                                return of([]);
                             }
-                            return this._lookupService.consultants(toSend.name, toSend.maxRecordsCount);
                         case 1: // Supplier
-                            if (value?.id) {
-                                toSend.name = value.id
-                                    ? value.supplierName
-                                    : value;
+                            if (value) {
+                                if (value?.id) {
+                                    toSend.name = value.id
+                                        ? value.supplierName
+                                        : value;
+                                }
+                                return this._lookupService.suppliers(toSend.name, toSend.maxRecordsCount);
+                            } else {
+                                return of([]);
                             }
-                            return this._lookupService.suppliers(toSend.name, toSend.maxRecordsCount);
                         default:
                             return of([]);
                     }
@@ -1997,7 +2044,7 @@ export class WorkflowSalesComponent extends AppComponentBase implements OnInit {
                 if (list.length) {
                     this.filteredRecipients = list;
                 } else {
-                    this.filteredRecipients = [{ name: 'No records found', id: 'no-data' }];
+                    this.filteredRecipients = [{ name: 'No records found', supplierName: 'No supplier found', clientName: 'No clients found', id: 'no-data' }];
                 }
             });
     }
@@ -2007,12 +2054,65 @@ export class WorkflowSalesComponent extends AppComponentBase implements OnInit {
     }
 
     removeCommission(index: number) {
+        this.isCommissionInitialAdd = false;
+        this.isCommissionEditing = false;
         this.commissions.removeAt(index);
     }
 
-    toggleEditCommissionRow(index: number) {
+    editOrSaveCommissionRow(index: number) {
         const isEditable = this.commissions.at(index).get('editable')?.value;
+        if (isEditable) {
+            // save
+            this.commissionToEdit = {
+                id: undefined,
+                commissionType: undefined,
+                amount: undefined,
+                currency: undefined,
+                commissionFrequency: undefined,
+                recipientType: undefined,
+                recipient: undefined
+            };
+            this.isCommissionInitialAdd = false;
+            this.isCommissionEditing = false;
+        } else {
+            // make editable
+            const commissionValue = this.commissions.at(index).value;
+            this.commissionToEdit = {
+                id: commissionValue.id,
+                commissionType: commissionValue.type,
+                amount: commissionValue.amount,
+                currency: commissionValue.currency,
+                commissionFrequency: commissionValue.frequency,
+                recipientType: commissionValue.recipientType,
+                recipient: commissionValue.recipient
+            }
+    
+            this.isCommissionEditing = true;
+        }
         this.commissions.at(index).get('editable')?.setValue(!isEditable);
+    }
+
+    cancelEditCommissionRow(index: number) {
+        const commissionRow = this.commissions.at(index);
+        commissionRow.get('id')?.setValue(this.commissionToEdit?.id);
+        commissionRow.get('commissionType')?.setValue(this.commissionToEdit?.commissionType);
+        commissionRow.get('amount')?.setValue(this.commissionToEdit?.amount);
+        commissionRow.get('currency')?.setValue(this.commissionToEdit?.currency);
+        commissionRow.get('commissionFrequency')?.setValue(this.commissionToEdit?.commissionFrequency);
+        commissionRow.get('recipientType')?.setValue(this.commissionToEdit?.recipientType);
+        commissionRow.get('recipient')?.setValue(this.commissionToEdit?.recipient);
+        this.commissionToEdit = {
+            id: undefined,
+            commissionType: undefined,
+            amount: undefined,
+            currency: undefined,
+            commissionFrequency: undefined,
+            recipientType: undefined,
+            recipient: undefined
+        };
+        this.isCommissionEditing = false;
+        this.isCommissionInitialAdd = false;
+        this.commissions.at(index).get('editable')?.setValue(false);
     }
 
     //#endregion commissions form array

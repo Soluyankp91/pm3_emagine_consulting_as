@@ -1141,7 +1141,7 @@
                                                 </mat-select>
                                             </mat-form-field>
                                             <mat-form-field appearance="fill" class="u-w--100 formFieldNoMarginPadding filter-select" fxFlex="10%">
-                                                <input matInput type="text" formControlName="value" placeholder="Value" />
+                                                <input matInput type="text" formControlName="amount" placeholder="Value" />
                                             </mat-form-field>
                                             <mat-form-field appearance="fill" class="u-w--100 formFieldNoMarginPadding filter-select" fxFlex="10%">
                                                 <mat-select formControlName="currency" placeholder="Currency" [disableOptionCentering]="true" [compareWith]="compareWithFn">
@@ -1162,7 +1162,7 @@
                                                 <ng-container *ngIf="commission.value.recipientType?.id === 4; else commissionRecipientAutocomplete">
                                                     <mat-select formControlName="recipient" placeholder="Recipient" [disableOptionCentering]="true" [compareWith]="compareWithFn">
                                                         <mat-option *ngFor="let item of tenants" [value]="item">
-                                                            {{ item.name }}
+                                                            <b>{{ item.name }}</b>
                                                         </mat-option>
                                                     </mat-select>
                                                 </ng-container>
@@ -1174,15 +1174,24 @@
                                                                 <ng-container [ngSwitch]="commission.value.recipientType?.id">
                                                                     <!-- 'Client' -->
                                                                     <span *ngSwitchCase="3">
-                                                                        {{ recipient.clientName }}
+                                                                        <div>
+                                                                            <b>{{ recipient.clientName }}</b>
+                                                                            <span *ngIf="recipient.id !== 'no-data'"> | {{recipient.address}} | {{recipient.address2}} | {{recipient.postCode}}</span>
+                                                                        </div>
                                                                     </span>
                                                                     <!-- 'Supplier' -->
                                                                     <span *ngSwitchCase="1">
-                                                                        {{ recipient.supplierName }}
+                                                                        <b>{{ recipient.supplierName }}</b>
                                                                     </span>
                                                                     <!-- 'Consultant' -->
                                                                     <span *ngSwitchCase="2">
-                                                                        {{ recipient.name }}
+                                                                        <div class="multilineDropdown-option--row">
+                                                                            <img *ngIf="recipient.id !== 'no-data'" class="border-rounded-50 u-ml--16 u-mr--16" [src]="consultantProfileUrl(recipient.externalId!)" />
+                                                                            <div class="multilineDropdown-option--column">
+                                                                                <b>{{ recipient.name }}</b>
+                                                                                <span *ngIf="recipient.id !== 'no-data'"> | {{recipient.companyName}} | {{recipient.city}} | #{{recipient.id}} / {{recipient.legacyId}}</span>
+                                                                            </div>
+                                                                        </div>
                                                                     </span>
                                                                 </ng-container>
                                                             </mat-option>
@@ -1211,11 +1220,11 @@
                                                 </mat-form-field>
                                             </div>
                                             <div fxFlex="10%" class="u-w--100 text-truncate-ellipsis flex-items-center">
-                                                <button mat-flat-button (click)="toggleEditCommissionRow(i)" class="inline-edit-form--btn__save">
+                                                <button mat-flat-button (click)="editOrSaveCommissionRow(i)" class="inline-edit-form--btn__save">
                                                     Save
                                                 </button>
-                                                <button mat-icon-button (click)="removeCommission(i)">
-                                                    <mat-icon>clear</mat-icon>
+                                                <button mat-flat-button (click)="isCommissionInitialAdd ? removeCommission(i) : cancelEditCommissionRow(i)" class="inline-edit-form--btn__cancel">
+                                                    Cancel
                                                 </button>
                                             </div>
                                         </ng-container>
@@ -1223,8 +1232,8 @@
                                             <span fxFlex="10%" class="u-w--100 text-truncate-ellipsis" [matTooltip]="salesMainDataForm.commissions.at(i).get('type')?.value?.name">
                                                 {{commission.value.type?.name}}
                                             </span>
-                                            <span fxFlex="10%" class="u-w--100 text-truncate-ellipsis" [matTooltip]="salesMainDataForm.commissions.at(i).get('value')?.value">
-                                                {{commission.value.value}}
+                                            <span fxFlex="10%" class="u-w--100 text-truncate-ellipsis" [matTooltip]="salesMainDataForm.commissions.at(i).get('amount')?.value">
+                                                {{commission.value.amount}}
                                             </span>
                                             <span fxFlex="10%" class="u-w--100 text-truncate-ellipsis" [matTooltip]="salesMainDataForm.commissions.at(i).get('currency')?.value?.name">
                                                 {{commission.value.currency?.name}}
@@ -1251,7 +1260,6 @@
                                                     </ng-container>
                                                     <ng-container *ngSwitchCase="'Consultant'">
                                                         <div fxLayout="row" fxLayoutAlign="start center">
-                                                            class="border-rounded-50 u-mr--16" src="https://picsum.photos/35/35" />
                                                             <div fxLayout="column" fxLayoutAlign="start start">
                                                                 <span>
                                                                     {{commission.value.recipient?.name}}
@@ -1290,7 +1298,8 @@
                                                         class="menu-item"
                                                         [ngClass]="salesMainDataForm.commissions.at(i).get('editable')?.value ? 'menu-item--add': 'menu-item--edit'"
                                                         mat-menu-item
-                                                        (click)="toggleEditCommissionRow(i)">
+                                                        [disabled]="isCommissionEditing"
+                                                        (click)="editOrSaveCommissionRow(i)">
                                                         <mat-icon>{{salesMainDataForm.commissions.at(i).get('editable')?.value ? 'save' : 'create'}}</mat-icon>
                                                         {{salesMainDataForm.commissions.at(i).get('editable')?.value ? 'Save' : 'Edit'}}
                                                     </button>
@@ -1308,7 +1317,7 @@
                                 </ng-container>
 
                                 <div fxLayout="row" fxLayoutAlign="start start" class="u-w--100 u-mb--20">
-                                    <button color="primary" class="u-mt--10 button-outlined" mat-flat-button (click)="addCommission()">Add commission</button>
+                                    <button color="primary" class="u-mt--10 button-outlined" mat-flat-button [disabled]="isCommissionEditing" (click)="addCommission(true)">Add commission</button>
                                 </div>
                         </div>
                         <mat-divider class="u-w--100 u-mt--20 u-mb--20"></mat-divider>
