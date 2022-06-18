@@ -2093,17 +2093,17 @@
                 <ng-container formArrayName="consultantData" class="u-mb--20">
                     <div fxLayout="column" fxLayoutAlign="start start" class="workflow-sales--process-data u-w--100">
                         <div *ngFor="let consultant of consultantsForm.consultantData.controls; let consultantIndex = index" [formGroupName]="consultantIndex" class="u-w--100">
-                            <div fxLayout="row" fxLayoutAlign="start start" fxLayoutGap="30px" class="u-w--100">
+                            <div fxLayout="row" fxLayoutAlign="start center" fxLayoutGap="30px" class="u-w--100">
                                 <h1 class="workflow-section--header-main" fxFlex="15%">Consultant data</h1>
-                                <div fxLayout="row" fxLayoutAlign="start start" class="u-w--100 u-mb--20">
+                                <div fxLayout="row" fxLayoutAlign="start start" class="u-w--100" *ngIf="activeSideSection.typeId === workflowSideSections.StartClientPeriod && !readOnlyMode">
                                     <span fxFlex="50%" fxLayout="row" fxLayoutAlign="start center">
                                         <ng-container  *ngIf="consultant.value?.consultantName?.id || consultant.value?.consultantNameOnly">
-                                            <img *ngIf="consultant.value?.consultantName?.id" class="border-rounded-50 u-ml--16 u-mr--16" [src]="consultantProfileUrl(consultant.value?.consultantName?.externalId)" />
+                                            <img *ngIf="consultant.value?.consultantName?.id" class="workflow-extension--consultant-data--consultant-img u-ml--16 u-mr--16" [src]="consultantProfileUrl(consultant.value?.consultantName?.externalId)" />
                                             <span class="workflow-form--consultants__name u-mr--16">
                                                 {{consultant.value?.consultantName?.name}}
                                             </span>
                                         </ng-container>
-                                        <button class="form-icon--delete-row" *ngIf="consultantsForm.consultantData?.controls?.length && (activeSideSection.typeId === workflowSideSections.StartClientPeriod || activeSideSection.typeId === workflowSideSections.ExtendClientPeriod)"
+                                        <button class="form-icon--delete-row" *ngIf="consultantsForm.consultantData?.controls?.length && (activeSideSection.typeId === workflowSideSections.StartClientPeriod && (isCompleted === editEnabledForcefuly))"
                                             mat-icon-button (click)="$event.stopPropagation();confirmRemoveConsultant(consultantIndex)">
                                             <mat-icon svgIcon="remove-icon"></mat-icon>
                                         </button>
@@ -2136,7 +2136,7 @@
                                                 <ng-container>
                                                     <mat-option *ngFor="let consultant of filteredConsultants" [value]="consultant" [ngClass]="{ 'no-data': consultant.id === 'no-data' }">
                                                         <div class="multilineDropdown-option--row">
-                                                            <img *ngIf="consultant.id !== 'no-data'" class="border-rounded-50 u-ml--16 u-mr--16" [src]="consultantProfileUrl(consultant.externalId)" />
+                                                            <img *ngIf="consultant.id !== 'no-data'" class="workflow-extension--consultant-data--consultant-img u-ml--16 u-mr--16" [src]="consultantProfileUrl(consultant.externalId)" />
                                                             <div class="multilineDropdown-option--column">
                                                                 <b>{{ consultant.name }}</b>
                                                                 <span *ngIf="consultant.id !== 'no-data'"> | {{consultant.companyName}} | {{consultant.city}} | #{{consultant.id}} / {{consultant.legacyId}}</span>
