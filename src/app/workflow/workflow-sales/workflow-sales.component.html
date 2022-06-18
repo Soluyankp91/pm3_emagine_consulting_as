@@ -2520,7 +2520,7 @@
 
                                     <div class="inline-edit-form u-w--100">
                                         <div fxLayout="row" fxLayoutAlign="space-between start" fxLayoutGap="10px" class="workflow-sales-inline--form__header-container u-w--100" *ngIf="consultant.value.specialRates?.length">
-                                            <span fxFlex="1 1 20%" class="workflow-sales-inline--form__header u-w--100">
+                                            <span fxFlex="1 0 20%" class="workflow-sales-inline--form__header u-w--100">
                                                 Rate name
                                             </span>
                                             <span fxFlex="20%" class="workflow-sales-inline--form__header u-w--100">
@@ -2540,7 +2540,7 @@
                                                 *ngFor="let rate of getConsultantRateControls(consultantIndex); let specialRateIndex = index;"
                                                 [formArrayName]="specialRateIndex">
                                                 <ng-container>
-                                                    <span fxFlex="1 1 20%" class="u-w--100 text-truncate-ellipsis" [matTooltip]="rate.value.rateName">
+                                                    <span fxFlex="1 0 20%" class="u-w--100 text-truncate-ellipsis" [matTooltip]="rate.value.rateName">
                                                         {{rate.value.rateName ?? '-'}}
                                                     </span>
                                                     <span fxFlex="20%" class="u-w--100 text-truncate-ellipsis" [matTooltip]="rate.value.reportingUnit?.name">
