@@ -427,7 +427,7 @@ export class WorkflowSalesComponent extends AppComponentBase implements OnInit {
         this.getCountries();
         this.getConsultantTimeReportingCap();
 
-        this.detectActiveSideSection();
+        this.getSalesStepData();
 
         this._workflowDataService.startClientPeriodSalesSaved
             .pipe(takeUntil(this._unsubscribe))
@@ -456,7 +456,7 @@ export class WorkflowSalesComponent extends AppComponentBase implements OnInit {
         this._workflowDataService.workflowSideSectionChanged
             .pipe(takeUntil(this._unsubscribe))
             .subscribe((value: {consultant?: ConsultantResultDto | undefined, consultantPeriodId?: string | undefined}) => {
-                this.detectActiveSideSection(value?.consultant, value?.consultantPeriodId);
+                this.getSalesStepData(value?.consultant, value?.consultantPeriodId);
             });
 
         this._workflowDataService.cancelForceEdit
@@ -465,7 +465,7 @@ export class WorkflowSalesComponent extends AppComponentBase implements OnInit {
                 this.isCompleted = true;
                 this.editEnabledForcefuly = false;
                 this._workflowDataService.updateWorkflowProgressStatus({currentStepIsCompleted: this.isCompleted, currentStepIsForcefullyEditing: this.editEnabledForcefuly});
-                this.detectActiveSideSection();
+                this.getSalesStepData();
             });
 
         this.individualConsultantActionsAvailable = environment.dev;
@@ -475,7 +475,7 @@ export class WorkflowSalesComponent extends AppComponentBase implements OnInit {
         this.isCompleted = !this.isCompleted;
         this.editEnabledForcefuly = !this.editEnabledForcefuly;
         this._workflowDataService.updateWorkflowProgressStatus({currentStepIsCompleted: this.isCompleted, currentStepIsForcefullyEditing: this.editEnabledForcefuly});
-        this.detectActiveSideSection();
+        this.getSalesStepData();
     }
 
     get canToggleEditMode() {
@@ -1069,12 +1069,13 @@ export class WorkflowSalesComponent extends AppComponentBase implements OnInit {
             consultantRateUnitType: new FormControl(this.findItemById(this.rateUnitTypes, consultant?.consultantRate?.rateUnitTypeId) ?? null),
             consultantRateCurrency: new FormControl(this.findItemById(this.currencies, consultant?.consultantRate?.currencyId) ?? null),
             consultantPDCRate: new FormControl(consultant?.consultantRate?.prodataToProdataRate ?? null),
-            consultantPDCRateUnitType: new FormControl(null), // ??
+            consultantPDCRateUnitType: new FormControl(this.findItemById(this.rateUnitTypes, consultant?.consultantRate?.rateUnitTypeId) ?? null),
             consultantPDCRateCurrency: new FormControl(this.findItemById(this.currencies, consultant?.consultantRate?.prodataToProdataCurrencyId) ?? null),
 
             consultantInvoicingFrequency: new FormControl(this.findItemById(this.invoiceFrequencies, consultant?.consultantRate?.invoiceFrequencyId) ?? null),
             consultantInvoicingTime: new FormControl(this.findItemById(this.invoicingTimes, consultant?.consultantRate?.invoicingTimeId) ?? null),
             consultantInvoicingManualDate: new FormControl(consultant?.consultantRate?.manualDate ?? null),
+            prodataToProdataInvoiceCurrency: new FormControl(this.findItemById(this.currencies, consultant?.consultantRate?.prodataToProdataInvoiceCurrencyId) ?? null),
 
             consultantSpecialRateFilter: new FormControl(''),
             specialRates: new FormArray([]),
@@ -1214,6 +1215,10 @@ export class WorkflowSalesComponent extends AppComponentBase implements OnInit {
         const filterValue = value.toLowerCase();
         const result = this.clientSpecialFeeList.filter(option => option.internalName!.toLowerCase().includes(filterValue));
         return result;
+    }
+
+    updateProdataUnitType(event: MatSelectChange, consultantIndex: number) {
+        this.consultantData.at(consultantIndex).get('consultantPDCRateUnitType')?.setValue(event.value, {emitEvent: false});
     }
 
     getConsultantRateControls(consultantIndex: number): AbstractControl[] | null {
@@ -1614,7 +1619,7 @@ export class WorkflowSalesComponent extends AppComponentBase implements OnInit {
                     consultantInput.consultantRate.rateUnitTypeId = consultant.consultantRateUnitType?.id;
                     consultantInput.consultantRate.prodataToProdataRate = consultant.consultantPDCRate;
                     consultantInput.consultantRate.prodataToProdataCurrencyId = consultant.consultantPDCRateCurrency?.id;
-                    consultantInput.consultantRate.prodataToProdataInvoiceCurrencyId = consultant.prodataToProdataInvoiceCurrencyId;
+                    consultantInput.consultantRate.prodataToProdataInvoiceCurrencyId = consultant.prodataToProdataInvoiceCurrency?.id;
                     if (consultantInput.consultantRate.isTimeBasedRate) {
                         consultantInput.consultantRate.invoiceFrequencyId = consultant.consultantInvoicingFrequency?.id;
                     }
@@ -2162,7 +2167,7 @@ export class WorkflowSalesComponent extends AppComponentBase implements OnInit {
 
     //#endregion termination
 
-    detectActiveSideSection(consultant?: ConsultantResultDto, consultantPeriodId?: string) {
+    getSalesStepData(consultant?: ConsultantResultDto, consultantPeriodId?: string) {
         switch (this._workflowDataService.getWorkflowProgress.currentlyActiveSideSection) {
             // Client period
             case WorkflowProcessType.StartClientPeriod:
@@ -2257,7 +2262,7 @@ export class WorkflowSalesComponent extends AppComponentBase implements OnInit {
             consultantInput.consultantRate.rateUnitTypeId = consultant.consultantRateUnitType?.id;
             consultantInput.consultantRate.prodataToProdataRate = consultant.consultantPDCRate;
             consultantInput.consultantRate.prodataToProdataCurrencyId = consultant.consultantPDCRateCurrency?.id;
-            consultantInput.consultantRate.prodataToProdataInvoiceCurrencyId = consultant.prodataToProdataInvoiceCurrencyId;
+            consultantInput.consultantRate.prodataToProdataInvoiceCurrencyId = consultant.prodataToProdataInvoiceCurrency?.id;
             if (consultantInput.consultantRate.isTimeBasedRate) {
                 consultantInput.consultantRate.invoiceFrequencyId = consultant.consultantInvoicingFrequency?.id;
             }
