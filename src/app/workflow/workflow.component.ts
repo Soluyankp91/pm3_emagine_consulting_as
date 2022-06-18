@@ -1,15 +1,15 @@
 import { Overlay } from '@angular/cdk/overlay';
-import { Component, Injector, OnDestroy, OnInit } from '@angular/core';
+import { Component, Injectable, Injector, OnDestroy, OnInit } from '@angular/core';
 import { FormControl } from '@angular/forms';
 import { MatDialog } from '@angular/material/dialog';
 import { MatTableDataSource } from '@angular/material/table';
-import { Router } from '@angular/router';
+import { ActivatedRoute, ActivatedRouteSnapshot, Resolve, Router } from '@angular/router';
 import { MsalService } from '@azure/msal-angular';
-import { Subject } from 'rxjs';
-import { debounceTime, finalize, switchMap, takeUntil } from 'rxjs/operators';
+import { Observable, Subject } from 'rxjs';
+import { debounceTime, finalize, map, switchMap, takeUntil } from 'rxjs/operators';
 import { AppComponentBase } from 'src/shared/app-component-base';
 import { AppConsts } from 'src/shared/AppConsts';
-import { ApiServiceProxy, EmployeeDto, EmployeeServiceProxy, EnumEntityTypeDto, LookupServiceProxy, StartNewWorkflowInputDto, WorkflowListItemDto, WorkflowProcessType, WorkflowServiceProxy, WorkflowStepStatus } from 'src/shared/service-proxies/service-proxies';
+import { ApiServiceProxy, EmployeeDto, EmployeeServiceProxy, EnumEntityTypeDto, LookupServiceProxy, StartNewWorkflowInputDto, WorkflowAlreadyExistsDto, WorkflowListItemDto, WorkflowProcessType, WorkflowServiceProxy, WorkflowStepStatus } from 'src/shared/service-proxies/service-proxies';
 import { SelectableCountry, SelectableIdNameDto } from '../client/client.model';
 import { InternalLookupService } from '../shared/common/internal-lookup.service';
 import { ManagerStatus } from '../shared/components/manager-search/manager-search.model';
@@ -96,8 +96,18 @@ export class WorkflowComponent extends AppComponentBase implements OnInit, OnDes
         private _lookupService: LookupServiceProxy,
         private _auth: MsalService,
         private _employeeService: EmployeeServiceProxy,
+        private _activatedRoute: ActivatedRoute
     ) {
         super(injector);
+
+        this._activatedRoute.data.subscribe(source => {
+            let data = source['data'];
+            if (data.existingWorkflowId) {
+               this.navigateToWorkflowDetails(data.existingWorkflowId);
+            } else {
+                this.createWorkflow(+data.requestId, +data.requestConsultantId);
+            }
+        });
         // this.workflowFilter.valueChanges.pipe(
         //     takeUntil(this._unsubscribe),
         //     debounceTime(300),
@@ -190,6 +200,7 @@ export class WorkflowComponent extends AppComponentBase implements OnInit, OnDes
     }
 
     ngOnInit(): void {
+
         this.getCurrentUser();
         // this.getWorkflowList();
         this.getTenants();
@@ -209,7 +220,7 @@ export class WorkflowComponent extends AppComponentBase implements OnInit, OnDes
         this.router.navigate(['/app/workflow', workflowId]);
     }
 
-    createWorkflow() {
+    createWorkflow(requestId?: number, requestConsultantId?: number) {
         const scrollStrategy = this.overlay.scrollStrategies.reposition();
         const dialogRef = this.dialog.open(CreateWorkflowDialogComponent, {
             minWidth: '450px',
@@ -218,7 +229,11 @@ export class WorkflowComponent extends AppComponentBase implements OnInit, OnDes
             width: 'auto',
             scrollStrategy,
             backdropClass: 'backdrop-modal--wrapper',
-            autoFocus: false
+            autoFocus: false,
+            data: {
+                requestId: requestId,
+                requestConsultantId: requestConsultantId
+            }
         });
 
         dialogRef.componentInstance.onConfirmed.subscribe((result) => {
@@ -226,6 +241,8 @@ export class WorkflowComponent extends AppComponentBase implements OnInit, OnDes
                 let input = new StartNewWorkflowInputDto();
                 input.startDate = result.startDate;
                 input.endDate = result.endDate;
+                input.requestId = result.requestId
+                input.soldRequestConsultantId = result.requestConsultantId;
                 this.showMainSpinner();
                 this._workflowService.start(input)
                     .pipe(finalize(() => {
@@ -421,5 +438,36 @@ export class WorkflowComponent extends AppComponentBase implements OnInit, OnDes
         this.includeTerminated = false;
         this.includeDeleted = false;
         this.getCurrentUser();
+    }
+}
+
+export class WorkflowSourcingCreate {
+    public requestId: number;
+    public requestConsultantId: number;
+    public existingWorkflowId: string | undefined;
+
+    constructor(requestId: number, requestConsultantId: number, existingWorkflowId: string | undefined) {
+        this.requestId = requestId;
+        this.requestConsultantId = requestConsultantId;
+        this.existingWorkflowId = existingWorkflowId;
+    }
+}
+
+@Injectable()
+export class WorkflowCreateResolver implements Resolve<WorkflowSourcingCreate> {
+    constructor(private _workflowService: WorkflowServiceProxy) { }
+
+    resolve(route: ActivatedRouteSnapshot): Observable<WorkflowSourcingCreate> {
+        let requestId = route.queryParams['requestId']
+        let requestConsultantId = route.queryParams['requestConsultantId'];
+        return this._workflowService.workflowExists(requestConsultantId)
+            .pipe(
+                map((value:WorkflowAlreadyExistsDto)  => {
+                return {
+                    requestId: requestId,
+                    requestConsultantId: requestConsultantId,
+                    existingWorkflowId: value.existingWorkflowId
+                }
+            }))
     }
 }
