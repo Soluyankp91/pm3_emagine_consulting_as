@@ -1,5 +1,5 @@
 <div class="workflow-contracts">
-    <button class="absolute-edit-toggle" mat-icon-button *ngIf="canToggleEditMode" (click)="toggleEditMode()"><mat-icon>{{readOnlyMode ? 'create' : 'close'}}</mat-icon></button>
+    <button class="absolute-edit-toggle" mat-icon-button *ngIf="canToggleEditMode" (click)="toggleEditMode(true)"><mat-icon>{{readOnlyMode ? 'create' : 'close'}}</mat-icon></button>
     <ng-container [ngSwitch]="true">
         <ng-container *ngSwitchCase="activeSideSection.typeId === workflowSideSections.TerminateWorkflow || activeSideSection.typeId === workflowSideSections.TerminateConsultant">
             <div class="workflow--termination">
@@ -1187,7 +1187,7 @@
                                         New legal contract needed
                                     </mat-checkbox>
                                 </div>
-        
+
                                 <div fxLayout="row" fxLayoutAlign="start center" class="u-mb--20" *ngIf="!readOnlyMode && consultant.value?.consultantLegalContractDoneStatusId !== 0">
                                     <mat-icon class="u-mr--5" [ngClass]="{'icon-cancel': consultant.value?.consultantLegalContractDoneStatusId === 0}" [svgIcon]="detectContractModuleIcon(consultant.value?.consultantLegalContractDoneStatusId)"></mat-icon>
                                     <div fxLayout="column" fxLayoutAlign="start start">

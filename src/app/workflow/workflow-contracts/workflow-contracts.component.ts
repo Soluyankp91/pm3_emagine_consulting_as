@@ -389,11 +389,13 @@ export class WorkflowContractsComponent extends AppComponentBase implements OnIn
         });
     }
 
-    toggleEditMode() {
+    toggleEditMode(isToggledFromUi?: boolean) {
         this.isCompleted = !this.isCompleted;
         this.editEnabledForcefuly = !this.editEnabledForcefuly;
         this._workflowDataService.updateWorkflowProgressStatus({currentStepIsCompleted: this.isCompleted, currentStepIsForcefullyEditing: this.editEnabledForcefuly});
-        this.getContractStepData();
+        if (isToggledFromUi) {
+            this.getContractStepData();
+        }
     }
 
     get canToggleEditMode() {
@@ -1240,6 +1242,7 @@ export class WorkflowContractsComponent extends AppComponentBase implements OnIn
             this._clientPeriodService.clientContractsPut(this.periodId!, input)
                 .pipe(finalize(() => {
                     this.hideMainSpinner();
+                    this.getContractStepData();
                 }))
                 .subscribe(result => {
                     if (isSyncToLegacy) {
@@ -1252,6 +1255,7 @@ export class WorkflowContractsComponent extends AppComponentBase implements OnIn
             this._clientContractsService.editFinish(this.periodId!, input)
                 .pipe(finalize(() => {
                     this.hideMainSpinner();
+                    this.getContractStepData();
                 }))
                 .subscribe(result => {
                     this._workflowDataService.workflowSideSectionUpdated.emit({isStatusUpdate: true});
@@ -1376,7 +1380,10 @@ export class WorkflowContractsComponent extends AppComponentBase implements OnIn
         this.showMainSpinner();
         if (isDraft) {
             this._consultantPeriodService.consultantContractsPut(this.activeSideSection.consultantPeriodId!, input)
-                .pipe(finalize(() => this.hideMainSpinner()))
+                .pipe(finalize(() => {
+                    this.hideMainSpinner();
+                    this.getContractStepData();
+                }))
                 .subscribe(result => {
                     if (isSyncToLegacy) {
                         this.syncConsultantPeriodToLegacySystem();
@@ -1386,7 +1393,10 @@ export class WorkflowContractsComponent extends AppComponentBase implements OnIn
                 });
         } else {
             this._consultantContractsService.editFinish(this.activeSideSection.consultantPeriodId!, input)
-                .pipe(finalize(() => this.hideMainSpinner()))
+                .pipe(finalize(() => {
+                    this.hideMainSpinner();
+                    this.getContractStepData();
+                }))
                 .subscribe(result => {
                     this._workflowDataService.workflowSideSectionUpdated.emit({isStatusUpdate: true});
                 });
@@ -1434,7 +1444,10 @@ export class WorkflowContractsComponent extends AppComponentBase implements OnIn
         this.showMainSpinner();
         if (isDraft) {
             this._workflowServiceProxy.terminationConsultantContractPut(this.workflowId!, input)
-                .pipe(finalize(() => this.hideMainSpinner()))
+                .pipe(finalize(() => {
+                    this.hideMainSpinner();
+                    this.getContractStepData();
+                }))
                 .subscribe(result => {
                     if (isSyncToLegacy) {
                         this.syncConsultantTerminationToLegacySystem();
@@ -1444,7 +1457,10 @@ export class WorkflowContractsComponent extends AppComponentBase implements OnIn
                 })
         } else {
             this._workflowServiceProxy.terminationConsultantContractComplete(this.workflowId!, input)
-            .pipe(finalize(() => this.hideMainSpinner()))
+            .pipe(finalize(() => {
+                this.hideMainSpinner();
+                this.getContractStepData();
+            }))
             .subscribe(result => {
                 this._workflowDataService.workflowSideSectionUpdated.emit({isStatusUpdate: true});
             })
@@ -1486,7 +1502,10 @@ export class WorkflowContractsComponent extends AppComponentBase implements OnIn
         this.showMainSpinner();
         if (isDraft) {
             this._workflowServiceProxy.terminationContractPut(this.workflowId!, input)
-                .pipe(finalize(() => this.hideMainSpinner()))
+                .pipe(finalize(() => {
+                    this.hideMainSpinner();
+                    this.getContractStepData();
+                }))
                 .subscribe(result => {
                     if (isSyncToLegacy) {
                         this.syncWorkflowTerminationToLegacySystem();
@@ -1494,7 +1513,10 @@ export class WorkflowContractsComponent extends AppComponentBase implements OnIn
                 })
         } else {
             this._workflowServiceProxy.terminationContractComplete(this.workflowId!, input)
-            .pipe(finalize(() => this.hideMainSpinner()))
+            .pipe(finalize(() => {
+                this.hideMainSpinner();
+                this.getContractStepData();
+            }))
             .subscribe(result => {
                 this._workflowDataService.workflowSideSectionUpdated.emit({isStatusUpdate: true});
             })
@@ -1540,7 +1562,6 @@ export class WorkflowContractsComponent extends AppComponentBase implements OnIn
         this._contractSyncService.clientPeriodSync(this.periodId!)
             .pipe(finalize(() => {
                 this.hideMainSpinner();
-                this.getContractStepData();
             }))
             .subscribe(result => {
                 this.syncNotPossible = !result.success!;
@@ -1555,7 +1576,6 @@ export class WorkflowContractsComponent extends AppComponentBase implements OnIn
         this._contractSyncService.consultantPeriodSync(this.activeSideSection.consultantPeriodId!)
             .pipe(finalize(() => {
                 this.hideMainSpinner();
-                this.getContractStepData();
             }))
             .subscribe(result => {
                 this.syncNotPossible = !result.success!;
@@ -1570,7 +1590,6 @@ export class WorkflowContractsComponent extends AppComponentBase implements OnIn
         this._contractSyncService.workflowTerminationSync(this.workflowId!)
             .pipe(finalize(() => {
                 this.hideMainSpinner();
-                this.getContractStepData();
             }))
             .subscribe(result => {
                 this.syncNotPossible = !result.success!;
@@ -1586,7 +1605,6 @@ export class WorkflowContractsComponent extends AppComponentBase implements OnIn
         this._contractSyncService.consultantTerminationSync(this.activeSideSection.consultantPeriodId!)
             .pipe(finalize(() => {
                 this.hideMainSpinner();
-                this.getContractStepData();
             }))
             .subscribe(result => {
                 this.syncNotPossible = !result.success!;
