@@ -1161,8 +1161,8 @@ export class WorkflowContractsComponent extends AppComponentBase implements OnIn
         input.mainData.noRemarks = this.contractsMainForm.noRemarks?.value;
 
         input.consultantData = new Array<ConsultantContractsDataDto>();
-        if (this.consultants.value?.length) {
-            for (let consultant of this.consultants.value) {
+        if (this.contractsConsultantsDataForm.consultants.value.length) {
+            for (let consultant of this.contractsConsultantsDataForm.consultants.value) {
                 let consultantData = new ConsultantContractsDataDto();
                 consultantData.consultantPeriodId = consultant.consultantPeriodId;
                 consultantData.employmentTypeId = consultant.consultantType?.id;
@@ -1192,8 +1192,8 @@ export class WorkflowContractsComponent extends AppComponentBase implements OnIn
                 }
                 consultantData.noSpecialFee = consultant.clientFees?.length === 0;
                 consultantData.periodConsultantSpecialRates = new Array<PeriodConsultantSpecialRateDto>();
-                if (consultant.clientSpecialRates?.length) {
-                    for (let specialRate of consultant.clientSpecialRates) {
+                if (consultant.specialRates?.length) {
+                    for (let specialRate of consultant.specialRates) {
                         let consultantRate = new PeriodConsultantSpecialRateDto();
                         consultantRate.id = specialRate.id;
                         consultantRate.clientSpecialRateId = specialRate.clientSpecialRateId;
