@@ -593,6 +593,7 @@ export class WorkflowContractsComponent extends AppComponentBase implements OnIn
     addConsultantLegalContract(consultant: ConsultantContractsDataDto) {
         const form = this._fb.group({
             consultantId: new FormControl(consultant.consultantId),
+            consultantPeriodId: new FormControl(consultant?.consultantPeriodId),
             consultant: new FormControl(consultant.consultant),
             internalLegalContractDoneStatusId: new FormControl(consultant.internalLegalContractDoneStatusId),
             consultantLegalContractDoneStatusId: new FormControl(consultant.consultantLegalContractDoneStatusId),
