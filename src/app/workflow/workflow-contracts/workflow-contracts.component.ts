@@ -1624,9 +1624,9 @@ export class WorkflowContractsComponent extends AppComponentBase implements OnIn
             });
     }
 
-    openContractModule(legalContractStatus: number, isInternal: boolean, tenantId: number, consultant?: ConsultantResultDto) {
+    openContractModule(periodId: string, legalContractStatus: number, isInternal: boolean, tenantId: number, consultant?: ConsultantResultDto) {
         let isFrameworkAgreement = false;
-        window.open(`pmpapercontractpm3:${this.periodId}/${isInternal ? 'True' : 'False'}/${legalContractStatus <= 1 ? 'True' : 'False'}/${isFrameworkAgreement ? 'True' : 'False'}/${tenantId}${consultant?.id ? '/' + consultant.id : ''}`);
+        window.open(`pmpapercontractpm3:${periodId}/${isInternal ? 'True' : 'False'}/${legalContractStatus <= 1 ? 'True' : 'False'}/${isFrameworkAgreement ? 'True' : 'False'}/${tenantId}${consultant?.id ? '/' + consultant.id : ''}`);
     }
 
     detectContractModuleIcon(legalContractStatus: number | string): string {
