@@ -113,7 +113,6 @@ export class AddOrEditProjectLineDialogComponent extends AppComponentBase implem
     }
 
     fillForm(data: any) {
-        console.log(data);
         this.projectLineForm.id?.setValue(data.id, {emitEvent: false});
         this.projectLineForm.projectName?.setValue(data.projectName, {emitEvent: false});
         this.projectLineForm.startDate?.setValue(data.startDate, {emitEvent: false});
@@ -161,7 +160,6 @@ export class AddOrEditProjectLineDialogComponent extends AppComponentBase implem
 
     confirm(): void {
         let result = new ProjectLineDto();
-        console.log(this.projectLineForm.value);
         result.id = this.projectLineForm.id?.value;
         result.projectName = this.projectLineForm.projectName?.value;
         result.startDate = this.projectLineForm.startDate?.value;
@@ -170,8 +168,12 @@ export class AddOrEditProjectLineDialogComponent extends AppComponentBase implem
         result.differentInvoicingReferenceNumber = this.projectLineForm.differentInvoicingReferenceNumber?.value;
         result.invoicingReferenceNumber = this.projectLineForm.invoicingReferenceNumber?.value;
         result.differentInvoicingReferencePerson = this.projectLineForm.differentInvoicingReferencePerson?.value;
-        result.invoicingReferencePersonId = this.projectLineForm.invoicingReferencePersonId?.value?.id;
-        result.invoicingReferencePerson = this.projectLineForm.invoicingReferencePersonId?.value;
+        if (this.projectLineForm.invoicingReferencePersonId?.value?.id) {
+            result.invoicingReferencePersonId = this.projectLineForm.invoicingReferencePersonId?.value?.id;
+            result.invoicingReferencePerson = this.projectLineForm.invoicingReferencePersonId?.value;
+        } else {
+            result.invoicingReferenceString = this.projectLineForm.invoicingReferencePersonId?.value;
+        }
         result.optionalInvoicingInfo = this.projectLineForm.optionalInvoicingInfo?.value;
         result.differentDebtorNumber = this.projectLineForm.differentDebtorNumber?.value;
         result.debtorNumber = this.projectLineForm.debtorNumber?.value;
@@ -192,7 +194,15 @@ export class AddOrEditProjectLineDialogComponent extends AppComponentBase implem
     }
 
     displayFullNameFn(option: any) {
-        return option ? option?.firstName + ' ' + option?.lastName : '';
+        if (option) {
+            if (option.firstName) {
+                return option ? option?.firstName + ' ' + option?.lastName : '';
+            } else {
+                return option;
+            }
+        } else {
+            return '';
+        }
     }
 
     displayClientNameFn(option: any) {
