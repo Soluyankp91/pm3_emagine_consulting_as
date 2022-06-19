@@ -11,9 +11,9 @@
     </div>
     <form [formGroup]="projectLineForm">
         <div fxLayout="column" fxLayoutAlign="start start" class="u-w--100">
-            <mat-form-field appearance="outline" class="u-w--100 textarea-input textarea-with-hint" fxFlex="100%" [hintLabel]="(projectLineForm.value.projectName?.length ?? 0 ) + '/50'">
+            <mat-form-field appearance="outline" class="u-w--100 textarea-input textarea-with-hint" fxFlex="100%" [hintLabel]="(projectLineForm.value.projectName?.length ?? 0 ) + '/250'">
                 <mat-label>Project name</mat-label>
-                <textarea matInput autocomplete="new-password" maxlength="50" [matTextareaAutosize]="true" [matAutosizeMinRows]="2" name="projectName" formControlName="projectName">
+                <textarea matInput autocomplete="new-password" maxlength="250" [matTextareaAutosize]="true" [matAutosizeMinRows]="2" name="projectName" formControlName="projectName">
                 </textarea>
                 <mat-error>
                     {{getValidationMessage(projectLineForm.projectName)}}

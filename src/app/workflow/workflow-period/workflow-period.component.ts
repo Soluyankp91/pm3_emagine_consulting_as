@@ -52,7 +52,7 @@ export class WorkflowPeriodComponent implements OnInit {
         this._workflowDataService.workflowSideSectionAdded
             .pipe(takeUntil(this._unsubscribe))
             .subscribe((value: boolean) => {
-                this.getSideMenu();
+                this.getSideMenu(value);
             });
         this._workflowDataService.workflowSideSectionUpdated
             .pipe(takeUntil(this._unsubscribe))
@@ -83,6 +83,10 @@ export class WorkflowPeriodComponent implements OnInit {
             }))
             .subscribe(result => {
                 this.sideMenuItems = result?.clientPeriods![0].workflowProcesses!;
+                if (autoUpdate) {
+                    let sideMenuItemsLength = this.sideMenuItems.length;
+                    this.changeSideSection(this.sideMenuItems[sideMenuItemsLength - 1], sideMenuItemsLength - 1);
+                }
             });
     }
 

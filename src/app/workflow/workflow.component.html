@@ -341,8 +341,8 @@
                 <ng-container matColumnDef="Status">
                     <mat-header-cell *matHeaderCellDef mat-sort-header fxFlex="10%"> Status </mat-header-cell>
                     <mat-cell *matCellDef="let row" fxFlex="10%">
-                        <span class="text-truncate-ellipsis" [matTooltip]="row.status">
-                            {{workflowStatuses[row.workflowStatusWithEmployee?.workflowStatus]}}
+                        <span class="text-truncate-ellipsis" [matTooltip]="workflowStatuses[row.workflowStatusWithEmployee?.status]">
+                            {{workflowStatuses[row.workflowStatusWithEmployee?.status]}}
                         </span>
                     </mat-cell>
                 </ng-container>

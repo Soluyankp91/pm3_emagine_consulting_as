@@ -96,7 +96,7 @@ export abstract class AppComponentBase {
         }
     }
 
-    findItemById(list: EnumEntityTypeDto[] | IdNameDto[], id?: number) {
+    findItemById(list: EnumEntityTypeDto[] | IdNameDto[], id?: number | null) {
         if (id) {
             return list.find((x: any) => x.id === id);
         } else {

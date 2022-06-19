@@ -1,6 +1,6 @@
 import { Routes, RouterModule } from '@angular/router';
 import { NgModule } from '@angular/core';
-import { WorkflowComponent } from './workflow.component';
+import { WorkflowComponent, WorkflowCreateResolver } from './workflow.component';
 import { WorkflowDetailsComponent } from './workflow-details/workflow-details.component';
 
 const routes: Routes = [
@@ -12,15 +12,15 @@ const routes: Routes = [
             //     path: '', redirectTo: ':id', pathMatch: 'full'
             // },
     },
-            { path: ':id', component: WorkflowDetailsComponent },
-        // ]
-    // },
-
-    //{ path: 'path/:routeParam', component: MyComponent },
-    //{ path: 'staticPath', component: ... },
-    //{ path: '**', component: ... },
-    //{ path: 'oldPath', redirectTo: '/staticPath' },
-    //{ path: ..., component: ..., data: { message: 'Custom' }
+    {
+        path: 'create',
+        component: WorkflowComponent,
+        resolve: {data: WorkflowCreateResolver}
+    },
+    {
+        path: ':id',
+        component: WorkflowDetailsComponent
+    },
 ];
 
 @NgModule({

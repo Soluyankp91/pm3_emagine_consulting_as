@@ -57,17 +57,6 @@ export class MainOverviewComponent extends AppComponentBase implements OnInit {
 
     isInitial = true;
 
-    // gant
-
-    // items: GanttItem<OverviewData>[] = [
-    //     { id: '000000', title: 'Leadership support', color: 'rgb(250, 173, 25)', origin: { firstName: 'Frederick', lastName: 'Rikke', process: OverviewFlag.Extended }, start: getUnixTime(new Date(2022, 5, 1)), end: getUnixTime(new Date(2022, 8, 3))},
-    //     { id: '000001', title: 'Leadership support', color: 'rgb(250, 173, 25)', origin: {  firstName: 'Frederick', lastName: 'Rikke', process: OverviewFlag.ExtensionExpected }, start: getUnixTime(new Date(2022, 5, 2)), end: getUnixTime(new Date(2022, 9, 2))},
-    //     { id: '000002', title: 'Leadership support', color: 'rgb(23, 162, 151)', origin: { firstName: 'Frederick', lastName: 'Rikke', process: OverviewFlag.Terminated }, start: getUnixTime(new Date(2022, 5, 1)), end: getUnixTime(new Date(2022, 9, 3))},
-    //     { id: '000003', title: 'Leadership support', color: 'rgb(139, 209, 203)', origin: { firstName: 'Frederick', lastName: 'Rikke', process: OverviewFlag.ExpectedToTerminate }, start: getUnixTime(new Date(2022, 6, 1)), end: getUnixTime(new Date(2022, 8, 25))},
-    //     { id: '000004', title: 'Leadership support', color: 'rgb(139, 209, 203)', origin: { firstName: 'Frederick', lastName: 'Rikke', process: OverviewFlag.ExtensionInNegotiation }, start: getUnixTime(new Date(2022, 7, 1)), end: getUnixTime(new Date(2022, 11, 30))},
-    //     { id: '000005', title: 'Leadership support', color: 'rgb(23, 162, 151)', origin: { firstName: 'Frederick', lastName: 'Rikke', process: OverviewFlag.RequiresAttention }, start: getUnixTime(new Date(2022, 6, 1)), end: getUnixTime(new Date(2022, 10, 6))}
-    // ];
-
     workflowsData: any[] = [];
     consultantsData: any[] = [];
 
@@ -247,27 +236,25 @@ export class MainOverviewComponent extends AppComponentBase implements OnInit {
                 let cutOffDateWeek = new Date();
                 cutOffDateWeek.setDate(cutOffDateWeek.getDate() - 35);
                 this.viewOptions.cellWidth = 50;
-                // this.viewOptions.start = new GanttDate(getUnixTime(new Date(cutOffDateWeek)));
                 this.getMainOverview(cutOffDateWeek);
                 break;
             case GanttViewType.month:
                 let cutOffDateMonth = new Date();
                 cutOffDateMonth.setMonth(cutOffDateMonth.getMonth() - 1)
                 this.viewOptions.cellWidth = 75;
-                // this.viewOptions.start = new GanttDate(getUnixTime(new Date(cutOffDateMonth)));
                 this.getMainOverview(cutOffDateMonth);
                 break;
         }
     }
 
-    // formatDate(date: any) {
-    //     var d = new Date(date),
-    //         month = (d.getMonth() + 1),
-    //         day = d.getDate(),
-    //         year = d.getFullYear();
+    formatDate(date: any) {
+        var d = new Date(date),
+            month = (d.getMonth() + 2),
+            day = d.getDate() - d.getDate(),
+            year = d.getFullYear() + 1;
 
-    //     return [year, month, day].join(',');
-    // }
+        return new Date(year, month, day);
+    }
 
     mapListByProperty(list: any[], prop: string) {
         if (list?.length) {
@@ -315,6 +302,12 @@ export class MainOverviewComponent extends AppComponentBase implements OnInit {
                     .subscribe(result => {
                         if (result.items?.length) {
                             let oldestDateArray = result.items.reduce((r, o) => o.lastClientPeriodEndDate! > r.lastClientPeriodEndDate! ? o : r);
+
+                            let endDate = new Date();
+                            if (oldestDateArray.lastClientPeriodEndDate === undefined || oldestDateArray.lastClientPeriodEndDate.toDate().getTime() < this.formatDate(date).getTime()) {
+                                endDate = this.formatDate(date);
+                            }
+
                             this.viewOptions = {
                                 dateFormat: {
                                     yearQuarter: `QQQ 'of' yyyy`,
@@ -323,9 +316,9 @@ export class MainOverviewComponent extends AppComponentBase implements OnInit {
                                     year: 'yyyy'
                                 },
                                 start: new GanttDate(getUnixTime(new Date(date))),
-                                end: new GanttDate(getUnixTime(new Date(oldestDateArray.lastClientPeriodEndDate?.toDate()!))),
+                                end: endDate.getTime() !== new Date().getTime() ? new GanttDate(getUnixTime(endDate)) : new GanttDate(getUnixTime(new Date(oldestDateArray.lastClientPeriodEndDate?.toDate()!))),
                                 min: new GanttDate(getUnixTime(new Date(date))),
-                                max: new GanttDate(getUnixTime(new Date(oldestDateArray.lastClientPeriodEndDate?.toDate()!)))
+                                max: endDate.getTime() !== new Date().getTime() ? new GanttDate(getUnixTime(endDate)) : new GanttDate(getUnixTime(new Date(oldestDateArray.lastClientPeriodEndDate?.toDate()!)))
                             }
 
                             this.workflowsData = result.items!.map(x => {
@@ -334,28 +327,24 @@ export class MainOverviewComponent extends AppComponentBase implements OnInit {
                                     id: x.workflowId!,
                                     title: x.clientDisplayName!,
                                     start: getUnixTime(x.clientPeriods![0]?.startDate!.toDate()),
-                                    end: x.clientPeriods![0]?.endDate ? getUnixTime(x.clientPeriods![0]?.endDate!.toDate()) : undefined,
+                                    end: x.clientPeriods![0]?.endDate ? getUnixTime(x.clientPeriods![0]?.endDate!.toDate()) : getUnixTime(this.viewOptions.end!.value),
                                     origin: x,
                                     color: 'rgb(23, 162, 151)'
                                 }
                                 return formattedData;
                             })
-                            let oldestDateArray1 = this.workflowsData.reduce((r, o) => o?.origin.lastClientPeriodEndDate! > r?.origin.lastClientPeriodEndDate! ? o : r);
 
-                            // this.ganttWorkflows.viewOptions.start = new GanttDate(getUnixTime(new Date(date)));
-                            this.ganttWorkflows.viewOptions.end = new GanttDate(getUnixTime(new Date(oldestDateArray1.origin.lastClientPeriodEndDate)));
+                            this.ganttWorkflows.viewOptions.end = new GanttDate(getUnixTime(new Date(oldestDateArray.lastClientPeriodEndDate?.toDate()!)));
                             this.ganttWorkflows.viewOptions.min = new GanttDate(getUnixTime(new Date(date)));
-                            this.ganttWorkflows.viewOptions.max = new GanttDate(getUnixTime(new Date(oldestDateArray1.origin.lastClientPeriodEndDate)));
+                            this.ganttWorkflows.viewOptions.max = new GanttDate(getUnixTime(new Date(oldestDateArray.lastClientPeriodEndDate?.toDate()!)));
 
-                            // this.ganttWorkflows.view.options.start = new GanttDate(getUnixTime(new Date(date)));
                             this.ganttWorkflows.view.options.min = new GanttDate(getUnixTime(new Date(date)));
-                            this.ganttWorkflows.view.options.max = new GanttDate(getUnixTime(new Date(oldestDateArray1.origin.lastClientPeriodEndDate)));
-                            this.ganttWorkflows.view.options.end = new GanttDate(getUnixTime(new Date(oldestDateArray1.origin.lastClientPeriodEndDate)));
-                            this.ganttWorkflows.view.end$.next(new GanttDate(getUnixTime(new Date(oldestDateArray1.origin.lastClientPeriodEndDate))));
+                            this.ganttWorkflows.view.options.max = new GanttDate(getUnixTime(new Date(oldestDateArray.lastClientPeriodEndDate?.toDate()!)));
+                            this.ganttWorkflows.view.options.end = new GanttDate(getUnixTime(new Date(oldestDateArray.lastClientPeriodEndDate?.toDate()!)));
+                            this.ganttWorkflows.view.end$.next(new GanttDate(getUnixTime(new Date(oldestDateArray.lastClientPeriodEndDate?.toDate()!))));
 
                             if (this.isInitial) {
                                 this.viewType.setValue(GanttViewType.month);
-                                console.log('repeat');
                                 this.isInitial = false;
                                 this.changeViewType();
                             }
@@ -384,6 +373,12 @@ export class MainOverviewComponent extends AppComponentBase implements OnInit {
                     .subscribe(result => {
                         if (result.items?.length) {
                             let oldestDateArray = result.items.reduce((r, o) => o?.lastConsultantPeriodEndDate! > r?.lastConsultantPeriodEndDate! ? o : r);
+
+                            let endDate = new Date();
+                            if (oldestDateArray.lastConsultantPeriodEndDate === undefined || oldestDateArray.lastConsultantPeriodEndDate.toDate().getTime() < this.formatDate(date).getTime()) {
+                                endDate = this.formatDate(date);
+                            }
+
                             this.viewOptions = {
                                 dateFormat: {
                                     yearQuarter: `QQQ 'of' yyyy`,
@@ -392,23 +387,24 @@ export class MainOverviewComponent extends AppComponentBase implements OnInit {
                                     year: 'yyyy'
                                 },
                                 start: new GanttDate(getUnixTime(new Date(date))),
-                                end: new GanttDate(getUnixTime(new Date(oldestDateArray.lastConsultantPeriodEndDate?.toDate()!))),
+                                end: endDate.getTime() !== new Date().getTime() ? new GanttDate(getUnixTime(endDate)) : new GanttDate(getUnixTime(new Date(oldestDateArray.lastConsultantPeriodEndDate?.toDate()!))),
                                 min: new GanttDate(getUnixTime(new Date(date))),
-                                max: new GanttDate(getUnixTime(new Date(oldestDateArray.lastConsultantPeriodEndDate?.toDate()!)))
+                                max: endDate.getTime() !== new Date().getTime() ? new GanttDate(getUnixTime(endDate)) : new GanttDate(getUnixTime(new Date(oldestDateArray.lastConsultantPeriodEndDate?.toDate()!)))
                             }
+
                             this.consultantsData = result.items!.map(x => {
                                 let formattedData: GanttItem<MainOverviewItemForConsultantDto>;
                                 formattedData = {
                                     id: x.workflowId!,
                                     title: x.clientDisplayName!,
                                     start: getUnixTime(x.consultantPeriods![0]?.startDate!.toDate()),
-                                    end: x.consultantPeriods![0]?.endDate ? getUnixTime(x.consultantPeriods![0]?.endDate!.toDate()) : undefined,
+                                    end: x.consultantPeriods![0]?.endDate ? getUnixTime(x.consultantPeriods![0]?.endDate!.toDate()) : getUnixTime(this.viewOptions.end!.value),
                                     origin: x,
                                     color: 'rgb(250, 173, 25)'
                                 }
                                 return formattedData;
                             })
-                            // this.ganttConsultants.viewOptions.start = new GanttDate(getUnixTime(new Date(this.formatDate(date))));
+
                             this.ganttConsultants.viewOptions.end = new GanttDate(getUnixTime(new Date(oldestDateArray.lastConsultantPeriodEndDate?.toDate()!)));
                             this.ganttConsultants.viewOptions.min = new GanttDate(getUnixTime(new Date(date)));
                             this.ganttConsultants.viewOptions.max = new GanttDate(getUnixTime(new Date(oldestDateArray.lastConsultantPeriodEndDate?.toDate()!)));
@@ -420,17 +416,14 @@ export class MainOverviewComponent extends AppComponentBase implements OnInit {
 
                             if (this.isInitial) {
                                 this.viewType.setValue(GanttViewType.month);
-                                console.log('repeat');
                                 this.isInitial = false;
                                 this.changeViewType();
                             }
                         }
                         this.totalCount = result.totalCount;
                     });
-                break
+                break;
         }
-
-
     }
 
     optionClicked(event: Event, item: SelectableIdNameDto | SelectableCountry | SelectableEmployeeDto, list: SelectableIdNameDto[] | SelectableCountry[] | SelectableEmployeeDto[]) {
