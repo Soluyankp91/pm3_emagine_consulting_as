@@ -1299,6 +1299,7 @@ export class WorkflowSalesComponent extends AppComponentBase implements OnInit {
         consultantRate.clientSpecialRateId = rate.id;
         consultantRate.rateName = rate.internalName;
         consultantRate.reportingUnit = rate.specialRateReportingUnit;
+        consultantRate.rateSpecifiedAs = rate.specialRateSpecifiedAs;
         if (consultantRate.rateSpecifiedAs?.id === 1) {
             consultantRate.prodataToProdataRate = +(this.consultantsForm.consultantData.at(consultantIndex)!.get('consultantRate')!.value * rate.proDataToProDataRate! / 100).toFixed(2);
             consultantRate.prodataToProdataRateCurrencyId = this.consultantsForm.consultantData.at(consultantIndex)!.get('consultantRateCurrency')!.value?.id;
