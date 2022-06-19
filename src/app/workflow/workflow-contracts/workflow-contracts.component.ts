@@ -1161,7 +1161,7 @@ export class WorkflowContractsComponent extends AppComponentBase implements OnIn
         input.mainData.noRemarks = this.contractsMainForm.noRemarks?.value;
 
         input.consultantData = new Array<ConsultantContractsDataDto>();
-        if (this.contractsConsultantsDataForm.consultants.value.length) {
+        if (this.contractsConsultantsDataForm?.consultants?.value?.length) {
             for (let consultant of this.contractsConsultantsDataForm.consultants.value) {
                 let consultantData = new ConsultantContractsDataDto();
                 consultantData.consultantPeriodId = consultant.consultantPeriodId;
