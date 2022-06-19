@@ -102,8 +102,8 @@ export class WorkflowComponent extends AppComponentBase implements OnInit, OnDes
 
         this._activatedRoute.data.subscribe(source => {
             let data = source['data'];
-            if (data.existingWorkflowId) {
-               this.navigateToWorkflowDetails(data.existingWorkflowId);
+            if (data?.existingWorkflowId) {
+               this.navigateToWorkflowDetails(data?.existingWorkflowId);
             } else {
                 this.createWorkflow(+data.requestId, +data.requestConsultantId);
             }
@@ -466,7 +466,7 @@ export class WorkflowCreateResolver implements Resolve<WorkflowSourcingCreate> {
                 return {
                     requestId: requestId,
                     requestConsultantId: requestConsultantId,
-                    existingWorkflowId: value.existingWorkflowId
+                    existingWorkflowId: value?.existingWorkflowId
                 }
             }))
     }
