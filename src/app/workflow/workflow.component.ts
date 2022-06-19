@@ -468,7 +468,7 @@ export class WorkflowCreateResolver implements Resolve<WorkflowSourcingCreate> {
                 return {
                     requestId: requestId,
                     requestConsultantId: requestConsultantId,
-                    existingWorkflowId: value.existingWorkflowId
+                    existingWorkflowId: value?.existingWorkflowId
                 }
             }))
     }
