@@ -109,7 +109,7 @@ export class WorkflowComponent extends AppComponentBase implements OnInit, OnDes
                 } else if (data?.requestId && data?.requestConsultantId) {
                     this.createWorkflow(+data.requestId, +data.requestConsultantId);
                 }
-            });
+        });
         // this.workflowFilter.valueChanges.pipe(
         //     takeUntil(this._unsubscribe),
         //     debounceTime(300),
