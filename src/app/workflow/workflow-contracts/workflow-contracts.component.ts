@@ -1054,7 +1054,7 @@ export class WorkflowContractsComponent extends AppComponentBase implements OnIn
                 this.contractsSyncDataForm.clientLegalContractDoneStatusId?.setValue(result?.clientLegalContractDoneStatusId, {emitEvent: false});
                 this.contractsSyncDataForm.enableLegalContractsButtons?.setValue(result?.enableLegalContractsButtons, {emitEvent: false});
                 this.contractsSyncDataForm.showManualOption?.setValue(result?.showManualOption, {emitEvent: false});
-
+                this.contractsSyncDataForm.manualCheckbox?.setValue(result?.contractLinesDoneManuallyInOldPm, {emitEvent: false});
                 if (result.clientData?.periodClientSpecialRates?.length) {
                     result.clientData.periodClientSpecialRates.forEach((rate: PeriodClientSpecialRateDto) => {
                         this.addSpecialRate(rate);
