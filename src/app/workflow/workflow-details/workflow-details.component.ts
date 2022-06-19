@@ -103,7 +103,7 @@ export class WorkflowDetailsComponent extends AppComponentBase implements OnInit
         this._workflowDataService.workflowTopSectionUpdated
             .pipe(takeUntil(this._unsubscribe))
             .subscribe((value: boolean) => {
-                this.getTopLevelMenu();
+                this.getTopLevelMenu(value);
             });
         this.individualConsultantActionsAvailable = environment.dev;
     }
@@ -177,7 +177,7 @@ export class WorkflowDetailsComponent extends AppComponentBase implements OnInit
         this._unsubscribe.complete();
     }
 
-    getTopLevelMenu() {
+    getTopLevelMenu(value?: boolean) {
         this.showMainSpinner();
         this._workflowServiceProxy.clientPeriods(this.workflowId)
             .pipe(finalize(() => {
@@ -186,11 +186,14 @@ export class WorkflowDetailsComponent extends AppComponentBase implements OnInit
             .subscribe(result => {
                 this.clientPeriods = result.clientPeriods;
                 this.workflowClient = result.clientName;
+                if (value) {
+                    this.selectedIndex = 1;
+                }
             });
     }
 
     tabChanged(event: MatTabChangeEvent) {
-        this.selectedTabIndex = event.index;
+        this.selectedIndex = event.index;
         this.selectedTabName = event.tab.textLabel;
         let newStatus = new WorkflowProgressStatus();
         newStatus.currentlyActiveStep = WorkflowSteps.Sales;
@@ -501,7 +504,7 @@ export class WorkflowDetailsComponent extends AppComponentBase implements OnInit
         //                         break;
         //                 }
         //                 break;
-                    
+
         //         }
         //         break;
         // }
@@ -539,9 +542,10 @@ export class WorkflowDetailsComponent extends AppComponentBase implements OnInit
     }
 
     terminateWorkflowStart() {
+        this.showMainSpinner();
         this._workflowServiceProxy.terminationStart(this.workflowId!)
         .pipe(finalize(() => {
-
+            this.hideMainSpinner();
         }))
         .subscribe(result => {
             this._workflowDataService.workflowSideSectionAdded.emit(true);
@@ -605,7 +609,7 @@ export class WorkflowDetailsComponent extends AppComponentBase implements OnInit
                 this._clientPeriodService.clientExtend(this._workflowDataService.getWorkflowProgress.currentlyActivePeriodId!, result)
                     .pipe(finalize(() => this.hideMainSpinner()))
                     .subscribe(result => {
-                        this._workflowDataService.workflowSideSectionAdded.emit(true);
+                        this._workflowDataService.workflowTopSectionUpdated.emit(true);
                     });
             }
         });
@@ -653,7 +657,7 @@ export class WorkflowDetailsComponent extends AppComponentBase implements OnInit
                 this._clientPeriodService.clientChange(this._workflowDataService.getWorkflowProgress.currentlyActivePeriodId!, result)
                     .pipe(finalize(() => this.hideMainSpinner()))
                     .subscribe(result => {
-                        this._workflowDataService.workflowTopSectionUpdated.emit();
+                        this._workflowDataService.workflowTopSectionUpdated.emit(true);
                     });
             }
         });
@@ -693,7 +697,7 @@ export class WorkflowDetailsComponent extends AppComponentBase implements OnInit
                 this._clientPeriodService.addConsultantPeriod(this._workflowDataService.getWorkflowProgress.currentlyActivePeriodId!, input)
                     .pipe(finalize(() => this.hideMainSpinner()))
                     .subscribe(result => {
-                        this._workflowDataService.workflowTopSectionUpdated.emit();
+                        this._workflowDataService.workflowSideSectionAdded.emit(true);
                     });
             }
         });
