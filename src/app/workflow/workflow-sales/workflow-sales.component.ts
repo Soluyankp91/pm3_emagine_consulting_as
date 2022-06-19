@@ -2086,7 +2086,7 @@ export class WorkflowSalesComponent extends AppComponentBase implements OnInit {
                 recipientType: commissionValue.recipientType,
                 recipient: commissionValue.recipient
             }
-    
+
             this.isCommissionEditing = true;
         }
         this.commissions.at(index).get('editable')?.setValue(!isEditable);
