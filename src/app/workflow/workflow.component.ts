@@ -100,13 +100,15 @@ export class WorkflowComponent extends AppComponentBase implements OnInit, OnDes
     ) {
         super(injector);
 
-        this._activatedRoute.data.subscribe(source => {
-            let data = source['data'];
-            if (data.existingWorkflowId) {
-               this.navigateToWorkflowDetails(data.existingWorkflowId);
-            } else {
-                this.createWorkflow(+data.requestId, +data.requestConsultantId);
-            }
+        this._activatedRoute.data
+            .pipe(takeUntil(this._unsubscribe))
+            .subscribe(source => {
+                let data = source['data'];
+                if (data?.existingWorkflowId) {
+                this.navigateToWorkflowDetails(data?.existingWorkflowId);
+                } else if (data?.requestId && data?.requestConsultantId) {
+                    this.createWorkflow(+data.requestId, +data.requestConsultantId);
+                }
         });
         // this.workflowFilter.valueChanges.pipe(
         //     takeUntil(this._unsubscribe),
