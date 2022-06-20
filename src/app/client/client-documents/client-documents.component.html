@@ -141,7 +141,7 @@
                         </mat-checkbox>
                     </div>
                     <div fxLayout="column" fxLayoutAlign="center center" class="u-mt--20 client-documents--contract-folders u-w--100">
-                      
+
                         <!-- Frame agreements -->
                         <mat-accordion [multi]="true" togglePosition="before" class="mat-elevation-z0">
                             <mat-expansion-panel class="mat-elevation-z0 contract-parent--folder">
@@ -194,7 +194,7 @@
                                                 [expandedHeight]="'44px'">
                                                 <h4 class="u-mb--0">
                                                     {{workflow.name}} {{workflow.startDate | momentFormat: 'DD.MM.YYYY'}}
-                                                </h4> 
+                                                </h4>
                                             </mat-expansion-panel-header>
                                             <!-- client contracts -->
                                             <mat-accordion [multi]="true" togglePosition="before" class="mat-elevation-z0">
@@ -335,7 +335,7 @@
                             <mat-icon class="calendar-icon" matSuffix svgIcon="calendar"></mat-icon>
                             <mat-datepicker #evaluationDocumentDatePicker></mat-datepicker>
                         </mat-form-field>
-            
+
                         <mat-checkbox  color="accent" name="contractDocumentsIncludeLinked" [formControl]="evaluationDocumentsIncludeLinked" class="black-checkbox u-w--100 u-mr--15">
                             Include linked clients
                         </mat-checkbox>
@@ -354,7 +354,7 @@
                             <ng-container matColumnDef="consultantName">
                                 <mat-header-cell *matHeaderCellDef fxFlex="20%"> Consultant name </mat-header-cell>
                                 <mat-cell *matCellDef="let row" fxFlex="20%">
-                                    <img [src]="consultantProfileUrl(row?.externalId)" />
+                                    <img class="image-settings" [src]="consultantProfileUrl(row?.externalId)" />
                                     <span class="text-truncate-ellipsis" [matTooltip]="row?.consultantName">
                                         {{row?.consultantName}}
                                     </span>
