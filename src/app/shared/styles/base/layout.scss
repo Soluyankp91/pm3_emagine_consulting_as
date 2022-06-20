@@ -260,3 +260,14 @@ html {
         height: 35px;
     }
 }
+
+.image-settings {
+    width: 32px;
+    height: 32px;
+    border-radius: 50%;
+    &--dropdown {
+        width: 24px;
+        height: 24px;
+        border-radius: 50%;
+    }
+}

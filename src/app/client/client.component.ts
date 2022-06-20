@@ -1,4 +1,4 @@
-import { Component, Injector, OnDestroy, OnInit } from '@angular/core';
+import { Component, Injector, OnDestroy, OnInit, ViewChild } from '@angular/core';
 import { FormControl } from '@angular/forms';
 import { MatTableDataSource } from '@angular/material/table';
 import { Router } from '@angular/router';
@@ -12,6 +12,7 @@ import { LocalHttpService } from 'src/shared/service-proxies/local-http.service'
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { AuthenticationResult } from '@azure/msal-browser';
 import { MsalService } from '@azure/msal-angular';
+import { MatMenuTrigger } from '@angular/material/menu';
 
 @Component({
     selector: 'app-client',
@@ -20,6 +21,10 @@ import { MsalService } from '@azure/msal-angular';
 })
 
 export class ClientComponent extends AppComponentBase implements OnInit, OnDestroy {
+    @ViewChild('rightMenuTrigger', {static: true}) matMenuTrigger: MatMenuTrigger;
+    menuTopLeftPosition =  {x: 0, y: 0}
+
+
     clientFilter = new FormControl();
     accountManagerFilter = new FormControl();
     clientsList: any[] = [];
@@ -261,6 +266,27 @@ export class ClientComponent extends AppComponentBase implements OnInit, OnDestr
         this.sorting = event.active.concat(' ', event.direction);
         this.getClientsGrid();
     }
+
+        /**
+    * Method called when the user click with the right button
+    * @param event MouseEvent, it contains the coordinates
+    * @param item Our data contained in the row of the table
+    */
+    onRightClick(event: MouseEvent, item: any) {
+        event.preventDefault();
+        this.menuTopLeftPosition.x = event.clientX;
+        this.menuTopLeftPosition.y = event.clientY;
+        this.matMenuTrigger.menuData = { item: item }
+        this.matMenuTrigger.openMenu();
+
+    }
+    openInNewTab(clientId: number) {
+        const url = this.router.serializeUrl(
+            this.router.createUrlTree([`/app/clients/${clientId}`])
+        );
+        window.open(url, '_blank');
+    }
+
 
     navigateToClientDetails(clientId: number): void {
         this.router.navigate(['/app/clients', clientId]);

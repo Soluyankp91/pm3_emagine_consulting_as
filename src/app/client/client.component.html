@@ -210,7 +210,8 @@
                     <mat-header-cell *matHeaderCellDef mat-sort-header fxFlex="10%"> Account manager </mat-header-cell>
                     <mat-cell *matCellDef="let row" fxFlex="10%">
                         <span class="text-truncate-ellipsis" [matTooltip]="row.owner_Name">
-                            <img class="manager-search--photo" src="../../../../assets/common/images/no-img.svg" [alt]="row?.owner?.name" />
+                            {{row.owner_Name ? row.owner_Name : '-' }}
+                            <!-- <img class="manager-search--photo" src="../../../../assets/common/images/no-img.svg" [alt]="row?.owner?.name" /> FIXME: uncomment when we will have externalId  -->
                         </span>
                     </mat-cell>
                 </ng-container>
@@ -243,7 +244,7 @@
                     </mat-cell>
                 </ng-container>
                 <mat-header-row *matHeaderRowDef="clientDisplayColumns"></mat-header-row>
-                <mat-row *matRowDef="let row; columns: clientDisplayColumns;" class="mat-elevation-z0 cursor-pointer" (click)="navigateToClientDetails(row.id)"></mat-row>
+                <mat-row *matRowDef="let row; columns: clientDisplayColumns;" class="mat-elevation-z0 cursor-pointer" (contextmenu)="onRightClick($event, {content: row})" (click)="navigateToClientDetails(row.id)"></mat-row>
             </mat-table>
             <div class="spinner-container" *ngIf="isDataLoading">
                 <mat-spinner [diameter]="50"></mat-spinner>
@@ -258,4 +259,14 @@
             </mat-paginator>
         </div>
     </div>
+    <!-- an hidden div is created to set the position of appearance of the menu-->
+    <div style="visibility: hidden; position: fixed;" [style.left.px]="menuTopLeftPosition.x"
+        [style.top.px]="menuTopLeftPosition.y" [matMenuTriggerFor]="rightMenu"  #rightMenuTrigger="matMenuTrigger"></div>
+
+    <!-- standar material menu -->
+    <mat-menu #rightMenu="matMenu">
+        <ng-template matMenuContent let-item="item">
+            <button mat-menu-item (click)="openInNewTab(item?.content?.id)">Open in new tab</button>
+        </ng-template>
+    </mat-menu>
 </div>
