@@ -22,7 +22,7 @@ export class ClientWorkflowTrackComponent extends AppComponentBase implements On
     pageNumber = 1;
     deafultPageSize = AppConsts.grid.defaultPageSize;
     pageSizeOptions = [5, 10, 20, 50, 100];
-    totalCount: number | undefined = 0;
+    totalCount: number = 0;
     sorting = '';
 
     clientDisplayColumns = [
@@ -110,7 +110,7 @@ export class ClientWorkflowTrackComponent extends AppComponentBase implements On
                     }
                 });
                 this.workflowTrackDataSource = new MatTableDataSource<any>(mappedData);
-                this.totalCount = result.totalCount;
+                this.totalCount = result.totalCount!;
             });
     }
 

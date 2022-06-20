@@ -69,7 +69,7 @@ export class ClientRequestTrackComponent implements OnInit, OnDestroy {
             }))
             .subscribe(result => {
                 this.clientDataSource = new MatTableDataSource<ClientRequestTrackItemDto>(result.items);
-                this.totalCount = result.items?.length;
+                this.totalCount = result.totalCount;
             });
     }
 
