@@ -62,11 +62,8 @@ export class ClientRequestTrackComponent implements OnInit, OnDestroy {
 
     getRequestTrack() {
         let legacyClientIdQuery = this.clientId;
-        let pageNumber = 1;
-        let pageSize = 20;
-        let sort = undefined;
         this.isDataLoading = true;
-        this._clientService.requestTrack(legacyClientIdQuery, pageNumber, pageSize, sort)
+        this._clientService.requestTrack(legacyClientIdQuery, this.pageNumber, this.deafultPageSize, this.sorting)
             .pipe(finalize(() => {
                 this.isDataLoading = false;
             }))
