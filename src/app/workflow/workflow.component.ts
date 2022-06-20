@@ -1,7 +1,8 @@
 import { Overlay } from '@angular/cdk/overlay';
-import { Component, Injectable, Injector, OnDestroy, OnInit } from '@angular/core';
+import { Component, Injectable, Injector, OnDestroy, OnInit, ViewChild } from '@angular/core';
 import { FormControl } from '@angular/forms';
 import { MatDialog } from '@angular/material/dialog';
+import { MatMenuTrigger } from '@angular/material/menu';
 import { MatTableDataSource } from '@angular/material/table';
 import { ActivatedRoute, ActivatedRouteSnapshot, Resolve, Router } from '@angular/router';
 import { MsalService } from '@azure/msal-angular';
@@ -83,6 +84,15 @@ export class WorkflowComponent extends AppComponentBase implements OnInit, OnDes
     selectedAccountManagers: SelectableEmployeeDto[] = [];
     filteredAccountManagers: SelectableEmployeeDto[] = [];
     accountManagerFilter = new FormControl();
+
+
+    // we create an object that contains coordinates
+  menuTopLeftPosition =  {x: 0, y: 0}
+
+  // reference to the MatMenuTrigger in the DOM
+  @ViewChild('rightMenuTrigger', {static: true}) matMenuTrigger: MatMenuTrigger;
+
+ 
 
     private _unsubscribe = new Subject();
     constructor(
@@ -216,7 +226,25 @@ export class WorkflowComponent extends AppComponentBase implements OnInit, OnDes
         this._unsubscribe.complete();
     }
 
+    /**
+  * Method called when the user click with the right button
+  * @param event MouseEvent, it contains the coordinates
+  * @param item Our data contained in the row of the table
+  */
+    onRightClick(event: MouseEvent, item: any) {
+        event.preventDefault();
+        this.menuTopLeftPosition.x = event.clientX;
+        this.menuTopLeftPosition.y = event.clientY;
+        this.matMenuTrigger.menuData = { item: item }
+        this.matMenuTrigger.openMenu();
 
+    }
+    openInNewTab(workflowId: string) {
+        const url = this.router.serializeUrl(
+            this.router.createUrlTree([`/app/workflow/${workflowId}`])
+        );
+        window.open(url, '_blank');
+    }
 
     navigateToWorkflowDetails(workflowId: string): void {
         this.router.navigate(['/app/workflow', workflowId]);

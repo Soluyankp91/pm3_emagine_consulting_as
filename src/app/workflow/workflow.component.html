@@ -364,7 +364,7 @@
                 </ng-container>
 
                 <mat-header-row *matHeaderRowDef="workflowDisplayColumns"></mat-header-row>
-                <mat-row *matRowDef="let row; columns: workflowDisplayColumns;" class="mat-elevation-z0 cursor-pointer flex-items-start" (click)="navigateToWorkflowDetails(row.workflowId)"></mat-row>
+                <mat-row *matRowDef="let row; columns: workflowDisplayColumns;" class="mat-elevation-z0 cursor-pointer flex-items-start"(contextmenu)="onRightClick($event, {content: row})" (click)="navigateToWorkflowDetails(row.workflowId)"></mat-row>
             </mat-table>
             <div class="spinner-container" *ngIf="isDataLoading">
                 <mat-spinner [diameter]="50"></mat-spinner>
@@ -379,5 +379,15 @@
             </mat-paginator>
         </div>
     </div>
+    <!-- an hidden div is created to set the position of appearance of the menu-->
+    <div style="visibility: hidden; position: fixed;" [style.left.px]="menuTopLeftPosition.x"
+        [style.top.px]="menuTopLeftPosition.y" [matMenuTriggerFor]="rightMenu"  #rightMenuTrigger="matMenuTrigger"></div>
+
+    <!-- standar material menu -->
+    <mat-menu #rightMenu="matMenu">
+        <ng-template matMenuContent let-item="item">
+            <button mat-menu-item (click)="openInNewTab(item?.content?.workflowId)">Open in new tab</button>
+        </ng-template>
+    </mat-menu>
 </div>
 <!-- <router-outlet></router-outlet> -->

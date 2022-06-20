@@ -98,7 +98,7 @@
                 </ng-container>
 
                 <mat-header-row *matHeaderRowDef="clientDisplayColumns"></mat-header-row>
-                <mat-row *matRowDef="let row; columns: clientDisplayColumns;" class="mat-elevation-z0" (click)="redirectToSourcingBoard(row.requestId)"></mat-row>
+                <mat-row *matRowDef="let row; columns: clientDisplayColumns;" class="mat-elevation-z0 cursor-pointer" (click)="redirectToSourcingBoard(row.requestId)"></mat-row>
             </mat-table>
             <div class="spinner-container" *ngIf="isDataLoading">
                 <mat-spinner [diameter]="50"></mat-spinner>
