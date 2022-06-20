@@ -12,6 +12,11 @@
         cursor: pointer;
         height: 44px;
         border-left: 4px solid transparent;
+        &__link {
+          display: flex;
+          text-decoration: none;
+          color: unset;
+        }
         mat-icon {
           margin-left: 16px;
           margin-right: 20px;
