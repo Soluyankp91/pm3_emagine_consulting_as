@@ -1186,7 +1186,7 @@
                                                                     <!-- 'Consultant' -->
                                                                     <span *ngSwitchCase="2">
                                                                         <div class="multilineDropdown-option--row">
-                                                                            <img *ngIf="recipient.id !== 'no-data'" class="border-rounded-50 u-ml--16 u-mr--16" [src]="consultantProfileUrl(recipient.externalId!)" />
+                                                                            <img *ngIf="recipient.id !== 'no-data'" class="image-settings--dropdown u-ml--16 u-mr--16" [src]="consultantProfileUrl(recipient.externalId!)" />
                                                                             <div class="multilineDropdown-option--column">
                                                                                 <b>{{ recipient.name }}</b>
                                                                                 <span *ngIf="recipient.id !== 'no-data'"> | {{recipient.companyName}} | {{recipient.city}} | #{{recipient.id}} / {{recipient.legacyId}}</span>
