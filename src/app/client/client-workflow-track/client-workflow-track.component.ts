@@ -89,11 +89,8 @@ export class ClientWorkflowTrackComponent extends AppComponentBase implements On
 
     getWorkflowTrack() {
         let legacyClientIdQuery = this.clientId;
-        let pageNumber = 1;
-        let pageSize = 20;
-        let sort = undefined;
         this.isDataLoading = true;
-        this._clientService.workflowTrack(legacyClientIdQuery, pageNumber, pageSize, sort)
+        this._clientService.workflowTrack(legacyClientIdQuery, this.pageNumber, this.deafultPageSize, this.sorting)
             .pipe(finalize(() => {
                 this.isDataLoading = false;
             }))
