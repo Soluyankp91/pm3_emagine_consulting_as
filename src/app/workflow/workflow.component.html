@@ -110,7 +110,7 @@
                         <mat-icon svgIcon="plus-button-icon"></mat-icon>
                     </button>
                 </div>
-                <button class="workflow-list--search-button" mat-icon-button (click)="isAdvancedFilters = !isAdvancedFilters">
+                <button class="workflow-list--search-button" mat-flat-button (click)="isAdvancedFilters = !isAdvancedFilters">
                     <mat-icon svgIcon="filter-icon"></mat-icon>
                     <span class="workflow-list--search-button-text u-ml--5">Advanced filters</span>
                 </button>
@@ -355,6 +355,7 @@
                                 class="menu-item"
                                 [ngClass]="row.isDeleted ? 'menu-item--add' : 'menu-item--cancel'"
                                 mat-menu-item
+                                (click)="confirmDeleteWorkflow(row?.workflowId)"
                                 [disabled]="false">
                                     <mat-icon>{{row.isDeleted ? 'refresh' : 'clear'}}</mat-icon>
                                     {{row.isDeleted ? 'restore' : 'delete'}}

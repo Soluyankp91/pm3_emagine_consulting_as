@@ -13,6 +13,7 @@ import { AppConsts } from 'src/shared/AppConsts';
 import { ApiServiceProxy, EmployeeDto, EmployeeServiceProxy, EnumEntityTypeDto, LookupServiceProxy, StartNewWorkflowInputDto, WorkflowAlreadyExistsDto, WorkflowListItemDto, WorkflowProcessType, WorkflowServiceProxy, WorkflowStepStatus } from 'src/shared/service-proxies/service-proxies';
 import { SelectableCountry, SelectableIdNameDto } from '../client/client.model';
 import { InternalLookupService } from '../shared/common/internal-lookup.service';
+import { ConfirmationDialogComponent } from '../shared/components/confirmation-dialog/confirmation-dialog.component';
 import { ManagerStatus } from '../shared/components/manager-search/manager-search.model';
 import { CreateWorkflowDialogComponent } from './create-workflow-dialog/create-workflow-dialog.component';
 import { SelectableEmployeeDto, WorkflowFlag, WorkflowList } from './workflow.model';
@@ -315,6 +316,43 @@ export class WorkflowComponent extends AppComponentBase implements OnInit, OnDes
         dialogRef.componentInstance.onRejected.subscribe(() => {
             // nthng
         });
+    }
+
+    confirmDeleteWorkflow(workflowId: string) {
+        const scrollStrategy = this.overlay.scrollStrategies.reposition();
+        const dialogRef = this.dialog.open(ConfirmationDialogComponent, {
+            width: '450px',
+            minHeight: '180px',
+            height: 'auto',
+            scrollStrategy,
+            backdropClass: 'backdrop-modal--wrapper',
+            autoFocus: false,
+            panelClass: 'confirmation-modal',
+            data: {
+                confirmationMessageTitle: `Are you sure you want to delete workflow?`,
+                confirmationMessage: 'If you confirm the deletion, all the info contained inside this workflow will be removed.',
+                rejectButtonText: 'Cancel',
+                confirmButtonText: 'Delete',
+                isNegative: true
+            }
+        });
+
+        dialogRef.componentInstance.onConfirmed.subscribe(() => {
+            this.deleteWorkflow(workflowId);
+        });
+
+        dialogRef.componentInstance.onRejected.subscribe(() => {
+            // nthng
+        });
+    }
+
+    deleteWorkflow(workflowId: string) {
+        this.isDataLoading;
+        this._workflowService.delete(workflowId)
+            .pipe(finalize(() => this.isDataLoading = false))
+            .subscribe(result => {
+                this.getWorkflowList();
+            });
     }
 
     getFlagColor(flag: number): string {
