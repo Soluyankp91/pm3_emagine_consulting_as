@@ -373,10 +373,13 @@
                 RESULTS NOT FOUND
             </div>
         </div>
-        <div class="pagination-container">
+        <div class="pagination-container u-w--100">
             <mat-paginator #clientsPaginator [length]="totalCount" [pageSize]="deafultPageSize"
                 [pageSizeOptions]="pageSizeOptions" [showFirstLastButtons]="true" (page)="pageChanged($event)">
             </mat-paginator>
+        </div>
+        <div class="spinner-container" *ngIf="isDataLoading">
+            <mat-spinner [diameter]="50"></mat-spinner>
         </div>
     </div>
     <!-- an hidden div is created to set the position of appearance of the menu-->

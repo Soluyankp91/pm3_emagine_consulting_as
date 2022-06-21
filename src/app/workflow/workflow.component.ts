@@ -17,6 +17,7 @@ import { ManagerStatus } from '../shared/components/manager-search/manager-searc
 import { CreateWorkflowDialogComponent } from './create-workflow-dialog/create-workflow-dialog.component';
 import { SelectableEmployeeDto, WorkflowFlag, WorkflowList } from './workflow.model';
 
+const WorkflowGridOptionsKey = 'WorkflowGridFILTERS.1.0.0.';
 @Component({
     selector: 'app-workflow',
     templateUrl: './workflow.component.html',
@@ -31,7 +32,7 @@ export class WorkflowComponent extends AppComponentBase implements OnInit, OnDes
     pageSizeOptions = [5, 10, 20, 50, 100];
     totalCount: number | undefined = 0;
     sorting = '';
-    isDataLoading = false;
+    isDataLoading = true;
 
     workflowDisplayColumns = [
         'flag',
@@ -115,74 +116,57 @@ export class WorkflowComponent extends AppComponentBase implements OnInit, OnDes
             .subscribe(source => {
                 let data = source['data'];
                 if (data?.existingWorkflowId) {
-                this.navigateToWorkflowDetails(data?.existingWorkflowId);
+                    this.navigateToWorkflowDetails(data?.existingWorkflowId);
                 } else if (data?.requestId && data?.requestConsultantId) {
                     this.createWorkflow(+data.requestId, +data.requestConsultantId);
                 }
         });
-        // this.workflowFilter.valueChanges.pipe(
-        //     takeUntil(this._unsubscribe),
-        //     debounceTime(300),
-        //     switchMap((value: any) => {
-        //         let input = value ? value : '';
-        //         this.isDataLoading = true;
-        //         // get workflow list
-        //         return this._apiService.workflows('test');
-        //     }),
-        // ).subscribe((list: any) => {
-        //     if (list.length) {
-        //         // list load
-        //     } else {
-        //         // empty list
-        //     }
-        //     this.isDataLoading = false;
-        // });
 
         this.workflowFilter.valueChanges.pipe(
             takeUntil(this._unsubscribe),
-            debounceTime(500)
+            debounceTime(700)
         ).subscribe(() => {
             this.getWorkflowList();
         });
 
         this.invoicingEntityControl.valueChanges.pipe(
             takeUntil(this._unsubscribe),
-            debounceTime(500)
+            debounceTime(700)
         ).subscribe(() => {
             this.getWorkflowList();
         });
 
         this.paymentEntityControl.valueChanges.pipe(
             takeUntil(this._unsubscribe),
-            debounceTime(500)
+            debounceTime(700)
         ).subscribe(() => {
             this.getWorkflowList();
         });
 
         this.salesTypeControl.valueChanges.pipe(
             takeUntil(this._unsubscribe),
-            debounceTime(500)
+            debounceTime(700)
         ).subscribe(() => {
             this.getWorkflowList();
         });
 
         this.deliveryTypesControl.valueChanges.pipe(
             takeUntil(this._unsubscribe),
-            debounceTime(500)
+            debounceTime(700)
         ).subscribe(() => {
             this.getWorkflowList();
         });
 
         this.workflowStatusControl.valueChanges.pipe(
             takeUntil(this._unsubscribe),
-            debounceTime(500)
+            debounceTime(700)
         ).subscribe(() => {
             this.getWorkflowList();
         });
 
         this.accountManagerFilter.valueChanges.pipe(
             takeUntil(this._unsubscribe),
-            debounceTime(300),
+            debounceTime(500),
             switchMap((value: any) => {
                 let toSend = {
                     name: value,
@@ -212,9 +196,7 @@ export class WorkflowComponent extends AppComponentBase implements OnInit, OnDes
     }
 
     ngOnInit(): void {
-
         this.getCurrentUser();
-        // this.getWorkflowList();
         this.getTenants();
         this.getSalesType();
         this.getDeliveryTypes();
@@ -224,6 +206,52 @@ export class WorkflowComponent extends AppComponentBase implements OnInit, OnDes
     ngOnDestroy(): void {
         this._unsubscribe.next();
         this._unsubscribe.complete();
+    }
+
+    saveGridOptions() {
+        let filters = {
+            pageNumber: this.pageNumber,
+            deafultPageSize: this.deafultPageSize,
+            sorting: this.sorting,
+            owners: this.selectedAccountManagers,
+            invoicingEntity: this.invoicingEntityControl.value ? this.invoicingEntityControl.value : undefined,
+            paymentEntity: this.paymentEntityControl.value ? this.paymentEntityControl.value : undefined,
+            salesType: this.salesTypeControl.value ? this.salesTypeControl.value : undefined,
+            deliveryTypes: this.deliveryTypesControl.value ? this.deliveryTypesControl.value : undefined,
+            workflowStatus: this.workflowStatusControl.value ? this.workflowStatusControl.value : undefined,
+            showOnlyWorkflowsWithNewSales: this.showOnlyWorkflowsWithNewSales,
+            showOnlyWorkflowsWithExtensions: this.showOnlyWorkflowsWithExtensions,
+            showOnlyWorkflowsWithPendingStepsForSelectedEmployees: this.showOnlyWorkflowsWithPendingStepsForSelectedEmployees,
+            showOnlyWorkflowsWithUpcomingStepsForSelectedEmployees: this.showOnlyWorkflowsWithUpcomingStepsForSelectedEmployees,
+            includeTerminated: this.includeTerminated,
+            includeDeleted: this.includeDeleted,
+            searchFilter: this.workflowFilter.value ? this.workflowFilter.value : ''
+        };
+
+        localStorage.setItem(WorkflowGridOptionsKey, JSON.stringify(filters));
+    }
+
+    getGridOptions() {
+        let filters = JSON.parse(localStorage.getItem(WorkflowGridOptionsKey)!);
+        if (filters) {
+            this.pageNumber = filters.pageNumber;
+            this.deafultPageSize = filters.deafultPageSize;
+            this.sorting = filters.sorting;
+            this.selectedAccountManagers = filters.owners?.length ? filters.owners : [];
+            this.workflowStatusControl.setValue(filters.workflowStatus, {emitEvent: false});
+            this.deliveryTypesControl.setValue(filters.deliveryTypes, {emitEvent: false});
+            this.salesTypeControl.setValue(filters.salesType, {emitEvent: false});
+            this.paymentEntityControl.setValue(filters.paymentEntity, {emitEvent: false});
+            this.invoicingEntityControl.setValue(filters.invoicingEntity, {emitEvent: false});
+            this.showOnlyWorkflowsWithNewSales = filters.showOnlyWorkflowsWithNewSales;
+            this.showOnlyWorkflowsWithExtensions = filters.showOnlyWorkflowsWithExtensions;
+            this.showOnlyWorkflowsWithPendingStepsForSelectedEmployees = filters.showOnlyWorkflowsWithPendingStepsForSelectedEmployees;
+            this.showOnlyWorkflowsWithUpcomingStepsForSelectedEmployees = filters.showOnlyWorkflowsWithUpcomingStepsForSelectedEmployees;
+            this.includeTerminated = filters.includeTerminated;
+            this.includeDeleted = filters.includeDeleted;
+            this.workflowFilter.setValue(filters.searchFilter, {emitEvent: false});
+        }
+        this.getWorkflowList();
     }
 
     /**
@@ -399,6 +427,7 @@ export class WorkflowComponent extends AppComponentBase implements OnInit, OnDes
                 })
                 this.workflowDataSource = new MatTableDataSource<any>(formattedData);
                 this.totalCount = result.totalCount;
+                this.saveGridOptions();
             });
     }
 
@@ -440,7 +469,7 @@ export class WorkflowComponent extends AppComponentBase implements OnInit, OnDes
 
         this._employeeService.current()
             .pipe(finalize(()=> {
-                this.getWorkflowList();
+                this.getGridOptions();
             }))
             .subscribe(result => {
                 this.selectedAccountManagers.push(
@@ -467,6 +496,7 @@ export class WorkflowComponent extends AppComponentBase implements OnInit, OnDes
         this.showOnlyWorkflowsWithUpcomingStepsForSelectedEmployees = false;
         this.includeTerminated = false;
         this.includeDeleted = false;
+        localStorage.removeItem(WorkflowGridOptionsKey);
         this.getCurrentUser();
     }
 }

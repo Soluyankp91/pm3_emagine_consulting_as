@@ -8,9 +8,9 @@
         <div fxLayout="row" fxLayoutAlign="space-between start" class="u-w--100">
             <div fxFlex="40%" fxLayout="row" fxLayoutAlign="start center" class="u-w--100">
                 <div class="client-list--filter-manager cursor-pointer u-mr--16" [matTooltip]="mapListByProperty(selectedAccountManagers, 'name')" [matMenuTriggerFor]="managerMenu" (menuOpened)="accountManagerFilter.setValue(''); accountManagerFilterInput.click()">
-                    <img *ngIf="selectedAccountManagers.length === 1" class="border-rounded-50 image-thumbnail-small" [src]="employeeProfileUrl(selectedAccountManagers[0]?.externalId!)" />
-                    <img *ngIf="selectedAccountManagers.length === 0" src="../../../assets/common/images/no-img.svg">
-                    <div *ngIf="selectedAccountManagers.length > 1" class="client-list--filter__badge">
+                    <img *ngIf="selectedAccountManagers?.length === 1" class="border-rounded-50 image-thumbnail-small" [src]="employeeProfileUrl(selectedAccountManagers[0]?.externalId!)" />
+                    <img *ngIf="selectedAccountManagers?.length === 0" src="../../../assets/common/images/no-img.svg">
+                    <div *ngIf="selectedAccountManagers?.length && selectedAccountManagers.length > 1" class="client-list--filter__badge">
                         {{selectedAccountManagers.length}}
                     </div>
                     <mat-menu #managerMenu>

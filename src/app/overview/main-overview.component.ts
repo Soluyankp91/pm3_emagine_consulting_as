@@ -14,6 +14,8 @@ import * as moment from 'moment';
 import { Router } from '@angular/router';
 import { AppComponentBase } from 'src/shared/app-component-base';
 
+const MainOverviewGridOptionsKey = 'MainOverviewGridFILTERS.1.0.0.';
+
 @Component({
     selector: 'app-main-overview',
     templateUrl: './main-overview.component.html',
@@ -31,7 +33,7 @@ export class MainOverviewComponent extends AppComponentBase implements OnInit {
     pageSizeOptions = [5, 10, 20, 50, 100];
     totalCount: number | undefined = 0;
     sorting = '';
-    isDataLoading = false;
+    isDataLoading = true;
 
     tenants: EnumEntityTypeDto[] = [];
     saleTypes: EnumEntityTypeDto[] = [];
@@ -129,49 +131,49 @@ export class MainOverviewComponent extends AppComponentBase implements OnInit {
 
         this.invoicingEntityControl.valueChanges.pipe(
             takeUntil(this._unsubscribe),
-            debounceTime(500)
+            debounceTime(700)
         ).subscribe(() => {
             this.changeViewType();
         });
 
         this.paymentEntityControl.valueChanges.pipe(
             takeUntil(this._unsubscribe),
-            debounceTime(500)
+            debounceTime(700)
         ).subscribe(() => {
             this.changeViewType();
         });
 
         this.salesTypeControl.valueChanges.pipe(
             takeUntil(this._unsubscribe),
-            debounceTime(500)
+            debounceTime(700)
         ).subscribe(() => {
             this.changeViewType();
         });
 
         this.deliveryTypesControl.valueChanges.pipe(
             takeUntil(this._unsubscribe),
-            debounceTime(500)
+            debounceTime(700)
         ).subscribe(() => {
             this.changeViewType();
         });
 
         this.marginsControl.valueChanges.pipe(
             takeUntil(this._unsubscribe),
-            debounceTime(500)
+            debounceTime(700)
         ).subscribe(() => {
             this.changeViewType();
         });
 
         this.overviewViewTypeControl.valueChanges.pipe(
             takeUntil(this._unsubscribe),
-            debounceTime(500)
+            debounceTime(700)
         ).subscribe(() => {
             this.changeViewType();
         });
 
         this.workflowFilter.valueChanges.pipe(
             takeUntil(this._unsubscribe),
-            debounceTime(500)
+            debounceTime(700)
         ).subscribe(() => {
             this.changeViewType();
         });
@@ -350,6 +352,7 @@ export class MainOverviewComponent extends AppComponentBase implements OnInit {
                             }
                         }
                         this.totalCount = result.totalCount;
+                        this.saveGridOptions();
                     });
                 break;
             case 2: //'Consultant periods':
@@ -421,6 +424,7 @@ export class MainOverviewComponent extends AppComponentBase implements OnInit {
                             }
                         }
                         this.totalCount = result.totalCount;
+                        this.saveGridOptions();
                     });
                 break;
         }
@@ -519,7 +523,7 @@ export class MainOverviewComponent extends AppComponentBase implements OnInit {
 
         this._employeeService.current()
             .pipe(finalize(()=> {
-                this.changeViewType();
+                this.getGridOptions();
             }))
             .subscribe(result => {
                 this.selectedAccountManagers.push(
@@ -585,7 +589,49 @@ export class MainOverviewComponent extends AppComponentBase implements OnInit {
         this.marginsControl.setValue(null, {emitEvent: false});
         this.filteredMainOverviewStatuses.forEach(x => {
             x.selected = false;
-        })
+        });
+        localStorage.removeItem(MainOverviewGridOptionsKey);
         this.getCurrentUser();
+    }
+
+    saveGridOptions() {
+        let filters = {
+            pageNumber: this.pageNumber,
+            deafultPageSize: this.deafultPageSize,
+            sorting: this.sorting,
+            owners: this.selectedAccountManagers,
+            invoicingEntity: this.invoicingEntityControl.value ? this.invoicingEntityControl.value : undefined,
+            paymentEntity: this.paymentEntityControl.value ? this.paymentEntityControl.value : undefined,
+            salesType: this.salesTypeControl.value ? this.salesTypeControl.value : undefined,
+            deliveryTypes: this.deliveryTypesControl.value ? this.deliveryTypesControl.value : undefined,
+            searchFilter: this.workflowFilter.value ? this.workflowFilter.value : '',
+            margins: this.marginsControl.value ?? undefined,
+            mainOverviewStatus: this.filteredMainOverviewStatuses.find(x => x.selected),
+            cutOffDate: this.cutOffDate
+        };
+
+        localStorage.setItem(MainOverviewGridOptionsKey, JSON.stringify(filters));
+    }
+
+    getGridOptions() {
+        let filters = JSON.parse(localStorage.getItem(MainOverviewGridOptionsKey)!);
+        if (filters) {
+            this.pageNumber = filters?.pageNumber;
+            this.deafultPageSize = filters?.deafultPageSize;
+            this.sorting = filters?.sorting;
+            this.selectedAccountManagers = filters?.owners?.length ? filters.owners : [];
+            this.deliveryTypesControl.setValue(filters?.deliveryTypes, {emitEvent: false});
+            this.salesTypeControl.setValue(filters?.salesType, {emitEvent: false});
+            this.paymentEntityControl.setValue(filters?.paymentEntity, {emitEvent: false});
+            this.invoicingEntityControl.setValue(filters?.invoicingEntity, {emitEvent: false});
+            this.workflowFilter.setValue(filters?.searchFilter, {emitEvent: false});
+            this.marginsControl.setValue(filters?.margins, {emitEvent: false});
+            const index = this.filteredMainOverviewStatuses.findIndex(x => x.id === filters?.mainOverviewStatus?.id);
+            if (index > -1) {
+                this.filteredMainOverviewStatuses[index].selected = true;
+            }
+            this.cutOffDate = filters?.cutOffDate;
+        }
+        this.changeViewType();
     }
 }
