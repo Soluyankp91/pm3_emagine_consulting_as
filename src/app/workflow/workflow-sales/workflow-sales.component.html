@@ -2134,12 +2134,12 @@
                                             <input #consultantNameFilterInput type="text" matInput [matAutocomplete]="consultantAutocomplete" formControlName="consultantName" (click)="$event.stopPropagation()" placeholder="Consultant name">
                                             <mat-autocomplete #consultantAutocomplete="matAutocomplete" [displayWith]="displayNameFn">
                                                 <ng-container>
-                                                    <mat-option *ngFor="let consultant of filteredConsultants" [value]="consultant" [ngClass]="{ 'no-data': consultant.id === 'no-data' }">
+                                                    <mat-option *ngFor="let item of filteredConsultants" [value]="item" [ngClass]="{ 'no-data': item.id === 'no-data' }">
                                                         <div class="multilineDropdown-option--row">
-                                                            <img *ngIf="consultant.id !== 'no-data'" class="workflow-extension--consultant-data--consultant-img u-ml--16 u-mr--16" [src]="consultantProfileUrl(consultant.externalId)" />
+                                                            <img *ngIf="item.id !== 'no-data'" class="workflow-extension--consultant-data--consultant-img u-ml--16 u-mr--16" [src]="consultantProfileUrl(item.consultant.externalId)" />
                                                             <div class="multilineDropdown-option--column">
-                                                                <b>{{ consultant.name }}</b>
-                                                                <span *ngIf="consultant.id !== 'no-data'"> | {{consultant.companyName}} | {{consultant.city}} | #{{consultant.id}} / {{consultant.legacyId}}</span>
+                                                                <b>{{ item.consultant.name }}</b>
+                                                                <span *ngIf="item.id !== 'no-data'"> | {{item.consultant.companyName}} | {{item.consultant.city}} | #{{item.consultant.id}} / {{item.consultant.legacyId}}</span>
                                                             </div>
                                                         </div>
                                                     </mat-option>
