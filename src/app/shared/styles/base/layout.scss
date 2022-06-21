@@ -151,6 +151,7 @@ html {
     display: flex;
     flex-direction: column;
     justify-content: space-between;
+    overflow-x: hidden !important;
 }
 
 .flex-row {
