@@ -87,6 +87,10 @@ export class WorkflowDetailsComponent extends AppComponentBase implements OnInit
         }
     }
 
+    get isProgressTrackVisible() {
+        return !environment.production;
+    }
+
     ngOnInit(): void {
         this.activatedRoute.paramMap.pipe(
             takeUntil(this._unsubscribe)
