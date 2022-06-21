@@ -1,7 +1,7 @@
 <div class="workflow" fxLayout="column" fxLayoutAlign="start start" #scroller>
 
     <div fxLayout="row" fxLayoutAlign="start start" class="workflow-header u-w--100">
-        <div fxFlex="40%" fxLayout="column">
+        <div fxFlex="1 0 40%" fxLayout="column">
             <h2 class="workflow-header--title u-mb--10">Workflow</h2>
             <p class="workflow-header--client u-mb--20">{{workflowClient?.length ? workflowClient : 'New workflow'}}</p>
             <!-- <div class="flex-row">
@@ -14,7 +14,7 @@
             </div> -->
         </div>
 
-        <div fxFlex="50%" fxLayout="row">
+        <div fxFlex="50%" fxLayout="row" *ngIf="isProgressTrackVisible">
             <div fxFlex="50%" fxLayout="column wrap" style="font-size: 12px;">
                 <span>
                     Started: {{_workflowDataService.getWorkflowProgress?.started}}
