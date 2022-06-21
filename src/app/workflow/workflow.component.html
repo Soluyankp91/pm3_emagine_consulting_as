@@ -110,7 +110,7 @@
                         <mat-icon svgIcon="plus-button-icon"></mat-icon>
                     </button>
                 </div>
-                <button class="workflow-list--search-button" mat-icon-button (click)="isAdvancedFilters = !isAdvancedFilters">
+                <button class="workflow-list--search-button" mat-flat-button (click)="isAdvancedFilters = !isAdvancedFilters">
                     <mat-icon svgIcon="filter-icon"></mat-icon>
                     <span class="workflow-list--search-button-text u-ml--5">Advanced filters</span>
                 </button>
@@ -202,7 +202,7 @@
                 <ng-container matColumnDef="Client">
                     <mat-header-cell *matHeaderCellDef fxFlex="10%">Client</mat-header-cell>
                     <mat-cell *matCellDef="let row" fxFlex="10%">
-                        <span class="text-truncate-ellipsis text-bold" [matTooltip]="row.clientName">
+                        <span class="text-truncate-ellipsis text-bold-800" [matTooltip]="row.clientName">
                             {{row.clientName}}
                         </span>
                     </mat-cell>
@@ -355,6 +355,7 @@
                                 class="menu-item"
                                 [ngClass]="row.isDeleted ? 'menu-item--add' : 'menu-item--cancel'"
                                 mat-menu-item
+                                (click)="confirmDeleteWorkflow(row?.workflowId)"
                                 [disabled]="false">
                                     <mat-icon>{{row.isDeleted ? 'refresh' : 'clear'}}</mat-icon>
                                     {{row.isDeleted ? 'restore' : 'delete'}}
@@ -373,10 +374,13 @@
                 RESULTS NOT FOUND
             </div>
         </div>
-        <div class="pagination-container">
+        <div class="pagination-container u-w--100">
             <mat-paginator #clientsPaginator [length]="totalCount" [pageSize]="deafultPageSize"
                 [pageSizeOptions]="pageSizeOptions" [showFirstLastButtons]="true" (page)="pageChanged($event)">
             </mat-paginator>
+        </div>
+        <div class="spinner-container" *ngIf="isDataLoading">
+            <mat-spinner [diameter]="50"></mat-spinner>
         </div>
     </div>
     <!-- an hidden div is created to set the position of appearance of the menu-->

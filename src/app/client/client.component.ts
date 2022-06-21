@@ -14,6 +14,7 @@ import { AuthenticationResult } from '@azure/msal-browser';
 import { MsalService } from '@azure/msal-angular';
 import { MatMenuTrigger } from '@angular/material/menu';
 
+const ClientGridOptionsKey = 'ClientGridFILTERS.1.0.0.';
 @Component({
     selector: 'app-client',
     templateUrl: './client.component.html',
@@ -93,7 +94,7 @@ export class ClientComponent extends AppComponentBase implements OnInit, OnDestr
         super(injector);
         this.clientFilter.valueChanges.pipe(
             takeUntil(this._unsubscribe),
-            debounceTime(500)
+            debounceTime(700)
         ).subscribe(() => {
             this.getClientsGrid();
         });
@@ -101,7 +102,7 @@ export class ClientComponent extends AppComponentBase implements OnInit, OnDestr
 
         this.accountManagerFilter.valueChanges.pipe(
             takeUntil(this._unsubscribe),
-            debounceTime(300),
+            debounceTime(500),
             switchMap((value: any) => {
                 let toSend = {
                     name: value,
@@ -149,7 +150,7 @@ export class ClientComponent extends AppComponentBase implements OnInit, OnDestr
         this._employeeService.current()
             .pipe(finalize(()=> {
                 this.hideMainSpinner();
-                this.getClientsGrid();
+                this.getGridOptions();
             }))
             .subscribe(result => {
                 this.selectedAccountManagers.push(
@@ -238,8 +239,8 @@ export class ClientComponent extends AppComponentBase implements OnInit, OnDestr
     getClientsGrid() {
         let searchFilter = this.clientFilter.value ? this.clientFilter.value : '';
         this.isDataLoading = true;
-        let ownerIds = this.selectedAccountManagers.map(x => +x.id);
-        let selectedCountryIds = this.selectedCountries.map(x => +x.id);
+        let ownerIds = this.selectedAccountManagers?.map(x => +x.id);
+        let selectedCountryIds = this.selectedCountries?.map(x => +x.id);
         let isActiveFlag;
         if ((this.isActiveClients && this.nonActiveClient) || (!this.isActiveClients && !this.nonActiveClient)) {
             isActiveFlag = undefined;
@@ -253,6 +254,7 @@ export class ClientComponent extends AppComponentBase implements OnInit, OnDestr
             .subscribe(result => {
                 this.clientDataSource = new MatTableDataSource<ClientListItemDto>(result.items);
                 this.totalCount = result.totalCount;
+                this.saveGridOptions();
             });
     }
 
@@ -264,6 +266,38 @@ export class ClientComponent extends AppComponentBase implements OnInit, OnDestr
 
     sortChanged(event?: any): void {
         this.sorting = event.active.concat(' ', event.direction);
+        this.getClientsGrid();
+    }
+
+    saveGridOptions() {
+        let filters = {
+            pageNumber: this.pageNumber,
+            deafultPageSize: this.deafultPageSize,
+            isActiveClients: this.isActiveClients,
+            nonActiveClient: this.nonActiveClient,
+            includeDeleted: this.includeDeleted,
+            onlyWrongfullyDeletedInHubspot: this.onlyWrongfullyDeletedInHubspot,
+            owners: this.selectedAccountManagers,
+            selectedCountries: this.selectedCountries,
+            searchFilter: this.clientFilter.value ? this.clientFilter.value : ''
+        };
+
+        localStorage.setItem(ClientGridOptionsKey, JSON.stringify(filters));
+    }
+
+    getGridOptions() {
+        let filters = JSON.parse(localStorage.getItem(ClientGridOptionsKey)!);
+        if (filters) {
+            this.pageNumber = filters.pageNumber;
+            this.deafultPageSize = filters.deafultPageSize;
+            this.isActiveClients = filters.isActiveClients;
+            this.nonActiveClient = filters.nonActiveClient;
+            this.includeDeleted = filters.includeDeleted;
+            this.onlyWrongfullyDeletedInHubspot = filters.onlyWrongfullyDeletedInHubspot;
+            this.selectedAccountManagers = filters.owners?.length ? filters.owners : [];
+            this.selectedCountries = filters.selectedCountries?.length ? filters.selectedCountries : [];
+            this.clientFilter.setValue(filters.searchFilter, {emitEvent: false});
+        }
         this.getClientsGrid();
     }
 
@@ -329,6 +363,7 @@ export class ClientComponent extends AppComponentBase implements OnInit, OnDestr
         this.includeDeleted = false;
         this.selectedCountries = [];
         this.countryList.map(x => x.selected = false);
+        localStorage.removeItem(ClientGridOptionsKey);
         this.getCurrentUser();
     }
 
