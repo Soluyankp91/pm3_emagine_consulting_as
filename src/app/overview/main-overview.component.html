@@ -165,7 +165,7 @@
                 <ngx-gantt-table>
                     <ngx-gantt-column name="" width="30px">
                         <ng-template #cell let-item="item">
-                            <span class="text-bold">
+                            <span class="text-bold-800">
                                 <div fxLayout="row" fxLayoutAlign="start center" class="u-w-100">
                                     <mat-icon class="main-overview-icon" [matMenuTriggerFor]="workflowMenu" svgIcon="{{detectIcon(item?.origin?.mainOverviewStatusOfWorkflowForSales)}}" [ngClass]="detectProcessColor(item?.origin?.mainOverviewStatusOfWorkflowForSales)"></mat-icon>
                                     <mat-menu #workflowMenu>
@@ -183,7 +183,7 @@
                     </ngx-gantt-column>
                     <ngx-gantt-column name="Client" width="375px">
                         <ng-template #cell let-item="item">
-                            <span class="text-bold">
+                            <span class="text-bold-800">
                                 {{ item?.title }}
                             </span>
                         </ng-template>

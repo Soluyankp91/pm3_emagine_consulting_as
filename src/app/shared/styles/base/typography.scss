@@ -9,6 +9,9 @@ h6,
 span,
 label {
     font-family: 'Open Sans', sans-serif !important;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+    text-shadow: 1px 1px 1px rgba(0,0,0,0.004);
 }
 
 
@@ -27,6 +30,10 @@ label {
 .text-bold {
   font-weight: 700;
 }
+
+.text-bold-800 {
+    font-weight: 800;
+  }
 
 .underlined-text {
     text-decoration: underline;
