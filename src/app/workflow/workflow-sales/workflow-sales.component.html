@@ -578,13 +578,13 @@
                                     <div fxLayout="column">
                                         <h3 class="workflow-readonly--gray-header">Consultant</h3>
                                         <div fxLayout="row" fxLayoutAlign="start center" class="u-mb--20">
-                                            <img class="workflow-extension--consultant-data--consultant-img u-mr--16" [src]="consultantProfileUrl(item.value.consultantName?.externalId)" >
+                                            <img class="workflow-extension--consultant-data--consultant-img u-mr--16" [src]="consultantProfileUrl(item.value.consultantName?.consultant?.externalId)" >
                                             <div fxLayout="column">
                                                 <p class="workflow-extension--consultant-data--consultant-name">
-                                                    {{item?.value?.consultantName?.name}}
+                                                    {{item?.value?.consultantName?.consultant?.name}}
                                                 </p>
                                                 <span class="workflow-extension--consultant-data--consultant-text">
-                                                    {{item?.value?.consultantName?.companyName}} | {{item?.value?.consultantName?.city}}, {{getTenantCodeFromId(item?.value?.consultantName?.countryId)}} | #{{item?.value?.consultantName?.id}} / {{getTenantCodeFromId(item?.value?.consultantName?.countryId)}}-{{item?.value?.consultantName?.legacyId}}
+                                                    {{item?.value?.consultantName?.consultant?.companyName}} | {{item?.value?.consultantName?.consultant?.city}}, {{getTenantCodeFromId(item?.value?.consultantName?.consultant?.countryId)}} | #{{item?.value?.consultantName?.consultant?.id}} / {{getTenantCodeFromId(item?.value?.consultantName?.consultant?.countryId)}}-{{item?.value?.consultantName?.consultant?.legacyId}}
                                                 </span>
                                             </div>
                                         </div>
@@ -2097,10 +2097,10 @@
                                 <h1 class="workflow-section--header-main" fxFlex="15%">Consultant data</h1>
                                 <div fxLayout="row" fxLayoutAlign="start start" class="u-w--100" *ngIf="activeSideSection.typeId === workflowSideSections.StartClientPeriod && !readOnlyMode">
                                     <span fxFlex="50%" fxLayout="row" fxLayoutAlign="start center">
-                                        <ng-container  *ngIf="consultant.value?.consultantName?.id || consultant.value?.consultantNameOnly">
-                                            <img *ngIf="consultant.value?.consultantName?.id" class="workflow-extension--consultant-data--consultant-img u-ml--16 u-mr--16" [src]="consultantProfileUrl(consultant.value?.consultantName?.externalId)" />
+                                        <ng-container  *ngIf="consultant.value?.consultantName?.consultant?.id || consultant.value?.consultantNameOnly">
+                                            <img *ngIf="consultant.value?.consultantName?.consultant?.id" class="workflow-extension--consultant-data--consultant-img u-ml--16 u-mr--16" [src]="consultantProfileUrl(consultant.value?.consultantName?.consultant?.externalId)" />
                                             <span class="workflow-form--consultants__name u-mr--16">
-                                                {{consultant.value?.consultantName?.name}}
+                                                {{consultant.value?.consultantName?.consultant?.name}}
                                             </span>
                                         </ng-container>
                                         <button class="form-icon--delete-row" *ngIf="consultantsForm.consultantData?.controls?.length && (activeSideSection.typeId === workflowSideSections.StartClientPeriod && (isCompleted === editEnabledForcefuly))"
@@ -2132,14 +2132,14 @@
                                         <mat-form-field appearance="outline" class="u-w--100 filter-select" fxFlex="33%" *ngIf="consultant.value?.employmentType?.id !== 10 && consultant.value?.employmentType?.id !== 11; else nameOnlyConsultant">
                                             <mat-label>Consultant Name</mat-label>
                                             <input #consultantNameFilterInput type="text" matInput [matAutocomplete]="consultantAutocomplete" formControlName="consultantName" (click)="$event.stopPropagation()" placeholder="Consultant name">
-                                            <mat-autocomplete #consultantAutocomplete="matAutocomplete" [displayWith]="displayNameFn">
+                                            <mat-autocomplete #consultantAutocomplete="matAutocomplete" [displayWith]="displayConsultantNameFn">
                                                 <ng-container>
-                                                    <mat-option *ngFor="let consultant of filteredConsultants" [value]="consultant" [ngClass]="{ 'no-data': consultant.id === 'no-data' }">
+                                                    <mat-option *ngFor="let item of filteredConsultants" [value]="item" [ngClass]="{ 'no-data': item.id === 'no-data' }">
                                                         <div class="multilineDropdown-option--row">
-                                                            <img *ngIf="consultant.id !== 'no-data'" class="workflow-extension--consultant-data--consultant-img u-ml--16 u-mr--16" [src]="consultantProfileUrl(consultant.externalId)" />
+                                                            <img *ngIf="item.id !== 'no-data'" class="workflow-extension--consultant-data--consultant-img u-ml--16 u-mr--16" [src]="consultantProfileUrl(item.consultant.externalId)" />
                                                             <div class="multilineDropdown-option--column">
-                                                                <b>{{ consultant.name }}</b>
-                                                                <span *ngIf="consultant.id !== 'no-data'"> | {{consultant.companyName}} | {{consultant.city}} | #{{consultant.id}} / {{consultant.legacyId}}</span>
+                                                                <b>{{ item.consultant.name }}</b>
+                                                                <span *ngIf="item.id !== 'no-data'"> | {{item.consultant.companyName}} | {{item.consultant.city}} | #{{item.consultant.id}} / {{item.consultant.legacyId}}</span>
                                                             </div>
                                                         </div>
                                                     </mat-option>
@@ -2166,13 +2166,13 @@
                                         <div fxLayout="column">
                                             <h3 class="workflow-readonly--gray-header">Consultant</h3>
                                             <div fxLayout="row" fxLayoutAlign="start center" class="u-mb--20">
-                                                <img class="workflow-extension--consultant-data--consultant-img u-mr--16" [src]="consultantProfileUrl(consultant.value.consultantName?.externalId)">
+                                                <img class="workflow-extension--consultant-data--consultant-img u-mr--16" [src]="consultantProfileUrl(consultant.value.consultantName?.consultant?.externalId)">
                                                 <div fxLayout="column">
                                                     <p class="workflow-extension--consultant-data--consultant-name">
-                                                        {{consultant?.value?.consultantName?.name}}
+                                                        {{consultant?.value?.consultantName?.consultant?.name}}
                                                     </p>
                                                     <span class="workflow-extension--consultant-data--consultant-text">
-                                                        {{consultant?.value?.consultantName?.companyName}} | {{consultant?.value?.consultantName?.city}}, {{getTenantCodeFromId(consultant?.value?.consultantName?.countryId)}} | #{{consultant?.value?.consultantName?.id}} / {{getTenantCodeFromId(consultant?.value?.consultantName?.countryId)}}-{{consultant?.value?.consultantName?.legacyId}}
+                                                        {{consultant?.value?.consultantName?.consultant?.companyName}} | {{consultant?.value?.consultantName?.consultant?.city}}, {{getTenantCodeFromId(consultant?.value?.consultantName?.consultant?.countryId)}} | #{{consultant?.value?.consultantName?.consultant?.id}} / {{getTenantCodeFromId(consultant?.value?.consultantName?.consultant?.countryId)}}-{{consultant?.value?.consultantName?.consultant?.legacyId}}
                                                     </span>
                                                 </div>
                                             </div>

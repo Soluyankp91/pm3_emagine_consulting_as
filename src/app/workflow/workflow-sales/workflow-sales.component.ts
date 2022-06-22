@@ -13,7 +13,7 @@ import { InternalLookupService } from 'src/app/shared/common/internal-lookup.ser
 import { ConfirmationDialogComponent } from 'src/app/shared/components/confirmation-dialog/confirmation-dialog.component';
 import { environment } from 'src/environments/environment';
 import { AppComponentBase, NotifySeverity } from 'src/shared/app-component-base';
-import { ClientPeriodSalesDataDto, ClientPeriodServiceProxy, ClientRateDto, CommissionDto, ConsultantRateDto, ConsultantSalesDataDto, ContractSignerDto, EmployeeDto, EnumEntityTypeDto, EnumServiceProxy, LookupServiceProxy, PeriodClientSpecialFeeDto, PeriodClientSpecialRateDto, SalesClientDataDto, SalesMainDataDto, WorkflowProcessType, WorkflowServiceProxy, ConsultantResultDto, ClientResultDto, ContactResultDto, ConsultantTerminationSalesDataCommandDto, WorkflowTerminationSalesDataCommandDto, PeriodConsultantSpecialFeeDto, PeriodConsultantSpecialRateDto, ClientSpecialRateDto, ClientsServiceProxy, ClientSpecialFeeDto, ClientSalesServiceProxy, ConsultantPeriodServiceProxy, ConsultantPeriodSalesDataDto, ConsultantSalesServiceProxy, ExtendConsultantPeriodDto, ChangeConsultantPeriodDto, WorkflowProcessDto } from 'src/shared/service-proxies/service-proxies';
+import { ClientPeriodSalesDataDto, ClientPeriodServiceProxy, ClientRateDto, CommissionDto, ConsultantRateDto, ConsultantSalesDataDto, ContractSignerDto, EmployeeDto, EnumEntityTypeDto, EnumServiceProxy, LookupServiceProxy, PeriodClientSpecialFeeDto, PeriodClientSpecialRateDto, SalesClientDataDto, SalesMainDataDto, WorkflowProcessType, WorkflowServiceProxy, ConsultantResultDto, ClientResultDto, ContactResultDto, ConsultantTerminationSalesDataCommandDto, WorkflowTerminationSalesDataCommandDto, PeriodConsultantSpecialFeeDto, PeriodConsultantSpecialRateDto, ClientSpecialRateDto, ClientsServiceProxy, ClientSpecialFeeDto, ClientSalesServiceProxy, ConsultantPeriodServiceProxy, ConsultantPeriodSalesDataDto, ConsultantSalesServiceProxy, ExtendConsultantPeriodDto, ChangeConsultantPeriodDto, WorkflowProcessDto, ConsultantWithSourcingRequestResultDto } from 'src/shared/service-proxies/service-proxies';
 import { WorkflowConsultantActionsDialogComponent } from '../workflow-consultant-actions-dialog/workflow-consultant-actions-dialog.component';
 import { WorkflowDataService } from '../workflow-data.service';
 import { ConsultantDiallogAction, SalesTerminateConsultantForm, TenantList, WorkflowSalesAdditionalDataForm, WorkflowSalesClientDataForm, WorkflowSalesConsultantsForm, WorkflowSalesMainForm } from './workflow-sales.model';
@@ -1068,9 +1068,13 @@ export class WorkflowSalesComponent extends AppComponentBase implements OnInit {
         if (consultant?.consultantRate?.isFixedRate) {
             consultantRate = this.findItemById(this.clientRateTypes, 2); // 2: fixed
         }
+        let consultantDto = new ConsultantWithSourcingRequestResultDto();
+        consultantDto.consultant = consultant?.consultant;
+        consultantDto.sourcingRequestConsultantId = consultant?.soldRequestConsultantId;
         const form = this._fb.group({
             employmentType: new FormControl(this.findItemById(this.employmentTypes, consultant?.employmentTypeId) ?? null),
-            consultantName: new FormControl(consultant?.consultant ?? null),
+            consultantName: new FormControl(consultantDto ?? null),
+            // requestConsultantId: new FormControl(consultant?.soldRequestConsultantId ?? null),
             consultantPeriodId: new FormControl(consultant?.consultantPeriodId ?? null),
             consultantNameOnly: new FormControl(consultant?.nameOnly ?? null),
 
@@ -1408,21 +1412,22 @@ export class WorkflowSalesComponent extends AppComponentBase implements OnInit {
                 debounceTime(300),
                 switchMap((value: any) => {
                     let toSend = {
-                        name: value,
+                        name: value ? value : '',
+                        clientId: this.salesClientDataForm.directClientIdValue!.value?.clientId,
                         maxRecordsCount: 1000,
                     };
-                    if (value?.id) {
+                    if (value?.consultant?.id) {
                         toSend.name = value.id
-                            ? value.name
+                            ? value.consultant.name
                             : value;
                     }
-                    return this._lookupService.consultants(toSend.name, toSend.maxRecordsCount);
+                    return this._lookupService.consultantsWithSourcingRequest(toSend.clientId, toSend.name, toSend.maxRecordsCount);
                 }),
-            ).subscribe((list: ConsultantResultDto[]) => {
+            ).subscribe((list: ConsultantWithSourcingRequestResultDto[]) => {
                 if (list.length) {
                     this.filteredConsultants = list;
                 } else {
-                    this.filteredConsultants = [{ name: 'No consultant found', externalId: '', id: 'no-data' }];
+                    this.filteredConsultants = [{ consultant: {name: 'No consultant found'}, externalId: '', id: 'no-data' }];
                 }
             });
 
@@ -1440,7 +1445,7 @@ export class WorkflowSalesComponent extends AppComponentBase implements OnInit {
             autoFocus: false,
             panelClass: 'confirmation-modal',
             data: {
-                confirmationMessageTitle: `Are you sure you want to delete consultant ${consultant.consultantName?.name ?? ''}?`,
+                confirmationMessageTitle: `Are you sure you want to delete consultant ${consultant.consultantName?.consultant?.name ?? ''}?`,
                 confirmationMessage: 'When you confirm the deletion, all the info contained inside this block will disappear.',
                 rejectButtonText: 'Cancel',
                 confirmButtonText: 'Delete',
@@ -1609,17 +1614,18 @@ export class WorkflowSalesComponent extends AppComponentBase implements OnInit {
                 if (consultant.employmentType?.id === 10 || consultant.employmentType?.id === 11) {
                     consultantInput.nameOnly = consultant.consultantNameOnly;
                 } else {
-                    consultantInput.consultantId = consultant.consultantName?.id
+                    consultantInput.consultantId = consultant.consultantName?.consultant?.id
+                    consultantInput.soldRequestConsultantId = consultant.consultantName?.sourcingRequestConsultantId;
                     consultantInput.consultantPeriodId = consultant.consultantPeriodId;
                     consultantInput.consultant = new ConsultantResultDto();
-                    consultantInput.consultant.id = consultant.consultantName?.id
-                    consultantInput.consultant.name = consultant.consultantName?.name;
-                    consultantInput.consultant.legacyId = consultant.consultantName?.legacyId;
-                    consultantInput.consultant.companyName = consultant.consultantName?.companyName;
-                    consultantInput.consultant.tenantId = consultant.consultantName?.tenantId;
-                    consultantInput.consultant.externalId = consultant.consultantName?.externalId;
-                    consultantInput.consultant.city = consultant.consultantName?.city;
-                    consultantInput.consultant.countryId = consultant.consultantName?.contryId;
+                    consultantInput.consultant.id = consultant.consultantName?.consultant?.id
+                    consultantInput.consultant.name = consultant.consultantName?.consultant?.name;
+                    consultantInput.consultant.legacyId = consultant.consultantName?.consultant?.legacyId;
+                    consultantInput.consultant.companyName = consultant.consultantName?.consultant?.companyName;
+                    consultantInput.consultant.tenantId = consultant.consultantName?.consultant?.tenantId;
+                    consultantInput.consultant.externalId = consultant.consultantName?.consultant?.externalId;
+                    consultantInput.consultant.city = consultant.consultantName?.consultant?.city;
+                    consultantInput.consultant.countryId = consultant.consultantName?.consultant?.contryId;
 
                     consultantInput.durationSameAsClientPeriod = consultant.consultantProjectDurationSameAsClient;
                     consultantInput.startDate = consultant.consultantProjectStartDate;
@@ -2226,9 +2232,9 @@ export class WorkflowSalesComponent extends AppComponentBase implements OnInit {
     }
 
     terminateConsultant(index: number) {
-        this.consultantInformation = this.consultantsForm.consultantData.at(index).value.consultantName;
+        let consultantInformation = this.consultantsForm.consultantData.at(index).value.consultantName;
 
-        console.log('terminate consultant ',  this.consultantInformation.id);
+        console.log('terminate consultant ',  consultantInformation?.consultant?.id);
         const scrollStrategy = this.overlay.scrollStrategies.reposition();
         const dialogRef = this.dialog.open(ConfirmationDialogComponent, {
             width: '450px',
@@ -2239,7 +2245,7 @@ export class WorkflowSalesComponent extends AppComponentBase implements OnInit {
             autoFocus: false,
             panelClass: 'confirmation-modal',
             data: {
-                confirmationMessageTitle: `Are you sure you want to terminate consultant ${this.consultantInformation?.name ?? ''}?`,
+                confirmationMessageTitle: `Are you sure you want to terminate consultant ${consultantInformation?.consultant?.name ?? ''}?`,
                 // confirmationMessage: 'When you confirm the termination, all the info contained inside this block will disappear.',
                 rejectButtonText: 'Cancel',
                 confirmButtonText: 'Terminate',
@@ -2248,7 +2254,7 @@ export class WorkflowSalesComponent extends AppComponentBase implements OnInit {
         });
 
         dialogRef.componentInstance.onConfirmed.subscribe(() => {
-            this.terminateConsultantStart(this.consultantInformation?.id!);
+            this.terminateConsultantStart(consultantInformation?.consultant?.id!);
         });
 
         dialogRef.componentInstance.onRejected.subscribe(() => {
@@ -2322,17 +2328,17 @@ export class WorkflowSalesComponent extends AppComponentBase implements OnInit {
         if (consultant.employmentType?.id === 10 || consultant.employmentType?.id === 11) {
             consultantInput.nameOnly = consultant.consultantNameOnly;
         } else {
-            consultantInput.consultantId = consultant.consultantName?.id
+            consultantInput.consultantId = consultant.consultantName?.consultant?.id
+            consultantInput.soldRequestConsultantId = consultant.consultantName?.sourcingRequestConsultantId;
             consultantInput.consultant = new ConsultantResultDto();
-
-            consultantInput.consultant.id = consultant.consultantName?.id
-            consultantInput.consultant.name = consultant.consultantName?.name;
-            consultantInput.consultant.legacyId = consultant.consultantName?.legacyId;
-            consultantInput.consultant.companyName = consultant.consultantName?.companyName;
-            consultantInput.consultant.tenantId = consultant.consultantName?.tenantId;
-            consultantInput.consultant.externalId = consultant.consultantName?.externalId;
-            consultantInput.consultant.city = consultant.consultantName?.city;
-            consultantInput.consultant.countryId = consultant.consultantName?.contryId;
+            consultantInput.consultant.id = consultant.consultantName?.consultant?.id
+            consultantInput.consultant.name = consultant.consultantName?.consultant?.name;
+            consultantInput.consultant.legacyId = consultant.consultantName?.consultant?.legacyId;
+            consultantInput.consultant.companyName = consultant.consultantName?.consultant?.companyName;
+            consultantInput.consultant.tenantId = consultant.consultantName?.consultant?.tenantId;
+            consultantInput.consultant.externalId = consultant.consultantName?.consultant?.externalId;
+            consultantInput.consultant.city = consultant.consultantName?.consultant?.city;
+            consultantInput.consultant.countryId = consultant.consultantName?.consultant?.contryId;
 
             consultantInput.startDate = consultant.consultantProjectStartDate;
             consultantInput.noEndDate = consultant.consultantProjectNoEndDate;
@@ -2448,6 +2454,10 @@ export class WorkflowSalesComponent extends AppComponentBase implements OnInit {
 
     displayNameFn(option: any) {
         return option?.name;
+    }
+
+    displayConsultantNameFn(option: any) {
+        return option?.consultant?.name;
     }
 
     displayInternalNameFn(option: any) {
