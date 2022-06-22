@@ -1,0 +1,57 @@
+<ngx-gantt-root [sideWidth]="300">
+  <ng-template #sideTemplate>
+    <div class="gantt-flat-side-header">Group</div>
+    <div class="gantt-flat-side-body">
+      <div class="gantt-group" *ngFor="let group of groups; trackBy: trackBy">
+        <div class="gantt-group-content" [style.height.px]="group.mergedItems?.length! * (styles.lineHeight + 10) - 10">
+          {{ group.title }} 1
+        </div>
+      </div>
+    </div>
+    <!-- <ngx-gantt-table>
+        <ngx-gantt-column name="" width="30px">
+            <ng-template #cell let-item="item">
+                <span class="text-bold">
+                </span>
+            </ng-template>
+        </ngx-gantt-column>
+        <ngx-gantt-column name="Client" width="375px">
+            <ng-template #cell let-item="item">
+                <span class="text-bold">
+                    123
+                </span>
+            </ng-template>
+        </ngx-gantt-column>
+        <ngx-gantt-column name="Consultants" width="325px">
+            <ng-template #cell let-item="item">
+                <span class="text-truncate-ellipsis text-bold">
+                   2222
+                </span>
+            </ng-template>
+        </ngx-gantt-column>
+        <ngx-gantt-column name="Sales manager" width="110px">
+            <ng-template #cell let-item="item">
+                333
+            </ng-template>
+        </ngx-gantt-column>
+    </ngx-gantt-table> -->
+  </ng-template>
+  <ng-template #mainTemplate>
+    <div class="gantt-main-container">
+      <!-- groups -->
+      <div class="gantt-main-groups" *ngIf="groups && groups.length > 0" [style.width.px]="view.width">
+        <ng-container *ngFor="let group of groups; trackBy: trackBy">
+          <div class="gantt-main-group" [style.height.px]="group.mergedItems?.length! * (styles.lineHeight + 10) - 10">
+            <ng-container *ngFor="let items of group.mergedItems">
+              <div class="gantt-flat-items" [style.height.px]="styles.lineHeight">
+                <ng-container *ngFor="let item of items; trackBy: trackBy">
+                  <ngx-gantt-bar [item]="item" [template]="barTemplate" (barClick)="barClick.emit($event)" [matTooltip]="'hi'"></ngx-gantt-bar>
+                </ng-container>
+              </div>
+            </ng-container>
+          </div>
+        </ng-container>
+      </div>
+    </div>
+  </ng-template>
+</ngx-gantt-root>
