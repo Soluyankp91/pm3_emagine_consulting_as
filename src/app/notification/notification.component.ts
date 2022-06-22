@@ -53,6 +53,8 @@ export class NotificationComponent extends AppComponentBase implements OnInit {
                 return 'International';
             case 27:
                 return 'France';
+            case 29:
+                return 'India';
             default:
                 return '';
         }
@@ -77,7 +79,6 @@ export class NotificationComponent extends AppComponentBase implements OnInit {
     }
 
     checkAll(value: boolean, tenantId: number) {
-        console.log('ss');
         const tenant = this.tenantWithNotifications.find(x => x.tenantId === tenantId);
         tenant?.notifications?.forEach(x => {
             x.enabled = value
