@@ -71,7 +71,7 @@ export class MainOverviewComponent extends AppComponentBase implements OnInit {
             year: 'yyyy'
         },
         cellWidth: 75,
-        start: new GanttDate(getUnixTime(new Date(this.startDate.setMonth(this.startDate.getMonth() - 1))))
+        start: new GanttDate(getUnixTime(new Date(this.startDate.setDate(this.startDate.getDate() - 7))))
     }
 
     views = [
@@ -234,13 +234,15 @@ export class MainOverviewComponent extends AppComponentBase implements OnInit {
         switch (this.viewType.value) {
             case GanttViewType.week:
                 let cutOffDateWeek = new Date();
-                cutOffDateWeek.setDate(cutOffDateWeek.getDate() - 35);
+                cutOffDateWeek.setDate(cutOffDateWeek.getDate() - 7);
                 this.viewOptions.cellWidth = 50;
                 this.getMainOverview(cutOffDateWeek);
                 break;
             case GanttViewType.month:
                 let cutOffDateMonth = new Date();
-                cutOffDateMonth.setMonth(cutOffDateMonth.getMonth() - 1)
+                // cutOffDateMonth.setMonth(cutOffDateMonth.getMonth() - 1);
+                cutOffDateMonth.setDate(cutOffDateMonth.getDate() - 7);
+
                 this.viewOptions.cellWidth = 75;
                 this.getMainOverview(cutOffDateMonth);
                 break;
@@ -304,10 +306,10 @@ export class MainOverviewComponent extends AppComponentBase implements OnInit {
                             let oldestDateArray = result.items.reduce((r, o) => o.lastClientPeriodEndDate! > r.lastClientPeriodEndDate! ? o : r);
 
                             let endDate = new Date();
-                            if (oldestDateArray.lastClientPeriodEndDate === undefined || oldestDateArray.lastClientPeriodEndDate.toDate().getTime() < this.formatDate(date).getTime()) {
+                            if (oldestDateArray.lastClientPeriodEndDate === undefined || (oldestDateArray.lastClientPeriodEndDate.toDate().getTime() < this.formatDate(date).getTime())) {
                                 endDate = this.formatDate(date);
                             }
-
+                            // console.log(new Date(endDate.setHours(0,0,0,0)).getTime() !== new Date(new Date().setHours(0,0,0,0)).getTime());
                             this.viewOptions = {
                                 dateFormat: {
                                     yearQuarter: `QQQ 'of' yyyy`,
@@ -315,10 +317,10 @@ export class MainOverviewComponent extends AppComponentBase implements OnInit {
                                     week: 'w',
                                     year: 'yyyy'
                                 },
-                                start: new GanttDate(getUnixTime(new Date(date))),
-                                end: endDate.getTime() !== new Date().getTime() ? new GanttDate(getUnixTime(endDate)) : new GanttDate(getUnixTime(new Date(oldestDateArray.lastClientPeriodEndDate?.toDate()!))),
-                                min: new GanttDate(getUnixTime(new Date(date))),
-                                max: endDate.getTime() !== new Date().getTime() ? new GanttDate(getUnixTime(endDate)) : new GanttDate(getUnixTime(new Date(oldestDateArray.lastClientPeriodEndDate?.toDate()!)))
+                                start: new GanttDate(getUnixTime(date)),
+                                end: new Date(endDate.setHours(0,0,0,0)).getTime() !== new Date(new Date().setHours(0,0,0,0)).getTime() ? new GanttDate(getUnixTime(endDate)) : new GanttDate(getUnixTime(new Date(oldestDateArray.lastClientPeriodEndDate?.toDate()!))),
+                                min: new GanttDate(getUnixTime(date)),
+                                max: new Date(endDate.setHours(0,0,0,0)).getTime() !== new Date(new Date().setHours(0,0,0,0)).getTime() ? new GanttDate(getUnixTime(endDate)) : new GanttDate(getUnixTime(new Date(oldestDateArray.lastClientPeriodEndDate?.toDate()!)))
                             }
 
                             this.workflowsData = result.items!.map(x => {
@@ -332,13 +334,15 @@ export class MainOverviewComponent extends AppComponentBase implements OnInit {
                                     color: 'rgb(23, 162, 151)'
                                 }
                                 return formattedData;
-                            })
+                            });
 
+                            this.ganttWorkflows.viewOptions.start = new GanttDate(getUnixTime(date));
+                            this.ganttWorkflows.viewOptions.min = new GanttDate(getUnixTime(date));
                             this.ganttWorkflows.viewOptions.end = new GanttDate(getUnixTime(new Date(oldestDateArray.lastClientPeriodEndDate?.toDate()!)));
-                            this.ganttWorkflows.viewOptions.min = new GanttDate(getUnixTime(new Date(date)));
                             this.ganttWorkflows.viewOptions.max = new GanttDate(getUnixTime(new Date(oldestDateArray.lastClientPeriodEndDate?.toDate()!)));
 
-                            this.ganttWorkflows.view.options.min = new GanttDate(getUnixTime(new Date(date)));
+                            this.ganttWorkflows.view.options.start = new GanttDate(getUnixTime(date));
+                            this.ganttWorkflows.view.options.min = new GanttDate(getUnixTime(date));
                             this.ganttWorkflows.view.options.max = new GanttDate(getUnixTime(new Date(oldestDateArray.lastClientPeriodEndDate?.toDate()!)));
                             this.ganttWorkflows.view.options.end = new GanttDate(getUnixTime(new Date(oldestDateArray.lastClientPeriodEndDate?.toDate()!)));
                             this.ganttWorkflows.view.end$.next(new GanttDate(getUnixTime(new Date(oldestDateArray.lastClientPeriodEndDate?.toDate()!))));

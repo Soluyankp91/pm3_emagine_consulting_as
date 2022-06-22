@@ -212,6 +212,64 @@
                     </ngx-gantt-column>
                 </ngx-gantt-table>
             </ngx-gantt>
+            <!-- <ngx-gantt-root>
+                <ng-template #sideTemplate>
+                    <ngx-gantt-table>
+                        <ngx-gantt-column name="" width="30px">
+                            <ng-template #cell let-item="item">
+                                <span class="text-bold">
+                                    <div fxLayout="row" fxLayoutAlign="start center" class="u-w-100">
+                                        <mat-icon class="main-overview-icon" [matMenuTriggerFor]="workflowMenu" svgIcon="{{detectIcon(item?.origin?.mainOverviewStatusOfWorkflowForSales)}}" [ngClass]="detectProcessColor(item?.origin?.mainOverviewStatusOfWorkflowForSales)"></mat-icon>
+                                        <mat-menu #workflowMenu>
+                                            <button *ngFor="let status of userSelectedStatuses"
+                                                class="menu-item"
+                                                mat-menu-item
+                                                (click)="setUserSelectedStatusForWorflow(item?.id, status?.id)">
+                                                <mat-icon class="main-overview-icon" svgIcon="{{detectIcon(status?.id)}}" [ngClass]="detectProcessColor(status?.id)"></mat-icon>
+                                                {{status?.name}}
+                                            </button>
+                                        </mat-menu>
+                                    </div>
+                                </span>
+                            </ng-template>
+                        </ngx-gantt-column>
+                        <ngx-gantt-column name="Client" width="375px">
+                            <ng-template #cell let-item="item">
+                                <span class="text-bold">
+                                    {{ item?.title }}
+                                </span>
+                            </ng-template>
+                        </ngx-gantt-column>
+                        <ngx-gantt-column name="Consultants" width="325px">
+                            <ng-template #cell let-item="item">
+                                <span class="text-truncate-ellipsis text-bold" [matTooltip]="mapListByProperty(item?.origin?.consultants, 'name')">
+                                    <ng-container *ngIf="item?.origin?.consultants?.length > 1; else singleConsultantDisplay">
+                                        {{item?.origin?.consultants?.length + 'Consultants'}}
+                                    </ng-container>
+                                    <ng-template #singleConsultantDisplay>
+                                        {{item?.origin?.consultants[0]?.name}}
+                                    </ng-template>
+                                </span>
+                            </ng-template>
+                        </ngx-gantt-column>
+                        <ngx-gantt-column name="Sales manager" width="110px">
+                            <ng-template #cell let-item="item">
+                                <div fxLayout="row" fxLayoutAlign="flex-end center" fxLayoutGap="15px" class="u-w-100">
+                                    <img class="manager-search--photo" [matTooltip]="item?.origin?.salesManager?.name" [src]="employeeProfileUrl(item?.origin?.salesManager?.externalId)"/>
+                                    <button mat-icon-button matTooltip="Go to workflow" (click)="redirectToWorkflow(item?.origin?.workflowId)">
+                                        <mat-icon class="icon-arrow-rotate180" svgIcon="arrow"></mat-icon>
+                                    </button>
+                                </div>
+                            </ng-template>
+                        </ngx-gantt-column>
+                    </ngx-gantt-table>
+                </ng-template>
+                <ng-template #mainTemplate>
+                    <ng-container *ngFor="let item of items; trackBy: trackBy">
+                        <ngx-gantt-bar [item]="item" [template]="barTemplate"></ngx-gantt-bar>
+                      </ng-container>
+                </ng-template>
+            </ngx-gantt-root> -->
             <div class="pagination-container u-w--100">
                 <mat-paginator #workflowsPaginator [length]="totalCount" [pageSize]="deafultPageSize"
                     [pageSizeOptions]="pageSizeOptions" [showFirstLastButtons]="true" (page)="workflowsPageChanged($event)">
