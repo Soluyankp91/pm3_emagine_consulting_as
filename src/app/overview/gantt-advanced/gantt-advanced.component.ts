@@ -1,8 +1,10 @@
-import { Component, OnInit, HostBinding } from '@angular/core';
-import { GanttViewType, GanttGroup, GanttItem } from '@worktile/gantt';
+import { Component, OnInit, HostBinding, Injector } from '@angular/core';
+import { Router } from '@angular/router';
+import { GanttViewType, GanttGroup, GanttItem, GanttDate } from '@worktile/gantt';
 import { getUnixTime } from 'date-fns';
 import * as moment from 'moment';
 import { finalize } from 'rxjs/operators';
+import { AppComponentBase } from 'src/shared/app-component-base';
 import { MainOverviewItemForWorkflowDto, MainOverviewItemPeriodDto, MainOverviewServiceProxy } from 'src/shared/service-proxies/service-proxies';
 import { randomGroupsAndItems } from '../helper';
 
@@ -10,29 +12,44 @@ import { randomGroupsAndItems } from '../helper';
     selector: 'app-gantt-advanced-example',
     templateUrl: './gantt-advanced.component.html'
 })
-export class AppGanttAdvancedExampleComponent implements OnInit {
+export class AppGanttAdvancedExampleComponent extends AppComponentBase implements OnInit {
 
     workflowsData: any[] = [];
     consultantsData = [];
     cutOffDate = moment();
     totalCount: number | undefined = 0;
     constructor(
+        injector: Injector,
+        private router: Router,
         private _mainOverviewService: MainOverviewServiceProxy,
 
-    ) {}
+
+    ) {
+        super(injector);
+
+    }
 
     items: GanttItem[] = [];
 
     groups: GanttGroup[] = [];
 
+    startDate = new Date();
     options = {
         viewType: GanttViewType.month,
-        draggable: true,
+        draggable: false,
         mergeIntervalDays: 1,
-        styles: {
-            lineHeight: 50,
-            barHeight: 20
-        }
+        // styles: {
+        //     lineHeight: 50,
+        //     barHeight: 20
+        // }
+        dateFormat: {
+            yearQuarter: `QQQ 'of' yyyy`,
+            month: 'LLL yy',
+            week: 'w',
+            year: 'yyyy'
+        },
+        cellWidth: 75,
+        start: new GanttDate(getUnixTime(new Date(this.startDate.setDate(this.startDate.getDate() - 7))))
     };
 
     @HostBinding('class.gantt-example-component') class = true;
@@ -126,4 +143,6 @@ randomItems(length: number, parent?: MainOverviewItemPeriodDto[], group?: string
     //         items
     //     };
     // }
+
+
 }

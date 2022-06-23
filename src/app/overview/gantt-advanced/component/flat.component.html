@@ -1,13 +1,13 @@
-<ngx-gantt-root [sideWidth]="300">
+<ngx-gantt-root [sideWidth]="768">
   <ng-template #sideTemplate>
-    <div class="gantt-flat-side-header">Group</div>
+    <!-- <div class="gantt-flat-side-header">Group</div>
     <div class="gantt-flat-side-body">
       <div class="gantt-group" *ngFor="let group of groups; trackBy: trackBy">
         <div class="gantt-group-content" [style.height.px]="group.mergedItems?.length! * (styles.lineHeight + 10) - 10">
-          {{ group.title }} 1
+          {{ group.title }}
         </div>
       </div>
-    </div>
+    </div> -->
     <!-- <ngx-gantt-table>
         <ngx-gantt-column name="" width="30px">
             <ng-template #cell let-item="item">
@@ -35,7 +35,64 @@
             </ng-template>
         </ngx-gantt-column>
     </ngx-gantt-table> -->
-  </ng-template>
+  <div fxLayout="column" fxLayoutAlign="start start"
+            class="main-overview--consultants-table u-w--100" *ngIf="groups && groups.length > 0">
+            <mat-table #table [dataSource]="groups" class="white-table u-w--100">
+                <ng-container matColumnDef="process">
+                    <mat-header-cell *matHeaderCellDef fxFlex="10%"></mat-header-cell>
+                    <mat-cell *matCellDef="let row" fxFlex="10%">
+                        <span class="text-truncate-ellipsis" [matTooltip]="row?.origin?.origin?.name">
+                        </span>
+                    </mat-cell>
+                </ng-container>
+                <ng-container matColumnDef="client">
+                    <mat-header-cell *matHeaderCellDef fxFlex="40%"> Client </mat-header-cell>
+                    <mat-cell *matCellDef="let row" fxFlex="40%">
+                        <span class="text-truncate-ellipsis text-bold" [matTooltip]="row?.origin?.origin?.clientDisplayName">
+                            {{row?.origin?.origin?.clientDisplayName}}
+                        </span>
+                    </mat-cell>
+                </ng-container>
+                <ng-container matColumnDef="consultants">
+                    <mat-header-cell *matHeaderCellDef fxFlex="35%"> Consultants </mat-header-cell>
+                    <mat-cell *matCellDef="let row" fxFlex="35%">
+                        <span class="text-truncate-ellipsis text-bold" [matTooltip]="mapListByProperty(row?.origin?.origin?.consultants, 'name')">
+                            <ng-container *ngIf="row?.origin?.origin?.consultants?.length > 1; else singleConsultantDisplay">
+                                {{row?.origin?.origin?.consultants?.length + 'Consultants'}}
+                            </ng-container>
+                            <ng-template #singleConsultantDisplay>
+                                {{row?.origin?.origin?.consultants[0]?.name}}
+                            </ng-template>
+                        </span>
+                    </mat-cell>
+                </ng-container>
+                <ng-container matColumnDef="salesManager">
+                    <mat-header-cell *matHeaderCellDef fxFlex="15%"> Sales manager </mat-header-cell>
+                    <mat-cell *matCellDef="let row" fxFlex="15%">
+                        <div fxLayout="row" fxLayoutAlign="flex-end center" fxLayoutGap="15px" class="u-w-100">
+                            <img class="manager-search--photo" [matTooltip]="row?.origin?.origin?.salesManager?.name" [src]="employeeProfileUrl(row?.origin?.origin?.salesManager?.externalId)"/>
+                            <button mat-icon-button matTooltip="Go to workflow" (click)="redirectToWorkflow(row?.origin?.origin?.workflowId)">
+                                <mat-icon class="icon-arrow-rotate180" svgIcon="arrow"></mat-icon>
+                            </button>
+                        </div>
+                    </mat-cell>
+                </ng-container>
+                <mat-header-row *matHeaderRowDef="clientDisplayColumns"></mat-header-row>
+                <mat-row *matRowDef="let row; columns: clientDisplayColumns;" class="mat-elevation-z0"></mat-row>
+            </mat-table>
+            <!-- <div class="spinner-container" *ngIf="isDataLoading">
+                <mat-spinner [diameter]="50"></mat-spinner>
+            </div>
+            <div class="results-not-found" *ngIf="totalCount === 0 && !isDataLoading">
+                RESULTS NOT FOUND
+            </div>
+            <div class="pagination-contaier">
+                <mat-paginator #clientsPaginator [length]="totalCount" [pageSize]="deafultPageSize"
+                    [pageSizeOptions]="pageSizeOptions" [showFirstLastButtons]="true" (page)="pageChanged($event)">
+                </mat-paginator>
+            </div> -->
+        </div>
+    </ng-template>
   <ng-template #mainTemplate>
     <div class="gantt-main-container">
       <!-- groups -->

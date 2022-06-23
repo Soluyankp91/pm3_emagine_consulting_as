@@ -29,3 +29,16 @@
         }
     }
 }
+
+.manager-search--photo {
+    height: 32px;
+    width: 32px;
+    border-radius: 50%;
+}
+
+.icon-arrow-rotate180 {
+    transform: rotateY(180deg);
+    height: 16px;
+    width: 16px;
+    line-height: 16px;
+}

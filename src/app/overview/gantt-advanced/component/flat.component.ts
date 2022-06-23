@@ -1,6 +1,8 @@
-import { Component, OnInit, HostBinding, NgZone, ChangeDetectorRef, ElementRef, Inject } from '@angular/core';
+import { Component, OnInit, HostBinding, NgZone, ChangeDetectorRef, ElementRef, Inject, Injector } from '@angular/core';
+import { Router } from '@angular/router';
 import { GANTT_UPPER_TOKEN, GanttUpper, GanttItemInternal, GanttGroupInternal, GANTT_GLOBAL_CONFIG, GanttGlobalConfig } from '@worktile/gantt';
 import { startWith, takeUntil } from 'rxjs/operators';
+import { environment } from 'src/environments/environment';
 
 @Component({
     selector: 'app-gantt-flat',
@@ -17,16 +19,28 @@ export class AppGanttFlatComponent extends GanttUpper implements OnInit {
     mergeIntervalDays = 1;
 
     override groups: GanttGroupInternal[] = [];
-
+    clientDisplayColumns = [
+        // 'countryFlag',
+        // 'id',
+        'process',
+        'client',
+        // 'clientCountry',
+        'consultants',
+        'salesManager',
+        // 'action',
+    ];
     @HostBinding('class.gantt-flat') ganttFlatClass = true;
 
     constructor(
         elementRef: ElementRef<HTMLElement>,
         cdr: ChangeDetectorRef,
         ngZone: NgZone,
-        @Inject(GANTT_GLOBAL_CONFIG) config: GanttGlobalConfig
+        @Inject(GANTT_GLOBAL_CONFIG) config: GanttGlobalConfig,
+        // injector: Injector,
+        private router: Router,
     ) {
         super(elementRef, cdr, ngZone, config);
+
     }
 
     private buildGroupMergedItems(items: GanttItemInternal[]) {
@@ -66,5 +80,24 @@ export class AppGanttFlatComponent extends GanttUpper implements OnInit {
             // 如果没有数据，默认填充两行空行
             group.mergedItems = group.mergedItems.length === 0 ? [[]] : group.mergedItems;
         });
+    }
+
+    mapListByProperty(list: any[], prop: string) {
+        if (list?.length) {
+            return list.map(x =>  x[prop]).join(', ');
+        } else {
+            return '-';
+        }
+    }
+
+    redirectToWorkflow(id: string) {
+        this.router.navigate(['app/workflow', id]);
+    }
+
+    employeeProfileUrl(fileToken: string): string {
+        if (!fileToken) {
+            return 'assets/common/images//no-img.svg';
+        }
+        return environment.sharedAssets + `/EmployeePicture/${fileToken}.jpg`;
     }
 }
