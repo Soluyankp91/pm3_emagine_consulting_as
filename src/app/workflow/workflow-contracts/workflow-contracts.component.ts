@@ -226,7 +226,7 @@ export class WorkflowContractsComponent extends AppComponentBase implements OnIn
 
     startEditTerminateWorkflow() {
         this.showMainSpinner();
-        this._workflowServiceProxy.terminationContractStartEdit(this.periodId!)
+        this._workflowServiceProxy.terminationContractStartEdit(this.workflowId!)
             .pipe(finalize(() => this.hideMainSpinner()))
             .subscribe(result => {
                 this._workflowDataService.workflowSideSectionUpdated.emit({isStatusUpdate: true});
@@ -246,7 +246,7 @@ export class WorkflowContractsComponent extends AppComponentBase implements OnIn
 
     startEditTerminateConsultant() {
         this.showMainSpinner();
-        this._workflowServiceProxy.terminationConsultantContractStartEdit(this.periodId!)
+        this._workflowServiceProxy.terminationConsultantContractStartEdit(this.workflowId!)
             .pipe(finalize(() => this.hideMainSpinner()))
             .subscribe(result => {
                 this._workflowDataService.workflowSideSectionUpdated.emit({isStatusUpdate: true});
