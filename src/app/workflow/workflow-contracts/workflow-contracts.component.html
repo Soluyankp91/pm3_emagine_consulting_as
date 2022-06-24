@@ -5,20 +5,19 @@
             <div class="workflow--termination">
                 <h2 class="workflow-section--header">Finish contract in PM</h2>
 
-                <button class="button-accept u-mb--10" mat-flat-button>
-                    Sync to legacy system
-                </button>
-
-                <div fxLayout="row" fxLayoutAlign="start center" class="u-mb--10">
-                    <span class="icon-cancel u-mr--5">
-                        x
-                    </span>
-                    <span class="sync-hint-text">
-                        Sync not possible
-                    </span>
+                <div fxLayout="column" fxLayoutAlign="start start" class="u-w--100">
+                    <button class="button-accept u-mb--10" mat-flat-button (click)="processSyncToLegacySystem()">
+                        Sync to legacy system
+                    </button>
+                    <div fxLayout="row" fxLayoutAlign="start center" class="u-mb--10" *ngIf="syncNotPossible">
+                        <mat-icon class="icon-cancel u-mr--5" svgIcon="cancel-fill"></mat-icon>
+                        <span class="sync-hint-text">
+                            {{syncMessage}}
+                        </span>
+                    </div>
                 </div>
 
-                <div fxLayout="row" fxLayoutAlign="start start" class="u-w--100 u-mb--20">
+                <div fxLayout="row" fxLayoutAlign="start start" class="u-w--100 u-mb--20" *ngIf="contractsSyncDataForm.showManualOption?.value">
                     <mat-checkbox color="accent" name="contractLinesDoneManuallyInOldPM" [formControl]="contractLinesDoneManuallyInOldPMControl" class="black-checkbox u-mt--10">
                         Contract lines done manually in old PM
                     </mat-checkbox>
