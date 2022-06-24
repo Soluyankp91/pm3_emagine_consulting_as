@@ -16,7 +16,7 @@ import { environment } from 'src/environments/environment';
     ]
 })
 export class AppGanttFlatComponent extends GanttUpper implements OnInit {
-    mergeIntervalDays = 1;
+    mergeIntervalDays = 3;
 
     override groups: GanttGroupInternal[] = [];
     clientDisplayColumns = [

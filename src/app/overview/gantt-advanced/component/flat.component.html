@@ -1,42 +1,79 @@
-<ngx-gantt-root [sideWidth]="768">
-  <ng-template #sideTemplate>
-    <!-- <div class="gantt-flat-side-header">Group</div>
-    <div class="gantt-flat-side-body">
-      <div class="gantt-group" *ngFor="let group of groups; trackBy: trackBy">
-        <div class="gantt-group-content" [style.height.px]="group.mergedItems?.length! * (styles.lineHeight + 10) - 10">
-          {{ group.title }}
-        </div>
-      </div>
-    </div> -->
-    <!-- <ngx-gantt-table>
-        <ngx-gantt-column name="" width="30px">
-            <ng-template #cell let-item="item">
-                <span class="text-bold">
-                </span>
-            </ng-template>
-        </ngx-gantt-column>
-        <ngx-gantt-column name="Client" width="375px">
-            <ng-template #cell let-item="item">
-                <span class="text-bold">
-                    123
-                </span>
-            </ng-template>
-        </ngx-gantt-column>
-        <ngx-gantt-column name="Consultants" width="325px">
-            <ng-template #cell let-item="item">
-                <span class="text-truncate-ellipsis text-bold">
-                   2222
-                </span>
-            </ng-template>
-        </ngx-gantt-column>
-        <ngx-gantt-column name="Sales manager" width="110px">
-            <ng-template #cell let-item="item">
-                333
-            </ng-template>
-        </ngx-gantt-column>
-    </ngx-gantt-table> -->
-  <div fxLayout="column" fxLayoutAlign="start start"
-            class="main-overview--consultants-table u-w--100" *ngIf="groups && groups.length > 0">
+<div class="gant-chart--group-container">
+    <ngx-gantt-root [sideWidth]="768">
+        <ng-template #sideTemplate>
+            <div class="gantt-flat-side-header" fxLayout="row" fxLayoutAlign="start center">
+                <div class="gantt-flat-side-column" fxFlex="10%">
+
+                </div>
+                <div class="gantt-flat-side-column" fxFlex="35%">
+                    Client
+                </div>
+                <div class="gantt-flat-side-column" fxFlex="35%">
+                    Consultants
+                </div>
+                <div class="gantt-flat-side-column" fxFlex="20%">
+                    Sales manager
+                </div>
+            </div>
+            <div class="gantt-flat-side-body">
+                <div class="gantt-group" *ngFor="let group of groups; trackBy: trackBy"
+                    [style.height.px]="group.mergedItems?.length! * (styles.lineHeight + 10) - 10">
+                    <div class="gantt-group-content" fxFlex="10%">
+                        {{ group?.origin?.title }}
+                    </div>
+                    <div class="gantt-group-content" fxFlex="35%">
+                        <span class="text-truncate-ellipsis text-bold" [matTooltip]="group?.origin?.origin?.clientDisplayName">
+                            {{group!.origin!.origin!.clientDisplayName}}
+                        </span>
+                    </div>
+                    <div class="gantt-group-content" fxFlex="35%">
+                        <span class="text-truncate-ellipsis text-bold" [matTooltip]="mapListByProperty(group?.origin?.origin?.consultants, 'name')">
+                            <ng-container *ngIf="group?.origin?.origin?.consultants?.length > 1; else singleConsultantDisplay">
+                                {{group?.origin?.origin?.consultants?.length + 'Consultants'}}
+                            </ng-container>
+                            <ng-template #singleConsultantDisplay>
+                                {{group?.origin?.origin?.consultants[0]?.name}}
+                            </ng-template>
+                        </span>
+                    </div>
+                    <div class="gantt-group-content" fxFlex="20%">
+                        <div fxLayout="row" fxLayoutAlign="flex-end center" fxLayoutGap="15px" class="u-w-100">
+                            <img class="manager-search--photo" [matTooltip]="group?.origin?.origin?.salesManager?.name" [src]="employeeProfileUrl(group?.origin?.origin?.salesManager?.externalId)"/>
+                            <button mat-icon-button matTooltip="Go to workflow" (click)="redirectToWorkflow(group?.origin?.origin?.workflowId)">
+                                <mat-icon class="icon-arrow-rotate180" svgIcon="arrow"></mat-icon>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <!-- <ngx-gantt-table>
+            <ngx-gantt-column name="" width="30px">
+                <ng-template #cell let-item="item">
+                    <span class="text-bold">
+                    </span>
+                </ng-template>
+            </ngx-gantt-column>
+            <ngx-gantt-column name="Client" width="375px">
+                <ng-template #cell let-item="item">
+                    <span class="text-bold">
+                        123
+                    </span>
+                </ng-template>
+            </ngx-gantt-column>
+            <ngx-gantt-column name="Consultants" width="325px">
+                <ng-template #cell let-item="item">
+                    <span class="text-truncate-ellipsis text-bold">
+                       2222
+                    </span>
+                </ng-template>
+            </ngx-gantt-column>
+            <ngx-gantt-column name="Sales manager" width="110px">
+                <ng-template #cell let-item="item">
+                    333
+                </ng-template>
+            </ngx-gantt-column>
+        </ngx-gantt-table> -->
+            <!-- <div fxLayout="column" fxLayoutAlign="start start" class="main-overview--consultants-table u-w--100" *ngIf="groups && groups.length > 0">
             <mat-table #table [dataSource]="groups" class="white-table u-w--100">
                 <ng-container matColumnDef="process">
                     <mat-header-cell *matHeaderCellDef fxFlex="10%"></mat-header-cell>
@@ -80,35 +117,38 @@
                 <mat-header-row *matHeaderRowDef="clientDisplayColumns"></mat-header-row>
                 <mat-row *matRowDef="let row; columns: clientDisplayColumns;" class="mat-elevation-z0"></mat-row>
             </mat-table>
-            <!-- <div class="spinner-container" *ngIf="isDataLoading">
-                <mat-spinner [diameter]="50"></mat-spinner>
+                <div class="spinner-container" *ngIf="isDataLoading">
+                    <mat-spinner [diameter]="50"></mat-spinner>
+                </div>
+                <div class="results-not-found" *ngIf="totalCount === 0 && !isDataLoading">
+                    RESULTS NOT FOUND
+                </div>
+                <div class="pagination-contaier">
+                    <mat-paginator #clientsPaginator [length]="totalCount" [pageSize]="deafultPageSize"
+                        [pageSizeOptions]="pageSizeOptions" [showFirstLastButtons]="true" (page)="pageChanged($event)">
+                    </mat-paginator>
+                </div>
+        </div> -->
+        </ng-template>
+        <ng-template #mainTemplate>
+            <div class="gantt-main-container">
+                <!-- groups -->
+                <div class="gantt-main-groups" *ngIf="groups && groups.length > 0" [style.width.px]="view.width">
+                    <ng-container *ngFor="let group of groups; trackBy: trackBy">
+                        <div class="gantt-main-group"
+                            [style.height.px]="group.mergedItems?.length! * (styles.lineHeight + 10) - 10">
+                            <ng-container *ngFor="let items of group.mergedItems">
+                                <div class="gantt-flat-items" [style.height.px]="styles.lineHeight">
+                                    <ng-container *ngFor="let item of items; trackBy: trackBy">
+                                        <ngx-gantt-bar [item]="item" [template]="barTemplate"
+                                            (barClick)="barClick.emit($event)" [matTooltip]="'hi'"></ngx-gantt-bar>
+                                    </ng-container>
+                                </div>
+                            </ng-container>
+                        </div>
+                    </ng-container>
+                </div>
             </div>
-            <div class="results-not-found" *ngIf="totalCount === 0 && !isDataLoading">
-                RESULTS NOT FOUND
-            </div>
-            <div class="pagination-contaier">
-                <mat-paginator #clientsPaginator [length]="totalCount" [pageSize]="deafultPageSize"
-                    [pageSizeOptions]="pageSizeOptions" [showFirstLastButtons]="true" (page)="pageChanged($event)">
-                </mat-paginator>
-            </div> -->
-        </div>
-    </ng-template>
-  <ng-template #mainTemplate>
-    <div class="gantt-main-container">
-      <!-- groups -->
-      <div class="gantt-main-groups" *ngIf="groups && groups.length > 0" [style.width.px]="view.width">
-        <ng-container *ngFor="let group of groups; trackBy: trackBy">
-          <div class="gantt-main-group" [style.height.px]="group.mergedItems?.length! * (styles.lineHeight + 10) - 10">
-            <ng-container *ngFor="let items of group.mergedItems">
-              <div class="gantt-flat-items" [style.height.px]="styles.lineHeight">
-                <ng-container *ngFor="let item of items; trackBy: trackBy">
-                  <ngx-gantt-bar [item]="item" [template]="barTemplate" (barClick)="barClick.emit($event)" [matTooltip]="'hi'"></ngx-gantt-bar>
-                </ng-container>
-              </div>
-            </ng-container>
-          </div>
-        </ng-container>
-      </div>
-    </div>
-  </ng-template>
-</ngx-gantt-root>
+        </ng-template>
+    </ngx-gantt-root>
+</div>

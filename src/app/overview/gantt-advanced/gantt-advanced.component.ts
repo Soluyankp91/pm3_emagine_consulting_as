@@ -22,8 +22,6 @@ export class AppGanttAdvancedExampleComponent extends AppComponentBase implement
         injector: Injector,
         private router: Router,
         private _mainOverviewService: MainOverviewServiceProxy,
-
-
     ) {
         super(injector);
 
@@ -31,13 +29,13 @@ export class AppGanttAdvancedExampleComponent extends AppComponentBase implement
 
     items: GanttItem[] = [];
 
-    groups: GanttGroup[] = [];
+    groups: GanttGroup<MainOverviewItemForWorkflowDto>[] = [];
 
     startDate = new Date();
     options = {
         viewType: GanttViewType.month,
         draggable: false,
-        mergeIntervalDays: 1,
+        mergeIntervalDays: 3,
         // styles: {
         //     lineHeight: 50,
         //     barHeight: 20
@@ -82,11 +80,11 @@ export class AppGanttAdvancedExampleComponent extends AppComponentBase implement
 
             }))
             .subscribe(result => {
-                let groups: GanttGroup[] = [];
+                let groups: GanttGroup<MainOverviewItemForWorkflowDto>[] = [];
                 let items: GanttItem[] = [];
                 if (result.items?.length) {
 
-                    result.items!.map((x, index) => {
+                    result.items!.map((x: MainOverviewItemForWorkflowDto, index: number) => {
                         // let formattedData: GanttItem<MainOverviewItemForWorkflowDto>;
                         // formattedData = {
                         groups.push({
@@ -94,7 +92,7 @@ export class AppGanttAdvancedExampleComponent extends AppComponentBase implement
                             title: x.clientDisplayName!,
                             // start: getUnixTime(x.clientPeriods![0]?.startDate!.toDate()),
                             // end: getUnixTime(x.clientPeriods![0]?.endDate!.toDate()),
-                            origin: x,
+                            origin: x!,
                             // color: 'rgb(23, 162, 151)',
                             // group_id: x.clientPeriods?.length! > 1 ? x.workflowId : undefined
                         })
@@ -111,7 +109,7 @@ export class AppGanttAdvancedExampleComponent extends AppComponentBase implement
 
     }
 
-randomItems(length: number, parent?: MainOverviewItemPeriodDto[], group?: string) {
+    randomItems(length: number, parent?: MainOverviewItemPeriodDto[], group?: string) {
         const items = [];
         for (let i = 0; i < length; i++) {
             // const start = addDays(new Date(), random(-200, 200));
