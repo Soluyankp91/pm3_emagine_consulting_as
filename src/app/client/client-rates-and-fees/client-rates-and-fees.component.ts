@@ -28,8 +28,8 @@ export class ClientRatesAndFeesComponent implements OnInit, OnDestroy {
     clientSpecialFeeFrequencies: EnumEntityTypeDto[];
     rateCategories: EnumEntityTypeDto[] = [];
 
-    showHiddenSpecialRates = true;
-    showHiddenSpecialFees = true;
+    showHiddenSpecialRates = false;
+    showHiddenSpecialFees = false;
 
     clientId: number;
 
