@@ -1,5 +1,5 @@
 <div class="workflow-sales">
-    <button class="absolute-edit-toggle" mat-icon-button *ngIf="canToggleEditMode" (click)="toggleEditMode()"><mat-icon>{{readOnlyMode ? 'create' : 'close'}}</mat-icon></button>
+    <button class="absolute-edit-toggle" mat-icon-button *ngIf="canToggleEditMode" type="button" (click)="toggleEditMode()"><mat-icon>{{readOnlyMode ? 'create' : 'close'}}</mat-icon></button>
     <ng-container *ngIf="readOnlyMode; else editMode">
         <ng-container *ngIf="(activeSideSection.typeId !== workflowSideSections.TerminateWorkflow) && (activeSideSection.typeId !== workflowSideSections.TerminateConsultant); else terminationTemplate">
             <!-- Main data -->
@@ -543,7 +543,7 @@
                                     </h1>
                                     <!-- Only visible when employment type is selected and it is not 'Fee only' - id: 10 nd not 'Recruitment' - id:11 -->
                                     <div fxFlex="50%" fxLayoutAlign="end center" *ngIf="item.value?.employmentType?.id !== 10 && item.value?.employmentType?.id !== 11;">
-                                        <button *ngIf="individualConsultantActionsAvailable" mat-icon-button (click)="$event.stopPropagation();" [matMenuTriggerFor]="consultantMenu" class="three-dots-actions-btn">
+                                        <button *ngIf="individualConsultantActionsAvailable" mat-icon-button (click)="$event.stopPropagation();" type="button" [matMenuTriggerFor]="consultantMenu" class="three-dots-actions-btn">
                                             <mat-icon>more_horiz</mat-icon>
                                         </button>
                                         <mat-menu #consultantMenu>
@@ -1224,10 +1224,10 @@
                                                 </mat-form-field>
                                             </div>
                                             <div fxFlex="10%" class="u-w--100 text-truncate-ellipsis flex-items-center">
-                                                <button mat-flat-button (click)="editOrSaveCommissionRow(i)" class="inline-edit-form--btn__save">
+                                                <button mat-flat-button type="button" (click)="editOrSaveCommissionRow(i)" class="inline-edit-form--btn__save">
                                                     Save
                                                 </button>
-                                                <button mat-flat-button (click)="isCommissionInitialAdd ? removeCommission(i) : cancelEditCommissionRow(i)" class="inline-edit-form--btn__cancel">
+                                                <button mat-flat-button type="button" (click)="isCommissionInitialAdd ? removeCommission(i) : cancelEditCommissionRow(i)" class="inline-edit-form--btn__cancel">
                                                     Cancel
                                                 </button>
                                             </div>
@@ -1295,7 +1295,7 @@
                                                 </ng-template>
                                             </span>
                                             <div fxFlex="10%" fxLayoutAlign="center center" class="u-w--100">
-                                                <button mat-icon-button (click)="$event.stopPropagation();" [matMenuTriggerFor]="commissionMenu" class="three-dots-actions-btn">
+                                                <button mat-icon-button type="button" (click)="$event.stopPropagation();" [matMenuTriggerFor]="commissionMenu" class="three-dots-actions-btn">
                                                     <mat-icon>more_horiz</mat-icon>
                                                 </button>
                                                 <mat-menu #commissionMenu>
@@ -1322,7 +1322,7 @@
                                 </ng-container>
 
                                 <div fxLayout="row" fxLayoutAlign="start start" class="u-w--100 u-mb--20">
-                                    <button color="primary" class="u-mt--10 button-outlined" mat-flat-button [disabled]="isCommissionEditing" (click)="addCommission(true)">Add commission</button>
+                                    <button color="primary" class="u-mt--10 button-outlined" mat-flat-button type="button" [disabled]="isCommissionEditing" (click)="addCommission(true)">Add commission</button>
                                 </div>
                         </div>
                         <mat-divider class="u-w--100 u-mt--20 u-mb--20"></mat-divider>
@@ -1838,17 +1838,17 @@
                                             </ng-template>
                                             <ng-container *ngIf="rate.value.editable; else clientRateActionDisplay">
                                                 <div fxFlex="10%" class="u-w--100 text-truncate-ellipsis" fxLayoutAlign="end center">
-                                                    <button mat-flat-button (click)="editOrSaveSpecialRate(rate.value.editable, i)" class="inline-edit-form--btn__save">
+                                                    <button mat-flat-button type="button" (click)="editOrSaveSpecialRate(rate.value.editable, i)" class="inline-edit-form--btn__save">
                                                         Save
                                                     </button>
-                                                    <button mat-flat-button (click)="cancelEditClientRate(i)" class="inline-edit-form--btn__cancel">
+                                                    <button mat-flat-button type="button" (click)="cancelEditClientRate(i)" class="inline-edit-form--btn__cancel">
                                                         Cancel
                                                     </button>
                                                 </div>
                                             </ng-container>
                                             <ng-template #clientRateActionDisplay>
                                                 <div fxFlex="10%" fxLayoutAlign="end center" class="u-w--100">
-                                                    <button mat-icon-button (click)="$event.stopPropagation();" [matMenuTriggerFor]="clientRateMenu" class="three-dots-actions-btn">
+                                                    <button mat-icon-button type="button" (click)="$event.stopPropagation();" [matMenuTriggerFor]="clientRateMenu" class="three-dots-actions-btn">
                                                         <mat-icon>more_horiz</mat-icon>
                                                     </button>
                                                     <mat-menu #clientRateMenu>
@@ -1878,6 +1878,7 @@
 
                             <div fxLayout="row" fxLayoutAlign="start start" class="u-mb--10">
                                 <button [ngClass]="salesClientDataForm!.clientRates!.controls!.length > 0 ? 'button-add' : 'button-outlined'" class="rates-and-fees--btn" mat-flat-button
+                                     type="button"
                                     [matMenuTriggerFor]="clientSpecialRateMenu" #clientRateMenuTrigger="matMenuTrigger" [disabled]="isClientRateEditing">
                                     <mat-icon *ngIf="salesClientDataForm.clientRates?.controls?.length">add</mat-icon>
                                     Add special rates
@@ -1942,17 +1943,17 @@
 
                                             <ng-container *ngIf="fee.value.editable; else clientFeeActionDisplay">
                                                 <div fxFlex="10%" class="u-w--100 text-truncate-ellipsis" fxLayoutAlign="end center">
-                                                    <button mat-flat-button (click)="editOrSaveClientFee(fee.value.editable, i)" class="inline-edit-form--btn__save">
+                                                    <button mat-flat-button type="button" (click)="editOrSaveClientFee(fee.value.editable, i)" class="inline-edit-form--btn__save">
                                                         Save
                                                     </button>
-                                                    <button mat-flat-button (click)="cancelEditClientFee(i)" class="inline-edit-form--btn__cancel">
+                                                    <button mat-flat-button type="button" (click)="cancelEditClientFee(i)" class="inline-edit-form--btn__cancel">
                                                         Cancel
                                                     </button>
                                                 </div>
                                             </ng-container>
                                             <ng-template #clientFeeActionDisplay>
                                                 <div fxFlex="10%" fxLayoutAlign="end center" class="u-w--100">
-                                                    <button mat-icon-button (click)="$event.stopPropagation();" [matMenuTriggerFor]="clientFeeMenu" class="three-dots-actions-btn">
+                                                    <button mat-icon-button type="button" (click)="$event.stopPropagation();" [matMenuTriggerFor]="clientFeeMenu" class="three-dots-actions-btn">
                                                         <mat-icon>more_horiz</mat-icon>
                                                     </button>
                                                     <mat-menu #clientFeeMenu>
@@ -1984,6 +1985,7 @@
                                     [ngClass]="salesClientDataForm!.clientFees!.controls!.length > 0 ? 'button-add' : 'button-outlined'"
                                     class="rates-and-fees--btn"
                                     mat-flat-button
+                                    type="button"
                                     [disabled]="isClientFeeEditing"
                                     [matMenuTriggerFor]="clientSpecialFeeMenu"
                                     (menuOpened)="clientSpecialFeeFilter.setValue('')"
@@ -2085,9 +2087,9 @@
                                             </mat-option>
                                         </mat-select>
                                     </mat-form-field>
-                                    <button class="form-icon--delete-row u-mt--5" mat-icon-button (click)="removeSigner(i)"><mat-icon svgIcon="remove-icon"></mat-icon></button>
+                                    <button class="form-icon--delete-row u-mt--5" type="button" mat-icon-button (click)="removeSigner(i)"><mat-icon svgIcon="remove-icon"></mat-icon></button>
                                 </div>
-                                <button class="button-add" mat-flat-button (click)="addSignerToForm()">
+                                <button class="button-add" mat-flat-button type="button" (click)="addSignerToForm()">
                                     <mat-icon>add</mat-icon>
                                     Add Signer
                                 </button>
@@ -2110,7 +2112,7 @@
                                                 {{consultant.value?.consultantName?.consultant?.name}}
                                             </span>
                                         </ng-container>
-                                        <button class="form-icon--delete-row" *ngIf="consultantsForm.consultantData?.controls?.length && (activeSideSection.typeId === workflowSideSections.StartClientPeriod && (isCompleted === editEnabledForcefuly))"
+                                        <button class="form-icon--delete-row" type="button" *ngIf="consultantsForm.consultantData?.controls?.length && (activeSideSection.typeId === workflowSideSections.StartClientPeriod && (isCompleted === editEnabledForcefuly))"
                                             mat-icon-button (click)="$event.stopPropagation();confirmRemoveConsultant(consultantIndex)">
                                             <mat-icon svgIcon="remove-icon"></mat-icon>
                                         </button>
@@ -2666,17 +2668,17 @@
                                                     </ng-template>
                                                     <ng-container *ngIf="rate.value.editable; else consultantRateActionDisplay">
                                                         <div fxFlex="10%" class="u-w--100 text-truncate-ellipsis flex-items-center">
-                                                            <button mat-flat-button (click)="editOrSaveConsultantRate(consultantIndex, specialRateIndex, rate.value.editable)" class="inline-edit-form--btn__save">
+                                                            <button mat-flat-button type="button" (click)="editOrSaveConsultantRate(consultantIndex, specialRateIndex, rate.value.editable)" class="inline-edit-form--btn__save">
                                                                 Save
                                                             </button>
-                                                            <button mat-flat-button (click)="cancelEditConsultantRate(consultantIndex, specialRateIndex)" class="inline-edit-form--btn__cancel">
+                                                            <button mat-flat-button type="button" (click)="cancelEditConsultantRate(consultantIndex, specialRateIndex)" class="inline-edit-form--btn__cancel">
                                                                 Cancel
                                                             </button>
                                                         </div>
                                                     </ng-container>
                                                     <ng-template #consultantRateActionDisplay>
                                                         <div fxFlex="10%" fxLayoutAlign="center center" class="u-w--100">
-                                                            <button mat-icon-button (click)="$event.stopPropagation();" [matMenuTriggerFor]="consutlantRateMenu" class="three-dots-actions-btn">
+                                                            <button mat-icon-button type="button" (click)="$event.stopPropagation();" [matMenuTriggerFor]="consutlantRateMenu" class="three-dots-actions-btn">
                                                                 <mat-icon>more_horiz</mat-icon>
                                                             </button>
                                                             <mat-menu #consutlantRateMenu>
@@ -2707,6 +2709,7 @@
                                         <button [ngClass]="consultant.value.specialRates?.length > 0 ? 'button-add' : 'button-outlined'" class="rates-and-fees--btn" mat-flat-button
                                             [matMenuTriggerFor]="consultantSpecialRateMenu"
                                             [disabled]="isConsultantRateEditing"
+                                            type="button"
                                             (menuOpened)="consultantsForm.consultantData.at(consultantIndex).get('consultantSpecialRateFilter')!.setValue('')"
                                             #consultantRateMenuTrigger="matMenuTrigger"
                                             [matMenuTriggerData]="{consultantIndex: consultantIndex}">
@@ -2800,17 +2803,17 @@
 
                                                     <ng-container *ngIf="fee.value.editable; else clientFeeActionDisplay">
                                                         <div fxFlex="10%" class="u-w--100 text-truncate-ellipsis flex-items-center">
-                                                            <button mat-flat-button (click)="editOrSaveConsultantFee(consultantIndex, specialFeeIndex, fee.value.editable)" class="inline-edit-form--btn__save">
+                                                            <button mat-flat-button type="button" (click)="editOrSaveConsultantFee(consultantIndex, specialFeeIndex, fee.value.editable)" class="inline-edit-form--btn__save">
                                                                 Save
                                                             </button>
-                                                            <button mat-flat-button (click)="cancelEditConsultantFee(consultantIndex, specialFeeIndex)" class="inline-edit-form--btn__cancel">
+                                                            <button mat-flat-button type="button" (click)="cancelEditConsultantFee(consultantIndex, specialFeeIndex)" class="inline-edit-form--btn__cancel">
                                                                 Cancel
                                                             </button>
                                                         </div>
                                                     </ng-container>
                                                     <ng-template #clientFeeActionDisplay>
                                                         <div fxFlex="10%" fxLayoutAlign="center center" class="u-w--100">
-                                                            <button mat-icon-button (click)="$event.stopPropagation();" [matMenuTriggerFor]="consultantFeeMenu" class="three-dots-actions-btn">
+                                                            <button mat-icon-button type="button" (click)="$event.stopPropagation();" [matMenuTriggerFor]="consultantFeeMenu" class="three-dots-actions-btn">
                                                                 <mat-icon>more_horiz</mat-icon>
                                                             </button>
                                                             <mat-menu #consultantFeeMenu>
@@ -2840,6 +2843,7 @@
                                         <button [ngClass]="consultant.value.specialFees?.length > 0 ? 'button-add' : 'button-outlined'" class="rates-and-fees--btn" mat-flat-button
                                             [matMenuTriggerFor]="consultantSpecialFeeMenu"
                                             [disabled]="isConsultantFeeEditing"
+                                            type="button"
                                             #consultantFeeMenuTrigger="matMenuTrigger"
                                             [matMenuTriggerData]="{consultantIndex: consultantIndex}">
                                             <mat-icon *ngIf="consultant.value.specialFees?.length">add</mat-icon>
@@ -2907,7 +2911,7 @@
                             </ng-container>
                         </div>
                         <div fxLayout="row" fxLayoutAlign="start start" class="u-w--100" *ngIf="activeSideSection.typeId === workflowSideSections.StartClientPeriod">
-                            <button class="button-add mat-elevation-z0 u-mt--10 u-mb--10" mat-flat-button (click)="addConsultantForm()">
+                            <button class="button-add mat-elevation-z0 u-mt--10 u-mb--10"  type="button" mat-flat-button (click)="addConsultantForm()">
                                 <mat-icon>add</mat-icon>
                                 Add consultant
                             </button>
