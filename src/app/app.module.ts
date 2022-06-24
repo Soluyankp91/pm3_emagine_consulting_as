@@ -599,5 +599,12 @@ export class AppModule {
             )
         );
 
+        iconRegistry.addSvgIcon(
+            'notes-icon',
+            sanitizer.bypassSecurityTrustResourceUrl(
+                'assets/common/images/notes-icon.svg'
+            )
+        );
+
     }
 }

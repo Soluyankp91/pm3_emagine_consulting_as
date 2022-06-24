@@ -16,6 +16,10 @@ import { AppComponentBase, NotifySeverity } from 'src/shared/app-component-base'
 import { ConfirmationDialogComponent } from 'src/app/shared/components/confirmation-dialog/confirmation-dialog.component';
 import * as moment from 'moment';
 import { environment } from 'src/environments/environment';
+import { FormControl, Validators } from '@angular/forms';
+import { LocalHttpService } from 'src/shared/service-proxies/local-http.service';
+import { AuthenticationResult } from '@azure/msal-browser';
+import { HttpClient, HttpHeaders } from '@angular/common/http';
 
 @Component({
   selector: 'app-workflow-details',
@@ -56,6 +60,10 @@ export class WorkflowDetailsComponent extends AppComponentBase implements OnInit
     workflowConsultantPeriodTypes: EnumEntityTypeDto[] = [];
     workflowPeriodStepTypes: { [key: string]: string };
     individualConsultantActionsAvailable: boolean;
+
+    isNoteVisible = false;
+    workflowNote = new FormControl('', Validators.maxLength(4000));
+    workflowNoteOldValue: string;
     private _unsubscribe = new Subject();
     constructor(
         injector: Injector,
@@ -68,6 +76,8 @@ export class WorkflowDetailsComponent extends AppComponentBase implements OnInit
         private _internalLookupService: InternalLookupService,
         private _workflowServiceProxy: WorkflowServiceProxy,
         private _clientPeriodService: ClientPeriodServiceProxy,
+        private localHttpService: LocalHttpService,
+        private httpClient: HttpClient
     ) {
         super(injector);
     }
@@ -103,6 +113,7 @@ export class WorkflowDetailsComponent extends AppComponentBase implements OnInit
         this.getClientPeriodTypes();
         this.getConsultantPeriodTypes();
         this.getPeriodStepTypes();
+        this.getNotes();
 
         this._workflowDataService.workflowTopSectionUpdated
             .pipe(takeUntil(this._unsubscribe))
@@ -110,6 +121,71 @@ export class WorkflowDetailsComponent extends AppComponentBase implements OnInit
                 this.getTopLevelMenu(value);
             });
         this.individualConsultantActionsAvailable = environment.dev;
+    }
+
+    showOrHideNotes() {
+        if (this.isNoteVisible) {
+            if (this.workflowNoteOldValue !== this.workflowNote.value) {
+                this.confirmCancelNote();
+            } else {
+                this.isNoteVisible = false;
+            }
+        } else {
+            this.isNoteVisible = true;
+        }
+    }
+
+    confirmCancelNote() {
+        const scrollStrategy = this.overlay.scrollStrategies.reposition();
+        const dialogRef = this.dialog.open(ConfirmationDialogComponent, {
+            width: '450px',
+            minHeight: '180px',
+            height: 'auto',
+            scrollStrategy,
+            backdropClass: 'backdrop-modal--wrapper',
+            autoFocus: false,
+            panelClass: 'confirmation-modal',
+            data: {
+                confirmationMessageTitle: `Are you sure you want to cancel?`,
+                confirmationMessage: 'If you cancel edit all unsaved changes will gone.',
+                rejectButtonText: 'Save and close',
+                confirmButtonText: 'Yes, cancel edit',
+                isNegative: true
+            }
+        });
+
+        dialogRef.componentInstance.onConfirmed.subscribe(() => {
+            this.isNoteVisible = false;
+            this.workflowNote.setValue(this.workflowNoteOldValue);
+        });
+
+        dialogRef.componentInstance.onRejected.subscribe(() => {
+            this.saveNotes();
+        });
+    }
+
+    getNotes() {
+        this.showMainSpinner();
+        this.localHttpService.getTokenPromise().then((response: AuthenticationResult) => {
+            this.httpClient.get(`${this.apiUrl}/api/Workflow/${this.workflowId}/notes`, {
+                    headers: new HttpHeaders({
+                        'Authorization': `Bearer ${response.accessToken}`
+                    }),
+                    responseType: 'text'
+                })
+                .pipe(finalize(() => this.hideMainSpinner() ))
+                .subscribe((result: any) => {
+                    this.workflowNoteOldValue = result;
+                    this.workflowNote.setValue(result);
+                })
+        });
+    }
+
+    saveNotes() {
+        this.showMainSpinner();
+        this._workflowServiceProxy.notesPut(this.workflowId, this.workflowNote.value)
+            .pipe(finalize(() => this.hideMainSpinner() ))
+            .subscribe(() => this.workflowNoteOldValue = this.workflowNote.value);
     }
 
     resetWorkflowProgress() {
