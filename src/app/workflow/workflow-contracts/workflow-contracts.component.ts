@@ -1014,6 +1014,7 @@ export class WorkflowContractsComponent extends AppComponentBase implements OnIn
         this.contractClientForm.clientRates.controls = [];
         this.contractClientForm.clientFees.controls = [];
         this.contractsConsultantsDataForm.consultants.controls = [];
+        this.contractsTerminationConsultantForm.consultantTerminationContractData.controls = [];
         this.contractsSyncDataForm.consultants.controls = [];
     }
 

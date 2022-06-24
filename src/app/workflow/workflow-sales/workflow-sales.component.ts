@@ -2218,13 +2218,13 @@ export class WorkflowSalesComponent extends AppComponentBase implements OnInit {
         this.showMainSpinner();
         if (isDraft) {
             this._workflowServiceProxy.terminationSalesPut(this.workflowId!, input)
-                .pipe(finalize(() => this.showMainSpinner()))
+                .pipe(finalize(() => this.hideMainSpinner()))
                 .subscribe(result => {
 
                 })
         } else {
             this._workflowServiceProxy.terminationSalesComplete(this.workflowId!, input)
-            .pipe(finalize(() => this.showMainSpinner()))
+            .pipe(finalize(() => this.hideMainSpinner()))
             .subscribe(result => {
                 this._workflowDataService.workflowSideSectionUpdated.emit({isStatusUpdate: true});
             })

@@ -107,6 +107,7 @@
                                                             {{commission.value.recipient?.clientName}}
                                                         </span>
                                                         <span>
+                                                            {{commission.value.recipient?.clientId ? '#' + commission.value.recipient?.clientId + ' | ' : ''}}
                                                             {{commission.value.recipient?.city ? commission.value.recipient?.city + ' | ' : ''}}
                                                             {{commission.value.recipient?.address ? commission.value.recipient?.address + ' | ' : ''}}
                                                             {{commission.value.recipient?.address2 ? commission.value.recipient?.address2 + ' | ' : ''}}
@@ -217,6 +218,7 @@
                                         {{salesClientDataForm?.directClientIdValue?.value?.clientName}}
                                     </span>
                                     <span class="workflow-readonly--blue-text-bold">
+                                        {{salesClientDataForm?.directClientIdValue?.value?.clientId ? '#' + salesClientDataForm?.directClientIdValue?.value?.clientId + ' | ' : '' }}
                                         {{salesClientDataForm?.directClientIdValue?.value?.city ? salesClientDataForm?.directClientIdValue?.value?.city + ' | ' : ''}}
                                         {{salesClientDataForm?.directClientIdValue?.value?.address ? salesClientDataForm?.directClientIdValue?.value?.address + ' | ' : ''}}
                                         {{salesClientDataForm?.directClientIdValue?.value?.address2 ? salesClientDataForm?.directClientIdValue?.value?.address2 + ' | ' : ''}}
@@ -238,6 +240,7 @@
                                         {{salesClientDataForm?.endClientIdValue?.value?.clientName}}
                                     </span>
                                     <span class="workflow-readonly--blue-text-bold">
+                                        {{salesClientDataForm?.endClientIdValue?.value?.clientId ? '#' + salesClientDataForm?.endClientIdValue?.value?.clientId + ' | ' : '' }}
                                         {{salesClientDataForm?.endClientIdValue?.value?.city ? salesClientDataForm?.endClientIdValue?.value?.city + ' | ' : ''}}
                                         {{salesClientDataForm?.endClientIdValue?.value?.address ? salesClientDataForm?.endClientIdValue?.value?.address + ' | ' : ''}}
                                         {{salesClientDataForm?.endClientIdValue?.value?.address2 ? salesClientDataForm?.endClientIdValue?.value?.address2 + ' | ' : ''}}
@@ -354,6 +357,7 @@
                                             {{salesClientDataForm?.clientInvoicingRecipientIdValue?.value?.clientName}}
                                         </span>
                                         <span class="workflow-readonly--blue-text-bold">
+                                            {{salesClientDataForm?.clientInvoicingRecipientIdValue?.value?.clientId ? '#' + salesClientDataForm?.clientInvoicingRecipientIdValue?.value?.clientId + ' | ' : ''}}
                                             {{salesClientDataForm?.clientInvoicingRecipientIdValue?.value?.city ? salesClientDataForm?.clientInvoicingRecipientIdValue?.value?.city + ' | ' : ''}}
                                             {{salesClientDataForm?.clientInvoicingRecipientIdValue?.value?.address ? salesClientDataForm?.clientInvoicingRecipientIdValue?.value?.address + ' | ' : ''}}
                                             {{salesClientDataForm?.clientInvoicingRecipientIdValue?.value?.address2 ? salesClientDataForm?.clientInvoicingRecipientIdValue?.value?.address2 + ' | ' : ''}}
@@ -1174,9 +1178,9 @@
                                                                 <ng-container [ngSwitch]="commission.value.recipientType?.id">
                                                                     <!-- 'Client' -->
                                                                     <span *ngSwitchCase="3">
-                                                                        <div>
+                                                                        <div class="multilineDropdown-option--column">
                                                                             <b>{{ recipient.clientName }}</b>
-                                                                            <span *ngIf="recipient.id !== 'no-data'"> | {{recipient.address}} | {{recipient.address2}} | {{recipient.postCode}}</span>
+                                                                            <span *ngIf="recipient.id !== 'no-data'"> #{{recipient.clientId}} | {{recipient.address}} | {{recipient.address2}} | {{recipient.postCode}}</span>
                                                                         </div>
                                                                     </span>
                                                                     <!-- 'Supplier' -->
@@ -1250,6 +1254,7 @@
                                                                     {{commission.value.recipient?.clientName}}
                                                                 </span>
                                                                 <span>
+                                                                    {{commission.value.recipient?.clientId ? '#' + commission.value.recipient?.clientId + ' | ' : ''}}
                                                                     {{commission.value.recipient?.city ? commission.value.recipient?.city + ' | ' : ''}}
                                                                     {{commission.value.recipient?.address ? commission.value.recipient?.address + ' | ' : ''}}
                                                                     {{commission.value.recipient?.address2 ? commission.value.recipient?.address2 + ' | ' : ''}}
@@ -1417,9 +1422,9 @@
                                         <mat-autocomplete #directClientAutocomplete="matAutocomplete" [displayWith]="displayClientNameFn" (optionSelected)="directClientSelected($event)">
                                             <ng-container>
                                                 <mat-option *ngFor="let client of filteredDirectClients" [value]="client" [ngClass]="{ 'no-data': client.id === 'no-data' }">
-                                                    <div>
+                                                    <div class="multilineDropdown-option--column">
                                                         <b>{{ client.clientName }}</b>
-                                                        <span *ngIf="client.id !== 'no-data'"> | {{client.address}} | {{client.address2}} | {{client.postCode}}</span>
+                                                        <span *ngIf="client.id !== 'no-data'"> #{{client.clientId}} | {{client.address}} | {{client.address2}} | {{client.postCode}}</span>
                                                     </div>
                                                 </mat-option>
                                             </ng-container>
@@ -1434,9 +1439,9 @@
                                     <mat-autocomplete #endClientAutocomplete="matAutocomplete" [displayWith]="displayClientNameFn">
                                         <ng-container>
                                             <mat-option *ngFor="let client of filteredEndClients" [value]="client" [ngClass]="{ 'no-data': client.id === 'no-data' }">
-                                                <div>
+                                                <div class="multilineDropdown-option--column">
                                                     <b>{{ client.clientName }}</b>
-                                                    <span *ngIf="client.id !== 'no-data'"> | {{client.address}} | {{client.address2}} | {{client.postCode}}</span>
+                                                    <span *ngIf="client.id !== 'no-data'">#{{client.clientId}} | {{client.address}} | {{client.address2}} | {{client.postCode}}</span>
                                                 </div>
                                             </mat-option>
                                         </ng-container>
@@ -1461,6 +1466,7 @@
                                                         {{salesClientDataForm?.directClientIdValue?.value?.clientName}}
                                                     </span>
                                                     <span class="workflow-readonly--blue-text-bold">
+                                                        {{salesClientDataForm?.directClientIdValue?.value?.clientId ? '#' + salesClientDataForm?.directClientIdValue?.value?.clientId + ' | ' : '' }}
                                                         {{salesClientDataForm?.directClientIdValue?.value?.city ? salesClientDataForm?.directClientIdValue?.value?.city + ' | ' : ''}}
                                                         {{salesClientDataForm?.directClientIdValue?.value?.address ? salesClientDataForm?.directClientIdValue?.value?.address + ' | ' : ''}}
                                                         {{salesClientDataForm?.directClientIdValue?.value?.address2 ? salesClientDataForm?.directClientIdValue?.value?.address2 + ' | ' : ''}}
@@ -1482,6 +1488,7 @@
                                                         {{salesClientDataForm?.endClientIdValue?.value?.clientName}}
                                                     </span>
                                                     <span class="workflow-readonly--blue-text-bold">
+                                                        {{salesClientDataForm?.endClientIdValue?.value?.clientId ? '#' + salesClientDataForm?.endClientIdValue?.value?.clientId + ' | ' : '' }}
                                                         {{salesClientDataForm?.endClientIdValue?.value?.city ? salesClientDataForm?.endClientIdValue?.value?.city + ' | ' : ''}}
                                                         {{salesClientDataForm?.endClientIdValue?.value?.address ? salesClientDataForm?.endClientIdValue?.value?.address + ' | ' : ''}}
                                                         {{salesClientDataForm?.endClientIdValue?.value?.address2 ? salesClientDataForm?.endClientIdValue?.value?.address2 + ' | ' : ''}}
@@ -1707,9 +1714,9 @@
                                     <mat-autocomplete #clientInvoicingRecipientAutocomplete="matAutocomplete" [displayWith]="displayClientNameFn">
                                         <ng-container>
                                             <mat-option *ngFor="let client of filteredClientInvoicingRecipients" [value]="client" [ngClass]="{ 'no-data': client.id === 'no-data' }">
-                                                <div>
+                                                <div class="multilineDropdown-option--column">
                                                     <b>{{ client.clientName }}</b>
-                                                    <span *ngIf="client.id !== 'no-data'"> | {{client.address}} | {{client.address2}} | {{client.postCode}}</span>
+                                                    <span *ngIf="client.id !== 'no-data'">#{{client.clientId}} | {{client.address}} | {{client.address2}} | {{client.postCode}}</span>
                                                 </div>
                                             </mat-option>
                                         </ng-container>
@@ -2472,9 +2479,9 @@
                                                         <input type="text" matInput [matAutocomplete]="consultantClientAddressAuto" formControlName="consultantWorkplaceClientAddress" (click)="$event.stopPropagation()" placeholder="Search client">
                                                         <mat-autocomplete #consultantClientAddressAuto="matAutocomplete" [displayWith]="displayClientNameFn">
                                                             <mat-option *ngFor="let client of filteredConsultantClientAddresses" [value]="client" [ngClass]="{ 'no-data': client.id === 'no-data' }">
-                                                                <div>
+                                                                <div class="multilineDropdown-option--column">
                                                                     <b>{{ client.clientName }}</b>
-                                                                    <span *ngIf="client.id !== 'no-data'"> {{client.address}} | {{client.address2}} | {{client.postCode}}</span>
+                                                                    <span *ngIf="client.id !== 'no-data'"> #{{client.clientId}} | {{client.address}} | {{client.address2}} | {{client.postCode}}</span>
                                                                 </div>
                                                             </mat-option>
                                                         </mat-autocomplete>

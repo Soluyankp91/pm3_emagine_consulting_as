@@ -129,6 +129,10 @@
     }
 }
 
+.workflow-icon--notes {
+    background: rgba($color: #F8A529, $alpha: .3);
+}
+
 .three-dots-actions-btn {
     &:hover {
         background: rgba($color: $green-color, $alpha: .2);
