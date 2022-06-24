@@ -2,6 +2,7 @@
 @import "/src/app/shared/styles/config/_colors";
 
 .workflow {
+    position: relative;
     min-height: 100%;
     &-toolbar {
         height: 50px;
@@ -59,6 +60,26 @@
     //     background-color: #FAF9FB;
     //     // position: sticky;
     // }
+
+    &-notes {
+        height: 100vh;
+        width: 20vw;
+        position: fixed;
+        top: 0;
+        right: 0;
+        z-index: 9999;
+        box-shadow: 0px 0px 20px rgba(26, 35, 126, 0.15);
+        padding: 32px 16px;
+        background-color: #fff;
+        &--header {
+            
+        }
+        &--content {
+            // background: rgba(255, 255, 255, 0.77);
+            // border: 1.3px solid rgba(182, 180, 178, 0.77);
+            // border-radius: 3px;
+        }
+    }
 
     &-form {
         // &--sales,
