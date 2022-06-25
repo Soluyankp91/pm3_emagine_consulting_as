@@ -1,4 +1,4 @@
-<div class="gant-chart--group-container">
+<!-- <div class="gant-chart--group-container"> -->
     <ngx-gantt-root [sideWidth]="768">
         <ng-template #sideTemplate>
             <div class="gantt-flat-side-header" fxLayout="row" fxLayoutAlign="start center">
@@ -11,7 +11,7 @@
                 <div class="gantt-flat-side-column" fxFlex="35%">
                     Consultants
                 </div>
-                <div class="gantt-flat-side-column" fxFlex="20%">
+                <div class="gantt-flat-side-column" fxLayoutAlign="flex-end center" fxFlex="20%">
                     Sales manager
                 </div>
             </div>
@@ -19,27 +19,27 @@
                 <div class="gantt-group" *ngFor="let group of groups; trackBy: trackBy"
                     [style.height.px]="group.mergedItems?.length! * (styles.lineHeight + 10) - 10">
                     <div class="gantt-group-content" fxFlex="10%">
-                        {{ group?.origin?.title }}
+                        <!-- {{ group?.origin?.origin }} -->
                     </div>
                     <div class="gantt-group-content" fxFlex="35%">
-                        <span class="text-truncate-ellipsis text-bold" [matTooltip]="group?.origin?.origin?.clientDisplayName">
+                        <span class="text-truncate-ellipsis text-bold" [matTooltip]="group?.origin?.origin?.clientDisplayName!">
                             {{group!.origin!.origin!.clientDisplayName}}
                         </span>
                     </div>
                     <div class="gantt-group-content" fxFlex="35%">
-                        <span class="text-truncate-ellipsis text-bold" [matTooltip]="mapListByProperty(group?.origin?.origin?.consultants, 'name')">
-                            <ng-container *ngIf="group?.origin?.origin?.consultants?.length > 1; else singleConsultantDisplay">
+                        <span class="text-truncate-ellipsis text-bold" [matTooltip]="mapListByProperty(group?.origin?.origin?.consultants!, 'name')">
+                            <ng-container *ngIf="group?.origin?.origin?.consultants!.length > 1; else singleConsultantDisplay">
                                 {{group?.origin?.origin?.consultants?.length + 'Consultants'}}
                             </ng-container>
                             <ng-template #singleConsultantDisplay>
-                                {{group?.origin?.origin?.consultants[0]?.name}}
+                                {{group?.origin?.origin?.consultants![0]?.name}}
                             </ng-template>
                         </span>
                     </div>
                     <div class="gantt-group-content" fxFlex="20%">
                         <div fxLayout="row" fxLayoutAlign="flex-end center" fxLayoutGap="15px" class="u-w-100">
-                            <img class="manager-search--photo" [matTooltip]="group?.origin?.origin?.salesManager?.name" [src]="employeeProfileUrl(group?.origin?.origin?.salesManager?.externalId)"/>
-                            <button mat-icon-button matTooltip="Go to workflow" (click)="redirectToWorkflow(group?.origin?.origin?.workflowId)">
+                            <img class="manager-search--photo" [matTooltip]="group?.origin?.origin?.salesManager?.name!" [src]="employeeProfileUrl(group?.origin?.origin?.salesManager?.externalId!)"/>
+                            <button mat-icon-button matTooltip="Go to workflow" (click)="redirectToWorkflow(group?.origin?.origin?.workflowId!)">
                                 <mat-icon class="icon-arrow-rotate180" svgIcon="arrow"></mat-icon>
                             </button>
                         </div>
@@ -128,7 +128,7 @@
                         [pageSizeOptions]="pageSizeOptions" [showFirstLastButtons]="true" (page)="pageChanged($event)">
                     </mat-paginator>
                 </div>
-        </div> -->
+            </div> -->
         </ng-template>
         <ng-template #mainTemplate>
             <div class="gantt-main-container">
@@ -141,7 +141,7 @@
                                 <div class="gantt-flat-items" [style.height.px]="styles.lineHeight">
                                     <ng-container *ngFor="let item of items; trackBy: trackBy">
                                         <ngx-gantt-bar [item]="item" [template]="barTemplate"
-                                            (barClick)="barClick.emit($event)" [matTooltip]="'hi'"></ngx-gantt-bar>
+                                            (barClick)="barClick.emit($event)" [matTooltip]="'hi'" [matTooltipPosition]="'above'"></ngx-gantt-bar>
                                     </ng-container>
                                 </div>
                             </ng-container>
@@ -151,4 +151,4 @@
             </div>
         </ng-template>
     </ngx-gantt-root>
-</div>
+<!-- </div> -->

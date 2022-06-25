@@ -1,8 +1,10 @@
 import { Component, OnInit, HostBinding, NgZone, ChangeDetectorRef, ElementRef, Inject, Injector } from '@angular/core';
 import { Router } from '@angular/router';
-import { GANTT_UPPER_TOKEN, GanttUpper, GanttItemInternal, GanttGroupInternal, GANTT_GLOBAL_CONFIG, GanttGlobalConfig } from '@worktile/gantt';
+import { GANTT_UPPER_TOKEN, GanttUpper, GanttItemInternal, GANTT_GLOBAL_CONFIG, GanttGlobalConfig } from '@worktile/gantt';
 import { startWith, takeUntil } from 'rxjs/operators';
 import { environment } from 'src/environments/environment';
+import { MainOverviewItemForWorkflowDto } from 'src/shared/service-proxies/service-proxies';
+import { GanttGroupInternal } from '../mocks';
 
 @Component({
     selector: 'app-gantt-flat',
@@ -18,7 +20,7 @@ import { environment } from 'src/environments/environment';
 export class AppGanttFlatComponent extends GanttUpper implements OnInit {
     mergeIntervalDays = 3;
 
-    override groups: GanttGroupInternal[] = [];
+    override groups: GanttGroupInternal<MainOverviewItemForWorkflowDto>[] = [];
     clientDisplayColumns = [
         // 'countryFlag',
         // 'id',
@@ -47,21 +49,22 @@ export class AppGanttFlatComponent extends GanttUpper implements OnInit {
         const mergedItems: GanttItemInternal[][] = [];
         items = items.filter((item) => item.start && item.end).sort((a, b) => a.start.getUnixTime() - b.start.getUnixTime());
         items.forEach((item) => {
-            // let indexOfMergedItems = -1;
-            // for (let i = 0; i < mergedItems.length; i++) {
-            //     const subItems = mergedItems[i];
-            //     if (item.start.value > subItems[subItems.length - 1].end.addDays(this.mergeIntervalDays).value) {
-            //         subItems.push(item);
-            //         indexOfMergedItems = i;
-            //         break;
-            //     }
-            // }
+            let indexOfMergedItems = -1;
+            for (let i = 0; i < mergedItems.length; i++) {
+                const subItems = mergedItems[i];
+                if (item.start.value > subItems[subItems.length - 1].end.addDays(this.mergeIntervalDays).value) {
+                    subItems.push(item);
+                    indexOfMergedItems = i;
+                    break;
+                }
+            }
             // 如果没有合适的位置插入，则插入到最后一行
-            // if (indexOfMergedItems === -1) {
-                // indexOfMergedItems = mergedItems.length - 1;
-                // }
-            });
-        mergedItems.push(items);
+            if (indexOfMergedItems === -1) {
+                mergedItems.push([item]);
+                indexOfMergedItems = mergedItems.length - 1;
+            }
+        });
+        // mergedItems.push(items);
         return mergedItems;
     }
 
