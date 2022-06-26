@@ -160,8 +160,8 @@
             </mat-form-field>
         </div>
         <!-- WORKFLOWS -->
-        <div fxLayout="column" fxLayoutAlign="start center" class="gant-chart-container" [fxHide]="workflowsData?.length === 0" fxFlexFill>
-            <ngx-gantt #ganttWorkflows [items]="workflowsData" [viewOptions]="viewOptions" [async]="true" [viewType]="viewType.value">
+        <div fxLayout="column" fxLayoutAlign="start center" class="gant-chart-container" [fxHide]="workflowGroups?.length === 0 && workflowItems?.length === 0" fxFlexFill>
+            <!-- <ngx-gantt #ganttWorkflows [items]="workflowsData" [viewOptions]="viewOptions" [async]="true" [viewType]="viewType.value">
                 <ngx-gantt-table>
                     <ngx-gantt-column name="" width="30px">
                         <ng-template #cell let-item="item">
@@ -211,7 +211,26 @@
                         </ng-template>
                     </ngx-gantt-column>
                 </ngx-gantt-table>
-            </ngx-gantt>
+            </ngx-gantt> -->
+            <div class="gant-chart--group-container">
+                <app-gantt-flat *ngIf="workflowGroups.length && workflowItems.length"
+                    #gantt
+                    [items]="workflowItems"
+                    [groups]="workflowGroups"
+                    [viewOptions]="viewOptions"
+                    [viewType]="viewType.value"
+                    [draggable]="false"
+                    [isWorkflow]="true"
+                    (userSelectedStatusForWorflow)="setUserSelectedStatusForWorflow($event)"
+                    >
+                    <ng-template #group let-group="group">
+                        <!-- {{ group.title }} -->
+                    </ng-template>
+                    <ng-template #bar let-item="item">
+                        <!-- <span style="color: #fff">&nbsp;&nbsp;{{ item.title }}</span> -->
+                    </ng-template>
+                </app-gantt-flat>
+            </div>
             <div class="pagination-container u-w--100">
                 <mat-paginator #workflowsPaginator [length]="totalCount" [pageSize]="deafultPageSize"
                     [pageSizeOptions]="pageSizeOptions" [showFirstLastButtons]="true" (page)="workflowsPageChanged($event)">
@@ -219,8 +238,8 @@
             </div>
         </div>
         <!-- CONSULTANTS -->
-        <div fxLayout="column" fxLayoutAlign="start center" class="gant-chart-container" [fxHide]="consultantsData?.length === 0" fxFlexFill>
-            <ngx-gantt #ganttConsultants [items]="consultantsData" [viewOptions]="viewOptions" [viewType]="viewType.value">
+        <div fxLayout="column" fxLayoutAlign="start center" class="gant-chart-container" [fxHide]="consultantsGroups?.length === 0 && consultantsItems?.length === 0" fxFlexFill>
+            <!-- <ngx-gantt #ganttConsultants [items]="consultantsData" [viewOptions]="viewOptions" [viewType]="viewType.value">
                 <ngx-gantt-table>
                     <ngx-gantt-column name="" width="30px">
                         <ng-template #cell let-item="item">
@@ -263,14 +282,33 @@
                         </ng-template>
                     </ngx-gantt-column>
                 </ngx-gantt-table>
-            </ngx-gantt>
+            </ngx-gantt> -->
+            <div class="gant-chart--group-container">
+                <app-gantt-flat *ngIf="consultantsGroups.length && consultantsItems.length"
+                    #gantt
+                    [items]="consultantsItems"
+                    [groups]="consultantsGroups"
+                    [viewOptions]="viewOptions"
+                    [viewType]="viewType.value"
+                    [draggable]="false"
+                    [isConsultants]="true"
+                    (userSelectedStatusForConsultant)="setUserSelectedStatusForConsultant($event)"
+                    >
+                    <ng-template #group let-group="group">
+                        <!-- {{ group.title }} -->
+                    </ng-template>
+                    <ng-template #bar let-item="item">
+                        <!-- <span style="color: #fff">&nbsp;&nbsp;{{ item.title }}</span> -->
+                    </ng-template>
+                </app-gantt-flat>
+            </div>
             <div class="pagination-container u-w--100">
                 <mat-paginator #consultantsPaginator [length]="totalCount" [pageSize]="deafultPageSize"
                     [pageSizeOptions]="pageSizeOptions" [showFirstLastButtons]="true" (page)="consultantsPageChanged($event)">
                 </mat-paginator>
             </div>
         </div>
-        <div fxLayout="column" fxLayoutAlign="start center" class="gant-chart-container" *ngIf="consultantsData?.length === 0 && workflowsData?.length === 0" fxFlexFill>
+        <div fxLayout="column" fxLayoutAlign="start center" class="gant-chart-container" *ngIf="consultantsGroups?.length === 0 && workflowGroups?.length === 0" fxFlexFill>
             <div class="results-not-found">
                 No data
             </div>

@@ -1,0 +1,18 @@
+<div class="gant-chart--group-container">
+    <app-gantt-flat *ngIf="groups.length && items.length"
+        #gantt
+        [items]="items"
+        [groups]="groups"
+        [viewOptions]="options"
+        [viewType]="options.viewType"
+        [draggable]="options.draggable"
+        >
+        <ng-template #group let-group="group">
+            <!-- {{ group.title }} -->
+        </ng-template>
+        <ng-template #bar let-item="item">
+            <!-- <span style="color: #fff">&nbsp;&nbsp;{{ item.title }}</span> -->
+        </ng-template>
+    </app-gantt-flat>
+</div>
+
