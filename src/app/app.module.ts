@@ -29,8 +29,10 @@ export function loggerCallback(logLevel: LogLevel, message: string) {
 export function MSALInstanceFactory(): IPublicClientApplication {
     return new PublicClientApplication({
         auth: {
-            clientId: '54e44fbe-ca87-45be-9344-9a3bb6dd0dca', // PPE testing environment
-            authority: 'https://login.microsoftonline.com/0749517d-d788-4fc5-b761-0cb1a1112694/', // PPE testing environment.
+            // clientId: '54e44fbe-ca87-45be-9344-9a3bb6dd0dca',
+            clientId: environment.msalClientId,
+            // authority: 'https://login.microsoftonline.com/0749517d-d788-4fc5-b761-0cb1a1112694/',
+            authority: environment.msalAuthorityUrl,
             redirectUri: '/',
             postLogoutRedirectUri: '/'
         },
@@ -50,7 +52,7 @@ export function MSALInstanceFactory(): IPublicClientApplication {
 
 export function MSALInterceptorConfigFactory(): MsalInterceptorConfiguration {
     const protectedResourceMap = new Map<string, Array<string>>();
-    protectedResourceMap.set(environment.apiUrl, ['openid', 'profile', 'api://5f63a91e-8bfd-40ea-b562-3dad54244ff7/access_as_user']);
+    protectedResourceMap.set(environment.apiUrl, ['openid', 'profile', environment.msalInterceptorConfigUrl]);
 
     return {
         interactionType: InteractionType.Redirect,
@@ -62,7 +64,7 @@ export function MSALGuardConfigFactory(): MsalGuardConfiguration {
     return {
         interactionType: InteractionType.Redirect,
         authRequest: {
-            scopes: ['openid', 'profile', 'api://5f63a91e-8bfd-40ea-b562-3dad54244ff7/access_as_user']
+            scopes: ['openid', 'profile', environment.msalInterceptorConfigUrl]
         },
         loginFailedRoute: '/login'
     };
@@ -596,6 +598,13 @@ export class AppModule {
             'warning',
             sanitizer.bypassSecurityTrustResourceUrl(
                 'assets/common/images/warning.svg'
+            )
+        );
+
+        iconRegistry.addSvgIcon(
+            'notes-icon',
+            sanitizer.bypassSecurityTrustResourceUrl(
+                'assets/common/images/notes-icon.svg'
             )
         );
 
