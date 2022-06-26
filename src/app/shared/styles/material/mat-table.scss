@@ -389,9 +389,11 @@ mat-table.white-table {
 }
 
 .gant-chart--group-container {
+    width: 100%;
     .gantt {
         background: transparent !important;
         &-side {
+            width: 45%;
             border-right: none !important;
             box-shadow: none !important;
             margin-right: 30px;

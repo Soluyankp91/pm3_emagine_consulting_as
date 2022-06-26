@@ -1,12 +1,11 @@
 import { Routes, RouterModule } from '@angular/router';
 import { NgModule } from '@angular/core';
 import { MainOverviewComponent } from './main-overview.component';
-import { AppGanttAdvancedExampleComponent } from './gantt-advanced/gantt-advanced.component';
 
 const routes: Routes = [
     {
         path: '',
-        component: AppGanttAdvancedExampleComponent
+        component: MainOverviewComponent
     },
 
     //{ path: 'path/:routeParam', component: MyComponent },

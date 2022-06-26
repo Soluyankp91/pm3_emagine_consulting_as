@@ -5,8 +5,7 @@ import { getUnixTime } from 'date-fns';
 import * as moment from 'moment';
 import { finalize } from 'rxjs/operators';
 import { AppComponentBase } from 'src/shared/app-component-base';
-import { MainOverviewItemForWorkflowDto, MainOverviewItemPeriodDto, MainOverviewServiceProxy } from 'src/shared/service-proxies/service-proxies';
-import { randomGroupsAndItems } from '../helper';
+import { MainOverviewItemPeriodDto, MainOverviewServiceProxy } from 'src/shared/service-proxies/service-proxies';
 
 @Component({
     selector: 'app-gantt-advanced-example',
@@ -29,7 +28,7 @@ export class AppGanttAdvancedExampleComponent extends AppComponentBase implement
 
     items: GanttItem[] = [];
 
-    groups: GanttGroup<MainOverviewItemForWorkflowDto>[] = [];
+    groups: GanttGroup<any>[] = [];
 
     startDate = new Date();
     options = {
@@ -53,12 +52,7 @@ export class AppGanttAdvancedExampleComponent extends AppComponentBase implement
     @HostBinding('class.gantt-example-component') class = true;
 
     ngOnInit(): void {
-        // const { groups, items } = randomGroupsAndItems
         this.getMainOverview();
-        // this.groups = groups;
-        // this.items = items;
-
-        // console.log(this.groups, this.items);
     }
 
     getMainOverview(date?: any) {
@@ -80,24 +74,18 @@ export class AppGanttAdvancedExampleComponent extends AppComponentBase implement
 
             }))
             .subscribe(result => {
-                let groups: GanttGroup<MainOverviewItemForWorkflowDto>[] = [];
+                let groups: GanttGroup<any>[] = [];
                 let items: GanttItem[] = [];
                 if (result.items?.length) {
 
-                    result.items!.map((x: MainOverviewItemForWorkflowDto, index: number) => {
-                        // let formattedData: GanttItem<MainOverviewItemForWorkflowDto>;
-                        // formattedData = {
+                    result.items!.map((x, index) => {
                         groups.push({
                             id: x.workflowId!,
                             title: x.clientDisplayName!,
-                            // start: getUnixTime(x.clientPeriods![0]?.startDate!.toDate()),
-                            // end: getUnixTime(x.clientPeriods![0]?.endDate!.toDate()),
-                            origin: x!,
-                            // color: 'rgb(23, 162, 151)',
-                            // group_id: x.clientPeriods?.length! > 1 ? x.workflowId : undefined
+                            origin: x!
                         })
+
                         items = [...items, ...this.randomItems(x.clientPeriods?.length!, x.clientPeriods, groups[index].id)];
-                        // return formattedData;
                     });
 
                 }
@@ -106,17 +94,14 @@ export class AppGanttAdvancedExampleComponent extends AppComponentBase implement
                 this.groups = groups;
                 this.items = items;
             });
-
     }
 
     randomItems(length: number, parent?: MainOverviewItemPeriodDto[], group?: string) {
         const items = [];
         for (let i = 0; i < length; i++) {
-            // const start = addDays(new Date(), random(-200, 200));
-            // const end = addDays(start, random(0, 100));
             items.push({
-                id: `${parent![i]?.id || group || ''}`,
-                title: `${parent![i]?.periodType || 'Task'}`,
+                id: `${parent![i]?.id || group}`,
+                title: `${parent![i]?.periodType}`,
                 start: getUnixTime(parent![i]?.startDate?.toDate()!),
                 end: getUnixTime(parent![i]?.endDate?.toDate()!),
                 group_id: group,
@@ -125,22 +110,4 @@ export class AppGanttAdvancedExampleComponent extends AppComponentBase implement
         }
         return items;
     }
-
-    // randomGroupsAndItems(length: number) {
-    //     const groups: GanttGroup[] = [];
-    //     let items: GanttItem[] = [];
-    //     for (let i = 0; i < length; i++) {
-    //         groups.push({
-    //             id: `00000${i}`,
-    //             title: `Group-${i}`
-    //         });
-    //         items = [...items, ...randomItems(6, undefined, groups[i].id)];
-    //     }
-    //     return {
-    //         groups,
-    //         items
-    //     };
-    // }
-
-
 }
