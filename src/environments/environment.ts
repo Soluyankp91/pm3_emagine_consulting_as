@@ -6,9 +6,12 @@ export const environment = {
     production: false,
     dev: true,
     qa: false,
-    apiUrl: 'https://pm3-dev-api.prodataconsult.com',
+    apiUrl: 'https://pm3-qa-api.prodataconsult.com',
     sourcingUrl: 'https://web-sourcing-dev.azurewebsites.net',
-    sharedAssets: "https://web-sourcing-qa-env.prodataconsult.com/api/shared-assets/qa"
+    sharedAssets: "https://web-sourcing-qa-env.prodataconsult.com/api/shared-assets/qa",
+    msalClientId: '54e44fbe-ca87-45be-9344-9a3bb6dd0dca',
+    msalAuthorityUrl: 'https://login.microsoftonline.com/0749517d-d788-4fc5-b761-0cb1a1112694/',
+    msalInterceptorConfigUrl: 'api://5f63a91e-8bfd-40ea-b562-3dad54244ff7/access_as_user'
 };
 
 /*
