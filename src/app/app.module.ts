@@ -324,12 +324,12 @@ export class AppModule {
         //     )
         // );
 
-        // iconRegistry.addSvgIcon(
-        //     'India-flag-selected',
-        //     sanitizer.bypassSecurityTrustResourceUrl(
-        //         'assets/common/images/country-flags/in-flag-selected.svg'
-        //     )
-        // );
+        iconRegistry.addSvgIcon(
+            'India-flag-selected',
+            sanitizer.bypassSecurityTrustResourceUrl(
+                'assets/common/images/country-flags/ind-flag-selected.svg'
+            )
+        );
 
         iconRegistry.addSvgIcon(
             'arrow',
