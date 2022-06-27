@@ -105,7 +105,8 @@
                                         [workflowId]="workflowId"
                                         [consultant]="consultant"
                                         [activeSideSection]="selectedSideSection"
-                                        [isCompleted]="selectedStep.status === workflowStatuses.Completed"></app-workflow-sourcing>
+                                        [isCompleted]="selectedStep.status === workflowStatuses.Completed"
+                                        [permissionsForCurrentUser]="selectedStep.actionsPermissionsForCurrentUser"></app-workflow-sourcing>
             </ng-container>
         </ng-container>
     </div>

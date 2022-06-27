@@ -17,6 +17,7 @@ export class WorkflowSourcingComponent extends AppComponentBase implements OnIni
     @Input() workflowId: string;
     @Input() isCompleted: boolean;
     @Input() consultant: ConsultantResultDto;
+    @Input() permissionsForCurrentUser: { [key: string]: boolean; } | undefined;
 
     workflowSideSections = WorkflowProcessType;
 
@@ -43,13 +44,10 @@ export class WorkflowSourcingComponent extends AppComponentBase implements OnIni
 
     ngOnInit(): void {
         this._workflowDataService.updateWorkflowProgressStatus({currentStepIsCompleted: this.isCompleted, currentStepIsForcefullyEditing: false});
-        switch (this.activeSideSection.typeId) {
-            case this.workflowSideSections.TerminateWorkflow:
-                this.getWorkflowSourcingStepTermination();
-                break;
-            case this.workflowSideSections.TerminateConsultant:
-                this.getWorkflowSourcingStepConsultantTermination();
-                break;
+        if (this.permissionsForCurrentUser!["StartEdit"]) {
+            this.startEditSourcingStep();
+        } else {
+            this.getSourcingStepData();
         }
 
         this._workflowDataService.workflowConsultantTerminationSourcingSaved
@@ -71,6 +69,48 @@ export class WorkflowSourcingComponent extends AppComponentBase implements OnIni
     }
 
     // Termination
+
+    getSourcingStepData() {
+        switch (this.activeSideSection.typeId) {
+            case this.workflowSideSections.TerminateWorkflow:
+                this.getWorkflowSourcingStepTermination();
+                break;
+            case this.workflowSideSections.TerminateConsultant:
+                this.getWorkflowSourcingStepConsultantTermination();
+                break;
+        }
+    }
+    
+    startEditSourcingStep() {
+        switch (this.activeSideSection.typeId) {
+            case this.workflowSideSections.TerminateWorkflow:
+                this.startEditSourcingStepTermination();
+                break;
+            case this.workflowSideSections.TerminateConsultant:
+                this.startEditSourcingStepConsultantTermination();
+                break;
+        }
+    }
+    
+    startEditSourcingStepTermination() {
+        this.showMainSpinner();
+        this._workflowServiceProxy.terminationSourcingStartEdit(this.workflowId)
+            .pipe(finalize(() => this.hideMainSpinner()))
+            .subscribe(result => {
+                this._workflowDataService.workflowSideSectionUpdated.emit({isStatusUpdate: true});
+                this.getSourcingStepData();
+            });
+    }
+    
+    startEditSourcingStepConsultantTermination() {
+        this.showMainSpinner();
+        this._workflowServiceProxy.terminationConsultantSourcingStartEdit(this.workflowId, this.consultant.id)
+            .pipe(finalize(() => this.hideMainSpinner()))
+            .subscribe(result => {
+                this._workflowDataService.workflowSideSectionUpdated.emit({isStatusUpdate: true});
+                this.getSourcingStepData();
+            });
+    }
 
     addConsultantDataToTerminationForm(consultant: ConsultantTerminationSourcingDataQueryDto) {
         const form = this._fb.group({
