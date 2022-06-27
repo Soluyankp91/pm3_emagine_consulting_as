@@ -2,6 +2,7 @@ import { Injectable } from '@angular/core';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { MsalService } from '@azure/msal-angular';
 import { AuthenticationResult } from '@azure/msal-browser';
+import { environment } from 'src/environments/environment';
 
 @Injectable()
 export class LocalHttpService {
@@ -12,10 +13,10 @@ export class LocalHttpService {
 
     getTokenPromise(): Promise<AuthenticationResult> {
         const params = {
-            scopes: ['openid', 'profile', 'api://5f63a91e-8bfd-40ea-b562-3dad54244ff7/access_as_user'],
+            scopes: ['openid', 'profile', environment.msalInterceptorConfigUrl],
             redirectUri: '',
             extraQueryParameters: undefined,
-            authority: 'https://login.microsoftonline.com/0749517d-d788-4fc5-b761-0cb1a1112694/',
+            authority: environment.msalAuthorityUrl,
             account: this._authService.instance.getActiveAccount()!,
             correlationId: '',
             forceRefresh: false
@@ -25,10 +26,10 @@ export class LocalHttpService {
 
     getToken(): string | any {
         const params = {
-            scopes: ['openid', 'profile', 'api://5f63a91e-8bfd-40ea-b562-3dad54244ff7/access_as_user'],
+            scopes: ['openid', 'profile', environment.msalInterceptorConfigUrl],
             redirectUri: '',
             extraQueryParameters: undefined,
-            authority: 'https://login.microsoftonline.com/0749517d-d788-4fc5-b761-0cb1a1112694/',
+            authority: environment.msalAuthorityUrl,
             account: this._authService.instance.getActiveAccount()!,
             correlationId: '',
             forceRefresh: false
