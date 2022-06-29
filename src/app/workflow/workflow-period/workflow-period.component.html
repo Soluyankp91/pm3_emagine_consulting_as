@@ -44,6 +44,11 @@
                                     <app-manager-search
                                         (click)="$event.stopPropagation()"
                                         [formFieldLabel]="step.name + ' Manager'"
+                                        [periodId]="periodId!"
+                                        [consultantPeriodId]="item.consultantPeriodId!"
+                                        [stepType]="step.typeId!"
+                                        [periodType]="item.typeId!"
+                                        [workflowId]="workflowId"
                                         (managerSelected)="selectedManager($event)"
                                         [managerStatus]="step.status === workflowStatuses.Completed ? managerStatus.Completed : managerStatus.Pending"
                                         [responsiblePerson]="step.responsiblePerson!">

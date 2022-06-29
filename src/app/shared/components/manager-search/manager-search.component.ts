@@ -2,9 +2,9 @@ import { Component, EventEmitter, Injector, Input, OnDestroy, OnInit, Output, Vi
 import { FormControl } from '@angular/forms';
 import { MatMenuTrigger } from '@angular/material/menu';
 import { Observable, Subject } from 'rxjs';
-import { debounceTime, switchMap, takeUntil } from 'rxjs/operators';
+import { debounceTime, finalize, switchMap, takeUntil } from 'rxjs/operators';
 import { AppComponentBase } from 'src/shared/app-component-base';
-import { EmployeeDto, IdNameDto, LookupServiceProxy } from 'src/shared/service-proxies/service-proxies';
+import { ClientPeriodServiceProxy, ConsultantPeriodServiceProxy, EmployeeDto, IdNameDto, LookupServiceProxy, WorkflowProcessType, WorkflowServiceProxy } from 'src/shared/service-proxies/service-proxies';
 import { ManagerStatus } from './manager-search.model';
 
 @Component({
@@ -19,6 +19,11 @@ export class ManagerSearchComponent extends AppComponentBase implements OnInit, 
     @Input() managerStatus: number;
     @Input() readonly: boolean;
     @Input() responsiblePerson: EmployeeDto;
+    @Input() periodType: number;
+    @Input() periodId: string;
+    @Input() consultantPeriodId: string;
+    @Input() stepType: number;
+    @Input() workflowId: string;
     @Output() managerSelected: EventEmitter<number> = new EventEmitter<number>();
 
     managerStatuses = ManagerStatus;
@@ -28,7 +33,10 @@ export class ManagerSearchComponent extends AppComponentBase implements OnInit, 
     private _unsubscribe = new Subject();
     constructor(
         injector: Injector,
-        private _lookupService: LookupServiceProxy
+        private _lookupService: LookupServiceProxy,
+        private _clientPeriodService: ClientPeriodServiceProxy,
+        private _consultantPeriodService: ConsultantPeriodServiceProxy,
+        private _workflowService: WorkflowServiceProxy
     ) {
         super(injector);
         this.managerFilter.valueChanges.pipe(
@@ -69,7 +77,53 @@ export class ManagerSearchComponent extends AppComponentBase implements OnInit, 
     selectOption(event: Event, option: EmployeeDto) {
         event.stopPropagation();
         this.managerSelected.emit(option.id);
+        switch (this.periodType) {
+            case WorkflowProcessType.StartClientPeriod:
+            case WorkflowProcessType.ExtendClientPeriod:
+            case WorkflowProcessType.ChangeClientPeriod:
+                this.changeResponsibleForClientPeriodStep(option.id!);
+                break;
+            case WorkflowProcessType.TerminateWorkflow:
+                this.changeResponsibleWorkflowTerminationStep(option.id!);
+                break;
+            case WorkflowProcessType.StartConsultantPeriod:
+            case WorkflowProcessType.ChangeConsultantPeriod:
+            case WorkflowProcessType.ExtendConsultantPeriod:
+                this.changeResponsibleForConsultantPeriodStep(option.id!);
+                break;
+            case WorkflowProcessType.TerminateConsultant:
+                this.changeResponsibleConsultantTerminationStep(option.id!);
+                break;
+        }
         this.managerSearchMenu.closeMenu();
+    }
+
+    changeResponsibleForClientPeriodStep(responsiblePersonId: number) {
+        this.showMainSpinner();
+        this._clientPeriodService.stepResponsible(this.periodId, this.stepType, responsiblePersonId)
+            .pipe(finalize(() => this.hideMainSpinner()))
+            .subscribe(() => {});
+    }
+
+    changeResponsibleForConsultantPeriodStep(responsiblePersonId: number) {
+        this.showMainSpinner();
+        this._consultantPeriodService.stepResponsible(this.consultantPeriodId, this.stepType, responsiblePersonId)
+            .pipe(finalize(() => this.hideMainSpinner()))
+            .subscribe(() => {});
+    }
+
+    changeResponsibleWorkflowTerminationStep(responsiblePersonId: number) {
+        this.showMainSpinner();
+        this._workflowService.terminationStepResponsible(this.workflowId, this.stepType, responsiblePersonId)
+            .pipe(finalize(() => this.hideMainSpinner()))
+            .subscribe(() => {});
+    }
+
+    changeResponsibleConsultantTerminationStep(responsiblePersonId: number) {
+        this.showMainSpinner();
+        this._workflowService.terminationConsultantStepResponsible(this.stepType, this.workflowId, this.consultantPeriodId, responsiblePersonId)
+            .pipe(finalize(() => this.hideMainSpinner()))
+            .subscribe(() => {});
     }
 
     detectManagerStatus(status: number) {
