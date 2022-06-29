@@ -1492,6 +1492,64 @@ export class ClientPeriodServiceProxy {
         }
         return _observableOf<AvailableConsultantDto[]>(null as any);
     }
+
+    /**
+     * @param newResponsibleEmployeeId (optional) 
+     * @return Success
+     */
+    stepResponsible(clientPeriodId: string, stepType: StepType, newResponsibleEmployeeId?: number | undefined): Observable<void> {
+        let url_ = this.baseUrl + "/api/ClientPeriod/{clientPeriodId}/{stepType}/step-responsible?";
+        if (clientPeriodId === undefined || clientPeriodId === null)
+            throw new Error("The parameter 'clientPeriodId' must be defined.");
+        url_ = url_.replace("{clientPeriodId}", encodeURIComponent("" + clientPeriodId));
+        if (stepType === undefined || stepType === null)
+            throw new Error("The parameter 'stepType' must be defined.");
+        url_ = url_.replace("{stepType}", encodeURIComponent("" + stepType));
+        if (newResponsibleEmployeeId === null)
+            throw new Error("The parameter 'newResponsibleEmployeeId' cannot be null.");
+        else if (newResponsibleEmployeeId !== undefined)
+            url_ += "newResponsibleEmployeeId=" + encodeURIComponent("" + newResponsibleEmployeeId) + "&";
+        url_ = url_.replace(/[?&]$/, "");
+
+        let options_ : any = {
+            observe: "response",
+            responseType: "blob",
+            headers: new HttpHeaders({
+            })
+        };
+
+        return this.http.request("put", url_, options_).pipe(_observableMergeMap((response_ : any) => {
+            return this.processStepResponsible(response_);
+        })).pipe(_observableCatch((response_: any) => {
+            if (response_ instanceof HttpResponseBase) {
+                try {
+                    return this.processStepResponsible(response_ as any);
+                } catch (e) {
+                    return _observableThrow(e) as any as Observable<void>;
+                }
+            } else
+                return _observableThrow(response_) as any as Observable<void>;
+        }));
+    }
+
+    protected processStepResponsible(response: HttpResponseBase): Observable<void> {
+        const status = response.status;
+        const responseBlob =
+            response instanceof HttpResponse ? response.body :
+            (response as any).error instanceof Blob ? (response as any).error : undefined;
+
+        let _headers: any = {}; if (response.headers) { for (let key of response.headers.keys()) { _headers[key] = response.headers.get(key); }}
+        if (status === 200) {
+            return blobToText(responseBlob).pipe(_observableMergeMap(_responseText => {
+            return _observableOf<void>(null as any);
+            }));
+        } else if (status !== 200 && status !== 204) {
+            return blobToText(responseBlob).pipe(_observableMergeMap(_responseText => {
+            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+            }));
+        }
+        return _observableOf<void>(null as any);
+    }
 }
 
 @Injectable()
@@ -3650,6 +3708,64 @@ export class ConsultantPeriodServiceProxy {
             }));
         }
         return _observableOf<string>(null as any);
+    }
+
+    /**
+     * @param newResponsibleEmployeeId (optional) 
+     * @return Success
+     */
+    stepResponsible(consultantPeriodId: string, stepType: StepType, newResponsibleEmployeeId?: number | undefined): Observable<void> {
+        let url_ = this.baseUrl + "/api/ConsultantPeriod/{consultantPeriodId}/{stepType}/step-responsible?";
+        if (consultantPeriodId === undefined || consultantPeriodId === null)
+            throw new Error("The parameter 'consultantPeriodId' must be defined.");
+        url_ = url_.replace("{consultantPeriodId}", encodeURIComponent("" + consultantPeriodId));
+        if (stepType === undefined || stepType === null)
+            throw new Error("The parameter 'stepType' must be defined.");
+        url_ = url_.replace("{stepType}", encodeURIComponent("" + stepType));
+        if (newResponsibleEmployeeId === null)
+            throw new Error("The parameter 'newResponsibleEmployeeId' cannot be null.");
+        else if (newResponsibleEmployeeId !== undefined)
+            url_ += "newResponsibleEmployeeId=" + encodeURIComponent("" + newResponsibleEmployeeId) + "&";
+        url_ = url_.replace(/[?&]$/, "");
+
+        let options_ : any = {
+            observe: "response",
+            responseType: "blob",
+            headers: new HttpHeaders({
+            })
+        };
+
+        return this.http.request("put", url_, options_).pipe(_observableMergeMap((response_ : any) => {
+            return this.processStepResponsible(response_);
+        })).pipe(_observableCatch((response_: any) => {
+            if (response_ instanceof HttpResponseBase) {
+                try {
+                    return this.processStepResponsible(response_ as any);
+                } catch (e) {
+                    return _observableThrow(e) as any as Observable<void>;
+                }
+            } else
+                return _observableThrow(response_) as any as Observable<void>;
+        }));
+    }
+
+    protected processStepResponsible(response: HttpResponseBase): Observable<void> {
+        const status = response.status;
+        const responseBlob =
+            response instanceof HttpResponse ? response.body :
+            (response as any).error instanceof Blob ? (response as any).error : undefined;
+
+        let _headers: any = {}; if (response.headers) { for (let key of response.headers.keys()) { _headers[key] = response.headers.get(key); }}
+        if (status === 200) {
+            return blobToText(responseBlob).pipe(_observableMergeMap(_responseText => {
+            return _observableOf<void>(null as any);
+            }));
+        } else if (status !== 200 && status !== 204) {
+            return blobToText(responseBlob).pipe(_observableMergeMap(_responseText => {
+            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+            }));
+        }
+        return _observableOf<void>(null as any);
     }
 }
 
@@ -8495,6 +8611,59 @@ export class NotificationTestServiceProxy {
         }
         return _observableOf<void>(null as any);
     }
+
+    /**
+     * @param email (optional) 
+     * @return Success
+     * @deprecated
+     */
+    sendWorkflowStepResponsibleChanged(email?: string | undefined): Observable<void> {
+        let url_ = this.baseUrl + "/api/NotificationTest/send-Workflow-Step-Responsible-Changed?";
+        if (email === null)
+            throw new Error("The parameter 'email' cannot be null.");
+        else if (email !== undefined)
+            url_ += "email=" + encodeURIComponent("" + email) + "&";
+        url_ = url_.replace(/[?&]$/, "");
+
+        let options_ : any = {
+            observe: "response",
+            responseType: "blob",
+            headers: new HttpHeaders({
+            })
+        };
+
+        return this.http.request("post", url_, options_).pipe(_observableMergeMap((response_ : any) => {
+            return this.processSendWorkflowStepResponsibleChanged(response_);
+        })).pipe(_observableCatch((response_: any) => {
+            if (response_ instanceof HttpResponseBase) {
+                try {
+                    return this.processSendWorkflowStepResponsibleChanged(response_ as any);
+                } catch (e) {
+                    return _observableThrow(e) as any as Observable<void>;
+                }
+            } else
+                return _observableThrow(response_) as any as Observable<void>;
+        }));
+    }
+
+    protected processSendWorkflowStepResponsibleChanged(response: HttpResponseBase): Observable<void> {
+        const status = response.status;
+        const responseBlob =
+            response instanceof HttpResponse ? response.body :
+            (response as any).error instanceof Blob ? (response as any).error : undefined;
+
+        let _headers: any = {}; if (response.headers) { for (let key of response.headers.keys()) { _headers[key] = response.headers.get(key); }}
+        if (status === 200) {
+            return blobToText(responseBlob).pipe(_observableMergeMap(_responseText => {
+            return _observableOf<void>(null as any);
+            }));
+        } else if (status !== 200 && status !== 204) {
+            return blobToText(responseBlob).pipe(_observableMergeMap(_responseText => {
+            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+            }));
+        }
+        return _observableOf<void>(null as any);
+    }
 }
 
 @Injectable()
@@ -9489,6 +9658,64 @@ export class WorkflowServiceProxy {
     }
 
     /**
+     * @param newResponsibleEmployeeId (optional) 
+     * @return Success
+     */
+    terminationStepResponsible(workflowId: string, stepType: StepType, newResponsibleEmployeeId?: number | undefined): Observable<void> {
+        let url_ = this.baseUrl + "/api/Workflow/{workflowId}/{stepType}/termination-step-responsible?";
+        if (workflowId === undefined || workflowId === null)
+            throw new Error("The parameter 'workflowId' must be defined.");
+        url_ = url_.replace("{workflowId}", encodeURIComponent("" + workflowId));
+        if (stepType === undefined || stepType === null)
+            throw new Error("The parameter 'stepType' must be defined.");
+        url_ = url_.replace("{stepType}", encodeURIComponent("" + stepType));
+        if (newResponsibleEmployeeId === null)
+            throw new Error("The parameter 'newResponsibleEmployeeId' cannot be null.");
+        else if (newResponsibleEmployeeId !== undefined)
+            url_ += "newResponsibleEmployeeId=" + encodeURIComponent("" + newResponsibleEmployeeId) + "&";
+        url_ = url_.replace(/[?&]$/, "");
+
+        let options_ : any = {
+            observe: "response",
+            responseType: "blob",
+            headers: new HttpHeaders({
+            })
+        };
+
+        return this.http.request("put", url_, options_).pipe(_observableMergeMap((response_ : any) => {
+            return this.processTerminationStepResponsible(response_);
+        })).pipe(_observableCatch((response_: any) => {
+            if (response_ instanceof HttpResponseBase) {
+                try {
+                    return this.processTerminationStepResponsible(response_ as any);
+                } catch (e) {
+                    return _observableThrow(e) as any as Observable<void>;
+                }
+            } else
+                return _observableThrow(response_) as any as Observable<void>;
+        }));
+    }
+
+    protected processTerminationStepResponsible(response: HttpResponseBase): Observable<void> {
+        const status = response.status;
+        const responseBlob =
+            response instanceof HttpResponse ? response.body :
+            (response as any).error instanceof Blob ? (response as any).error : undefined;
+
+        let _headers: any = {}; if (response.headers) { for (let key of response.headers.keys()) { _headers[key] = response.headers.get(key); }}
+        if (status === 200) {
+            return blobToText(responseBlob).pipe(_observableMergeMap(_responseText => {
+            return _observableOf<void>(null as any);
+            }));
+        } else if (status !== 200 && status !== 204) {
+            return blobToText(responseBlob).pipe(_observableMergeMap(_responseText => {
+            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+            }));
+        }
+        return _observableOf<void>(null as any);
+    }
+
+    /**
      * @return Success
      */
     terminationDelete(workflowId: string): Observable<void> {
@@ -10202,6 +10429,69 @@ export class WorkflowServiceProxy {
     }
 
     protected processTerminationConsultantSourcingComplete(response: HttpResponseBase): Observable<void> {
+        const status = response.status;
+        const responseBlob =
+            response instanceof HttpResponse ? response.body :
+            (response as any).error instanceof Blob ? (response as any).error : undefined;
+
+        let _headers: any = {}; if (response.headers) { for (let key of response.headers.keys()) { _headers[key] = response.headers.get(key); }}
+        if (status === 200) {
+            return blobToText(responseBlob).pipe(_observableMergeMap(_responseText => {
+            return _observableOf<void>(null as any);
+            }));
+        } else if (status !== 200 && status !== 204) {
+            return blobToText(responseBlob).pipe(_observableMergeMap(_responseText => {
+            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+            }));
+        }
+        return _observableOf<void>(null as any);
+    }
+
+    /**
+     * @param consultantTerminationId (optional) 
+     * @param newResponsibleEmployeeId (optional) 
+     * @return Success
+     */
+    terminationConsultantStepResponsible(stepType: StepType, workflowId: string, consultantTerminationId?: string | undefined, newResponsibleEmployeeId?: number | undefined): Observable<void> {
+        let url_ = this.baseUrl + "/api/Workflow/{workflowId}/{stepType}/termination-consultant-step-responsible?";
+        if (stepType === undefined || stepType === null)
+            throw new Error("The parameter 'stepType' must be defined.");
+        url_ = url_.replace("{stepType}", encodeURIComponent("" + stepType));
+        if (workflowId === undefined || workflowId === null)
+            throw new Error("The parameter 'workflowId' must be defined.");
+        url_ = url_.replace("{workflowId}", encodeURIComponent("" + workflowId));
+        if (consultantTerminationId === null)
+            throw new Error("The parameter 'consultantTerminationId' cannot be null.");
+        else if (consultantTerminationId !== undefined)
+            url_ += "consultantTerminationId=" + encodeURIComponent("" + consultantTerminationId) + "&";
+        if (newResponsibleEmployeeId === null)
+            throw new Error("The parameter 'newResponsibleEmployeeId' cannot be null.");
+        else if (newResponsibleEmployeeId !== undefined)
+            url_ += "newResponsibleEmployeeId=" + encodeURIComponent("" + newResponsibleEmployeeId) + "&";
+        url_ = url_.replace(/[?&]$/, "");
+
+        let options_ : any = {
+            observe: "response",
+            responseType: "blob",
+            headers: new HttpHeaders({
+            })
+        };
+
+        return this.http.request("put", url_, options_).pipe(_observableMergeMap((response_ : any) => {
+            return this.processTerminationConsultantStepResponsible(response_);
+        })).pipe(_observableCatch((response_: any) => {
+            if (response_ instanceof HttpResponseBase) {
+                try {
+                    return this.processTerminationConsultantStepResponsible(response_ as any);
+                } catch (e) {
+                    return _observableThrow(e) as any as Observable<void>;
+                }
+            } else
+                return _observableThrow(response_) as any as Observable<void>;
+        }));
+    }
+
+    protected processTerminationConsultantStepResponsible(response: HttpResponseBase): Observable<void> {
         const status = response.status;
         const responseBlob =
             response instanceof HttpResponse ? response.body :
@@ -13515,9 +13805,9 @@ export interface IConsultantTerminationSourcingDataQueryDto {
 }
 
 export class ConsultantWithSourcingRequestResultDto implements IConsultantWithSourcingRequestResultDto {
-    sourcingRequestConsultantId?: number;
-    sourcingRequestConsultantHeadline?: string | undefined;
     consultant?: ConsultantResultDto;
+    sourcingRequestConsultantId?: number | undefined;
+    sourcingRequestConsultantHeadline?: string | undefined;
 
     constructor(data?: IConsultantWithSourcingRequestResultDto) {
         if (data) {
@@ -13530,9 +13820,9 @@ export class ConsultantWithSourcingRequestResultDto implements IConsultantWithSo
 
     init(_data?: any) {
         if (_data) {
+            this.consultant = _data["consultant"] ? ConsultantResultDto.fromJS(_data["consultant"]) : <any>undefined;
             this.sourcingRequestConsultantId = _data["sourcingRequestConsultantId"];
             this.sourcingRequestConsultantHeadline = _data["sourcingRequestConsultantHeadline"];
-            this.consultant = _data["consultant"] ? ConsultantResultDto.fromJS(_data["consultant"]) : <any>undefined;
         }
     }
 
@@ -13545,17 +13835,17 @@ export class ConsultantWithSourcingRequestResultDto implements IConsultantWithSo
 
     toJSON(data?: any) {
         data = typeof data === 'object' ? data : {};
+        data["consultant"] = this.consultant ? this.consultant.toJSON() : <any>undefined;
         data["sourcingRequestConsultantId"] = this.sourcingRequestConsultantId;
         data["sourcingRequestConsultantHeadline"] = this.sourcingRequestConsultantHeadline;
-        data["consultant"] = this.consultant ? this.consultant.toJSON() : <any>undefined;
         return data;
     }
 }
 
 export interface IConsultantWithSourcingRequestResultDto {
-    sourcingRequestConsultantId?: number;
-    sourcingRequestConsultantHeadline?: string | undefined;
     consultant?: ConsultantResultDto;
+    sourcingRequestConsultantId?: number | undefined;
+    sourcingRequestConsultantHeadline?: string | undefined;
 }
 
 export class ContactDto implements IContactDto {
@@ -16525,7 +16815,7 @@ export class Tenant implements ITenant {
     readonly id?: number;
     readonly name?: string | undefined;
     timeZone?: string | undefined;
-    timeZoneInfo?: TimeZoneInfo;
+    culture?: string | undefined;
 
     constructor(data?: ITenant) {
         if (data) {
@@ -16546,7 +16836,7 @@ export class Tenant implements ITenant {
             (<any>this).id = _data["id"];
             (<any>this).name = _data["name"];
             this.timeZone = _data["timeZone"];
-            this.timeZoneInfo = _data["timeZoneInfo"] ? TimeZoneInfo.fromJS(_data["timeZoneInfo"]) : <any>undefined;
+            this.culture = _data["culture"];
         }
     }
 
@@ -16567,7 +16857,7 @@ export class Tenant implements ITenant {
         data["id"] = this.id;
         data["name"] = this.name;
         data["timeZone"] = this.timeZone;
-        data["timeZoneInfo"] = this.timeZoneInfo ? this.timeZoneInfo.toJSON() : <any>undefined;
+        data["culture"] = this.culture;
         return data;
     }
 }
@@ -16577,7 +16867,7 @@ export interface ITenant {
     id?: number;
     name?: string | undefined;
     timeZone?: string | undefined;
-    timeZoneInfo?: TimeZoneInfo;
+    culture?: string | undefined;
 }
 
 export enum TerminationReason {
@@ -16589,142 +16879,6 @@ export enum TerminationTime {
     AccordingToContract = 1,
     BeforeEndOfContract = 2,
     ContractDidNotStart = 3,
-}
-
-export class TimeSpan implements ITimeSpan {
-    ticks?: number;
-    days?: number;
-    hours?: number;
-    milliseconds?: number;
-    minutes?: number;
-    seconds?: number;
-    readonly totalDays?: number;
-    readonly totalHours?: number;
-    readonly totalMilliseconds?: number;
-    readonly totalMinutes?: number;
-    readonly totalSeconds?: number;
-
-    constructor(data?: ITimeSpan) {
-        if (data) {
-            for (var property in data) {
-                if (data.hasOwnProperty(property))
-                    (<any>this)[property] = (<any>data)[property];
-            }
-        }
-    }
-
-    init(_data?: any) {
-        if (_data) {
-            this.ticks = _data["ticks"];
-            this.days = _data["days"];
-            this.hours = _data["hours"];
-            this.milliseconds = _data["milliseconds"];
-            this.minutes = _data["minutes"];
-            this.seconds = _data["seconds"];
-            (<any>this).totalDays = _data["totalDays"];
-            (<any>this).totalHours = _data["totalHours"];
-            (<any>this).totalMilliseconds = _data["totalMilliseconds"];
-            (<any>this).totalMinutes = _data["totalMinutes"];
-            (<any>this).totalSeconds = _data["totalSeconds"];
-        }
-    }
-
-    static fromJS(data: any): TimeSpan {
-        data = typeof data === 'object' ? data : {};
-        let result = new TimeSpan();
-        result.init(data);
-        return result;
-    }
-
-    toJSON(data?: any) {
-        data = typeof data === 'object' ? data : {};
-        data["ticks"] = this.ticks;
-        data["days"] = this.days;
-        data["hours"] = this.hours;
-        data["milliseconds"] = this.milliseconds;
-        data["minutes"] = this.minutes;
-        data["seconds"] = this.seconds;
-        data["totalDays"] = this.totalDays;
-        data["totalHours"] = this.totalHours;
-        data["totalMilliseconds"] = this.totalMilliseconds;
-        data["totalMinutes"] = this.totalMinutes;
-        data["totalSeconds"] = this.totalSeconds;
-        return data;
-    }
-}
-
-export interface ITimeSpan {
-    ticks?: number;
-    days?: number;
-    hours?: number;
-    milliseconds?: number;
-    minutes?: number;
-    seconds?: number;
-    totalDays?: number;
-    totalHours?: number;
-    totalMilliseconds?: number;
-    totalMinutes?: number;
-    totalSeconds?: number;
-}
-
-export class TimeZoneInfo implements ITimeZoneInfo {
-    readonly id?: string | undefined;
-    readonly hasIanaId?: boolean;
-    readonly displayName?: string | undefined;
-    readonly standardName?: string | undefined;
-    readonly daylightName?: string | undefined;
-    baseUtcOffset?: TimeSpan;
-    readonly supportsDaylightSavingTime?: boolean;
-
-    constructor(data?: ITimeZoneInfo) {
-        if (data) {
-            for (var property in data) {
-                if (data.hasOwnProperty(property))
-                    (<any>this)[property] = (<any>data)[property];
-            }
-        }
-    }
-
-    init(_data?: any) {
-        if (_data) {
-            (<any>this).id = _data["id"];
-            (<any>this).hasIanaId = _data["hasIanaId"];
-            (<any>this).displayName = _data["displayName"];
-            (<any>this).standardName = _data["standardName"];
-            (<any>this).daylightName = _data["daylightName"];
-            this.baseUtcOffset = _data["baseUtcOffset"] ? TimeSpan.fromJS(_data["baseUtcOffset"]) : <any>undefined;
-            (<any>this).supportsDaylightSavingTime = _data["supportsDaylightSavingTime"];
-        }
-    }
-
-    static fromJS(data: any): TimeZoneInfo {
-        data = typeof data === 'object' ? data : {};
-        let result = new TimeZoneInfo();
-        result.init(data);
-        return result;
-    }
-
-    toJSON(data?: any) {
-        data = typeof data === 'object' ? data : {};
-        data["id"] = this.id;
-        data["hasIanaId"] = this.hasIanaId;
-        data["displayName"] = this.displayName;
-        data["standardName"] = this.standardName;
-        data["daylightName"] = this.daylightName;
-        data["baseUtcOffset"] = this.baseUtcOffset ? this.baseUtcOffset.toJSON() : <any>undefined;
-        data["supportsDaylightSavingTime"] = this.supportsDaylightSavingTime;
-        return data;
-    }
-}
-
-export interface ITimeZoneInfo {
-    id?: string | undefined;
-    hasIanaId?: boolean;
-    displayName?: string | undefined;
-    standardName?: string | undefined;
-    daylightName?: string | undefined;
-    baseUtcOffset?: TimeSpan;
-    supportsDaylightSavingTime?: boolean;
 }
 
 export class UpdateClientAttachmentFileInfoInputDto implements IUpdateClientAttachmentFileInfoInputDto {

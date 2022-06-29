@@ -91,17 +91,34 @@
     }
 }
 
-.status-dot {
-    width: 14px;
-    height: 14px;
-    font-size: 14px;
-    line-height: 14px;
-    &.grey-dot {
-        color: $light-grey-color;
+.status {
+    &-dot {
+        width: 14px;
+        height: 14px;
+        font-size: 14px;
+        line-height: 14px;
+        &.not-active-flag {
+            color: $light-grey-color;
+        }
+        &.active-flag {
+            color: $green-color;
+        }
+        &.deleted-flag {
+            color: #F80830;
+        }
     }
-    &.green-dot {
-        color: $green-color;
+    &-text {
+        &--active {
+            color: $green-color;
+        }
+        &--not-active {
+            color: $medium-grey-color;
+        }
+        &--deleted {
+            color: #F80830;
+        }
     }
+
 }
 
 .clear-all-button {
