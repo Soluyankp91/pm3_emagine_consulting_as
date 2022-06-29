@@ -2,7 +2,7 @@
     <div fxLayout="column" fxLayoutAlign="start start" class="main-overview--filter">
         <h2 class="main-overview--header u-mb--20">Overview</h2>
         <div fxLayout="row" fxLayoutAlign="space-between start" class="u-w--100">
-            <div fxFlex fxLayout="row" fxLayoutAlign="start center" class="u-w--100" fxFlex="75%">
+            <div fxFlex fxLayout="row" fxLayoutAlign="start center" class="u-w--100" fxFlex.gt-lg="75%" fxFlex.gt-md="85%" >
                 <div class="main-overview--filter-manager cursor-pointer u-mr--16" [matTooltip]="mapListByProperty(selectedAccountManagers, 'name')" [matMenuTriggerFor]="managerMenu" (menuOpened)="accountManagerFilter.setValue(''); accountManagerFilterInput.click()">
                     <img *ngIf="selectedAccountManagers.length === 1" class="border-rounded-50 image-thumbnail-small" [src]="employeeProfileUrl(selectedAccountManagers[0]?.externalId!)" />
                     <img *ngIf="selectedAccountManagers.length === 0" src="../../../assets/common/images/no-img.svg">
@@ -66,15 +66,15 @@
                     </span>
                 </div>
             </div>
-            <div fxLayout="row" fxLayoutAlign="start center" fxFlex="10%">
-                <mat-divider class="u-mr--10" [vertical]="true" style="height: 46px;"></mat-divider>
+            <div fxLayout="row" fxLayoutAlign="start center" fxFlex.gt-lg="10%" fxFlex.gt-md="7%">
+                <mat-divider class="" [vertical]="true" style="height: 46px;"></mat-divider>
                 <button mat-button (click)="clearAllFilters()">
                     <span class="clear-all-button" >
                         Clear all
                     </span>
                 </button>
             </div>
-            <div fxLayout="column" fxLayoutAlign="start end" fxFlex="15%">
+            <div fxLayout="column" fxLayoutAlign="start end" fxFlex.gt-lg="15%" fxFlex.gt-md="10%">
                 <div fxLayout="column" fxLayoutAlign="space-between end" fxLayoutGap="16px" class="u-w--100">
                     <mat-form-field appearance="fill" class="search-filter-input u-w--100 mat-elevation-z0 formFieldNoMarginPadding">
                         <input autocomplete="off" matInput [formControl]="workflowFilter" placeholder="Search" type="text">
@@ -142,7 +142,7 @@
     </div>
     <div fxLayout="column" fxLayoutAlign="start start" class="main-overview--content">
         <div fxLayout="row" fxLayoutAlign="flex-end start" class="u-w--100 u-mr--10">
-            <mat-form-field appearance="fill" class="main-overview--filter-select formFieldNoMarginPadding filter-select u-mr--10">
+            <mat-form-field appearance="fill" class="main-overview--filter-select formFieldNoMarginPadding u-mr--10">
                 <mat-select [formControl]="overviewViewTypeControl" name="item">
                     <mat-option *ngFor="let view of overviewViewTypes | keyvalue"
                         [value]="+view.key">
@@ -150,7 +150,7 @@
                     </mat-option>
                 </mat-select>
             </mat-form-field>
-            <mat-form-field appearance="fill" class="main-overview--filter-select formFieldNoMarginPadding filter-select">
+            <mat-form-field appearance="fill" class="main-overview--filter-select formFieldNoMarginPadding">
                 <mat-select [formControl]="viewType" name="item">
                     <mat-option *ngFor="let view of views" [class.active]="view.value === viewType.value"
                         (click)="changeViewType()" [value]="view.value">
@@ -221,8 +221,8 @@
                     [viewType]="viewType.value"
                     [draggable]="false"
                     [isWorkflow]="true"
-                    (userSelectedStatusForWorflow)="setUserSelectedStatusForWorflow($event)"
-                    >
+                    [start]="startDateOfChart"
+                    (userSelectedStatusForWorflow)="setUserSelectedStatusForWorflow($event)">
                     <ng-template #group let-group="group">
                         <!-- {{ group.title }} -->
                     </ng-template>
@@ -292,8 +292,8 @@
                     [viewType]="viewType.value"
                     [draggable]="false"
                     [isConsultants]="true"
-                    (userSelectedStatusForConsultant)="setUserSelectedStatusForConsultant($event)"
-                    >
+                    [start]="startDateOfChart"
+                    (userSelectedStatusForConsultant)="setUserSelectedStatusForConsultant($event)">
                     <ng-template #group let-group="group">
                         <!-- {{ group.title }} -->
                     </ng-template>
