@@ -12,7 +12,10 @@
             <input type="text" matInput [matAutocomplete]="auto" [formControl]="managerFilter" (click)="$event.stopPropagation()" [placeholder]="formFieldLabel">
             <mat-autocomplete #auto="matAutocomplete" [displayWith]="displayNameFn">
                 <mat-option *ngFor="let option of filteredManagers" [value]="option" (click)="selectOption($event, option)">
-                    {{option.name}}
+                    <div class="multilineDropdown-option--row flex-items-center" [matTooltip]="option.name">
+                        <img *ngIf="option.id !== 'no-data'" class="image-settings--dropdown u-mr--8" [src]="employeeProfileUrl(option.externalId!)" />
+                        <b>{{ option.name }}</b>
+                    </div>
                 </mat-option>
             </mat-autocomplete>
         </mat-form-field>
