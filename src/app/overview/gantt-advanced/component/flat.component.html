@@ -84,7 +84,12 @@
                             <div class="gantt-flat-items" [style.height.px]="styles.lineHeight">
                                 <ng-container *ngFor="let item of items; trackBy: trackBy">
                                     <ngx-gantt-bar [item]="item" [template]="barTemplate"
-                                        (barClick)="barClick.emit($event)"></ngx-gantt-bar>
+                                        (barClick)="barClick.emit($event)" (mouseenter)="setPosition($event, item)" class="period-item--bar">
+                                    </ngx-gantt-bar>
+                                    <div class="tooltip" [style.left.px]="menuTopLeftPosition.x"[style.top.px]="menuTopLeftPosition.y">
+                                        <span><b>{{item?.origin?.title!}}</b></span>
+                                        <span>{{tooltipStartDate | momentFormat: 'DD.MM.YYYY'}} - {{tooltipEndDate | momentFormat: 'DD.MM.YYYY'}}</span>
+                                    </div>
                                 </ng-container>
                             </div>
                         </ng-container>
