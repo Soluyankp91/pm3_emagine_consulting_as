@@ -26,7 +26,9 @@ export class AppGanttFlatComponent extends GanttUpper implements OnInit {
 
     mergeIntervalDays = 3;
     userSelectedStatuses: any;
-
+    menuTopLeftPosition =  {x: 0, y: 0}
+    tooltipStartDate: Date;
+    tooltipEndDate: Date | string;
     override groups: GanttGroupInternal<any>[] = [];
     clientDisplayColumns = [
         'process',
@@ -154,6 +156,15 @@ export class AppGanttFlatComponent extends GanttUpper implements OnInit {
     setUserSelectedStatusForConsultant(workflowId: string, consultantId: number, userSelectedStatus: number) {
         let ids = {workflowId: workflowId, consultantId: consultantId, userSelectedStatus: userSelectedStatus}
         this.userSelectedStatusForConsultant.emit(ids);
+    }
+
+    setPosition(event: MouseEvent, item: any) {
+        debugger;
+        event.preventDefault();
+        this.menuTopLeftPosition.x = event.clientX;
+        this.menuTopLeftPosition.y = event.clientY + 10;
+        this.tooltipStartDate = new Date(item?.origin?.start*1000) ;
+        this.tooltipEndDate = item?.origin?.end ? new Date(item?.origin?.end*1000) : '...';
     }
 
 }

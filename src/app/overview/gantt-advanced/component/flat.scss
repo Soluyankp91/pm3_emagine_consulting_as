@@ -35,9 +35,29 @@
 
 .main-overview {
     &-icon {
-        font-size: 12px;
+        line-height: 40px;
         &-type {
             line-height: 40px;
         }
+    }
+}
+
+.tooltip {
+    display: none;
+}
+
+.period-item--bar:hover {
+    &+.tooltip {
+        position: fixed;
+        z-index: 999;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        width: auto;
+        padding: 8px 16px;
+        background: #FFFFFF;
+        border: 1px solid #E7E3E8;
+        box-shadow: 0px 0px 11px rgba(0, 0, 0, 0.11);
+        color: rgba(56, 72, 83, 0.8);
     }
 }

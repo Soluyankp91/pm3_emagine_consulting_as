@@ -155,7 +155,7 @@ export class WorkflowPeriodComponent implements OnInit {
                 case WorkflowProcessType.ChangeClientPeriod:
                 return;
                 case WorkflowProcessType.TerminateConsultant:
-                    return this.deleteConsultantTermination(1); // change to item.consultant.id when BE will be ready
+                    return this.deleteConsultantTermination(item?.consultant?.id!);
                 case WorkflowProcessType.TerminateWorkflow:
                     return this.deleteWorkflow();
             }
