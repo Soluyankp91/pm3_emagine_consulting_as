@@ -58,7 +58,7 @@ export class ClientComponent extends AppComponentBase implements OnInit, OnDestr
         // 'clientCountry',
         'clientAddress_City',
         'clientAddress_Address',
-        'status',
+        'isActive',
         'owner_Name',
         'action'
     ];
