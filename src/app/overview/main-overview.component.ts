@@ -2,7 +2,7 @@ import { Component, Injector, OnInit, ViewChild } from '@angular/core';
 import { FormControl } from '@angular/forms';
 import { GanttDate, GanttItem, GanttViewOptions, GanttViewType, NgxGanttComponent } from '@worktile/gantt';
 import { getUnixTime } from 'date-fns';
-import { Subject } from 'rxjs';
+import { merge, Subject, Subscription } from 'rxjs';
 import { debounceTime, finalize, switchMap, takeUntil } from 'rxjs/operators';
 import { AppConsts } from 'src/shared/AppConsts';
 import { ApiServiceProxy, EmployeeDto, EmployeeServiceProxy, EnumEntityTypeDto, LookupServiceProxy, MainOverviewItemForConsultantDto, MainOverviewItemForWorkflowDto, MainOverviewServiceProxy, MainOverviewStatusDto } from 'src/shared/service-proxies/service-proxies';
@@ -87,6 +87,9 @@ export class MainOverviewComponent extends AppComponentBase implements OnInit {
         }
     ];
 
+    workflowChartSubscription: Subscription;
+    consultantChartSubscription: Subscription;
+
     private _unsubscribe = new Subject();
 
     constructor(
@@ -129,54 +132,18 @@ export class MainOverviewComponent extends AppComponentBase implements OnInit {
             }
         });
 
-        this.invoicingEntityControl.valueChanges.pipe(
-            takeUntil(this._unsubscribe),
-            debounceTime(700)
-        ).subscribe(() => {
-            this.changeViewType();
-        });
-
-        this.paymentEntityControl.valueChanges.pipe(
-            takeUntil(this._unsubscribe),
-            debounceTime(700)
-        ).subscribe(() => {
-            this.changeViewType();
-        });
-
-        this.salesTypeControl.valueChanges.pipe(
-            takeUntil(this._unsubscribe),
-            debounceTime(700)
-        ).subscribe(() => {
-            this.changeViewType();
-        });
-
-        this.deliveryTypesControl.valueChanges.pipe(
-            takeUntil(this._unsubscribe),
-            debounceTime(700)
-        ).subscribe(() => {
-            this.changeViewType();
-        });
-
-        this.marginsControl.valueChanges.pipe(
-            takeUntil(this._unsubscribe),
-            debounceTime(700)
-        ).subscribe(() => {
-            this.changeViewType();
-        });
-
-        this.overviewViewTypeControl.valueChanges.pipe(
-            takeUntil(this._unsubscribe),
-            debounceTime(700)
-        ).subscribe(() => {
-            this.changeViewType();
-        });
-
-        this.workflowFilter.valueChanges.pipe(
-            takeUntil(this._unsubscribe),
-            debounceTime(700)
-        ).subscribe(() => {
-            this.changeViewType();
-        });
+        merge(this.invoicingEntityControl.valueChanges,
+            this.paymentEntityControl.valueChanges,
+            this.salesTypeControl.valueChanges,
+            this.deliveryTypesControl.valueChanges,
+            this.marginsControl.valueChanges,
+            this.overviewViewTypeControl.valueChanges,
+            this.workflowFilter.valueChanges).pipe(
+                takeUntil(this._unsubscribe),
+                debounceTime(700)
+            ).subscribe(() => {
+                this.changeViewType();
+            });
      }
 
     ngOnInit(): void {
@@ -284,7 +251,10 @@ export class MainOverviewComponent extends AppComponentBase implements OnInit {
         this.showMainSpinner();
         switch (this.overviewViewTypeControl.value) {
             case 1: // 'Client periods':
-                this._mainOverviewService.workflows(
+                if (this.workflowChartSubscription) {
+                    this.workflowChartSubscription.unsubscribe();
+                }
+                this.workflowChartSubscription = this._mainOverviewService.workflows(
                     mainOverviewStatus?.id,
                     ownerIds,
                     invoicingEntity,
@@ -356,7 +326,10 @@ export class MainOverviewComponent extends AppComponentBase implements OnInit {
                     });
                 break;
             case 2: //'Consultant periods':
-                this._mainOverviewService.consultants(
+                if (this.consultantChartSubscription) {
+                    this.consultantChartSubscription.unsubscribe();
+                }
+                this.consultantChartSubscription = this._mainOverviewService.consultants(
                     mainOverviewStatus?.id,
                     ownerIds,
                     invoicingEntity,

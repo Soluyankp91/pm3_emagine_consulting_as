@@ -6,7 +6,7 @@ import { MatMenuTrigger } from '@angular/material/menu';
 import { MatTableDataSource } from '@angular/material/table';
 import { ActivatedRoute, ActivatedRouteSnapshot, Resolve, Router } from '@angular/router';
 import { MsalService } from '@azure/msal-angular';
-import { Observable, Subject } from 'rxjs';
+import { merge, Observable, Subject, Subscription } from 'rxjs';
 import { debounceTime, finalize, map, switchMap, takeUntil } from 'rxjs/operators';
 import { AppComponentBase } from 'src/shared/app-component-base';
 import { AppConsts } from 'src/shared/AppConsts';
@@ -94,7 +94,7 @@ export class WorkflowComponent extends AppComponentBase implements OnInit, OnDes
   // reference to the MatMenuTrigger in the DOM
   @ViewChild('rightMenuTrigger', {static: true}) matMenuTrigger: MatMenuTrigger;
 
- 
+  workflowListSubscription: Subscription;
 
     private _unsubscribe = new Subject();
     constructor(
@@ -123,42 +123,12 @@ export class WorkflowComponent extends AppComponentBase implements OnInit, OnDes
                 }
         });
 
-        this.workflowFilter.valueChanges.pipe(
-            takeUntil(this._unsubscribe),
-            debounceTime(700)
-        ).subscribe(() => {
-            this.getWorkflowList();
-        });
-
-        this.invoicingEntityControl.valueChanges.pipe(
-            takeUntil(this._unsubscribe),
-            debounceTime(700)
-        ).subscribe(() => {
-            this.getWorkflowList();
-        });
-
-        this.paymentEntityControl.valueChanges.pipe(
-            takeUntil(this._unsubscribe),
-            debounceTime(700)
-        ).subscribe(() => {
-            this.getWorkflowList();
-        });
-
-        this.salesTypeControl.valueChanges.pipe(
-            takeUntil(this._unsubscribe),
-            debounceTime(700)
-        ).subscribe(() => {
-            this.getWorkflowList();
-        });
-
-        this.deliveryTypesControl.valueChanges.pipe(
-            takeUntil(this._unsubscribe),
-            debounceTime(700)
-        ).subscribe(() => {
-            this.getWorkflowList();
-        });
-
-        this.workflowStatusControl.valueChanges.pipe(
+        merge(this.workflowFilter.valueChanges,
+            this.invoicingEntityControl.valueChanges,
+            this.paymentEntityControl.valueChanges,
+            this.salesTypeControl.valueChanges,
+            this.deliveryTypesControl.valueChanges,
+            this.workflowStatusControl.valueChanges).pipe(
             takeUntil(this._unsubscribe),
             debounceTime(700)
         ).subscribe(() => {
@@ -427,7 +397,11 @@ export class WorkflowComponent extends AppComponentBase implements OnInit, OnDes
         let workflowStatus = this.workflowStatusControl.value ? this.workflowStatusControl.value : undefined;
         let ownerIds = this.selectedAccountManagers.map(x => +x.id);
 
-        this._apiService.workflow(
+        if (this.workflowListSubscription) {
+            this.workflowListSubscription.unsubscribe();
+        }
+
+        this.workflowListSubscription = this._apiService.workflow(
             invoicingEntity,
             paymentEntity,
             salesType,
