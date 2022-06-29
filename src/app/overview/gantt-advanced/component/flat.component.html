@@ -7,10 +7,10 @@
             <div class="gantt-flat-side-column" fxFlex="40%">
                 Client
             </div>
-            <div class="gantt-flat-side-column" fxFlex="35%">
+            <div class="gantt-flat-side-column" fxFlex="30%">
                 Consultants
             </div>
-            <div class="gantt-flat-side-column" fxLayoutAlign="flex-end center" fxFlex="20%">
+            <div class="gantt-flat-side-column text-truncate-ellipsis" fxLayoutAlign="flex-end center" fxFlex="25%">
                 Sales manager
             </div>
         </div>
@@ -19,7 +19,7 @@
                 <div class="gantt-group-content" fxFlex="5%">
                     <span class="text-bold-800" *ngIf="isWorkflow">
                         <div fxLayout="row" fxLayoutAlign="start center" class="u-w-100">
-                            <mat-icon class="main-overview-icon" [matMenuTriggerFor]="workflowMenu" svgIcon="{{detectIcon(group?.origin?.origin?.mainOverviewStatusOfWorkflowForSales!)}}" [ngClass]="detectProcessColor(group?.origin?.origin?.mainOverviewStatusOfWorkflowForSales!)"></mat-icon>
+                            <mat-icon class="main-overview-icon cursor-pointer" [matMenuTriggerFor]="workflowMenu" svgIcon="{{detectIcon(group?.origin?.origin?.mainOverviewStatusOfWorkflowForSales!)}}" [ngClass]="detectProcessColor(group?.origin?.origin?.mainOverviewStatusOfWorkflowForSales!)"></mat-icon>
                             <mat-menu #workflowMenu>
                                 <button *ngFor="let status of userSelectedStatuses"
                                     class="menu-item"
@@ -46,12 +46,12 @@
                         </div>
                     </span>
                 </div>
-                <div class="gantt-group-content" fxFlex="40%">
+                <div class="gantt-group-content text-truncate-ellipsis" fxFlex="40%">
                     <span class="text-truncate-ellipsis text-bold" [matTooltip]="group?.origin?.origin?.clientDisplayName!">
                         {{group!.origin!.origin!.clientDisplayName}}
                     </span>
                 </div>
-                <div class="gantt-group-content" fxFlex="35%">
+                <div class="gantt-group-content text-truncate-ellipsis" fxFlex="30%">
                     <span class="text-truncate-ellipsis text-bold" [matTooltip]="mapListByProperty(group?.origin?.origin?.consultants!, 'name')" *ngIf="isWorkflow">
                         <ng-container *ngIf="group?.origin?.origin?.consultants!.length > 1; else singleConsultantDisplay">
                             {{group?.origin?.origin?.consultants?.length + 'Consultants'}}
@@ -64,7 +64,7 @@
                         {{group?.origin?.origin?.consultant?.name}}
                     </span>
                 </div>
-                <div class="gantt-group-content" fxFlex="20%">
+                <div class="gantt-group-content" fxFlex="25%">
                     <div fxLayout="row" fxLayoutAlign="flex-end center" fxLayoutGap="15px" class="u-w-100">
                         <img class="manager-search--photo" [matTooltip]="group?.origin?.origin?.salesManager?.name!" [src]="employeeProfileUrl(group?.origin?.origin?.salesManager?.externalId!)" />
                         <button mat-icon-button matTooltip="Go to workflow" (click)="redirectToWorkflow(group?.origin?.origin?.workflowId!)">
@@ -84,8 +84,7 @@
                             <div class="gantt-flat-items" [style.height.px]="styles.lineHeight">
                                 <ng-container *ngFor="let item of items; trackBy: trackBy">
                                     <ngx-gantt-bar [item]="item" [template]="barTemplate"
-                                        (barClick)="barClick.emit($event)" [matTooltip]="item?.origin?.title!"
-                                        [matTooltipPosition]="'above'"></ngx-gantt-bar>
+                                        (barClick)="barClick.emit($event)"></ngx-gantt-bar>
                                 </ng-container>
                             </div>
                         </ng-container>

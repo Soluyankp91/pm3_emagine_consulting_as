@@ -1,6 +1,6 @@
 import { Component, Injector, OnInit, ViewChild } from '@angular/core';
 import { FormControl } from '@angular/forms';
-import { GanttDate, GanttGroup, GanttItem, GanttViewOptions, GanttViewType, NgxGanttComponent } from '@worktile/gantt';
+import { GanttDate, GanttGroup, GanttItem, GanttUpper, GanttViewOptions, GanttViewType, NgxGanttComponent } from '@worktile/gantt';
 import { getUnixTime } from 'date-fns';
 import { Subject } from 'rxjs';
 import { debounceTime, finalize, switchMap, takeUntil } from 'rxjs/operators';
@@ -13,6 +13,7 @@ import { OverviewFlag, SelectableEmployeeDto, SelectableStatusesDto } from './ma
 import * as moment from 'moment';
 import { Router } from '@angular/router';
 import { AppComponentBase } from 'src/shared/app-component-base';
+import { AppGanttFlatComponent } from './gantt-advanced/component/flat.component';
 
 const MainOverviewGridOptionsKey = 'MainOverviewGridFILTERS.1.0.0.';
 
@@ -69,6 +70,7 @@ export class MainOverviewComponent extends AppComponentBase implements OnInit {
     viewType: FormControl = new FormControl(GanttViewType.week);
 
     startDate = new Date();
+    startDateOfChart: number;
     viewOptions = {
         mergeIntervalDays: 3,
         dateFormat: {
@@ -348,6 +350,7 @@ export class MainOverviewComponent extends AppComponentBase implements OnInit {
                                 //     week: 'w',
                                 //     year: 'yyyy'
                                 // },
+                            this.startDateOfChart = getUnixTime(date);
                             this.viewOptions.start = new GanttDate(getUnixTime(date)),
                             this.viewOptions.end = new Date(endDate.setHours(0,0,0,0)).getTime() !== new Date(new Date().setHours(0,0,0,0)).getTime() ? new GanttDate(getUnixTime(endDate)) : new GanttDate(getUnixTime(new Date(oldestDateArray.lastClientPeriodEndDate?.toDate()!))),
                             this.viewOptions.min = new GanttDate(getUnixTime(date)),
@@ -439,10 +442,11 @@ export class MainOverviewComponent extends AppComponentBase implements OnInit {
                             //         week: 'w',
                             //         year: 'yyyy'
                             //     },
-                                this.viewOptions.start = new GanttDate(getUnixTime(new Date(date))),
-                                this.viewOptions.end = endDate.getTime() !== new Date().getTime() ? new GanttDate(getUnixTime(endDate)) : new GanttDate(getUnixTime(new Date(oldestDateArray.lastConsultantPeriodEndDate?.toDate()!))),
-                                this.viewOptions.min = new GanttDate(getUnixTime(new Date(date))),
-                                this.viewOptions.max = endDate.getTime() !== new Date().getTime() ? new GanttDate(getUnixTime(endDate)) : new GanttDate(getUnixTime(new Date(oldestDateArray.lastConsultantPeriodEndDate?.toDate()!)))
+                            this.startDateOfChart = getUnixTime(date);
+                            this.viewOptions.start = new GanttDate(getUnixTime(new Date(date))),
+                            this.viewOptions.end = endDate.getTime() !== new Date().getTime() ? new GanttDate(getUnixTime(endDate)) : new GanttDate(getUnixTime(new Date(oldestDateArray.lastConsultantPeriodEndDate?.toDate()!))),
+                            this.viewOptions.min = new GanttDate(getUnixTime(new Date(date))),
+                            this.viewOptions.max = endDate.getTime() !== new Date().getTime() ? new GanttDate(getUnixTime(endDate)) : new GanttDate(getUnixTime(new Date(oldestDateArray.lastConsultantPeriodEndDate?.toDate()!)))
                             // }
                             let groups: GanttGroup<any>[] = [];
                             let items: GanttItem[] = [];
