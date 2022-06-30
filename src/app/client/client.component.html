@@ -6,7 +6,7 @@
             </h2>
         </div>
         <div fxLayout="row" fxLayoutAlign="space-between start" class="u-w--100">
-            <div fxFlex="40%" fxLayout="row" fxLayoutAlign="start center" class="u-w--100">
+            <div fxFlex="1 0 40%" fxLayout="row" fxLayoutAlign="start center" class="u-w--100">
                 <div class="client-list--filter-manager cursor-pointer u-mr--16" [matTooltip]="mapListByProperty(selectedAccountManagers, 'name')" [matMenuTriggerFor]="managerMenu" (menuOpened)="accountManagerFilter.setValue(''); accountManagerFilterInput.click()">
                     <img *ngIf="selectedAccountManagers?.length === 1" class="border-rounded-50 image-thumbnail-small" [src]="employeeProfileUrl(selectedAccountManagers[0]?.externalId!)" />
                     <img *ngIf="selectedAccountManagers?.length === 0" src="../../../assets/common/images/no-img.svg">
@@ -198,12 +198,24 @@
                         </span>
                     </mat-cell>
                 </ng-container>
-                <ng-container matColumnDef="status">
+                <ng-container matColumnDef="isActive">
                     <mat-header-cell *matHeaderCellDef mat-sort-header fxFlex="17%"> Status </mat-header-cell>
                     <mat-cell *matCellDef="let row" fxFlex="17%">
-                        <span class="text-truncate-ellipsis" [matTooltip]="row.status">
-                            {{row.status}}
-                        </span>
+                        <div fxLayout="row" fxLayoutAlign="start center" *ngIf="row.isActive && row.isWrongfullyDeletedInHubspot" matTooltip="Active, Wrongfully deleted">
+                            <mat-icon class="status-dot deleted-flag">fiber_manual_record</mat-icon>
+                            <span class="column">
+                                <span class="text-truncate-ellipsis status-text--active">Active</span>
+                                <span class="text-truncate-ellipsis status-text--deleted">Wrongfully deleted</span>
+                            </span>
+                        </div>
+                        <div fxLayout="row" fxLayoutAlign="start center" *ngIf="!row.isWrongfullyDeletedInHubspot" [matTooltip]="row.isActive ? 'Active' : 'Non-active'">
+                            <mat-icon class="status-dot" [ngClass]="row.isActive ? 'active-flag' : 'not-active-flag'">fiber_manual_record   </mat-icon>
+                            <span class="text-truncate-ellipsis" [ngClass]="row.isActive ? 'status-text--active' : 'status-text--not-active'">{{row.isActive ? 'Active' : 'Non-active'}}</span>
+                        </div>
+                        <div fxLayout="row" fxLayoutAlign="start center" matTooltip="Deleted" *ngIf="row.isDeleted">
+                            <mat-icon class="status-dot deleted-flag">fiber_manual_record</mat-icon>
+                            <span class="text-truncate-ellipsis status-text--deleted">Deleted</span>
+                        </div>
                     </mat-cell>
                 </ng-container>
                 <ng-container matColumnDef="owner_Name">

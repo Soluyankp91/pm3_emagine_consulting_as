@@ -1,6 +1,9 @@
-import { Component, EventEmitter, Inject, Injector, OnInit, Output } from '@angular/core';
+import { Component, EventEmitter, Inject, Injector, OnDestroy, OnInit, Output } from '@angular/core';
 import { FormBuilder, FormControl } from '@angular/forms';
 import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
+import * as moment from 'moment';
+import { Subject } from 'rxjs';
+import { debounceTime, takeUntil } from 'rxjs/operators';
 import { AppComponentBase } from 'src/shared/app-component-base';
 import { AvailableConsultantDto, ChangeClientPeriodDto, ConsultantPeriodAddDto, ExtendClientPeriodDto, NewContractRequiredConsultantPeriodDto } from 'src/shared/service-proxies/service-proxies';
 import { WorkflowDiallogAction } from '../workflow.model';
@@ -11,7 +14,7 @@ import { ChangeWorkflowForm, ExtendWorkflowForm } from './workflow-actions-dialo
   templateUrl: './workflow-actions-dialog.component.html',
   styleUrls: ['./workflow-actions-dialog.component.scss']
 })
-export class WorkflowActionsDialogComponent extends AppComponentBase implements OnInit {
+export class WorkflowActionsDialogComponent extends AppComponentBase implements OnInit, OnDestroy {
     @Output() onConfirmed: EventEmitter<any> = new EventEmitter<any>();
     @Output() onRejected: EventEmitter<any> = new EventEmitter<any>();
     // Change workflow
@@ -22,6 +25,7 @@ export class WorkflowActionsDialogComponent extends AppComponentBase implements 
     startDate = new FormControl(null);
     endDate = new FormControl(null);
     noEndDate = new FormControl(false);
+    minEndDate: Date;
     // Terminate workflow
     // TBD
     changeWorkflowForm: ChangeWorkflowForm;
@@ -29,6 +33,8 @@ export class WorkflowActionsDialogComponent extends AppComponentBase implements 
     // Dialog data
     dialogTypes = WorkflowDiallogAction;
     consultants: AvailableConsultantDto[];
+
+    private _unsubscribe = new Subject();
     constructor(
         injector: Injector,
         @Inject(MAT_DIALOG_DATA)
@@ -47,6 +53,13 @@ export class WorkflowActionsDialogComponent extends AppComponentBase implements 
             this.changeWorkflowForm = new ChangeWorkflowForm();
             this.extendWorkflowForm = new ExtendWorkflowForm();
             this.consultants = data.consultantData;
+            this.extendWorkflowForm?.startDate?.valueChanges.pipe(
+                takeUntil(this._unsubscribe),
+                debounceTime(500)
+            ).subscribe(() => {
+                let startDate = this.extendWorkflowForm?.startDate?.value as moment.Moment;
+                this.minEndDate = new Date(startDate.toDate().getFullYear(), startDate.toDate().getMonth(), startDate.toDate().getDate() + 1);
+            });
         }
 
     ngOnInit(): void {
@@ -64,6 +77,11 @@ export class WorkflowActionsDialogComponent extends AppComponentBase implements 
                 });
                 break;
         }
+    }
+
+    ngOnDestroy(): void {
+        this._unsubscribe.next();
+        this._unsubscribe.complete();
     }
 
     addConsutlantToChangeForm(consultant: AvailableConsultantDto) {
