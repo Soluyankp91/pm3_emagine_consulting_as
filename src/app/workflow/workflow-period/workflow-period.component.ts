@@ -195,7 +195,7 @@ export class WorkflowPeriodComponent extends AppComponentBase implements OnInit 
         this.showMainSpinner();
         this._apiService.clientPeriod(clientPeriodId)
             .pipe(finalize(() => this.hideMainSpinner()))
-            .subscribe(result => this._workflowDataService.workflowSideSectionUpdated.emit({isStatusUpdate: true}));
+            .subscribe(result => this._workflowDataService.workflowTopSectionUpdated.emit(true));
     }
 
     deleteConsultantPeriod(consultantPeriodId: string) {

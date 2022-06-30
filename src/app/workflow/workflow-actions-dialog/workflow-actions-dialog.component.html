@@ -101,6 +101,7 @@
                             <input autocomplete="off" placeholder="New end date" matInput
                                     [matDatepicker]="extensionDatePicker"
                                     name="endDate"
+                                    [min]="minEndDate"
                                     formControlName="endDate"
                                     (focus)="extensionDatePicker.open()"
                                     (click)="extensionDatePicker.open()" readonly>
