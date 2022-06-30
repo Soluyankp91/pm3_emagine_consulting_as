@@ -1,21 +1,21 @@
 import { Overlay } from '@angular/cdk/overlay';
-import { Component, Input, OnInit } from '@angular/core';
+import { Component, Injector, Input, OnInit } from '@angular/core';
 import { MatDialog } from '@angular/material/dialog';
 import { Subject } from 'rxjs';
 import { finalize, takeUntil } from 'rxjs/operators';
 import { InternalLookupService } from 'src/app/shared/common/internal-lookup.service';
 import { ConfirmationDialogComponent } from 'src/app/shared/components/confirmation-dialog/confirmation-dialog.component';
 import { ManagerStatus } from 'src/app/shared/components/manager-search/manager-search.model';
-import { WorkflowProcessDto, WorkflowProcessType, EnumEntityTypeDto, WorkflowServiceProxy, StepDto, EmployeeDto, StepType, WorkflowStepStatus, ConsultantResultDto } from 'src/shared/service-proxies/service-proxies';
+import { AppComponentBase } from 'src/shared/app-component-base';
+import { WorkflowProcessDto, WorkflowProcessType, WorkflowServiceProxy, StepDto, StepType, WorkflowStepStatus, ConsultantResultDto, ApiServiceProxy } from 'src/shared/service-proxies/service-proxies';
 import { WorkflowDataService } from '../workflow-data.service';
-import { WorkflowSteps } from '../workflow.model';
 
 @Component({
     selector: 'app-workflow-period',
     templateUrl: './workflow-period.component.html',
     styleUrls: ['./workflow-period.component.scss']
 })
-export class WorkflowPeriodComponent implements OnInit {
+export class WorkflowPeriodComponent extends AppComponentBase implements OnInit {
     @Input() workflowId: string;
     @Input() periodId: string | undefined;
 
@@ -39,12 +39,16 @@ export class WorkflowPeriodComponent implements OnInit {
     isStatusUpdate = false;
     private _unsubscribe = new Subject();
     constructor(
+        injector: Injector,
         public _workflowDataService: WorkflowDataService,
         private _workflowService: WorkflowServiceProxy,
         private overlay: Overlay,
         private dialog: MatDialog,
-        private _internalLookupService: InternalLookupService
-    ) { }
+        private _internalLookupService: InternalLookupService,
+        private _apiService: ApiServiceProxy
+    ) {
+        super(injector);
+    }
 
     ngOnInit(): void {
         this.getPeriodStepTypes();
@@ -153,11 +157,16 @@ export class WorkflowPeriodComponent implements OnInit {
         dialogRef.componentInstance.onConfirmed.subscribe((result) => {
             switch (item.typeId) {
                 case WorkflowProcessType.ChangeClientPeriod:
-                return;
+                case WorkflowProcessType.ExtendClientPeriod:
+                    return this.deleteClientPeriod(this.periodId!);
+                case WorkflowProcessType.StartConsultantPeriod:
+                case WorkflowProcessType.ChangeConsultantPeriod:
+                case WorkflowProcessType.ExtendConsultantPeriod:
+                    return this.deleteConsultantPeriod(item.consultantPeriodId!);
                 case WorkflowProcessType.TerminateConsultant:
                     return this.deleteConsultantTermination(item?.consultant?.id!);
                 case WorkflowProcessType.TerminateWorkflow:
-                    return this.deleteWorkflow();
+                    return this.deleteWorkflowTermination();
             }
         });
 
@@ -170,15 +179,29 @@ export class WorkflowPeriodComponent implements OnInit {
         this.selectedAnchor = anchorName;
     }
 
-    deleteWorkflow() {
+    deleteWorkflowTermination() {
         this._workflowService.terminationDelete(this.workflowId).subscribe(result => {
             this._workflowDataService.workflowSideSectionUpdated.emit({isStatusUpdate: true});
         });
     }
 
-    deleteConsultantTermination(consultantId: number) { //change type to number when BE will be ready
+    deleteConsultantTermination(consultantId: number) {
         this._workflowService.terminationConsultantDelete(this.workflowId, consultantId).subscribe(result => {
             this._workflowDataService.workflowSideSectionUpdated.emit({isStatusUpdate: true});
         })
+    }
+
+    deleteClientPeriod(clientPeriodId: string) {
+        this.showMainSpinner();
+        this._apiService.clientPeriod(clientPeriodId)
+            .pipe(finalize(() => this.hideMainSpinner()))
+            .subscribe(result => this._workflowDataService.workflowTopSectionUpdated.emit(true));
+    }
+
+    deleteConsultantPeriod(consultantPeriodId: string) {
+        this.showMainSpinner();
+        this._apiService.consultantPeriod(consultantPeriodId)
+            .pipe(finalize(() => this.hideMainSpinner()))
+            .subscribe(result => this._workflowDataService.workflowSideSectionUpdated.emit({isStatusUpdate: true}));
     }
 }

@@ -2,9 +2,10 @@ import { Component, EventEmitter, Injector, Input, OnDestroy, OnInit, Output, Vi
 import { FormControl } from '@angular/forms';
 import { MatMenuTrigger } from '@angular/material/menu';
 import { Observable, Subject } from 'rxjs';
-import { debounceTime, switchMap, takeUntil } from 'rxjs/operators';
+import { debounceTime, finalize, switchMap, takeUntil } from 'rxjs/operators';
+import { WorkflowDataService } from 'src/app/workflow/workflow-data.service';
 import { AppComponentBase } from 'src/shared/app-component-base';
-import { EmployeeDto, IdNameDto, LookupServiceProxy } from 'src/shared/service-proxies/service-proxies';
+import { ClientPeriodServiceProxy, ConsultantPeriodServiceProxy, EmployeeDto, IdNameDto, LookupServiceProxy, WorkflowProcessType, WorkflowServiceProxy } from 'src/shared/service-proxies/service-proxies';
 import { ManagerStatus } from './manager-search.model';
 
 @Component({
@@ -19,16 +20,25 @@ export class ManagerSearchComponent extends AppComponentBase implements OnInit, 
     @Input() managerStatus: number;
     @Input() readonly: boolean;
     @Input() responsiblePerson: EmployeeDto;
+    @Input() periodType: number;
+    @Input() periodId: string;
+    @Input() consultantPeriodId: string;
+    @Input() stepType: number;
+    @Input() workflowId: string;
     @Output() managerSelected: EventEmitter<number> = new EventEmitter<number>();
 
     managerStatuses = ManagerStatus;
 
     managerFilter = new FormControl('');
-    filteredManagers: IdNameDto[] = [];
+    filteredManagers: any[] = [];
     private _unsubscribe = new Subject();
     constructor(
         injector: Injector,
-        private _lookupService: LookupServiceProxy
+        private _lookupService: LookupServiceProxy,
+        private _clientPeriodService: ClientPeriodServiceProxy,
+        private _consultantPeriodService: ConsultantPeriodServiceProxy,
+        private _workflowService: WorkflowServiceProxy,
+        private _workflowDataService: WorkflowDataService
     ) {
         super(injector);
         this.managerFilter.valueChanges.pipe(
@@ -45,15 +55,14 @@ export class ManagerSearchComponent extends AppComponentBase implements OnInit, 
                         : value;
                 }
 
-                return this._lookupService.employees(value);
+                return this._lookupService.employees(toSend.name);
                 // return new Observable();
             }),
         ).subscribe((list: any) => {
             if (list.length) {
                 this.filteredManagers = list;
             } else {
-                // this.filteredManagers = [{ name: 'No sourcers found', id: undefined }];
-                this.filteredManagers = [];
+                this.filteredManagers = [{ name: 'No managerxs found', id: 'no-data' }];
             }
         });
     }
@@ -69,7 +78,53 @@ export class ManagerSearchComponent extends AppComponentBase implements OnInit, 
     selectOption(event: Event, option: EmployeeDto) {
         event.stopPropagation();
         this.managerSelected.emit(option.id);
+        switch (this.periodType) {
+            case WorkflowProcessType.StartClientPeriod:
+            case WorkflowProcessType.ExtendClientPeriod:
+            case WorkflowProcessType.ChangeClientPeriod:
+                this.changeResponsibleForClientPeriodStep(option);
+                break;
+            case WorkflowProcessType.TerminateWorkflow:
+                this.changeResponsibleWorkflowTerminationStep(option);
+                break;
+            case WorkflowProcessType.StartConsultantPeriod:
+            case WorkflowProcessType.ChangeConsultantPeriod:
+            case WorkflowProcessType.ExtendConsultantPeriod:
+                this.changeResponsibleForConsultantPeriodStep(option);
+                break;
+            case WorkflowProcessType.TerminateConsultant:
+                this.changeResponsibleConsultantTerminationStep(option);
+                break;
+        }
         this.managerSearchMenu.closeMenu();
+    }
+
+    changeResponsibleForClientPeriodStep(responsiblePerson: EmployeeDto) {
+        this.showMainSpinner();
+        this._clientPeriodService.stepResponsible(this.periodId, this.stepType, responsiblePerson.id)
+            .pipe(finalize(() => this.hideMainSpinner()))
+            .subscribe(() => this.responsiblePerson = responsiblePerson);
+    }
+
+    changeResponsibleForConsultantPeriodStep(responsiblePerson: EmployeeDto) {
+        this.showMainSpinner();
+        this._consultantPeriodService.stepResponsible(this.consultantPeriodId, this.stepType,  responsiblePerson.id)
+            .pipe(finalize(() => this.hideMainSpinner()))
+            .subscribe(() => this.responsiblePerson = responsiblePerson);
+    }
+
+    changeResponsibleWorkflowTerminationStep(responsiblePerson: EmployeeDto) {
+        this.showMainSpinner();
+        this._workflowService.terminationStepResponsible(this.workflowId, this.stepType,  responsiblePerson.id)
+            .pipe(finalize(() => this.hideMainSpinner()))
+            .subscribe(() => this.responsiblePerson = responsiblePerson);
+    }
+
+    changeResponsibleConsultantTerminationStep(responsiblePerson: EmployeeDto) {
+        this.showMainSpinner();
+        this._workflowService.terminationConsultantStepResponsible(this.stepType, this.workflowId, this.consultantPeriodId,  responsiblePerson.id)
+            .pipe(finalize(() => this.hideMainSpinner()))
+            .subscribe(() => this.responsiblePerson = responsiblePerson);
     }
 
     detectManagerStatus(status: number) {

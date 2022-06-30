@@ -66,13 +66,13 @@ export class LoginComponent implements OnInit {
             this.authService.loginPopup({ ...this.msalGuardConfig.authRequest } as PopupRequest)
                 .subscribe((response: AuthenticationResult) => {
                     this.authService.instance.setActiveAccount(response.account);
-                    this.router.navigate(['/main']);
+                    this.router.navigate(['/app']);
                 });
         } else {
             this.authService.loginPopup()
                 .subscribe((response: AuthenticationResult) => {
                     this.authService.instance.setActiveAccount(response.account);
-                    this.router.navigate(['/main']);
+                    this.router.navigate(['/app']);
                 });
         }
     }

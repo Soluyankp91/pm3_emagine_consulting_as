@@ -20,7 +20,7 @@
                                 </span>
                             </div>
                             <!-- Change WF || terminate WF || terminateConsultant when BE will have termination -->
-                            <div *ngIf="item.typeId === workflowProcessTypes.ChangeClientPeriod || item.typeId === workflowProcessTypes.TerminateWorkflow || item.typeId === workflowProcessTypes.TerminateConsultant">
+                            <div *ngIf="item.typeId !== workflowProcessTypes.StartClientPeriod">
                                 <button mat-icon-button [matMenuTriggerFor]="consultantMenu" type="button" (click)="$event.stopPropagation();" class="workflow-icon--actions-treedot u-mr--16"><mat-icon>more_horiz</mat-icon></button>
                                 <mat-menu #consultantMenu>
                                     <button
@@ -44,6 +44,11 @@
                                     <app-manager-search
                                         (click)="$event.stopPropagation()"
                                         [formFieldLabel]="step.name + ' Manager'"
+                                        [periodId]="periodId!"
+                                        [consultantPeriodId]="item.consultantPeriodId!"
+                                        [stepType]="step.typeId!"
+                                        [periodType]="item.typeId!"
+                                        [workflowId]="workflowId"
                                         (managerSelected)="selectedManager($event)"
                                         [managerStatus]="step.status === workflowStatuses.Completed ? managerStatus.Completed : managerStatus.Pending"
                                         [responsiblePerson]="step.responsiblePerson!">
@@ -105,7 +110,8 @@
                                         [workflowId]="workflowId"
                                         [consultant]="consultant"
                                         [activeSideSection]="selectedSideSection"
-                                        [isCompleted]="selectedStep.status === workflowStatuses.Completed"></app-workflow-sourcing>
+                                        [isCompleted]="selectedStep.status === workflowStatuses.Completed"
+                                        [permissionsForCurrentUser]="selectedStep.actionsPermissionsForCurrentUser"></app-workflow-sourcing>
             </ng-container>
         </ng-container>
     </div>

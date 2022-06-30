@@ -71,7 +71,7 @@
                     <h2 class="workflow-section--header">Consultants</h2>
                     <div *ngFor="let consultant of financesConsultantsForm.consultants.controls; let i = index; last as last" [formGroupName]="i" class="workflow-finances--block-consultants u-w--100" [ngClass]="{'last-block': last}">
                         <div fxLayout="row" fxLayoutAlign="start center" class="u-mb--20">
-                            <img class="workflow-finances--consultant-img u-mr--16" [src]="consultantProfileUrl(consultant.value?.consultantData?.externalId)">
+                            <img class="workflow-finances--consultant-img u-mr--16" [src]="consultantProfileUrl(consultant.value?.consultant?.externalId)">
                             <p class="workflow-finances--consultant-name">
                                 {{consultant.value?.consultant?.name}}
                             </p>

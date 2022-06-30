@@ -2,7 +2,7 @@ import { Component, Injector, OnDestroy, OnInit, ViewChild } from '@angular/core
 import { FormControl } from '@angular/forms';
 import { MatTableDataSource } from '@angular/material/table';
 import { Router } from '@angular/router';
-import { Observable, Subject } from 'rxjs';
+import { Observable, Subject, Subscription } from 'rxjs';
 import { takeUntil, debounceTime, switchMap, finalize, map } from 'rxjs/operators';
 import { AppConsts } from 'src/shared/AppConsts';
 import { ClientListItemDto, ClientsServiceProxy, EmployeeDto, EmployeeServiceProxy, EnumServiceProxy, LookupServiceProxy } from 'src/shared/service-proxies/service-proxies';
@@ -58,7 +58,7 @@ export class ClientComponent extends AppComponentBase implements OnInit, OnDestr
         // 'clientCountry',
         'clientAddress_City',
         'clientAddress_Address',
-        'status',
+        'isActive',
         'owner_Name',
         'action'
     ];
@@ -80,6 +80,8 @@ export class ClientComponent extends AppComponentBase implements OnInit, OnDestr
     onlyWrongfullyDeletedInHubspot = false;
 
     clientDataSource: MatTableDataSource<ClientListItemDto> = new MatTableDataSource<ClientListItemDto>();
+    clientListSubscription: Subscription;
+
     private _unsubscribe = new Subject();
     constructor(
         injector: Injector,
@@ -247,7 +249,10 @@ export class ClientComponent extends AppComponentBase implements OnInit, OnDestr
         } else {
             isActiveFlag = this.isActiveClients;
         }
-        this._clientService.list(searchFilter, selectedCountryIds, ownerIds, isActiveFlag, !this.includeDeleted, this.onlyWrongfullyDeletedInHubspot, this.pageNumber, this.deafultPageSize, this.sorting)
+        if (this.clientListSubscription) {
+            this.clientListSubscription.unsubscribe();
+        }
+        this.clientListSubscription = this._clientService.list(searchFilter, selectedCountryIds, ownerIds, isActiveFlag, !this.includeDeleted, this.onlyWrongfullyDeletedInHubspot, this.pageNumber, this.deafultPageSize, this.sorting)
             .pipe(finalize(() => {
                 this.isDataLoading = false;
             }))
