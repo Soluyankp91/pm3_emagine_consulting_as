@@ -201,9 +201,34 @@
 .main-overview--filter-select.mat-form-field-appearance-fill {
     .mat-form-field-flex {
         background-color: transparent !important;
+        padding: 0 !important
     }
     .mat-form-field-underline {
         display: none !important;
+    }
+    .mat-select-arrow-wrapper {
+        transform: translateY(-30%);
+    }
+    .mat-select-value-text {
+        font-weight: 600;
+        color: #898785;
+    }
+    .mat-select-arrow {
+        border: solid #4A4E60;
+        border-width: 0 2px 2px 0;
+        display: inline-block;
+        padding: 5px;
+        transform: rotate(45deg);
+        width: 14px;
+        height: 14px;
+        margin-top: 2px;
+        transition: all .3s ease-in-out;
+    }
+    mat-select[aria-expanded="true"] {
+        .mat-select-arrow {
+            transform: rotate(225deg);
+            // margin-top: 10px;
+        }
     }
 }
 

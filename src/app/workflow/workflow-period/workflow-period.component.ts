@@ -164,7 +164,7 @@ export class WorkflowPeriodComponent extends AppComponentBase implements OnInit 
                 case WorkflowProcessType.ExtendConsultantPeriod:
                     return this.deleteConsultantPeriod(item.consultantPeriodId!);
                 case WorkflowProcessType.TerminateConsultant:
-                    return this.deleteConsultantTermination(item?.consultant?.id!); 
+                    return this.deleteConsultantTermination(item?.consultant?.id!);
                 case WorkflowProcessType.TerminateWorkflow:
                     return this.deleteWorkflowTermination();
             }

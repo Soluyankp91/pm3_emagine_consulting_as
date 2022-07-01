@@ -387,3 +387,131 @@ mat-table.white-table {
         }
     }
 }
+
+.gant-chart--group-container {
+    width: 100%;
+    .gantt {
+        background: transparent !important;
+        &-side {
+            width: 45%;
+            border-right: none !important;
+            box-shadow: none !important;
+            margin-right: 30px;
+            padding-bottom: 17px;
+            &-container {
+                background: transparent !important;
+
+                // gantt-table.gantt-table {
+                //     background: transparent !important;
+                //     box-shadow: none !important;
+                //     font-weight: 400 !important;
+                //     line-height: 19px !important;
+                //     font-size: 16px !important;
+                    .gantt-flat-side-header {
+                        border: 0 !important;
+                        font-size: 18px;
+                        padding-left: 16px;
+                        background: transparent !important;
+                        z-index: 2;
+                        height: 44px;
+                        line-height: 44px;
+                        .gantt-flat-side-column {
+                            font-family: 'OpenSansWeb', sans-serif !important;
+                            color: $medium-grey-color !important;
+                            font-weight: 600;
+                            font-size: 12px;
+                            display: flex;
+                            justify-content: flex-start;
+                            &:last-of-type {
+                                padding-right: 32px;
+                            }
+                        }
+                    }
+                    .gantt-flat-side-body {
+                        .gantt-group {
+                            border-radius: 0;
+                            border: 1px solid $sand-color;
+                            margin-bottom: 0;
+                            padding-left: 16px;
+                            background-color: $white-color;
+                            display: flex;
+                            align-items: center;
+                            width: 100%;
+                            &:hover {
+                                transition: background-color .7s ease;
+                                background-color: rgba(102, 140, 164, .17);
+                            }
+                            .gantt-group-content {
+                                border-right: none;
+                                padding: 0 !important;
+                                color: $dark-grey-color !important;
+                                font-size: 16px;
+                                &:first-of-type {
+                                    padding-left: 16px;
+                                }
+
+                                &:last-of-type {
+                                    padding-right: 16px;
+                                }
+                                // .gantt-table-column-content {
+                                // }
+                            }
+                            // .gantt-expand-icon {
+                            //     display: none;
+                            // }
+                        }
+                    }
+                // }
+            }
+        }
+        &-container {
+            .gantt-main .gantt-main-container {
+                overflow-y: hidden;
+                .gantt-main-groups .gantt-main-group {
+                    border: none !important;
+                }
+            }
+            .gantt-calendar-overlay {
+                .gantt-calendar-overlay-main {
+                    background-color: transparent !important;
+                    .primary-text {
+                        display: none;
+                    }
+                    .secondary-text {
+                        font-family: 'OpenSansWeb', sans-serif !important;
+                        fill: $medium-grey-color !important;
+                        font-weight: 600;
+                        font-size: 12px;
+                        transform: translateY(-10px);
+                    }
+
+                    .primary-line {
+                        stroke: #ddd !important;
+                    }
+                    .line {
+                        shape-rendering: crispEdges !important;
+                    }
+                    .secondary-line {
+                        stroke-dasharray: none !important;
+                        stroke: #ddd !important;
+                        transform: translateY(-44px);
+                        height: calc(100% + 44px);
+                    }
+                    .header-line {
+                        stroke: none !important;
+                    }
+                }
+                .today-line {
+                    top: 0 !important;
+                    background: #8bd1cb !important;
+                    width: 5px;
+                }
+            }
+        }
+    }
+    ngx-gantt-bar {
+        .gantt-bar-content {
+            border-radius: 10px;
+        }
+    }
+}

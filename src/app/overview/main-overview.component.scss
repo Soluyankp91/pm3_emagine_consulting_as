@@ -38,6 +38,9 @@
                 font-weight: 700;
                 color: #384853;
                 font-size: 14px;
+                @media screen and (max-width: 1367px) {
+                    font-size: 11px;
+                }
             }
             &__quantity {
                 font-weight: 800;
@@ -48,6 +51,10 @@
                 background-color: rgba(42, 194, 167, 0.13);
                 // color: $white-color;
                 border-color: $green-color;
+            }
+
+            @media screen and (max-width: 1367px) {
+                padding: 4px 8px;
             }
         }
         &-manager {
@@ -83,7 +90,7 @@
         min-height: 120px;
     }
     &-icon {
-        font-size: 12px;
+        line-height: 40px;
         &-type {
             line-height: 40px;
         }

@@ -5,10 +5,14 @@ import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { OverviewRoutingModule } from './overview-routing.module';
 import { AppCommonModule } from '../shared/common/app-common.module';
 import { NgxGanttModule } from '@worktile/gantt';
+import { AppGanttFlatComponent } from './gantt-advanced/component/flat.component';
+import { AppGanttAdvancedExampleComponent } from './gantt-advanced/gantt-advanced.component';
 
 @NgModule({
     declarations: [
-        MainOverviewComponent
+        MainOverviewComponent,
+        AppGanttFlatComponent,
+        AppGanttAdvancedExampleComponent
     ],
     imports: [
         CommonModule,
