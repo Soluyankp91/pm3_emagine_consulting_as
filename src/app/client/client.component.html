@@ -267,7 +267,7 @@
         </div>
         <div class="pagination-container u-w--100">
             <mat-paginator #clientsPaginator [length]="totalCount" [pageSize]="deafultPageSize"
-                [pageSizeOptions]="pageSizeOptions" [showFirstLastButtons]="true" (page)="pageChanged($event)">
+                [pageSizeOptions]="pageSizeOptions" [showFirstLastButtons]="true" (page)="pageChanged($event)" [pageIndex]="pageNumber-1">
             </mat-paginator>
         </div>
     </div>
