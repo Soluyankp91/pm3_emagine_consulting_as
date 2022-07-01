@@ -1,11 +1,11 @@
 import { Component, Injector, OnInit, ViewChild } from '@angular/core';
 import { FormControl } from '@angular/forms';
-import { GanttDate, GanttGroup, GanttItem, GanttUpper, GanttViewOptions, GanttViewType, NgxGanttComponent } from '@worktile/gantt';
+import { GanttDate, GanttGroup, GanttItem, GanttViewType, NgxGanttComponent } from '@worktile/gantt';
 import { getUnixTime } from 'date-fns';
 import { merge, Subject, Subscription } from 'rxjs';
 import { debounceTime, finalize, switchMap, takeUntil } from 'rxjs/operators';
 import { AppConsts } from 'src/shared/AppConsts';
-import { ApiServiceProxy, EmployeeDto, EmployeeServiceProxy, EnumEntityTypeDto, LookupServiceProxy, MainOverviewItemForConsultantDto, MainOverviewItemForWorkflowDto, MainOverviewItemPeriodDto, MainOverviewServiceProxy, MainOverviewStatusDto } from 'src/shared/service-proxies/service-proxies';
+import { EmployeeDto, EmployeeServiceProxy, EnumEntityTypeDto, LookupServiceProxy, MainOverviewItemPeriodDto, MainOverviewServiceProxy, MainOverviewStatus, MainOverviewStatusDto } from 'src/shared/service-proxies/service-proxies';
 import { SelectableCountry, SelectableIdNameDto } from '../client/client.model';
 import { InternalLookupService } from '../shared/common/internal-lookup.service';
 import { ManagerStatus } from '../shared/components/manager-search/manager-search.model';
@@ -13,9 +13,8 @@ import { OverviewFlag, SelectableEmployeeDto, SelectableStatusesDto } from './ma
 import * as moment from 'moment';
 import { Router } from '@angular/router';
 import { AppComponentBase } from 'src/shared/app-component-base';
-import { AppGanttFlatComponent } from './gantt-advanced/component/flat.component';
 
-const MainOverviewGridOptionsKey = 'MainOverviewGridFILTERS.1.0.0.';
+const MainOverviewGridOptionsKey = 'MainOverviewGridFILTERS.1.0.1.';
 
 @Component({
     selector: 'app-main-overview',
@@ -29,10 +28,16 @@ export class MainOverviewComponent extends AppComponentBase implements OnInit {
     selectedAccountManagers: SelectableEmployeeDto[] = [];
     filteredAccountManagers: SelectableEmployeeDto[] = [];
 
-    pageNumber = 1;
-    deafultPageSize = AppConsts.grid.defaultPageSize;
+    workflowsPageNumber = 1;
+    consultantsPageNumber = 1;
+
+    workflowsDeafultPageSize = AppConsts.grid.defaultPageSize;
+    consultantsDeafultPageSize = AppConsts.grid.defaultPageSize;
+
     pageSizeOptions = [5, 10, 20, 50, 100];
-    totalCount: number | undefined = 0;
+    workflowsTotalCount: number | undefined = 0;
+    consultantsTotalCount: number | undefined = 0;
+
     sorting = '';
     isDataLoading = true;
 
@@ -219,9 +224,7 @@ export class MainOverviewComponent extends AppComponentBase implements OnInit {
                 break;
             case GanttViewType.month:
                 let cutOffDateMonth = new Date();
-                // cutOffDateMonth.setMonth(cutOffDateMonth.getMonth() - 1);
                 cutOffDateMonth.setDate(cutOffDateMonth.getDate() - 7);
-
                 this.viewOptions.cellWidth = 75;
                 this.getMainOverview(cutOffDateMonth);
                 break;
@@ -245,7 +248,7 @@ export class MainOverviewComponent extends AppComponentBase implements OnInit {
         }
     }
 
-    formatItems(length: number, parent?: MainOverviewItemPeriodDto[], group?: string) {
+    formatItems(length: number, parent: MainOverviewItemPeriodDto[], group: string, workflowStatus: MainOverviewStatus) {
         const items = [];
         for (let i = 0; i < length; i++) {
             items.push({
@@ -254,10 +257,34 @@ export class MainOverviewComponent extends AppComponentBase implements OnInit {
                 start: getUnixTime(parent![i]?.startDate?.toDate()!),
                 end: parent![i]?.endDate !== undefined ? getUnixTime(parent![i]?.endDate!.toDate()!) : getUnixTime(this.viewOptions.end!.value),
                 group_id: group,
-                color: parent![i]?.periodType === 'Extend period' ? 'rgb(23, 162, 151)' : 'rgb(250, 173, 25)'
+                color: this.getColorForPeriod(parent!, workflowStatus, i)
             });
         }
         return items;
+    }
+
+    getColorForPeriod(parent: MainOverviewItemPeriodDto[], workflowStatus: MainOverviewStatus, index: number) {
+        if (parent.length > 1) {
+            if (parent.length - 1 === index) { // the last period
+                return this.detectColorBasedOnStatus(workflowStatus);
+            } else {
+                return 'rgb(23, 162, 151)';
+            }
+        } else {
+            return this.detectColorBasedOnStatus(workflowStatus);
+        }
+    }
+
+    detectColorBasedOnStatus(workflowStatus: MainOverviewStatus) {
+        switch (workflowStatus) {
+            case MainOverviewStatus.ExtensionExpected:
+            case MainOverviewStatus.ExtensionInNegotiation:
+            case MainOverviewStatus.ExpectedToTerminate:
+            case MainOverviewStatus.RequiresAttention:
+                return 'rgb(250, 173, 25)';
+            default:
+                return 'rgb(23, 162, 151)';
+        }
     }
 
     getMainOverview(date?: any) {
@@ -273,8 +300,6 @@ export class MainOverviewComponent extends AppComponentBase implements OnInit {
         if (date) {
             this.cutOffDate = date;
         }
-        // this.workflowsData = [];
-        // this.consultantsData = [];
         this.workflowGroups = [];
         this.workflowItems = [];
         this.consultantsGroups = [];
@@ -295,8 +320,8 @@ export class MainOverviewComponent extends AppComponentBase implements OnInit {
                     margins,
                     searchFilter,
                     this.cutOffDate,
-                    this.pageNumber,
-                    this.deafultPageSize,
+                    this.workflowsPageNumber,
+                    this.workflowsDeafultPageSize,
                     this.sorting)
                     .pipe(finalize(() => {
                         this.isDataLoading = false;
@@ -310,35 +335,12 @@ export class MainOverviewComponent extends AppComponentBase implements OnInit {
                             if (oldestDateArray.lastClientPeriodEndDate === undefined || (oldestDateArray.lastClientPeriodEndDate.toDate().getTime() < this.formatDate(date).getTime())) {
                                 endDate = this.formatDate(date);
                             }
-                            // console.log(new Date(endDate.setHours(0,0,0,0)).getTime() !== new Date(new Date().setHours(0,0,0,0)).getTime());
-                            // this.viewOptions = {
-                                // mergeIntervalDays: 3,
-                                // cellWidth: 50,
-                                // dateFormat: {
-                                //     yearQuarter: `QQQ 'of' yyyy`,
-                                //     month: 'LLL yy',
-                                //     week: 'w',
-                                //     year: 'yyyy'
-                                // },
-                            this.startDateOfChart = getUnixTime(date);
-                            this.viewOptions.start = new GanttDate(getUnixTime(date)),
-                            this.viewOptions.end = new Date(endDate.setHours(0,0,0,0)).getTime() !== new Date(new Date().setHours(0,0,0,0)).getTime() ? new GanttDate(getUnixTime(endDate)) : new GanttDate(getUnixTime(new Date(oldestDateArray.lastClientPeriodEndDate?.toDate()!))),
-                            this.viewOptions.min = new GanttDate(getUnixTime(date)),
-                            this.viewOptions.max = new Date(endDate.setHours(0,0,0,0)).getTime() !== new Date(new Date().setHours(0,0,0,0)).getTime() ? new GanttDate(getUnixTime(endDate)) : new GanttDate(getUnixTime(new Date(oldestDateArray.lastClientPeriodEndDate?.toDate()!)))
-                            // }
 
-                            // this.workflowsData = result.items!.map(x => {
-                            //     let formattedData: GanttItem<MainOverviewItemForWorkflowDto>;
-                            //     formattedData = {
-                            //         id: x.workflowId!,
-                            //         title: x.clientDisplayName!,
-                            //         start: getUnixTime(x.clientPeriods![0]?.startDate!.toDate()),
-                            //         end: x.clientPeriods![0]?.endDate ? getUnixTime(x.clientPeriods![0]?.endDate!.toDate()) : getUnixTime(this.viewOptions.end!.value),
-                            //         origin: x,
-                            //         color: 'rgb(23, 162, 151)'
-                            //     }
-                            //     return formattedData;
-                            // });
+                            this.startDateOfChart = getUnixTime(date);
+                            this.viewOptions.start = new GanttDate(getUnixTime(date));
+                            this.viewOptions.end = new Date(endDate.setHours(0,0,0,0)).getTime() !== new Date(new Date().setHours(0,0,0,0)).getTime() ? new GanttDate(getUnixTime(endDate)) : new GanttDate(getUnixTime(new Date(oldestDateArray.lastClientPeriodEndDate?.toDate()!)));
+                            this.viewOptions.min = new GanttDate(getUnixTime(date));
+                            this.viewOptions.max = new Date(endDate.setHours(0,0,0,0)).getTime() !== new Date(new Date().setHours(0,0,0,0)).getTime() ? new GanttDate(getUnixTime(endDate)) : new GanttDate(getUnixTime(new Date(oldestDateArray.lastClientPeriodEndDate?.toDate()!)));
 
                             let groups: GanttGroup<any>[] = [];
                             let items: GanttItem[] = [];
@@ -350,31 +352,20 @@ export class MainOverviewComponent extends AppComponentBase implements OnInit {
                                     origin: x!
                                 })
 
-                                items = [...items, ...this.formatItems(x.clientPeriods?.length!, x.clientPeriods, groups[index].id)];
+                                items = [...items, ...this.formatItems(x.clientPeriods?.length!, x.clientPeriods!, groups[index].id, x.mainOverviewStatusOfWorkflowForSales!)];
                             });
 
                             this.workflowGroups = groups;
                             this.workflowItems = items;
 
-                            // this.ganttWorkflows.viewOptions.start = new GanttDate(getUnixTime(date));
-                            // this.ganttWorkflows.viewOptions.min = new GanttDate(getUnixTime(date));
-                            // this.ganttWorkflows.viewOptions.end = new GanttDate(getUnixTime(new Date(oldestDateArray.lastClientPeriodEndDate?.toDate()!)));
-                            // this.ganttWorkflows.viewOptions.max = new GanttDate(getUnixTime(new Date(oldestDateArray.lastClientPeriodEndDate?.toDate()!)));
-
-                            // this.ganttWorkflows.view.options.start = new GanttDate(getUnixTime(date));
-                            // this.ganttWorkflows.view.options.min = new GanttDate(getUnixTime(date));
-                            // this.ganttWorkflows.view.options.max = new GanttDate(getUnixTime(new Date(oldestDateArray.lastClientPeriodEndDate?.toDate()!)));
-                            // this.ganttWorkflows.view.options.end = new GanttDate(getUnixTime(new Date(oldestDateArray.lastClientPeriodEndDate?.toDate()!)));
-                            // this.ganttWorkflows.view.end$.next(new GanttDate(getUnixTime(new Date(oldestDateArray.lastClientPeriodEndDate?.toDate()!))));
-
-                            if (this.isInitial) {
-                                this.viewType.setValue(GanttViewType.month);
-                                this.isInitial = false;
-                                this.changeViewType();
-                            }
+                            // if (this.isInitial) {
+                            //     this.viewType.setValue(GanttViewType.month);
+                            //     this.isInitial = false;
+                            //     this.changeViewType();
+                            // }
                         }
 
-                        this.totalCount = result.totalCount;
+                        this.workflowsTotalCount = result.totalCount;
                         this.saveGridOptions();
                     });
                 break;
@@ -392,8 +383,8 @@ export class MainOverviewComponent extends AppComponentBase implements OnInit {
                     margins,
                     searchFilter,
                     this.cutOffDate,
-                    this.pageNumber,
-                    this.deafultPageSize,
+                    this.consultantsPageNumber,
+                    this.consultantsDeafultPageSize,
                     this.sorting)
                     .pipe(finalize(() => {
                         this.isDataLoading = false;
@@ -408,19 +399,12 @@ export class MainOverviewComponent extends AppComponentBase implements OnInit {
                                 endDate = this.formatDate(date);
                             }
 
-                            // this.viewOptions = {
-                            //     dateFormat: {
-                            //         yearQuarter: `QQQ 'of' yyyy`,
-                            //         month: 'LLL yy',
-                            //         week: 'w',
-                            //         year: 'yyyy'
-                            //     },
                             this.startDateOfChart = getUnixTime(date);
-                            this.viewOptions.start = new GanttDate(getUnixTime(new Date(date))),
-                            this.viewOptions.end = endDate.getTime() !== new Date().getTime() ? new GanttDate(getUnixTime(endDate)) : new GanttDate(getUnixTime(new Date(oldestDateArray.lastConsultantPeriodEndDate?.toDate()!))),
-                            this.viewOptions.min = new GanttDate(getUnixTime(new Date(date))),
-                            this.viewOptions.max = endDate.getTime() !== new Date().getTime() ? new GanttDate(getUnixTime(endDate)) : new GanttDate(getUnixTime(new Date(oldestDateArray.lastConsultantPeriodEndDate?.toDate()!)))
-                            // }
+                            this.viewOptions.start = new GanttDate(getUnixTime(new Date(date)));
+                            this.viewOptions.end = endDate.getTime() !== new Date().getTime() ? new GanttDate(getUnixTime(endDate)) : new GanttDate(getUnixTime(new Date(oldestDateArray.lastConsultantPeriodEndDate?.toDate()!)));
+                            this.viewOptions.min = new GanttDate(getUnixTime(new Date(date)));
+                            this.viewOptions.max = endDate.getTime() !== new Date().getTime() ? new GanttDate(getUnixTime(endDate)) : new GanttDate(getUnixTime(new Date(oldestDateArray.lastConsultantPeriodEndDate?.toDate()!)));
+
                             let groups: GanttGroup<any>[] = [];
                             let items: GanttItem[] = [];
 
@@ -431,40 +415,19 @@ export class MainOverviewComponent extends AppComponentBase implements OnInit {
                                     origin: x!
                                 })
 
-                                items = [...items, ...this.formatItems(x.consultantPeriods?.length!, x.consultantPeriods, groups[index].id)];
+                                items = [...items, ...this.formatItems(x.consultantPeriods?.length!, x.consultantPeriods!, groups[index].id, x.mainOverviewStatusOfWorkflowConsultantForSales!)];
                             });
 
                             this.consultantsGroups = groups;
                             this.consultantsItems = items;
-                            // this.consultantsData = result.items!.map(x => {
-                            //     let formattedData: GanttItem<MainOverviewItemForConsultantDto>;
-                            //     formattedData = {
-                            //         id: x.workflowId!,
-                            //         title: x.clientDisplayName!,
-                            //         start: getUnixTime(x.consultantPeriods![0]?.startDate!.toDate()),
-                            //         end: x.consultantPeriods![0]?.endDate ? getUnixTime(x.consultantPeriods![0]?.endDate!.toDate()) : getUnixTime(this.viewOptions.end!.value),
-                            //         origin: x,
-                            //         color: 'rgb(250, 173, 25)'
-                            //     }
-                            //     return formattedData;
-                            // })
 
-                            // this.ganttConsultants.viewOptions.end = new GanttDate(getUnixTime(new Date(oldestDateArray.lastConsultantPeriodEndDate?.toDate()!)));
-                            // this.ganttConsultants.viewOptions.min = new GanttDate(getUnixTime(new Date(date)));
-                            // this.ganttConsultants.viewOptions.max = new GanttDate(getUnixTime(new Date(oldestDateArray.lastConsultantPeriodEndDate?.toDate()!)));
-
-                            // this.ganttConsultants.view.options.min = new GanttDate(getUnixTime(new Date(date)));
-                            // this.ganttConsultants.view.options.max = new GanttDate(getUnixTime(new Date(oldestDateArray.lastConsultantPeriodEndDate?.toDate()!)));
-                            // this.ganttConsultants.view.options.end = new GanttDate(getUnixTime(new Date(oldestDateArray.lastConsultantPeriodEndDate?.toDate()!)));
-                            // this.ganttConsultants.view.end$.next(new GanttDate(getUnixTime(new Date(oldestDateArray.lastConsultantPeriodEndDate?.toDate()!))));
-
-                            if (this.isInitial) {
-                                this.viewType.setValue(GanttViewType.month);
-                                this.isInitial = false;
-                                this.changeViewType();
-                            }
+                            // if (this.isInitial) {
+                            //     this.viewType.setValue(GanttViewType.month);
+                            //     this.isInitial = false;
+                            //     this.changeViewType();
+                            // }
                         }
-                        this.totalCount = result.totalCount;
+                        this.consultantsTotalCount = result.totalCount;
                         this.saveGridOptions();
                     });
                 break;
@@ -610,14 +573,14 @@ export class MainOverviewComponent extends AppComponentBase implements OnInit {
     }
 
     workflowsPageChanged(event?: any): void {
-        this.pageNumber = event.pageIndex + 1;
-        this.deafultPageSize = event.pageSize;
+        this.workflowsPageNumber = event.pageIndex + 1;
+        this.workflowsDeafultPageSize = event.pageSize;
         this.changeViewType();
     }
 
     consultantsPageChanged(event?: any): void {
-        this.pageNumber = event.pageIndex + 1;
-        this.deafultPageSize = event.pageSize;
+        this.consultantsPageNumber = event.pageIndex + 1;
+        this.consultantsDeafultPageSize = event.pageSize;
         this.changeViewType();
     }
 
@@ -637,8 +600,10 @@ export class MainOverviewComponent extends AppComponentBase implements OnInit {
 
     saveGridOptions() {
         let filters = {
-            pageNumber: this.pageNumber,
-            deafultPageSize: this.deafultPageSize,
+            workflowsPageNumber: this.workflowsPageNumber,
+            consultantsPageNumber: this.consultantsPageNumber,
+            workflowsDeafultPageSize: this.workflowsDeafultPageSize,
+            consultantsDeafultPageSize: this.consultantsDeafultPageSize,
             sorting: this.sorting,
             owners: this.selectedAccountManagers,
             invoicingEntity: this.invoicingEntityControl.value ? this.invoicingEntityControl.value : undefined,
@@ -648,7 +613,9 @@ export class MainOverviewComponent extends AppComponentBase implements OnInit {
             searchFilter: this.workflowFilter.value ? this.workflowFilter.value : '',
             margins: this.marginsControl.value ?? undefined,
             mainOverviewStatus: this.filteredMainOverviewStatuses.find(x => x.selected),
-            cutOffDate: this.cutOffDate
+            cutOffDate: this.cutOffDate,
+            overviewViewTypeControl: this.overviewViewTypeControl.value,
+            viewType: this.viewType.value
         };
 
         localStorage.setItem(MainOverviewGridOptionsKey, JSON.stringify(filters));
@@ -657,8 +624,10 @@ export class MainOverviewComponent extends AppComponentBase implements OnInit {
     getGridOptions() {
         let filters = JSON.parse(localStorage.getItem(MainOverviewGridOptionsKey)!);
         if (filters) {
-            this.pageNumber = filters?.pageNumber;
-            this.deafultPageSize = filters?.deafultPageSize;
+            this.workflowsPageNumber = filters?.workflowsPageNumber;
+            this.workflowsDeafultPageSize = filters?.workflowsDeafultPageSize;
+            this.consultantsPageNumber = filters?.consultantsPageNumber;
+            this.consultantsDeafultPageSize = filters?.consultantsDeafultPageSize;
             this.sorting = filters?.sorting;
             this.selectedAccountManagers = filters?.owners?.length ? filters.owners : [];
             this.deliveryTypesControl.setValue(filters?.deliveryTypes, {emitEvent: false});
@@ -672,6 +641,8 @@ export class MainOverviewComponent extends AppComponentBase implements OnInit {
                 this.filteredMainOverviewStatuses[index].selected = true;
             }
             this.cutOffDate = filters?.cutOffDate;
+            this.overviewViewTypeControl.setValue(filters?.overviewViewTypeControl, {emitEvent: false});
+            this.viewType.setValue(filters?.viewType, {emitEvent: false});
         }
         this.changeViewType();
     }
