@@ -6,7 +6,7 @@
                 <ng-container matColumnDef="id">
                     <mat-header-cell *matHeaderCellDef mat-sort-header fxFlex="5%"> ID </mat-header-cell>
                     <mat-cell *matCellDef="let row" fxFlex="5%">
-                        <span class="text-truncate-ellipsis" [matTooltip]="row.id">
+                        <span class="text-truncate-ellipsis" [matTooltip]="row.id" matTooltipClass="white-tooltip">
                             {{row.id}}
                         </span>
                     </mat-cell>
@@ -15,7 +15,7 @@
                 <ng-container matColumnDef="contact">
                     <mat-header-cell *matHeaderCellDef mat-sort-header fxFlex="15%"> Contact </mat-header-cell>
                     <mat-cell *matCellDef="let row" fxFlex="15%">
-                        <span class="text-truncate-ellipsis" [matTooltip]="row.contact">
+                        <span class="text-truncate-ellipsis" [matTooltip]="row.contact" matTooltipClass="white-tooltip">
                             {{row.contact}}
                         </span>
                     </mat-cell>
@@ -24,7 +24,7 @@
                 <ng-container matColumnDef="position">
                     <mat-header-cell *matHeaderCellDef mat-sort-header fxFlex="15%"> Position </mat-header-cell>
                     <mat-cell *matCellDef="let row" fxFlex="15%">
-                        <span class="text-truncate-ellipsis" [matTooltip]="row?.position">
+                        <span class="text-truncate-ellipsis" [matTooltip]="row?.position" matTooltipClass="white-tooltip">
                             {{row?.position}}
                         </span>
                     </mat-cell>
@@ -33,7 +33,7 @@
                 <ng-container matColumnDef="email">
                     <mat-header-cell *matHeaderCellDef mat-sort-header fxFlex="15%"> Email </mat-header-cell>
                     <mat-cell *matCellDef="let row" fxFlex="15%">
-                        <span class="text-truncate-ellipsis" [matTooltip]="row.email">
+                        <span class="text-truncate-ellipsis" [matTooltip]="row.email" matTooltipClass="white-tooltip">
                             {{row.email}}
                         </span>
                     </mat-cell>
@@ -42,7 +42,7 @@
                 <ng-container matColumnDef="phone">
                     <mat-header-cell *matHeaderCellDef mat-sort-header fxFlex="15%"> Phone </mat-header-cell>
                     <mat-cell *matCellDef="let row" fxFlex="15%">
-                        <span class="text-truncate-ellipsis" [matTooltip]="row?.phone">
+                        <span class="text-truncate-ellipsis" [matTooltip]="row?.phone" matTooltipClass="white-tooltip">
                             {{row?.phone}}
                         </span>
                     </mat-cell>
@@ -51,7 +51,7 @@
                 <ng-container matColumnDef="relation">
                     <mat-header-cell *matHeaderCellDef mat-sort-header fxFlex="15%"> Relation </mat-header-cell>
                     <mat-cell *matCellDef="let row" fxFlex="15%">
-                        <span class="text-truncate-ellipsis" [matTooltip]="row?.relation">
+                        <span class="text-truncate-ellipsis" [matTooltip]="row?.relation" matTooltipClass="white-tooltip">
                             {{row?.relation}}
                         </span>
                     </mat-cell>
@@ -60,7 +60,7 @@
                 <ng-container matColumnDef="contactOwner">
                     <mat-header-cell *matHeaderCellDef mat-sort-header fxFlex="15%"> Contact owner </mat-header-cell>
                     <mat-cell *matCellDef="let row" fxFlex="15%">
-                        <span class="text-truncate-ellipsis" [matTooltip]="row.contactOwner">
+                        <span class="text-truncate-ellipsis" [matTooltip]="row.contactOwner" matTooltipClass="white-tooltip">
                             {{row.contactOwner}}
                         </span>
                     </mat-cell>

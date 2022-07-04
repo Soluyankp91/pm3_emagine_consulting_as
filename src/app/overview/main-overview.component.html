@@ -1,9 +1,9 @@
 <div class="main-overview" fxFlexFill>
     <div fxLayout="column" fxLayoutAlign="start start" class="main-overview--filter">
         <h2 class="main-overview--header u-mb--20">Overview</h2>
-        <div fxLayout="row" fxLayoutAlign="space-between start" class="u-w--100">
-            <div fxFlex fxLayout="row" fxLayoutAlign="start center" class="u-w--100" fxFlex.gt-lg="75%" fxFlex.gt-md="85%" >
-                <div class="main-overview--filter-manager cursor-pointer u-mr--16" [matTooltip]="mapListByProperty(selectedAccountManagers, 'name')" [matMenuTriggerFor]="managerMenu" (menuOpened)="accountManagerFilter.setValue(''); accountManagerFilterInput.click()">
+        <div fxLayout="row" fxLayoutAlign="start start" class="u-w--100">
+            <div fxFlex fxLayout="row wrap" fxLayoutAlign="start center" class="u-w--100" fxFlex="80%">
+                <div class="main-overview--filter-manager cursor-pointer u-mr--16" [matTooltip]="mapListByProperty(selectedAccountManagers, 'name')" matTooltipClass="white-tooltip" [matMenuTriggerFor]="managerMenu" (menuOpened)="accountManagerFilter.setValue(''); accountManagerFilterInput.click()">
                     <img *ngIf="selectedAccountManagers.length === 1" class="border-rounded-50 image-thumbnail-small" [src]="employeeProfileUrl(selectedAccountManagers[0]?.externalId!)" />
                     <img *ngIf="selectedAccountManagers.length === 0" src="../../../assets/common/images/no-img.svg">
                     <div *ngIf="selectedAccountManagers.length > 1" class="main-overview--filter__badge">
@@ -65,16 +65,16 @@
                         {{status.name}}
                     </span>
                 </div>
+                <div class="flex-row">
+                    <mat-divider [vertical]="true" style="height: 46px;"></mat-divider>
+                    <button mat-button (click)="clearAllFilters()">
+                        <span class="clear-all-button" >
+                            Clear all
+                        </span>
+                    </button>
+                </div>
             </div>
-            <div fxLayout="row" fxLayoutAlign="start center" fxFlex.gt-lg="10%" fxFlex.gt-md="7%">
-                <mat-divider class="" [vertical]="true" style="height: 46px;"></mat-divider>
-                <button mat-button (click)="clearAllFilters()">
-                    <span class="clear-all-button" >
-                        Clear all
-                    </span>
-                </button>
-            </div>
-            <div fxLayout="column" fxLayoutAlign="start end" fxFlex.gt-lg="15%" fxFlex.gt-md="10%">
+            <div fxLayout="column" fxLayoutAlign="start end" fxFlex>
                 <div fxLayout="column" fxLayoutAlign="space-between end" fxLayoutGap="16px" class="u-w--100">
                     <mat-form-field appearance="fill" class="search-filter-input u-w--100 mat-elevation-z0 formFieldNoMarginPadding">
                         <input autocomplete="off" matInput [formControl]="workflowFilter" placeholder="Search" type="text">

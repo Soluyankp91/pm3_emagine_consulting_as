@@ -16,7 +16,7 @@
             width: 40px;
             height: 40px;
             border-radius: 50%;
-            color: #fff;
+            color: $white-color;
         }
         &-country__flag {
             line-height: 40px;
@@ -31,16 +31,16 @@
         &-type {
             @include flexCentered;
             height: 40px;
-            padding: 8px 16px;
+            padding: 6px 10px;
             border: 1px solid $light-grey-color;
             border-radius: 40px;
             &__name {
                 font-weight: 700;
                 color: #384853;
                 font-size: 14px;
-                @media screen and (max-width: 1367px) {
-                    font-size: 11px;
-                }
+                // @media screen and (max-width: 1367px) {
+                //     font-size: 11px;
+                // }
             }
             &__quantity {
                 font-weight: 800;
@@ -53,9 +53,9 @@
                 border-color: $green-color;
             }
 
-            @media screen and (max-width: 1367px) {
-                padding: 4px 8px;
-            }
+            // @media screen and (max-width: 1367px) {
+            //     padding: 4px 8px;
+            // }
         }
         &-manager {
             img {
@@ -67,7 +67,7 @@
             padding: 14px 20px;
             background-color: #fff;
             position: absolute;
-            z-index: 9999;
+            z-index: 101;
             box-shadow: 0 10px 10px 0 rgb(26, 35, 126, 15%);
             transition: all .3s ease-in-out;
         }
