@@ -10,12 +10,12 @@
         &__header {
             font-size: 12px;
             min-height: 35px;
-            font-family: 'OpenSansWeb', sans-serif !important;
+            font-family: 'Open Sans', sans-serif !important;
             color: $medium-grey-color !important;
             font-weight: 600;
         }
         &__row {
-            background: #fff;
+            background: $white-color;
             // height: 50px;
             color: $dark-grey-color !important;
             // font-size: 16px;

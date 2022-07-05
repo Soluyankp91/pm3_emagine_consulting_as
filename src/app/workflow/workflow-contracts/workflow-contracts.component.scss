@@ -82,12 +82,12 @@
             &__period {
                 font-weight: 600;
                 font-size: 16px;
-                font-family: 'Open Sans';
+                font-family: 'Open Sans', sans-serif;
                 line-height: 120%;
                 color: #4A4E60;
             }
             &__payment-price-text {
-                font-family: 'Open Sans';
+                font-family: 'Open Sans', sans-serif;
                 font-weight: bold;
                 font-size: 14px;
                 line-height: 16px;
@@ -137,7 +137,7 @@
 
                 .process-name {
                     font-weight: 800;
-                    color: #17a297;
+                    color: $green-color;
                 }
                 .anchor-name {
                     color: #4a4e60;

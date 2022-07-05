@@ -12,10 +12,10 @@
             margin-bottom: 0 !important;
         }
         .mat-expansion-panel {
-            background: #FFFFFF;
+            background: $white-color;
             width: 100%;
             .mat-expansion-indicator::after {
-                border: solid #17A297;
+                border: solid $green-color;
                 border-width: 0 2px 2px 0;
                 display: inline-block;
                 padding: 2px;
@@ -30,7 +30,7 @@
                 }
             }
             // &.odd-folder {
-                background: #FFFFFF;
+                background: $white-color;
             // }
         }
         .contract-parent--folder.mat-expansion-panel {
@@ -64,7 +64,7 @@
             margin: 0 !important;
         }
         .mat-expansion-panel {
-            background: #FAF9FB;
+            background: $sand-25-color;
             border-radius: 0 !important;
             width: 100%;
             margin-bottom: 0 !important;
@@ -100,7 +100,7 @@
             margin: 0 !important;
         }
         .mat-expansion-panel {
-            background: #FAF9FB;
+            background: $sand-25-color;
             border-radius: 0 !important;
             width: 100%;
             margin-bottom: 0 !important;
@@ -167,7 +167,7 @@
     }
 
     .mat-expansion-panel {
-        background: #FFFFFF;
+        background: $white-color;
         width: 100%;
         border-radius: 0;
         border: 1px solid $sand-color;

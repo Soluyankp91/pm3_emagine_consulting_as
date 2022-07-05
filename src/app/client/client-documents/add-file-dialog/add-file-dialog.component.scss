@@ -1,7 +1,4 @@
-// app-file-uploader {
-//     position: relative;
-//     width: 100%;
-// }
+@import "/src/app/shared/styles/config/_colors";
 
 .file {
     z-index: 1;
@@ -27,7 +24,7 @@
     }
 
     .show-menu--icon {
-        color: rgb(23, 162, 151);
+        color: $green-color;
         cursor: pointer;
     }
 }

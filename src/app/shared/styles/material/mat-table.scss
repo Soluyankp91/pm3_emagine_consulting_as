@@ -8,13 +8,13 @@ mat-table.rounded-table {
     line-height: 19px;
     font-size: 16px;
     mat-header-row {
-        border-bottom-color: rgb(255, 255, 255) !important;
-        color: rgba(56, 72, 83, 0.87) !important;
+        border-bottom-color: $white-color !important;
+        color: rgba($color: #384853, $alpha: 0.87) !important;
         font-size: 18px;
         min-height: 35px;
         mat-header-cell {
-            font-family: 'OpenSansWeb', sans-serif !important;
-            color: rgba(56, 72, 83, 0.87) !important;
+            font-family: 'Open Sans', sans-serif !important;
+            color: rgba($color: #384853, $alpha: 0.87) !important;
             font-weight: 700;
             padding-right: 15px;
             &:first-of-type {
@@ -98,7 +98,7 @@ mat-table.white-table {
         font-size: 18px;
         min-height: 35px;
         mat-header-cell {
-            font-family: 'OpenSansWeb', sans-serif !important;
+            font-family: 'Open Sans', sans-serif !important;
             color: $medium-grey-color !important;
             font-weight: 600;
             &:first-of-type {
@@ -172,7 +172,7 @@ mat-table.white-table {
                         padding: 0 16px;
                         background: transparent !important;
                         .gantt-table-column {
-                            font-family: 'OpenSansWeb', sans-serif !important;
+                            font-family: 'Open Sans', sans-serif !important;
                             color: $medium-grey-color !important;
                             font-weight: 600;
                             font-size: 12px;
@@ -234,7 +234,7 @@ mat-table.white-table {
                         display: none;
                     }
                     .secondary-text {
-                        font-family: 'OpenSansWeb', sans-serif !important;
+                        font-family: 'Open Sans', sans-serif !important;
                         fill: $medium-grey-color !important;
                         font-weight: 600;
                         font-size: 12px;
@@ -294,7 +294,7 @@ mat-table.white-table {
                         padding: 0 16px;
                         background: transparent !important;
                         .gantt-table-column {
-                            font-family: "OpenSansWeb", sans-serif !important;
+                            font-family: 'Open Sans', sans-serif !important;
                             color: #4a4e60 !important;
                             font-weight: 800;
                             font-size: 16px;
@@ -350,7 +350,7 @@ mat-table.white-table {
                         display: none;
                     }
                     .secondary-text {
-                        font-family: 'OpenSansWeb', sans-serif !important;
+                        font-family: 'Open Sans', sans-serif !important;
                         fill: $medium-grey-color !important;
                         font-weight: 600;
                         font-size: 12px;
@@ -416,7 +416,7 @@ mat-table.white-table {
                         height: 44px;
                         line-height: 44px;
                         .gantt-flat-side-column {
-                            font-family: 'OpenSansWeb', sans-serif !important;
+                            font-family: 'Open Sans', sans-serif !important;
                             color: $medium-grey-color !important;
                             font-weight: 600;
                             font-size: 12px;
@@ -478,7 +478,7 @@ mat-table.white-table {
                         display: none;
                     }
                     .secondary-text {
-                        font-family: 'OpenSansWeb', sans-serif !important;
+                        font-family: 'Open Sans', sans-serif !important;
                         fill: $medium-grey-color !important;
                         font-weight: 600;
                         font-size: 12px;

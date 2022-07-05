@@ -1,3 +1,5 @@
+@import "/src/app/shared/styles/config/_colors";
+
 .workflow-overview {
     padding: 0 75px;
     margin-top: 28px;
@@ -43,7 +45,7 @@
                 border-radius: 10px;
                 background-color: rgba(227, 227, 227, 0.5);
                 &.finished {
-                    background-color: #17A297;
+                    background-color: $green-color;
                 }
                 &.in-progress {
                     background-color: #8AD0CA;
@@ -57,7 +59,7 @@
                 color: #b6b4b2;
                 font-weight: 600;
                 &.finished {
-                    color: #17A297;
+                    color: $green-color;
                 }
             }
         }
@@ -79,7 +81,7 @@
         padding: 16px 0;
     }
     &--client-name {
-        font-family: "OpenSansWeb", sans-serif !important;
+        font-family: 'Open Sans', sans-serif !important;
         color: #4a4e60 !important;
         font-weight: 800;
         font-size: 16px;

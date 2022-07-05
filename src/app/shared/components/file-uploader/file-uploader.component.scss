@@ -5,7 +5,7 @@
     padding: 10px;
     background-color: transparent;
     border: 1px dashed #e7e3e8;;
-    // outline: 2px dashed #17A297;
+    // outline: 2px dashed $green-color;
     border-radius: 0;
 
     .content {
@@ -17,7 +17,7 @@
 
         &-instructions {
             color: $light-grey-color;
-            font-family: 'Open Sans';
+            font-family: 'Open Sans', sans-serif;
             font-weight: 600;
             font-size: 12px;
             line-height: 140%;
@@ -100,7 +100,7 @@
     font-family: 'Barlow',sans-serif;
     font-size: 75%;
     .maxfilesize-hint {
-        color: #FF7A78 !important;
+        color: $red-color !important;
     }
 }
 
@@ -135,7 +135,7 @@
         }
 
         .show-menu--icon {
-            color: rgb(23, 162, 151);
+            color: $green-color;
             cursor: pointer;
         }
     }
