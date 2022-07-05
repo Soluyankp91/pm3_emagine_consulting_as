@@ -118,47 +118,47 @@
                             </div>
                         </ng-container>
                         <ng-container *ngIf="!rate.value.editable">
-                            <span fxFlex="10%" class="u-w--100 text-truncate-ellipsis" [matTooltip]="rate.value.rateName ?? ''">
+                            <span fxFlex="10%" class="u-w--100 text-truncate-ellipsis" [matTooltip]="rate.value.rateName ?? ''" matTooltipClass="white-tooltip">
                                 {{rate.value.rateName ?? '-'}}
                             </span>
-                            <span fxFlex="10%" class="u-w--100 text-truncate-ellipsis" [matTooltip]="rate.value.nameForInvoices ?? ''">
+                            <span fxFlex="10%" class="u-w--100 text-truncate-ellipsis" [matTooltip]="rate.value.nameForInvoices ?? ''" matTooltipClass="white-tooltip">
                                 {{rate.value.nameForInvoices ?? '-'}}
                             </span>
-                            <span fxFlex="10%" class="u-w--100 text-truncate-ellipsis" [matTooltip]="rate.value.reportingUnit?.name ?? ''">
+                            <span fxFlex="10%" class="u-w--100 text-truncate-ellipsis" [matTooltip]="rate.value.reportingUnit?.name ?? ''" matTooltipClass="white-tooltip">
                                 {{rate.value.reportingUnit?.name ?? '-'}}
                             </span>
-                            <span fxFlex="15%" class="u-w--100 text-truncate-ellipsis" [matTooltip]="rate.value.rateSpecifiedAs?.name ?? ''">
+                            <span fxFlex="15%" class="u-w--100 text-truncate-ellipsis" [matTooltip]="rate.value.rateSpecifiedAs?.name ?? ''" matTooltipClass="white-tooltip">
                                 {{rate.value.rateSpecifiedAs?.name ?? '-'}}
                             </span>
                             <ng-container *ngIf="rate.value.rateSpecifiedAs?.id === 1; else clientRateValue">
-                                <span fxFlex="15%" class="u-w--100 text-truncate-ellipsis" [matTooltip]="rate.value.clientRateValue + '%'">
+                                <span fxFlex="15%" class="u-w--100 text-truncate-ellipsis" [matTooltip]="rate.value.clientRateValue + '%'" matTooltipClass="white-tooltip">
                                     {{rate.value.clientRateValue ? rate.value.clientRateValue + '%' : '-'}}
                                 </span>
                             </ng-container>
                             <ng-template #clientRateValue>
-                                <span fxFlex="15%" class="u-w--100 text-truncate-ellipsis" [matTooltip]="rate.value.clientRateValue + ' ' + rate.value.clientRateCurrency?.name">
+                                <span fxFlex="15%" class="u-w--100 text-truncate-ellipsis" [matTooltip]="rate.value.clientRateValue + ' ' + rate.value.clientRateCurrency?.name" matTooltipClass="white-tooltip">
                                     {{rate.value.clientRateValue || rate.value.clientRateCurrency?.name ? rate.value.clientRateValue + ' ' + rate.value.clientRateCurrency?.name : '-'}}
                                 </span>
                             </ng-template>
 
                             <ng-container *ngIf="rate.value.rateSpecifiedAs?.id === 1; else proDataRateValue">
-                                <span fxFlex="15%" class="u-w--100 text-truncate-ellipsis" [matTooltip]="rate.value.proDataRate + '%'">
+                                <span fxFlex="15%" class="u-w--100 text-truncate-ellipsis" [matTooltip]="rate.value.proDataRate + '%'" matTooltipClass="white-tooltip">
                                     {{rate.value.proDataRate ? rate.value.proDataRate + '%' : '-'}}
                                 </span>
                             </ng-container>
                             <ng-template #proDataRateValue>
-                                <span fxFlex="15%" class="u-w--100 text-truncate-ellipsis" [matTooltip]="rate.value.proDataRate + ' ' + rate.value.proDataRateCurrency?.name">
+                                <span fxFlex="15%" class="u-w--100 text-truncate-ellipsis" [matTooltip]="rate.value.proDataRate + ' ' + rate.value.proDataRateCurrency?.name" matTooltipClass="white-tooltip">
                                     {{rate.value.proDataRate || rate.value.proDataRateCurrency?.name ? rate.value.proDataRate + ' ' + rate.value.proDataRateCurrency?.name : '-'}}
                                 </span>
                             </ng-template>
 
                             <ng-container *ngIf="rate.value.rateSpecifiedAs?.id === 1; else consultantRateValue">
-                                <span fxFlex="15%" class="u-w--100 text-truncate-ellipsis" [matTooltip]="rate.value.consultantRate + '%'">
+                                <span fxFlex="15%" class="u-w--100 text-truncate-ellipsis" [matTooltip]="rate.value.consultantRate + '%'" matTooltipClass="white-tooltip">
                                     {{rate.value.consultantRate ? rate.value.consultantRate + '%' : '-'}}
                                 </span>
                             </ng-container>
                             <ng-template #consultantRateValue>
-                                <span fxFlex="15%" class="u-w--100 text-truncate-ellipsis" [matTooltip]="rate.value.consultantRate + ' ' + rate.value.consultantRateCurrency?.name">
+                                <span fxFlex="15%" class="u-w--100 text-truncate-ellipsis" [matTooltip]="rate.value.consultantRate + ' ' + rate.value.consultantRateCurrency?.name" matTooltipClass="white-tooltip">
                                     {{rate.value.consultantRate || rate.value.consultantRateCurrency?.name ? rate.value.consultantRate + ' ' + rate.value.consultantRateCurrency?.name : '-'}}
                                 </span>
                             </ng-template>
@@ -308,25 +308,25 @@
                             </div>
                         </ng-container>
                         <ng-container *ngIf="!fee.value.editable">
-                            <span fxFlex="10%" class="u-w--100 text-truncate-ellipsis" [matTooltip]="fee.value.feeName ?? ''">
+                            <span fxFlex="10%" class="u-w--100 text-truncate-ellipsis" [matTooltip]="fee.value.feeName ?? ''" matTooltipClass="white-tooltip">
                                 {{fee.value.feeName ?? '-'}}
                             </span>
-                            <span fxFlex="10%" class="u-w--100 text-truncate-ellipsis" [matTooltip]="fee.value.nameForInvoices ?? ''">
+                            <span fxFlex="10%" class="u-w--100 text-truncate-ellipsis" [matTooltip]="fee.value.nameForInvoices ?? ''" matTooltipClass="white-tooltip">
                                 {{fee.value.nameForInvoices ?? '-'}}
                             </span>
-                            <span fxFlex="14%" class="u-w--100 text-truncate-ellipsis" [matTooltip]="fee.value.feeFrequency?.name ?? ''">
+                            <span fxFlex="14%" class="u-w--100 text-truncate-ellipsis" [matTooltip]="fee.value.feeFrequency?.name ?? ''" matTooltipClass="white-tooltip">
                                 {{fee.value.feeFrequency?.name ?? '-'}}
                             </span>
-                            <span fxFlex="14%" class="u-w--100 text-truncate-ellipsis" [matTooltip]="fee.value.feeSpecifiedAs?.name ?? ''">
+                            <span fxFlex="14%" class="u-w--100 text-truncate-ellipsis" [matTooltip]="fee.value.feeSpecifiedAs?.name ?? ''" matTooltipClass="white-tooltip">
                                 {{fee.value.feeSpecifiedAs?.name ?? '-'}}
                             </span>
-                            <span fxFlex="14%" class="u-w--100 text-truncate-ellipsis" [matTooltip]="fee.value.clientRateValue + ' ' + fee.value.clientRateCurrency?.name">
+                            <span fxFlex="14%" class="u-w--100 text-truncate-ellipsis" [matTooltip]="fee.value.clientRateValue + ' ' + fee.value.clientRateCurrency?.name" matTooltipClass="white-tooltip">
                                 {{fee.value.clientRateValue || fee.value.clientRateCurrency?.name ? fee.value.clientRateValue + ' ' + fee.value.clientRateCurrency?.name : ''}}
                             </span>
-                            <span fxFlex="14%" class="u-w--100 text-truncate-ellipsis" [matTooltip]="fee.value.proDataRate + ' ' + fee.value.proDataRateCurrency?.name">
+                            <span fxFlex="14%" class="u-w--100 text-truncate-ellipsis" [matTooltip]="fee.value.proDataRate + ' ' + fee.value.proDataRateCurrency?.name" matTooltipClass="white-tooltip">
                                 {{fee.value.proDataRate || fee.value.proDataRateCurrency?.name ? fee.value.proDataRate + ' ' + fee.value.proDataRateCurrency?.name : ''}}
                             </span>
-                            <span fxFlex="14%" class="u-w--100 text-truncate-ellipsis" [matTooltip]="fee.value.consultantRate + ' ' + fee.value.consultantRateCurrency?.name">
+                            <span fxFlex="14%" class="u-w--100 text-truncate-ellipsis" [matTooltip]="fee.value.consultantRate + ' ' + fee.value.consultantRateCurrency?.name" matTooltipClass="white-tooltip">
                                 {{fee.value.consultantRate || fee.value.consultantRateCurrency?.name ? fee.value.consultantRate + ' ' + fee.value.consultantRateCurrency?.name : ''}}
                             </span>
                             <div fxFlex="10%" fxLayoutAlign="center center" class="u-w--100">

@@ -3,7 +3,7 @@ import { Router } from '@angular/router';
 import { GANTT_UPPER_TOKEN, GanttUpper, GanttItemInternal, GANTT_GLOBAL_CONFIG, GanttGlobalConfig } from '@worktile/gantt';
 import { environment } from 'src/environments/environment';
 import { MainOverviewServiceProxy } from 'src/shared/service-proxies/service-proxies';
-import { OverviewFlag } from '../../main-overview.model';
+import { OverviewFlag, OverviewFlagNames } from '../../main-overview.model';
 import { GanttGroupInternal } from '../mocks';
 
 @Component({
@@ -23,6 +23,8 @@ export class AppGanttFlatComponent extends GanttUpper implements OnInit {
 
     @Output() userSelectedStatusForWorflow = new EventEmitter();
     @Output() userSelectedStatusForConsultant = new EventEmitter();
+
+    overviewFlagNames = OverviewFlagNames;
 
     mergeIntervalDays = 3;
     userSelectedStatuses: any;
@@ -159,7 +161,6 @@ export class AppGanttFlatComponent extends GanttUpper implements OnInit {
     }
 
     setPosition(event: MouseEvent, item: any) {
-        debugger;
         event.preventDefault();
         this.menuTopLeftPosition.x = event.clientX;
         this.menuTopLeftPosition.y = event.clientY + 10;

@@ -1,6 +1,6 @@
 @import '~@angular/material/theming';
 
-$mat-supplier-primary: (
+$mat-pm-primary: (
     50 : #e3f4f3,
     100 : #b9e3e0,
     200 : #8bd1cb,
@@ -33,7 +33,7 @@ $mat-supplier-primary: (
     )
 );
 
-$mat-supplier-secondary: (
+$mat-pm-secondary: (
     50 : #f9fff2,
     100 : #f0ffe0,
     200 : #e6ffcb,
@@ -65,10 +65,12 @@ $mat-supplier-secondary: (
         A700 : #000000,)
 );
 
-$primary: mat-palette($mat-supplier-primary);
-$secondary: mat-palette($mat-supplier-secondary);
+$primary: mat-palette($mat-pm-primary);
+$secondary: mat-palette($mat-pm-secondary);
 $pink: mat-palette($mat-pink, 400);
 $theme: mat-light-theme($primary, $secondary);
-
-@include mat-core();
+$custom-typography: mat-typography-config(
+    $font-family: 'Open Sans, sans-serif'
+);
+@include mat-core($custom-typography);
 @include angular-material-theme($theme);

@@ -1,4 +1,4 @@
-import { NgModule } from '@angular/core';
+import { Injectable, NgModule } from '@angular/core';
 import { MatIconModule } from '@angular/material/icon';
 import { DragDropModule } from '@angular/cdk/drag-drop';
 import { MatSidenavModule } from '@angular/material/sidenav';
@@ -27,7 +27,7 @@ import { MatTooltipModule } from '@angular/material/tooltip';
 import { MatSnackBarModule } from '@angular/material/snack-bar';
 import { MatSlideToggleModule } from '@angular/material/slide-toggle';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
-import { DateAdapter, MatNativeDateModule, MAT_DATE_FORMATS, MAT_DATE_LOCALE } from '@angular/material/core';
+import { DateAdapter, MatNativeDateModule, MAT_DATE_FORMATS, MAT_DATE_LOCALE, MAT_RIPPLE_GLOBAL_OPTIONS, RippleGlobalOptions } from '@angular/material/core';
 import { MAT_MOMENT_DATE_ADAPTER_OPTIONS, MAT_MOMENT_DATE_FORMATS, MomentDateAdapter } from '@angular/material-moment-adapter';
 import { MatChipsModule } from '@angular/material/chips';
 import { MatSliderModule } from '@angular/material/slider';
@@ -36,79 +36,69 @@ import { MatStepperModule } from '@angular/material/stepper';
 import { FlexLayoutModule } from '@angular/flex-layout';
 import { CustomDateAdapter } from './custom-date-adapter';
 
+const globalRippleConfig: RippleGlobalOptions = {
+    disabled: true,
+    animation: {
+      enterDuration: 0,
+      exitDuration: 0
+    }
+};
+
+@Injectable({providedIn: 'root'})
+export class AppGlobalRippleOptions implements RippleGlobalOptions {
+  /** Whether ripples should be disabled globally. */
+  disabled: boolean = true;
+}
+
+const MaterialModules = [
+    MatIconModule,
+    MatSidenavModule,
+    MatListModule,
+    MatToolbarModule,
+    MatSelectModule,
+    MatMenuModule,
+    MatButtonModule,
+    MatButtonToggleModule,
+    MatInputModule,
+    MatCheckboxModule,
+    MatTableModule,
+    MatPaginatorModule,
+    MatSortModule,
+    MatRadioModule,
+    MatCardModule,
+    MatDividerModule,
+    DragDropModule,
+    MatExpansionModule,
+    MatDatepickerModule,
+    MatNativeDateModule,
+    MatSnackBarModule,
+    MatTreeModule,
+    MatDialogModule,
+    MatProgressBarModule,
+    MatAutocompleteModule,
+    MatSlideToggleModule,
+    MatTabsModule,
+    MatTooltipModule,
+    MatChipsModule,
+    MatSliderModule,
+    MatBottomSheetModule,
+    MatStepperModule,
+    FlexLayoutModule,
+    MatProgressSpinnerModule
+]
+
 @NgModule({
     imports: [
-        MatIconModule,
-        MatSidenavModule,
-        MatListModule,
-        MatToolbarModule,
-        MatSelectModule,
-        MatMenuModule,
-        MatButtonModule,
-        MatButtonToggleModule,
-        MatInputModule,
-        MatCheckboxModule,
-        MatTableModule,
-        MatPaginatorModule,
-        MatSortModule,
-        MatRadioModule,
-        MatCardModule,
-        MatDividerModule,
-        DragDropModule,
-        MatExpansionModule,
-        MatDatepickerModule,
-        MatNativeDateModule,
-        MatSnackBarModule,
-        MatTreeModule,
-        MatDialogModule,
-        MatProgressBarModule,
-        MatAutocompleteModule,
-        MatSlideToggleModule,
-        MatTabsModule,
-        MatTooltipModule,
-        MatChipsModule,
-        MatSliderModule,
-        MatBottomSheetModule,
-        MatStepperModule,
-        FlexLayoutModule
+        ...MaterialModules
     ],
     exports: [
-        MatIconModule,
-        MatSidenavModule,
-        MatListModule,
-        MatToolbarModule,
-        MatSelectModule,
-        MatMenuModule,
-        MatButtonModule,
-        MatButtonToggleModule,
-        MatInputModule,
-        MatCheckboxModule,
-        MatTableModule,
-        MatPaginatorModule,
-        MatSortModule,
-        MatCardModule,
-        MatRadioModule,
-        MatDividerModule,
-        DragDropModule,
-        MatExpansionModule,
-        MatDatepickerModule,
-        MatNativeDateModule,
-        MatSnackBarModule,
-        MatDialogModule,
-        MatProgressBarModule,
-        MatTreeModule,
-        MatAutocompleteModule,
-        MatSlideToggleModule,
-        MatTabsModule,
-        MatProgressSpinnerModule,
-        MatTooltipModule,
-        MatChipsModule,
-        MatSliderModule,
-        MatBottomSheetModule,
-        MatStepperModule,
-        FlexLayoutModule
+        ...MaterialModules
     ],
     providers: [
+        {
+            provide: MAT_RIPPLE_GLOBAL_OPTIONS,
+            useExisting: AppGlobalRippleOptions
+        },
         {
             provide: MAT_DATE_LOCALE,
             useValue: 'en-GB'
@@ -128,6 +118,7 @@ import { CustomDateAdapter } from './custom-date-adapter';
         { provide: MatDialogRef, useValue: {} }
     ]
 })
+
 export class MaterialModule {
     constructor() {
     }

@@ -1,4 +1,4 @@
-import { Component, Inject, Injector, OnDestroy, OnInit, ViewChild } from '@angular/core';
+import { Component, Injector, OnDestroy, OnInit, ViewChild } from '@angular/core';
 import { FormArray, FormBuilder, FormControl } from '@angular/forms';
 import { MatTableDataSource } from '@angular/material/table';
 import { AppConsts } from 'src/shared/AppConsts';
@@ -6,15 +6,12 @@ import { ContractsData, DocumentSideNavDto, DocumentSideNavigation, DocumentSide
 import { AddFileDialogComponent } from './add-file-dialog/add-file-dialog.component';
 import { Overlay } from '@angular/cdk/overlay';
 import { MatDialog } from '@angular/material/dialog';
-import { ConfirmationDialogComponent } from 'src/app/shared/components/confirmation-dialog/confirmation-dialog.component';
 import { MatTabGroup } from '@angular/material/tabs';
-import { AddFolderDialogComponent } from './add-folder-dialog/add-folder-dialog.component';
 import { ClientAttachmentInfoOutputDto, ClientAttachmentTypeEnum, ClientContractViewRootDto, ClientDocumentsServiceProxy, ClientEvaluationOutputDto, DocumentTypeEnum, EnumEntityTypeDto, UpdateClientAttachmentFileInfoInputDto, FileParameter, IdNameDto } from 'src/shared/service-proxies/service-proxies';
 import { finalize, takeUntil } from 'rxjs/operators';
 import { merge, Subject } from 'rxjs';
 import { ActivatedRoute } from '@angular/router';
 import { AppComponentBase } from 'src/shared/app-component-base';
-import * as moment from 'moment';
 import { FileUploaderComponent } from 'src/app/shared/components/file-uploader/file-uploader.component';
 import { FileUploaderFile } from 'src/app/shared/components/file-uploader/file-uploader.model';
 import { LocalHttpService } from 'src/shared/service-proxies/local-http.service';
@@ -313,10 +310,6 @@ export class ClientDocumentsComponent extends AppComponentBase implements OnInit
         });
     }
 
-    init(): void {
-        // this.documentsTabs.realignInkBar();
-    }
-
     getFileTypeIcon(fileIcon: number) {
         switch (fileIcon) {
             case DocumentTypeEnum.Pdf:
@@ -365,16 +358,9 @@ export class ClientDocumentsComponent extends AppComponentBase implements OnInit
                 }
             });
         });
-        // window.open(`${this.apiUrl}/api/ClientDocuments/Document/${clientAttachmentGuid}`);
-        // this._clientDocumentsService.document(clientAttachmentGuid)
-        //     .subscribe(result => {
-        //         this.downloadFile(result.data)
-        //         console.log(result);
-        //     })
     }
 
     downloadFile(data: any) {
-        // const blob = new Blob([data]);
         const url= window.URL.createObjectURL(data);
         window.open(url);
       }
@@ -397,96 +383,11 @@ export class ClientDocumentsComponent extends AppComponentBase implements OnInit
         this.getEvaluations();
     }
 
-
-    addFile(folder: any) {
-        const scrollStrategy = this.overlay.scrollStrategies.reposition();
-        const dialogRef = this.dialog.open(AddFileDialogComponent, {
-            width: '525px',
-            minHeight: '150px',
-            height: 'auto',
-            scrollStrategy,
-            backdropClass: 'backdrop-modal--wrapper',
-        });
-
-        dialogRef.afterClosed().subscribe((result: any) => {
-            if (result?.name) {
-                // let input: ConsultantFileDto = new ConsultantFileDto();
-                // input.consultantId = this.consultantId;
-                // input.id = Number(consultantFile.id);
-                // input.fileName = result.name;
-                // input.fileContentType = consultantFile.fileContentType;
-                // input.fileCategoryValue = this.selectedFileType;
-                // this._fileService.rename(input)
-                //     .pipe(finalize(() => {
-
-                //     }))
-                //     .subscribe(result => {
-                //         this.getConsultantFiles();
-                //         abp.notify.success('Succesfully renamed');
-                //     },
-                //         (err) => {
-                //             abp.notify.warn('Error');
-                //         }
-                //     );
-            }
-        });
-        console.log(folder);
-    }
-
-    addFolder(folder: any) {
-        const scrollStrategy = this.overlay.scrollStrategies.reposition();
-        const dialogRef = this.dialog.open(AddFolderDialogComponent, {
-            width: '450px',
-            minHeight: '180px',
-            height: 'auto',
-            scrollStrategy,
-            backdropClass: 'backdrop-modal--wrapper',
-            autoFocus: false
-        });
-
-        dialogRef.componentInstance.onFolderAdded.subscribe(() => {
-            // API CALL TO ADD FOLDER inside folder id
-        });
-    }
-
-    confirmDeleteFolder(folder: any) {
-        const scrollStrategy = this.overlay.scrollStrategies.reposition();
-        const dialogRef = this.dialog.open(ConfirmationDialogComponent, {
-            width: '450px',
-            minHeight: '180px',
-            height: 'auto',
-            scrollStrategy,
-            backdropClass: 'backdrop-modal--wrapper',
-            autoFocus: false,
-            panelClass: 'confirmation-modal',
-            data: {
-                confirmationMessageTitle: `Are you sure you want to delete ${folder.name} folder?`,
-                confirmationMessage: 'When you confirm the deletion, all the files contained in this folder will disappear.',
-                rejectButtonText: 'Cancel',
-                confirmButtonText: 'Delete',
-                isNegative: true
-            }
-        });
-
-        dialogRef.componentInstance.onConfirmed.subscribe(() => {
-            this.deleteFolder(folder);
-        });
-
-        dialogRef.componentInstance.onRejected.subscribe(() => {
-            // nthng
-        });
-    }
-
-    deleteFolder(folder: any) {
-        // API TO DELETE FOLDER
-    }
-
     getContracts() {
         this.isContractsLoading = true;
         this._clientDocumentsService.contractDocuments(this.clientId, this.contractDocumentsIncludeLinked.value, this.contractDocumentsIncludeExpired.value)
             .pipe(finalize(() => this.isContractsLoading = false))
             .subscribe(result => {
-                console.log(result);
                 this.contractsDocuments = result;
             })
     }
@@ -496,33 +397,6 @@ export class ClientDocumentsComponent extends AppComponentBase implements OnInit
         this._clientDocumentsService.evaluations(this.clientId, this.evaluationDocumentsIncludeLinked.value, this.evaluationDocumentDate.value)
             .pipe(finalize(() => this.isDataLoading = false))
             .subscribe(result => {
-                // const data: ClientEvaluationOutputDto[] = [
-                //     new ClientEvaluationOutputDto({
-                //         evaluationGuid: "3fa85f64-5717-4562-b3fc-2c963f66afa6",
-                //         evaluationTenantId: 0,
-                //         consultantTenant: 0,
-                //         legacyConsultantId: 0,
-                //         clientName: "string",
-                //         clientContactName: "string",
-                //         averageScore: 0,
-                //         evaluationDate: moment(),
-                //         evaluationFormName: "string",
-                //         comment: "string"
-                //     }),
-                //     new ClientEvaluationOutputDto({
-                //         evaluationGuid: "3fa85f64-5717-4562-b3fc-2c963f66afa6",
-                //         evaluationTenantId: 0,
-                //         consultantTenant: 0,
-                //         legacyConsultantId: 0,
-                //         clientName: "string",
-                //         clientContactName: "string",
-                //         averageScore: 0,
-                //         evaluationDate: moment(),
-                //         evaluationFormName: "string",
-                //         comment: "string"
-                //     })
-
-                // ];
                 this.evalsDocumentsDataSource = new MatTableDataSource<ClientEvaluationOutputDto>(result);
                 this.totalCount = result.length;
             });
@@ -532,7 +406,6 @@ export class ClientDocumentsComponent extends AppComponentBase implements OnInit
         this._clientDocumentsService.evaluation(row.legacyConsultantId!, row.evaluationTenantId!, row.evaluationGuid!, useLocalLanguage, forcePdf)
             .pipe(finalize(() => {}))
             .subscribe(result => {
-                console.log(result);
             });
     }
 

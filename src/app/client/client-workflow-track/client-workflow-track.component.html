@@ -5,7 +5,7 @@
                 <ng-container matColumnDef="consultant">
                     <mat-header-cell *matHeaderCellDef mat-sort-header fxFlex="25%"> Consultant </mat-header-cell>
                     <mat-cell *matCellDef="let row" fxFlex="25%">
-                        <span class="text-truncate-ellipsis text-bold" [matTooltip]="mapListByProperty(row.consultants, 'name')">
+                        <span class="text-truncate-ellipsis text-bold" [matTooltip]="mapListByProperty(row.consultants, 'name')" matTooltipClass="white-tooltip">
                             <ng-container *ngIf="row.consultants?.length > 1; else singleConsultantDisplay">
                                 {{row.consultants?.length + 'Consultants'}}
                             </ng-container>
@@ -21,7 +21,7 @@
                 <ng-container matColumnDef="salesType">
                     <mat-header-cell *matHeaderCellDef mat-sort-header fxFlex="10%"> Sales Type </mat-header-cell>
                     <mat-cell *matCellDef="let row" fxFlex="10%">
-                        <span class="text-truncate-ellipsis" [matTooltip]="row?.salesTypeId?.name">
+                        <span class="text-truncate-ellipsis" [matTooltip]="row?.salesTypeId?.name" matTooltipClass="white-tooltip">
                             {{row?.salesTypeId?.name}}
                         </span>
                     </mat-cell>
@@ -29,7 +29,7 @@
                 <ng-container matColumnDef="deliveryType">
                     <mat-header-cell *matHeaderCellDef mat-sort-header fxFlex="10%"> Delivery Type </mat-header-cell>
                     <mat-cell *matCellDef="let row" fxFlex="10%">
-                        <span class="text-truncate-ellipsis" matTooltipClass="white-bg-tooltip" [matTooltip]="row?.deliveryTypeId?.name">
+                        <span class="text-truncate-ellipsis" matTooltipClass="white-tooltip" [matTooltip]="row?.deliveryTypeId?.name" matTooltipClass="white-tooltip">
                             {{row?.deliveryTypeId?.name}}
                         </span>
                     </mat-cell>
@@ -37,7 +37,7 @@
                 <ng-container matColumnDef="dateStart">
                     <mat-header-cell *matHeaderCellDef mat-sort-header fxFlex="10%"> Start </mat-header-cell>
                     <mat-cell *matCellDef="let row" fxFlex="10%">
-                        <span class="text-truncate-ellipsis" [matTooltip]="row.startDate | momentFormat: 'DD.MM.YYYY'">
+                        <span class="text-truncate-ellipsis" [matTooltip]="row.startDate | momentFormat: 'DD.MM.YYYY'" matTooltipClass="white-tooltip">
                             {{row.startDate | momentFormat: 'DD.MM.YYYY'}}
                         </span>
                     </mat-cell>
@@ -45,7 +45,7 @@
                 <ng-container matColumnDef="dateEnd">
                     <mat-header-cell *matHeaderCellDef mat-sort-header fxFlex="10%"> End </mat-header-cell>
                     <mat-cell *matCellDef="let row" fxFlex="10%">
-                        <span class="text-truncate-ellipsis" [matTooltip]="row?.endDate | momentFormat: 'DD.MM.YYYY'">
+                        <span class="text-truncate-ellipsis" [matTooltip]="row?.endDate | momentFormat: 'DD.MM.YYYY'" matTooltipClass="white-tooltip">
                             {{row?.endDate | momentFormat: 'DD.MM.YYYY'}}
                         </span>
                     </mat-cell>
@@ -53,7 +53,7 @@
                 <ng-container matColumnDef="invoicing">
                     <mat-header-cell *matHeaderCellDef mat-sort-header fxFlex="10%"> Invoicing </mat-header-cell>
                     <mat-cell *matCellDef="let row" fxFlex="10%">
-                        <span class="text-truncate-ellipsis flex-items-center" [matTooltip]="row?.invoicingReferencePerson?.firstName + ' ' + row?.invoicingReferencePerson?.lastName">
+                        <span class="text-truncate-ellipsis flex-items-center" [matTooltip]="row?.invoicingReferencePerson?.firstName + ' ' + row?.invoicingReferencePerson?.lastName" matTooltipClass="white-tooltip">
                             <img class="border-rounded-50 image-thumbnail-small" [src]="employeeProfileUrl(row?.invoicingReferencePerson?.id)" />
                         </span>
                     </mat-cell>
@@ -61,7 +61,7 @@
                 <ng-container matColumnDef="manager">
                     <mat-header-cell *matHeaderCellDef mat-sort-header fxFlex="10%"> Manager </mat-header-cell>
                     <mat-cell *matCellDef="let row" fxFlex="10%">
-                        <span class="text-truncate-ellipsis flex-items-center" [matTooltip]="row?.workflowEmployee?.name">
+                        <span class="text-truncate-ellipsis flex-items-center" [matTooltip]="row?.workflowEmployee?.name" matTooltipClass="white-tooltip">
                             <img class="border-rounded-50 image-thumbnail-small" [src]="employeeProfileUrl(row?.workflowEmployee?.externalId)" />
                         </span>
                     </mat-cell>
@@ -69,7 +69,7 @@
                 <ng-container matColumnDef="status">
                     <mat-header-cell *matHeaderCellDef mat-sort-header fxFlex="10%"> Status </mat-header-cell>
                     <mat-cell *matCellDef="let row" fxFlex="10%">
-                        <span class="text-truncate-ellipsis flex-items-center" [matTooltip]="row?.workflowStatusName">
+                        <span class="text-truncate-ellipsis flex-items-center" [matTooltip]="row?.workflowStatusName" matTooltipClass="white-tooltip">
                             <mat-icon [ngClass]="row?.workflowStatus">fiber_manual_record</mat-icon>
                             {{row?.workflowStatusName}}
                         </span>

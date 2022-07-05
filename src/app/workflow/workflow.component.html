@@ -12,7 +12,7 @@
                         {{type.name}}
                     </span>
                 </div> -->
-                <div class="workflow-list--filter-manager cursor-pointer u-mr--16" [matTooltip]="mapListByProperty(selectedAccountManagers, 'name')" [matMenuTriggerFor]="managerMenu" (menuOpened)="accountManagerFilter.setValue(''); accountManagerFilterInput.click()">
+                <div class="workflow-list--filter-manager cursor-pointer u-mr--16" [matTooltip]="mapListByProperty(selectedAccountManagers, 'name')" matTooltipClass="white-tooltip" [matMenuTriggerFor]="managerMenu" (menuOpened)="accountManagerFilter.setValue(''); accountManagerFilterInput.click()">
                     <!-- <img src="../../../assets/common/images/no-img.svg"> -->
                     <img *ngIf="selectedAccountManagers.length === 1" class="border-rounded-50 image-thumbnail-small" [src]="employeeProfileUrl(selectedAccountManagers[0]?.externalId!)" />
                     <img *ngIf="selectedAccountManagers.length === 0" src="../../../assets/common/images/no-img.svg">
@@ -110,9 +110,9 @@
                         <mat-icon svgIcon="plus-button-icon"></mat-icon>
                     </button>
                 </div>
-                <button class="workflow-list--search-button" mat-flat-button (click)="isAdvancedFilters = !isAdvancedFilters">
+                <button class="advanced-filterd--btn" mat-flat-button (click)="isAdvancedFilters = !isAdvancedFilters">
                     <mat-icon svgIcon="filter-icon"></mat-icon>
-                    <span class="workflow-list--search-button-text u-ml--5">Advanced filters</span>
+                    <span class="advanced-filterd--btn-text u-ml--5">Advanced filters</span>
                 </button>
             </div>
         </div>
@@ -188,13 +188,13 @@
                 <ng-container matColumnDef="flag">
                     <mat-header-cell *matHeaderCellDef fxFlex="3%"></mat-header-cell>
                     <mat-cell *matCellDef="let row" fxFlex="3%">
-                        <mat-icon class="workflow-flag" [ngClass]="getFlagColor(row.openProcesses?.typeId)" [matTooltip]="mapFlagTooltip(row.openProcesses?.typeId)">fiber_manual_record</mat-icon>
+                        <mat-icon class="workflow-flag" [ngClass]="getFlagColor(row.openProcesses?.typeId)" [matTooltip]="mapFlagTooltip(row.openProcesses?.typeId)" matTooltipClass="white-tooltip">fiber_manual_record</mat-icon>
                     </mat-cell>
                 </ng-container>
                 <ng-container matColumnDef="id">
                     <mat-header-cell *matHeaderCellDef fxFlex="3%">ID</mat-header-cell>
                     <mat-cell *matCellDef="let row" fxFlex="3%">
-                        <span class="text-truncate-ellipsis" [matTooltip]="row.workflowId">
+                        <span class="text-truncate-ellipsis" [matTooltip]="row.workflowId" matTooltipClass="white-tooltip">
                             {{row.workflowId}}
                         </span>
                     </mat-cell>
@@ -202,7 +202,7 @@
                 <ng-container matColumnDef="Client">
                     <mat-header-cell *matHeaderCellDef fxFlex="10%">Client</mat-header-cell>
                     <mat-cell *matCellDef="let row" fxFlex="10%">
-                        <span class="text-truncate-ellipsis text-bold-800" [matTooltip]="row.clientName">
+                        <span class="text-truncate-ellipsis text-bold-800" [matTooltip]="row.clientName" matTooltipClass="white-tooltip">
                             {{row.clientName}}
                         </span>
                     </mat-cell>
@@ -210,7 +210,7 @@
                 <ng-container matColumnDef="Consultants">
                     <mat-header-cell *matHeaderCellDef mat-sort-header fxFlex="10%"> Consultants </mat-header-cell>
                     <mat-cell *matCellDef="let row" fxFlex="10%">
-                        <span class="text-truncate-ellipsis" [matTooltip]="mapListByProperty(row.consultants, 'name')">
+                        <span class="text-truncate-ellipsis" [matTooltip]="mapListByProperty(row.consultants, 'name')" matTooltipClass="white-tooltip">
                             {{mapListByProperty(row.consultants, 'name')}}
                         </span>
                     </mat-cell>
@@ -218,7 +218,7 @@
                 <ng-container matColumnDef="SalesType">
                     <mat-header-cell *matHeaderCellDef mat-sort-header fxFlex="10%"> Sales type </mat-header-cell>
                     <mat-cell *matCellDef="let row" fxFlex="10%">
-                        <span class="text-truncate-ellipsis" [matTooltip]="row.salesType?.name">
+                        <span class="text-truncate-ellipsis" [matTooltip]="row.salesType?.name" matTooltipClass="white-tooltip">
                             {{row.salesType?.name}}
                         </span>
                     </mat-cell>
@@ -226,7 +226,7 @@
                 <ng-container matColumnDef="DeliveryType">
                     <mat-header-cell *matHeaderCellDef mat-sort-header fxFlex="10%"> Delivery type </mat-header-cell>
                     <mat-cell *matCellDef="let row" fxFlex="10%">
-                        <span class="text-truncate-ellipsis" [matTooltip]="row.deliveryType?.name">
+                        <span class="text-truncate-ellipsis" [matTooltip]="row.deliveryType?.name" matTooltipClass="white-tooltip">
                             {{row.deliveryType?.name}}
                         </span>
                     </mat-cell>
@@ -235,7 +235,7 @@
                 <ng-container matColumnDef="startDate">
                     <mat-header-cell *matHeaderCellDef mat-sort-header fxFlex="7%"> Start </mat-header-cell>
                     <mat-cell *matCellDef="let row" fxFlex="7%">
-                        <span class="text-truncate-ellipsis" [matTooltip]="(row.startDate | date: 'dd.MM.YYYY') ?? '-'">
+                        <span class="text-truncate-ellipsis" [matTooltip]="(row.startDate | date: 'dd.MM.YYYY') ?? '-'" matTooltipClass="white-tooltip">
                             {{(row.startDate | date: 'dd.MM.YYYY') ?? '-'}}
                         </span>
                     </mat-cell>
@@ -243,7 +243,7 @@
                 <ng-container matColumnDef="endDate">
                     <mat-header-cell *matHeaderCellDef mat-sort-header fxFlex="7%"> End </mat-header-cell>
                     <mat-cell *matCellDef="let row" fxFlex="7%">
-                        <span class="text-truncate-ellipsis" [matTooltip]="(row.endDate | date: 'dd.MM.YYYY') ?? '-'">
+                        <span class="text-truncate-ellipsis" [matTooltip]="(row.endDate | date: 'dd.MM.YYYY') ?? '-'" matTooltipClass="white-tooltip">
                             {{(row.endDate | date: 'dd.MM.YYYY') ?? '-'}}
                         </span>
                     </mat-cell>
@@ -341,7 +341,7 @@
                 <ng-container matColumnDef="Status">
                     <mat-header-cell *matHeaderCellDef mat-sort-header fxFlex="10%"> Status </mat-header-cell>
                     <mat-cell *matCellDef="let row" fxFlex="10%">
-                        <span class="text-truncate-ellipsis" [matTooltip]="workflowStatuses[row.workflowStatusWithEmployee?.status]">
+                        <span class="text-truncate-ellipsis" [matTooltip]="workflowStatuses[row.workflowStatusWithEmployee?.status]" matTooltipClass="white-tooltip">
                             {{workflowStatuses[row.workflowStatusWithEmployee?.status]}}
                         </span>
                     </mat-cell>

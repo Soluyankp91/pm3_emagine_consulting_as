@@ -1,3 +1,5 @@
+@import "/src/app/shared/styles/config/_colors";
+
 :host {
     .gantt-flat-items {
         position: relative;
@@ -22,7 +24,7 @@
 }
 
 .overview-termination-icon {
-    color: #ff7a78;
+    color: $red-color;
 }
 
 .overview-negotiation-icon {

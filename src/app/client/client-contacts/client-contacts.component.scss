@@ -1,13 +1,15 @@
+@import "/src/app/shared/styles/config/_colors";
+
 .inactive-status {
     color: #ffda44;
 }
 
 .active-status {
-    color: #17a297;
+    color: $green-color;
 }
 
 .deleted-status {
-    color: rgba($color: #ff7a78, $alpha: .5);
+    color: rgba($color: $red-color, $alpha: .5);
 }
 
 .icon-arrow-rotate180 {

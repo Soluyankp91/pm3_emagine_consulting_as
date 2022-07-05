@@ -1,3 +1,4 @@
+@import "/src/app/shared/styles/config/_colors";
 
 .filter-select,
 .client-documents--contract-filter__select {
@@ -70,7 +71,7 @@
     }
     &.mat-form-field-invalid {
         .mat-select-arrow {
-            border-color: #FF7A78 !important;
+            border-color: $red-color !important;
         }
     }
     mat-select[aria-expanded="true"] {
@@ -162,7 +163,7 @@
     }
     &.mat-form-field-invalid {
         .mat-select-arrow {
-            border-color: #FF7A78 !important;
+            border-color: $red-color !important;
         }
     }
     mat-select[aria-expanded="true"] {
@@ -187,7 +188,7 @@
     }
     &.mat-form-field-invalid {
         .mat-select-arrow {
-            border-color: #FF7A78 !important;
+            border-color: $red-color !important;
         }
     }
     mat-select[aria-expanded="true"] {

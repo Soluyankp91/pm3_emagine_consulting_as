@@ -20,7 +20,7 @@
                             <p class="workflow-overview--team__user-name">{{item.assignedPerson}}</p>
                         </div>
                     </div>
-                    <div class="workflow-overview--team__user-progress u-w--100" [ngClass]="{'finished': item.isCompleted, 'in-progress': item.isInProgress}" [matTooltip]="displayStepActionTooltip(item)">
+                    <div class="workflow-overview--team__user-progress u-w--100" [ngClass]="{'finished': item.isCompleted, 'in-progress': item.isInProgress}" [matTooltip]="displayStepActionTooltip(item)" matTooltipClass="white-tooltip">
                     </div>
                     <div fxLayout="row" fxLayoutAlign="end center" class="u-w--100">
                         <span class="icon-in-progress u-mr--5">
@@ -44,7 +44,7 @@
                             <div fxLayout="row" fxLayoutAlign="start center" fxLayoutGap="15px" class="u-w-100">
                                 <ng-container *ngIf="item.title !== ''; else childTemplate">
                                     <img class="manager-search--photo" src="../../../../assets/common/images/no-img.svg"/>
-                                    <span class="text-truncate-ellipsis workflow-overview--client-name" [matTooltip]="item?.title">
+                                    <span class="text-truncate-ellipsis workflow-overview--client-name" [matTooltip]="item?.title" matTooltipClass="white-tooltip">
                                         {{item?.title}}
                                     </span>
                                 </ng-container>

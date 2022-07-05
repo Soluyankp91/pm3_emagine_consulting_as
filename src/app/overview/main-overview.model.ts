@@ -8,6 +8,16 @@ export enum OverviewFlag {
     RequiresAttention = 20,
 }
 
+export enum OverviewFlagNames {
+  "Extension expected" = 1,
+  "Extension in negotiation" = 2,
+  "Expected to terminate" = 3,
+  "Started" = 10,
+  "Extended" = 11,
+  "Terminated" = 12,
+  "Requires attention" = 20,
+}
+
 export class OverviewData {
     firstName: string;
     lastName: string;
