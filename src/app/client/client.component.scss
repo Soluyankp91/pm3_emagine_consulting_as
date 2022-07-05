@@ -16,7 +16,7 @@
             width: 40px;
             height: 40px;
             border-radius: 50%;
-            color: #fff;
+            color: $white-color;
         }
         &-country {
             width: 40px;
@@ -28,24 +28,6 @@
             }
         }
         &-status {
-            // @include flexCentered;
-            // // display: flex;
-            // // justify-content: center;
-            // // align-items: center;
-            // height: 40px;
-            // padding: 8px 16px;
-            // border: 1px solid $light-grey-color;
-            // border-radius: 40px;
-            // &.selected-status {
-            //     background-color: rgba(42, 194, 167, 0.13);
-            //     // color: $white-color;
-            //     border-color: $green-color;
-            // }
-            // &__selected {
-            //     font-weight: 700;
-            //     color: #384853;
-            // }
-
             &__badge {
                 height: 40px;
                 padding: 8px 16px;
@@ -56,7 +38,6 @@
                 color: rgba(56, 72, 83, 0.87);
                 &.selected-status {
                     background-color: rgba(42, 194, 167, 0.13);
-                    // color: $white-color;
                     border-color: $green-color;
                 }
             }
@@ -81,7 +62,7 @@
 
     &--content {
         padding: 16px 75px;
-        background-color: #faf9fb;
+        background-color: $sand-25-color;
         min-height: calc(100vh - 150px);
     }
 

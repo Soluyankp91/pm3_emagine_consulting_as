@@ -86,19 +86,19 @@
                             <div fxLayout="row" fxLayoutAlign="space-between center" fxLayoutGap="10px" class="inline-edit-form workflow-sales-inline--form__row u-w--100"
                                 *ngFor="let commission of salesMainDataForm.commissions.controls; index as i">
                                 <ng-container *ngIf="!commission.value.editable">
-                                    <span fxFlex="10%" class="u-w--100 text-truncate-ellipsis" [matTooltip]="salesMainDataForm.commissions.at(i).get('type')?.value?.name">
+                                    <span fxFlex="10%" class="u-w--100 text-truncate-ellipsis" [matTooltip]="salesMainDataForm.commissions.at(i).get('type')?.value?.name" matTooltipClass="white-tooltip">
                                         {{commission.value.type?.name}}
                                     </span>
-                                    <span fxFlex="10%" class="u-w--100 text-truncate-ellipsis" [matTooltip]="salesMainDataForm.commissions.at(i).get('value')?.value">
+                                    <span fxFlex="10%" class="u-w--100 text-truncate-ellipsis" [matTooltip]="salesMainDataForm.commissions.at(i).get('value')?.value" matTooltipClass="white-tooltip">
                                         {{commission.value.value}}
                                     </span>
-                                    <span fxFlex="10%" class="u-w--100 text-truncate-ellipsis" [matTooltip]="salesMainDataForm.commissions.at(i).get('currency')?.value?.name">
+                                    <span fxFlex="10%" class="u-w--100 text-truncate-ellipsis" [matTooltip]="salesMainDataForm.commissions.at(i).get('currency')?.value?.name" matTooltipClass="white-tooltip">
                                         {{commission.value.currency?.name}}
                                     </span>
-                                    <span fxFlex="10%" class="u-w--100 text-truncate-ellipsis" [matTooltip]="salesMainDataForm.commissions.at(i).get('recipientType')?.value?.name">
+                                    <span fxFlex="10%" class="u-w--100 text-truncate-ellipsis" [matTooltip]="salesMainDataForm.commissions.at(i).get('recipientType')?.value?.name" matTooltipClass="white-tooltip">
                                         {{commission.value.recipientType?.name}}
                                     </span>
-                                    <span fxFlex="30%" class="u-w--100 text-truncate-ellipsis" [matTooltip]="salesMainDataForm.commissions.at(i).get('recipient')?.value?.name">
+                                    <span fxFlex="30%" class="u-w--100 text-truncate-ellipsis" [matTooltip]="salesMainDataForm.commissions.at(i).get('recipient')?.value?.name" matTooltipClass="white-tooltip">
                                         <ng-container [ngSwitch]="commission.value.recipientType?.name">
                                             <ng-container *ngSwitchCase="'Client'">
                                                 <div fxLayout="row" fxLayoutAlign="start center">
@@ -138,7 +138,7 @@
                                             </ng-container>
                                         </ng-container>
                                     </span>
-                                    <span fxFlex="20%" class="u-w--100 text-truncate-ellipsis" [matTooltip]="salesMainDataForm.commissions.at(i).get('frequency')?.value?.name">
+                                    <span fxFlex="20%" class="u-w--100 text-truncate-ellipsis" [matTooltip]="salesMainDataForm.commissions.at(i).get('frequency')?.value?.name" matTooltipClass="white-tooltip">
                                         <!-- frequency id === 2 -- 'One time' -->
                                         <ng-container *ngIf="salesMainDataForm.commissions.at(i).get('frequency')?.value?.id === 2; else commissionFrequency">
                                             {{salesMainDataForm.commissions.at(i).get('frequency')?.value?.name}} {{salesMainDataForm.commissions.at(i).get('oneTimeDate')?.value | momentFormat: 'DD.MM.YYYY'}}
@@ -430,13 +430,13 @@
                             <div fxLayout="row" fxLayoutAlign="space-between center" fxLayoutGap="10px" class="workflow-sales-inline--form__row u-w--100"
                                 *ngFor="let rate of salesClientDataForm.clientRates.controls; index as i">
                                 <ng-container>
-                                    <span fxFlex="30%" class="u-w--100 text-truncate-ellipsis" [matTooltip]="rate.value.rateName">
+                                    <span fxFlex="30%" class="u-w--100 text-truncate-ellipsis" [matTooltip]="rate.value.rateName" matTooltipClass="white-tooltip">
                                         {{rate.value.rateName ?? '-'}}
                                     </span>
-                                    <span fxFlex="30%" class="u-w--100 text-truncate-ellipsis" [matTooltip]="rate.value.reportingUnit?.name">
+                                    <span fxFlex="30%" class="u-w--100 text-truncate-ellipsis" [matTooltip]="rate.value.reportingUnit?.name" matTooltipClass="white-tooltip">
                                         {{rate.value.reportingUnit?.name ?? '-'}}
                                     </span>
-                                    <span fxFlex="30%" class="u-w--100 text-truncate-ellipsis" [matTooltip]="rate.value.clientRateValue + ' ' + rate.value.clientRateCurrency?.name">
+                                    <span fxFlex="30%" class="u-w--100 text-truncate-ellipsis" [matTooltip]="rate.value.clientRateValue + ' ' + rate.value.clientRateCurrency?.name" matTooltipClass="white-tooltip">
                                         {{rate.value.clientRateValue || rate.value.clientRateCurrency?.name ? rate.value.clientRateValue + ' ' + rate.value.clientRateCurrency?.name : '-'}}
                                     </span>
                                 </ng-container>
@@ -459,13 +459,13 @@
                             <div fxLayout="row" fxLayoutAlign="space-between center" fxLayoutGap="10px" class="workflow-sales-inline--form__row u-w--100"
                                 *ngFor="let fee of salesClientDataForm.clientFees.controls; index as i">
                                 <ng-container>
-                                    <span fxFlex="30%" class="u-w--100 text-truncate-ellipsis" [matTooltip]="fee.value.feeName ?? '-'">
+                                    <span fxFlex="30%" class="u-w--100 text-truncate-ellipsis" [matTooltip]="fee.value.feeName ?? '-'" matTooltipClass="white-tooltip">
                                         {{fee.value.feeName ?? '-'}}
                                     </span>
-                                    <span fxFlex="30%" class="u-w--100 text-truncate-ellipsis" [matTooltip]="fee.value.feeFrequency?.name ?? '-'">
+                                    <span fxFlex="30%" class="u-w--100 text-truncate-ellipsis" [matTooltip]="fee.value.feeFrequency?.name ?? '-'" matTooltipClass="white-tooltip">
                                         {{fee.value.feeFrequency?.name ?? '-'}}
                                     </span>
-                                    <span fxFlex="30%" class="u-w--100 text-truncate-ellipsis" [matTooltip]="fee.value.clientRateValue + ' ' + fee.value.clientRateCurrency?.name">
+                                    <span fxFlex="30%" class="u-w--100 text-truncate-ellipsis" [matTooltip]="fee.value.clientRateValue + ' ' + fee.value.clientRateCurrency?.name" matTooltipClass="white-tooltip">
                                         {{fee.value.clientRateValue || fee.value.clientRateCurrency?.name ? fee.value.clientRateValue + ' ' + fee.value.clientRateCurrency?.name : '-'}}
                                     </span>
                                 </ng-container>
@@ -876,18 +876,18 @@
                                             *ngFor="let rate of getConsultantRateControls(consultantIndex); let specialRateIndex = index;"
                                             [formArrayName]="specialRateIndex">
                                             <ng-container>
-                                                <span fxFlex="1 1 20%" class="u-w--100 text-truncate-ellipsis" [matTooltip]="rate.value.rateName">
+                                                <span fxFlex="1 1 20%" class="u-w--100 text-truncate-ellipsis" [matTooltip]="rate.value.rateName" matTooltipClass="white-tooltip">
                                                     {{rate.value.rateName ?? '-'}}
                                                 </span>
-                                                <span fxFlex="20%" class="u-w--100 text-truncate-ellipsis" [matTooltip]="rate.value.reportingUnit?.name">
+                                                <span fxFlex="20%" class="u-w--100 text-truncate-ellipsis" [matTooltip]="rate.value.reportingUnit?.name" matTooltipClass="white-tooltip">
                                                     {{rate.value.reportingUnit?.name ?? '-'}}
                                                 </span>
                                                 <ng-container *ngIf="item.value?.consultantProdataEntity?.id !== salesClientDataForm.value?.pdcInvoicingEntityId?.id">
-                                                    <span fxFlex="30%" class="u-w--100 text-truncate-ellipsis" [matTooltip]="rate.value.prodataToProdataRate + ' ' + rate.value.prodataToProdataRateCurrency?.name">
+                                                    <span fxFlex="30%" class="u-w--100 text-truncate-ellipsis" [matTooltip]="rate.value.prodataToProdataRate + ' ' + rate.value.prodataToProdataRateCurrency?.name" matTooltipClass="white-tooltip">
                                                         {{rate.value.prodataToProdataRate || rate.value.prodataToProdataRateCurrency?.name ? rate.value.prodataToProdataRate + ' ' + rate.value.prodataToProdataRateCurrency?.name : '-'}}
                                                     </span>
                                                 </ng-container>
-                                                <span fxFlex="30%" class="u-w--100 text-truncate-ellipsis" [matTooltip]="rate.value.consultantRate + ' ' + rate.value.consultantRateCurrency?.name">
+                                                <span fxFlex="30%" class="u-w--100 text-truncate-ellipsis" [matTooltip]="rate.value.consultantRate + ' ' + rate.value.consultantRateCurrency?.name" matTooltipClass="white-tooltip">
                                                     {{rate.value.consultantRate || rate.value.consultantRateCurrency?.name ? rate.value.consultantRate + ' ' + rate.value.consultantRateCurrency?.name : '-'}}
                                                 </span>
                                             </ng-container>
@@ -915,18 +915,18 @@
                                             *ngFor="let fee of getConsultantFeeControls(consultantIndex); let specialFeeIndex = index;"
                                             [formArrayName]="specialFeeIndex">
                                             <ng-container>
-                                                <span fxFlex="1 1 20%" class="u-w--100 text-truncate-ellipsis" [matTooltip]="fee.value.feeName ?? '-'">
+                                                <span fxFlex="1 1 20%" class="u-w--100 text-truncate-ellipsis" [matTooltip]="fee.value.feeName ?? '-'" matTooltipClass="white-tooltip">
                                                     {{fee.value.feeName ?? '-'}}
                                                 </span>
-                                                <span fxFlex="20%" class="u-w--100 text-truncate-ellipsis" [matTooltip]="fee.value.frequency?.name ?? '-'">
+                                                <span fxFlex="20%" class="u-w--100 text-truncate-ellipsis" [matTooltip]="fee.value.frequency?.name ?? '-'" matTooltipClass="white-tooltip">
                                                     {{fee.value.frequency?.name ?? '-'}}
                                                 </span>
                                                 <ng-container *ngIf="item.value?.consultantProdataEntity?.id !== salesClientDataForm.value?.pdcInvoicingEntityId?.id">
-                                                    <span fxFlex="30%" class="u-w--100 text-truncate-ellipsis" [matTooltip]="fee.value.prodataToProdataRate + ' ' + fee.value.prodataToProdataRateCurrency?.name">
+                                                    <span fxFlex="30%" class="u-w--100 text-truncate-ellipsis" [matTooltip]="fee.value.prodataToProdataRate + ' ' + fee.value.prodataToProdataRateCurrency?.name" matTooltipClass="white-tooltip">
                                                         {{fee.value.prodataToProdataRate || fee.value.prodataToProdataRateCurrency?.name ? fee.value.prodataToProdataRate + ' ' + fee.value.prodataToProdataRateCurrency?.name : '-'}}
                                                     </span>
                                                 </ng-container>
-                                                <span fxFlex="30%" class="u-w--100 text-truncate-ellipsis" [matTooltip]="fee.value.consultantRate + ' ' + fee.value.consultantRateCurrency?.name">
+                                                <span fxFlex="30%" class="u-w--100 text-truncate-ellipsis" [matTooltip]="fee.value.consultantRate + ' ' + fee.value.consultantRateCurrency?.name" matTooltipClass="white-tooltip">
                                                     {{fee.value.consultantRate || fee.value.consultantRateCurrency?.name ? fee.value.consultantRate + ' ' + fee.value.consultantRateCurrency?.name : '-'}}
                                                 </span>
                                             </ng-container>
@@ -1233,19 +1233,19 @@
                                             </div>
                                         </ng-container>
                                         <ng-container *ngIf="!commission.value.editable">
-                                            <span fxFlex="10%" class="u-w--100 text-truncate-ellipsis" [matTooltip]="salesMainDataForm.commissions.at(i).get('type')?.value?.name">
+                                            <span fxFlex="10%" class="u-w--100 text-truncate-ellipsis" [matTooltip]="salesMainDataForm.commissions.at(i).get('type')?.value?.name" matTooltipClass="white-tooltip">
                                                 {{commission.value.type?.name}}
                                             </span>
-                                            <span fxFlex="10%" class="u-w--100 text-truncate-ellipsis" [matTooltip]="salesMainDataForm.commissions.at(i).get('amount')?.value">
+                                            <span fxFlex="10%" class="u-w--100 text-truncate-ellipsis" [matTooltip]="salesMainDataForm.commissions.at(i).get('amount')?.value" matTooltipClass="white-tooltip">
                                                 {{commission.value.amount}}
                                             </span>
-                                            <span fxFlex="10%" class="u-w--100 text-truncate-ellipsis" [matTooltip]="salesMainDataForm.commissions.at(i).get('currency')?.value?.name">
+                                            <span fxFlex="10%" class="u-w--100 text-truncate-ellipsis" [matTooltip]="salesMainDataForm.commissions.at(i).get('currency')?.value?.name" matTooltipClass="white-tooltip">
                                                 {{commission.value.currency?.name}}
                                             </span>
-                                            <span fxFlex="10%" class="u-w--100 text-truncate-ellipsis" [matTooltip]="salesMainDataForm.commissions.at(i).get('recipientType')?.value?.name">
+                                            <span fxFlex="10%" class="u-w--100 text-truncate-ellipsis" [matTooltip]="salesMainDataForm.commissions.at(i).get('recipientType')?.value?.name" matTooltipClass="white-tooltip">
                                                 {{commission.value.recipientType?.name}}
                                             </span>
-                                            <span fxFlex="30%" class="u-w--100 text-truncate-ellipsis" [matTooltip]="salesMainDataForm.commissions.at(i).get('recipient')?.value?.name">
+                                            <span fxFlex="30%" class="u-w--100 text-truncate-ellipsis" [matTooltip]="salesMainDataForm.commissions.at(i).get('recipient')?.value?.name" matTooltipClass="white-tooltip">
                                                 <ng-container [ngSwitch]="commission.value.recipientType?.name">
                                                     <ng-container *ngSwitchCase="'Client'">
                                                         <div fxLayout="row" fxLayoutAlign="start center">
@@ -1285,7 +1285,7 @@
                                                     </ng-container>
                                                 </ng-container>
                                             </span>
-                                            <span fxFlex="20%" class="u-w--100 text-truncate-ellipsis" [matTooltip]="salesMainDataForm.commissions.at(i).get('frequency')?.value?.name">
+                                            <span fxFlex="20%" class="u-w--100 text-truncate-ellipsis" [matTooltip]="salesMainDataForm.commissions.at(i).get('frequency')?.value?.name" matTooltipClass="white-tooltip">
                                                 <!-- frequency id === 2 -- 'One time' -->
                                                 <ng-container *ngIf="salesMainDataForm.commissions.at(i).get('frequency')?.value?.id === 2; else commissionFrequency">
                                                     {{salesMainDataForm.commissions.at(i).get('frequency')?.value?.name}} {{salesMainDataForm.commissions.at(i).get('oneTimeDate')?.value | momentFormat: 'DD.MM.YYYY'}}
@@ -1810,10 +1810,10 @@
                                         *ngFor="let rate of salesClientDataForm.clientRates.controls; index as i"
                                         [formArrayName]="i">
                                         <ng-container>
-                                            <span fxFlex="30%" class="u-w--100 text-truncate-ellipsis" [matTooltip]="rate.value.rateName">
+                                            <span fxFlex="30%" class="u-w--100 text-truncate-ellipsis" [matTooltip]="rate.value.rateName" matTooltipClass="white-tooltip">
                                                 {{rate.value.rateName ?? '-'}}
                                             </span>
-                                            <span fxFlex="30%" class="u-w--100 text-truncate-ellipsis" [matTooltip]="rate.value.reportingUnit?.name">
+                                            <span fxFlex="30%" class="u-w--100 text-truncate-ellipsis" [matTooltip]="rate.value.reportingUnit?.name" matTooltipClass="white-tooltip">
                                                 {{rate.value.reportingUnit?.name ?? '-'}}
                                             </span>
 
@@ -1832,7 +1832,7 @@
                                                 </div>
                                             </ng-container>
                                             <ng-template #clientRateCurrencyDisplay>
-                                                <span fxFlex="30%" class="u-w--100 text-truncate-ellipsis" [matTooltip]="rate.value.clientRateValue + ' ' + rate.value.clientRateCurrency?.name">
+                                                <span fxFlex="30%" class="u-w--100 text-truncate-ellipsis" [matTooltip]="rate.value.clientRateValue + ' ' + rate.value.clientRateCurrency?.name" matTooltipClass="white-tooltip">
                                                     {{rate.value.clientRateValue || rate.value.clientRateCurrency?.name ? rate.value.clientRateValue + ' ' + rate.value.clientRateCurrency?.name : '-'}}
                                                 </span>
                                             </ng-template>
@@ -1914,10 +1914,10 @@
                                         *ngFor="let fee of salesClientDataForm.clientFees.controls; index as i"
                                         [formArrayName]="i">
                                         <ng-container>
-                                            <span fxFlex="30%" class="u-w--100 text-truncate-ellipsis" [matTooltip]="fee.value.feeName ?? '-'">
+                                            <span fxFlex="30%" class="u-w--100 text-truncate-ellipsis" [matTooltip]="fee.value.feeName ?? '-'" matTooltipClass="white-tooltip">
                                                 {{fee.value.feeName ?? '-'}}
                                             </span>
-                                            <span fxFlex="30%" class="u-w--100 text-truncate-ellipsis" [matTooltip]="fee.value.feeFrequency?.name ?? '-'">
+                                            <span fxFlex="30%" class="u-w--100 text-truncate-ellipsis" [matTooltip]="fee.value.feeFrequency?.name ?? '-'" matTooltipClass="white-tooltip">
                                                 {{fee.value.feeFrequency?.name ?? '-'}}
                                             </span>
 
@@ -1936,7 +1936,7 @@
                                                 </div>
                                             </ng-container>
                                             <ng-template #clientFeeCurrencyDisplay>
-                                                <span fxFlex="30%" class="u-w--100 text-truncate-ellipsis" [matTooltip]="fee.value.clientRateValue + ' ' + fee.value.clientRateCurrency?.name">
+                                                <span fxFlex="30%" class="u-w--100 text-truncate-ellipsis" [matTooltip]="fee.value.clientRateValue + ' ' + fee.value.clientRateCurrency?.name" matTooltipClass="white-tooltip">
                                                     {{fee.value.clientRateValue || fee.value.clientRateCurrency?.name ? fee.value.clientRateValue + ' ' + fee.value.clientRateCurrency?.name : '-'}}
                                                 </span>
                                             </ng-template>
@@ -2619,10 +2619,10 @@
                                                 *ngFor="let rate of getConsultantRateControls(consultantIndex); let specialRateIndex = index;"
                                                 [formArrayName]="specialRateIndex">
                                                 <ng-container>
-                                                    <span fxFlex="1 0 20%" class="u-w--100 text-truncate-ellipsis" [matTooltip]="rate.value.rateName">
+                                                    <span fxFlex="1 0 20%" class="u-w--100 text-truncate-ellipsis" [matTooltip]="rate.value.rateName" matTooltipClass="white-tooltip">
                                                         {{rate.value.rateName ?? '-'}}
                                                     </span>
-                                                    <span fxFlex="20%" class="u-w--100 text-truncate-ellipsis" [matTooltip]="rate.value.reportingUnit?.name">
+                                                    <span fxFlex="20%" class="u-w--100 text-truncate-ellipsis" [matTooltip]="rate.value.reportingUnit?.name" matTooltipClass="white-tooltip">
                                                         {{rate.value.reportingUnit?.name ?? '-'}}
                                                     </span>
                                                     <ng-container *ngIf="consultant.value?.consultantProdataEntity?.id !== salesClientDataForm.value?.pdcInvoicingEntityId?.id">
@@ -2641,7 +2641,7 @@
                                                             </div>
                                                         </ng-container>
                                                         <ng-template #consutlantProDataRateCurrencyDisplay>
-                                                            <span fxFlex="25%" class="u-w--100 text-truncate-ellipsis" [matTooltip]="rate.value.prodataToProdataRate + ' ' + rate.value.prodataToProdataRateCurrency?.name">
+                                                            <span fxFlex="25%" class="u-w--100 text-truncate-ellipsis" [matTooltip]="rate.value.prodataToProdataRate + ' ' + rate.value.prodataToProdataRateCurrency?.name" matTooltipClass="white-tooltip">
                                                                 {{rate.value.prodataToProdataRate || rate.value.prodataToProdataRateCurrency?.name ? rate.value.prodataToProdataRate + ' ' + rate.value.prodataToProdataRateCurrency?.name : '-'}}
                                                             </span>
                                                         </ng-template>
@@ -2662,7 +2662,7 @@
                                                         </div>
                                                     </ng-container>
                                                     <ng-template #consutlantRateCurrencyDisplay>
-                                                        <span fxFlex="25%" class="u-w--100 text-truncate-ellipsis" [matTooltip]="rate.value.consultantRate + ' ' + rate.value.consultantRateCurrency?.name">
+                                                        <span fxFlex="25%" class="u-w--100 text-truncate-ellipsis" [matTooltip]="rate.value.consultantRate + ' ' + rate.value.consultantRateCurrency?.name" matTooltipClass="white-tooltip">
                                                             {{rate.value.consultantRate || rate.value.consultantRateCurrency?.name ? rate.value.consultantRate + ' ' + rate.value.consultantRateCurrency?.name : '-'}}
                                                         </span>
                                                     </ng-template>
@@ -2753,10 +2753,10 @@
                                                 *ngFor="let fee of getConsultantFeeControls(consultantIndex); let specialFeeIndex = index;"
                                                 [formArrayName]="specialFeeIndex">
                                                 <ng-container>
-                                                    <span fxFlex="1 1 20%" class="u-w--100 text-truncate-ellipsis" [matTooltip]="fee.value.feeName ?? '-'">
+                                                    <span fxFlex="1 1 20%" class="u-w--100 text-truncate-ellipsis" [matTooltip]="fee.value.feeName ?? '-'" matTooltipClass="white-tooltip">
                                                         {{fee.value.feeName ?? '-'}}
                                                     </span>
-                                                    <span fxFlex="20%" class="u-w--100 text-truncate-ellipsis" [matTooltip]="fee.value.frequency?.name ?? '-'">
+                                                    <span fxFlex="20%" class="u-w--100 text-truncate-ellipsis" [matTooltip]="fee.value.frequency?.name ?? '-'" matTooltipClass="white-tooltip">
                                                         {{fee.value.frequency?.name ?? '-'}}
                                                     </span>
                                                     <ng-container *ngIf="consultant.value?.consultantProdataEntity?.id !== salesClientDataForm.value?.pdcInvoicingEntityId?.id">
@@ -2775,7 +2775,7 @@
                                                             </div>
                                                         </ng-container>
                                                         <ng-template #proDataFeeCurrencyDisplay>
-                                                            <span fxFlex="25%" class="u-w--100 text-truncate-ellipsis" [matTooltip]="fee.value.prodataToProdataRate + ' ' + fee.value.prodataToProdataRateCurrency?.name">
+                                                            <span fxFlex="25%" class="u-w--100 text-truncate-ellipsis" [matTooltip]="fee.value.prodataToProdataRate + ' ' + fee.value.prodataToProdataRateCurrency?.name" matTooltipClass="white-tooltip">
                                                                 {{fee.value.prodataToProdataRate || fee.value.prodataToProdataRateCurrency?.name ? fee.value.prodataToProdataRate + ' ' + fee.value.prodataToProdataRateCurrency?.name : '-'}}
                                                             </span>
                                                         </ng-template>
@@ -2796,7 +2796,7 @@
                                                         </div>
                                                     </ng-container>
                                                     <ng-template #consultantFeeCurrencyDisplay>
-                                                        <span fxFlex="25%" class="u-w--100 text-truncate-ellipsis" [matTooltip]="fee.value.consultantRate + ' ' + fee.value.consultantRateCurrency?.name">
+                                                        <span fxFlex="25%" class="u-w--100 text-truncate-ellipsis" [matTooltip]="fee.value.consultantRate + ' ' + fee.value.consultantRateCurrency?.name" matTooltipClass="white-tooltip">
                                                             {{fee.value.consultantRate || fee.value.consultantRateCurrency?.name ? fee.value.consultantRate + ' ' + fee.value.consultantRateCurrency?.name : '-'}}
                                                         </span>
                                                     </ng-template>

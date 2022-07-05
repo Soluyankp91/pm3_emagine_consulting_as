@@ -7,15 +7,15 @@
     border-radius: 50%;
     background: #E8F6F5;
     mat-icon {
-        color: #17A297;
+        color: $green-color;
         line-height: 20px !important;
     }
 }
 
 .button-outlined {
     background-color: #fff !important;
-    border: 2px solid #17A297 !important;
-    color: #17A297 !important;
+    border: 2px solid $green-color !important;
+    color: $green-color !important;
     font-weight: 700;
     &.mat-button-disabled {
         color: $light-grey-color !important;
@@ -27,9 +27,9 @@
 }
 
 .button-accept {
-    background-color: #17A297 !important;
-    border: 2px solid #17A297 !important;
-    color: #fff !important;
+    background-color: $green-color !important;
+    border: 2px solid $green-color !important;
+    color: $white-color !important;
     font-weight: 700;
     &.mat-button-disabled {
         background-color: rgba($color: $light-grey-color, $alpha: 0.55) !important;
@@ -39,7 +39,7 @@
 
 .button-add {
     background-color: transparent !important;
-    color: #17A297;
+    color: $green-color;
     font-weight: 700;
     padding-left: 0px !important;
     font-size: 16px;
@@ -48,7 +48,7 @@
         align-items: center;
     }
     mat-icon {
-        background-color: rgba($color: #17A297, $alpha: .2);
+        background-color: rgba($color: $green-color, $alpha: .2);
         border-radius: 50% !important;
         margin-right: 5px;
     }
@@ -208,5 +208,21 @@
             line-height: 40px;
             height: 37px;
         }
+    }
+}
+
+.advanced-filterd--btn {
+    min-width: 155px;
+    mat-icon {
+        height: 18px;
+        width: 18px;
+        line-height: 18px;
+    }
+    &-text {
+        font-size: 14px;
+        font-weight: 700;
+        line-height: 1.4;
+        letter-spacing: normal;
+        color: $green-color;
     }
 }

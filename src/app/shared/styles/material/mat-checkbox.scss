@@ -2,7 +2,7 @@
 
 .green-checkbox {
     .mat-checkbox-frame {
-        border-color: #17A297 !important;
+        border-color: $green-color !important;
         border-radius: 2px;
         transform: scale(1.1);
     }
@@ -13,9 +13,9 @@
         width: 32px;
     }
     &.mat-checkbox-checked .mat-checkbox-background {
-        background-color: #17A297 !important;
+        background-color: $green-color !important;
         svg path {
-            stroke: #fff !important;
+            stroke: $white-color !important;
         }
     }
 }

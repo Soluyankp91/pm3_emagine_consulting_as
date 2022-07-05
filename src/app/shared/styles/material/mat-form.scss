@@ -324,7 +324,7 @@
         }
         &.mat-focused:not(.mat-form-field-invalid) {
             .mat-form-field-flex {
-                // border: 1px solid #17A297 !important;
+                // border: 1px solid $green-color !important;
                 background-color: $sand-25-color !important;
             }
             .mat-form-field-underline {
@@ -355,10 +355,10 @@
 
         &.mat-form-field-invalid {
             .mat-input-element {
-                color: #FF7A78 !important;
+                color: $red-color !important;
             }
             .mat-form-field-label {
-                color: #FF7A78 !important;
+                color: $red-color !important;
             }
         }
         // .mat-form-field-suffix {
@@ -435,7 +435,7 @@
         }
         &.mat-focused:not(.mat-form-field-invalid) {
             .mat-form-field-flex {
-                // border: 1px solid #17A297 !important;
+                // border: 1px solid $green-color !important;
                 background-color: $sand-25-color !important;
             }
             .mat-form-field-underline {
@@ -466,10 +466,10 @@
 
         &.mat-form-field-invalid {
             .mat-input-element {
-                color: #FF7A78 !important;
+                color: $red-color !important;
             }
             .mat-form-field-label {
-                color: #FF7A78 !important;
+                color: $red-color !important;
             }
         }
         .mat-form-field-prefix {
@@ -566,7 +566,7 @@
         }
         &.mat-focused:not(.mat-form-field-invalid) {
             .mat-form-field-flex {
-                // border: 1px solid #17A297 !important;
+                // border: 1px solid $green-color !important;
                 background-color: $sand-25-color !important;
             }
             .mat-form-field-underline {
@@ -597,10 +597,10 @@
 
         &.mat-form-field-invalid {
             .mat-input-element {
-                color: #FF7A78 !important;
+                color: $red-color !important;
             }
             .mat-form-field-label {
-                color: #FF7A78 !important;
+                color: $red-color !important;
             }
         }
         // .mat-form-field-suffix {

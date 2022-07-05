@@ -17,7 +17,7 @@
                 <ng-container matColumnDef="headline">
                     <mat-header-cell *matHeaderCellDef mat-sort-header fxFlex="15%"> Request name </mat-header-cell>
                     <mat-cell *matCellDef="let row" fxFlex="15%">
-                        <span class="text-truncate-ellipsis" [matTooltip]="row.headline">
+                        <span class="text-truncate-ellipsis" [matTooltip]="row.headline" matTooltipClass="white-tooltip">
                             {{row.headline}}
                         </span>
                     </mat-cell>
@@ -25,7 +25,7 @@
                 <ng-container matColumnDef="status.value">
                     <mat-header-cell *matHeaderCellDef mat-sort-header fxFlex="10%"> Request status </mat-header-cell>
                     <mat-cell *matCellDef="let row" fxFlex="10%">
-                        <span class="text-truncate-ellipsis" [matTooltip]="row?.status?.name">
+                        <span class="text-truncate-ellipsis" [matTooltip]="row?.status?.name" matTooltipClass="white-tooltip">
                             {{row?.status?.name}}
                         </span>
                     </mat-cell>
@@ -33,7 +33,7 @@
                 <ng-container matColumnDef="clientDeadline">
                     <mat-header-cell *matHeaderCellDef mat-sort-header fxFlex="8%"> Client deadline </mat-header-cell>
                     <mat-cell *matCellDef="let row" fxFlex="8%">
-                        <span class="text-truncate-ellipsis" [matTooltip]="row.clientDeadline | momentFormat: 'DD.MM.YYYY'">
+                        <span class="text-truncate-ellipsis" [matTooltip]="row.clientDeadline | momentFormat: 'DD.MM.YYYY'" matTooltipClass="white-tooltip">
                             {{row.clientDeadline | momentFormat: 'DD.MM.YYYY'}}
                         </span>
                     </mat-cell>
@@ -41,7 +41,7 @@
                 <ng-container matColumnDef="dateAdded">
                     <mat-header-cell *matHeaderCellDef mat-sort-header fxFlex="8%"> Date added </mat-header-cell>
                     <mat-cell *matCellDef="let row" fxFlex="8%">
-                        <span class="text-truncate-ellipsis" [matTooltip]="row?.dateAdded | momentFormat: 'DD.MM.YYYY'">
+                        <span class="text-truncate-ellipsis" [matTooltip]="row?.dateAdded | momentFormat: 'DD.MM.YYYY'" matTooltipClass="white-tooltip">
                             {{row?.dateAdded | momentFormat: 'DD.MM.YYYY'}}
                         </span>
                     </mat-cell>
@@ -49,7 +49,7 @@
                 <ng-container matColumnDef="projectType.value">
                     <mat-header-cell *matHeaderCellDef mat-sort-header fxFlex="10%"> Project type </mat-header-cell>
                     <mat-cell *matCellDef="let row" fxFlex="10%">
-                        <span class="text-truncate-ellipsis" [matTooltip]="row?.projectType?.name">
+                        <span class="text-truncate-ellipsis" [matTooltip]="row?.projectType?.name" matTooltipClass="white-tooltip">
                             {{row?.projectType?.name}}
                         </span>
                     </mat-cell>
@@ -57,7 +57,7 @@
                 <ng-container matColumnDef="priority">
                     <mat-header-cell *matHeaderCellDef mat-sort-header fxFlex="5%"> Priority </mat-header-cell>
                     <mat-cell *matCellDef="let row" fxFlex="5%">
-                        <span class="text-truncate-ellipsis" [matTooltip]="row.priority">
+                        <span class="text-truncate-ellipsis" [matTooltip]="row.priority" matTooltipClass="white-tooltip">
                             {{row.priority}}
                         </span>
                     </mat-cell>
@@ -65,7 +65,7 @@
                 <ng-container matColumnDef="numberOfConsultants">
                     <mat-header-cell *matHeaderCellDef mat-sort-header fxFlex="5%"> Consultants </mat-header-cell>
                     <mat-cell *matCellDef="let row" fxFlex="5%">
-                        <span class="text-truncate-ellipsis" [matTooltip]="row.numberOfConsultants">
+                        <span class="text-truncate-ellipsis" [matTooltip]="row.numberOfConsultants" matTooltipClass="white-tooltip">
                             {{row.numberOfConsultants}}
                         </span>
                     </mat-cell>
@@ -73,7 +73,7 @@
                 <ng-container matColumnDef="locations">
                     <mat-header-cell *matHeaderCellDef fxFlex="10%"> Area </mat-header-cell>
                     <mat-cell *matCellDef="let row" fxFlex="10%">
-                        <span class="text-truncate-ellipsis" [matTooltip]="mapLocationArrayByName(row.locations)">
+                        <span class="text-truncate-ellipsis" [matTooltip]="mapLocationArrayByName(row.locations)" matTooltipClass="white-tooltip">
                             {{mapLocationArrayByName(row.locations)}}
                         </span>
                     </mat-cell>
@@ -82,7 +82,7 @@
                 <ng-container matColumnDef="salesManager">
                     <mat-header-cell *matHeaderCellDef fxFlex="12%"> Sales manager </mat-header-cell>
                     <mat-cell *matCellDef="let row" fxFlex="12%">
-                        <span class="text-truncate-ellipsis" [matTooltip]="mapEmployeeArrayByName(row.accountManagers)">
+                        <span class="text-truncate-ellipsis" [matTooltip]="mapEmployeeArrayByName(row.accountManagers)" matTooltipClass="white-tooltip">
                             {{mapEmployeeArrayByName(row.accountManagers)}}
                         </span>
                     </mat-cell>
@@ -91,7 +91,7 @@
                 <ng-container matColumnDef="sourcer">
                     <mat-header-cell *matHeaderCellDef fxFlex="12%"> Sourcer </mat-header-cell>
                     <mat-cell *matCellDef="let row" fxFlex="12%">
-                        <span class="text-truncate-ellipsis" [matTooltip]="mapEmployeeArrayByName(row.requestSourcers)">
+                        <span class="text-truncate-ellipsis" [matTooltip]="mapEmployeeArrayByName(row.requestSourcers)" matTooltipClass="white-tooltip">
                             {{mapEmployeeArrayByName(row.requestSourcers)}}
                         </span>
                     </mat-cell>

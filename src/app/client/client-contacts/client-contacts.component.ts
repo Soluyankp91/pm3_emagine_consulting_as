@@ -1,8 +1,9 @@
-import { Component, Input, OnDestroy, OnInit } from '@angular/core';
+import { Component, Injector, Input, OnDestroy, OnInit } from '@angular/core';
 import { MatTableDataSource } from '@angular/material/table';
 import { ActivatedRoute } from '@angular/router';
 import { Subject } from 'rxjs';
 import { finalize, takeUntil } from 'rxjs/operators';
+import { AppComponentBase } from 'src/shared/app-component-base';
 import { AppConsts } from 'src/shared/AppConsts';
 import { ClientsServiceProxy, ContactDto } from 'src/shared/service-proxies/service-proxies';
 
@@ -41,7 +42,7 @@ const DATA_SOURCE = [
     templateUrl: './client-contacts.component.html',
     styleUrls: ['./client-contacts.component.scss']
 })
-export class ClientContactsComponent implements OnInit, OnDestroy {
+export class ClientContactsComponent extends AppComponentBase implements OnInit, OnDestroy {
     clientId: number;
     isDataLoading = false;
     selectedCountries: string[] = [];
@@ -66,9 +67,11 @@ export class ClientContactsComponent implements OnInit, OnDestroy {
 
     private _unsubscribe = new Subject();
     constructor(
+        injector: Injector,
         private _clientService: ClientsServiceProxy,
         private activatedRoute: ActivatedRoute
     ) {
+        super(injector);
     }
 
     ngOnInit(): void {

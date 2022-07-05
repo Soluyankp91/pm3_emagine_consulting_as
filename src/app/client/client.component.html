@@ -7,7 +7,7 @@
         </div>
         <div fxLayout="row" fxLayoutAlign="space-between start" class="u-w--100">
             <div fxFlex="1 0 40%" fxLayout="row" fxLayoutAlign="start center" class="u-w--100">
-                <div class="client-list--filter-manager cursor-pointer u-mr--16" [matTooltip]="mapListByProperty(selectedAccountManagers, 'name')" [matMenuTriggerFor]="managerMenu" (menuOpened)="accountManagerFilter.setValue(''); accountManagerFilterInput.click()">
+                <div class="client-list--filter-manager cursor-pointer u-mr--16" [matTooltip]="mapListByProperty(selectedAccountManagers, 'name')" matTooltipClass="white-tooltip" [matMenuTriggerFor]="managerMenu" (menuOpened)="accountManagerFilter.setValue(''); accountManagerFilterInput.click()">
                     <img *ngIf="selectedAccountManagers?.length === 1" class="border-rounded-50 image-thumbnail-small" [src]="employeeProfileUrl(selectedAccountManagers[0]?.externalId!)" />
                     <img *ngIf="selectedAccountManagers?.length === 0" src="../../../assets/common/images/no-img.svg">
                     <div *ngIf="selectedAccountManagers?.length && selectedAccountManagers.length > 1" class="client-list--filter__badge">
@@ -65,7 +65,7 @@
                         [matMenuTriggerFor]="countryMenu"
                         (menuOpened)="countryFilter.setValue('')"
                         [ngClass]="{ 'client-list--filter-country__btn': selectedCountries.length > 1 }"
-                        [matTooltip]="mapListByProperty(selectedCountries, 'name')">
+                        [matTooltip]="mapListByProperty(selectedCountries, 'name')" matTooltipClass="white-tooltip">
                             <span *ngIf="selectedCountries.length > 1; else singleCountry" class="client-list--filter-country__badge">
                                 {{selectedCountries.length}}
                             </span>
@@ -166,7 +166,7 @@
                 <ng-container matColumnDef="name">
                     <mat-header-cell *matHeaderCellDef mat-sort-header fxFlex="25%"> Client </mat-header-cell>
                     <mat-cell *matCellDef="let row" fxFlex="25%">
-                        <span class="text-truncate-ellipsis text-bold-800" [matTooltip]="row.name">
+                        <span class="text-truncate-ellipsis text-bold-800" [matTooltip]="row.name" matTooltipClass="white-tooltip">
                             {{row.name}}
                         </span>
                     </mat-cell>
@@ -174,7 +174,7 @@
                 <ng-container matColumnDef="clientAddress_Country_Name">
                     <mat-header-cell *matHeaderCellDef mat-sort-header fxFlex="10%"> Country </mat-header-cell>
                     <mat-cell *matCellDef="let row" fxFlex="10%">
-                        <span class="text-truncate-ellipsis text-bold" [matTooltip]="row.clientAddress_Country_Name">
+                        <span class="text-truncate-ellipsis text-bold" [matTooltip]="row.clientAddress_Country_Name" matTooltipClass="white-tooltip">
                             <span class="flag-icon flag-icon-{{row.clientAddress_Country_Code | lowercase }}"></span>
                             <span>
                                 {{row.clientAddress_Country_Code}}
@@ -185,7 +185,7 @@
                 <ng-container matColumnDef="clientAddress_City">
                     <mat-header-cell *matHeaderCellDef mat-sort-header fxFlex="15%"> City </mat-header-cell>
                     <mat-cell *matCellDef="let row" fxFlex="15%">
-                        <span class="text-truncate-ellipsis" [matTooltip]="row.clientAddress_PostCode + ' ' + row.clientAddress_City">
+                        <span class="text-truncate-ellipsis" [matTooltip]="row.clientAddress_PostCode + ' ' + row.clientAddress_City" matTooltipClass="white-tooltip">
                             {{row.clientAddress_PostCode + ' ' + row.clientAddress_City}}
                         </span>
                     </mat-cell>
@@ -193,7 +193,7 @@
                 <ng-container matColumnDef="clientAddress_Address">
                     <mat-header-cell *matHeaderCellDef mat-sort-header fxFlex="15%"> Address </mat-header-cell>
                     <mat-cell *matCellDef="let row" fxFlex="15%">
-                        <span class="text-truncate-ellipsis" [matTooltip]="row.clientAddress_Address">
+                        <span class="text-truncate-ellipsis" [matTooltip]="row.clientAddress_Address" matTooltipClass="white-tooltip">
                             {{row.clientAddress_Address}}
                         </span>
                     </mat-cell>
@@ -208,7 +208,7 @@
                                 <span class="text-truncate-ellipsis status-text--deleted">Wrongfully deleted</span>
                             </span>
                         </div>
-                        <div fxLayout="row" fxLayoutAlign="start center" *ngIf="!row.isWrongfullyDeletedInHubspot" [matTooltip]="row.isActive ? 'Active' : 'Non-active'">
+                        <div fxLayout="row" fxLayoutAlign="start center" *ngIf="!row.isWrongfullyDeletedInHubspot" [matTooltip]="row.isActive ? 'Active' : 'Non-active'" matTooltipClass="white-tooltip">
                             <mat-icon class="status-dot" [ngClass]="row.isActive ? 'active-flag' : 'not-active-flag'">fiber_manual_record   </mat-icon>
                             <span class="text-truncate-ellipsis" [ngClass]="row.isActive ? 'status-text--active' : 'status-text--not-active'">{{row.isActive ? 'Active' : 'Non-active'}}</span>
                         </div>
@@ -221,7 +221,7 @@
                 <ng-container matColumnDef="owner_Name">
                     <mat-header-cell *matHeaderCellDef mat-sort-header fxFlex="10%"> Account manager </mat-header-cell>
                     <mat-cell *matCellDef="let row" fxFlex="10%">
-                        <span class="text-truncate-ellipsis" [matTooltip]="row.owner_Name">
+                        <span class="text-truncate-ellipsis" [matTooltip]="row.owner_Name" matTooltipClass="white-tooltip">
                             {{row.owner_Name ? row.owner_Name : '-' }}
                             <!-- <img class="manager-search--photo" src="../../../../assets/common/images/no-img.svg" [alt]="row?.owner?.name" /> FIXME: uncomment when we will have externalId  -->
                         </span>

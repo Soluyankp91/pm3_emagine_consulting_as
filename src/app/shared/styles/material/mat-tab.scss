@@ -4,10 +4,10 @@
 nav.client-details--tabs {
     .mat-tab-body-wrapper {
         box-shadow: 0px 0px 20px rgba(26, 35, 126, 0.15);
-        background-color: #FAF9FB !important;
+        background-color: $sand-25-color !important;
     }
     mat-ink-bar {
-        background-color: #17A297 !important;
+        background-color: $green-color !important;
         height: 4px;
     }
 
@@ -98,7 +98,7 @@ mat-tab-group.client-documents--tabs {
         position: sticky;
         position: -webkit-sticky;
         border-bottom: 0;
-        background-color: #fff;
+        background-color: $white-color;
     }
 
     .mat-tab-label-container {
@@ -106,7 +106,7 @@ mat-tab-group.client-documents--tabs {
     }
 
     mat-ink-bar {
-        background-color: #17A297 !important;
+        background-color: $green-color !important;
         height: 4px;
         top: 0;
     }
@@ -161,7 +161,7 @@ mat-tab-group.client-documents--tabs {
         }
         &-active,
         &:hover {
-            background-color: #FAF9FB;
+            background-color: $sand-25-color;
             color: $dark-grey-color;
             box-shadow: 0px 0px 15px rgba(0, 0, 0, 0.15);
             &::before {
@@ -198,10 +198,10 @@ mat-tab-group.client-documents--tabs {
 mat-tab-group.notification-settings--tabs {
     .mat-tab-body-wrapper {
         box-shadow: 0px 0px 20px rgba(26, 35, 126, 0.15);
-        background-color: #FAF9FB !important;
+        background-color: $sand-25-color !important;
     }
     mat-ink-bar {
-        background-color: #17A297 !important;
+        background-color: $green-color !important;
         height: 4px;
     }
 
