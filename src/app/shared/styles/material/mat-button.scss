@@ -210,3 +210,19 @@
         }
     }
 }
+
+.advanced-filterd--btn {
+    min-width: 155px;
+    mat-icon {
+        height: 18px;
+        width: 18px;
+        line-height: 18px;
+    }
+    &-text {
+        font-size: 14px;
+        font-weight: 700;
+        line-height: 1.4;
+        letter-spacing: normal;
+        color: $green-color;
+    }
+}
