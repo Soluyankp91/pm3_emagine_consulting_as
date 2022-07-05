@@ -161,7 +161,6 @@ export class AppGanttFlatComponent extends GanttUpper implements OnInit {
     }
 
     setPosition(event: MouseEvent, item: any) {
-        debugger;
         event.preventDefault();
         this.menuTopLeftPosition.x = event.clientX;
         this.menuTopLeftPosition.y = event.clientY + 10;
