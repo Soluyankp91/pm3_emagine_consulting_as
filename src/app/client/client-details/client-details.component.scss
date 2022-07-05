@@ -22,9 +22,12 @@
     &--content {
         height: calc(100vh - 150px);
         .nav-tab--content {
-            height: calc(100vh - 200px);
-            padding: 16px 60px;
-            background-color: $sand-25-color;
+            padding: 26px 60px;
+            &-wrapper {
+                height: calc(100vh - 200px);
+                overflow: hidden;
+                background-color: $sand-25-color;
+            }
         }
     }
     &--search {

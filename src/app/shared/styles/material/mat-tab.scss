@@ -17,14 +17,14 @@ nav.client-details--tabs {
 
     .mat-tab-link {
         background-color: transparent !important;
-        padding: 0 24px !important;
-        min-width: 160px !important;
+        padding: 0 0 19px !important;
+        min-width: unset !important;
         font-weight: 700 !important;
         font-size: 16px !important;
         line-height: 16px !important;
         opacity: 1;
         height: 50px;
-        margin-right: 5px;
+        margin-right: 35px;
 
         &.mat-tab-link-active,
         &:hover {
@@ -36,7 +36,6 @@ nav.client-details--tabs {
         }
     }
     .mat-tab-body-content {
-        height: calc(100vh - 200px);
         padding: 16px 60px;
     }
 }

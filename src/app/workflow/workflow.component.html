@@ -180,8 +180,8 @@
     </div>
     <div fxLayout="column" fxLayoutAlign="start center" class="workflow-list--content u-w--100">
         <div fxLayout="row" fxLayoutAlign="end start" fxLayoutGap="25px" class="u-w--100">
-            <mat-slide-toggle color="primary" labelPosition="before" (change)="getWorkflowList()" [(ngModel)]="includeDeleted">Show deleted</mat-slide-toggle>
-            <mat-slide-toggle color="primary" labelPosition="before" (change)="getWorkflowList()" [(ngModel)]="includeTerminated">Show terminated</mat-slide-toggle>
+            <mat-slide-toggle class="green-slide-toggle" color="primary" labelPosition="before" (change)="getWorkflowList()" [(ngModel)]="includeDeleted">Show deleted</mat-slide-toggle>
+            <mat-slide-toggle class="green-slide-toggle" color="primary" labelPosition="before" (change)="getWorkflowList()" [(ngModel)]="includeTerminated">Show terminated</mat-slide-toggle>
         </div>
         <div fxLayout="column" class="u-w--100">
             <mat-table #table [dataSource]="workflowDataSource" class="workflow-list--table white-table u-w--100" matSort matSortStart="asc" (matSortChange)="sortChanged($event)">

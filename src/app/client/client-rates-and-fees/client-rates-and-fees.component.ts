@@ -121,6 +121,7 @@ export class ClientRatesAndFeesComponent implements OnInit, OnDestroy {
             }))
             .subscribe(result => {
                 this.clientSpecailRateForm = new ClientSpecailRateForm();
+                this.rateIsEditing = false;
                 result.forEach(item => {
                     this.addSpecialRate(item);
                 });
@@ -134,6 +135,7 @@ export class ClientRatesAndFeesComponent implements OnInit, OnDestroy {
             }))
             .subscribe(result => {
                 this.clientFeesForm = new ClientFeesForm();
+                this.feeIsEditing = false;
                 result.forEach(item => {
                     this.addClientFee(item);
                 });
@@ -354,22 +356,6 @@ export class ClientRatesAndFeesComponent implements OnInit, OnDestroy {
     toggleSpecialFeeHiddenState(index: number) {
         this.clientFees.at(index).get('hidden')?.setValue(!this.clientFees.at(index).get('hidden')?.value);
         this.saveOrUpdateSpecialFee(index);
-    }
-
-    showHideSpecialRatesToggle(event: MatSlideToggleChange) {
-        if (event.checked) {
-            // logic to show hidden rows
-        } else {
-            // logic to hide hidden rows
-        }
-    }
-
-    showHideSpecialFeesToggle(event: MatSlideToggleChange) {
-        if (event.checked) {
-            // logic to show hidden rows
-        } else {
-            // logic to hide hidden rows
-        }
     }
 
     compareWithFn(listOfItems: any, selectedItem: any) {

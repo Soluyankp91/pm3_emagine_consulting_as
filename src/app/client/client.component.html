@@ -150,7 +150,7 @@
                     <input autocomplete="off" matInput [formControl]="clientFilter" placeholder="Search" type="text">
                     <mat-icon matPrefix class="search-icon u-ml--10">search</mat-icon>
                 </mat-form-field>
-                <mat-slide-toggle color="primary" labelPosition="before" (change)="getClientsGrid()" [(ngModel)]="includeDeleted">Show deleted</mat-slide-toggle>
+                <mat-slide-toggle class="green-slide-toggle" color="primary" labelPosition="before" (change)="getClientsGrid()" [(ngModel)]="includeDeleted">Show deleted</mat-slide-toggle>
             </div>
         </div>
     </div>

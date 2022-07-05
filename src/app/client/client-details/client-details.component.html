@@ -60,8 +60,12 @@
                 Contacts
             </a>
         </nav>
-        <div class="nav-tab--content u-w--100">
-            <router-outlet></router-outlet>
+        <div class="u-w--100 nav-tab--content-wrapper">
+            <ng-scrollbar>
+                <div class="nav-tab--content full-height">
+                    <router-outlet></router-outlet>
+                </div>
+            </ng-scrollbar>
         </div>
     </div>
 </div>
