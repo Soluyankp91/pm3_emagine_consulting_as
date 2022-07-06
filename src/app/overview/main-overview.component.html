@@ -1,6 +1,6 @@
 <div class="main-overview" fxFlexFill>
     <div fxLayout="column" fxLayoutAlign="start start" class="main-overview--filter">
-        <h2 class="main-overview--header u-mb--20">Overview</h2>
+        <h2 class="page-main-header u-mb--20">Overview</h2>
         <div fxLayout="row" fxLayoutAlign="start start" class="u-w--100">
             <div fxFlex fxLayout="row wrap" fxLayoutAlign="start center" fxLayoutGap="6px" class="u-w--100" fxFlex="80%">
                 <div class="main-overview--filter-manager cursor-pointer u-mb--10" [matTooltip]="mapListByProperty(selectedAccountManagers, 'name')" matTooltipClass="white-tooltip" [matMenuTriggerFor]="managerMenu" (menuOpened)="accountManagerFilter.setValue(''); accountManagerFilterInput.click()">
@@ -80,7 +80,7 @@
                         <input autocomplete="off" matInput [formControl]="workflowFilter" placeholder="Search" type="text">
                         <mat-icon matPrefix class="search-icon u-ml--10">search</mat-icon>
                     </mat-form-field>
-                    <button class="advanced-filterd--btn u-mb--10" mat-flat-button (click)="isAdvancedFilters = !isAdvancedFilters" matTooltip="Advanced filters" matTooltipClass="white-tooltip">
+                    <button class="advanced-filterd--btn u-mt--10 u-mb--10" [ngClass]="{'active': isAdvancedFilters}" mat-flat-button (click)="isAdvancedFilters = !isAdvancedFilters" matTooltip="Advanced filters" matTooltipClass="white-tooltip">
                         <mat-icon svgIcon="filter-icon"></mat-icon>
                         <span class="advanced-filterd--btn-text u-ml--5">Advanced filters</span>
                     </button>
@@ -92,7 +92,7 @@
         <mat-form-field appearance="outline" class="filter-select u-mr--16" fxFlex="20%">
             <mat-label>Invoicing entity</mat-label>
             <mat-select [formControl]="invoicingEntityControl" [disableOptionCentering]="true">
-                <mat-option class="mat-select-clear-option">
+                <mat-option class="mat-select-clear-option" *ngIf="invoicingEntityControl.value">
                     Clear
                 </mat-option>
                 <mat-option *ngFor="let item of tenants" [value]="item.id">
@@ -104,7 +104,7 @@
         <mat-form-field appearance="outline" class="filter-select u-mr--16" fxFlex="20%">
             <mat-label> Payment entity</mat-label>
             <mat-select [formControl]="paymentEntityControl" [disableOptionCentering]="true">
-                <mat-option class="mat-select-clear-option">
+                <mat-option class="mat-select-clear-option" *ngIf="paymentEntityControl.value">
                     Clear
                 </mat-option>
                 <mat-option *ngFor="let item of tenants" [value]="item.id">

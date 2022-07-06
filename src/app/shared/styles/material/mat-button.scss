@@ -52,6 +52,15 @@
         border-radius: 50% !important;
         margin-right: 5px;
     }
+    @media screen and (max-width: 1366px) {
+        font-size: 14px;
+        mat-icon {
+            width: 16px;
+            height: 16px;
+            line-height: 16px;
+            font-size: 16px;
+        }
+    }
 }
 
 .workflow-content--expand {
@@ -208,6 +217,14 @@
             line-height: 40px;
             height: 37px;
         }
+        @media screen and (max-width: 1366px) {
+            &__save.mat-flat-button,
+            &__cancel.mat-flat-button {
+                font-size: 12px;
+                min-width: unset;
+                padding: 0 5px;
+            }
+        }
     }
 }
 
@@ -224,5 +241,9 @@
         line-height: 1.4;
         letter-spacing: normal;
         color: $green-color;
+    }
+
+    &.active {
+        background-color: rgba($color: $green-color-25, $alpha: 0.33);
     }
 }

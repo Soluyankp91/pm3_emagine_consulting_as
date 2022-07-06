@@ -124,13 +124,15 @@ export class MainOverviewComponent extends AppComponentBase implements OnInit {
                 let toSend = {
                     name: value,
                     maxRecordsCount: 1000,
+                    showAll: true,
+                    excludeIds: this.selectedAccountManagers.map(x => +x.id)
                 };
                 if (value?.id) {
                     toSend.name = value.id
                         ? value.name
                         : value;
                 }
-                return this._lookupService.employees(value);
+                return this._lookupService.employees(toSend.name, toSend.showAll, toSend.excludeIds);
             }),
         ).subscribe((list: EmployeeDto[]) => {
             if (list.length) {
@@ -304,7 +306,6 @@ export class MainOverviewComponent extends AppComponentBase implements OnInit {
         this.workflowItems = [];
         this.consultantsGroups = [];
         this.consultantsItems = [];
-        this.showMainSpinner();
         switch (this.overviewViewTypeControl.value) {
             case 1: // 'Client periods':
                 if (this.workflowChartSubscription) {
@@ -548,20 +549,20 @@ export class MainOverviewComponent extends AppComponentBase implements OnInit {
     }
 
     setUserSelectedStatusForWorflow(event: any) {
-        this.showMainSpinner();
+        this.isDataLoading = true;
         this._mainOverviewService.setUserSelectedStatusForWorkflow(event.workflowId, event.userSelectedStatus)
             .pipe(finalize(() => {
-                this.hideMainSpinner();
+                this.isDataLoading = false;
             }))
             .subscribe(result => {
                 this.changeViewType();
             })
     }
     setUserSelectedStatusForConsultant(event: any) {
-        this.showMainSpinner();
+        this.isDataLoading = true;
         this._mainOverviewService.setUserSelectedStatusForConsultant(event.workflowId, event.consultantId, event.userSelectedStatus)
             .pipe(finalize(() => {
-                this.hideMainSpinner();
+                this.isDataLoading = false;
             }))
             .subscribe(result => {
                 this.changeViewType();

@@ -1,9 +1,7 @@
 <div class="client-list">
     <div fxLayout="column" fxLayoutAlign="start start" class="client-list--filter u-w--100">
         <div fxLayout="row" fxLayoutAlign="start center" class="u-w--100 u-mb--10">
-            <h2 class="client-list--header">
-                Client list
-            </h2>
+            <h2 class="page-main-header">Client list</h2>
         </div>
         <div fxLayout="row" fxLayoutAlign="space-between start" class="u-w--100">
             <div fxFlex="1 0 40%" fxLayout="row" fxLayoutAlign="start center" class="u-w--100">
@@ -150,7 +148,7 @@
                     <input autocomplete="off" matInput [formControl]="clientFilter" placeholder="Search" type="text">
                     <mat-icon matPrefix class="search-icon u-ml--10">search</mat-icon>
                 </mat-form-field>
-                <mat-slide-toggle color="primary" labelPosition="before" (change)="getClientsGrid()" [(ngModel)]="includeDeleted">Show deleted</mat-slide-toggle>
+                <mat-slide-toggle class="green-slide-toggle" color="primary" labelPosition="before" (change)="getClientsGrid()" [(ngModel)]="includeDeleted">Show deleted</mat-slide-toggle>
             </div>
         </div>
     </div>
@@ -201,7 +199,7 @@
                 <ng-container matColumnDef="isActive">
                     <mat-header-cell *matHeaderCellDef mat-sort-header fxFlex="17%"> Status </mat-header-cell>
                     <mat-cell *matCellDef="let row" fxFlex="17%">
-                        <div fxLayout="row" fxLayoutAlign="start center" *ngIf="row.isActive && row.isWrongfullyDeletedInHubspot" matTooltip="Active, Wrongfully deleted">
+                        <div fxLayout="row" fxLayoutAlign="start center" *ngIf="row.isActive && row.isWrongfullyDeletedInHubspot" matTooltip="Active, Wrongfully deleted" matTooltipClass="white-tooltip">
                             <mat-icon class="status-dot deleted-flag">fiber_manual_record</mat-icon>
                             <span class="column">
                                 <span class="text-truncate-ellipsis status-text--active">Active</span>
@@ -212,7 +210,7 @@
                             <mat-icon class="status-dot" [ngClass]="row.isActive ? 'active-flag' : 'not-active-flag'">fiber_manual_record   </mat-icon>
                             <span class="text-truncate-ellipsis" [ngClass]="row.isActive ? 'status-text--active' : 'status-text--not-active'">{{row.isActive ? 'Active' : 'Non-active'}}</span>
                         </div>
-                        <div fxLayout="row" fxLayoutAlign="start center" matTooltip="Deleted" *ngIf="row.isDeleted">
+                        <div fxLayout="row" fxLayoutAlign="start center" matTooltip="Deleted" *ngIf="row.isDeleted" matTooltipClass="white-tooltip">
                             <mat-icon class="status-dot deleted-flag">fiber_manual_record</mat-icon>
                             <span class="text-truncate-ellipsis status-text--deleted">Deleted</span>
                         </div>

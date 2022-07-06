@@ -4,7 +4,7 @@
             <div fxLayout="column" fxLayoutAlign="start start">
                 <div fxLayout="row" fxLayoutAlign="start center">
                     <button class="back-arrow--btn u-pl--0" (click)="navigateBack()" mat-icon-button><mat-icon svgIcon="arrow"></mat-icon></button>
-                    <span class="client-details--header__client-name">{{client?.name}}</span>
+                    <span class="page-main-header">{{client?.name}}</span>
                 </div>
                 <div fxLayout="row" fxLayoutAlign="start center" class="client-details--client-info u-mt--10">
                     <span class="client-details--client-info__header client-id">
@@ -26,14 +26,14 @@
                     </span>
                 </div>
             </div>
-            <div fxLayout="row" fxLayoutAlign="start center" class="client-details--search">
-                <mat-form-field appearance="outline" class="u-w--100 mat-elevation-z0 formFieldNoMarginPadding u-mr--10">
+            <div fxLayout="row" fxLayoutAlign="end center" class="client-details--search">
+                <!-- <mat-form-field appearance="outline" class="u-w--100 mat-elevation-z0 formFieldNoMarginPadding u-mr--10">
                     <mat-label>Search</mat-label>
                     <input autocomplete="off" matInput [formControl]="clientFilterInput" placeholder="Search" type="text">
                     <mat-icon matPrefix>search</mat-icon>
-                </mat-form-field>
-                <button mat-icon-button color="primary" class="u-mr--10 mat-elevation-z0" (click)="impersonateHubspot()"><mat-icon svgIcon="HUBSPOT-icon"></mat-icon></button>
-                <button mat-icon-button color="primary" class="mat-elevation-z0" (click)="impersonateCAM()"><mat-icon svgIcon="CAM-icon"></mat-icon></button>
+                </mat-form-field> -->
+                <button mat-icon-button color="primary" matTooltip="Log into HubSpot" matTooltipClass="white-tooltip" class="u-mr--10 mat-elevation-z0" (click)="impersonateHubspot()"><mat-icon svgIcon="HUBSPOT-icon"></mat-icon></button>
+                <button mat-icon-button color="primary" matTooltip="Log into CAM" matTooltipClass="white-tooltip" class="mat-elevation-z0" (click)="impersonateCAM()"><mat-icon svgIcon="CAM-icon"></mat-icon></button>
             </div>
         </div>
     </div>
@@ -60,8 +60,12 @@
                 Contacts
             </a>
         </nav>
-        <div class="nav-tab--content u-w--100">
-            <router-outlet></router-outlet>
+        <div class="u-w--100 nav-tab--content-wrapper">
+            <ng-scrollbar>
+                <div class="nav-tab--content full-height">
+                    <router-outlet></router-outlet>
+                </div>
+            </ng-scrollbar>
         </div>
     </div>
 </div>

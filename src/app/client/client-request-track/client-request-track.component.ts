@@ -25,7 +25,7 @@ export class ClientRequestTrackComponent implements OnInit, OnDestroy {
     sorting = '';
 
     clientDisplayColumns = [
-        'countryFlag',
+        // 'countryFlag',
         'id',
         'headline',
         'status.value',

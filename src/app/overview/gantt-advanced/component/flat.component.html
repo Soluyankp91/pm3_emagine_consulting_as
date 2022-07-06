@@ -67,7 +67,7 @@
                 <div class="gantt-group-content" fxFlex="25%">
                     <div fxLayout="row" fxLayoutAlign="flex-end center" fxLayoutGap="15px" class="u-w-100">
                         <img class="manager-search--photo" [matTooltip]="group?.origin?.origin?.salesManager?.name!" matTooltipClass="white-tooltip" [src]="employeeProfileUrl(group?.origin?.origin?.salesManager?.externalId!)" />
-                        <button mat-icon-button matTooltip="Go to workflow" (click)="redirectToWorkflow(group?.origin?.origin?.workflowId!)">
+                        <button mat-icon-button matTooltip="Go to workflow" matTooltipClass="white-tooltip" (click)="redirectToWorkflow(group?.origin?.origin?.workflowId!)">
                             <mat-icon class="icon-arrow-rotate180" svgIcon="arrow"></mat-icon>
                         </button>
                     </div>

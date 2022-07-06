@@ -10,7 +10,7 @@ import { merge, Observable, Subject, Subscription } from 'rxjs';
 import { debounceTime, finalize, map, switchMap, takeUntil } from 'rxjs/operators';
 import { AppComponentBase } from 'src/shared/app-component-base';
 import { AppConsts } from 'src/shared/AppConsts';
-import { ApiServiceProxy, EmployeeDto, EmployeeServiceProxy, EnumEntityTypeDto, LookupServiceProxy, StartNewWorkflowInputDto, WorkflowAlreadyExistsDto, WorkflowListItemDto, WorkflowProcessType, WorkflowServiceProxy, WorkflowStepStatus } from 'src/shared/service-proxies/service-proxies';
+import { ApiServiceProxy, EmployeeDto, EmployeeServiceProxy, EnumEntityTypeDto, LookupServiceProxy, StartNewWorkflowInputDto, WorkflowAlreadyExistsDto, WorkflowListItemDto, WorkflowProcessType, WorkflowServiceProxy, WorkflowStatus, WorkflowStepStatus } from 'src/shared/service-proxies/service-proxies';
 import { SelectableCountry, SelectableIdNameDto } from '../client/client.model';
 import { InternalLookupService } from '../shared/common/internal-lookup.service';
 import { ConfirmationDialogComponent } from '../shared/components/confirmation-dialog/confirmation-dialog.component';
@@ -37,16 +37,15 @@ export class WorkflowComponent extends AppComponentBase implements OnInit, OnDes
 
     workflowDisplayColumns = [
         'flag',
-        'id',
         'Client',
-        'Consultants',
         'SalesType',
         'DeliveryType',
         'startDate',
         'endDate',
+        'Consultants',
+        'Status',
         'openProcess',
         'Steps',
-        'Status',
         'action'
     ];
 
@@ -142,13 +141,15 @@ export class WorkflowComponent extends AppComponentBase implements OnInit, OnDes
                 let toSend = {
                     name: value,
                     maxRecordsCount: 1000,
+                    showAll: true,
+                    excludeIds: this.selectedAccountManagers.map(x => +x.id)
                 };
                 if (value?.id) {
                     toSend.name = value.id
                         ? value.name
                         : value;
                 }
-                return this._lookupService.employees(value);
+                return this._lookupService.employees(toSend.name, toSend.showAll, toSend.excludeIds);
             }),
         ).subscribe((list: EmployeeDto[]) => {
             if (list.length) {
@@ -327,9 +328,11 @@ export class WorkflowComponent extends AppComponentBase implements OnInit, OnDes
 
     getFlagColor(flag: number): string {
         switch (flag) {
-            case WorkflowFlag.NewSales:
+            case WorkflowProcessType.StartClientPeriod:
+            case WorkflowProcessType.StartConsultantPeriod:
                 return 'workflow-flag--sales'
-            case WorkflowFlag.Extension:
+            case WorkflowProcessType.ExtendClientPeriod:
+            case WorkflowProcessType.ExtendConsultantPeriod:
                 return 'workflow-flag--extension'
             default:
                 return '';
@@ -338,9 +341,11 @@ export class WorkflowComponent extends AppComponentBase implements OnInit, OnDes
 
     mapFlagTooltip(flag: number): string {
         switch (flag) {
-            case WorkflowFlag.NewSales:
+            case WorkflowProcessType.StartClientPeriod:
+            case WorkflowProcessType.StartConsultantPeriod:
                 return 'New Sales'
-            case WorkflowFlag.Extension:
+            case WorkflowProcessType.ExtendClientPeriod:
+            case WorkflowProcessType.ExtendConsultantPeriod:
                 return 'Has Extension'
             default:
                 return '';
@@ -389,7 +394,6 @@ export class WorkflowComponent extends AppComponentBase implements OnInit, OnDes
 
     getWorkflowList() {
         let searchFilter = this.workflowFilter.value ? this.workflowFilter.value : '';
-        this.isDataLoading = true;
         let invoicingEntity = this.invoicingEntityControl.value ? this.invoicingEntityControl.value : undefined;
         let paymentEntity = this.paymentEntityControl.value ? this.paymentEntityControl.value : undefined;
         let salesType = this.salesTypeControl.value ? this.salesTypeControl.value : undefined;
@@ -400,6 +404,7 @@ export class WorkflowComponent extends AppComponentBase implements OnInit, OnDes
         if (this.workflowListSubscription) {
             this.workflowListSubscription.unsubscribe();
         }
+        this.isDataLoading = true;
 
         this.workflowListSubscription = this._apiService.workflow(
             invoicingEntity,
@@ -424,13 +429,16 @@ export class WorkflowComponent extends AppComponentBase implements OnInit, OnDes
             .subscribe(result => {
                 let formattedData = result?.items!.map(x => {
                     return {
+                        processStatusIcon: this.getFlagColor(x.workflowStatusWithEmployee?.processType!),
+                        processStatusName: this.mapFlagTooltip(x.workflowStatusWithEmployee?.processType!),
                         workflowId: x.workflowId,
                         clientName: x.clientName,
                         startDate: x.startDate,
                         endDate: x.endDate,
                         salesType: this.findItemById(this.saleTypes, x.salesTypeId),
                         deliveryType: this.findItemById(this.deliveryTypes, x.deliveryTypeId),
-                        workflowStatusWithEmployee: x.workflowStatusWithEmployee,
+                        statusName: x.workflowStatusWithEmployee?.status,
+                        statusIcon: this.getStatusIcon(x.workflowStatusWithEmployee?.status!),
                         isDeleted: x.isDeleted,
                         consultants: x.consultants,
                         openProcesses: x.openProcesses,
@@ -441,6 +449,19 @@ export class WorkflowComponent extends AppComponentBase implements OnInit, OnDes
                 this.totalCount = result.totalCount;
                 this.saveGridOptions();
             });
+    }
+
+    getStatusIcon(status: number) {
+        switch (status) {
+            case WorkflowStatus.Active:
+                return 'active-status';
+            case WorkflowStatus.Pending:
+                return 'pending-status';
+            case WorkflowStatus.Finished:
+                return 'finished-status';
+            default:
+                return '';
+        }
     }
 
     pageChanged(event?: any): void {
