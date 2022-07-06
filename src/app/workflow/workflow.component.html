@@ -121,7 +121,7 @@
         <mat-form-field appearance="outline" class="filter-select u-mr--16" fxFlex="20%">
             <mat-label>Invoicing entity</mat-label>
             <mat-select [formControl]="invoicingEntityControl" [disableOptionCentering]="true">
-                <mat-option class="mat-select-clear-option">
+                <mat-option class="mat-select-clear-option" *ngIf="invoicingEntityControl.value">
                     Clear
                 </mat-option>
                 <mat-option *ngFor="let item of tenants" [value]="item.id">
@@ -133,7 +133,7 @@
         <mat-form-field appearance="outline" class="filter-select u-mr--16" fxFlex="20%">
             <mat-label> Payment entity</mat-label>
             <mat-select [formControl]="paymentEntityControl" [disableOptionCentering]="true">
-                <mat-option class="mat-select-clear-option">
+                <mat-option class="mat-select-clear-option" *ngIf="paymentEntityControl.value">
                     Clear
                 </mat-option>
                 <mat-option *ngFor="let item of tenants" [value]="item.id">
@@ -145,7 +145,7 @@
         <mat-form-field appearance="outline" class="filter-select u-mr--16" fxFlex="20%">
             <mat-label> Sales type</mat-label>
             <mat-select [formControl]="salesTypeControl" [disableOptionCentering]="true">
-                <mat-option class="mat-select-clear-option">
+                <mat-option class="mat-select-clear-option" *ngIf="salesTypeControl.value">
                     Clear
                 </mat-option>
                 <mat-option *ngFor="let item of saleTypes" [value]="item.id">
@@ -157,7 +157,7 @@
         <mat-form-field appearance="outline" class="filter-select u-mr--16" fxFlex="20%">
             <mat-label> Delivery type</mat-label>
             <mat-select [formControl]="deliveryTypesControl" [disableOptionCentering]="true">
-                <mat-option class="mat-select-clear-option">
+                <mat-option class="mat-select-clear-option" *ngIf="deliveryTypesControl.value">
                     Clear
                 </mat-option>
                 <mat-option *ngFor="let item of deliveryTypes" [value]="item.id">
@@ -166,10 +166,10 @@
             </mat-select>
         </mat-form-field>
 
-        <mat-form-field appearance="outline" class="filter-select u-mr--16" fxFlex="20%">
+        <mat-form-field appearance="outline" class="filter-select" fxFlex="20%">
             <mat-label> Workflow status</mat-label>
             <mat-select [formControl]="workflowStatusControl" [disableOptionCentering]="true">
-                <mat-option class="mat-select-clear-option">
+                <mat-option class="mat-select-clear-option" *ngIf="workflowStatusControl.value">
                     Clear
                 </mat-option>
                 <mat-option *ngFor="let item of workflowStatuses | keyvalue" [value]="item.key">
