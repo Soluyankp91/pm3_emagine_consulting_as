@@ -2,7 +2,7 @@
 
     <div fxLayout="row" fxLayoutAlign="start start" class="workflow-header u-w--100">
         <div fxFlex="1 0 40%" fxLayout="column">
-            <h2 class="workflow-header--title u-mb--10">Workflow</h2>
+            <h2 class="workflow-header--title">Workflow</h2>
             <p class="workflow-header--client u-mb--20">{{workflowClient?.length ? workflowClient : 'New workflow'}}</p>
         </div>
 
@@ -91,11 +91,14 @@
 
     <div class="workflow-content u-w--100" id="workflowDetails">
         <mat-tab-group class="workflow-content--tabs u-w--100" (selectedTabChange)="tabChanged($event)" [(selectedIndex)]="selectedIndex">
-            <mat-tab label="Overview">
+            <mat-tab label="Overview" [disabled]="disabledOverview">
                 <ng-template mat-tab-label>
                     <div fxLayout="row" fxLayoutAlign="center center">
-                        <mat-icon class="u-mr--5" svgIcon="overview-icon"></mat-icon>
-                        <span class="tab-header">Overview</span>
+                        <mat-icon class="u-mr--10" svgIcon="{{!disabledOverview ? 'overview-icon' : 'overview-icon-inactive'}}"></mat-icon>
+                        <div fxLayout="column" fxLayoutAlign="center start">
+                            <span class="tab-header-overview">Overview</span>
+                            <span class="tab-header-detail">Coming soon</span>
+                        </div>
                     </div>
                 </ng-template>
                 <div class="workflow-form--panel u-w--100">

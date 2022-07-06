@@ -4,9 +4,7 @@
 
 .client-list {
     &--filter {
-        // height: 150px;
-        height: $white-header-height;
-        padding: 16px 75px;
+        padding: 32px 50px;
         &__badge {
             display: flex;
             justify-content: center;
@@ -53,15 +51,15 @@
     }
 
     &--header {
-        color: $dark-grey-color;
-        font-size: 56px;
+        font-family: 'Open Sans', sans-serif !important;
         font-weight: 800;
-        font-size: 48px;
+        color: $dark-grey-color;
+        font-size: 36px;
         line-height: 120%;
     }
 
     &--content {
-        padding: 16px 75px;
+        padding: 32px 50px;
         background-color: $sand-25-color;
         min-height: calc(100vh - 150px);
     }
