@@ -13,6 +13,7 @@ import { OverviewFlag, SelectableEmployeeDto, SelectableStatusesDto } from './ma
 import * as moment from 'moment';
 import { Router } from '@angular/router';
 import { AppComponentBase } from 'src/shared/app-component-base';
+import { MatAutocompleteTrigger } from '@angular/material/autocomplete';
 
 const MainOverviewGridOptionsKey = 'MainOverviewGridFILTERS.1.0.1.';
 
@@ -24,7 +25,8 @@ const MainOverviewGridOptionsKey = 'MainOverviewGridFILTERS.1.0.1.';
 export class MainOverviewComponent extends AppComponentBase implements OnInit {
     @ViewChild('ganttWorkflows', {static: false}) ganttWorkflows: NgxGanttComponent;
     @ViewChild('ganttConsultants', {static: false}) ganttConsultants: NgxGanttComponent;
-
+    @ViewChild('trigger', { read: MatAutocompleteTrigger }) trigger: MatAutocompleteTrigger;
+    isLoading: boolean;
     selectedAccountManagers: SelectableEmployeeDto[] = [];
     filteredAccountManagers: SelectableEmployeeDto[] = [];
 
@@ -122,7 +124,7 @@ export class MainOverviewComponent extends AppComponentBase implements OnInit {
             debounceTime(300),
             switchMap((value: any) => {
                 let toSend = {
-                    name: value,
+                    name: value ? value : '',
                     maxRecordsCount: 1000,
                     showAll: true,
                     excludeIds: this.selectedAccountManagers.map(x => +x.id)
@@ -132,6 +134,7 @@ export class MainOverviewComponent extends AppComponentBase implements OnInit {
                         ? value.name
                         : value;
                 }
+                this.isLoading = true;
                 return this._lookupService.employees(toSend.name, toSend.showAll, toSend.excludeIds);
             }),
         ).subscribe((list: EmployeeDto[]) => {
@@ -147,6 +150,7 @@ export class MainOverviewComponent extends AppComponentBase implements OnInit {
             } else {
                 this.filteredAccountManagers = [{ name: 'No managers found', externalId: '', id: 'no-data', selected: false }];
             }
+            this.isLoading = false;
         });
 
         merge(this.invoicingEntityControl.valueChanges,
@@ -646,5 +650,15 @@ export class MainOverviewComponent extends AppComponentBase implements OnInit {
             this.viewType.setValue(filters?.viewType, {emitEvent: false});
         }
         this.changeViewType();
+    }
+
+    openMenu(event: any) {
+        event.stopPropagation();
+        this.trigger.openPanel();
+    }
+
+    onOpenedMenu() {
+        this.accountManagerFilter.setValue('');
+        this.accountManagerFilter.markAsTouched();
     }
 }

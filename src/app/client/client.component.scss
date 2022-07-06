@@ -23,6 +23,10 @@
                 background-color: #4a4e60;
                 color: $white-color;
                 font-weight: 700;
+                border-radius: 50%;
+                display: flex;
+                justify-content: center;
+                align-items: center;
             }
         }
         &-status {

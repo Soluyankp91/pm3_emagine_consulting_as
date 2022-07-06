@@ -31,7 +31,7 @@ nav.client-details--tabs {
         @media screen and (max-width: 1366px) {
             font-size: 12px !important;
         }
-        
+
         &.mat-tab-link-active,
         &:hover {
             color: #263238;
@@ -144,22 +144,43 @@ mat-tab-group.client-documents--tabs {
             align-items: flex-start;
         }
         .tab-header {
+            font-family: 'Open Sans', sans-serif;
+            font-weight: 800;
+            line-height: 120%;
             font-size: 16px;
-            line-height: 16px;
+            color: $dark-grey-color;
+            @media screen and (max-width: 1366px) {
+                font-size: 14px;
+            }
             &-overview { // Overview disabled
+                font-family: 'Open Sans', sans-serif;
+                font-weight: 800;
+                line-height: 120%;
+                font-size: 16px;
                 color: $light-grey-color;
+                @media screen and (max-width: 1366px) {
+                    font-size: 14px;
+                }
             }
             &-detail {
-                font-weight: 700;
+                font-weight: 600;
                 font-size: 12px;
                 line-height: 150%;
                 color: $light-grey-color;
+                @media screen and (max-width: 1366px) {
+                    font-size: 10px;
+                }
             }
         }
         .tab-subheader {
-            font-size: 14px;
-            line-height: 14px;
+            font-size: 12px;
             color: $medium-grey-color;
+            font-family: 'Open Sans';
+            font-weight: 600;
+            line-height: 150%;
+            @media screen and (max-width: 1366px) {
+                font-size: 10px;
+            }
         }
         &::before {
             content: "";
@@ -227,17 +248,23 @@ mat-tab-group.notification-settings--tabs {
     }
     .mat-tab-label {
         background-color: transparent !important;
-        padding: 0 24px !important;
-        min-width: 160px !important;
-        font-weight: 700 !important;
+        padding: 0 0 15px !important;
+        min-width: unset !important;
+        font-weight: 800 !important;
         font-size: 16px !important;
         line-height: 16px !important;
         opacity: 1;
         height: 50px;
         margin-right: 5px;
+        color: #37474F;
+
+        @media screen and (max-width: 1366px) {
+            font-size: 12px !important;
+        }
 
         &-active,
         &:hover {
+            color: #263238;
             background-color: transparent !important;
         }
     }
