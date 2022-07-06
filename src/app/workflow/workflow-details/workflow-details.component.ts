@@ -165,7 +165,6 @@ export class WorkflowDetailsComponent extends AppComponentBase implements OnInit
     }
 
     getNotes() {
-        this.showMainSpinner();
         this.localHttpService.getTokenPromise().then((response: AuthenticationResult) => {
             this.httpClient.get(`${this.apiUrl}/api/Workflow/${this.workflowId}/notes`, {
                     headers: new HttpHeaders({
@@ -173,7 +172,7 @@ export class WorkflowDetailsComponent extends AppComponentBase implements OnInit
                     }),
                     responseType: 'text'
                 })
-                .pipe(finalize(() => this.hideMainSpinner() ))
+                .pipe(finalize(() => {}))
                 .subscribe((result: any) => {
                     this.workflowNoteOldValue = result;
                     this.workflowNote.setValue(result);

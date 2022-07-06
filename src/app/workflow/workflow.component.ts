@@ -392,7 +392,6 @@ export class WorkflowComponent extends AppComponentBase implements OnInit, OnDes
 
     getWorkflowList() {
         let searchFilter = this.workflowFilter.value ? this.workflowFilter.value : '';
-        this.isDataLoading = true;
         let invoicingEntity = this.invoicingEntityControl.value ? this.invoicingEntityControl.value : undefined;
         let paymentEntity = this.paymentEntityControl.value ? this.paymentEntityControl.value : undefined;
         let salesType = this.salesTypeControl.value ? this.salesTypeControl.value : undefined;
@@ -403,6 +402,7 @@ export class WorkflowComponent extends AppComponentBase implements OnInit, OnDes
         if (this.workflowListSubscription) {
             this.workflowListSubscription.unsubscribe();
         }
+        this.isDataLoading = true;
 
         this.workflowListSubscription = this._apiService.workflow(
             invoicingEntity,

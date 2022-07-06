@@ -242,4 +242,8 @@
         letter-spacing: normal;
         color: $green-color;
     }
+
+    &.active {
+        background-color: rgba($color: $green-color-25, $alpha: 0.33);
+    }
 }

@@ -42,9 +42,22 @@
                 color: #384853;
             }
             &.selected-status {
-                background-color: rgba(42, 194, 167, 0.13);
-                // color: $white-color;
-                border-color: $green-color;
+                &.new-sales-status {
+                    background-color: rgba($color: $green-color, $alpha: 0.13);
+                    border-color: $green-color;
+                }
+                &.extensions-status {
+                    background-color: rgba($color: $purple-color, $alpha: 0.13);
+                    border-color: $purple-color;
+                }
+                &.pending-steps-status,
+                &.upcoming-steps-status {
+                    background-color: #384853;
+                    border-color: #384853;
+                    .workflow-list--filter-type__name {
+                        color: $white-color;
+                    }
+                }
             }
         }
         &-manager {

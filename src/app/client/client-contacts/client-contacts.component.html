@@ -59,9 +59,7 @@
                 <ng-container matColumnDef="owner">
                     <mat-header-cell *matHeaderCellDef fxFlex="8%"> Owner </mat-header-cell>
                     <mat-cell *matCellDef="let row" fxFlex="8%">
-                        <span class="text-truncate-ellipsis" [matTooltip]="row?.owner?.name" matTooltipClass="white-tooltip">
-                            <img class="manager-search--photo" [src]="employeeProfileUrl(row?.owner?.externalId!)"/>
-                        </span>
+                        <img class="border-rounded-50 image-thumbnail-small" [matTooltip]="row?.owner?.name" matTooltipClass="white-tooltip" [src]="employeeProfileUrl(row?.owner?.externalId!)"/>
                     </mat-cell>
                 </ng-container>
                 <mat-header-row *matHeaderRowDef="clientDisplayColumns"></mat-header-row>

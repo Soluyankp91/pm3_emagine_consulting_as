@@ -65,25 +65,25 @@
                         </div>
                     </mat-menu>
                 </div>
-                <span class="workflow-list--filter-type flex-items-center cursor-pointer u-mr--16" [ngClass]="{'selected-status': showOnlyWorkflowsWithNewSales}" (click)="showOnlyWorkflowsWithNewSales = !showOnlyWorkflowsWithNewSales; getWorkflowList()">
+                <span class="workflow-list--filter-type new-sales-status flex-items-center cursor-pointer u-mr--16" [ngClass]="{'selected-status': showOnlyWorkflowsWithNewSales}" (click)="showOnlyWorkflowsWithNewSales = !showOnlyWorkflowsWithNewSales; getWorkflowList()">
                     <mat-icon class="status-dot green-dot u-mr--5">fiber_manual_record</mat-icon>
                     <span class="workflow-list--filter-type__name">
                         New sales
                     </span>
                 </span>
-                <span class="workflow-list--filter-type flex-items-center cursor-pointer u-mr--16" [ngClass]="{'selected-status': showOnlyWorkflowsWithExtensions}" (click)="showOnlyWorkflowsWithExtensions = !showOnlyWorkflowsWithExtensions; getWorkflowList()">
+                <span class="workflow-list--filter-type extensions-status flex-items-center cursor-pointer u-mr--16" [ngClass]="{'selected-status': showOnlyWorkflowsWithExtensions}" (click)="showOnlyWorkflowsWithExtensions = !showOnlyWorkflowsWithExtensions; getWorkflowList()">
                     <mat-icon class="status-dot purple-dot u-mr--5">fiber_manual_record</mat-icon>
                     <span class="workflow-list--filter-type__name">
                         Extensions
                     </span>
                 </span>
                 <mat-divider class="u-mr--16" [vertical]="true" style="height: 40px;"></mat-divider>
-                <span class="workflow-list--filter-type flex-items-center cursor-pointer u-mr--16" [ngClass]="{'selected-status': showOnlyWorkflowsWithPendingStepsForSelectedEmployees}" (click)="showOnlyWorkflowsWithPendingStepsForSelectedEmployees = !showOnlyWorkflowsWithPendingStepsForSelectedEmployees; getWorkflowList()">
+                <span class="workflow-list--filter-type pending-steps-status flex-items-center cursor-pointer u-mr--16" [ngClass]="{'selected-status': showOnlyWorkflowsWithPendingStepsForSelectedEmployees}" (click)="showOnlyWorkflowsWithPendingStepsForSelectedEmployees = !showOnlyWorkflowsWithPendingStepsForSelectedEmployees; getWorkflowList()">
                     <span class="workflow-list--filter-type__name">
                         Pending steps
                     </span>
                 </span>
-                <span class="workflow-list--filter-type flex-items-center cursor-pointer u-mr--20" [ngClass]="{'selected-status': showOnlyWorkflowsWithUpcomingStepsForSelectedEmployees}" (click)="showOnlyWorkflowsWithUpcomingStepsForSelectedEmployees = !showOnlyWorkflowsWithUpcomingStepsForSelectedEmployees; getWorkflowList()">
+                <span class="workflow-list--filter-type upcoming-steps-status flex-items-center cursor-pointer u-mr--20" [ngClass]="{'selected-status': showOnlyWorkflowsWithUpcomingStepsForSelectedEmployees}" (click)="showOnlyWorkflowsWithUpcomingStepsForSelectedEmployees = !showOnlyWorkflowsWithUpcomingStepsForSelectedEmployees; getWorkflowList()">
                     <span class="workflow-list--filter-type__name">
                         Upcoming steps
                     </span>
@@ -110,7 +110,7 @@
                         <mat-icon svgIcon="plus-button-icon"></mat-icon>
                     </button>
                 </div>
-                <button class="advanced-filterd--btn" mat-flat-button (click)="isAdvancedFilters = !isAdvancedFilters">
+                <button class="advanced-filterd--btn" mat-flat-button [ngClass]="{'active': isAdvancedFilters}" (click)="isAdvancedFilters = !isAdvancedFilters" matTooltip="Advanced filters" matTooltipClass="white-tooltip">
                     <mat-icon svgIcon="filter-icon"></mat-icon>
                     <span class="advanced-filterd--btn-text u-ml--5">Advanced filters</span>
                 </button>
