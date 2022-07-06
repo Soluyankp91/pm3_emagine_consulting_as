@@ -452,6 +452,13 @@ export class AppModule {
         );
 
         iconRegistry.addSvgIcon(
+            'overview-icon-inactive',
+            sanitizer.bypassSecurityTrustResourceUrl(
+                'assets/common/images/overview-icon-inactive.svg'
+            )
+        );
+
+        iconRegistry.addSvgIcon(
             'remove-icon',
             sanitizer.bypassSecurityTrustResourceUrl(
                 'assets/common/images/remove-icon.svg'

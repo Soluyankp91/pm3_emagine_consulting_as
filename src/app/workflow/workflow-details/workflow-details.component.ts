@@ -64,6 +64,7 @@ export class WorkflowDetailsComponent extends AppComponentBase implements OnInit
     isNoteVisible = false;
     workflowNote = new FormControl('', Validators.maxLength(4000));
     workflowNoteOldValue: string;
+    disabledOverview = true;
     private _unsubscribe = new Subject();
     constructor(
         injector: Injector,
@@ -109,7 +110,7 @@ export class WorkflowDetailsComponent extends AppComponentBase implements OnInit
         });
         this.resetWorkflowProgress();
         this._internalLookupService.getData();
-        this.getTopLevelMenu();
+        this.getTopLevelMenu(true);
         this.getClientPeriodTypes();
         this.getConsultantPeriodTypes();
         this.getPeriodStepTypes();
