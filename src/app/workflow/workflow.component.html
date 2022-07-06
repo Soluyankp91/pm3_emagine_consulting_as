@@ -1,19 +1,9 @@
 <div class="workflow-list" fxFlexFill>
     <div fxLayout="column" fxLayoutAlign="start start" class="workflow-list--filter">
-        <!-- <div fxLayout="row" fxLayoutAlign="start start"> -->
-            <h2 class="workflow-list--header u-mb--20">Workflows</h2>
-        <!-- </div> -->
+        <h2 class="page-main-header u-mb--20">Workflows</h2>
         <div fxLayout="row" fxLayoutAlign="space-between start" class="u-w--100">
             <div fxFlex fxLayout="row" fxLayoutAlign="start center" class="u-w--100">
-                <!-- <mat-icon class="workflow-list--filter-country__flag u-mr--16" svgIcon="International-flag"></mat-icon> -->
-                <!-- <div class="workflow-list--filter-type u-mr--16" *ngFor="let type of selectedTypes">
-                    <mat-icon class="workflow-flag" [ngClass]="getFlagColor(type.flag)" [matTooltip]="mapFlagTooltip(type.flag)">fiber_manual_record</mat-icon>
-                    <span class="workflow-list--filter-type__name">
-                        {{type.name}}
-                    </span>
-                </div> -->
                 <div class="workflow-list--filter-manager cursor-pointer u-mr--16" [matTooltip]="mapListByProperty(selectedAccountManagers, 'name')" matTooltipClass="white-tooltip" [matMenuTriggerFor]="managerMenu" (menuOpened)="accountManagerFilter.setValue(''); accountManagerFilterInput.click()">
-                    <!-- <img src="../../../assets/common/images/no-img.svg"> -->
                     <img *ngIf="selectedAccountManagers.length === 1" class="border-rounded-50 image-thumbnail-small" [src]="employeeProfileUrl(selectedAccountManagers[0]?.externalId!)" />
                     <img *ngIf="selectedAccountManagers.length === 0" src="../../../assets/common/images/no-img.svg">
                     <div *ngIf="selectedAccountManagers.length > 1" class="workflow-list--filter__badge">
