@@ -137,6 +137,25 @@ mat-table.white-table {
             }
         }
     }
+
+    @media screen and (max-width: 1366px) {
+        line-height: 19px;
+        font-size: 14px;
+        mat-header-row {
+            font-size: 10px;
+            line-height: 14px;
+            mat-header-cell {
+                font-size: 10px;
+                line-height: 14px;
+            }
+        }
+        mat-row {
+            mat-cell {
+                font-size: 12px;
+                line-height: 140%;
+            }
+        }
+    }
 }
 
 .main-overview--consultants-table {

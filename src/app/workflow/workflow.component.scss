@@ -112,6 +112,12 @@
     &--extension {
         color: rgba($color: #6A47B8, $alpha: .5);
     }
+    @media screen and (max-width: 1366px) {
+        font-size: 10px;
+        width: 10px;
+        height: 10px;
+        line-height: 10px;
+    }
 }
 
 .status-dot {
@@ -134,4 +140,34 @@
     font-size: 14px;
     line-height: 140%;
     color: #B6B4B2;
+}
+
+.workflow-status {
+    font-size: 14px;
+    width: 14px;
+    height: 14px;
+    line-height: 14px;
+    @media screen and (max-width: 1366px) {
+        font-size: 10px;
+        width: 10px;
+        height: 10px;
+        line-height: 10px;
+    }
+    &.purple-dot {
+        color: $purple-color;
+        opacity: 0.5;
+    }
+    &.green-dot {
+        color: $green-color;
+        opacity: 0.5;
+    }
+    &.active-status {
+        color: $green-color;
+    }
+    &.pending-status {
+        color: #FBD344;
+    }
+    &.finished-status {
+        color: $red-color;
+    }
 }

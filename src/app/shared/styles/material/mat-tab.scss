@@ -19,12 +19,16 @@ nav.client-details--tabs {
         background-color: transparent !important;
         padding: 0 0 19px !important;
         min-width: unset !important;
-        font-weight: 700 !important;
+        font-weight: 800 !important;
         font-size: 16px !important;
-        line-height: 16px !important;
+        line-height: 120% !important;
         opacity: 1;
         height: 50px;
         margin-right: 35px;
+
+        @media screen and (max-width: 1366px) {
+            font-size: 12px !important;
+        }
 
         &.mat-tab-link-active,
         &:hover {
