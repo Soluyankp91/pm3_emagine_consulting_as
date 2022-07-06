@@ -1,7 +1,7 @@
 import { CdkScrollable, Overlay, ScrollDispatcher } from '@angular/cdk/overlay';
 import { AfterViewInit, Component, ElementRef, Injector, NgZone, OnDestroy, OnInit, ViewChild } from '@angular/core';
 import { MatDialog } from '@angular/material/dialog';
-import { MatTabChangeEvent } from '@angular/material/tabs';
+import { MatTabChangeEvent, MatTabGroup } from '@angular/material/tabs';
 import { ActivatedRoute } from '@angular/router';
 import { NgScrollbar } from 'ngx-scrollbar';
 import { Subject } from 'rxjs';
@@ -31,6 +31,8 @@ export class WorkflowDetailsComponent extends AppComponentBase implements OnInit
     @ViewChild('scroller', {static: true}) scroller: ElementRef<HTMLElement>;
     @ViewChild('scrollable', {static: true}) scrollBar: NgScrollbar;
     @ViewChild('workflowSales', {static: false}) workflowSales: WorkflowSalesComponent;
+    @ViewChild('topMenuTabs', {static: false}) topMenuTabs: MatTabGroup;
+
 
     menuIndex = 0;
     workflowId: string;
@@ -110,8 +112,8 @@ export class WorkflowDetailsComponent extends AppComponentBase implements OnInit
         });
         this.resetWorkflowProgress();
         this._internalLookupService.getData();
-        this.getTopLevelMenu(true);
         this.getClientPeriodTypes();
+        this.getTopLevelMenu(true);
         this.getConsultantPeriodTypes();
         this.getPeriodStepTypes();
         this.getNotes();
@@ -268,6 +270,7 @@ export class WorkflowDetailsComponent extends AppComponentBase implements OnInit
                 this.workflowClient = result.clientName;
                 if (value) {
                     this.selectedIndex = 1;
+                    this.topMenuTabs.realignInkBar();
                 }
             });
     }

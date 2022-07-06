@@ -13,6 +13,7 @@ import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { AuthenticationResult } from '@azure/msal-browser';
 import { MsalService } from '@azure/msal-angular';
 import { MatMenuTrigger } from '@angular/material/menu';
+import { MatAutocompleteTrigger } from '@angular/material/autocomplete';
 
 const ClientGridOptionsKey = 'ClientGridFILTERS.1.0.0.';
 @Component({
@@ -23,6 +24,12 @@ const ClientGridOptionsKey = 'ClientGridFILTERS.1.0.0.';
 
 export class ClientComponent extends AppComponentBase implements OnInit, OnDestroy {
     @ViewChild('rightMenuTrigger', {static: true}) matMenuTrigger: MatMenuTrigger;
+    @ViewChild('managersTrigger', { read: MatAutocompleteTrigger }) managersTrigger: MatAutocompleteTrigger;
+    @ViewChild('countriesTrigger', { read: MatAutocompleteTrigger }) countriesTrigger: MatAutocompleteTrigger;
+
+    isManagersLoading: boolean;
+    isCountriesLoading: boolean;
+
     menuTopLeftPosition =  {x: 0, y: 0}
 
 
@@ -117,6 +124,7 @@ export class ClientComponent extends AppComponentBase implements OnInit, OnDestr
                         ? value.name
                         : value;
                 }
+                this.isManagersLoading = true;
                 return this._lookupService.employees(toSend.name, toSend.showAll, toSend.excludeIds);
             }),
         ).subscribe((list: EmployeeDto[]) => {
@@ -132,6 +140,7 @@ export class ClientComponent extends AppComponentBase implements OnInit, OnDestr
             } else {
                 this.filteredAccountManagers = [{ name: 'No managers found', externalId: '', id: 'no-data', selected: false }];
             }
+            this.isManagersLoading = false;
         });
     }
 
@@ -216,9 +225,11 @@ export class ClientComponent extends AppComponentBase implements OnInit, OnDestr
     }
 
     getCountries() {
+        this.isCountriesLoading = true;
+
         this._enumService.countries()
             .pipe(finalize(() => {
-
+                this.isCountriesLoading = false;
             }))
             .subscribe(result => {
                 this.countryList = result.map(x => {
@@ -374,4 +385,24 @@ export class ClientComponent extends AppComponentBase implements OnInit, OnDestr
         this.getCurrentUser();
     }
 
+    openManagersMenu(event: any) {
+        event.stopPropagation();
+        this.managersTrigger.openPanel();
+    }
+
+    onManagersMenuOpened() {
+        this.accountManagerFilter.setValue('');
+        this.accountManagerFilter.markAsTouched();
+
+    }
+
+    openCountriesMenu(event: any) {
+        event.stopPropagation();
+        this.countriesTrigger.openPanel();
+    }
+
+    onCountriesMenuOpened() {
+        this.countryFilter.setValue('');
+        this.countryFilter.markAsTouched();
+    }
 }
