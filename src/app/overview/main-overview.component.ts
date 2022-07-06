@@ -124,13 +124,15 @@ export class MainOverviewComponent extends AppComponentBase implements OnInit {
                 let toSend = {
                     name: value,
                     maxRecordsCount: 1000,
+                    showAll: true,
+                    excludeIds: this.selectedAccountManagers.map(x => +x.id)
                 };
                 if (value?.id) {
                     toSend.name = value.id
                         ? value.name
                         : value;
                 }
-                return this._lookupService.employees(value);
+                return this._lookupService.employees(toSend.name, toSend.showAll, toSend.excludeIds);
             }),
         ).subscribe((list: EmployeeDto[]) => {
             if (list.length) {
