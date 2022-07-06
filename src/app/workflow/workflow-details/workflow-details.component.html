@@ -90,14 +90,14 @@
     </div>
 
     <div class="workflow-content u-w--100" id="workflowDetails">
-        <mat-tab-group class="workflow-content--tabs u-w--100" (selectedTabChange)="tabChanged($event)" [(selectedIndex)]="selectedIndex">
+        <mat-tab-group #topMenuTabs class="workflow-content--tabs u-w--100" (selectedTabChange)="tabChanged($event)" [(selectedIndex)]="selectedIndex">
             <mat-tab label="Overview" [disabled]="disabledOverview">
                 <ng-template mat-tab-label>
                     <div fxLayout="row" fxLayoutAlign="center center">
                         <mat-icon class="u-mr--10" svgIcon="{{!disabledOverview ? 'overview-icon' : 'overview-icon-inactive'}}"></mat-icon>
                         <div fxLayout="column" fxLayoutAlign="center start">
                             <span class="tab-header-overview">Overview</span>
-                            <span class="tab-header-detail">Coming soon</span>
+                            <span class="tab-header-detail u-mt--5">Coming soon</span>
                         </div>
                     </div>
                 </ng-template>
@@ -110,7 +110,7 @@
                     <div fxLayout="row" fxLayoutAlign="center center">
                         <span class="tab-header">{{tab.name}}</span>
                     </div>
-                    <span class="tab-subheader">{{tab.startDate | momentFormat: 'DD.MM.YYYY'}} - {{tab.endDate ? (tab.endDate | momentFormat: 'DD.MM.YYYY') : '...'}}</span>
+                    <span class="tab-subheader u-mt--5">{{tab.startDate | momentFormat: 'DD.MM.YYYY'}} - {{tab.endDate ? (tab.endDate | momentFormat: 'DD.MM.YYYY') : '...'}}</span>
                 </ng-template>
                 <div class="workflow-form--panel u-w--100">
                     <app-workflow-period *ngIf="selectedIndex === i + 1" [periodId]="tab.id" [workflowId]="workflowId"></app-workflow-period>

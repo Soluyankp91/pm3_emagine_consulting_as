@@ -1,6 +1,7 @@
 import { Overlay } from '@angular/cdk/overlay';
 import { Component, Injectable, Injector, OnDestroy, OnInit, ViewChild } from '@angular/core';
 import { FormControl } from '@angular/forms';
+import { MatAutocompleteTrigger } from '@angular/material/autocomplete';
 import { MatDialog } from '@angular/material/dialog';
 import { MatMenuTrigger } from '@angular/material/menu';
 import { MatTableDataSource } from '@angular/material/table';
@@ -26,6 +27,9 @@ const WorkflowGridOptionsKey = 'WorkflowGridFILTERS.1.0.0.';
 })
 
 export class WorkflowComponent extends AppComponentBase implements OnInit, OnDestroy {
+    @ViewChild('trigger', { read: MatAutocompleteTrigger }) trigger: MatAutocompleteTrigger;
+    isLoading: boolean;
+
     workflowFilter = new FormControl(null);
 
     pageNumber = 1;
@@ -149,6 +153,7 @@ export class WorkflowComponent extends AppComponentBase implements OnInit, OnDes
                         ? value.name
                         : value;
                 }
+                this.isLoading = true;
                 return this._lookupService.employees(toSend.name, toSend.showAll, toSend.excludeIds);
             }),
         ).subscribe((list: EmployeeDto[]) => {
@@ -164,6 +169,7 @@ export class WorkflowComponent extends AppComponentBase implements OnInit, OnDes
             } else {
                 this.filteredAccountManagers = [{ name: 'No managers found', externalId: '', id: 'no-data', selected: false }];
             }
+            this.isLoading = false;
         });
     }
 
@@ -531,6 +537,16 @@ export class WorkflowComponent extends AppComponentBase implements OnInit, OnDes
         this.includeDeleted = false;
         localStorage.removeItem(WorkflowGridOptionsKey);
         this.getCurrentUser();
+    }
+
+    openMenu(event: any) {
+        event.stopPropagation();
+        this.trigger.openPanel();
+    }
+
+    onOpenedMenu() {
+        this.accountManagerFilter.setValue('');
+        this.accountManagerFilter.markAsTouched();
     }
 }
 

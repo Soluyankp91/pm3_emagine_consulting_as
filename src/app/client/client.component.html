@@ -5,7 +5,7 @@
         </div>
         <div fxLayout="row" fxLayoutAlign="space-between start" class="u-w--100">
             <div fxFlex="1 0 40%" fxLayout="row" fxLayoutAlign="start center" class="u-w--100">
-                <div class="client-list--filter-manager cursor-pointer u-mr--16" [matTooltip]="mapListByProperty(selectedAccountManagers, 'name')" matTooltipClass="white-tooltip" [matMenuTriggerFor]="managerMenu" (menuOpened)="accountManagerFilter.setValue(''); accountManagerFilterInput.click()">
+                <div class="client-list--filter-manager cursor-pointer u-mr--16" [matTooltip]="mapListByProperty(selectedAccountManagers, 'name')" matTooltipClass="white-tooltip" [matMenuTriggerFor]="managerMenu" (menuOpened)="accountManagerFilter.setValue(''); onManagersMenuOpened(); accountManagerFilterInput.click()" (click)="openManagersMenu($event)">
                     <img *ngIf="selectedAccountManagers?.length === 1" class="border-rounded-50 image-thumbnail-small" [src]="employeeProfileUrl(selectedAccountManagers[0]?.externalId!)" />
                     <img *ngIf="selectedAccountManagers?.length === 0" src="../../../assets/common/images/no-img.svg">
                     <div *ngIf="selectedAccountManagers?.length && selectedAccountManagers.length > 1" class="client-list--filter__badge">
@@ -13,115 +13,135 @@
                     </div>
                     <mat-menu #managerMenu>
                         <div mat-menu-item (click)="$event.stopPropagation()" class="u-pg--0">
-                            <mat-form-field appearance="outline" (click)="$event.stopPropagation()">
-                                <input #accountManagerFilterInput type="text" matInput [matAutocomplete]="managerAutocomplete" [formControl]="accountManagerFilter" (click)="$event.stopPropagation()" placeholder="Select account manager(s)">
+                            <mat-form-field class="client-list--filter-manager-dropdown" appearance="fill" (click)="$event.stopPropagation()">
+                                <input #accountManagerFilterInput #managersTrigger type="text" matInput [matAutocomplete]="managerAutocomplete" [formControl]="accountManagerFilter" (click)="$event.stopPropagation()" placeholder="Select account manager(s)">
                             </mat-form-field>
                             <mat-autocomplete #managerAutocomplete="matAutocomplete">
-                                <mat-option *ngFor="let manager of selectedAccountManagers"
-                                    class="u-pg--5"
-                                    [value]="manager">
-                                    <div class="u-w--100"
-                                        (click)="optionClicked($event, manager, selectedAccountManagers)">
-                                        <mat-checkbox [checked]="manager.selected"
-                                            *ngIf="manager.id !== 'no-data'"
-                                            color="primary"
-                                            (change)="toggleSelection(manager,selectedAccountManagers)"
-                                            (click)="$event.stopPropagation()">
-                                            <span>{{ manager.name }}</span>
-                                        </mat-checkbox>
-                                        <span *ngIf="manager.id === 'no-data'"
-                                            (click)="$event.stopPropagation()">
-                                            {{ manager.name }}
-                                        </span>
+                                <mat-option *ngIf="isManagersLoading" class="is-loading">
+                                    <div class="is-loading-container">
+                                        <mat-spinner diameter="25"></mat-spinner>
                                     </div>
                                 </mat-option>
-                                <mat-option *ngFor="let manager of filteredAccountManagers"
-                                    class="u-pg--5"
-                                    [ngClass]="{ 'no-data': manager.id === 'no-data', 'hidden-option': selectedAccountManagers.includes(manager)}"
-                                    [value]="selectedAccountManagers">
-                                    <div
-                                        (click)="optionClicked($event, manager, selectedAccountManagers)">
-                                        <mat-checkbox [checked]="manager.selected"
-                                            *ngIf="manager.id !== 'no-data'"
-                                            color="primary"
-                                            (change)="toggleSelection(manager,selectedAccountManagers)"
-                                            (click)="$event.stopPropagation()">
-                                            <span>{{ manager.name }}</span>
-                                        </mat-checkbox>
-                                        <span *ngIf="manager.id === 'no-data'"
-                                            (click)="$event.stopPropagation()">{{ manager.name }}
-                                        </span>
-                                    </div>
-                                </mat-option>
+                                <ng-container *ngIf="!isManagersLoading">
+                                    <mat-option *ngFor="let manager of selectedAccountManagers"
+                                        class="u-pg--5"
+                                        [value]="manager">
+                                        <div class="u-w--100"
+                                            (click)="optionClicked($event, manager, selectedAccountManagers)">
+                                            <mat-checkbox [checked]="manager.selected"
+                                                *ngIf="manager.id !== 'no-data'"
+                                                color="primary"
+                                                (change)="toggleSelection(manager,selectedAccountManagers)"
+                                                (click)="$event.stopPropagation()">
+                                                <div fxLayout="row" fxLayoutAlign="start center" class="u-w--100">
+                                                    <img class="border-rounded-50 image-settings--dropdown u-mr--10" [src]="employeeProfileUrl(manager.externalId!)">
+                                                    <span>{{ manager.name }}</span>
+                                                </div>
+                                            </mat-checkbox>
+                                            <span *ngIf="manager.id === 'no-data'"
+                                                (click)="$event.stopPropagation()">
+                                                {{ manager.name }}
+                                            </span>
+                                        </div>
+                                    </mat-option>
+                                    <mat-option *ngFor="let manager of filteredAccountManagers"
+                                        class="u-pg--5"
+                                        [ngClass]="{ 'no-data': manager.id === 'no-data', 'hidden-option': selectedAccountManagers.includes(manager)}"
+                                        [value]="selectedAccountManagers">
+                                        <div
+                                            (click)="optionClicked($event, manager, selectedAccountManagers)">
+                                            <mat-checkbox [checked]="manager.selected"
+                                                *ngIf="manager.id !== 'no-data'"
+                                                color="primary"
+                                                (change)="toggleSelection(manager,selectedAccountManagers)"
+                                                (click)="$event.stopPropagation()">
+                                                <div fxLayout="row" fxLayoutAlign="start center" class="u-w--100">
+                                                    <img class="border-rounded-50 image-settings--dropdown u-mr--10" [src]="employeeProfileUrl(manager.externalId!)">
+                                                    <span>{{ manager.name }}</span>
+                                                </div>
+                                            </mat-checkbox>
+                                            <span *ngIf="manager.id === 'no-data'"
+                                                (click)="$event.stopPropagation()">{{ manager.name }}
+                                            </span>
+                                        </div>
+                                    </mat-option>
+                                </ng-container>
+
                             </mat-autocomplete>
                         </div>
                     </mat-menu>
                 </div>
-                <div class="u-mr--16">
-                    <button
-                        mat-icon-button
-                        [matMenuTriggerFor]="countryMenu"
-                        (menuOpened)="countryFilter.setValue('')"
-                        [ngClass]="{ 'client-list--filter-country__btn': selectedCountries.length > 1 }"
-                        [matTooltip]="mapListByProperty(selectedCountries, 'name')" matTooltipClass="white-tooltip">
-                            <span *ngIf="selectedCountries.length > 1; else singleCountry" class="client-list--filter-country__badge">
-                                {{selectedCountries.length}}
-                            </span>
-                            <ng-template #singleCountry>
-                                <mat-icon class="client-list--filter-country u-mr--16" [svgIcon]="selectedCountries.length ? selectedCountries[0]?.name + '-flag-selected' : 'Country-filter-flag'"></mat-icon>
-                            </ng-template>
-                    </button>
-                    <mat-menu #countryMenu class="autocomplete-menu">
+                <div class="client-list--filter-country cursor-pointer u-mr--16"
+                    [matMenuTriggerFor]="countryMenu"
+                    (menuOpened)="countryFilter.setValue(''); onCountriesMenuOpened(); countriesFilterInput.click();"
+                    [ngClass]="{ 'client-list--filter-country__btn': selectedCountries.length > 1 }"
+                    [matTooltip]="mapListByProperty(selectedCountries, 'name')" matTooltipClass="white-tooltip"
+                    (click)="openCountriesMenu($event)">
+                    <span *ngIf="selectedCountries.length > 1; else singleCountry" class="client-list--filter-country__badge">
+                        {{selectedCountries.length}}
+                    </span>
+                    <ng-template #singleCountry>
+                        <mat-icon class="client-list--filter-country u-mr--16" [svgIcon]="selectedCountries.length ? selectedCountries[0]?.name + '-flag-selected' : 'Country-filter-flag'"></mat-icon>
+                    </ng-template>
+                    <mat-menu #countryMenu>
                         <div mat-menu-item (click)="$event.stopPropagation()" class="u-pg--0">
-                            <mat-form-field appearance="outline" (click)="$event.stopPropagation()">
-                                <input type="text" matInput [matAutocomplete]="countryAutocomplete" [formControl]="countryFilter" (click)="$event.stopPropagation()" placeholder="Select client country">
+                            <mat-form-field class="client-list--filter-country-dropdown" appearance="fill" (click)="$event.stopPropagation()">
+                                <input type="text" #countriesFilterInput #countriesTrigger matInput [matAutocomplete]="countryAutocomplete" [formControl]="countryFilter" (click)="$event.stopPropagation()" placeholder="Select client country">
                             </mat-form-field>
                             <mat-autocomplete #countryAutocomplete="matAutocomplete">
-                                <mat-option *ngFor="let country of selectedCountries"
-                                    class="u-pg--5"
-                                    [value]="selectedCountries">
-                                    <div class="u-w--100"
-                                        (click)="optionClicked($event, country, selectedCountries)">
-                                        <mat-checkbox [checked]="country.selected"
-                                            *ngIf="country.id !== 'no-data'"
-                                            color="primary"
-                                            (change)="toggleSelection(country,selectedCountries)"
-                                            (click)="$event.stopPropagation()">
-                                            <mat-icon svgIcon="{{country.flag}}-flag-selected" *ngIf="country.id !== 0; else unkownCountry"></mat-icon>
-                                            <ng-template #unkownCountry>
-                                                <mat-icon svgIcon="Country-filter-flag"></mat-icon>
-                                            </ng-template>
-                                            <span>{{ country.name }}</span>
-                                        </mat-checkbox>
-                                        <span *ngIf="country.id === 'no-data'"
-                                            (click)="$event.stopPropagation()">
-                                            {{ country.name }}
-                                        </span>
+                                <mat-option *ngIf="isCountriesLoading" class="is-loading">
+                                    <div class="is-loading-container">
+                                        <mat-spinner diameter="25"></mat-spinner>
                                     </div>
                                 </mat-option>
-                                <mat-option *ngFor="let country of filteredCountries | async"
-                                    class="u-pg--5"
-                                    [ngClass]="{ 'no-data': country.id === 'no-data', 'hidden-option': selectedCountries.includes(country)}"
-                                    [value]="selectedCountries">
-                                    <div class="u-w--100"
-                                        (click)="optionClicked($event, country, selectedCountries)">
-                                        <mat-checkbox [checked]="country.selected"
-                                            *ngIf="country.id !== 'no-data'"
-                                            color="primary"
-                                            (change)="toggleSelection(country,selectedCountries)"
-                                            (click)="$event.stopPropagation()">
-                                            <mat-icon svgIcon="{{country.flag}}-flag-selected" *ngIf="country.id !== 0; else unkownCountry"></mat-icon>
-                                            <ng-template #unkownCountry>
-                                                <mat-icon svgIcon="Country-filter-flag"></mat-icon>
-                                            </ng-template>
-                                            <span>{{ country.name }}</span>
-                                        </mat-checkbox>
-                                        <span *ngIf="country.id === 'no-data'"
-                                            (click)="$event.stopPropagation()">
-                                            {{ country.name }}
-                                        </span>
-                                    </div>
-                                </mat-option>
+                                <ng-container *ngIf="!isCountriesLoading">
+                                    <mat-option *ngFor="let country of selectedCountries"
+                                        class="u-pg--5"
+                                        [value]="selectedCountries">
+                                        <div class="u-w--100"
+                                            (click)="optionClicked($event, country, selectedCountries)">
+                                            <mat-checkbox [checked]="country.selected"
+                                                *ngIf="country.id !== 'no-data'"
+                                                color="primary"
+                                                (change)="toggleSelection(country,selectedCountries)"
+                                                (click)="$event.stopPropagation()">
+                                                <mat-icon svgIcon="{{country.flag}}-flag-selected" *ngIf="country.id !== 0; else unkownCountry"></mat-icon>
+                                                <ng-template #unkownCountry>
+                                                    <mat-icon svgIcon="Country-filter-flag"></mat-icon>
+                                                </ng-template>
+                                                <span>{{ country.name }}</span>
+                                            </mat-checkbox>
+                                            <span *ngIf="country.id === 'no-data'"
+                                                (click)="$event.stopPropagation()">
+                                                {{ country.name }}
+                                            </span>
+                                        </div>
+                                    </mat-option>
+                                    <mat-option *ngFor="let country of filteredCountries | async"
+                                        class="u-pg--5"
+                                        [ngClass]="{ 'no-data': country.id === 'no-data', 'hidden-option': selectedCountries.includes(country)}"
+                                        [value]="selectedCountries">
+                                        <div class="u-w--100"
+                                            (click)="optionClicked($event, country, selectedCountries)">
+                                            <mat-checkbox [checked]="country.selected"
+                                                *ngIf="country.id !== 'no-data'"
+                                                color="primary"
+                                                (change)="toggleSelection(country,selectedCountries)"
+                                                (click)="$event.stopPropagation()">
+                                                <mat-icon svgIcon="{{country.flag}}-flag-selected" *ngIf="country.id !== 0; else unkownCountry"></mat-icon>
+                                                <ng-template #unkownCountry>
+                                                    <mat-icon svgIcon="Country-filter-flag"></mat-icon>
+                                                </ng-template>
+                                                <span>{{ country.name }}</span>
+                                            </mat-checkbox>
+                                            <span *ngIf="country.id === 'no-data'"
+                                                (click)="$event.stopPropagation()">
+                                                {{ country.name }}
+                                            </span>
+                                        </div>
+                                    </mat-option>
+                                </ng-container>
+
                             </mat-autocomplete>
                         </div>
                     </mat-menu>
