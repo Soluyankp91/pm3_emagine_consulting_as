@@ -46,6 +46,7 @@
             border: 1px solid $sand-color;
             height: 60px;
             &:hover {
+                transition: box-shadow .7s ease;
                 box-shadow: 0px 0px 20px rgba(26, 35, 126, 0.15);
             }
             @media screen and (max-width: 1366px) {

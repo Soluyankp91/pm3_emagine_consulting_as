@@ -39,6 +39,10 @@ label {
     text-decoration: underline;
 }
 
+.text-nowrap {
+    white-space: nowrap;
+}
+
 .text-truncate-ellipsis {
     text-overflow: ellipsis;
     overflow: hidden;

@@ -118,8 +118,8 @@ mat-table.white-table {
         padding: 0 16px;
         background-color: $white-color;
         &:hover {
-            transition: background-color .7s ease;
-            background-color: rgba(102, 140, 164, .17);
+            transition: box-shadow .7s ease;
+            box-shadow: 0px 0px 20px rgba(26, 35, 126, 0.15);
         }
         mat-cell {
             color: $dark-grey-color !important;
