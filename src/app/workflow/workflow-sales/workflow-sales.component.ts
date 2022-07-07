@@ -21,6 +21,7 @@ import { ConsultantDiallogAction, SalesTerminateConsultantForm, TenantList, Work
 @Component({
     selector: 'app-workflow-sales',
     templateUrl: './workflow-sales.component.html',
+    // styleUrls: ['./workflow-sales.component.scss', '../workflow-period/workflow-period.component.scss']
     styleUrls: ['./workflow-sales.component.scss']
 })
 export class WorkflowSalesComponent extends AppComponentBase implements OnInit {

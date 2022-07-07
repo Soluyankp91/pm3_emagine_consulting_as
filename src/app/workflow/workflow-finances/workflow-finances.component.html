@@ -12,7 +12,7 @@
                                 <mat-icon svgIcon="completed-icon"></mat-icon>
                             </span>
                             <div fxLayout="column" fxLayoutAlign="start start">
-                                <span class="workflow-readonly--blue-text-bold">Client (debitor) created in Navision</span>
+                                <span class="workflow-step-readonly--blue-text-bold">Client (debitor) created in Navision</span>
                             </div>
                         </div>
                     </ng-container>
@@ -24,10 +24,10 @@
                         </div>
                     </ng-template>
 
-                    <h3 [ngClass]="{'workflow-readonly--gray-header': readOnlyMode, 'workflow-blue--header': !readOnlyMode}">Client (debitor) number for invoicing</h3>
+                    <h3 [ngClass]="{'workflow-step-readonly--gray-header': readOnlyMode, 'workflow-blue--header': !readOnlyMode}">Client (debitor) number for invoicing</h3>
                     <ng-container *ngIf="readOnlyMode; else clientDebitorNumberInput">
                         <div fxLayout="column" fxLayoutAlign="start start" class="u-mb--20">
-                            <span class="workflow-readonly--blue-text-bold">
+                            <span class="workflow-step-readonly--blue-text-bold">
                                 {{financesClientForm?.differentDebtorNumberForInvoicing?.value ? 'Custom' : 'Same as client'}}
                             </span>
                         </div>
@@ -46,9 +46,9 @@
                     </ng-template>
 
                     <ng-container *ngIf="readOnlyMode; else debitorNumberInput">
-                        <h3 [ngClass]="{'workflow-readonly--gray-header': readOnlyMode, 'workflow-blue--header': !readOnlyMode}">Debitor number</h3>
+                        <h3 [ngClass]="{'workflow-step-readonly--gray-header': readOnlyMode, 'workflow-blue--header': !readOnlyMode}">Debitor number</h3>
                         <div fxLayout="column" fxLayoutAlign="start start">
-                            <span class="workflow-readonly--blue-text-bold">{{financesClientForm?.customDebtorNumber?.value ? financesClientForm?.customDebtorNumber?.value : '-'}}</span>
+                            <span class="workflow-step-readonly--blue-text-bold">{{financesClientForm?.customDebtorNumber?.value ? financesClientForm?.customDebtorNumber?.value : '-'}}</span>
                         </div>
                     </ng-container>
                     <ng-template #debitorNumberInput>
@@ -71,7 +71,7 @@
                     <h2 class="workflow-section--header">Consultants</h2>
                     <div *ngFor="let consultant of financesConsultantsForm.consultants.controls; let i = index; last as last" [formGroupName]="i" class="workflow-finances--block-consultants u-w--100" [ngClass]="{'last-block': last}">
                         <div fxLayout="row" fxLayoutAlign="start center" class="u-mb--20">
-                            <img class="workflow-finances--consultant-img u-mr--16" [src]="consultantProfileUrl(consultant.value?.consultant?.externalId)">
+                            <img class="border-rounded-50 image-thumbnail-responsive u-mr--16" [src]="consultantProfileUrl(consultant.value?.consultant?.externalId)">
                             <p class="workflow-finances--consultant-name">
                                 {{consultant.value?.consultant?.name}}
                             </p>
@@ -83,7 +83,7 @@
                                     <mat-icon [svgIcon]="consultant.value?.checkInvoicingSettingsOnConsultant ? 'completed-icon' : 'cancel-fill'"></mat-icon>
                                 </span>
                                 <div fxLayout="column" fxLayoutAlign="start start">
-                                    <span class="workflow-readonly--blue-text-bold">Checked invoicing settings on consultant</span>
+                                    <span class="workflow-step-readonly--blue-text-bold">Checked invoicing settings on consultant</span>
                                 </div>
                             </div>
                         </ng-container>
@@ -101,7 +101,7 @@
                                     <mat-icon [svgIcon]="consultant.value?.creditorCreatedInNavision ? 'completed-icon' : 'in-progress-icon'"></mat-icon>
                                 </span>
                                 <div fxLayout="column" fxLayoutAlign="start start">
-                                    <span class="workflow-readonly--blue-text-bold">Consultant company (creditor) created in Navision</span>
+                                    <span class="workflow-step-readonly--blue-text-bold">Consultant company (creditor) created in Navision</span>
                                 </div>
                             </div>
                         </ng-container>

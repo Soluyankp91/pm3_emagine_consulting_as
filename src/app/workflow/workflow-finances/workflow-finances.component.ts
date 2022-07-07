@@ -60,6 +60,15 @@ export class WorkflowFinancesComponent extends AppComponentBase implements OnIni
             .subscribe((value: boolean) => {
                 this.saveStartChangeOrExtendConsultantPeriodFinance(value);
             });
+
+        this._workflowDataService.cancelForceEdit
+            .pipe(takeUntil(this._unsubscribe))
+            .subscribe((value: boolean) => {
+                this.isCompleted = true;
+                this.editEnabledForcefuly = false;
+                this._workflowDataService.updateWorkflowProgressStatus({currentStepIsCompleted: this.isCompleted, currentStepIsForcefullyEditing: this.editEnabledForcefuly});
+                this.getFinanceStepData();
+            });
     }
 
     ngOnDestroy(): void {
