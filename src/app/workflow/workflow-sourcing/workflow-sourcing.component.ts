@@ -80,7 +80,7 @@ export class WorkflowSourcingComponent extends AppComponentBase implements OnIni
                 break;
         }
     }
-    
+
     startEditSourcingStep() {
         switch (this.activeSideSection.typeId) {
             case this.workflowSideSections.TerminateWorkflow:
@@ -91,7 +91,7 @@ export class WorkflowSourcingComponent extends AppComponentBase implements OnIni
                 break;
         }
     }
-    
+
     startEditSourcingStepTermination() {
         this.showMainSpinner();
         this._workflowServiceProxy.terminationSourcingStartEdit(this.workflowId)
@@ -101,7 +101,7 @@ export class WorkflowSourcingComponent extends AppComponentBase implements OnIni
                 this.getSourcingStepData();
             });
     }
-    
+
     startEditSourcingStepConsultantTermination() {
         this.showMainSpinner();
         this._workflowServiceProxy.terminationConsultantSourcingStartEdit(this.workflowId, this.consultant.id)
@@ -196,6 +196,10 @@ export class WorkflowSourcingComponent extends AppComponentBase implements OnIni
                 this._workflowDataService.workflowSideSectionUpdated.emit({isStatusUpdate: true});
             })
         }
+    }
+
+    get readOnlyMode() {
+        return this.isCompleted;
     }
 
 }
