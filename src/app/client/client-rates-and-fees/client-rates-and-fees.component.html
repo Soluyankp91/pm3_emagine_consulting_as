@@ -199,7 +199,7 @@
                     <mat-icon>add</mat-icon>
                     Add Special Rate
                 </button>
-                <mat-slide-toggle color="primary" [(ngModel)]="showHiddenSpecialRates" labelPosition="before" (change)="showHideSpecialRatesToggle($event)">
+                <mat-slide-toggle color="primary" [(ngModel)]="showHiddenSpecialRates" labelPosition="before" (change)="getClientRates()">
                     Show hidden
                 </mat-slide-toggle>
             </div>
@@ -367,7 +367,7 @@
                     <mat-icon>add</mat-icon>
                     Add Client Fee
                 </button>
-                <mat-slide-toggle color="primary" [(ngModel)]="showHiddenSpecialFees" labelPosition="before" (change)="showHideSpecialFeesToggle($event)">
+                <mat-slide-toggle color="primary" [(ngModel)]="showHiddenSpecialFees" labelPosition="before" (change)="getClientFees()">
                     Show hidden
                 </mat-slide-toggle>
             </div>
