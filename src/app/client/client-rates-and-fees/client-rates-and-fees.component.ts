@@ -356,22 +356,6 @@ export class ClientRatesAndFeesComponent implements OnInit, OnDestroy {
         this.saveOrUpdateSpecialFee(index);
     }
 
-    showHideSpecialRatesToggle(event: MatSlideToggleChange) {
-        if (event.checked) {
-            // logic to show hidden rows
-        } else {
-            // logic to hide hidden rows
-        }
-    }
-
-    showHideSpecialFeesToggle(event: MatSlideToggleChange) {
-        if (event.checked) {
-            // logic to show hidden rows
-        } else {
-            // logic to hide hidden rows
-        }
-    }
-
     compareWithFn(listOfItems: any, selectedItem: any) {
         return listOfItems && selectedItem && listOfItems.id === selectedItem.id;;
     }
