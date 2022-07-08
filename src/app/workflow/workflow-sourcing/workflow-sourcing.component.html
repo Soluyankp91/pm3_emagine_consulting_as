@@ -1,6 +1,12 @@
 <form fxLayout="column" fxLayoutAlign="start start" [formGroup]="sourcingConsultantsDataForm" class="workflow-sourcing u-w--100" id="consultantData">
+    <button class="absolute-edit-toggle" mat-icon-button *ngIf="canToggleEditMode" type="button" (click)="toggleEditMode()"><mat-icon>{{readOnlyMode ? 'create' : 'close'}}</mat-icon></button>
     <ng-container formArrayName="consultantTerminationSourcingData">
         <div *ngFor="let consultant of sourcingConsultantsDataForm.consultantTerminationSourcingData.controls; let i = index; last as last" [formGroupName]="i" class="workflow-contracts--block-consultants u-mt--20" [ngClass]="{'last-block': last}">
+            <h1  *ngIf="readOnlyMode" class="workflow-step-readonly--header-main u-mb--20">
+                <span class="process-name">Sourcing.</span>
+                <!-- <span class="anchor-name">Finish contract in PM</span> -->
+            </h1>
+
             <div fxLayout="row" fxLayoutAlign="start center" class="u-mb--20">
                 <img class="border-rounded-50 image-thumbnail-responsive u-mr--16" [src]="consultantProfileUrl(consultant.value.consultantData?.externalId)">
                 <p class="workflow-sourcing--consultant-name">
@@ -9,9 +15,20 @@
             </div>
 
             <div fxLayout="row" fxLayoutAlign="start center" class="u-w--100 u-mb--10">
-                <mat-checkbox color="accent" name="isCvUpdated" formControlName="cvUpdated" class="black-checkbox u-mr--10">
-                    CV Updated
-                </mat-checkbox>
+                <ng-container *ngIf="readOnlyMode; else cvUpdatedInput">
+                    <mat-icon class="termination-cancel-icon u-mr--5" [svgIcon]="'cancel-fill'" [ngClass]="{'icon-cancel': !sourcingConsultantsDataForm.consultantTerminationSourcingData.at(i).get('cvUpdated')?.value}"
+                        *ngIf="!sourcingConsultantsDataForm.consultantTerminationSourcingData.at(i).get('cvUpdated')?.value"></mat-icon>
+                    <mat-icon class="termination-complete-icon u-mr--5" [svgIcon]="'completed-icon'" height="22px" width="22px"
+                        *ngIf="sourcingConsultantsDataForm.consultantTerminationSourcingData.at(i).get('cvUpdated')?.value"></mat-icon>
+                    <span class="workflow-step-readonly--blue-text">
+                        Contract lines done manually in old PM
+                    </span>
+                </ng-container>
+                <ng-template #cvUpdatedInput>
+                    <mat-checkbox color="accent" name="isCvUpdated" formControlName="cvUpdated" class="black-checkbox u-mr--10">
+                        CV Updated
+                    </mat-checkbox>
+                </ng-template>
             </div>
         </div>
     </ng-container>

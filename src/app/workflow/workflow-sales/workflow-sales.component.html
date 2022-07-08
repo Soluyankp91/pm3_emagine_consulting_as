@@ -1132,7 +1132,7 @@
                                             Frequency
                                         </span>
                                         <span fxFlex="10%" class="workflow-sales-inline--form__header u-w--100">
-    
+
                                         </span>
                                     </div>
                                     <ng-container formArrayName="commissions" class="u-w--100">
@@ -1323,7 +1323,7 @@
                                             </ng-container>
                                         </div>
                                     </ng-container>
-    
+
                                     <div fxLayout="row" fxLayoutAlign="start start" class="u-w--100 u-mb--20">
                                         <button color="primary" class="u-mt--10 button-outlined" mat-flat-button type="button" [disabled]="isCommissionEditing" (click)="addCommission(true)">Add commission</button>
                                     </div>
@@ -2927,86 +2927,148 @@
     </ng-template>
 </div>
 <ng-template #terminationTemplate>
-    <form [formGroup]="salesTerminateConsultantForm" class="workflow-form--consultants workflow--termination u-mb--20 u-w--100">
-        <h3 class="workflow-gray--header u-mt--20" *ngIf="activeSideSection.typeId === workflowSideSections.TerminateConsultant">End of Consultant Contract</h3>
-        <h3 class="workflow-gray--header u-mt--20" *ngIf="activeSideSection.typeId === workflowSideSections.TerminateWorkflow">End of Client Contract</h3>
+    <ng-container *ngIf="readOnlyMode; else editMode">
+        <div fxLayout="column" fxLayoutAlign="start start" class="workflow-sales--process-data u-w--100">
+            <div fxLayout="column" fxLayoutAlign="start start" class="u-w--100">
+                <h1 class="workflow-step-readonly--header-main">
+                    <span class="process-name">Sales.</span>
+                    <span class="anchor-name" *ngIf="activeSideSection.typeId === workflowSideSections.TerminateConsultant">End of Consultant Contract</span>
+                    <span class="anchor-name" *ngIf="activeSideSection.typeId === workflowSideSections.TerminateWorkflow">End of Client Contract</span>
+                </h1>
 
-        <div fxLayout="row" fxLayoutAlign="start start" class="u-w--100 u-mb--10">
-            <mat-button-toggle-group class="workflow-toggle-buttons u-mt--10" formControlName="terminationTime">
-                <mat-button-toggle
-                    *ngFor="let item of nonStandartTerminationTimes | keyvalue"
-                    [value]="+item.key">
-                        {{ item.value }}
-                </mat-button-toggle>
-            </mat-button-toggle-group>
+                <div fxLayout="column" class="u-w--100 u-mb--20 u-mt--20">
+                    <h3 class="workflow-step-readonly--gray-header">Non standart termination time</h3>
+                    <span class="workflow-step-readonly--blue-text-bold">
+                        {{salesTerminateConsultantForm?.terminationTime?.value ? nonStandartTerminationTimes[salesTerminateConsultantForm?.terminationTime?.value] : '-'}}
+                    </span>
+                </div>
+
+                <div fxLayout="column" class="u-w--100 u-mb--20" *ngIf="salesTerminateConsultantForm?.terminationTime?.value === 2">
+                    <h3 class="workflow-step-readonly--gray-header">End date</h3>
+                    <span class="workflow-step-readonly--blue-text-bold">
+                        {{salesTerminateConsultantForm?.endDate?.value ? (salesTerminateConsultantForm?.endDate?.value | momentFormat: 'DD/MM/YYYY') : '-'}}
+                    </span>
+                </div>
+
+                <div fxLayout="column" class="u-w--100 u-mb--20" *ngIf="salesTerminateConsultantForm?.terminationTime?.value === 2 || salesTerminateConsultantForm?.terminationTime?.value === 3">
+                    <h3 class="workflow-step-readonly--gray-header">Termination reason</h3>
+                    <span class="workflow-step-readonly--blue-text-bold">
+                        {{salesTerminateConsultantForm?.terminationReason?.value ? terminationReasons[salesTerminateConsultantForm?.terminationReason?.value] : '-'}}
+                    </span>
+                </div>
+
+                <div fxLayout="column" class="u-w--100 u-mb--20" *ngIf="salesTerminateConsultantForm?.terminationTime?.value === 2 || salesTerminateConsultantForm?.terminationTime?.value === 3">
+                    <h3 class="workflow-step-readonly--gray-header">Cause</h3>
+                    <p class="workflow-step-readonly--blue-text">
+                        {{salesTerminateConsultantForm?.causeOfNonStandardTerminationTime?.value ? salesTerminateConsultantForm?.causeOfNonStandardTerminationTime?.value : '-'}}
+                    </p>
+                </div>
+
+                <div fxLayout="column" class="u-w--100 u-mb--20">
+                    <h3 class="workflow-step-readonly--gray-header">Additional comments</h3>
+                    <p class="workflow-step-readonly--blue-text">
+                        {{salesTerminateConsultantForm?.additionalComments?.value ? salesTerminateConsultantForm?.additionalComments?.value : '-'}}
+                    </p>
+                </div>
+
+                <div fxLayout="column" class="u-w--100 u-mb--20" *ngIf="salesTerminateConsultantForm?.terminationTime?.value === 1 || salesTerminateConsultantForm?.terminationTime?.value === 2">
+                    <h3 class="workflow-step-readonly--gray-header">Final Evaluation Reference Person</h3>
+                    <p class="workflow-step-readonly--blue-text-bold">
+                        {{salesTerminateConsultantForm?.noEvaluation?.value ? 'No evaluation' : (salesTerminateConsultantForm?.finalEvaluationReferencePerson?.value ? salesTerminateConsultantForm?.finalEvaluationReferencePerson?.value?.firstName + ' ' + salesTerminateConsultantForm?.finalEvaluationReferencePerson?.value?.lastName : '-')}}
+                    </p>
+
+                    <div fxLayout="column" class="u-w--100 u-mt--20" *ngIf="salesTerminateConsultantForm?.noEvaluation?.value === true">
+                        <h3 class="workflow-step-readonly--gray-header">Cause</h3>
+                        <p class="workflow-step-readonly--blue-text">
+                            {{salesTerminateConsultantForm?.causeOfNoEvaluation?.value ? salesTerminateConsultantForm?.causeOfNoEvaluation?.value : '-'}}
+                        </p>
+                    </div>
+                </div>
+            </div>
         </div>
+    </ng-container>
+    <ng-template #editMode>
+        <form [formGroup]="salesTerminateConsultantForm" class="workflow-form--consultants workflow--termination u-mb--20 u-w--100">
+            <h3 class="workflow-gray--header u-mt--20" *ngIf="activeSideSection.typeId === workflowSideSections.TerminateConsultant">End of Consultant Contract</h3>
+            <h3 class="workflow-gray--header u-mt--20" *ngIf="activeSideSection.typeId === workflowSideSections.TerminateWorkflow">End of Client Contract</h3>
 
-        <div fxLayout="row" fxLayoutAlign="start start" class="u-w--100 u-mb--10" *ngIf="salesTerminateConsultantForm?.terminationTime?.value === 2">
-            <mat-form-field appearance="outline">
-                <mat-label>End date</mat-label>
-                <input autocomplete="off" matInput
-                        [matDatepicker]="endClientContractEndDatePicker"
-                        name="clientContractEndDate" formControlName="endDate"
-                        (focus)="endClientContractEndDatePicker.open()"
-                        (click)="endClientContractEndDatePicker.open()" readonly>
-                <mat-icon class="calendar-icon" matSuffix svgIcon="calendar"></mat-icon>
-                <mat-datepicker #endClientContractEndDatePicker></mat-datepicker>
-            </mat-form-field>
-        </div>
+            <div fxLayout="row" fxLayoutAlign="start start" class="u-w--100 u-mb--10">
+                <mat-button-toggle-group class="workflow-toggle-buttons u-mt--10" formControlName="terminationTime">
+                    <mat-button-toggle
+                        *ngFor="let item of nonStandartTerminationTimes | keyvalue"
+                        [value]="+item.key">
+                            {{ item.value }}
+                    </mat-button-toggle>
+                </mat-button-toggle-group>
+            </div>
 
-        <div fxLayout="row" fxLayoutAlign="start start" class="u-w--100 u-mb--10" *ngIf="salesTerminateConsultantForm?.terminationTime?.value === 2 || salesTerminateConsultantForm?.terminationTime?.value === 3">
-            <mat-button-toggle-group class="workflow-toggle-buttons" formControlName="terminationReason">
-                <mat-button-toggle
-                    [value]="+item.key"
-                    *ngFor="let item of terminationReasons | keyvalue">
-                    {{ item.value }}
-                </mat-button-toggle>
-            </mat-button-toggle-group>
-        </div>
-
-        <div fxLayout="row" fxLayoutAlign="start start" class="u-w--100"  *ngIf="salesTerminateConsultantForm?.terminationTime?.value === 2 || salesTerminateConsultantForm?.terminationTime?.value === 3">
-            <mat-form-field appearance="outline" class="u-w--100 textarea-input " fxFlex="0 0 calc(66% + 16px)">
-                <mat-label>Cause</mat-label>
-                <textarea matInput autocomplete="new-password" name="causeOfTerminationBeforeEndOfContract" formControlName="causeOfNonStandardTerminationTime">
-                </textarea>
-            </mat-form-field>
-        </div>
-
-        <div fxLayout="row" fxLayoutAlign="start start" class="u-w--100 u-mb--20 u-mt--10">
-            <mat-form-field appearance="outline" class="u-w--100 textarea-input " fxFlex="0 0 calc(66% + 16px)">
-                <mat-label>Additional comments</mat-label>
-                <textarea matInput autocomplete="new-password" name="additionalComments" formControlName="additionalComments">
-                </textarea>
-            </mat-form-field>
-        </div>
-
-        <div fxLayout="column" fxLayoutAlign="start start" class="u-w--100" *ngIf="salesTerminateConsultantForm?.terminationTime?.value === 1 || salesTerminateConsultantForm?.terminationTime?.value === 2">
-            <h3 class="workflow-gray--header">Final Evaluation</h3>
-            <div fxLayout="row" fxLayoutAlign="start start" class="u-w--100 u-mb--10 u-mt--10">
-                <mat-form-field appearance="outline" class="u-w--100  filter-select u-mr--16" fxFlex="33%" [ngClass]="{'disabled-input': salesTerminateConsultantForm?.noEvaluation?.value}">
-                    <mat-label>Final Evaluation Reference Person</mat-label>
-                    <input #finalEvaluationReferencePersonInput type="text" matInput [matAutocomplete]="finalEvaluationReferencePersonAutocomplete" formControlName="finalEvaluationReferencePerson" (click)="$event.stopPropagation()" placeholder="Final Evaluation Reference Person">
-                    <mat-autocomplete #finalEvaluationReferencePersonAutocomplete="matAutocomplete" [displayWith]="displayFullNameFn">
-                        <ng-container>
-                            <mat-option *ngFor="let contact of filteredFinalEvaluationReferencePersons" [value]="contact" [ngClass]="{ 'no-data': contact.id === 'no-data' }">
-                                    <b>{{ contact.firstName + ' ' + contact.lastName }}</b>
-                            </mat-option>
-                        </ng-container>
-                    </mat-autocomplete>
+            <div fxLayout="row" fxLayoutAlign="start start" class="u-w--100 u-mb--10" *ngIf="salesTerminateConsultantForm?.terminationTime?.value === 2">
+                <mat-form-field appearance="outline">
+                    <mat-label>End date</mat-label>
+                    <input autocomplete="off" matInput
+                            [matDatepicker]="endClientContractEndDatePicker"
+                            name="clientContractEndDate" formControlName="endDate"
+                            (focus)="endClientContractEndDatePicker.open()"
+                            (click)="endClientContractEndDatePicker.open()" readonly>
+                    <mat-icon class="calendar-icon" matSuffix svgIcon="calendar"></mat-icon>
+                    <mat-datepicker #endClientContractEndDatePicker></mat-datepicker>
                 </mat-form-field>
             </div>
-            <div fxLayout="row" fxLayoutAlign="start start" class="u-w--100 u-mb--20">
-                <mat-checkbox color="accent" formControlName="noEvaluation" name="noEvaluation" class="black-checkbox" (change)="disableOrEnableInput(salesTerminateConsultantForm?.noEvaluation?.value, salesTerminateConsultantForm?.finalEvaluationReferencePerson)">
-                    No evaluation
-                </mat-checkbox>
+
+            <div fxLayout="row" fxLayoutAlign="start start" class="u-w--100 u-mb--10" *ngIf="salesTerminateConsultantForm?.terminationTime?.value === 2 || salesTerminateConsultantForm?.terminationTime?.value === 3">
+                <mat-button-toggle-group class="workflow-toggle-buttons" formControlName="terminationReason">
+                    <mat-button-toggle
+                        [value]="+item.key"
+                        *ngFor="let item of terminationReasons | keyvalue">
+                        {{ item.value }}
+                    </mat-button-toggle>
+                </mat-button-toggle-group>
             </div>
-            <div fxLayout="row" fxLayoutAlign="start start" class="u-w--100 u-mb--10" *ngIf="salesTerminateConsultantForm?.noEvaluation?.value === true">
+
+            <div fxLayout="row" fxLayoutAlign="start start" class="u-w--100"  *ngIf="salesTerminateConsultantForm?.terminationTime?.value === 2 || salesTerminateConsultantForm?.terminationTime?.value === 3">
                 <mat-form-field appearance="outline" class="u-w--100 textarea-input " fxFlex="0 0 calc(66% + 16px)">
                     <mat-label>Cause</mat-label>
-                    <textarea matInput autocomplete="new-password" name="causeOfNoEvaluation" formControlName="causeOfNoEvaluation">
+                    <textarea matInput autocomplete="new-password" name="causeOfTerminationBeforeEndOfContract" formControlName="causeOfNonStandardTerminationTime">
                     </textarea>
                 </mat-form-field>
             </div>
-        </div>
-    </form>
+
+            <div fxLayout="row" fxLayoutAlign="start start" class="u-w--100 u-mb--20 u-mt--10">
+                <mat-form-field appearance="outline" class="u-w--100 textarea-input " fxFlex="0 0 calc(66% + 16px)">
+                    <mat-label>Additional comments</mat-label>
+                    <textarea matInput autocomplete="new-password" name="additionalComments" formControlName="additionalComments">
+                    </textarea>
+                </mat-form-field>
+            </div>
+
+            <div fxLayout="column" fxLayoutAlign="start start" class="u-w--100" *ngIf="salesTerminateConsultantForm?.terminationTime?.value === 1 || salesTerminateConsultantForm?.terminationTime?.value === 2">
+                <h3 class="workflow-gray--header">Final Evaluation</h3>
+                <div fxLayout="row" fxLayoutAlign="start start" class="u-w--100 u-mb--10 u-mt--10">
+                    <mat-form-field appearance="outline" class="u-w--100  filter-select u-mr--16" fxFlex="33%" [ngClass]="{'disabled-input': salesTerminateConsultantForm?.noEvaluation?.value}">
+                        <mat-label>Final Evaluation Reference Person</mat-label>
+                        <input #finalEvaluationReferencePersonInput type="text" matInput [matAutocomplete]="finalEvaluationReferencePersonAutocomplete" formControlName="finalEvaluationReferencePerson" (click)="$event.stopPropagation()" placeholder="Final Evaluation Reference Person">
+                        <mat-autocomplete #finalEvaluationReferencePersonAutocomplete="matAutocomplete" [displayWith]="displayFullNameFn">
+                            <ng-container>
+                                <mat-option *ngFor="let contact of filteredFinalEvaluationReferencePersons" [value]="contact" [ngClass]="{ 'no-data': contact.id === 'no-data' }">
+                                        <b>{{ contact.firstName + ' ' + contact.lastName }}</b>
+                                </mat-option>
+                            </ng-container>
+                        </mat-autocomplete>
+                    </mat-form-field>
+                </div>
+                <div fxLayout="row" fxLayoutAlign="start start" class="u-w--100 u-mb--20">
+                    <mat-checkbox color="accent" formControlName="noEvaluation" name="noEvaluation" class="black-checkbox" (change)="disableOrEnableInput(salesTerminateConsultantForm?.noEvaluation?.value, salesTerminateConsultantForm?.finalEvaluationReferencePerson)">
+                        No evaluation
+                    </mat-checkbox>
+                </div>
+                <div fxLayout="row" fxLayoutAlign="start start" class="u-w--100 u-mb--10" *ngIf="salesTerminateConsultantForm?.noEvaluation?.value === true">
+                    <mat-form-field appearance="outline" class="u-w--100 textarea-input " fxFlex="0 0 calc(66% + 16px)">
+                        <mat-label>Cause</mat-label>
+                        <textarea matInput autocomplete="new-password" name="causeOfNoEvaluation" formControlName="causeOfNoEvaluation">
+                        </textarea>
+                    </mat-form-field>
+                </div>
+            </div>
+        </form>
+    </ng-template>
 </ng-template>

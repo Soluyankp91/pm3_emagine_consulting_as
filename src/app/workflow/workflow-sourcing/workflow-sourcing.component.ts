@@ -19,6 +19,8 @@ export class WorkflowSourcingComponent extends AppComponentBase implements OnIni
     @Input() consultant: ConsultantResultDto;
     @Input() permissionsForCurrentUser: { [key: string]: boolean; } | undefined;
 
+    editEnabledForcefuly = false;
+
     workflowSideSections = WorkflowProcessType;
 
     sourcingConsultantsDataForm: WorkflowSourcingConsultantsDataForm;
@@ -43,7 +45,8 @@ export class WorkflowSourcingComponent extends AppComponentBase implements OnIni
     }
 
     ngOnInit(): void {
-        this._workflowDataService.updateWorkflowProgressStatus({currentStepIsCompleted: this.isCompleted, currentStepIsForcefullyEditing: false});
+        this._workflowDataService.updateWorkflowProgressStatus({currentStepIsCompleted: this.isCompleted, currentStepIsForcefullyEditing: this.editEnabledForcefuly});
+
         if (this.permissionsForCurrentUser!["StartEdit"]) {
             this.startEditSourcingStep();
         } else {
@@ -60,6 +63,15 @@ export class WorkflowSourcingComponent extends AppComponentBase implements OnIni
             .pipe(takeUntil(this._unsubscribe))
             .subscribe((value: boolean) => {
                 this.saveWorkflowTerminationSourcingStep(value);
+            });
+
+        this._workflowDataService.cancelForceEdit
+            .pipe(takeUntil(this._unsubscribe))
+            .subscribe((value: boolean) => {
+                this.isCompleted = true;
+                this.editEnabledForcefuly = false;
+                this._workflowDataService.updateWorkflowProgressStatus({currentStepIsCompleted: this.isCompleted, currentStepIsForcefullyEditing: this.editEnabledForcefuly});
+                this.getSourcingStepData();
             });
     }
 
@@ -80,7 +92,7 @@ export class WorkflowSourcingComponent extends AppComponentBase implements OnIni
                 break;
         }
     }
-    
+
     startEditSourcingStep() {
         switch (this.activeSideSection.typeId) {
             case this.workflowSideSections.TerminateWorkflow:
@@ -91,7 +103,7 @@ export class WorkflowSourcingComponent extends AppComponentBase implements OnIni
                 break;
         }
     }
-    
+
     startEditSourcingStepTermination() {
         this.showMainSpinner();
         this._workflowServiceProxy.terminationSourcingStartEdit(this.workflowId)
@@ -101,7 +113,7 @@ export class WorkflowSourcingComponent extends AppComponentBase implements OnIni
                 this.getSourcingStepData();
             });
     }
-    
+
     startEditSourcingStepConsultantTermination() {
         this.showMainSpinner();
         this._workflowServiceProxy.terminationConsultantSourcingStartEdit(this.workflowId, this.consultant.id)
@@ -131,6 +143,7 @@ export class WorkflowSourcingComponent extends AppComponentBase implements OnIni
 
             }))
             .subscribe(result => {
+                this.resetForm();
                 this.addConsultantDataToTerminationForm(result);
             });
     }
@@ -145,7 +158,9 @@ export class WorkflowSourcingComponent extends AppComponentBase implements OnIni
             this._workflowServiceProxy.terminationConsultantSourcingPut(this.workflowId!, input)
                 .pipe(finalize(() => this.hideMainSpinner()))
                 .subscribe(result => {
-
+                    if (this.editEnabledForcefuly) {
+                        this.toggleEditMode();
+                    }
                 })
         } else {
             this._workflowServiceProxy.terminationConsultantSourcingComplete(this.workflowId!, input)
@@ -162,6 +177,7 @@ export class WorkflowSourcingComponent extends AppComponentBase implements OnIni
 
             }))
             .subscribe(result => {
+                this.resetForm();
                 result.consultantTerminationSourcingData?.forEach(data => {
                     this.addConsultantDataToTerminationForm(data);
                 })
@@ -187,7 +203,9 @@ export class WorkflowSourcingComponent extends AppComponentBase implements OnIni
             this._workflowServiceProxy.terminationSourcingPut(this.workflowId!, input)
                 .pipe(finalize(() => this.hideMainSpinner()))
                 .subscribe(result => {
-
+                    if (this.editEnabledForcefuly) {
+                        this.toggleEditMode();
+                    }
                 })
         } else {
             this._workflowServiceProxy.terminationSourcingComplete(this.workflowId!, input)
@@ -198,4 +216,22 @@ export class WorkflowSourcingComponent extends AppComponentBase implements OnIni
         }
     }
 
+    get readOnlyMode() {
+        return this.isCompleted;
+    }
+
+    get canToggleEditMode() {
+        return this.permissionsForCurrentUser!["Edit"] && this.isCompleted;
+    }
+
+    toggleEditMode() {
+        this.isCompleted = !this.isCompleted;
+        this.editEnabledForcefuly = !this.editEnabledForcefuly;
+        this._workflowDataService.updateWorkflowProgressStatus({currentStepIsCompleted: this.isCompleted, currentStepIsForcefullyEditing: this.editEnabledForcefuly});
+        this.getSourcingStepData();
+    }
+
+    resetForm() {
+        this.sourcingConsultantsDataForm.consultantTerminationSourcingData.controls = [];
+    }
 }
