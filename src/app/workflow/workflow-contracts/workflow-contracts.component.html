@@ -4,7 +4,7 @@
         <ng-container *ngSwitchCase="activeSideSection.typeId === workflowSideSections.TerminateWorkflow || activeSideSection.typeId === workflowSideSections.TerminateConsultant">
             <div class="workflow--termination">
                 <h2 *ngIf="!readOnlyMode" class="workflow-section--header">Finish contract in PM</h2>
-                <h1  *ngIf="readOnlyMode" class="workflow-readonly--header-main">
+                <h1  *ngIf="readOnlyMode" class="workflow-step-readonly--header-main">
                     <span class="process-name">Contract.</span>
                     <span class="anchor-name">Finish contract in PM</span>
                 </h1>
@@ -31,7 +31,7 @@
                             *ngIf="!contractLinesDoneManuallyInOldPMControl?.value"></mat-icon>
                         <mat-icon class="termination-complete-icon u-mr--5" [svgIcon]="'completed-icon'" height="22px" width="22px"
                             *ngIf="contractLinesDoneManuallyInOldPMControl?.value"></mat-icon>
-                        <span class="workflow-readonly--blue-text">
+                        <span class="workflow-step-readonly--blue-text">
                             Contract lines done manually in old PM
                         </span>
                     </ng-container>
@@ -59,7 +59,7 @@
                                         *ngIf="!contractsTerminationConsultantForm.consultantTerminationContractData.at(i).get('nameremovedConsultantFromAnyManualChecklists')?.value"></mat-icon>
                                     <mat-icon class="termination-complete-icon u-mr--5" [svgIcon]="'completed-icon'" height="22px" width="22px"
                                         *ngIf="contractsTerminationConsultantForm.consultantTerminationContractData.at(i).get('nameremovedConsultantFromAnyManualChecklists')?.value"></mat-icon>
-                                    <span class="workflow-readonly--blue-text">
+                                    <span class="workflow-step-readonly--blue-text">
                                         Removed Consultant from any manual checklists
                                     </span>
                                 </ng-container>
@@ -76,7 +76,7 @@
                                         *ngIf="!contractsTerminationConsultantForm.consultantTerminationContractData.at(i).get('deletedAnySensitiveDocumentsForGDPR')?.value"></mat-icon>
                                     <mat-icon class="termination-complete-icon u-mr--5" [svgIcon]="'completed-icon'"
                                         *ngIf="contractsTerminationConsultantForm.consultantTerminationContractData.at(i).get('deletedAnySensitiveDocumentsForGDPR')?.value"></mat-icon>
-                                    <span class="workflow-readonly--blue-text">
+                                    <span class="workflow-step-readonly--blue-text">
                                         Deleted any sensitive documents (GDPR)
                                     </span>
                                 </ng-container>

@@ -1132,7 +1132,7 @@
                                             Frequency
                                         </span>
                                         <span fxFlex="10%" class="workflow-sales-inline--form__header u-w--100">
-    
+
                                         </span>
                                     </div>
                                     <ng-container formArrayName="commissions" class="u-w--100">
@@ -1323,7 +1323,7 @@
                                             </ng-container>
                                         </div>
                                     </ng-container>
-    
+
                                     <div fxLayout="row" fxLayoutAlign="start start" class="u-w--100 u-mb--20">
                                         <button color="primary" class="u-mt--10 button-outlined" mat-flat-button type="button" [disabled]="isCommissionEditing" (click)="addCommission(true)">Add commission</button>
                                     </div>
@@ -2930,56 +2930,56 @@
     <ng-container *ngIf="readOnlyMode; else editMode">
         <div fxLayout="column" fxLayoutAlign="start start" class="workflow-sales--process-data u-w--100">
             <div fxLayout="column" fxLayoutAlign="start start" class="u-w--100">
-                <h1 class="workflow-readonly--header-main">
+                <h1 class="workflow-step-readonly--header-main">
                     <span class="process-name">Sales.</span>
                     <span class="anchor-name" *ngIf="activeSideSection.typeId === workflowSideSections.TerminateConsultant">End of Consultant Contract</span>
                     <span class="anchor-name" *ngIf="activeSideSection.typeId === workflowSideSections.TerminateWorkflow">End of Client Contract</span>
                 </h1>
 
                 <div fxLayout="column" class="u-w--100 u-mb--20 u-mt--20">
-                    <h3 class="workflow-readonly--gray-header">Non standart termination time</h3>
-                    <span class="workflow-readonly--blue-text-bold">
+                    <h3 class="workflow-step-readonly--gray-header">Non standart termination time</h3>
+                    <span class="workflow-step-readonly--blue-text-bold">
                         {{salesTerminateConsultantForm?.terminationTime?.value ? nonStandartTerminationTimes[salesTerminateConsultantForm?.terminationTime?.value] : '-'}}
                     </span>
                 </div>
 
                 <div fxLayout="column" class="u-w--100 u-mb--20" *ngIf="salesTerminateConsultantForm?.terminationTime?.value === 2">
-                    <h3 class="workflow-readonly--gray-header">End date</h3>
-                    <span class="workflow-readonly--blue-text-bold">
+                    <h3 class="workflow-step-readonly--gray-header">End date</h3>
+                    <span class="workflow-step-readonly--blue-text-bold">
                         {{salesTerminateConsultantForm?.endDate?.value ? (salesTerminateConsultantForm?.endDate?.value | momentFormat: 'DD/MM/YYYY') : '-'}}
                     </span>
                 </div>
 
                 <div fxLayout="column" class="u-w--100 u-mb--20" *ngIf="salesTerminateConsultantForm?.terminationTime?.value === 2 || salesTerminateConsultantForm?.terminationTime?.value === 3">
-                    <h3 class="workflow-readonly--gray-header">Termination reason</h3>
-                    <span class="workflow-readonly--blue-text-bold">
+                    <h3 class="workflow-step-readonly--gray-header">Termination reason</h3>
+                    <span class="workflow-step-readonly--blue-text-bold">
                         {{salesTerminateConsultantForm?.terminationReason?.value ? terminationReasons[salesTerminateConsultantForm?.terminationReason?.value] : '-'}}
                     </span>
                 </div>
 
                 <div fxLayout="column" class="u-w--100 u-mb--20" *ngIf="salesTerminateConsultantForm?.terminationTime?.value === 2 || salesTerminateConsultantForm?.terminationTime?.value === 3">
-                    <h3 class="workflow-readonly--gray-header">Cause</h3>
-                    <p class="workflow-readonly--blue-text">
+                    <h3 class="workflow-step-readonly--gray-header">Cause</h3>
+                    <p class="workflow-step-readonly--blue-text">
                         {{salesTerminateConsultantForm?.causeOfNonStandardTerminationTime?.value ? salesTerminateConsultantForm?.causeOfNonStandardTerminationTime?.value : '-'}}
                     </p>
                 </div>
 
                 <div fxLayout="column" class="u-w--100 u-mb--20">
-                    <h3 class="workflow-readonly--gray-header">Additional comments</h3>
-                    <p class="workflow-readonly--blue-text">
+                    <h3 class="workflow-step-readonly--gray-header">Additional comments</h3>
+                    <p class="workflow-step-readonly--blue-text">
                         {{salesTerminateConsultantForm?.additionalComments?.value ? salesTerminateConsultantForm?.additionalComments?.value : '-'}}
                     </p>
                 </div>
 
                 <div fxLayout="column" class="u-w--100 u-mb--20" *ngIf="salesTerminateConsultantForm?.terminationTime?.value === 1 || salesTerminateConsultantForm?.terminationTime?.value === 2">
-                    <h3 class="workflow-readonly--gray-header">Final Evaluation Reference Person</h3>
-                    <p class="workflow-readonly--blue-text-bold">
+                    <h3 class="workflow-step-readonly--gray-header">Final Evaluation Reference Person</h3>
+                    <p class="workflow-step-readonly--blue-text-bold">
                         {{salesTerminateConsultantForm?.noEvaluation?.value ? 'No evaluation' : (salesTerminateConsultantForm?.finalEvaluationReferencePerson?.value ? salesTerminateConsultantForm?.finalEvaluationReferencePerson?.value?.firstName + ' ' + salesTerminateConsultantForm?.finalEvaluationReferencePerson?.value?.lastName : '-')}}
                     </p>
 
                     <div fxLayout="column" class="u-w--100 u-mt--20" *ngIf="salesTerminateConsultantForm?.noEvaluation?.value === true">
-                        <h3 class="workflow-readonly--gray-header">Cause</h3>
-                        <p class="workflow-readonly--blue-text">
+                        <h3 class="workflow-step-readonly--gray-header">Cause</h3>
+                        <p class="workflow-step-readonly--blue-text">
                             {{salesTerminateConsultantForm?.causeOfNoEvaluation?.value ? salesTerminateConsultantForm?.causeOfNoEvaluation?.value : '-'}}
                         </p>
                     </div>
