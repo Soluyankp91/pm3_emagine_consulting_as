@@ -10,6 +10,12 @@
     height: 32px;
     width: 32px;
     border-radius: 50%;
+
+    @media screen and (max-width: 1366px) {
+        height: 24px;
+        width: 24px;
+    }
+
 }
 
 .icon-arrow-rotate180 {
@@ -38,6 +44,11 @@
 .main-overview {
     &-icon {
         line-height: 40px;
+        @media screen and (max-width: 1366px) {
+            transform: scale(0.8);
+            line-height: 42px;
+
+        }
         &-type {
             line-height: 40px;
         }

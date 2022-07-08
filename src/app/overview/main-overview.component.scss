@@ -5,7 +5,7 @@
 
 .main-overview {
     &--filter {
-        padding: 32px 50px 0 50px;
+        padding: 32px 24px 0 50px;
         background-color: $white-color;
         &__badge {
             display: flex;
@@ -34,10 +34,16 @@
             padding: 6px 10px;
             border: 1px solid $light-grey-color;
             border-radius: 40px;
+            @media screen and (max-width: 1366px) {
+                height: 30px;
+            }
             &__name {
                 font-weight: 700;
                 color: #384853;
                 font-size: 14px;
+                @media screen and (max-width: 1366px) {
+                    font-size: 11px;
+                }
             }
             &__quantity {
                 font-weight: 800;
@@ -55,15 +61,25 @@
             img {
                 width: 40px;
                 height: 40px;
+
+                @media screen and (max-width: 1366px) {
+                    width: 30px;
+                    height: 30px;
+                }
             }
         }
         &-additional {
-            padding: 0 50px 32px 50px;
+            padding: 0 24px 32px 50px;
             background-color: $white-color;
             position: absolute;
             z-index: 101;
             box-shadow: 0 10px 10px 0 rgb(26, 35, 126, 15%);
             transition: all .3s ease-in-out;
+        }
+        &-leftside {
+            @media screen and (max-width: 1366px) {
+                margin-top: 5px;
+            }
         }
     }
     &--content {
@@ -79,6 +95,10 @@
         line-height: 40px;
         &-type {
             line-height: 40px;
+            @media screen and (max-width: 1366px) {
+                transform: scale(0.8);
+            }
+
         }
     }
     &-search-button {
@@ -134,10 +154,28 @@
     font-size: 14px;
     line-height: 140%;
     color: #B6B4B2;
+
+    @media screen and (max-width: 1366px) {
+        font-size: 11px;
+    }
+}
+
+.reset-button {
+    @media screen and (max-width: 1366px) {
+        line-height: 30px !important;
+        padding: 0 8px !important;
+    }
 }
 
 .manager-search--photo {
     height: 32px;
     width: 32px;
     border-radius: 50%;
+}
+
+.divider-height {
+    height: 40px;
+    @media screen and (max-width: 1366px) {
+        height: 30px;
+    }
 }
