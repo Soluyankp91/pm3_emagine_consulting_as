@@ -5,13 +5,18 @@
         </div>
         <div fxLayout="row" fxLayoutAlign="space-between start" class="u-w--100">
             <div fxFlex="1 0 40%" fxLayout="row" fxLayoutAlign="start center" class="u-w--100">
-                <div class="client-list--filter-manager cursor-pointer u-mr--16" [matTooltip]="mapListByProperty(selectedAccountManagers, 'name')" matTooltipClass="white-tooltip" [matMenuTriggerFor]="managerMenu" (menuOpened)="accountManagerFilter.setValue(''); onManagersMenuOpened(); accountManagerFilterInput.click()" (click)="openManagersMenu($event)">
+                <div class="client-list--filter-manager cursor-pointer u-mr--16"
+                    [matMenuTriggerFor]="managerMenu"
+                    (menuOpened)="onManagersMenuOpened(); accountManagerFilterInput.click()"
+                    [matTooltip]="mapListByProperty(selectedAccountManagers, 'name')"
+                    matTooltipClass="white-tooltip"
+                    (click)="openManagersMenu($event)">
                     <img *ngIf="selectedAccountManagers?.length === 1" class="border-rounded-50 image-thumbnail-small" [src]="employeeProfileUrl(selectedAccountManagers[0]?.externalId!)" />
                     <img *ngIf="selectedAccountManagers?.length === 0" src="../../../assets/common/images/no-img.svg">
                     <div *ngIf="selectedAccountManagers?.length && selectedAccountManagers.length > 1" class="client-list--filter__badge">
                         {{selectedAccountManagers.length}}
                     </div>
-                    <mat-menu #managerMenu>
+                    <mat-menu #managerMenu backdropClass="client-list--filter-manager-menu">
                         <div mat-menu-item (click)="$event.stopPropagation()" class="u-pg--0">
                             <mat-form-field class="client-list--filter-manager-dropdown" appearance="fill" (click)="$event.stopPropagation()">
                                 <input #accountManagerFilterInput #managersTrigger type="text" matInput [matAutocomplete]="managerAutocomplete" [formControl]="accountManagerFilter" (click)="$event.stopPropagation()" placeholder="Select account manager(s)">
@@ -73,9 +78,10 @@
                 </div>
                 <div class="client-list--filter-country cursor-pointer u-mr--16"
                     [matMenuTriggerFor]="countryMenu"
-                    (menuOpened)="countryFilter.setValue(''); onCountriesMenuOpened(); countriesFilterInput.click();"
+                    (menuOpened)="onCountriesMenuOpened(); countriesFilterInput.click();"
                     [ngClass]="{ 'client-list--filter-country__btn': selectedCountries.length > 1 }"
-                    [matTooltip]="mapListByProperty(selectedCountries, 'name')" matTooltipClass="white-tooltip"
+                    [matTooltip]="mapListByProperty(selectedCountries, 'name')"
+                    matTooltipClass="white-tooltip"
                     (click)="openCountriesMenu($event)">
                     <span *ngIf="selectedCountries.length > 1; else singleCountry" class="client-list--filter-country__badge">
                         {{selectedCountries.length}}
@@ -83,7 +89,7 @@
                     <ng-template #singleCountry>
                         <mat-icon class="client-list--filter-country u-mr--16" [svgIcon]="selectedCountries.length ? selectedCountries[0]?.name + '-flag-selected' : 'Country-filter-flag'"></mat-icon>
                     </ng-template>
-                    <mat-menu #countryMenu>
+                    <mat-menu #countryMenu backdropClass="client-list--filter-country-menu">
                         <div mat-menu-item (click)="$event.stopPropagation()" class="u-pg--0">
                             <mat-form-field class="client-list--filter-country-dropdown" appearance="fill" (click)="$event.stopPropagation()">
                                 <input type="text" #countriesFilterInput #countriesTrigger matInput [matAutocomplete]="countryAutocomplete" [formControl]="countryFilter" (click)="$event.stopPropagation()" placeholder="Select client country">
