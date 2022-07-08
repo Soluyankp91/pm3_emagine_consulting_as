@@ -1,4 +1,5 @@
 @import "/src/app/shared/styles/config/_colors";
+@import "../workflow.component";
 
 .workflow {
     &-finances {
@@ -14,7 +15,6 @@
 
         &--block {
             width: 100%;
-            // border-bottom: 1px solid $sand-color;
             padding: 25px 0;
             &.last-block {
                 border-bottom: 0;
@@ -43,6 +43,14 @@
             font-size: 18px;
             margin-bottom: 20px;
         }
+        @media screen and (max-width: 1366px) {
+            .workflow-section--header {
+                font-size: 14px;
+            }
+            .workflow-blue--header {
+                font-size: 12px;
+            }
+        }
 
         &--consultant {
             &-name {
@@ -54,6 +62,15 @@
                 width: 32px;
                 height: 32px;
                 border-radius: 50%;
+            }
+            @media screen and (max-width: 1366px) {
+                &-name {
+                    font-size: 14px;
+                }
+                &-img {
+                    width: 24px;
+                    height: 24px;
+                }
             }
 
         }

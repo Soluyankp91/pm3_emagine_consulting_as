@@ -7,7 +7,7 @@
             </h1>
 
             <div fxLayout="row" fxLayoutAlign="start center" class="u-mb--20">
-                <img class="workflow-sourcing--consultant-img u-mr--16" [src]="consultantProfileUrl(consultant.value.consultantData?.externalId)">
+                <img class="border-rounded-50 image-thumbnail-responsive u-mr--16" [src]="consultantProfileUrl(consultant.value.consultantData?.externalId)">
                 <p class="workflow-sourcing--consultant-name">
                     {{sourcingConsultantsDataForm.consultantTerminationSourcingData.at(i).get('consultantData')?.value?.name}}
                 </p>

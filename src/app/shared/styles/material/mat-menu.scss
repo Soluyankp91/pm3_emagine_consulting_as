@@ -1,6 +1,8 @@
 @import "/src/app/shared/styles/config/_colors";
 
 .menu-item {
+    display: flex;
+    align-items: center;
     padding: 0 16px;
     font-weight: 700;
     mat-icon {
@@ -13,10 +15,9 @@
         justify-content: center;
     }
     &--cancel {
-        color: $red-color;
+        color: $dark-red-color;
         mat-icon {
-            background: rgba($color: $red-color, $alpha: 0.2);
-            color: $red-color !important;
+            color: $dark-red-color !important;
         }
     }
     &--edit {
@@ -35,9 +36,9 @@
     }
 
     &--delete {
-        color: $darkred-color !important;
+        color: $dark-red-color !important;
         mat-icon {
-            color: $darkred-color !important;
+            color: $dark-red-color !important;
         }
     }
 }

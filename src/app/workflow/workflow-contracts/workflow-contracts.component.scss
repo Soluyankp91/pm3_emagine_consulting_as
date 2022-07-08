@@ -1,4 +1,5 @@
 @import "/src/app/shared/styles/config/_colors";
+@import "../workflow.component";
 
 .workflow {
     &-contracts {
@@ -24,6 +25,11 @@
             }
             &-img {
                 border-radius: 50%;
+            }
+            @media screen and (max-width: 1366px) {
+                &-name {
+                    font-size: 14px;
+                }
             }
         }
         &--block {
@@ -77,21 +83,13 @@
                 line-height: 14px;
                 color: #B6B4B2
             }
-
-            &__name,
-            &__period {
-                font-weight: 600;
-                font-size: 16px;
-                font-family: 'Open Sans', sans-serif;
-                line-height: 120%;
-                color: #4A4E60;
-            }
-            &__payment-price-text {
-                font-family: 'Open Sans', sans-serif;
-                font-weight: bold;
-                font-size: 14px;
-                line-height: 16px;
-                color: rgba(56, 72, 83, 0.87);
+            @media screen and (max-width: 1366px) {
+                .workflow-darkblue--text {
+                    font-size: 14px;
+                }
+                .workflow-gray--header {
+                    font-size: 12px;
+                }
             }
         }
     }
@@ -109,7 +107,13 @@
             line-height: 120%;
             letter-spacing: 1px;
             text-transform: uppercase;
-            color: #4A4E60;
+            color: $dark-grey-color;
+        }
+        @media screen and (max-width: 1366px) {
+            font-size: 14px;
+            &-main {
+                font-size: 18px;
+            }
         }
     }
 
@@ -117,113 +121,10 @@
         padding: 30px;
     }
 
-    &-readonly {
-        &--header {
-            font-family: "Open Sans", sans-serif;
-            font-size: 16px;
-            font-weight: 700;
-            line-height: 1.2;
-            letter-spacing: 1px;
-            text-transform: uppercase;
-            color: #b6b4b2;
-
-            &-main {
-                font-family: "Open Sans", sans-serif;
-                font-size: 18px;
-                font-weight: 700;
-                line-height: 1.2;
-                letter-spacing: 1px;
-                text-transform: uppercase;
-
-                .process-name {
-                    font-weight: 800;
-                    color: $green-color;
-                }
-                .anchor-name {
-                    color: #4a4e60;
-                }
-            }
-        }
-        &--gray {
-            &-header {
-                font-family: "Open Sans", sans-serif;
-                font-size: 12px;
-                font-weight: 700;
-                color: #898785;
-            }
-        }
-        &--blue {
-            &-header {
-                font-family: "Open Sans", sans-serif;
-                font-size: 12px;
-                font-weight: 700;
-                color: #4a4e60;
-            }
-            &-text {
-                font-family: "Open Sans", sans-serif;
-                font-size: 14px;
-                font-weight: 600;
-                color: #4a4e60;
-                &-bold {
-                    font-family: "Open Sans", sans-serif;
-                    font-size: 14px;
-                    font-weight: 800;
-                    color: rgba(56, 72, 83, 0.87);
-                }
-            }
-        }
-    }
-    // &-controls {
-    //     position: sticky;
-    //     bottom: 0;
-    //     background-color: #fff;
-    //     height: 60px;
-    //     padding: 0 75px;
-    //     box-shadow: 0px 0px 20px rgba(26, 35, 126, 0.15);
-    //     button {
-    //         width: 150px;
-    //     }
-    // }
 }
 
 .hide {
     display: none;
-}
-
-.section-header {
-    &--page {
-        font-family: 'IBM Plex Sans', sans-serif !important;
-        font-weight: 700;
-        font-size: 50px;
-        color: #546E7A;
-        line-height: 65px;
-        margin-left: 70px;
-    }
-    &--main {
-        font-family: 'IBM Plex Mono', monospace !important;
-        font-weight: 700;
-        font-size: 30px;
-        color: #C7CFD3;
-        margin-right: 32px;
-    }
-    &--top {
-        font-weight: 700;
-        font-size: 16px;
-        line-height: 19px;
-        text-transform: uppercase;
-        color: #546E7A;
-        margin-left: 70px;
-        margin-bottom: 0;
-    }
-    &--block {
-        font-family: 'IBM Plex Sans', sans-serif;
-        font-weight: 700;
-        font-size: 14px;
-        color: #A1AFB6;
-        text-transform: uppercase;
-        margin-right: 16px;
-        line-height: 18px;
-    }
 }
 
 .icon {
@@ -240,7 +141,7 @@
     font-weight: 700;
     font-size: 12px;
     line-height: 150%;
-    color: #4A4E60;
+    color: $dark-grey-color;
 }
 
 // START remove after we will have correct icons

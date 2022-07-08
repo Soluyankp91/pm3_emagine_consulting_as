@@ -38,6 +38,9 @@
                 font-weight: 700;
                 font-size: 14px;
                 color: rgba(56, 72, 83, 0.87);
+                .active-status {
+                }
+                .non-active-status
                 &.selected-status {
                     background-color: rgba(42, 194, 167, 0.13);
                     border-color: $green-color;
@@ -59,11 +62,6 @@
         background-color: $sand-25-color;
         min-height: calc(100vh - 150px);
     }
-
-    // &--table {
-    //     position: relative;
-    //     min-height: 120px;
-    // }
 }
 
 .status {
@@ -80,6 +78,12 @@
         }
         &.deleted-flag {
             color: #F80830;
+        }
+        &.green-dot {
+            color: $green-color;
+        }
+        &.grey-dot {
+            color: $light-grey-color;
         }
     }
     &-text {

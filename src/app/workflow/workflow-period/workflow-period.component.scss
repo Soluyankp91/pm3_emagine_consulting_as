@@ -46,6 +46,9 @@
             color: $light-grey-color;
             text-transform: uppercase;
             margin-left: 10px;
+            @media screen and (max-width: 1366px) {
+                font-size: 14px;
+            }
         }
         &.active-step:not(.completed-step) {
             .workflow-navigation--step__number {
@@ -83,4 +86,16 @@
 .active-anchor {
     color: rgba(56, 72, 83, 0.87);
     font-weight: 700;
+}
+
+.workflow-period--delete {
+    width: 24px;
+    height: 24px;
+    line-height: 24px;
+
+    mat-icon {
+        width: 24px;
+        height: 24px;
+        line-height: 24px;
+    }
 }

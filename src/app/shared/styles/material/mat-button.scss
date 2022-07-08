@@ -24,6 +24,9 @@
     &:hover:not(.mat-button-disabled) {
         background-color: rgba(23, 162, 151, 0.07) !important;
     }
+    @media screen and (max-width: 1366px) {
+        font-size: 12px;
+    }
 }
 
 .button-accept {
@@ -34,6 +37,9 @@
     &.mat-button-disabled {
         background-color: rgba($color: $light-grey-color, $alpha: 0.55) !important;
         border: 2px solid rgba($color: $light-grey-color, $alpha: 0.55) !important;
+    }
+    @media screen and (max-width: 1366px) {
+        font-size: 12px;
     }
 }
 
@@ -87,21 +93,32 @@
             color: #384853;
             font-weight: 700;
             background-color: #fff;
-            border: 1px solid $light-grey-color;
+            border: 2.5px solid $light-grey-color;
             border-radius: 5px;
             height: 45px;
             min-width: 125px;
         }
         .mat-button-toggle-label-content {
             line-height: 45px;
-            padding: 0 16px;
+            padding: 0 24px;
+        }
+
+        @media screen and (max-width: 1366px) {
+            .mat-button-toggle {
+                font-size: 12px;
+                height: 35px;
+                border-width: 1.5px;
+            }
+            .mat-button-toggle-label-content {
+                line-height: 35px;
+            }
         }
 
         .mat-button-toggle.mat-button-toggle-checked {
-            color: #FFF;
+            color: $white-color;
             font-weight: 700;
-            background-color: #4A4E60;
-            border: 1px solid #4A4E60;
+            background-color: $dark-grey-color;
+            border: 1px solid $dark-grey-color;
             .mat-button-toggle-focus-overlay {
                 border-bottom: solid 45px;
             }
@@ -143,6 +160,11 @@
 }
 
 .three-dots-actions-btn {
+    .mat-button-wrapper {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+    }
     &:hover {
         background: rgba($color: $green-color, $alpha: .2);
     }
