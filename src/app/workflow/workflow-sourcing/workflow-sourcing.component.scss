@@ -1,52 +1,85 @@
 @import "/src/app/shared/styles/config/_colors";
+@import "../workflow.component";
 
-.workflow-sourcing {
-    padding: 10px 24px;
-    &--block {
-        width: 100%;
-        // border-bottom: 1px solid $sand-color;
-        padding: 25px 0;
-        &.last-block {
-            border-bottom: 0;
+.workflow {
+    &-sourcing {
+        padding: 10px 24px;
+
+        .absolute-edit-toggle {
+            position: fixed;
+            right: 50px;
+            top: 250px;
+            border-radius: 50%;
+            background-color: rgba($color: #72a0f8, $alpha: 0.2);
+            color: #72a0f8;
         }
 
-        &-consultants:not(:last-child) {
-            border-bottom: 1px solid $sand-color;
+        &--block {
+            width: 100%;
+            // border-bottom: 1px solid $sand-color;
+            padding: 25px 0;
+            &.last-block {
+                border-bottom: 0;
+            }
+
+            &-consultants:not(:last-child) {
+                border-bottom: 1px solid $sand-color;
+                margin-bottom: 20px;
+            }
+        }
+
+        .workflow-gray--header {
+            margin-bottom: 8px !important;
+            font-weight: bold;
+            font-size: 16px;
+            line-height: 16px;
+            color: rgba(56, 72, 83, 0.87);
+        }
+
+        .workflow-section--header {
+            color: $light-grey-color;
+            letter-spacing: 1px;
+            text-transform: uppercase;
+            font-size: 18px;
             margin-bottom: 20px;
         }
-    }
 
-    .workflow-gray--header {
-        margin-bottom: 8px !important;
-        font-weight: bold;
-        font-size: 16px;
-        line-height: 16px;
-        color: rgba(56, 72, 83, 0.87);
-    }
+        &--consultant {
+            &-name {
+                font-weight: 800;
+                font-size: 16px;
+                color: $dark-grey-color;
+            }
+            &-img {
+                width: 32px;
+                height: 32px;
+                border-radius: 50%;
+            }
 
-    .workflow-section--header {
-        color: $light-grey-color;
-        letter-spacing: 1px;
-        text-transform: uppercase;
-        font-size: 18px;
-        margin-bottom: 20px;
-    }
-
-    &--consultant {
-        &-name {
-            font-weight: 800;
-            font-size: 16px;
-            color: $dark-grey-color;
         }
-        &-img {
-            width: 32px;
-            height: 32px;
-            border-radius: 50%;
-        }
-
     }
 }
 
 .hide {
     display: none;
 }
+
+
+// START remove after we will have correct icons
+
+.termination-complete-icon {
+    height: 22px !important;
+    width: 22px !important;
+    font-size: 21px !important;
+    line-height: 21px !important;
+}
+
+.termination-cancel-icon {
+    height: 21px !important;
+    width: 21px !important;
+    font-size: 21px !important;
+    line-height: 21px !important;
+    margin-left: 1px;
+}
+
+// END remove after we will have correct icons

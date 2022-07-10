@@ -263,6 +263,10 @@
         line-height: 1.4;
         letter-spacing: normal;
         color: $green-color;
+        @media screen and (max-width: 1366px) {
+            font-size: 12px;
+        }
+
     }
 
     &.active {

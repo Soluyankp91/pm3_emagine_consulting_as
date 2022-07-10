@@ -53,6 +53,21 @@ mat-table.rounded-table {
 .pagination-container {
     .mat-paginator {
         background-color: transparent;
+        @media screen and (max-width: 1366px) {
+            font-size: 10px !important;
+            mat-form-field {
+                .mat-select-value-text {
+                    font-size: 10px !important;
+                }
+            }
+            .mat-paginator-range-actions {
+                .mat-icon-button {
+                    height: 30px;
+                    width: 30px;
+                    line-height: 30px;
+                }
+            }
+        }
     }
 }
 
@@ -449,6 +464,10 @@ mat-table.white-table {
                             &:last-of-type {
                                 padding-right: 32px;
                             }
+                            @media screen and (max-width: 1366px) {
+                                font-size: 10px;
+                                line-height: 14px;
+                            }
                         }
                     }
                     .gantt-flat-side-body {
@@ -470,12 +489,17 @@ mat-table.white-table {
                                 padding: 0 !important;
                                 color: $dark-grey-color !important;
                                 font-size: 16px;
+                                font-weight: 600;
                                 &:first-of-type {
                                     padding-left: 16px;
                                 }
 
                                 &:last-of-type {
                                     padding-right: 16px;
+                                }
+
+                                @media screen and (max-width: 1366px) {
+                                    font-size: 12px;
                                 }
                                 // .gantt-table-column-content {
                                 // }
@@ -507,6 +531,9 @@ mat-table.white-table {
                         font-weight: 600;
                         font-size: 12px;
                         transform: translateY(-10px);
+                        @media screen and (max-width: 1366px) {
+                            font-size: 10px;
+                        }
                     }
 
                     .primary-line {

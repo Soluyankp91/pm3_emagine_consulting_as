@@ -438,6 +438,11 @@
             font-size: 14px;
             display: flex;
             align-items: center;
+
+            @media screen and (max-width: 1366px) {
+                height: 40px;
+            }
+
             .mat-input-element {
                 color: rgba(56, 72, 83, 0.87);
                 font-weight: 700

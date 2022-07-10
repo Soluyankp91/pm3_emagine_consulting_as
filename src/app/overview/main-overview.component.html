@@ -2,14 +2,14 @@
     <div fxLayout="column" fxLayoutAlign="start start" class="main-overview--filter">
         <h2 class="page-main-header u-mb--20">Overview</h2>
         <div fxLayout="row" fxLayoutAlign="start start" class="u-w--100">
-            <div fxFlex fxLayout="row wrap" fxLayoutAlign="start center" fxLayoutGap="6px" class="u-w--100" fxFlex="80%">
+            <div fxLayout="row wrap" fxLayoutAlign="start center" fxLayoutGap="6px" class="u-w--100" fxFlex="80%" class="main-overview--filter-leftside">
                 <div class="main-overview--filter-manager cursor-pointer u-mb--10" [matTooltip]="mapListByProperty(selectedAccountManagers, 'name')" matTooltipClass="white-tooltip" [matMenuTriggerFor]="managerMenu" (menuOpened)="accountManagerFilterInput.click(); onOpenedMenu();" (click)="openMenu($event)">
                     <img *ngIf="selectedAccountManagers.length === 1" class="border-rounded-50 image-thumbnail-small" [src]="employeeProfileUrl(selectedAccountManagers[0]?.externalId!)" />
                     <img *ngIf="selectedAccountManagers.length === 0" src="../../../assets/common/images/no-img.svg">
                     <div *ngIf="selectedAccountManagers.length > 1" class="main-overview--filter__badge">
                         {{selectedAccountManagers.length}}
                     </div>
-                    <mat-menu #managerMenu>
+                    <mat-menu #managerMenu backdropClass="main-overview--filter-manager-menu">
                         <div mat-menu-item (click)="$event.stopPropagation()" class="u-pg--0">
                             <mat-form-field class="main-overview--filter-manager-dropdown" appearance="fill" (click)="$event.stopPropagation()">
                                 <input #accountManagerFilterInput #trigger type="text" matInput [matAutocomplete]="managerAutocomplete" [formControl]="accountManagerFilter" (click)="$event.stopPropagation();" placeholder="Filter by account manager/s">
@@ -79,8 +79,8 @@
                     </span>
                 </div>
                 <div class="flex-row u-mb--10">
-                    <mat-divider [vertical]="true" style="height: 46px;"></mat-divider>
-                    <button mat-button (click)="clearAllFilters()">
+                    <mat-divider [vertical]="true" class="divider-height"></mat-divider>
+                    <button mat-button (click)="clearAllFilters()" class="reset-button">
                         <span class="clear-all-button" >
                             Reset
                         </span>
@@ -154,9 +154,9 @@
         </mat-form-field>
     </div>
     <div fxLayout="column" fxLayoutAlign="start start" class="main-overview--content">
-        <div fxLayout="row" fxLayoutAlign="flex-end start" class="u-w--100 u-mr--10">
-            <mat-form-field appearance="fill" class="main-overview--filter-select formFieldNoMarginPadding u-mr--10">
-                <mat-select [formControl]="overviewViewTypeControl" name="item">
+        <div fxLayout="row" fxLayoutAlign="flex-end start" class="u-w--100 u-mr--10 u-mb--20">
+            <mat-form-field appearance="fill" class="main-overview--filter-select formFieldNoMarginPadding u-mr--20">
+                <mat-select [formControl]="overviewViewTypeControl" name="item" [disableOptionCentering]="true" panelClass="main-overview-dropdowns">
                     <mat-option *ngFor="let view of overviewViewTypes | keyvalue"
                         [value]="+view.key">
                         {{view.value}}
@@ -164,7 +164,7 @@
                 </mat-select>
             </mat-form-field>
             <mat-form-field appearance="fill" class="main-overview--filter-select formFieldNoMarginPadding">
-                <mat-select [formControl]="viewType" name="item">
+                <mat-select [formControl]="viewType" name="item" [disableOptionCentering]="true"  panelClass="main-overview-dropdowns">
                     <mat-option *ngFor="let view of views" [class.active]="view.value === viewType.value"
                         (click)="changeViewType()" [value]="view.value">
                         {{view.name}}

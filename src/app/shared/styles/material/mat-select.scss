@@ -68,6 +68,11 @@
         height: 14px;
         margin-top: 2px;
         transition: all .3s ease-in-out;
+        @media screen and (max-width: 1366px) {
+            padding: 4px;
+            width: 10px;
+            height: 10px;
+        }
     }
     &.mat-form-field-invalid {
         .mat-select-arrow {
@@ -155,6 +160,8 @@
 }
 
 .main-overview--filter-select.mat-form-field-appearance-fill {
+    width: auto;
+    min-width: 100px;
     .mat-form-field-flex {
         background-color: transparent !important;
         padding: 0 !important
@@ -169,21 +176,43 @@
         font-weight: 600;
         color: #898785;
     }
+
     .mat-select-arrow {
         border: solid $dark-grey-color;
         border-width: 0 2px 2px 0;
         display: inline-block;
-        padding: 5px;
+        padding: 4px;
         transform: rotate(45deg);
-        width: 14px;
-        height: 14px;
-        margin-top: 2px;
+        width: 8px;
+        height: 8px;
         transition: all .3s ease-in-out;
         @media screen and (max-width: 1440px) {
-            width: 8px;
-            height: 8px;
+            padding: 3px;
         }
     }
+    .mat-select-value {
+        width: fit-content;
+        padding-right: 10px;
+        max-width: unset;
+        font-weight: 600;
+        font-size: 14px;
+        line-height: 14px;
+        color: #898785;
+        @media screen and (max-width: 1440px) {
+            font-weight: 600;
+            font-size: 10px;
+            line-height: 14px;
+            color: #898785;
+        }
+
+    }
+
+    .mat-form-field-infix {
+        width: auto;
+        padding: 0 !important;
+        border-top: unset !important;
+    }
+
     mat-select[aria-expanded="true"] {
         .mat-select-arrow {
             transform: rotate(225deg);
@@ -192,3 +221,9 @@
     }
 }
 
+.cdk-overlay-container .cdk-overlay-pane .main-overview-dropdowns{
+    @media screen and (max-width: 1440px) {
+        font-size: 10px !important;
+        margin-top: 25px;
+    }
+}
