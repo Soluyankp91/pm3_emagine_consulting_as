@@ -13,7 +13,7 @@ import { InternalLookupService } from 'src/app/shared/common/internal-lookup.ser
 import { ConfirmationDialogComponent } from 'src/app/shared/components/confirmation-dialog/confirmation-dialog.component';
 import { environment } from 'src/environments/environment';
 import { AppComponentBase, NotifySeverity } from 'src/shared/app-component-base';
-import { ClientPeriodSalesDataDto, ClientPeriodServiceProxy, ClientRateDto, CommissionDto, ConsultantRateDto, ConsultantSalesDataDto, ContractSignerDto, EmployeeDto, EnumEntityTypeDto, EnumServiceProxy, LookupServiceProxy, PeriodClientSpecialFeeDto, PeriodClientSpecialRateDto, SalesClientDataDto, SalesMainDataDto, WorkflowProcessType, WorkflowServiceProxy, ConsultantResultDto, ClientResultDto, ContactResultDto, ConsultantTerminationSalesDataCommandDto, WorkflowTerminationSalesDataCommandDto, PeriodConsultantSpecialFeeDto, PeriodConsultantSpecialRateDto, ClientSpecialRateDto, ClientsServiceProxy, ClientSpecialFeeDto, ClientSalesServiceProxy, ConsultantPeriodServiceProxy, ConsultantPeriodSalesDataDto, ConsultantSalesServiceProxy, ExtendConsultantPeriodDto, ChangeConsultantPeriodDto, WorkflowProcessDto, ConsultantWithSourcingRequestResultDto } from 'src/shared/service-proxies/service-proxies';
+import { ClientPeriodSalesDataDto, ClientPeriodServiceProxy, ClientRateDto, CommissionDto, ConsultantRateDto, ConsultantSalesDataDto, ContractSignerDto, EmployeeDto, EnumEntityTypeDto, EnumServiceProxy, LookupServiceProxy, PeriodClientSpecialFeeDto, PeriodClientSpecialRateDto, SalesClientDataDto, SalesMainDataDto, WorkflowProcessType, WorkflowServiceProxy, ConsultantResultDto, ClientResultDto, ContactResultDto, ConsultantTerminationSalesDataCommandDto, WorkflowTerminationSalesDataCommandDto, PeriodConsultantSpecialFeeDto, PeriodConsultantSpecialRateDto, ClientSpecialRateDto, ClientsServiceProxy, ClientSpecialFeeDto, ClientSalesServiceProxy, ConsultantPeriodServiceProxy, ConsultantPeriodSalesDataDto, ConsultantSalesServiceProxy, ExtendConsultantPeriodDto, ChangeConsultantPeriodDto, WorkflowProcessDto, ConsultantWithSourcingRequestResultDto, CountryDto } from 'src/shared/service-proxies/service-proxies';
 import { WorkflowConsultantActionsDialogComponent } from '../workflow-consultant-actions-dialog/workflow-consultant-actions-dialog.component';
 import { WorkflowDataService } from '../workflow-data.service';
 import { ConsultantDiallogAction, SalesTerminateConsultantForm, TenantList, WorkflowSalesAdditionalDataForm, WorkflowSalesClientDataForm, WorkflowSalesConsultantsForm, WorkflowSalesMainForm } from './workflow-sales.model';
@@ -76,7 +76,7 @@ export class WorkflowSalesComponent extends AppComponentBase implements OnInit {
     nonStandartTerminationTimes: { [key: string]: string; };
     terminationReasons: { [key: string]: string; };
     employmentTypes: EnumEntityTypeDto[] = [];
-    countries: EnumEntityTypeDto[] = [];
+    countries: CountryDto[] = [];
     consultantTimeReportingCapList: EnumEntityTypeDto[] = [];
 
     // new UI
@@ -1213,7 +1213,7 @@ export class WorkflowSalesComponent extends AppComponentBase implements OnInit {
         );
     }
 
-    private _filterConsultantCountry(value: string): EnumEntityTypeDto[] {
+    private _filterConsultantCountry(value: string): CountryDto[] {
         const filterValue = value.toLowerCase();
         const result = this.countries.filter(option => option.name!.toLowerCase().includes(filterValue));
         return result;

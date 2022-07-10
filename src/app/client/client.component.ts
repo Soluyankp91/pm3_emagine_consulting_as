@@ -236,6 +236,7 @@ export class ClientComponent extends AppComponentBase implements OnInit, OnDestr
                     return new SelectableCountry({
                         id: x.id!,
                         name: x.name!,
+                        code: x.code!,
                         selected: false,
                         flag: x.name!
                     });
@@ -245,6 +246,7 @@ export class ClientComponent extends AppComponentBase implements OnInit, OnDestr
                         id: 0,
                         name: 'Unknown country',
                         selected: false,
+                        code: '',
                         flag: ''
                     })
                 );
