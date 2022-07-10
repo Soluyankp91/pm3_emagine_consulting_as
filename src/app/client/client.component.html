@@ -227,7 +227,7 @@
                                 <span class="text-truncate-ellipsis status-text--wrong-deleted">Wrongfully deleted</span>
                             </span>
                         </div>
-                        <div fxLayout="row" fxLayoutAlign="start center" *ngIf="!row.isWrongfullyDeletedInHubspot ?? !row.isDeleted" [matTooltip]="row.isActive ? 'Active' : 'Non-active'" matTooltipClass="white-tooltip">
+                        <div fxLayout="row" fxLayoutAlign="start center" *ngIf="!row.isWrongfullyDeletedInHubspot && !row.isDeleted" [matTooltip]="row.isActive ? 'Active' : 'Non-active'" matTooltipClass="white-tooltip">
                             <mat-icon class="status-dot" [ngClass]="row.isActive ? 'active-flag' : 'not-active-flag'">fiber_manual_record   </mat-icon>
                             <span class="text-truncate-ellipsis" [ngClass]="row.isActive ? 'status-text--active' : 'status-text--not-active'">{{row.isActive ? 'Active' : 'Non-active'}}</span>
                         </div>
