@@ -186,7 +186,7 @@
         width: 8px;
         height: 8px;
         transition: all .3s ease-in-out;
-        @media screen and (max-width: 1366px) {
+        @media screen and (max-width: 1440px) {
             padding: 3px;
         }
     }
@@ -198,7 +198,7 @@
         font-size: 14px;
         line-height: 14px;
         color: #898785;
-        @media screen and (max-width: 1366px) {
+        @media screen and (max-width: 1440px) {
             font-weight: 600;
             font-size: 10px;
             line-height: 14px;
@@ -222,7 +222,7 @@
 }
 
 .cdk-overlay-container .cdk-overlay-pane .main-overview-dropdowns{
-    @media screen and (max-width: 1366px) {
+    @media screen and (max-width: 1440px) {
         font-size: 10px !important;
         margin-top: 25px;
     }

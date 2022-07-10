@@ -26,7 +26,7 @@
             &-img {
                 border-radius: 50%;
             }
-            @media screen and (max-width: 1366px) {
+            @media screen and (max-width: 1440px) {
                 &-name {
                     font-size: 14px;
                 }
@@ -83,7 +83,7 @@
                 line-height: 14px;
                 color: #B6B4B2
             }
-            @media screen and (max-width: 1366px) {
+            @media screen and (max-width: 1440px) {
                 .workflow-darkblue--text {
                     font-size: 14px;
                 }
@@ -109,7 +109,7 @@
             text-transform: uppercase;
             color: $dark-grey-color;
         }
-        @media screen and (max-width: 1366px) {
+        @media screen and (max-width: 1440px) {
             font-size: 14px;
             &-main {
                 font-size: 18px;

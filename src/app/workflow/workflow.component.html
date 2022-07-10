@@ -68,25 +68,25 @@
                         </div>
                     </mat-menu>
                 </div>
-                <span class="workflow-list--filter-type new-sales-status flex-items-center cursor-pointer u-mr--16" [ngClass]="{'selected-status': showOnlyWorkflowsWithNewSales}" (click)="showOnlyWorkflowsWithNewSales = !showOnlyWorkflowsWithNewSales; getWorkflowList()">
+                <span class="workflow-list--filter-type new-sales-status flex-items-center cursor-pointer u-mr--16" [ngClass]="{'selected-status': showOnlyWorkflowsWithNewSales}" (click)="showOnlyWorkflowsWithNewSales = !showOnlyWorkflowsWithNewSales; getWorkflowList(true)">
                     <mat-icon class="status-dot green-dot u-mr--5">fiber_manual_record</mat-icon>
                     <span class="workflow-list--filter-type__name">
                         New sales
                     </span>
                 </span>
-                <span class="workflow-list--filter-type extensions-status flex-items-center cursor-pointer u-mr--16" [ngClass]="{'selected-status': showOnlyWorkflowsWithExtensions}" (click)="showOnlyWorkflowsWithExtensions = !showOnlyWorkflowsWithExtensions; getWorkflowList()">
+                <span class="workflow-list--filter-type extensions-status flex-items-center cursor-pointer u-mr--16" [ngClass]="{'selected-status': showOnlyWorkflowsWithExtensions}" (click)="showOnlyWorkflowsWithExtensions = !showOnlyWorkflowsWithExtensions; getWorkflowList(true)">
                     <mat-icon class="status-dot purple-dot u-mr--5">fiber_manual_record</mat-icon>
                     <span class="workflow-list--filter-type__name">
                         Extensions
                     </span>
                 </span>
                 <mat-divider class="u-mr--16" [vertical]="true" style="height: 40px;"></mat-divider>
-                <span class="workflow-list--filter-type pending-steps-status flex-items-center cursor-pointer u-mr--16" [ngClass]="{'selected-status': showOnlyWorkflowsWithPendingStepsForSelectedEmployees}" (click)="showOnlyWorkflowsWithPendingStepsForSelectedEmployees = !showOnlyWorkflowsWithPendingStepsForSelectedEmployees; getWorkflowList()">
+                <span class="workflow-list--filter-type pending-steps-status flex-items-center cursor-pointer u-mr--16" [ngClass]="{'selected-status': showOnlyWorkflowsWithPendingStepsForSelectedEmployees}" (click)="showOnlyWorkflowsWithPendingStepsForSelectedEmployees = !showOnlyWorkflowsWithPendingStepsForSelectedEmployees; getWorkflowList(true)">
                     <span class="workflow-list--filter-type__name">
                         Pending steps
                     </span>
                 </span>
-                <span class="workflow-list--filter-type upcoming-steps-status flex-items-center cursor-pointer u-mr--20" [ngClass]="{'selected-status': showOnlyWorkflowsWithUpcomingStepsForSelectedEmployees}" (click)="showOnlyWorkflowsWithUpcomingStepsForSelectedEmployees = !showOnlyWorkflowsWithUpcomingStepsForSelectedEmployees; getWorkflowList()">
+                <span class="workflow-list--filter-type upcoming-steps-status flex-items-center cursor-pointer u-mr--20" [ngClass]="{'selected-status': showOnlyWorkflowsWithUpcomingStepsForSelectedEmployees}" (click)="showOnlyWorkflowsWithUpcomingStepsForSelectedEmployees = !showOnlyWorkflowsWithUpcomingStepsForSelectedEmployees; getWorkflowList(true)">
                     <span class="workflow-list--filter-type__name">
                         Upcoming steps
                     </span>
@@ -292,7 +292,7 @@
                                     </ng-container>
                                     <ng-container *ngSwitchCase="workflowProcess.ChangeClientPeriod">
                                         <span class="flex-row flex-items-center">
-                                            <mat-icon svgIcon="workflowStartOrExtend"></mat-icon>
+                                            <mat-icon svgIcon="workflowEdit"></mat-icon>
                                             <span class="sidenav-expansion--header__name">
                                                 Change workflow
                                             </span>
@@ -303,6 +303,22 @@
                                             <mat-icon svgIcon="workflowAdd"></mat-icon>
                                             <span class="sidenav-expansion--header__name">
                                                 Add consultant
+                                            </span>
+                                        </span>
+                                    </ng-container>
+                                    <ng-container *ngSwitchCase="workflowProcess.ChangeConsultantPeriod">
+                                        <span class="flex-row flex-items-center">
+                                            <mat-icon svgIcon="workflowEdit"></mat-icon>
+                                            <span class="sidenav-expansion--header__name">
+                                                Change consultant
+                                            </span>
+                                        </span>
+                                    </ng-container>
+                                    <ng-container *ngSwitchCase="workflowProcess.ExtendConsultantPeriod">
+                                        <span class="flex-row flex-items-center">
+                                            <mat-icon svgIcon="workflowStartOrExtend"></mat-icon>
+                                            <span class="sidenav-expansion--header__name">
+                                                Extend consultant
                                             </span>
                                         </span>
                                     </ng-container>

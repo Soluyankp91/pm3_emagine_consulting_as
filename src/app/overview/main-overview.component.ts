@@ -163,7 +163,7 @@ export class MainOverviewComponent extends AppComponentBase implements OnInit {
                 takeUntil(this._unsubscribe),
                 debounceTime(700)
             ).subscribe(() => {
-                this.changeViewType();
+                this.changeViewType(true);
             });
      }
 
@@ -220,19 +220,19 @@ export class MainOverviewComponent extends AppComponentBase implements OnInit {
         }
     }
 
-    changeViewType() {
+    changeViewType(filterChanged?: boolean) {
         switch (this.viewType.value) {
             case GanttViewType.week:
                 let cutOffDateWeek = new Date();
                 cutOffDateWeek.setDate(cutOffDateWeek.getDate() - 7);
                 this.viewOptions.cellWidth = 50;
-                this.getMainOverview(cutOffDateWeek);
+                this.getMainOverview(cutOffDateWeek, filterChanged);
                 break;
             case GanttViewType.month:
                 let cutOffDateMonth = new Date();
                 cutOffDateMonth.setDate(cutOffDateMonth.getDate() - 7);
                 this.viewOptions.cellWidth = 75;
-                this.getMainOverview(cutOffDateMonth);
+                this.getMainOverview(cutOffDateMonth, filterChanged);
                 break;
         }
     }
@@ -293,7 +293,7 @@ export class MainOverviewComponent extends AppComponentBase implements OnInit {
         }
     }
 
-    getMainOverview(date?: any) {
+    getMainOverview(date?: any, filterChanged?: boolean) {
         this.isDataLoading = true;
         let searchFilter = this.workflowFilter.value ? this.workflowFilter.value : '';
         let ownerIds = this.selectedAccountManagers.map(x => +x.id);
@@ -314,6 +314,9 @@ export class MainOverviewComponent extends AppComponentBase implements OnInit {
             case 1: // 'Client periods':
                 if (this.workflowChartSubscription) {
                     this.workflowChartSubscription.unsubscribe();
+                }
+                if (filterChanged) {
+                    this.workflowsPageNumber = 1;
                 }
                 this.workflowChartSubscription = this._mainOverviewService.workflows(
                     mainOverviewStatus?.id,
@@ -377,6 +380,10 @@ export class MainOverviewComponent extends AppComponentBase implements OnInit {
             case 2: //'Consultant periods':
                 if (this.consultantChartSubscription) {
                     this.consultantChartSubscription.unsubscribe();
+                }
+
+                if (filterChanged) {
+                    this.consultantsPageNumber = 1;
                 }
                 this.consultantChartSubscription = this._mainOverviewService.consultants(
                     mainOverviewStatus?.id,
@@ -454,7 +461,7 @@ export class MainOverviewComponent extends AppComponentBase implements OnInit {
             const i = list.findIndex((value: any) => value.name === item.name);
             list.splice(i, 1);
         }
-        this.changeViewType();
+        this.changeViewType(true);
     }
 
     getTenants() {
@@ -520,7 +527,7 @@ export class MainOverviewComponent extends AppComponentBase implements OnInit {
             }
         })
         status.selected = !status.selected;
-        this.changeViewType();
+        this.changeViewType(true);
     }
 
     statusesTrackBy(index: number, item: SelectableStatusesDto) {

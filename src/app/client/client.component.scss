@@ -77,6 +77,9 @@
             color: $green-color;
         }
         &.deleted-flag {
+            color: #FF7A78;
+        }
+        &.wrong-deleted-flag {
             color: #F80830;
         }
         &.green-dot {
@@ -94,6 +97,9 @@
             color: $medium-grey-color;
         }
         &--deleted {
+            color: #FF7A78;
+        }
+        &--wrong-deleted {
             color: #F80830;
         }
     }

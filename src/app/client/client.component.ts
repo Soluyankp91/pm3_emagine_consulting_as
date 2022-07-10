@@ -105,7 +105,7 @@ export class ClientComponent extends AppComponentBase implements OnInit, OnDestr
             takeUntil(this._unsubscribe),
             debounceTime(700)
         ).subscribe(() => {
-            this.getClientsGrid();
+            this.getClientsGrid(true);
         });
 
 
@@ -204,7 +204,7 @@ export class ClientComponent extends AppComponentBase implements OnInit, OnDestr
             const i = list.findIndex((value: any) => value.name === item.name);
             list.splice(i, 1);
         }
-        this.getClientsGrid();
+        this.getClientsGrid(true);
     }
 
     toggleStatusSelection(event: Event, status: SelectableIdNameDto) {
@@ -251,7 +251,7 @@ export class ClientComponent extends AppComponentBase implements OnInit, OnDestr
             });
     }
 
-    getClientsGrid() {
+    getClientsGrid(filterChanged?: boolean) {
         let searchFilter = this.clientFilter.value ? this.clientFilter.value : '';
         this.isDataLoading = true;
         let ownerIds = this.selectedAccountManagers?.map(x => +x.id);
@@ -264,6 +264,9 @@ export class ClientComponent extends AppComponentBase implements OnInit, OnDestr
         }
         if (this.clientListSubscription) {
             this.clientListSubscription.unsubscribe();
+        }
+        if (filterChanged) {
+            this.pageNumber = 1;
         }
         this.clientListSubscription = this._clientService.list(searchFilter, selectedCountryIds, ownerIds, isActiveFlag, !this.includeDeleted, this.onlyWrongfullyDeletedInHubspot, this.pageNumber, this.deafultPageSize, this.sorting)
             .pipe(finalize(() => {

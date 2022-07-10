@@ -1062,29 +1062,42 @@
                             <ng-container *ngIf="activeSideSection.typeId === workflowSideSections.ExtendClientPeriod || activeSideSection.typeId === workflowSideSections.ChangeClientPeriod">
                                 <div fxLayout="row" fxLayoutAlign="start start" fxLayoutGap="120px" class="u-w--100 u-mb--20">
                                     <div fxLayout="column">
-                                        <h3 class="workflow-extension--gray-header">Project Type (Legacy)</h3>
-                                        <span class="workflow-extension--blue-text">
+                                        <h3 class="workflow-step-readonly--gray-header">Project Type (Legacy)</h3>
+                                        <span class="workflow-step-readonly--blue-text-bold">
                                             {{salesMainDataForm?.projectType?.value?.name}}
                                         </span>
                                     </div>
                                     <div fxLayout="column">
-                                        <h3 class="workflow-extension--gray-header">Sales Type</h3>
-                                        <span class="workflow-extension--blue-text">
+                                        <h3 class="workflow-step-readonly--gray-header">Sales Type</h3>
+                                        <span class="workflow-step-readonly--blue-text-bold">
                                             {{salesMainDataForm?.salesType?.value?.name}}
                                         </span>
                                     </div>
                                     <div fxLayout="column">
-                                        <h3 class="workflow-extension--gray-header">Delivery Type</h3>
-                                        <span class="workflow-extension--blue-text">
+                                        <h3 class="workflow-step-readonly--gray-header">Delivery Type</h3>
+                                        <span class="workflow-step-readonly--blue-text-bold">
                                             {{salesMainDataForm?.deliveryType?.value?.name}}
                                         </span>
                                     </div>
                                 </div>
-
+                                <div fxLayout="row" fxLayoutAlign="start start" class="u-w--100 u-mb--10">
+                                    <mat-form-field appearance="outline" class="u-w--100  filter-select u-mr--16" fxFlex="33%">
+                                        <mat-label>Margin</mat-label>
+                                        <mat-select formControlName="margin" [disableOptionCentering]="true" [compareWith]="compareWithFn" required>
+                                            <mat-option class="mat-select-clear-option">
+                                                Clear
+                                            </mat-option>
+                                            <mat-option *ngFor="let item of margins" [value]="item">
+                                                {{ item.name }}
+                                            </mat-option>
+                                        </mat-select>
+                                        <mat-error>{{getValidationMessage(salesMainDataForm.margin)}}</mat-error>
+                                    </mat-form-field>
+                                </div>
                                 <div fxLayout="column" class="u-w--100 u-mb--20">
-                                    <h3 class="workflow-extension--gray-header">Project Category</h3>
-                                    <span class="workflow-extension--blue-text">
-                                        {{salesMainDataForm?.projectCategory?.value?.name}}
+                                    <h3 class="workflow-step-readonly--gray-header">Project Category</h3>
+                                    <span class="workflow-step-readonly--blue-text-bold">
+                                        {{salesMainDataForm?.projectCategory?.value?.name ?? '-'}}
                                     </span>
                                 </div>
                             </ng-container>
@@ -1453,8 +1466,8 @@
                             <ng-container *ngIf="activeSideSection.typeId === workflowSideSections.ExtendClientPeriod || activeSideSection.typeId === workflowSideSections.ChangeClientPeriod">
                                 <div fxLayout="column" fxLayoutAlign="start start" fxLayoutGap="20px" class="u-w--100 u-mb--20" fxFlex="80%">
                                     <div fxLayout="column">
-                                        <h3 class="workflow-extension--gray-header">Client relation</h3>
-                                        <span class="workflow-extension--blue-text">
+                                        <h3 class="workflow-step-readonly--gray-header">Client relation</h3>
+                                        <span class="workflow-step-readonly--blue-text-bold">
                                             {{salesClientDataForm?.differentEndClient?.value ? 'Different end-client' : 'Direct Client'}}
                                         </span>
                                     </div>
