@@ -38,7 +38,7 @@
               "./node_modules/@angular/material/prebuilt-themes/indigo-pink.css",
               "src/app/shared/core.scss",
               "src/styles.scss",
-              "./node_modules/flag-icon-css/css/flag-icons.min.css",
+              "./node_modules/flag-icons/sass/flag-icons.scss",
               "./node_modules/@worktile/gantt/main.bundle.scss"
 
             ],
@@ -133,7 +133,6 @@
               "./node_modules/@angular/material/prebuilt-themes/indigo-pink.css",
               "src/app/shared/core.scss",
               "src/styles.scss",
-              "./node_modules/flag-icon-css/css/flag-icons.min.css",
               "./node_modules/@worktile/gantt/main.bundle.scss"
             ],
             "scripts": []

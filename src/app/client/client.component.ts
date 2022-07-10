@@ -2,8 +2,8 @@ import { Component, Injector, OnDestroy, OnInit, ViewChild } from '@angular/core
 import { FormControl } from '@angular/forms';
 import { MatTableDataSource } from '@angular/material/table';
 import { Router } from '@angular/router';
-import { Observable, Subject, Subscription } from 'rxjs';
-import { takeUntil, debounceTime, switchMap, finalize, map } from 'rxjs/operators';
+import { Observable, of, Subject, Subscription } from 'rxjs';
+import { takeUntil, debounceTime, switchMap, finalize, map, startWith } from 'rxjs/operators';
 import { AppConsts } from 'src/shared/AppConsts';
 import { ClientListItemDto, ClientsServiceProxy, EmployeeDto, EmployeeServiceProxy, EnumServiceProxy, LookupServiceProxy } from 'src/shared/service-proxies/service-proxies';
 import { SelectableCountry, SelectableEmployeeDto, SelectableIdNameDto, StatusList } from './client.model';
@@ -13,7 +13,7 @@ import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { AuthenticationResult } from '@azure/msal-browser';
 import { MsalService } from '@azure/msal-angular';
 import { MatMenuTrigger } from '@angular/material/menu';
-import { MatAutocompleteTrigger } from '@angular/material/autocomplete';
+import { MatAutocomplete, MatAutocompleteTrigger } from '@angular/material/autocomplete';
 
 const ClientGridOptionsKey = 'ClientGridFILTERS.1.0.0.';
 @Component({
@@ -26,6 +26,7 @@ export class ClientComponent extends AppComponentBase implements OnInit, OnDestr
     @ViewChild('rightMenuTrigger', {static: true}) matMenuTrigger: MatMenuTrigger;
     @ViewChild('managersTrigger', { read: MatAutocompleteTrigger }) managersTrigger: MatAutocompleteTrigger;
     @ViewChild('countriesTrigger', { read: MatAutocompleteTrigger }) countriesTrigger: MatAutocompleteTrigger;
+    @ViewChild('countryAutocomplete') countryAutocomplete: MatAutocomplete;
 
     isManagersLoading: boolean;
     isCountriesLoading: boolean;
@@ -73,7 +74,7 @@ export class ClientComponent extends AppComponentBase implements OnInit, OnDestr
     selectedAccountManagers: SelectableEmployeeDto[] = [];
     filteredAccountManagers: SelectableEmployeeDto[] = [];
 
-    countryFilter = new FormControl('');
+    countryFilter = new FormControl(null);
     selectedCountries: SelectableCountry[] = [];
     filteredCountries: Observable<SelectableCountry[] | undefined>;
 
@@ -179,9 +180,20 @@ export class ClientComponent extends AppComponentBase implements OnInit, OnDestr
 
     private _filterCountries(value: string): SelectableCountry[] {
         const filterValue = value.toLowerCase();
-
-        const result = this.countryList.filter(option => option.name.toLowerCase().includes(filterValue));
-        return result.length ? result : this.countryList;
+        const noResults = new SelectableCountry({
+            id: 'no-data',
+            name: 'No countries found',
+            code: '',
+            flag: '',
+            selected: false
+        });
+        const result = this.countryList.filter(option => option.name.toLowerCase().includes(filterValue)).filter(x => !this.selectedCountries.map(y => y.id).includes(x.id));
+        this.countriesTrigger.updatePosition();
+        if (value === '') {
+            return this.countryList.filter(x => !this.selectedCountries.map(y => y.id).includes(x.id));
+        } else {
+            return result.length ? result : [noResults];
+        }
     }
 
     ngOnDestroy(): void {
@@ -236,6 +248,7 @@ export class ClientComponent extends AppComponentBase implements OnInit, OnDestr
                     return new SelectableCountry({
                         id: x.id!,
                         name: x.name!,
+                        code: x.code!,
                         selected: false,
                         flag: x.name!
                     });
@@ -245,6 +258,7 @@ export class ClientComponent extends AppComponentBase implements OnInit, OnDestr
                         id: 0,
                         name: 'Unknown country',
                         selected: false,
+                        code: '',
                         flag: ''
                     })
                 );
@@ -401,11 +415,14 @@ export class ClientComponent extends AppComponentBase implements OnInit, OnDestr
 
     openCountriesMenu(event: any) {
         event.stopPropagation();
-        this.countriesTrigger.openPanel();
+        // this.countriesTrigger.openPanel();
     }
-
+    
     onCountriesMenuOpened() {
-        this.countryFilter.setValue('');
-        this.countryFilter.markAsTouched();
+        // workaround as panel position is wrongly calculated
+        setTimeout(() => {
+            this.countryFilter.setValue('');
+            this.countryFilter.markAsTouched();
+        }, 0);
     }
 }

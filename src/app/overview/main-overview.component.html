@@ -15,33 +15,33 @@
                                 <input #accountManagerFilterInput #trigger type="text" matInput [matAutocomplete]="managerAutocomplete" [formControl]="accountManagerFilter" (click)="$event.stopPropagation();" placeholder="Filter by account manager/s">
                             </mat-form-field>
                             <mat-autocomplete #managerAutocomplete="matAutocomplete">
+                                <mat-option *ngFor="let manager of selectedAccountManagers"
+                                    class="u-pg--5"
+                                    [value]="manager">
+                                    <div class="u-w--100"
+                                        (click)="optionClicked($event, manager, selectedAccountManagers)">
+                                        <mat-checkbox [checked]="manager.selected"
+                                            *ngIf="manager.id !== 'no-data'"
+                                            color="primary"
+                                            (change)="toggleSelection(manager,selectedAccountManagers)"
+                                            (click)="$event.stopPropagation()">
+                                            <div fxLayout="row" fxLayoutAlign="start center" class="u-w--100">
+                                                <img class="border-rounded-50 image-settings--dropdown u-mr--10" [src]="employeeProfileUrl(manager.externalId!)">
+                                                <span>{{ manager.name }}</span>
+                                            </div>
+                                        </mat-checkbox>
+                                        <span *ngIf="manager.id === 'no-data'"
+                                            (click)="$event.stopPropagation()">
+                                            {{ manager.name }}
+                                        </span>
+                                    </div>
+                                </mat-option>
                                 <mat-option *ngIf="isLoading" class="is-loading">
                                     <div class="is-loading-container">
                                         <mat-spinner diameter="25"></mat-spinner>
                                     </div>
                                 </mat-option>
                                 <ng-container *ngIf="!isLoading">
-                                    <mat-option *ngFor="let manager of selectedAccountManagers"
-                                        class="u-pg--5"
-                                        [value]="manager">
-                                        <div class="u-w--100"
-                                            (click)="optionClicked($event, manager, selectedAccountManagers)">
-                                            <mat-checkbox [checked]="manager.selected"
-                                                *ngIf="manager.id !== 'no-data'"
-                                                color="primary"
-                                                (change)="toggleSelection(manager,selectedAccountManagers)"
-                                                (click)="$event.stopPropagation()">
-                                                <div fxLayout="row" fxLayoutAlign="start center" class="u-w--100">
-                                                    <img class="border-rounded-50 image-settings--dropdown u-mr--10" [src]="employeeProfileUrl(manager.externalId!)">
-                                                    <span>{{ manager.name }}</span>
-                                                </div>
-                                            </mat-checkbox>
-                                            <span *ngIf="manager.id === 'no-data'"
-                                                (click)="$event.stopPropagation()">
-                                                {{ manager.name }}
-                                            </span>
-                                        </div>
-                                    </mat-option>
                                     <mat-option *ngFor="let manager of filteredAccountManagers"
                                         class="u-pg--5"
                                         [ngClass]="{ 'no-data': manager.id === 'no-data', 'hidden-option': selectedAccountManagers.includes(manager)}"
