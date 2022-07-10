@@ -86,15 +86,16 @@
             background-clip: padding-box
         }
 
-    .mat-option {
-        padding: 8px 14px !important;
-        .mat-option-text {
-            font-weight: 700;
-            font-size: 14px;
-            line-height: 140%;
-            color: rgba(56, 72, 83, 0.8);
-            @media screen and (max-width: 1440px) {
-                font-size: 12px;
+        .mat-option {
+            padding: 8px 14px !important;
+            .mat-option-text {
+                font-weight: 700;
+                font-size: 14px;
+                line-height: 140%;
+                color: rgba(56, 72, 83, 0.8);
+                @media screen and (max-width: 1440px) {
+                    font-size: 12px;
+                }
             }
         }
     }
