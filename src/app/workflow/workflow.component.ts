@@ -4,6 +4,7 @@ import { FormControl } from '@angular/forms';
 import { MatAutocompleteTrigger } from '@angular/material/autocomplete';
 import { MatDialog } from '@angular/material/dialog';
 import { MatMenuTrigger } from '@angular/material/menu';
+import { MatPaginator } from '@angular/material/paginator';
 import { MatTableDataSource } from '@angular/material/table';
 import { ActivatedRoute, ActivatedRouteSnapshot, Resolve, Router } from '@angular/router';
 import { MsalService } from '@azure/msal-angular';
@@ -28,6 +29,7 @@ const WorkflowGridOptionsKey = 'WorkflowGridFILTERS.1.0.0.';
 
 export class WorkflowComponent extends AppComponentBase implements OnInit, OnDestroy {
     @ViewChild('trigger', { read: MatAutocompleteTrigger }) trigger: MatAutocompleteTrigger;
+    @ViewChild('clientsPaginator') paginator: MatPaginator;
     isLoading: boolean;
 
     workflowFilter = new FormControl(null);
@@ -135,7 +137,7 @@ export class WorkflowComponent extends AppComponentBase implements OnInit, OnDes
             takeUntil(this._unsubscribe),
             debounceTime(700)
         ).subscribe(() => {
-            this.getWorkflowList();
+            this.getWorkflowList(true);
         });
 
         this.accountManagerFilter.valueChanges.pipe(
@@ -398,7 +400,7 @@ export class WorkflowComponent extends AppComponentBase implements OnInit, OnDes
             });
     }
 
-    getWorkflowList() {
+    getWorkflowList(filterChanged?: boolean) {
         let searchFilter = this.workflowFilter.value ? this.workflowFilter.value : '';
         let invoicingEntity = this.invoicingEntityControl.value ? this.invoicingEntityControl.value : undefined;
         let paymentEntity = this.paymentEntityControl.value ? this.paymentEntityControl.value : undefined;
@@ -411,6 +413,10 @@ export class WorkflowComponent extends AppComponentBase implements OnInit, OnDes
             this.workflowListSubscription.unsubscribe();
         }
         this.isDataLoading = true;
+
+        if (filterChanged) {
+            this.pageNumber = 1;
+        }
 
         this.workflowListSubscription = this._apiService.workflow(
             invoicingEntity,
@@ -500,7 +506,8 @@ export class WorkflowComponent extends AppComponentBase implements OnInit, OnDes
             const i = list.findIndex((value: any) => value.name === item.name);
             list.splice(i, 1);
         }
-        this.getWorkflowList();
+        this.pageNumber = 1;
+        this.getWorkflowList(true);
     }
 
     getCurrentUser() {
