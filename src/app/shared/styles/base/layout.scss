@@ -263,7 +263,7 @@ html {
     &-responsive {
         width: 48px;
         height: 48px;
-        @media screen and (max-width: 1366px) {
+        @media screen and (max-width: 1440px) {
             width: 35px;
             height: 35px;
         }
@@ -287,7 +287,7 @@ html {
     color: $dark-grey-color;
     font-size: 48px;
     line-height: 120%;
-    @media screen and (max-width: 1366px) {
+    @media screen and (max-width: 1440px) {
         font-size: 36px;
     }
 }

@@ -4,19 +4,19 @@
     .mat-slide-toggle {
         &-thumb {
             background-color: #CCCBC9;
-            @media screen and (max-width: 1366px) {
+            @media screen and (max-width: 1440px) {
                 height: 16px;
                 width: 16px;
             }
             &-container {
-                @media screen and (max-width: 1366px) {
+                @media screen and (max-width: 1440px) {
                     height: 16px;
                     width: 16px;
                     left: -4px;
                     top: -2px;
                 }
                 .mat-ripple.mat-slide-toggle-ripple.mat-focus-indicator {
-                    @media screen and (max-width: 1366px) {
+                    @media screen and (max-width: 1440px) {
                         top: calc(50% - 16px);
                         left: calc(50% - 16px);
                         height: 32px;
@@ -28,7 +28,7 @@
         &-bar {
             background-color: $white-color;
             border: 1px solid #E5E5E5;
-            @media screen and (max-width: 1366px) {
+            @media screen and (max-width: 1440px) {
                 height: 12px;
                 width: 26px;
             }
@@ -37,11 +37,11 @@
             color: $medium-grey-color;
             font-weight: 600;
             font-size: 14px;
-            @media screen and (max-width: 1366px) {
+            @media screen and (max-width: 1440px) {
                 font-size: 10px;
             }
         }
-        @media screen and (max-width: 1366px) {
+        @media screen and (max-width: 1440px) {
             &-thumb {
                 height: 16px;
                 width: 16px;

@@ -16,7 +16,7 @@
                 font-size: 16px;
                 line-height: 140%;
                 color: rgba(56, 72, 83, 0.87);
-                @media screen and (max-width: 1366px) {
+                @media screen and (max-width: 1440px) {
                     font-size: 12px;
                 }
             }
@@ -39,7 +39,7 @@
                 padding-bottom: 0.3em;
             }
 
-            @media screen and (max-width: 1366px) {
+            @media screen and (max-width: 1440px) {
                 &__name,
                 &__period {
                     font-size: 14px;
@@ -67,7 +67,7 @@
             text-transform: uppercase;
             color: $dark-grey-color;
         }
-        @media screen and (max-width: 1366px) {
+        @media screen and (max-width: 1440px) {
             font-size: 14px;
             &-main {
                 font-size: 18px;
@@ -109,7 +109,7 @@
                         font-weight: 700;
                     }
                 }
-                @media screen and (max-width: 1366px) {
+                @media screen and (max-width: 1440px) {
                     &__header {
                         font-size: 12px;
                     }
@@ -134,7 +134,7 @@
             font-size: 14px;
             line-height: 140%;
             color: #B6B4B2;
-            @media screen and (max-width: 1366px) {
+            @media screen and (max-width: 1440px) {
                 font-size: 12px;
             }
         }
@@ -164,7 +164,7 @@
                     width: 32px;
                     height: 32px;
                 }
-                @media screen and (max-width: 1366px) {
+                @media screen and (max-width: 1440px) {
                     &-name {
                         font-size: 14px;
                     }
@@ -233,7 +233,7 @@
             }
         }
 
-        @media screen and (max-width: 1366px) {
+        @media screen and (max-width: 1440px) {
             &--header {
                 font-size: 14px;
                 &-main {
