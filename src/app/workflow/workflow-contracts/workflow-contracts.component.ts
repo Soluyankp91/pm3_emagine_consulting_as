@@ -162,23 +162,23 @@ export class WorkflowContractsComponent extends AppComponentBase implements OnIn
             });
     }
 
-    getContractStepData() {
+    getContractStepData(isFromSyncToLegacy?: boolean) {
         switch (this.activeSideSection.typeId) {
             case this.workflowSideSections.StartClientPeriod:
             case this.workflowSideSections.ChangeClientPeriod:
             case this.workflowSideSections.ExtendClientPeriod:
-                this.getStartChangeOrExtendClientPeriodContracts();
+                this.getStartChangeOrExtendClientPeriodContracts(isFromSyncToLegacy);
                 break;
             case this.workflowSideSections.TerminateWorkflow:
-                this.getWorkflowContractStepTermination();
+                this.getWorkflowContractStepTermination(isFromSyncToLegacy);
                 break;
             case this.workflowSideSections.StartConsultantPeriod:
             case this.workflowSideSections.ChangeConsultantPeriod:
             case this.workflowSideSections.ExtendConsultantPeriod:
-                this.getStartChangeOrExtendConsultantPeriodContracts();
+                this.getStartChangeOrExtendConsultantPeriodContracts(isFromSyncToLegacy);
                 break;
             case this.workflowSideSections.TerminateConsultant:
-                this.getWorkflowContractsStepConsultantTermination();
+                this.getWorkflowContractsStepConsultantTermination(isFromSyncToLegacy);
                 break;
         }
     }
@@ -193,20 +193,10 @@ export class WorkflowContractsComponent extends AppComponentBase implements OnIn
             case this.workflowSideSections.TerminateWorkflow:
                 this.startEditTerminateWorkflow();
                 break;
-
             case this.workflowSideSections.StartConsultantPeriod:
             case this.workflowSideSections.ChangeConsultantPeriod:
             case this.workflowSideSections.ExtendConsultantPeriod:
-                // if (!this.activeSideSection.consultantPeriodId) {
-                //     let interval = setInterval(() => {
-                //         if (this.activeSideSection.consultantPeriodId) {
-                //             clearInterval(interval);
-                            this.startEditConsultantPeriod();
-                //         }
-                //     }, 100);
-                // } else {
-                //     this.startEditConsultantPeriod();
-                // }
+                this.startEditConsultantPeriod();
                 break;
             case this.workflowSideSections.TerminateConsultant:
                 this.startEditTerminateConsultant();
@@ -1019,7 +1009,7 @@ export class WorkflowContractsComponent extends AppComponentBase implements OnIn
     }
 
     //#region Start client period
-    getStartChangeOrExtendClientPeriodContracts() {
+    getStartChangeOrExtendClientPeriodContracts(isFromSyncToLegacy?: boolean) {
         this.resetForms();
         this.showMainSpinner();
         this._clientPeriodService.clientContractsGet(this.periodId!)
@@ -1073,6 +1063,9 @@ export class WorkflowContractsComponent extends AppComponentBase implements OnIn
                         this.addConsultantDataToForm(consultant, index);
                         this.addConsultantLegalContract(consultant);
                     })
+                }
+                if (isFromSyncToLegacy) {
+                    this.processSyncToLegacySystem();
                 }
             });
     }
@@ -1249,30 +1242,28 @@ export class WorkflowContractsComponent extends AppComponentBase implements OnIn
             this._clientPeriodService.clientContractsPut(this.periodId!, input)
                 .pipe(finalize(() => {
                     this.hideMainSpinner();
-                    this.getContractStepData();
                 }))
                 .subscribe(result => {
-                    if (isSyncToLegacy) {
-                        this.syncClientPeriodToLegacySystem();
-                    } else if (this.editEnabledForcefuly) {
+                    if (this.editEnabledForcefuly) {
                         this.toggleEditMode();
                     }
+                    this.getContractStepData(isSyncToLegacy);
                 });
         } else {
             this._clientContractsService.editFinish(this.periodId!, input)
                 .pipe(finalize(() => {
                     this.hideMainSpinner();
-                    this.getContractStepData();
                 }))
                 .subscribe(result => {
                     this._workflowDataService.workflowSideSectionUpdated.emit({isStatusUpdate: true});
+                    this.getContractStepData();
                 });
         }
     }
     //#endregion Start client period
 
     //#region Start consultant period
-    getStartChangeOrExtendConsultantPeriodContracts() {
+    getStartChangeOrExtendConsultantPeriodContracts(isFromSyncToLegacy?: boolean) {
         this.resetForms();
         this.showMainSpinner();
         this._consultantPeriodService.consultantContractsGet(this.activeSideSection.consultantPeriodId!)
@@ -1292,6 +1283,9 @@ export class WorkflowContractsComponent extends AppComponentBase implements OnIn
                 this.addConsultantDataToForm(result?.consultantData!, 0);
                 this.contractsSyncDataForm.manualCheckbox?.setValue(result?.contractLinesDoneManuallyInOldPm, {emitEvent: false})
                 this.contractsSyncDataForm.newLegalContract?.setValue(result?.newLegalContractRequired, {emitEvent: false});
+                if (isFromSyncToLegacy) {
+                    this.processSyncToLegacySystem();
+                }
             });
     }
 
@@ -1394,23 +1388,21 @@ export class WorkflowContractsComponent extends AppComponentBase implements OnIn
             this._consultantPeriodService.consultantContractsPut(this.activeSideSection.consultantPeriodId!, input)
                 .pipe(finalize(() => {
                     this.hideMainSpinner();
-                    this.getContractStepData();
                 }))
                 .subscribe(result => {
-                    if (isSyncToLegacy) {
-                        this.syncConsultantPeriodToLegacySystem();
-                    } else if (this.editEnabledForcefuly) {
+                    if (this.editEnabledForcefuly) {
                         this.toggleEditMode();
                     }
+                    this.getContractStepData(isSyncToLegacy);
                 });
         } else {
             this._consultantContractsService.editFinish(this.activeSideSection.consultantPeriodId!, input)
                 .pipe(finalize(() => {
                     this.hideMainSpinner();
-                    this.getContractStepData();
                 }))
                 .subscribe(result => {
                     this._workflowDataService.workflowSideSectionUpdated.emit({isStatusUpdate: true});
+                    this.getContractStepData();
                 });
         }
     }
@@ -1433,7 +1425,7 @@ export class WorkflowContractsComponent extends AppComponentBase implements OnIn
         return this.contractsTerminationConsultantForm.get('consultantTerminationContractData') as FormArray;
     }
 
-    getWorkflowContractsStepConsultantTermination() {
+    getWorkflowContractsStepConsultantTermination(isFromSyncToLegacy?: boolean) {
         this.resetForms();
         this._workflowServiceProxy.terminationConsultantContractGet(this.workflowId!, this.consultant.id!)
             .pipe(finalize(() => {
@@ -1443,6 +1435,9 @@ export class WorkflowContractsComponent extends AppComponentBase implements OnIn
                 // End of Consultant Contract
                 this.contractLinesDoneManuallyInOldPMControl?.setValue(result?.contractLinesDoneManuallyInOldPM, {emitEvent: false});
                 this.addConsultantDataToTerminationForm(result);
+                if (isFromSyncToLegacy) {
+                    this.processSyncToLegacySystem();
+                }
             });
     }
 
@@ -1458,28 +1453,26 @@ export class WorkflowContractsComponent extends AppComponentBase implements OnIn
             this._workflowServiceProxy.terminationConsultantContractPut(this.workflowId!, input)
                 .pipe(finalize(() => {
                     this.hideMainSpinner();
-                    this.getContractStepData();
                 }))
                 .subscribe(result => {
-                    if (isSyncToLegacy) {
-                        this.syncConsultantTerminationToLegacySystem();
-                    } else if (this.editEnabledForcefuly) {
+                    if (this.editEnabledForcefuly) {
                         this.toggleEditMode();
                     }
+                    this.getContractStepData(isSyncToLegacy);
                 })
         } else {
             this._workflowServiceProxy.terminationConsultantContractComplete(this.workflowId!, input)
             .pipe(finalize(() => {
                 this.hideMainSpinner();
-                this.getContractStepData();
             }))
             .subscribe(result => {
                 this._workflowDataService.workflowSideSectionUpdated.emit({isStatusUpdate: true});
+                this.getContractStepData();
             })
         }
     }
 
-    getWorkflowContractStepTermination() {
+    getWorkflowContractStepTermination(isFromSyncToLegacy?: boolean) {
         this.resetForms();
         this._workflowServiceProxy.terminationContractGet(this.workflowId!)
             .pipe(finalize(() => {
@@ -1491,6 +1484,9 @@ export class WorkflowContractsComponent extends AppComponentBase implements OnIn
                 result.consultantTerminationContractData?.forEach(data => {
                     this.addConsultantDataToTerminationForm(data);
                 })
+                if (isFromSyncToLegacy) {
+                    this.processSyncToLegacySystem();
+                }
             });
     }
 
@@ -1516,21 +1512,18 @@ export class WorkflowContractsComponent extends AppComponentBase implements OnIn
             this._workflowServiceProxy.terminationContractPut(this.workflowId!, input)
                 .pipe(finalize(() => {
                     this.hideMainSpinner();
-                    this.getContractStepData();
                 }))
                 .subscribe(result => {
-                    if (isSyncToLegacy) {
-                        this.syncWorkflowTerminationToLegacySystem();
-                    }
+                    this.getContractStepData(isSyncToLegacy);
                 })
         } else {
             this._workflowServiceProxy.terminationContractComplete(this.workflowId!, input)
             .pipe(finalize(() => {
                 this.hideMainSpinner();
-                this.getContractStepData();
             }))
             .subscribe(result => {
                 this._workflowDataService.workflowSideSectionUpdated.emit({isStatusUpdate: true});
+                this.getContractStepData();
             })
         }
     }
@@ -1546,7 +1539,7 @@ export class WorkflowContractsComponent extends AppComponentBase implements OnIn
         });
     }
 
-    processSyncToLegacySystem() {
+    processSaveBeforeSyncToLegacySystem() {
         let isDraft = true;
         let isSyncToLegacy = true;
         switch (this._workflowDataService.workflowProgress.currentlyActiveSideSection) {
@@ -1565,6 +1558,27 @@ export class WorkflowContractsComponent extends AppComponentBase implements OnIn
             case WorkflowProcessType.ChangeConsultantPeriod:
             case WorkflowProcessType.ExtendConsultantPeriod:
                 this.saveStartChangeOrExtendConsultantPeriodContracts(isDraft, isSyncToLegacy);
+                break;
+        }
+    }
+
+    processSyncToLegacySystem() {
+        switch (this._workflowDataService.workflowProgress.currentlyActiveSideSection) {
+            case WorkflowProcessType.StartClientPeriod:
+            case WorkflowProcessType.ChangeClientPeriod:
+            case WorkflowProcessType.ExtendClientPeriod:
+                this.syncClientPeriodToLegacySystem();
+                break;
+            case WorkflowProcessType.TerminateWorkflow:
+                this.syncWorkflowTerminationToLegacySystem();
+                break;
+            case WorkflowProcessType.TerminateConsultant:
+                this.syncConsultantTerminationToLegacySystem();
+                break;
+            case WorkflowProcessType.StartConsultantPeriod:
+            case WorkflowProcessType.ChangeConsultantPeriod:
+            case WorkflowProcessType.ExtendConsultantPeriod:
+                this.syncConsultantPeriodToLegacySystem();
                 break;
         }
     }
