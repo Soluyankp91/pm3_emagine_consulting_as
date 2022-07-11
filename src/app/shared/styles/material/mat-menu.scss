@@ -1,6 +1,8 @@
 @import "/src/app/shared/styles/config/_colors";
 
 .menu-item {
+    display: flex;
+    align-items: center;
     padding: 0 16px;
     font-weight: 700;
     mat-icon {
@@ -13,10 +15,9 @@
         justify-content: center;
     }
     &--cancel {
-        color: $red-color;
+        color: $dark-red-color;
         mat-icon {
-            background: rgba($color: $red-color, $alpha: 0.2);
-            color: $red-color !important;
+            color: $dark-red-color !important;
         }
     }
     &--edit {
@@ -35,13 +36,66 @@
     }
 
     &--delete {
-        color: $darkred-color !important;
+        color: $dark-red-color !important;
         mat-icon {
-            color: $darkred-color !important;
+            color: $dark-red-color !important;
         }
     }
 }
 
 .autocomplete-menu {
     width: 100%;
+}
+
+.workflow-list--filter-manager-menu + * .cdk-overlay-pane,
+.client-list--filter-manager-menu + * .cdk-overlay-pane,
+.client-list--filter-country-menu + * .cdk-overlay-pane,
+.main-overview--filter-manager-menu + * .cdk-overlay-pane {
+    .mat-menu-panel {
+        min-height: 48px !important;
+        border-radius: unset !important;
+        min-width: 234px !important;
+        .mat-menu-content {
+            padding: 0 !important;
+        }
+    }
+}
+
+.workflow-list--filter-manager-menu + * + * .cdk-overlay-pane,
+.client-list--filter-manager-menu + * + * .cdk-overlay-pane,
+.client-list--filter-country-menu + * + * .cdk-overlay-pane,
+.main-overview--filter-manager-menu + * + * .cdk-overlay-pane  {
+    .mat-autocomplete-panel {
+        // border: 1px solid #E7E3E8;
+        min-width: 234px !important;
+
+        &::-webkit-scrollbar {
+            width: 10px;
+        }
+
+        /* Track */
+        &::-webkit-scrollbar-track {
+            background: #fff;
+        }
+
+        /* Handle */
+        &::-webkit-scrollbar-thumb {
+            background: #888;
+            border-right: 5px #fff solid;
+            background-clip: padding-box
+        }
+
+        .mat-option {
+            padding: 8px 14px !important;
+            .mat-option-text {
+                font-weight: 700;
+                font-size: 14px;
+                line-height: 140%;
+                color: rgba(56, 72, 83, 0.8);
+                @media screen and (max-width: 1440px) {
+                    font-size: 12px;
+                }
+            }
+        }
+    }
 }

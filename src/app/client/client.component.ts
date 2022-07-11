@@ -2,8 +2,8 @@ import { Component, Injector, OnDestroy, OnInit, ViewChild } from '@angular/core
 import { FormControl } from '@angular/forms';
 import { MatTableDataSource } from '@angular/material/table';
 import { Router } from '@angular/router';
-import { Observable, Subject, Subscription } from 'rxjs';
-import { takeUntil, debounceTime, switchMap, finalize, map } from 'rxjs/operators';
+import { Observable, of, Subject, Subscription } from 'rxjs';
+import { takeUntil, debounceTime, switchMap, finalize, map, startWith } from 'rxjs/operators';
 import { AppConsts } from 'src/shared/AppConsts';
 import { ClientListItemDto, ClientsServiceProxy, EmployeeDto, EmployeeServiceProxy, EnumServiceProxy, LookupServiceProxy } from 'src/shared/service-proxies/service-proxies';
 import { SelectableCountry, SelectableEmployeeDto, SelectableIdNameDto, StatusList } from './client.model';
@@ -13,6 +13,7 @@ import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { AuthenticationResult } from '@azure/msal-browser';
 import { MsalService } from '@azure/msal-angular';
 import { MatMenuTrigger } from '@angular/material/menu';
+import { MatAutocomplete, MatAutocompleteTrigger } from '@angular/material/autocomplete';
 
 const ClientGridOptionsKey = 'ClientGridFILTERS.1.0.0.';
 @Component({
@@ -23,6 +24,13 @@ const ClientGridOptionsKey = 'ClientGridFILTERS.1.0.0.';
 
 export class ClientComponent extends AppComponentBase implements OnInit, OnDestroy {
     @ViewChild('rightMenuTrigger', {static: true}) matMenuTrigger: MatMenuTrigger;
+    @ViewChild('managersTrigger', { read: MatAutocompleteTrigger }) managersTrigger: MatAutocompleteTrigger;
+    @ViewChild('countriesTrigger', { read: MatAutocompleteTrigger }) countriesTrigger: MatAutocompleteTrigger;
+    @ViewChild('countryAutocomplete') countryAutocomplete: MatAutocomplete;
+
+    isManagersLoading: boolean;
+    isCountriesLoading: boolean;
+
     menuTopLeftPosition =  {x: 0, y: 0}
 
 
@@ -66,7 +74,7 @@ export class ClientComponent extends AppComponentBase implements OnInit, OnDestr
     selectedAccountManagers: SelectableEmployeeDto[] = [];
     filteredAccountManagers: SelectableEmployeeDto[] = [];
 
-    countryFilter = new FormControl('');
+    countryFilter = new FormControl(null);
     selectedCountries: SelectableCountry[] = [];
     filteredCountries: Observable<SelectableCountry[] | undefined>;
 
@@ -98,7 +106,7 @@ export class ClientComponent extends AppComponentBase implements OnInit, OnDestr
             takeUntil(this._unsubscribe),
             debounceTime(700)
         ).subscribe(() => {
-            this.getClientsGrid();
+            this.getClientsGrid(true);
         });
 
 
@@ -109,13 +117,16 @@ export class ClientComponent extends AppComponentBase implements OnInit, OnDestr
                 let toSend = {
                     name: value,
                     maxRecordsCount: 1000,
+                    showAll: true,
+                    excludeIds: this.selectedAccountManagers.map(x => +x.id)
                 };
                 if (value?.id) {
                     toSend.name = value.id
                         ? value.name
                         : value;
                 }
-                return this._lookupService.employees(value);
+                this.isManagersLoading = true;
+                return this._lookupService.employees(toSend.name, toSend.showAll, toSend.excludeIds);
             }),
         ).subscribe((list: EmployeeDto[]) => {
             if (list.length) {
@@ -130,6 +141,7 @@ export class ClientComponent extends AppComponentBase implements OnInit, OnDestr
             } else {
                 this.filteredAccountManagers = [{ name: 'No managers found', externalId: '', id: 'no-data', selected: false }];
             }
+            this.isManagersLoading = false;
         });
     }
 
@@ -168,9 +180,20 @@ export class ClientComponent extends AppComponentBase implements OnInit, OnDestr
 
     private _filterCountries(value: string): SelectableCountry[] {
         const filterValue = value.toLowerCase();
-
-        const result = this.countryList.filter(option => option.name.toLowerCase().includes(filterValue));
-        return result.length ? result : this.countryList;
+        const noResults = new SelectableCountry({
+            id: 'no-data',
+            name: 'No countries found',
+            code: '',
+            flag: '',
+            selected: false
+        });
+        const result = this.countryList.filter(option => option.name.toLowerCase().includes(filterValue)).filter(x => !this.selectedCountries.map(y => y.id).includes(x.id));
+        this.countriesTrigger.updatePosition();
+        if (value === '') {
+            return this.countryList.filter(x => !this.selectedCountries.map(y => y.id).includes(x.id));
+        } else {
+            return result.length ? result : [noResults];
+        }
     }
 
     ngOnDestroy(): void {
@@ -193,7 +216,7 @@ export class ClientComponent extends AppComponentBase implements OnInit, OnDestr
             const i = list.findIndex((value: any) => value.name === item.name);
             list.splice(i, 1);
         }
-        this.getClientsGrid();
+        this.getClientsGrid(true);
     }
 
     toggleStatusSelection(event: Event, status: SelectableIdNameDto) {
@@ -214,15 +237,18 @@ export class ClientComponent extends AppComponentBase implements OnInit, OnDestr
     }
 
     getCountries() {
+        this.isCountriesLoading = true;
+
         this._enumService.countries()
             .pipe(finalize(() => {
-
+                this.isCountriesLoading = false;
             }))
             .subscribe(result => {
                 this.countryList = result.map(x => {
                     return new SelectableCountry({
                         id: x.id!,
                         name: x.name!,
+                        code: x.code!,
                         selected: false,
                         flag: x.name!
                     });
@@ -232,13 +258,14 @@ export class ClientComponent extends AppComponentBase implements OnInit, OnDestr
                         id: 0,
                         name: 'Unknown country',
                         selected: false,
+                        code: '',
                         flag: ''
                     })
                 );
             });
     }
 
-    getClientsGrid() {
+    getClientsGrid(filterChanged?: boolean) {
         let searchFilter = this.clientFilter.value ? this.clientFilter.value : '';
         this.isDataLoading = true;
         let ownerIds = this.selectedAccountManagers?.map(x => +x.id);
@@ -251,6 +278,9 @@ export class ClientComponent extends AppComponentBase implements OnInit, OnDestr
         }
         if (this.clientListSubscription) {
             this.clientListSubscription.unsubscribe();
+        }
+        if (filterChanged) {
+            this.pageNumber = 1;
         }
         this.clientListSubscription = this._clientService.list(searchFilter, selectedCountryIds, ownerIds, isActiveFlag, !this.includeDeleted, this.onlyWrongfullyDeletedInHubspot, this.pageNumber, this.deafultPageSize, this.sorting)
             .pipe(finalize(() => {
@@ -372,4 +402,27 @@ export class ClientComponent extends AppComponentBase implements OnInit, OnDestr
         this.getCurrentUser();
     }
 
+    openManagersMenu(event: any) {
+        event.stopPropagation();
+        this.managersTrigger.openPanel();
+    }
+
+    onManagersMenuOpened() {
+        this.accountManagerFilter.setValue('');
+        this.accountManagerFilter.markAsTouched();
+
+    }
+
+    openCountriesMenu(event: any) {
+        event.stopPropagation();
+        // this.countriesTrigger.openPanel();
+    }
+    
+    onCountriesMenuOpened() {
+        // workaround as panel position is wrongly calculated
+        setTimeout(() => {
+            this.countryFilter.setValue('');
+            this.countryFilter.markAsTouched();
+        }, 0);
+    }
 }

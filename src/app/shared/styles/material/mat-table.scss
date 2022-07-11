@@ -53,6 +53,21 @@ mat-table.rounded-table {
 .pagination-container {
     .mat-paginator {
         background-color: transparent;
+        @media screen and (max-width: 1366px) {
+            font-size: 10px !important;
+            mat-form-field {
+                .mat-select-value-text {
+                    font-size: 10px !important;
+                }
+            }
+            .mat-paginator-range-actions {
+                .mat-icon-button {
+                    height: 30px;
+                    width: 30px;
+                    line-height: 30px;
+                }
+            }
+        }
     }
 }
 
@@ -111,16 +126,15 @@ mat-table.white-table {
         padding: 0 16px;
     }
     mat-row {
-        height: auto;
-        min-height: 50px;
+        height: 50px;
         border-radius: 0;
         border: 1px solid $sand-color;
         margin-bottom: 0;
         padding: 0 16px;
         background-color: $white-color;
         &:hover {
-            transition: background-color .7s ease;
-            background-color: rgba(102, 140, 164, .17);
+            transition: box-shadow .7s ease;
+            box-shadow: 0px 0px 20px rgba(26, 35, 126, 0.15);
         }
         mat-cell {
             color: $dark-grey-color !important;
@@ -134,6 +148,31 @@ mat-table.white-table {
 
             &:last-of-type {
                 padding-right: 16px;
+            }
+        }
+    }
+    &.workflow-list--table {
+        mat-row {
+            min-height: 50px;
+            height: auto;
+        }
+    }
+
+    @media screen and (max-width: 1440px) {
+        line-height: 19px;
+        font-size: 14px;
+        mat-header-row {
+            font-size: 10px;
+            line-height: 14px;
+            mat-header-cell {
+                font-size: 10px;
+                line-height: 14px;
+            }
+        }
+        mat-row {
+            mat-cell {
+                font-size: 12px;
+                line-height: 140%;
             }
         }
     }
@@ -425,6 +464,10 @@ mat-table.white-table {
                             &:last-of-type {
                                 padding-right: 32px;
                             }
+                            @media screen and (max-width: 1366px) {
+                                font-size: 10px;
+                                line-height: 14px;
+                            }
                         }
                     }
                     .gantt-flat-side-body {
@@ -446,12 +489,17 @@ mat-table.white-table {
                                 padding: 0 !important;
                                 color: $dark-grey-color !important;
                                 font-size: 16px;
+                                font-weight: 600;
                                 &:first-of-type {
                                     padding-left: 16px;
                                 }
 
                                 &:last-of-type {
                                     padding-right: 16px;
+                                }
+
+                                @media screen and (max-width: 1366px) {
+                                    font-size: 12px;
                                 }
                                 // .gantt-table-column-content {
                                 // }
@@ -483,6 +531,9 @@ mat-table.white-table {
                         font-weight: 600;
                         font-size: 12px;
                         transform: translateY(-10px);
+                        @media screen and (max-width: 1366px) {
+                            font-size: 10px;
+                        }
                     }
 
                     .primary-line {

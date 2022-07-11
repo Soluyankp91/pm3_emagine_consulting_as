@@ -1,8 +1,6 @@
 <div class="notification-settings">
-    <div fxLayout="row" fxLayoutAlign="start center" class="notification-settings--top u-w--100">
-        <h2 class="notification-settings--top__header">
-            Notifications
-        </h2>
+    <div fxLayout="row" fxLayoutAlign="start start" class="notification-settings--top u-w--100">
+        <h2 class="page-main-header">Notifications</h2>
     </div>
     <div fxLayout="row" fxLayoutAlign="start start" class="notification-settings--content u-w--100">
         <mat-tab-group class="notification-settings--tabs u-w--100">
@@ -29,7 +27,7 @@
                             <mat-checkbox *ngFor="let notification of tenant.notifications; trackBy: notificationTrackBy;" [checked]="notification.enabled!" (change)="changeEmployeeNotification($event.checked, notification, tenant.tenantId)" color="accent" class="black-checkbox u-mr--10">
                                 {{notification.notificationName}}
                             </mat-checkbox>
-                            
+
                         </div>
                     </mat-expansion-panel>
                 </mat-accordion>

@@ -13,6 +13,7 @@ import { OverviewFlag, SelectableEmployeeDto, SelectableStatusesDto } from './ma
 import * as moment from 'moment';
 import { Router } from '@angular/router';
 import { AppComponentBase } from 'src/shared/app-component-base';
+import { MatAutocompleteTrigger } from '@angular/material/autocomplete';
 
 const MainOverviewGridOptionsKey = 'MainOverviewGridFILTERS.1.0.1.';
 
@@ -24,7 +25,8 @@ const MainOverviewGridOptionsKey = 'MainOverviewGridFILTERS.1.0.1.';
 export class MainOverviewComponent extends AppComponentBase implements OnInit {
     @ViewChild('ganttWorkflows', {static: false}) ganttWorkflows: NgxGanttComponent;
     @ViewChild('ganttConsultants', {static: false}) ganttConsultants: NgxGanttComponent;
-
+    @ViewChild('trigger', { read: MatAutocompleteTrigger }) trigger: MatAutocompleteTrigger;
+    isLoading: boolean;
     selectedAccountManagers: SelectableEmployeeDto[] = [];
     filteredAccountManagers: SelectableEmployeeDto[] = [];
 
@@ -122,15 +124,18 @@ export class MainOverviewComponent extends AppComponentBase implements OnInit {
             debounceTime(300),
             switchMap((value: any) => {
                 let toSend = {
-                    name: value,
+                    name: value ? value : '',
                     maxRecordsCount: 1000,
+                    showAll: true,
+                    excludeIds: this.selectedAccountManagers.map(x => +x.id)
                 };
                 if (value?.id) {
                     toSend.name = value.id
                         ? value.name
                         : value;
                 }
-                return this._lookupService.employees(value);
+                this.isLoading = true;
+                return this._lookupService.employees(toSend.name, toSend.showAll, toSend.excludeIds);
             }),
         ).subscribe((list: EmployeeDto[]) => {
             if (list.length) {
@@ -145,6 +150,7 @@ export class MainOverviewComponent extends AppComponentBase implements OnInit {
             } else {
                 this.filteredAccountManagers = [{ name: 'No managers found', externalId: '', id: 'no-data', selected: false }];
             }
+            this.isLoading = false;
         });
 
         merge(this.invoicingEntityControl.valueChanges,
@@ -157,7 +163,7 @@ export class MainOverviewComponent extends AppComponentBase implements OnInit {
                 takeUntil(this._unsubscribe),
                 debounceTime(700)
             ).subscribe(() => {
-                this.changeViewType();
+                this.changeViewType(true);
             });
      }
 
@@ -214,19 +220,19 @@ export class MainOverviewComponent extends AppComponentBase implements OnInit {
         }
     }
 
-    changeViewType() {
+    changeViewType(filterChanged?: boolean) {
         switch (this.viewType.value) {
             case GanttViewType.week:
                 let cutOffDateWeek = new Date();
                 cutOffDateWeek.setDate(cutOffDateWeek.getDate() - 7);
                 this.viewOptions.cellWidth = 50;
-                this.getMainOverview(cutOffDateWeek);
+                this.getMainOverview(cutOffDateWeek, filterChanged);
                 break;
             case GanttViewType.month:
                 let cutOffDateMonth = new Date();
                 cutOffDateMonth.setDate(cutOffDateMonth.getDate() - 7);
                 this.viewOptions.cellWidth = 75;
-                this.getMainOverview(cutOffDateMonth);
+                this.getMainOverview(cutOffDateMonth, filterChanged);
                 break;
         }
     }
@@ -287,7 +293,7 @@ export class MainOverviewComponent extends AppComponentBase implements OnInit {
         }
     }
 
-    getMainOverview(date?: any) {
+    getMainOverview(date?: any, filterChanged?: boolean) {
         this.isDataLoading = true;
         let searchFilter = this.workflowFilter.value ? this.workflowFilter.value : '';
         let ownerIds = this.selectedAccountManagers.map(x => +x.id);
@@ -304,11 +310,13 @@ export class MainOverviewComponent extends AppComponentBase implements OnInit {
         this.workflowItems = [];
         this.consultantsGroups = [];
         this.consultantsItems = [];
-        this.showMainSpinner();
         switch (this.overviewViewTypeControl.value) {
             case 1: // 'Client periods':
                 if (this.workflowChartSubscription) {
                     this.workflowChartSubscription.unsubscribe();
+                }
+                if (filterChanged) {
+                    this.workflowsPageNumber = 1;
                 }
                 this.workflowChartSubscription = this._mainOverviewService.workflows(
                     mainOverviewStatus?.id,
@@ -372,6 +380,10 @@ export class MainOverviewComponent extends AppComponentBase implements OnInit {
             case 2: //'Consultant periods':
                 if (this.consultantChartSubscription) {
                     this.consultantChartSubscription.unsubscribe();
+                }
+
+                if (filterChanged) {
+                    this.consultantsPageNumber = 1;
                 }
                 this.consultantChartSubscription = this._mainOverviewService.consultants(
                     mainOverviewStatus?.id,
@@ -449,7 +461,7 @@ export class MainOverviewComponent extends AppComponentBase implements OnInit {
             const i = list.findIndex((value: any) => value.name === item.name);
             list.splice(i, 1);
         }
-        this.changeViewType();
+        this.changeViewType(true);
     }
 
     getTenants() {
@@ -515,7 +527,7 @@ export class MainOverviewComponent extends AppComponentBase implements OnInit {
             }
         })
         status.selected = !status.selected;
-        this.changeViewType();
+        this.changeViewType(true);
     }
 
     statusesTrackBy(index: number, item: SelectableStatusesDto) {
@@ -548,20 +560,20 @@ export class MainOverviewComponent extends AppComponentBase implements OnInit {
     }
 
     setUserSelectedStatusForWorflow(event: any) {
-        this.showMainSpinner();
+        this.isDataLoading = true;
         this._mainOverviewService.setUserSelectedStatusForWorkflow(event.workflowId, event.userSelectedStatus)
             .pipe(finalize(() => {
-                this.hideMainSpinner();
+                this.isDataLoading = false;
             }))
             .subscribe(result => {
                 this.changeViewType();
             })
     }
     setUserSelectedStatusForConsultant(event: any) {
-        this.showMainSpinner();
+        this.isDataLoading = true;
         this._mainOverviewService.setUserSelectedStatusForConsultant(event.workflowId, event.consultantId, event.userSelectedStatus)
             .pipe(finalize(() => {
-                this.hideMainSpinner();
+                this.isDataLoading = false;
             }))
             .subscribe(result => {
                 this.changeViewType();
@@ -645,5 +657,15 @@ export class MainOverviewComponent extends AppComponentBase implements OnInit {
             this.viewType.setValue(filters?.viewType, {emitEvent: false});
         }
         this.changeViewType();
+    }
+
+    openMenu(event: any) {
+        event.stopPropagation();
+        this.trigger.openPanel();
+    }
+
+    onOpenedMenu() {
+        this.accountManagerFilter.setValue('');
+        this.accountManagerFilter.markAsTouched();
     }
 }

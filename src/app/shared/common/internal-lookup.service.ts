@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
-import { EnumEntityTypeDto, EnumServiceProxy } from 'src/shared/service-proxies/service-proxies';
+import { CountryDto, EnumEntityTypeDto, EnumServiceProxy } from 'src/shared/service-proxies/service-proxies';
 
 @Injectable()
 export class InternalLookupService {
@@ -34,7 +34,7 @@ export class InternalLookupService {
     nonStandartTerminationTimes: { [key: string]: string; };
     terminationReasons: { [key: string]: string; };
     employmentTypes: EnumEntityTypeDto[] = [];
-    countries: EnumEntityTypeDto[] = [];
+    countries: CountryDto[] = [];
     consultantTimeReportingCapList: EnumEntityTypeDto[] = [];
     workflowStatuses: { [key: string]: string; };
     consultantInsuranceOptions: { [key: string]: string; };
@@ -643,8 +643,8 @@ export class InternalLookupService {
         });
     }
 
-    getCountries(): Observable<EnumEntityTypeDto[]> {
-        return new Observable<EnumEntityTypeDto[]>((observer) => {
+    getCountries(): Observable<CountryDto[]> {
+        return new Observable<CountryDto[]>((observer) => {
             if (this.countries.length) {
                 observer.next(this.countries);
                 observer.complete();

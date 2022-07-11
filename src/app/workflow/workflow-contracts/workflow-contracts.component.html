@@ -3,12 +3,20 @@
     <ng-container [ngSwitch]="true">
         <ng-container *ngSwitchCase="activeSideSection.typeId === workflowSideSections.TerminateWorkflow || activeSideSection.typeId === workflowSideSections.TerminateConsultant">
             <div class="workflow--termination">
-                <h2 class="workflow-section--header">Finish contract in PM</h2>
+                <h2 *ngIf="!readOnlyMode" class="workflow-section--header">Finish contract in PM</h2>
+                <h1  *ngIf="readOnlyMode" class="workflow-step-readonly--header-main">
+                    <span class="process-name">Contract.</span>
+                    <span class="anchor-name">Finish contract in PM</span>
+                </h1>
 
                 <div fxLayout="column" fxLayoutAlign="start start" class="u-w--100">
-                    <button class="button-accept u-mb--10" mat-flat-button (click)="processSaveBeforeSyncToLegacySystem()">
-                        Sync to legacy system
-                    </button>
+                    <ng-container *ngIf="readOnlyMode; else contractLinesDoneManuallyInOldPMInput">
+                    </ng-container>
+                    <ng-template #contractLinesDoneManuallyInOldPMInput>
+                        <button class="button-accept u-mb--10" mat-flat-button (click)="processSyncToLegacySystem()">
+                            Sync to legacy system
+                        </button>
+                    </ng-template>
                     <div fxLayout="row" fxLayoutAlign="start center" class="u-mb--10" *ngIf="syncNotPossible">
                         <mat-icon class="icon-cancel u-mr--5" svgIcon="cancel-fill"></mat-icon>
                         <span class="sync-hint-text">
@@ -18,32 +26,66 @@
                 </div>
 
                 <div fxLayout="row" fxLayoutAlign="start start" class="u-w--100 u-mb--20" *ngIf="contractsSyncDataForm.showManualOption?.value">
-                    <mat-checkbox color="accent" name="contractLinesDoneManuallyInOldPM" [formControl]="contractLinesDoneManuallyInOldPMControl" class="black-checkbox u-mt--10">
-                        Contract lines done manually in old PM
-                    </mat-checkbox>
+                    <ng-container *ngIf="readOnlyMode; else contractLinesDoneManuallyInOldPMInput">
+                        <mat-icon class="termination-cancel-icon u-mr--5" [svgIcon]="'cancel-fill'" [ngClass]="{'icon-cancel': !contractLinesDoneManuallyInOldPMControl?.value}"
+                            *ngIf="!contractLinesDoneManuallyInOldPMControl?.value"></mat-icon>
+                        <mat-icon class="termination-complete-icon u-mr--5" [svgIcon]="'completed-icon'" height="22px" width="22px"
+                            *ngIf="contractLinesDoneManuallyInOldPMControl?.value"></mat-icon>
+                        <span class="workflow-step-readonly--blue-text">
+                            Contract lines done manually in old PM
+                        </span>
+                    </ng-container>
+                    <ng-template #contractLinesDoneManuallyInOldPMInput>
+                        <mat-checkbox color="accent" name="contractLinesDoneManuallyInOldPM" [formControl]="contractLinesDoneManuallyInOldPMControl" class="black-checkbox u-mt--10">
+                            Contract lines done manually in old PM
+                        </mat-checkbox>
+                    </ng-template>
                 </div>
-
-                <mat-divider class="u-w--100"></mat-divider>
+                <!-- remove ngIf on mat-divider when we will have readonly Sync to legacy system button -->
+                <mat-divider *ngIf="readOnlyMode && syncNotPossible && contractsSyncDataForm.showManualOption?.value" class="u-w--100"></mat-divider>
                 <form fxLayout="column" fxLayoutAlign="start start" [formGroup]="contractsTerminationConsultantForm" class="workflow-form u-w--100" id="consultantData">
                     <ng-container formArrayName="consultantTerminationContractData">
                         <div *ngFor="let consultant of contractsTerminationConsultantForm.consultantTerminationContractData.controls; index as i; last as last" [formGroupName]="i" class="workflow-contracts--block-consultants u-mt--20" [ngClass]="{'last-block': last}">
                             <div fxLayout="row" fxLayoutAlign="start center" class="u-mb--20">
-                                <img class="border-rounded-50 u-mr--16 image-thumbnail" [src]="consultantProfileUrl(consultant.value?.consultantData?.externalId)">
+                                <img class="border-rounded-50 u-mr--16 image-thumbnail-responsive" [src]="consultantProfileUrl(consultant.value?.consultantData?.externalId)">
                                 <p class="workflow-contracts--consultant-name">
                                     {{contractsTerminationConsultantForm.consultantTerminationContractData.at(i).get('consultantData')?.value?.name}}
                                 </p>
                             </div>
 
                             <div fxLayout="row" fxLayoutAlign="start center" class="u-w--100 u-mb--10">
-                                <mat-checkbox color="accent" name="removedConsultantFromAnyManualChecklists" formControlName="removedConsultantFromAnyManualChecklists" class="black-checkbox u-mr--10">
-                                    Removed Consultant from any manual checklists
-                                </mat-checkbox>
+                                <ng-container *ngIf="readOnlyMode; else nameremovedConsultantFromAnyManualChecklistsInput">
+                                    <mat-icon class="termination-cancel-icon u-mr--5" [svgIcon]="'cancel-fill'" [ngClass]="{'icon-cancel': !contractsTerminationConsultantForm.consultantTerminationContractData.at(i).get('nameremovedConsultantFromAnyManualChecklists')?.value}"
+                                        *ngIf="!contractsTerminationConsultantForm.consultantTerminationContractData.at(i).get('nameremovedConsultantFromAnyManualChecklists')?.value"></mat-icon>
+                                    <mat-icon class="termination-complete-icon u-mr--5" [svgIcon]="'completed-icon'" height="22px" width="22px"
+                                        *ngIf="contractsTerminationConsultantForm.consultantTerminationContractData.at(i).get('nameremovedConsultantFromAnyManualChecklists')?.value"></mat-icon>
+                                    <span class="workflow-step-readonly--blue-text">
+                                        Removed Consultant from any manual checklists
+                                    </span>
+                                </ng-container>
+                                <ng-template #nameremovedConsultantFromAnyManualChecklistsInput>
+                                    <mat-checkbox color="accent" name="removedConsultantFromAnyManualChecklists" formControlName="removedConsultantFromAnyManualChecklists" class="black-checkbox u-mr--10">
+                                        Removed Consultant from any manual checklists
+                                    </mat-checkbox>
+                                </ng-template>
                             </div>
 
                             <div fxLayout="row" fxLayoutAlign="start center" class="u-w--100 u-mb--20">
-                                <mat-checkbox color="accent" name="deletedAnySensitiveDocumentsForGDPR" formControlName="deletedAnySensitiveDocumentsForGDPR" class="black-checkbox u-mr--10">
-                                    Deleted any sensitive documents (GDPR)
-                                </mat-checkbox>
+                                <ng-container *ngIf="readOnlyMode; else deletedAnySensitiveDocumentsForGDPRInput">
+                                    <mat-icon class="termination-cancel-icon u-mr--5" [svgIcon]="'cancel-fill'" [ngClass]="{'icon-cancel': !contractsTerminationConsultantForm.consultantTerminationContractData.at(i).get('deletedAnySensitiveDocumentsForGDPR')?.value}"
+                                        *ngIf="!contractsTerminationConsultantForm.consultantTerminationContractData.at(i).get('deletedAnySensitiveDocumentsForGDPR')?.value"></mat-icon>
+                                    <mat-icon class="termination-complete-icon u-mr--5" [svgIcon]="'completed-icon'"
+                                        *ngIf="contractsTerminationConsultantForm.consultantTerminationContractData.at(i).get('deletedAnySensitiveDocumentsForGDPR')?.value"></mat-icon>
+                                    <span class="workflow-step-readonly--blue-text">
+                                        Deleted any sensitive documents (GDPR)
+                                    </span>
+                                </ng-container>
+                                <ng-template #deletedAnySensitiveDocumentsForGDPRInput>
+                                    <mat-checkbox color="accent" name="deletedAnySensitiveDocumentsForGDPR" formControlName="deletedAnySensitiveDocumentsForGDPR" class="black-checkbox u-mr--10">
+                                        Deleted any sensitive documents (GDPR)
+                                    </mat-checkbox>
+                                </ng-template>
+
                             </div>
                         </div>
                     </ng-container>
@@ -53,7 +95,7 @@
         <ng-container *ngSwitchDefault>
             <form [formGroup]="contractsMainForm" id="mainData" class="workflow-form workflow-form--main u-w--100">
                 <div fxLayout="column" fxLayoutAlign="start start" class="workflow-contracts--process-data u-w--100">
-                    <h1 class="workflow-readonly--header-main">
+                    <h1 class="workflow-step-readonly--header-main">
                         <span class="process-name" *ngIf="readOnlyMode">Contracts.</span>
                         <span class="anchor-name">Main data</span>
                     </h1>
@@ -67,26 +109,26 @@
                             <span class="workflow-darkblue--text">{{contractsMainForm?.deliveryType?.value?.name}}</span>
                         </div> -->
                         <div fxLayout="column" fxFlex="25%">
-                            <h3 class="workflow-readonly--gray-header">Project Type (Legacy)</h3>
-                            <span class="workflow-readonly--blue-text-bold">
+                            <h3 class="workflow-step-readonly--gray-header">Project Type (Legacy)</h3>
+                            <span class="workflow-step-readonly--blue-text-bold">
                                 {{contractsMainForm?.projectType?.value?.name ? contractsMainForm?.projectType?.value?.name : '-' }}
                             </span>
                         </div>
                         <div fxLayout="column" fxFlex="25%">
-                            <h3 class="workflow-readonly--gray-header">Sales Type</h3>
-                            <span class="workflow-readonly--blue-text-bold">
+                            <h3 class="workflow-step-readonly--gray-header">Sales Type</h3>
+                            <span class="workflow-step-readonly--blue-text-bold">
                                 {{contractsMainForm?.salesType?.value?.name ? contractsMainForm?.salesType?.value?.name : '-'}}
                             </span>
                         </div>
                         <div fxLayout="column" fxFlex="25%">
-                            <h3 class="workflow-readonly--gray-header">Delivery Type</h3>
-                            <span class="workflow-readonly--blue-text-bold">
+                            <h3 class="workflow-step-readonly--gray-header">Delivery Type</h3>
+                            <span class="workflow-step-readonly--blue-text-bold">
                                 {{contractsMainForm?.deliveryType?.value?.name ? contractsMainForm?.deliveryType?.value?.name : '-'}}
                             </span>
                         </div>
                         <div fxLayout="column" fxFlex="25%">
-                            <h3 class="workflow-readonly--gray-header">Margin</h3>
-                            <span class="workflow-readonly--blue-text-bold">
+                            <h3 class="workflow-step-readonly--gray-header">Margin</h3>
+                            <span class="workflow-step-readonly--blue-text-bold">
                                 {{contractsMainForm?.margin?.value?.name ? contractsMainForm?.margin?.value?.name : '-'}}
                             </span>
                         </div>
@@ -94,7 +136,7 @@
                     <h3 class="workflow-gray--header">Project Description</h3>
                     <div fxLayout="row" fxLayoutAlign="start start" class="u-w--100 u-mb--20">
                         <ng-container *ngIf="readOnlyMode; else projectDescriptionInput">
-                            <span class="workflow-readonly--blue-text">
+                            <span class="workflow-step-readonly--blue-text">
                                 {{contractsMainForm?.projectDescription?.value ? contractsMainForm?.projectDescription?.value : '-'}}
                             </span>
                         </ng-container>
@@ -114,10 +156,10 @@
                     <h3 class="workflow-gray--header">Remarks</h3>
                     <div fxLayout="row" fxLayoutAlign="start start" class="u-w--100">
                         <ng-container *ngIf="readOnlyMode; else remarksInput">
-                            <span class="workflow-readonly--blue-text" *ngIf="contractsMainForm?.noRemarks?.value">
+                            <span class="workflow-step-readonly--blue-text" *ngIf="contractsMainForm?.noRemarks?.value">
                                 No remarks
                             </span>
-                            <span class="workflow-readonly--blue-text" *ngIf="contractsMainForm?.remarks?.value">
+                            <span class="workflow-step-readonly--blue-text" *ngIf="contractsMainForm?.remarks?.value">
                                 {{contractsMainForm?.remarks?.value ? contractsMainForm?.remarks?.value : '-'}}
                             </span>
                         </ng-container>
@@ -141,7 +183,7 @@
             <ng-container *ngIf="activeSideSection.typeId === workflowSideSections.StartClientPeriod || activeSideSection.typeId === workflowSideSections.ExtendClientPeriod || activeSideSection.typeId === workflowSideSections.ChangeClientPeriod">
                 <form fxLayout="column" fxLayoutAlign="start start" id="clientData" [formGroup]="contractClientForm" class="workflow-form workflow-form--sales u-w--100">
                     <div fxLayout="column" fxLayoutAlign="start start" class="workflow-contracts--process-data u-w--100">
-                        <h1 class="workflow-readonly--header-main">
+                        <h1 class="workflow-step-readonly--header-main">
                             <span class="process-name" *ngIf="readOnlyMode">Contracts.</span>
                             <span class="anchor-name">Client data</span>
                         </h1>
@@ -182,10 +224,10 @@
                         <h3 class="workflow-gray--header">Special Contract Terms</h3>
                         <div fxLayout="row" fxLayoutAlign="start start" class="u-w--100">
                             <ng-container *ngIf="readOnlyMode; else specialContractTermsInput">
-                                <span class="workflow-readonly--blue-text" *ngIf="contractClientForm?.noSpecialContractTerms?.value">
+                                <span class="workflow-step-readonly--blue-text" *ngIf="contractClientForm?.noSpecialContractTerms?.value">
                                     No special contract terms
                                 </span>
-                                <span class="workflow-readonly--blue-text" *ngIf="contractClientForm?.specialContractTerms?.value">
+                                <span class="workflow-step-readonly--blue-text" *ngIf="contractClientForm?.specialContractTerms?.value">
                                     {{contractClientForm?.specialContractTerms?.value ? contractClientForm?.specialContractTerms?.value : '-'}}
                                 </span>
                             </ng-container>
@@ -205,7 +247,7 @@
                         </div>
 
                         <h2 class="workflow-section--header u-mt--20">Client Special Rates</h2>
-                        <div class="inline-edit-form u-w--100 u-mb--20">
+                        <div class="inline-edit-form u-w--100" [ngClass]="{'u-mb--20': contractClientForm.clientRates?.controls?.length}">
                             <div fxLayout="row" fxLayoutAlign="space-between start" fxLayoutGap="10px" class="u-w--100 u-pl--16 u-pr--16" *ngIf="contractClientForm.clientRates?.controls?.length">
                                 <span fxFlex="25%" class="workflow-contracts--list-header u-w--100">
                                     Rate name
@@ -312,7 +354,7 @@
                         </div>
 
                         <h2 class="workflow-section--header u-mt--20">Client Fees</h2>
-                        <div class="inline-edit-form u-w--100 u-mb--20">
+                        <div class="inline-edit-form u-w--100" [ngClass]="{'u-mb--20': contractClientForm.clientFees?.controls?.length}">
                             <div fxLayout="row" fxLayoutAlign="space-between start" fxLayoutGap="10px" class="u-w--100 u-pl--16 u-pr--16" *ngIf="contractClientForm.clientFees?.controls?.length">
                                 <span fxFlex="25%" class="workflow-contracts--list-header u-w--100">
                                     Fee name
@@ -434,15 +476,14 @@
                     <div *ngFor="let consultant of contractsConsultantsDataForm.consultants.controls; let consultantIndex = index" [formGroupName]="consultantIndex" class="workflow-form--consultants u-w--100">
                         <div fxLayout="column" fxLayoutAlign="start start" class="workflow-contracts--process-data u-w--100">
                             <div fxLayout="row" fxLayoutAlign="start center" class="u-w--100 u-mb--20">
-                                <h1 class="workflow-readonly--header-main" fxFlex="{{readOnlyMode ? '25%' : '15%'}}">
+                                <h1 class="workflow-step-readonly--header-main text-nowrap" fxFlex="1 0 20%">
                                     <span class="process-name" *ngIf="readOnlyMode">Contracts.</span>
                                     <span class="anchor-name">Consultant data</span>
                                 </h1>
                                 <div fxLayout="row" fxLayoutAlign="start start" class="u-w--100">
                                     <span fxFlex="50%" fxLayout="row" fxLayoutAlign="start center">
-                                        <!-- <img class="border-rounded-50 u-ml--16 u-mr--16" src="https://picsum.photos/35/35" /> -->
-                                        <img class="border-rounded-50 u-ml--16 u-mr--16 image-thumbnail" [src]="consultantProfileUrl(consultant.value?.consultant?.externalId)" />
-                                        <span class="workflow-form--consultants__name u-mr--16">
+                                        <img class="border-rounded-50 u-ml--16 u-mr--16 image-thumbnail-responsive" [src]="consultantProfileUrl(consultant.value?.consultant?.externalId)" />
+                                        <span class="workflow-contracts--consultant-name">
                                             {{ consultant.value?.consultant?.name }}
                                         </span>
                                     </span>
@@ -522,10 +563,10 @@
                             <h3 class="workflow-gray--header">Special Contract Terms</h3>
                             <div fxLayout="row" fxLayoutAlign="start start" class="u-w--100">
                                 <ng-container *ngIf="readOnlyMode; else consultantsSpecialContractTermsInput">
-                                    <span class="workflow-readonly--blue-text" *ngIf="consultant.value.specialContractTerms">
+                                    <span class="workflow-step-readonly--blue-text" *ngIf="consultant.value.specialContractTerms">
                                         {{consultant.value.specialContractTerms ? consultant.value.specialContractTerms : '-'}}
                                     </span>
-                                    <span class="workflow-readonly--blue-text" *ngIf="consultant.value.noSpecialContractTerms">
+                                    <span class="workflow-step-readonly--blue-text" *ngIf="consultant.value.noSpecialContractTerms">
                                         No contract special terms
                                     </span>
                                 </ng-container>
@@ -1067,7 +1108,7 @@
 
             <form [formGroup]="contractsSyncDataForm" id="syncLegalContracts" class="workflow-form workflow-form--main u-w--100">
                 <div fxLayout="column" fxLayoutAlign="start start" class="workflow-contracts--process-data u-w--100">
-                    <h1 class="workflow-readonly--header-main">
+                    <h1 class="workflow-step-readonly--header-main">
                         <span class="process-name" *ngIf="readOnlyMode">Contracts.</span>
                         <span class="anchor-name">Sync & legal contracts</span>
                     </h1>
@@ -1150,7 +1191,7 @@
                             <div *ngFor="let consultant of contractsSyncDataForm.consultants.controls; let consultantIndex = index" [formGroupName]="consultantIndex" class="workflow-form--consultants u-w--100">
                                 <span class="u-mt--20" [ngClass]="{'workflow-gray--header': readOnlyMode, 'workflow-darkblue--text': !readOnlyMode}">Consultant legal contracts</span>
                                 <div fxLayout="row" fxLayoutAlign="start center" class="u-mb--20 u-mt--10 u-w--100">
-                                    <img class="border-rounded-50 image-thumbnail-small u-mr--10" [src]="consultantProfileUrl(consultant.value.consultant?.externalId)" />
+                                    <img class="border-rounded-50 image-thumbnail-responsive u-mr--10" [src]="consultantProfileUrl(consultant.value.consultant?.externalId)" />
                                     <p class="workflow-contracts--consultant-name">
                                         {{consultant.value?.consultant?.name}}
                                     </p>

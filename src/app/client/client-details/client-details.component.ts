@@ -64,9 +64,8 @@ export class ClientDetailsComponent extends AppComponentBase implements OnInit {
     }
 
     getClientDetails() {
-        this.showMainSpinner();
         this._apiService.clients(this.clientId)
-            .pipe(finalize(() => this.hideMainSpinner()))
+            .pipe(finalize(() => {}))
             .subscribe(result => {
                 this.client = result;
             });

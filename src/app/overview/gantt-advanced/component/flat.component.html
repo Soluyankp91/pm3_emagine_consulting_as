@@ -32,8 +32,8 @@
                         </div>
                     </span>
                     <span class="text-bold" *ngIf="isConsultants">
-                        <div fxLayout="row" fxLayoutAlign="start center" class="u-w-100" [matTooltip]="overviewFlagNames[group?.origin?.origin?.mainOverviewStatusOfWorkflowForSales!]" matTooltipClass="white-tooltip">
-                            <mat-icon class="main-overview-icon" [matMenuTriggerFor]="consultantsMenu" svgIcon="{{detectIcon(group?.origin?.origin?.mainOverviewStatusOfWorkflowForSales)}}" [ngClass]="detectProcessColor(group?.origin?.origin?.mainOverviewStatusOfWorkflowForSales)"></mat-icon>
+                        <div fxLayout="row" fxLayoutAlign="start center" class="u-w-100" [matTooltip]="overviewFlagNames[group?.origin?.origin?.mainOverviewStatusOfWorkflowConsultantForSales!]" matTooltipClass="white-tooltip">
+                            <mat-icon class="main-overview-icon cursor-pointer" [matMenuTriggerFor]="consultantsMenu" svgIcon="{{detectIcon(group?.origin?.origin?.mainOverviewStatusOfWorkflowConsultantForSales)}}" [ngClass]="detectProcessColor(group?.origin?.origin?.mainOverviewStatusOfWorkflowConsultantForSales)"></mat-icon>
                             <mat-menu #consultantsMenu>
                                 <button *ngFor="let status of userSelectedStatuses"
                                     class="menu-item"
@@ -47,12 +47,12 @@
                     </span>
                 </div>
                 <div class="gantt-group-content text-truncate-ellipsis" fxFlex="40%">
-                    <span class="text-truncate-ellipsis text-bold" [matTooltip]="group?.origin?.origin?.clientDisplayName!" matTooltipClass="white-tooltip">
+                    <span class="text-truncate-ellipsis text-bold-800" [matTooltip]="group?.origin?.origin?.clientDisplayName!" matTooltipClass="white-tooltip">
                         {{group!.origin!.origin!.clientDisplayName}}
                     </span>
                 </div>
                 <div class="gantt-group-content text-truncate-ellipsis" fxFlex="30%">
-                    <span class="text-truncate-ellipsis text-bold" [matTooltip]="mapListByProperty(group?.origin?.origin?.consultants!, 'name')" matTooltipClass="white-tooltip" *ngIf="isWorkflow">
+                    <span class="text-truncate-ellipsis" [matTooltip]="mapListByProperty(group?.origin?.origin?.consultants!, 'name')" matTooltipClass="white-tooltip" *ngIf="isWorkflow">
                         <ng-container *ngIf="group?.origin?.origin?.consultants!.length > 1; else singleConsultantDisplay">
                             {{group?.origin?.origin?.consultants?.length + 'Consultants'}}
                         </ng-container>
@@ -60,14 +60,14 @@
                             {{group?.origin?.origin?.consultants![0]?.name}}
                         </ng-template>
                     </span>
-                    <span class="text-truncate-ellipsis text-bold" *ngIf="isConsultants">
+                    <span class="text-truncate-ellipsis" *ngIf="isConsultants">
                         {{group?.origin?.origin?.consultant?.name}}
                     </span>
                 </div>
                 <div class="gantt-group-content" fxFlex="25%">
                     <div fxLayout="row" fxLayoutAlign="flex-end center" fxLayoutGap="15px" class="u-w-100">
                         <img class="manager-search--photo" [matTooltip]="group?.origin?.origin?.salesManager?.name!" matTooltipClass="white-tooltip" [src]="employeeProfileUrl(group?.origin?.origin?.salesManager?.externalId!)" />
-                        <button mat-icon-button matTooltip="Go to workflow" (click)="redirectToWorkflow(group?.origin?.origin?.workflowId!)">
+                        <button mat-icon-button matTooltip="Go to workflow" matTooltipClass="white-tooltip" (click)="redirectToWorkflow(group?.origin?.origin?.workflowId!)">
                             <mat-icon class="icon-arrow-rotate180" svgIcon="arrow"></mat-icon>
                         </button>
                     </div>

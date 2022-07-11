@@ -40,6 +40,7 @@
         &.active,
         &:hover {
           background: $white-color;
+          transition: box-shadow .7s ease;
           box-shadow: 0px 0px 20px rgba(26, 35, 126, 0.15);
           border-radius: 0px;
           border-left: 4px solid $green-color;
@@ -58,4 +59,8 @@
         }
       }
   }
+}
+
+.ng-scroll-content {
+  max-width: 100%;
 }

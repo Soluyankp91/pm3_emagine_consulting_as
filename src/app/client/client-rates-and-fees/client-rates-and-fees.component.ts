@@ -121,6 +121,7 @@ export class ClientRatesAndFeesComponent implements OnInit, OnDestroy {
             }))
             .subscribe(result => {
                 this.clientSpecailRateForm = new ClientSpecailRateForm();
+                this.rateIsEditing = false;
                 result.forEach(item => {
                     this.addSpecialRate(item);
                 });
@@ -134,6 +135,7 @@ export class ClientRatesAndFeesComponent implements OnInit, OnDestroy {
             }))
             .subscribe(result => {
                 this.clientFeesForm = new ClientFeesForm();
+                this.feeIsEditing = false;
                 result.forEach(item => {
                     this.addClientFee(item);
                 });

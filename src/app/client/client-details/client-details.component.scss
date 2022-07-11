@@ -2,17 +2,9 @@
 @import "/src/app/shared/styles/config/_colors";
 
 .client-details {
-    // min-height: 100%;
-    // padding: 14px 20px;
     &--header {
-        // height: 150px;
         height: $white-header-height;
-        padding: 16px 75px;
-        &__client-name {
-            font-size: 32px;
-            font-weight: 700;
-            color: $dark-grey-color;
-        }
+        padding: 32px 50px 32px 40px;
     }
     .absolute-filter {
         position: absolute;
@@ -22,9 +14,12 @@
     &--content {
         height: calc(100vh - 150px);
         .nav-tab--content {
-            height: calc(100vh - 200px);
-            padding: 16px 60px;
-            background-color: $sand-25-color;
+            padding: 32px 50px;
+            &-wrapper {
+                height: calc(100vh - 200px);
+                overflow: hidden;
+                background-color: $sand-25-color;
+            }
         }
     }
     &--search {
@@ -35,6 +30,7 @@
         }
     }
     &--client-info {
+            margin-left: 40px;
         &__header {
             display: flex;
             align-items: center;

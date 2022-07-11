@@ -15,3 +15,16 @@
 .icon-arrow-rotate180 {
     transform: rotateY(180deg);
 }
+
+.workflow-track-status {
+    font-size: 14px;
+    width: 14px;
+    height: 14px;
+    line-height: 14px;
+    @media screen and (max-width: 1440px) {
+        font-size: 10px;
+        width: 10px;
+        height: 10px;
+        line-height: 10px;
+    }
+}

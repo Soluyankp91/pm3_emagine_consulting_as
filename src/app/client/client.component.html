@@ -1,22 +1,25 @@
 <div class="client-list">
     <div fxLayout="column" fxLayoutAlign="start start" class="client-list--filter u-w--100">
         <div fxLayout="row" fxLayoutAlign="start center" class="u-w--100 u-mb--10">
-            <h2 class="client-list--header">
-                Client list
-            </h2>
+            <h2 class="page-main-header">Client list</h2>
         </div>
         <div fxLayout="row" fxLayoutAlign="space-between start" class="u-w--100">
             <div fxFlex="1 0 40%" fxLayout="row" fxLayoutAlign="start center" class="u-w--100">
-                <div class="client-list--filter-manager cursor-pointer u-mr--16" [matTooltip]="mapListByProperty(selectedAccountManagers, 'name')" matTooltipClass="white-tooltip" [matMenuTriggerFor]="managerMenu" (menuOpened)="accountManagerFilter.setValue(''); accountManagerFilterInput.click()">
+                <div class="client-list--filter-manager cursor-pointer u-mr--16"
+                    [matMenuTriggerFor]="managerMenu"
+                    (menuOpened)="onManagersMenuOpened(); accountManagerFilterInput.focus()"
+                    [matTooltip]="mapListByProperty(selectedAccountManagers, 'name')"
+                    matTooltipClass="white-tooltip"
+                    (click)="openManagersMenu($event)">
                     <img *ngIf="selectedAccountManagers?.length === 1" class="border-rounded-50 image-thumbnail-small" [src]="employeeProfileUrl(selectedAccountManagers[0]?.externalId!)" />
                     <img *ngIf="selectedAccountManagers?.length === 0" src="../../../assets/common/images/no-img.svg">
                     <div *ngIf="selectedAccountManagers?.length && selectedAccountManagers.length > 1" class="client-list--filter__badge">
                         {{selectedAccountManagers.length}}
                     </div>
-                    <mat-menu #managerMenu>
+                    <mat-menu #managerMenu backdropClass="client-list--filter-manager-menu">
                         <div mat-menu-item (click)="$event.stopPropagation()" class="u-pg--0">
-                            <mat-form-field appearance="outline" (click)="$event.stopPropagation()">
-                                <input #accountManagerFilterInput type="text" matInput [matAutocomplete]="managerAutocomplete" [formControl]="accountManagerFilter" (click)="$event.stopPropagation()" placeholder="Select account manager(s)">
+                            <mat-form-field class="client-list--filter-manager-dropdown" appearance="fill" (click)="$event.stopPropagation()">
+                                <input #accountManagerFilterInput #managersTrigger type="text" matInput [matAutocomplete]="managerAutocomplete" [formControl]="accountManagerFilter" (click)="$event.stopPropagation()" placeholder="Select account manager(s)">
                             </mat-form-field>
                             <mat-autocomplete #managerAutocomplete="matAutocomplete">
                                 <mat-option *ngFor="let manager of selectedAccountManagers"
@@ -29,7 +32,10 @@
                                             color="primary"
                                             (change)="toggleSelection(manager,selectedAccountManagers)"
                                             (click)="$event.stopPropagation()">
-                                            <span>{{ manager.name }}</span>
+                                            <div fxLayout="row" fxLayoutAlign="start center" class="u-w--100">
+                                                <img class="border-rounded-50 image-settings--dropdown u-mr--10" [src]="employeeProfileUrl(manager.externalId!)">
+                                                <span>{{ manager.name }}</span>
+                                            </div>
                                         </mat-checkbox>
                                         <span *ngIf="manager.id === 'no-data'"
                                             (click)="$event.stopPropagation()">
@@ -37,102 +43,121 @@
                                         </span>
                                     </div>
                                 </mat-option>
-                                <mat-option *ngFor="let manager of filteredAccountManagers"
-                                    class="u-pg--5"
-                                    [ngClass]="{ 'no-data': manager.id === 'no-data', 'hidden-option': selectedAccountManagers.includes(manager)}"
-                                    [value]="selectedAccountManagers">
-                                    <div
-                                        (click)="optionClicked($event, manager, selectedAccountManagers)">
-                                        <mat-checkbox [checked]="manager.selected"
-                                            *ngIf="manager.id !== 'no-data'"
-                                            color="primary"
-                                            (change)="toggleSelection(manager,selectedAccountManagers)"
-                                            (click)="$event.stopPropagation()">
-                                            <span>{{ manager.name }}</span>
-                                        </mat-checkbox>
-                                        <span *ngIf="manager.id === 'no-data'"
-                                            (click)="$event.stopPropagation()">{{ manager.name }}
-                                        </span>
+                                <mat-option *ngIf="isManagersLoading" class="is-loading">
+                                    <div class="is-loading-container">
+                                        <mat-spinner diameter="25"></mat-spinner>
                                     </div>
                                 </mat-option>
+                                <ng-container *ngIf="!isManagersLoading">
+                                    <mat-option *ngFor="let manager of filteredAccountManagers"
+                                        class="u-pg--5"
+                                        [ngClass]="{ 'no-data': manager.id === 'no-data', 'hidden-option': selectedAccountManagers.includes(manager)}"
+                                        [value]="selectedAccountManagers">
+                                        <div
+                                            (click)="optionClicked($event, manager, selectedAccountManagers)">
+                                            <mat-checkbox [checked]="manager.selected"
+                                                *ngIf="manager.id !== 'no-data'"
+                                                color="primary"
+                                                (change)="toggleSelection(manager,selectedAccountManagers)"
+                                                (click)="$event.stopPropagation()">
+                                                <div fxLayout="row" fxLayoutAlign="start center" class="u-w--100">
+                                                    <img class="border-rounded-50 image-settings--dropdown u-mr--10" [src]="employeeProfileUrl(manager.externalId!)">
+                                                    <span>{{ manager.name }}</span>
+                                                </div>
+                                            </mat-checkbox>
+                                            <span *ngIf="manager.id === 'no-data'"
+                                                (click)="$event.stopPropagation()">{{ manager.name }}
+                                            </span>
+                                        </div>
+                                    </mat-option>
+                                </ng-container>
+
                             </mat-autocomplete>
                         </div>
                     </mat-menu>
                 </div>
-                <div class="u-mr--16">
-                    <button
-                        mat-icon-button
-                        [matMenuTriggerFor]="countryMenu"
-                        (menuOpened)="countryFilter.setValue('')"
-                        [ngClass]="{ 'client-list--filter-country__btn': selectedCountries.length > 1 }"
-                        [matTooltip]="mapListByProperty(selectedCountries, 'name')" matTooltipClass="white-tooltip">
-                            <span *ngIf="selectedCountries.length > 1; else singleCountry" class="client-list--filter-country__badge">
-                                {{selectedCountries.length}}
-                            </span>
-                            <ng-template #singleCountry>
-                                <mat-icon class="client-list--filter-country u-mr--16" [svgIcon]="selectedCountries.length ? selectedCountries[0]?.name + '-flag-selected' : 'Country-filter-flag'"></mat-icon>
-                            </ng-template>
-                    </button>
-                    <mat-menu #countryMenu class="autocomplete-menu">
+                <div class="client-list--filter-country cursor-pointer u-mr--16"
+                    [matMenuTriggerFor]="countryMenu"
+                    (menuOpened)="onCountriesMenuOpened(); countriesTrigger.focus();"
+                    [ngClass]="{ 'client-list--filter-country__btn': selectedCountries.length > 1 }"
+                    [matTooltip]="mapListByProperty(selectedCountries, 'name')"
+                    matTooltipClass="white-tooltip"
+                    (click)="openCountriesMenu($event)">
+                    <span *ngIf="selectedCountries.length > 1; else singleCountry" class="client-list--filter-country__badge">
+                        {{selectedCountries.length}}
+                    </span>
+                    <ng-template #singleCountry>
+                        <span class="country-flag--big fi fi-{{selectedCountries[0]?.code | lowercase }} fis border-rounded-50" *ngIf="selectedCountries.length > 0; else iconCountry"></span>
+                    </ng-template>
+                    <ng-template #iconCountry>
+                        <mat-icon class="client-list--filter-country u-mr--16" svgIcon="Country-filter-flag"></mat-icon>
+                    </ng-template>
+                    <mat-menu #countryMenu backdropClass="client-list--filter-country-menu">
                         <div mat-menu-item (click)="$event.stopPropagation()" class="u-pg--0">
-                            <mat-form-field appearance="outline" (click)="$event.stopPropagation()">
-                                <input type="text" matInput [matAutocomplete]="countryAutocomplete" [formControl]="countryFilter" (click)="$event.stopPropagation()" placeholder="Select client country">
+                            <mat-form-field class="client-list--filter-country-dropdown" appearance="fill" (click)="$event.stopPropagation()">
+                                <input type="text" #countriesTrigger matInput [matAutocomplete]="countryAutocomplete" [formControl]="countryFilter" (click)="$event.stopPropagation()" placeholder="Select client country">
                             </mat-form-field>
                             <mat-autocomplete #countryAutocomplete="matAutocomplete">
-                                <mat-option *ngFor="let country of selectedCountries"
-                                    class="u-pg--5"
-                                    [value]="selectedCountries">
-                                    <div class="u-w--100"
-                                        (click)="optionClicked($event, country, selectedCountries)">
-                                        <mat-checkbox [checked]="country.selected"
-                                            *ngIf="country.id !== 'no-data'"
-                                            color="primary"
-                                            (change)="toggleSelection(country,selectedCountries)"
-                                            (click)="$event.stopPropagation()">
-                                            <mat-icon svgIcon="{{country.flag}}-flag-selected" *ngIf="country.id !== 0; else unkownCountry"></mat-icon>
-                                            <ng-template #unkownCountry>
-                                                <mat-icon svgIcon="Country-filter-flag"></mat-icon>
-                                            </ng-template>
-                                            <span>{{ country.name }}</span>
-                                        </mat-checkbox>
-                                        <span *ngIf="country.id === 'no-data'"
-                                            (click)="$event.stopPropagation()">
-                                            {{ country.name }}
-                                        </span>
+                                <mat-option *ngIf="isCountriesLoading" class="is-loading">
+                                    <div class="is-loading-container">
+                                        <mat-spinner diameter="25"></mat-spinner>
                                     </div>
                                 </mat-option>
-                                <mat-option *ngFor="let country of filteredCountries | async"
-                                    class="u-pg--5"
-                                    [ngClass]="{ 'no-data': country.id === 'no-data', 'hidden-option': selectedCountries.includes(country)}"
-                                    [value]="selectedCountries">
-                                    <div class="u-w--100"
-                                        (click)="optionClicked($event, country, selectedCountries)">
-                                        <mat-checkbox [checked]="country.selected"
-                                            *ngIf="country.id !== 'no-data'"
-                                            color="primary"
-                                            (change)="toggleSelection(country,selectedCountries)"
-                                            (click)="$event.stopPropagation()">
-                                            <mat-icon svgIcon="{{country.flag}}-flag-selected" *ngIf="country.id !== 0; else unkownCountry"></mat-icon>
-                                            <ng-template #unkownCountry>
-                                                <mat-icon svgIcon="Country-filter-flag"></mat-icon>
-                                            </ng-template>
-                                            <span>{{ country.name }}</span>
-                                        </mat-checkbox>
-                                        <span *ngIf="country.id === 'no-data'"
-                                            (click)="$event.stopPropagation()">
-                                            {{ country.name }}
-                                        </span>
-                                    </div>
-                                </mat-option>
+                                <ng-container *ngIf="!isCountriesLoading">
+                                    <mat-option *ngFor="let country of selectedCountries"
+                                        class="u-pg--5"
+                                        [value]="country">
+                                        <div class="u-w--100"
+                                            (click)="optionClicked($event, country, selectedCountries)">
+                                            <mat-checkbox [checked]="country.selected"
+                                                *ngIf="country.id !== 'no-data'"
+                                                color="primary"
+                                                (change)="toggleSelection(country,selectedCountries)"
+                                                (click)="$event.stopPropagation()">
+                                                <span class="country-flag fi fi-{{country.code | lowercase }} fis border-rounded-50 u-mr--16" *ngIf="country.id !== 0"></span>
+                                                <!-- <ng-template #unkownCountry> -->
+                                                    <mat-icon *ngIf="country.id === 0"  svgIcon="Country-filter-flag"></mat-icon>
+                                                <!-- </ng-template> -->
+                                                <span>{{ country.name }}</span>
+                                            </mat-checkbox>
+                                            <span *ngIf="country.id === 'no-data'"
+                                                (click)="$event.stopPropagation()">
+                                                {{ country.name }}
+                                            </span>
+                                        </div>
+                                    </mat-option>
+                                    <mat-option *ngFor="let country of filteredCountries | async"
+                                        class="u-pg--5"
+                                        [ngClass]="{ 'no-data': country.id === 'no-data', 'hidden-option': selectedCountries.includes(country)}"
+                                        [value]="country">
+                                        <div class="u-w--100"
+                                            (click)="optionClicked($event, country, selectedCountries)">
+                                            <mat-checkbox [checked]="country.selected"
+                                                *ngIf="country.id !== 'no-data'"
+                                                color="primary"
+                                                (change)="toggleSelection(country,selectedCountries)"
+                                                (click)="$event.stopPropagation()">
+                                                <span class="country-flag fi fi-{{country.code | lowercase }} fis border-rounded-50 u-mr--16" *ngIf="country.id !== 0"></span>
+                                                <mat-icon *ngIf="country.id === 0" svgIcon="Country-filter-flag"></mat-icon>
+                                                <span>{{ country.name }}</span>
+                                            </mat-checkbox>
+                                            <span *ngIf="country.id === 'no-data'"
+                                                (click)="$event.stopPropagation()">
+                                                {{ country.name }}
+                                            </span>
+                                        </div>
+                                    </mat-option>
+                                </ng-container>
+
                             </mat-autocomplete>
                         </div>
                     </mat-menu>
                 </div>
-                <span class="client-list--filter-status__badge flex-items-center cursor-pointer u-mr--16" [ngClass]="{'selected-status': isActiveClients}" (click)="isActiveClients = !isActiveClients; getClientsGrid()">
+                <span class="client-list--filter-status__badge flex-items-center cursor-pointer u-mr--16" [ngClass]="{'selected-status': isActiveClients}" (click)="isActiveClients = !isActiveClients; getClientsGrid(true)">
                     <mat-icon class="status-dot green-dot u-mr--5">fiber_manual_record</mat-icon>
                     Active clients
                 </span>
-                <span class="client-list--filter-status__badge flex-items-center cursor-pointer u-mr--16" [ngClass]="{'selected-status': nonActiveClient}" (click)="nonActiveClient = !nonActiveClient; getClientsGrid()">
+                <span class="client-list--filter-status__badge flex-items-center cursor-pointer u-mr--16" [ngClass]="{'selected-status': nonActiveClient}" (click)="nonActiveClient = !nonActiveClient; getClientsGrid(true)">
                     <mat-icon class="status-dot grey-dot u-mr--5">fiber_manual_record</mat-icon>
                     Non-active clients
                 </span>
@@ -140,7 +165,7 @@
                     <mat-divider class="u-mr--10" [vertical]="true" style="height: 46px;"></mat-divider>
                     <button mat-button (click)="clearAllFilters()">
                         <span class="clear-all-button" >
-                            Clear all
+                            Reset
                         </span>
                     </button>
                 </div>
@@ -150,7 +175,7 @@
                     <input autocomplete="off" matInput [formControl]="clientFilter" placeholder="Search" type="text">
                     <mat-icon matPrefix class="search-icon u-ml--10">search</mat-icon>
                 </mat-form-field>
-                <mat-slide-toggle color="primary" labelPosition="before" (change)="getClientsGrid()" [(ngModel)]="includeDeleted">Show deleted</mat-slide-toggle>
+                <mat-slide-toggle class="green-slide-toggle" color="primary" labelPosition="before" (change)="getClientsGrid()" [(ngModel)]="includeDeleted">Show deleted</mat-slide-toggle>
             </div>
         </div>
     </div>
@@ -175,7 +200,7 @@
                     <mat-header-cell *matHeaderCellDef mat-sort-header fxFlex="10%"> Country </mat-header-cell>
                     <mat-cell *matCellDef="let row" fxFlex="10%">
                         <span class="text-truncate-ellipsis text-bold" [matTooltip]="row.clientAddress_Country_Name" matTooltipClass="white-tooltip">
-                            <span class="flag-icon flag-icon-{{row.clientAddress_Country_Code | lowercase }}"></span>
+                            <span class="country-flag--grid fi fi-{{row.clientAddress_Country_Code | lowercase }}"></span>
                             <span>
                                 {{row.clientAddress_Country_Code}}
                             </span>
@@ -201,18 +226,19 @@
                 <ng-container matColumnDef="isActive">
                     <mat-header-cell *matHeaderCellDef mat-sort-header fxFlex="17%"> Status </mat-header-cell>
                     <mat-cell *matCellDef="let row" fxFlex="17%">
-                        <div fxLayout="row" fxLayoutAlign="start center" *ngIf="row.isActive && row.isWrongfullyDeletedInHubspot" matTooltip="Active, Wrongfully deleted">
-                            <mat-icon class="status-dot deleted-flag">fiber_manual_record</mat-icon>
+                        <div fxLayout="row" fxLayoutAlign="start center" *ngIf="row.isWrongfullyDeletedInHubspot" matTooltip="Active, Wrongfully deleted" matTooltipClass="white-tooltip">
+                            <mat-icon class="status-dot wrong-deleted-flag">fiber_manual_record</mat-icon>
                             <span class="column">
-                                <span class="text-truncate-ellipsis status-text--active">Active</span>
-                                <span class="text-truncate-ellipsis status-text--deleted">Wrongfully deleted</span>
+                                <span class="text-truncate-ellipsis" *ngIf="!row.isDeleted" [ngClass]="row.isActive ? 'status-text--active' : 'status-text--not-active'">{{row.isActive ? 'Active' : 'Non-active'}}</span>
+                                <span class="text-truncate-ellipsis status-text--deleted" *ngIf="row.isDeleted">Deleted</span>
+                                <span class="text-truncate-ellipsis status-text--wrong-deleted">Wrongfully deleted</span>
                             </span>
                         </div>
-                        <div fxLayout="row" fxLayoutAlign="start center" *ngIf="!row.isWrongfullyDeletedInHubspot" [matTooltip]="row.isActive ? 'Active' : 'Non-active'" matTooltipClass="white-tooltip">
+                        <div fxLayout="row" fxLayoutAlign="start center" *ngIf="!row.isWrongfullyDeletedInHubspot && !row.isDeleted" [matTooltip]="row.isActive ? 'Active' : 'Non-active'" matTooltipClass="white-tooltip">
                             <mat-icon class="status-dot" [ngClass]="row.isActive ? 'active-flag' : 'not-active-flag'">fiber_manual_record   </mat-icon>
                             <span class="text-truncate-ellipsis" [ngClass]="row.isActive ? 'status-text--active' : 'status-text--not-active'">{{row.isActive ? 'Active' : 'Non-active'}}</span>
                         </div>
-                        <div fxLayout="row" fxLayoutAlign="start center" matTooltip="Deleted" *ngIf="row.isDeleted">
+                        <div fxLayout="row" fxLayoutAlign="start center" matTooltip="Deleted" *ngIf="row.isDeleted" matTooltipClass="white-tooltip">
                             <mat-icon class="status-dot deleted-flag">fiber_manual_record</mat-icon>
                             <span class="text-truncate-ellipsis status-text--deleted">Deleted</span>
                         </div>

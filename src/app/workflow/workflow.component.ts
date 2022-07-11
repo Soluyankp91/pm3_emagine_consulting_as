@@ -1,8 +1,10 @@
 import { Overlay } from '@angular/cdk/overlay';
 import { Component, Injectable, Injector, OnDestroy, OnInit, ViewChild } from '@angular/core';
 import { FormControl } from '@angular/forms';
+import { MatAutocompleteTrigger } from '@angular/material/autocomplete';
 import { MatDialog } from '@angular/material/dialog';
 import { MatMenuTrigger } from '@angular/material/menu';
+import { MatPaginator } from '@angular/material/paginator';
 import { MatTableDataSource } from '@angular/material/table';
 import { ActivatedRoute, ActivatedRouteSnapshot, Resolve, Router } from '@angular/router';
 import { MsalService } from '@azure/msal-angular';
@@ -10,7 +12,7 @@ import { merge, Observable, Subject, Subscription } from 'rxjs';
 import { debounceTime, finalize, map, switchMap, takeUntil } from 'rxjs/operators';
 import { AppComponentBase } from 'src/shared/app-component-base';
 import { AppConsts } from 'src/shared/AppConsts';
-import { ApiServiceProxy, EmployeeDto, EmployeeServiceProxy, EnumEntityTypeDto, LookupServiceProxy, StartNewWorkflowInputDto, WorkflowAlreadyExistsDto, WorkflowListItemDto, WorkflowProcessType, WorkflowServiceProxy, WorkflowStepStatus } from 'src/shared/service-proxies/service-proxies';
+import { ApiServiceProxy, EmployeeDto, EmployeeServiceProxy, EnumEntityTypeDto, LookupServiceProxy, StartNewWorkflowInputDto, WorkflowAlreadyExistsDto, WorkflowListItemDto, WorkflowProcessType, WorkflowServiceProxy, WorkflowStatus, WorkflowStepStatus } from 'src/shared/service-proxies/service-proxies';
 import { SelectableCountry, SelectableIdNameDto } from '../client/client.model';
 import { InternalLookupService } from '../shared/common/internal-lookup.service';
 import { ConfirmationDialogComponent } from '../shared/components/confirmation-dialog/confirmation-dialog.component';
@@ -26,6 +28,10 @@ const WorkflowGridOptionsKey = 'WorkflowGridFILTERS.1.0.0.';
 })
 
 export class WorkflowComponent extends AppComponentBase implements OnInit, OnDestroy {
+    @ViewChild('trigger', { read: MatAutocompleteTrigger }) trigger: MatAutocompleteTrigger;
+    @ViewChild('clientsPaginator') paginator: MatPaginator;
+    isLoading: boolean;
+
     workflowFilter = new FormControl(null);
 
     pageNumber = 1;
@@ -37,16 +43,15 @@ export class WorkflowComponent extends AppComponentBase implements OnInit, OnDes
 
     workflowDisplayColumns = [
         'flag',
-        'id',
         'Client',
-        'Consultants',
         'SalesType',
         'DeliveryType',
         'startDate',
         'endDate',
+        'Consultants',
+        'Status',
         'openProcess',
         'Steps',
-        'Status',
         'action'
     ];
 
@@ -132,7 +137,7 @@ export class WorkflowComponent extends AppComponentBase implements OnInit, OnDes
             takeUntil(this._unsubscribe),
             debounceTime(700)
         ).subscribe(() => {
-            this.getWorkflowList();
+            this.getWorkflowList(true);
         });
 
         this.accountManagerFilter.valueChanges.pipe(
@@ -142,13 +147,16 @@ export class WorkflowComponent extends AppComponentBase implements OnInit, OnDes
                 let toSend = {
                     name: value,
                     maxRecordsCount: 1000,
+                    showAll: true,
+                    excludeIds: this.selectedAccountManagers.map(x => +x.id)
                 };
                 if (value?.id) {
                     toSend.name = value.id
                         ? value.name
                         : value;
                 }
-                return this._lookupService.employees(value);
+                this.isLoading = true;
+                return this._lookupService.employees(toSend.name, toSend.showAll, toSend.excludeIds);
             }),
         ).subscribe((list: EmployeeDto[]) => {
             if (list.length) {
@@ -163,6 +171,7 @@ export class WorkflowComponent extends AppComponentBase implements OnInit, OnDes
             } else {
                 this.filteredAccountManagers = [{ name: 'No managers found', externalId: '', id: 'no-data', selected: false }];
             }
+            this.isLoading = false;
         });
     }
 
@@ -327,9 +336,11 @@ export class WorkflowComponent extends AppComponentBase implements OnInit, OnDes
 
     getFlagColor(flag: number): string {
         switch (flag) {
-            case WorkflowFlag.NewSales:
+            case WorkflowProcessType.StartClientPeriod:
+            case WorkflowProcessType.StartConsultantPeriod:
                 return 'workflow-flag--sales'
-            case WorkflowFlag.Extension:
+            case WorkflowProcessType.ExtendClientPeriod:
+            case WorkflowProcessType.ExtendConsultantPeriod:
                 return 'workflow-flag--extension'
             default:
                 return '';
@@ -338,9 +349,11 @@ export class WorkflowComponent extends AppComponentBase implements OnInit, OnDes
 
     mapFlagTooltip(flag: number): string {
         switch (flag) {
-            case WorkflowFlag.NewSales:
+            case WorkflowProcessType.StartClientPeriod:
+            case WorkflowProcessType.StartConsultantPeriod:
                 return 'New Sales'
-            case WorkflowFlag.Extension:
+            case WorkflowProcessType.ExtendClientPeriod:
+            case WorkflowProcessType.ExtendConsultantPeriod:
                 return 'Has Extension'
             default:
                 return '';
@@ -387,9 +400,8 @@ export class WorkflowComponent extends AppComponentBase implements OnInit, OnDes
             });
     }
 
-    getWorkflowList() {
+    getWorkflowList(filterChanged?: boolean) {
         let searchFilter = this.workflowFilter.value ? this.workflowFilter.value : '';
-        this.isDataLoading = true;
         let invoicingEntity = this.invoicingEntityControl.value ? this.invoicingEntityControl.value : undefined;
         let paymentEntity = this.paymentEntityControl.value ? this.paymentEntityControl.value : undefined;
         let salesType = this.salesTypeControl.value ? this.salesTypeControl.value : undefined;
@@ -399,6 +411,11 @@ export class WorkflowComponent extends AppComponentBase implements OnInit, OnDes
 
         if (this.workflowListSubscription) {
             this.workflowListSubscription.unsubscribe();
+        }
+        this.isDataLoading = true;
+
+        if (filterChanged) {
+            this.pageNumber = 1;
         }
 
         this.workflowListSubscription = this._apiService.workflow(
@@ -424,13 +441,16 @@ export class WorkflowComponent extends AppComponentBase implements OnInit, OnDes
             .subscribe(result => {
                 let formattedData = result?.items!.map(x => {
                     return {
+                        processStatusIcon: this.getFlagColor(x.workflowStatusWithEmployee?.processType!),
+                        processStatusName: this.mapFlagTooltip(x.workflowStatusWithEmployee?.processType!),
                         workflowId: x.workflowId,
                         clientName: x.clientName,
                         startDate: x.startDate,
                         endDate: x.endDate,
                         salesType: this.findItemById(this.saleTypes, x.salesTypeId),
                         deliveryType: this.findItemById(this.deliveryTypes, x.deliveryTypeId),
-                        workflowStatusWithEmployee: x.workflowStatusWithEmployee,
+                        statusName: x.workflowStatusWithEmployee?.status,
+                        statusIcon: this.getStatusIcon(x.workflowStatusWithEmployee?.status!),
                         isDeleted: x.isDeleted,
                         consultants: x.consultants,
                         openProcesses: x.openProcesses,
@@ -441,6 +461,19 @@ export class WorkflowComponent extends AppComponentBase implements OnInit, OnDes
                 this.totalCount = result.totalCount;
                 this.saveGridOptions();
             });
+    }
+
+    getStatusIcon(status: number) {
+        switch (status) {
+            case WorkflowStatus.Active:
+                return 'active-status';
+            case WorkflowStatus.Pending:
+                return 'pending-status';
+            case WorkflowStatus.Finished:
+                return 'finished-status';
+            default:
+                return '';
+        }
     }
 
     pageChanged(event?: any): void {
@@ -473,7 +506,8 @@ export class WorkflowComponent extends AppComponentBase implements OnInit, OnDes
             const i = list.findIndex((value: any) => value.name === item.name);
             list.splice(i, 1);
         }
-        this.getWorkflowList();
+        this.pageNumber = 1;
+        this.getWorkflowList(true);
     }
 
     getCurrentUser() {
@@ -510,6 +544,16 @@ export class WorkflowComponent extends AppComponentBase implements OnInit, OnDes
         this.includeDeleted = false;
         localStorage.removeItem(WorkflowGridOptionsKey);
         this.getCurrentUser();
+    }
+
+    openMenu(event: any) {
+        event.stopPropagation();
+        this.trigger.openPanel();
+    }
+
+    onOpenedMenu() {
+        this.accountManagerFilter.setValue('');
+        this.accountManagerFilter.markAsTouched();
     }
 }
 

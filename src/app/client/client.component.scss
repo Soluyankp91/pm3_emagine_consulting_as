@@ -4,9 +4,7 @@
 
 .client-list {
     &--filter {
-        // height: 150px;
-        height: $white-header-height;
-        padding: 16px 75px;
+        padding: 32px 50px;
         &__badge {
             display: flex;
             justify-content: center;
@@ -25,6 +23,10 @@
                 background-color: #4a4e60;
                 color: $white-color;
                 font-weight: 700;
+                border-radius: 50%;
+                display: flex;
+                justify-content: center;
+                align-items: center;
             }
         }
         &-status {
@@ -36,6 +38,9 @@
                 font-weight: 700;
                 font-size: 14px;
                 color: rgba(56, 72, 83, 0.87);
+                .active-status {
+                }
+                .non-active-status
                 &.selected-status {
                     background-color: rgba(42, 194, 167, 0.13);
                     border-color: $green-color;
@@ -52,23 +57,10 @@
         }
     }
 
-    &--header {
-        color: $dark-grey-color;
-        font-size: 56px;
-        font-weight: 800;
-        font-size: 48px;
-        line-height: 120%;
-    }
-
     &--content {
-        padding: 16px 75px;
+        padding: 32px 50px;
         background-color: $sand-25-color;
         min-height: calc(100vh - 150px);
-    }
-
-    &--table {
-        position: relative;
-        min-height: 120px;
     }
 }
 
@@ -85,7 +77,16 @@
             color: $green-color;
         }
         &.deleted-flag {
+            color: #FF7A78;
+        }
+        &.wrong-deleted-flag {
             color: #F80830;
+        }
+        &.green-dot {
+            color: $green-color;
+        }
+        &.grey-dot {
+            color: $light-grey-color;
         }
     }
     &-text {
@@ -96,6 +97,9 @@
             color: $medium-grey-color;
         }
         &--deleted {
+            color: #FF7A78;
+        }
+        &--wrong-deleted {
             color: #F80830;
         }
     }
@@ -107,4 +111,15 @@
     font-size: 14px;
     line-height: 140%;
     color: #B6B4B2;
+}
+
+.country-flag {
+    width: 24px;
+    height: 24px;
+    line-height: 24px;
+    &--big {
+        width: 40px;
+        height: 40px;
+        line-height: 40px;
+    }
 }

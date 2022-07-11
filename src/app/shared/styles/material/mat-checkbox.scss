@@ -18,6 +18,11 @@
             stroke: $white-color !important;
         }
     }
+    @media screen and (max-width: 1440px) {
+        .mat-checkbox-label {
+            font-size: 12px;
+        }
+    }
 }
 
 .black-checkbox {
@@ -39,6 +44,11 @@
         color: #384853DE;
         font-weight: 700;
     }
+    @media screen and (max-width: 1440px) {
+        .mat-checkbox-label {
+            font-size: 12px;
+        }
+    }
     &.mat-checkbox-checked,
     &.mat-checkbox-indeterminate {
         .mat-checkbox-frame {
@@ -47,7 +57,7 @@
         .mat-checkbox-background {
             background-color: $dark-grey-color !important;
             svg path {
-                stroke: #fff !important;
+                stroke:  $white-color !important;
             }
         }
     }

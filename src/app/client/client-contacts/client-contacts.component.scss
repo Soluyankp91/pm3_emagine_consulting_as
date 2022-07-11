@@ -15,3 +15,32 @@
 .icon-arrow-rotate180 {
     transform: rotateY(180deg);
 }
+
+.contact-status-dot {
+    font-size: 14px;
+    width: 14px;
+    height: 14px;
+    line-height: 14px;
+    @media screen and (max-width: 1440px) {
+        font-size: 10px;
+        width: 10px;
+        height: 10px;
+        line-height: 10px;
+    }
+    &.active-status {
+        color:  rgba($color: $green-color, $alpha: 0.5);
+    }
+    &.deleted-status {
+        color: #F80830;
+    }
+    &.wrongfully-deleted-status {
+        color: $red-color;
+    }
+    &.non-active-status {
+        color:  rgba($color: $medium-grey-color, $alpha: 0.5);
+    }
+}
+
+.contact-deleted-row {
+    background-color: rgba(255, 122, 120, 0.05);
+}

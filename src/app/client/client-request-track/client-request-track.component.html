@@ -2,22 +2,22 @@
     <div fxLayout="column" fxLayoutAlign="start center" class="client-list--table u-w--100">
         <div fxLayout="column" fxFlexFill>
             <mat-table #table [dataSource]="clientDataSource" class="white-table u-w--100" matSort matSortStart="asc" (matSortChange)="sortChanged($event)">
-                <ng-container matColumnDef="countryFlag">
+                <!-- <ng-container matColumnDef="countryFlag">
                     <mat-header-cell *matHeaderCellDef fxFlex="2%"></mat-header-cell>
                     <mat-cell *matCellDef="let row" fxFlex="2%">
-                        <!-- <mat-icon class="country-lookup--btn__flag selected-country" svgIcon="{{row.clientAddress_Country_Name}}-flag-selected"></mat-icon> -->
+                        <mat-icon class="country-lookup--btn__flag selected-country" svgIcon="{{row.clientAddress_Country_Name}}-flag-selected"></mat-icon>
                     </mat-cell>
-                </ng-container>
+                </ng-container> -->
                 <ng-container matColumnDef="id">
-                    <mat-header-cell *matHeaderCellDef mat-sort-header fxFlex="3%"> # </mat-header-cell>
-                    <mat-cell *matCellDef="let row" fxFlex="3%">
+                    <mat-header-cell *matHeaderCellDef mat-sort-header fxFlex="5%"> # </mat-header-cell>
+                    <mat-cell *matCellDef="let row" fxFlex="5%">
                         {{row.requestId}}
                     </mat-cell>
                 </ng-container>
                 <ng-container matColumnDef="headline">
                     <mat-header-cell *matHeaderCellDef mat-sort-header fxFlex="15%"> Request name </mat-header-cell>
                     <mat-cell *matCellDef="let row" fxFlex="15%">
-                        <span class="text-truncate-ellipsis" [matTooltip]="row.headline" matTooltipClass="white-tooltip">
+                        <span class="text-truncate-ellipsis text-bold" [matTooltip]="row.headline" matTooltipClass="white-tooltip">
                             {{row.headline}}
                         </span>
                     </mat-cell>
