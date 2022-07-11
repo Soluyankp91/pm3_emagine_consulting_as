@@ -34,8 +34,15 @@ export class GlobalHttpInterceptorService implements HttpInterceptor {
                             case 400:
                                 return this.transformBlobToJson(error)
                                     .then(response => {
-                                        // console.log(JSON.stringify(response));
-                                        message = response?.error?.message ?? 'Invalid input';
+                                        console.log(JSON.stringify(response));
+                                        // let message = JSON.parse(response);
+                                        // console.log(message);
+                                        if (response?.error?.message?.length > 0) {
+                                            message = response?.error?.message;
+                                        } else {
+                                            message = JSON.stringify(response) ?? 'Invalid input';
+                                        }
+                                        // message = response?.error?.message ?? 'Invalid input';
                                         header = 'Bad request!';
                                         handled = true;
                                         this.showDialog(message, header);
