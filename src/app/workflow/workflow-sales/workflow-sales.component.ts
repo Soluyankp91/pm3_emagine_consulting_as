@@ -1720,6 +1720,7 @@ export class WorkflowSalesComponent extends AppComponentBase implements OnInit {
                 }))
                 .subscribe(result => {
                     this.showNotify(NotifySeverity.Success, 'Saved sales step', 'Ok');
+                    this._workflowDataService.workflowTopSectionUpdated.emit();
                     if (this.editEnabledForcefuly) {
                         this.toggleEditMode();
                     }
