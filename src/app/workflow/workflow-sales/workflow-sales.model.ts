@@ -1,4 +1,4 @@
-import { FormArray, FormControl, FormGroup } from "@angular/forms";
+import { FormArray, FormControl, FormGroup, Validators } from "@angular/forms";
 
 export class WorkflowSalesMainForm extends FormGroup {
     constructor() {
@@ -8,7 +8,7 @@ export class WorkflowSalesMainForm extends FormGroup {
             projectType: new FormControl(null),
             margin: new FormControl(null),
             projectCategory: new FormControl(null),
-            projectDescription: new FormControl(null),
+            projectDescription: new FormControl(null, Validators.maxLength(4000)),
 
             discounts: new FormControl(null),
 

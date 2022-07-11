@@ -143,7 +143,7 @@
                         <ng-template #projectDescriptionInput>
                             <mat-form-field appearance="outline" class="u-w--100 textarea-input " fxFlex="0 0 calc(66% + 16px)">
                                 <mat-label>Project Description</mat-label>
-                                <textarea matInput autocomplete="new-password" name="projectDescription" formControlName="projectDescription">
+                                <textarea matInput autocomplete="new-password" name="projectDescription" formControlName="projectDescription" [matTextareaAutosize]="true" [matAutosizeMinRows]="2">
                                 </textarea>
                             </mat-form-field>
                         </ng-template>
@@ -166,7 +166,7 @@
                         <ng-template #remarksInput>
                             <mat-form-field appearance="outline" class="u-w--100 textarea-input " fxFlex="0 0 calc(66% + 16px)">
                                 <mat-label>Remarks</mat-label>
-                                <textarea matInput autocomplete="new-password" name="remarks" formControlName="remarks">
+                                <textarea matInput autocomplete="new-password" name="remarks" formControlName="remarks" [matTextareaAutosize]="true" [matAutosizeMinRows]="2">
                                 </textarea>
                             </mat-form-field>
                         </ng-template>
@@ -234,7 +234,7 @@
                             <ng-template #specialContractTermsInput>
                                 <mat-form-field appearance="outline" class="u-w--100  textarea-input" fxFlex="0 0 calc(66% + 16px)">
                                     <mat-label>Special Contract Terms</mat-label>
-                                    <textarea matInput autocomplete="new-password" name="specialContractTerms" formControlName="specialContractTerms">
+                                    <textarea matInput autocomplete="new-password" name="specialContractTerms" formControlName="specialContractTerms" [matTextareaAutosize]="true" [matAutosizeMinRows]="2">
                                     </textarea>
                                 </mat-form-field>
                             </ng-template>
@@ -573,7 +573,7 @@
                                 <ng-template #consultantsSpecialContractTermsInput>
                                     <mat-form-field appearance="outline" class="u-w--100  textarea-input" fxFlex="0 0 calc(66% + 16px)">
                                         <mat-label>Special Contract Terms</mat-label>
-                                        <textarea matInput autocomplete="new-password" name="specialContractTerms" formControlName="specialContractTerms">
+                                        <textarea matInput autocomplete="new-password" name="specialContractTerms" formControlName="specialContractTerms" [matTextareaAutosize]="true" [matAutosizeMinRows]="2">
                                         </textarea>
                                     </mat-form-field>
                                 </ng-template>

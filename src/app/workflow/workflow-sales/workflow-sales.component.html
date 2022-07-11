@@ -980,7 +980,7 @@
                         <div fxLayout="row" fxLayoutAlign="start start" class="u-w--100 u-mb--10  u-mt--10">
                             <mat-form-field appearance="outline" class="u-w--100 textarea-input " fxFlex="0 0 calc(66% + 16px)">
                                 <mat-label>Remarks</mat-label>
-                                <textarea matInput autocomplete="new-password" name="remarks" formControlName="remarks">
+                                <textarea matInput autocomplete="new-password" name="remarks" formControlName="remarks" [matTextareaAutosize]="true" [matAutosizeMinRows]="2">
                                 </textarea>
                             </mat-form-field>
                         </div>
@@ -1105,8 +1105,9 @@
                             <div fxLayout="row" fxLayoutAlign="start start" class="u-w--100 u-mb--10">
                                 <mat-form-field appearance="outline" class="u-w--100 textarea-input " fxFlex="0 0 calc(66% + 16px)">
                                     <mat-label>Project Description</mat-label>
-                                    <textarea matInput autocomplete="new-password" name="projectDescription" formControlName="projectDescription">
+                                    <textarea matInput autocomplete="new-password" name="projectDescription" formControlName="projectDescription" [matTextareaAutosize]="true" [matAutosizeMinRows]="2">
                                     </textarea>
+                                    <mat-error>{{getValidationMessage(salesMainDataForm.projectDescription)}}</mat-error>
                                 </mat-form-field>
                             </div>
                         </div>
@@ -1401,7 +1402,7 @@
                             <div fxLayout="row" fxLayoutAlign="start start" class="u-w--100 u-mb--10">
                                 <mat-form-field appearance="outline" class="u-w--100 textarea-input " fxFlex="0 0 calc(66% + 16px)">
                                     <mat-label>Remarks</mat-label>
-                                    <textarea matInput autocomplete="new-password" name="remarks" formControlName="remarks">
+                                    <textarea matInput autocomplete="new-password" name="remarks" formControlName="remarks" [matTextareaAutosize]="true" [matAutosizeMinRows]="2">
                                     </textarea>
                                 </mat-form-field>
                             </div>
@@ -2051,7 +2052,7 @@
 
                                 <mat-form-field *ngIf="salesClientDataForm?.value?.evaluationsDisabled" appearance="outline" class="u-w--100 textarea-input " fxFlex="0 0 calc(66% + 16px)">
                                     <mat-label>Disable Evaluations Reason</mat-label>
-                                    <textarea matInput autocomplete="new-password" name="evaluationsDisabledReason" formControlName="evaluationsDisabledReason">
+                                    <textarea matInput autocomplete="new-password" name="evaluationsDisabledReason" formControlName="evaluationsDisabledReason" [matTextareaAutosize]="true" [matAutosizeMinRows]="2">
                                     </textarea>
                                 </mat-form-field>
                             </div>
@@ -2063,7 +2064,7 @@
                             <div fxLayout="row" fxLayoutAlign="start start" fxLayoutGap="10px" class="u-w--100 u-mb--10">
                                 <mat-form-field appearance="outline" class="u-w--100  textarea-input" fxFlex="0 0 calc(66% + 16px)">
                                     <mat-label>Special Contract Terms</mat-label>
-                                    <textarea matInput autocomplete="new-password" name="specialContractTerms" formControlName="specialContractTerms">
+                                    <textarea matInput autocomplete="new-password" name="specialContractTerms" formControlName="specialContractTerms" [matTextareaAutosize]="true" [matAutosizeMinRows]="2">
                                     </textarea>
                                 </mat-form-field>
                                 <mat-checkbox color="accent" formControlName="noSpecialContractTerms" name="noSpecialContractTerms" class="black-checkbox u-mt--10" (change)="disableOrEnableInput(salesClientDataForm?.noSpecialContractTerms?.value, salesClientDataForm?.specialContractTerms)" >
@@ -2889,7 +2890,7 @@
                                     <div fxLayout="row" fxLayoutAlign="start center" class="u-w--100">
                                         <mat-form-field appearance="outline" class="u-w--100  textarea-input u-mr--16" fxFlex="0 0 calc(66% + 16px)">
                                             <mat-label>Consultant Special Contract Terms</mat-label>
-                                            <textarea matInput autocomplete="new-password" name="consultantSpecialContractTerms" formControlName="consultantSpecialContractTerms">
+                                            <textarea matInput autocomplete="new-password" name="consultantSpecialContractTerms" formControlName="consultantSpecialContractTerms" [matTextareaAutosize]="true" [matAutosizeMinRows]="2">
                                             </textarea>
                                         </mat-form-field>
                                     </div>
@@ -3041,7 +3042,7 @@
             <div fxLayout="row" fxLayoutAlign="start start" class="u-w--100"  *ngIf="salesTerminateConsultantForm?.terminationTime?.value === 2 || salesTerminateConsultantForm?.terminationTime?.value === 3">
                 <mat-form-field appearance="outline" class="u-w--100 textarea-input " fxFlex="0 0 calc(66% + 16px)">
                     <mat-label>Cause</mat-label>
-                    <textarea matInput autocomplete="new-password" name="causeOfTerminationBeforeEndOfContract" formControlName="causeOfNonStandardTerminationTime">
+                    <textarea matInput autocomplete="new-password" name="causeOfTerminationBeforeEndOfContract" formControlName="causeOfNonStandardTerminationTime" [matTextareaAutosize]="true" [matAutosizeMinRows]="2">
                     </textarea>
                 </mat-form-field>
             </div>
@@ -3049,7 +3050,7 @@
             <div fxLayout="row" fxLayoutAlign="start start" class="u-w--100 u-mb--20 u-mt--10">
                 <mat-form-field appearance="outline" class="u-w--100 textarea-input " fxFlex="0 0 calc(66% + 16px)">
                     <mat-label>Additional comments</mat-label>
-                    <textarea matInput autocomplete="new-password" name="additionalComments" formControlName="additionalComments">
+                    <textarea matInput autocomplete="new-password" name="additionalComments" formControlName="additionalComments" [matTextareaAutosize]="true" [matAutosizeMinRows]="2">
                     </textarea>
                 </mat-form-field>
             </div>
@@ -3077,7 +3078,7 @@
                 <div fxLayout="row" fxLayoutAlign="start start" class="u-w--100 u-mb--10" *ngIf="salesTerminateConsultantForm?.noEvaluation?.value === true">
                     <mat-form-field appearance="outline" class="u-w--100 textarea-input " fxFlex="0 0 calc(66% + 16px)">
                         <mat-label>Cause</mat-label>
-                        <textarea matInput autocomplete="new-password" name="causeOfNoEvaluation" formControlName="causeOfNoEvaluation">
+                        <textarea matInput autocomplete="new-password" name="causeOfNoEvaluation" formControlName="causeOfNoEvaluation" [matTextareaAutosize]="true" [matAutosizeMinRows]="2">
                         </textarea>
                     </mat-form-field>
                 </div>
