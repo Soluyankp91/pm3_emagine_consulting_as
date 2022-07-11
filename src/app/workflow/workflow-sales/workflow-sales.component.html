@@ -2162,7 +2162,7 @@
                                                 <ng-container>
                                                     <mat-option *ngFor="let item of filteredConsultants" [value]="item" [ngClass]="{ 'no-data': item.id === 'no-data' }">
                                                         <div class="multilineDropdown-option--row">
-                                                            <img *ngIf="item.id !== 'no-data'" class="image-thumbnail-responsive u-ml--16 u-mr--16" [src]="consultantProfileUrl(item.consultant.externalId)" />
+                                                            <img *ngIf="item.id !== 'no-data'" class="image-thumbnail-responsive border-rounded-50 u-ml--16 u-mr--16" [src]="consultantProfileUrl(item.consultant.externalId)" />
                                                             <div class="multilineDropdown-option--column">
                                                                 <b>{{ item.consultant.name }}</b>
                                                                 <span *ngIf="item.id !== 'no-data'"> | {{item.consultant.companyName}} | {{item.consultant.city}} | #{{item.consultant.id}} / {{item.consultant.legacyId}}</span>
