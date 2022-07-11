@@ -1129,7 +1129,7 @@
                     <ng-template #syncInput>
                         <h2 class="workflow-section--header u-mt--20">Sync</h2>
                         <div fxLayout="column" fxLayoutAlign="start start" class="u-w--100">
-                            <button class="button-accept u-mb--10" mat-flat-button (click)="processSyncToLegacySystem()">
+                            <button class="button-accept u-mb--10" mat-flat-button (click)="processSaveBeforeSyncToLegacySystem()">
                                 Sync to legacy system
                             </button>
                             <div fxLayout="row" fxLayoutAlign="start center" class="u-mb--10" *ngIf="syncNotPossible">
