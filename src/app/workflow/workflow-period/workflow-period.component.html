@@ -2,7 +2,7 @@
     <div fxFlex="20%" class="workflow-navigation--wrapper">
         <ng-scrollbar>
             <mat-accordion class="workflow-sidenav--expansion" [togglePosition]="'before'">
-                <mat-expansion-panel class="mat-elevation-z0" *ngFor="let item of sideMenuItems; index as i" [expanded]="sectionIndex === i" (click)="sectionIndex === i ? $event.preventDefault() : ''" (opened)="changeSideSection(item, i)">
+                <mat-expansion-panel class="mat-elevation-z0" *ngFor="let item of sideMenuItems2; index as i" [expanded]="sectionIndex === i" (click)="sectionIndex === i ? $event.preventDefault() : ''" (opened)="changeSideSection(item, i)">
                     <mat-expansion-panel-header [collapsedHeight]="'60px'" [expandedHeight]="'60px'">
                         <div fxLayout="row" fxLayoutAlign="space-between start" class="u-w--100">
                             <div class="sidenav-expansion--header" fxFlex="90%">
@@ -59,15 +59,18 @@
                                     </span>
                                 </div>
                                 <!-- TODO: add when BE will be ready -->
-                                <!-- <div fxLayout="column" fxLayoutAlign="start start" class="u-ml--55" *ngIf="step.name === selectedStep">
-                                    <div *ngFor="let anchor of step.menuAnchors"
+                                <div fxLayout="column" fxLayoutAlign="start start" class="u-ml--55" *ngIf="step.name === selectedStep.name">
+                                    <div *ngFor="let item of step.menuAnchors"
                                          class="workflow-navigation--step__anchor u-mb--10"
-                                         (click)="changeAnchorSelection(anchor.name)"
-                                         [ngxScrollTo]="anchor.value"
-                                         [ngClass]="{'active-anchor': anchor.name === selectedAnchor}">
-                                        {{anchor.name}}
+                                         (click)="changeAnchorSelection(item.name!)"
+                                         [ngxScrollTo]="item.anchor!"
+                                         [ngClass]="{'active-anchor': item.name === selectedAnchor}">
+                                        {{item.name}}
+                                        <span *ngIf="item?.consultantName" style="color: red; text-transform: none;">
+                                            {{item.consultantName}}
+                                        </span>
                                     </div>
-                                </div> -->
+                                </div>
                             </div>
                         </div>
                     </div>

@@ -202,7 +202,7 @@
                 <ng-container matColumnDef="SalesType">
                     <mat-header-cell *matHeaderCellDef mat-sort-header fxFlex="10%"> Sales type </mat-header-cell>
                     <mat-cell *matCellDef="let row" fxFlex="10%">
-                        <span class="text-truncate-ellipsis" [matTooltip]="row.salesType?.name" matTooltipClass="white-tooltip">
+                        <span class="text-truncate-ellipsis"  [matTooltip]="row.salesType?.name" matTooltipClass="white-tooltip">
                             {{row.salesType?.name}}
                         </span>
                     </mat-cell>
