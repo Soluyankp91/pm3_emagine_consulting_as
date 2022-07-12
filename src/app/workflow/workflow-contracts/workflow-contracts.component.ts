@@ -1244,7 +1244,7 @@ export class WorkflowContractsComponent extends AppComponentBase implements OnIn
                     this.hideMainSpinner();
                 }))
                 .subscribe(result => {
-                    if (this.editEnabledForcefuly) {
+                    if (this.editEnabledForcefuly && !isSyncToLegacy) {
                         this.toggleEditMode();
                     }
                     this.getContractStepData(isSyncToLegacy);
@@ -1390,7 +1390,7 @@ export class WorkflowContractsComponent extends AppComponentBase implements OnIn
                     this.hideMainSpinner();
                 }))
                 .subscribe(result => {
-                    if (this.editEnabledForcefuly) {
+                    if (this.editEnabledForcefuly && !isSyncToLegacy) {
                         this.toggleEditMode();
                     }
                     this.getContractStepData(isSyncToLegacy);
@@ -1455,7 +1455,7 @@ export class WorkflowContractsComponent extends AppComponentBase implements OnIn
                     this.hideMainSpinner();
                 }))
                 .subscribe(result => {
-                    if (this.editEnabledForcefuly) {
+                    if (this.editEnabledForcefuly && !isSyncToLegacy) {
                         this.toggleEditMode();
                     }
                     this.getContractStepData(isSyncToLegacy);
@@ -1514,6 +1514,9 @@ export class WorkflowContractsComponent extends AppComponentBase implements OnIn
                     this.hideMainSpinner();
                 }))
                 .subscribe(result => {
+                    if (this.editEnabledForcefuly && !isSyncToLegacy) {
+                        this.toggleEditMode();
+                    }
                     this.getContractStepData(isSyncToLegacy);
                 })
         } else {
