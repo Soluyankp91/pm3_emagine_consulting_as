@@ -162,7 +162,7 @@ export class WorkflowPeriodComponent extends AppComponentBase implements OnInit 
                 }
                 return new Array<StepAnchorDto>(...SalesAnchors);
             case StepType.Contract:
-                let ContractAnchors = [
+                let ContractAnchors: StepAnchorDto[] = [
                     {
                         name: 'Main Data',
                         anchor: 'mainDataAnchor'
@@ -170,10 +170,23 @@ export class WorkflowPeriodComponent extends AppComponentBase implements OnInit 
                     {
                         name: 'Client Data',
                         anchor: 'clientDataAnchor'
+                    },
+                    {
+                        name: 'Sync & Legal',
+                        anchor: 'syncLegalContractAnchor'
                     }
                 ];
+                if (consultantNames?.length) {
+                    let consultantAnchors: StepAnchorDto[] = consultantNames.map((name, index) => {
+                        return {
+                            name: 'Consultant Data',
+                            anchor: `consultantDataAnchor${index}`,
+                            consultantName: name
+                        }
+                    });
+                    ContractAnchors.splice(2, 0, ...consultantAnchors);
+                }
                 return new Array<StepAnchorDto>(...ContractAnchors);
-                // return ['Main Data', 'Client Data', 'Consultant Data'];
             case StepType.Finance:
                 return [];
             case StepType.Sourcing:

@@ -3,7 +3,7 @@
     <ng-container *ngIf="readOnlyMode; else editMode">
         <ng-container *ngIf="(activeSideSection.typeId !== workflowSideSections.TerminateWorkflow) && (activeSideSection.typeId !== workflowSideSections.TerminateConsultant); else terminationTemplate">
             <!-- Main data -->
-            <div fxLayout="column" fxLayoutAlign="start start" class="workflow-sales--process-data u-w--100">
+            <div fxLayout="column" fxLayoutAlign="start start" class="workflow-sales--process-data u-w--100" id="mainDataAnchor">
                 <div fxLayout="column" fxLayoutAlign="start start" class="u-w--100">
                     <h1 class="workflow-step-readonly--header-main">
                         <span class="process-name">Sales.</span>
@@ -198,7 +198,7 @@
             <mat-divider></mat-divider>
             <!-- Client data -->
             <div fxLayout="column" fxLayoutAlign="start start" class="workflow-sales--process-data u-w--100">
-                <div fxLayout="column" fxLayoutAlign="start start" class="u-w--100">
+                <div fxLayout="column" fxLayoutAlign="start start" class="u-w--100" id="clientDataAnchor">
                     <h1 class="workflow-step-readonly--header-main u-mb--10">
                         <span class="process-name">Sales.</span>
                         <span class="anchor-name">Client data</span>
@@ -536,7 +536,7 @@
             <form [formGroup]="consultantsForm">
                 <ng-container formArrayName="consultantData" class="u-mb--20">
                     <ng-container *ngFor="let item of consultantsForm.consultantData.controls; index as consultantIndex" [formGroupName]="consultantIndex">
-                        <div fxLayout="column" fxLayoutAlign="start start" class="workflow-sales--process-data u-w--100">
+                        <div fxLayout="column" fxLayoutAlign="start start" class="workflow-sales--process-data u-w--100" [id]="'consultantDataAnchor' + consultantIndex">
                             <div fxLayout="column" fxLayoutAlign="start start" class="u-w--100">
                                 <div fxLayout="row" fxLayoutAlign="start center" class="u-w--100 u-mb--10">
                                     <h1 class="workflow-step-readonly--header-main" fxFlex="50%">
@@ -975,7 +975,7 @@
         <ng-container *ngIf="(activeSideSection.typeId !== workflowSideSections.TerminateWorkflow) && (activeSideSection.typeId !== workflowSideSections.TerminateConsultant); else terminationTemplate">
             <form [formGroup]="salesMainDataForm" id="mainData" class="workflow-form workflow-form--main u-w--100">
                 <ng-container *ngIf="(activeSideSection.typeId === workflowSideSections.StartConsultantPeriod) || (activeSideSection.typeId === workflowSideSections.ChangeConsultantPeriod) || (activeSideSection.typeId === workflowSideSections.ExtendConsultantPeriod); else startClientPeriodTemplate">
-                    <div fxLayout="column" fxLayoutAlign="start start" class="workflow-sales--process-data u-w--100">
+                    <div fxLayout="column" fxLayoutAlign="start start" class="workflow-sales--process-data u-w--100" id="mainDataAnchor">
                         <h1 class="workflow-section--header-main">Main data</h1>
                         <div fxLayout="row" fxLayoutAlign="start start" class="u-w--100 u-mb--10  u-mt--10">
                             <mat-form-field appearance="outline" class="u-w--100 textarea-input " fxFlex="0 0 calc(66% + 16px)">
@@ -992,7 +992,7 @@
                     </div>
                 </ng-container>
                 <ng-template #startClientPeriodTemplate>
-                    <div fxLayout="column" fxLayoutAlign="start start" class="workflow-sales--process-data u-w--100">
+                    <div fxLayout="column" fxLayoutAlign="start start" class="workflow-sales--process-data u-w--100" id="mainDataAnchor">
                         <div fxLayout="column" fxLayoutAlign="start start" class="u-w--100">
                             <h1 class="workflow-section--header-main">Main data</h1>
                             <h2 class="workflow-section--header">Project</h2>
@@ -1416,7 +1416,7 @@
                 </ng-template>
             </form>
             <ng-container *ngIf="(activeSideSection.typeId !== workflowSideSections.StartConsultantPeriod) && (activeSideSection.typeId !== workflowSideSections.ChangeConsultantPeriod) && (activeSideSection.typeId !== workflowSideSections.ExtendConsultantPeriod)">
-                <form [formGroup]="salesClientDataForm" id="clientData" class="workflow-form workflow-form--client u-w--100">
+                <form [formGroup]="salesClientDataForm" id="clientData" class="workflow-form workflow-form--client u-w--100" id="clientDataAnchor">
                     <div fxLayout="column" fxLayoutAlign="start start" class="workflow-sales--process-data u-w--100">
                         <div fxLayout="column" fxLayoutAlign="start start" class="u-w--100">
                             <h1 class="workflow-section--header-main">Client data</h1>
@@ -2119,7 +2119,7 @@
                 <ng-container formArrayName="consultantData" class="u-mb--20">
                     <div fxLayout="column" fxLayoutAlign="start start" class="workflow-sales--process-data u-w--100">
                         <div *ngFor="let consultant of consultantsForm.consultantData.controls; let consultantIndex = index" [formGroupName]="consultantIndex" class="u-w--100">
-                            <div fxLayout="row" fxLayoutAlign="start center" fxLayoutGap="30px" class="u-w--100">
+                            <div fxLayout="row" fxLayoutAlign="start center" fxLayoutGap="30px" class="u-w--100" [id]="'consultantDataAnchor' + consultantIndex">
                                 <h1 class="workflow-section--header-main text-nowrap">Consultant data</h1>
                                 <ng-container  *ngIf="activeSideSection.typeId === workflowSideSections.StartClientPeriod && !readOnlyMode">
                                     <span fxFlex="auto" fxLayout="row" fxLayoutAlign="start center" class="u-w--100">

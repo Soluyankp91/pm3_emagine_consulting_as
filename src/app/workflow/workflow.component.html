@@ -192,8 +192,8 @@
                     </mat-cell>
                 </ng-container>
                 <ng-container matColumnDef="Client">
-                    <mat-header-cell *matHeaderCellDef fxFlex="17%">Client</mat-header-cell>
-                    <mat-cell *matCellDef="let row" fxFlex="17%">
+                    <mat-header-cell *matHeaderCellDef fxFlex="15%">Client</mat-header-cell>
+                    <mat-cell *matCellDef="let row" fxFlex="15%">
                         <span class="text-truncate-ellipsis text-bold-800" [matTooltip]="row.clientName ?? '-'" matTooltipClass="white-tooltip">
                             {{row.clientName ?? '-'}}
                         </span>
@@ -252,8 +252,8 @@
                     </mat-cell>
                 </ng-container>
                 <ng-container matColumnDef="Status">
-                    <mat-header-cell *matHeaderCellDef fxFlex="5%" fxLayoutAlign="center center"> WF Status </mat-header-cell>
-                    <mat-cell *matCellDef="let row" fxFlex="5%" fxLayoutAlign="center center">
+                    <mat-header-cell *matHeaderCellDef fxFlex="7%" fxLayoutAlign="center center"> WF Status </mat-header-cell>
+                    <mat-cell *matCellDef="let row" fxFlex="7%" fxLayoutAlign="center center">
                         <mat-icon class="workflow-status" [matTooltip]="workflowStatuses[row.statusName] + ' workflow'" matTooltipClass="white-tooltip" [ngClass]="row?.statusIcon">fiber_manual_record</mat-icon>
                     </mat-cell>
                 </ng-container>
