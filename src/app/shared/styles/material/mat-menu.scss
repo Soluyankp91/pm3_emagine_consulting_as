@@ -50,7 +50,8 @@
 .workflow-list--filter-manager-menu + * .cdk-overlay-pane,
 .client-list--filter-manager-menu + * .cdk-overlay-pane,
 .client-list--filter-country-menu + * .cdk-overlay-pane,
-.main-overview--filter-manager-menu + * .cdk-overlay-pane {
+.main-overview--filter-manager-menu + * .cdk-overlay-pane,
+.main-overview--filter-country-menu + * .cdk-overlay-pane {
     .mat-menu-panel {
         min-height: 48px !important;
         border-radius: unset !important;
@@ -64,7 +65,8 @@
 .workflow-list--filter-manager-menu + * + * .cdk-overlay-pane,
 .client-list--filter-manager-menu + * + * .cdk-overlay-pane,
 .client-list--filter-country-menu + * + * .cdk-overlay-pane,
-.main-overview--filter-manager-menu + * + * .cdk-overlay-pane  {
+.main-overview--filter-manager-menu + * + * .cdk-overlay-pane,
+.main-overview--filter-country-menu + * + * .cdk-overlay-pane {
     .mat-autocomplete-panel {
         // border: 1px solid #E7E3E8;
         min-width: 234px !important;
@@ -94,6 +96,29 @@
                 color: rgba(56, 72, 83, 0.8);
                 @media screen and (max-width: 1440px) {
                     font-size: 12px;
+                }
+            }
+        }
+    }
+}
+
+.main-overview--user-status-menu + * .cdk-overlay-pane {
+    .mat-menu-panel {
+        min-height: 48px !important;
+        border-radius: unset !important;
+        min-width: 167px !important;
+        .mat-menu-content {
+            padding: 10px 0 !important;
+            button {
+                display: flex;
+                height: 30px !important;
+                font-style: normal;
+                font-weight: 600;
+                font-size: 12px;
+                line-height: 140%;
+                color: #4A4E60;
+                @media screen and (max-width: 1366px) {
+                    font-size: 10px;
                 }
             }
         }

@@ -27,6 +27,8 @@ export class MainOverviewComponent extends AppComponentBase implements OnInit {
     @ViewChild('ganttConsultants', {static: false}) ganttConsultants: NgxGanttComponent;
     @ViewChild('trigger', { read: MatAutocompleteTrigger }) trigger: MatAutocompleteTrigger;
     isLoading: boolean;
+    isCountriesLoading: boolean;
+
     selectedAccountManagers: SelectableEmployeeDto[] = [];
     filteredAccountManagers: SelectableEmployeeDto[] = [];
 
@@ -43,7 +45,7 @@ export class MainOverviewComponent extends AppComponentBase implements OnInit {
     sorting = '';
     isDataLoading = true;
 
-    tenants: EnumEntityTypeDto[] = [];
+    tenants: SelectableCountry[] = [];
     saleTypes: EnumEntityTypeDto[] = [];
     deliveryTypes: EnumEntityTypeDto[] = [];
     margins: EnumEntityTypeDto[] = [];
@@ -297,7 +299,7 @@ export class MainOverviewComponent extends AppComponentBase implements OnInit {
         this.isDataLoading = true;
         let searchFilter = this.workflowFilter.value ? this.workflowFilter.value : '';
         let ownerIds = this.selectedAccountManagers.map(x => +x.id);
-        let invoicingEntity = this.invoicingEntityControl.value ?? undefined;
+        let invoicingEntity = this.invoicingEntityControl.value?.id ?? undefined;
         let paymentEntity = this.paymentEntityControl.value ?? undefined;
         let salesType = this.salesTypeControl.value ?? undefined;
         let deliveryType = this.deliveryTypesControl.value ?? undefined;
@@ -465,13 +467,49 @@ export class MainOverviewComponent extends AppComponentBase implements OnInit {
     }
 
     getTenants() {
+        this.isCountriesLoading = true;
+
         this._internalLookupService.getTenants()
             .pipe(finalize(() => {
-
+                this.isCountriesLoading = false;
             }))
             .subscribe(result => {
-                this.tenants = result;
+                this.tenants = result.map(x => {
+
+                    return new SelectableCountry({
+                        id: x.id!,
+                        name: x.name!,
+                        code: this.getTenantCountryCode(x.name!)!,
+                        selected: false,
+                        flag: x.name!
+                    });
+                });
             });
+    }
+
+    getTenantCountryCode(name: string) {
+        switch (name) {
+            case 'Denmark':
+                return 'DK';
+            case 'Sweden':
+                return 'SE';
+            case 'Poland':
+                return 'PL';
+            case 'Netherlands':
+                return 'NL';
+            case 'Germany':
+                return 'DE';
+            case 'Norway':
+                return 'NO';
+            case 'France':
+                return 'FR';
+            case 'India':
+                return 'IN';
+            case 'International':
+                return 'EU';
+            default:
+                break;
+        }
     }
 
     getSalesType() {

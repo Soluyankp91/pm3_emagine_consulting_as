@@ -18,6 +18,23 @@
             border-radius: 50%;
             color: $white-color;
         }
+        &-country {
+            width: 40px;
+            height: 40px;
+            &__btn {
+                background-color: #4a4e60;
+                color: $white-color;
+                font-weight: 700;
+                border-radius: 50%;
+                display: flex;
+                justify-content: center;
+                align-items: center;
+            }
+            @media screen and (max-width: 1366px) {
+                width: 30px;
+                height: 30px;
+            }
+        }
         &-country__flag {
             line-height: 40px;
             height: 40px;
@@ -179,3 +196,38 @@
         height: 30px;
     }
 }
+
+.country-flag {
+    width: 24px;
+    height: 24px;
+    line-height: 24px;
+    &--big {
+        width: 40px;
+        height: 40px;
+        line-height: 40px;
+        @media screen and (max-width: 1366px) {
+            width: 30px;
+            line-height: 30px;
+            height: 30px;
+        }
+    }
+}
+
+.select-button .mat-select {
+    width: 100%;
+    height: 100%;
+    opacity: 0;
+    position: absolute;
+    top: 0;
+    left: 0;
+  }
+
+  .select-button {
+    position: relative;
+    display: flex;
+    align-items: center;
+  }
+
+  .no-width {
+    width: 0px !important;
+  }

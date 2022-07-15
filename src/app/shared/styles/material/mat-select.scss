@@ -103,6 +103,16 @@
             color: rgba(0, 0, 0, 0.47) !important;
             font-weight: 400;
         }
+        &.mat-select-header-option {
+            font-style: normal;
+            font-weight: 600;
+            font-size: 14px;
+            line-height: 140%;
+            color: rgba(137, 135, 133, 0.77) !important;
+            @media screen and (max-width: 1366px) {
+                font-size: 12px;
+            }
+        }
 
     }
 }
@@ -222,6 +232,21 @@
 }
 
 .cdk-overlay-container .cdk-overlay-pane .main-overview-dropdowns{
+    &::-webkit-scrollbar {
+        width: 10px;
+    }
+
+    /* Track */
+    &::-webkit-scrollbar-track {
+        background: #fff;
+    }
+
+    /* Handle */
+    &::-webkit-scrollbar-thumb {
+        background: #888;
+        border-right: 5px #fff solid;
+        background-clip: padding-box
+    }
     @media screen and (max-width: 1440px) {
         font-size: 10px !important;
         margin-top: 25px;
