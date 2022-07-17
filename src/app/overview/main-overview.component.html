@@ -97,7 +97,7 @@
                         </div>
                     </mat-menu>
                 </div>
-                <div class="main-overview--filter-type cursor-pointer u-mb--10" [ngClass]="{'selected-status': status.selected}" *ngFor="let status of filteredMainOverviewStatuses; trackBy: statusesTrackBy"
+                <div class="main-overview--filter-type cursor-pointer u-mb--10" [ngClass]="detectSelectedStatusColor(status)" *ngFor="let status of filteredMainOverviewStatuses; trackBy: statusesTrackBy"
                     (click)="changeOverviewStatus(status)">
                     <mat-icon class="main-overview-icon-type" svgIcon="{{status.flag}}" [ngClass]="detectProcessColor(status.id)"></mat-icon>
                     <!-- <span class="main-overview--filter-type__quantity u-mr--5">

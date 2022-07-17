@@ -68,8 +68,22 @@
                 font-size: 14px;
             }
             &.selected-status {
-                background-color: rgba(42, 194, 167, 0.13);
-                border-color: $green-color;
+                &.green {
+                    background-color: rgba(42, 194, 167, 0.13);
+                    border-color: $green-color;
+                }
+                &.yellow {
+                    background-color: rgba(248, 176, 37, 0.22);
+                    border-color: #F8B025;
+                }
+                &.blue {
+                    background-color: rgba(45, 156, 219, 0.22);
+                    border-color: #2D9CDB;
+                }
+                &.red {
+                    background-color: rgba(255, 122, 120, 0.22);
+                    border-color: #FF7A78;
+                }
             }
         }
         &-manager {

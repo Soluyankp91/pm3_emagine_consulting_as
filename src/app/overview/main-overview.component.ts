@@ -202,6 +202,28 @@ export class MainOverviewComponent extends AppComponentBase implements OnInit {
         }
     }
 
+    detectSelectedStatusColor(status: SelectableStatusesDto) {
+        if (status.selected) {
+            switch (status.id) {
+                case OverviewFlag.ExtensionExpected:
+                case OverviewFlag.Extended:
+                case OverviewFlag.Started:
+                    return 'selected-status green'
+                case OverviewFlag.Terminated:
+                case OverviewFlag.ExpectedToTerminate:
+                    return 'selected-status red';
+                case OverviewFlag.ExtensionInNegotiation:
+                    return 'selected-status blue';
+                case OverviewFlag.RequiresAttention:
+                    return 'selected-status yellow';
+                default:
+                    return '';
+            }
+        } else {
+            return ''
+        }
+    }
+
     detectIcon(process: number) {
         switch (process) {
             case OverviewFlag.ExtensionExpected:
