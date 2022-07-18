@@ -8,9 +8,10 @@ import { finalize, takeUntil } from 'rxjs/operators';
 import { InternalLookupService } from 'src/app/shared/common/internal-lookup.service';
 import { ConfirmationDialogComponent } from 'src/app/shared/components/confirmation-dialog/confirmation-dialog.component';
 import { AppComponentBase } from 'src/shared/app-component-base';
-import { ClientPeriodContractsDataDto, WorkflowProcessType, WorkflowServiceProxy, ClientPeriodServiceProxy, ConsultantContractsDataDto, ConsultantSalesDataDto, ContractsClientDataDto, ContractsMainDataDto, EnumEntityTypeDto, PeriodClientSpecialFeeDto, PeriodClientSpecialRateDto, PeriodConsultantSpecialFeeDto, PeriodConsultantSpecialRateDto, ProjectLineDto, ConsultantTerminationContractDataCommandDto, WorkflowTerminationContractDataCommandDto, ConsultantTerminationContractDataQueryDto, ClientContractsServiceProxy, ConsultantPeriodServiceProxy, ConsultantContractsServiceProxy, ConsultantPeriodContractsDataDto, ClientsServiceProxy, ClientSpecialRateDto, ClientSpecialFeeDto, ConsultantResultDto, WorkflowProcessDto, ContractSyncServiceProxy } from 'src/shared/service-proxies/service-proxies';
+import { ClientPeriodContractsDataDto, WorkflowProcessType, WorkflowServiceProxy, ClientPeriodServiceProxy, ConsultantContractsDataDto, ConsultantSalesDataDto, ContractsClientDataDto, ContractsMainDataDto, EnumEntityTypeDto, PeriodClientSpecialFeeDto, PeriodClientSpecialRateDto, PeriodConsultantSpecialFeeDto, PeriodConsultantSpecialRateDto, ProjectLineDto, ConsultantTerminationContractDataCommandDto, WorkflowTerminationContractDataCommandDto, ConsultantTerminationContractDataQueryDto, ClientContractsServiceProxy, ConsultantPeriodServiceProxy, ConsultantContractsServiceProxy, ConsultantPeriodContractsDataDto, ClientsServiceProxy, ClientSpecialRateDto, ClientSpecialFeeDto, ConsultantResultDto, WorkflowProcessDto, ContractSyncServiceProxy, StepType } from 'src/shared/service-proxies/service-proxies';
 import { WorkflowConsultantActionsDialogComponent } from '../workflow-consultant-actions-dialog/workflow-consultant-actions-dialog.component';
 import { WorkflowDataService } from '../workflow-data.service';
+import { WorkflowProcessWithAnchorsDto } from '../workflow-period/workflow-period.model';
 import { ConsultantDiallogAction } from '../workflow-sales/workflow-sales.model';
 import { ProjectLineDiallogMode } from '../workflow.model';
 import { AddOrEditProjectLineDialogComponent } from './add-or-edit-project-line-dialog/add-or-edit-project-line-dialog.component';
@@ -27,7 +28,9 @@ export class WorkflowContractsComponent extends AppComponentBase implements OnIn
     @Input() consultant: ConsultantResultDto;
 
     // Changed all above to enum
-    @Input() activeSideSection: WorkflowProcessDto;
+    // @Input() activeSideSection: WorkflowProcessDto;
+    @Input() activeSideSection: WorkflowProcessWithAnchorsDto;
+
     @Input() isCompleted: boolean;
     @Input() permissionsForCurrentUser: { [key: string]: boolean; } | undefined;
 
@@ -396,6 +399,17 @@ export class WorkflowContractsComponent extends AppComponentBase implements OnIn
     get readOnlyMode() {
         // return !this.permissionsForCurrentUser!["Edit"] && !this.permissionsForCurrentUser!["StartEdit"];
         return this.isCompleted;
+    }
+
+    updateConsultantStepAnchors() {
+        let consultantNames = this.contractsConsultantsDataForm.consultants.value.map((item: any) => {
+            if (item.employmentType?.id === 10 || item.employmentType?.id === 11) {
+                return item.consultantNameOnly;
+            } else {
+                return item.consultant.name;
+            }
+        });
+        this._workflowDataService.consultantsAddedToStep.emit({stepType: StepType.Contract, processTypeId: this.activeSideSection.typeId!, consultantNames: consultantNames});
     }
 
     // #region CHANGE NAMING
@@ -1062,7 +1076,8 @@ export class WorkflowContractsComponent extends AppComponentBase implements OnIn
                     result.consultantData.forEach((consultant: ConsultantContractsDataDto, index) => {
                         this.addConsultantDataToForm(consultant, index);
                         this.addConsultantLegalContract(consultant);
-                    })
+                    });
+                    this.updateConsultantStepAnchors();
                 }
                 if (isFromSyncToLegacy) {
                     this.processSyncToLegacySystem();
@@ -1280,9 +1295,10 @@ export class WorkflowContractsComponent extends AppComponentBase implements OnIn
                 this.contractsMainForm.projectType?.setValue(this.findItemById(this.projectTypes, result?.mainData?.projectTypeId), {emitEvent: false});
                 this.contractsMainForm.margin?.setValue(this.findItemById(this.margins, result?.mainData?.marginId), {emitEvent: false});
                 this.contractsMainForm.discounts?.setValue(this.findItemById(this.discounts, result?.mainData?.discountId), {emitEvent: false});
-                this.addConsultantDataToForm(result?.consultantData!, 0);
                 this.contractsSyncDataForm.manualCheckbox?.setValue(result?.contractLinesDoneManuallyInOldPm, {emitEvent: false})
                 this.contractsSyncDataForm.newLegalContract?.setValue(result?.newLegalContractRequired, {emitEvent: false});
+                this.addConsultantDataToForm(result?.consultantData!, 0);
+                this.updateConsultantStepAnchors();
                 if (isFromSyncToLegacy) {
                     this.processSyncToLegacySystem();
                 }

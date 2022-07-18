@@ -20,6 +20,8 @@
             background-color: rgba($color: $sand-color, $alpha: 0.5);
         }
         &__anchor {
+            display: flex;
+            flex-direction: column;
             font-family: 'Open Sans', sans-serif;
             font-style: normal;
             font-weight: bold;
@@ -27,6 +29,10 @@
             line-height: 140%;
             color: $green-color;
             text-transform: uppercase;
+            &-consultant-name {
+                text-transform: none;
+                color: $dark-grey-color;
+            }
         }
         &__number {
             color: $medium-grey-color;

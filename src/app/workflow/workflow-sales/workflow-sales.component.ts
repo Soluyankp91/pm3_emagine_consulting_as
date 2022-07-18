@@ -13,9 +13,10 @@ import { InternalLookupService } from 'src/app/shared/common/internal-lookup.ser
 import { ConfirmationDialogComponent } from 'src/app/shared/components/confirmation-dialog/confirmation-dialog.component';
 import { environment } from 'src/environments/environment';
 import { AppComponentBase, NotifySeverity } from 'src/shared/app-component-base';
-import { ClientPeriodSalesDataDto, ClientPeriodServiceProxy, ClientRateDto, CommissionDto, ConsultantRateDto, ConsultantSalesDataDto, ContractSignerDto, EmployeeDto, EnumEntityTypeDto, EnumServiceProxy, LookupServiceProxy, PeriodClientSpecialFeeDto, PeriodClientSpecialRateDto, SalesClientDataDto, SalesMainDataDto, WorkflowProcessType, WorkflowServiceProxy, ConsultantResultDto, ClientResultDto, ContactResultDto, ConsultantTerminationSalesDataCommandDto, WorkflowTerminationSalesDataCommandDto, PeriodConsultantSpecialFeeDto, PeriodConsultantSpecialRateDto, ClientSpecialRateDto, ClientsServiceProxy, ClientSpecialFeeDto, ClientSalesServiceProxy, ConsultantPeriodServiceProxy, ConsultantPeriodSalesDataDto, ConsultantSalesServiceProxy, ExtendConsultantPeriodDto, ChangeConsultantPeriodDto, WorkflowProcessDto, ConsultantWithSourcingRequestResultDto, CountryDto } from 'src/shared/service-proxies/service-proxies';
+import { ClientPeriodSalesDataDto, ClientPeriodServiceProxy, ClientRateDto, CommissionDto, ConsultantRateDto, ConsultantSalesDataDto, ContractSignerDto, EmployeeDto, EnumEntityTypeDto, EnumServiceProxy, LookupServiceProxy, PeriodClientSpecialFeeDto, PeriodClientSpecialRateDto, SalesClientDataDto, SalesMainDataDto, WorkflowProcessType, WorkflowServiceProxy, ConsultantResultDto, ClientResultDto, ContactResultDto, ConsultantTerminationSalesDataCommandDto, WorkflowTerminationSalesDataCommandDto, PeriodConsultantSpecialFeeDto, PeriodConsultantSpecialRateDto, ClientSpecialRateDto, ClientsServiceProxy, ClientSpecialFeeDto, ClientSalesServiceProxy, ConsultantPeriodServiceProxy, ConsultantPeriodSalesDataDto, ConsultantSalesServiceProxy, ExtendConsultantPeriodDto, ChangeConsultantPeriodDto, WorkflowProcessDto, ConsultantWithSourcingRequestResultDto, CountryDto, StepType } from 'src/shared/service-proxies/service-proxies';
 import { WorkflowConsultantActionsDialogComponent } from '../workflow-consultant-actions-dialog/workflow-consultant-actions-dialog.component';
 import { WorkflowDataService } from '../workflow-data.service';
+import { WorkflowProcessWithAnchorsDto } from '../workflow-period/workflow-period.model';
 import { ConsultantDiallogAction, SalesTerminateConsultantForm, TenantList, WorkflowSalesAdditionalDataForm, WorkflowSalesClientDataForm, WorkflowSalesConsultantsForm, WorkflowSalesMainForm } from './workflow-sales.model';
 
 @Component({
@@ -29,7 +30,8 @@ export class WorkflowSalesComponent extends AppComponentBase implements OnInit {
     @Input() periodId: string | undefined;
     @Input() consultant: ConsultantResultDto;
     // Changed all above to enum
-    @Input() activeSideSection: WorkflowProcessDto;
+    // @Input() activeSideSection: WorkflowProcessDto;
+    @Input() activeSideSection: WorkflowProcessWithAnchorsDto;
     @Input() isCompleted: boolean;
 
     @Input() permissionsForCurrentUser: { [key: string]: boolean; } | undefined;
@@ -1143,6 +1145,17 @@ export class WorkflowSalesComponent extends AppComponentBase implements OnInit {
         this.manageConsultantCountryAutocomplete(this.consultantsForm.consultantData.length - 1);
     }
 
+    updateConsultantStepAnchors() {
+        let consultantNames = this.consultantData.value.map((item: any) => {
+            if (item.employmentType?.id === 10 || item.employmentType?.id === 11) {
+                return item.consultantNameOnly;
+            } else {
+                return item.consultantName.consultant.name;
+            }
+        });
+        this._workflowDataService.consultantsAddedToStep.emit({stepType: StepType.Sales, processTypeId: this.activeSideSection.typeId!, consultantNames: consultantNames});
+    }
+
     manageManagerAutocomplete(consultantIndex: number) {
         let arrayControl = this.consultantsForm.consultantData.at(consultantIndex);
         arrayControl!.get('deliveryAccountManager')!.valueChanges
@@ -1432,6 +1445,14 @@ export class WorkflowSalesComponent extends AppComponentBase implements OnInit {
                 }
             });
 
+        arrayControl!.get('consultantNameOnly')?.valueChanges
+            .pipe(
+                takeUntil(this._unsubscribe),
+                debounceTime(2000)
+            ).subscribe(() => {
+                this.updateConsultantStepAnchors();
+            });
+
     }
 
     confirmRemoveConsultant(index: number) {
@@ -1465,6 +1486,7 @@ export class WorkflowSalesComponent extends AppComponentBase implements OnInit {
 
     removeConsultant(index: number) {
         this.consultantsForm.consultantData.removeAt(index);
+        this.updateConsultantStepAnchors();
     }
 
     get consultantData(): FormArray {
@@ -1732,6 +1754,7 @@ export class WorkflowSalesComponent extends AppComponentBase implements OnInit {
                 }))
                 .subscribe(result => {
                     this._workflowDataService.workflowSideSectionUpdated.emit({isStatusUpdate: true});
+                    this.getSalesStepData();
                 })
         }
 
@@ -1857,6 +1880,7 @@ export class WorkflowSalesComponent extends AppComponentBase implements OnInit {
                     result.consultantSalesData?.forEach(consultant => {
                         this.addConsultantForm(consultant);
                     });
+                    this.updateConsultantStepAnchors();
                 }
             });
     }
@@ -2177,6 +2201,7 @@ export class WorkflowSalesComponent extends AppComponentBase implements OnInit {
             .pipe(finalize(() => this.hideMainSpinner()))
             .subscribe(result => {
                 this._workflowDataService.workflowSideSectionUpdated.emit({isStatusUpdate: true});
+                this.getSalesStepData();
             })
         }
     }
@@ -2229,6 +2254,7 @@ export class WorkflowSalesComponent extends AppComponentBase implements OnInit {
             .pipe(finalize(() => this.hideMainSpinner()))
             .subscribe(result => {
                 this._workflowDataService.workflowSideSectionUpdated.emit({isStatusUpdate: true});
+                this.getSalesStepData();
             })
         }
     }
@@ -2314,6 +2340,7 @@ export class WorkflowSalesComponent extends AppComponentBase implements OnInit {
                 }
                 this.salesMainDataForm.projectDescription?.setValue(result?.projectDescription, {emitEvent: false});
                 this.addConsultantForm(result?.consultantSalesData);
+                this.updateConsultantStepAnchors();
             });
     }
 
@@ -2434,6 +2461,7 @@ export class WorkflowSalesComponent extends AppComponentBase implements OnInit {
                 .pipe(finalize(() => this.hideMainSpinner()))
                 .subscribe(result => {
                     this._workflowDataService.workflowSideSectionUpdated.emit({isStatusUpdate: true});
+                    this.getSalesStepData();
                 });
         }
     }

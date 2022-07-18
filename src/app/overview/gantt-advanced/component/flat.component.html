@@ -20,7 +20,7 @@
                     <span class="text-bold-800" *ngIf="isWorkflow">
                         <div fxLayout="row" fxLayoutAlign="start center" class="u-w-100" [matTooltip]="overviewFlagNames[group?.origin?.origin?.mainOverviewStatusOfWorkflowForSales!]" matTooltipClass="white-tooltip">
                             <mat-icon class="main-overview-icon cursor-pointer" [matMenuTriggerFor]="workflowMenu" svgIcon="{{detectIcon(group?.origin?.origin?.mainOverviewStatusOfWorkflowForSales!)}}" [ngClass]="detectProcessColor(group?.origin?.origin?.mainOverviewStatusOfWorkflowForSales!)"></mat-icon>
-                            <mat-menu #workflowMenu>
+                            <mat-menu #workflowMenu backdropClass="main-overview--user-status-menu">
                                 <button *ngFor="let status of userSelectedStatuses"
                                     class="menu-item"
                                     mat-menu-item
@@ -34,7 +34,7 @@
                     <span class="text-bold" *ngIf="isConsultants">
                         <div fxLayout="row" fxLayoutAlign="start center" class="u-w-100" [matTooltip]="overviewFlagNames[group?.origin?.origin?.mainOverviewStatusOfWorkflowConsultantForSales!]" matTooltipClass="white-tooltip">
                             <mat-icon class="main-overview-icon cursor-pointer" [matMenuTriggerFor]="consultantsMenu" svgIcon="{{detectIcon(group?.origin?.origin?.mainOverviewStatusOfWorkflowConsultantForSales)}}" [ngClass]="detectProcessColor(group?.origin?.origin?.mainOverviewStatusOfWorkflowConsultantForSales)"></mat-icon>
-                            <mat-menu #consultantsMenu>
+                            <mat-menu #consultantsMenu backdropClass="main-overview--user-status-menu">
                                 <button *ngFor="let status of userSelectedStatuses"
                                     class="menu-item"
                                     mat-menu-item

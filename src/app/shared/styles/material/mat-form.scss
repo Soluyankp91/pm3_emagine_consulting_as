@@ -71,6 +71,7 @@
 }
 
 .main-overview--filter-manager-dropdown,
+.main-overview--filter-country-dropdown,
 .client-list--filter-manager-dropdown,
 .client-list--filter-country-dropdown,
 .workflow-list--filter-manager-dropdown {
@@ -101,8 +102,11 @@
                 &::placeholder{
                     font-family: 'Open Sans', sans-serif;
                     font-weight: 600;
-                    font-size: 12px;
+                    font-size: 14px;
                     color: #898785;
+                    @media screen and (max-width: 1366px) {
+                        font-size: 12px;
+                    }
                  }
             }
         }
