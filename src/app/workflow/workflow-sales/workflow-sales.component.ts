@@ -1153,7 +1153,7 @@ export class WorkflowSalesComponent extends AppComponentBase implements OnInit {
                 return item.consultantName.consultant.name;
             }
         });
-        this._workflowDataService.consultantsAddedToStep.emit({stepType: StepType.Sales, consultantNames: consultantNames});
+        this._workflowDataService.consultantsAddedToStep.emit({stepType: StepType.Sales, processTypeId: this.activeSideSection.typeId!, consultantNames: consultantNames});
     }
 
     manageManagerAutocomplete(consultantIndex: number) {
@@ -1443,6 +1443,14 @@ export class WorkflowSalesComponent extends AppComponentBase implements OnInit {
                 } else {
                     this.filteredConsultants = [{ consultant: {name: 'No consultant found'}, externalId: '', id: 'no-data' }];
                 }
+            });
+
+        arrayControl!.get('consultantNameOnly')?.valueChanges
+            .pipe(
+                takeUntil(this._unsubscribe),
+                debounceTime(2000)
+            ).subscribe(() => {
+                this.updateConsultantStepAnchors();
             });
 
     }
@@ -1746,6 +1754,7 @@ export class WorkflowSalesComponent extends AppComponentBase implements OnInit {
                 }))
                 .subscribe(result => {
                     this._workflowDataService.workflowSideSectionUpdated.emit({isStatusUpdate: true});
+                    this.getSalesStepData();
                 })
         }
 
@@ -2192,6 +2201,7 @@ export class WorkflowSalesComponent extends AppComponentBase implements OnInit {
             .pipe(finalize(() => this.hideMainSpinner()))
             .subscribe(result => {
                 this._workflowDataService.workflowSideSectionUpdated.emit({isStatusUpdate: true});
+                this.getSalesStepData();
             })
         }
     }
@@ -2244,6 +2254,7 @@ export class WorkflowSalesComponent extends AppComponentBase implements OnInit {
             .pipe(finalize(() => this.hideMainSpinner()))
             .subscribe(result => {
                 this._workflowDataService.workflowSideSectionUpdated.emit({isStatusUpdate: true});
+                this.getSalesStepData();
             })
         }
     }
@@ -2450,6 +2461,7 @@ export class WorkflowSalesComponent extends AppComponentBase implements OnInit {
                 .pipe(finalize(() => this.hideMainSpinner()))
                 .subscribe(result => {
                     this._workflowDataService.workflowSideSectionUpdated.emit({isStatusUpdate: true});
+                    this.getSalesStepData();
                 });
         }
     }

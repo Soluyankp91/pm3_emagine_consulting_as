@@ -45,7 +45,7 @@
                 <mat-divider *ngIf="readOnlyMode && syncNotPossible && contractsSyncDataForm.showManualOption?.value" class="u-w--100"></mat-divider>
                 <form fxLayout="column" fxLayoutAlign="start start" [formGroup]="contractsTerminationConsultantForm" class="workflow-form u-w--100" id="consultantData">
                     <ng-container formArrayName="consultantTerminationContractData">
-                        <div *ngFor="let consultant of contractsTerminationConsultantForm.consultantTerminationContractData.controls; index as i; last as last" [formGroupName]="i" class="workflow-contracts--block-consultants u-mt--20" [ngClass]="{'last-block': last}">
+                        <div *ngFor="let consultant of contractsTerminationConsultantForm.consultantTerminationContractData.controls; index as i; last as last" [formGroupName]="i" class="workflow-contracts--block-consultants u-mt--20" [ngClass]="{'last-block': last}" [id]="'consultantDataAnchor' + i">
                             <div fxLayout="row" fxLayoutAlign="start center" class="u-mb--20">
                                 <img class="border-rounded-50 u-mr--16 image-thumbnail-responsive" [src]="consultantProfileUrl(consultant.value?.consultantData?.externalId)">
                                 <p class="workflow-contracts--consultant-name">
@@ -93,7 +93,7 @@
             </div>
         </ng-container>
         <ng-container *ngSwitchDefault>
-            <form [formGroup]="contractsMainForm" id="mainData" class="workflow-form workflow-form--main u-w--100">
+            <form [formGroup]="contractsMainForm" id="mainDataAnchor" class="workflow-form workflow-form--main u-w--100">
                 <div fxLayout="column" fxLayoutAlign="start start" class="workflow-contracts--process-data u-w--100">
                     <h1 class="workflow-step-readonly--header-main">
                         <span class="process-name" *ngIf="readOnlyMode">Contracts.</span>
@@ -181,7 +181,7 @@
 
             <!-- hidden on AddConsultant, ChangeConsultant, Extend Consultant -->
             <ng-container *ngIf="activeSideSection.typeId === workflowSideSections.StartClientPeriod || activeSideSection.typeId === workflowSideSections.ExtendClientPeriod || activeSideSection.typeId === workflowSideSections.ChangeClientPeriod">
-                <form fxLayout="column" fxLayoutAlign="start start" id="clientData" [formGroup]="contractClientForm" class="workflow-form workflow-form--sales u-w--100">
+                <form fxLayout="column" fxLayoutAlign="start start" id="clientDataAnchor" [formGroup]="contractClientForm" class="workflow-form workflow-form--sales u-w--100">
                     <div fxLayout="column" fxLayoutAlign="start start" class="workflow-contracts--process-data u-w--100">
                         <h1 class="workflow-step-readonly--header-main">
                             <span class="process-name" *ngIf="readOnlyMode">Contracts.</span>
@@ -471,9 +471,9 @@
                 </form>
             </ng-container>
 
-            <form [formGroup]="contractsConsultantsDataForm" class="u-w--100" id="consultantData">
+            <form [formGroup]="contractsConsultantsDataForm" class="u-w--100">
                 <ng-container formArrayName="consultants">
-                    <div *ngFor="let consultant of contractsConsultantsDataForm.consultants.controls; let consultantIndex = index" [formGroupName]="consultantIndex" class="workflow-form--consultants u-w--100">
+                    <div *ngFor="let consultant of contractsConsultantsDataForm.consultants.controls; let consultantIndex = index" [formGroupName]="consultantIndex" class="workflow-form--consultants u-w--100" [id]="'consultantDataAnchor' + consultantIndex">
                         <div fxLayout="column" fxLayoutAlign="start start" class="workflow-contracts--process-data u-w--100">
                             <div fxLayout="row" fxLayoutAlign="start center" class="u-w--100 u-mb--20">
                                 <h1 class="workflow-step-readonly--header-main text-nowrap" fxFlex="1 0 20%">
@@ -1106,7 +1106,7 @@
                 </ng-container>
             </form>
 
-            <form [formGroup]="contractsSyncDataForm" id="syncLegalContracts" class="workflow-form workflow-form--main u-w--100">
+            <form [formGroup]="contractsSyncDataForm" id="syncLegalContractAnchor" class="workflow-form workflow-form--main u-w--100">
                 <div fxLayout="column" fxLayoutAlign="start start" class="workflow-contracts--process-data u-w--100">
                     <h1 class="workflow-step-readonly--header-main">
                         <span class="process-name" *ngIf="readOnlyMode">Contracts.</span>

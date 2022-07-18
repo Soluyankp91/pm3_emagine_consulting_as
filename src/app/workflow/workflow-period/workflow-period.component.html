@@ -2,7 +2,7 @@
     <div fxFlex="20%" class="workflow-navigation--wrapper">
         <ng-scrollbar>
             <mat-accordion class="workflow-sidenav--expansion" [togglePosition]="'before'">
-                <mat-expansion-panel class="mat-elevation-z0" *ngFor="let item of sideMenuItems2; index as i" [expanded]="sectionIndex === i" (click)="sectionIndex === i ? $event.preventDefault() : ''" (opened)="changeSideSection(item, i)">
+                <mat-expansion-panel class="mat-elevation-z0" *ngFor="let item of sideMenuItems; index as i" [expanded]="sectionIndex === i" (click)="sectionIndex === i ? $event.preventDefault() : ''" (opened)="changeSideSection(item, i)">
                     <mat-expansion-panel-header [collapsedHeight]="'60px'" [expandedHeight]="'60px'">
                         <div fxLayout="row" fxLayoutAlign="space-between start" class="u-w--100">
                             <div class="sidenav-expansion--header" fxFlex="90%">
@@ -58,15 +58,15 @@
                                         {{step.name}}
                                     </span>
                                 </div>
-                                <!-- TODO: add when BE will be ready -->
                                 <div fxLayout="column" fxLayoutAlign="start start" class="u-ml--55" *ngIf="step.name === selectedStep.name">
                                     <div *ngFor="let item of step.menuAnchors"
                                          class="workflow-navigation--step__anchor u-mb--10"
-                                         (click)="changeAnchorSelection(item.name!)"
+                                         (click)="changeAnchorSelection(item.anchor!)"
                                          [ngxScrollTo]="item.anchor!"
-                                         [ngClass]="{'active-anchor': item.name === selectedAnchor}">
+                                         [ngxScrollToOffset]="-120"
+                                         [ngClass]="{'active-anchor': item.anchor === selectedAnchor}">
                                         {{item.name}}
-                                        <span *ngIf="item?.consultantName" style="color: red; text-transform: none;">
+                                        <span *ngIf="item?.consultantName" class="workflow-navigation--step__anchor-consultant-name">
                                             {{item.consultantName}}
                                         </span>
                                     </div>

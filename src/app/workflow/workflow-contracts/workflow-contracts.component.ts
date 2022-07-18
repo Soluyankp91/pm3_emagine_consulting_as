@@ -409,7 +409,7 @@ export class WorkflowContractsComponent extends AppComponentBase implements OnIn
                 return item.consultant.name;
             }
         });
-        this._workflowDataService.consultantsAddedToStep.emit({stepType: StepType.Contract, consultantNames: consultantNames});
+        this._workflowDataService.consultantsAddedToStep.emit({stepType: StepType.Contract, processTypeId: this.activeSideSection.typeId!, consultantNames: consultantNames});
     }
 
     // #region CHANGE NAMING
