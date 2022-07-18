@@ -5,6 +5,7 @@ import { finalize, takeUntil } from 'rxjs/operators';
 import { AppComponentBase } from 'src/shared/app-component-base';
 import { ConsultantResultDto, ConsultantTerminationSourcingDataCommandDto, ConsultantTerminationSourcingDataQueryDto, WorkflowProcessDto, WorkflowProcessType, WorkflowServiceProxy, WorkflowTerminationSourcingDataCommandDto } from 'src/shared/service-proxies/service-proxies';
 import { WorkflowDataService } from '../workflow-data.service';
+import { WorkflowProcessWithAnchorsDto } from '../workflow-period/workflow-period.model';
 import { WorkflowSourcingConsultantsDataForm } from './workflow-sourcing.model';
 
 @Component({
@@ -13,7 +14,8 @@ import { WorkflowSourcingConsultantsDataForm } from './workflow-sourcing.model';
     styleUrls: ['./workflow-sourcing.component.scss']
 })
 export class WorkflowSourcingComponent extends AppComponentBase implements OnInit, OnDestroy {
-    @Input() activeSideSection: WorkflowProcessDto;
+    // @Input() activeSideSection: WorkflowProcessDto;
+    @Input() activeSideSection: WorkflowProcessWithAnchorsDto;
     @Input() workflowId: string;
     @Input() isCompleted: boolean;
     @Input() consultant: ConsultantResultDto;

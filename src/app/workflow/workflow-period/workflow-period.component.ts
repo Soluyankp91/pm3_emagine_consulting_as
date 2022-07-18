@@ -9,6 +9,7 @@ import { ManagerStatus } from 'src/app/shared/components/manager-search/manager-
 import { AppComponentBase } from 'src/shared/app-component-base';
 import { WorkflowProcessDto, WorkflowProcessType, WorkflowServiceProxy, StepDto, StepType, WorkflowStepStatus, ConsultantResultDto, ApiServiceProxy } from 'src/shared/service-proxies/service-proxies';
 import { WorkflowDataService } from '../workflow-data.service';
+import { StepAnchorDto, StepWithAnchorsDto, WorkflowProcessWithAnchorsDto } from './workflow-period.model';
 
 @Component({
     selector: 'app-workflow-period',
@@ -19,15 +20,17 @@ export class WorkflowPeriodComponent extends AppComponentBase implements OnInit 
     @Input() workflowId: string;
     @Input() periodId: string | undefined;
 
-    sideMenuItems: WorkflowProcessDto[] = [];
+    sideMenuItems: WorkflowProcessWithAnchorsDto[] = [];
     workflowProcessTypes = WorkflowProcessType;
     workflowPeriodStepTypes: { [key: string]: string };
-    selectedStep: StepDto;
+    // selectedStep: StepDto;
+    selectedStep: StepWithAnchorsDto;
     selectedAnchor: string;
 
     workflowSteps = StepType;
     selectedStepEnum: StepType;
-    selectedSideSection: WorkflowProcessDto;
+    // selectedSideSection: WorkflowProcessDto;
+    selectedSideSection: WorkflowProcessWithAnchorsDto;
     sectionIndex = 0;
     consultant: ConsultantResultDto;
 
@@ -48,6 +51,11 @@ export class WorkflowPeriodComponent extends AppComponentBase implements OnInit 
         private _apiService: ApiServiceProxy
     ) {
         super(injector);
+        this._workflowDataService.consultantsAddedToStep
+            .pipe(takeUntil(this._unsubscribe))
+            .subscribe((value: {stepType: number, processTypeId: number, consultantNames: string[]}) => {
+                this.updateConsultantAnchorsInStep(value.stepType, value.processTypeId, value.consultantNames)
+            });
     }
 
     ngOnInit(): void {
@@ -86,12 +94,152 @@ export class WorkflowPeriodComponent extends AppComponentBase implements OnInit 
 
             }))
             .subscribe(result => {
-                this.sideMenuItems = result?.clientPeriods![0].workflowProcesses!;
+                this.sideMenuItems = result?.clientPeriods![0].workflowProcesses!.map(side => {
+                    return new WorkflowProcessWithAnchorsDto({
+                        typeId: side.typeId!,
+                        name: side.name!,
+                        consultantPeriodId: side.consultantPeriodId!,
+                        consultant: side.consultant!,
+                        periodStartDate: side.periodStartDate!,
+                        periodEndDate: side.periodEndDate!,
+                        terminationEndDate: side.terminationEndDate!,
+                        steps: side?.steps?.map(step => this.mapStepIntoNewDto(step, side.typeId!))
+                    });
+                });
+
                 if (autoUpdate) {
                     let sideMenuItemsLength = this.sideMenuItems.length;
                     this.changeSideSection(this.sideMenuItems[sideMenuItemsLength - 1], sideMenuItemsLength - 1);
                 }
             });
+    }
+
+    updateConsultantAnchorsInStep(stepType: number, processTypeId: number, consultantNames: string[]) {
+        const stepIndex = this.sideMenuItems[this.sectionIndex].steps?.findIndex(x => x.typeId === stepType)!;
+        let stepToUpdate = this.sideMenuItems[this.sectionIndex].steps![stepIndex];
+        this.sideMenuItems[this.sectionIndex].steps![stepIndex] = this.mapStepIntoNewDto(stepToUpdate, processTypeId, consultantNames);
+    }
+
+    mapStepIntoNewDto(step: StepDto | StepWithAnchorsDto, processTypeId: number, consultantNames?: string[]) {
+        return new StepWithAnchorsDto({
+            typeId: step.typeId,
+            name: step.name,
+            status: step.status,
+            responsiblePerson: step.responsiblePerson,
+            actionsPermissionsForCurrentUser: step.actionsPermissionsForCurrentUser,
+            menuAnchors: this.mapAnchorsForSteps(step!, processTypeId, consultantNames)
+        });
+    }
+
+    mapAnchorsForSteps(step: StepDto | StepWithAnchorsDto, processTypeId: number, consultantNames?: string[]) {
+        switch (step.typeId) {
+            case StepType.Sales:
+                let SalesAnchors: StepAnchorDto[] = [];
+                switch (processTypeId) {
+                    case WorkflowProcessType.StartClientPeriod:
+                    case WorkflowProcessType.ChangeClientPeriod:
+                    case WorkflowProcessType.ExtendClientPeriod:
+                        SalesAnchors = [
+                            {
+                                name: 'Main Data',
+                                anchor: 'salesMainDataAnchor'
+                            },
+                            {
+                                name: 'Client Data',
+                                anchor: 'salesClientDataAnchor'
+                            }
+                        ];
+                        break;
+                    case WorkflowProcessType.StartConsultantPeriod:
+                    case WorkflowProcessType.ChangeConsultantPeriod:
+                    case WorkflowProcessType.ExtendConsultantPeriod:
+                        SalesAnchors = [
+                            {
+                                name: 'Main Data',
+                                anchor: 'salesMainDataAnchor'
+                            }
+                        ];
+                        break;
+                    case WorkflowProcessType.TerminateWorkflow:
+                    case WorkflowProcessType.TerminateConsultant:
+                        break;
+                }
+
+                if (consultantNames?.length) {
+                    consultantNames.forEach((name, index) => {
+                        SalesAnchors.push({
+                            name: 'Consultant Data',
+                            anchor: `salesConsultantDataAnchor${index}`,
+                            consultantName: name
+                        })
+                    })
+                }
+                return new Array<StepAnchorDto>(...SalesAnchors);
+            case StepType.Contract:
+                let ContractAnchors: StepAnchorDto[] = [];
+                switch (processTypeId) {
+                    case WorkflowProcessType.StartClientPeriod:
+                    case WorkflowProcessType.ChangeClientPeriod:
+                    case WorkflowProcessType.ExtendClientPeriod:
+                        ContractAnchors = [
+                            {
+                                name: 'Main Data',
+                                anchor: 'mainDataAnchor'
+                            },
+                            {
+                                name: 'Client Data',
+                                anchor: 'clientDataAnchor'
+                            },
+                            {
+                                name: 'Sync & Legal',
+                                anchor: 'syncLegalContractAnchor'
+                            }
+                        ];
+                        if (consultantNames?.length) {
+                            let consultantAnchors: StepAnchorDto[] = consultantNames.map((name, index) => {
+                                return {
+                                    name: 'Consultant Data',
+                                    anchor: `consultantDataAnchor${index}`,
+                                    consultantName: name
+                                }
+                            });
+                            ContractAnchors.splice(2, 0, ...consultantAnchors);
+                        }
+                        break;
+                    case WorkflowProcessType.StartConsultantPeriod:
+                    case WorkflowProcessType.ChangeConsultantPeriod:
+                    case WorkflowProcessType.ExtendConsultantPeriod:
+                        ContractAnchors = [
+                            {
+                                name: 'Main Data',
+                                anchor: 'mainDataAnchor'
+                            },
+                            {
+                                name: 'Sync & Legal',
+                                anchor: 'syncLegalContractAnchor'
+                            }
+                        ];
+                        if (consultantNames?.length) {
+                            let consultantAnchors: StepAnchorDto[] = consultantNames.map((name, index) => {
+                                return {
+                                    name: 'Consultant Data',
+                                    anchor: `consultantDataAnchor${index}`,
+                                    consultantName: name
+                                }
+                            });
+                            ContractAnchors.splice(1, 0, ...consultantAnchors);
+                        }
+                        break;
+                    case WorkflowProcessType.TerminateWorkflow:
+                    case WorkflowProcessType.TerminateConsultant:
+                        break;
+                }
+                return new Array<StepAnchorDto>(...ContractAnchors);
+            case StepType.Finance:
+                return [];
+            case StepType.Sourcing:
+                return [];
+        }
     }
 
 
@@ -112,13 +260,15 @@ export class WorkflowPeriodComponent extends AppComponentBase implements OnInit 
         }
     }
 
-    changeStepSelection(step: StepDto) {
+    changeStepSelection(step: StepWithAnchorsDto) {
+        this.selectedAnchor = '';
         this.selectedStepEnum = step.typeId!;
         this.selectedStep = step;
         this._workflowDataService.updateWorkflowProgressStatus({currentlyActiveStep: step.typeId, stepSpecificPermissions: step.actionsPermissionsForCurrentUser, currentStepIsCompleted: step.status === WorkflowStepStatus.Completed});
     }
 
-    changeSideSection(item: WorkflowProcessDto, index: number) {
+    changeSideSection(item: WorkflowProcessWithAnchorsDto, index: number) {
+        this.selectedAnchor = '';
         this.sectionIndex = index;
         this.selectedSideSection = item;
         this.consultant = item.consultant!;
@@ -134,7 +284,7 @@ export class WorkflowPeriodComponent extends AppComponentBase implements OnInit 
         this._workflowDataService.workflowSideSectionChanged.emit({consultant: item.consultant, consultantPeriodId: item.consultantPeriodId});
     }
 
-    deleteSideSection(item: WorkflowProcessDto) {
+    deleteSideSection(item: WorkflowProcessWithAnchorsDto) {
         const scrollStrategy = this.overlay.scrollStrategies.reposition();
         const dialogRef = this.dialog.open(ConfirmationDialogComponent, {
             minWidth: '450px',

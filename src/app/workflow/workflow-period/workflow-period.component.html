@@ -58,16 +58,19 @@
                                         {{step.name}}
                                     </span>
                                 </div>
-                                <!-- TODO: add when BE will be ready -->
-                                <!-- <div fxLayout="column" fxLayoutAlign="start start" class="u-ml--55" *ngIf="step.name === selectedStep">
-                                    <div *ngFor="let anchor of step.menuAnchors"
+                                <div fxLayout="column" fxLayoutAlign="start start" class="u-ml--55" *ngIf="step.name === selectedStep.name">
+                                    <div *ngFor="let item of step.menuAnchors"
                                          class="workflow-navigation--step__anchor u-mb--10"
-                                         (click)="changeAnchorSelection(anchor.name)"
-                                         [ngxScrollTo]="anchor.value"
-                                         [ngClass]="{'active-anchor': anchor.name === selectedAnchor}">
-                                        {{anchor.name}}
+                                         (click)="changeAnchorSelection(item.anchor!)"
+                                         [ngxScrollTo]="item.anchor!"
+                                         [ngxScrollToOffset]="-120"
+                                         [ngClass]="{'active-anchor': item.anchor === selectedAnchor}">
+                                        {{item.name}}
+                                        <span *ngIf="item?.consultantName" class="workflow-navigation--step__anchor-consultant-name">
+                                            {{item.consultantName}}
+                                        </span>
                                     </div>
-                                </div> -->
+                                </div>
                             </div>
                         </div>
                     </div>
