@@ -47,10 +47,13 @@
                     <ng-container formArrayName="consultantTerminationContractData">
                         <div *ngFor="let consultant of contractsTerminationConsultantForm.consultantTerminationContractData.controls; index as i; last as last" [formGroupName]="i" class="workflow-contracts--block-consultants u-mt--20" [ngClass]="{'last-block': last}" [id]="'consultantDataAnchor' + i">
                             <div fxLayout="row" fxLayoutAlign="start center" class="u-mb--20">
-                                <img class="border-rounded-50 u-mr--16 image-thumbnail-responsive" [src]="consultantProfileUrl(consultant.value?.consultantData?.externalId)">
+                                <img *ngIf="consultant.value?.consultantData?.id" class="border-rounded-50 u-mr--16 image-thumbnail-responsive" [src]="consultantProfileUrl(consultant.value?.consultantData?.externalId)">
                                 <p class="workflow-contracts--consultant-name">
                                     {{contractsTerminationConsultantForm.consultantTerminationContractData.at(i).get('consultantData')?.value?.name}}
                                 </p>
+                                <button *ngIf="consultant.value?.consultantData?.id" mat-icon-button class="consultant-deeplink--btn" (click)="$event.stopPropagation(); deepLinkToSourcing(consultant.value?.consultantData?.id)" matTooltip="Preview in Sourcing" matTooltipClass="white-tooltip">
+                                    <mat-icon svgIcon="sourcing-deeplink"></mat-icon>
+                                </button>
                             </div>
 
                             <div fxLayout="row" fxLayoutAlign="start center" class="u-w--100 u-mb--10">
@@ -482,10 +485,13 @@
                                 </h1>
                                 <div fxLayout="row" fxLayoutAlign="start start" class="u-w--100">
                                     <span fxFlex="50%" fxLayout="row" fxLayoutAlign="start center">
-                                        <img class="border-rounded-50 u-ml--16 u-mr--16 image-thumbnail-responsive" [src]="consultantProfileUrl(consultant.value?.consultant?.externalId)" />
+                                        <img *ngIf="consultant.value?.consultant?.id" class="border-rounded-50 u-ml--16 u-mr--16 image-thumbnail-responsive" [src]="consultantProfileUrl(consultant.value?.consultant?.externalId)" />
                                         <span class="workflow-contracts--consultant-name">
                                             {{ consultant.value?.consultant?.name }}
                                         </span>
+                                        <button *ngIf="consultant.value?.consultant?.id" mat-icon-button class="consultant-deeplink--btn" (click)="$event.stopPropagation(); deepLinkToSourcing(consultant.value?.consultant?.id)" matTooltip="Preview in Sourcing" matTooltipClass="white-tooltip">
+                                            <mat-icon svgIcon="sourcing-deeplink"></mat-icon>
+                                        </button>
                                     </span>
                                     <div fxFlex="50%" fxLayoutAlign="end center" *ngIf="!readOnlyMode">
                                         <!-- <span class="workflow-form--consultants__period u-mr--8">
@@ -1191,10 +1197,13 @@
                             <div *ngFor="let consultant of contractsSyncDataForm.consultants.controls; let consultantIndex = index" [formGroupName]="consultantIndex" class="workflow-form--consultants u-w--100">
                                 <span class="u-mt--20" [ngClass]="{'workflow-gray--header': readOnlyMode, 'workflow-darkblue--text': !readOnlyMode}">Consultant legal contracts</span>
                                 <div fxLayout="row" fxLayoutAlign="start center" class="u-mb--20 u-mt--10 u-w--100">
-                                    <img class="border-rounded-50 image-thumbnail-responsive u-mr--10" [src]="consultantProfileUrl(consultant.value.consultant?.externalId)" />
+                                    <img *ngIf="consultant.value?.consultant?.id" class="border-rounded-50 image-thumbnail-responsive u-mr--10" [src]="consultantProfileUrl(consultant.value.consultant?.externalId)" />
                                     <p class="workflow-contracts--consultant-name">
                                         {{consultant.value?.consultant?.name}}
                                     </p>
+                                    <button *ngIf="consultant.value?.consultant?.id" mat-icon-button class="consultant-deeplink--btn" (click)="$event.stopPropagation(); deepLinkToSourcing(consultant.value?.consultant?.id)" matTooltip="Preview in Sourcing" matTooltipClass="white-tooltip">
+                                        <mat-icon svgIcon="sourcing-deeplink"></mat-icon>
+                                    </button>
                                 </div>
                                 <div fxLayout="column" fxLayoutAlign="start start" class="u-w--100" *ngIf="readOnlyMode">
                                     <div fxLayout="row" fxLayoutAlign="start center" *ngIf="(contractClientForm.pdcInvoicingEntityId?.value !== consultant?.value?.pdcPaymentEntityId)">

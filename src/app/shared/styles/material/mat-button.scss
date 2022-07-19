@@ -273,3 +273,12 @@
         background-color: rgba($color: $green-color-25, $alpha: 0.33);
     }
 }
+
+.consultant-deeplink--btn {
+    width: 30px;
+    height: 30px;
+    line-height: 30px;
+    &:hover {
+        background-color: rgba($color: $green-color-50, $alpha: 0.22);
+    }
+}
