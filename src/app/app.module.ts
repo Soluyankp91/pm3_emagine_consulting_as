@@ -615,5 +615,12 @@ export class AppModule {
             )
         );
 
+        iconRegistry.addSvgIcon(
+            'sourcing-deeplink',
+            sanitizer.bypassSecurityTrustResourceUrl(
+                'assets/common/images/sourcing-deeplink.svg'
+            )
+        );
+
     }
 }

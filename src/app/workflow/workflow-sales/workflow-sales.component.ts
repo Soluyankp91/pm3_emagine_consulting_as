@@ -2534,5 +2534,4 @@ export class WorkflowSalesComponent extends AppComponentBase implements OnInit {
     }
     //#endregion formatting
 
-
 }

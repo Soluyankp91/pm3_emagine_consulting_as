@@ -71,10 +71,13 @@
                     <h2 class="workflow-section--header">Consultants</h2>
                     <div *ngFor="let consultant of financesConsultantsForm.consultants.controls; let i = index; last as last" [formGroupName]="i" class="workflow-finances--block-consultants u-w--100" [ngClass]="{'last-block': last}">
                         <div fxLayout="row" fxLayoutAlign="start center" class="u-mb--20">
-                            <img class="border-rounded-50 image-thumbnail-responsive u-mr--16" [src]="consultantProfileUrl(consultant.value?.consultant?.externalId)">
+                            <img *ngIf="consultant.value?.consultant?.id" class="border-rounded-50 image-thumbnail-responsive u-mr--16" [src]="consultantProfileUrl(consultant.value?.consultant?.externalId)">
                             <p class="workflow-finances--consultant-name">
                                 {{consultant.value?.consultant?.name}}
                             </p>
+                            <button *ngIf="consultant.value?.consultant?.id" mat-icon-button class="consultant-deeplink--btn" (click)="$event.stopPropagation(); deepLinkToSourcing(consultant.value?.consultant?.id)" matTooltip="Preview in Sourcing" matTooltipClass="white-tooltip">
+                                <mat-icon svgIcon="sourcing-deeplink"></mat-icon>
+                            </button>
                         </div>
 
                         <ng-container *ngIf="readOnlyMode; else checkboxInvoicingInput">
