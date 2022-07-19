@@ -134,4 +134,8 @@ export abstract class AppComponentBase {
         return environment.sharedAssets + `/EmployeePicture/${fileToken}.jpg`;
     }
 
+    deepLinkToSourcing(consultantId: number) {
+        window.open(`${environment.sourcingUrl}/app/overview/consultants/consultant/${consultantId}`, '_blank');
+    }
+
 }
