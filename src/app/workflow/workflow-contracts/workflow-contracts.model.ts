@@ -10,7 +10,8 @@ export class WorkflowContractsMainForm extends FormGroup {
             projectDescription: new FormControl(null),
             discounts: new FormControl(null),
             remarks: new FormControl(null),
-            noRemarks: new FormControl(false)
+            noRemarks: new FormControl(false),
+            customDebtorNumber: new FormControl(null)
         });
     }
 
@@ -38,6 +39,9 @@ export class WorkflowContractsMainForm extends FormGroup {
     get noRemarks() {
         return this.get('noRemarks');
     }
+    get customDebtorNumber() {
+        return this.get('customDebtorNumber');
+    }
 }
 
 export class WorkflowContractsSyncForm extends FormGroup {
@@ -53,6 +57,8 @@ export class WorkflowContractsSyncForm extends FormGroup {
             clientLegalContractDoneStatusId: new FormControl(null),
             enableLegalContractsButtons: new FormControl(false),
             showManualOption: new FormControl(false),
+            isNewSyncNeeded: new FormControl(false),
+            lastSyncedDate: new FormControl(null),
             consultants: new FormArray([])
         });
     }
@@ -87,6 +93,12 @@ export class WorkflowContractsSyncForm extends FormGroup {
     get showManualOption() {
         return this.get('showManualOption');
     }
+    get isNewSyncNeeded() {
+        return this.get('isNewSyncNeeded');
+    }
+    get lastSyncedDate() {
+        return this.get('lastSyncedDate');
+    }
     get consultants() {
         return this.get('consultants') as FormArray;
     }
@@ -104,6 +116,12 @@ export class WorkflowContractsClientDataForm extends FormGroup {
             rateUnitType: new FormControl(null),
             currency: new FormControl(null),
             clientRate: new FormControl(null),
+
+            invoicingReferenceNumber: new FormControl(null),
+            clientInvoicingRecipientIdValue: new FormControl(null),
+            clientInvoicingRecipient: new FormControl(null),
+            invoicingReferencePersonIdValue: new FormControl(null),
+            invoicingReferencePerson: new FormControl(null),
 
             specialContractTerms: new FormControl(null),
             noSpecialContractTerms: new FormControl(null),
@@ -139,6 +157,21 @@ export class WorkflowContractsClientDataForm extends FormGroup {
     }
     get clientRate() {
         return this.get('clientRate');
+    }
+    get invoicingReferenceNumber() {
+        return this.get('invoicingReferenceNumber');
+    }
+    get clientInvoicingRecipientIdValue() {
+        return this.get('clientInvoicingRecipientIdValue');
+    }
+    get clientInvoicingRecipient() {
+        return this.get('clientInvoicingRecipient');
+    }
+    get invoicingReferencePersonIdValue() {
+        return this.get('invoicingReferencePersonIdValue');
+    }
+    get invoicingReferencePerson() {
+        return this.get('invoicingReferencePerson');
     }
     get specialContractTerms() {
         return this.get('specialContractTerms');
