@@ -48,13 +48,13 @@
         }
         &__name {
             font-weight: 700;
-            font-size: 16px;
+            font-size: 14px;
             color: $light-grey-color;
             text-transform: uppercase;
             margin-left: 10px;
-            @media screen and (max-width: 1440px) {
-                font-size: 14px;
-            }
+            // @media screen and (max-width: 1440px) {
+            //     font-size: 14px;
+            // }
         }
         &.active-step:not(.completed-step) {
             .workflow-navigation--step__number {
