@@ -48,12 +48,10 @@
         &-type {
             @include flexCentered;
             height: 40px;
+            line-height: 24px;
             padding: 6px 10px;
             border: 1px solid $light-grey-color;
             border-radius: 40px;
-            @media screen and (max-width: 1366px) {
-                height: 30px;
-            }
             &__name {
                 font-weight: 700;
                 color: #384853;
@@ -120,13 +118,12 @@
         min-height: 120px;
     }
     &-icon {
-        line-height: 40px;
         &-type {
-            line-height: 40px;
-            @media screen and (max-width: 1366px) {
-                transform: scale(0.8);
-            }
-
+            width: 19px;
+            height: 19px;
+            font-size: 19px;
+            line-height: 19px;
+            margin-right: 5px;
         }
     }
     &-search-button {
