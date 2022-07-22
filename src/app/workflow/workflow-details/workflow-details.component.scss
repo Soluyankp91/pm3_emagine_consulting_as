@@ -14,14 +14,14 @@
         padding: 0 75px;
         &--title {
             color: $dark-grey-color;
-            font-size: 16px;
-            line-height: 16px;
+            font-size: 14px;
+            line-height: 14px;
             font-weight: 700;
         }
         &--client {
             color: $dark-grey-color;
-            font-size: 16px;
-            line-height: 16px;
+            font-size: 14px;
+            line-height: 14px;
             font-weight: 700;
         }
     }
@@ -133,14 +133,14 @@
         h2:not(.workflow-green--header) {
             margin-bottom: 8px !important;
             font-weight: bold;
-            font-size: 16px;
-            line-height: 16px;
+            font-size: 14px;
+            line-height: 14px;
             color: rgba(56, 72, 83, 0.87);
         }
     }
     &-green--header {
         font-weight: bold;
-        font-size: 16px;
+        font-size: 14px;
         text-transform: uppercase;
         color: $green-color;
     }

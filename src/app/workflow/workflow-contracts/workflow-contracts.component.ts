@@ -1474,9 +1474,10 @@ export class WorkflowContractsComponent extends AppComponentBase implements OnIn
 
     getWorkflowContractsStepConsultantTermination(isFromSyncToLegacy?: boolean) {
         this.resetForms();
+        this.showMainSpinner();
         this._workflowServiceProxy.terminationConsultantContractGet(this.workflowId!, this.consultant.id!)
             .pipe(finalize(() => {
-
+                this.hideMainSpinner();
             }))
             .subscribe(result => {
                 // End of Consultant Contract
@@ -1521,9 +1522,10 @@ export class WorkflowContractsComponent extends AppComponentBase implements OnIn
 
     getWorkflowContractStepTermination(isFromSyncToLegacy?: boolean) {
         this.resetForms();
+        this.showMainSpinner();
         this._workflowServiceProxy.terminationContractGet(this.workflowId!)
             .pipe(finalize(() => {
-
+                this.hideMainSpinner();
             }))
             .subscribe(result => {
                 // End of Consultant Contract

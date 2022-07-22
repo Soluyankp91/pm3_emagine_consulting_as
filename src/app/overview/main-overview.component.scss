@@ -48,19 +48,14 @@
         &-type {
             @include flexCentered;
             height: 40px;
+            line-height: 24px;
             padding: 6px 10px;
             border: 1px solid $light-grey-color;
             border-radius: 40px;
-            @media screen and (max-width: 1366px) {
-                height: 30px;
-            }
             &__name {
                 font-weight: 700;
                 color: #384853;
                 font-size: 14px;
-                @media screen and (max-width: 1366px) {
-                    font-size: 11px;
-                }
             }
             &__quantity {
                 font-weight: 800;
@@ -123,13 +118,12 @@
         min-height: 120px;
     }
     &-icon {
-        line-height: 40px;
         &-type {
-            line-height: 40px;
-            @media screen and (max-width: 1366px) {
-                transform: scale(0.8);
-            }
-
+            width: 19px;
+            height: 19px;
+            font-size: 19px;
+            line-height: 19px;
+            margin-right: 5px;
         }
     }
     &-search-button {
@@ -145,10 +139,10 @@
 }
 
 .workflow-flag {
-    height: 14px;
-    width: 14px;
-    line-height: 14px;
-    font-size: 14px;
+    height: 16px;
+    width: 16px;
+    line-height: 16px;
+    font-size: 16px;
     &--sales {
         color: rgba($color: $green-color, $alpha: .5);
     }
@@ -185,10 +179,6 @@
     font-size: 14px;
     line-height: 140%;
     color: #B6B4B2;
-
-    @media screen and (max-width: 1366px) {
-        font-size: 11px;
-    }
 }
 
 .reset-button {
