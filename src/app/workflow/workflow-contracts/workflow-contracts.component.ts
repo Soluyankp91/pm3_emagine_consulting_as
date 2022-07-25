@@ -415,7 +415,6 @@ export class WorkflowContractsComponent extends AppComponentBase implements OnIn
 
     // #region CHANGE NAMING
     selectClientRate(event: any, rate: ClientSpecialRateDto, clientRateMenuTrigger: MatMenuTrigger) {
-        console.log('ss');
         const clientRate = new PeriodClientSpecialRateDto();
         clientRate.id = undefined;
         clientRate.clientSpecialRateId = rate.id;
@@ -821,7 +820,6 @@ export class WorkflowContractsComponent extends AppComponentBase implements OnIn
         });
 
         dialogRef.componentInstance.onConfirmed.subscribe((projectLine) => {
-            console.log(projectLine);
             if (projectLinesIndex !== null && projectLinesIndex !== undefined) {
                 // Edit
                 this.editProjectLineValue(index, projectLinesIndex, projectLine);
@@ -1081,7 +1079,6 @@ export class WorkflowContractsComponent extends AppComponentBase implements OnIn
                 this.contractsSyncDataForm.manualCheckbox?.setValue(result.contractLinesDoneManuallyInOldPm, {emitEvent: false});
                 this.contractsSyncDataForm.isNewSyncNeeded?.setValue(result?.isNewSyncNeeded, {emitEvent: false});
                 this.contractsSyncDataForm.lastSyncedDate?.setValue(result?.lastSyncedDate, {emitEvent: false});
-                console.log(this.contractsSyncDataForm.lastSyncedDate?.value);
                 if (result.clientData?.periodClientSpecialRates?.length) {
                     result.clientData.periodClientSpecialRates.forEach((rate: PeriodClientSpecialRateDto) => {
                         this.addSpecialRate(rate);
@@ -1337,7 +1334,6 @@ export class WorkflowContractsComponent extends AppComponentBase implements OnIn
                 this.contractsSyncDataForm.newLegalContract?.setValue(result?.newLegalContractRequired, {emitEvent: false});
                 this.contractsSyncDataForm.isNewSyncNeeded?.setValue(result?.isNewSyncNeeded, {emitEvent: false});
                 this.contractsSyncDataForm.lastSyncedDate?.setValue(result?.lastSyncedDate, {emitEvent: false});
-                console.log(this.contractsSyncDataForm.lastSyncedDate?.value);
 
                 this.addConsultantDataToForm(result?.consultantData!, 0);
                 this.updateConsultantStepAnchors();
