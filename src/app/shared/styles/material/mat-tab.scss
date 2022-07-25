@@ -152,16 +152,16 @@ mat-tab-group.client-documents--tabs {
             @media screen and (max-width: 1440px) {
                 font-size: 14px;
             }
-            &-overview { // Overview disabled
-                font-family: 'Open Sans', sans-serif;
-                font-weight: 800;
-                line-height: 120%;
-                font-size: 16px;
-                color: $light-grey-color;
-                @media screen and (max-width: 1440px) {
-                    font-size: 14px;
-                }
-            }
+            // &-overview { // Overview disabled
+            //     font-family: 'Open Sans', sans-serif;
+            //     font-weight: 800;
+            //     line-height: 120%;
+            //     font-size: 16px;
+            //     color: $light-grey-color;
+            //     @media screen and (max-width: 1440px) {
+            //         font-size: 14px;
+            //     }
+            // }
             &-detail {
                 font-weight: 600;
                 font-size: 12px;
@@ -205,9 +205,9 @@ mat-tab-group.client-documents--tabs {
         }
 
         &:first-of-type {
-            &:hover {
-                pointer-events: none;
-            }
+            // &:hover {
+            //     pointer-events: none;
+            // }
             width: 20%;
         }
     }

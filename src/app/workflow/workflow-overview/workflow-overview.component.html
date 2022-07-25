@@ -4,29 +4,57 @@
             <!-- TODO: move each block to card component-->
             <div fxLayout="column" fxLayoutAlign="start start" fxFlex="15%">
                 <span class="flex-row flex-items-center u-mb--10">
-                    <mat-icon svgIcon="{{item.name}}"></mat-icon>
+                    <ng-container [ngSwitch]="item.typeId">
+                        <ng-container *ngSwitchCase="workflowProcessType.StartClientPeriod">
+                            <mat-icon svgIcon="workflowAdd"></mat-icon>
+                        </ng-container>
+                        <ng-container *ngSwitchCase="workflowProcessType.ExtendClientPeriod">
+                            <mat-icon svgIcon="workflowStartOrExtend"></mat-icon>
+                        </ng-container>
+                        <ng-container *ngSwitchCase="workflowProcessType.TerminateWorkflow">
+                            <mat-icon svgIcon="workflowTerminate"></mat-icon>
+                        </ng-container>
+                        <ng-container *ngSwitchCase="workflowProcessType.ChangeClientPeriod">
+                            <mat-icon svgIcon="workflowEdit"></mat-icon>
+                        </ng-container>
+                        <ng-container *ngSwitchCase="workflowProcessType.StartConsultantPeriod">
+                            <mat-icon svgIcon="workflowAdd"></mat-icon>
+                        </ng-container>
+                        <ng-container *ngSwitchCase="workflowProcessType.ChangeConsultantPeriod">
+                            <mat-icon svgIcon="workflowEdit"></mat-icon>
+                        </ng-container>
+                        <ng-container *ngSwitchCase="workflowProcessType.ExtendConsultantPeriod">
+                            <mat-icon svgIcon="workflowStartOrExtend"></mat-icon>
+                        </ng-container>
+                        <ng-container *ngSwitchCase="workflowProcessType.TerminateConsultant">
+                            <mat-icon svgIcon="workflowTerminate"></mat-icon>
+                        </ng-container>
+                        <ng-container *ngSwitchDefault>
+                            -
+                        </ng-container>
+                    </ng-container>
                     <span class="workflow-overview--process">
-                        {{item.displayName}}
+                        {{item.name}}
                     </span>
                 </span>
-                <span class="workflow-overview--process-daterange u-ml--5">{{item.dateRange}}</span>
+                <span class="workflow-overview--process-daterange u-ml--5">{{item.periodStartDate | momentFormat: 'DD/MM/YYYY' + ' - ' + (item.periodEndDate ? (item.periodEndDate | momentFormat: 'DD/MM/YYYY') : '...')}}</span>
             </div>
-            <div *ngFor="let item of item.processSteps" fxFlex="20%">
+            <div *ngFor="let item of item.steps" fxFlex="20%">
                 <div class="workflow-overview--team__user column">
                     <div fxLayout="row" fxLayoutAlign="start center">
-                        <img class="workflow-overview--team__user-img" src="https://placekitten.com/64/64" alt="">
+                        <img class="workflow-overview--team__user-img" [src]="employeeProfileUrl(item.responsiblePerson?.externalId!)" alt="">
                         <div class="column">
-                            <h2 class="workflow-overview--team__user-position">{{item.displayName}}</h2>
-                            <p class="workflow-overview--team__user-name">{{item.assignedPerson}}</p>
+                            <h2 class="workflow-overview--team__user-position">{{item.name}}</h2>
+                            <p class="workflow-overview--team__user-name">{{item.responsiblePerson?.name}}</p>
                         </div>
                     </div>
-                    <div class="workflow-overview--team__user-progress u-w--100" [ngClass]="{'finished': item.isCompleted, 'in-progress': item.isInProgress}" [matTooltip]="displayStepActionTooltip(item)" matTooltipClass="white-tooltip">
+                    <div class="workflow-overview--team__user-progress u-w--100" [ngClass]="{'finished': item.status === workflowStepStatus.Completed, 'in-progress': item.status === workflowStepStatus.Pending}" [matTooltip]="displayStepActionTooltip(item)" matTooltipClass="white-tooltip">
                     </div>
                     <div fxLayout="row" fxLayoutAlign="end center" class="u-w--100">
                         <span class="icon-in-progress u-mr--5">
-                            <mat-icon svgIcon="{{item.isCompleted ? 'completed-icon' : 'in-progress-icon'}}"></mat-icon>
+                            <mat-icon svgIcon="{{item.status === workflowStepStatus.Completed ? 'completed-icon' : 'in-progress-icon'}}"></mat-icon>
                         </span>
-                        <span class="workflow-overview--team__user-status" [ngClass]="{'finished': item.canStartSetup || item.isInProgress}">
+                        <span class="workflow-overview--team__user-status" [ngClass]="{'finished': item.status !== workflowStepStatus.Completed}">
                             {{displayStepAction(item)}}
                         </span>
                     </div>
@@ -34,31 +62,36 @@
             </div>
         </div>
     </div>
-    <!-- FIXME: hidden for the 1st release -->
-    <div class="workflow-overview--timeline" fxLayout="row" fxLayoutAlign="start start" [fxHide]="true">
-        <div fxLayout="row" fxLayoutAlign="start center" class="workflow-overview--chart-container" fxFlexFill>
-            <ngx-gantt #gantt [items]="items" [viewOptions]="viewOptions" [viewType]="viewType">
-                <ngx-gantt-table>
-                    <ngx-gantt-column name="" width="250px">
-                        <ng-template #cell let-item="item">
-                            <div fxLayout="row" fxLayoutAlign="start center" fxLayoutGap="15px" class="u-w-100">
-                                <ng-container *ngIf="item.title !== ''; else childTemplate">
-                                    <img class="manager-search--photo" src="../../../../assets/common/images/no-img.svg"/>
-                                    <span class="text-truncate-ellipsis workflow-overview--client-name" [matTooltip]="item?.title" matTooltipClass="white-tooltip">
-                                        {{item?.title}}
-                                    </span>
-                                </ng-container>
-                                <ng-template #childTemplate>
-                                    <img class="manager-search--photo" src="../../../../assets/common/images/no-img.svg"/>
-                                    <span>
-                                        {{item?.origin?.firstName + ' ' + item?.origin?.lastName}}
-                                    </span>
-                                </ng-template>
-                            </div>
-                        </ng-template>
-                    </ngx-gantt-column>
-                </ngx-gantt-table>
-            </ngx-gantt>
-        </div>
+    <div class="workflow-overview--timeline" fxLayout="row" fxLayoutAlign="start start" [fxHide]="overviewGroups.length === 0 && overviewItems.length === 0" fxFlexFill>
+        <app-gantt-chart *ngIf="overviewGroups.length && overviewItems.length"
+            #gantt
+            [items]="overviewItems"
+            [groups]="overviewGroups"
+            [viewOptions]="viewOptions"
+            [viewType]="viewType"
+            [draggable]="false"
+            [start]="startDateOfChart">
+            <ng-template #group let-group="group">
+                <!-- {{ group.title }} -->
+            </ng-template>
+            <ng-template #bar let-item="item">
+                <!-- <span style="color: #fff">&nbsp;&nbsp;{{ item.title }}</span> -->
+            </ng-template>
+        </app-gantt-chart>
+    <!-- <div class="pagination-container u-w--100">
+        <mat-paginator #workflowsPaginator [length]="workflowsTotalCount" [pageSize]="workflowsDeafultPageSize" [pageIndex]="workflowsPageNumber-1"
+            [pageSizeOptions]="pageSizeOptions" [showFirstLastButtons]="true" (page)="workflowsPageChanged($event)">
+        </mat-paginator>
+    </div> -->
+    </div>
+    <mat-divider class="u-w--100 u-mb--30"></mat-divider>
+    <div fxLayout="row" fxLayoutAlign="start start" *ngFor="let item of workflowHistory">
+        <span>{{item.occurredAtUtc | momentFormat: 'DD.MM.YYYY'}}</span>
+        <img class="workflow-overview--team__user-img" [src]="employeeProfileUrl(item.initiatedBy?.externalId!)" alt="">
+        <span class="text-bold-700">{{item.eventName}}</span>
+        <span>{{item.initiatedBy?.name}}</span>
+        <!-- <div>
+
+        </div> -->
     </div>
 </div>

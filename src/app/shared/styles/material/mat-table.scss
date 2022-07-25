@@ -311,67 +311,84 @@ mat-table.white-table {
     }
 }
 
-.workflow-overview--chart-container {
+.workflow-overview--timeline {
     .gantt {
         background: transparent !important;
         &-side {
             border-right: none !important;
             box-shadow: none !important;
-            margin-right: 30px;
+            margin: 44px 30px 0 0;
+            padding-bottom: 17px;
             &-container {
                 background: transparent !important;
-
-                gantt-table.gantt-table {
+                .gantt-flat-side-header {
+                    border: 0 !important;
+                    font-size: 18px;
+                    padding: 0 16px;
                     background: transparent !important;
-                    box-shadow: none !important;
-                    font-weight: 400 !important;
-                    line-height: 19px !important;
-                    font-size: 16px !important;
-                    .gantt-table-header {
-                        border: 0 !important;
-                        font-size: 18px;
-                        padding: 0 16px;
-                        background: transparent !important;
-                        .gantt-table-column {
-                            font-family: 'Open Sans', sans-serif !important;
-                            color: #4a4e60 !important;
-                            font-weight: 800;
-                            font-size: 16px;
+                    .gantt-flat-side-column {
+                        font-family: 'Open Sans', sans-serif !important;
+                        color: #4a4e60 !important;
+                        font-weight: 800;
+                        font-size: 16px;
+                        display: flex;
+                        justify-content: flex-start;
+                        &:last-of-type {
+                            padding-right: 16px;
+                        }
+                        @media screen and (max-width: 1366px) {
+                            font-size: 10px;
+                            line-height: 14px;
+                        }
+                    }
+                }
+                .gantt-flat-side-body {
+                    .gantt-group {
+                        padding-left: 16px;
+                        border: 0;
+                        display: flex;
+                        align-items: center;
+                        width: 100%;
+                        &:hover {
+                            transition: background-color .7s ease;
+                            background-color: rgba(102, 140, 164, .17);
+                        }
+                        &:first-child {
+                            .gantt-group-content {
+                                padding-left: 16px;
+                                font-style: normal;
+                                font-weight: 800;
+                                font-size: 14px;
+                                line-height: 120%;
+                                color: #4A4E60;
+                            }
+                        }
+                        .gantt-group-content {
+                            border-right: none;
+                            padding: 0 !important;
+                            font-style: normal;
+                            font-weight: 600;
+                            font-size: 11px;
+                            line-height: 120%;
+                            color: #4A4E60;
                             display: flex;
-                            justify-content: flex-start;
+                            flex-direction: row;
+                            align-items: center;
+                            &:first-of-type {
+                                padding-left: 16px;
+                                // font-style: normal;
+                                // font-weight: 800;
+                                // font-size: 14px;
+                                // line-height: 120%;
+                                // color: #4A4E60;
+                            }
+
                             &:last-of-type {
                                 padding-right: 16px;
                             }
-                        }
-                    }
-                    .gantt-table-body {
-                        .gantt-table-item {
-                            padding-left: 16px;
-                            border: 0;
-                            display: flex;
-                            align-items: center;
-                            width: 100%;
-                            &:hover {
-                                transition: background-color .7s ease;
-                                background-color: rgba(102, 140, 164, .17);
-                            }
-                            .gantt-table-column {
-                                border-right: none;
-                                padding: 0 !important;
-                                &:first-of-type {
-                                    padding-left: 16px;
-                                }
 
-                                &:last-of-type {
-                                    padding-right: 16px;
-                                }
-                                .gantt-table-column-content {
-                                    color: $dark-grey-color !important;
-                                    font-size: 16px;
-                                }
-                            }
-                            .gantt-expand-icon {
-                                display: none;
+                            @media screen and (max-width: 1366px) {
+                                font-size: 12px;
                             }
                         }
                     }
@@ -391,8 +408,8 @@ mat-table.white-table {
                     .secondary-text {
                         font-family: 'Open Sans', sans-serif !important;
                         fill: $medium-grey-color !important;
-                        font-weight: 600;
-                        font-size: 12px;
+                        font-weight: 700;
+                        font-size: 10px;
                         transform: translateY(-10px);
                     }
 
@@ -420,9 +437,13 @@ mat-table.white-table {
             }
         }
     }
-    gantt-bar {
+    .gantt-bar {
+        height: 11px !important;
+        border-radius: 10px !important;
+        margin-top: 6px;
         .gantt-bar-content {
             border-radius: 10px;
+            height: 11px;
         }
     }
 }

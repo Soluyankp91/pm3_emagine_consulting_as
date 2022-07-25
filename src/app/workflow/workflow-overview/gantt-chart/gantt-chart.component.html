@@ -1,0 +1,42 @@
+<ngx-gantt-root>
+    <ng-template #sideTemplate>
+        <div class="gantt-flat-side-header" fxLayout="row" fxLayoutAlign="start center">
+            <div class="gantt-flat-side-column" fxFlex="5%">
+
+            </div>
+        </div>
+        <div class="gantt-flat-side-body">
+            <div class="gantt-group" *ngFor="let group of groups; trackBy: trackBy" [style.height.px]="group.mergedItems.length! * (styles.lineHeight + 10) - 10">
+                <div class="gantt-group-content text-truncate-ellipsis">
+                    <img *ngIf="group.origin!.origin" class="border-rounded-50 image-settings--dropdown u-mr--10" [src]="employeeProfileUrl(group.origin!.origin)">
+                    <span class="text-truncate-ellipsis" [matTooltip]="group?.origin?.title!" matTooltipClass="white-tooltip">
+                        {{group!.origin!.title!}}
+                    </span>
+                </div>
+            </div>
+        </div>
+    </ng-template>
+    <ng-template #mainTemplate>
+        <div class="gantt-main-container">
+            <div class="gantt-main-groups" *ngIf="groups && groups.length > 0" [style.width.px]="view.width">
+                <ng-container *ngFor="let group of groups; trackBy: trackBy">
+                    <div class="gantt-main-group" [style.height.px]="group.mergedItems.length! * (styles.lineHeight + 10) - 10">
+                        <ng-container *ngFor="let items of group.mergedItems">
+                            <div class="gantt-flat-items" [style.height.px]="styles.lineHeight">
+                                <ng-container *ngFor="let item of items; trackBy: trackBy">
+                                    <ngx-gantt-bar [item]="item" [template]="barTemplate"
+                                        (barClick)="barClick.emit($event)" (mouseenter)="setPosition($event, item)" class="period-item--bar">
+                                    </ngx-gantt-bar>
+                                    <div class="tooltip" [style.left.px]="menuTopLeftPosition.x"[style.top.px]="menuTopLeftPosition.y">
+                                        <span><b>{{item?.origin?.title!}}</b></span>
+                                        <span>{{tooltipStartDate | momentFormat: 'DD.MM.YYYY'}} - {{tooltipEndDate | momentFormat: 'DD.MM.YYYY'}}</span>
+                                    </div>
+                                </ng-container>
+                            </div>
+                        </ng-container>
+                    </div>
+                </ng-container>
+            </div>
+        </div>
+    </ng-template>
+</ngx-gantt-root>
