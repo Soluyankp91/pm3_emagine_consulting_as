@@ -44,7 +44,7 @@
           overflow: hidden;
           white-space: nowrap;
           word-break: keep-all;
-          font-weight: 800;
+          font-weight: 700;
           color: #4A4E60;
         }
         &:focus {
@@ -57,6 +57,9 @@
           box-shadow: 0px 0px 20px rgba(26, 35, 126, 0.15);
           border-radius: 0px;
           border-left: 4px solid $green-color;
+          .main-navigation--list-item__name {
+            font-weight: 800;
+          }
         }
         &.active:not(.hubspot-shortcut),
         &:not(.hubspot-shortcut):hover {
