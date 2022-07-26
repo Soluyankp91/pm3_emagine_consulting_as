@@ -91,13 +91,13 @@
 
     <div class="workflow-content u-w--100" id="workflowDetails">
         <mat-tab-group #topMenuTabs class="workflow-content--tabs u-w--100" (selectedTabChange)="tabChanged($event)" [(selectedIndex)]="selectedIndex">
-            <mat-tab label="Overview" [disabled]="disabledOverview">
+            <mat-tab label="Overview">
                 <ng-template mat-tab-label>
                     <div fxLayout="row" fxLayoutAlign="center center">
-                        <mat-icon class="u-mr--10" svgIcon="{{!disabledOverview ? 'overview-icon' : 'overview-icon-inactive'}}"></mat-icon>
+                        <mat-icon class="u-mr--10" svgIcon="overview-icon"></mat-icon>
                         <div fxLayout="column" fxLayoutAlign="center start">
-                            <span class="tab-header-overview">Overview</span>
-                            <span class="tab-header-detail u-mt--5">Coming soon</span>
+                            <span class="tab-header">Overview</span>
+                            <!-- <span class="tab-header-detail u-mt--5">Coming soon</span> -->
                         </div>
                     </div>
                 </ng-template>

@@ -150,13 +150,7 @@ mat-tab-group.client-documents--tabs {
             font-size: 14px;
             color: $dark-grey-color;
 
-            &-overview { // Overview disabled
-                font-family: 'Open Sans', sans-serif;
-                font-weight: 800;
-                line-height: 120%;
-                font-size: 14px;
-                color: $light-grey-color;
-            }
+
             &-detail {
                 font-weight: 600;
                 font-size: 12px;
@@ -194,9 +188,9 @@ mat-tab-group.client-documents--tabs {
         }
 
         &:first-of-type {
-            &:hover {
-                pointer-events: none;
-            }
+            // &:hover {
+            //     pointer-events: none;
+            // }
             width: 20%;
         }
     }

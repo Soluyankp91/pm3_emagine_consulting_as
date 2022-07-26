@@ -113,7 +113,7 @@ export class WorkflowDetailsComponent extends AppComponentBase implements OnInit
         this.resetWorkflowProgress();
         this._internalLookupService.getData();
         this.getClientPeriodTypes();
-        this.getTopLevelMenu(true);
+        this.getTopLevelMenu();
         this.getConsultantPeriodTypes();
         this.getPeriodStepTypes();
         this.getNotes();
