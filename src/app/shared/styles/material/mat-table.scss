@@ -349,10 +349,7 @@ mat-table.white-table {
                         display: flex;
                         align-items: center;
                         width: 100%;
-                        &:hover {
-                            transition: background-color .7s ease;
-                            background-color: rgba(102, 140, 164, .17);
-                        }
+
                         &:first-child {
                             .gantt-group-content {
                                 padding-left: 16px;

@@ -1,12 +1,18 @@
+import { Overlay } from '@angular/cdk/overlay';
 import { Component, Injector, Input, OnInit, ViewChild } from '@angular/core';
+import { MatDialog } from '@angular/material/dialog';
 import { ActivatedRoute } from '@angular/router';
 import { GanttDate, GanttGroup, GanttItem, GanttViewOptions, GanttViewType, NgxGanttComponent } from '@worktile/gantt';
 import { getUnixTime } from 'date-fns';
 import { Subject } from 'rxjs';
-import { takeUntil } from 'rxjs/operators';
+import { finalize, takeUntil } from 'rxjs/operators';
+import { ConfirmationDialogComponent } from 'src/app/shared/components/confirmation-dialog/confirmation-dialog.component';
 import { AppComponentBase } from 'src/shared/app-component-base';
-import { GanttRowItem, StepDto, WorkflowHistoryDto, WorkflowProcessDto, WorkflowProcessType, WorkflowServiceProxy, WorkflowStepStatus } from 'src/shared/service-proxies/service-proxies';
+import { AppConsts } from 'src/shared/AppConsts';
+import { ChangeConsultantPeriodDto, ConsultantGanttRow, ConsultantPeriodServiceProxy, ExtendConsultantPeriodDto, GanttRowItem, StepDto, WorkflowHistoryDto, WorkflowProcessDto, WorkflowProcessType, WorkflowServiceProxy, WorkflowStepStatus } from 'src/shared/service-proxies/service-proxies';
+import { WorkflowConsultantActionsDialogComponent } from '../workflow-consultant-actions-dialog/workflow-consultant-actions-dialog.component';
 import { WorkflowDataService } from '../workflow-data.service';
+import { ConsultantDiallogAction } from '../workflow-sales/workflow-sales.model';
 import { ExtendWorkflowProcessDto, OverviewData, ProcessParentItemDto, ProcessSubItemDto, StartWorkflowProcessDto } from './workflow-overview.model';
 
 @Component({
@@ -18,72 +24,19 @@ export class WorkflowOverviewComponent extends AppComponentBase implements OnIni
     @ViewChild('gantt') ganttComponent: NgxGanttComponent;
 
     @Input() workflowId: string;
-    // finished = true;
-    // inPorgress = true;
-    // notStarted = true;
+
     componentInitalized = false;
     workflowStepStatus = WorkflowStepStatus;
 
-    // workflowProcesses: ProcessParentItemDto[] = [];
     workflowProcesses: WorkflowProcessDto[];
     workflowProcessType = WorkflowProcessType;
-
     workflowHistory: WorkflowHistoryDto[];
 
     // gant
 
-    items: GanttItem<OverviewData>[] = [
-        {
-            id: '000000',
-            title: 'Nordea Bank Danmark A/S',
-            start: getUnixTime(new Date(2022, 1, 1)),
-            end: getUnixTime(new Date(2022, 11, 31)),
-            color: 'rgb(23, 162, 151)',
-            expandable: true,
-            expanded: true,
-            children:[
-                {
-                    id: '000006',
-                    title: '',
-                    start: getUnixTime(new Date(2022, 1, 3)),
-                    end: getUnixTime(new Date(2022, 5, 29)),
-                    color: 'rgb(106, 71, 184)',
-                    origin: {
-                        firstName: 'Robertsen',
-                        lastName: 'Oscar'
-                    },
-                },
-                {
-                    id: '000007',
-                    title: '',
-                    start: getUnixTime(new Date(2022, 2, 3)),
-                    end: getUnixTime(new Date(2022, 4, 29)),
-                    color: 'rgb(106, 71, 184)',
-                    origin: {
-                        firstName: 'Frederick',
-                        lastName: 'Rikke'
-                    },
-                }
-            ]
-        },
-        {
-            id: '000001',
-            title: 'Leadership support',
-            color: 'rgb(23, 162, 151)',
-            origin: {
-                firstName: 'Frederick',
-                lastName: 'Rikke'
-            },
-            start: getUnixTime(new Date(2022, 1, 2)),
-            end: getUnixTime(new Date(2022, 2, 2))},
-    ];
-
     overviewItems: GanttItem[] = [];
     overviewGroups: GanttGroup<any>[] = [];
     viewType = GanttViewType.month;
-
-    startDate = new Date();
-    startDateOfChart: number;
 
     viewOptions = {
         mergeIntervalDays: 0,
@@ -91,17 +44,26 @@ export class WorkflowOverviewComponent extends AppComponentBase implements OnIni
             month: 'MM yyyy'
         },
         cellWidth: 115,
-        start: new GanttDate(getUnixTime(new Date(this.startDate.setDate(this.startDate.getDate() - 7)))),
+        start: new GanttDate(),
         end: new GanttDate(),
         min: new GanttDate(),
         max: new GanttDate()
     }
+    historyTotalCount: number | undefined = 0;
+    historyDeafultPageSize = AppConsts.grid.defaultPageSize;
+    historyPageNumber = 1;
+    pageSizeOptions = [5, 10, 20, 50, 100];
+
     private _unsubscribe = new Subject();
     constructor(
         injector: Injector,
         public _workflowDataService: WorkflowDataService,
         private _workflowService: WorkflowServiceProxy,
-        private activatedRoute: ActivatedRoute
+        private activatedRoute: ActivatedRoute,
+        private overlay: Overlay,
+        private dialog: MatDialog,
+        private _consultantPeriodSerivce: ConsultantPeriodServiceProxy,
+
     ) {
         super(injector);
      }
@@ -113,7 +75,6 @@ export class WorkflowOverviewComponent extends AppComponentBase implements OnIni
             this.workflowId = params.get('id')!;
         });
         this.componentInitalized = true;
-        // this.initializeProcesses();
         this.getOverviewData();
         this.getWorkflowHistory();
     }
@@ -121,11 +82,6 @@ export class WorkflowOverviewComponent extends AppComponentBase implements OnIni
     ngOnDestroy(): void {
         this._unsubscribe.next();
         this._unsubscribe.complete();
-    }
-
-    initializeProcesses() {
-        // this.workflowProcesses.unshift(StartWorkflowProcessDto);
-        // this.workflowProcesses.unshift(ExtendWorkflowProcessDto);
     }
 
     displayStepAction(process: StepDto) {
@@ -151,15 +107,6 @@ export class WorkflowOverviewComponent extends AppComponentBase implements OnIni
             default:
                 return 'Not yet started';
         }
-        // if (process.status) {
-        //     return 'Finished';
-        // } else if (process.isInProgress) {
-        //     return 'In progress';
-        // } else if (process.canStartSetup) {
-        //     return 'Not yet started';
-        // } else {
-        //     return 'Not yet started'
-        // }
     }
 
     getOverviewData() {
@@ -167,7 +114,6 @@ export class WorkflowOverviewComponent extends AppComponentBase implements OnIni
         this.overviewItems = [];
         this._workflowService.overview(this.workflowId).subscribe(result => {
             this.workflowProcesses = result.incompleteWorkflowProcesses!;
-            console.log(this.workflowProcesses);
 
             let groups: GanttGroup<any>[] = [];
             let items: GanttItem[] = [];
@@ -179,7 +125,6 @@ export class WorkflowOverviewComponent extends AppComponentBase implements OnIni
             //     endDate = this.formatDate(date);
             // }
             let groupIndex = 0;
-            // if (result.clientGanntRows)
             result.clientGanntRows!.map((x, index) => {
                 groups.push({
                     id: (++groupIndex).toString(),
@@ -187,7 +132,6 @@ export class WorkflowOverviewComponent extends AppComponentBase implements OnIni
                 })
 
                 items = [...items, ...this.formatItems(x.ganttRowItems?.length!, x.ganttRowItems!, groups[index].id, true)];
-                console.log('clientGanntRows', items)
             });
 
             result.consultantGanntRows!.map((x, index) => {
@@ -195,17 +139,14 @@ export class WorkflowOverviewComponent extends AppComponentBase implements OnIni
                 groups.push({
                     id: (++groupIndex).toString(),
                     title: x.name!,
-                    origin: x.consultantExternalId
+                    origin: x
                 })
 
                 items = [...items, ...this.formatItems(x.ganttRowItems?.length!, x.ganttRowItems!, groups[index].id, false)];
-                console.log('consultantGanntRows', items)
-
             });
 
             this.overviewGroups = groups;
             this.overviewItems = items;
-            console.log('overviewItems', this.overviewItems)
 
         })
     }
@@ -226,10 +167,131 @@ export class WorkflowOverviewComponent extends AppComponentBase implements OnIni
     }
 
     getWorkflowHistory() {
-        this._workflowService.history(this.workflowId).subscribe(result => {
+        this._workflowService.history(this.workflowId, this.historyPageNumber, this.historyDeafultPageSize).subscribe(result => {
             if (result.items) {
                 this.workflowHistory = result.items!;
+                this.historyTotalCount = result.totalCount;
             }
         })
     }
+
+    terminateConsultant(consultantInfo: ConsultantGanttRow) {
+        const scrollStrategy = this.overlay.scrollStrategies.reposition();
+        const dialogRef = this.dialog.open(ConfirmationDialogComponent, {
+            width: '450px',
+            minHeight: '180px',
+            height: 'auto',
+            scrollStrategy,
+            backdropClass: 'backdrop-modal--wrapper',
+            autoFocus: false,
+            panelClass: 'confirmation-modal',
+            data: {
+                confirmationMessageTitle: `Are you sure you want to terminate consultant ${consultantInfo?.name}?`,
+                rejectButtonText: 'Cancel',
+                confirmButtonText: 'Terminate',
+                isNegative: true
+            }
+        });
+
+        dialogRef.componentInstance.onConfirmed.subscribe(() => {
+            this.terminateConsultantStart(1); //FIXME: add real id when BE will be fixed
+        });
+
+        dialogRef.componentInstance.onRejected.subscribe(() => {
+            // nthng
+        });
+    }
+
+    terminateConsultantStart(index: number) {
+        this._workflowService.terminationConsultantStart(this.workflowId!, index)
+            .pipe(finalize(() => {
+
+            }))
+            .subscribe(result => {
+                this._workflowDataService.workflowSideSectionAdded.emit(true);
+            });
+    }
+
+    changeConsultantData(consultantInfo: ConsultantGanttRow) {
+        const scrollStrategy = this.overlay.scrollStrategies.reposition();
+        const dialogRef = this.dialog.open(WorkflowConsultantActionsDialogComponent, {
+            minWidth: '450px',
+            minHeight: '180px',
+            height: 'auto',
+            width: 'auto',
+            scrollStrategy,
+            backdropClass: 'backdrop-modal--wrapper',
+            autoFocus: false,
+            panelClass: 'confirmation-modal',
+            data: {
+                dialogType: ConsultantDiallogAction.Change,
+                consultantData: {externalId: consultantInfo.consultantExternalId, name: consultantInfo.name},
+                dialogTitle: `Change consultant`,
+                rejectButtonText: 'Cancel',
+                confirmButtonText: 'Create',
+                isNegative: false
+            }
+        });
+
+        dialogRef.componentInstance.onConfirmed.subscribe((result) => {
+            let input = new ChangeConsultantPeriodDto();
+            input.cutoverDate = result.newCutoverDate;
+            input.newLegalContractRequired = result.newLegalContractRequired;
+            this._consultantPeriodSerivce.change(consultantInfo?.ganttRowItems![0].id!, input)
+                .pipe(finalize(() => {}))
+                .subscribe(result => {
+                    this._workflowDataService.workflowSideSectionAdded.emit(true);
+                });
+        });
+
+        dialogRef.componentInstance.onRejected.subscribe(() => {
+            // nthng
+        });
+    }
+
+    extendConsultant(consultantInfo: ConsultantGanttRow) {
+        const scrollStrategy = this.overlay.scrollStrategies.reposition();
+        const dialogRef = this.dialog.open(WorkflowConsultantActionsDialogComponent, {
+            minWidth: '450px',
+            minHeight: '180px',
+            height: 'auto',
+            width: 'auto',
+            scrollStrategy,
+            backdropClass: 'backdrop-modal--wrapper',
+            autoFocus: false,
+            panelClass: 'confirmation-modal',
+            data: {
+                dialogType: ConsultantDiallogAction.Extend,
+                consultantData: {externalId: consultantInfo.consultantExternalId, name: consultantInfo.name},
+                dialogTitle: `Extend consultant`,
+                rejectButtonText: 'Cancel',
+                confirmButtonText: 'Create',
+                isNegative: false
+            }
+        });
+
+        dialogRef.componentInstance.onConfirmed.subscribe((result) => {
+            let input = new ExtendConsultantPeriodDto();
+            input.startDate = result.startDate;
+            input.endDate = result.endDate;
+            input.noEndDate = result.noEndDate;
+            this._consultantPeriodSerivce.extend(consultantInfo?.ganttRowItems![0].id!, input)
+                .pipe(finalize(() => {}))
+                .subscribe(result => {
+                    this._workflowDataService.workflowSideSectionAdded.emit(true);
+                });
+            this._workflowDataService.workflowSideSectionAdded.emit(true);
+        });
+
+        dialogRef.componentInstance.onRejected.subscribe(() => {
+            // nthng
+        });
+    }
+
+    historyPageChanged(event?: any): void {
+        this.historyPageNumber = event.pageIndex + 1;
+        this.historyDeafultPageSize = event.pageSize;
+        this.getWorkflowHistory();
+    }
+
 }

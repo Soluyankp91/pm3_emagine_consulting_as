@@ -70,7 +70,7 @@
             [viewOptions]="viewOptions"
             [viewType]="viewType"
             [draggable]="false"
-            [start]="startDateOfChart">
+            [showTodayLine]="false">
             <ng-template #group let-group="group">
                 <!-- {{ group.title }} -->
             </ng-template>
@@ -78,20 +78,60 @@
                 <!-- <span style="color: #fff">&nbsp;&nbsp;{{ item.title }}</span> -->
             </ng-template>
         </app-gantt-chart>
-    <!-- <div class="pagination-container u-w--100">
-        <mat-paginator #workflowsPaginator [length]="workflowsTotalCount" [pageSize]="workflowsDeafultPageSize" [pageIndex]="workflowsPageNumber-1"
-            [pageSizeOptions]="pageSizeOptions" [showFirstLastButtons]="true" (page)="workflowsPageChanged($event)">
-        </mat-paginator>
-    </div> -->
-    </div>
-    <mat-divider class="u-w--100 u-mb--30"></mat-divider>
-    <div fxLayout="row" fxLayoutAlign="start start" *ngFor="let item of workflowHistory">
-        <span>{{item.occurredAtUtc | momentFormat: 'DD.MM.YYYY'}}</span>
-        <img class="workflow-overview--team__user-img" [src]="employeeProfileUrl(item.initiatedBy?.externalId!)" alt="">
-        <span class="text-bold-700">{{item.eventName}}</span>
-        <span>{{item.initiatedBy?.name}}</span>
-        <!-- <div>
 
-        </div> -->
+        <div fxFlex="3%" fxLayout="column" class="u-mt--44">
+            <div *ngFor="let item of overviewGroups" class="workflow-overview--timeline-actions">
+                <button  mat-icon-button (click)="$event.stopPropagation();" type="button" [matMenuTriggerFor]="consultantMenu" class="three-dots-actions-btn workflow-overview--three-dots">
+                    <mat-icon>more_horiz</mat-icon>
+                </button>
+                <mat-menu #consultantMenu>
+                    <button
+                        class="menu-item menu-item--edit"
+                        mat-menu-item
+                        (click)="changeConsultantData(item.origin)">
+                        <mat-icon>create</mat-icon>
+                        Change consultant data
+                    </button>
+                    <button
+                        class="menu-item menu-item--edit"
+                        mat-menu-item
+                        (click)="extendConsultant(item.origin)">
+                        <mat-icon>add</mat-icon>
+                        Extend consultant
+                    </button>
+                    <!-- FIXME: uncomment when BE will return cons id -->
+                    <!-- <button
+                        class="menu-item menu-item--cancel"
+                        mat-menu-item
+                        (click)="terminateConsultant(item.origin)">
+                        <mat-icon>clear</mat-icon>
+                        Terminate consultant
+                    </button> -->
+                </mat-menu>
+            </div>
+        </div>
     </div>
+    <ng-container *ngIf="workflowHistory.length">
+        <mat-divider class="u-w--100 u-mb--30"></mat-divider>
+        <h2 class="workflow-overview--history-header u-mb--30">Latest changes</h2>
+        <div fxLayout="row" fxLayoutAlign="start start" class="workflow-overview--history">
+            <div fxLayout="row" fxLayoutAlign="start center" fxFlex="35%" *ngFor="let item of workflowHistory" class="u-mb--15">
+                <span class="workflow-overview--history-grey-text" fxFlex="20%">
+                    {{item.occurredAtUtc | momentFormat: 'DD.MM.YYYY'}}
+                </span>
+                <img class="workflow-overview--history-img" [src]="employeeProfileUrl(item.initiatedBy?.externalId!)" alt="" fxFlex="10%">
+                <span class="workflow-overview--history-event-name" fxFlex="35%">
+                    {{item.eventName}}
+                </span>
+                <span class="workflow-overview--history-grey-text" fxFlex="35%">
+                    {{item.initiatedBy?.name}}
+                </span>
+            </div>
+            <div class="pagination-container u-w--100">
+                <mat-paginator #historyPaginator [length]="historyTotalCount" [pageSize]="historyDeafultPageSize" [pageIndex]="historyPageNumber-1"
+                    [pageSizeOptions]="pageSizeOptions" [showFirstLastButtons]="true" (page)="historyPageChanged($event)">
+                </mat-paginator>
+            </div>
+        </div>
+    </ng-container>
 </div>

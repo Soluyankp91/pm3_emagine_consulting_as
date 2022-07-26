@@ -179,6 +179,15 @@
         height: 36px;
         width: 36px;
     }
+
+    &.workflow-overview--three-dots {
+        &:hover {
+            background: rgba($color: $green-color, $alpha: .1);
+        }
+        mat-icon {
+            color: rgb(0, 0, 0);
+        }
+    }
 }
 
 .form-icon--delete-row {

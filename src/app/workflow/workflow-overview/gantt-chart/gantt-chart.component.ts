@@ -39,22 +39,23 @@ export class GanttChartComponent extends GanttUpper implements OnInit {
     private buildGroupMergedItems(items: GanttItemInternal[]) {
         const mergedItems: GanttItemInternal[][] = [];
         items = items.filter((item) => item.start && item.end).sort((a, b) => a.start.getUnixTime() - b.start.getUnixTime());
-        items.forEach((item) => {
-            let indexOfMergedItems = -1;
-            for (let i = 0; i < mergedItems.length; i++) {
-                const subItems = mergedItems[i];
-                if (item.start.value > subItems[subItems.length - 1].end.addDays(this.mergeIntervalDays).value) {
-                    subItems.push(item);
-                    indexOfMergedItems = i;
-                    break;
-                }
-            }
-            if (indexOfMergedItems === -1) {
-                mergedItems.push([item]);
-                indexOfMergedItems = mergedItems.length - 1;
-            }
-        });
-        // mergedItems.push(items);
+        // FIXME: temporary commented
+        // items.forEach((item) => {
+        //     let indexOfMergedItems = -1;
+        //     for (let i = 0; i < mergedItems.length; i++) {
+        //         const subItems = mergedItems[i];
+        //         if (item.start.value > subItems[subItems.length - 1].end.value) {
+        //             subItems.push(item);
+        //             indexOfMergedItems = i;
+        //             break;
+        //         }
+        //     }
+        //     if (indexOfMergedItems === -1) {
+        //         mergedItems.push([item]);
+        //         indexOfMergedItems = mergedItems.length - 1;
+        //     }
+        // });
+        mergedItems.push(items);
         return mergedItems;
     }
 
@@ -85,9 +86,16 @@ export class GanttChartComponent extends GanttUpper implements OnInit {
 
     employeeProfileUrl(fileToken: string): string {
         if (!fileToken) {
-            return 'assets/common/images//no-img.svg';
+            return 'assets/common/images/no-img.svg';
         }
         return environment.sharedAssets + `/EmployeePicture/${fileToken}.jpg`;
+    }
+
+    consultantProfileUrl(fileToken: string): string {
+        if (!fileToken) {
+            return 'assets/common/images/no-img.svg';
+        }
+        return `${environment.sharedAssets}/ProfilePicture/${fileToken}.jpg`;
     }
 
     setPosition(event: MouseEvent, item: any) {
