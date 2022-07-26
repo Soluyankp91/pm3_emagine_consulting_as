@@ -9,19 +9,19 @@
         <div fxFlex="50%" fxLayout="row" *ngIf="isProgressTrackVisible">
             <div fxFlex="50%" fxLayout="column wrap" style="font-size: 12px;">
                 <span>
-                    Started: {{_workflowDataService.getWorkflowProgress?.started}}
+                    Started: {{_workflowDataService.getWorkflowProgress.started}}
                 </span>
                 <span>
-                    currentlyActiveSection: {{mapSectionName(_workflowDataService.getWorkflowProgress?.currentlyActiveSection)}}
+                    currentlyActiveSection: {{mapSectionName(_workflowDataService.getWorkflowProgress.currentlyActiveSection)}}
                 </span>
                 <span>
-                    currentlyActiveStep: {{mapStepName(_workflowDataService.getWorkflowProgress?.currentlyActiveStep)}}
+                    currentlyActiveStep: {{mapStepName(_workflowDataService.getWorkflowProgress.currentlyActiveStep)}}
                 </span>
                 <span>
-                    currentlyActiveSideSection: {{mapSideSectionName(_workflowDataService.getWorkflowProgress?.currentlyActiveSideSection)}}
+                    currentlyActiveSideSection: {{mapSideSectionName(_workflowDataService.getWorkflowProgress.currentlyActiveSideSection)}}
                 </span>
                 <span>
-                    periodId: {{_workflowDataService.getWorkflowProgress?.currentlyActivePeriodId}}
+                    periodId: {{_workflowDataService.getWorkflowProgress.currentlyActivePeriodId}}
                 </span>
             </div>
         </div>
@@ -128,7 +128,7 @@
                     class="button-outlined mat-elevation-z0 u-mr--16"
                     *ngIf="_workflowDataService.getWorkflowProgress?.stepSpecificPermissions!['Edit']"
                     (click)="saveOrCompleteStep(true)">
-                {{_workflowDataService.getWorkflowProgress?.currentStepIsForcefullyEditing ? 'Save' : 'Save draft'}}
+                {{_workflowDataService.getWorkflowProgress.currentStepIsForcefullyEditing ? 'Save' : 'Save draft'}}
             </button>
             <button color="primary"
                     class="button-accept mat-elevation-z0"

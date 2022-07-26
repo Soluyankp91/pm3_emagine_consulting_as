@@ -1926,7 +1926,7 @@ export class WorkflowSalesComponent extends AppComponentBase implements OnInit {
 
         dialogRef.componentInstance.onConfirmed.subscribe((result) => {
             let input = new ChangeConsultantPeriodDto();
-            input.cutoverDate = result.cutoverDate;
+            input.cutoverDate = result.newCutoverDate;
             input.newLegalContractRequired = result.newLegalContractRequired;
             this._consultantPeriodSerivce.change(consultantData.consultantPeriodId, input)
                 .pipe(finalize(() => {}))

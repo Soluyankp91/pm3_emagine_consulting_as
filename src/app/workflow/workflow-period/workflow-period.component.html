@@ -61,7 +61,7 @@
                                 <div fxLayout="column" fxLayoutAlign="start start" class="u-ml--55" *ngIf="step.name === selectedStep.name">
                                     <div *ngFor="let item of step.menuAnchors"
                                          class="workflow-navigation--step__anchor u-mb--10"
-                                         (click)="changeAnchorSelection(item.anchor!)"
+                                         (click)="$event.stopPropagation(); changeAnchorSelection(item.anchor!)"
                                          [ngxScrollTo]="item.anchor!"
                                          [ngxScrollToOffset]="-120"
                                          [ngClass]="{'active-anchor': item.anchor === selectedAnchor}">
