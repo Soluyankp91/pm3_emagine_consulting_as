@@ -28,9 +28,9 @@ export class WorkflowOverviewComponent extends AppComponentBase implements OnIni
     componentInitalized = false;
     workflowStepStatus = WorkflowStepStatus;
 
-    workflowProcesses: WorkflowProcessDto[];
+    workflowProcesses: WorkflowProcessDto[] = [];
     workflowProcessType = WorkflowProcessType;
-    workflowHistory: WorkflowHistoryDto[];
+    workflowHistory: WorkflowHistoryDto[] = [];
 
     // gant
 
@@ -118,8 +118,16 @@ export class WorkflowOverviewComponent extends AppComponentBase implements OnIni
             let groups: GanttGroup<any>[] = [];
             let items: GanttItem[] = [];
 
-            // let oldestDateArray = result.clientGanntRows!.reduce((r, o) => o.lastClientPeriodEndDate! > r.lastClientPeriodEndDate! ? o : r);
-
+            let oldestDateClientArray = result.clientGanntRows?.map(x => {
+                if (x.ganttRowItems?.length) {
+                    if (x.ganttRowItems?.length > 1) {
+                        return x.ganttRowItems?.reduce((r, o) => o.endDate! > r.endDate! ? o : r);
+                    } else {
+                        return x.ganttRowItems[0].endDate;
+                    }
+                }
+            })
+            console.log('oldestDateClientArray', oldestDateClientArray);
             // let endDate = new Date();
             // if (oldestDateArray.lastClientPeriodEndDate === undefined || (oldestDateArray.lastClientPeriodEndDate.toDate().getTime() < this.formatDate(date).getTime())) {
             //     endDate = this.formatDate(date);
@@ -169,7 +177,7 @@ export class WorkflowOverviewComponent extends AppComponentBase implements OnIni
     getWorkflowHistory() {
         this._workflowService.history(this.workflowId, this.historyPageNumber, this.historyDeafultPageSize).subscribe(result => {
             if (result.items) {
-                this.workflowHistory = result.items!;
+                this.workflowHistory = result.items;
                 this.historyTotalCount = result.totalCount;
             }
         })
