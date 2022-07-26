@@ -8,10 +8,13 @@
             </h1>
 
             <div fxLayout="row" fxLayoutAlign="start center" class="u-mb--20">
-                <img class="border-rounded-50 image-thumbnail-responsive u-mr--16" [src]="consultantProfileUrl(consultant.value.consultantData?.externalId)">
+                <img *ngIf="consultant.value?.consultantData?.id" class="border-rounded-50 image-thumbnail-responsive u-mr--16" [src]="consultantProfileUrl(consultant.value.consultantData?.externalId)">
                 <p class="workflow-sourcing--consultant-name">
                     {{sourcingConsultantsDataForm.consultantTerminationSourcingData.at(i).get('consultantData')?.value?.name}}
                 </p>
+                <button *ngIf="consultant.value?.consultantData?.id" mat-icon-button class="consultant-deeplink--btn" (click)="$event.stopPropagation(); deepLinkToSourcing(consultant.value?.consultantData?.id)" matTooltip="Preview in Sourcing" matTooltipClass="white-tooltip">
+                    <mat-icon svgIcon="sourcing-deeplink"></mat-icon>
+                </button>
             </div>
 
             <div fxLayout="row" fxLayoutAlign="start center" class="u-w--100 u-mb--10">

@@ -20,7 +20,7 @@ nav.client-details--tabs {
         padding: 0 0 15px !important;
         min-width: unset !important;
         font-weight: 800 !important;
-        font-size: 16px !important;
+        font-size: 14px !important;
         line-height: 120% !important;
         justify-content: unset;
         opacity: 1;
@@ -72,8 +72,8 @@ mat-tab-group.client-documents--tabs {
         padding: 0 24px !important;
         min-width: 160px !important;
         font-weight: 700 !important;
-        font-size: 16px !important;
-        line-height: 16px !important;
+        font-size: 14px !important;
+        line-height: 14px !important;
         color: $dark-grey-color !important;
         box-shadow: unset !important;
         background-color: transparent !important;
@@ -129,8 +129,8 @@ mat-tab-group.client-documents--tabs {
         padding: 8px 24px 0 24px;
         min-width: 150px;
         font-weight: 700;
-        font-size: 16px;
-        line-height: 16px;
+        font-size: 14px;
+        line-height: 14px;
         color: $dark-grey-color;
         box-shadow: unset;
         background-color: #fff;
@@ -147,29 +147,15 @@ mat-tab-group.client-documents--tabs {
             font-family: 'Open Sans', sans-serif;
             font-weight: 800;
             line-height: 120%;
-            font-size: 16px;
+            font-size: 14px;
             color: $dark-grey-color;
-            @media screen and (max-width: 1440px) {
-                font-size: 14px;
-            }
-            // &-overview { // Overview disabled
-            //     font-family: 'Open Sans', sans-serif;
-            //     font-weight: 800;
-            //     line-height: 120%;
-            //     font-size: 16px;
-            //     color: $light-grey-color;
-            //     @media screen and (max-width: 1440px) {
-            //         font-size: 14px;
-            //     }
-            // }
+
+
             &-detail {
                 font-weight: 600;
                 font-size: 12px;
                 line-height: 150%;
                 color: $light-grey-color;
-                @media screen and (max-width: 1440px) {
-                    font-size: 10px;
-                }
             }
         }
         .tab-subheader {
@@ -178,9 +164,6 @@ mat-tab-group.client-documents--tabs {
             font-family: 'Open Sans';
             font-weight: 600;
             line-height: 150%;
-            @media screen and (max-width: 1440px) {
-                font-size: 10px;
-            }
         }
         &::before {
             content: "";
@@ -251,16 +234,12 @@ mat-tab-group.notification-settings--tabs {
         padding: 0 0 15px !important;
         min-width: unset !important;
         font-weight: 800 !important;
-        font-size: 16px !important;
-        line-height: 16px !important;
+        font-size: 14px !important;
+        line-height: 14px !important;
         opacity: 1;
         height: 50px;
         margin-right: 5px;
         color: #37474F;
-
-        @media screen and (max-width: 1440px) {
-            font-size: 12px !important;
-        }
 
         &-active,
         &:hover {

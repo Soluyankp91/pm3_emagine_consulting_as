@@ -34,12 +34,14 @@
             padding: 8px 16px;
             border: 1px solid $light-grey-color;
             border-radius: 40px;
+            line-height: 16px;
             &__name {
                 font-weight: 700;
                 color: #384853;
-                @media screen and (max-width: 1440px) {
-                    font-size: 14px;
-                }
+                font-size: 14px;
+                // @media screen and (max-width: 1440px) {
+                //     font-size: 14px;
+                // }
             }
             &.selected-status {
                 &.new-sales-status {
@@ -109,29 +111,29 @@
 }
 
 .workflow-flag {
-    height: 14px;
-    width: 14px;
-    line-height: 14px;
-    font-size: 14px;
+    height: 16px;
+    width: 16px;
+    line-height: 16px;
+    font-size: 16px;
     &--sales {
         color: rgba($color: $green-color, $alpha: .5);
     }
     &--extension {
         color: rgba($color: #6A47B8, $alpha: .5);
     }
-    @media screen and (max-width: 1440px) {
-        font-size: 10px;
-        width: 10px;
-        height: 10px;
-        line-height: 10px;
-    }
+    // @media screen and (max-width: 1440px) {
+    //     font-size: 10px;
+    //     width: 10px;
+    //     height: 10px;
+    //     line-height: 10px;
+    // }
 }
 
 .status-dot {
-    width: 24px;
-    height: 24px;
-    font-size: 24px;
-    line-height: 24px;
+    width: 16px;
+    height: 16px;
+    font-size: 16px;
+    line-height: 16px;
     &.purple-dot {
         color: $purple-color;
         opacity: 0.5;
@@ -150,16 +152,16 @@
 }
 
 .workflow-status {
-    font-size: 14px;
-    width: 14px;
-    height: 14px;
-    line-height: 14px;
-    @media screen and (max-width: 1440px) {
-        font-size: 10px;
-        width: 10px;
-        height: 10px;
-        line-height: 10px;
-    }
+    font-size: 16px;
+    width: 16px;
+    height: 16px;
+    line-height: 16px;
+    // @media screen and (max-width: 1440px) {
+    //     font-size: 10px;
+    //     width: 10px;
+    //     height: 10px;
+    //     line-height: 10px;
+    // }
     &.purple-dot {
         color: $purple-color;
         opacity: 0.5;
@@ -182,7 +184,7 @@
 .workflow-step-readonly {
     &--header {
         font-family: "Open Sans", sans-serif;
-        font-size: 16px;
+        font-size: 14px;
         font-weight: 700;
         line-height: 1.2;
         letter-spacing: 1px;
@@ -191,7 +193,7 @@
 
         &-main {
             font-family: "Open Sans", sans-serif;
-            font-size: 18px;
+            font-size: 16px;
             font-weight: 700;
             line-height: 1.2;
             letter-spacing: 1px;
@@ -209,7 +211,7 @@
     &--gray {
         &-header {
             font-family: "Open Sans", sans-serif;
-            font-size: 14px;
+            font-size: 12px;
             font-weight: 700;
             color: #898785;
         }
@@ -223,40 +225,40 @@
         }
         &-text {
             font-family: "Open Sans", sans-serif;
-            font-size: 16px;
+            font-size: 14px;
             font-weight: 600;
             color: #4a4e60;
             &-bold {
                 font-family: "Open Sans", sans-serif;
-                font-size: 16px;
+                font-size: 14px;
                 font-weight: 800;
                 color: rgba(56, 72, 83, 0.87);
             }
         }
     }
 
-    @media screen and (max-width: 1440px) {
-        &--blue {
-            &-header {
-                font-size: 12px;
-            }
-            &-text {
-                font-size: 14px;
-                &-bold {
-                    font-size: 14px;
-                }
-            }
-        }
-        &--header {
-            font-size: 14px;
-            &-main {
-                font-size: 18px;
-            }
-        }
-        &--gray {
-            &-header {
-                font-size: 12px;
-            }
-        }
-    }
+    // @media screen and (max-width: 1440px) {
+    //     &--blue {
+    //         &-header {
+    //             font-size: 12px;
+    //         }
+    //         &-text {
+    //             font-size: 14px;
+    //             &-bold {
+    //                 font-size: 14px;
+    //             }
+    //         }
+    //     }
+    //     &--header {
+    //         font-size: 14px;
+    //         &-main {
+    //             font-size: 18px;
+    //         }
+    //     }
+    //     &--gray {
+    //         &-header {
+    //             font-size: 12px;
+    //         }
+    //     }
+    // }
 }

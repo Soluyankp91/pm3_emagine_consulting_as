@@ -77,6 +77,7 @@ export class WorkflowContractsComponent extends AppComponentBase implements OnIn
 
     editEnabledForcefuly = false;
     syncNotPossible = false;
+    statusAfterSync = false;
     syncMessage = '';
     legalContractModuleStatuses = LegalContractStatus;
     private _unsubscribe = new Subject();
@@ -414,7 +415,6 @@ export class WorkflowContractsComponent extends AppComponentBase implements OnIn
 
     // #region CHANGE NAMING
     selectClientRate(event: any, rate: ClientSpecialRateDto, clientRateMenuTrigger: MatMenuTrigger) {
-        console.log('ss');
         const clientRate = new PeriodClientSpecialRateDto();
         clientRate.id = undefined;
         clientRate.clientSpecialRateId = rate.id;
@@ -796,6 +796,10 @@ export class WorkflowContractsComponent extends AppComponentBase implements OnIn
             startDate: this.contractsConsultantsDataForm.consultants.at(index).get('startDate')?.value,
             endDate: this.contractsConsultantsDataForm.consultants.at(index).get('endDate')?.value,
             noEndDate: this.contractsConsultantsDataForm.consultants.at(index).get('noEndDate')?.value,
+            debtorNumber: this.contractsMainForm!.customDebtorNumber?.value,
+            invoicingReferenceNumber: this.contractClientForm.invoicingReferenceNumber?.value,
+            invoiceRecipient: this.contractClientForm.clientInvoicingRecipient?.value,
+            invoicingReferencePerson: this.contractClientForm.invoicingReferencePerson?.value,
         };
         if (projectLinesIndex !== null && projectLinesIndex !== undefined) {
             projectLine = (this.contractsConsultantsDataForm.consultants.at(index).get('projectLines') as FormArray).at(projectLinesIndex!).value;
@@ -816,7 +820,6 @@ export class WorkflowContractsComponent extends AppComponentBase implements OnIn
         });
 
         dialogRef.componentInstance.onConfirmed.subscribe((projectLine) => {
-            console.log(projectLine);
             if (projectLinesIndex !== null && projectLinesIndex !== undefined) {
                 // Edit
                 this.editProjectLineValue(index, projectLinesIndex, projectLine);
@@ -854,7 +857,9 @@ export class WorkflowContractsComponent extends AppComponentBase implements OnIn
             modifiedById: new FormControl(projectLine?.modifiedById ?? null),
             modifiedBy: new FormControl(projectLine?.modifiedBy ?? null),
             modificationDate: new FormControl(projectLine?.modificationDate ?? null),
-            consultantInsuranceOptionId: new FormControl(projectLine?.consultantInsuranceOptionId)
+            consultantInsuranceOptionId: new FormControl(projectLine?.consultantInsuranceOptionId),
+            markedForLegacyDeletion: new FormControl(projectLine?.markedForLegacyDeletion),
+            wasSynced: new FormControl(projectLine?.wasSynced)
         });
         (this.contractsConsultantsDataForm.consultants.at(index).get('projectLines') as FormArray).push(form);
     }
@@ -881,15 +886,14 @@ export class WorkflowContractsComponent extends AppComponentBase implements OnIn
         projectLineRow.get('modifiedBy')?.setValue(projectLineData.modifiedBy, {emitEvent: false});
         projectLineRow.get('modificationDate')?.setValue(projectLineData.modificationDate, {emitEvent: false});
         projectLineRow.get('consultantInsuranceOptionId')?.setValue(projectLineData.consultantInsuranceOptionId, {emitEvent: false});
-        console.log(projectLineRow.value);
+        projectLineRow.get('markedForLegacyDeletion')?.setValue(projectLineData.markedForLegacyDeletion, {emitEvent: false});
+        projectLineRow.get('wasSynced')?.setValue(projectLineData.wasSynced, {emitEvent: false});
     }
 
     duplicateProjectLine(consultantIndex: number, projectLinesIndex: number) {
         const projectLineRowValue: ProjectLineDto = new ProjectLineDto((this.contractsConsultantsDataForm.consultants.at(consultantIndex).get('projectLines') as FormArray).at(projectLinesIndex).value);
         projectLineRowValue.id = undefined; // to create a new instance of project line
-        console.log(projectLineRowValue);
         this.addProjectLinesToConsultantData(consultantIndex, projectLineRowValue);
-        // (this.contractsConsultantsDataForm.consultants.at(consultantIndex).get('projectLines') as FormArray).push(projectLineRow);
     }
 
     removeConsultantDataProjectLines(consultantIndex: number, projectLineIndex: number) {
@@ -902,6 +906,10 @@ export class WorkflowContractsComponent extends AppComponentBase implements OnIn
 
     getConsultantProjectLinesControls(index: number): AbstractControl[] | null {
         return (this.contractsConsultantsDataForm.consultants.at(index).get('projectLines') as FormArray).controls
+    }
+
+    toggleMarkProjectLineForDeletion(previousValue: boolean, consultantIndex: number, projectLineIndex: number) {
+        (this.contractsConsultantsDataForm.consultants.at(consultantIndex).get('projectLines') as FormArray).at(projectLineIndex).get('markedForLegacyDeletion')?.setValue(!previousValue, {emitEvent: false});
     }
     // Consultant data Project Lines END REGION
 
@@ -1013,6 +1021,7 @@ export class WorkflowContractsComponent extends AppComponentBase implements OnIn
     }
 
     resetForms() {
+        this.statusAfterSync = false;
         this.contractsMainForm.reset('', {emitEvent: false});
         this.contractClientForm.reset('', {emitEvent: false});
         this.contractClientForm.clientRates.controls = [];
@@ -1028,7 +1037,9 @@ export class WorkflowContractsComponent extends AppComponentBase implements OnIn
         this.showMainSpinner();
         this._clientPeriodService.clientContractsGet(this.periodId!)
             .pipe(finalize(() => {
-                this.hideMainSpinner();
+                if (!isFromSyncToLegacy) {
+                    this.hideMainSpinner();
+                }
             }))
             .subscribe(result => {
                 // Main data
@@ -1056,10 +1067,18 @@ export class WorkflowContractsComponent extends AppComponentBase implements OnIn
                 this.contractClientForm.specialContractTerms?.setValue(result.clientData?.specialContractTerms, {emitEvent: false});
                 this.contractClientForm.noSpecialContractTerms?.setValue(result.clientData?.noSpecialContractTerms, {emitEvent: false});
 
+                this.contractClientForm.invoicingReferenceNumber?.setValue(result.clientData?.invoicingReferenceNumber, {emitEvent: false});
+                this.contractClientForm.clientInvoicingRecipientIdValue?.setValue(result.clientData?.clientInvoicingRecipientIdValue, {emitEvent: false});
+                this.contractClientForm.clientInvoicingRecipient?.setValue(result.clientData?.clientInvoicingRecipient, {emitEvent: false});
+                this.contractClientForm.invoicingReferencePersonIdValue?.setValue(result.clientData?.invoicingReferencePersonIdValue, {emitEvent: false});
+                this.contractClientForm.invoicingReferencePerson?.setValue(result.clientData?.invoicingReferencePerson, {emitEvent: false});
+
                 this.contractsSyncDataForm.clientLegalContractDoneStatusId?.setValue(result?.clientLegalContractDoneStatusId, {emitEvent: false});
                 this.contractsSyncDataForm.enableLegalContractsButtons?.setValue(result?.enableLegalContractsButtons, {emitEvent: false});
                 this.contractsSyncDataForm.showManualOption?.setValue(result?.showManualOption, {emitEvent: false});
-                this.contractsSyncDataForm.manualCheckbox?.setValue(result?.contractLinesDoneManuallyInOldPm, {emitEvent: false});
+                this.contractsSyncDataForm.manualCheckbox?.setValue(result.contractLinesDoneManuallyInOldPm, {emitEvent: false});
+                this.contractsSyncDataForm.isNewSyncNeeded?.setValue(result?.isNewSyncNeeded, {emitEvent: false});
+                this.contractsSyncDataForm.lastSyncedDate?.setValue(result?.lastSyncedDate, {emitEvent: false});
                 if (result.clientData?.periodClientSpecialRates?.length) {
                     result.clientData.periodClientSpecialRates.forEach((rate: PeriodClientSpecialRateDto) => {
                         this.addSpecialRate(rate);
@@ -1244,6 +1263,8 @@ export class WorkflowContractsComponent extends AppComponentBase implements OnIn
                         projectLineInput.modifiedBy = projectLine.modifiedBy;
                         projectLineInput.modificationDate = projectLine.modificationDate;
                         projectLineInput.consultantInsuranceOptionId = projectLine.consultantInsuranceOptionId;
+                        projectLineInput.markedForLegacyDeletion = projectLine.markedForLegacyDeletion;
+                        projectLineInput.wasSynced = projectLine.wasSynced;
 
                         consultantData.projectLines.push(projectLineInput);
                     }
@@ -1256,7 +1277,9 @@ export class WorkflowContractsComponent extends AppComponentBase implements OnIn
         if (isDraft) {
             this._clientPeriodService.clientContractsPut(this.periodId!, input)
                 .pipe(finalize(() => {
-                    this.hideMainSpinner();
+                    if (!isSyncToLegacy) {
+                        this.hideMainSpinner();
+                    }
                 }))
                 .subscribe(result => {
                     if (this.editEnabledForcefuly && !isSyncToLegacy) {
@@ -1282,7 +1305,11 @@ export class WorkflowContractsComponent extends AppComponentBase implements OnIn
         this.resetForms();
         this.showMainSpinner();
         this._consultantPeriodService.consultantContractsGet(this.activeSideSection.consultantPeriodId!)
-            .pipe(finalize(() => this.hideMainSpinner()))
+            .pipe(finalize(() => {
+                if (!isFromSyncToLegacy) {
+                    this.hideMainSpinner();
+                }
+            }))
             .subscribe(result => {
                 this.contractsMainForm.remarks?.setValue(result?.remarks, {emitEvent: false});
                 this.contractsMainForm.noRemarks?.setValue(result?.noRemarks, {emitEvent: false});
@@ -1295,8 +1322,19 @@ export class WorkflowContractsComponent extends AppComponentBase implements OnIn
                 this.contractsMainForm.projectType?.setValue(this.findItemById(this.projectTypes, result?.mainData?.projectTypeId), {emitEvent: false});
                 this.contractsMainForm.margin?.setValue(this.findItemById(this.margins, result?.mainData?.marginId), {emitEvent: false});
                 this.contractsMainForm.discounts?.setValue(this.findItemById(this.discounts, result?.mainData?.discountId), {emitEvent: false});
+                this.contractsMainForm.customDebtorNumber?.setValue(result?.customDebtorNumber, {emitEvent: false});
+
+                this.contractClientForm.invoicingReferenceNumber?.setValue(result.clientData?.invoicingReferenceNumber, {emitEvent: false});
+                this.contractClientForm.clientInvoicingRecipientIdValue?.setValue(result.clientData?.clientInvoicingRecipientIdValue, {emitEvent: false});
+                this.contractClientForm.clientInvoicingRecipient?.setValue(result.clientData?.clientInvoicingRecipient, {emitEvent: false});
+                this.contractClientForm.invoicingReferencePersonIdValue?.setValue(result.clientData?.invoicingReferencePersonIdValue, {emitEvent: false});
+                this.contractClientForm.invoicingReferencePerson?.setValue(result.clientData?.invoicingReferencePerson, {emitEvent: false});
+
                 this.contractsSyncDataForm.manualCheckbox?.setValue(result?.contractLinesDoneManuallyInOldPm, {emitEvent: false})
                 this.contractsSyncDataForm.newLegalContract?.setValue(result?.newLegalContractRequired, {emitEvent: false});
+                this.contractsSyncDataForm.isNewSyncNeeded?.setValue(result?.isNewSyncNeeded, {emitEvent: false});
+                this.contractsSyncDataForm.lastSyncedDate?.setValue(result?.lastSyncedDate, {emitEvent: false});
+
                 this.addConsultantDataToForm(result?.consultantData!, 0);
                 this.updateConsultantStepAnchors();
                 if (isFromSyncToLegacy) {
@@ -1391,6 +1429,8 @@ export class WorkflowContractsComponent extends AppComponentBase implements OnIn
                     projectLineInput.modifiedBy = projectLine.modifiedBy;
                     projectLineInput.modificationDate = projectLine.modificationDate;
                     projectLineInput.consultantInsuranceOptionId = projectLine.consultantInsuranceOptionId;
+                    projectLineInput.markedForLegacyDeletion = projectLine.markedForLegacyDeletion;
+                    projectLineInput.wasSynced = projectLine.wasSynced;
 
                     consultantData.projectLines.push(projectLineInput);
                 }
@@ -1403,7 +1443,9 @@ export class WorkflowContractsComponent extends AppComponentBase implements OnIn
         if (isDraft) {
             this._consultantPeriodService.consultantContractsPut(this.activeSideSection.consultantPeriodId!, input)
                 .pipe(finalize(() => {
-                    this.hideMainSpinner();
+                    if (!isSyncToLegacy) {
+                        this.hideMainSpinner();
+                    }
                 }))
                 .subscribe(result => {
                     if (this.editEnabledForcefuly && !isSyncToLegacy) {
@@ -1443,9 +1485,12 @@ export class WorkflowContractsComponent extends AppComponentBase implements OnIn
 
     getWorkflowContractsStepConsultantTermination(isFromSyncToLegacy?: boolean) {
         this.resetForms();
+        this.showMainSpinner();
         this._workflowServiceProxy.terminationConsultantContractGet(this.workflowId!, this.consultant.id!)
             .pipe(finalize(() => {
-
+                if (!isFromSyncToLegacy) {
+                    this.hideMainSpinner();
+                }
             }))
             .subscribe(result => {
                 // End of Consultant Contract
@@ -1468,7 +1513,9 @@ export class WorkflowContractsComponent extends AppComponentBase implements OnIn
         if (isDraft) {
             this._workflowServiceProxy.terminationConsultantContractPut(this.workflowId!, input)
                 .pipe(finalize(() => {
-                    this.hideMainSpinner();
+                    if (!isSyncToLegacy) {
+                        this.hideMainSpinner();
+                    }
                 }))
                 .subscribe(result => {
                     if (this.editEnabledForcefuly && !isSyncToLegacy) {
@@ -1490,9 +1537,12 @@ export class WorkflowContractsComponent extends AppComponentBase implements OnIn
 
     getWorkflowContractStepTermination(isFromSyncToLegacy?: boolean) {
         this.resetForms();
+        this.showMainSpinner();
         this._workflowServiceProxy.terminationContractGet(this.workflowId!)
             .pipe(finalize(() => {
-
+                if (!isFromSyncToLegacy) {
+                    this.hideMainSpinner();
+                }
             }))
             .subscribe(result => {
                 // End of Consultant Contract
@@ -1527,7 +1577,9 @@ export class WorkflowContractsComponent extends AppComponentBase implements OnIn
         if (isDraft) {
             this._workflowServiceProxy.terminationContractPut(this.workflowId!, input)
                 .pipe(finalize(() => {
-                    this.hideMainSpinner();
+                    if (!isSyncToLegacy) {
+                        this.hideMainSpinner();
+                    }
                 }))
                 .subscribe(result => {
                     if (this.editEnabledForcefuly && !isSyncToLegacy) {
@@ -1609,10 +1661,11 @@ export class WorkflowContractsComponent extends AppComponentBase implements OnIn
                 this.hideMainSpinner();
             }))
             .subscribe(result => {
+                this.statusAfterSync = true;
                 this.syncNotPossible = !result.success!;
                 this.contractsSyncDataForm.enableLegalContractsButtons?.setValue(result.enableLegalContractsButtons!);
                 this.contractsSyncDataForm.showManualOption?.setValue(result?.showManualOption, {emitEvent: false});
-                this.syncMessage = result.message!;
+                this.syncMessage = result.success ? 'Sync successfull' : result.message!;
             });
     }
 
@@ -1623,10 +1676,11 @@ export class WorkflowContractsComponent extends AppComponentBase implements OnIn
                 this.hideMainSpinner();
             }))
             .subscribe(result => {
+                this.statusAfterSync = true;
                 this.syncNotPossible = !result.success!;
                 this.contractsSyncDataForm.enableLegalContractsButtons?.setValue(result.enableLegalContractsButtons!);
                 this.contractsSyncDataForm.showManualOption?.setValue(result?.showManualOption, {emitEvent: false});
-                this.syncMessage = result.message!;
+                this.syncMessage = result.success ? 'Sync successfull' : result.message!;
             });
     }
 
@@ -1637,10 +1691,11 @@ export class WorkflowContractsComponent extends AppComponentBase implements OnIn
                 this.hideMainSpinner();
             }))
             .subscribe(result => {
+                this.statusAfterSync = true;
                 this.syncNotPossible = !result.success!;
                 this.contractsSyncDataForm.enableLegalContractsButtons?.setValue(result.enableLegalContractsButtons!);
                 this.contractsSyncDataForm.showManualOption?.setValue(result?.showManualOption, {emitEvent: false});
-                this.syncMessage = result.message!;
+                this.syncMessage = result.success ? 'Sync successfull' : result.message!;
             });
     }
 
@@ -1652,10 +1707,15 @@ export class WorkflowContractsComponent extends AppComponentBase implements OnIn
                 this.hideMainSpinner();
             }))
             .subscribe(result => {
+                this.statusAfterSync = true;
                 this.syncNotPossible = !result.success!;
                 this.contractsSyncDataForm.enableLegalContractsButtons?.setValue(result.enableLegalContractsButtons!);
                 this.contractsSyncDataForm.showManualOption?.setValue(result?.showManualOption, {emitEvent: false});
-                this.syncMessage = result.message!;
+                this.syncMessage = result.success ? 'Sync successfull' : result.message!;
+                // if (result.success) {
+                //     this.contractsSyncDataForm.isNewSyncNeeded?.setValue(!result.success, {emitEvent: false});
+                //     this.contractsSyncDataForm.lastSyncedDate?.setValue(null, {emitEvent: false});
+                // }
             });
     }
 

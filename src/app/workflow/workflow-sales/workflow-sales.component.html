@@ -586,9 +586,14 @@
                                         <div fxLayout="row" fxLayoutAlign="start center" class="u-mb--20">
                                             <img class="border-rounded-50 image-thumbnail-responsive u-mr--16" [src]="consultantProfileUrl(item.value.consultantName?.consultant?.externalId)" >
                                             <div fxLayout="column">
-                                                <p class="workflow-extension--consultant-data--consultant-name">
-                                                    {{item?.value?.consultantName?.consultant?.name}}
-                                                </p>
+                                                <div fxLayout="row" fxLayoutAlign="start center">
+                                                    <p class="workflow-extension--consultant-data--consultant-name">
+                                                        {{item?.value?.consultantName?.consultant?.name}}
+                                                    </p>
+                                                    <button *ngIf="item.value?.consultantName?.consultant?.id" mat-icon-button class="consultant-deeplink--btn" (click)="$event.stopPropagation(); deepLinkToSourcing(item.value?.consultantName?.consultant?.id)" matTooltip="Preview in Sourcing" matTooltipClass="white-tooltip">
+                                                        <mat-icon svgIcon="sourcing-deeplink"></mat-icon>
+                                                    </button>
+                                                </div>
                                                 <span class="workflow-extension--consultant-data--consultant-text">
                                                     {{item?.value?.consultantName?.consultant?.companyName}} | {{item?.value?.consultantName?.consultant?.city}}, {{getTenantCodeFromId(item?.value?.consultantName?.consultant?.countryId)}} | #{{item?.value?.consultantName?.consultant?.id}} / {{getTenantCodeFromId(item?.value?.consultantName?.consultant?.countryId)}}-{{item?.value?.consultantName?.consultant?.legacyId}}
                                                 </span>
@@ -2125,9 +2130,12 @@
                                     <span fxFlex="auto" fxLayout="row" fxLayoutAlign="start center" class="u-w--100">
                                         <ng-container  *ngIf="consultant.value?.consultantName?.consultant?.id || consultant.value?.consultantNameOnly">
                                             <img *ngIf="consultant.value?.consultantName?.consultant?.id" class="image-thumbnail-responsive border-rounded-50 u-ml--16 u-mr--16" [src]="consultantProfileUrl(consultant.value?.consultantName?.consultant?.externalId)" />
-                                            <span class="workflow-form--consultants__name u-mr--16">
+                                            <span class="workflow-form--consultants__name">
                                                 {{consultant.value?.consultantName?.consultant?.name}}
                                             </span>
+                                            <button *ngIf="consultant.value?.consultantName?.consultant?.id" mat-icon-button class="consultant-deeplink--btn u-mr--16" (click)="$event.stopPropagation(); deepLinkToSourcing(consultant.value?.consultantName?.consultant?.id)" matTooltip="Preview in Sourcing" matTooltipClass="white-tooltip">
+                                                <mat-icon svgIcon="sourcing-deeplink"></mat-icon>
+                                            </button>
                                         </ng-container>
                                         <button class="form-icon--delete-row" type="button" *ngIf="consultantsForm.consultantData?.controls?.length && (activeSideSection.typeId === workflowSideSections.StartClientPeriod && (isCompleted === editEnabledForcefuly))"
                                             mat-icon-button (click)="$event.stopPropagation();confirmRemoveConsultant(consultantIndex)">
@@ -2194,9 +2202,14 @@
                                             <div fxLayout="row" fxLayoutAlign="start center" class="u-mb--20">
                                                 <img class="border-rounded-50 image-thumbnail-responsive u-mr--16" [src]="consultantProfileUrl(consultant.value.consultantName?.consultant?.externalId)">
                                                 <div fxLayout="column">
-                                                    <p class="workflow-extension--consultant-data--consultant-name">
-                                                        {{consultant?.value?.consultantName?.consultant?.name}}
-                                                    </p>
+                                                    <div fxLayout="row" fxLayoutAlign="start center">
+                                                        <p class="workflow-extension--consultant-data--consultant-name">
+                                                            {{consultant?.value?.consultantName?.consultant?.name}}
+                                                        </p>
+                                                        <button *ngIf="consultant.value?.consultantName?.consultant?.id" mat-icon-button class="consultant-deeplink--btn" (click)="$event.stopPropagation(); deepLinkToSourcing(consultant.value?.consultantName?.consultant?.id)" matTooltip="Preview in Sourcing" matTooltipClass="white-tooltip">
+                                                            <mat-icon svgIcon="sourcing-deeplink"></mat-icon>
+                                                        </button>
+                                                    </div>
                                                     <span class="workflow-extension--consultant-data--consultant-text">
                                                         {{consultant?.value?.consultantName?.consultant?.companyName}} | {{consultant?.value?.consultantName?.consultant?.city}}, {{getTenantCodeFromId(consultant?.value?.consultantName?.consultant?.countryId)}} | #{{consultant?.value?.consultantName?.consultant?.id}} / {{getTenantCodeFromId(consultant?.value?.consultantName?.consultant?.countryId)}}-{{consultant?.value?.consultantName?.consultant?.legacyId}}
                                                     </span>

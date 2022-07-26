@@ -50,11 +50,11 @@
                 </div>
             </div>
             <mat-form-field appearance="outline" class="u-w--100 u-mt--10 filter-select">
-                <mat-label>Assignment ID / PO no</mat-label>
+                <mat-label>Assignment ID / PO number</mat-label>
                 <input matInput type="text" formControlName="invoicingReferenceNumber">
             </mat-form-field>
             <mat-checkbox color="accent" name="differentInvoicingReferenceNumber" formControlName="differentInvoicingReferenceNumber" class="green-checkbox" (change)="disableOrEnableInput(!projectLineForm.differentInvoicingReferenceNumber!.value, projectLineForm.invoicingReferenceNumber)">
-                Different invoice reference number
+                Different assignment ID / PO number
             </mat-checkbox>
 
             <mat-form-field appearance="outline" class="u-w--100 u-mt--10 filter-select">
@@ -106,7 +106,8 @@
             </mat-checkbox>
 
             <mat-form-field appearance="outline" class="u-w--100 formFieldNoMarginPadding filter-select u-mt--10" fxFlex="20%">
-                <mat-select formControlName="consultantInsuranceOptionId" placeholder="Consultant insurance option" [disableOptionCentering]="true">
+                <mat-label>Insurance</mat-label>
+                <mat-select formControlName="consultantInsuranceOptionId" placeholder="Insurance" [disableOptionCentering]="true">
                     <mat-option *ngFor="let item of consultantInsuranceOptions | keyvalue" [value]="+item.key">
                         {{ item.value }}
                     </mat-option>
