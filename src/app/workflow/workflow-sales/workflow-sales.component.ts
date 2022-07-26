@@ -96,8 +96,6 @@ export class WorkflowSalesComponent extends AppComponentBase implements OnInit {
         )
     );
 
-    showMore = false;
-
     filteredAccountManagers: any[] = [];
     filteredSalesAccountManagers: any[] = [];
     filteredCommisionAccountManagers: any[] = [];
@@ -1916,7 +1914,7 @@ export class WorkflowSalesComponent extends AppComponentBase implements OnInit {
             panelClass: 'confirmation-modal',
             data: {
                 dialogType: ConsultantDiallogAction.Change,
-                consultantData: consultantData,
+                consultantData: {externalId: consultantData.consultantName.consultant.externalId, name: consultantData.consultantName.consultant.name},
                 dialogTitle: `Change consultant`,
                 rejectButtonText: 'Cancel',
                 confirmButtonText: 'Create',
@@ -1955,7 +1953,7 @@ export class WorkflowSalesComponent extends AppComponentBase implements OnInit {
             panelClass: 'confirmation-modal',
             data: {
                 dialogType: ConsultantDiallogAction.Extend,
-                consultantData: consultantData,
+                consultantData: {externalId: consultantData.consultantName.consultant.externalId, name: consultantData.consultantName.consultant.name},
                 dialogTitle: `Extend consultant`,
                 rejectButtonText: 'Cancel',
                 confirmButtonText: 'Create',

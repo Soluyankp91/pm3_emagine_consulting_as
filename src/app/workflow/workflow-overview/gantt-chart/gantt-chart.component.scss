@@ -1,0 +1,79 @@
+@import "/src/app/shared/styles/config/_colors";
+@import '~@worktile/gantt/main.bundle.scss';
+
+$gantt-bar-handle-height: 12px;
+
+:host {
+    .gantt-flat-items {
+        position: relative;
+    }
+}
+
+.manager-search--photo {
+    height: 32px;
+    width: 32px;
+    border-radius: 50%;
+
+    @media screen and (max-width: 1366px) {
+        height: 24px;
+        width: 24px;
+    }
+
+}
+
+.icon-arrow-rotate180 {
+    transform: rotateY(180deg);
+    height: 16px;
+    width: 16px;
+    line-height: 16px;
+}
+
+.overview-extensions-icon {
+    color: #6bc87a;
+}
+
+.overview-termination-icon {
+    color: $red-color;
+}
+
+.overview-negotiation-icon {
+    color: #2d9cdb
+}
+
+.overview-attention-icon {
+    color: #f8b025;
+}
+
+.main-overview {
+    &-icon {
+        line-height: 40px;
+        @media screen and (max-width: 1366px) {
+            transform: scale(0.8);
+            line-height: 42px;
+
+        }
+        &-type {
+            line-height: 40px;
+        }
+    }
+}
+
+.tooltip {
+    display: none;
+}
+
+.period-item--bar:hover {
+    &+.tooltip {
+        position: fixed;
+        z-index: 999;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        width: auto;
+        padding: 8px 16px;
+        background: #FFFFFF;
+        border: 1px solid #E7E3E8;
+        box-shadow: 0px 0px 11px rgba(0, 0, 0, 0.11);
+        color: rgba(56, 72, 83, 0.8);
+    }
+}
