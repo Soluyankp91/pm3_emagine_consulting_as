@@ -43,7 +43,7 @@ export class WorkflowComponent extends AppComponentBase implements OnInit, OnDes
 
     workflowDisplayColumns = [
         'flag',
-        'Client',
+        'clientName',
         'SalesType',
         'DeliveryType',
         'startDate',
@@ -92,14 +92,13 @@ export class WorkflowComponent extends AppComponentBase implements OnInit, OnDes
     filteredAccountManagers: SelectableEmployeeDto[] = [];
     accountManagerFilter = new FormControl();
 
-
     // we create an object that contains coordinates
-  menuTopLeftPosition =  {x: 0, y: 0}
+    menuTopLeftPosition =  {x: 0, y: 0}
 
-  // reference to the MatMenuTrigger in the DOM
-  @ViewChild('rightMenuTrigger', {static: true}) matMenuTrigger: MatMenuTrigger;
+    // reference to the MatMenuTrigger in the DOM
+    @ViewChild('rightMenuTrigger', {static: true}) matMenuTrigger: MatMenuTrigger;
 
-  workflowListSubscription: Subscription;
+    workflowListSubscription: Subscription;
 
     private _unsubscribe = new Subject();
     constructor(
@@ -454,7 +453,8 @@ export class WorkflowComponent extends AppComponentBase implements OnInit, OnDes
                         isDeleted: x.isDeleted,
                         consultants: x.consultants,
                         openProcesses: x.openProcesses,
-                        accountManager: x.accountManager
+                        accountManager: x.accountManager,
+                        isActive: x.workflowStatusWithEmployee?.status === WorkflowStatus.Active
                     }
                 })
                 this.workflowDataSource = new MatTableDataSource<any>(formattedData);
