@@ -4,7 +4,7 @@
         <div fxLayout="row" fxLayoutAlign="space-between start" class="u-w--100">
             <div fxFlex fxLayout="row" fxLayoutAlign="start center" class="u-w--100">
                 <div class="workflow-list--filter-manager cursor-pointer u-mr--16" [matTooltip]="mapListByProperty(selectedAccountManagers, 'name')" matTooltipClass="white-tooltip" [matMenuTriggerFor]="managerMenu" (menuOpened)="accountManagerFilterInput.click(); onOpenedMenu();" (click)="openMenu($event)">
-                    <img *ngIf="selectedAccountManagers.length === 1" class="border-rounded-50 image-thumbnail-small" [src]="employeeProfileUrl(selectedAccountManagers[0]?.externalId!)" />
+                    <img *ngIf="selectedAccountManagers.length === 1" class="border-rounded-50 image-thumbnail-small" [src]="employeeProfileUrl(selectedAccountManagers[0].externalId!)" />
                     <img *ngIf="selectedAccountManagers.length === 0" src="../../../assets/common/images/no-img.svg">
                     <div *ngIf="selectedAccountManagers.length > 1" class="workflow-list--filter__badge">
                         {{selectedAccountManagers.length}}
@@ -187,12 +187,12 @@
             <mat-table #table [dataSource]="workflowDataSource" class="workflow-list--table white-table u-w--100" matSort matSortStart="asc" (matSortChange)="sortChanged($event)">
                 <ng-container matColumnDef="flag">
                     <mat-header-cell *matHeaderCellDef fxFlex="3%"></mat-header-cell>
-                    <mat-cell *matCellDef="let row" fxFlex="3%">
+                    <mat-cell *matCellDef="let row" fxFlex="3%" fxLayoutAlign="center center">
                         <mat-icon class="workflow-flag" [ngClass]="row?.processStatusIcon" [matTooltip]="row?.processStatusName" matTooltipClass="white-tooltip">fiber_manual_record</mat-icon>
                     </mat-cell>
                 </ng-container>
-                <ng-container matColumnDef="Client">
-                    <mat-header-cell *matHeaderCellDef fxFlex="15%">Client</mat-header-cell>
+                <ng-container matColumnDef="clientName">
+                    <mat-header-cell *matHeaderCellDef mat-sort-header fxFlex="15%">Client</mat-header-cell>
                     <mat-cell *matCellDef="let row" fxFlex="15%">
                         <span class="text-truncate-ellipsis text-bold-800" [matTooltip]="row.clientName ?? '-'" matTooltipClass="white-tooltip">
                             {{row.clientName ?? '-'}}
@@ -376,7 +376,7 @@
                 </ng-container>
 
                 <mat-header-row *matHeaderRowDef="workflowDisplayColumns"></mat-header-row>
-                <mat-row *matRowDef="let row; columns: workflowDisplayColumns;" class="mat-elevation-z0 cursor-pointer flex-items-start"(contextmenu)="onRightClick($event, {content: row})" (click)="navigateToWorkflowDetails(row.workflowId)"></mat-row>
+                <mat-row *matRowDef="let row; columns: workflowDisplayColumns;" class="mat-elevation-z0 cursor-pointer flex-items-start" [ngClass]="{'active-workflow': row.isActive}" (contextmenu)="onRightClick($event, {content: row})" (click)="navigateToWorkflowDetails(row.workflowId)"></mat-row>
             </mat-table>
             <div class="spinner-container" *ngIf="isDataLoading">
                 <mat-spinner [diameter]="50"></mat-spinner>
