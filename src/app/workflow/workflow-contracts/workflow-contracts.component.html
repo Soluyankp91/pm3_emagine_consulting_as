@@ -34,7 +34,7 @@
 
                 <div fxLayout="row" fxLayoutAlign="start start" class="u-w--100 u-mb--20" *ngIf="contractsSyncDataForm.showManualOption?.value">
                     <ng-container *ngIf="readOnlyMode; else contractLinesDoneManuallyInOldPMInput">
-                        <mat-icon class="termination-cancel-icon u-mr--5" [svgIcon]="'cancel-fill'" [ngClass]="{'icon-cancel': !contractLinesDoneManuallyInOldPMControl?.value}"
+                        <mat-icon class="termination-cancel-icon u-mr--5" [svgIcon]="'cancel-fill'" [ngClass]="{'icon-cancel': !contractLinesDoneManuallyInOldPMControl.value}"
                             *ngIf="!contractLinesDoneManuallyInOldPMControl?.value"></mat-icon>
                         <mat-icon class="termination-complete-icon u-mr--5" [svgIcon]="'completed-icon'" height="22px" width="22px"
                             *ngIf="contractLinesDoneManuallyInOldPMControl?.value"></mat-icon>
@@ -112,34 +112,34 @@
                     <div fxLayout="row" fxLayoutAlign="start start" class="u-w--100 u-mb--20 u-mt--20">
                         <!-- <div fxLayout="column" fxFlex="25%">
                             <h3 class="workflow-gray--header">Sales Type</h3>
-                            <span class="workflow-darkblue--text">{{contractsMainForm?.salesType?.value?.name}}</span>
+                            <span class="workflow-darkblue--text">{{contractsMainForm.salesType?.value?.name}}</span>
                         </div>
                         <div fxLayout="column" fxFlex="25%">
                             <h3 class="workflow-gray--header">Delivery Type</h3>
-                            <span class="workflow-darkblue--text">{{contractsMainForm?.deliveryType?.value?.name}}</span>
+                            <span class="workflow-darkblue--text">{{contractsMainForm.deliveryType?.value?.name}}</span>
                         </div> -->
                         <div fxLayout="column" fxFlex="25%">
                             <h3 class="workflow-step-readonly--gray-header">Project Type (Legacy)</h3>
                             <span class="workflow-step-readonly--blue-text-bold">
-                                {{contractsMainForm?.projectType?.value?.name ? contractsMainForm?.projectType?.value?.name : '-' }}
+                                {{contractsMainForm.projectType?.value?.name ? contractsMainForm.projectType?.value?.name : '-' }}
                             </span>
                         </div>
                         <div fxLayout="column" fxFlex="25%">
                             <h3 class="workflow-step-readonly--gray-header">Sales Type</h3>
                             <span class="workflow-step-readonly--blue-text-bold">
-                                {{contractsMainForm?.salesType?.value?.name ? contractsMainForm?.salesType?.value?.name : '-'}}
+                                {{contractsMainForm.salesType?.value?.name ? contractsMainForm.salesType?.value?.name : '-'}}
                             </span>
                         </div>
                         <div fxLayout="column" fxFlex="25%">
                             <h3 class="workflow-step-readonly--gray-header">Delivery Type</h3>
                             <span class="workflow-step-readonly--blue-text-bold">
-                                {{contractsMainForm?.deliveryType?.value?.name ? contractsMainForm?.deliveryType?.value?.name : '-'}}
+                                {{contractsMainForm.deliveryType?.value?.name ? contractsMainForm.deliveryType?.value?.name : '-'}}
                             </span>
                         </div>
                         <div fxLayout="column" fxFlex="25%">
                             <h3 class="workflow-step-readonly--gray-header">Margin</h3>
                             <span class="workflow-step-readonly--blue-text-bold">
-                                {{contractsMainForm?.margin?.value?.name ? contractsMainForm?.margin?.value?.name : '-'}}
+                                {{contractsMainForm.margin?.value?.name ? contractsMainForm.margin?.value?.name : '-'}}
                             </span>
                         </div>
                     </div>
@@ -147,7 +147,7 @@
                     <div fxLayout="row" fxLayoutAlign="start start" class="u-w--100 u-mb--20">
                         <ng-container *ngIf="readOnlyMode; else projectDescriptionInput">
                             <span class="workflow-step-readonly--blue-text">
-                                {{contractsMainForm?.projectDescription?.value ? contractsMainForm?.projectDescription?.value : '-'}}
+                                {{contractsMainForm.projectDescription?.value ? contractsMainForm.projectDescription?.value : '-'}}
                             </span>
                         </ng-container>
                         <ng-template #projectDescriptionInput>
@@ -160,17 +160,17 @@
                     </div>
                     <div fxLayout="column" fxLayoutAlign="start start" class="u-w--100 u-mb--20">
                         <h3 class="workflow-gray--header">Discounts</h3>
-                        <span class="workflow-darkblue--text">{{contractsMainForm?.discounts?.value?.name ? contractsMainForm?.discounts?.value?.name : '-'}}</span>
+                        <span class="workflow-darkblue--text">{{contractsMainForm.discounts?.value?.name ? contractsMainForm.discounts?.value?.name : '-'}}</span>
                         <!-- <span class="workflow-darkblue--text">SKI 02.17</span> -->
                     </div>
                     <h3 class="workflow-gray--header">Remarks</h3>
                     <div fxLayout="row" fxLayoutAlign="start start" class="u-w--100">
                         <ng-container *ngIf="readOnlyMode; else remarksInput">
-                            <span class="workflow-step-readonly--blue-text" *ngIf="contractsMainForm?.noRemarks?.value">
+                            <span class="workflow-step-readonly--blue-text" *ngIf="contractsMainForm.noRemarks?.value">
                                 No remarks
                             </span>
-                            <span class="workflow-step-readonly--blue-text" *ngIf="contractsMainForm?.remarks?.value">
-                                {{contractsMainForm?.remarks?.value ? contractsMainForm?.remarks?.value : '-'}}
+                            <span class="workflow-step-readonly--blue-text" *ngIf="contractsMainForm.remarks?.value">
+                                {{contractsMainForm.remarks?.value ? contractsMainForm.remarks?.value : '-'}}
                             </span>
                         </ng-container>
                         <ng-template #remarksInput>
@@ -182,7 +182,7 @@
                         </ng-template>
                     </div>
                     <div fxLayout="row" fxLayoutAlign="start start" class="u-w--100" *ngIf="!readOnlyMode">
-                        <mat-checkbox color="accent" formControlName="noRemarks" name="noRemarks" class="black-checkbox" (change)="disableOrEnableInput(contractsMainForm?.noRemarks?.value, contractsMainForm?.remarks)">
+                        <mat-checkbox color="accent" formControlName="noRemarks" name="noRemarks" class="black-checkbox" (change)="disableOrEnableInput(contractsMainForm.noRemarks?.value, contractsMainForm.remarks)">
                             None
                         </mat-checkbox>
                     </div>
@@ -201,16 +201,16 @@
                             <div fxLayout="column" fxFlex="25%">
                                 <h3 class="workflow-gray--header">Shared Cap on Hour Reporting</h3>
                                 <span class="workflow-darkblue--text">
-                                    {{contractClientForm?.clientTimeReportingCapId?.value?.name ? contractClientForm?.clientTimeReportingCapId?.value?.name : '-'}}
+                                    {{contractClientForm.clientTimeReportingCapId?.value?.name ? contractClientForm.clientTimeReportingCapId?.value?.name : '-'}}
                                 </span>
                             </div>
                             <div fxLayout="column" fxFlex="25%" *ngIf="contractClientForm.clientTimeReportingCapId?.value?.id !== 3 && contractClientForm.clientTimeReportingCapId?.value?.id !== 4">
                                 <h3 class="workflow-gray--header">Max. value</h3>
-                                <span class="workflow-darkblue--text" *ngIf="contractClientForm?.clientTimeReportingCapId?.value?.id !== 4"> <!-- id: 4 - no cap -->
-                                    {{contractClientForm?.clientTimeReportingCapMaxValue?.value ? contractClientForm?.clientTimeReportingCapMaxValue?.value : '-'}}
-                                    <ng-container [ngSwitch]="contractClientForm?.clientTimeReportingCapId?.value?.id">
+                                <span class="workflow-darkblue--text" *ngIf="contractClientForm.clientTimeReportingCapId?.value?.id !== 4"> <!-- id: 4 - no cap -->
+                                    {{contractClientForm.clientTimeReportingCapMaxValue?.value ? contractClientForm.clientTimeReportingCapMaxValue?.value : '-'}}
+                                    <ng-container [ngSwitch]="contractClientForm.clientTimeReportingCapId?.value?.id">
                                         <ng-container *ngSwitchCase="1"> <!-- Cap on units -->
-                                            <ng-container [ngSwitch]="contractClientForm?.rateUnitType?.value?.id">
+                                            <ng-container [ngSwitch]="contractClientForm.rateUnitType?.value?.id">
                                                 <ng-container *ngSwitchCase="1">  <!-- Per hour -->
                                                     hours
                                                 </ng-container>
@@ -223,7 +223,7 @@
                                             </ng-container>
                                         </ng-container>
                                         <ng-container *ngSwitchCase="2">  <!-- Cap on value -->
-                                            {{contractClientForm?.currency?.value?.name ? contractClientForm?.currency?.value?.name : '-'}}
+                                            {{contractClientForm.currency?.value?.name ? contractClientForm.currency?.value?.name : '-'}}
                                         </ng-container>
                                     </ng-container>
                                 </span>
@@ -234,11 +234,11 @@
                         <h3 class="workflow-gray--header">Special Contract Terms</h3>
                         <div fxLayout="row" fxLayoutAlign="start start" class="u-w--100">
                             <ng-container *ngIf="readOnlyMode; else specialContractTermsInput">
-                                <span class="workflow-step-readonly--blue-text" *ngIf="contractClientForm?.noSpecialContractTerms?.value">
+                                <span class="workflow-step-readonly--blue-text" *ngIf="contractClientForm.noSpecialContractTerms?.value">
                                     No special contract terms
                                 </span>
-                                <span class="workflow-step-readonly--blue-text" *ngIf="contractClientForm?.specialContractTerms?.value">
-                                    {{contractClientForm?.specialContractTerms?.value ? contractClientForm?.specialContractTerms?.value : '-'}}
+                                <span class="workflow-step-readonly--blue-text" *ngIf="contractClientForm.specialContractTerms?.value">
+                                    {{contractClientForm.specialContractTerms?.value ? contractClientForm.specialContractTerms?.value : '-'}}
                                 </span>
                             </ng-container>
                             <ng-template #specialContractTermsInput>
@@ -251,13 +251,13 @@
                         </div>
 
                         <div fxLayout="row" fxLayoutAlign="start start" class="u-w--100 u-mb--20" *ngIf="!readOnlyMode">
-                            <mat-checkbox color="accent" formControlName="noSpecialContractTerms" name="noSpecialContractTerms" class="black-checkbox u-mt--10" (change)="disableOrEnableInput(contractClientForm?.noSpecialContractTerms?.value, contractClientForm?.specialContractTerms)">
+                            <mat-checkbox color="accent" formControlName="noSpecialContractTerms" name="noSpecialContractTerms" class="black-checkbox u-mt--10" (change)="disableOrEnableInput(contractClientForm.noSpecialContractTerms?.value, contractClientForm.specialContractTerms)">
                                 None
                             </mat-checkbox>
                         </div>
 
                         <h2 class="workflow-section--header u-mt--20">Client Special Rates</h2>
-                        <div class="inline-edit-form u-w--100" [ngClass]="{'u-mb--20': contractClientForm.clientRates?.controls?.length}">
+                        <div class="inline-edit-form u-w--100" [ngClass]="{'u-mb--20': contractClientForm.clientRates.controls.length}">
                             <div fxLayout="row" fxLayoutAlign="space-between start" fxLayoutGap="10px" class="u-w--100 u-pl--16 u-pr--16" *ngIf="contractClientForm.clientRates?.controls?.length">
                                 <span fxFlex="25%" class="workflow-contracts--list-header text-truncate-ellipsis u-w--100">
                                     Rate name
@@ -302,7 +302,7 @@
                                     </ng-template>
                                     <ng-container *ngIf="rate.value.editable && !readOnlyMode; else clientRatesActions">
                                         <div fxFlex="20%" class="u-w--100 text-truncate-ellipsis" fxLayoutAlign="end center">
-                                            <button mat-flat-button (click)="editOrSaveSpecialRate(contractClientForm?.clientRates?.at(i)?.get('editable')?.value, i)" class="inline-edit-form--btn__save">
+                                            <button mat-flat-button (click)="editOrSaveSpecialRate(contractClientForm.clientRates.at(i).get('editable')?.value, i)" class="inline-edit-form--btn__save">
                                                 Save
                                             </button>
                                             <button mat-flat-button (click)="cancelEditClientRate(i)" class="inline-edit-form--btn__cancel">
@@ -364,7 +364,7 @@
                         </div>
 
                         <h2 class="workflow-section--header u-mt--20">Client Fees</h2>
-                        <div class="inline-edit-form u-w--100" [ngClass]="{'u-mb--20': contractClientForm.clientFees?.controls?.length}">
+                        <div class="inline-edit-form u-w--100" [ngClass]="{'u-mb--20': contractClientForm.clientFees.controls.length}">
                             <div fxLayout="row" fxLayoutAlign="space-between start" fxLayoutGap="10px" class="u-w--100 u-pl--16 u-pr--16" *ngIf="contractClientForm.clientFees?.controls?.length">
                                 <span fxFlex="25%" class="workflow-contracts--list-header text-truncate-ellipsis u-w--100">
                                     Fee name
@@ -500,12 +500,12 @@
                                             <mat-icon svgIcon="sourcing-deeplink"></mat-icon>
                                         </button>
                                     </span>
-                                    <div fxFlex="50%" fxLayoutAlign="end center" *ngIf="!readOnlyMode">
-                                        <!-- <span class="workflow-form--consultants__period u-mr--8">
+                                    <!-- <div fxFlex="50%" fxLayoutAlign="end center" *ngIf="!readOnlyMode">
+                                        <span class="workflow-form--consultants__period u-mr--8">
                                             {{consultant.value.startDate | momentFormat: 'DD.MM.YYYY'}}
                                             -
                                             {{consultant.value.endDate | momentFormat: 'DD.MM.YYYY'}}
-                                        </span> -->
+                                        </span>
                                         <button mat-icon-button [matMenuTriggerFor]="consultantMenu" type="button" (click)="$event.stopPropagation();" class="workflow-icon--actions u-mr--16"><mat-icon>more_horiz</mat-icon></button>
                                         <mat-menu #consultantMenu>
                                             <button
@@ -532,7 +532,7 @@
                                                 Terminate consultant
                                             </button>
                                         </mat-menu>
-                                    </div>
+                                    </div> -->
                                 </div>
                             </div>
 
@@ -598,7 +598,7 @@
                                     formControlName="noSpecialContractTerms"
                                     name="noSpecialContractTerms"
                                     class="black-checkbox u-mt--10"
-                                    (change)="disableOrEnableInput(contractsConsultantsDataForm?.consultants?.at(consultantIndex)?.get('noSpecialContractTerms')?.value, contractsConsultantsDataForm?.consultants?.at(consultantIndex)?.get('specialContractTerms'))">
+                                    (change)="disableOrEnableInput(contractsConsultantsDataForm.consultants.at(consultantIndex).get('noSpecialContractTerms')?.value, contractsConsultantsDataForm.consultants.at(consultantIndex).get('specialContractTerms'))">
                                     None
                                 </mat-checkbox>
                             </div>
@@ -1089,10 +1089,10 @@
                                                 {{projectLine.value.markedForLegacyDeletion ? 'Delete from sync' : projectLine.value.wasSynced ? 'Synced' : 'Not synced'}}
                                             </span>
                                             <div fxFlex="5%" fxLayoutAlign="end center" class="u-w--100 workflow-contracts--list-item">
-                                                <button mat-icon-button (click)="$event.stopPropagation();" [matMenuTriggerFor]="clientFeeMenu" class="three-dots-actions-btn">
+                                                <button mat-icon-button (click)="$event.stopPropagation();" [matMenuTriggerFor]="consultantProjectLineMenu" class="three-dots-actions-btn">
                                                     <mat-icon>more_horiz</mat-icon>
                                                 </button>
-                                                <mat-menu #clientFeeMenu>
+                                                <mat-menu #consultantProjectLineMenu>
                                                     <button
                                                         class="menu-item menu-item--edit"
                                                         mat-menu-item
