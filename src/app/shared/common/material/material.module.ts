@@ -4,7 +4,7 @@ import { DragDropModule } from '@angular/cdk/drag-drop';
 import { MatSidenavModule } from '@angular/material/sidenav';
 import { MatListModule } from '@angular/material/list';
 import { MatToolbarModule } from '@angular/material/toolbar';
-import { MatSelectModule } from '@angular/material/select';
+import { MatSelectModule, MAT_SELECT_CONFIG } from '@angular/material/select';
 import { MatDividerModule } from '@angular/material/divider';
 import { MatMenuModule } from '@angular/material/menu';
 import { MatCheckboxModule } from '@angular/material/checkbox';
@@ -46,8 +46,7 @@ const globalRippleConfig: RippleGlobalOptions = {
 
 @Injectable({providedIn: 'root'})
 export class AppGlobalRippleOptions implements RippleGlobalOptions {
-  /** Whether ripples should be disabled globally. */
-  disabled: boolean = true;
+    disabled: boolean = true;
 }
 
 const MaterialModules = [
@@ -98,6 +97,10 @@ const MaterialModules = [
         {
             provide: MAT_RIPPLE_GLOBAL_OPTIONS,
             useExisting: AppGlobalRippleOptions
+        },
+        {
+            provide: MAT_SELECT_CONFIG,
+            useValue: { disableOptionCentering: true, overlayPanelClass: 'pm-mat-select-pane'}
         },
         {
             provide: MAT_DATE_LOCALE,

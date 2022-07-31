@@ -916,7 +916,6 @@ export class WorkflowContractsComponent extends AppComponentBase implements OnIn
     //#region Consultant menu actions
     changeConsultantData(index: number) {
         const consultantData = this.contractsConsultantsDataForm.consultants.at(index).value;
-        console.log('change consultant ', consultantData);
         const scrollStrategy = this.overlay.scrollStrategies.reposition();
         const dialogRef = this.dialog.open(WorkflowConsultantActionsDialogComponent, {
             minWidth: '450px',
@@ -938,7 +937,6 @@ export class WorkflowContractsComponent extends AppComponentBase implements OnIn
         });
 
         dialogRef.componentInstance.onConfirmed.subscribe((result) => {
-            console.log('new date ', result?.newCutoverDate, 'new contract required ', result?.newLegalContractRequired);
             // call API to change consultant
         });
 
@@ -949,7 +947,6 @@ export class WorkflowContractsComponent extends AppComponentBase implements OnIn
 
     extendConsultant(index: number) {
         const consultantData = this.contractsConsultantsDataForm.consultants.at(index).value;
-        console.log('extend consultant ', consultantData);
         const scrollStrategy = this.overlay.scrollStrategies.reposition();
         const dialogRef = this.dialog.open(WorkflowConsultantActionsDialogComponent, {
             minWidth: '450px',
@@ -971,7 +968,6 @@ export class WorkflowContractsComponent extends AppComponentBase implements OnIn
         });
 
         dialogRef.componentInstance.onConfirmed.subscribe((result) => {
-            console.log('start date ', result?.startDate, 'end date ', result?.endDate, 'no end date ', result?.noEndDate);
             // call API to change consultant
         });
 
@@ -982,7 +978,6 @@ export class WorkflowContractsComponent extends AppComponentBase implements OnIn
 
     terminateConsultant(index: number) {
         const consultantData = this.contractsConsultantsDataForm.consultants.at(index).value;
-        console.log('terminate consultant ', consultantData);
         const scrollStrategy = this.overlay.scrollStrategies.reposition();
         const dialogRef = this.dialog.open(ConfirmationDialogComponent, {
             width: '450px',
@@ -1336,6 +1331,7 @@ export class WorkflowContractsComponent extends AppComponentBase implements OnIn
                 this.contractsSyncDataForm.lastSyncedDate?.setValue(result?.lastSyncedDate, {emitEvent: false});
 
                 this.addConsultantDataToForm(result?.consultantData!, 0);
+                this.addConsultantLegalContract(result.consultantData!);
                 this.updateConsultantStepAnchors();
                 if (isFromSyncToLegacy) {
                     this.processSyncToLegacySystem();
@@ -1348,11 +1344,12 @@ export class WorkflowContractsComponent extends AppComponentBase implements OnIn
         input.remarks =  this.contractsMainForm.remarks?.value;
         input.noRemarks =  this.contractsMainForm.noRemarks?.value
         input.projectDescription =  this.contractsMainForm.projectDescription?.value;
-        input.mainData!.projectTypeId = this.contractsMainForm.projectType?.value?.id;;
-        input.mainData!.salesTypeId =  this.contractsMainForm.salesType?.value?.id;
-        input.mainData!.deliveryTypeId =this.contractsMainForm.deliveryType?.value?.id;
-        input.mainData!.marginId = this.contractsMainForm.margin?.value?.id;
-        input.mainData!.discountId = this.contractsMainForm.discounts?.value?.id;
+        input.mainData = new ContractsMainDataDto();
+        input.mainData.projectTypeId = this.contractsMainForm.projectType?.value?.id;;
+        input.mainData.salesTypeId =  this.contractsMainForm.salesType?.value?.id;
+        input.mainData.deliveryTypeId =this.contractsMainForm.deliveryType?.value?.id;
+        input.mainData.marginId = this.contractsMainForm.margin?.value?.id;
+        input.mainData.discountId = this.contractsMainForm.discounts?.value?.id;
 
         input.consultantData = new ConsultantContractsDataDto();
         const consultantInput = this.contractsConsultantsDataForm.consultants.at(0).value;
