@@ -1336,6 +1336,7 @@ export class WorkflowContractsComponent extends AppComponentBase implements OnIn
                 this.contractsSyncDataForm.lastSyncedDate?.setValue(result?.lastSyncedDate, {emitEvent: false});
 
                 this.addConsultantDataToForm(result?.consultantData!, 0);
+                this.addConsultantLegalContract(result.consultantData!);
                 this.updateConsultantStepAnchors();
                 if (isFromSyncToLegacy) {
                     this.processSyncToLegacySystem();
@@ -1348,11 +1349,12 @@ export class WorkflowContractsComponent extends AppComponentBase implements OnIn
         input.remarks =  this.contractsMainForm.remarks?.value;
         input.noRemarks =  this.contractsMainForm.noRemarks?.value
         input.projectDescription =  this.contractsMainForm.projectDescription?.value;
-        input.mainData!.projectTypeId = this.contractsMainForm.projectType?.value?.id;;
-        input.mainData!.salesTypeId =  this.contractsMainForm.salesType?.value?.id;
-        input.mainData!.deliveryTypeId =this.contractsMainForm.deliveryType?.value?.id;
-        input.mainData!.marginId = this.contractsMainForm.margin?.value?.id;
-        input.mainData!.discountId = this.contractsMainForm.discounts?.value?.id;
+        input.mainData = new ContractsMainDataDto();
+        input.mainData.projectTypeId = this.contractsMainForm.projectType?.value?.id;;
+        input.mainData.salesTypeId =  this.contractsMainForm.salesType?.value?.id;
+        input.mainData.deliveryTypeId =this.contractsMainForm.deliveryType?.value?.id;
+        input.mainData.marginId = this.contractsMainForm.margin?.value?.id;
+        input.mainData.discountId = this.contractsMainForm.discounts?.value?.id;
 
         input.consultantData = new ConsultantContractsDataDto();
         const consultantInput = this.contractsConsultantsDataForm.consultants.at(0).value;
