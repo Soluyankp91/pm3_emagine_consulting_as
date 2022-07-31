@@ -804,6 +804,7 @@ export class WorkflowContractsComponent extends AppComponentBase implements OnIn
         if (projectLinesIndex !== null && projectLinesIndex !== undefined) {
             projectLine = (this.contractsConsultantsDataForm.consultants.at(index).get('projectLines') as FormArray).at(projectLinesIndex!).value;
         }
+        console.log(projectLine);
         const dialogRef = this.dialog.open(AddOrEditProjectLineDialogComponent, {
             width: '450px',
             minHeight: '180px',
@@ -888,6 +889,7 @@ export class WorkflowContractsComponent extends AppComponentBase implements OnIn
         projectLineRow.get('consultantInsuranceOptionId')?.setValue(projectLineData.consultantInsuranceOptionId, {emitEvent: false});
         projectLineRow.get('markedForLegacyDeletion')?.setValue(projectLineData.markedForLegacyDeletion, {emitEvent: false});
         projectLineRow.get('wasSynced')?.setValue(projectLineData.wasSynced, {emitEvent: false});
+        console.log(projectLineData.wasSynced);
     }
 
     duplicateProjectLine(consultantIndex: number, projectLinesIndex: number) {

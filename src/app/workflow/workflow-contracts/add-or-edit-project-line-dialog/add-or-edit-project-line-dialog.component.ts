@@ -148,6 +148,7 @@ export class AddOrEditProjectLineDialogComponent extends AppComponentBase implem
         this.projectLineForm.consultantInsuranceOptionId?.setValue(data.consultantInsuranceOptionId ?? 0, {emitEvent: false});
         this.projectLineForm.modificationDate?.setValue(data.modificationDate, {emitEvent: false});
         this.projectLineForm.modifiedById?.setValue(data.modifiedBy, {emitEvent: false});
+        this.projectLineForm.wasSynced?.setValue(data.wasSynced, {emitEvent: false});
 
         this.projectLineForm.markAsDirty();
         this.projectLineForm.markAllAsTouched();
@@ -184,6 +185,7 @@ export class AddOrEditProjectLineDialogComponent extends AppComponentBase implem
         result.modifiedBy = this.projectLineForm.modifiedById?.value;
         result.modificationDate = this.projectLineForm.modificationDate?.value;
         result.consultantInsuranceOptionId = this.projectLineForm.consultantInsuranceOptionId?.value;
+        result.wasSynced = this.projectLineForm.wasSynced?.value;
         this.onConfirmed.emit(result);
         this.closeInternal();
     }
