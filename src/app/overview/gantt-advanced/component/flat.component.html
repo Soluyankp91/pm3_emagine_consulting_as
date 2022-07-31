@@ -88,7 +88,7 @@
                                     </ngx-gantt-bar>
                                     <div class="tooltip" [style.left.px]="menuTopLeftPosition.x"[style.top.px]="menuTopLeftPosition.y">
                                         <span><b>{{item?.origin?.title!}}</b></span>
-                                        <span>{{tooltipStartDate | momentFormat: 'DD.MM.YYYY'}} - {{tooltipEndDate | momentFormat: 'DD.MM.YYYY'}}</span>
+                                        <span>{{tooltipStartDate | momentFormat: 'DD.MM.YYYY'}} - {{tooltipEndDate ? (tooltipEndDate | momentFormat: 'DD.MM.YYYY') : '...'}}</span>
                                     </div>
                                 </ng-container>
                             </div>
