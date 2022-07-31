@@ -916,7 +916,6 @@ export class WorkflowContractsComponent extends AppComponentBase implements OnIn
     //#region Consultant menu actions
     changeConsultantData(index: number) {
         const consultantData = this.contractsConsultantsDataForm.consultants.at(index).value;
-        console.log('change consultant ', consultantData);
         const scrollStrategy = this.overlay.scrollStrategies.reposition();
         const dialogRef = this.dialog.open(WorkflowConsultantActionsDialogComponent, {
             minWidth: '450px',
@@ -938,7 +937,6 @@ export class WorkflowContractsComponent extends AppComponentBase implements OnIn
         });
 
         dialogRef.componentInstance.onConfirmed.subscribe((result) => {
-            console.log('new date ', result?.newCutoverDate, 'new contract required ', result?.newLegalContractRequired);
             // call API to change consultant
         });
 
@@ -949,7 +947,6 @@ export class WorkflowContractsComponent extends AppComponentBase implements OnIn
 
     extendConsultant(index: number) {
         const consultantData = this.contractsConsultantsDataForm.consultants.at(index).value;
-        console.log('extend consultant ', consultantData);
         const scrollStrategy = this.overlay.scrollStrategies.reposition();
         const dialogRef = this.dialog.open(WorkflowConsultantActionsDialogComponent, {
             minWidth: '450px',
@@ -971,7 +968,6 @@ export class WorkflowContractsComponent extends AppComponentBase implements OnIn
         });
 
         dialogRef.componentInstance.onConfirmed.subscribe((result) => {
-            console.log('start date ', result?.startDate, 'end date ', result?.endDate, 'no end date ', result?.noEndDate);
             // call API to change consultant
         });
 
@@ -982,7 +978,6 @@ export class WorkflowContractsComponent extends AppComponentBase implements OnIn
 
     terminateConsultant(index: number) {
         const consultantData = this.contractsConsultantsDataForm.consultants.at(index).value;
-        console.log('terminate consultant ', consultantData);
         const scrollStrategy = this.overlay.scrollStrategies.reposition();
         const dialogRef = this.dialog.open(ConfirmationDialogComponent, {
             width: '450px',
