@@ -21,7 +21,7 @@ export class GanttChartComponent extends GanttUpper implements OnInit {
     userSelectedStatuses: any;
     menuTopLeftPosition =  {x: 0, y: 0}
     tooltipStartDate: Date;
-    tooltipEndDate: Date | string;
+    tooltipEndDate: Date | undefined;
     override groups: GanttGroupInternal<any>[] = [];
 
     @HostBinding('class.gantt-flat') ganttFlatClass = true;
@@ -102,8 +102,9 @@ export class GanttChartComponent extends GanttUpper implements OnInit {
         event.preventDefault();
         this.menuTopLeftPosition.x = event.clientX;
         this.menuTopLeftPosition.y = event.clientY + 10;
+        console.log(item);
         this.tooltipStartDate = new Date(item?.origin?.start*1000) ;
-        this.tooltipEndDate = item?.origin?.end ? new Date(item?.origin?.end*1000) : '...';
+        this.tooltipEndDate = (item?.origin?.origin.endDate !== undefined && item?.origin?.origin.endDate !== null) ? new Date(item?.origin?.end*1000) : undefined;
     }
 
 }

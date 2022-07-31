@@ -287,7 +287,8 @@ export class MainOverviewComponent extends AppComponentBase implements OnInit {
                 start: getUnixTime(parent![i]?.startDate?.toDate()!),
                 end: parent![i]?.endDate !== undefined ? getUnixTime(parent![i]?.endDate!.toDate()!) : getUnixTime(this.viewOptions.end!.value),
                 group_id: group,
-                color: this.getColorForPeriod(parent!, workflowStatus, i)
+                color: this.getColorForPeriod(parent!, workflowStatus, i),
+                origin: parent[i]
             });
         }
         return items;

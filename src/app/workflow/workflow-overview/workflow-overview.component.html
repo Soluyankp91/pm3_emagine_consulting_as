@@ -115,16 +115,16 @@
         <mat-divider class="u-w--100 u-mb--30"></mat-divider>
         <h2 class="workflow-overview--history-header u-mb--30">Latest changes</h2>
         <div fxLayout="row" fxLayoutAlign="start start" class="workflow-overview--history">
-            <div fxLayout="column" fxLayoutAlign="start start" fxFlex="40%" class="u-mb--15">
-                <div fxlayout="row" fxLayoutAlign="start center" class="u-w--100" *ngFor="let item of workflowHistory" >
-                    <span class="workflow-overview--history-grey-text" fxFlex="15%">
-                        {{item.occurredAtUtc | momentFormat: 'DD.MM.YYYY'}}
+            <div fxLayout="column" fxLayoutAlign="start start" fxFlex="40%">
+                <div fxlayout="row" fxLayoutAlign="start center" class="u-mb--15 u-w--100" *ngFor="let item of workflowHistory" >
+                    <span class="workflow-overview--history-grey-text" fxFlex="20%">
+                        {{item.occurredAtUtc | momentFormat: 'DD.MM.YYYY HH:mm'}}
                     </span>
                     <img class="workflow-overview--history-img" [src]="employeeProfileUrl(item.initiatedBy?.externalId!)" alt="" fxFlex="10%">
-                    <span class="workflow-overview--history-event-name text-truncate-ellipsis"  [matTooltip]="item.eventName!" fxFlex="35%">
+                    <span class="workflow-overview--history-event-name text-truncate-ellipsis"  [matTooltip]="item.eventName!" fxFlex="40%">
                         {{item.eventName}}
                     </span>
-                    <span class="workflow-overview--history-grey-text text-truncate-ellipsis" [matTooltip]="item.initiatedBy?.name!" fxFlex="35%">
+                    <span class="workflow-overview--history-grey-text text-truncate-ellipsis" [matTooltip]="item.initiatedBy?.name!" fxFlex="30%">
                         {{item.initiatedBy?.name}}
                     </span>
                 </div>

@@ -2,7 +2,7 @@ import { Overlay } from '@angular/cdk/overlay';
 import { Component, Injector, Input, OnInit, ViewChild } from '@angular/core';
 import { MatDialog } from '@angular/material/dialog';
 import { ActivatedRoute } from '@angular/router';
-import { GanttDate, GanttGroup, GanttItem, GanttViewOptions, GanttViewType, NgxGanttComponent } from '@worktile/gantt';
+import { GanttDate, GanttGroup, GanttItem, GanttViewType, NgxGanttComponent } from '@worktile/gantt';
 import { getUnixTime } from 'date-fns';
 import { Subject } from 'rxjs';
 import { finalize, takeUntil } from 'rxjs/operators';
@@ -13,7 +13,6 @@ import { ChangeConsultantPeriodDto, ConsultantGanttRow, ConsultantPeriodServiceP
 import { WorkflowConsultantActionsDialogComponent } from '../workflow-consultant-actions-dialog/workflow-consultant-actions-dialog.component';
 import { WorkflowDataService } from '../workflow-data.service';
 import { ConsultantDiallogAction } from '../workflow-sales/workflow-sales.model';
-import { ExtendWorkflowProcessDto, OverviewData, ProcessParentItemDto, ProcessSubItemDto, StartWorkflowProcessDto } from './workflow-overview.model';
 
 @Component({
     selector: 'app-workflow-overview',
@@ -123,15 +122,31 @@ export class WorkflowOverviewComponent extends AppComponentBase implements OnIni
                     if (x.ganttRowItems?.length > 1) {
                         return x.ganttRowItems?.reduce((r, o) => o.endDate! > r.endDate! ? o : r);
                     } else {
-                        return x.ganttRowItems[0].endDate;
+                        return x.ganttRowItems[0];
                     }
                 }
-            })
-            console.log('oldestDateClientArray', oldestDateClientArray);
-            // let endDate = new Date();
-            // if (oldestDateArray.lastClientPeriodEndDate === undefined || (oldestDateArray.lastClientPeriodEndDate.toDate().getTime() < this.formatDate(date).getTime())) {
-            //     endDate = this.formatDate(date);
-            // }
+            });
+
+            let startOfClientArray = result.clientGanntRows?.map(x => {
+                if (x.ganttRowItems?.length) {
+                    if (x.ganttRowItems?.length > 1) {
+                        return x.ganttRowItems?.reduce((r, o) => o.startDate! < r.startDate! ? o! : r!);
+                    } else {
+                        return x.ganttRowItems[0];
+                    }
+                }
+            });
+
+            let endDate = new Date();
+            if (oldestDateClientArray![0]!.endDate === undefined || oldestDateClientArray![0]!.endDate.toDate().getTime() < this.formatDate(startOfClientArray![0]?.startDate!.toDate()!).getTime()) {
+                endDate = this.formatDate(startOfClientArray![0]?.startDate!.toDate()!);
+            }
+            
+            this.viewOptions.start = new GanttDate(getUnixTime(new Date(startOfClientArray![0]?.startDate!.toDate()!)));
+            this.viewOptions.min = new GanttDate(getUnixTime(new Date(startOfClientArray![0]?.startDate!.toDate()!)));
+            this.viewOptions.end = endDate.getTime() !== new Date().getTime() ? new GanttDate(getUnixTime(endDate)) : new GanttDate(getUnixTime(new Date(oldestDateClientArray![0]?.endDate?.toDate()!)));
+            this.viewOptions.max = endDate.getTime() !== new Date().getTime() ? new GanttDate(getUnixTime(endDate)) : new GanttDate(getUnixTime(new Date(oldestDateClientArray![0]?.endDate?.toDate()!)));
+
             let groupIndex = 0;
             result.clientGanntRows!.map((x, index) => {
                 groups.push({
@@ -139,7 +154,7 @@ export class WorkflowOverviewComponent extends AppComponentBase implements OnIni
                     title: x.name!
                 })
 
-                items = [...items, ...this.formatItems(x.ganttRowItems?.length!, x.ganttRowItems!, groups[index].id, true)];
+                items = [...items, ...this.formatItems(x.ganttRowItems?.length!, x.ganttRowItems!, groups[index].id)];
             });
 
             result.consultantGanntRows!.map((x, index) => {
@@ -150,7 +165,7 @@ export class WorkflowOverviewComponent extends AppComponentBase implements OnIni
                     origin: x
                 })
 
-                items = [...items, ...this.formatItems(x.ganttRowItems?.length!, x.ganttRowItems!, groups[index].id, false)];
+                items = [...items, ...this.formatItems(x.ganttRowItems?.length!, x.ganttRowItems!, groups[index].id)];
             });
 
             this.overviewGroups = groups;
@@ -159,21 +174,48 @@ export class WorkflowOverviewComponent extends AppComponentBase implements OnIni
         })
     }
 
-    formatItems(length: number, parent: GanttRowItem[], group: string, isClient: boolean) {
+    formatDate(date: any) {
+        var d = new Date(date),
+            month = (d.getMonth() + 3),
+            day = d.getDate() - d.getDate(),
+            year = d.getFullYear();
+
+        return new Date(year, month, day);
+    }
+
+    formatItems(length: number, parent: GanttRowItem[], group: string) {
         const items = [];
         for (let i = 0; i < length; i++) {
             items.push({
                 id: `${parent![i]?.id || group}`,
                 title: `${WorkflowProcessType[parent![i]?.processTypeId!]}`,
                 start: getUnixTime(parent![i]?.startDate?.toDate()!),
-                end: parent![i]?.endDate !== undefined ? getUnixTime(parent![i]?.endDate!.toDate()!) : getUnixTime(this.viewOptions.end!.value),
+                end: (parent![i]?.endDate !== undefined && parent![i]?.endDate !== null) ? getUnixTime(parent![i]?.endDate!.toDate()!) : getUnixTime(this.viewOptions.end!.value),
                 group_id: group,
-                color: isClient ? 'rgba(23, 162, 151, 1)' : 'rgba(106, 71, 184, 1)'
+                color: this.getColorForConsultantsOverview(parent[i].processTypeId),
+                origin: parent[i]
             });
         }
         return items;
     }
 
+    getColorForConsultantsOverview(item: WorkflowProcessType | undefined) {
+        switch (item) {
+            case WorkflowProcessType.StartClientPeriod:
+            case WorkflowProcessType.ChangeClientPeriod:
+            case WorkflowProcessType.ExtendClientPeriod:
+                return 'rgba(23, 162, 151, 1)';
+            case WorkflowProcessType.StartConsultantPeriod:
+            case WorkflowProcessType.ChangeConsultantPeriod:
+            case WorkflowProcessType.ExtendConsultantPeriod:
+                return 'rgba(106, 71, 184, 1)';
+            case WorkflowProcessType.TerminateConsultant:
+            case WorkflowProcessType.TerminateWorkflow:
+                return 'rgba(255, 122, 120, 1)';
+            default:
+                break;
+        }
+    }
     getWorkflowHistory() {
         this._workflowService.history(this.workflowId, this.historyPageNumber, this.historyDeafultPageSize).subscribe(result => {
             if (result.items) {
@@ -301,5 +343,4 @@ export class WorkflowOverviewComponent extends AppComponentBase implements OnIni
         this.historyDeafultPageSize = event.pageSize;
         this.getWorkflowHistory();
     }
-
 }
