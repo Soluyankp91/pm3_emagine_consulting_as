@@ -1026,7 +1026,7 @@
                                 <div fxLayout="row" fxLayoutAlign="start start" class="u-w--100 u-mb--10 u-mt--10">
                                     <mat-form-field appearance="outline" class="u-w--100  filter-select" fxFlex="33%">
                                         <mat-label>Project type</mat-label>
-                                        <mat-select formControlName="projectType" [disableOptionCentering]="false" [compareWith]="compareWithFn" (selectionChange)="getDataBasedOnProjectType($event)">
+                                        <mat-select formControlName="projectType" [disableOptionCentering]="true" [compareWith]="compareWithFn" (selectionChange)="getDataBasedOnProjectType($event)">
                                             <mat-option *ngFor="let item of projectTypes" [value]="item">
                                                 {{ item.name }}
                                             </mat-option>
@@ -1076,7 +1076,7 @@
                                 <div fxLayout="row" fxLayoutAlign="start start" class="u-w--100 u-mb--10">
                                     <mat-form-field appearance="outline" class="u-w--100  filter-select u-mr--16" fxFlex="33%">
                                         <mat-label>Project Category</mat-label>
-                                        <mat-select formControlName="projectCategory" [disableOptionCentering]="false" [compareWith]="compareWithFn">
+                                        <mat-select formControlName="projectCategory" [disableOptionCentering]="true" [compareWith]="compareWithFn">
                                             <mat-option *ngFor="let item of projectCategories" [value]="item">
                                                 {{ item.name }}
                                             </mat-option>
