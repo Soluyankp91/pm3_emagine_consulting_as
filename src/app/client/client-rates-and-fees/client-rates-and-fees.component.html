@@ -105,7 +105,7 @@
                                 </mat-form-field>
                             </div>
                             <div fxFlex="15%" class="u-w--100 text-truncate-ellipsis flex-items-center">
-                                <button mat-flat-button (click)="saveOrUpdateSpecialRate(i)" class="inline-edit-form--btn__save">
+                                <button mat-flat-button (click)="saveOrUpdateSpecialRate(i)" class="inline-edit-form--btn__save" [disabled]="rateIsSaving">
                                     Save
                                 </button>
                                 <button mat-flat-button *ngIf="rate.value.id" (click)="cancelRateEdit(i)" class="inline-edit-form--btn__cancel">
@@ -296,7 +296,7 @@
                                 </mat-form-field>
                             </div>
                             <div fxFlex="15%" class="u-w--100 text-truncate-ellipsis flex-items-center">
-                                <button mat-flat-button (click)="saveOrUpdateSpecialFee(i)" class="inline-edit-form--btn__save">
+                                <button mat-flat-button (click)="saveOrUpdateSpecialFee(i)" class="inline-edit-form--btn__save" [disabled]="feeIsSaving">
                                     Save
                                 </button>
                                 <button mat-flat-button (click)="cancelFeeEdit(i)" class="inline-edit-form--btn__cancel">
