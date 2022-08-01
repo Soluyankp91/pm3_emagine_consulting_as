@@ -8,7 +8,7 @@ import { finalize, takeUntil } from 'rxjs/operators';
 import { InternalLookupService } from 'src/app/shared/common/internal-lookup.service';
 import { ConfirmationDialogComponent } from 'src/app/shared/components/confirmation-dialog/confirmation-dialog.component';
 import { AppComponentBase } from 'src/shared/app-component-base';
-import { ClientPeriodContractsDataDto, WorkflowProcessType, WorkflowServiceProxy, ClientPeriodServiceProxy, ConsultantContractsDataDto, ConsultantSalesDataDto, ContractsClientDataDto, ContractsMainDataDto, EnumEntityTypeDto, PeriodClientSpecialFeeDto, PeriodClientSpecialRateDto, PeriodConsultantSpecialFeeDto, PeriodConsultantSpecialRateDto, ProjectLineDto, ConsultantTerminationContractDataCommandDto, WorkflowTerminationContractDataCommandDto, ConsultantTerminationContractDataQueryDto, ClientContractsServiceProxy, ConsultantPeriodServiceProxy, ConsultantContractsServiceProxy, ConsultantPeriodContractsDataDto, ClientsServiceProxy, ClientSpecialRateDto, ClientSpecialFeeDto, ConsultantResultDto, WorkflowProcessDto, ContractSyncServiceProxy, StepType } from 'src/shared/service-proxies/service-proxies';
+import { ClientPeriodContractsDataCommandDto, WorkflowProcessType, WorkflowServiceProxy, ClientPeriodServiceProxy, ConsultantContractsDataCommandDto, ContractsClientDataDto, ContractsMainDataDto, EnumEntityTypeDto, PeriodClientSpecialFeeDto, PeriodClientSpecialRateDto, PeriodConsultantSpecialFeeDto, PeriodConsultantSpecialRateDto, ProjectLineDto, ConsultantTerminationContractDataCommandDto, WorkflowTerminationContractDataCommandDto, ConsultantTerminationContractDataQueryDto, ClientContractsServiceProxy, ConsultantPeriodServiceProxy, ConsultantContractsServiceProxy, ConsultantPeriodContractsDataCommandDto, ClientsServiceProxy, ClientSpecialRateDto, ClientSpecialFeeDto, ConsultantResultDto, WorkflowProcessDto, ContractSyncServiceProxy, StepType, ConsultantContractsDataQueryDto } from 'src/shared/service-proxies/service-proxies';
 import { WorkflowConsultantActionsDialogComponent } from '../workflow-consultant-actions-dialog/workflow-consultant-actions-dialog.component';
 import { WorkflowDataService } from '../workflow-data.service';
 import { WorkflowProcessWithAnchorsDto } from '../workflow-period/workflow-period.model';
@@ -549,7 +549,7 @@ export class WorkflowContractsComponent extends AppComponentBase implements OnIn
 
     // #endregion CHANGE NAMING
 
-    addConsultantDataToForm(consultant: ConsultantContractsDataDto, consultantIndex: number) {
+    addConsultantDataToForm(consultant: ConsultantContractsDataQueryDto, consultantIndex: number) {
         // TODO: add missing properties, id, employmentType, etc.
         const form = this._fb.group({
             consultantPeriodId: new FormControl(consultant?.consultantPeriodId),
@@ -576,13 +576,13 @@ export class WorkflowContractsComponent extends AppComponentBase implements OnIn
             projectLines: new FormArray([])
         });
         this.contractsConsultantsDataForm.consultants.push(form);
-        consultant.projectLines?.forEach(project => {
+        consultant.projectLines?.forEach((project: any) => {
             this.addProjectLinesToConsultantData(consultantIndex, project);
         });
-        consultant.periodConsultantSpecialFees?.forEach(fee => {
+        consultant.periodConsultantSpecialFees?.forEach((fee: any) => {
             this.addClientFeesToConsultantData(consultantIndex, fee);
         });
-        consultant.periodConsultantSpecialRates?.forEach(rate => {
+        consultant.periodConsultantSpecialRates?.forEach((rate: any) => {
             this.addSpecialRateToConsultantData(consultantIndex, rate);
         });
 
@@ -594,7 +594,7 @@ export class WorkflowContractsComponent extends AppComponentBase implements OnIn
         return this.contractsConsultantsDataForm.get('consultants') as FormArray;
     }
 
-    addConsultantLegalContract(consultant: ConsultantContractsDataDto) {
+    addConsultantLegalContract(consultant: ConsultantContractsDataQueryDto) {
         const form = this._fb.group({
             consultantId: new FormControl(consultant.consultantId),
             consultantPeriodId: new FormControl(consultant?.consultantPeriodId),
@@ -1087,7 +1087,7 @@ export class WorkflowContractsComponent extends AppComponentBase implements OnIn
                 }
 
                 if (result.consultantData?.length) {
-                    result.consultantData.forEach((consultant: ConsultantContractsDataDto, index) => {
+                    result.consultantData.forEach((consultant: ConsultantContractsDataQueryDto, index) => {
                         this.addConsultantDataToForm(consultant, index);
                         this.addConsultantLegalContract(consultant);
                     });
@@ -1134,7 +1134,7 @@ export class WorkflowContractsComponent extends AppComponentBase implements OnIn
     }
 
     saveStartChangeOrExtendClientPeriodContracts(isDraft: boolean, isSyncToLegacy?: boolean) {
-        let input = new ClientPeriodContractsDataDto();
+        let input = new ClientPeriodContractsDataCommandDto();
         input.clientData = new ContractsClientDataDto();
 
         input.clientData.specialContractTerms = this.contractClientForm.specialContractTerms?.value;
@@ -1183,10 +1183,10 @@ export class WorkflowContractsComponent extends AppComponentBase implements OnIn
         input.mainData.remarks = this.contractsMainForm.remarks?.value;
         input.mainData.noRemarks = this.contractsMainForm.noRemarks?.value;
 
-        input.consultantData = new Array<ConsultantContractsDataDto>();
+        input.consultantData = new Array<ConsultantContractsDataCommandDto>();
         if (this.contractsConsultantsDataForm?.consultants?.value?.length) {
             for (let consultant of this.contractsConsultantsDataForm.consultants.value) {
-                let consultantData = new ConsultantContractsDataDto();
+                let consultantData = new ConsultantContractsDataCommandDto();
                 consultantData.consultantPeriodId = consultant.consultantPeriodId;
                 consultantData.employmentTypeId = consultant.consultantType?.id;
                 consultantData.consultantId = consultant.consultantId;
@@ -1340,7 +1340,7 @@ export class WorkflowContractsComponent extends AppComponentBase implements OnIn
     }
 
     saveStartChangeOrExtendConsultantPeriodContracts(isDraft: boolean, isSyncToLegacy?: boolean) {
-        let input = new ConsultantPeriodContractsDataDto();
+        let input = new ConsultantPeriodContractsDataCommandDto();
         input.remarks =  this.contractsMainForm.remarks?.value;
         input.noRemarks =  this.contractsMainForm.noRemarks?.value
         input.projectDescription =  this.contractsMainForm.projectDescription?.value;
@@ -1351,10 +1351,10 @@ export class WorkflowContractsComponent extends AppComponentBase implements OnIn
         input.mainData.marginId = this.contractsMainForm.margin?.value?.id;
         input.mainData.discountId = this.contractsMainForm.discounts?.value?.id;
 
-        input.consultantData = new ConsultantContractsDataDto();
+        input.consultantData = new ConsultantContractsDataCommandDto();
         const consultantInput = this.contractsConsultantsDataForm.consultants.at(0).value;
         if (consultantInput) {
-            let consultantData = new ConsultantContractsDataDto();
+            let consultantData = new ConsultantContractsDataCommandDto();
             consultantData.consultantPeriodId = consultantInput.consultantPeriodId;
             consultantData.employmentTypeId = consultantInput.consultantType?.id;
             consultantData.consultantId = consultantInput.consultantId;
