@@ -21,7 +21,7 @@
                 <ng-container matColumnDef="salesType">
                     <mat-header-cell *matHeaderCellDef mat-sort-header fxFlex="10%"> Sales Type </mat-header-cell>
                     <mat-cell *matCellDef="let row" fxFlex="10%">
-                        <span class="text-truncate-ellipsis" [matTooltip]="row?.salesTypeId?.name" matTooltipClass="white-tooltip">
+                        <span class="text-truncate-ellipsis" [matTooltip]="row?.salesTypeId?.name" matTooltipClass="white-tooltip" appShowIfTruncated>
                             {{row?.salesTypeId?.name}}
                         </span>
                     </mat-cell>
@@ -29,7 +29,7 @@
                 <ng-container matColumnDef="deliveryType">
                     <mat-header-cell *matHeaderCellDef mat-sort-header fxFlex="10%"> Delivery Type </mat-header-cell>
                     <mat-cell *matCellDef="let row" fxFlex="10%">
-                        <span class="text-truncate-ellipsis" matTooltipClass="white-tooltip" [matTooltip]="row?.deliveryTypeId?.name" matTooltipClass="white-tooltip">
+                        <span class="text-truncate-ellipsis" matTooltipClass="white-tooltip" [matTooltip]="row?.deliveryTypeId?.name" matTooltipClass="white-tooltip" appShowIfTruncated>
                             {{row?.deliveryTypeId?.name}}
                         </span>
                     </mat-cell>
@@ -37,7 +37,7 @@
                 <ng-container matColumnDef="dateStart">
                     <mat-header-cell *matHeaderCellDef mat-sort-header fxFlex="10%"> Start </mat-header-cell>
                     <mat-cell *matCellDef="let row" fxFlex="10%">
-                        <span class="text-truncate-ellipsis" [matTooltip]="row.startDate | momentFormat: 'DD.MM.YYYY'" matTooltipClass="white-tooltip">
+                        <span class="text-truncate-ellipsis" [matTooltip]="row.startDate | momentFormat: 'DD.MM.YYYY'" matTooltipClass="white-tooltip" appShowIfTruncated>
                             {{row.startDate | momentFormat: 'DD.MM.YYYY'}}
                         </span>
                     </mat-cell>
@@ -45,7 +45,7 @@
                 <ng-container matColumnDef="dateEnd">
                     <mat-header-cell *matHeaderCellDef mat-sort-header fxFlex="10%"> End </mat-header-cell>
                     <mat-cell *matCellDef="let row" fxFlex="10%">
-                        <span class="text-truncate-ellipsis" [matTooltip]="row?.endDate | momentFormat: 'DD.MM.YYYY'" matTooltipClass="white-tooltip">
+                        <span class="text-truncate-ellipsis" [matTooltip]="row?.endDate | momentFormat: 'DD.MM.YYYY'" matTooltipClass="white-tooltip" appShowIfTruncated>
                             {{row?.endDate | momentFormat: 'DD.MM.YYYY'}}
                         </span>
                     </mat-cell>
@@ -54,7 +54,7 @@
                     <mat-header-cell *matHeaderCellDef mat-sort-header fxFlex="10%"> Invoicing </mat-header-cell>
                     <mat-cell *matCellDef="let row" fxFlex="10%">
                         <span class="text-truncate-ellipsis flex-items-center" [matTooltip]="row?.invoicingReferencePerson?.firstName + ' ' + row?.invoicingReferencePerson?.lastName" matTooltipClass="white-tooltip">
-                            <img class="border-rounded-50 image-thumbnail-responsiveimage-thumbnail-small" [src]="employeeProfileUrl(row?.invoicingReferencePerson?.id)" />
+                            <img class="image-settings--dropdown" [src]="employeeProfileUrl(row?.invoicingReferencePerson?.id)" />
                         </span>
                     </mat-cell>
                 </ng-container>
@@ -69,7 +69,7 @@
                 <ng-container matColumnDef="status">
                     <mat-header-cell *matHeaderCellDef mat-sort-header fxFlex="10%"> Status </mat-header-cell>
                     <mat-cell *matCellDef="let row" fxFlex="10%">
-                        <span class="text-truncate-ellipsis flex-items-center" [matTooltip]="row?.workflowStatusName" matTooltipClass="white-tooltip">
+                        <span class="text-truncate-ellipsis flex-items-center" [matTooltip]="row?.workflowStatusName" matTooltipClass="white-tooltip" appShowIfTruncated>
                             <mat-icon class="workflow-track-status u-mr--8" [ngClass]="row?.workflowStatus">fiber_manual_record</mat-icon>
                             {{row?.workflowStatusName}}
                         </span>

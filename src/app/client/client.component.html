@@ -30,10 +30,11 @@
                                         <mat-checkbox [checked]="manager.selected"
                                             *ngIf="manager.id !== 'no-data'"
                                             color="primary"
+                                            class="green-checkbox"
                                             (change)="toggleSelection(manager,selectedAccountManagers)"
                                             (click)="$event.stopPropagation()">
                                             <div fxLayout="row" fxLayoutAlign="start center" class="u-w--100">
-                                                <img class="border-rounded-50 image-settings--dropdown u-mr--10" [src]="employeeProfileUrl(manager.externalId!)">
+                                                <img class="border-rounded-50 image-settings--dropdown u-ml--8 u-mr--16" [src]="employeeProfileUrl(manager.externalId!)">
                                                 <span>{{ manager.name }}</span>
                                             </div>
                                         </mat-checkbox>
@@ -58,10 +59,11 @@
                                             <mat-checkbox [checked]="manager.selected"
                                                 *ngIf="manager.id !== 'no-data'"
                                                 color="primary"
+                                                class="green-checkbox"
                                                 (change)="toggleSelection(manager,selectedAccountManagers)"
                                                 (click)="$event.stopPropagation()">
                                                 <div fxLayout="row" fxLayoutAlign="start center" class="u-w--100">
-                                                    <img class="border-rounded-50 image-settings--dropdown u-mr--10" [src]="employeeProfileUrl(manager.externalId!)">
+                                                    <img class="border-rounded-50 image-settings--dropdown u-ml--8 u-mr--16" [src]="employeeProfileUrl(manager.externalId!)">
                                                     <span>{{ manager.name }}</span>
                                                 </div>
                                             </mat-checkbox>
@@ -71,7 +73,6 @@
                                         </div>
                                     </mat-option>
                                 </ng-container>
-
                             </mat-autocomplete>
                         </div>
                     </mat-menu>
@@ -112,11 +113,12 @@
                                             <mat-checkbox [checked]="country.selected"
                                                 *ngIf="country.id !== 'no-data'"
                                                 color="primary"
+                                                class="green-checkbox"
                                                 (change)="toggleSelection(country,selectedCountries)"
                                                 (click)="$event.stopPropagation()">
-                                                <span class="country-flag fi fi-{{country.code | lowercase }} fis border-rounded-50 u-mr--16" *ngIf="country.id !== 0"></span>
+                                                <span class="country-flag fi fi-{{country.code | lowercase }} fis border-rounded-50 u-ml--8 u-mr--16" *ngIf="country.id !== 0"></span>
                                                 <!-- <ng-template #unkownCountry> -->
-                                                    <mat-icon *ngIf="country.id === 0"  svgIcon="Country-filter-flag"></mat-icon>
+                                                    <mat-icon *ngIf="country.id === 0" svgIcon="Country-filter-flag" class="u-ml--8"></mat-icon>
                                                 <!-- </ng-template> -->
                                                 <span>{{ country.name }}</span>
                                             </mat-checkbox>
@@ -135,10 +137,11 @@
                                             <mat-checkbox [checked]="country.selected"
                                                 *ngIf="country.id !== 'no-data'"
                                                 color="primary"
+                                                class="green-checkbox"
                                                 (change)="toggleSelection(country,selectedCountries)"
                                                 (click)="$event.stopPropagation()">
-                                                <span class="country-flag fi fi-{{country.code | lowercase }} fis border-rounded-50 u-mr--16" *ngIf="country.id !== 0"></span>
-                                                <mat-icon *ngIf="country.id === 0" svgIcon="Country-filter-flag"></mat-icon>
+                                                <span class="country-flag fi fi-{{country.code | lowercase }} fis border-rounded-50 u-ml--8 u-mr--16" *ngIf="country.id !== 0"></span>
+                                                <mat-icon *ngIf="country.id === 0" svgIcon="Country-filter-flag" class="u-ml--8"></mat-icon>
                                                 <span>{{ country.name }}</span>
                                             </mat-checkbox>
                                             <span *ngIf="country.id === 'no-data'"
@@ -191,7 +194,7 @@
                 <ng-container matColumnDef="name">
                     <mat-header-cell *matHeaderCellDef mat-sort-header fxFlex="25%"> Client </mat-header-cell>
                     <mat-cell *matCellDef="let row" fxFlex="25%">
-                        <span class="text-truncate-ellipsis text-bold-800" [matTooltip]="row.name" matTooltipClass="white-tooltip">
+                        <span class="text-truncate-ellipsis text-bold-800" [matTooltip]="row.name" matTooltipClass="white-tooltip" appShowIfTruncated>
                             {{row.name}}
                         </span>
                     </mat-cell>
@@ -199,7 +202,7 @@
                 <ng-container matColumnDef="clientAddress_Country_Name">
                     <mat-header-cell *matHeaderCellDef mat-sort-header fxFlex="10%"> Country </mat-header-cell>
                     <mat-cell *matCellDef="let row" fxFlex="10%">
-                        <span class="text-truncate-ellipsis text-bold" [matTooltip]="row.clientAddress_Country_Name" matTooltipClass="white-tooltip">
+                        <span class="text-truncate-ellipsis text-bold" [matTooltip]="row.clientAddress_Country_Name" matTooltipClass="white-tooltip" appShowIfTruncated>
                             <span class="country-flag--grid fi fi-{{row.clientAddress_Country_Code | lowercase }}"></span>
                             <span>
                                 {{row.clientAddress_Country_Code}}
@@ -210,7 +213,7 @@
                 <ng-container matColumnDef="clientAddress_City">
                     <mat-header-cell *matHeaderCellDef mat-sort-header fxFlex="15%"> City </mat-header-cell>
                     <mat-cell *matCellDef="let row" fxFlex="15%">
-                        <span class="text-truncate-ellipsis" [matTooltip]="row.clientAddress_PostCode + ' ' + row.clientAddress_City" matTooltipClass="white-tooltip">
+                        <span class="text-truncate-ellipsis" [matTooltip]="row.clientAddress_PostCode + ' ' + row.clientAddress_City" matTooltipClass="white-tooltip" appShowIfTruncated>
                             {{row.clientAddress_PostCode + ' ' + row.clientAddress_City}}
                         </span>
                     </mat-cell>
@@ -218,7 +221,7 @@
                 <ng-container matColumnDef="clientAddress_Address">
                     <mat-header-cell *matHeaderCellDef mat-sort-header fxFlex="15%"> Address </mat-header-cell>
                     <mat-cell *matCellDef="let row" fxFlex="15%">
-                        <span class="text-truncate-ellipsis" [matTooltip]="row.clientAddress_Address" matTooltipClass="white-tooltip">
+                        <span class="text-truncate-ellipsis" [matTooltip]="row.clientAddress_Address" matTooltipClass="white-tooltip" appShowIfTruncated>
                             {{row.clientAddress_Address}}
                         </span>
                     </mat-cell>
@@ -247,7 +250,7 @@
                 <ng-container matColumnDef="owner_Name">
                     <mat-header-cell *matHeaderCellDef mat-sort-header fxFlex="10%"> Account manager </mat-header-cell>
                     <mat-cell *matCellDef="let row" fxFlex="10%">
-                        <span class="text-truncate-ellipsis" [matTooltip]="row.owner_Name" matTooltipClass="white-tooltip">
+                        <span class="text-truncate-ellipsis" [matTooltip]="row.owner_Name" matTooltipClass="white-tooltip" appShowIfTruncated>
                             {{row.owner_Name ? row.owner_Name : '-' }}
                             <!-- <img class="manager-search--photo" src="../../../../assets/common/images/no-img.svg" [alt]="row?.owner?.name" /> FIXME: uncomment when we will have externalId  -->
                         </span>

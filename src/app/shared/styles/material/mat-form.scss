@@ -75,7 +75,7 @@
 .client-list--filter-manager-dropdown,
 .client-list--filter-country-dropdown,
 .workflow-list--filter-manager-dropdown {
-    min-width: 234px;
+    min-width: 300px;
     &.mat-form-field-appearance-fill {
         &.textarea-input {
             .mat-form-field-flex {
@@ -93,7 +93,7 @@
             border-radius: unset;
             height: 40px;
             margin-top: 0 !important;
-            padding: 0.8em 0.1em 0.5em 0.1em !important;
+            padding: 0.8em 0 !important;
 
             font-size: 14px;
             .mat-input-element {
@@ -125,7 +125,7 @@
         }
 
         .mat-form-field-flex>.mat-form-field-infix {
-            padding: 0.2em 0.2em 0.2em !important;
+            padding: 0.2em 10px !important;
             width: auto;
             border: 0 !important;
         }
