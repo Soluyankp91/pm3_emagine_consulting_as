@@ -36,6 +36,9 @@ export class ClientRatesAndFeesComponent implements OnInit, OnDestroy {
     feeIsEditing = false;
     rateIsEditing = false;
 
+    feeIsSaving = false;
+    rateIsSaving = false;
+
     private _unsubscribe = new Subject();
     constructor(
         private _fb: FormBuilder,
@@ -208,6 +211,7 @@ export class ClientRatesAndFeesComponent implements OnInit, OnDestroy {
     }
 
     saveOrUpdateSpecialRate(index: number) {
+        this.rateIsSaving = true;
         const clientRate = this.specialRates.at(index).value;
         let input = new AddClientSpecialRateDto();
         input.internalName = clientRate.rateName;
@@ -227,6 +231,7 @@ export class ClientRatesAndFeesComponent implements OnInit, OnDestroy {
 
                 }))
                 .subscribe(result => {
+                    this.rateIsSaving = false;
                     this.rateIsEditing = false;
                     this.getClientRates();
                 });
@@ -329,12 +334,14 @@ export class ClientRatesAndFeesComponent implements OnInit, OnDestroy {
         input.consultantRate = clientFee.consultantRate;
         input.consultantCurrencyId = clientFee.consultantRateCurrency?.id;
         input.isHidden = clientFee.hidden ?? false;
+        this.feeIsSaving = true;
         if (clientFee.id === null || clientFee.id === undefined) {
             this._clientService.specialFeesPost(this.clientId, input)
                 .pipe(finalize(() => {
 
                 }))
                 .subscribe(result => {
+                    this.feeIsSaving = false;
                     this.feeIsEditing = false;
                     this.getClientFees();
                 });
@@ -346,6 +353,7 @@ export class ClientRatesAndFeesComponent implements OnInit, OnDestroy {
 
                 }))
                 .subscribe(result => {
+                    this.feeIsSaving = false;
                     this.feeIsEditing = false;
                     this.getClientFees();
                 });

@@ -39,10 +39,10 @@
             }
         }
         &--list {
-            height: 60px;
+            height: 50px;
+            border: 1px solid $sand-color;
             padding: 0 8px;
-            background-color: #fff;
-            border: solid 1px #e7e3e8;
+            background-color: $white-color;
 
             &-item {
                 font-family: "Open Sans", sans-serif;
@@ -68,7 +68,7 @@
         &--consultants,
         &--summary {
 
-            border-bottom: 1px solid #E7E3E8;
+            border-bottom: 1px solid $sand-color;
             .workflow-darkblue--text {
                 // margin-bottom: 8px !important;
                 font-weight: bold;

@@ -11,7 +11,7 @@
                     [matTooltip]="mapListByProperty(selectedAccountManagers, 'name')"
                     matTooltipClass="white-tooltip"
                     (click)="openManagersMenu($event)">
-                    <img *ngIf="selectedAccountManagers?.length === 1" class="border-rounded-50 image-thumbnail-small" [src]="employeeProfileUrl(selectedAccountManagers[0]?.externalId!)" />
+                    <img *ngIf="selectedAccountManagers?.length === 1" class="border-rounded-50 image-thumbnail-small" [src]="employeeProfileUrl(selectedAccountManagers[0].externalId!)" />
                     <img *ngIf="selectedAccountManagers?.length === 0" src="../../../assets/common/images/no-img.svg">
                     <div *ngIf="selectedAccountManagers?.length && selectedAccountManagers.length > 1" class="client-list--filter__badge">
                         {{selectedAccountManagers.length}}
@@ -88,7 +88,7 @@
                         {{selectedCountries.length}}
                     </span>
                     <ng-template #singleCountry>
-                        <span class="country-flag--big fi fi-{{selectedCountries[0]?.code | lowercase }} fis border-rounded-50" *ngIf="selectedCountries.length > 0; else iconCountry"></span>
+                        <span class="country-flag--big fi fi-{{selectedCountries[0].code | lowercase }} fis border-rounded-50" *ngIf="selectedCountries.length > 0; else iconCountry"></span>
                     </ng-template>
                     <ng-template #iconCountry>
                         <mat-icon class="client-list--filter-country u-mr--16" svgIcon="Country-filter-flag"></mat-icon>

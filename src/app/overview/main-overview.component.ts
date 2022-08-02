@@ -15,7 +15,7 @@ import { Router } from '@angular/router';
 import { AppComponentBase } from 'src/shared/app-component-base';
 import { MatAutocompleteTrigger } from '@angular/material/autocomplete';
 
-const MainOverviewGridOptionsKey = 'MainOverviewGridFILTERS.1.0.1.';
+const MainOverviewGridOptionsKey = 'MainOverviewGridFILTERS.1.0.2.';
 
 @Component({
     selector: 'app-main-overview',
@@ -65,7 +65,6 @@ export class MainOverviewComponent extends AppComponentBase implements OnInit {
     filteredMainOverviewStatuses: SelectableStatusesDto[] = [];
     overviewViewTypes: { [key: string]: string };
     cutOffDate = moment();
-    userSelectedStatuses: any;
 
     isInitial = true;
 
@@ -308,10 +307,10 @@ export class MainOverviewComponent extends AppComponentBase implements OnInit {
 
     detectColorBasedOnStatus(workflowStatus: MainOverviewStatus) {
         switch (workflowStatus) {
-            case MainOverviewStatus.ExtensionExpected:
-            case MainOverviewStatus.ExtensionInNegotiation:
+            case MainOverviewStatus.ExpectedExtension:
+            case MainOverviewStatus.InNegotiation:
             case MainOverviewStatus.ExpectedToTerminate:
-            case MainOverviewStatus.RequiresAttention:
+            case MainOverviewStatus.AttentionRequired:
                 return 'rgb(250, 173, 25)';
             default:
                 return 'rgb(23, 162, 151)';
@@ -327,7 +326,7 @@ export class MainOverviewComponent extends AppComponentBase implements OnInit {
         let salesType = this.salesTypeControl.value ?? undefined;
         let deliveryType = this.deliveryTypesControl.value ?? undefined;
         let margins = this.marginsControl.value ?? undefined;
-        let mainOverviewStatus = this.filteredMainOverviewStatuses.find(x => x.selected);
+        let mainOverviewStatuses = this.filteredMainOverviewStatuses.filter(x => x.selected).map(x => x.id);
         if (date) {
             this.cutOffDate = date;
         }
@@ -344,7 +343,7 @@ export class MainOverviewComponent extends AppComponentBase implements OnInit {
                     this.workflowsPageNumber = 1;
                 }
                 this.workflowChartSubscription = this._mainOverviewService.workflows(
-                    mainOverviewStatus?.id,
+                    mainOverviewStatuses,
                     ownerIds,
                     invoicingEntity,
                     paymentEntity,
@@ -411,7 +410,7 @@ export class MainOverviewComponent extends AppComponentBase implements OnInit {
                     this.consultantsPageNumber = 1;
                 }
                 this.consultantChartSubscription = this._mainOverviewService.consultants(
-                    mainOverviewStatus?.id,
+                    mainOverviewStatuses,
                     ownerIds,
                     invoicingEntity,
                     paymentEntity,
@@ -567,6 +566,7 @@ export class MainOverviewComponent extends AppComponentBase implements OnInit {
 
     getMainOverviewStatuses() {
         this._mainOverviewService.statuses().subscribe(result => {
+            console.log(result);
             this.filteredMainOverviewStatuses = result.map(x => {
                 return new SelectableStatusesDto({
                     id: x.id!,
@@ -577,16 +577,10 @@ export class MainOverviewComponent extends AppComponentBase implements OnInit {
                     flag: this.detectIcon(x.id!)
                 })
             });
-            this.userSelectedStatuses = result.filter(x => x.canBeSetByUser);
         })
     }
 
     changeOverviewStatus(status: SelectableStatusesDto) {
-        this.filteredMainOverviewStatuses.forEach(x => {
-            if (x.id !== status.id) {
-                x.selected = false;
-            }
-        })
         status.selected = !status.selected;
         this.changeViewType(true);
     }
@@ -685,7 +679,7 @@ export class MainOverviewComponent extends AppComponentBase implements OnInit {
             deliveryTypes: this.deliveryTypesControl.value ? this.deliveryTypesControl.value : undefined,
             searchFilter: this.workflowFilter.value ? this.workflowFilter.value : '',
             margins: this.marginsControl.value ?? undefined,
-            mainOverviewStatus: this.filteredMainOverviewStatuses.find(x => x.selected),
+            mainOverviewStatus: this.filteredMainOverviewStatuses.filter(x => x.selected),
             cutOffDate: this.cutOffDate,
             overviewViewTypeControl: this.overviewViewTypeControl.value,
             viewType: this.viewType.value
@@ -709,9 +703,13 @@ export class MainOverviewComponent extends AppComponentBase implements OnInit {
             this.invoicingEntityControl.setValue(filters?.invoicingEntity, {emitEvent: false});
             this.workflowFilter.setValue(filters?.searchFilter, {emitEvent: false});
             this.marginsControl.setValue(filters?.margins, {emitEvent: false});
-            const index = this.filteredMainOverviewStatuses.findIndex(x => x.id === filters?.mainOverviewStatus?.id);
-            if (index > -1) {
-                this.filteredMainOverviewStatuses[index].selected = true;
+            if (filters?.mainOverviewStatus?.length) {
+                filters.mainOverviewStatus.forEach((status: SelectableStatusesDto) => {
+                    const index = this.filteredMainOverviewStatuses.findIndex(x => x.id === status?.id);
+                    if (index > -1) {
+                        this.filteredMainOverviewStatuses[index].selected = true;
+                    }
+                });
             }
             this.cutOffDate = filters?.cutOffDate;
             this.overviewViewTypeControl.setValue(filters?.overviewViewTypeControl, {emitEvent: false});
