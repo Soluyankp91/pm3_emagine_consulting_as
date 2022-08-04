@@ -800,7 +800,7 @@
                                             <div fxLayout="column" fxFlex="40%">
                                                 <h3 class="workflow-step-readonly--gray-header">Client address</h3>
                                                 <span class="workflow-step-readonly--blue-text-bold">
-                                                    {{item.value.consultantWorkplaceClientAddress?.countryName}} | {{item.value.consultantWorkplaceClientAddress?.address}} | {{item.value.consultantWorkplaceClientAddress?.address2}} | {{item.value.consultantWorkplaceClientAddress?.postCode}}
+                                                    {{item.value.consultantWorkplaceClientAddress?.countryName}} | {{item.value.consultantWorkplaceClientAddress?.city}} | {{item.value.consultantWorkplaceClientAddress?.address}} | {{item.value.consultantWorkplaceClientAddress?.address2}} | {{item.value.consultantWorkplaceClientAddress?.postCode}}
                                                 </span>
                                             </div>
                                             <div fxLayout="column" fxFlex="30%" *ngIf="item?.value?.consultantWorkplacePercentageOnSite">
@@ -1464,7 +1464,7 @@
                                                 <mat-option *ngFor="let client of filteredDirectClients" [value]="client" [ngClass]="{ 'no-data': client.id === 'no-data' }">
                                                     <div class="multilineDropdown-option--column">
                                                         <b>{{ client.clientName }}</b>
-                                                        <span *ngIf="client.id !== 'no-data'"> #{{client.clientId}} | {{client.address}} | {{client.address2}} | {{client.postCode}}</span>
+                                                        <span *ngIf="client.id !== 'no-data'"> #{{client.clientId}} | {{client.city}} | {{client.address}} | {{client.address2}} | {{client.postCode}}</span>
                                                     </div>
                                                 </mat-option>
                                             </ng-container>
@@ -1481,7 +1481,7 @@
                                             <mat-option *ngFor="let client of filteredEndClients" [value]="client" [ngClass]="{ 'no-data': client.id === 'no-data' }">
                                                 <div class="multilineDropdown-option--column">
                                                     <b>{{ client.clientName }}</b>
-                                                    <span *ngIf="client.id !== 'no-data'">#{{client.clientId}} | {{client.address}} | {{client.address2}} | {{client.postCode}}</span>
+                                                    <span *ngIf="client.id !== 'no-data'">#{{client.clientId}} | {{client.city}} | {{client.address}} | {{client.address2}} | {{client.postCode}}</span>
                                                 </div>
                                             </mat-option>
                                         </ng-container>
@@ -2524,7 +2524,7 @@
                                     <h3 class="workflow-gray--header u-mb--10">Workplace</h3>
                                     <div fxLayout="column" fxLayoutAlign="start start" class="u-w--100">
                                         <div fxLayout="row" fxLayoutAlign="start start" class="u-w--100 u-mb--20">
-                                            <mat-checkbox color="accent" formControlName="consultantIsOnsiteWorkplace" name="consultantIsOnsiteWorkplace" class="black-checkbox u-mr--16 u-mt--10" fxFlex="0 0 calc(16.5% - 8px)">
+                                            <mat-checkbox color="accent" [required]="!consultant.value.consultantIsEmagineOfficeWorkplace && !consultant.value.consultantIsRemoteWorkplace" formControlName="consultantIsOnsiteWorkplace" name="consultantIsOnsiteWorkplace" class="black-checkbox u-mr--16 u-mt--10" fxFlex="0 0 calc(16.5% - 8px)">
                                                 Onsite
                                             </mat-checkbox>
                                             <ng-container *ngIf="consultantsForm.consultantData.at(consultantIndex).get('consultantIsOnsiteWorkplace')?.value">
@@ -2536,13 +2536,13 @@
                                                             <mat-option *ngFor="let client of filteredConsultantClientAddresses" [value]="client" [ngClass]="{ 'no-data': client.id === 'no-data' }">
                                                                 <div class="multilineDropdown-option--column">
                                                                     <b>{{ client.clientName }}</b>
-                                                                    <span *ngIf="client.id !== 'no-data'"> #{{client.clientId}} | {{client.address}} | {{client.address2}} | {{client.postCode}}</span>
+                                                                    <span *ngIf="client.id !== 'no-data'"> #{{client.clientId}} | {{client.city}} | {{client.address}} | {{client.address2}} | {{client.postCode}}</span>
                                                                 </div>
                                                             </mat-option>
                                                         </mat-autocomplete>
                                                     </mat-form-field>
                                                     <span class="workflow-step-readonly--blue-text-bold" *ngIf="consultant.value.consultantWorkplaceClientAddress?.clientId">
-                                                        {{consultant.value.consultantWorkplaceClientAddress?.countryName}} | {{consultant.value.consultantWorkplaceClientAddress?.address}} | {{consultant.value.consultantWorkplaceClientAddress?.address2}} | {{consultant.value.consultantWorkplaceClientAddress?.postCode}}
+                                                        #{{consultant.value.consultantWorkplaceClientAddress?.clientId}} | {{consultant.value.consultantWorkplaceClientAddress?.countryName}} | {{consultant.value.consultantWorkplaceClientAddress?.city}} | {{consultant.value.consultantWorkplaceClientAddress?.address}} | {{consultant.value.consultantWorkplaceClientAddress?.address2}} | {{consultant.value.consultantWorkplaceClientAddress?.postCode}}
                                                     </span>
                                                 </div>
 
@@ -2553,7 +2553,7 @@
                                             </ng-container>
                                         </div>
                                         <div fxLayout="row" fxLayoutAlign="start center" class="u-w--100 u-mb--20">
-                                            <mat-checkbox color="accent" formControlName="consultantIsEmagineOfficeWorkplace" name="consultantIsEmagineOfficeWorkplace" class="black-checkbox u-mr--16" fxFlex="0 0 calc(16.5% - 8px)">
+                                            <mat-checkbox color="accent" [required]="!consultant.value.consultantIsOnsiteWorkplace && !consultant.value.consultantIsRemoteWorkplace" formControlName="consultantIsEmagineOfficeWorkplace" name="consultantIsEmagineOfficeWorkplace" class="black-checkbox u-mr--16" fxFlex="0 0 calc(16.5% - 8px)">
                                                 PDC Office
                                             </mat-checkbox>
 
@@ -2567,7 +2567,7 @@
                                             </mat-form-field>
                                         </div>
                                         <div fxLayout="row" fxLayoutAlign="start center" class="u-w--100 u-mb--20">
-                                            <mat-checkbox color="accent" formControlName="consultantIsRemoteWorkplace" name="consultantIsRemoteWorkplace" class="black-checkbox u-mr--16" fxFlex="0 0 calc(16.5% - 8px)">
+                                            <mat-checkbox color="accent" [required]="!consultant.value.consultantIsOnsiteWorkplace && !consultant.value.consultantIsEmagineOfficeWorkplace" formControlName="consultantIsRemoteWorkplace" name="consultantIsRemoteWorkplace" class="black-checkbox u-mr--16" fxFlex="0 0 calc(16.5% - 8px)">
                                                 Remote
                                             </mat-checkbox>
                                             <mat-form-field appearance="outline" class="u-w--100" fxFlex="0 0 calc(33% + 16px)" *ngIf="consultantsForm.consultantData.at(consultantIndex).get('consultantIsRemoteWorkplace')?.value">
@@ -2580,6 +2580,9 @@
                                                 </mat-autocomplete>
                                             </mat-form-field>
                                         </div>
+                                        <!-- <mat-error *ngIf="!consultant.value.consultantIsOnsiteWorkplace && !consultant.value.consultantIsEmagineOfficeWorkplace && !consultant.value.consultantIsRemoteWorkplace">
+                                            At least one Workplace is required
+                                        </mat-error> -->
                                     </div>
 
                                     <h3 class="workflow-gray--header u-mb--10">Expected Workload</h3>
