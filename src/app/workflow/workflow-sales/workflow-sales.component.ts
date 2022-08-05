@@ -545,6 +545,7 @@ export class WorkflowSalesComponent extends AppComponentBase implements OnInit {
     }
 
     directClientSelected(event: MatAutocompleteSelectedEvent) {
+        this.salesClientDataForm.clientInvoicingRecipientIdValue?.setValue(event.option.value, {emitEvent: false});
         this.getRatesAndFees(event.option.value?.clientId);
     }
 
@@ -1843,7 +1844,7 @@ export class WorkflowSalesComponent extends AppComponentBase implements OnInit {
                     this.salesClientDataForm.clientInvoiceFrequency?.setValue(this.findItemById(this.invoiceFrequencies, result.salesClientData?.clientRate?.invoiceFrequencyId), {emitEVent: false});
                 }
                 if (this.salesClientDataForm.clientRateAndInvoicing?.value?.id === 2) { // Fixed
-                    this.salesClientDataForm.clientInvoiceFrequency?.setValue(this.findItemById(this.invoicingTimes, result.salesClientData?.clientRate?.invoicingTimeId), {emitEVent: false});
+                    this.salesClientDataForm.clientInvoiceTime?.setValue(this.findItemById(this.invoicingTimes, result.salesClientData?.clientRate?.invoicingTimeId), {emitEVent: false});
                 }
                 this.salesClientDataForm.clientInvoicingDate?.setValue(result.salesClientData?.clientRate?.manualDate, {emitEVent: false});
 

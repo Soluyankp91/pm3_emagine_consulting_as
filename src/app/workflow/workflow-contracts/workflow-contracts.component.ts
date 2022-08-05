@@ -404,8 +404,8 @@ export class WorkflowContractsComponent extends AppComponentBase implements OnIn
 
     updateConsultantStepAnchors() {
         let consultantNames = this.contractsConsultantsDataForm.consultants.value.map((item: any) => {
-            if (item.employmentType?.id === 10 || item.employmentType?.id === 11) {
-                return item.consultantNameOnly;
+            if (item.consultantType?.id === 10 || item.consultantType?.id === 11) {
+                return item.nameOnly;
             } else {
                 return item.consultant.name;
             }
@@ -599,6 +599,8 @@ export class WorkflowContractsComponent extends AppComponentBase implements OnIn
             consultantId: new FormControl(consultant.consultantId),
             consultantPeriodId: new FormControl(consultant?.consultantPeriodId),
             consultant: new FormControl(consultant.consultant),
+            consultantType: new FormControl(this.findItemById(this.employmentTypes, consultant?.employmentTypeId)),
+            nameOnly: new FormControl(consultant.nameOnly),
             internalLegalContractDoneStatusId: new FormControl(consultant.internalLegalContractDoneStatusId),
             consultantLegalContractDoneStatusId: new FormControl(consultant.consultantLegalContractDoneStatusId),
             pdcPaymentEntityId: new FormControl(consultant.pdcPaymentEntityId)

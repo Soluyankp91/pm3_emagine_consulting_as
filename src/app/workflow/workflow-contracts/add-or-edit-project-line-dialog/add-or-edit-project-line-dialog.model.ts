@@ -4,7 +4,7 @@ export class ProjectLineForm extends FormGroup {
     constructor() {
         super({
             id: new FormControl(null),
-            projectName: new FormControl(null, Validators.maxLength(50)),
+            projectName: new FormControl(null, Validators.maxLength(250)),
             startDate: new FormControl(null),
             endDate: new FormControl(null),
             noEndDate: new FormControl(false),
