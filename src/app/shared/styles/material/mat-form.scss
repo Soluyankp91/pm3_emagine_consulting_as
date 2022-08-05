@@ -241,14 +241,24 @@
     .mat-form-field-outline-gap,
     .mat-form-field-outline-start,
     .mat-form-field-outline-end {
-        border-width: 2.5px !important;
+        border-width: 2px !important;
         // @media screen and (max-width: 1440px) {
         //     border-width: 1.3px !important;
         // }
     }
-
+    .mat-form-field-outline {
+        color: rgba(182, 180, 178, 0.77) !important;
+    }
     .mat-form-field-outline-thick {
         color: rgba(182, 180, 178, 0.77) !important;
+    }
+    &:hover {
+        .mat-form-field-outline-thick {
+            color: rgb(182, 180, 178) !important;
+        }
+        .mat-form-field-outline {
+            color: rgb(182, 180, 178) !important;
+        }
     }
     .mat-form-field-label {
         color: $medium-grey-color !important;
