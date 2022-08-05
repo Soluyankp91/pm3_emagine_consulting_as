@@ -120,7 +120,7 @@
                 <h2>Select consultants to be extended</h2>
                 <div fxLayout="column" fxLayoutAlign="center start" fxLayoutGap="10px" class="u-mt--10" formArrayName="consultants">
                     <div fxLayout="row" fxLayoutAlign="start center" class="u-w--100" *ngFor="let consultant of extendWorkflowForm.consultants.controls; index as i" [formGroupName]="i">
-                        <mat-checkbox color="accent" name="extendConsutlant" formControlName="extendConsutlant" class="green-checkbox u-mr--16">
+                        <mat-checkbox color="accent" name="extendConsultant" formControlName="extendConsultant" class="green-checkbox u-mr--16">
                             <div fxLayout="row" fxLayoutAlign="start center" class="text-truncate-ellipsis u-mr--16">
                                 <img class="border-rounded-50 u-mr--16 image-thumbnail" [src]="consultantProfileUrl(consultant.value?.externalId)">
                                 <p class="workflow-change-dialog--consultant-name text-truncate-ellipsis" fxFlex="75%">
