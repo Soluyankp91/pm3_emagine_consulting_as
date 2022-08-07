@@ -570,7 +570,8 @@ export class WorkflowDetailsComponent extends AppComponentBase implements OnInit
     }
 
     navigateToRequest(requestUrl: string) {
-        window.open(`${environment.sourcingUrl}/app/request-hub/${requestUrl}/board`, '_blank');
+        // window.open(`${environment.sourcingUrl}/app/request-hub/${requestUrl}/board`, '_blank');
+        window.open(requestUrl, '_blank');
     }
 
 }
