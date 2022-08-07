@@ -6,7 +6,7 @@ import { ActivatedRoute } from '@angular/router';
 import { NgScrollbar } from 'ngx-scrollbar';
 import { Subject } from 'rxjs';
 import { finalize, takeUntil } from 'rxjs/operators';
-import { AvailableConsultantDto, ChangeClientPeriodDto, ClientPeriodDto, ClientPeriodServiceProxy, ConsultantPeriodAddDto, EnumEntityTypeDto, ExtendClientPeriodDto, NewContractRequiredConsultantPeriodDto, StepType, WorkflowDto, WorkflowProcessType, WorkflowServiceProxy } from 'src/shared/service-proxies/service-proxies';
+import { AvailableConsultantDto, ChangeClientPeriodDto, ClientPeriodDto, ClientPeriodServiceProxy, ConsultantNameWithRequestUrl, ConsultantPeriodAddDto, EnumEntityTypeDto, ExtendClientPeriodDto, NewContractRequiredConsultantPeriodDto, StepType, WorkflowDto, WorkflowProcessType, WorkflowServiceProxy } from 'src/shared/service-proxies/service-proxies';
 import { WorkflowDataService } from '../workflow-data.service';
 import { WorkflowSalesComponent } from '../workflow-sales/workflow-sales.component';
 import { WorkflowProgressStatus, WorkflowTopSections, WorkflowSteps, WorkflowDiallogAction } from '../workflow.model';
@@ -57,6 +57,7 @@ export class WorkflowDetailsComponent extends AppComponentBase implements OnInit
     workflowResponse: WorkflowDto;
     clientPeriods: ClientPeriodDto[] | undefined = [];
     workflowClient: string | undefined;
+    workflowConsultants: ConsultantNameWithRequestUrl[] = [];
 
     workflowClientPeriodTypes: EnumEntityTypeDto[] = [];
     workflowConsultantPeriodTypes: EnumEntityTypeDto[] = [];
@@ -268,6 +269,8 @@ export class WorkflowDetailsComponent extends AppComponentBase implements OnInit
             .subscribe(result => {
                 this.clientPeriods = result.clientPeriods;
                 this.workflowClient = result.clientName;
+                this.workflowConsultants = result.consultantNamesWithRequestUrls!;
+                this.workflowId = result.workflowId!;
                 if (value) {
                     this.selectedIndex = 1;
                     this.topMenuTabs.realignInkBar();
@@ -564,6 +567,11 @@ export class WorkflowDetailsComponent extends AppComponentBase implements OnInit
         dialogRef.componentInstance.onRejected.subscribe(() => {
             // rejected
         });
+    }
+
+    navigateToRequest(requestUrl: string) {
+        // window.open(`${environment.sourcingUrl}/app/request-hub/${requestUrl}/board`, '_blank');
+        window.open(requestUrl, '_blank');
     }
 
 }
