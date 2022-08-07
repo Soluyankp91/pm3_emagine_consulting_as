@@ -48,11 +48,10 @@
                 margin-right: 5px;
             }
         }
+        &--request {
+            color: $light-grey-color;
+        }
     }
-    // &-content {
-    //     background-color: $sand-25-color;
-    //     // position: sticky;
-    // }
 
     &-notes {
         height: 100vh;
@@ -64,40 +63,11 @@
         box-shadow: 0px 0px 20px rgba(26, 35, 126, 0.15);
         padding: 32px 16px;
         background-color: $white-color;
-        &--header {
-
-        }
-        &--content {
-            // background: rgba(255, 255, 255, 0.77);
-            // border: 1.3px solid rgba(182, 180, 178, 0.77);
-            // border-radius: 3px;
-        }
     }
 
     &-form {
-        // &--sales,
-        // &--consultants,
-        // &--summary {
-        //     h2:not(.workflow-green--header) {
-        //         margin-bottom: 8px !important;
-        //         font-weight: bold;
-        //         font-size: 16px;
-        //         line-height: 16px;
-        //         color: rgba(56, 72, 83, 0.87);
-        //     }
-        // }
         &--panel {
             background: $sand-25-color;
-            // padding: 16px 75px;
-            // padding-bottom: 32px;
-            // height: calc(80vh - 50px);
-            // h2:not(.workflow-green--header) {
-            //     margin-bottom: 8px !important;
-            //     font-weight: bold;
-            //     font-size: 16px;
-            //     line-height: 16px;
-            //     color: rgba(56, 72, 83, 0.87);
-            // }
         }
     }
     &-content {
@@ -107,9 +77,6 @@
         flex-direction: column;
         flex-grow: 1;
         justify-content: space-between;
-        // height: 80vh;
-        // position: relative;
-        // overflow-y: hidden;
         &--expand {
             position: absolute;
             right: 0;

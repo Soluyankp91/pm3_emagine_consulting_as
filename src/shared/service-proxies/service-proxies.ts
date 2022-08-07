@@ -13551,6 +13551,46 @@ export interface IConsultantGanttRow {
     ganttRowItems?: GanttRowItem[] | undefined;
 }
 
+export class ConsultantNameWithRequestUrl implements IConsultantNameWithRequestUrl {
+    consultantName?: string | undefined;
+    requestUrl?: string | undefined;
+
+    constructor(data?: IConsultantNameWithRequestUrl) {
+        if (data) {
+            for (var property in data) {
+                if (data.hasOwnProperty(property))
+                    (<any>this)[property] = (<any>data)[property];
+            }
+        }
+    }
+
+    init(_data?: any) {
+        if (_data) {
+            this.consultantName = _data["consultantName"];
+            this.requestUrl = _data["requestUrl"];
+        }
+    }
+
+    static fromJS(data: any): ConsultantNameWithRequestUrl {
+        data = typeof data === 'object' ? data : {};
+        let result = new ConsultantNameWithRequestUrl();
+        result.init(data);
+        return result;
+    }
+
+    toJSON(data?: any) {
+        data = typeof data === 'object' ? data : {};
+        data["consultantName"] = this.consultantName;
+        data["requestUrl"] = this.requestUrl;
+        return data;
+    }
+}
+
+export interface IConsultantNameWithRequestUrl {
+    consultantName?: string | undefined;
+    requestUrl?: string | undefined;
+}
+
 export class ConsultantPeriodAddDto implements IConsultantPeriodAddDto {
     startDate?: moment.Moment;
     noEndDate?: boolean;
@@ -14031,6 +14071,7 @@ export class ConsultantSalesDataDto implements IConsultantSalesDataDto {
     employmentTypeId?: number | undefined;
     consultantPeriodId?: string | undefined;
     soldRequestConsultantId?: number | undefined;
+    requestId?: number | undefined;
     consultantId?: number | undefined;
     consultant?: ConsultantResultDto;
     nameOnly?: string | undefined;
@@ -14077,6 +14118,7 @@ export class ConsultantSalesDataDto implements IConsultantSalesDataDto {
             this.employmentTypeId = _data["employmentTypeId"];
             this.consultantPeriodId = _data["consultantPeriodId"];
             this.soldRequestConsultantId = _data["soldRequestConsultantId"];
+            this.requestId = _data["requestId"];
             this.consultantId = _data["consultantId"];
             this.consultant = _data["consultant"] ? ConsultantResultDto.fromJS(_data["consultant"]) : <any>undefined;
             this.nameOnly = _data["nameOnly"];
@@ -14131,6 +14173,7 @@ export class ConsultantSalesDataDto implements IConsultantSalesDataDto {
         data["employmentTypeId"] = this.employmentTypeId;
         data["consultantPeriodId"] = this.consultantPeriodId;
         data["soldRequestConsultantId"] = this.soldRequestConsultantId;
+        data["requestId"] = this.requestId;
         data["consultantId"] = this.consultantId;
         data["consultant"] = this.consultant ? this.consultant.toJSON() : <any>undefined;
         data["nameOnly"] = this.nameOnly;
@@ -14178,6 +14221,7 @@ export interface IConsultantSalesDataDto {
     employmentTypeId?: number | undefined;
     consultantPeriodId?: string | undefined;
     soldRequestConsultantId?: number | undefined;
+    requestId?: number | undefined;
     consultantId?: number | undefined;
     consultant?: ConsultantResultDto;
     nameOnly?: string | undefined;
@@ -14522,6 +14566,7 @@ export interface IConsultantTerminationSourcingDataQueryDto {
 export class ConsultantWithSourcingRequestResultDto implements IConsultantWithSourcingRequestResultDto {
     consultant?: ConsultantResultDto;
     sourcingRequestConsultantId?: number | undefined;
+    sourcingRequestId?: number | undefined;
     sourcingRequestConsultantHeadline?: string | undefined;
 
     constructor(data?: IConsultantWithSourcingRequestResultDto) {
@@ -14537,6 +14582,7 @@ export class ConsultantWithSourcingRequestResultDto implements IConsultantWithSo
         if (_data) {
             this.consultant = _data["consultant"] ? ConsultantResultDto.fromJS(_data["consultant"]) : <any>undefined;
             this.sourcingRequestConsultantId = _data["sourcingRequestConsultantId"];
+            this.sourcingRequestId = _data["sourcingRequestId"];
             this.sourcingRequestConsultantHeadline = _data["sourcingRequestConsultantHeadline"];
         }
     }
@@ -14552,6 +14598,7 @@ export class ConsultantWithSourcingRequestResultDto implements IConsultantWithSo
         data = typeof data === 'object' ? data : {};
         data["consultant"] = this.consultant ? this.consultant.toJSON() : <any>undefined;
         data["sourcingRequestConsultantId"] = this.sourcingRequestConsultantId;
+        data["sourcingRequestId"] = this.sourcingRequestId;
         data["sourcingRequestConsultantHeadline"] = this.sourcingRequestConsultantHeadline;
         return data;
     }
@@ -14560,6 +14607,7 @@ export class ConsultantWithSourcingRequestResultDto implements IConsultantWithSo
 export interface IConsultantWithSourcingRequestResultDto {
     consultant?: ConsultantResultDto;
     sourcingRequestConsultantId?: number | undefined;
+    sourcingRequestId?: number | undefined;
     sourcingRequestConsultantHeadline?: string | undefined;
 }
 
@@ -18121,6 +18169,7 @@ export class WorkflowDto implements IWorkflowDto {
     workflowId?: string;
     clientName?: string | undefined;
     clientPeriods?: ClientPeriodDto[] | undefined;
+    consultantNamesWithRequestUrls?: ConsultantNameWithRequestUrl[] | undefined;
 
     constructor(data?: IWorkflowDto) {
         if (data) {
@@ -18139,6 +18188,11 @@ export class WorkflowDto implements IWorkflowDto {
                 this.clientPeriods = [] as any;
                 for (let item of _data["clientPeriods"])
                     this.clientPeriods!.push(ClientPeriodDto.fromJS(item));
+            }
+            if (Array.isArray(_data["consultantNamesWithRequestUrls"])) {
+                this.consultantNamesWithRequestUrls = [] as any;
+                for (let item of _data["consultantNamesWithRequestUrls"])
+                    this.consultantNamesWithRequestUrls!.push(ConsultantNameWithRequestUrl.fromJS(item));
             }
         }
     }
@@ -18159,6 +18213,11 @@ export class WorkflowDto implements IWorkflowDto {
             for (let item of this.clientPeriods)
                 data["clientPeriods"].push(item.toJSON());
         }
+        if (Array.isArray(this.consultantNamesWithRequestUrls)) {
+            data["consultantNamesWithRequestUrls"] = [];
+            for (let item of this.consultantNamesWithRequestUrls)
+                data["consultantNamesWithRequestUrls"].push(item.toJSON());
+        }
         return data;
     }
 }
@@ -18167,6 +18226,7 @@ export interface IWorkflowDto {
     workflowId?: string;
     clientName?: string | undefined;
     clientPeriods?: ClientPeriodDto[] | undefined;
+    consultantNamesWithRequestUrls?: ConsultantNameWithRequestUrl[] | undefined;
 }
 
 export enum WorkflowElementType {

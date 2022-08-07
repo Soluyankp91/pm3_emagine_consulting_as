@@ -1082,6 +1082,7 @@ export class WorkflowSalesComponent extends AppComponentBase implements OnInit {
         let consultantDto = new ConsultantWithSourcingRequestResultDto();
         consultantDto.consultant = consultant?.consultant;
         consultantDto.sourcingRequestConsultantId = consultant?.soldRequestConsultantId;
+        consultantDto.sourcingRequestId = consultant?.requestId;
         const form = this._fb.group({
             employmentType: new FormControl(this.findItemById(this.employmentTypes, consultant?.employmentTypeId) ?? null),
             consultantName: new FormControl(consultantDto ?? null),
@@ -1657,6 +1658,8 @@ export class WorkflowSalesComponent extends AppComponentBase implements OnInit {
                     consultantInput.consultant.externalId = consultant.consultantName?.consultant?.externalId;
                     consultantInput.consultant.city = consultant.consultantName?.consultant?.city;
                     consultantInput.consultant.countryId = consultant.consultantName?.consultant?.contryId;
+
+                    consultantInput.requestId = consultant.consultantName?.consultant?.sourcingRequestId;
 
                     consultantInput.durationSameAsClientPeriod = consultant.consultantProjectDurationSameAsClient;
                     consultantInput.startDate = consultant.consultantProjectStartDate;
@@ -2403,7 +2406,7 @@ export class WorkflowSalesComponent extends AppComponentBase implements OnInit {
             consultantInput.consultant.externalId = consultant.consultantName?.consultant?.externalId;
             consultantInput.consultant.city = consultant.consultantName?.consultant?.city;
             consultantInput.consultant.countryId = consultant.consultantName?.consultant?.contryId;
-
+            consultantInput.requestId = consultant.consultantName?.consultant?.sourcingRequestId;
             consultantInput.durationSameAsClientPeriod = consultant.consultantProjectDurationSameAsClient;
             consultantInput.startDate = consultant.consultantProjectStartDate;
             consultantInput.noEndDate = consultant.consultantProjectNoEndDate;
