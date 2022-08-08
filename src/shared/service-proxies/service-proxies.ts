@@ -315,6 +315,112 @@ export class AccountServiceProxy {
 }
 
 @Injectable()
+export class SearchServiceServiceProxy {
+    private http: HttpClient;
+    private baseUrl: string;
+    protected jsonParseReviver: ((key: string, value: any) => any) | undefined = undefined;
+
+    constructor(@Inject(HttpClient) http: HttpClient, @Optional() @Inject(API_BASE_URL) baseUrl?: string) {
+        this.http = http;
+        this.baseUrl = baseUrl !== undefined && baseUrl !== null ? baseUrl : "";
+    }
+
+    /**
+     * @return Success
+     */
+    dropAndCreateWorkflowIndex(): Observable<void> {
+        let url_ = this.baseUrl + "/api/Admin/search-service/drop-and-create-workflow-index";
+        url_ = url_.replace(/[?&]$/, "");
+
+        let options_ : any = {
+            observe: "response",
+            responseType: "blob",
+            headers: new HttpHeaders({
+            })
+        };
+
+        return this.http.request("post", url_, options_).pipe(_observableMergeMap((response_ : any) => {
+            return this.processDropAndCreateWorkflowIndex(response_);
+        })).pipe(_observableCatch((response_: any) => {
+            if (response_ instanceof HttpResponseBase) {
+                try {
+                    return this.processDropAndCreateWorkflowIndex(response_ as any);
+                } catch (e) {
+                    return _observableThrow(e) as any as Observable<void>;
+                }
+            } else
+                return _observableThrow(response_) as any as Observable<void>;
+        }));
+    }
+
+    protected processDropAndCreateWorkflowIndex(response: HttpResponseBase): Observable<void> {
+        const status = response.status;
+        const responseBlob =
+            response instanceof HttpResponse ? response.body :
+            (response as any).error instanceof Blob ? (response as any).error : undefined;
+
+        let _headers: any = {}; if (response.headers) { for (let key of response.headers.keys()) { _headers[key] = response.headers.get(key); }}
+        if (status === 200) {
+            return blobToText(responseBlob).pipe(_observableMergeMap(_responseText => {
+            return _observableOf<void>(null as any);
+            }));
+        } else if (status !== 200 && status !== 204) {
+            return blobToText(responseBlob).pipe(_observableMergeMap(_responseText => {
+            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+            }));
+        }
+        return _observableOf<void>(null as any);
+    }
+
+    /**
+     * @return Success
+     */
+    fillIndexWithData(): Observable<void> {
+        let url_ = this.baseUrl + "/api/Admin/search-service/fill-index-with-data";
+        url_ = url_.replace(/[?&]$/, "");
+
+        let options_ : any = {
+            observe: "response",
+            responseType: "blob",
+            headers: new HttpHeaders({
+            })
+        };
+
+        return this.http.request("post", url_, options_).pipe(_observableMergeMap((response_ : any) => {
+            return this.processFillIndexWithData(response_);
+        })).pipe(_observableCatch((response_: any) => {
+            if (response_ instanceof HttpResponseBase) {
+                try {
+                    return this.processFillIndexWithData(response_ as any);
+                } catch (e) {
+                    return _observableThrow(e) as any as Observable<void>;
+                }
+            } else
+                return _observableThrow(response_) as any as Observable<void>;
+        }));
+    }
+
+    protected processFillIndexWithData(response: HttpResponseBase): Observable<void> {
+        const status = response.status;
+        const responseBlob =
+            response instanceof HttpResponse ? response.body :
+            (response as any).error instanceof Blob ? (response as any).error : undefined;
+
+        let _headers: any = {}; if (response.headers) { for (let key of response.headers.keys()) { _headers[key] = response.headers.get(key); }}
+        if (status === 200) {
+            return blobToText(responseBlob).pipe(_observableMergeMap(_responseText => {
+            return _observableOf<void>(null as any);
+            }));
+        } else if (status !== 200 && status !== 204) {
+            return blobToText(responseBlob).pipe(_observableMergeMap(_responseText => {
+            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+            }));
+        }
+        return _observableOf<void>(null as any);
+    }
+}
+
+@Injectable()
 export class ClientDocumentsServiceProxy {
     private http: HttpClient;
     private baseUrl: string;
@@ -2025,19 +2131,19 @@ export class ApiServiceProxy {
      * @param deliveryType (optional) 
      * @param workflowStatus (optional) 
      * @param responsibleEmployees (optional) 
-     * @param showOnlyWorkflowsWithNewSales (optional) 
-     * @param showOnlyWorkflowsWithExtensions (optional) 
-     * @param showOnlyWorkflowsWithPendingStepsForSelectedEmployees (optional) 
-     * @param showOnlyWorkflowsWithUpcomingStepsForSelectedEmployees (optional) 
-     * @param includeTerminated (optional) 
-     * @param includeDeleted (optional) 
+     * @param showNewSales (optional) 
+     * @param showExtensions (optional) 
+     * @param showPendingSteps (optional) 
+     * @param showUpcomingSteps (optional) 
+     * @param showCompleted (optional) 
+     * @param showDeleted (optional) 
      * @param search (optional) 
      * @param pageNumber (optional) 
      * @param pageSize (optional) 
      * @param sort (optional) 
      * @return Success
      */
-    workflow(invoicingEntity?: number | undefined, paymentEntity?: number | undefined, salesType?: number | undefined, deliveryType?: number | undefined, workflowStatus?: WorkflowStatus | undefined, responsibleEmployees?: number[] | undefined, showOnlyWorkflowsWithNewSales?: boolean | undefined, showOnlyWorkflowsWithExtensions?: boolean | undefined, showOnlyWorkflowsWithPendingStepsForSelectedEmployees?: boolean | undefined, showOnlyWorkflowsWithUpcomingStepsForSelectedEmployees?: boolean | undefined, includeTerminated?: boolean | undefined, includeDeleted?: boolean | undefined, search?: string | undefined, pageNumber?: number | undefined, pageSize?: number | undefined, sort?: string | undefined): Observable<WorkflowListItemDtoPaginatedList> {
+    workflow(invoicingEntity?: number | undefined, paymentEntity?: number | undefined, salesType?: number | undefined, deliveryType?: number | undefined, workflowStatus?: WorkflowStatus | undefined, responsibleEmployees?: number[] | undefined, showNewSales?: boolean | undefined, showExtensions?: boolean | undefined, showPendingSteps?: boolean | undefined, showUpcomingSteps?: boolean | undefined, showCompleted?: boolean | undefined, showDeleted?: boolean | undefined, search?: string | undefined, pageNumber?: number | undefined, pageSize?: number | undefined, sort?: string | undefined): Observable<WorkflowListItemDtoPaginatedList> {
         let url_ = this.baseUrl + "/api/Workflow?";
         if (invoicingEntity === null)
             throw new Error("The parameter 'invoicingEntity' cannot be null.");
@@ -2063,30 +2169,30 @@ export class ApiServiceProxy {
             throw new Error("The parameter 'responsibleEmployees' cannot be null.");
         else if (responsibleEmployees !== undefined)
             responsibleEmployees && responsibleEmployees.forEach(item => { url_ += "ResponsibleEmployees=" + encodeURIComponent("" + item) + "&"; });
-        if (showOnlyWorkflowsWithNewSales === null)
-            throw new Error("The parameter 'showOnlyWorkflowsWithNewSales' cannot be null.");
-        else if (showOnlyWorkflowsWithNewSales !== undefined)
-            url_ += "ShowOnlyWorkflowsWithNewSales=" + encodeURIComponent("" + showOnlyWorkflowsWithNewSales) + "&";
-        if (showOnlyWorkflowsWithExtensions === null)
-            throw new Error("The parameter 'showOnlyWorkflowsWithExtensions' cannot be null.");
-        else if (showOnlyWorkflowsWithExtensions !== undefined)
-            url_ += "ShowOnlyWorkflowsWithExtensions=" + encodeURIComponent("" + showOnlyWorkflowsWithExtensions) + "&";
-        if (showOnlyWorkflowsWithPendingStepsForSelectedEmployees === null)
-            throw new Error("The parameter 'showOnlyWorkflowsWithPendingStepsForSelectedEmployees' cannot be null.");
-        else if (showOnlyWorkflowsWithPendingStepsForSelectedEmployees !== undefined)
-            url_ += "ShowOnlyWorkflowsWithPendingStepsForSelectedEmployees=" + encodeURIComponent("" + showOnlyWorkflowsWithPendingStepsForSelectedEmployees) + "&";
-        if (showOnlyWorkflowsWithUpcomingStepsForSelectedEmployees === null)
-            throw new Error("The parameter 'showOnlyWorkflowsWithUpcomingStepsForSelectedEmployees' cannot be null.");
-        else if (showOnlyWorkflowsWithUpcomingStepsForSelectedEmployees !== undefined)
-            url_ += "ShowOnlyWorkflowsWithUpcomingStepsForSelectedEmployees=" + encodeURIComponent("" + showOnlyWorkflowsWithUpcomingStepsForSelectedEmployees) + "&";
-        if (includeTerminated === null)
-            throw new Error("The parameter 'includeTerminated' cannot be null.");
-        else if (includeTerminated !== undefined)
-            url_ += "IncludeTerminated=" + encodeURIComponent("" + includeTerminated) + "&";
-        if (includeDeleted === null)
-            throw new Error("The parameter 'includeDeleted' cannot be null.");
-        else if (includeDeleted !== undefined)
-            url_ += "IncludeDeleted=" + encodeURIComponent("" + includeDeleted) + "&";
+        if (showNewSales === null)
+            throw new Error("The parameter 'showNewSales' cannot be null.");
+        else if (showNewSales !== undefined)
+            url_ += "ShowNewSales=" + encodeURIComponent("" + showNewSales) + "&";
+        if (showExtensions === null)
+            throw new Error("The parameter 'showExtensions' cannot be null.");
+        else if (showExtensions !== undefined)
+            url_ += "ShowExtensions=" + encodeURIComponent("" + showExtensions) + "&";
+        if (showPendingSteps === null)
+            throw new Error("The parameter 'showPendingSteps' cannot be null.");
+        else if (showPendingSteps !== undefined)
+            url_ += "ShowPendingSteps=" + encodeURIComponent("" + showPendingSteps) + "&";
+        if (showUpcomingSteps === null)
+            throw new Error("The parameter 'showUpcomingSteps' cannot be null.");
+        else if (showUpcomingSteps !== undefined)
+            url_ += "ShowUpcomingSteps=" + encodeURIComponent("" + showUpcomingSteps) + "&";
+        if (showCompleted === null)
+            throw new Error("The parameter 'showCompleted' cannot be null.");
+        else if (showCompleted !== undefined)
+            url_ += "ShowCompleted=" + encodeURIComponent("" + showCompleted) + "&";
+        if (showDeleted === null)
+            throw new Error("The parameter 'showDeleted' cannot be null.");
+        else if (showDeleted !== undefined)
+            url_ += "ShowDeleted=" + encodeURIComponent("" + showDeleted) + "&";
         if (search === null)
             throw new Error("The parameter 'search' cannot be null.");
         else if (search !== undefined)
@@ -18372,6 +18478,94 @@ export interface IWorkflowHistoryDtoPaginatedList {
     hasNextPage?: boolean;
 }
 
+export class WorkflowListConsultantDto implements IWorkflowListConsultantDto {
+    id?: number;
+    externalId?: string;
+    name?: string | undefined;
+
+    constructor(data?: IWorkflowListConsultantDto) {
+        if (data) {
+            for (var property in data) {
+                if (data.hasOwnProperty(property))
+                    (<any>this)[property] = (<any>data)[property];
+            }
+        }
+    }
+
+    init(_data?: any) {
+        if (_data) {
+            this.id = _data["id"];
+            this.externalId = _data["externalId"];
+            this.name = _data["name"];
+        }
+    }
+
+    static fromJS(data: any): WorkflowListConsultantDto {
+        data = typeof data === 'object' ? data : {};
+        let result = new WorkflowListConsultantDto();
+        result.init(data);
+        return result;
+    }
+
+    toJSON(data?: any) {
+        data = typeof data === 'object' ? data : {};
+        data["id"] = this.id;
+        data["externalId"] = this.externalId;
+        data["name"] = this.name;
+        return data;
+    }
+}
+
+export interface IWorkflowListConsultantDto {
+    id?: number;
+    externalId?: string;
+    name?: string | undefined;
+}
+
+export class WorkflowListEmployeeDto implements IWorkflowListEmployeeDto {
+    id?: number;
+    externalId?: string;
+    name?: string | undefined;
+
+    constructor(data?: IWorkflowListEmployeeDto) {
+        if (data) {
+            for (var property in data) {
+                if (data.hasOwnProperty(property))
+                    (<any>this)[property] = (<any>data)[property];
+            }
+        }
+    }
+
+    init(_data?: any) {
+        if (_data) {
+            this.id = _data["id"];
+            this.externalId = _data["externalId"];
+            this.name = _data["name"];
+        }
+    }
+
+    static fromJS(data: any): WorkflowListEmployeeDto {
+        data = typeof data === 'object' ? data : {};
+        let result = new WorkflowListEmployeeDto();
+        result.init(data);
+        return result;
+    }
+
+    toJSON(data?: any) {
+        data = typeof data === 'object' ? data : {};
+        data["id"] = this.id;
+        data["externalId"] = this.externalId;
+        data["name"] = this.name;
+        return data;
+    }
+}
+
+export interface IWorkflowListEmployeeDto {
+    id?: number;
+    externalId?: string;
+    name?: string | undefined;
+}
+
 export class WorkflowListItemDto implements IWorkflowListItemDto {
     workflowId?: string;
     clientName?: string | undefined;
@@ -18379,11 +18573,13 @@ export class WorkflowListItemDto implements IWorkflowListItemDto {
     endDate?: moment.Moment | undefined;
     salesTypeId?: number | undefined;
     deliveryTypeId?: number | undefined;
-    workflowStatusWithEmployee?: WorkflowStatusWithEmployeeDto;
+    workflowStatus?: WorkflowStatus;
     isDeleted?: boolean;
-    consultants?: ConsultantResultDto[] | undefined;
-    openProcesses?: WorkflowProcessDto[] | undefined;
-    accountManager?: EmployeeDto;
+    isCompleted?: boolean;
+    consultantName?: string | undefined;
+    consultantNamesTooltip?: string | undefined;
+    consultants?: WorkflowListConsultantDto[] | undefined;
+    openProcesses?: WorkflowListProcessDto[] | undefined;
 
     constructor(data?: IWorkflowListItemDto) {
         if (data) {
@@ -18402,19 +18598,21 @@ export class WorkflowListItemDto implements IWorkflowListItemDto {
             this.endDate = _data["endDate"] ? moment(_data["endDate"].toString()) : <any>undefined;
             this.salesTypeId = _data["salesTypeId"];
             this.deliveryTypeId = _data["deliveryTypeId"];
-            this.workflowStatusWithEmployee = _data["workflowStatusWithEmployee"] ? WorkflowStatusWithEmployeeDto.fromJS(_data["workflowStatusWithEmployee"]) : <any>undefined;
+            this.workflowStatus = _data["workflowStatus"];
             this.isDeleted = _data["isDeleted"];
+            this.isCompleted = _data["isCompleted"];
+            this.consultantName = _data["consultantName"];
+            this.consultantNamesTooltip = _data["consultantNamesTooltip"];
             if (Array.isArray(_data["consultants"])) {
                 this.consultants = [] as any;
                 for (let item of _data["consultants"])
-                    this.consultants!.push(ConsultantResultDto.fromJS(item));
+                    this.consultants!.push(WorkflowListConsultantDto.fromJS(item));
             }
             if (Array.isArray(_data["openProcesses"])) {
                 this.openProcesses = [] as any;
                 for (let item of _data["openProcesses"])
-                    this.openProcesses!.push(WorkflowProcessDto.fromJS(item));
+                    this.openProcesses!.push(WorkflowListProcessDto.fromJS(item));
             }
-            this.accountManager = _data["accountManager"] ? EmployeeDto.fromJS(_data["accountManager"]) : <any>undefined;
         }
     }
 
@@ -18433,8 +18631,11 @@ export class WorkflowListItemDto implements IWorkflowListItemDto {
         data["endDate"] = this.endDate ? this.endDate.format('YYYY-MM-DD') : <any>undefined;
         data["salesTypeId"] = this.salesTypeId;
         data["deliveryTypeId"] = this.deliveryTypeId;
-        data["workflowStatusWithEmployee"] = this.workflowStatusWithEmployee ? this.workflowStatusWithEmployee.toJSON() : <any>undefined;
+        data["workflowStatus"] = this.workflowStatus;
         data["isDeleted"] = this.isDeleted;
+        data["isCompleted"] = this.isCompleted;
+        data["consultantName"] = this.consultantName;
+        data["consultantNamesTooltip"] = this.consultantNamesTooltip;
         if (Array.isArray(this.consultants)) {
             data["consultants"] = [];
             for (let item of this.consultants)
@@ -18445,7 +18646,6 @@ export class WorkflowListItemDto implements IWorkflowListItemDto {
             for (let item of this.openProcesses)
                 data["openProcesses"].push(item.toJSON());
         }
-        data["accountManager"] = this.accountManager ? this.accountManager.toJSON() : <any>undefined;
         return data;
     }
 }
@@ -18457,11 +18657,13 @@ export interface IWorkflowListItemDto {
     endDate?: moment.Moment | undefined;
     salesTypeId?: number | undefined;
     deliveryTypeId?: number | undefined;
-    workflowStatusWithEmployee?: WorkflowStatusWithEmployeeDto;
+    workflowStatus?: WorkflowStatus;
     isDeleted?: boolean;
-    consultants?: ConsultantResultDto[] | undefined;
-    openProcesses?: WorkflowProcessDto[] | undefined;
-    accountManager?: EmployeeDto;
+    isCompleted?: boolean;
+    consultantName?: string | undefined;
+    consultantNamesTooltip?: string | undefined;
+    consultants?: WorkflowListConsultantDto[] | undefined;
+    openProcesses?: WorkflowListProcessDto[] | undefined;
 }
 
 export class WorkflowListItemDtoPaginatedList implements IWorkflowListItemDtoPaginatedList {
@@ -18530,6 +18732,106 @@ export interface IWorkflowListItemDtoPaginatedList {
     pageSize?: number;
     hasPreviousPage?: boolean;
     hasNextPage?: boolean;
+}
+
+export class WorkflowListProcessDto implements IWorkflowListProcessDto {
+    typeId?: WorkflowProcessType;
+    name?: string | undefined;
+    steps?: WorkflowListStepDto[] | undefined;
+
+    constructor(data?: IWorkflowListProcessDto) {
+        if (data) {
+            for (var property in data) {
+                if (data.hasOwnProperty(property))
+                    (<any>this)[property] = (<any>data)[property];
+            }
+        }
+    }
+
+    init(_data?: any) {
+        if (_data) {
+            this.typeId = _data["typeId"];
+            this.name = _data["name"];
+            if (Array.isArray(_data["steps"])) {
+                this.steps = [] as any;
+                for (let item of _data["steps"])
+                    this.steps!.push(WorkflowListStepDto.fromJS(item));
+            }
+        }
+    }
+
+    static fromJS(data: any): WorkflowListProcessDto {
+        data = typeof data === 'object' ? data : {};
+        let result = new WorkflowListProcessDto();
+        result.init(data);
+        return result;
+    }
+
+    toJSON(data?: any) {
+        data = typeof data === 'object' ? data : {};
+        data["typeId"] = this.typeId;
+        data["name"] = this.name;
+        if (Array.isArray(this.steps)) {
+            data["steps"] = [];
+            for (let item of this.steps)
+                data["steps"].push(item.toJSON());
+        }
+        return data;
+    }
+}
+
+export interface IWorkflowListProcessDto {
+    typeId?: WorkflowProcessType;
+    name?: string | undefined;
+    steps?: WorkflowListStepDto[] | undefined;
+}
+
+export class WorkflowListStepDto implements IWorkflowListStepDto {
+    typeId?: StepType;
+    name?: string | undefined;
+    status?: WorkflowStepStatus;
+    responsiblePerson?: WorkflowListEmployeeDto;
+
+    constructor(data?: IWorkflowListStepDto) {
+        if (data) {
+            for (var property in data) {
+                if (data.hasOwnProperty(property))
+                    (<any>this)[property] = (<any>data)[property];
+            }
+        }
+    }
+
+    init(_data?: any) {
+        if (_data) {
+            this.typeId = _data["typeId"];
+            this.name = _data["name"];
+            this.status = _data["status"];
+            this.responsiblePerson = _data["responsiblePerson"] ? WorkflowListEmployeeDto.fromJS(_data["responsiblePerson"]) : <any>undefined;
+        }
+    }
+
+    static fromJS(data: any): WorkflowListStepDto {
+        data = typeof data === 'object' ? data : {};
+        let result = new WorkflowListStepDto();
+        result.init(data);
+        return result;
+    }
+
+    toJSON(data?: any) {
+        data = typeof data === 'object' ? data : {};
+        data["typeId"] = this.typeId;
+        data["name"] = this.name;
+        data["status"] = this.status;
+        data["responsiblePerson"] = this.responsiblePerson ? this.responsiblePerson.toJSON() : <any>undefined;
+        return data;
+    }
+}
+
+export interface IWorkflowListStepDto {
+    typeId?: StepType;
+    name?: string | undefined;
+    status?: WorkflowStepStatus;
+    responsiblePerson?: WorkflowListEmployeeDto;
 }
 
 export class WorkflowOverviewDto implements IWorkflowOverviewDto {
