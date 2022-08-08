@@ -38,7 +38,7 @@ export class WorkflowComponent extends AppComponentBase implements OnInit, OnDes
     deafultPageSize = AppConsts.grid.defaultPageSize;
     pageSizeOptions = [5, 10, 20, 50, 100];
     totalCount: number | undefined = 0;
-    sorting = 'WorkflowId desc';
+    sorting = 'EndDate desc';
     isDataLoading = true;
 
     workflowDisplayColumns = [
