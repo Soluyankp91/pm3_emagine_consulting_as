@@ -190,7 +190,15 @@
                 <ng-container matColumnDef="flag">
                     <mat-header-cell *matHeaderCellDef fxFlex="3%"></mat-header-cell>
                     <mat-cell *matCellDef="let row" fxFlex="3%" fxLayoutAlign="center center">
-                        <mat-icon class="workflow-flag" [ngClass]="row?.processStatusIcon" [matTooltip]="row?.processStatusName" matTooltipClass="white-tooltip">fiber_manual_record</mat-icon>
+                        <mat-icon class="workflow-flag" [ngClass]="row?.isNewSale ? 'workflow-flag--sales' : 'workflow-flag--extension'" [matTooltip]="row?.isNewSale ? 'New Sales' : 'Has Extension'" matTooltipClass="white-tooltip">fiber_manual_record</mat-icon>
+                    </mat-cell>
+                </ng-container>
+                <ng-container matColumnDef="WorkflowId">
+                    <mat-header-cell *matHeaderCellDef mat-sort-header fxFlex="3%">ID</mat-header-cell>
+                    <mat-cell *matCellDef="let row" fxFlex="3%" fxLayoutAlign="center center">
+                        <span [matTooltip]="row.workflowId" matTooltipClass="white-tooltip">
+                            ...{{row.workflowId | slice: row.workflowId.length-4:row.workflowId.length}}
+                        </span>
                     </mat-cell>
                 </ng-container>
                 <ng-container matColumnDef="clientName">
@@ -201,15 +209,14 @@
                         </span>
                     </mat-cell>
                 </ng-container>
-                <ng-container matColumnDef="SalesType">
+                <ng-container matColumnDef="SalesTypeId">
                     <mat-header-cell *matHeaderCellDef mat-sort-header fxFlex="10%"> Sales type </mat-header-cell>
                     <mat-cell *matCellDef="let row" fxFlex="10%">
                         <span class="text-truncate-ellipsis"  [matTooltip]="row.salesType?.name" matTooltipClass="white-tooltip" appShowIfTruncated>
-                            {{row.salesType?.name}}
                         </span>
                     </mat-cell>
                 </ng-container>
-                <ng-container matColumnDef="DeliveryType">
+                <ng-container matColumnDef="DeliveryTypeId">
                     <mat-header-cell *matHeaderCellDef mat-sort-header fxFlex="10%"> Delivery type </mat-header-cell>
                     <mat-cell *matCellDef="let row" fxFlex="10%">
                         <span class="text-truncate-ellipsis" [matTooltip]="row.deliveryType?.name" matTooltipClass="white-tooltip" appShowIfTruncated>
@@ -218,7 +225,7 @@
                     </mat-cell>
                 </ng-container>
 
-                <ng-container matColumnDef="startDate">
+                <ng-container matColumnDef="StartDate">
                     <mat-header-cell *matHeaderCellDef mat-sort-header fxFlex="7%"> Start </mat-header-cell>
                     <mat-cell *matCellDef="let row" fxFlex="7%">
                         <span class="text-truncate-ellipsis" [matTooltip]="(row.startDate | date: 'dd.MM.YYYY') ?? '-'" matTooltipClass="white-tooltip" appShowIfTruncated>
@@ -226,7 +233,7 @@
                         </span>
                     </mat-cell>
                 </ng-container>
-                <ng-container matColumnDef="endDate">
+                <ng-container matColumnDef="EndDate">
                     <mat-header-cell *matHeaderCellDef mat-sort-header fxFlex="7%"> End </mat-header-cell>
                     <mat-cell *matCellDef="let row" fxFlex="7%">
                         <span class="text-truncate-ellipsis" [matTooltip]="(row.endDate | date: 'dd.MM.YYYY') ?? '-'" matTooltipClass="white-tooltip" appShowIfTruncated>
@@ -234,33 +241,33 @@
                         </span>
                     </mat-cell>
                 </ng-container>
-                <ng-container matColumnDef="Consultants">
+                <ng-container matColumnDef="ConsultantName">
                     <mat-header-cell *matHeaderCellDef mat-sort-header fxFlex="12%"> Consultants </mat-header-cell>
                     <mat-cell *matCellDef="let row" fxFlex="12%">
-                        <span class="text-truncate-ellipsis" [matTooltip]="mapListByProperty(row.consultants, 'name')" matTooltipClass="white-tooltip">
+                        <span class="text-truncate-ellipsis" [matTooltip]="row.consultantNamesTooltip" matTooltipClass="white-tooltip">
                             <ng-container *ngIf="row.consultants?.length > 1; else singleConsultantDisplay">
                                 <span class="flex-items-center">
                                     <img class="border-rounded-50 image-settings--dropdown u-mr--10" src="../../assets/common/images/no-img.svg" />
-                                    {{row.consultants?.length + 'Consultants'}}
+                                    {{row.consultantName}}
                                 </span>
                             </ng-container>
                             <ng-template #singleConsultantDisplay>
                                 <span class="flex-items-center">
                                     <img *ngIf="row.consultants[0]?.name" class="border-rounded-50 image-settings--dropdown u-mr--10" [src]="consultantProfileUrl(row?.consultants[0]?.externalId)" />
-                                    {{row.consultants[0]?.name ?? '-'}}
+                                    {{row.consultantName}}
                                 </span>
                             </ng-template>
                         </span>
                     </mat-cell>
                 </ng-container>
-                <ng-container matColumnDef="Status">
-                    <mat-header-cell *matHeaderCellDef fxFlex="7%" fxLayoutAlign="center center"> WF Status </mat-header-cell>
+                <ng-container matColumnDef="WorkflowStatus">
+                    <mat-header-cell *matHeaderCellDef fxFlex="7%" mat-sort-header fxLayoutAlign="center center"> WF Status </mat-header-cell>
                     <mat-cell *matCellDef="let row" fxFlex="7%" fxLayoutAlign="center center">
-                        <mat-icon class="workflow-status" [matTooltip]="workflowStatuses[row.statusName] + ' workflow'" matTooltipClass="white-tooltip" [ngClass]="row?.statusIcon">fiber_manual_record</mat-icon>
+                        <mat-icon class="workflow-status" [matTooltip]="row.statusName + ' workflow'" matTooltipClass="white-tooltip" [ngClass]="row?.statusIcon">fiber_manual_record</mat-icon>
                     </mat-cell>
                 </ng-container>
                 <ng-container matColumnDef="openProcess">
-                    <mat-header-cell *matHeaderCellDef mat-sort-header fxFlex="13%"> Open process </mat-header-cell>
+                    <mat-header-cell *matHeaderCellDef fxFlex="13%"> Open process </mat-header-cell>
                     <mat-cell *matCellDef="let row" fxFlex="13%">
                         <div class="column">
                             <div *ngFor="let item of row.openProcesses; last as last"

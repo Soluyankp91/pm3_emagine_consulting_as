@@ -20,7 +20,7 @@ import { ManagerStatus } from '../shared/components/manager-search/manager-searc
 import { CreateWorkflowDialogComponent } from './create-workflow-dialog/create-workflow-dialog.component';
 import { SelectableEmployeeDto, WorkflowFlag, WorkflowList } from './workflow.model';
 
-const WorkflowGridOptionsKey = 'WorkflowGridFILTERS.1.0.0.';
+const WorkflowGridOptionsKey = 'WorkflowGridFILTERS.1.0.1.';
 @Component({
     selector: 'app-workflow',
     templateUrl: './workflow.component.html',
@@ -43,13 +43,14 @@ export class WorkflowComponent extends AppComponentBase implements OnInit, OnDes
 
     workflowDisplayColumns = [
         'flag',
+        'WorkflowId',
         'clientName',
-        'SalesType',
-        'DeliveryType',
-        'startDate',
-        'endDate',
-        'Consultants',
-        'Status',
+        'SalesTypeId',
+        'DeliveryTypeId',
+        'StartDate',
+        'EndDate',
+        'ConsultantName',
+        'WorkflowStatus',
         'openProcess',
         'Steps',
         'action'
@@ -428,7 +429,7 @@ export class WorkflowComponent extends AppComponentBase implements OnInit, OnDes
             this.showOnlyWorkflowsWithExtensions,
             this.showOnlyWorkflowsWithPendingStepsForSelectedEmployees,
             this.showOnlyWorkflowsWithUpcomingStepsForSelectedEmployees,
-            this.includeTerminated,
+            !this.includeTerminated,
             this.includeDeleted,
             searchFilter,
             this.pageNumber,
@@ -440,21 +441,20 @@ export class WorkflowComponent extends AppComponentBase implements OnInit, OnDes
             .subscribe(result => {
                 let formattedData = result?.items!.map(x => {
                     return {
-                        processStatusIcon: this.getFlagColor(x.workflowStatusWithEmployee?.processType!),
-                        processStatusName: this.mapFlagTooltip(x.workflowStatusWithEmployee?.processType!),
                         workflowId: x.workflowId,
                         clientName: x.clientName,
                         startDate: x.startDate,
                         endDate: x.endDate,
                         salesType: this.findItemById(this.saleTypes, x.salesTypeId),
                         deliveryType: this.findItemById(this.deliveryTypes, x.deliveryTypeId),
-                        statusName: x.workflowStatusWithEmployee?.status,
-                        statusIcon: this.getStatusIcon(x.workflowStatusWithEmployee?.status!),
+                        statusName: WorkflowStatus[x.workflowStatus!],
+                        statusIcon: this.getStatusIcon(x.workflowStatus!),
                         isDeleted: x.isDeleted,
                         consultants: x.consultants,
+                        consultantName: x.consultantName,
+                        consultantNamesTooltip: x.consultantNamesTooltip,
                         openProcesses: x.openProcesses,
-                        accountManager: x.accountManager,
-                        isActive: x.workflowStatusWithEmployee?.status === WorkflowStatus.Active
+                        isActive: x.workflowStatus === WorkflowStatus.Active
                     }
                 })
                 this.workflowDataSource = new MatTableDataSource<any>(formattedData);
