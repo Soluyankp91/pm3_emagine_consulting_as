@@ -18741,6 +18741,7 @@ export interface IWorkflowListItemDtoPaginatedList {
 export class WorkflowListProcessDto implements IWorkflowListProcessDto {
     typeId?: WorkflowProcessType;
     name?: string | undefined;
+    processId?: string;
     steps?: WorkflowListStepDto[] | undefined;
 
     constructor(data?: IWorkflowListProcessDto) {
@@ -18756,6 +18757,7 @@ export class WorkflowListProcessDto implements IWorkflowListProcessDto {
         if (_data) {
             this.typeId = _data["typeId"];
             this.name = _data["name"];
+            this.processId = _data["processId"];
             if (Array.isArray(_data["steps"])) {
                 this.steps = [] as any;
                 for (let item of _data["steps"])
@@ -18775,6 +18777,7 @@ export class WorkflowListProcessDto implements IWorkflowListProcessDto {
         data = typeof data === 'object' ? data : {};
         data["typeId"] = this.typeId;
         data["name"] = this.name;
+        data["processId"] = this.processId;
         if (Array.isArray(this.steps)) {
             data["steps"] = [];
             for (let item of this.steps)
@@ -18787,6 +18790,7 @@ export class WorkflowListProcessDto implements IWorkflowListProcessDto {
 export interface IWorkflowListProcessDto {
     typeId?: WorkflowProcessType;
     name?: string | undefined;
+    processId?: string;
     steps?: WorkflowListStepDto[] | undefined;
 }
 

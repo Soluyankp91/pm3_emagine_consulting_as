@@ -348,7 +348,7 @@
                     </mat-cell>
                 </ng-container>
                 <ng-container matColumnDef="Steps">
-                    <mat-header-cell *matHeaderCellDef mat-sort-header fxFlex="13%"> Steps </mat-header-cell>
+                    <mat-header-cell *matHeaderCellDef fxFlex="13%"> Steps </mat-header-cell>
                     <mat-cell *matCellDef="let row" fxFlex="13%">
                         <div class="column">
                             <div *ngFor="let item of row.openProcesses; last as last"
@@ -360,10 +360,14 @@
                                         <app-manager-search
                                             (click)="$event.stopPropagation()"
                                             [formFieldLabel]="step.name + ' Manager'"
+                                            [periodId]="item.processId!"
+                                            [consultantPeriodId]="item.processId!"
+                                            [stepType]="step.typeId!"
+                                            [periodType]="item.typeId!"
+                                            [workflowId]="row.workflowId"
                                             (managerSelected)="selectedManager($event)"
-                                            [managerStatus]="step.status"
-                                            [responsiblePerson]="step.responsiblePerson"
-                                            [readonly]="true">
+                                            [managerStatus]="step.status === workflowStatuses.Completed ? managerStatus.Completed : managerStatus.Pending"
+                                            [responsiblePerson]="step.responsiblePerson!">
                                         </app-manager-search>
                                     </div>
                                 </ng-container>
