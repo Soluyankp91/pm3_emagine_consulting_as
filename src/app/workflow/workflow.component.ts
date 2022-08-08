@@ -454,7 +454,8 @@ export class WorkflowComponent extends AppComponentBase implements OnInit, OnDes
                         consultantName: x.consultantName,
                         consultantNamesTooltip: x.consultantNamesTooltip,
                         openProcesses: x.openProcesses,
-                        isActive: x.workflowStatus === WorkflowStatus.Active
+                        isActive: x.workflowStatus === WorkflowStatus.Active,
+                        isNewSale: x.isNewSale
                     }
                 })
                 this.workflowDataSource = new MatTableDataSource<any>(formattedData);
