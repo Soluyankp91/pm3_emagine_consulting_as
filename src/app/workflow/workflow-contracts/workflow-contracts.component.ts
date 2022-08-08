@@ -1046,9 +1046,11 @@ export class WorkflowContractsComponent extends AppComponentBase implements OnIn
                 this.contractsMainForm.projectType?.setValue(this.findItemById(this.projectTypes, result.mainData?.projectTypeId), {emitEvent: false});
                 this.contractsMainForm.margin?.setValue(this.findItemById(this.margins, result.mainData?.marginId), {emitEvent: false});
                 this.contractsMainForm.projectDescription?.setValue(result.mainData?.projectDescription, {emitEvent: false});
-                this.contractsMainForm.remarks?.setValue(result.mainData?.remarks, {emitEvent: false});
                 this.contractsMainForm.noRemarks?.setValue(result.mainData?.noRemarks, {emitEvent: false});
-
+                this.contractsMainForm.remarks?.setValue(result.mainData?.remarks, {emitEvent: false});
+                if (result.mainData?.noRemarks) {
+                    this.contractsMainForm.remarks?.disable();
+                }
                 // Client data
                 this.contractClientForm.directClientId?.setValue(result.clientData?.directClientId);
                 if (result?.clientData?.directClientId) {
@@ -1063,7 +1065,9 @@ export class WorkflowContractsComponent extends AppComponentBase implements OnIn
                 this.contractClientForm.clientTimeReportingCapCurrencyId?.setValue(this.findItemById(this.currencies, result.clientData?.clientTimeReportingCapCurrencyId), {emitEvent: false});
                 this.contractClientForm.specialContractTerms?.setValue(result.clientData?.specialContractTerms, {emitEvent: false});
                 this.contractClientForm.noSpecialContractTerms?.setValue(result.clientData?.noSpecialContractTerms, {emitEvent: false});
-
+                if (result.clientData?.noSpecialContractTerms) {
+                    this.contractClientForm.specialContractTerms?.disable();
+                }
                 this.contractClientForm.invoicingReferenceNumber?.setValue(result.clientData?.invoicingReferenceNumber, {emitEvent: false});
                 this.contractClientForm.clientInvoicingRecipientIdValue?.setValue(result.clientData?.clientInvoicingRecipientIdValue, {emitEvent: false});
                 this.contractClientForm.clientInvoicingRecipient?.setValue(result.clientData?.clientInvoicingRecipient, {emitEvent: false});
@@ -1145,6 +1149,7 @@ export class WorkflowContractsComponent extends AppComponentBase implements OnIn
         input.clientData.clientTimeReportingCapMaxValue = this.contractClientForm.clientTimeReportingCapMaxValue?.value;
         input.clientData.clientTimeReportingCapCurrencyId = this.contractClientForm.clientTimeReportingCapCurrencyId?.value?.id;
         input.clientData.clientRate = this.contractClientForm.clientRate?.value;
+        input.clientData.pdcInvoicingEntityId = this.contractClientForm.pdcInvoicingEntityId?.value;
         input.clientData.periodClientSpecialRates = new Array<PeriodClientSpecialRateDto>();
         if (this.contractClientForm.clientRates.value?.length) {
             for (let specialRate of this.contractClientForm.clientRates.value) {
@@ -1199,6 +1204,7 @@ export class WorkflowContractsComponent extends AppComponentBase implements OnIn
                 consultantData.noSpecialContractTerms = consultant.noSpecialContractTerms;
                 consultantData.specialContractTerms = consultant.specialContractTerms;
                 consultantData.consultantRate = consultant.consultantRate;
+                consultantData.pdcPaymentEntityId = consultant.pdcPaymentEntityId;
 
                 consultantData.periodConsultantSpecialFees = new Array<PeriodConsultantSpecialFeeDto>();
                 if (consultant.clientFees?.length) {
