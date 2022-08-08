@@ -20,7 +20,7 @@ import { ManagerStatus } from '../shared/components/manager-search/manager-searc
 import { CreateWorkflowDialogComponent } from './create-workflow-dialog/create-workflow-dialog.component';
 import { SelectableEmployeeDto, WorkflowFlag, WorkflowList } from './workflow.model';
 
-const WorkflowGridOptionsKey = 'WorkflowGridFILTERS.1.0.1.';
+const WorkflowGridOptionsKey = 'WorkflowGridFILTERS.1.0.2.';
 @Component({
     selector: 'app-workflow',
     templateUrl: './workflow.component.html',
@@ -38,7 +38,7 @@ export class WorkflowComponent extends AppComponentBase implements OnInit, OnDes
     deafultPageSize = AppConsts.grid.defaultPageSize;
     pageSizeOptions = [5, 10, 20, 50, 100];
     totalCount: number | undefined = 0;
-    sorting = '';
+    sorting = 'EndDate desc';
     isDataLoading = true;
 
     workflowDisplayColumns = [
