@@ -6,11 +6,11 @@ mat-table.rounded-table {
     font-family: 'Roboto';
     font-weight: 400;
     line-height: 19px;
-    font-size: 16px;
+    font-size: 14px;
     mat-header-row {
         border-bottom-color: $white-color !important;
         color: rgba($color: #384853, $alpha: 0.87) !important;
-        font-size: 18px;
+        font-size: 12px;
         min-height: 35px;
         mat-header-cell {
             font-family: 'Open Sans', sans-serif !important;
@@ -36,7 +36,7 @@ mat-table.rounded-table {
         }
         mat-cell {
             color: rgba(56, 72, 83, 0.6) !important;
-            font-size: 16px;
+            font-size: 14px;
             padding-right: 15px;
 
             &:first-of-type {
@@ -53,21 +53,21 @@ mat-table.rounded-table {
 .pagination-container {
     .mat-paginator {
         background-color: transparent;
-        @media screen and (max-width: 1366px) {
-            font-size: 10px !important;
-            mat-form-field {
-                .mat-select-value-text {
-                    font-size: 10px !important;
-                }
-            }
-            .mat-paginator-range-actions {
-                .mat-icon-button {
-                    height: 30px;
-                    width: 30px;
-                    line-height: 30px;
-                }
-            }
-        }
+        // @media screen and (max-width: 1366px) {
+        //     font-size: 10px !important;
+        //     mat-form-field {
+        //         .mat-select-value-text {
+        //             font-size: 10px !important;
+        //         }
+        //     }
+        //     .mat-paginator-range-actions {
+        //         .mat-icon-button {
+        //             height: 30px;
+        //             width: 30px;
+        //             line-height: 30px;
+        //         }
+        //     }
+        // }
     }
 }
 
@@ -107,12 +107,13 @@ mat-table.white-table {
     box-shadow: none;
     font-weight: 400;
     line-height: 19px;
-    font-size: 16px;
+    font-size: 14px;
     mat-header-row {
         border: 0 !important;
-        font-size: 18px;
+        font-size: 12px;
         min-height: 35px;
         mat-header-cell {
+            font-size: 12px;
             font-family: 'Open Sans', sans-serif !important;
             color: $medium-grey-color !important;
             font-weight: 600;
@@ -123,14 +124,12 @@ mat-table.white-table {
                 padding-right: 16px;
             }
         }
-        padding: 0 16px;
     }
     mat-row {
         height: 50px;
         border-radius: 0;
         border: 1px solid $sand-color;
         margin-bottom: 0;
-        padding: 0 16px;
         background-color: $white-color;
         &:hover {
             transition: box-shadow .7s ease;
@@ -138,7 +137,7 @@ mat-table.white-table {
         }
         mat-cell {
             color: $dark-grey-color !important;
-            font-size: 16px;
+            font-size: 14px;
             padding-right: 15px;
             font-weight: 600;
 
@@ -158,24 +157,24 @@ mat-table.white-table {
         }
     }
 
-    @media screen and (max-width: 1440px) {
-        line-height: 19px;
-        font-size: 14px;
-        mat-header-row {
-            font-size: 10px;
-            line-height: 14px;
-            mat-header-cell {
-                font-size: 10px;
-                line-height: 14px;
-            }
-        }
-        mat-row {
-            mat-cell {
-                font-size: 12px;
-                line-height: 140%;
-            }
-        }
-    }
+    // @media screen and (max-width: 1440px) {
+    //     line-height: 19px;
+    //     font-size: 14px;
+    //     mat-header-row {
+    //         font-size: 10px;
+    //         line-height: 14px;
+    //         mat-header-cell {
+    //             font-size: 10px;
+    //             line-height: 14px;
+    //         }
+    //     }
+    //     mat-row {
+    //         mat-cell {
+    //             font-size: 12px;
+    //             line-height: 140%;
+    //         }
+    //     }
+    // }
 }
 
 .main-overview--consultants-table {
@@ -204,7 +203,7 @@ mat-table.white-table {
                     box-shadow: none !important;
                     font-weight: 400 !important;
                     line-height: 19px !important;
-                    font-size: 16px !important;
+                    font-size: 14px !important;
                     .gantt-table-header {
                         border: 0 !important;
                         font-size: 18px;
@@ -311,67 +310,81 @@ mat-table.white-table {
     }
 }
 
-.workflow-overview--chart-container {
+.workflow-overview--timeline {
     .gantt {
         background: transparent !important;
         &-side {
             border-right: none !important;
             box-shadow: none !important;
-            margin-right: 30px;
+            margin: 44px 30px 0 0;
+            padding-bottom: 17px;
             &-container {
                 background: transparent !important;
-
-                gantt-table.gantt-table {
+                .gantt-flat-side-header {
+                    border: 0 !important;
+                    font-size: 18px;
+                    padding: 0 16px;
                     background: transparent !important;
-                    box-shadow: none !important;
-                    font-weight: 400 !important;
-                    line-height: 19px !important;
-                    font-size: 16px !important;
-                    .gantt-table-header {
-                        border: 0 !important;
-                        font-size: 18px;
-                        padding: 0 16px;
-                        background: transparent !important;
-                        .gantt-table-column {
-                            font-family: 'Open Sans', sans-serif !important;
-                            color: #4a4e60 !important;
-                            font-weight: 800;
-                            font-size: 16px;
+                    .gantt-flat-side-column {
+                        font-family: 'Open Sans', sans-serif !important;
+                        color: #4a4e60 !important;
+                        font-weight: 800;
+                        font-size: 16px;
+                        display: flex;
+                        justify-content: flex-start;
+                        &:last-of-type {
+                            padding-right: 16px;
+                        }
+                        @media screen and (max-width: 1366px) {
+                            font-size: 10px;
+                            line-height: 14px;
+                        }
+                    }
+                }
+                .gantt-flat-side-body {
+                    .gantt-group {
+                        padding-left: 16px;
+                        border: 0;
+                        display: flex;
+                        align-items: center;
+                        width: 100%;
+
+                        &:first-child {
+                            .gantt-group-content {
+                                padding-left: 16px;
+                                font-style: normal;
+                                font-weight: 800;
+                                font-size: 14px;
+                                line-height: 120%;
+                                color: #4A4E60;
+                            }
+                        }
+                        .gantt-group-content {
+                            border-right: none;
+                            padding: 0 !important;
+                            font-style: normal;
+                            font-weight: 600;
+                            font-size: 11px;
+                            line-height: 120%;
+                            color: #4A4E60;
                             display: flex;
-                            justify-content: flex-start;
+                            flex-direction: row;
+                            align-items: center;
+                            &:first-of-type {
+                                padding-left: 16px;
+                                // font-style: normal;
+                                // font-weight: 800;
+                                // font-size: 14px;
+                                // line-height: 120%;
+                                // color: #4A4E60;
+                            }
+
                             &:last-of-type {
                                 padding-right: 16px;
                             }
-                        }
-                    }
-                    .gantt-table-body {
-                        .gantt-table-item {
-                            padding-left: 16px;
-                            border: 0;
-                            display: flex;
-                            align-items: center;
-                            width: 100%;
-                            &:hover {
-                                transition: background-color .7s ease;
-                                background-color: rgba(102, 140, 164, .17);
-                            }
-                            .gantt-table-column {
-                                border-right: none;
-                                padding: 0 !important;
-                                &:first-of-type {
-                                    padding-left: 16px;
-                                }
 
-                                &:last-of-type {
-                                    padding-right: 16px;
-                                }
-                                .gantt-table-column-content {
-                                    color: $dark-grey-color !important;
-                                    font-size: 16px;
-                                }
-                            }
-                            .gantt-expand-icon {
-                                display: none;
+                            @media screen and (max-width: 1366px) {
+                                font-size: 12px;
                             }
                         }
                     }
@@ -391,8 +404,8 @@ mat-table.white-table {
                     .secondary-text {
                         font-family: 'Open Sans', sans-serif !important;
                         fill: $medium-grey-color !important;
-                        font-weight: 600;
-                        font-size: 12px;
+                        font-weight: 700;
+                        font-size: 10px;
                         transform: translateY(-10px);
                     }
 
@@ -420,9 +433,13 @@ mat-table.white-table {
             }
         }
     }
-    gantt-bar {
+    .gantt-bar {
+        height: 11px !important;
+        border-radius: 10px !important;
+        margin-top: 6px;
         .gantt-bar-content {
             border-radius: 10px;
+            height: 11px;
         }
     }
 }
@@ -439,16 +456,8 @@ mat-table.white-table {
             padding-bottom: 17px;
             &-container {
                 background: transparent !important;
-
-                // gantt-table.gantt-table {
-                //     background: transparent !important;
-                //     box-shadow: none !important;
-                //     font-weight: 400 !important;
-                //     line-height: 19px !important;
-                //     font-size: 16px !important;
                     .gantt-flat-side-header {
                         border: 0 !important;
-                        font-size: 18px;
                         padding-left: 16px;
                         background: transparent !important;
                         z-index: 2;
@@ -463,10 +472,6 @@ mat-table.white-table {
                             justify-content: flex-start;
                             &:last-of-type {
                                 padding-right: 32px;
-                            }
-                            @media screen and (max-width: 1366px) {
-                                font-size: 10px;
-                                line-height: 14px;
                             }
                         }
                     }
@@ -488,7 +493,7 @@ mat-table.white-table {
                                 border-right: none;
                                 padding: 0 !important;
                                 color: $dark-grey-color !important;
-                                font-size: 16px;
+                                font-size: 14px;
                                 font-weight: 600;
                                 &:first-of-type {
                                     padding-left: 16px;
@@ -498,15 +503,8 @@ mat-table.white-table {
                                     padding-right: 16px;
                                 }
 
-                                @media screen and (max-width: 1366px) {
-                                    font-size: 12px;
-                                }
-                                // .gantt-table-column-content {
-                                // }
+                             
                             }
-                            // .gantt-expand-icon {
-                            //     display: none;
-                            // }
                         }
                     }
                 // }
@@ -531,9 +529,6 @@ mat-table.white-table {
                         font-weight: 600;
                         font-size: 12px;
                         transform: translateY(-10px);
-                        @media screen and (max-width: 1366px) {
-                            font-size: 10px;
-                        }
                     }
 
                     .primary-line {

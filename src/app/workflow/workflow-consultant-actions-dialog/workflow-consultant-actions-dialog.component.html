@@ -3,8 +3,8 @@
         {{ data.dialogTitle }}
     </div>
     <div fxLayout="row" fxLayoutAlign="start center">
-        <img class="border-rounded-50 u-mr--16 image-thumbnail" [src]="consultantProfileUrl(consultant.consultantName?.externalId)">
-        <p class="consultant-name">{{consultant.consultantName?.name}}</p>
+        <img class="border-rounded-50 u-mr--16 image-thumbnail" [src]="consultantProfileUrl(consultant.externalId)">
+        <p class="consultant-name">{{consultant.name}}</p>
     </div>
     <ng-container [ngSwitch]="data.dialogType">
         <ng-container *ngSwitchCase="dialogTypes.Change">
@@ -55,9 +55,6 @@
                     </mat-checkbox>
                 </div>
             </div>
-        </ng-container>
-        <ng-container *ngSwitchCase="dialogTypes.Terminate">
-            // TBD
         </ng-container>
         <ng-container *ngSwitchDefault>
 

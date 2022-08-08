@@ -18,7 +18,7 @@
                     <mat-select
                         #select
                         [disableOptionCentering]="true"
-                        panelClass="main-overview-dropdowns"
+                        panelClass="main-overview-dropdowns country-filter-dropdown"
                         [formControl]="invoicingEntityControl">
                         <mat-option class="mat-select-header-option" [disabled]="true">
                             Select invoicing entity
@@ -33,7 +33,7 @@
                     </mat-select>
                 </button>
                 <div class="main-overview--filter-manager cursor-pointer u-mb--10" [matTooltip]="mapListByProperty(selectedAccountManagers, 'name')" matTooltipClass="white-tooltip" [matMenuTriggerFor]="managerMenu" (menuOpened)="accountManagerFilterInput.click(); onOpenedMenu();" (click)="openMenu($event)">
-                    <img *ngIf="selectedAccountManagers.length === 1" class="border-rounded-50 image-thumbnail-small" [src]="employeeProfileUrl(selectedAccountManagers[0]?.externalId!)" />
+                    <img *ngIf="selectedAccountManagers.length === 1" class="border-rounded-50 image-thumbnail-small" [src]="employeeProfileUrl(selectedAccountManagers[0].externalId!)" />
                     <img *ngIf="selectedAccountManagers.length === 0" src="../../../assets/common/images/no-img.svg">
                     <div *ngIf="selectedAccountManagers.length > 1" class="main-overview--filter__badge">
                         {{selectedAccountManagers.length}}
@@ -52,10 +52,11 @@
                                         <mat-checkbox [checked]="manager.selected"
                                             *ngIf="manager.id !== 'no-data'"
                                             color="primary"
+                                            class="green-checkbox"
                                             (change)="toggleSelection(manager,selectedAccountManagers)"
                                             (click)="$event.stopPropagation()">
                                             <div fxLayout="row" fxLayoutAlign="start center" class="u-w--100">
-                                                <img class="border-rounded-50 image-settings--dropdown u-mr--10" [src]="employeeProfileUrl(manager.externalId!)">
+                                                <img class="border-rounded-50 image-settings--dropdown u-ml--8 u-mr--16" [src]="employeeProfileUrl(manager.externalId!)">
                                                 <span>{{ manager.name }}</span>
                                             </div>
                                         </mat-checkbox>
@@ -80,10 +81,11 @@
                                             <mat-checkbox [checked]="manager.selected"
                                                 *ngIf="manager.id !== 'no-data'"
                                                 color="primary"
+                                                class="green-checkbox"
                                                 (change)="toggleSelection(manager,selectedAccountManagers)"
                                                 (click)="$event.stopPropagation()">
                                                 <div fxLayout="row" fxLayoutAlign="start center" class="u-w--100">
-                                                    <img class="border-rounded-50 image-settings--dropdown u-mr--10" [src]="employeeProfileUrl(manager.externalId!)">
+                                                    <img class="border-rounded-50 image-settings--dropdown u-ml--8 u-mr--16" [src]="employeeProfileUrl(manager.externalId!)">
                                                     <span>{{ manager.name }}</span>
                                                 </div>
                                             </mat-checkbox>

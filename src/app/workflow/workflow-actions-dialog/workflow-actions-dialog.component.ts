@@ -99,7 +99,7 @@ export class WorkflowActionsDialogComponent extends AppComponentBase implements 
             consulantName: new FormControl(consultant.consultantName),
             consultantId: new FormControl(consultant.consultantId),
             externalId: new FormControl(consultant.externalId),
-            extendConsutlant: new FormControl(false)
+            extendConsultant: new FormControl(false)
         });
         this.extendWorkflowForm.consultants.push(form);
     }
@@ -119,12 +119,12 @@ export class WorkflowActionsDialogComponent extends AppComponentBase implements 
                 this.onConfirmed.emit(addConsultantOutput);
                 break;
             case WorkflowDiallogAction.Change:
-                const consutlants = this.changeWorkflowForm.value.consultants;
+                const consultants = this.changeWorkflowForm.value.consultants;
                 let changeWorkflowOutput = new ChangeClientPeriodDto();
                 changeWorkflowOutput.clientNewLegalContractRequired = this.changeWorkflowForm.newLegalContractRequired?.value;
                 changeWorkflowOutput.cutoverDate = this.changeWorkflowForm.cutoverDate?.value;
                 changeWorkflowOutput.consultantPeriods = new Array<NewContractRequiredConsultantPeriodDto>();
-                consutlants.forEach((consultant: any) => {
+                consultants.forEach((consultant: any) => {
                     let consultantInput = new NewContractRequiredConsultantPeriodDto();
                     consultantInput.consultantNewLegalContractRequired = consultant.newLegalContractRequired,
                     consultantInput.consultantId = consultant.consultantId;
@@ -133,12 +133,12 @@ export class WorkflowActionsDialogComponent extends AppComponentBase implements 
                 this.onConfirmed.emit(changeWorkflowOutput);
                 break;
             case WorkflowDiallogAction.Extend:
-                const consutlantsToExtend = this.extendWorkflowForm.value.consultants;
+                const consultantsToExtend = this.extendWorkflowForm.value.consultants;
                 let extendWorkflowOutput = new ExtendClientPeriodDto();
                 extendWorkflowOutput.startDate = this.extendWorkflowForm.startDate?.value,
                 extendWorkflowOutput.endDate = this.extendWorkflowForm.endDate?.value,
                 extendWorkflowOutput.noEndDate = this.extendWorkflowForm.noEndDate?.value ?? false,
-                extendWorkflowOutput.extendConsultantIds = consutlantsToExtend.filter((x: any) => x.extendConsutlant).map((y: any) => y.consultantId);
+                extendWorkflowOutput.extendConsultantIds = consultantsToExtend.filter((x: any) => x.extendConsultant).map((y: any) => y.consultantId);
                 this.onConfirmed.emit(extendWorkflowOutput);
                 break;
             case WorkflowDiallogAction.Terminate:

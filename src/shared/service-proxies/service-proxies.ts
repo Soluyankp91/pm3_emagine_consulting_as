@@ -984,7 +984,7 @@ export class ClientPeriodServiceProxy {
      * @param body (optional) 
      * @return Success
      */
-    clientContractsPut(clientPeriodId: string, body?: ClientPeriodContractsDataDto | undefined): Observable<void> {
+    clientContractsPut(clientPeriodId: string, body?: ClientPeriodContractsDataCommandDto | undefined): Observable<void> {
         let url_ = this.baseUrl + "/api/ClientPeriod/{clientPeriodId}/client-contracts";
         if (clientPeriodId === undefined || clientPeriodId === null)
             throw new Error("The parameter 'clientPeriodId' must be defined.");
@@ -1038,7 +1038,7 @@ export class ClientPeriodServiceProxy {
     /**
      * @return Success
      */
-    clientContractsGet(clientPeriodId: string): Observable<ClientPeriodContractsDataDto> {
+    clientContractsGet(clientPeriodId: string): Observable<ClientPeriodContractsDataQueryDto> {
         let url_ = this.baseUrl + "/api/ClientPeriod/{clientPeriodId}/client-contracts";
         if (clientPeriodId === undefined || clientPeriodId === null)
             throw new Error("The parameter 'clientPeriodId' must be defined.");
@@ -1060,14 +1060,14 @@ export class ClientPeriodServiceProxy {
                 try {
                     return this.processClientContractsGet(response_ as any);
                 } catch (e) {
-                    return _observableThrow(e) as any as Observable<ClientPeriodContractsDataDto>;
+                    return _observableThrow(e) as any as Observable<ClientPeriodContractsDataQueryDto>;
                 }
             } else
-                return _observableThrow(response_) as any as Observable<ClientPeriodContractsDataDto>;
+                return _observableThrow(response_) as any as Observable<ClientPeriodContractsDataQueryDto>;
         }));
     }
 
-    protected processClientContractsGet(response: HttpResponseBase): Observable<ClientPeriodContractsDataDto> {
+    protected processClientContractsGet(response: HttpResponseBase): Observable<ClientPeriodContractsDataQueryDto> {
         const status = response.status;
         const responseBlob =
             response instanceof HttpResponse ? response.body :
@@ -1078,7 +1078,7 @@ export class ClientPeriodServiceProxy {
             return blobToText(responseBlob).pipe(_observableMergeMap(_responseText => {
             let result200: any = null;
             let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
-            result200 = ClientPeriodContractsDataDto.fromJS(resultData200);
+            result200 = ClientPeriodContractsDataQueryDto.fromJS(resultData200);
             return _observableOf(result200);
             }));
         } else if (status !== 200 && status !== 204) {
@@ -1086,7 +1086,7 @@ export class ClientPeriodServiceProxy {
             return throwException("An unexpected server error occurred.", status, _responseText, _headers);
             }));
         }
-        return _observableOf<ClientPeriodContractsDataDto>(null as any);
+        return _observableOf<ClientPeriodContractsDataQueryDto>(null as any);
     }
 
     /**
@@ -1684,7 +1684,7 @@ export class ClientContractsServiceProxy {
      * @param body (optional) 
      * @return Success
      */
-    editFinish(clientPeriodId: string, body?: ClientPeriodContractsDataDto | undefined): Observable<void> {
+    editFinish(clientPeriodId: string, body?: ClientPeriodContractsDataCommandDto | undefined): Observable<void> {
         let url_ = this.baseUrl + "/api/ClientPeriod/{clientPeriodId}/client-contracts/edit-finish";
         if (clientPeriodId === undefined || clientPeriodId === null)
             throw new Error("The parameter 'clientPeriodId' must be defined.");
@@ -3375,7 +3375,7 @@ export class ConsultantPeriodServiceProxy {
     /**
      * @return Success
      */
-    consultantContractsGet(consultantPeriodId: string): Observable<ConsultantPeriodContractsDataDto> {
+    consultantContractsGet(consultantPeriodId: string): Observable<ConsultantPeriodContractsDataQueryDto> {
         let url_ = this.baseUrl + "/api/ConsultantPeriod/{consultantPeriodId}/consultant-contracts";
         if (consultantPeriodId === undefined || consultantPeriodId === null)
             throw new Error("The parameter 'consultantPeriodId' must be defined.");
@@ -3397,14 +3397,14 @@ export class ConsultantPeriodServiceProxy {
                 try {
                     return this.processConsultantContractsGet(response_ as any);
                 } catch (e) {
-                    return _observableThrow(e) as any as Observable<ConsultantPeriodContractsDataDto>;
+                    return _observableThrow(e) as any as Observable<ConsultantPeriodContractsDataQueryDto>;
                 }
             } else
-                return _observableThrow(response_) as any as Observable<ConsultantPeriodContractsDataDto>;
+                return _observableThrow(response_) as any as Observable<ConsultantPeriodContractsDataQueryDto>;
         }));
     }
 
-    protected processConsultantContractsGet(response: HttpResponseBase): Observable<ConsultantPeriodContractsDataDto> {
+    protected processConsultantContractsGet(response: HttpResponseBase): Observable<ConsultantPeriodContractsDataQueryDto> {
         const status = response.status;
         const responseBlob =
             response instanceof HttpResponse ? response.body :
@@ -3415,7 +3415,7 @@ export class ConsultantPeriodServiceProxy {
             return blobToText(responseBlob).pipe(_observableMergeMap(_responseText => {
             let result200: any = null;
             let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
-            result200 = ConsultantPeriodContractsDataDto.fromJS(resultData200);
+            result200 = ConsultantPeriodContractsDataQueryDto.fromJS(resultData200);
             return _observableOf(result200);
             }));
         } else if (status !== 200 && status !== 204) {
@@ -3423,14 +3423,14 @@ export class ConsultantPeriodServiceProxy {
             return throwException("An unexpected server error occurred.", status, _responseText, _headers);
             }));
         }
-        return _observableOf<ConsultantPeriodContractsDataDto>(null as any);
+        return _observableOf<ConsultantPeriodContractsDataQueryDto>(null as any);
     }
 
     /**
      * @param body (optional) 
      * @return Success
      */
-    consultantContractsPut(consultantPeriodId: string, body?: ConsultantPeriodContractsDataDto | undefined): Observable<void> {
+    consultantContractsPut(consultantPeriodId: string, body?: ConsultantPeriodContractsDataCommandDto | undefined): Observable<void> {
         let url_ = this.baseUrl + "/api/ConsultantPeriod/{consultantPeriodId}/consultant-contracts";
         if (consultantPeriodId === undefined || consultantPeriodId === null)
             throw new Error("The parameter 'consultantPeriodId' must be defined.");
@@ -3901,7 +3901,7 @@ export class ConsultantContractsServiceProxy {
      * @param body (optional) 
      * @return Success
      */
-    editFinish(consultantPeriodId: string, body?: ConsultantPeriodContractsDataDto | undefined): Observable<void> {
+    editFinish(consultantPeriodId: string, body?: ConsultantPeriodContractsDataCommandDto | undefined): Observable<void> {
         let url_ = this.baseUrl + "/api/ConsultantPeriod/{consultantPeriodId}/consultant-contracts/edit-finish";
         if (consultantPeriodId === undefined || consultantPeriodId === null)
             throw new Error("The parameter 'consultantPeriodId' must be defined.");
@@ -8035,7 +8035,7 @@ export class MainOverviewServiceProxy {
     }
 
     /**
-     * @param mainOverviewStatusForSales (optional) 
+     * @param mainOverviewStatusesForSales (optional) 
      * @param accountManagers (optional) 
      * @param invoicingEntity (optional) 
      * @param paymentEntity (optional) 
@@ -8049,12 +8049,12 @@ export class MainOverviewServiceProxy {
      * @param sort (optional) 
      * @return Success
      */
-    workflows(mainOverviewStatusForSales?: MainOverviewStatus | undefined, accountManagers?: number[] | undefined, invoicingEntity?: number | undefined, paymentEntity?: number | undefined, salesTypes?: number[] | undefined, deliveryTypes?: number[] | undefined, margins?: number[] | undefined, search?: string | undefined, cutOffDate?: moment.Moment | undefined, pageNumber?: number | undefined, pageSize?: number | undefined, sort?: string | undefined): Observable<MainOverviewItemForWorkflowDtoPaginatedList> {
+    workflows(mainOverviewStatusesForSales?: MainOverviewStatus[] | undefined, accountManagers?: number[] | undefined, invoicingEntity?: number | undefined, paymentEntity?: number | undefined, salesTypes?: number[] | undefined, deliveryTypes?: number[] | undefined, margins?: number[] | undefined, search?: string | undefined, cutOffDate?: moment.Moment | undefined, pageNumber?: number | undefined, pageSize?: number | undefined, sort?: string | undefined): Observable<MainOverviewItemForWorkflowDtoPaginatedList> {
         let url_ = this.baseUrl + "/api/MainOverview/workflows?";
-        if (mainOverviewStatusForSales === null)
-            throw new Error("The parameter 'mainOverviewStatusForSales' cannot be null.");
-        else if (mainOverviewStatusForSales !== undefined)
-            url_ += "MainOverviewStatusForSales=" + encodeURIComponent("" + mainOverviewStatusForSales) + "&";
+        if (mainOverviewStatusesForSales === null)
+            throw new Error("The parameter 'mainOverviewStatusesForSales' cannot be null.");
+        else if (mainOverviewStatusesForSales !== undefined)
+            mainOverviewStatusesForSales && mainOverviewStatusesForSales.forEach(item => { url_ += "MainOverviewStatusesForSales=" + encodeURIComponent("" + item) + "&"; });
         if (accountManagers === null)
             throw new Error("The parameter 'accountManagers' cannot be null.");
         else if (accountManagers !== undefined)
@@ -8146,7 +8146,7 @@ export class MainOverviewServiceProxy {
     }
 
     /**
-     * @param mainOverviewStatusForSales (optional) 
+     * @param mainOverviewStatusesForSales (optional) 
      * @param accountManagers (optional) 
      * @param invoicingEntity (optional) 
      * @param paymentEntity (optional) 
@@ -8160,12 +8160,12 @@ export class MainOverviewServiceProxy {
      * @param sort (optional) 
      * @return Success
      */
-    consultants(mainOverviewStatusForSales?: MainOverviewStatus | undefined, accountManagers?: number[] | undefined, invoicingEntity?: number | undefined, paymentEntity?: number | undefined, salesTypes?: number[] | undefined, deliveryTypes?: number[] | undefined, margins?: number[] | undefined, search?: string | undefined, cutOffDate?: moment.Moment | undefined, pageNumber?: number | undefined, pageSize?: number | undefined, sort?: string | undefined): Observable<MainOverviewItemForConsultantDtoPaginatedList> {
+    consultants(mainOverviewStatusesForSales?: MainOverviewStatus[] | undefined, accountManagers?: number[] | undefined, invoicingEntity?: number | undefined, paymentEntity?: number | undefined, salesTypes?: number[] | undefined, deliveryTypes?: number[] | undefined, margins?: number[] | undefined, search?: string | undefined, cutOffDate?: moment.Moment | undefined, pageNumber?: number | undefined, pageSize?: number | undefined, sort?: string | undefined): Observable<MainOverviewItemForConsultantDtoPaginatedList> {
         let url_ = this.baseUrl + "/api/MainOverview/consultants?";
-        if (mainOverviewStatusForSales === null)
-            throw new Error("The parameter 'mainOverviewStatusForSales' cannot be null.");
-        else if (mainOverviewStatusForSales !== undefined)
-            url_ += "MainOverviewStatusForSales=" + encodeURIComponent("" + mainOverviewStatusForSales) + "&";
+        if (mainOverviewStatusesForSales === null)
+            throw new Error("The parameter 'mainOverviewStatusesForSales' cannot be null.");
+        else if (mainOverviewStatusesForSales !== undefined)
+            mainOverviewStatusesForSales && mainOverviewStatusesForSales.forEach(item => { url_ += "MainOverviewStatusesForSales=" + encodeURIComponent("" + item) + "&"; });
         if (accountManagers === null)
             throw new Error("The parameter 'accountManagers' cannot be null.");
         else if (accountManagers !== undefined)
@@ -11919,16 +11919,13 @@ export interface IClientOverviewListItemDtoPaginatedList {
     hasNextPage?: boolean;
 }
 
-export class ClientPeriodContractsDataDto implements IClientPeriodContractsDataDto {
+export class ClientPeriodContractsDataCommandDto implements IClientPeriodContractsDataCommandDto {
     mainData?: ContractsMainDataDto;
     clientData?: ContractsClientDataDto;
-    consultantData?: ConsultantContractsDataDto[] | undefined;
-    showManualOption?: boolean;
     contractLinesDoneManuallyInOldPm?: boolean | undefined;
-    enableLegalContractsButtons?: boolean;
-    clientLegalContractDoneStatusId?: number;
+    consultantData?: ConsultantContractsDataCommandDto[] | undefined;
 
-    constructor(data?: IClientPeriodContractsDataDto) {
+    constructor(data?: IClientPeriodContractsDataCommandDto) {
         if (data) {
             for (var property in data) {
                 if (data.hasOwnProperty(property))
@@ -11941,21 +11938,18 @@ export class ClientPeriodContractsDataDto implements IClientPeriodContractsDataD
         if (_data) {
             this.mainData = _data["mainData"] ? ContractsMainDataDto.fromJS(_data["mainData"]) : <any>undefined;
             this.clientData = _data["clientData"] ? ContractsClientDataDto.fromJS(_data["clientData"]) : <any>undefined;
+            this.contractLinesDoneManuallyInOldPm = _data["contractLinesDoneManuallyInOldPm"];
             if (Array.isArray(_data["consultantData"])) {
                 this.consultantData = [] as any;
                 for (let item of _data["consultantData"])
-                    this.consultantData!.push(ConsultantContractsDataDto.fromJS(item));
+                    this.consultantData!.push(ConsultantContractsDataCommandDto.fromJS(item));
             }
-            this.showManualOption = _data["showManualOption"];
-            this.contractLinesDoneManuallyInOldPm = _data["contractLinesDoneManuallyInOldPm"];
-            this.enableLegalContractsButtons = _data["enableLegalContractsButtons"];
-            this.clientLegalContractDoneStatusId = _data["clientLegalContractDoneStatusId"];
         }
     }
 
-    static fromJS(data: any): ClientPeriodContractsDataDto {
+    static fromJS(data: any): ClientPeriodContractsDataCommandDto {
         data = typeof data === 'object' ? data : {};
-        let result = new ClientPeriodContractsDataDto();
+        let result = new ClientPeriodContractsDataCommandDto();
         result.init(data);
         return result;
     }
@@ -11964,27 +11958,101 @@ export class ClientPeriodContractsDataDto implements IClientPeriodContractsDataD
         data = typeof data === 'object' ? data : {};
         data["mainData"] = this.mainData ? this.mainData.toJSON() : <any>undefined;
         data["clientData"] = this.clientData ? this.clientData.toJSON() : <any>undefined;
+        data["contractLinesDoneManuallyInOldPm"] = this.contractLinesDoneManuallyInOldPm;
         if (Array.isArray(this.consultantData)) {
             data["consultantData"] = [];
             for (let item of this.consultantData)
                 data["consultantData"].push(item.toJSON());
         }
-        data["showManualOption"] = this.showManualOption;
-        data["contractLinesDoneManuallyInOldPm"] = this.contractLinesDoneManuallyInOldPm;
-        data["enableLegalContractsButtons"] = this.enableLegalContractsButtons;
-        data["clientLegalContractDoneStatusId"] = this.clientLegalContractDoneStatusId;
         return data;
     }
 }
 
-export interface IClientPeriodContractsDataDto {
+export interface IClientPeriodContractsDataCommandDto {
     mainData?: ContractsMainDataDto;
     clientData?: ContractsClientDataDto;
-    consultantData?: ConsultantContractsDataDto[] | undefined;
-    showManualOption?: boolean;
     contractLinesDoneManuallyInOldPm?: boolean | undefined;
+    consultantData?: ConsultantContractsDataCommandDto[] | undefined;
+}
+
+export class ClientPeriodContractsDataQueryDto implements IClientPeriodContractsDataQueryDto {
+    mainData?: ContractsMainDataDto;
+    clientData?: ContractsClientDataDto;
+    contractLinesDoneManuallyInOldPm?: boolean | undefined;
+    isNewSyncNeeded?: boolean;
+    lastSyncedDate?: moment.Moment | undefined;
+    showManualOption?: boolean;
     enableLegalContractsButtons?: boolean;
     clientLegalContractDoneStatusId?: number;
+    customDebtorNumber?: string | undefined;
+    consultantData?: ConsultantContractsDataQueryDto[] | undefined;
+
+    constructor(data?: IClientPeriodContractsDataQueryDto) {
+        if (data) {
+            for (var property in data) {
+                if (data.hasOwnProperty(property))
+                    (<any>this)[property] = (<any>data)[property];
+            }
+        }
+    }
+
+    init(_data?: any) {
+        if (_data) {
+            this.mainData = _data["mainData"] ? ContractsMainDataDto.fromJS(_data["mainData"]) : <any>undefined;
+            this.clientData = _data["clientData"] ? ContractsClientDataDto.fromJS(_data["clientData"]) : <any>undefined;
+            this.contractLinesDoneManuallyInOldPm = _data["contractLinesDoneManuallyInOldPm"];
+            this.isNewSyncNeeded = _data["isNewSyncNeeded"];
+            this.lastSyncedDate = _data["lastSyncedDate"] ? moment(_data["lastSyncedDate"].toString()) : <any>undefined;
+            this.showManualOption = _data["showManualOption"];
+            this.enableLegalContractsButtons = _data["enableLegalContractsButtons"];
+            this.clientLegalContractDoneStatusId = _data["clientLegalContractDoneStatusId"];
+            this.customDebtorNumber = _data["customDebtorNumber"];
+            if (Array.isArray(_data["consultantData"])) {
+                this.consultantData = [] as any;
+                for (let item of _data["consultantData"])
+                    this.consultantData!.push(ConsultantContractsDataQueryDto.fromJS(item));
+            }
+        }
+    }
+
+    static fromJS(data: any): ClientPeriodContractsDataQueryDto {
+        data = typeof data === 'object' ? data : {};
+        let result = new ClientPeriodContractsDataQueryDto();
+        result.init(data);
+        return result;
+    }
+
+    toJSON(data?: any) {
+        data = typeof data === 'object' ? data : {};
+        data["mainData"] = this.mainData ? this.mainData.toJSON() : <any>undefined;
+        data["clientData"] = this.clientData ? this.clientData.toJSON() : <any>undefined;
+        data["contractLinesDoneManuallyInOldPm"] = this.contractLinesDoneManuallyInOldPm;
+        data["isNewSyncNeeded"] = this.isNewSyncNeeded;
+        data["lastSyncedDate"] = this.lastSyncedDate ? this.lastSyncedDate.toISOString() : <any>undefined;
+        data["showManualOption"] = this.showManualOption;
+        data["enableLegalContractsButtons"] = this.enableLegalContractsButtons;
+        data["clientLegalContractDoneStatusId"] = this.clientLegalContractDoneStatusId;
+        data["customDebtorNumber"] = this.customDebtorNumber;
+        if (Array.isArray(this.consultantData)) {
+            data["consultantData"] = [];
+            for (let item of this.consultantData)
+                data["consultantData"].push(item.toJSON());
+        }
+        return data;
+    }
+}
+
+export interface IClientPeriodContractsDataQueryDto {
+    mainData?: ContractsMainDataDto;
+    clientData?: ContractsClientDataDto;
+    contractLinesDoneManuallyInOldPm?: boolean | undefined;
+    isNewSyncNeeded?: boolean;
+    lastSyncedDate?: moment.Moment | undefined;
+    showManualOption?: boolean;
+    enableLegalContractsButtons?: boolean;
+    clientLegalContractDoneStatusId?: number;
+    customDebtorNumber?: string | undefined;
+    consultantData?: ConsultantContractsDataQueryDto[] | undefined;
 }
 
 export class ClientPeriodDto implements IClientPeriodDto {
@@ -13151,7 +13219,7 @@ export interface ICommissionDto {
     client?: ClientResultDto;
 }
 
-export class ConsultantContractsDataDto implements IConsultantContractsDataDto {
+export class ConsultantContractsDataCommandDto implements IConsultantContractsDataCommandDto {
     consultantPeriodId?: string;
     employmentTypeId?: number | undefined;
     consultantId?: number | undefined;
@@ -13168,14 +13236,12 @@ export class ConsultantContractsDataDto implements IConsultantContractsDataDto {
     noSpecialFee?: boolean;
     periodConsultantSpecialFees?: PeriodConsultantSpecialFeeDto[] | undefined;
     projectLines?: ProjectLineDto[] | undefined;
-    readonly internalLegalContractDoneStatusId?: number;
-    readonly consultantLegalContractDoneStatusId?: number;
     startDate?: moment.Moment;
     noEndDate?: boolean;
     endDate?: moment.Moment | undefined;
     pdcPaymentEntityId?: number | undefined;
 
-    constructor(data?: IConsultantContractsDataDto) {
+    constructor(data?: IConsultantContractsDataCommandDto) {
         if (data) {
             for (var property in data) {
                 if (data.hasOwnProperty(property))
@@ -13214,8 +13280,6 @@ export class ConsultantContractsDataDto implements IConsultantContractsDataDto {
                 for (let item of _data["projectLines"])
                     this.projectLines!.push(ProjectLineDto.fromJS(item));
             }
-            (<any>this).internalLegalContractDoneStatusId = _data["internalLegalContractDoneStatusId"];
-            (<any>this).consultantLegalContractDoneStatusId = _data["consultantLegalContractDoneStatusId"];
             this.startDate = _data["startDate"] ? moment(_data["startDate"].toString()) : <any>undefined;
             this.noEndDate = _data["noEndDate"];
             this.endDate = _data["endDate"] ? moment(_data["endDate"].toString()) : <any>undefined;
@@ -13223,9 +13287,9 @@ export class ConsultantContractsDataDto implements IConsultantContractsDataDto {
         }
     }
 
-    static fromJS(data: any): ConsultantContractsDataDto {
+    static fromJS(data: any): ConsultantContractsDataCommandDto {
         data = typeof data === 'object' ? data : {};
-        let result = new ConsultantContractsDataDto();
+        let result = new ConsultantContractsDataCommandDto();
         result.init(data);
         return result;
     }
@@ -13260,8 +13324,6 @@ export class ConsultantContractsDataDto implements IConsultantContractsDataDto {
             for (let item of this.projectLines)
                 data["projectLines"].push(item.toJSON());
         }
-        data["internalLegalContractDoneStatusId"] = this.internalLegalContractDoneStatusId;
-        data["consultantLegalContractDoneStatusId"] = this.consultantLegalContractDoneStatusId;
         data["startDate"] = this.startDate ? this.startDate.format('YYYY-MM-DD') : <any>undefined;
         data["noEndDate"] = this.noEndDate;
         data["endDate"] = this.endDate ? this.endDate.format('YYYY-MM-DD') : <any>undefined;
@@ -13270,7 +13332,7 @@ export class ConsultantContractsDataDto implements IConsultantContractsDataDto {
     }
 }
 
-export interface IConsultantContractsDataDto {
+export interface IConsultantContractsDataCommandDto {
     consultantPeriodId?: string;
     employmentTypeId?: number | undefined;
     consultantId?: number | undefined;
@@ -13287,16 +13349,159 @@ export interface IConsultantContractsDataDto {
     noSpecialFee?: boolean;
     periodConsultantSpecialFees?: PeriodConsultantSpecialFeeDto[] | undefined;
     projectLines?: ProjectLineDto[] | undefined;
-    internalLegalContractDoneStatusId?: number;
-    consultantLegalContractDoneStatusId?: number;
     startDate?: moment.Moment;
     noEndDate?: boolean;
     endDate?: moment.Moment | undefined;
     pdcPaymentEntityId?: number | undefined;
 }
 
+export class ConsultantContractsDataQueryDto implements IConsultantContractsDataQueryDto {
+    consultantPeriodId?: string;
+    employmentTypeId?: number | undefined;
+    consultantId?: number | undefined;
+    consultant?: ConsultantResultDto;
+    nameOnly?: string | undefined;
+    consultantTimeReportingCapId?: number | undefined;
+    consultantTimeReportingCapMaxValue?: number | undefined;
+    consultantTimeReportingCapCurrencyId?: number | undefined;
+    noSpecialContractTerms?: boolean;
+    specialContractTerms?: string | undefined;
+    consultantRate?: ConsultantRateDto;
+    noSpecialRate?: boolean;
+    periodConsultantSpecialRates?: PeriodConsultantSpecialRateDto[] | undefined;
+    noSpecialFee?: boolean;
+    periodConsultantSpecialFees?: PeriodConsultantSpecialFeeDto[] | undefined;
+    projectLines?: ProjectLineDto[] | undefined;
+    startDate?: moment.Moment;
+    noEndDate?: boolean;
+    endDate?: moment.Moment | undefined;
+    pdcPaymentEntityId?: number | undefined;
+    internalLegalContractDoneStatusId?: number;
+    consultantLegalContractDoneStatusId?: number;
+
+    constructor(data?: IConsultantContractsDataQueryDto) {
+        if (data) {
+            for (var property in data) {
+                if (data.hasOwnProperty(property))
+                    (<any>this)[property] = (<any>data)[property];
+            }
+        }
+    }
+
+    init(_data?: any) {
+        if (_data) {
+            this.consultantPeriodId = _data["consultantPeriodId"];
+            this.employmentTypeId = _data["employmentTypeId"];
+            this.consultantId = _data["consultantId"];
+            this.consultant = _data["consultant"] ? ConsultantResultDto.fromJS(_data["consultant"]) : <any>undefined;
+            this.nameOnly = _data["nameOnly"];
+            this.consultantTimeReportingCapId = _data["consultantTimeReportingCapId"];
+            this.consultantTimeReportingCapMaxValue = _data["consultantTimeReportingCapMaxValue"];
+            this.consultantTimeReportingCapCurrencyId = _data["consultantTimeReportingCapCurrencyId"];
+            this.noSpecialContractTerms = _data["noSpecialContractTerms"];
+            this.specialContractTerms = _data["specialContractTerms"];
+            this.consultantRate = _data["consultantRate"] ? ConsultantRateDto.fromJS(_data["consultantRate"]) : <any>undefined;
+            this.noSpecialRate = _data["noSpecialRate"];
+            if (Array.isArray(_data["periodConsultantSpecialRates"])) {
+                this.periodConsultantSpecialRates = [] as any;
+                for (let item of _data["periodConsultantSpecialRates"])
+                    this.periodConsultantSpecialRates!.push(PeriodConsultantSpecialRateDto.fromJS(item));
+            }
+            this.noSpecialFee = _data["noSpecialFee"];
+            if (Array.isArray(_data["periodConsultantSpecialFees"])) {
+                this.periodConsultantSpecialFees = [] as any;
+                for (let item of _data["periodConsultantSpecialFees"])
+                    this.periodConsultantSpecialFees!.push(PeriodConsultantSpecialFeeDto.fromJS(item));
+            }
+            if (Array.isArray(_data["projectLines"])) {
+                this.projectLines = [] as any;
+                for (let item of _data["projectLines"])
+                    this.projectLines!.push(ProjectLineDto.fromJS(item));
+            }
+            this.startDate = _data["startDate"] ? moment(_data["startDate"].toString()) : <any>undefined;
+            this.noEndDate = _data["noEndDate"];
+            this.endDate = _data["endDate"] ? moment(_data["endDate"].toString()) : <any>undefined;
+            this.pdcPaymentEntityId = _data["pdcPaymentEntityId"];
+            this.internalLegalContractDoneStatusId = _data["internalLegalContractDoneStatusId"];
+            this.consultantLegalContractDoneStatusId = _data["consultantLegalContractDoneStatusId"];
+        }
+    }
+
+    static fromJS(data: any): ConsultantContractsDataQueryDto {
+        data = typeof data === 'object' ? data : {};
+        let result = new ConsultantContractsDataQueryDto();
+        result.init(data);
+        return result;
+    }
+
+    toJSON(data?: any) {
+        data = typeof data === 'object' ? data : {};
+        data["consultantPeriodId"] = this.consultantPeriodId;
+        data["employmentTypeId"] = this.employmentTypeId;
+        data["consultantId"] = this.consultantId;
+        data["consultant"] = this.consultant ? this.consultant.toJSON() : <any>undefined;
+        data["nameOnly"] = this.nameOnly;
+        data["consultantTimeReportingCapId"] = this.consultantTimeReportingCapId;
+        data["consultantTimeReportingCapMaxValue"] = this.consultantTimeReportingCapMaxValue;
+        data["consultantTimeReportingCapCurrencyId"] = this.consultantTimeReportingCapCurrencyId;
+        data["noSpecialContractTerms"] = this.noSpecialContractTerms;
+        data["specialContractTerms"] = this.specialContractTerms;
+        data["consultantRate"] = this.consultantRate ? this.consultantRate.toJSON() : <any>undefined;
+        data["noSpecialRate"] = this.noSpecialRate;
+        if (Array.isArray(this.periodConsultantSpecialRates)) {
+            data["periodConsultantSpecialRates"] = [];
+            for (let item of this.periodConsultantSpecialRates)
+                data["periodConsultantSpecialRates"].push(item.toJSON());
+        }
+        data["noSpecialFee"] = this.noSpecialFee;
+        if (Array.isArray(this.periodConsultantSpecialFees)) {
+            data["periodConsultantSpecialFees"] = [];
+            for (let item of this.periodConsultantSpecialFees)
+                data["periodConsultantSpecialFees"].push(item.toJSON());
+        }
+        if (Array.isArray(this.projectLines)) {
+            data["projectLines"] = [];
+            for (let item of this.projectLines)
+                data["projectLines"].push(item.toJSON());
+        }
+        data["startDate"] = this.startDate ? this.startDate.format('YYYY-MM-DD') : <any>undefined;
+        data["noEndDate"] = this.noEndDate;
+        data["endDate"] = this.endDate ? this.endDate.format('YYYY-MM-DD') : <any>undefined;
+        data["pdcPaymentEntityId"] = this.pdcPaymentEntityId;
+        data["internalLegalContractDoneStatusId"] = this.internalLegalContractDoneStatusId;
+        data["consultantLegalContractDoneStatusId"] = this.consultantLegalContractDoneStatusId;
+        return data;
+    }
+}
+
+export interface IConsultantContractsDataQueryDto {
+    consultantPeriodId?: string;
+    employmentTypeId?: number | undefined;
+    consultantId?: number | undefined;
+    consultant?: ConsultantResultDto;
+    nameOnly?: string | undefined;
+    consultantTimeReportingCapId?: number | undefined;
+    consultantTimeReportingCapMaxValue?: number | undefined;
+    consultantTimeReportingCapCurrencyId?: number | undefined;
+    noSpecialContractTerms?: boolean;
+    specialContractTerms?: string | undefined;
+    consultantRate?: ConsultantRateDto;
+    noSpecialRate?: boolean;
+    periodConsultantSpecialRates?: PeriodConsultantSpecialRateDto[] | undefined;
+    noSpecialFee?: boolean;
+    periodConsultantSpecialFees?: PeriodConsultantSpecialFeeDto[] | undefined;
+    projectLines?: ProjectLineDto[] | undefined;
+    startDate?: moment.Moment;
+    noEndDate?: boolean;
+    endDate?: moment.Moment | undefined;
+    pdcPaymentEntityId?: number | undefined;
+    internalLegalContractDoneStatusId?: number;
+    consultantLegalContractDoneStatusId?: number;
+}
+
 export class ConsultantGanttRow implements IConsultantGanttRow {
     name?: string | undefined;
+    consultantId?: number | undefined;
     consultantExternalId?: string | undefined;
     ganttRowItems?: GanttRowItem[] | undefined;
 
@@ -13312,6 +13517,7 @@ export class ConsultantGanttRow implements IConsultantGanttRow {
     init(_data?: any) {
         if (_data) {
             this.name = _data["name"];
+            this.consultantId = _data["consultantId"];
             this.consultantExternalId = _data["consultantExternalId"];
             if (Array.isArray(_data["ganttRowItems"])) {
                 this.ganttRowItems = [] as any;
@@ -13331,6 +13537,7 @@ export class ConsultantGanttRow implements IConsultantGanttRow {
     toJSON(data?: any) {
         data = typeof data === 'object' ? data : {};
         data["name"] = this.name;
+        data["consultantId"] = this.consultantId;
         data["consultantExternalId"] = this.consultantExternalId;
         if (Array.isArray(this.ganttRowItems)) {
             data["ganttRowItems"] = [];
@@ -13343,8 +13550,53 @@ export class ConsultantGanttRow implements IConsultantGanttRow {
 
 export interface IConsultantGanttRow {
     name?: string | undefined;
+    consultantId?: number | undefined;
     consultantExternalId?: string | undefined;
     ganttRowItems?: GanttRowItem[] | undefined;
+}
+
+export class ConsultantNameWithRequestUrl implements IConsultantNameWithRequestUrl {
+    consultantName?: string | undefined;
+    requestId?: number | undefined;
+    requestUrl?: string | undefined;
+
+    constructor(data?: IConsultantNameWithRequestUrl) {
+        if (data) {
+            for (var property in data) {
+                if (data.hasOwnProperty(property))
+                    (<any>this)[property] = (<any>data)[property];
+            }
+        }
+    }
+
+    init(_data?: any) {
+        if (_data) {
+            this.consultantName = _data["consultantName"];
+            this.requestId = _data["requestId"];
+            this.requestUrl = _data["requestUrl"];
+        }
+    }
+
+    static fromJS(data: any): ConsultantNameWithRequestUrl {
+        data = typeof data === 'object' ? data : {};
+        let result = new ConsultantNameWithRequestUrl();
+        result.init(data);
+        return result;
+    }
+
+    toJSON(data?: any) {
+        data = typeof data === 'object' ? data : {};
+        data["consultantName"] = this.consultantName;
+        data["requestId"] = this.requestId;
+        data["requestUrl"] = this.requestUrl;
+        return data;
+    }
+}
+
+export interface IConsultantNameWithRequestUrl {
+    consultantName?: string | undefined;
+    requestId?: number | undefined;
+    requestUrl?: string | undefined;
 }
 
 export class ConsultantPeriodAddDto implements IConsultantPeriodAddDto {
@@ -13391,16 +13643,16 @@ export interface IConsultantPeriodAddDto {
     endDate?: moment.Moment | undefined;
 }
 
-export class ConsultantPeriodContractsDataDto implements IConsultantPeriodContractsDataDto {
+export class ConsultantPeriodContractsDataCommandDto implements IConsultantPeriodContractsDataCommandDto {
     remarks?: string | undefined;
     noRemarks?: boolean;
     projectDescription?: string | undefined;
     mainData?: ContractsMainDataDto;
-    consultantData?: ConsultantContractsDataDto;
     contractLinesDoneManuallyInOldPm?: boolean | undefined;
     newLegalContractRequired?: boolean | undefined;
+    consultantData?: ConsultantContractsDataCommandDto;
 
-    constructor(data?: IConsultantPeriodContractsDataDto) {
+    constructor(data?: IConsultantPeriodContractsDataCommandDto) {
         if (data) {
             for (var property in data) {
                 if (data.hasOwnProperty(property))
@@ -13415,15 +13667,15 @@ export class ConsultantPeriodContractsDataDto implements IConsultantPeriodContra
             this.noRemarks = _data["noRemarks"];
             this.projectDescription = _data["projectDescription"];
             this.mainData = _data["mainData"] ? ContractsMainDataDto.fromJS(_data["mainData"]) : <any>undefined;
-            this.consultantData = _data["consultantData"] ? ConsultantContractsDataDto.fromJS(_data["consultantData"]) : <any>undefined;
             this.contractLinesDoneManuallyInOldPm = _data["contractLinesDoneManuallyInOldPm"];
             this.newLegalContractRequired = _data["newLegalContractRequired"];
+            this.consultantData = _data["consultantData"] ? ConsultantContractsDataCommandDto.fromJS(_data["consultantData"]) : <any>undefined;
         }
     }
 
-    static fromJS(data: any): ConsultantPeriodContractsDataDto {
+    static fromJS(data: any): ConsultantPeriodContractsDataCommandDto {
         data = typeof data === 'object' ? data : {};
-        let result = new ConsultantPeriodContractsDataDto();
+        let result = new ConsultantPeriodContractsDataCommandDto();
         result.init(data);
         return result;
     }
@@ -13434,21 +13686,105 @@ export class ConsultantPeriodContractsDataDto implements IConsultantPeriodContra
         data["noRemarks"] = this.noRemarks;
         data["projectDescription"] = this.projectDescription;
         data["mainData"] = this.mainData ? this.mainData.toJSON() : <any>undefined;
-        data["consultantData"] = this.consultantData ? this.consultantData.toJSON() : <any>undefined;
         data["contractLinesDoneManuallyInOldPm"] = this.contractLinesDoneManuallyInOldPm;
         data["newLegalContractRequired"] = this.newLegalContractRequired;
+        data["consultantData"] = this.consultantData ? this.consultantData.toJSON() : <any>undefined;
         return data;
     }
 }
 
-export interface IConsultantPeriodContractsDataDto {
+export interface IConsultantPeriodContractsDataCommandDto {
     remarks?: string | undefined;
     noRemarks?: boolean;
     projectDescription?: string | undefined;
     mainData?: ContractsMainDataDto;
-    consultantData?: ConsultantContractsDataDto;
     contractLinesDoneManuallyInOldPm?: boolean | undefined;
     newLegalContractRequired?: boolean | undefined;
+    consultantData?: ConsultantContractsDataCommandDto;
+}
+
+export class ConsultantPeriodContractsDataQueryDto implements IConsultantPeriodContractsDataQueryDto {
+    remarks?: string | undefined;
+    noRemarks?: boolean;
+    projectDescription?: string | undefined;
+    mainData?: ContractsMainDataDto;
+    contractLinesDoneManuallyInOldPm?: boolean | undefined;
+    newLegalContractRequired?: boolean | undefined;
+    clientData?: ContractsClientDataDto;
+    isNewSyncNeeded?: boolean;
+    lastSyncedDate?: moment.Moment | undefined;
+    showManualOption?: boolean;
+    enableLegalContractsButtons?: boolean;
+    customDebtorNumber?: string | undefined;
+    consultantData?: ConsultantContractsDataQueryDto;
+
+    constructor(data?: IConsultantPeriodContractsDataQueryDto) {
+        if (data) {
+            for (var property in data) {
+                if (data.hasOwnProperty(property))
+                    (<any>this)[property] = (<any>data)[property];
+            }
+        }
+    }
+
+    init(_data?: any) {
+        if (_data) {
+            this.remarks = _data["remarks"];
+            this.noRemarks = _data["noRemarks"];
+            this.projectDescription = _data["projectDescription"];
+            this.mainData = _data["mainData"] ? ContractsMainDataDto.fromJS(_data["mainData"]) : <any>undefined;
+            this.contractLinesDoneManuallyInOldPm = _data["contractLinesDoneManuallyInOldPm"];
+            this.newLegalContractRequired = _data["newLegalContractRequired"];
+            this.clientData = _data["clientData"] ? ContractsClientDataDto.fromJS(_data["clientData"]) : <any>undefined;
+            this.isNewSyncNeeded = _data["isNewSyncNeeded"];
+            this.lastSyncedDate = _data["lastSyncedDate"] ? moment(_data["lastSyncedDate"].toString()) : <any>undefined;
+            this.showManualOption = _data["showManualOption"];
+            this.enableLegalContractsButtons = _data["enableLegalContractsButtons"];
+            this.customDebtorNumber = _data["customDebtorNumber"];
+            this.consultantData = _data["consultantData"] ? ConsultantContractsDataQueryDto.fromJS(_data["consultantData"]) : <any>undefined;
+        }
+    }
+
+    static fromJS(data: any): ConsultantPeriodContractsDataQueryDto {
+        data = typeof data === 'object' ? data : {};
+        let result = new ConsultantPeriodContractsDataQueryDto();
+        result.init(data);
+        return result;
+    }
+
+    toJSON(data?: any) {
+        data = typeof data === 'object' ? data : {};
+        data["remarks"] = this.remarks;
+        data["noRemarks"] = this.noRemarks;
+        data["projectDescription"] = this.projectDescription;
+        data["mainData"] = this.mainData ? this.mainData.toJSON() : <any>undefined;
+        data["contractLinesDoneManuallyInOldPm"] = this.contractLinesDoneManuallyInOldPm;
+        data["newLegalContractRequired"] = this.newLegalContractRequired;
+        data["clientData"] = this.clientData ? this.clientData.toJSON() : <any>undefined;
+        data["isNewSyncNeeded"] = this.isNewSyncNeeded;
+        data["lastSyncedDate"] = this.lastSyncedDate ? this.lastSyncedDate.toISOString() : <any>undefined;
+        data["showManualOption"] = this.showManualOption;
+        data["enableLegalContractsButtons"] = this.enableLegalContractsButtons;
+        data["customDebtorNumber"] = this.customDebtorNumber;
+        data["consultantData"] = this.consultantData ? this.consultantData.toJSON() : <any>undefined;
+        return data;
+    }
+}
+
+export interface IConsultantPeriodContractsDataQueryDto {
+    remarks?: string | undefined;
+    noRemarks?: boolean;
+    projectDescription?: string | undefined;
+    mainData?: ContractsMainDataDto;
+    contractLinesDoneManuallyInOldPm?: boolean | undefined;
+    newLegalContractRequired?: boolean | undefined;
+    clientData?: ContractsClientDataDto;
+    isNewSyncNeeded?: boolean;
+    lastSyncedDate?: moment.Moment | undefined;
+    showManualOption?: boolean;
+    enableLegalContractsButtons?: boolean;
+    customDebtorNumber?: string | undefined;
+    consultantData?: ConsultantContractsDataQueryDto;
 }
 
 export class ConsultantPeriodFinanceDataDto implements IConsultantPeriodFinanceDataDto {
@@ -13743,6 +14079,7 @@ export class ConsultantSalesDataDto implements IConsultantSalesDataDto {
     employmentTypeId?: number | undefined;
     consultantPeriodId?: string | undefined;
     soldRequestConsultantId?: number | undefined;
+    requestId?: number | undefined;
     consultantId?: number | undefined;
     consultant?: ConsultantResultDto;
     nameOnly?: string | undefined;
@@ -13789,6 +14126,7 @@ export class ConsultantSalesDataDto implements IConsultantSalesDataDto {
             this.employmentTypeId = _data["employmentTypeId"];
             this.consultantPeriodId = _data["consultantPeriodId"];
             this.soldRequestConsultantId = _data["soldRequestConsultantId"];
+            this.requestId = _data["requestId"];
             this.consultantId = _data["consultantId"];
             this.consultant = _data["consultant"] ? ConsultantResultDto.fromJS(_data["consultant"]) : <any>undefined;
             this.nameOnly = _data["nameOnly"];
@@ -13843,6 +14181,7 @@ export class ConsultantSalesDataDto implements IConsultantSalesDataDto {
         data["employmentTypeId"] = this.employmentTypeId;
         data["consultantPeriodId"] = this.consultantPeriodId;
         data["soldRequestConsultantId"] = this.soldRequestConsultantId;
+        data["requestId"] = this.requestId;
         data["consultantId"] = this.consultantId;
         data["consultant"] = this.consultant ? this.consultant.toJSON() : <any>undefined;
         data["nameOnly"] = this.nameOnly;
@@ -13890,6 +14229,7 @@ export interface IConsultantSalesDataDto {
     employmentTypeId?: number | undefined;
     consultantPeriodId?: string | undefined;
     soldRequestConsultantId?: number | undefined;
+    requestId?: number | undefined;
     consultantId?: number | undefined;
     consultant?: ConsultantResultDto;
     nameOnly?: string | undefined;
@@ -14234,6 +14574,7 @@ export interface IConsultantTerminationSourcingDataQueryDto {
 export class ConsultantWithSourcingRequestResultDto implements IConsultantWithSourcingRequestResultDto {
     consultant?: ConsultantResultDto;
     sourcingRequestConsultantId?: number | undefined;
+    sourcingRequestId?: number | undefined;
     sourcingRequestConsultantHeadline?: string | undefined;
 
     constructor(data?: IConsultantWithSourcingRequestResultDto) {
@@ -14249,6 +14590,7 @@ export class ConsultantWithSourcingRequestResultDto implements IConsultantWithSo
         if (_data) {
             this.consultant = _data["consultant"] ? ConsultantResultDto.fromJS(_data["consultant"]) : <any>undefined;
             this.sourcingRequestConsultantId = _data["sourcingRequestConsultantId"];
+            this.sourcingRequestId = _data["sourcingRequestId"];
             this.sourcingRequestConsultantHeadline = _data["sourcingRequestConsultantHeadline"];
         }
     }
@@ -14264,6 +14606,7 @@ export class ConsultantWithSourcingRequestResultDto implements IConsultantWithSo
         data = typeof data === 'object' ? data : {};
         data["consultant"] = this.consultant ? this.consultant.toJSON() : <any>undefined;
         data["sourcingRequestConsultantId"] = this.sourcingRequestConsultantId;
+        data["sourcingRequestId"] = this.sourcingRequestId;
         data["sourcingRequestConsultantHeadline"] = this.sourcingRequestConsultantHeadline;
         return data;
     }
@@ -14272,6 +14615,7 @@ export class ConsultantWithSourcingRequestResultDto implements IConsultantWithSo
 export interface IConsultantWithSourcingRequestResultDto {
     consultant?: ConsultantResultDto;
     sourcingRequestConsultantId?: number | undefined;
+    sourcingRequestId?: number | undefined;
     sourcingRequestConsultantHeadline?: string | undefined;
 }
 
@@ -14503,6 +14847,11 @@ export class ContractsClientDataDto implements IContractsClientDataDto {
     periodClientSpecialFees?: PeriodClientSpecialFeeDto[] | undefined;
     directClientId?: number | undefined;
     pdcInvoicingEntityId?: number | undefined;
+    invoicingReferenceNumber?: string | undefined;
+    clientInvoicingRecipientIdValue?: number | undefined;
+    clientInvoicingRecipient?: ClientResultDto;
+    invoicingReferencePersonIdValue?: number | undefined;
+    invoicingReferencePerson?: ContactResultDto;
 
     constructor(data?: IContractsClientDataDto) {
         if (data) {
@@ -14535,6 +14884,11 @@ export class ContractsClientDataDto implements IContractsClientDataDto {
             }
             this.directClientId = _data["directClientId"];
             this.pdcInvoicingEntityId = _data["pdcInvoicingEntityId"];
+            this.invoicingReferenceNumber = _data["invoicingReferenceNumber"];
+            this.clientInvoicingRecipientIdValue = _data["clientInvoicingRecipientIdValue"];
+            this.clientInvoicingRecipient = _data["clientInvoicingRecipient"] ? ClientResultDto.fromJS(_data["clientInvoicingRecipient"]) : <any>undefined;
+            this.invoicingReferencePersonIdValue = _data["invoicingReferencePersonIdValue"];
+            this.invoicingReferencePerson = _data["invoicingReferencePerson"] ? ContactResultDto.fromJS(_data["invoicingReferencePerson"]) : <any>undefined;
         }
     }
 
@@ -14567,6 +14921,11 @@ export class ContractsClientDataDto implements IContractsClientDataDto {
         }
         data["directClientId"] = this.directClientId;
         data["pdcInvoicingEntityId"] = this.pdcInvoicingEntityId;
+        data["invoicingReferenceNumber"] = this.invoicingReferenceNumber;
+        data["clientInvoicingRecipientIdValue"] = this.clientInvoicingRecipientIdValue;
+        data["clientInvoicingRecipient"] = this.clientInvoicingRecipient ? this.clientInvoicingRecipient.toJSON() : <any>undefined;
+        data["invoicingReferencePersonIdValue"] = this.invoicingReferencePersonIdValue;
+        data["invoicingReferencePerson"] = this.invoicingReferencePerson ? this.invoicingReferencePerson.toJSON() : <any>undefined;
         return data;
     }
 }
@@ -14584,6 +14943,11 @@ export interface IContractsClientDataDto {
     periodClientSpecialFees?: PeriodClientSpecialFeeDto[] | undefined;
     directClientId?: number | undefined;
     pdcInvoicingEntityId?: number | undefined;
+    invoicingReferenceNumber?: string | undefined;
+    clientInvoicingRecipientIdValue?: number | undefined;
+    clientInvoicingRecipient?: ClientResultDto;
+    invoicingReferencePersonIdValue?: number | undefined;
+    invoicingReferencePerson?: ContactResultDto;
 }
 
 export class ContractSignerDto implements IContractSignerDto {
@@ -15992,13 +16356,12 @@ export interface IMainOverviewItemPeriodDto {
 }
 
 export enum MainOverviewStatus {
-    ExtensionExpected = 1,
-    ExtensionInNegotiation = 2,
+    ExpectedExtension = 1,
+    InNegotiation = 2,
     ExpectedToTerminate = 3,
-    Started = 10,
-    Extended = 11,
+    NoAction = 10,
     Terminated = 12,
-    RequiresAttention = 20,
+    AttentionRequired = 20,
 }
 
 export class MainOverviewStatusDto implements IMainOverviewStatusDto {
@@ -16091,6 +16454,7 @@ export interface INewContractRequiredConsultantPeriodDto {
 
 export class NewWorkflowCreatedDto implements INewWorkflowCreatedDto {
     workflowId?: string;
+    clientPeriodId?: string | undefined;
 
     constructor(data?: INewWorkflowCreatedDto) {
         if (data) {
@@ -16104,6 +16468,7 @@ export class NewWorkflowCreatedDto implements INewWorkflowCreatedDto {
     init(_data?: any) {
         if (_data) {
             this.workflowId = _data["workflowId"];
+            this.clientPeriodId = _data["clientPeriodId"];
         }
     }
 
@@ -16117,12 +16482,14 @@ export class NewWorkflowCreatedDto implements INewWorkflowCreatedDto {
     toJSON(data?: any) {
         data = typeof data === 'object' ? data : {};
         data["workflowId"] = this.workflowId;
+        data["clientPeriodId"] = this.clientPeriodId;
         return data;
     }
 }
 
 export interface INewWorkflowCreatedDto {
     workflowId?: string;
+    clientPeriodId?: string | undefined;
 }
 
 export class OutputWorkflowPeriodInfoForIncomeReportDto implements IOutputWorkflowPeriodInfoForIncomeReportDto {
@@ -16507,6 +16874,8 @@ export class ProjectLineDto implements IProjectLineDto {
     modifiedBy?: EmployeeDto;
     modificationDate?: moment.Moment | undefined;
     consultantInsuranceOptionId?: number | undefined;
+    markedForLegacyDeletion?: boolean | undefined;
+    wasSynced?: boolean | undefined;
 
     constructor(data?: IProjectLineDto) {
         if (data) {
@@ -16540,6 +16909,8 @@ export class ProjectLineDto implements IProjectLineDto {
             this.modifiedBy = _data["modifiedBy"] ? EmployeeDto.fromJS(_data["modifiedBy"]) : <any>undefined;
             this.modificationDate = _data["modificationDate"] ? moment(_data["modificationDate"].toString()) : <any>undefined;
             this.consultantInsuranceOptionId = _data["consultantInsuranceOptionId"];
+            this.markedForLegacyDeletion = _data["markedForLegacyDeletion"];
+            this.wasSynced = _data["wasSynced"];
         }
     }
 
@@ -16573,6 +16944,8 @@ export class ProjectLineDto implements IProjectLineDto {
         data["modifiedBy"] = this.modifiedBy ? this.modifiedBy.toJSON() : <any>undefined;
         data["modificationDate"] = this.modificationDate ? this.modificationDate.format('YYYY-MM-DD') : <any>undefined;
         data["consultantInsuranceOptionId"] = this.consultantInsuranceOptionId;
+        data["markedForLegacyDeletion"] = this.markedForLegacyDeletion;
+        data["wasSynced"] = this.wasSynced;
         return data;
     }
 }
@@ -16599,6 +16972,8 @@ export interface IProjectLineDto {
     modifiedBy?: EmployeeDto;
     modificationDate?: moment.Moment | undefined;
     consultantInsuranceOptionId?: number | undefined;
+    markedForLegacyDeletion?: boolean | undefined;
+    wasSynced?: boolean | undefined;
 }
 
 export class ProjectTypeConfigurationDto implements IProjectTypeConfigurationDto {
@@ -17802,6 +18177,7 @@ export class WorkflowDto implements IWorkflowDto {
     workflowId?: string;
     clientName?: string | undefined;
     clientPeriods?: ClientPeriodDto[] | undefined;
+    consultantNamesWithRequestUrls?: ConsultantNameWithRequestUrl[] | undefined;
 
     constructor(data?: IWorkflowDto) {
         if (data) {
@@ -17820,6 +18196,11 @@ export class WorkflowDto implements IWorkflowDto {
                 this.clientPeriods = [] as any;
                 for (let item of _data["clientPeriods"])
                     this.clientPeriods!.push(ClientPeriodDto.fromJS(item));
+            }
+            if (Array.isArray(_data["consultantNamesWithRequestUrls"])) {
+                this.consultantNamesWithRequestUrls = [] as any;
+                for (let item of _data["consultantNamesWithRequestUrls"])
+                    this.consultantNamesWithRequestUrls!.push(ConsultantNameWithRequestUrl.fromJS(item));
             }
         }
     }
@@ -17840,6 +18221,11 @@ export class WorkflowDto implements IWorkflowDto {
             for (let item of this.clientPeriods)
                 data["clientPeriods"].push(item.toJSON());
         }
+        if (Array.isArray(this.consultantNamesWithRequestUrls)) {
+            data["consultantNamesWithRequestUrls"] = [];
+            for (let item of this.consultantNamesWithRequestUrls)
+                data["consultantNamesWithRequestUrls"].push(item.toJSON());
+        }
         return data;
     }
 }
@@ -17848,6 +18234,7 @@ export interface IWorkflowDto {
     workflowId?: string;
     clientName?: string | undefined;
     clientPeriods?: ClientPeriodDto[] | undefined;
+    consultantNamesWithRequestUrls?: ConsultantNameWithRequestUrl[] | undefined;
 }
 
 export enum WorkflowElementType {

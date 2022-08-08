@@ -32,7 +32,16 @@ export class WorkflowSalesComponent extends AppComponentBase implements OnInit {
     // Changed all above to enum
     // @Input() activeSideSection: WorkflowProcessDto;
     @Input() activeSideSection: WorkflowProcessWithAnchorsDto;
+    
     @Input() isCompleted: boolean;
+    // _isCompleted: boolean;
+    // get isCompleted(): boolean {
+    //     return this._isCompleted;
+    // }
+
+    // @Input() set isCompleted(value: boolean) {
+    //     this._isCompleted = value;
+    // }
 
     @Input() permissionsForCurrentUser: { [key: string]: boolean; } | undefined;
     editEnabledForcefuly = false;
@@ -95,8 +104,6 @@ export class WorkflowSalesComponent extends AppComponentBase implements OnInit {
             }
         )
     );
-
-    showMore = false;
 
     filteredAccountManagers: any[] = [];
     filteredSalesAccountManagers: any[] = [];
@@ -538,6 +545,7 @@ export class WorkflowSalesComponent extends AppComponentBase implements OnInit {
     }
 
     directClientSelected(event: MatAutocompleteSelectedEvent) {
+        this.salesClientDataForm.clientInvoicingRecipientIdValue?.setValue(event.option.value, {emitEvent: false});
         this.getRatesAndFees(event.option.value?.clientId);
     }
 
@@ -1074,6 +1082,7 @@ export class WorkflowSalesComponent extends AppComponentBase implements OnInit {
         let consultantDto = new ConsultantWithSourcingRequestResultDto();
         consultantDto.consultant = consultant?.consultant;
         consultantDto.sourcingRequestConsultantId = consultant?.soldRequestConsultantId;
+        consultantDto.sourcingRequestId = consultant?.requestId;
         const form = this._fb.group({
             employmentType: new FormControl(this.findItemById(this.employmentTypes, consultant?.employmentTypeId) ?? null),
             consultantName: new FormControl(consultantDto ?? null),
@@ -1430,8 +1439,8 @@ export class WorkflowSalesComponent extends AppComponentBase implements OnInit {
                         clientId: this.salesClientDataForm.directClientIdValue!.value?.clientId,
                         maxRecordsCount: 1000,
                     };
-                    if (value?.consultant?.id) {
-                        toSend.name = value.id
+                    if (value) {
+                        toSend.name = value?.consultant?.id
                             ? value.consultant.name
                             : value;
                     }
@@ -1650,6 +1659,8 @@ export class WorkflowSalesComponent extends AppComponentBase implements OnInit {
                     consultantInput.consultant.city = consultant.consultantName?.consultant?.city;
                     consultantInput.consultant.countryId = consultant.consultantName?.consultant?.contryId;
 
+                    consultantInput.requestId = consultant.consultantName?.consultant?.sourcingRequestId;
+
                     consultantInput.durationSameAsClientPeriod = consultant.consultantProjectDurationSameAsClient;
                     consultantInput.startDate = consultant.consultantProjectStartDate;
                     consultantInput.noEndDate = consultant.consultantProjectNoEndDate;
@@ -1836,7 +1847,7 @@ export class WorkflowSalesComponent extends AppComponentBase implements OnInit {
                     this.salesClientDataForm.clientInvoiceFrequency?.setValue(this.findItemById(this.invoiceFrequencies, result.salesClientData?.clientRate?.invoiceFrequencyId), {emitEVent: false});
                 }
                 if (this.salesClientDataForm.clientRateAndInvoicing?.value?.id === 2) { // Fixed
-                    this.salesClientDataForm.clientInvoiceFrequency?.setValue(this.findItemById(this.invoicingTimes, result.salesClientData?.clientRate?.invoicingTimeId), {emitEVent: false});
+                    this.salesClientDataForm.clientInvoiceTime?.setValue(this.findItemById(this.invoicingTimes, result.salesClientData?.clientRate?.invoicingTimeId), {emitEVent: false});
                 }
                 this.salesClientDataForm.clientInvoicingDate?.setValue(result.salesClientData?.clientRate?.manualDate, {emitEVent: false});
 
@@ -1916,7 +1927,7 @@ export class WorkflowSalesComponent extends AppComponentBase implements OnInit {
             panelClass: 'confirmation-modal',
             data: {
                 dialogType: ConsultantDiallogAction.Change,
-                consultantData: consultantData,
+                consultantData: {externalId: consultantData.consultantName.consultant.externalId, name: consultantData.consultantName.consultant.name},
                 dialogTitle: `Change consultant`,
                 rejectButtonText: 'Cancel',
                 confirmButtonText: 'Create',
@@ -1926,7 +1937,7 @@ export class WorkflowSalesComponent extends AppComponentBase implements OnInit {
 
         dialogRef.componentInstance.onConfirmed.subscribe((result) => {
             let input = new ChangeConsultantPeriodDto();
-            input.cutoverDate = result.cutoverDate;
+            input.cutoverDate = result.newCutoverDate;
             input.newLegalContractRequired = result.newLegalContractRequired;
             this._consultantPeriodSerivce.change(consultantData.consultantPeriodId, input)
                 .pipe(finalize(() => {}))
@@ -1955,7 +1966,7 @@ export class WorkflowSalesComponent extends AppComponentBase implements OnInit {
             panelClass: 'confirmation-modal',
             data: {
                 dialogType: ConsultantDiallogAction.Extend,
-                consultantData: consultantData,
+                consultantData: {externalId: consultantData.consultantName.consultant.externalId, name: consultantData.consultantName.consultant.name},
                 dialogTitle: `Extend consultant`,
                 rejectButtonText: 'Cancel',
                 confirmButtonText: 'Create',
@@ -2194,7 +2205,9 @@ export class WorkflowSalesComponent extends AppComponentBase implements OnInit {
             this._workflowServiceProxy.terminationConsultantSalesPut(this.workflowId!, this.consultant.id, input)
                 .pipe(finalize(() => this.hideMainSpinner()))
                 .subscribe(result => {
-
+                    if (this.editEnabledForcefuly) {
+                        this.toggleEditMode();
+                    }
                 })
         } else {
             this._workflowServiceProxy.terminationConsultantSalesComplete(this.workflowId!, this.consultant.id, input)
@@ -2247,7 +2260,9 @@ export class WorkflowSalesComponent extends AppComponentBase implements OnInit {
             this._workflowServiceProxy.terminationSalesPut(this.workflowId!, input)
                 .pipe(finalize(() => this.hideMainSpinner()))
                 .subscribe(result => {
-
+                    if (this.editEnabledForcefuly) {
+                        this.toggleEditMode();
+                    }
                 })
         } else {
             this._workflowServiceProxy.terminationSalesComplete(this.workflowId!, input)
@@ -2333,6 +2348,29 @@ export class WorkflowSalesComponent extends AppComponentBase implements OnInit {
             .pipe(finalize(() => {}))
             .subscribe(result => {
                 this.resetForms();
+                let clientDto = new ClientResultDto();
+                clientDto.clientId = result.directClientIdValue;
+                this.salesClientDataForm.directClientIdValue?.setValue(clientDto, {emitEvent: false});
+                let clientRateType = this.findItemById(this.clientRateTypes, 1); // default value is 'Time based'
+                if (result.clientRate?.isFixedRate) {
+                    clientRateType = this.findItemById(this.clientRateTypes, 2); // 2: 'Fixed'
+                } else if (result.clientRate?.isTimeBasedRate) {
+                    clientRateType = this.findItemById(this.clientRateTypes, 1); // 1: 'Time based'
+                }
+                this.salesClientDataForm.clientRateAndInvoicing?.setValue(clientRateType, {emitEVent: false});
+                this.salesClientDataForm.pdcInvoicingEntityId?.setValue(this.findItemById(this.tenants, result?.clientPeriodPdcInvoicingEntityId), {emitEvent: false});
+                this.salesClientDataForm.clientPrice?.setValue(result.clientRate?.normalRate, {emitEVent: false});
+                this.salesClientDataForm.rateUnitTypeId?.setValue(this.findItemById(this.rateUnitTypes, result.clientRate?.rateUnitTypeId), {emitEVent: false});
+                this.salesClientDataForm.clientCurrency?.setValue(this.findItemById(this.currencies, result.clientRate?.currencyId), {emitEVent: false});
+                this.salesClientDataForm.clientInvoiceCurrency?.setValue(this.findItemById(this.currencies, result.clientRate?.invoiceCurrencyId), {emitEVent: false});
+                if (this.salesClientDataForm.clientRateAndInvoicing?.value?.id === 1) { // Time based
+                    this.salesClientDataForm.clientInvoiceFrequency?.setValue(this.findItemById(this.invoiceFrequencies, result.clientRate?.invoiceFrequencyId), {emitEVent: false});
+                }
+                if (this.salesClientDataForm.clientRateAndInvoicing?.value?.id === 2) { // Fixed
+                    this.salesClientDataForm.clientInvoiceFrequency?.setValue(this.findItemById(this.invoicingTimes, result.clientRate?.invoicingTimeId), {emitEVent: false});
+                }
+                this.salesClientDataForm.clientInvoicingDate?.setValue(result.clientRate?.manualDate, {emitEVent: false});
+
                 this.salesMainDataForm.remarks?.setValue(result?.remarks, {emitEvent: false});
                 this.salesMainDataForm.noRemarks?.setValue(result?.noRemarks, {emitEvent: false});
                 if (result?.noRemarks) {
@@ -2368,7 +2406,8 @@ export class WorkflowSalesComponent extends AppComponentBase implements OnInit {
             consultantInput.consultant.externalId = consultant.consultantName?.consultant?.externalId;
             consultantInput.consultant.city = consultant.consultantName?.consultant?.city;
             consultantInput.consultant.countryId = consultant.consultantName?.consultant?.contryId;
-
+            consultantInput.requestId = consultant.consultantName?.consultant?.sourcingRequestId;
+            consultantInput.durationSameAsClientPeriod = consultant.consultantProjectDurationSameAsClient;
             consultantInput.startDate = consultant.consultantProjectStartDate;
             consultantInput.noEndDate = consultant.consultantProjectNoEndDate;
             consultantInput.endDate = consultant.consultantProjectEndDate;
@@ -2405,7 +2444,7 @@ export class WorkflowSalesComponent extends AppComponentBase implements OnInit {
             if (consultantInput.consultantRate.isFixedRate) {
                 consultantInput.consultantRate.invoicingTimeId = consultant.consultantInvoicingTime?.id;
             }
-            consultantInput.consultantRate.manualDate = consultant.manualDate;
+            consultantInput.consultantRate.manualDate = consultant.consultantInvoicingManualDate;
 
             if (consultant.specialRates.length) {
                 consultantInput.periodConsultantSpecialRates = new Array<PeriodConsultantSpecialRateDto>();
@@ -2454,7 +2493,9 @@ export class WorkflowSalesComponent extends AppComponentBase implements OnInit {
             this._consultantPeriodSerivce.consultantSalesPut(this.activeSideSection.consultantPeriodId!, input)
                 .pipe(finalize(() => this.hideMainSpinner()))
                 .subscribe(result => {
-
+                    if (this.editEnabledForcefuly) {
+                        this.toggleEditMode();
+                    }
                 });
         } else {
             this._consultantSalesSerivce.editFinish(this.activeSideSection.consultantPeriodId!, input)

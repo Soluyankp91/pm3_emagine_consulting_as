@@ -24,9 +24,6 @@
     &:hover:not(.mat-button-disabled) {
         background-color: rgba(23, 162, 151, 0.07) !important;
     }
-    @media screen and (max-width: 1440px) {
-        font-size: 12px;
-    }
 }
 
 .button-accept {
@@ -34,12 +31,10 @@
     border: 2px solid $green-color !important;
     color: $white-color !important;
     font-weight: 700;
+    font-size: 14px;
     &.mat-button-disabled {
         background-color: rgba($color: $light-grey-color, $alpha: 0.55) !important;
         border: 2px solid rgba($color: $light-grey-color, $alpha: 0.55) !important;
-    }
-    @media screen and (max-width: 1440px) {
-        font-size: 12px;
     }
 }
 
@@ -48,7 +43,7 @@
     color: $green-color;
     font-weight: 700;
     padding-left: 0px !important;
-    font-size: 16px;
+    font-size: 14px;
     .mat-button-wrapper {
         display: flex;
         align-items: center;
@@ -59,7 +54,6 @@
         margin-right: 5px;
     }
     @media screen and (max-width: 1440px) {
-        font-size: 14px;
         mat-icon {
             width: 16px;
             height: 16px;
@@ -93,34 +87,26 @@
             color: #384853;
             font-weight: 700;
             background-color: #fff;
-            border: 2.5px solid $light-grey-color;
+            border: 2px solid rgba($color: $light-grey-color, $alpha: 0.77);
             border-radius: 5px;
-            height: 45px;
+            height: 40px;
             min-width: 125px;
+            &:not(.mat-button-toggle-checked):hover {
+                border: 2px solid $light-grey-color;
+            }
         }
         .mat-button-toggle-label-content {
-            line-height: 45px;
+            line-height: 36px;
             padding: 0 24px;
-        }
-
-        @media screen and (max-width: 1440px) {
-            .mat-button-toggle {
-                font-size: 12px;
-                height: 35px;
-                border-width: 1.5px;
-            }
-            .mat-button-toggle-label-content {
-                line-height: 35px;
-            }
         }
 
         .mat-button-toggle.mat-button-toggle-checked {
             color: $white-color;
             font-weight: 700;
             background-color: $dark-grey-color;
-            border: 1px solid $dark-grey-color;
+            border: 2px solid $dark-grey-color;
             .mat-button-toggle-focus-overlay {
-                border-bottom: solid 45px;
+                border-bottom: solid 40px;
             }
         }
     }
@@ -178,6 +164,15 @@
         border-radius: 50%;
         height: 36px;
         width: 36px;
+    }
+
+    &.workflow-overview--three-dots {
+        &:hover {
+            background: rgba($color: $green-color, $alpha: .1);
+        }
+        mat-icon {
+            color: rgb(0, 0, 0);
+        }
     }
 }
 
@@ -242,7 +237,7 @@
         @media screen and (max-width: 1440px) {
             &__save.mat-flat-button,
             &__cancel.mat-flat-button {
-                font-size: 12px;
+                font-size: 14px;
                 min-width: unset;
                 padding: 0 5px;
             }
@@ -263,10 +258,6 @@
         line-height: 1.4;
         letter-spacing: normal;
         color: $green-color;
-        @media screen and (max-width: 1366px) {
-            font-size: 12px;
-        }
-
     }
 
     &.active {
@@ -274,7 +265,8 @@
     }
 }
 
-.consultant-deeplink--btn {
+.consultant-deeplink--btn.mat-icon-button {
+    margin-left: 5px;
     width: 30px;
     height: 30px;
     line-height: 30px;

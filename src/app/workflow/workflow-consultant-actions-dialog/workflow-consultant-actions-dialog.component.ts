@@ -24,13 +24,13 @@ export class WorkflowConsultantActionsDialogComponent extends AppComponentBase i
 
     // Dialog data
     dialogTypes = ConsultantDiallogAction;
-    consultant: any;
+    consultant: {externalId: string, name: string};
     constructor(
         injector: Injector,
         @Inject(MAT_DIALOG_DATA)
         public data: {
             dialogType: number,
-            consultantData: any,
+            consultantData: {externalId: string, name: string},
             dialogTitle: string,
             rejectButtonText: string,
             confirmButtonText: string,

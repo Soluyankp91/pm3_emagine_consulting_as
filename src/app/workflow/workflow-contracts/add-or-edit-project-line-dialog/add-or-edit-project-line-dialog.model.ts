@@ -4,7 +4,7 @@ export class ProjectLineForm extends FormGroup {
     constructor() {
         super({
             id: new FormControl(null),
-            projectName: new FormControl(null, Validators.maxLength(50)),
+            projectName: new FormControl(null, Validators.maxLength(250)),
             startDate: new FormControl(null),
             endDate: new FormControl(null),
             noEndDate: new FormControl(false),
@@ -19,7 +19,8 @@ export class ProjectLineForm extends FormGroup {
             differentInvoiceRecipient: new FormControl(false),
             modifiedById: new FormControl(null),
             modificationDate: new FormControl(null),
-            consultantInsuranceOptionId: new FormControl(null)
+            consultantInsuranceOptionId: new FormControl(null),
+            wasSynced: new FormControl(false)
         })
 
     }
@@ -73,5 +74,8 @@ export class ProjectLineForm extends FormGroup {
     }
     get consultantInsuranceOptionId() {
         return this.get('consultantInsuranceOptionId');
+    }
+    get wasSynced() {
+        return this.get('wasSynced');
     }
 }

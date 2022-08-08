@@ -12,6 +12,7 @@ import { NgScrollbarModule } from 'ngx-scrollbar';
 import { InternalLookupService } from './internal-lookup.service';
 import { ManagerSearchComponent } from '../components/manager-search/manager-search.component';
 import { MomentFormatPipe } from 'src/shared/common/pipes/moment-format.pipe';
+import { ShowIfTruncatedDirective } from '../../../shared/common/directives/show-if-truncated.directive';
 
 @NgModule({
     declarations: [
@@ -20,7 +21,8 @@ import { MomentFormatPipe } from 'src/shared/common/pipes/moment-format.pipe';
         FileUploaderComponent,
         ConfirmationDialogComponent,
         ManagerSearchComponent,
-        MomentFormatPipe
+        MomentFormatPipe,
+        ShowIfTruncatedDirective
     ],
     imports: [
         CommonModule,
@@ -40,7 +42,8 @@ import { MomentFormatPipe } from 'src/shared/common/pipes/moment-format.pipe';
         ScrollToModule,
         NgScrollbarModule,
         ManagerSearchComponent,
-        MomentFormatPipe
+        MomentFormatPipe,
+        ShowIfTruncatedDirective
     ],
     providers: [
         ErrorDialogService,

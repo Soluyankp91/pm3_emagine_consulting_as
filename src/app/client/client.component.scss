@@ -38,9 +38,6 @@
                 font-weight: 700;
                 font-size: 14px;
                 color: rgba(56, 72, 83, 0.87);
-                .active-status {
-                }
-                .non-active-status
                 &.selected-status {
                     background-color: rgba(42, 194, 167, 0.13);
                     border-color: $green-color;
@@ -66,10 +63,10 @@
 
 .status {
     &-dot {
-        width: 14px;
-        height: 14px;
-        font-size: 14px;
-        line-height: 14px;
+        width: 16px;
+        height: 16px;
+        font-size: 16px;
+        line-height: 16px;
         &.not-active-flag {
             color: $light-grey-color;
         }

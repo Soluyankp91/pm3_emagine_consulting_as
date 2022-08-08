@@ -2,53 +2,6 @@
 
 .filter-select,
 .client-documents--contract-filter__select {
-    // .mat-form-field-flex {
-    //     background-color: rgba(255, 255, 255, .77) !important;
-    //     border-radius: 5px;
-    //     border: 1px solid #B6B4B2;
-    //     min-height: 45px;
-    // }
-
-    // &.mat-form-field-appearance-outline:not(.mat-form-field-disabled) {
-
-    //     .mat-form-field-outline {
-    //         // top: 0 !important;
-    //         // opacity: 0 !important;
-    //     }
-    //     .mat-form-field-infix {
-    //         padding: 0.4em 0px !important;
-    //     }
-
-    //     .mat-form-field-label-wrapper {
-    //         top: -1.5em !important;
-    //     }
-
-    //     .mat-form-field-outline .mat-form-field-outline-thick {
-    //         color: transparent !important;
-    //         opacity: 0 !important;
-    //     }
-
-        &.mat-form-field-should-float {
-            // .mat-form-field-outline .mat-form-field-outline-thick {
-            //     color: transparent !important;
-            //     opacity: 0 !important;
-            // }
-            .mat-form-field-label {
-                // color: #939BA0 !important;
-                // font-weight: 600;
-                // line-height: 20px !important;
-                // &-wrapper {
-                //     top: -1em !important;
-                // }
-            }
-        }
-    //     .mat-form-field-label {
-    //         color: #939BA0 !important;
-    //         font-weight: 600;
-    //         line-height: 20px !important;
-    //     }
-    // }
-
     .mat-select-value {
         color: rgba(56, 72, 83, 0.87);
         font-weight: 700;
@@ -68,11 +21,6 @@
         height: 14px;
         margin-top: 2px;
         transition: all .3s ease-in-out;
-        @media screen and (max-width: 1366px) {
-            padding: 4px;
-            width: 10px;
-            height: 10px;
-        }
     }
     &.mat-form-field-invalid {
         .mat-select-arrow {
@@ -96,8 +44,7 @@
         &:focus:not(.mat-option-disabled),
         &.mat-active,
         &.mat-selected:not(.mat-option-disabled) {
-            // color: #546E7A;
-            background: rgba(23, 162, 151, 0.07);
+            font-weight: 800;
         }
         &.mat-select-clear-option {
             color: rgba(0, 0, 0, 0.47) !important;
@@ -109,9 +56,6 @@
             font-size: 14px;
             line-height: 140%;
             color: rgba(137, 135, 133, 0.77) !important;
-            @media screen and (max-width: 1366px) {
-                font-size: 12px;
-            }
         }
 
     }
@@ -174,13 +118,13 @@
     min-width: 100px;
     .mat-form-field-flex {
         background-color: transparent !important;
-        padding: 0 !important
+        padding: 0.2em 0px 0.6em !important;
     }
     .mat-form-field-underline {
         display: none !important;
     }
     .mat-select-arrow-wrapper {
-        transform: translateY(-30%);
+        transform: translateY(0);
     }
     .mat-select-value-text {
         font-weight: 600;
@@ -196,9 +140,7 @@
         width: 8px;
         height: 8px;
         transition: all .3s ease-in-out;
-        @media screen and (max-width: 1440px) {
-            padding: 3px;
-        }
+        margin-bottom: 3px;
     }
     .mat-select-value {
         width: fit-content;
@@ -208,12 +150,6 @@
         font-size: 14px;
         line-height: 14px;
         color: #898785;
-        @media screen and (max-width: 1440px) {
-            font-weight: 600;
-            font-size: 10px;
-            line-height: 14px;
-            color: #898785;
-        }
 
     }
 
@@ -226,7 +162,7 @@
     mat-select[aria-expanded="true"] {
         .mat-select-arrow {
             transform: rotate(225deg);
-            // margin-top: 10px;
+            margin-bottom: -2px;
         }
     }
 }
@@ -247,8 +183,14 @@
         border-right: 5px #fff solid;
         background-clip: padding-box
     }
-    @media screen and (max-width: 1440px) {
-        font-size: 10px !important;
-        margin-top: 25px;
-    }
+}
+
+
+.pm-mat-select-pane {
+    margin-top: 25px;
+    margin-bottom: 25px;
+}
+
+.country-filter-dropdown {
+    margin-top: 15px;
 }

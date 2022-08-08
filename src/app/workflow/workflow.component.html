@@ -4,7 +4,7 @@
         <div fxLayout="row" fxLayoutAlign="space-between start" class="u-w--100">
             <div fxFlex fxLayout="row" fxLayoutAlign="start center" class="u-w--100">
                 <div class="workflow-list--filter-manager cursor-pointer u-mr--16" [matTooltip]="mapListByProperty(selectedAccountManagers, 'name')" matTooltipClass="white-tooltip" [matMenuTriggerFor]="managerMenu" (menuOpened)="accountManagerFilterInput.click(); onOpenedMenu();" (click)="openMenu($event)">
-                    <img *ngIf="selectedAccountManagers.length === 1" class="border-rounded-50 image-thumbnail-small" [src]="employeeProfileUrl(selectedAccountManagers[0]?.externalId!)" />
+                    <img *ngIf="selectedAccountManagers.length === 1" class="border-rounded-50 image-thumbnail-small" [src]="employeeProfileUrl(selectedAccountManagers[0].externalId!)" />
                     <img *ngIf="selectedAccountManagers.length === 0" src="../../../assets/common/images/no-img.svg">
                     <div *ngIf="selectedAccountManagers.length > 1" class="workflow-list--filter__badge">
                         {{selectedAccountManagers.length}}
@@ -23,10 +23,11 @@
                                         <mat-checkbox [checked]="manager.selected"
                                             *ngIf="manager.id !== 'no-data'"
                                             color="primary"
+                                            class="green-checkbox"
                                             (change)="toggleSelection(manager,selectedAccountManagers)"
                                             (click)="$event.stopPropagation()">
                                             <div fxLayout="row" fxLayoutAlign="start center" class="u-w--100">
-                                                <img class="border-rounded-50 image-settings--dropdown u-mr--10" [src]="employeeProfileUrl(manager.externalId!)">
+                                                <img class="border-rounded-50 image-settings--dropdown u-ml--8 u-mr--16" [src]="employeeProfileUrl(manager.externalId!)">
                                                 <span>{{ manager.name }}</span>
                                             </div>
                                         </mat-checkbox>
@@ -51,10 +52,11 @@
                                             <mat-checkbox [checked]="manager.selected"
                                                 *ngIf="manager.id !== 'no-data'"
                                                 color="primary"
+                                                class="green-checkbox"
                                                 (change)="toggleSelection(manager,selectedAccountManagers)"
                                                 (click)="$event.stopPropagation()">
                                                 <div fxLayout="row" fxLayoutAlign="start center" class="u-w--100">
-                                                    <img class="border-rounded-50 image-settings--dropdown u-mr--10" [src]="employeeProfileUrl(manager.externalId!)">
+                                                    <img class="border-rounded-50 image-settings--dropdown u-ml--8 u-mr--16" [src]="employeeProfileUrl(manager.externalId!)">
                                                     <span>{{ manager.name }}</span>
                                                 </div>
                                             </mat-checkbox>
@@ -187,14 +189,14 @@
             <mat-table #table [dataSource]="workflowDataSource" class="workflow-list--table white-table u-w--100" matSort matSortStart="asc" (matSortChange)="sortChanged($event)">
                 <ng-container matColumnDef="flag">
                     <mat-header-cell *matHeaderCellDef fxFlex="3%"></mat-header-cell>
-                    <mat-cell *matCellDef="let row" fxFlex="3%">
+                    <mat-cell *matCellDef="let row" fxFlex="3%" fxLayoutAlign="center center">
                         <mat-icon class="workflow-flag" [ngClass]="row?.processStatusIcon" [matTooltip]="row?.processStatusName" matTooltipClass="white-tooltip">fiber_manual_record</mat-icon>
                     </mat-cell>
                 </ng-container>
-                <ng-container matColumnDef="Client">
-                    <mat-header-cell *matHeaderCellDef fxFlex="15%">Client</mat-header-cell>
+                <ng-container matColumnDef="clientName">
+                    <mat-header-cell *matHeaderCellDef mat-sort-header fxFlex="15%">Client</mat-header-cell>
                     <mat-cell *matCellDef="let row" fxFlex="15%">
-                        <span class="text-truncate-ellipsis text-bold-800" [matTooltip]="row.clientName ?? '-'" matTooltipClass="white-tooltip">
+                        <span class="text-truncate-ellipsis text-bold-800" [matTooltip]="row.clientName ?? '-'" matTooltipClass="white-tooltip" appShowIfTruncated>
                             {{row.clientName ?? '-'}}
                         </span>
                     </mat-cell>
@@ -202,7 +204,7 @@
                 <ng-container matColumnDef="SalesType">
                     <mat-header-cell *matHeaderCellDef mat-sort-header fxFlex="10%"> Sales type </mat-header-cell>
                     <mat-cell *matCellDef="let row" fxFlex="10%">
-                        <span class="text-truncate-ellipsis"  [matTooltip]="row.salesType?.name" matTooltipClass="white-tooltip">
+                        <span class="text-truncate-ellipsis"  [matTooltip]="row.salesType?.name" matTooltipClass="white-tooltip" appShowIfTruncated>
                             {{row.salesType?.name}}
                         </span>
                     </mat-cell>
@@ -210,7 +212,7 @@
                 <ng-container matColumnDef="DeliveryType">
                     <mat-header-cell *matHeaderCellDef mat-sort-header fxFlex="10%"> Delivery type </mat-header-cell>
                     <mat-cell *matCellDef="let row" fxFlex="10%">
-                        <span class="text-truncate-ellipsis" [matTooltip]="row.deliveryType?.name" matTooltipClass="white-tooltip">
+                        <span class="text-truncate-ellipsis" [matTooltip]="row.deliveryType?.name" matTooltipClass="white-tooltip" appShowIfTruncated>
                             {{row.deliveryType?.name}}
                         </span>
                     </mat-cell>
@@ -219,7 +221,7 @@
                 <ng-container matColumnDef="startDate">
                     <mat-header-cell *matHeaderCellDef mat-sort-header fxFlex="7%"> Start </mat-header-cell>
                     <mat-cell *matCellDef="let row" fxFlex="7%">
-                        <span class="text-truncate-ellipsis" [matTooltip]="(row.startDate | date: 'dd.MM.YYYY') ?? '-'" matTooltipClass="white-tooltip">
+                        <span class="text-truncate-ellipsis" [matTooltip]="(row.startDate | date: 'dd.MM.YYYY') ?? '-'" matTooltipClass="white-tooltip" appShowIfTruncated>
                             {{(row.startDate | date: 'dd.MM.YYYY') ?? '-'}}
                         </span>
                     </mat-cell>
@@ -227,7 +229,7 @@
                 <ng-container matColumnDef="endDate">
                     <mat-header-cell *matHeaderCellDef mat-sort-header fxFlex="7%"> End </mat-header-cell>
                     <mat-cell *matCellDef="let row" fxFlex="7%">
-                        <span class="text-truncate-ellipsis" [matTooltip]="(row.endDate | date: 'dd.MM.YYYY') ?? '-'" matTooltipClass="white-tooltip">
+                        <span class="text-truncate-ellipsis" [matTooltip]="(row.endDate | date: 'dd.MM.YYYY') ?? '-'" matTooltipClass="white-tooltip" appShowIfTruncated>
                             {{(row.endDate | date: 'dd.MM.YYYY') ?? '-'}}
                         </span>
                     </mat-cell>
@@ -238,13 +240,13 @@
                         <span class="text-truncate-ellipsis" [matTooltip]="mapListByProperty(row.consultants, 'name')" matTooltipClass="white-tooltip">
                             <ng-container *ngIf="row.consultants?.length > 1; else singleConsultantDisplay">
                                 <span class="flex-items-center">
-                                    <img class="border-rounded-50 image-thumbnail-small u-mr--10" src="../../assets/common/images/no-img.svg" />
+                                    <img class="border-rounded-50 image-settings--dropdown u-mr--10" src="../../assets/common/images/no-img.svg" />
                                     {{row.consultants?.length + 'Consultants'}}
                                 </span>
                             </ng-container>
                             <ng-template #singleConsultantDisplay>
                                 <span class="flex-items-center">
-                                    <img *ngIf="row.consultants[0]?.name" class="border-rounded-50 image-thumbnail-small u-mr--10" [src]="consultantProfileUrl(row?.consultants[0]?.externalId)" />
+                                    <img *ngIf="row.consultants[0]?.name" class="border-rounded-50 image-settings--dropdown u-mr--10" [src]="consultantProfileUrl(row?.consultants[0]?.externalId)" />
                                     {{row.consultants[0]?.name ?? '-'}}
                                 </span>
                             </ng-template>
@@ -376,7 +378,7 @@
                 </ng-container>
 
                 <mat-header-row *matHeaderRowDef="workflowDisplayColumns"></mat-header-row>
-                <mat-row *matRowDef="let row; columns: workflowDisplayColumns;" class="mat-elevation-z0 cursor-pointer flex-items-start"(contextmenu)="onRightClick($event, {content: row})" (click)="navigateToWorkflowDetails(row.workflowId)"></mat-row>
+                <mat-row *matRowDef="let row; columns: workflowDisplayColumns;" class="mat-elevation-z0 cursor-pointer flex-items-start" [ngClass]="{'active-workflow': row.isActive}" (contextmenu)="onRightClick($event, {content: row})" (click)="navigateToWorkflowDetails(row.workflowId)"></mat-row>
             </mat-table>
             <div class="spinner-container" *ngIf="isDataLoading">
                 <mat-spinner [diameter]="50"></mat-spinner>

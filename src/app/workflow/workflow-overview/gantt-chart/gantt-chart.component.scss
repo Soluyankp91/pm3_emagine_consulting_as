@@ -1,4 +1,7 @@
 @import "/src/app/shared/styles/config/_colors";
+@import '~@worktile/gantt/main.bundle.scss';
+
+$gantt-bar-handle-height: 12px;
 
 :host {
     .gantt-flat-items {
@@ -43,19 +46,14 @@
 
 .main-overview {
     &-icon {
-        line-height: 42px;
+        line-height: 40px;
         @media screen and (max-width: 1366px) {
             transform: scale(0.8);
-            line-height: 44px;
+            line-height: 42px;
 
         }
         &-type {
             line-height: 40px;
-        }
-        &-status {
-            line-height: 40px;
-            width: 20px !important;
-            height: 20px !important;
         }
     }
 }

@@ -4,11 +4,11 @@
             <div fxLayout="column" fxLayoutAlign="start start">
                 <div fxLayout="row" fxLayoutAlign="start center">
                     <button class="back-arrow--btn u-pl--0" (click)="navigateBack()" mat-icon-button><mat-icon svgIcon="arrow"></mat-icon></button>
-                    <span class="page-main-header">{{client?.name}}</span>
+                    <span class="page-main-header">{{client.name}}</span>
                 </div>
                 <div fxLayout="row" fxLayoutAlign="start center" class="client-details--client-info u-mt--10">
                     <span class="client-details--client-info__header client-id">
-                        #{{client?.clientId}}
+                        #{{client.clientId}}
                     </span>
                     <!-- FIXME: add country flag after mapping countryName -> countryCode -->
                     <!-- <span class="flag-icon flag-icon-{{selectedClient.countryCode | lowercase }} u-mr--10"></span> -->
