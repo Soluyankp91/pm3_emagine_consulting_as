@@ -491,7 +491,7 @@
                                     <span class="anchor-name">Consultant data</span>
                                 </h1>
                                 <!-- Only visible when employment type is selected and it is not 'Fee only' - id: 10 nd not 'Recruitment' - id:11 -->
-                                <div fxLayout="row" fxLayoutAlign="start start" class="u-w--100"  *ngIf="consultant.value.consultantType?.id !== 10 && consultant.value.consultantType?.id !== 11">
+                                <div fxLayout="row" fxLayoutAlign="start start" class="u-w--100" *ngIf="consultant.value.consultantType?.id !== 10 && consultant.value.consultantType?.id !== 11">
                                     <span fxFlex="50%" fxLayout="row" fxLayoutAlign="start center">
                                         <img *ngIf="consultant.value?.consultant?.id" class="border-rounded-50 u-ml--16 u-mr--16 image-thumbnail-responsive" [src]="consultantProfileUrl(consultant.value?.consultant?.externalId)" />
                                         <span class="workflow-contracts--consultant-name">
