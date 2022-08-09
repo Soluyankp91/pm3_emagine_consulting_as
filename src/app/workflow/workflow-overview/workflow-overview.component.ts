@@ -7,6 +7,7 @@ import { getUnixTime } from 'date-fns';
 import { Subject } from 'rxjs';
 import { finalize, takeUntil } from 'rxjs/operators';
 import { ConfirmationDialogComponent } from 'src/app/shared/components/confirmation-dialog/confirmation-dialog.component';
+import { environment } from 'src/environments/environment';
 import { AppComponentBase } from 'src/shared/app-component-base';
 import { AppConsts } from 'src/shared/AppConsts';
 import { ChangeConsultantPeriodDto, ConsultantGanttRow, ConsultantPeriodServiceProxy, ExtendConsultantPeriodDto, GanttRowItem, StepDto, WorkflowHistoryDto, WorkflowProcessDto, WorkflowProcessType, WorkflowServiceProxy, WorkflowStepStatus } from 'src/shared/service-proxies/service-proxies';
@@ -52,7 +53,7 @@ export class WorkflowOverviewComponent extends AppComponentBase implements OnIni
     historyDeafultPageSize = AppConsts.grid.defaultPageSize;
     historyPageNumber = 1;
     pageSizeOptions = [5, 10, 20, 50, 100];
-
+    individualConsultantActionsAvailable: boolean;
     private _unsubscribe = new Subject();
     constructor(
         injector: Injector,
@@ -74,6 +75,7 @@ export class WorkflowOverviewComponent extends AppComponentBase implements OnIni
             this.workflowId = params.get('id')!;
         });
         this.componentInitalized = true;
+        this.individualConsultantActionsAvailable = environment.dev;
         this.getOverviewData();
         this.getWorkflowHistory();
     }
