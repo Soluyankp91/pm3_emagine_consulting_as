@@ -91,8 +91,8 @@
                                             <span fxFlex="10%" class="u-w--100 text-truncate-ellipsis" [matTooltip]="salesMainDataForm.commissions.at(i).get('type')?.value?.name" matTooltipClass="white-tooltip" appShowIfTruncated>
                                                 {{commission.value.type?.name}}
                                             </span>
-                                            <span fxFlex="10%" class="u-w--100 text-truncate-ellipsis" [matTooltip]="salesMainDataForm.commissions.at(i).get('value')?.value" matTooltipClass="white-tooltip" appShowIfTruncated>
-                                                {{commission.value.value}}
+                                            <span fxFlex="10%" class="u-w--100 text-truncate-ellipsis" [matTooltip]="salesMainDataForm.commissions.at(i).get('amount')?.value" matTooltipClass="white-tooltip" appShowIfTruncated>
+                                                {{commission.value.amount}}
                                             </span>
                                             <span fxFlex="10%" class="u-w--100 text-truncate-ellipsis" [matTooltip]="salesMainDataForm.commissions.at(i).get('currency')?.value?.name" matTooltipClass="white-tooltip" appShowIfTruncated>
                                                 {{commission.value.currency?.name}}
