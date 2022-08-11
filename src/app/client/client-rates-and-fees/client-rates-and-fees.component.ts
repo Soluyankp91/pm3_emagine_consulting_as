@@ -228,11 +228,10 @@ export class ClientRatesAndFeesComponent implements OnInit, OnDestroy {
         if (clientRate?.id === null || clientRate?.id === undefined) {
             this._clientService.specialRatesPost(this.clientId, input)
                 .pipe(finalize(() => {
-
-                }))
-                .subscribe(result => {
                     this.rateIsSaving = false;
                     this.rateIsEditing = false;
+                }))
+                .subscribe(result => {
                     this.getClientRates();
                 });
         } else {
@@ -338,11 +337,10 @@ export class ClientRatesAndFeesComponent implements OnInit, OnDestroy {
         if (clientFee.id === null || clientFee.id === undefined) {
             this._clientService.specialFeesPost(this.clientId, input)
                 .pipe(finalize(() => {
-
-                }))
-                .subscribe(result => {
                     this.feeIsSaving = false;
                     this.feeIsEditing = false;
+                }))
+                .subscribe(result => {
                     this.getClientFees();
                 });
         } else {
