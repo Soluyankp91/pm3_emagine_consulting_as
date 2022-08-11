@@ -1196,7 +1196,7 @@
                                                     </mat-select>
                                                 </mat-form-field>
                                                 <mat-form-field appearance="fill" class="u-w--100 formFieldNoMarginPadding filter-select" fxFlex="10%">
-                                                    <input matInput type="text" formControlName="amount" placeholder="Value" />
+                                                    <input matInput type="number" formControlName="amount" placeholder="Value" />
                                                 </mat-form-field>
                                                 <mat-form-field appearance="fill" class="u-w--100 formFieldNoMarginPadding filter-select" fxFlex="10%">
                                                     <mat-select formControlName="currency" placeholder="Currency" [disableOptionCentering]="true" [compareWith]="compareWithFn">
@@ -1652,7 +1652,7 @@
                                         <div fxLayout="row" fxLayoutAlign="start start" class="u-w--100 u-mb--10">
                                             <mat-form-field appearance="outline" class="u-w--100  u-mr--16" fxFlex="0 0 calc(16.5% - 8px)">
                                                 <mat-label>Price</mat-label>
-                                                <input autocomplete="off" matInput formControlName="clientPrice" type="text">
+                                                <input autocomplete="off" matInput formControlName="clientPrice" type="number">
                                             </mat-form-field>
     
                                             <mat-form-field appearance="outline" class="u-w--100  filter-select u-mr--16" fxFlex="0 0 calc(16.5% - 8px)">
@@ -1678,7 +1678,7 @@
                                         <div fxLayout="row" fxLayoutAlign="start start" class="u-w--100 u-mb--10">
                                             <mat-form-field appearance="outline" class="u-w--100  u-mr--16" fxFlex="0 0 calc(16.5% - 8px)">
                                                 <mat-label>Price</mat-label>
-                                                <input autocomplete="off" matInput formControlName="clientPrice" type="text">
+                                                <input autocomplete="off" matInput formControlName="clientPrice" type="number">
                                             </mat-form-field>
     
                                             <mat-form-field appearance="outline" class="u-w--100  filter-select" fxFlex="0 0 calc(16.5% - 8px)">
@@ -1816,7 +1816,7 @@
                             <div fxLayout="row" fxLayoutAlign="start center" class="u-w--100 u-mb--10" *ngIf="salesClientDataForm.capOnTimeReporting?.value?.id !== 3 && salesClientDataForm.capOnTimeReporting?.value?.id !== 4">
                                 <mat-form-field appearance="outline" class="u-w--100  u-mr--16" fxFlex="0 0 calc(16.5% - 8px)">
                                     <mat-label>Max value</mat-label>
-                                    <input autocomplete="off" matInput formControlName="capOnTimeReportingValue" type="text">
+                                    <input autocomplete="off" matInput formControlName="capOnTimeReportingValue" type="number">
                                 </mat-form-field>
                                 <span class="workflow-step-readonly--blue-text-bold">
                                     <ng-container [ngSwitch]="salesClientDataForm.capOnTimeReporting?.value?.id">
@@ -2326,7 +2326,7 @@
                                                 <div fxLayout="row" fxLayoutAlign="start center" class="u-w--100 u-mb--10">
                                                     <mat-form-field appearance="outline" class="u-w--100  u-mr--16" fxFlex="0 0 calc(16.5% - 8px)">
                                                         <mat-label>Rate</mat-label>
-                                                        <input autocomplete="off" matInput formControlName="consultantRate" type="text">
+                                                        <input autocomplete="off" matInput formControlName="consultantRate" type="number">
                                                     </mat-form-field>
                                                     <mat-form-field appearance="outline" class="u-w--100  filter-select u-mr--16" fxFlex="0 0 calc(16.5% - 8px)">
                                                         <mat-label>Unit type</mat-label>
@@ -2368,7 +2368,7 @@
                                                 <div fxLayout="row" fxLayoutAlign="start center" class="u-w--100 u-mb--10" *ngIf="consultant.value?.consultantProdataEntity?.id !== salesClientDataForm.value?.pdcInvoicingEntityId?.id">
                                                     <mat-form-field appearance="outline" class="u-w--100  u-mr--16" fxFlex="0 0 calc(16.5% - 8px)">
                                                         <mat-label>PDC-to-PDC rate</mat-label>
-                                                        <input autocomplete="off" matInput formControlName="consultantPDCRate" type="text">
+                                                        <input autocomplete="off" matInput formControlName="consultantPDCRate" type="number">
                                                     </mat-form-field>
                                                     <mat-form-field appearance="outline" class="u-w--100  filter-select u-mr--16" fxFlex="0 0 calc(16.5% - 8px)">
                                                         <mat-label>Unit type</mat-label>
@@ -2404,7 +2404,7 @@
                                                 <div fxLayout="row" fxLayoutAlign="start center" class="u-w--100 u-mb--10">
                                                     <mat-form-field appearance="outline" class="u-w--100  u-mr--16" fxFlex="0 0 calc(16.5% - 8px)">
                                                         <mat-label>Rate</mat-label>
-                                                        <input autocomplete="off" matInput formControlName="consultantRate" type="text">
+                                                        <input autocomplete="off" matInput formControlName="consultantRate" type="number">
                                                     </mat-form-field>
                                                     <mat-form-field appearance="outline" class="u-w--100  filter-select u-mr--16" fxFlex="0 0 calc(16.5% - 8px)">
                                                         <mat-label>Currency</mat-label>
@@ -2438,7 +2438,7 @@
                                                 <div fxLayout="row" fxLayoutAlign="start center" class="u-w--100 u-mb--10" *ngIf="consultant.value?.consultantProdataEntity?.id && (consultant.value?.consultantProdataEntity?.id !== salesClientDataForm.value?.pdcInvoicingEntityId?.id)">
                                                     <mat-form-field appearance="outline" class="u-w--100  u-mr--16" fxFlex="0 0 calc(16.5% - 8px)">
                                                         <mat-label>PDC-to-PDC rate</mat-label>
-                                                        <input autocomplete="off" matInput formControlName="consultantPDCRate" type="text">
+                                                        <input autocomplete="off" matInput formControlName="consultantPDCRate" type="number">
                                                     </mat-form-field>
                                                     <mat-form-field appearance="outline" class="u-w--100  filter-select u-mr--16" fxFlex="0 0 calc(16.5% - 8px)">
                                                         <mat-label>Currency</mat-label>
@@ -2561,7 +2561,7 @@
 
                                                 <mat-form-field appearance="outline" class="u-w--100 u-mr--16" fxFlex="0 0 calc(16% - 8px)" *ngIf="consultant.value?.consultantIsEmagineOfficeWorkplace || consultant.value?.consultantIsRemoteWorkplace">
                                                     <mat-label>Add value %</mat-label>
-                                                    <input autocomplete="off" matInput formControlName="consultantWorkplacePercentageOnSite" type="text">
+                                                    <input autocomplete="off" matInput formControlName="consultantWorkplacePercentageOnSite" type="number">
                                                 </mat-form-field>
                                             </ng-container>
                                         </div>
@@ -2602,7 +2602,7 @@
                                     <div fxLayout="row" fxLayoutAlign="start center" class="u-w--100 u-mb--10">
                                         <mat-form-field appearance="outline" class="u-w--100 mat-elevation-z0  u-mr--16" fxFlex="0 0 calc(16.5% - 8px)">
                                             <mat-label>Hours</mat-label>
-                                            <input autocomplete="off" matInput formControlName="expectedWorkloadHours" type="text">
+                                            <input autocomplete="off" matInput formControlName="expectedWorkloadHours" type="number">
                                         </mat-form-field>
                                         <mat-form-field appearance="outline" class="u-w--100  filter-select" fxFlex="0 0 calc(16.5% - 8px)">
                                             <mat-label>Period</mat-label>
@@ -2629,7 +2629,7 @@
                                                 <ng-container *ngSwitchCase="1">  <!-- 'Cap on units' -->
                                                     <mat-form-field appearance="outline" class="u-w--100  u-mr--16" fxFlex="0 0 calc(16.5% - 8px)">
                                                         <mat-label>Max value</mat-label>
-                                                        <input autocomplete="off" matInput formControlName="consultantTimeReportingCapMaxValue" type="text">
+                                                        <input autocomplete="off" matInput formControlName="consultantTimeReportingCapMaxValue" type="number">
                                                     </mat-form-field>
                                                     <div fxFlex="0 0 calc(16.5% - 8px)" fxLayoutAlign="start center" class="workflow-form--consultants__payment-price-text">
                                                         <ng-container [ngSwitch]="consultant.value.consultantRateUnitType?.id">
@@ -2648,7 +2648,7 @@
                                                 <ng-container *ngSwitchCase="2"> <!-- 'Cap on value' -->
                                                     <mat-form-field appearance="outline" class="u-w--100  u-mr--16" fxFlex="0 0 calc(16.5% - 8px)">
                                                         <mat-label>Max value</mat-label>
-                                                        <input autocomplete="off" matInput formControlName="consultantTimeReportingCapMaxValue" type="text">
+                                                        <input autocomplete="off" matInput formControlName="consultantTimeReportingCapMaxValue" type="number">
                                                     </mat-form-field>
                                                     <div fxFlex="0 0 calc(16.5% - 8px)" fxLayoutAlign="start center" class="workflow-form--consultants__payment-price-text">
                                                         {{consultant.value.consultantRateCurrency?.name}}

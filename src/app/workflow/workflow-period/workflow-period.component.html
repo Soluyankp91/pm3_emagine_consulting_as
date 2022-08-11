@@ -50,7 +50,7 @@
                                         [periodType]="item.typeId!"
                                         [workflowId]="workflowId"
                                         (managerSelected)="selectedManager($event)"
-                                        [managerStatus]="step.status === workflowStatuses.Completed ? managerStatus.Completed : managerStatus.Pending"
+                                        [managerStatus]="step.status!"
                                         [responsiblePerson]="step.responsiblePerson!">
                                     </app-manager-search>
 
