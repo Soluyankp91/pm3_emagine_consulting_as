@@ -366,8 +366,9 @@
                                             [periodType]="item.typeId!"
                                             [workflowId]="row.workflowId"
                                             (managerSelected)="selectedManager($event)"
-                                            [managerStatus]="step.status === workflowStatuses.Completed ? managerStatus.Completed : managerStatus.Pending"
-                                            [responsiblePerson]="step.responsiblePerson!">
+                                            [managerStatus]="step.status!"
+                                            [responsiblePerson]="step.responsiblePerson!"
+                                            [readonly]="item.processId === null || item.processId === undefined">
                                         </app-manager-search>
                                     </div>
                                 </ng-container>
