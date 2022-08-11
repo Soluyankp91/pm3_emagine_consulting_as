@@ -1567,7 +1567,10 @@ export class WorkflowSalesComponent extends AppComponentBase implements OnInit {
         input.salesClientData.clientExtensionDeadlineId = this.salesClientDataForm.clientExtensionDeadline?.value?.id;
         input.salesClientData.clientExtensionSpecificDate = this.salesClientDataForm.clientExtensionEndDate?.value;
         input.salesClientData.clientTimeReportingCapId = this.salesClientDataForm.capOnTimeReporting?.value?.id;
-        input.salesClientData.clientTimeReportingCapMaxValue = this.salesClientDataForm.capOnTimeReportingValue?.value;
+        // id: 4 - 'No cap', id:3 - individual cap
+        if (this.salesClientDataForm.capOnTimeReporting?.value?.id && this.salesClientDataForm.capOnTimeReporting?.value?.id !== 4 && this.salesClientDataForm.capOnTimeReporting?.value?.id !== 3) {
+            input.salesClientData.clientTimeReportingCapMaxValue = this.salesClientDataForm.capOnTimeReportingValue?.value;
+        }
         input.salesClientData.pdcInvoicingEntityId = this.salesClientDataForm.pdcInvoicingEntityId?.value?.id;
 
         input.salesClientData.clientRate = new ClientRateDto();
@@ -1680,7 +1683,10 @@ export class WorkflowSalesComponent extends AppComponentBase implements OnInit {
                     consultantInput.expectedWorkloadHours = consultant.expectedWorkloadHours;
                     consultantInput.expectedWorkloadUnitId = consultant.expectedWorkloadUnitId?.id;
                     consultantInput.consultantTimeReportingCapId = consultant.consultantCapOnTimeReporting?.id;
-                    consultantInput.consultantTimeReportingCapMaxValue = consultant.consultantTimeReportingCapMaxValue;
+                    // id: 4 - 'No cap', id:3 - individual cap
+                    if (consultant.consultantCapOnTimeReporting?.id && consultant.consultantCapOnTimeReporting?.id !== 4 && consultant.consultantCapOnTimeReporting?.id !== 3) {
+                        consultantInput.consultantTimeReportingCapMaxValue = consultant.consultantTimeReportingCapMaxValue;
+                    }
                     consultantInput.pdcPaymentEntityId = consultant.consultantProdataEntity?.id;
 
                     consultantInput.consultantRate = new ConsultantRateDto();
