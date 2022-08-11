@@ -429,7 +429,7 @@ export class WorkflowComponent extends AppComponentBase implements OnInit, OnDes
             this.showOnlyWorkflowsWithExtensions,
             this.showOnlyWorkflowsWithPendingStepsForSelectedEmployees,
             this.showOnlyWorkflowsWithUpcomingStepsForSelectedEmployees,
-            !this.includeTerminated,
+            this.includeTerminated,
             this.includeDeleted,
             searchFilter,
             this.pageNumber,

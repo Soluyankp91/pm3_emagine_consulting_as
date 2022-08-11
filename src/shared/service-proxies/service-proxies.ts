@@ -18741,7 +18741,7 @@ export interface IWorkflowListItemDtoPaginatedList {
 export class WorkflowListProcessDto implements IWorkflowListProcessDto {
     typeId?: WorkflowProcessType;
     name?: string | undefined;
-    processId?: string;
+    processId?: string | undefined;
     steps?: WorkflowListStepDto[] | undefined;
 
     constructor(data?: IWorkflowListProcessDto) {
@@ -18790,7 +18790,7 @@ export class WorkflowListProcessDto implements IWorkflowListProcessDto {
 export interface IWorkflowListProcessDto {
     typeId?: WorkflowProcessType;
     name?: string | undefined;
-    processId?: string;
+    processId?: string | undefined;
     steps?: WorkflowListStepDto[] | undefined;
 }
 
@@ -18844,8 +18844,8 @@ export interface IWorkflowListStepDto {
 
 export class WorkflowOverviewDto implements IWorkflowOverviewDto {
     incompleteWorkflowProcesses?: WorkflowProcessDto[] | undefined;
-    clientGanntRows?: ClientGanttRow[] | undefined;
-    consultantGanntRows?: ConsultantGanttRow[] | undefined;
+    clientGanttRows?: ClientGanttRow[] | undefined;
+    consultantGanttRows?: ConsultantGanttRow[] | undefined;
 
     constructor(data?: IWorkflowOverviewDto) {
         if (data) {
@@ -18863,15 +18863,15 @@ export class WorkflowOverviewDto implements IWorkflowOverviewDto {
                 for (let item of _data["incompleteWorkflowProcesses"])
                     this.incompleteWorkflowProcesses!.push(WorkflowProcessDto.fromJS(item));
             }
-            if (Array.isArray(_data["clientGanntRows"])) {
-                this.clientGanntRows = [] as any;
-                for (let item of _data["clientGanntRows"])
-                    this.clientGanntRows!.push(ClientGanttRow.fromJS(item));
+            if (Array.isArray(_data["clientGanttRows"])) {
+                this.clientGanttRows = [] as any;
+                for (let item of _data["clientGanttRows"])
+                    this.clientGanttRows!.push(ClientGanttRow.fromJS(item));
             }
-            if (Array.isArray(_data["consultantGanntRows"])) {
-                this.consultantGanntRows = [] as any;
-                for (let item of _data["consultantGanntRows"])
-                    this.consultantGanntRows!.push(ConsultantGanttRow.fromJS(item));
+            if (Array.isArray(_data["consultantGanttRows"])) {
+                this.consultantGanttRows = [] as any;
+                for (let item of _data["consultantGanttRows"])
+                    this.consultantGanttRows!.push(ConsultantGanttRow.fromJS(item));
             }
         }
     }
@@ -18890,15 +18890,15 @@ export class WorkflowOverviewDto implements IWorkflowOverviewDto {
             for (let item of this.incompleteWorkflowProcesses)
                 data["incompleteWorkflowProcesses"].push(item.toJSON());
         }
-        if (Array.isArray(this.clientGanntRows)) {
-            data["clientGanntRows"] = [];
-            for (let item of this.clientGanntRows)
-                data["clientGanntRows"].push(item.toJSON());
+        if (Array.isArray(this.clientGanttRows)) {
+            data["clientGanttRows"] = [];
+            for (let item of this.clientGanttRows)
+                data["clientGanttRows"].push(item.toJSON());
         }
-        if (Array.isArray(this.consultantGanntRows)) {
-            data["consultantGanntRows"] = [];
-            for (let item of this.consultantGanntRows)
-                data["consultantGanntRows"].push(item.toJSON());
+        if (Array.isArray(this.consultantGanttRows)) {
+            data["consultantGanttRows"] = [];
+            for (let item of this.consultantGanttRows)
+                data["consultantGanttRows"].push(item.toJSON());
         }
         return data;
     }
@@ -18906,8 +18906,8 @@ export class WorkflowOverviewDto implements IWorkflowOverviewDto {
 
 export interface IWorkflowOverviewDto {
     incompleteWorkflowProcesses?: WorkflowProcessDto[] | undefined;
-    clientGanntRows?: ClientGanttRow[] | undefined;
-    consultantGanntRows?: ConsultantGanttRow[] | undefined;
+    clientGanttRows?: ClientGanttRow[] | undefined;
+    consultantGanttRows?: ConsultantGanttRow[] | undefined;
 }
 
 export class WorkflowPeriodForLegacyContractDto implements IWorkflowPeriodForLegacyContractDto {
