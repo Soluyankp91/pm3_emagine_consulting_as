@@ -122,7 +122,7 @@
                     <span class="workflow-overview--history-grey-text" fxFlex="20%">
                         {{item.occurredAtUtc | momentFormat: 'DD.MM.YYYY HH:mm'}}
                     </span>
-                    <img class="workflow-overview--history-img" [src]="employeeProfileUrl(item.initiatedBy?.externalId!)" alt="" fxFlex="10%">
+                    <img class="workflow-overview--history-img u-mr--16" [src]="employeeProfileUrl(item.initiatedBy?.externalId!)" alt="">
                     <span class="workflow-overview--history-event-name text-truncate-ellipsis"  [matTooltip]="item.eventName!" matTooltipClass="white-tooltip" fxFlex="40%" appShowIfTruncated>
                         {{item.eventName}}
                     </span>
