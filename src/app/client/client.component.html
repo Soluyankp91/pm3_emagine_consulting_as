@@ -1,10 +1,10 @@
 <div class="client-list">
     <div fxLayout="column" fxLayoutAlign="start start" class="client-list--filter u-w--100">
-        <div fxLayout="row" fxLayoutAlign="start center" class="u-w--100 u-mb--10">
-            <h2 class="page-main-header">Client list</h2>
-        </div>
+        <!-- <div fxLayout="row" fxLayoutAlign="start center" class="u-w--100 u-mb--20"> -->
+            <h2 class="page-main-header u-mb--20">Client list</h2>
+        <!-- </div> -->
         <div fxLayout="row" fxLayoutAlign="space-between start" class="u-w--100">
-            <div fxFlex="1 0 40%" fxLayout="row" fxLayoutAlign="start center" class="u-w--100">
+            <div fxFlex="1 0 40%" fxLayout="row" fxLayoutAlign="start start" class="u-w--100">
                 <div class="client-list--filter-manager cursor-pointer u-mr--16"
                     [matMenuTriggerFor]="managerMenu"
                     (menuOpened)="onManagersMenuOpened(); accountManagerFilterInput.focus()"
@@ -165,9 +165,9 @@
                     Non-active clients
                 </span>
                 <div fxLayout="row" fxLayoutAlign="start center" class="u-ml--10">
-                    <mat-divider class="u-mr--10" [vertical]="true" style="height: 46px;"></mat-divider>
+                    <mat-divider class="divider-height u-mr--10" [vertical]="true"></mat-divider>
                     <button mat-button (click)="clearAllFilters()">
-                        <span class="clear-all-button" >
+                        <span class="clear-all-button">
                             Reset
                         </span>
                     </button>

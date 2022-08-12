@@ -103,9 +103,9 @@
             transition: all .3s ease-in-out;
         }
         &-leftside {
-            @media screen and (max-width: 1366px) {
-                margin-top: 5px;
-            }
+            // @media screen and (max-width: 1366px) {
+                // margin-top: 5px;
+            // }
         }
     }
     &--content {
@@ -196,9 +196,6 @@
 
 .divider-height {
     height: 40px;
-    @media screen and (max-width: 1366px) {
-        height: 30px;
-    }
 }
 
 .country-flag {
