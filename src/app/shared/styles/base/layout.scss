@@ -129,8 +129,11 @@ html {
             transition: all .3s ease-in-out;
             &:hover {
               max-width: 250px !important;
-              .main-navigation--list-item__name {
-                display: flex;
+              .main-navigation--list-item {
+                  border-color: transparent;
+                &__name {
+                    display: flex;
+                }
               }
             }
         }
