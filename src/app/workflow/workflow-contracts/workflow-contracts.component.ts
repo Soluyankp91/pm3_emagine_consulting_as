@@ -1046,8 +1046,8 @@ export class WorkflowContractsComponent extends AppComponentBase implements OnIn
                 this.contractsMainForm.projectType?.setValue(this.findItemById(this.projectTypes, result.mainData?.projectTypeId), {emitEvent: false});
                 this.contractsMainForm.margin?.setValue(this.findItemById(this.margins, result.mainData?.marginId), {emitEvent: false});
                 this.contractsMainForm.projectDescription?.setValue(result.mainData?.projectDescription, {emitEvent: false});
-                this.contractsMainForm.remarks?.setValue(result.mainData?.remarks, {emitEvent: false});
                 this.contractsMainForm.noRemarks?.setValue(result.mainData?.noRemarks, {emitEvent: false});
+                this.contractsMainForm.remarks?.setValue(result.mainData?.remarks, {emitEvent: false});
                 if (result.mainData?.noRemarks) {
                     this.contractsMainForm.remarks?.disable();
                 }
@@ -1205,6 +1205,7 @@ export class WorkflowContractsComponent extends AppComponentBase implements OnIn
                 consultantData.specialContractTerms = consultant.specialContractTerms;
                 consultantData.consultantRate = consultant.consultantRate;
                 consultantData.pdcPaymentEntityId = consultant.pdcPaymentEntityId;
+
                 consultantData.periodConsultantSpecialFees = new Array<PeriodConsultantSpecialFeeDto>();
                 if (consultant.clientFees?.length) {
                     for (let specialFee of consultant.clientFees) {

@@ -119,7 +119,7 @@ export class WorkflowOverviewComponent extends AppComponentBase implements OnIni
             let groups: GanttGroup<any>[] = [];
             let items: GanttItem[] = [];
 
-            let oldestDateClientArray = result.clientGanntRows?.map(x => {
+            let oldestDateClientArray = result.clientGanttRows?.map(x => {
                 if (x.ganttRowItems?.length) {
                     if (x.ganttRowItems?.length > 1) {
                         return x.ganttRowItems?.reduce((r, o) => o.endDate! > r.endDate! ? o : r);
@@ -129,7 +129,7 @@ export class WorkflowOverviewComponent extends AppComponentBase implements OnIni
                 }
             });
 
-            let startOfClientArray = result.clientGanntRows?.map(x => {
+            let startOfClientArray = result.clientGanttRows?.map(x => {
                 if (x.ganttRowItems?.length) {
                     if (x.ganttRowItems?.length > 1) {
                         return x.ganttRowItems?.reduce((r, o) => o.startDate! < r.startDate! ? o! : r!);
@@ -150,7 +150,7 @@ export class WorkflowOverviewComponent extends AppComponentBase implements OnIni
             this.viewOptions.max = endDate.getTime() !== new Date().getTime() ? new GanttDate(getUnixTime(endDate)) : new GanttDate(getUnixTime(new Date(oldestDateClientArray![0]?.endDate?.toDate()!)));
 
             let groupIndex = 0;
-            result.clientGanntRows!.map((x, index) => {
+            result.clientGanttRows!.map((x, index) => {
                 groups.push({
                     id: (++groupIndex).toString(),
                     title: x.name!
@@ -159,7 +159,7 @@ export class WorkflowOverviewComponent extends AppComponentBase implements OnIni
                 items = [...items, ...this.formatItems(x.ganttRowItems?.length!, x.ganttRowItems!, groups[index].id)];
             });
 
-            result.consultantGanntRows!.map((x, index) => {
+            result.consultantGanttRows!.map((x, index) => {
                 index = groupIndex;
                 groups.push({
                     id: (++groupIndex).toString(),
