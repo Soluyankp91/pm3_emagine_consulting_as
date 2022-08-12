@@ -217,7 +217,7 @@
                                                 <ng-container *ngSwitchCase="2">  <!-- Per day -->
                                                     days
                                                 </ng-container>
-                                                <ng-container *ngSwitchCase="3">  <!-- Per month -->
+                                                <ng-container *ngSwitchCase="4">  <!-- Per month -->
                                                     months
                                                 </ng-container>
                                             </ng-container>
@@ -284,7 +284,7 @@
                                     <ng-container *ngIf="rate.value.editable; else clientRatesDisplay">
                                         <div fxFlex="30%" fxLayout="row" fxLayoutAlign="start start">
                                             <mat-form-field appearance="fill" class="u-w--100 formFieldNoMarginPadding filter-select" fxFlex="40%">
-                                                <input matInput type="text" placeholder="Rate" formControlName="clientRateValue">
+                                                <input matInput type="number" placeholder="Rate" formControlName="clientRateValue">
                                             </mat-form-field>
                                             <mat-form-field appearance="fill" class="u-w--100 formFieldNoMarginPadding filter-select" fxFlex="60%">
                                                 <mat-select formControlName="clientRateCurrency" placeholder="Currency" [disableOptionCentering]="true" [compareWith]="compareWithFn">
@@ -391,7 +391,7 @@
                                     <ng-container *ngIf="fee.value.editable; else clientFeeRateDisplay">
                                         <div fxFlex="30%" fxLayout="row" fxLayoutAlign="start start">
                                             <mat-form-field appearance="fill" class="u-w--100 formFieldNoMarginPadding filter-select" fxFlex="40%">
-                                                <input matInput type="text" placeholder="Rate" formControlName="clientRateValue">
+                                                <input matInput type="number" placeholder="Rate" formControlName="clientRateValue">
                                             </mat-form-field>
                                             <mat-form-field appearance="fill" class="u-w--100 formFieldNoMarginPadding filter-select" fxFlex="60%">
                                                 <mat-select formControlName="clientRateCurrency" placeholder="Currency" [disableOptionCentering]="true" [compareWith]="compareWithFn">
@@ -530,7 +530,7 @@
                                                         <ng-container *ngSwitchCase="2"> <!-- Per day -->
                                                             days
                                                         </ng-container>
-                                                        <ng-container *ngSwitchCase="3"> <!-- Per month -->
+                                                        <ng-container *ngSwitchCase="4"> <!-- Per month -->
                                                             months
                                                         </ng-container>
                                                     </ng-container>
