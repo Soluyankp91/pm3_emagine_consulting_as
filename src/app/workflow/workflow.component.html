@@ -194,10 +194,10 @@
                     </mat-cell>
                 </ng-container>
                 <ng-container matColumnDef="WorkflowId">
-                    <mat-header-cell *matHeaderCellDef mat-sort-header fxFlex="3%">ID</mat-header-cell>
-                    <mat-cell *matCellDef="let row" fxFlex="3%" fxLayoutAlign="center center">
-                        <span [matTooltip]="row.workflowId" matTooltipClass="white-tooltip">
-                            ...{{row.workflowId | slice: row.workflowId.length-4:row.workflowId.length}}
+                    <mat-header-cell *matHeaderCellDef mat-sort-header fxFlex="5%">ID</mat-header-cell>
+                    <mat-cell *matCellDef="let row" fxFlex="5%" fxLayoutAlign="center center">
+                        <span class="text-truncate-ellipsis" [matTooltip]="row.workflowId" matTooltipClass="white-tooltip">
+                            {{row.workflowId}}
                         </span>
                     </mat-cell>
                 </ng-container>
@@ -267,8 +267,8 @@
                     </mat-cell>
                 </ng-container>
                 <ng-container matColumnDef="openProcess">
-                    <mat-header-cell *matHeaderCellDef fxFlex="13%"> Open process </mat-header-cell>
-                    <mat-cell *matCellDef="let row" fxFlex="13%">
+                    <mat-header-cell *matHeaderCellDef fxFlex="12%"> Open process </mat-header-cell>
+                    <mat-cell *matCellDef="let row" fxFlex="12%">
                         <div class="column">
                             <div *ngFor="let item of row.openProcesses; last as last"
                                  style="height: 50px;"
@@ -348,8 +348,8 @@
                     </mat-cell>
                 </ng-container>
                 <ng-container matColumnDef="Steps">
-                    <mat-header-cell *matHeaderCellDef fxFlex="13%"> Steps </mat-header-cell>
-                    <mat-cell *matCellDef="let row" fxFlex="13%">
+                    <mat-header-cell *matHeaderCellDef fxFlex="12%"> Steps </mat-header-cell>
+                    <mat-cell *matCellDef="let row" fxFlex="12%">
                         <div class="column">
                             <div *ngFor="let item of row.openProcesses; last as last"
                                  style="height: 50px;"
