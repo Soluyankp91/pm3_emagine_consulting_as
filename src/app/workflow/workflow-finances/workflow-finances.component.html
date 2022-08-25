@@ -1,5 +1,5 @@
 <div class="workflow-finances u-w--100">
-    <button class="absolute-edit-toggle" mat-icon-button *ngIf="canToggleEditMode" (click)="toggleEditMode()"><mat-icon>{{readOnlyMode ? 'create' : 'close'}}</mat-icon></button>
+    <button class="absolute-edit-toggle" mat-icon-button *ngIf="canToggleEditMode" appPreventDoubleClick (throttledClick)="toggleEditMode()"><mat-icon>{{readOnlyMode ? 'create' : 'close'}}</mat-icon></button>
     <ng-container *ngIf="activeSideSection.typeId !== workflowSideSections.StartConsultantPeriod">
         <form fxLayout="column" fxLayoutAlign="start start" [formGroup]="financesClientForm" class="workflow-form u-w--100">
             <div class="workflow-finances--block">
@@ -75,7 +75,7 @@
                             <p class="workflow-finances--consultant-name">
                                 {{consultant.value?.consultant?.name}}
                             </p>
-                            <button *ngIf="consultant.value?.consultant?.id" mat-icon-button class="consultant-deeplink--btn" (click)="$event.stopPropagation(); deepLinkToSourcing(consultant.value?.consultant?.id)" matTooltip="Preview in Sourcing" matTooltipClass="white-tooltip">
+                            <button *ngIf="consultant.value?.consultant?.id" mat-icon-button class="consultant-deeplink--btn" appPreventDoubleClick (throttledClick)="$event.stopPropagation(); deepLinkToSourcing(consultant.value?.consultant?.id)" matTooltip="Preview in Sourcing" matTooltipClass="white-tooltip">
                                 <mat-icon svgIcon="sourcing-deeplink"></mat-icon>
                             </button>
                         </div>

@@ -2,7 +2,7 @@
     <div fxFlex="20%" class="workflow-navigation--wrapper">
         <ng-scrollbar>
             <mat-accordion class="workflow-sidenav--expansion" [togglePosition]="'before'">
-                <mat-expansion-panel class="mat-elevation-z0" *ngFor="let item of sideMenuItems; index as i" [expanded]="sectionIndex === i" (click)="sectionIndex === i ? $event.preventDefault() : ''" (opened)="changeSideSection(item, i)">
+                <mat-expansion-panel class="mat-elevation-z0" *ngFor="let item of sideMenuItems; index as i" [expanded]="sectionIndex === i" appPreventDoubleClick (throttledClick)="sectionIndex === i ? $event.preventDefault() : ''" (opened)="changeSideSection(item, i)">
                     <mat-expansion-panel-header [collapsedHeight]="'60px'" [expandedHeight]="'60px'">
                         <div fxLayout="row" fxLayoutAlign="space-between start" class="u-w--100">
                             <div class="sidenav-expansion--header" fxFlex="90%">
@@ -21,13 +21,13 @@
                             </div>
                             <!-- Change WF || terminate WF || terminateConsultant when BE will have termination -->
                             <ng-container *ngIf="item.typeId !== workflowProcessTypes.StartClientPeriod">
-                                <button mat-icon-button [matMenuTriggerFor]="consultantMenu" type="button" (click)="$event.stopPropagation();" class="workflow-period--delete u-mr--16"><mat-icon>more_horiz</mat-icon></button>
+                                <button mat-icon-button [matMenuTriggerFor]="consultantMenu" type="button" appPreventDoubleClick (throttledClick)="$event.stopPropagation();" class="workflow-period--delete u-mr--16"><mat-icon>more_horiz</mat-icon></button>
                                 <mat-menu #consultantMenu>
                                     <button
                                         class="menu-item menu-item--delete"
                                         mat-menu-item
                                         [disabled]="false"
-                                        (click)="deleteSideSection(item)">
+                                        appPreventDoubleClick (throttledClick)="deleteSideSection(item)">
                                         <mat-icon>clear</mat-icon>
                                         Delete
                                     </button>
@@ -37,12 +37,12 @@
                     </mat-expansion-panel-header>
                     <div class="workflow-navigation">
                         <div class="workflow-navigation--step u-mb--10" *ngFor="let step of item.steps; let i = index;"
-                            (click)="changeStepSelection(step)"
+                            appPreventDoubleClick (throttledClick)="changeStepSelection(step)"
                             [ngClass]="{'active-step': step.name === selectedStep.name, 'completed-step': step.status === workflowStatuses.Completed}">
                             <div fxLayout="column" fxLayoutAlign="start start">
                                 <div fxLayout="row" fxLayoutAlign="start center">
                                     <app-manager-search
-                                        (click)="$event.stopPropagation()"
+                                        appPreventDoubleClick (throttledClick)="$event.stopPropagation()"
                                         [formFieldLabel]="step.name + ' Manager'"
                                         [periodId]="periodId!"
                                         [consultantPeriodId]="item.consultantPeriodId!"
@@ -61,7 +61,7 @@
                                 <div fxLayout="column" fxLayoutAlign="start start" class="u-ml--55" *ngIf="step.name === selectedStep.name">
                                     <div *ngFor="let item of step.menuAnchors"
                                          class="workflow-navigation--step__anchor u-mb--10"
-                                         (click)="$event.stopPropagation(); changeAnchorSelection(item.anchor!)"
+                                         appPreventDoubleClick (throttledClick)="$event.stopPropagation(); changeAnchorSelection(item.anchor!)"
                                          [ngxScrollTo]="item.anchor!"
                                          [ngxScrollToOffset]="-120"
                                          [ngClass]="{'active-anchor': item.anchor === selectedAnchor}">

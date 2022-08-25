@@ -16,7 +16,7 @@
                             [matDatepicker]="startDatePicker"
                             name="clientExtensionEndDate" [formControl]="startDate"
                             (focus)="startDatePicker.open()"
-                            (click)="startDatePicker.open()" readonly>
+                            appPreventDoubleClick (throttledClick)="startDatePicker.open()" readonly>
                     <mat-icon class="calendar-icon" matSuffix svgIcon="calendar"></mat-icon>
                     <mat-datepicker #startDatePicker></mat-datepicker>
                 </mat-form-field>
@@ -28,7 +28,7 @@
                                 [matDatepicker]="endDatePicker"
                                 name="clientExtensionEndDate" [formControl]="endDate"
                                 (focus)="endDatePicker.open()"
-                                (click)="endDatePicker.open()" readonly>
+                                appPreventDoubleClick (throttledClick)="endDatePicker.open()" readonly>
                         <mat-icon class="calendar-icon" matSuffix svgIcon="calendar"></mat-icon>
                         <mat-datepicker #endDatePicker></mat-datepicker>
                     </mat-form-field>
@@ -49,7 +49,7 @@
                                 name="cutoverDate"
                                 formControlName="cutoverDate"
                                 (focus)="cutoverDatePicker.open()"
-                                (click)="cutoverDatePicker.open()" readonly>
+                                appPreventDoubleClick (throttledClick)="cutoverDatePicker.open()" readonly>
                         <mat-icon class="calendar-icon" matSuffix svgIcon="calendar"></mat-icon>
                         <mat-datepicker #cutoverDatePicker></mat-datepicker>
                     </mat-form-field>
@@ -90,7 +90,7 @@
                                     name="startDate"
                                     formControlName="startDate"
                                     (focus)="startDatePicker.open()"
-                                    (click)="startDatePicker.open()" readonly>
+                                    appPreventDoubleClick (throttledClick)="startDatePicker.open()" readonly>
                             <mat-icon class="calendar-icon" matSuffix svgIcon="calendar"></mat-icon>
                             <mat-datepicker #startDatePicker></mat-datepicker>
                         </mat-form-field>
@@ -104,7 +104,7 @@
                                     [min]="minEndDate"
                                     formControlName="endDate"
                                     (focus)="extensionDatePicker.open()"
-                                    (click)="extensionDatePicker.open()" readonly>
+                                    appPreventDoubleClick (throttledClick)="extensionDatePicker.open()" readonly>
                             <mat-icon class="calendar-icon" matSuffix svgIcon="calendar"></mat-icon>
                             <mat-datepicker #extensionDatePicker></mat-datepicker>
                         </mat-form-field>
@@ -141,10 +141,10 @@
     </ng-container>
 </mat-dialog-content>
 <mat-dialog-actions align="start" class="confiramtion-dialog--actions">
-    <button mat-flat-button class="dialog-btn dialog-btn__outlined" (click)="reject()">
+    <button mat-flat-button class="dialog-btn dialog-btn__outlined" appPreventDoubleClick (throttledClick)="reject()">
         {{ data.rejectButtonText }}
     </button>
-    <button mat-flat-button class="dialog-btn" [ngClass]="data.isNegative ? 'dialog-btn__negative' : 'dialog-btn__positive'" (click)="confirm()">
+    <button mat-flat-button class="dialog-btn" [ngClass]="data.isNegative ? 'dialog-btn__negative' : 'dialog-btn__positive'" appPreventDoubleClick (throttledClick)="confirm()">
         {{ data.confirmButtonText }}
     </button>
 </mat-dialog-actions>

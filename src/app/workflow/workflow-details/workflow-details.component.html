@@ -15,7 +15,7 @@
                 <span [matTooltip]="workflowId" matTooltipClass="white-tooltip">
                     / Workflow ID: ...{{workflowId | slice: workflowId.length - 4:workflowId.length}}
                 </span>
-                <span *ngIf="workflowConsultants.length && workflowConsultants[0].requestId" class="workflow-header--request" matTooltip="Open request on Sourcing" matTooltipClass="white-tooltip" (click)="navigateToRequest(workflowConsultants![0].requestUrl!)">
+                <span *ngIf="workflowConsultants.length && workflowConsultants[0].requestId" class="workflow-header--request" matTooltip="Open request on Sourcing" matTooltipClass="white-tooltip" appPreventDoubleClick (throttledClick)="navigateToRequest(workflowConsultants![0].requestUrl!)">
                     / Request ID: {{workflowConsultants[0].requestId}}
                 </span>
             </h2>
@@ -42,7 +42,7 @@
             </div>
         </div>
         <div fxFlex="10%" fxLayoutAlign="end center">
-            <button mat-icon-button class="workflow-icon--notes u-mr--16" (click)="showOrHideNotes()"><mat-icon svgIcon="notes-icon"></mat-icon></button>
+            <button mat-icon-button class="workflow-icon--notes u-mr--16" appPreventDoubleClick (throttledClick)="showOrHideNotes()"><mat-icon svgIcon="notes-icon"></mat-icon></button>
             <button mat-icon-button [matMenuTriggerFor]="workflowMenu" class="workflow-icon--actions"><mat-icon>more_horiz</mat-icon></button>
             <mat-menu #workflowMenu>
                 <button
@@ -50,7 +50,7 @@
                     class="menu-item menu-item--edit"
                     mat-menu-item
                     [disabled]="false"
-                    (click)="addConsultant()">
+                    appPreventDoubleClick (throttledClick)="addConsultant()">
                     <mat-icon>add</mat-icon>
                     Add consultant
                 </button>
@@ -58,21 +58,21 @@
                     class="menu-item menu-item--edit"
                     mat-menu-item
                     [disabled]="false"
-                    (click)="getAvailableConsultantForChangeOrExtend(workflowDiallogActions.Change)">
+                    appPreventDoubleClick (throttledClick)="getAvailableConsultantForChangeOrExtend(workflowDiallogActions.Change)">
                     <mat-icon>create</mat-icon>
                     Change Workflow Data
                 </button>
                 <button
                     class="menu-item menu-item--add"
                     mat-menu-item
-                    (click)="getAvailableConsultantForChangeOrExtend(workflowDiallogActions.Extend)">
+                    appPreventDoubleClick (throttledClick)="getAvailableConsultantForChangeOrExtend(workflowDiallogActions.Extend)">
                     <mat-icon>add</mat-icon>
                     Extend Workflow
                 </button>
                 <button
                     class="menu-item menu-item--cancel"
                     mat-menu-item
-                    (click)="addTermination()">
+                    appPreventDoubleClick (throttledClick)="addTermination()">
                     <mat-icon>clear</mat-icon>
                     Terminate Workflow
                 </button>
@@ -82,7 +82,7 @@
 
     <div *ngIf="isNoteVisible" class="workflow-notes">
         <div fxLayout="row" fxLayoutAlign="space-between center" class="workflow-notes--header">
-            <button mat-icon-button type="button" (click)="showOrHideNotes()"><mat-icon>close</mat-icon></button>
+            <button mat-icon-button type="button" appPreventDoubleClick (throttledClick)="showOrHideNotes()"><mat-icon>close</mat-icon></button>
             <button mat-icon-button type="button" class="workflow-icon--notes u-mr--16"><mat-icon svgIcon="notes-icon"></mat-icon></button>
         </div>
         <div class="workflow-notes--content u-mt--20">
@@ -96,7 +96,7 @@
             </mat-form-field>
         </div>
         <div fxLayout="row" fxLayoutAlign="end center" class="workflow-notes--footer u-mt--20">
-            <button mat-flat-button type="button" color="primary" class="button-accept" (click)="saveNotes()">Save</button>
+            <button mat-flat-button type="button" color="primary" class="button-accept" appPreventDoubleClick (throttledClick)="saveNotes()">Save</button>
         </div>
     </div>
 
@@ -136,20 +136,20 @@
             <button mat-flat-button
                     class="button-outlined mat-elevation-z0 u-mr--16"
                     *ngIf="_workflowDataService.getWorkflowProgress?.currentStepIsForcefullyEditing"
-                    (click)="cancelForceEdit()">
+                    appPreventDoubleClick (throttledClick)="cancelForceEdit()">
                 Cancel
             </button>
             <button mat-flat-button
                     class="button-outlined mat-elevation-z0 u-mr--16"
                     *ngIf="_workflowDataService.getWorkflowProgress?.stepSpecificPermissions!['Edit']"
-                    (click)="saveOrCompleteStep(true)">
+                    appPreventDoubleClick (throttledClick)="saveOrCompleteStep(true)">
                 {{_workflowDataService.getWorkflowProgress.currentStepIsForcefullyEditing ? 'Save' : 'Save draft'}}
             </button>
             <button color="primary"
                     class="button-accept mat-elevation-z0"
                     mat-flat-button
                     *ngIf="_workflowDataService.getWorkflowProgress?.stepSpecificPermissions!['Completion']"
-                    (click)="saveOrCompleteStep(false)">
+                    appPreventDoubleClick (throttledClick)="saveOrCompleteStep(false)">
                     Complete step
             </button>
         </div>

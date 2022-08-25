@@ -2,6 +2,6 @@
     <div fxLayout="column" fxLayoutAlign="center center">
         <img src="../../assets/common/images/login-image.svg" />
         <p>Log in with your Microsoft account</p>
-        <button color="primary" class="mat-elevation-z0" mat-raised-button (click)="loginPopup()">LOGIN</button>
+        <button color="primary" class="mat-elevation-z0" mat-raised-button appPreventDoubleClick (throttledClick)="loginPopup()">LOGIN</button>
     </div>
 </div>

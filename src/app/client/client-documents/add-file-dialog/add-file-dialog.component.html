@@ -18,16 +18,16 @@
         <div class="file">
             <span class="flex-row flex-items-center">
                 <mat-icon class="icon" svgIcon="{{ file.icon }}"></mat-icon>
-                <span (click)="$event.stopPropagation()" class="label">{{ file.name }}</span>
+                <span appPreventDoubleClick (throttledClick)="$event.stopPropagation()" class="label">{{ file.name }}</span>
             </span>
         </div>
     </div>
 </mat-dialog-content>
 <mat-dialog-actions class="add-file--actions flex-justify-between">
-    <button (click)="reject()" mat-flat-button class="add-file--actions-btn dialog-btn dialog-btn__outlined">
+    <button appPreventDoubleClick (throttledClick)="reject()" mat-flat-button class="add-file--actions-btn dialog-btn dialog-btn__outlined">
         Cancel
     </button>
-    <button mat-flat-button class="add-file--actions-btn dialog-btn dialog-btn__positive" (click)="upload()" [disabled]="!attachmentTypeId.valid">
+    <button mat-flat-button class="add-file--actions-btn dialog-btn dialog-btn__positive" appPreventDoubleClick (throttledClick)="upload()" [disabled]="!attachmentTypeId.valid">
         Upload
     </button>
 </mat-dialog-actions>
