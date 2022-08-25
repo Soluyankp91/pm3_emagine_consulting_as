@@ -3,16 +3,16 @@
         <h2 class="page-main-header u-mb--20">Workflows</h2>
         <div fxLayout="row" fxLayoutAlign="start start" class="u-w--100">
             <div fxFlex fxLayout="row" fxLayoutAlign="start start" class="u-w--100">
-                <div class="workflow-list--filter-manager cursor-pointer u-mr--16" [matTooltip]="mapListByProperty(selectedAccountManagers, 'name')" matTooltipClass="white-tooltip" [matMenuTriggerFor]="managerMenu" (menuOpened)="accountManagerFilterInput.click(); onOpenedMenu();" appPreventDoubleClick (throttledClick)="openMenu($event)">
+                <div class="workflow-list--filter-manager cursor-pointer u-mr--16" [matTooltip]="mapListByProperty(selectedAccountManagers, 'name')" matTooltipClass="white-tooltip" [matMenuTriggerFor]="managerMenu" (menuOpened)="accountManagerFilterInput.click(); onOpenedMenu();" (click)="openMenu($event)">
                     <img *ngIf="selectedAccountManagers.length === 1" class="border-rounded-50 image-thumbnail-small" [src]="employeeProfileUrl(selectedAccountManagers[0].externalId!)" />
                     <img *ngIf="selectedAccountManagers.length === 0" src="../../../assets/common/images/no-img.svg">
                     <div *ngIf="selectedAccountManagers.length > 1" class="workflow-list--filter__badge">
                         {{selectedAccountManagers.length}}
                     </div>
                     <mat-menu #managerMenu backdropClass="workflow-list--filter-manager-menu">
-                        <div mat-menu-item appPreventDoubleClick (throttledClick)="$event.stopPropagation()" class="u-pg--0">
-                            <mat-form-field class="workflow-list--filter-manager-dropdown" appearance="fill" appPreventDoubleClick (throttledClick)="$event.stopPropagation()">
-                                <input #accountManagerFilterInput #trigger type="text" matInput [matAutocomplete]="managerAutocomplete" [formControl]="accountManagerFilter" appPreventDoubleClick (throttledClick)="$event.stopPropagation()" placeholder="Select account manager(s)">
+                        <div mat-menu-item (click)="$event.stopPropagation()" class="u-pg--0">
+                            <mat-form-field class="workflow-list--filter-manager-dropdown" appearance="fill" (click)="$event.stopPropagation()">
+                                <input #accountManagerFilterInput #trigger type="text" matInput [matAutocomplete]="managerAutocomplete" [formControl]="accountManagerFilter" (click)="$event.stopPropagation()" placeholder="Select account manager(s)">
                             </mat-form-field>
                             <mat-autocomplete #managerAutocomplete="matAutocomplete">
                                 <mat-option *ngFor="let manager of selectedAccountManagers"
