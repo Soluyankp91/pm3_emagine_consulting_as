@@ -9,10 +9,10 @@
     </p>
 </mat-dialog-content>
 <mat-dialog-actions class="confiramtion-dialog--actions flex-justify-between">
-    <button mat-flat-button class="confiramtion-dialog--actions-btn dialog-btn dialog-btn__outlined" (click)="reject()">
+    <button mat-flat-button class="confiramtion-dialog--actions-btn dialog-btn dialog-btn__outlined" appPreventDoubleClick (throttledClick)="reject()">
         {{ data.rejectButtonText }}
     </button>
-    <button mat-flat-button class="dialog-btn" [ngClass]="data.isNegative ? 'dialog-btn__negative' : 'dialog-btn__positive'" (click)="confirm()">
+    <button mat-flat-button class="dialog-btn" [ngClass]="data.isNegative ? 'dialog-btn__negative' : 'dialog-btn__positive'" appPreventDoubleClick (throttledClick)="confirm()">
         {{ data.confirmButtonText }}
     </button>
 </mat-dialog-actions>

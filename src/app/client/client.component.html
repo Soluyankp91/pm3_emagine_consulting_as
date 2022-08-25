@@ -10,36 +10,36 @@
                     (menuOpened)="onManagersMenuOpened(); accountManagerFilterInput.focus()"
                     [matTooltip]="mapListByProperty(selectedAccountManagers, 'name')"
                     matTooltipClass="white-tooltip"
-                    (click)="openManagersMenu($event)">
+                    appPreventDoubleClick (throttledClick)="openManagersMenu($event)">
                     <img *ngIf="selectedAccountManagers?.length === 1" class="border-rounded-50 image-thumbnail-small" [src]="employeeProfileUrl(selectedAccountManagers[0].externalId!)" />
                     <img *ngIf="selectedAccountManagers?.length === 0" src="../../../assets/common/images/no-img.svg">
                     <div *ngIf="selectedAccountManagers?.length && selectedAccountManagers.length > 1" class="client-list--filter__badge">
                         {{selectedAccountManagers.length}}
                     </div>
                     <mat-menu #managerMenu backdropClass="client-list--filter-manager-menu">
-                        <div mat-menu-item (click)="$event.stopPropagation()" class="u-pg--0">
-                            <mat-form-field class="client-list--filter-manager-dropdown" appearance="fill" (click)="$event.stopPropagation()">
-                                <input #accountManagerFilterInput #managersTrigger type="text" matInput [matAutocomplete]="managerAutocomplete" [formControl]="accountManagerFilter" (click)="$event.stopPropagation()" placeholder="Select account manager(s)">
+                        <div mat-menu-item appPreventDoubleClick (throttledClick)="$event.stopPropagation()" class="u-pg--0">
+                            <mat-form-field class="client-list--filter-manager-dropdown" appearance="fill" appPreventDoubleClick (throttledClick)="$event.stopPropagation()">
+                                <input #accountManagerFilterInput #managersTrigger type="text" matInput [matAutocomplete]="managerAutocomplete" [formControl]="accountManagerFilter" appPreventDoubleClick (throttledClick)="$event.stopPropagation()" placeholder="Select account manager(s)">
                             </mat-form-field>
                             <mat-autocomplete #managerAutocomplete="matAutocomplete">
                                 <mat-option *ngFor="let manager of selectedAccountManagers"
                                     class="u-pg--5"
                                     [value]="manager">
                                     <div class="u-w--100"
-                                        (click)="optionClicked($event, manager, selectedAccountManagers)">
+                                        appPreventDoubleClick (throttledClick)="optionClicked($event, manager, selectedAccountManagers)">
                                         <mat-checkbox [checked]="manager.selected"
                                             *ngIf="manager.id !== 'no-data'"
                                             color="primary"
                                             class="green-checkbox"
                                             (change)="toggleSelection(manager,selectedAccountManagers)"
-                                            (click)="$event.stopPropagation()">
+                                            appPreventDoubleClick (throttledClick)="$event.stopPropagation()">
                                             <div fxLayout="row" fxLayoutAlign="start center" class="u-w--100">
                                                 <img class="border-rounded-50 image-settings--dropdown u-ml--8 u-mr--16" [src]="employeeProfileUrl(manager.externalId!)">
                                                 <span>{{ manager.name }}</span>
                                             </div>
                                         </mat-checkbox>
                                         <span *ngIf="manager.id === 'no-data'"
-                                            (click)="$event.stopPropagation()">
+                                            appPreventDoubleClick (throttledClick)="$event.stopPropagation()">
                                             {{ manager.name }}
                                         </span>
                                     </div>
@@ -55,20 +55,20 @@
                                         [ngClass]="{ 'no-data': manager.id === 'no-data', 'hidden-option': selectedAccountManagers.includes(manager)}"
                                         [value]="selectedAccountManagers">
                                         <div
-                                            (click)="optionClicked($event, manager, selectedAccountManagers)">
+                                            appPreventDoubleClick (throttledClick)="optionClicked($event, manager, selectedAccountManagers)">
                                             <mat-checkbox [checked]="manager.selected"
                                                 *ngIf="manager.id !== 'no-data'"
                                                 color="primary"
                                                 class="green-checkbox"
                                                 (change)="toggleSelection(manager,selectedAccountManagers)"
-                                                (click)="$event.stopPropagation()">
+                                                appPreventDoubleClick (throttledClick)="$event.stopPropagation()">
                                                 <div fxLayout="row" fxLayoutAlign="start center" class="u-w--100">
                                                     <img class="border-rounded-50 image-settings--dropdown u-ml--8 u-mr--16" [src]="employeeProfileUrl(manager.externalId!)">
                                                     <span>{{ manager.name }}</span>
                                                 </div>
                                             </mat-checkbox>
                                             <span *ngIf="manager.id === 'no-data'"
-                                                (click)="$event.stopPropagation()">{{ manager.name }}
+                                                appPreventDoubleClick (throttledClick)="$event.stopPropagation()">{{ manager.name }}
                                             </span>
                                         </div>
                                     </mat-option>
@@ -83,7 +83,7 @@
                     [ngClass]="{ 'client-list--filter-country__btn': selectedCountries.length > 1 }"
                     [matTooltip]="mapListByProperty(selectedCountries, 'name')"
                     matTooltipClass="white-tooltip"
-                    (click)="openCountriesMenu($event)">
+                    appPreventDoubleClick (throttledClick)="openCountriesMenu($event)">
                     <span *ngIf="selectedCountries.length > 1; else singleCountry" class="client-list--filter-country__badge">
                         {{selectedCountries.length}}
                     </span>
@@ -94,9 +94,9 @@
                         <mat-icon class="client-list--filter-country u-mr--16" svgIcon="Country-filter-flag"></mat-icon>
                     </ng-template>
                     <mat-menu #countryMenu backdropClass="client-list--filter-country-menu">
-                        <div mat-menu-item (click)="$event.stopPropagation()" class="u-pg--0">
-                            <mat-form-field class="client-list--filter-country-dropdown" appearance="fill" (click)="$event.stopPropagation()">
-                                <input type="text" #countriesTrigger matInput [matAutocomplete]="countryAutocomplete" [formControl]="countryFilter" (click)="$event.stopPropagation()" placeholder="Select client country">
+                        <div mat-menu-item appPreventDoubleClick (throttledClick)="$event.stopPropagation()" class="u-pg--0">
+                            <mat-form-field class="client-list--filter-country-dropdown" appearance="fill" appPreventDoubleClick (throttledClick)="$event.stopPropagation()">
+                                <input type="text" #countriesTrigger matInput [matAutocomplete]="countryAutocomplete" [formControl]="countryFilter" appPreventDoubleClick (throttledClick)="$event.stopPropagation()" placeholder="Select client country">
                             </mat-form-field>
                             <mat-autocomplete #countryAutocomplete="matAutocomplete">
                                 <mat-option *ngIf="isCountriesLoading" class="is-loading">
@@ -109,13 +109,13 @@
                                         class="u-pg--5"
                                         [value]="country">
                                         <div class="u-w--100"
-                                            (click)="optionClicked($event, country, selectedCountries)">
+                                            appPreventDoubleClick (throttledClick)="optionClicked($event, country, selectedCountries)">
                                             <mat-checkbox [checked]="country.selected"
                                                 *ngIf="country.id !== 'no-data'"
                                                 color="primary"
                                                 class="green-checkbox"
                                                 (change)="toggleSelection(country,selectedCountries)"
-                                                (click)="$event.stopPropagation()">
+                                                appPreventDoubleClick (throttledClick)="$event.stopPropagation()">
                                                 <span class="country-flag fi fi-{{country.code | lowercase }} fis border-rounded-50 u-ml--8 u-mr--16" *ngIf="country.id !== 0"></span>
                                                 <!-- <ng-template #unkownCountry> -->
                                                     <mat-icon *ngIf="country.id === 0" svgIcon="Country-filter-flag" class="u-ml--8"></mat-icon>
@@ -123,7 +123,7 @@
                                                 <span>{{ country.name }}</span>
                                             </mat-checkbox>
                                             <span *ngIf="country.id === 'no-data'"
-                                                (click)="$event.stopPropagation()">
+                                                appPreventDoubleClick (throttledClick)="$event.stopPropagation()">
                                                 {{ country.name }}
                                             </span>
                                         </div>
@@ -133,19 +133,19 @@
                                         [ngClass]="{ 'no-data': country.id === 'no-data', 'hidden-option': selectedCountries.includes(country)}"
                                         [value]="country">
                                         <div class="u-w--100"
-                                            (click)="optionClicked($event, country, selectedCountries)">
+                                            appPreventDoubleClick (throttledClick)="optionClicked($event, country, selectedCountries)">
                                             <mat-checkbox [checked]="country.selected"
                                                 *ngIf="country.id !== 'no-data'"
                                                 color="primary"
                                                 class="green-checkbox"
                                                 (change)="toggleSelection(country,selectedCountries)"
-                                                (click)="$event.stopPropagation()">
+                                                appPreventDoubleClick (throttledClick)="$event.stopPropagation()">
                                                 <span class="country-flag fi fi-{{country.code | lowercase }} fis border-rounded-50 u-ml--8 u-mr--16" *ngIf="country.id !== 0"></span>
                                                 <mat-icon *ngIf="country.id === 0" svgIcon="Country-filter-flag" class="u-ml--8"></mat-icon>
                                                 <span>{{ country.name }}</span>
                                             </mat-checkbox>
                                             <span *ngIf="country.id === 'no-data'"
-                                                (click)="$event.stopPropagation()">
+                                                appPreventDoubleClick (throttledClick)="$event.stopPropagation()">
                                                 {{ country.name }}
                                             </span>
                                         </div>
@@ -156,17 +156,17 @@
                         </div>
                     </mat-menu>
                 </div>
-                <span class="client-list--filter-status__badge flex-items-center cursor-pointer u-mr--16" [ngClass]="{'selected-status': isActiveClients}" (click)="isActiveClients = !isActiveClients; getClientsGrid(true)">
+                <span class="client-list--filter-status__badge flex-items-center cursor-pointer u-mr--16" [ngClass]="{'selected-status': isActiveClients}" appPreventDoubleClick (throttledClick)="isActiveClients = !isActiveClients; getClientsGrid(true)">
                     <mat-icon class="status-dot green-dot u-mr--5">fiber_manual_record</mat-icon>
                     Active clients
                 </span>
-                <span class="client-list--filter-status__badge flex-items-center cursor-pointer u-mr--16" [ngClass]="{'selected-status': nonActiveClient}" (click)="nonActiveClient = !nonActiveClient; getClientsGrid(true)">
+                <span class="client-list--filter-status__badge flex-items-center cursor-pointer u-mr--16" [ngClass]="{'selected-status': nonActiveClient}" appPreventDoubleClick (throttledClick)="nonActiveClient = !nonActiveClient; getClientsGrid(true)">
                     <mat-icon class="status-dot grey-dot u-mr--5">fiber_manual_record</mat-icon>
                     Non-active clients
                 </span>
                 <div fxLayout="row" fxLayoutAlign="start center" class="u-ml--10">
                     <mat-divider class="divider-height u-mr--10" [vertical]="true"></mat-divider>
-                    <button mat-button (click)="clearAllFilters()">
+                    <button mat-button appPreventDoubleClick (throttledClick)="clearAllFilters()">
                         <span class="clear-all-button">
                             Reset
                         </span>
@@ -259,33 +259,33 @@
                 <ng-container matColumnDef="action">
                     <mat-header-cell *matHeaderCellDef fxFlex="3%"> </mat-header-cell>
                     <mat-cell *matCellDef="let row" fxFlex="3%">
-                        <button mat-icon-button (click)="$event.stopPropagation();" [matMenuTriggerFor]="clientListMenu" class="three-dots-actions-btn">
+                        <button mat-icon-button appPreventDoubleClick (throttledClick)="$event.stopPropagation();" [matMenuTriggerFor]="clientListMenu" class="three-dots-actions-btn">
                             <mat-icon>more_horiz</mat-icon>
                         </button>
                         <mat-menu #clientListMenu>
                             <!-- <button
                                 class="menu-item menu-item--delete"
                                 mat-menu-item
-                                (click)="restoreWrongfullyDeleted(row)">
+                                appPreventDoubleClick (throttledClick)="restoreWrongfullyDeleted(row)">
                                 Restore wrongfully deleted
                             </button> -->
                             <button
                                 class="menu-item menu-item--add"
                                 mat-menu-item
-                                (click)="openInHubspot(row)">
+                                appPreventDoubleClick (throttledClick)="openInHubspot(row)">
                                 Open in Hubspot
                             </button>
                             <button
                                 class="menu-item menu-item--add"
                                 mat-menu-item
-                                (click)="openInCAM(row)">
+                                appPreventDoubleClick (throttledClick)="openInCAM(row)">
                                 Open in CAM
                             </button>
                         </mat-menu>
                     </mat-cell>
                 </ng-container>
                 <mat-header-row *matHeaderRowDef="clientDisplayColumns"></mat-header-row>
-                <mat-row *matRowDef="let row; columns: clientDisplayColumns;" class="mat-elevation-z0 cursor-pointer" (contextmenu)="onRightClick($event, {content: row})" (click)="navigateToClientDetails(row.id)"></mat-row>
+                <mat-row *matRowDef="let row; columns: clientDisplayColumns;" class="mat-elevation-z0 cursor-pointer" (contextmenu)="onRightClick($event, {content: row})" appPreventDoubleClick (throttledClick)="navigateToClientDetails(row.id)"></mat-row>
             </mat-table>
             <div class="spinner-container" *ngIf="isDataLoading">
                 <mat-spinner [diameter]="50"></mat-spinner>
@@ -307,7 +307,7 @@
     <!-- standar material menu -->
     <mat-menu #rightMenu="matMenu">
         <ng-template matMenuContent let-item="item">
-            <button mat-menu-item (click)="openInNewTab(item?.content?.id)">Open in new tab</button>
+            <button mat-menu-item appPreventDoubleClick (throttledClick)="openInNewTab(item?.content?.id)">Open in new tab</button>
         </ng-template>
     </mat-menu>
 </div>

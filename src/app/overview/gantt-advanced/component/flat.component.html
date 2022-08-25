@@ -25,7 +25,7 @@
                                     <button *ngFor="let status of userSelectedStatuses"
                                         class="menu-item"
                                         mat-menu-item
-                                        (click)="setUserSelectedStatusForWorflow(group?.origin?.id!, status?.id)">
+                                        appPreventDoubleClick (throttledClick)="setUserSelectedStatusForWorflow(group?.origin?.id!, status?.id)">
                                         <mat-icon class="main-overview-icon-status" svgIcon="{{detectIcon(status?.id)}}" [ngClass]="detectProcessColor(status?.id)"></mat-icon>
                                         <span [ngClass]="{'text-bold-800': selectedStatus === status.id}">
                                             {{status?.name}}
@@ -43,7 +43,7 @@
                                     <button *ngFor="let status of userSelectedStatuses"
                                         class="menu-item"
                                         mat-menu-item
-                                        (click)="setUserSelectedStatusForConsultant(group?.origin?.origin?.workflowId, group?.origin?.origin?.consultant?.id, status?.id)">
+                                        appPreventDoubleClick (throttledClick)="setUserSelectedStatusForConsultant(group?.origin?.origin?.workflowId, group?.origin?.origin?.consultant?.id, status?.id)">
                                         <mat-icon class="main-overview-icon-status" svgIcon="{{detectIcon(status?.id)}}" [ngClass]="detectProcessColor(status?.id)"></mat-icon>
                                         <span [ngClass]="{'text-bold-800': selectedStatus === status.id}">
                                             {{status?.name}}
@@ -75,7 +75,7 @@
                 <div class="gantt-group-content" fxFlex="25%">
                     <div fxLayout="row" fxLayoutAlign="flex-end center" fxLayoutGap="15px" class="u-w-100">
                         <img class="manager-search--photo" [matTooltip]="group?.origin?.origin?.salesManager?.name!" matTooltipClass="white-tooltip" [src]="employeeProfileUrl(group?.origin?.origin?.salesManager?.externalId!)" />
-                        <button mat-icon-button matTooltip="Go to workflow" matTooltipClass="white-tooltip" (click)="redirectToWorkflow(group?.origin?.origin?.workflowId!)">
+                        <button mat-icon-button matTooltip="Go to workflow" matTooltipClass="white-tooltip" appPreventDoubleClick (throttledClick)="redirectToWorkflow(group?.origin?.origin?.workflowId!)">
                             <mat-icon class="icon-arrow-rotate180" svgIcon="arrow"></mat-icon>
                         </button>
                     </div>

@@ -11,7 +11,7 @@
                     name="clientExtensionEndDate" [formControl]="startDate"
                     (focus)="startDatePicker.open()"
                     required
-                    (click)="startDatePicker.open()" readonly>
+                    appPreventDoubleClick (throttledClick)="startDatePicker.open()" readonly>
             <mat-icon class="calendar-icon" matSuffix svgIcon="calendar"></mat-icon>
             <mat-datepicker #startDatePicker></mat-datepicker>
             <mat-error>
@@ -28,7 +28,7 @@
                         (focus)="endDatePicker.open()"
                         [min]="startDate.value"
                         required
-                        (click)="endDatePicker.open()" readonly>
+                        appPreventDoubleClick (throttledClick)="endDatePicker.open()" readonly>
                 <mat-icon class="calendar-icon" matSuffix svgIcon="calendar"></mat-icon>
                 <mat-datepicker #endDatePicker></mat-datepicker>
                 <mat-error>
@@ -42,10 +42,10 @@
     </div>
 </mat-dialog-content>
 <mat-dialog-actions class="confiramtion-dialog--actions">
-    <button mat-flat-button class="dialog-btn dialog-btn__outlined" (click)="reject()">
+    <button mat-flat-button class="dialog-btn dialog-btn__outlined" appPreventDoubleClick (throttledClick)="reject()">
         Cancel
     </button>
-    <button mat-flat-button class="dialog-btn dialog-btn__positive" [disabled]="!startDate.value || (!endDate.value && !noEndDate.value)" (click)="confirm()">
+    <button mat-flat-button class="dialog-btn dialog-btn__positive" [disabled]="!startDate.value || (!endDate.value && !noEndDate.value)" appPreventDoubleClick (throttledClick)="confirm()">
         Create
     </button>
 </mat-dialog-actions>
