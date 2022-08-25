@@ -45,7 +45,6 @@ export class WorkflowDataService {
                 (this.workflowProgress[key] as any) = status[key];
             }
         }
-        console.log(this.workflowProgress);
     }
 
     get getWorkflowProgress() {
