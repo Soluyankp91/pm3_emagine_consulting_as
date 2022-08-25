@@ -458,7 +458,6 @@ export class WorkflowComponent extends AppComponentBase implements OnInit, OnDes
                         isNewSale: x.isNewSale
                     }
                 })
-                console.log(formattedData);
                 this.workflowDataSource = new MatTableDataSource<any>(formattedData);
                 this.totalCount = result.totalCount;
                 this.saveGridOptions();

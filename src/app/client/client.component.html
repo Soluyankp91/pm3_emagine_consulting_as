@@ -10,16 +10,16 @@
                     (menuOpened)="onManagersMenuOpened(); accountManagerFilterInput.focus()"
                     [matTooltip]="mapListByProperty(selectedAccountManagers, 'name')"
                     matTooltipClass="white-tooltip"
-                    appPreventDoubleClick (throttledClick)="openManagersMenu($event)">
+                    (click)="openManagersMenu($event)">
                     <img *ngIf="selectedAccountManagers?.length === 1" class="border-rounded-50 image-thumbnail-small" [src]="employeeProfileUrl(selectedAccountManagers[0].externalId!)" />
                     <img *ngIf="selectedAccountManagers?.length === 0" src="../../../assets/common/images/no-img.svg">
                     <div *ngIf="selectedAccountManagers?.length && selectedAccountManagers.length > 1" class="client-list--filter__badge">
                         {{selectedAccountManagers.length}}
                     </div>
                     <mat-menu #managerMenu backdropClass="client-list--filter-manager-menu">
-                        <div mat-menu-item appPreventDoubleClick (throttledClick)="$event.stopPropagation()" class="u-pg--0">
-                            <mat-form-field class="client-list--filter-manager-dropdown" appearance="fill" appPreventDoubleClick (throttledClick)="$event.stopPropagation()">
-                                <input #accountManagerFilterInput #managersTrigger type="text" matInput [matAutocomplete]="managerAutocomplete" [formControl]="accountManagerFilter" appPreventDoubleClick (throttledClick)="$event.stopPropagation()" placeholder="Select account manager(s)">
+                        <div mat-menu-item (click)="$event.stopPropagation()" class="u-pg--0">
+                            <mat-form-field class="client-list--filter-manager-dropdown" appearance="fill" (click)="$event.stopPropagation()">
+                                <input #accountManagerFilterInput #managersTrigger type="text" matInput [matAutocomplete]="managerAutocomplete" [formControl]="accountManagerFilter" (click)="$event.stopPropagation()" placeholder="Select account manager(s)">
                             </mat-form-field>
                             <mat-autocomplete #managerAutocomplete="matAutocomplete">
                                 <mat-option *ngFor="let manager of selectedAccountManagers"
@@ -83,7 +83,7 @@
                     [ngClass]="{ 'client-list--filter-country__btn': selectedCountries.length > 1 }"
                     [matTooltip]="mapListByProperty(selectedCountries, 'name')"
                     matTooltipClass="white-tooltip"
-                    appPreventDoubleClick (throttledClick)="openCountriesMenu($event)">
+                    (click)="openCountriesMenu($event)">
                     <span *ngIf="selectedCountries.length > 1; else singleCountry" class="client-list--filter-country__badge">
                         {{selectedCountries.length}}
                     </span>
