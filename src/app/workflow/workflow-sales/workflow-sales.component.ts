@@ -822,7 +822,6 @@ export class WorkflowSalesComponent extends AppComponentBase implements OnInit {
             }))
             .subscribe(result => {
                 this.nonStandartTerminationTimes = result;
-                console.log(this.nonStandartTerminationTimes['Before end of contract'])
             });
     }
 
@@ -1914,7 +1913,6 @@ export class WorkflowSalesComponent extends AppComponentBase implements OnInit {
     //#region Consultant menu actions
     changeConsultantData(index: number) {
         const consultantData = this.consultantsForm.consultantData.at(index).value;
-        console.log('change consultant ', consultantData);
         const scrollStrategy = this.overlay.scrollStrategies.reposition();
         const dialogRef = this.dialog.open(WorkflowConsultantActionsDialogComponent, {
             minWidth: '450px',
@@ -1953,7 +1951,6 @@ export class WorkflowSalesComponent extends AppComponentBase implements OnInit {
 
     extendConsultant(index: number) {
         const consultantData = this.consultantsForm.consultantData.at(index).value;
-        console.log('extend consultant ', consultantData);
         const scrollStrategy = this.overlay.scrollStrategies.reposition();
         const dialogRef = this.dialog.open(WorkflowConsultantActionsDialogComponent, {
             minWidth: '450px',
@@ -2276,8 +2273,6 @@ export class WorkflowSalesComponent extends AppComponentBase implements OnInit {
 
     terminateConsultant(index: number) {
         let consultantInformation = this.consultantsForm.consultantData.at(index).value.consultantName;
-
-        console.log('terminate consultant ',  consultantInformation?.consultant?.id);
         const scrollStrategy = this.overlay.scrollStrategies.reposition();
         const dialogRef = this.dialog.open(ConfirmationDialogComponent, {
             width: '450px',

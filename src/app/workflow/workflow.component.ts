@@ -488,10 +488,6 @@ export class WorkflowComponent extends AppComponentBase implements OnInit, OnDes
         this.getWorkflowList();
     }
 
-    selectedManager(event: any) {
-        console.log(event);
-    }
-
     optionClicked(event: Event, item: SelectableIdNameDto | SelectableCountry | SelectableEmployeeDto, list: SelectableIdNameDto[] | SelectableCountry[] | SelectableEmployeeDto[]) {
         event.stopPropagation();
         this.toggleSelection(item, list);

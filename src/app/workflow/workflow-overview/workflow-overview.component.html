@@ -37,7 +37,7 @@
                         {{item.name}}
                     </span>
                 </span>
-                <span class="workflow-overview--process-daterange u-ml--5">{{item.periodStartDate | momentFormat: 'DD/MM/YYYY' + ' - ' + (item.periodEndDate ? (item.periodEndDate | momentFormat: 'DD/MM/YYYY') : '...')}}</span>
+                <span class="workflow-overview--process-daterange u-ml--5">{{item.periodStartDate | momentFormat: 'DD.MM.YYYY' + ' - ' + (item.periodEndDate ? (item.periodEndDate | momentFormat: 'DD.MM.YYYY') : '...')}}</span>
             </div>
             <div *ngFor="let item of item.steps" fxFlex="20%">
                 <div class="workflow-overview--team__user column">
