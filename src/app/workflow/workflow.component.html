@@ -379,11 +379,11 @@
                 <ng-container matColumnDef="action">
                     <mat-header-cell *matHeaderCellDef fxFlex="3%"></mat-header-cell>
                     <mat-cell *matCellDef="let row" fxFlex="3%">
-                        <button mat-icon-button class="three-dots-actions-btn" [matMenuTriggerFor]="workflowActions" appPreventDoubleClick (throttledClick)="$event.stopPropagation();"><mat-icon>more_horiz</mat-icon></button>
+                        <button *ngIf="!row.isDeleted" mat-icon-button class="three-dots-actions-btn" [matMenuTriggerFor]="workflowActions" appPreventDoubleClick (throttledClick)="$event.stopPropagation();"><mat-icon>more_horiz</mat-icon></button>
                         <mat-menu #workflowActions>
-                            <button class="menu-item" [ngClass]="row.isDeleted ? 'menu-item--add' : 'menu-item--cancel'" mat-menu-item appPreventDoubleClick (throttledClick)="confirmDeleteWorkflow(row?.workflowId)">
-                                    <mat-icon>{{row.isDeleted ? 'refresh' : 'clear'}}</mat-icon>
-                                    <span>{{row.isDeleted ? 'Restore' : 'Delete'}}</span>
+                            <button class="menu-item menu-item--cancel" mat-menu-item appPreventDoubleClick (throttledClick)="confirmDeleteWorkflow(row?.workflowId)">
+                                    <mat-icon>clear</mat-icon>
+                                    <span>Delete</span>
                             </button>
                         </mat-menu>
                     </mat-cell>
