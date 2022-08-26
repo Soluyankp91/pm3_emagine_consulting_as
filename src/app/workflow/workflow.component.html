@@ -3,7 +3,7 @@
         <h2 class="page-main-header u-mb--20">Workflows</h2>
         <div fxLayout="row" fxLayoutAlign="start start" class="u-w--100">
             <div fxFlex fxLayout="row" fxLayoutAlign="start start" class="u-w--100">
-                <div class="workflow-list--filter-manager cursor-pointer u-mr--16" [matTooltip]="mapListByProperty(selectedAccountManagers, 'name')" matTooltipClass="white-tooltip" [matMenuTriggerFor]="managerMenu" (menuOpened)="accountManagerFilterInput.click(); onOpenedMenu();" (click)="openMenu($event)">
+                <div class="workflow-list--filter-manager cursor-pointer u-mr--16" [matTooltip]="selectedAccountManagers.length ? mapListByProperty(selectedAccountManagers, 'name') : 'Select account manager(s)'" matTooltipClass="white-tooltip" [matMenuTriggerFor]="managerMenu" (menuOpened)="accountManagerFilterInput.click(); onOpenedMenu();" (click)="openMenu($event)">
                     <img *ngIf="selectedAccountManagers.length === 1" class="border-rounded-50 image-thumbnail-small" [src]="employeeProfileUrl(selectedAccountManagers[0].externalId!)" />
                     <img *ngIf="selectedAccountManagers.length === 0" src="../../../assets/common/images/no-img.svg">
                     <div *ngIf="selectedAccountManagers.length > 1" class="workflow-list--filter__badge">
@@ -17,22 +17,21 @@
                             <mat-autocomplete #managerAutocomplete="matAutocomplete">
                                 <mat-option *ngFor="let manager of selectedAccountManagers"
                                     class="u-pg--5"
-                                    [value]="manager">
-                                    <div class="u-w--100"
-                                        appPreventDoubleClick (throttledClick)="optionClicked($event, manager, selectedAccountManagers)">
+                                    [value]="manager" (click)="optionClicked($event, manager, selectedAccountManagers)">
+                                    <div class="u-w--100">
                                         <mat-checkbox [checked]="manager.selected"
                                             *ngIf="manager.id !== 'no-data'"
                                             color="primary"
                                             class="green-checkbox"
                                             (change)="toggleSelection(manager,selectedAccountManagers)"
-                                            appPreventDoubleClick (throttledClick)="$event.stopPropagation()">
+                                            (click)="$event.stopPropagation()">
                                             <div fxLayout="row" fxLayoutAlign="start center" class="u-w--100">
                                                 <img class="border-rounded-50 image-settings--dropdown u-ml--8 u-mr--16" [src]="employeeProfileUrl(manager.externalId!)">
                                                 <span>{{ manager.name }}</span>
                                             </div>
                                         </mat-checkbox>
                                         <span *ngIf="manager.id === 'no-data'"
-                                            appPreventDoubleClick (throttledClick)="$event.stopPropagation()">
+                                            (click)="$event.stopPropagation()">
                                             {{ manager.name }}
                                         </span>
                                     </div>
@@ -46,22 +45,21 @@
                                     <mat-option *ngFor="let manager of filteredAccountManagers"
                                         class="u-pg--5"
                                         [ngClass]="{ 'no-data': manager.id === 'no-data', 'hidden-option': selectedAccountManagers.includes(manager)}"
-                                        [value]="selectedAccountManagers">
-                                        <div
-                                            appPreventDoubleClick (throttledClick)="optionClicked($event, manager, selectedAccountManagers)">
+                                        [value]="selectedAccountManagers" (click)="optionClicked($event, manager, selectedAccountManagers)">
+                                        <div>
                                             <mat-checkbox [checked]="manager.selected"
                                                 *ngIf="manager.id !== 'no-data'"
                                                 color="primary"
                                                 class="green-checkbox"
                                                 (change)="toggleSelection(manager,selectedAccountManagers)"
-                                                appPreventDoubleClick (throttledClick)="$event.stopPropagation()">
+                                                (click)="$event.stopPropagation()">
                                                 <div fxLayout="row" fxLayoutAlign="start center" class="u-w--100">
                                                     <img class="border-rounded-50 image-settings--dropdown u-ml--8 u-mr--16" [src]="employeeProfileUrl(manager.externalId!)">
                                                     <span>{{ manager.name }}</span>
                                                 </div>
                                             </mat-checkbox>
                                             <span *ngIf="manager.id === 'no-data'"
-                                                appPreventDoubleClick (throttledClick)="$event.stopPropagation()">{{ manager.name }}
+                                                (click)="$event.stopPropagation()">{{ manager.name }}
                                             </span>
                                         </div>
                                     </mat-option>
