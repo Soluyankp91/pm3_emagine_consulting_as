@@ -3,7 +3,7 @@
         <h2 class="page-main-header u-mb--20">Workflows</h2>
         <div fxLayout="row" fxLayoutAlign="start start" class="u-w--100">
             <div fxFlex fxLayout="row" fxLayoutAlign="start start" class="u-w--100">
-                <div class="workflow-list--filter-manager cursor-pointer u-mr--16" [matTooltip]="mapListByProperty(selectedAccountManagers, 'name')" matTooltipClass="white-tooltip" [matMenuTriggerFor]="managerMenu" (menuOpened)="accountManagerFilterInput.click(); onOpenedMenu();" (click)="openMenu($event)">
+                <div class="workflow-list--filter-manager cursor-pointer u-mr--16" [matTooltip]="selectedAccountManagers.length ? mapListByProperty(selectedAccountManagers, 'name') : 'Select account manager(s)'" matTooltipClass="white-tooltip" [matMenuTriggerFor]="managerMenu" (menuOpened)="accountManagerFilterInput.click(); onOpenedMenu();" (click)="openMenu($event)">
                     <img *ngIf="selectedAccountManagers.length === 1" class="border-rounded-50 image-thumbnail-small" [src]="employeeProfileUrl(selectedAccountManagers[0].externalId!)" />
                     <img *ngIf="selectedAccountManagers.length === 0" src="../../../assets/common/images/no-img.svg">
                     <div *ngIf="selectedAccountManagers.length > 1" class="workflow-list--filter__badge">
@@ -17,9 +17,8 @@
                             <mat-autocomplete #managerAutocomplete="matAutocomplete">
                                 <mat-option *ngFor="let manager of selectedAccountManagers"
                                     class="u-pg--5"
-                                    [value]="manager">
-                                    <div class="u-w--100"
-                                        (click)="optionClicked($event, manager, selectedAccountManagers)">
+                                    [value]="manager" (click)="optionClicked($event, manager, selectedAccountManagers)">
+                                    <div class="u-w--100">
                                         <mat-checkbox [checked]="manager.selected"
                                             *ngIf="manager.id !== 'no-data'"
                                             color="primary"
@@ -46,9 +45,8 @@
                                     <mat-option *ngFor="let manager of filteredAccountManagers"
                                         class="u-pg--5"
                                         [ngClass]="{ 'no-data': manager.id === 'no-data', 'hidden-option': selectedAccountManagers.includes(manager)}"
-                                        [value]="selectedAccountManagers">
-                                        <div
-                                            (click)="optionClicked($event, manager, selectedAccountManagers)">
+                                        [value]="selectedAccountManagers" (click)="optionClicked($event, manager, selectedAccountManagers)">
+                                        <div>
                                             <mat-checkbox [checked]="manager.selected"
                                                 *ngIf="manager.id !== 'no-data'"
                                                 color="primary"
@@ -70,32 +68,32 @@
                         </div>
                     </mat-menu>
                 </div>
-                <span class="workflow-list--filter-type new-sales-status flex-items-center cursor-pointer u-mr--16" [ngClass]="{'selected-status': showOnlyWorkflowsWithNewSales}" (click)="showOnlyWorkflowsWithNewSales = !showOnlyWorkflowsWithNewSales; getWorkflowList(true)">
+                <span class="workflow-list--filter-type new-sales-status flex-items-center cursor-pointer u-mr--16" [ngClass]="{'selected-status': showOnlyWorkflowsWithNewSales}" appPreventDoubleClick (throttledClick)="showOnlyWorkflowsWithNewSales = !showOnlyWorkflowsWithNewSales; getWorkflowList(true)">
                     <mat-icon class="status-dot green-dot u-mr--5">fiber_manual_record</mat-icon>
                     <span class="workflow-list--filter-type__name">
                         New sales
                     </span>
                 </span>
-                <span class="workflow-list--filter-type extensions-status flex-items-center cursor-pointer u-mr--16" [ngClass]="{'selected-status': showOnlyWorkflowsWithExtensions}" (click)="showOnlyWorkflowsWithExtensions = !showOnlyWorkflowsWithExtensions; getWorkflowList(true)">
+                <span class="workflow-list--filter-type extensions-status flex-items-center cursor-pointer u-mr--16" [ngClass]="{'selected-status': showOnlyWorkflowsWithExtensions}" appPreventDoubleClick (throttledClick)="showOnlyWorkflowsWithExtensions = !showOnlyWorkflowsWithExtensions; getWorkflowList(true)">
                     <mat-icon class="status-dot purple-dot u-mr--5">fiber_manual_record</mat-icon>
                     <span class="workflow-list--filter-type__name">
                         Extensions
                     </span>
                 </span>
                 <mat-divider class="u-mr--16" [vertical]="true" style="height: 40px;"></mat-divider>
-                <span class="workflow-list--filter-type pending-steps-status flex-items-center cursor-pointer u-mr--16" [ngClass]="{'selected-status': showOnlyWorkflowsWithPendingStepsForSelectedEmployees}" (click)="showOnlyWorkflowsWithPendingStepsForSelectedEmployees = !showOnlyWorkflowsWithPendingStepsForSelectedEmployees; getWorkflowList(true)">
+                <span class="workflow-list--filter-type pending-steps-status flex-items-center cursor-pointer u-mr--16" [ngClass]="{'selected-status': showOnlyWorkflowsWithPendingStepsForSelectedEmployees}" appPreventDoubleClick (throttledClick)="showOnlyWorkflowsWithPendingStepsForSelectedEmployees = !showOnlyWorkflowsWithPendingStepsForSelectedEmployees; getWorkflowList(true)">
                     <span class="workflow-list--filter-type__name">
                         Pending steps
                     </span>
                 </span>
-                <span class="workflow-list--filter-type upcoming-steps-status flex-items-center cursor-pointer u-mr--20" [ngClass]="{'selected-status': showOnlyWorkflowsWithUpcomingStepsForSelectedEmployees}" (click)="showOnlyWorkflowsWithUpcomingStepsForSelectedEmployees = !showOnlyWorkflowsWithUpcomingStepsForSelectedEmployees; getWorkflowList(true)">
+                <span class="workflow-list--filter-type upcoming-steps-status flex-items-center cursor-pointer u-mr--20" [ngClass]="{'selected-status': showOnlyWorkflowsWithUpcomingStepsForSelectedEmployees}" appPreventDoubleClick (throttledClick)="showOnlyWorkflowsWithUpcomingStepsForSelectedEmployees = !showOnlyWorkflowsWithUpcomingStepsForSelectedEmployees; getWorkflowList(true)">
                     <span class="workflow-list--filter-type__name">
                         Upcoming steps
                     </span>
                 </span>
                 <div fxLayout="row" fxLayoutAlign="start center" fxFlex="10%">
                     <mat-divider class="u-mr--10 divider-height" [vertical]="true"></mat-divider>
-                    <button mat-button (click)="clearAllFilters()">
+                    <button mat-button appPreventDoubleClick (throttledClick)="clearAllFilters()">
                         <span class="clear-all-button" >
                             Reset
                         </span>
@@ -108,7 +106,7 @@
                         <input autocomplete="off" matInput [formControl]="workflowFilter" placeholder="Search" type="text">
                         <mat-icon class="search-icon u-ml--10" matPrefix>search</mat-icon>
                     </mat-form-field>
-                    <button mat-icon-button (click)="createWorkflow()" class="workflow-list--filter__add-btn" matTooltip="Create workflow" matTooltipClass="white-tooltip">
+                    <button mat-icon-button appPreventDoubleClick (throttledClick)="createWorkflow()" class="workflow-list--filter__add-btn" matTooltip="Create workflow" matTooltipClass="white-tooltip">
                         <mat-icon svgIcon="plus-button-icon"></mat-icon>
                     </button>
                 </div>
@@ -213,6 +211,7 @@
                     <mat-header-cell *matHeaderCellDef mat-sort-header fxFlex="10%"> Sales type </mat-header-cell>
                     <mat-cell *matCellDef="let row" fxFlex="10%">
                         <span class="text-truncate-ellipsis"  [matTooltip]="row.salesType?.name" matTooltipClass="white-tooltip" appShowIfTruncated>
+                            {{row.salesType?.name}}
                         </span>
                     </mat-cell>
                 </ng-container>
@@ -358,14 +357,13 @@
                                 <ng-container *ngFor="let step of item.steps; let i = index;">
                                     <div class="workflow-list--step u-mr--16" [ngClass]="{'completed-step': step.status === workflowStatuses.Completed}">
                                         <app-manager-search
-                                            (click)="$event.stopPropagation()"
+                                            appPreventDoubleClick (throttledClick)="$event.stopPropagation()"
                                             [formFieldLabel]="step.name + ' Manager'"
                                             [periodId]="item.processId!"
                                             [consultantPeriodId]="item.processId!"
                                             [stepType]="step.typeId!"
                                             [periodType]="item.typeId!"
                                             [workflowId]="row.workflowId"
-                                            (managerSelected)="selectedManager($event)"
                                             [managerStatus]="step.status!"
                                             [responsiblePerson]="step.responsiblePerson!"
                                             [readonly]="item.processId === null || item.processId === undefined">
@@ -379,18 +377,18 @@
                 <ng-container matColumnDef="action">
                     <mat-header-cell *matHeaderCellDef fxFlex="3%"></mat-header-cell>
                     <mat-cell *matCellDef="let row" fxFlex="3%">
-                        <button mat-icon-button class="three-dots-actions-btn" [matMenuTriggerFor]="workflowActions" (click)="$event.stopPropagation();"><mat-icon>more_horiz</mat-icon></button>
+                        <button *ngIf="!row.isDeleted" mat-icon-button class="three-dots-actions-btn" [matMenuTriggerFor]="workflowActions" appPreventDoubleClick (throttledClick)="$event.stopPropagation();"><mat-icon>more_horiz</mat-icon></button>
                         <mat-menu #workflowActions>
-                            <button class="menu-item" [ngClass]="row.isDeleted ? 'menu-item--add' : 'menu-item--cancel'" mat-menu-item (click)="confirmDeleteWorkflow(row?.workflowId)">
-                                    <mat-icon>{{row.isDeleted ? 'refresh' : 'clear'}}</mat-icon>
-                                    <span>{{row.isDeleted ? 'Restore' : 'Delete'}}</span>
+                            <button class="menu-item menu-item--cancel" mat-menu-item appPreventDoubleClick (throttledClick)="confirmDeleteWorkflow(row?.workflowId)">
+                                    <mat-icon>clear</mat-icon>
+                                    <span>Delete</span>
                             </button>
                         </mat-menu>
                     </mat-cell>
                 </ng-container>
 
                 <mat-header-row *matHeaderRowDef="workflowDisplayColumns"></mat-header-row>
-                <mat-row *matRowDef="let row; columns: workflowDisplayColumns;" class="mat-elevation-z0 cursor-pointer flex-items-start" [ngClass]="{'active-workflow': row.isActive}" (contextmenu)="onRightClick($event, {content: row})" (click)="navigateToWorkflowDetails(row.workflowId)"></mat-row>
+                <mat-row *matRowDef="let row; columns: workflowDisplayColumns;" class="mat-elevation-z0 cursor-pointer flex-items-start" [ngClass]="{'active-workflow': row.isActive}" (contextmenu)="onRightClick($event, {content: row})" appPreventDoubleClick (throttledClick)="navigateToWorkflowDetails(row.workflowId)"></mat-row>
             </mat-table>
             <div class="spinner-container" *ngIf="isDataLoading">
                 <mat-spinner [diameter]="50"></mat-spinner>
@@ -415,7 +413,7 @@
     <!-- standar material menu -->
     <mat-menu #rightMenu="matMenu">
         <ng-template matMenuContent let-item="item">
-            <button mat-menu-item (click)="openInNewTab(item?.content?.workflowId)">Open in new tab</button>
+            <button mat-menu-item appPreventDoubleClick (throttledClick)="openInNewTab(item?.content?.workflowId)">Open in new tab</button>
         </ng-template>
     </mat-menu>
 </div>

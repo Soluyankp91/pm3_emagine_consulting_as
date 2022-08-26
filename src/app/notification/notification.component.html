@@ -14,7 +14,7 @@
                                 class="black-checkbox u-ml--10 u-mr--10"
                                 [checked]="allChecked(tenant.tenantId!)"
                                 [indeterminate]="someChecked(tenant.tenantId!)"
-                                (click)="$event.stopPropagation()"
+                                appPreventDoubleClick (throttledClick)="$event.stopPropagation()"
                                 (change)="checkAll($event.checked, tenant?.tenantId!)">
                                     <span class="flex-row">
                                         <mat-icon svgIcon="{{tenant?.tenantName}}-flag-selected" class="u-mr--10"></mat-icon>

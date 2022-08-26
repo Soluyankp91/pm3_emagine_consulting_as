@@ -727,4 +727,8 @@ export class MainOverviewComponent extends AppComponentBase implements OnInit {
         this.accountManagerFilter.setValue('');
         this.accountManagerFilter.markAsTouched();
     }
+
+    compareWithFn(listOfItems: any, selectedItem: any) {
+        return listOfItems && selectedItem && listOfItems.id === selectedItem.id;;
+    }
 }

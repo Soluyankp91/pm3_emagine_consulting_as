@@ -3,7 +3,7 @@
         <div fxLayout="row" fxLayoutAlign="space-between start" class="u-w--100">
             <div fxLayout="column" fxLayoutAlign="start start">
                 <div fxLayout="row" fxLayoutAlign="start center">
-                    <button class="back-arrow--btn u-pl--0" (click)="navigateBack()" mat-icon-button><mat-icon svgIcon="arrow"></mat-icon></button>
+                    <button class="back-arrow--btn u-pl--0" appPreventDoubleClick (throttledClick)="navigateBack()" mat-icon-button><mat-icon svgIcon="arrow"></mat-icon></button>
                     <span class="page-main-header">{{client.name}}</span>
                 </div>
                 <div fxLayout="row" fxLayoutAlign="start center" class="client-details--client-info u-mt--10">
@@ -32,8 +32,8 @@
                     <input autocomplete="off" matInput [formControl]="clientFilterInput" placeholder="Search" type="text">
                     <mat-icon matPrefix>search</mat-icon>
                 </mat-form-field> -->
-                <button mat-icon-button color="primary" matTooltip="Log into HubSpot" matTooltipClass="white-tooltip" class="u-mr--10 mat-elevation-z0" (click)="impersonateHubspot()"><mat-icon svgIcon="HUBSPOT-icon"></mat-icon></button>
-                <button mat-icon-button color="primary" matTooltip="Log into CAM" matTooltipClass="white-tooltip" class="mat-elevation-z0" (click)="impersonateCAM()"><mat-icon svgIcon="CAM-icon"></mat-icon></button>
+                <button mat-icon-button color="primary" matTooltip="Log into HubSpot" matTooltipClass="white-tooltip" class="u-mr--10 mat-elevation-z0" appPreventDoubleClick (throttledClick)="impersonateHubspot()"><mat-icon svgIcon="HUBSPOT-icon"></mat-icon></button>
+                <button mat-icon-button color="primary" matTooltip="Log into CAM" matTooltipClass="white-tooltip" class="mat-elevation-z0" appPreventDoubleClick (throttledClick)="impersonateCAM()"><mat-icon svgIcon="CAM-icon"></mat-icon></button>
             </div>
         </div>
     </div>

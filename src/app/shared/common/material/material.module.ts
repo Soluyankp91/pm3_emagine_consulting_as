@@ -44,6 +44,18 @@ const globalRippleConfig: RippleGlobalOptions = {
     }
 };
 
+const MY_DATE_FORMAT = {
+    parse: {
+      dateInput: 'DD.MM.YYYY', // this is how your date will be parsed from Input
+    },
+    display: {
+      dateInput: 'DD.MM.YYYY', // this is how your date will get displayed on the Input
+      monthYearLabel: 'MMMM YYYY',
+      dateA11yLabel: 'LL',
+      monthYearA11yLabel: 'MMMM YYYY'
+    }
+};
+
 @Injectable({providedIn: 'root'})
 export class AppGlobalRippleOptions implements RippleGlobalOptions {
     disabled: boolean = true;
@@ -117,10 +129,12 @@ const MaterialModules = [
             useClass: MomentDateAdapter,
             deps: [MAT_DATE_LOCALE]
         },
-        { provide: MAT_DATE_FORMATS, useValue: MAT_MOMENT_DATE_FORMATS },
+        { provide: MAT_DATE_FORMATS, useValue: MY_DATE_FORMAT },
         { provide: MatDialogRef, useValue: {} }
     ]
 })
+
+
 
 export class MaterialModule {
     constructor() {

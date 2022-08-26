@@ -13,6 +13,7 @@ import { InternalLookupService } from './internal-lookup.service';
 import { ManagerSearchComponent } from '../components/manager-search/manager-search.component';
 import { MomentFormatPipe } from 'src/shared/common/pipes/moment-format.pipe';
 import { ShowIfTruncatedDirective } from '../../../shared/common/directives/show-if-truncated.directive';
+import { PreventDoubleClickDirective } from 'src/shared/common/directives/prevent-doubleClick.directive';
 
 @NgModule({
     declarations: [
@@ -22,7 +23,8 @@ import { ShowIfTruncatedDirective } from '../../../shared/common/directives/show
         ConfirmationDialogComponent,
         ManagerSearchComponent,
         MomentFormatPipe,
-        ShowIfTruncatedDirective
+        ShowIfTruncatedDirective,
+        PreventDoubleClickDirective
     ],
     imports: [
         CommonModule,
@@ -43,7 +45,8 @@ import { ShowIfTruncatedDirective } from '../../../shared/common/directives/show
         NgScrollbarModule,
         ManagerSearchComponent,
         MomentFormatPipe,
-        ShowIfTruncatedDirective
+        ShowIfTruncatedDirective,
+        PreventDoubleClickDirective
     ],
     providers: [
         ErrorDialogService,

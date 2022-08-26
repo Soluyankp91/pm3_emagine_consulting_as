@@ -8,7 +8,7 @@
                         <mat-icon class="country-lookup--btn__flag selected-country" svgIcon="{{row.clientAddress_Country_Name}}-flag-selected"></mat-icon>
                     </mat-cell>
                 </ng-container> -->
-                <ng-container matColumnDef="id">
+                <ng-container matColumnDef="requestId">
                     <mat-header-cell *matHeaderCellDef mat-sort-header fxFlex="5%"> # </mat-header-cell>
                     <mat-cell *matCellDef="let row" fxFlex="5%">
                         {{row.requestId}}
@@ -98,7 +98,7 @@
                 </ng-container>
 
                 <mat-header-row *matHeaderRowDef="clientDisplayColumns"></mat-header-row>
-                <mat-row *matRowDef="let row; columns: clientDisplayColumns;" class="mat-elevation-z0 cursor-pointer" (click)="redirectToSourcingBoard(row.requestId)"></mat-row>
+                <mat-row *matRowDef="let row; columns: clientDisplayColumns;" class="mat-elevation-z0 cursor-pointer" appPreventDoubleClick (throttledClick)="redirectToSourcingBoard(row.requestId)"></mat-row>
             </mat-table>
             <div class="spinner-container" *ngIf="isDataLoading">
                 <mat-spinner [diameter]="50"></mat-spinner>

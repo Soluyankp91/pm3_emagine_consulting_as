@@ -105,13 +105,13 @@
                                 </mat-form-field>
                             </div>
                             <div fxFlex="15%" class="u-w--100 text-truncate-ellipsis flex-items-center">
-                                <button mat-flat-button (click)="saveOrUpdateSpecialRate(i)" class="inline-edit-form--btn__save" [disabled]="rateIsSaving">
+                                <button mat-flat-button appPreventDoubleClick (throttledClick)="saveOrUpdateSpecialRate(i)" class="inline-edit-form--btn__save" [disabled]="rateIsSaving">
                                     Save
                                 </button>
-                                <button mat-flat-button *ngIf="rate.value.id" (click)="cancelRateEdit(i)" class="inline-edit-form--btn__cancel">
+                                <button mat-flat-button *ngIf="rate.value.id" appPreventDoubleClick (throttledClick)="cancelRateEdit(i)" class="inline-edit-form--btn__cancel">
                                     Cancel
                                 </button>
-                                <button mat-icon-button (click)="removeSpecialRate(rate.value.id, rate.value.inUse, i)">
+                                <button mat-icon-button appPreventDoubleClick (throttledClick)="removeSpecialRate(rate.value.id, rate.value.inUse, i)">
                                     <mat-icon>clear</mat-icon>
                                 </button>
                             </div>
@@ -168,7 +168,7 @@
                                         class="menu-item menu-item--edit"
                                         mat-menu-item
                                         [disabled]="rateIsEditing"
-                                        (click)="startEditSpecialRate(rate.value.editable, i)">
+                                        appPreventDoubleClick (throttledClick)="startEditSpecialRate(rate.value.editable, i)">
                                         <mat-icon>create</mat-icon>
                                         Edit
                                     </button>
@@ -176,14 +176,14 @@
                                         class="menu-item"
                                         mat-menu-item
                                         [disabled]="false"
-                                        (click)="toggleSpecialRateHiddenState(i)">
+                                        appPreventDoubleClick (throttledClick)="toggleSpecialRateHiddenState(i)">
                                         <mat-icon [svgIcon]="rate.value.hidden ? 'icon-show' : 'icon-hide'"></mat-icon>
                                         {{rate.value.hidden ? 'Show' : 'Hide'}}
                                     </button>
                                     <button
                                         class="menu-item menu-item--cancel"
                                         mat-menu-item
-                                        (click)="removeSpecialRate(rate.value.id, rate.value.inUse, i)">
+                                        appPreventDoubleClick (throttledClick)="removeSpecialRate(rate.value.id, rate.value.inUse, i)">
                                         <mat-icon>clear</mat-icon>
                                         Remove
                                     </button>
@@ -194,7 +194,7 @@
                 </ng-container>
             </form>
             <div fxLayout="row" fxLayoutAlign="space-between center" class="u-w--100 u-mt--10">
-                <button class="button-add u-ml--8" mat-flat-button (click)="addSpecialRate()" [disabled]="rateIsEditing && specialRates?.length! > 0">
+                <button class="button-add u-ml--8" mat-flat-button appPreventDoubleClick (throttledClick)="addSpecialRate()" [disabled]="rateIsEditing && specialRates?.length! > 0">
                     <mat-icon>add</mat-icon>
                     Add Special Rate
                 </button>
@@ -296,13 +296,13 @@
                                 </mat-form-field>
                             </div>
                             <div fxFlex="15%" class="u-w--100 text-truncate-ellipsis flex-items-center">
-                                <button mat-flat-button (click)="saveOrUpdateSpecialFee(i)" class="inline-edit-form--btn__save" [disabled]="feeIsSaving">
+                                <button mat-flat-button appPreventDoubleClick (throttledClick)="saveOrUpdateSpecialFee(i)" class="inline-edit-form--btn__save" [disabled]="feeIsSaving">
                                     Save
                                 </button>
-                                <button mat-flat-button (click)="cancelFeeEdit(i)" class="inline-edit-form--btn__cancel">
+                                <button mat-flat-button appPreventDoubleClick (throttledClick)="cancelFeeEdit(i)" class="inline-edit-form--btn__cancel">
                                     Cancel
                                 </button>
-                                <button mat-icon-button (click)="removeClientFee(fee.value.id, fee.value.inUse, i)">
+                                <button mat-icon-button appPreventDoubleClick (throttledClick)="removeClientFee(fee.value.id, fee.value.inUse, i)">
                                     <mat-icon>clear</mat-icon>
                                 </button>
                             </div>
@@ -337,7 +337,7 @@
                                         *ngIf="!fee.value.editable"
                                         mat-menu-item
                                         [disabled]="feeIsEditing"
-                                        (click)="startEditSpecialFee(fee.value.editable, i)">
+                                        appPreventDoubleClick (throttledClick)="startEditSpecialFee(fee.value.editable, i)">
                                         <mat-icon>create</mat-icon>
                                         Edit
                                     </button>
@@ -345,14 +345,14 @@
                                         class="menu-item"
                                         mat-menu-item
                                         [disabled]="false"
-                                        (click)="toggleSpecialFeeHiddenState(i)">
+                                        appPreventDoubleClick (throttledClick)="toggleSpecialFeeHiddenState(i)">
                                         <mat-icon [svgIcon]="fee.value.hidden ? 'icon-show' : 'icon-hide'"></mat-icon>
                                         {{fee.value.hidden ? 'Show' : 'Hide'}}
                                     </button>
                                     <button
                                         class="menu-item menu-item--cancel"
                                         mat-menu-item
-                                        (click)="removeClientFee(fee.value.id, fee.value.inUse, i)">
+                                        appPreventDoubleClick (throttledClick)="removeClientFee(fee.value.id, fee.value.inUse, i)">
                                         <mat-icon>clear</mat-icon>
                                         Remove
                                     </button>
@@ -363,7 +363,7 @@
                 </ng-container>
             </form>
             <div fxLayout="row" fxLayoutAlign="space-between center" class="u-w--100 u-mt--10">
-                <button class="button-add u-ml--8" mat-flat-button (click)="addClientFee()" [disabled]="feeIsEditing && clientFees?.length! > 0">
+                <button class="button-add u-ml--8" mat-flat-button appPreventDoubleClick (throttledClick)="addClientFee()" [disabled]="feeIsEditing && clientFees?.length! > 0">
                     <mat-icon>add</mat-icon>
                     Add Fee
                 </button>

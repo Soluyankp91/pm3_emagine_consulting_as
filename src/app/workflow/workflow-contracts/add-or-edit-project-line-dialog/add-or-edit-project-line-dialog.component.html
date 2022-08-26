@@ -27,7 +27,7 @@
                             name="startDate"
                             formControlName="startDate"
                             (focus)="startDatePicker.open()"
-                            (click)="startDatePicker.open()" readonly>
+                            appPreventDoubleClick (throttledClick)="startDatePicker.open()" readonly>
                     <mat-icon class="calendar-icon" matSuffix svgIcon="calendar"></mat-icon>
                     <mat-datepicker #startDatePicker></mat-datepicker>
                 </mat-form-field>
@@ -40,7 +40,7 @@
                                 name="saleDate"
                                 formControlName="endDate"
                                 (focus)="endDatePicker.open()"
-                                (click)="endDatePicker.open()" readonly>
+                                appPreventDoubleClick (throttledClick)="endDatePicker.open()" readonly>
                         <mat-icon class="calendar-icon" matSuffix svgIcon="calendar"></mat-icon>
                         <mat-datepicker #endDatePicker></mat-datepicker>
                     </mat-form-field>
@@ -59,7 +59,7 @@
 
             <mat-form-field appearance="outline" class="u-w--100 u-mt--10 filter-select">
                 <mat-label>Invoice reference person</mat-label>
-                <input #invoicingReferencePersonAutocompleteInput type="text" matInput [matAutocomplete]="invoicingReferencePersonAutocomplete" formControlName="invoicingReferencePersonId" (click)="$event.stopPropagation()" placeholder="Invoice reference person">
+                <input #invoicingReferencePersonAutocompleteInput type="text" matInput [matAutocomplete]="invoicingReferencePersonAutocomplete" formControlName="invoicingReferencePersonId" appPreventDoubleClick (throttledClick)="$event.stopPropagation()" placeholder="Invoice reference person">
                 <mat-autocomplete #invoicingReferencePersonAutocomplete="matAutocomplete" [displayWith]="displayFullNameFn">
                     <ng-container>
                         <mat-option *ngFor="let contact of filteredReferencePersons" [value]="contact" [ngClass]="{ 'no-data': contact.id === 'no-data' }">
@@ -89,7 +89,7 @@
 
             <mat-form-field appearance="outline" class="u-w--100 u-mt--10 formFieldNoMarginPadding">
                 <mat-label>Invoice recipient</mat-label>
-                <input #clientInvoicingRecipientInput type="text" matInput [matAutocomplete]="clientInvoicingRecipientAutocomplete" formControlName="invoiceRecipientId" (click)="$event.stopPropagation()" placeholder="Invoice recipient">
+                <input #clientInvoicingRecipientInput type="text" matInput [matAutocomplete]="clientInvoicingRecipientAutocomplete" formControlName="invoiceRecipientId" appPreventDoubleClick (throttledClick)="$event.stopPropagation()" placeholder="Invoice recipient">
                 <mat-autocomplete #clientInvoicingRecipientAutocomplete="matAutocomplete" [displayWith]="displayClientNameFn">
                     <ng-container>
                         <mat-option *ngFor="let client of filteredClientInvoicingRecipients" [value]="client" [ngClass]="{ 'no-data': client.id === 'no-data' }">
@@ -117,10 +117,10 @@
     </form>
 </mat-dialog-content>
 <mat-dialog-actions align="start" class="confiramtion-dialog--actions">
-    <button mat-flat-button class="dialog-btn dialog-btn__outlined" (click)="reject()">
+    <button mat-flat-button class="dialog-btn dialog-btn__outlined" appPreventDoubleClick (throttledClick)="reject()">
         Cancel
     </button>
-    <button mat-flat-button class="dialog-btn dialog-btn__positive" (click)="confirm()">
+    <button mat-flat-button class="dialog-btn dialog-btn__positive" appPreventDoubleClick (throttledClick)="confirm()">
         Save
     </button>
 </mat-dialog-actions>

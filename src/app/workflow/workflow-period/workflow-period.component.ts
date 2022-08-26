@@ -74,10 +74,6 @@ export class WorkflowPeriodComponent extends AppComponentBase implements OnInit 
                 });
     }
 
-    selectedManager(event: any) {
-        console.log(event);
-    }
-
     getPeriodStepTypes() {
         this._internalLookupService.getWorkflowPeriodStepTypes()
             .pipe(finalize(() => {

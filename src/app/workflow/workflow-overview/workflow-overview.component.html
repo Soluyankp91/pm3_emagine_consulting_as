@@ -37,7 +37,7 @@
                         {{item.name}}
                     </span>
                 </span>
-                <span class="workflow-overview--process-daterange u-ml--5">{{item.periodStartDate | momentFormat: 'DD/MM/YYYY' + ' - ' + (item.periodEndDate ? (item.periodEndDate | momentFormat: 'DD/MM/YYYY') : '...')}}</span>
+                <span class="workflow-overview--process-daterange u-ml--5">{{item.periodStartDate | momentFormat: 'DD.MM.YYYY' + ' - ' + (item.periodEndDate ? (item.periodEndDate | momentFormat: 'DD.MM.YYYY') : '...')}}</span>
             </div>
             <div *ngFor="let item of item.steps" fxFlex="20%">
                 <div class="workflow-overview--team__user column">
@@ -82,21 +82,21 @@
         <div fxFlex="3%" fxLayout="column" class="u-mt--44">
             <ng-container *ngIf="individualConsultantActionsAvailable">
                 <div *ngFor="let item of overviewGroups" class="workflow-overview--timeline-actions">
-                    <button  mat-icon-button (click)="$event.stopPropagation();" type="button" [matMenuTriggerFor]="consultantMenu" class="three-dots-actions-btn workflow-overview--three-dots">
+                    <button  mat-icon-button appPreventDoubleClick (throttledClick)="$event.stopPropagation();" type="button" [matMenuTriggerFor]="consultantMenu" class="three-dots-actions-btn workflow-overview--three-dots">
                         <mat-icon>more_horiz</mat-icon>
                     </button>
                     <mat-menu #consultantMenu>
                         <button
                             class="menu-item menu-item--edit"
                             mat-menu-item
-                            (click)="changeConsultantData(item.origin)">
+                            appPreventDoubleClick (throttledClick)="changeConsultantData(item.origin)">
                             <mat-icon>create</mat-icon>
                             Change consultant data
                         </button>
                         <button
                             class="menu-item menu-item--edit"
                             mat-menu-item
-                            (click)="extendConsultant(item.origin)">
+                            appPreventDoubleClick (throttledClick)="extendConsultant(item.origin)">
                             <mat-icon>add</mat-icon>
                             Extend consultant
                         </button>
@@ -104,7 +104,7 @@
                         <!-- <button
                             class="menu-item menu-item--cancel"
                             mat-menu-item
-                            (click)="terminateConsultant(item.origin)">
+                            appPreventDoubleClick (throttledClick)="terminateConsultant(item.origin)">
                             <mat-icon>clear</mat-icon>
                             Terminate consultant
                         </button> -->
