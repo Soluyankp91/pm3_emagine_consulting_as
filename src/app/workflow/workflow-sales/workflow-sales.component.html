@@ -1464,37 +1464,55 @@
                                         </mat-button-toggle>
                                     </mat-button-toggle-group>
                                 </div>
-                                <div fxLayout="row" fxLayoutAlign="start start" class="u-w--100 u-mb--10">
-                                    <mat-form-field appearance="outline" class="u-w--100 filter-select" fxFlex="33%">
-                                        <mat-label>Direct client</mat-label>
-                                        <input #directClientFilterInput type="text" matInput [matAutocomplete]="directClientAutocomplete" formControlName="directClientIdValue" appPreventDoubleClick (throttledClick)="$event.stopPropagation()" placeholder="Direct client name + address">
-                                        <mat-autocomplete #directClientAutocomplete="matAutocomplete" [displayWith]="displayClientNameFn" (optionSelected)="directClientSelected($event)">
-                                            <ng-container>
-                                                <mat-option *ngFor="let client of filteredDirectClients" [value]="client" [ngClass]="{ 'no-data': client.id === 'no-data' }">
-                                                    <div class="multilineDropdown-option--column">
-                                                        <b>{{ client.clientName }}</b>
-                                                        <span *ngIf="client.id !== 'no-data'"> #{{client.clientId}} | {{client.city}} | {{client.address}} | {{client.address2}} | {{client.postCode}}</span>
-                                                    </div>
-                                                </mat-option>
-                                            </ng-container>
-                                        </mat-autocomplete>
-                                    </mat-form-field>
+                                <div fxLayout="column" fxLayoutAlign="start start" class="u-w--100 u-mb--10">
+                                    <div fxLayout="row" fxLayoutAlign="start start" class="u-w--100">
+                                        <mat-form-field appearance="outline" class="u-w--100 filter-select" fxFlex="33%">
+                                            <mat-label>Direct client</mat-label>
+                                            <input #directClientFilterInput type="text" matInput [matAutocomplete]="directClientAutocomplete" formControlName="directClientIdValue" appPreventDoubleClick (throttledClick)="$event.stopPropagation()" placeholder="Direct client name + address">
+                                            <mat-autocomplete #directClientAutocomplete="matAutocomplete" [displayWith]="displayClientNameFn" (optionSelected)="directClientSelected($event)">
+                                                <ng-container>
+                                                    <mat-option *ngFor="let client of filteredDirectClients" [value]="client" [ngClass]="{ 'no-data': client.id === 'no-data' }">
+                                                        <div class="multilineDropdown-option--column">
+                                                            <b>{{ client.clientName }}</b>
+                                                            <span *ngIf="client.id !== 'no-data'"> #{{client.clientId}} | {{client.city}} | {{client.address}} | {{client.address2}} | {{client.postCode}}</span>
+                                                        </div>
+                                                    </mat-option>
+                                                </ng-container>
+                                            </mat-autocomplete>
+                                        </mat-form-field>
+                                    </div>
+                                    <span class="workflow-step-readonly--blue-text-bold">
+                                        {{salesClientDataForm.directClientIdValue?.value?.clientId ? '#' + salesClientDataForm.directClientIdValue?.value?.clientId + ' | ' : '' }}
+                                        {{salesClientDataForm.directClientIdValue?.value?.city ? salesClientDataForm.directClientIdValue?.value?.city + ' | ' : ''}}
+                                        {{salesClientDataForm.directClientIdValue?.value?.address ? salesClientDataForm.directClientIdValue?.value?.address + ' | ' : ''}}
+                                        {{salesClientDataForm.directClientIdValue?.value?.address2 ? salesClientDataForm.directClientIdValue?.value?.address2 + ' | ' : ''}}
+                                        {{salesClientDataForm.directClientIdValue?.value?.postCode}}
+                                    </span>
                                 </div>
-                                <div fxLayout="row" fxLayoutAlign="start start" class="u-w--100 u-mb--10" *ngIf="salesClientDataForm.differentEndClient?.value">
-                                    <mat-form-field appearance="outline" class="u-w--100  filter-select" fxFlex="33%">
-                                        <mat-label>End client</mat-label>
-                                        <input #endClientFilterInput type="text" matInput [matAutocomplete]="endClientAutocomplete" formControlName="endClientIdValue" appPreventDoubleClick (throttledClick)="$event.stopPropagation()" placeholder="End client name + address">
-                                    </mat-form-field>
-                                    <mat-autocomplete #endClientAutocomplete="matAutocomplete" [displayWith]="displayClientNameFn">
-                                        <ng-container>
-                                            <mat-option *ngFor="let client of filteredEndClients" [value]="client" [ngClass]="{ 'no-data': client.id === 'no-data' }">
-                                                <div class="multilineDropdown-option--column">
-                                                    <b>{{ client.clientName }}</b>
-                                                    <span *ngIf="client.id !== 'no-data'">#{{client.clientId}} | {{client.city}} | {{client.address}} | {{client.address2}} | {{client.postCode}}</span>
-                                                </div>
-                                            </mat-option>
-                                        </ng-container>
-                                    </mat-autocomplete>
+                                <div fxLayout="column" fxLayoutAlign="start start" class="u-w--100 u-mb--10" *ngIf="salesClientDataForm.differentEndClient?.value">
+                                    <div fxLayout="row" fxLayoutAlign="start start" class="u-w--100">
+                                        <mat-form-field appearance="outline" class="u-w--100  filter-select" fxFlex="33%">
+                                            <mat-label>End client</mat-label>
+                                            <input #endClientFilterInput type="text" matInput [matAutocomplete]="endClientAutocomplete" formControlName="endClientIdValue" appPreventDoubleClick (throttledClick)="$event.stopPropagation()" placeholder="End client name + address">
+                                            <mat-autocomplete #endClientAutocomplete="matAutocomplete" [displayWith]="displayClientNameFn">
+                                                <ng-container>
+                                                    <mat-option *ngFor="let client of filteredEndClients" [value]="client" [ngClass]="{ 'no-data': client.id === 'no-data' }">
+                                                        <div class="multilineDropdown-option--column">
+                                                            <b>{{ client.clientName }}</b>
+                                                            <span *ngIf="client.id !== 'no-data'">#{{client.clientId}} | {{client.city}} | {{client.address}} | {{client.address2}} | {{client.postCode}}</span>
+                                                        </div>
+                                                    </mat-option>
+                                                </ng-container>
+                                            </mat-autocomplete>
+                                        </mat-form-field>
+                                    </div>
+                                    <span class="workflow-step-readonly--blue-text-bold">
+                                        {{salesClientDataForm.endClientIdValue?.value?.clientId ? '#' + salesClientDataForm.endClientIdValue?.value?.clientId + ' | ' : '' }}
+                                        {{salesClientDataForm.endClientIdValue?.value?.city ? salesClientDataForm.endClientIdValue?.value?.city + ' | ' : ''}}
+                                        {{salesClientDataForm.endClientIdValue?.value?.address ? salesClientDataForm.endClientIdValue?.value?.address + ' | ' : ''}}
+                                        {{salesClientDataForm.endClientIdValue?.value?.address2 ? salesClientDataForm.endClientIdValue?.value?.address2 + ' | ' : ''}}
+                                        {{salesClientDataForm.endClientIdValue?.value?.postCode}}
+                                    </span>
                                 </div>
                             </ng-container>
 
@@ -2541,22 +2559,27 @@
                                                 Onsite
                                             </mat-checkbox>
                                             <ng-container *ngIf="consultantsForm.consultantData.at(consultantIndex).get('consultantIsOnsiteWorkplace')?.value">
-                                                <div fxLayout="column" fxFlex="0 0 calc(33% + 16px)" class="u-mr--16">
-                                                    <mat-form-field appearance="outline" class="u-w--100 mat-elevation-z0">
-                                                        <mat-label>Client</mat-label>
-                                                        <input type="text" matInput [matAutocomplete]="consultantClientAddressAuto" formControlName="consultantWorkplaceClientAddress" appPreventDoubleClick (throttledClick)="$event.stopPropagation()" placeholder="Search client">
-                                                        <mat-autocomplete #consultantClientAddressAuto="matAutocomplete" [displayWith]="displayClientNameFn">
-                                                            <mat-option *ngFor="let client of filteredConsultantClientAddresses" [value]="client" [ngClass]="{ 'no-data': client.id === 'no-data' }">
-                                                                <div class="multilineDropdown-option--column">
-                                                                    <b>{{ client.clientName }}</b>
-                                                                    <span *ngIf="client.id !== 'no-data'"> #{{client.clientId}} | {{client.city}} | {{client.address}} | {{client.address2}} | {{client.postCode}}</span>
-                                                                </div>
-                                                            </mat-option>
-                                                        </mat-autocomplete>
-                                                    </mat-form-field>
-                                                    <span class="workflow-step-readonly--blue-text-bold" *ngIf="consultant.value.consultantWorkplaceClientAddress?.clientId">
-                                                        #{{consultant.value.consultantWorkplaceClientAddress?.clientId}} | {{consultant.value.consultantWorkplaceClientAddress?.countryName}} | {{consultant.value.consultantWorkplaceClientAddress?.city}} | {{consultant.value.consultantWorkplaceClientAddress?.address}} | {{consultant.value.consultantWorkplaceClientAddress?.address2}} | {{consultant.value.consultantWorkplaceClientAddress?.postCode}}
-                                                    </span>
+                                                <div fxLayout="row" fxLayoutAlign="start start" class="u-w--100">
+                                                    <div fxLayout="column" fxFlex="0 0 calc(33% + 16px)" class="u-mr--16">
+                                                        <mat-form-field appearance="outline" class="u-w--100 mat-elevation-z0">
+                                                            <mat-label>Client</mat-label>
+                                                            <input type="text" matInput [matAutocomplete]="consultantClientAddressAuto" formControlName="consultantWorkplaceClientAddress" appPreventDoubleClick (throttledClick)="$event.stopPropagation()" placeholder="Search client">
+                                                            <mat-autocomplete #consultantClientAddressAuto="matAutocomplete" [displayWith]="displayClientNameFn">
+                                                                <mat-option *ngFor="let client of filteredConsultantClientAddresses" [value]="client" [ngClass]="{ 'no-data': client.id === 'no-data' }">
+                                                                    <div class="multilineDropdown-option--column">
+                                                                        <b>{{ client.clientName }}</b>
+                                                                        <span *ngIf="client.id !== 'no-data'"> #{{client.clientId}} | {{client.city}} | {{client.address}} | {{client.address2}} | {{client.postCode}}</span>
+                                                                    </div>
+                                                                </mat-option>
+                                                            </mat-autocomplete>
+                                                        </mat-form-field>
+                                                        <span class="workflow-step-readonly--blue-text-bold" *ngIf="consultant.value.consultantWorkplaceClientAddress?.clientId">
+                                                            #{{consultant.value.consultantWorkplaceClientAddress?.clientId}} | {{consultant.value.consultantWorkplaceClientAddress?.countryName}} | {{consultant.value.consultantWorkplaceClientAddress?.city}} | {{consultant.value.consultantWorkplaceClientAddress?.address}} | {{consultant.value.consultantWorkplaceClientAddress?.address2}} | {{consultant.value.consultantWorkplaceClientAddress?.postCode}}
+                                                        </span>
+                                                    </div>
+                                                    <mat-checkbox color="accent" (change)="changeConsultantWorkplace($event, consultantIndex)" [checked]="salesClientDataForm.directClientIdValue?.value?.clientId === consultant.value.consultantWorkplaceClientAddress?.clientId" name="consultantIsOnsiteWorkplaceSameAsDirectClient" class="black-checkbox u-mr--16 u-mt--10">
+                                                        Same as direct client
+                                                    </mat-checkbox>
                                                 </div>
 
                                                 <mat-form-field appearance="outline" class="u-w--100 u-mr--16" fxFlex="0 0 calc(16% - 8px)" *ngIf="consultant.value?.consultantIsEmagineOfficeWorkplace || consultant.value?.consultantIsRemoteWorkplace">
