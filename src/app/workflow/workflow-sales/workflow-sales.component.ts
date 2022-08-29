@@ -3,6 +3,7 @@ import { NumberSymbol } from '@angular/common';
 import { Component, Injector, Input, OnInit } from '@angular/core';
 import { AbstractControl, FormArray, FormBuilder, FormControl } from '@angular/forms';
 import { MatAutocompleteSelectedEvent } from '@angular/material/autocomplete';
+import { MatCheckboxChange } from '@angular/material/checkbox';
 import { MatDialog } from '@angular/material/dialog';
 import { MatMenuTrigger } from '@angular/material/menu';
 import { MatSelectChange } from '@angular/material/select';
@@ -1907,6 +1908,13 @@ export class WorkflowSalesComponent extends AppComponentBase implements OnInit {
         if (value.id === 3) { // Managed Service
             const itemToPreselct = this.deliveryTypes.find(x => x.id === 1); // Managed Service
             this.salesMainDataForm.deliveryType?.setValue(itemToPreselct, {emitEvent: false});
+        }
+    }
+
+    changeConsultantWorkplace(event: MatCheckboxChange, consutlantIndex: number) {
+        console.log('sss');
+        if (event.checked) {
+            this.consultantData.at(consutlantIndex).get('consultantWorkplaceClientAddress')?.setValue(this.salesClientDataForm.directClientIdValue?.value, {emitEvent: false});
         }
     }
 
