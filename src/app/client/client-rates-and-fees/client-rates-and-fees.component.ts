@@ -239,10 +239,10 @@ export class ClientRatesAndFeesComponent implements OnInit, OnDestroy {
             updateInput.id = clientRate.id;
             this._clientService.specialRatesPut(this.clientId, updateInput)
                 .pipe(finalize(() => {
-
+                    this.rateIsSaving = false;
+                    this.rateIsEditing = false;
                 }))
                 .subscribe(result => {
-                    this.rateIsEditing = false;
                     this.getClientRates();
                 });
         }
@@ -332,7 +332,7 @@ export class ClientRatesAndFeesComponent implements OnInit, OnDestroy {
         input.prodataToProdataRateCurrencyId = clientFee.proDataRateCurrency?.id;
         input.consultantRate = clientFee.consultantRate;
         input.consultantCurrencyId = clientFee.consultantRateCurrency?.id;
-        input.isHidden = clientFee.hidden ?? false;
+    input.isHidden = clientFee.hidden ?? false;
         this.feeIsSaving = true;
         if (clientFee.id === null || clientFee.id === undefined) {
             this._clientService.specialFeesPost(this.clientId, input)
@@ -348,11 +348,10 @@ export class ClientRatesAndFeesComponent implements OnInit, OnDestroy {
             updateInput.id = clientFee.id;
             this._clientService.specialFeesPut(this.clientId, updateInput)
                 .pipe(finalize(() => {
-
-                }))
-                .subscribe(result => {
                     this.feeIsSaving = false;
                     this.feeIsEditing = false;
+                }))
+                .subscribe(result => {
                     this.getClientFees();
                 });
         }
