@@ -243,20 +243,22 @@
                 <ng-container matColumnDef="ConsultantName">
                     <mat-header-cell *matHeaderCellDef mat-sort-header fxFlex="12%"> Consultants </mat-header-cell>
                     <mat-cell *matCellDef="let row" fxFlex="12%">
-                        <span class="text-truncate-ellipsis" [matTooltip]="row.consultantNamesTooltip" matTooltipClass="white-tooltip">
-                            <ng-container *ngIf="row.consultants?.length > 1; else singleConsultantDisplay">
-                                <span class="flex-items-center">
-                                    <img class="border-rounded-50 image-settings--dropdown u-mr--10" src="../../assets/common/images/no-img.svg" />
-                                    {{row.consultantName}}
+                        <ng-container *ngIf="row.consultants?.length > 1; else singleConsultantDisplay">
+                            <span class="flex-items-center" fxFlex="100%">
+                                <img class="border-rounded-50 image-settings--dropdown u-mr--10" src="../../assets/common/images/no-img.svg" />
+                                <span class="text-truncate-ellipsis" [matTooltip]="row.consultantNamesTooltip" matTooltipClass="white-tooltip" appShowIfTruncated>
+                                    {{row.consultantName + row.consultantName}}
                                 </span>
-                            </ng-container>
-                            <ng-template #singleConsultantDisplay>
-                                <span class="flex-items-center">
-                                    <img *ngIf="row.consultants[0]?.name" class="border-rounded-50 image-settings--dropdown u-mr--10" [src]="consultantProfileUrl(row?.consultants[0]?.externalId)" />
-                                    {{row.consultantName}}
+                            </span>
+                        </ng-container>
+                        <ng-template #singleConsultantDisplay>
+                            <span class="flex-items-center" fxFlex="100%">
+                                <img *ngIf="row.consultants[0]?.name" class="border-rounded-50 image-settings--dropdown u-mr--10" [src]="consultantProfileUrl(row?.consultants[0]?.externalId)" />
+                                <span class="text-truncate-ellipsis" [matTooltip]="row.consultantNamesTooltip" matTooltipClass="white-tooltip" appShowIfTruncated>
+                                    {{row.consultantName + row.consultantName}}
                                 </span>
-                            </ng-template>
-                        </span>
+                            </span>
+                        </ng-template>
                     </mat-cell>
                 </ng-container>
                 <ng-container matColumnDef="WorkflowStatus">
@@ -277,7 +279,7 @@
                                     <ng-container *ngSwitchCase="workflowProcess.StartClientPeriod">
                                         <span class="flex-row flex-items-center">
                                             <mat-icon svgIcon="workflowAdd"></mat-icon>
-                                            <span class="sidenav-expansion--header__name">
+                                            <span class="process-name">
                                                 Start workflow
                                             </span>
                                         </span>
@@ -285,7 +287,7 @@
                                     <ng-container *ngSwitchCase="workflowProcess.ExtendClientPeriod">
                                         <span class="flex-row flex-items-center">
                                             <mat-icon svgIcon="workflowStartOrExtend"></mat-icon>
-                                            <span class="sidenav-expansion--header__name">
+                                            <span class="process-name">
                                                 Extend workflow
                                             </span>
                                         </span>
@@ -293,7 +295,7 @@
                                     <ng-container *ngSwitchCase="workflowProcess.TerminateWorkflow">
                                         <span class="flex-row flex-items-center">
                                             <mat-icon svgIcon="workflowTerminate"></mat-icon>
-                                            <span class="sidenav-expansion--header__name">
+                                            <span class="process-name">
                                                 Terminate workflow
                                             </span>
                                         </span>
@@ -301,7 +303,7 @@
                                     <ng-container *ngSwitchCase="workflowProcess.ChangeClientPeriod">
                                         <span class="flex-row flex-items-center">
                                             <mat-icon svgIcon="workflowEdit"></mat-icon>
-                                            <span class="sidenav-expansion--header__name">
+                                            <span class="process-name">
                                                 Change workflow
                                             </span>
                                         </span>
@@ -309,7 +311,7 @@
                                     <ng-container *ngSwitchCase="workflowProcess.StartConsultantPeriod">
                                         <span class="flex-row flex-items-center">
                                             <mat-icon svgIcon="workflowAdd"></mat-icon>
-                                            <span class="sidenav-expansion--header__name">
+                                            <span class="process-name">
                                                 Add consultant
                                             </span>
                                         </span>
@@ -317,7 +319,7 @@
                                     <ng-container *ngSwitchCase="workflowProcess.ChangeConsultantPeriod">
                                         <span class="flex-row flex-items-center">
                                             <mat-icon svgIcon="workflowEdit"></mat-icon>
-                                            <span class="sidenav-expansion--header__name">
+                                            <span class="process-name">
                                                 Change consultant
                                             </span>
                                         </span>
@@ -325,7 +327,7 @@
                                     <ng-container *ngSwitchCase="workflowProcess.ExtendConsultantPeriod">
                                         <span class="flex-row flex-items-center">
                                             <mat-icon svgIcon="workflowStartOrExtend"></mat-icon>
-                                            <span class="sidenav-expansion--header__name">
+                                            <span class="process-name">
                                                 Extend consultant
                                             </span>
                                         </span>
@@ -333,7 +335,7 @@
                                     <ng-container *ngSwitchCase="workflowProcess.TerminateConsultant">
                                         <span class="flex-row flex-items-center">
                                             <mat-icon svgIcon="workflowTerminate"></mat-icon>
-                                            <span class="sidenav-expansion--header__name">
+                                            <span class="process-name">
                                                 Terminate consultant
                                             </span>
                                         </span>

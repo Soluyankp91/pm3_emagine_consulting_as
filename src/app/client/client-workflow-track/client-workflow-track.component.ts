@@ -27,10 +27,10 @@ export class ClientWorkflowTrackComponent extends AppComponentBase implements On
 
     clientDisplayColumns = [
         'consultant',
-        'salesType',
-        'deliveryType',
-        'dateStart',
-        'dateEnd',
+        'salesTypeId',
+        'deliveryTypeId',
+        'startDate',
+        'endDate',
         'invoicing',
         'manager',
         'status',

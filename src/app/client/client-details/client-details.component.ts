@@ -17,21 +17,8 @@ import { ClientDocumentsComponent } from '../client-documents/client-documents.c
 })
 export class ClientDetailsComponent extends AppComponentBase implements OnInit {
     @ViewChild('documentsTab', {static: true}) documentsTab: ClientDocumentsComponent;
-    selectedClient = {
-        name: 'Volkswagen Financial Services',
-        id: 1327,
-        address: 'Some address 1',
-        address2: 'Some address 2',
-        postcode: '28912',
-        country: 'Denmark',
-        countryCode: 'DK',
-        phone: '+54 456 788 45 12',
-        website: 'somewebsite.com',
-        type: 'Type',
-        accountManager: 'Some owner'
-    };
 
-    client: ClientDetailsDto;
+    client = new ClientDetailsDto();
 
     clientFilterInput = new FormControl();
     clientId: number;
