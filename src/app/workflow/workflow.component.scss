@@ -90,6 +90,9 @@
         position: relative;
         min-height: 120px;
     }
+    &--process-name {
+        margin-left: 5px;
+    }
     &--search-button {
         min-width: 155px;
         &-text {
@@ -269,8 +272,4 @@
 
 .divider-height {
     height: 40px;
-}
-
-.process-name {
-    margin-left: 5px;
 }
