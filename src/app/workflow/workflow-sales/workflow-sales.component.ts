@@ -8,7 +8,7 @@ import { MatDialog } from '@angular/material/dialog';
 import { MatMenuTrigger } from '@angular/material/menu';
 import { MatSelectChange } from '@angular/material/select';
 import { ActivatedRoute } from '@angular/router';
-import { Observable, of, Subject } from 'rxjs';
+import { merge, Observable, of, Subject } from 'rxjs';
 import { debounceTime, finalize, map, switchMap, takeUntil } from 'rxjs/operators';
 import { InternalLookupService } from 'src/app/shared/common/internal-lookup.service';
 import { ConfirmationDialogComponent } from 'src/app/shared/components/confirmation-dialog/confirmation-dialog.component';
@@ -407,6 +407,28 @@ export class WorkflowSalesComponent extends AppComponentBase implements OnInit {
                     this.filteredFinalEvaluationReferencePersons = [{ firstName: 'No records found', lastName: '', id: 'no-data' }];
                 }
             });
+
+        merge(this.salesClientDataForm.clientContractStartDate!.valueChanges,
+            this.salesClientDataForm.clientContractEndDate!.valueChanges,
+            this.salesClientDataForm.clientContractNoEndDate!.valueChanges)
+            .pipe(
+                takeUntil(this._unsubscribe),
+                debounceTime(300)
+            )
+            .subscribe(() => {
+                for (let consultant of this.consultantData.controls) {
+                    if (consultant.get('consultantProjectDurationSameAsClient')!.value) {
+                        consultant.get('consultantProjectStartDate')?.setValue(this.salesClientDataForm.clientContractStartDate?.value, {emitEvent: false});
+                        consultant.get('consultantProjectEndDate')?.setValue(this.salesClientDataForm.clientContractEndDate?.value, {emitEvent: false});
+                        consultant.get('consultantProjectNoEndDate')?.setValue(this.salesClientDataForm.clientContractNoEndDate?.value, {emitEvent: false});
+                        if (this.salesClientDataForm.clientContractNoEndDate?.value) {
+                            consultant.get('consultantProjectEndDate')?.disable();
+                        } else {
+                            consultant.get('consultantProjectEndDate')?.enable();
+                        }
+                    }
+                }
+            }); 
 
     }
 
