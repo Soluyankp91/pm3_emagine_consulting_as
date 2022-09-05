@@ -211,7 +211,7 @@
                     <mat-header-cell *matHeaderCellDef mat-sort-header fxFlex="10%"> Sales type </mat-header-cell>
                     <mat-cell *matCellDef="let row" fxFlex="10%">
                         <span class="text-truncate-ellipsis"  [matTooltip]="row.salesType?.name" matTooltipClass="white-tooltip" appShowIfTruncated>
-                            {{row.salesType?.name}}
+                            {{row.salesType?.name ?? '-'}}
                         </span>
                     </mat-cell>
                 </ng-container>
@@ -219,7 +219,7 @@
                     <mat-header-cell *matHeaderCellDef mat-sort-header fxFlex="10%"> Delivery type </mat-header-cell>
                     <mat-cell *matCellDef="let row" fxFlex="10%">
                         <span class="text-truncate-ellipsis" [matTooltip]="row.deliveryType?.name" matTooltipClass="white-tooltip" appShowIfTruncated>
-                            {{row.deliveryType?.name}}
+                            {{row.deliveryType?.name ?? '-'}}
                         </span>
                     </mat-cell>
                 </ng-container>
@@ -247,7 +247,7 @@
                             <span class="flex-items-center" fxFlex="100%">
                                 <img class="border-rounded-50 image-settings--dropdown u-mr--10" src="../../assets/common/images/no-img.svg" />
                                 <span class="text-truncate-ellipsis" [matTooltip]="row.consultantNamesTooltip" matTooltipClass="white-tooltip" appShowIfTruncated>
-                                    {{row.consultantName + row.consultantName}}
+                                    {{row.consultantName}}
                                 </span>
                             </span>
                         </ng-container>
@@ -255,7 +255,7 @@
                             <span class="flex-items-center" fxFlex="100%">
                                 <img *ngIf="row.consultants[0]?.name" class="border-rounded-50 image-settings--dropdown u-mr--10" [src]="consultantProfileUrl(row?.consultants[0]?.externalId)" />
                                 <span class="text-truncate-ellipsis" [matTooltip]="row.consultantNamesTooltip" matTooltipClass="white-tooltip" appShowIfTruncated>
-                                    {{row.consultantName + row.consultantName}}
+                                    {{row.consultantName}}
                                 </span>
                             </span>
                         </ng-template>
