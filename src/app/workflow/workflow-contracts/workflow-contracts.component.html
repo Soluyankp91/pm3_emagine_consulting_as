@@ -1094,9 +1094,9 @@
                                                             <mat-icon>clear</mat-icon>
                                                             Remove
                                                         </button>
-                                                        <div class="menu-item" mat-menu-item appPreventDoubleClick (throttledClick)="$event.stopPropagation(); toggleMarkProjectLineForDeletion(projectLine.value.markedForLegacyDeletion, consultantIndex, projectLinesIndex)" *ngIf="projectLine.value.wasSynced">
+                                                        <div class="menu-item" mat-menu-item (click)="$event.stopPropagation(); toggleMarkProjectLineForDeletion(projectLine.value.markedForLegacyDeletion, consultantIndex, projectLinesIndex)" *ngIf="projectLine.value.wasSynced">
                                                             <mat-checkbox color="accent" class="black-checkbox" id="markedForLegacyDeletion" name="markedForLegacyDeletion"
-                                                                formControlName="markedForLegacyDeletion" appPreventDoubleClick (throttledClick)="$event.stopPropagation();">
+                                                                formControlName="markedForLegacyDeletion" (click)="$event.stopPropagation();">
                                                                 Mark for deletion in legacy
                                                             </mat-checkbox>
                                                         </div>
