@@ -43,7 +43,7 @@ export class WorkflowDetailsComponent extends AppComponentBase implements OnInit
     currencies: EnumEntityTypeDto[] = [];
     saleTypes: EnumEntityTypeDto[] = [];
 
-    showToolbar = false;
+    topToolbarVisible = false;
 
     workflowDiallogActions = WorkflowDiallogAction;
 
@@ -86,7 +86,7 @@ export class WorkflowDetailsComponent extends AppComponentBase implements OnInit
         super(injector);
     }
 
-    get toolbarVisible() {
+    get bottomToolbarVisible() {
         if (this.selectedTabName === 'Overview' ||
             (!this._workflowDataService.getWorkflowProgress.stepSpecificPermissions!['StartEdit'] &&
             !this._workflowDataService.getWorkflowProgress.stepSpecificPermissions!['Edit'] &&
@@ -247,9 +247,9 @@ export class WorkflowDetailsComponent extends AppComponentBase implements OnInit
                 this.zone.run(() => {
                     const scrollPosition = cdk.getElementRef().nativeElement.scrollTop;
                     if (scrollPosition > 120) { // 120 - header height
-                        this.showToolbar = true;
+                        this.topToolbarVisible = true;
                     } else {
-                        this.showToolbar = false;
+                        this.topToolbarVisible = false;
                     }
                 });
             });
