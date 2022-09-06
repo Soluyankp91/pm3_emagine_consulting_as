@@ -6,7 +6,7 @@
         padding: 0 30px;
         .absolute-edit-toggle {
             position: fixed;
-            right: 50px;
+            right: calc(20% + 50px);
             top: 250px;
             border-radius: 50%;
             background-color: rgba($color: #72a0f8, $alpha: 0.2);

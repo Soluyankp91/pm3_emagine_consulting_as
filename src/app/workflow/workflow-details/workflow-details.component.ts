@@ -68,6 +68,7 @@ export class WorkflowDetailsComponent extends AppComponentBase implements OnInit
     workflowNote = new FormControl('', Validators.maxLength(4000));
     workflowNoteOldValue: string;
     disabledOverview = true;
+    notesEditable = false;
     private _unsubscribe = new Subject();
     constructor(
         injector: Injector,
@@ -128,15 +129,16 @@ export class WorkflowDetailsComponent extends AppComponentBase implements OnInit
     }
 
     showOrHideNotes() {
-        if (this.isNoteVisible) {
-            if (this.workflowNoteOldValue !== this.workflowNote.value) {
-                this.confirmCancelNote();
-            } else {
-                this.isNoteVisible = false;
-            }
-        } else {
-            this.isNoteVisible = true;
-        }
+        this.isNoteVisible = !this.isNoteVisible;
+        // if (this.isNoteVisible) {
+        //     if (this.workflowNoteOldValue !== this.workflowNote.value) {
+        //         this.confirmCancelNote();
+        //     } else {
+        //         this.isNoteVisible = false;
+        //     }
+        // } else {
+        //     this.isNoteVisible = true;
+        // }
     }
 
     confirmCancelNote() {
@@ -166,6 +168,11 @@ export class WorkflowDetailsComponent extends AppComponentBase implements OnInit
         dialogRef.componentInstance.onRejected.subscribe(() => {
             this.saveNotes();
         });
+    }
+
+    cancelNoteEdit() {
+        this.notesEditable = false;
+        this.workflowNote.setValue(this.workflowNoteOldValue);
     }
 
     getNotes() {

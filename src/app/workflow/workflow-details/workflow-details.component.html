@@ -97,26 +97,10 @@
                         </div>
                     </div>
                 </ng-template>
-                <div class="workflow-form--panel u-w--100">
+                <div class="workflow-form--panel pos-relative u-w--100">
                     <app-workflow-overview></app-workflow-overview>
-                    <div *ngIf="isNoteVisible" class="workflow-notes">
-                        <div fxLayout="row" fxLayoutAlign="space-between center" class="workflow-notes--header">
-                            <button mat-icon-button type="button" appPreventDoubleClick (throttledClick)="showOrHideNotes()"><mat-icon>close</mat-icon></button>
-                            <button mat-icon-button type="button" class="workflow-icon--notes u-mr--16"><mat-icon svgIcon="notes-icon"></mat-icon></button>
-                        </div>
-                        <div class="workflow-notes--content u-mt--20">
-                            <mat-form-field appearance="outline" class="u-w--100 textarea-input" fxFlex="100%">
-                                <mat-label>Workflow notes</mat-label>
-                                <textarea matInput autocomplete="new-password" maxlength="4000" [matTextareaAutosize]="true" [matAutosizeMinRows]="2" [matAutosizeMaxRows]="40" name="workflowNote" [formControl]="workflowNote">
-                                </textarea>
-                                <mat-error>
-                                    {{getValidationMessage(workflowNote)}}
-                                </mat-error>
-                            </mat-form-field>
-                        </div>
-                        <div fxLayout="row" fxLayoutAlign="end center" class="workflow-notes--footer u-mt--20">
-                            <button mat-flat-button type="button" color="primary" class="button-accept" appPreventDoubleClick (throttledClick)="saveNotes()">Save</button>
-                        </div>
+                    <div *ngIf="isNoteVisible" class="workflow-notes-wrapper">
+                        <app-workflow-notes (noteHidden)="isNoteVisible = !isNoteVisible" [topToolbarVisible]="topToolbarVisible" [workflowId]="workflowId" [alwaysVisible]="false"></app-workflow-notes>
                     </div>
                 </div>
             </mat-tab>
@@ -131,24 +115,8 @@
                     <div fxFlex="80%">
                         <app-workflow-period *ngIf="selectedIndex === i + 1" [periodId]="tab.id" [workflowId]="workflowId"></app-workflow-period>
                     </div>
-                    <div fxFlex="20%" class="workflow-notes" [ngClass]="{'top-toolbar-shown': topToolbarVisible, 'bottom-toolbar-shown': bottomToolbarVisible}">
-                        <div fxLayout="row" fxLayoutAlign="space-between center" class="workflow-notes--header">
-                            <button mat-icon-button type="button" appPreventDoubleClick (throttledClick)="showOrHideNotes()"><mat-icon>close</mat-icon></button>
-                            <button mat-icon-button type="button" class="workflow-icon--notes u-mr--16"><mat-icon svgIcon="notes-icon"></mat-icon></button>
-                        </div>
-                        <div class="workflow-notes--content u-mt--20">
-                            <mat-form-field appearance="outline" class="u-w--100 textarea-input" fxFlex="100%">
-                                <mat-label>Workflow notes</mat-label>
-                                <textarea matInput autocomplete="new-password" maxlength="4000" [matTextareaAutosize]="true" [matAutosizeMinRows]="2" [matAutosizeMaxRows]="40" name="workflowNote" [formControl]="workflowNote">
-                                </textarea>
-                                <mat-error>
-                                    {{getValidationMessage(workflowNote)}}
-                                </mat-error>
-                            </mat-form-field>
-                        </div>
-                        <div fxLayout="row" fxLayoutAlign="end center" class="workflow-notes--footer u-mt--20">
-                            <button mat-flat-button type="button" color="primary" class="button-accept" appPreventDoubleClick (throttledClick)="saveNotes()">Save</button>
-                        </div>
+                    <div fxFlex="20%" class="workflow-notes-wrapper">
+                        <app-workflow-notes *ngIf="selectedIndex === i + 1" [topToolbarVisible]="topToolbarVisible" [workflowId]="workflowId" [alwaysVisible]="true"></app-workflow-notes>
                     </div>
                 </div>
             </mat-tab>
