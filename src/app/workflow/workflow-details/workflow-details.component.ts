@@ -43,7 +43,7 @@ export class WorkflowDetailsComponent extends AppComponentBase implements OnInit
     currencies: EnumEntityTypeDto[] = [];
     saleTypes: EnumEntityTypeDto[] = [];
 
-    showToolbar = false;
+    topToolbarVisible = false;
 
     workflowDiallogActions = WorkflowDiallogAction;
 
@@ -68,6 +68,7 @@ export class WorkflowDetailsComponent extends AppComponentBase implements OnInit
     workflowNote = new FormControl('', Validators.maxLength(4000));
     workflowNoteOldValue: string;
     disabledOverview = true;
+    notesEditable = false;
     private _unsubscribe = new Subject();
     constructor(
         injector: Injector,
@@ -86,7 +87,7 @@ export class WorkflowDetailsComponent extends AppComponentBase implements OnInit
         super(injector);
     }
 
-    get toolbarVisible() {
+    get bottomToolbarVisible() {
         if (this.selectedTabName === 'Overview' ||
             (!this._workflowDataService.getWorkflowProgress.stepSpecificPermissions!['StartEdit'] &&
             !this._workflowDataService.getWorkflowProgress.stepSpecificPermissions!['Edit'] &&
@@ -128,15 +129,16 @@ export class WorkflowDetailsComponent extends AppComponentBase implements OnInit
     }
 
     showOrHideNotes() {
-        if (this.isNoteVisible) {
-            if (this.workflowNoteOldValue !== this.workflowNote.value) {
-                this.confirmCancelNote();
-            } else {
-                this.isNoteVisible = false;
-            }
-        } else {
-            this.isNoteVisible = true;
-        }
+        this.isNoteVisible = !this.isNoteVisible;
+        // if (this.isNoteVisible) {
+        //     if (this.workflowNoteOldValue !== this.workflowNote.value) {
+        //         this.confirmCancelNote();
+        //     } else {
+        //         this.isNoteVisible = false;
+        //     }
+        // } else {
+        //     this.isNoteVisible = true;
+        // }
     }
 
     confirmCancelNote() {
@@ -166,6 +168,11 @@ export class WorkflowDetailsComponent extends AppComponentBase implements OnInit
         dialogRef.componentInstance.onRejected.subscribe(() => {
             this.saveNotes();
         });
+    }
+
+    cancelNoteEdit() {
+        this.notesEditable = false;
+        this.workflowNote.setValue(this.workflowNoteOldValue);
     }
 
     getNotes() {
@@ -247,9 +254,9 @@ export class WorkflowDetailsComponent extends AppComponentBase implements OnInit
                 this.zone.run(() => {
                     const scrollPosition = cdk.getElementRef().nativeElement.scrollTop;
                     if (scrollPosition > 120) { // 120 - header height
-                        this.showToolbar = true;
+                        this.topToolbarVisible = true;
                     } else {
-                        this.showToolbar = false;
+                        this.topToolbarVisible = false;
                     }
                 });
             });

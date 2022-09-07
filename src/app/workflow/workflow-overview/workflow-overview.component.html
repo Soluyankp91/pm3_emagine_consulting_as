@@ -1,7 +1,6 @@
 <div class="workflow-overview" *ngIf="componentInitalized">
     <div *ngFor="let item of workflowProcesses">
         <div class="workflow-overview--team" fxLayout="row" fxLayoutAlign="start start" fxLayoutGap="60px">
-            <!-- TODO: move each block to card component-->
             <div fxLayout="column" fxLayoutAlign="start start" fxFlex="15%">
                 <span class="flex-row flex-items-center u-mb--10">
                     <ng-container [ngSwitch]="item.typeId">

@@ -622,5 +622,12 @@ export class AppModule {
             )
         );
 
+        iconRegistry.addSvgIcon(
+            'empty-notes-icon',
+            sanitizer.bypassSecurityTrustResourceUrl(
+                'assets/common/images/empty_notes_icon.svg'
+            )
+        );
+
     }
 }

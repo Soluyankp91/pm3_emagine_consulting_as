@@ -17,6 +17,7 @@ import { WorkflowSalesComponent } from './workflow-sales/workflow-sales.componen
 import { WorkflowSourcingComponent } from './workflow-sourcing/workflow-sourcing.component';
 import { WorkflowComponent, WorkflowCreateResolver } from './workflow.component';
 import { GanttChartComponent } from './workflow-overview/gantt-chart/gantt-chart.component';
+import { WorkflowNotesComponent } from './workflow-notes/workflow-notes.component';
 
 @NgModule({
     declarations: [
@@ -32,7 +33,8 @@ import { GanttChartComponent } from './workflow-overview/gantt-chart/gantt-chart
         WorkflowSourcingComponent,
         WorkflowPeriodComponent,
         AddOrEditProjectLineDialogComponent,
-        GanttChartComponent
+        GanttChartComponent,
+        WorkflowNotesComponent
     ],
     imports: [
         CommonModule,
