@@ -664,7 +664,7 @@
                                 <div fxLayout="column" fxLayoutAlign="start start" class="u-w--100">
                                     <h2 class="workflow-step-readonly--header u-mb--20">Consultant payment</h2>
                                     <div fxLayout="column" class="u-w--100 u-mb--20">
-                                        <h3 class="workflow-step-readonly--gray-header">ProData Entity</h3>
+                                        <h3 class="workflow-step-readonly--gray-header">emagine Entity</h3>
                                         <span class="workflow-step-readonly--blue-text-bold">
                                             {{item?.value?.consultantProdataEntity?.name ? item?.value?.consultantProdataEntity?.name : '-'}}
                                         </span>
@@ -716,7 +716,7 @@
                                     </div>
                                     <div fxLayout="row" fxLayoutAlign="start start" class="u-w--100 u-mb--20" *ngIf="(item.value?.consultantProdataEntity?.id && salesClientDataForm.value?.pdcInvoicingEntityId?.id) && (item.value?.consultantProdataEntity?.id !== salesClientDataForm.value?.pdcInvoicingEntityId?.id)">
                                         <div fxLayout="column" fxFlex="15%">
-                                            <h3 class="workflow-step-readonly--gray-header">PDC-to-PDC rate</h3>
+                                            <h3 class="workflow-step-readonly--gray-header">emagine-to-emagine rate</h3>
                                             <span class="workflow-step-readonly--blue-text-bold">
                                                 {{item?.value?.consultantPDCRate ? item?.value?.consultantPDCRate : '-'}}
                                             </span>
@@ -786,7 +786,7 @@
                                     </div>
                                     <div fxLayout="row" fxLayoutAlign="start center" class="u-w--100 u-mb--10" >
                                         <div fxLayout="column" fxFlex="25%"*ngIf="(salesClientDataForm.value?.pdcInvoicingEntityId?.id && item.value?.consultantProdataEntity?.id) && (item.value?.consultantProdataEntity?.id !== salesClientDataForm.value?.pdcInvoicingEntityId?.id)">
-                                            <h3 class="workflow-step-readonly--gray-header">PDC invoicing currency</h3>
+                                            <h3 class="workflow-step-readonly--gray-header">emagine invoicing currency</h3>
                                             <span class="workflow-step-readonly--blue-text-bold">
                                                 {{item?.value?.prodataToProdataInvoiceCurrency ? item?.value?.prodataToProdataInvoiceCurrency?.name : '-'}}
                                             </span>
@@ -822,7 +822,7 @@
                                                 <div fxLayout="column" fxFlex="30%">
                                                     <h3 class="workflow-step-readonly--gray-header">Workplace</h3>
                                                     <span class="workflow-step-readonly--blue-text-bold">
-                                                        PDC Office
+                                                        emagine Office
                                                     </span>
                                                 </div>
                                                 <div fxLayout="column" fxFlex="40%">
@@ -900,7 +900,7 @@
                                                 Reporting unit
                                             </span>
                                             <span fxFlex="30%" class="workflow-sales-inline--form__header u-w--100" *ngIf="item.value?.consultantProdataEntity?.id !== salesClientDataForm.value?.pdcInvoicingEntityId?.id">
-                                                ProData rate
+                                                emagine rate
                                             </span>
                                             <span fxFlex="30%" class="workflow-sales-inline--form__header u-w--100">
                                                 Consultant rate
@@ -939,7 +939,7 @@
                                                 Frequency
                                             </span>
                                             <span fxFlex="30%" class="workflow-sales-inline--form__header u-w--100" *ngIf="item.value?.consultantProdataEntity?.id !== salesClientDataForm.value?.pdcInvoicingEntityId?.id">
-                                                ProData fee
+                                                emagine fee
                                             </span>
                                             <span fxFlex="30%" class="workflow-sales-inline--form__header u-w--100">
                                                 Consultant fee
@@ -1647,7 +1647,7 @@
                             <h3 class="workflow-gray--header u-mb--10">Invoicing Entity</h3>
                             <div fxLayout="row" fxLayoutAlign="start center" class="u-w--100 u-mb--10">
                                 <mat-form-field appearance="outline" class="u-w--100  filter-select" fxFlex="33%">
-                                    <mat-label>ProData entity</mat-label>
+                                    <mat-label>emagine entity</mat-label>
                                     <mat-select formControlName="pdcInvoicingEntityId" [disableOptionCentering]="true" [compareWith]="compareWithFn">
                                         <mat-option *ngFor="let item of tenants" [value]="item">
                                             {{ item.name }}
@@ -2320,7 +2320,7 @@
                                     <h3 class="workflow-gray--header u-mb--10">Payment entity (consultant)</h3>
                                     <div fxLayout="row" fxLayoutAlign="start start" class="u-w--100 u-mb--10">
                                         <mat-form-field appearance="outline" class="u-w--100  filter-select" fxFlex="33%">
-                                            <mat-label>ProData Entity</mat-label>
+                                            <mat-label>emagine Entity</mat-label>
                                             <mat-select formControlName="consultantProdataEntity" [disableOptionCentering]="true" [compareWith]="compareWithFn">
                                                 <mat-option *ngFor="let item of tenants" [value]="item">
                                                     {{ item.name }}
@@ -2385,7 +2385,7 @@
                                                 </div>
                                                 <div fxLayout="row" fxLayoutAlign="start center" class="u-w--100 u-mb--10" *ngIf="consultant.value?.consultantProdataEntity?.id !== salesClientDataForm.value?.pdcInvoicingEntityId?.id">
                                                     <mat-form-field appearance="outline" class="u-w--100  u-mr--16" fxFlex="0 0 calc(16.5% - 8px)">
-                                                        <mat-label>PDC-to-PDC rate</mat-label>
+                                                        <mat-label>emagine-to-emagine rate</mat-label>
                                                         <input autocomplete="off" matInput formControlName="consultantPDCRate" type="number">
                                                     </mat-form-field>
                                                     <mat-form-field appearance="outline" class="u-w--100  filter-select u-mr--16" fxFlex="0 0 calc(16.5% - 8px)">
@@ -2455,7 +2455,7 @@
     
                                                 <div fxLayout="row" fxLayoutAlign="start center" class="u-w--100 u-mb--10" *ngIf="consultant.value?.consultantProdataEntity?.id && (consultant.value?.consultantProdataEntity?.id !== salesClientDataForm.value?.pdcInvoicingEntityId?.id)">
                                                     <mat-form-field appearance="outline" class="u-w--100  u-mr--16" fxFlex="0 0 calc(16.5% - 8px)">
-                                                        <mat-label>PDC-to-PDC rate</mat-label>
+                                                        <mat-label>emagine-to-emagine rate</mat-label>
                                                         <input autocomplete="off" matInput formControlName="consultantPDCRate" type="number">
                                                     </mat-form-field>
                                                     <mat-form-field appearance="outline" class="u-w--100  filter-select u-mr--16" fxFlex="0 0 calc(16.5% - 8px)">
@@ -2590,11 +2590,11 @@
                                         </div>
                                         <div fxLayout="row" fxLayoutAlign="start center" class="u-w--100 u-mb--20">
                                             <mat-checkbox color="accent" [required]="!consultant.value.consultantIsOnsiteWorkplace && !consultant.value.consultantIsRemoteWorkplace" formControlName="consultantIsEmagineOfficeWorkplace" name="consultantIsEmagineOfficeWorkplace" class="black-checkbox u-mr--16" fxFlex="0 0 calc(16.5% - 8px)">
-                                                PDC Office
+                                                emagine Office
                                             </mat-checkbox>
 
                                             <mat-form-field appearance="outline" class="u-w--100  filter-select" fxFlex="0 0 calc(33% + 16px)" *ngIf="consultantsForm.consultantData.at(consultantIndex).get('consultantIsEmagineOfficeWorkplace')?.value">
-                                                <mat-label>PDC Office address</mat-label>
+                                                <mat-label>emagine Office address</mat-label>
                                                 <mat-select formControlName="consultantWorkplaceEmagineOffice" [disableOptionCentering]="true">
                                                     <mat-option *ngFor="let item of emagineOffices" [value]="item">
                                                         {{ item.name }}
@@ -2698,7 +2698,7 @@
                                                 Reporting unit
                                             </span>
                                             <span fxFlex="25%" class="workflow-sales-inline--form__header u-w--100" *ngIf="consultant.value?.consultantProdataEntity?.id !== salesClientDataForm.value?.pdcInvoicingEntityId?.id">
-                                                ProData rate
+                                                emagine rate
                                             </span>
                                             <span fxFlex="25%" class="workflow-sales-inline--form__header u-w--100">
                                                 Consultant rate
@@ -2831,7 +2831,7 @@
                                                 Frequency
                                             </span>
                                             <span fxFlex="25%" class="workflow-sales-inline--form__header u-w--100" *ngIf="consultant.value?.consultantProdataEntity?.id !== salesClientDataForm.value?.pdcInvoicingEntityId?.id">
-                                                ProData fee
+                                                emagine fee
                                             </span>
                                             <span fxFlex="25%" class="workflow-sales-inline--form__header u-w--100">
                                                 Consultant fee

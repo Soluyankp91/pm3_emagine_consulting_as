@@ -1181,7 +1181,7 @@ export class WorkflowSalesComponent extends AppComponentBase implements OnInit {
             if (item.employmentType?.id === 10 || item.employmentType?.id === 11) {
                 return item.consultantNameOnly;
             } else {
-                return item.consultantName.consultant.name;
+                return item.consultantName?.consultant?.name;
             }
         });
         this._workflowDataService.consultantsAddedToStep.emit({stepType: StepType.Sales, processTypeId: this.activeSideSection.typeId!, consultantNames: consultantNames});

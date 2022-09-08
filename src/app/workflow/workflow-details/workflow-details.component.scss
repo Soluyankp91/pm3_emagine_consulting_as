@@ -76,9 +76,6 @@
         &.top-toolbar-shown {
             height: calc(100vh - 115px);
         }
-        &.bottom-toolbar-shown {
-
-        }
         &--header {
             &-text {
                 color: $dark-grey-color;
@@ -165,7 +162,7 @@
         background-color: #fff;
         height: 60px;
         width: 80%;
-        padding: 0 75px;
+        padding: 0 20px 0 15%;
         box-shadow: 0px 0px 20px rgba(26, 35, 126, 0.15);
         button {
             width: 150px;

@@ -2,7 +2,7 @@ import { Component, OnInit, Injector, Input, Output, EventEmitter } from '@angul
 import { FormControl, Validators } from '@angular/forms';
 import { AppComponentBase } from 'src/shared/app-component-base';
 import { finalize } from 'rxjs/operators';
-import { WorkflowServiceProxy } from 'src/shared/service-proxies/service-proxies';
+import { EmployeeRole, EmployeeServiceProxy, WorkflowServiceProxy } from 'src/shared/service-proxies/service-proxies';
 import { AuthenticationResult } from '@azure/msal-browser';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { LocalHttpService } from 'src/shared/service-proxies/local-http.service';
@@ -19,6 +19,7 @@ export class WorkflowNotesComponent extends AppComponentBase implements OnInit {
     @Output() noteHidden = new EventEmitter<any>();
     notesEditable = false;
     isNoteVisible = false;
+    isAllowedToEdit = false;
 
     workflowNote = new FormControl('', Validators.maxLength(4000));
     workflowNoteOldValue: string;
@@ -26,13 +27,22 @@ export class WorkflowNotesComponent extends AppComponentBase implements OnInit {
         injector: Injector,
         private _workflowServiceProxy: WorkflowServiceProxy,
         private localHttpService: LocalHttpService,
-        private httpClient: HttpClient
+        private httpClient: HttpClient,
+        private _employeeService: EmployeeServiceProxy
     ) {
         super(injector);
     }
 
     ngOnInit(): void {
         this.getNotes();
+        this.getCurrentRole();
+    }
+
+    getCurrentRole() {
+        this._employeeService.current()
+            .subscribe(result => {
+                this.isAllowedToEdit = result.employeeRole === EmployeeRole.ContractManager;
+            });
     }
 
     saveNotes() {
