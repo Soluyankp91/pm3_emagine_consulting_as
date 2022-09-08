@@ -407,7 +407,7 @@ export class WorkflowContractsComponent extends AppComponentBase implements OnIn
             if (item.consultantType?.id === 10 || item.consultantType?.id === 11) {
                 return item.nameOnly;
             } else {
-                return item.consultant.name;
+                return item.consultant?.name;
             }
         });
         this._workflowDataService.consultantsAddedToStep.emit({stepType: StepType.Contract, processTypeId: this.activeSideSection.typeId!, consultantNames: consultantNames});

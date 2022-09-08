@@ -162,3 +162,15 @@
 }
 
 // END remove after we will have correct icons
+
+.project-line--expansion-additional {
+    font-weight: 600;
+    font-size: 14px;
+    margin-bottom: 12px;
+    &__header {
+        color: $medium-grey-color;
+    }
+    &__content {
+        color: $dark-grey-color;
+    }
+}
