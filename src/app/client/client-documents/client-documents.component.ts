@@ -327,7 +327,7 @@ export class ClientDocumentsComponent extends AppComponentBase implements OnInit
         }
     }
 
-    downloadGeneralDocument(clientAttachmentGuid: string) {
+    downloadDocument(clientAttachmentGuid: string) {
         this.localHttpService.getTokenPromise().then((response: AuthenticationResult) => {
             const fileUrl = `${this.apiUrl}/api/ClientDocuments/Document/${clientAttachmentGuid}`;
             this.httpClient.get(fileUrl, {
@@ -349,7 +349,7 @@ export class ClientDocumentsComponent extends AppComponentBase implements OnInit
                     const nav = (window.navigator as any);
                     console.log(blob);
                     console.log(contentDispositionFileName);
-                    
+
                     if (nav.msSaveOrOpenBlob) {
                         nav.msSaveBlob(blob, contentDispositionFileName);
                     } else {
