@@ -102,7 +102,6 @@ export class GanttChartComponent extends GanttUpper implements OnInit {
         event.preventDefault();
         this.menuTopLeftPosition.x = event.clientX;
         this.menuTopLeftPosition.y = event.clientY + 10;
-        console.log(item);
         this.tooltipStartDate = (item?.origin?.origin.startDate !== undefined && item?.origin?.origin.startDate !== null) ? new Date(item?.origin?.start*1000) : undefined;
         this.tooltipEndDate = (item?.origin?.origin.endDate !== undefined && item?.origin?.origin.endDate !== null) ? new Date(item?.origin?.end*1000) : undefined;
     }
