@@ -33,7 +33,7 @@ export class WorkflowSalesComponent extends AppComponentBase implements OnInit {
     // Changed all above to enum
     // @Input() activeSideSection: WorkflowProcessDto;
     @Input() activeSideSection: WorkflowProcessWithAnchorsDto;
-    
+
     @Input() isCompleted: boolean;
     // _isCompleted: boolean;
     // get isCompleted(): boolean {
@@ -428,7 +428,7 @@ export class WorkflowSalesComponent extends AppComponentBase implements OnInit {
                         }
                     }
                 }
-            }); 
+            });
 
     }
 
@@ -2600,4 +2600,23 @@ export class WorkflowSalesComponent extends AppComponentBase implements OnInit {
     }
     //#endregion formatting
 
+    validateContractSigners(group: any, index: any) {
+        if (
+            !(group.get("contractSigners")! as FormArray)
+                .at(index)
+                .get("clientContact")!.value?.id
+        ) {
+            (group.get("contractSigners") as FormArray)
+                .at(index)
+                .get("clientContact")!
+                .setErrors({ invalid: true });
+            return true;
+        } else {
+            (group.get("contractSigners") as FormArray)
+                .at(index)
+                .get("clientContact")!
+                .setErrors(null);
+            return false;
+        }
+    }
 }
