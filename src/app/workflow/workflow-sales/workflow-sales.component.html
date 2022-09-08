@@ -890,7 +890,7 @@
                                 <mat-divider class="u-w--100 u-mt--20 u-mb--20"></mat-divider>
                                 <div fxLayout="column" fxLayoutAlign="start start" class="u-w--100">
                                     <h2 class="workflow-section--header">Rates and fees</h2>
-    
+
                                     <div class="inline-edit-form u-w--100">
                                         <div fxLayout="row" fxLayoutAlign="space-between start" fxLayoutGap="10px" class="workflow-sales-inline--form__header-container u-w--100" *ngIf="item.value.specialRates?.length">
                                             <span fxFlex="1 1 20%" class="workflow-sales-inline--form__header u-w--100">
@@ -929,7 +929,7 @@
                                             </div>
                                         </ng-container>
                                     </div>
-    
+
                                     <div class="inline-edit-form u-w--100">
                                         <div fxLayout="row" fxLayoutAlign="space-between start" fxLayoutGap="10px" class="workflow-sales-inline--form__header-container u-w--100" *ngIf="item.value.specialFees?.length">
                                             <span fxFlex="1 1 20%" class="workflow-sales-inline--form__header u-w--100">
@@ -969,7 +969,7 @@
                                         </ng-container>
                                     </div>
                                 </div>
-    
+
                                 <mat-divider class="u-w--100 u-mt--20 u-mb--20"></mat-divider>
                                 <div fxLayout="column" fxLayoutAlign="start start" class="u-w--100">
                                     <h2 class="workflow-step-readonly--header u-mb--20">Consultant contract</h2>
@@ -1672,7 +1672,7 @@
                                                 <mat-label>Price</mat-label>
                                                 <input autocomplete="off" matInput formControlName="clientPrice" type="number">
                                             </mat-form-field>
-    
+
                                             <mat-form-field appearance="outline" class="u-w--100  filter-select u-mr--16" fxFlex="0 0 calc(16.5% - 8px)">
                                                 <mat-label>Unit type</mat-label>
                                                 <mat-select formControlName="rateUnitTypeId" [disableOptionCentering]="true" [compareWith]="compareWithFn">
@@ -1681,7 +1681,7 @@
                                                     </mat-option>
                                                 </mat-select>
                                             </mat-form-field>
-    
+
                                             <mat-form-field appearance="outline" class="u-w--100  filter-select" fxFlex="0 0 calc(16.5% - 8px)">
                                                 <mat-label>Currency</mat-label>
                                                 <mat-select formControlName="clientCurrency" [disableOptionCentering]="true" [compareWith]="compareWithFn">
@@ -1698,7 +1698,7 @@
                                                 <mat-label>Price</mat-label>
                                                 <input autocomplete="off" matInput formControlName="clientPrice" type="number">
                                             </mat-form-field>
-    
+
                                             <mat-form-field appearance="outline" class="u-w--100  filter-select" fxFlex="0 0 calc(16.5% - 8px)">
                                                 <mat-label>Currency</mat-label>
                                                 <mat-select formControlName="clientCurrency" [disableOptionCentering]="true" [compareWith]="compareWithFn">
@@ -1722,7 +1722,7 @@
                                             </mat-option>
                                         </mat-select>
                                     </mat-form-field>
-    
+
                                     <ng-container [ngSwitch]="salesClientDataForm.clientRateAndInvoicing?.value?.id">
                                         <ng-container *ngSwitchCase="1"> <!-- Time based -->
                                             <mat-form-field appearance="outline" class="u-w--100  filter-select" fxFlex="33%" [ngClass]="{'u-mr--16': salesClientDataForm.clientInvoiceFrequency?.value?.name === 'Manual date'}">
@@ -1768,14 +1768,14 @@
                                         </ng-container>
                                     </ng-container>
                                 </div>
-    
+
                                 <div fxLayout="row" fxLayoutAlign="start start" class="u-w--100 u-mb--10">
                                     <mat-form-field appearance="outline" class="u-w--100 " fxFlex="33%">
                                         <mat-label>Invoicing Reference Number</mat-label>
                                         <input autocomplete="off" matInput formControlName="invoicingReferenceNumber" type="text">
                                     </mat-form-field>
                                 </div>
-    
+
                                 <div fxLayout="row" fxLayoutAlign="start center" class="u-w--100 u-mb--10">
                                     <mat-form-field appearance="outline" class="u-w--100 filter-select u-mr--16" fxFlex="33%">
                                         <mat-label>Client invoicing recipient</mat-label>
@@ -1797,7 +1797,7 @@
                                     </mat-checkbox>
                                     <!-- </div> -->
                                 </div>
-    
+
                                 <div fxLayout="row" fxLayoutAlign="start center" class="u-w--100 u-mb--10">
                                     <mat-form-field appearance="outline" class="u-w--100 filter-select u-mr--16" fxFlex="33%">
                                         <mat-label>Invoicing Reference Person</mat-label>
@@ -2139,6 +2139,9 @@
                                                 </mat-option>
                                             </ng-container>
                                         </mat-autocomplete>
+                                        <mat-error *ngIf="validateContractSigners(salesClientDataForm, i)">
+                                            You need to select the contract signer
+                                        </mat-error>
                                     </mat-form-field>
 
                                     <mat-form-field appearance="outline" class="u-w--100  filter-select u-mr--16" fxFlex="33%">
@@ -2338,7 +2341,7 @@
                                                 </mat-button-toggle>
                                             </mat-button-toggle-group>
                                         </div>
-    
+
                                         <ng-container class="u-w--100" [ngSwitch]="consultant.value.consultantPaymentType?.id">
                                             <ng-container *ngSwitchCase="1"> <!-- 'Time based' -->
                                                 <div fxLayout="row" fxLayoutAlign="start center" class="u-w--100 u-mb--10">
@@ -2452,7 +2455,7 @@
                                                         </ng-template>
                                                     </div>
                                                 </div>
-    
+
                                                 <div fxLayout="row" fxLayoutAlign="start center" class="u-w--100 u-mb--10" *ngIf="consultant.value?.consultantProdataEntity?.id && (consultant.value?.consultantProdataEntity?.id !== salesClientDataForm.value?.pdcInvoicingEntityId?.id)">
                                                     <mat-form-field appearance="outline" class="u-w--100  u-mr--16" fxFlex="0 0 calc(16.5% - 8px)">
                                                         <mat-label>PDC-to-PDC rate</mat-label>
