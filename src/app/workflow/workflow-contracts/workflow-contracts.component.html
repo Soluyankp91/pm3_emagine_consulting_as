@@ -594,7 +594,7 @@
                                                 Reporting unit
                                             </span>
                                             <span fxFlex="25%" class="workflow-contracts--list-header text-truncate-ellipsis u-w--100" *ngIf="consultant.value?.pdcPaymentEntityId !== contractClientForm.value?.pdcInvoicingEntityId">
-                                                ProData rate
+                                                emagine rate
                                             </span>
                                             <span fxFlex="25%" class="workflow-contracts--list-header text-truncate-ellipsis u-w--100">
                                                 Consultant rate
@@ -632,7 +632,7 @@
                                                 Reporting unit
                                             </span>
                                             <span fxFlex="25%" class="workflow-contracts--list-header text-truncate-ellipsis u-w--100" *ngIf="consultant.value?.pdcPaymentEntityId !== contractClientForm.value?.pdcInvoicingEntityId">
-                                                ProData rate
+                                                emagine rate
                                             </span>
                                             <span fxFlex="25%" class="workflow-contracts--list-header text-truncate-ellipsis u-w--100">
                                                 Consultant rate
@@ -764,14 +764,11 @@
                                             <span fxFlex="20%" class="workflow-contracts--list-header text-truncate-ellipsis u-w--100">
                                                 Fee name
                                             </span>
-                                            <!-- <span fxFlex="20%" class="workflow-contracts--list-header text-truncate-ellipsis u-w--100">
-                                                Fee direction
-                                            </span> -->
                                             <span fxFlex="20%" class="workflow-contracts--list-header text-truncate-ellipsis u-w--100">
                                                 Frequency
                                             </span>
                                             <span fxFlex="25%" class="workflow-contracts--list-header text-truncate-ellipsis u-w--100">
-                                                ProData fee
+                                                emagine fee
                                             </span>
                                             <span fxFlex="25%" class="workflow-contracts--list-header text-truncate-ellipsis u-w--100">
                                                 Consultant fee
@@ -806,13 +803,12 @@
                                                 Frequency
                                             </span>
                                             <span fxFlex="25%" class="workflow-contracts--list-header text-truncate-ellipsis u-w--100">
-                                                ProData fee
+                                                emagine fee
                                             </span>
                                             <span fxFlex="25%" class="workflow-contracts--list-header text-truncate-ellipsis u-w--100">
                                                 Consultant fee
                                             </span>
                                             <span fxFlex="10%" class="workflow-contracts--list-header text-truncate-ellipsis u-w--100">
-    
                                             </span>
                                         </div>
                                         <ng-container formArrayName="clientFees" class="u-w--100">
@@ -929,76 +925,122 @@
                                 </ng-template>
     
                                 <h2 class="workflow-section--header">Project Lines</h2>
-                                <ng-container *ngIf="readOnlyMode; else projectLinesInput">
-                                    <div class="inline-edit-form u-w--100 u-mb--10">
-                                        <div fxLayout="row" fxLayoutAlign="space-between start" fxLayoutGap="10px" class="u-w--100 u-pl--16 u-pr--16" *ngIf="consultant.value.projectLines?.length">
-                                            <span fxFlex="5%" class="workflow-contracts--list-header text-truncate-ellipsis">
-                                                Id
-                                            </span>
-                                            <span fxFlex="17%" class="workflow-contracts--list-header text-truncate-ellipsis">
-                                                Project name
-                                            </span>
-                                            <span fxFlex="17%" class="workflow-contracts--list-header text-truncate-ellipsis">
-                                                Assignment ID/PO No
-                                            </span>
-                                            <span fxFlex="9%" class="workflow-contracts--list-header text-truncate-ellipsis">
-                                                Start date
-                                            </span>
-                                            <span fxFlex="9%" class="workflow-contracts--list-header text-truncate-ellipsis">
-                                                End date
-                                            </span>
-                                            <span fxFlex="10%" class="workflow-contracts--list-header text-truncate-ellipsis">
-                                                Inv. ref person
-                                            </span>
-                                            <span fxFlex="9%" class="workflow-contracts--list-header text-truncate-ellipsis">
-                                                Changed
-                                            </span>
-                                            <span fxFlex="18%" class="workflow-contracts--list-header text-truncate-ellipsis">
-                                                Optional Invoicing Info
-                                            </span>
-                                            <span fxFlex="6%" class="workflow-contracts--list-header text-truncate-ellipsis">
-                                                Status
-                                            </span>
-                                        </div>
-                                        <ng-container class="u-w--100">
-                                            <div fxLayout="row" fxLayoutAlign="space-between center" fxLayoutGap="10px"
-                                                class="workflow-contracts--list u-w--100 u-pl--16 u-pr--16" *ngFor="let projectLine of getConsultantProjectLinesControls(consultantIndex); let projectLinesIndex = index">
-                                                <span fxFlex="5%" class="u-w--100 text-truncate-ellipsis workflow-contracts--list-item" [matTooltip]="projectLine.value.id ?? '-'" matTooltipClass="white-tooltip" appShowIfTruncated>
-                                                    {{projectLine.value.id ?? '-'}}
-                                                </span>
-                                                <span fxFlex="17%" class="u-w--100 text-truncate-ellipsis__multilne workflow-contracts--list-item" [matTooltip]="projectLine.value.projectName ?? '-'" matTooltipClass="white-tooltip" appShowIfTruncated>
-                                                    {{projectLine.value.projectName ?? '-'}}
-                                                </span>
-                                                <span fxFlex="17%" class="u-w--100 text-truncate-ellipsis workflow-contracts--list-item" [matTooltip]="projectLine.value.invoicingReferenceNumber ?? '-'" matTooltipClass="white-tooltip" appShowIfTruncated>
-                                                    {{projectLine.value.invoicingReferenceNumber ?? '-'}}
-                                                </span>
-                                                <span fxFlex="9%" class="u-w--100 text-truncate-ellipsis workflow-contracts--list-item" [matTooltip]="projectLine.value.startDate ? (projectLine.value.startDate | momentFormat: 'DD.MM.YYYY') : '-'" matTooltipClass="white-tooltip" appShowIfTruncated>
-                                                    {{projectLine.value.startDate ? (projectLine.value.startDate | momentFormat: 'DD.MM.YYYY') : '-'}}
-                                                </span>
-                                                <span fxFlex="9%" class="u-w--100 text-truncate-ellipsis workflow-contracts--list-item" [matTooltip]="projectLine.value.endDate ? (projectLine.value.endDate | momentFormat: 'DD.MM.YYYY') : '-'" matTooltipClass="white-tooltip" appShowIfTruncated>
-                                                    {{projectLine.value.endDate ? (projectLine.value.endDate | momentFormat: 'DD.MM.YYYY') : '-'}}
-                                                </span>
-                                                <span fxFlex="10%" class="u-w--100 text-truncate-ellipsis workflow-contracts--list-item" [matTooltip]="projectLine.value.invoicingReferencePerson?.firstName ? (projectLine.value.invoicingReferencePerson?.firstName + ' ' + projectLine.value.invoicingReferencePerson?.lastName) : '-'" matTooltipClass="white-tooltip" appShowIfTruncated>
-                                                    <ng-container *ngIf="projectLine.value.invoicingReferencePerson?.id; else invoicingReferencePersonFreeText">
-                                                        {{projectLine.value.invoicingReferencePerson?.firstName ? (projectLine.value.invoicingReferencePerson?.firstName + ' ' + projectLine.value.invoicingReferencePerson?.lastName) : '-'}}
-                                                    </ng-container>
-                                                    <ng-template #invoicingReferencePersonFreeText>
-                                                        {{projectLine.value.invoicingReferencePerson ?? '-'}}
-                                                    </ng-template>
-                                                </span>
-                                                <span fxFlex="9%" class="u-w--100 text-truncate-ellipsis workflow-contracts--list-item" [matTooltip]="projectLine.value.modificationDate ? (projectLine.value.modificationDate | momentFormat: 'DD.MM.YYYY') : '-'" matTooltipClass="white-tooltip" appShowIfTruncated>
-                                                    {{projectLine.value.modificationDate ? (projectLine.value.modificationDate | momentFormat: 'DD.MM.YYYY') : '-'}}
-                                                </span>
-                                                <span fxFlex="18%" class="u-w--100 text-truncate-ellipsis__multilne workflow-contracts--list-item" [matTooltip]="projectLine.value.optionalInvoicingInfo ?? '-'" matTooltipClass="white-tooltip" appShowIfTruncated>
-                                                    {{projectLine.value.optionalInvoicingInfo ?? '-'}}
-                                                </span>
-                                                <span fxFlex="6%" class="u-w--100 text-truncate-ellipsis workflow-contracts--list-item" [matTooltip]="projectLine.value.markedForLegacyDeletion ? 'Delete from sync' : projectLine.value.wasSynced ? 'Synced' : 'Not synced'" matTooltipClass="white-tooltip" appShowIfTruncated>
-                                                    {{projectLine.value.markedForLegacyDeletion ? 'Delete from sync' : projectLine.value.wasSynced ? 'Synced' : 'Not synced'}}
-                                                </span>
-                                            </div>
-                                        </ng-container>
+                                <div class="inline-edit-form u-w--100" [ngClass]="{'u-mb--10': readOnlyMode}">
+                                    <div fxLayout="row" fxLayoutAlign="space-between start" fxLayoutGap="10px" class="u-w--100 u-pl--50 u-pr--16" *ngIf="consultant.value.projectLines?.length">
+                                        <span fxFlex="5%" class="workflow-contracts--list-header text-truncate-ellipsis">
+                                            Id
+                                        </span>
+                                        <span fxFlex="25%" class="workflow-contracts--list-header text-truncate-ellipsis">
+                                            Project name
+                                        </span>
+                                        <span fxFlex="25%" class="workflow-contracts--list-header text-truncate-ellipsis">
+                                            Assignment ID/PO No
+                                        </span>
+                                        <span fxFlex="10%" class="workflow-contracts--list-header text-truncate-ellipsis">
+                                            Start date
+                                        </span>
+                                        <span fxFlex="10%" class="workflow-contracts--list-header text-truncate-ellipsis">
+                                            End date
+                                        </span>
+                                        <span fxFlex="1 0 20%" class="workflow-contracts--list-header text-truncate-ellipsis">
+                                            Optional Invoicing Info
+                                        </span>
+                                        <span *ngIf="!readOnlyMode" fxFlex="5%"></span>
                                     </div>
-                                </ng-container>
+                                    <ng-container class="u-w--100">
+                                        <mat-accordion [multi]="true" class="project-line--expansion mat-elevation-z0" togglePosition="before">
+                                            <mat-expansion-panel class="mat-elevation-z0" *ngFor="let projectLine of getConsultantProjectLinesControls(consultantIndex); let projectLinesIndex = index">
+                                                <mat-expansion-panel-header>
+                                                    <div fxLayout="row" fxLayoutAlign="space-between center" fxLayoutGap="10px"
+                                                        class="u-w--100">
+                                                        <span fxFlex="5%" class="u-w--100 text-truncate-ellipsis workflow-contracts--list-item" [matTooltip]="projectLine.value.id ?? '-'" matTooltipClass="white-tooltip" appShowIfTruncated>
+                                                            {{projectLine.value.id ?? '-'}}
+                                                        </span>
+                                                        <span fxFlex="25%" class="u-w--100 text-truncate-ellipsis__multilne workflow-contracts--list-item" [matTooltip]="projectLine.value.projectName ?? '-'" matTooltipClass="white-tooltip" appShowIfTruncated>
+                                                            {{projectLine.value.projectName ?? '-'}}
+                                                        </span>
+                                                        <span fxFlex="25%" class="u-w--100 text-truncate-ellipsis workflow-contracts--list-item" [matTooltip]="projectLine.value.invoicingReferenceNumber ?? '-'" matTooltipClass="white-tooltip" appShowIfTruncated>
+                                                            {{projectLine.value.invoicingReferenceNumber ?? '-'}}
+                                                        </span>
+                                                        <span fxFlex="10%" class="u-w--100 text-truncate-ellipsis workflow-contracts--list-item" [matTooltip]="projectLine.value.startDate ? (projectLine.value.startDate | momentFormat: 'DD.MM.YYYY') : '-'" matTooltipClass="white-tooltip" appShowIfTruncated>
+                                                            {{projectLine.value.startDate ? (projectLine.value.startDate | momentFormat: 'DD.MM.YYYY') : '-'}}
+                                                        </span>
+                                                        <span fxFlex="10%" class="u-w--100 text-truncate-ellipsis workflow-contracts--list-item" [matTooltip]="projectLine.value.endDate ? (projectLine.value.endDate | momentFormat: 'DD.MM.YYYY') : '-'" matTooltipClass="white-tooltip" appShowIfTruncated>
+                                                            {{projectLine.value.endDate ? (projectLine.value.endDate | momentFormat: 'DD.MM.YYYY') : '-'}}
+                                                        </span>
+                                                        <span fxFlex="1 0 20%" class="u-w--100 text-truncate-ellipsis__multilne workflow-contracts--list-item" [matTooltip]="projectLine.value.optionalInvoicingInfo ?? '-'" matTooltipClass="white-tooltip" appShowIfTruncated>
+                                                            {{projectLine.value.optionalInvoicingInfo ?? '-'}}
+                                                        </span>
+                                                        <div *ngIf="!readOnlyMode" fxFlex="5%" fxLayoutAlign="end center" class="u-w--100 workflow-contracts--list-item">
+                                                            <button mat-icon-button appPreventDoubleClick (throttledClick)="$event.stopPropagation();" [matMenuTriggerFor]="consultantProjectLineMenu" class="three-dots-actions-btn">
+                                                                <mat-icon>more_horiz</mat-icon>
+                                                            </button>
+                                                            <mat-menu #consultantProjectLineMenu>
+                                                                <button
+                                                                    class="menu-item menu-item--edit"
+                                                                    mat-menu-item
+                                                                    appPreventDoubleClick (throttledClick)="duplicateProjectLine(consultantIndex, projectLinesIndex)">
+                                                                    <mat-icon>content_copy</mat-icon>
+                                                                    Duplicate
+                                                                </button>
+                                                                <button
+                                                                    class="menu-item menu-item--edit"
+                                                                    mat-menu-item
+                                                                    appPreventDoubleClick (throttledClick)="createOrEditProjectLine(consultantIndex, projectLinesIndex)">
+                                                                    <mat-icon>create</mat-icon>
+                                                                    Edit
+                                                                </button>
+                                                                <button
+                                                                    class="menu-item menu-item--cancel"
+                                                                    *ngIf="!projectLine.value.wasSynced"
+                                                                    mat-menu-item
+                                                                    appPreventDoubleClick (throttledClick)="removeConsultantDataProjectLines(consultantIndex, projectLinesIndex)">
+                                                                    <mat-icon>clear</mat-icon>
+                                                                    Remove
+                                                                </button>
+                                                                <div class="menu-item" mat-menu-item (click)="$event.stopPropagation(); toggleMarkProjectLineForDeletion(projectLine.value.markedForLegacyDeletion, consultantIndex, projectLinesIndex)" *ngIf="projectLine.value.wasSynced">
+                                                                    <mat-checkbox color="accent" class="black-checkbox" id="markedForLegacyDeletion" name="markedForLegacyDeletion"
+                                                                        formControlName="markedForLegacyDeletion" (click)="$event.stopPropagation();">
+                                                                        Mark for deletion in legacy
+                                                                    </mat-checkbox>
+                                                                </div>
+                                                            </mat-menu>
+                                                        </div>
+                                                    </div>
+                                                </mat-expansion-panel-header>
+                                                <div fxLayout="row"  class="project-line--expansion-additional">
+                                                    <span fxFlex="15%" class="project-line--expansion-additional__header">Invoicing ref person</span>
+                                                    <span class="project-line--expansion-additional__content">
+                                                        <ng-container *ngIf="projectLine.value.invoicingReferencePerson?.id; else invoicingReferencePersonFreeText">
+                                                            {{projectLine.value.invoicingReferencePerson?.firstName ? (projectLine.value.invoicingReferencePerson?.firstName + ' ' + projectLine.value.invoicingReferencePerson?.lastName) : '-'}}
+                                                        </ng-container>
+                                                        <ng-template #invoicingReferencePersonFreeText>
+                                                            {{projectLine.value.invoicingReferencePerson ?? '-'}}
+                                                        </ng-template>
+                                                    </span>
+                                                </div>
+                                                <div fxLayout="row" class="project-line--expansion-additional">
+                                                    <span fxFlex="15%" class="project-line--expansion-additional__header">Changed</span>
+                                                    <span class="project-line--expansion-additional__content">
+                                                        {{projectLine.value.modificationDate ? (projectLine.value.modificationDate | momentFormat: 'DD.MM.YYYY') : '-'}}
+                                                    </span>
+                                                </div>
+                                                <div fxLayout="row" class="project-line--expansion-additional">
+                                                    <span fxFlex="15%" class="project-line--expansion-additional__header">Status</span>
+                                                    <span class="project-line--expansion-additional__content">
+                                                        {{projectLine.value.markedForLegacyDeletion ? 'Delete from sync' : projectLine.value.wasSynced ? 'Synced' : 'Not synced'}}
+                                                    </span>
+                                                </div>
+                                            </mat-expansion-panel>
+                                        </mat-accordion>
+                                    </ng-container>
+                                </div>
+                                <div *ngIf="!readOnlyMode" fxLayout="row" fxLayoutAlign="start start" class="u-mb--10">
+                                    <button [ngClass]="consultant.value.projectLines?.length > 0 ? 'button-add' : 'button-outlined'" class="rates-and-fees--btn" mat-flat-button appPreventDoubleClick (throttledClick)="createOrEditProjectLine(consultantIndex)" *ngIf="!readOnlyMode">
+                                        <mat-icon *ngIf="consultant.value.projectLines?.length">add</mat-icon>
+                                        Add project line
+                                    </button>
+                                </div>
                                 <ng-template #projectLinesInput>
                                     <div class="inline-edit-form u-w--100">
                                         <div fxLayout="row" fxLayoutAlign="space-between start" fxLayoutGap="10px" class="u-w--100 u-pl--16 u-pr--16" *ngIf="consultant.value.projectLines?.length">
