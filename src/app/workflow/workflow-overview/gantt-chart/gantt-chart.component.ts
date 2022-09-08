@@ -20,7 +20,7 @@ export class GanttChartComponent extends GanttUpper implements OnInit {
     mergeIntervalDays = 0;
     userSelectedStatuses: any;
     menuTopLeftPosition =  {x: 0, y: 0}
-    tooltipStartDate: Date;
+    tooltipStartDate: Date | undefined;
     tooltipEndDate: Date | undefined;
     override groups: GanttGroupInternal<any>[] = [];
 
@@ -103,7 +103,7 @@ export class GanttChartComponent extends GanttUpper implements OnInit {
         this.menuTopLeftPosition.x = event.clientX;
         this.menuTopLeftPosition.y = event.clientY + 10;
         console.log(item);
-        this.tooltipStartDate = new Date(item?.origin?.start*1000) ;
+        this.tooltipStartDate = (item?.origin?.origin.startDate !== undefined && item?.origin?.origin.startDate !== null) ? new Date(item?.origin?.start*1000) : undefined;
         this.tooltipEndDate = (item?.origin?.origin.endDate !== undefined && item?.origin?.origin.endDate !== null) ? new Date(item?.origin?.end*1000) : undefined;
     }
 
