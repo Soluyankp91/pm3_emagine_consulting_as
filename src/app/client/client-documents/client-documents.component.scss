@@ -4,6 +4,11 @@
     &--contract {
         padding: 16px 24px;
         position: relative;
+
+        .no-files {
+            font-size: 14px;
+            font-weight: 600;
+        }
     }
     &--form {
         position: relative;
