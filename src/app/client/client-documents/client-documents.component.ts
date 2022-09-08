@@ -263,7 +263,6 @@ export class ClientDocumentsComponent extends AppComponentBase implements OnInit
 
         dialogRef.componentInstance.onConfirmed.subscribe((result: {attachmentTypeId: number, file: FileUploaderFile}) => {
             if (result?.attachmentTypeId) {
-                console.log(result);
                 let fileInput: FileParameter;
                 fileInput = {
                     fileName: result.file.name,
@@ -337,9 +336,7 @@ export class ClientDocumentsComponent extends AppComponentBase implements OnInit
                 observe: 'response'
             }).subscribe((data: HttpResponse<Blob>) => {
                 const blob = new Blob([data.body!], { type: data.body!.type });
-                console.log(data);
                 const contentDispositionHeader = data.headers.get('Content-Disposition');
-                console.log(contentDispositionHeader);
                 if (contentDispositionHeader !== null) {
                     const contentDispositionHeaderResult = contentDispositionHeader.split(';')[1].trim().split('=')[1];
                     const contentDispositionFileName = contentDispositionHeaderResult.replace(/"/g, '');
@@ -347,8 +344,6 @@ export class ClientDocumentsComponent extends AppComponentBase implements OnInit
                     downloadlink.href = window.URL.createObjectURL(blob);
                     downloadlink.download = contentDispositionFileName;
                     const nav = (window.navigator as any);
-                    console.log(blob);
-                    console.log(contentDispositionFileName);
 
                     if (nav.msSaveOrOpenBlob) {
                         nav.msSaveBlob(blob, contentDispositionFileName);
@@ -359,11 +354,6 @@ export class ClientDocumentsComponent extends AppComponentBase implements OnInit
             });
         });
     }
-
-    downloadFile(data: any) {
-        const url= window.URL.createObjectURL(data);
-        window.open(url);
-      }
 
     editGeneralDocument(isEditMode: boolean, index: number) {
         this.documents.at(index).get('editable')?.setValue(!isEditMode, {emitEvent: false});
