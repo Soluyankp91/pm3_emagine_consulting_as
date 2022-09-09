@@ -20,6 +20,11 @@
                 </span>
             </h2>
             <p class="page-main-header u-mb--20">{{workflowClient?.length ? workflowClient : 'New workflow'}}</p>
+            <h2 class="workflow-header--title">
+                <span matTooltipClass="white-tooltip">
+                    / Client ID: {{workflowDirectClientid}}
+                </span>
+            </h2>
         </div>
 
         <div fxFlex="50%" fxLayout="row" *ngIf="isProgressTrackVisible">

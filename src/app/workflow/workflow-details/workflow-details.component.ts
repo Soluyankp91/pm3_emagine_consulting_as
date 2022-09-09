@@ -57,6 +57,7 @@ export class WorkflowDetailsComponent extends AppComponentBase implements OnInit
     workflowResponse: WorkflowDto;
     clientPeriods: ClientPeriodDto[] | undefined = [];
     workflowClient: string | undefined;
+    workflowDirectClientid: number | undefined;
     workflowConsultants: ConsultantNameWithRequestUrl[] = [];
 
     workflowClientPeriodTypes: EnumEntityTypeDto[] = [];
@@ -276,6 +277,7 @@ export class WorkflowDetailsComponent extends AppComponentBase implements OnInit
             .subscribe(result => {
                 this.clientPeriods = result.clientPeriods;
                 this.workflowClient = result.clientName;
+                this.workflowDirectClientid = result.directClientId;
                 this.workflowConsultants = result.consultantNamesWithRequestUrls!;
                 this.workflowId = result.workflowId!;
                 if (value) {
