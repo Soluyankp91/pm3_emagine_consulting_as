@@ -1,7 +1,7 @@
 import { Overlay } from '@angular/cdk/overlay';
 import { NumberSymbol } from '@angular/common';
 import { Component, Injector, Input, OnInit } from '@angular/core';
-import { AbstractControl, FormArray, FormBuilder, FormControl } from '@angular/forms';
+import { AbstractControl, FormArray, FormBuilder, FormControl, Validators } from '@angular/forms';
 import { MatAutocompleteSelectedEvent } from '@angular/material/autocomplete';
 import { MatCheckboxChange } from '@angular/material/checkbox';
 import { MatDialog } from '@angular/material/dialog';
@@ -18,7 +18,7 @@ import { ClientPeriodSalesDataDto, ClientPeriodServiceProxy, ClientRateDto, Comm
 import { WorkflowConsultantActionsDialogComponent } from '../workflow-consultant-actions-dialog/workflow-consultant-actions-dialog.component';
 import { WorkflowDataService } from '../workflow-data.service';
 import { WorkflowProcessWithAnchorsDto } from '../workflow-period/workflow-period.model';
-import { ConsultantDiallogAction, SalesTerminateConsultantForm, TenantList, WorkflowSalesAdditionalDataForm, WorkflowSalesClientDataForm, WorkflowSalesConsultantsForm, WorkflowSalesMainForm } from './workflow-sales.model';
+import { ConsultantDiallogAction, SalesTerminateConsultantForm, TenantList, WorkflowSalesClientDataForm, WorkflowSalesConsultantsForm, WorkflowSalesMainForm } from './workflow-sales.model';
 
 @Component({
     selector: 'app-workflow-sales',
@@ -54,7 +54,6 @@ export class WorkflowSalesComponent extends AppComponentBase implements OnInit {
     salesClientDataForm: WorkflowSalesClientDataForm;
     salesMainDataForm: WorkflowSalesMainForm;
     consultantsForm: WorkflowSalesConsultantsForm;
-    additionalDataForm: WorkflowSalesAdditionalDataForm;
     salesTerminateConsultantForm: SalesTerminateConsultantForm;
 
     clientSpecialRateActive = false;
@@ -181,7 +180,6 @@ export class WorkflowSalesComponent extends AppComponentBase implements OnInit {
         this.salesClientDataForm = new WorkflowSalesClientDataForm();
         this.salesMainDataForm = new WorkflowSalesMainForm();
         this.consultantsForm = new WorkflowSalesConsultantsForm();
-        this.additionalDataForm = new WorkflowSalesAdditionalDataForm();
         this.salesTerminateConsultantForm = new SalesTerminateConsultantForm();
 
         //#region form subscriptions
@@ -2045,13 +2043,13 @@ export class WorkflowSalesComponent extends AppComponentBase implements OnInit {
         }
         const form = this._fb.group({
             id: new FormControl(commission?.id ?? null),
-            type: new FormControl(this.findItemById(this.commissionTypes, commission?.commissionTypeId) ?? null),
-            amount: new FormControl(commission?.amount ?? null),
-            currency: new FormControl(this.findItemById(this.currencies, commission?.currencyId) ?? null),
-            recipientType: new FormControl(this.findItemById(this.commissionRecipientTypeList, commission?.recipientTypeId) ?? null),
-            recipient: new FormControl(commissionRecipient ?? null),
-            frequency: new FormControl(this.findItemById(this.commissionFrequencies, commission?.commissionFrequencyId) ?? null),
-            oneTimeDate: new FormControl(commission?.oneTimeDate ?? null),
+            type: new FormControl(this.findItemById(this.commissionTypes, commission?.commissionTypeId) ?? null, Validators.required),
+            amount: new FormControl(commission?.amount ?? null, Validators.required),
+            currency: new FormControl(this.findItemById(this.currencies, commission?.currencyId) ?? null, Validators.required),
+            recipientType: new FormControl(this.findItemById(this.commissionRecipientTypeList, commission?.recipientTypeId) ?? null, Validators.required),
+            recipient: new FormControl(commissionRecipient ?? null, Validators.required),
+            frequency: new FormControl(this.findItemById(this.commissionFrequencies, commission?.commissionFrequencyId) ?? null, Validators.required),
+            oneTimeDate: new FormControl(commission?.oneTimeDate ?? null, Validators.required),
             editable: new FormControl(commission?.id ? false : true)
         });
         this.salesMainDataForm.commissions.push(form);
