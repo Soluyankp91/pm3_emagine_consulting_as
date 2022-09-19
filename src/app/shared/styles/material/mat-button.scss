@@ -32,6 +32,7 @@
     color: $white-color !important;
     font-weight: 700;
     font-size: 14px;
+    border-radius: 5px;
     &.mat-button-disabled {
         background-color: rgba($color: $light-grey-color, $alpha: 0.55) !important;
         border: 2px solid rgba($color: $light-grey-color, $alpha: 0.55) !important;
@@ -273,4 +274,12 @@
     &:hover {
         background-color: rgba($color: $green-color-50, $alpha: 0.22);
     }
+}
+
+.button-cancel {
+    color: $green-color;
+    font-weight: 700;
+    background-color: transparent;
+    border: 0;
+    border-radius: 5px;
 }

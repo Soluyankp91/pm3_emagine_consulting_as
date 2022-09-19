@@ -5,7 +5,7 @@
     &-contracts {
         .absolute-edit-toggle {
             position: fixed;
-            right: 50px;
+            right: calc(20% + 50px);
             top: 250px;
             border-radius: 50%;
             background-color: rgba($color: #72a0f8, $alpha: 0.2);
@@ -162,3 +162,15 @@
 }
 
 // END remove after we will have correct icons
+
+.project-line--expansion-additional {
+    font-weight: 600;
+    font-size: 14px;
+    margin-bottom: 12px;
+    &__header {
+        color: $medium-grey-color;
+    }
+    &__content {
+        color: $dark-grey-color;
+    }
+}
