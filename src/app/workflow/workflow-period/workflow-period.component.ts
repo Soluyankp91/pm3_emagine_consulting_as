@@ -1,5 +1,5 @@
 import { Overlay } from '@angular/cdk/overlay';
-import { Component, Injector, Input, OnInit } from '@angular/core';
+import { Component, Injector, Input, OnInit, ViewChild } from '@angular/core';
 import { MatDialog } from '@angular/material/dialog';
 import { Subject } from 'rxjs';
 import { finalize, takeUntil } from 'rxjs/operators';
@@ -8,7 +8,9 @@ import { ConfirmationDialogComponent } from 'src/app/shared/components/confirmat
 import { ManagerStatus } from 'src/app/shared/components/manager-search/manager-search.model';
 import { AppComponentBase } from 'src/shared/app-component-base';
 import { WorkflowProcessDto, WorkflowProcessType, WorkflowServiceProxy, StepDto, StepType, WorkflowStepStatus, ConsultantResultDto, ApiServiceProxy } from 'src/shared/service-proxies/service-proxies';
+import { WorkflowContractsComponent } from '../workflow-contracts/workflow-contracts.component';
 import { WorkflowDataService } from '../workflow-data.service';
+import { WorkflowSalesComponent } from '../workflow-sales/workflow-sales.component';
 import { StepAnchorDto, StepWithAnchorsDto, WorkflowProcessWithAnchorsDto } from './workflow-period.model';
 
 @Component({
@@ -17,6 +19,9 @@ import { StepAnchorDto, StepWithAnchorsDto, WorkflowProcessWithAnchorsDto } from
     styleUrls: ['./workflow-period.component.scss']
 })
 export class WorkflowPeriodComponent extends AppComponentBase implements OnInit {
+    @ViewChild('workflowSales', {static: false}) workflowSales: WorkflowSalesComponent;
+    @ViewChild('workflowContracts', {static: false}) workflowContracts: WorkflowContractsComponent;
+
     @Input() workflowId: string;
     @Input() periodId: string | undefined;
 
@@ -56,6 +61,19 @@ export class WorkflowPeriodComponent extends AppComponentBase implements OnInit 
             .subscribe((value: {stepType: number, processTypeId: number, consultantNames: string[]}) => {
                 this.updateConsultantAnchorsInStep(value.stepType, value.processTypeId, value.consultantNames)
             });
+    }
+
+    get formValid() {
+        switch (this._workflowDataService.workflowProgress.currentlyActiveStep) {
+            case StepType.Sales:
+                return this.workflowSales.salesClientDataForm.valid && this.workflowSales.consultantsForm.valid && this.workflowSales.salesMainDataForm.valid;
+            case StepType.Contract:
+                return this.workflowContracts.contractClientForm.valid && this.workflowContracts.contractsMainForm.valid;
+            case StepType.Finance:
+                return true;
+            case StepType.Sourcing:
+                return false;
+        }
     }
 
     ngOnInit(): void {

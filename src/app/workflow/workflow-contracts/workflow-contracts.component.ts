@@ -1,6 +1,6 @@
 import { Overlay } from '@angular/cdk/overlay';
 import { Component, Injector, Input, OnDestroy, OnInit } from '@angular/core';
-import { AbstractControl, FormArray, FormBuilder, FormControl, FormGroup } from '@angular/forms';
+import { AbstractControl, FormArray, FormBuilder, FormControl, FormGroup, Validators } from '@angular/forms';
 import { MatDialog } from '@angular/material/dialog';
 import { MatMenuTrigger } from '@angular/material/menu';
 import { Subject } from 'rxjs';
@@ -567,7 +567,7 @@ export class WorkflowContractsComponent extends AppComponentBase implements OnIn
             consultantRateCurrency: new FormControl(this.findItemById(this.currencies, consultant?.consultantRate?.currencyId)),
             consultantRate: new FormControl(consultant.consultantRate),
             noSpecialContractTerms: new FormControl(consultant?.noSpecialContractTerms),
-            specialContractTerms: new FormControl({value: consultant?.specialContractTerms, disabled: consultant?.noSpecialContractTerms}),
+            specialContractTerms: new FormControl({value: consultant?.specialContractTerms, disabled: consultant?.noSpecialContractTerms}, Validators.required),
             pdcPaymentEntityId: new FormControl(consultant?.pdcPaymentEntityId),
             specialRates: new FormArray([]),
             consultantSpecialRateFilter: new FormControl(''),

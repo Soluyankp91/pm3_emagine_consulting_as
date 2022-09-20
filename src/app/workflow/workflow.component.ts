@@ -99,7 +99,7 @@ export class WorkflowComponent extends AppComponentBase implements OnInit, OnDes
     // reference to the MatMenuTrigger in the DOM
     @ViewChild('rightMenuTrigger', {static: true}) matMenuTrigger: MatMenuTrigger;
 
-    workflowListSubscription: Subscription;
+    workflowListSubscription = new Subscription();
 
     private _unsubscribe = new Subject();
     constructor(
