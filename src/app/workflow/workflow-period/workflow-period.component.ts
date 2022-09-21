@@ -10,6 +10,7 @@ import { AppComponentBase } from 'src/shared/app-component-base';
 import { WorkflowProcessDto, WorkflowProcessType, WorkflowServiceProxy, StepDto, StepType, WorkflowStepStatus, ConsultantResultDto, ApiServiceProxy } from 'src/shared/service-proxies/service-proxies';
 import { WorkflowContractsComponent } from '../workflow-contracts/workflow-contracts.component';
 import { WorkflowDataService } from '../workflow-data.service';
+import { WorkflowFinancesComponent } from '../workflow-finances/workflow-finances.component';
 import { WorkflowSalesComponent } from '../workflow-sales/workflow-sales.component';
 import { StepAnchorDto, StepWithAnchorsDto, WorkflowProcessWithAnchorsDto } from './workflow-period.model';
 
@@ -21,6 +22,7 @@ import { StepAnchorDto, StepWithAnchorsDto, WorkflowProcessWithAnchorsDto } from
 export class WorkflowPeriodComponent extends AppComponentBase implements OnInit {
     @ViewChild('workflowSales', {static: false}) workflowSales: WorkflowSalesComponent;
     @ViewChild('workflowContracts', {static: false}) workflowContracts: WorkflowContractsComponent;
+    @ViewChild('workflowFinances', {static: false}) workflowFinances: WorkflowFinancesComponent;
 
     @Input() workflowId: string;
     @Input() periodId: string | undefined;
@@ -70,9 +72,9 @@ export class WorkflowPeriodComponent extends AppComponentBase implements OnInit 
             case StepType.Contract:
                 return this.workflowContracts.contractClientForm.valid && this.workflowContracts.contractsMainForm.valid;
             case StepType.Finance:
-                return true;
+                return this.workflowFinances.financesClientForm.valid;
             case StepType.Sourcing:
-                return false;
+                return true;
         }
     }
 
