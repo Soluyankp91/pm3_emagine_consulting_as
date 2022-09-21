@@ -287,7 +287,6 @@
                                         <div fxFlex="30%" fxLayout="row" fxLayoutAlign="start start">
                                             <mat-form-field appearance="fill" class="u-w--100 formFieldNoMarginPadding filter-select" fxFlex="40%">
                                                 <input required matInput type="number" placeholder="Rate" formControlName="clientRateValue">
-                                                <mat-error>{{getValidationMessage(rate.get('clientRateValue'))}}</mat-error>
                                             </mat-form-field>
                                             <mat-form-field appearance="fill" class="u-w--100 formFieldNoMarginPadding filter-select" fxFlex="60%">
                                                 <mat-select required formControlName="clientRateCurrency" placeholder="Currency" [disableOptionCentering]="true" [compareWith]="compareWithFn">
@@ -295,7 +294,6 @@
                                                         {{ item.name }}
                                                     </mat-option>
                                                 </mat-select>
-                                                <mat-error>{{getValidationMessage(rate.get('clientRateCurrency'))}}</mat-error>
                                             </mat-form-field>
                                         </div>
                                     </ng-container>
@@ -396,7 +394,6 @@
                                         <div fxFlex="30%" fxLayout="row" fxLayoutAlign="start start">
                                             <mat-form-field appearance="fill" class="u-w--100 formFieldNoMarginPadding filter-select" fxFlex="40%">
                                                 <input required matInput type="number" placeholder="Rate" formControlName="clientRateValue">
-                                                <mat-error>{{getValidationMessage(fee.get('clientRateValue'))}}</mat-error>
                                             </mat-form-field>
                                             <mat-form-field appearance="fill" class="u-w--100 formFieldNoMarginPadding filter-select" fxFlex="60%">
                                                 <mat-select required formControlName="clientRateCurrency" placeholder="Currency" [disableOptionCentering]="true" [compareWith]="compareWithFn">
@@ -404,7 +401,6 @@
                                                         {{ item.name }}
                                                     </mat-option>
                                                 </mat-select>
-                                                <mat-error>{{getValidationMessage(fee.get('clientRateCurrency'))}}</mat-error>
                                             </mat-form-field>
                                         </div>
                                     </ng-container>
@@ -662,7 +658,6 @@
                                                         <div fxFlex="25%" fxLayout="row" fxLayoutAlign="start start">
                                                             <mat-form-field appearance="fill" class="u-w--100 formFieldNoMarginPadding filter-select" fxFlex="40%">
                                                                 <input required matInput type="number" placeholder="Rate" formControlName="proDataRateValue">
-                                                                <mat-error>{{getValidationMessage(rate.get('proDataRateValue'))}}</mat-error>
                                                             </mat-form-field>
                                                             <mat-form-field appearance="fill" class="u-w--100 formFieldNoMarginPadding filter-select" fxFlex="60%">
                                                                 <mat-select required formControlName="proDataRateCurrency" placeholder="Currency" [disableOptionCentering]="true" [compareWith]="compareWithFn">
@@ -670,7 +665,6 @@
                                                                         {{ item.name }}
                                                                     </mat-option>
                                                                 </mat-select>
-                                                                <mat-error>{{getValidationMessage(rate.get('proDataRateCurrency'))}}</mat-error>
                                                             </mat-form-field>
                                                         </div>
                                                     </ng-container>
@@ -685,7 +679,6 @@
                                                     <div fxFlex="25%" fxLayout="row" fxLayoutAlign="start start">
                                                         <mat-form-field appearance="fill" class="u-w--100 formFieldNoMarginPadding filter-select" fxFlex="40%">
                                                             <input required matInput type="number" placeholder="Rate" formControlName="consultantRateValue">
-                                                            <mat-error>{{getValidationMessage(rate.get('consultantRateValue'))}}</mat-error>
                                                         </mat-form-field>
                                                         <mat-form-field appearance="fill" class="u-w--100 formFieldNoMarginPadding filter-select" fxFlex="60%">
                                                             <mat-select required formControlName="consultantRateCurrency" placeholder="Currency" [disableOptionCentering]="true" [compareWith]="compareWithFn">
@@ -693,7 +686,6 @@
                                                                     {{ item.name }}
                                                                 </mat-option>
                                                             </mat-select>
-                                                            <mat-error>{{getValidationMessage(rate.get('consultantRateCurrency'))}}</mat-error>
                                                         </mat-form-field>
                                                     </div>
                                                 </ng-container>
@@ -836,7 +828,6 @@
                                                         <div fxFlex="25%" fxLayout="row" fxLayoutAlign="start start">
                                                             <mat-form-field appearance="fill" class="u-w--100 formFieldNoMarginPadding filter-select" fxFlex="40%">
                                                                 <input required matInput type="number" placeholder="Rate" formControlName="proDataRateValue">
-                                                                <mat-error>{{getValidationMessage(fee.get('proDataRateValue'))}}</mat-error>
                                                             </mat-form-field>
                                                             <mat-form-field appearance="fill" class="u-w--100 formFieldNoMarginPadding filter-select" fxFlex="60%">
                                                                 <mat-select required formControlName="proDataRateCurrency" placeholder="Currency" [disableOptionCentering]="true" [compareWith]="compareWithFn">
@@ -844,7 +835,6 @@
                                                                         {{ item.name }}
                                                                     </mat-option>
                                                                 </mat-select>
-                                                                <mat-error>{{getValidationMessage(fee.get('proDataRateCurrency'))}}</mat-error>
                                                             </mat-form-field>
                                                         </div>
                                                     </ng-container>
@@ -858,7 +848,6 @@
                                                     <div fxFlex="25%" fxLayout="row" fxLayoutAlign="start start">
                                                         <mat-form-field appearance="fill" class="u-w--100 formFieldNoMarginPadding filter-select" fxFlex="40%">
                                                             <input required matInput type="number" placeholder="Rate" formControlName="consultantRateValue">
-                                                            <mat-error>{{getValidationMessage(fee.get('consultantRateValue'))}}</mat-error>
                                                         </mat-form-field>
                                                         <mat-form-field appearance="fill" class="u-w--100 formFieldNoMarginPadding filter-select" fxFlex="60%">
                                                             <mat-select required formControlName="consultantRateCurrency" placeholder="Currency" [disableOptionCentering]="true" [compareWith]="compareWithFn">
@@ -866,7 +855,6 @@
                                                                     {{ item.name }}
                                                                 </mat-option>
                                                             </mat-select>
-                                                            <mat-error>{{getValidationMessage(fee.get('consultantRateCurrency'))}}</mat-error>
                                                         </mat-form-field>
                                                     </div>
                                                 </ng-container>
