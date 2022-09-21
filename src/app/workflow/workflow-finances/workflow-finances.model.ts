@@ -1,11 +1,11 @@
-import { FormArray, FormControl, FormGroup } from "@angular/forms";
+import { FormArray, FormControl, FormGroup, Validators } from "@angular/forms";
 
 export class FinancesClientForm extends FormGroup {
     constructor() {
         super({
             clientCreatedInNavision: new FormControl(false),
             differentDebtorNumberForInvoicing: new FormControl(false),
-            customDebtorNumber: new FormControl(null)
+            customDebtorNumber: new FormControl(null, Validators.required)
         });
     }
 
