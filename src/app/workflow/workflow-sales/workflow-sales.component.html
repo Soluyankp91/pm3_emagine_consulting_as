@@ -1949,20 +1949,25 @@
 
                             <div fxLayout="row" fxLayoutAlign="start start" class="u-mb--10">
                                 <button [ngClass]="salesClientDataForm!.clientRates!.controls!.length > 0 ? 'button-add' : 'button-outlined'" class="rates-and-fees--btn" mat-flat-button
-                                     type="button"
+                                    type="button" (menuOpened)="clientSpecialRateSelect.open();"
                                     [matMenuTriggerFor]="clientSpecialRateMenu" #clientRateMenuTrigger="matMenuTrigger" [disabled]="isClientRateEditing">
                                     <mat-icon *ngIf="salesClientDataForm.clientRates?.controls?.length">add</mat-icon>
                                     Add special rates
                                 </button>
-                                <mat-menu #clientSpecialRateMenu>
-                                    <mat-form-field appearance="outline" class="filter-select u-w--100" appPreventDoubleClick (throttledClick)="$event.stopPropagation();">
-                                        <mat-label>Choose special rate</mat-label>
-                                        <mat-select [formControl]="clientSpecialRateFilter" [disableOptionCentering]="true">
-                                            <mat-option *ngFor="let item of clientSpecialRateList" [value]="item.id" appPreventDoubleClick (throttledClick)="selectClientSpecialRate($event, item, clientRateMenuTrigger)">
-                                                {{ item.internalName }}
-                                            </mat-option>
-                                        </mat-select>
-                                    </mat-form-field>
+                                <mat-menu #clientSpecialRateMenu backdropClass="add-rates-button--menu">
+                                    <div mat-menu-item appPreventDoubleClick (throttledClick)="$event.stopPropagation()" class="u-pg--0">
+                                        <mat-form-field appearance="fill" class="add-rates-button--dropdown filter-select u-w--100">
+                                            <mat-label>Choose special rate</mat-label>
+                                            <mat-select #clientSpecialRateSelect [formControl]="clientSpecialRateFilter" [disableOptionCentering]="true">
+                                                <mat-option *ngIf="clientSpecialRateList.length == 0" (click)="$event.stopPropagation();">
+                                                    No results
+                                                </mat-option>
+                                                <mat-option *ngFor="let item of clientSpecialRateList" [value]="item.id" appPreventDoubleClick (throttledClick)="selectClientSpecialRate($event, item, clientRateMenuTrigger)">
+                                                    {{ item.internalName }}
+                                                </mat-option>
+                                            </mat-select>
+                                        </mat-form-field>
+                                    </div>
                                 </mat-menu>
                             </div>
                             <div class="inline-edit-form u-w--100">
@@ -2059,20 +2064,25 @@
                                     type="button"
                                     [disabled]="isClientFeeEditing"
                                     [matMenuTriggerFor]="clientSpecialFeeMenu"
-                                    (menuOpened)="clientSpecialFeeFilter.setValue('')"
+                                    (menuOpened)="clientSpecialFeeFilter.setValue(''); clientSpecialFeeSelect.open()"
                                     #clientFeeMenuTrigger="matMenuTrigger">
                                     <mat-icon *ngIf="salesClientDataForm.clientFees?.controls?.length">add</mat-icon>
                                     Add special fees
                                 </button>
-                                <mat-menu #clientSpecialFeeMenu>
-                                    <mat-form-field appearance="outline" class="filter-select u-w--100" appPreventDoubleClick (throttledClick)="$event.stopPropagation();">
-                                        <mat-label>Choose special fee</mat-label>
-                                        <mat-select [formControl]="clientSpecialFeeFilter" [disableOptionCentering]="true">
-                                            <mat-option *ngFor="let item of clientSpecialFeeList" [value]="item.id" appPreventDoubleClick (throttledClick)="selectClientSpecialFee($event, item, clientFeeMenuTrigger)">
-                                                {{ item.internalName }}
-                                            </mat-option>
-                                        </mat-select>
-                                    </mat-form-field>
+                                <mat-menu #clientSpecialFeeMenu backdropClass="add-rates-button--menu">
+                                    <div mat-menu-item appPreventDoubleClick (throttledClick)="$event.stopPropagation()" class="u-pg--0">
+                                        <mat-form-field appearance="fill" class="add-rates-button--dropdown filter-select u-w--100">
+                                            <mat-label>Choose special fee</mat-label>
+                                            <mat-select #clientSpecialFeeSelect [formControl]="clientSpecialFeeFilter" [disableOptionCentering]="true">
+                                                <mat-option *ngIf="clientSpecialFeeList.length == 0" (click)="$event.stopPropagation();">
+                                                    No results
+                                                </mat-option>
+                                                <mat-option *ngFor="let item of clientSpecialFeeList" [value]="item.id" appPreventDoubleClick (throttledClick)="selectClientSpecialFee($event, item, clientFeeMenuTrigger)">
+                                                    {{ item.internalName }}
+                                                </mat-option>
+                                            </mat-select>
+                                        </mat-form-field>
+                                    </div>
                                 </mat-menu>
                             </div>
                         </div>
@@ -2805,23 +2815,25 @@
                                             [matMenuTriggerFor]="consultantSpecialRateMenu"
                                             [disabled]="isConsultantRateEditing"
                                             type="button"
-                                            (menuOpened)="consultantsForm.consultantData.at(consultantIndex).get('consultantSpecialRateFilter')!.setValue('')"
-                                            #consultantRateMenuTrigger="matMenuTrigger"
-                                            [matMenuTriggerData]="{consultantIndex: consultantIndex}">
+                                            (menuOpened)="consultantsForm.consultantData.at(consultantIndex).get('consultantSpecialRateFilter')!.setValue(''); consultantSpecialRateSelect.open();"
+                                            #consultantRateMenuTrigger="matMenuTrigger">
                                             <mat-icon *ngIf="consultant.value.specialRates?.length">add</mat-icon>
                                             Add special rate
                                         </button>
-                                        <mat-menu #consultantSpecialRateMenu>
-                                            <ng-template matMenuContent let-consultantIndex="consultantIndex">
-                                                <mat-form-field appearance="outline" class="filter-select u-w--100" appPreventDoubleClick (throttledClick)="$event.stopPropagation();">
+                                        <mat-menu #consultantSpecialRateMenu backdropClass="add-rates-button--menu">
+                                            <div mat-menu-item appPreventDoubleClick (throttledClick)="$event.stopPropagation()" class="u-pg--0">
+                                                <mat-form-field appearance="fill" class="add-rates-button--dropdown filter-select u-w--100">
                                                     <mat-label>Choose special rate</mat-label>
-                                                    <mat-select formControlName="consultantSpecialRateFilter" [disableOptionCentering]="true">
+                                                    <mat-select #consultantSpecialRateSelect formControlName="consultantSpecialRateFilter" [disableOptionCentering]="true">
+                                                        <mat-option *ngIf="clientSpecialRateList.length == 0" (click)="$event.stopPropagation();">
+                                                            No results
+                                                        </mat-option>
                                                         <mat-option *ngFor="let item of clientSpecialRateList" [value]="item.id" appPreventDoubleClick (throttledClick)="selectConsultantSpecialRate($event, consultantIndex, item, consultantRateMenuTrigger)">
                                                             {{ item.internalName }}
                                                         </mat-option>
                                                     </mat-select>
                                                 </mat-form-field>
-                                            </ng-template>
+                                            </div>
                                         </mat-menu>
                                     </div>
 
@@ -2940,21 +2952,24 @@
                                             [disabled]="isConsultantFeeEditing"
                                             type="button"
                                             #consultantFeeMenuTrigger="matMenuTrigger"
-                                            [matMenuTriggerData]="{consultantIndex: consultantIndex}">
+                                            (menuOpened)="consultantSpecialFeeSelect.open();">
                                             <mat-icon *ngIf="consultant.value.specialFees?.length">add</mat-icon>
                                             Add special fees
                                         </button>
-                                        <mat-menu #consultantSpecialFeeMenu>
-                                            <ng-template matMenuContent let-consultantIndex="consultantIndex">
-                                                <mat-form-field appearance="outline" class="filter-select u-w--100" appPreventDoubleClick (throttledClick)="$event.stopPropagation();">
+                                        <mat-menu #consultantSpecialFeeMenu backdropClass="add-rates-button--menu">
+                                            <div mat-menu-item appPreventDoubleClick (throttledClick)="$event.stopPropagation()" class="u-pg--0">
+                                                <mat-form-field appearance="fill" class="add-rates-button--dropdown filter-select u-w--100">
                                                     <mat-label>Choose special fee</mat-label>
-                                                    <mat-select formControlName="consultantSpecialFeeFilter" [disableOptionCentering]="true">
+                                                    <mat-select #consultantSpecialFeeSelect formControlName="consultantSpecialFeeFilter" [disableOptionCentering]="true">
+                                                        <mat-option *ngIf="clientSpecialFeeList.length == 0" (click)="$event.stopPropagation();">
+                                                            No results
+                                                        </mat-option>
                                                         <mat-option *ngFor="let item of clientSpecialFeeList" [value]="item.id" appPreventDoubleClick (throttledClick)="selectConsultantSpecialFee($event, consultantIndex, item, consultantFeeMenuTrigger)">
                                                             {{ item.internalName }}
                                                         </mat-option>
                                                     </mat-select>
                                                 </mat-form-field>
-                                            </ng-template>
+                                            </div>
                                         </mat-menu>
                                     </div>
                                 </div>

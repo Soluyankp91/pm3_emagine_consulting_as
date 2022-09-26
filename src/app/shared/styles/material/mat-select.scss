@@ -194,3 +194,62 @@
 .country-filter-dropdown {
     margin-top: 15px;
 }
+
+
+.add-rates-button--menu + * + * + * .cdk-overlay-pane {
+    .mat-autocomplete-panel, .mat-select-panel {
+        // border: 1px solid #E7E3E8;
+        min-width: 300px !important;
+        border-radius: unset;
+        &::-webkit-scrollbar {
+            width: 10px;
+        }
+
+        /* Track */
+        &::-webkit-scrollbar-track {
+            background: #fff;
+        }
+
+        /* Handle */
+        &::-webkit-scrollbar-thumb {
+            background: #888;
+            border-right: 5px #fff solid;
+            background-clip: padding-box
+        }
+
+        .mat-option {
+            padding: 8px 10px 8px 8px !important;
+            .mat-option-text {
+                font-weight: 700;
+                font-size: 14px;
+                line-height: 140%;
+                color: rgba(56, 72, 83, 0.8);
+                padding-left: 5px;
+                // @media screen and (max-width: 1440px) {
+                //     font-size: 12px;
+                // }
+            }
+        }
+    }
+    .mat-select-panel-wrap {
+        padding-left: 2px;
+        padding-top: 8px;
+    }
+
+    .mat-checkbox-layout .mat-checkbox-label {
+        display: flex;
+        align-items: center;
+    }
+}
+
+.add-rates-button--menu + * .cdk-overlay-pane {
+    .mat-menu-panel, .mat-select-panel {
+        min-height: 48px !important;
+        border-radius: unset !important;
+        min-width: 300px !important;
+        .mat-menu-content {
+            padding: 0 !important;
+
+        }
+    }
+}

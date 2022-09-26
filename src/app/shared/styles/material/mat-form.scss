@@ -74,7 +74,8 @@
 .main-overview--filter-country-dropdown,
 .client-list--filter-manager-dropdown,
 .client-list--filter-country-dropdown,
-.workflow-list--filter-manager-dropdown {
+.workflow-list--filter-manager-dropdown,
+.add-rates-button--dropdown {
     min-width: 300px;
     &.mat-form-field-appearance-fill {
         &.textarea-input {
@@ -680,6 +681,13 @@
     }
 }
 
+.add-rates-button--dropdown {
+    &.mat-form-field-appearance-fill {
+        .mat-form-field-flex {
+            padding: 1.2em 0.5em !important;
+        }
+    }
+}
 
 /* Chrome, Safari, Edge, Opera */
 input::-webkit-outer-spin-button,
