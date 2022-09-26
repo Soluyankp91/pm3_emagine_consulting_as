@@ -5,11 +5,11 @@
         </h2>
         <button *ngIf="!alwaysVisible" mat-icon-button type="button" appPreventDoubleClick (throttledClick)="showOrHideNotes()"><mat-icon>close</mat-icon></button>
     </div>
-    <div fxLayout="column" [fxLayoutAlign]="workflowNote.value?.length ? 'start start' : 'center center'" class="workflow-notes--content u-mt--20">
+    <div fxLayout="column" [fxLayoutAlign]="workflowNote.value?.length ? 'start start' : 'center center'" class="workflow-notes--content u-mt--10">
         <ng-container *ngIf="notesEditable; else notesReadonly">
             <mat-form-field appearance="outline" class="u-w--100 textarea-input u-h--100" fxFlex="100%">
                 <mat-label>Workflow notes</mat-label>
-                <textarea matInput autocomplete="new-password" maxlength="4000" [matTextareaAutosize]="true" [matAutosizeMinRows]="2" [matAutosizeMaxRows]="40" name="workflowNote" [formControl]="workflowNote">
+                <textarea matInput autocomplete="new-password" maxlength="4000" [matTextareaAutosize]="true" [matAutosizeMinRows]="2" [matAutosizeMaxRows]="topToolbarVisible ? 40 : 32" name="workflowNote" [formControl]="workflowNote">
                 </textarea>
                 <mat-error>
                     {{getValidationMessage(workflowNote)}}
@@ -18,9 +18,11 @@
         </ng-container>
         <ng-template #notesReadonly>
             <ng-container *ngIf="workflowNote.value?.length; else notesEmpty">
-                <span class="workflow-notes--content-text">
-                    {{workflowNote.value}}
-                </span>
+                <ng-scrollbar class="u-w--100 u-h--100">
+                    <span class="workflow-notes--content-text">
+                        {{workflowNote.value}}
+                    </span>
+                </ng-scrollbar>
             </ng-container>
         </ng-template>
         <ng-template #notesEmpty>
@@ -32,7 +34,7 @@
             </div>
         </ng-template>
     </div>
-    <div fxLayout="row" fxLayoutAlign="end center" class="workflow-notes--footer u-mt--20">
+    <div fxLayout="row" fxLayoutAlign="end center" class="workflow-notes--footer u-mt--10">
         <button class="edit-toggle" mat-icon-button *ngIf="!notesEditable && isAllowedToEdit" type="button" appPreventDoubleClick (throttledClick)="notesEditable = !notesEditable"><mat-icon>{{workflowNote.value?.length ? 'create' : 'add'}}</mat-icon></button>
         <button mat-flat-button type="button" class="button-cancel" *ngIf="notesEditable" appPreventDoubleClick (throttledClick)="cancelNoteEdit()">Cancel</button>
         <button mat-flat-button type="button" color="primary" class="button-accept" *ngIf="notesEditable" appPreventDoubleClick (throttledClick)="saveNotes()">Save</button>
