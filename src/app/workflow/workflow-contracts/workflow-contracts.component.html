@@ -354,7 +354,7 @@
                                     <mat-form-field appearance="fill" class="add-rates-button--dropdown filter-select u-w--100">
                                         <mat-label>Choose special rate</mat-label>
                                         <mat-select #clientSpecialRateSelect [formControl]="clientSpecialRateFilter" [disableOptionCentering]="true">
-                                            <mat-option *ngIf="clientSpecialRateList.length == 0" (click)="$event.stopPropagation();">
+                                            <mat-option *ngIf="clientSpecialRateList?.length == 0" (click)="$event.stopPropagation();">
                                                 No results
                                             </mat-option>
                                             <mat-option *ngFor="let item of clientSpecialRateList" [value]="item.id" appPreventDoubleClick (throttledClick)="selectClientRate($event, item, clientRateMenuTrigger)">
@@ -472,7 +472,7 @@
                                     <mat-form-field appearance="fill" class="add-rates-button--dropdown filter-select u-w--100">
                                         <mat-label>Choose special fee</mat-label>
                                         <mat-select #clientSpecialFeeSelect [formControl]="clientSpecialFeeFilter" [disableOptionCentering]="true">
-                                            <mat-option *ngIf="clientSpecialFeeList.length == 0" (click)="$event.stopPropagation();">
+                                            <mat-option *ngIf="clientSpecialFeeList?.length == 0" (click)="$event.stopPropagation();">
                                                 No results
                                             </mat-option>
                                             <mat-option *ngFor="let item of clientSpecialFeeList" [value]="item.id" appPreventDoubleClick (throttledClick)="selectClientFee($event, item, clientFeeMenuTrigger)">
@@ -752,7 +752,7 @@
                                                 <mat-form-field appearance="fill" class="add-rates-button--dropdown filter-select u-w--100">
                                                     <mat-label>Choose special rate</mat-label>
                                                     <mat-select #consultantSpecialRateSelect formControlName="consultantSpecialRateFilter" [disableOptionCentering]="true">
-                                                        <mat-option *ngIf="clientSpecialRateList.length == 0" (click)="$event.stopPropagation();">
+                                                        <mat-option *ngIf="clientSpecialRateList?.length == 0" (click)="$event.stopPropagation();">
                                                             No results
                                                         </mat-option>
                                                         <mat-option *ngFor="let item of clientSpecialRateList" [value]="item.id" appPreventDoubleClick (throttledClick)="selectConsultantSpecialRate($event, consultantIndex, item, consultantRateMenuTrigger)">
@@ -921,7 +921,7 @@
                                                 <mat-form-field appearance="fill" class="add-rates-button--dropdown filter-select u-w--100">
                                                     <mat-label>Choose special fee</mat-label>
                                                     <mat-select #consultantSpecialFeeSelect formControlName="consultantSpecialFeeFilter" [disableOptionCentering]="true">
-                                                        <mat-option *ngIf="clientSpecialFeeList.length == 0" (click)="$event.stopPropagation();">
+                                                        <mat-option *ngIf="clientSpecialFeeList?.length == 0" (click)="$event.stopPropagation();">
                                                             No results
                                                         </mat-option>
                                                         <mat-option *ngFor="let item of clientSpecialFeeList" [value]="item.id" appPreventDoubleClick (throttledClick)="selectConsultantSpecialFee($event, consultantIndex, item, consultantFeeMenuTrigger)">

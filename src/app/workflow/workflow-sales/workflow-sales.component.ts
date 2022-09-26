@@ -7,7 +7,7 @@ import { MatCheckboxChange } from '@angular/material/checkbox';
 import { MatDialog } from '@angular/material/dialog';
 import { MatMenuTrigger } from '@angular/material/menu';
 import { MatSelectChange } from '@angular/material/select';
-import { ActivatedRoute } from '@angular/router';
+import { ActivatedRoute, Router } from '@angular/router';
 import { merge, Observable, of, Subject } from 'rxjs';
 import { debounceTime, finalize, map, switchMap, takeUntil } from 'rxjs/operators';
 import { InternalLookupService } from 'src/app/shared/common/internal-lookup.service';
@@ -168,6 +168,7 @@ export class WorkflowSalesComponent extends AppComponentBase implements OnInit {
         private activatedRoute: ActivatedRoute,
         private overlay: Overlay,
         private dialog: MatDialog,
+        private router: Router,
         private _internalLookupService: InternalLookupService,
         private _lookupService: LookupServiceProxy,
         private _clientPeriodService: ClientPeriodServiceProxy,
@@ -2618,5 +2619,12 @@ export class WorkflowSalesComponent extends AppComponentBase implements OnInit {
                 .setErrors(null);
             return false;
         }
+    }
+
+    openInNewTab(clientId: string) {
+        const url = this.router.serializeUrl(
+            this.router.createUrlTree([`/app/clients/${clientId}/rates-and-fees`])
+        );
+        window.open(url, '_blank');
     }
 }
