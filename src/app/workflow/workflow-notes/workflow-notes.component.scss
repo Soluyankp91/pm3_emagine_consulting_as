@@ -31,7 +31,8 @@
         }
     }
     &--content {
-        height: 85%;
+        height: 90%;
+        overflow: hidden;
         &-text {
             color: $dark-grey-color;
             font-weight: 600;
