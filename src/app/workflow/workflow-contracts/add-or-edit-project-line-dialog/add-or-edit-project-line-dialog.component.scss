@@ -9,3 +9,10 @@
         border-top: 1px solid $sand-color;
     }
 }
+
+.invoice-recipient--blue-text-bold {
+    font-family: "Open Sans", sans-serif;
+    font-size: 14px;
+    font-weight: 800;
+    color: rgba(56, 72, 83, 0.87);
+}
