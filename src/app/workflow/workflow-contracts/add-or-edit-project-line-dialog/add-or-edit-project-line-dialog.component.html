@@ -102,7 +102,11 @@
             </mat-form-field>
             <div fxLayout="row" fxLayoutAlign="start start" class="u-w--100" *ngIf="projectLineForm.invoiceRecipientId?.value">
                 <span class="invoice-recipient--blue-text-bold">
-                    {{projectLineForm.invoiceRecipientId?.value?.countryName}} | {{projectLineForm.invoiceRecipientId?.value?.city}} | {{projectLineForm.invoiceRecipientId?.value?.address}} | {{projectLineForm.invoiceRecipientId?.value?.address2}} | {{projectLineForm.invoiceRecipientId?.value?.postCode}}
+                    {{projectLineForm.invoiceRecipientId?.value?.countryName ? projectLineForm.invoiceRecipientId?.value?.countryName + '| ' : ''}}
+                    {{projectLineForm.invoiceRecipientId?.value?.city ? projectLineForm.invoiceRecipientId?.value?.city + ' | ' : ''}}
+                    {{projectLineForm.invoiceRecipientId?.value?.address ? projectLineForm.invoiceRecipientId?.value?.address + ' | ' : ''}}
+                    {{projectLineForm.invoiceRecipientId?.value?.address2 ? projectLineForm.invoiceRecipientId?.value?.address2 + ' | ' : ''}}
+                    {{projectLineForm.invoiceRecipientId?.value?.postCode}}
                 </span>
                 <button mat-icon-button class="button-open-in-new" *ngIf="projectLineForm.invoiceRecipientId?.value?.clientId"
                     (click)="openInNewTab(projectLineForm.invoiceRecipientId?.value?.clientId)">
