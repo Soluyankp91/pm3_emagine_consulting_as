@@ -153,8 +153,8 @@
                                     </h4>
                                 </mat-expansion-panel-header>
                                 <mat-accordion [multi]="true" togglePosition="before" class="mat-elevation-z0">
-                                    <ng-container *ngIf="contractsDocuments.frameAgreements?.length; else noFilesTemplate">
-                                        <mat-expansion-panel *ngFor="let frame of contractsDocuments.frameAgreements" class="mat-elevation-z0">
+                                    <ng-container *ngIf="contractsDocuments?.frameAgreements?.length; else noFilesTemplate">
+                                        <mat-expansion-panel *ngFor="let frame of contractsDocuments?.frameAgreements" class="mat-elevation-z0">
                                             <mat-expansion-panel-header
                                                 [collapsedHeight]="'44px'"
                                                 [expandedHeight]="'44px'">
@@ -187,8 +187,8 @@
                                     </h4>
                                 </mat-expansion-panel-header>
                                 <mat-accordion [multi]="true" togglePosition="before" class="mat-elevation-z0">
-                                    <ng-container *ngIf="contractsDocuments.workflows?.length; else noFilesTemplate">
-                                        <mat-expansion-panel *ngFor="let workflow of contractsDocuments.workflows" class="mat-elevation-z0">
+                                    <ng-container *ngIf="contractsDocuments?.workflows?.length; else noFilesTemplate">
+                                        <mat-expansion-panel *ngFor="let workflow of contractsDocuments?.workflows" class="mat-elevation-z0">
                                             <mat-expansion-panel-header
                                                 [collapsedHeight]="'44px'"
                                                 [expandedHeight]="'44px'">
