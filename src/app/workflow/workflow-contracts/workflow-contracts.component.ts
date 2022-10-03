@@ -1285,6 +1285,7 @@ export class WorkflowContractsComponent extends AppComponentBase implements OnIn
                     }
                 }))
                 .subscribe(result => {
+                    this._workflowDataService.workflowOverviewUpdated.emit(true);
                     if (this.editEnabledForcefuly && !isSyncToLegacy) {
                         this.toggleEditMode();
                     }
@@ -1297,6 +1298,7 @@ export class WorkflowContractsComponent extends AppComponentBase implements OnIn
                 }))
                 .subscribe(result => {
                     this._workflowDataService.workflowSideSectionUpdated.emit({isStatusUpdate: true});
+                    this._workflowDataService.workflowOverviewUpdated.emit(true);
                     this.getContractStepData();
                 });
         }
@@ -1453,6 +1455,7 @@ export class WorkflowContractsComponent extends AppComponentBase implements OnIn
                     }
                 }))
                 .subscribe(result => {
+                    this._workflowDataService.workflowOverviewUpdated.emit(true);
                     if (this.editEnabledForcefuly && !isSyncToLegacy) {
                         this.toggleEditMode();
                     }
@@ -1465,6 +1468,7 @@ export class WorkflowContractsComponent extends AppComponentBase implements OnIn
                 }))
                 .subscribe(result => {
                     this._workflowDataService.workflowSideSectionUpdated.emit({isStatusUpdate: true});
+                    this._workflowDataService.workflowOverviewUpdated.emit(true);
                     this.getContractStepData();
                 });
         }
@@ -1523,6 +1527,7 @@ export class WorkflowContractsComponent extends AppComponentBase implements OnIn
                     }
                 }))
                 .subscribe(result => {
+                    this._workflowDataService.workflowOverviewUpdated.emit(true);
                     if (this.editEnabledForcefuly && !isSyncToLegacy) {
                         this.toggleEditMode();
                     }
@@ -1535,6 +1540,7 @@ export class WorkflowContractsComponent extends AppComponentBase implements OnIn
             }))
             .subscribe(result => {
                 this._workflowDataService.workflowSideSectionUpdated.emit({isStatusUpdate: true});
+                this._workflowDataService.workflowOverviewUpdated.emit(true);
                 this.getContractStepData();
             })
         }
@@ -1587,6 +1593,7 @@ export class WorkflowContractsComponent extends AppComponentBase implements OnIn
                     }
                 }))
                 .subscribe(result => {
+                    this._workflowDataService.workflowOverviewUpdated.emit(true);
                     if (this.editEnabledForcefuly && !isSyncToLegacy) {
                         this.toggleEditMode();
                     }
@@ -1599,6 +1606,7 @@ export class WorkflowContractsComponent extends AppComponentBase implements OnIn
             }))
             .subscribe(result => {
                 this._workflowDataService.workflowSideSectionUpdated.emit({isStatusUpdate: true});
+                this._workflowDataService.workflowOverviewUpdated.emit(true);
                 this.getContractStepData();
             })
         }
@@ -1612,6 +1620,7 @@ export class WorkflowContractsComponent extends AppComponentBase implements OnIn
         }))
         .subscribe(result => {
             this._workflowDataService.workflowSideSectionAdded.emit(true);
+            this._workflowDataService.workflowOverviewUpdated.emit(true);
         });
     }
 

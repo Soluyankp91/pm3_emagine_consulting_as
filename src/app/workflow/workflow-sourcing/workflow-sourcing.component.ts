@@ -160,16 +160,18 @@ export class WorkflowSourcingComponent extends AppComponentBase implements OnIni
             this._workflowServiceProxy.terminationConsultantSourcingPut(this.workflowId!, input)
                 .pipe(finalize(() => this.hideMainSpinner()))
                 .subscribe(result => {
+                    this._workflowDataService.workflowOverviewUpdated.emit(true);
                     if (this.editEnabledForcefuly) {
                         this.toggleEditMode();
                     }
                 })
         } else {
             this._workflowServiceProxy.terminationConsultantSourcingComplete(this.workflowId!, input)
-            .pipe(finalize(() => this.hideMainSpinner()))
-            .subscribe(result => {
-                this._workflowDataService.workflowSideSectionUpdated.emit({isStatusUpdate: true});
-            })
+                .pipe(finalize(() => this.hideMainSpinner()))
+                .subscribe(result => {
+                    this._workflowDataService.workflowSideSectionUpdated.emit({isStatusUpdate: true});
+                    this._workflowDataService.workflowOverviewUpdated.emit(true);
+                })
         }
     }
 
@@ -205,16 +207,18 @@ export class WorkflowSourcingComponent extends AppComponentBase implements OnIni
             this._workflowServiceProxy.terminationSourcingPut(this.workflowId!, input)
                 .pipe(finalize(() => this.hideMainSpinner()))
                 .subscribe(result => {
+                    this._workflowDataService.workflowOverviewUpdated.emit(true);
                     if (this.editEnabledForcefuly) {
                         this.toggleEditMode();
                     }
                 })
         } else {
             this._workflowServiceProxy.terminationSourcingComplete(this.workflowId!, input)
-            .pipe(finalize(() => this.hideMainSpinner()))
-            .subscribe(result => {
-                this._workflowDataService.workflowSideSectionUpdated.emit({isStatusUpdate: true});
-            })
+                .pipe(finalize(() => this.hideMainSpinner()))
+                .subscribe(result => {
+                    this._workflowDataService.workflowSideSectionUpdated.emit({isStatusUpdate: true});
+                    this._workflowDataService.workflowOverviewUpdated.emit(true);
+                })
         }
     }
 

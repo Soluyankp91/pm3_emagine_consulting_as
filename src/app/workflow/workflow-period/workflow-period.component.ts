@@ -328,12 +328,14 @@ export class WorkflowPeriodComponent extends AppComponentBase implements OnInit 
     deleteWorkflowTermination() {
         this._workflowService.terminationDelete(this.workflowId).subscribe(result => {
             this._workflowDataService.workflowSideSectionUpdated.emit({isStatusUpdate: true});
+            this._workflowDataService.workflowOverviewUpdated.emit(true);
         });
     }
 
     deleteConsultantTermination(consultantId: number) {
         this._workflowService.terminationConsultantDelete(this.workflowId, consultantId).subscribe(result => {
             this._workflowDataService.workflowSideSectionUpdated.emit({isStatusUpdate: true});
+            this._workflowDataService.workflowOverviewUpdated.emit(true);
         })
     }
 
@@ -341,13 +343,19 @@ export class WorkflowPeriodComponent extends AppComponentBase implements OnInit 
         this.showMainSpinner();
         this._apiService.clientPeriod(clientPeriodId)
             .pipe(finalize(() => this.hideMainSpinner()))
-            .subscribe(result => this._workflowDataService.workflowTopSectionUpdated.emit(true));
+            .subscribe(result => {
+                this._workflowDataService.workflowTopSectionUpdated.emit(true);
+                this._workflowDataService.workflowOverviewUpdated.emit(true);
+            });
     }
 
     deleteConsultantPeriod(consultantPeriodId: string) {
         this.showMainSpinner();
         this._apiService.consultantPeriod(consultantPeriodId)
             .pipe(finalize(() => this.hideMainSpinner()))
-            .subscribe(result => this._workflowDataService.workflowSideSectionUpdated.emit({isStatusUpdate: true}));
+            .subscribe(result => {
+                this._workflowDataService.workflowSideSectionUpdated.emit({isStatusUpdate: true});
+                this._workflowDataService.workflowOverviewUpdated.emit(true);
+            });
     }
 }
