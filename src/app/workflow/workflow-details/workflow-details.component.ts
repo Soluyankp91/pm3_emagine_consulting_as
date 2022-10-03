@@ -132,15 +132,6 @@ export class WorkflowDetailsComponent extends AppComponentBase implements OnInit
 
     showOrHideNotes() {
         this.isNoteVisible = !this.isNoteVisible;
-        // if (this.isNoteVisible) {
-        //     if (this.workflowNoteOldValue !== this.workflowNote.value) {
-        //         this.confirmCancelNote();
-        //     } else {
-        //         this.isNoteVisible = false;
-        //     }
-        // } else {
-        //     this.isNoteVisible = true;
-        // }
     }
 
     confirmCancelNote() {

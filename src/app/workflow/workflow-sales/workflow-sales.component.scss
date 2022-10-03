@@ -67,12 +67,6 @@
             text-transform: uppercase;
             color: $dark-grey-color;
         }
-        // @media screen and (max-width: 1440px) {
-        //     font-size: 14px;
-        //     &-main {
-        //         font-size: 18px;
-        //     }
-        // }
     }
     &-sales {
         .rates-and-fees--btn {
@@ -80,7 +74,7 @@
         }
         .absolute-edit-toggle {
             position: fixed;
-            right: calc(20% + 50px);
+            right: calc(20% + 100px);
             top: 250px;
             border-radius: 50%;
             background-color: rgba($color: #72a0f8, $alpha: 0.2);
