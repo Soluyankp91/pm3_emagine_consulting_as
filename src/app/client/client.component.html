@@ -21,7 +21,7 @@
                             <mat-form-field class="client-list--filter-manager-dropdown" appearance="fill" (click)="$event.stopPropagation()">
                                 <input #accountManagerFilterInput #managersTrigger type="text" matInput [matAutocomplete]="managerAutocomplete" [formControl]="accountManagerFilter" (click)="$event.stopPropagation()" placeholder="Select account manager(s)">
                             </mat-form-field>
-                            <mat-autocomplete #managerAutocomplete="matAutocomplete">
+                            <mat-autocomplete #managerAutocomplete="matAutocomplete" [displayWith]="displayNameFn">
                                 <mat-option *ngFor="let manager of selectedAccountManagers"
                                     class="u-pg--5"
                                     [value]="manager" (click)="optionClicked($event, manager, selectedAccountManagers)">
@@ -99,7 +99,7 @@
                             <mat-form-field class="client-list--filter-country-dropdown" appearance="fill" appPreventDoubleClick (throttledClick)="$event.stopPropagation()">
                                 <input type="text" #countriesTrigger matInput [matAutocomplete]="countryAutocomplete" [formControl]="countryFilter" appPreventDoubleClick (throttledClick)="$event.stopPropagation()" placeholder="Select client country">
                             </mat-form-field>
-                            <mat-autocomplete #countryAutocomplete="matAutocomplete">
+                            <mat-autocomplete #countryAutocomplete="matAutocomplete" [displayWith]="displayNameFn">
                                 <mat-option *ngIf="isCountriesLoading" class="is-loading">
                                     <div class="is-loading-container">
                                         <mat-spinner diameter="25"></mat-spinner>

@@ -417,12 +417,16 @@ export class ClientComponent extends AppComponentBase implements OnInit, OnDestr
         event.stopPropagation();
         // this.countriesTrigger.openPanel();
     }
-    
+
     onCountriesMenuOpened() {
         // workaround as panel position is wrongly calculated
         setTimeout(() => {
             this.countryFilter.setValue('');
             this.countryFilter.markAsTouched();
         }, 0);
+    }
+
+    displayNameFn(option: any) {
+        return option?.name;
     }
 }
