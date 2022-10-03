@@ -564,7 +564,6 @@ export class MainOverviewComponent extends AppComponentBase implements OnInit {
 
     getMainOverviewStatuses() {
         this._mainOverviewService.statuses().subscribe(result => {
-            console.log(result);
             this.filteredMainOverviewStatuses = result.map(x => {
                 return new SelectableStatusesDto({
                     id: x.id!,
