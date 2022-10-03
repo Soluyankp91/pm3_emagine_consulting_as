@@ -53,6 +53,7 @@ export class WorkflowComponent extends AppComponentBase implements OnInit, OnDes
         'WorkflowStatus',
         'openProcess',
         'Steps',
+        'startDateOfOpenedPeriodOrLastClientPeriod',
         'action'
     ];
 
@@ -444,6 +445,7 @@ export class WorkflowComponent extends AppComponentBase implements OnInit, OnDes
                         workflowId: x.workflowId,
                         clientName: x.clientName,
                         startDate: x.startDate,
+                        startDateOfOpenedPeriodOrLastClientPeriod: x.startDateOfOpenedPeriodOrLastClientPeriod,
                         endDate: x.endDate,
                         salesType: this.findItemById(this.saleTypes, x.salesTypeId),
                         deliveryType: this.findItemById(this.deliveryTypes, x.deliveryTypeId),

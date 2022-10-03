@@ -1932,7 +1932,6 @@ export class WorkflowSalesComponent extends AppComponentBase implements OnInit {
     }
 
     changeConsultantWorkplace(event: MatCheckboxChange, consutlantIndex: number) {
-        console.log('sss');
         if (event.checked) {
             this.consultantData.at(consutlantIndex).get('consultantWorkplaceClientAddress')?.setValue(this.salesClientDataForm.directClientIdValue?.value, {emitEvent: false});
         }
