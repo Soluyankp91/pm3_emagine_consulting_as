@@ -731,4 +731,8 @@ export class MainOverviewComponent extends AppComponentBase implements OnInit {
     compareWithFn(listOfItems: any, selectedItem: any) {
         return listOfItems && selectedItem && listOfItems.id === selectedItem.id;;
     }
+
+    displayNameFn(option: any) {
+        return option?.name;
+    }
 }

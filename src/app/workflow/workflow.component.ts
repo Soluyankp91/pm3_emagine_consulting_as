@@ -552,6 +552,10 @@ export class WorkflowComponent extends AppComponentBase implements OnInit, OnDes
         this.accountManagerFilter.setValue('');
         this.accountManagerFilter.markAsTouched();
     }
+
+    displayNameFn(option: any) {
+        return option?.name;
+    }
 }
 
 export class WorkflowSourcingCreate {
