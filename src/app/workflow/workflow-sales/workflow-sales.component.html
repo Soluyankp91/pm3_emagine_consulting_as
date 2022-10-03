@@ -6,10 +6,24 @@
                 <!-- Main data -->
                 <div fxLayout="column" fxLayoutAlign="start start" class="workflow-sales--process-data u-w--100" id="salesMainDataAnchor">
                     <div fxLayout="column" fxLayoutAlign="start start" class="u-w--100">
-                        <h1 class="workflow-step-readonly--header-main">
-                            <span class="process-name">Sales.</span>
-                            <span class="anchor-name">Main data</span>
-                        </h1>
+                        <div fxLayout="row" fxLayoutAlign="space-between center" class="u-w--100 u-mb--20">
+                            <h1 class="workflow-step-readonly--header-main">
+                                <span class="process-name">Sales.</span>
+                                <span class="anchor-name">Main data</span>
+                            </h1>
+                            <button *ngIf="permissionsForCurrentUser!['Reopen']" mat-icon-button appPreventDoubleClick (throttledClick)="$event.stopPropagation();" type="button" [matMenuTriggerFor]="returnToSalesMenu" class="three-dots-actions-btn">
+                                <mat-icon>more_horiz</mat-icon>
+                            </button>
+                            <mat-menu #returnToSalesMenu>
+                                <button
+                                    class="menu-item menu-item--edit"
+                                    mat-menu-item
+                                    appPreventDoubleClick (throttledClick)="returnToSales()">
+                                    <mat-icon>create</mat-icon>
+                                    Reopen for editing
+                                </button>
+                            </mat-menu>
+                        </div>
                         <h2 class="workflow-step-readonly--header u-mt--10 u-mb--20">Project</h2>
                         <div fxLayout="row" fxLayoutAlign="start start" class="u-w--100 u-mb--20">
                             <div fxLayout="column" fxFlex="25%">

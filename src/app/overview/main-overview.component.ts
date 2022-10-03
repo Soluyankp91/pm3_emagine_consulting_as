@@ -318,6 +318,7 @@ export class MainOverviewComponent extends AppComponentBase implements OnInit {
     }
 
     getMainOverview(date?: any, filterChanged?: boolean) {
+        let showDeleted = false; // hardcoded as Mandy told that there is no business need in this feature
         this.isDataLoading = true;
         let searchFilter = this.workflowFilter.value ? this.workflowFilter.value : '';
         let ownerIds = this.selectedAccountManagers.map(x => +x.id);
@@ -352,6 +353,7 @@ export class MainOverviewComponent extends AppComponentBase implements OnInit {
                     margins,
                     searchFilter,
                     this.cutOffDate,
+                    showDeleted,
                     this.workflowsPageNumber,
                     this.workflowsDeafultPageSize,
                     this.sorting)
@@ -390,11 +392,6 @@ export class MainOverviewComponent extends AppComponentBase implements OnInit {
                             this.workflowGroups = groups;
                             this.workflowItems = items;
 
-                            // if (this.isInitial) {
-                            //     this.viewType.setValue(GanttViewType.month);
-                            //     this.isInitial = false;
-                            //     this.changeViewType();
-                            // }
                         }
 
                         this.workflowsTotalCount = result.totalCount;
@@ -419,6 +416,7 @@ export class MainOverviewComponent extends AppComponentBase implements OnInit {
                     margins,
                     searchFilter,
                     this.cutOffDate,
+                    showDeleted,
                     this.consultantsPageNumber,
                     this.consultantsDeafultPageSize,
                     this.sorting)

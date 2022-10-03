@@ -174,7 +174,7 @@ export class WorkflowSalesComponent extends AppComponentBase implements OnInit {
         private _clientSalesService: ClientSalesServiceProxy,
         private _clientService: ClientsServiceProxy,
         private _consultantPeriodSerivce: ConsultantPeriodServiceProxy,
-        private _consultantSalesSerivce: ConsultantSalesServiceProxy
+        private _consultantSalesService: ConsultantSalesServiceProxy
     ) {
         super(injector);
         this.salesClientDataForm = new WorkflowSalesClientDataForm();
@@ -2521,7 +2521,7 @@ export class WorkflowSalesComponent extends AppComponentBase implements OnInit {
                     }
                 });
         } else {
-            this._consultantSalesSerivce.editFinish(this.activeSideSection.consultantPeriodId!, input)
+            this._consultantSalesService.editFinish(this.activeSideSection.consultantPeriodId!, input)
                 .pipe(finalize(() => this.hideMainSpinner()))
                 .subscribe(result => {
                     this._workflowDataService.workflowSideSectionUpdated.emit({isStatusUpdate: true});
@@ -2615,6 +2615,50 @@ export class WorkflowSalesComponent extends AppComponentBase implements OnInit {
                 .get("clientContact")!
                 .setErrors(null);
             return false;
+        }
+    }
+
+    returnToSales() {
+        switch (this._workflowDataService.workflowProgress.currentlyActiveSideSection) {
+            case WorkflowProcessType.StartClientPeriod:
+            case WorkflowProcessType.ChangeClientPeriod:
+            case WorkflowProcessType.ExtendClientPeriod:
+                this.showMainSpinner();
+                this._clientSalesService.reopen(this.periodId!)
+                    .pipe(finalize(() => {
+                        this.hideMainSpinner();
+                    }))
+                    .subscribe(() => this._workflowDataService.workflowSideSectionUpdated.emit({isStatusUpdate: true}));
+                break;
+
+            case WorkflowProcessType.TerminateWorkflow:
+                this.showMainSpinner();
+                this._workflowServiceProxy.terminationSalesReopen(this.periodId!)
+                    .pipe(finalize(() => {
+                        this.hideMainSpinner();
+                    }))
+                    .subscribe(() => this._workflowDataService.workflowSideSectionUpdated.emit({isStatusUpdate: true}));
+                break;
+
+            case WorkflowProcessType.TerminateConsultant:
+                this.showMainSpinner();
+                this._workflowServiceProxy.terminationConsultantSalesReopen(this.periodId!)
+                    .pipe(finalize(() => {
+                        this.hideMainSpinner();
+                    }))
+                    .subscribe(() => this._workflowDataService.workflowSideSectionUpdated.emit({isStatusUpdate: true}));
+                break;
+
+            case WorkflowProcessType.StartConsultantPeriod:
+            case WorkflowProcessType.ChangeConsultantPeriod:
+            case WorkflowProcessType.ExtendConsultantPeriod:
+                this.showMainSpinner();
+                this._consultantSalesService.reopen(this.periodId!)
+                    .pipe(finalize(() => {
+                        this.hideMainSpinner();
+                    }))
+                    .subscribe(() => this._workflowDataService.workflowSideSectionUpdated.emit({isStatusUpdate: true}));
+                break;
         }
     }
 }

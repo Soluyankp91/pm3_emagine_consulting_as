@@ -114,7 +114,7 @@ export class WorkflowPeriodComponent extends AppComponentBase implements OnInit 
 
             }))
             .subscribe(result => {
-                this.sideMenuItems = result?.clientPeriods![0].workflowProcesses!.map(side => {
+                this.sideMenuItems = result?.clientPeriods![0]?.workflowProcesses!.map(side => {
                     return new WorkflowProcessWithAnchorsDto({
                         typeId: side.typeId!,
                         name: side.name!,
