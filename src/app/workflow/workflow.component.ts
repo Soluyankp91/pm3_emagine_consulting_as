@@ -326,7 +326,7 @@ export class WorkflowComponent extends AppComponentBase implements OnInit, OnDes
     }
 
     deleteWorkflow(workflowId: string) {
-        this.isDataLoading;
+        this.isDataLoading = true;
         this._workflowService.delete(workflowId)
             .pipe(finalize(() => this.isDataLoading = false))
             .subscribe(result => {
