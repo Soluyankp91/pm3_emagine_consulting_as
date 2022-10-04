@@ -29,35 +29,48 @@
                             <mat-icon svgIcon="workflowTerminate"></mat-icon>
                         </ng-container>
                         <ng-container *ngSwitchDefault>
-                            -
+                            <mat-icon svgIcon="what-next-icon" class="u-mr--10"></mat-icon>
                         </ng-container>
                     </ng-container>
                     <span class="workflow-overview--process">
-                        {{item.name}}
+                        {{item.name ? item.name : 'What next?'}}
                     </span>
                 </span>
                 <span class="workflow-overview--process-daterange u-ml--5">{{item.periodStartDate | momentFormat: 'DD.MM.YYYY' + ' - ' + (item.periodEndDate ? (item.periodEndDate | momentFormat: 'DD.MM.YYYY') : '...')}}</span>
             </div>
             <div *ngFor="let item of item.steps" fxFlex="20%">
-                <div class="workflow-overview--team__user column">
-                    <div fxLayout="row" fxLayoutAlign="start center">
-                        <img class="workflow-overview--team__user-img" [src]="employeeProfileUrl(item.responsiblePerson?.externalId!)" alt="">
-                        <div class="column">
-                            <h2 class="workflow-overview--team__user-position">{{item.name}}</h2>
-                            <p class="workflow-overview--team__user-name">{{item.responsiblePerson?.name}}</p>
+                <ng-container *ngIf="!item.isFakeActiveStep; else fakeActiveStepTemplate">
+                    <div class="workflow-overview--team__user column">
+                        <div fxLayout="row" fxLayoutAlign="start center">
+                            <img class="workflow-overview--team__user-img" [src]="employeeProfileUrl(item.responsiblePerson?.externalId!)" alt="">
+                            <div class="column">
+                                <h2 class="workflow-overview--team__user-position">{{item.name}}</h2>
+                                <p class="workflow-overview--team__user-name">{{item.responsiblePerson?.name}}</p>
+                            </div>
+                        </div>
+                        <div class="workflow-overview--team__user-progress u-w--100" [ngClass]="{'finished': item.status === workflowStepStatus.Completed, 'in-progress': item.status === workflowStepStatus.Pending}" [matTooltip]="displayStepActionTooltip(item)" matTooltipClass="white-tooltip">
+                        </div>
+                        <div fxLayout="row" fxLayoutAlign="end center" class="u-w--100">
+                            <span class="icon-in-progress u-mr--5">
+                                <mat-icon svgIcon="{{item.status === workflowStepStatus.Completed ? 'completed-icon' : 'in-progress-icon'}}"></mat-icon>
+                            </span>
+                            <span class="workflow-overview--team__user-status" [ngClass]="{'finished': item.status !== workflowStepStatus.Completed}">
+                                {{displayStepAction(item)}}
+                            </span>
                         </div>
                     </div>
-                    <div class="workflow-overview--team__user-progress u-w--100" [ngClass]="{'finished': item.status === workflowStepStatus.Completed, 'in-progress': item.status === workflowStepStatus.Pending}" [matTooltip]="displayStepActionTooltip(item)" matTooltipClass="white-tooltip">
+                </ng-container>
+                <ng-template #fakeActiveStepTemplate>
+                    <div class="workflow-overview--team__user column">
+                        <div fxLayout="row" fxLayoutAlign="start center">
+                            <img class="workflow-overview--team__user-img" [src]="employeeProfileUrl(item.responsiblePerson?.externalId!)" alt="">
+                            <div class="column">
+                                <h2 class="workflow-overview--team__user-position">Account manager</h2>
+                                <p class="workflow-overview--team__user-name">{{item.responsiblePerson?.name}}</p>
+                            </div>
+                        </div>
                     </div>
-                    <div fxLayout="row" fxLayoutAlign="end center" class="u-w--100">
-                        <span class="icon-in-progress u-mr--5">
-                            <mat-icon svgIcon="{{item.status === workflowStepStatus.Completed ? 'completed-icon' : 'in-progress-icon'}}"></mat-icon>
-                        </span>
-                        <span class="workflow-overview--team__user-status" [ngClass]="{'finished': item.status !== workflowStepStatus.Completed}">
-                            {{displayStepAction(item)}}
-                        </span>
-                    </div>
-                </div>
+                </ng-template>
             </div>
         </div>
     </div>

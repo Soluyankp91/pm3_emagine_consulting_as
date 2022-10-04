@@ -629,5 +629,12 @@ export class AppModule {
             )
         );
 
+        iconRegistry.addSvgIcon(
+            'what-next-icon',
+            sanitizer.bypassSecurityTrustResourceUrl(
+                'assets/common/images/what-next-icon.svg'
+            )
+        );
+
     }
 }
