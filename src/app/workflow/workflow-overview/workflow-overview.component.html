@@ -38,24 +38,38 @@
                 </span>
                 <span class="workflow-overview--process-daterange u-ml--5">{{item.periodStartDate | momentFormat: 'DD.MM.YYYY' + ' - ' + (item.periodEndDate ? (item.periodEndDate | momentFormat: 'DD.MM.YYYY') : '...')}}</span>
             </div>
-            <div *ngFor="let item of item.steps" fxFlex="20%">
-                <ng-container *ngIf="!item.isFakeActiveStep; else fakeActiveStepTemplate">
+            <div *ngFor="let step of item.steps" fxFlex="20%">
+                <ng-container *ngIf="!step.isFakeActiveStep; else fakeActiveStepTemplate">
                     <div class="workflow-overview--team__user column">
                         <div fxLayout="row" fxLayoutAlign="start center">
-                            <img class="workflow-overview--team__user-img" [src]="employeeProfileUrl(item.responsiblePerson?.externalId!)" alt="">
+                            <!-- <img class="workflow-overview--team__user-img" [src]="employeeProfileUrl(step.responsiblePerson?.externalId!)" alt=""> -->
+                            <div class="workflow-overview--team__user-img u-mr--16" [ngClass]="{'completed-step': step.status === workflowStepStatus.Completed}">
+                                <app-manager-search
+                                    appPreventDoubleClick (throttledClick)="$event.stopPropagation()"
+                                    [formFieldLabel]="step.name + ' Manager'"
+                                    [periodId]="item.consultantPeriodId!"
+                                    [consultantPeriodId]="item.consultantPeriodId!"
+                                    [stepType]="step.typeId!"
+                                    [periodType]="step.typeId!"
+                                    [workflowId]="workflowId"
+                                    [managerStatus]="step.status!"
+                                    [responsiblePerson]="step.responsiblePerson!"
+                                    [readonly]="item.consultantPeriodId === null || item.consultantPeriodId === undefined">
+                                </app-manager-search>
+                            </div>
                             <div class="column">
-                                <h2 class="workflow-overview--team__user-position">{{item.name}}</h2>
-                                <p class="workflow-overview--team__user-name">{{item.responsiblePerson?.name}}</p>
+                                <h2 class="workflow-overview--team__user-position">{{step.name}}</h2>
+                                <p class="workflow-overview--team__user-name">{{step.responsiblePerson?.name}}</p>
                             </div>
                         </div>
-                        <div class="workflow-overview--team__user-progress u-w--100" [ngClass]="{'finished': item.status === workflowStepStatus.Completed, 'in-progress': item.status === workflowStepStatus.Pending}" [matTooltip]="displayStepActionTooltip(item)" matTooltipClass="white-tooltip">
+                        <div class="workflow-overview--team__user-progress u-w--100" [ngClass]="{'finished': step.status === workflowStepStatus.Completed, 'in-progress': step.status === workflowStepStatus.Pending}" [matTooltip]="displayStepActionTooltip(step)" matTooltipClass="white-tooltip">
                         </div>
                         <div fxLayout="row" fxLayoutAlign="end center" class="u-w--100">
                             <span class="icon-in-progress u-mr--5">
-                                <mat-icon svgIcon="{{item.status === workflowStepStatus.Completed ? 'completed-icon' : 'in-progress-icon'}}"></mat-icon>
+                                <mat-icon svgIcon="{{step.status === workflowStepStatus.Completed ? 'completed-icon' : 'in-progress-icon'}}"></mat-icon>
                             </span>
-                            <span class="workflow-overview--team__user-status" [ngClass]="{'finished': item.status !== workflowStepStatus.Completed}">
-                                {{displayStepAction(item)}}
+                            <span class="workflow-overview--team__user-status" [ngClass]="{'finished': step.status !== workflowStepStatus.Completed}">
+                                {{displayStepAction(step)}}
                             </span>
                         </div>
                     </div>
@@ -63,10 +77,24 @@
                 <ng-template #fakeActiveStepTemplate>
                     <div class="workflow-overview--team__user column">
                         <div fxLayout="row" fxLayoutAlign="start center">
-                            <img class="workflow-overview--team__user-img" [src]="employeeProfileUrl(item.responsiblePerson?.externalId!)" alt="">
+                            <!-- <img class="workflow-overview--team__user-img" [src]="employeeProfileUrl(step.responsiblePerson?.externalId!)" alt=""> -->
+                            <div class="workflow-overview--team__user-img u-mr--16" [ngClass]="{'completed-step': step.status === workflowStepStatus.Completed}">
+                                <app-manager-search
+                                    appPreventDoubleClick (throttledClick)="$event.stopPropagation()"
+                                    [formFieldLabel]="step.name + ' Manager'"
+                                    [periodId]="item.consultantPeriodId!"
+                                    [consultantPeriodId]="item.consultantPeriodId!"
+                                    [stepType]="step.typeId!"
+                                    [periodType]="step.typeId!"
+                                    [workflowId]="workflowId"
+                                    [managerStatus]="step.status!"
+                                    [responsiblePerson]="step.responsiblePerson!"
+                                    [readonly]="item.consultantPeriodId === null || item.consultantPeriodId === undefined">
+                                </app-manager-search>
+                            </div>
                             <div class="column">
                                 <h2 class="workflow-overview--team__user-position">Account manager</h2>
-                                <p class="workflow-overview--team__user-name">{{item.responsiblePerson?.name}}</p>
+                                <p class="workflow-overview--team__user-name">{{step.responsiblePerson?.name}}</p>
                             </div>
                         </div>
                     </div>
