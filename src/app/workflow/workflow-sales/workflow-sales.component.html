@@ -60,6 +60,13 @@
                         </div>
 
                         <div fxLayout="column" class="u-w--100 u-mb--10">
+                            <h3 class="workflow-step-readonly--gray-header">Project Name</h3>
+                            <p class="workflow-step-readonly--blue-text">
+                                {{salesMainDataForm.projectName?.value ? salesMainDataForm.projectName?.value : '-'}}
+                            </p>
+                        </div>
+
+                        <div fxLayout="column" class="u-w--100 u-mb--10">
                             <h3 class="workflow-step-readonly--gray-header">Project Description</h3>
                             <p class="workflow-step-readonly--blue-text">
                                 {{salesMainDataForm.projectDescription?.value ? salesMainDataForm.projectDescription?.value : '-'}}
@@ -1155,8 +1162,17 @@
 
                             <div fxLayout="row" fxLayoutAlign="start start" class="u-w--100 u-mb--10">
                                 <mat-form-field appearance="outline" class="u-w--100 textarea-input " fxFlex="0 0 calc(66% + 16px)">
+                                    <mat-label>Project Name</mat-label>
+                                    <textarea matInput autocomplete="new-password" name="projectName" required formControlName="projectName" [matTextareaAutosize]="true" [matAutosizeMinRows]="2">
+                                    </textarea>
+                                    <mat-error>{{getValidationMessage(salesMainDataForm.projectName)}}</mat-error>
+                                </mat-form-field>
+                            </div>
+
+                            <div fxLayout="row" fxLayoutAlign="start start" class="u-w--100 u-mb--10">
+                                <mat-form-field appearance="outline" class="u-w--100 textarea-input " fxFlex="0 0 calc(66% + 16px)">
                                     <mat-label>Project Description</mat-label>
-                                    <textarea matInput autocomplete="new-password" name="projectDescription" formControlName="projectDescription" [matTextareaAutosize]="true" [matAutosizeMinRows]="2">
+                                    <textarea matInput autocomplete="new-password" name="projectDescription" required formControlName="projectDescription" [matTextareaAutosize]="true" [matAutosizeMinRows]="2">
                                     </textarea>
                                     <mat-error>{{getValidationMessage(salesMainDataForm.projectDescription)}}</mat-error>
                                 </mat-form-field>

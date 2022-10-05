@@ -8,6 +8,7 @@ export class WorkflowContractsMainForm extends FormGroup {
             projectType: new FormControl(null),
             margin: new FormControl(null),
             projectDescription: new FormControl(null, Validators.required),
+            projectName: new FormControl(null, Validators.required),
             discounts: new FormControl(null),
             remarks: new FormControl(null, Validators.required),
             noRemarks: new FormControl(false),
@@ -29,6 +30,9 @@ export class WorkflowContractsMainForm extends FormGroup {
     }
     get projectDescription() {
         return this.get('projectDescription');
+    }
+    get projectName() {
+        return this.get('projectName');
     }
     get discounts() {
         return this.get('discounts');

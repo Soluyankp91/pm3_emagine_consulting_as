@@ -1534,6 +1534,8 @@ export class WorkflowSalesComponent extends AppComponentBase implements OnInit {
         input.salesMainData.marginId = this.salesMainDataForm.margin?.value?.id;
         input.salesMainData.projectCategoryId = this.salesMainDataForm.projectCategory?.value?.id;
         input.salesMainData.projectDescription = this.salesMainDataForm.projectDescription?.value;
+        input.salesMainData.projectName = this.salesMainDataForm.projectName?.value;
+
         input.salesMainData.discountId = this.salesMainDataForm.discounts?.value?.id;
         input.salesMainData.salesAccountManagerIdValue = this.salesMainDataForm.salesAccountManagerIdValue?.value?.id;
         input.salesMainData.commissionAccountManagerIdValue = this.salesMainDataForm.commissionAccountManagerIdValue?.value?.id;
@@ -1806,6 +1808,7 @@ export class WorkflowSalesComponent extends AppComponentBase implements OnInit {
                 this.salesMainDataForm.projectCategory?.setValue(this.findItemById(this.projectCategories, result?.salesMainData?.projectCategoryId), {emitEvent: false});
                 this.salesMainDataForm.margin?.setValue(this.findItemById(this.margins, result?.salesMainData?.marginId), {emitEvent: false});
                 this.salesMainDataForm.projectDescription?.setValue(result?.salesMainData?.projectDescription, {emitEvent: false});
+                this.salesMainDataForm.projectName?.setValue(result?.salesMainData?.projectName, {emitEvent: false});
 
                 // Invoicing
                 result.salesMainData?.commissions?.forEach((commission: CommissionDto) => {
@@ -2399,6 +2402,7 @@ export class WorkflowSalesComponent extends AppComponentBase implements OnInit {
                     this.salesMainDataForm.remarks?.disable();
                 }
                 this.salesMainDataForm.projectDescription?.setValue(result?.projectDescription, {emitEvent: false});
+                this.salesMainDataForm.projectName?.setValue(result?.projectName, {emitEvent: false});
                 this.addConsultantForm(result?.consultantSalesData);
                 this.updateConsultantStepAnchors();
             });
@@ -2409,6 +2413,7 @@ export class WorkflowSalesComponent extends AppComponentBase implements OnInit {
         input.remarks = this.salesMainDataForm.remarks?.value;
         input.noRemarks = this.salesMainDataForm.noRemarks?.value;
         input.projectDescription = this.salesMainDataForm.projectDescription?.value;
+        input.projectName = this.salesMainDataForm.projectName?.value;
         input.consultantSalesData = new ConsultantSalesDataDto();
         let consultantInput = new ConsultantSalesDataDto();
         const consultant = this.consultantsForm.consultantData.at(0).value;
