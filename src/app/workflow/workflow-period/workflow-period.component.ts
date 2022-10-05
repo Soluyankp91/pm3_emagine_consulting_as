@@ -1,6 +1,7 @@
 import { Overlay } from '@angular/cdk/overlay';
-import { Component, Injector, Input, OnInit } from '@angular/core';
+import { Component, Injector, Input, OnInit, ViewChild } from '@angular/core';
 import { MatDialog } from '@angular/material/dialog';
+import { MatMenuTrigger } from '@angular/material/menu';
 import { Subject } from 'rxjs';
 import { finalize, takeUntil } from 'rxjs/operators';
 import { InternalLookupService } from 'src/app/shared/common/internal-lookup.service';
@@ -17,6 +18,8 @@ import { StepAnchorDto, StepWithAnchorsDto, WorkflowProcessWithAnchorsDto } from
     styleUrls: ['./workflow-period.component.scss']
 })
 export class WorkflowPeriodComponent extends AppComponentBase implements OnInit {
+    @ViewChild('menuDeleteTrigger', {static: false}) menuDeleteTrigger: MatMenuTrigger;
+
     @Input() workflowId: string;
     @Input() periodId: string | undefined;
 
@@ -281,6 +284,7 @@ export class WorkflowPeriodComponent extends AppComponentBase implements OnInit 
     }
 
     deleteSideSection(item: WorkflowProcessWithAnchorsDto) {
+        this.menuDeleteTrigger.closeMenu();
         const scrollStrategy = this.overlay.scrollStrategies.reposition();
         const dialogRef = this.dialog.open(ConfirmationDialogComponent, {
             minWidth: '450px',
@@ -326,14 +330,20 @@ export class WorkflowPeriodComponent extends AppComponentBase implements OnInit 
     }
 
     deleteWorkflowTermination() {
-        this._workflowService.terminationDelete(this.workflowId).subscribe(result => {
+        this.showMainSpinner();
+        this._workflowService.terminationDelete(this.workflowId)
+        .pipe(finalize(() => this.hideMainSpinner()))
+        .subscribe(result => {
             this._workflowDataService.workflowSideSectionUpdated.emit({isStatusUpdate: true});
             this._workflowDataService.workflowOverviewUpdated.emit(true);
         });
     }
 
     deleteConsultantTermination(consultantId: number) {
-        this._workflowService.terminationConsultantDelete(this.workflowId, consultantId).subscribe(result => {
+        this.showMainSpinner();
+        this._workflowService.terminationConsultantDelete(this.workflowId, consultantId)
+        .pipe(finalize(() => this.hideMainSpinner()))
+        .subscribe(result => {
             this._workflowDataService.workflowSideSectionUpdated.emit({isStatusUpdate: true});
             this._workflowDataService.workflowOverviewUpdated.emit(true);
         })

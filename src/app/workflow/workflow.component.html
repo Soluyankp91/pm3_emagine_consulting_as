@@ -379,9 +379,9 @@
                 <ng-container matColumnDef="action">
                     <mat-header-cell *matHeaderCellDef fxFlex="3%"></mat-header-cell>
                     <mat-cell *matCellDef="let row" fxFlex="3%">
-                        <button *ngIf="!row.isDeleted" mat-icon-button class="three-dots-actions-btn" [matMenuTriggerFor]="workflowActions" appPreventDoubleClick (throttledClick)="$event.stopPropagation();"><mat-icon>more_horiz</mat-icon></button>
+                        <button *ngIf="!row.isDeleted" mat-icon-button class="three-dots-actions-btn" #menuDeleteTrigger="matMenuTrigger" [matMenuTriggerFor]="workflowActions" appPreventDoubleClick (throttledClick)="$event.stopPropagation();"><mat-icon>more_horiz</mat-icon></button>
                         <mat-menu #workflowActions>
-                            <button class="menu-item menu-item--cancel" mat-menu-item appPreventDoubleClick (throttledClick)="confirmDeleteWorkflow(row?.workflowId)">
+                            <button class="menu-item menu-item--cancel" mat-menu-item (click)="confirmDeleteWorkflow(row?.workflowId)">
                                     <mat-icon>clear</mat-icon>
                                     <span>Delete</span>
                             </button>
@@ -392,9 +392,6 @@
                 <mat-header-row *matHeaderRowDef="workflowDisplayColumns"></mat-header-row>
                 <mat-row *matRowDef="let row; columns: workflowDisplayColumns;" class="mat-elevation-z0 cursor-pointer flex-items-start" [ngClass]="{'active-workflow': row.isActive}" (contextmenu)="onRightClick($event, {content: row})" appPreventDoubleClick (throttledClick)="navigateToWorkflowDetails(row.workflowId)"></mat-row>
             </mat-table>
-            <div class="spinner-container" *ngIf="isDataLoading">
-                <mat-spinner [diameter]="50"></mat-spinner>
-            </div>
             <div class="results-not-found" *ngIf="totalCount === 0 && !isDataLoading">
                 RESULTS NOT FOUND
             </div>
