@@ -8,12 +8,14 @@ import { Subject } from 'rxjs';
 import { finalize, takeUntil } from 'rxjs/operators';
 import { ConfirmationDialogComponent } from 'src/app/shared/components/confirmation-dialog/confirmation-dialog.component';
 import { environment } from 'src/environments/environment';
-import { AppComponentBase } from 'src/shared/app-component-base';
+import { AppComponentBase, NotifySeverity } from 'src/shared/app-component-base';
 import { AppConsts } from 'src/shared/AppConsts';
-import { ChangeConsultantPeriodDto, ConsultantGanttRow, ConsultantPeriodServiceProxy, ExtendConsultantPeriodDto, GanttRowItem, StepDto, WorkflowHistoryDto, WorkflowProcessDto, WorkflowProcessType, WorkflowServiceProxy, WorkflowStepStatus } from 'src/shared/service-proxies/service-proxies';
+import { AvailableConsultantDto, ChangeConsultantPeriodDto, ClientPeriodServiceProxy, ConsultantGanttRow, ConsultantPeriodServiceProxy, ExtendClientPeriodDto, ExtendConsultantPeriodDto, GanttRowItem, StepDto, WorkflowHistoryDto, WorkflowProcessDto, WorkflowProcessType, WorkflowServiceProxy, WorkflowStepStatus } from 'src/shared/service-proxies/service-proxies';
+import { WorkflowActionsDialogComponent } from '../workflow-actions-dialog/workflow-actions-dialog.component';
 import { WorkflowConsultantActionsDialogComponent } from '../workflow-consultant-actions-dialog/workflow-consultant-actions-dialog.component';
 import { WorkflowDataService } from '../workflow-data.service';
 import { ConsultantDiallogAction } from '../workflow-sales/workflow-sales.model';
+import { WorkflowDiallogAction, WorkflowProgressStatus } from '../workflow.model';
 
 @Component({
     selector: 'app-workflow-overview',
@@ -24,6 +26,7 @@ export class WorkflowOverviewComponent extends AppComponentBase implements OnIni
     @ViewChild('gantt') ganttComponent: NgxGanttComponent;
 
     @Input() workflowId: string;
+    @Input() periodId: string | undefined;
 
     componentInitalized = false;
     workflowStepStatus = WorkflowStepStatus;
@@ -63,6 +66,7 @@ export class WorkflowOverviewComponent extends AppComponentBase implements OnIni
         private overlay: Overlay,
         private dialog: MatDialog,
         private _consultantPeriodSerivce: ConsultantPeriodServiceProxy,
+        private _clientPeriodService: ClientPeriodServiceProxy,
 
     ) {
         super(injector);
@@ -143,7 +147,7 @@ export class WorkflowOverviewComponent extends AppComponentBase implements OnIni
             if (oldestDateClientArray![0]!.endDate === undefined || oldestDateClientArray![0]!.endDate.toDate().getTime() < this.formatDate(startOfClientArray![0]?.startDate!.toDate()!).getTime()) {
                 endDate = this.formatDate(startOfClientArray![0]?.startDate!.toDate()!);
             }
-            
+
             this.viewOptions.start = new GanttDate(getUnixTime(new Date(startOfClientArray![0]?.startDate!.toDate()!)));
             this.viewOptions.min = new GanttDate(getUnixTime(new Date(startOfClientArray![0]?.startDate!.toDate()!)));
             this.viewOptions.end = endDate.getTime() !== new Date().getTime() ? new GanttDate(getUnixTime(endDate)) : new GanttDate(getUnixTime(new Date(oldestDateClientArray![0]?.endDate?.toDate()!)));
@@ -344,5 +348,62 @@ export class WorkflowOverviewComponent extends AppComponentBase implements OnIni
         this.historyPageNumber = event.pageIndex + 1;
         this.historyDeafultPageSize = event.pageSize;
         this.getWorkflowHistory();
+    }
+
+    getAvailableConsultantForChangeOrExtend() {
+        console.log(this.periodId);
+        if (!this._workflowDataService.getWorkflowProgress.currentlyActivePeriodId) {
+            let newStatus = new WorkflowProgressStatus();
+            newStatus.currentlyActivePeriodId = this.periodId;
+            this._workflowDataService.updateWorkflowProgressStatus(newStatus);
+        }
+
+        this.showMainSpinner();
+        this._clientPeriodService.availableConsultants(this._workflowDataService.getWorkflowProgress.currentlyActivePeriodId!)
+            .pipe(finalize(() => this.hideMainSpinner()))
+            .subscribe(result => {
+                if (result.length) {
+                    this.addExtension(result);
+                } else {
+                    this.showNotify(NotifySeverity.Error, 'There are no available consultants for this action', 'Ok');
+                }
+            });
+    }
+
+    addExtension(availableConsultants: AvailableConsultantDto[]) {
+        const scrollStrategy = this.overlay.scrollStrategies.reposition();
+        const dialogRef = this.dialog.open(WorkflowActionsDialogComponent, {
+            width: '450px',
+            minHeight: '180px',
+            height: 'auto',
+            scrollStrategy,
+            backdropClass: 'backdrop-modal--wrapper',
+            autoFocus: false,
+            panelClass: 'confirmation-modal',
+            data: {
+                dialogType: WorkflowDiallogAction.Extend,
+                dialogTitle: 'Extend Workflow',
+                rejectButtonText: 'Cancel',
+                confirmButtonText: 'Create',
+                isNegative: false,
+                consultantData: availableConsultants
+            }
+        });
+
+        dialogRef.componentInstance.onConfirmed.subscribe((result: ExtendClientPeriodDto) => {
+            if (result) {
+                this.showMainSpinner();
+                this._clientPeriodService.clientExtend(this._workflowDataService.getWorkflowProgress.currentlyActivePeriodId!, result)
+                    .pipe(finalize(() => this.hideMainSpinner()))
+                    .subscribe(result => {
+                        this._workflowDataService.workflowTopSectionUpdated.emit(true);
+                    });
+            }
+        });
+
+        dialogRef.componentInstance.onRejected.subscribe(() => {
+            // rejected
+        });
+
     }
 }
