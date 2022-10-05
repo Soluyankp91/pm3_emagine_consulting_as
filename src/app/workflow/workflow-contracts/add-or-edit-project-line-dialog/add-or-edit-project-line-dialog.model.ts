@@ -20,7 +20,8 @@ export class ProjectLineForm extends FormGroup {
             modifiedById: new FormControl(null),
             modificationDate: new FormControl(null),
             consultantInsuranceOptionId: new FormControl(null),
-            wasSynced: new FormControl(false)
+            wasSynced: new FormControl(false),
+            isLineForFees: new FormControl(false)
         })
 
     }
@@ -77,5 +78,8 @@ export class ProjectLineForm extends FormGroup {
     }
     get wasSynced() {
         return this.get('wasSynced');
+    }
+    get isLineForFees() {
+        return this.get('isLineForFees');
     }
 }

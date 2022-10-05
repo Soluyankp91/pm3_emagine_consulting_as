@@ -9,6 +9,7 @@ export class WorkflowSalesMainForm extends FormGroup {
             margin: new FormControl(null, Validators.required),
             projectCategory: new FormControl(null, Validators.required),
             projectDescription: new FormControl(null, [Validators.required, Validators.maxLength(4000)]),
+            projectName: new FormControl(null, [Validators.required, Validators.maxLength(100)]),
 
             discounts: new FormControl(null),
 
@@ -42,6 +43,9 @@ export class WorkflowSalesMainForm extends FormGroup {
     get projectDescription() {
         return this.get('projectDescription');
     }
+    get projectName() {
+        return this.get('projectName');
+    }
     get discounts() {
         return this.get('discounts');
     }
@@ -60,7 +64,6 @@ export class WorkflowSalesMainForm extends FormGroup {
     get customContractExpirationNotificationDate() {
         return this.get('customContractExpirationNotificationDate');
     }
-
     get remarks() {
         return this.get('remarks');
     }
