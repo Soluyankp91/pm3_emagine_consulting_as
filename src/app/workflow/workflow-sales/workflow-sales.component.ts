@@ -7,7 +7,7 @@ import { MatCheckboxChange } from '@angular/material/checkbox';
 import { MatDialog } from '@angular/material/dialog';
 import { MatMenuTrigger } from '@angular/material/menu';
 import { MatSelectChange } from '@angular/material/select';
-import { ActivatedRoute } from '@angular/router';
+import { ActivatedRoute, Router } from '@angular/router';
 import { merge, Observable, of, Subject } from 'rxjs';
 import { debounceTime, finalize, map, switchMap, takeUntil } from 'rxjs/operators';
 import { InternalLookupService } from 'src/app/shared/common/internal-lookup.service';
@@ -168,6 +168,7 @@ export class WorkflowSalesComponent extends AppComponentBase implements OnInit {
         private activatedRoute: ActivatedRoute,
         private overlay: Overlay,
         private dialog: MatDialog,
+        private router: Router,
         private _internalLookupService: InternalLookupService,
         private _lookupService: LookupServiceProxy,
         private _clientPeriodService: ClientPeriodServiceProxy,
@@ -1185,6 +1186,7 @@ export class WorkflowSalesComponent extends AppComponentBase implements OnInit {
             }
         });
         this._workflowDataService.consultantsAddedToStep.emit({stepType: StepType.Sales, processTypeId: this.activeSideSection.typeId!, consultantNames: consultantNames});
+        this._workflowDataService.workflowOverviewUpdated.emit(true);
     }
 
     manageManagerAutocomplete(consultantIndex: number) {
@@ -1539,8 +1541,8 @@ export class WorkflowSalesComponent extends AppComponentBase implements OnInit {
         input.salesMainData.discountId = this.salesMainDataForm.discounts?.value?.id;
         input.salesMainData.salesAccountManagerIdValue = this.salesMainDataForm.salesAccountManagerIdValue?.value?.id;
         input.salesMainData.commissionAccountManagerIdValue = this.salesMainDataForm.commissionAccountManagerIdValue?.value?.id;
+        input.salesMainData.customContractExpirationNotificationDate = this.salesMainDataForm.contractExpirationNotification?.value?.includes(999) ? this.salesMainDataForm.customContractExpirationNotificationDate?.value : null;
         input.salesMainData.contractExpirationNotificationIntervalIds = this.salesMainDataForm.contractExpirationNotification?.value?.filter((x: number) => x !== 999);
-        input.salesMainData.customContractExpirationNotificationDate = this.salesMainDataForm.customContractExpirationNotificationDate?.value;
 
         input.salesMainData.remarks = this.salesMainDataForm.remarks?.value;
         input.salesMainData.noRemarks = this.salesMainDataForm.noRemarks?.value;
@@ -1776,6 +1778,7 @@ export class WorkflowSalesComponent extends AppComponentBase implements OnInit {
                 .subscribe(result => {
                     this.showNotify(NotifySeverity.Success, 'Saved sales step', 'Ok');
                     this._workflowDataService.workflowTopSectionUpdated.emit();
+                    this._workflowDataService.workflowOverviewUpdated.emit(true);
                     if (this.editEnabledForcefuly) {
                         this.toggleEditMode();
                     }
@@ -1787,6 +1790,7 @@ export class WorkflowSalesComponent extends AppComponentBase implements OnInit {
                 }))
                 .subscribe(result => {
                     this._workflowDataService.workflowSideSectionUpdated.emit({isStatusUpdate: true});
+                    this._workflowDataService.workflowOverviewUpdated.emit(true);
                     this.getSalesStepData();
                 })
         }
@@ -1818,12 +1822,13 @@ export class WorkflowSalesComponent extends AppComponentBase implements OnInit {
                 // Account Manager
                 this.salesMainDataForm.salesAccountManagerIdValue?.setValue(result?.salesMainData?.salesAccountManagerData, {emitEvent: false});
                 this.salesMainDataForm.commissionAccountManagerIdValue?.setValue(result?.salesMainData?.commissionAccountManagerData, {emitEvent: false});
-                this.contractExpirationNotificationDisplay = this.formatExpirationNotificationsForDisplay(result?.salesMainData?.contractExpirationNotificationIntervalIds);
 
+                let expirationNotificationIntervals = result.salesMainData?.contractExpirationNotificationIntervalIds;
                 if (result?.salesMainData?.customContractExpirationNotificationDate !== null && result?.salesMainData?.customContractExpirationNotificationDate !== undefined) {
-                    result?.salesMainData?.contractExpirationNotificationIntervalIds!.push(999);
+                    expirationNotificationIntervals!.push(999);
                 }
-                this.salesMainDataForm.contractExpirationNotification?.setValue(result?.salesMainData?.contractExpirationNotificationIntervalIds, {emitEvent: false});
+                this.contractExpirationNotificationDisplay = this.formatExpirationNotificationsForDisplay(expirationNotificationIntervals);
+                this.salesMainDataForm.contractExpirationNotification?.setValue(expirationNotificationIntervals, {emitEvent: false});
                 this.salesMainDataForm.customContractExpirationNotificationDate?.setValue(result?.salesMainData?.customContractExpirationNotificationDate, {emitEvent: false});
                 this.salesMainDataForm.remarks?.setValue(result?.salesMainData?.remarks, {emitEvent: false});
                 this.salesMainDataForm.noRemarks?.setValue(result?.salesMainData?.noRemarks, {emitEVent: false});
@@ -1971,6 +1976,7 @@ export class WorkflowSalesComponent extends AppComponentBase implements OnInit {
                 .pipe(finalize(() => {}))
                 .subscribe(result => {
                     this._workflowDataService.workflowSideSectionAdded.emit(true);
+                    this._workflowDataService.workflowOverviewUpdated.emit(true);
                 });
         });
 
@@ -2010,8 +2016,8 @@ export class WorkflowSalesComponent extends AppComponentBase implements OnInit {
                 .pipe(finalize(() => {}))
                 .subscribe(result => {
                     this._workflowDataService.workflowSideSectionAdded.emit(true);
+                    this._workflowDataService.workflowOverviewUpdated.emit(true);
                 });
-            this._workflowDataService.workflowSideSectionAdded.emit(true);
         });
 
         dialogRef.componentInstance.onRejected.subscribe(() => {
@@ -2232,17 +2238,19 @@ export class WorkflowSalesComponent extends AppComponentBase implements OnInit {
             this._workflowServiceProxy.terminationConsultantSalesPut(this.workflowId!, this.consultant.id, input)
                 .pipe(finalize(() => this.hideMainSpinner()))
                 .subscribe(result => {
+                    this._workflowDataService.workflowOverviewUpdated.emit(true);
                     if (this.editEnabledForcefuly) {
                         this.toggleEditMode();
                     }
                 })
         } else {
             this._workflowServiceProxy.terminationConsultantSalesComplete(this.workflowId!, this.consultant.id, input)
-            .pipe(finalize(() => this.hideMainSpinner()))
-            .subscribe(result => {
-                this._workflowDataService.workflowSideSectionUpdated.emit({isStatusUpdate: true});
-                this.getSalesStepData();
-            })
+                .pipe(finalize(() => this.hideMainSpinner()))
+                .subscribe(result => {
+                    this._workflowDataService.workflowSideSectionUpdated.emit({isStatusUpdate: true});
+                    this._workflowDataService.workflowOverviewUpdated.emit(true);
+                    this.getSalesStepData();
+                })
         }
     }
 
@@ -2287,6 +2295,7 @@ export class WorkflowSalesComponent extends AppComponentBase implements OnInit {
             this._workflowServiceProxy.terminationSalesPut(this.workflowId!, input)
                 .pipe(finalize(() => this.hideMainSpinner()))
                 .subscribe(result => {
+                    this._workflowDataService.workflowOverviewUpdated.emit(true);
                     if (this.editEnabledForcefuly) {
                         this.toggleEditMode();
                     }
@@ -2296,6 +2305,7 @@ export class WorkflowSalesComponent extends AppComponentBase implements OnInit {
             .pipe(finalize(() => this.hideMainSpinner()))
             .subscribe(result => {
                 this._workflowDataService.workflowSideSectionUpdated.emit({isStatusUpdate: true});
+                this._workflowDataService.workflowOverviewUpdated.emit(true);
                 this.getSalesStepData();
             })
         }
@@ -2337,6 +2347,7 @@ export class WorkflowSalesComponent extends AppComponentBase implements OnInit {
             }))
             .subscribe(result => {
                 this._workflowDataService.workflowSideSectionAdded.emit(true);
+                this._workflowDataService.workflowOverviewUpdated.emit(true);
             });
     }
 
@@ -2518,6 +2529,7 @@ export class WorkflowSalesComponent extends AppComponentBase implements OnInit {
             this._consultantPeriodSerivce.consultantSalesPut(this.activeSideSection.consultantPeriodId!, input)
                 .pipe(finalize(() => this.hideMainSpinner()))
                 .subscribe(result => {
+                    this._workflowDataService.workflowOverviewUpdated.emit(true);
                     if (this.editEnabledForcefuly) {
                         this.toggleEditMode();
                     }
@@ -2527,6 +2539,7 @@ export class WorkflowSalesComponent extends AppComponentBase implements OnInit {
                 .pipe(finalize(() => this.hideMainSpinner()))
                 .subscribe(result => {
                     this._workflowDataService.workflowSideSectionUpdated.emit({isStatusUpdate: true});
+                    this._workflowDataService.workflowOverviewUpdated.emit(true);
                     this.getSalesStepData();
                 });
         }
@@ -2592,7 +2605,13 @@ export class WorkflowSalesComponent extends AppComponentBase implements OnInit {
     formatExpirationNotificationsForDisplay(data: number[] | undefined): string {
         let contractExpirationNotificationDisplay: any[] = [];
         if (data?.length) {
-            contractExpirationNotificationDisplay = data?.map(x => this.contractExpirationNotificationDuration[x]);
+            contractExpirationNotificationDisplay = data?.map(x => {
+                if (x === 999) { // 999 - Manual date
+                    return 'Manual date';
+                } else {
+                    return this.contractExpirationNotificationDuration[x];
+                }
+            });
             return contractExpirationNotificationDisplay?.length ? contractExpirationNotificationDisplay.join(', ') : '-';
         } else {
             return '-';
@@ -2618,5 +2637,12 @@ export class WorkflowSalesComponent extends AppComponentBase implements OnInit {
                 .setErrors(null);
             return false;
         }
+    }
+
+    openInNewTab(clientId: string) {
+        const url = this.router.serializeUrl(
+            this.router.createUrlTree([`/app/clients/${clientId}/rates-and-fees`])
+        );
+        window.open(url, '_blank');
     }
 }

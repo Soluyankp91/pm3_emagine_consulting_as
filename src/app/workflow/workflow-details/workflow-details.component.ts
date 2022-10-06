@@ -435,6 +435,7 @@ export class WorkflowDetailsComponent extends AppComponentBase implements OnInit
         }))
         .subscribe(result => {
             this._workflowDataService.workflowSideSectionAdded.emit(true);
+            this._workflowDataService.workflowOverviewUpdated.emit(true);
         });
     }
 
@@ -491,6 +492,7 @@ export class WorkflowDetailsComponent extends AppComponentBase implements OnInit
                     .pipe(finalize(() => this.hideMainSpinner()))
                     .subscribe(result => {
                         this._workflowDataService.workflowTopSectionUpdated.emit(true);
+                        this._workflowDataService.workflowOverviewUpdated.emit(true);
                     });
             }
         });
@@ -529,6 +531,7 @@ export class WorkflowDetailsComponent extends AppComponentBase implements OnInit
                     .pipe(finalize(() => this.hideMainSpinner()))
                     .subscribe(result => {
                         this._workflowDataService.workflowTopSectionUpdated.emit(true);
+                        this._workflowDataService.workflowOverviewUpdated.emit(true);
                     });
             }
         });
@@ -569,6 +572,7 @@ export class WorkflowDetailsComponent extends AppComponentBase implements OnInit
                     .pipe(finalize(() => this.hideMainSpinner()))
                     .subscribe(result => {
                         this._workflowDataService.workflowSideSectionAdded.emit(true);
+                        this._workflowDataService.workflowOverviewUpdated.emit(true);
                     });
             }
         });

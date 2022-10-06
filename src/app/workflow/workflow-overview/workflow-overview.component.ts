@@ -78,6 +78,12 @@ export class WorkflowOverviewComponent extends AppComponentBase implements OnIni
         this.individualConsultantActionsAvailable = environment.dev;
         this.getOverviewData();
         this.getWorkflowHistory();
+
+        this._workflowDataService.workflowOverviewUpdated
+            .pipe(takeUntil(this._unsubscribe))
+            .subscribe((value: boolean) => {
+                this.getOverviewData();
+            });
     }
 
     ngOnDestroy(): void {
@@ -143,7 +149,7 @@ export class WorkflowOverviewComponent extends AppComponentBase implements OnIni
             if (oldestDateClientArray![0]!.endDate === undefined || oldestDateClientArray![0]!.endDate.toDate().getTime() < this.formatDate(startOfClientArray![0]?.startDate!.toDate()!).getTime()) {
                 endDate = this.formatDate(startOfClientArray![0]?.startDate!.toDate()!);
             }
-            
+
             this.viewOptions.start = new GanttDate(getUnixTime(new Date(startOfClientArray![0]?.startDate!.toDate()!)));
             this.viewOptions.min = new GanttDate(getUnixTime(new Date(startOfClientArray![0]?.startDate!.toDate()!)));
             this.viewOptions.end = endDate.getTime() !== new Date().getTime() ? new GanttDate(getUnixTime(endDate)) : new GanttDate(getUnixTime(new Date(oldestDateClientArray![0]?.endDate?.toDate()!)));

@@ -86,7 +86,6 @@
             <mat-checkbox color="accent" name="differentDebtorNumber" formControlName="differentDebtorNumber" class="green-checkbox" (change)="disableOrEnableInput(!projectLineForm.differentDebtorNumber!.value, projectLineForm.debtorNumber)">
                 Different debitor number
             </mat-checkbox>
-
             <mat-form-field appearance="outline" class="u-w--100 u-mt--10 formFieldNoMarginPadding">
                 <mat-label>Invoice recipient</mat-label>
                 <input #clientInvoicingRecipientInput type="text" matInput [matAutocomplete]="clientInvoicingRecipientAutocomplete" formControlName="invoiceRecipientId" appPreventDoubleClick (throttledClick)="$event.stopPropagation()" placeholder="Invoice recipient">
@@ -101,6 +100,19 @@
                     </ng-container>
                 </mat-autocomplete>
             </mat-form-field>
+            <div fxLayout="row" fxLayoutAlign="start start" class="u-w--100" *ngIf="projectLineForm.invoiceRecipientId?.value">
+                <span class="invoice-recipient--blue-text-bold">
+                    {{projectLineForm.invoiceRecipientId?.value?.countryName ? projectLineForm.invoiceRecipientId?.value?.countryName + '| ' : ''}}
+                    {{projectLineForm.invoiceRecipientId?.value?.city ? projectLineForm.invoiceRecipientId?.value?.city + ' | ' : ''}}
+                    {{projectLineForm.invoiceRecipientId?.value?.address ? projectLineForm.invoiceRecipientId?.value?.address + ' | ' : ''}}
+                    {{projectLineForm.invoiceRecipientId?.value?.address2 ? projectLineForm.invoiceRecipientId?.value?.address2 + ' | ' : ''}}
+                    {{projectLineForm.invoiceRecipientId?.value?.postCode}}
+                </span>
+                <button mat-icon-button class="button-open-in-new" *ngIf="projectLineForm.invoiceRecipientId?.value?.clientId"
+                    (click)="openInNewTab(projectLineForm.invoiceRecipientId?.value?.clientId)">
+                    <mat-icon>open_in_new</mat-icon>
+                </button>
+            </div>
             <mat-checkbox color="accent" name="differentInvoiceRecipient" formControlName="differentInvoiceRecipient" class="green-checkbox" (change)="disableOrEnableInput(!projectLineForm.differentInvoiceRecipient!.value, projectLineForm.invoiceRecipientId)">
                 Different invoice recipient
             </mat-checkbox>

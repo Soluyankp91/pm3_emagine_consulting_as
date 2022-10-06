@@ -222,7 +222,7 @@
                                                                 </mat-expansion-panel-header>
                                                                 <div *ngIf="clientContract.documents?.length; else noFilesTemplate" class="column u-ml--32">
                                                                     <div *ngFor="let file of clientContract.documents; last as last" class="flex-items-center" [ngClass]="{'u-mb--20': !last}">
-                                                                        <div class="u-w--100" (click)="downloadDocument(file.documentStorageGuid!)">
+                                                                        <div class="cursor-pointer u-w--100" (click)="downloadDocument(file.documentStorageGuid!)">
                                                                             <mat-icon class="icon" svgIcon="pdf"></mat-icon>
                                                                             <span class="text-bold">
                                                                                 {{ file.name }}
@@ -261,7 +261,7 @@
                                                                 </mat-expansion-panel-header>
                                                                 <div *ngIf="consultantContract.documents?.length; else noFilesTemplate" class="column u-ml--32">
                                                                     <div *ngFor="let file of consultantContract.documents; last as last" class="flex-items-center" [ngClass]="{'u-mb--20': !last}">
-                                                                        <div class="u-w--100" (click)="downloadDocument(file.documentStorageGuid!)">
+                                                                        <div class="cursor-pointer u-w--100" (click)="downloadDocument(file.documentStorageGuid!)">
                                                                             <mat-icon class="icon" svgIcon="pdf"></mat-icon>
                                                                             <span class="text-bold">
                                                                                 {{ file.name }}
@@ -301,7 +301,7 @@
                                                                 </mat-expansion-panel-header>
                                                                 <div *ngIf="internalContract.documents?.length; else noFilesTemplate" class="column u-ml--32">
                                                                     <div *ngFor="let file of internalContract.documents; last as last" class="flex-items-center" [ngClass]="{'u-mb--20': !last}">
-                                                                        <div class="u-w--100" (click)="downloadDocument(file.documentStorageGuid!)">
+                                                                        <div class="cursor-pointer u-w--100" (click)="downloadDocument(file.documentStorageGuid!)">
                                                                             <mat-icon class="icon" svgIcon="pdf"></mat-icon>
                                                                             <span class="text-bold">
                                                                                 {{ file.name }}
