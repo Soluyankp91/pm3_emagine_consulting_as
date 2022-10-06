@@ -21,9 +21,6 @@
             z-index: 9999;
         }
     }
-    &.top-toolbar-shown {
-        height: calc(100vh - 115px);
-    }
     &--header {
         &-text {
             color: $dark-grey-color;
@@ -31,8 +28,14 @@
             font-weight: 800;
         }
     }
+    &.top-toolbar-shown {
+        height: calc(100vh - 115px);
+        .workflow-notes--content {
+            height: calc(100vh - 250px);
+        }
+    }
     &--content {
-        height: 90%;
+        height: calc(100vh - 350px);
         overflow: hidden;
         &-text {
             color: $dark-grey-color;

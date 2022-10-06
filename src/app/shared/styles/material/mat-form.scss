@@ -700,3 +700,21 @@ input::-webkit-inner-spin-button {
 input[type=number] {
   -moz-appearance: textfield;
 }
+
+
+.autosize-textarea {
+    .mat-form-field-wrapper,
+    .mat-form-field-flex {
+        min-height: 100% !important;
+        max-height: 100% !important;
+        height: 100% !important;
+    }
+    &.top-toolbar-shown {
+        textarea {
+            max-height: calc(100vh - 290px);
+        }
+    }
+    textarea {
+        max-height: calc(100vh - 390px);
+    }
+}
