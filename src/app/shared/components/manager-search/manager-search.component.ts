@@ -103,28 +103,40 @@ export class ManagerSearchComponent extends AppComponentBase implements OnInit, 
         this.showMainSpinner();
         this._clientPeriodService.stepResponsible(this.periodId, this.stepType, responsiblePerson.id)
             .pipe(finalize(() => this.hideMainSpinner()))
-            .subscribe(() => this.responsiblePerson = responsiblePerson);
+            .subscribe(() => {
+                this.responsiblePerson = responsiblePerson;
+                this._workflowDataService.workflowSideSectionUpdated.emit({isStatusUpdate: true});
+            });
     }
 
     changeResponsibleForConsultantPeriodStep(responsiblePerson: EmployeeDto) {
         this.showMainSpinner();
         this._consultantPeriodService.stepResponsible(this.consultantPeriodId, this.stepType,  responsiblePerson.id)
             .pipe(finalize(() => this.hideMainSpinner()))
-            .subscribe(() => this.responsiblePerson = responsiblePerson);
+            .subscribe(() => {
+                this.responsiblePerson = responsiblePerson;
+                this._workflowDataService.workflowSideSectionUpdated.emit({isStatusUpdate: true});
+            });
     }
 
     changeResponsibleWorkflowTerminationStep(responsiblePerson: EmployeeDto) {
         this.showMainSpinner();
         this._workflowService.terminationStepResponsible(this.workflowId, this.stepType,  responsiblePerson.id)
             .pipe(finalize(() => this.hideMainSpinner()))
-            .subscribe(() => this.responsiblePerson = responsiblePerson);
+            .subscribe(() => {
+                this.responsiblePerson = responsiblePerson;
+                this._workflowDataService.workflowSideSectionUpdated.emit({isStatusUpdate: true});
+            });
     }
 
     changeResponsibleConsultantTerminationStep(responsiblePerson: EmployeeDto) {
         this.showMainSpinner();
         this._workflowService.terminationConsultantStepResponsible(this.stepType, this.workflowId, this.consultantPeriodId,  responsiblePerson.id)
             .pipe(finalize(() => this.hideMainSpinner()))
-            .subscribe(() => this.responsiblePerson = responsiblePerson);
+            .subscribe(() => {
+                this.responsiblePerson = responsiblePerson;
+                this._workflowDataService.workflowSideSectionUpdated.emit({isStatusUpdate: true});
+            });
     }
 
     detectManagerStatus(status: number) {

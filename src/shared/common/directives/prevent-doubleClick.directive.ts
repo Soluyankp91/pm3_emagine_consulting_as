@@ -13,7 +13,7 @@ export class PreventDoubleClickDirective implements OnInit, OnDestroy {
     throttledClick = new EventEmitter();
 
     private clicks = new Subject();
-    private subscription: Subscription;
+    private subscription = new Subscription();
 
     constructor() { }
 

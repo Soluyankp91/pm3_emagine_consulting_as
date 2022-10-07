@@ -14,7 +14,7 @@
                             <mat-form-field class="workflow-list--filter-manager-dropdown" appearance="fill" (click)="$event.stopPropagation()">
                                 <input #accountManagerFilterInput #trigger type="text" matInput [matAutocomplete]="managerAutocomplete" [formControl]="accountManagerFilter" (click)="$event.stopPropagation()" placeholder="Select account manager(s)">
                             </mat-form-field>
-                            <mat-autocomplete #managerAutocomplete="matAutocomplete">
+                            <mat-autocomplete #managerAutocomplete="matAutocomplete" [displayWith]="displayNameFn">
                                 <mat-option *ngFor="let manager of selectedAccountManagers"
                                     class="u-pg--5"
                                     [value]="manager" (click)="optionClicked($event, manager, selectedAccountManagers)">
@@ -46,7 +46,7 @@
                                         class="u-pg--5"
                                         [ngClass]="{ 'no-data': manager.id === 'no-data', 'hidden-option': selectedAccountManagers.includes(manager)}"
                                         [value]="selectedAccountManagers" (click)="optionClicked($event, manager, selectedAccountManagers)">
-                                        <div>
+                                        <div class="u-w--100">
                                             <mat-checkbox [checked]="manager.selected"
                                                 *ngIf="manager.id !== 'no-data'"
                                                 color="primary"
@@ -387,9 +387,9 @@
                 <ng-container matColumnDef="action">
                     <mat-header-cell *matHeaderCellDef fxFlex="3%"></mat-header-cell>
                     <mat-cell *matCellDef="let row" fxFlex="3%">
-                        <button *ngIf="!row.isDeleted" mat-icon-button class="three-dots-actions-btn" [matMenuTriggerFor]="workflowActions" appPreventDoubleClick (throttledClick)="$event.stopPropagation();"><mat-icon>more_horiz</mat-icon></button>
+                        <button *ngIf="!row.isDeleted" mat-icon-button class="three-dots-actions-btn" #menuDeleteTrigger="matMenuTrigger" [matMenuTriggerFor]="workflowActions" appPreventDoubleClick (throttledClick)="$event.stopPropagation();"><mat-icon>more_horiz</mat-icon></button>
                         <mat-menu #workflowActions>
-                            <button class="menu-item menu-item--cancel" mat-menu-item appPreventDoubleClick (throttledClick)="confirmDeleteWorkflow(row?.workflowId)">
+                            <button class="menu-item menu-item--cancel" mat-menu-item (click)="confirmDeleteWorkflow(row?.workflowId)">
                                     <mat-icon>clear</mat-icon>
                                     <span>Delete</span>
                             </button>
@@ -400,9 +400,6 @@
                 <mat-header-row *matHeaderRowDef="workflowDisplayColumns"></mat-header-row>
                 <mat-row *matRowDef="let row; columns: workflowDisplayColumns;" class="mat-elevation-z0 cursor-pointer flex-items-start" [ngClass]="{'active-workflow': row.isActive}" (contextmenu)="onRightClick($event, {content: row})" appPreventDoubleClick (throttledClick)="navigateToWorkflowDetails(row.workflowId)"></mat-row>
             </mat-table>
-            <div class="spinner-container" *ngIf="isDataLoading">
-                <mat-spinner [diameter]="50"></mat-spinner>
-            </div>
             <div class="results-not-found" *ngIf="totalCount === 0 && !isDataLoading">
                 RESULTS NOT FOUND
             </div>

@@ -1,5 +1,6 @@
 import { Component, EventEmitter, Inject, Injector, OnDestroy, OnInit, Output } from '@angular/core';
 import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
+import { Router } from '@angular/router';
 import { of, Subject } from 'rxjs';
 import { debounceTime, finalize, switchMap, takeUntil } from 'rxjs/operators';
 import { InternalLookupService } from 'src/app/shared/common/internal-lookup.service';
@@ -34,7 +35,8 @@ export class AddOrEditProjectLineDialogComponent extends AppComponentBase implem
         },
         private dialogRef: MatDialogRef<AddOrEditProjectLineDialogComponent>,
         private _lookupService: LookupServiceProxy,
-        private _internalLookupService: InternalLookupService
+        private _internalLookupService: InternalLookupService,
+        private router: Router
     ) {
         super(injector);
         this.projectLineForm = new ProjectLineForm();
@@ -216,6 +218,13 @@ export class AddOrEditProjectLineDialogComponent extends AppComponentBase implem
 
     private closeInternal(): void {
         this.dialogRef.close();
+    }
+
+    openInNewTab(clientId: number | undefined) {
+        const url = this.router.serializeUrl(
+            this.router.createUrlTree([`/app/clients/${clientId}/rates-and-fees`])
+        );
+        window.open(url, '_blank');
     }
 
 }

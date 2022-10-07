@@ -18,6 +18,7 @@ import { InternalLookupService } from '../shared/common/internal-lookup.service'
 import { ConfirmationDialogComponent } from '../shared/components/confirmation-dialog/confirmation-dialog.component';
 import { ManagerStatus } from '../shared/components/manager-search/manager-search.model';
 import { CreateWorkflowDialogComponent } from './create-workflow-dialog/create-workflow-dialog.component';
+import { WorkflowDataService } from './workflow-data.service';
 import { SelectableEmployeeDto, WorkflowFlag, WorkflowList } from './workflow.model';
 
 const WorkflowGridOptionsKey = 'WorkflowGridFILTERS.1.0.2.';
@@ -29,6 +30,7 @@ const WorkflowGridOptionsKey = 'WorkflowGridFILTERS.1.0.2.';
 
 export class WorkflowComponent extends AppComponentBase implements OnInit, OnDestroy {
     @ViewChild('trigger', { read: MatAutocompleteTrigger }) trigger: MatAutocompleteTrigger;
+    @ViewChild('menuDeleteTrigger', {static: false}) menuDeleteTrigger: MatMenuTrigger;
     @ViewChild('clientsPaginator') paginator: MatPaginator;
     isLoading: boolean;
 
@@ -299,6 +301,7 @@ export class WorkflowComponent extends AppComponentBase implements OnInit, OnDes
     }
 
     confirmDeleteWorkflow(workflowId: string) {
+        this.menuDeleteTrigger.closeMenu();
         const scrollStrategy = this.overlay.scrollStrategies.reposition();
         const dialogRef = this.dialog.open(ConfirmationDialogComponent, {
             width: '450px',
@@ -327,9 +330,9 @@ export class WorkflowComponent extends AppComponentBase implements OnInit, OnDes
     }
 
     deleteWorkflow(workflowId: string) {
-        this.isDataLoading;
+        this.isDataLoading = true;
         this._workflowService.delete(workflowId)
-            .pipe(finalize(() => this.isDataLoading = false))
+            .pipe(finalize(() => this.isDataLoading = false ))
             .subscribe(result => {
                 this.getWorkflowList();
             });
@@ -414,7 +417,6 @@ export class WorkflowComponent extends AppComponentBase implements OnInit, OnDes
             this.workflowListSubscription.unsubscribe();
         }
         this.isDataLoading = true;
-
         if (filterChanged) {
             this.pageNumber = 1;
         }
@@ -553,6 +555,10 @@ export class WorkflowComponent extends AppComponentBase implements OnInit, OnDes
     onOpenedMenu() {
         this.accountManagerFilter.setValue('');
         this.accountManagerFilter.markAsTouched();
+    }
+
+    displayNameFn(option: any) {
+        return option?.name;
     }
 }
 
