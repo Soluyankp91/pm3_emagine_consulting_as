@@ -6,6 +6,7 @@
     top: 115px;
     z-index: 9999;
     border-left: 1px solid $sand-color;
+    border-top: 1px solid $sand-color;
     padding: 32px 16px;
     background-color: $white-color;
     &-wrapper {
@@ -20,9 +21,6 @@
             z-index: 9999;
         }
     }
-    &.top-toolbar-shown {
-        height: calc(100vh - 115px);
-    }
     &--header {
         &-text {
             color: $dark-grey-color;
@@ -30,8 +28,15 @@
             font-weight: 800;
         }
     }
+    &.top-toolbar-shown {
+        height: calc(100vh - 115px);
+        .workflow-notes--content {
+            height: calc(100vh - 250px);
+        }
+    }
     &--content {
-        height: 85%;
+        height: calc(100vh - 350px);
+        overflow: hidden;
         &-text {
             color: $dark-grey-color;
             font-weight: 600;
