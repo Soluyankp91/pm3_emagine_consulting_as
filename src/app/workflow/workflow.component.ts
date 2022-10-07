@@ -55,6 +55,7 @@ export class WorkflowComponent extends AppComponentBase implements OnInit, OnDes
         'WorkflowStatus',
         'openProcess',
         'Steps',
+        'startDateOfOpenedPeriodOrLastClientPeriod',
         'action'
     ];
 
@@ -101,7 +102,7 @@ export class WorkflowComponent extends AppComponentBase implements OnInit, OnDes
     // reference to the MatMenuTrigger in the DOM
     @ViewChild('rightMenuTrigger', {static: true}) matMenuTrigger: MatMenuTrigger;
 
-    workflowListSubscription: Subscription;
+    workflowListSubscription = new Subscription();
 
     private _unsubscribe = new Subject();
     constructor(
@@ -446,6 +447,7 @@ export class WorkflowComponent extends AppComponentBase implements OnInit, OnDes
                         workflowId: x.workflowId,
                         clientName: x.clientName,
                         startDate: x.startDate,
+                        startDateOfOpenedPeriodOrLastClientPeriod: x.startDateOfOpenedPeriodOrLastClientPeriod,
                         endDate: x.endDate,
                         salesType: this.findItemById(this.saleTypes, x.salesTypeId),
                         deliveryType: this.findItemById(this.deliveryTypes, x.deliveryTypeId),

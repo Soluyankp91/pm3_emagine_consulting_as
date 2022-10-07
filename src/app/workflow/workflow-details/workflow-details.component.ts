@@ -20,6 +20,7 @@ import { FormControl, Validators } from '@angular/forms';
 import { LocalHttpService } from 'src/shared/service-proxies/local-http.service';
 import { AuthenticationResult } from '@azure/msal-browser';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
+import { WorkflowPeriodComponent } from '../workflow-period/workflow-period.component';
 
 @Component({
   selector: 'app-workflow-details',
@@ -30,8 +31,8 @@ import { HttpClient, HttpHeaders } from '@angular/common/http';
 export class WorkflowDetailsComponent extends AppComponentBase implements OnInit, OnDestroy, AfterViewInit {
     @ViewChild('scroller', {static: true}) scroller: ElementRef<HTMLElement>;
     @ViewChild('scrollable', {static: true}) scrollBar: NgScrollbar;
-    @ViewChild('workflowSales', {static: false}) workflowSales: WorkflowSalesComponent;
     @ViewChild('topMenuTabs', {static: false}) topMenuTabs: MatTabGroup;
+    @ViewChild('workflowPeriod', {static: false}) workflowPeriod: WorkflowPeriodComponent;
 
 
     menuIndex = 0;
@@ -131,15 +132,6 @@ export class WorkflowDetailsComponent extends AppComponentBase implements OnInit
 
     showOrHideNotes() {
         this.isNoteVisible = !this.isNoteVisible;
-        // if (this.isNoteVisible) {
-        //     if (this.workflowNoteOldValue !== this.workflowNote.value) {
-        //         this.confirmCancelNote();
-        //     } else {
-        //         this.isNoteVisible = false;
-        //     }
-        // } else {
-        //     this.isNoteVisible = true;
-        // }
     }
 
     confirmCancelNote() {

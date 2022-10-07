@@ -200,24 +200,24 @@
                     </mat-cell>
                 </ng-container>
                 <ng-container matColumnDef="clientName">
-                    <mat-header-cell *matHeaderCellDef mat-sort-header fxFlex="15%">Client</mat-header-cell>
-                    <mat-cell *matCellDef="let row" fxFlex="15%">
+                    <mat-header-cell *matHeaderCellDef mat-sort-header fxFlex="11%">Client</mat-header-cell>
+                    <mat-cell *matCellDef="let row" fxFlex="11%">
                         <span class="text-truncate-ellipsis text-bold-800" [matTooltip]="row.clientName ?? '-'" matTooltipClass="white-tooltip" appShowIfTruncated>
                             {{row.clientName ?? '-'}}
                         </span>
                     </mat-cell>
                 </ng-container>
                 <ng-container matColumnDef="SalesTypeId">
-                    <mat-header-cell *matHeaderCellDef mat-sort-header fxFlex="10%"> Sales type </mat-header-cell>
-                    <mat-cell *matCellDef="let row" fxFlex="10%">
+                    <mat-header-cell *matHeaderCellDef mat-sort-header fxFlex="8%"> Sales type </mat-header-cell>
+                    <mat-cell *matCellDef="let row" fxFlex="8%">
                         <span class="text-truncate-ellipsis"  [matTooltip]="row.salesType?.name" matTooltipClass="white-tooltip" appShowIfTruncated>
                             {{row.salesType?.name ?? '-'}}
                         </span>
                     </mat-cell>
                 </ng-container>
                 <ng-container matColumnDef="DeliveryTypeId">
-                    <mat-header-cell *matHeaderCellDef mat-sort-header fxFlex="10%"> Delivery type </mat-header-cell>
-                    <mat-cell *matCellDef="let row" fxFlex="10%">
+                    <mat-header-cell *matHeaderCellDef mat-sort-header fxFlex="8%"> Delivery type </mat-header-cell>
+                    <mat-cell *matCellDef="let row" fxFlex="8%">
                         <span class="text-truncate-ellipsis" [matTooltip]="row.deliveryType?.name" matTooltipClass="white-tooltip" appShowIfTruncated>
                             {{row.deliveryType?.name ?? '-'}}
                         </span>
@@ -225,24 +225,24 @@
                 </ng-container>
 
                 <ng-container matColumnDef="StartDate">
-                    <mat-header-cell *matHeaderCellDef mat-sort-header fxFlex="7%"> Start </mat-header-cell>
-                    <mat-cell *matCellDef="let row" fxFlex="7%">
+                    <mat-header-cell *matHeaderCellDef mat-sort-header fxFlex="6%"> Start </mat-header-cell>
+                    <mat-cell *matCellDef="let row" fxFlex="6%">
                         <span class="text-truncate-ellipsis" [matTooltip]="(row.startDate | date: 'dd.MM.YYYY') ?? '-'" matTooltipClass="white-tooltip" appShowIfTruncated>
                             {{(row.startDate | date: 'dd.MM.YYYY') ?? '-'}}
                         </span>
                     </mat-cell>
                 </ng-container>
                 <ng-container matColumnDef="EndDate">
-                    <mat-header-cell *matHeaderCellDef mat-sort-header fxFlex="7%"> End </mat-header-cell>
-                    <mat-cell *matCellDef="let row" fxFlex="7%">
+                    <mat-header-cell *matHeaderCellDef mat-sort-header fxFlex="6%"> End </mat-header-cell>
+                    <mat-cell *matCellDef="let row" fxFlex="6%">
                         <span class="text-truncate-ellipsis" [matTooltip]="(row.endDate | date: 'dd.MM.YYYY') ?? '-'" matTooltipClass="white-tooltip" appShowIfTruncated>
                             {{(row.endDate | date: 'dd.MM.YYYY') ?? '-'}}
                         </span>
                     </mat-cell>
                 </ng-container>
                 <ng-container matColumnDef="ConsultantName">
-                    <mat-header-cell *matHeaderCellDef mat-sort-header fxFlex="12%"> Consultants </mat-header-cell>
-                    <mat-cell *matCellDef="let row" fxFlex="12%">
+                    <mat-header-cell *matHeaderCellDef mat-sort-header fxFlex="11%"> Consultants </mat-header-cell>
+                    <mat-cell *matCellDef="let row" fxFlex="11%">
                         <ng-container *ngIf="row.consultants?.length > 1; else singleConsultantDisplay">
                             <span class="flex-items-center" fxFlex="100%">
                                 <img class="border-rounded-50 image-settings--dropdown u-mr--10" src="../../assets/common/images/no-img.svg" />
@@ -262,8 +262,8 @@
                     </mat-cell>
                 </ng-container>
                 <ng-container matColumnDef="WorkflowStatus">
-                    <mat-header-cell *matHeaderCellDef fxFlex="7%" mat-sort-header fxLayoutAlign="center center"> WF Status </mat-header-cell>
-                    <mat-cell *matCellDef="let row" fxFlex="7%" fxLayoutAlign="center center">
+                    <mat-header-cell *matHeaderCellDef fxFlex="5%" mat-sort-header fxLayoutAlign="center center"> WF Status </mat-header-cell>
+                    <mat-cell *matCellDef="let row" fxFlex="5%" fxLayoutAlign="center center">
                         <mat-icon class="workflow-status" [matTooltip]="row.statusName + ' workflow'" matTooltipClass="white-tooltip" [ngClass]="row?.statusIcon">fiber_manual_record</mat-icon>
                     </mat-cell>
                 </ng-container>
@@ -374,6 +374,14 @@
                                 </ng-container>
                             </div>
                         </div>
+                    </mat-cell>
+                </ng-container>
+                <ng-container matColumnDef="startDateOfOpenedPeriodOrLastClientPeriod">
+                    <mat-header-cell *matHeaderCellDef mat-sort-header fxFlex="10%"> Start date of step </mat-header-cell>
+                    <mat-cell *matCellDef="let row" fxFlex="10%">
+                        <span class="text-truncate-ellipsis" [matTooltip]="(row.startDateOfOpenedPeriodOrLastClientPeriod | date: 'dd.MM.YYYY') ?? '-'" matTooltipClass="white-tooltip" appShowIfTruncated>
+                            {{(row.startDateOfOpenedPeriodOrLastClientPeriod | date: 'dd.MM.YYYY') ?? '-'}}
+                        </span>
                     </mat-cell>
                 </ng-container>
                 <ng-container matColumnDef="action">

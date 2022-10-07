@@ -1,4 +1,4 @@
-import { FormArray, FormControl, FormGroup } from "@angular/forms";
+import { FormArray, FormControl, FormGroup, Validators } from "@angular/forms";
 
 export class WorkflowContractsMainForm extends FormGroup {
     constructor() {
@@ -7,11 +7,12 @@ export class WorkflowContractsMainForm extends FormGroup {
             deliveryType: new FormControl(null),
             projectType: new FormControl(null),
             margin: new FormControl(null),
-            projectDescription: new FormControl(null),
+            projectDescription: new FormControl(null, Validators.required),
+            projectName: new FormControl(null, Validators.required),
             discounts: new FormControl(null),
-            remarks: new FormControl(null),
+            remarks: new FormControl(null, Validators.required),
             noRemarks: new FormControl(false),
-            customDebtorNumber: new FormControl(null)
+            customDebtorNumber: new FormControl(null, Validators.required)
         });
     }
 
@@ -30,6 +31,9 @@ export class WorkflowContractsMainForm extends FormGroup {
     get projectDescription() {
         return this.get('projectDescription');
     }
+    get projectName() {
+        return this.get('projectName');
+    }
     get discounts() {
         return this.get('discounts');
     }
@@ -47,11 +51,6 @@ export class WorkflowContractsMainForm extends FormGroup {
 export class WorkflowContractsSyncForm extends FormGroup {
     constructor() {
         super({
-            salesType: new FormControl(null),
-            deliveryType: new FormControl(null),
-            projectDescription: new FormControl(null),
-            discounts: new FormControl(null),
-            remarks: new FormControl(null),
             manualCheckbox: new FormControl(false),
             newLegalContract: new FormControl(false),
             clientLegalContractDoneStatusId: new FormControl(null),
@@ -59,25 +58,10 @@ export class WorkflowContractsSyncForm extends FormGroup {
             showManualOption: new FormControl(false),
             isNewSyncNeeded: new FormControl(false),
             lastSyncedDate: new FormControl(null),
-            consultants: new FormArray([])
+            consultants: new FormArray([], Validators.minLength(1))
         });
     }
 
-    get salesType() {
-        return this.get('salesType');
-    }
-    get deliveryType() {
-        return this.get('deliveryType');
-    }
-    get projectDescription() {
-        return this.get('projectDescription');
-    }
-    get discounts() {
-        return this.get('discounts');
-    }
-    get remarks() {
-        return this.get('remarks');
-    }
     get manualCheckbox() {
         return this.get('manualCheckbox');
     }
@@ -107,7 +91,6 @@ export class WorkflowContractsSyncForm extends FormGroup {
 export class WorkflowContractsClientDataForm extends FormGroup {
     constructor() {
         super({
-            // capOnTimeReporting: new FormControl(null),
             directClientId: new FormControl(null),
             pdcInvoicingEntityId: new FormControl(null),
             clientTimeReportingCapId: new FormControl(null),
@@ -123,7 +106,7 @@ export class WorkflowContractsClientDataForm extends FormGroup {
             invoicingReferencePersonIdValue: new FormControl(null),
             invoicingReferencePerson: new FormControl(null),
 
-            specialContractTerms: new FormControl(null),
+            specialContractTerms: new FormControl(null, Validators.required),
             noSpecialContractTerms: new FormControl(null),
             clientRates: new FormArray([]),
             clientFees: new FormArray([]),
@@ -131,9 +114,6 @@ export class WorkflowContractsClientDataForm extends FormGroup {
         });
     }
 
-    // get capOnTimeReporting() {
-    //     return this.get('capOnTimeReporting');
-    // }
     get directClientId() {
         return this.get('directClientId');
     }
@@ -190,9 +170,8 @@ export class WorkflowContractsClientDataForm extends FormGroup {
 export class WorkflowContractsConsultantsDataForm extends FormGroup {
     constructor() {
         super({
-            consultants: new FormArray([])
+            consultants: new FormArray([], Validators.minLength(1))
         })
-
     }
     get consultants() {
         return this.get('consultants') as FormArray;

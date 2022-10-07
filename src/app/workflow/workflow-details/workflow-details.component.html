@@ -118,7 +118,7 @@
                 </ng-template>
                 <div fxLayout="row" fxLayoutAlign="start start" class="workflow-form--panel u-w--100">
                     <div fxFlex="80%">
-                        <app-workflow-period *ngIf="selectedIndex === i + 1" [periodId]="tab.id" [workflowId]="workflowId"></app-workflow-period>
+                        <app-workflow-period #workflowPeriod *ngIf="selectedIndex === i + 1" [periodId]="tab.id" [workflowId]="workflowId"></app-workflow-period>
                     </div>
                     <div fxFlex="20%" class="workflow-notes-wrapper">
                         <app-workflow-notes *ngIf="selectedIndex === i + 1" [topToolbarVisible]="topToolbarVisible" [workflowId]="workflowId" [alwaysVisible]="true"></app-workflow-notes>
@@ -143,6 +143,7 @@
                     class="button-accept mat-elevation-z0"
                     mat-flat-button
                     *ngIf="_workflowDataService.getWorkflowProgress?.stepSpecificPermissions!['Completion']"
+                    [disabled]="!workflowPeriod.formValid"
                     appPreventDoubleClick (throttledClick)="saveOrCompleteStep(false)">
                     Complete step
             </button>

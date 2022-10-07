@@ -69,7 +69,6 @@ export class GanttChartComponent extends GanttUpper implements OnInit {
             group.mergedItems = this.buildGroupMergedItems(group.items);
             group.mergedItems = group.mergedItems.length === 0 ? [[]] : group.mergedItems;
         });
-        console.log(this.groups)
     }
 
     mapListByProperty(list: any[], prop: string) {

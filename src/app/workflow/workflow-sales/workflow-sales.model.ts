@@ -3,23 +3,24 @@ import { FormArray, FormControl, FormGroup, Validators } from "@angular/forms";
 export class WorkflowSalesMainForm extends FormGroup {
     constructor() {
         super({
-            salesType: new FormControl(null),
-            deliveryType: new FormControl(null),
-            projectType: new FormControl(null),
-            margin: new FormControl(null),
-            projectCategory: new FormControl(null),
-            projectDescription: new FormControl(null, Validators.maxLength(4000)),
+            salesType: new FormControl(null, Validators.required),
+            deliveryType: new FormControl(null, Validators.required),
+            projectType: new FormControl(null, Validators.required),
+            margin: new FormControl(null, Validators.required),
+            projectCategory: new FormControl(null, Validators.required),
+            projectDescription: new FormControl(null, [Validators.required, Validators.maxLength(4000)]),
+            projectName: new FormControl(null, [Validators.required, Validators.maxLength(100)]),
 
             discounts: new FormControl(null),
 
             commissions: new FormArray([]),
 
-            salesAccountManagerIdValue: new FormControl(null),
+            salesAccountManagerIdValue: new FormControl(null, Validators.required),
             commissionAccountManagerIdValue: new FormControl(null),
             contractExpirationNotification: new FormControl(null),
             customContractExpirationNotificationDate: new FormControl(null),
 
-            remarks: new FormControl(null),
+            remarks: new FormControl(null, Validators.required),
             noRemarks: new FormControl(false)
         });
     }
@@ -42,6 +43,9 @@ export class WorkflowSalesMainForm extends FormGroup {
     get projectDescription() {
         return this.get('projectDescription');
     }
+    get projectName() {
+        return this.get('projectName');
+    }
     get discounts() {
         return this.get('discounts');
     }
@@ -60,7 +64,6 @@ export class WorkflowSalesMainForm extends FormGroup {
     get customContractExpirationNotificationDate() {
         return this.get('customContractExpirationNotificationDate');
     }
-
     get remarks() {
         return this.get('remarks');
     }
@@ -74,64 +77,61 @@ export class WorkflowSalesClientDataForm extends FormGroup {
         super({
             // Client
             differentEndClient: new FormControl(true),
-            directClientIdValue: new FormControl(null),
-            endClientIdValue: new FormControl(null),
+            directClientIdValue: new FormControl(null, Validators.required),
+            endClientIdValue: new FormControl(null, Validators.required),
 
             // PDC Invoicing Entity (client)
 
             // Client Invoicing Recipient
-            pdcInvoicingEntityId: new FormControl(null),
-            clientInvoicingRecipientSameAsDirectClient: new FormControl(false),
+            pdcInvoicingEntityId: new FormControl(null, Validators.required),
+            clientInvoicingRecipientSameAsDirectClient: new FormControl(false, Validators.required),
             invoicingReferenceNumber: new FormControl(null),
-            clientInvoicingRecipientIdValue: new FormControl(null),
+            clientInvoicingRecipientIdValue: new FormControl(null, Validators.required),
 
             // Client Invoicing Reference Person
-            invoicingReferencePersonIdValue: new FormControl(null),
-            noInvoicingReferencePerson: new FormControl(false),
+            invoicingReferencePersonIdValue: new FormControl(null, Validators.required),
+            noInvoicingReferencePerson: new FormControl(false, Validators.required),
 
             // Client Evaluations - Consultant
-            evaluationsReferencePersonIdValue: new FormControl(null),
+            evaluationsReferencePersonIdValue: new FormControl(null, Validators.required),
             evaluationsDisabled: new FormControl(false),
-            evaluationsDisabledReason: new FormControl(null),
+            evaluationsDisabledReason: new FormControl(null, Validators.required),
 
             // Client Contract Signers
             contractSigners: new FormArray([]),
 
             // Client Special Contract Terms
-            specialContractTerms: new FormControl(null),
+            specialContractTerms: new FormControl(null, Validators.required),
             noSpecialContractTerms: new FormControl(false),
 
             // Client Rate & Invoicing
             clientRateAndInvoicing: new FormControl(null),
-            clientPrice: new FormControl(null),
-            clientCurrency: new FormControl(null),
-            rateUnitTypeId: new FormControl(null),
-            clientInvoiceCurrency: new FormControl(null),
-            clientInvoiceFrequency: new FormControl(null),
-            clientInvoiceTime: new FormControl(null),
-            clientInvoicingDate: new FormControl(null),
-            //client special rates
-            clientSpecialRatePrice: new FormControl(null),
-            clientSpecialRateCurrency: new FormControl(null),
+            clientPrice: new FormControl(null, Validators.required),
+            clientCurrency: new FormControl(null, Validators.required),
+            rateUnitTypeId: new FormControl(null, Validators.required),
+            clientInvoiceCurrency: new FormControl(null, Validators.required),
+            clientInvoiceFrequency: new FormControl(null, Validators.required),
+            clientInvoiceTime: new FormControl(null, Validators.required),
+            clientInvoicingDate: new FormControl(null, Validators.required),
 
-            // clientFees
+            // clientRatesNFees
             clientFees: new FormArray([]),
             clientRates: new FormArray([]),
 
             // Client Contract Duration
-            clientContractStartDate: new FormControl(null),
-            clientContractEndDate: new FormControl(null),
+            clientContractStartDate: new FormControl(null, Validators.required),
+            clientContractEndDate: new FormControl(null, Validators.required),
             clientContractNoEndDate: new FormControl(false),
 
             // Client Extension Option
-            clientExtensionDuration: new FormControl(null),
-            clientExtensionEndDate: new FormControl(null),
-            clientExtensionDeadline: new FormControl(null),
+            clientExtensionDuration: new FormControl(null, Validators.required),
+            clientExtensionEndDate: new FormControl(null, Validators.required),
+            clientExtensionDeadline: new FormControl(null, Validators.required),
             noClientExtensionOption: new FormControl(false),
 
             // Client project
             capOnTimeReporting: new FormControl(false),
-            capOnTimeReportingValue: new FormControl(null)
+            capOnTimeReportingValue: new FormControl(null, Validators.required)
         });
     }
 
@@ -265,92 +265,12 @@ export class WorkflowSalesClientDataForm extends FormGroup {
 export class WorkflowSalesConsultantsForm extends FormGroup {
     constructor() {
         super({
-            consultantData: new FormArray([])
+            consultantData: new FormArray([], Validators.minLength(1))
         })
 
     }
     get consultantData() {
         return this.get('consultantData') as FormArray;
-    }
-}
-
-export class WorkflowSalesAdditionalDataForm extends FormGroup {
-    constructor() {
-        super({
-            notification: new FormControl(null),
-            projectCategory: new FormControl(null),
-            projectDescription: new FormControl(null),
-            workplace: new FormControl(null),
-            expectedWorkloadHours: new FormControl(null),
-            expectedWorkloadPeriod: new FormControl(null),
-            expectedWorkloadNA: new FormControl(false),
-            timeReportingCap: new FormControl(null),
-            timeReportingNoCap: new FormControl(false),
-            highLowMargin: new FormControl(null),
-            discounts: new FormControl(null),
-            isDiscounts: new FormControl(false),
-            fees: new FormControl(null),
-            isFees: new FormControl(false),
-            comission: new FormControl(null),
-            isComission: new FormControl(false),
-            remarks: new FormControl(null),
-            noRemarks: new FormControl(false),
-        })
-
-    }
-    get notification() {
-        return this.get('notification');
-    }
-    get projectCategory() {
-        return this.get('projectCategory');
-    }
-    get projectDescription() {
-        return this.get('projectDescription');
-    }
-    get workplace() {
-        return this.get('workplace');
-    }
-    get expectedWorkloadHours() {
-        return this.get('expectedWorkloadHours');
-    }
-    get expectedWorkloadPeriod() {
-        return this.get('expectedWorkloadPeriod');
-    }
-    get expectedWorkloadNA() {
-        return this.get('expectedWorkloadNA');
-    }
-    get timeReportingCap() {
-        return this.get('timeReportingCap');
-    }
-    get timeReportingNoCap() {
-        return this.get('timeReportingNoCap');
-    }
-    get highLowMargin() {
-        return this.get('highLowMargin');
-    }
-    get discounts() {
-        return this.get('discounts');
-    }
-    get isDiscounts() {
-        return this.get('isDiscounts');
-    }
-    get fees() {
-        return this.get('fees');
-    }
-    get isFees() {
-        return this.get('isFees');
-    }
-    get comission() {
-        return this.get('comission');
-    }
-    get isComission() {
-        return this.get('isComission');
-    }
-    get remarks() {
-        return this.get('remarks');
-    }
-    get noRemarks() {
-        return this.get('noRemarks');
     }
 }
 

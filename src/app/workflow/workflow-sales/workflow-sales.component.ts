@@ -1,7 +1,7 @@
 import { Overlay } from '@angular/cdk/overlay';
 import { NumberSymbol } from '@angular/common';
 import { Component, Injector, Input, OnInit } from '@angular/core';
-import { AbstractControl, FormArray, FormBuilder, FormControl } from '@angular/forms';
+import { AbstractControl, FormArray, FormBuilder, FormControl, Validators } from '@angular/forms';
 import { MatAutocompleteSelectedEvent } from '@angular/material/autocomplete';
 import { MatCheckboxChange } from '@angular/material/checkbox';
 import { MatDialog } from '@angular/material/dialog';
@@ -18,7 +18,7 @@ import { ClientPeriodSalesDataDto, ClientPeriodServiceProxy, ClientRateDto, Comm
 import { WorkflowConsultantActionsDialogComponent } from '../workflow-consultant-actions-dialog/workflow-consultant-actions-dialog.component';
 import { WorkflowDataService } from '../workflow-data.service';
 import { WorkflowProcessWithAnchorsDto } from '../workflow-period/workflow-period.model';
-import { ConsultantDiallogAction, SalesTerminateConsultantForm, TenantList, WorkflowSalesAdditionalDataForm, WorkflowSalesClientDataForm, WorkflowSalesConsultantsForm, WorkflowSalesMainForm } from './workflow-sales.model';
+import { ConsultantDiallogAction, SalesTerminateConsultantForm, TenantList, WorkflowSalesClientDataForm, WorkflowSalesConsultantsForm, WorkflowSalesMainForm } from './workflow-sales.model';
 
 @Component({
     selector: 'app-workflow-sales',
@@ -54,7 +54,6 @@ export class WorkflowSalesComponent extends AppComponentBase implements OnInit {
     salesClientDataForm: WorkflowSalesClientDataForm;
     salesMainDataForm: WorkflowSalesMainForm;
     consultantsForm: WorkflowSalesConsultantsForm;
-    additionalDataForm: WorkflowSalesAdditionalDataForm;
     salesTerminateConsultantForm: SalesTerminateConsultantForm;
 
     clientSpecialRateActive = false;
@@ -176,13 +175,12 @@ export class WorkflowSalesComponent extends AppComponentBase implements OnInit {
         private _clientSalesService: ClientSalesServiceProxy,
         private _clientService: ClientsServiceProxy,
         private _consultantPeriodSerivce: ConsultantPeriodServiceProxy,
-        private _consultantSalesSerivce: ConsultantSalesServiceProxy
+        private _consultantSalesService: ConsultantSalesServiceProxy
     ) {
         super(injector);
         this.salesClientDataForm = new WorkflowSalesClientDataForm();
         this.salesMainDataForm = new WorkflowSalesMainForm();
         this.consultantsForm = new WorkflowSalesConsultantsForm();
-        this.additionalDataForm = new WorkflowSalesAdditionalDataForm();
         this.salesTerminateConsultantForm = new SalesTerminateConsultantForm();
 
         //#region form subscriptions
@@ -1538,6 +1536,8 @@ export class WorkflowSalesComponent extends AppComponentBase implements OnInit {
         input.salesMainData.marginId = this.salesMainDataForm.margin?.value?.id;
         input.salesMainData.projectCategoryId = this.salesMainDataForm.projectCategory?.value?.id;
         input.salesMainData.projectDescription = this.salesMainDataForm.projectDescription?.value;
+        input.salesMainData.projectName = this.salesMainDataForm.projectName?.value;
+
         input.salesMainData.discountId = this.salesMainDataForm.discounts?.value?.id;
         input.salesMainData.salesAccountManagerIdValue = this.salesMainDataForm.salesAccountManagerIdValue?.value?.id;
         input.salesMainData.commissionAccountManagerIdValue = this.salesMainDataForm.commissionAccountManagerIdValue?.value?.id;
@@ -1812,6 +1812,7 @@ export class WorkflowSalesComponent extends AppComponentBase implements OnInit {
                 this.salesMainDataForm.projectCategory?.setValue(this.findItemById(this.projectCategories, result?.salesMainData?.projectCategoryId), {emitEvent: false});
                 this.salesMainDataForm.margin?.setValue(this.findItemById(this.margins, result?.salesMainData?.marginId), {emitEvent: false});
                 this.salesMainDataForm.projectDescription?.setValue(result?.salesMainData?.projectDescription, {emitEvent: false});
+                this.salesMainDataForm.projectName?.setValue(result?.salesMainData?.projectName, {emitEvent: false});
 
                 // Invoicing
                 result.salesMainData?.commissions?.forEach((commission: CommissionDto) => {
@@ -1939,7 +1940,6 @@ export class WorkflowSalesComponent extends AppComponentBase implements OnInit {
     }
 
     changeConsultantWorkplace(event: MatCheckboxChange, consutlantIndex: number) {
-        console.log('sss');
         if (event.checked) {
             this.consultantData.at(consutlantIndex).get('consultantWorkplaceClientAddress')?.setValue(this.salesClientDataForm.directClientIdValue?.value, {emitEvent: false});
         }
@@ -2051,13 +2051,13 @@ export class WorkflowSalesComponent extends AppComponentBase implements OnInit {
         }
         const form = this._fb.group({
             id: new FormControl(commission?.id ?? null),
-            type: new FormControl(this.findItemById(this.commissionTypes, commission?.commissionTypeId) ?? null),
-            amount: new FormControl(commission?.amount ?? null),
-            currency: new FormControl(this.findItemById(this.currencies, commission?.currencyId) ?? null),
-            recipientType: new FormControl(this.findItemById(this.commissionRecipientTypeList, commission?.recipientTypeId) ?? null),
-            recipient: new FormControl(commissionRecipient ?? null),
-            frequency: new FormControl(this.findItemById(this.commissionFrequencies, commission?.commissionFrequencyId) ?? null),
-            oneTimeDate: new FormControl(commission?.oneTimeDate ?? null),
+            type: new FormControl(this.findItemById(this.commissionTypes, commission?.commissionTypeId) ?? null, Validators.required),
+            amount: new FormControl(commission?.amount ?? null, Validators.required),
+            currency: new FormControl(this.findItemById(this.currencies, commission?.currencyId) ?? null, Validators.required),
+            recipientType: new FormControl(this.findItemById(this.commissionRecipientTypeList, commission?.recipientTypeId) ?? null, Validators.required),
+            recipient: new FormControl(commissionRecipient ?? null, Validators.required),
+            frequency: new FormControl(this.findItemById(this.commissionFrequencies, commission?.commissionFrequencyId) ?? null, Validators.required),
+            oneTimeDate: new FormControl(commission?.oneTimeDate ?? null, Validators.required),
             editable: new FormControl(commission?.id ? false : true)
         });
         this.salesMainDataForm.commissions.push(form);
@@ -2413,6 +2413,7 @@ export class WorkflowSalesComponent extends AppComponentBase implements OnInit {
                     this.salesMainDataForm.remarks?.disable();
                 }
                 this.salesMainDataForm.projectDescription?.setValue(result?.projectDescription, {emitEvent: false});
+                this.salesMainDataForm.projectName?.setValue(result?.projectName, {emitEvent: false});
                 this.addConsultantForm(result?.consultantSalesData);
                 this.updateConsultantStepAnchors();
             });
@@ -2423,6 +2424,7 @@ export class WorkflowSalesComponent extends AppComponentBase implements OnInit {
         input.remarks = this.salesMainDataForm.remarks?.value;
         input.noRemarks = this.salesMainDataForm.noRemarks?.value;
         input.projectDescription = this.salesMainDataForm.projectDescription?.value;
+        input.projectName = this.salesMainDataForm.projectName?.value;
         input.consultantSalesData = new ConsultantSalesDataDto();
         let consultantInput = new ConsultantSalesDataDto();
         const consultant = this.consultantsForm.consultantData.at(0).value;
@@ -2535,7 +2537,7 @@ export class WorkflowSalesComponent extends AppComponentBase implements OnInit {
                     }
                 });
         } else {
-            this._consultantSalesSerivce.editFinish(this.activeSideSection.consultantPeriodId!, input)
+            this._consultantSalesService.editFinish(this.activeSideSection.consultantPeriodId!, input)
                 .pipe(finalize(() => this.hideMainSpinner()))
                 .subscribe(result => {
                     this._workflowDataService.workflowSideSectionUpdated.emit({isStatusUpdate: true});
@@ -2636,6 +2638,50 @@ export class WorkflowSalesComponent extends AppComponentBase implements OnInit {
                 .get("clientContact")!
                 .setErrors(null);
             return false;
+        }
+    }
+
+    returnToSales() {
+        switch (this._workflowDataService.workflowProgress.currentlyActiveSideSection) {
+            case WorkflowProcessType.StartClientPeriod:
+            case WorkflowProcessType.ChangeClientPeriod:
+            case WorkflowProcessType.ExtendClientPeriod:
+                this.showMainSpinner();
+                this._clientSalesService.reopen(this.periodId!)
+                    .pipe(finalize(() => {
+                        this.hideMainSpinner();
+                    }))
+                    .subscribe(() => this._workflowDataService.workflowSideSectionUpdated.emit({isStatusUpdate: true}));
+                break;
+
+            case WorkflowProcessType.TerminateWorkflow:
+                this.showMainSpinner();
+                this._workflowServiceProxy.terminationSalesReopen(this.periodId!)
+                    .pipe(finalize(() => {
+                        this.hideMainSpinner();
+                    }))
+                    .subscribe(() => this._workflowDataService.workflowSideSectionUpdated.emit({isStatusUpdate: true}));
+                break;
+
+            case WorkflowProcessType.TerminateConsultant:
+                this.showMainSpinner();
+                this._workflowServiceProxy.terminationConsultantSalesReopen(this.periodId!)
+                    .pipe(finalize(() => {
+                        this.hideMainSpinner();
+                    }))
+                    .subscribe(() => this._workflowDataService.workflowSideSectionUpdated.emit({isStatusUpdate: true}));
+                break;
+
+            case WorkflowProcessType.StartConsultantPeriod:
+            case WorkflowProcessType.ChangeConsultantPeriod:
+            case WorkflowProcessType.ExtendConsultantPeriod:
+                this.showMainSpinner();
+                this._consultantSalesService.reopen(this.periodId!)
+                    .pipe(finalize(() => {
+                        this.hideMainSpinner();
+                    }))
+                    .subscribe(() => this._workflowDataService.workflowSideSectionUpdated.emit({isStatusUpdate: true}));
+                break;
         }
     }
 

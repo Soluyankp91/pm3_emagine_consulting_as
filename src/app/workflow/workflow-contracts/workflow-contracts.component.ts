@@ -1,6 +1,6 @@
 import { Overlay } from '@angular/cdk/overlay';
 import { Component, Injector, Input, OnDestroy, OnInit } from '@angular/core';
-import { AbstractControl, FormArray, FormBuilder, FormControl, FormGroup } from '@angular/forms';
+import { AbstractControl, FormArray, FormBuilder, FormControl, FormGroup, Validators } from '@angular/forms';
 import { MatDialog } from '@angular/material/dialog';
 import { MatMenuTrigger } from '@angular/material/menu';
 import { Subject } from 'rxjs';
@@ -567,7 +567,7 @@ export class WorkflowContractsComponent extends AppComponentBase implements OnIn
             consultantRateCurrency: new FormControl(this.findItemById(this.currencies, consultant?.consultantRate?.currencyId)),
             consultantRate: new FormControl(consultant.consultantRate),
             noSpecialContractTerms: new FormControl(consultant?.noSpecialContractTerms),
-            specialContractTerms: new FormControl({value: consultant?.specialContractTerms, disabled: consultant?.noSpecialContractTerms}),
+            specialContractTerms: new FormControl({value: consultant?.specialContractTerms, disabled: consultant?.noSpecialContractTerms}, Validators.required),
             pdcPaymentEntityId: new FormControl(consultant?.pdcPaymentEntityId),
             specialRates: new FormArray([]),
             consultantSpecialRateFilter: new FormControl(''),
@@ -794,7 +794,7 @@ export class WorkflowContractsComponent extends AppComponentBase implements OnIn
     createOrEditProjectLine(index: number, projectLinesIndex?: number) {
         const scrollStrategy = this.overlay.scrollStrategies.reposition();
         let projectLine = {
-            projectName: this.contractsMainForm.projectDescription!.value,
+            projectName: this.contractsMainForm.projectName!.value,
             startDate: this.contractsConsultantsDataForm.consultants.at(index).get('startDate')?.value,
             endDate: this.contractsConsultantsDataForm.consultants.at(index).get('endDate')?.value,
             noEndDate: this.contractsConsultantsDataForm.consultants.at(index).get('noEndDate')?.value,
@@ -807,7 +807,7 @@ export class WorkflowContractsComponent extends AppComponentBase implements OnIn
             projectLine = (this.contractsConsultantsDataForm.consultants.at(index).get('projectLines') as FormArray).at(projectLinesIndex!).value;
         }
         const dialogRef = this.dialog.open(AddOrEditProjectLineDialogComponent, {
-            width: '450px',
+            width: '760px',
             minHeight: '180px',
             height: 'auto',
             scrollStrategy,
@@ -861,7 +861,8 @@ export class WorkflowContractsComponent extends AppComponentBase implements OnIn
             modificationDate: new FormControl(projectLine?.modificationDate ?? null),
             consultantInsuranceOptionId: new FormControl(projectLine?.consultantInsuranceOptionId),
             markedForLegacyDeletion: new FormControl(projectLine?.markedForLegacyDeletion),
-            wasSynced: new FormControl(projectLine?.wasSynced)
+            wasSynced: new FormControl(projectLine?.wasSynced),
+            isLineForFees: new FormControl(projectLine?.isLineForFees)
         });
         (this.contractsConsultantsDataForm.consultants.at(index).get('projectLines') as FormArray).push(form);
     }
@@ -890,11 +891,15 @@ export class WorkflowContractsComponent extends AppComponentBase implements OnIn
         projectLineRow.get('consultantInsuranceOptionId')?.setValue(projectLineData.consultantInsuranceOptionId, {emitEvent: false});
         projectLineRow.get('markedForLegacyDeletion')?.setValue(projectLineData.markedForLegacyDeletion, {emitEvent: false});
         projectLineRow.get('wasSynced')?.setValue(projectLineData.wasSynced, {emitEvent: false});
+        projectLineRow.get('isLineForFees')?.setValue(projectLineData.isLineForFees, {emitEvent: false});
+
     }
 
     duplicateProjectLine(consultantIndex: number, projectLinesIndex: number) {
         const projectLineRowValue: ProjectLineDto = new ProjectLineDto((this.contractsConsultantsDataForm.consultants.at(consultantIndex).get('projectLines') as FormArray).at(projectLinesIndex).value);
         projectLineRowValue.id = undefined; // to create a new instance of project line
+        projectLineRowValue.wasSynced = false;
+        projectLineRowValue.isLineForFees = false;
         this.addProjectLinesToConsultantData(consultantIndex, projectLineRowValue);
     }
 
@@ -1046,6 +1051,7 @@ export class WorkflowContractsComponent extends AppComponentBase implements OnIn
                 this.contractsMainForm.projectType?.setValue(this.findItemById(this.projectTypes, result.mainData?.projectTypeId), {emitEvent: false});
                 this.contractsMainForm.margin?.setValue(this.findItemById(this.margins, result.mainData?.marginId), {emitEvent: false});
                 this.contractsMainForm.projectDescription?.setValue(result.mainData?.projectDescription, {emitEvent: false});
+                this.contractsMainForm.projectName?.setValue(result.mainData?.projectName, {emitEvent: false});
                 this.contractsMainForm.noRemarks?.setValue(result.mainData?.noRemarks, {emitEvent: false});
                 this.contractsMainForm.remarks?.setValue(result.mainData?.remarks, {emitEvent: false});
                 if (result.mainData?.noRemarks) {
@@ -1182,6 +1188,7 @@ export class WorkflowContractsComponent extends AppComponentBase implements OnIn
 
         input.mainData = new ContractsMainDataDto();
         input.mainData.projectDescription = this.contractsMainForm.projectDescription?.value;
+        input.mainData.projectName = this.contractsMainForm.projectName?.value;
         input.mainData.projectTypeId = this.contractsMainForm.projectType?.value?.id;
         input.mainData.salesTypeId = this.contractsMainForm.salesType?.value?.id;
         input.mainData.deliveryTypeId = this.contractsMainForm.deliveryType?.value?.id;
@@ -1268,6 +1275,7 @@ export class WorkflowContractsComponent extends AppComponentBase implements OnIn
                         projectLineInput.consultantInsuranceOptionId = projectLine.consultantInsuranceOptionId;
                         projectLineInput.markedForLegacyDeletion = projectLine.markedForLegacyDeletion;
                         projectLineInput.wasSynced = projectLine.wasSynced;
+                        projectLineInput.isLineForFees = projectLine.isLineForFees;
 
                         consultantData.projectLines.push(projectLineInput);
                     }
@@ -1322,6 +1330,7 @@ export class WorkflowContractsComponent extends AppComponentBase implements OnIn
                     this.contractsMainForm.remarks?.disable();
                 }
                 this.contractsMainForm.projectDescription?.setValue(result?.projectDescription, {emitEvent: false});
+                this.contractsMainForm.projectName?.setValue(result?.projectName, {emitEvent: false});
                 this.contractsMainForm.salesType?.setValue(this.findItemById(this.saleTypes, result?.mainData?.salesTypeId), {emitEvent: false});
                 this.contractsMainForm.deliveryType?.setValue(this.findItemById(this.deliveryTypes, result?.mainData?.deliveryTypeId), {emitEvent: false});
                 this.contractsMainForm.projectType?.setValue(this.findItemById(this.projectTypes, result?.mainData?.projectTypeId), {emitEvent: false});
@@ -1354,6 +1363,7 @@ export class WorkflowContractsComponent extends AppComponentBase implements OnIn
         input.remarks =  this.contractsMainForm.remarks?.value;
         input.noRemarks =  this.contractsMainForm.noRemarks?.value
         input.projectDescription =  this.contractsMainForm.projectDescription?.value;
+        input.projectName =  this.contractsMainForm.projectName?.value;
         input.mainData = new ContractsMainDataDto();
         input.mainData.projectTypeId = this.contractsMainForm.projectType?.value?.id;;
         input.mainData.salesTypeId =  this.contractsMainForm.salesType?.value?.id;
@@ -1438,6 +1448,7 @@ export class WorkflowContractsComponent extends AppComponentBase implements OnIn
                     projectLineInput.consultantInsuranceOptionId = projectLine.consultantInsuranceOptionId;
                     projectLineInput.markedForLegacyDeletion = projectLine.markedForLegacyDeletion;
                     projectLineInput.wasSynced = projectLine.wasSynced;
+                    projectLineInput.isLineForFees = projectLine.isLineForFees;
 
                     consultantData.projectLines.push(projectLineInput);
                 }
