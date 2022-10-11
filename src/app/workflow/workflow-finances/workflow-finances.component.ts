@@ -171,13 +171,14 @@ export class WorkflowFinancesComponent extends AppComponentBase implements OnIni
             this._clientPeriodSerivce.clientFinancePut(this.periodId!, input)
                 .pipe(finalize(() => this.hideMainSpinner()))
                 .subscribe(result => {
-    
+                    this._workflowDataService.workflowOverviewUpdated.emit(true);
                 });
         } else {
             this._financeService.editFinish(this.periodId!, input)
                 .pipe(finalize(() => this.hideMainSpinner()))
                 .subscribe(result => {
                     this._workflowDataService.workflowSideSectionUpdated.emit({isStatusUpdate: true});
+                    this._workflowDataService.workflowOverviewUpdated.emit(true);
                 });
         }
     }
@@ -203,13 +204,14 @@ export class WorkflowFinancesComponent extends AppComponentBase implements OnIni
             this._consultantPeriodSerivce.consultantFinancePut(this.periodId!, input)
                 .pipe(finalize(() => this.hideMainSpinner()))
                 .subscribe(result => {
-
+                    this._workflowDataService.workflowOverviewUpdated.emit(true);
                 });
         } else {
             this._consutlantFinanceService.editFinish(this.periodId!, input)
                 .pipe(finalize(() => this.hideMainSpinner()))
                 .subscribe(result => {
                     this._workflowDataService.workflowSideSectionUpdated.emit({isStatusUpdate: true});
+                    this._workflowDataService.workflowOverviewUpdated.emit(true);
                 });
         }
     }
@@ -218,7 +220,7 @@ export class WorkflowFinancesComponent extends AppComponentBase implements OnIni
         this.financesConsultantsForm.consultants.controls = [];
         this.financesClientForm.reset('', {emitEvent: false});
     }
-    
+
     addConsultantToForm(consultant: ConsultantPeriodFinanceDataDto) {
         const form = this._fb.group({
             id: new FormControl(consultant.consultantId),

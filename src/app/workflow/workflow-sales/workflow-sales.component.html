@@ -60,6 +60,13 @@
                         </div>
 
                         <div fxLayout="column" class="u-w--100 u-mb--10">
+                            <h3 class="workflow-step-readonly--gray-header">Project Name</h3>
+                            <p class="workflow-step-readonly--blue-text">
+                                {{salesMainDataForm.projectName?.value ? salesMainDataForm.projectName?.value : '-'}}
+                            </p>
+                        </div>
+
+                        <div fxLayout="column" class="u-w--100 u-mb--10">
                             <h3 class="workflow-step-readonly--gray-header">Project Description</h3>
                             <p class="workflow-step-readonly--blue-text">
                                 {{salesMainDataForm.projectDescription?.value ? salesMainDataForm.projectDescription?.value : '-'}}
@@ -194,7 +201,7 @@
                                 </span>
                             </div>
                             <div fxLayout="column" fxLayoutAlign="start start" class="u-w--100 u-mb--10" fxFlex="25%" *ngIf="salesMainDataForm.contractExpirationNotification?.value?.includes(999)">
-                                <h3 class="workflow-step-readonly--gray-header">Manual date</h3>
+                                <h3 class="workflow-step-readonly--gray-header">Notification date</h3>
                                 <span class="workflow-step-readonly--blue-text-bold">
                                     {{salesMainDataForm.customContractExpirationNotificationDate?.value | momentFormat: 'DD.MM.YYYY'}}
                                 </span>
@@ -234,13 +241,19 @@
                                         <span class="workflow-step-readonly--blue-text-bold">
                                             {{salesClientDataForm.directClientIdValue?.value?.clientName}}
                                         </span>
-                                        <span class="workflow-step-readonly--blue-text-bold">
-                                            {{salesClientDataForm.directClientIdValue?.value?.clientId ? '#' + salesClientDataForm.directClientIdValue?.value?.clientId + ' | ' : '' }}
-                                            {{salesClientDataForm.directClientIdValue?.value?.city ? salesClientDataForm.directClientIdValue?.value?.city + ' | ' : ''}}
-                                            {{salesClientDataForm.directClientIdValue?.value?.address ? salesClientDataForm.directClientIdValue?.value?.address + ' | ' : ''}}
-                                            {{salesClientDataForm.directClientIdValue?.value?.address2 ? salesClientDataForm.directClientIdValue?.value?.address2 + ' | ' : ''}}
-                                            {{salesClientDataForm.directClientIdValue?.value?.postCode}}
-                                        </span>
+                                        <div fxLayout="row" fxLayoutAlign="start center" class="u-w--100">
+                                            <span class="workflow-step-readonly--blue-text-bold">
+                                                {{salesClientDataForm.directClientIdValue?.value?.clientId ? '#' + salesClientDataForm.directClientIdValue?.value?.clientId + ' | ' : '' }}
+                                                {{salesClientDataForm.directClientIdValue?.value?.city ? salesClientDataForm.directClientIdValue?.value?.city + ' | ' : ''}}
+                                                {{salesClientDataForm.directClientIdValue?.value?.address ? salesClientDataForm.directClientIdValue?.value?.address + ' | ' : ''}}
+                                                {{salesClientDataForm.directClientIdValue?.value?.address2 ? salesClientDataForm.directClientIdValue?.value?.address2 + ' | ' : ''}}
+                                                {{salesClientDataForm.directClientIdValue?.value?.postCode}}
+                                            </span>
+                                            <button mat-icon-button *ngIf="salesClientDataForm.directClientIdValue?.value?.clientId"
+                                                (click)="openInNewTab(salesClientDataForm.directClientIdValue?.value?.clientId)">
+                                                <mat-icon>open_in_new</mat-icon>
+                                            </button>
+                                        </div>
                                     </div>
                                 </div>
                                 <ng-template #noDataTemplate>
@@ -256,13 +269,19 @@
                                         <span class="workflow-step-readonly--blue-text-bold">
                                             {{salesClientDataForm.endClientIdValue?.value?.clientName}}
                                         </span>
-                                        <span class="workflow-step-readonly--blue-text-bold">
-                                            {{salesClientDataForm.endClientIdValue?.value?.clientId ? '#' + salesClientDataForm.endClientIdValue?.value?.clientId + ' | ' : '' }}
-                                            {{salesClientDataForm.endClientIdValue?.value?.city ? salesClientDataForm.endClientIdValue?.value?.city + ' | ' : ''}}
-                                            {{salesClientDataForm.endClientIdValue?.value?.address ? salesClientDataForm.endClientIdValue?.value?.address + ' | ' : ''}}
-                                            {{salesClientDataForm.endClientIdValue?.value?.address2 ? salesClientDataForm.endClientIdValue?.value?.address2 + ' | ' : ''}}
-                                            {{salesClientDataForm.endClientIdValue?.value?.postCode}}
-                                        </span>
+                                        <div fxLayout="row" fxLayoutAlign="start center" class="u-w--100">
+                                            <span class="workflow-step-readonly--blue-text-bold">
+                                                {{salesClientDataForm.endClientIdValue?.value?.clientId ? '#' + salesClientDataForm.endClientIdValue?.value?.clientId + ' | ' : '' }}
+                                                {{salesClientDataForm.endClientIdValue?.value?.city ? salesClientDataForm.endClientIdValue?.value?.city + ' | ' : ''}}
+                                                {{salesClientDataForm.endClientIdValue?.value?.address ? salesClientDataForm.endClientIdValue?.value?.address + ' | ' : ''}}
+                                                {{salesClientDataForm.endClientIdValue?.value?.address2 ? salesClientDataForm.endClientIdValue?.value?.address2 + ' | ' : ''}}
+                                                {{salesClientDataForm.endClientIdValue?.value?.postCode}}
+                                            </span>
+                                            <button mat-icon-button *ngIf="salesClientDataForm.endClientIdValue?.value?.clientId"
+                                                (click)="openInNewTab(salesClientDataForm.endClientIdValue?.value?.clientId)">
+                                                <mat-icon>open_in_new</mat-icon>
+                                            </button>
+                                        </div>
                                     </div>
                                 </div>
                             </div>
@@ -373,13 +392,19 @@
                                             <span class="workflow-step-readonly--blue-text-bold">
                                                 {{salesClientDataForm.clientInvoicingRecipientIdValue?.value?.clientName}}
                                             </span>
-                                            <span class="workflow-step-readonly--blue-text-bold">
-                                                {{salesClientDataForm.clientInvoicingRecipientIdValue?.value?.clientId ? '#' + salesClientDataForm.clientInvoicingRecipientIdValue?.value?.clientId + ' | ' : ''}}
-                                                {{salesClientDataForm.clientInvoicingRecipientIdValue?.value?.city ? salesClientDataForm.clientInvoicingRecipientIdValue?.value?.city + ' | ' : ''}}
-                                                {{salesClientDataForm.clientInvoicingRecipientIdValue?.value?.address ? salesClientDataForm.clientInvoicingRecipientIdValue?.value?.address + ' | ' : ''}}
-                                                {{salesClientDataForm.clientInvoicingRecipientIdValue?.value?.address2 ? salesClientDataForm.clientInvoicingRecipientIdValue?.value?.address2 + ' | ' : ''}}
-                                                {{salesClientDataForm.clientInvoicingRecipientIdValue?.value?.postCode}}
-                                            </span>
+                                            <div fxLayout="row" fxLayoutAlign="start center" class="u-w--100">
+                                                <span class="workflow-step-readonly--blue-text-bold">
+                                                    {{salesClientDataForm.clientInvoicingRecipientIdValue?.value?.clientId ? '#' + salesClientDataForm.clientInvoicingRecipientIdValue?.value?.clientId + ' | ' : ''}}
+                                                    {{salesClientDataForm.clientInvoicingRecipientIdValue?.value?.city ? salesClientDataForm.clientInvoicingRecipientIdValue?.value?.city + ' | ' : ''}}
+                                                    {{salesClientDataForm.clientInvoicingRecipientIdValue?.value?.address ? salesClientDataForm.clientInvoicingRecipientIdValue?.value?.address + ' | ' : ''}}
+                                                    {{salesClientDataForm.clientInvoicingRecipientIdValue?.value?.address2 ? salesClientDataForm.clientInvoicingRecipientIdValue?.value?.address2 + ' | ' : ''}}
+                                                    {{salesClientDataForm.clientInvoicingRecipientIdValue?.value?.postCode}}
+                                                </span>
+                                                <button mat-icon-button *ngIf="salesClientDataForm.clientInvoicingRecipientIdValue?.value?.clientId"
+                                                    (click)="openInNewTab(salesClientDataForm.clientInvoicingRecipientIdValue?.value?.clientId)">
+                                                    <mat-icon>open_in_new</mat-icon>
+                                                </button>
+                                            </div>
                                         </div>
                                     </div>
                                 </ng-template>
@@ -811,7 +836,7 @@
                                 <div fxLayout="column" fxLayoutAlign="start start" class="u-w--100">
                                     <h2 class="workflow-step-readonly--header u-mb--20">Consultant project</h2>
                                     <div fxLayout="row" fxLayoutAlign="start start" class="u-w--100 u-mb--20">
-                                        <div fxLayout="column" fxFlex="50%">
+                                        <div fxLayout="column" fxFlex="70%">
                                             <div fxLayout="row" class="u-w--100 u-mb--10" *ngIf="item?.value?.consultantIsOnsiteWorkplace">
                                                 <div fxLayout="column" fxFlex="30%">
                                                     <h3 class="workflow-step-readonly--gray-header">Workplace</h3>
@@ -821,9 +846,15 @@
                                                 </div>
                                                 <div fxLayout="column" fxFlex="40%">
                                                     <h3 class="workflow-step-readonly--gray-header">Client address</h3>
-                                                    <span class="workflow-step-readonly--blue-text-bold">
-                                                        {{item.value.consultantWorkplaceClientAddress?.countryName}} | {{item.value.consultantWorkplaceClientAddress?.city}} | {{item.value.consultantWorkplaceClientAddress?.address}} | {{item.value.consultantWorkplaceClientAddress?.address2}} | {{item.value.consultantWorkplaceClientAddress?.postCode}}
-                                                    </span>
+                                                    <div fxLayout="row" fxLayoutAlign="start start" class="u-w--100">
+                                                        <span class="workflow-step-readonly--blue-text-bold">
+                                                            {{item.value.consultantWorkplaceClientAddress?.countryName}} | {{item.value.consultantWorkplaceClientAddress?.city}} | {{item.value.consultantWorkplaceClientAddress?.address}} | {{item.value.consultantWorkplaceClientAddress?.address2}} | {{item.value.consultantWorkplaceClientAddress?.postCode}}
+                                                        </span>
+                                                        <button mat-icon-button *ngIf="item.value.consultantWorkplaceClientAddress?.clientId"
+                                                            (click)="openInNewTab(item.value.consultantWorkplaceClientAddress?.clientId)">
+                                                            <mat-icon>open_in_new</mat-icon>
+                                                        </button>
+                                                    </div>
                                                 </div>
                                                 <div fxLayout="column" fxFlex="30%" *ngIf="item?.value?.consultantWorkplacePercentageOnSite">
                                                     <h3 class="workflow-step-readonly--gray-header">Percentage onsite</h3>
@@ -1155,8 +1186,17 @@
 
                             <div fxLayout="row" fxLayoutAlign="start start" class="u-w--100 u-mb--10">
                                 <mat-form-field appearance="outline" class="u-w--100 textarea-input " fxFlex="0 0 calc(66% + 16px)">
+                                    <mat-label>Project Name</mat-label>
+                                    <textarea matInput autocomplete="new-password" name="projectName" required formControlName="projectName" [matTextareaAutosize]="true" [matAutosizeMinRows]="2">
+                                    </textarea>
+                                    <mat-error>{{getValidationMessage(salesMainDataForm.projectName)}}</mat-error>
+                                </mat-form-field>
+                            </div>
+
+                            <div fxLayout="row" fxLayoutAlign="start start" class="u-w--100 u-mb--10">
+                                <mat-form-field appearance="outline" class="u-w--100 textarea-input " fxFlex="0 0 calc(66% + 16px)">
                                     <mat-label>Project Description</mat-label>
-                                    <textarea matInput autocomplete="new-password" name="projectDescription" formControlName="projectDescription" [matTextareaAutosize]="true" [matAutosizeMinRows]="2">
+                                    <textarea matInput autocomplete="new-password" name="projectDescription" required formControlName="projectDescription" [matTextareaAutosize]="true" [matAutosizeMinRows]="2">
                                     </textarea>
                                     <mat-error>{{getValidationMessage(salesMainDataForm.projectDescription)}}</mat-error>
                                 </mat-form-field>
@@ -1508,13 +1548,19 @@
                                             <mat-error>{{getValidationMessage(salesClientDataForm.directClientIdValue)}}</mat-error>
                                         </mat-form-field>
                                     </div>
-                                    <span class="workflow-step-readonly--blue-text-bold">
-                                        {{salesClientDataForm.directClientIdValue?.value?.clientId ? '#' + salesClientDataForm.directClientIdValue?.value?.clientId + ' | ' : '' }}
-                                        {{salesClientDataForm.directClientIdValue?.value?.city ? salesClientDataForm.directClientIdValue?.value?.city + ' | ' : ''}}
-                                        {{salesClientDataForm.directClientIdValue?.value?.address ? salesClientDataForm.directClientIdValue?.value?.address + ' | ' : ''}}
-                                        {{salesClientDataForm.directClientIdValue?.value?.address2 ? salesClientDataForm.directClientIdValue?.value?.address2 + ' | ' : ''}}
-                                        {{salesClientDataForm.directClientIdValue?.value?.postCode}}
-                                    </span>
+                                    <div fxLayout="row" fxLayoutAlign="start center" class="u-w--100">
+                                        <span class="workflow-step-readonly--blue-text-bold">
+                                            {{salesClientDataForm.directClientIdValue?.value?.clientId ? '#' + salesClientDataForm.directClientIdValue?.value?.clientId + ' | ' : '' }}
+                                            {{salesClientDataForm.directClientIdValue?.value?.city ? salesClientDataForm.directClientIdValue?.value?.city + ' | ' : ''}}
+                                            {{salesClientDataForm.directClientIdValue?.value?.address ? salesClientDataForm.directClientIdValue?.value?.address + ' | ' : ''}}
+                                            {{salesClientDataForm.directClientIdValue?.value?.address2 ? salesClientDataForm.directClientIdValue?.value?.address2 + ' | ' : ''}}
+                                            {{salesClientDataForm.directClientIdValue?.value?.postCode}}
+                                        </span>
+                                        <button mat-icon-button *ngIf="salesClientDataForm.directClientIdValue?.value?.clientId"
+                                            (click)="openInNewTab(salesClientDataForm.directClientIdValue?.value?.clientId)">
+                                            <mat-icon>open_in_new</mat-icon>
+                                        </button>
+                                    </div>
                                 </div>
                                 <div fxLayout="column" fxLayoutAlign="start start" class="u-w--100 u-mb--10" *ngIf="salesClientDataForm.differentEndClient?.value">
                                     <div fxLayout="row" fxLayoutAlign="start start" class="u-w--100">
@@ -1534,13 +1580,19 @@
                                             <mat-error>{{getValidationMessage(salesClientDataForm.endClientIdValue)}}</mat-error>
                                         </mat-form-field>
                                     </div>
-                                    <span class="workflow-step-readonly--blue-text-bold">
-                                        {{salesClientDataForm.endClientIdValue?.value?.clientId ? '#' + salesClientDataForm.endClientIdValue?.value?.clientId + ' | ' : '' }}
-                                        {{salesClientDataForm.endClientIdValue?.value?.city ? salesClientDataForm.endClientIdValue?.value?.city + ' | ' : ''}}
-                                        {{salesClientDataForm.endClientIdValue?.value?.address ? salesClientDataForm.endClientIdValue?.value?.address + ' | ' : ''}}
-                                        {{salesClientDataForm.endClientIdValue?.value?.address2 ? salesClientDataForm.endClientIdValue?.value?.address2 + ' | ' : ''}}
-                                        {{salesClientDataForm.endClientIdValue?.value?.postCode}}
-                                    </span>
+                                    <div fxLayout="row" fxLayoutAlign="start center" class="u-w--100">
+                                        <span class="workflow-step-readonly--blue-text-bold">
+                                            {{salesClientDataForm.endClientIdValue?.value?.clientId ? '#' + salesClientDataForm.endClientIdValue?.value?.clientId + ' | ' : '' }}
+                                            {{salesClientDataForm.endClientIdValue?.value?.city ? salesClientDataForm.endClientIdValue?.value?.city + ' | ' : ''}}
+                                            {{salesClientDataForm.endClientIdValue?.value?.address ? salesClientDataForm.endClientIdValue?.value?.address + ' | ' : ''}}
+                                            {{salesClientDataForm.endClientIdValue?.value?.address2 ? salesClientDataForm.endClientIdValue?.value?.address2 + ' | ' : ''}}
+                                            {{salesClientDataForm.endClientIdValue?.value?.postCode}}
+                                        </span>
+                                        <button mat-icon-button *ngIf="salesClientDataForm.endClientIdValue?.value?.clientId"
+                                            (click)="openInNewTab(salesClientDataForm.endClientIdValue?.value?.clientId)">
+                                            <mat-icon>open_in_new</mat-icon>
+                                        </button>
+                                    </div>
                                 </div>
                             </ng-container>
 
@@ -1820,27 +1872,40 @@
                                     </mat-form-field>
                                 </div>
 
-                                <div fxLayout="row" fxLayoutAlign="start center" class="u-w--100 u-mb--10">
-                                    <mat-form-field appearance="outline" class="u-w--100 filter-select u-mr--16" fxFlex="33%">
-                                        <mat-label>Client invoicing recipient</mat-label>
-                                        <input #clientInvoicingRecipientInput type="text" matInput [matAutocomplete]="clientInvoicingRecipientAutocomplete" formControlName="clientInvoicingRecipientIdValue" appPreventDoubleClick (throttledClick)="$event.stopPropagation()" placeholder="Client invoicing recipient">
-                                        <mat-autocomplete #clientInvoicingRecipientAutocomplete="matAutocomplete" [displayWith]="displayClientNameFn">
-                                            <ng-container>
-                                                <mat-option *ngFor="let client of filteredClientInvoicingRecipients" [value]="client" [ngClass]="{ 'no-data': client.id === 'no-data' }">
-                                                    <div class="multilineDropdown-option--column">
-                                                        <b>{{ client.clientName }}</b>
-                                                        <span *ngIf="client.id !== 'no-data'">#{{client.clientId}} | {{client.address}} | {{client.address2}} | {{client.postCode}}</span>
-                                                    </div>
-                                                </mat-option>
-                                            </ng-container>
-                                        </mat-autocomplete>
-                                        <mat-error>{{getValidationMessage(salesClientDataForm.clientInvoicingRecipientIdValue)}}</mat-error>
-                                    </mat-form-field>
-                                    <!-- <div fxLayout="row" fxLayoutAlign="start center" class="u-w--100 u-mb--10"> -->
-                                    <mat-checkbox color="accent" formControlName="clientInvoicingRecipientSameAsDirectClient" name="clientInvoicingRecipientSameAsDirectClient" class="black-checkbox u-mr--10" (change)="disableOrEnableInput(salesClientDataForm.clientInvoicingRecipientSameAsDirectClient?.value, salesClientDataForm.clientInvoicingRecipientIdValue)">
-                                        Same as direct client
-                                    </mat-checkbox>
-                                    <!-- </div> -->
+                                <div fxLayout="column" fxLayoutAlign="start start" class="u-w--100 u-mb--10">
+                                    <div fxLayout="row" fxLayoutAlign="start center" class="u-w--100">
+                                        <mat-form-field appearance="outline" class="u-w--100 filter-select u-mr--16" fxFlex="33%">
+                                            <mat-label>Client invoicing recipient</mat-label>
+                                            <input #clientInvoicingRecipientInput type="text" matInput [matAutocomplete]="clientInvoicingRecipientAutocomplete" formControlName="clientInvoicingRecipientIdValue" appPreventDoubleClick (throttledClick)="$event.stopPropagation()" placeholder="Client invoicing recipient">
+                                            <mat-autocomplete #clientInvoicingRecipientAutocomplete="matAutocomplete" [displayWith]="displayClientNameFn">
+                                                <ng-container>
+                                                    <mat-option *ngFor="let client of filteredClientInvoicingRecipients" [value]="client" [ngClass]="{ 'no-data': client.id === 'no-data' }">
+                                                        <div class="multilineDropdown-option--column">
+                                                            <b>{{ client.clientName }}</b>
+                                                            <span *ngIf="client.id !== 'no-data'">#{{client.clientId}} | {{client.address}} | {{client.address2}} | {{client.postCode}}</span>
+                                                        </div>
+                                                    </mat-option>
+                                                </ng-container>
+                                            </mat-autocomplete>
+                                            <mat-error>{{getValidationMessage(salesClientDataForm.clientInvoicingRecipientIdValue)}}</mat-error>
+                                        </mat-form-field>
+                                        <mat-checkbox color="accent" formControlName="clientInvoicingRecipientSameAsDirectClient" name="clientInvoicingRecipientSameAsDirectClient" class="black-checkbox u-mr--10" (change)="disableOrEnableInput(salesClientDataForm.clientInvoicingRecipientSameAsDirectClient?.value, salesClientDataForm.clientInvoicingRecipientIdValue)">
+                                            Same as direct client
+                                        </mat-checkbox>
+                                    </div>
+                                    <div fxLayout="row" fxLayoutAlign="start center" class="u-w--100">
+                                        <span class="workflow-step-readonly--blue-text-bold">
+                                            {{salesClientDataForm.clientInvoicingRecipientIdValue?.value?.clientId ? '#' + salesClientDataForm.clientInvoicingRecipientIdValue?.value?.clientId + ' | ' : '' }}
+                                            {{salesClientDataForm.clientInvoicingRecipientIdValue?.value?.city ? salesClientDataForm.clientInvoicingRecipientIdValue?.value?.city + ' | ' : ''}}
+                                            {{salesClientDataForm.clientInvoicingRecipientIdValue?.value?.address ? salesClientDataForm.clientInvoicingRecipientIdValue?.value?.address + ' | ' : ''}}
+                                            {{salesClientDataForm.clientInvoicingRecipientIdValue?.value?.address2 ? salesClientDataForm.clientInvoicingRecipientIdValue?.value?.address2 + ' | ' : ''}}
+                                            {{salesClientDataForm.clientInvoicingRecipientIdValue?.value?.postCode}}
+                                        </span>
+                                        <button mat-icon-button *ngIf="salesClientDataForm.clientInvoicingRecipientIdValue?.value?.clientId"
+                                            (click)="openInNewTab(salesClientDataForm.clientInvoicingRecipientIdValue?.value?.clientId)">
+                                            <mat-icon>open_in_new</mat-icon>
+                                        </button>
+                                    </div>
                                 </div>
 
                                 <div fxLayout="row" fxLayoutAlign="start center" class="u-w--100 u-mb--10">
@@ -1996,20 +2061,25 @@
 
                             <div fxLayout="row" fxLayoutAlign="start start" class="u-mb--10">
                                 <button [ngClass]="salesClientDataForm!.clientRates!.controls!.length > 0 ? 'button-add' : 'button-outlined'" class="rates-and-fees--btn" mat-flat-button
-                                     type="button"
+                                    type="button" (menuOpened)="clientSpecialRateSelect.open();"
                                     [matMenuTriggerFor]="clientSpecialRateMenu" #clientRateMenuTrigger="matMenuTrigger" [disabled]="isClientRateEditing">
                                     <mat-icon *ngIf="salesClientDataForm.clientRates?.controls?.length">add</mat-icon>
                                     Add special rates
                                 </button>
-                                <mat-menu #clientSpecialRateMenu>
-                                    <mat-form-field appearance="outline" class="filter-select u-w--100" appPreventDoubleClick (throttledClick)="$event.stopPropagation();">
-                                        <mat-label>Choose special rate</mat-label>
-                                        <mat-select [formControl]="clientSpecialRateFilter" [disableOptionCentering]="true">
-                                            <mat-option *ngFor="let item of clientSpecialRateList" [value]="item.id" appPreventDoubleClick (throttledClick)="selectClientSpecialRate($event, item, clientRateMenuTrigger)">
-                                                {{ item.internalName }}
-                                            </mat-option>
-                                        </mat-select>
-                                    </mat-form-field>
+                                <mat-menu #clientSpecialRateMenu backdropClass="add-rates-button--menu">
+                                    <div mat-menu-item appPreventDoubleClick (throttledClick)="$event.stopPropagation()" class="u-pg--0">
+                                        <mat-form-field appearance="fill" class="add-rates-button--dropdown filter-select u-w--100">
+                                            <mat-label>Choose special rate</mat-label>
+                                            <mat-select #clientSpecialRateSelect [formControl]="clientSpecialRateFilter" [disableOptionCentering]="true">
+                                                <mat-option *ngIf="clientSpecialRateList.length == 0" (click)="$event.stopPropagation();">
+                                                    No results
+                                                </mat-option>
+                                                <mat-option *ngFor="let item of clientSpecialRateList" [value]="item.id" appPreventDoubleClick (throttledClick)="selectClientSpecialRate($event, item, clientRateMenuTrigger)">
+                                                    {{ item.internalName }}
+                                                </mat-option>
+                                            </mat-select>
+                                        </mat-form-field>
+                                    </div>
                                 </mat-menu>
                             </div>
                             <div class="inline-edit-form u-w--100">
@@ -2106,20 +2176,25 @@
                                     type="button"
                                     [disabled]="isClientFeeEditing"
                                     [matMenuTriggerFor]="clientSpecialFeeMenu"
-                                    (menuOpened)="clientSpecialFeeFilter.setValue('')"
+                                    (menuOpened)="clientSpecialFeeFilter.setValue(''); clientSpecialFeeSelect.open()"
                                     #clientFeeMenuTrigger="matMenuTrigger">
                                     <mat-icon *ngIf="salesClientDataForm.clientFees?.controls?.length">add</mat-icon>
                                     Add special fees
                                 </button>
-                                <mat-menu #clientSpecialFeeMenu>
-                                    <mat-form-field appearance="outline" class="filter-select u-w--100" appPreventDoubleClick (throttledClick)="$event.stopPropagation();">
-                                        <mat-label>Choose special fee</mat-label>
-                                        <mat-select [formControl]="clientSpecialFeeFilter" [disableOptionCentering]="true">
-                                            <mat-option *ngFor="let item of clientSpecialFeeList" [value]="item.id" appPreventDoubleClick (throttledClick)="selectClientSpecialFee($event, item, clientFeeMenuTrigger)">
-                                                {{ item.internalName }}
-                                            </mat-option>
-                                        </mat-select>
-                                    </mat-form-field>
+                                <mat-menu #clientSpecialFeeMenu backdropClass="add-rates-button--menu">
+                                    <div mat-menu-item appPreventDoubleClick (throttledClick)="$event.stopPropagation()" class="u-pg--0">
+                                        <mat-form-field appearance="fill" class="add-rates-button--dropdown filter-select u-w--100">
+                                            <mat-label>Choose special fee</mat-label>
+                                            <mat-select #clientSpecialFeeSelect [formControl]="clientSpecialFeeFilter" [disableOptionCentering]="true">
+                                                <mat-option *ngIf="clientSpecialFeeList.length == 0" (click)="$event.stopPropagation();">
+                                                    No results
+                                                </mat-option>
+                                                <mat-option *ngFor="let item of clientSpecialFeeList" [value]="item.id" appPreventDoubleClick (throttledClick)="selectClientSpecialFee($event, item, clientFeeMenuTrigger)">
+                                                    {{ item.internalName }}
+                                                </mat-option>
+                                            </mat-select>
+                                        </mat-form-field>
+                                    </div>
                                 </mat-menu>
                             </div>
                         </div>
@@ -2649,9 +2724,15 @@
                                                             </mat-autocomplete>
                                                             <mat-error>{{getValidationMessage(consultant.get('consultantWorkplaceClientAddress'))}}</mat-error>
                                                         </mat-form-field>
-                                                        <span class="workflow-step-readonly--blue-text-bold" *ngIf="consultant.value.consultantWorkplaceClientAddress?.clientId">
-                                                            #{{consultant.value.consultantWorkplaceClientAddress?.clientId}} | {{consultant.value.consultantWorkplaceClientAddress?.countryName}} | {{consultant.value.consultantWorkplaceClientAddress?.city}} | {{consultant.value.consultantWorkplaceClientAddress?.address}} | {{consultant.value.consultantWorkplaceClientAddress?.address2}} | {{consultant.value.consultantWorkplaceClientAddress?.postCode}}
-                                                        </span>
+                                                        <div fxLayout="row" fxLayoutAlign="start center" class="u-w--100">
+                                                            <span class="workflow-step-readonly--blue-text-bold" *ngIf="consultant.value.consultantWorkplaceClientAddress?.clientId">
+                                                                #{{consultant.value.consultantWorkplaceClientAddress?.clientId}} | {{consultant.value.consultantWorkplaceClientAddress?.countryName}} | {{consultant.value.consultantWorkplaceClientAddress?.city}} | {{consultant.value.consultantWorkplaceClientAddress?.address}} | {{consultant.value.consultantWorkplaceClientAddress?.address2}} | {{consultant.value.consultantWorkplaceClientAddress?.postCode}}
+                                                            </span>
+                                                            <button mat-icon-button *ngIf="consultant.value.consultantWorkplaceClientAddress?.clientId"
+                                                                (click)="openInNewTab(consultant.value.consultantWorkplaceClientAddress?.clientId)">
+                                                                <mat-icon>open_in_new</mat-icon>
+                                                            </button>
+                                                        </div>
                                                     </div>
                                                     <mat-checkbox color="accent" (change)="changeConsultantWorkplace($event, consultantIndex)" [checked]="salesClientDataForm.directClientIdValue?.value?.clientId === consultant.value.consultantWorkplaceClientAddress?.clientId" name="consultantIsOnsiteWorkplaceSameAsDirectClient" class="black-checkbox u-mr--16 u-mt--10">
                                                         Same as direct client
@@ -2885,23 +2966,25 @@
                                             [matMenuTriggerFor]="consultantSpecialRateMenu"
                                             [disabled]="isConsultantRateEditing"
                                             type="button"
-                                            (menuOpened)="consultantsForm.consultantData.at(consultantIndex).get('consultantSpecialRateFilter')!.setValue('')"
-                                            #consultantRateMenuTrigger="matMenuTrigger"
-                                            [matMenuTriggerData]="{consultantIndex: consultantIndex}">
+                                            (menuOpened)="consultantsForm.consultantData.at(consultantIndex).get('consultantSpecialRateFilter')!.setValue(''); consultantSpecialRateSelect.open();"
+                                            #consultantRateMenuTrigger="matMenuTrigger">
                                             <mat-icon *ngIf="consultant.value.specialRates?.length">add</mat-icon>
                                             Add special rate
                                         </button>
-                                        <mat-menu #consultantSpecialRateMenu>
-                                            <ng-template matMenuContent let-consultantIndex="consultantIndex">
-                                                <mat-form-field appearance="outline" class="filter-select u-w--100" appPreventDoubleClick (throttledClick)="$event.stopPropagation();">
+                                        <mat-menu #consultantSpecialRateMenu backdropClass="add-rates-button--menu">
+                                            <div mat-menu-item appPreventDoubleClick (throttledClick)="$event.stopPropagation()" class="u-pg--0">
+                                                <mat-form-field appearance="fill" class="add-rates-button--dropdown filter-select u-w--100">
                                                     <mat-label>Choose special rate</mat-label>
-                                                    <mat-select formControlName="consultantSpecialRateFilter" [disableOptionCentering]="true">
+                                                    <mat-select #consultantSpecialRateSelect formControlName="consultantSpecialRateFilter" [disableOptionCentering]="true">
+                                                        <mat-option *ngIf="clientSpecialRateList.length == 0" (click)="$event.stopPropagation();">
+                                                            No results
+                                                        </mat-option>
                                                         <mat-option *ngFor="let item of clientSpecialRateList" [value]="item.id" appPreventDoubleClick (throttledClick)="selectConsultantSpecialRate($event, consultantIndex, item, consultantRateMenuTrigger)">
                                                             {{ item.internalName }}
                                                         </mat-option>
                                                     </mat-select>
                                                 </mat-form-field>
-                                            </ng-template>
+                                            </div>
                                         </mat-menu>
                                     </div>
 
@@ -3020,21 +3103,24 @@
                                             [disabled]="isConsultantFeeEditing"
                                             type="button"
                                             #consultantFeeMenuTrigger="matMenuTrigger"
-                                            [matMenuTriggerData]="{consultantIndex: consultantIndex}">
+                                            (menuOpened)="consultantSpecialFeeSelect.open();">
                                             <mat-icon *ngIf="consultant.value.specialFees?.length">add</mat-icon>
                                             Add special fees
                                         </button>
-                                        <mat-menu #consultantSpecialFeeMenu>
-                                            <ng-template matMenuContent let-consultantIndex="consultantIndex">
-                                                <mat-form-field appearance="outline" class="filter-select u-w--100" appPreventDoubleClick (throttledClick)="$event.stopPropagation();">
+                                        <mat-menu #consultantSpecialFeeMenu backdropClass="add-rates-button--menu">
+                                            <div mat-menu-item appPreventDoubleClick (throttledClick)="$event.stopPropagation()" class="u-pg--0">
+                                                <mat-form-field appearance="fill" class="add-rates-button--dropdown filter-select u-w--100">
                                                     <mat-label>Choose special fee</mat-label>
-                                                    <mat-select formControlName="consultantSpecialFeeFilter" [disableOptionCentering]="true">
+                                                    <mat-select #consultantSpecialFeeSelect formControlName="consultantSpecialFeeFilter" [disableOptionCentering]="true">
+                                                        <mat-option *ngIf="clientSpecialFeeList.length == 0" (click)="$event.stopPropagation();">
+                                                            No results
+                                                        </mat-option>
                                                         <mat-option *ngFor="let item of clientSpecialFeeList" [value]="item.id" appPreventDoubleClick (throttledClick)="selectConsultantSpecialFee($event, consultantIndex, item, consultantFeeMenuTrigger)">
                                                             {{ item.internalName }}
                                                         </mat-option>
                                                     </mat-select>
                                                 </mat-form-field>
-                                            </ng-template>
+                                            </div>
                                         </mat-menu>
                                     </div>
                                 </div>

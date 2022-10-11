@@ -52,7 +52,7 @@
 .client-list--filter-country-menu + * .cdk-overlay-pane,
 .main-overview--filter-manager-menu + * .cdk-overlay-pane,
 .main-overview--filter-country-menu + * .cdk-overlay-pane {
-    .mat-menu-panel {
+    .mat-menu-panel, .mat-select-panel {
         min-height: 48px !important;
         border-radius: unset !important;
         min-width: 300px !important;
@@ -67,7 +67,7 @@
 .client-list--filter-country-menu + * + * .cdk-overlay-pane,
 .main-overview--filter-manager-menu + * + * .cdk-overlay-pane,
 .main-overview--filter-country-menu + * + * .cdk-overlay-pane {
-    .mat-autocomplete-panel {
+    .mat-autocomplete-panel, .mat-select-panel {
         // border: 1px solid #E7E3E8;
         min-width: 300px !important;
 
@@ -107,6 +107,8 @@
         align-items: center;
     }
 }
+
+
 
 .main-overview--user-status-menu + * .cdk-overlay-pane {
     .mat-menu-panel {

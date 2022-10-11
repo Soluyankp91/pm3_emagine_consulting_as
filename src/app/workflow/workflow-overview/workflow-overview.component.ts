@@ -82,6 +82,12 @@ export class WorkflowOverviewComponent extends AppComponentBase implements OnIni
         this.individualConsultantActionsAvailable = environment.dev;
         this.getOverviewData();
         this.getWorkflowHistory();
+
+        this._workflowDataService.workflowOverviewUpdated
+            .pipe(takeUntil(this._unsubscribe))
+            .subscribe((value: boolean) => {
+                this.getOverviewData();
+            });
     }
 
     ngOnDestroy(): void {

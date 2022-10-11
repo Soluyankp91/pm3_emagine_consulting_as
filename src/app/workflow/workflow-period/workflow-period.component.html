@@ -21,13 +21,13 @@
                             </div>
                             <!-- Change WF || terminate WF || terminateConsultant when BE will have termination -->
                             <ng-container *ngIf="item.typeId !== workflowProcessTypes.StartClientPeriod">
-                                <button mat-icon-button [matMenuTriggerFor]="consultantMenu" type="button" appPreventDoubleClick (throttledClick)="$event.stopPropagation();" class="workflow-period--delete u-mr--16"><mat-icon>more_horiz</mat-icon></button>
+                                <button mat-icon-button #menuDeleteTrigger="matMenuTrigger" [matMenuTriggerFor]="consultantMenu" type="button" appPreventDoubleClick (throttledClick)="$event.stopPropagation();" class="workflow-period--delete u-mr--16"><mat-icon>more_horiz</mat-icon></button>
                                 <mat-menu #consultantMenu>
                                     <button
                                         class="menu-item menu-item--delete"
                                         mat-menu-item
                                         [disabled]="false"
-                                        appPreventDoubleClick (throttledClick)="deleteSideSection(item)">
+                                        (click)="deleteSideSection(item)">
                                         <mat-icon>clear</mat-icon>
                                         Delete
                                     </button>

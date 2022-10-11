@@ -1,5 +1,6 @@
 import { Component, EventEmitter, Inject, Injector, OnDestroy, OnInit, Output } from '@angular/core';
 import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
+import { Router } from '@angular/router';
 import { of, Subject } from 'rxjs';
 import { debounceTime, finalize, switchMap, takeUntil } from 'rxjs/operators';
 import { InternalLookupService } from 'src/app/shared/common/internal-lookup.service';
@@ -34,7 +35,8 @@ export class AddOrEditProjectLineDialogComponent extends AppComponentBase implem
         },
         private dialogRef: MatDialogRef<AddOrEditProjectLineDialogComponent>,
         private _lookupService: LookupServiceProxy,
-        private _internalLookupService: InternalLookupService
+        private _internalLookupService: InternalLookupService,
+        private router: Router
     ) {
         super(injector);
         this.projectLineForm = new ProjectLineForm();
@@ -149,6 +151,7 @@ export class AddOrEditProjectLineDialogComponent extends AppComponentBase implem
         this.projectLineForm.modificationDate?.setValue(data.modificationDate, {emitEvent: false});
         this.projectLineForm.modifiedById?.setValue(data.modifiedBy, {emitEvent: false});
         this.projectLineForm.wasSynced?.setValue(data.wasSynced, {emitEvent: false});
+        this.projectLineForm.isLineForFees?.setValue(data.isLineForFees, {emitEvent: false});
 
         this.projectLineForm.markAsDirty();
         this.projectLineForm.markAllAsTouched();
@@ -186,6 +189,8 @@ export class AddOrEditProjectLineDialogComponent extends AppComponentBase implem
         result.modificationDate = this.projectLineForm.modificationDate?.value;
         result.consultantInsuranceOptionId = this.projectLineForm.consultantInsuranceOptionId?.value;
         result.wasSynced = this.projectLineForm.wasSynced?.value;
+        result.isLineForFees = this.projectLineForm.isLineForFees?.value;
+
         this.onConfirmed.emit(result);
         this.closeInternal();
     }
@@ -213,6 +218,13 @@ export class AddOrEditProjectLineDialogComponent extends AppComponentBase implem
 
     private closeInternal(): void {
         this.dialogRef.close();
+    }
+
+    openInNewTab(clientId: number | undefined) {
+        const url = this.router.serializeUrl(
+            this.router.createUrlTree([`/app/clients/${clientId}/rates-and-fees`])
+        );
+        window.open(url, '_blank');
     }
 
 }

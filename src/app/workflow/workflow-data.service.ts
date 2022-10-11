@@ -33,6 +33,8 @@ export class WorkflowDataService {
     workflowSideSectionUpdated = new EventEmitter<{isStatusUpdate: boolean}>();
     workflowTopSectionUpdated = new EventEmitter<any>();
 
+    workflowOverviewUpdated = new EventEmitter<boolean>();
+
     consultantsAddedToStep = new EventEmitter<{stepType: number, processTypeId: number, consultantNames: string[]}>();
 
     cancelForceEdit =  new EventEmitter<any>();
