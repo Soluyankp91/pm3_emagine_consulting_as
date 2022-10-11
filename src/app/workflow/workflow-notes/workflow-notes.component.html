@@ -35,7 +35,9 @@
         </ng-template>
     </div>
     <div fxLayout="row" fxLayoutAlign="end center" class="workflow-notes--footer u-mt--16">
-        <button class="edit-toggle" mat-icon-button *ngIf="!notesEditable && isAllowedToEdit" type="button" appPreventDoubleClick (throttledClick)="notesEditable = !notesEditable"><mat-icon>{{workflowNote.value?.length ? 'create' : 'add'}}</mat-icon></button>
+        <button class="edit-toggle contract-manager-action" mat-icon-button *ngIf="!notesEditable && isAllowedToEdit" type="button" appPreventDoubleClick (throttledClick)="notesEditable = !notesEditable">
+            <mat-icon [svgIcon]="workflowNote.value?.length ? 'edit-icon' : 'add-icon'"></mat-icon>
+        </button>
         <button mat-flat-button type="button" class="button-cancel" *ngIf="notesEditable" appPreventDoubleClick (throttledClick)="cancelNoteEdit()">Cancel</button>
         <button mat-flat-button type="button" color="primary" class="button-accept" *ngIf="notesEditable" appPreventDoubleClick (throttledClick)="saveNotes()">Save</button>
     </div>

@@ -629,5 +629,26 @@ export class AppModule {
             )
         );
 
+        iconRegistry.addSvgIcon(
+            'edit-icon',
+            sanitizer.bypassSecurityTrustResourceUrl(
+                'assets/common/images/edit-icon.svg'
+            )
+        );
+
+        iconRegistry.addSvgIcon(
+            'return-icon',
+            sanitizer.bypassSecurityTrustResourceUrl(
+                'assets/common/images/return-icon.svg'
+            )
+        );
+
+        iconRegistry.addSvgIcon(
+            'add-icon',
+            sanitizer.bypassSecurityTrustResourceUrl(
+                'assets/common/images/add-icon.svg'
+            )
+        );
+
     }
 }

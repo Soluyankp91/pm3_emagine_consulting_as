@@ -175,6 +175,14 @@
             color: rgb(0, 0, 0);
         }
     }
+    &.contract-manager-action {
+        &:hover {
+            background: rgba($color: #72A0F8, $alpha: .1);
+        }
+        mat-icon {
+            color: rgb(0, 0, 0);
+        }
+    }
 }
 
 .form-icon--delete-row {
@@ -282,6 +290,9 @@
     background-color: transparent;
     border: 0;
     border-radius: 5px;
+    &.contract-manager-action {
+        color: #72A0F8;
+    }
 }
 
 .button-close.mat-icon-button {
