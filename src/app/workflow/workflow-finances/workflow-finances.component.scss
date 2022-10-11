@@ -43,14 +43,6 @@
             font-size: 16px;
             margin-bottom: 20px;
         }
-        // @media screen and (max-width: 1440px) {
-        //     .workflow-section--header {
-        //         font-size: 14px;
-        //     }
-        //     .workflow-blue--header {
-        //         font-size: 12px;
-        //     }
-        // }
 
         &--consultant {
             &-name {
@@ -63,15 +55,13 @@
                 height: 32px;
                 border-radius: 50%;
             }
-            // @media screen and (max-width: 1440px) {
-            //     &-name {
-            //         font-size: 14px;
-            //     }
-            //     &-img {
-            //         width: 24px;
-            //         height: 24px;
-            //     }
-            // }
+           &-text {
+                font-family: "Open Sans", sans-serif;
+                font-weight: 600;
+                font-size: 12px;
+                line-height: 150%;
+                color: rgba(56, 72, 83, 0.87);
+           }
 
         }
     }

@@ -2599,11 +2599,6 @@ export class WorkflowSalesComponent extends AppComponentBase implements OnInit {
         return option ? option?.firstName + ' ' + option?.lastName : '';
     }
 
-    getTenantCodeFromId(tenantId: number) {
-        const tenant = TenantList.find(x => x.id === tenantId);
-        return tenant?.code;
-    }
-
     formatExpirationNotificationsForDisplay(data: number[] | undefined): string {
         let contractExpirationNotificationDisplay: any[] = [];
         if (data?.length) {

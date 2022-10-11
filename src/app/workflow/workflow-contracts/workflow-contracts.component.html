@@ -54,15 +54,21 @@
                     <ng-container formArrayName="consultantTerminationContractData">
                         <div *ngFor="let consultant of contractsTerminationConsultantForm.consultantTerminationContractData.controls; index as i; last as last" [formGroupName]="i" class="workflow-contracts--block-consultants u-mt--20" [ngClass]="{'last-block': last}" [id]="'consultantDataAnchor' + i">
                             <div fxLayout="row" fxLayoutAlign="start center" class="u-mb--20">
-                                <img *ngIf="consultant.value?.consultantData?.id" class="border-rounded-50 u-mr--16 image-thumbnail-responsive" [src]="consultantProfileUrl(consultant.value?.consultantData?.externalId)">
-                                <p class="workflow-contracts--consultant-name">
-                                    {{contractsTerminationConsultantForm.consultantTerminationContractData.at(i).get('consultantData')?.value?.name}}
-                                </p>
-                                <button *ngIf="consultant.value?.consultantData?.id" mat-icon-button class="consultant-deeplink--btn" appPreventDoubleClick (throttledClick)="$event.stopPropagation(); deepLinkToSourcing(consultant.value?.consultantData?.id)" matTooltip="Preview in Sourcing" matTooltipClass="white-tooltip">
-                                    <mat-icon svgIcon="sourcing-deeplink"></mat-icon>
-                                </button>
+                                <img *ngIf="consultant.value?.consultantData?.id" class="border-rounded-50 u-mr--16 image-thumbnail-responsive" [src]="consultantProfileUrl(consultant.value?.consultantData?.externalId)" />
+                                <div fxLayout="column">
+                                    <div fxLayout="row" fxLayoutAlign="start center">
+                                        <p class="workflow-contracts--consultant-name">
+                                            {{ consultant.value?.consultantData?.name }}
+                                        </p>
+                                        <button *ngIf="consultant.value?.consultantData?.id" mat-icon-button class="consultant-deeplink--btn" appPreventDoubleClick (throttledClick)="$event.stopPropagation(); deepLinkToSourcing(consultant.value?.consultantData?.id)" matTooltip="Preview in Sourcing" matTooltipClass="white-tooltip">
+                                            <mat-icon svgIcon="sourcing-deeplink"></mat-icon>
+                                        </button>
+                                    </div>
+                                    <span class="workflow-contracts--consultant-text">
+                                        {{consultant?.value?.consultantData?.companyName}} | {{consultant?.value?.consultantData?.city}}, {{getTenantCodeFromId(consultant?.value?.consultantData?.countryId)}} | #{{consultant?.value?.consultantData?.id}} / {{getTenantCodeFromId(consultant?.value?.consultantData?.countryId)}}-{{consultant?.value?.consultantData?.legacyId}}
+                                    </span>
+                                </div>
                             </div>
-
                             <div fxLayout="row" fxLayoutAlign="start center" class="u-w--100 u-mb--10">
                                 <ng-container *ngIf="readOnlyMode; else nameremovedConsultantFromAnyManualChecklistsInput">
                                     <mat-icon class="termination-cancel-icon u-mr--5" [svgIcon]="'cancel-fill'" [ngClass]="{'icon-cancel': !contractsTerminationConsultantForm.consultantTerminationContractData.at(i).get('nameremovedConsultantFromAnyManualChecklists')?.value}"
@@ -514,17 +520,26 @@
                                     <span class="process-name" *ngIf="readOnlyMode">Contracts.</span>
                                     <span class="anchor-name">Consultant data</span>
                                 </h1>
-                                <!-- Only visible when employment type is selected and it is not 'Fee only' - id: 10 nd not 'Recruitment' - id:11 -->
-                                <div fxLayout="row" fxLayoutAlign="start start" class="u-w--100" *ngIf="consultant.value.consultantType?.id !== 10 && consultant.value.consultantType?.id !== 11">
-                                    <span fxFlex="50%" fxLayout="row" fxLayoutAlign="start center">
-                                        <img *ngIf="consultant.value?.consultant?.id" class="border-rounded-50 u-ml--16 u-mr--16 image-thumbnail-responsive" [src]="consultantProfileUrl(consultant.value?.consultant?.externalId)" />
-                                        <span class="workflow-contracts--consultant-name">
-                                            {{ consultant.value?.consultant?.name }}
+                            </div>
+
+                            <!-- Only visible when employment type is selected and it is not 'Fee only' - id: 10 nd not 'Recruitment' - id:11 -->
+                            <div fxLayout="column">
+                                <h3 class="workflow-step-readonly--gray-header">Consultant</h3>
+                                <div fxLayout="row" fxLayoutAlign="start center" class="u-mb--20" *ngIf="consultant.value.employmentType?.id !== 10 && consultant.value.employmentType?.id !== 11">
+                                    <img *ngIf="consultant.value?.consultant?.id" class="border-rounded-50 u-mr--16 image-thumbnail-responsive" [src]="consultantProfileUrl(consultant.value?.consultant?.externalId)" />
+                                    <div fxLayout="column">
+                                        <div fxLayout="row" fxLayoutAlign="start center">
+                                            <p class="workflow-contracts--consultant-name">
+                                                {{ consultant.value?.consultant?.name }}
+                                            </p>
+                                            <button *ngIf="consultant.value?.consultant?.id" mat-icon-button class="consultant-deeplink--btn" appPreventDoubleClick (throttledClick)="$event.stopPropagation(); deepLinkToSourcing(consultant.value?.consultant?.id)" matTooltip="Preview in Sourcing" matTooltipClass="white-tooltip">
+                                                <mat-icon svgIcon="sourcing-deeplink"></mat-icon>
+                                            </button>
+                                        </div>
+                                        <span class="workflow-contracts--consultant-text">
+                                            {{consultant?.value?.consultant?.companyName}} | {{consultant?.value?.consultant?.city}}, {{getTenantCodeFromId(consultant?.value?.consultant?.countryId)}} | #{{consultant?.value?.consultant?.id}} / {{getTenantCodeFromId(consultant?.value?.consultant?.countryId)}}-{{consultant?.value?.consultant?.legacyId}}
                                         </span>
-                                        <button *ngIf="consultant.value?.consultant?.id" mat-icon-button class="consultant-deeplink--btn" appPreventDoubleClick (throttledClick)="$event.stopPropagation(); deepLinkToSourcing(consultant.value?.consultant?.id)" matTooltip="Preview in Sourcing" matTooltipClass="white-tooltip">
-                                            <mat-icon svgIcon="sourcing-deeplink"></mat-icon>
-                                        </button>
-                                    </span>
+                                    </div>
                                 </div>
                             </div>
 
@@ -1225,22 +1240,27 @@
                         <ng-container formArrayName="consultants">
                             <div *ngFor="let consultant of contractsSyncDataForm.consultants.controls; let consultantIndex = index" [formGroupName]="consultantIndex" class="workflow-form--consultants u-w--100">
                                 <span class="u-mt--20" [ngClass]="{'workflow-gray--header': readOnlyMode, 'workflow-darkblue--text': !readOnlyMode}">Consultant legal contracts</span>
-                                <div fxLayout="row" fxLayoutAlign="start center" class="u-mb--20 u-mt--10 u-w--100">
-                                    <ng-container *ngIf="consultant.value.consultantType?.id !== 10 && consultant.value.consultantType?.id !== 11; else consultantNameOnly">
-                                        <img *ngIf="consultant.value?.consultant?.id" class="border-rounded-50 image-thumbnail-responsive u-mr--10" [src]="consultantProfileUrl(consultant.value.consultant?.externalId)" />
-                                        <p class="workflow-contracts--consultant-name">
-                                            {{consultant.value?.consultant?.name}}
-                                        </p>
-                                        <button *ngIf="consultant.value?.consultant?.id" mat-icon-button class="consultant-deeplink--btn" appPreventDoubleClick (throttledClick)="$event.stopPropagation(); deepLinkToSourcing(consultant.value?.consultant?.id)" matTooltip="Preview in Sourcing" matTooltipClass="white-tooltip">
-                                            <mat-icon svgIcon="sourcing-deeplink"></mat-icon>
-                                        </button>
-                                    </ng-container>
-                                    <ng-template #consultantNameOnly>
-                                        <p class="workflow-contracts--consultant-name">
-                                            {{consultant.value?.nameOnly}}
-                                        </p>
-                                    </ng-template>
+                                <div fxLayout="row" fxLayoutAlign="start center" class="u-mb--20" *ngIf="consultant.value.employmentType?.id !== 10 && consultant.value.employmentType?.id !== 11; else consultantNameOnly">
+                                    <img *ngIf="consultant.value?.consultant?.id" class="border-rounded-50 u-mr--16 image-thumbnail-responsive" [src]="consultantProfileUrl(consultant.value?.consultant?.externalId)" />
+                                    <div fxLayout="column">
+                                        <div fxLayout="row" fxLayoutAlign="start center">
+                                            <p class="workflow-contracts--consultant-name">
+                                                {{ consultant.value?.consultant?.name }}
+                                            </p>
+                                            <button *ngIf="consultant.value?.consultant?.id" mat-icon-button class="consultant-deeplink--btn" appPreventDoubleClick (throttledClick)="$event.stopPropagation(); deepLinkToSourcing(consultant.value?.consultant?.id)" matTooltip="Preview in Sourcing" matTooltipClass="white-tooltip">
+                                                <mat-icon svgIcon="sourcing-deeplink"></mat-icon>
+                                            </button>
+                                        </div>
+                                        <span class="workflow-contracts--consultant-text">
+                                            {{consultant?.value?.consultant?.companyName}} | {{consultant?.value?.consultant?.city}}, {{getTenantCodeFromId(consultant?.value?.consultant?.countryId)}} | #{{consultant?.value?.consultant?.id}} / {{getTenantCodeFromId(consultant?.value?.consultant?.countryId)}}-{{consultant?.value?.consultant?.legacyId}}
+                                        </span>
+                                    </div>
                                 </div>
+                                <ng-template #consultantNameOnly>
+                                    <p class="workflow-contracts--consultant-name">
+                                        {{consultant.value?.nameOnly}}
+                                    </p>
+                                </ng-template>
                                 <div fxLayout="column" fxLayoutAlign="start start" class="u-w--100" *ngIf="readOnlyMode">
                                     <div fxLayout="row" fxLayoutAlign="start center" *ngIf="(contractClientForm.pdcInvoicingEntityId?.value !== consultant?.value?.pdcPaymentEntityId)">
                                         <mat-icon class="u-mr--5" [ngClass]="{'icon-cancel': consultant.value?.internalLegalContractDoneStatusId === 0}" [svgIcon]="detectContractModuleIcon(consultant.value?.internalLegalContractDoneStatusId)"></mat-icon>

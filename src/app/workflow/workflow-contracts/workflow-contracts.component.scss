@@ -26,11 +26,13 @@
             &-img {
                 border-radius: 50%;
             }
-            // @media screen and (max-width: 1440px) {
-            //     &-name {
-            //         font-size: 14px;
-            //     }
-            // }
+            &-text {
+                font-family: "Open Sans", sans-serif;
+                font-weight: 600;
+                font-size: 12px;
+                line-height: 150%;
+                color: rgba(56, 72, 83, 0.87);
+            }
         }
         &--block {
             &-consultants:not(:last-child) {
@@ -83,14 +85,6 @@
                 line-height: 14px;
                 color: #B6B4B2
             }
-            // @media screen and (max-width: 1440px) {
-            //     .workflow-darkblue--text {
-            //         font-size: 14px;
-            //     }
-            //     .workflow-gray--header {
-            //         font-size: 12px;
-            //     }
-            // }
         }
     }
     &-section--header {
@@ -109,12 +103,6 @@
             text-transform: uppercase;
             color: $dark-grey-color;
         }
-        // @media screen and (max-width: 1440px) {
-        //     font-size: 14px;
-        //     &-main {
-        //         font-size: 18px;
-        //     }
-        // }
     }
 
     &--termination {

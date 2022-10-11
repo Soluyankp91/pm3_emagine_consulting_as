@@ -12,7 +12,7 @@ import { ClientPeriodContractsDataCommandDto, WorkflowProcessType, WorkflowServi
 import { WorkflowConsultantActionsDialogComponent } from '../workflow-consultant-actions-dialog/workflow-consultant-actions-dialog.component';
 import { WorkflowDataService } from '../workflow-data.service';
 import { WorkflowProcessWithAnchorsDto } from '../workflow-period/workflow-period.model';
-import { ConsultantDiallogAction } from '../workflow-sales/workflow-sales.model';
+import { ConsultantDiallogAction, TenantList } from '../workflow-sales/workflow-sales.model';
 import { ProjectLineDiallogMode } from '../workflow.model';
 import { AddOrEditProjectLineDialogComponent } from './add-or-edit-project-line-dialog/add-or-edit-project-line-dialog.component';
 import { LegalContractStatus, WorkflowConsultantsLegalContractForm, WorkflowContractsClientDataForm, WorkflowContractsConsultantsDataForm, WorkflowContractsMainForm, WorkflowContractsSyncForm, WorkflowContractsTerminationConsultantsDataForm } from './workflow-contracts.model';
@@ -1763,4 +1763,5 @@ export class WorkflowContractsComponent extends AppComponentBase implements OnIn
                 return '';
         }
     }
+
 }
