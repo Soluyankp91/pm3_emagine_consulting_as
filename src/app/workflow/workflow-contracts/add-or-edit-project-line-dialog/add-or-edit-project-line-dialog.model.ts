@@ -12,7 +12,7 @@ export class ProjectLineForm extends FormGroup {
             differentInvoicingReferenceNumber: new FormControl(false),
             invoicingReferencePersonId: new FormControl(null),
             differentInvoicingReferencePerson: new FormControl(false),
-            optionalInvoicingInfo: new FormControl(null),
+            optionalInvoicingInfo: new FormControl(null, Validators.maxLength(250)),
             debtorNumber: new FormControl(null),
             differentDebtorNumber: new FormControl(false),
             invoiceRecipientId: new FormControl(null),
