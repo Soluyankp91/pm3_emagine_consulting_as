@@ -82,14 +82,15 @@
                                 <app-manager-search
                                     appPreventDoubleClick (throttledClick)="$event.stopPropagation()"
                                     [formFieldLabel]="step.name + ' Manager'"
-                                    [periodId]="item.consultantPeriodId!"
-                                    [consultantPeriodId]="item.consultantPeriodId!"
+                                    [periodId]="periodId!"
+                                    [consultantPeriodId]="periodId!"
                                     [stepType]="step.typeId!"
                                     [periodType]="step.typeId!"
                                     [workflowId]="workflowId"
                                     [managerStatus]="step.status!"
                                     [responsiblePerson]="step.responsiblePerson!"
-                                    [readonly]="step.isFakeActiveStep || (item.consultantPeriodId === null || item.consultantPeriodId === undefined)">
+                                    [readonly]="periodId === null || periodId === undefined"
+                                    [isFakeActiveStep]="step.isFakeActiveStep!">
                                 </app-manager-search>
                             </div>
                             <div class="column">

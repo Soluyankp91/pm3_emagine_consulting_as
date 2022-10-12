@@ -25,6 +25,7 @@ export class ManagerSearchComponent extends AppComponentBase implements OnInit, 
     @Input() consultantPeriodId: string;
     @Input() stepType: number;
     @Input() workflowId: string;
+    @Input() isFakeActiveStep: boolean;
     @Output() managerSelected: EventEmitter<number> = new EventEmitter<number>();
 
     managerStatuses = ManagerStatus;
@@ -78,23 +79,27 @@ export class ManagerSearchComponent extends AppComponentBase implements OnInit, 
     selectOption(event: Event, option: EmployeeDto) {
         event.stopPropagation();
         this.managerSelected.emit(option.id);
-        switch (this.periodType) {
-            case WorkflowProcessType.StartClientPeriod:
-            case WorkflowProcessType.ExtendClientPeriod:
-            case WorkflowProcessType.ChangeClientPeriod:
-                this.changeResponsibleForClientPeriodStep(option);
-                break;
-            case WorkflowProcessType.TerminateWorkflow:
-                this.changeResponsibleWorkflowTerminationStep(option);
-                break;
-            case WorkflowProcessType.StartConsultantPeriod:
-            case WorkflowProcessType.ChangeConsultantPeriod:
-            case WorkflowProcessType.ExtendConsultantPeriod:
-                this.changeResponsibleForConsultantPeriodStep(option);
-                break;
-            case WorkflowProcessType.TerminateConsultant:
-                this.changeResponsibleConsultantTerminationStep(option);
-                break;
+        if (this.isFakeActiveStep !== null && this.isFakeActiveStep !== undefined) {
+            this.updateSalesAccountManager(option);
+        } else {
+            switch (this.periodType) {
+                case WorkflowProcessType.StartClientPeriod:
+                case WorkflowProcessType.ExtendClientPeriod:
+                case WorkflowProcessType.ChangeClientPeriod:
+                    this.changeResponsibleForClientPeriodStep(option);
+                    break;
+                case WorkflowProcessType.TerminateWorkflow:
+                    this.changeResponsibleWorkflowTerminationStep(option);
+                    break;
+                case WorkflowProcessType.StartConsultantPeriod:
+                case WorkflowProcessType.ChangeConsultantPeriod:
+                case WorkflowProcessType.ExtendConsultantPeriod:
+                    this.changeResponsibleForConsultantPeriodStep(option);
+                    break;
+                case WorkflowProcessType.TerminateConsultant:
+                    this.changeResponsibleConsultantTerminationStep(option);
+                    break;
+            }
         }
         this.managerSearchMenu.closeMenu();
     }
@@ -136,6 +141,16 @@ export class ManagerSearchComponent extends AppComponentBase implements OnInit, 
             .subscribe(() => {
                 this.responsiblePerson = responsiblePerson;
                 this._workflowDataService.workflowSideSectionUpdated.emit({isStatusUpdate: true});
+            });
+    }
+
+    updateSalesAccountManager(responsiblePerson: EmployeeDto) {
+        this.showMainSpinner();
+        this._clientPeriodService.salesAccountManager(this.periodId,  responsiblePerson.id)
+            .pipe(finalize(() => this.hideMainSpinner()))
+            .subscribe(() => {
+                this.responsiblePerson = responsiblePerson;
+                this._workflowDataService.workflowOverviewUpdated.emit(true);
             });
     }
 

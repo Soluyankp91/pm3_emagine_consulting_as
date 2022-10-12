@@ -357,7 +357,6 @@ export class WorkflowOverviewComponent extends AppComponentBase implements OnIni
     }
 
     getAvailableConsultantForChangeOrExtend() {
-        console.log(this.periodId);
         if (!this._workflowDataService.getWorkflowProgress.currentlyActivePeriodId) {
             let newStatus = new WorkflowProgressStatus();
             newStatus.currentlyActivePeriodId = this.periodId;
