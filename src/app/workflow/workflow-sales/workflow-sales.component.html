@@ -851,7 +851,11 @@
                                                     <h3 class="workflow-step-readonly--gray-header">Client address</h3>
                                                     <div fxLayout="row" fxLayoutAlign="start flex-end" class="u-w--100">
                                                         <span class="workflow-readonly--blue-hint">
-                                                            {{item.value.consultantWorkplaceClientAddress?.countryName}} | {{item.value.consultantWorkplaceClientAddress?.city}} | {{item.value.consultantWorkplaceClientAddress?.address}} | {{item.value.consultantWorkplaceClientAddress?.address2}} | {{item.value.consultantWorkplaceClientAddress?.postCode}}
+                                                            {{item.value.consultantWorkplaceClientAddress?.countryName ? item.value.consultantWorkplaceClientAddress?.countryName + ' | ' : ''}}
+                                                            {{item.value.consultantWorkplaceClientAddress?.city ? item.value.consultantWorkplaceClientAddress?.city + ' | ' : ''}}
+                                                            {{item.value.consultantWorkplaceClientAddress?.address ? item.value.consultantWorkplaceClientAddress?.address + ' | ' : ''}}
+                                                            {{item.value.consultantWorkplaceClientAddress?.address2 ? item.value.consultantWorkplaceClientAddress?.address2 + ' | ' : ''}}
+                                                            {{item.value.consultantWorkplaceClientAddress?.postCode}}
                                                         </span>
                                                         <button class="link-to-client-icon" mat-icon-button *ngIf="item.value.consultantWorkplaceClientAddress?.clientId"
                                                             (click)="openInNewTab(item.value.consultantWorkplaceClientAddress?.clientId)"
@@ -2735,10 +2739,10 @@
                                                             <span class="workflow-readonly--blue-hint" *ngIf="consultant.value.consultantWorkplaceClientAddress?.clientId">
                                                                 {{consultant.value.consultantWorkplaceClientAddress?.clientId ? '#' + consultant.value.consultantWorkplaceClientAddress?.clientId + ' | ' : ''}}
                                                                 {{consultant.value.consultantWorkplaceClientAddress?.countryName ? consultant.value.consultantWorkplaceClientAddress?.countryName + ' | ' : ''}}
-                                                                | {{consultant.value.consultantWorkplaceClientAddress?.city ? consultant.value.consultantWorkplaceClientAddress?.city + ' | ' : ''}}
-                                                                | {{consultant.value.consultantWorkplaceClientAddress?.address ? consultant.value.consultantWorkplaceClientAddress?.address + ' | ' : ''}}
-                                                                | {{consultant.value.consultantWorkplaceClientAddress?.address2 ? consultant.value.consultantWorkplaceClientAddress?.address2 + ' | ' : ''}}
-                                                                | {{consultant.value.consultantWorkplaceClientAddress?.postCode}}
+                                                                {{consultant.value.consultantWorkplaceClientAddress?.city ? consultant.value.consultantWorkplaceClientAddress?.city + ' | ' : ''}}
+                                                                {{consultant.value.consultantWorkplaceClientAddress?.address ? consultant.value.consultantWorkplaceClientAddress?.address + ' | ' : ''}}
+                                                                {{consultant.value.consultantWorkplaceClientAddress?.address2 ? consultant.value.consultantWorkplaceClientAddress?.address2 + ' | ' : ''}}
+                                                                {{consultant.value.consultantWorkplaceClientAddress?.postCode}}
                                                             </span>
                                                             <button class="link-to-client-icon" mat-icon-button *ngIf="consultant.value.consultantWorkplaceClientAddress?.clientId"
                                                                 (click)="openInNewTab(consultant.value.consultantWorkplaceClientAddress?.clientId)"
