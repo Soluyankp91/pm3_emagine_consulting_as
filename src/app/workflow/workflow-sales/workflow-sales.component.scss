@@ -226,6 +226,13 @@
                     color: rgba(56, 72, 83, 0.87);
                 }
             }
+            &-hint {
+                font-family: "Open Sans", sans-serif;
+                    font-size: 14px;
+                    font-weight: 600;
+                    color: rgba(56, 72, 83, 0.87);
+                    line-height: 35px;
+            }
         }
 
         // @media screen and (max-width: 1440px) {
@@ -252,7 +259,19 @@
     display: none;
 }
 
-
 .workflow-toggle-buttons--showMore {
     border: 1px solid $light-grey-color;
+}
+
+.link-to-client-icon {
+    width: 35px;
+    height: 35px;
+    border-radius: 50%;
+    display: flex;
+    justify-content: center;
+    align-items: end;
+    &:hover {
+        background-color: rgba(139,209,203,0.22);
+        // mix-blend-mode: multiply;
+    }
 }
