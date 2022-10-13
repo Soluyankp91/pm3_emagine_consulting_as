@@ -20,7 +20,7 @@ export class WorkflowSalesMainForm extends FormGroup {
             contractExpirationNotification: new FormControl(null),
             customContractExpirationNotificationDate: new FormControl(null),
 
-            remarks: new FormControl(null, Validators.required),
+            remarks: new FormControl(null),
             noRemarks: new FormControl(false)
         });
     }
@@ -78,7 +78,7 @@ export class WorkflowSalesClientDataForm extends FormGroup {
             // Client
             differentEndClient: new FormControl(true),
             directClientIdValue: new FormControl(null, Validators.required),
-            endClientIdValue: new FormControl(null, Validators.required),
+            endClientIdValue: new FormControl(null),
 
             // PDC Invoicing Entity (client)
 
@@ -93,7 +93,7 @@ export class WorkflowSalesClientDataForm extends FormGroup {
             noInvoicingReferencePerson: new FormControl(false, Validators.required),
 
             // Client Evaluations - Consultant
-            evaluationsReferencePersonIdValue: new FormControl(null, Validators.required),
+            evaluationsReferencePersonIdValue: new FormControl(null),
             evaluationsDisabled: new FormControl(false),
             evaluationsDisabledReason: new FormControl(null, Validators.required),
 
@@ -111,8 +111,8 @@ export class WorkflowSalesClientDataForm extends FormGroup {
             rateUnitTypeId: new FormControl(null, Validators.required),
             clientInvoiceCurrency: new FormControl(null, Validators.required),
             clientInvoiceFrequency: new FormControl(null, Validators.required),
-            clientInvoiceTime: new FormControl(null, Validators.required),
-            clientInvoicingDate: new FormControl(null, Validators.required),
+            clientInvoiceTime: new FormControl(null),
+            clientInvoicingDate: new FormControl(null),
 
             // clientRatesNFees
             clientFees: new FormArray([]),
@@ -125,13 +125,13 @@ export class WorkflowSalesClientDataForm extends FormGroup {
 
             // Client Extension Option
             clientExtensionDuration: new FormControl(null, Validators.required),
-            clientExtensionEndDate: new FormControl(null, Validators.required),
+            clientExtensionEndDate: new FormControl(null),
             clientExtensionDeadline: new FormControl(null, Validators.required),
             noClientExtensionOption: new FormControl(false),
 
             // Client project
             capOnTimeReporting: new FormControl(false),
-            capOnTimeReportingValue: new FormControl(null, Validators.required)
+            capOnTimeReportingValue: new FormControl(null)
         });
     }
 

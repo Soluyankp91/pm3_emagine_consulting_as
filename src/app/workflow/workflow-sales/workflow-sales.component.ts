@@ -8,8 +8,9 @@ import { MatDialog } from '@angular/material/dialog';
 import { MatMenuTrigger } from '@angular/material/menu';
 import { MatSelectChange } from '@angular/material/select';
 import { ActivatedRoute, Router } from '@angular/router';
+import { ScrollToConfigOptions, ScrollToService } from '@nicky-lenaers/ngx-scroll-to';
 import { merge, Observable, of, Subject } from 'rxjs';
-import { debounceTime, finalize, map, switchMap, takeUntil } from 'rxjs/operators';
+import { debounceTime, finalize, map, switchMap, takeUntil, delay } from 'rxjs/operators';
 import { InternalLookupService } from 'src/app/shared/common/internal-lookup.service';
 import { ConfirmationDialogComponent } from 'src/app/shared/components/confirmation-dialog/confirmation-dialog.component';
 import { environment } from 'src/environments/environment';
@@ -30,24 +31,11 @@ export class WorkflowSalesComponent extends AppComponentBase implements OnInit {
     @Input() workflowId: string;
     @Input() periodId: string | undefined;
     @Input() consultant: ConsultantResultDto;
-    // Changed all above to enum
-    // @Input() activeSideSection: WorkflowProcessDto;
     @Input() activeSideSection: WorkflowProcessWithAnchorsDto;
-
     @Input() isCompleted: boolean;
-    // _isCompleted: boolean;
-    // get isCompleted(): boolean {
-    //     return this._isCompleted;
-    // }
-
-    // @Input() set isCompleted(value: boolean) {
-    //     this._isCompleted = value;
-    // }
-
     @Input() permissionsForCurrentUser: { [key: string]: boolean; } | undefined;
+
     editEnabledForcefuly = false;
-    consultantInformation: ConsultantResultDto; // FIXME: fix after be changes
-    // workflowSideSections = WorkflowSideSections;
     workflowSideSections = WorkflowProcessType;
     // SalesStep
     intracompanyActive = false;
@@ -175,7 +163,8 @@ export class WorkflowSalesComponent extends AppComponentBase implements OnInit {
         private _clientSalesService: ClientSalesServiceProxy,
         private _clientService: ClientsServiceProxy,
         private _consultantPeriodSerivce: ConsultantPeriodServiceProxy,
-        private _consultantSalesService: ConsultantSalesServiceProxy
+        private _consultantSalesService: ConsultantSalesServiceProxy,
+        private scrollToService: ScrollToService
     ) {
         super(injector);
         this.salesClientDataForm = new WorkflowSalesClientDataForm();
@@ -494,8 +483,30 @@ export class WorkflowSalesComponent extends AppComponentBase implements OnInit {
 
         this._workflowDataService.startClientPeriodSalesSaved
             .pipe(takeUntil(this._unsubscribe))
-            .subscribe((value: boolean) => {
-                this.saveStartChangeOrExtendClientPeriodSales(value);
+            .subscribe((isDraft: boolean) => {
+                if (isDraft) {
+                    this.saveStartChangeOrExtendClientPeriodSales(isDraft);
+                } else {
+                    // trigger validation -> on success triggerComplete()
+                    if (this.validateSalesForm()) {
+                        console.log('valid');
+                        this.saveStartChangeOrExtendClientPeriodSales(isDraft);    
+                    } else {
+                        console.log('invalid');
+                        of(([])).pipe(
+                            delay(100)
+                           ).subscribe((results) => { 
+                               let firstError = document.getElementsByClassName('mat-form-field-invalid')[0] as HTMLElement;
+                               if (firstError) {
+                                   let config: ScrollToConfigOptions = {
+                                       target: firstError,
+                                       offset: -120
+                                   }
+                                   this.scrollToService.scrollTo(config)
+                               }
+                            });
+                    }
+                }
             });
         this._workflowDataService.consultantStartChangeOrExtendSalesSaved
             .pipe(takeUntil(this._unsubscribe))
@@ -532,6 +543,28 @@ export class WorkflowSalesComponent extends AppComponentBase implements OnInit {
             });
 
         this.individualConsultantActionsAvailable = environment.dev;
+    }
+
+    validateSalesForm() {
+        this.salesClientDataForm.markAllAsTouched();
+        this.salesMainDataForm.markAllAsTouched();
+        this.consultantsForm.markAllAsTouched();
+        console.log(this.salesClientDataForm);
+        console.log(this.salesClientDataForm.valid);
+        console.log(Object.keys(this.salesClientDataForm.controls).filter(key => this.salesClientDataForm.controls[key].status === 'INVALID'));
+        console.log(this.salesMainDataForm);
+        console.log(this.salesMainDataForm.valid);
+        console.log(Object.keys(this.consultantsForm.controls).filter(key => this.consultantsForm.controls[key].status === 'INVALID'));
+        console.log(this.consultantsForm);
+        console.log(this.consultantsForm.valid);
+        this.consultantsForm.consultantData.controls.forEach(form => {
+            console.log(form);
+            console.log(form.valid);
+        })
+        console.log(this.contractSigners.controls?.every(x => x.value.clientContact?.id !== null && x.value.clientContact?.id !== undefined));
+        console.log(Object.keys(this.salesClientDataForm.controls).filter(key => this.salesClientDataForm.controls[key].status === 'INVALID'));
+
+        return this.salesClientDataForm.valid && this.salesMainDataForm.valid && this.consultantsForm.valid && this.contractSigners.controls?.every(x => x.value.clientContact?.id !== null && x.value.clientContact?.id !== undefined);
     }
 
     toggleEditMode() {
@@ -597,304 +630,123 @@ export class WorkflowSalesComponent extends AppComponentBase implements OnInit {
     //#region dataFetch
 
     getCurrencies() {
-        this._internalLookupService.getCurrencies()
-            .pipe(finalize(() => {
-
-            }))
-            .subscribe(result => {
-                this.currencies = result;
-            });
+        this._internalLookupService.getCurrencies().subscribe(result => this.currencies = result);
     }
 
     getUnitTypes() {
-        this._internalLookupService.getUnitTypes()
-            .pipe(finalize(() => {
-
-            }))
-            .subscribe(result => {
-                this.rateUnitTypes = result;
-            });
+        this._internalLookupService.getUnitTypes().subscribe(result =>this.rateUnitTypes = result);
     }
 
     getDeliveryTypes() {
-        this._internalLookupService.getDeliveryTypes()
-            .pipe(finalize(() => {
-
-            }))
-            .subscribe(result => {
-                this.deliveryTypes = result;
-            });
+        this._internalLookupService.getDeliveryTypes().subscribe(result => this.deliveryTypes = result);
     }
 
     getSaleTypes() {
-        this._internalLookupService.getSaleTypes()
-            .pipe(finalize(() => {
-
-            }))
-            .subscribe(result => {
-                this.saleTypes = result;
-            });
+        this._internalLookupService.getSaleTypes().subscribe(result => this.saleTypes = result);
     }
 
     getProjectTypes() {
-        this._internalLookupService.getProjectTypes()
-            .pipe(finalize(() => {
-
-            }))
-            .subscribe(result => {
-                this.projectTypes = result;
-            });
+        this._internalLookupService.getProjectTypes().subscribe(result => this.projectTypes = result);
     }
 
     getInvoicingTimes() {
-        this._internalLookupService.getInvoicingTimes()
-            .pipe(finalize(() => {
-
-            }))
-            .subscribe(result => {
-                this.invoicingTimes = result;
-            });
+        this._internalLookupService.getInvoicingTimes().subscribe(result => this.invoicingTimes = result);
     }
 
     getInvoiceFrequencies() {
-        this._internalLookupService.getInvoiceFrequencies()
-            .pipe(finalize(() => {
-
-            }))
-            .subscribe(result => {
-                this.invoiceFrequencies = result;
-            });
+        this._internalLookupService.getInvoiceFrequencies().subscribe(result => this.invoiceFrequencies = result);
     }
 
     getSignerRoles() {
-        this._internalLookupService.getSignerRoles()
-            .pipe(finalize(() => {
-
-            }))
-            .subscribe(result => {
-                this.signerRoles = result;
-            });
+        this._internalLookupService.getSignerRoles().subscribe(result => this.signerRoles = result);
     }
 
     getEmagineOfficeList() {
-        this._internalLookupService.getEmagineOfficeList()
-            .pipe(finalize(() => {
-
-            }))
-            .subscribe(result => {
-                this.emagineOffices = result;
-            });
+        this._internalLookupService.getEmagineOfficeList().subscribe(result => this.emagineOffices = result);
     }
 
-
     getMargins() {
-        this._internalLookupService.getMargins()
-            .pipe(finalize(() => {
-
-            }))
-            .subscribe(result => {
-                this.margins = result;
-            });
+        this._internalLookupService.getMargins().subscribe(result => this.margins = result);
     }
 
     getExtensionDeadlines() {
-        this._internalLookupService.getExtensionDeadlines()
-            .pipe(finalize(() => {
-
-            }))
-            .subscribe(result => {
-                this.clientExtensionDeadlines = result;
-            });
+        this._internalLookupService.getExtensionDeadlines().subscribe(result => this.clientExtensionDeadlines = result);
     }
 
     getExtensionDurations() {
-        this._internalLookupService.getExtensionDurations()
-            .pipe(finalize(() => {
-
-            }))
-            .subscribe(result => {
-                this.clientExtensionDurations = result;
-            });
+        this._internalLookupService.getExtensionDurations().subscribe(result => this.clientExtensionDurations = result);
     }
 
     getSpecialFeeFrequencies() {
-        this._internalLookupService.getSpecialFeeFrequencies()
-            .pipe(finalize(() => {
-
-            }))
-            .subscribe(result => {
-                this.clientSpecialFeeFrequencies = result;
-            });
+        this._internalLookupService.getSpecialFeeFrequencies().subscribe(result => this.clientSpecialFeeFrequencies = result);
     }
 
     getSpecialFeeSpecifications() {
-        this._internalLookupService.getSpecialFeeSpecifications()
-            .pipe(finalize(() => {
-
-            }))
-            .subscribe(result => {
-                this.clientSpecialFeeSpecifications = result;
-            });
+        this._internalLookupService.getSpecialFeeSpecifications().subscribe(result => this.clientSpecialFeeSpecifications = result);
     }
 
     getSpecialRateReportUnits() {
-        this._internalLookupService.getSpecialRateReportUnits()
-            .pipe(finalize(() => {
-
-            }))
-            .subscribe(result => {
-                this.clientSpecialRateReportUnits = result;
-            });
+        this._internalLookupService.getSpecialRateReportUnits().subscribe(result => this.clientSpecialRateReportUnits = result);
     }
 
     getSpecialRateSpecifications() {
-        this._internalLookupService.getSpecialRateSpecifications()
-            .pipe(finalize(() => {
-
-            }))
-            .subscribe(result => {
-                this.clientSpecialRateSpecifications = result;
-            });
+        this._internalLookupService.getSpecialRateSpecifications().subscribe(result => this.clientSpecialRateSpecifications = result);
     }
 
     getContractExpirationNotificationInterval() {
-        this._internalLookupService.getContractExpirationNotificationInterval()
-            .pipe(finalize(() => {
-
-            }))
-            .subscribe(result => {
-                this.contractExpirationNotificationDuration = result;
-            });
+        this._internalLookupService.getContractExpirationNotificationInterval().subscribe(result => this.contractExpirationNotificationDuration = result);
     }
 
     getClientTimeReportingCap() {
-        this._internalLookupService.getClientTimeReportingCap()
-            .pipe(finalize(() => {
-
-            }))
-            .subscribe(result => {
-                this.clientTimeReportingCap = result;
-            });
+        this._internalLookupService.getClientTimeReportingCap().subscribe(result => this.clientTimeReportingCap = result);
     }
 
     getCommissionFrequency() {
-        this._internalLookupService.getCommissionFrequency()
-            .pipe(finalize(() => {
-
-            }))
-            .subscribe(result => {
-                this.commissionFrequencies = result;
-            });
+        this._internalLookupService.getCommissionFrequency().subscribe(result => this.commissionFrequencies = result);
     }
 
     getCommissionTypes() {
-        this._internalLookupService.getCommissionTypes()
-            .pipe(finalize(() => {
-
-            }))
-            .subscribe(result => {
-                this.commissionTypes = result;
-            });
+        this._internalLookupService.getCommissionTypes().subscribe(result => this.commissionTypes = result);
     }
 
     getCommissionRecipientTypes() {
-        this._internalLookupService.getCommissionRecipientTypes()
-            .pipe(finalize(() => {
-
-            }))
-            .subscribe(result => {
-                this.commissionRecipientTypeList = result;
-            });
+        this._internalLookupService.getCommissionRecipientTypes().subscribe(result => this.commissionRecipientTypeList = result);
     }
 
     getTenants() {
-        this._internalLookupService.getTenants()
-            .pipe(finalize(() => {
-
-            }))
-            .subscribe(result => {
-                this.tenants = result;
-            });
+        this._internalLookupService.getTenants().subscribe(result => this.tenants = result);
     }
 
     getProjectCategory() {
-        this._internalLookupService.getProjectCategory()
-            .pipe(finalize(() => {
-
-            }))
-            .subscribe(result => {
-                this.projectCategories = result;
-            });
+        this._internalLookupService.getProjectCategory().subscribe(result => this.projectCategories = result);
     }
 
     getDiscounts() {
-        this._internalLookupService.getDiscounts()
-            .pipe(finalize(() => {
-
-            }))
-            .subscribe(result => {
-                this.discounts = result;
-            });
+        this._internalLookupService.getDiscounts().subscribe(result => this.discounts = result);
     }
 
     getTerminationTimes() {
-        this._internalLookupService.getTerminationTimes()
-            .pipe(finalize(() => {
-
-            }))
-            .subscribe(result => {
-                this.nonStandartTerminationTimes = result;
-            });
+        this._internalLookupService.getTerminationTimes().subscribe(result => this.nonStandartTerminationTimes = result);
     }
 
     getTerminationReasons() {
-        this._internalLookupService.getTerminationReasons()
-            .pipe(finalize(() => {
-
-            }))
-            .subscribe(result => {
-                this.terminationReasons = result;
-            });
+        this._internalLookupService.getTerminationReasons().subscribe(result => this.terminationReasons = result);
     }
 
     getExpectedWorkloadUnit() {
-        this._internalLookupService.getExpectedWorkloadUnit()
-            .pipe(finalize(() => {
-
-            }))
-            .subscribe(result => {
-                this.expectedWorkloadUnits = result;
-            });
+        this._internalLookupService.getExpectedWorkloadUnit().subscribe(result => this.expectedWorkloadUnits = result);
     }
 
     getEmploymentTypes() {
-        this._internalLookupService.getEmploymentTypes()
-            .pipe(finalize(() => {
-
-            }))
-            .subscribe(result => {
-                this.employmentTypes = result;
-            });
+        this._internalLookupService.getEmploymentTypes().subscribe(result => this.employmentTypes = result);
     }
 
     getCountries() {
-        this._internalLookupService.getCountries()
-            .pipe(finalize(() => {
-
-            }))
-            .subscribe(result => {
-                this.countries = result;
-            });
+        this._internalLookupService.getCountries().subscribe(result => this.countries = result);
     }
 
     getConsultantTimeReportingCap() {
-        this._internalLookupService.getConsultantTimeReportingCap()
-            .pipe(finalize(() => {
-
-            }))
-            .subscribe(result => {
-                this.consultantTimeReportingCapList = result;
-            });
+        this._internalLookupService.getConsultantTimeReportingCap().subscribe(result => this.consultantTimeReportingCapList = result);
     }
 
     //#endregion dataFetch
@@ -1466,7 +1318,11 @@ export class WorkflowSalesComponent extends AppComponentBase implements OnInit {
                             ? value.consultant.name
                             : value;
                     }
-                    return this._lookupService.consultantsWithSourcingRequest(toSend.clientId, toSend.name, toSend.maxRecordsCount);
+                    if (toSend?.clientId) {
+                        return this._lookupService.consultantsWithSourcingRequest(toSend.clientId, toSend.name, toSend.maxRecordsCount);
+                    } else {
+                        return of([]);
+                    }
                 }),
             ).subscribe((list: ConsultantWithSourcingRequestResultDto[]) => {
                 if (list.length) {
@@ -1480,7 +1336,7 @@ export class WorkflowSalesComponent extends AppComponentBase implements OnInit {
             .pipe(
                 takeUntil(this._unsubscribe),
                 debounceTime(2000)
-            ).subscribe(() => {
+            ).subscribe((value: string) => {
                 this.updateConsultantStepAnchors();
             });
 
