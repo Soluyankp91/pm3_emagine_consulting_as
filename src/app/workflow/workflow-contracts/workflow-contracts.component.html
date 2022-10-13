@@ -994,7 +994,7 @@
                                                             {{projectLine.value.projectName ?? '-'}}
                                                         </span>
                                                         <span fxFlex="25%" class="u-w--100 text-truncate-ellipsis workflow-contracts--list-item" [matTooltip]="projectLine.value.invoicingReferenceNumber ?? '-'" matTooltipClass="white-tooltip" appShowIfTruncated>
-                                                            {{projectLine.value.invoicingReferenceNumber ?? '-'}}
+                                                            {{projectLine.value.invoicingReferenceNumber && projectLine.value.invoicingReferenceNumber !== '' ? projectLine.value.invoicingReferenceNumber : '-'}}
                                                         </span>
                                                         <span fxFlex="10%" class="u-w--100 text-truncate-ellipsis workflow-contracts--list-item" [matTooltip]="projectLine.value.startDate ? (projectLine.value.startDate | momentFormat: 'DD.MM.YYYY') : '-'" matTooltipClass="white-tooltip" appShowIfTruncated>
                                                             {{projectLine.value.startDate ? (projectLine.value.startDate | momentFormat: 'DD.MM.YYYY') : '-'}}
@@ -1003,7 +1003,7 @@
                                                             {{projectLine.value.endDate ? (projectLine.value.endDate | momentFormat: 'DD.MM.YYYY') : '-'}}
                                                         </span>
                                                         <span fxFlex="1 0 15%" class="u-w--100 text-truncate-ellipsis__multilne workflow-contracts--list-item" [matTooltip]="projectLine.value.optionalInvoicingInfo ?? '-'" matTooltipClass="white-tooltip" appShowIfTruncated>
-                                                            {{projectLine.value.optionalInvoicingInfo ?? '-'}}
+                                                            {{projectLine.value.optionalInvoicingInfo && projectLine.value.optionalInvoicingInfo !== '' ? projectLine.value.optionalInvoicingInfo : '-'}}
                                                         </span>
                                                         <span fxFlex="5%" class="u-w--100 text-truncate-ellipsis workflow-contracts--list-item">
                                                             <ng-container *ngIf="projectLine.value.isLineForFees; else noFeesBilledTemplate">
@@ -1061,11 +1061,11 @@
                                                 <div fxLayout="row"  class="project-line--expansion-additional">
                                                     <span fxFlex="15%" class="project-line--expansion-additional__header">Invoicing ref person</span>
                                                     <span class="project-line--expansion-additional__content">
-                                                        <ng-container *ngIf="projectLine.value.invoicingReferencePerson?.id; else invoicingReferencePersonFreeText">
+                                                        <ng-container *ngIf="projectLine.value.invoicingReferencePerson?.id && projectLine.value.invoicingReferencePerson !== ''; else invoicingReferencePersonFreeText">
                                                             {{projectLine.value.invoicingReferencePerson?.firstName ? (projectLine.value.invoicingReferencePerson?.firstName + ' ' + projectLine.value.invoicingReferencePerson?.lastName) : '-'}}
                                                         </ng-container>
                                                         <ng-template #invoicingReferencePersonFreeText>
-                                                            {{projectLine.value.invoicingReferencePerson ?? '-'}}
+                                                            {{projectLine.value.invoicingReferencePerson && projectLine.value.invoicingReferencePerson !== '' ? projectLine.value.invoicingReferencePerson : '-'}}
                                                         </ng-template>
                                                     </span>
                                                 </div>
@@ -1078,17 +1078,22 @@
                                                 <div fxLayout="row" class="project-line--expansion-additional">
                                                     <span fxFlex="15%" class="project-line--expansion-additional__header">Invoice recipient</span>
                                                     <span class="project-line--expansion-additional__content">
-                                                        {{projectLine.value.invoiceRecipient?.countryName ? projectLine.value.invoiceRecipient?.countryName + '| ' : ''}}
-                                                        {{projectLine.value.invoiceRecipient?.city ? projectLine.value.invoiceRecipient?.city + ' | ' : ''}}
-                                                        {{projectLine.value.invoiceRecipient?.address ? projectLine.value.invoiceRecipient?.address + ' | ' : ''}}
-                                                        {{projectLine.value.invoiceRecipient?.address2 ? projectLine.value.invoiceRecipient?.address2 + ' | ' : ''}}
-                                                        {{projectLine.value.invoiceRecipient?.postCode}}
+                                                        <ng-container *ngIf="projectLine.value.invoiceRecipient !== null && projectLine.value.invoiceRecipient !== ''; else noInvoiceRecipientTemplate">
+                                                            {{projectLine.value.invoiceRecipient?.countryName ? projectLine.value.invoiceRecipient?.countryName + '| ' : ''}}
+                                                            {{projectLine.value.invoiceRecipient?.city ? projectLine.value.invoiceRecipient?.city + ' | ' : ''}}
+                                                            {{projectLine.value.invoiceRecipient?.address ? projectLine.value.invoiceRecipient?.address + ' | ' : ''}}
+                                                            {{projectLine.value.invoiceRecipient?.address2 ? projectLine.value.invoiceRecipient?.address2 + ' | ' : ''}}
+                                                            {{projectLine.value.invoiceRecipient?.postCode}}
+                                                        </ng-container>
+                                                        <ng-template #noInvoiceRecipientTemplate>
+                                                            -
+                                                        </ng-template>
                                                     </span>
                                                 </div>
                                                 <div fxLayout="row" class="project-line--expansion-additional">
                                                     <span fxFlex="15%" class="project-line--expansion-additional__header">Insurance</span>
                                                     <span class="project-line--expansion-additional__content">
-                                                        {{projectLine.value.consultantInsuranceOptionId ?? '-'}}
+                                                        {{projectLine.value.consultantInsuranceOptionId ? consultantInsuranceOptions[projectLine.value.consultantInsuranceOptionId] : '-'}}
                                                     </span>
                                                 </div>
                                                 <div fxLayout="row" class="project-line--expansion-additional">
@@ -1119,7 +1124,7 @@
                                                 <div fxLayout="row" class="project-line--expansion-additional">
                                                     <span fxFlex="15%" class="project-line--expansion-additional__header">Optional info</span>
                                                     <span class="project-line--expansion-additional__content">
-                                                        {{projectLine.value.optionalInvoicingInfo ?? '-'}}
+                                                        {{projectLine.value.optionalInvoicingInfo && projectLine.value.optionalInvoicingInfo !== '' ? projectLine.value.optionalInvoicingInfo : '-'}}
                                                     </span>
                                                 </div>
                                             </mat-expansion-panel>
