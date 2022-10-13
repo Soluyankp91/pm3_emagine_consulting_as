@@ -3,7 +3,6 @@
 
 .workflow {
     &-form {
-        // margin: 0 145px;
         &--main,
         &--client,
         &--consultants,
@@ -11,14 +10,10 @@
             border-bottom: 1px solid #E7E3E8;
 
             .workflow-gray--header {
-                // margin-bottom: 8px !important;
                 font-weight: bold;
                 font-size: 14px;
                 line-height: 140%;
                 color: rgba(56, 72, 83, 0.87);
-                // @media screen and (max-width: 1440px) {
-                //     font-size: 12px;
-                // }
             }
         }
         &--consultants {
@@ -38,16 +33,6 @@
                 color: rgba(56, 72, 83, 0.87);
                 margin-top: 0.3em;
             }
-
-            // @media screen and (max-width: 1440px) {
-            //     &__name,
-            //     &__period {
-            //         font-size: 14px;
-            //     }
-            //     &__payment-price-text {
-            //         font-size: 12px;
-            //     }
-            // }
         }
     }
     &-section--header {
@@ -104,17 +89,6 @@
                         font-weight: 700;
                     }
                 }
-                // @media screen and (max-width: 1440px) {
-                //     &__header {
-                //         font-size: 12px;
-                //     }
-                //     &__row {
-                //         height: 50px;
-                //         span {
-                //             font-size: 12px;
-                //         }
-                //     }
-                // }
             }
         }
         &--process-data {
@@ -129,9 +103,6 @@
             font-size: 14px;
             line-height: 140%;
             color: #B6B4B2;
-            // @media screen and (max-width: 1440px) {
-            //     font-size: 12px;
-            // }
         }
         &--blue-text {
             font-weight: bold;
@@ -159,11 +130,6 @@
                     width: 32px;
                     height: 32px;
                 }
-                // @media screen and (max-width: 1440px) {
-                //     &-name {
-                //         font-size: 14px;
-                //     }
-                // }
             }
 
         }
@@ -234,24 +200,6 @@
                     line-height: 35px;
             }
         }
-
-        // @media screen and (max-width: 1440px) {
-        //     &--header {
-        //         font-size: 14px;
-        //         &-main {
-        //             font-size: 18px;
-        //             .anchor-name,
-        //             .process-name {
-        //                 font-size: 14px;
-        //             }
-        //         }
-        //     }
-        //     &--gray {
-        //         &-header {
-        //             font-size: 12px;
-        //         }
-        //     }
-        // }
     }
 }
 
@@ -272,6 +220,5 @@
     align-items: end;
     &:hover {
         background-color: rgba(139,209,203,0.22);
-        // mix-blend-mode: multiply;
     }
 }
