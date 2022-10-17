@@ -93,7 +93,7 @@ export class OverviewData {
     lastName: string;
 }
 
-export const dialogConfig: MatDialogConfig = {
+export const DialogConfig: MatDialogConfig = {
     minWidth: '450px',
     minHeight: '180px',
     height: 'auto',
