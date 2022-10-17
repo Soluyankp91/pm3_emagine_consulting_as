@@ -522,10 +522,9 @@
                                 </h1>
                             </div>
 
-                            <!-- Only visible when employment type is selected and it is not 'Fee only' - id: 10 nd not 'Recruitment' - id:11 -->
                             <div fxLayout="column">
                                 <h3 class="workflow-step-readonly--gray-header">Consultant</h3>
-                                <div fxLayout="row" fxLayoutAlign="start center" class="u-mb--20" *ngIf="consultant.value.employmentType?.id !== 10 && consultant.value.employmentType?.id !== 11">
+                                <div fxLayout="row" fxLayoutAlign="start center" class="u-mb--20" *ngIf="consultant.value.employmentType?.id !== employmentTypesEnum.FeeOnly && consultant.value.employmentType?.id !== employmentTypesEnum.Recruitment">
                                     <img *ngIf="consultant.value?.consultant?.id" class="border-rounded-50 u-mr--16 image-thumbnail-responsive" [src]="consultantProfileUrl(consultant.value?.consultant?.externalId)" />
                                     <div fxLayout="column">
                                         <div fxLayout="row" fxLayoutAlign="start center">
@@ -1240,7 +1239,7 @@
                         <ng-container formArrayName="consultants">
                             <div *ngFor="let consultant of contractsSyncDataForm.consultants.controls; let consultantIndex = index" [formGroupName]="consultantIndex" class="workflow-form--consultants u-w--100">
                                 <span class="u-mt--20" [ngClass]="{'workflow-gray--header': readOnlyMode, 'workflow-darkblue--text': !readOnlyMode}">Consultant legal contracts</span>
-                                <div fxLayout="row" fxLayoutAlign="start center" class="u-mb--20" *ngIf="consultant.value.employmentType?.id !== 10 && consultant.value.employmentType?.id !== 11; else consultantNameOnly">
+                                <div fxLayout="row" fxLayoutAlign="start center" class="u-mb--20" *ngIf="consultant.value.employmentType?.id !== employmentTypesEnum.FeeOnly && consultant.value.employmentType?.id !== employmentTypesEnum.Recruitment; else consultantNameOnly">
                                     <img *ngIf="consultant.value?.consultant?.id" class="border-rounded-50 u-mr--16 image-thumbnail-responsive" [src]="consultantProfileUrl(consultant.value?.consultant?.externalId)" />
                                     <div fxLayout="column">
                                         <div fxLayout="row" fxLayoutAlign="start center">
