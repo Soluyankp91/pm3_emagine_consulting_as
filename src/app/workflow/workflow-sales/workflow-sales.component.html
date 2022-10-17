@@ -1103,10 +1103,10 @@
                                 </div>
 
                                 <h3 class="workflow-gray--header">Delivery Type</h3>
-                                <div fxLayout="row" fxLayoutAlign="start start" class="u-w--100 u-mb--20">
-                                    <mat-button-toggle-group class="workflow-toggle-buttons u-mt--10" formControlName="deliveryType" required>
-                                        <!-- // salesTpye id 3 = Managed Service -->
-                                        <!-- // deliveryTpye id 1 = Managed Service -->
+                                <div fxLayout="column" fxLayoutAlign="start start" class="u-w--100 u-mb--20">
+                                    <!-- // salesTpye id 3 = Managed Service -->
+                                    <!-- // deliveryTpye id 1 = Managed Service -->
+                                    <mat-button-toggle-group [ngClass]="{'mat-form-field-invalid': !salesMainDataForm.deliveryType?.value}" class="workflow-toggle-buttons u-mt--10" formControlName="deliveryType" required>
                                         <mat-button-toggle
                                             [value]="item"
                                             *ngFor="let item of deliveryTypes"
@@ -1117,6 +1117,7 @@
                                             {{ item.name }}
                                         </mat-button-toggle>
                                     </mat-button-toggle-group>
+                                    <mat-error *ngIf="salesMainDataForm.deliveryType?.touched">{{getValidationMessage(salesMainDataForm.salesType)}}</mat-error>
                                 </div>
                                 <div fxLayout="row" fxLayoutAlign="start start" class="u-w--100 u-mb--10">
                                     <mat-form-field appearance="outline" class="u-w--100  filter-select u-mr--16" fxFlex="33%">
@@ -1755,8 +1756,8 @@
                                         </mat-button-toggle>
                                     </mat-button-toggle-group>
                                 </div>
-                                <div class="u-w--100" [ngSwitch]="salesClientDataForm.clientRateAndInvoicing?.value?.id">
-                                    <ng-container *ngSwitchCase="1"> <!-- 'Time based' -->
+                                <!-- <div class="u-w--100" [ngSwitch]="salesClientDataForm.clientRateAndInvoicing?.value?.id"> -->
+                                    <!-- <ng-container *ngSwitchCase="1"> 'Time based' -->
                                         <div fxLayout="row" fxLayoutAlign="start start" class="u-w--100 u-mb--10">
                                             <mat-form-field appearance="outline" class="u-w--100  u-mr--16" fxFlex="0 0 calc(16.5% - 8px)">
                                                 <mat-label>Price</mat-label>
@@ -1764,9 +1765,9 @@
                                                 <mat-error>{{getValidationMessage(salesClientDataForm.clientPrice)}}</mat-error>
                                             </mat-form-field>
 
-                                            <mat-form-field appearance="outline" class="u-w--100  filter-select u-mr--16" fxFlex="0 0 calc(16.5% - 8px)">
+                                            <mat-form-field appearance="outline" class="u-w--100  filter-select u-mr--16" fxFlex="0 0 calc(16.5% - 8px)" [fxHide]="salesClientDataForm.clientRateAndInvoicing?.value?.id !== 1">
                                                 <mat-label>Unit type</mat-label>
-                                                <mat-select required formControlName="rateUnitTypeId" [disableOptionCentering]="true" [compareWith]="compareWithFn">
+                                                <mat-select [required]="salesClientDataForm.clientRateAndInvoicing?.value?.id === 1" formControlName="rateUnitTypeId" [disableOptionCentering]="true" [compareWith]="compareWithFn">
                                                     <mat-option *ngFor="let item of rateUnitTypes" [value]="item">
                                                         {{ item.name }}
                                                     </mat-option>
@@ -1784,8 +1785,8 @@
                                                 <mat-error>{{getValidationMessage(salesClientDataForm.clientCurrency)}}</mat-error>
                                             </mat-form-field>
                                         </div>
-                                    </ng-container>
-                                    <ng-container *ngSwitchCase="2"> <!-- 'Fixed' -->
+                                    <!-- </ng-container> -->
+                                    <!-- <ng-container *ngSwitchCase="2"> 'Fixed'
                                         <div fxLayout="row" fxLayoutAlign="start start" class="u-w--100 u-mb--10">
                                             <mat-form-field appearance="outline" class="u-w--100  u-mr--16" fxFlex="0 0 calc(16.5% - 8px)">
                                                 <mat-label>Price</mat-label>
@@ -1805,8 +1806,8 @@
                                         </div>
                                     </ng-container>
                                     <ng-container *ngSwitchDefault>
-                                    </ng-container>
-                                </div>
+                                    </ng-container> -->
+                                <!-- </div> -->
                                 <h3 class="workflow-gray--header u-mb--10">Invoicing information</h3>
                                 <div fxLayout="row" fxLayoutAlign="start start" class="u-w--100 u-mb--10">
                                     <mat-form-field appearance="outline" class="filter-select u-mr--16" fxFlex="0 0 calc(16.5% - 8px)">
@@ -2334,12 +2335,13 @@
                             <div fxLayout="column" fxLayoutAlign="start start" class="u-w--100">
                                 <ng-container *ngIf="activeSideSection.typeId === workflowSideSections.StartClientPeriod || activeSideSection.typeId === workflowSideSections.StartConsultantPeriod">
                                     <h3 class="workflow-gray--header u-mb--10">Employment type</h3>
-                                    <div fxLayout="row" fxLayoutAlign="start start" class="u-w--100 u-mb--20">
-                                        <mat-button-toggle-group class="workflow-toggle-buttons" formControlName="employmentType">
+                                    <div fxLayout="column" fxLayoutAlign="start start" class="u-w--100 u-mb--20">
+                                        <mat-button-toggle-group [ngClass]="{'mat-form-field-invalid': !consultant.value?.employmentType}" class="workflow-toggle-buttons" formControlName="employmentType">
                                             <mat-button-toggle *ngFor="let item of employmentTypes" [value]="item">
                                                 {{ item.name }}
                                             </mat-button-toggle>
                                         </mat-button-toggle-group>
+                                        <mat-error *ngIf="consultant.value?.employmentType?.touched">{{getValidationMessage(consultant.value?.employmentType)}}</mat-error>
                                     </div>
                                     <!-- Only visible when employment type is selected and it is not 'Fee only' - id: 10 nd not 'Recruitment' - id:11 -->
                                     <div fxLayout="row" fxLayoutAlign="start start" class="u-w--100 u-mb--10" *ngIf="consultant.value?.employmentType?.id">
@@ -2654,7 +2656,7 @@
                                                 <mat-error>{{getValidationMessage(consultant.get('consultantInvoicingManualDate'))}}</mat-error>
                                             </mat-form-field>
                                         </div>
-                                        <div fxLayout="row" fxLayoutAlign="start center" class="u-w--100 u-mb--10" [hidden]="consultant.value.consultantPaymentType?.id !== 2"> <!-- id: 2 - Fixed -->
+                                        <div fxLayout="row" fxLayoutAlign="start center" class="u-w--100 u-mb--10" [fxHide]="consultant.value.consultantPaymentType?.id !== 2"> <!-- id: 2 - Fixed -->
                                             <mat-form-field appearance="outline" class="u-w--100  filter-select" fxFlex="33%" [ngClass]="{'u-mr--16': consultant.value.consultantInvoicingTime?.name === 'Manual date'}">
                                                 <mat-label>Invoicing time</mat-label>
                                                 <mat-select [required]="consultant.value.consultantPaymentType?.id === 2" formControlName="consultantInvoicingTime" [disableOptionCentering]="true" [compareWith]="compareWithFn">
@@ -2665,15 +2667,15 @@
                                                 <mat-error>{{getValidationMessage(consultant.get('consultantInvoicingTime'))}}</mat-error>
                                             </mat-form-field>
                                             <!-- id: 2 - Manual date -->
-                                            <mat-form-field appearance="outline" fxFlex="0 0 calc(16.5% - 8px)" [fxHide]="consultant.value?.consultantInvoicingTime?.id !== 2">
+                                            <mat-form-field appearance="outline" fxFlex="0 0 calc(16.5% - 8px)" [fxHide]="consultant.value?.consultantInvoicingTime?.id && consultant.value?.consultantInvoicingTime?.id !== 2">
                                                 <mat-label>Date</mat-label>
                                                 <input [required]="consultant.value?.consultantInvoicingTime?.id === 2" autocomplete="off" matInput
-                                                        [matDatepicker]="consultantInvoicingDatePicker"
+                                                        [matDatepicker]="consultantInvoiceDatePicker"
                                                         name="consultantInvoicingManualDate" formControlName="consultantInvoicingManualDate"
-                                                        (focus)="consultantInvoicingDatePicker.open()"
-                                                        appPreventDoubleClick (throttledClick)="consultantInvoicingDatePicker.open()" readonly>
+                                                        (focus)="consultantInvoiceDatePicker.open()"
+                                                        appPreventDoubleClick (throttledClick)="consultantInvoiceDatePicker.open()" readonly>
                                                 <mat-icon class="calendar-icon" matSuffix svgIcon="calendar"></mat-icon>
-                                                <mat-datepicker #consultantInvoicingDatePicker></mat-datepicker>
+                                                <mat-datepicker #consultantInvoiceDatePicker></mat-datepicker>
                                                 <mat-error>{{getValidationMessage(consultant.get('consultantInvoicingManualDate'))}}</mat-error>
                                             </mat-form-field>
                                         </div>
