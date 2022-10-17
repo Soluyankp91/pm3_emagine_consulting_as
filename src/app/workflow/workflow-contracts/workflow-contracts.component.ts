@@ -1,5 +1,5 @@
 import { Overlay } from '@angular/cdk/overlay';
-import { Component, Injector, Input, OnDestroy, OnInit } from '@angular/core';
+import { Component, Injector, Input, OnDestroy, OnInit, ViewChild } from '@angular/core';
 import { AbstractControl, FormArray, FormBuilder, FormControl, FormGroup, Validators } from '@angular/forms';
 import { MatDialog } from '@angular/material/dialog';
 import { MatMenuTrigger } from '@angular/material/menu';
@@ -23,6 +23,7 @@ import { LegalContractStatus, WorkflowConsultantsLegalContractForm, WorkflowCont
     styleUrls: ['./workflow-contracts.component.scss']
 })
 export class WorkflowContractsComponent extends AppComponentBase implements OnInit, OnDestroy {
+    @ViewChild('projectLinesMenuTrigger', {static: false}) projectLinesMenuTrigger: MatMenuTrigger;
     @Input() workflowId: string;
     @Input() periodId: string | undefined;
     @Input() consultant: ConsultantResultDto;
@@ -55,6 +56,7 @@ export class WorkflowContractsComponent extends AppComponentBase implements OnIn
     consultantTimeReportingCapList: EnumEntityTypeDto[] = [];
     rateUnitTypes: EnumEntityTypeDto[] = [];
     legalContractStatuses: { [key: string]: string; };
+    consultantInsuranceOptions: { [key: string]: string; };
 
     contractLinesDoneManuallyInOldPMControl = new FormControl();
     contractsTerminationConsultantForm: WorkflowContractsTerminationConsultantsDataForm;
@@ -110,7 +112,6 @@ export class WorkflowContractsComponent extends AppComponentBase implements OnIn
         this.getCurrencies();
         this.getSpecialRateReportUnits();
         this.getSpecialFeeFrequencies();
-
         this.getDiscounts();
         this.getDeliveryTypes();
         this.getSaleTypes();
@@ -121,6 +122,7 @@ export class WorkflowContractsComponent extends AppComponentBase implements OnIn
         this.getConsultantTimeReportingCap();
         this.getUnitTypes();
         this.getLegalContractStatuses();
+        this.getConsultantInsuranceOptions();
 
         this._workflowDataService.updateWorkflowProgressStatus({currentStepIsCompleted: this.isCompleted, currentStepIsForcefullyEditing: false});
         if (this.permissionsForCurrentUser!["StartEdit"]) {
@@ -380,6 +382,12 @@ export class WorkflowContractsComponent extends AppComponentBase implements OnIn
         }))
         .subscribe(result => {
             this.legalContractStatuses = result;
+        });
+    }
+
+    getConsultantInsuranceOptions() {
+        this._internalLookupService.getConsultantInsuranceOptions().subscribe(result => {
+            this.consultantInsuranceOptions = result;
         });
     }
 
@@ -792,6 +800,7 @@ export class WorkflowContractsComponent extends AppComponentBase implements OnIn
     // Consultant data Project Lines START REGION
 
     createOrEditProjectLine(index: number, projectLinesIndex?: number) {
+        this.projectLinesMenuTrigger.closeMenu();
         const scrollStrategy = this.overlay.scrollStrategies.reposition();
         let projectLine = {
             projectName: this.contractsMainForm.projectName!.value,
@@ -1691,6 +1700,13 @@ export class WorkflowContractsComponent extends AppComponentBase implements OnIn
                 this.contractsSyncDataForm.enableLegalContractsButtons?.setValue(result.enableLegalContractsButtons!);
                 this.contractsSyncDataForm.showManualOption?.setValue(result?.showManualOption, {emitEvent: false});
                 this.syncMessage = result.success ? 'Sync successfull' : result.message!;
+                if (result.success) {
+                    this.contractsConsultantsDataForm.consultants.controls.forEach((consultant: any) => {
+                        consultant.controls.projectLines.controls.forEach((x: any) => {
+                            x.controls.wasSynced.setValue(true, {emitEvent: false});
+                        })
+                    })
+                }
             });
     }
 
@@ -1706,6 +1722,13 @@ export class WorkflowContractsComponent extends AppComponentBase implements OnIn
                 this.contractsSyncDataForm.enableLegalContractsButtons?.setValue(result.enableLegalContractsButtons!);
                 this.contractsSyncDataForm.showManualOption?.setValue(result?.showManualOption, {emitEvent: false});
                 this.syncMessage = result.success ? 'Sync successfull' : result.message!;
+                if (result.success) {
+                    this.contractsConsultantsDataForm.consultants.controls.forEach((consultant: any) => {
+                        consultant.controls.projectLines.controls.forEach((x: any) => {
+                            x.controls.wasSynced.setValue(true, {emitEvent: false});
+                        })
+                    })
+                }
             });
     }
 
