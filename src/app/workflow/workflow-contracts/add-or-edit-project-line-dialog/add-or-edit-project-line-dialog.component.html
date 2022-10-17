@@ -1,17 +1,15 @@
 <mat-dialog-content class="confiramtion-dialog">
     <div mat-dialog-title class="confiramtion-dialog--header" align="start">
-        <ng-container [ngSwitch]="data.dialogType">
-            <ng-container *ngSwitchCase="dialogType.Create">
-                <span class="text-bold-800">
+        <span class="text-bold-800">
+            <ng-container [ngSwitch]="data.dialogType">
+                <ng-container *ngSwitchCase="dialogType.Create">
                     Create project line
-                </span>
-            </ng-container>
-            <ng-container *ngSwitchCase="dialogType.Edit">
-                <span class="text-bold-800">
+                </ng-container>
+                <ng-container *ngSwitchCase="dialogType.Edit">
                     Edit project line
-                </span>
+                </ng-container>
             </ng-container>
-        </ng-container>
+        </span>
     </div>
     <form [formGroup]="projectLineForm">
         <div fxLayout="row" fxLayoutAlign="start start" fxLayoutGap="30px">
