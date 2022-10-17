@@ -8,7 +8,6 @@
         &--client,
         &--consultants {
             border-bottom: 1px solid #E7E3E8;
-
             .workflow-gray--header {
                 font-weight: 700;
                 font-size: 14px;
@@ -89,20 +88,6 @@
     }
 
     &-extension {
-        &--gray-header {
-            margin-bottom: 8px !important;
-            font-weight: 700;
-            font-size: 14px;
-            line-height: 140%;
-            color: #B6B4B2;
-        }
-        &--blue-text {
-            font-weight: 700;
-            font-size: 14px;
-            line-height: 14px;
-            color: rgba(56, 72, 83, 0.87);
-        }
-
         &--consultant-data {
             &--consultant {
                 &-text {
@@ -117,74 +102,11 @@
                     font-size: 14px;
                     color: $dark-grey-color;
                 }
-                &-img {
-                    border-radius: 50%;
-                    width: 32px;
-                    height: 32px;
-                }
             }
-
         }
     }
     &--termination {
         padding: 10px 24px;
-    }
-
-    &-readonly {
-        &--header {
-            @include fontOpenSans;
-            font-size: 14px;
-            font-weight: 700;
-            line-height: 1.2;
-            letter-spacing: 1px;
-            text-transform: uppercase;
-            color: #b6b4b2;
-
-            &-main {
-                @include fontOpenSans;
-                font-size: 16px;
-                font-weight: 700;
-                line-height: 1.2;
-                letter-spacing: 1px;
-                text-transform: uppercase;
-
-                .process-name {
-                    font-weight: 800;
-                    color: $green-color;
-                }
-                .anchor-name {
-                    color: #4a4e60;
-                }
-            }
-        }
-        &--gray {
-            &-header {
-                @include fontOpenSans;
-                font-size: 12px;
-                font-weight: 700;
-                color: #898785;
-            }
-        }
-        &--blue {
-            &-header {
-                @include fontOpenSans;
-                font-size: 12px;
-                font-weight: 700;
-                color: #4a4e60;
-            }
-            &-text {
-                @include fontOpenSans;
-                font-size: 14px;
-                font-weight: 600;
-                color: #4a4e60;
-                &-bold {
-                    @include fontOpenSans;
-                    font-size: 14px;
-                    font-weight: 800;
-                    color: rgba(56, 72, 83, 0.87);
-                }
-            }
-        }
     }
 }
 
