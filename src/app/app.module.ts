@@ -629,5 +629,12 @@ export class AppModule {
             )
         );
 
+        iconRegistry.addSvgIcon(
+            'link-to-client-icon',
+            sanitizer.bypassSecurityTrustResourceUrl(
+                'assets/common/images/link-to-client-icon.svg'
+            )
+        );
+
     }
 }
