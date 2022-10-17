@@ -1,0 +1,36 @@
+.hubspot-sync-dialog {
+    &--header {
+        display: flex;
+        flex-direction: row;
+        justify-content: space-between;
+        align-items: center;
+
+        &-text {
+            font-style: normal;
+            font-weight: 800;
+            font-size: 21px;
+            line-height: 120%;
+            color: #4A4E60;
+        }
+
+        &-close-icon {
+            cursor: pointer;
+        }
+    }
+    &--content {
+        white-space: pre-wrap;
+        &-text {
+            font-style: normal;
+            font-weight: 700;
+            font-size: 12px;
+            line-height: 200%;
+            color: #4A4E60;
+        }
+    }
+    &--actions{
+        &-btn {
+            width: 64px;
+            padding: 0 !important;
+        }
+    }
+}

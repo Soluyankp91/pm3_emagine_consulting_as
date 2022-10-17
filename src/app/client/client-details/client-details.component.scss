@@ -55,3 +55,17 @@
     }
 
 }
+
+.hubspot-icon {
+    mat-icon {
+        width: 20px;
+        height: 20px;
+        line-height: 20px;
+        svg [fill],
+        svg path[fill],
+        svg g [fill] {
+            fill: #17A297 !important;
+            color: #17A297;
+        }
+    }
+}

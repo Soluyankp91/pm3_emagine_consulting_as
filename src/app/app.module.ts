@@ -636,5 +636,12 @@ export class AppModule {
             )
         );
 
+        iconRegistry.addSvgIcon(
+            'hubspot-sync-icon',
+            sanitizer.bypassSecurityTrustResourceUrl(
+                'assets/common/images/hubspot-sync-icon.svg'
+            )
+        );
+
     }
 }

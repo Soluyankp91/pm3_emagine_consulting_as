@@ -27,11 +27,7 @@
                 </div>
             </div>
             <div fxLayout="row" fxLayoutAlign="end center" class="client-details--search">
-                <!-- <mat-form-field appearance="outline" class="u-w--100 mat-elevation-z0 formFieldNoMarginPadding u-mr--10">
-                    <mat-label>Search</mat-label>
-                    <input autocomplete="off" matInput [formControl]="clientFilterInput" placeholder="Search" type="text">
-                    <mat-icon matPrefix>search</mat-icon>
-                </mat-form-field> -->
+                <button mat-icon-button color="primary" matTooltip="Sync from HubSpot" matTooltipClass="white-tooltip" class="u-mr--10 mat-elevation-z0 hubspot-icon" appPreventDoubleClick (throttledClick)="syncFromHubspot()"><mat-icon svgIcon="hubspot-sync-icon"></mat-icon></button>
                 <button mat-icon-button color="primary" matTooltip="Log into HubSpot" matTooltipClass="white-tooltip" class="u-mr--10 mat-elevation-z0" appPreventDoubleClick (throttledClick)="impersonateHubspot()"><mat-icon svgIcon="HUBSPOT-icon"></mat-icon></button>
                 <button mat-icon-button color="primary" matTooltip="Log into CAM" matTooltipClass="white-tooltip" class="mat-elevation-z0" appPreventDoubleClick (throttledClick)="impersonateCAM()"><mat-icon svgIcon="CAM-icon"></mat-icon></button>
             </div>
