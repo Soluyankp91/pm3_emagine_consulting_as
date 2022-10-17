@@ -602,8 +602,7 @@
                                         <span class="process-name">Sales.</span>
                                         <span class="anchor-name">Consultant data</span>
                                     </h1>
-                                    <!-- Only visible when employment type is selected and it is not 'Fee only' - id: 10 nd not 'Recruitment' - id:11 -->
-                                    <div fxFlex="50%" fxLayoutAlign="end center" *ngIf="item.value?.employmentType?.id !== 10 && item.value?.employmentType?.id !== 11;">
+                                    <div fxFlex="50%" fxLayoutAlign="end center" *ngIf="item.value?.employmentType?.id !== employmentTypesEnum.FeeOnly && item.value?.employmentType?.id !== employmentTypesEnum.Recruitment;">
                                         <button *ngIf="individualConsultantActionsAvailable" mat-icon-button appPreventDoubleClick (throttledClick)="$event.stopPropagation();" type="button" [matMenuTriggerFor]="consultantMenu" class="three-dots-actions-btn">
                                             <mat-icon>more_horiz</mat-icon>
                                         </button>
@@ -643,7 +642,7 @@
                                     <div fxLayout="column">
                                         <h3 class="workflow-step-readonly--gray-header">Consultant</h3>
                                         <div fxLayout="row" fxLayoutAlign="start center" class="u-mb--20">
-                                            <ng-container *ngIf="item.value.employmentType?.id !== 10 && item.value.employmentType?.id !== 11; else consultantNameOnly">
+                                            <ng-container *ngIf="item.value.employmentType?.id !== employmentTypesEnum.FeeOnly && item.value.employmentType?.id !== employmentTypesEnum.Recruitment; else consultantNameOnly">
                                                 <img class="border-rounded-50 image-thumbnail-responsive u-mr--16" [src]="consultantProfileUrl(item.value.consultantName?.consultant?.externalId)" >
                                                 <div fxLayout="column">
                                                     <div fxLayout="row" fxLayoutAlign="start center">
@@ -668,8 +667,7 @@
                                     </div>
                                 </div>
                             </div>
-                            <!-- Only visible when employment type is selected and it is not 'Fee only' - id: 10 nd not 'Recruitment' - id:11 -->
-                            <ng-container *ngIf="item.value.employmentType?.id !== 10 && item.value.employmentType?.id !== 11">
+                            <ng-container *ngIf="item.value.employmentType?.id !== employmentTypesEnum.FeeOnly && item.value.employmentType?.id !== employmentTypesEnum.Recruitment">
                                 <mat-divider class="u-w--100 u-mt--20 u-mb--20"></mat-divider>
                                 <div fxLayout="column" fxLayoutAlign="start start" class="u-w--100">
                                     <h2 class="workflow-step-readonly--header u-mb--20">Consultant contract duration</h2>
@@ -2340,9 +2338,8 @@
                                             </mat-button-toggle>
                                         </mat-button-toggle-group>
                                     </div>
-                                    <!-- Only visible when employment type is selected and it is not 'Fee only' - id: 10 nd not 'Recruitment' - id:11 -->
                                     <div fxLayout="row" fxLayoutAlign="start start" class="u-w--100 u-mb--10" *ngIf="consultant.value?.employmentType?.id">
-                                        <mat-form-field appearance="outline" class="u-w--100 filter-select" fxFlex="33%" *ngIf="consultant.value?.employmentType?.id !== 10 && consultant.value?.employmentType?.id !== 11; else nameOnlyConsultant">
+                                        <mat-form-field appearance="outline" class="u-w--100 filter-select" fxFlex="33%" *ngIf="consultant.value?.employmentType?.id !== employmentTypesEnum.FeeOnly && consultant.value?.employmentType?.id !== employmentTypesEnum.Recruitment; else nameOnlyConsultant">
                                             <mat-label>Consultant Name</mat-label>
                                             <input required #consultantNameFilterInput type="text" matInput [matAutocomplete]="consultantAutocomplete" formControlName="consultantName" appPreventDoubleClick (throttledClick)="$event.stopPropagation()" placeholder="Consultant name">
                                             <mat-autocomplete #consultantAutocomplete="matAutocomplete" [displayWith]="displayConsultantNameFn">
@@ -2402,8 +2399,7 @@
                                     </div>
                                 </ng-container>
                             </div>
-                            <!-- Only visible when employment type is selected and it is not 'Fee only' - id: 10 nd not 'Recruitment' - id:11 -->
-                            <ng-container *ngIf="consultant.value?.employmentType?.id  && (consultant.value?.employmentType?.id !== 10 && consultant.value?.employmentType?.id !== 11)">
+                            <ng-container *ngIf="consultant.value?.employmentType?.id  && (consultant.value?.employmentType?.id !== employmentTypesEnum.FeeOnly && consultant.value?.employmentType?.id !== employmentTypesEnum.Recruitment)">
                                 <mat-divider class="u-w--100 u-mt--20 u-mb--20"></mat-divider>
 
                                 <div fxLayout="column" fxLayoutAlign="start start" class="u-w--100">
