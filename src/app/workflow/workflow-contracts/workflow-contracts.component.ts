@@ -13,7 +13,7 @@ import { WorkflowConsultantActionsDialogComponent } from '../workflow-consultant
 import { WorkflowDataService } from '../workflow-data.service';
 import { WorkflowProcessWithAnchorsDto } from '../workflow-period/workflow-period.model';
 import { ConsultantDiallogAction } from '../workflow-sales/workflow-sales.model';
-import { ProjectLineDiallogMode } from '../workflow.model';
+import { EmploymentTypes, ProjectLineDiallogMode } from '../workflow.model';
 import { AddOrEditProjectLineDialogComponent } from './add-or-edit-project-line-dialog/add-or-edit-project-line-dialog.component';
 import { LegalContractStatus, WorkflowConsultantsLegalContractForm, WorkflowContractsClientDataForm, WorkflowContractsConsultantsDataForm, WorkflowContractsMainForm, WorkflowContractsSyncForm, WorkflowContractsTerminationConsultantsDataForm } from './workflow-contracts.model';
 
@@ -76,6 +76,9 @@ export class WorkflowContractsComponent extends AppComponentBase implements OnIn
     statusAfterSync = false;
     syncMessage = '';
     legalContractModuleStatuses = LegalContractStatus;
+
+    employmentTypesEnum = EmploymentTypes;
+
     private _unsubscribe = new Subject();
 
     constructor(
