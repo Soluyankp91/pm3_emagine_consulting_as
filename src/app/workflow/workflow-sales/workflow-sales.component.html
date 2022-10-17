@@ -655,7 +655,7 @@
                                                         </button>
                                                     </div>
                                                     <span class="workflow-extension--consultant-data--consultant-text">
-                                                        {{item?.value?.consultantName?.consultant?.companyName}} | {{item?.value?.consultantName?.consultant?.city}}, {{getTenantCodeFromId(item?.value?.consultantName?.consultant?.countryId)}} | #{{item?.value?.consultantName?.consultant?.id}} / {{getTenantCodeFromId(item?.value?.consultantName?.consultant?.countryId)}}-{{item?.value?.consultantName?.consultant?.legacyId}}
+                                                        <app-consultant-information [consultantData]="item?.value?.consultantName?.consultant"></app-consultant-information>
                                                     </span>
                                                 </div>
                                             </ng-container>
@@ -2394,7 +2394,7 @@
                                                         </button>
                                                     </div>
                                                     <span class="workflow-extension--consultant-data--consultant-text">
-                                                        {{consultant?.value?.consultantName?.consultant?.companyName}} | {{consultant?.value?.consultantName?.consultant?.city}}, {{getTenantCodeFromId(consultant?.value?.consultantName?.consultant?.countryId)}} | #{{consultant?.value?.consultantName?.consultant?.id}} / {{getTenantCodeFromId(consultant?.value?.consultantName?.consultant?.countryId)}}-{{consultant?.value?.consultantName?.consultant?.legacyId}}
+                                                        <app-consultant-information [consultantData]="consultant?.value?.consultantName?.consultant"></app-consultant-information>
                                                     </span>
                                                 </div>
                                             </div>

@@ -14,6 +14,7 @@ import { ManagerSearchComponent } from '../components/manager-search/manager-sea
 import { MomentFormatPipe } from 'src/shared/common/pipes/moment-format.pipe';
 import { ShowIfTruncatedDirective } from '../../../shared/common/directives/show-if-truncated.directive';
 import { PreventDoubleClickDirective } from 'src/shared/common/directives/prevent-doubleClick.directive';
+import { ConsultantInformationComponent } from '../components/consultant-information/consultant-information.component';
 
 @NgModule({
     declarations: [
@@ -24,7 +25,8 @@ import { PreventDoubleClickDirective } from 'src/shared/common/directives/preven
         ManagerSearchComponent,
         MomentFormatPipe,
         ShowIfTruncatedDirective,
-        PreventDoubleClickDirective
+        PreventDoubleClickDirective,
+        ConsultantInformationComponent
     ],
     imports: [
         CommonModule,
@@ -46,7 +48,8 @@ import { PreventDoubleClickDirective } from 'src/shared/common/directives/preven
         ManagerSearchComponent,
         MomentFormatPipe,
         ShowIfTruncatedDirective,
-        PreventDoubleClickDirective
+        PreventDoubleClickDirective,
+        ConsultantInformationComponent
     ],
     providers: [
         ErrorDialogService,

@@ -83,7 +83,7 @@
                                     </button>
                                 </div>
                                 <span class="workflow-finances--consultant-text">
-                                    {{consultant?.value?.consultant?.companyName}} | {{consultant?.value?.consultant?.city}}, {{getTenantCodeFromId(consultant?.value?.consultant?.countryId)}} | #{{consultant?.value?.consultant?.id}} / {{getTenantCodeFromId(consultant?.value?.consultant?.countryId)}}-{{consultant?.value?.consultant?.legacyId}}
+                                    <app-consultant-information [consultantData]="consultant?.value?.consultant"></app-consultant-information>
                                 </span>
                             </div>
                         </div>

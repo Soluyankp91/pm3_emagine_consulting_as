@@ -65,7 +65,7 @@
                                         </button>
                                     </div>
                                     <span class="workflow-contracts--consultant-text">
-                                        {{consultant?.value?.consultantData?.companyName}} | {{consultant?.value?.consultantData?.city}}, {{getTenantCodeFromId(consultant?.value?.consultantData?.countryId)}} | #{{consultant?.value?.consultantData?.id}} / {{getTenantCodeFromId(consultant?.value?.consultantData?.countryId)}}-{{consultant?.value?.consultantData?.legacyId}}
+                                        <app-consultant-information [consultantData]="consultant?.value?.consultantData"></app-consultant-information>
                                     </span>
                                 </div>
                             </div>
@@ -537,7 +537,7 @@
                                             </button>
                                         </div>
                                         <span class="workflow-contracts--consultant-text">
-                                            {{consultant?.value?.consultant?.companyName}} | {{consultant?.value?.consultant?.city}}, {{getTenantCodeFromId(consultant?.value?.consultant?.countryId)}} | #{{consultant?.value?.consultant?.id}} / {{getTenantCodeFromId(consultant?.value?.consultant?.countryId)}}-{{consultant?.value?.consultant?.legacyId}}
+                                            <app-consultant-information [consultantData]="consultant?.value?.consultant"></app-consultant-information>
                                         </span>
                                     </div>
                                 </div>
@@ -1252,7 +1252,7 @@
                                             </button>
                                         </div>
                                         <span class="workflow-contracts--consultant-text">
-                                            {{consultant?.value?.consultant?.companyName}} | {{consultant?.value?.consultant?.city}}, {{getTenantCodeFromId(consultant?.value?.consultant?.countryId)}} | #{{consultant?.value?.consultant?.id}} / {{getTenantCodeFromId(consultant?.value?.consultant?.countryId)}}-{{consultant?.value?.consultant?.legacyId}}
+                                            <app-consultant-information [consultantData]="consultant?.value?.consultant"></app-consultant-information>
                                         </span>
                                     </div>
                                 </div>
