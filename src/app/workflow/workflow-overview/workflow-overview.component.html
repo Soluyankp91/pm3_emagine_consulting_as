@@ -38,11 +38,10 @@
                 </span>
                 <span class="workflow-overview--process-daterange u-ml--5">{{item.periodStartDate | momentFormat: 'DD.MM.YYYY' + ' - ' + (item.periodEndDate ? (item.periodEndDate | momentFormat: 'DD.MM.YYYY') : '...')}}</span>
             </div>
-            <div fxLayout="row" *ngFor="let step of item.steps" [fxFlex]="step.isFakeActiveStep ? 'auto' : '20%'">
+            <div fxLayout="row" *ngFor="let step of item.steps; trackBy: stepsTrackBy" [fxFlex]="step.isFakeActiveStep ? 'auto' : '20%'">
                 <ng-container *ngIf="!step.isFakeActiveStep; else fakeActiveStepTemplate">
                     <div class="workflow-overview--team__user column">
                         <div fxLayout="row" fxLayoutAlign="start center">
-                            <!-- <img class="workflow-overview--team__user-img" [src]="employeeProfileUrl(step.responsiblePerson?.externalId!)" alt=""> -->
                             <div class="workflow-overview--team__user-img u-mr--16" [ngClass]="{'completed-step': step.status === workflowStepStatus.Completed}">
                                 <app-manager-search
                                     appPreventDoubleClick (throttledClick)="$event.stopPropagation()"
@@ -77,7 +76,6 @@
                 <ng-template #fakeActiveStepTemplate>
                     <div class="workflow-overview--team__user column">
                         <div fxLayout="row" fxLayoutAlign="start center">
-                            <!-- <img class="workflow-overview--team__user-img" [src]="employeeProfileUrl(step.responsiblePerson?.externalId!)" alt=""> -->
                             <div class="workflow-overview--team__user-img u-mr--16" [ngClass]="{'completed-step': step.status === workflowStepStatus.Completed}">
                                 <app-manager-search
                                     appPreventDoubleClick (throttledClick)="$event.stopPropagation()"
@@ -121,10 +119,8 @@
             [draggable]="false"
             [showTodayLine]="false">
             <ng-template #group let-group="group">
-                <!-- {{ group.title }} -->
             </ng-template>
             <ng-template #bar let-item="item">
-                <!-- <span style="color: #fff">&nbsp;&nbsp;{{ item.title }}</span> -->
             </ng-template>
         </app-gantt-chart>
 

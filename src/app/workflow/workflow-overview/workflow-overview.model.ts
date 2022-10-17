@@ -1,5 +1,5 @@
+import { MatDialogConfig } from "@angular/material/dialog";
 import { StepType, WorkflowProcessType } from "src/shared/service-proxies/service-proxies";
-import { WorkflowSteps } from "../workflow.model";
 
 export class ProcessSubItemDto {
     id: number;
@@ -93,3 +93,12 @@ export class OverviewData {
     lastName: string;
 }
 
+export const dialogConfig: MatDialogConfig = {
+    minWidth: '450px',
+    minHeight: '180px',
+    height: 'auto',
+    width: 'auto',
+    backdropClass: 'backdrop-modal--wrapper',
+    autoFocus: false,
+    panelClass: 'confirmation-modal'
+}
