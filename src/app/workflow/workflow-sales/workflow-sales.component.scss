@@ -1,65 +1,50 @@
 @import "/src/app/shared/styles/config/_colors";
+@import "/src/app/shared/styles/config/_mixins";
 @import "../workflow.component";
 
 .workflow {
     &-form {
-        // margin: 0 145px;
         &--main,
         &--client,
-        &--consultants,
-        &--summary {
+        &--consultants {
             border-bottom: 1px solid #E7E3E8;
 
             .workflow-gray--header {
-                // margin-bottom: 8px !important;
-                font-weight: bold;
+                font-weight: 700;
                 font-size: 14px;
                 line-height: 140%;
                 color: rgba(56, 72, 83, 0.87);
-                // @media screen and (max-width: 1440px) {
-                //     font-size: 12px;
-                // }
             }
         }
         &--consultants {
             &__name,
             &__period {
+                @include fontOpenSans;
                 font-weight: 600;
                 font-size: 14px;
-                font-family: 'Open Sans', sans-serif;
                 line-height: 120%;
                 color: $dark-grey-color;
             }
             &__payment-price-text {
-                font-family: 'Open Sans', sans-serif;
-                font-weight: bold;
+                @include fontOpenSans;
+                font-weight: 700;
                 font-size: 12px;
                 line-height: 14px;
                 color: rgba(56, 72, 83, 0.87);
                 margin-top: 0.3em;
             }
-
-            // @media screen and (max-width: 1440px) {
-            //     &__name,
-            //     &__period {
-            //         font-size: 14px;
-            //     }
-            //     &__payment-price-text {
-            //         font-size: 12px;
-            //     }
-            // }
         }
     }
     &-section--header {
+        @include fontOpenSans;
         color: $light-grey-color;
         letter-spacing: 1px;
         text-transform: uppercase;
         font-size: 16px;
         margin-bottom: 20px;
-        font-family: "Open Sans", sans-serif;
 
         &-main {
-            font-family: "Open Sans", sans-serif;
+            @include fontOpenSans;
             font-weight: 700;
             font-size: 18px;
             line-height: 120%;
@@ -71,11 +56,6 @@
     &-sales {
         .rates-and-fees--btn {
             width: 180px;
-        }
-        .edit-toggle {
-            border-radius: 50%;
-            background-color: rgba($color: #72a0f8, $alpha: 0.2);
-            color: #72a0f8;
         }
         &-inline {
             &--form {
@@ -101,17 +81,6 @@
                         font-weight: 700;
                     }
                 }
-                // @media screen and (max-width: 1440px) {
-                //     &__header {
-                //         font-size: 12px;
-                //     }
-                //     &__row {
-                //         height: 50px;
-                //         span {
-                //             font-size: 12px;
-                //         }
-                //     }
-                // }
             }
         }
         &--process-data {
@@ -122,16 +91,13 @@
     &-extension {
         &--gray-header {
             margin-bottom: 8px !important;
-            font-weight: bold;
+            font-weight: 700;
             font-size: 14px;
             line-height: 140%;
             color: #B6B4B2;
-            // @media screen and (max-width: 1440px) {
-            //     font-size: 12px;
-            // }
         }
         &--blue-text {
-            font-weight: bold;
+            font-weight: 700;
             font-size: 14px;
             line-height: 14px;
             color: rgba(56, 72, 83, 0.87);
@@ -140,7 +106,7 @@
         &--consultant-data {
             &--consultant {
                 &-text {
-                    font-family: 'Open Sans', sans-serif;
+                    @include fontOpenSans;
                     font-weight: 600;
                     font-size: 12px;
                     line-height: 150%;
@@ -156,11 +122,6 @@
                     width: 32px;
                     height: 32px;
                 }
-                // @media screen and (max-width: 1440px) {
-                //     &-name {
-                //         font-size: 14px;
-                //     }
-                // }
             }
 
         }
@@ -171,7 +132,7 @@
 
     &-readonly {
         &--header {
-            font-family: "Open Sans", sans-serif;
+            @include fontOpenSans;
             font-size: 14px;
             font-weight: 700;
             line-height: 1.2;
@@ -180,7 +141,7 @@
             color: #b6b4b2;
 
             &-main {
-                font-family: "Open Sans", sans-serif;
+                @include fontOpenSans;
                 font-size: 16px;
                 font-weight: 700;
                 line-height: 1.2;
@@ -198,7 +159,7 @@
         }
         &--gray {
             &-header {
-                font-family: "Open Sans", sans-serif;
+                @include fontOpenSans;
                 font-size: 12px;
                 font-weight: 700;
                 color: #898785;
@@ -206,50 +167,24 @@
         }
         &--blue {
             &-header {
-                font-family: "Open Sans", sans-serif;
+                @include fontOpenSans;
                 font-size: 12px;
                 font-weight: 700;
                 color: #4a4e60;
             }
             &-text {
-                font-family: "Open Sans", sans-serif;
+                @include fontOpenSans;
                 font-size: 14px;
                 font-weight: 600;
                 color: #4a4e60;
                 &-bold {
-                    font-family: "Open Sans", sans-serif;
+                    @include fontOpenSans;
                     font-size: 14px;
                     font-weight: 800;
                     color: rgba(56, 72, 83, 0.87);
                 }
             }
         }
-
-        // @media screen and (max-width: 1440px) {
-        //     &--header {
-        //         font-size: 14px;
-        //         &-main {
-        //             font-size: 18px;
-        //             .anchor-name,
-        //             .process-name {
-        //                 font-size: 14px;
-        //             }
-        //         }
-        //     }
-        //     &--gray {
-        //         &-header {
-        //             font-size: 12px;
-        //         }
-        //     }
-        // }
     }
 }
 
-.hide {
-    display: none;
-}
-
-
-.workflow-toggle-buttons--showMore {
-    border: 1px solid $light-grey-color;
-}
