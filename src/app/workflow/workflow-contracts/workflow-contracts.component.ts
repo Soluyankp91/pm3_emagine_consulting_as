@@ -253,69 +253,31 @@ export class WorkflowContractsComponent extends AppComponentBase implements OnIn
     }
 
     getCurrencies() {
-        this._internalLookupService.getCurrencies().subscribe(result => {
-                this.currencies = result;
-            });
+        this._internalLookupService.getCurrencies().subscribe(result => this.currencies = result);
     }
 
     getSpecialRateReportUnits() {
-        this._internalLookupService.getSpecialRateReportUnits()
-            .pipe(finalize(() => {
-
-            }))
-            .subscribe(result => {
-                this.clientSpecialRateReportUnits = result;
-            });
+        this._internalLookupService.getSpecialRateReportUnits().subscribe(result => this.clientSpecialRateReportUnits = result);
     }
 
     getSpecialFeeFrequencies() {
-        this._internalLookupService.getSpecialFeeFrequencies()
-            .pipe(finalize(() => {
-
-            }))
-            .subscribe(result => {
-                this.clientSpecialFeeFrequencies = result;
-            });
+        this._internalLookupService.getSpecialFeeFrequencies().subscribe(result => this.clientSpecialFeeFrequencies = result);
     }
 
     getDiscounts() {
-        this._internalLookupService.getDiscounts()
-            .pipe(finalize(() => {
-
-            }))
-            .subscribe(result => {
-                this.discounts = result;
-            });
+        this._internalLookupService.getDiscounts().subscribe(result => this.discounts = result);
     }
 
     getDeliveryTypes() {
-        this._internalLookupService.getDeliveryTypes()
-            .pipe(finalize(() => {
-
-            }))
-            .subscribe(result => {
-                this.deliveryTypes = result;
-            });
+        this._internalLookupService.getDeliveryTypes().subscribe(result => this.deliveryTypes = result);
     }
 
     getSaleTypes() {
-        this._internalLookupService.getSaleTypes()
-            .pipe(finalize(() => {
-
-            }))
-            .subscribe(result => {
-                this.saleTypes = result;
-            });
+        this._internalLookupService.getSaleTypes().subscribe(result => this.saleTypes = result);
     }
 
     getProjectTypes() {
-        this._internalLookupService.getProjectTypes()
-            .pipe(finalize(() => {
-
-            }))
-            .subscribe(result => {
-                this.projectTypes = result;
-            });
+        this._internalLookupService.getProjectTypes().subscribe(result => this.projectTypes = result);
     }
 
     getMargins() {
@@ -329,53 +291,23 @@ export class WorkflowContractsComponent extends AppComponentBase implements OnIn
     }
 
     getClientTimeReportingCap() {
-        this._internalLookupService.getClientTimeReportingCap()
-            .pipe(finalize(() => {
-
-            }))
-            .subscribe(result => {
-                this.clientTimeReportingCap = result;
-            });
+        this._internalLookupService.getClientTimeReportingCap().subscribe(result => this.clientTimeReportingCap = result);
     }
 
     getEmploymentTypes() {
-        this._internalLookupService.getEmploymentTypes()
-            .pipe(finalize(() => {
-
-            }))
-            .subscribe(result => {
-                this.employmentTypes = result;
-            });
+        this._internalLookupService.getEmploymentTypes().subscribe(result => this.employmentTypes = result);
     }
 
     getConsultantTimeReportingCap() {
-        this._internalLookupService.getConsultantTimeReportingCap()
-            .pipe(finalize(() => {
-
-            }))
-            .subscribe(result => {
-                this.consultantTimeReportingCapList = result;
-            });
+        this._internalLookupService.getConsultantTimeReportingCap().subscribe(result => this.consultantTimeReportingCapList = result);
     }
 
     getUnitTypes() {
-        this._internalLookupService.getUnitTypes()
-            .pipe(finalize(() => {
-
-            }))
-            .subscribe(result => {
-                this.rateUnitTypes = result;
-            });
+        this._internalLookupService.getUnitTypes().subscribe(result => this.rateUnitTypes = result);
     }
 
     getLegalContractStatuses() {
-        this._internalLookupService.getLegalContractStatuses()
-        .pipe(finalize(() => {
-
-        }))
-        .subscribe(result => {
-            this.legalContractStatuses = result;
-        });
+        this._internalLookupService.getLegalContractStatuses().subscribe(result => this.legalContractStatuses = result);
     }
 
     toggleEditMode(isToggledFromUi?: boolean) {
@@ -388,12 +320,10 @@ export class WorkflowContractsComponent extends AppComponentBase implements OnIn
     }
 
     get canToggleEditMode() {
-        // return this.permissionsForCurrentUser!["Edit"] && (this.isCompleted || this.editEnabledForcefuly);
         return this.permissionsForCurrentUser!["Edit"] && this.isCompleted;
     }
 
     get readOnlyMode() {
-        // return !this.permissionsForCurrentUser!["Edit"] && !this.permissionsForCurrentUser!["StartEdit"];
         return this.isCompleted;
     }
 

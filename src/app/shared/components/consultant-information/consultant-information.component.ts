@@ -4,8 +4,7 @@ import { TenantEnum } from './consultant-information.model';
 
 @Component({
     selector: 'app-consultant-information',
-    templateUrl: './consultant-information.component.html',
-    styleUrls: ['./consultant-information.component.scss']
+    templateUrl: './consultant-information.component.html'
 })
 export class ConsultantInformationComponent extends AppComponentBase implements OnInit {
     @Input() consultantData: any;
