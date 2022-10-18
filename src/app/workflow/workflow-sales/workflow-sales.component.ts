@@ -15,7 +15,8 @@ import { InternalLookupService } from 'src/app/shared/common/internal-lookup.ser
 import { ConfirmationDialogComponent } from 'src/app/shared/components/confirmation-dialog/confirmation-dialog.component';
 import { environment } from 'src/environments/environment';
 import { AppComponentBase, NotifySeverity } from 'src/shared/app-component-base';
-import { ClientPeriodSalesDataDto, ClientPeriodServiceProxy, ClientRateDto, CommissionDto, ConsultantRateDto, ConsultantSalesDataDto, ContractSignerDto, EmployeeDto, EnumEntityTypeDto, EnumServiceProxy, LookupServiceProxy, PeriodClientSpecialFeeDto, PeriodClientSpecialRateDto, SalesClientDataDto, SalesMainDataDto, WorkflowProcessType, WorkflowServiceProxy, ConsultantResultDto, ClientResultDto, ContactResultDto, ConsultantTerminationSalesDataCommandDto, WorkflowTerminationSalesDataCommandDto, PeriodConsultantSpecialFeeDto, PeriodConsultantSpecialRateDto, ClientSpecialRateDto, ClientsServiceProxy, ClientSpecialFeeDto, ClientSalesServiceProxy, ConsultantPeriodServiceProxy, ConsultantPeriodSalesDataDto, ConsultantSalesServiceProxy, ExtendConsultantPeriodDto, ChangeConsultantPeriodDto, WorkflowProcessDto, ConsultantWithSourcingRequestResultDto, CountryDto, StepType } from 'src/shared/service-proxies/service-proxies';
+import { ClientPeriodSalesDataDto, ClientPeriodServiceProxy, ClientRateDto, CommissionDto, ConsultantRateDto, ConsultantSalesDataDto, ContractSignerDto, EmployeeDto, EnumEntityTypeDto, LookupServiceProxy, PeriodClientSpecialFeeDto, PeriodClientSpecialRateDto, SalesClientDataDto, SalesMainDataDto, WorkflowProcessType, WorkflowServiceProxy, ConsultantResultDto, ClientResultDto, ContactResultDto, ConsultantTerminationSalesDataCommandDto, WorkflowTerminationSalesDataCommandDto, PeriodConsultantSpecialFeeDto, PeriodConsultantSpecialRateDto, ClientSpecialRateDto, ClientsServiceProxy, ClientSpecialFeeDto, ClientSalesServiceProxy, ConsultantPeriodServiceProxy, ConsultantPeriodSalesDataDto, ConsultantSalesServiceProxy, ExtendConsultantPeriodDto, ChangeConsultantPeriodDto, WorkflowProcessDto, ConsultantWithSourcingRequestResultDto, CountryDto, StepType } from 'src/shared/service-proxies/service-proxies';
+import { CustomValidators } from 'src/shared/utils/custom-validators';
 import { WorkflowConsultantActionsDialogComponent } from '../workflow-consultant-actions-dialog/workflow-consultant-actions-dialog.component';
 import { WorkflowDataService } from '../workflow-data.service';
 import { WorkflowProcessWithAnchorsDto } from '../workflow-period/workflow-period.model';
@@ -24,7 +25,6 @@ import { ConsultantDiallogAction, SalesTerminateConsultantForm, TenantList, Work
 @Component({
     selector: 'app-workflow-sales',
     templateUrl: './workflow-sales.component.html',
-    // styleUrls: ['./workflow-sales.component.scss', '../workflow-period/workflow-period.component.scss']
     styleUrls: ['./workflow-sales.component.scss']
 })
 export class WorkflowSalesComponent extends AppComponentBase implements OnInit {
@@ -149,7 +149,6 @@ export class WorkflowSalesComponent extends AppComponentBase implements OnInit {
     constructor(
         injector: Injector,
         private _fb: FormBuilder,
-        private _enumService: EnumServiceProxy,
         private _workflowDataService: WorkflowDataService,
         // private _workflowService: WorkflowsServiceProxy,
         private activatedRoute: ActivatedRoute,
@@ -487,15 +486,12 @@ export class WorkflowSalesComponent extends AppComponentBase implements OnInit {
                 if (isDraft) {
                     this.saveStartChangeOrExtendClientPeriodSales(isDraft);
                 } else {
-                    // trigger validation -> on success triggerComplete()
                     if (this.validateSalesForm()) {
-                        console.log('valid');
                         this.saveStartChangeOrExtendClientPeriodSales(isDraft);    
                     } else {
-                        console.log('invalid');
                         of(([])).pipe(
                             delay(100)
-                           ).subscribe((results) => { 
+                           ).subscribe(() => { 
                                let firstError = document.getElementsByClassName('mat-form-field-invalid')[0] as HTMLElement;
                                if (firstError) {
                                    let config: ScrollToConfigOptions = {
@@ -557,10 +553,6 @@ export class WorkflowSalesComponent extends AppComponentBase implements OnInit {
         console.log(Object.keys(this.consultantsForm.controls).filter(key => this.consultantsForm.controls[key].status === 'INVALID'));
         console.log(this.consultantsForm);
         console.log(this.consultantsForm.valid);
-        this.consultantsForm.consultantData.controls.forEach(form => {
-            console.log(form);
-            console.log(form.valid);
-        })
         console.log(this.contractSigners.controls?.every(x => x.value.clientContact?.id !== null && x.value.clientContact?.id !== undefined));
         console.log(Object.keys(this.salesClientDataForm.controls).filter(key => this.salesClientDataForm.controls[key].status === 'INVALID'));
 
@@ -903,7 +895,7 @@ export class WorkflowSalesComponent extends AppComponentBase implements OnInit {
 
     addSignerToForm(signer?: ContractSignerDto) {
         const form = this._fb.group({
-            clientContact: new FormControl(signer?.contact ?? null),
+            clientContact: new FormControl(signer?.contact ?? null, CustomValidators.autocompleteValidator('id')),
             clientRole: new FormControl(this.findItemById(this.signerRoles, signer?.signerRoleId) ?? null),
             clientSequence: new FormControl(signer?.signOrder ?? null)
         });
@@ -1003,10 +995,10 @@ export class WorkflowSalesComponent extends AppComponentBase implements OnInit {
             specialFees: new FormArray([]),
 
             consultantSpecialContractTermsNone: new FormControl(consultant?.noSpecialContractTerms ?? false),
-            consultantSpecialContractTerms: new FormControl({value: consultant?.specialContractTerms ?? null, disabled: consultant?.noSpecialContractTerms}),
+            consultantSpecialContractTerms: new FormControl({value: consultant?.specialContractTerms ?? null, disabled: consultant?.noSpecialContractTerms}, Validators.required),
 
             deliveryManagerSameAsAccountManager: new FormControl(consultant?.deliveryManagerSameAsAccountManager ?? false),
-            deliveryAccountManager: new FormControl(consultant?.deliveryAccountManager ?? ''),
+            deliveryAccountManager: new FormControl(consultant?.deliveryAccountManager ?? '', CustomValidators.autocompleteValidator('id')),
         });
         this.consultantsForm.consultantData.push(form);
         if (consultant?.periodConsultantSpecialRates?.length) {
@@ -2476,26 +2468,6 @@ export class WorkflowSalesComponent extends AppComponentBase implements OnInit {
         }
     }
     //#endregion formatting
-
-    validateContractSigners(group: any, index: any) {
-        if (
-            !(group.get("contractSigners")! as FormArray)
-                .at(index)
-                .get("clientContact")!.value?.id
-        ) {
-            (group.get("contractSigners") as FormArray)
-                .at(index)
-                .get("clientContact")!
-                .setErrors({ invalid: true });
-            return true;
-        } else {
-            (group.get("contractSigners") as FormArray)
-                .at(index)
-                .get("clientContact")!
-                .setErrors(null);
-            return false;
-        }
-    }
 
     returnToSales() {
         switch (this._workflowDataService.workflowProgress.currentlyActiveSideSection) {

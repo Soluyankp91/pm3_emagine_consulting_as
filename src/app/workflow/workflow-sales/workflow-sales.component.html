@@ -2266,9 +2266,7 @@
                                                 </mat-option>
                                             </ng-container>
                                         </mat-autocomplete>
-                                        <mat-error *ngIf="validateContractSigners(salesClientDataForm, i)">
-                                            You need to select the contract signer
-                                        </mat-error>
+                                        <mat-error>{{getValidationMessage(contractSigners.at(i).get('clientContact'))}}</mat-error>
                                     </mat-form-field>
 
                                     <mat-form-field appearance="outline" class="u-w--100  filter-select u-mr--16" fxFlex="33%">
