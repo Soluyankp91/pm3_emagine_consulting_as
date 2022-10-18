@@ -8,12 +8,15 @@ import { Subject } from 'rxjs';
 import { finalize, takeUntil } from 'rxjs/operators';
 import { ConfirmationDialogComponent } from 'src/app/shared/components/confirmation-dialog/confirmation-dialog.component';
 import { environment } from 'src/environments/environment';
-import { AppComponentBase } from 'src/shared/app-component-base';
+import { AppComponentBase, NotifySeverity } from 'src/shared/app-component-base';
 import { AppConsts } from 'src/shared/AppConsts';
-import { ChangeConsultantPeriodDto, ConsultantGanttRow, ConsultantPeriodServiceProxy, ExtendConsultantPeriodDto, GanttRowItem, StepDto, WorkflowHistoryDto, WorkflowProcessDto, WorkflowProcessType, WorkflowServiceProxy, WorkflowStepStatus } from 'src/shared/service-proxies/service-proxies';
+import { AvailableConsultantDto, ChangeConsultantPeriodDto, ClientPeriodServiceProxy, ConsultantGanttRow, ConsultantPeriodServiceProxy, ExtendClientPeriodDto, ExtendConsultantPeriodDto, GanttRowItem, StepDto, WorkflowHistoryDto, WorkflowProcessDto, WorkflowProcessType, WorkflowServiceProxy, WorkflowStepStatus } from 'src/shared/service-proxies/service-proxies';
+import { WorkflowActionsDialogComponent } from '../workflow-actions-dialog/workflow-actions-dialog.component';
 import { WorkflowConsultantActionsDialogComponent } from '../workflow-consultant-actions-dialog/workflow-consultant-actions-dialog.component';
 import { WorkflowDataService } from '../workflow-data.service';
 import { ConsultantDiallogAction } from '../workflow-sales/workflow-sales.model';
+import { WorkflowDiallogAction, WorkflowProgressStatus } from '../workflow.model';
+import { DialogConfig } from './workflow-overview.model';
 
 @Component({
     selector: 'app-workflow-overview',
@@ -24,6 +27,7 @@ export class WorkflowOverviewComponent extends AppComponentBase implements OnIni
     @ViewChild('gantt') ganttComponent: NgxGanttComponent;
 
     @Input() workflowId: string;
+    @Input() periodId: string | undefined;
 
     componentInitalized = false;
     workflowStepStatus = WorkflowStepStatus;
@@ -63,6 +67,7 @@ export class WorkflowOverviewComponent extends AppComponentBase implements OnIni
         private overlay: Overlay,
         private dialog: MatDialog,
         private _consultantPeriodSerivce: ConsultantPeriodServiceProxy,
+        private _clientPeriodService: ClientPeriodServiceProxy,
 
     ) {
         super(injector);
@@ -235,114 +240,70 @@ export class WorkflowOverviewComponent extends AppComponentBase implements OnIni
 
     terminateConsultant(consultantInfo: ConsultantGanttRow) {
         const scrollStrategy = this.overlay.scrollStrategies.reposition();
-        const dialogRef = this.dialog.open(ConfirmationDialogComponent, {
-            width: '450px',
-            minHeight: '180px',
-            height: 'auto',
-            scrollStrategy,
-            backdropClass: 'backdrop-modal--wrapper',
-            autoFocus: false,
-            panelClass: 'confirmation-modal',
-            data: {
-                confirmationMessageTitle: `Are you sure you want to terminate consultant ${consultantInfo?.name}?`,
-                rejectButtonText: 'Cancel',
-                confirmButtonText: 'Terminate',
-                isNegative: true
-            }
-        });
-
+        DialogConfig.scrollStrategy = scrollStrategy;
+        DialogConfig.data = {
+            confirmationMessageTitle: `Are you sure you want to terminate consultant ${consultantInfo?.name}?`,
+            rejectButtonText: 'Cancel',
+            confirmButtonText: 'Terminate',
+            isNegative: true
+        }
+        const dialogRef = this.dialog.open(ConfirmationDialogComponent, DialogConfig);
         dialogRef.componentInstance.onConfirmed.subscribe(() => {
             this.terminateConsultantStart(1); //FIXME: add real id when BE will be fixed
-        });
-
-        dialogRef.componentInstance.onRejected.subscribe(() => {
-            // nthng
         });
     }
 
     terminateConsultantStart(index: number) {
         this._workflowService.terminationConsultantStart(this.workflowId!, index)
-            .pipe(finalize(() => {
-
-            }))
-            .subscribe(result => {
+            .subscribe(() => {
                 this._workflowDataService.workflowSideSectionAdded.emit(true);
             });
     }
 
     changeConsultantData(consultantInfo: ConsultantGanttRow) {
         const scrollStrategy = this.overlay.scrollStrategies.reposition();
-        const dialogRef = this.dialog.open(WorkflowConsultantActionsDialogComponent, {
-            minWidth: '450px',
-            minHeight: '180px',
-            height: 'auto',
-            width: 'auto',
-            scrollStrategy,
-            backdropClass: 'backdrop-modal--wrapper',
-            autoFocus: false,
-            panelClass: 'confirmation-modal',
-            data: {
-                dialogType: ConsultantDiallogAction.Change,
-                consultantData: {externalId: consultantInfo.consultantExternalId, name: consultantInfo.name},
-                dialogTitle: `Change consultant`,
-                rejectButtonText: 'Cancel',
-                confirmButtonText: 'Create',
-                isNegative: false
-            }
-        });
-
+        DialogConfig.scrollStrategy = scrollStrategy;
+        DialogConfig.data = {
+            dialogType: ConsultantDiallogAction.Change,
+            consultantData: {externalId: consultantInfo.consultantExternalId, name: consultantInfo.name},
+            dialogTitle: `Change consultant`,
+            rejectButtonText: 'Cancel',
+            confirmButtonText: 'Create',
+            isNegative: false
+        }
+        const dialogRef = this.dialog.open(WorkflowConsultantActionsDialogComponent, DialogConfig);
         dialogRef.componentInstance.onConfirmed.subscribe((result) => {
             let input = new ChangeConsultantPeriodDto();
             input.cutoverDate = result.newCutoverDate;
             input.newLegalContractRequired = result.newLegalContractRequired;
             this._consultantPeriodSerivce.change(consultantInfo?.ganttRowItems![0].id!, input)
-                .pipe(finalize(() => {}))
-                .subscribe(result => {
+                .subscribe(() => {
                     this._workflowDataService.workflowSideSectionAdded.emit(true);
                 });
-        });
-
-        dialogRef.componentInstance.onRejected.subscribe(() => {
-            // nthng
         });
     }
 
     extendConsultant(consultantInfo: ConsultantGanttRow) {
         const scrollStrategy = this.overlay.scrollStrategies.reposition();
-        const dialogRef = this.dialog.open(WorkflowConsultantActionsDialogComponent, {
-            minWidth: '450px',
-            minHeight: '180px',
-            height: 'auto',
-            width: 'auto',
-            scrollStrategy,
-            backdropClass: 'backdrop-modal--wrapper',
-            autoFocus: false,
-            panelClass: 'confirmation-modal',
-            data: {
-                dialogType: ConsultantDiallogAction.Extend,
-                consultantData: {externalId: consultantInfo.consultantExternalId, name: consultantInfo.name},
-                dialogTitle: `Extend consultant`,
-                rejectButtonText: 'Cancel',
-                confirmButtonText: 'Create',
-                isNegative: false
-            }
-        });
-
+        DialogConfig.scrollStrategy = scrollStrategy;
+        DialogConfig.data = {
+            dialogType: ConsultantDiallogAction.Extend,
+            consultantData: {externalId: consultantInfo.consultantExternalId, name: consultantInfo.name},
+            dialogTitle: `Extend consultant`,
+            rejectButtonText: 'Cancel',
+            confirmButtonText: 'Create',
+            isNegative: false
+        }
+        const dialogRef = this.dialog.open(WorkflowConsultantActionsDialogComponent, DialogConfig);
         dialogRef.componentInstance.onConfirmed.subscribe((result) => {
             let input = new ExtendConsultantPeriodDto();
             input.startDate = result.startDate;
             input.endDate = result.endDate;
             input.noEndDate = result.noEndDate;
             this._consultantPeriodSerivce.extend(consultantInfo?.ganttRowItems![0].id!, input)
-                .pipe(finalize(() => {}))
-                .subscribe(result => {
+                .subscribe(() => {
                     this._workflowDataService.workflowSideSectionAdded.emit(true);
                 });
-            this._workflowDataService.workflowSideSectionAdded.emit(true);
-        });
-
-        dialogRef.componentInstance.onRejected.subscribe(() => {
-            // nthng
         });
     }
 
@@ -350,5 +311,52 @@ export class WorkflowOverviewComponent extends AppComponentBase implements OnIni
         this.historyPageNumber = event.pageIndex + 1;
         this.historyDeafultPageSize = event.pageSize;
         this.getWorkflowHistory();
+    }
+
+    getAvailableConsultantForChangeOrExtend() {
+        if (!this._workflowDataService.getWorkflowProgress.currentlyActivePeriodId) {
+            let newStatus = new WorkflowProgressStatus();
+            newStatus.currentlyActivePeriodId = this.periodId;
+            this._workflowDataService.updateWorkflowProgressStatus(newStatus);
+        }
+
+        this.showMainSpinner();
+        this._clientPeriodService.availableConsultants(this._workflowDataService.getWorkflowProgress.currentlyActivePeriodId!)
+            .pipe(finalize(() => this.hideMainSpinner()))
+            .subscribe(result => {
+                if (result.length) {
+                    this.addExtension(result);
+                } else {
+                    this.showNotify(NotifySeverity.Error, 'There are no available consultants for this action', 'Ok');
+                }
+            });
+    }
+
+    addExtension(availableConsultants: AvailableConsultantDto[]) {
+        const scrollStrategy = this.overlay.scrollStrategies.reposition();
+        DialogConfig.scrollStrategy = scrollStrategy;
+        DialogConfig.data = {
+            dialogType: WorkflowDiallogAction.Extend,
+            dialogTitle: 'Extend Workflow',
+            rejectButtonText: 'Cancel',
+            confirmButtonText: 'Create',
+            isNegative: false,
+            consultantData: availableConsultants
+        }
+        const dialogRef = this.dialog.open(WorkflowActionsDialogComponent, DialogConfig);
+        dialogRef.componentInstance.onConfirmed.subscribe((result: ExtendClientPeriodDto) => {
+            if (result) {
+                this.showMainSpinner();
+                this._clientPeriodService.clientExtend(this._workflowDataService.getWorkflowProgress.currentlyActivePeriodId!, result)
+                    .pipe(finalize(() => this.hideMainSpinner()))
+                    .subscribe(() => {
+                        this._workflowDataService.workflowTopSectionUpdated.emit(true);
+                    });
+            }
+        });
+    }
+
+    stepsTrackBy(index: number, step: StepDto) {
+        return step;
     }
 }
