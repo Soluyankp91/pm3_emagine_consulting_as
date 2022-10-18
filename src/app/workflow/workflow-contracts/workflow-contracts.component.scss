@@ -1,4 +1,5 @@
 @import "/src/app/shared/styles/config/_colors";
+@import "/src/app/shared/styles/config/_mixins";
 @import "../workflow.component";
 
 .workflow {
@@ -19,18 +20,17 @@
         }
         &--consultant {
             &-name {
-                font-weight: 800;
-                font-size: 14px;
+                @include fontOpenSans(14px, 800);
                 color: $dark-grey-color;
             }
             &-img {
                 border-radius: 50%;
             }
-            // @media screen and (max-width: 1440px) {
-            //     &-name {
-            //         font-size: 14px;
-            //     }
-            // }
+            &-text {
+                @include fontOpenSans(12px, 600);
+                line-height: 150%;
+                color: rgba(56, 72, 83, 0.87);
+            }
         }
         &--block {
             &-consultants:not(:last-child) {
@@ -45,24 +45,19 @@
             background-color: $white-color;
 
             &-item {
-                font-family: "Open Sans", sans-serif;
-                font-weight: 700;
-                font-size: 14px;
+                @include fontOpenSans(14px, 700);
                 line-height: 140%;
                 color: #4a4e60;
             }
 
             &-header {
-                font-family: "Open Sans", sans-serif;
-                font-weight: 700;
-                font-size: 12px;
+                @include fontOpenSans(12px, 700);
                 line-height: 14px;
                 color: #898785;
             }
         }
     }
     &-form {
-        // margin: 0 145px;
         &--main,
         &--sales,
         &--consultants,
@@ -70,51 +65,31 @@
 
             border-bottom: 1px solid $sand-color;
             .workflow-darkblue--text {
-                // margin-bottom: 8px !important;
-                font-weight: bold;
-                font-size: 14px;
+                @include fontOpenSans(14px, 700);
                 line-height: 14px;
                 color: rgba(56, 72, 83, 0.87);
             }
             .workflow-gray--header {
+                @include fontOpenSans(14px, 700);
                 margin-bottom: 8px !important;
-                font-weight: bold;
-                font-size: 14px;
                 line-height: 14px;
                 color: #B6B4B2
             }
-            // @media screen and (max-width: 1440px) {
-            //     .workflow-darkblue--text {
-            //         font-size: 14px;
-            //     }
-            //     .workflow-gray--header {
-            //         font-size: 12px;
-            //     }
-            // }
         }
     }
     &-section--header {
         color: $light-grey-color;
-        font-family: "Open Sans", sans-serif;
+        @include fontOpenSans(16px, 'inherit');
         letter-spacing: 1px;
         text-transform: uppercase;
-        font-size: 16px;
         margin-bottom: 20px;
         &-main {
-            font-family: "Open Sans", sans-serif;
-            font-weight: 700;
-            font-size: 18px;
+            @include fontOpenSans(18px, 700);
             line-height: 120%;
             letter-spacing: 1px;
             text-transform: uppercase;
             color: $dark-grey-color;
         }
-        // @media screen and (max-width: 1440px) {
-        //     font-size: 14px;
-        //     &-main {
-        //         font-size: 18px;
-        //     }
-        // }
     }
 
     &--termination {
@@ -137,9 +112,7 @@
 }
 
 .sync-hint-text {
-    font-family: "Open Sans", sans-serif;
-    font-weight: 700;
-    font-size: 12px;
+    @include fontOpenSans(12px, 700);
     line-height: 150%;
     color: $dark-grey-color;
 }

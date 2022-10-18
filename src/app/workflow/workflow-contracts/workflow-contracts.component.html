@@ -54,15 +54,21 @@
                     <ng-container formArrayName="consultantTerminationContractData">
                         <div *ngFor="let consultant of contractsTerminationConsultantForm.consultantTerminationContractData.controls; index as i; last as last" [formGroupName]="i" class="workflow-contracts--block-consultants u-mt--20" [ngClass]="{'last-block': last}" [id]="'consultantDataAnchor' + i">
                             <div fxLayout="row" fxLayoutAlign="start center" class="u-mb--20">
-                                <img *ngIf="consultant.value?.consultantData?.id" class="border-rounded-50 u-mr--16 image-thumbnail-responsive" [src]="consultantProfileUrl(consultant.value?.consultantData?.externalId)">
-                                <p class="workflow-contracts--consultant-name">
-                                    {{contractsTerminationConsultantForm.consultantTerminationContractData.at(i).get('consultantData')?.value?.name}}
-                                </p>
-                                <button *ngIf="consultant.value?.consultantData?.id" mat-icon-button class="consultant-deeplink--btn" appPreventDoubleClick (throttledClick)="$event.stopPropagation(); deepLinkToSourcing(consultant.value?.consultantData?.id)" matTooltip="Preview in Sourcing" matTooltipClass="white-tooltip">
-                                    <mat-icon svgIcon="sourcing-deeplink"></mat-icon>
-                                </button>
+                                <img *ngIf="consultant.value?.consultantData?.id" class="border-rounded-50 u-mr--16 image-thumbnail-responsive" [src]="consultantProfileUrl(consultant.value?.consultantData?.externalId)" />
+                                <div fxLayout="column">
+                                    <div fxLayout="row" fxLayoutAlign="start center">
+                                        <p class="workflow-contracts--consultant-name">
+                                            {{ consultant.value?.consultantData?.name }}
+                                        </p>
+                                        <button *ngIf="consultant.value?.consultantData?.id" mat-icon-button class="consultant-deeplink--btn" appPreventDoubleClick (throttledClick)="$event.stopPropagation(); deepLinkToSourcing(consultant.value?.consultantData?.id)" matTooltip="Preview in Sourcing" matTooltipClass="white-tooltip">
+                                            <mat-icon svgIcon="sourcing-deeplink"></mat-icon>
+                                        </button>
+                                    </div>
+                                    <span class="workflow-contracts--consultant-text">
+                                        <app-consultant-information [consultantData]="consultant?.value?.consultantData"></app-consultant-information>
+                                    </span>
+                                </div>
                             </div>
-
                             <div fxLayout="row" fxLayoutAlign="start center" class="u-w--100 u-mb--10">
                                 <ng-container *ngIf="readOnlyMode; else nameremovedConsultantFromAnyManualChecklistsInput">
                                     <mat-icon class="termination-cancel-icon u-mr--5" [svgIcon]="'cancel-fill'" [ngClass]="{'icon-cancel': !contractsTerminationConsultantForm.consultantTerminationContractData.at(i).get('nameremovedConsultantFromAnyManualChecklists')?.value}"
@@ -276,7 +282,7 @@
 
                         <h2 class="workflow-section--header u-mt--20">Client Special Rates</h2>
                         <div class="inline-edit-form u-w--100" [ngClass]="{'u-mb--20': contractClientForm.clientRates.controls.length}">
-                            <div fxLayout="row" fxLayoutAlign="space-between start" fxLayoutGap="10px" class="u-w--100 u-pl--16 u-pr--16" *ngIf="contractClientForm.clientRates?.controls?.length">
+                            <div fxLayout="row" fxLayoutAlign="space-between start" fxLayoutGap="10px" class="u-w--100 u-pl--16 u-pr--16 u-pb--12" *ngIf="contractClientForm.clientRates?.controls?.length">
                                 <span fxFlex="25%" class="workflow-contracts--list-header text-truncate-ellipsis u-w--100">
                                     Rate name
                                 </span>
@@ -386,7 +392,7 @@
 
                         <h2 class="workflow-section--header u-mt--20">Client Fees</h2>
                         <div class="inline-edit-form u-w--100" [ngClass]="{'u-mb--20': contractClientForm.clientFees.controls.length}">
-                            <div fxLayout="row" fxLayoutAlign="space-between start" fxLayoutGap="10px" class="u-w--100 u-pl--16 u-pr--16" *ngIf="contractClientForm.clientFees?.controls?.length">
+                            <div fxLayout="row" fxLayoutAlign="space-between start" fxLayoutGap="10px" class="u-w--100 u-pl--16 u-pr--16 u-pb--12" *ngIf="contractClientForm.clientFees?.controls?.length">
                                 <span fxFlex="25%" class="workflow-contracts--list-header text-truncate-ellipsis u-w--100">
                                     Fee name
                                 </span>
@@ -514,17 +520,25 @@
                                     <span class="process-name" *ngIf="readOnlyMode">Contracts.</span>
                                     <span class="anchor-name">Consultant data</span>
                                 </h1>
-                                <!-- Only visible when employment type is selected and it is not 'Fee only' - id: 10 nd not 'Recruitment' - id:11 -->
-                                <div fxLayout="row" fxLayoutAlign="start start" class="u-w--100" *ngIf="consultant.value.consultantType?.id !== 10 && consultant.value.consultantType?.id !== 11">
-                                    <span fxFlex="50%" fxLayout="row" fxLayoutAlign="start center">
-                                        <img *ngIf="consultant.value?.consultant?.id" class="border-rounded-50 u-ml--16 u-mr--16 image-thumbnail-responsive" [src]="consultantProfileUrl(consultant.value?.consultant?.externalId)" />
-                                        <span class="workflow-contracts--consultant-name">
-                                            {{ consultant.value?.consultant?.name }}
+                            </div>
+
+                            <div fxLayout="column">
+                                <h3 class="workflow-step-readonly--gray-header">Consultant</h3>
+                                <div fxLayout="row" fxLayoutAlign="start center" class="u-mb--20" *ngIf="consultant.value.employmentType?.id !== employmentTypesEnum.FeeOnly && consultant.value.employmentType?.id !== employmentTypesEnum.Recruitment">
+                                    <img *ngIf="consultant.value?.consultant?.id" class="border-rounded-50 u-mr--16 image-thumbnail-responsive" [src]="consultantProfileUrl(consultant.value?.consultant?.externalId)" />
+                                    <div fxLayout="column">
+                                        <div fxLayout="row" fxLayoutAlign="start center">
+                                            <p class="workflow-contracts--consultant-name">
+                                                {{ consultant.value?.consultant?.name }}
+                                            </p>
+                                            <button *ngIf="consultant.value?.consultant?.id" mat-icon-button class="consultant-deeplink--btn" appPreventDoubleClick (throttledClick)="$event.stopPropagation(); deepLinkToSourcing(consultant.value?.consultant?.id)" matTooltip="Preview in Sourcing" matTooltipClass="white-tooltip">
+                                                <mat-icon svgIcon="sourcing-deeplink"></mat-icon>
+                                            </button>
+                                        </div>
+                                        <span class="workflow-contracts--consultant-text">
+                                            <app-consultant-information [consultantData]="consultant?.value?.consultant"></app-consultant-information>
                                         </span>
-                                        <button *ngIf="consultant.value?.consultant?.id" mat-icon-button class="consultant-deeplink--btn" appPreventDoubleClick (throttledClick)="$event.stopPropagation(); deepLinkToSourcing(consultant.value?.consultant?.id)" matTooltip="Preview in Sourcing" matTooltipClass="white-tooltip">
-                                            <mat-icon svgIcon="sourcing-deeplink"></mat-icon>
-                                        </button>
-                                    </span>
+                                    </div>
                                 </div>
                             </div>
 
@@ -611,7 +625,7 @@
 
                                 <ng-container *ngIf="readOnlyMode; else specialRatesInput">
                                     <div class="inline-edit-form u-w--100 u-mb--10">
-                                        <div fxLayout="row" fxLayoutAlign="space-between start" fxLayoutGap="10px" class="u-w--100 u-pl--16 u-pr--16" *ngIf="consultant.value.specialRates?.length">
+                                        <div fxLayout="row" fxLayoutAlign="space-between start" fxLayoutGap="10px" class="u-w--100 u-pl--16 u-pr--16 u-pb--12" *ngIf="consultant.value.specialRates?.length">
                                             <span fxFlex="1 0 20%" class="workflow-contracts--list-header text-truncate-ellipsis u-w--100">
                                                 Rate name
                                             </span>
@@ -787,7 +801,7 @@
                                 <h2 class="workflow-section--header">Special Fees</h2>
                                 <ng-container *ngIf="readOnlyMode; else clientFeesInput">
                                     <div class="inline-edit-form u-w--100 u-mb--20">
-                                        <div fxLayout="row" fxLayoutAlign="space-between start" fxLayoutGap="10px" class="u-w--100 u-pl--16 u-pr--16" *ngIf="consultant.value.clientFees?.length">
+                                        <div fxLayout="row" fxLayoutAlign="space-between start" fxLayoutGap="10px" class="u-w--100 u-pl--16 u-pr--16 u-pb--12" *ngIf="consultant.value.clientFees?.length">
                                             <span fxFlex="1 0 20%" class="workflow-contracts--list-header text-truncate-ellipsis u-w--100">
                                                 Fee name
                                             </span>
@@ -957,7 +971,7 @@
 
                                 <h2 class="workflow-section--header">Project Lines</h2>
                                 <div class="inline-edit-form u-w--100" [ngClass]="{'u-mb--10': readOnlyMode}">
-                                    <div fxLayout="row" fxLayoutAlign="space-between start" fxLayoutGap="10px" class="u-w--100 u-pl--50 u-pr--16" *ngIf="consultant.value.projectLines?.length">
+                                    <div fxLayout="row" fxLayoutAlign="space-between start" fxLayoutGap="10px" class="u-w--100 u-pl--50 u-pr--16 u-pb--12" *ngIf="consultant.value.projectLines?.length">
                                         <span fxFlex="5%" class="workflow-contracts--list-header text-truncate-ellipsis">
                                             Id
                                         </span>
@@ -994,7 +1008,7 @@
                                                             {{projectLine.value.projectName ?? '-'}}
                                                         </span>
                                                         <span fxFlex="25%" class="u-w--100 text-truncate-ellipsis workflow-contracts--list-item" [matTooltip]="projectLine.value.invoicingReferenceNumber ?? '-'" matTooltipClass="white-tooltip" appShowIfTruncated>
-                                                            {{projectLine.value.invoicingReferenceNumber ?? '-'}}
+                                                            {{projectLine.value.invoicingReferenceNumber && projectLine.value.invoicingReferenceNumber !== '' ? projectLine.value.invoicingReferenceNumber : '-'}}
                                                         </span>
                                                         <span fxFlex="10%" class="u-w--100 text-truncate-ellipsis workflow-contracts--list-item" [matTooltip]="projectLine.value.startDate ? (projectLine.value.startDate | momentFormat: 'DD.MM.YYYY') : '-'" matTooltipClass="white-tooltip" appShowIfTruncated>
                                                             {{projectLine.value.startDate ? (projectLine.value.startDate | momentFormat: 'DD.MM.YYYY') : '-'}}
@@ -1003,7 +1017,7 @@
                                                             {{projectLine.value.endDate ? (projectLine.value.endDate | momentFormat: 'DD.MM.YYYY') : '-'}}
                                                         </span>
                                                         <span fxFlex="1 0 15%" class="u-w--100 text-truncate-ellipsis__multilne workflow-contracts--list-item" [matTooltip]="projectLine.value.optionalInvoicingInfo ?? '-'" matTooltipClass="white-tooltip" appShowIfTruncated>
-                                                            {{projectLine.value.optionalInvoicingInfo ?? '-'}}
+                                                            {{projectLine.value.optionalInvoicingInfo && projectLine.value.optionalInvoicingInfo !== '' ? projectLine.value.optionalInvoicingInfo : '-'}}
                                                         </span>
                                                         <span fxFlex="5%" class="u-w--100 text-truncate-ellipsis workflow-contracts--list-item">
                                                             <ng-container *ngIf="projectLine.value.isLineForFees; else noFeesBilledTemplate">
@@ -1016,21 +1030,21 @@
                                                             </ng-template>
                                                         </span>
                                                         <div *ngIf="!readOnlyMode" fxFlex="5%" fxLayoutAlign="end center" class="u-w--100 workflow-contracts--list-item">
-                                                            <button mat-icon-button appPreventDoubleClick (throttledClick)="$event.stopPropagation();" [matMenuTriggerFor]="consultantProjectLineMenu" class="three-dots-actions-btn">
+                                                            <button mat-icon-button appPreventDoubleClick (throttledClick)="$event.stopPropagation();" #projectLinesMenuTrigger="matMenuTrigger" [matMenuTriggerFor]="consultantProjectLineMenu" class="three-dots-actions-btn">
                                                                 <mat-icon>more_horiz</mat-icon>
                                                             </button>
                                                             <mat-menu #consultantProjectLineMenu>
                                                                 <button
                                                                     class="menu-item menu-item--edit"
                                                                     mat-menu-item
-                                                                    appPreventDoubleClick (throttledClick)="duplicateProjectLine(consultantIndex, projectLinesIndex)">
+                                                                    (click)="duplicateProjectLine(consultantIndex, projectLinesIndex)">
                                                                     <mat-icon>content_copy</mat-icon>
                                                                     Duplicate
                                                                 </button>
                                                                 <button
                                                                     class="menu-item menu-item--edit"
                                                                     mat-menu-item
-                                                                    appPreventDoubleClick (throttledClick)="createOrEditProjectLine(consultantIndex, projectLinesIndex)">
+                                                                    (click)="createOrEditProjectLine(consultantIndex, projectLinesIndex)">
                                                                     <mat-icon>create</mat-icon>
                                                                     Edit
                                                                 </button>
@@ -1038,7 +1052,7 @@
                                                                     class="menu-item menu-item--cancel"
                                                                     *ngIf="!projectLine.value.wasSynced"
                                                                     mat-menu-item
-                                                                    appPreventDoubleClick (throttledClick)="removeConsultantDataProjectLines(consultantIndex, projectLinesIndex)">
+                                                                    (click)="removeConsultantDataProjectLines(consultantIndex, projectLinesIndex)">
                                                                     <mat-icon>clear</mat-icon>
                                                                     Remove
                                                                 </button>
@@ -1061,11 +1075,11 @@
                                                 <div fxLayout="row"  class="project-line--expansion-additional">
                                                     <span fxFlex="15%" class="project-line--expansion-additional__header">Invoicing ref person</span>
                                                     <span class="project-line--expansion-additional__content">
-                                                        <ng-container *ngIf="projectLine.value.invoicingReferencePerson?.id; else invoicingReferencePersonFreeText">
+                                                        <ng-container *ngIf="projectLine.value.invoicingReferencePerson?.id && projectLine.value.invoicingReferencePerson !== ''; else invoicingReferencePersonFreeText">
                                                             {{projectLine.value.invoicingReferencePerson?.firstName ? (projectLine.value.invoicingReferencePerson?.firstName + ' ' + projectLine.value.invoicingReferencePerson?.lastName) : '-'}}
                                                         </ng-container>
                                                         <ng-template #invoicingReferencePersonFreeText>
-                                                            {{projectLine.value.invoicingReferencePerson ?? '-'}}
+                                                            {{projectLine.value.invoicingReferencePerson && projectLine.value.invoicingReferencePerson !== '' ? projectLine.value.invoicingReferencePerson : '-'}}
                                                         </ng-template>
                                                     </span>
                                                 </div>
@@ -1078,17 +1092,22 @@
                                                 <div fxLayout="row" class="project-line--expansion-additional">
                                                     <span fxFlex="15%" class="project-line--expansion-additional__header">Invoice recipient</span>
                                                     <span class="project-line--expansion-additional__content">
-                                                        {{projectLine.value.invoiceRecipient?.countryName ? projectLine.value.invoiceRecipient?.countryName + '| ' : ''}}
-                                                        {{projectLine.value.invoiceRecipient?.city ? projectLine.value.invoiceRecipient?.city + ' | ' : ''}}
-                                                        {{projectLine.value.invoiceRecipient?.address ? projectLine.value.invoiceRecipient?.address + ' | ' : ''}}
-                                                        {{projectLine.value.invoiceRecipient?.address2 ? projectLine.value.invoiceRecipient?.address2 + ' | ' : ''}}
-                                                        {{projectLine.value.invoiceRecipient?.postCode}}
+                                                        <ng-container *ngIf="projectLine.value.invoiceRecipient !== null && projectLine.value.invoiceRecipient !== ''; else noInvoiceRecipientTemplate">
+                                                            {{projectLine.value.invoiceRecipient?.countryName ? projectLine.value.invoiceRecipient?.countryName + '| ' : ''}}
+                                                            {{projectLine.value.invoiceRecipient?.city ? projectLine.value.invoiceRecipient?.city + ' | ' : ''}}
+                                                            {{projectLine.value.invoiceRecipient?.address ? projectLine.value.invoiceRecipient?.address + ' | ' : ''}}
+                                                            {{projectLine.value.invoiceRecipient?.address2 ? projectLine.value.invoiceRecipient?.address2 + ' | ' : ''}}
+                                                            {{projectLine.value.invoiceRecipient?.postCode}}
+                                                        </ng-container>
+                                                        <ng-template #noInvoiceRecipientTemplate>
+                                                            -
+                                                        </ng-template>
                                                     </span>
                                                 </div>
                                                 <div fxLayout="row" class="project-line--expansion-additional">
                                                     <span fxFlex="15%" class="project-line--expansion-additional__header">Insurance</span>
                                                     <span class="project-line--expansion-additional__content">
-                                                        {{projectLine.value.consultantInsuranceOptionId ?? '-'}}
+                                                        {{projectLine.value.consultantInsuranceOptionId ? consultantInsuranceOptions[projectLine.value.consultantInsuranceOptionId] : '-'}}
                                                     </span>
                                                 </div>
                                                 <div fxLayout="row" class="project-line--expansion-additional">
@@ -1119,7 +1138,7 @@
                                                 <div fxLayout="row" class="project-line--expansion-additional">
                                                     <span fxFlex="15%" class="project-line--expansion-additional__header">Optional info</span>
                                                     <span class="project-line--expansion-additional__content">
-                                                        {{projectLine.value.optionalInvoicingInfo ?? '-'}}
+                                                        {{projectLine.value.optionalInvoicingInfo && projectLine.value.optionalInvoicingInfo !== '' ? projectLine.value.optionalInvoicingInfo : '-'}}
                                                     </span>
                                                 </div>
                                             </mat-expansion-panel>
@@ -1225,22 +1244,27 @@
                         <ng-container formArrayName="consultants">
                             <div *ngFor="let consultant of contractsSyncDataForm.consultants.controls; let consultantIndex = index" [formGroupName]="consultantIndex" class="workflow-form--consultants u-w--100">
                                 <span class="u-mt--20" [ngClass]="{'workflow-gray--header': readOnlyMode, 'workflow-darkblue--text': !readOnlyMode}">Consultant legal contracts</span>
-                                <div fxLayout="row" fxLayoutAlign="start center" class="u-mb--20 u-mt--10 u-w--100">
-                                    <ng-container *ngIf="consultant.value.consultantType?.id !== 10 && consultant.value.consultantType?.id !== 11; else consultantNameOnly">
-                                        <img *ngIf="consultant.value?.consultant?.id" class="border-rounded-50 image-thumbnail-responsive u-mr--10" [src]="consultantProfileUrl(consultant.value.consultant?.externalId)" />
-                                        <p class="workflow-contracts--consultant-name">
-                                            {{consultant.value?.consultant?.name}}
-                                        </p>
-                                        <button *ngIf="consultant.value?.consultant?.id" mat-icon-button class="consultant-deeplink--btn" appPreventDoubleClick (throttledClick)="$event.stopPropagation(); deepLinkToSourcing(consultant.value?.consultant?.id)" matTooltip="Preview in Sourcing" matTooltipClass="white-tooltip">
-                                            <mat-icon svgIcon="sourcing-deeplink"></mat-icon>
-                                        </button>
-                                    </ng-container>
-                                    <ng-template #consultantNameOnly>
-                                        <p class="workflow-contracts--consultant-name">
-                                            {{consultant.value?.nameOnly}}
-                                        </p>
-                                    </ng-template>
+                                <div fxLayout="row" fxLayoutAlign="start center" class="u-mb--20" *ngIf="consultant.value.employmentType?.id !== employmentTypesEnum.FeeOnly && consultant.value.employmentType?.id !== employmentTypesEnum.Recruitment; else consultantNameOnly">
+                                    <img *ngIf="consultant.value?.consultant?.id" class="border-rounded-50 u-mr--16 image-thumbnail-responsive" [src]="consultantProfileUrl(consultant.value?.consultant?.externalId)" />
+                                    <div fxLayout="column">
+                                        <div fxLayout="row" fxLayoutAlign="start center">
+                                            <p class="workflow-contracts--consultant-name">
+                                                {{ consultant.value?.consultant?.name }}
+                                            </p>
+                                            <button *ngIf="consultant.value?.consultant?.id" mat-icon-button class="consultant-deeplink--btn" appPreventDoubleClick (throttledClick)="$event.stopPropagation(); deepLinkToSourcing(consultant.value?.consultant?.id)" matTooltip="Preview in Sourcing" matTooltipClass="white-tooltip">
+                                                <mat-icon svgIcon="sourcing-deeplink"></mat-icon>
+                                            </button>
+                                        </div>
+                                        <span class="workflow-contracts--consultant-text">
+                                            <app-consultant-information [consultantData]="consultant?.value?.consultant"></app-consultant-information>
+                                        </span>
+                                    </div>
                                 </div>
+                                <ng-template #consultantNameOnly>
+                                    <p class="workflow-contracts--consultant-name">
+                                        {{consultant.value?.nameOnly}}
+                                    </p>
+                                </ng-template>
                                 <div fxLayout="column" fxLayoutAlign="start start" class="u-w--100" *ngIf="readOnlyMode">
                                     <div fxLayout="row" fxLayoutAlign="start center" *ngIf="(contractClientForm.pdcInvoicingEntityId?.value !== consultant?.value?.pdcPaymentEntityId)">
                                         <mat-icon class="u-mr--5" [ngClass]="{'icon-cancel': consultant.value?.internalLegalContractDoneStatusId === 0}" [svgIcon]="detectContractModuleIcon(consultant.value?.internalLegalContractDoneStatusId)"></mat-icon>

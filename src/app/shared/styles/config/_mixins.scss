@@ -10,6 +10,8 @@
     transition: opacity .4s ease-in;
 }
 
-@mixin fontOpenSans() {
+@mixin fontOpenSans($font-size, $font-weight) {
     font-family: "Open Sans", sans-serif;
+    font-size: $font-size;
+    font-weight: $font-weight;
 }

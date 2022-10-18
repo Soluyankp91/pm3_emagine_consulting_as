@@ -103,7 +103,7 @@
                     </div>
                 </ng-template>
                 <div class="workflow-form--panel pos-relative u-w--100">
-                    <app-workflow-overview></app-workflow-overview>
+                    <app-workflow-overview [periodId]="clientPeriods![0]?.id"></app-workflow-overview>
                     <div *ngIf="isNoteVisible" class="workflow-notes-wrapper">
                         <app-workflow-notes (noteHidden)="isNoteVisible = !isNoteVisible" [topToolbarVisible]="topToolbarVisible" [workflowId]="workflowId" [alwaysVisible]="false"></app-workflow-notes>
                     </div>
@@ -143,7 +143,6 @@
                     class="button-accept mat-elevation-z0"
                     mat-flat-button
                     *ngIf="_workflowDataService.getWorkflowProgress?.stepSpecificPermissions!['Completion']"
-                    [disabled]="!workflowPeriod.formValid"
                     appPreventDoubleClick (throttledClick)="saveOrCompleteStep(false)">
                     Complete step
             </button>

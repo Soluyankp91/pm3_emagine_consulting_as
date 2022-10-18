@@ -1,4 +1,4 @@
-import { APP_INITIALIZER, NgModule } from '@angular/core';
+import { NgModule } from '@angular/core';
 import { DomSanitizer } from '@angular/platform-browser';
 
 import { AppRoutingModule } from './app-routing.module';
@@ -630,6 +630,27 @@ export class AppModule {
         );
 
         iconRegistry.addSvgIcon(
+            'what-next-icon',
+            sanitizer.bypassSecurityTrustResourceUrl(
+                'assets/common/images/what-next-icon.svg'
+            )
+        );
+
+        iconRegistry.addSvgIcon(
+            'link-to-client-icon',
+            sanitizer.bypassSecurityTrustResourceUrl(
+                'assets/common/images/link-to-client-icon.svg'
+            )
+        );
+
+        iconRegistry.addSvgIcon(
+            'hubspot-sync-icon',
+            sanitizer.bypassSecurityTrustResourceUrl(
+                'assets/common/images/hubspot-sync-icon.svg'
+            )
+        );
+
+        iconRegistry.addSvgIcon(
             'edit-icon',
             sanitizer.bypassSecurityTrustResourceUrl(
                 'assets/common/images/edit-icon.svg'
@@ -649,6 +670,4 @@ export class AppModule {
                 'assets/common/images/add-icon.svg'
             )
         );
-
-    }
 }

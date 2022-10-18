@@ -305,3 +305,18 @@
     height: 24px;
     line-height: 24px;
 }
+
+.hubspot-icon.mat-icon-button {
+    mat-icon {
+        width: 20px;
+        height: 20px;
+        line-height: 20px;
+    }
+    &:hover {
+        mat-icon {
+            svg path {
+                fill: #17A297;
+            }
+        }
+    }
+}

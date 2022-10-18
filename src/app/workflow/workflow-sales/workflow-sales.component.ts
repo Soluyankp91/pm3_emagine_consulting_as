@@ -18,6 +18,7 @@ import { ClientPeriodSalesDataDto, ClientPeriodServiceProxy, ClientRateDto, Comm
 import { WorkflowConsultantActionsDialogComponent } from '../workflow-consultant-actions-dialog/workflow-consultant-actions-dialog.component';
 import { WorkflowDataService } from '../workflow-data.service';
 import { WorkflowProcessWithAnchorsDto } from '../workflow-period/workflow-period.model';
+import { EmploymentTypes } from '../workflow.model';
 import { ConsultantDiallogAction, SalesTerminateConsultantForm, TenantList, WorkflowSalesClientDataForm, WorkflowSalesConsultantsForm, WorkflowSalesMainForm } from './workflow-sales.model';
 
 @Component({
@@ -30,21 +31,11 @@ export class WorkflowSalesComponent extends AppComponentBase implements OnInit {
     @Input() workflowId: string;
     @Input() periodId: string | undefined;
     @Input() consultant: ConsultantResultDto;
-    // Changed all above to enum
-    // @Input() activeSideSection: WorkflowProcessDto;
     @Input() activeSideSection: WorkflowProcessWithAnchorsDto;
-
     @Input() isCompleted: boolean;
-    // _isCompleted: boolean;
-    // get isCompleted(): boolean {
-    //     return this._isCompleted;
-    // }
-
-    // @Input() set isCompleted(value: boolean) {
-    //     this._isCompleted = value;
-    // }
-
     @Input() permissionsForCurrentUser: { [key: string]: boolean; } | undefined;
+
+
     editEnabledForcefuly = false;
     consultantInformation: ConsultantResultDto; // FIXME: fix after be changes
     // workflowSideSections = WorkflowSideSections;
@@ -89,6 +80,8 @@ export class WorkflowSalesComponent extends AppComponentBase implements OnInit {
     employmentTypes: EnumEntityTypeDto[] = [];
     countries: CountryDto[] = [];
     consultantTimeReportingCapList: EnumEntityTypeDto[] = [];
+
+    employmentTypesEnum = EmploymentTypes;
 
     // new UI
     clientRateTypes: EnumEntityTypeDto[] = new Array<EnumEntityTypeDto>(
@@ -2597,11 +2590,6 @@ export class WorkflowSalesComponent extends AppComponentBase implements OnInit {
 
     displayFullNameFn(option: any) {
         return option ? option?.firstName + ' ' + option?.lastName : '';
-    }
-
-    getTenantCodeFromId(tenantId: number) {
-        const tenant = TenantList.find(x => x.id === tenantId);
-        return tenant?.code;
     }
 
     formatExpirationNotificationsForDisplay(data: number[] | undefined): string {

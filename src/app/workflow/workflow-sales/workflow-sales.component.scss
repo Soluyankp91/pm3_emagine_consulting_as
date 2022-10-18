@@ -110,3 +110,15 @@
     }
 }
 
+
+.link-to-client-icon {
+    width: 35px;
+    height: 35px;
+    border-radius: 50%;
+    display: flex;
+    justify-content: center;
+    align-items: end;
+    &:hover {
+        background-color: rgba(139,209,203,0.22);
+    }
+}

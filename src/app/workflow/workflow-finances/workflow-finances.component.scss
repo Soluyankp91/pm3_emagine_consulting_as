@@ -1,4 +1,5 @@
 @import "/src/app/shared/styles/config/_colors";
+@import "/src/app/shared/styles/config/_mixins";
 @import "../workflow.component";
 
 .workflow {
@@ -27,30 +28,19 @@
         }
 
         .workflow-blue--header {
-            font-family: "Open Sans", sans-serif;
+            @include fontOpenSans(14px, 700);
             margin-bottom: 8px !important;
-            font-weight: 700;
-            font-size: 14px;
             line-height: 14px;
             color: rgba(56, 72, 83, 0.87);
         }
 
         .workflow-section--header {
-            font-family: "Open Sans", sans-serif;
+            @include fontOpenSans(16px, 'inherit');
             color: $light-grey-color;
             letter-spacing: 1px;
             text-transform: uppercase;
-            font-size: 16px;
             margin-bottom: 20px;
         }
-        // @media screen and (max-width: 1440px) {
-        //     .workflow-section--header {
-        //         font-size: 14px;
-        //     }
-        //     .workflow-blue--header {
-        //         font-size: 12px;
-        //     }
-        // }
 
         &--consultant {
             &-name {
@@ -63,32 +53,24 @@
                 height: 32px;
                 border-radius: 50%;
             }
-            // @media screen and (max-width: 1440px) {
-            //     &-name {
-            //         font-size: 14px;
-            //     }
-            //     &-img {
-            //         width: 24px;
-            //         height: 24px;
-            //     }
-            // }
+           &-text {
+                @include fontOpenSans(12px, 600);
+                line-height: 150%;
+                color: rgba(56, 72, 83, 0.87);
+           }
 
         }
     }
     &-readonly {
         &--header {
-            font-family: "Open Sans", sans-serif;
-            font-size: 14px;
-            font-weight: 700;
+            @include fontOpenSans(14px, 700);
             line-height: 1.2;
             letter-spacing: 1px;
             text-transform: uppercase;
             color: #b6b4b2;
 
             &-main {
-                font-family: "Open Sans", sans-serif;
-                font-size: 16px;
-                font-weight: 700;
+                @include fontOpenSans(16px, 700);
                 line-height: 1.2;
                 letter-spacing: 1px;
                 text-transform: uppercase;
@@ -104,28 +86,20 @@
         }
         &--gray {
             &-header {
-                font-family: "Open Sans", sans-serif;
-                font-size: 12px;
-                font-weight: 700;
+                @include fontOpenSans(12px, 700);
                 color: #898785;
             }
         }
         &--blue {
             &-header {
-                font-family: "Open Sans", sans-serif;
-                font-size: 12px;
-                font-weight: 700;
+                @include fontOpenSans(12px, 700);
                 color: #4a4e60;
             }
             &-text {
-                font-family: "Open Sans", sans-serif;
-                font-size: 14px;
-                font-weight: 600;
+                @include fontOpenSans(14px, 600);
                 color: #4a4e60;
                 &-bold {
-                    font-family: "Open Sans", sans-serif;
-                    font-size: 14px;
-                    font-weight: 800;
+                    @include fontOpenSans(14px, 800);
                     color: rgba(56, 72, 83, 0.87);
                 }
             }
