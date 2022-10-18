@@ -18,16 +18,12 @@
         &--consultants {
             &__name,
             &__period {
-                @include fontOpenSans;
-                font-weight: 600;
-                font-size: 14px;
+                @include fontOpenSans(14px, 600);
                 line-height: 120%;
                 color: $dark-grey-color;
             }
             &__payment-price-text {
-                @include fontOpenSans;
-                font-weight: 700;
-                font-size: 12px;
+                @include fontOpenSans(12px, 700);
                 line-height: 14px;
                 color: rgba(56, 72, 83, 0.87);
                 margin-top: 0.3em;
@@ -35,17 +31,14 @@
         }
     }
     &-section--header {
-        @include fontOpenSans;
+        @include fontOpenSans(16px, 'inherit');
         color: $light-grey-color;
         letter-spacing: 1px;
         text-transform: uppercase;
-        font-size: 16px;
         margin-bottom: 20px;
 
         &-main {
-            @include fontOpenSans;
-            font-weight: 700;
-            font-size: 18px;
+            @include fontOpenSans(18px, 700);
             line-height: 120%;
             letter-spacing: 1px;
             text-transform: uppercase;
@@ -91,15 +84,12 @@
         &--consultant-data {
             &--consultant {
                 &-text {
-                    @include fontOpenSans;
-                    font-weight: 600;
-                    font-size: 12px;
+                    @include fontOpenSans(12px, 600);
                     line-height: 150%;
                     color: rgba(56, 72, 83, 0.87);
                 }
                 &-name {
-                    font-weight: 800;
-                    font-size: 14px;
+                    @include fontOpenSans(14px, 800);
                     color: $dark-grey-color;
                 }
             }

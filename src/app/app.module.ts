@@ -317,13 +317,6 @@ export class AppModule {
             )
         );
 
-        // iconRegistry.addSvgIcon(
-        //     'India-flag',
-        //     sanitizer.bypassSecurityTrustResourceUrl(
-        //         'assets/common/images/country-flags/in-flag.svg'
-        //     )
-        // );
-
         iconRegistry.addSvgIcon(
             'India-flag-selected',
             sanitizer.bypassSecurityTrustResourceUrl(
@@ -670,4 +663,5 @@ export class AppModule {
                 'assets/common/images/add-icon.svg'
             )
         );
+    }
 }
