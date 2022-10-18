@@ -5,7 +5,7 @@ export class FinancesClientForm extends FormGroup {
         super({
             clientCreatedInNavision: new FormControl(false),
             differentDebtorNumberForInvoicing: new FormControl(false),
-            customDebtorNumber: new FormControl(null, [Validators.required, Validators.min(10), Validators.minLength(5)])
+            customDebtorNumber: new FormControl(null, Validators.required)
         });
     }
 
