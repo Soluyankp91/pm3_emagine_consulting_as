@@ -23,10 +23,12 @@
         }
     }
     &--search {
-        mat-icon {
-            line-height: 40px;
-            width: 40px;
-            height: 40px;
+        .icon-big {
+            mat-icon {
+                line-height: 40px;
+                width: 40px;
+                height: 40px;
+            }
         }
     }
     &--client-info {
@@ -55,3 +57,5 @@
     }
 
 }
+
+

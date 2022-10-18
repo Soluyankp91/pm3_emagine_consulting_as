@@ -241,17 +241,18 @@
                                         <span class="workflow-step-readonly--blue-text-bold">
                                             {{salesClientDataForm.directClientIdValue?.value?.clientName}}
                                         </span>
-                                        <div fxLayout="row" fxLayoutAlign="start center" class="u-w--100">
-                                            <span class="workflow-step-readonly--blue-text-bold">
+                                        <div fxLayout="row" fxLayoutAlign="start flex-end" class="u-w--100">
+                                            <span class="workflow-readonly--blue-hint">
                                                 {{salesClientDataForm.directClientIdValue?.value?.clientId ? '#' + salesClientDataForm.directClientIdValue?.value?.clientId + ' | ' : '' }}
                                                 {{salesClientDataForm.directClientIdValue?.value?.city ? salesClientDataForm.directClientIdValue?.value?.city + ' | ' : ''}}
                                                 {{salesClientDataForm.directClientIdValue?.value?.address ? salesClientDataForm.directClientIdValue?.value?.address + ' | ' : ''}}
                                                 {{salesClientDataForm.directClientIdValue?.value?.address2 ? salesClientDataForm.directClientIdValue?.value?.address2 + ' | ' : ''}}
                                                 {{salesClientDataForm.directClientIdValue?.value?.postCode}}
                                             </span>
-                                            <button mat-icon-button *ngIf="salesClientDataForm.directClientIdValue?.value?.clientId"
-                                                (click)="openInNewTab(salesClientDataForm.directClientIdValue?.value?.clientId)">
-                                                <mat-icon>open_in_new</mat-icon>
+                                            <button class="link-to-client-icon" mat-icon-button *ngIf="salesClientDataForm.directClientIdValue?.value?.clientId"
+                                                (click)="openInNewTab(salesClientDataForm.directClientIdValue?.value?.clientId)"
+                                                [matTooltip]="'Link to Client profile'" matTooltipClass="white-tooltip">
+                                                <mat-icon svgIcon="link-to-client-icon"></mat-icon>
                                             </button>
                                         </div>
                                     </div>
@@ -269,17 +270,18 @@
                                         <span class="workflow-step-readonly--blue-text-bold">
                                             {{salesClientDataForm.endClientIdValue?.value?.clientName}}
                                         </span>
-                                        <div fxLayout="row" fxLayoutAlign="start center" class="u-w--100">
-                                            <span class="workflow-step-readonly--blue-text-bold">
+                                        <div fxLayout="row" fxLayoutAlign="start flex-end" class="u-w--100">
+                                            <span class="workflow-readonly--blue-hint">
                                                 {{salesClientDataForm.endClientIdValue?.value?.clientId ? '#' + salesClientDataForm.endClientIdValue?.value?.clientId + ' | ' : '' }}
                                                 {{salesClientDataForm.endClientIdValue?.value?.city ? salesClientDataForm.endClientIdValue?.value?.city + ' | ' : ''}}
                                                 {{salesClientDataForm.endClientIdValue?.value?.address ? salesClientDataForm.endClientIdValue?.value?.address + ' | ' : ''}}
                                                 {{salesClientDataForm.endClientIdValue?.value?.address2 ? salesClientDataForm.endClientIdValue?.value?.address2 + ' | ' : ''}}
                                                 {{salesClientDataForm.endClientIdValue?.value?.postCode}}
                                             </span>
-                                            <button mat-icon-button *ngIf="salesClientDataForm.endClientIdValue?.value?.clientId"
-                                                (click)="openInNewTab(salesClientDataForm.endClientIdValue?.value?.clientId)">
-                                                <mat-icon>open_in_new</mat-icon>
+                                            <button class="link-to-client-icon" mat-icon-button *ngIf="salesClientDataForm.endClientIdValue?.value?.clientId"
+                                                (click)="openInNewTab(salesClientDataForm.endClientIdValue?.value?.clientId)"
+                                                [matTooltip]="'Link to Client profile'" matTooltipClass="white-tooltip">
+                                                <mat-icon svgIcon="link-to-client-icon"></mat-icon>
                                             </button>
                                         </div>
                                     </div>
@@ -392,17 +394,18 @@
                                             <span class="workflow-step-readonly--blue-text-bold">
                                                 {{salesClientDataForm.clientInvoicingRecipientIdValue?.value?.clientName}}
                                             </span>
-                                            <div fxLayout="row" fxLayoutAlign="start center" class="u-w--100">
-                                                <span class="workflow-step-readonly--blue-text-bold">
+                                            <div fxLayout="row" fxLayoutAlign="start flex-end" class="u-w--100">
+                                                <span class="workflow-readonly--blue-hint">
                                                     {{salesClientDataForm.clientInvoicingRecipientIdValue?.value?.clientId ? '#' + salesClientDataForm.clientInvoicingRecipientIdValue?.value?.clientId + ' | ' : ''}}
                                                     {{salesClientDataForm.clientInvoicingRecipientIdValue?.value?.city ? salesClientDataForm.clientInvoicingRecipientIdValue?.value?.city + ' | ' : ''}}
                                                     {{salesClientDataForm.clientInvoicingRecipientIdValue?.value?.address ? salesClientDataForm.clientInvoicingRecipientIdValue?.value?.address + ' | ' : ''}}
                                                     {{salesClientDataForm.clientInvoicingRecipientIdValue?.value?.address2 ? salesClientDataForm.clientInvoicingRecipientIdValue?.value?.address2 + ' | ' : ''}}
                                                     {{salesClientDataForm.clientInvoicingRecipientIdValue?.value?.postCode}}
                                                 </span>
-                                                <button mat-icon-button *ngIf="salesClientDataForm.clientInvoicingRecipientIdValue?.value?.clientId"
-                                                    (click)="openInNewTab(salesClientDataForm.clientInvoicingRecipientIdValue?.value?.clientId)">
-                                                    <mat-icon>open_in_new</mat-icon>
+                                                <button class="link-to-client-icon" mat-icon-button *ngIf="salesClientDataForm.clientInvoicingRecipientIdValue?.value?.clientId"
+                                                    (click)="openInNewTab(salesClientDataForm.clientInvoicingRecipientIdValue?.value?.clientId)"
+                                                    [matTooltip]="'Link to Client profile'" matTooltipClass="white-tooltip">
+                                                    <mat-icon svgIcon="link-to-client-icon"></mat-icon>
                                                 </button>
                                             </div>
                                         </div>
@@ -844,13 +847,18 @@
                                                 </div>
                                                 <div fxLayout="column" fxFlex="40%">
                                                     <h3 class="workflow-step-readonly--gray-header">Client address</h3>
-                                                    <div fxLayout="row" fxLayoutAlign="start start" class="u-w--100">
-                                                        <span class="workflow-step-readonly--blue-text-bold">
-                                                            {{item.value.consultantWorkplaceClientAddress?.countryName}} | {{item.value.consultantWorkplaceClientAddress?.city}} | {{item.value.consultantWorkplaceClientAddress?.address}} | {{item.value.consultantWorkplaceClientAddress?.address2}} | {{item.value.consultantWorkplaceClientAddress?.postCode}}
+                                                    <div fxLayout="row" fxLayoutAlign="start flex-end" class="u-w--100">
+                                                        <span class="workflow-readonly--blue-hint">
+                                                            {{item.value.consultantWorkplaceClientAddress?.countryName ? item.value.consultantWorkplaceClientAddress?.countryName + ' | ' : ''}}
+                                                            {{item.value.consultantWorkplaceClientAddress?.city ? item.value.consultantWorkplaceClientAddress?.city + ' | ' : ''}}
+                                                            {{item.value.consultantWorkplaceClientAddress?.address ? item.value.consultantWorkplaceClientAddress?.address + ' | ' : ''}}
+                                                            {{item.value.consultantWorkplaceClientAddress?.address2 ? item.value.consultantWorkplaceClientAddress?.address2 + ' | ' : ''}}
+                                                            {{item.value.consultantWorkplaceClientAddress?.postCode}}
                                                         </span>
-                                                        <button mat-icon-button *ngIf="item.value.consultantWorkplaceClientAddress?.clientId"
-                                                            (click)="openInNewTab(item.value.consultantWorkplaceClientAddress?.clientId)">
-                                                            <mat-icon>open_in_new</mat-icon>
+                                                        <button class="link-to-client-icon" mat-icon-button *ngIf="item.value.consultantWorkplaceClientAddress?.clientId"
+                                                            (click)="openInNewTab(item.value.consultantWorkplaceClientAddress?.clientId)"
+                                                            [matTooltip]="'Link to Client profile'" matTooltipClass="white-tooltip">
+                                                            <mat-icon svgIcon="link-to-client-icon"></mat-icon>
                                                         </button>
                                                     </div>
                                                 </div>
@@ -1546,17 +1554,18 @@
                                             <mat-error>{{getValidationMessage(salesClientDataForm.directClientIdValue)}}</mat-error>
                                         </mat-form-field>
                                     </div>
-                                    <div fxLayout="row" fxLayoutAlign="start center" class="u-w--100">
-                                        <span class="workflow-step-readonly--blue-text-bold">
+                                    <div fxLayout="row" fxLayoutAlign="start flex-end" class="u-w--100">
+                                        <span class="workflow-readonly--blue-hint">
                                             {{salesClientDataForm.directClientIdValue?.value?.clientId ? '#' + salesClientDataForm.directClientIdValue?.value?.clientId + ' | ' : '' }}
                                             {{salesClientDataForm.directClientIdValue?.value?.city ? salesClientDataForm.directClientIdValue?.value?.city + ' | ' : ''}}
                                             {{salesClientDataForm.directClientIdValue?.value?.address ? salesClientDataForm.directClientIdValue?.value?.address + ' | ' : ''}}
                                             {{salesClientDataForm.directClientIdValue?.value?.address2 ? salesClientDataForm.directClientIdValue?.value?.address2 + ' | ' : ''}}
                                             {{salesClientDataForm.directClientIdValue?.value?.postCode}}
                                         </span>
-                                        <button mat-icon-button *ngIf="salesClientDataForm.directClientIdValue?.value?.clientId"
-                                            (click)="openInNewTab(salesClientDataForm.directClientIdValue?.value?.clientId)">
-                                            <mat-icon>open_in_new</mat-icon>
+                                        <button class="link-to-client-icon" mat-icon-button *ngIf="salesClientDataForm.directClientIdValue?.value?.clientId"
+                                            (click)="openInNewTab(salesClientDataForm.directClientIdValue?.value?.clientId)"
+                                            [matTooltip]="'Link to Client profile'" matTooltipClass="white-tooltip">
+                                            <mat-icon svgIcon="link-to-client-icon"></mat-icon>
                                         </button>
                                     </div>
                                 </div>
@@ -1578,17 +1587,18 @@
                                             <mat-error>{{getValidationMessage(salesClientDataForm.endClientIdValue)}}</mat-error>
                                         </mat-form-field>
                                     </div>
-                                    <div fxLayout="row" fxLayoutAlign="start center" class="u-w--100">
-                                        <span class="workflow-step-readonly--blue-text-bold">
+                                    <div fxLayout="row" fxLayoutAlign="start flex-end" class="u-w--100">
+                                        <span class="workflow-readonly--blue-hint">
                                             {{salesClientDataForm.endClientIdValue?.value?.clientId ? '#' + salesClientDataForm.endClientIdValue?.value?.clientId + ' | ' : '' }}
                                             {{salesClientDataForm.endClientIdValue?.value?.city ? salesClientDataForm.endClientIdValue?.value?.city + ' | ' : ''}}
                                             {{salesClientDataForm.endClientIdValue?.value?.address ? salesClientDataForm.endClientIdValue?.value?.address + ' | ' : ''}}
                                             {{salesClientDataForm.endClientIdValue?.value?.address2 ? salesClientDataForm.endClientIdValue?.value?.address2 + ' | ' : ''}}
                                             {{salesClientDataForm.endClientIdValue?.value?.postCode}}
                                         </span>
-                                        <button mat-icon-button *ngIf="salesClientDataForm.endClientIdValue?.value?.clientId"
-                                            (click)="openInNewTab(salesClientDataForm.endClientIdValue?.value?.clientId)">
-                                            <mat-icon>open_in_new</mat-icon>
+                                        <button class="link-to-client-icon" mat-icon-button *ngIf="salesClientDataForm.endClientIdValue?.value?.clientId"
+                                            (click)="openInNewTab(salesClientDataForm.endClientIdValue?.value?.clientId)"
+                                            [matTooltip]="'Link to Client profile'" matTooltipClass="white-tooltip">
+                                            <mat-icon svgIcon="link-to-client-icon"></mat-icon>
                                         </button>
                                     </div>
                                 </div>
@@ -1891,17 +1901,18 @@
                                             Same as direct client
                                         </mat-checkbox>
                                     </div>
-                                    <div fxLayout="row" fxLayoutAlign="start center" class="u-w--100">
-                                        <span class="workflow-step-readonly--blue-text-bold">
+                                    <div fxLayout="row" fxLayoutAlign="start flex-end" class="u-w--100">
+                                        <span class="workflow-readonly--blue-hint">
                                             {{salesClientDataForm.clientInvoicingRecipientIdValue?.value?.clientId ? '#' + salesClientDataForm.clientInvoicingRecipientIdValue?.value?.clientId + ' | ' : '' }}
                                             {{salesClientDataForm.clientInvoicingRecipientIdValue?.value?.city ? salesClientDataForm.clientInvoicingRecipientIdValue?.value?.city + ' | ' : ''}}
                                             {{salesClientDataForm.clientInvoicingRecipientIdValue?.value?.address ? salesClientDataForm.clientInvoicingRecipientIdValue?.value?.address + ' | ' : ''}}
                                             {{salesClientDataForm.clientInvoicingRecipientIdValue?.value?.address2 ? salesClientDataForm.clientInvoicingRecipientIdValue?.value?.address2 + ' | ' : ''}}
                                             {{salesClientDataForm.clientInvoicingRecipientIdValue?.value?.postCode}}
                                         </span>
-                                        <button mat-icon-button *ngIf="salesClientDataForm.clientInvoicingRecipientIdValue?.value?.clientId"
-                                            (click)="openInNewTab(salesClientDataForm.clientInvoicingRecipientIdValue?.value?.clientId)">
-                                            <mat-icon>open_in_new</mat-icon>
+                                        <button class="link-to-client-icon" mat-icon-button *ngIf="salesClientDataForm.clientInvoicingRecipientIdValue?.value?.clientId"
+                                            (click)="openInNewTab(salesClientDataForm.clientInvoicingRecipientIdValue?.value?.clientId)"
+                                            [matTooltip]="'Link to Client profile'" matTooltipClass="white-tooltip">
+                                            <mat-icon svgIcon="link-to-client-icon"></mat-icon>
                                         </button>
                                     </div>
                                 </div>
@@ -2720,13 +2731,19 @@
                                                             </mat-autocomplete>
                                                             <mat-error>{{getValidationMessage(consultant.get('consultantWorkplaceClientAddress'))}}</mat-error>
                                                         </mat-form-field>
-                                                        <div fxLayout="row" fxLayoutAlign="start center" class="u-w--100">
-                                                            <span class="workflow-step-readonly--blue-text-bold" *ngIf="consultant.value.consultantWorkplaceClientAddress?.clientId">
-                                                                #{{consultant.value.consultantWorkplaceClientAddress?.clientId}} | {{consultant.value.consultantWorkplaceClientAddress?.countryName}} | {{consultant.value.consultantWorkplaceClientAddress?.city}} | {{consultant.value.consultantWorkplaceClientAddress?.address}} | {{consultant.value.consultantWorkplaceClientAddress?.address2}} | {{consultant.value.consultantWorkplaceClientAddress?.postCode}}
+                                                        <div fxLayout="row" fxLayoutAlign="start flex-end" class="u-w--100">
+                                                            <span class="workflow-readonly--blue-hint" *ngIf="consultant.value.consultantWorkplaceClientAddress?.clientId">
+                                                                {{consultant.value.consultantWorkplaceClientAddress?.clientId ? '#' + consultant.value.consultantWorkplaceClientAddress?.clientId + ' | ' : ''}}
+                                                                {{consultant.value.consultantWorkplaceClientAddress?.countryName ? consultant.value.consultantWorkplaceClientAddress?.countryName + ' | ' : ''}}
+                                                                {{consultant.value.consultantWorkplaceClientAddress?.city ? consultant.value.consultantWorkplaceClientAddress?.city + ' | ' : ''}}
+                                                                {{consultant.value.consultantWorkplaceClientAddress?.address ? consultant.value.consultantWorkplaceClientAddress?.address + ' | ' : ''}}
+                                                                {{consultant.value.consultantWorkplaceClientAddress?.address2 ? consultant.value.consultantWorkplaceClientAddress?.address2 + ' | ' : ''}}
+                                                                {{consultant.value.consultantWorkplaceClientAddress?.postCode}}
                                                             </span>
-                                                            <button mat-icon-button *ngIf="consultant.value.consultantWorkplaceClientAddress?.clientId"
-                                                                (click)="openInNewTab(consultant.value.consultantWorkplaceClientAddress?.clientId)">
-                                                                <mat-icon>open_in_new</mat-icon>
+                                                            <button class="link-to-client-icon" mat-icon-button *ngIf="consultant.value.consultantWorkplaceClientAddress?.clientId"
+                                                                (click)="openInNewTab(consultant.value.consultantWorkplaceClientAddress?.clientId)"
+                                                                [matTooltip]="'Link to Client profile'" matTooltipClass="white-tooltip">
+                                                                <mat-icon svgIcon="link-to-client-icon"></mat-icon>
                                                             </button>
                                                         </div>
                                                     </div>
