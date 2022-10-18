@@ -16,6 +16,7 @@ import { ShowIfTruncatedDirective } from '../../../shared/common/directives/show
 import { PreventDoubleClickDirective } from 'src/shared/common/directives/prevent-doubleClick.directive';
 import { ValidatorComponent } from '../components/validator/validator.component';
 import { ReplacePipe } from 'src/shared/common/pipes/replace.pipe';
+import { ConsultantInformationComponent } from '../components/consultant-information/consultant-information.component';
 
 @NgModule({
     declarations: [
@@ -28,7 +29,8 @@ import { ReplacePipe } from 'src/shared/common/pipes/replace.pipe';
         ShowIfTruncatedDirective,
         PreventDoubleClickDirective,
         ValidatorComponent,
-        ReplacePipe
+        ReplacePipe,
+        ConsultantInformationComponent
     ],
     imports: [
         CommonModule,
@@ -52,7 +54,8 @@ import { ReplacePipe } from 'src/shared/common/pipes/replace.pipe';
         ShowIfTruncatedDirective,
         PreventDoubleClickDirective,
         ValidatorComponent,
-        ReplacePipe
+        ReplacePipe,
+        ConsultantInformationComponent
     ],
     providers: [
         ErrorDialogService,

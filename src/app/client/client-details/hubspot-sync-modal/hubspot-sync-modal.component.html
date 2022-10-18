@@ -1,0 +1,16 @@
+<mat-dialog-content class="hubspot-sync-dialog">
+    <div mat-dialog-title class="hubspot-sync-dialog--header">
+        <h1 class="hubspot-sync-dialog--header-text">
+            Sync from HubSpot
+        </h1>
+        <mat-icon class="hubspot-sync-dialog--header-close-icon" (click)="close()">close</mat-icon>
+    </div>
+    <ul id="ul" class="hubspot-sync-dialog--content">
+        <li class="hubspot-sync-dialog--content-text" *ngFor="let item of data.message">{{item}}</li>
+    </ul>
+</mat-dialog-content>
+<mat-dialog-actions class="hubspot-sync-dialog--actions flex-justify-between">
+    <button mat-flat-button class="hubspot-sync-dialog--actions-btn dialog-btn dialog-btn__outlined" appPreventDoubleClick (throttledClick)="close()">
+        OK
+    </button>
+</mat-dialog-actions>
