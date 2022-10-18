@@ -1,4 +1,10 @@
 .hubspot-sync-dialog {
+    height: 100%;
+    max-height: 80vh;
+    @media screen and (max-width: 1366px) {
+        max-height: 75vh;
+    }
+
     &--header {
         display: flex;
         flex-direction: row;

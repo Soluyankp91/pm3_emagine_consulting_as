@@ -102,7 +102,7 @@ export class ClientDetailsComponent extends AppComponentBase implements OnInit {
         const dialogRef = this.dialog.open(HubspotSyncModalComponent, {
             width: '450px',
             minHeight: '180px',
-            height: 'auto',
+            height: 'calc(100vh - 120px)',
             autoFocus: false,
             panelClass: 'hubspot-sync-modal',
             hasBackdrop: false,
