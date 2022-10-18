@@ -630,6 +630,13 @@ export class AppModule {
         );
 
         iconRegistry.addSvgIcon(
+            'what-next-icon',
+            sanitizer.bypassSecurityTrustResourceUrl(
+                'assets/common/images/what-next-icon.svg'
+            )
+        );
+
+        iconRegistry.addSvgIcon(
             'link-to-client-icon',
             sanitizer.bypassSecurityTrustResourceUrl(
                 'assets/common/images/link-to-client-icon.svg'
@@ -642,6 +649,5 @@ export class AppModule {
                 'assets/common/images/hubspot-sync-icon.svg'
             )
         );
-
     }
 }

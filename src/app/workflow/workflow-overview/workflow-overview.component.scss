@@ -19,6 +19,10 @@
                 margin-right: 10px;
                 height: 36px;
                 width: 36px;
+                cursor: pointer;
+                &:hover {
+                    background-color: rgba($color: $sand-color, $alpha: 0.5);
+        }
             }
             &-position {
                 font-family: 'Open Sans', sans-serif !important;
