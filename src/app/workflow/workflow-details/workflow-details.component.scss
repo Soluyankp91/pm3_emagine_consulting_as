@@ -1,5 +1,6 @@
 @import "/src/app/shared/styles/config/_sizes";
 @import "/src/app/shared/styles/config/_colors";
+@import "/src/app/shared/styles/config/_mixins";
 
 .workflow {
     position: relative;
@@ -30,15 +31,13 @@
         height: $white-header-height;
         background-color: $white-color;
         &--title {
-            font-family: 'Open Sans', sans-serif !important;
+            @include fontOpenSans(14px, 'inherit');
             color: $dark-grey-color;
-            font-size: 14px;
             line-height: 18px;
         }
         &--status {
-            font-family: 'Open Sans', sans-serif !important;
+            @include fontOpenSans(14px, 'inherit');
             color: $dark-grey-color;
-            font-size: 14px;
             line-height: 14px;
             &__icon {
                 border: 1px solid;

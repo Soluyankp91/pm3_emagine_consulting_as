@@ -5,7 +5,6 @@
 .workflow-list {
     &--filter {
         padding: 32px 50px;
-        // height: $white-header-height;
         background-color: $white-color;
         &__badge {
             display: flex;
@@ -39,9 +38,6 @@
                 font-weight: 700;
                 color: #384853;
                 font-size: 14px;
-                // @media screen and (max-width: 1440px) {
-                //     font-size: 14px;
-                // }
             }
             &.selected-status {
                 &.new-sales-status {
@@ -186,18 +182,14 @@
 
 .workflow-step-readonly {
     &--header {
-        font-family: "Open Sans", sans-serif;
-        font-size: 14px;
-        font-weight: 700;
+        @include fontOpenSans(14px, 700);
         line-height: 1.2;
         letter-spacing: 1px;
         text-transform: uppercase;
         color: #b6b4b2;
 
         &-main {
-            font-family: "Open Sans", sans-serif;
-            font-size: 16px;
-            font-weight: 700;
+            @include fontOpenSans(16px, 700);
             line-height: 1.2;
             letter-spacing: 1px;
             text-transform: uppercase;
@@ -213,57 +205,24 @@
     }
     &--gray {
         &-header {
-            font-family: "Open Sans", sans-serif;
-            font-size: 12px;
-            font-weight: 700;
+            @include fontOpenSans(12px, 700);
             color: #898785;
         }
     }
     &--blue {
         &-header {
-            font-family: "Open Sans", sans-serif;
-            font-size: 14px;
-            font-weight: 700;
+            @include fontOpenSans(14px, 700);
             color: #4a4e60;
         }
         &-text {
-            font-family: "Open Sans", sans-serif;
-            font-size: 14px;
-            font-weight: 600;
+            @include fontOpenSans(14px, 600);
             color: #4a4e60;
             &-bold {
-                font-family: "Open Sans", sans-serif;
-                font-size: 14px;
-                font-weight: 800;
+                @include fontOpenSans(14px, 800);
                 color: rgba(56, 72, 83, 0.87);
             }
         }
     }
-
-    // @media screen and (max-width: 1440px) {
-    //     &--blue {
-    //         &-header {
-    //             font-size: 12px;
-    //         }
-    //         &-text {
-    //             font-size: 14px;
-    //             &-bold {
-    //                 font-size: 14px;
-    //             }
-    //         }
-    //     }
-    //     &--header {
-    //         font-size: 14px;
-    //         &-main {
-    //             font-size: 18px;
-    //         }
-    //     }
-    //     &--gray {
-    //         &-header {
-    //             font-size: 12px;
-    //         }
-    //     }
-    // }
 }
 
 .active-workflow {

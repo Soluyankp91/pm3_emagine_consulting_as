@@ -423,3 +423,18 @@ export class SelectableEmployeeDto implements ISelectableEmployeeDto {
         this.selected = data?.selected!;
     }
 }
+
+
+export enum EmploymentTypes {
+    FreelanceConsultant = 1,
+    SupplierConsultant = 2,
+    TemporaryWorker = 3,
+    ProjectEmployee = 4,
+    InternalEmployee = 5,
+    Nearshore = 6,
+    VMSOrReferred = 7,
+    EConsultant = 8,
+    CivilLawConsultant = 9,
+    FeeOnly = 10,
+    Recruitment = 11
+}
