@@ -92,14 +92,16 @@ export class ClientDetailsComponent extends AppComponentBase implements OnInit {
     }
 
     syncFromHubspot() {
-        this._clientService.crmSync(this.clientId).subscribe(result => {
-            this.openHubspotSyncDialog(result);
-        })
+        this.showMainSpinner();
+        this._clientService.crmSync(this.clientId)
+            .pipe(finalize(() => this.hideMainSpinner() ))
+            .subscribe(result => {
+                this.openHubspotSyncDialog(result);
+            })
     }
 
     openHubspotSyncDialog(syncMessage: SyncClientFromCrmResultDto) {
-        this.showMainSpinner();
-        const dialogRef = this.dialog.open(HubspotSyncModalComponent, {
+        this.dialog.open(HubspotSyncModalComponent, {
             width: '450px',
             minHeight: '180px',
             height: 'calc(100vh - 120px)',
@@ -110,8 +112,5 @@ export class ClientDetailsComponent extends AppComponentBase implements OnInit {
                 message: syncMessage.message?.split('\n').filter(item => item)
             }
         });
-        dialogRef.afterOpened().subscribe(() => {
-            this.hideMainSpinner();
-        })
     }
 }
