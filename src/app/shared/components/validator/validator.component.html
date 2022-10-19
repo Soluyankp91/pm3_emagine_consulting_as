@@ -1,0 +1,32 @@
+<div [ngClass]="{'display-none': !control?.dirty && !control?.touched}" class="validator">
+    <ng-container *ngIf="control?.errors?.required">
+        <p>{{ validatorMessages.required }}</p>
+    </ng-container>
+    <ng-container *ngIf="control?.errors?.email">
+        <p>{{ validatorMessages.email }}</p>
+    </ng-container>
+    <ng-container *ngIf="control?.errors?.min">
+        <p>{{ validatorMessages.min | replace : '{{value}}' : control?.errors?.min?.min}}</p>
+    </ng-container>
+    <ng-container *ngIf="control?.errors?.max">
+        <p>{{ validatorMessages.max | replace : '{{value}}' : control?.errors?.max?.max }}</p>
+    </ng-container>
+    <ng-container *ngIf="control?.errors?.minlength">
+        <p>{{ validatorMessages.minlength | replace : '{{value}}' : control?.errors?.minlength?.requiredLength }}</p>
+    </ng-container>
+    <ng-container *ngIf="control?.errors?.maxlength">
+        <p>{{ validatorMessages.maxlength | replace : '{{value}}' : control?.errors?.maxlength?.requiredLength }}</p>
+    </ng-container>
+    <ng-container *ngIf="control?.errors?.pattern">
+        <p>{{ validatorMessages.pattern }}</p>
+    </ng-container>
+    <ng-container *ngIf="control?.errors?.alphanumeric">
+        <p>{{ validatorMessages.alphanumeric }}</p>
+    </ng-container>
+    <ng-container *ngIf="control?.errors?.alphanumericWithDashes">
+        <p>{{ validatorMessages.alphanumericWithDashes }}</p>
+    </ng-container>
+    <ng-container *ngIf="control?.errors?.noNumeric">
+        <p>{{ validatorMessages.noNumeric }}</p>
+    </ng-container>
+</div>

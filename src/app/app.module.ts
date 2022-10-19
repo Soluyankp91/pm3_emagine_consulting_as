@@ -3,7 +3,6 @@ import { DomSanitizer } from '@angular/platform-browser';
 
 import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
-// import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { AppCommonModule } from './shared/common/app-common.module';
 import { MatIconRegistry } from '@angular/material/icon';
 import { HttpClientModule, HTTP_INTERCEPTORS } from '@angular/common/http';
@@ -16,7 +15,6 @@ import { LoginGuard } from './login/login.guard';
 import { LoginComponent } from './login/login.component';
 import { environment } from 'src/environments/environment';
 import { NgxSpinnerModule, NgxSpinnerService } from 'ngx-spinner';
-// import { NgxGanttModule } from '@worktile/gantt';
 import { CommonModule } from '@angular/common';
 import { LocalHttpService } from 'src/shared/service-proxies/local-http.service';
 
@@ -29,9 +27,7 @@ export function loggerCallback(logLevel: LogLevel, message: string) {
 export function MSALInstanceFactory(): IPublicClientApplication {
     return new PublicClientApplication({
         auth: {
-            // clientId: '54e44fbe-ca87-45be-9344-9a3bb6dd0dca',
             clientId: environment.msalClientId,
-            // authority: 'https://login.microsoftonline.com/0749517d-d788-4fc5-b761-0cb1a1112694/',
             authority: environment.msalAuthorityUrl,
             redirectUri: '/',
             postLogoutRedirectUri: '/'
@@ -82,13 +78,11 @@ export function getRemoteServiceBaseUrl(): string {
     imports: [
         CommonModule,
         AppRoutingModule,
-        // BrowserAnimationsModule,
         HttpClientModule,
         AppCommonModule,
         ServiceProxyModule,
         MsalModule,
         NgxSpinnerModule,
-        // NgxGanttModule
     ],
     providers: [
         LoginGuard,

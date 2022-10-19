@@ -18,9 +18,7 @@
                     <mat-label>Project name</mat-label>
                     <textarea matInput autocomplete="new-password" maxlength="250" [matTextareaAutosize]="true" [matAutosizeMinRows]="2" name="projectName" formControlName="projectName">
                     </textarea>
-                    <mat-error>
-                        {{getValidationMessage(projectLineForm.projectName)}}
-                    </mat-error>
+                    <app-validator [control]="projectLineForm.projectName"></app-validator>
                 </mat-form-field>
                 <div fxLayout="row" fxLayoutAlign="start start" class="u-w--100 u-mt--10">
                     <mat-form-field appearance="outline" class="u-mr--16" fxFlex="0 0 calc(50% - 8px)">
