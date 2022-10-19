@@ -1269,11 +1269,9 @@
                                                             {{ item.name }}
                                                         </mat-option>
                                                     </mat-select>
-                                                    <app-validator [control]="salesMainDataForm.commissions.at(i).get('type')"></app-validator>
                                                 </mat-form-field>
                                                 <mat-form-field appearance="fill" class="u-w--100 formFieldNoMarginPadding filter-select" fxFlex="10%">
                                                     <input required matInput type="number" formControlName="amount" placeholder="Value" />
-                                                    <app-validator [control]="salesMainDataForm.commissions.at(i).get('amount')"></app-validator>
                                                 </mat-form-field>
                                                 <mat-form-field appearance="fill" class="u-w--100 formFieldNoMarginPadding filter-select" fxFlex="10%">
                                                     <mat-select required formControlName="currency" placeholder="Currency" [disableOptionCentering]="true" [compareWith]="compareWithFn">
@@ -1281,7 +1279,6 @@
                                                             {{ item.name }}
                                                         </mat-option>
                                                     </mat-select>
-                                                    <app-validator [control]="salesMainDataForm.commissions.at(i).get('currency')"></app-validator>
                                                 </mat-form-field>
                                                 <mat-form-field appearance="fill" class="u-w--100 formFieldNoMarginPadding filter-select" fxFlex="10%">
                                                     <mat-select formControlName="recipientType" placeholder="Recipient type" [disableOptionCentering]="true" (selectionChange)="commissionRecipientTypeChanged($event, i)" [compareWith]="compareWithFn">
@@ -1289,7 +1286,6 @@
                                                             {{ item.name }}
                                                         </mat-option>
                                                     </mat-select>
-                                                    <app-validator [control]="salesMainDataForm.commissions.at(i).get('currency')"></app-validator>
                                                 </mat-form-field>
                                                 <mat-form-field appearance="fill" class="u-w--100 formFieldNoMarginPadding filter-select" fxFlex="30%" [ngClass]="{'disabled-autocomplete': commission.value.recipientType === null || commission.value.recipientType === ''}">
                                                     <!-- recipientType?.id === 4 - PDC entity -->
@@ -1332,7 +1328,6 @@
                                                             </ng-container>
                                                         </mat-autocomplete>
                                                     </ng-template>
-                                                    <app-validator [control]="salesMainDataForm.commissions.at(i).get('recipient')"></app-validator>
                                                 </mat-form-field>
                                                 <div fxFlex="20%">
                                                     <mat-form-field appearance="fill" class="u-w--100 formFieldNoMarginPadding filter-select" fxFlex="1 0 40%">
@@ -2755,7 +2750,7 @@
 
                                                 <mat-form-field appearance="outline" class="u-w--100 u-mr--16" fxFlex="0 0 calc(16% - 8px)" [fxHide]="!consultant.value?.consultantIsEmagineOfficeWorkplace && !consultant.value?.consultantIsRemoteWorkplace">
                                                     <mat-label>Add value %</mat-label>
-                                                    <input [required]="consultant.value?.consultantIsEmagineOfficeWorkplace || consultant.value?.consultantIsRemoteWorkplace" autocomplete="off" matInput formControlName="consultantWorkplacePercentageOnSite" type="number">
+                                                    <input [required]="consultant.value?.consultantIsEmagineOfficeWorkplace || consultant.value?.consultantIsRemoteWorkplace" autocomplete="off" matInput formControlName="consultantWorkplacePercentageOnSite" type="number" [min]="1" [max]="100">
                                                     <app-validator [control]="consultant.get('consultantWorkplacePercentageOnSite')"></app-validator>
                                                 </mat-form-field>
                                             </ng-container>

@@ -154,7 +154,6 @@ export class WorkflowSalesComponent extends AppComponentBase implements OnInit {
         injector: Injector,
         private _fb: FormBuilder,
         private _workflowDataService: WorkflowDataService,
-        // private _workflowService: WorkflowsServiceProxy,
         private activatedRoute: ActivatedRoute,
         private overlay: Overlay,
         private dialog: MatDialog,
@@ -420,7 +419,6 @@ export class WorkflowSalesComponent extends AppComponentBase implements OnInit {
                     }
                 }
             });
-
     }
 
     ngOnInit(): void {
@@ -493,38 +491,51 @@ export class WorkflowSalesComponent extends AppComponentBase implements OnInit {
                     if (this.validateSalesForm()) {
                         this.saveStartChangeOrExtendClientPeriodSales(isDraft);    
                     } else {
-                        of(([])).pipe(
-                            delay(100)
-                           ).subscribe(() => { 
-                               let firstError = document.getElementsByClassName('mat-form-field-invalid')[0] as HTMLElement;
-                               if (firstError) {
-                                   let config: ScrollToConfigOptions = {
-                                       target: firstError,
-                                       offset: -120
-                                   }
-                                   this.scrollToService.scrollTo(config)
-                               }
-                            });
+                        this.scrollToFirstError();
                     }
                 }
             });
         this._workflowDataService.consultantStartChangeOrExtendSalesSaved
             .pipe(takeUntil(this._unsubscribe))
-            .subscribe((value: boolean) => {
-                this.saveStartChangeOrExtendConsultantPeriodSales(value);
+            .subscribe((isDraft: boolean) => {
+                if (isDraft) {
+                    this.saveStartChangeOrExtendConsultantPeriodSales(isDraft);
+                } else {
+                    if (this.validateSalesForm()) {
+                        this.saveStartChangeOrExtendConsultantPeriodSales(isDraft);
+                    } else {
+                        this.scrollToFirstError();
+                    }
+                }
             });
 
         // Termination
         this._workflowDataService.consultantTerminationSalesSaved
             .pipe(takeUntil(this._unsubscribe))
-            .subscribe((value: boolean) => {
-                this.saveTerminationConsultantSalesStep(value);
+            .subscribe((isDraft: boolean) => {
+                if (isDraft) {
+                    this.saveTerminationConsultantSalesStep(isDraft);
+                } else {
+                    if (this.validateSalesForm()) {
+                        this.saveTerminationConsultantSalesStep(isDraft);
+                    } else {
+                        this.scrollToFirstError();
+                    }
+                }
             });
 
         this._workflowDataService.workflowTerminationSalesSaved
             .pipe(takeUntil(this._unsubscribe))
-            .subscribe((value: boolean) => {
-                this.saveWorkflowTerminationSalesStep(value);
+            .subscribe((isDraft: boolean) => {
+                if (isDraft) {
+                    this.saveWorkflowTerminationSalesStep(isDraft);
+                } else {
+                    if (this.validateSalesForm()) {
+                        this.saveWorkflowTerminationSalesStep(isDraft);
+                    } else {
+                        this.scrollToFirstError();
+                    }
+                }
             });
 
         this._workflowDataService.workflowSideSectionChanged
@@ -557,10 +568,32 @@ export class WorkflowSalesComponent extends AppComponentBase implements OnInit {
         console.log(Object.keys(this.consultantsForm.controls).filter(key => this.consultantsForm.controls[key].status === 'INVALID'));
         console.log(this.consultantsForm);
         console.log(this.consultantsForm.valid);
-        console.log(this.contractSigners.controls?.every(x => x.value.clientContact?.id !== null && x.value.clientContact?.id !== undefined));
         console.log(Object.keys(this.salesClientDataForm.controls).filter(key => this.salesClientDataForm.controls[key].status === 'INVALID'));
+        switch (this.activeSideSection.typeId) {
+            case WorkflowProcessType.StartClientPeriod:
+            case WorkflowProcessType.ChangeClientPeriod:
+            case WorkflowProcessType.ExtendClientPeriod:
+            case WorkflowProcessType.StartConsultantPeriod:
+            case WorkflowProcessType.ChangeConsultantPeriod:
+            case WorkflowProcessType.ExtendConsultantPeriod:
+                return this.salesClientDataForm.valid && this.salesMainDataForm.valid && this.consultantsForm.valid;
+            case WorkflowProcessType.TerminateWorkflow:
+            case WorkflowProcessType.TerminateConsultant:
+                return this.salesTerminateConsultantForm.valid;
+        }
+    }
 
-        return this.salesClientDataForm.valid && this.salesMainDataForm.valid && this.consultantsForm.valid && this.contractSigners.controls?.every(x => x.value.clientContact?.id !== null && x.value.clientContact?.id !== undefined);
+    scrollToFirstError() {
+        setTimeout(() => {
+            let firstError = document.getElementsByClassName('mat-form-field-invalid')[0] as HTMLElement;
+            if (firstError) {
+                let config: ScrollToConfigOptions = {
+                    target: firstError,
+                    offset: -120
+                }
+                this.scrollToService.scrollTo(config)
+            }
+        }, 0);
     }
 
     toggleEditMode() {
@@ -601,20 +634,8 @@ export class WorkflowSalesComponent extends AppComponentBase implements OnInit {
     }
 
     getRatesAndFees(clientId: number) {
-        this._clientService.specialRatesGet(clientId, true)
-            .pipe(finalize(() => {
-
-            }))
-            .subscribe(result => {
-                this.clientSpecialRateList = result.filter(x => !x.isHidden);
-            });
-        this._clientService.specialFeesGet(clientId, true)
-            .pipe(finalize(() => {
-
-            }))
-            .subscribe(result => {
-                this.clientSpecialFeeList = result.filter(x => !x.isHidden);
-            });
+        this._clientService.specialRatesGet(clientId, true).subscribe(result => this.clientSpecialRateList = result.filter(x => !x.isHidden));
+        this._clientService.specialFeesGet(clientId, true).subscribe(result => this.clientSpecialFeeList = result.filter(x => !x.isHidden));
     }
 
 
@@ -899,7 +920,7 @@ export class WorkflowSalesComponent extends AppComponentBase implements OnInit {
 
     addSignerToForm(signer?: ContractSignerDto) {
         const form = this._fb.group({
-            clientContact: new FormControl(signer?.contact ?? null, CustomValidators.autocompleteValidator('id')),
+            clientContact: new FormControl(signer?.contact ?? null, CustomValidators.autocompleteValidator(['id'])),
             clientRole: new FormControl(this.findItemById(this.signerRoles, signer?.signerRoleId) ?? null),
             clientSequence: new FormControl(signer?.signOrder ?? null)
         });
@@ -968,7 +989,7 @@ export class WorkflowSalesComponent extends AppComponentBase implements OnInit {
             consultantWorkplaceClientAddress: new FormControl(consultant?.onsiteClient ?? null),
             consultantWorkplaceEmagineOffice: new FormControl(this.findItemById(this.emagineOffices, consultant?.emagineOfficeId) ?? null),
             consultantWorkplaceRemote: new FormControl(this.findItemById(this.countries, consultant?.remoteAddressCountryId) ?? null),
-            consultantWorkplacePercentageOnSite: new FormControl(consultant?.percentageOnSite ?? null),
+            consultantWorkplacePercentageOnSite: new FormControl(consultant?.percentageOnSite ?? null, [Validators.min(1), Validators.max(100)]),
 
             consultantIsOnsiteWorkplace: new FormControl(consultant?.isOnsiteWorkplace ?? false),
             consultantIsEmagineOfficeWorkplace: new FormControl(consultant?.isEmagineOfficeWorkplace ?? false),
@@ -978,7 +999,6 @@ export class WorkflowSalesComponent extends AppComponentBase implements OnInit {
             expectedWorkloadUnitId: new FormControl(this.findItemById(this.expectedWorkloadUnits ,consultant?.expectedWorkloadUnitId) ?? null),
             consultantCapOnTimeReporting: new FormControl(this.findItemById(this.consultantTimeReportingCapList, consultant?.consultantTimeReportingCapId ?? 4)), // ?? default value = no cap - id:4
             consultantTimeReportingCapMaxValue: new FormControl(consultant?.consultantTimeReportingCapMaxValue ?? null),
-            consultantCapOnTimeReportingCurrency: new FormControl(null), // remove
             consultantProdataEntity: new FormControl(this.findItemById(this.tenants, consultant?.pdcPaymentEntityId) ?? null),
             consultantPaymentType: new FormControl(consultantRate),
             consultantRate: new FormControl(consultant?.consultantRate?.normalRate ?? null),
@@ -1002,7 +1022,7 @@ export class WorkflowSalesComponent extends AppComponentBase implements OnInit {
             consultantSpecialContractTerms: new FormControl({value: consultant?.specialContractTerms ?? null, disabled: consultant?.noSpecialContractTerms}, Validators.required),
 
             deliveryManagerSameAsAccountManager: new FormControl(consultant?.deliveryManagerSameAsAccountManager ?? false),
-            deliveryAccountManager: new FormControl(consultant?.deliveryAccountManager ?? '', CustomValidators.autocompleteValidator('id')),
+            deliveryAccountManager: new FormControl({value: consultant?.deliveryAccountManager ?? '', disabled: consultant?.deliveryManagerSameAsAccountManager}, CustomValidators.autocompleteValidator(['id'])),
         });
         this.consultantsForm.consultantData.push(form);
         if (consultant?.periodConsultantSpecialRates?.length) {
@@ -1907,7 +1927,7 @@ export class WorkflowSalesComponent extends AppComponentBase implements OnInit {
             amount: new FormControl(commission?.amount ?? null, Validators.required),
             currency: new FormControl(this.findItemById(this.currencies, commission?.currencyId) ?? null, Validators.required),
             recipientType: new FormControl(this.findItemById(this.commissionRecipientTypeList, commission?.recipientTypeId) ?? null, Validators.required),
-            recipient: new FormControl(commissionRecipient ?? null, Validators.required),
+            recipient: new FormControl(commissionRecipient ?? null, [Validators.required, CustomValidators.autocompleteValidator(['clientId', 'id', 'supplierId'])]),
             frequency: new FormControl(this.findItemById(this.commissionFrequencies, commission?.commissionFrequencyId) ?? null, Validators.required),
             oneTimeDate: new FormControl(commission?.oneTimeDate ?? null, Validators.required),
             editable: new FormControl(commission?.id ? false : true)
@@ -2067,9 +2087,6 @@ export class WorkflowSalesComponent extends AppComponentBase implements OnInit {
                 this.salesTerminateConsultantForm.finalEvaluationReferencePerson?.setValue(result?.finalEvaluationReferencePerson, {emitEvent: false}); // add findItemById function
                 this.salesTerminateConsultantForm.noEvaluation?.setValue(result?.noEvaluation, {emitEvent: false});
                 this.salesTerminateConsultantForm.causeOfNoEvaluation?.setValue(result?.causeOfNoEvaluation, {emitEvent: false});
-
-                // example with findItemById
-                // this.salesMainDataForm.projectType?.setValue(this.findItemById(this.projectTypes, result?.salesMainData?.projectTypeId), {emitEvent: false});
             });
     }
 

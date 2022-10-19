@@ -3,6 +3,7 @@ import { Component, Injector, Input, OnDestroy, OnInit, ViewChild } from '@angul
 import { AbstractControl, FormArray, FormBuilder, FormControl, Validators } from '@angular/forms';
 import { MatDialog } from '@angular/material/dialog';
 import { MatMenuTrigger } from '@angular/material/menu';
+import { ScrollToConfigOptions, ScrollToService } from '@nicky-lenaers/ngx-scroll-to';
 import { Subject } from 'rxjs';
 import { finalize, takeUntil } from 'rxjs/operators';
 import { InternalLookupService } from 'src/app/shared/common/internal-lookup.service';
@@ -96,7 +97,8 @@ export class WorkflowContractsComponent extends AppComponentBase implements OnIn
         private _consultantPeriodService: ConsultantPeriodServiceProxy,
         private _consultantContractsService: ConsultantContractsServiceProxy,
         private _clientService: ClientsServiceProxy,
-        private _contractSyncService: ContractSyncServiceProxy
+        private _contractSyncService: ContractSyncServiceProxy,
+        private scrollToService: ScrollToService
     ) {
         super(injector);
         this.contractsMainForm = new WorkflowContractsMainForm();
@@ -133,28 +135,60 @@ export class WorkflowContractsComponent extends AppComponentBase implements OnIn
         // Client start, extend and change periods
         this._workflowDataService.startClientPeriodContractsSaved
             .pipe(takeUntil(this._unsubscribe))
-            .subscribe((value: boolean) => {
-                this.saveStartChangeOrExtendClientPeriodContracts(value);
+            .subscribe((isDraft: boolean) => {
+                if (isDraft) {
+                    this.saveStartChangeOrExtendClientPeriodContracts(isDraft);
+                } else {
+                    if (this.validateSalesForm()) {
+                        this.saveStartChangeOrExtendClientPeriodContracts(isDraft);
+                    } else {
+                        this.scrollToFirstError();
+                    }
+                }
             });
 
         // Consultant start, extend and change periods
         this._workflowDataService.consultantStartChangeOrExtendContractsSaved
             .pipe(takeUntil(this._unsubscribe))
-            .subscribe((value: boolean) => {
-                this.saveStartChangeOrExtendConsultantPeriodContracts(value);
+            .subscribe((isDraft: boolean) => {
+                if (isDraft) {
+                    this.saveStartChangeOrExtendConsultantPeriodContracts(isDraft);
+                } else {
+                    if (this.validateSalesForm()) {
+                        this.saveStartChangeOrExtendConsultantPeriodContracts(isDraft);
+                    } else {
+                        this.scrollToFirstError();
+                    }
+                }
             });
 
         // Terminations
         this._workflowDataService.workflowConsultantTerminationContractsSaved
             .pipe(takeUntil(this._unsubscribe))
-            .subscribe((value: boolean) => {
-                this.saveTerminationConsultantContractStep(value);
+            .subscribe((isDraft: boolean) => {
+                if (isDraft) {
+                    this.saveTerminationConsultantContractStep(isDraft);
+                } else {
+                    if (this.validateSalesForm()) {
+                        this.saveTerminationConsultantContractStep(isDraft);
+                    } else {
+                        this.scrollToFirstError();
+                    }
+                }
             });
 
         this._workflowDataService.workflowTerminationContractsSaved
             .pipe(takeUntil(this._unsubscribe))
-            .subscribe((value: boolean) => {
-                this.saveWorkflowTerminationContractStep(value);
+            .subscribe((isDraft: boolean) => {
+                if (isDraft) {
+                    this.saveWorkflowTerminationContractStep(isDraft);
+                } else {
+                    if (this.validateSalesForm()) {
+                        this.saveWorkflowTerminationContractStep(isDraft);
+                    } else {
+                        this.scrollToFirstError();
+                    }
+                }
             });
 
         this._workflowDataService.cancelForceEdit
@@ -165,6 +199,50 @@ export class WorkflowContractsComponent extends AppComponentBase implements OnIn
                 this._workflowDataService.updateWorkflowProgressStatus({currentStepIsCompleted: this.isCompleted, currentStepIsForcefullyEditing: this.editEnabledForcefuly});
                 this.getContractStepData();
             });
+    }
+
+    validateSalesForm() {
+        this.contractsMainForm.markAllAsTouched();
+        this.contractClientForm.markAllAsTouched();
+        this.contractsSyncDataForm.markAllAsTouched();
+        this.contractsConsultantsDataForm.markAllAsTouched();
+        console.log(this.contractsMainForm);
+        console.log(this.contractsMainForm.valid);
+        console.log(Object.keys(this.contractsMainForm.controls).filter(key => this.contractsMainForm.controls[key].status === 'INVALID'));
+        console.log(this.contractClientForm);
+        console.log(this.contractClientForm.valid);
+        console.log(Object.keys(this.contractClientForm.controls).filter(key => this.contractClientForm.controls[key].status === 'INVALID'));
+        console.log(this.contractsSyncDataForm);
+        console.log(this.contractsSyncDataForm.valid);
+        console.log(Object.keys(this.contractsSyncDataForm.controls).filter(key => this.contractsSyncDataForm.controls[key].status === 'INVALID'));
+        console.log(this.contractsConsultantsDataForm);
+        console.log(this.contractsConsultantsDataForm.valid);
+        console.log(Object.keys(this.contractsConsultantsDataForm.controls).filter(key => this.contractsConsultantsDataForm.controls[key].status === 'INVALID'));
+        switch (this.activeSideSection.typeId) {
+            case WorkflowProcessType.StartClientPeriod:
+            case WorkflowProcessType.ChangeClientPeriod:
+            case WorkflowProcessType.ExtendClientPeriod:
+            case WorkflowProcessType.StartConsultantPeriod:
+            case WorkflowProcessType.ChangeConsultantPeriod:
+            case WorkflowProcessType.ExtendConsultantPeriod:
+                return this.contractsMainForm.valid && this.contractClientForm.valid && this.contractsSyncDataForm.valid && this.contractsConsultantsDataForm.valid
+            case WorkflowProcessType.TerminateWorkflow:
+            case WorkflowProcessType.TerminateConsultant:
+                return true;
+        }
+    }
+
+    scrollToFirstError() {
+        setTimeout(() => {
+            let firstError = document.getElementsByClassName('mat-form-field-invalid')[0] as HTMLElement;
+            if (firstError) {
+                let config: ScrollToConfigOptions = {
+                    target: firstError,
+                    offset: -120
+                }
+                this.scrollToService.scrollTo(config)
+            }
+        }, 0);
     }
 
     getContractStepData(isFromSyncToLegacy?: boolean) {
@@ -283,13 +361,7 @@ export class WorkflowContractsComponent extends AppComponentBase implements OnIn
     }
 
     getMargins() {
-        this._internalLookupService.getMargins()
-            .pipe(finalize(() => {
-
-            }))
-            .subscribe(result => {
-                this.margins = result;
-            });
+        this._internalLookupService.getMargins().subscribe(result => this.margins = result);
     }
 
     getClientTimeReportingCap() {
@@ -313,9 +385,7 @@ export class WorkflowContractsComponent extends AppComponentBase implements OnIn
     }
 
     getConsultantInsuranceOptions() {
-        this._internalLookupService.getConsultantInsuranceOptions().subscribe(result => {
-            this.consultantInsuranceOptions = result;
-        });
+        this._internalLookupService.getConsultantInsuranceOptions().subscribe(result => this.consultantInsuranceOptions = result);
     }
 
     toggleEditMode(isToggledFromUi?: boolean) {
