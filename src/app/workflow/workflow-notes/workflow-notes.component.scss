@@ -58,8 +58,8 @@
     &--footer {
         .edit-toggle {
             border-radius: 50%;
-            background-color: $green-color-25;
-            color: $green-color;
+            background: rgba($color: #72A0F8, $alpha: .2);
+            color: #72A0F8 !important;
         }
     }
 }

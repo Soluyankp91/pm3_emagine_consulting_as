@@ -15,7 +15,7 @@
             <mat-icon class="calendar-icon" matSuffix svgIcon="calendar"></mat-icon>
             <mat-datepicker #startDatePicker></mat-datepicker>
             <mat-error>
-                {{getValidationMessage(startDate)}}
+                <app-validator [control]="startDate"></app-validator>
             </mat-error>
         </mat-form-field>
 
@@ -32,7 +32,7 @@
                 <mat-icon class="calendar-icon" matSuffix svgIcon="calendar"></mat-icon>
                 <mat-datepicker #endDatePicker></mat-datepicker>
                 <mat-error>
-                    {{getValidationMessage(endDate)}}
+                    <app-validator [control]="endDate"></app-validator>
                 </mat-error>
             </mat-form-field>
             <mat-checkbox color="accent" [formControl]="noEndDate" name="noEndDate" class="black-checkbox u-mr--10" (change)="disableOrEnableInput(noEndDate.value, endDate)">

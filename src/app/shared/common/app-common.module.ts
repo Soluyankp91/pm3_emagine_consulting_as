@@ -14,6 +14,8 @@ import { ManagerSearchComponent } from '../components/manager-search/manager-sea
 import { MomentFormatPipe } from 'src/shared/common/pipes/moment-format.pipe';
 import { ShowIfTruncatedDirective } from '../../../shared/common/directives/show-if-truncated.directive';
 import { PreventDoubleClickDirective } from 'src/shared/common/directives/prevent-doubleClick.directive';
+import { ValidatorComponent } from '../components/validator/validator.component';
+import { ReplacePipe } from 'src/shared/common/pipes/replace.pipe';
 import { ConsultantInformationComponent } from '../components/consultant-information/consultant-information.component';
 
 @NgModule({
@@ -26,6 +28,8 @@ import { ConsultantInformationComponent } from '../components/consultant-informa
         MomentFormatPipe,
         ShowIfTruncatedDirective,
         PreventDoubleClickDirective,
+        ValidatorComponent,
+        ReplacePipe,
         ConsultantInformationComponent
     ],
     imports: [
@@ -49,6 +53,8 @@ import { ConsultantInformationComponent } from '../components/consultant-informa
         MomentFormatPipe,
         ShowIfTruncatedDirective,
         PreventDoubleClickDirective,
+        ValidatorComponent,
+        ReplacePipe,
         ConsultantInformationComponent
     ],
     providers: [
