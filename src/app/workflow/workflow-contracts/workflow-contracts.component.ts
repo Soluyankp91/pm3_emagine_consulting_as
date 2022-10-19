@@ -1,6 +1,6 @@
 import { Overlay } from '@angular/cdk/overlay';
-import { Component, Injector, Input, OnDestroy, OnInit } from '@angular/core';
-import { AbstractControl, FormArray, FormBuilder, FormControl, FormGroup, Validators } from '@angular/forms';
+import { Component, Injector, Input, OnDestroy, OnInit, ViewChild } from '@angular/core';
+import { AbstractControl, FormArray, FormBuilder, FormControl, Validators } from '@angular/forms';
 import { MatDialog } from '@angular/material/dialog';
 import { MatMenuTrigger } from '@angular/material/menu';
 import { Subject } from 'rxjs';
@@ -8,12 +8,12 @@ import { finalize, takeUntil } from 'rxjs/operators';
 import { InternalLookupService } from 'src/app/shared/common/internal-lookup.service';
 import { ConfirmationDialogComponent } from 'src/app/shared/components/confirmation-dialog/confirmation-dialog.component';
 import { AppComponentBase } from 'src/shared/app-component-base';
-import { ClientPeriodContractsDataCommandDto, WorkflowProcessType, WorkflowServiceProxy, ClientPeriodServiceProxy, ConsultantContractsDataCommandDto, ContractsClientDataDto, ContractsMainDataDto, EnumEntityTypeDto, PeriodClientSpecialFeeDto, PeriodClientSpecialRateDto, PeriodConsultantSpecialFeeDto, PeriodConsultantSpecialRateDto, ProjectLineDto, ConsultantTerminationContractDataCommandDto, WorkflowTerminationContractDataCommandDto, ConsultantTerminationContractDataQueryDto, ClientContractsServiceProxy, ConsultantPeriodServiceProxy, ConsultantContractsServiceProxy, ConsultantPeriodContractsDataCommandDto, ClientsServiceProxy, ClientSpecialRateDto, ClientSpecialFeeDto, ConsultantResultDto, WorkflowProcessDto, ContractSyncServiceProxy, StepType, ConsultantContractsDataQueryDto } from 'src/shared/service-proxies/service-proxies';
+import { ClientPeriodContractsDataCommandDto, WorkflowProcessType, WorkflowServiceProxy, ClientPeriodServiceProxy, ConsultantContractsDataCommandDto, ContractsClientDataDto, ContractsMainDataDto, EnumEntityTypeDto, PeriodClientSpecialFeeDto, PeriodClientSpecialRateDto, PeriodConsultantSpecialFeeDto, PeriodConsultantSpecialRateDto, ProjectLineDto, ConsultantTerminationContractDataCommandDto, WorkflowTerminationContractDataCommandDto, ConsultantTerminationContractDataQueryDto, ClientContractsServiceProxy, ConsultantPeriodServiceProxy, ConsultantContractsServiceProxy, ConsultantPeriodContractsDataCommandDto, ClientsServiceProxy, ClientSpecialRateDto, ClientSpecialFeeDto, ConsultantResultDto, ContractSyncServiceProxy, StepType, ConsultantContractsDataQueryDto } from 'src/shared/service-proxies/service-proxies';
 import { WorkflowConsultantActionsDialogComponent } from '../workflow-consultant-actions-dialog/workflow-consultant-actions-dialog.component';
 import { WorkflowDataService } from '../workflow-data.service';
 import { WorkflowProcessWithAnchorsDto } from '../workflow-period/workflow-period.model';
 import { ConsultantDiallogAction } from '../workflow-sales/workflow-sales.model';
-import { ProjectLineDiallogMode } from '../workflow.model';
+import { EmploymentTypes, ProjectLineDiallogMode } from '../workflow.model';
 import { AddOrEditProjectLineDialogComponent } from './add-or-edit-project-line-dialog/add-or-edit-project-line-dialog.component';
 import { LegalContractStatus, WorkflowConsultantsLegalContractForm, WorkflowContractsClientDataForm, WorkflowContractsConsultantsDataForm, WorkflowContractsMainForm, WorkflowContractsSyncForm, WorkflowContractsTerminationConsultantsDataForm } from './workflow-contracts.model';
 
@@ -23,14 +23,11 @@ import { LegalContractStatus, WorkflowConsultantsLegalContractForm, WorkflowCont
     styleUrls: ['./workflow-contracts.component.scss']
 })
 export class WorkflowContractsComponent extends AppComponentBase implements OnInit, OnDestroy {
+    @ViewChild('projectLinesMenuTrigger', {static: false}) projectLinesMenuTrigger: MatMenuTrigger;
     @Input() workflowId: string;
     @Input() periodId: string | undefined;
     @Input() consultant: ConsultantResultDto;
-
-    // Changed all above to enum
-    // @Input() activeSideSection: WorkflowProcessDto;
     @Input() activeSideSection: WorkflowProcessWithAnchorsDto;
-
     @Input() isCompleted: boolean;
     @Input() permissionsForCurrentUser: { [key: string]: boolean; } | undefined;
 
@@ -55,6 +52,7 @@ export class WorkflowContractsComponent extends AppComponentBase implements OnIn
     consultantTimeReportingCapList: EnumEntityTypeDto[] = [];
     rateUnitTypes: EnumEntityTypeDto[] = [];
     legalContractStatuses: { [key: string]: string; };
+    consultantInsuranceOptions: { [key: string]: string; };
 
     contractLinesDoneManuallyInOldPMControl = new FormControl();
     contractsTerminationConsultantForm: WorkflowContractsTerminationConsultantsDataForm;
@@ -80,6 +78,9 @@ export class WorkflowContractsComponent extends AppComponentBase implements OnIn
     statusAfterSync = false;
     syncMessage = '';
     legalContractModuleStatuses = LegalContractStatus;
+
+    employmentTypesEnum = EmploymentTypes;
+
     private _unsubscribe = new Subject();
 
     constructor(
@@ -110,7 +111,6 @@ export class WorkflowContractsComponent extends AppComponentBase implements OnIn
         this.getCurrencies();
         this.getSpecialRateReportUnits();
         this.getSpecialFeeFrequencies();
-
         this.getDiscounts();
         this.getDeliveryTypes();
         this.getSaleTypes();
@@ -121,6 +121,7 @@ export class WorkflowContractsComponent extends AppComponentBase implements OnIn
         this.getConsultantTimeReportingCap();
         this.getUnitTypes();
         this.getLegalContractStatuses();
+        this.getConsultantInsuranceOptions();
 
         this._workflowDataService.updateWorkflowProgressStatus({currentStepIsCompleted: this.isCompleted, currentStepIsForcefullyEditing: false});
         if (this.permissionsForCurrentUser!["StartEdit"]) {
@@ -254,73 +255,31 @@ export class WorkflowContractsComponent extends AppComponentBase implements OnIn
     }
 
     getCurrencies() {
-        this._internalLookupService.getCurrencies()
-            .pipe(finalize(() => {
-
-            }))
-            .subscribe(result => {
-                this.currencies = result;
-            });
+        this._internalLookupService.getCurrencies().subscribe(result => this.currencies = result);
     }
 
     getSpecialRateReportUnits() {
-        this._internalLookupService.getSpecialRateReportUnits()
-            .pipe(finalize(() => {
-
-            }))
-            .subscribe(result => {
-                this.clientSpecialRateReportUnits = result;
-            });
+        this._internalLookupService.getSpecialRateReportUnits().subscribe(result => this.clientSpecialRateReportUnits = result);
     }
 
     getSpecialFeeFrequencies() {
-        this._internalLookupService.getSpecialFeeFrequencies()
-            .pipe(finalize(() => {
-
-            }))
-            .subscribe(result => {
-                this.clientSpecialFeeFrequencies = result;
-            });
+        this._internalLookupService.getSpecialFeeFrequencies().subscribe(result => this.clientSpecialFeeFrequencies = result);
     }
 
     getDiscounts() {
-        this._internalLookupService.getDiscounts()
-            .pipe(finalize(() => {
-
-            }))
-            .subscribe(result => {
-                this.discounts = result;
-            });
+        this._internalLookupService.getDiscounts().subscribe(result => this.discounts = result);
     }
 
     getDeliveryTypes() {
-        this._internalLookupService.getDeliveryTypes()
-            .pipe(finalize(() => {
-
-            }))
-            .subscribe(result => {
-                this.deliveryTypes = result;
-            });
+        this._internalLookupService.getDeliveryTypes().subscribe(result => this.deliveryTypes = result);
     }
 
     getSaleTypes() {
-        this._internalLookupService.getSaleTypes()
-            .pipe(finalize(() => {
-
-            }))
-            .subscribe(result => {
-                this.saleTypes = result;
-            });
+        this._internalLookupService.getSaleTypes().subscribe(result => this.saleTypes = result);
     }
 
     getProjectTypes() {
-        this._internalLookupService.getProjectTypes()
-            .pipe(finalize(() => {
-
-            }))
-            .subscribe(result => {
-                this.projectTypes = result;
-            });
+        this._internalLookupService.getProjectTypes().subscribe(result => this.projectTypes = result);
     }
 
     getMargins() {
@@ -334,52 +293,28 @@ export class WorkflowContractsComponent extends AppComponentBase implements OnIn
     }
 
     getClientTimeReportingCap() {
-        this._internalLookupService.getClientTimeReportingCap()
-            .pipe(finalize(() => {
-
-            }))
-            .subscribe(result => {
-                this.clientTimeReportingCap = result;
-            });
+        this._internalLookupService.getClientTimeReportingCap().subscribe(result => this.clientTimeReportingCap = result);
     }
 
     getEmploymentTypes() {
-        this._internalLookupService.getEmploymentTypes()
-            .pipe(finalize(() => {
-
-            }))
-            .subscribe(result => {
-                this.employmentTypes = result;
-            });
+        this._internalLookupService.getEmploymentTypes().subscribe(result => this.employmentTypes = result);
     }
 
     getConsultantTimeReportingCap() {
-        this._internalLookupService.getConsultantTimeReportingCap()
-            .pipe(finalize(() => {
-
-            }))
-            .subscribe(result => {
-                this.consultantTimeReportingCapList = result;
-            });
+        this._internalLookupService.getConsultantTimeReportingCap().subscribe(result => this.consultantTimeReportingCapList = result);
     }
 
     getUnitTypes() {
-        this._internalLookupService.getUnitTypes()
-            .pipe(finalize(() => {
-
-            }))
-            .subscribe(result => {
-                this.rateUnitTypes = result;
-            });
+        this._internalLookupService.getUnitTypes().subscribe(result => this.rateUnitTypes = result);
     }
 
     getLegalContractStatuses() {
-        this._internalLookupService.getLegalContractStatuses()
-        .pipe(finalize(() => {
+        this._internalLookupService.getLegalContractStatuses().subscribe(result => this.legalContractStatuses = result);
+    }
 
-        }))
-        .subscribe(result => {
-            this.legalContractStatuses = result;
+    getConsultantInsuranceOptions() {
+        this._internalLookupService.getConsultantInsuranceOptions().subscribe(result => {
+            this.consultantInsuranceOptions = result;
         });
     }
 
@@ -393,12 +328,10 @@ export class WorkflowContractsComponent extends AppComponentBase implements OnIn
     }
 
     get canToggleEditMode() {
-        // return this.permissionsForCurrentUser!["Edit"] && (this.isCompleted || this.editEnabledForcefuly);
         return this.permissionsForCurrentUser!["Edit"] && this.isCompleted;
     }
 
     get readOnlyMode() {
-        // return !this.permissionsForCurrentUser!["Edit"] && !this.permissionsForCurrentUser!["StartEdit"];
         return this.isCompleted;
     }
 
@@ -792,6 +725,7 @@ export class WorkflowContractsComponent extends AppComponentBase implements OnIn
     // Consultant data Project Lines START REGION
 
     createOrEditProjectLine(index: number, projectLinesIndex?: number) {
+        this.projectLinesMenuTrigger.closeMenu();
         const scrollStrategy = this.overlay.scrollStrategies.reposition();
         let projectLine = {
             projectName: this.contractsMainForm.projectName!.value,
@@ -1691,6 +1625,13 @@ export class WorkflowContractsComponent extends AppComponentBase implements OnIn
                 this.contractsSyncDataForm.enableLegalContractsButtons?.setValue(result.enableLegalContractsButtons!);
                 this.contractsSyncDataForm.showManualOption?.setValue(result?.showManualOption, {emitEvent: false});
                 this.syncMessage = result.success ? 'Sync successfull' : result.message!;
+                if (result.success) {
+                    this.contractsConsultantsDataForm.consultants.controls.forEach((consultant: any) => {
+                        consultant.controls.projectLines.controls.forEach((x: any) => {
+                            x.controls.wasSynced.setValue(true, {emitEvent: false});
+                        })
+                    })
+                }
             });
     }
 
@@ -1706,6 +1647,13 @@ export class WorkflowContractsComponent extends AppComponentBase implements OnIn
                 this.contractsSyncDataForm.enableLegalContractsButtons?.setValue(result.enableLegalContractsButtons!);
                 this.contractsSyncDataForm.showManualOption?.setValue(result?.showManualOption, {emitEvent: false});
                 this.syncMessage = result.success ? 'Sync successfull' : result.message!;
+                if (result.success) {
+                    this.contractsConsultantsDataForm.consultants.controls.forEach((consultant: any) => {
+                        consultant.controls.projectLines.controls.forEach((x: any) => {
+                            x.controls.wasSynced.setValue(true, {emitEvent: false});
+                        })
+                    })
+                }
             });
     }
 
@@ -1763,4 +1711,5 @@ export class WorkflowContractsComponent extends AppComponentBase implements OnIn
                 return '';
         }
     }
+
 }

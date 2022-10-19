@@ -11,6 +11,7 @@ import { ClientRatesAndFeesComponent } from './client-rates-and-fees/client-rate
 import { ClientRequestTrackComponent } from './client-request-track/client-request-track.component';
 import { ClientWorkflowTrackComponent } from './client-workflow-track/client-workflow-track.component';
 import { AddFileDialogComponent } from './client-documents/add-file-dialog/add-file-dialog.component';
+import { HubspotSyncModalComponent } from './client-details/hubspot-sync-modal/hubspot-sync-modal.component';
 
 @NgModule({
     declarations: [
@@ -22,7 +23,8 @@ import { AddFileDialogComponent } from './client-documents/add-file-dialog/add-f
         ClientRatesAndFeesComponent,
         ClientRequestTrackComponent,
         ClientWorkflowTrackComponent,
-        AddFileDialogComponent
+        AddFileDialogComponent,
+        HubspotSyncModalComponent
     ],
     imports: [
         CommonModule,

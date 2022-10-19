@@ -2,6 +2,7 @@ import { Injector } from "@angular/core";
 import { AbstractControl } from "@angular/forms";
 import { MatSnackBar } from "@angular/material/snack-bar";
 import { NgxSpinnerService } from "ngx-spinner";
+import { TenantList } from "src/app/workflow/workflow-sales/workflow-sales.model";
 import { environment } from "src/environments/environment";
 import { API_BASE_URL, CountryDto, EnumEntityTypeDto, IdNameDto } from "./service-proxies/service-proxies";
 
@@ -136,6 +137,10 @@ export abstract class AppComponentBase {
 
     deepLinkToSourcing(consultantId: number) {
         window.open(`${environment.sourcingUrl}/app/overview/consultants/consultant/${consultantId}`, '_blank');
+    }
+    getTenantCodeFromId(tenantId: number) {
+        const tenant = TenantList.find(x => x.id === tenantId);
+        return tenant?.code;
     }
 
 }

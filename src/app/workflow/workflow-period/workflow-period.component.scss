@@ -1,4 +1,5 @@
 @import "/src/app/shared/styles/config/_colors";
+@import "/src/app/shared/styles/config/_mixins";
 
 .primary-workflow {
     position: relative;
@@ -22,10 +23,8 @@
         &__anchor {
             display: flex;
             flex-direction: column;
-            font-family: 'Open Sans', sans-serif;
+            @include fontOpenSans(14px, 700);
             font-style: normal;
-            font-weight: bold;
-            font-size: 14px;
             line-height: 140%;
             color: $green-color;
             text-transform: uppercase;
@@ -35,11 +34,10 @@
             }
         }
         &__number {
+            @include fontOpenSans(15px, 700);
             color: $medium-grey-color;
             background-color: $sand-color;
             border-radius: 50%;
-            font-weight: 700;
-            font-size: 15px;
             width: 24px;
             height: 24px;
             display: flex;
@@ -47,14 +45,10 @@
             justify-content: center;
         }
         &__name {
-            font-weight: 700;
-            font-size: 14px;
+            @include fontOpenSans(14px, 700);
             color: $light-grey-color;
             text-transform: uppercase;
             margin-left: 10px;
-            // @media screen and (max-width: 1440px) {
-            //     font-size: 14px;
-            // }
         }
         &.active-step:not(.completed-step) {
             .workflow-navigation--step__number {
