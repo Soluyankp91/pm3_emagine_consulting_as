@@ -1,16 +1,15 @@
 @import "/src/app/shared/styles/config/_colors";
+@import "/src/app/shared/styles/config/_mixins";
 @import "../workflow.component";
 
 .workflow {
     &-form {
         &--main,
         &--client,
-        &--consultants,
-        &--summary {
+        &--consultants {
             border-bottom: 1px solid #E7E3E8;
-
             .workflow-gray--header {
-                font-weight: bold;
+                font-weight: 700;
                 font-size: 14px;
                 line-height: 140%;
                 color: rgba(56, 72, 83, 0.87);
@@ -19,16 +18,12 @@
         &--consultants {
             &__name,
             &__period {
-                font-weight: 600;
-                font-size: 14px;
-                font-family: 'Open Sans', sans-serif;
+                @include fontOpenSans(14px, 600);
                 line-height: 120%;
                 color: $dark-grey-color;
             }
             &__payment-price-text {
-                font-family: 'Open Sans', sans-serif;
-                font-weight: bold;
-                font-size: 12px;
+                @include fontOpenSans(12px, 700);
                 line-height: 14px;
                 color: rgba(56, 72, 83, 0.87);
                 margin-top: 0.3em;
@@ -36,17 +31,14 @@
         }
     }
     &-section--header {
+        @include fontOpenSans(16px, 'inherit');
         color: $light-grey-color;
         letter-spacing: 1px;
         text-transform: uppercase;
-        font-size: 16px;
         margin-bottom: 20px;
-        font-family: "Open Sans", sans-serif;
 
         &-main {
-            font-family: "Open Sans", sans-serif;
-            font-weight: 700;
-            font-size: 18px;
+            @include fontOpenSans(18px, 700);
             line-height: 120%;
             letter-spacing: 1px;
             text-transform: uppercase;
@@ -56,14 +48,6 @@
     &-sales {
         .rates-and-fees--btn {
             width: 180px;
-        }
-        .absolute-edit-toggle {
-            position: fixed;
-            right: calc(20% + 100px);
-            top: 250px;
-            border-radius: 50%;
-            background-color: rgba($color: #72a0f8, $alpha: 0.2);
-            color: #72a0f8;
         }
         &-inline {
             &--form {
@@ -97,119 +81,25 @@
     }
 
     &-extension {
-        &--gray-header {
-            margin-bottom: 8px !important;
-            font-weight: bold;
-            font-size: 14px;
-            line-height: 140%;
-            color: #B6B4B2;
-        }
-        &--blue-text {
-            font-weight: bold;
-            font-size: 14px;
-            line-height: 14px;
-            color: rgba(56, 72, 83, 0.87);
-        }
-
         &--consultant-data {
             &--consultant {
                 &-text {
-                    font-family: 'Open Sans', sans-serif;
-                    font-weight: 600;
-                    font-size: 12px;
+                    @include fontOpenSans(12px, 600);
                     line-height: 150%;
                     color: rgba(56, 72, 83, 0.87);
                 }
                 &-name {
-                    font-weight: 800;
-                    font-size: 14px;
+                    @include fontOpenSans(14px, 800);
                     color: $dark-grey-color;
                 }
-                &-img {
-                    border-radius: 50%;
-                    width: 32px;
-                    height: 32px;
-                }
             }
-
         }
     }
     &--termination {
         padding: 10px 24px;
     }
-
-    &-readonly {
-        &--header {
-            font-family: "Open Sans", sans-serif;
-            font-size: 14px;
-            font-weight: 700;
-            line-height: 1.2;
-            letter-spacing: 1px;
-            text-transform: uppercase;
-            color: #b6b4b2;
-
-            &-main {
-                font-family: "Open Sans", sans-serif;
-                font-size: 16px;
-                font-weight: 700;
-                line-height: 1.2;
-                letter-spacing: 1px;
-                text-transform: uppercase;
-
-                .process-name {
-                    font-weight: 800;
-                    color: $green-color;
-                }
-                .anchor-name {
-                    color: #4a4e60;
-                }
-            }
-        }
-        &--gray {
-            &-header {
-                font-family: "Open Sans", sans-serif;
-                font-size: 12px;
-                font-weight: 700;
-                color: #898785;
-            }
-        }
-        &--blue {
-            &-header {
-                font-family: "Open Sans", sans-serif;
-                font-size: 12px;
-                font-weight: 700;
-                color: #4a4e60;
-            }
-            &-text {
-                font-family: "Open Sans", sans-serif;
-                font-size: 14px;
-                font-weight: 600;
-                color: #4a4e60;
-                &-bold {
-                    font-family: "Open Sans", sans-serif;
-                    font-size: 14px;
-                    font-weight: 800;
-                    color: rgba(56, 72, 83, 0.87);
-                }
-            }
-            &-hint {
-                font-family: "Open Sans", sans-serif;
-                    font-size: 14px;
-                    font-weight: 600;
-                    color: rgba(56, 72, 83, 0.87);
-                    line-height: 35px;
-            }
-        }
-    }
 }
 
-.hide {
-    display: none;
-}
-
-.workflow-toggle-buttons--showMore {
-    border: 1px solid $light-grey-color;
-}
 
 .link-to-client-icon {
     width: 35px;
