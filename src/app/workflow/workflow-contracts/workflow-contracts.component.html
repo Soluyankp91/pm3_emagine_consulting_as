@@ -1091,18 +1091,21 @@
                                                 </div>
                                                 <div fxLayout="row" class="project-line--expansion-additional">
                                                     <span fxFlex="15%" class="project-line--expansion-additional__header">Invoice recipient</span>
-                                                    <span class="project-line--expansion-additional__content">
+                                                    <div fxLayout="column" class="project-line--expansion-additional__content">
                                                         <ng-container *ngIf="projectLine.value.invoiceRecipient !== null && projectLine.value.invoiceRecipient !== ''; else noInvoiceRecipientTemplate">
-                                                            {{projectLine.value.invoiceRecipient?.countryName ? projectLine.value.invoiceRecipient?.countryName + '| ' : ''}}
-                                                            {{projectLine.value.invoiceRecipient?.city ? projectLine.value.invoiceRecipient?.city + ' | ' : ''}}
-                                                            {{projectLine.value.invoiceRecipient?.address ? projectLine.value.invoiceRecipient?.address + ' | ' : ''}}
-                                                            {{projectLine.value.invoiceRecipient?.address2 ? projectLine.value.invoiceRecipient?.address2 + ' | ' : ''}}
-                                                            {{projectLine.value.invoiceRecipient?.postCode}}
+                                                            <span class="text-bold">{{projectLine.value.invoiceRecipient?.clientName}}</span>
+                                                            <span>
+                                                                {{projectLine.value.invoiceRecipient?.countryName ? projectLine.value.invoiceRecipient?.countryName + '| ' : ''}}
+                                                                {{projectLine.value.invoiceRecipient?.city ? projectLine.value.invoiceRecipient?.city + ' | ' : ''}}
+                                                                {{projectLine.value.invoiceRecipient?.address ? projectLine.value.invoiceRecipient?.address + ' | ' : ''}}
+                                                                {{projectLine.value.invoiceRecipient?.address2 ? projectLine.value.invoiceRecipient?.address2 + ' | ' : ''}}
+                                                                {{projectLine.value.invoiceRecipient?.postCode}}
+                                                            </span>
                                                         </ng-container>
-                                                        <ng-template #noInvoiceRecipientTemplate>
-                                                            -
-                                                        </ng-template>
-                                                    </span>
+                                                    </div>
+                                                    <ng-template #noInvoiceRecipientTemplate>
+                                                        -
+                                                    </ng-template>
                                                 </div>
                                                 <div fxLayout="row" class="project-line--expansion-additional">
                                                     <span fxFlex="15%" class="project-line--expansion-additional__header">Insurance</span>
