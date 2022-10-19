@@ -23,7 +23,6 @@ import { LegalContractStatus, WorkflowConsultantsLegalContractForm, WorkflowCont
     styleUrls: ['./workflow-contracts.component.scss']
 })
 export class WorkflowContractsComponent extends AppComponentBase implements OnInit, OnDestroy {
-    @ViewChild('projectLinesMenuTrigger', {static: false}) projectLinesMenuTrigger: MatMenuTrigger;
     @Input() workflowId: string;
     @Input() periodId: string | undefined;
     @Input() consultant: ConsultantResultDto;
@@ -724,8 +723,10 @@ export class WorkflowContractsComponent extends AppComponentBase implements OnIn
 
     // Consultant data Project Lines START REGION
 
-    createOrEditProjectLine(index: number, projectLinesIndex?: number) {
-        this.projectLinesMenuTrigger.closeMenu();
+    createOrEditProjectLine(index: number, projectLinesMenuTrigger?: MatMenuTrigger, projectLinesIndex?: number) {
+        if (projectLinesMenuTrigger) {
+            projectLinesMenuTrigger.closeMenu();
+        }
         const scrollStrategy = this.overlay.scrollStrategies.reposition();
         let projectLine = {
             projectName: this.contractsMainForm.projectName!.value,

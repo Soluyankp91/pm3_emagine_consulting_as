@@ -320,3 +320,11 @@
         }
     }
 }
+
+.link-to-client-icon:disabled {
+    mat-icon {
+        svg path {
+            fill: $light-grey-color;
+        }
+    }
+}
