@@ -26,6 +26,22 @@
             background: rgba($color: $green-color, $alpha: 0.2);
             color: $green-color !important;
         }
+        &[disabled] {
+            color: $medium-grey-color !important;
+            mat-icon {
+                background: rgba($color: $medium-grey-color, $alpha: 0.2) !important;
+                color: $medium-grey-color !important;
+                path {
+                    fill: $medium-grey-color !important;
+                }
+            }
+        }
+        &.contract-manager-action {
+            color: #72A0F8;
+            mat-icon {
+                background: unset !important;
+            }
+        }
     }
     &--add {
         color: $green-color;

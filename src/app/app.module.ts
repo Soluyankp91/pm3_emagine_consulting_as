@@ -311,13 +311,6 @@ export class AppModule {
             )
         );
 
-        // iconRegistry.addSvgIcon(
-        //     'India-flag',
-        //     sanitizer.bypassSecurityTrustResourceUrl(
-        //         'assets/common/images/country-flags/in-flag.svg'
-        //     )
-        // );
-
         iconRegistry.addSvgIcon(
             'India-flag-selected',
             sanitizer.bypassSecurityTrustResourceUrl(
@@ -641,6 +634,27 @@ export class AppModule {
             'hubspot-sync-icon',
             sanitizer.bypassSecurityTrustResourceUrl(
                 'assets/common/images/hubspot-sync-icon.svg'
+            )
+        );
+
+        iconRegistry.addSvgIcon(
+            'edit-icon',
+            sanitizer.bypassSecurityTrustResourceUrl(
+                'assets/common/images/edit-icon.svg'
+            )
+        );
+
+        iconRegistry.addSvgIcon(
+            'return-icon',
+            sanitizer.bypassSecurityTrustResourceUrl(
+                'assets/common/images/return-icon.svg'
+            )
+        );
+
+        iconRegistry.addSvgIcon(
+            'add-icon',
+            sanitizer.bypassSecurityTrustResourceUrl(
+                'assets/common/images/add-icon.svg'
             )
         );
     }
