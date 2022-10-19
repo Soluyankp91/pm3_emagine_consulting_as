@@ -19,3 +19,24 @@
         padding: 8px 30px;
     }
 }
+
+.hubspot-sync-modal {
+    position: fixed !important;
+    bottom: 0;
+    right: 0;
+    .mat-dialog-container {
+        border-radius: unset !important;
+
+        .mat-dialog-content {
+            margin: 0px !important;
+            padding: 30px !important;
+            overflow: hidden !important;
+        }
+
+        .mat-dialog-actions {
+            margin-bottom: 0 !important;
+            padding: 8px;
+            border-top: 1px solid #E7E3E8;
+        }
+    }
+}

@@ -180,6 +180,14 @@
             color: rgb(0, 0, 0);
         }
     }
+    &.contract-manager-action {
+        &:hover {
+            background: rgba($color: #72A0F8, $alpha: .1);
+        }
+        mat-icon {
+            color: rgb(0, 0, 0);
+        }
+    }
 }
 
 .form-icon--delete-row {
@@ -287,6 +295,9 @@
     background-color: transparent;
     border: 0;
     border-radius: 5px;
+    &.contract-manager-action {
+        color: #72A0F8;
+    }
 }
 
 .button-close.mat-icon-button {
@@ -298,4 +309,19 @@
 .button-open-in-new {
     height: 24px;
     line-height: 24px;
+}
+
+.hubspot-icon.mat-icon-button {
+    mat-icon {
+        width: 20px;
+        height: 20px;
+        line-height: 20px;
+    }
+    &:hover {
+        mat-icon {
+            svg path {
+                fill: #17A297;
+            }
+        }
+    }
 }

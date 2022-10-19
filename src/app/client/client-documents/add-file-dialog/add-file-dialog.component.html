@@ -12,7 +12,7 @@
                 </mat-option>
             </mat-select>
             <mat-error>
-                {{getValidationMessage(attachmentTypeId)}}
+                <app-validator [control]="attachmentTypeId"></app-validator>
             </mat-error>
         </mat-form-field>
         <div class="file">

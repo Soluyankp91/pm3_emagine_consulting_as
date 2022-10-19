@@ -20,6 +20,7 @@ import { CustomValidators } from 'src/shared/utils/custom-validators';
 import { WorkflowConsultantActionsDialogComponent } from '../workflow-consultant-actions-dialog/workflow-consultant-actions-dialog.component';
 import { WorkflowDataService } from '../workflow-data.service';
 import { WorkflowProcessWithAnchorsDto } from '../workflow-period/workflow-period.model';
+import { EmploymentTypes } from '../workflow.model';
 import { ConsultantDiallogAction, SalesTerminateConsultantForm, TenantList, WorkflowSalesClientDataForm, WorkflowSalesConsultantsForm, WorkflowSalesMainForm } from './workflow-sales.model';
 
 @Component({
@@ -34,6 +35,7 @@ export class WorkflowSalesComponent extends AppComponentBase implements OnInit {
     @Input() activeSideSection: WorkflowProcessWithAnchorsDto;
     @Input() isCompleted: boolean;
     @Input() permissionsForCurrentUser: { [key: string]: boolean; } | undefined;
+
 
     editEnabledForcefuly = false;
     workflowSideSections = WorkflowProcessType;
@@ -77,6 +79,8 @@ export class WorkflowSalesComponent extends AppComponentBase implements OnInit {
     employmentTypes: EnumEntityTypeDto[] = [];
     countries: CountryDto[] = [];
     consultantTimeReportingCapList: EnumEntityTypeDto[] = [];
+
+    employmentTypesEnum = EmploymentTypes;
 
     // new UI
     clientRateTypes: EnumEntityTypeDto[] = new Array<EnumEntityTypeDto>(
@@ -2445,11 +2449,6 @@ export class WorkflowSalesComponent extends AppComponentBase implements OnInit {
 
     displayFullNameFn(option: any) {
         return option ? option?.firstName + ' ' + option?.lastName : '';
-    }
-
-    getTenantCodeFromId(tenantId: number) {
-        const tenant = TenantList.find(x => x.id === tenantId);
-        return tenant?.code;
     }
 
     formatExpirationNotificationsForDisplay(data: number[] | undefined): string {

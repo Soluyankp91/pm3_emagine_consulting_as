@@ -1,11 +1,11 @@
 @import "/src/app/shared/styles/config/_colors";
+@import "/src/app/shared/styles/config/_mixins";
 
 .file-uploader {
     height: 60px;
     padding: 10px;
     background-color: transparent;
     border: 1px dashed #e7e3e8;;
-    // outline: 2px dashed $green-color;
     border-radius: 0;
 
     .content {
@@ -16,10 +16,8 @@
         align-items: center;
 
         &-instructions {
+            @include fontOpenSans(12px, 600);
             color: $light-grey-color;
-            font-family: 'Open Sans', sans-serif;
-            font-weight: 600;
-            font-size: 12px;
             line-height: 140%;
         }
 
@@ -49,47 +47,6 @@
                 }
             }
         }
-
-        // .watermark {
-        //     width: 100%;
-        //     max-width: 250px;
-        //     z-index: 0;
-        //     display: flex;
-        //     flex-direction: column;
-        //     justify-content: center;
-        //     position: absolute;
-
-        //     .icon {
-        //         height: 61px;
-        //         width: auto;
-        //     }
-
-        //     .label {
-        //         color: #89838D;
-        //         font-size: 14px;
-        //         font-weight: 500;
-        //         margin-top: 22px;
-        //         text-align: center;
-        //     }
-        // }
-
-        // &::-webkit-scrollbar {
-        //     width: 5px;
-        //     height: 5px;
-        // }
-
-        // &::-webkit-scrollbar-track {
-        //     background: #303b43;
-        // }
-
-        // &::-webkit-scrollbar-thumb {
-        //     background: #566874;
-        //     border-radius: 50px;
-        // }
-
-        // &::-webkit-scrollbar-thumb:hover {
-        //     background: #566874;
-        // }
     }
 }
 

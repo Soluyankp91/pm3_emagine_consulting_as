@@ -1,3 +1,5 @@
+@import "/src/app/shared/styles/config/_mixins";
+
 .full-height {
     height: 100%;
 }
@@ -219,8 +221,6 @@ html {
     background: rgba(23, 162, 151, .5);
         &~ .cdk-global-overlay-wrapper {
         pointer-events: auto !important;
-        // Commented out for dialog over dialog
-        // position: relative !important;
         overflow: auto !important;
         &::before {
             content: '' !important;
@@ -286,10 +286,8 @@ html {
 }
 
 .page-main-header {
-    font-family: 'Open Sans', sans-serif !important;
-    font-weight: 800;
+    @include fontOpenSans(36px, 800);
     color: $dark-grey-color;
-    font-size: 36px;
     line-height: 120%;
 }
 

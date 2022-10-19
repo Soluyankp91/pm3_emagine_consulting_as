@@ -1,14 +1,16 @@
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { Component, Injector, OnInit, ViewChild } from '@angular/core';
 import { FormControl } from '@angular/forms';
+import { MatDialog } from '@angular/material/dialog';
 import { ActivatedRoute, Router } from '@angular/router';
 import { AuthenticationResult } from '@azure/msal-browser';
 import { Subject } from 'rxjs';
 import { finalize, takeUntil } from 'rxjs/operators';
 import { AppComponentBase } from 'src/shared/app-component-base';
 import { LocalHttpService } from 'src/shared/service-proxies/local-http.service';
-import { ApiServiceProxy, ClientDetailsDto, ClientsServiceProxy } from 'src/shared/service-proxies/service-proxies';
+import { ApiServiceProxy, ClientDetailsDto, ClientsServiceProxy, SyncClientFromCrmResultDto } from 'src/shared/service-proxies/service-proxies';
 import { ClientDocumentsComponent } from '../client-documents/client-documents.component';
+import { HubspotSyncModalComponent } from './hubspot-sync-modal/hubspot-sync-modal.component';
 
 @Component({
     selector: 'app-client-details',
@@ -31,7 +33,8 @@ export class ClientDetailsComponent extends AppComponentBase implements OnInit {
         private _apiService: ApiServiceProxy,
         private _clientService: ClientsServiceProxy,
         private httpClient: HttpClient,
-        private localHttpService: LocalHttpService
+        private localHttpService: LocalHttpService,
+        private dialog: MatDialog
     ) {
         super(injector);
     }
@@ -86,5 +89,28 @@ export class ClientDetailsComponent extends AppComponentBase implements OnInit {
 
     navigateBack() {
         this.router.navigate(['/app/clients']);
+    }
+
+    syncFromHubspot() {
+        this.showMainSpinner();
+        this._clientService.crmSync(this.clientId)
+            .pipe(finalize(() => this.hideMainSpinner() ))
+            .subscribe(result => {
+                this.openHubspotSyncDialog(result);
+            })
+    }
+
+    openHubspotSyncDialog(syncMessage: SyncClientFromCrmResultDto) {
+        this.dialog.open(HubspotSyncModalComponent, {
+            width: '450px',
+            minHeight: '180px',
+            height: 'calc(100vh - 120px)',
+            autoFocus: false,
+            panelClass: 'hubspot-sync-modal',
+            hasBackdrop: false,
+            data: {
+                message: syncMessage.message?.split('\n').filter(item => item)
+            }
+        });
     }
 }

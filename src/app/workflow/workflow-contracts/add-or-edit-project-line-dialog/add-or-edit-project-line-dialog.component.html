@@ -1,13 +1,15 @@
 <mat-dialog-content class="confiramtion-dialog">
-    <div mat-dialog-title class="confiramtion-dialog--header" align="center">
-        <ng-container [ngSwitch]="data.dialogType">
-            <ng-container *ngSwitchCase="dialogType.Create">
-                Create project line
+    <div mat-dialog-title class="confiramtion-dialog--header" align="start">
+        <span class="text-bold-800">
+            <ng-container [ngSwitch]="data.dialogType">
+                <ng-container *ngSwitchCase="dialogType.Create">
+                    Create project line
+                </ng-container>
+                <ng-container *ngSwitchCase="dialogType.Edit">
+                    Edit project line
+                </ng-container>
             </ng-container>
-            <ng-container *ngSwitchCase="dialogType.Edit">
-                Edit project line
-            </ng-container>
-        </ng-container>
+        </span>
     </div>
     <form [formGroup]="projectLineForm">
         <div fxLayout="row" fxLayoutAlign="start start" fxLayoutGap="30px">
@@ -16,9 +18,7 @@
                     <mat-label>Project name</mat-label>
                     <textarea matInput autocomplete="new-password" maxlength="250" [matTextareaAutosize]="true" [matAutosizeMinRows]="2" name="projectName" formControlName="projectName">
                     </textarea>
-                    <mat-error>
-                        {{getValidationMessage(projectLineForm.projectName)}}
-                    </mat-error>
+                    <app-validator [control]="projectLineForm.projectName"></app-validator>
                 </mat-form-field>
                 <div fxLayout="row" fxLayoutAlign="start start" class="u-w--100 u-mt--10">
                     <mat-form-field appearance="outline" class="u-mr--16" fxFlex="0 0 calc(50% - 8px)">
@@ -45,7 +45,7 @@
                             <mat-icon class="calendar-icon" matSuffix svgIcon="calendar"></mat-icon>
                             <mat-datepicker #endDatePicker></mat-datepicker>
                         </mat-form-field>
-                        <mat-checkbox color="accent" formControlName="noEndDate" name="noEndDate" class="green-checkbox u-mr--10" (change)="disableOrEnableInput(projectLineForm.noEndDate!.value, projectLineForm.endDate)">
+                        <mat-checkbox color="accent" formControlName="noEndDate" name="noEndDate" class="black-checkbox u-mr--10" (change)="disableOrEnableInput(projectLineForm.noEndDate!.value, projectLineForm.endDate)">
                             No end date
                         </mat-checkbox>
                     </div>
@@ -60,13 +60,13 @@
                     </mat-select>
                 </mat-form-field>
 
-                <mat-form-field appearance="outline" class="u-w--100 u-mt--10 textarea-input">
+                <mat-form-field appearance="outline" class="u-w--100 u-mt--10 textarea-input textarea-with-hint" [hintLabel]="(projectLineForm.value.optionalInvoicingInfo?.length ?? 0 ) + '/250'">
                     <mat-label>Optional invoicing info</mat-label>
-                    <textarea matInput autocomplete="new-password" [matAutosizeMinRows]="5" [matTextareaAutosize]="true" name="optionalInvoicingInfo" formControlName="optionalInvoicingInfo">
+                    <textarea matInput autocomplete="new-password" maxlength="250" [matAutosizeMinRows]="5" [matTextareaAutosize]="true" name="optionalInvoicingInfo" formControlName="optionalInvoicingInfo">
                     </textarea>
                 </mat-form-field>
 
-                <mat-checkbox color="accent" name="feesBilledWithThisProjectLine" formControlName="isLineForFees" class="green-checkbox u-mt--20">
+                <mat-checkbox color="accent" name="feesBilledWithThisProjectLine" formControlName="isLineForFees" class="black-checkbox u-mt--20">
                     Fees billed with this Project line
                 </mat-checkbox>
             </div>
@@ -75,7 +75,7 @@
                     <mat-label>Assignment ID / PO number</mat-label>
                     <input matInput type="text" formControlName="invoicingReferenceNumber">
                 </mat-form-field>
-                <mat-checkbox color="accent" name="differentInvoicingReferenceNumber" formControlName="differentInvoicingReferenceNumber" class="green-checkbox" (change)="disableOrEnableInput(!projectLineForm.differentInvoicingReferenceNumber!.value, projectLineForm.invoicingReferenceNumber)">
+                <mat-checkbox color="accent" name="differentInvoicingReferenceNumber" formControlName="differentInvoicingReferenceNumber" class="black-checkbox" (change)="disableOrEnableInput(!projectLineForm.differentInvoicingReferenceNumber!.value, projectLineForm.invoicingReferenceNumber)">
                     Different assignment ID / PO number
                 </mat-checkbox>
 
@@ -90,7 +90,7 @@
                         </ng-container>
                     </mat-autocomplete>
                 </mat-form-field>
-                <mat-checkbox color="accent" name="differentInvoicingReferencePerson" formControlName="differentInvoicingReferencePerson" class="green-checkbox" (change)="disableOrEnableInput(!projectLineForm.differentInvoicingReferencePerson!.value, projectLineForm.invoicingReferencePersonId)">
+                <mat-checkbox color="accent" name="differentInvoicingReferencePerson" formControlName="differentInvoicingReferencePerson" class="black-checkbox" (change)="disableOrEnableInput(!projectLineForm.differentInvoicingReferencePerson!.value, projectLineForm.invoicingReferencePersonId)">
                     Different invoicing reference person
                 </mat-checkbox>
 
@@ -98,7 +98,7 @@
                     <mat-label>Debitor number</mat-label>
                     <input matInput type="text" formControlName="debtorNumber">
                 </mat-form-field>
-                <mat-checkbox color="accent" name="differentDebtorNumber" formControlName="differentDebtorNumber" class="green-checkbox" (change)="disableOrEnableInput(!projectLineForm.differentDebtorNumber!.value, projectLineForm.debtorNumber)">
+                <mat-checkbox color="accent" name="differentDebtorNumber" formControlName="differentDebtorNumber" class="black-checkbox" (change)="disableOrEnableInput(!projectLineForm.differentDebtorNumber!.value, projectLineForm.debtorNumber)">
                     Different debitor number
                 </mat-checkbox>
 
@@ -116,7 +116,7 @@
                         </ng-container>
                     </mat-autocomplete>
                 </mat-form-field>
-                <mat-checkbox color="accent" name="differentInvoiceRecipient" formControlName="differentInvoiceRecipient" class="green-checkbox" (change)="disableOrEnableInput(!projectLineForm.differentInvoiceRecipient!.value, projectLineForm.invoiceRecipientId)">
+                <mat-checkbox color="accent" name="differentInvoiceRecipient" formControlName="differentInvoiceRecipient" class="black-checkbox" (change)="disableOrEnableInput(!projectLineForm.differentInvoiceRecipient!.value, projectLineForm.invoiceRecipientId)">
                     Different invoice recipient
                 </mat-checkbox>
             </div>
