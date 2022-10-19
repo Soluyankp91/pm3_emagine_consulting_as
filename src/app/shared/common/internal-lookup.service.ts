@@ -40,6 +40,7 @@ export class InternalLookupService {
     consultantInsuranceOptions: { [key: string]: string; };
     contractExpirationNotificationDuration: { [key: string]: string; };
     legalContractStatuses: { [key: string]: string; };
+    hubspotClientUrl: string;
 
     constructor(private _enumService: EnumServiceProxy) {
 

@@ -638,6 +638,13 @@ export class AppModule {
         );
 
         iconRegistry.addSvgIcon(
+            'link-to-client-hubspot-icon',
+            sanitizer.bypassSecurityTrustResourceUrl(
+                'assets/common/images/link-to-client-hubspot.svg'
+            )
+        );
+
+        iconRegistry.addSvgIcon(
             'edit-icon',
             sanitizer.bypassSecurityTrustResourceUrl(
                 'assets/common/images/edit-icon.svg'
