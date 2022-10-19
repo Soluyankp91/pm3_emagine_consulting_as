@@ -161,7 +161,7 @@
                                 <mat-label>Project Name</mat-label>
                                 <textarea required matInput autocomplete="new-password" name="projectName" formControlName="projectName" [matTextareaAutosize]="true" [matAutosizeMinRows]="2">
                                 </textarea>
-                                <mat-error>{{getValidationMessage(contractsMainForm.projectName)}}</mat-error>
+                                <app-validator [control]="contractsMainForm.projectName"></app-validator>
                             </mat-form-field>
                         </ng-template>
                     </div>
@@ -177,7 +177,7 @@
                                 <mat-label>Project Description</mat-label>
                                 <textarea required matInput autocomplete="new-password" name="projectDescription" formControlName="projectDescription" [matTextareaAutosize]="true" [matAutosizeMinRows]="2">
                                 </textarea>
-                                <mat-error>{{getValidationMessage(contractsMainForm.projectDescription)}}</mat-error>
+                                <app-validator [control]="contractsMainForm.projectDescription"></app-validator>
                             </mat-form-field>
                         </ng-template>
                     </div>
@@ -200,7 +200,7 @@
                                 <mat-label>Remarks</mat-label>
                                 <textarea required matInput autocomplete="new-password" name="remarks" formControlName="remarks" [matTextareaAutosize]="true" [matAutosizeMinRows]="2">
                                 </textarea>
-                                <mat-error>{{getValidationMessage(contractsMainForm.remarks)}}</mat-error>
+                                <app-validator [control]="contractsMainForm.remarks"></app-validator>
                             </mat-form-field>
                         </ng-template>
                     </div>
@@ -269,7 +269,7 @@
                                     <mat-label>Special Contract Terms</mat-label>
                                     <textarea required matInput autocomplete="new-password" name="specialContractTerms" formControlName="specialContractTerms" [matTextareaAutosize]="true" [matAutosizeMinRows]="2">
                                     </textarea>
-                                    <mat-error>{{getValidationMessage(contractClientForm.specialContractTerms)}}</mat-error>
+                                    <app-validator [control]="contractClientForm.specialContractTerms"></app-validator>
                                 </mat-form-field>
                             </ng-template>
                         </div>
@@ -605,7 +605,7 @@
                                             <mat-label>Special Contract Terms</mat-label>
                                             <textarea required matInput autocomplete="new-password" name="specialContractTerms" formControlName="specialContractTerms" [matTextareaAutosize]="true" [matAutosizeMinRows]="2">
                                             </textarea>
-                                            <mat-error>{{getValidationMessage(consultant.get('specialContractTerms'))}}</mat-error>
+                                            <app-validator [control]="consultant.get('specialContractTerms')"></app-validator>
                                         </mat-form-field>
                                     </ng-template>
                                 </div>

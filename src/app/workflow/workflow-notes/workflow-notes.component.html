@@ -11,9 +11,7 @@
                 <mat-label>Workflow notes</mat-label>
                 <textarea matInput autocomplete="new-password" maxlength="4000" [matTextareaAutosize]="true" [matAutosizeMinRows]="2" name="workflowNote" [formControl]="workflowNote">
                 </textarea>
-                <mat-error>
-                    {{getValidationMessage(workflowNote)}}
-                </mat-error>
+                <app-validator [control]="workflowNote"></app-validator>
             </mat-form-field>
         </ng-container>
         <ng-template #notesReadonly>
