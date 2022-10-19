@@ -1,5 +1,6 @@
 import { Overlay } from '@angular/cdk/overlay';
 import { NumberSymbol } from '@angular/common';
+import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { Component, Injector, Input, OnInit } from '@angular/core';
 import { AbstractControl, FormArray, FormBuilder, FormControl, Validators } from '@angular/forms';
 import { MatAutocompleteSelectedEvent } from '@angular/material/autocomplete';
@@ -8,12 +9,14 @@ import { MatDialog } from '@angular/material/dialog';
 import { MatMenuTrigger } from '@angular/material/menu';
 import { MatSelectChange } from '@angular/material/select';
 import { ActivatedRoute, Router } from '@angular/router';
+import { AuthenticationResult } from '@azure/msal-browser';
 import { merge, Observable, of, Subject } from 'rxjs';
 import { debounceTime, finalize, map, switchMap, takeUntil } from 'rxjs/operators';
 import { InternalLookupService } from 'src/app/shared/common/internal-lookup.service';
 import { ConfirmationDialogComponent } from 'src/app/shared/components/confirmation-dialog/confirmation-dialog.component';
 import { environment } from 'src/environments/environment';
 import { AppComponentBase, NotifySeverity } from 'src/shared/app-component-base';
+import { LocalHttpService } from 'src/shared/service-proxies/local-http.service';
 import { ClientPeriodSalesDataDto, ClientPeriodServiceProxy, ClientRateDto, CommissionDto, ConsultantRateDto, ConsultantSalesDataDto, ContractSignerDto, EmployeeDto, EnumEntityTypeDto, EnumServiceProxy, LookupServiceProxy, PeriodClientSpecialFeeDto, PeriodClientSpecialRateDto, SalesClientDataDto, SalesMainDataDto, WorkflowProcessType, WorkflowServiceProxy, ConsultantResultDto, ClientResultDto, ContactResultDto, ConsultantTerminationSalesDataCommandDto, WorkflowTerminationSalesDataCommandDto, PeriodConsultantSpecialFeeDto, PeriodConsultantSpecialRateDto, ClientSpecialRateDto, ClientsServiceProxy, ClientSpecialFeeDto, ClientSalesServiceProxy, ConsultantPeriodServiceProxy, ConsultantPeriodSalesDataDto, ConsultantSalesServiceProxy, ExtendConsultantPeriodDto, ChangeConsultantPeriodDto, WorkflowProcessDto, ConsultantWithSourcingRequestResultDto, CountryDto, StepType } from 'src/shared/service-proxies/service-proxies';
 import { WorkflowConsultantActionsDialogComponent } from '../workflow-consultant-actions-dialog/workflow-consultant-actions-dialog.component';
 import { WorkflowDataService } from '../workflow-data.service';
@@ -168,7 +171,9 @@ export class WorkflowSalesComponent extends AppComponentBase implements OnInit {
         private _clientSalesService: ClientSalesServiceProxy,
         private _clientService: ClientsServiceProxy,
         private _consultantPeriodSerivce: ConsultantPeriodServiceProxy,
-        private _consultantSalesService: ConsultantSalesServiceProxy
+        private _consultantSalesService: ConsultantSalesServiceProxy,
+        private httpClient: HttpClient,
+        private localHttpService: LocalHttpService
     ) {
         super(injector);
         this.salesClientDataForm = new WorkflowSalesClientDataForm();
@@ -1561,7 +1566,8 @@ export class WorkflowSalesComponent extends AppComponentBase implements OnInit {
                         commissionInput.clientId = commission.recipient?.clientId;
                         break;
                     case 4: // PDC entity
-                        commissionInput.tenantId = commission.recipient?.id;
+                        //FIXME: commented out because of errors after updating service proxies. will be fixed in P30-486
+                        // commissionInput.tenantId = commission.recipient?.id;
                         break;
                 }
                 // id = 2 == 'One time'
@@ -2039,7 +2045,8 @@ export class WorkflowSalesComponent extends AppComponentBase implements OnInit {
                 commissionRecipient = commission.client;
                 break;
             case 4: // PDC entity
-                commissionRecipient = this.findItemById(this.tenants, commission.tenantId);
+                //FIXME: commented out because of errors after updating service proxies. will be fixed in P30-486
+                // commissionRecipient = this.findItemById(this.tenants, commission.tenantId);
                 break;
         }
         const form = this._fb.group({
@@ -2678,5 +2685,27 @@ export class WorkflowSalesComponent extends AppComponentBase implements OnInit {
             this.router.createUrlTree([`/app/clients/${clientId}/rates-and-fees`])
         );
         window.open(url, '_blank');
+    }
+
+    openInHubspot(client: ClientResultDto) {
+        if (this._internalLookupService.hubspotClientUrl?.length) {
+            if (client.crmClientId !== null && client.crmClientId !== undefined) {
+                window.open(this._internalLookupService.hubspotClientUrl.replace('{CrmClientId}', client.crmClientId!.toString()), '_blank');
+            }
+        } else {
+            this.localHttpService.getTokenPromise().then((response: AuthenticationResult) => {
+                this.httpClient.get(`${this.apiUrl}/api/Clients/HubspotPartialUrlAsync`, {
+                        headers: new HttpHeaders({
+                            'Authorization': `Bearer ${response.accessToken}`
+                        }),
+                        responseType: 'text'
+                    }).subscribe((result: string) => {
+                        this._internalLookupService.hubspotClientUrl = result;
+                        if (client.crmClientId !== null && client.crmClientId !== undefined) {
+                            window.open(result.replace('{CrmClientId}', client.crmClientId!.toString()), '_blank');
+                        }
+                })
+            });
+        }
     }
 }

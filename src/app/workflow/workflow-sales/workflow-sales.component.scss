@@ -94,6 +94,13 @@
         &--process-data {
             padding: 30px;
         }
+        &--additional-address-hint {
+            font-family: "Open Sans", sans-serif;
+            font-size: 14px;
+            font-weight: 600;
+            color: rgba(56, 72, 83, 0.87);
+            line-height: 35px;
+        }
     }
 
     &-extension {
@@ -194,10 +201,10 @@
             }
             &-hint {
                 font-family: "Open Sans", sans-serif;
-                    font-size: 14px;
-                    font-weight: 600;
-                    color: rgba(56, 72, 83, 0.87);
-                    line-height: 35px;
+                font-size: 14px;
+                font-weight: 600;
+                color: rgba(56, 72, 83, 0.87);
+                line-height: 35px;
             }
         }
     }
@@ -217,8 +224,8 @@
     border-radius: 50%;
     display: flex;
     justify-content: center;
-    align-items: end;
-    &:hover {
+    align-items: flex-end;
+    &:not([disabled]):hover {
         background-color: rgba(139,209,203,0.22);
     }
 }
