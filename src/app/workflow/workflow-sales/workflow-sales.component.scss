@@ -79,9 +79,7 @@
             padding: 30px;
         }
         &--additional-address-hint {
-            font-family: "Open Sans", sans-serif;
-            font-size: 14px;
-            font-weight: 600;
+            @include fontOpenSans(14px, 600);
             color: rgba(56, 72, 83, 0.87);
             line-height: 35px;
         }
