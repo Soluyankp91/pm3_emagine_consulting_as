@@ -10,6 +10,7 @@
                 </ng-container>
             </ng-container>
         </span>
+        <mat-icon class="confiramtion-dialog--header-close-icon" (click)="close()">close</mat-icon>
     </div>
     <form [formGroup]="projectLineForm">
         <div fxLayout="row" fxLayoutAlign="start start" fxLayoutGap="30px">
@@ -124,7 +125,7 @@
     </form>
 </mat-dialog-content>
 <mat-dialog-actions align="start" class="confiramtion-dialog--actions">
-    <button mat-flat-button class="dialog-btn dialog-btn__outlined" appPreventDoubleClick (throttledClick)="reject()">
+    <button mat-flat-button class="dialog-btn dialog-btn__outlined confiramtion-dialog--actions-cancel" appPreventDoubleClick (throttledClick)="reject()">
         Cancel
     </button>
     <button mat-flat-button class="dialog-btn dialog-btn__positive" appPreventDoubleClick (throttledClick)="confirm()">
