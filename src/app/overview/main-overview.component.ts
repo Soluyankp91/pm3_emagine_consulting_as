@@ -3,13 +3,13 @@ import { FormControl } from '@angular/forms';
 import { GanttDate, GanttGroup, GanttItem, GanttViewType, NgxGanttComponent } from '@worktile/gantt';
 import { getUnixTime } from 'date-fns';
 import { merge, Subject, Subscription } from 'rxjs';
-import { debounceTime, finalize, switchMap, takeUntil } from 'rxjs/operators';
+import { debounceTime, finalize, switchMap, takeUntil, map } from 'rxjs/operators';
 import { AppConsts } from 'src/shared/AppConsts';
 import { EmployeeDto, EmployeeServiceProxy, EnumEntityTypeDto, LookupServiceProxy, MainOverviewItemPeriodDto, MainOverviewServiceProxy, MainOverviewStatus, MainOverviewStatusDto } from 'src/shared/service-proxies/service-proxies';
-import { SelectableCountry, SelectableIdNameDto } from '../client/client.model';
+import { SelectableIdNameDto } from '../client/client.model';
 import { InternalLookupService } from '../shared/common/internal-lookup.service';
 import { ManagerStatus } from '../shared/components/manager-search/manager-search.model';
-import { OverviewFlag, SelectableEmployeeDto, SelectableStatusesDto } from './main-overview.model';
+import { OverviewFlag, SelectableCountry, SelectableEmployeeDto, SelectableStatusesDto } from './main-overview.model';
 import * as moment from 'moment';
 import { Router } from '@angular/router';
 import { AppComponentBase } from 'src/shared/app-component-base';
@@ -45,7 +45,7 @@ export class MainOverviewComponent extends AppComponentBase implements OnInit {
     sorting = '';
     isDataLoading = true;
 
-    tenants: SelectableCountry[] = [];
+    legalEntities: SelectableCountry[] = [];
     saleTypes: EnumEntityTypeDto[] = [];
     deliveryTypes: EnumEntityTypeDto[] = [];
     margins: EnumEntityTypeDto[] = [];
@@ -169,7 +169,7 @@ export class MainOverviewComponent extends AppComponentBase implements OnInit {
      }
 
     ngOnInit(): void {
-        this.getTenants();
+        this.getLegalEntities();
         this.getSalesType();
         this.getDeliveryTypes();
         this.getMargins();
@@ -454,12 +454,6 @@ export class MainOverviewComponent extends AppComponentBase implements OnInit {
 
                             this.consultantsGroups = groups;
                             this.consultantsItems = items;
-
-                            // if (this.isInitial) {
-                            //     this.viewType.setValue(GanttViewType.month);
-                            //     this.isInitial = false;
-                            //     this.changeViewType();
-                            // }
                         }
                         this.consultantsTotalCount = result.totalCount;
                         this.saveGridOptions();
@@ -486,24 +480,22 @@ export class MainOverviewComponent extends AppComponentBase implements OnInit {
         this.changeViewType(true);
     }
 
-    getTenants() {
+    getLegalEntities() {
         this.isCountriesLoading = true;
-
-        this._internalLookupService.getTenants()
-            .pipe(finalize(() => {
-                this.isCountriesLoading = false;
-            }))
-            .subscribe(result => {
-                this.tenants = result.map(x => {
-
+        this._internalLookupService.getLegalEntities()
+            .pipe(finalize(() => this.isCountriesLoading = false),
+                map(entities => entities.map(x => {
                     return new SelectableCountry({
                         id: x.id!,
                         name: x.name!,
-                        code: this.getTenantCountryCode(x.name!)!,
+                        tenantName: x.tenantName!,
+                        code: this.getTenantCountryCode(x.tenantName!)!,
                         selected: false,
-                        flag: x.name!
+                        flag: x.tenantName!
                     });
-                });
+                })))
+            .subscribe(result => {
+                this.legalEntities = result;
             });
     }
 
@@ -525,7 +517,7 @@ export class MainOverviewComponent extends AppComponentBase implements OnInit {
                 return 'FR';
             case 'India':
                 return 'IN';
-            case 'International':
+            case 'United Kingdom':
                 return 'EU';
             default:
                 break;

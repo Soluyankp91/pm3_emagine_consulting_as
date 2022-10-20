@@ -18,7 +18,7 @@ import { ConfirmationDialogComponent } from 'src/app/shared/components/confirmat
 import { environment } from 'src/environments/environment';
 import { AppComponentBase, NotifySeverity } from 'src/shared/app-component-base';
 import { LocalHttpService } from 'src/shared/service-proxies/local-http.service';
-import { ClientPeriodSalesDataDto, ClientPeriodServiceProxy, ClientRateDto, CommissionDto, ConsultantRateDto, ConsultantSalesDataDto, ContractSignerDto, EmployeeDto, EnumEntityTypeDto, LookupServiceProxy, PeriodClientSpecialFeeDto, PeriodClientSpecialRateDto, SalesClientDataDto, SalesMainDataDto, WorkflowProcessType, WorkflowServiceProxy, ConsultantResultDto, ClientResultDto, ContactResultDto, ConsultantTerminationSalesDataCommandDto, WorkflowTerminationSalesDataCommandDto, PeriodConsultantSpecialFeeDto, PeriodConsultantSpecialRateDto, ClientSpecialRateDto, ClientsServiceProxy, ClientSpecialFeeDto, ClientSalesServiceProxy, ConsultantPeriodServiceProxy, ConsultantPeriodSalesDataDto, ConsultantSalesServiceProxy, ExtendConsultantPeriodDto, ChangeConsultantPeriodDto, WorkflowProcessDto, ConsultantWithSourcingRequestResultDto, CountryDto, StepType } from 'src/shared/service-proxies/service-proxies';
+import { ClientPeriodSalesDataDto, ClientPeriodServiceProxy, ClientRateDto, CommissionDto, ConsultantRateDto, ConsultantSalesDataDto, ContractSignerDto, EmployeeDto, EnumEntityTypeDto, LookupServiceProxy, PeriodClientSpecialFeeDto, PeriodClientSpecialRateDto, SalesClientDataDto, SalesMainDataDto, WorkflowProcessType, WorkflowServiceProxy, ConsultantResultDto, ClientResultDto, ContactResultDto, ConsultantTerminationSalesDataCommandDto, WorkflowTerminationSalesDataCommandDto, PeriodConsultantSpecialFeeDto, PeriodConsultantSpecialRateDto, ClientSpecialRateDto, ClientsServiceProxy, ClientSpecialFeeDto, ClientSalesServiceProxy, ConsultantPeriodServiceProxy, ConsultantPeriodSalesDataDto, ConsultantSalesServiceProxy, ExtendConsultantPeriodDto, ChangeConsultantPeriodDto, WorkflowProcessDto, ConsultantWithSourcingRequestResultDto, CountryDto, StepType, LegalEntityDto } from 'src/shared/service-proxies/service-proxies';
 import { CustomValidators } from 'src/shared/utils/custom-validators';
 import { WorkflowConsultantActionsDialogComponent } from '../workflow-consultant-actions-dialog/workflow-consultant-actions-dialog.component';
 import { WorkflowDataService } from '../workflow-data.service';
@@ -73,7 +73,7 @@ export class WorkflowSalesComponent extends AppComponentBase implements OnInit {
     commissionFrequencies: EnumEntityTypeDto[] = [];
     commissionTypes: EnumEntityTypeDto[] = [];
     commissionRecipientTypeList: EnumEntityTypeDto[] = [];
-    tenants: EnumEntityTypeDto[] = [];
+    legalEntities: LegalEntityDto[] = [];
     projectCategories: EnumEntityTypeDto[] = [];
     discounts: EnumEntityTypeDto[] = [];
     expectedWorkloadUnits: EnumEntityTypeDto[] = [];
@@ -475,7 +475,7 @@ export class WorkflowSalesComponent extends AppComponentBase implements OnInit {
         this.getCommissionFrequency();
         this.getCommissionTypes();
         this.getCommissionRecipientTypes();
-        this.getTenants();
+        this.getLegalEntities();
         this.getProjectCategory();
         this.getDiscounts();
         this.getTerminationTimes();
@@ -494,7 +494,7 @@ export class WorkflowSalesComponent extends AppComponentBase implements OnInit {
                     this.saveStartChangeOrExtendClientPeriodSales(isDraft);
                 } else {
                     if (this.validateSalesForm()) {
-                        this.saveStartChangeOrExtendClientPeriodSales(isDraft);    
+                        this.saveStartChangeOrExtendClientPeriodSales(isDraft);
                     } else {
                         this.scrollToFirstError();
                     }
@@ -727,8 +727,8 @@ export class WorkflowSalesComponent extends AppComponentBase implements OnInit {
         this._internalLookupService.getCommissionRecipientTypes().subscribe(result => this.commissionRecipientTypeList = result);
     }
 
-    getTenants() {
-        this._internalLookupService.getTenants().subscribe(result => this.tenants = result);
+    getLegalEntities() {
+        this._internalLookupService.getLegalEntities().subscribe(result => this.legalEntities = result);
     }
 
     getProjectCategory() {
@@ -996,7 +996,7 @@ export class WorkflowSalesComponent extends AppComponentBase implements OnInit {
             expectedWorkloadUnitId: new FormControl(this.findItemById(this.expectedWorkloadUnits ,consultant?.expectedWorkloadUnitId) ?? null),
             consultantCapOnTimeReporting: new FormControl(this.findItemById(this.consultantTimeReportingCapList, consultant?.consultantTimeReportingCapId ?? 4)), // ?? default value = no cap - id:4
             consultantTimeReportingCapMaxValue: new FormControl(consultant?.consultantTimeReportingCapMaxValue ?? null),
-            consultantProdataEntity: new FormControl(this.findItemById(this.tenants, consultant?.pdcPaymentEntityId) ?? null),
+            consultantProdataEntity: new FormControl(this.findItemById(this.legalEntities, consultant?.pdcPaymentEntityId) ?? null),
             consultantPaymentType: new FormControl(consultantRate),
             consultantRate: new FormControl(consultant?.consultantRate?.normalRate ?? null),
             consultantRateUnitType: new FormControl(this.findItemById(this.rateUnitTypes, consultant?.consultantRate?.rateUnitTypeId) ?? null),
@@ -1437,8 +1437,7 @@ export class WorkflowSalesComponent extends AppComponentBase implements OnInit {
                         commissionInput.clientId = commission.recipient?.clientId;
                         break;
                     case 4: // PDC entity
-                        //FIXME: commented out because of errors after updating service proxies. will be fixed in P30-486
-                        // commissionInput.tenantId = commission.recipient?.id;
+                        commissionInput.legalEntityId = commission.recipient?.id;
                         break;
                 }
                 // id = 2 == 'One time'
@@ -1728,7 +1727,7 @@ export class WorkflowSalesComponent extends AppComponentBase implements OnInit {
                 this.salesClientDataForm.capOnTimeReporting?.setValue(this.findItemById(this.clientTimeReportingCap, result?.salesClientData?.clientTimeReportingCapId ?? 1), {emitEvent: false}); // default idValue = 1
                 this.salesClientDataForm.capOnTimeReportingValue?.setValue(result?.salesClientData?.clientTimeReportingCapMaxValue, {emitEvent: false});
                 // Invoicing
-                this.salesClientDataForm.pdcInvoicingEntityId?.setValue(this.findItemById(this.tenants, result?.salesClientData?.pdcInvoicingEntityId), {emitEvent: false});
+                this.salesClientDataForm.pdcInvoicingEntityId?.setValue(this.findItemById(this.legalEntities, result?.salesClientData?.pdcInvoicingEntityId), {emitEvent: false});
                 let clientRateType = this.findItemById(this.clientRateTypes, 1); // default value is 'Time based'
                 if (result.salesClientData?.clientRate?.isFixedRate) {
                     clientRateType = this.findItemById(this.clientRateTypes, 2); // 2: 'Fixed'
@@ -1916,8 +1915,7 @@ export class WorkflowSalesComponent extends AppComponentBase implements OnInit {
                 commissionRecipient = commission.client;
                 break;
             case 4: // PDC entity
-                //FIXME: commented out because of errors after updating service proxies. will be fixed in P30-486
-                // commissionRecipient = this.findItemById(this.tenants, commission.tenantId);
+                commissionRecipient = this.findItemById(this.legalEntities, commission.legalEntityId);
                 break;
         }
         const form = this._fb.group({
@@ -2262,7 +2260,7 @@ export class WorkflowSalesComponent extends AppComponentBase implements OnInit {
                     clientRateType = this.findItemById(this.clientRateTypes, 1); // 1: 'Time based'
                 }
                 this.salesClientDataForm.clientRateAndInvoicing?.setValue(clientRateType, {emitEVent: false});
-                this.salesClientDataForm.pdcInvoicingEntityId?.setValue(this.findItemById(this.tenants, result?.clientPeriodPdcInvoicingEntityId), {emitEvent: false});
+                this.salesClientDataForm.pdcInvoicingEntityId?.setValue(this.findItemById(this.legalEntities, result?.clientPeriodPdcInvoicingEntityId), {emitEvent: false});
                 this.salesClientDataForm.clientPrice?.setValue(result.clientRate?.normalRate, {emitEVent: false});
                 this.salesClientDataForm.rateUnitTypeId?.setValue(this.findItemById(this.rateUnitTypes, result.clientRate?.rateUnitTypeId), {emitEVent: false});
                 this.salesClientDataForm.clientCurrency?.setValue(this.findItemById(this.currencies, result.clientRate?.currencyId), {emitEVent: false});
