@@ -2570,7 +2570,7 @@
                                             </mat-form-field>
                                             <mat-form-field [fxHide]="consultant.value.consultantInvoicingFrequency?.name !== 'Manual date'" appearance="outline" fxFlex="0 0 calc(16.5% - 8px)">
                                                 <mat-label>Date</mat-label>
-                                                <input [required]="onsultant.value.consultantInvoicingFrequency?.name === 'Manual date'" autocomplete="off" matInput
+                                                <input [required]="consultant.value.consultantInvoicingFrequency?.name === 'Manual date'" autocomplete="off" matInput
                                                         [matDatepicker]="consultantInvoicingDatePicker"
                                                         name="consultantInvoicingManualDate" formControlName="consultantInvoicingManualDate"
                                                         (focus)="consultantInvoicingDatePicker.open()"
