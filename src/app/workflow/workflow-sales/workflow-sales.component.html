@@ -2570,7 +2570,7 @@
                                             </mat-form-field>
                                             <mat-form-field [fxHide]="consultant.value.consultantInvoicingFrequency?.name !== 'Manual date'" appearance="outline" fxFlex="0 0 calc(16.5% - 8px)">
                                                 <mat-label>Date</mat-label>
-                                                <input required autocomplete="off" matInput
+                                                <input [required]="onsultant.value.consultantInvoicingFrequency?.name === 'Manual date'" autocomplete="off" matInput
                                                         [matDatepicker]="consultantInvoicingDatePicker"
                                                         name="consultantInvoicingManualDate" formControlName="consultantInvoicingManualDate"
                                                         (focus)="consultantInvoicingDatePicker.open()"
@@ -2593,7 +2593,7 @@
                                             <!-- id: 2 - Manual date -->
                                             <mat-form-field appearance="outline" fxFlex="0 0 calc(16.5% - 8px)" [fxHide]="consultant.value?.consultantInvoicingTime?.id && consultant.value?.consultantInvoicingTime?.id !== 2">
                                                 <mat-label>Date</mat-label>
-                                                <input [required]="consultant.value?.consultantInvoicingTime?.id === 2" autocomplete="off" matInput
+                                                <input [required]="consultant.value?.consultantInvoicingTime?.name === 'Manual date'" autocomplete="off" matInput
                                                         [matDatepicker]="consultantInvoiceDatePicker"
                                                         name="consultantInvoicingManualDate" formControlName="consultantInvoicingManualDate"
                                                         (focus)="consultantInvoiceDatePicker.open()"
