@@ -12,7 +12,7 @@ import { merge, Observable, Subject, Subscription } from 'rxjs';
 import { debounceTime, finalize, map, switchMap, takeUntil } from 'rxjs/operators';
 import { AppComponentBase } from 'src/shared/app-component-base';
 import { AppConsts } from 'src/shared/AppConsts';
-import { ApiServiceProxy, EmployeeDto, EmployeeServiceProxy, EnumEntityTypeDto, LookupServiceProxy, StartNewWorkflowInputDto, WorkflowAlreadyExistsDto, WorkflowListItemDto, WorkflowProcessType, WorkflowServiceProxy, WorkflowStatus, WorkflowStepStatus } from 'src/shared/service-proxies/service-proxies';
+import { ApiServiceProxy, EmployeeDto, EmployeeServiceProxy, EnumEntityTypeDto, LegalEntityDto, LookupServiceProxy, StartNewWorkflowInputDto, WorkflowAlreadyExistsDto, WorkflowListItemDto, WorkflowProcessType, WorkflowServiceProxy, WorkflowStatus, WorkflowStepStatus } from 'src/shared/service-proxies/service-proxies';
 import { SelectableCountry, SelectableIdNameDto } from '../client/client.model';
 import { InternalLookupService } from '../shared/common/internal-lookup.service';
 import { ConfirmationDialogComponent } from '../shared/components/confirmation-dialog/confirmation-dialog.component';
@@ -73,7 +73,7 @@ export class WorkflowComponent extends AppComponentBase implements OnInit, OnDes
     //     }
     // ];
 
-    tenants: EnumEntityTypeDto[] = [];
+    legalEntities: LegalEntityDto[] = [];
     saleTypes: EnumEntityTypeDto[] = [];
     deliveryTypes: EnumEntityTypeDto[] = [];
     workflowStatuses: { [key: string]: string; };
@@ -180,7 +180,7 @@ export class WorkflowComponent extends AppComponentBase implements OnInit, OnDes
 
     ngOnInit(): void {
         this.getCurrentUser();
-        this.getTenants();
+        this.getLegalEntities();
         this.getSalesType();
         this.getDeliveryTypes();
         this.getWorkflowStatuses();
@@ -364,14 +364,10 @@ export class WorkflowComponent extends AppComponentBase implements OnInit, OnDes
         }
     }
 
-    getTenants() {
-        this._internalLookupService.getTenants()
-            .pipe(finalize(() => {
-
-            }))
-            .subscribe(result => {
-                this.tenants = result;
-            });
+    getLegalEntities() {
+        this._internalLookupService.getLegalEntities().subscribe(result => {
+            this.legalEntities = result;
+        });
     }
 
     getSalesType() {

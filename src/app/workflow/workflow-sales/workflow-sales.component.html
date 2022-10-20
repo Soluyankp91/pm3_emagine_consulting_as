@@ -165,7 +165,7 @@
                                                         {{commission.value.recipient?.supplierName}}
                                                     </ng-container>
                                                     <ng-container *ngSwitchCase="'PDC entity'">
-                                                        {{commission.value.recipient?.name}}
+                                                        {{commission.value.recipient?.tenantName + ' ' + '(' + commission.value.recipient?.name + ')'}}
                                                     </ng-container>
                                                 </ng-container>
                                             </span>
@@ -1243,8 +1243,8 @@
                                                     <!-- recipientType?.id === 4 - PDC entity -->
                                                     <ng-container *ngIf="commission.value.recipientType?.id === 4; else commissionRecipientAutocomplete">
                                                         <mat-select formControlName="recipient" placeholder="Recipient" [disableOptionCentering]="true" [compareWith]="compareWithFn">
-                                                            <mat-option *ngFor="let item of tenants" [value]="item">
-                                                                <b>{{ item.name }}</b>
+                                                            <mat-option *ngFor="let item of legalEntities" [value]="item">
+                                                                <b>{{ item.tenantName + ' ' + '(' + item.name + ')' }}</b>
                                                             </mat-option>
                                                         </mat-select>
                                                     </ng-container>
@@ -1362,7 +1362,7 @@
                                                             {{commission.value.recipient?.supplierName}}
                                                         </ng-container>
                                                         <ng-container *ngSwitchCase="'PDC entity'">
-                                                            {{commission.value.recipient?.name}}
+                                                            {{commission.value.recipient?.tenantName + ' ' + '(' + commission.value.recipient?.name + ')'}}
                                                         </ng-container>
                                                     </ng-container>
                                                 </span>
@@ -1678,8 +1678,8 @@
                                 <mat-form-field appearance="outline" class="u-w--100  filter-select" fxFlex="33%">
                                     <mat-label>emagine entity</mat-label>
                                     <mat-select required formControlName="pdcInvoicingEntityId" [disableOptionCentering]="true" [compareWith]="compareWithFn">
-                                        <mat-option *ngFor="let item of tenants" [value]="item">
-                                            {{ item.name }}
+                                        <mat-option *ngFor="let item of legalEntities" [value]="item">
+                                            {{ item.tenantName + ' ' + '(' + item.name + ')' }}
                                         </mat-option>
                                     </mat-select>
                                     <app-validator [control]="salesClientDataForm.pdcInvoicingEntityId"></app-validator>
@@ -2381,8 +2381,8 @@
                                         <mat-form-field appearance="outline" class="u-w--100  filter-select" fxFlex="33%">
                                             <mat-label>emagine Entity</mat-label>
                                             <mat-select required formControlName="consultantProdataEntity" [disableOptionCentering]="true" [compareWith]="compareWithFn">
-                                                <mat-option *ngFor="let item of tenants" [value]="item">
-                                                    {{ item.name }}
+                                                <mat-option *ngFor="let item of legalEntities" [value]="item">
+                                                    {{ item.tenantName + ' ' + '(' + item.name + ')' }}
                                                 </mat-option>
                                             </mat-select>
                                             <app-validator [control]="consultant.get('consultantProdataEntity')"></app-validator>
@@ -2570,7 +2570,7 @@
                                             </mat-form-field>
                                             <mat-form-field [fxHide]="consultant.value.consultantInvoicingFrequency?.name !== 'Manual date'" appearance="outline" fxFlex="0 0 calc(16.5% - 8px)">
                                                 <mat-label>Date</mat-label>
-                                                <input required autocomplete="off" matInput
+                                                <input [required]="consultant.value.consultantInvoicingFrequency?.name === 'Manual date'" autocomplete="off" matInput
                                                         [matDatepicker]="consultantInvoicingDatePicker"
                                                         name="consultantInvoicingManualDate" formControlName="consultantInvoicingManualDate"
                                                         (focus)="consultantInvoicingDatePicker.open()"
@@ -2593,7 +2593,7 @@
                                             <!-- id: 2 - Manual date -->
                                             <mat-form-field appearance="outline" fxFlex="0 0 calc(16.5% - 8px)" [fxHide]="consultant.value?.consultantInvoicingTime?.id && consultant.value?.consultantInvoicingTime?.id !== 2">
                                                 <mat-label>Date</mat-label>
-                                                <input [required]="consultant.value?.consultantInvoicingTime?.id === 2" autocomplete="off" matInput
+                                                <input [required]="consultant.value?.consultantInvoicingTime?.name === 'Manual date'" autocomplete="off" matInput
                                                         [matDatepicker]="consultantInvoiceDatePicker"
                                                         name="consultantInvoicingManualDate" formControlName="consultantInvoicingManualDate"
                                                         (focus)="consultantInvoiceDatePicker.open()"
