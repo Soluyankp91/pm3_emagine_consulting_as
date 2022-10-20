@@ -116,3 +116,29 @@ export class SelectableStatusesDto implements ISelectableStatusesDto {
         this.flag = data?.flag!;
     }
 }
+
+export interface ISelectableCountry {
+    id: number | string;
+    flag: string;
+    name: string;
+    tenantName: string;
+    code: string;
+    selected: boolean;
+}
+
+export class SelectableCountry implements ISelectableCountry {
+    id: number | string;
+    flag: string;
+    name: string;
+    tenantName: string;
+    code: string;
+    selected: boolean;
+    constructor(data?: ISelectableCountry) {
+        this.id = data?.id!;
+        this.flag = data?.flag!;
+        this.name = data?.name!;
+        this.tenantName = data?.tenantName!;
+        this.code = data?.code!;
+        this.selected = data?.selected!;
+    }
+}

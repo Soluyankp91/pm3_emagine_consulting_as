@@ -1005,7 +1005,7 @@
                                                             {{projectLine.value.id ?? '-'}}
                                                         </span>
                                                         <span fxFlex="25%" class="u-w--100 text-truncate-ellipsis__multilne workflow-contracts--list-item" [matTooltip]="projectLine.value.projectName ?? '-'" matTooltipClass="white-tooltip" appShowIfTruncated>
-                                                            {{projectLine.value.projectName ?? '-'}}
+                                                            {{projectLine.value.projectName && projectLine.value.projectName !== '' ? projectLine.value.projectName : '-'}}
                                                         </span>
                                                         <span fxFlex="25%" class="u-w--100 text-truncate-ellipsis workflow-contracts--list-item" [matTooltip]="projectLine.value.invoicingReferenceNumber ?? '-'" matTooltipClass="white-tooltip" appShowIfTruncated>
                                                             {{projectLine.value.invoicingReferenceNumber && projectLine.value.invoicingReferenceNumber !== '' ? projectLine.value.invoicingReferenceNumber : '-'}}
@@ -1069,7 +1069,7 @@
                                                 <div fxLayout="row" class="project-line--expansion-additional">
                                                     <span fxFlex="15%" class="project-line--expansion-additional__header">Project name</span>
                                                     <span class="project-line--expansion-additional__content">
-                                                        {{projectLine.value.projectName ?? '-'}}
+                                                        {{projectLine.value.projectName && projectLine.value.projectName !== '' ? projectLine.value.projectName : '-'}}
                                                     </span>
                                                 </div>
                                                 <div fxLayout="row"  class="project-line--expansion-additional">
@@ -1086,7 +1086,7 @@
                                                 <div fxLayout="row" class="project-line--expansion-additional">
                                                     <span fxFlex="15%" class="project-line--expansion-additional__header">Debitor number</span>
                                                     <span class="project-line--expansion-additional__content">
-                                                        {{projectLine.value.debtorNumber ?? '-'}}
+                                                        {{projectLine.value.debtorNumber && projectLine.value.debtorNumber !== '' ? projectLine.value.debtorNumber : '-'}}
                                                     </span>
                                                 </div>
                                                 <div fxLayout="row" class="project-line--expansion-additional">

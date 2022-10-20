@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
-import { CountryDto, EnumEntityTypeDto, EnumServiceProxy } from 'src/shared/service-proxies/service-proxies';
+import { CountryDto, EnumEntityTypeDto, EnumServiceProxy, LegalEntityDto } from 'src/shared/service-proxies/service-proxies';
 
 @Injectable()
 export class InternalLookupService {
@@ -41,9 +41,9 @@ export class InternalLookupService {
     contractExpirationNotificationDuration: { [key: string]: string; };
     legalContractStatuses: { [key: string]: string; };
     hubspotClientUrl: string;
+    legalEntities: EnumEntityTypeDto[] = [];
 
     constructor(private _enumService: EnumServiceProxy) {
-
     }
 
     getData() {
@@ -65,6 +65,7 @@ export class InternalLookupService {
         this.getWorkflowClientPeriodTypes();
         this.getWorkflowConsultantPeriodTypes();
         this.getWorkflowPeriodStepTypes();
+        this.getLegalEntities();
     }
 
     getCurrencies(): Observable<EnumEntityTypeDto[]> {
@@ -707,6 +708,23 @@ export class InternalLookupService {
                     .subscribe(response => {
                         this.consultantInsuranceOptions = response;
                         observer.next(this.consultantInsuranceOptions);
+                        observer.complete();
+                    }, error => {
+                        observer.error(error);
+                    });
+            }
+        });
+    }
+    getLegalEntities(): Observable<LegalEntityDto[]> {
+        return new Observable<LegalEntityDto[]>((observer) => {
+            if (this.legalEntities.length) {
+                observer.next(this.legalEntities);
+                observer.complete();
+            } else {
+                this._enumService.legalEntities()
+                    .subscribe(response => {
+                        this.legalEntities = response;
+                        observer.next(this.legalEntities);
                         observer.complete();
                     }, error => {
                         observer.error(error);
