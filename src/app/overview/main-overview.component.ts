@@ -3,7 +3,7 @@ import { FormControl } from '@angular/forms';
 import { GanttDate, GanttGroup, GanttItem, GanttViewType, NgxGanttComponent } from '@worktile/gantt';
 import { getUnixTime } from 'date-fns';
 import { merge, Subject, Subscription } from 'rxjs';
-import { debounceTime, finalize, switchMap, takeUntil } from 'rxjs/operators';
+import { debounceTime, finalize, switchMap, takeUntil, map } from 'rxjs/operators';
 import { AppConsts } from 'src/shared/AppConsts';
 import { EmployeeDto, EmployeeServiceProxy, EnumEntityTypeDto, LookupServiceProxy, MainOverviewItemPeriodDto, MainOverviewServiceProxy, MainOverviewStatus, MainOverviewStatusDto } from 'src/shared/service-proxies/service-proxies';
 import { SelectableIdNameDto } from '../client/client.model';
@@ -483,11 +483,8 @@ export class MainOverviewComponent extends AppComponentBase implements OnInit {
     getLegalEntities() {
         this.isCountriesLoading = true;
         this._internalLookupService.getLegalEntities()
-            .pipe(finalize(() => {
-                this.isCountriesLoading = false;
-            }))
-            .subscribe(result => {
-                this.legalEntities = result.map(x => {
+            .pipe(finalize(() => this.isCountriesLoading = false),
+                map(entities => entities.map(x => {
                     return new SelectableCountry({
                         id: x.id!,
                         name: x.name!,
@@ -496,7 +493,9 @@ export class MainOverviewComponent extends AppComponentBase implements OnInit {
                         selected: false,
                         flag: x.tenantName!
                     });
-                });
+                })))
+            .subscribe(result => {
+                this.legalEntities = result;
             });
     }
 
