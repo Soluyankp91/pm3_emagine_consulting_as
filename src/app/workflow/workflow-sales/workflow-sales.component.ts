@@ -584,10 +584,9 @@ export class WorkflowSalesComponent extends AppComponentBase implements OnInit {
             let firstError = document.getElementsByClassName('mat-form-field-invalid')[0] as HTMLElement;
             if (firstError) {
                 let config: ScrollToConfigOptions = {
-                    target: firstError,
-                    offset: -120
+                    target: firstError
                 }
-                this.scrollToService.scrollTo(config)
+                this.scrollToService.scrollTo(config);
             }
         }, 0);
     }

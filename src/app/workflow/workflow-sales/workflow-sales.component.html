@@ -2566,11 +2566,11 @@
                                                         {{ item.name }}
                                                     </mat-option>
                                                 </mat-select>
-                                                <app-validator [control]="consultant.get('consultantInvoicingFrequency')"></app-validator>                                                
+                                                <app-validator [control]="consultant.get('consultantInvoicingFrequency')"></app-validator>
                                             </mat-form-field>
                                             <mat-form-field [fxHide]="consultant.value.consultantInvoicingFrequency?.name !== 'Manual date'" appearance="outline" fxFlex="0 0 calc(16.5% - 8px)">
                                                 <mat-label>Date</mat-label>
-                                                <input required autocomplete="off" matInput
+                                                <input [required]="consultant.value.consultantInvoicingFrequency?.name === 'Manual date'" autocomplete="off" matInput
                                                         [matDatepicker]="consultantInvoicingDatePicker"
                                                         name="consultantInvoicingManualDate" formControlName="consultantInvoicingManualDate"
                                                         (focus)="consultantInvoicingDatePicker.open()"
@@ -2591,9 +2591,9 @@
                                                 <app-validator [control]="consultant.get('consultantInvoicingTime')"></app-validator>
                                             </mat-form-field>
                                             <!-- id: 2 - Manual date -->
-                                            <mat-form-field appearance="outline" fxFlex="0 0 calc(16.5% - 8px)" [fxHide]="consultant.value?.consultantInvoicingTime?.id && consultant.value?.consultantInvoicingTime?.id !== 2">
+                                            <mat-form-field appearance="outline" fxFlex="0 0 calc(16.5% - 8px)" [fxHide]="consultant.value?.consultantInvoicingTime?.name !== 'Manual date'">
                                                 <mat-label>Date</mat-label>
-                                                <input [required]="consultant.value?.consultantInvoicingTime?.id === 2" autocomplete="off" matInput
+                                                <input [required]="consultant.value?.consultantInvoicingTime?.name === 'Manual date'" autocomplete="off" matInput
                                                         [matDatepicker]="consultantInvoiceDatePicker"
                                                         name="consultantInvoicingManualDate" formControlName="consultantInvoicingManualDate"
                                                         (focus)="consultantInvoiceDatePicker.open()"
@@ -3164,13 +3164,14 @@
             <h3 class="workflow-gray--header u-mt--20" *ngIf="activeSideSection.typeId === workflowSideSections.TerminateWorkflow">End of Client Contract</h3>
 
             <div fxLayout="row" fxLayoutAlign="start start" class="u-w--100 u-mb--10">
-                <mat-button-toggle-group class="workflow-toggle-buttons u-mt--10" formControlName="terminationTime">
+                <mat-button-toggle-group [ngClass]="{'mat-form-field-invalid': !salesTerminateConsultantForm.terminationTime?.value}" class="workflow-toggle-buttons u-mt--10" formControlName="terminationTime">
                     <mat-button-toggle
                         *ngFor="let item of nonStandartTerminationTimes | keyvalue"
                         [value]="+item.key">
                             {{ item.value }}
                     </mat-button-toggle>
                 </mat-button-toggle-group>
+                <app-validator *ngIf="salesTerminateConsultantForm.terminationTime?.touched" [control]="salesTerminateConsultantForm.terminationTime"></app-validator>
             </div>
 
             <div fxLayout="row" fxLayoutAlign="start start" class="u-w--100 u-mb--10" *ngIf="salesTerminateConsultantForm?.terminationTime?.value === 2">
@@ -3188,13 +3189,14 @@
             </div>
 
             <div fxLayout="row" fxLayoutAlign="start start" class="u-w--100 u-mb--10" *ngIf="salesTerminateConsultantForm?.terminationTime?.value === 2 || salesTerminateConsultantForm?.terminationTime?.value === 3">
-                <mat-button-toggle-group class="workflow-toggle-buttons" formControlName="terminationReason">
+                <mat-button-toggle-group [ngClass]="{'mat-form-field-invalid': !salesTerminateConsultantForm.terminationReason?.value}" class="workflow-toggle-buttons" formControlName="terminationReason">
                     <mat-button-toggle
                         [value]="+item.key"
                         *ngFor="let item of terminationReasons | keyvalue">
                         {{ item.value }}
                     </mat-button-toggle>
                 </mat-button-toggle-group>
+                <app-validator *ngIf="salesTerminateConsultantForm.terminationReason?.touched" [control]="salesTerminateConsultantForm.terminationReason"></app-validator>
             </div>
 
             <div fxLayout="row" fxLayoutAlign="start start" class="u-w--100"  *ngIf="salesTerminateConsultantForm?.terminationTime?.value === 2 || salesTerminateConsultantForm?.terminationTime?.value === 3">
