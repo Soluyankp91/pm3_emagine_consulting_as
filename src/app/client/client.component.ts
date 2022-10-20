@@ -159,11 +159,11 @@ export class ClientComponent extends AppComponentBase implements OnInit, OnDestr
     }
 
     getCurrentUser() {
-        this.showMainSpinner();
+        this.isDataLoading = true;
         this.selectedAccountManagers = [];
         this._employeeService.current()
             .pipe(finalize(()=> {
-                this.hideMainSpinner();
+                this.isDataLoading = false;
                 this.getGridOptions();
             }))
             .subscribe(result => {
