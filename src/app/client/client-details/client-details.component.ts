@@ -34,7 +34,7 @@ export class ClientDetailsComponent extends AppComponentBase implements OnInit {
         private _clientService: ClientsServiceProxy,
         private httpClient: HttpClient,
         private localHttpService: LocalHttpService,
-        private dialog: MatDialog
+        private dialog: MatDialog,
     ) {
         super(injector);
     }
@@ -49,6 +49,7 @@ export class ClientDetailsComponent extends AppComponentBase implements OnInit {
     }
 
     ngOnDestroy(): void {
+        this.dialog.closeAll();
         this._unsubscribe.next();
         this._unsubscribe.complete();
     }
@@ -103,13 +104,12 @@ export class ClientDetailsComponent extends AppComponentBase implements OnInit {
     openHubspotSyncDialog(syncMessage: SyncClientFromCrmResultDto) {
         this.dialog.open(HubspotSyncModalComponent, {
             width: '450px',
-            minHeight: '180px',
-            height: 'calc(100vh - 120px)',
-            autoFocus: false,
+            height: 'calc(100vh - 201px)',
             panelClass: 'hubspot-sync-modal',
+            autoFocus: false,
             hasBackdrop: false,
             data: {
-                message: syncMessage.message?.split('\n').filter(item => item)
+                message: syncMessage.message?.split('.\n').filter(item => item)
             }
         });
     }

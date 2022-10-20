@@ -3,16 +3,14 @@ import { Component, Injector, Input, OnDestroy, OnInit, ViewChild } from '@angul
 import { AbstractControl, FormArray, FormBuilder, FormControl, Validators } from '@angular/forms';
 import { MatDialog } from '@angular/material/dialog';
 import { MatMenuTrigger } from '@angular/material/menu';
+import { ScrollToConfigOptions, ScrollToService } from '@nicky-lenaers/ngx-scroll-to';
 import { Subject } from 'rxjs';
 import { finalize, takeUntil } from 'rxjs/operators';
 import { InternalLookupService } from 'src/app/shared/common/internal-lookup.service';
-import { ConfirmationDialogComponent } from 'src/app/shared/components/confirmation-dialog/confirmation-dialog.component';
 import { AppComponentBase } from 'src/shared/app-component-base';
-import { ClientPeriodContractsDataCommandDto, WorkflowProcessType, WorkflowServiceProxy, ClientPeriodServiceProxy, ConsultantContractsDataCommandDto, ContractsClientDataDto, ContractsMainDataDto, EnumEntityTypeDto, PeriodClientSpecialFeeDto, PeriodClientSpecialRateDto, PeriodConsultantSpecialFeeDto, PeriodConsultantSpecialRateDto, ProjectLineDto, ConsultantTerminationContractDataCommandDto, WorkflowTerminationContractDataCommandDto, ConsultantTerminationContractDataQueryDto, ClientContractsServiceProxy, ConsultantPeriodServiceProxy, ConsultantContractsServiceProxy, ConsultantPeriodContractsDataCommandDto, ClientsServiceProxy, ClientSpecialRateDto, ClientSpecialFeeDto, ConsultantResultDto, ContractSyncServiceProxy, StepType, ConsultantContractsDataQueryDto } from 'src/shared/service-proxies/service-proxies';
-import { WorkflowConsultantActionsDialogComponent } from '../workflow-consultant-actions-dialog/workflow-consultant-actions-dialog.component';
+import { ClientPeriodContractsDataCommandDto, WorkflowProcessType, WorkflowServiceProxy, ClientPeriodServiceProxy, ConsultantContractsDataCommandDto, ContractsClientDataDto, ContractsMainDataDto, EnumEntityTypeDto, PeriodClientSpecialFeeDto, PeriodClientSpecialRateDto, PeriodConsultantSpecialFeeDto, PeriodConsultantSpecialRateDto, ProjectLineDto, ConsultantTerminationContractDataCommandDto, WorkflowTerminationContractDataCommandDto, ConsultantTerminationContractDataQueryDto, ClientContractsServiceProxy, ConsultantPeriodServiceProxy, ConsultantContractsServiceProxy, ConsultantPeriodContractsDataCommandDto, ClientsServiceProxy, ClientSpecialRateDto, ClientSpecialFeeDto, ConsultantResultDto, ContractSyncServiceProxy, StepType, ConsultantContractsDataQueryDto, ContractSyncResultDto } from 'src/shared/service-proxies/service-proxies';
 import { WorkflowDataService } from '../workflow-data.service';
 import { WorkflowProcessWithAnchorsDto } from '../workflow-period/workflow-period.model';
-import { ConsultantDiallogAction } from '../workflow-sales/workflow-sales.model';
 import { EmploymentTypes, ProjectLineDiallogMode } from '../workflow.model';
 import { AddOrEditProjectLineDialogComponent } from './add-or-edit-project-line-dialog/add-or-edit-project-line-dialog.component';
 import { LegalContractStatus, WorkflowConsultantsLegalContractForm, WorkflowContractsClientDataForm, WorkflowContractsConsultantsDataForm, WorkflowContractsMainForm, WorkflowContractsSyncForm, WorkflowContractsTerminationConsultantsDataForm } from './workflow-contracts.model';
@@ -23,7 +21,6 @@ import { LegalContractStatus, WorkflowConsultantsLegalContractForm, WorkflowCont
     styleUrls: ['./workflow-contracts.component.scss']
 })
 export class WorkflowContractsComponent extends AppComponentBase implements OnInit, OnDestroy {
-    @ViewChild('projectLinesMenuTrigger', {static: false}) projectLinesMenuTrigger: MatMenuTrigger;
     @Input() workflowId: string;
     @Input() periodId: string | undefined;
     @Input() consultant: ConsultantResultDto;
@@ -96,7 +93,8 @@ export class WorkflowContractsComponent extends AppComponentBase implements OnIn
         private _consultantPeriodService: ConsultantPeriodServiceProxy,
         private _consultantContractsService: ConsultantContractsServiceProxy,
         private _clientService: ClientsServiceProxy,
-        private _contractSyncService: ContractSyncServiceProxy
+        private _contractSyncService: ContractSyncServiceProxy,
+        private scrollToService: ScrollToService
     ) {
         super(injector);
         this.contractsMainForm = new WorkflowContractsMainForm();
@@ -133,28 +131,60 @@ export class WorkflowContractsComponent extends AppComponentBase implements OnIn
         // Client start, extend and change periods
         this._workflowDataService.startClientPeriodContractsSaved
             .pipe(takeUntil(this._unsubscribe))
-            .subscribe((value: boolean) => {
-                this.saveStartChangeOrExtendClientPeriodContracts(value);
+            .subscribe((isDraft: boolean) => {
+                if (isDraft) {
+                    this.saveStartChangeOrExtendClientPeriodContracts(isDraft);
+                } else {
+                    if (this.validateSalesForm()) {
+                        this.saveStartChangeOrExtendClientPeriodContracts(isDraft);
+                    } else {
+                        this.scrollToFirstError();
+                    }
+                }
             });
 
         // Consultant start, extend and change periods
         this._workflowDataService.consultantStartChangeOrExtendContractsSaved
             .pipe(takeUntil(this._unsubscribe))
-            .subscribe((value: boolean) => {
-                this.saveStartChangeOrExtendConsultantPeriodContracts(value);
+            .subscribe((isDraft: boolean) => {
+                if (isDraft) {
+                    this.saveStartChangeOrExtendConsultantPeriodContracts(isDraft);
+                } else {
+                    if (this.validateSalesForm()) {
+                        this.saveStartChangeOrExtendConsultantPeriodContracts(isDraft);
+                    } else {
+                        this.scrollToFirstError();
+                    }
+                }
             });
 
         // Terminations
         this._workflowDataService.workflowConsultantTerminationContractsSaved
             .pipe(takeUntil(this._unsubscribe))
-            .subscribe((value: boolean) => {
-                this.saveTerminationConsultantContractStep(value);
+            .subscribe((isDraft: boolean) => {
+                if (isDraft) {
+                    this.saveTerminationConsultantContractStep(isDraft);
+                } else {
+                    if (this.validateSalesForm()) {
+                        this.saveTerminationConsultantContractStep(isDraft);
+                    } else {
+                        this.scrollToFirstError();
+                    }
+                }
             });
 
         this._workflowDataService.workflowTerminationContractsSaved
             .pipe(takeUntil(this._unsubscribe))
-            .subscribe((value: boolean) => {
-                this.saveWorkflowTerminationContractStep(value);
+            .subscribe((isDraft: boolean) => {
+                if (isDraft) {
+                    this.saveWorkflowTerminationContractStep(isDraft);
+                } else {
+                    if (this.validateSalesForm()) {
+                        this.saveWorkflowTerminationContractStep(isDraft);
+                    } else {
+                        this.scrollToFirstError();
+                    }
+                }
             });
 
         this._workflowDataService.cancelForceEdit
@@ -165,6 +195,38 @@ export class WorkflowContractsComponent extends AppComponentBase implements OnIn
                 this._workflowDataService.updateWorkflowProgressStatus({currentStepIsCompleted: this.isCompleted, currentStepIsForcefullyEditing: this.editEnabledForcefuly});
                 this.getContractStepData();
             });
+    }
+
+    validateSalesForm() {
+        this.contractsMainForm.markAllAsTouched();
+        this.contractClientForm.markAllAsTouched();
+        this.contractsSyncDataForm.markAllAsTouched();
+        this.contractsConsultantsDataForm.markAllAsTouched();
+        switch (this.activeSideSection.typeId) {
+            case WorkflowProcessType.StartClientPeriod:
+            case WorkflowProcessType.ChangeClientPeriod:
+            case WorkflowProcessType.ExtendClientPeriod:
+            case WorkflowProcessType.StartConsultantPeriod:
+            case WorkflowProcessType.ChangeConsultantPeriod:
+            case WorkflowProcessType.ExtendConsultantPeriod:
+                return this.contractsMainForm.valid && this.contractClientForm.valid && this.contractsSyncDataForm.valid && this.contractsConsultantsDataForm.valid
+            case WorkflowProcessType.TerminateWorkflow:
+            case WorkflowProcessType.TerminateConsultant:
+                return true;
+        }
+    }
+
+    scrollToFirstError() {
+        setTimeout(() => {
+            let firstError = document.getElementsByClassName('mat-form-field-invalid')[0] as HTMLElement;
+            if (firstError) {
+                let config: ScrollToConfigOptions = {
+                    target: firstError,
+                    offset: -120
+                }
+                this.scrollToService.scrollTo(config)
+            }
+        }, 0);
     }
 
     getContractStepData(isFromSyncToLegacy?: boolean) {
@@ -283,13 +345,7 @@ export class WorkflowContractsComponent extends AppComponentBase implements OnIn
     }
 
     getMargins() {
-        this._internalLookupService.getMargins()
-            .pipe(finalize(() => {
-
-            }))
-            .subscribe(result => {
-                this.margins = result;
-            });
+        this._internalLookupService.getMargins().subscribe(result => this.margins = result);
     }
 
     getClientTimeReportingCap() {
@@ -313,9 +369,7 @@ export class WorkflowContractsComponent extends AppComponentBase implements OnIn
     }
 
     getConsultantInsuranceOptions() {
-        this._internalLookupService.getConsultantInsuranceOptions().subscribe(result => {
-            this.consultantInsuranceOptions = result;
-        });
+        this._internalLookupService.getConsultantInsuranceOptions().subscribe(result => this.consultantInsuranceOptions = result);
     }
 
     toggleEditMode(isToggledFromUi?: boolean) {
@@ -346,7 +400,6 @@ export class WorkflowContractsComponent extends AppComponentBase implements OnIn
         this._workflowDataService.consultantsAddedToStep.emit({stepType: StepType.Contract, processTypeId: this.activeSideSection.typeId!, consultantNames: consultantNames});
     }
 
-    // #region CHANGE NAMING
     selectClientRate(event: any, rate: ClientSpecialRateDto, clientRateMenuTrigger: MatMenuTrigger) {
         const clientRate = new PeriodClientSpecialRateDto();
         clientRate.id = undefined;
@@ -480,10 +533,7 @@ export class WorkflowContractsComponent extends AppComponentBase implements OnIn
         this.clientFees.at(index).get('editable')?.setValue(false, {emitEvent: false});
     }
 
-    // #endregion CHANGE NAMING
-
     addConsultantDataToForm(consultant: ConsultantContractsDataQueryDto, consultantIndex: number) {
-        // TODO: add missing properties, id, employmentType, etc.
         const form = this._fb.group({
             consultantPeriodId: new FormControl(consultant?.consultantPeriodId),
             consultantId: new FormControl(consultant?.consultantId),
@@ -610,11 +660,9 @@ export class WorkflowContractsComponent extends AppComponentBase implements OnIn
 
     editOrSaveConsultantSpecialRate(isEditable: boolean, consultantIndex: number, rateIndex: number) {
         if (isEditable) {
-            // save
             this.consultantRateToEdit = new PeriodConsultantSpecialRateDto();
             this.isConsultantRateEditing = false;
         } else {
-            // make editable
             const consultantRateValue = (this.consultants.at(consultantIndex).get('specialRates') as FormArray).at(rateIndex).value;
             this.consultantRateToEdit = new PeriodConsultantSpecialRateDto({
                 id: consultantRateValue.id,
@@ -685,11 +733,9 @@ export class WorkflowContractsComponent extends AppComponentBase implements OnIn
 
     editOrSaveConsultantSpecialFee(isEditable: boolean, consultantIndex: number, feeIndex: number) {
         if (isEditable) {
-            // save
             this.consultantFeeToEdit = new PeriodConsultantSpecialFeeDto();
             this.isConsultantFeeEditing = false;
         } else {
-            // make editable
             const consultantFeeValue = (this.consultants.at(consultantIndex).get('clientFees') as FormArray).at(feeIndex).value;
             this.consultantFeeToEdit = new PeriodConsultantSpecialFeeDto({
                 id: consultantFeeValue.id,
@@ -724,8 +770,10 @@ export class WorkflowContractsComponent extends AppComponentBase implements OnIn
 
     // Consultant data Project Lines START REGION
 
-    createOrEditProjectLine(index: number, projectLinesIndex?: number) {
-        this.projectLinesMenuTrigger.closeMenu();
+    createOrEditProjectLine(index: number, projectLinesMenuTrigger?: MatMenuTrigger, projectLinesIndex?: number) {
+        if (projectLinesMenuTrigger) {
+            projectLinesMenuTrigger.closeMenu();
+        }
         const scrollStrategy = this.overlay.scrollStrategies.reposition();
         let projectLine = {
             projectName: this.contractsMainForm.projectName!.value,
@@ -757,22 +805,30 @@ export class WorkflowContractsComponent extends AppComponentBase implements OnIn
 
         dialogRef.componentInstance.onConfirmed.subscribe((projectLine) => {
             if (projectLinesIndex !== null && projectLinesIndex !== undefined) {
-                // Edit
                 this.editProjectLineValue(index, projectLinesIndex, projectLine);
             } else {
                 this.addProjectLinesToConsultantData(index, projectLine);
-                // Create
             }
-            // confirmed
         });
 
-        dialogRef.componentInstance.onRejected.subscribe(() => {
-            // rejected
-        });
 
     }
 
     addProjectLinesToConsultantData(index: number, projectLine?: ProjectLineDto) {
+        if (projectLine) {
+            if (!projectLine?.differentDebtorNumber) {
+                projectLine!.debtorNumber = this.contractsMainForm!.customDebtorNumber?.value;
+            }
+            if (!projectLine?.differentInvoiceRecipient) {
+                projectLine!.invoiceRecipient = this.contractClientForm.clientInvoicingRecipient?.value;
+            }
+            if (!projectLine?.differentInvoicingReferenceNumber) {
+                projectLine!.invoicingReferenceNumber = this.contractClientForm.invoicingReferenceNumber?.value;
+            }
+            if (!projectLine?.differentInvoicingReferencePerson) {
+                projectLine!.invoicingReferencePerson = this.contractClientForm.invoicingReferencePerson?.value;
+            }
+        }
         const form = this._fb.group({
             id: new FormControl(projectLine?.id ?? null),
             projectName: new FormControl(projectLine?.projectName ?? null),
@@ -853,100 +909,6 @@ export class WorkflowContractsComponent extends AppComponentBase implements OnIn
         (this.contractsConsultantsDataForm.consultants.at(consultantIndex).get('projectLines') as FormArray).at(projectLineIndex).get('markedForLegacyDeletion')?.setValue(!previousValue, {emitEvent: false});
     }
     // Consultant data Project Lines END REGION
-
-    //#region Consultant menu actions
-    changeConsultantData(index: number) {
-        const consultantData = this.contractsConsultantsDataForm.consultants.at(index).value;
-        const scrollStrategy = this.overlay.scrollStrategies.reposition();
-        const dialogRef = this.dialog.open(WorkflowConsultantActionsDialogComponent, {
-            minWidth: '450px',
-            minHeight: '180px',
-            height: 'auto',
-            width: 'auto',
-            scrollStrategy,
-            backdropClass: 'backdrop-modal--wrapper',
-            autoFocus: false,
-            panelClass: 'confirmation-modal',
-            data: {
-                dialogType: ConsultantDiallogAction.Change,
-                consultantData: consultantData,
-                dialogTitle: `Change consultant`,
-                rejectButtonText: 'Cancel',
-                confirmButtonText: 'Create',
-                isNegative: false
-            }
-        });
-
-        dialogRef.componentInstance.onConfirmed.subscribe((result) => {
-            // call API to change consultant
-        });
-
-        dialogRef.componentInstance.onRejected.subscribe(() => {
-            // nthng
-        });
-    }
-
-    extendConsultant(index: number) {
-        const consultantData = this.contractsConsultantsDataForm.consultants.at(index).value;
-        const scrollStrategy = this.overlay.scrollStrategies.reposition();
-        const dialogRef = this.dialog.open(WorkflowConsultantActionsDialogComponent, {
-            minWidth: '450px',
-            minHeight: '180px',
-            height: 'auto',
-            width: 'auto',
-            scrollStrategy,
-            backdropClass: 'backdrop-modal--wrapper',
-            autoFocus: false,
-            panelClass: 'confirmation-modal',
-            data: {
-                dialogType: ConsultantDiallogAction.Extend,
-                consultantData: consultantData,
-                dialogTitle: `Extend consultant`,
-                rejectButtonText: 'Cancel',
-                confirmButtonText: 'Create',
-                isNegative: false
-            }
-        });
-
-        dialogRef.componentInstance.onConfirmed.subscribe((result) => {
-            // call API to change consultant
-        });
-
-        dialogRef.componentInstance.onRejected.subscribe(() => {
-            // nthng
-        });
-    }
-
-    terminateConsultant(index: number) {
-        const consultantData = this.contractsConsultantsDataForm.consultants.at(index).value;
-        const scrollStrategy = this.overlay.scrollStrategies.reposition();
-        const dialogRef = this.dialog.open(ConfirmationDialogComponent, {
-            width: '450px',
-            minHeight: '180px',
-            height: 'auto',
-            scrollStrategy,
-            backdropClass: 'backdrop-modal--wrapper',
-            autoFocus: false,
-            panelClass: 'confirmation-modal',
-            data: {
-                confirmationMessageTitle: `Are you sure you want to terminate consultant ${consultantData.consultant?.name ?? ''}?`,
-                // confirmationMessage: 'When you confirm the termination, all the info contained inside this block will disappear.',
-                rejectButtonText: 'Cancel',
-                confirmButtonText: 'Delete',
-                isNegative: true
-            }
-        });
-
-        dialogRef.componentInstance.onConfirmed.subscribe(() => {
-            this.terminateConsultantStart(consultantData.consultant?.id);
-        });
-
-        dialogRef.componentInstance.onRejected.subscribe(() => {
-            // nthng
-        });
-    }
-
-    //#endregion Consultant menu actions
 
     compareWithFn(listOfItems: any, selectedItem: any) {
         return listOfItems && selectedItem && listOfItems.id === selectedItem.id;;
@@ -1082,7 +1044,6 @@ export class WorkflowContractsComponent extends AppComponentBase implements OnIn
     saveStartChangeOrExtendClientPeriodContracts(isDraft: boolean, isSyncToLegacy?: boolean) {
         let input = new ClientPeriodContractsDataCommandDto();
         input.clientData = new ContractsClientDataDto();
-
         input.clientData.specialContractTerms = this.contractClientForm.specialContractTerms?.value;
         input.clientData.noSpecialContractTerms = this.contractClientForm.noSpecialContractTerms?.value;
         input.clientData.clientTimeReportingCapId = this.contractClientForm.clientTimeReportingCapId?.value?.id;
@@ -1189,20 +1150,28 @@ export class WorkflowContractsComponent extends AppComponentBase implements OnIn
                         projectLineInput.endDate = projectLine.endDate;
                         projectLineInput.noEndDate = projectLine.noEndDate;
                         projectLineInput.differentInvoicingReferenceNumber = projectLine.differentInvoicingReferenceNumber;
-                        projectLineInput.invoicingReferenceNumber = projectLine.invoicingReferenceNumber;
+                        if (projectLineInput.differentInvoicingReferenceNumber) {
+                            projectLineInput.invoicingReferenceNumber = projectLine.invoicingReferenceNumber;
+                        }
                         projectLineInput.differentInvoicingReferencePerson = projectLine.differentInvoicingReferencePerson;
-                        if (projectLine.invoicingReferencePerson?.id) {
-                            projectLineInput.invoicingReferencePersonId = projectLine.invoicingReferencePersonId;
-                            projectLineInput.invoicingReferencePerson = projectLine.invoicingReferencePerson;
-                        } else {
-                            projectLineInput.invoicingReferenceString = projectLine.invoicingReferencePersonId;
+                        if (projectLineInput.differentInvoicingReferencePerson) {
+                            if (projectLine.invoicingReferencePerson?.id) {
+                                projectLineInput.invoicingReferencePersonId = projectLine.invoicingReferencePersonId;
+                                projectLineInput.invoicingReferencePerson = projectLine.invoicingReferencePerson;
+                            } else {
+                                projectLineInput.invoicingReferenceString = projectLine.invoicingReferencePersonId;
+                            }
                         }
                         projectLineInput.optionalInvoicingInfo = projectLine.optionalInvoicingInfo;
                         projectLineInput.differentDebtorNumber = projectLine.differentDebtorNumber;
-                        projectLineInput.debtorNumber = projectLine.debtorNumber;
+                        if (projectLineInput.differentDebtorNumber) {
+                            projectLineInput.debtorNumber = projectLine.debtorNumber;
+                        }
                         projectLineInput.differentInvoiceRecipient = projectLine.differentInvoiceRecipient;
-                        projectLineInput.invoiceRecipientId = projectLine.invoiceRecipientId;
-                        projectLineInput.invoiceRecipient = projectLine.invoiceRecipient;
+                        if (projectLineInput.differentInvoiceRecipient) {
+                            projectLineInput.invoiceRecipientId = projectLine.invoiceRecipientId;
+                            projectLineInput.invoiceRecipient = projectLine.invoiceRecipient;
+                        }
                         projectLineInput.modifiedById = projectLine.modifiedById;
                         projectLineInput.modifiedBy = projectLine.modifiedBy;
                         projectLineInput.modificationDate = projectLine.modificationDate;
@@ -1361,21 +1330,28 @@ export class WorkflowContractsComponent extends AppComponentBase implements OnIn
                     projectLineInput.endDate = projectLine.endDate;
                     projectLineInput.noEndDate = projectLine.noEndDate;
                     projectLineInput.differentInvoicingReferenceNumber = projectLine.differentInvoicingReferenceNumber;
-                    projectLineInput.invoicingReferenceNumber = projectLine.invoicingReferenceNumber;
-                    projectLineInput.differentInvoicingReferencePerson = projectLine.differentInvoicingReferencePerson;
-                    if (projectLine.invoicingReferencePerson?.id) {
-                        projectLineInput.invoicingReferencePersonId = projectLine.invoicingReferencePersonId;
-                        projectLineInput.invoicingReferencePerson = projectLine.invoicingReferencePerson;
-                    } else {
-                        projectLineInput.invoicingReferenceString = projectLine.invoicingReferencePersonId;
+                    if (projectLineInput.differentInvoicingReferenceNumber) {
+                        projectLineInput.invoicingReferenceNumber = projectLine.invoicingReferenceNumber;
                     }
-                    projectLineInput.invoicingReferencePerson = projectLine.invoicingReferencePerson;
+                    projectLineInput.differentInvoicingReferencePerson = projectLine.differentInvoicingReferencePerson;
+                    if (projectLineInput.differentInvoicingReferencePerson) {
+                        if (projectLine.invoicingReferencePerson?.id) {
+                            projectLineInput.invoicingReferencePersonId = projectLine.invoicingReferencePersonId;
+                            projectLineInput.invoicingReferencePerson = projectLine.invoicingReferencePerson;
+                        } else {
+                            projectLineInput.invoicingReferenceString = projectLine.invoicingReferencePersonId;
+                        }
+                    }
                     projectLineInput.optionalInvoicingInfo = projectLine.optionalInvoicingInfo;
                     projectLineInput.differentDebtorNumber = projectLine.differentDebtorNumber;
-                    projectLineInput.debtorNumber = projectLine.debtorNumber;
+                    if (projectLineInput.differentDebtorNumber) {
+                        projectLineInput.debtorNumber = projectLine.debtorNumber;
+                    }
                     projectLineInput.differentInvoiceRecipient = projectLine.differentInvoiceRecipient;
-                    projectLineInput.invoiceRecipientId = projectLine.invoiceRecipientId;
-                    projectLineInput.invoiceRecipient = projectLine.invoiceRecipient;
+                    if (projectLineInput.differentInvoiceRecipient) {
+                        projectLineInput.invoiceRecipientId = projectLine.invoiceRecipientId;
+                        projectLineInput.invoiceRecipient = projectLine.invoiceRecipient;
+                    }
                     projectLineInput.modifiedById = projectLine.modifiedById;
                     projectLineInput.modifiedBy = projectLine.modifiedBy;
                     projectLineInput.modificationDate = projectLine.modificationDate;
@@ -1558,15 +1534,15 @@ export class WorkflowContractsComponent extends AppComponentBase implements OnIn
     }
 
     terminateConsultantStart(index: number) {
-        // this.consultantInformation = this.consultantsForm.consultantData.at(index).value.consultantName;
+        this.showMainSpinner();
         this._workflowServiceProxy.terminationConsultantStart(this.workflowId!, index)
-        .pipe(finalize(() => {
-
-        }))
-        .subscribe(result => {
-            this._workflowDataService.workflowSideSectionAdded.emit(true);
-            this._workflowDataService.workflowOverviewUpdated.emit(true);
-        });
+            .pipe(finalize(() => {
+                this.hideMainSpinner();
+            }))
+            .subscribe(result => {
+                this._workflowDataService.workflowSideSectionAdded.emit(true);
+                this._workflowDataService.workflowOverviewUpdated.emit(true);
+            });
     }
 
     processSaveBeforeSyncToLegacySystem() {
@@ -1620,18 +1596,7 @@ export class WorkflowContractsComponent extends AppComponentBase implements OnIn
                 this.hideMainSpinner();
             }))
             .subscribe(result => {
-                this.statusAfterSync = true;
-                this.syncNotPossible = !result.success!;
-                this.contractsSyncDataForm.enableLegalContractsButtons?.setValue(result.enableLegalContractsButtons!);
-                this.contractsSyncDataForm.showManualOption?.setValue(result?.showManualOption, {emitEvent: false});
-                this.syncMessage = result.success ? 'Sync successfull' : result.message!;
-                if (result.success) {
-                    this.contractsConsultantsDataForm.consultants.controls.forEach((consultant: any) => {
-                        consultant.controls.projectLines.controls.forEach((x: any) => {
-                            x.controls.wasSynced.setValue(true, {emitEvent: false});
-                        })
-                    })
-                }
+                this.processAfterSync(result);
             });
     }
 
@@ -1642,18 +1607,7 @@ export class WorkflowContractsComponent extends AppComponentBase implements OnIn
                 this.hideMainSpinner();
             }))
             .subscribe(result => {
-                this.statusAfterSync = true;
-                this.syncNotPossible = !result.success!;
-                this.contractsSyncDataForm.enableLegalContractsButtons?.setValue(result.enableLegalContractsButtons!);
-                this.contractsSyncDataForm.showManualOption?.setValue(result?.showManualOption, {emitEvent: false});
-                this.syncMessage = result.success ? 'Sync successfull' : result.message!;
-                if (result.success) {
-                    this.contractsConsultantsDataForm.consultants.controls.forEach((consultant: any) => {
-                        consultant.controls.projectLines.controls.forEach((x: any) => {
-                            x.controls.wasSynced.setValue(true, {emitEvent: false});
-                        })
-                    })
-                }
+                this.processAfterSync(result);
             });
     }
 
@@ -1664,11 +1618,7 @@ export class WorkflowContractsComponent extends AppComponentBase implements OnIn
                 this.hideMainSpinner();
             }))
             .subscribe(result => {
-                this.statusAfterSync = true;
-                this.syncNotPossible = !result.success!;
-                this.contractsSyncDataForm.enableLegalContractsButtons?.setValue(result.enableLegalContractsButtons!);
-                this.contractsSyncDataForm.showManualOption?.setValue(result?.showManualOption, {emitEvent: false});
-                this.syncMessage = result.success ? 'Sync successfull' : result.message!;
+                this.processAfterSync(result);
             });
     }
 
@@ -1680,16 +1630,23 @@ export class WorkflowContractsComponent extends AppComponentBase implements OnIn
                 this.hideMainSpinner();
             }))
             .subscribe(result => {
-                this.statusAfterSync = true;
-                this.syncNotPossible = !result.success!;
-                this.contractsSyncDataForm.enableLegalContractsButtons?.setValue(result.enableLegalContractsButtons!);
-                this.contractsSyncDataForm.showManualOption?.setValue(result?.showManualOption, {emitEvent: false});
-                this.syncMessage = result.success ? 'Sync successfull' : result.message!;
-                // if (result.success) {
-                //     this.contractsSyncDataForm.isNewSyncNeeded?.setValue(!result.success, {emitEvent: false});
-                //     this.contractsSyncDataForm.lastSyncedDate?.setValue(null, {emitEvent: false});
-                // }
+                this.processAfterSync(result);
             });
+    }
+
+    processAfterSync(result: ContractSyncResultDto) {
+        this.statusAfterSync = true;
+        this.syncNotPossible = !result.success!;
+        this.contractsSyncDataForm.enableLegalContractsButtons?.setValue(result.enableLegalContractsButtons!);
+        this.contractsSyncDataForm.showManualOption?.setValue(result?.showManualOption, {emitEvent: false});
+        this.syncMessage = result.success ? 'Sync successfull' : result.message!;
+        if (result.success) {
+            this.contractsConsultantsDataForm.consultants.controls.forEach((consultant: any) => {
+                consultant.controls.projectLines.controls.forEach((x: any) => {
+                    x.controls.wasSynced.setValue(true, {emitEvent: false});
+                })
+            })
+        }
     }
 
     openContractModule(periodId: string, legalContractStatus: number, isInternal: boolean, tenantId: number, consultant?: ConsultantResultDto) {
@@ -1699,13 +1656,13 @@ export class WorkflowContractsComponent extends AppComponentBase implements OnIn
 
     detectContractModuleIcon(legalContractStatus: number | string): string {
         switch (legalContractStatus) {
-            case LegalContractStatus.NotAcceessible: // Not accessible
+            case LegalContractStatus.NotAcceessible:
                 return 'cancel-fill';
-            case LegalContractStatus.NotYetCreated: // Not yet created
+            case LegalContractStatus.NotYetCreated:
                 return 'in-progress-icon';
-            case LegalContractStatus.SavedButNotGenerated: // Saved but not generated
+            case LegalContractStatus.SavedButNotGenerated:
                 return 'completed-icon';
-            case LegalContractStatus.Done: // Done (generated or bypassed)
+            case LegalContractStatus.Done:
                 return 'completed-icon';
             default:
                 return '';
