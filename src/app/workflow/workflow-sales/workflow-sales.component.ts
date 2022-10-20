@@ -560,15 +560,6 @@ export class WorkflowSalesComponent extends AppComponentBase implements OnInit {
         this.salesClientDataForm.markAllAsTouched();
         this.salesMainDataForm.markAllAsTouched();
         this.consultantsForm.markAllAsTouched();
-        console.log(this.salesClientDataForm);
-        console.log(this.salesClientDataForm.valid);
-        console.log(Object.keys(this.salesClientDataForm.controls).filter(key => this.salesClientDataForm.controls[key].status === 'INVALID'));
-        console.log(this.salesMainDataForm);
-        console.log(this.salesMainDataForm.valid);
-        console.log(Object.keys(this.consultantsForm.controls).filter(key => this.consultantsForm.controls[key].status === 'INVALID'));
-        console.log(this.consultantsForm);
-        console.log(this.consultantsForm.valid);
-        console.log(Object.keys(this.salesClientDataForm.controls).filter(key => this.salesClientDataForm.controls[key].status === 'INVALID'));
         switch (this.activeSideSection.typeId) {
             case WorkflowProcessType.StartClientPeriod:
             case WorkflowProcessType.ChangeClientPeriod:

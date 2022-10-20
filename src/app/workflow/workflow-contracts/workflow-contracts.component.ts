@@ -206,18 +206,6 @@ export class WorkflowContractsComponent extends AppComponentBase implements OnIn
         this.contractClientForm.markAllAsTouched();
         this.contractsSyncDataForm.markAllAsTouched();
         this.contractsConsultantsDataForm.markAllAsTouched();
-        console.log(this.contractsMainForm);
-        console.log(this.contractsMainForm.valid);
-        console.log(Object.keys(this.contractsMainForm.controls).filter(key => this.contractsMainForm.controls[key].status === 'INVALID'));
-        console.log(this.contractClientForm);
-        console.log(this.contractClientForm.valid);
-        console.log(Object.keys(this.contractClientForm.controls).filter(key => this.contractClientForm.controls[key].status === 'INVALID'));
-        console.log(this.contractsSyncDataForm);
-        console.log(this.contractsSyncDataForm.valid);
-        console.log(Object.keys(this.contractsSyncDataForm.controls).filter(key => this.contractsSyncDataForm.controls[key].status === 'INVALID'));
-        console.log(this.contractsConsultantsDataForm);
-        console.log(this.contractsConsultantsDataForm.valid);
-        console.log(Object.keys(this.contractsConsultantsDataForm.controls).filter(key => this.contractsConsultantsDataForm.controls[key].status === 'INVALID'));
         switch (this.activeSideSection.typeId) {
             case WorkflowProcessType.StartClientPeriod:
             case WorkflowProcessType.ChangeClientPeriod:
