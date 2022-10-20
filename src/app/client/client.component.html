@@ -215,7 +215,7 @@
                     <mat-header-cell *matHeaderCellDef mat-sort-header fxFlex="15%"> City </mat-header-cell>
                     <mat-cell *matCellDef="let row" fxFlex="15%">
                         <span class="text-truncate-ellipsis" [matTooltip]="row.clientAddress_PostCode + ' ' + row.clientAddress_City" matTooltipClass="white-tooltip" appShowIfTruncated>
-                            {{row.clientAddress_PostCode && row.clientAddress_PostCode !== '' ? row.clientAddress_PostCode + (row.clientAddress_City && row.clientAddress_City !== '' ? ' ' + row.clientAddress_City : '') : '-' }}
+                            {{row.clientAddress_PostCode && row.clientAddress_PostCode !== '' ? row.clientAddress_PostCode : '-'}} {{row.clientAddress_City && row.clientAddress_City !== '' ? ' ' + row.clientAddress_City : ''}}
                         </span>
                     </mat-cell>
                 </ng-container>
