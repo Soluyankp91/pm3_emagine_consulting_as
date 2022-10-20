@@ -201,25 +201,29 @@
                 <ng-container matColumnDef="clientAddress_Country_Name">
                     <mat-header-cell *matHeaderCellDef mat-sort-header fxFlex="10%"> Country </mat-header-cell>
                     <mat-cell *matCellDef="let row" fxFlex="10%">
-                        <span class="text-truncate-ellipsis text-bold" [matTooltip]="row.clientAddress_Country_Name" matTooltipClass="white-tooltip" appShowIfTruncated>
-                            <span class="country-flag--grid fi fi-{{row.clientAddress_Country_Code | lowercase }}"></span>
-                            <span>
-                                {{row.clientAddress_Country_Code}}
+                        <ng-container *ngIf="row.clientAddress_Country_Name && row.clientAddress_Country_Name !== ''; else noDataTemplate">
+                            <span class="text-truncate-ellipsis text-bold" [matTooltip]="row.clientAddress_Country_Name" matTooltipClass="white-tooltip" appShowIfTruncated>
+                                <span class="country-flag--grid fi fi-{{row.clientAddress_Country_Code | lowercase }}"></span>
+                                <span>
+                                    {{row.clientAddress_Country_Code}}
+                                </span>
                             </span>
-                        </span>
+                        </ng-container>
                     </mat-cell>
                 </ng-container>
                 <ng-container matColumnDef="clientAddress_City">
                     <mat-header-cell *matHeaderCellDef mat-sort-header fxFlex="15%"> City </mat-header-cell>
                     <mat-cell *matCellDef="let row" fxFlex="15%">
                         <span class="text-truncate-ellipsis" [matTooltip]="row.clientAddress_PostCode + ' ' + row.clientAddress_City" matTooltipClass="white-tooltip" appShowIfTruncated>
-                            {{row.clientAddress_PostCode + ' ' + row.clientAddress_City}}
+                            {{row.clientAddress_PostCode && row.clientAddress_PostCode !== '' ? row.clientAddress_PostCode + (row.clientAddress_City && row.clientAddress_City !== '' ? ' ' + row.clientAddress_City : '') : '-' }}
                         </span>
                     </mat-cell>
                 </ng-container>
                 <ng-container matColumnDef="clientAddress_Address">
                     <mat-header-cell *matHeaderCellDef mat-sort-header fxFlex="15%"> Address </mat-header-cell>
                     <mat-cell *matCellDef="let row" fxFlex="15%">
+                        <ng-container *ngIf="row.clientAddress_Address && row.clientAddress_Address !== ''; else noDataTemplate">
+                        </ng-container>
                         <span class="text-truncate-ellipsis" [matTooltip]="row.clientAddress_Address" matTooltipClass="white-tooltip" appShowIfTruncated>
                             {{row.clientAddress_Address}}
                         </span>
@@ -310,3 +314,6 @@
         </ng-template>
     </mat-menu>
 </div>
+<ng-template #noDataTemplate>
+    -
+</ng-template>
