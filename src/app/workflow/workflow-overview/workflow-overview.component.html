@@ -1,8 +1,8 @@
 <div class="workflow-overview" *ngIf="componentInitalized">
     <div *ngFor="let item of workflowProcesses">
-        <div class="workflow-overview--team" fxLayout="row" fxLayoutAlign="start start" fxLayoutGap="60px">
+        <div class="workflow-overview--team" fxLayout="row" fxLayoutGap="60px" [ngClass]="{'flex-items-center': !item.typeId}">
             <div fxLayout="column" fxLayoutAlign="start start" fxFlex="15%">
-                <span class="flex-row flex-items-center u-mb--10">
+                <span class="flex-row flex-items-center" [ngClass]="{'u-mb--10': item.typeId}">
                     <ng-container [ngSwitch]="item.typeId">
                         <ng-container *ngSwitchCase="workflowProcessType.StartClientPeriod">
                             <mat-icon svgIcon="workflowAdd"></mat-icon>
@@ -38,7 +38,7 @@
                 </span>
                 <span class="workflow-overview--process-daterange u-ml--5">{{item.periodStartDate | momentFormat: 'DD.MM.YYYY' + ' - ' + (item.periodEndDate ? (item.periodEndDate | momentFormat: 'DD.MM.YYYY') : '...')}}</span>
             </div>
-            <div fxLayout="row" *ngFor="let step of item.steps; trackBy: stepsTrackBy" [fxFlex]="step.isFakeActiveStep ? 'auto' : '20%'">
+            <div fxLayout="row" fxLayoutAlign="start center" *ngFor="let step of item.steps; trackBy: stepsTrackBy" [fxFlex]="step.isFakeActiveStep ? 'auto' : '20%'">
                 <ng-container *ngIf="!step.isFakeActiveStep; else fakeActiveStepTemplate">
                     <div class="workflow-overview--team__user column">
                         <div fxLayout="row" fxLayoutAlign="start center">
@@ -53,7 +53,9 @@
                                     [workflowId]="workflowId"
                                     [managerStatus]="step.status!"
                                     [responsiblePerson]="step.responsiblePerson!"
-                                    [readonly]="item.consultantPeriodId === null || item.consultantPeriodId === undefined">
+                                    [readonly]="item.consultantPeriodId === null || item.consultantPeriodId === undefined"
+                                    [width]="30"
+                                    [height]="30">
                                 </app-manager-search>
                             </div>
                             <div class="column">
@@ -88,7 +90,9 @@
                                     [managerStatus]="step.status!"
                                     [responsiblePerson]="step.responsiblePerson!"
                                     [readonly]="periodId === null || periodId === undefined"
-                                    [isFakeActiveStep]="step.isFakeActiveStep!">
+                                    [isFakeActiveStep]="step.isFakeActiveStep!"
+                                    [width]="30"
+                                    [height]="30">
                                 </app-manager-search>
                             </div>
                             <div class="column">
