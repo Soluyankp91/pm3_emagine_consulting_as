@@ -26,6 +26,8 @@ export class ClientDetailsComponent extends AppComponentBase implements OnInit {
     clientId: number;
 
     private _unsubscribe = new Subject();
+    private isDialogOpened = false;
+
     constructor(
         injector: Injector,
         private router: Router,
@@ -93,16 +95,19 @@ export class ClientDetailsComponent extends AppComponentBase implements OnInit {
     }
 
     syncFromHubspot() {
-        this.showMainSpinner();
-        this._clientService.crmSync(this.clientId)
-            .pipe(finalize(() => this.hideMainSpinner() ))
-            .subscribe(result => {
-                this.openHubspotSyncDialog(result);
-            })
+        if (!this.isDialogOpened) {
+            this.isDialogOpened = true;
+            this.showMainSpinner();
+            this._clientService.crmSync(this.clientId)
+                .pipe(finalize(() => this.hideMainSpinner() ))
+                .subscribe(result => {
+                    this.openHubspotSyncDialog(result);
+                })
+        }
     }
 
     openHubspotSyncDialog(syncMessage: SyncClientFromCrmResultDto) {
-        this.dialog.open(HubspotSyncModalComponent, {
+       const dialogRef = this.dialog.open(HubspotSyncModalComponent, {
             width: '450px',
             height: 'calc(100vh - 201px)',
             panelClass: 'hubspot-sync-modal',
@@ -111,6 +116,10 @@ export class ClientDetailsComponent extends AppComponentBase implements OnInit {
             data: {
                 message: syncMessage.message?.split('.\n').filter(item => item)
             }
+        });
+
+        dialogRef.afterClosed().subscribe(() => {
+            this.isDialogOpened = false;
         });
     }
 }
