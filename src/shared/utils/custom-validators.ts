@@ -1,0 +1,17 @@
+import { ValidatorFn, AbstractControl } from '@angular/forms';
+
+export class CustomValidators {
+    static autocompleteValidator(ids: string[]): ValidatorFn {
+        return (control: AbstractControl): { [key: string]: any } | null => {
+            if (!control.value) {
+                // if control is empty return no error
+                return null;
+            }
+            if (typeof control.value === 'object') {
+                return ids?.some(id => control.value.hasOwnProperty(id)) ? null : {optionNotSelected: control.value};
+            } else {
+                return {optionNotSelected: control.value};
+            }
+        };
+    }
+}
