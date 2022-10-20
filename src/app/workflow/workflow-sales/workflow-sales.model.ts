@@ -1,4 +1,5 @@
 import { FormArray, FormControl, FormGroup, Validators } from "@angular/forms";
+import { CustomValidators } from "src/shared/utils/custom-validators";
 
 export class WorkflowSalesMainForm extends FormGroup {
     constructor() {
@@ -15,12 +16,12 @@ export class WorkflowSalesMainForm extends FormGroup {
 
             commissions: new FormArray([]),
 
-            salesAccountManagerIdValue: new FormControl(null, Validators.required),
+            salesAccountManagerIdValue: new FormControl(null, [Validators.required, CustomValidators.autocompleteValidator(['id'])]),
             commissionAccountManagerIdValue: new FormControl(null),
             contractExpirationNotification: new FormControl(null),
             customContractExpirationNotificationDate: new FormControl(null),
 
-            remarks: new FormControl(null, Validators.required),
+            remarks: new FormControl(null),
             noRemarks: new FormControl(false)
         });
     }
@@ -77,8 +78,8 @@ export class WorkflowSalesClientDataForm extends FormGroup {
         super({
             // Client
             differentEndClient: new FormControl(true),
-            directClientIdValue: new FormControl(null, Validators.required),
-            endClientIdValue: new FormControl(null, Validators.required),
+            directClientIdValue: new FormControl(null, [Validators.required, CustomValidators.autocompleteValidator(['clientId'])]),
+            endClientIdValue: new FormControl(null, CustomValidators.autocompleteValidator(['clientId'])),
 
             // PDC Invoicing Entity (client)
 
@@ -86,14 +87,14 @@ export class WorkflowSalesClientDataForm extends FormGroup {
             pdcInvoicingEntityId: new FormControl(null, Validators.required),
             clientInvoicingRecipientSameAsDirectClient: new FormControl(false, Validators.required),
             invoicingReferenceNumber: new FormControl(null),
-            clientInvoicingRecipientIdValue: new FormControl(null, Validators.required),
+            clientInvoicingRecipientIdValue: new FormControl(null, [Validators.required, CustomValidators.autocompleteValidator(['clientId'])]),
 
             // Client Invoicing Reference Person
-            invoicingReferencePersonIdValue: new FormControl(null, Validators.required),
+            invoicingReferencePersonIdValue: new FormControl(null, [Validators.required, CustomValidators.autocompleteValidator(['id'])]),
             noInvoicingReferencePerson: new FormControl(false, Validators.required),
 
             // Client Evaluations - Consultant
-            evaluationsReferencePersonIdValue: new FormControl(null, Validators.required),
+            evaluationsReferencePersonIdValue: new FormControl(null, CustomValidators.autocompleteValidator(['id'])),
             evaluationsDisabled: new FormControl(false),
             evaluationsDisabledReason: new FormControl(null, Validators.required),
 
@@ -111,8 +112,8 @@ export class WorkflowSalesClientDataForm extends FormGroup {
             rateUnitTypeId: new FormControl(null, Validators.required),
             clientInvoiceCurrency: new FormControl(null, Validators.required),
             clientInvoiceFrequency: new FormControl(null, Validators.required),
-            clientInvoiceTime: new FormControl(null, Validators.required),
-            clientInvoicingDate: new FormControl(null, Validators.required),
+            clientInvoiceTime: new FormControl(null),
+            clientInvoicingDate: new FormControl(null),
 
             // clientRatesNFees
             clientFees: new FormArray([]),
@@ -125,13 +126,13 @@ export class WorkflowSalesClientDataForm extends FormGroup {
 
             // Client Extension Option
             clientExtensionDuration: new FormControl(null, Validators.required),
-            clientExtensionEndDate: new FormControl(null, Validators.required),
+            clientExtensionEndDate: new FormControl(null),
             clientExtensionDeadline: new FormControl(null, Validators.required),
             noClientExtensionOption: new FormControl(false),
 
             // Client project
             capOnTimeReporting: new FormControl(false),
-            capOnTimeReportingValue: new FormControl(null, Validators.required)
+            capOnTimeReportingValue: new FormControl(null)
         });
     }
 
@@ -273,14 +274,6 @@ export class WorkflowSalesConsultantsForm extends FormGroup {
         return this.get('consultantData') as FormArray;
     }
 }
-
-export const InputReadonlyState = {
-    deliveryType: true,
-    salesType: true,
-    margin: true,
-    // all inputs
-}
-
 
 export enum ConsultantDiallogAction {
     Change = 1,

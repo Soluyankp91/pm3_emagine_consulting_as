@@ -8,5 +8,6 @@ export const ValidatorMessagesModel = {
     'alphanumericWithDashes': 'This field can only contain alphanumeric and dash characters',
     'noNumeric': 'This field can\'t contain numeric characters',
     'min': 'The minimum value is {{value}}',
-    'max': 'The maximum value is {{value}}'
+    'max': 'The maximum value is {{value}}',
+    'optionNotSelected': 'Please select an option'
 };
