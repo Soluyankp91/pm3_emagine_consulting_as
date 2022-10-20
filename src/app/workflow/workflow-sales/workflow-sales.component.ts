@@ -24,7 +24,7 @@ import { WorkflowConsultantActionsDialogComponent } from '../workflow-consultant
 import { WorkflowDataService } from '../workflow-data.service';
 import { WorkflowProcessWithAnchorsDto } from '../workflow-period/workflow-period.model';
 import { EmploymentTypes } from '../workflow.model';
-import { ConsultantDiallogAction, SalesTerminateConsultantForm, TenantList, WorkflowSalesClientDataForm, WorkflowSalesConsultantsForm, WorkflowSalesMainForm } from './workflow-sales.model';
+import { ConsultantDiallogAction, SalesTerminateConsultantForm, WorkflowSalesClientDataForm, WorkflowSalesConsultantsForm, WorkflowSalesMainForm } from './workflow-sales.model';
 
 @Component({
     selector: 'app-workflow-sales',
