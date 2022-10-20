@@ -727,9 +727,7 @@ export class WorkflowSalesComponent extends AppComponentBase implements OnInit {
     }
 
     getLegalEntities() {
-        this._internalLookupService.getLegalEntities().subscribe(result => {
-            this.legalEntities = result;
-        });
+        this._internalLookupService.getLegalEntities().subscribe(result => this.legalEntities = result);
     }
 
     getProjectCategory() {
