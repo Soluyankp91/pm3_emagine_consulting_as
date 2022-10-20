@@ -202,18 +202,19 @@ export class WorkflowContractsComponent extends AppComponentBase implements OnIn
         this.contractClientForm.markAllAsTouched();
         this.contractsSyncDataForm.markAllAsTouched();
         this.contractsConsultantsDataForm.markAllAsTouched();
-        switch (this.activeSideSection.typeId) {
-            case WorkflowProcessType.StartClientPeriod:
-            case WorkflowProcessType.ChangeClientPeriod:
-            case WorkflowProcessType.ExtendClientPeriod:
-            case WorkflowProcessType.StartConsultantPeriod:
-            case WorkflowProcessType.ChangeConsultantPeriod:
-            case WorkflowProcessType.ExtendConsultantPeriod:
-                return this.contractsMainForm.valid && this.contractClientForm.valid && this.contractsSyncDataForm.valid && this.contractsConsultantsDataForm.valid
-            case WorkflowProcessType.TerminateWorkflow:
-            case WorkflowProcessType.TerminateConsultant:
-                return true;
-        }
+        return true;
+        // switch (this.activeSideSection.typeId) {
+        //     case WorkflowProcessType.StartClientPeriod:
+        //     case WorkflowProcessType.ChangeClientPeriod:
+        //     case WorkflowProcessType.ExtendClientPeriod:
+        //     case WorkflowProcessType.StartConsultantPeriod:
+        //     case WorkflowProcessType.ChangeConsultantPeriod:
+        //     case WorkflowProcessType.ExtendConsultantPeriod:
+        //         return this.contractsMainForm.valid && this.contractClientForm.valid && this.contractsSyncDataForm.valid && this.contractsConsultantsDataForm.valid
+        //     case WorkflowProcessType.TerminateWorkflow:
+        //     case WorkflowProcessType.TerminateConsultant:
+        //         return true;
+        // }
     }
 
     scrollToFirstError() {
