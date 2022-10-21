@@ -1,6 +1,6 @@
 import { Overlay } from '@angular/cdk/overlay';
 import { NumberSymbol } from '@angular/common';
-import { HttpClient, HttpHeaders } from '@angular/common/http';
+import { HttpClient } from '@angular/common/http';
 import { Component, Injector, Input, OnInit } from '@angular/core';
 import { AbstractControl, FormArray, FormBuilder, FormControl, Validators } from '@angular/forms';
 import { MatAutocompleteSelectedEvent } from '@angular/material/autocomplete';
@@ -9,16 +9,15 @@ import { MatDialog } from '@angular/material/dialog';
 import { MatMenuTrigger } from '@angular/material/menu';
 import { MatSelectChange } from '@angular/material/select';
 import { ActivatedRoute, Router } from '@angular/router';
-import { AuthenticationResult } from '@azure/msal-browser';
 import { ScrollToConfigOptions, ScrollToService } from '@nicky-lenaers/ngx-scroll-to';
 import { merge, Observable, of, Subject } from 'rxjs';
-import { debounceTime, finalize, map, switchMap, takeUntil, delay } from 'rxjs/operators';
+import { debounceTime, finalize, map, switchMap, takeUntil } from 'rxjs/operators';
 import { InternalLookupService } from 'src/app/shared/common/internal-lookup.service';
 import { ConfirmationDialogComponent } from 'src/app/shared/components/confirmation-dialog/confirmation-dialog.component';
 import { environment } from 'src/environments/environment';
 import { AppComponentBase, NotifySeverity } from 'src/shared/app-component-base';
 import { LocalHttpService } from 'src/shared/service-proxies/local-http.service';
-import { ClientPeriodSalesDataDto, ClientPeriodServiceProxy, ClientRateDto, CommissionDto, ConsultantRateDto, ConsultantSalesDataDto, ContractSignerDto, EmployeeDto, EnumEntityTypeDto, LookupServiceProxy, PeriodClientSpecialFeeDto, PeriodClientSpecialRateDto, SalesClientDataDto, SalesMainDataDto, WorkflowProcessType, WorkflowServiceProxy, ConsultantResultDto, ClientResultDto, ContactResultDto, ConsultantTerminationSalesDataCommandDto, WorkflowTerminationSalesDataCommandDto, PeriodConsultantSpecialFeeDto, PeriodConsultantSpecialRateDto, ClientSpecialRateDto, ClientsServiceProxy, ClientSpecialFeeDto, ClientSalesServiceProxy, ConsultantPeriodServiceProxy, ConsultantPeriodSalesDataDto, ConsultantSalesServiceProxy, ExtendConsultantPeriodDto, ChangeConsultantPeriodDto, WorkflowProcessDto, ConsultantWithSourcingRequestResultDto, CountryDto, StepType, LegalEntityDto } from 'src/shared/service-proxies/service-proxies';
+import { ClientPeriodSalesDataDto, ClientPeriodServiceProxy, ClientRateDto, CommissionDto, ConsultantRateDto, ConsultantSalesDataDto, ContractSignerDto, EmployeeDto, EnumEntityTypeDto, LookupServiceProxy, PeriodClientSpecialFeeDto, PeriodClientSpecialRateDto, SalesClientDataDto, SalesMainDataDto, WorkflowProcessType, WorkflowServiceProxy, ConsultantResultDto, ClientResultDto, ContactResultDto, ConsultantTerminationSalesDataCommandDto, WorkflowTerminationSalesDataCommandDto, PeriodConsultantSpecialFeeDto, PeriodConsultantSpecialRateDto, ClientSpecialRateDto, ClientsServiceProxy, ClientSpecialFeeDto, ClientSalesServiceProxy, ConsultantPeriodServiceProxy, ConsultantPeriodSalesDataDto, ConsultantSalesServiceProxy, ExtendConsultantPeriodDto, ChangeConsultantPeriodDto, ConsultantWithSourcingRequestResultDto, CountryDto, StepType } from 'src/shared/service-proxies/service-proxies';
 import { CustomValidators } from 'src/shared/utils/custom-validators';
 import { WorkflowConsultantActionsDialogComponent } from '../workflow-consultant-actions-dialog/workflow-consultant-actions-dialog.component';
 import { WorkflowDataService } from '../workflow-data.service';
@@ -73,7 +72,7 @@ export class WorkflowSalesComponent extends AppComponentBase implements OnInit {
     commissionFrequencies: EnumEntityTypeDto[] = [];
     commissionTypes: EnumEntityTypeDto[] = [];
     commissionRecipientTypeList: EnumEntityTypeDto[] = [];
-    legalEntities: LegalEntityDto[] = [];
+    // legalEntities: LegalEntityDto[] = [];
     projectCategories: EnumEntityTypeDto[] = [];
     discounts: EnumEntityTypeDto[] = [];
     expectedWorkloadUnits: EnumEntityTypeDto[] = [];
@@ -82,6 +81,8 @@ export class WorkflowSalesComponent extends AppComponentBase implements OnInit {
     employmentTypes: EnumEntityTypeDto[] = [];
     countries: CountryDto[] = [];
     consultantTimeReportingCapList: EnumEntityTypeDto[] = [];
+    // FIXME: remove after release
+    tenants: EnumEntityTypeDto[] = [];
 
     employmentTypesEnum = EmploymentTypes;
 
@@ -475,7 +476,6 @@ export class WorkflowSalesComponent extends AppComponentBase implements OnInit {
         this.getCommissionFrequency();
         this.getCommissionTypes();
         this.getCommissionRecipientTypes();
-        this.getLegalEntities();
         this.getProjectCategory();
         this.getDiscounts();
         this.getTerminationTimes();
@@ -484,6 +484,10 @@ export class WorkflowSalesComponent extends AppComponentBase implements OnInit {
         this.getExpectedWorkloadUnit();
         this.getCountries();
         this.getConsultantTimeReportingCap();
+
+        // this.getLegalEntities();
+        // FIXME: remove after release
+        this.getTenants();
 
         this.getSalesStepData();
 
@@ -727,8 +731,12 @@ export class WorkflowSalesComponent extends AppComponentBase implements OnInit {
         this._internalLookupService.getCommissionRecipientTypes().subscribe(result => this.commissionRecipientTypeList = result);
     }
 
-    getLegalEntities() {
-        this._internalLookupService.getLegalEntities().subscribe(result => this.legalEntities = result);
+    // getLegalEntities() {
+    //     this._internalLookupService.getLegalEntities().subscribe(result => this.legalEntities = result);
+    // }
+
+    getTenants() {
+        this._internalLookupService.getTenants().subscribe(result => this.tenants = result);
     }
 
     getProjectCategory() {
@@ -996,7 +1004,8 @@ export class WorkflowSalesComponent extends AppComponentBase implements OnInit {
             expectedWorkloadUnitId: new FormControl(this.findItemById(this.expectedWorkloadUnits ,consultant?.expectedWorkloadUnitId) ?? null),
             consultantCapOnTimeReporting: new FormControl(this.findItemById(this.consultantTimeReportingCapList, consultant?.consultantTimeReportingCapId ?? 4)), // ?? default value = no cap - id:4
             consultantTimeReportingCapMaxValue: new FormControl(consultant?.consultantTimeReportingCapMaxValue ?? null),
-            consultantProdataEntity: new FormControl(this.findItemById(this.legalEntities, consultant?.pdcPaymentEntityId) ?? null),
+            // consultantProdataEntity: new FormControl(this.findItemById(this.legalEntities, consultant?.pdcPaymentEntityId) ?? null),
+            consultantProdataEntity: new FormControl(this.findItemById(this.tenants, consultant?.pdcPaymentEntityId) ?? null),
             consultantPaymentType: new FormControl(consultantRate),
             consultantRate: new FormControl(consultant?.consultantRate?.normalRate ?? null),
             consultantRateUnitType: new FormControl(this.findItemById(this.rateUnitTypes, consultant?.consultantRate?.rateUnitTypeId) ?? null),
@@ -1437,7 +1446,8 @@ export class WorkflowSalesComponent extends AppComponentBase implements OnInit {
                         commissionInput.clientId = commission.recipient?.clientId;
                         break;
                     case 4: // PDC entity
-                        commissionInput.legalEntityId = commission.recipient?.id;
+                        // commissionInput.legalEntityId = commission.recipient?.id;
+                        commissionInput.tenantId = commission.recipient?.id;
                         break;
                 }
                 // id = 2 == 'One time'
@@ -1727,7 +1737,8 @@ export class WorkflowSalesComponent extends AppComponentBase implements OnInit {
                 this.salesClientDataForm.capOnTimeReporting?.setValue(this.findItemById(this.clientTimeReportingCap, result?.salesClientData?.clientTimeReportingCapId ?? 1), {emitEvent: false}); // default idValue = 1
                 this.salesClientDataForm.capOnTimeReportingValue?.setValue(result?.salesClientData?.clientTimeReportingCapMaxValue, {emitEvent: false});
                 // Invoicing
-                this.salesClientDataForm.pdcInvoicingEntityId?.setValue(this.findItemById(this.legalEntities, result?.salesClientData?.pdcInvoicingEntityId), {emitEvent: false});
+                // this.salesClientDataForm.pdcInvoicingEntityId?.setValue(this.findItemById(this.legalEntities, result?.salesClientData?.pdcInvoicingEntityId), {emitEvent: false});
+                this.salesClientDataForm.pdcInvoicingEntityId?.setValue(this.findItemById(this.tenants, result?.salesClientData?.pdcInvoicingEntityId), {emitEvent: false});
                 let clientRateType = this.findItemById(this.clientRateTypes, 1); // default value is 'Time based'
                 if (result.salesClientData?.clientRate?.isFixedRate) {
                     clientRateType = this.findItemById(this.clientRateTypes, 2); // 2: 'Fixed'
@@ -1915,7 +1926,8 @@ export class WorkflowSalesComponent extends AppComponentBase implements OnInit {
                 commissionRecipient = commission.client;
                 break;
             case 4: // PDC entity
-                commissionRecipient = this.findItemById(this.legalEntities, commission.legalEntityId);
+                // commissionRecipient = this.findItemById(this.legalEntities, commission.legalEntityId);
+                commissionRecipient = this.findItemById(this.tenants, commission.tenantId);
                 break;
         }
         const form = this._fb.group({
@@ -2260,7 +2272,8 @@ export class WorkflowSalesComponent extends AppComponentBase implements OnInit {
                     clientRateType = this.findItemById(this.clientRateTypes, 1); // 1: 'Time based'
                 }
                 this.salesClientDataForm.clientRateAndInvoicing?.setValue(clientRateType, {emitEVent: false});
-                this.salesClientDataForm.pdcInvoicingEntityId?.setValue(this.findItemById(this.legalEntities, result?.clientPeriodPdcInvoicingEntityId), {emitEvent: false});
+                // this.salesClientDataForm.pdcInvoicingEntityId?.setValue(this.findItemById(this.legalEntities, result?.clientPeriodPdcInvoicingEntityId), {emitEvent: false});
+                this.salesClientDataForm.pdcInvoicingEntityId?.setValue(this.findItemById(this.tenants, result?.clientPeriodPdcInvoicingEntityId), {emitEvent: false});
                 this.salesClientDataForm.clientPrice?.setValue(result.clientRate?.normalRate, {emitEVent: false});
                 this.salesClientDataForm.rateUnitTypeId?.setValue(this.findItemById(this.rateUnitTypes, result.clientRate?.rateUnitTypeId), {emitEVent: false});
                 this.salesClientDataForm.clientCurrency?.setValue(this.findItemById(this.currencies, result.clientRate?.currencyId), {emitEVent: false});
@@ -2533,25 +2546,25 @@ export class WorkflowSalesComponent extends AppComponentBase implements OnInit {
         window.open(url, '_blank');
     }
 
-    openInHubspot(client: ClientResultDto) {
-        if (this._internalLookupService.hubspotClientUrl?.length) {
-            if (client.crmClientId !== null && client.crmClientId !== undefined) {
-                window.open(this._internalLookupService.hubspotClientUrl.replace('{CrmClientId}', client.crmClientId!.toString()), '_blank');
-            }
-        } else {
-            this.localHttpService.getTokenPromise().then((response: AuthenticationResult) => {
-                this.httpClient.get(`${this.apiUrl}/api/Clients/HubspotPartialUrlAsync`, {
-                        headers: new HttpHeaders({
-                            'Authorization': `Bearer ${response.accessToken}`
-                        }),
-                        responseType: 'text'
-                    }).subscribe((result: string) => {
-                        this._internalLookupService.hubspotClientUrl = result;
-                        if (client.crmClientId !== null && client.crmClientId !== undefined) {
-                            window.open(result.replace('{CrmClientId}', client.crmClientId!.toString()), '_blank');
-                        }
-                })
-            });
-        }
-    }
+    // openInHubspot(client: ClientResultDto) {
+    //     if (this._internalLookupService.hubspotClientUrl?.length) {
+    //         if (client.crmClientId !== null && client.crmClientId !== undefined) {
+    //             window.open(this._internalLookupService.hubspotClientUrl.replace('{CrmClientId}', client.crmClientId!.toString()), '_blank');
+    //         }
+    //     } else {
+    //         this.localHttpService.getTokenPromise().then((response: AuthenticationResult) => {
+    //             this.httpClient.get(`${this.apiUrl}/api/Clients/HubspotPartialUrlAsync`, {
+    //                     headers: new HttpHeaders({
+    //                         'Authorization': `Bearer ${response.accessToken}`
+    //                     }),
+    //                     responseType: 'text'
+    //                 }).subscribe((result: string) => {
+    //                     this._internalLookupService.hubspotClientUrl = result;
+    //                     if (client.crmClientId !== null && client.crmClientId !== undefined) {
+    //                         window.open(result.replace('{CrmClientId}', client.crmClientId!.toString()), '_blank');
+    //                     }
+    //             })
+    //         });
+    //     }
+    // }
 }

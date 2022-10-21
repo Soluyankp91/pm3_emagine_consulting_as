@@ -165,7 +165,8 @@
                                                         {{commission.value.recipient?.supplierName}}
                                                     </ng-container>
                                                     <ng-container *ngSwitchCase="'PDC entity'">
-                                                        {{commission.value.recipient?.tenantName + ' ' + '(' + commission.value.recipient?.name + ')'}}
+                                                        <!-- {{commission.value.recipient?.tenantName + ' ' + '(' + commission.value.recipient?.name + ')'}} -->
+                                                        {{ commission.value.recipient?.name }}
                                                     </ng-container>
                                                 </ng-container>
                                             </span>
@@ -1243,8 +1244,9 @@
                                                     <!-- recipientType?.id === 4 - PDC entity -->
                                                     <ng-container *ngIf="commission.value.recipientType?.id === 4; else commissionRecipientAutocomplete">
                                                         <mat-select formControlName="recipient" placeholder="Recipient" [disableOptionCentering]="true" [compareWith]="compareWithFn">
-                                                            <mat-option *ngFor="let item of legalEntities" [value]="item">
-                                                                <b>{{ item.tenantName + ' ' + '(' + item.name + ')' }}</b>
+                                                            <mat-option *ngFor="let item of tenants" [value]="item">
+                                                                <!-- <b>{{ item.tenantName + ' ' + '(' + item.name + ')' }}</b> -->
+                                                                {{ item.name }}
                                                             </mat-option>
                                                         </mat-select>
                                                     </ng-container>
@@ -1362,7 +1364,8 @@
                                                             {{commission.value.recipient?.supplierName}}
                                                         </ng-container>
                                                         <ng-container *ngSwitchCase="'PDC entity'">
-                                                            {{commission.value.recipient?.tenantName + ' ' + '(' + commission.value.recipient?.name + ')'}}
+                                                            <!-- {{commission.value.recipient?.tenantName + ' ' + '(' + commission.value.recipient?.name + ')'}} -->
+                                                            {{ commission.value.recipient?.name }}
                                                         </ng-container>
                                                     </ng-container>
                                                 </span>
@@ -1678,8 +1681,9 @@
                                 <mat-form-field appearance="outline" class="u-w--100  filter-select" fxFlex="33%">
                                     <mat-label>emagine entity</mat-label>
                                     <mat-select required formControlName="pdcInvoicingEntityId" [disableOptionCentering]="true" [compareWith]="compareWithFn">
-                                        <mat-option *ngFor="let item of legalEntities" [value]="item">
-                                            {{ item.tenantName + ' ' + '(' + item.name + ')' }}
+                                        <mat-option *ngFor="let item of tenants" [value]="item">
+                                            <!-- {{ item.tenantName + ' ' + '(' + item.name + ')' }} -->
+                                            {{ item.name }}
                                         </mat-option>
                                     </mat-select>
                                     <app-validator [control]="salesClientDataForm.pdcInvoicingEntityId"></app-validator>
@@ -2381,8 +2385,9 @@
                                         <mat-form-field appearance="outline" class="u-w--100  filter-select" fxFlex="33%">
                                             <mat-label>emagine Entity</mat-label>
                                             <mat-select required formControlName="consultantProdataEntity" [disableOptionCentering]="true" [compareWith]="compareWithFn">
-                                                <mat-option *ngFor="let item of legalEntities" [value]="item">
-                                                    {{ item.tenantName + ' ' + '(' + item.name + ')' }}
+                                                <mat-option *ngFor="let item of tenants" [value]="item">
+                                                    <!-- {{ item.tenantName + ' ' + '(' + item.name + ')' }} -->
+                                                    {{ item.name }}
                                                 </mat-option>
                                             </mat-select>
                                             <app-validator [control]="consultant.get('consultantProdataEntity')"></app-validator>
@@ -3263,11 +3268,11 @@
             <mat-icon svgIcon="link-to-client-icon"></mat-icon>
         </button>
 
-        <button class="link-to-client-icon" mat-icon-button *ngIf="client?.clientId"
+        <!-- <button class="link-to-client-icon" mat-icon-button *ngIf="client?.clientId"
             (click)="openInHubspot(client)"
             [disabled]="client.crmClientId === null || client.crmClientId === undefined"
             [matTooltip]="'Link to Hubspot'" matTooltipClass="white-tooltip">
             <mat-icon svgIcon="link-to-client-hubspot-icon"></mat-icon>
-        </button>
+        </button> -->
     </div>
 </ng-template>
