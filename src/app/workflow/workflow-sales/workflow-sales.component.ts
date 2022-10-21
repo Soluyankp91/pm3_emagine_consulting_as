@@ -1938,7 +1938,7 @@ export class WorkflowSalesComponent extends AppComponentBase implements OnInit {
             recipientType: new FormControl(this.findItemById(this.commissionRecipientTypeList, commission?.recipientTypeId) ?? null, Validators.required),
             recipient: new FormControl(commissionRecipient ?? null, [Validators.required, CustomValidators.autocompleteValidator(['clientId', 'id', 'supplierId'])]),
             frequency: new FormControl(this.findItemById(this.commissionFrequencies, commission?.commissionFrequencyId) ?? null, Validators.required),
-            oneTimeDate: new FormControl(commission?.oneTimeDate ?? null, Validators.required),
+            oneTimeDate: new FormControl(commission?.oneTimeDate ?? null),
             editable: new FormControl(commission?.id ? false : true)
         });
         this.salesMainDataForm.commissions.push(form);
