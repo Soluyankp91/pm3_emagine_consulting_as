@@ -77,7 +77,6 @@
                 <mat-form-field appearance="outline" class="u-w--100 filter-select">
                     <mat-label>Assignment ID / PO number</mat-label>
                     <input matInput type="text" formControlName="invoicingReferenceNumber">
-                    <!-- <span *ngIf="!projectLineForm.differentInvoicingReferenceNumber?.value || projectLineForm.differentInvoicingReferenceNumber?.value === false" matPrefix>-</span> -->
                 </mat-form-field>
                 <mat-checkbox color="accent" name="differentInvoicingReferenceNumber" formControlName="differentInvoicingReferenceNumber" class="black-checkbox" (change)="disableOrEnableInput(!projectLineForm.differentInvoicingReferenceNumber!.value, projectLineForm.invoicingReferenceNumber)">
                     Different assignment ID / PO number
