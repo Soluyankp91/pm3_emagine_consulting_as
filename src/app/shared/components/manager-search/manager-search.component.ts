@@ -26,6 +26,9 @@ export class ManagerSearchComponent extends AppComponentBase implements OnInit, 
     @Input() stepType: number;
     @Input() workflowId: string;
     @Input() isFakeActiveStep: boolean;
+    @Input() width: number;
+    @Input() height: number;
+
     @Output() managerSelected: EventEmitter<number> = new EventEmitter<number>();
 
     managerStatuses = ManagerStatus;

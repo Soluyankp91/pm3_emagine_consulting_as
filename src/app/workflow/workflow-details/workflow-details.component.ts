@@ -21,6 +21,7 @@ import { LocalHttpService } from 'src/shared/service-proxies/local-http.service'
 import { AuthenticationResult } from '@azure/msal-browser';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { WorkflowPeriodComponent } from '../workflow-period/workflow-period.component';
+import { MatMenuTrigger } from '@angular/material/menu';
 
 @Component({
   selector: 'app-workflow-details',
@@ -33,7 +34,7 @@ export class WorkflowDetailsComponent extends AppComponentBase implements OnInit
     @ViewChild('scrollable', {static: true}) scrollBar: NgScrollbar;
     @ViewChild('topMenuTabs', {static: false}) topMenuTabs: MatTabGroup;
     @ViewChild('workflowPeriod', {static: false}) workflowPeriod: WorkflowPeriodComponent;
-
+    @ViewChild('menuActionsTrigger', {static: false}) menuActionsTrigger: MatMenuTrigger;
 
     menuIndex = 0;
     workflowId: string;
@@ -392,6 +393,7 @@ export class WorkflowDetailsComponent extends AppComponentBase implements OnInit
     // add Termiantion
 
     addTermination() {
+        this.menuActionsTrigger.closeMenu();
         const scrollStrategy = this.overlay.scrollStrategies.reposition();
         const dialogRef = this.dialog.open(ConfirmationDialogComponent, {
             width: '450px',
@@ -432,6 +434,7 @@ export class WorkflowDetailsComponent extends AppComponentBase implements OnInit
     }
 
     getAvailableConsultantForChangeOrExtend(workflowAction: number) {
+        this.menuActionsTrigger.closeMenu();
         if (!this._workflowDataService.getWorkflowProgress.currentlyActivePeriodId) {
             let newStatus = new WorkflowProgressStatus();
             newStatus.currentlyActivePeriodId = this.clientPeriods![0].id;
@@ -534,6 +537,7 @@ export class WorkflowDetailsComponent extends AppComponentBase implements OnInit
     }
 
     addConsultant() {
+        this.menuActionsTrigger.closeMenu();
         const scrollStrategy = this.overlay.scrollStrategies.reposition();
         const dialogRef = this.dialog.open(WorkflowActionsDialogComponent, {
             minWidth: '450px',
