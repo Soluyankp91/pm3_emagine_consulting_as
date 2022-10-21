@@ -94,9 +94,9 @@ export class WorkflowPeriodComponent extends AppComponentBase implements OnInit 
             });
         this._workflowDataService.workflowSideSectionUpdated
             .pipe(takeUntil(this._unsubscribe))
-                .subscribe((value: {isStatusUpdate: boolean}) => {
+                .subscribe((value: {isStatusUpdate: boolean, autoUpdate?: boolean}) => {
                     this.isStatusUpdate = value.isStatusUpdate;
-                    this.getSideMenu();
+                    this.getSideMenu(value.autoUpdate);
                 });
     }
 
@@ -357,7 +357,7 @@ export class WorkflowPeriodComponent extends AppComponentBase implements OnInit 
         this._workflowService.terminationDelete(this.workflowId)
         .pipe(finalize(() => this.hideMainSpinner()))
         .subscribe(result => {
-            this._workflowDataService.workflowSideSectionUpdated.emit({isStatusUpdate: true});
+            this._workflowDataService.workflowSideSectionUpdated.emit({isStatusUpdate: false, autoUpdate: true});
             this._workflowDataService.workflowOverviewUpdated.emit(true);
         });
     }
@@ -367,7 +367,7 @@ export class WorkflowPeriodComponent extends AppComponentBase implements OnInit 
         this._workflowService.terminationConsultantDelete(this.workflowId, consultantId)
         .pipe(finalize(() => this.hideMainSpinner()))
         .subscribe(result => {
-            this._workflowDataService.workflowSideSectionUpdated.emit({isStatusUpdate: true});
+            this._workflowDataService.workflowSideSectionUpdated.emit({isStatusUpdate: false, autoUpdate: true});
             this._workflowDataService.workflowOverviewUpdated.emit(true);
         })
     }
@@ -387,7 +387,7 @@ export class WorkflowPeriodComponent extends AppComponentBase implements OnInit 
         this._apiService.consultantPeriod(consultantPeriodId)
             .pipe(finalize(() => this.hideMainSpinner()))
             .subscribe(result => {
-                this._workflowDataService.workflowSideSectionUpdated.emit({isStatusUpdate: true});
+                this._workflowDataService.workflowSideSectionUpdated.emit({isStatusUpdate: false, autoUpdate: true});
                 this._workflowDataService.workflowOverviewUpdated.emit(true);
             });
     }
