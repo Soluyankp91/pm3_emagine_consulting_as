@@ -61,10 +61,12 @@
                     </mat-select>
                 </mat-form-field>
 
-                <mat-form-field appearance="outline" class="u-w--100 u-mt--10 textarea-input textarea-with-hint" [hintLabel]="(projectLineForm.value.optionalInvoicingInfo?.length ?? 0 ) + '/250'">
+                <mat-form-field appearance="outline" class="u-w--100 u-mt--10 textarea-input textarea-with-hint">
+                    <!-- [hintLabel]="(projectLineForm.value.optionalInvoicingInfo?.length ?? 0 ) + '/250'" -->
                     <mat-label>Optional invoicing info</mat-label>
-                    <textarea matInput autocomplete="new-password" maxlength="250" [matAutosizeMinRows]="5" [matTextareaAutosize]="true" name="optionalInvoicingInfo" formControlName="optionalInvoicingInfo">
+                    <textarea matInput autocomplete="new-password" maxlength="250" [matAutosizeMinRows]="5" [matTextareaAutosize]="true" name="optionalInvoicingInfo" formControlName="optionalInvoicingInfo" class="u-pb--10">
                     </textarea>
+                    <mat-hint [ngClass]="{'hint-reached-maximum-characters': projectLineForm.value.optionalInvoicingInfo?.length === 250}">{{(projectLineForm.value.optionalInvoicingInfo?.length ?? 0 ) + '/250'}}</mat-hint>
                 </mat-form-field>
 
                 <mat-checkbox color="accent" name="feesBilledWithThisProjectLine" formControlName="isLineForFees" class="black-checkbox u-mt--20">
@@ -75,6 +77,7 @@
                 <mat-form-field appearance="outline" class="u-w--100 filter-select">
                     <mat-label>Assignment ID / PO number</mat-label>
                     <input matInput type="text" formControlName="invoicingReferenceNumber">
+                    <!-- <span *ngIf="!projectLineForm.differentInvoicingReferenceNumber?.value || projectLineForm.differentInvoicingReferenceNumber?.value === false" matPrefix>-</span> -->
                 </mat-form-field>
                 <mat-checkbox color="accent" name="differentInvoicingReferenceNumber" formControlName="differentInvoicingReferenceNumber" class="black-checkbox" (change)="disableOrEnableInput(!projectLineForm.differentInvoicingReferenceNumber!.value, projectLineForm.invoicingReferenceNumber)">
                     Different assignment ID / PO number

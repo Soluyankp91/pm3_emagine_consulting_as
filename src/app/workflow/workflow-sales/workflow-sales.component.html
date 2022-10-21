@@ -2566,7 +2566,7 @@
                                                         {{ item.name }}
                                                     </mat-option>
                                                 </mat-select>
-                                                <app-validator [control]="consultant.get('consultantInvoicingFrequency')"></app-validator>                                                
+                                                <app-validator [control]="consultant.get('consultantInvoicingFrequency')"></app-validator>
                                             </mat-form-field>
                                             <mat-form-field [fxHide]="consultant.value.consultantInvoicingFrequency?.name !== 'Manual date'" appearance="outline" fxFlex="0 0 calc(16.5% - 8px)">
                                                 <mat-label>Date</mat-label>
@@ -3267,7 +3267,7 @@
 
         <button class="link-to-client-icon" mat-icon-button *ngIf="client?.clientId"
             (click)="openInHubspot(client)"
-            [disabled]="client.crmClient === null || client.crmClient === undefined"
+            [disabled]="client.crmClientId === null || client.crmClientId === undefined"
             [matTooltip]="'Link to Hubspot'" matTooltipClass="white-tooltip">
             <mat-icon svgIcon="link-to-client-hubspot-icon"></mat-icon>
         </button>
