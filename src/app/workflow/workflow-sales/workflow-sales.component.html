@@ -809,7 +809,7 @@
                                 <div fxLayout="column" fxLayoutAlign="start start" class="u-w--100">
                                     <h2 class="workflow-step-readonly--header u-mb--20">Consultant project</h2>
                                     <div fxLayout="row" fxLayoutAlign="start start" class="u-w--100 u-mb--20">
-                                        <div fxLayout="column" fxFlex="70%">
+                                        <div fxLayout="column" fxFlex="100%">
                                             <div fxLayout="row" class="u-w--100 u-mb--10" *ngIf="item?.value?.consultantIsOnsiteWorkplace">
                                                 <div fxLayout="column" fxFlex="30%">
                                                     <h3 class="workflow-step-readonly--gray-header">Workplace</h3>
@@ -817,12 +817,12 @@
                                                         Onsite
                                                     </span>
                                                 </div>
-                                                <div fxLayout="column" fxFlex="40%">
+                                                <div fxLayout="column" fxFlex="55%">
                                                     <h3 class="workflow-step-readonly--gray-header">Client address</h3>
                                                     <ng-container [ngTemplateOutlet]="consultantAdditionalInfo" [ngTemplateOutletContext]="{client: item.value.consultantWorkplaceClientAddress}">
                                                     </ng-container>
                                                 </div>
-                                                <div fxLayout="column" fxFlex="30%" *ngIf="item?.value?.consultantWorkplacePercentageOnSite">
+                                                <div fxLayout="column" fxFlex="15%" *ngIf="item?.value?.consultantWorkplacePercentageOnSite">
                                                     <h3 class="workflow-step-readonly--gray-header">Percentage onsite</h3>
                                                     <span class="workflow-step-readonly--blue-text-bold">
                                                         {{item?.value?.consultantWorkplacePercentageOnSite ? item?.value?.consultantWorkplacePercentageOnSite : '-'}}
@@ -2623,34 +2623,27 @@
                                     <h2 class="workflow-section--header">Consultant Project</h2>
                                     <h3 class="workflow-gray--header u-mb--10">Workplace</h3>
                                     <div fxLayout="column" fxLayoutAlign="start start" class="u-w--100">
-                                        <div fxLayout="row" fxLayoutAlign="start start" class="u-w--100 u-mb--20">
+                                        <div fxLayout="row" fxLayoutAlign="start start" class="u-w--100 u-mb--10">
                                             <mat-checkbox color="accent" [required]="!consultant.value.consultantIsEmagineOfficeWorkplace && !consultant.value.consultantIsRemoteWorkplace" formControlName="consultantIsOnsiteWorkplace" name="consultantIsOnsiteWorkplace" class="black-checkbox u-mr--16 u-mt--10" fxFlex="0 0 calc(16.5% - 8px)">
                                                 Onsite
                                             </mat-checkbox>
                                             <ng-container *ngIf="consultantsForm.consultantData.at(consultantIndex).get('consultantIsOnsiteWorkplace')?.value">
-                                                <div fxLayout="row" fxLayoutAlign="start start" class="u-w--100">
-                                                    <div fxLayout="column" fxFlex="0 0 calc(33% + 16px)" class="u-mr--16">
-                                                        <mat-form-field appearance="outline" class="u-w--100 mat-elevation-z0">
-                                                            <mat-label>Client</mat-label>
-                                                            <input required type="text" matInput [matAutocomplete]="consultantClientAddressAuto" formControlName="consultantWorkplaceClientAddress" appPreventDoubleClick (throttledClick)="$event.stopPropagation()" placeholder="Search client">
-                                                            <mat-autocomplete #consultantClientAddressAuto="matAutocomplete" [displayWith]="displayClientNameFn">
-                                                                <mat-option *ngFor="let client of filteredConsultantClientAddresses" [value]="client" [ngClass]="{ 'no-data': client.id === 'no-data' }">
-                                                                    <div class="multilineDropdown-option--column">
-                                                                        <b>{{ client.clientName }}</b>
-                                                                        <span *ngIf="client.id !== 'no-data'"> #{{client.clientId}} | {{client.city}} | {{client.address}} | {{client.address2}} | {{client.postCode}}</span>
-                                                                    </div>
-                                                                </mat-option>
-                                                            </mat-autocomplete>
-                                                            <app-validator [control]="consultant.get('consultantWorkplaceClientAddress')"></app-validator>
-                                                        </mat-form-field>
-                                                        <ng-container [ngTemplateOutlet]="consultantAdditionalInfo" [ngTemplateOutletContext]="{client: consultant.value.consultantWorkplaceClientAddress}">
-                                                        </ng-container>
-                                                    </div>
-                                                    <mat-checkbox color="accent" (change)="changeConsultantWorkplace($event, consultantIndex)" [checked]="salesClientDataForm.directClientIdValue?.value?.clientId === consultant.value.consultantWorkplaceClientAddress?.clientId" name="consultantIsOnsiteWorkplaceSameAsDirectClient" class="black-checkbox u-mr--16 u-mt--10">
-                                                        Same as direct client
-                                                    </mat-checkbox>
-                                                </div>
-
+                                                <mat-form-field appearance="outline" fxFlex="0 0 calc(33% + 16px)" class="u-w--100 mat-elevation-z0 u-mr--10">
+                                                    <mat-label>Client</mat-label>
+                                                    <input required type="text" matInput [matAutocomplete]="consultantClientAddressAuto" formControlName="consultantWorkplaceClientAddress" appPreventDoubleClick (throttledClick)="$event.stopPropagation()" placeholder="Search client">
+                                                    <mat-autocomplete #consultantClientAddressAuto="matAutocomplete" [displayWith]="displayClientNameFn">
+                                                        <mat-option *ngFor="let client of filteredConsultantClientAddresses" [value]="client" [ngClass]="{ 'no-data': client.id === 'no-data' }">
+                                                            <div class="multilineDropdown-option--column">
+                                                                <b>{{ client.clientName }}</b>
+                                                                <span *ngIf="client.id !== 'no-data'"> #{{client.clientId}} | {{client.city}} | {{client.address}} | {{client.address2}} | {{client.postCode}}</span>
+                                                            </div>
+                                                        </mat-option>
+                                                    </mat-autocomplete>
+                                                    <app-validator [control]="consultant.get('consultantWorkplaceClientAddress')"></app-validator>
+                                                </mat-form-field>
+                                                <mat-checkbox color="accent" (change)="changeConsultantWorkplace($event, consultantIndex)" [checked]="salesClientDataForm.directClientIdValue?.value?.clientId === consultant.value.consultantWorkplaceClientAddress?.clientId" name="consultantIsOnsiteWorkplaceSameAsDirectClient" class="black-checkbox u-mr--16 u-mt--10">
+                                                    Same as direct client
+                                                </mat-checkbox>
                                                 <mat-form-field appearance="outline" class="u-w--100 u-mr--16" fxFlex="0 0 calc(16% - 8px)" [fxHide]="!consultant.value?.consultantIsEmagineOfficeWorkplace && !consultant.value?.consultantIsRemoteWorkplace">
                                                     <mat-label>Add value %</mat-label>
                                                     <input [required]="consultant.value?.consultantIsEmagineOfficeWorkplace || consultant.value?.consultantIsRemoteWorkplace" autocomplete="off" matInput formControlName="consultantWorkplacePercentageOnSite" type="number" [min]="1" [max]="100">
@@ -2658,11 +2651,16 @@
                                                 </mat-form-field>
                                             </ng-container>
                                         </div>
+                                        <div fxLayout="row" fxLayoutAlign="start center" class="u-w--100 u-mb--20" *ngIf="consultantsForm.consultantData.at(consultantIndex).get('consultantIsOnsiteWorkplace')?.value">
+                                            <div fxFlex="0 0 calc(16.5% - 8px)" class="u-mr--16">
+                                            </div>
+                                            <ng-container [ngTemplateOutlet]="consultantAdditionalInfo" [ngTemplateOutletContext]="{client: consultant.value.consultantWorkplaceClientAddress}">
+                                            </ng-container>
+                                        </div>
                                         <div fxLayout="row" fxLayoutAlign="start center" class="u-w--100 u-mb--20">
                                             <mat-checkbox color="accent" [required]="!consultant.value.consultantIsOnsiteWorkplace && !consultant.value.consultantIsRemoteWorkplace" formControlName="consultantIsEmagineOfficeWorkplace" name="consultantIsEmagineOfficeWorkplace" class="black-checkbox u-mr--16" fxFlex="0 0 calc(16.5% - 8px)">
                                                 emagine Office
                                             </mat-checkbox>
-
                                             <mat-form-field appearance="outline" class="u-w--100  filter-select" fxFlex="0 0 calc(33% + 16px)" [fxHide]="!consultantsForm.consultantData.at(consultantIndex).get('consultantIsEmagineOfficeWorkplace')?.value">
                                                 <mat-label>emagine Office address</mat-label>
                                                 <mat-select [required]="consultantsForm.consultantData.at(consultantIndex).get('consultantIsEmagineOfficeWorkplace')?.value" formControlName="consultantWorkplaceEmagineOffice" [disableOptionCentering]="true">

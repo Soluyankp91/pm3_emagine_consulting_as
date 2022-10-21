@@ -15,10 +15,11 @@
     <form [formGroup]="projectLineForm">
         <div fxLayout="row" fxLayoutAlign="start start" fxLayoutGap="30px">
             <div fxLayout="column" fxLayoutAlign="start start" class="u-w--100" fxFlex="50%">
-                <mat-form-field appearance="outline" class="u-w--100 textarea-input textarea-with-hint" fxFlex="100%" [hintLabel]="(projectLineForm.value.projectName?.length ?? 0 ) + '/250'">
+                <mat-form-field appearance="outline" class="u-w--100 textarea-input textarea-with-hint" fxFlex="100%">
                     <mat-label>Project name</mat-label>
                     <textarea matInput autocomplete="new-password" maxlength="250" [matTextareaAutosize]="true" [matAutosizeMinRows]="2" name="projectName" formControlName="projectName">
                     </textarea>
+                    <mat-hint [ngClass]="{'hint-reached-maximum-characters': projectLineForm.value.projectName?.length === 250}">{{(projectLineForm.value.projectName?.length ?? 0 ) + '/250'}}</mat-hint>
                     <app-validator [control]="projectLineForm.projectName"></app-validator>
                 </mat-form-field>
                 <div fxLayout="row" fxLayoutAlign="start start" class="u-w--100 u-mt--10">
@@ -62,7 +63,6 @@
                 </mat-form-field>
 
                 <mat-form-field appearance="outline" class="u-w--100 u-mt--10 textarea-input textarea-with-hint">
-                    <!-- [hintLabel]="(projectLineForm.value.optionalInvoicingInfo?.length ?? 0 ) + '/250'" -->
                     <mat-label>Optional invoicing info</mat-label>
                     <textarea matInput autocomplete="new-password" maxlength="250" [matAutosizeMinRows]="5" [matTextareaAutosize]="true" name="optionalInvoicingInfo" formControlName="optionalInvoicingInfo" class="u-pb--10">
                     </textarea>
