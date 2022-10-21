@@ -282,7 +282,7 @@
 
                         <h2 class="workflow-section--header u-mt--20">Client Special Rates</h2>
                         <div class="inline-edit-form u-w--100" [ngClass]="{'u-mb--20': contractClientForm.clientRates.controls.length}">
-                            <div fxLayout="row" fxLayoutAlign="space-between start" fxLayoutGap="10px" class="u-w--100 u-pl--16 u-pr--16 u-pb--12" *ngIf="contractClientForm.clientRates?.controls?.length">
+                            <div fxLayout="row" fxLayoutAlign="space-between start" fxLayoutGap="10px" class="u-w--100 u-pl--16 u-pr--16 u-pb--10" *ngIf="contractClientForm.clientRates?.controls?.length">
                                 <span fxFlex="25%" class="workflow-contracts--list-header text-truncate-ellipsis u-w--100">
                                     Rate name
                                 </span>
@@ -392,7 +392,7 @@
 
                         <h2 class="workflow-section--header u-mt--20">Client Fees</h2>
                         <div class="inline-edit-form u-w--100" [ngClass]="{'u-mb--20': contractClientForm.clientFees.controls.length}">
-                            <div fxLayout="row" fxLayoutAlign="space-between start" fxLayoutGap="10px" class="u-w--100 u-pl--16 u-pr--16 u-pb--12" *ngIf="contractClientForm.clientFees?.controls?.length">
+                            <div fxLayout="row" fxLayoutAlign="space-between start" fxLayoutGap="10px" class="u-w--100 u-pl--16 u-pr--16 u-pb--10" *ngIf="contractClientForm.clientFees?.controls?.length">
                                 <span fxFlex="25%" class="workflow-contracts--list-header text-truncate-ellipsis u-w--100">
                                     Fee name
                                 </span>
@@ -625,7 +625,7 @@
 
                                 <ng-container *ngIf="readOnlyMode; else specialRatesInput">
                                     <div class="inline-edit-form u-w--100 u-mb--10">
-                                        <div fxLayout="row" fxLayoutAlign="space-between start" fxLayoutGap="10px" class="u-w--100 u-pl--16 u-pr--16 u-pb--12" *ngIf="consultant.value.specialRates?.length">
+                                        <div fxLayout="row" fxLayoutAlign="space-between start" fxLayoutGap="10px" class="u-w--100 u-pl--16 u-pr--16 u-pb--10" *ngIf="consultant.value.specialRates?.length">
                                             <span fxFlex="1 0 20%" class="workflow-contracts--list-header text-truncate-ellipsis u-w--100">
                                                 Rate name
                                             </span>
@@ -663,7 +663,7 @@
                                 </ng-container>
                                 <ng-template #specialRatesInput>
                                     <div class="inline-edit-form u-w--100">
-                                        <div fxLayout="row" fxLayoutAlign="space-between start" fxLayoutGap="10px" class="u-w--100 u-pl--16 u-pr--16" *ngIf="consultant.value.specialRates?.length">
+                                        <div fxLayout="row" fxLayoutAlign="space-between start" fxLayoutGap="10px" class="u-w--100 u-pl--16 u-pr--16 u-pb--10" *ngIf="consultant.value.specialRates?.length">
                                             <span fxFlex="1 0 20%" class="workflow-contracts--list-header text-truncate-ellipsis u-w--100">
                                                 Rate name
                                             </span>
@@ -801,7 +801,7 @@
                                 <h2 class="workflow-section--header">Special Fees</h2>
                                 <ng-container *ngIf="readOnlyMode; else clientFeesInput">
                                     <div class="inline-edit-form u-w--100 u-mb--20">
-                                        <div fxLayout="row" fxLayoutAlign="space-between start" fxLayoutGap="10px" class="u-w--100 u-pl--16 u-pr--16 u-pb--12" *ngIf="consultant.value.clientFees?.length">
+                                        <div fxLayout="row" fxLayoutAlign="space-between start" fxLayoutGap="10px" class="u-w--100 u-pl--16 u-pr--16 u-pb--10" *ngIf="consultant.value.clientFees?.length">
                                             <span fxFlex="1 0 20%" class="workflow-contracts--list-header text-truncate-ellipsis u-w--100">
                                                 Fee name
                                             </span>
@@ -836,7 +836,7 @@
                                 </ng-container>
                                 <ng-template #clientFeesInput>
                                     <div class="inline-edit-form u-w--100">
-                                        <div fxLayout="row" fxLayoutAlign="space-between start" fxLayoutGap="10px" class="u-w--100 u-pl--16 u-pr--16" *ngIf="consultant.value.clientFees?.length">
+                                        <div fxLayout="row" fxLayoutAlign="space-between start" fxLayoutGap="10px" class="u-w--100 u-pl--16 u-pr--16 u-pb--10" *ngIf="consultant.value.clientFees?.length">
                                             <span fxFlex="1 0 20%" class="workflow-contracts--list-header text-truncate-ellipsis u-w--100">
                                                 Fee name
                                             </span>
@@ -971,7 +971,7 @@
 
                                 <h2 class="workflow-section--header">Project Lines</h2>
                                 <div class="inline-edit-form u-w--100" [ngClass]="{'u-mb--10': readOnlyMode}">
-                                    <div fxLayout="row" fxLayoutAlign="space-between start" fxLayoutGap="10px" class="u-w--100 u-pl--50 u-pr--16 u-pb--12" *ngIf="consultant.value.projectLines?.length">
+                                    <div fxLayout="row" fxLayoutAlign="space-between start" fxLayoutGap="10px" class="u-w--100 u-pl--50 u-pr--16 u-pb--10" *ngIf="consultant.value.projectLines?.length">
                                         <span fxFlex="5%" class="workflow-contracts--list-header text-truncate-ellipsis">
                                             Id
                                         </span>
@@ -1118,7 +1118,7 @@
                                                     <span class="project-line--expansion-additional__content">
                                                         <ng-container *ngIf="projectLine.value.isLineForFees; else noFeesBilledTemplate">
                                                             <div fxLayout="row" fxLayoutAlign="start center">
-                                                                <mat-icon svgIcon="check-circle-fill"></mat-icon> Billed with this Project line
+                                                                <mat-icon svgIcon="check-circle-fill" class="project-line--expansion-additional--fees-icon u-mr--10"></mat-icon> Billed with this Project line
                                                             </div>
                                                         </ng-container>
                                                         <ng-template #noFeesBilledTemplate>
