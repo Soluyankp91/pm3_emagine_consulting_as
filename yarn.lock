@@ -209,12 +209,12 @@
   dependencies:
     tslib "^2.3.0"
 
-"@angular/flex-layout@^12.0.0-beta.34":
-  version "12.0.0-beta.35"
-  resolved "https://registry.yarnpkg.com/@angular/flex-layout/-/flex-layout-12.0.0-beta.35.tgz#b52c3c82608cbb92a119f8dcde2a5b98186fe558"
-  integrity sha512-nPi2MGDFuCacwWHqxF/G7lUJd2X99HbLjjUvKXnyLwyCIVgH1sfS52su2wYbVYWJRqAVAB2/VMlrtW8Khr8hDA==
+"@angular/flex-layout@^14.0.0-beta.41":
+  version "14.0.0-beta.41"
+  resolved "https://registry.yarnpkg.com/@angular/flex-layout/-/flex-layout-14.0.0-beta.41.tgz#94903664670090c3ba0d4824b0135882a7f1bda9"
+  integrity sha512-x1YcxqkdFlcbVXEy9ebCgW/F+7n/MXkEkwEcVEIPf5v5qn7HZsjQxgIj35Lf0amvMyF7h35prpoxO1uX5+ntFg==
   dependencies:
-    tslib "^2.1.0"
+    tslib "^2.3.0"
 
 "@angular/forms@^14.2.7":
   version "14.2.7"
@@ -2054,12 +2054,12 @@
     "@webassemblyjs/ast" "1.11.1"
     "@xtuc/long" "4.2.2"
 
-"@worktile/gantt@^12.2.3":
-  version "12.2.3"
-  resolved "https://registry.yarnpkg.com/@worktile/gantt/-/gantt-12.2.3.tgz#4a36db266c836acda94d40b1fe6f111d10c61cd9"
-  integrity sha512-A81eo1k6o5N8mt9K+c0ofE+WdToOwOjP2InQdp/BOFKKrc/a/nDPCky4pUz1Fy8lt10jlIOrvljBUdwkc8rnnw==
+"@worktile/gantt@14.0.1":
+  version "14.0.1"
+  resolved "https://registry.yarnpkg.com/@worktile/gantt/-/gantt-14.0.1.tgz#a3b21931ff08db8739b5f7309e8337288bec31b3"
+  integrity sha512-rp27IZ2lV39xH0le8/pzgkwkZORlj9YuGPNf9igaCyoZQy3JaEMt3czqbps0+6yZAFh38F8e+BYbuqOCpFdabg==
   dependencies:
-    tslib "^2.2.0"
+    tslib "^2.3.0"
 
 "@xtuc/ieee754@^1.2.0":
   version "1.2.0"
@@ -4738,20 +4738,20 @@ neo-async@^2.6.2:
   resolved "https://registry.yarnpkg.com/neo-async/-/neo-async-2.6.2.tgz#b4aafb93e3aeb2d8174ca53cf163ab7d7308305f"
   integrity sha512-Yd3UES5mWCSqR+qNT93S3UoYUkqAZ9lLg8a7g9rimsWmYGK8cVToA4/sF3RrshdyV3sAGMXVUmpMYOw+dLpOuw==
 
-ngx-scrollbar@^8.0.0:
-  version "8.0.0"
-  resolved "https://registry.yarnpkg.com/ngx-scrollbar/-/ngx-scrollbar-8.0.0.tgz#2ec98a53f8d8c0b2d02814e225440e81e448005d"
-  integrity sha512-fwpPUp7lTz4294NZ/cBuUR44i0li7LE7mhhoShOdtG19wnT0C+KORgGNC6UMcZF2MDNBpJ5L6WviF7fHT8lFBQ==
+ngx-scrollbar@^10.0.1:
+  version "10.0.1"
+  resolved "https://registry.yarnpkg.com/ngx-scrollbar/-/ngx-scrollbar-10.0.1.tgz#58b3425c0c72aae6d9b9bb7d12a72a505f920c5a"
+  integrity sha512-lrjc0mo8myZLxuqod8tcdbNK4HGKs8Sl3Jh7sD7eHoFsqPEBA9T+qvgVU+p81OEIPYDjmJvjR7ItTGmCpEl7hA==
   dependencies:
     bezier-easing "^2.1.0"
-    tslib "^2.0.0"
+    tslib "^2.3.1"
 
-ngx-spinner@12.0.0:
-  version "12.0.0"
-  resolved "https://registry.yarnpkg.com/ngx-spinner/-/ngx-spinner-12.0.0.tgz#c23d50912bb8f3974534c3a27cb3d359cdb3e707"
-  integrity sha512-0BIaLQDBwNApdSWfKYnYA4hSpfgd2bZ9ptBTB+1tOYJHULg67TRqVYswR6H4tNqmGfA8KNivTYXcY7/6RkyjyA==
+ngx-spinner@^14.0.0:
+  version "14.0.0"
+  resolved "https://registry.yarnpkg.com/ngx-spinner/-/ngx-spinner-14.0.0.tgz#395c41be9bc5415f910cbe66aaa6995f0d5ab3b2"
+  integrity sha512-rz7wRCW4L+eZStpWwKUZ8mW+1WWtVEs1DZLDT1DUx1v3k+pLh5BhoDzfF1YySxTqZX13I7pwl13urqzniQ/jXQ==
   dependencies:
-    tslib "^2.1.0"
+    tslib "^2.3.0"
 
 nice-napi@^1.0.2:
   version "1.0.2"
@@ -6484,7 +6484,7 @@ tree-kill@1.2.2:
   resolved "https://registry.yarnpkg.com/tree-kill/-/tree-kill-1.2.2.tgz#4ca09a9092c88b73a7cdc5e8a01b507b0790a0cc"
   integrity sha512-L0Orpi8qGpRG//Nd+H90vFB+3iHnue1zSSGmNOOCh1GLJ7rUKVwV2HvijphGQS2UmhUZewS9VgvxYIdgr+fG1A==
 
-tslib@2.4.0:
+tslib@2.4.0, tslib@^2.3.1:
   version "2.4.0"
   resolved "https://registry.yarnpkg.com/tslib/-/tslib-2.4.0.tgz#7cecaa7f073ce680a05847aa77be941098f36dc3"
   integrity sha512-d6xOpEDfsi2CZVlPQzGeux8XMwLT9hssAsaPYExaQMuYskwb+x1x7J371tWlbBdWHroy99KnVB6qIkUbs5X3UQ==
@@ -6494,7 +6494,7 @@ tslib@^1.9.0:
   resolved "https://registry.yarnpkg.com/tslib/-/tslib-1.14.1.tgz#cf2d38bdc34a134bcaf1091c41f6619e2f672d00"
   integrity sha512-Xni35NKzjgMrwevysHTCArtLDpPvye8zV/0E4EyYn43P7/7qvQwPh9BGkHewbMulVntbigmcT7rdX3BNo9wRJg==
 
-tslib@^2.0.0, tslib@^2.1.0, tslib@^2.2.0, tslib@^2.3.0:
+tslib@^2.0.0, tslib@^2.1.0, tslib@^2.3.0:
   version "2.3.1"
   resolved "https://registry.yarnpkg.com/tslib/-/tslib-2.3.1.tgz#e8a335add5ceae51aa261d32a490158ef042ef01"
   integrity sha512-77EbyPPpMz+FRFRuAFlWMtmgUWGe9UOG2Z25NqCwiIjRhOf5iKGuzSe5P2w1laq+FkRy4p+PCuVkJSGkzTEKVw==
