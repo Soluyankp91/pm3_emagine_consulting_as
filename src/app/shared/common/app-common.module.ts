@@ -60,9 +60,6 @@ import { ConsultantInformationComponent } from '../components/consultant-informa
     providers: [
         ErrorDialogService,
         InternalLookupService,
-    ],
-    entryComponents: [
-        ErrorDialogComponent
     ]
 })
 export class AppCommonModule { }
