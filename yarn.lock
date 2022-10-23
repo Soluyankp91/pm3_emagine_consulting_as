@@ -135,12 +135,12 @@
   dependencies:
     tslib "^2.3.0"
 
-"@angular/cdk@12.2.4":
-  version "12.2.4"
-  resolved "https://registry.yarnpkg.com/@angular/cdk/-/cdk-12.2.4.tgz#2d744413d847030f0562c568054db780473c3ef1"
-  integrity sha512-XvdMWz2iJgcSD0fMM9I29i9/XV4/1MTqSPN+c5EIESLXhjhh4o6VFOsKcj4BfrJxO6tadqA0AdGA0AJfP+de/w==
+"@angular/cdk@13.3.9":
+  version "13.3.9"
+  resolved "https://registry.yarnpkg.com/@angular/cdk/-/cdk-13.3.9.tgz#a177196e872e29be3f84d3a50f778d361c689ff7"
+  integrity sha512-XCuCbeuxWFyo3EYrgEYx7eHzwl76vaWcxtWXl00ka8d+WAOtMQ6Tf1D98ybYT5uwF9889fFpXAPw98mVnlo3MA==
   dependencies:
-    tslib "^2.2.0"
+    tslib "^2.3.0"
   optionalDependencies:
     parse5 "^5.0.0"
 
@@ -220,19 +220,19 @@
   dependencies:
     tslib "^2.3.0"
 
-"@angular/material-moment-adapter@^13.2.0":
-  version "13.3.3"
-  resolved "https://registry.yarnpkg.com/@angular/material-moment-adapter/-/material-moment-adapter-13.3.3.tgz#acda21814f9e71bc0c9a172ffb0d8bbd029e01f9"
-  integrity sha512-VkEsyYwfND7bTYZeuMDffhLVmkacf/Pk8YHoOHJohpM3o+6gO9lmN1LFFWjZ+iYLH5ylv6gfZ+b+rN4+eH2SFw==
+"@angular/material-moment-adapter@^13.3.9":
+  version "13.3.9"
+  resolved "https://registry.yarnpkg.com/@angular/material-moment-adapter/-/material-moment-adapter-13.3.9.tgz#1eb6ddf6e6d3316dba8fa352be119b2a0c582958"
+  integrity sha512-H1mHd3oXFI0tnzWewlnXyO0qBe5xnl64KdDZW0KA089ElAXZf91/C6pWB7rxtJk8u7aWvg6shXg/9hSOoGn/4g==
   dependencies:
     tslib "^2.3.0"
 
-"@angular/material@12.2.4":
-  version "12.2.4"
-  resolved "https://registry.yarnpkg.com/@angular/material/-/material-12.2.4.tgz#7243708ffbe89d5241bf616286628cd03c969dbc"
-  integrity sha512-Hvo6QjUqzlq0OJBAKT0pUiKymCqGUunZi0HX+oL/iga5qVfU4OGSjxaGEuv5stBEDZ7PARaV1pd56X18HQRUew==
+"@angular/material@13.3.9":
+  version "13.3.9"
+  resolved "https://registry.yarnpkg.com/@angular/material/-/material-13.3.9.tgz#efd8ab5800b654df01e36426391d31531e412425"
+  integrity sha512-FU8lcMgo+AL8ckd27B4V097ZPoIZNRHiCe3wpgkImT1qC0YwcyXZVn0MqQTTFSdC9a/aI8wPm3AbTClJEVw5Vw==
   dependencies:
-    tslib "^2.2.0"
+    tslib "^2.3.0"
 
 "@angular/platform-browser-dynamic@~13.3.11":
   version "13.3.11"
