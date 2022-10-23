@@ -6,7 +6,9 @@
                 <span *ngIf="workflowConsultants.length && workflowConsultants.length === 1">
                     {{workflowConsultants[0].consultantName}}
                 </span>
-                <span *ngIf="workflowConsultants.length && workflowConsultants.length > 1" [matTooltip]="mapListByProperty(workflowConsultants, 'consultantName')" matTooltipClass="white-tooltip">
+                <span *ngIf="workflowConsultants.length && workflowConsultants.length > 1"
+                    [matTooltip]="mapListByProperty(workflowConsultants, 'consultantName')"
+                    matTooltipClass="white-tooltip">
                     {{workflowConsultants.length + ' Consultants'}}
                 </span>
                 <span *ngIf="workflowConsultants.length === 0">
@@ -15,7 +17,10 @@
                 <span [matTooltip]="workflowId" matTooltipClass="white-tooltip">
                     / Workflow ID: {{workflowId | slice: 0:4}}...
                 </span>
-                <span *ngIf="workflowConsultants.length && workflowConsultants[0].requestId" class="workflow-header--request" matTooltip="Open request on Sourcing" matTooltipClass="white-tooltip" appPreventDoubleClick (throttledClick)="navigateToRequest(workflowConsultants![0].requestUrl!)">
+                <span *ngIf="workflowConsultants.length && workflowConsultants[0].requestId"
+                    class="workflow-header--request" matTooltip="Open request on Sourcing"
+                    matTooltipClass="white-tooltip" appPreventDoubleClick
+                    (throttledClick)="navigateToRequest(workflowConsultants![0].requestUrl!)">
                     / Request ID: {{workflowConsultants[0].requestId}}
                 </span>
             </h2>
@@ -33,13 +38,15 @@
                     Started: {{_workflowDataService.getWorkflowProgress.started}}
                 </span>
                 <span>
-                    currentlyActiveSection: {{mapSectionName(_workflowDataService.getWorkflowProgress.currentlyActiveSection)}}
+                    currentlyActiveSection:
+                    {{mapSectionName(_workflowDataService.getWorkflowProgress.currentlyActiveSection)}}
                 </span>
                 <span>
                     currentlyActiveStep: {{mapStepName(_workflowDataService.getWorkflowProgress.currentlyActiveStep)}}
                 </span>
                 <span>
-                    currentlyActiveSideSection: {{mapSideSectionName(_workflowDataService.getWorkflowProgress.currentlyActiveSideSection)}}
+                    currentlyActiveSideSection:
+                    {{mapSideSectionName(_workflowDataService.getWorkflowProgress.currentlyActiveSideSection)}}
                 </span>
                 <span>
                     periodId: {{_workflowDataService.getWorkflowProgress.currentlyActivePeriodId}}
@@ -47,37 +54,32 @@
             </div>
         </div>
         <div fxFlex="10%" fxLayoutAlign="end center">
-            <button *ngIf="selectedTabName === 'Overview'" mat-icon-button class="workflow-icon--notes u-mr--16" appPreventDoubleClick (throttledClick)="showOrHideNotes()"><mat-icon svgIcon="notes-icon"></mat-icon></button>
-            <button mat-icon-button #menuActionsTrigger="matMenuTrigger" [matMenuTriggerFor]="workflowMenu" class="workflow-icon--actions"><mat-icon>more_horiz</mat-icon></button>
+            <button *ngIf="selectedTabName === 'Overview'" mat-icon-button class="workflow-icon--notes u-mr--16"
+                appPreventDoubleClick (throttledClick)="showOrHideNotes()">
+                <mat-icon svgIcon="notes-icon"></mat-icon>
+            </button>
+            <button mat-icon-button #menuActionsTrigger="matMenuTrigger" [matMenuTriggerFor]="workflowMenu"
+                class="workflow-icon--actions">
+                <mat-icon>more_horiz</mat-icon>
+            </button>
             <mat-menu #workflowMenu>
-                <button
-                    *ngIf="individualConsultantActionsAvailable"
-                    class="menu-item menu-item--edit"
-                    mat-menu-item
-                    [disabled]="false"
-                    appPreventDoubleClick (throttledClick)="addConsultant()">
+                <button *ngIf="individualConsultantActionsAvailable" class="menu-item menu-item--edit" mat-menu-item
+                    [disabled]="false" appPreventDoubleClick (throttledClick)="addConsultant()">
                     <mat-icon>add</mat-icon>
                     Add consultant
                 </button>
-                <button
-                    class="menu-item menu-item--edit"
-                    mat-menu-item
-                    [disabled]="false"
-                    appPreventDoubleClick (throttledClick)="getAvailableConsultantForChangeOrExtend(workflowDiallogActions.Change)">
+                <button class="menu-item menu-item--edit" mat-menu-item [disabled]="false" appPreventDoubleClick
+                    (throttledClick)="getAvailableConsultantForChangeOrExtend(workflowDiallogActions.Change)">
                     <mat-icon>create</mat-icon>
                     Change Workflow Data
                 </button>
-                <button
-                    class="menu-item menu-item--add"
-                    mat-menu-item
-                    appPreventDoubleClick (throttledClick)="getAvailableConsultantForChangeOrExtend(workflowDiallogActions.Extend)">
+                <button class="menu-item menu-item--add" mat-menu-item appPreventDoubleClick
+                    (throttledClick)="getAvailableConsultantForChangeOrExtend(workflowDiallogActions.Extend)">
                     <mat-icon>add</mat-icon>
                     Extend Workflow
                 </button>
-                <button
-                    class="menu-item menu-item--cancel"
-                    mat-menu-item
-                    appPreventDoubleClick (throttledClick)="addTermination()">
+                <button class="menu-item menu-item--cancel" mat-menu-item appPreventDoubleClick
+                    (throttledClick)="addTermination()">
                     <mat-icon>clear</mat-icon>
                     Terminate Workflow
                 </button>
@@ -92,7 +94,8 @@
     </div>
 
     <div class="workflow-content u-w--100" id="workflowDetails">
-        <mat-tab-group #topMenuTabs class="workflow-content--tabs u-w--100" (selectedTabChange)="tabChanged($event)" [(selectedIndex)]="selectedIndex">
+        <mat-tab-group #topMenuTabs class="workflow-content--tabs u-w--100" (selectedTabChange)="tabChanged($event)"
+            [(selectedIndex)]="selectedIndex">
             <mat-tab label="Overview">
                 <ng-template mat-tab-label>
                     <div fxLayout="row" fxLayoutAlign="center center">
@@ -103,9 +106,11 @@
                     </div>
                 </ng-template>
                 <div class="workflow-form--panel pos-relative u-w--100">
-                    <app-workflow-overview [periodId]="clientPeriods![0]?.id"></app-workflow-overview>
+                    <app-workflow-overview [periodId]="clientPeriods![0].id"></app-workflow-overview>
                     <div *ngIf="isNoteVisible" class="workflow-notes-wrapper">
-                        <app-workflow-notes (noteHidden)="isNoteVisible = !isNoteVisible" [topToolbarVisible]="topToolbarVisible" [workflowId]="workflowId" [alwaysVisible]="false"></app-workflow-notes>
+                        <app-workflow-notes (noteHidden)="isNoteVisible = !isNoteVisible"
+                            [topToolbarVisible]="topToolbarVisible" [workflowId]="workflowId" [alwaysVisible]="false">
+                        </app-workflow-notes>
                     </div>
                 </div>
             </mat-tab>
@@ -114,37 +119,38 @@
                     <div fxLayout="row" fxLayoutAlign="center center">
                         <span class="tab-header">{{tab.name}}</span>
                     </div>
-                    <span class="tab-subheader">{{tab.startDate | momentFormat: 'DD.MM.YYYY'}} - {{tab.endDate ? (tab.endDate | momentFormat: 'DD.MM.YYYY') : '...'}}</span>
+                    <span class="tab-subheader">{{tab.startDate | momentFormat: 'DD.MM.YYYY'}} - {{tab.endDate ?
+                        (tab.endDate | momentFormat: 'DD.MM.YYYY') : '...'}}</span>
                 </ng-template>
                 <div fxLayout="row" fxLayoutAlign="start start" class="workflow-form--panel u-w--100">
                     <div fxFlex="80%">
-                        <app-workflow-period #workflowPeriod *ngIf="selectedIndex === i + 1" [periodId]="tab.id" [workflowId]="workflowId"></app-workflow-period>
+                        <app-workflow-period #workflowPeriod *ngIf="selectedIndex === i + 1" [periodId]="tab.id"
+                            [workflowId]="workflowId"></app-workflow-period>
                     </div>
                     <div fxFlex="20%" class="workflow-notes-wrapper">
-                        <app-workflow-notes *ngIf="selectedIndex === i + 1" [topToolbarVisible]="topToolbarVisible" [workflowId]="workflowId" [alwaysVisible]="true"></app-workflow-notes>
+                        <app-workflow-notes *ngIf="selectedIndex === i + 1" [topToolbarVisible]="topToolbarVisible"
+                            [workflowId]="workflowId" [alwaysVisible]="true"></app-workflow-notes>
                     </div>
                 </div>
             </mat-tab>
         </mat-tab-group>
-        <div fxLayout="row" [fxLayoutAlign]="_workflowDataService.getWorkflowProgress.currentStepIsForcefullyEditing ? 'space-between center' : 'end center'" class="workflow-controls" *ngIf="bottomToolbarVisible">
-            <button mat-flat-button
-                    class="button-cancel mat-elevation-z0 u-mr--16"
-                    *ngIf="_workflowDataService.getWorkflowProgress?.currentStepIsForcefullyEditing"
-                    appPreventDoubleClick (throttledClick)="cancelForceEdit()">
+        <div fxLayout="row"
+            [fxLayoutAlign]="_workflowDataService.getWorkflowProgress.currentStepIsForcefullyEditing ? 'space-between center' : 'end center'"
+            class="workflow-controls" *ngIf="bottomToolbarVisible">
+            <button mat-flat-button class="button-cancel mat-elevation-z0 u-mr--16"
+                *ngIf="_workflowDataService.getWorkflowProgress?.currentStepIsForcefullyEditing" appPreventDoubleClick
+                (throttledClick)="cancelForceEdit()">
                 Cancel
             </button>
-            <button mat-flat-button
-                    class="button-outlined mat-elevation-z0 u-mr--16"
-                    *ngIf="_workflowDataService.getWorkflowProgress?.stepSpecificPermissions!['Edit']"
-                    appPreventDoubleClick (throttledClick)="saveOrCompleteStep(true)">
+            <button mat-flat-button class="button-outlined mat-elevation-z0 u-mr--16"
+                *ngIf="_workflowDataService.getWorkflowProgress?.stepSpecificPermissions!['Edit']" appPreventDoubleClick
+                (throttledClick)="saveOrCompleteStep(true)">
                 {{_workflowDataService.getWorkflowProgress.currentStepIsForcefullyEditing ? 'Save' : 'Save draft'}}
             </button>
-            <button color="primary"
-                    class="button-accept mat-elevation-z0"
-                    mat-flat-button
-                    *ngIf="_workflowDataService.getWorkflowProgress?.stepSpecificPermissions!['Completion']"
-                    appPreventDoubleClick (throttledClick)="saveOrCompleteStep(false)">
-                    Complete step
+            <button color="primary" class="button-accept mat-elevation-z0" mat-flat-button
+                *ngIf="_workflowDataService.getWorkflowProgress?.stepSpecificPermissions!['Completion']"
+                appPreventDoubleClick (throttledClick)="saveOrCompleteStep(false)">
+                Complete step
             </button>
         </div>
     </div>

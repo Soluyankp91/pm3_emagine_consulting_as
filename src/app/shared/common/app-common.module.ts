@@ -7,7 +7,6 @@ import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { ConfirmationDialogComponent } from '../components/confirmation-dialog/confirmation-dialog.component';
 import { FileUploaderComponent } from '../components/file-uploader/file-uploader.component';
 import { FileDragAndDropDirective } from '../components/file-uploader/file-drag-and-drop.directive';
-import { ScrollToModule } from '@nicky-lenaers/ngx-scroll-to';
 import { NgScrollbarModule } from 'ngx-scrollbar';
 import { InternalLookupService } from './internal-lookup.service';
 import { ManagerSearchComponent } from '../components/manager-search/manager-search.component';
@@ -30,15 +29,14 @@ import { ConsultantInformationComponent } from '../components/consultant-informa
         PreventDoubleClickDirective,
         ValidatorComponent,
         ReplacePipe,
-        ConsultantInformationComponent
+        ConsultantInformationComponent,
     ],
     imports: [
         CommonModule,
         MaterialModule,
         FormsModule,
         ReactiveFormsModule,
-        ScrollToModule.forRoot(),
-        NgScrollbarModule
+        NgScrollbarModule,
     ],
     exports: [
         MaterialModule,
@@ -47,7 +45,6 @@ import { ConsultantInformationComponent } from '../components/consultant-informa
         FileDragAndDropDirective,
         FileUploaderComponent,
         ConfirmationDialogComponent,
-        ScrollToModule,
         NgScrollbarModule,
         ManagerSearchComponent,
         MomentFormatPipe,
@@ -55,11 +52,8 @@ import { ConsultantInformationComponent } from '../components/consultant-informa
         PreventDoubleClickDirective,
         ValidatorComponent,
         ReplacePipe,
-        ConsultantInformationComponent
+        ConsultantInformationComponent,
     ],
-    providers: [
-        ErrorDialogService,
-        InternalLookupService,
-    ]
+    providers: [ErrorDialogService, InternalLookupService],
 })
-export class AppCommonModule { }
+export class AppCommonModule {}

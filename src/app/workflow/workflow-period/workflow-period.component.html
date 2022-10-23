@@ -2,7 +2,10 @@
     <div fxFlex="20%" class="workflow-navigation--wrapper">
         <ng-scrollbar>
             <mat-accordion class="workflow-sidenav--expansion" [togglePosition]="'before'">
-                <mat-expansion-panel class="mat-elevation-z0" *ngFor="let item of sideMenuItems; index as i" [expanded]="sectionIndex === i" appPreventDoubleClick (throttledClick)="sectionIndex === i ? $event.preventDefault() : ''" (opened)="changeSideSection(item, i)">
+                <mat-expansion-panel class="mat-elevation-z0" *ngFor="let item of sideMenuItems; index as i"
+                    [expanded]="sectionIndex === i" appPreventDoubleClick
+                    (throttledClick)="sectionIndex === i ? $event.preventDefault() : ''"
+                    (opened)="changeSideSection(item, i)">
                     <mat-expansion-panel-header [collapsedHeight]="'60px'" [expandedHeight]="'60px'">
                         <div fxLayout="row" fxLayoutAlign="space-between start" class="u-w--100">
                             <div class="sidenav-expansion--header" fxFlex="90%">
@@ -16,17 +19,20 @@
                                     {{item.consultant?.name ?? ''}}
                                 </span>
                                 <span class="sidenav-expansion--header__date">
-                                    {{item.periodStartDate | momentFormat: 'DD.MM.YYYY'}} - {{item.periodEndDate ? (item.periodEndDate | momentFormat: 'DD.MM.YYYY') : '...'}}
+                                    {{item.periodStartDate | momentFormat: 'DD.MM.YYYY'}} - {{item.periodEndDate ?
+                                    (item.periodEndDate | momentFormat: 'DD.MM.YYYY') : '...'}}
                                 </span>
                             </div>
                             <!-- Change WF || terminate WF || terminateConsultant when BE will have termination -->
                             <ng-container *ngIf="item.typeId !== workflowProcessTypes.StartClientPeriod">
-                                <button mat-icon-button #menuDeleteTrigger="matMenuTrigger" [matMenuTriggerFor]="consultantMenu" type="button" appPreventDoubleClick (throttledClick)="$event.stopPropagation();" class="workflow-period--delete u-mr--16"><mat-icon>more_horiz</mat-icon></button>
+                                <button mat-icon-button #menuDeleteTrigger="matMenuTrigger"
+                                    [matMenuTriggerFor]="consultantMenu" type="button" appPreventDoubleClick
+                                    (throttledClick)="$event.stopPropagation();"
+                                    class="workflow-period--delete u-mr--16">
+                                    <mat-icon>more_horiz</mat-icon>
+                                </button>
                                 <mat-menu #consultantMenu>
-                                    <button
-                                        class="menu-item menu-item--delete"
-                                        mat-menu-item
-                                        [disabled]="false"
+                                    <button class="menu-item menu-item--delete" mat-menu-item [disabled]="false"
                                         (click)="deleteSideSection(item)">
                                         <mat-icon>clear</mat-icon>
                                         Delete
@@ -41,33 +47,28 @@
                             [ngClass]="{'active-step': step.name === selectedStep.name, 'completed-step': step.status === workflowStatuses.Completed}">
                             <div fxLayout="column" fxLayoutAlign="start start">
                                 <div fxLayout="row" fxLayoutAlign="start center">
-                                    <app-manager-search
-                                        appPreventDoubleClick (throttledClick)="$event.stopPropagation()"
-                                        [formFieldLabel]="step.name + ' Manager'"
-                                        [periodId]="periodId!"
-                                        [consultantPeriodId]="item.consultantPeriodId!"
-                                        [stepType]="step.typeId!"
-                                        [periodType]="item.typeId!"
-                                        [workflowId]="workflowId"
-                                        [managerStatus]="step.status!"
-                                        [responsiblePerson]="step.responsiblePerson!"
-                                        [width]="24"
-                                        [height]="24">
+                                    <app-manager-search appPreventDoubleClick
+                                        (throttledClick)="$event.stopPropagation()"
+                                        [formFieldLabel]="step.name + ' Manager'" [periodId]="periodId!"
+                                        [consultantPeriodId]="item.consultantPeriodId!" [stepType]="step.typeId!"
+                                        [periodType]="item.typeId!" [workflowId]="workflowId"
+                                        [managerStatus]="step.status!" [responsiblePerson]="step.responsiblePerson!"
+                                        [width]="24" [height]="24">
                                     </app-manager-search>
 
                                     <span class="workflow-navigation--step__name">
                                         {{step.name}}
                                     </span>
                                 </div>
-                                <div fxLayout="column" fxLayoutAlign="start start" class="u-ml--55" *ngIf="step.name === selectedStep.name">
+                                <div fxLayout="column" fxLayoutAlign="start start" class="u-ml--55"
+                                    *ngIf="step.name === selectedStep.name">
                                     <div *ngFor="let item of step.menuAnchors"
-                                         class="workflow-navigation--step__anchor u-mb--10"
-                                         appPreventDoubleClick (throttledClick)="$event.stopPropagation(); changeAnchorSelection(item.anchor!)"
-                                         [ngxScrollTo]="item.anchor!"
-                                         [ngxScrollToOffset]="-120"
-                                         [ngClass]="{'active-anchor': item.anchor === selectedAnchor}">
+                                        class="workflow-navigation--step__anchor u-mb--10" appPreventDoubleClick
+                                        (throttledClick)="$event.stopPropagation(); changeAnchorSelection(item.anchor!)"
+                                        [ngClass]="{'active-anchor': item.anchor === selectedAnchor}">
                                         {{item.name}}
-                                        <span *ngIf="item?.consultantName" class="workflow-navigation--step__anchor-consultant-name">
+                                        <span *ngIf="item?.consultantName"
+                                            class="workflow-navigation--step__anchor-consultant-name">
                                             {{item.consultantName}}
                                         </span>
                                     </div>
@@ -82,39 +83,30 @@
     <div fxFlex="80%" id="step-container">
         <ng-container [ngSwitch]="selectedStepEnum">
             <ng-container *ngSwitchCase="workflowSteps.Sales">
-                <app-workflow-sales #workflowSales
-                                    [workflowId]="workflowId"
-                                    [periodId]="periodId"
-                                    [activeSideSection]="selectedSideSection"
-                                    [consultant]="consultant"
-                                    [isCompleted]="selectedStep.status === workflowStatuses.Completed"
-                                    [permissionsForCurrentUser]="selectedStep.actionsPermissionsForCurrentUser">
+                <app-workflow-sales #workflowSales [workflowId]="workflowId" [periodId]="periodId"
+                    [activeSideSection]="selectedSideSection" [consultant]="consultant"
+                    [isCompleted]="selectedStep.status === workflowStatuses.Completed"
+                    [permissionsForCurrentUser]="selectedStep.actionsPermissionsForCurrentUser">
                 </app-workflow-sales>
             </ng-container>
             <ng-container *ngSwitchCase="workflowSteps.Contract">
-                <app-workflow-contracts #workflowContracts
-                                        [workflowId]="workflowId"
-                                        [periodId]="periodId"
-                                        [consultant]="consultant"
-                                        [activeSideSection]="selectedSideSection"
-                                        [isCompleted]="selectedStep.status === workflowStatuses.Completed"
-                                        [permissionsForCurrentUser]="selectedStep.actionsPermissionsForCurrentUser"></app-workflow-contracts>
+                <app-workflow-contracts #workflowContracts [workflowId]="workflowId" [periodId]="periodId"
+                    [consultant]="consultant" [activeSideSection]="selectedSideSection"
+                    [isCompleted]="selectedStep.status === workflowStatuses.Completed"
+                    [permissionsForCurrentUser]="selectedStep.actionsPermissionsForCurrentUser">
+                </app-workflow-contracts>
             </ng-container>
             <ng-container *ngSwitchCase="workflowSteps.Finance">
-                <app-workflow-finances #workflowFinances
-                                        [workflowId]="workflowId"
-                                        [periodId]="periodId"
-                                        [activeSideSection]="selectedSideSection"
-                                        [isCompleted]="selectedStep.status === workflowStatuses.Completed"
-                                        [permissionsForCurrentUser]="selectedStep.actionsPermissionsForCurrentUser"></app-workflow-finances>
+                <app-workflow-finances #workflowFinances [workflowId]="workflowId" [periodId]="periodId"
+                    [activeSideSection]="selectedSideSection"
+                    [isCompleted]="selectedStep.status === workflowStatuses.Completed"
+                    [permissionsForCurrentUser]="selectedStep.actionsPermissionsForCurrentUser"></app-workflow-finances>
             </ng-container>
             <ng-container *ngSwitchCase="workflowSteps.Sourcing">
-                <app-workflow-sourcing #workflowSourcing
-                                        [workflowId]="workflowId"
-                                        [consultant]="consultant"
-                                        [activeSideSection]="selectedSideSection"
-                                        [isCompleted]="selectedStep.status === workflowStatuses.Completed"
-                                        [permissionsForCurrentUser]="selectedStep.actionsPermissionsForCurrentUser"></app-workflow-sourcing>
+                <app-workflow-sourcing #workflowSourcing [workflowId]="workflowId" [consultant]="consultant"
+                    [activeSideSection]="selectedSideSection"
+                    [isCompleted]="selectedStep.status === workflowStatuses.Completed"
+                    [permissionsForCurrentUser]="selectedStep.actionsPermissionsForCurrentUser"></app-workflow-sourcing>
             </ng-container>
         </ng-container>
     </div>
