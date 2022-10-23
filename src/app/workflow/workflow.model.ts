@@ -1,25 +1,25 @@
-import { FormArray, FormControl, FormGroup } from "@angular/forms";
+import { UntypedFormArray, UntypedFormControl, UntypedFormGroup } from "@angular/forms";
 import { EnumEntityTypeDto, WorkflowProcessType } from "src/shared/service-proxies/service-proxies";
 
-export class WorkflowSalesExtensionForm extends FormGroup {
+export class WorkflowSalesExtensionForm extends UntypedFormGroup {
     constructor() {
         super({
-            salesExtension: new FormArray([])
+            salesExtension: new UntypedFormArray([])
         })
 
     }
     get salesExtension() {
-        return this.get('salesExtension') as FormArray;
+        return this.get('salesExtension') as UntypedFormArray;
     }
 }
 
-export class WorkflowExtensionForm extends FormGroup {
+export class WorkflowExtensionForm extends UntypedFormGroup {
     constructor() {
         super({
             // salesExtension: new FormArray([])
-            extensionEndDate: new FormControl(null),
-            noExtensionEndDate: new FormControl(null),
-            workflowInformation: new FormControl(null)
+            extensionEndDate: new UntypedFormControl(null),
+            noExtensionEndDate: new UntypedFormControl(null),
+            workflowInformation: new UntypedFormControl(null)
         })
     }
     // get salesExtension() {
@@ -36,13 +36,13 @@ export class WorkflowExtensionForm extends FormGroup {
     }
 }
 
-export class WorkflowChangeForm extends FormGroup {
+export class WorkflowChangeForm extends UntypedFormGroup {
     constructor() {
         super({
             // salesExtension: new FormArray([])
-            extensionEndDate: new FormControl(null),
-            noExtensionEndDate: new FormControl(null),
-            workflowInformation: new FormControl(null)
+            extensionEndDate: new UntypedFormControl(null),
+            noExtensionEndDate: new UntypedFormControl(null),
+            workflowInformation: new UntypedFormControl(null)
         })
 
     }
@@ -60,14 +60,14 @@ export class WorkflowChangeForm extends FormGroup {
     }
 }
 
-export class WorkflowTerminationSalesForm extends FormGroup {
+export class WorkflowTerminationSalesForm extends UntypedFormGroup {
     constructor() {
         super({
-            cause: new FormControl(null),
-            comments: new FormControl(null),
-            clientEvaluationConsultant: new FormControl(null),
-            clientEvaluationProData: new FormControl(null),
-            endDate: new FormControl(null)
+            cause: new UntypedFormControl(null),
+            comments: new UntypedFormControl(null),
+            clientEvaluationConsultant: new UntypedFormControl(null),
+            clientEvaluationProData: new UntypedFormControl(null),
+            endDate: new UntypedFormControl(null)
         })
 
     }

@@ -2,7 +2,7 @@ import { Overlay } from '@angular/cdk/overlay';
 import { NumberSymbol } from '@angular/common';
 import { HttpClient } from '@angular/common/http';
 import { Component, Injector, Input, OnInit } from '@angular/core';
-import { AbstractControl, FormArray, FormBuilder, FormControl, Validators } from '@angular/forms';
+import { AbstractControl, UntypedFormArray, UntypedFormBuilder, UntypedFormControl, Validators } from '@angular/forms';
 import { MatAutocompleteSelectedEvent } from '@angular/material/autocomplete';
 import { MatCheckboxChange } from '@angular/material/checkbox';
 import { MatDialog } from '@angular/material/dialog';
@@ -121,11 +121,11 @@ export class WorkflowSalesComponent extends AppComponentBase implements OnInit {
     consultantFeeToEdit: PeriodConsultantSpecialFeeDto;
     isConsultantFeeEditing = false;
 
-    clientSpecialRateFilter = new FormControl('');
+    clientSpecialRateFilter = new UntypedFormControl('');
     clientSpecialRateList: ClientSpecialRateDto[] = [];
     filteredClientSpecialRates: Observable<ClientSpecialRateDto[] | undefined>;
 
-    clientSpecialFeeFilter = new FormControl('');
+    clientSpecialFeeFilter = new UntypedFormControl('');
     clientSpecialFeeList: ClientSpecialFeeDto[] = [];
     filteredClientSpecialFees: Observable<ClientSpecialFeeDto[] | undefined>;
 
@@ -156,7 +156,7 @@ export class WorkflowSalesComponent extends AppComponentBase implements OnInit {
 
     constructor(
         injector: Injector,
-        private _fb: FormBuilder,
+        private _fb: UntypedFormBuilder,
         private _workflowDataService: WorkflowDataService,
         private activatedRoute: ActivatedRoute,
         private overlay: Overlay,
@@ -809,20 +809,20 @@ export class WorkflowSalesComponent extends AppComponentBase implements OnInit {
 
     addSpecialRate(clientRate?: PeriodClientSpecialRateDto) {
         const form = this._fb.group({
-            id: new FormControl(clientRate?.id ?? null),
-            clientSpecialRateId: new FormControl(clientRate?.clientSpecialRateId ?? null),
-            rateName: new FormControl(clientRate?.rateName ?? null),
-            reportingUnit: new FormControl(clientRate?.reportingUnit ?? null),
-            rateSpecifiedAs: new FormControl(clientRate?.rateSpecifiedAs ?? null),
-            clientRateValue: new FormControl(clientRate?.clientRate ?? null),
-            clientRateCurrency: new FormControl(this.findItemById(this.currencies, clientRate?.clientRateCurrencyId) ?? null),
-            editable: new FormControl(clientRate ? false : true)
+            id: new UntypedFormControl(clientRate?.id ?? null),
+            clientSpecialRateId: new UntypedFormControl(clientRate?.clientSpecialRateId ?? null),
+            rateName: new UntypedFormControl(clientRate?.rateName ?? null),
+            reportingUnit: new UntypedFormControl(clientRate?.reportingUnit ?? null),
+            rateSpecifiedAs: new UntypedFormControl(clientRate?.rateSpecifiedAs ?? null),
+            clientRateValue: new UntypedFormControl(clientRate?.clientRate ?? null),
+            clientRateCurrency: new UntypedFormControl(this.findItemById(this.currencies, clientRate?.clientRateCurrencyId) ?? null),
+            editable: new UntypedFormControl(clientRate ? false : true)
         });
         this.salesClientDataForm.clientRates.push(form);
     }
 
-    get clientRates(): FormArray {
-        return this.salesClientDataForm.get('clientRates') as FormArray;
+    get clientRates(): UntypedFormArray {
+        return this.salesClientDataForm.get('clientRates') as UntypedFormArray;
     }
 
     removeClientRate(index: number) {
@@ -874,19 +874,19 @@ export class WorkflowSalesComponent extends AppComponentBase implements OnInit {
 
     addClientFee(clientFee?: PeriodClientSpecialFeeDto) {
         const form = this._fb.group({
-            id: new FormControl(clientFee?.id ?? null),
-            clientSpecialFeeId: new FormControl(clientFee?.clientSpecialFeeId ?? null),
-            feeName: new FormControl(clientFee?.feeName ?? null),
-            feeFrequency: new FormControl(clientFee?.frequency ?? null),
-            clientRateValue: new FormControl(clientFee?.clientRate ?? null),
-            clientRateCurrency: new FormControl(this.findItemById(this.currencies, clientFee?.clientRateCurrencyId) ?? null),
-            editable: new FormControl(clientFee ? false : true)
+            id: new UntypedFormControl(clientFee?.id ?? null),
+            clientSpecialFeeId: new UntypedFormControl(clientFee?.clientSpecialFeeId ?? null),
+            feeName: new UntypedFormControl(clientFee?.feeName ?? null),
+            feeFrequency: new UntypedFormControl(clientFee?.frequency ?? null),
+            clientRateValue: new UntypedFormControl(clientFee?.clientRate ?? null),
+            clientRateCurrency: new UntypedFormControl(this.findItemById(this.currencies, clientFee?.clientRateCurrencyId) ?? null),
+            editable: new UntypedFormControl(clientFee ? false : true)
         });
         this.salesClientDataForm.clientFees.push(form);
     }
 
-    get clientFees(): FormArray {
-        return this.salesClientDataForm.get('clientFees') as FormArray;
+    get clientFees(): UntypedFormArray {
+        return this.salesClientDataForm.get('clientFees') as UntypedFormArray;
     }
 
     removeClientFee(index: number) {
@@ -925,9 +925,9 @@ export class WorkflowSalesComponent extends AppComponentBase implements OnInit {
 
     addSignerToForm(signer?: ContractSignerDto) {
         const form = this._fb.group({
-            clientContact: new FormControl(signer?.contact ?? null, CustomValidators.autocompleteValidator(['id'])),
-            clientRole: new FormControl(this.findItemById(this.signerRoles, signer?.signerRoleId) ?? null),
-            clientSequence: new FormControl(signer?.signOrder ?? null)
+            clientContact: new UntypedFormControl(signer?.contact ?? null, CustomValidators.autocompleteValidator(['id'])),
+            clientRole: new UntypedFormControl(this.findItemById(this.signerRoles, signer?.signerRoleId) ?? null),
+            clientSequence: new UntypedFormControl(signer?.signOrder ?? null)
         });
         this.salesClientDataForm.contractSigners.push(form);
         this.manageSignersContactAutocomplete(this.salesClientDataForm.contractSigners.length - 1);
@@ -961,8 +961,8 @@ export class WorkflowSalesComponent extends AppComponentBase implements OnInit {
             });
     }
 
-    get contractSigners(): FormArray {
-        return this.salesClientDataForm.get('contractSigners') as FormArray;
+    get contractSigners(): UntypedFormArray {
+        return this.salesClientDataForm.get('contractSigners') as UntypedFormArray;
     }
 
     removeSigner(index: number) {
@@ -979,56 +979,56 @@ export class WorkflowSalesComponent extends AppComponentBase implements OnInit {
         consultantDto.sourcingRequestConsultantId = consultant?.soldRequestConsultantId;
         consultantDto.sourcingRequestId = consultant?.requestId;
         const form = this._fb.group({
-            employmentType: new FormControl(this.findItemById(this.employmentTypes, consultant?.employmentTypeId) ?? null),
-            consultantName: new FormControl(consultantDto ?? null),
+            employmentType: new UntypedFormControl(this.findItemById(this.employmentTypes, consultant?.employmentTypeId) ?? null),
+            consultantName: new UntypedFormControl(consultantDto ?? null),
             // requestConsultantId: new FormControl(consultant?.soldRequestConsultantId ?? null),
-            consultantPeriodId: new FormControl(consultant?.consultantPeriodId ?? null),
-            consultantNameOnly: new FormControl(consultant?.nameOnly ?? null),
+            consultantPeriodId: new UntypedFormControl(consultant?.consultantPeriodId ?? null),
+            consultantNameOnly: new UntypedFormControl(consultant?.nameOnly ?? null),
 
-            consultantProjectDurationSameAsClient: new FormControl(consultant?.durationSameAsClientPeriod ?? true),
-            consultantProjectStartDate: new FormControl(consultant?.startDate ?? null),
-            consultantProjectEndDate: new FormControl({value: consultant?.endDate ?? null, disabled: consultant?.noEndDate}),
-            consultantProjectNoEndDate: new FormControl(consultant?.noEndDate ?? false),
+            consultantProjectDurationSameAsClient: new UntypedFormControl(consultant?.durationSameAsClientPeriod ?? true),
+            consultantProjectStartDate: new UntypedFormControl(consultant?.startDate ?? null),
+            consultantProjectEndDate: new UntypedFormControl({value: consultant?.endDate ?? null, disabled: consultant?.noEndDate}),
+            consultantProjectNoEndDate: new UntypedFormControl(consultant?.noEndDate ?? false),
 
-            consultantWorkplace: new FormControl(null),
-            consultantWorkplaceClientAddress: new FormControl(consultant?.onsiteClient ?? null),
-            consultantWorkplaceEmagineOffice: new FormControl(this.findItemById(this.emagineOffices, consultant?.emagineOfficeId) ?? null),
-            consultantWorkplaceRemote: new FormControl(this.findItemById(this.countries, consultant?.remoteAddressCountryId) ?? null),
-            consultantWorkplacePercentageOnSite: new FormControl(consultant?.percentageOnSite ?? null, [Validators.min(1), Validators.max(100)]),
+            consultantWorkplace: new UntypedFormControl(null),
+            consultantWorkplaceClientAddress: new UntypedFormControl(consultant?.onsiteClient ?? null),
+            consultantWorkplaceEmagineOffice: new UntypedFormControl(this.findItemById(this.emagineOffices, consultant?.emagineOfficeId) ?? null),
+            consultantWorkplaceRemote: new UntypedFormControl(this.findItemById(this.countries, consultant?.remoteAddressCountryId) ?? null),
+            consultantWorkplacePercentageOnSite: new UntypedFormControl(consultant?.percentageOnSite ?? null, [Validators.min(1), Validators.max(100)]),
 
-            consultantIsOnsiteWorkplace: new FormControl(consultant?.isOnsiteWorkplace ?? false),
-            consultantIsEmagineOfficeWorkplace: new FormControl(consultant?.isEmagineOfficeWorkplace ?? false),
-            consultantIsRemoteWorkplace: new FormControl(consultant?.isRemoteWorkplace ?? false),
+            consultantIsOnsiteWorkplace: new UntypedFormControl(consultant?.isOnsiteWorkplace ?? false),
+            consultantIsEmagineOfficeWorkplace: new UntypedFormControl(consultant?.isEmagineOfficeWorkplace ?? false),
+            consultantIsRemoteWorkplace: new UntypedFormControl(consultant?.isRemoteWorkplace ?? false),
 
-            expectedWorkloadHours: new FormControl(consultant?.expectedWorkloadHours ?? null),
-            expectedWorkloadUnitId: new FormControl(this.findItemById(this.expectedWorkloadUnits ,consultant?.expectedWorkloadUnitId) ?? null),
-            consultantCapOnTimeReporting: new FormControl(this.findItemById(this.consultantTimeReportingCapList, consultant?.consultantTimeReportingCapId ?? 4)), // ?? default value = no cap - id:4
-            consultantTimeReportingCapMaxValue: new FormControl(consultant?.consultantTimeReportingCapMaxValue ?? null),
+            expectedWorkloadHours: new UntypedFormControl(consultant?.expectedWorkloadHours ?? null),
+            expectedWorkloadUnitId: new UntypedFormControl(this.findItemById(this.expectedWorkloadUnits ,consultant?.expectedWorkloadUnitId) ?? null),
+            consultantCapOnTimeReporting: new UntypedFormControl(this.findItemById(this.consultantTimeReportingCapList, consultant?.consultantTimeReportingCapId ?? 4)), // ?? default value = no cap - id:4
+            consultantTimeReportingCapMaxValue: new UntypedFormControl(consultant?.consultantTimeReportingCapMaxValue ?? null),
             // consultantProdataEntity: new FormControl(this.findItemById(this.legalEntities, consultant?.pdcPaymentEntityId) ?? null),
-            consultantProdataEntity: new FormControl(this.findItemById(this.tenants, consultant?.pdcPaymentEntityId) ?? null),
-            consultantPaymentType: new FormControl(consultantRate),
-            consultantRate: new FormControl(consultant?.consultantRate?.normalRate ?? null),
-            consultantRateUnitType: new FormControl(this.findItemById(this.rateUnitTypes, consultant?.consultantRate?.rateUnitTypeId) ?? null),
-            consultantRateCurrency: new FormControl(this.findItemById(this.currencies, consultant?.consultantRate?.currencyId) ?? null),
-            consultantPDCRate: new FormControl(consultant?.consultantRate?.prodataToProdataRate ?? null),
-            consultantPDCRateUnitType: new FormControl(this.findItemById(this.rateUnitTypes, consultant?.consultantRate?.rateUnitTypeId) ?? null),
-            consultantPDCRateCurrency: new FormControl(this.findItemById(this.currencies, consultant?.consultantRate?.prodataToProdataCurrencyId) ?? null),
+            consultantProdataEntity: new UntypedFormControl(this.findItemById(this.tenants, consultant?.pdcPaymentEntityId) ?? null),
+            consultantPaymentType: new UntypedFormControl(consultantRate),
+            consultantRate: new UntypedFormControl(consultant?.consultantRate?.normalRate ?? null),
+            consultantRateUnitType: new UntypedFormControl(this.findItemById(this.rateUnitTypes, consultant?.consultantRate?.rateUnitTypeId) ?? null),
+            consultantRateCurrency: new UntypedFormControl(this.findItemById(this.currencies, consultant?.consultantRate?.currencyId) ?? null),
+            consultantPDCRate: new UntypedFormControl(consultant?.consultantRate?.prodataToProdataRate ?? null),
+            consultantPDCRateUnitType: new UntypedFormControl(this.findItemById(this.rateUnitTypes, consultant?.consultantRate?.rateUnitTypeId) ?? null),
+            consultantPDCRateCurrency: new UntypedFormControl(this.findItemById(this.currencies, consultant?.consultantRate?.prodataToProdataCurrencyId) ?? null),
 
-            consultantInvoicingFrequency: new FormControl(this.findItemById(this.invoiceFrequencies, consultant?.consultantRate?.invoiceFrequencyId) ?? null),
-            consultantInvoicingTime: new FormControl(this.findItemById(this.invoicingTimes, consultant?.consultantRate?.invoicingTimeId) ?? null),
-            consultantInvoicingManualDate: new FormControl(consultant?.consultantRate?.manualDate ?? null),
-            prodataToProdataInvoiceCurrency: new FormControl(this.findItemById(this.currencies, consultant?.consultantRate?.prodataToProdataInvoiceCurrencyId) ?? null),
+            consultantInvoicingFrequency: new UntypedFormControl(this.findItemById(this.invoiceFrequencies, consultant?.consultantRate?.invoiceFrequencyId) ?? null),
+            consultantInvoicingTime: new UntypedFormControl(this.findItemById(this.invoicingTimes, consultant?.consultantRate?.invoicingTimeId) ?? null),
+            consultantInvoicingManualDate: new UntypedFormControl(consultant?.consultantRate?.manualDate ?? null),
+            prodataToProdataInvoiceCurrency: new UntypedFormControl(this.findItemById(this.currencies, consultant?.consultantRate?.prodataToProdataInvoiceCurrencyId) ?? null),
 
-            consultantSpecialRateFilter: new FormControl(''),
-            specialRates: new FormArray([]),
-            consultantSpecialFeeFilter: new FormControl(''),
-            specialFees: new FormArray([]),
+            consultantSpecialRateFilter: new UntypedFormControl(''),
+            specialRates: new UntypedFormArray([]),
+            consultantSpecialFeeFilter: new UntypedFormControl(''),
+            specialFees: new UntypedFormArray([]),
 
-            consultantSpecialContractTermsNone: new FormControl(consultant?.noSpecialContractTerms ?? false),
-            consultantSpecialContractTerms: new FormControl({value: consultant?.specialContractTerms ?? null, disabled: consultant?.noSpecialContractTerms}, Validators.required),
+            consultantSpecialContractTermsNone: new UntypedFormControl(consultant?.noSpecialContractTerms ?? false),
+            consultantSpecialContractTerms: new UntypedFormControl({value: consultant?.specialContractTerms ?? null, disabled: consultant?.noSpecialContractTerms}, Validators.required),
 
-            deliveryManagerSameAsAccountManager: new FormControl(consultant?.deliveryManagerSameAsAccountManager ?? false),
-            deliveryAccountManager: new FormControl({value: consultant?.deliveryAccountManager ?? '', disabled: consultant?.deliveryManagerSameAsAccountManager}, CustomValidators.autocompleteValidator(['id'])),
+            deliveryManagerSameAsAccountManager: new UntypedFormControl(consultant?.deliveryManagerSameAsAccountManager ?? false),
+            deliveryAccountManager: new UntypedFormControl({value: consultant?.deliveryAccountManager ?? '', disabled: consultant?.deliveryManagerSameAsAccountManager}, CustomValidators.autocompleteValidator(['id'])),
         });
         this.consultantsForm.consultantData.push(form);
         if (consultant?.periodConsultantSpecialRates?.length) {
@@ -1176,11 +1176,11 @@ export class WorkflowSalesComponent extends AppComponentBase implements OnInit {
     }
 
     getConsultantRateControls(consultantIndex: number): AbstractControl[] | null {
-        return (this.consultantsForm.consultantData.at(consultantIndex).get('specialRates') as FormArray).controls;
+        return (this.consultantsForm.consultantData.at(consultantIndex).get('specialRates') as UntypedFormArray).controls;
     }
 
     removeConsutlantRate(consultantIndex: number, specialRateIndex: number) {
-        (this.consultantsForm.consultantData.at(consultantIndex).get('specialRates') as FormArray).removeAt(specialRateIndex);
+        (this.consultantsForm.consultantData.at(consultantIndex).get('specialRates') as UntypedFormArray).removeAt(specialRateIndex);
     }
 
     editOrSaveConsultantRate(consultantIndex: number, specialRateIndex: number, isEditable: boolean) {
@@ -1190,7 +1190,7 @@ export class WorkflowSalesComponent extends AppComponentBase implements OnInit {
             this.isConsultantRateEditing = false;
         } else {
             // make editable
-            const consultantRateValue = (this.consultantsForm.consultantData.at(consultantIndex).get('specialRates') as FormArray).at(specialRateIndex).value;
+            const consultantRateValue = (this.consultantsForm.consultantData.at(consultantIndex).get('specialRates') as UntypedFormArray).at(specialRateIndex).value;
             this.consultantRateToEdit = new PeriodConsultantSpecialRateDto({
                 id: consultantRateValue.id,
                 clientSpecialRateId: consultantRateValue.clientSpecialRateId,
@@ -1203,17 +1203,17 @@ export class WorkflowSalesComponent extends AppComponentBase implements OnInit {
             });
             this.isConsultantRateEditing = true;
         }
-        (this.consultantsForm.consultantData.at(consultantIndex).get('specialRates') as FormArray).at(specialRateIndex).get('editable')?.setValue(!isEditable, {emitEvent: false});
+        (this.consultantsForm.consultantData.at(consultantIndex).get('specialRates') as UntypedFormArray).at(specialRateIndex).get('editable')?.setValue(!isEditable, {emitEvent: false});
     }
 
     cancelEditConsultantRate(consultantIndex: number, specialRateIndex: number) {
-        const rateRow = (this.consultantsForm.consultantData.at(consultantIndex).get('specialRates') as FormArray).at(specialRateIndex);
+        const rateRow = (this.consultantsForm.consultantData.at(consultantIndex).get('specialRates') as UntypedFormArray).at(specialRateIndex);
         rateRow.get('prodataToProdataRate')?.setValue(this.consultantRateToEdit.prodataToProdataRate, {emitEvent: false});
         rateRow.get('prodataToProdataRateCurrency')?.setValue(this.findItemById(this.currencies, this.consultantRateToEdit.prodataToProdataRateCurrencyId), {emitEvent: false});
         rateRow.get('consultantRate')?.setValue(this.consultantRateToEdit.consultantRate, {emitEvent: false});
         rateRow.get('consultantRateCurrency')?.setValue(this.findItemById(this.currencies, this.consultantRateToEdit.consultantRateCurrencyId), {emitEvent: false});
         this.isConsultantRateEditing = false;
-        (this.consultantsForm.consultantData.at(consultantIndex).get('specialRates') as FormArray).at(specialRateIndex).get('editable')?.setValue(false, {emitEvent: false});
+        (this.consultantsForm.consultantData.at(consultantIndex).get('specialRates') as UntypedFormArray).at(specialRateIndex).get('editable')?.setValue(false, {emitEvent: false});
     }
 
     selectConsultantSpecialRate(event: any, consultantIndex: number, rate: ClientSpecialRateDto, consultantRateMenuTrigger: MatMenuTrigger) {
@@ -1240,25 +1240,25 @@ export class WorkflowSalesComponent extends AppComponentBase implements OnInit {
 
     addConsultantSpecialRate(consultantIndex: NumberSymbol, consultantRate?: PeriodConsultantSpecialRateDto) {
         const form = this._fb.group({
-            id: new FormControl(consultantRate?.id ?? null),
-            clientSpecialRateId: new FormControl(consultantRate?.clientSpecialRateId ?? null),
-            rateName: new FormControl(consultantRate?.rateName ?? null),
-            reportingUnit: new FormControl(consultantRate?.reportingUnit ?? null),
-            prodataToProdataRate: new FormControl(consultantRate?.prodataToProdataRate ?? null),
-            prodataToProdataRateCurrency: new FormControl(this.findItemById(this.currencies, consultantRate?.prodataToProdataRateCurrencyId) ?? null),
-            consultantRate: new FormControl(consultantRate?.consultantRate ?? null),
-            consultantRateCurrency: new FormControl(this.findItemById(this.currencies, consultantRate?.consultantRateCurrencyId) ?? null),
-            editable: new FormControl(false)
+            id: new UntypedFormControl(consultantRate?.id ?? null),
+            clientSpecialRateId: new UntypedFormControl(consultantRate?.clientSpecialRateId ?? null),
+            rateName: new UntypedFormControl(consultantRate?.rateName ?? null),
+            reportingUnit: new UntypedFormControl(consultantRate?.reportingUnit ?? null),
+            prodataToProdataRate: new UntypedFormControl(consultantRate?.prodataToProdataRate ?? null),
+            prodataToProdataRateCurrency: new UntypedFormControl(this.findItemById(this.currencies, consultantRate?.prodataToProdataRateCurrencyId) ?? null),
+            consultantRate: new UntypedFormControl(consultantRate?.consultantRate ?? null),
+            consultantRateCurrency: new UntypedFormControl(this.findItemById(this.currencies, consultantRate?.consultantRateCurrencyId) ?? null),
+            editable: new UntypedFormControl(false)
         });
-        (this.consultantsForm.consultantData.at(consultantIndex).get('specialRates') as FormArray).push(form);
+        (this.consultantsForm.consultantData.at(consultantIndex).get('specialRates') as UntypedFormArray).push(form);
     }
 
     getConsultantFeeControls(consultantIndex: number): AbstractControl[] | null {
-        return (this.consultantsForm.consultantData.at(consultantIndex).get('specialFees') as FormArray).controls;
+        return (this.consultantsForm.consultantData.at(consultantIndex).get('specialFees') as UntypedFormArray).controls;
     }
 
     removeConsutlantFee(consultantIndex: number, specialFeeIndex: number) {
-        (this.consultantsForm.consultantData.at(consultantIndex).get('specialFees') as FormArray).removeAt(specialFeeIndex);
+        (this.consultantsForm.consultantData.at(consultantIndex).get('specialFees') as UntypedFormArray).removeAt(specialFeeIndex);
     }
 
     editOrSaveConsultantFee(consultantIndex: number, specialFeeIndex: number, isEditable: boolean) {
@@ -1268,7 +1268,7 @@ export class WorkflowSalesComponent extends AppComponentBase implements OnInit {
             this.isConsultantFeeEditing = false;
         } else {
             // make editable
-            const consultantFeeValue = (this.consultantsForm.consultantData.at(consultantIndex).get('specialFees') as FormArray).at(specialFeeIndex).value;
+            const consultantFeeValue = (this.consultantsForm.consultantData.at(consultantIndex).get('specialFees') as UntypedFormArray).at(specialFeeIndex).value;
             this.consultantFeeToEdit = new PeriodConsultantSpecialFeeDto({
                 id: consultantFeeValue.id,
                 clientSpecialFeeId: consultantFeeValue.clientSpecialFeeId,
@@ -1281,17 +1281,17 @@ export class WorkflowSalesComponent extends AppComponentBase implements OnInit {
             });
             this.isConsultantFeeEditing = true;
         }
-        (this.consultantsForm.consultantData.at(consultantIndex).get('specialFees') as FormArray).at(specialFeeIndex).get('editable')?.setValue(!isEditable, {emitEvent: false});
+        (this.consultantsForm.consultantData.at(consultantIndex).get('specialFees') as UntypedFormArray).at(specialFeeIndex).get('editable')?.setValue(!isEditable, {emitEvent: false});
     }
 
     cancelEditConsultantFee(consultantIndex: number, specialFeeIndex: number) {
-        const rateRow = (this.consultantsForm.consultantData.at(consultantIndex).get('specialFees') as FormArray).at(specialFeeIndex);
+        const rateRow = (this.consultantsForm.consultantData.at(consultantIndex).get('specialFees') as UntypedFormArray).at(specialFeeIndex);
         rateRow.get('prodataToProdataRate')?.setValue(this.consultantFeeToEdit.prodataToProdataRate, {emitEvent: false});
         rateRow.get('prodataToProdataRateCurrency')?.setValue(this.findItemById(this.currencies, this.consultantFeeToEdit.prodataToProdataRateCurrencyId), {emitEvent: false});
         rateRow.get('consultantRate')?.setValue(this.consultantFeeToEdit.consultantRate, {emitEvent: false});
         rateRow.get('consultantRateCurrency')?.setValue(this.findItemById(this.currencies, this.consultantFeeToEdit.consultantRateCurrencyId), {emitEvent: false});
         this.isConsultantFeeEditing = false;
-        (this.consultantsForm.consultantData.at(consultantIndex).get('specialFees') as FormArray).at(specialFeeIndex).get('editable')?.setValue(false, {emitEvent: false});
+        (this.consultantsForm.consultantData.at(consultantIndex).get('specialFees') as UntypedFormArray).at(specialFeeIndex).get('editable')?.setValue(false, {emitEvent: false});
     }
 
     selectConsultantSpecialFee(event: any, consultantIndex: number, fee: ClientSpecialFeeDto, consultantFeeMenuTrigger: MatMenuTrigger) {
@@ -1310,17 +1310,17 @@ export class WorkflowSalesComponent extends AppComponentBase implements OnInit {
 
     addConsultantSpecialFee(consultantIndex: number, consultantFee?: PeriodConsultantSpecialFeeDto) {
         const form = this._fb.group({
-            id: new FormControl(consultantFee?.id ?? null),
-            clientSpecialFeeId: new FormControl(consultantFee?.clientSpecialFeeId ?? null),
-            feeName: new FormControl(consultantFee?.feeName ?? null),
-            frequency: new FormControl(consultantFee?.frequency ?? null),
-            prodataToProdataRate: new FormControl(consultantFee?.prodataToProdataRate ?? null),
-            prodataToProdataRateCurrency: new FormControl(this.findItemById(this.currencies, consultantFee?.prodataToProdataRateCurrencyId) ?? null),
-            consultantRate: new FormControl(consultantFee?.consultantRate ?? null),
-            consultantRateCurrency: new FormControl(this.findItemById(this.currencies, consultantFee?.consultantRateCurrencyId) ?? null),
-            editable: new FormControl(false)
+            id: new UntypedFormControl(consultantFee?.id ?? null),
+            clientSpecialFeeId: new UntypedFormControl(consultantFee?.clientSpecialFeeId ?? null),
+            feeName: new UntypedFormControl(consultantFee?.feeName ?? null),
+            frequency: new UntypedFormControl(consultantFee?.frequency ?? null),
+            prodataToProdataRate: new UntypedFormControl(consultantFee?.prodataToProdataRate ?? null),
+            prodataToProdataRateCurrency: new UntypedFormControl(this.findItemById(this.currencies, consultantFee?.prodataToProdataRateCurrencyId) ?? null),
+            consultantRate: new UntypedFormControl(consultantFee?.consultantRate ?? null),
+            consultantRateCurrency: new UntypedFormControl(this.findItemById(this.currencies, consultantFee?.consultantRateCurrencyId) ?? null),
+            editable: new UntypedFormControl(false)
         });
-        (this.consultantsForm.consultantData.at(consultantIndex).get('specialFees') as FormArray).push(form);
+        (this.consultantsForm.consultantData.at(consultantIndex).get('specialFees') as UntypedFormArray).push(form);
     }
 
     manageConsultantAutocomplete(consultantIndex: number) {
@@ -1398,8 +1398,8 @@ export class WorkflowSalesComponent extends AppComponentBase implements OnInit {
         this.updateConsultantStepAnchors();
     }
 
-    get consultantData(): FormArray {
-        return this.consultantsForm.get('consultantData') as FormArray;
+    get consultantData(): UntypedFormArray {
+        return this.consultantsForm.get('consultantData') as UntypedFormArray;
     }
 
     saveStartChangeOrExtendClientPeriodSales(isDraft: boolean) {
@@ -1931,15 +1931,15 @@ export class WorkflowSalesComponent extends AppComponentBase implements OnInit {
                 break;
         }
         const form = this._fb.group({
-            id: new FormControl(commission?.id ?? null),
-            type: new FormControl(this.findItemById(this.commissionTypes, commission?.commissionTypeId) ?? null, Validators.required),
-            amount: new FormControl(commission?.amount ?? null, Validators.required),
-            currency: new FormControl(this.findItemById(this.currencies, commission?.currencyId) ?? null, Validators.required),
-            recipientType: new FormControl(this.findItemById(this.commissionRecipientTypeList, commission?.recipientTypeId) ?? null, Validators.required),
-            recipient: new FormControl(commissionRecipient ?? null, [Validators.required, CustomValidators.autocompleteValidator(['clientId', 'id', 'supplierId'])]),
-            frequency: new FormControl(this.findItemById(this.commissionFrequencies, commission?.commissionFrequencyId) ?? null, Validators.required),
-            oneTimeDate: new FormControl(commission?.oneTimeDate ?? null),
-            editable: new FormControl(commission?.id ? false : true)
+            id: new UntypedFormControl(commission?.id ?? null),
+            type: new UntypedFormControl(this.findItemById(this.commissionTypes, commission?.commissionTypeId) ?? null, Validators.required),
+            amount: new UntypedFormControl(commission?.amount ?? null, Validators.required),
+            currency: new UntypedFormControl(this.findItemById(this.currencies, commission?.currencyId) ?? null, Validators.required),
+            recipientType: new UntypedFormControl(this.findItemById(this.commissionRecipientTypeList, commission?.recipientTypeId) ?? null, Validators.required),
+            recipient: new UntypedFormControl(commissionRecipient ?? null, [Validators.required, CustomValidators.autocompleteValidator(['clientId', 'id', 'supplierId'])]),
+            frequency: new UntypedFormControl(this.findItemById(this.commissionFrequencies, commission?.commissionFrequencyId) ?? null, Validators.required),
+            oneTimeDate: new UntypedFormControl(commission?.oneTimeDate ?? null),
+            editable: new UntypedFormControl(commission?.id ? false : true)
         });
         this.salesMainDataForm.commissions.push(form);
         if (isInitial) {
@@ -2008,7 +2008,7 @@ export class WorkflowSalesComponent extends AppComponentBase implements OnInit {
     }
 
     get commissions() {
-        return this.salesMainDataForm.commissions as FormArray;
+        return this.salesMainDataForm.commissions as UntypedFormArray;
     }
 
     removeCommission(index: number) {

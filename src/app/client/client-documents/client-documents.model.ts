@@ -1,4 +1,4 @@
-import { FormArray, FormGroup } from "@angular/forms";
+import { UntypedFormArray, UntypedFormGroup } from "@angular/forms";
 import * as moment from "moment";
 import { ClientContractViewRootDto } from "src/shared/service-proxies/service-proxies";
 
@@ -19,15 +19,15 @@ export class FolderFlatNode {
     ) {}
 }
 
-export class GeneralDocumentForm extends FormGroup {
+export class GeneralDocumentForm extends UntypedFormGroup {
     constructor() {
         super({
-            documents: new FormArray([])
+            documents: new UntypedFormArray([])
         })
 
     }
     get documents() {
-        return this.get('documents') as FormArray;
+        return this.get('documents') as UntypedFormArray;
     }
 }
 

@@ -1,5 +1,5 @@
 import { Component, Injector, OnDestroy, OnInit, ViewChild } from '@angular/core';
-import { FormArray, FormBuilder, FormControl } from '@angular/forms';
+import { UntypedFormArray, UntypedFormBuilder, UntypedFormControl } from '@angular/forms';
 import { MatTableDataSource } from '@angular/material/table';
 import { AppConsts } from 'src/shared/AppConsts';
 import { ContractsData, DocumentSideNavDto, DocumentSideNavigation, DocumentSideNavItem, GeneralDocumentForm } from './client-documents.model';
@@ -62,19 +62,19 @@ export class ClientDocumentsComponent extends AppComponentBase implements OnInit
 
     // Contracts tab
 
-    clientFilter = new FormControl();
-    dataFilter = new FormControl();
+    clientFilter = new UntypedFormControl();
+    dataFilter = new UntypedFormControl();
 
     documentSideNavigation = DocumentSideNavigation;
     documentSideItems = DocumentSideNavItem;
     selectedItem = DocumentSideNavItem.General;
     isContractsLoading = false;
 
-    generalDocumentsIncludeLinked = new FormControl(false);
-    contractDocumentsIncludeLinked = new FormControl(false);
-    contractDocumentsIncludeExpired = new FormControl(false);
-    evaluationDocumentDate = new FormControl(new Date());
-    evaluationDocumentsIncludeLinked = new FormControl(false);
+    generalDocumentsIncludeLinked = new UntypedFormControl(false);
+    contractDocumentsIncludeLinked = new UntypedFormControl(false);
+    contractDocumentsIncludeExpired = new UntypedFormControl(false);
+    evaluationDocumentDate = new UntypedFormControl(new Date());
+    evaluationDocumentsIncludeLinked = new UntypedFormControl(false);
 
     contractsData = ContractsData;
 
@@ -85,7 +85,7 @@ export class ClientDocumentsComponent extends AppComponentBase implements OnInit
         injector: Injector,
         private overlay: Overlay,
         private dialog: MatDialog,
-        private _fb: FormBuilder,
+        private _fb: UntypedFormBuilder,
         private _clientDocumentsService: ClientDocumentsServiceProxy,
         private activatedRoute: ActivatedRoute,
         private httpClient: HttpClient,
@@ -178,21 +178,21 @@ export class ClientDocumentsComponent extends AppComponentBase implements OnInit
 
     addGeneralDocument(generalDocument?: ClientAttachmentInfoOutputDto) {
         const form = this._fb.group({
-            clientAttachmentGuid: new FormControl(generalDocument?.clientAttachmentGuid ?? null),
-            documentStorageGuid: new FormControl(generalDocument?.documentStorageGuid ?? null),
-            icon: new FormControl(this.getFileTypeIcon(generalDocument?.documentType!) ?? null),
-            headline: new FormControl(generalDocument?.headline ?? null),
-            filename: new FormControl(generalDocument?.filename ?? null),
-            attachmentTypeId: new FormControl(this.findItemById(this.generalFileTypes, generalDocument?.attachmentTypeId) ?? null),
-            dateUpdated: new FormControl(generalDocument?.dateUpdated ?? null),
-            updatedBy: new FormControl(generalDocument?.updatedBy ?? null),
-            editable: new FormControl(generalDocument ? false : true)
+            clientAttachmentGuid: new UntypedFormControl(generalDocument?.clientAttachmentGuid ?? null),
+            documentStorageGuid: new UntypedFormControl(generalDocument?.documentStorageGuid ?? null),
+            icon: new UntypedFormControl(this.getFileTypeIcon(generalDocument?.documentType!) ?? null),
+            headline: new UntypedFormControl(generalDocument?.headline ?? null),
+            filename: new UntypedFormControl(generalDocument?.filename ?? null),
+            attachmentTypeId: new UntypedFormControl(this.findItemById(this.generalFileTypes, generalDocument?.attachmentTypeId) ?? null),
+            dateUpdated: new UntypedFormControl(generalDocument?.dateUpdated ?? null),
+            updatedBy: new UntypedFormControl(generalDocument?.updatedBy ?? null),
+            editable: new UntypedFormControl(generalDocument ? false : true)
         });
         this.generalDocumentForm.documents.push(form);
     }
 
-    get documents(): FormArray {
-        return this.generalDocumentForm.get('documents') as FormArray;
+    get documents(): UntypedFormArray {
+        return this.generalDocumentForm.get('documents') as UntypedFormArray;
     }
 
     deleteGeneralDocument(clientAttachmentGuid: string) {

@@ -1,5 +1,5 @@
 import { Component, OnInit, Injector, Input, Output, EventEmitter } from '@angular/core';
-import { FormControl, Validators } from '@angular/forms';
+import { UntypedFormControl, Validators } from '@angular/forms';
 import { AppComponentBase } from 'src/shared/app-component-base';
 import { finalize } from 'rxjs/operators';
 import { EmployeeRole, EmployeeServiceProxy, WorkflowServiceProxy } from 'src/shared/service-proxies/service-proxies';
@@ -21,7 +21,7 @@ export class WorkflowNotesComponent extends AppComponentBase implements OnInit {
     isNoteVisible = false;
     isAllowedToEdit = false;
 
-    workflowNote = new FormControl('', Validators.maxLength(4000));
+    workflowNote = new UntypedFormControl('', Validators.maxLength(4000));
     workflowNoteOldValue: string;
     constructor(
         injector: Injector,

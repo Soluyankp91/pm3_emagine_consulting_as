@@ -1,5 +1,5 @@
 import { Component, Injector, OnInit, ViewChild } from '@angular/core';
-import { FormControl } from '@angular/forms';
+import { UntypedFormControl } from '@angular/forms';
 import { GanttDate, GanttGroup, GanttItem, GanttViewType, NgxGanttComponent } from '@worktile/gantt';
 import { getUnixTime } from 'date-fns';
 import { merge, Subject, Subscription } from 'rxjs';
@@ -54,14 +54,14 @@ export class MainOverviewComponent extends AppComponentBase implements OnInit {
     margins: EnumEntityTypeDto[] = [];
     isAdvancedFilters = false;
 
-    workflowFilter = new FormControl(null);
-    accountManagerFilter = new FormControl();
-    invoicingEntityControl = new FormControl();
-    paymentEntityControl = new FormControl();
-    salesTypeControl = new FormControl();
-    deliveryTypesControl = new FormControl();
-    marginsControl = new FormControl();
-    overviewViewTypeControl = new FormControl(1);
+    workflowFilter = new UntypedFormControl(null);
+    accountManagerFilter = new UntypedFormControl();
+    invoicingEntityControl = new UntypedFormControl();
+    paymentEntityControl = new UntypedFormControl();
+    salesTypeControl = new UntypedFormControl();
+    deliveryTypesControl = new UntypedFormControl();
+    marginsControl = new UntypedFormControl();
+    overviewViewTypeControl = new UntypedFormControl(1);
 
     managerStatus = ManagerStatus;
     mainOverviewStatuses: MainOverviewStatusDto;
@@ -78,7 +78,7 @@ export class MainOverviewComponent extends AppComponentBase implements OnInit {
     consultantsItems: GanttItem[] = [];
     consultantsGroups: GanttGroup<any>[] = [];
 
-    viewType: FormControl = new FormControl(GanttViewType.week);
+    viewType: UntypedFormControl = new UntypedFormControl(GanttViewType.week);
 
     startDate = new Date();
     startDateOfChart: number;

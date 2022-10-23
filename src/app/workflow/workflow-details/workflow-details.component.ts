@@ -16,7 +16,7 @@ import { AppComponentBase, NotifySeverity } from 'src/shared/app-component-base'
 import { ConfirmationDialogComponent } from 'src/app/shared/components/confirmation-dialog/confirmation-dialog.component';
 import * as moment from 'moment';
 import { environment } from 'src/environments/environment';
-import { FormControl, Validators } from '@angular/forms';
+import { UntypedFormControl, Validators } from '@angular/forms';
 import { LocalHttpService } from 'src/shared/service-proxies/local-http.service';
 import { AuthenticationResult } from '@azure/msal-browser';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
@@ -68,7 +68,7 @@ export class WorkflowDetailsComponent extends AppComponentBase implements OnInit
     individualConsultantActionsAvailable: boolean;
 
     isNoteVisible = false;
-    workflowNote = new FormControl('', Validators.maxLength(4000));
+    workflowNote = new UntypedFormControl('', Validators.maxLength(4000));
     workflowNoteOldValue: string;
     disabledOverview = true;
     notesEditable = false;
