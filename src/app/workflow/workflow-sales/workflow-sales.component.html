@@ -2157,28 +2157,32 @@
                                     <app-validator [control]="salesClientDataForm.evaluationsReferencePersonIdValue"></app-validator>
                                 </mat-form-field>
 
-                                <mat-form-field *ngIf="salesClientDataForm.value?.evaluationsDisabled" appearance="outline" class="u-w--100 textarea-input " fxFlex="0 0 calc(66% + 16px)">
-                                    <mat-label>Disable Evaluations Reason</mat-label>
-                                    <textarea required matInput autocomplete="new-password" name="evaluationsDisabledReason" formControlName="evaluationsDisabledReason" [matTextareaAutosize]="true" [matAutosizeMinRows]="2">
-                                    </textarea>
-                                    <app-validator [control]="salesClientDataForm.evaluationsDisabledReason"></app-validator>
-                                </mat-form-field>
+                                <div fxLayout="column" fxLayoutAlign="start start" class="u-w--100" fxFlex="0 0 calc(66% + 16px)" [fxHide]="!salesClientDataForm.value?.evaluationsDisabled">
+                                    <mat-form-field appearance="outline" class="u-w--100 textarea-input">
+                                        <mat-label>Disable Evaluations Reason</mat-label>
+                                        <textarea [required]="salesClientDataForm.value?.evaluationsDisabled" matInput autocomplete="new-password" name="evaluationsDisabledReason" formControlName="evaluationsDisabledReason" [matTextareaAutosize]="true" [matAutosizeMinRows]="2">
+                                        </textarea>
+                                    </mat-form-field>
+                                    <app-validator [withoutPadding]="true" [control]="salesClientDataForm.evaluationsDisabledReason"></app-validator>
+                                </div>
                             </div>
                         </div>
                         <mat-divider class="u-w--100 u-mt--20 u-mb--20"></mat-divider>
                         <div fxLayout="column" fxLayoutAlign="start start" class="u-w--100">
                             <h2 class="workflow-section--header">Contract</h2>
                             <h3 class="workflow-gray--header u-mb--10">Special Contract Terms</h3>
-                            <div fxLayout="row" fxLayoutAlign="start start" fxLayoutGap="10px" class="u-w--100 u-mb--10">
-                                <mat-form-field appearance="outline" class="u-w--100  textarea-input" fxFlex="0 0 calc(66% + 16px)">
-                                    <mat-label>Special Contract Terms</mat-label>
-                                    <textarea required matInput autocomplete="new-password" name="specialContractTerms" formControlName="specialContractTerms" [matTextareaAutosize]="true" [matAutosizeMinRows]="2">
-                                    </textarea>
-                                    <app-validator [control]="salesClientDataForm.specialContractTerms"></app-validator>
-                                </mat-form-field>
-                                <mat-checkbox color="accent" formControlName="noSpecialContractTerms" name="noSpecialContractTerms" class="black-checkbox u-mt--10" (change)="disableOrEnableInput(salesClientDataForm.noSpecialContractTerms?.value, salesClientDataForm.specialContractTerms)" >
-                                    None
-                                </mat-checkbox>
+                            <div fxLayout="column" fxLayoutAlign="start start" class="u-w--100">
+                                <div fxLayout="row" fxLayoutAlign="start start" fxLayoutGap="10px" class="u-w--100 u-mb--10">
+                                    <mat-form-field appearance="outline" class="u-w--100  textarea-input" fxFlex="0 0 calc(66% + 16px)">
+                                        <mat-label>Special Contract Terms</mat-label>
+                                        <textarea required matInput autocomplete="new-password" name="specialContractTerms" formControlName="specialContractTerms" [matTextareaAutosize]="true" [matAutosizeMinRows]="2">
+                                        </textarea>
+                                    </mat-form-field>
+                                    <mat-checkbox color="accent" formControlName="noSpecialContractTerms" name="noSpecialContractTerms" class="black-checkbox u-mt--10" (change)="disableOrEnableInput(salesClientDataForm.noSpecialContractTerms?.value, salesClientDataForm.specialContractTerms)" >
+                                        None
+                                    </mat-checkbox>
+                                </div>
+                                <app-validator [control]="salesClientDataForm.specialContractTerms"></app-validator>
                             </div>
 
                             <h3 class="workflow-gray--header u-mb--10">Client Contract Signers</h3>
