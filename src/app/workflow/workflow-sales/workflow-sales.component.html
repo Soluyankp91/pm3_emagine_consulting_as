@@ -1636,10 +1636,10 @@
                                 </mat-button-toggle-group>
                             </div>
 
-                            <div fxLayout="row" fxLayoutAlign="start start" class="u-w--100 u-mb--10" *ngIf="!salesClientDataForm.noClientExtensionOption?.value">
+                            <div fxLayout="row" fxLayoutAlign="start start" class="u-w--100 u-mb--10" [fxHide]="salesClientDataForm.noClientExtensionOption?.value">
                                 <mat-form-field appearance="outline" class="filter-select u-mr--16" fxFlex="0 0 calc(16.5% - 8px)">
                                     <mat-label> Duration</mat-label>
-                                    <mat-select required formControlName="clientExtensionDuration" [disableOptionCentering]="true" [compareWith]="compareWithFn">
+                                    <mat-select [required]="!salesClientDataForm.noClientExtensionOption?.value" formControlName="clientExtensionDuration" [disableOptionCentering]="true" [compareWith]="compareWithFn">
                                         <mat-option *ngFor="let item of clientExtensionDurations" [value]="item">
                                             {{ item.name }}
                                         </mat-option>
@@ -1649,7 +1649,7 @@
 
                                 <mat-form-field appearance="outline" class="filter-select u-mr--16" fxFlex="0 0 calc(16.5% - 8px)">
                                     <mat-label> Deadline</mat-label>
-                                    <mat-select required formControlName="clientExtensionDeadline" [disableOptionCentering]="true" [compareWith]="compareWithFn">
+                                    <mat-select [required]="!salesClientDataForm.noClientExtensionOption?.value" formControlName="clientExtensionDeadline" [disableOptionCentering]="true" [compareWith]="compareWithFn">
                                         <mat-option *ngFor="let item of clientExtensionDeadlines" [value]="item">
                                             {{ item.name }}
                                         </mat-option>
@@ -1657,9 +1657,9 @@
                                     <app-validator [control]="salesClientDataForm.clientExtensionDeadline"></app-validator>
                                 </mat-form-field>
 
-                                <mat-form-field appearance="outline" *ngIf="salesClientDataForm.clientExtensionDeadline?.value?.name === 'Manual date'" fxFlex="0 0 calc(16.5% - 8px)">
+                                <mat-form-field appearance="outline" [fxHide]="salesClientDataForm.clientExtensionDeadline?.value?.name !== 'Manual date'" fxFlex="0 0 calc(16.5% - 8px)">
                                     <mat-label>Specific date</mat-label>
-                                    <input required autocomplete="off" matInput
+                                    <input [required]="salesClientDataForm.clientExtensionDeadline?.value?.name === 'Manual date'" autocomplete="off" matInput
                                             [matDatepicker]="clientExtensionEndDatePicker"
                                             name="clientExtensionEndDate" formControlName="clientExtensionEndDate"
                                             (focus)="clientExtensionEndDatePicker.open()"
@@ -2572,7 +2572,7 @@
                                                 <mat-label>Date</mat-label>
                                                 <input [required]="consultant.value.consultantInvoicingFrequency?.name === 'Manual date'" autocomplete="off" matInput
                                                         [matDatepicker]="consultantInvoicingDatePicker"
-                                                        name="consultantInvoicingManualDate" formControlName="consultantInvoicingManualDate"
+                                                        name="consultantInvoicingManualDateFrequency" formControlName="consultantInvoicingManualDate"
                                                         (focus)="consultantInvoicingDatePicker.open()"
                                                         appPreventDoubleClick (throttledClick)="consultantInvoicingDatePicker.open()" readonly>
                                                 <mat-icon class="calendar-icon" matSuffix svgIcon="calendar"></mat-icon>

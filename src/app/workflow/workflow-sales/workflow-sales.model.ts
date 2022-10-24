@@ -125,9 +125,9 @@ export class WorkflowSalesClientDataForm extends FormGroup {
             clientContractNoEndDate: new FormControl(false),
 
             // Client Extension Option
-            clientExtensionDuration: new FormControl(null, Validators.required),
+            clientExtensionDuration: new FormControl(null),
             clientExtensionEndDate: new FormControl(null),
-            clientExtensionDeadline: new FormControl(null, Validators.required),
+            clientExtensionDeadline: new FormControl(null),
             noClientExtensionOption: new FormControl(false),
 
             // Client project
