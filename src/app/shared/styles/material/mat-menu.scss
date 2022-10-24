@@ -67,9 +67,10 @@
 .client-list--filter-manager-menu + * .cdk-overlay-pane,
 .client-list--filter-country-menu + * .cdk-overlay-pane,
 .main-overview--filter-manager-menu + * .cdk-overlay-pane,
-.main-overview--filter-country-menu + * .cdk-overlay-pane {
+.main-overview--filter-country-menu + * .cdk-overlay-pane,
+.filter-manager--menu + * .cdk-overlay-pane {
     .mat-menu-panel, .mat-select-panel {
-        min-height: 48px !important;
+        min-height: 40px !important;
         border-radius: unset !important;
         min-width: 300px !important;
         .mat-menu-content {
@@ -82,10 +83,11 @@
 .client-list--filter-manager-menu + * + * .cdk-overlay-pane,
 .client-list--filter-country-menu + * + * .cdk-overlay-pane,
 .main-overview--filter-manager-menu + * + * .cdk-overlay-pane,
-.main-overview--filter-country-menu + * + * .cdk-overlay-pane {
+.main-overview--filter-country-menu + * + * .cdk-overlay-pane,
+.filter-manager--menu + * + * .cdk-overlay-pane {
     .mat-autocomplete-panel, .mat-select-panel {
-        // border: 1px solid #E7E3E8;
         min-width: 300px !important;
+        border-top: 1px solid #E7E3E8;
 
         &::-webkit-scrollbar {
             width: 10px;
