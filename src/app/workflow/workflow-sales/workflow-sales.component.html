@@ -1022,13 +1022,13 @@
                 <ng-container *ngIf="(activeSideSection.typeId === workflowSideSections.StartConsultantPeriod) || (activeSideSection.typeId === workflowSideSections.ChangeConsultantPeriod) || (activeSideSection.typeId === workflowSideSections.ExtendConsultantPeriod); else startClientPeriodTemplate">
                     <div fxLayout="column" fxLayoutAlign="start start" class="workflow-sales--process-data u-w--100" id="salesMainDataAnchor">
                         <h1 class="workflow-section--header-main">Main data</h1>
-                        <div fxLayout="row" fxLayoutAlign="start start" class="u-w--100 u-mb--10  u-mt--10">
-                            <mat-form-field appearance="outline" class="u-w--100 textarea-input " fxFlex="0 0 calc(66% + 16px)">
+                        <div fxLayout="column" fxLayoutAlign="start start" class="u-w--100 u-mb--10  u-mt--10" fxFlex="0 0 calc(66% + 16px)">
+                            <mat-form-field appearance="outline" class="u-w--100 textarea-input">
                                 <mat-label>Remarks</mat-label>
                                 <textarea required matInput autocomplete="new-password" name="remarks" formControlName="remarks" [matTextareaAutosize]="true" [matAutosizeMinRows]="2">
                                 </textarea>
-                                <app-validator [control]="salesMainDataForm.remarks"></app-validator>
                             </mat-form-field>
+                            <app-validator [withoutPadding]="true" [control]="salesMainDataForm.remarks"></app-validator>
                         </div>
                         <div fxLayout="row" fxLayoutAlign="start start" class="u-w--100 u-mb--20">
                             <mat-checkbox color="accent" formControlName="noRemarks" name="noRemarks" class="black-checkbox" (change)="disableOrEnableInput(salesMainDataForm.noRemarks?.value, salesMainDataForm.remarks)">
@@ -1154,22 +1154,22 @@
                                 </div>
                             </ng-container>
 
-                            <div fxLayout="row" fxLayoutAlign="start start" class="u-w--100 u-mb--10">
-                                <mat-form-field appearance="outline" class="u-w--100 textarea-input " fxFlex="0 0 calc(66% + 16px)">
+                            <div fxLayout="column" fxLayoutAlign="start start" class="u-w--100 u-mb--10" fxFlex="0 0 calc(66% + 16px)">
+                                <mat-form-field appearance="outline" class="u-w--100 textarea-input">
                                     <mat-label>Project Name</mat-label>
                                     <textarea matInput autocomplete="new-password" name="projectName" required formControlName="projectName" [matTextareaAutosize]="true" [matAutosizeMinRows]="2">
                                     </textarea>
-                                    <app-validator [control]="salesMainDataForm.projectName"></app-validator>
                                 </mat-form-field>
+                                <app-validator [withoutPadding]="true" [control]="salesMainDataForm.projectName"></app-validator>
                             </div>
 
-                            <div fxLayout="row" fxLayoutAlign="start start" class="u-w--100 u-mb--10">
-                                <mat-form-field appearance="outline" class="u-w--100 textarea-input " fxFlex="0 0 calc(66% + 16px)">
+                            <div fxLayout="column" fxLayoutAlign="start start" class="u-w--100 u-mb--10" fxFlex="0 0 calc(66% + 16px)">
+                                <mat-form-field appearance="outline" class="u-w--100 textarea-input">
                                     <mat-label>Project Description</mat-label>
                                     <textarea matInput autocomplete="new-password" name="projectDescription" required formControlName="projectDescription" [matTextareaAutosize]="true" [matAutosizeMinRows]="2">
                                     </textarea>
-                                    <app-validator [control]="salesMainDataForm.projectDescription"></app-validator>
                                 </mat-form-field>
+                                <app-validator [withoutPadding]="true" [control]="salesMainDataForm.projectDescription"></app-validator>
                             </div>
                         </div>
                         <mat-divider class="u-w--100 u-mt--20 u-mb--20"></mat-divider>
@@ -1464,13 +1464,13 @@
                                 </mat-form-field>
                             </div>
 
-                            <div fxLayout="row" fxLayoutAlign="start start" class="u-w--100 u-mb--10">
-                                <mat-form-field appearance="outline" class="u-w--100 textarea-input " fxFlex="0 0 calc(66% + 16px)">
+                            <div fxLayout="column" fxLayoutAlign="start start" class="u-w--100 u-mb--10" fxFlex="0 0 calc(66% + 16px)">
+                                <mat-form-field appearance="outline" class="u-w--100 textarea-input">
                                     <mat-label>Remarks</mat-label>
                                     <textarea required matInput autocomplete="new-password" name="remarks" formControlName="remarks" [matTextareaAutosize]="true" [matAutosizeMinRows]="2">
                                     </textarea>
-                                    <app-validator [control]="salesMainDataForm.remarks"></app-validator>
                                 </mat-form-field>
+                                <app-validator [withoutPadding]="true" [control]="salesMainDataForm.remarks"></app-validator>
                             </div>
                             <div fxLayout="row" fxLayoutAlign="start start" class="u-w--100">
                                 <mat-checkbox color="accent" formControlName="noRemarks" name="noRemarks" class="black-checkbox" (change)="disableOrEnableInput(salesMainDataForm.noRemarks?.value, salesMainDataForm.remarks)">
@@ -3046,13 +3046,15 @@
                                 <div fxLayout="column" fxLayoutAlign="start start" class="u-w--100">
                                     <h2 class="workflow-section--header">Consultant Contract</h2>
                                     <h3 class="workflow-gray--header u-mb--10">Special Contract Terms</h3>
-                                    <div fxLayout="row" fxLayoutAlign="start center" class="u-w--100">
-                                        <mat-form-field appearance="outline" class="u-w--100  textarea-input u-mr--16" fxFlex="0 0 calc(66% + 16px)">
-                                            <mat-label>Consultant Special Contract Terms</mat-label>
-                                            <textarea required matInput autocomplete="new-password" name="consultantSpecialContractTerms" formControlName="consultantSpecialContractTerms" [matTextareaAutosize]="true" [matAutosizeMinRows]="2">
-                                            </textarea>
-                                            <app-validator [control]="consultant.get('consultantSpecialContractTerms')"></app-validator>
-                                        </mat-form-field>
+                                    <div fxLayout="column" fxLayoutAlign="start start" class="u-w--100">
+                                        <div fxLayout="row" fxLayoutAlign="start center" class="u-w--100" fxFlex="0 0 calc(66% + 16px)">
+                                            <mat-form-field appearance="outline" class="u-w--100 textarea-input u-mr--16">
+                                                <mat-label>Consultant Special Contract Terms</mat-label>
+                                                <textarea required matInput autocomplete="new-password" name="consultantSpecialContractTerms" formControlName="consultantSpecialContractTerms" [matTextareaAutosize]="true" [matAutosizeMinRows]="2">
+                                                </textarea>
+                                            </mat-form-field>
+                                        </div>
+                                        <app-validator [withoutPadding]="true" [control]="consultant.get('consultantSpecialContractTerms')"></app-validator>
                                     </div>
                                     <div fxLayout="row" fxLayoutAlign="start center" class="u-w--100 u-mb--10">
                                         <mat-checkbox color="accent" formControlName="consultantSpecialContractTermsNone" name="consultantSpecialContractTermsNone" class="black-checkbox u-mr--16" (change)="disableOrEnableInput(consultant?.value?.consultantSpecialContractTermsNone, consultant?.get('consultantSpecialContractTerms'))">
