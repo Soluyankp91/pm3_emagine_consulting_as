@@ -326,7 +326,7 @@
                                     </ng-template>
                                     <ng-container *ngIf="rate.value.editable && !readOnlyMode; else clientRatesActions">
                                         <div fxFlex="20%" class="u-w--100 text-truncate-ellipsis" fxLayoutAlign="end center">
-                                            <button mat-flat-button type="button" [disabled]="!rate.value.clientRateValue || !rate.value.clientRateCurrency?.name" appPreventDoubleClick (throttledClick)="editOrSaveSpecialRate(contractClientForm.clientRates.at(i).get('editable')?.value, i)" class="inline-edit-form--btn__save">
+                                            <button mat-flat-button type="button" [disabled]="!rate.valid" appPreventDoubleClick (throttledClick)="editOrSaveSpecialRate(contractClientForm.clientRates.at(i).get('editable')?.value, i)" class="inline-edit-form--btn__save">
                                                 Save
                                             </button>
                                             <button mat-flat-button type="button" appPreventDoubleClick (throttledClick)="cancelEditClientRate(i)" class="inline-edit-form--btn__cancel">
@@ -437,7 +437,7 @@
 
                                     <ng-container *ngIf="fee.value.editable && !readOnlyMode; else clientFeeActions">
                                         <div fxFlex="20%" class="u-w--100 text-truncate-ellipsis" fxLayoutAlign="end center">
-                                            <button mat-flat-button type="button" [disabled]="!fee.value.clientRateValue || !fee.value.clientRateCurrency?.name" appPreventDoubleClick (throttledClick)="editOrSaveClientFee(contractClientForm.clientFees.at(i).get('editable')?.value, i)" class="inline-edit-form--btn__save">
+                                            <button mat-flat-button type="button" [disabled]="!fee.valid" appPreventDoubleClick (throttledClick)="editOrSaveClientFee(contractClientForm.clientFees.at(i).get('editable')?.value, i)" class="inline-edit-form--btn__save">
                                                 Save
                                             </button>
                                             <button mat-flat-button type="button" appPreventDoubleClick (throttledClick)="cancelEditClientFee(i)" class="inline-edit-form--btn__cancel">
@@ -693,10 +693,10 @@
                                                     <ng-container *ngIf="rate.value.editable; else consutlantProDataRateCurrencyDisplay">
                                                         <div fxFlex="25%" fxLayout="row" fxLayoutAlign="start start">
                                                             <mat-form-field appearance="fill" class="u-w--100 formFieldNoMarginPadding filter-select" fxFlex="40%">
-                                                                <input required matInput type="number" placeholder="Rate" formControlName="proDataRateValue">
+                                                                <input [required]="consultant.value?.pdcPaymentEntityId !== contractClientForm.value?.pdcInvoicingEntityId" matInput type="number" placeholder="Rate" formControlName="proDataRateValue">
                                                             </mat-form-field>
                                                             <mat-form-field appearance="fill" class="u-w--100 formFieldNoMarginPadding filter-select" fxFlex="60%">
-                                                                <mat-select required formControlName="proDataRateCurrency" placeholder="Currency" [disableOptionCentering]="true" [compareWith]="compareWithFn">
+                                                                <mat-select [required]="consultant.value?.pdcPaymentEntityId !== contractClientForm.value?.pdcInvoicingEntityId" formControlName="proDataRateCurrency" placeholder="Currency" [disableOptionCentering]="true" [compareWith]="compareWithFn">
                                                                     <mat-option *ngFor="let item of currencies" [value]="item">
                                                                         {{ item.name }}
                                                                     </mat-option>
@@ -733,7 +733,7 @@
                                                 </ng-template>
                                                 <ng-container *ngIf="rate.value.editable; else consultantRateACtions">
                                                     <div fxFlex="10%" class="u-w--100 text-truncate-ellipsis flex-items-center">
-                                                        <button mat-flat-button type="button" [disabled]="!rate.value.consultantRateValue || !rate.value.consultantRateCurrency?.name || (consultant.value?.pdcPaymentEntityId !== contractClientForm.value?.pdcInvoicingEntityId && (!rate.value.proDataRateValue || !rate.value.proDataRateCurrency?.name))" appPreventDoubleClick (throttledClick)="editOrSaveConsultantSpecialRate(rate?.value.editable, consultantIndex, specialRateIndex)" class="inline-edit-form--btn__save">
+                                                        <button mat-flat-button type="button" [disabled]="!rate.valid" appPreventDoubleClick (throttledClick)="editOrSaveConsultantSpecialRate(rate?.value.editable, consultantIndex, specialRateIndex)" class="inline-edit-form--btn__save">
                                                             Save
                                                         </button>
                                                         <button mat-flat-button type="button" appPreventDoubleClick (throttledClick)="cancelEditConsultantRate(consultantIndex, specialRateIndex)" class="inline-edit-form--btn__cancel">
@@ -865,10 +865,10 @@
                                                     <ng-container *ngIf="fee.value.editable; else consultantFeeProDataRateDisplay">
                                                         <div fxFlex="25%" fxLayout="row" fxLayoutAlign="start start">
                                                             <mat-form-field appearance="fill" class="u-w--100 formFieldNoMarginPadding filter-select" fxFlex="40%">
-                                                                <input required matInput type="number" placeholder="Rate" formControlName="proDataRateValue">
+                                                                <input [required]="consultant.value?.pdcPaymentEntityId !== contractClientForm.value?.pdcInvoicingEntityId" matInput type="number" placeholder="Rate" formControlName="proDataRateValue">
                                                             </mat-form-field>
                                                             <mat-form-field appearance="fill" class="u-w--100 formFieldNoMarginPadding filter-select" fxFlex="60%">
-                                                                <mat-select required formControlName="proDataRateCurrency" placeholder="Currency" [disableOptionCentering]="true" [compareWith]="compareWithFn">
+                                                                <mat-select [required]="consultant.value?.pdcPaymentEntityId !== contractClientForm.value?.pdcInvoicingEntityId" formControlName="proDataRateCurrency" placeholder="Currency" [disableOptionCentering]="true" [compareWith]="compareWithFn">
                                                                     <mat-option *ngFor="let item of currencies" [value]="item">
                                                                         {{ item.name }}
                                                                     </mat-option>
@@ -904,7 +904,7 @@
 
                                                 <ng-container *ngIf="fee.value.editable; else consultantFeeActions">
                                                     <div fxFlex="10%" class="u-w--100 text-truncate-ellipsis flex-items-center">
-                                                        <button mat-flat-button type="button" [disabled]="!fee.value.consultantRateValue || !fee.value.consultantRateCurrency?.name || (consultant.value?.pdcPaymentEntityId !== contractClientForm.value?.pdcInvoicingEntityId && (!fee.value.proDataRateValue || !fee.value.proDataRateCurrency?.name))" appPreventDoubleClick (throttledClick)="editOrSaveConsultantSpecialFee(fee.value.editable, consultantIndex, clientFeeIndex)" class="inline-edit-form--btn__save">
+                                                        <button mat-flat-button type="button" [disabled]="!fee.value.valid" appPreventDoubleClick (throttledClick)="editOrSaveConsultantSpecialFee(fee.value.editable, consultantIndex, clientFeeIndex)" class="inline-edit-form--btn__save">
                                                             Save
                                                         </button>
                                                         <button mat-flat-button type="button" appPreventDoubleClick (throttledClick)="cancelEditConsultantFee(consultantIndex, clientFeeIndex)" class="inline-edit-form--btn__cancel">
