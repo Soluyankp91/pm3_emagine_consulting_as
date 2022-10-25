@@ -1695,58 +1695,33 @@
                                         </mat-button-toggle>
                                     </mat-button-toggle-group>
                                 </div>
-                                <!-- <div class="u-w--100" [ngSwitch]="salesClientDataForm.clientRateAndInvoicing?.value?.id"> -->
-                                    <!-- <ng-container *ngSwitchCase="1"> 'Time based' -->
-                                        <div fxLayout="row" fxLayoutAlign="start start" class="u-w--100 u-mb--10">
-                                            <mat-form-field appearance="outline" class="u-w--100  u-mr--16" fxFlex="0 0 calc(16.5% - 8px)">
-                                                <mat-label>Price</mat-label>
-                                                <input required autocomplete="off" matInput formControlName="clientPrice" type="number">
-                                                <app-validator [control]="salesClientDataForm.clientPrice"></app-validator>
-                                            </mat-form-field>
+                                <div fxLayout="row" fxLayoutAlign="start start" class="u-w--100 u-mb--10">
+                                    <mat-form-field appearance="outline" class="u-w--100  u-mr--16" fxFlex="0 0 calc(16.5% - 8px)">
+                                        <mat-label>Price</mat-label>
+                                        <input required autocomplete="off" matInput formControlName="clientPrice" type="number">
+                                        <app-validator [control]="salesClientDataForm.clientPrice"></app-validator>
+                                    </mat-form-field>
 
-                                            <mat-form-field appearance="outline" class="u-w--100  filter-select u-mr--16" fxFlex="0 0 calc(16.5% - 8px)" [fxHide]="salesClientDataForm.clientRateAndInvoicing?.value?.id !== 1">
-                                                <mat-label>Unit type</mat-label>
-                                                <mat-select [required]="salesClientDataForm.clientRateAndInvoicing?.value?.id === 1" formControlName="rateUnitTypeId" [disableOptionCentering]="true" [compareWith]="compareWithFn">
-                                                    <mat-option *ngFor="let item of rateUnitTypes" [value]="item">
-                                                        {{ item.name }}
-                                                    </mat-option>
-                                                </mat-select>
-                                                <app-validator [control]="salesClientDataForm.rateUnitTypeId"></app-validator>
-                                            </mat-form-field>
+                                    <mat-form-field appearance="outline" class="u-w--100  filter-select u-mr--16" fxFlex="0 0 calc(16.5% - 8px)" [fxHide]="salesClientDataForm.clientRateAndInvoicing?.value?.id !== 1">
+                                        <mat-label>Unit type</mat-label>
+                                        <mat-select [required]="salesClientDataForm.clientRateAndInvoicing?.value?.id === 1" formControlName="rateUnitTypeId" [disableOptionCentering]="true" [compareWith]="compareWithFn">
+                                            <mat-option *ngFor="let item of rateUnitTypes" [value]="item">
+                                                {{ item.name }}
+                                            </mat-option>
+                                        </mat-select>
+                                        <app-validator [control]="salesClientDataForm.rateUnitTypeId"></app-validator>
+                                    </mat-form-field>
 
-                                            <mat-form-field appearance="outline" class="u-w--100  filter-select" fxFlex="0 0 calc(16.5% - 8px)">
-                                                <mat-label>Currency</mat-label>
-                                                <mat-select required formControlName="clientCurrency" [disableOptionCentering]="true" [compareWith]="compareWithFn">
-                                                    <mat-option *ngFor="let item of currencies" [value]="item">
-                                                        {{ item.name }}
-                                                    </mat-option>
-                                                </mat-select>
-                                                <app-validator [control]="salesClientDataForm.clientCurrency"></app-validator>
-                                            </mat-form-field>
-                                        </div>
-                                    <!-- </ng-container> -->
-                                    <!-- <ng-container *ngSwitchCase="2"> 'Fixed'
-                                        <div fxLayout="row" fxLayoutAlign="start start" class="u-w--100 u-mb--10">
-                                            <mat-form-field appearance="outline" class="u-w--100  u-mr--16" fxFlex="0 0 calc(16.5% - 8px)">
-                                                <mat-label>Price</mat-label>
-                                                <input required autocomplete="off" matInput formControlName="clientPrice" type="number">
-                                                <app-validator [control]="salesClientDataForm.clientPrice"></app-validator>
-                                            </mat-form-field>
-
-                                            <mat-form-field appearance="outline" class="u-w--100  filter-select" fxFlex="0 0 calc(16.5% - 8px)">
-                                                <mat-label>Currency</mat-label>
-                                                <mat-select required formControlName="clientCurrency" [disableOptionCentering]="true" [compareWith]="compareWithFn">
-                                                    <mat-option *ngFor="let item of currencies" [value]="item">
-                                                        {{ item.name }}
-                                                    </mat-option>
-                                                </mat-select>
-                                                <app-validator [control]="salesClientDataForm.clientCurrency"></app-validator>
-                                            </mat-form-field>
-                                        </div>
-                                    </ng-container>
-                                    <ng-container *ngSwitchDefault>
-                                    </ng-container> -->
-                                <!-- </div> -->
+                                    <mat-form-field appearance="outline" class="u-w--100  filter-select" fxFlex="0 0 calc(16.5% - 8px)">
+                                        <mat-label>Currency</mat-label>
+                                        <mat-select required formControlName="clientCurrency" [disableOptionCentering]="true" [compareWith]="compareWithFn">
+                                            <mat-option *ngFor="let item of currencies" [value]="item">
+                                                {{ item.name }}
+                                            </mat-option>
+                                        </mat-select>
+                                        <app-validator [control]="salesClientDataForm.clientCurrency"></app-validator>
+                                    </mat-form-field>
+                                </div>
                                 <h3 class="workflow-gray--header u-mb--10">Invoicing information</h3>
                                 <div fxLayout="row" fxLayoutAlign="start start" class="u-w--100 u-mb--10">
                                     <mat-form-field appearance="outline" class="filter-select u-mr--16" fxFlex="0 0 calc(16.5% - 8px)">
@@ -1759,7 +1734,6 @@
                                         <app-validator [control]="salesClientDataForm.clientInvoiceCurrency"></app-validator>
                                     </mat-form-field>
 
-                                    <!-- <ng-container [ngSwitch]="salesClientDataForm.clientRateAndInvoicing?.value?.id"> -->
                                     <div fxLayout="row" fxLayoutAlign="start start" class="u-w--100 u-mb--10" [fxHide]="salesClientDataForm.clientRateAndInvoicing?.value?.id !== 1"> <!-- id: 1 - Time based -->
                                         <mat-form-field appearance="outline" class="u-w--100  filter-select" fxFlex="33%" [ngClass]="{'u-mr--16': salesClientDataForm.clientInvoiceFrequency?.value?.name === 'Manual date'}">
                                             <mat-label>Invoicing frequency</mat-label>
@@ -1770,10 +1744,9 @@
                                             </mat-select>
                                             <app-validator [control]="salesClientDataForm.clientInvoiceFrequency"></app-validator>
                                         </mat-form-field>
-                                        <!-- FIXME: - manual date now is gone? -->
-                                        <mat-form-field *ngIf="salesClientDataForm.clientInvoiceFrequency?.value?.id === 'Manual date'" appearance="outline" fxFlex="0 0 calc(16.5% - 8px)">
+                                        <mat-form-field  fxFlex="0 0 calc(16.5% - 8px)" [fxHide]="salesClientDataForm.clientInvoiceFrequency?.value?.name !== 'Manual date'" appearance="outline">
                                             <mat-label>Date</mat-label>
-                                            <input required autocomplete="off" matInput
+                                            <input [required]="salesClientDataForm.clientInvoiceFrequency?.value?.name === 'Manual date'" autocomplete="off" matInput
                                                     [matDatepicker]="clientInvoicingDateDatePicker"
                                                     name="clientInvoicingDate" formControlName="clientInvoicingDate"
                                                     (focus)="clientInvoicingDateDatePicker.open()"
@@ -3243,13 +3216,15 @@
                         No evaluation
                     </mat-checkbox>
                 </div>
-                <div fxLayout="row" fxLayoutAlign="start start" class="u-w--100 u-mb--10" *ngIf="salesTerminateConsultantForm?.noEvaluation?.value === true">
-                    <mat-form-field appearance="outline" class="u-w--100 textarea-input " fxFlex="0 0 calc(66% + 16px)">
-                        <mat-label>Cause</mat-label>
-                        <textarea required matInput autocomplete="new-password" name="causeOfNoEvaluation" formControlName="causeOfNoEvaluation" [matTextareaAutosize]="true" [matAutosizeMinRows]="2">
-                        </textarea>
-                        <app-validator [control]="salesTerminateConsultantForm.causeOfNoEvaluation"></app-validator>
-                    </mat-form-field>
+                <div fxLayout="column" fxLayoutAlign="start start" class="u-w--100 u-mb--10" [fxHide]="!salesTerminateConsultantForm.noEvaluation?.value">
+                    <div fxLayout="row" fxLayoutAlign="start start" class="u-w--100" fxFlex="0 0 calc(66% + 16px)">
+                        <mat-form-field appearance="outline" class="u-w--100 textarea-input">
+                            <mat-label>Cause</mat-label>
+                            <textarea [required]="salesTerminateConsultantForm.noEvaluation?.value" matInput autocomplete="new-password" name="causeOfNoEvaluation" formControlName="causeOfNoEvaluation" [matTextareaAutosize]="true" [matAutosizeMinRows]="2">
+                            </textarea>
+                        </mat-form-field>
+                    </div>
+                    <app-validator [withoutPadding]="true" [control]="salesTerminateConsultantForm.causeOfNoEvaluation"></app-validator>
                 </div>
             </div>
         </form>
