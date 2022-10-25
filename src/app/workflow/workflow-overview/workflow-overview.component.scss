@@ -16,12 +16,9 @@
             &-img {
                 border-radius: 50%;
                 margin-right: 10px;
-                height: 36px;
-                width: 36px;
+                height: 30px;
+                width: 30px;
                 cursor: pointer;
-                &:hover {
-                    background-color: rgba($color: $sand-color, $alpha: 0.5);
-        }
             }
             &-position {
                 @include fontOpenSans(14px, 700);
