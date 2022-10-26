@@ -1803,7 +1803,6 @@ export class WorkflowSalesComponent extends AppComponentBase implements OnInit {
                     });
                     this.updateConsultantStepAnchors();
                 }
-                console.log(this.consultantsForm.consultantData.controls)
             });
     }
 
