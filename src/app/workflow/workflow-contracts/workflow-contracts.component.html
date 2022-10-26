@@ -904,7 +904,7 @@
 
                                                 <ng-container *ngIf="fee.value.editable; else consultantFeeActions">
                                                     <div fxFlex="10%" class="u-w--100 text-truncate-ellipsis flex-items-center">
-                                                        <button mat-flat-button type="button" [disabled]="!fee.value.valid" appPreventDoubleClick (throttledClick)="editOrSaveConsultantSpecialFee(fee.value.editable, consultantIndex, clientFeeIndex)" class="inline-edit-form--btn__save">
+                                                        <button mat-flat-button type="button" [disabled]="!fee.valid" appPreventDoubleClick (throttledClick)="editOrSaveConsultantSpecialFee(fee.value.editable, consultantIndex, clientFeeIndex)" class="inline-edit-form--btn__save">
                                                             Save
                                                         </button>
                                                         <button mat-flat-button type="button" appPreventDoubleClick (throttledClick)="cancelEditConsultantFee(consultantIndex, clientFeeIndex)" class="inline-edit-form--btn__cancel">
