@@ -329,8 +329,8 @@
                                             <button mat-flat-button type="button" [disabled]="!rate.valid" appPreventDoubleClick (throttledClick)="editOrSaveSpecialRate(contractClientForm.clientRates.at(i).get('editable')?.value, i)" class="inline-edit-form--btn__save">
                                                 Save
                                             </button>
-                                            <button mat-flat-button type="button" appPreventDoubleClick (throttledClick)="cancelEditClientRate(i)" class="inline-edit-form--btn__cancel">
-                                                Cancel
+                                            <button mat-icon-button type="button" appPreventDoubleClick (throttledClick)="cancelEditClientRate(i)" class="inline-edit-form--btn__cancel">
+                                                <mat-icon>close</mat-icon>
                                             </button>
                                         </div>
                                     </ng-container>
@@ -440,8 +440,8 @@
                                             <button mat-flat-button type="button" [disabled]="!fee.valid" appPreventDoubleClick (throttledClick)="editOrSaveClientFee(contractClientForm.clientFees.at(i).get('editable')?.value, i)" class="inline-edit-form--btn__save">
                                                 Save
                                             </button>
-                                            <button mat-flat-button type="button" appPreventDoubleClick (throttledClick)="cancelEditClientFee(i)" class="inline-edit-form--btn__cancel">
-                                                Cancel
+                                            <button mat-icon-button type="button" appPreventDoubleClick (throttledClick)="cancelEditClientFee(i)" class="inline-edit-form--btn__cancel">
+                                                <mat-icon>close</mat-icon>
                                             </button>
                                         </div>
                                     </ng-container>
@@ -736,8 +736,8 @@
                                                         <button mat-flat-button type="button" [disabled]="!rate.valid" appPreventDoubleClick (throttledClick)="editOrSaveConsultantSpecialRate(rate?.value.editable, consultantIndex, specialRateIndex)" class="inline-edit-form--btn__save">
                                                             Save
                                                         </button>
-                                                        <button mat-flat-button type="button" appPreventDoubleClick (throttledClick)="cancelEditConsultantRate(consultantIndex, specialRateIndex)" class="inline-edit-form--btn__cancel">
-                                                            Cancel
+                                                        <button mat-icon-button type="button" appPreventDoubleClick (throttledClick)="cancelEditConsultantRate(consultantIndex, specialRateIndex)" class="inline-edit-form--btn__cancel">
+                                                            <mat-icon>close</mat-icon>
                                                         </button>
                                                     </div>
                                                 </ng-container>
@@ -907,8 +907,8 @@
                                                         <button mat-flat-button type="button" [disabled]="!fee.valid" appPreventDoubleClick (throttledClick)="editOrSaveConsultantSpecialFee(fee.value.editable, consultantIndex, clientFeeIndex)" class="inline-edit-form--btn__save">
                                                             Save
                                                         </button>
-                                                        <button mat-flat-button type="button" appPreventDoubleClick (throttledClick)="cancelEditConsultantFee(consultantIndex, clientFeeIndex)" class="inline-edit-form--btn__cancel">
-                                                            Cancel
+                                                        <button mat-icon-button type="button" appPreventDoubleClick (throttledClick)="cancelEditConsultantFee(consultantIndex, clientFeeIndex)" class="inline-edit-form--btn__cancel">
+                                                            <mat-icon>close</mat-icon>
                                                         </button>
                                                     </div>
                                                 </ng-container>

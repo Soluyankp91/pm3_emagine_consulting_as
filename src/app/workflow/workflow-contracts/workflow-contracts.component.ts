@@ -463,8 +463,8 @@ export class WorkflowContractsComponent extends AppComponentBase implements OnIn
 
     cancelEditClientRate(index: number) {
         const rateRow = this.clientFees.at(index);
-        rateRow.get('clientRateValue')?.setValue(this.clientRateToEdit.clientRate, {emitEvent: false});
-        rateRow.get('clientRateCurrencyId')?.setValue(this.findItemById(this.currencies, this.clientRateToEdit.clientRateCurrencyId), {emitEvent: false});
+        rateRow?.get('clientRateValue')?.setValue(this.clientRateToEdit.clientRate, {emitEvent: false});
+        rateRow?.get('clientRateCurrencyId')?.setValue(this.findItemById(this.currencies, this.clientRateToEdit.clientRateCurrencyId), {emitEvent: false});
         this.clientRateToEdit = new PeriodConsultantSpecialRateDto();
         this.isClientRateEditing = false;
         this.clientRates.at(index).get('editable')?.setValue(false, {emitEvent: false});
@@ -527,8 +527,8 @@ export class WorkflowContractsComponent extends AppComponentBase implements OnIn
 
     cancelEditClientFee(index: number) {
         const feeRow = this.clientFees.at(index);
-        feeRow.get('clientRateValue')?.setValue(this.clientFeeToEdit.clientRate, {emitEvent: false});
-        feeRow.get('clientRateCurrencyId')?.setValue(this.findItemById(this.currencies, this.clientFeeToEdit.clientRateCurrencyId), {emitEvent: false});
+        feeRow?.get('clientRateValue')?.setValue(this.clientFeeToEdit.clientRate, {emitEvent: false});
+        feeRow?.get('clientRateCurrencyId')?.setValue(this.findItemById(this.currencies, this.clientFeeToEdit.clientRateCurrencyId), {emitEvent: false});
         this.clientFeeToEdit = new PeriodConsultantSpecialFeeDto();
         this.isClientFeeEditing = false;
         this.clientFees.at(index).get('editable')?.setValue(false, {emitEvent: false});
@@ -682,10 +682,10 @@ export class WorkflowContractsComponent extends AppComponentBase implements OnIn
 
     cancelEditConsultantRate(consultantIndex: number, specialRateIndex: number) {
         const rateRow = (this.consultants.at(consultantIndex).get('specialRates') as FormArray).at(specialRateIndex);
-        rateRow.get('proDataRateValue')?.setValue(this.consultantRateToEdit.prodataToProdataRate, {emitEvent: false});
-        rateRow.get('proDataRateCurrency')?.setValue(this.findItemById(this.currencies, this.consultantRateToEdit.prodataToProdataRateCurrencyId), {emitEvent: false});
-        rateRow.get('consultantRateValue')?.setValue(this.consultantRateToEdit.consultantRate, {emitEvent: false});
-        rateRow.get('consultantRateCurrency')?.setValue(this.findItemById(this.currencies, this.consultantRateToEdit.consultantRateCurrencyId), {emitEvent: false});
+        rateRow?.get('proDataRateValue')?.setValue(this.consultantRateToEdit.prodataToProdataRate, {emitEvent: false});
+        rateRow?.get('proDataRateCurrency')?.setValue(this.findItemById(this.currencies, this.consultantRateToEdit.prodataToProdataRateCurrencyId), {emitEvent: false});
+        rateRow?.get('consultantRateValue')?.setValue(this.consultantRateToEdit.consultantRate, {emitEvent: false});
+        rateRow?.get('consultantRateCurrency')?.setValue(this.findItemById(this.currencies, this.consultantRateToEdit.consultantRateCurrencyId), {emitEvent: false});
         this.consultantRateToEdit = new PeriodConsultantSpecialRateDto();
         this.isConsultantRateEditing = false;
         (this.consultants.at(consultantIndex).get('specialRates') as FormArray).at(specialRateIndex).get('editable')?.setValue(false, {emitEvent: false});
@@ -755,10 +755,10 @@ export class WorkflowContractsComponent extends AppComponentBase implements OnIn
 
     cancelEditConsultantFee(consultantIndex: number, specialFeeIndex: number) {
         const feeRow = (this.consultants.at(consultantIndex).get('clientFees') as FormArray).at(specialFeeIndex);
-        feeRow.get('proDataRateValue')?.setValue(this.consultantFeeToEdit?.prodataToProdataRate, {emitEvent: false});
-        feeRow.get('proDataRateCurrency')?.setValue(this.findItemById(this.currencies, this.consultantFeeToEdit?.prodataToProdataRateCurrencyId), {emitEvent: false});
-        feeRow.get('consultantRateValue')?.setValue(this.consultantFeeToEdit?.consultantRate, {emitEvent: false});
-        feeRow.get('consultantRateCurrency')?.setValue(this.findItemById(this.currencies, this.consultantFeeToEdit?.consultantRateCurrencyId), {emitEvent: false});
+        feeRow?.get('proDataRateValue')?.setValue(this.consultantFeeToEdit?.prodataToProdataRate, {emitEvent: false});
+        feeRow?.get('proDataRateCurrency')?.setValue(this.findItemById(this.currencies, this.consultantFeeToEdit?.prodataToProdataRateCurrencyId), {emitEvent: false});
+        feeRow?.get('consultantRateValue')?.setValue(this.consultantFeeToEdit?.consultantRate, {emitEvent: false});
+        feeRow?.get('consultantRateCurrency')?.setValue(this.findItemById(this.currencies, this.consultantFeeToEdit?.consultantRateCurrencyId), {emitEvent: false});
         this.consultantFeeToEdit = new PeriodConsultantSpecialFeeDto();
         this.isConsultantFeeEditing = false;
         (this.consultants.at(consultantIndex).get('clientFees') as FormArray).at(specialFeeIndex).get('editable')?.setValue(false, {emitEvent: false});
