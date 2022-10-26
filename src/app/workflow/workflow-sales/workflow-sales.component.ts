@@ -140,6 +140,7 @@ export class WorkflowSalesComponent extends AppComponentBase implements OnInit {
     clientIdFromTerminationSales: number;
 
     individualConsultantActionsAvailable: boolean;
+    addConsultantAvailable: boolean;
     isCommissionEditing = false;
     isCommissionInitialAdd = false;
     commissionToEdit: {
@@ -563,6 +564,7 @@ export class WorkflowSalesComponent extends AppComponentBase implements OnInit {
             });
 
         this.individualConsultantActionsAvailable = environment.dev;
+        this.addConsultantAvailable = environment.production;
     }
 
     validateSalesForm() {
@@ -1801,6 +1803,7 @@ export class WorkflowSalesComponent extends AppComponentBase implements OnInit {
                     });
                     this.updateConsultantStepAnchors();
                 }
+                console.log(this.consultantsForm.consultantData.controls)
             });
     }
 
