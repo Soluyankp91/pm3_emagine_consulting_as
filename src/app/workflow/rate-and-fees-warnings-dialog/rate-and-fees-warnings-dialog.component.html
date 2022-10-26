@@ -1,0 +1,27 @@
+<mat-dialog-content class="rate-warning-dialog">
+    <div mat-dialog-title class="rate-warning-dialog--header">
+        <h1 class="rate-warning-dialog--header-text">
+            Rates & Fees updates
+        </h1>
+        <mat-icon class="rate-warning-dialog--header-close-icon" (click)="close()">close</mat-icon>
+    </div>
+    <div class="u-w--100 u-h--100">
+        <ng-container *ngIf="data.specialRatesWarnings?.length">
+            <h2 class="rate-warning-dialog--content-header">{{data.specialRatesWarnings![0]}}</h2>
+            <ul id="ul" class="rate-warning-dialog--content" >
+                <li class="rate-warning-dialog--content-text" *ngFor="let item of data.specialRatesWarnings | slice: 1:data.specialRatesWarnings!.length">{{item}}</li>
+            </ul>
+        </ng-container>
+        <ng-container *ngIf="data.specialFeesWarnings?.length">
+            <h2 class="rate-warning-dialog--content-header">{{data.specialFeesWarnings![0]}}</h2>
+            <ul id="ul" class="rate-warning-dialog--content">
+                <li class="rate-warning-dialog--content-text" *ngFor="let item of data.specialFeesWarnings | slice: 1:data.specialFeesWarnings!.length">{{item}}</li>
+            </ul>
+        </ng-container>
+    </div>
+</mat-dialog-content>
+<mat-dialog-actions class="rate-warning-dialog--actions flex-justify-end">
+    <button mat-flat-button class="rate-warning-dialog--actions-btn dialog-btn dialog-btn__positive" appPreventDoubleClick (throttledClick)="close()">
+        OK
+    </button>
+</mat-dialog-actions>

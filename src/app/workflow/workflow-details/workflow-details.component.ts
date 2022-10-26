@@ -22,6 +22,7 @@ import { AuthenticationResult } from '@azure/msal-browser';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { WorkflowPeriodComponent } from '../workflow-period/workflow-period.component';
 import { MatMenuTrigger } from '@angular/material/menu';
+import { RateAndFeesWarningsDialogComponent } from '../rate-and-fees-warnings-dialog/rate-and-fees-warnings-dialog.component';
 
 @Component({
   selector: 'app-workflow-details',
@@ -488,12 +489,11 @@ export class WorkflowDetailsComponent extends AppComponentBase implements OnInit
                     .subscribe(result => {
                         this._workflowDataService.workflowTopSectionUpdated.emit(true);
                         this._workflowDataService.workflowOverviewUpdated.emit(true);
+                        if (result?.specialFeesChangesWarnings?.length || result?.specialRatesChangesWarnings?.length) {
+                            this.processRatesAfterChangeOrExtend(result?.specialRatesChangesWarnings, result?.specialFeesChangesWarnings);
+                        }
                     });
             }
-        });
-
-        dialogRef.componentInstance.onRejected.subscribe(() => {
-            // rejected
         });
 
     }
@@ -525,14 +525,32 @@ export class WorkflowDetailsComponent extends AppComponentBase implements OnInit
                 this._clientPeriodService.clientChange(this._workflowDataService.getWorkflowProgress.currentlyActivePeriodId!, result)
                     .pipe(finalize(() => this.hideMainSpinner()))
                     .subscribe(result => {
+                        console.log('ss');
+                        if (result?.specialFeesChangesWarnings?.length || result?.specialRatesChangesWarnings?.length) {
+                            this.processRatesAfterChangeOrExtend(result?.specialRatesChangesWarnings, result?.specialFeesChangesWarnings);
+                        }
                         this._workflowDataService.workflowTopSectionUpdated.emit(true);
                         this._workflowDataService.workflowOverviewUpdated.emit(true);
                     });
             }
         });
+    }
 
-        dialogRef.componentInstance.onRejected.subscribe(() => {
-            // rejected
+    processRatesAfterChangeOrExtend(specialRatesWarnings: string[] | undefined, specialFeesWarnings: string[] | undefined) {
+        const scrollStrategy = this.overlay.scrollStrategies.reposition();
+        this.dialog.open(RateAndFeesWarningsDialogComponent, {
+            minWidth: '450px',
+            minHeight: '180px',
+            height: 'auto',
+            width: 'auto',
+            scrollStrategy,
+            backdropClass: 'backdrop-modal--wrapper',
+            autoFocus: false,
+            panelClass: 'confirmation-modal',
+            data: {
+                specialRatesWarnings: specialRatesWarnings,
+                specialFeesWarnings: specialFeesWarnings
+            }
         });
     }
 
