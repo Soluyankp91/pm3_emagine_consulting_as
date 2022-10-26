@@ -18,9 +18,10 @@
                     </ng-container>
                     <ng-template #clientDebitorInput>
                         <div fxLayout="row" fxLayoutAlign="start center" class="u-w--100 u-mb--20">
-                            <mat-checkbox color="accent" formControlName="clientCreatedInNavision" name="clientCreatedInNavision" class="black-checkbox u-mr--10">
+                            <mat-checkbox required color="accent" formControlName="clientCreatedInNavision" name="clientCreatedInNavision" class="black-checkbox u-mr--10">
                                 Client (debitor) created in Navision
                             </mat-checkbox>
+                            <app-validator [control]="financesClientForm.clientCreatedInNavision"></app-validator>
                         </div>
                     </ng-template>
 
@@ -34,7 +35,7 @@
                     </ng-container>
                     <ng-template #clientDebitorNumberInput>
                         <div fxLayout="row" fxLayoutAlign="start start" class="u-w--100 u-mb--20">
-                            <mat-button-toggle-group class="workflow-toggle-buttons u-mt--10" formControlName="differentDebtorNumberForInvoicing">
+                            <mat-button-toggle-group [ngClass]="{'mat-form-field-invalid': financesClientForm.differentDebtorNumberForInvoicing?.value === null || financesClientForm.differentDebtorNumberForInvoicing?.value === undefined}" class="workflow-toggle-buttons u-mt--10" formControlName="differentDebtorNumberForInvoicing">
                                 <mat-button-toggle [value]="false">
                                     Same as client
                                 </mat-button-toggle>
@@ -42,6 +43,7 @@
                                     Custom
                                 </mat-button-toggle>
                             </mat-button-toggle-group>
+                            <app-validator *ngIf="financesClientForm.differentDebtorNumberForInvoicing?.touched" [control]="financesClientForm.differentDebtorNumberForInvoicing"></app-validator>
                         </div>
                     </ng-template>
 
@@ -52,10 +54,10 @@
                         </div>
                     </ng-container>
                     <ng-template #debitorNumberInput>
-                        <div fxLayout="row" fxLayoutAlign="start start" class="u-w--100" *ngIf="financesClientForm?.differentDebtorNumberForInvoicing?.value">
+                        <div fxLayout="row" fxLayoutAlign="start start" class="u-w--100" [fxHide]="!financesClientForm.differentDebtorNumberForInvoicing?.value">
                             <mat-form-field appearance="outline" class="u-w--100  u-mr--16" fxFlex="33%">
                                 <mat-label>Debitor number</mat-label>
-                                <input required autocomplete="off" matInput formControlName="customDebtorNumber" type="text">
+                                <input [required]="financesClientForm.differentDebtorNumberForInvoicing?.value" autocomplete="off" matInput formControlName="customDebtorNumber" type="text">
                                 <app-validator [control]="financesClientForm.customDebtorNumber"></app-validator>
                             </mat-form-field>
                         </div>
@@ -103,6 +105,7 @@
                                 <mat-checkbox color="accent" formControlName="checkInvoicingSettingsOnConsultant" name="checkInvoicingSettingsOnConsultant" class="black-checkbox u-mr--10">
                                     Check invoicing settings on consultant
                                 </mat-checkbox>
+                                <app-validator [control]="consultant.get('checkInvoicingSettingsOnConsultant')"></app-validator>
                             </div>
                         </ng-template>
 
@@ -118,9 +121,10 @@
                         </ng-container>
                         <ng-template #checkboxCompanyCreatedInput>
                             <div fxLayout="row" fxLayoutAlign="start center" class="u-w--100 u-mb--20">
-                                <mat-checkbox color="accent" formControlName="creditorCreatedInNavision" name="creditorCreatedInNavision" class="black-checkbox u-mr--10">
+                                <mat-checkbox required color="accent" formControlName="creditorCreatedInNavision" name="creditorCreatedInNavision" class="black-checkbox u-mr--10">
                                     Consultant company (creditor) created in Navision
                                 </mat-checkbox>
+                                <app-validator [control]="consultant.get('creditorCreatedInNavision')"></app-validator>
                             </div>
                         </ng-template>
                     </div>

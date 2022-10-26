@@ -135,7 +135,7 @@ export class WorkflowContractsComponent extends AppComponentBase implements OnIn
                 if (isDraft) {
                     this.saveStartChangeOrExtendClientPeriodContracts(isDraft);
                 } else {
-                    if (this.validateSalesForm()) {
+                    if (this.validateContractForm()) {
                         this.saveStartChangeOrExtendClientPeriodContracts(isDraft);
                     } else {
                         this.scrollToFirstError();
@@ -150,7 +150,7 @@ export class WorkflowContractsComponent extends AppComponentBase implements OnIn
                 if (isDraft) {
                     this.saveStartChangeOrExtendConsultantPeriodContracts(isDraft);
                 } else {
-                    if (this.validateSalesForm()) {
+                    if (this.validateContractForm()) {
                         this.saveStartChangeOrExtendConsultantPeriodContracts(isDraft);
                     } else {
                         this.scrollToFirstError();
@@ -165,7 +165,7 @@ export class WorkflowContractsComponent extends AppComponentBase implements OnIn
                 if (isDraft) {
                     this.saveTerminationConsultantContractStep(isDraft);
                 } else {
-                    if (this.validateSalesForm()) {
+                    if (this.validateContractForm()) {
                         this.saveTerminationConsultantContractStep(isDraft);
                     } else {
                         this.scrollToFirstError();
@@ -179,7 +179,7 @@ export class WorkflowContractsComponent extends AppComponentBase implements OnIn
                 if (isDraft) {
                     this.saveWorkflowTerminationContractStep(isDraft);
                 } else {
-                    if (this.validateSalesForm()) {
+                    if (this.validateContractForm()) {
                         this.saveWorkflowTerminationContractStep(isDraft);
                     } else {
                         this.scrollToFirstError();
@@ -197,24 +197,29 @@ export class WorkflowContractsComponent extends AppComponentBase implements OnIn
             });
     }
 
-    validateSalesForm() {
+    validateContractForm() {
         this.contractsMainForm.markAllAsTouched();
         this.contractClientForm.markAllAsTouched();
         this.contractsSyncDataForm.markAllAsTouched();
         this.contractsConsultantsDataForm.markAllAsTouched();
-        return true;
-        // switch (this.activeSideSection.typeId) {
-        //     case WorkflowProcessType.StartClientPeriod:
-        //     case WorkflowProcessType.ChangeClientPeriod:
-        //     case WorkflowProcessType.ExtendClientPeriod:
-        //     case WorkflowProcessType.StartConsultantPeriod:
-        //     case WorkflowProcessType.ChangeConsultantPeriod:
-        //     case WorkflowProcessType.ExtendConsultantPeriod:
-        //         return this.contractsMainForm.valid && this.contractClientForm.valid && this.contractsSyncDataForm.valid && this.contractsConsultantsDataForm.valid
-        //     case WorkflowProcessType.TerminateWorkflow:
-        //     case WorkflowProcessType.TerminateConsultant:
-        //         return true;
-        // }
+        this.contractsTerminationConsultantForm.markAllAsTouched();
+        switch (this.activeSideSection.typeId) {
+            case WorkflowProcessType.StartClientPeriod:
+            case WorkflowProcessType.ChangeClientPeriod:
+            case WorkflowProcessType.ExtendClientPeriod:
+            case WorkflowProcessType.StartConsultantPeriod:
+            case WorkflowProcessType.ChangeConsultantPeriod:
+            case WorkflowProcessType.ExtendConsultantPeriod:
+                return this.contractsMainForm.valid &&
+                        this.contractClientForm.valid &&
+                        this.contractsSyncDataForm.valid &&
+                        this.contractsConsultantsDataForm.valid &&
+                        this.contractsConsultantsDataForm.consultants.controls.every(form => form.get('projectLines')?.value?.length) &&
+                        this.statusAfterSync;
+            case WorkflowProcessType.TerminateWorkflow:
+            case WorkflowProcessType.TerminateConsultant:
+                return this.contractsTerminationConsultantForm.valid;
+        }
     }
 
     scrollToFirstError() {
@@ -223,7 +228,7 @@ export class WorkflowContractsComponent extends AppComponentBase implements OnIn
             if (firstError) {
                 let config: ScrollToConfigOptions = {
                     target: firstError,
-                    offset: -120
+                    offset: -115
                 }
                 this.scrollToService.scrollTo(config)
             }
@@ -557,7 +562,7 @@ export class WorkflowContractsComponent extends AppComponentBase implements OnIn
             consultantSpecialRateFilter: new FormControl(''),
             clientFees: new FormArray([]),
             consultantSpecialFeeFilter: new FormControl(''),
-            projectLines: new FormArray([])
+            projectLines: new FormArray([], Validators.minLength(1))
         });
         this.contractsConsultantsDataForm.consultants.push(form);
         consultant.projectLines?.forEach((project: any) => {
@@ -1403,8 +1408,8 @@ export class WorkflowContractsComponent extends AppComponentBase implements OnIn
         const form = this._fb.group({
             consultantId: new FormControl(consultant?.consultant?.id),
             consultantData: new FormControl(consultant?.consultant),
-            removedConsultantFromAnyManualChecklists: new FormControl(consultant.removedConsultantFromAnyManualChecklists),
-            deletedAnySensitiveDocumentsForGDPR: new FormControl(consultant.deletedAnySensitiveDocumentsForGDPR),
+            removedConsultantFromAnyManualChecklists: new FormControl(consultant.removedConsultantFromAnyManualChecklists, Validators.required),
+            deletedAnySensitiveDocumentsForGDPR: new FormControl(consultant.deletedAnySensitiveDocumentsForGDPR, Validators.required),
 
         });
         this.contractsTerminationConsultantForm.consultantTerminationContractData.push(form);
@@ -1625,7 +1630,6 @@ export class WorkflowContractsComponent extends AppComponentBase implements OnIn
 
     syncConsultantTerminationToLegacySystem() {
         this.showMainSpinner();
-        this.activeSideSection.consultantPeriodId
         this._contractSyncService.consultantTerminationSync(this.activeSideSection.consultantPeriodId!)
             .pipe(finalize(() => {
                 this.hideMainSpinner();

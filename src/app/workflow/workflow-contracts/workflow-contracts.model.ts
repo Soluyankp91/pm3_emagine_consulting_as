@@ -12,7 +12,7 @@ export class WorkflowContractsMainForm extends FormGroup {
             discounts: new FormControl(null),
             remarks: new FormControl(null, Validators.required),
             noRemarks: new FormControl(false),
-            customDebtorNumber: new FormControl(null, Validators.required)
+            customDebtorNumber: new FormControl(null)
         });
     }
 

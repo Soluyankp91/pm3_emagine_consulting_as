@@ -565,19 +565,18 @@ export class WorkflowSalesComponent extends AppComponentBase implements OnInit {
         this.salesClientDataForm.markAllAsTouched();
         this.salesMainDataForm.markAllAsTouched();
         this.consultantsForm.markAllAsTouched();
-        return true;
-        // switch (this.activeSideSection.typeId) {
-        //     case WorkflowProcessType.StartClientPeriod:
-        //     case WorkflowProcessType.ChangeClientPeriod:
-        //     case WorkflowProcessType.ExtendClientPeriod:
-        //     case WorkflowProcessType.StartConsultantPeriod:
-        //     case WorkflowProcessType.ChangeConsultantPeriod:
-        //     case WorkflowProcessType.ExtendConsultantPeriod:
-        //         return this.salesClientDataForm.valid && this.salesMainDataForm.valid && this.consultantsForm.valid;
-        //     case WorkflowProcessType.TerminateWorkflow:
-        //     case WorkflowProcessType.TerminateConsultant:
-        //         return this.salesTerminateConsultantForm.valid;
-        // }
+        switch (this.activeSideSection.typeId) {
+            case WorkflowProcessType.StartClientPeriod:
+            case WorkflowProcessType.ChangeClientPeriod:
+            case WorkflowProcessType.ExtendClientPeriod:
+            case WorkflowProcessType.StartConsultantPeriod:
+            case WorkflowProcessType.ChangeConsultantPeriod:
+            case WorkflowProcessType.ExtendConsultantPeriod:
+                return this.salesClientDataForm.valid && this.salesMainDataForm.valid && this.consultantsForm.valid;
+            case WorkflowProcessType.TerminateWorkflow:
+            case WorkflowProcessType.TerminateConsultant:
+                return this.salesTerminateConsultantForm.valid;
+        }
     }
 
     scrollToFirstError() {
@@ -586,9 +585,9 @@ export class WorkflowSalesComponent extends AppComponentBase implements OnInit {
             if (firstError) {
                 let config: ScrollToConfigOptions = {
                     target: firstError,
-                    offset: -120
+                    offset: -115
                 }
-                this.scrollToService.scrollTo(config)
+                this.scrollToService.scrollTo(config);
             }
         }, 0);
     }

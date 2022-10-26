@@ -1,5 +1,6 @@
 import { Component, Injector, Input, OnDestroy, OnInit } from '@angular/core';
 import { FormArray, FormBuilder, FormControl } from '@angular/forms';
+import { ScrollToConfigOptions, ScrollToService } from '@nicky-lenaers/ngx-scroll-to';
 import { Subject } from 'rxjs';
 import { finalize, takeUntil } from 'rxjs/operators';
 import { AppComponentBase } from 'src/shared/app-component-base';
@@ -16,7 +17,6 @@ import { FinancesClientForm, FinancesConsultantsForm } from './workflow-finances
 export class WorkflowFinancesComponent extends AppComponentBase implements OnInit, OnDestroy {
     @Input() workflowId: string;
     @Input() periodId: string | undefined;
-    // @Input() activeSideSection: WorkflowProcessDto;
     @Input() activeSideSection: WorkflowProcessWithAnchorsDto;
     @Input() isCompleted: boolean;
     @Input() permissionsForCurrentUser: { [key: string]: boolean; } | undefined;
@@ -36,7 +36,8 @@ export class WorkflowFinancesComponent extends AppComponentBase implements OnIni
         private _clientPeriodSerivce: ClientPeriodServiceProxy,
         private _consultantPeriodSerivce: ConsultantPeriodServiceProxy,
         private _financeService: ClientFinanceServiceProxy,
-        private _consutlantFinanceService: ConsultantFinanceServiceProxy
+        private _consutlantFinanceService: ConsultantFinanceServiceProxy,
+        private scrollToService: ScrollToService
     ) {
         super(injector);
         this.financesClientForm = new FinancesClientForm();
@@ -53,14 +54,30 @@ export class WorkflowFinancesComponent extends AppComponentBase implements OnIni
 
         this._workflowDataService.startClientPeriodFinanceSaved
             .pipe(takeUntil(this._unsubscribe))
-            .subscribe((value: boolean) => {
-                this.saveStartChangeOrExtendClientPeriodFinance(value);
+            .subscribe((isDraft: boolean) => {
+                if (isDraft) {
+                    this.saveStartChangeOrExtendClientPeriodFinance(isDraft);
+                } else {
+                    if (this.validateFinanceForm()) {
+                        this.saveStartChangeOrExtendClientPeriodFinance(isDraft);
+                    } else {
+                        this.scrollToFirstError();
+                    }
+                }
             });
 
         this._workflowDataService.consultantStartChangeOrExtendFinanceSaved
             .pipe(takeUntil(this._unsubscribe))
-            .subscribe((value: boolean) => {
-                this.saveStartChangeOrExtendConsultantPeriodFinance(value);
+            .subscribe((isDraft: boolean) => {
+                if (isDraft) {
+                    this.saveStartChangeOrExtendConsultantPeriodFinance(isDraft);
+                } else {
+                    if (this.validateFinanceForm()) {
+                        this.saveStartChangeOrExtendConsultantPeriodFinance(isDraft);
+                    } else {
+                        this.scrollToFirstError();
+                    }
+                }
             });
 
         this._workflowDataService.cancelForceEdit
@@ -71,6 +88,33 @@ export class WorkflowFinancesComponent extends AppComponentBase implements OnIni
                 this._workflowDataService.updateWorkflowProgressStatus({currentStepIsCompleted: this.isCompleted, currentStepIsForcefullyEditing: this.editEnabledForcefuly});
                 this.getFinanceStepData();
             });
+    }
+
+    validateFinanceForm() {
+        this.financesClientForm.markAllAsTouched();
+        this.financesConsultantsForm.markAllAsTouched();
+        switch (this.activeSideSection.typeId) {
+            case WorkflowProcessType.StartClientPeriod:
+            case WorkflowProcessType.ChangeClientPeriod:
+            case WorkflowProcessType.ExtendClientPeriod:
+            case WorkflowProcessType.StartConsultantPeriod:
+            case WorkflowProcessType.ChangeConsultantPeriod:
+            case WorkflowProcessType.ExtendConsultantPeriod:
+                return this.financesClientForm.valid && this.financesConsultantsForm.valid;
+        }
+    }
+
+    scrollToFirstError() {
+        setTimeout(() => {
+            let firstError = document.getElementsByClassName('mat-form-field-invalid')[0] as HTMLElement;
+            if (firstError) {
+                let config: ScrollToConfigOptions = {
+                    target: firstError,
+                    offset: -115
+                }
+                this.scrollToService.scrollTo(config)
+            }
+        }, 0);
     }
 
     ngOnDestroy(): void {
