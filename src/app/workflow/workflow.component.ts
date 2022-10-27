@@ -19,7 +19,7 @@ import { ConfirmationDialogComponent } from '../shared/components/confirmation-d
 import { ManagerStatus } from '../shared/components/manager-search/manager-search.model';
 import { CreateWorkflowDialogComponent } from './create-workflow-dialog/create-workflow-dialog.component';
 import { WorkflowDataService } from './workflow-data.service';
-import { SelectableEmployeeDto, WorkflowFlag, WorkflowList } from './workflow.model';
+import { SelectableEmployeeDto, StepTypes } from './workflow.model';
 
 const WorkflowGridOptionsKey = 'WorkflowGridFILTERS.1.0.2.';
 @Component({
@@ -103,6 +103,8 @@ export class WorkflowComponent extends AppComponentBase implements OnInit, OnDes
     @ViewChild('rightMenuTrigger', {static: true}) matMenuTrigger: MatMenuTrigger;
 
     workflowListSubscription = new Subscription();
+
+    stepTypes = StepTypes;
 
     private _unsubscribe = new Subject();
     constructor(
@@ -427,7 +429,9 @@ export class WorkflowComponent extends AppComponentBase implements OnInit, OnDes
             this.showOnlyWorkflowsWithNewSales,
             this.showOnlyWorkflowsWithExtensions,
             this.showOnlyWorkflowsWithPendingStepsForSelectedEmployees,
+            1,
             this.showOnlyWorkflowsWithUpcomingStepsForSelectedEmployees,
+            1,
             this.includeTerminated,
             this.includeDeleted,
             searchFilter,

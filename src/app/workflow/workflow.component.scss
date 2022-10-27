@@ -57,6 +57,26 @@
                     }
                 }
             }
+            &-dropdown {
+                display: flex;
+                align-items: center;
+                justify-content: space-between;
+                height: 40px;
+                padding: 8px 10px 8px 16px;
+                border: 1px solid $light-grey-color;
+                border-radius: 40px;
+                line-height: 16px;
+                mat-icon {
+                    font-size: 26px;
+                    color: $dark-grey-color;
+                }
+                &__name {
+                    font-weight: 700;
+                    color: #384853;
+                    font-size: 14px;
+                    margin-right: 5px;
+                }
+            }
         }
         &-manager {
             width: 40px;

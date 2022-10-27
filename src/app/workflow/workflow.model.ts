@@ -424,7 +424,6 @@ export class SelectableEmployeeDto implements ISelectableEmployeeDto {
     }
 }
 
-
 export enum EmploymentTypes {
     FreelanceConsultant = 1,
     SupplierConsultant = 2,
@@ -438,3 +437,22 @@ export enum EmploymentTypes {
     FeeOnly = 10,
     Recruitment = 11
 }
+
+export const StepTypes = [
+    {
+        id: 1,
+        name: 'Sales'
+    },
+    {
+        id: 2,
+        name: 'Contract'
+    },
+    {
+        id: 3,
+        name: 'Finance'
+    },
+    {
+        id: 4,
+        name: 'Sourcing'
+    }
+];

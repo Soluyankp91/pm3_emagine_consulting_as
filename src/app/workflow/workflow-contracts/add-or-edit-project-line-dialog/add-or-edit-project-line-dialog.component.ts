@@ -55,7 +55,7 @@ export class AddOrEditProjectLineDialogComponent extends AppComponentBase implem
                             ? value.firstName
                             : value;
                     }
-                    return this._lookupService.contacts(toSend.clientId, toSend.name, toSend.maxRecordsCount);
+                    return this._lookupService.contacts(toSend.clientId, toSend.name, undefined, toSend.maxRecordsCount);
                 }),
             ).subscribe((list: ContactResultDto[]) => {
                 if (list.length) {

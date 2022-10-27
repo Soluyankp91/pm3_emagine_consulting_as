@@ -91,6 +91,16 @@
                         Upcoming steps
                     </span>
                 </span>
+                <span class="workflow-list--filter-type-dropdown upcoming-steps-status flex-items-center cursor-pointer u-mr--20" [matMenuTriggerFor]="upcomingSteps">
+                    <span class="workflow-list--filter-type-dropdown__name">
+                        Upcoming steps
+                    </span>
+                    <mat-icon>expand_more</mat-icon>
+                </span>
+                <mat-menu #upcomingSteps>
+                    <button *ngFor="let item of stepTypes" mat-menu-item>{{item.id}} {{item.name}}</button>
+                    <button mat-menu-item>Reset</button>
+                </mat-menu>
                 <div fxLayout="row" fxLayoutAlign="start center" fxFlex="10%">
                     <mat-divider class="u-mr--10 divider-height" [vertical]="true"></mat-divider>
                     <button mat-button appPreventDoubleClick (throttledClick)="clearAllFilters()">
