@@ -8,13 +8,11 @@ import { Subject } from 'rxjs';
 import { finalize, takeUntil } from 'rxjs/operators';
 import { AvailableConsultantDto, ChangeClientPeriodDto, ClientPeriodDto, ClientPeriodServiceProxy, ConsultantNameWithRequestUrl, ConsultantPeriodAddDto, EnumEntityTypeDto, ExtendClientPeriodDto, NewContractRequiredConsultantPeriodDto, StepType, WorkflowDto, WorkflowProcessType, WorkflowServiceProxy } from 'src/shared/service-proxies/service-proxies';
 import { WorkflowDataService } from '../workflow-data.service';
-import { WorkflowSalesComponent } from '../workflow-sales/workflow-sales.component';
 import { WorkflowProgressStatus, WorkflowTopSections, WorkflowSteps, WorkflowDiallogAction } from '../workflow.model';
 import { InternalLookupService } from 'src/app/shared/common/internal-lookup.service';
 import { WorkflowActionsDialogComponent } from '../workflow-actions-dialog/workflow-actions-dialog.component';
 import { AppComponentBase, NotifySeverity } from 'src/shared/app-component-base';
 import { ConfirmationDialogComponent } from 'src/app/shared/components/confirmation-dialog/confirmation-dialog.component';
-import * as moment from 'moment';
 import { environment } from 'src/environments/environment';
 import { FormControl, Validators } from '@angular/forms';
 import { LocalHttpService } from 'src/shared/service-proxies/local-http.service';
@@ -23,6 +21,7 @@ import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { WorkflowPeriodComponent } from '../workflow-period/workflow-period.component';
 import { MatMenuTrigger } from '@angular/material/menu';
 import { RateAndFeesWarningsDialogComponent } from '../rate-and-fees-warnings-dialog/rate-and-fees-warnings-dialog.component';
+import { DialogConfig } from './workflow-details.model';
 
 @Component({
   selector: 'app-workflow-details',
@@ -134,35 +133,6 @@ export class WorkflowDetailsComponent extends AppComponentBase implements OnInit
 
     showOrHideNotes() {
         this.isNoteVisible = !this.isNoteVisible;
-    }
-
-    confirmCancelNote() {
-        const scrollStrategy = this.overlay.scrollStrategies.reposition();
-        const dialogRef = this.dialog.open(ConfirmationDialogComponent, {
-            width: '450px',
-            minHeight: '180px',
-            height: 'auto',
-            scrollStrategy,
-            backdropClass: 'backdrop-modal--wrapper',
-            autoFocus: false,
-            panelClass: 'confirmation-modal',
-            data: {
-                confirmationMessageTitle: `Are you sure you want to cancel?`,
-                confirmationMessage: 'If you cancel edit all unsaved changes will gone.',
-                rejectButtonText: 'Save and close',
-                confirmButtonText: 'Yes, cancel edit',
-                isNegative: true
-            }
-        });
-
-        dialogRef.componentInstance.onConfirmed.subscribe(() => {
-            this.isNoteVisible = false;
-            this.workflowNote.setValue(this.workflowNoteOldValue);
-        });
-
-        dialogRef.componentInstance.onRejected.subscribe(() => {
-            this.saveNotes();
-        });
     }
 
     cancelNoteEdit() {
@@ -406,7 +376,6 @@ export class WorkflowDetailsComponent extends AppComponentBase implements OnInit
             panelClass: 'confirmation-modal',
             data: {
                 confirmationMessageTitle: `Are you sure you want to terminate workflow?`,
-                // confirmationMessage: 'When you confirm the termination, all the info contained inside this block will disappear.',
                 rejectButtonText: 'Cancel',
                 confirmButtonText: 'Terminate',
                 isNegative: true
@@ -415,10 +384,6 @@ export class WorkflowDetailsComponent extends AppComponentBase implements OnInit
 
         dialogRef.componentInstance.onConfirmed.subscribe(() => {
             this.terminateWorkflowStart();
-        });
-
-        dialogRef.componentInstance.onRejected.subscribe(() => {
-            // nthng
         });
     }
 
@@ -463,23 +428,16 @@ export class WorkflowDetailsComponent extends AppComponentBase implements OnInit
 
     addExtension(availableConsultants: AvailableConsultantDto[]) {
         const scrollStrategy = this.overlay.scrollStrategies.reposition();
-        const dialogRef = this.dialog.open(WorkflowActionsDialogComponent, {
-            width: '450px',
-            minHeight: '180px',
-            height: 'auto',
-            scrollStrategy,
-            backdropClass: 'backdrop-modal--wrapper',
-            autoFocus: false,
-            panelClass: 'confirmation-modal',
-            data: {
-                dialogType: WorkflowDiallogAction.Extend,
-                dialogTitle: 'Extend Workflow',
-                rejectButtonText: 'Cancel',
-                confirmButtonText: 'Create',
-                isNegative: false,
-                consultantData: availableConsultants
-            }
-        });
+        DialogConfig.scrollStrategy = scrollStrategy;
+        DialogConfig.data = {
+            dialogType: WorkflowDiallogAction.Extend,
+            dialogTitle: 'Extend Workflow',
+            rejectButtonText: 'Cancel',
+            confirmButtonText: 'Create',
+            isNegative: false,
+            consultantData: availableConsultants
+        }
+        const dialogRef = this.dialog.open(WorkflowActionsDialogComponent, DialogConfig);
 
         dialogRef.componentInstance.onConfirmed.subscribe((result: ExtendClientPeriodDto) => {
             if (result) {
@@ -490,7 +448,7 @@ export class WorkflowDetailsComponent extends AppComponentBase implements OnInit
                         this._workflowDataService.workflowTopSectionUpdated.emit(true);
                         this._workflowDataService.workflowOverviewUpdated.emit(true);
                         if (result?.specialFeesChangesWarnings?.length || result?.specialRatesChangesWarnings?.length) {
-                            this.processRatesAfterChangeOrExtend(result?.specialRatesChangesWarnings, result?.specialFeesChangesWarnings);
+                            this.processRatesAfterChangeOrExtend(result.specialRatesChangesWarnings, result.specialFeesChangesWarnings);
                         }
                     });
             }
@@ -500,24 +458,16 @@ export class WorkflowDetailsComponent extends AppComponentBase implements OnInit
 
     changeWorkflow(availableConsultants: AvailableConsultantDto[]) {
         const scrollStrategy = this.overlay.scrollStrategies.reposition();
-        const dialogRef = this.dialog.open(WorkflowActionsDialogComponent, {
-            width: '500px',
-            minWidth: '450px',
-            minHeight: '180px',
-            height: 'auto',
-            scrollStrategy,
-            backdropClass: 'backdrop-modal--wrapper',
-            autoFocus: false,
-            panelClass: 'confirmation-modal',
-            data: {
-                dialogType: WorkflowDiallogAction.Change,
-                dialogTitle: 'Change Workflow data',
-                rejectButtonText: 'Cancel',
-                confirmButtonText: 'Create',
-                isNegative: false,
-                consultantData: availableConsultants
-            }
-        });
+        DialogConfig.scrollStrategy = scrollStrategy;
+        DialogConfig.data = {
+            dialogType: WorkflowDiallogAction.Change,
+            dialogTitle: 'Change Workflow data',
+            rejectButtonText: 'Cancel',
+            confirmButtonText: 'Create',
+            isNegative: false,
+            consultantData: availableConsultants
+        }
+        const dialogRef = this.dialog.open(WorkflowActionsDialogComponent, DialogConfig);
 
         dialogRef.componentInstance.onConfirmed.subscribe((result: ChangeClientPeriodDto) => {
             if (result) {
@@ -525,9 +475,8 @@ export class WorkflowDetailsComponent extends AppComponentBase implements OnInit
                 this._clientPeriodService.clientChange(this._workflowDataService.getWorkflowProgress.currentlyActivePeriodId!, result)
                     .pipe(finalize(() => this.hideMainSpinner()))
                     .subscribe(result => {
-                        console.log('ss');
                         if (result?.specialFeesChangesWarnings?.length || result?.specialRatesChangesWarnings?.length) {
-                            this.processRatesAfterChangeOrExtend(result?.specialRatesChangesWarnings, result?.specialFeesChangesWarnings);
+                            this.processRatesAfterChangeOrExtend(result.specialRatesChangesWarnings, result.specialFeesChangesWarnings);
                         }
                         this._workflowDataService.workflowTopSectionUpdated.emit(true);
                         this._workflowDataService.workflowOverviewUpdated.emit(true);
@@ -538,42 +487,26 @@ export class WorkflowDetailsComponent extends AppComponentBase implements OnInit
 
     processRatesAfterChangeOrExtend(specialRatesWarnings: string[] | undefined, specialFeesWarnings: string[] | undefined) {
         const scrollStrategy = this.overlay.scrollStrategies.reposition();
-        this.dialog.open(RateAndFeesWarningsDialogComponent, {
-            minWidth: '450px',
-            minHeight: '180px',
-            height: 'auto',
-            width: 'auto',
-            scrollStrategy,
-            backdropClass: 'backdrop-modal--wrapper',
-            autoFocus: false,
-            panelClass: 'confirmation-modal',
-            data: {
-                specialRatesWarnings: specialRatesWarnings,
-                specialFeesWarnings: specialFeesWarnings
-            }
-        });
+        DialogConfig.scrollStrategy = scrollStrategy;
+        DialogConfig.data = {
+            specialRatesWarnings: specialRatesWarnings,
+            specialFeesWarnings: specialFeesWarnings
+        }
+        this.dialog.open(RateAndFeesWarningsDialogComponent, DialogConfig);
     }
 
     addConsultant() {
         this.menuActionsTrigger.closeMenu();
         const scrollStrategy = this.overlay.scrollStrategies.reposition();
-        const dialogRef = this.dialog.open(WorkflowActionsDialogComponent, {
-            minWidth: '450px',
-            minHeight: '180px',
-            height: 'auto',
-            width: 'auto',
-            scrollStrategy,
-            backdropClass: 'backdrop-modal--wrapper',
-            autoFocus: false,
-            panelClass: 'confirmation-modal',
-            data: {
-                dialogType: WorkflowDiallogAction.AddConsultant,
-                dialogTitle: 'Add consultant',
-                rejectButtonText: 'Cancel',
-                confirmButtonText: 'Create',
-                isNegative: false
-            }
-        });
+        DialogConfig.scrollStrategy = scrollStrategy;
+        DialogConfig.data = {
+            dialogType: WorkflowDiallogAction.AddConsultant,
+            dialogTitle: 'Add consultant',
+            rejectButtonText: 'Cancel',
+            confirmButtonText: 'Create',
+            isNegative: false
+        }
+        const dialogRef = this.dialog.open(WorkflowActionsDialogComponent, DialogConfig);
 
         dialogRef.componentInstance.onConfirmed.subscribe((result) => {
             if (result) {
@@ -590,14 +523,9 @@ export class WorkflowDetailsComponent extends AppComponentBase implements OnInit
                     });
             }
         });
-
-        dialogRef.componentInstance.onRejected.subscribe(() => {
-            // rejected
-        });
     }
 
     navigateToRequest(requestUrl: string) {
-        // window.open(`${environment.sourcingUrl}/app/request-hub/${requestUrl}/board`, '_blank');
         window.open(requestUrl, '_blank');
     }
 

@@ -1,4 +1,4 @@
-import { Component, Injector, Inject, OnInit } from '@angular/core';
+import { Component, Injector, Inject } from '@angular/core';
 import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
 import { AppComponentBase } from 'src/shared/app-component-base';
 
@@ -7,7 +7,7 @@ import { AppComponentBase } from 'src/shared/app-component-base';
     templateUrl: './rate-and-fees-warnings-dialog.component.html',
     styleUrls: ['./rate-and-fees-warnings-dialog.component.scss']
 })
-export class RateAndFeesWarningsDialogComponent extends AppComponentBase implements OnInit {
+export class RateAndFeesWarningsDialogComponent extends AppComponentBase {
 
     constructor(
         injector: Injector,
@@ -19,10 +19,6 @@ export class RateAndFeesWarningsDialogComponent extends AppComponentBase impleme
         private dialogRef: MatDialogRef<RateAndFeesWarningsDialogComponent>
     ) {
         super(injector);
-    }
-
-    ngOnInit(): void {
-
     }
 
     close() {
