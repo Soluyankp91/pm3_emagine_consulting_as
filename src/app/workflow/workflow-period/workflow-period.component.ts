@@ -1,5 +1,5 @@
 import { Overlay } from '@angular/cdk/overlay';
-import { Component, Injector, Input, OnInit, ViewChild } from '@angular/core';
+import { Component, Injector, Input, OnDestroy, OnInit, ViewChild } from '@angular/core';
 import { MatDialog } from '@angular/material/dialog';
 import { MatMenuTrigger } from '@angular/material/menu';
 import { Subject } from 'rxjs';
@@ -20,7 +20,7 @@ import { StepAnchorDto, StepWithAnchorsDto, WorkflowProcessWithAnchorsDto } from
     templateUrl: './workflow-period.component.html',
     styleUrls: ['./workflow-period.component.scss']
 })
-export class WorkflowPeriodComponent extends AppComponentBase implements OnInit {
+export class WorkflowPeriodComponent extends AppComponentBase implements OnInit, OnDestroy {
     @ViewChild('workflowSales', {static: false}) workflowSales: WorkflowSalesComponent;
     @ViewChild('workflowContracts', {static: false}) workflowContracts: WorkflowContractsComponent;
     @ViewChild('workflowFinances', {static: false}) workflowFinances: WorkflowFinancesComponent;
@@ -98,6 +98,11 @@ export class WorkflowPeriodComponent extends AppComponentBase implements OnInit 
                     this.isStatusUpdate = value.isStatusUpdate;
                     this.getSideMenu(value.autoUpdate);
                 });
+    }
+
+    ngOnDestroy(): void {
+        this._unsubscribe.next();
+        this._unsubscribe.complete();
     }
 
     getPeriodStepTypes() {
