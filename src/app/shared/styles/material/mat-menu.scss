@@ -1,5 +1,19 @@
 @import "/src/app/shared/styles/config/_colors";
 
+.mat-menu-panel {
+    min-height: 40px !important;
+    .mat-menu-content:not(:empty) {
+        padding: 0;
+        .mat-menu-item {
+            height: 40px;
+            line-height: 40px;
+            &:hover:not([disabled]) {
+                background: unset !important;
+            }
+        }
+    }
+}
+
 .menu-item {
     display: flex;
     align-items: center;
@@ -40,6 +54,14 @@
             color: #72A0F8;
             mat-icon {
                 background: unset !important;
+            }
+            &:hover {
+                color: #3363BE;
+                mat-icon {
+                    path {
+                        fill: #3363BE !important;
+                    }
+                }
             }
         }
     }
