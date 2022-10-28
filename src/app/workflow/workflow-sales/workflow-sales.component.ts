@@ -307,7 +307,7 @@ export class WorkflowSalesComponent extends AppComponentBase implements OnInit {
                             ? value.firstName
                             : value;
                     }
-                    return this._lookupService.contacts(toSend.clientId, toSend.name, toSend.maxRecordsCount);
+                    return this._lookupService.contacts(toSend.clientId, undefined, toSend.name, toSend.maxRecordsCount);
                 }),
             ).subscribe((list: ContactResultDto[]) => {
                 if (list.length) {
@@ -361,7 +361,7 @@ export class WorkflowSalesComponent extends AppComponentBase implements OnInit {
                                 ? value.firstName
                                 : value;
                         }
-                        return this._lookupService.contacts(toSend.clientId, toSend.name, toSend.maxRecordsCount);
+                        return this._lookupService.contacts(toSend.clientId, undefined, toSend.name, toSend.maxRecordsCount);
                     } else {
                         return of([]);
                     }
@@ -390,7 +390,7 @@ export class WorkflowSalesComponent extends AppComponentBase implements OnInit {
                                 ? value.firstName
                                 : value;
                         }
-                        return this._lookupService.contacts(toSend.clientId, toSend.name, toSend.maxRecordsCount);
+                        return this._lookupService.contacts(toSend.clientId, undefined, toSend.name, toSend.maxRecordsCount);
                     } else {
                         return of([]);
                     }
@@ -941,7 +941,7 @@ export class WorkflowSalesComponent extends AppComponentBase implements OnInit {
                             ? value.firstName
                             : value;
                     }
-                    return this._lookupService.contacts(toSend.clientId, toSend.name, toSend.maxRecordsCount);
+                    return this._lookupService.contacts(toSend.clientId, undefined, toSend.name, toSend.maxRecordsCount);
                 }),
             ).subscribe((list: ContactResultDto[]) => {
                 if (list.length) {
