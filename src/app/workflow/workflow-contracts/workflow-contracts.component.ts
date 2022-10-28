@@ -1646,11 +1646,13 @@ export class WorkflowContractsComponent extends AppComponentBase implements OnIn
         this.contractsSyncDataForm.showManualOption?.setValue(result?.showManualOption, {emitEvent: false});
         this.syncMessage = result.success ? 'Sync successfull' : result.message!;
         if (result.success) {
-            this.contractsConsultantsDataForm.consultants.controls.forEach((consultant: any) => {
-                consultant.controls.projectLines.controls.forEach((x: any) => {
-                    x.controls.wasSynced.setValue(true, {emitEvent: false});
-                })
-            })
+            // TODO: need to test all cases
+            this.getContractStepData();
+            // this.contractsConsultantsDataForm.consultants.controls.forEach((consultant: any) => {
+            //     consultant.controls.projectLines.controls.forEach((x: any) => {
+            //         x.controls.wasSynced.setValue(true, {emitEvent: false});
+            //     })
+            // })
         }
     }
 
