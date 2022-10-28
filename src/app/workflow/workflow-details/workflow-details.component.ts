@@ -325,7 +325,8 @@ export class WorkflowDetailsComponent extends AppComponentBase implements OnInit
         return value ? StepType[value] : '';
     }
 
-    saveOrCompleteStep(isDraft: boolean) {
+    saveOrCompleteStep(isDraft: boolean, event?: any) {
+        console.log(event)
         switch (this._workflowDataService.workflowProgress.currentlyActiveSideSection) {
             case WorkflowProcessType.StartClientPeriod:
             case WorkflowProcessType.ChangeClientPeriod:
