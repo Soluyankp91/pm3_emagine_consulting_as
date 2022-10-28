@@ -87,7 +87,7 @@
                     </span>
                     <mat-icon>expand_more</mat-icon>
                 </span>
-                <mat-menu #pendingSteps>
+                <mat-menu #pendingSteps backdropClass="step-filter--menu">
                     <button class="workflow-list--filter-type-dropdown__item" *ngFor="let item of stepTypes" mat-menu-item (click)="selectPendingStep(item.id)">{{item.name}}</button>
                     <button class="workflow-list--filter-type-dropdown__reset" mat-menu-item (click)="selectPendingStep(null)">Reset</button>
                 </mat-menu>
@@ -97,7 +97,7 @@
                     </span>
                     <mat-icon>expand_more</mat-icon>
                 </span>
-                <mat-menu #upcomingSteps>
+                <mat-menu #upcomingSteps backdropClass="step-filter--menu">
                     <button class="workflow-list--filter-type-dropdown__item" *ngFor="let item of stepTypes" mat-menu-item (click)="selectUpcomingStep(item.id)">{{item.name}}</button>
                     <button class="workflow-list--filter-type-dropdown__reset" mat-menu-item (click)="selectUpcomingStep(null)">Reset</button>
                 </mat-menu>
