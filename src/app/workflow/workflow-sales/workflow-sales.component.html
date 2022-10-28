@@ -3076,7 +3076,7 @@
                                 </ng-container>
                             </ng-container>
                         </div>
-                        <ng-container *ngIf="addConsultantAvailable && consultantsForm.consultantData.controls.length !== 0">
+                        <ng-container *ngIf="(appEnv.production && consultantsForm.consultantData.controls.length === 0) || (appEnv.dev || appEnv.qa)">
                             <div fxLayout="row" fxLayoutAlign="start start" class="u-w--100" [fxHide]="activeSideSection.typeId === workflowSideSections.StartClientPeriod">
                                 <button class="button-add mat-elevation-z0 u-mt--10 u-mb--10"  type="button" mat-flat-button appPreventDoubleClick (throttledClick)="addConsultantForm()">
                                     <mat-icon>add</mat-icon>
