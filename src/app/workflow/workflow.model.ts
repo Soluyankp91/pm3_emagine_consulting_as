@@ -440,6 +440,10 @@ export enum EmploymentTypes {
 
 export const StepTypes = [
     {
+        id: 0,
+        name: 'All'
+    },
+    {
         id: 1,
         name: 'Sales'
     },

@@ -48,14 +48,6 @@
                     background-color: rgba($color: $purple-color, $alpha: 0.13);
                     border-color: $purple-color;
                 }
-                &.pending-steps-status,
-                &.upcoming-steps-status {
-                    background-color: #384853;
-                    border-color: #384853;
-                    .workflow-list--filter-type__name {
-                        color: $white-color;
-                    }
-                }
             }
             &-dropdown {
                 display: flex;
@@ -75,6 +67,24 @@
                     color: #384853;
                     font-size: 14px;
                     margin-right: 5px;
+                }
+
+                &__item {
+                    @include fontOpenSans(14px, 700);
+                    color: rgba($color: #384853, $alpha: 0.88);
+                }
+                &__reset {
+                    border-top: 1px solid $sand-color;
+                    @include fontOpenSans(14px, 700);
+                    color: $light-grey-color;
+                }
+                &.selected-status {
+                    background-color: #384853;
+                    border-color: #384853;
+                    mat-icon,
+                    .workflow-list--filter-type-dropdown__name {
+                        color: $white-color;
+                    }
                 }
             }
         }
@@ -140,12 +150,6 @@
     &--extension {
         color: rgba($color: #6A47B8, $alpha: .5);
     }
-    // @media screen and (max-width: 1440px) {
-    //     font-size: 10px;
-    //     width: 10px;
-    //     height: 10px;
-    //     line-height: 10px;
-    // }
 }
 
 .status-dot {
@@ -175,12 +179,7 @@
     width: 16px;
     height: 16px;
     line-height: 16px;
-    // @media screen and (max-width: 1440px) {
-    //     font-size: 10px;
-    //     width: 10px;
-    //     height: 10px;
-    //     line-height: 10px;
-    // }
+
     &.purple-dot {
         color: $purple-color;
         opacity: 0.5;
