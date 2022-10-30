@@ -298,7 +298,8 @@ export class WorkflowSalesComponent extends AppComponentBase implements OnInit {
                 debounceTime(300),
                 switchMap((value: any) => {
                     let toSend = {
-                        clientId: this.salesClientDataForm.directClientIdValue?.value?.clientId,
+                        clientId1: this.salesClientDataForm.directClientIdValue?.value?.clientId,
+                        clientId2: this.salesClientDataForm.endClientIdValue?.value?.clientId ?? undefined,
                         name: value,
                         maxRecordsCount: 1000,
                     };
@@ -307,7 +308,7 @@ export class WorkflowSalesComponent extends AppComponentBase implements OnInit {
                             ? value.firstName
                             : value;
                     }
-                    return this._lookupService.contacts(toSend.clientId, toSend.name, toSend.maxRecordsCount);
+                    return this._lookupService.contacts(toSend.clientId1, toSend.clientId2, toSend.name, toSend.maxRecordsCount);
                 }),
             ).subscribe((list: ContactResultDto[]) => {
                 if (list.length) {
@@ -352,7 +353,8 @@ export class WorkflowSalesComponent extends AppComponentBase implements OnInit {
                 switchMap((value: any) => {
                     if (value) {
                         let toSend = {
-                            clientId: this.salesClientDataForm.directClientIdValue?.value?.clientId,
+                            clientId1: this.salesClientDataForm.directClientIdValue?.value?.clientId,
+                            clientId2: this.salesClientDataForm.endClientIdValue?.value?.clientId ?? undefined,
                             name: value,
                             maxRecordsCount: 1000,
                         };
@@ -361,7 +363,7 @@ export class WorkflowSalesComponent extends AppComponentBase implements OnInit {
                                 ? value.firstName
                                 : value;
                         }
-                        return this._lookupService.contacts(toSend.clientId, toSend.name, toSend.maxRecordsCount);
+                        return this._lookupService.contacts(toSend.clientId1, toSend.clientId2, toSend.name, toSend.maxRecordsCount);
                     } else {
                         return of([]);
                     }
@@ -381,7 +383,8 @@ export class WorkflowSalesComponent extends AppComponentBase implements OnInit {
                 switchMap((value: any) => {
                     if (value) {
                         let toSend = {
-                            clientId: this.clientIdFromTerminationSales,
+                            clientId1: this.clientIdFromTerminationSales,
+                            clientId2: undefined, // waiting for be
                             name: value ?? '',
                             maxRecordsCount: 1000,
                         };
@@ -390,7 +393,7 @@ export class WorkflowSalesComponent extends AppComponentBase implements OnInit {
                                 ? value.firstName
                                 : value;
                         }
-                        return this._lookupService.contacts(toSend.clientId, toSend.name, toSend.maxRecordsCount);
+                        return this._lookupService.contacts(toSend.clientId1, toSend.clientId2, toSend.name, toSend.maxRecordsCount);
                     } else {
                         return of([]);
                     }
@@ -932,7 +935,8 @@ export class WorkflowSalesComponent extends AppComponentBase implements OnInit {
                 debounceTime(300),
                 switchMap((value: any) => {
                     let toSend = {
-                        clientId: this.salesClientDataForm.directClientIdValue?.value?.clientId,
+                        clientId1: this.salesClientDataForm.directClientIdValue?.value?.clientId,
+                        clientId2: this.salesClientDataForm.endClientIdValue?.value?.clientId ?? undefined,
                         name: value,
                         maxRecordsCount: 1000,
                     };
@@ -941,7 +945,7 @@ export class WorkflowSalesComponent extends AppComponentBase implements OnInit {
                             ? value.firstName
                             : value;
                     }
-                    return this._lookupService.contacts(toSend.clientId, toSend.name, toSend.maxRecordsCount);
+                    return this._lookupService.contacts(toSend.clientId1, toSend.clientId2, toSend.name, toSend.maxRecordsCount);
                 }),
             ).subscribe((list: ContactResultDto[]) => {
                 if (list.length) {
