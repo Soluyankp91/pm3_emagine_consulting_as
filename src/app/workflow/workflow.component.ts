@@ -7,7 +7,6 @@ import { MatMenuTrigger } from '@angular/material/menu';
 import { MatPaginator } from '@angular/material/paginator';
 import { MatTableDataSource } from '@angular/material/table';
 import { ActivatedRoute, ActivatedRouteSnapshot, Resolve, Router } from '@angular/router';
-import { MsalService } from '@azure/msal-angular';
 import { merge, Observable, Subject, Subscription } from 'rxjs';
 import { debounceTime, finalize, map, switchMap, takeUntil } from 'rxjs/operators';
 import { AppComponentBase } from 'src/shared/app-component-base';
@@ -18,8 +17,7 @@ import { InternalLookupService } from '../shared/common/internal-lookup.service'
 import { ConfirmationDialogComponent } from '../shared/components/confirmation-dialog/confirmation-dialog.component';
 import { ManagerStatus } from '../shared/components/manager-search/manager-search.model';
 import { CreateWorkflowDialogComponent } from './create-workflow-dialog/create-workflow-dialog.component';
-import { WorkflowDataService } from './workflow-data.service';
-import { SelectableEmployeeDto, WorkflowFlag, WorkflowList } from './workflow.model';
+import { SelectableEmployeeDto } from './workflow.model';
 
 const WorkflowGridOptionsKey = 'WorkflowGridFILTERS.1.0.2.';
 @Component({
@@ -62,16 +60,6 @@ export class WorkflowComponent extends AppComponentBase implements OnInit, OnDes
     workflowDataSource: MatTableDataSource<WorkflowListItemDto>;
     workflowProcess = WorkflowProcessType;
 
-    // selectedTypes = [
-    //     {
-    //         flag: WorkflowFlag.NewSales,
-    //         name: 'New Sales'
-    //     },
-    //     {
-    //         flag: WorkflowFlag.Extension,
-    //         name: 'Extension'
-    //     }
-    // ];
 
     legalEntities: LegalEntityDto[] = [];
     saleTypes: EnumEntityTypeDto[] = [];
@@ -114,7 +102,6 @@ export class WorkflowComponent extends AppComponentBase implements OnInit, OnDes
         private dialog: MatDialog,
         private _internalLookupService: InternalLookupService,
         private _lookupService: LookupServiceProxy,
-        private _auth: MsalService,
         private _employeeService: EmployeeServiceProxy,
         private _activatedRoute: ActivatedRoute
     ) {
@@ -324,9 +311,6 @@ export class WorkflowComponent extends AppComponentBase implements OnInit, OnDes
             this.deleteWorkflow(workflowId);
         });
 
-        dialogRef.componentInstance.onRejected.subscribe(() => {
-            // nthng
-        });
     }
 
     deleteWorkflow(workflowId: string) {
@@ -484,7 +468,7 @@ export class WorkflowComponent extends AppComponentBase implements OnInit, OnDes
     }
 
     sortChanged(event?: any): void {
-        this.sorting = event.active.concat(' ', event.direction);
+        this.sorting = event.direction && event.direction.length ? event.active.concat(' ', event.direction) : '';
         this.getWorkflowList();
     }
 

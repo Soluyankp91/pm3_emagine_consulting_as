@@ -2,8 +2,8 @@ import { Component, Injector, OnDestroy, OnInit, ViewChild } from '@angular/core
 import { FormControl } from '@angular/forms';
 import { MatTableDataSource } from '@angular/material/table';
 import { Router } from '@angular/router';
-import { Observable, of, Subject, Subscription } from 'rxjs';
-import { takeUntil, debounceTime, switchMap, finalize, map, startWith } from 'rxjs/operators';
+import { Observable, Subject, Subscription } from 'rxjs';
+import { takeUntil, debounceTime, switchMap, finalize, map } from 'rxjs/operators';
 import { AppConsts } from 'src/shared/AppConsts';
 import { ClientListItemDto, ClientsServiceProxy, EmployeeDto, EmployeeServiceProxy, EnumServiceProxy, LookupServiceProxy } from 'src/shared/service-proxies/service-proxies';
 import { SelectableCountry, SelectableEmployeeDto, SelectableIdNameDto, StatusList } from './client.model';
@@ -11,7 +11,6 @@ import { AppComponentBase } from 'src/shared/app-component-base';
 import { LocalHttpService } from 'src/shared/service-proxies/local-http.service';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { AuthenticationResult } from '@azure/msal-browser';
-import { MsalService } from '@azure/msal-angular';
 import { MatMenuTrigger } from '@angular/material/menu';
 import { MatAutocomplete, MatAutocompleteTrigger } from '@angular/material/autocomplete';
 
@@ -45,25 +44,11 @@ export class ClientComponent extends AppComponentBase implements OnInit, OnDestr
     totalCount: number | undefined = 0;
     sorting = '';
 
-    // clientDisplayColumns = [
-    //     'countryFlag',
-    //     'id',
-    //     'name',
-    //     'clientAddress_Address',
-    //     'clientAddress_Address2',
-    //     'clientAddress_PostCode',
-    //     'clientAddress_City',
-    //     'clientAddress_Country_Name',
-    //     'phone',
-    //     'owner_Name'
-    // ];
 
     clientDisplayColumns = [
-        // 'countryFlag',
         'id',
         'name',
         'clientAddress_Country_Name',
-        // 'clientCountry',
         'clientAddress_City',
         'clientAddress_Address',
         'isActive',
@@ -300,7 +285,7 @@ export class ClientComponent extends AppComponentBase implements OnInit, OnDestr
     }
 
     sortChanged(event?: any): void {
-        this.sorting = event.active.concat(' ', event.direction);
+        this.sorting = event.direction && event.direction.length ? event.active.concat(' ', event.direction) : '';
         this.getClientsGrid();
     }
 

@@ -1,13 +1,12 @@
 import { Component, Injector, Input, OnInit } from '@angular/core';
 import { MatTableDataSource } from '@angular/material/table';
 import { ActivatedRoute, Router } from '@angular/router';
-import * as moment from 'moment';
 import { Subject } from 'rxjs';
 import { finalize, takeUntil } from 'rxjs/operators';
 import { InternalLookupService } from 'src/app/shared/common/internal-lookup.service';
 import { AppComponentBase } from 'src/shared/app-component-base';
 import { AppConsts } from 'src/shared/AppConsts';
-import { ClientWorkflowTrackItemDto, ClientsServiceProxy, EmployeeDto, EnumEntityTypeDto, WorkflowStatus } from 'src/shared/service-proxies/service-proxies';
+import { ClientsServiceProxy, EnumEntityTypeDto, WorkflowStatus } from 'src/shared/service-proxies/service-proxies';
 
 @Component({
     selector: 'app-client-workflow-track',
@@ -121,7 +120,7 @@ export class ClientWorkflowTrackComponent extends AppComponentBase implements On
     }
 
     sortChanged(event?: any): void {
-        this.sorting = event.active.concat(' ', event.direction);
+        this.sorting = event.direction && event.direction.length ? event.active.concat(' ', event.direction) : '';
         this.getWorkflowTrack();
     }
 

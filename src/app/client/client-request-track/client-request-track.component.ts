@@ -38,7 +38,7 @@ export class ClientRequestTrackComponent implements OnInit, OnDestroy {
         'salesManager',
         'sourcer'
     ];
-    clientDataSource: MatTableDataSource<ClientRequestTrackItemDto> = new MatTableDataSource<ClientRequestTrackItemDto>();
+    clientDataSource: MatTableDataSource<any> = new MatTableDataSource<any>();
 
     private _unsubscribe = new Subject();
     constructor(
@@ -68,7 +68,22 @@ export class ClientRequestTrackComponent implements OnInit, OnDestroy {
                 this.isDataLoading = false;
             }))
             .subscribe(result => {
-                this.clientDataSource = new MatTableDataSource<ClientRequestTrackItemDto>(result.items);
+                let formattedData = result?.items!.map(x => {
+                    return {
+                        requestId: x.requestId,
+                        headline: x.headline,
+                        status: x.status,
+                        clientDeadline: x.clientDeadline,
+                        dateAdded: x.dateAdded,
+                        projectType: x.projectType,
+                        priority: x.priority,
+                        numberOfConsultants: x.numberOfConsultants,
+                        locations: this.mapLocationArrayByName(x.locations!),
+                        requestSourcers: this.mapEmployeeArrayByName(x.requestSourcers!),
+                        accountManagers: this.mapEmployeeArrayByName(x.accountManagers!)
+                    }
+                })
+                this.clientDataSource = new MatTableDataSource<any>(result.items);
                 this.totalCount = result.totalCount;
             });
     }
@@ -80,7 +95,7 @@ export class ClientRequestTrackComponent implements OnInit, OnDestroy {
     }
 
     sortChanged(event?: any): void {
-        this.sorting = event.active.concat(' ', event.direction);
+        this.sorting = event.direction && event.direction.length ? event.active.concat(' ', event.direction) : '';
         this.getRequestTrack();
     }
 
