@@ -75,6 +75,7 @@ export class WorkflowContractsComponent extends AppComponentBase implements OnIn
     statusAfterSync = false;
     syncMessage = '';
     legalContractModuleStatuses = LegalContractStatus;
+    bypassLegalValidation = false;
 
     employmentTypesEnum = EmploymentTypes;
 
@@ -131,7 +132,8 @@ export class WorkflowContractsComponent extends AppComponentBase implements OnIn
         // Client start, extend and change periods
         this._workflowDataService.startClientPeriodContractsSaved
             .pipe(takeUntil(this._unsubscribe))
-            .subscribe((isDraft: boolean) => {
+            .subscribe(({isDraft, bypassLegalValidation}) => {
+                this.bypassLegalValidation = bypassLegalValidation!;
                 if (isDraft) {
                     this.saveStartChangeOrExtendClientPeriodContracts(isDraft);
                 } else {
@@ -146,7 +148,8 @@ export class WorkflowContractsComponent extends AppComponentBase implements OnIn
         // Consultant start, extend and change periods
         this._workflowDataService.consultantStartChangeOrExtendContractsSaved
             .pipe(takeUntil(this._unsubscribe))
-            .subscribe((isDraft: boolean) => {
+            .subscribe(({isDraft, bypassLegalValidation}) => {
+                this.bypassLegalValidation = bypassLegalValidation!;
                 if (isDraft) {
                     this.saveStartChangeOrExtendConsultantPeriodContracts(isDraft);
                 } else {
@@ -1049,6 +1052,7 @@ export class WorkflowContractsComponent extends AppComponentBase implements OnIn
 
     saveStartChangeOrExtendClientPeriodContracts(isDraft: boolean, isSyncToLegacy?: boolean) {
         let input = new ClientPeriodContractsDataCommandDto();
+        input.bypassLegalValidation = this.bypassLegalValidation;
         input.clientData = new ContractsClientDataDto();
         input.clientData.specialContractTerms = this.contractClientForm.specialContractTerms?.value;
         input.clientData.noSpecialContractTerms = this.contractClientForm.noSpecialContractTerms?.value;
@@ -1211,6 +1215,7 @@ export class WorkflowContractsComponent extends AppComponentBase implements OnIn
         } else {
             this._clientContractsService.editFinish(this.periodId!, input)
                 .pipe(finalize(() => {
+                    this.bypassLegalValidation = false;
                     this.hideMainSpinner();
                 }))
                 .subscribe(result => {
@@ -1269,6 +1274,7 @@ export class WorkflowContractsComponent extends AppComponentBase implements OnIn
 
     saveStartChangeOrExtendConsultantPeriodContracts(isDraft: boolean, isSyncToLegacy?: boolean) {
         let input = new ConsultantPeriodContractsDataCommandDto();
+        input.bypassLegalValidation = this.bypassLegalValidation;
         input.remarks =  this.contractsMainForm.remarks?.value;
         input.noRemarks =  this.contractsMainForm.noRemarks?.value
         input.projectDescription =  this.contractsMainForm.projectDescription?.value;
@@ -1391,6 +1397,7 @@ export class WorkflowContractsComponent extends AppComponentBase implements OnIn
         } else {
             this._consultantContractsService.editFinish(this.activeSideSection.consultantPeriodId!, input)
                 .pipe(finalize(() => {
+                    this.bypassLegalValidation = false;
                     this.hideMainSpinner();
                 }))
                 .subscribe(result => {

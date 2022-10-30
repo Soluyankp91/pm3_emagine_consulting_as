@@ -326,7 +326,6 @@ export class WorkflowDetailsComponent extends AppComponentBase implements OnInit
     }
 
     saveOrCompleteStep(isDraft: boolean, event?: any) {
-        console.log(event)
         switch (this._workflowDataService.workflowProgress.currentlyActiveSideSection) {
             case WorkflowProcessType.StartClientPeriod:
             case WorkflowProcessType.ChangeClientPeriod:
@@ -336,7 +335,8 @@ export class WorkflowDetailsComponent extends AppComponentBase implements OnInit
                         this._workflowDataService.startClientPeriodSalesSaved.emit(isDraft);
                         break;
                     case StepType.Contract:
-                        this._workflowDataService.startClientPeriodContractsSaved.emit(isDraft);
+                        let bypassLegalValidation = event?.altKey && event?.shiftKey;
+                        this._workflowDataService.startClientPeriodContractsSaved.emit({isDraft: isDraft, bypassLegalValidation: bypassLegalValidation});
                         break;
                     case StepType.Finance:
                         this._workflowDataService.startClientPeriodFinanceSaved.emit(isDraft);
@@ -380,7 +380,8 @@ export class WorkflowDetailsComponent extends AppComponentBase implements OnInit
                         this._workflowDataService.consultantStartChangeOrExtendSalesSaved.emit(isDraft);
                         break;
                     case StepType.Contract:
-                        this._workflowDataService.consultantStartChangeOrExtendContractsSaved.emit(isDraft);
+                        let bypassLegalValidation = event?.altKey && event?.shiftKey;
+                        this._workflowDataService.consultantStartChangeOrExtendContractsSaved.emit({isDraft, bypassLegalValidation: bypassLegalValidation});
                         break;
                     case StepType.Finance:
                         this._workflowDataService.consultantStartChangeOrExtendFinanceSaved.emit(isDraft);
