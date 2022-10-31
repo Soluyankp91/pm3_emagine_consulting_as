@@ -83,7 +83,7 @@ export class ClientRequestTrackComponent implements OnInit, OnDestroy {
                         accountManagers: this.mapEmployeeArrayByName(x.accountManagers!)
                     }
                 })
-                this.clientDataSource = new MatTableDataSource<any>(result.items);
+                this.clientDataSource = new MatTableDataSource<any>(formattedData);
                 this.totalCount = result.totalCount;
             });
     }
