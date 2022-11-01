@@ -56,6 +56,19 @@
                             </span>
                         </a>
                     </li>
+                    <li class="main-navigation--list-item" >
+                        <img class="border-rounded-50 image-thumbnail-small" [matMenuTriggerFor]="menu" #trigger="matMenuTrigger" (mouseenter)="trigger.openMenu()" [src]="employeeProfileUrl(currentEmployee.externalId!)" />
+                        <mat-menu #menu="matMenu" [overlapTrigger]="false" [hasBackdrop]="false" yPosition="above" xPosition="before">
+                            <div fxLayout="row" fxLayoutAlign="start center">
+                                <img class="border-rounded-50 image-thumbnail-small" [src]="employeeProfileUrl(currentEmployee.externalId!)" />
+                                <div fxLayout="column" >
+                                    <span>{{accountInfo.username}}</span>
+                                    <span>{{accountInfo.name}}</span>
+                                </div>
+                            </div>
+                            <button mat-menu-item appPreventDoubleClick (throttledClick)="logout()">Log out</button>
+                        </mat-menu>
+                    </li>
                 </div>
                 <!-- FIXME: COMMENTED OUT FOR PRESENTATION -->
                 <!-- <li class="main-navigation--list-item" routerLink="/main/statistics" routerLinkActive="active">

@@ -129,15 +129,15 @@ html {
             -webkit-transition: all .3s ease-in-out;
             -moz-transition: all .3s ease-in-out;
             transition: all .3s ease-in-out;
-            &:hover {
-              max-width: 250px !important;
-              .main-navigation--list-item {
-                  border-color: transparent;
-                &__name {
-                    display: flex;
-                }
-              }
-            }
+            // &:hover {
+            //   max-width: 250px !important;
+            //   .main-navigation--list-item {
+            //       border-color: transparent;
+            //     &__name {
+            //         display: flex;
+            //     }
+            //   }
+            // }
         }
         &-content {
             flex: 1;
