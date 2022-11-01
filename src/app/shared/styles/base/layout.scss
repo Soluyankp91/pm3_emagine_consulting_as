@@ -272,6 +272,16 @@ html {
             height: 35px;
         }
     }
+    &--logout {
+        width: 20px;
+        height: 20px;
+        margin-left: 8px;
+        margin-right: 12px;
+        &-menu {
+            width: 28px;
+            height: 28px;
+        }
+    }
 }
 
 .image-settings {

@@ -78,6 +78,18 @@
     }
 }
 
+.main-navigation--logout-menu + * .cdk-overlay-pane {
+    .mat-menu-panel {
+        min-height: 48px !important;
+        border-radius: unset !important;
+        min-width: 200px !important;
+        overflow: hidden;
+        .mat-menu-content {
+            padding: 0 !important;
+        }
+    }
+}
+
 .workflow-list--filter-manager-menu + * + * .cdk-overlay-pane,
 .client-list--filter-manager-menu + * + * .cdk-overlay-pane,
 .client-list--filter-country-menu + * + * .cdk-overlay-pane,
