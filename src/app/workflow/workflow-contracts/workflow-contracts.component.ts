@@ -1,5 +1,5 @@
 import { Overlay } from '@angular/cdk/overlay';
-import { Component, Injector, Input, OnDestroy, OnInit, ViewChild } from '@angular/core';
+import { Component, Injector, Input, OnDestroy, OnInit } from '@angular/core';
 import { AbstractControl, FormArray, FormBuilder, FormControl, Validators } from '@angular/forms';
 import { MatDialog } from '@angular/material/dialog';
 import { MatMenuTrigger } from '@angular/material/menu';
@@ -941,9 +941,7 @@ export class WorkflowContractsComponent extends AppComponentBase implements OnIn
         this.showMainSpinner();
         this._clientPeriodService.clientContractsGet(this.periodId!)
             .pipe(finalize(() => {
-                if (!isFromSyncToLegacy) {
-                    this.hideMainSpinner();
-                }
+                this.hideMainSpinner();
             }))
             .subscribe(result => {
                 // Main data
@@ -1009,7 +1007,6 @@ export class WorkflowContractsComponent extends AppComponentBase implements OnIn
                 }
                 if (isFromSyncToLegacy) {
                     this.processAfterSync(syncResult!);
-                    // this.processSyncToLegacySystem();
                 }
             });
     }
@@ -1198,16 +1195,18 @@ export class WorkflowContractsComponent extends AppComponentBase implements OnIn
         if (isDraft) {
             this._clientPeriodService.clientContractsPut(this.periodId!, input)
                 .pipe(finalize(() => {
-                    if (!isSyncToLegacy) {
-                        this.hideMainSpinner();
-                    }
+                    this.hideMainSpinner();
                 }))
                 .subscribe(result => {
                     this._workflowDataService.workflowOverviewUpdated.emit(true);
                     if (this.editEnabledForcefuly && !isSyncToLegacy) {
                         this.toggleEditMode();
                     }
-                    this.getContractStepData(isSyncToLegacy);
+                    if (isSyncToLegacy) {
+                        this.processSyncToLegacySystem();
+                    } else {
+                        this.getContractStepData();
+                    }
                 });
         } else {
             this._clientContractsService.editFinish(this.periodId!, input)
@@ -1263,7 +1262,6 @@ export class WorkflowContractsComponent extends AppComponentBase implements OnIn
                 this.addConsultantLegalContract(result.consultantData!);
                 this.updateConsultantStepAnchors();
                 if (isFromSyncToLegacy) {
-                    // this.processSyncToLegacySystem();
                     this.processAfterSync(syncResult!);
                 }
             });
@@ -1379,16 +1377,18 @@ export class WorkflowContractsComponent extends AppComponentBase implements OnIn
         if (isDraft) {
             this._consultantPeriodService.consultantContractsPut(this.activeSideSection.consultantPeriodId!, input)
                 .pipe(finalize(() => {
-                    if (!isSyncToLegacy) {
-                        this.hideMainSpinner();
-                    }
+                    this.hideMainSpinner();
                 }))
                 .subscribe(result => {
                     this._workflowDataService.workflowOverviewUpdated.emit(true);
                     if (this.editEnabledForcefuly && !isSyncToLegacy) {
                         this.toggleEditMode();
                     }
-                    this.getContractStepData(isSyncToLegacy);
+                    if (isSyncToLegacy) {
+                        this.processSyncToLegacySystem();
+                    } else {
+                        this.getContractStepData();
+                    }
                 });
         } else {
             this._consultantContractsService.editFinish(this.activeSideSection.consultantPeriodId!, input)
@@ -1435,7 +1435,6 @@ export class WorkflowContractsComponent extends AppComponentBase implements OnIn
                 this.contractLinesDoneManuallyInOldPMControl?.setValue(result?.contractLinesDoneManuallyInOldPM, {emitEvent: false});
                 this.addConsultantDataToTerminationForm(result);
                 if (isFromSyncToLegacy) {
-                    // this.processSyncToLegacySystem();
                     this.processAfterSync(syncResult!);
                 }
             });
@@ -1452,9 +1451,7 @@ export class WorkflowContractsComponent extends AppComponentBase implements OnIn
         if (isDraft) {
             this._workflowServiceProxy.terminationConsultantContractPut(this.workflowId!, input)
                 .pipe(finalize(() => {
-                    if (!isSyncToLegacy) {
-                        this.hideMainSpinner();
-                    }
+                    this.hideMainSpinner();
                 }))
                 .subscribe(result => {
                     this._workflowDataService.workflowOverviewUpdated.emit(true);
@@ -1463,8 +1460,9 @@ export class WorkflowContractsComponent extends AppComponentBase implements OnIn
                     }
                     if (isSyncToLegacy) {
                         this.processSyncToLegacySystem();
+                    } else {
+                        this.getContractStepData();
                     }
-                    // this.getContractStepData(isSyncToLegacy);
                 })
         } else {
             this._workflowServiceProxy.terminationConsultantContractComplete(this.workflowId!, input)
@@ -1495,7 +1493,6 @@ export class WorkflowContractsComponent extends AppComponentBase implements OnIn
                     this.addConsultantDataToTerminationForm(data);
                 })
                 if (isFromSyncToLegacy) {
-                    // this.processSyncToLegacySystem();
                     this.processAfterSync(syncResult!);
                 }
             });
@@ -1522,16 +1519,18 @@ export class WorkflowContractsComponent extends AppComponentBase implements OnIn
         if (isDraft) {
             this._workflowServiceProxy.terminationContractPut(this.workflowId!, input)
                 .pipe(finalize(() => {
-                    if (!isSyncToLegacy) {
-                        this.hideMainSpinner();
-                    }
+                    this.hideMainSpinner();
                 }))
                 .subscribe(result => {
                     this._workflowDataService.workflowOverviewUpdated.emit(true);
                     if (this.editEnabledForcefuly && !isSyncToLegacy) {
                         this.toggleEditMode();
                     }
-                    this.getContractStepData(isSyncToLegacy);
+                    if (isSyncToLegacy) {
+                        this.processSyncToLegacySystem();
+                    } else {
+                        this.getContractStepData();
+                    }
                 })
         } else {
             this._workflowServiceProxy.terminationContractComplete(this.workflowId!, input)
@@ -1609,7 +1608,7 @@ export class WorkflowContractsComponent extends AppComponentBase implements OnIn
                 this.hideMainSpinner();
             }))
             .subscribe(result => {
-                this.processAfterSync(result);
+                this.getContractStepData(true, result);
             });
     }
 
@@ -1620,7 +1619,7 @@ export class WorkflowContractsComponent extends AppComponentBase implements OnIn
                 this.hideMainSpinner();
             }))
             .subscribe(result => {
-                this.processAfterSync(result);
+                this.getContractStepData(true, result);
             });
     }
 
@@ -1631,7 +1630,7 @@ export class WorkflowContractsComponent extends AppComponentBase implements OnIn
                 this.hideMainSpinner();
             }))
             .subscribe(result => {
-                this.processAfterSync(result);
+                this.getContractStepData(true, result);
             });
     }
 
@@ -1642,7 +1641,7 @@ export class WorkflowContractsComponent extends AppComponentBase implements OnIn
                 this.hideMainSpinner();
             }))
             .subscribe(result => {
-                this.processAfterSync(result);
+                this.getContractStepData(true, result);
             });
     }
 
@@ -1653,13 +1652,11 @@ export class WorkflowContractsComponent extends AppComponentBase implements OnIn
         this.contractsSyncDataForm.showManualOption?.setValue(result?.showManualOption, {emitEvent: false});
         this.syncMessage = result.success ? 'Sync successfull' : result.message!;
         if (result.success) {
-            // TODO: need to test all cases
-            this.getContractStepData();
-            // this.contractsConsultantsDataForm.consultants.controls.forEach((consultant: any) => {
-            //     consultant.controls.projectLines.controls.forEach((x: any) => {
-            //         x.controls.wasSynced.setValue(true, {emitEvent: false});
-            //     })
-            // })
+            this.contractsConsultantsDataForm.consultants.controls.forEach((consultant: any) => {
+                consultant.controls.projectLines.controls.forEach((x: any) => {
+                    x.controls.wasSynced.setValue(true, {emitEvent: false});
+                })
+            })
         }
     }
 
