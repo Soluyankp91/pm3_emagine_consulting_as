@@ -1,12 +1,11 @@
-import { Component, Input, OnDestroy, OnInit } from '@angular/core';
+import { Component, OnDestroy, OnInit } from '@angular/core';
 import { MatTableDataSource } from '@angular/material/table';
 import { ActivatedRoute } from '@angular/router';
-import * as moment from 'moment';
 import { Subject } from 'rxjs';
 import { finalize, takeUntil } from 'rxjs/operators';
 import { environment } from 'src/environments/environment';
 import { AppConsts } from 'src/shared/AppConsts';
-import { ClientDetailsDto, ClientRequestTrackItemDto, ClientsServiceProxy, EmployeeDto } from 'src/shared/service-proxies/service-proxies';
+import { ClientsServiceProxy, EmployeeDto } from 'src/shared/service-proxies/service-proxies';
 
 @Component({
     selector: 'app-client-request-track',
