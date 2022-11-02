@@ -384,7 +384,7 @@ export class WorkflowSalesComponent extends AppComponentBase implements OnInit {
                     if (value) {
                         let toSend = {
                             clientId1: this.clientIdFromTerminationSales,
-                            clientId2: undefined, // waiting for be
+                            clientId2: undefined, // TODO: waiting for be
                             name: value ?? '',
                             maxRecordsCount: 1000,
                         };

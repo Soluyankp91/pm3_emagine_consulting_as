@@ -47,7 +47,7 @@ export class AddOrEditProjectLineDialogComponent extends AppComponentBase implem
                 switchMap((value: any) => {
                     let toSend = {
                         clientId1: this.data?.clientId,
-                        clientId2: undefined, // waiting for be
+                        clientId2: undefined, // TODO: waiting for be
                         name: value,
                         maxRecordsCount: 1000,
                     };
