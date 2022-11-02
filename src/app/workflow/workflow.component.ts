@@ -18,10 +18,9 @@ import { InternalLookupService } from '../shared/common/internal-lookup.service'
 import { ConfirmationDialogComponent } from '../shared/components/confirmation-dialog/confirmation-dialog.component';
 import { ManagerStatus } from '../shared/components/manager-search/manager-search.model';
 import { CreateWorkflowDialogComponent } from './create-workflow-dialog/create-workflow-dialog.component';
-import { WorkflowDataService } from './workflow-data.service';
-import { SelectableEmployeeDto, WorkflowFlag, WorkflowList } from './workflow.model';
+import { SelectableEmployeeDto, StepTypes } from './workflow.model';
 
-const WorkflowGridOptionsKey = 'WorkflowGridFILTERS.1.0.2.';
+const WorkflowGridOptionsKey = 'WorkflowGridFILTERS.1.0.3.';
 @Component({
     selector: 'app-workflow',
     templateUrl: './workflow.component.html',
@@ -62,17 +61,6 @@ export class WorkflowComponent extends AppComponentBase implements OnInit, OnDes
     workflowDataSource: MatTableDataSource<WorkflowListItemDto>;
     workflowProcess = WorkflowProcessType;
 
-    // selectedTypes = [
-    //     {
-    //         flag: WorkflowFlag.NewSales,
-    //         name: 'New Sales'
-    //     },
-    //     {
-    //         flag: WorkflowFlag.Extension,
-    //         name: 'Extension'
-    //     }
-    // ];
-
     legalEntities: LegalEntityDto[] = [];
     saleTypes: EnumEntityTypeDto[] = [];
     deliveryTypes: EnumEntityTypeDto[] = [];
@@ -81,8 +69,8 @@ export class WorkflowComponent extends AppComponentBase implements OnInit, OnDes
     isAdvancedFilters = false;
     showOnlyWorkflowsWithNewSales = false;
     showOnlyWorkflowsWithExtensions = false;
-    showOnlyWorkflowsWithPendingStepsForSelectedEmployees = false;
-    showOnlyWorkflowsWithUpcomingStepsForSelectedEmployees = false;
+    showPendingSteps = false;
+    showUpcomingSteps = false;
     includeTerminated = false;
     includeDeleted = false;
     invoicingEntityControl = new FormControl();
@@ -98,11 +86,14 @@ export class WorkflowComponent extends AppComponentBase implements OnInit, OnDes
 
     // we create an object that contains coordinates
     menuTopLeftPosition =  {x: 0, y: 0}
-
     // reference to the MatMenuTrigger in the DOM
     @ViewChild('rightMenuTrigger', {static: true}) matMenuTrigger: MatMenuTrigger;
 
     workflowListSubscription = new Subscription();
+
+    stepTypes = StepTypes;
+    upcomingStepType: number | null = null;
+    pendingStepType: number | null = null;
 
     private _unsubscribe = new Subject();
     constructor(
@@ -204,8 +195,10 @@ export class WorkflowComponent extends AppComponentBase implements OnInit, OnDes
             workflowStatus: this.workflowStatusControl.value ? this.workflowStatusControl.value : undefined,
             showOnlyWorkflowsWithNewSales: this.showOnlyWorkflowsWithNewSales,
             showOnlyWorkflowsWithExtensions: this.showOnlyWorkflowsWithExtensions,
-            showOnlyWorkflowsWithPendingStepsForSelectedEmployees: this.showOnlyWorkflowsWithPendingStepsForSelectedEmployees,
-            showOnlyWorkflowsWithUpcomingStepsForSelectedEmployees: this.showOnlyWorkflowsWithUpcomingStepsForSelectedEmployees,
+            showPendingSteps: this.showPendingSteps,
+            pendingStepType: this.pendingStepType,
+            showUpcomingSteps: this.showUpcomingSteps,
+            upcomingStepType: this.upcomingStepType,
             includeTerminated: this.includeTerminated,
             includeDeleted: this.includeDeleted,
             searchFilter: this.workflowFilter.value ? this.workflowFilter.value : ''
@@ -228,8 +221,10 @@ export class WorkflowComponent extends AppComponentBase implements OnInit, OnDes
             this.invoicingEntityControl.setValue(filters.invoicingEntity, {emitEvent: false});
             this.showOnlyWorkflowsWithNewSales = filters.showOnlyWorkflowsWithNewSales;
             this.showOnlyWorkflowsWithExtensions = filters.showOnlyWorkflowsWithExtensions;
-            this.showOnlyWorkflowsWithPendingStepsForSelectedEmployees = filters.showOnlyWorkflowsWithPendingStepsForSelectedEmployees;
-            this.showOnlyWorkflowsWithUpcomingStepsForSelectedEmployees = filters.showOnlyWorkflowsWithUpcomingStepsForSelectedEmployees;
+            this.showPendingSteps = filters.showPendingSteps;
+            this.pendingStepType = filters.pendingStepType;
+            this.showUpcomingSteps = filters.showUpcomingSteps;
+            this.upcomingStepType = filters.upcomingStepType;
             this.includeTerminated = filters.includeTerminated;
             this.includeDeleted = filters.includeDeleted;
             this.workflowFilter.setValue(filters.searchFilter, {emitEvent: false});
@@ -294,10 +289,6 @@ export class WorkflowComponent extends AppComponentBase implements OnInit, OnDes
                     });
             }
         });
-
-        dialogRef.componentInstance.onRejected.subscribe(() => {
-            // nthng
-        });
     }
 
     confirmDeleteWorkflow(workflowId: string) {
@@ -322,10 +313,6 @@ export class WorkflowComponent extends AppComponentBase implements OnInit, OnDes
 
         dialogRef.componentInstance.onConfirmed.subscribe(() => {
             this.deleteWorkflow(workflowId);
-        });
-
-        dialogRef.componentInstance.onRejected.subscribe(() => {
-            // nthng
         });
     }
 
@@ -408,6 +395,8 @@ export class WorkflowComponent extends AppComponentBase implements OnInit, OnDes
         let deliveryTypes = this.deliveryTypesControl.value ? this.deliveryTypesControl.value : undefined;
         let workflowStatus = this.workflowStatusControl.value ? this.workflowStatusControl.value : undefined;
         let ownerIds = this.selectedAccountManagers.map(x => +x.id);
+        let selectedPendingStepType = this.pendingStepType === 0 ? undefined : this.pendingStepType;
+        let selectedUpcomingStepType = this.upcomingStepType === 0 ? undefined : this.upcomingStepType;
 
         if (this.workflowListSubscription) {
             this.workflowListSubscription.unsubscribe();
@@ -426,8 +415,10 @@ export class WorkflowComponent extends AppComponentBase implements OnInit, OnDes
             ownerIds,
             this.showOnlyWorkflowsWithNewSales,
             this.showOnlyWorkflowsWithExtensions,
-            this.showOnlyWorkflowsWithPendingStepsForSelectedEmployees,
-            this.showOnlyWorkflowsWithUpcomingStepsForSelectedEmployees,
+            this.showPendingSteps,
+            selectedPendingStepType !== null ? selectedPendingStepType : undefined,
+            this.showUpcomingSteps,
+            selectedUpcomingStepType !== null ? selectedUpcomingStepType : undefined,
             this.includeTerminated,
             this.includeDeleted,
             searchFilter,
@@ -507,6 +498,24 @@ export class WorkflowComponent extends AppComponentBase implements OnInit, OnDes
         this.getWorkflowList(true);
     }
 
+    selectUpcomingStep(stepType: number | null = null) {
+        this.upcomingStepType = stepType;
+        this.showUpcomingSteps = stepType !== null;
+        this.pageNumber = 1;
+        this.getWorkflowList();
+    }
+
+    selectPendingStep(stepType: number | null = null) {
+        this.pendingStepType = stepType;
+        this.showPendingSteps = stepType !== null;
+        this.pageNumber = 1;
+        this.getWorkflowList();
+    }
+
+    stepTypeTrackBy(index: number, item: {id: number, name: string}) {
+        return item.id;
+    }
+
     getCurrentUser() {
         this.selectedAccountManagers = [];
 
@@ -535,8 +544,10 @@ export class WorkflowComponent extends AppComponentBase implements OnInit, OnDes
         this.workflowStatusControl.setValue(null, {emitEvent: false});
         this.showOnlyWorkflowsWithNewSales = false;
         this.showOnlyWorkflowsWithExtensions = false;
-        this.showOnlyWorkflowsWithPendingStepsForSelectedEmployees = false;
-        this.showOnlyWorkflowsWithUpcomingStepsForSelectedEmployees = false;
+        this.pendingStepType = null
+        this.showPendingSteps = false;
+        this.upcomingStepType = null
+        this.showUpcomingSteps = false;
         this.includeTerminated = false;
         this.includeDeleted = false;
         localStorage.removeItem(WorkflowGridOptionsKey);
