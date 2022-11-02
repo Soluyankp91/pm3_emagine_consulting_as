@@ -12,13 +12,12 @@ import { merge, Observable, Subject, Subscription } from 'rxjs';
 import { debounceTime, finalize, map, switchMap, takeUntil } from 'rxjs/operators';
 import { AppComponentBase } from 'src/shared/app-component-base';
 import { AppConsts } from 'src/shared/AppConsts';
-import { ApiServiceProxy, EmployeeDto, EmployeeServiceProxy, EnumEntityTypeDto, LegalEntityDto, LookupServiceProxy, StartNewWorkflowInputDto, StepType, WorkflowAlreadyExistsDto, WorkflowListItemDto, WorkflowProcessType, WorkflowServiceProxy, WorkflowStatus, WorkflowStepStatus } from 'src/shared/service-proxies/service-proxies';
+import { ApiServiceProxy, EmployeeDto, EmployeeServiceProxy, EnumEntityTypeDto, LegalEntityDto, LookupServiceProxy, StartNewWorkflowInputDto, WorkflowAlreadyExistsDto, WorkflowListItemDto, WorkflowProcessType, WorkflowServiceProxy, WorkflowStatus, WorkflowStepStatus } from 'src/shared/service-proxies/service-proxies';
 import { SelectableCountry, SelectableIdNameDto } from '../client/client.model';
 import { InternalLookupService } from '../shared/common/internal-lookup.service';
 import { ConfirmationDialogComponent } from '../shared/components/confirmation-dialog/confirmation-dialog.component';
 import { ManagerStatus } from '../shared/components/manager-search/manager-search.model';
 import { CreateWorkflowDialogComponent } from './create-workflow-dialog/create-workflow-dialog.component';
-import { WorkflowDataService } from './workflow-data.service';
 import { SelectableEmployeeDto, StepTypes } from './workflow.model';
 
 const WorkflowGridOptionsKey = 'WorkflowGridFILTERS.1.0.3.';
@@ -499,18 +498,22 @@ export class WorkflowComponent extends AppComponentBase implements OnInit, OnDes
         this.getWorkflowList(true);
     }
 
-    selectUpcomingStep(stepType: number | null) {
+    selectUpcomingStep(stepType: number | null = null) {
         this.upcomingStepType = stepType;
         this.showUpcomingSteps = stepType !== null;
         this.pageNumber = 1;
         this.getWorkflowList();
     }
 
-    selectPendingStep(stepType: number | null) {
+    selectPendingStep(stepType: number | null = null) {
         this.pendingStepType = stepType;
         this.showPendingSteps = stepType !== null;
         this.pageNumber = 1;
         this.getWorkflowList();
+    }
+
+    stepTypeTrackBy(index: number, item: {id: number, name: string}) {
+        return item.id;
     }
 
     getCurrentUser() {

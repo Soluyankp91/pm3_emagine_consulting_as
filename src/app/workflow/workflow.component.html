@@ -88,8 +88,8 @@
                     <mat-icon>expand_more</mat-icon>
                 </span>
                 <mat-menu #pendingSteps backdropClass="step-filter--menu">
-                    <button class="workflow-list--filter-type-dropdown__item" *ngFor="let item of stepTypes" mat-menu-item (click)="selectPendingStep(item.id)">{{item.name}}</button>
-                    <button class="workflow-list--filter-type-dropdown__reset" mat-menu-item (click)="selectPendingStep(null)">Reset</button>
+                    <button class="workflow-list--filter-type-dropdown__item" *ngFor="let item of stepTypes; trackBy: stepTypeTrackBy" mat-menu-item (click)="selectPendingStep(item.id)">{{item.name}}</button>
+                    <button class="workflow-list--filter-type-dropdown__reset" mat-menu-item (click)="selectPendingStep()">Reset</button>
                 </mat-menu>
                 <span class="workflow-list--filter-type-dropdown cursor-pointer u-mr--20" [matMenuTriggerFor]="upcomingSteps" [ngClass]="{'selected-status': upcomingStepType !== null && upcomingStepType >= 0}">
                     <span class="workflow-list--filter-type-dropdown__name">
@@ -98,8 +98,8 @@
                     <mat-icon>expand_more</mat-icon>
                 </span>
                 <mat-menu #upcomingSteps backdropClass="step-filter--menu">
-                    <button class="workflow-list--filter-type-dropdown__item" *ngFor="let item of stepTypes" mat-menu-item (click)="selectUpcomingStep(item.id)">{{item.name}}</button>
-                    <button class="workflow-list--filter-type-dropdown__reset" mat-menu-item (click)="selectUpcomingStep(null)">Reset</button>
+                    <button class="workflow-list--filter-type-dropdown__item" *ngFor="let item of stepTypes; trackBy: stepTypeTrackBy" mat-menu-item (click)="selectUpcomingStep(item.id)">{{item.name}}</button>
+                    <button class="workflow-list--filter-type-dropdown__reset" mat-menu-item (click)="selectUpcomingStep()">Reset</button>
                 </mat-menu>
                 <div fxLayout="row" fxLayoutAlign="start center" fxFlex="10%">
                     <mat-divider class="u-mr--10 divider-height" [vertical]="true"></mat-divider>

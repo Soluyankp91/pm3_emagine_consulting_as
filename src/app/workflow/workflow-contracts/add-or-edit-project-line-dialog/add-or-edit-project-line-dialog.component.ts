@@ -5,7 +5,7 @@ import { of, Subject } from 'rxjs';
 import { debounceTime, finalize, switchMap, takeUntil } from 'rxjs/operators';
 import { InternalLookupService } from 'src/app/shared/common/internal-lookup.service';
 import { AppComponentBase } from 'src/shared/app-component-base';
-import { ClientResultDto, ContactResultDto, EnumEntityTypeDto, LookupServiceProxy, ProjectLineDto } from 'src/shared/service-proxies/service-proxies';
+import { ClientResultDto, ContactResultDto, LookupServiceProxy, ProjectLineDto } from 'src/shared/service-proxies/service-proxies';
 import { ProjectLineDiallogMode } from '../../workflow.model';
 import { ProjectLineForm } from './add-or-edit-project-line-dialog.model';
 
