@@ -6,15 +6,13 @@ import { ActivatedRoute } from '@angular/router';
 import { NgScrollbar } from 'ngx-scrollbar';
 import { Subject } from 'rxjs';
 import { finalize, takeUntil } from 'rxjs/operators';
-import { AvailableConsultantDto, ChangeClientPeriodDto, ClientPeriodDto, ClientPeriodServiceProxy, ConsultantNameWithRequestUrl, ConsultantPeriodAddDto, EnumEntityTypeDto, ExtendClientPeriodDto, NewContractRequiredConsultantPeriodDto, StepType, WorkflowDto, WorkflowProcessType, WorkflowServiceProxy } from 'src/shared/service-proxies/service-proxies';
+import { AvailableConsultantDto, ChangeClientPeriodDto, ClientPeriodDto, ClientPeriodServiceProxy, ConsultantNameWithRequestUrl, ConsultantPeriodAddDto, EnumEntityTypeDto, ExtendClientPeriodDto, StepType, WorkflowDto, WorkflowProcessType, WorkflowServiceProxy } from 'src/shared/service-proxies/service-proxies';
 import { WorkflowDataService } from '../workflow-data.service';
-import { WorkflowSalesComponent } from '../workflow-sales/workflow-sales.component';
 import { WorkflowProgressStatus, WorkflowTopSections, WorkflowSteps, WorkflowDiallogAction } from '../workflow.model';
 import { InternalLookupService } from 'src/app/shared/common/internal-lookup.service';
 import { WorkflowActionsDialogComponent } from '../workflow-actions-dialog/workflow-actions-dialog.component';
 import { AppComponentBase, NotifySeverity } from 'src/shared/app-component-base';
 import { ConfirmationDialogComponent } from 'src/app/shared/components/confirmation-dialog/confirmation-dialog.component';
-import * as moment from 'moment';
 import { environment } from 'src/environments/environment';
 import { FormControl, Validators } from '@angular/forms';
 import { LocalHttpService } from 'src/shared/service-proxies/local-http.service';
@@ -325,7 +323,7 @@ export class WorkflowDetailsComponent extends AppComponentBase implements OnInit
         return value ? StepType[value] : '';
     }
 
-    saveOrCompleteStep(isDraft: boolean, event?: any) {
+    saveOrCompleteStep(isDraft: boolean, event?: KeyboardEvent) {
         switch (this._workflowDataService.workflowProgress.currentlyActiveSideSection) {
             case WorkflowProcessType.StartClientPeriod:
             case WorkflowProcessType.ChangeClientPeriod:

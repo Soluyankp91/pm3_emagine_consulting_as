@@ -132,13 +132,13 @@ export class WorkflowContractsComponent extends AppComponentBase implements OnIn
         // Client start, extend and change periods
         this._workflowDataService.startClientPeriodContractsSaved
             .pipe(takeUntil(this._unsubscribe))
-            .subscribe(({isDraft, bypassLegalValidation}) => {
-                this.bypassLegalValidation = bypassLegalValidation!;
-                if (isDraft) {
-                    this.saveStartChangeOrExtendClientPeriodContracts(isDraft);
+            .subscribe((value: {isDraft: boolean, bypassLegalValidation?: boolean | undefined}) => {
+                this.bypassLegalValidation = value.bypassLegalValidation!;
+                if (value.isDraft) {
+                    this.saveStartChangeOrExtendClientPeriodContracts(value.isDraft);
                 } else {
                     if (this.validateContractForm()) {
-                        this.saveStartChangeOrExtendClientPeriodContracts(isDraft);
+                        this.saveStartChangeOrExtendClientPeriodContracts(value.isDraft);
                     } else {
                         this.scrollToFirstError();
                     }
@@ -148,13 +148,13 @@ export class WorkflowContractsComponent extends AppComponentBase implements OnIn
         // Consultant start, extend and change periods
         this._workflowDataService.consultantStartChangeOrExtendContractsSaved
             .pipe(takeUntil(this._unsubscribe))
-            .subscribe(({isDraft, bypassLegalValidation}) => {
-                this.bypassLegalValidation = bypassLegalValidation!;
-                if (isDraft) {
-                    this.saveStartChangeOrExtendConsultantPeriodContracts(isDraft);
+            .subscribe((value: {isDraft: boolean, bypassLegalValidation?: boolean | undefined}) => {
+                this.bypassLegalValidation = value.bypassLegalValidation!;
+                if (value.isDraft) {
+                    this.saveStartChangeOrExtendConsultantPeriodContracts(value.isDraft);
                 } else {
                     if (this.validateContractForm()) {
-                        this.saveStartChangeOrExtendConsultantPeriodContracts(isDraft);
+                        this.saveStartChangeOrExtendConsultantPeriodContracts(value.isDraft);
                     } else {
                         this.scrollToFirstError();
                     }
