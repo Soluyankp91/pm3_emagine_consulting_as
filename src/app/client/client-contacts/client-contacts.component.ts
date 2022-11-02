@@ -1,4 +1,4 @@
-import { Component, Injector, Input, OnDestroy, OnInit } from '@angular/core';
+import { Component, Injector, OnDestroy, OnInit } from '@angular/core';
 import { MatTableDataSource } from '@angular/material/table';
 import { ActivatedRoute } from '@angular/router';
 import { Subject } from 'rxjs';
@@ -6,36 +6,6 @@ import { finalize, takeUntil } from 'rxjs/operators';
 import { AppComponentBase } from 'src/shared/app-component-base';
 import { AppConsts } from 'src/shared/AppConsts';
 import { ClientsServiceProxy, ContactDto } from 'src/shared/service-proxies/service-proxies';
-
-const DATA_SOURCE = [
-    {
-        id: 12,
-        status: {name: 'Wrongfully deleted in HubSpot', value: 1},
-        name: 'Frederick Rikke',
-        title: 'Leadership support',
-        email: 'rd@mail.com',
-        phone: '+54 431 881 75 42',
-        owner: ''
-    },
-    {
-        id: 12,
-        status: {name: 'Active', value: 2},
-        name: 'Frederick Rikke',
-        title: 'Leadership support',
-        email: 'rd@mail.com',
-        phone: '+54 431 881 75 42',
-        owner: ''
-    },
-    {
-        id: 12,
-        status: {name: 'Inactive', value: 3},
-        name: 'Frederick Rikke',
-        title: 'Leadership support',
-        email: 'rd@mail.com',
-        phone: '+54 431 881 75 42',
-        owner: ''
-    }
-]
 
 @Component({
     selector: 'app-client-contacts',
@@ -61,7 +31,6 @@ export class ClientContactsComponent extends AppComponentBase implements OnInit,
         'phone',
         'lastCamLogin',
         'owner'
-        // 'action'
     ];
     clientContactsDataSource: MatTableDataSource<ContactDto> = new MatTableDataSource<ContactDto>();
 
@@ -89,7 +58,6 @@ export class ClientContactsComponent extends AppComponentBase implements OnInit,
     }
 
     getClientContacts() {
-        // this.clientContractsDataSource = new MatTableDataSource<any>(DATA_SOURCE);
         this.isDataLoading = true;
         this._clientService.contacts(this.clientId, false)
                 .pipe(finalize(() => {
@@ -99,11 +67,6 @@ export class ClientContactsComponent extends AppComponentBase implements OnInit,
                     this.clientContactsDataSource = new MatTableDataSource<ContactDto>(result);
                     this.totalCount = result.length;
                 });
-        // let legacyClientIdQuery = this.clientId;
-        // let pageNumber = 1;
-        // let pageSize = 20;
-        // let sort = undefined;
-        // this._clientService.requestTrack(legacyClientIdQuery, pageNumber, pageSize, sort)
     }
 
     pageChanged(event?: any): void {
@@ -113,7 +76,7 @@ export class ClientContactsComponent extends AppComponentBase implements OnInit,
     }
 
     sortChanged(event?: any): void {
-        this.sorting = event.active.concat(' ', event.direction);
+        this.sorting = event.direction && event.direction.length ? event.active.concat(' ', event.direction) : '';
         this.getClientContacts();
     }
 

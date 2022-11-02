@@ -29,7 +29,7 @@ export class AccountServiceProxy {
     }
 
     /**
-     * @param redirectUri (optional)
+     * @param redirectUri (optional) 
      * @return Success
      */
     signIn(scheme: string, redirectUri?: string | undefined): Observable<void> {
@@ -84,12 +84,12 @@ export class AccountServiceProxy {
     }
 
     /**
-     * @param redirectUri (optional)
-     * @param scope (optional)
-     * @param loginHint (optional)
-     * @param domainHint (optional)
-     * @param claims (optional)
-     * @param policy (optional)
+     * @param redirectUri (optional) 
+     * @param scope (optional) 
+     * @param loginHint (optional) 
+     * @param domainHint (optional) 
+     * @param claims (optional) 
+     * @param policy (optional) 
      * @return Success
      */
     challenge(scheme: string, redirectUri?: string | undefined, scope?: string | undefined, loginHint?: string | undefined, domainHint?: string | undefined, claims?: string | undefined, policy?: string | undefined): Observable<void> {
@@ -420,7 +420,7 @@ export class SearchServiceServiceProxy {
     }
 
     /**
-     * @param workflowId (optional)
+     * @param workflowId (optional) 
      * @return Success
      */
     fillSingleWorkflowIndexWithData(workflowId?: string | undefined): Observable<void> {
@@ -472,8 +472,8 @@ export class SearchServiceServiceProxy {
     }
 
     /**
-     * @param maxResultCount (optional)
-     * @param testsCount (optional)
+     * @param maxResultCount (optional) 
+     * @param testsCount (optional) 
      * @return Success
      */
     testOfFetchingDataFromAzureSearchIndex(maxResultCount?: number | undefined, testsCount?: number | undefined): Observable<string[]> {
@@ -721,7 +721,7 @@ export class AdminServiceProxy {
             let result200: any = null;
             let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
                 result200 = resultData200 !== undefined ? resultData200 : <any>null;
-
+    
             return _observableOf(result200);
             }));
         } else if (status !== 200 && status !== 204) {
@@ -745,9 +745,9 @@ export class AgreementServiceProxy {
     }
 
     /**
-     * @param pageNumber (optional)
-     * @param pageSize (optional)
-     * @param sort (optional)
+     * @param pageNumber (optional) 
+     * @param pageSize (optional) 
+     * @param sort (optional) 
      * @return Success
      */
     list(pageNumber?: number | undefined, pageSize?: number | undefined, sort?: string | undefined): Observable<AgreementListItemDtoPaginatedList> {
@@ -811,10 +811,10 @@ export class AgreementServiceProxy {
     }
 
     /**
-     * @param search (optional)
-     * @param pageNumber (optional)
-     * @param pageSize (optional)
-     * @param sort (optional)
+     * @param search (optional) 
+     * @param pageNumber (optional) 
+     * @param pageSize (optional) 
+     * @param sort (optional) 
      * @return Success
      */
     simpleList(search?: string | undefined, pageNumber?: number | undefined, pageSize?: number | undefined, sort?: string | undefined): Observable<SimpleAgreementListItemDtoPaginatedList> {
@@ -882,7 +882,7 @@ export class AgreementServiceProxy {
     }
 
     /**
-     * @param body (optional)
+     * @param body (optional) 
      * @return Success
      */
     documentFilePut(agreementId: number, forceUpdate: boolean, body?: string | undefined): Observable<void> {
@@ -1005,7 +1005,7 @@ export class ApiServiceProxy {
     }
 
     /**
-     * @param body (optional)
+     * @param body (optional) 
      * @return Success
      */
     agreementPost(body?: SaveAgreementDto | undefined): Observable<SaveAgreementCommandResult> {
@@ -1061,7 +1061,7 @@ export class ApiServiceProxy {
     }
 
     /**
-     * @param body (optional)
+     * @param body (optional) 
      * @return Success
      */
     agreementPatch(agreementId: number, body?: SaveAgreementDto | undefined): Observable<SaveAgreementCommandResult> {
@@ -1224,7 +1224,7 @@ export class ApiServiceProxy {
     }
 
     /**
-     * @param body (optional)
+     * @param body (optional) 
      * @return Success
      */
     agreementTemplatePost(body?: SaveAgreementTemplateDto | undefined): Observable<SaveAgreementTemplateCommandResult> {
@@ -1280,7 +1280,7 @@ export class ApiServiceProxy {
     }
 
     /**
-     * @param body (optional)
+     * @param body (optional) 
      * @return Success
      */
     agreementTemplatePatch(agreementTemplateId: number, body?: SaveAgreementTemplateDto | undefined): Observable<SaveAgreementTemplateCommandResult> {
@@ -1597,7 +1597,7 @@ export class ApiServiceProxy {
     }
 
     /**
-     * @param body (optional)
+     * @param body (optional) 
      * @return Success
      */
     docuSignTest(body?: SendToDocuSignTestCommand | undefined): Observable<string> {
@@ -1642,7 +1642,7 @@ export class ApiServiceProxy {
             let result200: any = null;
             let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
                 result200 = resultData200 !== undefined ? resultData200 : <any>null;
-
+    
             return _observableOf(result200);
             }));
         } else if (status !== 200 && status !== 204) {
@@ -1654,24 +1654,24 @@ export class ApiServiceProxy {
     }
 
     /**
-     * @param invoicingEntity (optional)
-     * @param paymentEntity (optional)
-     * @param salesType (optional)
-     * @param deliveryType (optional)
-     * @param workflowStatus (optional)
-     * @param responsibleEmployees (optional)
-     * @param showNewSales (optional)
-     * @param showExtensions (optional)
-     * @param showPendingSteps (optional)
-     * @param showPendingStepType (optional)
-     * @param showUpcomingSteps (optional)
-     * @param showUpcomingStepType (optional)
-     * @param showCompleted (optional)
-     * @param showDeleted (optional)
-     * @param search (optional)
-     * @param pageNumber (optional)
-     * @param pageSize (optional)
-     * @param sort (optional)
+     * @param invoicingEntity (optional) 
+     * @param paymentEntity (optional) 
+     * @param salesType (optional) 
+     * @param deliveryType (optional) 
+     * @param workflowStatus (optional) 
+     * @param responsibleEmployees (optional) 
+     * @param showNewSales (optional) 
+     * @param showExtensions (optional) 
+     * @param showPendingSteps (optional) 
+     * @param showPendingStepType (optional) 
+     * @param showUpcomingSteps (optional) 
+     * @param showUpcomingStepType (optional) 
+     * @param showCompleted (optional) 
+     * @param showDeleted (optional) 
+     * @param search (optional) 
+     * @param pageNumber (optional) 
+     * @param pageSize (optional) 
+     * @param sort (optional) 
      * @return Success
      */
     workflow(invoicingEntity?: number | undefined, paymentEntity?: number | undefined, salesType?: number | undefined, deliveryType?: number | undefined, workflowStatus?: WorkflowStatus | undefined, responsibleEmployees?: number[] | undefined, showNewSales?: boolean | undefined, showExtensions?: boolean | undefined, showPendingSteps?: boolean | undefined, showPendingStepType?: StepType | undefined, showUpcomingSteps?: boolean | undefined, showUpcomingStepType?: StepType | undefined, showCompleted?: boolean | undefined, showDeleted?: boolean | undefined, search?: string | undefined, pageNumber?: number | undefined, pageSize?: number | undefined, sort?: string | undefined): Observable<WorkflowListItemDtoPaginatedList> {
@@ -1795,8 +1795,8 @@ export class ApiServiceProxy {
     }
 
     /**
-     * @param isInternalContract (optional)
-     * @param pm3ConsultantId (optional)
+     * @param isInternalContract (optional) 
+     * @param pm3ConsultantId (optional) 
      * @return Success
      */
     workflowIntegration(periodId: string, isInternalContract?: boolean | undefined, pm3ConsultantId?: number | undefined): Observable<WorkflowPeriodForLegacyContractDto> {
@@ -1875,11 +1875,11 @@ export class DocumentFileServiceProxy {
     }
 
     /**
-     * @param body (optional)
+     * @param body (optional) 
      * @return Success
      */
-    completePatch(agreementId: number, forceUpdate: boolean, body?: CompleteAgreementDocumentFileDraftDto | undefined): Observable<void> {
-        let url_ = this.baseUrl + "/api/Agreement/{agreementId}/document-file/complete/{forceUpdate}";
+    completeAgreement(agreementId: number, forceUpdate: boolean, body?: CompleteAgreementDocumentFileDraftDto | undefined): Observable<void> {
+        let url_ = this.baseUrl + "/api/Agreement/{agreementId}/document-file/complete-agreement/{forceUpdate}";
         if (agreementId === undefined || agreementId === null)
             throw new Error("The parameter 'agreementId' must be defined.");
         url_ = url_.replace("{agreementId}", encodeURIComponent("" + agreementId));
@@ -1900,11 +1900,11 @@ export class DocumentFileServiceProxy {
         };
 
         return this.http.request("patch", url_, options_).pipe(_observableMergeMap((response_ : any) => {
-            return this.processCompletePatch(response_);
+            return this.processCompleteAgreement(response_);
         })).pipe(_observableCatch((response_: any) => {
             if (response_ instanceof HttpResponseBase) {
                 try {
-                    return this.processCompletePatch(response_ as any);
+                    return this.processCompleteAgreement(response_ as any);
                 } catch (e) {
                     return _observableThrow(e) as any as Observable<void>;
                 }
@@ -1913,7 +1913,7 @@ export class DocumentFileServiceProxy {
         }));
     }
 
-    protected processCompletePatch(response: HttpResponseBase): Observable<void> {
+    protected processCompleteAgreement(response: HttpResponseBase): Observable<void> {
         const status = response.status;
         const responseBlob =
             response instanceof HttpResponse ? response.body :
@@ -1935,8 +1935,8 @@ export class DocumentFileServiceProxy {
     /**
      * @return Success
      */
-    latestGet(agreementId: number, getDraftIfAvailable: boolean): Observable<void> {
-        let url_ = this.baseUrl + "/api/Agreement/{agreementId}/document-file/latest/{getDraftIfAvailable}";
+    latestAgreementVersion(agreementId: number, getDraftIfAvailable: boolean): Observable<void> {
+        let url_ = this.baseUrl + "/api/Agreement/{agreementId}/document-file/latest-agreement-version/{getDraftIfAvailable}";
         if (agreementId === undefined || agreementId === null)
             throw new Error("The parameter 'agreementId' must be defined.");
         url_ = url_.replace("{agreementId}", encodeURIComponent("" + agreementId));
@@ -1953,11 +1953,11 @@ export class DocumentFileServiceProxy {
         };
 
         return this.http.request("get", url_, options_).pipe(_observableMergeMap((response_ : any) => {
-            return this.processLatestGet(response_);
+            return this.processLatestAgreementVersion(response_);
         })).pipe(_observableCatch((response_: any) => {
             if (response_ instanceof HttpResponseBase) {
                 try {
-                    return this.processLatestGet(response_ as any);
+                    return this.processLatestAgreementVersion(response_ as any);
                 } catch (e) {
                     return _observableThrow(e) as any as Observable<void>;
                 }
@@ -1966,7 +1966,7 @@ export class DocumentFileServiceProxy {
         }));
     }
 
-    protected processLatestGet(response: HttpResponseBase): Observable<void> {
+    protected processLatestAgreementVersion(response: HttpResponseBase): Observable<void> {
         const status = response.status;
         const responseBlob =
             response instanceof HttpResponse ? response.body :
@@ -1988,8 +1988,8 @@ export class DocumentFileServiceProxy {
     /**
      * @return Success
      */
-    versionsGet(agreementId: number): Observable<AgreementDocumentFileVersionDto[]> {
-        let url_ = this.baseUrl + "/api/Agreement/{agreementId}/document-file/versions";
+    agreementVersions(agreementId: number): Observable<AgreementDocumentFileVersionDto[]> {
+        let url_ = this.baseUrl + "/api/Agreement/{agreementId}/document-file/agreement-versions";
         if (agreementId === undefined || agreementId === null)
             throw new Error("The parameter 'agreementId' must be defined.");
         url_ = url_.replace("{agreementId}", encodeURIComponent("" + agreementId));
@@ -2004,11 +2004,11 @@ export class DocumentFileServiceProxy {
         };
 
         return this.http.request("get", url_, options_).pipe(_observableMergeMap((response_ : any) => {
-            return this.processVersionsGet(response_);
+            return this.processAgreementVersions(response_);
         })).pipe(_observableCatch((response_: any) => {
             if (response_ instanceof HttpResponseBase) {
                 try {
-                    return this.processVersionsGet(response_ as any);
+                    return this.processAgreementVersions(response_ as any);
                 } catch (e) {
                     return _observableThrow(e) as any as Observable<AgreementDocumentFileVersionDto[]>;
                 }
@@ -2017,7 +2017,7 @@ export class DocumentFileServiceProxy {
         }));
     }
 
-    protected processVersionsGet(response: HttpResponseBase): Observable<AgreementDocumentFileVersionDto[]> {
+    protected processAgreementVersions(response: HttpResponseBase): Observable<AgreementDocumentFileVersionDto[]> {
         const status = response.status;
         const responseBlob =
             response instanceof HttpResponse ? response.body :
@@ -2047,11 +2047,11 @@ export class DocumentFileServiceProxy {
     }
 
     /**
-     * @param body (optional)
+     * @param body (optional) 
      * @return Success
      */
-    completePatch2(agreementTemplateId: number, forceUpdate: boolean, body?: CompleteTemplateDocumentFileDraftDto | undefined): Observable<void> {
-        let url_ = this.baseUrl + "/api/AgreementTemplate/{agreementTemplateId}/document-file/complete/{forceUpdate}";
+    completeTemplate(agreementTemplateId: number, forceUpdate: boolean, body?: CompleteTemplateDocumentFileDraftDto | undefined): Observable<void> {
+        let url_ = this.baseUrl + "/api/AgreementTemplate/{agreementTemplateId}/document-file/complete-template/{forceUpdate}";
         if (agreementTemplateId === undefined || agreementTemplateId === null)
             throw new Error("The parameter 'agreementTemplateId' must be defined.");
         url_ = url_.replace("{agreementTemplateId}", encodeURIComponent("" + agreementTemplateId));
@@ -2072,11 +2072,11 @@ export class DocumentFileServiceProxy {
         };
 
         return this.http.request("patch", url_, options_).pipe(_observableMergeMap((response_ : any) => {
-            return this.processCompletePatch(response_);
+            return this.processCompleteTemplate(response_);
         })).pipe(_observableCatch((response_: any) => {
             if (response_ instanceof HttpResponseBase) {
                 try {
-                    return this.processCompletePatch(response_ as any);
+                    return this.processCompleteTemplate(response_ as any);
                 } catch (e) {
                     return _observableThrow(e) as any as Observable<void>;
                 }
@@ -2085,7 +2085,7 @@ export class DocumentFileServiceProxy {
         }));
     }
 
-    protected processCompletePatch2(response: HttpResponseBase): Observable<void> {
+    protected processCompleteTemplate(response: HttpResponseBase): Observable<void> {
         const status = response.status;
         const responseBlob =
             response instanceof HttpResponse ? response.body :
@@ -2107,8 +2107,8 @@ export class DocumentFileServiceProxy {
     /**
      * @return Success
      */
-    latestGet2(agreementTemplateId: number, getDraftIfAvailable: boolean): Observable<void> {
-        let url_ = this.baseUrl + "/api/AgreementTemplate/{agreementTemplateId}/document-file/latest/{getDraftIfAvailable}";
+    latestTemplateVersion(agreementTemplateId: number, getDraftIfAvailable: boolean): Observable<void> {
+        let url_ = this.baseUrl + "/api/AgreementTemplate/{agreementTemplateId}/document-file/latest-template-version/{getDraftIfAvailable}";
         if (agreementTemplateId === undefined || agreementTemplateId === null)
             throw new Error("The parameter 'agreementTemplateId' must be defined.");
         url_ = url_.replace("{agreementTemplateId}", encodeURIComponent("" + agreementTemplateId));
@@ -2125,11 +2125,11 @@ export class DocumentFileServiceProxy {
         };
 
         return this.http.request("get", url_, options_).pipe(_observableMergeMap((response_ : any) => {
-            return this.processLatestGet(response_);
+            return this.processLatestTemplateVersion(response_);
         })).pipe(_observableCatch((response_: any) => {
             if (response_ instanceof HttpResponseBase) {
                 try {
-                    return this.processLatestGet(response_ as any);
+                    return this.processLatestTemplateVersion(response_ as any);
                 } catch (e) {
                     return _observableThrow(e) as any as Observable<void>;
                 }
@@ -2138,7 +2138,7 @@ export class DocumentFileServiceProxy {
         }));
     }
 
-    protected processLatestGet2(response: HttpResponseBase): Observable<void> {
+    protected processLatestTemplateVersion(response: HttpResponseBase): Observable<void> {
         const status = response.status;
         const responseBlob =
             response instanceof HttpResponse ? response.body :
@@ -2160,8 +2160,8 @@ export class DocumentFileServiceProxy {
     /**
      * @return Success
      */
-    versionsGet2(agreementTemplateId: number): Observable<AgreementTemplateDocumentFileVersionDto[]> {
-        let url_ = this.baseUrl + "/api/AgreementTemplate/{agreementTemplateId}/document-file/versions";
+    templateVersions(agreementTemplateId: number): Observable<AgreementTemplateDocumentFileVersionDto[]> {
+        let url_ = this.baseUrl + "/api/AgreementTemplate/{agreementTemplateId}/document-file/template-versions";
         if (agreementTemplateId === undefined || agreementTemplateId === null)
             throw new Error("The parameter 'agreementTemplateId' must be defined.");
         url_ = url_.replace("{agreementTemplateId}", encodeURIComponent("" + agreementTemplateId));
@@ -2176,11 +2176,11 @@ export class DocumentFileServiceProxy {
         };
 
         return this.http.request("get", url_, options_).pipe(_observableMergeMap((response_ : any) => {
-            return this.processVersionsGet(response_);
+            return this.processTemplateVersions(response_);
         })).pipe(_observableCatch((response_: any) => {
             if (response_ instanceof HttpResponseBase) {
                 try {
-                    return this.processVersionsGet(response_ as any);
+                    return this.processTemplateVersions(response_ as any);
                 } catch (e) {
                     return _observableThrow(e) as any as Observable<AgreementTemplateDocumentFileVersionDto[]>;
                 }
@@ -2189,7 +2189,7 @@ export class DocumentFileServiceProxy {
         }));
     }
 
-    protected processVersionsGet2(response: HttpResponseBase): Observable<AgreementTemplateDocumentFileVersionDto[]> {
+    protected processTemplateVersions(response: HttpResponseBase): Observable<AgreementTemplateDocumentFileVersionDto[]> {
         const status = response.status;
         const responseBlob =
             response instanceof HttpResponse ? response.body :
@@ -2231,25 +2231,25 @@ export class AgreementTemplateServiceProxy {
     }
 
     /**
-     * @param isClientTemplate (optional)
-     * @param search (optional)
-     * @param tenantId (optional)
-     * @param legalEntityId (optional)
-     * @param name (optional)
-     * @param clientId (optional)
-     * @param language (optional)
-     * @param agreementType (optional)
-     * @param agreementRecipients (optional)
-     * @param contractTypes (optional)
-     * @param salesTypes (optional)
-     * @param deliveryTypes (optional)
-     * @param lastUpdatedByEmployeeId (optional)
-     * @param isEnabled (optional)
-     * @param linkState (optional)
-     * @param linkStateAccepted (optional)
-     * @param pageNumber (optional)
-     * @param pageSize (optional)
-     * @param sort (optional)
+     * @param isClientTemplate (optional) 
+     * @param search (optional) 
+     * @param tenantId (optional) 
+     * @param legalEntityId (optional) 
+     * @param name (optional) 
+     * @param clientId (optional) 
+     * @param language (optional) 
+     * @param agreementType (optional) 
+     * @param agreementRecipients (optional) 
+     * @param contractTypes (optional) 
+     * @param salesTypes (optional) 
+     * @param deliveryTypes (optional) 
+     * @param lastUpdatedByEmployeeId (optional) 
+     * @param isEnabled (optional) 
+     * @param linkState (optional) 
+     * @param linkStateAccepted (optional) 
+     * @param pageNumber (optional) 
+     * @param pageSize (optional) 
+     * @param sort (optional) 
      * @return Success
      */
     list(isClientTemplate?: boolean | undefined, search?: string | undefined, tenantId?: number[] | undefined, legalEntityId?: number[] | undefined, name?: string | undefined, clientId?: number[] | undefined, language?: AgreementLanguage[] | undefined, agreementType?: AgreementType[] | undefined, agreementRecipients?: number[] | undefined, contractTypes?: number[] | undefined, salesTypes?: number[] | undefined, deliveryTypes?: number[] | undefined, lastUpdatedByEmployeeId?: number[] | undefined, isEnabled?: boolean | undefined, linkState?: number | undefined, linkStateAccepted?: boolean | undefined, pageNumber?: number | undefined, pageSize?: number | undefined, sort?: string | undefined): Observable<AgreementTemplatesListItemDtoPaginatedList> {
@@ -2377,11 +2377,11 @@ export class AgreementTemplateServiceProxy {
     }
 
     /**
-     * @param isClientTemplate (optional)
-     * @param search (optional)
-     * @param pageNumber (optional)
-     * @param pageSize (optional)
-     * @param sort (optional)
+     * @param isClientTemplate (optional) 
+     * @param search (optional) 
+     * @param pageNumber (optional) 
+     * @param pageSize (optional) 
+     * @param sort (optional) 
      * @return Success
      */
     simpleList(isClientTemplate?: boolean | undefined, search?: string | undefined, pageNumber?: number | undefined, pageSize?: number | undefined, sort?: string | undefined): Observable<SimpleAgreementTemplatesListItemDtoPaginatedList> {
@@ -2453,7 +2453,7 @@ export class AgreementTemplateServiceProxy {
     }
 
     /**
-     * @param body (optional)
+     * @param body (optional) 
      * @return Success
      */
     documentFilePut(agreementTemplateId: number, forceUpdate: boolean, body?: string | undefined): Observable<void> {
@@ -2564,10 +2564,10 @@ export class AgreementTemplateServiceProxy {
     }
 
     /**
-     * @param search (optional)
-     * @param pageNumber (optional)
-     * @param pageSize (optional)
-     * @param sort (optional)
+     * @param search (optional) 
+     * @param pageNumber (optional) 
+     * @param pageSize (optional) 
+     * @param sort (optional) 
      * @return Success
      */
     childTemplates(agreementTemplateId: number, search?: string | undefined, pageNumber?: number | undefined, pageSize?: number | undefined, sort?: string | undefined): Observable<AgreementTemplateChildTemplateDtoPaginatedList> {
@@ -2998,7 +2998,7 @@ export class ClientDocumentsServiceProxy {
     }
 
     /**
-     * @param formFile (optional)
+     * @param formFile (optional) 
      * @return Success
      */
     generalFilePost(clientId: number, attachmentFileTypeId: number, formFile?: FileParameter | undefined): Observable<void> {
@@ -3112,7 +3112,7 @@ export class ClientDocumentsServiceProxy {
     }
 
     /**
-     * @param body (optional)
+     * @param body (optional) 
      * @return Success
      */
     generalFilePut(clientId: number, body?: UpdateClientAttachmentFileInfoInputDto | undefined): Observable<void> {
@@ -3310,7 +3310,7 @@ export class ClientPeriodServiceProxy {
     }
 
     /**
-     * @param body (optional)
+     * @param body (optional) 
      * @return Success
      */
     clientSalesPut(clientPeriodId: string, body?: ClientPeriodSalesDataDto | undefined): Observable<void> {
@@ -3419,7 +3419,7 @@ export class ClientPeriodServiceProxy {
     }
 
     /**
-     * @param body (optional)
+     * @param body (optional) 
      * @return Success
      */
     clientContractsPut(clientPeriodId: string, body?: ClientPeriodContractsDataCommandDto | undefined): Observable<void> {
@@ -3528,7 +3528,7 @@ export class ClientPeriodServiceProxy {
     }
 
     /**
-     * @param body (optional)
+     * @param body (optional) 
      * @return Success
      */
     clientFinancePut(clientPeriodId: string, body?: ClientPeriodFinanceDataDto | undefined): Observable<void> {
@@ -3637,7 +3637,7 @@ export class ClientPeriodServiceProxy {
     }
 
     /**
-     * @param body (optional)
+     * @param body (optional) 
      * @return Success
      */
     clientExtend(clientPeriodId: string, body?: ExtendClientPeriodDto | undefined): Observable<ExtendClientPeriodResultDto> {
@@ -3696,7 +3696,7 @@ export class ClientPeriodServiceProxy {
     }
 
     /**
-     * @param body (optional)
+     * @param body (optional) 
      * @return Success
      */
     clientChange(clientPeriodId: string, body?: ChangeClientPeriodDto | undefined): Observable<ChangeClientPeriodResultDto> {
@@ -3755,7 +3755,7 @@ export class ClientPeriodServiceProxy {
     }
 
     /**
-     * @param body (optional)
+     * @param body (optional) 
      * @return Success
      */
     addConsultantPeriod(clientPeriodId: string, body?: ConsultantPeriodAddDto | undefined): Observable<string> {
@@ -3803,7 +3803,7 @@ export class ClientPeriodServiceProxy {
             let result200: any = null;
             let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
                 result200 = resultData200 !== undefined ? resultData200 : <any>null;
-
+    
             return _observableOf(result200);
             }));
         } else if (status !== 200 && status !== 204) {
@@ -3930,7 +3930,7 @@ export class ClientPeriodServiceProxy {
     }
 
     /**
-     * @param newResponsibleEmployeeId (optional)
+     * @param newResponsibleEmployeeId (optional) 
      * @return Success
      */
     stepResponsible(clientPeriodId: string, stepType: StepType, newResponsibleEmployeeId?: number | undefined): Observable<void> {
@@ -3988,7 +3988,7 @@ export class ClientPeriodServiceProxy {
     }
 
     /**
-     * @param newSalesAccountManagerId (optional)
+     * @param newSalesAccountManagerId (optional) 
      * @return Success
      */
     salesAccountManager(clientPeriodId: string, newSalesAccountManagerId?: number | undefined): Observable<void> {
@@ -4055,7 +4055,7 @@ export class ClientSalesServiceProxy {
     }
 
     /**
-     * @param body (optional)
+     * @param body (optional) 
      * @return Success
      */
     editFinish(clientPeriodId: string, body?: ClientPeriodSalesDataDto | undefined): Observable<void> {
@@ -4222,7 +4222,7 @@ export class ClientContractsServiceProxy {
     }
 
     /**
-     * @param body (optional)
+     * @param body (optional) 
      * @return Success
      */
     editFinish(clientPeriodId: string, body?: ClientPeriodContractsDataCommandDto | undefined): Observable<void> {
@@ -4339,7 +4339,7 @@ export class ClientFinanceServiceProxy {
     }
 
     /**
-     * @param body (optional)
+     * @param body (optional) 
      * @return Success
      */
     editFinish(clientPeriodId: string, body?: ClientPeriodFinanceDataDto | undefined): Observable<void> {
@@ -4406,15 +4406,15 @@ export class ClientsServiceProxy {
     }
 
     /**
-     * @param search (optional)
-     * @param countryFilter (optional)
-     * @param ownerFilter (optional)
-     * @param isActive (optional)
-     * @param excludeDeleted (optional)
-     * @param onlyWrongfullyDeletedInHubspot (optional)
-     * @param pageNumber (optional)
-     * @param pageSize (optional)
-     * @param sort (optional)
+     * @param search (optional) 
+     * @param countryFilter (optional) 
+     * @param ownerFilter (optional) 
+     * @param isActive (optional) 
+     * @param excludeDeleted (optional) 
+     * @param onlyWrongfullyDeletedInHubspot (optional) 
+     * @param pageNumber (optional) 
+     * @param pageSize (optional) 
+     * @param sort (optional) 
      * @return Success
      */
     list(search?: string | undefined, countryFilter?: number[] | undefined, ownerFilter?: number[] | undefined, isActive?: boolean | undefined, excludeDeleted?: boolean | undefined, onlyWrongfullyDeletedInHubspot?: boolean | undefined, pageNumber?: number | undefined, pageSize?: number | undefined, sort?: string | undefined): Observable<ClientListItemDtoPaginatedList> {
@@ -4502,11 +4502,11 @@ export class ClientsServiceProxy {
     }
 
     /**
-     * @param search (optional)
-     * @param projectTypeFilter (optional)
-     * @param pageNumber (optional)
-     * @param pageSize (optional)
-     * @param sort (optional)
+     * @param search (optional) 
+     * @param projectTypeFilter (optional) 
+     * @param pageNumber (optional) 
+     * @param pageSize (optional) 
+     * @param sort (optional) 
      * @return Success
      */
     clientOverview(search?: string | undefined, projectTypeFilter?: string[] | undefined, pageNumber?: number | undefined, pageSize?: number | undefined, sort?: string | undefined): Observable<ClientOverviewListItemDtoPaginatedList> {
@@ -4642,7 +4642,7 @@ export class ClientsServiceProxy {
     }
 
     /**
-     * @param body (optional)
+     * @param body (optional) 
      * @return Success
      */
     specialRatesPost(clientId: number, body?: AddClientSpecialRateDto | undefined): Observable<void> {
@@ -4697,7 +4697,7 @@ export class ClientsServiceProxy {
     }
 
     /**
-     * @param body (optional)
+     * @param body (optional) 
      * @return Success
      */
     specialRatesPut(clientId: number, body?: UpdateClientSpecialRateDto | undefined): Observable<void> {
@@ -4816,7 +4816,7 @@ export class ClientsServiceProxy {
     }
 
     /**
-     * @param body (optional)
+     * @param body (optional) 
      * @return Success
      */
     specialFeesPost(clientId: number, body?: AddClientSpecialFeeDto | undefined): Observable<void> {
@@ -4871,7 +4871,7 @@ export class ClientsServiceProxy {
     }
 
     /**
-     * @param body (optional)
+     * @param body (optional) 
      * @return Success
      */
     specialFeesPut(clientId: number, body?: UpdateClientSpecialFeeDto | undefined): Observable<void> {
@@ -4926,9 +4926,9 @@ export class ClientsServiceProxy {
     }
 
     /**
-     * @param pageNumber (optional)
-     * @param pageSize (optional)
-     * @param sort (optional)
+     * @param pageNumber (optional) 
+     * @param pageSize (optional) 
+     * @param sort (optional) 
      * @return Success
      */
     requestTrack(clientId: number, pageNumber?: number | undefined, pageSize?: number | undefined, sort?: string | undefined): Observable<ClientRequestTrackItemDtoPaginatedList> {
@@ -4995,9 +4995,9 @@ export class ClientsServiceProxy {
     }
 
     /**
-     * @param pageNumber (optional)
-     * @param pageSize (optional)
-     * @param sort (optional)
+     * @param pageNumber (optional) 
+     * @param pageSize (optional) 
+     * @param sort (optional) 
      * @return Success
      */
     workflowTrack(clientId: number, pageNumber?: number | undefined, pageSize?: number | undefined, sort?: string | undefined): Observable<ClientWorkflowTrackItemDtoPaginatedList> {
@@ -5064,7 +5064,7 @@ export class ClientsServiceProxy {
     }
 
     /**
-     * @param excludeDeleted (optional)
+     * @param excludeDeleted (optional) 
      * @return Success
      */
     contacts(clientId: number, excludeDeleted?: boolean | undefined): Observable<ContactDto[]> {
@@ -5173,7 +5173,7 @@ export class ClientsServiceProxy {
             let result200: any = null;
             let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
                 result200 = resultData200 !== undefined ? resultData200 : <any>null;
-
+    
             return _observableOf(result200);
             }));
         } else if (status !== 200 && status !== 204) {
@@ -5231,7 +5231,7 @@ export class ClientsServiceProxy {
             let result200: any = null;
             let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
                 result200 = resultData200 !== undefined ? resultData200 : <any>null;
-
+    
             return _observableOf(result200);
             }));
         } else if (status !== 200 && status !== 204) {
@@ -5286,7 +5286,7 @@ export class ClientsServiceProxy {
             let result200: any = null;
             let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
                 result200 = resultData200 !== undefined ? resultData200 : <any>null;
-
+    
             return _observableOf(result200);
             }));
         } else if (status !== 200 && status !== 204) {
@@ -5338,7 +5338,7 @@ export class ClientsServiceProxy {
             let result200: any = null;
             let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
                 result200 = resultData200 !== undefined ? resultData200 : <any>null;
-
+    
             return _observableOf(result200);
             }));
         } else if (status !== 200 && status !== 204) {
@@ -5600,7 +5600,7 @@ export class ConsultantPeriodServiceProxy {
     }
 
     /**
-     * @param body (optional)
+     * @param body (optional) 
      * @return Success
      */
     consultantSalesPut(consultantPeriodId: string, body?: ConsultantPeriodSalesDataDto | undefined): Observable<void> {
@@ -5709,7 +5709,7 @@ export class ConsultantPeriodServiceProxy {
     }
 
     /**
-     * @param body (optional)
+     * @param body (optional) 
      * @return Success
      */
     consultantContractsPut(consultantPeriodId: string, body?: ConsultantPeriodContractsDataCommandDto | undefined): Observable<void> {
@@ -5818,7 +5818,7 @@ export class ConsultantPeriodServiceProxy {
     }
 
     /**
-     * @param body (optional)
+     * @param body (optional) 
      * @return Success
      */
     consultantFinancePut(consultantPeriodId: string, body?: ConsultantPeriodFinanceDataDto | undefined): Observable<void> {
@@ -5873,7 +5873,7 @@ export class ConsultantPeriodServiceProxy {
     }
 
     /**
-     * @param body (optional)
+     * @param body (optional) 
      * @return Success
      */
     extend(consultantPeriodId: string, body?: ExtendConsultantPeriodDto | undefined): Observable<string> {
@@ -5921,7 +5921,7 @@ export class ConsultantPeriodServiceProxy {
             let result200: any = null;
             let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
                 result200 = resultData200 !== undefined ? resultData200 : <any>null;
-
+    
             return _observableOf(result200);
             }));
         } else if (status !== 200 && status !== 204) {
@@ -5933,7 +5933,7 @@ export class ConsultantPeriodServiceProxy {
     }
 
     /**
-     * @param body (optional)
+     * @param body (optional) 
      * @return Success
      */
     change(consultantPeriodId: string, body?: ChangeConsultantPeriodDto | undefined): Observable<string> {
@@ -5981,7 +5981,7 @@ export class ConsultantPeriodServiceProxy {
             let result200: any = null;
             let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
                 result200 = resultData200 !== undefined ? resultData200 : <any>null;
-
+    
             return _observableOf(result200);
             }));
         } else if (status !== 200 && status !== 204) {
@@ -5993,7 +5993,7 @@ export class ConsultantPeriodServiceProxy {
     }
 
     /**
-     * @param newResponsibleEmployeeId (optional)
+     * @param newResponsibleEmployeeId (optional) 
      * @return Success
      */
     stepResponsible(consultantPeriodId: string, stepType: StepType, newResponsibleEmployeeId?: number | undefined): Observable<void> {
@@ -6063,7 +6063,7 @@ export class ConsultantSalesServiceProxy {
     }
 
     /**
-     * @param body (optional)
+     * @param body (optional) 
      * @return Success
      */
     editFinish(consultantPeriodId: string, body?: ConsultantPeriodSalesDataDto | undefined): Observable<void> {
@@ -6230,7 +6230,7 @@ export class ConsultantContractsServiceProxy {
     }
 
     /**
-     * @param body (optional)
+     * @param body (optional) 
      * @return Success
      */
     editFinish(consultantPeriodId: string, body?: ConsultantPeriodContractsDataCommandDto | undefined): Observable<void> {
@@ -6347,7 +6347,7 @@ export class ConsultantFinanceServiceProxy {
     }
 
     /**
-     * @param body (optional)
+     * @param body (optional) 
      * @return Success
      */
     editFinish(consultantPeriodId: string, body?: ConsultantPeriodFinanceDataDto | undefined): Observable<void> {
@@ -6576,7 +6576,7 @@ export class ContractSyncServiceProxy {
     }
 
     /**
-     * @param workflowTerminationId (optional)
+     * @param workflowTerminationId (optional) 
      * @return Success
      */
     consultantTerminationSync(consultantTerminationId: string, workflowTerminationId?: string | undefined): Observable<ContractSyncResultDto> {
@@ -6768,8 +6768,8 @@ export class EmployeeNotificationServiceProxy {
     }
 
     /**
-     * @param notificationId (optional)
-     * @param tenantId (optional)
+     * @param notificationId (optional) 
+     * @param tenantId (optional) 
      * @return Success
      */
     addNotification(notificationId?: number | undefined, tenantId?: number | undefined): Observable<void> {
@@ -6825,8 +6825,8 @@ export class EmployeeNotificationServiceProxy {
     }
 
     /**
-     * @param notificationId (optional)
-     * @param tenantId (optional)
+     * @param notificationId (optional) 
+     * @param tenantId (optional) 
      * @return Success
      */
     removeNotification(notificationId?: number | undefined, tenantId?: number | undefined): Observable<void> {
@@ -9306,7 +9306,7 @@ export class FileServiceProxy {
     }
 
     /**
-     * @param file (optional)
+     * @param file (optional) 
      * @return Success
      */
     temporaryPost(file?: FileParameter | undefined): Observable<string> {
@@ -9354,7 +9354,7 @@ export class FileServiceProxy {
             let result200: any = null;
             let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
                 result200 = resultData200 !== undefined ? resultData200 : <any>null;
-
+    
             return _observableOf(result200);
             }));
         } else if (status !== 200 && status !== 204) {
@@ -9428,8 +9428,8 @@ export class HubSpotCardDataFetchServiceProxy {
     }
 
     /**
-     * @param hs_object_id (optional)
-     * @param associatedcompanyid (optional)
+     * @param hs_object_id (optional) 
+     * @param associatedcompanyid (optional) 
      * @return Success
      */
     workflows(hs_object_id?: string | undefined, associatedcompanyid?: string | undefined): Observable<string> {
@@ -9478,7 +9478,7 @@ export class HubSpotCardDataFetchServiceProxy {
             let result200: any = null;
             let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
                 result200 = resultData200 !== undefined ? resultData200 : <any>null;
-
+    
             return _observableOf(result200);
             }));
         } else if (status !== 200 && status !== 204) {
@@ -9490,8 +9490,8 @@ export class HubSpotCardDataFetchServiceProxy {
     }
 
     /**
-     * @param hs_object_id (optional)
-     * @param associatedcompanyid (optional)
+     * @param hs_object_id (optional) 
+     * @param associatedcompanyid (optional) 
      * @return Success
      */
     requests(hs_object_id?: string | undefined, associatedcompanyid?: string | undefined): Observable<string> {
@@ -9540,7 +9540,7 @@ export class HubSpotCardDataFetchServiceProxy {
             let result200: any = null;
             let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
                 result200 = resultData200 !== undefined ? resultData200 : <any>null;
-
+    
             return _observableOf(result200);
             }));
         } else if (status !== 200 && status !== 204) {
@@ -9552,8 +9552,8 @@ export class HubSpotCardDataFetchServiceProxy {
     }
 
     /**
-     * @param hs_object_id (optional)
-     * @param userEmail (optional)
+     * @param hs_object_id (optional) 
+     * @param userEmail (optional) 
      * @return Success
      */
     contactPerson(hs_object_id?: string | undefined, userEmail?: string | undefined): Observable<string> {
@@ -9602,7 +9602,7 @@ export class HubSpotCardDataFetchServiceProxy {
             let result200: any = null;
             let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
                 result200 = resultData200 !== undefined ? resultData200 : <any>null;
-
+    
             return _observableOf(result200);
             }));
         } else if (status !== 200 && status !== 204) {
@@ -9614,8 +9614,8 @@ export class HubSpotCardDataFetchServiceProxy {
     }
 
     /**
-     * @param hs_object_id (optional)
-     * @param userEmail (optional)
+     * @param hs_object_id (optional) 
+     * @param userEmail (optional) 
      * @return Success
      */
     camLoginLink(hs_object_id?: string | undefined, userEmail?: string | undefined): Observable<string> {
@@ -9664,7 +9664,7 @@ export class HubSpotCardDataFetchServiceProxy {
             let result200: any = null;
             let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
                 result200 = resultData200 !== undefined ? resultData200 : <any>null;
-
+    
             return _observableOf(result200);
             }));
         } else if (status !== 200 && status !== 204) {
@@ -9688,8 +9688,8 @@ export class HubSpotContractFetchServiceProxy {
     }
 
     /**
-     * @param userId (optional)
-     * @param userEmail (optional)
+     * @param userId (optional) 
+     * @param userEmail (optional) 
      * @return Success
      */
     listContracts(userId?: string | undefined, userEmail?: string | undefined): Observable<string> {
@@ -9738,7 +9738,7 @@ export class HubSpotContractFetchServiceProxy {
             let result200: any = null;
             let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
                 result200 = resultData200 !== undefined ? resultData200 : <any>null;
-
+    
             return _observableOf(result200);
             }));
         } else if (status !== 200 && status !== 204) {
@@ -9762,7 +9762,7 @@ export class HubSpotInstallServiceProxy {
     }
 
     /**
-     * @param code (optional)
+     * @param code (optional) 
      * @return Success
      */
     auth(code?: string | undefined): Observable<string> {
@@ -9807,7 +9807,7 @@ export class HubSpotInstallServiceProxy {
             let result200: any = null;
             let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
                 result200 = resultData200 !== undefined ? resultData200 : <any>null;
-
+    
             return _observableOf(result200);
             }));
         } else if (status !== 200 && status !== 204) {
@@ -10282,9 +10282,9 @@ export class LookupServiceProxy {
     }
 
     /**
-     * @param nameFilter (optional)
-     * @param showAll (optional)
-     * @param idsToExclude (optional)
+     * @param nameFilter (optional) 
+     * @param showAll (optional) 
+     * @param idsToExclude (optional) 
      * @return Success
      */
     employees(nameFilter?: string | undefined, showAll?: boolean | undefined, idsToExclude?: number[] | undefined): Observable<EmployeeDto[]> {
@@ -10355,9 +10355,9 @@ export class LookupServiceProxy {
     }
 
     /**
-     * @param filter (optional)
-     * @param maxRecords (optional)
-     * @param idsToExclude (optional)
+     * @param filter (optional) 
+     * @param maxRecords (optional) 
+     * @param idsToExclude (optional) 
      * @return Success
      */
     consultants(filter?: string | undefined, maxRecords?: number | undefined, idsToExclude?: number[] | undefined): Observable<ConsultantResultDto[]> {
@@ -10428,9 +10428,9 @@ export class LookupServiceProxy {
     }
 
     /**
-     * @param clientId (optional)
-     * @param filter (optional)
-     * @param maxRecords (optional)
+     * @param clientId (optional) 
+     * @param filter (optional) 
+     * @param maxRecords (optional) 
      * @return Success
      */
     consultantsWithSourcingRequest(clientId?: number | undefined, filter?: string | undefined, maxRecords?: number | undefined): Observable<ConsultantWithSourcingRequestResultDto[]> {
@@ -10501,9 +10501,9 @@ export class LookupServiceProxy {
     }
 
     /**
-     * @param filter (optional)
-     * @param maxRecords (optional)
-     * @param idsToExclude (optional)
+     * @param filter (optional) 
+     * @param maxRecords (optional) 
+     * @param idsToExclude (optional) 
      * @return Success
      */
     suppliers(filter?: string | undefined, maxRecords?: number | undefined, idsToExclude?: number[] | undefined): Observable<SupplierResultDto[]> {
@@ -10574,8 +10574,8 @@ export class LookupServiceProxy {
     }
 
     /**
-     * @param filter (optional)
-     * @param maxRecords (optional)
+     * @param filter (optional) 
+     * @param maxRecords (optional) 
      * @return Success
      */
     clients(filter?: string | undefined, maxRecords?: number | undefined): Observable<ClientResultDto[]> {
@@ -10642,10 +10642,10 @@ export class LookupServiceProxy {
     }
 
     /**
-     * @param clientId1 (optional)
-     * @param clientId2 (optional)
-     * @param filter (optional)
-     * @param maxRecords (optional)
+     * @param clientId1 (optional) 
+     * @param clientId2 (optional) 
+     * @param filter (optional) 
+     * @param maxRecords (optional) 
      * @return Success
      */
     contacts(clientId1?: number | undefined, clientId2?: number | undefined, filter?: string | undefined, maxRecords?: number | undefined): Observable<ContactResultDto[]> {
@@ -10732,19 +10732,19 @@ export class MainOverviewServiceProxy {
     }
 
     /**
-     * @param mainOverviewStatusesForSales (optional)
-     * @param accountManagers (optional)
-     * @param invoicingEntity (optional)
-     * @param paymentEntity (optional)
-     * @param salesTypes (optional)
-     * @param deliveryTypes (optional)
-     * @param margins (optional)
-     * @param search (optional)
-     * @param cutOffDate (optional)
-     * @param showDeleted (optional)
-     * @param pageNumber (optional)
-     * @param pageSize (optional)
-     * @param sort (optional)
+     * @param mainOverviewStatusesForSales (optional) 
+     * @param accountManagers (optional) 
+     * @param invoicingEntity (optional) 
+     * @param paymentEntity (optional) 
+     * @param salesTypes (optional) 
+     * @param deliveryTypes (optional) 
+     * @param margins (optional) 
+     * @param search (optional) 
+     * @param cutOffDate (optional) 
+     * @param showDeleted (optional) 
+     * @param pageNumber (optional) 
+     * @param pageSize (optional) 
+     * @param sort (optional) 
      * @return Success
      */
     workflows(mainOverviewStatusesForSales?: MainOverviewStatus[] | undefined, accountManagers?: number[] | undefined, invoicingEntity?: number | undefined, paymentEntity?: number | undefined, salesTypes?: number[] | undefined, deliveryTypes?: number[] | undefined, margins?: number[] | undefined, search?: string | undefined, cutOffDate?: moment.Moment | undefined, showDeleted?: boolean | undefined, pageNumber?: number | undefined, pageSize?: number | undefined, sort?: string | undefined): Observable<MainOverviewItemForWorkflowDtoPaginatedList> {
@@ -10848,19 +10848,19 @@ export class MainOverviewServiceProxy {
     }
 
     /**
-     * @param mainOverviewStatusesForSales (optional)
-     * @param accountManagers (optional)
-     * @param invoicingEntity (optional)
-     * @param paymentEntity (optional)
-     * @param salesTypes (optional)
-     * @param deliveryTypes (optional)
-     * @param margins (optional)
-     * @param search (optional)
-     * @param cutOffDate (optional)
-     * @param showDeleted (optional)
-     * @param pageNumber (optional)
-     * @param pageSize (optional)
-     * @param sort (optional)
+     * @param mainOverviewStatusesForSales (optional) 
+     * @param accountManagers (optional) 
+     * @param invoicingEntity (optional) 
+     * @param paymentEntity (optional) 
+     * @param salesTypes (optional) 
+     * @param deliveryTypes (optional) 
+     * @param margins (optional) 
+     * @param search (optional) 
+     * @param cutOffDate (optional) 
+     * @param showDeleted (optional) 
+     * @param pageNumber (optional) 
+     * @param pageSize (optional) 
+     * @param sort (optional) 
      * @return Success
      */
     consultants(mainOverviewStatusesForSales?: MainOverviewStatus[] | undefined, accountManagers?: number[] | undefined, invoicingEntity?: number | undefined, paymentEntity?: number | undefined, salesTypes?: number[] | undefined, deliveryTypes?: number[] | undefined, margins?: number[] | undefined, search?: string | undefined, cutOffDate?: moment.Moment | undefined, showDeleted?: boolean | undefined, pageNumber?: number | undefined, pageSize?: number | undefined, sort?: string | undefined): Observable<MainOverviewItemForConsultantDtoPaginatedList> {
@@ -10964,8 +10964,8 @@ export class MainOverviewServiceProxy {
     }
 
     /**
-     * @param workflowId (optional)
-     * @param mainOverviewUserSelectedStatusForSales (optional)
+     * @param workflowId (optional) 
+     * @param mainOverviewUserSelectedStatusForSales (optional) 
      * @return Success
      */
     setUserSelectedStatusForWorkflow(workflowId?: string | undefined, mainOverviewUserSelectedStatusForSales?: MainOverviewStatus | undefined): Observable<void> {
@@ -11021,9 +11021,9 @@ export class MainOverviewServiceProxy {
     }
 
     /**
-     * @param workflowId (optional)
-     * @param consultantId (optional)
-     * @param mainOverviewUserSelectedStatusForSales (optional)
+     * @param workflowId (optional) 
+     * @param consultantId (optional) 
+     * @param mainOverviewUserSelectedStatusForSales (optional) 
      * @return Success
      */
     setUserSelectedStatusForConsultant(workflowId?: string | undefined, consultantId?: number | undefined, mainOverviewUserSelectedStatusForSales?: MainOverviewStatus | undefined): Observable<void> {
@@ -11409,7 +11409,7 @@ export class AgreementNameTemplateServiceProxy {
     }
 
     /**
-     * @param agreementNameTemplate (optional)
+     * @param agreementNameTemplate (optional) 
      * @return Success
      */
     templatePreview(agreementNameTemplate?: string | undefined): Observable<string> {
@@ -11454,7 +11454,7 @@ export class AgreementNameTemplateServiceProxy {
             let result200: any = null;
             let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
                 result200 = resultData200 !== undefined ? resultData200 : <any>null;
-
+    
             return _observableOf(result200);
             }));
         } else if (status !== 200 && status !== 204) {
@@ -11466,9 +11466,9 @@ export class AgreementNameTemplateServiceProxy {
     }
 
     /**
-     * @param agreementTemplateId (optional)
-     * @param clientId (optional)
-     * @param consultantId (optional)
+     * @param agreementTemplateId (optional) 
+     * @param clientId (optional) 
+     * @param consultantId (optional) 
      * @return Success
      */
     actual(agreementTemplateId?: number | undefined, clientId?: number | undefined, consultantId?: number | undefined): Observable<string> {
@@ -11521,7 +11521,7 @@ export class AgreementNameTemplateServiceProxy {
             let result200: any = null;
             let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
                 result200 = resultData200 !== undefined ? resultData200 : <any>null;
-
+    
             return _observableOf(result200);
             }));
         } else if (status !== 200 && status !== 204) {
@@ -11545,7 +11545,7 @@ export class NotificationTestServiceProxy {
     }
 
     /**
-     * @param email (optional)
+     * @param email (optional) 
      * @return Success
      * @deprecated
      */
@@ -11598,7 +11598,7 @@ export class NotificationTestServiceProxy {
     }
 
     /**
-     * @param email (optional)
+     * @param email (optional) 
      * @return Success
      * @deprecated
      */
@@ -11651,7 +11651,7 @@ export class NotificationTestServiceProxy {
     }
 
     /**
-     * @param email (optional)
+     * @param email (optional) 
      * @return Success
      * @deprecated
      */
@@ -11704,7 +11704,7 @@ export class NotificationTestServiceProxy {
     }
 
     /**
-     * @param email (optional)
+     * @param email (optional) 
      * @return Success
      * @deprecated
      */
@@ -11769,7 +11769,7 @@ export class WorkflowServiceProxy {
     }
 
     /**
-     * @param body (optional)
+     * @param body (optional) 
      * @return Success
      */
     start(body?: StartNewWorkflowInputDto | undefined): Observable<NewWorkflowCreatedDto> {
@@ -11879,8 +11879,8 @@ export class WorkflowServiceProxy {
     }
 
     /**
-     * @param clientPeriodId (optional)
-     * @param includeProcesses (optional)
+     * @param clientPeriodId (optional) 
+     * @param includeProcesses (optional) 
      * @return Success
      */
     clientPeriods(workflowId: string, clientPeriodId?: string | undefined, includeProcesses?: boolean | undefined): Observable<WorkflowDto> {
@@ -11997,8 +11997,8 @@ export class WorkflowServiceProxy {
     }
 
     /**
-     * @param pageNumber (optional)
-     * @param pageSize (optional)
+     * @param pageNumber (optional) 
+     * @param pageSize (optional) 
      * @return Success
      */
     history(workflowId: string, pageNumber?: number | undefined, pageSize?: number | undefined): Observable<WorkflowHistoryDtoPaginatedList> {
@@ -12104,7 +12104,7 @@ export class WorkflowServiceProxy {
             let result200: any = null;
             let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
                 result200 = resultData200 !== undefined ? resultData200 : <any>null;
-
+    
             return _observableOf(result200);
             }));
         } else if (status !== 200 && status !== 204) {
@@ -12116,7 +12116,7 @@ export class WorkflowServiceProxy {
     }
 
     /**
-     * @param body (optional)
+     * @param body (optional) 
      * @return Success
      */
     notesPut(workflowId: string, body?: string | undefined): Observable<void> {
@@ -12275,7 +12275,7 @@ export class WorkflowServiceProxy {
     }
 
     /**
-     * @param body (optional)
+     * @param body (optional) 
      * @return Success
      */
     terminationSalesPut(workflowId: string, body?: WorkflowTerminationSalesDataCommandDto | undefined): Observable<void> {
@@ -12330,7 +12330,7 @@ export class WorkflowServiceProxy {
     }
 
     /**
-     * @param body (optional)
+     * @param body (optional) 
      * @return Success
      */
     terminationSalesComplete(workflowId: string, body?: WorkflowTerminationSalesDataCommandDto | undefined): Observable<void> {
@@ -12489,7 +12489,7 @@ export class WorkflowServiceProxy {
     }
 
     /**
-     * @param body (optional)
+     * @param body (optional) 
      * @return Success
      */
     terminationContractPut(workflowId: string, body?: WorkflowTerminationContractDataCommandDto | undefined): Observable<void> {
@@ -12594,7 +12594,7 @@ export class WorkflowServiceProxy {
     }
 
     /**
-     * @param body (optional)
+     * @param body (optional) 
      * @return Success
      */
     terminationContractComplete(workflowId: string, body?: WorkflowTerminationContractDataCommandDto | undefined): Observable<void> {
@@ -12703,7 +12703,7 @@ export class WorkflowServiceProxy {
     }
 
     /**
-     * @param body (optional)
+     * @param body (optional) 
      * @return Success
      */
     terminationSourcingPut(workflowId: string, body?: WorkflowTerminationSourcingDataCommandDto | undefined): Observable<void> {
@@ -12808,7 +12808,7 @@ export class WorkflowServiceProxy {
     }
 
     /**
-     * @param body (optional)
+     * @param body (optional) 
      * @return Success
      */
     terminationSourcingComplete(workflowId: string, body?: WorkflowTerminationSourcingDataCommandDto | undefined): Observable<void> {
@@ -12863,7 +12863,7 @@ export class WorkflowServiceProxy {
     }
 
     /**
-     * @param newResponsibleEmployeeId (optional)
+     * @param newResponsibleEmployeeId (optional) 
      * @return Success
      */
     terminationStepResponsible(workflowId: string, stepType: StepType, newResponsibleEmployeeId?: number | undefined): Observable<void> {
@@ -12971,7 +12971,7 @@ export class WorkflowServiceProxy {
     }
 
     /**
-     * @param consultantId (optional)
+     * @param consultantId (optional) 
      * @return Success
      */
     terminationConsultantStart(workflowId: string, consultantId?: number | undefined): Observable<void> {
@@ -13026,7 +13026,7 @@ export class WorkflowServiceProxy {
     }
 
     /**
-     * @param consultantId (optional)
+     * @param consultantId (optional) 
      * @return Success
      */
     terminationConsultantSalesGet(workflowId: string, consultantId?: number | undefined): Observable<ConsultantTerminationSalesDataQueryDto> {
@@ -13085,8 +13085,8 @@ export class WorkflowServiceProxy {
     }
 
     /**
-     * @param consultantId (optional)
-     * @param body (optional)
+     * @param consultantId (optional) 
+     * @param body (optional) 
      * @return Success
      */
     terminationConsultantSalesPut(workflowId: string, consultantId?: number | undefined, body?: ConsultantTerminationSalesDataCommandDto | undefined): Observable<void> {
@@ -13145,8 +13145,8 @@ export class WorkflowServiceProxy {
     }
 
     /**
-     * @param consultantId (optional)
-     * @param body (optional)
+     * @param consultantId (optional) 
+     * @param body (optional) 
      * @return Success
      */
     terminationConsultantSalesComplete(workflowId: string, consultantId?: number | undefined, body?: ConsultantTerminationSalesDataCommandDto | undefined): Observable<void> {
@@ -13205,7 +13205,7 @@ export class WorkflowServiceProxy {
     }
 
     /**
-     * @param consultantId (optional)
+     * @param consultantId (optional) 
      * @return Success
      */
     terminationConsultantSalesReopen(workflowId: string, consultantId?: number | undefined): Observable<void> {
@@ -13260,7 +13260,7 @@ export class WorkflowServiceProxy {
     }
 
     /**
-     * @param consultantId (optional)
+     * @param consultantId (optional) 
      * @return Success
      */
     terminationConsultantContractGet(workflowId: string, consultantId?: number | undefined): Observable<ConsultantTerminationContractDataQueryDto> {
@@ -13319,7 +13319,7 @@ export class WorkflowServiceProxy {
     }
 
     /**
-     * @param body (optional)
+     * @param body (optional) 
      * @return Success
      */
     terminationConsultantContractPut(workflowId: string, body?: ConsultantTerminationContractDataCommandDto | undefined): Observable<void> {
@@ -13374,7 +13374,7 @@ export class WorkflowServiceProxy {
     }
 
     /**
-     * @param consultantId (optional)
+     * @param consultantId (optional) 
      * @return Success
      */
     terminationConsultantContractStartEdit(workflowId: string, consultantId?: number | undefined): Observable<void> {
@@ -13429,7 +13429,7 @@ export class WorkflowServiceProxy {
     }
 
     /**
-     * @param body (optional)
+     * @param body (optional) 
      * @return Success
      */
     terminationConsultantContractComplete(workflowId: string, body?: ConsultantTerminationContractDataCommandDto | undefined): Observable<void> {
@@ -13484,7 +13484,7 @@ export class WorkflowServiceProxy {
     }
 
     /**
-     * @param consultantId (optional)
+     * @param consultantId (optional) 
      * @return Success
      */
     terminationConsultantSourcingGet(workflowId: string, consultantId?: number | undefined): Observable<ConsultantTerminationSourcingDataQueryDto> {
@@ -13543,7 +13543,7 @@ export class WorkflowServiceProxy {
     }
 
     /**
-     * @param body (optional)
+     * @param body (optional) 
      * @return Success
      */
     terminationConsultantSourcingPut(workflowId: string, body?: ConsultantTerminationSourcingDataCommandDto | undefined): Observable<void> {
@@ -13598,7 +13598,7 @@ export class WorkflowServiceProxy {
     }
 
     /**
-     * @param consultantId (optional)
+     * @param consultantId (optional) 
      * @return Success
      */
     terminationConsultantSourcingStartEdit(workflowId: string, consultantId?: number | undefined): Observable<void> {
@@ -13653,7 +13653,7 @@ export class WorkflowServiceProxy {
     }
 
     /**
-     * @param body (optional)
+     * @param body (optional) 
      * @return Success
      */
     terminationConsultantSourcingComplete(workflowId: string, body?: ConsultantTerminationSourcingDataCommandDto | undefined): Observable<void> {
@@ -13708,8 +13708,8 @@ export class WorkflowServiceProxy {
     }
 
     /**
-     * @param consultantTerminationId (optional)
-     * @param newResponsibleEmployeeId (optional)
+     * @param consultantTerminationId (optional) 
+     * @param newResponsibleEmployeeId (optional) 
      * @return Success
      */
     terminationConsultantStepResponsible(stepType: StepType, workflowId: string, consultantTerminationId?: string | undefined, newResponsibleEmployeeId?: number | undefined): Observable<void> {
@@ -13771,7 +13771,7 @@ export class WorkflowServiceProxy {
     }
 
     /**
-     * @param consultantId (optional)
+     * @param consultantId (optional) 
      * @return Success
      */
     terminationConsultantDelete(workflowId: string, consultantId?: number | undefined): Observable<void> {
@@ -13938,7 +13938,7 @@ export class WorkflowIntegrationServiceProxy {
     }
 
     /**
-     * @param body (optional)
+     * @param body (optional) 
      * @return Success
      */
     workflowPeriodLegalContractStatus(body?: WorkflowPeriodLegalContractStatusUpdateInputDto | undefined): Observable<void> {
@@ -13994,11 +13994,11 @@ export class WorkflowIntegrationServiceProxy {
     }
 
     /**
-     * @param tenantId (optional)
-     * @param fromDate (optional)
-     * @param toDate (optional)
-     * @param includeCommissionFromOtherTenants (optional)
-     * @param body (optional)
+     * @param tenantId (optional) 
+     * @param fromDate (optional) 
+     * @param toDate (optional) 
+     * @param includeCommissionFromOtherTenants (optional) 
+     * @param body (optional) 
      * @return Success
      */
     workflowPeriodInfosForIncomeReport(tenantId?: number | undefined, fromDate?: moment.Moment | undefined, toDate?: moment.Moment | undefined, includeCommissionFromOtherTenants?: boolean | undefined, body?: InputWorkflowPeriodInfoForIncomeReportDto[] | undefined): Observable<OutputWorkflowPeriodInfoForIncomeReportDto> {
@@ -14074,7 +14074,7 @@ export class WorkflowIntegrationServiceProxy {
     }
 
     /**
-     * @param body (optional)
+     * @param body (optional) 
      * @return Success
      */
     getWorkflowPeriodInfoForEvaluations(body?: number[] | undefined): Observable<WorkflowPeriodInfoForEvaluationDto[]> {
