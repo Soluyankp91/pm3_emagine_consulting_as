@@ -7,7 +7,6 @@ import { MatMenuTrigger } from '@angular/material/menu';
 import { MatPaginator } from '@angular/material/paginator';
 import { MatTableDataSource } from '@angular/material/table';
 import { ActivatedRoute, ActivatedRouteSnapshot, Resolve, Router } from '@angular/router';
-import { MsalService } from '@azure/msal-angular';
 import { merge, Observable, Subject, Subscription } from 'rxjs';
 import { debounceTime, finalize, map, switchMap, takeUntil } from 'rxjs/operators';
 import { AppComponentBase } from 'src/shared/app-component-base';
@@ -61,6 +60,7 @@ export class WorkflowComponent extends AppComponentBase implements OnInit, OnDes
     workflowDataSource: MatTableDataSource<WorkflowListItemDto>;
     workflowProcess = WorkflowProcessType;
 
+
     legalEntities: LegalEntityDto[] = [];
     saleTypes: EnumEntityTypeDto[] = [];
     deliveryTypes: EnumEntityTypeDto[] = [];
@@ -105,7 +105,6 @@ export class WorkflowComponent extends AppComponentBase implements OnInit, OnDes
         private dialog: MatDialog,
         private _internalLookupService: InternalLookupService,
         private _lookupService: LookupServiceProxy,
-        private _auth: MsalService,
         private _employeeService: EmployeeServiceProxy,
         private _activatedRoute: ActivatedRoute
     ) {
@@ -314,6 +313,7 @@ export class WorkflowComponent extends AppComponentBase implements OnInit, OnDes
         dialogRef.componentInstance.onConfirmed.subscribe(() => {
             this.deleteWorkflow(workflowId);
         });
+
     }
 
     deleteWorkflow(workflowId: string) {
@@ -475,7 +475,7 @@ export class WorkflowComponent extends AppComponentBase implements OnInit, OnDes
     }
 
     sortChanged(event?: any): void {
-        this.sorting = event.active.concat(' ', event.direction);
+        this.sorting = event.direction && event.direction.length ? event.active.concat(' ', event.direction) : '';
         this.getWorkflowList();
     }
 
