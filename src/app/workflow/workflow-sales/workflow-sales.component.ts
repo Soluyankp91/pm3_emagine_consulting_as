@@ -307,7 +307,7 @@ export class WorkflowSalesComponent extends AppComponentBase implements OnInit {
                             ? value.firstName
                             : value;
                     }
-                    return this._lookupService.contacts(toSend.clientId, toSend.name, toSend.maxRecordsCount);
+                    return this._lookupService.contacts(toSend.clientId, toSend.name, undefined, toSend.maxRecordsCount);
                 }),
             ).subscribe((list: ContactResultDto[]) => {
                 if (list.length) {
@@ -361,7 +361,7 @@ export class WorkflowSalesComponent extends AppComponentBase implements OnInit {
                                 ? value.firstName
                                 : value;
                         }
-                        return this._lookupService.contacts(toSend.clientId, toSend.name, toSend.maxRecordsCount);
+                        return this._lookupService.contacts(toSend.clientId, toSend.name, undefined, toSend.maxRecordsCount);
                     } else {
                         return of([]);
                     }
@@ -390,7 +390,7 @@ export class WorkflowSalesComponent extends AppComponentBase implements OnInit {
                                 ? value.firstName
                                 : value;
                         }
-                        return this._lookupService.contacts(toSend.clientId, toSend.name, toSend.maxRecordsCount);
+                        return this._lookupService.contacts(toSend.clientId, toSend.name, undefined, toSend.maxRecordsCount);
                     } else {
                         return of([]);
                     }
@@ -941,7 +941,7 @@ export class WorkflowSalesComponent extends AppComponentBase implements OnInit {
                             ? value.firstName
                             : value;
                     }
-                    return this._lookupService.contacts(toSend.clientId, toSend.name, toSend.maxRecordsCount);
+                    return this._lookupService.contacts(toSend.clientId, toSend.name, undefined, toSend.maxRecordsCount);
                 }),
             ).subscribe((list: ContactResultDto[]) => {
                 if (list.length) {
@@ -1041,7 +1041,7 @@ export class WorkflowSalesComponent extends AppComponentBase implements OnInit {
 
     updateConsultantStepAnchors() {
         let consultantNames = this.consultantData.value.map((item: any) => {
-            if (item.employmentType?.id === 10 || item.employmentType?.id === 11) {
+            if (item.employmentType?.id === EmploymentTypes.FeeOnly || item.employmentType?.id === EmploymentTypes.Recruitment) {
                 return item.consultantNameOnly;
             } else {
                 return item.consultantName?.consultant?.name;
@@ -1534,8 +1534,7 @@ export class WorkflowSalesComponent extends AppComponentBase implements OnInit {
             this.consultantsForm.consultantData.value.forEach((consultant: any) => {
                 let consultantInput = new ConsultantSalesDataDto();
                 consultantInput.employmentTypeId = consultant.employmentType?.id;
-                //  IF employment type is 'Fee only' - id: 10 or 'Recruitment' - id:11 only name is stored
-                if (consultant.employmentType?.id === 10 || consultant.employmentType?.id === 11) {
+                if (consultant.employmentType?.id === EmploymentTypes.FeeOnly || consultant.employmentType?.id === EmploymentTypes.Recruitment) {
                     consultantInput.nameOnly = consultant.consultantNameOnly;
                 } else {
                     consultantInput.consultantId = consultant.consultantName?.consultant?.id
@@ -1590,7 +1589,9 @@ export class WorkflowSalesComponent extends AppComponentBase implements OnInit {
                     if (consultantInput.consultantRate.isFixedRate) {
                         consultantInput.consultantRate.invoicingTimeId = consultant.consultantInvoicingTime?.id;
                     }
-                    consultantInput.consultantRate.manualDate = consultant.manualDate;
+                    if (consultant.consultantInvoicingTime?.name === 'Manual date') {
+                        consultantInput.consultantRate.manualDate = consultant.consultantInvoicingManualDate;
+                    }
 
                     if (consultant.specialRates.length) {
                         consultantInput.periodConsultantSpecialRates = new Array<PeriodConsultantSpecialRateDto>();
@@ -2294,8 +2295,7 @@ export class WorkflowSalesComponent extends AppComponentBase implements OnInit {
         let consultantInput = new ConsultantSalesDataDto();
         const consultant = this.consultantsForm.consultantData.at(0).value;
         consultantInput.employmentTypeId = consultant.employmentType?.id;
-        //  IF employment type is 'Fee only' - id: 10 or 'Recruitment' - id:11 only name is stored
-        if (consultant.employmentType?.id === 10 || consultant.employmentType?.id === 11) {
+        if (consultant.employmentType?.id === EmploymentTypes.FeeOnly || consultant.employmentType?.id === EmploymentTypes.Recruitment) {
             consultantInput.nameOnly = consultant.consultantNameOnly;
         } else {
             consultantInput.consultantId = consultant.consultantName?.consultant?.id
@@ -2347,7 +2347,9 @@ export class WorkflowSalesComponent extends AppComponentBase implements OnInit {
             if (consultantInput.consultantRate.isFixedRate) {
                 consultantInput.consultantRate.invoicingTimeId = consultant.consultantInvoicingTime?.id;
             }
-            consultantInput.consultantRate.manualDate = consultant.consultantInvoicingManualDate;
+            if (consultant.consultantInvoicingTime?.name === 'Manual date') {
+                consultantInput.consultantRate.manualDate = consultant.consultantInvoicingManualDate;
+            }
 
             if (consultant.specialRates.length) {
                 consultantInput.periodConsultantSpecialRates = new Array<PeriodConsultantSpecialRateDto>();

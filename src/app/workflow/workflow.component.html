@@ -81,16 +81,26 @@
                     </span>
                 </span>
                 <mat-divider class="u-mr--16" [vertical]="true" style="height: 40px;"></mat-divider>
-                <span class="workflow-list--filter-type pending-steps-status flex-items-center cursor-pointer u-mr--16" [ngClass]="{'selected-status': showOnlyWorkflowsWithPendingStepsForSelectedEmployees}" appPreventDoubleClick (throttledClick)="showOnlyWorkflowsWithPendingStepsForSelectedEmployees = !showOnlyWorkflowsWithPendingStepsForSelectedEmployees; getWorkflowList(true)">
-                    <span class="workflow-list--filter-type__name">
-                        Pending steps
+                <span class="workflow-list--filter-type-dropdown cursor-pointer u-mr--20" [matMenuTriggerFor]="pendingSteps" [ngClass]="{'selected-status': pendingStepType !== null && pendingStepType >= 0}">
+                    <span class="workflow-list--filter-type-dropdown__name">
+                        {{pendingStepType !== null && pendingStepType >= 0 ? stepTypes[pendingStepType].name + ' pending steps' : 'Pending steps'}}
                     </span>
+                    <mat-icon>expand_more</mat-icon>
                 </span>
-                <span class="workflow-list--filter-type upcoming-steps-status flex-items-center cursor-pointer u-mr--20" [ngClass]="{'selected-status': showOnlyWorkflowsWithUpcomingStepsForSelectedEmployees}" appPreventDoubleClick (throttledClick)="showOnlyWorkflowsWithUpcomingStepsForSelectedEmployees = !showOnlyWorkflowsWithUpcomingStepsForSelectedEmployees; getWorkflowList(true)">
-                    <span class="workflow-list--filter-type__name">
-                        Upcoming steps
+                <mat-menu #pendingSteps backdropClass="step-filter--menu">
+                    <button class="workflow-list--filter-type-dropdown__item" *ngFor="let item of stepTypes; trackBy: stepTypeTrackBy" mat-menu-item (click)="selectPendingStep(item.id)">{{item.name}}</button>
+                    <button class="workflow-list--filter-type-dropdown__reset" mat-menu-item (click)="selectPendingStep()">Reset</button>
+                </mat-menu>
+                <span class="workflow-list--filter-type-dropdown cursor-pointer u-mr--20" [matMenuTriggerFor]="upcomingSteps" [ngClass]="{'selected-status': upcomingStepType !== null && upcomingStepType >= 0}">
+                    <span class="workflow-list--filter-type-dropdown__name">
+                        {{upcomingStepType !== null && upcomingStepType >= 0 ? stepTypes[upcomingStepType].name + ' upcoming steps' : 'Upcoming steps'}}
                     </span>
+                    <mat-icon>expand_more</mat-icon>
                 </span>
+                <mat-menu #upcomingSteps backdropClass="step-filter--menu">
+                    <button class="workflow-list--filter-type-dropdown__item" *ngFor="let item of stepTypes; trackBy: stepTypeTrackBy" mat-menu-item (click)="selectUpcomingStep(item.id)">{{item.name}}</button>
+                    <button class="workflow-list--filter-type-dropdown__reset" mat-menu-item (click)="selectUpcomingStep()">Reset</button>
+                </mat-menu>
                 <div fxLayout="row" fxLayoutAlign="start center" fxFlex="10%">
                     <mat-divider class="u-mr--10 divider-height" [vertical]="true"></mat-divider>
                     <button mat-button appPreventDoubleClick (throttledClick)="clearAllFilters()">
