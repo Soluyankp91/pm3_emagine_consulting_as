@@ -141,10 +141,15 @@
                 font-size: 12px;
                 line-height: 140%;
                 color: #4A4E60;
-                // @media screen and (max-width: 1366px) {
-                //     font-size: 10px;
-                // }
             }
+        }
+    }
+}
+
+.step-filter--menu + * .cdk-overlay-pane {
+    .mat-menu-panel {
+        .mat-menu-item:hover {
+            background-color: rgba($color: $green-color-25, $alpha: 0.33);
         }
     }
 }
