@@ -1,7 +1,7 @@
 import { Overlay } from '@angular/cdk/overlay';
 import { NumberSymbol } from '@angular/common';
 import { HttpClient } from '@angular/common/http';
-import { Component, Injector, Input, OnInit } from '@angular/core';
+import { Component, Injector, Input, OnDestroy, OnInit } from '@angular/core';
 import { AbstractControl, FormArray, FormBuilder, FormControl, Validators } from '@angular/forms';
 import { MatAutocompleteSelectedEvent } from '@angular/material/autocomplete';
 import { MatCheckboxChange } from '@angular/material/checkbox';
@@ -30,7 +30,7 @@ import { ConsultantDiallogAction, SalesTerminateConsultantForm, WorkflowSalesCli
     templateUrl: './workflow-sales.component.html',
     styleUrls: ['./workflow-sales.component.scss']
 })
-export class WorkflowSalesComponent extends AppComponentBase implements OnInit {
+export class WorkflowSalesComponent extends AppComponentBase implements OnInit, OnDestroy {
     @Input() workflowId: string;
     @Input() periodId: string | undefined;
     @Input() consultant: ConsultantResultDto;
@@ -140,6 +140,8 @@ export class WorkflowSalesComponent extends AppComponentBase implements OnInit {
     clientIdFromTerminationSales: number;
 
     individualConsultantActionsAvailable: boolean;
+    appEnv = environment;
+
     isCommissionEditing = false;
     isCommissionInitialAdd = false;
     commissionToEdit: {
@@ -1677,13 +1679,13 @@ export class WorkflowSalesComponent extends AppComponentBase implements OnInit {
     }
 
     getStartChangeOrExtendClientPeriodSales() {
-        this.resetForms();
         this.showMainSpinner();
         this._clientPeriodService.clientSalesGet(this.periodId!)
             .pipe(finalize(() => {
                 this.hideMainSpinner();
             }))
             .subscribe(result => {
+                this.resetForms();
                 // Project
                 this.salesMainDataForm.projectType?.setValue(this.findItemById(this.projectTypes, result?.salesMainData?.projectTypeId), {emitEvent: false});
                 this.salesMainDataForm.salesType?.setValue(this.findItemById(this.saleTypes, result?.salesMainData?.salesTypeId), {emitEvent: false});
@@ -2078,12 +2080,13 @@ export class WorkflowSalesComponent extends AppComponentBase implements OnInit {
     //#region termination
 
     getWorkflowSalesStepConsultantTermination(consultant: ConsultantResultDto) {
-        this.resetForms();
+        this.showMainSpinner();
         this._workflowServiceProxy.terminationConsultantSalesGet(this.workflowId!, consultant.id!)
-            .pipe(finalize(() => {
-
-            }))
-            .subscribe(result => {
+        .pipe(finalize(() => {
+            this.hideMainSpinner();
+        }))
+        .subscribe(result => {
+                this.resetForms();
                 // End of Consultant Contract
                 this.salesTerminateConsultantForm.terminationTime?.setValue(result?.terminationTime, {emitEvent: false});
                 this.salesTerminateConsultantForm.endDate?.setValue(result?.endDate, {emitEvent: false});
@@ -2115,7 +2118,7 @@ export class WorkflowSalesComponent extends AppComponentBase implements OnInit {
         if (isDraft) {
             this._workflowServiceProxy.terminationConsultantSalesPut(this.workflowId!, this.consultant.id, input)
                 .pipe(finalize(() => this.hideMainSpinner()))
-                .subscribe(result => {
+                .subscribe(() => {
                     this._workflowDataService.workflowOverviewUpdated.emit(true);
                     if (this.editEnabledForcefuly) {
                         this.toggleEditMode();
@@ -2124,7 +2127,7 @@ export class WorkflowSalesComponent extends AppComponentBase implements OnInit {
         } else {
             this._workflowServiceProxy.terminationConsultantSalesComplete(this.workflowId!, this.consultant.id, input)
                 .pipe(finalize(() => this.hideMainSpinner()))
-                .subscribe(result => {
+                .subscribe(() => {
                     this._workflowDataService.workflowSideSectionUpdated.emit({isStatusUpdate: true});
                     this._workflowDataService.workflowOverviewUpdated.emit(true);
                     this.getSalesStepData();
@@ -2133,12 +2136,13 @@ export class WorkflowSalesComponent extends AppComponentBase implements OnInit {
     }
 
     getWorkflowSalesStepTermination() {
-        this.resetForms();
+        this.showMainSpinner();
         this._workflowServiceProxy.terminationSalesGet(this.workflowId!)
-            .pipe(finalize(() => {
-
-            }))
-            .subscribe(result => {
+        .pipe(finalize(() => {
+            this.hideMainSpinner();
+        }))
+        .subscribe(result => {
+                this.resetForms();
                 // End of Consultant Contract
                 this.salesTerminateConsultantForm.terminationTime?.setValue(result?.terminationTime, {emitEvent: false});
                 this.salesTerminateConsultantForm.endDate?.setValue(result?.endDate, {emitEvent: false});
@@ -2257,7 +2261,6 @@ export class WorkflowSalesComponent extends AppComponentBase implements OnInit {
     }
 
     getStartChangeOrExtendConsutlantPeriodSales(consultantPeriodId: string) {
-        this.resetForms();
         this._consultantPeriodSerivce.consultantSalesGet(consultantPeriodId)
             .pipe(finalize(() => {}))
             .subscribe(result => {
