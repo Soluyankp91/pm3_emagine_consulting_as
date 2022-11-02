@@ -143,7 +143,7 @@
                     class="button-accept mat-elevation-z0"
                     mat-flat-button
                     *ngIf="_workflowDataService.getWorkflowProgress?.stepSpecificPermissions!['Completion']"
-                    appPreventDoubleClick (throttledClick)="saveOrCompleteStep(false)">
+                    appPreventDoubleClick (throttledClick)="saveOrCompleteStep(false, $event)">
                     Complete step
             </button>
         </div>
