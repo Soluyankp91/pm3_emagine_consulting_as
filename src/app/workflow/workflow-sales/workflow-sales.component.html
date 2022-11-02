@@ -3094,11 +3094,35 @@
     <ng-container *ngIf="readOnlyMode; else editMode">
         <div fxLayout="column" fxLayoutAlign="start start" class="workflow-sales--process-data u-w--100">
             <div fxLayout="column" fxLayoutAlign="start start" class="u-w--100">
-                <h1 class="workflow-step-readonly--header-main">
-                    <span class="process-name">Sales.</span>
-                    <span class="anchor-name" *ngIf="activeSideSection.typeId === workflowSideSections.TerminateConsultant">End of Consultant Contract</span>
-                    <span class="anchor-name" *ngIf="activeSideSection.typeId === workflowSideSections.TerminateWorkflow">End of Client Contract</span>
-                </h1>
+                <div fxLayout="row" fxLayoutAlign="space-between center" class="u-w--100">
+                    <h1 class="workflow-step-readonly--header-main">
+                        <span class="process-name">Sales.</span>
+                        <span class="anchor-name" *ngIf="activeSideSection.typeId === workflowSideSections.TerminateConsultant">End of Consultant Contract</span>
+                        <span class="anchor-name" *ngIf="activeSideSection.typeId === workflowSideSections.TerminateWorkflow">End of Client Contract</span>
+                    </h1>
+                    <div fxLayout="row" fxLayoutAlign="start start">
+                        <button
+                            *ngIf="canToggleEditMode"
+                            class="absolute-edit-toggle contract-manager-action u-mr--16"
+                            mat-icon-button
+                            appPreventDoubleClick (throttledClick)="toggleEditMode()">
+                            <mat-icon svgIcon="edit-icon"></mat-icon>
+                        </button>
+                        <button mat-icon-button appPreventDoubleClick (throttledClick)="$event.stopPropagation();" type="button" [matMenuTriggerFor]="returnToSalesMenu" class="three-dots-actions-btn contract-manager-action">
+                            <mat-icon>more_horiz</mat-icon>
+                        </button>
+                        <mat-menu #returnToSalesMenu>
+                            <button
+                                class="menu-item menu-item--edit contract-manager-action"
+                                mat-menu-item
+                                [disabled]="!permissionsForCurrentUser!['Reopen']"
+                                appPreventDoubleClick (throttledClick)="returnToSales()">
+                                <mat-icon svgIcon="return-icon"></mat-icon>
+                                Return to Sales
+                            </button>
+                        </mat-menu>
+                    </div>
+                </div>
 
                 <div fxLayout="column" class="u-w--100 u-mb--20 u-mt--20">
                     <h3 class="workflow-step-readonly--gray-header">Non standart termination time</h3>
