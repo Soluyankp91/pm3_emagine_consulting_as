@@ -4,6 +4,7 @@ import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { Component, Injector, Input, OnInit } from '@angular/core';
 import { AbstractControl, FormArray, FormBuilder, FormControl, Validators } from '@angular/forms';
 import { MatAutocompleteSelectedEvent } from '@angular/material/autocomplete';
+import { MatButtonToggleChange } from '@angular/material/button-toggle';
 import { MatCheckboxChange } from '@angular/material/checkbox';
 import { MatDialog } from '@angular/material/dialog';
 import { MatMenuTrigger } from '@angular/material/menu';
@@ -1821,9 +1822,22 @@ export class WorkflowSalesComponent extends AppComponentBase implements OnInit {
         }
     }
 
-    changeConsultantWorkplace(event: MatCheckboxChange, consutlantIndex: number) {
+    changeConsultantWorkplace(event: MatCheckboxChange, consultantIndex: number) {
         if (event.checked) {
-            this.consultantData.at(consutlantIndex).get('consultantWorkplaceClientAddress')?.setValue(this.salesClientDataForm.directClientIdValue?.value, {emitEvent: false});
+            this.consultantData.at(consultantIndex).get('consultantWorkplaceClientAddress')?.setValue(this.salesClientDataForm.directClientIdValue?.value, {emitEvent: false});
+        }
+    }
+
+    updateConsultantDates(event: MatButtonToggleChange, consultantIndex: number) {
+        if (event.value) {
+            this.consultantData.at(consultantIndex).get('consultantProjectStartDate')?.setValue(this.salesClientDataForm.clientContractStartDate?.value, {emitEvent: false});
+            this.consultantData.at(consultantIndex).get('consultantProjectEndDate')?.setValue(this.salesClientDataForm.clientContractEndDate?.value, {emitEvent: false});
+            this.consultantData.at(consultantIndex).get('consultantProjectNoEndDate')?.setValue(this.salesClientDataForm.clientContractNoEndDate?.value, {emitEvent: false});
+            if (this.salesClientDataForm.clientContractNoEndDate?.value) {
+                this.consultantData.at(consultantIndex).get('consultantProjectEndDate')?.disable();
+            } else {
+                this.consultantData.at(consultantIndex).get('consultantProjectEndDate')?.enable();
+            }
         }
     }
 

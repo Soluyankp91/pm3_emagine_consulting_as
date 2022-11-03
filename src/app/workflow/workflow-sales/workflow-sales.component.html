@@ -2320,7 +2320,7 @@
                                     <h2 class="workflow-section--header">Contract Duration</h2>
                                     <h3 class="workflow-gray--header u-mb--10">Project duration</h3>
                                     <div fxLayout="row" fxLayoutAlign="start start" class="u-w--100 u-mb--20">
-                                        <mat-button-toggle-group class="workflow-toggle-buttons" formControlName="consultantProjectDurationSameAsClient">
+                                        <mat-button-toggle-group class="workflow-toggle-buttons" formControlName="consultantProjectDurationSameAsClient" (change)="updateConsultantDates($event, consultantIndex)">
                                             <mat-button-toggle *ngFor="let item of [{name: 'Same as client', value: true}, {name: 'Different from client', value: false}]" [value]="item.value">
                                                 {{ item.name }}
                                             </mat-button-toggle>
