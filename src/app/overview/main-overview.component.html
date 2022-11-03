@@ -20,9 +20,6 @@
                         [disableOptionCentering]="true"
                         panelClass="main-overview-dropdowns country-filter-dropdown"
                         [formControl]="invoicingEntityControl">
-                        <mat-option class="mat-select-header-option" [disabled]="true">
-                            Select invoicing entity
-                        </mat-option>
                         <mat-option class="mat-select-clear-option" *ngIf="invoicingEntityControl.value">
                             Clear
                         </mat-option>

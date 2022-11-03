@@ -50,24 +50,24 @@
             color: rgba(0, 0, 0, 0.47) !important;
             font-weight: 400;
         }
-        &.mat-select-header-option {
-            font-style: normal;
-            font-weight: 600;
-            font-size: 14px;
-            line-height: 140%;
-            color: rgba(137, 135, 133, 0.77) !important;
-        }
+        // &.mat-select-header-option {
+        //     font-style: normal;
+        //     font-weight: 600;
+        //     font-size: 14px;
+        //     line-height: 140%;
+        //     color: rgba(137, 135, 133, 0.77) !important;
+        // }
 
     }
 }
 
-.main-overview-dropdowns {
-    .mat-option {
-        &.mat-select-header-option {
-            border-bottom: 1px solid #E7E3E8;
-        }
-    }
-}
+// .main-overview-dropdowns {
+//     .mat-option {
+//         &.mat-select-header-option {
+//             border-bottom: 1px solid #E7E3E8;
+//         }
+//     }
+// }
 
 
 .client-rates,
@@ -177,7 +177,7 @@
 
 .cdk-overlay-container .cdk-overlay-pane .main-overview-dropdowns{
     &::-webkit-scrollbar {
-        width: 10px;
+        width: 5px;
     }
 
     /* Track */
@@ -187,9 +187,10 @@
 
     /* Handle */
     &::-webkit-scrollbar-thumb {
-        background: #888;
-        border-right: 5px #fff solid;
-        background-clip: padding-box
+        background: #E7E3E8;
+        // border-right: 5px #fff solid;
+        background-clip: padding-box;
+        border-radius: 5px;
     }
 }
 
@@ -209,7 +210,7 @@
         min-width: 300px !important;
         border-radius: unset;
         &::-webkit-scrollbar {
-            width: 10px;
+            width: 5px;
         }
 
         /* Track */
@@ -219,9 +220,9 @@
 
         /* Handle */
         &::-webkit-scrollbar-thumb {
-            background: #888;
-            border-right: 5px #fff solid;
-            background-clip: padding-box
+            background: #E7E3E8;
+            background-clip: padding-box;
+            border-radius: 5px;
         }
 
         .mat-option {

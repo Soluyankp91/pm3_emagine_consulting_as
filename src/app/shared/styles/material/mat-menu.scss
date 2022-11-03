@@ -112,7 +112,7 @@
         border-top: 1px solid #E7E3E8;
 
         &::-webkit-scrollbar {
-            width: 10px;
+            width: 5px;
         }
 
         /* Track */
@@ -122,9 +122,9 @@
 
         /* Handle */
         &::-webkit-scrollbar-thumb {
-            background: #888;
-            border-right: 5px #fff solid;
-            background-clip: padding-box
+            background: #E7E3E8;
+            background-clip: padding-box;
+            border-radius: 5px;
         }
 
         .mat-option {
