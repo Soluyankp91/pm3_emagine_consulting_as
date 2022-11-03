@@ -1042,7 +1042,7 @@
                         <div fxLayout="column" fxLayoutAlign="start start" class="u-w--100">
                             <h1 class="workflow-section--header-main">Main data</h1>
                             <h2 class="workflow-section--header">Project</h2>
-                            <ng-container *ngIf="activeSideSection.typeId === workflowSideSections.StartClientPeriod">
+                            <ng-container *ngIf="activeSideSection.typeId === workflowSideSections.StartClientPeriod || activeSideSection.typeId === workflowSideSections.ExtendClientPeriod || activeSideSection.typeId === workflowSideSections.ChangeClientPeriod">
                                 <h3 class="workflow-gray--header">Project Type (Legacy)</h3>
                                 <div fxLayout="row" fxLayoutAlign="start start" class="u-w--100 u-mb--10 u-mt--10">
                                     <mat-form-field appearance="outline" class="u-w--100  filter-select" fxFlex="33%">
@@ -1099,6 +1099,17 @@
                                         <app-validator [control]="salesMainDataForm.margin"></app-validator>
                                     </mat-form-field>
                                 </div>
+                            </ng-container>
+
+                            <ng-container *ngIf="activeSideSection.typeId === workflowSideSections.ExtendClientPeriod || activeSideSection.typeId === workflowSideSections.ChangeClientPeriod; else startClientPeriodProjectCategory">
+                                <div fxLayout="column" class="u-w--100 u-mb--20">
+                                    <h3 class="workflow-step-readonly--gray-header">Project Category</h3>
+                                    <span class="workflow-step-readonly--blue-text-bold">
+                                        {{salesMainDataForm.projectCategory?.value?.name ?? '-'}}
+                                    </span>
+                                </div>
+                            </ng-container>
+                            <ng-template #startClientPeriodProjectCategory>
                                 <div fxLayout="row" fxLayoutAlign="start start" class="u-w--100 u-mb--10">
                                     <mat-form-field appearance="outline" class="u-w--100  filter-select u-mr--16" fxFlex="33%">
                                         <mat-label>Project Category</mat-label>
@@ -1110,49 +1121,7 @@
                                         <app-validator [control]="salesMainDataForm.projectCategory"></app-validator>
                                     </mat-form-field>
                                 </div>
-                            </ng-container>
-                            <ng-container *ngIf="activeSideSection.typeId === workflowSideSections.ExtendClientPeriod || activeSideSection.typeId === workflowSideSections.ChangeClientPeriod">
-                                <div fxLayout="row" fxLayoutAlign="start start" fxLayoutGap="120px" class="u-w--100 u-mb--20">
-                                    <div fxLayout="column">
-                                        <h3 class="workflow-step-readonly--gray-header">Project Type (Legacy)</h3>
-                                        <span class="workflow-step-readonly--blue-text-bold">
-                                            {{salesMainDataForm.projectType?.value?.name}}
-                                        </span>
-                                    </div>
-                                    <div fxLayout="column">
-                                        <h3 class="workflow-step-readonly--gray-header">Sales Type</h3>
-                                        <span class="workflow-step-readonly--blue-text-bold">
-                                            {{salesMainDataForm.salesType?.value?.name}}
-                                        </span>
-                                    </div>
-                                    <div fxLayout="column">
-                                        <h3 class="workflow-step-readonly--gray-header">Delivery Type</h3>
-                                        <span class="workflow-step-readonly--blue-text-bold">
-                                            {{salesMainDataForm.deliveryType?.value?.name}}
-                                        </span>
-                                    </div>
-                                </div>
-                                <div fxLayout="row" fxLayoutAlign="start start" class="u-w--100 u-mb--10">
-                                    <mat-form-field appearance="outline" class="u-w--100  filter-select u-mr--16" fxFlex="33%">
-                                        <mat-label>Margin</mat-label>
-                                        <mat-select formControlName="margin" [disableOptionCentering]="true" [compareWith]="compareWithFn" required>
-                                            <mat-option class="mat-select-clear-option">
-                                                Clear
-                                            </mat-option>
-                                            <mat-option *ngFor="let item of margins" [value]="item">
-                                                {{ item.name }}
-                                            </mat-option>
-                                        </mat-select>
-                                        <app-validator [control]="salesMainDataForm.margin"></app-validator>
-                                    </mat-form-field>
-                                </div>
-                                <div fxLayout="column" class="u-w--100 u-mb--20">
-                                    <h3 class="workflow-step-readonly--gray-header">Project Category</h3>
-                                    <span class="workflow-step-readonly--blue-text-bold">
-                                        {{salesMainDataForm.projectCategory?.value?.name ?? '-'}}
-                                    </span>
-                                </div>
-                            </ng-container>
+                            </ng-template>
 
                             <div fxLayout="column" fxLayoutAlign="start start" class="u-w--100 u-mb--10">
                                 <div fxLayout="row" fxLayoutAlign="start start" class="u-w--100">
