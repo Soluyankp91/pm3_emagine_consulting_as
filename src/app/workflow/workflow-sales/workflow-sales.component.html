@@ -3280,15 +3280,6 @@
             </span>
         </ng-container>
 
-        <!-- <span class="workflow-sales--additional-address-hint">
-            {{client?.clientId ? '#' + client?.clientId + ' | ' : '' }}
-            {{client?.countryName ? client?.countryName + ' | ' : ''}}
-            {{client?.city ? client?.city + ' | ' : ''}}
-            {{client?.address ? client?.address + ' | ' : ''}}
-            {{client?.address2 ? client?.address2 + ' | ' : ''}}
-            {{client?.postCode ? client?.postCode : ''}}
-        </span> -->
-
         <button class="link-to-client-icon" mat-icon-button *ngIf="client?.clientId"
             (click)="openInNewTab(client?.clientId)"
             [matTooltip]="'Link to Client profile'" matTooltipClass="white-tooltip">
