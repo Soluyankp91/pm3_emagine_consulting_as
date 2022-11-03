@@ -85,7 +85,7 @@
                     <mat-autocomplete #invoicingReferencePersonAutocomplete="matAutocomplete" [displayWith]="displayFullNameFn">
                         <ng-container>
                             <mat-option *ngFor="let contact of filteredReferencePersons" [value]="contact" [ngClass]="{ 'no-data': contact.id === 'no-data' }">
-                                <b>{{ contact.firstName + ' ' + contact.lastName }}</b>
+                                <span class="autocopmlete-option-name">{{ contact.firstName + ' ' + contact.lastName }}</span>
                             </mat-option>
                         </ng-container>
                     </mat-autocomplete>
@@ -108,9 +108,11 @@
                     <mat-autocomplete #clientInvoicingRecipientAutocomplete="matAutocomplete" [displayWith]="displayClientNameFn">
                         <ng-container>
                             <mat-option *ngFor="let client of filteredClientInvoicingRecipients" [value]="client" [ngClass]="{ 'no-data': client.id === 'no-data' }">
-                                <div>
-                                    <b>{{ client.clientName }}</b>
-                                    <span *ngIf="client.id !== 'no-data'"> | {{client.address}} | {{client.address2}} | {{client.postCode}}</span>
+                                <div class="multilineDropdown-option--column">
+                                    <span class="multilineDropdown-option--column-client-name">{{ client.clientName }}</span>
+                                    <span *ngIf="client.id !== 'no-data'" class="multilineDropdown-option--column-client-info">
+                                        #{{client.clientId}} | {{client.city ?? ''}} {{client.countryName ? ', ' + client.countryName : ''}}
+                                    </span>
                                 </div>
                             </mat-option>
                         </ng-container>

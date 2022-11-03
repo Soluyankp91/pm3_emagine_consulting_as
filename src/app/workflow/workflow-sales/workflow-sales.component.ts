@@ -241,7 +241,7 @@ export class WorkflowSalesComponent extends AppComponentBase implements OnInit {
                 takeUntil(this._unsubscribe),
                 debounceTime(300),
                 switchMap((value: any) => {
-                    if (value) {
+                    // if (value) {
                         let toSend = {
                             name: value ?? '',
                             maxRecordsCount: 1000,
@@ -252,9 +252,9 @@ export class WorkflowSalesComponent extends AppComponentBase implements OnInit {
                                 : value?.trim();
                         }
                         return this._lookupService.clients(toSend.name, toSend.maxRecordsCount);
-                    } else {
-                        return of([]);
-                    }
+                    // } else {
+                    //     return of([]);
+                    // }
                 }),
             ).subscribe((list: ClientResultDto[]) => {
                 if (list.length) {

@@ -492,14 +492,39 @@
         &--row {
             display: flex;
             flex-direction: row;
+            align-items: center;
             line-height: 1 !important;
         }
         &--column {
             display: flex;
             flex-direction: column;
             line-height: 1 !important;
+            &-client {
+                &-name {
+                    font-style: normal;
+                    font-weight: 700;
+                    font-size: 14px;
+                    line-height: 140%;
+                    color: #4A4E60;
+                }
+                &-info {
+                    font-style: normal;
+                    font-weight: 600;
+                    font-size: 14px;
+                    line-height: 140%;
+                    color: #4A4E60;
+                }
+            }
         }
     }
+}
+
+.autocopmlete-option-name {
+    font-style: normal;
+    font-weight: 700;
+    font-size: 14px;
+    line-height: 140%;
+    color: #4A4E60;
 }
 
 .textarea-with-hint {
