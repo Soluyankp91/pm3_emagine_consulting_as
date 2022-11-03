@@ -1811,7 +1811,7 @@
                                             </mat-autocomplete>
                                             <app-validator [control]="salesClientDataForm.clientInvoicingRecipientIdValue"></app-validator>
                                         </mat-form-field>
-                                        <mat-checkbox color="accent" formControlName="clientInvoicingRecipientSameAsDirectClient" name="clientInvoicingRecipientSameAsDirectClient" class="black-checkbox u-mr--10" (change)="disableOrEnableInput(salesClientDataForm.clientInvoicingRecipientSameAsDirectClient?.value, salesClientDataForm.clientInvoicingRecipientIdValue)">
+                                        <mat-checkbox color="accent" formControlName="clientInvoicingRecipientSameAsDirectClient" name="clientInvoicingRecipientSameAsDirectClient" class="black-checkbox u-mr--10" (change)="setValueAndToggleDisalbeState(salesClientDataForm.clientInvoicingRecipientSameAsDirectClient?.value, salesClientDataForm.clientInvoicingRecipientIdValue, salesClientDataForm.directClientIdValue?.value)">
                                             Same as direct client
                                         </mat-checkbox>
                                     </div>
@@ -3063,7 +3063,7 @@
                                                 <app-validator [control]="consultant.get('deliveryAccountManager')"></app-validator>
                                             </mat-form-field>
                                             <mat-checkbox color="accent" formControlName="deliveryManagerSameAsAccountManager" name="deliveryManagerSameAsAccountManager" class="black-checkbox u-mr--10"
-                                                (change)="disableOrEnableInput(consultant?.value?.deliveryManagerSameAsAccountManager, consultant?.get('deliveryAccountManager'))">
+                                                (change)="setValueAndToggleDisalbeState(consultant?.value?.deliveryManagerSameAsAccountManager, consultant?.get('deliveryAccountManager'), salesMainDataForm.salesAccountManagerIdValue?.value)">
                                                 Same as account manager
                                             </mat-checkbox>
                                         </div>

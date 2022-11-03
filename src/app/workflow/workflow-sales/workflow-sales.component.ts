@@ -767,6 +767,15 @@ export class WorkflowSalesComponent extends AppComponentBase implements OnInit {
 
     //#endregion dataFetch
 
+    setValueAndToggleDisalbeState(disableControl: boolean, control: AbstractControl | null | undefined, value: any) {
+        if (disableControl) {
+            control!.disable();
+            control!.setValue(value, {emitEvent: false})
+        } else {
+            control!.enable();
+        }
+    }
+
     getDataBasedOnProjectType(event: MatSelectChange) {
         const projectTypeId = event.value.id;
         this.showMainSpinner();
