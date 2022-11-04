@@ -85,8 +85,6 @@
         </div>
     </div>
 
-
-
     <div *ngIf="topToolbarVisible" fxLayout="row" fxLayoutAlign="start center" class="workflow-toolbar u-w--100">
         <p class="workflow-toolbar--client u-mr--20">{{workflowClient?.length ? workflowClient : 'New workflow'}}</p>
     </div>
@@ -116,7 +114,7 @@
                     </div>
                     <span class="tab-subheader">{{tab.startDate | momentFormat: 'DD.MM.YYYY'}} - {{tab.endDate ? (tab.endDate | momentFormat: 'DD.MM.YYYY') : '...'}}</span>
                 </ng-template>
-                <div fxLayout="row" fxLayoutAlign="start start" class="workflow-form--panel u-w--100">
+                <div fxLayout="row" fxLayoutAlign="start start" class="workflow-form--panel u-w--100 u-mb--50">
                     <div fxFlex="80%">
                         <app-workflow-period #workflowPeriod *ngIf="selectedIndex === i + 1" [periodId]="tab.id" [workflowId]="workflowId"></app-workflow-period>
                     </div>
