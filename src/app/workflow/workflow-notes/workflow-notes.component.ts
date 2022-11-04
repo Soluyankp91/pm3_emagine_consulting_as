@@ -1,4 +1,4 @@
-import { Component, OnInit, Injector, Input, Output, EventEmitter, ViewChild, OnDestroy, NgZone, ElementRef } from '@angular/core';
+import { Component, OnInit, Injector, Input, Output, EventEmitter, ViewChild, OnDestroy, NgZone, ElementRef, AfterViewInit } from '@angular/core';
 import { FormControl, Validators } from '@angular/forms';
 import { AppComponentBase } from 'src/shared/app-component-base';
 import { finalize, takeUntil } from 'rxjs/operators';
@@ -14,7 +14,7 @@ import { Subject } from 'rxjs';
     templateUrl: './workflow-notes.component.html',
     styleUrls: ['./workflow-notes.component.scss']
 })
-export class WorkflowNotesComponent extends AppComponentBase implements OnInit, OnDestroy {
+export class WorkflowNotesComponent extends AppComponentBase implements OnInit, AfterViewInit, OnDestroy {
     @Input() topToolbarVisible: boolean;
     @Input() workflowId: string;
     @Input() alwaysVisible: boolean;
@@ -52,13 +52,10 @@ export class WorkflowNotesComponent extends AppComponentBase implements OnInit, 
             .pipe(
                 takeUntil(this._unsubscribe)
             )
-            .subscribe((cdk: CdkScrollable | any) => {
+            .subscribe(() => {
                 this.zone.run(() => {
-                    const scrollPosition = cdk.getElementRef().nativeElement.scrollTop;
                     if (this.notesContainer) {
-                        // if (scrollPosition < 115) { // 115 - header height
-                            this.height = this.notesContainer.nativeElement.getBoundingClientRect().top;
-                        // }
+                        this.height = this.notesContainer.nativeElement.getBoundingClientRect().top;
                     }
                 });
             });
