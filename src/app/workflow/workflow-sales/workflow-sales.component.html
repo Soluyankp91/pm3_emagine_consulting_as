@@ -2703,7 +2703,7 @@
                                     </div>
 
                                     <!-- 'Individual cap' Id = 3 -->
-                                    <div [fxHide]="salesClientDataForm.capOnTimeReporting?.value?.id !== 3">
+                                    <div [fxHide]="salesClientDataForm.capOnTimeReporting?.value?.id !== 3" class="u-w--100">
                                         <h3 class="workflow-gray--header u-mb--10">Cap on Time Reporting</h3>
                                         <div fxLayout="row" fxLayoutAlign="start start" class="u-w--100 u-mb--20">
                                             <mat-button-toggle-group class="workflow-toggle-buttons" formControlName="consultantCapOnTimeReporting">
@@ -2713,13 +2713,13 @@
                                             </mat-button-toggle-group>
                                         </div>
                                         <div fxLayout="row" fxLayoutAlign="start center" class="u-w--100 u-mb--20">
-                                            <mat-form-field appearance="outline" class="u-w--100  u-mr--16" fxFlex="0 0 calc(16.5% - 8px)">
-                                                <mat-label>Max value</mat-label>
-                                                <input [required]="salesClientDataForm.capOnTimeReporting?.value?.id === 3 && (consultant.value?.consultantCapOnTimeReporting.id === 1 || consultant.value?.consultantCapOnTimeReporting.id === 2)" autocomplete="off" matInput formControlName="consultantTimeReportingCapMaxValue" type="number">
-                                                <app-validator [control]="consultant.get('consultantTimeReportingCapMaxValue')"></app-validator>
-                                            </mat-form-field>
                                             <ng-container [ngSwitch]="consultant.value?.consultantCapOnTimeReporting.id">
                                                 <ng-container *ngSwitchCase="1">  <!-- 'Cap on units' -->
+                                                    <mat-form-field appearance="outline" class="u-w--100  u-mr--16" fxFlex="0 0 calc(16.5% - 8px)">
+                                                        <mat-label>Max value</mat-label>
+                                                        <input [required]="salesClientDataForm.capOnTimeReporting?.value?.id === 3 && (consultant.value?.consultantCapOnTimeReporting.id === 1 || consultant.value?.consultantCapOnTimeReporting.id === 2)" autocomplete="off" matInput formControlName="consultantTimeReportingCapMaxValue" type="number">
+                                                        <app-validator [control]="consultant.get('consultantTimeReportingCapMaxValue')"></app-validator>
+                                                    </mat-form-field>
                                                     <div fxFlex="0 0 calc(16.5% - 8px)" fxLayoutAlign="start center" class="workflow-form--consultants__payment-price-text">
                                                         <ng-container [ngSwitch]="consultant.value.consultantRateUnitType?.id">
                                                             <ng-container *ngSwitchCase="1"> <!-- Per hour -->
