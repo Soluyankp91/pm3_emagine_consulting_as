@@ -1,6 +1,6 @@
 import { Overlay } from '@angular/cdk/overlay';
 import { NumberSymbol } from '@angular/common';
-import { HttpClient } from '@angular/common/http';
+import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { Component, Injector, Input, OnDestroy, OnInit } from '@angular/core';
 import { AbstractControl, FormArray, FormBuilder, FormControl, Validators } from '@angular/forms';
 import { MatAutocompleteSelectedEvent } from '@angular/material/autocomplete';
@@ -10,6 +10,7 @@ import { MatDialog } from '@angular/material/dialog';
 import { MatMenuTrigger } from '@angular/material/menu';
 import { MatSelectChange } from '@angular/material/select';
 import { ActivatedRoute, Router } from '@angular/router';
+import { AuthenticationResult } from '@azure/msal-browser';
 import { ScrollToConfigOptions, ScrollToService } from '@nicky-lenaers/ngx-scroll-to';
 import { merge, Observable, of, Subject } from 'rxjs';
 import { debounceTime, finalize, map, switchMap, takeUntil } from 'rxjs/operators';
@@ -2563,25 +2564,25 @@ export class WorkflowSalesComponent extends AppComponentBase implements OnInit, 
         window.open(url, '_blank');
     }
 
-    // openInHubspot(client: ClientResultDto) {
-    //     if (this._internalLookupService.hubspotClientUrl?.length) {
-    //         if (client.crmClientId !== null && client.crmClientId !== undefined) {
-    //             window.open(this._internalLookupService.hubspotClientUrl.replace('{CrmClientId}', client.crmClientId!.toString()), '_blank');
-    //         }
-    //     } else {
-    //         this.localHttpService.getTokenPromise().then((response: AuthenticationResult) => {
-    //             this.httpClient.get(`${this.apiUrl}/api/Clients/HubspotPartialUrlAsync`, {
-    //                     headers: new HttpHeaders({
-    //                         'Authorization': `Bearer ${response.accessToken}`
-    //                     }),
-    //                     responseType: 'text'
-    //                 }).subscribe((result: string) => {
-    //                     this._internalLookupService.hubspotClientUrl = result;
-    //                     if (client.crmClientId !== null && client.crmClientId !== undefined) {
-    //                         window.open(result.replace('{CrmClientId}', client.crmClientId!.toString()), '_blank');
-    //                     }
-    //             })
-    //         });
-    //     }
-    // }
+    openInHubspot(client: ClientResultDto) {
+        if (this._internalLookupService.hubspotClientUrl?.length) {
+            if (client.crmClientId !== null && client.crmClientId !== undefined) {
+                window.open(this._internalLookupService.hubspotClientUrl.replace('{CrmClientId}', client.crmClientId!.toString()), '_blank');
+            }
+        } else {
+            this.localHttpService.getTokenPromise().then((response: AuthenticationResult) => {
+                this.httpClient.get(`${this.apiUrl}/api/Clients/HubspotPartialUrlAsync`, {
+                        headers: new HttpHeaders({
+                            'Authorization': `Bearer ${response.accessToken}`
+                        }),
+                        responseType: 'text'
+                    }).subscribe((result: string) => {
+                        this._internalLookupService.hubspotClientUrl = result;
+                        if (client.crmClientId !== null && client.crmClientId !== undefined) {
+                            window.open(result.replace('{CrmClientId}', client.crmClientId!.toString()), '_blank');
+                        }
+                })
+            });
+        }
+    }
 }
