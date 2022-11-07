@@ -1811,7 +1811,7 @@
                                             </mat-autocomplete>
                                             <app-validator [control]="salesClientDataForm.clientInvoicingRecipientIdValue"></app-validator>
                                         </mat-form-field>
-                                        <mat-checkbox color="accent" formControlName="clientInvoicingRecipientSameAsDirectClient" name="clientInvoicingRecipientSameAsDirectClient" class="black-checkbox u-mr--10" (change)="disableOrEnableInput(salesClientDataForm.clientInvoicingRecipientSameAsDirectClient?.value, salesClientDataForm.clientInvoicingRecipientIdValue)">
+                                        <mat-checkbox color="accent" formControlName="clientInvoicingRecipientSameAsDirectClient" name="clientInvoicingRecipientSameAsDirectClient" class="black-checkbox u-mr--10" (change)="setValueAndToggleDisalbeState(salesClientDataForm.clientInvoicingRecipientSameAsDirectClient?.value, salesClientDataForm.clientInvoicingRecipientIdValue, salesClientDataForm.directClientIdValue?.value)">
                                             Same as direct client
                                         </mat-checkbox>
                                     </div>
@@ -2320,7 +2320,7 @@
                                     <h2 class="workflow-section--header">Contract Duration</h2>
                                     <h3 class="workflow-gray--header u-mb--10">Project duration</h3>
                                     <div fxLayout="row" fxLayoutAlign="start start" class="u-w--100 u-mb--20">
-                                        <mat-button-toggle-group class="workflow-toggle-buttons" formControlName="consultantProjectDurationSameAsClient">
+                                        <mat-button-toggle-group class="workflow-toggle-buttons" formControlName="consultantProjectDurationSameAsClient" (change)="updateConsultantDates($event, consultantIndex)">
                                             <mat-button-toggle *ngFor="let item of [{name: 'Same as client', value: true}, {name: 'Different from client', value: false}]" [value]="item.value">
                                                 {{ item.name }}
                                             </mat-button-toggle>
@@ -3063,7 +3063,7 @@
                                                 <app-validator [control]="consultant.get('deliveryAccountManager')"></app-validator>
                                             </mat-form-field>
                                             <mat-checkbox color="accent" formControlName="deliveryManagerSameAsAccountManager" name="deliveryManagerSameAsAccountManager" class="black-checkbox u-mr--10"
-                                                (change)="disableOrEnableInput(consultant?.value?.deliveryManagerSameAsAccountManager, consultant?.get('deliveryAccountManager'))">
+                                                (change)="setValueAndToggleDisalbeState(consultant?.value?.deliveryManagerSameAsAccountManager, consultant?.get('deliveryAccountManager'), salesMainDataForm.salesAccountManagerIdValue?.value)">
                                                 Same as account manager
                                             </mat-checkbox>
                                         </div>
