@@ -54,6 +54,7 @@
                 padding: 0;
                 &__header {
                     font-weight: 600;
+                    font-size: 12px;
                     color: $medium-grey-color;
                     &-container {
                         padding: 8px;
@@ -117,3 +118,10 @@
         background-color: rgba(139,209,203,0.22);
     }
 }
+
+.absolute-edit-toggle {
+    border-radius: 50%;
+    background-color: rgba($color: #72a0f8, $alpha: 0.2);
+    color: #72a0f8;
+}
+
