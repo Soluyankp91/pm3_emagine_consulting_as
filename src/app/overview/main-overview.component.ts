@@ -46,8 +46,6 @@ export class MainOverviewComponent extends AppComponentBase implements OnInit {
     isDataLoading = true;
 
     legalEntities: SelectableCountry[] = [];
-    // FIXME: remove after release
-    tenants: SelectableCountry[] = [];
 
     saleTypes: EnumEntityTypeDto[] = [];
     deliveryTypes: EnumEntityTypeDto[] = [];
@@ -172,16 +170,13 @@ export class MainOverviewComponent extends AppComponentBase implements OnInit {
      }
 
     ngOnInit(): void {
-        // this.getLegalEntities();
+        this.getLegalEntities();
         this.getSalesType();
         this.getDeliveryTypes();
         this.getMargins();
         this.getMainOverviewStatuses();
         this.getOverviewViewTypes();
         this.getCurrentUser();
-
-        // FIXME: remove after release
-        this.getTenants();
     }
 
     ngOnDestroy(): void {
@@ -486,44 +481,25 @@ export class MainOverviewComponent extends AppComponentBase implements OnInit {
         this.changeViewType(true);
     }
 
-    // getLegalEntities() {
-    //     this.isCountriesLoading = true;
-    //     this._internalLookupService.getLegalEntities()
-    //         .pipe(finalize(() => this.isCountriesLoading = false),
-    //             map(entities => entities.map(x => {
-    //                 return new SelectableCountry({
-    //                     id: x.id!,
-    //                     name: x.name!,
-    //                     tenantName: x.tenantName!,
-    //                     code: this.getTenantCountryCode(x.tenantName!)!,
-    //                     selected: false,
-    //                     flag: x.tenantName!
-    //                 });
-    //             })))
-    //         .subscribe(result => {
-    //             this.legalEntities = result;
-    //         });
-    // }
-
-    // FIXME: remove after release
-    getTenants() {
+    getLegalEntities() {
         this.isCountriesLoading = true;
-        this._internalLookupService.getTenants()
+        this._internalLookupService.getLegalEntities()
             .pipe(finalize(() => this.isCountriesLoading = false),
                 map(entities => entities.map(x => {
                     return new SelectableCountry({
                         id: x.id!,
                         name: x.name!,
-                        tenantName: x.name!,
-                        code: this.getTenantCountryCode(x.name!)!,
+                        tenantName: x.tenantName!,
+                        code: this.getTenantCountryCode(x.tenantName!)!,
                         selected: false,
-                        flag: x.name!
+                        flag: x.tenantName!
                     });
                 })))
             .subscribe(result => {
-                this.tenants = result;
+                this.legalEntities = result;
             });
     }
+
 
     getTenantCountryCode(name: string) {
         switch (name) {
@@ -545,8 +521,8 @@ export class MainOverviewComponent extends AppComponentBase implements OnInit {
                 return 'IN';
             case 'International':
                 return 'EU';
-            // case 'United Kingdom':
-            //     return 'EU';
+            case 'United Kingdom':
+                return 'UK';
             default:
                 break;
         }
