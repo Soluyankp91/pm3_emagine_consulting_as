@@ -1,5 +1,5 @@
 import { Overlay } from '@angular/cdk/overlay';
-import { Component, Injector, Input, OnInit, ViewChild } from '@angular/core';
+import { Component, Injector, Input, OnDestroy, OnInit, ViewChild } from '@angular/core';
 import { MatDialog } from '@angular/material/dialog';
 import { MatMenuTrigger } from '@angular/material/menu';
 import { Subject } from 'rxjs';
@@ -8,7 +8,7 @@ import { InternalLookupService } from 'src/app/shared/common/internal-lookup.ser
 import { ConfirmationDialogComponent } from 'src/app/shared/components/confirmation-dialog/confirmation-dialog.component';
 import { ManagerStatus } from 'src/app/shared/components/manager-search/manager-search.model';
 import { AppComponentBase } from 'src/shared/app-component-base';
-import { WorkflowProcessDto, WorkflowProcessType, WorkflowServiceProxy, StepDto, StepType, WorkflowStepStatus, ConsultantResultDto, ApiServiceProxy } from 'src/shared/service-proxies/service-proxies';
+import { WorkflowProcessType, WorkflowServiceProxy, StepDto, StepType, WorkflowStepStatus, ConsultantResultDto, ApiServiceProxy } from 'src/shared/service-proxies/service-proxies';
 import { WorkflowContractsComponent } from '../workflow-contracts/workflow-contracts.component';
 import { WorkflowDataService } from '../workflow-data.service';
 import { WorkflowFinancesComponent } from '../workflow-finances/workflow-finances.component';
@@ -20,7 +20,7 @@ import { StepAnchorDto, StepWithAnchorsDto, WorkflowProcessWithAnchorsDto } from
     templateUrl: './workflow-period.component.html',
     styleUrls: ['./workflow-period.component.scss']
 })
-export class WorkflowPeriodComponent extends AppComponentBase implements OnInit {
+export class WorkflowPeriodComponent extends AppComponentBase implements OnInit, OnDestroy {
     @ViewChild('workflowSales', {static: false}) workflowSales: WorkflowSalesComponent;
     @ViewChild('workflowContracts', {static: false}) workflowContracts: WorkflowContractsComponent;
     @ViewChild('workflowFinances', {static: false}) workflowFinances: WorkflowFinancesComponent;
@@ -94,10 +94,15 @@ export class WorkflowPeriodComponent extends AppComponentBase implements OnInit 
             });
         this._workflowDataService.workflowSideSectionUpdated
             .pipe(takeUntil(this._unsubscribe))
-                .subscribe((value: {isStatusUpdate: boolean}) => {
+                .subscribe((value: {isStatusUpdate: boolean, autoUpdate?: boolean}) => {
                     this.isStatusUpdate = value.isStatusUpdate;
-                    this.getSideMenu();
+                    this.getSideMenu(value.autoUpdate);
                 });
+    }
+
+    ngOnDestroy(): void {
+        this._unsubscribe.next();
+        this._unsubscribe.complete();
     }
 
     getPeriodStepTypes() {
@@ -357,7 +362,7 @@ export class WorkflowPeriodComponent extends AppComponentBase implements OnInit 
         this._workflowService.terminationDelete(this.workflowId)
         .pipe(finalize(() => this.hideMainSpinner()))
         .subscribe(result => {
-            this._workflowDataService.workflowSideSectionUpdated.emit({isStatusUpdate: true});
+            this._workflowDataService.workflowSideSectionUpdated.emit({isStatusUpdate: false, autoUpdate: true});
             this._workflowDataService.workflowOverviewUpdated.emit(true);
         });
     }
@@ -367,7 +372,7 @@ export class WorkflowPeriodComponent extends AppComponentBase implements OnInit 
         this._workflowService.terminationConsultantDelete(this.workflowId, consultantId)
         .pipe(finalize(() => this.hideMainSpinner()))
         .subscribe(result => {
-            this._workflowDataService.workflowSideSectionUpdated.emit({isStatusUpdate: true});
+            this._workflowDataService.workflowSideSectionUpdated.emit({isStatusUpdate: false, autoUpdate: true});
             this._workflowDataService.workflowOverviewUpdated.emit(true);
         })
     }
@@ -387,7 +392,7 @@ export class WorkflowPeriodComponent extends AppComponentBase implements OnInit 
         this._apiService.consultantPeriod(consultantPeriodId)
             .pipe(finalize(() => this.hideMainSpinner()))
             .subscribe(result => {
-                this._workflowDataService.workflowSideSectionUpdated.emit({isStatusUpdate: true});
+                this._workflowDataService.workflowSideSectionUpdated.emit({isStatusUpdate: false, autoUpdate: true});
                 this._workflowDataService.workflowOverviewUpdated.emit(true);
             });
     }

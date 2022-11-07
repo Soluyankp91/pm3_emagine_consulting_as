@@ -22,7 +22,7 @@
                                         <mat-checkbox [checked]="manager.selected"
                                             *ngIf="manager.id !== 'no-data'"
                                             color="primary"
-                                            class="green-checkbox"
+                                            class="black-checkbox"
                                             (change)="toggleSelection(manager,selectedAccountManagers)"
                                             (click)="$event.stopPropagation()">
                                             <div fxLayout="row" fxLayoutAlign="start center" class="u-w--100">
@@ -50,7 +50,7 @@
                                             <mat-checkbox [checked]="manager.selected"
                                                 *ngIf="manager.id !== 'no-data'"
                                                 color="primary"
-                                                class="green-checkbox"
+                                                class="black-checkbox"
                                                 (change)="toggleSelection(manager,selectedAccountManagers)"
                                                 (click)="$event.stopPropagation()">
                                                 <div fxLayout="row" fxLayoutAlign="start center" class="u-w--100">
@@ -134,8 +134,9 @@
                 <mat-option class="mat-select-clear-option" *ngIf="invoicingEntityControl.value">
                     Clear
                 </mat-option>
-                <mat-option *ngFor="let item of legalEntities" [value]="item.id">
-                    {{ item.tenantName + ' ' + '(' + item.name + ')' }}
+                <mat-option *ngFor="let item of tenants" [value]="item.id">
+                    <!-- {{ item.tenantName + ' ' + '(' + item.name + ')' }} -->
+                    {{ item.name }}
                 </mat-option>
             </mat-select>
         </mat-form-field>
@@ -146,8 +147,9 @@
                 <mat-option class="mat-select-clear-option" *ngIf="paymentEntityControl.value">
                     Clear
                 </mat-option>
-                <mat-option *ngFor="let item of legalEntities" [value]="item.id">
-                    {{ item.tenantName + ' ' + '(' + item.name + ')' }}
+                <mat-option *ngFor="let item of tenants" [value]="item.id">
+                    <!-- {{ item.tenantName + ' ' + '(' + item.name + ')' }} -->
+                    {{ item.name }}
                 </mat-option>
             </mat-select>
         </mat-form-field>

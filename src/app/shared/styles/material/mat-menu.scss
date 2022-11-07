@@ -1,5 +1,19 @@
 @import "/src/app/shared/styles/config/_colors";
 
+.mat-menu-panel {
+    min-height: 40px !important;
+    .mat-menu-content:not(:empty) {
+        padding: 0;
+        .mat-menu-item {
+            height: 40px;
+            line-height: 40px;
+            &:hover:not([disabled]) {
+                background: unset !important;
+            }
+        }
+    }
+}
+
 .menu-item {
     display: flex;
     align-items: center;
@@ -41,6 +55,14 @@
             mat-icon {
                 background: unset !important;
             }
+            &:hover {
+                color: #3363BE;
+                mat-icon {
+                    path {
+                        fill: #3363BE !important;
+                    }
+                }
+            }
         }
     }
     &--add {
@@ -67,9 +89,10 @@
 .client-list--filter-manager-menu + * .cdk-overlay-pane,
 .client-list--filter-country-menu + * .cdk-overlay-pane,
 .main-overview--filter-manager-menu + * .cdk-overlay-pane,
-.main-overview--filter-country-menu + * .cdk-overlay-pane {
+.main-overview--filter-country-menu + * .cdk-overlay-pane,
+.filter-manager--menu + * .cdk-overlay-pane {
     .mat-menu-panel, .mat-select-panel {
-        min-height: 48px !important;
+        min-height: 40px !important;
         border-radius: unset !important;
         min-width: 300px !important;
         .mat-menu-content {
@@ -94,10 +117,11 @@
 .client-list--filter-manager-menu + * + * .cdk-overlay-pane,
 .client-list--filter-country-menu + * + * .cdk-overlay-pane,
 .main-overview--filter-manager-menu + * + * .cdk-overlay-pane,
-.main-overview--filter-country-menu + * + * .cdk-overlay-pane {
+.main-overview--filter-country-menu + * + * .cdk-overlay-pane,
+.filter-manager--menu + * + * .cdk-overlay-pane {
     .mat-autocomplete-panel, .mat-select-panel {
-        // border: 1px solid #E7E3E8;
         min-width: 300px !important;
+        border-top: 1px solid #E7E3E8;
 
         &::-webkit-scrollbar {
             width: 10px;
