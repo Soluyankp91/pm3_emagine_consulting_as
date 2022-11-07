@@ -664,5 +664,12 @@ export class AppModule {
                 'assets/common/images/add-icon.svg'
             )
         );
+
+        iconRegistry.addSvgIcon(
+            '3-dots',
+            sanitizer.bypassSecurityTrustResourceUrl(
+                'assets/common/images/3-dots.svg'
+            )
+        );
     }
 }

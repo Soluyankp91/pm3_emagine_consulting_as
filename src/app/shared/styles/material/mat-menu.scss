@@ -51,9 +51,15 @@
             }
         }
         &.contract-manager-action {
-            color: #72A0F8;
+            display: flex;
+            color: #5B8EEF;
+            font-size: 12px;
             mat-icon {
                 background: unset !important;
+                height: 18px;
+                width: 18px;
+                font-size: 18px;
+                line-height: 18px;
             }
             &:hover {
                 color: #3363BE;
@@ -135,9 +141,6 @@
                 line-height: 140%;
                 color: rgba(56, 72, 83, 0.8);
                 padding-left: 5px;
-                // @media screen and (max-width: 1440px) {
-                //     font-size: 12px;
-                // }
             }
         }
     }

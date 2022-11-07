@@ -13,13 +13,13 @@
                             <div fxLayout="row" fxLayoutAlign="start start">
                                 <button
                                     *ngIf="canToggleEditMode"
-                                    class="absolute-edit-toggle contract-manager-action u-mr--16"
+                                    class="absolute-edit-toggle contract-manager-action u-mr--8"
                                     mat-icon-button
                                     appPreventDoubleClick (throttledClick)="toggleEditMode()">
                                     <mat-icon svgIcon="edit-icon"></mat-icon>
                                 </button>
                                 <button mat-icon-button appPreventDoubleClick (throttledClick)="$event.stopPropagation();" type="button" [matMenuTriggerFor]="returnToSalesMenu" class="three-dots-actions-btn contract-manager-action">
-                                    <mat-icon>more_horiz</mat-icon>
+                                    <mat-icon svgIcon="3-dots"></mat-icon>
                                 </button>
                                 <mat-menu #returnToSalesMenu>
                                     <button
@@ -3109,7 +3109,7 @@
                             <mat-icon svgIcon="edit-icon"></mat-icon>
                         </button>
                         <button mat-icon-button appPreventDoubleClick (throttledClick)="$event.stopPropagation();" type="button" [matMenuTriggerFor]="returnToSalesMenu" class="three-dots-actions-btn contract-manager-action">
-                            <mat-icon>more_horiz</mat-icon>
+                            <mat-icon svgIcon="3-dots"></mat-icon>
                         </button>
                         <mat-menu #returnToSalesMenu>
                             <button
