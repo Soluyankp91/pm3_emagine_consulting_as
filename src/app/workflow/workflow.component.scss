@@ -197,6 +197,9 @@
     &.finished-status {
         color: $red-color;
     }
+    &.deleted-status {
+        color: $light-grey-color;
+    }
 }
 
 .workflow-step-readonly {
@@ -244,7 +247,7 @@
     }
 }
 
-.active-workflow {
+.activeOrDeletedWorkflow {
     background-color: #FAF9FB;
 }
 

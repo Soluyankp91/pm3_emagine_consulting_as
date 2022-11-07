@@ -17,7 +17,7 @@ import { InternalLookupService } from '../shared/common/internal-lookup.service'
 import { ConfirmationDialogComponent } from '../shared/components/confirmation-dialog/confirmation-dialog.component';
 import { ManagerStatus } from '../shared/components/manager-search/manager-search.model';
 import { CreateWorkflowDialogComponent } from './create-workflow-dialog/create-workflow-dialog.component';
-import { SelectableEmployeeDto, StepTypes } from './workflow.model';
+import { DialogConfig, SelectableEmployeeDto, StepTypes } from './workflow.model';
 
 const WorkflowGridOptionsKey = 'WorkflowGridFILTERS.1.0.3.';
 @Component({
@@ -59,7 +59,6 @@ export class WorkflowComponent extends AppComponentBase implements OnInit, OnDes
 
     workflowDataSource: MatTableDataSource<WorkflowListItemDto>;
     workflowProcess = WorkflowProcessType;
-
 
     legalEntities: LegalEntityDto[] = [];
     saleTypes: EnumEntityTypeDto[] = [];
@@ -293,22 +292,15 @@ export class WorkflowComponent extends AppComponentBase implements OnInit, OnDes
     confirmDeleteWorkflow(workflowId: string) {
         this.menuDeleteTrigger.closeMenu();
         const scrollStrategy = this.overlay.scrollStrategies.reposition();
-        const dialogRef = this.dialog.open(ConfirmationDialogComponent, {
-            width: '450px',
-            minHeight: '180px',
-            height: 'auto',
-            scrollStrategy,
-            backdropClass: 'backdrop-modal--wrapper',
-            autoFocus: false,
-            panelClass: 'confirmation-modal',
-            data: {
-                confirmationMessageTitle: `Are you sure you want to delete workflow?`,
-                confirmationMessage: 'If you confirm the deletion, all the info contained inside this workflow will be removed.',
-                rejectButtonText: 'Cancel',
-                confirmButtonText: 'Delete',
-                isNegative: true
-            }
-        });
+        DialogConfig.scrollStrategy = scrollStrategy;
+        DialogConfig.data = {
+            confirmationMessageTitle: `Are you sure you want to delete workflow?`,
+            confirmationMessage: 'If you confirm the deletion, all the info contained inside this workflow will be removed.',
+            rejectButtonText: 'Cancel',
+            confirmButtonText: 'Delete',
+            isNegative: true
+        }
+        const dialogRef = this.dialog.open(ConfirmationDialogComponent, DialogConfig);
 
         dialogRef.componentInstance.onConfirmed.subscribe(() => {
             this.deleteWorkflow(workflowId);
@@ -320,9 +312,31 @@ export class WorkflowComponent extends AppComponentBase implements OnInit, OnDes
         this.isDataLoading = true;
         this._workflowService.delete(workflowId)
             .pipe(finalize(() => this.isDataLoading = false ))
-            .subscribe(result => {
-                this.getWorkflowList();
-            });
+            .subscribe(() => this.getWorkflowList());
+    }
+
+    confirmRestoreWorkflow(workflowId: string) {
+        this.menuDeleteTrigger.closeMenu();
+        const scrollStrategy = this.overlay.scrollStrategies.reposition();
+        DialogConfig.scrollStrategy = scrollStrategy;
+        DialogConfig.data = {
+            confirmationMessageTitle: `Are you sure you want to restore workflow?`,
+                rejectButtonText: 'Cancel',
+                confirmButtonText: 'Yes',
+                isNegative: false
+        }
+        const dialogRef = this.dialog.open(ConfirmationDialogComponent, DialogConfig);
+
+        dialogRef.componentInstance.onConfirmed.subscribe(() => {
+            this.restoreWorkflow(workflowId);
+        });
+    }
+
+    restoreWorkflow(workflowId: string) {
+        this.isDataLoading = true;
+        this._workflowService.restore(workflowId)
+            .pipe(finalize(() => this.isDataLoading = false))
+            .subscribe(() => this.getWorkflowList())
     }
 
     getFlagColor(flag: number): string {
@@ -413,6 +427,7 @@ export class WorkflowComponent extends AppComponentBase implements OnInit, OnDes
             deliveryTypes,
             workflowStatus,
             ownerIds,
+            [], // FIXME: tmp placeholder for new parameter
             this.showOnlyWorkflowsWithNewSales,
             this.showOnlyWorkflowsWithExtensions,
             this.showPendingSteps,
@@ -438,8 +453,8 @@ export class WorkflowComponent extends AppComponentBase implements OnInit, OnDes
                         endDate: x.endDate,
                         salesType: this.findItemById(this.saleTypes, x.salesTypeId),
                         deliveryType: this.findItemById(this.deliveryTypes, x.deliveryTypeId),
-                        statusName: WorkflowStatus[x.workflowStatus!],
-                        statusIcon: this.getStatusIcon(x.workflowStatus!),
+                        statusName: x.isDeleted ? 'Deleted' : WorkflowStatus[x.workflowStatus!],
+                        statusIcon: x.isDeleted ? 'deleted-status' : this.getStatusIcon(x.workflowStatus!),
                         isDeleted: x.isDeleted,
                         consultants: x.consultants,
                         consultantName: x.consultantName,

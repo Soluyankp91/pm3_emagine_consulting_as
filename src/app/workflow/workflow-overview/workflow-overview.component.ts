@@ -1,5 +1,5 @@
 import { Overlay } from '@angular/cdk/overlay';
-import { Component, Injector, Input, OnInit, ViewChild } from '@angular/core';
+import { Component, Injector, Input, OnInit, ViewChild, OnDestroy } from '@angular/core';
 import { MatDialog } from '@angular/material/dialog';
 import { ActivatedRoute } from '@angular/router';
 import { GanttDate, GanttGroup, GanttItem, GanttViewType, NgxGanttComponent } from '@worktile/gantt';
@@ -23,7 +23,7 @@ import { DialogConfig } from './workflow-overview.model';
     templateUrl: './workflow-overview.component.html',
     styleUrls: ['./workflow-overview.component.scss']
 })
-export class WorkflowOverviewComponent extends AppComponentBase implements OnInit {
+export class WorkflowOverviewComponent extends AppComponentBase implements OnInit, OnDestroy {
     @ViewChild('gantt') ganttComponent: NgxGanttComponent;
 
     @Input() workflowId: string;
