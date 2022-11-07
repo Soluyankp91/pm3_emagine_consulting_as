@@ -41,12 +41,12 @@
             color: $green-color !important;
         }
         &[disabled] {
-            color: $medium-grey-color !important;
+            color: $light-grey-color !important;
             mat-icon {
-                background: rgba($color: $medium-grey-color, $alpha: 0.2) !important;
-                color: $medium-grey-color !important;
+                background: rgba($color: $light-grey-color, $alpha: 0.2) !important;
+                color: $light-grey-color !important;
                 path {
-                    fill: $medium-grey-color !important;
+                    fill: $light-grey-color !important;
                 }
             }
         }
