@@ -522,7 +522,7 @@ export class MainOverviewComponent extends AppComponentBase implements OnInit {
             case 'International':
                 return 'EU';
             case 'United Kingdom':
-                return 'UK';
+                return 'GB';
             default:
                 break;
         }
