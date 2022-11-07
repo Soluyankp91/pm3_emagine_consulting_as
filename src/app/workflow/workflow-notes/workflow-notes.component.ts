@@ -6,7 +6,7 @@ import { EmployeeRole, EmployeeServiceProxy, WorkflowServiceProxy } from 'src/sh
 import { AuthenticationResult } from '@azure/msal-browser';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { LocalHttpService } from 'src/shared/service-proxies/local-http.service';
-import { CdkScrollable, ScrollDispatcher } from '@angular/cdk/scrolling';
+import { ScrollDispatcher } from '@angular/cdk/scrolling';
 import { Subject } from 'rxjs';
 
 @Component({
