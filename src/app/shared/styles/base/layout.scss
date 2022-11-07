@@ -129,15 +129,6 @@ html {
             -webkit-transition: all .3s ease-in-out;
             -moz-transition: all .3s ease-in-out;
             transition: all .3s ease-in-out;
-            &:hover {
-              max-width: 250px !important;
-              .main-navigation--list-item {
-                  border-color: transparent;
-                &__name {
-                    display: flex;
-                }
-              }
-            }
         }
         &-content {
             flex: 1;
@@ -270,6 +261,16 @@ html {
         @media screen and (max-width: 1440px) {
             width: 35px;
             height: 35px;
+        }
+    }
+    &--logout {
+        width: 20px;
+        height: 20px;
+        margin-left: 8px;
+        margin-right: 12px;
+        &-menu {
+            width: 28px;
+            height: 28px;
         }
     }
 }

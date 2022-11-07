@@ -1,23 +1,31 @@
-import { Component, Inject, OnInit } from '@angular/core';
+import { Component, Injector, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
-import { MSAL_GUARD_CONFIG, MsalGuardConfiguration, MsalService, MsalBroadcastService } from '@azure/msal-angular';
-import { InteractionStatus, RedirectRequest, PopupRequest, AuthenticationResult } from '@azure/msal-browser';
-import { Subject } from 'rxjs';
-import { filter, takeUntil } from 'rxjs/operators';
+import { MsalService } from '@azure/msal-angular';
 import { environment } from 'src/environments/environment';
+import { AppComponentBase } from 'src/shared/app-component-base';
+import { EmployeeServiceProxy, CurrentEmployeeDto } from 'src/shared/service-proxies/service-proxies';
 
 @Component({
     // selector: 'app-root',
     templateUrl: './app.component.html',
     styleUrls: ['./app.component.scss']
 })
-export class AppComponent implements OnInit {
+export class AppComponent extends AppComponentBase implements OnInit {
+    accountInfo: any;
+    currentEmployee: CurrentEmployeeDto;
     constructor(
-        private router: Router
-    ) { }
+        injector: Injector,
+        private router: Router,
+        private authService: MsalService,
+        private _employeeService: EmployeeServiceProxy
+
+    ) {
+        super(injector);
+     }
 
     ngOnInit(): void {
-
+        this.accountInfo = this.authService.instance.getActiveAccount();
+        this.getCurrentEmployee();
     }
 
     openSourcingApp() {
@@ -37,6 +45,18 @@ export class AppComponent implements OnInit {
         } else {
           return this.router.navigate(['app', 'clients']);
         }
+    }
+
+    getCurrentEmployee() {
+        this._employeeService.current().subscribe(result => {
+            this.currentEmployee = result;
+        });
+    }
+
+    logout() {
+        this.authService.logoutPopup({
+            mainWindowRedirectUri: "/"
+        });
     }
 
 }

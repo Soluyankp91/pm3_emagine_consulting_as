@@ -30,7 +30,7 @@ export class NotificationComponent extends AppComponentBase implements OnInit {
             }))
             .subscribe(result => {
                 this.tenantWithNotifications = result.map(x => {
-                    return new EmployeeNotifications(x.tenantId!, this.mapTenantNameFromId(x.tenantId!),  x.notifications!);
+                    return new EmployeeNotifications(x.tenantId!, this.mapTenantNameFromId(x.tenantId!), this.mapFlagFromTenantId(x.tenantId!), x.notifications!);
                 });
             })
     }
@@ -49,12 +49,41 @@ export class NotificationComponent extends AppComponentBase implements OnInit {
                 return 'Germany';
             case 17:
                 return 'Norway';
+            case 20:
+                return 'United Kingdom';
             case 25:
                 return 'International';
             case 27:
                 return 'France';
             case 29:
                 return 'India';
+            default:
+                return '';
+        }
+    }
+
+    mapFlagFromTenantId(tenantId: number) {
+        switch (tenantId) {
+            case 1:
+                return 'DK';
+            case 2:
+                return 'SE';
+            case 4:
+                return 'PL';
+            case 8:
+                return 'NL';
+            case 10:
+                return 'DE';
+            case 17:
+                return 'NO';
+            case 20:
+                return 'GB';
+            case 25:
+                return 'EU';
+            case 27:
+                return 'FR';
+            case 29:
+                return 'IN';
             default:
                 return '';
         }

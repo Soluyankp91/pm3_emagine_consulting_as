@@ -8,4 +8,8 @@
         @include fontOpenSans(75%, 600);
         color: $red-message-color;
     }
+    &.withoutPadding {
+        padding-top: 0 !important;
+        margin: 0 !important;
+    }
 }

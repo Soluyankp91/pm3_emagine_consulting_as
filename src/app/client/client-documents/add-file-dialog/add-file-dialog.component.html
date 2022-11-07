@@ -11,9 +11,7 @@
                     {{ item.name }}
                 </mat-option>
             </mat-select>
-            <mat-error>
-                <app-validator [control]="attachmentTypeId"></app-validator>
-            </mat-error>
+            <app-validator [control]="attachmentTypeId"></app-validator>
         </mat-form-field>
         <div class="file">
             <span class="flex-row flex-items-center">
