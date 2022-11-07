@@ -60,7 +60,6 @@ export class WorkflowComponent extends AppComponentBase implements OnInit, OnDes
     workflowDataSource: MatTableDataSource<WorkflowListItemDto>;
     workflowProcess = WorkflowProcessType;
 
-
     legalEntities: LegalEntityDto[] = [];
     saleTypes: EnumEntityTypeDto[] = [];
     deliveryTypes: EnumEntityTypeDto[] = [];
@@ -428,6 +427,7 @@ export class WorkflowComponent extends AppComponentBase implements OnInit, OnDes
             deliveryTypes,
             workflowStatus,
             ownerIds,
+            [], // FIXME: tmp placeholder for new parameter
             this.showOnlyWorkflowsWithNewSales,
             this.showOnlyWorkflowsWithExtensions,
             this.showPendingSteps,

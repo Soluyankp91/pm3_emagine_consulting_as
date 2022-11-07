@@ -62,8 +62,8 @@
                             <div fxLayout="row" fxLayoutAlign="start center" fxLayoutGap="15px" class="main-navigation--list-item-logout">
                                 <img class="border-rounded-50 image-thumbnail--logout-menu" [src]="employeeProfileUrl(currentEmployee?.externalId!)" />
                                 <div fxLayout="column" >
-                                    <span class="main-navigation--list-item-logout-username u-mb--5">{{accountInfo.username}}</span>
-                                    <span class="main-navigation--list-item-logout-name">{{accountInfo.name}}</span>
+                                    <span class="main-navigation--list-item-logout-username u-mb--5">{{accountInfo?.username}}</span>
+                                    <span class="main-navigation--list-item-logout-name">{{accountInfo?.name}}</span>
                                 </div>
                             </div>
                             <div fxLayout="row" fxLayoutAlign="start start" class="u-pt--10 u-pb--10">

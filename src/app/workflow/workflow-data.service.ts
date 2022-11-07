@@ -30,7 +30,7 @@ export class WorkflowDataService {
     workflowTerminationSourcingSaved = new EventEmitter<boolean>();
 
     workflowSideSectionChanged = new EventEmitter<{consultant?: ConsultantResultDto | undefined,  consultantPeriodId?: string | undefined}>();
-    workflowSideSectionUpdated = new EventEmitter<{isStatusUpdate: boolean}>();
+    workflowSideSectionUpdated = new EventEmitter<{isStatusUpdate: boolean, autoUpdate?: boolean}>();
     workflowTopSectionUpdated = new EventEmitter<any>();
 
     workflowOverviewUpdated = new EventEmitter<boolean>();

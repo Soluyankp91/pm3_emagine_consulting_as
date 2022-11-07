@@ -46,6 +46,7 @@ export class MainOverviewComponent extends AppComponentBase implements OnInit {
     isDataLoading = true;
 
     legalEntities: SelectableCountry[] = [];
+
     saleTypes: EnumEntityTypeDto[] = [];
     deliveryTypes: EnumEntityTypeDto[] = [];
     margins: EnumEntityTypeDto[] = [];
@@ -499,6 +500,7 @@ export class MainOverviewComponent extends AppComponentBase implements OnInit {
             });
     }
 
+
     getTenantCountryCode(name: string) {
         switch (name) {
             case 'Denmark':
@@ -517,8 +519,10 @@ export class MainOverviewComponent extends AppComponentBase implements OnInit {
                 return 'FR';
             case 'India':
                 return 'IN';
-            case 'United Kingdom':
+            case 'International':
                 return 'EU';
+            case 'United Kingdom':
+                return 'GB';
             default:
                 break;
         }

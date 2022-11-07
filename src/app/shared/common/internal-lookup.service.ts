@@ -41,7 +41,7 @@ export class InternalLookupService {
     contractExpirationNotificationDuration: { [key: string]: string; };
     legalContractStatuses: { [key: string]: string; };
     hubspotClientUrl: string;
-    legalEntities: EnumEntityTypeDto[] = [];
+    legalEntities: LegalEntityDto[] = [];
 
     constructor(private _enumService: EnumServiceProxy) {
     }
