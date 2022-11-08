@@ -11,15 +11,15 @@ import { merge, Observable, Subject, Subscription } from 'rxjs';
 import { debounceTime, finalize, map, switchMap, takeUntil } from 'rxjs/operators';
 import { AppComponentBase } from 'src/shared/app-component-base';
 import { AppConsts } from 'src/shared/AppConsts';
-import { ApiServiceProxy, EmployeeDto, EmployeeServiceProxy, EnumEntityTypeDto, LegalEntityDto, LookupServiceProxy, StartNewWorkflowInputDto, WorkflowAlreadyExistsDto, WorkflowListItemDto, WorkflowProcessType, WorkflowServiceProxy, WorkflowStatus, WorkflowStepStatus } from 'src/shared/service-proxies/service-proxies';
+import { ApiServiceProxy, EmployeeDto, EmployeeServiceProxy, EnumEntityTypeDto, LegalEntityDto, LookupServiceProxy, StartNewWorkflowInputDto, SyncStateStatus, WorkflowAlreadyExistsDto, WorkflowListItemDto, WorkflowProcessType, WorkflowServiceProxy, WorkflowStatus, WorkflowStepStatus } from 'src/shared/service-proxies/service-proxies';
 import { SelectableCountry, SelectableIdNameDto } from '../client/client.model';
 import { InternalLookupService } from '../shared/common/internal-lookup.service';
 import { ConfirmationDialogComponent } from '../shared/components/confirmation-dialog/confirmation-dialog.component';
 import { ManagerStatus } from '../shared/components/manager-search/manager-search.model';
 import { CreateWorkflowDialogComponent } from './create-workflow-dialog/create-workflow-dialog.component';
-import { DialogConfig, SelectableEmployeeDto, StepTypes } from './workflow.model';
+import { DialogConfig, ISelectableIdNameDto, SelectableEmployeeDto, StepTypes } from './workflow.model';
 
-const WorkflowGridOptionsKey = 'WorkflowGridFILTERS.1.0.3.';
+const WorkflowGridOptionsKey = 'WorkflowGridFILTERS.1.0.4';
 @Component({
     selector: 'app-workflow',
     templateUrl: './workflow.component.html',
@@ -54,6 +54,7 @@ export class WorkflowComponent extends AppComponentBase implements OnInit, OnDes
         'openProcess',
         'Steps',
         'startDateOfOpenedPeriodOrLastClientPeriod',
+        'syncStateStatus',
         'action'
     ];
 
@@ -93,6 +94,9 @@ export class WorkflowComponent extends AppComponentBase implements OnInit, OnDes
     stepTypes = StepTypes;
     upcomingStepType: number | null = null;
     pendingStepType: number | null = null;
+
+    syncStateStatuses: ISelectableIdNameDto[] = [];
+    selectedSyncStateStatuses: ISelectableIdNameDto[] = [];
 
     private _unsubscribe = new Subject();
     constructor(
@@ -168,6 +172,7 @@ export class WorkflowComponent extends AppComponentBase implements OnInit, OnDes
     }
 
     ngOnInit(): void {
+        this.getSyncStateStatuses();
         this.getCurrentUser();
         this.getLegalEntities();
         this.getSalesType();
@@ -191,6 +196,7 @@ export class WorkflowComponent extends AppComponentBase implements OnInit, OnDes
             salesType: this.salesTypeControl.value ? this.salesTypeControl.value : undefined,
             deliveryTypes: this.deliveryTypesControl.value ? this.deliveryTypesControl.value : undefined,
             workflowStatus: this.workflowStatusControl.value ? this.workflowStatusControl.value : undefined,
+            syncStateStatus: this.selectedSyncStateStatuses,
             showOnlyWorkflowsWithNewSales: this.showOnlyWorkflowsWithNewSales,
             showOnlyWorkflowsWithExtensions: this.showOnlyWorkflowsWithExtensions,
             showPendingSteps: this.showPendingSteps,
@@ -223,6 +229,12 @@ export class WorkflowComponent extends AppComponentBase implements OnInit, OnDes
             this.pendingStepType = filters.pendingStepType;
             this.showUpcomingSteps = filters.showUpcomingSteps;
             this.upcomingStepType = filters.upcomingStepType;
+            this.selectedSyncStateStatuses = filters.syncStateStatus?.length ? filters.syncStateStatus : [];
+            if (this.selectedSyncStateStatuses.length) {
+                this.syncStateStatuses.forEach(x => {
+                    x.selected = this.selectedSyncStateStatuses.some(item => item.id === x.id);
+                })
+            }
             this.includeTerminated = filters.includeTerminated;
             this.includeDeleted = filters.includeDeleted;
             this.workflowFilter.setValue(filters.searchFilter, {emitEvent: false});
@@ -366,39 +378,22 @@ export class WorkflowComponent extends AppComponentBase implements OnInit, OnDes
     }
 
     getLegalEntities() {
-        this._internalLookupService.getLegalEntities().subscribe(result => {
-            this.legalEntities = result;
-        });
+        this._internalLookupService.getLegalEntities().subscribe(result => { this.legalEntities = result });
     }
 
     getSalesType() {
-        this._internalLookupService.getSaleTypes()
-            .pipe(finalize(() => {
-
-            }))
-            .subscribe(result => {
-                this.saleTypes = result;
-            });
+        this._internalLookupService.getSaleTypes().subscribe(result => { this.saleTypes = result });
     }
 
     getDeliveryTypes() {
-        this._internalLookupService.getDeliveryTypes()
-            .pipe(finalize(() => {
-
-            }))
-            .subscribe(result => {
-                this.deliveryTypes = result;
-            });
+        this._internalLookupService.getDeliveryTypes().subscribe(result => { this.deliveryTypes = result });
     }
 
     getWorkflowStatuses() {
-        this._internalLookupService.getWorkflowStatuses()
-            .pipe(finalize(() => {
-
-            }))
-            .subscribe(result => {
-                this.workflowStatuses = result;
-            });
+        this._internalLookupService.getWorkflowStatuses().subscribe(result => { this.workflowStatuses = result });
+    }
+    getSyncStateStatuses() {
+        this._internalLookupService.getSyncStateStatuses().subscribe(result => { this.syncStateStatuses = this.toArray(result)});
     }
 
     getWorkflowList(filterChanged?: boolean) {
@@ -427,7 +422,7 @@ export class WorkflowComponent extends AppComponentBase implements OnInit, OnDes
             deliveryTypes,
             workflowStatus,
             ownerIds,
-            [], // FIXME: tmp placeholder for new parameter
+            this.selectedSyncStateStatuses?.map(x => x.id),
             this.showOnlyWorkflowsWithNewSales,
             this.showOnlyWorkflowsWithExtensions,
             this.showPendingSteps,
@@ -461,7 +456,9 @@ export class WorkflowComponent extends AppComponentBase implements OnInit, OnDes
                         consultantNamesTooltip: x.consultantNamesTooltip,
                         openProcesses: x.openProcesses,
                         isActive: x.workflowStatus === WorkflowStatus.Active,
-                        isNewSale: x.isNewSale
+                        isNewSale: x.isNewSale,
+                        syncStateStatusName: SyncStateStatus[x.syncStateStatus!],
+                        syncStateStatusIcon: this.getSyncStatusIcon(x.syncStateStatus!)
                     }
                 })
                 this.workflowDataSource = new MatTableDataSource<any>(formattedData);
@@ -530,7 +527,9 @@ export class WorkflowComponent extends AppComponentBase implements OnInit, OnDes
     stepTypeTrackBy(index: number, item: {id: number, name: string}) {
         return item.id;
     }
-
+    syncStatusTrackBy(index: number, item: {id: number, name: string}) {
+        return item.id;
+    }
     getCurrentUser() {
         this.selectedAccountManagers = [];
 
@@ -565,6 +564,8 @@ export class WorkflowComponent extends AppComponentBase implements OnInit, OnDes
         this.showUpcomingSteps = false;
         this.includeTerminated = false;
         this.includeDeleted = false;
+        this.selectedSyncStateStatuses = [];
+        this.syncStateStatuses.forEach(x => x.selected = false);
         localStorage.removeItem(WorkflowGridOptionsKey);
         this.getCurrentUser();
     }
@@ -581,6 +582,43 @@ export class WorkflowComponent extends AppComponentBase implements OnInit, OnDes
 
     displayNameFn(option: any) {
         return option?.name;
+    }
+
+    toArray(enumme: { [key: string]: string; }) {
+        let result: ISelectableIdNameDto[] = [];
+        for (const key of Object.keys(enumme)) {
+            result.push({ id: Number(key), name: enumme[key], selected: false });
+        }
+        return result;
+    }
+
+    syncStatusFilterControl(item: ISelectableIdNameDto) {
+        const index = this.selectedSyncStateStatuses.findIndex(x => x.id === item.id);
+        if (index >= 0) {
+            this.selectedSyncStateStatuses.splice(index, 1);
+        } else {
+            this.selectedSyncStateStatuses.push(item);
+        }
+        item.selected = !item.selected;
+        this.getWorkflowList();
+    }
+
+    getSyncStatusIcon(status: number) {
+        switch (status) {
+            case SyncStateStatus.NewSyncNeeded:
+                return 'new-sync-needed-icon';
+            case SyncStateStatus.NotSynced:
+                return 'no-sync-icon';
+            case SyncStateStatus.Synced:
+                return 'synced-icon';
+            default:
+                return '';
+        }
+    }
+
+    syncStatusClicked(event: Event, item: ISelectableIdNameDto) {
+        event.stopPropagation();
+        this.syncStatusFilterControl(item);
     }
 }
 

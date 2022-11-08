@@ -291,3 +291,20 @@ export const DialogConfig: MatDialogConfig = {
     autoFocus: false,
     panelClass: 'confirmation-modal'
 }
+
+export interface ISelectableIdNameDto {
+    id: number;
+    name: string;
+    selected: boolean;
+}
+
+export class SelectableIdNameDto implements ISelectableIdNameDto {
+    id: number;
+    name: string;
+    selected: boolean;
+    constructor(data?: ISelectableIdNameDto) {
+        this.id = data?.id!;
+        this.name = data?.name!;
+        this.selected = data?.selected!;
+    }
+}
