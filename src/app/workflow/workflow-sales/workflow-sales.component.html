@@ -1972,7 +1972,7 @@
                                                 <mat-option *ngIf="clientSpecialRateList.length == 0" (click)="$event.stopPropagation();">
                                                     No results
                                                 </mat-option>
-                                                <mat-option *ngFor="let item of clientSpecialRateList" [value]="item.id" appPreventDoubleClick (throttledClick)="selectClientSpecialRate($event, item, clientRateMenuTrigger)">
+                                                <mat-option *ngFor="let item of clientSpecialRateList | excludeIds: salesClientDataForm!.clientRates?.value : 'clientSpecialRateId'" [value]="item.id" appPreventDoubleClick (throttledClick)="selectClientSpecialRate($event, item, clientRateMenuTrigger)">
                                                     {{ item.internalName }}
                                                 </mat-option>
                                             </mat-select>
@@ -2087,7 +2087,7 @@
                                                 <mat-option *ngIf="clientSpecialFeeList.length == 0" (click)="$event.stopPropagation();">
                                                     No results
                                                 </mat-option>
-                                                <mat-option *ngFor="let item of clientSpecialFeeList" [value]="item.id" appPreventDoubleClick (throttledClick)="selectClientSpecialFee($event, item, clientFeeMenuTrigger)">
+                                                <mat-option *ngFor="let item of clientSpecialFeeList | excludeIds: salesClientDataForm!.clientFees?.value : 'clientSpecialFeeId'" [value]="item.id" appPreventDoubleClick (throttledClick)="selectClientSpecialFee($event, item, clientFeeMenuTrigger)">
                                                     {{ item.internalName }}
                                                 </mat-option>
                                             </mat-select>
@@ -2863,7 +2863,7 @@
                                                         <mat-option *ngIf="clientSpecialRateList.length == 0" (click)="$event.stopPropagation();">
                                                             No results
                                                         </mat-option>
-                                                        <mat-option *ngFor="let item of clientSpecialRateList" [value]="item.id" appPreventDoubleClick (throttledClick)="selectConsultantSpecialRate($event, consultantIndex, item, consultantRateMenuTrigger)">
+                                                        <mat-option *ngFor="let item of clientSpecialRateList | excludeIds: consultant.value.specialRates : 'clientSpecialRateId'" [value]="item.id" appPreventDoubleClick (throttledClick)="selectConsultantSpecialRate($event, consultantIndex, item, consultantRateMenuTrigger)">
                                                             {{ item.internalName }}
                                                         </mat-option>
                                                     </mat-select>
@@ -2999,7 +2999,7 @@
                                                         <mat-option *ngIf="clientSpecialFeeList.length == 0" (click)="$event.stopPropagation();">
                                                             No results
                                                         </mat-option>
-                                                        <mat-option *ngFor="let item of clientSpecialFeeList" [value]="item.id" appPreventDoubleClick (throttledClick)="selectConsultantSpecialFee($event, consultantIndex, item, consultantFeeMenuTrigger)">
+                                                        <mat-option *ngFor="let item of clientSpecialFeeList | excludeIds: consultant.value.specialFees : 'clientSpecialFeeId'" [value]="item.id" appPreventDoubleClick (throttledClick)="selectConsultantSpecialFee($event, consultantIndex, item, consultantFeeMenuTrigger)">
                                                             {{ item.internalName }}
                                                         </mat-option>
                                                     </mat-select>
