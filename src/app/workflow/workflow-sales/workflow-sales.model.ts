@@ -96,7 +96,7 @@ export class WorkflowSalesClientDataForm extends FormGroup {
             // Client Evaluations - Consultant
             evaluationsReferencePersonIdValue: new FormControl(null, CustomValidators.autocompleteValidator(['id'])),
             evaluationsDisabled: new FormControl(false),
-            evaluationsDisabledReason: new FormControl(null, Validators.required),
+            evaluationsDisabledReason: new FormControl(null),
 
             // Client Contract Signers
             contractSigners: new FormArray([]),
