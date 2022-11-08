@@ -1,10 +1,12 @@
 <div class="manager-search">
     <div class="manager-search--image-wrapper" *ngIf="readonly">
-        <img class="border-rounded-50" [width]="width" [height]="height" [src]="employeeProfileUrl(responsiblePerson?.externalId!)" [matTooltip]="responsiblePerson?.name!" matTooltipClass="white-tooltip" alt="" />
+        <!-- <img class="border-rounded-50" [width]="width" [height]="height" [src]="employeeProfileUrl(responsiblePerson?.externalId!)" [matTooltip]="responsiblePerson?.name!" matTooltipClass="white-tooltip" alt="" /> -->
+        <img class="border-rounded-50" [width]="width" [height]="height" [src]="employeePhoto + responsiblePerson?.externalId! + '.jpg'" [matTooltip]="responsiblePerson?.name!" matTooltipClass="white-tooltip" alt="" />
         <mat-icon class="manager-search--status" [svgIcon]="detectManagerStatus(managerStatus)" [matTooltip]="detectStatusTooltip(managerStatus)" matTooltipClass="white-tooltip"></mat-icon>
     </div>
     <div class="manager-search--image-wrapper" [matMenuTriggerFor]="managerSearch" *ngIf="!readonly">
-        <img class="border-rounded-50" [width]="width" [height]="height" [src]="employeeProfileUrl(responsiblePerson?.externalId!)" [matTooltip]="responsiblePerson?.name!" matTooltipClass="white-tooltip" alt="" />
+        <!-- <img class="border-rounded-50" [width]="width" [height]="height" [src]="employeeProfileUrl(responsiblePerson?.externalId!)" [matTooltip]="responsiblePerson?.name!" matTooltipClass="white-tooltip" alt="" /> -->
+        <img class="border-rounded-50" [width]="width" [height]="height" [src]="employeePhoto + responsiblePerson?.externalId! + '.jpg'" [matTooltip]="responsiblePerson?.name!" matTooltipClass="white-tooltip" alt="" />
         <mat-icon class="manager-search--status" [svgIcon]="detectManagerStatus(managerStatus)" [matTooltip]="detectStatusTooltip(managerStatus)" matTooltipClass="white-tooltip"></mat-icon>
     </div>
     <mat-menu #managerSearch="matMenu" backdropClass="filter-manager--menu">
@@ -13,7 +15,7 @@
             <mat-autocomplete #auto="matAutocomplete" [displayWith]="displayNameFn">
                 <mat-option *ngFor="let option of filteredManagers" [value]="option" appPreventDoubleClick (throttledClick)="selectOption($event, option)">
                     <div class="multilineDropdown-option--row flex-items-center" [matTooltip]="option.name" matTooltipClass="white-tooltip" appShowIfTruncated>
-                        <img *ngIf="option.id !== 'no-data'" class="image-settings--dropdown u-mr--8" [src]="employeeProfileUrl(option.externalId!)" />
+                        <img *ngIf="option.id !== 'no-data'" class="image-settings--dropdown u-mr--8" [src]="employeePhoto + option?.externalId! + '.jpg'" />
                         <b>{{ option.name }}</b>
                     </div>
                 </mat-option>

@@ -35,7 +35,6 @@ export class WorkflowOverviewComponent extends AppComponentBase implements OnIni
     workflowProcesses: WorkflowProcessDto[] = [];
     workflowProcessType = WorkflowProcessType;
     workflowHistory: WorkflowHistoryDto[] = [];
-
     // gant
 
     overviewItems: GanttItem[] = [];

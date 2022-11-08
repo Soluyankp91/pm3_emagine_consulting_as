@@ -4,6 +4,7 @@ import { MatSnackBar } from "@angular/material/snack-bar";
 import { NgxSpinnerService } from "ngx-spinner";
 import { TenantList } from "src/app/workflow/workflow-sales/workflow-sales.model";
 import { environment } from "src/environments/environment";
+import { AppConsts } from "./AppConsts";
 import { API_BASE_URL, CountryDto, EnumEntityTypeDto, IdNameDto } from "./service-proxies/service-proxies";
 
 export enum NotifySeverity {
@@ -17,10 +18,14 @@ export abstract class AppComponentBase {
     apiUrl: string;
     spinnerService: NgxSpinnerService;
     matSnackbar: MatSnackBar;
+    employeePhoto = AppConsts.EmployeeProfileUrl;
+    consultantPhoto = AppConsts.ConsultantProfileUrl;
+
     constructor(injector: Injector) {
         this.apiUrl = injector.get(API_BASE_URL);
         this.spinnerService = injector.get(NgxSpinnerService);
         this.matSnackbar = injector.get(MatSnackBar);
+        // this.employeePhoto = injector.get(AppConsts.EmployeeProfileUrl);
     }
 
     showNotify(severity: number, text: string, buttonText: string) {
@@ -128,6 +133,7 @@ export abstract class AppComponentBase {
         if (!fileToken) {
             return 'assets/common/images/no-img.svg';
         }
+        console.log('2');
         return `${environment.sharedAssets}/ProfilePicture/${fileToken}.jpg`;
     }
 
@@ -135,6 +141,7 @@ export abstract class AppComponentBase {
         if (!fileToken) {
             return 'assets/common/images/no-img.svg';
         }
+        console.log('1');
         return environment.sharedAssets + `/EmployeePicture/${fileToken}.jpg`;
     }
 

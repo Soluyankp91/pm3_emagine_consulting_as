@@ -4,7 +4,8 @@
         <div fxLayout="row" fxLayoutAlign="start start" class="u-w--100">
             <div fxFlex fxLayout="row" fxLayoutAlign="start start" class="u-w--100">
                 <div class="workflow-list--filter-manager cursor-pointer u-mr--16" [matTooltip]="selectedAccountManagers.length ? mapListByProperty(selectedAccountManagers, 'name') : 'Select account manager(s)'" matTooltipClass="white-tooltip" [matMenuTriggerFor]="managerMenu" (menuOpened)="accountManagerFilterInput.click(); onOpenedMenu();" (click)="openMenu($event)">
-                    <img *ngIf="selectedAccountManagers.length === 1" class="border-rounded-50 image-thumbnail-small" [src]="employeeProfileUrl(selectedAccountManagers[0].externalId!)" />
+                    <!-- <img *ngIf="selectedAccountManagers.length === 1" class="border-rounded-50 image-thumbnail-small" [src]="employeeProfileUrl(selectedAccountManagers[0].externalId!)" /> -->
+                    <img *ngIf="selectedAccountManagers.length === 1" class="border-rounded-50 image-thumbnail-small" [src]="employeePhoto + selectedAccountManagers[0].externalId! + '.jpg'" />
                     <img *ngIf="selectedAccountManagers.length === 0" src="../../../assets/common/images/no-img.svg">
                     <div *ngIf="selectedAccountManagers.length > 1" class="workflow-list--filter__badge">
                         {{selectedAccountManagers.length}}
@@ -26,7 +27,8 @@
                                             (change)="toggleSelection(manager,selectedAccountManagers)"
                                             (click)="$event.stopPropagation()">
                                             <div fxLayout="row" fxLayoutAlign="start center" class="u-w--100">
-                                                <img class="border-rounded-50 image-settings--dropdown u-ml--8 u-mr--16" [src]="employeeProfileUrl(manager.externalId!)">
+                                                <!-- <img class="border-rounded-50 image-settings--dropdown u-ml--8 u-mr--16" [src]="employeeProfileUrl(manager.externalId!)"> -->
+                                                <img class="border-rounded-50 image-settings--dropdown u-ml--8 u-mr--16" [src]="employeePhoto + manager.externalId! + '.jpg'">
                                                 <span>{{ manager.name }}</span>
                                             </div>
                                         </mat-checkbox>
@@ -54,7 +56,8 @@
                                                 (change)="toggleSelection(manager,selectedAccountManagers)"
                                                 (click)="$event.stopPropagation()">
                                                 <div fxLayout="row" fxLayoutAlign="start center" class="u-w--100">
-                                                    <img class="border-rounded-50 image-settings--dropdown u-ml--8 u-mr--16" [src]="employeeProfileUrl(manager.externalId!)">
+                                                    <!-- <img class="border-rounded-50 image-settings--dropdown u-ml--8 u-mr--16" [src]="employeeProfileUrl(manager.externalId!)"> -->
+                                                    <img class="border-rounded-50 image-settings--dropdown u-ml--8 u-mr--16" [src]="employeePhoto + manager.externalId! + '.jpg'">
                                                     <span>{{ manager.name }}</span>
                                                 </div>
                                             </mat-checkbox>
@@ -263,7 +266,8 @@
                         </ng-container>
                         <ng-template #singleConsultantDisplay>
                             <span class="flex-items-center" fxFlex="100%">
-                                <img *ngIf="row.consultants[0]?.name" class="border-rounded-50 image-settings--dropdown u-mr--10" [src]="consultantProfileUrl(row?.consultants[0]?.externalId)" />
+                                <!-- <img *ngIf="row.consultants[0]?.name" class="border-rounded-50 image-settings--dropdown u-mr--10" [src]="consultantProfileUrl(row?.consultants[0]?.externalId)" /> -->
+                                <img *ngIf="row.consultants[0]?.name" class="border-rounded-50 image-settings--dropdown u-mr--10" [src]="consultantPhoto +  row?.consultants[0]?.externalId + '.jpg'" />
                                 <span class="text-truncate-ellipsis" [matTooltip]="row.consultantNamesTooltip" matTooltipClass="white-tooltip" appShowIfTruncated>
                                     {{row.consultantName}}
                                 </span>

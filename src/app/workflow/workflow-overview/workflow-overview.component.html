@@ -171,7 +171,8 @@
                     <span class="workflow-overview--history-grey-text" fxFlex="20%">
                         {{item.occurredAtUtc | momentFormat: 'DD.MM.YYYY HH:mm'}}
                     </span>
-                    <img class="workflow-overview--history-img u-mr--16" [src]="employeeProfileUrl(item.initiatedBy?.externalId!)" alt="">
+                    <!-- <img class="workflow-overview--history-img u-mr--16" [src]="employeeProfileUrl(item.initiatedBy?.externalId!)" alt=""> -->
+                    <img class="workflow-overview--history-img u-mr--16" [src]="employeePhoto + item.initiatedBy?.externalId! + '.jpg'" alt="">
                     <span class="workflow-overview--history-event-name text-truncate-ellipsis"  [matTooltip]="item.eventName!" matTooltipClass="white-tooltip" fxFlex="40%" appShowIfTruncated>
                         {{item.eventName}}
                     </span>

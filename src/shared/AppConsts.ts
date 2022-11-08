@@ -6,6 +6,8 @@ export class AppConsts {
     static remoteSyncServiceBaseUrl: string;
     static appBaseUrl: string;
     static appBaseHref: string; // returns angular's base-href parameter value if used during the publish
+    static EmployeeProfileUrl = `${environment.sharedAssets}/EmployeePicture/`;
+    static ConsultantProfileUrl = `${environment.sharedAssets}/ProfilePicture/`;
 
     static localeMappings: any = [];
 
