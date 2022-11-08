@@ -157,12 +157,16 @@
                             </span>
                         </ng-container>
                         <ng-template #projectNameInput>
-                            <mat-form-field appearance="outline" class="u-w--100 textarea-input " fxFlex="0 0 calc(66% + 16px)">
-                                <mat-label>Project Name</mat-label>
-                                <textarea required matInput autocomplete="new-password" name="projectName" formControlName="projectName" [matTextareaAutosize]="true" [matAutosizeMinRows]="2">
-                                </textarea>
-                                <app-validator [control]="contractsMainForm.projectName"></app-validator>
-                            </mat-form-field>
+                            <div fxLayout="column" fxLayoutAlign="start start" class="u-w--100">
+                                <div fxLayout="row" fxLayoutAlign="start start" class="u-w--100">
+                                    <mat-form-field appearance="outline" class="u-w--100 textarea-input" fxFlex="0 0 calc(66% + 16px)">
+                                        <mat-label>Project Name</mat-label>
+                                        <textarea required matInput autocomplete="new-password" name="projectName" formControlName="projectName" [matTextareaAutosize]="true" [matAutosizeMinRows]="2">
+                                        </textarea>
+                                    </mat-form-field>
+                                </div>
+                                <app-validator [withoutPadding]="true" [control]="contractsMainForm.projectName"></app-validator>
+                            </div>
                         </ng-template>
                     </div>
                     <h3 class="workflow-gray--header">Project Description</h3>
@@ -173,12 +177,16 @@
                             </span>
                         </ng-container>
                         <ng-template #projectDescriptionInput>
-                            <mat-form-field appearance="outline" class="u-w--100 textarea-input " fxFlex="0 0 calc(66% + 16px)">
-                                <mat-label>Project Description</mat-label>
-                                <textarea required matInput autocomplete="new-password" name="projectDescription" formControlName="projectDescription" [matTextareaAutosize]="true" [matAutosizeMinRows]="2">
-                                </textarea>
-                                <app-validator [control]="contractsMainForm.projectDescription"></app-validator>
-                            </mat-form-field>
+                            <div fxLayout="column" fxLayoutAlign="start start" class="u-w--100">
+                                <div fxLayout="row" fxLayoutAlign="start start" class="u-w--100">
+                                    <mat-form-field appearance="outline" class="u-w--100 textarea-input" fxFlex="0 0 calc(66% + 16px)">
+                                        <mat-label>Project Description</mat-label>
+                                        <textarea required matInput autocomplete="new-password" name="projectDescription" formControlName="projectDescription" [matTextareaAutosize]="true" [matAutosizeMinRows]="2">
+                                        </textarea>
+                                    </mat-form-field>
+                                </div>
+                                <app-validator [withoutPadding]="true" [control]="contractsMainForm.projectDescription"></app-validator>
+                            </div>
                         </ng-template>
                     </div>
                     <div fxLayout="column" fxLayoutAlign="start start" class="u-w--100 u-mb--20">
@@ -196,12 +204,16 @@
                             </span>
                         </ng-container>
                         <ng-template #remarksInput>
-                            <mat-form-field appearance="outline" class="u-w--100 textarea-input " fxFlex="0 0 calc(66% + 16px)">
-                                <mat-label>Remarks</mat-label>
-                                <textarea required matInput autocomplete="new-password" name="remarks" formControlName="remarks" [matTextareaAutosize]="true" [matAutosizeMinRows]="2">
-                                </textarea>
-                                <app-validator [control]="contractsMainForm.remarks"></app-validator>
-                            </mat-form-field>
+                            <div fxLayout="column" fxLayoutAlign="start start" class="u-w--100">
+                                <div fxLayout="row" fxLayoutAlign="start start" class="u-w--100">
+                                    <mat-form-field appearance="outline" class="u-w--100 textarea-input" fxFlex="0 0 calc(66% + 16px)">
+                                        <mat-label>Remarks</mat-label>
+                                        <textarea required matInput autocomplete="new-password" name="remarks" formControlName="remarks" [matTextareaAutosize]="true" [matAutosizeMinRows]="2">
+                                        </textarea>
+                                    </mat-form-field>
+                                </div>
+                                <app-validator [withoutPadding]="true" [control]="contractsMainForm.remarks"></app-validator>
+                            </div>
                         </ng-template>
                     </div>
                     <div fxLayout="row" fxLayoutAlign="start start" class="u-w--100" *ngIf="!readOnlyMode">
@@ -265,12 +277,16 @@
                                 </span>
                             </ng-container>
                             <ng-template #specialContractTermsInput>
-                                <mat-form-field appearance="outline" class="u-w--100  textarea-input" fxFlex="0 0 calc(66% + 16px)">
-                                    <mat-label>Special Contract Terms</mat-label>
-                                    <textarea required matInput autocomplete="new-password" name="specialContractTerms" formControlName="specialContractTerms" [matTextareaAutosize]="true" [matAutosizeMinRows]="2">
-                                    </textarea>
-                                    <app-validator [control]="contractClientForm.specialContractTerms"></app-validator>
-                                </mat-form-field>
+                                <div fxLayout="column" fxLayoutAlign="start start" class="u-w--100">
+                                    <div fxLayout="row" fxLayoutAlign="start start" class="u-w--100">
+                                        <mat-form-field appearance="outline" class="u-w--100  textarea-input" fxFlex="0 0 calc(66% + 16px)">
+                                            <mat-label>Special Contract Terms</mat-label>
+                                            <textarea required matInput autocomplete="new-password" name="specialContractTerms" formControlName="specialContractTerms" [matTextareaAutosize]="true" [matAutosizeMinRows]="2">
+                                            </textarea>
+                                        </mat-form-field>
+                                    </div>
+                                    <app-validator [withoutPadding]="true" [control]="contractClientForm.specialContractTerms"></app-validator>
+                                </div>
                             </ng-template>
                         </div>
 
@@ -601,12 +617,16 @@
                                         </span>
                                     </ng-container>
                                     <ng-template #consultantsSpecialContractTermsInput>
-                                        <mat-form-field appearance="outline" class="u-w--100  textarea-input" fxFlex="0 0 calc(66% + 16px)">
-                                            <mat-label>Special Contract Terms</mat-label>
-                                            <textarea required matInput autocomplete="new-password" name="specialContractTerms" formControlName="specialContractTerms" [matTextareaAutosize]="true" [matAutosizeMinRows]="2">
-                                            </textarea>
-                                            <app-validator [control]="consultant.get('specialContractTerms')"></app-validator>
-                                        </mat-form-field>
+                                        <div fxLayout="column" fxLayoutAlign="start start" class="u-w--100">
+                                            <div fxLayout="row" fxLayoutAlign="start start" class="u-w--100">
+                                                <mat-form-field appearance="outline" class="u-w--100  textarea-input" fxFlex="0 0 calc(66% + 16px)">
+                                                    <mat-label>Special Contract Terms</mat-label>
+                                                    <textarea required matInput autocomplete="new-password" name="specialContractTerms" formControlName="specialContractTerms" [matTextareaAutosize]="true" [matAutosizeMinRows]="2">
+                                                    </textarea>
+                                                </mat-form-field>
+                                            </div>
+                                            <app-validator [withoutPadding]="true" [control]="consultant.get('specialContractTerms')"></app-validator>
+                                        </div>
                                     </ng-template>
                                 </div>
 
