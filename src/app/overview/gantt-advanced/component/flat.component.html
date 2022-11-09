@@ -4,13 +4,16 @@
             <div class="gantt-flat-side-column" fxFlex="5%">
 
             </div>
-            <div class="gantt-flat-side-column" fxFlex="40%">
+            <div class="gantt-flat-side-column" fxFlex="35%">
                 Client
             </div>
-            <div class="gantt-flat-side-column" fxFlex="30%">
+            <div class="gantt-flat-side-column" fxFlex="25%">
                 Consultants
             </div>
-            <div class="gantt-flat-side-column text-truncate-ellipsis" fxLayoutAlign="flex-end center" fxFlex="25%">
+            <div class="gantt-flat-side-column" fxFlex="15%">
+                End date
+            </div>
+            <div class="gantt-flat-side-column text-truncate-ellipsis" fxLayoutAlign="flex-end center" fxFlex="20%">
                 Sales manager
             </div>
         </div>
@@ -54,12 +57,12 @@
                         </div>
                     </span>
                 </div>
-                <div class="gantt-group-content text-truncate-ellipsis" fxFlex="40%" [matTooltip]="group?.origin?.origin?.clientDisplayName!" matTooltipClass="white-tooltip" appShowIfTruncated>
+                <div class="gantt-group-content text-truncate-ellipsis" fxFlex="35%" [matTooltip]="group?.origin?.origin?.clientDisplayName!" matTooltipClass="white-tooltip" appShowIfTruncated>
                     <span class="text-bold-800">
                         {{group!.origin!.origin!.clientDisplayName}}
                     </span>
                 </div>
-                <div class="gantt-group-content text-truncate-ellipsis" fxFlex="30%">
+                <div class="gantt-group-content text-truncate-ellipsis" fxFlex="25%">
                     <span class="text-truncate-ellipsis" [matTooltip]="mapListByProperty(group?.origin?.origin?.consultants!, 'name')" matTooltipClass="white-tooltip" *ngIf="isWorkflow" appShowIfTruncated>
                         <ng-container *ngIf="group?.origin?.origin?.consultants!.length > 1; else singleConsultantDisplay">
                             {{group?.origin?.origin?.consultants?.length + 'Consultants'}}
@@ -72,7 +75,15 @@
                         {{group?.origin?.origin?.consultant?.name}}
                     </span>
                 </div>
-                <div class="gantt-group-content" fxFlex="25%">
+                <div class="gantt-group-content text-truncate-ellipsis" fxFlex="15%">
+                    <span *ngIf="isWorkflow">
+                        {{group!.origin!.origin!.lastClientPeriodEndDate ? (group!.origin!.origin!.lastClientPeriodEndDate | momentFormat: 'DD.MM.YYYY') : '-'}}
+                    </span>
+                    <span *ngIf="isConsultants">
+                        {{group!.origin!.origin!.lastConsultantPeriodEndDate ? (group!.origin!.origin!.lastConsultantPeriodEndDate | momentFormat: 'DD.MM.YYYY') : '-'}}
+                    </span>
+                </div>
+                <div class="gantt-group-content" fxFlex="20%">
                     <div fxLayout="row" fxLayoutAlign="flex-end center" fxLayoutGap="15px" class="u-w-100">
                         <img class="manager-search--photo" [matTooltip]="group?.origin?.origin?.salesManager?.name!" matTooltipClass="white-tooltip" [src]="employeeProfileUrl(group?.origin?.origin?.salesManager?.externalId!)" />
                         <button mat-icon-button matTooltip="Go to workflow" matTooltipClass="white-tooltip" appPreventDoubleClick (throttledClick)="redirectToWorkflow(group?.origin?.origin?.workflowId!)">
