@@ -247,8 +247,27 @@ export class WorkflowDetailsComponent extends AppComponentBase implements OnInit
                 if (value) {
                     this.selectedIndex = 1;
                     this.topMenuTabs.realignInkBar();
+                    this.updateWorkflowProgressAfterTopTabChanged();
                 }
             });
+    }
+
+    updateWorkflowProgressAfterTopTabChanged() {
+        let newStatus = new WorkflowProgressStatus();
+        newStatus.currentlyActiveStep = WorkflowSteps.Sales;
+        if (this.selectedTabIndex > 0) {
+            // if not overview - active period
+            newStatus.currentlyActivePeriodId = this.clientPeriods![this.selectedTabIndex - 1]?.id; // first period, as index = 0 - Overview tab
+        } else {
+            // if overview - most recent period
+            newStatus.currentlyActivePeriodId = this.clientPeriods![0]?.id;
+        }
+        if (this.selectedTabName === 'Overview') {
+            newStatus.currentlyActiveSection = WorkflowTopSections.Overview;
+        } else {
+            newStatus.currentlyActiveSection = this.detectTopLevelMenu(this.selectedTabName);
+        }
+        this._workflowDataService.updateWorkflowProgressStatus(newStatus);
     }
 
     tabChanged(event: MatTabChangeEvent) {
