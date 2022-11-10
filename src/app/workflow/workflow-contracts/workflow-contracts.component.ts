@@ -217,8 +217,13 @@ export class WorkflowContractsComponent extends AppComponentBase implements OnIn
                         this.contractClientForm.valid &&
                         this.contractsSyncDataForm.valid &&
                         this.contractsConsultantsDataForm.valid &&
-                        this.contractsConsultantsDataForm.consultants.controls.every(form => form.get('projectLines')?.value?.length) &&
-                        this.statusAfterSync;
+                        (this.statusAfterSync ||
+                            (
+                                !this.contractsSyncDataForm.value.isNewSyncNeeded &&
+                                this.contractsSyncDataForm.value.lastSyncedDate !== null &&
+                                this.contractsSyncDataForm.value.lastSyncedDate !== undefined
+                            )
+                        );
             case WorkflowProcessType.TerminateWorkflow:
             case WorkflowProcessType.TerminateConsultant:
                 return this.contractsTerminationConsultantForm.valid;
