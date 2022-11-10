@@ -13,13 +13,13 @@
                             <div fxLayout="row" fxLayoutAlign="start start">
                                 <button
                                     *ngIf="canToggleEditMode"
-                                    class="absolute-edit-toggle contract-manager-action u-mr--16"
+                                    class="absolute-edit-toggle contract-manager-action u-mr--8"
                                     mat-icon-button
                                     appPreventDoubleClick (throttledClick)="toggleEditMode()">
                                     <mat-icon svgIcon="edit-icon"></mat-icon>
                                 </button>
                                 <button mat-icon-button appPreventDoubleClick (throttledClick)="$event.stopPropagation();" type="button" [matMenuTriggerFor]="returnToSalesMenu" class="three-dots-actions-btn contract-manager-action">
-                                    <mat-icon>more_horiz</mat-icon>
+                                    <mat-icon svgIcon="3-dots"></mat-icon>
                                 </button>
                                 <mat-menu #returnToSalesMenu>
                                     <button
@@ -1732,7 +1732,7 @@
                                     <div fxLayout="row" fxLayoutAlign="start start" class="u-w--100 u-mb--10" [fxHide]="salesClientDataForm.clientRateAndInvoicing?.value?.id !== 1"> <!-- id: 1 - Time based -->
                                         <mat-form-field appearance="outline" class="u-w--100  filter-select" fxFlex="33%" [ngClass]="{'u-mr--16': salesClientDataForm.clientInvoiceFrequency?.value?.name === 'Manual date'}">
                                             <mat-label>Invoicing frequency</mat-label>
-                                            <mat-select required formControlName="clientInvoiceFrequency" [disableOptionCentering]="true" [compareWith]="compareWithFn">
+                                            <mat-select [required]="salesClientDataForm.clientRateAndInvoicing?.value?.id === 1" formControlName="clientInvoiceFrequency" [disableOptionCentering]="true" [compareWith]="compareWithFn">
                                                 <mat-option *ngFor="let item of invoiceFrequencies" [value]="item">
                                                     {{ item.name }}
                                                 </mat-option>
@@ -1972,7 +1972,7 @@
                                                 <mat-option *ngIf="clientSpecialRateList.length == 0" (click)="$event.stopPropagation();">
                                                     No results
                                                 </mat-option>
-                                                <mat-option *ngFor="let item of clientSpecialRateList" [value]="item.id" appPreventDoubleClick (throttledClick)="selectClientSpecialRate($event, item, clientRateMenuTrigger)">
+                                                <mat-option *ngFor="let item of clientSpecialRateList | excludeIds: salesClientDataForm!.clientRates?.value : 'clientSpecialRateId'" [value]="item.id" appPreventDoubleClick (throttledClick)="selectClientSpecialRate($event, item, clientRateMenuTrigger)">
                                                     {{ item.internalName }}
                                                 </mat-option>
                                             </mat-select>
@@ -2087,7 +2087,7 @@
                                                 <mat-option *ngIf="clientSpecialFeeList.length == 0" (click)="$event.stopPropagation();">
                                                     No results
                                                 </mat-option>
-                                                <mat-option *ngFor="let item of clientSpecialFeeList" [value]="item.id" appPreventDoubleClick (throttledClick)="selectClientSpecialFee($event, item, clientFeeMenuTrigger)">
+                                                <mat-option *ngFor="let item of clientSpecialFeeList | excludeIds: salesClientDataForm!.clientFees?.value : 'clientSpecialFeeId'" [value]="item.id" appPreventDoubleClick (throttledClick)="selectClientSpecialFee($event, item, clientFeeMenuTrigger)">
                                                     {{ item.internalName }}
                                                 </mat-option>
                                             </mat-select>
@@ -2533,7 +2533,7 @@
                                             <h3 class="workflow-gray--header u-mb--10">Invoicing information</h3>
                                         </ng-container>
                                         <div fxLayout="row" fxLayoutAlign="start center" class="u-w--100 u-mb--10" [fxHide]="consultant.value.consultantPaymentType?.id !== 1"> <!-- id: 1 - Time based -->
-                                            <mat-form-field appearance="outline" class="u-w--100  filter-select" fxFlex="33%" [ngClass]="{'u-mr--16': consultant.value.consultantInvoicingFrequency?.name === 'Manual date'}" [fxHide]="salesClientDataForm.clientRateAndInvoicing?.value?.id !== 2">
+                                            <mat-form-field appearance="outline" class="u-w--100  filter-select" fxFlex="33%" [ngClass]="{'u-mr--16': consultant.value.consultantInvoicingFrequency?.name === 'Manual date'}">
                                                 <mat-label>Invoicing frequency</mat-label>
                                                 <mat-select [required]="salesClientDataForm.clientRateAndInvoicing?.value?.id === 2" formControlName="consultantInvoicingFrequency" [disableOptionCentering]="true" [compareWith]="compareWithFn">
                                                     <mat-option *ngFor="let item of invoiceFrequencies" [value]="item">
@@ -2863,7 +2863,7 @@
                                                         <mat-option *ngIf="clientSpecialRateList.length == 0" (click)="$event.stopPropagation();">
                                                             No results
                                                         </mat-option>
-                                                        <mat-option *ngFor="let item of clientSpecialRateList" [value]="item.id" appPreventDoubleClick (throttledClick)="selectConsultantSpecialRate($event, consultantIndex, item, consultantRateMenuTrigger)">
+                                                        <mat-option *ngFor="let item of clientSpecialRateList | excludeIds: consultant.value.specialRates : 'clientSpecialRateId'" [value]="item.id" appPreventDoubleClick (throttledClick)="selectConsultantSpecialRate($event, consultantIndex, item, consultantRateMenuTrigger)">
                                                             {{ item.internalName }}
                                                         </mat-option>
                                                     </mat-select>
@@ -2999,7 +2999,7 @@
                                                         <mat-option *ngIf="clientSpecialFeeList.length == 0" (click)="$event.stopPropagation();">
                                                             No results
                                                         </mat-option>
-                                                        <mat-option *ngFor="let item of clientSpecialFeeList" [value]="item.id" appPreventDoubleClick (throttledClick)="selectConsultantSpecialFee($event, consultantIndex, item, consultantFeeMenuTrigger)">
+                                                        <mat-option *ngFor="let item of clientSpecialFeeList | excludeIds: consultant.value.specialFees : 'clientSpecialFeeId'" [value]="item.id" appPreventDoubleClick (throttledClick)="selectConsultantSpecialFee($event, consultantIndex, item, consultantFeeMenuTrigger)">
                                                             {{ item.internalName }}
                                                         </mat-option>
                                                     </mat-select>
@@ -3092,7 +3092,7 @@
                             <mat-icon svgIcon="edit-icon"></mat-icon>
                         </button>
                         <button mat-icon-button appPreventDoubleClick (throttledClick)="$event.stopPropagation();" type="button" [matMenuTriggerFor]="returnToSalesMenu" class="three-dots-actions-btn contract-manager-action">
-                            <mat-icon>more_horiz</mat-icon>
+                            <mat-icon svgIcon="3-dots"></mat-icon>
                         </button>
                         <mat-menu #returnToSalesMenu>
                             <button

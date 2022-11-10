@@ -1,5 +1,5 @@
 <div class="workflow-contracts">
-    <button class="absolute-edit-toggle" mat-icon-button *ngIf="canToggleEditMode" appPreventDoubleClick (throttledClick)="toggleEditMode(true)"><mat-icon>{{readOnlyMode ? 'create' : 'close'}}</mat-icon></button>
+    <button class="absolute-edit-toggle" mat-icon-button *ngIf="canToggleEditMode" appPreventDoubleClick (throttledClick)="toggleEditMode(true)"><mat-icon svgIcon="edit-icon"></mat-icon></button>
     <ng-container [ngSwitch]="true">
         <ng-container *ngSwitchCase="activeSideSection.typeId === workflowSideSections.TerminateWorkflow || activeSideSection.typeId === workflowSideSections.TerminateConsultant">
             <div class="workflow--termination">
@@ -397,7 +397,7 @@
                                             <mat-option *ngIf="clientSpecialRateList?.length == 0" (click)="$event.stopPropagation();">
                                                 No results
                                             </mat-option>
-                                            <mat-option *ngFor="let item of clientSpecialRateList" [value]="item.id" appPreventDoubleClick (throttledClick)="selectClientRate($event, item, clientRateMenuTrigger)">
+                                            <mat-option *ngFor="let item of clientSpecialRateList | excludeIds: contractClientForm!.clientRates?.value : 'clientSpecialRateId'" [value]="item.id" appPreventDoubleClick (throttledClick)="selectClientRate($event, item, clientRateMenuTrigger)">
                                                 {{ item.internalName }}
                                             </mat-option>
                                         </mat-select>
@@ -515,7 +515,7 @@
                                             <mat-option *ngIf="clientSpecialFeeList?.length == 0" (click)="$event.stopPropagation();">
                                                 No results
                                             </mat-option>
-                                            <mat-option *ngFor="let item of clientSpecialFeeList" [value]="item.id" appPreventDoubleClick (throttledClick)="selectClientFee($event, item, clientFeeMenuTrigger)">
+                                            <mat-option *ngFor="let item of clientSpecialFeeList | excludeIds: contractClientForm!.clientFees?.value : 'clientSpecialFeeId'" [value]="item.id" appPreventDoubleClick (throttledClick)="selectClientFee($event, item, clientFeeMenuTrigger)">
                                                 {{ item.internalName }}
                                             </mat-option>
                                         </mat-select>
@@ -808,7 +808,7 @@
                                                         <mat-option *ngIf="clientSpecialRateList?.length == 0" (click)="$event.stopPropagation();">
                                                             No results
                                                         </mat-option>
-                                                        <mat-option *ngFor="let item of clientSpecialRateList" [value]="item.id" appPreventDoubleClick (throttledClick)="selectConsultantSpecialRate($event, consultantIndex, item, consultantRateMenuTrigger)">
+                                                        <mat-option *ngFor="let item of clientSpecialRateList | excludeIds: consultant.value.specialRates : 'clientSpecialRateId'" [value]="item.id" appPreventDoubleClick (throttledClick)="selectConsultantSpecialRate($event, consultantIndex, item, consultantRateMenuTrigger)">
                                                             {{ item.internalName }}
                                                         </mat-option>
                                                     </mat-select>
@@ -979,7 +979,7 @@
                                                         <mat-option *ngIf="clientSpecialFeeList?.length == 0" (click)="$event.stopPropagation();">
                                                             No results
                                                         </mat-option>
-                                                        <mat-option *ngFor="let item of clientSpecialFeeList" [value]="item.id" appPreventDoubleClick (throttledClick)="selectConsultantSpecialFee($event, consultantIndex, item, consultantFeeMenuTrigger)">
+                                                        <mat-option *ngFor="let item of clientSpecialFeeList | excludeIds: consultant.value.clientFees : 'clientSpecialFeeId'" [value]="item.id" appPreventDoubleClick (throttledClick)="selectConsultantSpecialFee($event, consultantIndex, item, consultantFeeMenuTrigger)">
                                                             {{ item.internalName }}
                                                         </mat-option>
                                                     </mat-select>
