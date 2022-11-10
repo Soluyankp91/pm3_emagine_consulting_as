@@ -15,7 +15,7 @@
                 <span [matTooltip]="workflowId" matTooltipClass="white-tooltip">
                     / Workflow ID: {{workflowId | slice: 0:4}}...
                 </span>
-                <span *ngIf="workflowConsultants.length && workflowConsultants[0].requestId" class="workflow-header--request" matTooltip="Open request on Sourcing" matTooltipClass="white-tooltip" appPreventDoubleClick (throttledClick)="navigateToRequest(workflowConsultants![0].requestUrl!)">
+                <span *ngIf="workflowConsultants.length && workflowConsultants[0].requestId" class="workflow-header--request cursor-pointer" matTooltip="Open request on Sourcing" matTooltipClass="white-tooltip" appPreventDoubleClick (throttledClick)="navigateToRequest(workflowConsultants![0].requestUrl!)">
                     / Request ID: {{workflowConsultants[0].requestId}}
                 </span>
             </h2>
@@ -141,7 +141,7 @@
                     class="button-accept mat-elevation-z0"
                     mat-flat-button
                     *ngIf="_workflowDataService.getWorkflowProgress?.stepSpecificPermissions!['Completion']"
-                    appPreventDoubleClick (throttledClick)="saveOrCompleteStep(false)">
+                    appPreventDoubleClick (throttledClick)="saveOrCompleteStep(false, $event)">
                     Complete step
             </button>
         </div>

@@ -48,11 +48,41 @@
                     background-color: rgba($color: $purple-color, $alpha: 0.13);
                     border-color: $purple-color;
                 }
-                &.pending-steps-status,
-                &.upcoming-steps-status {
+            }
+            &-dropdown {
+                display: flex;
+                align-items: center;
+                justify-content: space-between;
+                height: 40px;
+                padding: 8px 10px 8px 16px;
+                border: 1px solid $light-grey-color;
+                border-radius: 40px;
+                line-height: 16px;
+                mat-icon {
+                    font-size: 26px;
+                    color: $dark-grey-color;
+                }
+                &__name {
+                    font-weight: 700;
+                    color: #384853;
+                    font-size: 14px;
+                    margin-right: 5px;
+                }
+
+                &__item {
+                    @include fontOpenSans(14px, 700);
+                    color: rgba($color: #384853, $alpha: 0.88);
+                }
+                &__reset {
+                    border-top: 1px solid $sand-color;
+                    @include fontOpenSans(14px, 700);
+                    color: $light-grey-color;
+                }
+                &.selected-status {
                     background-color: #384853;
                     border-color: #384853;
-                    .workflow-list--filter-type__name {
+                    mat-icon,
+                    .workflow-list--filter-type-dropdown__name {
                         color: $white-color;
                     }
                 }
@@ -120,12 +150,6 @@
     &--extension {
         color: rgba($color: #6A47B8, $alpha: .5);
     }
-    // @media screen and (max-width: 1440px) {
-    //     font-size: 10px;
-    //     width: 10px;
-    //     height: 10px;
-    //     line-height: 10px;
-    // }
 }
 
 .status-dot {
@@ -155,12 +179,7 @@
     width: 16px;
     height: 16px;
     line-height: 16px;
-    // @media screen and (max-width: 1440px) {
-    //     font-size: 10px;
-    //     width: 10px;
-    //     height: 10px;
-    //     line-height: 10px;
-    // }
+
     &.purple-dot {
         color: $purple-color;
         opacity: 0.5;
@@ -177,6 +196,9 @@
     }
     &.finished-status {
         color: $red-color;
+    }
+    &.deleted-status {
+        color: $light-grey-color;
     }
 }
 
@@ -225,7 +247,7 @@
     }
 }
 
-.active-workflow {
+.activeOrDeletedWorkflow {
     background-color: #FAF9FB;
 }
 

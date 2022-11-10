@@ -7,21 +7,19 @@ import { MatMenuTrigger } from '@angular/material/menu';
 import { MatPaginator } from '@angular/material/paginator';
 import { MatTableDataSource } from '@angular/material/table';
 import { ActivatedRoute, ActivatedRouteSnapshot, Resolve, Router } from '@angular/router';
-import { MsalService } from '@azure/msal-angular';
 import { merge, Observable, Subject, Subscription } from 'rxjs';
 import { debounceTime, finalize, map, switchMap, takeUntil } from 'rxjs/operators';
 import { AppComponentBase } from 'src/shared/app-component-base';
 import { AppConsts } from 'src/shared/AppConsts';
-import { ApiServiceProxy, EmployeeDto, EmployeeServiceProxy, EnumEntityTypeDto, LookupServiceProxy, StartNewWorkflowInputDto, WorkflowAlreadyExistsDto, WorkflowListItemDto, WorkflowProcessType, WorkflowServiceProxy, WorkflowStatus, WorkflowStepStatus } from 'src/shared/service-proxies/service-proxies';
+import { ApiServiceProxy, EmployeeDto, EmployeeServiceProxy, EnumEntityTypeDto, LegalEntityDto, LookupServiceProxy, StartNewWorkflowInputDto, WorkflowAlreadyExistsDto, WorkflowListItemDto, WorkflowProcessType, WorkflowServiceProxy, WorkflowStatus, WorkflowStepStatus } from 'src/shared/service-proxies/service-proxies';
 import { SelectableCountry, SelectableIdNameDto } from '../client/client.model';
 import { InternalLookupService } from '../shared/common/internal-lookup.service';
 import { ConfirmationDialogComponent } from '../shared/components/confirmation-dialog/confirmation-dialog.component';
 import { ManagerStatus } from '../shared/components/manager-search/manager-search.model';
 import { CreateWorkflowDialogComponent } from './create-workflow-dialog/create-workflow-dialog.component';
-import { WorkflowDataService } from './workflow-data.service';
-import { SelectableEmployeeDto, WorkflowFlag, WorkflowList } from './workflow.model';
+import { DialogConfig, SelectableEmployeeDto, StepTypes } from './workflow.model';
 
-const WorkflowGridOptionsKey = 'WorkflowGridFILTERS.1.0.2.';
+const WorkflowGridOptionsKey = 'WorkflowGridFILTERS.1.0.3.';
 @Component({
     selector: 'app-workflow',
     templateUrl: './workflow.component.html',
@@ -62,9 +60,7 @@ export class WorkflowComponent extends AppComponentBase implements OnInit, OnDes
     workflowDataSource: MatTableDataSource<WorkflowListItemDto>;
     workflowProcess = WorkflowProcessType;
 
-
-    tenants: EnumEntityTypeDto[] = [];
-    // legalEntities: LegalEntityDto[] = [];
+    legalEntities: LegalEntityDto[] = [];
     saleTypes: EnumEntityTypeDto[] = [];
     deliveryTypes: EnumEntityTypeDto[] = [];
     workflowStatuses: { [key: string]: string; };
@@ -72,8 +68,8 @@ export class WorkflowComponent extends AppComponentBase implements OnInit, OnDes
     isAdvancedFilters = false;
     showOnlyWorkflowsWithNewSales = false;
     showOnlyWorkflowsWithExtensions = false;
-    showOnlyWorkflowsWithPendingStepsForSelectedEmployees = false;
-    showOnlyWorkflowsWithUpcomingStepsForSelectedEmployees = false;
+    showPendingSteps = false;
+    showUpcomingSteps = false;
     includeTerminated = false;
     includeDeleted = false;
     invoicingEntityControl = new FormControl();
@@ -89,11 +85,14 @@ export class WorkflowComponent extends AppComponentBase implements OnInit, OnDes
 
     // we create an object that contains coordinates
     menuTopLeftPosition =  {x: 0, y: 0}
-
     // reference to the MatMenuTrigger in the DOM
     @ViewChild('rightMenuTrigger', {static: true}) matMenuTrigger: MatMenuTrigger;
 
     workflowListSubscription = new Subscription();
+
+    stepTypes = StepTypes;
+    upcomingStepType: number | null = null;
+    pendingStepType: number | null = null;
 
     private _unsubscribe = new Subject();
     constructor(
@@ -105,7 +104,6 @@ export class WorkflowComponent extends AppComponentBase implements OnInit, OnDes
         private dialog: MatDialog,
         private _internalLookupService: InternalLookupService,
         private _lookupService: LookupServiceProxy,
-        private _auth: MsalService,
         private _employeeService: EmployeeServiceProxy,
         private _activatedRoute: ActivatedRoute
     ) {
@@ -171,13 +169,10 @@ export class WorkflowComponent extends AppComponentBase implements OnInit, OnDes
 
     ngOnInit(): void {
         this.getCurrentUser();
-        // this.getLegalEntities();
+        this.getLegalEntities();
         this.getSalesType();
         this.getDeliveryTypes();
         this.getWorkflowStatuses();
-
-        // FIXME: remove after release
-        this.getTenants();
     }
 
     ngOnDestroy(): void {
@@ -198,8 +193,10 @@ export class WorkflowComponent extends AppComponentBase implements OnInit, OnDes
             workflowStatus: this.workflowStatusControl.value ? this.workflowStatusControl.value : undefined,
             showOnlyWorkflowsWithNewSales: this.showOnlyWorkflowsWithNewSales,
             showOnlyWorkflowsWithExtensions: this.showOnlyWorkflowsWithExtensions,
-            showOnlyWorkflowsWithPendingStepsForSelectedEmployees: this.showOnlyWorkflowsWithPendingStepsForSelectedEmployees,
-            showOnlyWorkflowsWithUpcomingStepsForSelectedEmployees: this.showOnlyWorkflowsWithUpcomingStepsForSelectedEmployees,
+            showPendingSteps: this.showPendingSteps,
+            pendingStepType: this.pendingStepType,
+            showUpcomingSteps: this.showUpcomingSteps,
+            upcomingStepType: this.upcomingStepType,
             includeTerminated: this.includeTerminated,
             includeDeleted: this.includeDeleted,
             searchFilter: this.workflowFilter.value ? this.workflowFilter.value : ''
@@ -222,8 +219,10 @@ export class WorkflowComponent extends AppComponentBase implements OnInit, OnDes
             this.invoicingEntityControl.setValue(filters.invoicingEntity, {emitEvent: false});
             this.showOnlyWorkflowsWithNewSales = filters.showOnlyWorkflowsWithNewSales;
             this.showOnlyWorkflowsWithExtensions = filters.showOnlyWorkflowsWithExtensions;
-            this.showOnlyWorkflowsWithPendingStepsForSelectedEmployees = filters.showOnlyWorkflowsWithPendingStepsForSelectedEmployees;
-            this.showOnlyWorkflowsWithUpcomingStepsForSelectedEmployees = filters.showOnlyWorkflowsWithUpcomingStepsForSelectedEmployees;
+            this.showPendingSteps = filters.showPendingSteps;
+            this.pendingStepType = filters.pendingStepType;
+            this.showUpcomingSteps = filters.showUpcomingSteps;
+            this.upcomingStepType = filters.upcomingStepType;
             this.includeTerminated = filters.includeTerminated;
             this.includeDeleted = filters.includeDeleted;
             this.workflowFilter.setValue(filters.searchFilter, {emitEvent: false});
@@ -288,48 +287,56 @@ export class WorkflowComponent extends AppComponentBase implements OnInit, OnDes
                     });
             }
         });
-
-        dialogRef.componentInstance.onRejected.subscribe(() => {
-            // nthng
-        });
     }
 
     confirmDeleteWorkflow(workflowId: string) {
         this.menuDeleteTrigger.closeMenu();
         const scrollStrategy = this.overlay.scrollStrategies.reposition();
-        const dialogRef = this.dialog.open(ConfirmationDialogComponent, {
-            width: '450px',
-            minHeight: '180px',
-            height: 'auto',
-            scrollStrategy,
-            backdropClass: 'backdrop-modal--wrapper',
-            autoFocus: false,
-            panelClass: 'confirmation-modal',
-            data: {
-                confirmationMessageTitle: `Are you sure you want to delete workflow?`,
-                confirmationMessage: 'If you confirm the deletion, all the info contained inside this workflow will be removed.',
-                rejectButtonText: 'Cancel',
-                confirmButtonText: 'Delete',
-                isNegative: true
-            }
-        });
+        DialogConfig.scrollStrategy = scrollStrategy;
+        DialogConfig.data = {
+            confirmationMessageTitle: `Are you sure you want to delete workflow?`,
+            confirmationMessage: 'If you confirm the deletion, all the info contained inside this workflow will be removed.',
+            rejectButtonText: 'Cancel',
+            confirmButtonText: 'Delete',
+            isNegative: true
+        }
+        const dialogRef = this.dialog.open(ConfirmationDialogComponent, DialogConfig);
 
         dialogRef.componentInstance.onConfirmed.subscribe(() => {
             this.deleteWorkflow(workflowId);
         });
 
-        dialogRef.componentInstance.onRejected.subscribe(() => {
-            // nthng
-        });
     }
 
     deleteWorkflow(workflowId: string) {
         this.isDataLoading = true;
         this._workflowService.delete(workflowId)
             .pipe(finalize(() => this.isDataLoading = false ))
-            .subscribe(result => {
-                this.getWorkflowList();
-            });
+            .subscribe(() => this.getWorkflowList());
+    }
+
+    confirmRestoreWorkflow(workflowId: string) {
+        this.menuDeleteTrigger.closeMenu();
+        const scrollStrategy = this.overlay.scrollStrategies.reposition();
+        DialogConfig.scrollStrategy = scrollStrategy;
+        DialogConfig.data = {
+            confirmationMessageTitle: `Are you sure you want to restore workflow?`,
+                rejectButtonText: 'Cancel',
+                confirmButtonText: 'Yes',
+                isNegative: false
+        }
+        const dialogRef = this.dialog.open(ConfirmationDialogComponent, DialogConfig);
+
+        dialogRef.componentInstance.onConfirmed.subscribe(() => {
+            this.restoreWorkflow(workflowId);
+        });
+    }
+
+    restoreWorkflow(workflowId: string) {
+        this.isDataLoading = true;
+        this._workflowService.restore(workflowId)
+            .pipe(finalize(() => this.isDataLoading = false))
+            .subscribe(() => this.getWorkflowList())
     }
 
     getFlagColor(flag: number): string {
@@ -358,14 +365,10 @@ export class WorkflowComponent extends AppComponentBase implements OnInit, OnDes
         }
     }
 
-    // getLegalEntities() {
-    //     this._internalLookupService.getLegalEntities().subscribe(result => {
-    //         this.legalEntities = result;
-    //     });
-    // }
-
-    getTenants() {
-        this._internalLookupService.getTenants().subscribe(result => this.tenants = result);
+    getLegalEntities() {
+        this._internalLookupService.getLegalEntities().subscribe(result => {
+            this.legalEntities = result;
+        });
     }
 
     getSalesType() {
@@ -406,6 +409,8 @@ export class WorkflowComponent extends AppComponentBase implements OnInit, OnDes
         let deliveryTypes = this.deliveryTypesControl.value ? this.deliveryTypesControl.value : undefined;
         let workflowStatus = this.workflowStatusControl.value ? this.workflowStatusControl.value : undefined;
         let ownerIds = this.selectedAccountManagers.map(x => +x.id);
+        let selectedPendingStepType = this.pendingStepType === 0 ? undefined : this.pendingStepType;
+        let selectedUpcomingStepType = this.upcomingStepType === 0 ? undefined : this.upcomingStepType;
 
         if (this.workflowListSubscription) {
             this.workflowListSubscription.unsubscribe();
@@ -422,10 +427,13 @@ export class WorkflowComponent extends AppComponentBase implements OnInit, OnDes
             deliveryTypes,
             workflowStatus,
             ownerIds,
+            [], // FIXME: tmp placeholder for new parameter
             this.showOnlyWorkflowsWithNewSales,
             this.showOnlyWorkflowsWithExtensions,
-            this.showOnlyWorkflowsWithPendingStepsForSelectedEmployees,
-            this.showOnlyWorkflowsWithUpcomingStepsForSelectedEmployees,
+            this.showPendingSteps,
+            selectedPendingStepType !== null ? selectedPendingStepType : undefined,
+            this.showUpcomingSteps,
+            selectedUpcomingStepType !== null ? selectedUpcomingStepType : undefined,
             this.includeTerminated,
             this.includeDeleted,
             searchFilter,
@@ -445,8 +453,8 @@ export class WorkflowComponent extends AppComponentBase implements OnInit, OnDes
                         endDate: x.endDate,
                         salesType: this.findItemById(this.saleTypes, x.salesTypeId),
                         deliveryType: this.findItemById(this.deliveryTypes, x.deliveryTypeId),
-                        statusName: WorkflowStatus[x.workflowStatus!],
-                        statusIcon: this.getStatusIcon(x.workflowStatus!),
+                        statusName: x.isDeleted ? 'Deleted' : WorkflowStatus[x.workflowStatus!],
+                        statusIcon: x.isDeleted ? 'deleted-status' : this.getStatusIcon(x.workflowStatus!),
                         isDeleted: x.isDeleted,
                         consultants: x.consultants,
                         consultantName: x.consultantName,
@@ -482,7 +490,7 @@ export class WorkflowComponent extends AppComponentBase implements OnInit, OnDes
     }
 
     sortChanged(event?: any): void {
-        this.sorting = event.active.concat(' ', event.direction);
+        this.sorting = event.direction && event.direction.length ? event.active.concat(' ', event.direction) : '';
         this.getWorkflowList();
     }
 
@@ -503,6 +511,24 @@ export class WorkflowComponent extends AppComponentBase implements OnInit, OnDes
         }
         this.pageNumber = 1;
         this.getWorkflowList(true);
+    }
+
+    selectUpcomingStep(stepType: number | null = null) {
+        this.upcomingStepType = stepType;
+        this.showUpcomingSteps = stepType !== null;
+        this.pageNumber = 1;
+        this.getWorkflowList();
+    }
+
+    selectPendingStep(stepType: number | null = null) {
+        this.pendingStepType = stepType;
+        this.showPendingSteps = stepType !== null;
+        this.pageNumber = 1;
+        this.getWorkflowList();
+    }
+
+    stepTypeTrackBy(index: number, item: {id: number, name: string}) {
+        return item.id;
     }
 
     getCurrentUser() {
@@ -533,8 +559,10 @@ export class WorkflowComponent extends AppComponentBase implements OnInit, OnDes
         this.workflowStatusControl.setValue(null, {emitEvent: false});
         this.showOnlyWorkflowsWithNewSales = false;
         this.showOnlyWorkflowsWithExtensions = false;
-        this.showOnlyWorkflowsWithPendingStepsForSelectedEmployees = false;
-        this.showOnlyWorkflowsWithUpcomingStepsForSelectedEmployees = false;
+        this.pendingStepType = null
+        this.showPendingSteps = false;
+        this.upcomingStepType = null
+        this.showUpcomingSteps = false;
         this.includeTerminated = false;
         this.includeDeleted = false;
         localStorage.removeItem(WorkflowGridOptionsKey);

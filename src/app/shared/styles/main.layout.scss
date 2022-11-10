@@ -74,6 +74,22 @@
           }
 
         }
+        &-logout {
+            padding: 16px;
+            border-bottom: 1px solid #E6E6E5;
+            &-username {
+                @include fontOpenSans(14px, 600);
+                font-style: normal;
+                line-height: 19px;
+                color: #383C37;
+            }
+            &-name {
+                @include fontOpenSans(12px, 600);
+                font-style: normal;
+                line-height: 16px;
+                color: #696964;
+            }
+        }
       }
   }
 }

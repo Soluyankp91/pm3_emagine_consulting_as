@@ -81,16 +81,26 @@
                     </span>
                 </span>
                 <mat-divider class="u-mr--16" [vertical]="true" style="height: 40px;"></mat-divider>
-                <span class="workflow-list--filter-type pending-steps-status flex-items-center cursor-pointer u-mr--16" [ngClass]="{'selected-status': showOnlyWorkflowsWithPendingStepsForSelectedEmployees}" appPreventDoubleClick (throttledClick)="showOnlyWorkflowsWithPendingStepsForSelectedEmployees = !showOnlyWorkflowsWithPendingStepsForSelectedEmployees; getWorkflowList(true)">
-                    <span class="workflow-list--filter-type__name">
-                        Pending steps
+                <span class="workflow-list--filter-type-dropdown cursor-pointer u-mr--20" [matMenuTriggerFor]="pendingSteps" [ngClass]="{'selected-status': pendingStepType !== null && pendingStepType >= 0}">
+                    <span class="workflow-list--filter-type-dropdown__name">
+                        {{pendingStepType !== null && pendingStepType >= 0 ? stepTypes[pendingStepType].name + ' pending steps' : 'Pending steps'}}
                     </span>
+                    <mat-icon>expand_more</mat-icon>
                 </span>
-                <span class="workflow-list--filter-type upcoming-steps-status flex-items-center cursor-pointer u-mr--20" [ngClass]="{'selected-status': showOnlyWorkflowsWithUpcomingStepsForSelectedEmployees}" appPreventDoubleClick (throttledClick)="showOnlyWorkflowsWithUpcomingStepsForSelectedEmployees = !showOnlyWorkflowsWithUpcomingStepsForSelectedEmployees; getWorkflowList(true)">
-                    <span class="workflow-list--filter-type__name">
-                        Upcoming steps
+                <mat-menu #pendingSteps backdropClass="step-filter--menu">
+                    <button class="workflow-list--filter-type-dropdown__item" *ngFor="let item of stepTypes; trackBy: stepTypeTrackBy" mat-menu-item (click)="selectPendingStep(item.id)">{{item.name}}</button>
+                    <button class="workflow-list--filter-type-dropdown__reset" mat-menu-item (click)="selectPendingStep()">Reset</button>
+                </mat-menu>
+                <span class="workflow-list--filter-type-dropdown cursor-pointer u-mr--20" [matMenuTriggerFor]="upcomingSteps" [ngClass]="{'selected-status': upcomingStepType !== null && upcomingStepType >= 0}">
+                    <span class="workflow-list--filter-type-dropdown__name">
+                        {{upcomingStepType !== null && upcomingStepType >= 0 ? stepTypes[upcomingStepType].name + ' upcoming steps' : 'Upcoming steps'}}
                     </span>
+                    <mat-icon>expand_more</mat-icon>
                 </span>
+                <mat-menu #upcomingSteps backdropClass="step-filter--menu">
+                    <button class="workflow-list--filter-type-dropdown__item" *ngFor="let item of stepTypes; trackBy: stepTypeTrackBy" mat-menu-item (click)="selectUpcomingStep(item.id)">{{item.name}}</button>
+                    <button class="workflow-list--filter-type-dropdown__reset" mat-menu-item (click)="selectUpcomingStep()">Reset</button>
+                </mat-menu>
                 <div fxLayout="row" fxLayoutAlign="start center" fxFlex="10%">
                     <mat-divider class="u-mr--10 divider-height" [vertical]="true"></mat-divider>
                     <button mat-button appPreventDoubleClick (throttledClick)="clearAllFilters()">
@@ -124,9 +134,8 @@
                 <mat-option class="mat-select-clear-option" *ngIf="invoicingEntityControl.value">
                     Clear
                 </mat-option>
-                <mat-option *ngFor="let item of tenants" [value]="item.id">
-                    <!-- {{ item.tenantName + ' ' + '(' + item.name + ')' }} -->
-                    {{ item.name }}
+                <mat-option *ngFor="let item of legalEntities" [value]="item.id">
+                    {{ item.tenantName + ' ' + '(' + item.name + ')' }}
                 </mat-option>
             </mat-select>
         </mat-form-field>
@@ -137,9 +146,8 @@
                 <mat-option class="mat-select-clear-option" *ngIf="paymentEntityControl.value">
                     Clear
                 </mat-option>
-                <mat-option *ngFor="let item of tenants" [value]="item.id">
-                    <!-- {{ item.tenantName + ' ' + '(' + item.name + ')' }} -->
-                    {{ item.name }}
+                <mat-option *ngFor="let item of legalEntities" [value]="item.id">
+                    {{ item.tenantName + ' ' + '(' + item.name + ')' }}
                 </mat-option>
             </mat-select>
         </mat-form-field>
@@ -391,18 +399,22 @@
                 <ng-container matColumnDef="action">
                     <mat-header-cell *matHeaderCellDef fxFlex="3%"></mat-header-cell>
                     <mat-cell *matCellDef="let row" fxFlex="3%">
-                        <button *ngIf="!row.isDeleted" mat-icon-button class="three-dots-actions-btn" #menuDeleteTrigger="matMenuTrigger" [matMenuTriggerFor]="workflowActions" appPreventDoubleClick (throttledClick)="$event.stopPropagation();"><mat-icon>more_horiz</mat-icon></button>
+                        <button mat-icon-button class="three-dots-actions-btn" #menuDeleteTrigger="matMenuTrigger" [matMenuTriggerFor]="workflowActions" appPreventDoubleClick (throttledClick)="$event.stopPropagation();"><mat-icon>more_horiz</mat-icon></button>
                         <mat-menu #workflowActions>
-                            <button class="menu-item menu-item--cancel" mat-menu-item (click)="confirmDeleteWorkflow(row?.workflowId)">
-                                    <mat-icon>clear</mat-icon>
-                                    <span>Delete</span>
+                            <button *ngIf="row.isDeleted" class="menu-item menu-item--edit" mat-menu-item (click)="confirmRestoreWorkflow(row?.workflowId)">
+                                    <mat-icon>settings_backup_restore</mat-icon>
+                                    <span>Restore workflow</span>
                             </button>
+                            <button *ngIf="!row.isDeleted" class="menu-item menu-item--cancel" mat-menu-item (click)="confirmDeleteWorkflow(row?.workflowId)">
+                                <mat-icon>clear</mat-icon>
+                                <span>Delete</span>
+                        </button>
                         </mat-menu>
                     </mat-cell>
                 </ng-container>
 
                 <mat-header-row *matHeaderRowDef="workflowDisplayColumns"></mat-header-row>
-                <mat-row *matRowDef="let row; columns: workflowDisplayColumns;" class="mat-elevation-z0 cursor-pointer flex-items-start" [ngClass]="{'active-workflow': row.isActive}" (contextmenu)="onRightClick($event, {content: row})" appPreventDoubleClick (throttledClick)="navigateToWorkflowDetails(row.workflowId)"></mat-row>
+                <mat-row *matRowDef="let row; columns: workflowDisplayColumns;" class="mat-elevation-z0 cursor-pointer flex-items-start" [ngClass]="{'activeOrDeletedWorkflow': row.isActive || row.isDeleted}" (contextmenu)="onRightClick($event, {content: row})" appPreventDoubleClick (throttledClick)="navigateToWorkflowDetails(row.workflowId)"></mat-row>
             </mat-table>
             <div class="results-not-found" *ngIf="totalCount === 0 && !isDataLoading">
                 RESULTS NOT FOUND

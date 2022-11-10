@@ -11,12 +11,12 @@ export class WorkflowDataService {
     workflowSideSectionAdded = new EventEmitter<boolean>();
     // Start Clinet period
     startClientPeriodSalesSaved = new EventEmitter<boolean>();
-    startClientPeriodContractsSaved = new EventEmitter<boolean>();
+    startClientPeriodContractsSaved = new EventEmitter<{isDraft: boolean, bypassLegalValidation?: boolean}>();
     startClientPeriodFinanceSaved = new EventEmitter<boolean>();
 
     // Consultant start, extend and change periods
     consultantStartChangeOrExtendSalesSaved = new EventEmitter<boolean>();
-    consultantStartChangeOrExtendContractsSaved = new EventEmitter<boolean>();
+    consultantStartChangeOrExtendContractsSaved = new EventEmitter<{isDraft: boolean, bypassLegalValidation?: boolean}>();
     consultantStartChangeOrExtendFinanceSaved = new EventEmitter<boolean>();
 
     // Change consultant period

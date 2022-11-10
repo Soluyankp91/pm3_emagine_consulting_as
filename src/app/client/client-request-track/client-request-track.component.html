@@ -2,12 +2,6 @@
     <div fxLayout="column" fxLayoutAlign="start center" class="client-list--table u-w--100">
         <div fxLayout="column" fxFlexFill>
             <mat-table #table [dataSource]="clientDataSource" class="white-table u-w--100" matSort matSortStart="asc" (matSortChange)="sortChanged($event)">
-                <!-- <ng-container matColumnDef="countryFlag">
-                    <mat-header-cell *matHeaderCellDef fxFlex="2%"></mat-header-cell>
-                    <mat-cell *matCellDef="let row" fxFlex="2%">
-                        <mat-icon class="country-lookup--btn__flag selected-country" svgIcon="{{row.clientAddress_Country_Name}}-flag-selected"></mat-icon>
-                    </mat-cell>
-                </ng-container> -->
                 <ng-container matColumnDef="requestId">
                     <mat-header-cell *matHeaderCellDef mat-sort-header fxFlex="5%"> # </mat-header-cell>
                     <mat-cell *matCellDef="let row" fxFlex="5%">
@@ -73,8 +67,8 @@
                 <ng-container matColumnDef="locations">
                     <mat-header-cell *matHeaderCellDef fxFlex="10%"> Area </mat-header-cell>
                     <mat-cell *matCellDef="let row" fxFlex="10%">
-                        <span class="text-truncate-ellipsis" [matTooltip]="mapLocationArrayByName(row.locations)" matTooltipClass="white-tooltip" appShowIfTruncated>
-                            {{mapLocationArrayByName(row.locations)}}
+                        <span class="text-truncate-ellipsis" [matTooltip]="row.locations" matTooltipClass="white-tooltip" appShowIfTruncated>
+                            {{row.locations}}
                         </span>
                     </mat-cell>
                 </ng-container>
@@ -82,8 +76,8 @@
                 <ng-container matColumnDef="salesManager">
                     <mat-header-cell *matHeaderCellDef fxFlex="12%"> Sales manager </mat-header-cell>
                     <mat-cell *matCellDef="let row" fxFlex="12%">
-                        <span class="text-truncate-ellipsis" [matTooltip]="mapEmployeeArrayByName(row.accountManagers)" matTooltipClass="white-tooltip" appShowIfTruncated>
-                            {{mapEmployeeArrayByName(row.accountManagers)}}
+                        <span class="text-truncate-ellipsis" [matTooltip]="row.accountManagers" matTooltipClass="white-tooltip" appShowIfTruncated>
+                            {{row.accountManagers}}
                         </span>
                     </mat-cell>
                 </ng-container>
@@ -91,8 +85,8 @@
                 <ng-container matColumnDef="sourcer">
                     <mat-header-cell *matHeaderCellDef fxFlex="12%"> Sourcer </mat-header-cell>
                     <mat-cell *matCellDef="let row" fxFlex="12%">
-                        <span class="text-truncate-ellipsis" [matTooltip]="mapEmployeeArrayByName(row.requestSourcers)" matTooltipClass="white-tooltip" appShowIfTruncated>
-                            {{mapEmployeeArrayByName(row.requestSourcers)}}
+                        <span class="text-truncate-ellipsis" [matTooltip]="row.requestSourcers" matTooltipClass="white-tooltip" appShowIfTruncated>
+                            {{row.requestSourcers}}
                         </span>
                     </mat-cell>
                 </ng-container>

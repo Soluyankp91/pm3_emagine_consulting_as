@@ -1,4 +1,5 @@
 import { FormArray, FormControl, FormGroup } from "@angular/forms";
+import { MatDialogConfig } from "@angular/material/dialog";
 import { EnumEntityTypeDto, WorkflowProcessType } from "src/shared/service-proxies/service-proxies";
 
 export class WorkflowSalesExtensionForm extends FormGroup {
@@ -224,186 +225,6 @@ export enum ProjectLineDiallogMode {
     Edit = 2
 }
 
-// #region hardcoded grid
-export enum WorkflowFlag {
-    NewSales = 1,
-    Extension = 2
-}
-
-export const WorkflowList = [
-    {
-        flag: WorkflowFlag.NewSales,
-        id: 'bb028a73-4a3c-4088-9722-53511b30c0f5',
-
-        client: 'new WF',
-        consultants: [
-            { name: 'Martha Marikel' },
-            { name: 'John Doe'}
-        ],
-        salesType: 'T&M',
-        deliveryType: 'Offshore',
-        startDate: new Date(2021, 4, 2),
-        endDate: new Date(2021, 5, 3),
-        step: 'Sales',
-        openProcess: [null, WorkflowProcessType.StartClientPeriod],
-        status: 'In progress',
-        managers: [1,2],
-        isDeleted: false
-    },
-    {
-        flag: WorkflowFlag.NewSales,
-        id: '37c3da55-1242-4940-ba42-f990712be7b1',
-
-        client: 'completed WF',
-        consultants: [
-            { name: 'Martha Marikel' },
-            { name: 'John Doe'}
-        ],
-        salesType: 'T&M',
-        deliveryType: 'Offshore',
-        startDate: new Date(2021, 4, 2),
-        endDate: new Date(2021, 5, 3),
-        step: 'Sales',
-        openProcess: [null, WorkflowProcessType.StartClientPeriod],
-        status: 'In progress',
-        managers: [1,2],
-        isDeleted: false
-    },
-    {
-        flag: WorkflowFlag.NewSales,
-        id: 'B54D53F1-3514-48F8-98FA-0523B5AE1F14',
-
-        client: 'many extensions',
-        consultants: [
-            { name: 'Martha Marikel' },
-            { name: 'John Doe'}
-        ],
-        salesType: 'T&M',
-        deliveryType: 'Offshore',
-        startDate: new Date(2021, 4, 2),
-        endDate: new Date(2021, 5, 3),
-        step: 'Sales',
-        openProcess: [null, WorkflowProcessType.StartClientPeriod],
-        status: 'In progress',
-        managers: [1,2],
-        isDeleted: false
-    },
-    {
-        flag: WorkflowFlag.NewSales,
-        id: 'E469E5E0-E0D8-425B-8FEF-47CC6148C319',
-        client: 'start + 2 extend',
-        consultants: [
-            { name: 'Martha Marikel'}
-        ],
-        salesType: 'T&M',
-        deliveryType: 'Nearshore',
-        startDate: new Date(2021, 2, 1),
-        endDate: new Date(2021, 5, 3),
-        step: 'Sales',
-        openProcess: [WorkflowProcessType.ExtendClientPeriod, null],
-        status: 'In progress',
-        managers: [1,2],
-        isDeleted: false
-    },
-    {
-        flag: WorkflowFlag.Extension,
-        id: 'FFDBABC6-B7A9-4169-8C03-023063EB3E3C',
-        client: 'Terminated wf test',
-        consultants: [
-            { name: 'Martha Marikel' },
-            { name: 'Van Trier Mia' },
-            { name: 'Robertsen Oscar'}
-        ],
-        salesType: 'Managed service',
-        deliveryType: 'Managed Service',
-        startDate: new Date(2021, 2, 15),
-        endDate: new Date(2022, 11, 25),
-        step: 'Contracts',
-        openProcess: [WorkflowProcessType.TerminateWorkflow],
-        status: 'In progress',
-        managers: [1,2],
-        isDeleted: true
-    },
-    {
-        flag: WorkflowFlag.Extension,
-        id: '71A3D92E-7A51-4B49-A702-02877B34144B',
-        client: 'terminated test2',
-        consultants: [
-            { name: 'Martha Marikel' },
-            { name: 'Van Trier Mia' },
-            { name: 'Robertsen Oscar'}
-        ],
-        salesType: 'Managed service',
-        deliveryType: 'Managed Service',
-        startDate: new Date(2021, 2, 15),
-        endDate: new Date(2022, 11, 25),
-        step: 'Contracts',
-        openProcess: [WorkflowProcessType.ChangeClientPeriod],
-        status: 'In progress',
-        managers: [1,2],
-        isDeleted: true
-    },
-    {
-        flag: WorkflowFlag.NewSales,
-        id: '3cd07ad0-a534-4b45-bb54-3285ebbe8474',
-        client: 'My WF',
-        consultants: [
-            { name: 'Martha Marikel' },
-            { name: 'Van Trier Mia' },
-            { name: 'Robertsen Oscar'}
-        ],
-        salesType: 'Managed service',
-        deliveryType: 'Managed Service',
-        startDate: new Date(2021, 2, 15),
-        endDate: new Date(2022, 11, 25),
-        step: 'Contracts',
-        openProcess: [WorkflowProcessType.StartConsultantPeriod, WorkflowProcessType.ChangeClientPeriod],
-        status: 'In progress',
-        managers: [1,2],
-        isDeleted: true
-    },
-    {
-        flag: WorkflowFlag.NewSales,
-        id: 'b5cd880a-c94e-4dee-a5b0-de7184582a31',
-        client: 'Martha Marikel',
-        consultants: [
-            { name: 'Martha Marikel' },
-            { name: 'Van Trier Mia' },
-            { name: 'Robertsen Oscar'}
-        ],
-        salesType: 'Managed service',
-        deliveryType: 'Managed Service',
-        startDate: new Date(2021, 2, 15),
-        endDate: new Date(2022, 11, 25),
-        step: 'Contracts',
-        openProcess: [WorkflowProcessType.TerminateConsultant],
-        status: 'In progress',
-        managers: [1,2],
-        isDeleted: true
-    },
-    {
-        flag: WorkflowFlag.Extension,
-        id: 'b5cd880a-c94e-4dee-a5b0-de7184582a31',
-        client: 'Martha Marikel',
-        consultants: [
-            { name: 'Martha Marikel' },
-            { name: 'Van Trier Mia' },
-            { name: 'Robertsen Oscar'}
-        ],
-        salesType: 'Managed service',
-        deliveryType: 'Managed Service',
-        startDate: new Date(2021, 2, 15),
-        endDate: new Date(2022, 11, 25),
-        step: 'Contracts',
-        openProcess: null,
-        status: 'In progress',
-        managers: [1,2],
-        isDeleted: true
-    }
-];
-
-// #endrefion hardcoded grid
-
 export interface ISelectableEmployeeDto {
     id: number | string;
     name: string;
@@ -424,7 +245,6 @@ export class SelectableEmployeeDto implements ISelectableEmployeeDto {
     }
 }
 
-
 export enum EmploymentTypes {
     FreelanceConsultant = 1,
     SupplierConsultant = 2,
@@ -437,4 +257,37 @@ export enum EmploymentTypes {
     CivilLawConsultant = 9,
     FeeOnly = 10,
     Recruitment = 11
+}
+
+export const StepTypes = [
+    {
+        id: 0,
+        name: 'All'
+    },
+    {
+        id: 1,
+        name: 'Sales'
+    },
+    {
+        id: 2,
+        name: 'Contract'
+    },
+    {
+        id: 3,
+        name: 'Finance'
+    },
+    {
+        id: 4,
+        name: 'Sourcing'
+    }
+];
+
+export const DialogConfig: MatDialogConfig = {
+    minWidth: '450px',
+    minHeight: '180px',
+    height: 'auto',
+    width: 'auto',
+    backdropClass: 'backdrop-modal--wrapper',
+    autoFocus: false,
+    panelClass: 'confirmation-modal'
 }
