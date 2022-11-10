@@ -1732,7 +1732,7 @@
                                     <div fxLayout="row" fxLayoutAlign="start start" class="u-w--100 u-mb--10" [fxHide]="salesClientDataForm.clientRateAndInvoicing?.value?.id !== 1"> <!-- id: 1 - Time based -->
                                         <mat-form-field appearance="outline" class="u-w--100  filter-select" fxFlex="33%" [ngClass]="{'u-mr--16': salesClientDataForm.clientInvoiceFrequency?.value?.name === 'Manual date'}">
                                             <mat-label>Invoicing frequency</mat-label>
-                                            <mat-select required formControlName="clientInvoiceFrequency" [disableOptionCentering]="true" [compareWith]="compareWithFn">
+                                            <mat-select  [required]="salesClientDataForm.clientRateAndInvoicing?.value?.id === 1"  formControlName="clientInvoiceFrequency" [disableOptionCentering]="true" [compareWith]="compareWithFn">
                                                 <mat-option *ngFor="let item of invoiceFrequencies" [value]="item">
                                                     {{ item.name }}
                                                 </mat-option>
@@ -2535,7 +2535,7 @@
                                         <div fxLayout="row" fxLayoutAlign="start center" class="u-w--100 u-mb--10" [fxHide]="consultant.value.consultantPaymentType?.id !== 1"> <!-- id: 1 - Time based -->
                                             <mat-form-field appearance="outline" class="u-w--100  filter-select" fxFlex="33%" [ngClass]="{'u-mr--16': consultant.value.consultantInvoicingFrequency?.name === 'Manual date'}" [fxHide]="salesClientDataForm.clientRateAndInvoicing?.value?.id !== 2">
                                                 <mat-label>Invoicing frequency</mat-label>
-                                                <mat-select [required]="salesClientDataForm.clientRateAndInvoicing?.value?.id === 2" formControlName="consultantInvoicingFrequency" [disableOptionCentering]="true" [compareWith]="compareWithFn">
+                                                <mat-select [required]="consultant.value.consultantPaymentType?.id === 1" formControlName="consultantInvoicingFrequency" [disableOptionCentering]="true" [compareWith]="compareWithFn">
                                                     <mat-option *ngFor="let item of invoiceFrequencies" [value]="item">
                                                         {{ item.name }}
                                                     </mat-option>
