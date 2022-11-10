@@ -1,5 +1,5 @@
 <form fxLayout="column" fxLayoutAlign="start start" [formGroup]="sourcingConsultantsDataForm" class="workflow-sourcing u-w--100" id="consultantData">
-    <button class="absolute-edit-toggle" mat-icon-button *ngIf="canToggleEditMode" type="button" appPreventDoubleClick (throttledClick)="toggleEditMode()"><mat-icon>{{readOnlyMode ? 'create' : 'close'}}</mat-icon></button>
+    <button class="absolute-edit-toggle" mat-icon-button *ngIf="canToggleEditMode" type="button" appPreventDoubleClick (throttledClick)="toggleEditMode()"><mat-icon svgIcon="edit-icon"></mat-icon></button>
     <ng-container formArrayName="consultantTerminationSourcingData">
         <div *ngFor="let consultant of sourcingConsultantsDataForm.consultantTerminationSourcingData.controls; let i = index; last as last" [formGroupName]="i" class="workflow-contracts--block-consultants u-mt--20" [ngClass]="{'last-block': last}">
             <h1  *ngIf="readOnlyMode" class="workflow-step-readonly--header-main u-mb--20">
