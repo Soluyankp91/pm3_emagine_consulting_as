@@ -11,6 +11,13 @@
             border-radius: 50%;
             background-color: rgba($color: #72a0f8, $alpha: 0.2);
             color: #72a0f8;
+            border-radius: 50%;
+            mat-icon {
+                width: 20px;
+                height: 20px;
+                font-size: 20px;
+                line-height: 20px;
+            }
         }
         .rates-and-fees--btn {
             width: 180px;
