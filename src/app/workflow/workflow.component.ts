@@ -378,22 +378,22 @@ export class WorkflowComponent extends AppComponentBase implements OnInit, OnDes
     }
 
     getLegalEntities() {
-        this._internalLookupService.getLegalEntities().subscribe(result => { this.legalEntities = result });
+        this._internalLookupService.getLegalEntities().subscribe(result => { this.legalEntities = result; });
     }
 
     getSalesType() {
-        this._internalLookupService.getSaleTypes().subscribe(result => { this.saleTypes = result });
+        this._internalLookupService.getSaleTypes().subscribe(result => { this.saleTypes = result; });
     }
 
     getDeliveryTypes() {
-        this._internalLookupService.getDeliveryTypes().subscribe(result => { this.deliveryTypes = result });
+        this._internalLookupService.getDeliveryTypes().subscribe(result => { this.deliveryTypes = result; });
     }
 
     getWorkflowStatuses() {
-        this._internalLookupService.getWorkflowStatuses().subscribe(result => { this.workflowStatuses = result });
+        this._internalLookupService.getWorkflowStatuses().subscribe(result => { this.workflowStatuses = result; });
     }
     getSyncStateStatuses() {
-        this._internalLookupService.getSyncStateStatuses().subscribe(result => { this.syncStateStatuses = this.toArray(result)});
+        this._internalLookupService.getSyncStateStatuses().subscribe(result => { this.syncStateStatuses = this.toArray(result); });
     }
 
     getWorkflowList(filterChanged?: boolean) {
@@ -524,10 +524,7 @@ export class WorkflowComponent extends AppComponentBase implements OnInit, OnDes
         this.getWorkflowList();
     }
 
-    stepTypeTrackBy(index: number, item: {id: number, name: string}) {
-        return item.id;
-    }
-    syncStatusTrackBy(index: number, item: {id: number, name: string}) {
+    filtersTrackBy(index: number, item: {id: number, name: string}) {
         return item.id;
     }
     getCurrentUser() {
