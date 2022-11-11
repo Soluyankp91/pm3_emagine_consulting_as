@@ -66,7 +66,7 @@ export class ManagerSearchComponent extends AppComponentBase implements OnInit, 
             if (list.length) {
                 this.filteredManagers = list;
             } else {
-                this.filteredManagers = [{ name: 'No managerxs found', id: 'no-data' }];
+                this.filteredManagers = [{ name: 'No managers found', id: 'no-data' }];
             }
         });
     }
