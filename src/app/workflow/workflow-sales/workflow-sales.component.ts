@@ -1811,7 +1811,7 @@ export class WorkflowSalesComponent extends AppComponentBase implements OnInit, 
     }
 
     clientRateTypeChange(value: EnumEntityTypeDto) {
-        if (value) {
+        if (value.id) {
             this.salesClientDataForm.rateUnitTypeId?.setValue(null, {emitEvent: false});
             this.salesClientDataForm.clientPrice?.setValue(null, {emitEvent: false});
             this.salesClientDataForm.clientCurrency?.setValue(null, {emitEvent: false});
