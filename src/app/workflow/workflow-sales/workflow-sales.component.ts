@@ -244,20 +244,16 @@ export class WorkflowSalesComponent extends AppComponentBase implements OnInit, 
                 takeUntil(this._unsubscribe),
                 debounceTime(300),
                 switchMap((value: any) => {
-                    if (value) {
-                        let toSend = {
-                            name: value ?? '',
-                            maxRecordsCount: 1000,
-                        };
-                        if (value?.id) {
-                            toSend.name = value.id
-                                ? value.clientNam?.trim()
-                                : value?.trim();
-                        }
-                        return this._lookupService.clients(toSend.name, toSend.maxRecordsCount);
-                    } else {
-                        return of([]);
+                    let toSend = {
+                        name: value ?? '',
+                        maxRecordsCount: 1000,
+                    };
+                    if (value?.id) {
+                        toSend.name = value.id
+                            ? value.clientName?.trim()
+                            : value?.trim();
                     }
+                    return this._lookupService.clients(toSend.name, toSend.maxRecordsCount);
                 }),
             ).subscribe((list: ClientResultDto[]) => {
                 if (list.length) {
@@ -272,20 +268,16 @@ export class WorkflowSalesComponent extends AppComponentBase implements OnInit, 
                 takeUntil(this._unsubscribe),
                 debounceTime(300),
                 switchMap((value: any) => {
-                    if (value) {
-                        let toSend = {
-                            name: value,
-                            maxRecordsCount: 1000,
-                        };
-                        if (value?.id) {
-                            toSend.name = value.id
-                                ? value.clientName?.trim()
-                                : value?.trim();
-                        }
-                        return this._lookupService.clients(toSend.name, toSend.maxRecordsCount);
-                    } else {
-                        return of([]);
+                    let toSend = {
+                        name: value ?? '',
+                        maxRecordsCount: 1000,
+                    };
+                    if (value?.id) {
+                        toSend.name = value.id
+                            ? value.clientName?.trim()
+                            : value?.trim();
                     }
+                    return this._lookupService.clients(toSend.name, toSend.maxRecordsCount);
                 }),
             ).subscribe((list: ClientResultDto[]) => {
                 if (list.length) {
@@ -326,20 +318,17 @@ export class WorkflowSalesComponent extends AppComponentBase implements OnInit, 
                 takeUntil(this._unsubscribe),
                 debounceTime(300),
                 switchMap((value: any) => {
-                    if (value) {
-                        let toSend = {
-                            name: value,
-                            maxRecordsCount: 1000,
-                        };
-                        if (value?.id) {
-                            toSend.name = value.id
-                                ? value.clientName
-                                : value;
-                        }
-                        return this._lookupService.clients(toSend.name, toSend.maxRecordsCount);
-                    } else {
-                        return of([]);
+                    let toSend = {
+                        name: value ?? '',
+                        maxRecordsCount: 1000,
+                    };
+                    if (value?.id) {
+                        toSend.name = value.id
+                            ? value.clientName
+                            : value;
                     }
+                    return this._lookupService.clients(toSend.name, toSend.maxRecordsCount);
+
                 }),
             ).subscribe((list: ClientResultDto[]) => {
                 if (list.length) {
@@ -1811,7 +1800,7 @@ export class WorkflowSalesComponent extends AppComponentBase implements OnInit, 
     }
 
     clientRateTypeChange(value: EnumEntityTypeDto) {
-        if (value) {
+        if (value.id) {
             this.salesClientDataForm.rateUnitTypeId?.setValue(null, {emitEvent: false});
             this.salesClientDataForm.clientPrice?.setValue(null, {emitEvent: false});
             this.salesClientDataForm.clientCurrency?.setValue(null, {emitEvent: false});
