@@ -308,3 +308,9 @@ export class SelectableIdNameDto implements ISelectableIdNameDto {
         this.selected = data?.selected!;
     }
 }
+
+export enum SyncStatusIcon {
+    'no-sync-icon' = 1,
+    'new-sync-needed-icon'= 2,
+    'synced-icon' = 3
+}

@@ -17,7 +17,7 @@ import { InternalLookupService } from '../shared/common/internal-lookup.service'
 import { ConfirmationDialogComponent } from '../shared/components/confirmation-dialog/confirmation-dialog.component';
 import { ManagerStatus } from '../shared/components/manager-search/manager-search.model';
 import { CreateWorkflowDialogComponent } from './create-workflow-dialog/create-workflow-dialog.component';
-import { DialogConfig, ISelectableIdNameDto, SelectableEmployeeDto, StepTypes } from './workflow.model';
+import { DialogConfig, ISelectableIdNameDto, SelectableEmployeeDto, StepTypes, SyncStatusIcon } from './workflow.model';
 
 const WorkflowGridOptionsKey = 'WorkflowGridFILTERS.1.0.4';
 @Component({
@@ -458,7 +458,7 @@ export class WorkflowComponent extends AppComponentBase implements OnInit, OnDes
                         isActive: x.workflowStatus === WorkflowStatus.Active,
                         isNewSale: x.isNewSale,
                         syncStateStatusName: SyncStateStatus[x.syncStateStatus!],
-                        syncStateStatusIcon: this.getSyncStatusIcon(x.syncStateStatus!)
+                        syncStateStatusIcon: SyncStatusIcon[x.syncStateStatus!]
                     }
                 })
                 this.workflowDataSource = new MatTableDataSource<any>(formattedData);
@@ -581,14 +581,6 @@ export class WorkflowComponent extends AppComponentBase implements OnInit, OnDes
         return option?.name;
     }
 
-    toArray(enumme: { [key: string]: string; }) {
-        let result: ISelectableIdNameDto[] = [];
-        for (const key of Object.keys(enumme)) {
-            result.push({ id: Number(key), name: enumme[key], selected: false });
-        }
-        return result;
-    }
-
     syncStatusFilterControl(item: ISelectableIdNameDto) {
         const index = this.selectedSyncStateStatuses.findIndex(x => x.id === item.id);
         if (index >= 0) {
@@ -598,19 +590,6 @@ export class WorkflowComponent extends AppComponentBase implements OnInit, OnDes
         }
         item.selected = !item.selected;
         this.getWorkflowList();
-    }
-
-    getSyncStatusIcon(status: number) {
-        switch (status) {
-            case SyncStateStatus.NewSyncNeeded:
-                return 'new-sync-needed-icon';
-            case SyncStateStatus.NotSynced:
-                return 'no-sync-icon';
-            case SyncStateStatus.Synced:
-                return 'synced-icon';
-            default:
-                return '';
-        }
     }
 
     syncStatusClicked(event: Event, item: ISelectableIdNameDto) {
