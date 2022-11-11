@@ -13,4 +13,5 @@ export class AppConsts {
         defaultPageSize: 20,
         dashboardPageSize: 7
     };
+    static momentFormatType = 'DD.MM.YYYY';
 }
