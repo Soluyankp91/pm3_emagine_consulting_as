@@ -1,4 +1,5 @@
 @import "/src/app/shared/styles/config/_colors";
+@import "/src/app/shared/styles/config/_mixins";
 
 .mat-form-field {
     font-size: 1em !important;
@@ -494,14 +495,33 @@
         &--row {
             display: flex;
             flex-direction: row;
+            align-items: center;
             line-height: 1 !important;
         }
         &--column {
             display: flex;
             flex-direction: column;
             line-height: 1 !important;
+            &-client {
+                &-name {
+                    @include fontOpenSans(14px, 700);
+                    line-height: 140%;
+                    color: #4A4E60;
+                }
+                &-info {
+                    @include fontOpenSans(14px, 600);
+                    line-height: 140%;
+                    color: #4A4E60;
+                }
+            }
         }
     }
+}
+
+.autocopmlete-option-name {
+    @include fontOpenSans(14px, 700);
+    line-height: 140%;
+    color: #4A4E60;
 }
 
 .textarea-with-hint {
