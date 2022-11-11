@@ -2,6 +2,7 @@ import { Component, OnInit, HostBinding, NgZone, ChangeDetectorRef, ElementRef, 
 import { Router } from '@angular/router';
 import { GANTT_UPPER_TOKEN, GanttUpper, GanttItemInternal, GANTT_GLOBAL_CONFIG, GanttGlobalConfig } from '@worktile/gantt';
 import { environment } from 'src/environments/environment';
+import { AppConsts } from 'src/shared/AppConsts';
 import { MainOverviewServiceProxy } from 'src/shared/service-proxies/service-proxies';
 import { OverviewFlag, OverviewFlagNames } from '../../main-overview.model';
 import { GanttGroupInternal } from '../mocks';
@@ -24,8 +25,8 @@ export class AppGanttFlatComponent extends GanttUpper implements OnInit {
     @Output() userSelectedStatusForWorflow = new EventEmitter();
     @Output() userSelectedStatusForConsultant = new EventEmitter();
 
+    momentFormatType = AppConsts.momentFormatType;
     overviewFlagNames = OverviewFlagNames;
-
     mergeIntervalDays = 3;
     userSelectedStatuses: any;
     menuTopLeftPosition =  {x: 0, y: 0}
@@ -166,7 +167,7 @@ export class AppGanttFlatComponent extends GanttUpper implements OnInit {
         this.menuTopLeftPosition.y = event.clientY + 10;
         this.tooltipStartDate = new Date(item?.origin?.start*1000) ;
         this.tooltipEndDate = (item?.origin?.origin.endDate !== undefined && item?.origin?.origin.endDate !== null) ? new Date(item?.origin?.end*1000) : undefined;
-    
+
     }
 
 }
