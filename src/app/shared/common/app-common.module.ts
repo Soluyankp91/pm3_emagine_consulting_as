@@ -17,6 +17,7 @@ import { PreventDoubleClickDirective } from 'src/shared/common/directives/preven
 import { ValidatorComponent } from '../components/validator/validator.component';
 import { ReplacePipe } from 'src/shared/common/pipes/replace.pipe';
 import { ConsultantInformationComponent } from '../components/consultant-information/consultant-information.component';
+import { ExcludeIdsPipe } from 'src/shared/common/pipes/exclude-ids.pipe';
 
 @NgModule({
     declarations: [
@@ -30,7 +31,8 @@ import { ConsultantInformationComponent } from '../components/consultant-informa
         PreventDoubleClickDirective,
         ValidatorComponent,
         ReplacePipe,
-        ConsultantInformationComponent
+        ConsultantInformationComponent,
+        ExcludeIdsPipe
     ],
     imports: [
         CommonModule,
@@ -55,7 +57,8 @@ import { ConsultantInformationComponent } from '../components/consultant-informa
         PreventDoubleClickDirective,
         ValidatorComponent,
         ReplacePipe,
-        ConsultantInformationComponent
+        ConsultantInformationComponent,
+        ExcludeIdsPipe
     ],
     providers: [
         ErrorDialogService,
