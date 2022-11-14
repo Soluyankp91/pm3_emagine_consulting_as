@@ -2533,9 +2533,9 @@
                                             <h3 class="workflow-gray--header u-mb--10">Invoicing information</h3>
                                         </ng-container>
                                         <div fxLayout="row" fxLayoutAlign="start center" class="u-w--100 u-mb--10" [fxHide]="consultant.value.consultantPaymentType?.id !== 1"> <!-- id: 1 - Time based -->
-                                            <mat-form-field appearance="outline" class="u-w--100  filter-select" fxFlex="33%" [ngClass]="{'u-mr--16': consultant.value.consultantInvoicingFrequency?.name === 'Manual date'}">
+                                            <mat-form-field appearance="outline" class="u-w--100  filter-select" fxFlex="33%" [ngClass]="{'u-mr--16': consultant.value.consultantInvoicingFrequency?.name === 'Manual date'}" [fxHide]="salesClientDataForm.clientRateAndInvoicing?.value?.id !== 2">
                                                 <mat-label>Invoicing frequency</mat-label>
-                                                <mat-select [required]="salesClientDataForm.clientRateAndInvoicing?.value?.id === 2" formControlName="consultantInvoicingFrequency" [disableOptionCentering]="true" [compareWith]="compareWithFn">
+                                                <mat-select [required]="consultant.value.consultantPaymentType?.id === 1 && salesClientDataForm.clientRateAndInvoicing?.value?.id === 2" formControlName="consultantInvoicingFrequency" [disableOptionCentering]="true" [compareWith]="compareWithFn">
                                                     <mat-option *ngFor="let item of invoiceFrequencies" [value]="item">
                                                         {{ item.name }}
                                                     </mat-option>
@@ -3018,7 +3018,7 @@
                                         <div fxLayout="row" fxLayoutAlign="start center" class="u-w--100">
                                             <mat-form-field appearance="outline" class="u-w--100 textarea-input u-mr--16" fxFlex="0 0 calc(66% + 16px)">
                                                 <mat-label>Consultant Special Contract Terms</mat-label>
-                                                <textarea required matInput autocomplete="new-password" name="consultantSpecialContractTerms" formControlName="consultantSpecialContractTerms" [matTextareaAutosize]="true" [matAutosizeMinRows]="2">
+                                                <textarea [required]="consultant.value?.employmentType?.id !== employmentTypesEnum.FeeOnly && consultant.value?.employmentType?.id !== employmentTypesEnum.Recruitment" matInput autocomplete="new-password" name="consultantSpecialContractTerms" formControlName="consultantSpecialContractTerms" [matTextareaAutosize]="true" [matAutosizeMinRows]="2">
                                                 </textarea>
                                             </mat-form-field>
                                         </div>

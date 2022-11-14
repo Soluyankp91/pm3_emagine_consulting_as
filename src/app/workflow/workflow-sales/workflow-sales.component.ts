@@ -569,9 +569,11 @@ export class WorkflowSalesComponent extends AppComponentBase implements OnInit, 
     }
 
     validateSalesForm() {
+        debugger;
         this.salesClientDataForm.markAllAsTouched();
         this.salesMainDataForm.markAllAsTouched();
         this.consultantsForm.markAllAsTouched();
+        this.consultantsForm.consultantData.controls.forEach(consultant => consultant.markAllAsTouched());
         switch (this.activeSideSection.typeId) {
             case WorkflowProcessType.StartClientPeriod:
             case WorkflowProcessType.ChangeClientPeriod:
@@ -988,8 +990,7 @@ export class WorkflowSalesComponent extends AppComponentBase implements OnInit, 
         consultantDto.sourcingRequestId = consultant?.requestId;
         const form = this._fb.group({
             employmentType: new FormControl(this.findItemById(this.employmentTypes, consultant?.employmentTypeId) ?? null),
-            consultantName: new FormControl(consultantDto ?? null),
-            // requestConsultantId: new FormControl(consultant?.soldRequestConsultantId ?? null),
+            consultantName: new FormControl(consultantDto ?? null, CustomValidators.autocompleteConsultantValidator),
             consultantPeriodId: new FormControl(consultant?.consultantPeriodId ?? null),
             consultantNameOnly: new FormControl(consultant?.nameOnly ?? null),
 
@@ -1001,7 +1002,7 @@ export class WorkflowSalesComponent extends AppComponentBase implements OnInit, 
             consultantWorkplace: new FormControl(null),
             consultantWorkplaceClientAddress: new FormControl(consultant?.onsiteClient ?? null),
             consultantWorkplaceEmagineOffice: new FormControl(this.findItemById(this.emagineOffices, consultant?.emagineOfficeId) ?? null),
-            consultantWorkplaceRemote: new FormControl(this.findItemById(this.countries, consultant?.remoteAddressCountryId) ?? null),
+            consultantWorkplaceRemote: new FormControl(this.findItemById(this.countries, consultant?.remoteAddressCountryId) ?? null, CustomValidators.autocompleteValidator(['id'])),
             consultantWorkplacePercentageOnSite: new FormControl(consultant?.percentageOnSite ?? null, [Validators.min(1), Validators.max(100)]),
 
             consultantIsOnsiteWorkplace: new FormControl(consultant?.isOnsiteWorkplace ?? false),

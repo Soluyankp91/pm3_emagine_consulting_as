@@ -29,4 +29,7 @@
     <ng-container *ngIf="control?.errors?.noNumeric">
         <p>{{ validatorMessages.noNumeric }}</p>
     </ng-container>
+    <ng-container *ngIf="control?.errors?.optionNotSelected">
+        <p>{{ validatorMessages.optionNotSelected }}</p>
+    </ng-container>
 </div>
