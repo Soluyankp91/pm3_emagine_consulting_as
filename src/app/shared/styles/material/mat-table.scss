@@ -193,7 +193,6 @@ mat-table.white-table {
         &-side {
             border-right: none !important;
             box-shadow: none !important;
-            margin-right: 30px;
             padding-bottom: 17px;
             &-container {
                 background: transparent !important;
@@ -449,10 +448,10 @@ mat-table.white-table {
     .gantt {
         background: transparent !important;
         &-side {
-            width: 45%;
+            width: 50%;
             border-right: none !important;
             box-shadow: none !important;
-            margin-right: 30px;
+            padding-right: 30px;
             padding-bottom: 17px;
             &-container {
                 background: transparent !important;
@@ -503,7 +502,7 @@ mat-table.white-table {
                                     padding-right: 16px;
                                 }
 
-                             
+
                             }
                         }
                     }
