@@ -569,11 +569,9 @@ export class WorkflowSalesComponent extends AppComponentBase implements OnInit, 
     }
 
     validateSalesForm() {
-        debugger;
         this.salesClientDataForm.markAllAsTouched();
         this.salesMainDataForm.markAllAsTouched();
         this.consultantsForm.markAllAsTouched();
-        this.consultantsForm.consultantData.controls.forEach(consultant => consultant.markAllAsTouched());
         switch (this.activeSideSection.typeId) {
             case WorkflowProcessType.StartClientPeriod:
             case WorkflowProcessType.ChangeClientPeriod:
@@ -984,13 +982,16 @@ export class WorkflowSalesComponent extends AppComponentBase implements OnInit, 
         if (consultant?.consultantRate?.isFixedRate) {
             consultantRate = this.findItemById(this.clientRateTypes, 2); // 2: fixed
         }
-        let consultantDto = new ConsultantWithSourcingRequestResultDto();
-        consultantDto.consultant = consultant?.consultant;
-        consultantDto.sourcingRequestConsultantId = consultant?.soldRequestConsultantId;
-        consultantDto.sourcingRequestId = consultant?.requestId;
+        let consultantDto = null;
+        if (consultant) {
+            consultantDto = new ConsultantWithSourcingRequestResultDto();
+            consultantDto.consultant = consultant?.consultant;
+            consultantDto.sourcingRequestConsultantId = consultant?.soldRequestConsultantId;
+            consultantDto.sourcingRequestId = consultant?.requestId;
+        }
         const form = this._fb.group({
             employmentType: new FormControl(this.findItemById(this.employmentTypes, consultant?.employmentTypeId) ?? null),
-            consultantName: new FormControl(consultantDto ?? null, CustomValidators.autocompleteConsultantValidator),
+            consultantName: new FormControl(consultantDto ?? null, CustomValidators.autocompleteConsultantValidator()),
             consultantPeriodId: new FormControl(consultant?.consultantPeriodId ?? null),
             consultantNameOnly: new FormControl(consultant?.nameOnly ?? null),
 
