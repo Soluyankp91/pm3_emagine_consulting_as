@@ -58,6 +58,10 @@
                 border: 1px solid $light-grey-color;
                 border-radius: 40px;
                 line-height: 16px;
+                .mat-menu-trigger {
+                    position: absolute;
+                    right: 0;
+                }
                 mat-icon {
                     font-size: 26px;
                     color: $dark-grey-color;
