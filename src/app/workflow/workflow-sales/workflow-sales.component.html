@@ -2647,9 +2647,11 @@
                                                 <app-validator [control]="consultant.get('consultantWorkplaceRemote')"></app-validator>
                                             </mat-form-field>
                                         </div>
-                                        <mat-error *ngIf="!consultant.value.consultantIsOnsiteWorkplace && !consultant.value.consultantIsEmagineOfficeWorkplace && !consultant.value.consultantIsRemoteWorkplace">
-                                            At least one Workplace is required
-                                        </mat-error>
+                                        <ng-container *ngIf="consultant.get('consultantIsOnsiteWorkplace')?.touched || consultant.get('consultantIsRemoteWorkplace')?.touched || consultant.get('consultantIsEmagineOfficeWorkplace')?.touched">
+                                            <mat-error class="custom-error--message" *ngIf="!consultant.value.consultantIsOnsiteWorkplace && !consultant.value.consultantIsEmagineOfficeWorkplace && !consultant.value.consultantIsRemoteWorkplace">
+                                                At least one Workplace is required
+                                            </mat-error>
+                                        </ng-container>
                                     </div>
 
                                     <h3 class="workflow-gray--header u-mb--10 u-mt--20">Expected Workload</h3>
