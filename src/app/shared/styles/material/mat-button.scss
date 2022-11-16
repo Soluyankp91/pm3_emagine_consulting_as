@@ -349,5 +349,14 @@
         display: flex;
         align-items: center;
     }
+}
 
+.mat-icon-button {
+    // @include fontLineHeightAndSize(36px, 36px, 36px, 36px);
+    .mat-button-wrapper {
+        @include flexCentered();
+        mat-icon {
+            @include fontLineHeightAndSize(20px, 20px, 20px, 20px);
+        }
+    }
 }
