@@ -121,6 +121,10 @@
     &--table {
         position: relative;
         min-height: 120px;
+        .sync-status-icon {
+            width: 16px;
+            height: 16px;
+        }
     }
     &--process-name {
         margin-left: 5px;
