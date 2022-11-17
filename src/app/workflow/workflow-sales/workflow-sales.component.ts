@@ -492,7 +492,7 @@ export class WorkflowSalesComponent extends AppComponentBase implements OnInit, 
                     if (this.validateSalesForm()) {
                         this.saveStartChangeOrExtendClientPeriodSales(isDraft);
                     } else {
-                        this.scrollToFirstError();
+                        this.scrollToFirstError(isDraft, this.saveStartChangeOrExtendClientPeriodSales);
                     }
                 }
             });
@@ -505,7 +505,7 @@ export class WorkflowSalesComponent extends AppComponentBase implements OnInit, 
                     if (this.validateSalesForm()) {
                         this.saveStartChangeOrExtendConsultantPeriodSales(isDraft);
                     } else {
-                        this.scrollToFirstError();
+                        this.scrollToFirstError(isDraft, this.saveStartChangeOrExtendConsultantPeriodSales);
                     }
                 }
             });
@@ -520,7 +520,7 @@ export class WorkflowSalesComponent extends AppComponentBase implements OnInit, 
                     if (this.validateSalesForm()) {
                         this.saveTerminationConsultantSalesStep(isDraft);
                     } else {
-                        this.scrollToFirstError();
+                        this.scrollToFirstError(isDraft, this.saveTerminationConsultantSalesStep);
                     }
                 }
             });
@@ -534,7 +534,7 @@ export class WorkflowSalesComponent extends AppComponentBase implements OnInit, 
                     if (this.validateSalesForm()) {
                         this.saveWorkflowTerminationSalesStep(isDraft);
                     } else {
-                        this.scrollToFirstError();
+                        this.scrollToFirstError(isDraft, this.saveWorkflowTerminationSalesStep);
                     }
                 }
             });
@@ -575,7 +575,7 @@ export class WorkflowSalesComponent extends AppComponentBase implements OnInit, 
         }
     }
 
-    scrollToFirstError() {
+    scrollToFirstError(isDraft: boolean, callbackSaveStep: (isDraft: boolean) => void) {
         setTimeout(() => {
             let firstError = document.getElementsByClassName('mat-form-field-invalid')[0] as HTMLElement;
             if (firstError) {
@@ -584,6 +584,8 @@ export class WorkflowSalesComponent extends AppComponentBase implements OnInit, 
                     offset: -115
                 }
                 this.scrollToService.scrollTo(config);
+            } else {
+                callbackSaveStep(isDraft);
             }
         }, 0);
     }
