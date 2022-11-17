@@ -6,6 +6,7 @@ import { AppConsts } from 'src/shared/AppConsts';
 import { MainOverviewServiceProxy } from 'src/shared/service-proxies/service-proxies';
 import { OverviewFlag, OverviewFlagNames } from '../../main-overview.model';
 import { GanttGroupInternal } from '../mocks';
+import { SortDirections } from '../../helper';
 
 @Component({
     selector: 'app-gantt-flat',
@@ -24,6 +25,7 @@ export class AppGanttFlatComponent extends GanttUpper implements OnInit {
 
     @Output() userSelectedStatusForWorflow = new EventEmitter();
     @Output() userSelectedStatusForConsultant = new EventEmitter();
+    @Output() sortUpdated = new EventEmitter<string>();
 
     momentFormatType = AppConsts.momentFormatType;
     overviewFlagNames = OverviewFlagNames;
@@ -39,6 +41,11 @@ export class AppGanttFlatComponent extends GanttUpper implements OnInit {
         'consultants',
         'salesManager',
     ];
+
+    sortDirection = SortDirections.None;
+    sortDirections = SortDirections;
+    sortName = '';
+    sorting: string;
     @HostBinding('class.gantt-flat') ganttFlatClass = true;
 
     constructor(
@@ -168,6 +175,31 @@ export class AppGanttFlatComponent extends GanttUpper implements OnInit {
         this.tooltipStartDate = new Date(item?.origin?.start*1000) ;
         this.tooltipEndDate = (item?.origin?.origin.endDate !== undefined && item?.origin?.origin.endDate !== null) ? new Date(item?.origin?.end*1000) : undefined;
 
+    }
+
+    sortChanged(sortName: string) {
+        if (this.sortName === '' || sortName === this.sortName) {
+            switch (this.sortDirection) {
+                case SortDirections.Desc:
+                    this.sortDirection = SortDirections.None;
+                    break;
+                case SortDirections.Asc:
+                    this.sortDirection = SortDirections.Desc;
+                    break;
+                case SortDirections.None:
+                    this.sortDirection = SortDirections.Asc;
+                    break;
+            }
+        } else {
+            this.sortDirection = SortDirections.Asc;
+        }
+        this.sortName = this.sortDirection === SortDirections.None ? '' : sortName;
+        this.sorting = this.sortDirection && this.sortDirection.length ? sortName.concat(' ', this.sortDirection) : '';
+        this.sortUpdated.emit(this.sorting);
+        console.log(this.sorting);
+        console.log(this.sortName);
+        console.log(sortName);
+        console.log(this.sortDirection);
     }
 
 }

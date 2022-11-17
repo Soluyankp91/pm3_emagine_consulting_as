@@ -36,3 +36,9 @@ export function randomGroupsAndItems(length: number) {
         items
     };
 }
+
+export enum SortDirections {
+    Asc = 'asc',
+    Desc = 'desc',
+    None = ''
+}

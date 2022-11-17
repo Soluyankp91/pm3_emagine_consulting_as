@@ -201,7 +201,8 @@
                     [draggable]="false"
                     [isWorkflow]="true"
                     [start]="startDateOfChart"
-                    (userSelectedStatusForWorflow)="setUserSelectedStatusForWorflow($event)">
+                    (userSelectedStatusForWorflow)="setUserSelectedStatusForWorflow($event)"
+                    (sortUpdated)="workflowSortChanged($event)">
                     <ng-template #group let-group="group">
                         <!-- {{ group.title }} -->
                     </ng-template>
@@ -228,7 +229,8 @@
                     [draggable]="false"
                     [isConsultants]="true"
                     [start]="startDateOfChart"
-                    (userSelectedStatusForConsultant)="setUserSelectedStatusForConsultant($event)">
+                    (userSelectedStatusForConsultant)="setUserSelectedStatusForConsultant($event)"
+                    (sortUpdated)="consultantSortChanged($event)">
                     <ng-template #group let-group="group">
                         <!-- {{ group.title }} -->
                     </ng-template>

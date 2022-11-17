@@ -15,7 +15,7 @@ import { Router } from '@angular/router';
 import { AppComponentBase } from 'src/shared/app-component-base';
 import { MatAutocompleteTrigger } from '@angular/material/autocomplete';
 
-const MainOverviewGridOptionsKey = 'MainOverviewGridFILTERS.1.0.2.';
+const MainOverviewGridOptionsKey = 'MainOverviewGridFILTERS.1.0.3';
 
 @Component({
     selector: 'app-main-overview',
@@ -42,7 +42,8 @@ export class MainOverviewComponent extends AppComponentBase implements OnInit {
     workflowsTotalCount: number | undefined = 0;
     consultantsTotalCount: number | undefined = 0;
 
-    sorting = '';
+    workflowSorting = '';
+    consultantSorting = '';
     isDataLoading = true;
 
     legalEntities: SelectableCountry[] = [];
@@ -357,7 +358,7 @@ export class MainOverviewComponent extends AppComponentBase implements OnInit {
                     showDeleted,
                     this.workflowsPageNumber,
                     this.workflowsDeafultPageSize,
-                    this.sorting)
+                    this.workflowSorting)
                     .pipe(finalize(() => {
                         this.isDataLoading = false;
                         this.hideMainSpinner();
@@ -420,7 +421,7 @@ export class MainOverviewComponent extends AppComponentBase implements OnInit {
                     showDeleted,
                     this.consultantsPageNumber,
                     this.consultantsDeafultPageSize,
-                    this.sorting)
+                    this.consultantSorting)
                     .pipe(finalize(() => {
                         this.isDataLoading = false;
                         this.hideMainSpinner();
@@ -638,9 +639,19 @@ export class MainOverviewComponent extends AppComponentBase implements OnInit {
         this.changeViewType();
     }
 
+    workflowSortChanged(sort: string) {
+        this.workflowSorting = sort;
+        this.changeViewType();
+    }
+
     consultantsPageChanged(event?: any): void {
         this.consultantsPageNumber = event.pageIndex + 1;
         this.consultantsDeafultPageSize = event.pageSize;
+        this.changeViewType();
+    }
+
+    consultantSortChanged(sort: string) {
+        this.consultantSorting = sort;
         this.changeViewType();
     }
 
@@ -664,7 +675,8 @@ export class MainOverviewComponent extends AppComponentBase implements OnInit {
             consultantsPageNumber: this.consultantsPageNumber,
             workflowsDeafultPageSize: this.workflowsDeafultPageSize,
             consultantsDeafultPageSize: this.consultantsDeafultPageSize,
-            sorting: this.sorting,
+            workflowSorting: this.workflowSorting,
+            consultantSorting: this.consultantSorting,
             owners: this.selectedAccountManagers,
             invoicingEntity: this.invoicingEntityControl.value ? this.invoicingEntityControl.value : undefined,
             paymentEntity: this.paymentEntityControl.value ? this.paymentEntityControl.value : undefined,
@@ -688,7 +700,8 @@ export class MainOverviewComponent extends AppComponentBase implements OnInit {
             this.workflowsDeafultPageSize = filters?.workflowsDeafultPageSize;
             this.consultantsPageNumber = filters?.consultantsPageNumber;
             this.consultantsDeafultPageSize = filters?.consultantsDeafultPageSize;
-            this.sorting = filters?.sorting;
+            this.workflowSorting = filters?.workflowSorting;
+            this.consultantSorting = filters?.consultantSorting;
             this.selectedAccountManagers = filters?.owners?.length ? filters.owners : [];
             this.deliveryTypesControl.setValue(filters?.deliveryTypes, {emitEvent: false});
             this.salesTypeControl.setValue(filters?.salesType, {emitEvent: false});

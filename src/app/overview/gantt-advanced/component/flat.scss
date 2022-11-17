@@ -79,3 +79,86 @@
         color: rgba(56, 72, 83, 0.8);
     }
 }
+
+.sort-container {
+    cursor: pointer;
+    .sort {
+        &-arrow {
+            margin-left: 5px;
+            height: 12px;
+            width: 12px;
+            min-width: 12px;
+            position: relative;
+            display: flex;
+            opacity: 0;
+        }
+        &-stem {
+            background: currentColor;
+            height: 10px;
+            width: 2px;
+            margin: auto;
+            display: flex;
+            align-items: center;
+        }
+        &-indicator {
+            width: 100%;
+            height: 2px;
+            display: flex;
+            align-items: center;
+            position: absolute;
+            top: 0;
+            left: 0;
+            transform: translateY(0px);
+        }
+        &-pointer {
+            &-left,
+            &-right {
+                background: currentColor;
+                width: 6px;
+                height: 2px;
+                position: absolute;
+                top: 0;
+            }
+            &-left {
+                transform-origin: right;
+                left: 0;
+                transform: rotate(-45deg);
+            }
+            &-right {
+                transform-origin: left;
+                right: 0;
+                transform: rotate(45deg);
+            }
+            &-middle {
+                margin: auto;
+                height: 2px;
+                width: 2px;
+                background: currentColor;
+                transform: rotate(45deg);
+            }
+        }
+    }
+    &.desc {
+        .sort {
+            &-indicator {
+                transform: translateY(10px);
+            }
+            &-pointer {
+                &-left {
+                    transform: rotate(45deg);
+                }
+                &-right {
+                    transform: rotate(-45deg);
+                }
+            }
+        }
+    }
+    &:hover,
+    &.active {
+        .sort {
+            &-arrow {
+                opacity: 1;
+            }
+        }
+    }
+}
