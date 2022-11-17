@@ -187,8 +187,10 @@
 
 .step-filter--menu + * .cdk-overlay-pane {
     .mat-menu-panel {
-        .mat-menu-item:hover {
-            background-color: rgba($color: $green-color-25, $alpha: 0.33);
+        .mat-menu-content:not(:empty) {
+            .mat-menu-item:hover:not([disabled]) {
+                background: rgba($color: $green-color-25, $alpha: 0.33) !important;
+            }
         }
     }
 }
