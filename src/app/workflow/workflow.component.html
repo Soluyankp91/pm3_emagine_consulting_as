@@ -116,7 +116,7 @@
                     </span>
                     <mat-icon>expand_more</mat-icon>
                 </span>
-                <mat-menu #syncStatuses backdropClass="step-filter--menu">
+                <mat-menu #syncStatuses backdropClass="step-filter--menu" xPosition="before">
                     <div *ngFor="let item of syncStateStatuses; trackBy: filtersTrackBy"
                         class="workflow-list--filter-type-dropdown__item" mat-menu-item
                         (click)="syncStatusClicked($event, item);">
