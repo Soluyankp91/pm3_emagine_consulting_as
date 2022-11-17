@@ -161,17 +161,15 @@
             font-weight: 700
         }
     }
-    &.mat-form-field-invalid:not(.formFieldNoMarginPadding) {
+    &.mat-form-field-invalid {
         .mat-form-field-wrapper {
             margin: 0 !important;
-            padding-bottom: 0.3em !important;
+            padding-bottom: 8px !important;
         }
-    }
-    &.mat-form-field-invalid {
         &:not(.formFieldNoMarginPadding) {
             .mat-form-field-wrapper {
                 margin: 0 !important;
-                padding-bottom: 1em !important;
+                padding-bottom: 0.5em !important;
             }
         }
     }
