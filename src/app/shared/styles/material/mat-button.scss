@@ -216,10 +216,13 @@
         font-weight: 700;
 
         &__outlined {
-            color: $green-color;
+            color: $dark-grey-color;
             background-color: transparent;
             border: 0;
             border-radius: 5px;
+            width: auto;
+            padding: 0;
+            min-width: unset;
         }
 
         &__positive {

@@ -1,5 +1,5 @@
-<mat-dialog-content class="confiramtion-dialog">
-    <div mat-dialog-title class="confiramtion-dialog--header" align="start">
+<mat-dialog-content class="confirmation-dialog">
+    <div mat-dialog-title class="confirmation-dialog--header" align="start">
         <span class="text-bold-800">
             <ng-container [ngSwitch]="data.dialogType">
                 <ng-container *ngSwitchCase="dialogType.Create">
@@ -10,7 +10,7 @@
                 </ng-container>
             </ng-container>
         </span>
-        <mat-icon class="confiramtion-dialog--header-close-icon" (click)="close()">close</mat-icon>
+        <mat-icon class="confirmation-dialog--header-close-icon" (click)="close()">close</mat-icon>
     </div>
     <form [formGroup]="projectLineForm">
         <div fxLayout="row" fxLayoutAlign="start start" fxLayoutGap="30px">
@@ -130,8 +130,8 @@
         </div>
     </form>
 </mat-dialog-content>
-<mat-dialog-actions align="start" class="confiramtion-dialog--actions">
-    <button mat-flat-button class="dialog-btn dialog-btn__outlined confiramtion-dialog--actions-cancel" appPreventDoubleClick (throttledClick)="reject()">
+<mat-dialog-actions align="start" class="confirmation-dialog--actions">
+    <button mat-flat-button class="dialog-btn dialog-btn__outlined confirmation-dialog--actions-cancel" appPreventDoubleClick (throttledClick)="reject()">
         Cancel
     </button>
     <button mat-flat-button class="dialog-btn dialog-btn__positive" appPreventDoubleClick (throttledClick)="confirm()">
