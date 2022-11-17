@@ -649,7 +649,6 @@ input[type=number] {
   -moz-appearance: textfield;
 }
 
-
 .autosize-textarea {
     .mat-form-field-wrapper,
     .mat-form-field-flex {
@@ -665,4 +664,9 @@ input[type=number] {
     textarea {
         max-height: calc(100vh - 390px);
     }
+}
+
+.custom-error--message {
+    @include fontOpenSans(10.5px, 600);
+    color: $red-message-color;
 }
