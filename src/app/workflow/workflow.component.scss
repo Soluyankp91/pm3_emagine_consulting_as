@@ -24,8 +24,7 @@
             font-size: 40px;
         }
         &__add-btn mat-icon {
-            width: 34px;
-            height: 34px;
+            @include fontLineHeightAndSize(34px, 34px, 34px, 34px);
         }
         &-type {
             @include flexCentered;

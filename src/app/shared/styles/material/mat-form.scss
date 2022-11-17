@@ -666,5 +666,9 @@ input[type=number] {
     }
     textarea {
         max-height: calc(100vh - 390px);
+        &.mat-input-element {
+            color: $dark-grey-color !important;
+            font-weight: 600 !important;
+        }
     }
 }

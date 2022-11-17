@@ -165,11 +165,8 @@
         display: inline-flex;
         justify-content: center;
         align-items: center;
-        line-height: 24px;
-        font-size: 24px;
+        @include fontLineHeightAndSize(24px, 24px, 36px, 36px);
         border-radius: 50%;
-        height: 36px;
-        width: 36px;
     }
 
     &.workflow-overview--three-dots {
@@ -340,8 +337,7 @@
 
 .logout-button {
     color: $green-color;
-    font-weight: 700;
-    font-size: 14px;
+    @include fontOpenSans(14px, 700);
     background-color: transparent;
     border: 0;
     border-radius: 5px;
@@ -352,7 +348,6 @@
 }
 
 .mat-icon-button {
-    // @include fontLineHeightAndSize(36px, 36px, 36px, 36px);
     .mat-button-wrapper {
         @include flexCentered();
         mat-icon {

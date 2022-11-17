@@ -2136,7 +2136,7 @@
 
                             <h3 class="workflow-gray--header u-mb--10">Client Contract Signers</h3>
                             <div formArrayName="contractSigners" class="u-w--100 u-mb--10">
-                                <div fxLayout="row" fxLayoutAlign="start start" class="u-w--100 u-mb--10" *ngFor="let signer of contractSigners.controls; let i = index" [formGroupName]="i">
+                                <div fxLayout="row" fxLayoutAlign="start center" class="u-w--100 u-mb--10" *ngFor="let signer of contractSigners.controls; let i = index" [formGroupName]="i">
                                     <mat-form-field appearance="outline" class="u-w--100  filter-select u-mr--16" fxFlex="33%">
                                         <mat-label>Name</mat-label>
                                         <input required type="text" matInput [matAutocomplete]="contactSignerAutocomplete" formControlName="clientContact" appPreventDoubleClick (throttledClick)="$event.stopPropagation()" placeholder="Name">
@@ -2169,7 +2169,7 @@
                                         </mat-select>
                                         <app-validator [control]="contractSigners.at(i).get('clientSequence')"></app-validator>
                                     </mat-form-field>
-                                    <button class="form-icon--delete-row u-mt--5" type="button" mat-icon-button appPreventDoubleClick (throttledClick)="removeSigner(i)"><mat-icon svgIcon="remove-icon"></mat-icon></button>
+                                    <button class="form-icon--delete-row" type="button" mat-icon-button appPreventDoubleClick (throttledClick)="removeSigner(i)"><mat-icon svgIcon="remove-icon"></mat-icon></button>
                                 </div>
                                 <button class="button-add" mat-flat-button type="button" appPreventDoubleClick (throttledClick)="addSignerToForm()">
                                     <mat-icon>add</mat-icon>

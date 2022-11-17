@@ -55,10 +55,7 @@
     &-icon {
         &--notes {
             mat-icon {
-                line-height: 20px;
-                font-size: 20px;
-                width: 20px;
-                height: 20px;
+                @include fontLineHeightAndSize(20px, 20px, 20px, 20px);
             }
         }
     }
@@ -93,8 +90,7 @@
         &--header {
             &-text {
                 color: $dark-grey-color;
-                font-size: 16px;
-                font-weight: 800;
+                @include fontOpenSans(16px, 800);
             }
         }
         &--content {
@@ -102,10 +98,7 @@
         }
         &--empty {
             &-icon {
-                width: 72px;
-                height: 72px;
-                line-height: 72px;
-                font-size: 72px;
+                @include fontLineHeightAndSize(72px, 72px, 72px, 72px);
             }
             &-text {
                 color: $medium-grey-color;
@@ -140,10 +133,8 @@
             color: rgba(56, 72, 83, 0.87);
             z-index: 999;
             mat-icon {
-                width: 36px;
-                height: 36px;
-                line-height: 36px;
-                font-size: 36px;
+                @include fontLineHeightAndSize(36px, 36px, 36px, 36px);
+
             }
         }
     }
@@ -156,15 +147,13 @@
         padding: 16px;
         h2:not(.workflow-green--header) {
             margin-bottom: 8px !important;
-            font-weight: bold;
-            font-size: 14px;
+            @include fontOpenSans(14px, 700);
             line-height: 14px;
             color: rgba(56, 72, 83, 0.87);
         }
     }
     &-green--header {
-        font-weight: bold;
-        font-size: 14px;
+        @include fontOpenSans(14px, 700);
         text-transform: uppercase;
         color: $green-color;
     }

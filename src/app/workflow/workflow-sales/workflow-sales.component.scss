@@ -118,7 +118,7 @@
     border-radius: 50%;
     display: flex;
     justify-content: center;
-    align-items: flex-end;
+    align-items: center;
     &:not([disabled]):hover {
         background-color: rgba(139,209,203,0.22);
     }
