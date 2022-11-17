@@ -14,7 +14,9 @@
                     appPreventDoubleClick (throttledClick)="startDatePicker.open()" readonly>
             <mat-icon class="calendar-icon" matSuffix svgIcon="calendar"></mat-icon>
             <mat-datepicker #startDatePicker></mat-datepicker>
-            <app-validator [control]="startDate"></app-validator>
+            <mat-error>
+                <app-validator [control]="startDate"></app-validator>
+            </mat-error>
         </mat-form-field>
 
         <div fxLayout="column" fxLayoutAlign="start start" fxFlex="50%">
@@ -29,9 +31,11 @@
                         appPreventDoubleClick (throttledClick)="endDatePicker.open()" readonly>
                 <mat-icon class="calendar-icon" matSuffix svgIcon="calendar"></mat-icon>
                 <mat-datepicker #endDatePicker></mat-datepicker>
-                <app-validator [control]="endDate"></app-validator>
+                <mat-error>
+                    <app-validator [control]="endDate"></app-validator>
+                </mat-error>
             </mat-form-field>
-            <mat-checkbox color="accent" [formControl]="noEndDate" name="noEndDate" class="black-checkbox u-mr--10" (change)="disableOrEnableInput(noEndDate.value, endDate)">
+            <mat-checkbox color="accent" [formControl]="noEndDate" name="noEndDate" class="black-checkbox u-mr--10 u-mt--10" (change)="disableOrEnableInput(noEndDate.value, endDate)">
                 No end date
             </mat-checkbox>
         </div>

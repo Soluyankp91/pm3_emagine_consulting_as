@@ -20,7 +20,9 @@
                     <textarea matInput autocomplete="new-password" maxlength="250" [matTextareaAutosize]="true" [matAutosizeMinRows]="2" name="projectName" formControlName="projectName">
                     </textarea>
                     <mat-hint [ngClass]="{'hint-reached-maximum-characters': projectLineForm.value.projectName?.length === 250}">{{(projectLineForm.value.projectName?.length ?? 0 ) + '/250'}}</mat-hint>
-                    <app-validator [control]="projectLineForm.projectName"></app-validator>
+                    <mat-error>
+                        <app-validator [control]="projectLineForm.projectName"></app-validator>
+                    </mat-error>
                 </mat-form-field>
                 <div fxLayout="row" fxLayoutAlign="start start" class="u-w--100 u-mt--10">
                     <mat-form-field appearance="outline" class="u-mr--16" fxFlex="0 0 calc(50% - 8px)">

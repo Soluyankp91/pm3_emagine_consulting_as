@@ -1,5 +1,5 @@
 export const ValidatorMessagesModel = {
-    'required': 'This field is required',
+    'required': 'Field required',
     'email': 'Email must be a valid email address',
     'pattern': 'Please enter a valid format of data',
     'minlength': 'The minimum length is {{value}} characters',
