@@ -9,7 +9,7 @@ import { ValidatorMessagesModel } from './validator.model';
 })
 export class ValidatorComponent implements OnInit {
     @Input() public control: AbstractControl | null;
-    @Input() public withoutPadding: boolean;
+    @Input() public withoutFormField: boolean;
     validatorMessages = ValidatorMessagesModel;
 
     constructor() { }

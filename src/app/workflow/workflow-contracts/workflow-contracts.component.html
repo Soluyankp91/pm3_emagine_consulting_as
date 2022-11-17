@@ -159,13 +159,15 @@
                         <ng-template #projectNameInput>
                             <div fxLayout="column" fxLayoutAlign="start start" class="u-w--100">
                                 <div fxLayout="row" fxLayoutAlign="start start" class="u-w--100">
-                                    <mat-form-field appearance="outline" class="u-w--100 textarea-input" fxFlex="0 0 calc(66% + 16px)">
+                                    <mat-form-field appearance="outline" class="u-w--100 textarea-input formFieldNoMarginPadding" fxFlex="0 0 calc(66% + 16px)">
                                         <mat-label>Project Name</mat-label>
                                         <textarea required matInput autocomplete="new-password" name="projectName" formControlName="projectName" [matTextareaAutosize]="true" [matAutosizeMinRows]="2">
                                         </textarea>
+                                        <mat-error>
+                                            <app-validator [control]="contractsMainForm.projectName"></app-validator>
+                                        </mat-error>
                                     </mat-form-field>
                                 </div>
-                                <app-validator [withoutPadding]="true" [control]="contractsMainForm.projectName"></app-validator>
                             </div>
                         </ng-template>
                     </div>
@@ -179,13 +181,15 @@
                         <ng-template #projectDescriptionInput>
                             <div fxLayout="column" fxLayoutAlign="start start" class="u-w--100">
                                 <div fxLayout="row" fxLayoutAlign="start start" class="u-w--100">
-                                    <mat-form-field appearance="outline" class="u-w--100 textarea-input" fxFlex="0 0 calc(66% + 16px)">
+                                    <mat-form-field appearance="outline" class="u-w--100 textarea-input formFieldNoMarginPadding" fxFlex="0 0 calc(66% + 16px)">
                                         <mat-label>Project Description</mat-label>
                                         <textarea required matInput autocomplete="new-password" name="projectDescription" formControlName="projectDescription" [matTextareaAutosize]="true" [matAutosizeMinRows]="2">
                                         </textarea>
+                                        <mat-error>
+                                            <app-validator [control]="contractsMainForm.projectDescription"></app-validator>
+                                        </mat-error>
                                     </mat-form-field>
                                 </div>
-                                <app-validator [withoutPadding]="true" [control]="contractsMainForm.projectDescription"></app-validator>
                             </div>
                         </ng-template>
                     </div>
@@ -206,13 +210,15 @@
                         <ng-template #remarksInput>
                             <div fxLayout="column" fxLayoutAlign="start start" class="u-w--100">
                                 <div fxLayout="row" fxLayoutAlign="start start" class="u-w--100">
-                                    <mat-form-field appearance="outline" class="u-w--100 textarea-input" fxFlex="0 0 calc(66% + 16px)">
+                                    <mat-form-field appearance="outline" class="u-w--100 textarea-input formFieldNoMarginPadding" fxFlex="0 0 calc(66% + 16px)">
                                         <mat-label>Remarks</mat-label>
                                         <textarea required matInput autocomplete="new-password" name="remarks" formControlName="remarks" [matTextareaAutosize]="true" [matAutosizeMinRows]="2">
                                         </textarea>
+                                        <mat-error>
+                                            <app-validator [control]="contractsMainForm.remarks"></app-validator>
+                                        </mat-error>
                                     </mat-form-field>
                                 </div>
-                                <app-validator [withoutPadding]="true" [control]="contractsMainForm.remarks"></app-validator>
                             </div>
                         </ng-template>
                     </div>
@@ -279,13 +285,15 @@
                             <ng-template #specialContractTermsInput>
                                 <div fxLayout="column" fxLayoutAlign="start start" class="u-w--100">
                                     <div fxLayout="row" fxLayoutAlign="start start" class="u-w--100">
-                                        <mat-form-field appearance="outline" class="u-w--100  textarea-input" fxFlex="0 0 calc(66% + 16px)">
+                                        <mat-form-field appearance="outline" class="u-w--100 formFieldNoMarginPadding textarea-input" fxFlex="0 0 calc(66% + 16px)">
                                             <mat-label>Special Contract Terms</mat-label>
                                             <textarea required matInput autocomplete="new-password" name="specialContractTerms" formControlName="specialContractTerms" [matTextareaAutosize]="true" [matAutosizeMinRows]="2">
                                             </textarea>
+                                            <mat-error>
+                                                <app-validator [control]="contractClientForm.specialContractTerms"></app-validator>
+                                            </mat-error>
                                         </mat-form-field>
                                     </div>
-                                    <app-validator [withoutPadding]="true" [control]="contractClientForm.specialContractTerms"></app-validator>
                                 </div>
                             </ng-template>
                         </div>
@@ -619,13 +627,15 @@
                                     <ng-template #consultantsSpecialContractTermsInput>
                                         <div fxLayout="column" fxLayoutAlign="start start" class="u-w--100">
                                             <div fxLayout="row" fxLayoutAlign="start start" class="u-w--100">
-                                                <mat-form-field appearance="outline" class="u-w--100  textarea-input" fxFlex="0 0 calc(66% + 16px)">
+                                                <mat-form-field appearance="outline" class="u-w--100 formFieldNoMarginPadding textarea-input" fxFlex="0 0 calc(66% + 16px)">
                                                     <mat-label>Special Contract Terms</mat-label>
                                                     <textarea required matInput autocomplete="new-password" name="specialContractTerms" formControlName="specialContractTerms" [matTextareaAutosize]="true" [matAutosizeMinRows]="2">
                                                     </textarea>
+                                                    <mat-error>
+                                                        <app-validator [control]="consultant.get('specialContractTerms')"></app-validator>
+                                                    </mat-error>
                                                 </mat-form-field>
                                             </div>
-                                            <app-validator [withoutPadding]="true" [control]="consultant.get('specialContractTerms')"></app-validator>
                                         </div>
                                     </ng-template>
                                 </div>
@@ -1190,7 +1200,8 @@
 
                     <h2 class="workflow-section--header u-mt--20">Sync</h2>
                     <ng-template #syncStatus>
-                        <div fxLayout="row" fxLayoutAlign="start center" class="u-mb--20 u-w--100" *ngIf="!statusAfterSync">
+                        <div fxLayout="row" fxLayoutAlign="start center" class="u-mb--20 u-w--100" *ngIf="!statusAfterSync"
+                            [ngClass]="{'mat-form-field-invalid': validationTriggered && contractsSyncDataForm.value.isNewSyncNeeded}">
                             <mat-icon class="u-mr--5" [ngClass]="{'icon-cancel': contractsSyncDataForm.value?.isNewSyncNeeded}" [svgIcon]="contractsSyncDataForm.value.isNewSyncNeeded ? 'cancel-fill' : 'completed-icon'"></mat-icon>
                             <span class="workflow-darkblue--text test">
                                 {{contractsSyncDataForm.value.isNewSyncNeeded ? "New sync needed. " : ""}} {{contractsSyncDataForm.value.lastSyncedDate !== null && contractsSyncDataForm.value.lastSyncedDate !== undefined ? ("Last synced at " + (contractsSyncDataForm.value.lastSyncedDate | momentFormat: 'DD.MM.YYYY HH:mm')) : ""}}
@@ -1208,8 +1219,7 @@
                             </button>
                             <ng-container *ngTemplateOutlet="syncStatus"></ng-container>
 
-
-                            <div fxLayout="row" fxLayoutAlign="start center" class="u-mb--10" *ngIf="statusAfterSync">
+                            <div fxLayout="row" fxLayoutAlign="start center" class="u-mb--10" *ngIf="statusAfterSync" [ngClass]="{'mat-form-field-invalid': validationTriggered && syncNotPossible}">
                                 <mat-icon class="u-mr--5" [ngClass]="{'icon-cancel': syncNotPossible}" [svgIcon]="syncNotPossible ? 'cancel-fill' : 'completed-icon'"></mat-icon>
                                 <span class="sync-hint-text">
                                     {{syncMessage}}

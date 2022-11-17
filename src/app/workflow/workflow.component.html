@@ -2,7 +2,7 @@
     <div fxLayout="column" fxLayoutAlign="start start" class="workflow-list--filter">
         <h2 class="page-main-header u-mb--20">Workflows</h2>
         <div fxLayout="row" fxLayoutAlign="start start" class="u-w--100">
-            <div fxFlex fxLayout="row" fxLayoutAlign="start start" class="u-w--100">
+            <div fxFlex fxLayout="row wrap" fxLayoutAlign="start start" class="u-w--100 flex-row-gap--10">
                 <div class="workflow-list--filter-manager cursor-pointer u-mr--16" [matTooltip]="selectedAccountManagers.length ? mapListByProperty(selectedAccountManagers, 'name') : 'Select account manager(s)'" matTooltipClass="white-tooltip" [matMenuTriggerFor]="managerMenu" (menuOpened)="accountManagerFilterInput.click(); onOpenedMenu();" (click)="openMenu($event)">
                     <img *ngIf="selectedAccountManagers.length === 1" class="border-rounded-50 image-thumbnail-small" [src]="employeeProfileUrl(selectedAccountManagers[0].externalId!)" />
                     <img *ngIf="selectedAccountManagers.length === 0" src="../../../assets/common/images/no-img.svg">
@@ -87,7 +87,7 @@
                     </span>
                     <mat-icon>expand_more</mat-icon>
                 </span>
-                <mat-menu #pendingSteps backdropClass="step-filter--menu">
+                <mat-menu #pendingSteps backdropClass="step-filter--menu" xPosition="before">
                     <button class="workflow-list--filter-type-dropdown__item" *ngFor="let item of stepTypes; trackBy: filtersTrackBy" mat-menu-item (click)="selectPendingStep(item.id)">{{item.name}}</button>
                     <button class="workflow-list--filter-type-dropdown__reset" mat-menu-item (click)="selectPendingStep()">Reset</button>
                 </mat-menu>
@@ -97,7 +97,7 @@
                     </span>
                     <mat-icon>expand_more</mat-icon>
                 </span>
-                <mat-menu #upcomingSteps backdropClass="step-filter--menu">
+                <mat-menu #upcomingSteps backdropClass="step-filter--menu" xPosition="before">
                     <button class="workflow-list--filter-type-dropdown__item" *ngFor="let item of stepTypes; trackBy: filtersTrackBy" mat-menu-item (click)="selectUpcomingStep(item.id)">{{item.name}}</button>
                     <button class="workflow-list--filter-type-dropdown__reset" mat-menu-item (click)="selectUpcomingStep()">Reset</button>
                 </mat-menu>

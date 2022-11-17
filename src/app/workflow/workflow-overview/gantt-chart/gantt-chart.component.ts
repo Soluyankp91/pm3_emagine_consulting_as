@@ -1,8 +1,9 @@
-import { ChangeDetectorRef, Component, ElementRef, EventEmitter, HostBinding, Inject, Input, NgZone, OnInit, Output } from '@angular/core';
+import { ChangeDetectorRef, Component, ElementRef, HostBinding, Inject, NgZone, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
 import { GanttGlobalConfig, GanttItemInternal, GanttUpper, GANTT_GLOBAL_CONFIG, GANTT_UPPER_TOKEN } from '@worktile/gantt';
 import { GanttGroupInternal } from 'src/app/overview/gantt-advanced/mocks';
 import { environment } from 'src/environments/environment';
+import { AppConsts } from 'src/shared/AppConsts';
 
 @Component({
   selector: 'app-gantt-chart',
@@ -16,7 +17,7 @@ import { environment } from 'src/environments/environment';
 ]
 })
 export class GanttChartComponent extends GanttUpper implements OnInit {
-
+    momentFormatType = AppConsts.momentFormatType;
     mergeIntervalDays = 0;
     userSelectedStatuses: any;
     menuTopLeftPosition =  {x: 0, y: 0}

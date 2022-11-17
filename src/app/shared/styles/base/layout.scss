@@ -208,6 +208,10 @@ html {
     justify-content: flex-start;
 }
 
+.flex-row-gap--10 {
+    row-gap: 10px !important;
+}
+
 .backdrop-modal--wrapper {
     background: rgba(23, 162, 151, .5);
         &~ .cdk-global-overlay-wrapper {

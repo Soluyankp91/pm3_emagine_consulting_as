@@ -76,6 +76,7 @@ export class WorkflowContractsComponent extends AppComponentBase implements OnIn
     syncMessage = '';
     legalContractModuleStatuses = LegalContractStatus;
     bypassLegalValidation = false;
+    validationTriggered = false;
 
     employmentTypesEnum = EmploymentTypes;
 
@@ -206,6 +207,7 @@ export class WorkflowContractsComponent extends AppComponentBase implements OnIn
         this.contractsSyncDataForm.markAllAsTouched();
         this.contractsConsultantsDataForm.markAllAsTouched();
         this.contractsTerminationConsultantForm.markAllAsTouched();
+        this.validationTriggered = true;
         switch (this.activeSideSection.typeId) {
             case WorkflowProcessType.StartClientPeriod:
             case WorkflowProcessType.ChangeClientPeriod:
@@ -1206,7 +1208,8 @@ export class WorkflowContractsComponent extends AppComponentBase implements OnIn
                 .pipe(finalize(() => {
                     this.hideMainSpinner();
                 }))
-                .subscribe(result => {
+                .subscribe(() => {
+                    this.validationTriggered = false;
                     this._workflowDataService.workflowOverviewUpdated.emit(true);
                     if (this.editEnabledForcefuly && !isSyncToLegacy) {
                         this.toggleEditMode();
@@ -1223,7 +1226,8 @@ export class WorkflowContractsComponent extends AppComponentBase implements OnIn
                     this.bypassLegalValidation = false;
                     this.hideMainSpinner();
                 }))
-                .subscribe(result => {
+                .subscribe(() => {
+                    this.validationTriggered = false;
                     this._workflowDataService.workflowSideSectionUpdated.emit({isStatusUpdate: true});
                     this._workflowDataService.workflowOverviewUpdated.emit(true);
                     this.getContractStepData();
@@ -1390,7 +1394,8 @@ export class WorkflowContractsComponent extends AppComponentBase implements OnIn
                 .pipe(finalize(() => {
                     this.hideMainSpinner();
                 }))
-                .subscribe(result => {
+                .subscribe(() => {
+                    this.validationTriggered = false;
                     this._workflowDataService.workflowOverviewUpdated.emit(true);
                     if (this.editEnabledForcefuly && !isSyncToLegacy) {
                         this.toggleEditMode();
@@ -1407,7 +1412,8 @@ export class WorkflowContractsComponent extends AppComponentBase implements OnIn
                     this.bypassLegalValidation = false;
                     this.hideMainSpinner();
                 }))
-                .subscribe(result => {
+                .subscribe(() => {
+                    this.validationTriggered = false;
                     this._workflowDataService.workflowSideSectionUpdated.emit({isStatusUpdate: true});
                     this._workflowDataService.workflowOverviewUpdated.emit(true);
                     this.getContractStepData();
@@ -1465,7 +1471,8 @@ export class WorkflowContractsComponent extends AppComponentBase implements OnIn
                 .pipe(finalize(() => {
                     this.hideMainSpinner();
                 }))
-                .subscribe(result => {
+                .subscribe(() => {
+                    this.validationTriggered = false;
                     this._workflowDataService.workflowOverviewUpdated.emit(true);
                     if (this.editEnabledForcefuly && !isSyncToLegacy) {
                         this.toggleEditMode();
@@ -1481,7 +1488,8 @@ export class WorkflowContractsComponent extends AppComponentBase implements OnIn
             .pipe(finalize(() => {
                 this.hideMainSpinner();
             }))
-            .subscribe(result => {
+            .subscribe(() => {
+                this.validationTriggered = false;
                 this._workflowDataService.workflowSideSectionUpdated.emit({isStatusUpdate: true});
                 this._workflowDataService.workflowOverviewUpdated.emit(true);
                 this.getContractStepData();
@@ -1533,7 +1541,8 @@ export class WorkflowContractsComponent extends AppComponentBase implements OnIn
                 .pipe(finalize(() => {
                     this.hideMainSpinner();
                 }))
-                .subscribe(result => {
+                .subscribe(() => {
+                    this.validationTriggered = false;
                     this._workflowDataService.workflowOverviewUpdated.emit(true);
                     if (this.editEnabledForcefuly && !isSyncToLegacy) {
                         this.toggleEditMode();
@@ -1549,7 +1558,8 @@ export class WorkflowContractsComponent extends AppComponentBase implements OnIn
             .pipe(finalize(() => {
                 this.hideMainSpinner();
             }))
-            .subscribe(result => {
+            .subscribe(() => {
+                this.validationTriggered = false;
                 this._workflowDataService.workflowSideSectionUpdated.emit({isStatusUpdate: true});
                 this._workflowDataService.workflowOverviewUpdated.emit(true);
                 this.getContractStepData();
