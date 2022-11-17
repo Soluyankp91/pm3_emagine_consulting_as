@@ -2,7 +2,7 @@
     <div fxLayout="column" fxLayoutAlign="start start" class="workflow-list--filter">
         <h2 class="page-main-header u-mb--20">Workflows</h2>
         <div fxLayout="row" fxLayoutAlign="start start" class="u-w--100">
-            <div fxFlex fxLayout="row" fxLayoutAlign="start start" class="u-w--100">
+            <div fxFlex fxLayout="row wrap" fxLayoutAlign="start start" class="u-w--100 flex-row-gap--10">
                 <div class="workflow-list--filter-manager cursor-pointer u-mr--16" [matTooltip]="selectedAccountManagers.length ? mapListByProperty(selectedAccountManagers, 'name') : 'Select account manager(s)'" matTooltipClass="white-tooltip" [matMenuTriggerFor]="managerMenu" (menuOpened)="accountManagerFilterInput.click(); onOpenedMenu();" (click)="openMenu($event)">
                     <img *ngIf="selectedAccountManagers.length === 1" class="border-rounded-50 image-thumbnail-small" [src]="employeeProfileUrl(selectedAccountManagers[0].externalId!)" />
                     <img *ngIf="selectedAccountManagers.length === 0" src="../../../assets/common/images/no-img.svg">
@@ -87,8 +87,8 @@
                     </span>
                     <mat-icon>expand_more</mat-icon>
                 </span>
-                <mat-menu #pendingSteps backdropClass="step-filter--menu">
-                    <button class="workflow-list--filter-type-dropdown__item" *ngFor="let item of stepTypes; trackBy: stepTypeTrackBy" mat-menu-item (click)="selectPendingStep(item.id)">{{item.name}}</button>
+                <mat-menu #pendingSteps backdropClass="step-filter--menu" xPosition="before">
+                    <button class="workflow-list--filter-type-dropdown__item" *ngFor="let item of stepTypes; trackBy: filtersTrackBy" mat-menu-item (click)="selectPendingStep(item.id)">{{item.name}}</button>
                     <button class="workflow-list--filter-type-dropdown__reset" mat-menu-item (click)="selectPendingStep()">Reset</button>
                 </mat-menu>
                 <span class="workflow-list--filter-type-dropdown cursor-pointer u-mr--20" [matMenuTriggerFor]="upcomingSteps" [ngClass]="{'selected-status': upcomingStepType !== null && upcomingStepType >= 0}">
@@ -97,10 +97,37 @@
                     </span>
                     <mat-icon>expand_more</mat-icon>
                 </span>
-                <mat-menu #upcomingSteps backdropClass="step-filter--menu">
-                    <button class="workflow-list--filter-type-dropdown__item" *ngFor="let item of stepTypes; trackBy: stepTypeTrackBy" mat-menu-item (click)="selectUpcomingStep(item.id)">{{item.name}}</button>
+                <mat-menu #upcomingSteps backdropClass="step-filter--menu" xPosition="before">
+                    <button class="workflow-list--filter-type-dropdown__item" *ngFor="let item of stepTypes; trackBy: filtersTrackBy" mat-menu-item (click)="selectUpcomingStep(item.id)">{{item.name}}</button>
                     <button class="workflow-list--filter-type-dropdown__reset" mat-menu-item (click)="selectUpcomingStep()">Reset</button>
                 </mat-menu>
+
+                <span class="workflow-list--filter-type-dropdown cursor-pointer u-mr--20" [matMenuTriggerFor]="syncStatuses" [ngClass]="{'selected-status': selectedSyncStateStatuses !== undefined && selectedSyncStateStatuses!.length > 0}">
+                    <span class="workflow-list--filter-type-dropdown__name" [ngSwitch]="selectedSyncStateStatuses?.length">
+                        <ng-container *ngSwitchCase="0">
+                            All sync statuses
+                        </ng-container>
+                        <ng-container *ngSwitchCase="1">
+                            {{selectedSyncStateStatuses[0].name}}
+                        </ng-container>
+                        <ng-container *ngSwitchDefault>
+                            {{selectedSyncStateStatuses.length + ' statuses'}}
+                        </ng-container>
+                    </span>
+                    <mat-icon>expand_more</mat-icon>
+                </span>
+                <mat-menu #syncStatuses backdropClass="step-filter--menu" xPosition="before">
+                    <div *ngFor="let item of syncStateStatuses; trackBy: filtersTrackBy"
+                        class="workflow-list--filter-type-dropdown__item" mat-menu-item
+                        (click)="syncStatusClicked($event, item);">
+                        <mat-checkbox #chb class="black-checkbox"
+                            [checked]="item.selected"
+                            (click)="$event.stopPropagation();" (change)="syncStatusFilterControl(item)">
+                            {{item.name}}
+                        </mat-checkbox>
+                    </div>
+                </mat-menu>
+
                 <div fxLayout="row" fxLayoutAlign="start center" fxFlex="10%">
                     <mat-divider class="u-mr--10 divider-height" [vertical]="true"></mat-divider>
                     <button mat-button appPreventDoubleClick (throttledClick)="clearAllFilters()">
@@ -210,8 +237,8 @@
                     </mat-cell>
                 </ng-container>
                 <ng-container matColumnDef="clientName">
-                    <mat-header-cell *matHeaderCellDef mat-sort-header fxFlex="11%">Client</mat-header-cell>
-                    <mat-cell *matCellDef="let row" fxFlex="11%">
+                    <mat-header-cell *matHeaderCellDef mat-sort-header fxFlex="10%">Client</mat-header-cell>
+                    <mat-cell *matCellDef="let row" fxFlex="10%">
                         <span class="text-truncate-ellipsis text-bold-800" [matTooltip]="row.clientName ?? '-'" matTooltipClass="white-tooltip" appShowIfTruncated>
                             {{row.clientName ?? '-'}}
                         </span>
@@ -251,8 +278,8 @@
                     </mat-cell>
                 </ng-container>
                 <ng-container matColumnDef="ConsultantName">
-                    <mat-header-cell *matHeaderCellDef mat-sort-header fxFlex="11%"> Consultants </mat-header-cell>
-                    <mat-cell *matCellDef="let row" fxFlex="11%">
+                    <mat-header-cell *matHeaderCellDef mat-sort-header fxFlex="10%"> Consultants </mat-header-cell>
+                    <mat-cell *matCellDef="let row" fxFlex="10%">
                         <ng-container *ngIf="row.consultants?.length > 1; else singleConsultantDisplay">
                             <span class="flex-items-center" fxFlex="100%">
                                 <img class="border-rounded-50 image-settings--dropdown u-mr--10" src="../../assets/common/images/no-img.svg" />
@@ -359,8 +386,8 @@
                     </mat-cell>
                 </ng-container>
                 <ng-container matColumnDef="Steps">
-                    <mat-header-cell *matHeaderCellDef fxFlex="12%"> Steps </mat-header-cell>
-                    <mat-cell *matCellDef="let row" fxFlex="12%">
+                    <mat-header-cell *matHeaderCellDef fxFlex="10%"> Steps </mat-header-cell>
+                    <mat-cell *matCellDef="let row" fxFlex="10%">
                         <div class="column">
                             <div *ngFor="let item of row.openProcesses; last as last"
                                  style="height: 50px;"
@@ -389,11 +416,17 @@
                     </mat-cell>
                 </ng-container>
                 <ng-container matColumnDef="startDateOfOpenedPeriodOrLastClientPeriod">
-                    <mat-header-cell *matHeaderCellDef mat-sort-header fxFlex="10%"> Start date of step </mat-header-cell>
-                    <mat-cell *matCellDef="let row" fxFlex="10%">
+                    <mat-header-cell *matHeaderCellDef mat-sort-header fxFlex="8%"> Start date of step </mat-header-cell>
+                    <mat-cell *matCellDef="let row" fxFlex="8%">
                         <span class="text-truncate-ellipsis" [matTooltip]="(row.startDateOfOpenedPeriodOrLastClientPeriod | date: 'dd.MM.YYYY') ?? '-'" matTooltipClass="white-tooltip" appShowIfTruncated>
                             {{(row.startDateOfOpenedPeriodOrLastClientPeriod | date: 'dd.MM.YYYY') ?? '-'}}
                         </span>
+                    </mat-cell>
+                </ng-container>
+                <ng-container matColumnDef="syncStateStatus">
+                    <mat-header-cell *matHeaderCellDef mat-sort-header fxFlex="6%" fxLayoutAlign="center center"> Sync </mat-header-cell>
+                    <mat-cell *matCellDef="let row" fxFlex="6%" fxLayoutAlign="center center">
+                        <mat-icon class="sync-status-icon" svgIcon="{{row.syncStateStatusIcon}}" [matTooltip]="row.syncStateStatusName ?? '-'" matTooltipClass="white-tooltip"></mat-icon>
                     </mat-cell>
                 </ng-container>
                 <ng-container matColumnDef="action">
