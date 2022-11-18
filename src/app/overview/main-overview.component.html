@@ -198,14 +198,13 @@
                     [draggable]="false"
                     [isWorkflow]="true"
                     [start]="startDateOfChart"
+                    [sortingFromParent]="workflowSorting"
                     [userSelectedStatuses]="userSelectedStatuses"
                     (userSelectedStatusForWorflow)="setUserSelectedStatusForWorflow($event)"
                     (sortUpdated)="workflowSortChanged($event)">
                     <ng-template #group let-group="group">
-                        <!-- {{ group.title }} -->
                     </ng-template>
                     <ng-template #bar let-item="item">
-                        <!-- <span style="color: #fff">&nbsp;&nbsp;{{ item.title }}</span> -->
                     </ng-template>
                 </app-gantt-flat>
             </div>
@@ -227,14 +226,13 @@
                     [draggable]="false"
                     [isConsultants]="true"
                     [start]="startDateOfChart"
+                    [sortingFromParent]="consultantSorting"
                     [userSelectedStatuses]="userSelectedStatuses"
                     (userSelectedStatusForConsultant)="setUserSelectedStatusForConsultant($event)"
                     (sortUpdated)="consultantSortChanged($event)">
                     <ng-template #group let-group="group">
-                        <!-- {{ group.title }} -->
                     </ng-template>
                     <ng-template #bar let-item="item">
-                        <!-- <span style="color: #fff">&nbsp;&nbsp;{{ item.title }}</span> -->
                     </ng-template>
                 </app-gantt-flat>
             </div>
