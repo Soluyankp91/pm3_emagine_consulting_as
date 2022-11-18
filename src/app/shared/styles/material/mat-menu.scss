@@ -7,6 +7,7 @@
         .mat-menu-item {
             height: 40px;
             line-height: 40px;
+            padding: 0 12px;
             &:hover:not([disabled]) {
                 background: unset !important;
             }

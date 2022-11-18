@@ -19,8 +19,9 @@
             color: $white-color;
         }
         &-country {
-            width: 40px;
-            height: 40px;
+            mat-icon {
+                @include fontLineHeightAndSize(40px, 40px, 40px, 40px);
+            }
             &__btn {
                 background-color: #4a4e60;
                 color: $white-color;
@@ -31,19 +32,14 @@
                 align-items: center;
             }
             @media screen and (max-width: 1366px) {
-                width: 30px;
-                height: 30px;
+                @include fontLineHeightAndSize(30px, 30px, 30px, 30px);
             }
         }
         &-country__flag {
-            line-height: 40px;
-            height: 40px;
-            width: 40px;
-            font-size: 40px;
+            @include fontLineHeightAndSize(40px, 40px, 40px, 40px);
         }
         &__add-btn mat-icon {
-            width: 34px;
-            height: 34px;
+            @include fontLineHeightAndSize(34px, 34px, 34px, 34px);
         }
         &-type {
             @include flexCentered;
@@ -101,11 +97,6 @@
             z-index: 101;
             box-shadow: 0 10px 10px 0 rgb(26, 35, 126, 15%);
             transition: all .3s ease-in-out;
-        }
-        &-leftside {
-            // @media screen and (max-width: 1366px) {
-                // margin-top: 5px;
-            // }
         }
     }
     &--content {
