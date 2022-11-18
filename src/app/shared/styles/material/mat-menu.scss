@@ -153,6 +153,9 @@
                     margin-right: 0 !important;
                 }
             }
+            &:hover {
+                background: rgba($color: $green-color-25, $alpha: 0.33) !important;
+            }
         }
     }
 
