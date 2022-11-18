@@ -105,9 +105,6 @@
                 <div class="main-overview--filter-type cursor-pointer u-mb--10" [ngClass]="detectSelectedStatusColor(status)" *ngFor="let status of filteredMainOverviewStatuses; trackBy: statusesTrackBy"
                     appPreventDoubleClick (throttledClick)="changeOverviewStatus(status)">
                     <mat-icon class="main-overview-icon-type" svgIcon="{{status.flag}}" [ngClass]="detectProcessColor(status.id)"></mat-icon>
-                    <!-- <span class="main-overview--filter-type__quantity u-mr--5">
-                        {{status.quantity}}
-                    </span> -->
                     <span class="main-overview--filter-type__name">
                         {{status.name}}
                     </span>
@@ -206,12 +203,13 @@
                     [draggable]="false"
                     [isWorkflow]="true"
                     [start]="startDateOfChart"
-                    (userSelectedStatusForWorflow)="setUserSelectedStatusForWorflow($event)">
+                    [sortingFromParent]="workflowSorting"
+                    [userSelectedStatuses]="userSelectedStatuses"
+                    (userSelectedStatusForWorflow)="setUserSelectedStatusForWorflow($event)"
+                    (sortUpdated)="workflowSortChanged($event)">
                     <ng-template #group let-group="group">
-                        <!-- {{ group.title }} -->
                     </ng-template>
                     <ng-template #bar let-item="item">
-                        <!-- <span style="color: #fff">&nbsp;&nbsp;{{ item.title }}</span> -->
                     </ng-template>
                 </app-gantt-flat>
             </div>
@@ -233,12 +231,13 @@
                     [draggable]="false"
                     [isConsultants]="true"
                     [start]="startDateOfChart"
-                    (userSelectedStatusForConsultant)="setUserSelectedStatusForConsultant($event)">
+                    [sortingFromParent]="consultantSorting"
+                    [userSelectedStatuses]="userSelectedStatuses"
+                    (userSelectedStatusForConsultant)="setUserSelectedStatusForConsultant($event)"
+                    (sortUpdated)="consultantSortChanged($event)">
                     <ng-template #group let-group="group">
-                        <!-- {{ group.title }} -->
                     </ng-template>
                     <ng-template #bar let-item="item">
-                        <!-- <span style="color: #fff">&nbsp;&nbsp;{{ item.title }}</span> -->
                     </ng-template>
                 </app-gantt-flat>
             </div>
