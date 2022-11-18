@@ -154,6 +154,9 @@
                 color: rgba(56, 72, 83, 0.8);
                 padding-left: 5px;
             }
+            &:hover {
+                background: rgba($color: $green-color-25, $alpha: 0.33) !important;
+            }
         }
     }
 

@@ -44,7 +44,7 @@
         &:focus:not(.mat-option-disabled),
         &.mat-active,
         &.mat-selected:not(.mat-option-disabled) {
-            font-weight: 800;
+            background: rgba($color: $green-color-25, $alpha: 0.33) !important;
         }
         &.mat-select-clear-option {
             color: rgba(0, 0, 0, 0.47) !important;

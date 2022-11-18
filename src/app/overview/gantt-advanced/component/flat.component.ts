@@ -3,10 +3,10 @@ import { Router } from '@angular/router';
 import { GANTT_UPPER_TOKEN, GanttUpper, GanttItemInternal, GANTT_GLOBAL_CONFIG, GanttGlobalConfig } from '@worktile/gantt';
 import { environment } from 'src/environments/environment';
 import { AppConsts } from 'src/shared/AppConsts';
-import { MainOverviewServiceProxy } from 'src/shared/service-proxies/service-proxies';
+import { MainOverviewServiceProxy, MainOverviewStatusDto } from 'src/shared/service-proxies/service-proxies';
 import { OverviewFlag, OverviewFlagNames } from '../../main-overview.model';
 import { GanttGroupInternal } from '../mocks';
-import { SortDirections } from '../../helper';
+import { OverviewStatusIcon, SortDirections } from '../../helper';
 
 @Component({
     selector: 'app-gantt-flat',
@@ -22,6 +22,8 @@ import { SortDirections } from '../../helper';
 export class AppGanttFlatComponent extends GanttUpper implements OnInit {
     @Input() isConsultants: boolean;
     @Input() isWorkflow: boolean;
+    @Input() sortingFromParent: string;
+    @Input() userSelectedStatuses: any[];
 
     @Output() userSelectedStatusForWorflow = new EventEmitter();
     @Output() userSelectedStatusForConsultant = new EventEmitter();
@@ -30,7 +32,7 @@ export class AppGanttFlatComponent extends GanttUpper implements OnInit {
     momentFormatType = AppConsts.momentFormatType;
     overviewFlagNames = OverviewFlagNames;
     mergeIntervalDays = 3;
-    userSelectedStatuses: any;
+    // userSelectedStatuses: any;
     menuTopLeftPosition =  {x: 0, y: 0}
     tooltipStartDate: Date;
     tooltipEndDate: Date | undefined;
@@ -47,6 +49,8 @@ export class AppGanttFlatComponent extends GanttUpper implements OnInit {
     sortName = '';
     sorting: string;
     @HostBinding('class.gantt-flat') ganttFlatClass = true;
+
+    statusIconEnum = OverviewStatusIcon;
 
     constructor(
         elementRef: ElementRef<HTMLElement>,
@@ -85,7 +89,11 @@ export class AppGanttFlatComponent extends GanttUpper implements OnInit {
      ngOnInit() {
         super.ngOnInit();
         this.buildGroupItems();
-        this.getMainOverviewStatuses();
+        if (this.sortingFromParent?.length) {
+            let sortingArray = this.sortingFromParent.split(' ');
+            this.sortName = sortingArray[0];
+            this.sortDirection = sortingArray[1] === 'desc' ? SortDirections.Desc : SortDirections.Asc;
+        }
     }
 
     private buildGroupItems() {
@@ -114,7 +122,7 @@ export class AppGanttFlatComponent extends GanttUpper implements OnInit {
         return environment.sharedAssets + `/EmployeePicture/${fileToken}.jpg`;
     }
 
-    detectProcessColor(process: number) {
+    detectProcessColor(process: number | undefined) {
         switch (process) {
             case OverviewFlag.ExtensionExpected:
             case OverviewFlag.Extended:
@@ -132,7 +140,7 @@ export class AppGanttFlatComponent extends GanttUpper implements OnInit {
         }
     }
 
-    detectIcon(process: number) {
+    detectIcon(process: number | undefined) {
         switch (process) {
             case OverviewFlag.ExtensionExpected:
                 return 'check-circle';
@@ -150,12 +158,6 @@ export class AppGanttFlatComponent extends GanttUpper implements OnInit {
             default:
                 return '';
         }
-    }
-
-    getMainOverviewStatuses() {
-        this._mainOverviewService.statuses().subscribe(result => {
-            this.userSelectedStatuses = result.filter(x => x.canBeSetByUser);
-        })
     }
 
     setUserSelectedStatusForWorflow(workflowId: string, userSelectedStatus: number) {

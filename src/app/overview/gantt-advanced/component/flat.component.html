@@ -2,14 +2,14 @@
     <ng-template #sideTemplate>
         <div class="gantt-flat-side-header" fxLayout="row" fxLayoutAlign="start center">
             <div class="gantt-flat-side-column" fxFlex="5%"></div>
-            <div class="gantt-flat-side-column sort-container pos-relative" [ngClass]="{'active': sortName === 'clientDisplayName', 'desc': sortDirection === sortDirections.Desc }"  fxFlex="35%" fxLayoutAlign="start center" (click)="sortChanged('clientDisplayName')">
+            <div class="gantt-flat-side-column sort-container pos-relative" [ngClass]="{'active': sortName === 'clientDisplayName', 'desc': sortName === 'clientDisplayName' && sortDirection === sortDirections.Desc }"  fxFlex="35%" fxLayoutAlign="start center" (click)="sortChanged('clientDisplayName')">
                 Client
                 <ng-container *ngTemplateOutlet="sortArrow"></ng-container>
             </div>
             <div class="gantt-flat-side-column" fxFlex="25%" fxLayoutAlign="start center">
                 Consultants
             </div>
-            <div class="gantt-flat-side-column sort-container pos-relative" [ngClass]="{'active': sortName === (isWorkflow ? 'lastClientPeriodEndDate' : 'lastConsultantPeriodEndDate'), 'desc': sortDirection === sortDirections.Desc}" fxFlex="15%" fxLayoutAlign="end center" (click)="sortChanged(isWorkflow ? 'lastClientPeriodEndDate' : 'lastConsultantPeriodEndDate')">
+            <div class="gantt-flat-side-column sort-container pos-relative" [ngClass]="{'active': sortName === (isWorkflow ? 'lastClientPeriodEndDate' : 'lastConsultantPeriodEndDate'), 'desc': sortName === (isWorkflow ? 'lastClientPeriodEndDate' : 'lastConsultantPeriodEndDate') && sortDirection === sortDirections.Desc}" fxFlex="15%" fxLayoutAlign="end center" (click)="sortChanged(isWorkflow ? 'lastClientPeriodEndDate' : 'lastConsultantPeriodEndDate')">
                 End date
                 <ng-container *ngTemplateOutlet="sortArrow"></ng-container>
             </div>
