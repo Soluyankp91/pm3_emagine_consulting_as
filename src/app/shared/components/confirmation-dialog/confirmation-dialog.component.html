@@ -1,15 +1,16 @@
-<mat-dialog-content class="confiramtion-dialog">
-    <div mat-dialog-title class="confiramtion-dialog--header">
+<mat-dialog-content class="confirmation-dialog">
+    <div mat-dialog-title class="confirmation-dialog--header">
         <h1>
             {{ data.confirmationMessageTitle }}
         </h1>
+        <button class="confirmation-dialog--close" mat-icon-button (click)="close()"><mat-icon>close</mat-icon></button>
     </div>
-    <p>
+    <p class="text-wrap--pre-line">
         {{ data.confirmationMessage }}
     </p>
 </mat-dialog-content>
-<mat-dialog-actions class="confiramtion-dialog--actions flex-justify-between">
-    <button mat-flat-button class="confiramtion-dialog--actions-btn dialog-btn dialog-btn__outlined" appPreventDoubleClick (throttledClick)="reject()">
+<mat-dialog-actions class="confirmation-dialog--actions flex-justify-between">
+    <button mat-flat-button class="confirmation-dialog--actions-btn dialog-btn dialog-btn__outlined" appPreventDoubleClick (throttledClick)="reject()">
         {{ data.rejectButtonText }}
     </button>
     <button mat-flat-button class="dialog-btn" [ngClass]="data.isNegative ? 'dialog-btn__negative' : 'dialog-btn__positive'" appPreventDoubleClick (throttledClick)="confirm()">

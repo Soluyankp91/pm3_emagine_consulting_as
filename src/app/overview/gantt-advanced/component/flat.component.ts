@@ -3,7 +3,7 @@ import { Router } from '@angular/router';
 import { GANTT_UPPER_TOKEN, GanttUpper, GanttItemInternal, GANTT_GLOBAL_CONFIG, GanttGlobalConfig } from '@worktile/gantt';
 import { environment } from 'src/environments/environment';
 import { AppConsts } from 'src/shared/AppConsts';
-import { MainOverviewServiceProxy } from 'src/shared/service-proxies/service-proxies';
+import { SortDirections } from 'src/shared/entities/shared-enums';
 import { OverviewFlag, OverviewFlagNames } from '../../main-overview.model';
 import { GanttGroupInternal } from '../mocks';
 
@@ -21,14 +21,17 @@ import { GanttGroupInternal } from '../mocks';
 export class AppGanttFlatComponent extends GanttUpper implements OnInit {
     @Input() isConsultants: boolean;
     @Input() isWorkflow: boolean;
+    @Input() sortingFromParent: string;
+    @Input() userSelectedStatuses: any[];
 
     @Output() userSelectedStatusForWorflow = new EventEmitter();
     @Output() userSelectedStatusForConsultant = new EventEmitter();
+    @Output() sortUpdated = new EventEmitter<string>();
 
     momentFormatType = AppConsts.momentFormatType;
     overviewFlagNames = OverviewFlagNames;
     mergeIntervalDays = 3;
-    userSelectedStatuses: any;
+
     menuTopLeftPosition =  {x: 0, y: 0}
     tooltipStartDate: Date;
     tooltipEndDate: Date | undefined;
@@ -39,6 +42,11 @@ export class AppGanttFlatComponent extends GanttUpper implements OnInit {
         'consultants',
         'salesManager',
     ];
+
+    sortDirection = SortDirections.None;
+    sortDirections = SortDirections;
+    sortName = '';
+    sorting: string;
     @HostBinding('class.gantt-flat') ganttFlatClass = true;
 
     constructor(
@@ -46,9 +54,7 @@ export class AppGanttFlatComponent extends GanttUpper implements OnInit {
         cdr: ChangeDetectorRef,
         ngZone: NgZone,
         @Inject(GANTT_GLOBAL_CONFIG) config: GanttGlobalConfig,
-        private router: Router,
-        private _mainOverviewService: MainOverviewServiceProxy,
-
+        private router: Router
     ) {
         super(elementRef, cdr, ngZone, config);
     }
@@ -71,14 +77,17 @@ export class AppGanttFlatComponent extends GanttUpper implements OnInit {
                 indexOfMergedItems = mergedItems.length - 1;
             }
         });
-        // mergedItems.push(items);
         return mergedItems;
     }
 
      ngOnInit() {
         super.ngOnInit();
         this.buildGroupItems();
-        this.getMainOverviewStatuses();
+        if (this.sortingFromParent?.length) {
+            let sortingArray = this.sortingFromParent.split(' ');
+            this.sortName = sortingArray[0];
+            this.sortDirection = sortingArray[1] === 'desc' ? SortDirections.Desc : SortDirections.Asc;
+        }
     }
 
     private buildGroupItems() {
@@ -107,7 +116,7 @@ export class AppGanttFlatComponent extends GanttUpper implements OnInit {
         return environment.sharedAssets + `/EmployeePicture/${fileToken}.jpg`;
     }
 
-    detectProcessColor(process: number) {
+    detectProcessColor(process: number | undefined) {
         switch (process) {
             case OverviewFlag.ExtensionExpected:
             case OverviewFlag.Extended:
@@ -125,7 +134,7 @@ export class AppGanttFlatComponent extends GanttUpper implements OnInit {
         }
     }
 
-    detectIcon(process: number) {
+    detectIcon(process: number | undefined) {
         switch (process) {
             case OverviewFlag.ExtensionExpected:
                 return 'check-circle';
@@ -145,12 +154,6 @@ export class AppGanttFlatComponent extends GanttUpper implements OnInit {
         }
     }
 
-    getMainOverviewStatuses() {
-        this._mainOverviewService.statuses().subscribe(result => {
-            this.userSelectedStatuses = result.filter(x => x.canBeSetByUser);
-        })
-    }
-
     setUserSelectedStatusForWorflow(workflowId: string, userSelectedStatus: number) {
         let ids = {workflowId: workflowId, userSelectedStatus: userSelectedStatus}
         this.userSelectedStatusForWorflow.emit(ids);
@@ -168,6 +171,27 @@ export class AppGanttFlatComponent extends GanttUpper implements OnInit {
         this.tooltipStartDate = new Date(item?.origin?.start*1000) ;
         this.tooltipEndDate = (item?.origin?.origin.endDate !== undefined && item?.origin?.origin.endDate !== null) ? new Date(item?.origin?.end*1000) : undefined;
 
+    }
+
+    sortChanged(sortName: string) {
+        if (this.sortName === '' || sortName === this.sortName) {
+            switch (this.sortDirection) {
+                case SortDirections.Desc:
+                    this.sortDirection = SortDirections.None;
+                    break;
+                case SortDirections.Asc:
+                    this.sortDirection = SortDirections.Desc;
+                    break;
+                case SortDirections.None:
+                    this.sortDirection = SortDirections.Asc;
+                    break;
+            }
+        } else {
+            this.sortDirection = SortDirections.Asc;
+        }
+        this.sortName = this.sortDirection === SortDirections.None ? '' : sortName;
+        this.sorting = this.sortDirection && this.sortDirection.length ? sortName.concat(' ', this.sortDirection) : '';
+        this.sortUpdated.emit(this.sorting);
     }
 
 }

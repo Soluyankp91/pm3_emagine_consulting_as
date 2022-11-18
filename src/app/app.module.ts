@@ -673,6 +673,13 @@ export class AppModule {
         );
 
         iconRegistry.addSvgIcon(
+            '3-dots-green',
+            sanitizer.bypassSecurityTrustResourceUrl(
+                'assets/common/images/3-dots-green.svg'
+            )
+        );
+
+        iconRegistry.addSvgIcon(
             'logout-icon',
             sanitizer.bypassSecurityTrustResourceUrl(
                 'assets/common/images/logout-icon.svg'
