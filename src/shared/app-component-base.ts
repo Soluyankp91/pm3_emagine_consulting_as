@@ -152,7 +152,7 @@ export abstract class AppComponentBase {
     toArray(enumme: { [key: string]: string; }) {
         let result: ISelectableIdNameDto[] = [];
         for (const key of Object.keys(enumme)) {
-            result.push({ id: Number(key), name: enumme[key], selected: false });
+            result.push({ id: Number(key), name: enumme[key].replace(/[A-Z]/g, ' $&').trim(), selected: false });
         }
         return result;
     }

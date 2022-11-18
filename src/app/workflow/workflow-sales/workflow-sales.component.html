@@ -1496,15 +1496,15 @@
                                 </div>
                                 <div fxLayout="column" fxLayoutAlign="start start" class="u-w--100 u-mb--10">
                                     <div fxLayout="row" fxLayoutAlign="start start" class="u-w--100 u-mb--10">
-                                        <mat-form-field appearance="outline" class="u-w--100 formFieldNoMarginPadding filter-select" fxFlex="33%">
+                                        <mat-form-field appearance="outline" class="formFieldNoMarginPadding client-and-consultant-autocomplete">
                                             <mat-label>Direct client</mat-label>
                                             <input required #directClientFilterInput type="text" matInput [matAutocomplete]="directClientAutocomplete" formControlName="directClientIdValue" appPreventDoubleClick (throttledClick)="$event.stopPropagation()" placeholder="Direct client name + address">
                                             <mat-autocomplete #directClientAutocomplete="matAutocomplete" [displayWith]="displayClientNameFn" (optionSelected)="directClientSelected($event)">
                                                 <ng-container>
                                                     <mat-option *ngFor="let client of filteredDirectClients" [value]="client" [ngClass]="{ 'no-data': client.id === 'no-data' }">
-                                                        <div class="multilineDropdown-option--column">
+                                                        <div class="multilineDropdown-option--column text-truncate-ellipsis">
                                                             <span class="multilineDropdown-option--column-client-name">{{ client.clientName }}</span>
-                                                            <span *ngIf="client.id !== 'no-data'" class="multilineDropdown-option--column-client-info">
+                                                            <span *ngIf="client.id !== 'no-data'" class="multilineDropdown-option--column-client-info text-truncate-ellipsis">
                                                                 #{{client.clientId}} | {{client.city ?? ''}} {{client.countryName ? ', ' + client.countryName : ''}}
                                                             </span>
                                                         </div>
@@ -1521,15 +1521,15 @@
                                 </div>
                                 <div fxLayout="column" fxLayoutAlign="start start" class="u-w--100 u-mb--10" [fxHide]="!salesClientDataForm.differentEndClient?.value">
                                     <div fxLayout="row" fxLayoutAlign="start start" class="u-w--100">
-                                        <mat-form-field appearance="outline" class="u-w--100 formFieldNoMarginPadding filter-select" fxFlex="33%">
+                                        <mat-form-field appearance="outline" class="formFieldNoMarginPadding client-and-consultant-autocomplete">
                                             <mat-label>End client</mat-label>
                                             <input [required]="salesClientDataForm.differentEndClient?.value" #endClientFilterInput type="text" matInput [matAutocomplete]="endClientAutocomplete" formControlName="endClientIdValue" appPreventDoubleClick (throttledClick)="$event.stopPropagation()" placeholder="End client name + address">
                                             <mat-autocomplete #endClientAutocomplete="matAutocomplete" [displayWith]="displayClientNameFn">
                                                 <ng-container>
                                                     <mat-option *ngFor="let client of filteredEndClients" [value]="client" [ngClass]="{ 'no-data': client.id === 'no-data' }">
-                                                        <div class="multilineDropdown-option--column">
+                                                        <div class="multilineDropdown-option--column text-truncate-ellipsis">
                                                             <span class="multilineDropdown-option--column-client-name">{{ client.clientName }}</span>
-                                                            <span *ngIf="client.id !== 'no-data'" class="multilineDropdown-option--column-client-info">
+                                                            <span *ngIf="client.id !== 'no-data'" class="multilineDropdown-option--column-client-info text-truncate-ellipsis">
                                                                 #{{client.clientId}} | {{client.city ?? ''}} {{client.countryName ? ', ' + client.countryName : ''}}
                                                             </span>
                                                         </div>
@@ -1814,15 +1814,15 @@
 
                                 <div fxLayout="column" fxLayoutAlign="start start" class="u-w--100 u-mb--10">
                                     <div fxLayout="row" fxLayoutAlign="start center" class="u-w--100">
-                                        <mat-form-field appearance="outline" class="u-w--100 formFieldNoMarginPadding filter-select u-mr--16" fxFlex="33%">
+                                        <mat-form-field appearance="outline" class="formFieldNoMarginPadding client-and-consultant-autocomplete u-mr--16">
                                             <mat-label>Client invoicing recipient</mat-label>
                                             <input #clientInvoicingRecipientInput type="text" matInput [matAutocomplete]="clientInvoicingRecipientAutocomplete" formControlName="clientInvoicingRecipientIdValue" appPreventDoubleClick (throttledClick)="$event.stopPropagation()" placeholder="Client invoicing recipient">
                                             <mat-autocomplete #clientInvoicingRecipientAutocomplete="matAutocomplete" [displayWith]="displayClientNameFn">
                                                 <ng-container>
                                                     <mat-option *ngFor="let client of filteredClientInvoicingRecipients" [value]="client" [ngClass]="{ 'no-data': client.id === 'no-data' }">
-                                                        <div class="multilineDropdown-option--column">
+                                                        <div class="multilineDropdown-option--column text-truncate-ellipsis">
                                                             <span class="multilineDropdown-option--column-client-name">{{ client.clientName }}</span>
-                                                            <span *ngIf="client.id !== 'no-data'" class="multilineDropdown-option--column-client-info">
+                                                            <span *ngIf="client.id !== 'no-data'" class="multilineDropdown-option--column-client-info text-truncate-ellipsis">
                                                                 #{{client.clientId}} | {{client.city ?? ''}} {{client.countryName ? ', ' + client.countryName : ''}}
                                                             </span>
                                                         </div>
@@ -2200,7 +2200,7 @@
 
                             <h3 class="workflow-gray--header u-mb--10">Client Contract Signers</h3>
                             <div formArrayName="contractSigners" class="u-w--100 u-mb--10">
-                                <div fxLayout="row" fxLayoutAlign="start start" class="u-w--100 u-mb--10" *ngFor="let signer of contractSigners.controls; let i = index" [formGroupName]="i">
+                                <div fxLayout="row" fxLayoutAlign="start center" class="u-w--100 u-mb--10" *ngFor="let signer of contractSigners.controls; let i = index" [formGroupName]="i">
                                     <mat-form-field appearance="outline" class="u-w--100 formFieldNoMarginPadding filter-select u-mr--16" fxFlex="33%">
                                         <mat-label>Name</mat-label>
                                         <input required type="text" matInput [matAutocomplete]="contactSignerAutocomplete" formControlName="clientContact" appPreventDoubleClick (throttledClick)="$event.stopPropagation()" placeholder="Name">
@@ -2239,7 +2239,7 @@
                                             <app-validator [control]="contractSigners.at(i).get('clientSequence')"></app-validator>
                                         </mat-error>
                                     </mat-form-field>
-                                    <button class="form-icon--delete-row u-mt--5" type="button" mat-icon-button appPreventDoubleClick (throttledClick)="removeSigner(i)"><mat-icon svgIcon="remove-icon"></mat-icon></button>
+                                    <button class="form-icon--delete-row" type="button" mat-icon-button appPreventDoubleClick (throttledClick)="removeSigner(i)"><mat-icon svgIcon="remove-icon"></mat-icon></button>
                                 </div>
                                 <button class="button-add" mat-flat-button type="button" appPreventDoubleClick (throttledClick)="addSignerToForm()">
                                     <mat-icon>add</mat-icon>
@@ -2295,17 +2295,17 @@
                                         </mat-error>
                                     </div>
                                     <div fxLayout="row" fxLayoutAlign="start start" class="u-w--100 u-mb--10" *ngIf="consultant.value?.employmentType?.id">
-                                        <mat-form-field appearance="outline" class="u-w--100 formFieldNoMarginPadding filter-select" fxFlex="33%" [fxHide]="consultant.value?.employmentType?.id === 10 || consultant.value?.employmentType?.id === 11">
+                                        <mat-form-field appearance="outline" class="formFieldNoMarginPadding client-and-consultant-autocomplete" [fxHide]="consultant.value?.employmentType?.id === 10 || consultant.value?.employmentType?.id === 11">
                                             <mat-label>Consultant Name</mat-label>
                                             <input [required]="consultant.value?.employmentType?.id !== 10 && consultant.value?.employmentType?.id !== 11" type="text" matInput [matAutocomplete]="consultantAutocomplete" name="consutlantNameAutocomplete" formControlName="consultantName" appPreventDoubleClick (throttledClick)="$event.stopPropagation()" placeholder="Consultant name">
                                             <mat-autocomplete #consultantAutocomplete="matAutocomplete" [displayWith]="displayConsultantNameFn">
                                                 <mat-option *ngFor="let item of filteredConsultants" [value]="item" [ngClass]="{ 'no-data': item.id === 'no-data' }" appPreventDoubleClick (throttledClick)="updateConsultantStepAnchors()">
                                                     <div class="multilineDropdown-option--row">
-                                                        <img *ngIf="item.id !== 'no-data'" class="image-thumbnail-small border-rounded-50 u-ml--16 u-mr--16" [src]="consultantProfileUrl(item.consultant.externalId)" />
-                                                        <div class="multilineDropdown-option--column">
+                                                        <img *ngIf="item.id !== 'no-data'" class="image-thumbnail-small border-rounded-50 u-mr--10" [src]="consultantProfileUrl(item.consultant.externalId)" />
+                                                        <div class="multilineDropdown-option--column text-truncate-ellipsis">
                                                             <span class="multilineDropdown-option--column-client-name">{{ item.consultant.name }}</span>
-                                                            <span *ngIf="item.id !== 'no-data'" class="multilineDropdown-option--column-client-info">
-                                                                    {{item.consultant.companyName}} {{item.consultant.city ? '|' + item.consultant.city : ''}} | #{{item.consultant.id}} / {{item.consultant.legacyId}}
+                                                            <span *ngIf="item.id !== 'no-data'" class="multilineDropdown-option--column-client-info text-truncate-ellipsis">
+                                                                    {{item.consultant.companyName ? item.consultant.companyName + ' | ' : ''}} {{item.consultant.city ? item.consultant.city + ' | ' : ''}} #{{item.consultant.id}} / {{item.consultant.legacyId}}
                                                             </span>
                                                         </div>
                                                     </div>
@@ -2695,14 +2695,14 @@
                                                 Onsite
                                             </mat-checkbox>
                                             <ng-container *ngIf="consultantsForm.consultantData.at(consultantIndex).get('consultantIsOnsiteWorkplace')?.value">
-                                                <mat-form-field appearance="outline" fxFlex="0 0 calc(33% + 16px)" class="u-w--100 formFieldNoMarginPadding mat-elevation-z0 u-mr--10">
+                                                <mat-form-field appearance="outline" class="formFieldNoMarginPadding client-and-consultant-autocomplete mat-elevation-z0 u-mr--10">
                                                     <mat-label>Client</mat-label>
                                                     <input required type="text" matInput [matAutocomplete]="consultantClientAddressAuto" formControlName="consultantWorkplaceClientAddress" appPreventDoubleClick (throttledClick)="$event.stopPropagation()" placeholder="Search client">
                                                     <mat-autocomplete #consultantClientAddressAuto="matAutocomplete" [displayWith]="displayClientNameFn">
                                                         <mat-option *ngFor="let client of filteredConsultantClientAddresses" [value]="client" [ngClass]="{ 'no-data': client.id === 'no-data' }">
-                                                            <div class="multilineDropdown-option--column">
+                                                            <div class="multilineDropdown-option--column text-truncate-ellipsis">
                                                                 <span class="multilineDropdown-option--column-client-name">{{ client.clientName }}</span>
-                                                                <span *ngIf="client.id !== 'no-data'" class="multilineDropdown-option--column-client-info">
+                                                                <span *ngIf="client.id !== 'no-data'" class="multilineDropdown-option--column-client-info text-truncate-ellipsis">
                                                                     #{{client.clientId}} | {{client.city ?? ''}} {{client.countryName ? ', ' + client.countryName : ''}}
                                                                 </span>
                                                             </div>
@@ -3431,7 +3431,7 @@
         </ng-container>
         <ng-container *ngIf="consultant?.value?.consultant?.city">
             <span class="workflow-sales--additional-address-hint-label u-mr--5">
-                | Address:
+                {{consultant?.value?.consultant?.companyName ? '| ' : ''}}Address:
             </span>
             <span class="workflow-sales--additional-address-hint u-mr--5">
                 {{consultant?.value?.consultant?.city}}
@@ -3439,7 +3439,7 @@
         </ng-container>
         <ng-container *ngIf="consultant?.value?.consultant?.id">
             <span class="workflow-sales--additional-address-hint-label u-mr--5">
-                | Consultant ID:
+                {{consultant?.value?.consultant?.companyName || consultant?.value?.consultant?.city ? '| ' : ''}}Consultant ID:
             </span>
             <span class="workflow-sales--additional-address-hint">
                 # {{consultant?.value?.consultant?.id}} {{consultant?.value?.consultant?.legacyId ? ' / ' + consultant?.value?.consultant?.legacyId : ''}}

@@ -248,8 +248,8 @@ export class WorkflowSalesComponent extends AppComponentBase implements OnInit, 
                         name: value ?? '',
                         maxRecordsCount: 1000,
                     };
-                    if (value?.id) {
-                        toSend.name = value.id
+                    if (value?.clientId) {
+                        toSend.name = value.clientId
                             ? value.clientName?.trim()
                             : value?.trim();
                     }
@@ -272,8 +272,8 @@ export class WorkflowSalesComponent extends AppComponentBase implements OnInit, 
                         name: value ?? '',
                         maxRecordsCount: 1000,
                     };
-                    if (value?.id) {
-                        toSend.name = value.id
+                    if (value?.clientId) {
+                        toSend.name = value.clientId
                             ? value.clientName?.trim()
                             : value?.trim();
                     }
@@ -322,8 +322,8 @@ export class WorkflowSalesComponent extends AppComponentBase implements OnInit, 
                         name: value ?? '',
                         maxRecordsCount: 1000,
                     };
-                    if (value?.id) {
-                        toSend.name = value.id
+                    if (value?.clientId) {
+                        toSend.name = value.clientId
                             ? value.clientName
                             : value;
                     }
