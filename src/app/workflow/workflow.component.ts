@@ -307,7 +307,10 @@ export class WorkflowComponent extends AppComponentBase implements OnInit, OnDes
         DialogConfig.scrollStrategy = scrollStrategy;
         DialogConfig.data = {
             confirmationMessageTitle: `Are you sure you want to delete workflow?`,
-            confirmationMessage: 'If you confirm the deletion, all the info contained inside this workflow will be removed.',
+            confirmationMessage: `This workflow will be hidden from lists and statistics.\n
+            Note that if it contained periods which were synced, it should be terminated first.\n
+            If not terminated -  the contract lines will still appear in Legacy PM,\n
+            on the consultant website and inside the client module.`,
             rejectButtonText: 'Cancel',
             confirmButtonText: 'Delete',
             isNegative: true
@@ -457,7 +460,7 @@ export class WorkflowComponent extends AppComponentBase implements OnInit, OnDes
                         openProcesses: x.openProcesses,
                         isActive: x.workflowStatus === WorkflowStatus.Active,
                         isNewSale: x.isNewSale,
-                        syncStateStatusName: SyncStateStatus[x.syncStateStatus!],
+                        syncStateStatusName: SyncStateStatus[x.syncStateStatus!].replace(/[A-Z]/g, ' $&').trim(),
                         syncStateStatusIcon: SyncStatusIcon[x.syncStateStatus!]
                     }
                 })

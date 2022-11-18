@@ -1,5 +1,5 @@
-<mat-dialog-content class="confiramtion-dialog">
-    <div mat-dialog-title class="confiramtion-dialog--header" align="center">
+<mat-dialog-content class="confirmation-dialog">
+    <div mat-dialog-title class="confirmation-dialog--header" align="center">
         {{ data.dialogTitle }}
     </div>
     <div fxLayout="row" fxLayoutAlign="start center">
@@ -61,7 +61,7 @@
         </ng-container>
     </ng-container>
 </mat-dialog-content>
-<mat-dialog-actions align="start" class="confiramtion-dialog--actions">
+<mat-dialog-actions align="start" class="confirmation-dialog--actions">
     <button mat-flat-button class="dialog-btn dialog-btn__outlined" appPreventDoubleClick (throttledClick)="reject()">
         {{ data.rejectButtonText }}
     </button>
