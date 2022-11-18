@@ -30,18 +30,19 @@ export class InternalLookupService {
     workflowClientPeriodTypes: EnumEntityTypeDto[] = [];
     workflowConsultantPeriodTypes: EnumEntityTypeDto[] = [];
     expectedWorkloadUnits: EnumEntityTypeDto[] = [];
-    workflowPeriodStepTypes: { [key: string]: string; };
-    nonStandartTerminationTimes: { [key: string]: string; };
+    workflowPeriodStepTypes: { [key: string]: string };
+    nonStandartTerminationTimes: { [key: string]: string };
     terminationReasons: { [key: string]: string; };
     employmentTypes: EnumEntityTypeDto[] = [];
     countries: CountryDto[] = [];
     consultantTimeReportingCapList: EnumEntityTypeDto[] = [];
-    workflowStatuses: { [key: string]: string; };
-    consultantInsuranceOptions: { [key: string]: string; };
-    contractExpirationNotificationDuration: { [key: string]: string; };
-    legalContractStatuses: { [key: string]: string; };
+    workflowStatuses: { [key: string]: string };
+    consultantInsuranceOptions: { [key: string]: string };
+    contractExpirationNotificationDuration: { [key: string]: string };
+    legalContractStatuses: { [key: string]: string };
     hubspotClientUrl: string;
     legalEntities: LegalEntityDto[] = [];
+    syncStateStatuses: { [key: string]: string };
 
     constructor(private _enumService: EnumServiceProxy) {
     }
@@ -66,6 +67,7 @@ export class InternalLookupService {
         this.getWorkflowConsultantPeriodTypes();
         this.getWorkflowPeriodStepTypes();
         this.getLegalEntities();
+        this.getSyncStateStatuses();
     }
 
     getCurrencies(): Observable<EnumEntityTypeDto[]> {
@@ -725,6 +727,23 @@ export class InternalLookupService {
                     .subscribe(response => {
                         this.legalEntities = response;
                         observer.next(this.legalEntities);
+                        observer.complete();
+                    }, error => {
+                        observer.error(error);
+                    });
+            }
+        });
+    }
+    getSyncStateStatuses(): Observable<{ [key: string]: string }> {
+        return new Observable<{ [key: string]: string }>((observer) => {
+            if (this.syncStateStatuses !== undefined && this.syncStateStatuses !== null) {
+                observer.next(this.syncStateStatuses);
+                observer.complete();
+            } else {
+                this._enumService.syncStateStatuses()
+                    .subscribe(response => {
+                        this.syncStateStatuses = response;
+                        observer.next(this.syncStateStatuses);
                         observer.complete();
                     }, error => {
                         observer.error(error);
