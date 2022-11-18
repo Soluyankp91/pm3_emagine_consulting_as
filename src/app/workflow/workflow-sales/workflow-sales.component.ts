@@ -561,6 +561,7 @@ export class WorkflowSalesComponent extends AppComponentBase implements OnInit, 
         this.salesClientDataForm.markAllAsTouched();
         this.salesMainDataForm.markAllAsTouched();
         this.consultantsForm.markAllAsTouched();
+        this.salesTerminateConsultantForm.markAllAsTouched();
         switch (this.activeSideSection.typeId) {
             case WorkflowProcessType.StartClientPeriod:
             case WorkflowProcessType.ChangeClientPeriod:
