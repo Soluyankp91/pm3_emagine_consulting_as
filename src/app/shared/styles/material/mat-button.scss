@@ -351,6 +351,9 @@
         display: flex;
         align-items: center;
     }
+    mat-icon {
+        @include fontLineHeightAndSize(16px, 16px, 16px, 16px);
+    }
 }
 
 .workflow-sales--additional-address-hint {
