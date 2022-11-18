@@ -675,7 +675,7 @@ export class AppModule {
         iconRegistry.addSvgIcon(
             '3-dots-green',
             sanitizer.bypassSecurityTrustResourceUrl(
-                'assets/common/images/3dots-green.svg'
+                'assets/common/images/3-dots-green.svg'
             )
         );
 
