@@ -3,10 +3,9 @@ import { Router } from '@angular/router';
 import { GANTT_UPPER_TOKEN, GanttUpper, GanttItemInternal, GANTT_GLOBAL_CONFIG, GanttGlobalConfig } from '@worktile/gantt';
 import { environment } from 'src/environments/environment';
 import { AppConsts } from 'src/shared/AppConsts';
-import { MainOverviewServiceProxy } from 'src/shared/service-proxies/service-proxies';
+import { SortDirections } from 'src/shared/entities/shared-enums';
 import { OverviewFlag, OverviewFlagNames } from '../../main-overview.model';
 import { GanttGroupInternal } from '../mocks';
-import { SortDirections } from '../../helper';
 
 @Component({
     selector: 'app-gantt-flat',
