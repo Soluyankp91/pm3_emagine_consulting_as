@@ -183,9 +183,17 @@
         padding-right: 8px !important;
         color: $medium-grey-color !important;
         font-weight: 600;
+        .mat-option-text {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
         .tenant-name {
             font-weight: 700;
             color: #000000;
+        }
+        .mat-icon {
+            margin-right: 0 !important;
         }
     }
 }

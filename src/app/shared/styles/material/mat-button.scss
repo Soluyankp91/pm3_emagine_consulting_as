@@ -372,3 +372,9 @@
     }
 }
 
+.cancel-invoicing-entitity {
+    @include fontLineHeightAndSize(20px, 20px, 20px, 20px);
+    mat-icon {
+        @include fontLineHeightAndSize(20px, 20px, 20px, 20px);
+    }
+}
