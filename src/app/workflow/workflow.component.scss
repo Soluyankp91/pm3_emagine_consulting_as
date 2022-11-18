@@ -24,8 +24,7 @@
             font-size: 40px;
         }
         &__add-btn mat-icon {
-            width: 34px;
-            height: 34px;
+            @include fontLineHeightAndSize(34px, 34px, 34px, 34px);
         }
         &-type {
             @include flexCentered;
@@ -121,6 +120,10 @@
     &--table {
         position: relative;
         min-height: 120px;
+        .sync-status-icon {
+            width: 16px;
+            height: 16px;
+        }
     }
     &--process-name {
         margin-left: 5px;

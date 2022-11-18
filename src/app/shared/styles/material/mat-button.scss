@@ -1,4 +1,6 @@
 @import "/src/app/shared/styles/config/_colors";
+@import "/src/app/shared/styles/config/_mixins";
+
 
 .client-documents--contract__action-btn {
     width: 24px !important;
@@ -165,11 +167,8 @@
         display: inline-flex;
         justify-content: center;
         align-items: center;
-        line-height: 24px;
-        font-size: 24px;
+        @include fontLineHeightAndSize(24px, 24px, 36px, 36px);
         border-radius: 50%;
-        height: 36px;
-        width: 36px;
     }
 
     &.workflow-overview--three-dots {
@@ -343,8 +342,7 @@
 
 .logout-button {
     color: $green-color;
-    font-weight: 700;
-    font-size: 14px;
+    @include fontOpenSans(14px, 700);
     background-color: transparent;
     border: 0;
     border-radius: 5px;
@@ -352,5 +350,25 @@
         display: flex;
         align-items: center;
     }
-
 }
+
+.workflow-sales--additional-address-hint {
+    .mat-icon-button {
+        .mat-button-wrapper {
+            @include flexCentered();
+            mat-icon {
+                @include fontLineHeightAndSize(20px, 20px, 20px, 20px);
+            }
+        }
+    }
+}
+
+.mat-icon-button {
+    .mat-button-wrapper {
+        @include flexCentered();
+        mat-icon {
+            @include fontLineHeightAndSize(20px, 20px, 20px, 20px);
+        }
+    }
+}
+

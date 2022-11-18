@@ -15,3 +15,10 @@
     font-size: $font-size;
     font-weight: $font-weight;
 }
+
+@mixin fontLineHeightAndSize($font-size, $line-height, $width, $height) {
+    font-size: $font-size !important;
+    line-height: $line-height !important;
+    width: $width !important;
+    height: $height !important;
+}
