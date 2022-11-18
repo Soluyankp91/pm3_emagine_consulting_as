@@ -100,9 +100,6 @@
                 <div class="main-overview--filter-type cursor-pointer u-mb--10" [ngClass]="detectSelectedStatusColor(status)" *ngFor="let status of filteredMainOverviewStatuses; trackBy: statusesTrackBy"
                     appPreventDoubleClick (throttledClick)="changeOverviewStatus(status)">
                     <mat-icon class="main-overview-icon-type" svgIcon="{{status.flag}}" [ngClass]="detectProcessColor(status.id)"></mat-icon>
-                    <!-- <span class="main-overview--filter-type__quantity u-mr--5">
-                        {{status.quantity}}
-                    </span> -->
                     <span class="main-overview--filter-type__name">
                         {{status.name}}
                     </span>
@@ -201,6 +198,7 @@
                     [draggable]="false"
                     [isWorkflow]="true"
                     [start]="startDateOfChart"
+                    [userSelectedStatuses]="userSelectedStatuses"
                     (userSelectedStatusForWorflow)="setUserSelectedStatusForWorflow($event)"
                     (sortUpdated)="workflowSortChanged($event)">
                     <ng-template #group let-group="group">
@@ -229,6 +227,7 @@
                     [draggable]="false"
                     [isConsultants]="true"
                     [start]="startDateOfChart"
+                    [userSelectedStatuses]="userSelectedStatuses"
                     (userSelectedStatusForConsultant)="setUserSelectedStatusForConsultant($event)"
                     (sortUpdated)="consultantSortChanged($event)">
                     <ng-template #group let-group="group">

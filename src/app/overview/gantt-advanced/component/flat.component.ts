@@ -3,10 +3,10 @@ import { Router } from '@angular/router';
 import { GANTT_UPPER_TOKEN, GanttUpper, GanttItemInternal, GANTT_GLOBAL_CONFIG, GanttGlobalConfig } from '@worktile/gantt';
 import { environment } from 'src/environments/environment';
 import { AppConsts } from 'src/shared/AppConsts';
-import { MainOverviewServiceProxy, MainOverviewStatusDto } from 'src/shared/service-proxies/service-proxies';
+import { MainOverviewServiceProxy } from 'src/shared/service-proxies/service-proxies';
 import { OverviewFlag, OverviewFlagNames } from '../../main-overview.model';
 import { GanttGroupInternal } from '../mocks';
-import { OverviewStatusIcon, SortDirections } from '../../helper';
+import { SortDirections } from '../../helper';
 
 @Component({
     selector: 'app-gantt-flat',
@@ -32,7 +32,7 @@ export class AppGanttFlatComponent extends GanttUpper implements OnInit {
     momentFormatType = AppConsts.momentFormatType;
     overviewFlagNames = OverviewFlagNames;
     mergeIntervalDays = 3;
-    // userSelectedStatuses: any;
+
     menuTopLeftPosition =  {x: 0, y: 0}
     tooltipStartDate: Date;
     tooltipEndDate: Date | undefined;
@@ -50,16 +50,12 @@ export class AppGanttFlatComponent extends GanttUpper implements OnInit {
     sorting: string;
     @HostBinding('class.gantt-flat') ganttFlatClass = true;
 
-    statusIconEnum = OverviewStatusIcon;
-
     constructor(
         elementRef: ElementRef<HTMLElement>,
         cdr: ChangeDetectorRef,
         ngZone: NgZone,
         @Inject(GANTT_GLOBAL_CONFIG) config: GanttGlobalConfig,
-        private router: Router,
-        private _mainOverviewService: MainOverviewServiceProxy,
-
+        private router: Router
     ) {
         super(elementRef, cdr, ngZone, config);
     }
@@ -82,7 +78,6 @@ export class AppGanttFlatComponent extends GanttUpper implements OnInit {
                 indexOfMergedItems = mergedItems.length - 1;
             }
         });
-        // mergedItems.push(items);
         return mergedItems;
     }
 
@@ -198,10 +193,6 @@ export class AppGanttFlatComponent extends GanttUpper implements OnInit {
         this.sortName = this.sortDirection === SortDirections.None ? '' : sortName;
         this.sorting = this.sortDirection && this.sortDirection.length ? sortName.concat(' ', this.sortDirection) : '';
         this.sortUpdated.emit(this.sorting);
-        console.log(this.sorting);
-        console.log(this.sortName);
-        console.log(sortName);
-        console.log(this.sortDirection);
     }
 
 }

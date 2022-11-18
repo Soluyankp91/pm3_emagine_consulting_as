@@ -67,7 +67,7 @@ export class MainOverviewComponent extends AppComponentBase implements OnInit {
     filteredMainOverviewStatuses: SelectableStatusesDto[] = [];
     overviewViewTypes: { [key: string]: string };
     cutOffDate = moment();
-
+    userSelectedStatuses: MainOverviewStatusDto[] = [];
     isInitial = true;
 
     workflowsData: any[] = [];
@@ -561,6 +561,7 @@ export class MainOverviewComponent extends AppComponentBase implements OnInit {
 
     getMainOverviewStatuses() {
         this._mainOverviewService.statuses().subscribe(result => {
+            this.userSelectedStatuses = result.filter(x => x.canBeSetByUser);
             this.filteredMainOverviewStatuses = result.map(x => {
                 return new SelectableStatusesDto({
                     id: x.id!,
@@ -614,7 +615,7 @@ export class MainOverviewComponent extends AppComponentBase implements OnInit {
             .pipe(finalize(() => {
                 this.isDataLoading = false;
             }))
-            .subscribe(result => {
+            .subscribe(() => {
                 this.changeViewType();
             })
     }
@@ -624,7 +625,7 @@ export class MainOverviewComponent extends AppComponentBase implements OnInit {
             .pipe(finalize(() => {
                 this.isDataLoading = false;
             }))
-            .subscribe(result => {
+            .subscribe(() => {
                 this.changeViewType();
             })
     }
