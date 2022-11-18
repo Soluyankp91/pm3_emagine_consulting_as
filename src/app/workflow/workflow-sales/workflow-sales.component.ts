@@ -492,7 +492,7 @@ export class WorkflowSalesComponent extends AppComponentBase implements OnInit, 
                     if (this.validateSalesForm()) {
                         this.saveStartChangeOrExtendClientPeriodSales(isDraft);
                     } else {
-                        this.scrollToFirstError(isDraft, this.saveStartChangeOrExtendClientPeriodSales);
+                        this.scrollToFirstError(isDraft);
                     }
                 }
             });
@@ -505,7 +505,7 @@ export class WorkflowSalesComponent extends AppComponentBase implements OnInit, 
                     if (this.validateSalesForm()) {
                         this.saveStartChangeOrExtendConsultantPeriodSales(isDraft);
                     } else {
-                        this.scrollToFirstError(isDraft, this.saveStartChangeOrExtendConsultantPeriodSales);
+                        this.scrollToFirstError(isDraft);
                     }
                 }
             });
@@ -520,7 +520,7 @@ export class WorkflowSalesComponent extends AppComponentBase implements OnInit, 
                     if (this.validateSalesForm()) {
                         this.saveTerminationConsultantSalesStep(isDraft);
                     } else {
-                        this.scrollToFirstError(isDraft, this.saveTerminationConsultantSalesStep);
+                        this.scrollToFirstError(isDraft);
                     }
                 }
             });
@@ -534,7 +534,7 @@ export class WorkflowSalesComponent extends AppComponentBase implements OnInit, 
                     if (this.validateSalesForm()) {
                         this.saveWorkflowTerminationSalesStep(isDraft);
                     } else {
-                        this.scrollToFirstError(isDraft, this.saveWorkflowTerminationSalesStep);
+                        this.scrollToFirstError(isDraft);
                     }
                 }
             });
@@ -575,7 +575,7 @@ export class WorkflowSalesComponent extends AppComponentBase implements OnInit, 
         }
     }
 
-    scrollToFirstError(isDraft: boolean, callbackSaveStep: (isDraft: boolean) => void) {
+    scrollToFirstError(isDraft: boolean) {
         setTimeout(() => {
             let firstError = document.getElementsByClassName('mat-form-field-invalid')[0] as HTMLElement;
             if (firstError) {
@@ -585,9 +585,30 @@ export class WorkflowSalesComponent extends AppComponentBase implements OnInit, 
                 }
                 this.scrollToService.scrollTo(config);
             } else {
-                callbackSaveStep(isDraft);
+                this.saveSalesStep(isDraft);
             }
         }, 0);
+    }
+
+    saveSalesStep(isDraft: boolean) {
+        switch (this._workflowDataService.workflowProgress.currentlyActiveSideSection) {
+            case WorkflowProcessType.StartClientPeriod:
+            case WorkflowProcessType.ChangeClientPeriod:
+            case WorkflowProcessType.ExtendClientPeriod:
+                this.saveStartChangeOrExtendClientPeriodSales(isDraft);
+                break;
+            case WorkflowProcessType.TerminateWorkflow:
+                this.saveWorkflowTerminationSalesStep(isDraft);
+                break;
+            case WorkflowProcessType.TerminateConsultant:
+                this.saveTerminationConsultantSalesStep(isDraft);
+                break;
+            case WorkflowProcessType.StartConsultantPeriod:
+            case WorkflowProcessType.ChangeConsultantPeriod:
+            case WorkflowProcessType.ExtendConsultantPeriod:
+                this.saveStartChangeOrExtendConsultantPeriodSales(isDraft);
+                break;
+        }
     }
 
     toggleEditMode() {
