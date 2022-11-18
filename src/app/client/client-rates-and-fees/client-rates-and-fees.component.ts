@@ -1,12 +1,12 @@
 import { Component, OnDestroy, OnInit } from '@angular/core';
 import { FormArray, FormBuilder, FormControl } from '@angular/forms';
-import { MatSlideToggleChange } from '@angular/material/slide-toggle';
+import { MatSelectChange } from '@angular/material/select';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { ActivatedRoute } from '@angular/router';
 import { Subject } from 'rxjs';
 import { finalize, takeUntil } from 'rxjs/operators';
 import { InternalLookupService } from 'src/app/shared/common/internal-lookup.service';
-import { AddClientSpecialFeeDto, AddClientSpecialRateDto, ClientSpecialFeeDto, ClientSpecialRateDto, ClientsServiceProxy, EnumEntityTypeDto, EnumServiceProxy, SpecialFeesServiceProxy, SpecialRatesServiceProxy, UpdateClientSpecialFeeDto, UpdateClientSpecialRateDto } from 'src/shared/service-proxies/service-proxies';
+import { AddClientSpecialFeeDto, AddClientSpecialRateDto, ClientSpecialFeeDto, ClientSpecialRateDto, ClientsServiceProxy, EnumEntityTypeDto, SpecialFeesServiceProxy, SpecialRatesServiceProxy, UpdateClientSpecialFeeDto, UpdateClientSpecialRateDto } from 'src/shared/service-proxies/service-proxies';
 import { ClientFeesForm, ClientSpecailRateForm } from './client-rates-and-fees.model';
 
 @Component({
@@ -119,9 +119,6 @@ export class ClientRatesAndFeesComponent implements OnInit, OnDestroy {
 
     getClientRates() {
         this._clientService.specialRatesGet(this.clientId, this.showHiddenSpecialRates)
-            .pipe(finalize(() => {
-
-            }))
             .subscribe(result => {
                 this.clientSpecailRateForm = new ClientSpecailRateForm();
                 this.rateIsEditing = false;
@@ -133,9 +130,6 @@ export class ClientRatesAndFeesComponent implements OnInit, OnDestroy {
 
     getClientFees() {
         this._clientService.specialFeesGet(this.clientId, this.showHiddenSpecialFees)
-            .pipe(finalize(() => {
-
-            }))
             .subscribe(result => {
                 this.clientFeesForm = new ClientFeesForm();
                 this.feeIsEditing = false;
@@ -340,7 +334,7 @@ export class ClientRatesAndFeesComponent implements OnInit, OnDestroy {
                     this.feeIsSaving = false;
                     this.feeIsEditing = false;
                 }))
-                .subscribe(result => {
+                .subscribe(() => {
                     this.getClientFees();
                 });
         } else {
@@ -351,16 +345,33 @@ export class ClientRatesAndFeesComponent implements OnInit, OnDestroy {
                     this.feeIsSaving = false;
                     this.feeIsEditing = false;
                 }))
-                .subscribe(result => {
+                .subscribe(() => {
                     this.getClientFees();
                 });
         }
     }
 
-
     toggleSpecialFeeHiddenState(index: number) {
         this.clientFees.at(index).get('hidden')?.setValue(!this.clientFees.at(index).get('hidden')?.value);
         this.saveOrUpdateSpecialFee(index);
+    }
+
+    disableOrEnableRateFields(event: MatSelectChange, rateIndex: number) {
+        if (event.value.id === 3) { // Different for each
+            this.specialRates.at(rateIndex).get('clientRateValue')?.disable();
+            this.specialRates.at(rateIndex).get('clientRateCurrency')?.disable();
+            this.specialRates.at(rateIndex).get('proDataRate')?.disable();
+            this.specialRates.at(rateIndex).get('proDataRateCurrency')?.disable();
+            this.specialRates.at(rateIndex).get('consultantRate')?.disable();
+            this.specialRates.at(rateIndex).get('consultantRateCurrency')?.disable();
+        } else {
+            this.specialRates.at(rateIndex).get('clientRateValue')?.enable();
+            this.specialRates.at(rateIndex).get('clientRateCurrency')?.enable();
+            this.specialRates.at(rateIndex).get('proDataRate')?.enable();
+            this.specialRates.at(rateIndex).get('proDataRateCurrency')?.enable();
+            this.specialRates.at(rateIndex).get('consultantRate')?.enable();
+            this.specialRates.at(rateIndex).get('consultantRateCurrency')?.enable();
+        }
     }
 
     compareWithFn(listOfItems: any, selectedItem: any) {
