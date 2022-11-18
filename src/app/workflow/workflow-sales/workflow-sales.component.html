@@ -242,8 +242,8 @@
                             </span>
                         </div>
 
-                        <div fxLayout="row" fxLayoutAlign="start start" class="u-w--100 u-mb--20">
-                            <div fxLayout="column" fxFlex="50%">
+                        <div fxLayout="column" fxLayoutAlign="start start" class="u-w--100 u-mb--20">
+                            <div fxLayout="column" fxFlex="100%">
                                 <h3 class="workflow-step-readonly--gray-header">Direct client</h3>
                                 <div fxLayout="row" fxLayoutAlign="start center" *ngIf="salesClientDataForm.directClientIdValue?.value; else noDataTemplate">
                                     <div fxLayout="column" fxLayoutAlign="start start">
@@ -260,7 +260,7 @@
                                     </span>
                                 </ng-template>
                             </div>
-                            <div fxLayout="column" fxFlex="50%" *ngIf="salesClientDataForm.endClientIdValue?.value">
+                            <div fxLayout="column" fxFlex="100%" *ngIf="salesClientDataForm.endClientIdValue?.value">
                                 <h3 class="workflow-step-readonly--gray-header">End client</h3>
                                 <div fxLayout="row" fxLayoutAlign="start center">
                                     <div fxLayout="column" fxLayoutAlign="start start">
@@ -367,10 +367,10 @@
                                 </span>
                             </div>
                         </div>
-                        <div fxLayout="row" fxLayoutAlign="start start" class="u-w--100 u-mb--20">
-                            <div fxLayout="column" fxFlex="25%">
+                        <div fxLayout="column" fxLayoutAlign="start start" class="u-w--100 u-mb--20">
+                            <div fxLayout="column" class="u-mb--10" fxFlex>
                                 <h3 class="workflow-step-readonly--gray-header">Client Invoicing recipient</h3>
-                                <span class="workflow-step-readonly--blue-text-bold" *ngIf="salesClientDataForm.clientInvoicingRecipientSameAsDirectClient?.value === true; else clientInvoicingRecipientTemplate">
+                                <span class="workflow-step-readonly--blue-text-bold" *ngIf="salesClientDataForm.clientInvoicingRecipientSameAsDirectClient?.value; else clientInvoicingRecipientTemplate">
                                     Same as client
                                 </span>
                                 <ng-template #clientInvoicingRecipientTemplate>
@@ -385,7 +385,7 @@
                                     </div>
                                 </ng-template>
                             </div>
-                            <div fxLayout="column" fxFlex="25%">
+                            <div fxLayout="column">
                                 <h3 class="workflow-step-readonly--gray-header">Invoicing reference person</h3>
                                 <span class="workflow-step-readonly--blue-text-bold" *ngIf="salesClientDataForm.invoicingReferencePersonIdValue?.value; else noDataTemplate">
                                     {{salesClientDataForm.invoicingReferencePersonIdValue?.value?.firstName + ' ' + salesClientDataForm.invoicingReferencePersonIdValue?.value?.lastName }}
@@ -3384,7 +3384,7 @@
 </ng-template>
 
 <ng-template #clientAdditionalInfo let-client="client">
-    <div fxLayout="row" fxLayoutAlign="start flex-end" class="u-w--100">
+    <div fxLayout="row wrap" fxLayoutAlign="start center" class="u-w--100">
         <ng-container *ngIf="client?.address || client?.address2 || client?.countryName || client?.city || client?.postCode">
             <span class="workflow-sales--additional-address-hint-label u-mr--5">
                 Address:
@@ -3401,12 +3401,12 @@
             <span class="workflow-sales--additional-address-hint-label u-mr--5">
                 | Client ID:
             </span>
-            <span class="workflow-sales--additional-address-hint u-mr--5">
+            <span class="workflow-sales--additional-address-hint">
                 {{client?.clientId ? '#' + client?.clientId : ''}}
             </span>
         </ng-container>
 
-        <button class="link-to-client-icon u-ml--20" mat-icon-button *ngIf="client?.clientId"
+        <button class="link-to-client-icon u-ml--10" mat-icon-button *ngIf="client?.clientId"
             (click)="openInNewTab(client?.clientId)"
             [matTooltip]="'Link to Client profile'" matTooltipClass="white-tooltip">
             <mat-icon svgIcon="link-to-client-icon"></mat-icon>
