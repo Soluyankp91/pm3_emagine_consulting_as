@@ -68,7 +68,7 @@
                     font-family: 'Open Sans', sans-serif;
                     font-weight: 600;
                     font-size: 14px;
-                    color: #898785;
+                    color: rgba(137,135,133,0.77);
                  }
             }
         }
@@ -669,4 +669,11 @@ input[type=number] {
 .custom-error--message {
     @include fontOpenSans(10.5px, 600);
     color: $red-message-color;
+}
+
+.client-and-consultant-autocomplete {
+    width: 450px;
+    .mat-form-field-flex {
+        padding: 0 1em 0 1em !important;
+    }
 }
