@@ -728,4 +728,8 @@ export class MainOverviewComponent extends AppComponentBase implements OnInit {
     displayNameFn(option: any) {
         return option?.name;
     }
+
+    resetInvoicingEntity() {
+        this.invoicingEntityControl.value.setValue(null, {emitEvent: false});
+    }
 }
