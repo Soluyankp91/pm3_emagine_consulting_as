@@ -457,7 +457,7 @@ export class WorkflowComponent extends AppComponentBase implements OnInit, OnDes
                         openProcesses: x.openProcesses,
                         isActive: x.workflowStatus === WorkflowStatus.Active,
                         isNewSale: x.isNewSale,
-                        syncStateStatusName: SyncStateStatus[x.syncStateStatus!],
+                        syncStateStatusName: SyncStateStatus[x.syncStateStatus!].replace(/[A-Z]/g, ' $&').trim(),
                         syncStateStatusIcon: SyncStatusIcon[x.syncStateStatus!]
                     }
                 })
