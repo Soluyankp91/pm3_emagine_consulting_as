@@ -7,7 +7,7 @@ import { AddFileDialogComponent } from './add-file-dialog/add-file-dialog.compon
 import { Overlay } from '@angular/cdk/overlay';
 import { MatDialog } from '@angular/material/dialog';
 import { MatTabGroup } from '@angular/material/tabs';
-import { ClientAttachmentInfoOutputDto, ClientAttachmentTypeEnum, ClientContractViewRootDto, ClientDocumentsServiceProxy, ClientEvaluationOutputDto, DocumentTypeEnum, EnumEntityTypeDto, UpdateClientAttachmentFileInfoInputDto, FileParameter, IdNameDto } from 'src/shared/service-proxies/service-proxies';
+import { ClientAttachmentInfoOutputDto, ClientAttachmentTypeEnum, ClientContractViewRootDto, ClientDocumentsServiceProxy, ClientEvaluationOutputDto, DocumentTypeEnum, UpdateClientAttachmentFileInfoInputDto, FileParameter, IdNameDto } from 'src/shared/service-proxies/service-proxies';
 import { finalize, takeUntil } from 'rxjs/operators';
 import { merge, Subject } from 'rxjs';
 import { ActivatedRoute } from '@angular/router';
@@ -122,7 +122,7 @@ export class ClientDocumentsComponent extends AppComponentBase implements OnInit
             ).subscribe(params => {
                 this.clientId = +params.get('id')!;
                 this.getGeneralFileTypes();
-                // this.getGeneralDocuments();
+                this.getGeneralDocuments();
                 this.getContracts();
                 this.getEvaluations();
         });
@@ -285,21 +285,6 @@ export class ClientDocumentsComponent extends AppComponentBase implements OnInit
         });
     }
 
-    uploadFile(files: FileUploaderFile[]) {
-        const fileToUpload = files[0];
-        this.getBase64(fileToUpload.internalFile!).then((result: any) => {
-            let inputFile: any;
-            inputFile.filename = fileToUpload.name;
-            inputFile!.fileBytes = result!;
-            let attachmentTypeId = 256; // ??
-            this._clientDocumentsService.generalFilePost(this.clientId!, attachmentTypeId, inputFile)
-                .pipe(finalize(() => this.fileUploader.clear()))
-                .subscribe(result => {
-
-                });
-        });
-    }
-
     getBase64(file: File): Promise<string | ArrayBuffer> {
         return new Promise((resolve, reject) => {
             const reader = new FileReader();
@@ -369,7 +354,7 @@ export class ClientDocumentsComponent extends AppComponentBase implements OnInit
     }
 
     sortChanged(event?: any): void {
-        this.sorting = event.active.concat(' ', event.direction);
+        this.sorting = event.direction && event.direction.length ? event.active.concat(' ', event.direction) : '';
         this.getEvaluations();
     }
 

@@ -10,7 +10,7 @@
                     </span>
                 </li> -->
                 <div class="main-navigation--list-top">
-                    <li class="main-navigation--list-item" routerLinkActive="active">
+                    <li class="main-navigation--list-item" routerLinkActive="active" [matTooltip]="'Overview'" matTooltipClass="white-tooltip">
                         <a class="main-navigation--list-item__link" href="" routerLink="/app/overview">
                             <mat-icon svgIcon="overview-menu"></mat-icon>
                             <span class="main-navigation--list-item__name">
@@ -18,7 +18,7 @@
                             </span>
                         </a>
                     </li>
-                    <li class="main-navigation--list-item" routerLinkActive="active">
+                    <li class="main-navigation--list-item" routerLinkActive="active" [matTooltip]="'Workflows / RF'" matTooltipClass="white-tooltip">
                         <a class="main-navigation--list-item__link" href="" routerLink="/app/workflow">
                             <mat-icon svgIcon="workflow-menu"></mat-icon>
                             <span class="main-navigation--list-item__name">
@@ -26,7 +26,7 @@
                             </span>
                         </a>
                     </li>
-                    <li class="main-navigation--list-item" routerLinkActive="active">
+                    <li class="main-navigation--list-item" routerLinkActive="active" [matTooltip]="'Client list'" matTooltipClass="white-tooltip">
                         <a class="main-navigation--list-item__link" href="" routerLink="/app/clients">
                             <mat-icon svgIcon="client-list-menu"></mat-icon>
                             <span class="main-navigation--list-item__name">
@@ -36,25 +36,40 @@
                     </li>
                 </div>
                 <div class="main-navigation--list-bottom">
-                    <li class="main-navigation--list-item" appPreventDoubleClick (throttledClick)="openSourcingApp()">
+                    <li class="main-navigation--list-item" appPreventDoubleClick (throttledClick)="openSourcingApp()" [matTooltip]="'Sourcing 3.0 shortcut'" matTooltipClass="white-tooltip">
                         <mat-icon svgIcon="sourcing-shortcut-menu"></mat-icon>
                         <span class="main-navigation--list-item__name">
                             Sourcing 3.0 shortcut
                         </span>
                     </li>
-                    <li class="main-navigation--list-item hubspot-shortcut" appPreventDoubleClick (throttledClick)="openHubspot()">
+                    <li class="main-navigation--list-item hubspot-shortcut" appPreventDoubleClick (throttledClick)="openHubspot()" [matTooltip]="'Hubspot shortcut'" matTooltipClass="white-tooltip">
                         <mat-icon svgIcon="HUBSPOT-icon"></mat-icon>
                         <span class="main-navigation--list-item__name">
                             Hubspot shortcut
                         </span>
                     </li>
-                    <li class="main-navigation--list-item" routerLinkActive="active">
+                    <li class="main-navigation--list-item" routerLinkActive="active" [matTooltip]="'Notifications'" matTooltipClass="white-tooltip">
                         <a class="main-navigation--list-item__link" href="" routerLink="/app/notifications">
                             <mat-icon svgIcon="notification-menu"></mat-icon>
                             <span class="main-navigation--list-item__name">
                                 Notifications
                             </span>
                         </a>
+                    </li>
+                    <li class="main-navigation--list-item" [matMenuTriggerFor]="menu" #trigger="matMenuTrigger" [matTooltip]="'User profile'" matTooltipClass="white-tooltip">
+                        <img class="border-rounded-50 image-thumbnail--logout" [src]="employeeProfileUrl(currentEmployee?.externalId!)" />
+                        <mat-menu #menu="matMenu" backdropClass="main-navigation--logout-menu">
+                            <div fxLayout="row" fxLayoutAlign="start center" fxLayoutGap="15px" class="main-navigation--list-item-logout">
+                                <img class="border-rounded-50 image-thumbnail--logout-menu" [src]="employeeProfileUrl(currentEmployee?.externalId!)" />
+                                <div fxLayout="column" >
+                                    <span class="main-navigation--list-item-logout-username u-mb--5">{{accountInfo?.username}}</span>
+                                    <span class="main-navigation--list-item-logout-name">{{accountInfo?.name}}</span>
+                                </div>
+                            </div>
+                            <div fxLayout="row" fxLayoutAlign="start start" class="u-pt--10 u-pb--10">
+                                <button class="logout-button" mat-flat-button appPreventDoubleClick (throttledClick)="logout()"><mat-icon svgIcon="logout-icon" class="u-mr--5"></mat-icon>Log out</button>
+                            </div>
+                        </mat-menu>
                     </li>
                 </div>
                 <!-- FIXME: COMMENTED OUT FOR PRESENTATION -->

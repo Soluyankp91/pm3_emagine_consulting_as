@@ -35,7 +35,7 @@
                     <app-validator [control]="endDate"></app-validator>
                 </mat-error>
             </mat-form-field>
-            <mat-checkbox color="accent" [formControl]="noEndDate" name="noEndDate" class="black-checkbox u-mr--10" (change)="disableOrEnableInput(noEndDate.value, endDate)">
+            <mat-checkbox color="accent" [formControl]="noEndDate" name="noEndDate" class="black-checkbox u-mr--10 u-mt--10" (change)="disableOrEnableInput(noEndDate.value, endDate)">
                 No end date
             </mat-checkbox>
         </div>

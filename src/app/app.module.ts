@@ -664,5 +664,40 @@ export class AppModule {
                 'assets/common/images/add-icon.svg'
             )
         );
+
+        iconRegistry.addSvgIcon(
+            '3-dots',
+            sanitizer.bypassSecurityTrustResourceUrl(
+                'assets/common/images/3-dots.svg'
+            )
+        );
+
+        iconRegistry.addSvgIcon(
+            'logout-icon',
+            sanitizer.bypassSecurityTrustResourceUrl(
+                'assets/common/images/logout-icon.svg'
+            )
+        );
+
+        iconRegistry.addSvgIcon(
+            'no-sync-icon',
+            sanitizer.bypassSecurityTrustResourceUrl(
+                'assets/common/images/no-sync-icon.svg'
+            )
+        );
+
+        iconRegistry.addSvgIcon(
+            'new-sync-needed-icon',
+            sanitizer.bypassSecurityTrustResourceUrl(
+                'assets/common/images/new-sync-needed-icon.svg'
+            )
+        );
+
+        iconRegistry.addSvgIcon(
+            'synced-icon',
+            sanitizer.bypassSecurityTrustResourceUrl(
+                'assets/common/images/synced-icon.svg'
+            )
+        );
     }
 }

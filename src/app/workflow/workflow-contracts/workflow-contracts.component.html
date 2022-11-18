@@ -1,5 +1,5 @@
 <div class="workflow-contracts">
-    <button class="absolute-edit-toggle" mat-icon-button *ngIf="canToggleEditMode" appPreventDoubleClick (throttledClick)="toggleEditMode(true)"><mat-icon>{{readOnlyMode ? 'create' : 'close'}}</mat-icon></button>
+    <button class="absolute-edit-toggle" mat-icon-button *ngIf="canToggleEditMode" appPreventDoubleClick (throttledClick)="toggleEditMode(true)"><mat-icon svgIcon="edit-icon"></mat-icon></button>
     <ng-container [ngSwitch]="true">
         <ng-container *ngSwitchCase="activeSideSection.typeId === workflowSideSections.TerminateWorkflow || activeSideSection.typeId === workflowSideSections.TerminateConsultant">
             <div class="workflow--termination">
@@ -157,12 +157,18 @@
                             </span>
                         </ng-container>
                         <ng-template #projectNameInput>
-                            <mat-form-field appearance="outline" class="u-w--100 textarea-input " fxFlex="0 0 calc(66% + 16px)">
-                                <mat-label>Project Name</mat-label>
-                                <textarea required matInput autocomplete="new-password" name="projectName" formControlName="projectName" [matTextareaAutosize]="true" [matAutosizeMinRows]="2">
-                                </textarea>
-                                <app-validator [control]="contractsMainForm.projectName"></app-validator>
-                            </mat-form-field>
+                            <div fxLayout="column" fxLayoutAlign="start start" class="u-w--100">
+                                <div fxLayout="row" fxLayoutAlign="start start" class="u-w--100">
+                                    <mat-form-field appearance="outline" class="u-w--100 textarea-input formFieldNoMarginPadding" fxFlex="0 0 calc(66% + 16px)">
+                                        <mat-label>Project Name</mat-label>
+                                        <textarea required matInput autocomplete="new-password" name="projectName" formControlName="projectName" [matTextareaAutosize]="true" [matAutosizeMinRows]="2">
+                                        </textarea>
+                                        <mat-error>
+                                            <app-validator [control]="contractsMainForm.projectName"></app-validator>
+                                        </mat-error>
+                                    </mat-form-field>
+                                </div>
+                            </div>
                         </ng-template>
                     </div>
                     <h3 class="workflow-gray--header">Project Description</h3>
@@ -173,12 +179,18 @@
                             </span>
                         </ng-container>
                         <ng-template #projectDescriptionInput>
-                            <mat-form-field appearance="outline" class="u-w--100 textarea-input " fxFlex="0 0 calc(66% + 16px)">
-                                <mat-label>Project Description</mat-label>
-                                <textarea required matInput autocomplete="new-password" name="projectDescription" formControlName="projectDescription" [matTextareaAutosize]="true" [matAutosizeMinRows]="2">
-                                </textarea>
-                                <app-validator [control]="contractsMainForm.projectDescription"></app-validator>
-                            </mat-form-field>
+                            <div fxLayout="column" fxLayoutAlign="start start" class="u-w--100">
+                                <div fxLayout="row" fxLayoutAlign="start start" class="u-w--100">
+                                    <mat-form-field appearance="outline" class="u-w--100 textarea-input formFieldNoMarginPadding" fxFlex="0 0 calc(66% + 16px)">
+                                        <mat-label>Project Description</mat-label>
+                                        <textarea required matInput autocomplete="new-password" name="projectDescription" formControlName="projectDescription" [matTextareaAutosize]="true" [matAutosizeMinRows]="2">
+                                        </textarea>
+                                        <mat-error>
+                                            <app-validator [control]="contractsMainForm.projectDescription"></app-validator>
+                                        </mat-error>
+                                    </mat-form-field>
+                                </div>
+                            </div>
                         </ng-template>
                     </div>
                     <div fxLayout="column" fxLayoutAlign="start start" class="u-w--100 u-mb--20">
@@ -196,12 +208,18 @@
                             </span>
                         </ng-container>
                         <ng-template #remarksInput>
-                            <mat-form-field appearance="outline" class="u-w--100 textarea-input " fxFlex="0 0 calc(66% + 16px)">
-                                <mat-label>Remarks</mat-label>
-                                <textarea required matInput autocomplete="new-password" name="remarks" formControlName="remarks" [matTextareaAutosize]="true" [matAutosizeMinRows]="2">
-                                </textarea>
-                                <app-validator [control]="contractsMainForm.remarks"></app-validator>
-                            </mat-form-field>
+                            <div fxLayout="column" fxLayoutAlign="start start" class="u-w--100">
+                                <div fxLayout="row" fxLayoutAlign="start start" class="u-w--100">
+                                    <mat-form-field appearance="outline" class="u-w--100 textarea-input formFieldNoMarginPadding" fxFlex="0 0 calc(66% + 16px)">
+                                        <mat-label>Remarks</mat-label>
+                                        <textarea required matInput autocomplete="new-password" name="remarks" formControlName="remarks" [matTextareaAutosize]="true" [matAutosizeMinRows]="2">
+                                        </textarea>
+                                        <mat-error>
+                                            <app-validator [control]="contractsMainForm.remarks"></app-validator>
+                                        </mat-error>
+                                    </mat-form-field>
+                                </div>
+                            </div>
                         </ng-template>
                     </div>
                     <div fxLayout="row" fxLayoutAlign="start start" class="u-w--100" *ngIf="!readOnlyMode">
@@ -265,12 +283,18 @@
                                 </span>
                             </ng-container>
                             <ng-template #specialContractTermsInput>
-                                <mat-form-field appearance="outline" class="u-w--100  textarea-input" fxFlex="0 0 calc(66% + 16px)">
-                                    <mat-label>Special Contract Terms</mat-label>
-                                    <textarea required matInput autocomplete="new-password" name="specialContractTerms" formControlName="specialContractTerms" [matTextareaAutosize]="true" [matAutosizeMinRows]="2">
-                                    </textarea>
-                                    <app-validator [control]="contractClientForm.specialContractTerms"></app-validator>
-                                </mat-form-field>
+                                <div fxLayout="column" fxLayoutAlign="start start" class="u-w--100">
+                                    <div fxLayout="row" fxLayoutAlign="start start" class="u-w--100">
+                                        <mat-form-field appearance="outline" class="u-w--100 formFieldNoMarginPadding textarea-input" fxFlex="0 0 calc(66% + 16px)">
+                                            <mat-label>Special Contract Terms</mat-label>
+                                            <textarea required matInput autocomplete="new-password" name="specialContractTerms" formControlName="specialContractTerms" [matTextareaAutosize]="true" [matAutosizeMinRows]="2">
+                                            </textarea>
+                                            <mat-error>
+                                                <app-validator [control]="contractClientForm.specialContractTerms"></app-validator>
+                                            </mat-error>
+                                        </mat-form-field>
+                                    </div>
+                                </div>
                             </ng-template>
                         </div>
 
@@ -320,8 +344,8 @@
                                         </div>
                                     </ng-container>
                                     <ng-template #clientRatesDisplay>
-                                        <span fxFlex="30%" class="workflow-contracts--list-item u-w--100 text-truncate-ellipsis" [matTooltip]="contractClientForm.clientRates.at(i).get('clientRateValue')?.value + ' ' + contractClientForm.clientRates.at(i).get('clientRateCurrency')?.value?.name" matTooltipClass="white-tooltip" appShowIfTruncated>
-                                            {{rate.value.clientRateValue || rate.value.clientRateCurrency?.name ? rate.value.clientRateValue + ' ' + rate.value.clientRateCurrency?.name : '-'}}
+                                        <span fxFlex="30%" class="workflow-contracts--list-item u-w--100 text-truncate-ellipsis" [matTooltip]="rate.value.clientRateValue !== null && rate.value.clientRateCurrency?.name ? rate.value.clientRateValue + ' ' + rate.value.clientRateCurrency?.name : '-'" matTooltipClass="white-tooltip" appShowIfTruncated>
+                                            {{rate.value.clientRateValue !== null && rate.value.clientRateCurrency?.name ? rate.value.clientRateValue + ' ' + rate.value.clientRateCurrency?.name : '-'}}
                                         </span>
                                     </ng-template>
                                     <ng-container *ngIf="rate.value.editable && !readOnlyMode; else clientRatesActions">
@@ -381,7 +405,7 @@
                                             <mat-option *ngIf="clientSpecialRateList?.length == 0" (click)="$event.stopPropagation();">
                                                 No results
                                             </mat-option>
-                                            <mat-option *ngFor="let item of clientSpecialRateList" [value]="item.id" appPreventDoubleClick (throttledClick)="selectClientRate($event, item, clientRateMenuTrigger)">
+                                            <mat-option *ngFor="let item of clientSpecialRateList | excludeIds: contractClientForm!.clientRates?.value : 'clientSpecialRateId'" [value]="item.id" appPreventDoubleClick (throttledClick)="selectClientRate($event, item, clientRateMenuTrigger)">
                                                 {{ item.internalName }}
                                             </mat-option>
                                         </mat-select>
@@ -430,8 +454,8 @@
                                         </div>
                                     </ng-container>
                                     <ng-template #clientFeeRateDisplay>
-                                        <span fxFlex="30%" class="workflow-contracts--list-item u-w--100 text-truncate-ellipsis" [matTooltip]="contractClientForm.clientFees.at(i).get('clientRateValue')?.value + ' ' + contractClientForm.clientFees.at(i).get('clientRateCurrency')?.value?.name" matTooltipClass="white-tooltip" appShowIfTruncated>
-                                            {{fee.value.clientRateValue || fee.value.clientRateCurrency?.name ? fee.value.clientRateValue + ' ' + fee.value.clientRateCurrency?.name : '-'}}
+                                        <span fxFlex="30%" class="workflow-contracts--list-item u-w--100 text-truncate-ellipsis" [matTooltip]="fee.value.clientRateValue !== null && fee.value.clientRateCurrency?.name ? fee.value.clientRateValue + ' ' + fee.value.clientRateCurrency?.name : '-'" matTooltipClass="white-tooltip" appShowIfTruncated>
+                                            {{fee.value.clientRateValue !== null && fee.value.clientRateCurrency?.name ? fee.value.clientRateValue + ' ' + fee.value.clientRateCurrency?.name : '-'}}
                                         </span>
                                     </ng-template>
 
@@ -499,7 +523,7 @@
                                             <mat-option *ngIf="clientSpecialFeeList?.length == 0" (click)="$event.stopPropagation();">
                                                 No results
                                             </mat-option>
-                                            <mat-option *ngFor="let item of clientSpecialFeeList" [value]="item.id" appPreventDoubleClick (throttledClick)="selectClientFee($event, item, clientFeeMenuTrigger)">
+                                            <mat-option *ngFor="let item of clientSpecialFeeList | excludeIds: contractClientForm!.clientFees?.value : 'clientSpecialFeeId'" [value]="item.id" appPreventDoubleClick (throttledClick)="selectClientFee($event, item, clientFeeMenuTrigger)">
                                                 {{ item.internalName }}
                                             </mat-option>
                                         </mat-select>
@@ -601,12 +625,18 @@
                                         </span>
                                     </ng-container>
                                     <ng-template #consultantsSpecialContractTermsInput>
-                                        <mat-form-field appearance="outline" class="u-w--100  textarea-input" fxFlex="0 0 calc(66% + 16px)">
-                                            <mat-label>Special Contract Terms</mat-label>
-                                            <textarea required matInput autocomplete="new-password" name="specialContractTerms" formControlName="specialContractTerms" [matTextareaAutosize]="true" [matAutosizeMinRows]="2">
-                                            </textarea>
-                                            <app-validator [control]="consultant.get('specialContractTerms')"></app-validator>
-                                        </mat-form-field>
+                                        <div fxLayout="column" fxLayoutAlign="start start" class="u-w--100">
+                                            <div fxLayout="row" fxLayoutAlign="start start" class="u-w--100">
+                                                <mat-form-field appearance="outline" class="u-w--100 formFieldNoMarginPadding textarea-input" fxFlex="0 0 calc(66% + 16px)">
+                                                    <mat-label>Special Contract Terms</mat-label>
+                                                    <textarea required matInput autocomplete="new-password" name="specialContractTerms" formControlName="specialContractTerms" [matTextareaAutosize]="true" [matAutosizeMinRows]="2">
+                                                    </textarea>
+                                                    <mat-error>
+                                                        <app-validator [control]="consultant.get('specialContractTerms')"></app-validator>
+                                                    </mat-error>
+                                                </mat-form-field>
+                                            </div>
+                                        </div>
                                     </ng-template>
                                 </div>
 
@@ -650,11 +680,11 @@
                                                         {{rate.value.reportingUnit?.name}}
                                                     </span>
                                                     <span fxFlex="25%" class="u-w--100 text-truncate-ellipsis workflow-contracts--list-item" *ngIf="consultant.value?.pdcPaymentEntityId !== contractClientForm.value?.pdcInvoicingEntityId"
-                                                          [matTooltip]="rate.value.proDataRateValue + ' ' + rate.value.proDataRateCurrency?.name" matTooltipClass="white-tooltip" appShowIfTruncated>
-                                                        {{rate.value.proDataRateValue || rate.value.proDataRateCurrency?.name ? rate.value.proDataRateValue + ' ' + rate.value.proDataRateCurrency?.name : '-'}}
+                                                          [matTooltip]="rate.value.proDataRateValue !== null && rate.value.proDataRateCurrency?.name ? rate.value.proDataRateValue + ' ' + rate.value.proDataRateCurrency?.name : '-'" matTooltipClass="white-tooltip" appShowIfTruncated>
+                                                        {{rate.value.proDataRateValue !== null && rate.value.proDataRateCurrency?.name ? rate.value.proDataRateValue + ' ' + rate.value.proDataRateCurrency?.name : '-'}}
                                                     </span>
-                                                    <span fxFlex="25%" class="u-w--100 text-truncate-ellipsis workflow-contracts--list-item" [matTooltip]="rate.value.consultantRateValue + ' ' + rate.value.consultantRateCurrency?.name" matTooltipClass="white-tooltip" appShowIfTruncated>
-                                                        {{rate.value.consultantRateValue || rate.value.consultantRateCurrency?.name ? rate.value.consultantRateValue + ' ' + rate.value.consultantRateCurrency?.name : '-'}}
+                                                    <span fxFlex="25%" class="u-w--100 text-truncate-ellipsis workflow-contracts--list-item" [matTooltip]="rate.value.consultantRateValue !== null && rate.value.consultantRateCurrency?.name ? rate.value.consultantRateValue + ' ' + rate.value.consultantRateCurrency?.name : '-'" matTooltipClass="white-tooltip" appShowIfTruncated>
+                                                        {{rate.value.consultantRateValue !== null && rate.value.consultantRateCurrency?.name ? rate.value.consultantRateValue + ' ' + rate.value.consultantRateCurrency?.name : '-'}}
                                                     </span>
                                                 </ng-container>
                                             </div>
@@ -705,8 +735,8 @@
                                                         </div>
                                                     </ng-container>
                                                     <ng-template #consutlantProDataRateCurrencyDisplay>
-                                                        <span fxFlex="25%" class="u-w--100 text-truncate-ellipsis workflow-contracts--list-item" [matTooltip]="rate.value.proDataRateValue + ' ' + rate.value.proDataRateCurrency?.name" matTooltipClass="white-tooltip" appShowIfTruncated>
-                                                            {{rate.value.proDataRateValue || rate.value.proDataRateCurrency?.name ? rate.value.proDataRateValue + ' ' + rate.value.proDataRateCurrency?.name : '-'}}
+                                                        <span fxFlex="25%" class="u-w--100 text-truncate-ellipsis workflow-contracts--list-item" [matTooltip]="rate.value.proDataRateValue !== null && rate.value.proDataRateCurrency?.name ? rate.value.proDataRateValue + ' ' + rate.value.proDataRateCurrency?.name : '-'" matTooltipClass="white-tooltip" appShowIfTruncated>
+                                                            {{rate.value.proDataRateValue !== null && rate.value.proDataRateCurrency?.name ? rate.value.proDataRateValue + ' ' + rate.value.proDataRateCurrency?.name : '-'}}
                                                         </span>
                                                     </ng-template>
                                                 </ng-container>
@@ -727,8 +757,8 @@
                                                 </ng-container>
 
                                                 <ng-template #consutlantRateCurrencyDisplay>
-                                                    <span fxFlex="25%" class="u-w--100 text-truncate-ellipsis workflow-contracts--list-item" [matTooltip]="rate.value.consultantRateValue + ' ' + rate.value.consultantRateCurrency?.name" matTooltipClass="white-tooltip" appShowIfTruncated>
-                                                        {{rate.value.consultantRateValue || rate.value.consultantRateCurrency?.name ? rate.value.consultantRateValue + ' ' + rate.value.consultantRateCurrency?.name : '-'}}
+                                                    <span fxFlex="25%" class="u-w--100 text-truncate-ellipsis workflow-contracts--list-item" [matTooltip]="rate.value.consultantRateValue !== null && rate.value.consultantRateCurrency?.name ? rate.value.consultantRateValue + ' ' + rate.value.consultantRateCurrency?.name : '-'" matTooltipClass="white-tooltip" appShowIfTruncated>
+                                                        {{rate.value.consultantRateValue !== null && rate.value.consultantRateCurrency?.name ? rate.value.consultantRateValue + ' ' + rate.value.consultantRateCurrency?.name : '-'}}
                                                     </span>
                                                 </ng-template>
                                                 <ng-container *ngIf="rate.value.editable; else consultantRateACtions">
@@ -788,7 +818,7 @@
                                                         <mat-option *ngIf="clientSpecialRateList?.length == 0" (click)="$event.stopPropagation();">
                                                             No results
                                                         </mat-option>
-                                                        <mat-option *ngFor="let item of clientSpecialRateList" [value]="item.id" appPreventDoubleClick (throttledClick)="selectConsultantSpecialRate($event, consultantIndex, item, consultantRateMenuTrigger)">
+                                                        <mat-option *ngFor="let item of clientSpecialRateList | excludeIds: consultant.value.specialRates : 'clientSpecialRateId'" [value]="item.id" appPreventDoubleClick (throttledClick)="selectConsultantSpecialRate($event, consultantIndex, item, consultantRateMenuTrigger)">
                                                             {{ item.internalName }}
                                                         </mat-option>
                                                     </mat-select>
@@ -824,11 +854,11 @@
                                                 <span fxFlex="20%" class="u-w--100 text-truncate-ellipsis workflow-contracts--list-item" [matTooltip]="fee.value.feeFrequency?.name ?? '-'" matTooltipClass="white-tooltip" appShowIfTruncated>
                                                     {{fee.value.feeFrequency?.name ?? '-'}}
                                                 </span>
-                                                <span fxFlex="25%" class="u-w--100 text-truncate-ellipsis workflow-contracts--list-item" [matTooltip]="fee.value.proDataRateValue + ' ' + fee.value.proDataRateCurrency?.name" matTooltipClass="white-tooltip" appShowIfTruncated  *ngIf="consultant.value?.pdcPaymentEntityId !== contractClientForm.value?.pdcInvoicingEntityId">
-                                                    {{fee.value.proDataRateValue || fee.value.proDataRateCurrency?.name ? fee.value.proDataRateValue + ' ' + fee.value.proDataRateCurrency?.name : '-'}}
+                                                <span fxFlex="25%" class="u-w--100 text-truncate-ellipsis workflow-contracts--list-item" [matTooltip]="fee.value.proDataRateValue !== null && fee.value.proDataRateCurrency?.name ? fee.value.proDataRateValue + ' ' + fee.value.proDataRateCurrency?.name : '-'" matTooltipClass="white-tooltip" appShowIfTruncated  *ngIf="consultant.value?.pdcPaymentEntityId !== contractClientForm.value?.pdcInvoicingEntityId">
+                                                    {{fee.value.proDataRateValue !== null && fee.value.proDataRateCurrency?.name ? fee.value.proDataRateValue + ' ' + fee.value.proDataRateCurrency?.name : '-'}}
                                                 </span>
-                                                <span fxFlex="25%" class="u-w--100 text-truncate-ellipsis workflow-contracts--list-item" [matTooltip]="fee.value.consultantRateValue + ' ' + fee.value.consultantRateCurrency?.name" matTooltipClass="white-tooltip" appShowIfTruncated>
-                                                    {{fee.value.consultantRateValue || fee.value.consultantRateCurrency?.name ? fee.value.consultantRateValue + ' ' + fee.value.consultantRateCurrency?.name : '-'}}
+                                                <span fxFlex="25%" class="u-w--100 text-truncate-ellipsis workflow-contracts--list-item" [matTooltip]="fee.value.consultantRateValue !== null && fee.value.consultantRateCurrency?.name ? fee.value.consultantRateValue + ' ' + fee.value.consultantRateCurrency?.name : '-'" matTooltipClass="white-tooltip" appShowIfTruncated>
+                                                    {{fee.value.consultantRateValue !== null && fee.value.consultantRateCurrency?.name ? fee.value.consultantRateValue + ' ' + fee.value.consultantRateCurrency?.name : '-'}}
                                                 </span>
                                             </div>
                                         </ng-container>
@@ -877,8 +907,8 @@
                                                         </div>
                                                     </ng-container>
                                                     <ng-template #consultantFeeProDataRateDisplay>
-                                                        <span fxFlex="25%" class="u-w--100 text-truncate-ellipsis workflow-contracts--list-item" [matTooltip]="fee.value.proDataRateValue + ' ' + fee.value.proDataRateCurrency?.name" matTooltipClass="white-tooltip" appShowIfTruncated>
-                                                            {{fee.value.proDataRateValue || fee.value.proDataRateCurrency?.name ? fee.value.proDataRateValue + ' ' + fee.value.proDataRateCurrency?.name : '-'}}
+                                                        <span fxFlex="25%" class="u-w--100 text-truncate-ellipsis workflow-contracts--list-item" [matTooltip]="fee.value.proDataRateValue !== null && fee.value.proDataRateCurrency?.name ? fee.value.proDataRateValue + ' ' + fee.value.proDataRateCurrency?.name : '-'" matTooltipClass="white-tooltip" appShowIfTruncated>
+                                                            {{fee.value.proDataRateValue !== null && fee.value.proDataRateCurrency?.name ? fee.value.proDataRateValue + ' ' + fee.value.proDataRateCurrency?.name : '-'}}
                                                         </span>
                                                     </ng-template>
                                                 </ng-container>
@@ -897,8 +927,8 @@
                                                     </div>
                                                 </ng-container>
                                                 <ng-template #consultantFeeRateDisplay>
-                                                    <span fxFlex="25%" class="u-w--100 text-truncate-ellipsis workflow-contracts--list-item" [matTooltip]="fee.value.consultantRateValue + ' ' + fee.value.consultantRateCurrency?.name" matTooltipClass="white-tooltip" appShowIfTruncated>
-                                                        {{fee.value.consultantRateValue || fee.value.consultantRateCurrency?.name ? fee.value.consultantRateValue + ' ' + fee.value.consultantRateCurrency?.name : '-'}}
+                                                    <span fxFlex="25%" class="u-w--100 text-truncate-ellipsis workflow-contracts--list-item" [matTooltip]="fee.value.consultantRateValue !== null && fee.value.consultantRateCurrency?.name ? fee.value.consultantRateValue + ' ' + fee.value.consultantRateCurrency?.name : '-'" matTooltipClass="white-tooltip" appShowIfTruncated>
+                                                        {{fee.value.consultantRateValue !== null && fee.value.consultantRateCurrency?.name ? fee.value.consultantRateValue + ' ' + fee.value.consultantRateCurrency?.name : '-'}}
                                                     </span>
                                                 </ng-template>
 
@@ -959,7 +989,7 @@
                                                         <mat-option *ngIf="clientSpecialFeeList?.length == 0" (click)="$event.stopPropagation();">
                                                             No results
                                                         </mat-option>
-                                                        <mat-option *ngFor="let item of clientSpecialFeeList" [value]="item.id" appPreventDoubleClick (throttledClick)="selectConsultantSpecialFee($event, consultantIndex, item, consultantFeeMenuTrigger)">
+                                                        <mat-option *ngFor="let item of clientSpecialFeeList | excludeIds: consultant.value.clientFees : 'clientSpecialFeeId'" [value]="item.id" appPreventDoubleClick (throttledClick)="selectConsultantSpecialFee($event, consultantIndex, item, consultantFeeMenuTrigger)">
                                                             {{ item.internalName }}
                                                         </mat-option>
                                                     </mat-select>
@@ -1170,7 +1200,8 @@
 
                     <h2 class="workflow-section--header u-mt--20">Sync</h2>
                     <ng-template #syncStatus>
-                        <div fxLayout="row" fxLayoutAlign="start center" class="u-mb--20 u-w--100" *ngIf="!statusAfterSync">
+                        <div fxLayout="row" fxLayoutAlign="start center" class="u-mb--20 u-w--100" *ngIf="!statusAfterSync"
+                            [ngClass]="{'mat-form-field-invalid': validationTriggered && contractsSyncDataForm.value.isNewSyncNeeded}">
                             <mat-icon class="u-mr--5" [ngClass]="{'icon-cancel': contractsSyncDataForm.value?.isNewSyncNeeded}" [svgIcon]="contractsSyncDataForm.value.isNewSyncNeeded ? 'cancel-fill' : 'completed-icon'"></mat-icon>
                             <span class="workflow-darkblue--text test">
                                 {{contractsSyncDataForm.value.isNewSyncNeeded ? "New sync needed. " : ""}} {{contractsSyncDataForm.value.lastSyncedDate !== null && contractsSyncDataForm.value.lastSyncedDate !== undefined ? ("Last synced at " + (contractsSyncDataForm.value.lastSyncedDate | momentFormat: 'DD.MM.YYYY HH:mm')) : ""}}
@@ -1188,8 +1219,7 @@
                             </button>
                             <ng-container *ngTemplateOutlet="syncStatus"></ng-container>
 
-
-                            <div fxLayout="row" fxLayoutAlign="start center" class="u-mb--10" *ngIf="statusAfterSync">
+                            <div fxLayout="row" fxLayoutAlign="start center" class="u-mb--10" *ngIf="statusAfterSync" [ngClass]="{'mat-form-field-invalid': validationTriggered && syncNotPossible}">
                                 <mat-icon class="u-mr--5" [ngClass]="{'icon-cancel': syncNotPossible}" [svgIcon]="syncNotPossible ? 'cancel-fill' : 'completed-icon'"></mat-icon>
                                 <span class="sync-hint-text">
                                     {{syncMessage}}

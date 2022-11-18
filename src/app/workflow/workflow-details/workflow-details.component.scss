@@ -52,6 +52,17 @@
         }
     }
 
+    &-icon {
+        &--notes {
+            mat-icon {
+                line-height: 20px;
+                font-size: 20px;
+                width: 20px;
+                height: 20px;
+            }
+        }
+    }
+
     &-notes {
         height: calc(100vh - 215px);
         position: sticky;
@@ -155,12 +166,12 @@
     }
 
     &-controls {
-        position: sticky;
+        position: fixed;
         bottom: 0;
         z-index: 999;
         background-color: #fff;
         height: 60px;
-        width: 80%;
+        width: calc(80% - 35px);
         padding: 0 20px 0 15%;
         box-shadow: 0px 0px 20px rgba(26, 35, 126, 0.15);
         clip-path: inset(-20px 0px -20px -20px);

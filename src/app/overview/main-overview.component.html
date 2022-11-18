@@ -23,11 +23,9 @@
                         <mat-option class="mat-select-clear-option" *ngIf="invoicingEntityControl.value">
                             Clear
                         </mat-option>
-                        <mat-option *ngFor="let item of tenants" [value]="item">
+                        <mat-option *ngFor="let item of legalEntities" [value]="item">
                             <span class="country-flag fi fi-{{item.code | lowercase }} fis border-rounded-50 u-mr--16" *ngIf="item.id !== 0"></span>
-                            <!-- // FIXME: remove after release -->
-                            <!-- {{ item.tenantName + ' ' + '(' + item.name + ')' }} -->
-                            {{item.name}}
+                            {{ item.tenantName + ' ' + '(' + item.name + ')' }}
                         </mat-option>
                     </mat-select>
                 </button>
@@ -136,10 +134,8 @@
                 <mat-option class="mat-select-clear-option" *ngIf="paymentEntityControl.value">
                     Clear
                 </mat-option>
-                <mat-option *ngFor="let item of tenants" [value]="item.id">
-                    <!-- // FIXME: remove after release -->
-                    <!-- {{ item.tenantName + ' ' + '(' + item.name + ')' }} -->
-                    {{ item.name }}
+                <mat-option *ngFor="let item of legalEntities" [value]="item.id">
+                    {{ item.tenantName + ' ' + '(' + item.name + ')' }}
                 </mat-option>
             </mat-select>
         </mat-form-field>

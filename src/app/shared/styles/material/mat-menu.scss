@@ -41,19 +41,25 @@
             color: $green-color !important;
         }
         &[disabled] {
-            color: $medium-grey-color !important;
+            color: $light-grey-color !important;
             mat-icon {
-                background: rgba($color: $medium-grey-color, $alpha: 0.2) !important;
-                color: $medium-grey-color !important;
+                background: rgba($color: $light-grey-color, $alpha: 0.2) !important;
+                color: $light-grey-color !important;
                 path {
-                    fill: $medium-grey-color !important;
+                    fill: $light-grey-color !important;
                 }
             }
         }
         &.contract-manager-action {
-            color: #72A0F8;
+            display: flex;
+            color: #5B8EEF;
+            font-size: 12px;
             mat-icon {
                 background: unset !important;
+                height: 18px;
+                width: 18px;
+                font-size: 18px;
+                line-height: 18px;
             }
             &:hover {
                 color: #3363BE;
@@ -101,6 +107,18 @@
     }
 }
 
+.main-navigation--logout-menu + * .cdk-overlay-pane {
+    .mat-menu-panel {
+        min-height: 48px !important;
+        border-radius: unset !important;
+        min-width: 200px !important;
+        overflow: hidden;
+        .mat-menu-content {
+            padding: 0 !important;
+        }
+    }
+}
+
 .workflow-list--filter-manager-menu + * + * .cdk-overlay-pane,
 .client-list--filter-manager-menu + * + * .cdk-overlay-pane,
 .client-list--filter-country-menu + * + * .cdk-overlay-pane,
@@ -135,9 +153,6 @@
                 line-height: 140%;
                 color: rgba(56, 72, 83, 0.8);
                 padding-left: 5px;
-                // @media screen and (max-width: 1440px) {
-                //     font-size: 12px;
-                // }
             }
         }
     }
@@ -165,9 +180,16 @@
                 font-size: 12px;
                 line-height: 140%;
                 color: #4A4E60;
-                // @media screen and (max-width: 1366px) {
-                //     font-size: 10px;
-                // }
+            }
+        }
+    }
+}
+
+.step-filter--menu + * .cdk-overlay-pane {
+    .mat-menu-panel {
+        .mat-menu-content:not(:empty) {
+            .mat-menu-item:hover:not([disabled]) {
+                background: rgba($color: $green-color-25, $alpha: 0.33) !important;
             }
         }
     }

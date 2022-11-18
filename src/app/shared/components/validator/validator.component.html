@@ -1,4 +1,4 @@
-<div [ngClass]="{'display-none': !control?.dirty && !control?.touched}" class="validator">
+<div [ngClass]="{'display-none': !control?.dirty && !control?.touched, 'withoutFormField': withoutFormField}" class="validator">
     <ng-container *ngIf="control?.errors?.required">
         <p>{{ validatorMessages.required }}</p>
     </ng-container>
@@ -28,5 +28,8 @@
     </ng-container>
     <ng-container *ngIf="control?.errors?.noNumeric">
         <p>{{ validatorMessages.noNumeric }}</p>
+    </ng-container>
+    <ng-container *ngIf="control?.errors?.optionNotSelected">
+        <p>{{ validatorMessages.optionNotSelected }}</p>
     </ng-container>
 </div>

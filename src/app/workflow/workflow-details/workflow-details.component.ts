@@ -6,7 +6,7 @@ import { ActivatedRoute } from '@angular/router';
 import { NgScrollbar } from 'ngx-scrollbar';
 import { Subject } from 'rxjs';
 import { finalize, takeUntil } from 'rxjs/operators';
-import { AvailableConsultantDto, ChangeClientPeriodDto, ClientPeriodDto, ClientPeriodServiceProxy, ConsultantNameWithRequestUrl, ConsultantPeriodAddDto, EnumEntityTypeDto, ExtendClientPeriodDto, NewContractRequiredConsultantPeriodDto, StepType, WorkflowDto, WorkflowProcessType, WorkflowServiceProxy } from 'src/shared/service-proxies/service-proxies';
+import { AvailableConsultantDto, ChangeClientPeriodDto, ClientPeriodDto, ClientPeriodServiceProxy, ConsultantNameWithRequestUrl, ConsultantPeriodAddDto, EnumEntityTypeDto, ExtendClientPeriodDto, StepType, WorkflowDto, WorkflowProcessType, WorkflowServiceProxy } from 'src/shared/service-proxies/service-proxies';
 import { WorkflowDataService } from '../workflow-data.service';
 import { WorkflowProgressStatus, WorkflowTopSections, WorkflowSteps, WorkflowDiallogAction } from '../workflow.model';
 import { InternalLookupService } from 'src/app/shared/common/internal-lookup.service';
@@ -247,8 +247,27 @@ export class WorkflowDetailsComponent extends AppComponentBase implements OnInit
                 if (value) {
                     this.selectedIndex = 1;
                     this.topMenuTabs.realignInkBar();
+                    this.updateWorkflowProgressAfterTopTabChanged();
                 }
             });
+    }
+
+    updateWorkflowProgressAfterTopTabChanged() {
+        let newStatus = new WorkflowProgressStatus();
+        newStatus.currentlyActiveStep = WorkflowSteps.Sales;
+        if (this.selectedTabIndex > 0) {
+            // if not overview - active period
+            newStatus.currentlyActivePeriodId = this.clientPeriods![this.selectedTabIndex - 1]?.id; // first period, as index = 0 - Overview tab
+        } else {
+            // if overview - most recent period
+            newStatus.currentlyActivePeriodId = this.clientPeriods![0]?.id;
+        }
+        if (this.selectedTabName === 'Overview') {
+            newStatus.currentlyActiveSection = WorkflowTopSections.Overview;
+        } else {
+            newStatus.currentlyActiveSection = this.detectTopLevelMenu(this.selectedTabName);
+        }
+        this._workflowDataService.updateWorkflowProgressStatus(newStatus);
     }
 
     tabChanged(event: MatTabChangeEvent) {
@@ -296,7 +315,7 @@ export class WorkflowDetailsComponent extends AppComponentBase implements OnInit
         return value ? StepType[value] : '';
     }
 
-    saveOrCompleteStep(isDraft: boolean) {
+    saveOrCompleteStep(isDraft: boolean, event?: KeyboardEvent) {
         switch (this._workflowDataService.workflowProgress.currentlyActiveSideSection) {
             case WorkflowProcessType.StartClientPeriod:
             case WorkflowProcessType.ChangeClientPeriod:
@@ -306,7 +325,8 @@ export class WorkflowDetailsComponent extends AppComponentBase implements OnInit
                         this._workflowDataService.startClientPeriodSalesSaved.emit(isDraft);
                         break;
                     case StepType.Contract:
-                        this._workflowDataService.startClientPeriodContractsSaved.emit(isDraft);
+                        let bypassLegalValidation = event?.altKey && event?.shiftKey;
+                        this._workflowDataService.startClientPeriodContractsSaved.emit({isDraft: isDraft, bypassLegalValidation: bypassLegalValidation});
                         break;
                     case StepType.Finance:
                         this._workflowDataService.startClientPeriodFinanceSaved.emit(isDraft);
@@ -350,7 +370,8 @@ export class WorkflowDetailsComponent extends AppComponentBase implements OnInit
                         this._workflowDataService.consultantStartChangeOrExtendSalesSaved.emit(isDraft);
                         break;
                     case StepType.Contract:
-                        this._workflowDataService.consultantStartChangeOrExtendContractsSaved.emit(isDraft);
+                        let bypassLegalValidation = event?.altKey && event?.shiftKey;
+                        this._workflowDataService.consultantStartChangeOrExtendContractsSaved.emit({isDraft, bypassLegalValidation: bypassLegalValidation});
                         break;
                     case StepType.Finance:
                         this._workflowDataService.consultantStartChangeOrExtendFinanceSaved.emit(isDraft);

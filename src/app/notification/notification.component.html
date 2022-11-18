@@ -17,7 +17,7 @@
                                 (click)="$event.stopPropagation()"
                                 (change)="checkAll($event.checked, tenant?.tenantId!)">
                                     <span class="flex-row">
-                                        <mat-icon svgIcon="{{tenant?.tenantName}}-flag-selected" class="u-mr--10"></mat-icon>
+                                        <span class="country-flag fi fi-{{tenant?.flag | lowercase }} fis border-rounded-50 u-mr--16 u-ml--8"></span>
                                         {{tenant?.tenantName}}
                                     </span>
                             </mat-checkbox>
