@@ -1,10 +1,16 @@
 @import "/src/app/shared/styles/config/_sizes";
 @import "/src/app/shared/styles/config/_colors";
+@import "/src/app/shared/styles/config/_mixins";
 
 .client-details {
     &--header {
         height: $white-header-height;
         padding: 32px 50px 32px 15px;
+        .back-arrow--btn {
+            mat-icon {
+                @include fontLineHeightAndSize(24px, 34px, 24px, 24px);
+            }
+        }
     }
     .absolute-filter {
         position: absolute;
@@ -25,9 +31,7 @@
     &--search {
         .icon-big {
             mat-icon {
-                line-height: 40px;
-                width: 40px;
-                height: 40px;
+                @include fontLineHeightAndSize(40px, 40px, 40px, 40px);
             }
         }
     }

@@ -1361,7 +1361,7 @@ export class WorkflowSalesComponent extends AppComponentBase implements OnInit, 
                             ? value.consultant.name
                             : value;
                     }
-                    if (toSend?.clientId) {
+                    if (toSend?.clientId && value) {
                         return this._lookupService.consultantsWithSourcingRequest(toSend.clientId, toSend.name, toSend.maxRecordsCount);
                     } else {
                         return of([]);

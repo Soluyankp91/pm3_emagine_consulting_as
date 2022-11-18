@@ -2200,7 +2200,7 @@
 
                             <h3 class="workflow-gray--header u-mb--10">Client Contract Signers</h3>
                             <div formArrayName="contractSigners" class="u-w--100 u-mb--10">
-                                <div fxLayout="row" fxLayoutAlign="start start" class="u-w--100 u-mb--10" *ngFor="let signer of contractSigners.controls; let i = index" [formGroupName]="i">
+                                <div fxLayout="row" fxLayoutAlign="start center" class="u-w--100 u-mb--10" *ngFor="let signer of contractSigners.controls; let i = index" [formGroupName]="i">
                                     <mat-form-field appearance="outline" class="u-w--100 formFieldNoMarginPadding filter-select u-mr--16" fxFlex="33%">
                                         <mat-label>Name</mat-label>
                                         <input required type="text" matInput [matAutocomplete]="contactSignerAutocomplete" formControlName="clientContact" appPreventDoubleClick (throttledClick)="$event.stopPropagation()" placeholder="Name">
@@ -2239,7 +2239,7 @@
                                             <app-validator [control]="contractSigners.at(i).get('clientSequence')"></app-validator>
                                         </mat-error>
                                     </mat-form-field>
-                                    <button class="form-icon--delete-row u-mt--5" type="button" mat-icon-button appPreventDoubleClick (throttledClick)="removeSigner(i)"><mat-icon svgIcon="remove-icon"></mat-icon></button>
+                                    <button class="form-icon--delete-row" type="button" mat-icon-button appPreventDoubleClick (throttledClick)="removeSigner(i)"><mat-icon svgIcon="remove-icon"></mat-icon></button>
                                 </div>
                                 <button class="button-add" mat-flat-button type="button" appPreventDoubleClick (throttledClick)="addSignerToForm()">
                                     <mat-icon>add</mat-icon>
@@ -3129,17 +3129,15 @@
                                 <div fxLayout="column" fxLayoutAlign="start start" class="u-w--100">
                                     <h2 class="workflow-section--header">Consultant Contract</h2>
                                     <h3 class="workflow-gray--header u-mb--10">Special Contract Terms</h3>
-                                    <div fxLayout="column" fxLayoutAlign="start start" class="u-w--100">
-                                        <div fxLayout="row" fxLayoutAlign="start center" class="u-w--100">
-                                            <mat-form-field appearance="outline" class="u-w--100 formFieldNoMarginPadding textarea-input u-mr--16" fxFlex="0 0 calc(66% + 16px)">
-                                                <mat-label>Consultant Special Contract Terms</mat-label>
-                                                <textarea [required]="consultant.value?.employmentType?.id !== employmentTypesEnum.FeeOnly && consultant.value?.employmentType?.id !== employmentTypesEnum.Recruitment" matInput autocomplete="new-password" name="consultantSpecialContractTerms" formControlName="consultantSpecialContractTerms" [matTextareaAutosize]="true" [matAutosizeMinRows]="2">
-                                                </textarea>
-                                                <mat-error>
-                                                    <app-validator [control]="consultant.get('consultantSpecialContractTerms')"></app-validator>
-                                                </mat-error>
-                                            </mat-form-field>
-                                        </div>
+                                    <div fxLayout="row" fxLayoutAlign="start center" class="u-w--100 u-mb--10">
+                                        <mat-form-field appearance="outline" class="u-w--100 formFieldNoMarginPadding textarea-input u-mr--16" fxFlex="0 0 calc(66% + 16px)">
+                                            <mat-label>Consultant Special Contract Terms</mat-label>
+                                            <textarea [required]="consultant.value?.employmentType?.id !== employmentTypesEnum.FeeOnly && consultant.value?.employmentType?.id !== employmentTypesEnum.Recruitment" matInput autocomplete="new-password" name="consultantSpecialContractTerms" formControlName="consultantSpecialContractTerms" [matTextareaAutosize]="true" [matAutosizeMinRows]="2">
+                                            </textarea>
+                                            <mat-error>
+                                                <app-validator [control]="consultant.get('consultantSpecialContractTerms')"></app-validator>
+                                            </mat-error>
+                                        </mat-form-field>
                                     </div>
                                     <div fxLayout="row" fxLayoutAlign="start center" class="u-w--100 u-mb--10">
                                         <mat-checkbox color="accent" formControlName="consultantSpecialContractTermsNone" name="consultantSpecialContractTermsNone" class="black-checkbox u-mr--16" (change)="disableOrEnableInput(consultant?.value?.consultantSpecialContractTermsNone, consultant?.get('consultantSpecialContractTerms'))">
