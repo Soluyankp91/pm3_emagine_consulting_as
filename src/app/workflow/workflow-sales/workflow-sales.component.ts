@@ -248,8 +248,8 @@ export class WorkflowSalesComponent extends AppComponentBase implements OnInit, 
                         name: value ?? '',
                         maxRecordsCount: 1000,
                     };
-                    if (value?.id) {
-                        toSend.name = value.id
+                    if (value?.clientId) {
+                        toSend.name = value.clientId
                             ? value.clientName?.trim()
                             : value?.trim();
                     }
@@ -272,8 +272,8 @@ export class WorkflowSalesComponent extends AppComponentBase implements OnInit, 
                         name: value ?? '',
                         maxRecordsCount: 1000,
                     };
-                    if (value?.id) {
-                        toSend.name = value.id
+                    if (value?.clientId) {
+                        toSend.name = value.clientId
                             ? value.clientName?.trim()
                             : value?.trim();
                     }
@@ -322,8 +322,8 @@ export class WorkflowSalesComponent extends AppComponentBase implements OnInit, 
                         name: value ?? '',
                         maxRecordsCount: 1000,
                     };
-                    if (value?.id) {
-                        toSend.name = value.id
+                    if (value?.clientId) {
+                        toSend.name = value.clientId
                             ? value.clientName
                             : value;
                     }
@@ -492,7 +492,7 @@ export class WorkflowSalesComponent extends AppComponentBase implements OnInit, 
                     if (this.validateSalesForm()) {
                         this.saveStartChangeOrExtendClientPeriodSales(isDraft);
                     } else {
-                        this.scrollToFirstError();
+                        this.scrollToFirstError(isDraft);
                     }
                 }
             });
@@ -505,7 +505,7 @@ export class WorkflowSalesComponent extends AppComponentBase implements OnInit, 
                     if (this.validateSalesForm()) {
                         this.saveStartChangeOrExtendConsultantPeriodSales(isDraft);
                     } else {
-                        this.scrollToFirstError();
+                        this.scrollToFirstError(isDraft);
                     }
                 }
             });
@@ -520,7 +520,7 @@ export class WorkflowSalesComponent extends AppComponentBase implements OnInit, 
                     if (this.validateSalesForm()) {
                         this.saveTerminationConsultantSalesStep(isDraft);
                     } else {
-                        this.scrollToFirstError();
+                        this.scrollToFirstError(isDraft);
                     }
                 }
             });
@@ -534,7 +534,7 @@ export class WorkflowSalesComponent extends AppComponentBase implements OnInit, 
                     if (this.validateSalesForm()) {
                         this.saveWorkflowTerminationSalesStep(isDraft);
                     } else {
-                        this.scrollToFirstError();
+                        this.scrollToFirstError(isDraft);
                     }
                 }
             });
@@ -575,7 +575,7 @@ export class WorkflowSalesComponent extends AppComponentBase implements OnInit, 
         }
     }
 
-    scrollToFirstError() {
+    scrollToFirstError(isDraft: boolean) {
         setTimeout(() => {
             let firstError = document.getElementsByClassName('mat-form-field-invalid')[0] as HTMLElement;
             if (firstError) {
@@ -584,8 +584,31 @@ export class WorkflowSalesComponent extends AppComponentBase implements OnInit, 
                     offset: -115
                 }
                 this.scrollToService.scrollTo(config);
+            } else {
+                this.saveSalesStep(isDraft);
             }
         }, 0);
+    }
+
+    saveSalesStep(isDraft: boolean) {
+        switch (this._workflowDataService.workflowProgress.currentlyActiveSideSection) {
+            case WorkflowProcessType.StartClientPeriod:
+            case WorkflowProcessType.ChangeClientPeriod:
+            case WorkflowProcessType.ExtendClientPeriod:
+                this.saveStartChangeOrExtendClientPeriodSales(isDraft);
+                break;
+            case WorkflowProcessType.TerminateWorkflow:
+                this.saveWorkflowTerminationSalesStep(isDraft);
+                break;
+            case WorkflowProcessType.TerminateConsultant:
+                this.saveTerminationConsultantSalesStep(isDraft);
+                break;
+            case WorkflowProcessType.StartConsultantPeriod:
+            case WorkflowProcessType.ChangeConsultantPeriod:
+            case WorkflowProcessType.ExtendConsultantPeriod:
+                this.saveStartChangeOrExtendConsultantPeriodSales(isDraft);
+                break;
+        }
     }
 
     toggleEditMode() {
@@ -971,14 +994,16 @@ export class WorkflowSalesComponent extends AppComponentBase implements OnInit, 
         if (consultant?.consultantRate?.isFixedRate) {
             consultantRate = this.findItemById(this.clientRateTypes, 2); // 2: fixed
         }
-        let consultantDto = new ConsultantWithSourcingRequestResultDto();
-        consultantDto.consultant = consultant?.consultant;
-        consultantDto.sourcingRequestConsultantId = consultant?.soldRequestConsultantId;
-        consultantDto.sourcingRequestId = consultant?.requestId;
+        let consultantDto = null;
+        if (consultant) {
+            consultantDto = new ConsultantWithSourcingRequestResultDto();
+            consultantDto.consultant = consultant?.consultant;
+            consultantDto.sourcingRequestConsultantId = consultant?.soldRequestConsultantId;
+            consultantDto.sourcingRequestId = consultant?.requestId;
+        }
         const form = this._fb.group({
             employmentType: new FormControl(this.findItemById(this.employmentTypes, consultant?.employmentTypeId) ?? null),
-            consultantName: new FormControl(consultantDto ?? null),
-            // requestConsultantId: new FormControl(consultant?.soldRequestConsultantId ?? null),
+            consultantName: new FormControl(consultantDto ?? null, CustomValidators.autocompleteConsultantValidator()),
             consultantPeriodId: new FormControl(consultant?.consultantPeriodId ?? null),
             consultantNameOnly: new FormControl(consultant?.nameOnly ?? null),
 
@@ -990,7 +1015,7 @@ export class WorkflowSalesComponent extends AppComponentBase implements OnInit, 
             consultantWorkplace: new FormControl(null),
             consultantWorkplaceClientAddress: new FormControl(consultant?.onsiteClient ?? null),
             consultantWorkplaceEmagineOffice: new FormControl(this.findItemById(this.emagineOffices, consultant?.emagineOfficeId) ?? null),
-            consultantWorkplaceRemote: new FormControl(this.findItemById(this.countries, consultant?.remoteAddressCountryId) ?? null),
+            consultantWorkplaceRemote: new FormControl(this.findItemById(this.countries, consultant?.remoteAddressCountryId) ?? null, CustomValidators.autocompleteValidator(['id'])),
             consultantWorkplacePercentageOnSite: new FormControl(consultant?.percentageOnSite ?? null, [Validators.min(1), Validators.max(100)]),
 
             consultantIsOnsiteWorkplace: new FormControl(consultant?.isOnsiteWorkplace ?? false),

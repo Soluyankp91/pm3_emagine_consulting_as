@@ -1,4 +1,6 @@
 @import "/src/app/shared/styles/config/_colors";
+@import "/src/app/shared/styles/config/_mixins";
+
 
 .client-documents--contract__action-btn {
     width: 24px !important;
@@ -347,6 +349,15 @@
     }
 }
 
+.workflow-sales--additional-address-hint {
+    .mat-icon-button {
+        .mat-button-wrapper {
+            @include flexCentered();
+            mat-icon {
+                @include fontLineHeightAndSize(20px, 20px, 20px, 20px);
+            }
+        }
+    }
 .mat-icon-button {
     .mat-button-wrapper {
         @include flexCentered();
@@ -355,3 +366,4 @@
         }
     }
 }
+

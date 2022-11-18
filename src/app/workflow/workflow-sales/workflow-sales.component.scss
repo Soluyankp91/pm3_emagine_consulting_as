@@ -82,11 +82,9 @@
         &--additional-address-hint {
             @include fontOpenSans(14px, 800);
             color: rgba(56, 72, 83, 0.87);
-            line-height: 35px;
             &-label {
                 @include fontOpenSans(14px, 700);
                 color: #898785;
-                line-height: 35px;
             }
         }
     }

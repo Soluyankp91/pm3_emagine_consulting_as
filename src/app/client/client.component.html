@@ -1,8 +1,6 @@
 <div class="client-list">
     <div fxLayout="column" fxLayoutAlign="start start" class="client-list--filter u-w--100">
-        <!-- <div fxLayout="row" fxLayoutAlign="start center" class="u-w--100 u-mb--20"> -->
-            <h2 class="page-main-header u-mb--20">Client list</h2>
-        <!-- </div> -->
+        <h2 class="page-main-header u-mb--20">Client list</h2>
         <div fxLayout="row" fxLayoutAlign="space-between start" class="u-w--100">
             <div fxFlex="1 0 40%" fxLayout="row" fxLayoutAlign="start start" class="u-w--100">
                 <div class="client-list--filter-manager cursor-pointer u-mr--16"
@@ -33,7 +31,7 @@
                                             (change)="toggleSelection(manager,selectedAccountManagers)"
                                             (click)="$event.stopPropagation()">
                                             <div fxLayout="row" fxLayoutAlign="start center" class="u-w--100">
-                                                <img class="border-rounded-50 image-settings--dropdown u-ml--8 u-mr--16" [src]="employeeProfileUrl(manager.externalId!)">
+                                                <img class="border-rounded-50 image-settings--dropdown u-ml--10 u-mr--10" [src]="employeeProfileUrl(manager.externalId!)">
                                                 <span>{{ manager.name }}</span>
                                             </div>
                                         </mat-checkbox>
@@ -61,7 +59,7 @@
                                                 (change)="toggleSelection(manager,selectedAccountManagers)"
                                                 (click)="$event.stopPropagation()">
                                                 <div fxLayout="row" fxLayoutAlign="start center" class="u-w--100">
-                                                    <img class="border-rounded-50 image-settings--dropdown u-ml--8 u-mr--16" [src]="employeeProfileUrl(manager.externalId!)">
+                                                    <img class="border-rounded-50 image-settings--dropdown u-ml--10 u-mr--10" [src]="employeeProfileUrl(manager.externalId!)">
                                                     <span>{{ manager.name }}</span>
                                                 </div>
                                             </mat-checkbox>
@@ -116,10 +114,8 @@
                                                 class="black-checkbox"
                                                 (change)="toggleSelection(country,selectedCountries)"
                                                 (click)="$event.stopPropagation()">
-                                                <span class="country-flag fi fi-{{country.code | lowercase }} fis border-rounded-50 u-ml--8 u-mr--16" *ngIf="country.id !== 0"></span>
-                                                <!-- <ng-template #unkownCountry> -->
-                                                    <mat-icon *ngIf="country.id === 0" svgIcon="Country-filter-flag" class="u-ml--8"></mat-icon>
-                                                <!-- </ng-template> -->
+                                                <span class="country-flag fi fi-{{country.code | lowercase }} fis border-rounded-50 u-ml--10 u-mr--10" *ngIf="country.id !== 0"></span>
+                                                <mat-icon *ngIf="country.id === 0" svgIcon="Country-filter-flag" class="u-ml--10 u-mr--10"></mat-icon>
                                                 <span>{{ country.name }}</span>
                                             </mat-checkbox>
                                             <span *ngIf="country.id === 'no-data'"
@@ -139,8 +135,8 @@
                                                 class="black-checkbox"
                                                 (change)="toggleSelection(country,selectedCountries)"
                                                 (click)="$event.stopPropagation()">
-                                                <span class="country-flag fi fi-{{country.code | lowercase }} fis border-rounded-50 u-ml--8 u-mr--16" *ngIf="country.id !== 0"></span>
-                                                <mat-icon *ngIf="country.id === 0" svgIcon="Country-filter-flag" class="u-ml--8"></mat-icon>
+                                                <span class="country-flag fi fi-{{country.code | lowercase }} fis border-rounded-50 u-ml--10 u-mr--10" *ngIf="country.id !== 0"></span>
+                                                <mat-icon *ngIf="country.id === 0" svgIcon="Country-filter-flag" class="u-ml--10 u-mr--10"></mat-icon>
                                                 <span>{{ country.name }}</span>
                                             </mat-checkbox>
                                             <span *ngIf="country.id === 'no-data'"
@@ -150,7 +146,6 @@
                                         </div>
                                     </mat-option>
                                 </ng-container>
-
                             </mat-autocomplete>
                         </div>
                     </mat-menu>
