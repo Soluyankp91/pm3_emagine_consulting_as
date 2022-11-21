@@ -75,7 +75,7 @@
                 </div>
                 <div class="client-list--filter-country cursor-pointer u-mr--16"
                     [matMenuTriggerFor]="countryMenu"
-                    (menuOpened)="onCountriesMenuOpened(); countriesTrigger.focus();"
+                    (menuOpened)="onCountriesMenuOpened(); countriesFilterInput.focus();"
                     [ngClass]="{ 'client-list--filter-country__btn': selectedCountries.length > 1 }"
                     [matTooltip]="selectedCountries.length ? mapListByProperty(selectedCountries, 'name') : 'Select country'"
                     matTooltipClass="white-tooltip"
@@ -93,9 +93,9 @@
                         <mat-icon class="client-list--filter-country u-mr--16" svgIcon="Country-filter-flag"></mat-icon>
                     </ng-template>
                     <mat-menu #countryMenu backdropClass="client-list--filter-country-menu">
-                        <div mat-menu-item appPreventDoubleClick (throttledClick)="$event.stopPropagation()" class="u-pg--0">
-                            <mat-form-field class="client-list--filter-country-dropdown" appearance="fill" appPreventDoubleClick (throttledClick)="$event.stopPropagation()">
-                                <input type="text" #countriesTrigger matInput [matAutocomplete]="countryAutocomplete" [formControl]="countryFilter" appPreventDoubleClick (throttledClick)="$event.stopPropagation()" placeholder="Select client country">
+                        <div mat-menu-item (click)="$event.stopPropagation()" class="u-pg--0">
+                            <mat-form-field class="client-list--filter-country-dropdown" appearance="fill" (click)="$event.stopPropagation()">
+                                <input #countriesFilterInput type="text" #countriesTrigger matInput [matAutocomplete]="countryAutocomplete" [formControl]="countryFilter" (click)="$event.stopPropagation()" placeholder="Select client country">
                             </mat-form-field>
                             <mat-autocomplete #countryAutocomplete="matAutocomplete" [displayWith]="displayNameFn">
                                 <mat-option *ngIf="isCountriesLoading" class="is-loading">
