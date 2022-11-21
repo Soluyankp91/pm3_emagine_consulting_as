@@ -706,5 +706,12 @@ export class AppModule {
                 'assets/common/images/synced-icon.svg'
             )
         );
+
+        iconRegistry.addSvgIcon(
+            'close-icon',
+            sanitizer.bypassSecurityTrustResourceUrl(
+                'assets/common/images/close-icon.svg'
+            )
+        );
     }
 }

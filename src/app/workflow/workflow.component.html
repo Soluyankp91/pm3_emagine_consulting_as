@@ -218,7 +218,7 @@
     <div fxLayout="column" fxLayoutAlign="start center" class="workflow-list--content u-w--100">
         <div fxLayout="row" fxLayoutAlign="end start" fxLayoutGap="25px" class="u-w--100">
             <mat-slide-toggle class="green-slide-toggle" color="primary" labelPosition="before" (change)="getWorkflowList()" [(ngModel)]="includeDeleted">Show deleted</mat-slide-toggle>
-            <mat-slide-toggle class="green-slide-toggle" color="primary" labelPosition="before" (change)="getWorkflowList()" [(ngModel)]="includeTerminated">Show terminated</mat-slide-toggle>
+            <mat-slide-toggle class="green-slide-toggle" color="primary" labelPosition="before" (change)="getWorkflowList()" [(ngModel)]="includeTerminated">Show finished</mat-slide-toggle>
         </div>
         <div fxLayout="column" class="u-w--100">
             <mat-table #table [dataSource]="workflowDataSource" class="workflow-list--table white-table u-w--100" matSort matSortStart="asc" (matSortChange)="sortChanged($event)">
@@ -432,14 +432,14 @@
                 <ng-container matColumnDef="action">
                     <mat-header-cell *matHeaderCellDef fxFlex="3%"></mat-header-cell>
                     <mat-cell *matCellDef="let row" fxFlex="3%">
-                        <button mat-icon-button class="three-dots-actions-btn" #menuDeleteTrigger="matMenuTrigger" [matMenuTriggerFor]="workflowActions" appPreventDoubleClick (throttledClick)="$event.stopPropagation();"><mat-icon>more_horiz</mat-icon></button>
+                        <button mat-icon-button class="three-dots-actions-btn" #menuDeleteTrigger="matMenuTrigger" [matMenuTriggerFor]="workflowActions" appPreventDoubleClick (throttledClick)="$event.stopPropagation();"><mat-icon svgIcon="3-dots"></mat-icon></button>
                         <mat-menu #workflowActions>
                             <button *ngIf="row.isDeleted" class="menu-item menu-item--edit" mat-menu-item (click)="confirmRestoreWorkflow(row?.workflowId)">
                                     <mat-icon>settings_backup_restore</mat-icon>
                                     <span>Restore workflow</span>
                             </button>
                             <button *ngIf="!row.isDeleted" class="menu-item menu-item--cancel" mat-menu-item (click)="confirmDeleteWorkflow(row?.workflowId)">
-                                <mat-icon>clear</mat-icon>
+                                <mat-icon svgIcon="close-icon"></mat-icon>
                                 <span>Delete</span>
                         </button>
                         </mat-menu>

@@ -361,7 +361,7 @@
                                     <ng-template #clientRatesActions>
                                         <div fxFlex="20%" fxLayoutAlign="end center" class="u-w--100" *ngIf="!readOnlyMode">
                                             <button mat-icon-button appPreventDoubleClick (throttledClick)="$event.stopPropagation();" [matMenuTriggerFor]="clientRateMenu" class="three-dots-actions-btn">
-                                                <mat-icon>more_horiz</mat-icon>
+                                                <mat-icon svgIcon="3-dots"></mat-icon>
                                             </button>
                                             <mat-menu #clientRateMenu>
                                                 <button
@@ -478,7 +478,7 @@
                                                     <mat-icon>save</mat-icon>
                                             </button>
                                             <button mat-icon-button appPreventDoubleClick (throttledClick)="$event.stopPropagation();" [matMenuTriggerFor]="clientFeeMenu" class="three-dots-actions-btn">
-                                                <mat-icon>more_horiz</mat-icon>
+                                                <mat-icon svgIcon="3-dots"></mat-icon>
                                             </button>
                                             <mat-menu #clientFeeMenu>
                                                 <button
@@ -774,7 +774,7 @@
                                                 <ng-template #consultantRateACtions>
                                                     <div fxFlex="10%" fxLayoutAlign="center center" class="u-w--100 workflow-contracts--list-item">
                                                         <button mat-icon-button appPreventDoubleClick (throttledClick)="$event.stopPropagation();" [matMenuTriggerFor]="clientRateMenu" class="three-dots-actions-btn">
-                                                            <mat-icon>more_horiz</mat-icon>
+                                                            <mat-icon svgIcon="3-dots"></mat-icon>
                                                         </button>
                                                         <mat-menu #clientRateMenu>
                                                             <button
@@ -945,7 +945,7 @@
                                                 <ng-template #consultantFeeActions>
                                                     <div fxFlex="10%" fxLayoutAlign="center center" class="u-w--100 workflow-contracts--list-item">
                                                         <button mat-icon-button appPreventDoubleClick (throttledClick)="$event.stopPropagation();" [matMenuTriggerFor]="clientFeeMenu" class="three-dots-actions-btn">
-                                                            <mat-icon>more_horiz</mat-icon>
+                                                            <mat-icon svgIcon="3-dots"></mat-icon>
                                                         </button>
                                                         <mat-menu #clientFeeMenu>
                                                             <button
@@ -1061,7 +1061,7 @@
                                                         </span>
                                                         <div *ngIf="!readOnlyMode" fxFlex="5%" fxLayoutAlign="end center" class="u-w--100 workflow-contracts--list-item">
                                                             <button mat-icon-button appPreventDoubleClick (throttledClick)="$event.stopPropagation();" #projectLinesMenuTrigger="matMenuTrigger" [matMenuTriggerFor]="consultantProjectLineMenu" class="three-dots-actions-btn">
-                                                                <mat-icon>more_horiz</mat-icon>
+                                                                <mat-icon svgIcon="3-dots"></mat-icon>
                                                             </button>
                                                             <mat-menu #consultantProjectLineMenu>
                                                                 <button
