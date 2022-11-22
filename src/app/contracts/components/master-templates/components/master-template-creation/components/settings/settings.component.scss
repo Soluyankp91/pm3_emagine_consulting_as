@@ -5,6 +5,15 @@ app-settings {
     .text-area .mat-form-field-flex {
         height: 133px !important;
     }
+    .mat-radio-button.mat-radio-disabled .mat-radio-label-content {
+        color: unset !important;
+    }
+    .mat-radio-button.mat-radio-disabled .mat-radio-inner-circle {
+        background-color: #17a297 !important;
+    }
+    .mat-radio-button.mat-accent.mat-radio-checked .mat-radio-outer-circle {
+        border-color: #17a297;
+    }
 }
 .template-settings-section {
     min-width: 612px;

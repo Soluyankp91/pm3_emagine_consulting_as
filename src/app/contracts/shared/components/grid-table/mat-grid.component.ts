@@ -77,23 +77,6 @@ export class MatGridComponent implements OnInit, AfterViewInit {
                     );
                 }
             });
-        console.log(this.cells_, this.tableConfig);
-
-        this.tableConfig.items.forEach((item, index) => {
-            const factory =
-                this.componentFactoryResolver.resolveComponentFactory(
-                    DateCellComponent
-                );
-            const component = this.cells_
-                .get(45 + index)
-                ?.createComponent(factory);
-            component!.instance.date = moment(
-                item[this.displayedColumns[9]]['_d']
-            ).format('DD/MM/YYYY');
-            component?.instance.emitTest.subscribe((data) => {
-                console.log(data);
-            });
-        });
     }
 
     closeFilter(chip: string) {

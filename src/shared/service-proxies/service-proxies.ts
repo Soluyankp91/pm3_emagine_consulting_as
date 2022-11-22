@@ -16026,6 +16026,7 @@ export class FileServiceProxy {
         if (status === 200) {
             return blobToText(responseBlob).pipe(
                 _observableMergeMap((_responseText) => {
+
                     return _observableOf(_responseText);
                 })
             );

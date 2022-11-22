@@ -23,6 +23,9 @@
                 <input matInput formControlName="search" placeholder="search" />
             </mat-form-field>
         </div>
-        <div class="add-button" (click)="navigateTo()">Create</div>
+        <div class="add-button" (click)="navigateTo()" [style.display]="'flex'" [style.align-items]="'center'">
+            <mat-icon svgIcon="create-icon" [style.height.px]="50" [style.width.px]="50"></mat-icon>
+            <div>Create</div>
+        </div>
     </div>
 </div>

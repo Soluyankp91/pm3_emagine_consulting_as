@@ -671,5 +671,11 @@ export class AppModule {
                 'assets/common/images/logout-icon.svg'
             )
         );
+        iconRegistry.addSvgIcon(
+            'create-icon',
+            sanitizer.bypassSecurityTrustResourceUrl(
+                'assets/common/images/create-icon.svg'
+            )
+        );
     }
 }

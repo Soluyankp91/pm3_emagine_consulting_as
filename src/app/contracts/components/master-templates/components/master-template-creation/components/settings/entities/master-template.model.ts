@@ -3,8 +3,8 @@ import { FormControl, FormGroup, Validators } from '@angular/forms';
 export class MasterTemplateModel extends FormGroup {
     constructor() {
         super({
-            agreementType: new FormControl({}, [Validators.required]),
-            recipientTypeId: new FormControl({}, [Validators.required]),
+            agreementType: new FormControl('', [Validators.required]),
+            recipientTypeId: new FormControl('', [Validators.required]),
             name: new FormControl('', [Validators.required]),
             agreementNameTemplate: new FormControl('', [Validators.required]),
             definition: new FormControl(''),
@@ -16,7 +16,10 @@ export class MasterTemplateModel extends FormGroup {
             note: new FormControl(''),
             isSignatureRequired: new FormControl(false),
             isEnabled: new FormControl(false),
-            attachments: new FormControl([]),
+            attachments: new FormControl({
+                selectedInheritedFiles: [],
+                uploadedFiles: [],
+            }),
         });
     }
 
