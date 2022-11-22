@@ -372,3 +372,6 @@
     }
 }
 
+.dialog-close--button {
+    @include fontLineHeightAndSize(24px, 24px, 24px, 24px);
+}
