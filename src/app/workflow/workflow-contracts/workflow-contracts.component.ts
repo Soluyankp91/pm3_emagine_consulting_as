@@ -1688,6 +1688,7 @@ export class WorkflowContractsComponent extends AppComponentBase implements OnIn
                 })
             })
         }
+        this.hideMainSpinner();
     }
 
     openContractModule(periodId: string, legalContractStatus: number, isInternal: boolean, tenantId: number, consultant?: ConsultantResultDto) {
