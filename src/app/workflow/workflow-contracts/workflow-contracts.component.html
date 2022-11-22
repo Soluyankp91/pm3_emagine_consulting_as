@@ -369,14 +369,14 @@
                                                     mat-menu-item
                                                     [disabled]="isConsultantRateEditing"
                                                     appPreventDoubleClick (throttledClick)="editOrSaveSpecialRate(rate.value.editable, i)">
-                                                    <mat-icon>create</mat-icon>
+                                                    <mat-icon svgIcon="edit-icon-green"></mat-icon>
                                                     Edit
                                                 </button>
                                                 <button
                                                     class="menu-item menu-item--cancel"
                                                     mat-menu-item
                                                     appPreventDoubleClick (throttledClick)="removeClientRate(i)">
-                                                    <mat-icon>clear</mat-icon>
+                                                    <mat-icon svgIcon="close-icon"></mat-icon>
                                                     Delete
                                                 </button>
                                             </mat-menu>
@@ -487,14 +487,14 @@
                                                     mat-menu-item
                                                     [disabled]="isClientFeeEditing"
                                                     appPreventDoubleClick (throttledClick)="editOrSaveClientFee(fee.value.editable, i)">
-                                                    <mat-icon>create</mat-icon>
+                                                    <mat-icon svgIcon="edit-icon-green"></mat-icon>
                                                     Edit
                                                 </button>
                                                 <button
                                                     class="menu-item menu-item--cancel"
                                                     mat-menu-item
                                                     appPreventDoubleClick (throttledClick)="removeClientFee(i)">
-                                                    <mat-icon>clear</mat-icon>
+                                                    <mat-icon svgIcon="close-icon"></mat-icon>
                                                     Remove
                                                 </button>
                                             </mat-menu>
@@ -782,14 +782,14 @@
                                                                 mat-menu-item
                                                                 [disabled]="isConsultantRateEditing"
                                                                 appPreventDoubleClick (throttledClick)="editOrSaveConsultantSpecialRate(rate.value.editable, consultantIndex, specialRateIndex)">
-                                                                <mat-icon>create</mat-icon>
+                                                                <mat-icon svgIcon="edit-icon-green"></mat-icon>
                                                                 Edit
                                                             </button>
                                                             <button
                                                                 class="menu-item menu-item--cancel"
                                                                 mat-menu-item
                                                                 appPreventDoubleClick (throttledClick)="removeConsultantDataSpecialRate(consultantIndex, specialRateIndex)">
-                                                                <mat-icon>clear</mat-icon>
+                                                                <mat-icon svgIcon="close-icon"></mat-icon>
                                                                 Delete
                                                             </button>
                                                         </mat-menu>
@@ -953,14 +953,14 @@
                                                                 mat-menu-item
                                                                 [disabled]="isConsultantFeeEditing"
                                                                 appPreventDoubleClick (throttledClick)="editOrSaveConsultantSpecialFee(fee.value.editable, consultantIndex, clientFeeIndex)">
-                                                                <mat-icon>create</mat-icon>
+                                                                <mat-icon svgIcon="edit-icon-green"></mat-icon>
                                                                 Edit
                                                             </button>
                                                             <button
                                                                 class="menu-item menu-item--cancel"
                                                                 mat-menu-item
                                                                 appPreventDoubleClick (throttledClick)="removeConsultantDataClientFees(consultantIndex, clientFeeIndex)">
-                                                                <mat-icon>clear</mat-icon>
+                                                                <mat-icon svgIcon="close-icon"></mat-icon>
                                                                 Delete
                                                             </button>
                                                         </mat-menu>
@@ -1065,17 +1065,17 @@
                                                             </button>
                                                             <mat-menu #consultantProjectLineMenu>
                                                                 <button
-                                                                    class="menu-item menu-item--edit"
+                                                                    class="menu-item green-color"
                                                                     mat-menu-item
                                                                     (click)="duplicateProjectLine(consultantIndex, projectLinesIndex)">
-                                                                    <mat-icon>content_copy</mat-icon>
+                                                                    <mat-icon svgIcon="duplicate-icon-green"></mat-icon>
                                                                     Duplicate
                                                                 </button>
                                                                 <button
-                                                                    class="menu-item menu-item--edit"
+                                                                    class="menu-item green-color"
                                                                     mat-menu-item
                                                                     (click)="createOrEditProjectLine(consultantIndex, projectLinesMenuTrigger, projectLinesIndex)">
-                                                                    <mat-icon>create</mat-icon>
+                                                                    <mat-icon svgIcon="edit-icon-green"></mat-icon>
                                                                     Edit
                                                                 </button>
                                                                 <button
@@ -1083,7 +1083,7 @@
                                                                     *ngIf="!projectLine.value.wasSynced"
                                                                     mat-menu-item
                                                                     (click)="removeConsultantDataProjectLines(consultantIndex, projectLinesIndex)">
-                                                                    <mat-icon>clear</mat-icon>
+                                                                    <mat-icon svgIcon="close-icon"></mat-icon>
                                                                     Remove
                                                                 </button>
                                                                 <div class="menu-item" mat-menu-item (click)="$event.stopPropagation(); toggleMarkProjectLineForDeletion(projectLine.value.markedForLegacyDeletion, consultantIndex, projectLinesIndex)" *ngIf="projectLine.value.wasSynced">

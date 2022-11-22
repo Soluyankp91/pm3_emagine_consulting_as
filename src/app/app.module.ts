@@ -652,6 +652,13 @@ export class AppModule {
         );
 
         iconRegistry.addSvgIcon(
+            'edit-icon-green',
+            sanitizer.bypassSecurityTrustResourceUrl(
+                'assets/common/images/edit-icon-green.svg'
+            )
+        );
+
+        iconRegistry.addSvgIcon(
             'return-icon',
             sanitizer.bypassSecurityTrustResourceUrl(
                 'assets/common/images/return-icon.svg'
@@ -662,6 +669,13 @@ export class AppModule {
             'add-icon',
             sanitizer.bypassSecurityTrustResourceUrl(
                 'assets/common/images/add-icon.svg'
+            )
+        );
+
+        iconRegistry.addSvgIcon(
+            'add-icon-green',
+            sanitizer.bypassSecurityTrustResourceUrl(
+                'assets/common/images/add-icon-green.svg'
             )
         );
 
@@ -711,6 +725,13 @@ export class AppModule {
             'close-icon',
             sanitizer.bypassSecurityTrustResourceUrl(
                 'assets/common/images/close-icon.svg'
+            )
+        );
+
+        iconRegistry.addSvgIcon(
+            'duplicate-icon-green',
+            sanitizer.bypassSecurityTrustResourceUrl(
+                'assets/common/images/duplicate-icon-green.svg'
             )
         );
     }

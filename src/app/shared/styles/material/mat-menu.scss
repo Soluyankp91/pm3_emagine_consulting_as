@@ -22,10 +22,16 @@
     @include fontOpenSans(14px, 700);
     display: flex;
     align-items: center;
+    &.returnToSalesIcon {
+        mat-icon {
+            transform: scale(1.25);
+        }
+    }
     mat-icon {
         margin-right: 8px !important;
         border-radius: 50%;
-        @include fontLineHeightAndSize(14px, 14px, 14px, 14px);
+        @include fontLineHeightAndSize(24px, 24px, 24px, 24px);
+        padding: 4px;
     }
     &--cancel {
         color: $dark-red-color;
