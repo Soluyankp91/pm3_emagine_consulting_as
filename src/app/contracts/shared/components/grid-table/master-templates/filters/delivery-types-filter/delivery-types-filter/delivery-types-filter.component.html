@@ -1,0 +1,7 @@
+<app-multi-select
+    *ngIf="deliveryTypes$ | async as deliveryTypes"
+    [options]="deliveryTypes"
+    [displayedProperty]="'name'"
+    [formControl]="fc">
+    <div #triggerButton>Delivery Types</div></app-multi-select
+>

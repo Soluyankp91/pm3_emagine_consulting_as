@@ -1,0 +1,47 @@
+
+<mat-form-field>
+    <mat-label>Label</mat-label>
+    <input
+        type="text"
+        matInput
+        [matAutocomplete]="auto"
+        [formControl]="inputControl"
+    />
+    <mat-autocomplete #auto>
+        <mat-option>
+            <mat-checkbox
+                (click)="$event.stopPropagation()"
+                (change)="toggleSelectAll()"
+                [checked]="selectedAll"
+            >
+                {{ selectedAll ? "unselect" : "selectAll" }}
+            </mat-checkbox>
+        </mat-option>
+        <mat-option *ngFor="let selectedOption of selectedOptions">
+            <mat-checkbox
+                *ngIf="selectedOption"
+                [checked]="true"
+                (click)="$event.stopPropagation()"
+                (change)="unSelectCheckBox(selectedOption)"
+            >
+                {{ selectedOption.name }}
+            </mat-checkbox>
+        </mat-option>
+        <mat-divider></mat-divider>
+        <ng-container *ngIf="!isSearchNull ; else notFound">
+            <ng-container *ngFor="let option of availableOptions;trackBy: trackById">
+                <mat-option >
+                    <mat-checkbox
+                        (click)="$event.stopPropagation()"
+                        (change)="selectCheckBox(option)"
+                    >
+                        {{ option.name }}
+                    </mat-checkbox>
+                </mat-option>
+            </ng-container>
+        </ng-container>
+        <ng-template #notFound>
+            <mat-option>Not Found</mat-option>
+        </ng-template>
+    </mat-autocomplete>
+</mat-form-field>

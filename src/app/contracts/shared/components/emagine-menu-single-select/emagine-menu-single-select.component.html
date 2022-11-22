@@ -1,0 +1,28 @@
+<button
+  mat-icon-button
+  [matMenuTriggerFor]="menu"
+  (menuOpened)="onMatMenuOpened(); isOpened = true"
+  #menubutton>
+  <div class="align-items">
+    <span
+      [ngClass]="isOpened ? ['opened__green', 'icon__margin'] : 'closed__grey'"
+      >{{ label }}</span
+    >
+    <mat-icon svgIcon="mat-icon-menu" *ngIf="isOpened"></mat-icon>
+  </div>
+</button>
+<mat-menu #menu="matMenu" class="mat-menu-single-select-menu-panel">
+  <mat-form-field (click)="$event.stopPropagation()" appearance="outline">
+    <mat-select
+      [placeholder]="label"
+      #myselect
+      (closed)="onMatSelectClose(); isOpened = false"
+      panelClass="mat-menu-single-select"
+      (selectionChange)="onSelectionChange($event.value)"
+      [value]="selectedItem">
+      <mat-option *ngFor="let option of options" [value]="option">
+        {{ option[displayedProperty] }}
+      </mat-option>
+    </mat-select>
+  </mat-form-field>
+</mat-menu>

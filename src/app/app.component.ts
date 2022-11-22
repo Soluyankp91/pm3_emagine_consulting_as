@@ -11,6 +11,7 @@ import { EmployeeServiceProxy, CurrentEmployeeDto } from 'src/shared/service-pro
     styleUrls: ['./app.component.scss']
 })
 export class AppComponent extends AppComponentBase implements OnInit {
+    production = environment.production;
     accountInfo: any;
     currentEmployee: CurrentEmployeeDto;
     constructor(

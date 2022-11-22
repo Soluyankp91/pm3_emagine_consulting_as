@@ -1,0 +1,8 @@
+<app-multi-select
+    *ngIf="legalEntities$ | async as legalEntities"
+    [options]="legalEntities"
+    [displayedProperty]="'name'"
+    [formControl]="fc"
+>
+    <div #triggerButton>Legal Entities</div></app-multi-select
+>

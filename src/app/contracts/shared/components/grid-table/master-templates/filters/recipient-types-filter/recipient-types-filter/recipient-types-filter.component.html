@@ -1,0 +1,8 @@
+<app-multi-select
+    *ngIf="recipientTypes$ | async as agreementTypes"
+    [options]="agreementTypes"
+    [displayedProperty]="'name'"
+    [formControl]="fc"
+>
+    <div #triggerButton>Recipients</div></app-multi-select
+>

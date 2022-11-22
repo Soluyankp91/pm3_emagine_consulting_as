@@ -1,0 +1,7 @@
+<app-dropdown-autocomplete-multiselect
+    *ngIf="employees$ | async as employees"
+    [options]="employees"
+    [formControl]="fc"
+    (emitText)="emitText($event)"
+></app-dropdown-autocomplete-multiselect>
+

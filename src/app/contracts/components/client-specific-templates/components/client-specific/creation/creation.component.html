@@ -1,0 +1,242 @@
+<ng-container *ngIf="options$ | async as options">
+    <mat-radio-group
+        [style.display]="'flex'"
+        [style.flexDirection]="'column'"
+        [formControl]="creationModeControl"
+    >
+        <mat-radio-button
+            [value]="creationModes.InheritedFromParent"
+            (click)="this.modeControl.next(creationModes.InheritedFromParent)"
+        >
+            Inherit from master template
+        </mat-radio-button>
+        <mat-radio-button
+            [value]="creationModes.Duplicated"
+            (click)="this.modeControl.next(creationModes.Duplicated)"
+        >
+            Duplicate from client specific template</mat-radio-button
+        >
+        <mat-radio-button
+            [value]="creationModes.FromScratch"
+            (click)="this.modeControl.next(creationModes.FromScratch)"
+        >
+            Create from scratch
+        </mat-radio-button>
+    </mat-radio-group>
+    <div [formGroup]="clientTemplateFormGroup" [style.display]="'flex'">
+        <div>
+            <ng-container *ngIf="currentMode === creationModes.Duplicated">
+                <app-dropdown-autocomplete-single-select
+                    *ngIf="
+                        clientTemplatesOptions$
+                            | async as clientTemplatesOptions
+                    "
+                    [options]="clientTemplatesOptions"
+                    [displayedProperty]="'agreementTemplateId'"
+                    [outputProperty]="'agreementTemplateId'"
+                    [label]="'Client specific Template'"
+                    [formControl]="clientTemplateControl"
+                    (inputEmitter)="clientTemplateOptionsChanged$.next($event)"
+                >
+                </app-dropdown-autocomplete-single-select>
+            </ng-container>
+            <div></div>
+            <ng-container
+                *ngIf="currentMode === creationModes.InheritedFromParent"
+            >
+                <app-dropdown-autocomplete-single-select
+                    *ngIf="
+                        masterTemplatesOptions$
+                            | async as masterTemplatesOptions
+                    "
+                    [options]="masterTemplatesOptions"
+                    [displayedProperty]="'name'"
+                    [outputProperty]="'agreementTemplateId'"
+                    [label]="'Parent master template'"
+                    [formControl]="parentMasterTemplateControl"
+                    (inputEmitter)="masterTemplateOptionsChanged$.next($event)"
+                ></app-dropdown-autocomplete-single-select>
+            </ng-container>
+            <div></div>
+            <ng-container *ngIf="currentMode !== creationModes.Duplicated">
+                <mat-form-field appearance="outline">
+                    <mat-label>Document type</mat-label>
+                    <mat-select
+                        placeholder="Document type"
+                        formControlName="agreementType"
+                    >
+                        <mat-option
+                            *ngFor="let aggreementType of options.agreementType"
+                            [value]="aggreementType.id"
+                            >{{ aggreementType.name }}</mat-option
+                        >
+                    </mat-select>
+                    <mat-error>{{ requiredValidationMessage }}</mat-error>
+                </mat-form-field>
+                <div></div>
+                <mat-form-field appearance="outline">
+                    <mat-label> Recipient type </mat-label>
+                    <mat-select
+                        placeholder="Recipient type"
+                        formControlName="recipientTypeId"
+                    >
+                        <mat-option
+                            *ngFor="
+                                let recipientType of options.recipientTypeId
+                            "
+                            [value]="recipientType.id"
+                            >{{ recipientType.name }}</mat-option
+                        >
+                    </mat-select>
+                    <mat-error>{{ requiredValidationMessage }}</mat-error>
+                </mat-form-field>
+            </ng-container>
+            <div></div>
+            <app-dropdown-autocomplete-single-select
+                *ngIf="clientOptions$ | async as clientOptions"
+                [options]="clientOptions"
+                formControlName="clientId"
+                [label]="'Specific recipient'"
+                [displayedProperty]="'clientName'"
+                [outputProperty]="'clientId'"
+                (inputEmitter)="clientOptionsChanged$.next($event)"
+            >
+            </app-dropdown-autocomplete-single-select>
+            <div></div>
+            <mat-form-field appearance="outline">
+                <mat-label> Template name</mat-label>
+                <input matInput type="text" formControlName="name" />
+                <mat-error>{{ requiredValidationMessage }}</mat-error>
+            </mat-form-field>
+            <div></div>
+            <app-auto-name formControlName="agreementNameTemplate">
+            </app-auto-name>
+            <div></div>
+            <mat-form-field appearance="outline">
+                <mat-label> Definition </mat-label>
+                <input
+                    matInput
+                    type="text"
+                    formControlName="definition"
+                    placeholder="Definition"
+                />
+                <mat-error>{{ requiredValidationMessage }}</mat-error>
+            </mat-form-field>
+            <div></div>
+            <mat-form-field appearance="outline">
+                <mat-label>Internal legal entity</mat-label>
+                <mat-select
+                    formControlName="legalEntities"
+                    placeholder="Internal legal entity"
+                    multiple
+                >
+                    <mat-option
+                        *ngFor="let legalEntity of options.legalEntities"
+                        [value]="legalEntity.id"
+                        >{{ legalEntity.name }}</mat-option
+                    >
+                </mat-select>
+                <mat-error>{{ requiredValidationMessage }}</mat-error>
+            </mat-form-field>
+            <div></div>
+            <mat-form-field appearance="outline">
+                <mat-label>Sales type</mat-label>
+                <mat-select
+                    formControlName="salesTypes"
+                    placeholder="Sales types"
+                    multiple
+                >
+                    <mat-option
+                        *ngFor="let salesType of options.salesTypes"
+                        [value]="salesType.id"
+                    >
+                        {{ salesType.name }}</mat-option
+                    >
+                </mat-select>
+                <mat-error>{{ requiredValidationMessage }}</mat-error>
+            </mat-form-field>
+            <div></div>
+            <mat-form-field appearance="outline">
+                <mat-label>Delivery type</mat-label>
+                <mat-select
+                    formControlName="deliveryTypes"
+                    placeholder="Delivery type"
+                    multiple
+                >
+                    <mat-option
+                        *ngFor="let deliveryType of options.deliveryTypes"
+                        [value]="deliveryType.id"
+                        >{{ deliveryType.name }}</mat-option
+                    >
+                </mat-select>
+                <mat-error>{{ requiredValidationMessage }}</mat-error>
+            </mat-form-field>
+            <div></div>
+            <mat-form-field appearance="outline">
+                <mat-label> Contract type</mat-label>
+                <mat-select
+                    formControlName="contractTypes"
+                    placeholder="Contract type"
+                    multiple
+                >
+                    <mat-option
+                        *ngFor="let contractType of options.contractTypes"
+                        [value]="contractType.id"
+                        >{{ contractType.name }}</mat-option
+                    >
+                </mat-select>
+                <mat-error>{{ requiredValidationMessage }}</mat-error>
+            </mat-form-field>
+            <div></div>
+            <mat-form-field appearance="outline">
+                <mat-label> Language of text</mat-label>
+                <mat-select
+                    formControlName="language"
+                    placeholder="Language of text"
+                >
+                    <mat-option
+                        *ngFor="let language of options.languages"
+                        [value]="language.id"
+                        >{{ language.name }}</mat-option
+                    >
+                </mat-select>
+            </mat-form-field>
+            <div></div>
+            <mat-form-field
+                [style.width.px]="564"
+                appearance="outline"
+                class="text-area"
+            >
+                <mat-label>Notes</mat-label>
+                <textarea
+                    formControlName="note"
+                    matInput
+                    rows="7"
+                    [style.resize]="'none'"
+                ></textarea>
+            </mat-form-field>
+            <div></div>
+            <mat-checkbox formControlName="isSignatureRequired"
+                >Signature required</mat-checkbox
+            >
+            <div></div>
+            <mat-checkbox
+                >Default template for contracts of this type</mat-checkbox
+            >
+            <mat-divider></mat-divider>
+            <h4>Status</h4>
+            <mat-checkbox formControlName="isEnabled">Enable</mat-checkbox>
+            <div></div>
+            <button mat-button (click)="onSave()" [disabled]="!isValid">
+                Save
+            </button>
+            <button mat-button>Cancel</button>
+        </div>
+        <div class="attachments-section">
+            <app-new-file-uploader
+                formControlName="attachments"
+                [inheritedFiles]="preselectedFiles"
+            ></app-new-file-uploader>
+        </div>
+    </div>
+</ng-container>

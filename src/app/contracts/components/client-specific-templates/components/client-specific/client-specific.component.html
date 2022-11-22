@@ -1,0 +1,14 @@
+<div class="">New client specific template</div>
+<nav mat-tab-nav-bar>
+    <a
+        mat-tab-link
+        *ngFor="let tab of tabs"
+        [active]="activeTab === tab.link"
+        [routerLink]="tab.link"
+        (click)="activeTab = tab.link"
+        routerLinkActive="active"
+    >
+        {{ tab.label }}
+    </a>
+</nav>
+<router-outlet></router-outlet>

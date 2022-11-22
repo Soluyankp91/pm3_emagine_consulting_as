@@ -1,6 +1,7 @@
 import { NgModule } from '@angular/core';
 import { RouterModule } from '@angular/router';
 import { AppComponent } from './app.component';
+import { ProductionGuard } from './guards/production.guard';
 
 @NgModule({
   imports: [RouterModule.forChild(
@@ -35,6 +36,11 @@ import { AppComponent } from './app.component';
             data: {preload: true},
             // canLoad: [MsalGuard]
           },
+          {
+            path: 'contracts',
+            loadChildren:() => import('../app/contracts/contracts.module').then(m => m.ContractsModule),
+            canActivate:[ProductionGuard],
+           },
           {
             path: 'notifications',
             loadChildren:() => import('../app/notification/notifications.module').then(m => m.NotificationsModule),

@@ -1,0 +1,78 @@
+<div class="files-container">
+    <h3 class="section-header">Attachments</h3>
+    <mat-spinner
+        *ngIf="isFilesLoading"
+        strokeWidth="5"
+        diameter="50"
+    ></mat-spinner>
+    <ng-container *ngIf="inheritedFiles.length">
+        <h4>From master template</h4>
+        <div *ngFor="let file of inheritedFilesModified" class="file-container">
+            <mat-checkbox
+                *ngIf="file.selected !== undefined"
+                (change)="toggleCheckBox(file)"
+                [checked]="file.selected"
+            >
+                <div class="file-item-left">
+                    <mat-icon
+                        *ngIf="file.icon"
+                        [svgIcon]="file.icon"
+                    ></mat-icon>
+                    <div class="file-label">{{ file.name }}</div>
+                </div>
+                <button mat-icon-button [matMenuTriggerFor]="menu">
+                    <mat-icon>more_horiz</mat-icon>
+                </button>
+                <mat-menu #menu="matMenu">
+                    <button mat-menu-item (click)="downloadAttachment(file)">
+                        Download
+                    </button>
+                </mat-menu>
+            </mat-checkbox>
+        </div>
+        <h4>Current master template</h4>
+    </ng-container>
+    <div class="loaded-files" *ngIf="uploadedFiles$ | async as files">
+        <div *ngFor="let file of files" class="file-container">
+            <div class="file-item-left">
+                <mat-icon *ngIf="file.icon" [svgIcon]="file.icon"></mat-icon>
+                <div class="file-label">{{ file.name }}</div>
+            </div>
+            <button mat-icon-button [matMenuTriggerFor]="menu">
+                <mat-icon>more_horiz</mat-icon>
+            </button>
+            <mat-menu #menu="matMenu">
+                <button mat-menu-item (click)="onFileDelete(file)">
+                    Delete
+                </button>
+            </mat-menu>
+        </div>
+    </div>
+    <div
+        class="file-uploader"
+        appNewFileUploader
+        (filesEmitter)="onFileAdded($event)"
+    >
+        <div (click)="file.click()">
+            <button mat-button class="add-attachment-cell">
+                <div class="button-labels">
+                    <div class="add-button">
+                        <mat-icon svgIcon="add-button"></mat-icon>
+                        <span class="add-label"> Add attachment</span>
+                    </div>
+                    <div class="upload-tip">
+                        Upload or drag and drop file here
+                    </div>
+                </div>
+            </button>
+        </div>
+        <input
+            #file
+            multiple
+            type="file"
+            [accept]="'.pdf,.doc'"
+            (change)="onFileAdded($event.target)"
+            [style.display]="'none'"
+        />
+    </div>
+</div>
