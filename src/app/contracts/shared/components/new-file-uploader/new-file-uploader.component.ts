@@ -162,6 +162,7 @@ export class NewFileUploaderComponent
                     ),
                     1
                 );
+                this._uploadedFiles$.next([]);
             });
     }
 
@@ -219,8 +220,10 @@ export class NewFileUploaderComponent
         );
     }
 
-    writeValue(files: FileUpload[]): void {
+    writeValue(files: { selectedInheritedFiles: []; uploadedFiles: [] }): void {
         this.selectedInheritedFiles = [];
+        this.inheritedFiles = [];
+        this.inheritedFilesModified = [];
         this.deletedFiles = [
             ...this.deletedFiles,
             ...this.files.map((file) => {
@@ -232,9 +235,6 @@ export class NewFileUploaderComponent
         this.inheritedFilesModified.forEach((file) => {
             file.selected = false;
         });
-        if (!files || !files.length) {
-            return;
-        }
     }
 
     private onChange = (val: any) => {};

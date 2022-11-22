@@ -21,7 +21,6 @@ import {
     ValidationErrors,
     Validator,
     ValidatorFn,
-    Validators,
 } from '@angular/forms';
 import { ErrorStateMatcher } from '@angular/material/core';
 import { isEmpty } from 'lodash';
@@ -73,6 +72,7 @@ export class DropdownAutocompleteSingleSelectComponent
 
     ngOnInit(): void {
         this._subsribeOnInputControl();
+        this.inputControl.setErrors({ customRequired: true });
     }
     ngOnChanges(changes: SimpleChanges): void {
         if (changes['options']) {
@@ -93,7 +93,9 @@ export class DropdownAutocompleteSingleSelectComponent
         this.inputControl.valueChanges.subscribe((input) => {
             this.optionSelected = false;
             this.inputEmitter.emit(input);
-            this.onChange(input[this.outputProperty]);
+            if (input[this.outputProperty]) {
+                this.onChange(input[this.outputProperty]);
+            }
         });
     }
 
@@ -115,13 +117,15 @@ export class DropdownAutocompleteSingleSelectComponent
     }
     writeValue(preselectedItem: Item): void {
         if (isEmpty(preselectedItem)) {
-            this.inputControl.setValue('');
+            this.inputControl.setValue('', { emitEvent: false });
+            this.onChange('');
             this.inputControl.markAsPristine();
             this.inputControl.markAsUntouched();
             this.inputControl.updateValueAndValidity();
             return;
         }
-        this.inputControl.setValue(preselectedItem);
+        this.optionSelected = true;
+        this.inputControl.setValue(preselectedItem, { emitEvent: false });
         this.onChange(preselectedItem[this.outputProperty]);
     }
 }
@@ -132,6 +136,6 @@ export class SingleAutoErrorStateMatcher implements ErrorStateMatcher {
         control: FormControl | null,
         form: FormGroupDirective | NgForm | null
     ): boolean {
-        return !!(control?.touched && !(typeof control.value === 'object'));
+        return !!(control?.touched && control?.invalid);
     }
 }

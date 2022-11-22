@@ -5,7 +5,7 @@
         strokeWidth="5"
         diameter="50"
     ></mat-spinner>
-    <ng-container *ngIf="inheritedFiles.length">
+    <ng-container *ngIf="inheritedFilesModified.length">
         <h4>From master template</h4>
         <div *ngFor="let file of inheritedFilesModified" class="file-container">
             <mat-checkbox

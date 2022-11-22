@@ -158,7 +158,7 @@ export class CreateMasterTemplateComponent implements OnInit {
                 ].map((attachment: FileUpload) => {
                     return new AgreementTemplateAttachmentDto(attachment);
                 });
-                agreementPostDto.sourceAgreementTemplateId =
+                agreementPostDto.duplicationSourceAgreementTemplateId =
                     this.duplicateTemplateControl.value;
                 break;
             }

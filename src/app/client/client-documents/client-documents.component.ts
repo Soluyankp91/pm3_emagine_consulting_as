@@ -1,13 +1,35 @@
-import { Component, Injector, OnDestroy, OnInit, ViewChild } from '@angular/core';
+import {
+    Component,
+    Injector,
+    OnDestroy,
+    OnInit,
+    ViewChild,
+} from '@angular/core';
 import { FormArray, FormBuilder, FormControl } from '@angular/forms';
 import { MatTableDataSource } from '@angular/material/table';
 import { AppConsts } from 'src/shared/AppConsts';
-import { ContractsData, DocumentSideNavDto, DocumentSideNavigation, DocumentSideNavItem, GeneralDocumentForm } from './client-documents.model';
+import {
+    ContractsData,
+    DocumentSideNavDto,
+    DocumentSideNavigation,
+    DocumentSideNavItem,
+    GeneralDocumentForm,
+} from './client-documents.model';
 import { AddFileDialogComponent } from './add-file-dialog/add-file-dialog.component';
 import { Overlay } from '@angular/cdk/overlay';
 import { MatDialog } from '@angular/material/dialog';
 import { MatTabGroup } from '@angular/material/tabs';
-import { ClientAttachmentInfoOutputDto, ClientAttachmentTypeEnum, ClientContractViewRootDto, ClientDocumentsServiceProxy, ClientEvaluationOutputDto, DocumentTypeEnum, UpdateClientAttachmentFileInfoInputDto, FileParameter, IdNameDto } from 'src/shared/service-proxies/service-proxies';
+import {
+    ClientAttachmentInfoOutputDto,
+    ClientAttachmentTypeEnum,
+    ClientContractViewRootDto,
+    ClientDocumentsServiceProxy,
+    ClientEvaluationOutputDto,
+    DocumentTypeEnum,
+    UpdateClientAttachmentFileInfoInputDto,
+    FileParameter,
+    IdNameDto,
+} from 'src/shared/service-proxies/service-proxies';
 import { finalize, takeUntil } from 'rxjs/operators';
 import { merge, Subject } from 'rxjs';
 import { ActivatedRoute } from '@angular/router';
@@ -21,10 +43,13 @@ import { AuthenticationResult } from '@azure/msal-browser';
 @Component({
     selector: 'app-client-documents',
     templateUrl: './client-documents.component.html',
-    styleUrls: ['./client-documents.component.scss']
+    styleUrls: ['./client-documents.component.scss'],
 })
-export class ClientDocumentsComponent extends AppComponentBase implements OnInit, OnDestroy {
-    @ViewChild('documentsTabs', {static: false}) documentsTabs: MatTabGroup;
+export class ClientDocumentsComponent
+    extends AppComponentBase
+    implements OnInit, OnDestroy
+{
+    @ViewChild('documentsTabs', { static: false }) documentsTabs: MatTabGroup;
     @ViewChild('fileUploader') fileUploader: FileUploaderComponent;
     clientId: number;
 
@@ -39,7 +64,8 @@ export class ClientDocumentsComponent extends AppComponentBase implements OnInit
     isGeneralDocumentEditing = false;
 
     // Evals tab
-    evalsDocumentsDataSource: MatTableDataSource<any> = new MatTableDataSource<any>();
+    evalsDocumentsDataSource: MatTableDataSource<any> =
+        new MatTableDataSource<any>();
 
     isDataLoading = false;
     selectedCountries: string[] = [];
@@ -57,7 +83,7 @@ export class ClientDocumentsComponent extends AppComponentBase implements OnInit
         'evaluator',
         'comments',
         'local',
-        'english'
+        'english',
     ];
 
     // Contracts tab
@@ -94,38 +120,40 @@ export class ClientDocumentsComponent extends AppComponentBase implements OnInit
         super(injector);
         this.generalDocumentForm = new GeneralDocumentForm();
         this.generalDocumentsIncludeLinked.valueChanges
-            .pipe(
-                takeUntil(this._unsubscribe)
-            ).subscribe(() => this.getGeneralDocuments());
+            .pipe(takeUntil(this._unsubscribe))
+            .subscribe(() => this.getGeneralDocuments());
 
-        merge(this.contractDocumentsIncludeLinked.valueChanges, this.contractDocumentsIncludeExpired.valueChanges)
-            .pipe(
-                takeUntil(this._unsubscribe)
-            ).subscribe(() => this.getContracts());
+        merge(
+            this.contractDocumentsIncludeLinked.valueChanges,
+            this.contractDocumentsIncludeExpired.valueChanges
+        )
+            .pipe(takeUntil(this._unsubscribe))
+            .subscribe(() => this.getContracts());
 
-
-        merge(this.evaluationDocumentDate.valueChanges, this.evaluationDocumentsIncludeLinked.valueChanges)
-            .pipe(
-                takeUntil(this._unsubscribe)
-            ).subscribe(() => this.getEvaluations());
+        merge(
+            this.evaluationDocumentDate.valueChanges,
+            this.evaluationDocumentsIncludeLinked.valueChanges
+        )
+            .pipe(takeUntil(this._unsubscribe))
+            .subscribe(() => this.getEvaluations());
     }
 
     selectSideNav(item: DocumentSideNavDto) {
-        this.documentSideNavigation.forEach(x => x.selected = false);
+        this.documentSideNavigation.forEach((x) => (x.selected = false));
         item.selected = true;
         this.selectedItem = item.enumValue;
     }
 
     ngOnInit(): void {
-        this.activatedRoute.parent!.paramMap.pipe(
-            takeUntil(this._unsubscribe)
-            ).subscribe(params => {
+        this.activatedRoute
+            .parent!.paramMap.pipe(takeUntil(this._unsubscribe))
+            .subscribe((params) => {
                 this.clientId = +params.get('id')!;
                 this.getGeneralFileTypes();
                 this.getGeneralDocuments();
                 this.getContracts();
                 this.getEvaluations();
-        });
+            });
     }
 
     ngOnDestroy(): void {
@@ -134,9 +162,10 @@ export class ClientDocumentsComponent extends AppComponentBase implements OnInit
     }
 
     getGeneralFileTypes() {
-        this._clientDocumentsService.getAvailableStatusForClientAttachments()
+        this._clientDocumentsService
+            .getAvailableStatusForClientAttachments()
             .pipe(finalize(() => {}))
-            .subscribe(result => {
+            .subscribe((result) => {
                 this.generalFileTypes = result;
                 this.getGeneralDocuments();
             });
@@ -144,13 +173,19 @@ export class ClientDocumentsComponent extends AppComponentBase implements OnInit
 
     getGeneralDocuments() {
         this.isGeneralDocumentsLoading = true;
-        this._clientDocumentsService.generalAttachments(this.clientId, this.generalDocumentsIncludeLinked.value)
-            .pipe(finalize(() => this.isGeneralDocumentsLoading = false))
-            .subscribe(result => {
+        this._clientDocumentsService
+            .generalAttachments(
+                this.clientId,
+                this.generalDocumentsIncludeLinked.value
+            )
+            .pipe(finalize(() => (this.isGeneralDocumentsLoading = false)))
+            .subscribe((result) => {
                 this.generalDocumentForm.documents.clear();
-                result.forEach((generalDocument: ClientAttachmentInfoOutputDto) => {
-                    this.addGeneralDocument(generalDocument)
-                });
+                result.forEach(
+                    (generalDocument: ClientAttachmentInfoOutputDto) => {
+                        this.addGeneralDocument(generalDocument);
+                    }
+                );
                 this.generalDocumensNoData = result?.length === 0;
             });
     }
@@ -173,20 +208,33 @@ export class ClientDocumentsComponent extends AppComponentBase implements OnInit
     }
 
     compareWithFn(listOfItems: any, selectedItem: any) {
-        return listOfItems && selectedItem && listOfItems.id === selectedItem.id;;
+        return (
+            listOfItems && selectedItem && listOfItems.id === selectedItem.id
+        );
     }
 
     addGeneralDocument(generalDocument?: ClientAttachmentInfoOutputDto) {
         const form = this._fb.group({
-            clientAttachmentGuid: new FormControl(generalDocument?.clientAttachmentGuid ?? null),
-            documentStorageGuid: new FormControl(generalDocument?.documentStorageGuid ?? null),
-            icon: new FormControl(this.getFileTypeIcon(generalDocument?.documentType!) ?? null),
+            clientAttachmentGuid: new FormControl(
+                generalDocument?.clientAttachmentGuid ?? null
+            ),
+            documentStorageGuid: new FormControl(
+                generalDocument?.documentStorageGuid ?? null
+            ),
+            icon: new FormControl(
+                this.getFileTypeIcon(generalDocument?.documentType!) ?? null
+            ),
             headline: new FormControl(generalDocument?.headline ?? null),
             filename: new FormControl(generalDocument?.filename ?? null),
-            attachmentTypeId: new FormControl(this.findItemById(this.generalFileTypes, generalDocument?.attachmentTypeId) ?? null),
+            attachmentTypeId: new FormControl(
+                this.findItemById(
+                    this.generalFileTypes,
+                    generalDocument?.attachmentTypeId
+                ) ?? null
+            ),
             dateUpdated: new FormControl(generalDocument?.dateUpdated ?? null),
             updatedBy: new FormControl(generalDocument?.updatedBy ?? null),
-            editable: new FormControl(generalDocument ? false : true)
+            editable: new FormControl(generalDocument ? false : true),
         });
         this.generalDocumentForm.documents.push(form);
     }
@@ -197,9 +245,10 @@ export class ClientDocumentsComponent extends AppComponentBase implements OnInit
 
     deleteGeneralDocument(clientAttachmentGuid: string) {
         this.showMainSpinner();
-        this._clientDocumentsService.generalFileDelete(this.clientId, clientAttachmentGuid)
+        this._clientDocumentsService
+            .generalFileDelete(this.clientId, clientAttachmentGuid)
             .pipe(finalize(() => this.hideMainSpinner()))
-            .subscribe(result => {
+            .subscribe((result) => {
                 this.getGeneralDocuments();
             });
     }
@@ -214,18 +263,29 @@ export class ClientDocumentsComponent extends AppComponentBase implements OnInit
             const formRow = this.documents.at(index).value;
             this.generalDocumentToEdit = {
                 headline: formRow.headline,
-                fileType: formRow.attachmentTypeId
+                fileType: formRow.attachmentTypeId,
             };
         }
         this.isGeneralDocumentEditing = !this.isGeneralDocumentEditing;
-        this.documents.at(index).get('editable')?.setValue(!isEditMode, {emitEvent: false});
+        this.documents
+            .at(index)
+            .get('editable')
+            ?.setValue(!isEditMode, { emitEvent: false });
     }
 
     cancelEditGeneralDocument(index: number) {
         const formRow = this.documents.at(index);
-        formRow!.get('headline')!.setValue(this.generalDocumentToEdit.headline, {emitEvent: false});
-        formRow!.get('attachmentTypeId')!.setValue(this.generalDocumentToEdit.fileType, {emitEvent: false});
-        formRow!.get('editable')!.setValue(false, {emitEvent: false});
+        formRow!
+            .get('headline')!
+            .setValue(this.generalDocumentToEdit.headline, {
+                emitEvent: false,
+            });
+        formRow!
+            .get('attachmentTypeId')!
+            .setValue(this.generalDocumentToEdit.fileType, {
+                emitEvent: false,
+            });
+        formRow!.get('editable')!.setValue(false, { emitEvent: false });
         this.generalDocumentToEdit = {};
         this.isGeneralDocumentEditing = false;
     }
@@ -237,14 +297,15 @@ export class ClientDocumentsComponent extends AppComponentBase implements OnInit
         input.headline = form.headline;
         input.fileType = form.attachmentTypeId?.id;
         this.showMainSpinner();
-        this._clientDocumentsService.generalFilePut(this.clientId!, input)
-            .pipe(finalize(() => {
-                this.hideMainSpinner();
-                this.getGeneralDocuments();
-            }))
-            .subscribe(result => {
-
-            });
+        this._clientDocumentsService
+            .generalFilePut(this.clientId!, input)
+            .pipe(
+                finalize(() => {
+                    this.hideMainSpinner();
+                    this.getGeneralDocuments();
+                })
+            )
+            .subscribe((result) => {});
     }
 
     openDialogToAddFile(files: FileUploaderFile[]) {
@@ -257,28 +318,37 @@ export class ClientDocumentsComponent extends AppComponentBase implements OnInit
             scrollStrategy,
             backdropClass: 'backdrop-modal--wrapper',
             data: {
-                fileToUpload
-            }
+                fileToUpload,
+            },
         });
 
-        dialogRef.componentInstance.onConfirmed.subscribe((result: {attachmentTypeId: number, file: FileUploaderFile}) => {
-            if (result?.attachmentTypeId) {
-                let fileInput: FileParameter;
-                fileInput = {
-                    fileName: result.file.name,
-                    data: result.file.internalFile
+        dialogRef.componentInstance.onConfirmed.subscribe(
+            (result: { attachmentTypeId: number; file: FileUploaderFile }) => {
+                if (result?.attachmentTypeId) {
+                    let fileInput: FileParameter;
+                    fileInput = {
+                        fileName: result.file.name,
+                        data: result.file.internalFile,
+                    };
+                    this.showMainSpinner();
+                    this._clientDocumentsService
+                        .generalFilePost(
+                            this.clientId!,
+                            result.attachmentTypeId,
+                            fileInput
+                        )
+                        .pipe(
+                            finalize(() => {
+                                this.hideMainSpinner();
+                                this.fileUploader.clear();
+                            })
+                        )
+                        .subscribe((response) => {
+                            this.getGeneralDocuments();
+                        });
                 }
-                this.showMainSpinner();
-                this._clientDocumentsService.generalFilePost(this.clientId!, result.attachmentTypeId, fileInput)
-                    .pipe(finalize(() => {
-                        this.hideMainSpinner();
-                        this.fileUploader.clear();
-                    }))
-                    .subscribe(response => {
-                        this.getGeneralDocuments();
-                    });
             }
-        });
+        );
 
         dialogRef.componentInstance.onRejected.subscribe(() => {
             this.fileUploader.clear();
@@ -290,7 +360,7 @@ export class ClientDocumentsComponent extends AppComponentBase implements OnInit
             const reader = new FileReader();
             reader.readAsDataURL(file);
             reader.onload = () => resolve(reader.result!);
-            reader.onerror = error => reject(error);
+            reader.onerror = (error) => reject(error);
         });
     }
 
@@ -312,36 +382,60 @@ export class ClientDocumentsComponent extends AppComponentBase implements OnInit
     }
 
     downloadDocument(clientAttachmentGuid: string) {
-        this.localHttpService.getTokenPromise().then((response: AuthenticationResult) => {
-            const fileUrl = `${this.apiUrl}/api/ClientDocuments/Document/${clientAttachmentGuid}`;
-            this.httpClient.get(fileUrl, {
-                headers: new HttpHeaders({
-                    'Authorization': `Bearer ${response.accessToken}`,
-                }), responseType: 'blob',
-                observe: 'response'
-            }).subscribe((data: HttpResponse<Blob>) => {
-                const blob = new Blob([data.body!], { type: data.body!.type });
-                const contentDispositionHeader = data.headers.get('Content-Disposition');
-                if (contentDispositionHeader !== null) {
-                    const contentDispositionHeaderResult = contentDispositionHeader.split(';')[1].trim().split('=')[1];
-                    const contentDispositionFileName = contentDispositionHeaderResult.replace(/"/g, '');
-                    const downloadlink = document.createElement('a');
-                    downloadlink.href = window.URL.createObjectURL(blob);
-                    downloadlink.download = contentDispositionFileName;
-                    const nav = (window.navigator as any);
+        this.localHttpService
+            .getTokenPromise()
+            .then((response: AuthenticationResult) => {
+                const fileUrl = `${this.apiUrl}/api/ClientDocuments/Document/${clientAttachmentGuid}`;
+                this.httpClient
+                    .get(fileUrl, {
+                        headers: new HttpHeaders({
+                            Authorization: `Bearer ${response.accessToken}`,
+                        }),
+                        responseType: 'blob',
+                        observe: 'response',
+                    })
+                    .subscribe((data: HttpResponse<Blob>) => {
+                        const blob = new Blob([data.body!], {
+                            type: data.body!.type,
+                        });
+                        const contentDispositionHeader = data.headers.get(
+                            'Content-Disposition'
+                        );
+                        if (contentDispositionHeader !== null) {
+                            const contentDispositionHeaderResult =
+                                contentDispositionHeader
+                                    .split(';')[1]
+                                    .trim()
+                                    .split('=')[1];
+                            const contentDispositionFileName =
+                                contentDispositionHeaderResult.replace(
+                                    /"/g,
+                                    ''
+                                );
+                            const downloadlink = document.createElement('a');
+                            downloadlink.href =
+                                window.URL.createObjectURL(blob);
+                            downloadlink.download = contentDispositionFileName;
+                            const nav = window.navigator as any;
 
-                    if (nav.msSaveOrOpenBlob) {
-                        nav.msSaveBlob(blob, contentDispositionFileName);
-                    } else {
-                        downloadlink.click();
-                    }
-                }
+                            if (nav.msSaveOrOpenBlob) {
+                                nav.msSaveBlob(
+                                    blob,
+                                    contentDispositionFileName
+                                );
+                            } else {
+                                downloadlink.click();
+                            }
+                        }
+                    });
             });
-        });
     }
 
     editGeneralDocument(isEditMode: boolean, index: number) {
-        this.documents.at(index).get('editable')?.setValue(!isEditMode, {emitEvent: false});
+        this.documents
+            .at(index)
+            .get('editable')
+            ?.setValue(!isEditMode, { emitEvent: false });
         if (isEditMode) {
             this.saveOrUpdateGeneralDocument(index);
         }
@@ -354,34 +448,59 @@ export class ClientDocumentsComponent extends AppComponentBase implements OnInit
     }
 
     sortChanged(event?: any): void {
-        this.sorting = event.direction && event.direction.length ? event.active.concat(' ', event.direction) : '';
+        this.sorting =
+            event.direction && event.direction.length
+                ? event.active.concat(' ', event.direction)
+                : '';
         this.getEvaluations();
     }
 
     getContracts() {
         this.isContractsLoading = true;
-        this._clientDocumentsService.contractDocuments(this.clientId, this.contractDocumentsIncludeLinked.value, this.contractDocumentsIncludeExpired.value)
-            .pipe(finalize(() => this.isContractsLoading = false))
-            .subscribe(result => {
+        this._clientDocumentsService
+            .contractDocuments(
+                this.clientId,
+                this.contractDocumentsIncludeLinked.value,
+                this.contractDocumentsIncludeExpired.value
+            )
+            .pipe(finalize(() => (this.isContractsLoading = false)))
+            .subscribe((result) => {
                 this.contractsDocuments = result;
-            })
+            });
     }
 
     getEvaluations() {
         this.isDataLoading = true;
-        this._clientDocumentsService.evaluations(this.clientId, this.evaluationDocumentsIncludeLinked.value, this.evaluationDocumentDate.value)
-            .pipe(finalize(() => this.isDataLoading = false))
-            .subscribe(result => {
-                this.evalsDocumentsDataSource = new MatTableDataSource<ClientEvaluationOutputDto>(result);
-                this.totalCount = result.length;
+        this._clientDocumentsService
+            .evaluations(
+                this.clientId,
+                this.evaluationDocumentsIncludeLinked.value,
+                this.evaluationDocumentDate.value
+            )
+            .pipe(finalize(() => (this.isDataLoading = false)))
+            .subscribe((result) => {
+                this.evalsDocumentsDataSource =
+                    new MatTableDataSource<ClientEvaluationOutputDto>(
+                        result as any
+                    );
+                this.totalCount = (result as any).length;
             });
     }
 
-    downloadEvaluationDocument(row: ClientEvaluationOutputDto, useLocalLanguage: boolean, forcePdf: boolean) {
-        this._clientDocumentsService.evaluation(row.legacyConsultantId!, row.evaluationTenantId!, row.evaluationGuid!, useLocalLanguage, forcePdf)
+    downloadEvaluationDocument(
+        row: ClientEvaluationOutputDto,
+        useLocalLanguage: boolean,
+        forcePdf: boolean
+    ) {
+        this._clientDocumentsService
+            .evaluation(
+                row.legacyConsultantId!,
+                row.evaluationTenantId!,
+                row.evaluationGuid!,
+                useLocalLanguage,
+                forcePdf
+            )
             .pipe(finalize(() => {}))
-            .subscribe(result => {
-            });
+            .subscribe((result) => {});
     }
-
 }

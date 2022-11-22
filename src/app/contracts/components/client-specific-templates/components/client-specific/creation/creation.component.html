@@ -1,30 +1,32 @@
 <ng-container *ngIf="options$ | async as options">
-    <mat-radio-group
-        [style.display]="'flex'"
-        [style.flexDirection]="'column'"
-        [formControl]="creationModeControl"
-    >
-        <mat-radio-button
-            [value]="creationModes.InheritedFromParent"
-            (click)="this.modeControl.next(creationModes.InheritedFromParent)"
-        >
-            Inherit from master template
-        </mat-radio-button>
-        <mat-radio-button
-            [value]="creationModes.Duplicated"
-            (click)="this.modeControl.next(creationModes.Duplicated)"
-        >
-            Duplicate from client specific template</mat-radio-button
-        >
-        <mat-radio-button
-            [value]="creationModes.FromScratch"
-            (click)="this.modeControl.next(creationModes.FromScratch)"
-        >
-            Create from scratch
-        </mat-radio-button>
-    </mat-radio-group>
-    <div [formGroup]="clientTemplateFormGroup" [style.display]="'flex'">
+    <form [formGroup]="clientTemplateFormGroup" [style.display]="'flex'">
         <div>
+            <mat-radio-group
+                [style.display]="'flex'"
+                [style.flexDirection]="'column'"
+                [formControl]="creationModeControl"
+            >
+                <mat-radio-button
+                    [value]="creationModes.InheritedFromParent"
+                    (click)="
+                        this.modeControl.next(creationModes.InheritedFromParent)
+                    "
+                >
+                    Inherit from master template
+                </mat-radio-button>
+                <mat-radio-button
+                    [value]="creationModes.Duplicated"
+                    (click)="this.modeControl.next(creationModes.Duplicated)"
+                >
+                    Duplicate from client specific template</mat-radio-button
+                >
+                <mat-radio-button
+                    [value]="creationModes.FromScratch"
+                    (click)="this.modeControl.next(creationModes.FromScratch)"
+                >
+                    Create from scratch
+                </mat-radio-button>
+            </mat-radio-group>
             <ng-container *ngIf="currentMode === creationModes.Duplicated">
                 <app-dropdown-autocomplete-single-select
                     *ngIf="
@@ -57,40 +59,37 @@
                     (inputEmitter)="masterTemplateOptionsChanged$.next($event)"
                 ></app-dropdown-autocomplete-single-select>
             </ng-container>
+
             <div></div>
-            <ng-container *ngIf="currentMode !== creationModes.Duplicated">
-                <mat-form-field appearance="outline">
-                    <mat-label>Document type</mat-label>
-                    <mat-select
-                        placeholder="Document type"
-                        formControlName="agreementType"
+            <mat-form-field appearance="outline">
+                <mat-label>Document type</mat-label>
+                <mat-select
+                    placeholder="Document type"
+                    formControlName="agreementType"
+                >
+                    <mat-option
+                        *ngFor="let aggreementType of options.agreementType"
+                        [value]="aggreementType.id"
+                        >{{ aggreementType.name }}</mat-option
                     >
-                        <mat-option
-                            *ngFor="let aggreementType of options.agreementType"
-                            [value]="aggreementType.id"
-                            >{{ aggreementType.name }}</mat-option
-                        >
-                    </mat-select>
-                    <mat-error>{{ requiredValidationMessage }}</mat-error>
-                </mat-form-field>
-                <div></div>
-                <mat-form-field appearance="outline">
-                    <mat-label> Recipient type </mat-label>
-                    <mat-select
-                        placeholder="Recipient type"
-                        formControlName="recipientTypeId"
+                </mat-select>
+                <mat-error>{{ requiredValidationMessage }}</mat-error>
+            </mat-form-field>
+            <div></div>
+            <mat-form-field appearance="outline">
+                <mat-label> Recipient type </mat-label>
+                <mat-select
+                    placeholder="Recipient type"
+                    formControlName="recipientTypeId"
+                >
+                    <mat-option
+                        *ngFor="let recipientType of options.recipientTypeId"
+                        [value]="recipientType.id"
+                        >{{ recipientType.name }}</mat-option
                     >
-                        <mat-option
-                            *ngFor="
-                                let recipientType of options.recipientTypeId
-                            "
-                            [value]="recipientType.id"
-                            >{{ recipientType.name }}</mat-option
-                        >
-                    </mat-select>
-                    <mat-error>{{ requiredValidationMessage }}</mat-error>
-                </mat-form-field>
-            </ng-container>
+                </mat-select>
+                <mat-error>{{ requiredValidationMessage }}</mat-error>
+            </mat-form-field>
             <div></div>
             <app-dropdown-autocomplete-single-select
                 *ngIf="clientOptions$ | async as clientOptions"
@@ -227,10 +226,6 @@
             <h4>Status</h4>
             <mat-checkbox formControlName="isEnabled">Enable</mat-checkbox>
             <div></div>
-            <button mat-button (click)="onSave()" [disabled]="!isValid">
-                Save
-            </button>
-            <button mat-button>Cancel</button>
         </div>
         <div class="attachments-section">
             <app-new-file-uploader
@@ -238,5 +233,16 @@
                 [inheritedFiles]="preselectedFiles"
             ></app-new-file-uploader>
         </div>
+    </form>
+    <div
+        [style.display]="'flex'"
+        [style.justify-content]="'space-between'"
+        [style.background-color]="'#fff'"
+        [style.height.px]="64"
+    >
+        <button mat-button>Cancel</button>
+        <button mat-button (click)="onSave()" [disabled]="!isValid">
+            Save
+        </button>
     </div>
 </ng-container>

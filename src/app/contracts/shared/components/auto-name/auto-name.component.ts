@@ -31,6 +31,7 @@ export type AutoName = { [key: string]: any } & {
 };
 export function customAutoNameRequiredValidator(): ValidatorFn {
     return (control: AbstractControl): ValidationErrors | null => {
+        console.log(control.value);
         return !control.value.length ? { customRequired: true } : null;
     };
 }
@@ -220,13 +221,23 @@ export class AutoNameComponent
             this.displayedOptionItems = this.optionItems;
             this.textControl.setValue(buildedView, { emitEvent: false });
             this.input.nativeElement.value = buildedView;
+            this.chipsControl.setValue(this.selectedOptions);
+            this.matcher.matchipsLength = this.selectedOptions.length;
             this.textControl.disable();
         } else {
+            this.chipsControl.markAsPristine();
+            this.chipsControl.markAsUntouched();
+            if (this.input) {
+                this.input.nativeElement.value = '';
+            }
             this._preselectAutoNames([]);
-            this.textControl.setValue('');
-            this.displayedOptionItems = [];
-            this.sampleData = false;
             this.textControl.enable();
+            this.textControl.setValue('');
+            this.displayedOptionItems.forEach(
+                (option) => (option.selected = false)
+            );
+            this.selectedOptions = [];
+            this.sampleData = false;
             this.onChange('');
         }
     }

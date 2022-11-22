@@ -73,6 +73,7 @@ export class CreationComponent extends AppComponentBase implements OnInit {
     isDirty: boolean = false;
     isValid: boolean = false;
 
+    isDuplicateFromInherited = false;
     requiredValidationMessage = REQUIRED_VALIDATION_MESSAGE;
     //parent template && client template controls
     parentMasterTemplateControl = new FormControl({});
@@ -152,18 +153,25 @@ export class CreationComponent extends AppComponentBase implements OnInit {
         this.clientOptions$ = this.clientOptionsChanged$.pipe(
             startWith(''),
             switchMap((searchInput) => {
-                console.log(searchInput);
+                //console.log(searchInput);
                 return this.lookupServiceProxy.clients(searchInput, 20);
             })
         );
     }
     private _subscribeOnStatusChanges() {
         this.clientTemplateFormGroup.statusChanges.subscribe((status) => {
+            const invalid = [];
+            const controls = this.clientTemplateFormGroup.controls;
+            for (const name in controls) {
+                if (controls[name].invalid) {
+                    invalid.push(name);
+                }
+            }
+            //console.log(invalid);
             if (status === 'VALID') {
                 return (this.isValid = true);
             }
             this.isValid = false;
-            console.log(this.isValid);
         });
     }
     ngOnInit(): void {
@@ -226,7 +234,7 @@ export class CreationComponent extends AppComponentBase implements OnInit {
                 ].map((attachment: FileUpload) => {
                     return new AgreementTemplateAttachmentDto(attachment);
                 });
-                agreementPostDto.sourceAgreementTemplateId =
+                agreementPostDto.duplicationSourceAgreementTemplateId =
                     this.clientTemplateControl.value;
                 break;
             }
@@ -237,6 +245,7 @@ export class CreationComponent extends AppComponentBase implements OnInit {
             )
             .subscribe();
     }
+
     private _subscribeOnDirtyStatus() {
         this.clientTemplateFormGroup.valueChanges
             .pipe(
@@ -247,6 +256,7 @@ export class CreationComponent extends AppComponentBase implements OnInit {
                 this.isDirty = isDirty;
             });
     }
+
     private _subscribeOnMasterTemplateChanges() {
         this.parentMasterTemplateControl.valueChanges
             .pipe(
@@ -296,22 +306,46 @@ export class CreationComponent extends AppComponentBase implements OnInit {
             isEnabled: data.isEnabled,
             attachments: [],
         });
-        this.preselectedFiles = data.attachments?.map(
-            (attachment) =>
-                Object.assign(
-                    {},
-                    {
-                        agreementTemplateAttachmentId:
-                            attachment.agreementTemplateAttachmentId,
-                        name: attachment.name,
-                    }
-                ) as FileUpload
-        ) as FileUpload[];
+        this.preselectedFiles = [
+            ...(data.attachments?.map(
+                (attachment) =>
+                    Object.assign(
+                        {},
+                        {
+                            agreementTemplateAttachmentId:
+                                attachment.agreementTemplateAttachmentId,
+                            name: attachment.name,
+                        }
+                    ) as FileUpload
+            ) as FileUpload[]),
+            ...(data.attachmentsFromParent
+                ? data.attachmentsFromParent.map(
+                      (attachment) =>
+                          Object.assign(
+                              {},
+                              {
+                                  agreementTemplateAttachmentId:
+                                      attachment.agreementTemplateAttachmentId,
+                                  name: attachment.name,
+                              }
+                          ) as FileUpload
+                  )
+                : []),
+        ];
+        this.isDuplicateFromInherited = !!data.parentAgreementTemplateId;
+        this._updateDisabledStateForDuplicate();
         this.cdr.detectChanges();
+    }
+    private _updateDisabledStateForDuplicate() {
+        if (this.isDuplicateFromInherited) {
+            this._disableControls();
+        } else {
+            this._enableControls();
+        }
     }
     private _subscribeOnFormChanges() {
         this.clientTemplateFormGroup.valueChanges.subscribe((formValue) => {
-            console.log(formValue);
+            //console.log(formValue);
         });
     }
     private _subscribeOnCreationModeResolver() {
@@ -355,7 +389,6 @@ export class CreationComponent extends AppComponentBase implements OnInit {
                 break;
             }
             case AgreementCreationMode.Duplicated: {
-                this._disableControls();
                 this.clientTemplateFormGroup.reset(
                     this.dirtyCheckService.initialFormValue$.value
                 );
