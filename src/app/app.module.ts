@@ -121,6 +121,12 @@ export class AppModule {
     constructor(iconRegistry: MatIconRegistry, sanitizer: DomSanitizer) {
         // MENU ICONS REGISRTY
         iconRegistry.addSvgIcon(
+            'create-icon',
+            sanitizer.bypassSecurityTrustResourceUrl(
+                'assets/common/images/create-icon.svg'
+            )
+        );
+        iconRegistry.addSvgIcon(
             'evaluation-menu',
             sanitizer.bypassSecurityTrustResourceUrl(
                 'assets/common/images/menu/achievement-menu.svg'
@@ -671,11 +677,6 @@ export class AppModule {
                 'assets/common/images/logout-icon.svg'
             )
         );
-        iconRegistry.addSvgIcon(
-            'create-icon',
-            sanitizer.bypassSecurityTrustResourceUrl(
-                'assets/common/images/create-icon.svg'
-            )
-        );
+        
     }
 }
