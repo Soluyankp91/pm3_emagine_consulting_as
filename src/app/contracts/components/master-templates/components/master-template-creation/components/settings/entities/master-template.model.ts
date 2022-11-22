@@ -1,18 +1,18 @@
-import { FormControl, FormGroup } from '@angular/forms';
+import { FormControl, FormGroup, Validators } from '@angular/forms';
 
 export class MasterTemplateModel extends FormGroup {
     constructor() {
         super({
-            agreementType: new FormControl({}),
-            recipientTypeId: new FormControl({}),
-            name: new FormControl(''),
-            agreementNameTemplate: new FormControl(''),
+            agreementType: new FormControl({}, [Validators.required]),
+            recipientTypeId: new FormControl({}, [Validators.required]),
+            name: new FormControl('', [Validators.required]),
+            agreementNameTemplate: new FormControl('', [Validators.required]),
             definition: new FormControl(''),
-            legalEntities: new FormControl([]),
-            salesTypes: new FormControl([]),
-            deliveryTypes: new FormControl([]),
-            contractTypes: new FormControl([]),
-            language: new FormControl({}),
+            legalEntities: new FormControl([], [Validators.required]),
+            salesTypes: new FormControl([], [Validators.required]),
+            deliveryTypes: new FormControl([], [Validators.required]),
+            contractTypes: new FormControl([], [Validators.required]),
+            language: new FormControl('', [Validators.required]),
             note: new FormControl(''),
             isSignatureRequired: new FormControl(false),
             isEnabled: new FormControl(false),

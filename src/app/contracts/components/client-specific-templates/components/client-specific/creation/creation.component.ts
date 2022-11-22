@@ -160,14 +160,6 @@ export class CreationComponent extends AppComponentBase implements OnInit {
     }
     private _subscribeOnStatusChanges() {
         this.clientTemplateFormGroup.statusChanges.subscribe((status) => {
-            const invalid = [];
-            const controls = this.clientTemplateFormGroup.controls;
-            for (const name in controls) {
-                if (controls[name].invalid) {
-                    invalid.push(name);
-                }
-            }
-            //console.log(invalid);
             if (status === 'VALID') {
                 return (this.isValid = true);
             }

@@ -41,7 +41,7 @@
                         {{ agreementType.name }}
                     </mat-option>
                 </mat-select>
-                <mat-error>This field is mandatory</mat-error>
+                <mat-error>{{ requiredValidationMessage }}</mat-error>
             </mat-form-field>
             <mat-form-field
                 class="dropdown"
@@ -212,7 +212,7 @@
                 >Signature required</mat-checkbox
             >
             <div></div>
-            <mat-checkbox formControlName="defaultTemplate"
+            <mat-checkbox
                 >Default template for contracts of this type</mat-checkbox
             >
             <mat-divider></mat-divider>

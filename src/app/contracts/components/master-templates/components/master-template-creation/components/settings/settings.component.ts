@@ -24,6 +24,7 @@ import { ActivatedRoute, Router } from '@angular/router';
 import { BaseEnumDto } from 'src/app/contracts/shared/entities/contracts.interfaces';
 import { FileUpload } from 'src/app/contracts/shared/components/new-file-uploader/new-file-uploader.interface';
 import { MasterTemplateModel } from './entities/master-template.model';
+import { REQUIRED_VALIDATION_MESSAGE } from 'src/app/contracts/shared/entities/contracts.constants';
 
 @Component({
     selector: 'app-settings',
@@ -41,10 +42,14 @@ export class CreateMasterTemplateComponent implements OnInit {
     createControl = new FormControl();
     duplicateTemplateControl = new FormControl();
 
-    attachmentFiles: any[] = [];
+    isDirty: boolean = false;
+
+    attachmentFiles: FileUpload[] = [];
 
     masterTemplateFormGroup = new MasterTemplateModel();
     isFormValid = false;
+
+    requiredValidationMessage = REQUIRED_VALIDATION_MESSAGE;
 
     autoNames: string[];
 
