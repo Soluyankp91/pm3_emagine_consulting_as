@@ -1,5 +1,5 @@
-<mat-dialog-content class="confiramtion-dialog">
-    <div mat-dialog-title class="confiramtion-dialog--header" align="center">
+<mat-dialog-content class="confirmation-dialog">
+    <div mat-dialog-title class="confirmation-dialog--header" align="center">
         Create workflow
     </div>
     <h3>Select workflow start and end dates</h3>
@@ -14,7 +14,9 @@
                     appPreventDoubleClick (throttledClick)="startDatePicker.open()" readonly>
             <mat-icon class="calendar-icon" matSuffix svgIcon="calendar"></mat-icon>
             <mat-datepicker #startDatePicker></mat-datepicker>
-            <app-validator [control]="startDate"></app-validator>
+            <mat-error>
+                <app-validator [control]="startDate"></app-validator>
+            </mat-error>
         </mat-form-field>
 
         <div fxLayout="column" fxLayoutAlign="start start" fxFlex="50%">
@@ -29,15 +31,17 @@
                         appPreventDoubleClick (throttledClick)="endDatePicker.open()" readonly>
                 <mat-icon class="calendar-icon" matSuffix svgIcon="calendar"></mat-icon>
                 <mat-datepicker #endDatePicker></mat-datepicker>
-                <app-validator [control]="endDate"></app-validator>
+                <mat-error>
+                    <app-validator [control]="endDate"></app-validator>
+                </mat-error>
             </mat-form-field>
-            <mat-checkbox color="accent" [formControl]="noEndDate" name="noEndDate" class="black-checkbox u-mr--10" (change)="disableOrEnableInput(noEndDate.value, endDate)">
+            <mat-checkbox color="accent" [formControl]="noEndDate" name="noEndDate" class="black-checkbox u-mr--10 u-mt--10" (change)="disableOrEnableInput(noEndDate.value, endDate)">
                 No end date
             </mat-checkbox>
         </div>
     </div>
 </mat-dialog-content>
-<mat-dialog-actions class="confiramtion-dialog--actions">
+<mat-dialog-actions class="confirmation-dialog--actions">
     <button mat-flat-button class="dialog-btn dialog-btn__outlined" appPreventDoubleClick (throttledClick)="reject()">
         Cancel
     </button>

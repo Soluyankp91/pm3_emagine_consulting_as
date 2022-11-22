@@ -48,7 +48,7 @@
         </div>
         <div fxFlex="10%" fxLayoutAlign="end center">
             <button *ngIf="selectedTabName === 'Overview'" mat-icon-button class="workflow-icon--notes u-mr--16" appPreventDoubleClick (throttledClick)="showOrHideNotes()"><mat-icon svgIcon="notes-icon"></mat-icon></button>
-            <button mat-icon-button #menuActionsTrigger="matMenuTrigger" [matMenuTriggerFor]="workflowMenu" class="workflow-icon--actions"><mat-icon>more_horiz</mat-icon></button>
+            <button mat-icon-button #menuActionsTrigger="matMenuTrigger" [matMenuTriggerFor]="workflowMenu" class="workflow-icon--actions"><mat-icon svgIcon="3-dots-green"></mat-icon></button>
             <mat-menu #workflowMenu>
                 <button
                     *ngIf="individualConsultantActionsAvailable"
@@ -85,13 +85,11 @@
         </div>
     </div>
 
-
-
     <div *ngIf="topToolbarVisible" fxLayout="row" fxLayoutAlign="start center" class="workflow-toolbar u-w--100">
         <p class="workflow-toolbar--client u-mr--20">{{workflowClient?.length ? workflowClient : 'New workflow'}}</p>
     </div>
 
-    <div class="workflow-content u-w--100" id="workflowDetails">
+    <div class="workflow-content pos-relative u-w--100" id="workflowDetails">
         <mat-tab-group #topMenuTabs class="workflow-content--tabs u-w--100" (selectedTabChange)="tabChanged($event)" [(selectedIndex)]="selectedIndex">
             <mat-tab label="Overview">
                 <ng-template mat-tab-label>
@@ -104,7 +102,7 @@
                 </ng-template>
                 <div class="workflow-form--panel pos-relative u-w--100">
                     <app-workflow-overview [periodId]="clientPeriods![0]?.id"></app-workflow-overview>
-                    <div *ngIf="isNoteVisible" class="workflow-notes-wrapper">
+                    <div *ngIf="isNoteVisible" class="workflow-notes-wrapper wrapper-overlay">
                         <app-workflow-notes (noteHidden)="isNoteVisible = !isNoteVisible" [topToolbarVisible]="topToolbarVisible" [workflowId]="workflowId" [alwaysVisible]="false"></app-workflow-notes>
                     </div>
                 </div>
@@ -116,16 +114,16 @@
                     </div>
                     <span class="tab-subheader">{{tab.startDate | momentFormat: 'DD.MM.YYYY'}} - {{tab.endDate ? (tab.endDate | momentFormat: 'DD.MM.YYYY') : '...'}}</span>
                 </ng-template>
-                <div fxLayout="row" fxLayoutAlign="start start" class="workflow-form--panel u-w--100">
+                <div fxLayout="row" fxLayoutAlign="start start" class="workflow-form--panel u-w--100 u-mb--50">
                     <div fxFlex="80%">
                         <app-workflow-period #workflowPeriod *ngIf="selectedIndex === i + 1" [periodId]="tab.id" [workflowId]="workflowId"></app-workflow-period>
-                    </div>
-                    <div fxFlex="20%" class="workflow-notes-wrapper">
-                        <app-workflow-notes *ngIf="selectedIndex === i + 1" [topToolbarVisible]="topToolbarVisible" [workflowId]="workflowId" [alwaysVisible]="true"></app-workflow-notes>
                     </div>
                 </div>
             </mat-tab>
         </mat-tab-group>
+        <div class="workflow-notes-wrapper">
+            <app-workflow-notes *ngIf="selectedTabName !== 'Overview'" [topToolbarVisible]="topToolbarVisible" [workflowId]="workflowId" [alwaysVisible]="true"></app-workflow-notes>
+        </div>
         <div fxLayout="row" [fxLayoutAlign]="_workflowDataService.getWorkflowProgress.currentStepIsForcefullyEditing ? 'space-between center' : 'end center'" class="workflow-controls" *ngIf="bottomToolbarVisible">
             <button mat-flat-button
                     class="button-cancel mat-elevation-z0 u-mr--16"

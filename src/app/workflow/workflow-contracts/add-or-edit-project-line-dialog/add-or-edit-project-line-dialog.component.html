@@ -1,5 +1,5 @@
-<mat-dialog-content class="confiramtion-dialog">
-    <div mat-dialog-title class="confiramtion-dialog--header" align="start">
+<mat-dialog-content class="confirmation-dialog">
+    <div mat-dialog-title class="confirmation-dialog--header" align="start">
         <span class="text-bold-800">
             <ng-container [ngSwitch]="data.dialogType">
                 <ng-container *ngSwitchCase="dialogType.Create">
@@ -10,7 +10,7 @@
                 </ng-container>
             </ng-container>
         </span>
-        <mat-icon class="confiramtion-dialog--header-close-icon" (click)="close()">close</mat-icon>
+        <mat-icon class="confirmation-dialog--header-close-icon" (click)="close()">close</mat-icon>
     </div>
     <form [formGroup]="projectLineForm">
         <div fxLayout="row" fxLayoutAlign="start start" fxLayoutGap="30px">
@@ -20,7 +20,9 @@
                     <textarea matInput autocomplete="new-password" maxlength="250" [matTextareaAutosize]="true" [matAutosizeMinRows]="2" name="projectName" formControlName="projectName">
                     </textarea>
                     <mat-hint [ngClass]="{'hint-reached-maximum-characters': projectLineForm.value.projectName?.length === 250}">{{(projectLineForm.value.projectName?.length ?? 0 ) + '/250'}}</mat-hint>
-                    <app-validator [control]="projectLineForm.projectName"></app-validator>
+                    <mat-error>
+                        <app-validator [control]="projectLineForm.projectName"></app-validator>
+                    </mat-error>
                 </mat-form-field>
                 <div fxLayout="row" fxLayoutAlign="start start" class="u-w--100 u-mt--10">
                     <mat-form-field appearance="outline" class="u-mr--16" fxFlex="0 0 calc(50% - 8px)">
@@ -88,7 +90,7 @@
                     <mat-autocomplete #invoicingReferencePersonAutocomplete="matAutocomplete" [displayWith]="displayFullNameFn">
                         <ng-container>
                             <mat-option *ngFor="let contact of filteredReferencePersons" [value]="contact" [ngClass]="{ 'no-data': contact.id === 'no-data' }">
-                                <b>{{ contact.firstName + ' ' + contact.lastName }}</b>
+                                <span class="autocopmlete-option-name">{{ contact.firstName + ' ' + contact.lastName }}</span>
                             </mat-option>
                         </ng-container>
                     </mat-autocomplete>
@@ -111,9 +113,11 @@
                     <mat-autocomplete #clientInvoicingRecipientAutocomplete="matAutocomplete" [displayWith]="displayClientNameFn">
                         <ng-container>
                             <mat-option *ngFor="let client of filteredClientInvoicingRecipients" [value]="client" [ngClass]="{ 'no-data': client.id === 'no-data' }">
-                                <div>
-                                    <b>{{ client.clientName }}</b>
-                                    <span *ngIf="client.id !== 'no-data'"> | {{client.address}} | {{client.address2}} | {{client.postCode}}</span>
+                                <div class="multilineDropdown-option--column">
+                                    <span class="multilineDropdown-option--column-client-name">{{ client.clientName }}</span>
+                                    <span *ngIf="client.id !== 'no-data'" class="multilineDropdown-option--column-client-info">
+                                        #{{client.clientId}} | {{client.city ?? ''}} {{client.countryName ? ', ' + client.countryName : ''}}
+                                    </span>
                                 </div>
                             </mat-option>
                         </ng-container>
@@ -126,8 +130,8 @@
         </div>
     </form>
 </mat-dialog-content>
-<mat-dialog-actions align="start" class="confiramtion-dialog--actions">
-    <button mat-flat-button class="dialog-btn dialog-btn__outlined confiramtion-dialog--actions-cancel" appPreventDoubleClick (throttledClick)="reject()">
+<mat-dialog-actions align="start" class="confirmation-dialog--actions">
+    <button mat-flat-button class="dialog-btn dialog-btn__outlined confirmation-dialog--actions-cancel" appPreventDoubleClick (throttledClick)="reject()">
         Cancel
     </button>
     <button mat-flat-button class="dialog-btn dialog-btn__positive" appPreventDoubleClick (throttledClick)="confirm()">

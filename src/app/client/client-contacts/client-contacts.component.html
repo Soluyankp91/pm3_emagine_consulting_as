@@ -51,7 +51,7 @@
                 <ng-container matColumnDef="lastCamLogin">
                     <mat-header-cell *matHeaderCellDef fxFlex="10%"> Last CAM Login </mat-header-cell>
                     <mat-cell *matCellDef="let row" fxFlex="10%">
-                        <span class="text-truncate-ellipsis" [matTooltip]="row?.lastCamLogin | momentFormat: 'DD.MM.YYYY'" matTooltipClass="white-tooltip" appShowIfTruncated>
+                        <span class="text-truncate-ellipsis" [matTooltip]="row?.lastCamLogin | momentFormat: momentFormatType" matTooltipClass="white-tooltip" appShowIfTruncated>
                             {{row?.lastCamLogin | momentFormat: 'DD.MM.YYYY'}}
                         </span>
                     </mat-cell>

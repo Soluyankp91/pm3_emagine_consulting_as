@@ -1,16 +1,19 @@
 <ngx-gantt-root>
     <ng-template #sideTemplate>
         <div class="gantt-flat-side-header" fxLayout="row" fxLayoutAlign="start center">
-            <div class="gantt-flat-side-column" fxFlex="5%">
-
-            </div>
-            <div class="gantt-flat-side-column" fxFlex="40%">
+            <div class="gantt-flat-side-column" fxFlex="5%"></div>
+            <div class="gantt-flat-side-column sort-container pos-relative" [ngClass]="{'active': sortName === 'clientDisplayName', 'desc': sortName === 'clientDisplayName' && sortDirection === sortDirections.Desc }"  fxFlex="35%" fxLayoutAlign="start center" (click)="sortChanged('clientDisplayName')">
                 Client
+                <ng-container *ngTemplateOutlet="sortArrow"></ng-container>
             </div>
-            <div class="gantt-flat-side-column" fxFlex="30%">
+            <div class="gantt-flat-side-column" fxFlex="25%" fxLayoutAlign="start center">
                 Consultants
             </div>
-            <div class="gantt-flat-side-column text-truncate-ellipsis" fxLayoutAlign="flex-end center" fxFlex="25%">
+            <div class="gantt-flat-side-column sort-container pos-relative" [ngClass]="{'active': sortName === (isWorkflow ? 'lastClientPeriodEndDate' : 'lastConsultantPeriodEndDate'), 'desc': sortName === (isWorkflow ? 'lastClientPeriodEndDate' : 'lastConsultantPeriodEndDate') && sortDirection === sortDirections.Desc}" fxFlex="15%" fxLayoutAlign="end center" (click)="sortChanged(isWorkflow ? 'lastClientPeriodEndDate' : 'lastConsultantPeriodEndDate')">
+                End date
+                <ng-container *ngTemplateOutlet="sortArrow"></ng-container>
+            </div>
+            <div class="gantt-flat-side-column text-truncate-ellipsis" fxLayoutAlign="flex-end center" fxFlex="20%">
                 Sales manager
             </div>
         </div>
@@ -54,12 +57,12 @@
                         </div>
                     </span>
                 </div>
-                <div class="gantt-group-content text-truncate-ellipsis" fxFlex="40%" [matTooltip]="group?.origin?.origin?.clientDisplayName!" matTooltipClass="white-tooltip" appShowIfTruncated>
+                <div class="gantt-group-content text-truncate-ellipsis" fxFlex="35%" [matTooltip]="group?.origin?.origin?.clientDisplayName!" matTooltipClass="white-tooltip" appShowIfTruncated>
                     <span class="text-bold-800">
                         {{group!.origin!.origin!.clientDisplayName}}
                     </span>
                 </div>
-                <div class="gantt-group-content text-truncate-ellipsis" fxFlex="30%">
+                <div class="gantt-group-content text-truncate-ellipsis" fxFlex="25%">
                     <span class="text-truncate-ellipsis" [matTooltip]="mapListByProperty(group?.origin?.origin?.consultants!, 'name')" matTooltipClass="white-tooltip" *ngIf="isWorkflow" appShowIfTruncated>
                         <ng-container *ngIf="group?.origin?.origin?.consultants!.length > 1; else singleConsultantDisplay">
                             {{group?.origin?.origin?.consultants?.length + 'Consultants'}}
@@ -72,7 +75,17 @@
                         {{group?.origin?.origin?.consultant?.name}}
                     </span>
                 </div>
-                <div class="gantt-group-content" fxFlex="25%">
+                <div class="gantt-group-content text-truncate-ellipsis" fxFlex="15%" fxLayoutAlign="end center">
+                    <span class="u-mr--20">
+                        <ng-container *ngIf="isWorkflow">
+                            {{group!.origin!.origin!.lastClientPeriodEndDate ? (group!.origin!.origin!.lastClientPeriodEndDate | momentFormat: momentFormatType) : '-'}}
+                        </ng-container>
+                        <ng-container *ngIf="isConsultants">
+                            {{group!.origin!.origin!.lastConsultantPeriodEndDate ? (group!.origin!.origin!.lastConsultantPeriodEndDate | momentFormat: momentFormatType) : '-'}}
+                        </ng-container>
+                    </span>
+                </div>
+                <div class="gantt-group-content" fxFlex="20%">
                     <div fxLayout="row" fxLayoutAlign="flex-end center" fxLayoutGap="15px" class="u-w-100">
                         <img class="manager-search--photo" [matTooltip]="group?.origin?.origin?.salesManager?.name!" matTooltipClass="white-tooltip" [src]="employeeProfileUrl(group?.origin?.origin?.salesManager?.externalId!)" />
                         <button mat-icon-button matTooltip="Go to workflow" matTooltipClass="white-tooltip" appPreventDoubleClick (throttledClick)="redirectToWorkflow(group?.origin?.origin?.workflowId!)">
@@ -96,7 +109,7 @@
                                     </ngx-gantt-bar>
                                     <div class="tooltip" [style.left.px]="menuTopLeftPosition.x"[style.top.px]="menuTopLeftPosition.y">
                                         <span><b>{{item?.origin?.title!}}</b></span>
-                                        <span>{{tooltipStartDate | momentFormat: 'DD.MM.YYYY'}} - {{tooltipEndDate ? (tooltipEndDate | momentFormat: 'DD.MM.YYYY') : '...'}}</span>
+                                        <span>{{tooltipStartDate | momentFormat: momentFormatType}} - {{tooltipEndDate ? (tooltipEndDate | momentFormat: momentFormatType) : '...'}}</span>
                                     </div>
                                 </ng-container>
                             </div>
@@ -107,3 +120,23 @@
         </div>
     </ng-template>
 </ngx-gantt-root>
+
+<ng-template #sortArrow>
+    <div class="sort-arrow">
+        <div class="sort-stem"></div>
+        <div class="sort-indicator">
+            <div class="sort-pointer-left"></div>
+            <div class="sort-pointer-right"></div>
+            <div class="sort-pointer-middle"></div>
+        </div>
+    </div>
+
+    <div class="mat-sort-header-arrow">
+        <div class="mat-sort-header-stem"></div>
+        <div class="mat-sort-header-indicator">
+            <div class="mat-sort-header-pointer-left"></div>
+            <div class="mat-sort-header-pointer-right"></div>
+            <div class="mat-sort-header-pointer-middle"></div>
+        </div>
+    </div>
+</ng-template>

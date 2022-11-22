@@ -80,9 +80,12 @@
             padding: 30px;
         }
         &--additional-address-hint {
-            @include fontOpenSans(14px, 600);
+            @include fontOpenSans(14px, 800);
             color: rgba(56, 72, 83, 0.87);
-            line-height: 35px;
+            &-label {
+                @include fontOpenSans(14px, 700);
+                color: #898785;
+            }
         }
     }
 
@@ -113,7 +116,7 @@
     border-radius: 50%;
     display: flex;
     justify-content: center;
-    align-items: flex-end;
+    align-items: center;
     &:not([disabled]):hover {
         background-color: rgba(139,209,203,0.22);
     }
@@ -123,5 +126,11 @@
     border-radius: 50%;
     background-color: rgba($color: #72a0f8, $alpha: 0.2);
     color: #72a0f8;
+    mat-icon {
+        width: 20px;
+        height: 20px;
+        font-size: 20px;
+        line-height: 20px;
+    }
 }
 
