@@ -744,6 +744,6 @@ export class MainOverviewComponent extends AppComponentBase implements OnInit {
     }
 
     resetInvoicingEntity() {
-        this.invoicingEntityControl.value.setValue(null);
+        this.invoicingEntityControl.setValue(null);
     }
 }
