@@ -154,7 +154,7 @@
                                 </mat-expansion-panel-header>
                                 <mat-accordion [multi]="true" togglePosition="before" class="mat-elevation-z0">
                                     <ng-container *ngIf="contractsDocuments?.frameAgreements?.length; else noFilesTemplate">
-                                        <mat-expansion-panel *ngFor="let frame of contractsDocuments?.frameAgreements" class="mat-elevation-z0">
+                                        <mat-expansion-panel *ngFor="let frame of contractsDocuments?.frameAgreements; trackBy: contractsTrackBy" class="mat-elevation-z0">
                                             <mat-expansion-panel-header
                                                 [collapsedHeight]="'44px'"
                                                 [expandedHeight]="'44px'">
@@ -163,7 +163,7 @@
                                                 </h4>
                                             </mat-expansion-panel-header>
                                             <div *ngIf="frame.documents?.length" class="column u-ml--32">
-                                                <div *ngFor="let file of frame.documents; last as last" class="flex-items-center" [ngClass]="{'u-mb--20': !last}">
+                                                <div *ngFor="let file of frame.documents; trackBy: documentsTrackBy; last as last" class="flex-items-center" [ngClass]="{'u-mb--20': !last}">
                                                     <mat-icon class="icon" svgIcon="pdf"></mat-icon>
                                                     <span class="text-bold">
                                                         {{ file.name }}
@@ -188,7 +188,7 @@
                                 </mat-expansion-panel-header>
                                 <mat-accordion [multi]="true" togglePosition="before" class="mat-elevation-z0">
                                     <ng-container *ngIf="contractsDocuments?.workflows?.length; else noFilesTemplate">
-                                        <mat-expansion-panel *ngFor="let workflow of contractsDocuments?.workflows" class="mat-elevation-z0">
+                                        <mat-expansion-panel *ngFor="let workflow of contractsDocuments?.workflows; trackBy: workflowsTrackBy" class="mat-elevation-z0">
                                             <mat-expansion-panel-header
                                                 [collapsedHeight]="'44px'"
                                                 [expandedHeight]="'44px'">
@@ -210,7 +210,7 @@
                                                     </mat-expansion-panel-header>
                                                     <mat-accordion [multi]="true" togglePosition="before" class="mat-elevation-z0">
                                                         <ng-container *ngIf="workflow.clientContracts?.length; else noFilesTemplate">
-                                                            <mat-expansion-panel *ngFor="let clientContract of workflow.clientContracts" class="mat-elevation-z0">
+                                                            <mat-expansion-panel *ngFor="let clientContract of workflow.clientContracts; trackBy: contractsTrackBy" class="mat-elevation-z0">
                                                                 <mat-expansion-panel-header
                                                                     [collapsedHeight]="'44px'"
                                                                     [expandedHeight]="'44px'">
@@ -221,7 +221,7 @@
                                                                     </div>
                                                                 </mat-expansion-panel-header>
                                                                 <div *ngIf="clientContract.documents?.length; else noFilesTemplate" class="column u-ml--32">
-                                                                    <div *ngFor="let file of clientContract.documents; last as last" class="flex-items-center" [ngClass]="{'u-mb--20': !last}">
+                                                                    <div *ngFor="let file of clientContract.documents; trackBy: documentsTrackBy; last as last" class="flex-items-center" [ngClass]="{'u-mb--20': !last}">
                                                                         <div class="cursor-pointer u-w--100" (click)="downloadDocument(file.documentStorageGuid!)">
                                                                             <mat-icon class="icon" svgIcon="pdf"></mat-icon>
                                                                             <span class="text-bold">
@@ -249,7 +249,7 @@
                                                     </mat-expansion-panel-header>
                                                     <mat-accordion [multi]="true" togglePosition="before" class="mat-elevation-z0">
                                                         <ng-container *ngIf="workflow.consultantContracts?.length; else noFilesTemplate">
-                                                            <mat-expansion-panel *ngFor="let consultantContract of workflow.consultantContracts" class="mat-elevation-z0">
+                                                            <mat-expansion-panel *ngFor="let consultantContract of workflow.consultantContracts; trackBy: contractsTrackBy" class="mat-elevation-z0">
                                                                 <mat-expansion-panel-header
                                                                     [collapsedHeight]="'44px'"
                                                                     [expandedHeight]="'44px'">
@@ -260,7 +260,7 @@
                                                                     </div>
                                                                 </mat-expansion-panel-header>
                                                                 <div *ngIf="consultantContract.documents?.length; else noFilesTemplate" class="column u-ml--32">
-                                                                    <div *ngFor="let file of consultantContract.documents; last as last" class="flex-items-center" [ngClass]="{'u-mb--20': !last}">
+                                                                    <div *ngFor="let file of consultantContract.documents; trackBy: documentsTrackBy; last as last" class="flex-items-center" [ngClass]="{'u-mb--20': !last}">
                                                                         <div class="cursor-pointer u-w--100" (click)="downloadDocument(file.documentStorageGuid!)">
                                                                             <mat-icon class="icon" svgIcon="pdf"></mat-icon>
                                                                             <span class="text-bold">
@@ -289,7 +289,7 @@
                                                     </mat-expansion-panel-header>
                                                     <mat-accordion [multi]="true" togglePosition="before" class="mat-elevation-z0">
                                                         <ng-container *ngIf="workflow.internalContracts?.length; else noFilesTemplate">
-                                                            <mat-expansion-panel *ngFor="let internalContract of workflow.internalContracts" class="mat-elevation-z0">
+                                                            <mat-expansion-panel *ngFor="let internalContract of workflow.internalContracts; trackBy: contractsTrackBy" class="mat-elevation-z0">
                                                                 <mat-expansion-panel-header
                                                                     [collapsedHeight]="'44px'"
                                                                     [expandedHeight]="'44px'">
@@ -300,7 +300,7 @@
                                                                     </div>
                                                                 </mat-expansion-panel-header>
                                                                 <div *ngIf="internalContract.documents?.length; else noFilesTemplate" class="column u-ml--32">
-                                                                    <div *ngFor="let file of internalContract.documents; last as last" class="flex-items-center" [ngClass]="{'u-mb--20': !last}">
+                                                                    <div *ngFor="let file of internalContract.documents; trackBy: documentsTrackBy; last as last" class="flex-items-center" [ngClass]="{'u-mb--20': !last}">
                                                                         <div class="cursor-pointer u-w--100" (click)="downloadDocument(file.documentStorageGuid!)">
                                                                             <mat-icon class="icon" svgIcon="pdf"></mat-icon>
                                                                             <span class="text-bold">

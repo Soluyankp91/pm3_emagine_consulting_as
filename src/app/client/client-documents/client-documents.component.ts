@@ -7,7 +7,7 @@ import { AddFileDialogComponent } from './add-file-dialog/add-file-dialog.compon
 import { Overlay } from '@angular/cdk/overlay';
 import { MatDialog } from '@angular/material/dialog';
 import { MatTabGroup } from '@angular/material/tabs';
-import { ClientAttachmentInfoOutputDto, ClientAttachmentTypeEnum, ClientContractViewRootDto, ClientDocumentsServiceProxy, ClientEvaluationOutputDto, DocumentTypeEnum, UpdateClientAttachmentFileInfoInputDto, FileParameter, IdNameDto } from 'src/shared/service-proxies/service-proxies';
+import { ClientAttachmentInfoOutputDto, ClientAttachmentTypeEnum, ClientContractViewRootDto, ClientDocumentsServiceProxy, ClientEvaluationOutputDto, DocumentTypeEnum, UpdateClientAttachmentFileInfoInputDto, FileParameter, IdNameDto, ClientContractBaseDto, ContractDocumentInfoDto, ClientWorkflowTreeItemDto } from 'src/shared/service-proxies/service-proxies';
 import { finalize, takeUntil } from 'rxjs/operators';
 import { merge, Subject } from 'rxjs';
 import { ActivatedRoute } from '@angular/router';
@@ -382,6 +382,18 @@ export class ClientDocumentsComponent extends AppComponentBase implements OnInit
             .pipe(finalize(() => {}))
             .subscribe(result => {
             });
+    }
+
+    workflowsTrackBy(index: number, item: ClientWorkflowTreeItemDto) {
+        return item.id;
+    }
+
+    contractsTrackBy(index: number, item: ClientContractBaseDto) {
+        return item.id;
+    }
+
+    documentsTrackBy(index: number, item: ContractDocumentInfoDto) {
+        return item.documentStorageGuid;
     }
 
 }
