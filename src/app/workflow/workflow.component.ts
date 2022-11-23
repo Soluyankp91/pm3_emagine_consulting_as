@@ -306,7 +306,7 @@ export class WorkflowComponent extends AppComponentBase implements OnInit, OnDes
         const scrollStrategy = this.overlay.scrollStrategies.reposition();
         DialogConfig.scrollStrategy = scrollStrategy;
         DialogConfig.data = {
-            confirmationMessageTitle: `Are you sure you want to delete workflow?`,
+            confirmationMessageTitle: `Are you sure you want to delete this workflow?`,
             confirmationMessage: `This workflow will be hidden from lists and statistics.\n
             Note that if it contained periods which were synced, it should be terminated first.\n
             If not terminated -  the contract lines will still appear in Legacy PM,\n
@@ -451,7 +451,7 @@ export class WorkflowComponent extends AppComponentBase implements OnInit, OnDes
                         endDate: x.endDate,
                         salesType: this.findItemById(this.saleTypes, x.salesTypeId),
                         deliveryType: this.findItemById(this.deliveryTypes, x.deliveryTypeId),
-                        statusName: x.isDeleted ? 'Deleted' : WorkflowStatus[x.workflowStatus!],
+                        statusName: x.isDeleted ? 'Finished' : WorkflowStatus[x.workflowStatus!],
                         statusIcon: x.isDeleted ? 'deleted-status' : this.getStatusIcon(x.workflowStatus!),
                         isDeleted: x.isDeleted,
                         consultants: x.consultants,
