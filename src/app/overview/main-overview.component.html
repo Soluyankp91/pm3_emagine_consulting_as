@@ -20,15 +20,20 @@
                         [disableOptionCentering]="true"
                         panelClass="main-overview-dropdowns country-filter-dropdown"
                         [formControl]="invoicingEntityControl">
-                        <mat-option class="mat-select-header-option" [disabled]="true">
-                            Select invoicing entity
+                        <mat-option *ngIf="invoicingEntityControl.value">
+                            <div class="u-w--100">
+                                <span class="country-flag fi fi-{{invoicingEntityControl.value.code | lowercase }} fis border-rounded-50 u-mr--16" *ngIf="invoicingEntityControl.value.id !== 0"></span>
+                                <span class="tenant-name">{{invoicingEntityControl.value.tenantName}}</span>
+                                {{' (' + invoicingEntityControl.value.name + ')' }}
+                            </div>
+                            <button (click)="resetInvoicingEntity()" class="cancel-invoicing-entitity" mat-icon-button><mat-icon>close</mat-icon></button>
                         </mat-option>
-                        <mat-option class="mat-select-clear-option" *ngIf="invoicingEntityControl.value">
-                            Clear
-                        </mat-option>
-                        <mat-option *ngFor="let item of legalEntities" [value]="item">
-                            <span class="country-flag fi fi-{{item.code | lowercase }} fis border-rounded-50 u-mr--16" *ngIf="item.id !== 0"></span>
-                            {{ item.tenantName + ' ' + '(' + item.name + ')' }}
+                        <mat-option [fxHide]="invoicingEntityControl.value?.id === item.id" *ngFor="let item of legalEntities" [value]="item">
+                            <div class="u-w--100" [ngStyle]="{'display: none': invoicingEntityControl.value?.id === item.id}">
+                                <span class="country-flag fi fi-{{item.code | lowercase }} fis border-rounded-50 u-mr--16" *ngIf="item.id !== 0"></span>
+                                <span class="tenant-name">{{item.tenantName}}</span>
+                                {{' (' + item.name + ')' }}
+                            </div>
                         </mat-option>
                     </mat-select>
                 </button>
