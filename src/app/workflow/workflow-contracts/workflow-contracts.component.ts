@@ -1515,6 +1515,9 @@ export class WorkflowContractsComponent extends AppComponentBase implements OnIn
             .subscribe(result => {
                 // End of Consultant Contract
                 this.contractLinesDoneManuallyInOldPMControl?.setValue(result?.contractLinesDoneManuallyInOldPM, {emitEvent: false});
+                this.contractsSyncDataForm.manualCheckbox?.setValue(result?.contractLinesDoneManuallyInOldPM, {emitEvent: false})
+                this.contractsSyncDataForm.isNewSyncNeeded?.setValue(result?.isNewSyncNeeded, {emitEvent: false});
+                this.contractsSyncDataForm.lastSyncedDate?.setValue(result?.lastSyncedDate, {emitEvent: false});
                 result.consultantTerminationContractData?.forEach(data => {
                     this.addConsultantDataToTerminationForm(data);
                 })
