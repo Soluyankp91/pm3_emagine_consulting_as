@@ -137,7 +137,8 @@ export class WorkflowSalesComponent extends AppComponentBase implements OnInit, 
     filteredConsultantClientAddresses: any[] = [];
     filteredContractSigners: any[] = [];
 
-    clientIdFromTerminationSales: number;
+    directClientIdTerminationSales: number | null;
+    endClientIdTerminationSales: number | null;
 
     individualConsultantActionsAvailable: boolean;
     appEnv = environment;
@@ -375,8 +376,8 @@ export class WorkflowSalesComponent extends AppComponentBase implements OnInit, 
                 switchMap((value: any) => {
                     if (value) {
                         let toSend = {
-                            clientId1: this.clientIdFromTerminationSales,
-                            clientId2: undefined, // TODO: waiting for be
+                            clientId1: this.directClientIdTerminationSales ?? undefined,
+                            clientId2: this.endClientIdTerminationSales ?? undefined,
                             name: value ?? '',
                             maxRecordsCount: 1000,
                         };
@@ -2126,8 +2127,8 @@ export class WorkflowSalesComponent extends AppComponentBase implements OnInit, 
                 this.salesTerminateConsultantForm.additionalComments?.setValue(result?.additionalComments, {emitEvent: false});
 
                 //Final Evaluation
-                // FIXME: after merge
-                // this.clientIdFromTerminationSales = result.clientId!;
+                this.directClientIdTerminationSales = result.directClientId!;
+                this.endClientIdTerminationSales = result.endClientId!;
                 this.salesTerminateConsultantForm.finalEvaluationReferencePerson?.setValue(result?.finalEvaluationReferencePerson, {emitEvent: false}); // add findItemById function
                 this.salesTerminateConsultantForm.noEvaluation?.setValue(result?.noEvaluation, {emitEvent: false});
                 this.salesTerminateConsultantForm.causeOfNoEvaluation?.setValue(result?.causeOfNoEvaluation, {emitEvent: false});
@@ -2184,7 +2185,8 @@ export class WorkflowSalesComponent extends AppComponentBase implements OnInit, 
 
                 //Final Evaluation
                 // FIXME: after merge
-                // this.clientIdFromTerminationSales = result.clientId!;
+                this.directClientIdTerminationSales = result.directClientId!;
+                this.endClientIdTerminationSales = result.endClientId!;
                 this.salesTerminateConsultantForm.finalEvaluationReferencePerson?.setValue(result?.finalEvaluationReferencePerson, {emitEvent: false}); // add findItemById function
                 this.salesTerminateConsultantForm.noEvaluation?.setValue(result?.noEvaluation, {emitEvent: false});
                 this.salesTerminateConsultantForm.causeOfNoEvaluation?.setValue(result?.causeOfNoEvaluation, {emitEvent: false});
@@ -2467,6 +2469,8 @@ export class WorkflowSalesComponent extends AppComponentBase implements OnInit, 
         this.salesMainDataForm.commissions.controls = [];
         this.salesClientDataForm.reset('', {emitEvent: false});
         this.consultantsForm.consultantData.controls = [];
+        this.directClientIdTerminationSales = null;
+        this.endClientIdTerminationSales = null;
     }
 
     //#region formatting
