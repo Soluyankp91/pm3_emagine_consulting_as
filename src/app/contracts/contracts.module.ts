@@ -39,6 +39,8 @@ import { ClientSpecificComponent } from './components/client-specific-templates/
 import { DropdownAutocompleteSingleSelectComponent } from './shared/components/dropdown-autocomplete-single-select/dropdown-autocomplete-single-select.component';
 import { ConfirmDialogComponent } from './shared/components/popUps/confirm-dialog/confirm-dialog.component';
 import { DateCellComponent } from './shared/components/grid-table/master-templates/cells/date-cell/date-cell.component';
+import { MatIconRegistry } from '@angular/material/icon';
+import { DomSanitizer } from '@angular/platform-browser';
 
 @NgModule({
     declarations: [
@@ -87,4 +89,13 @@ import { DateCellComponent } from './shared/components/grid-table/master-templat
         AgreementNameTemplateServiceProxy,
     ],
 })
-export class ContractsModule {}
+export class ContractsModule {
+    constructor(iconRegistry: MatIconRegistry, sanitizer: DomSanitizer) {
+        iconRegistry.addSvgIcon(
+            'create-icon',
+            sanitizer.bypassSecurityTrustResourceUrl(
+                'assets/common/images/create-icon.svg'
+            )
+        );
+    }
+}

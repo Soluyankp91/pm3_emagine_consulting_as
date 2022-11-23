@@ -246,7 +246,7 @@
         [style.background-color]="'#fff'"
         [style.height.px]="64"
     >
-        <button mat-button>Cancel</button>
+        <button mat-button (click)="navigateOnAction()">Cancel</button>
         <button mat-button appPreventDoubleClick (click)="onSave()" [disabled]="!isValid">
             Save
         </button>

@@ -1,4 +1,4 @@
-<div  class="top-filters">
+<div [formGroup]="topFiltersFormGroup" class="top-filters">
     <div class="left-panel">
         <div class="country-filter" *ngIf="countryFilter$ | async as countries">
             <app-multi-select [options]="countries" formControlName="tenantIds">

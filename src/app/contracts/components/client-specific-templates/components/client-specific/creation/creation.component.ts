@@ -48,6 +48,7 @@ import { dirtyCheck } from './dirtyCheckOperator';
 import { ConfirmDialogComponent } from 'src/app/contracts/shared/components/popUps/confirm-dialog/confirm-dialog.component';
 import { AppComponentBase } from 'src/shared/app-component-base';
 import { REQUIRED_VALIDATION_MESSAGE } from 'src/app/contracts/shared/entities/contracts.constants';
+import { ActivatedRoute, Router } from '@angular/router';
 @Component({
     selector: 'app-creation',
     templateUrl: './creation.component.html',
@@ -68,6 +69,8 @@ export class CreationComponent
         private readonly contractService: ContractsService,
         private readonly lookupServiceProxy: LookupServiceProxy,
         private readonly agreementTemplateServiceProxy: AgreementTemplateServiceProxy,
+        private readonly route: ActivatedRoute,
+        private readonly router: Router,
         public dialog: MatDialog
     ) {
         super(injector);
@@ -154,6 +157,12 @@ export class CreationComponent
     }
     trackByContractTypeId(index: number, item: EnumEntityTypeDto) {
         return item.id;
+    }
+
+    navigateOnAction() {
+        this.router.navigate(['../../client-specific-templates'], {
+            relativeTo: this.route,
+        });
     }
 
     private _initExistingTemplates(): void {
@@ -269,7 +278,9 @@ export class CreationComponent
             .agreementTemplatePost(
                 new SaveAgreementTemplateDto(agreementPostDto)
             )
-            .subscribe();
+            .subscribe(() => {
+                this.navigateOnAction();
+            });
     }
 
     private _subscribeOnDirtyStatus(): void {

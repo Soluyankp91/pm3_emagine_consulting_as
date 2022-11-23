@@ -444,7 +444,6 @@ export class TenantConfigServiceServiceProxy {
     }
 }
 
-
 @Injectable()
 export class ConfigServiceProxy {
     private http: HttpClient;
