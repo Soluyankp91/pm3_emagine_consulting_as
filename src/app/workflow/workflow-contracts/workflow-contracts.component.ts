@@ -135,13 +135,13 @@ export class WorkflowContractsComponent extends AppComponentBase implements OnIn
             .pipe(takeUntil(this._unsubscribe))
             .subscribe((value: {isDraft: boolean, bypassLegalValidation?: boolean | undefined}) => {
                 this.bypassLegalValidation = value.bypassLegalValidation!;
-                if (value.isDraft) {
+                if (value.isDraft && !this.editEnabledForcefuly) {
                     this.saveStartChangeOrExtendClientPeriodContracts(value.isDraft);
                 } else {
                     if (this.validateContractForm()) {
                         this.saveStartChangeOrExtendClientPeriodContracts(value.isDraft);
                     } else {
-                        this.scrollToFirstError();
+                        this.scrollToFirstError(value.isDraft);
                     }
                 }
             });
@@ -151,13 +151,13 @@ export class WorkflowContractsComponent extends AppComponentBase implements OnIn
             .pipe(takeUntil(this._unsubscribe))
             .subscribe((value: {isDraft: boolean, bypassLegalValidation?: boolean | undefined}) => {
                 this.bypassLegalValidation = value.bypassLegalValidation!;
-                if (value.isDraft) {
+                if (value.isDraft && !this.editEnabledForcefuly) {
                     this.saveStartChangeOrExtendConsultantPeriodContracts(value.isDraft);
                 } else {
                     if (this.validateContractForm()) {
                         this.saveStartChangeOrExtendConsultantPeriodContracts(value.isDraft);
                     } else {
-                        this.scrollToFirstError();
+                        this.scrollToFirstError(value.isDraft);
                     }
                 }
             });
@@ -166,13 +166,13 @@ export class WorkflowContractsComponent extends AppComponentBase implements OnIn
         this._workflowDataService.workflowConsultantTerminationContractsSaved
             .pipe(takeUntil(this._unsubscribe))
             .subscribe((isDraft: boolean) => {
-                if (isDraft) {
+                if (isDraft && !this.editEnabledForcefuly) {
                     this.saveTerminationConsultantContractStep(isDraft);
                 } else {
                     if (this.validateContractForm()) {
                         this.saveTerminationConsultantContractStep(isDraft);
                     } else {
-                        this.scrollToFirstError();
+                        this.scrollToFirstError(isDraft);
                     }
                 }
             });
@@ -180,20 +180,20 @@ export class WorkflowContractsComponent extends AppComponentBase implements OnIn
         this._workflowDataService.workflowTerminationContractsSaved
             .pipe(takeUntil(this._unsubscribe))
             .subscribe((isDraft: boolean) => {
-                if (isDraft) {
+                if (isDraft && !this.editEnabledForcefuly) {
                     this.saveWorkflowTerminationContractStep(isDraft);
                 } else {
                     if (this.validateContractForm()) {
                         this.saveWorkflowTerminationContractStep(isDraft);
                     } else {
-                        this.scrollToFirstError();
+                        this.scrollToFirstError(isDraft);
                     }
                 }
             });
 
         this._workflowDataService.cancelForceEdit
             .pipe(takeUntil(this._unsubscribe))
-            .subscribe((value: boolean) => {
+            .subscribe(() => {
                 this.isCompleted = true;
                 this.editEnabledForcefuly = false;
                 this._workflowDataService.updateWorkflowProgressStatus({currentStepIsCompleted: this.isCompleted, currentStepIsForcefullyEditing: this.editEnabledForcefuly});
@@ -232,7 +232,7 @@ export class WorkflowContractsComponent extends AppComponentBase implements OnIn
         }
     }
 
-    scrollToFirstError() {
+    scrollToFirstError(isDraft: boolean) {
         setTimeout(() => {
             let firstError = document.getElementsByClassName('mat-form-field-invalid')[0] as HTMLElement;
             if (firstError) {
@@ -241,6 +241,8 @@ export class WorkflowContractsComponent extends AppComponentBase implements OnIn
                     offset: -115
                 }
                 this.scrollToService.scrollTo(config)
+            } else {
+                this.saveContractStepData(isDraft);
             }
         }, 0);
     }
@@ -262,6 +264,27 @@ export class WorkflowContractsComponent extends AppComponentBase implements OnIn
                 break;
             case this.workflowSideSections.TerminateConsultant:
                 this.getWorkflowContractsStepConsultantTermination(isFromSyncToLegacy, syncResult);
+                break;
+        }
+    }
+
+    saveContractStepData(isDraft: boolean) {
+        switch (this.activeSideSection.typeId) {
+            case this.workflowSideSections.StartClientPeriod:
+            case this.workflowSideSections.ChangeClientPeriod:
+            case this.workflowSideSections.ExtendClientPeriod:
+                this.saveStartChangeOrExtendClientPeriodContracts(isDraft);
+                break;
+            case this.workflowSideSections.TerminateWorkflow:
+                this.saveWorkflowTerminationContractStep(isDraft);
+                break;
+            case this.workflowSideSections.StartConsultantPeriod:
+            case this.workflowSideSections.ChangeConsultantPeriod:
+            case this.workflowSideSections.ExtendConsultantPeriod:
+                this.saveStartChangeOrExtendConsultantPeriodContracts(isDraft);
+                break;
+            case this.workflowSideSections.TerminateConsultant:
+                this.saveTerminationConsultantContractStep(isDraft);
                 break;
         }
     }

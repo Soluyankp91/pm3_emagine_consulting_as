@@ -6,10 +6,13 @@
         display: flex;
         align-items: center;
         justify-content: space-between;
-        line-height: 40px;
+        h1 {
+            line-height: 24px;
+        }
     }
     &--content {
-        padding: 30px;
+        color: $dark-grey-color;
+        font-weight: 600;
     }
     &--actions{
         justify-content: space-between;
