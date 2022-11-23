@@ -347,8 +347,10 @@
     border: 0;
     border-radius: 5px;
     .mat-button-wrapper {
-        display: flex;
-        align-items: center;
+        @include flexCentered();
+        mat-icon {
+            @include fontLineHeightAndSize(16px, 16px, 16px, 16px);
+        }
     }
 }
 
