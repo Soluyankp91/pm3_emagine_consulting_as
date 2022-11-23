@@ -18,12 +18,12 @@ export class LegalEntitiesFilterComponent implements IFilter {
         this.masterTemplateService
             .getTableFilters$()
             .pipe(take(1), pluck(this.tableFilter))
-            .subscribe(legalEntities => {
-                this.fc = new FormControl(legalEntities);
+            .subscribe((legalEntities) => {
+                this.filterFormControl = new FormControl(legalEntities);
             });
     }
 
     legalEntities$ = this.contractsService.getLegalEntities$();
-    fc: FormControl;
+    filterFormControl: FormControl;
     private tableFilter = 'legalEntities';
 }

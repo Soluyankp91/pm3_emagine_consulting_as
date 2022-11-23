@@ -23,8 +23,9 @@
         backdropClass="mat-menu-content-wrapper"
     >
         <div class="scrollbar-container" fuseScrollbar>
-            <mat-checkbox
-                *ngFor="let option of options"
+            <ng-container *ngFor="let option of options;trackBy:trackByIndex">
+                <mat-checkbox
+
                 (click)="$event.stopPropagation()"
                 [matTooltip]="
                     option[displayedProperty].length > maxLength
@@ -41,13 +42,10 @@
                     [ngTemplateOutletContext]="{ $implicit: option }"
                 >
                 </ng-container>
-                {{
-                    option[displayedProperty].length > maxLength
-                        ? (option[displayedProperty]
-                              | slice: 0:maxLength - threeDotsLength) + "..."
-                        : option[displayedProperty]
-                }}</mat-checkbox
+                {{option[displayedProperty]}}
+                </mat-checkbox
             >
+            </ng-container>
         </div>
     </mat-menu>
 </div>

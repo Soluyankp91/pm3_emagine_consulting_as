@@ -18,12 +18,12 @@ export class AgreementTypesFilterComponent implements IFilter {
         this.masterTemplateService
             .getTableFilters$()
             .pipe(take(1), pluck(this.tableFilter))
-            .subscribe(agreementTypes => {
-                this.fc = new FormControl(agreementTypes);
+            .subscribe((agreementTypes) => {
+                this.filterFormControl = new FormControl(agreementTypes);
             });
     }
 
     agreementTypes$ = this.contractsService.getAgreementTypes$();
-    fc: FormControl;
+    filterFormControl: FormControl;
     private tableFilter = 'agreementTypes';
 }

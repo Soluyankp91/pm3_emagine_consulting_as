@@ -1,10 +1,12 @@
 import { Injectable } from '@angular/core';
 import {
-    Cell,
+    ICell,
     HeaderCell,
-    HeaderCells,
+    EHeaderCells,
 } from '../components/grid-table/mat-grid.interfaces';
 
+// getSortCellConfig(cell:HeaderCell.SORT): Cell
+// getFilterCellConfig(cell:HeaderCell.FIILTER): Cell
 @Injectable()
 export class GridHelpService {
     constructor() {}
@@ -12,35 +14,35 @@ export class GridHelpService {
     generateTableConfig(headerCells: HeaderCell[]) {
         return headerCells.reduce((acc, current) => {
             switch (current.type) {
-                case HeaderCells.SORT:
+                case EHeaderCells.SORT:
                     return [
                         ...acc,
                         {
                             matColumnDef: current.field,
                             headerCell: {
-                                type: HeaderCells.SORT,
+                                type: EHeaderCells.SORT,
                                 title: current.title,
                             },
-                        } as Cell,
+                        } as ICell,
                     ];
 
-                case HeaderCells.FILTER:
+                case EHeaderCells.FILTER:
                     return [
                         ...acc,
                         {
                             matColumnDef: current.field,
                             headerCell: {
-                                type: HeaderCells.FILTER,
+                                type: EHeaderCells.FILTER,
                                 filter: {
                                     formControlName: current.field,
                                     component: current.component,
                                 },
                             },
-                        } as Cell,
+                        } as ICell,
                     ];
                 default:
                     return acc;
             }
-        }, [] as Cell[]);
+        }, [] as ICell[]);
     }
 }

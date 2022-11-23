@@ -1,4 +1,5 @@
-import { startWith } from 'rxjs/operators';
+import { startWith, pairwise, takeUntil } from 'rxjs/operators';
+import { Subject } from 'rxjs';
 import {
     Component,
     OnInit,
@@ -13,14 +14,12 @@ import {
     ViewChildren,
     QueryList,
     ComponentRef,
+    OnDestroy,
 } from '@angular/core';
 import { PageEvent } from '@angular/material/paginator';
 import { Sort } from '@angular/material/sort';
-import { pairwise } from 'rxjs/operators';
 import { FormGroup } from '@angular/forms';
-import { Cell, IFilter, TableConfig } from './mat-grid.interfaces';
-import * as moment from 'moment';
-import { DateCellComponent } from './master-templates/cells/date-cell/date-cell.component';
+import { ICell, IFilter, ITableConfig } from './mat-grid.interfaces';
 
 @Component({
     selector: 'app-mat-grid',
@@ -28,14 +27,14 @@ import { DateCellComponent } from './master-templates/cells/date-cell/date-cell.
     styleUrls: ['./mat-grid.component.scss'],
     changeDetection: ChangeDetectionStrategy.OnPush,
 })
-export class MatGridComponent implements OnInit, AfterViewInit {
+export class MatGridComponent implements OnInit, OnDestroy, AfterViewInit {
     @ViewChildren('filterContainer', { read: ViewContainerRef })
     children: QueryList<ViewContainerRef>;
     @ViewChildren('cell_', { read: ViewContainerRef })
     cells_: QueryList<ViewContainerRef>;
     @Input() displayedColumns: string[];
-    @Input() tableConfig: TableConfig;
-    @Input() cells: Cell[];
+    @Input() tableConfig: ITableConfig;
+    @Input() cells: ICell[];
 
     @Output() sortChange = new EventEmitter<Sort>();
     @Output() pageChange = new EventEmitter<PageEvent>();
@@ -45,6 +44,7 @@ export class MatGridComponent implements OnInit, AfterViewInit {
     formGroup: FormGroup;
 
     matChips: string[] = [];
+    private unSubscribe$ = new Subject<void>();
     constructor(
         private componentFactoryResolver: ComponentFactoryResolver,
         private readonly cdr: ChangeDetectorRef
@@ -52,11 +52,20 @@ export class MatGridComponent implements OnInit, AfterViewInit {
     ngOnInit(): void {
         this.formGroup = new FormGroup({});
     }
+
+    ngOnDestroy(): void {
+        this.unSubscribe$.next();
+    }
+
     ngAfterViewInit(): void {
         this.loadFilters();
         this._subscribeOnFormControlChanges();
         this._subscribeOnEachFormControl();
         this.cdr.detectChanges();
+    }
+
+    trackByCellColumnDef(index: number, item: ICell) {
+        return item.matColumnDef;
     }
 
     loadFilters() {
@@ -73,7 +82,8 @@ export class MatGridComponent implements OnInit, AfterViewInit {
                         ?.createComponent(factory);
                     this.formGroup.addControl(
                         cell.headerCell.filter.formControlName,
-                        (component as ComponentRef<IFilter>).instance.fc
+                        (component as ComponentRef<IFilter>).instance
+                            .filterFormControl
                     );
                 }
             });
@@ -97,14 +107,17 @@ export class MatGridComponent implements OnInit, AfterViewInit {
     }
 
     private _subscribeOnFormControlChanges() {
-        this.formGroup.valueChanges.subscribe((value) => {
-            this.formControlChange.emit(value);
-        });
+        this.formGroup.valueChanges
+            .pipe(takeUntil(this.unSubscribe$))
+            .subscribe((value) => {
+                this.formControlChange.emit(value);
+            });
     }
     private _subscribeOnEachFormControl() {
         Object.keys(this.formGroup.controls).forEach((controlName) => {
             this.formGroup.controls[controlName].valueChanges
                 .pipe(
+                    takeUntil(this.unSubscribe$),
                     startWith(this.formGroup.controls[controlName].value),
                     pairwise()
                 )

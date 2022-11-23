@@ -4,15 +4,15 @@ import { SortDirection } from '@angular/material/sort';
 
 export interface HeaderCell {
     field: string;
-    type: HeaderCells;
+    type: EHeaderCells;
     title?: string;
     component?: ComponentType<IFilter>;
 }
 export interface IFilter {
-    fc: FormControl;
+    filterFormControl: FormControl;
 }
 
-export interface TableConfig {
+export interface ITableConfig {
     items: any[];
     pageSize: number;
     totalCount: number;
@@ -20,10 +20,10 @@ export interface TableConfig {
     sortDirection: SortDirection;
     sortActive: string;
 }
-export interface Cell {
+export interface ICell {
     matColumnDef: string;
     headerCell: {
-        type: HeaderCells;
+        type: EHeaderCells;
         title?: string;
         filter?: {
             formControlName: string;
@@ -32,7 +32,7 @@ export interface Cell {
     };
 }
 
-export enum HeaderCells {
+export enum EHeaderCells {
     SORT = 'sort',
     FILTER = 'filter',
 }

@@ -2,7 +2,7 @@
     *ngIf="agreementLanguages$ | async as agreementTypes"
     [options]="agreementTypes"
     [displayedProperty]="'name'"
-    [formControl]="fc"
+    [formControl]="filterFormControl"
 >
     <div #triggerButton>Languages</div></app-multi-select
 >

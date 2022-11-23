@@ -5,6 +5,7 @@ import {
     forwardRef,
     OnInit,
     ViewChild,
+    OnDestroy,
 } from '@angular/core';
 import {
     AbstractControl,
@@ -19,8 +20,8 @@ import {
     ValidatorFn,
 } from '@angular/forms';
 import { ErrorStateMatcher } from '@angular/material/core';
-import { forkJoin, Observable } from 'rxjs';
-import { mergeMap, tap } from 'rxjs/operators';
+import { forkJoin, Subject } from 'rxjs';
+import { mergeMap, tap, takeUntil } from 'rxjs/operators';
 import { AgreementNameTemplateServiceProxy } from 'src/shared/service-proxies/service-proxies';
 import { REQUIRED_VALIDATION_MESSAGE } from '../../entities/contracts.constants';
 
@@ -53,7 +54,7 @@ export function customAutoNameRequiredValidator(): ValidatorFn {
     ],
 })
 export class AutoNameComponent
-    implements OnInit, ControlValueAccessor, Validator
+    implements OnInit, OnDestroy, ControlValueAccessor, Validator
 {
     @ViewChild('input') input: ElementRef<HTMLInputElement>;
 
@@ -68,6 +69,7 @@ export class AutoNameComponent
     matcher = new AutoNameErrorStateMatcher();
     textControl = new FormControl('');
     chipsControl = new FormControl([], [customAutoNameRequiredValidator()]);
+    private unSubscribe$ = new Subject();
 
     constructor(
         private readonly agreementNameTemplateServiceProxy: AgreementNameTemplateServiceProxy
@@ -76,29 +78,31 @@ export class AutoNameComponent
     ngOnInit(): void {
         this._initFields();
         this._subscribeOnTextChanges();
-        this.onChange(this.buildChangesOutput());
+        this.onChange(this._buildChangesOutput());
     }
+    ngOnDestroy(): void {
+        this.unSubscribe$.next();
+    }
+
     toggleCheckbox(optionItem: AutoName) {
         optionItem.selected = !optionItem.selected;
         if (optionItem.selected) {
             this.selectedOptions.push(optionItem);
-            this.chipsControl.setValue(this.selectedOptions);
-            this.matcher.matchipsLength = this.selectedOptions.length;
-            this.onChange(this.buildChangesOutput());
         } else {
             const foundedIndex = this.selectedOptions.findIndex(
                 (option) => optionItem.id === option.id
             );
             this.selectedOptions.splice(foundedIndex, 1);
-            this.chipsControl.setValue(this.selectedOptions);
-            this.matcher.matchipsLength = this.selectedOptions.length;
-            this.onChange(this.buildChangesOutput());
         }
+        this.chipsControl.setValue(this.selectedOptions);
+        this.matcher.matchipsLength = this.selectedOptions.length;
+        this.onChange(this._buildChangesOutput());
     }
+
     onShowSampleChanged(checked: boolean) {
         this.sampleData = checked;
         if (this.sampleData) {
-            const buildedAutoName = this.buildForAutoName();
+            const buildedAutoName = this._buildForAutoName();
             this.textControl.setValue(buildedAutoName);
             this.input.nativeElement.value = buildedAutoName;
             this.textControl.disable();
@@ -108,7 +112,11 @@ export class AutoNameComponent
             this.input.nativeElement.value = '';
         }
     }
-    private buildForAutoName(): string {
+    trackByOptionName(index: number, item: AutoName) {
+        return item.name;
+    }
+
+    private _buildForAutoName(): string {
         return this.selectedOptions.reduce((acc, current, index) => {
             if (!index) {
                 acc = this.autoNameMap.get(current.name) as string;
@@ -118,7 +126,8 @@ export class AutoNameComponent
             return acc;
         }, '');
     }
-    private buildChangesOutput(): string {
+
+    private _buildChangesOutput(): string {
         return this.selectedOptions
             .reduce((acc, current, index) => {
                 if (!index) {
@@ -132,6 +141,7 @@ export class AutoNameComponent
             .replace(/^/, '{')
             .replace(/$/, '}');
     }
+
     private _setOptionItems(optionsRaw: string[], selected: boolean) {
         return optionsRaw.map((optionName, index) => {
             return {
@@ -141,34 +151,36 @@ export class AutoNameComponent
             } as AutoName;
         });
     }
+
     registerOnChange(fn: any): void {
         this.onChange = fn;
     }
+
     registerOnTouched(fn: any): void {
         this.onTouch = fn;
     }
+
     validate(control: AbstractControl): ValidationErrors | null {
         if (this.selectedOptions.length) {
             return null;
         }
         return { customRequired: true };
     }
+
     private _initFields() {
         this.agreementNameTemplateServiceProxy
             .fields()
             .pipe(
+                takeUntil(this.unSubscribe$),
                 mergeMap((keys) => {
                     this.optionItems = this._setOptionItems(keys, false);
                     this.displayedOptionItems = this.optionItems;
                     return forkJoin(
-                        keys.reduce((acc, current) => {
-                            acc.push(
-                                this.agreementNameTemplateServiceProxy.templatePreview(
-                                    '{' + current + '}'
-                                )
-                            );
-                            return acc;
-                        }, [] as Observable<string>[])
+                        keys.map((item) =>
+                            this.agreementNameTemplateServiceProxy.templatePreview(
+                                '{' + item + '}'
+                            )
+                        )
                     ).pipe(
                         tap((values) => {
                             values.forEach((val, index) => {
@@ -180,15 +192,19 @@ export class AutoNameComponent
             )
             .subscribe();
     }
+
     private _subscribeOnTextChanges() {
-        this.textControl.valueChanges.subscribe((text) => {
-            this.displayedOptionItems = this.optionItems.filter(
-                (optionItem) => {
-                    return optionItem.name.toLowerCase().includes(text);
-                }
-            );
-        });
+        this.textControl.valueChanges
+            .pipe(takeUntil(this.unSubscribe$))
+            .subscribe((text) => {
+                this.displayedOptionItems = this.optionItems.filter(
+                    (optionItem) => {
+                        return optionItem.name.toLowerCase().includes(text);
+                    }
+                );
+            });
     }
+
     private _parseSetValue(val: string) {
         const regExp = new RegExp(/{(.*?)}/gm);
         const autoName: string[] = [];
@@ -198,6 +214,7 @@ export class AutoNameComponent
         }
         return autoName;
     }
+
     private _preselectAutoNames(autoName: string[]) {
         this.selectedOptions = autoName.reduce((acc, current) => {
             acc.push(
@@ -212,12 +229,13 @@ export class AutoNameComponent
             return acc;
         }, [] as AutoName[]);
     }
+
     writeValue(val: string): void {
         if (val && val.length) {
             const autoNames = this._parseSetValue(val);
             this._preselectAutoNames(autoNames);
             this.sampleData = true;
-            const buildedView = this.buildForAutoName();
+            const buildedView = this._buildForAutoName();
             this.displayedOptionItems = this.optionItems;
             this.textControl.setValue(buildedView, { emitEvent: false });
             this.input.nativeElement.value = buildedView;
@@ -246,7 +264,7 @@ export class AutoNameComponent
 }
 export class AutoNameErrorStateMatcher implements ErrorStateMatcher {
     constructor() {}
-    matchipsLength = 0;
+    matchipsLength: number = 0;
     isErrorState(
         control: FormControl | null,
         form: FormGroupDirective | NgForm | null

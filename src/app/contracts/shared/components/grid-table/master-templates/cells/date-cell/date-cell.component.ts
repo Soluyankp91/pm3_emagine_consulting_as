@@ -10,9 +10,5 @@ export class DateCellComponent implements OnInit {
     date: string;
     constructor() {}
 
-    ngOnInit(): void {
-        setTimeout(() => {
-            this.emitTest.emit('shit');
-        }, 1000);
-    }
+    ngOnInit(): void {}
 }

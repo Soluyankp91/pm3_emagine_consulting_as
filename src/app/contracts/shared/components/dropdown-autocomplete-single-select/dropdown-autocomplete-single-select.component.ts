@@ -25,14 +25,10 @@ import {
 import { ErrorStateMatcher } from '@angular/material/core';
 import { isEmpty } from 'lodash';
 import { REQUIRED_VALIDATION_MESSAGE } from '../../entities/contracts.constants';
-export type Item = { [key: string]: any };
-export function customRequiredValidator(): ValidatorFn {
-    return (control: AbstractControl): ValidationErrors | null => {
-        return !(typeof control.value === 'object')
-            ? { customRequired: true }
-            : null;
-    };
-}
+import { SingleAutoErrorStateMatcher } from './entities/customMatcher';
+import { customRequiredValidator } from './entities/customRequireValidator';
+import { Item } from './entities/interfaces';
+
 @Component({
     selector: 'app-dropdown-autocomplete-single-select',
     templateUrl: './dropdown-autocomplete-single-select.component.html',
@@ -89,6 +85,10 @@ export class DropdownAutocompleteSingleSelectComponent
         this.onChange(selectedOption[this.outputProperty]);
     }
 
+    trackByOptionProp(index: number, item: Item) {
+        return index;
+    }
+
     private _subsribeOnInputControl() {
         this.inputControl.valueChanges.subscribe((input) => {
             this.optionSelected = false;
@@ -127,15 +127,5 @@ export class DropdownAutocompleteSingleSelectComponent
         this.optionSelected = true;
         this.inputControl.setValue(preselectedItem, { emitEvent: false });
         this.onChange(preselectedItem[this.outputProperty]);
-    }
-}
-export class SingleAutoErrorStateMatcher implements ErrorStateMatcher {
-    constructor() {}
-    isSelectedOption = false;
-    isErrorState(
-        control: FormControl | null,
-        form: FormGroupDirective | NgForm | null
-    ): boolean {
-        return !!(control?.touched && control?.invalid);
     }
 }

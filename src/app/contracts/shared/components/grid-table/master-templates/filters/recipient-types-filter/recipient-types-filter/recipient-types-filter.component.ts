@@ -18,11 +18,11 @@ export class RecipientTypesFilterComponent implements IFilter {
         this.masterTemplateService
             .getTableFilters$()
             .pipe(take(1), pluck(this.tableFilter))
-            .subscribe(recipientTypes => {
-                this.fc = new FormControl(recipientTypes);
+            .subscribe((recipientTypes) => {
+                this.filterFormControl = new FormControl(recipientTypes);
             });
     }
     recipientTypes$ = this.contractsService.getRecipientTypes$();
-    fc: FormControl;
+    filterFormControl: FormControl;
     private tableFilter = 'recipientTypes';
 }

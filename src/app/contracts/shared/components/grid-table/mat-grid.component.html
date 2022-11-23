@@ -22,7 +22,7 @@
         [formGroup]="formGroup"
     >
         <ng-container
-            *ngFor="let cell of cells"
+            *ngFor="let cell of cells; trackBy: trackByCellColumnDef"
             [matColumnDef]="cell.matColumnDef"
         >
             <ng-container [ngSwitch]="cell.headerCell.type">

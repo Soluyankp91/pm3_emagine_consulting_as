@@ -1,4 +1,11 @@
-import { map, startWith, switchMap, tap, skip } from 'rxjs/operators';
+import {
+    map,
+    startWith,
+    switchMap,
+    tap,
+    skip,
+    takeUntil,
+} from 'rxjs/operators';
 import {
     BehaviorSubject,
     combineLatest,
@@ -6,6 +13,7 @@ import {
     Observable,
     Subject,
     of,
+    ReplaySubject,
 } from 'rxjs';
 import {
     Component,
@@ -13,16 +21,16 @@ import {
     ChangeDetectionStrategy,
     ChangeDetectorRef,
     ViewEncapsulation,
+    OnDestroy,
 } from '@angular/core';
 import { ContractsService } from 'src/app/contracts/contracts.service';
-import { FormControl, Validators } from '@angular/forms';
+import { FormControl } from '@angular/forms';
 import {
     AgreementCreationMode,
     AgreementTemplateAttachmentDto,
     AgreementTemplateServiceProxy,
     ApiServiceProxy,
     EnumEntityTypeDto,
-    FileServiceProxy,
     LegalEntityDto,
     SaveAgreementTemplateDto,
     SimpleAgreementTemplatesListItemDto,
@@ -43,13 +51,9 @@ import { DirtyCheckService } from './dirty-check-service.service';
     styleUrls: ['./settings.component.scss'],
     changeDetection: ChangeDetectionStrategy.OnPush,
     encapsulation: ViewEncapsulation.None,
-    providers: [
-        {
-            provide: DirtyCheckService,
-        },
-    ],
+    providers: [DirtyCheckService],
 })
-export class CreateMasterTemplateComponent implements OnInit {
+export class CreateMasterTemplateComponent implements OnInit, OnDestroy {
     preselectedFiles: FileUpload[] = [];
 
     creationModes = AgreementCreationMode;
@@ -72,20 +76,29 @@ export class CreateMasterTemplateComponent implements OnInit {
     agreementTypes$ = this.contractsService.getAgreementTypes$();
     recipientTypes$ = this.contractsService.getRecipientTypes$();
     legalEntities$ = this.contractsService.getLegalEntities$();
-    salesTypes = this.contractsService.getSalesTypes$();
-    deliveryTypes = this.contractsService.getDeliveryTypes$();
-    contractTypes = this.contractsService.getEmploymentTypes$();
+    salesTypes$ = this.contractsService.getSalesTypes$();
+    deliveryTypes$ = this.contractsService.getDeliveryTypes$();
+    contractTypes$ = this.contractsService.getEmploymentTypes$();
     languages$ = this.contractsService.getAgreementLanguages$();
 
-    options$ = combineLatest([
+    optionsObservable$: [
+        ReplaySubject<BaseEnumDto[]>,
+        ReplaySubject<EnumEntityTypeDto[]>,
+        ReplaySubject<LegalEntityDto[]>,
+        ReplaySubject<EnumEntityTypeDto[]>,
+        ReplaySubject<EnumEntityTypeDto[]>,
+        ReplaySubject<EnumEntityTypeDto[]>,
+        ReplaySubject<BaseEnumDto[]>
+    ] = [
         this.agreementTypes$,
         this.recipientTypes$,
         this.legalEntities$,
-        this.salesTypes,
-        this.deliveryTypes,
-        this.contractTypes,
+        this.salesTypes$,
+        this.deliveryTypes$,
+        this.contractTypes$,
         this.languages$,
-    ]).pipe(
+    ];
+    options$ = combineLatest(this.optionsObservable$).pipe(
         map((combined) => {
             return {
                 agreementTypes: combined[0] as unknown as BaseEnumDto[],
@@ -100,10 +113,12 @@ export class CreateMasterTemplateComponent implements OnInit {
     );
 
     modeControl = new BehaviorSubject(AgreementCreationMode.FromScratch);
+    private unSubscribe$ = new Subject<void>();
 
     private _subscribeOnCreationModeResolver() {
         this.modeControl
             .pipe(
+                takeUntil(this.unSubscribe$),
                 skip(1),
                 switchMap((mode) => {
                     if (this.isDirty) {
@@ -128,6 +143,7 @@ export class CreateMasterTemplateComponent implements OnInit {
     private _subscribeOnDirtyStatus() {
         this.masterTemplateFormGroup.valueChanges
             .pipe(
+                takeUntil(this.unSubscribe$),
                 map(() => this.masterTemplateFormGroup.getRawValue()),
                 dirtyCheck(this.dirtyCheckService.initialFormValue$)
             )
@@ -153,6 +169,9 @@ export class CreateMasterTemplateComponent implements OnInit {
         this.masterTemplateOptions$ = this._getExistingTemplate$();
         this._subscribeOnDirtyStatus();
         this._subscribeOnCreationModeResolver();
+    }
+    ngOnDestroy(): void {
+        this.unSubscribe$.next();
     }
     masterTemplateOptions$: Observable<SimpleAgreementTemplatesListItemDto[]>;
     masterTemplateOptionsChanged$ = new Subject<string>();
@@ -225,6 +244,7 @@ export class CreateMasterTemplateComponent implements OnInit {
                     new SaveAgreementTemplateDto(agreementPostDto)
                 )
             )
+            .pipe(takeUntil(this.unSubscribe$))
             .subscribe((x) => {
                 this.navigateOnAction();
             });
@@ -238,14 +258,17 @@ export class CreateMasterTemplateComponent implements OnInit {
         });
     }
     private _subscribeOnFormValid() {
-        this.masterTemplateFormGroup.statusChanges.subscribe((isValid) => {
-            this.isFormValid = isValid === 'INVALID' ? false : true;
-        });
+        this.masterTemplateFormGroup.statusChanges
+            .pipe(takeUntil(this.unSubscribe$))
+            .subscribe((isValid) => {
+                this.isFormValid = isValid === 'INVALID' ? false : true;
+            });
     }
 
     private _subscribeOnDuplicateControlChanges() {
         this.duplicateTemplateControl.valueChanges
             .pipe(
+                takeUntil(this.unSubscribe$),
                 switchMap((templateId) => {
                     return this.apiServiceProxy.agreementTemplateGet(
                         templateId

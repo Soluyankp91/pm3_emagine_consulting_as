@@ -6,16 +6,14 @@ import {
     ViewEncapsulation,
     ChangeDetectionStrategy,
     ChangeDetectorRef,
-    AfterViewInit,
     OnChanges,
     SimpleChanges,
-    ContentChildren,
     ContentChild,
     TemplateRef,
 } from '@angular/core';
 import { ControlValueAccessor, NG_VALUE_ACCESSOR } from '@angular/forms';
 import { IDropdownItem } from './emagine-menu-multi-select.interfaces';
-import { cloneDeep, isEqual, uniqBy } from 'lodash';
+import { isEqual, uniqBy } from 'lodash';
 import { MatMenuTrigger } from '@angular/material/menu';
 @Component({
     selector: 'app-multi-select',
@@ -31,7 +29,9 @@ import { MatMenuTrigger } from '@angular/material/menu';
     changeDetection: ChangeDetectionStrategy.OnPush,
     encapsulation: ViewEncapsulation.None,
 })
-export class MultiSelectComponent implements OnInit,AfterViewInit, ControlValueAccessor, OnChanges {
+export class MultiSelectComponent
+    implements OnInit, ControlValueAccessor, OnChanges
+{
     @Input() set options(options: any[]) {
         this._options = options;
     }
@@ -80,7 +80,9 @@ export class MultiSelectComponent implements OnInit,AfterViewInit, ControlValueA
     public registerOnTouched(fn: any): void {
         this.onTouched = fn;
     }
-
+    trackByIndex(index: number, item: any) {
+        return index;
+    }
     public writeValue(outer: object[]): void {
         this.selectedItems = [];
         if (outer?.length > 0) {
@@ -96,15 +98,12 @@ export class MultiSelectComponent implements OnInit,AfterViewInit, ControlValueA
                 foundedOption.selected = true;
             });
             this.onChange([...this.selectedItems]);
-            this.cdr.detectChanges();
         } else {
             this.unselectAll();
-            this.cdr.detectChanges();
         }
+        this.cdr.detectChanges();
     }
-    public ngOnChanges(changes: SimpleChanges): void {
-        // console.log(changes);
-    }
+    public ngOnChanges(changes: SimpleChanges): void {}
     private unselectAll() {
         this._options.forEach((option) => {
             (option as IDropdownItem).selected = false;
@@ -117,6 +116,4 @@ export class MultiSelectComponent implements OnInit,AfterViewInit, ControlValueA
 
     private onChange = (val: any) => {};
     private onTouched = (val: any) => {};
-    public ngAfterViewInit(): void {
-    }
 }

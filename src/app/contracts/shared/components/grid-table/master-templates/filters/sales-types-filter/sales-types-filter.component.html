@@ -2,7 +2,7 @@
     *ngIf="salesTypes$ | async as salesTypes"
     [options]="salesTypes"
     [displayedProperty]="'name'"
-    [formControl]="fc"
+    [formControl]="filterFormControl"
 >
     <div #triggerButton>Sales Types</div></app-multi-select
 >

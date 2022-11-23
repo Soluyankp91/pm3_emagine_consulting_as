@@ -1,6 +1,4 @@
-import { FormControl, FormGroup } from '@angular/forms';
-import { ContractsService } from 'src/app/contracts/contracts.service';
-import { TableConfig } from '../../shared/components/grid-table/mat-grid.interfaces';
+import { ITableConfig } from '../../shared/components/grid-table/mat-grid.interfaces';
 import { MasterTemplatesService } from './master-templates.service';
 import { Component, ChangeDetectionStrategy, OnInit } from '@angular/core';
 import { map } from 'rxjs/operators';
@@ -28,10 +26,7 @@ export class MasterTemplatesComponent implements OnInit {
 
     displayedColumns = DISPLAYED_COLUMNS;
     table$: Observable<any>;
-    fg = new FormGroup({
-        countries: new FormControl(),
-        search: new FormControl(),
-    });
+
     constructor(
         private readonly masterTemplatesService: MasterTemplatesService,
         private gridHelpService: GridHelpService
@@ -41,9 +36,9 @@ export class MasterTemplatesComponent implements OnInit {
     }
     private _initTable$() {
         this.table$ = this.dataSource$.pipe(
-            map(data => {
+            map((data) => {
                 console.log(data);
-                const tableConfig: TableConfig = {
+                const tableConfig: ITableConfig = {
                     pageSize: data.pageSize,
                     pageIndex: data.pageIndex - 1,
                     totalCount: data.totalCount,
@@ -56,18 +51,13 @@ export class MasterTemplatesComponent implements OnInit {
         );
     }
     onSortChange($event: Sort) {
-        console.log($event);
         this.masterTemplatesService.updateSort($event);
     }
     onFormControlChange($event: TableFiltersEnum) {
-        // console.log($event);
         this.masterTemplatesService.updateTableFilters($event);
     }
     onPageChange($event: PageEvent) {
-        console.log($event);
         this.masterTemplatesService.updatePage($event);
     }
-    onSelectTableRow(row: { [key: string]: string }) {
-        console.log(row);
-    }
+    onSelectTableRow(row: { [key: string]: string }) {}
 }

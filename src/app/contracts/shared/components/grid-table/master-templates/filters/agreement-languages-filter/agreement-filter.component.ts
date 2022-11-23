@@ -12,7 +12,7 @@ import { MasterTemplatesService } from 'src/app/contracts/components/master-temp
 })
 export class AgreementLanguagesFilterComponent implements IFilter {
     agreementLanguages$ = this.contractsService.getAgreementLanguages$();
-    fc: FormControl;
+    filterFormControl: FormControl;
 
     private tableFilter = 'agreementLanguages';
 
@@ -23,8 +23,8 @@ export class AgreementLanguagesFilterComponent implements IFilter {
         this.masterTemplatesService
             .getTableFilters$()
             .pipe(take(1), pluck(this.tableFilter))
-            .subscribe(agreementLanguages => {
-                this.fc = new FormControl(agreementLanguages);
+            .subscribe((agreementLanguages) => {
+                this.filterFormControl = new FormControl(agreementLanguages);
             });
     }
 }

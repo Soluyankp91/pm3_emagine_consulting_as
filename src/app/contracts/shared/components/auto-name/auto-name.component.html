@@ -6,9 +6,12 @@
         [errorStateMatcher]="matcher"
     >
         <ng-container *ngIf="!sampleData">
-            <mat-chip *ngFor="let chip of selectedOptions" [value]="chip.name">
-                {{ "{" + chip.name + "}" }}
-            </mat-chip>
+            <ng-container *ngFor="let chip of selectedOptions;trackBy:trackByOptionName">
+                <mat-chip  [value]="chip.name">
+                    {{ "{" + chip.name + "}" }}
+                </mat-chip>
+            </ng-container>
+
         </ng-container>
         <input
             #input
@@ -23,15 +26,17 @@
     </mat-chip-list>
     <mat-error>{{ requiredValidationMessage }}</mat-error>
     <mat-autocomplete #auto="matAutocomplete">
-        <mat-option *ngFor="let optionItem of displayedOptionItems">
-            <mat-checkbox
-                (click)="$event.stopPropagation()"
-                [checked]="optionItem.selected"
-                (change)="toggleCheckbox(optionItem)"
-            >
-                {{ optionItem.name }}
-            </mat-checkbox>
-        </mat-option>
+        <ng-container *ngFor="let optionItem of displayedOptionItems; trackBy:trackByOptionName">
+            <mat-option>
+                <mat-checkbox
+                    (click)="$event.stopPropagation()"
+                    [checked]="optionItem.selected"
+                    (change)="toggleCheckbox(optionItem)"
+                >
+                    {{ optionItem.name }}
+                </mat-checkbox>
+            </mat-option>
+        </ng-container>
     </mat-autocomplete>
 </mat-form-field>
 <div></div>

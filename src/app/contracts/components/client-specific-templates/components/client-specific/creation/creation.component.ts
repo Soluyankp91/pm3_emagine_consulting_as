@@ -5,6 +5,7 @@ import {
     OnInit,
     ViewEncapsulation,
     Injector,
+    OnDestroy,
 } from '@angular/core';
 import { ContractsService } from 'src/app/contracts/contracts.service';
 import {
@@ -20,7 +21,14 @@ import {
     SaveAgreementTemplateDto,
     SimpleAgreementTemplatesListItemDto,
 } from 'src/shared/service-proxies/service-proxies';
-import { map, switchMap, startWith, tap, skip } from 'rxjs/operators';
+import {
+    map,
+    switchMap,
+    startWith,
+    tap,
+    skip,
+    takeUntil,
+} from 'rxjs/operators';
 import {
     combineLatest,
     Observable,
@@ -28,6 +36,7 @@ import {
     forkJoin,
     of,
     BehaviorSubject,
+    ReplaySubject,
 } from 'rxjs';
 import { BaseEnumDto } from 'src/app/contracts/shared/entities/contracts.interfaces';
 import { FormControl } from '@angular/forms';
@@ -45,13 +54,12 @@ import { REQUIRED_VALIDATION_MESSAGE } from 'src/app/contracts/shared/entities/c
     styleUrls: ['./creation.component.scss'],
     changeDetection: ChangeDetectionStrategy.OnPush,
     encapsulation: ViewEncapsulation.None,
-    providers: [
-        {
-            provide: DirtyCheckService,
-        },
-    ],
+    providers: [DirtyCheckService],
 })
-export class CreationComponent extends AppComponentBase implements OnInit {
+export class CreationComponent
+    extends AppComponentBase
+    implements OnInit, OnDestroy
+{
     constructor(
         private readonly injector: Injector,
         private readonly cdr: ChangeDetectorRef,
@@ -92,8 +100,15 @@ export class CreationComponent extends AppComponentBase implements OnInit {
     languages$ = this.contractService.getAgreementLanguages$();
 
     preselectedFiles: FileUpload[] = [];
-
-    options$ = combineLatest([
+    optionsObservable$: [
+        ReplaySubject<BaseEnumDto[]>,
+        ReplaySubject<EnumEntityTypeDto[]>,
+        ReplaySubject<LegalEntityDto[]>,
+        ReplaySubject<EnumEntityTypeDto[]>,
+        ReplaySubject<EnumEntityTypeDto[]>,
+        ReplaySubject<EnumEntityTypeDto[]>,
+        ReplaySubject<BaseEnumDto[]>
+    ] = [
         this.agreementTypes$,
         this.recipientTypes$,
         this.legalEntities$,
@@ -101,7 +116,8 @@ export class CreationComponent extends AppComponentBase implements OnInit {
         this.deliveryTypes$,
         this.contractTypes$,
         this.languages$,
-    ]).pipe(
+    ];
+    options$ = combineLatest(this.optionsObservable$).pipe(
         map((combined) => {
             return {
                 agreementType: combined[0] as unknown as BaseEnumDto[],
@@ -125,7 +141,22 @@ export class CreationComponent extends AppComponentBase implements OnInit {
     masterTemplateOptionsChanged$ = new Subject<string>();
     clientTemplateOptionsChanged$ = new Subject<string>();
 
-    private _initExistingTemplates() {
+    private unSubscribe$ = new Subject<void>();
+
+    trackByRecipientId(index: number, item: EnumEntityTypeDto) {
+        return item.id;
+    }
+    trackByLegalEntityId(index: number, item: LegalEntityDto) {
+        return item.id;
+    }
+    trackByDeliveryTypeId(index: number, item: EnumEntityTypeDto) {
+        return item.id;
+    }
+    trackByContractTypeId(index: number, item: EnumEntityTypeDto) {
+        return item.id;
+    }
+
+    private _initExistingTemplates(): void {
         this.clientTemplatesOptions$ =
             this._getExistingTemplatesObservable$(true);
         this.masterTemplatesOptions$ =
@@ -149,27 +180,27 @@ export class CreationComponent extends AppComponentBase implements OnInit {
             )
         );
     }
-    private _initClients() {
+    private _initClients(): void {
         this.clientOptions$ = this.clientOptionsChanged$.pipe(
             startWith(''),
             switchMap((searchInput) => {
-                //console.log(searchInput);
                 return this.lookupServiceProxy.clients(searchInput, 20);
             })
         );
     }
-    private _subscribeOnStatusChanges() {
-        this.clientTemplateFormGroup.statusChanges.subscribe((status) => {
-            if (status === 'VALID') {
-                return (this.isValid = true);
-            }
-            this.isValid = false;
-        });
+    private _subscribeOnStatusChanges(): void {
+        this.clientTemplateFormGroup.statusChanges
+            .pipe(takeUntil(this.unSubscribe$))
+            .subscribe((status) => {
+                if (status === 'VALID') {
+                    return (this.isValid = true);
+                }
+                this.isValid = false;
+            });
     }
     ngOnInit(): void {
         //disable creation mode changes, so we can make resolver for radio buttons
         this.creationModeControl.disable();
-        this._subscribeOnFormChanges();
         this._subscribeOnMasterTemplateChanges();
         this._subscribeOnDirtyStatus();
         this._initClients();
@@ -177,6 +208,9 @@ export class CreationComponent extends AppComponentBase implements OnInit {
         this._subscribeOnClientTemplateChanges();
         this._subscribeOnCreationModeResolver();
         this._subscribeOnStatusChanges();
+    }
+    ngOnDestroy(): void {
+        this.unSubscribe$.next();
     }
     onSave() {
         let creationMode = this.creationModeControl.value;
@@ -238,9 +272,10 @@ export class CreationComponent extends AppComponentBase implements OnInit {
             .subscribe();
     }
 
-    private _subscribeOnDirtyStatus() {
+    private _subscribeOnDirtyStatus(): void {
         this.clientTemplateFormGroup.valueChanges
             .pipe(
+                takeUntil(this.unSubscribe$),
                 map(() => this.clientTemplateFormGroup.getRawValue()),
                 dirtyCheck(this.dirtyCheckService.initialFormValue$)
             )
@@ -249,9 +284,10 @@ export class CreationComponent extends AppComponentBase implements OnInit {
             });
     }
 
-    private _subscribeOnMasterTemplateChanges() {
+    private _subscribeOnMasterTemplateChanges(): void {
         this.parentMasterTemplateControl.valueChanges
             .pipe(
+                takeUntil(this.unSubscribe$),
                 switchMap((agreementTemplateId: number) => {
                     return this.apiServiceProxy.agreementTemplateGet(
                         agreementTemplateId as number
@@ -263,9 +299,10 @@ export class CreationComponent extends AppComponentBase implements OnInit {
             )
             .subscribe();
     }
-    private _subscribeOnClientTemplateChanges() {
+    private _subscribeOnClientTemplateChanges(): void {
         this.clientTemplateControl.valueChanges
             .pipe(
+                takeUntil(this.unSubscribe$),
                 switchMap((agreementTemplateId) => {
                     return this.apiServiceProxy.agreementTemplateGet(
                         agreementTemplateId as number
@@ -277,7 +314,9 @@ export class CreationComponent extends AppComponentBase implements OnInit {
             )
             .subscribe();
     }
-    private _setDataFromRetrievedTemplate(data: AgreementTemplateDetailsDto) {
+    private _setDataFromRetrievedTemplate(
+        data: AgreementTemplateDetailsDto
+    ): void {
         this.clientTemplateFormGroup.patchValue({
             agreementType: data.agreementType,
             recipientTypeId: data.recipientTypeId,
@@ -328,21 +367,17 @@ export class CreationComponent extends AppComponentBase implements OnInit {
         this._updateDisabledStateForDuplicate();
         this.cdr.detectChanges();
     }
-    private _updateDisabledStateForDuplicate() {
+    private _updateDisabledStateForDuplicate(): void {
         if (this.isDuplicateFromInherited) {
             this._disableControls();
         } else {
             this._enableControls();
         }
     }
-    private _subscribeOnFormChanges() {
-        this.clientTemplateFormGroup.valueChanges.subscribe((formValue) => {
-            //console.log(formValue);
-        });
-    }
-    private _subscribeOnCreationModeResolver() {
+    private _subscribeOnCreationModeResolver(): void {
         this.modeControl
             .pipe(
+                takeUntil(this.unSubscribe$),
                 skip(1),
                 switchMap((mode) => {
                     if (this.isDirty) {
@@ -364,7 +399,7 @@ export class CreationComponent extends AppComponentBase implements OnInit {
                 }
             });
     }
-    private onCreationModeChange(mode: AgreementCreationMode) {
+    private onCreationModeChange(mode: AgreementCreationMode): void {
         switch (mode) {
             case AgreementCreationMode.FromScratch: {
                 this._enableControls();
@@ -388,7 +423,7 @@ export class CreationComponent extends AppComponentBase implements OnInit {
             }
         }
     }
-    private _enableControls() {
+    private _enableControls(): void {
         this.clientTemplateFormGroup.agreementType?.enable({
             emitEvent: false,
         });
@@ -399,7 +434,7 @@ export class CreationComponent extends AppComponentBase implements OnInit {
             emitEvent: false,
         });
     }
-    private _disableControls() {
+    private _disableControls(): void {
         this.clientTemplateFormGroup.agreementType?.disable({
             emitEvent: false,
         });

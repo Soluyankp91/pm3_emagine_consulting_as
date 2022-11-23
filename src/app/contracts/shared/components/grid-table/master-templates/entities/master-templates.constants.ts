@@ -1,6 +1,6 @@
 import {
     HeaderCell,
-    HeaderCells,
+    EHeaderCells,
 } from 'src/app/contracts/shared/components/grid-table/mat-grid.interfaces';
 import { AgreementLanguagesFilterComponent } from '../filters/agreement-languages-filter/agreement-filter.component';
 import { AgreementTypesFilterComponent } from '../filters/agreement-types-filter/agreement-types-filter.component';
@@ -28,57 +28,57 @@ export const DISPLAYED_COLUMNS: string[] = [
 export const MASTER_TEMPLATE_HEADER_CELLS: HeaderCell[] = [
     {
         field: 'agreementTemplateId',
-        type: HeaderCells.SORT,
+        type: EHeaderCells.SORT,
         title: 'agreementTemplateId',
     },
     {
         field: 'name',
-        type: HeaderCells.SORT,
+        type: EHeaderCells.SORT,
         title: 'Name',
     },
     {
         field: 'language',
-        type: HeaderCells.FILTER,
+        type: EHeaderCells.FILTER,
         component: AgreementLanguagesFilterComponent,
     },
     {
         field: 'agreementType',
-        type: HeaderCells.FILTER,
+        type: EHeaderCells.FILTER,
         component: AgreementTypesFilterComponent,
     },
     {
         field: 'recipientTypeId',
-        type: HeaderCells.FILTER,
+        type: EHeaderCells.FILTER,
         component: RecipientTypesFilterComponent,
     },
     {
         field: 'legalEntityIds',
-        type: HeaderCells.FILTER,
+        type: EHeaderCells.FILTER,
         component: LegalEntitiesFilterComponent,
     },
     {
         field: 'salesTypeIds',
-        type: HeaderCells.FILTER,
+        type: EHeaderCells.FILTER,
         component: SalesTypesFilterComponent,
     },
     {
         field: 'deliveryTypeIds',
-        type: HeaderCells.FILTER,
+        type: EHeaderCells.FILTER,
         component: DeliveryTypesFilterComponent,
     },
     {
         field: 'contractTypeIds',
-        type: HeaderCells.FILTER,
+        type: EHeaderCells.FILTER,
         component: EmploymentTypesFilterComponent,
     },
     {
         field: 'lastUpdateDateUtc',
-        type: HeaderCells.SORT,
+        type: EHeaderCells.SORT,
         title: 'Last updated',
     },
     {
         field: 'lastUpdatedByLowerCaseInitials',
-        type: HeaderCells.FILTER,
+        type: EHeaderCells.FILTER,
         component: EmployeesFilterComponent,
     },
 ];

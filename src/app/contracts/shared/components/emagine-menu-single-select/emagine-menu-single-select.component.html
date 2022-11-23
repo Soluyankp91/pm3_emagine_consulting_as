@@ -20,9 +20,11 @@
       panelClass="mat-menu-single-select"
       (selectionChange)="onSelectionChange($event.value)"
       [value]="selectedItem">
-      <mat-option *ngFor="let option of options" [value]="option">
-        {{ option[displayedProperty] }}
-      </mat-option>
+      <ng-container *ngFor="let option of options;trackBy:trackByIndex">
+        <mat-option [value]="option">
+            {{ option[displayedProperty] }}
+          </mat-option>
+      </ng-container>
     </mat-select>
   </mat-form-field>
 </mat-menu>

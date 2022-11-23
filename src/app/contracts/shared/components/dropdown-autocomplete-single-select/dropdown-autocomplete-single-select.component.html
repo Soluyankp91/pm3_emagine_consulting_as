@@ -13,9 +13,11 @@
         [displayWith]="displayFn.bind(this)"
         (optionSelected)="onSelect($event.option.value)"
     >
-        <mat-option *ngFor="let option of options" [value]="option">{{
+    <ng-container *ngFor="let option of options; trackBy:trackByOptionProp" >
+        <mat-option  [value]="option">{{
             option[displayedProperty]
         }}</mat-option>
+    </ng-container>
     </mat-autocomplete>
     <mat-error *ngIf="inputControl.hasError('customRequired')">
         {{ requiredValidationMessage }}

@@ -23,8 +23,8 @@ export class EmployeesFilterComponent {
         this.masterTemplateService
             .getTableFilters$()
             .pipe(take(1), pluck(this.tableFilter))
-            .subscribe(salesTypes => {
-                this.fc = new FormControl(salesTypes);
+            .subscribe((salesTypes) => {
+                this.filterFormControl = new FormControl(salesTypes);
             });
     }
 
@@ -40,7 +40,7 @@ export class EmployeesFilterComponent {
         }),
         tap(() => this.initialLoading.next(true))
     );
-    fc: FormControl;
+    filterFormControl: FormControl;
     private tableFilter = 'employees';
     emitText($event: { nameFilter: string; idsToExclude: number[] }) {
         this.textEmitter.emit($event);

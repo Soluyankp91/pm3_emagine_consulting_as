@@ -18,12 +18,12 @@ export class DeliveryTypesFilterComponent implements IFilter {
         this.masterTemplateService
             .getTableFilters$()
             .pipe(take(1), pluck(this.tableFilter))
-            .subscribe(deliveryTypes => {
-                this.fc = new FormControl(deliveryTypes);
+            .subscribe((deliveryTypes) => {
+                this.filterFormControl = new FormControl(deliveryTypes);
             });
     }
 
     deliveryTypes$ = this.contractService.getDeliveryTypes$();
-    fc: FormControl;
+    filterFormControl: FormControl;
     private tableFilter = 'deliveryTypes';
 }

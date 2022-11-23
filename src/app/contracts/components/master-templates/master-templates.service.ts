@@ -2,7 +2,7 @@ import { TableFiltersEnum } from '../../shared/components/grid-table/master-temp
 import { Injectable } from '@angular/core';
 import { SortDirection } from '@angular/material/sort';
 import { Observable, BehaviorSubject, combineLatest } from 'rxjs';
-import { map, switchMap, finalize, debounceTime } from 'rxjs/operators';
+import { map, switchMap, finalize, debounceTime, tap } from 'rxjs/operators';
 import {
     DEFAULT_SIZE_OPTION,
     INITIAL_PAGE_INDEX,
@@ -84,15 +84,13 @@ export class MasterTemplatesService {
             this.tenantIds$$,
             this.searchFilter$$,
         ]).pipe(
-            debounceTime(1000),
+            debounceTime(300),
             switchMap(([tableFilters, sort, page, tenantIds, search]) => {
-                this.contractsLoading$.next(true);
-                console.log(tenantIds, search);
                 const filters = Object.entries({
                     ...tableFilters,
                     tenantIds,
                 }).reduce((acc, current) => {
-                    acc[current[0]] = current[1].map(item => item.id);
+                    acc[current[0]] = current[1].map((item) => item.id);
                     return acc;
                 }, {} as any);
                 filters;
@@ -119,6 +117,9 @@ export class MasterTemplatesService {
                         ? sort.active + ' ' + sort.direction
                         : ''
                 );
+            }),
+            tap(() => {
+                this.contractsLoading$.next(true);
             })
         );
     }

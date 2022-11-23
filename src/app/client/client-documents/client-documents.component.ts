@@ -479,10 +479,7 @@ export class ClientDocumentsComponent
             )
             .pipe(finalize(() => (this.isDataLoading = false)))
             .subscribe((result) => {
-                this.evalsDocumentsDataSource =
-                    new MatTableDataSource<ClientEvaluationOutputDto>(
-                        result as any
-                    );
+                this.evalsDocumentsDataSource = new MatTableDataSource<ClientEvaluationOutputDto>(result as any);
                 this.totalCount = (result as any).length;
             });
     }

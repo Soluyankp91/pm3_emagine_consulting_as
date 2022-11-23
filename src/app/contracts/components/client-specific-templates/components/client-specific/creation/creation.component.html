@@ -82,11 +82,12 @@
                     placeholder="Recipient type"
                     formControlName="recipientTypeId"
                 >
+                <ng-container *ngFor="let recipientType of options.recipientTypeId; trackBy:trackByRecipientId">
                     <mat-option
-                        *ngFor="let recipientType of options.recipientTypeId"
-                        [value]="recipientType.id"
-                        >{{ recipientType.name }}</mat-option
-                    >
+                    [value]="recipientType.id"
+                    >{{ recipientType.name }}</mat-option
+                >
+                </ng-container>
                 </mat-select>
                 <mat-error>{{ requiredValidationMessage }}</mat-error>
             </mat-form-field>
@@ -129,11 +130,12 @@
                     placeholder="Internal legal entity"
                     multiple
                 >
+                <ng-container *ngFor="let legalEntity of options.legalEntities;trackBy:trackByLegalEntityId">
                     <mat-option
-                        *ngFor="let legalEntity of options.legalEntities"
-                        [value]="legalEntity.id"
-                        >{{ legalEntity.name }}</mat-option
-                    >
+                    [value]="legalEntity.id"
+                    >{{ legalEntity.name }}</mat-option
+                >
+                </ng-container>
                 </mat-select>
                 <mat-error>{{ requiredValidationMessage }}</mat-error>
             </mat-form-field>
@@ -162,11 +164,13 @@
                     placeholder="Delivery type"
                     multiple
                 >
+                <ng-container *ngFor="let deliveryType of options.deliveryTypes;trackBy:trackByDeliveryTypeId">
                     <mat-option
-                        *ngFor="let deliveryType of options.deliveryTypes"
-                        [value]="deliveryType.id"
-                        >{{ deliveryType.name }}</mat-option
-                    >
+
+                    [value]="deliveryType.id"
+                    >{{ deliveryType.name }}</mat-option
+                >
+                </ng-container>
                 </mat-select>
                 <mat-error>{{ requiredValidationMessage }}</mat-error>
             </mat-form-field>
@@ -178,11 +182,13 @@
                     placeholder="Contract type"
                     multiple
                 >
+                <ng-container *ngFor="let contractType of options.contractTypes;trackBy:trackByContractTypeId">
                     <mat-option
-                        *ngFor="let contractType of options.contractTypes"
-                        [value]="contractType.id"
-                        >{{ contractType.name }}</mat-option
-                    >
+
+                    [value]="contractType.id"
+                    >{{ contractType.name }}</mat-option
+                >
+                </ng-container>
                 </mat-select>
                 <mat-error>{{ requiredValidationMessage }}</mat-error>
             </mat-form-field>
@@ -241,7 +247,7 @@
         [style.height.px]="64"
     >
         <button mat-button>Cancel</button>
-        <button mat-button (click)="onSave()" [disabled]="!isValid">
+        <button mat-button appPreventDoubleClick (click)="onSave()" [disabled]="!isValid">
             Save
         </button>
     </div>
