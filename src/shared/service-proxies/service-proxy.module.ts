@@ -6,7 +6,6 @@ import * as ApiServiceProxies from './service-proxies';
 @NgModule({
     providers: [
         ApiServiceProxies.AccountServiceProxy,
-        ApiServiceProxies.ApiServiceProxy,
         ApiServiceProxies.ClientsServiceProxy,
         ApiServiceProxies.EnumServiceProxy,
         ApiServiceProxies.HubSpotContractFetchServiceProxy,
@@ -15,18 +14,10 @@ import * as ApiServiceProxies from './service-proxies';
         ApiServiceProxies.LookupServiceProxy,
         ApiServiceProxies.WorkflowServiceProxy,
         ApiServiceProxies.ClientPeriodServiceProxy,
-        ApiServiceProxies.SpecialRatesServiceProxy,
-        ApiServiceProxies.SpecialFeesServiceProxy,
-        ApiServiceProxies.ClientSalesServiceProxy,
-        ApiServiceProxies.ClientContractsServiceProxy,
         ApiServiceProxies.EmployeeNotificationServiceProxy,
         ApiServiceProxies.ClientDocumentsServiceProxy,
         ApiServiceProxies.ConsultantPeriodServiceProxy,
-        ApiServiceProxies.ConsultantSalesServiceProxy,
-        ApiServiceProxies.ConsultantContractsServiceProxy,
         ApiServiceProxies.MainOverviewServiceProxy,
-        ApiServiceProxies.ClientFinanceServiceProxy,
-        ApiServiceProxies.ConsultantFinanceServiceProxy,
         ApiServiceProxies.EmployeeServiceProxy,
         ApiServiceProxies.ContractSyncServiceProxy,
         {
