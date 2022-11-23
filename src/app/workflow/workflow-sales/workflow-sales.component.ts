@@ -487,7 +487,7 @@ export class WorkflowSalesComponent extends AppComponentBase implements OnInit, 
         this._workflowDataService.startClientPeriodSalesSaved
             .pipe(takeUntil(this._unsubscribe))
             .subscribe((isDraft: boolean) => {
-                if (isDraft) {
+                if (isDraft && !this.editEnabledForcefuly) {
                     this.saveStartChangeOrExtendClientPeriodSales(isDraft);
                 } else {
                     if (this.validateSalesForm()) {
@@ -500,7 +500,7 @@ export class WorkflowSalesComponent extends AppComponentBase implements OnInit, 
         this._workflowDataService.consultantStartChangeOrExtendSalesSaved
             .pipe(takeUntil(this._unsubscribe))
             .subscribe((isDraft: boolean) => {
-                if (isDraft) {
+                if (isDraft && !this.editEnabledForcefuly) {
                     this.saveStartChangeOrExtendConsultantPeriodSales(isDraft);
                 } else {
                     if (this.validateSalesForm()) {
@@ -515,7 +515,7 @@ export class WorkflowSalesComponent extends AppComponentBase implements OnInit, 
         this._workflowDataService.consultantTerminationSalesSaved
             .pipe(takeUntil(this._unsubscribe))
             .subscribe((isDraft: boolean) => {
-                if (isDraft) {
+                if (isDraft && !this.editEnabledForcefuly) {
                     this.saveTerminationConsultantSalesStep(isDraft);
                 } else {
                     if (this.validateSalesForm()) {
@@ -529,7 +529,7 @@ export class WorkflowSalesComponent extends AppComponentBase implements OnInit, 
         this._workflowDataService.workflowTerminationSalesSaved
             .pipe(takeUntil(this._unsubscribe))
             .subscribe((isDraft: boolean) => {
-                if (isDraft) {
+                if (isDraft && !this.editEnabledForcefuly) {
                     this.saveWorkflowTerminationSalesStep(isDraft);
                 } else {
                     if (this.validateSalesForm()) {

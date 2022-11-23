@@ -1,9 +1,11 @@
+@import "/src/app/shared/styles/config/_colors";
+
 .white-color {
     color: white !important;
 }
 
 .green-color {
-    color: #2FC8AE !important;
+    color: $green-color !important;
 }
 
 .main-black-color-text {

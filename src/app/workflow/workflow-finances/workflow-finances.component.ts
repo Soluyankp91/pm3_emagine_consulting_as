@@ -4,7 +4,7 @@ import { ScrollToConfigOptions, ScrollToService } from '@nicky-lenaers/ngx-scrol
 import { Subject } from 'rxjs';
 import { finalize, takeUntil } from 'rxjs/operators';
 import { AppComponentBase } from 'src/shared/app-component-base';
-import { ClientFinanceServiceProxy, ClientPeriodFinanceDataDto, ClientPeriodServiceProxy, ConsultantFinanceServiceProxy, ConsultantPeriodFinanceDataDto, ConsultantPeriodServiceProxy, WorkflowProcessDto, WorkflowProcessType } from 'src/shared/service-proxies/service-proxies';
+import { ClientFinanceServiceProxy, ClientPeriodFinanceDataDto, ClientPeriodServiceProxy, ConsultantFinanceServiceProxy, ConsultantPeriodFinanceDataDto, ConsultantPeriodServiceProxy, WorkflowProcessType } from 'src/shared/service-proxies/service-proxies';
 import { WorkflowDataService } from '../workflow-data.service';
 import { WorkflowProcessWithAnchorsDto } from '../workflow-period/workflow-period.model';
 import { FinancesClientForm, FinancesConsultantsForm } from './workflow-finances.model';
@@ -55,13 +55,13 @@ export class WorkflowFinancesComponent extends AppComponentBase implements OnIni
         this._workflowDataService.startClientPeriodFinanceSaved
             .pipe(takeUntil(this._unsubscribe))
             .subscribe((isDraft: boolean) => {
-                if (isDraft) {
+                if (isDraft && !this.editEnabledForcefuly) {
                     this.saveStartChangeOrExtendClientPeriodFinance(isDraft);
                 } else {
                     if (this.validateFinanceForm()) {
                         this.saveStartChangeOrExtendClientPeriodFinance(isDraft);
                     } else {
-                        this.scrollToFirstError();
+                        this.scrollToFirstError(isDraft);
                     }
                 }
             });
@@ -69,20 +69,20 @@ export class WorkflowFinancesComponent extends AppComponentBase implements OnIni
         this._workflowDataService.consultantStartChangeOrExtendFinanceSaved
             .pipe(takeUntil(this._unsubscribe))
             .subscribe((isDraft: boolean) => {
-                if (isDraft) {
+                if (isDraft && !this.editEnabledForcefuly) {
                     this.saveStartChangeOrExtendConsultantPeriodFinance(isDraft);
                 } else {
                     if (this.validateFinanceForm()) {
                         this.saveStartChangeOrExtendConsultantPeriodFinance(isDraft);
                     } else {
-                        this.scrollToFirstError();
+                        this.scrollToFirstError(isDraft);
                     }
                 }
             });
 
         this._workflowDataService.cancelForceEdit
             .pipe(takeUntil(this._unsubscribe))
-            .subscribe((value: boolean) => {
+            .subscribe(() => {
                 this.isCompleted = true;
                 this.editEnabledForcefuly = false;
                 this._workflowDataService.updateWorkflowProgressStatus({currentStepIsCompleted: this.isCompleted, currentStepIsForcefullyEditing: this.editEnabledForcefuly});
@@ -104,7 +104,7 @@ export class WorkflowFinancesComponent extends AppComponentBase implements OnIni
         }
     }
 
-    scrollToFirstError() {
+    scrollToFirstError(isDraft: boolean) {
         setTimeout(() => {
             let firstError = document.getElementsByClassName('mat-form-field-invalid')[0] as HTMLElement;
             if (firstError) {
@@ -113,6 +113,8 @@ export class WorkflowFinancesComponent extends AppComponentBase implements OnIni
                     offset: -115
                 }
                 this.scrollToService.scrollTo(config)
+            } else {
+                this.saveFinanceStepDate(isDraft);
             }
         }, 0);
     }
@@ -158,7 +160,24 @@ export class WorkflowFinancesComponent extends AppComponentBase implements OnIni
                 this.getStartChangeOrExtendClientPeriodFinances();
                 break;
             case WorkflowProcessType.StartConsultantPeriod:
+            case WorkflowProcessType.ChangeConsultantPeriod:
+            case WorkflowProcessType.ExtendConsultantPeriod:
                 this.getStartConsultantPeriodFinance()
+                break;
+        }
+    }
+
+    saveFinanceStepDate(isDraft: boolean) {
+        switch (this._workflowDataService.getWorkflowProgress.currentlyActiveSideSection) {
+            case WorkflowProcessType.StartClientPeriod:
+            case WorkflowProcessType.ChangeClientPeriod:
+            case WorkflowProcessType.ExtendClientPeriod:
+                this.saveStartChangeOrExtendClientPeriodFinance(isDraft);
+                break;
+            case WorkflowProcessType.StartConsultantPeriod:
+            case WorkflowProcessType.ChangeConsultantPeriod:
+            case WorkflowProcessType.ExtendConsultantPeriod:
+                this.saveStartChangeOrExtendConsultantPeriodFinance(isDraft)
                 break;
         }
     }

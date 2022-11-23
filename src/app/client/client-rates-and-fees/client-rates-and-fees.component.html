@@ -162,18 +162,18 @@
                                 </span>
                             </ng-template>
                             <div fxFlex="15%" fxLayoutAlign="end center" class="u-w--100 u-pr--10">
-                                <button mat-icon-button [matMenuTriggerFor]="clientRateMenu" class="client-rates-icon--actions"><mat-icon>more_horiz</mat-icon></button>
+                                <button mat-icon-button [matMenuTriggerFor]="clientRateMenu" class="client-rates-icon--actions"><mat-icon svgIcon="3-dots"></mat-icon></button>
                                 <mat-menu #clientRateMenu>
                                     <button
-                                        class="menu-item menu-item--edit"
+                                        class="menu-item green-color"
                                         mat-menu-item
                                         [disabled]="rateIsEditing"
                                         appPreventDoubleClick (throttledClick)="startEditSpecialRate(rate.value.editable, i)">
-                                        <mat-icon>create</mat-icon>
+                                        <mat-icon svgIcon="edit-icon-green"></mat-icon>
                                         Edit
                                     </button>
                                     <button
-                                        class="menu-item"
+                                        class="menu-item green-color"
                                         mat-menu-item
                                         [disabled]="false"
                                         appPreventDoubleClick (throttledClick)="toggleSpecialRateHiddenState(i)">
@@ -184,7 +184,7 @@
                                         class="menu-item menu-item--cancel"
                                         mat-menu-item
                                         appPreventDoubleClick (throttledClick)="removeSpecialRate(rate.value.id, rate.value.inUse, i)">
-                                        <mat-icon>clear</mat-icon>
+                                        <mat-icon svgIcon="close-icon"></mat-icon>
                                         Remove
                                     </button>
                                 </mat-menu>
@@ -330,19 +330,19 @@
                                 {{fee.value.consultantRate || fee.value.consultantRateCurrency?.name ? fee.value.consultantRate + ' ' + fee.value.consultantRateCurrency?.name : ''}}
                             </span>
                             <div fxFlex="15%" fxLayoutAlign="end center" class="u-w--100 u-pr--10">
-                                <button mat-icon-button [matMenuTriggerFor]="clientFeeMenu" class="client-rates-icon--actions"><mat-icon>more_horiz</mat-icon></button>
+                                <button mat-icon-button [matMenuTriggerFor]="clientFeeMenu" class="client-rates-icon--actions"><mat-icon svgIcon="3-dots"></mat-icon></button>
                                 <mat-menu #clientFeeMenu>
                                     <button
-                                        class="menu-item menu-item--edit"
+                                        class="menu-item green-color"
                                         *ngIf="!fee.value.editable"
                                         mat-menu-item
                                         [disabled]="feeIsEditing"
                                         appPreventDoubleClick (throttledClick)="startEditSpecialFee(fee.value.editable, i)">
-                                        <mat-icon>create</mat-icon>
+                                        <mat-icon svgIcon="edit-icon-green"></mat-icon>
                                         Edit
                                     </button>
                                     <button
-                                        class="menu-item"
+                                        class="menu-item green-color"
                                         mat-menu-item
                                         [disabled]="false"
                                         appPreventDoubleClick (throttledClick)="toggleSpecialFeeHiddenState(i)">
@@ -353,7 +353,7 @@
                                         class="menu-item menu-item--cancel"
                                         mat-menu-item
                                         appPreventDoubleClick (throttledClick)="removeClientFee(fee.value.id, fee.value.inUse, i)">
-                                        <mat-icon>clear</mat-icon>
+                                        <mat-icon svgIcon="close-icon"></mat-icon>
                                         Remove
                                     </button>
                                 </mat-menu>
