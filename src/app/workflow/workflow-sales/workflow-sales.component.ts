@@ -2600,4 +2600,15 @@ export class WorkflowSalesComponent extends AppComponentBase implements OnInit, 
             });
         }
     }
+
+    focusinmethod(){
+        let b = document.getElementsByTagName('mat-drawer-content')[0] as HTMLElement;
+        b.style.overflow = "hidden";
+    }
+
+    focusoutmethod(){
+        let b = document.getElementsByTagName('mat-drawer-content')[0] as HTMLElement;
+        b.style.overflow = "auto";
+    }
+
 }
