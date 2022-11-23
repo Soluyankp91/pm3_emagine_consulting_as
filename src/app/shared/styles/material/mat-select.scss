@@ -50,25 +50,8 @@
             color: rgba(0, 0, 0, 0.47) !important;
             font-weight: 400;
         }
-        &.mat-select-header-option {
-            font-style: normal;
-            font-weight: 600;
-            font-size: 14px;
-            line-height: 140%;
-            color: rgba(137, 135, 133, 0.77) !important;
-        }
-
     }
 }
-
-.main-overview-dropdowns {
-    .mat-option {
-        &.mat-select-header-option {
-            border-bottom: 1px solid #E7E3E8;
-        }
-    }
-}
-
 
 .client-rates,
 .client-documents--form {
@@ -175,7 +158,7 @@
     }
 }
 
-.cdk-overlay-container .cdk-overlay-pane .main-overview-dropdowns{
+.cdk-overlay-container .cdk-overlay-pane .main-overview-dropdowns {
     &::-webkit-scrollbar {
         width: 15px;
     }
@@ -187,7 +170,6 @@
     }
 }
 
-
 .pm-mat-select-pane {
     margin-top: 25px;
     margin-bottom: 25px;
@@ -195,8 +177,26 @@
 
 .country-filter-dropdown {
     margin-top: 15px;
-}
+    min-width: 460px !important;
 
+    .mat-option {
+        padding-right: 8px !important;
+        color: $medium-grey-color !important;
+        font-weight: 600;
+        .mat-option-text {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+        .tenant-name {
+            font-weight: 700;
+            color: #000000;
+        }
+        .mat-icon {
+            margin-right: 0 !important;
+        }
+    }
+}
 
 .add-rates-button--menu + * + * + * .cdk-overlay-pane {
     .mat-autocomplete-panel, .mat-select-panel {
