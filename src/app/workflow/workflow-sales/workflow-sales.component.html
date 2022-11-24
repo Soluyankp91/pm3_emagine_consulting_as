@@ -1239,7 +1239,7 @@
                                                 </ng-container>
                                                 <ng-template #commissionRecipientAutocomplete>
                                                     <input #recipientFilterInput type="text" matInput [matAutocomplete]="recipientAutocomplete" formControlName="recipient" appPreventDoubleClick (throttledClick)="$event.stopPropagation()" placeholder="Recipient"
-                                                        (focus)="focusinmethod()" (focusout)="focusoutmethod()">
+                                                        (focus)="focusInMethod()" (focusout)="focusOutMethod()">
                                                     <mat-autocomplete #recipientAutocomplete="matAutocomplete" [displayWith]="displayRecipientFn">
                                                         <ng-container>
                                                             <mat-option *ngFor="let recipient of filteredRecipients" [value]="recipient" [ngClass]="{ 'no-data': recipient.id === 'no-data' }">
@@ -1407,7 +1407,7 @@
                                 <mat-form-field appearance="outline" class="u-w--100 formFieldNoMarginPadding filter-select u-mr--16" fxFlex="33%">
                                     <mat-label>Sales Account Manager</mat-label>
                                     <input required #salesAccountManagerFilterInput type="text" matInput [matAutocomplete]="salesManagerAutocomplete" formControlName="salesAccountManagerIdValue" appPreventDoubleClick (throttledClick)="$event.stopPropagation()" placeholder="Select account manager(s)"
-                                        (focus)="focusinmethod()" (focusout)="focusoutmethod()">
+                                        (focus)="focusInMethod()" (focusout)="focusOutMethod()">
                                     <mat-autocomplete #salesManagerAutocomplete="matAutocomplete" [displayWith]="displayNameFn">
                                         <ng-container>
                                             <mat-option *ngFor="let manager of filteredSalesAccountManagers"
@@ -1425,7 +1425,7 @@
                                 <mat-form-field appearance="outline" class="u-w--100 formFieldNoMarginPadding filter-select" fxFlex="33%">
                                     <mat-label>Commission Account Manager</mat-label>
                                     <input #commissionManagerFilterInput type="text" matInput [matAutocomplete]="commissionManagerAutocomplete" formControlName="commissionAccountManagerIdValue" appPreventDoubleClick (throttledClick)="$event.stopPropagation()" placeholder="Select account manager(s)"
-                                        (focus)="focusinmethod()" (focusout)="focusoutmethod()">
+                                        (focus)="focusInMethod()" (focusout)="focusOutMethod()">
                                 </mat-form-field>
                                 <mat-autocomplete #commissionManagerAutocomplete="matAutocomplete" [displayWith]="displayNameFn">
                                     <ng-container>
@@ -1502,7 +1502,7 @@
                                         <mat-form-field appearance="outline" class="formFieldNoMarginPadding client-and-consultant-autocomplete">
                                             <mat-label>Direct client</mat-label>
                                             <input required #directClientFilterInput type="text" matInput [matAutocomplete]="directClientAutocomplete" formControlName="directClientIdValue" appPreventDoubleClick (throttledClick)="$event.stopPropagation()" placeholder="Direct client name + address"
-                                                (focus)="focusinmethod()" (focusout)="focusoutmethod()">
+                                                (focus)="focusInMethod()" (focusout)="focusOutMethod()">
                                             <mat-autocomplete #directClientAutocomplete="matAutocomplete"
                                                             [displayWith]="displayClientNameFn"
                                                             (optionSelected)="directClientSelected($event)">
@@ -1530,7 +1530,7 @@
                                         <mat-form-field appearance="outline" class="formFieldNoMarginPadding client-and-consultant-autocomplete">
                                             <mat-label>End client</mat-label>
                                             <input [required]="salesClientDataForm.differentEndClient?.value" #endClientFilterInput type="text" matInput [matAutocomplete]="endClientAutocomplete" formControlName="endClientIdValue" appPreventDoubleClick (throttledClick)="$event.stopPropagation()" placeholder="End client name + address"
-                                                (focus)="focusinmethod()" (focusout)="focusoutmethod()">
+                                                (focus)="focusInMethod()" (focusout)="focusOutMethod()">
                                             <mat-autocomplete #endClientAutocomplete="matAutocomplete" [displayWith]="displayClientNameFn">
                                                 <ng-container>
                                                     <mat-option *ngFor="let client of filteredEndClients" [value]="client" [ngClass]="{ 'no-data': client.id === 'no-data' }">
@@ -1824,7 +1824,7 @@
                                         <mat-form-field appearance="outline" class="formFieldNoMarginPadding client-and-consultant-autocomplete u-mr--16">
                                             <mat-label>Client invoicing recipient</mat-label>
                                             <input #clientInvoicingRecipientInput type="text" matInput [matAutocomplete]="clientInvoicingRecipientAutocomplete" formControlName="clientInvoicingRecipientIdValue" appPreventDoubleClick (throttledClick)="$event.stopPropagation()" placeholder="Client invoicing recipient"
-                                                (focus)="focusinmethod()" (focusout)="focusoutmethod()">
+                                                (focus)="focusInMethod()" (focusout)="focusOutMethod()">
                                             <mat-autocomplete #clientInvoicingRecipientAutocomplete="matAutocomplete" [displayWith]="displayClientNameFn">
                                                 <ng-container>
                                                     <mat-option *ngFor="let client of filteredClientInvoicingRecipients" [value]="client" [ngClass]="{ 'no-data': client.id === 'no-data' }">
@@ -1853,7 +1853,7 @@
                                     <mat-form-field appearance="outline" class="u-w--100 formFieldNoMarginPadding filter-select u-mr--16" fxFlex="33%">
                                         <mat-label>Invoicing Reference Person</mat-label>
                                         <input required #invoicingReferencePersonInput type="text" matInput [matAutocomplete]="invoicingReferencePersonAutocomplete" formControlName="invoicingReferencePersonIdValue" appPreventDoubleClick (throttledClick)="$event.stopPropagation()" placeholder="Invoicing Reference Person"
-                                            (focus)="focusinmethod()" (focusout)="focusoutmethod()">
+                                            (focus)="focusInMethod()" (focusout)="focusOutMethod()">
                                         <mat-autocomplete #invoicingReferencePersonAutocomplete="matAutocomplete" [displayWith]="displayFullNameFn">
                                             <ng-container>
                                                 <mat-option *ngFor="let contact of filteredReferencePersons" [value]="contact" [ngClass]="{ 'no-data': contact.id === 'no-data' }">
@@ -2161,7 +2161,7 @@
                                 <mat-form-field appearance="outline" class="u-w--100 formFieldNoMarginPadding filter-select u-mr--16" fxFlex="33%" [fxHide]="salesClientDataForm.value?.evaluationsDisabled">
                                     <mat-label>Evaluation Reference Person</mat-label>
                                     <input [required]="!salesClientDataForm.value?.evaluationsDisabled" type="text" matInput [matAutocomplete]="evaluationReferencePersonAutocomplete" name="evaluationsReferencePerson" formControlName="evaluationsReferencePersonIdValue" appPreventDoubleClick (throttledClick)="$event.stopPropagation()" placeholder="Final Evaluation Reference Person"
-                                        (focus)="focusinmethod()" (focusout)="focusoutmethod()">
+                                        (focus)="focusInMethod()" (focusout)="focusOutMethod()">
                                     <mat-autocomplete #evaluationReferencePersonAutocomplete="matAutocomplete" [displayWith]="displayFullNameFn">
                                         <ng-container>
                                             <mat-option *ngFor="let contact of filteredEvaluationReferencePersons" [value]="contact" [ngClass]="{ 'no-data': contact.id === 'no-data' }">
@@ -2214,7 +2214,7 @@
                                     <mat-form-field appearance="outline" class="u-w--100 formFieldNoMarginPadding filter-select u-mr--16" fxFlex="33%">
                                         <mat-label>Name</mat-label>
                                         <input required type="text" matInput [matAutocomplete]="contactSignerAutocomplete" formControlName="clientContact" appPreventDoubleClick (throttledClick)="$event.stopPropagation()" placeholder="Name"
-                                            (focus)="focusinmethod()" (focusout)="focusoutmethod()">
+                                            (focus)="focusInMethod()" (focusout)="focusOutMethod()">
                                         <mat-autocomplete #contactSignerAutocomplete="matAutocomplete" [displayWith]="displayFullNameFn">
                                             <ng-container>
                                                 <mat-option *ngFor="let contact of filteredContractSigners" [value]="contact" [ngClass]="{ 'no-data': contact.id === 'no-data' }">
@@ -2309,7 +2309,7 @@
                                         <mat-form-field appearance="outline" class="formFieldNoMarginPadding client-and-consultant-autocomplete" [fxHide]="consultant.value?.employmentType?.id === 10 || consultant.value?.employmentType?.id === 11">
                                             <mat-label>Consultant Name</mat-label>
                                             <input [required]="consultant.value?.employmentType?.id !== 10 && consultant.value?.employmentType?.id !== 11" type="text" matInput [matAutocomplete]="consultantAutocomplete" name="consutlantNameAutocomplete" formControlName="consultantName" appPreventDoubleClick (throttledClick)="$event.stopPropagation()" placeholder="Consultant name"
-                                                (focus)="focusinmethod()" (focusout)="focusoutmethod()">
+                                                (focus)="focusInMethod()" (focusout)="focusOutMethod()">
                                             <mat-autocomplete #consultantAutocomplete="matAutocomplete" [displayWith]="displayConsultantNameFn">
                                                 <mat-option *ngFor="let item of filteredConsultants" [value]="item" [ngClass]="{ 'no-data': item.id === 'no-data' }" appPreventDoubleClick (throttledClick)="updateConsultantStepAnchors()">
                                                     <div class="multilineDropdown-option--row">
@@ -2710,7 +2710,7 @@
                                                 <mat-form-field appearance="outline" class="formFieldNoMarginPadding client-and-consultant-autocomplete mat-elevation-z0 u-mr--10">
                                                     <mat-label>Client</mat-label>
                                                     <input required type="text" matInput [matAutocomplete]="consultantClientAddressAuto" formControlName="consultantWorkplaceClientAddress" appPreventDoubleClick (throttledClick)="$event.stopPropagation()" placeholder="Search client"
-                                                        (focus)="focusinmethod()" (focusout)="focusoutmethod()">
+                                                        (focus)="focusInMethod()" (focusout)="focusOutMethod()">
                                                     <mat-autocomplete #consultantClientAddressAuto="matAutocomplete" [displayWith]="displayClientNameFn">
                                                         <mat-option *ngFor="let client of filteredConsultantClientAddresses" [value]="client" [ngClass]="{ 'no-data': client.id === 'no-data' }">
                                                             <div class="multilineDropdown-option--column text-truncate-ellipsis">
@@ -2766,7 +2766,7 @@
                                             <mat-form-field appearance="outline" class="u-w--100 formFieldNoMarginPadding" fxFlex="0 0 calc(33% + 16px)" [fxHide]="!consultantsForm.consultantData.at(consultantIndex).get('consultantIsRemoteWorkplace')?.value">
                                                 <mat-label>Remote country</mat-label>
                                                 <input [required]="consultantsForm.consultantData.at(consultantIndex).get('consultantIsRemoteWorkplace')?.value" type="text" matInput [matAutocomplete]="consultantCountryAuto" formControlName="consultantWorkplaceRemote" appPreventDoubleClick (throttledClick)="$event.stopPropagation()" placeholder="Search country"
-                                                    (focus)="focusinmethod()" (focusout)="focusoutmethod()">
+                                                    (focus)="focusInMethod()" (focusout)="focusOutMethod()">
                                                 <mat-autocomplete #consultantCountryAuto="matAutocomplete" [displayWith]="displayNameFn">
                                                     <mat-option *ngFor="let option of filteredConsultantCountries" [value]="option">
                                                         <span class="autocopmlete-option-name">
@@ -3167,7 +3167,7 @@
                                             <mat-form-field appearance="outline" class="u-w--100 formFieldNoMarginPadding filter-select u-mr--16" fxFlex="33%">
                                                 <mat-label>Delivery Account manager</mat-label>
                                                 <input required #deliveryManagerFilterInput type="text" matInput [matAutocomplete]="deliveryManagerAutocomplete" formControlName="deliveryAccountManager" appPreventDoubleClick (throttledClick)="$event.stopPropagation()" placeholder="Select account manager(s)"
-                                                    (focus)="focusinmethod()" (focusout)="focusoutmethod()">
+                                                    (focus)="focusInMethod()" (focusout)="focusOutMethod()">
                                                 <mat-autocomplete #deliveryManagerAutocomplete="matAutocomplete" [displayWith]="displayNameFn">
                                                     <ng-container>
                                                         <mat-option *ngFor="let manager of filteredAccountManagers"
@@ -3362,7 +3362,7 @@
                     <mat-form-field appearance="outline" class="u-w--100 formFieldNoMarginPadding filter-select u-mr--16" fxFlex="33%" [ngClass]="{'disabled-input': salesTerminateConsultantForm.noEvaluation?.value}">
                         <mat-label>Final Evaluation Reference Person</mat-label>
                         <input rqeuired #finalEvaluationReferencePersonInput type="text" matInput [matAutocomplete]="finalEvaluationReferencePersonAutocomplete" formControlName="finalEvaluationReferencePerson" appPreventDoubleClick (throttledClick)="$event.stopPropagation()" placeholder="Final Evaluation Reference Person"
-                            (focus)="focusinmethod()" (focusout)="focusoutmethod()">
+                            (focus)="focusInMethod()" (focusout)="focusOutMethod()">
                         <mat-autocomplete #finalEvaluationReferencePersonAutocomplete="matAutocomplete" [displayWith]="displayFullNameFn">
                             <ng-container>
                                 <mat-option *ngFor="let contact of filteredFinalEvaluationReferencePersons" [value]="contact" [ngClass]="{ 'no-data': contact.id === 'no-data' }">
