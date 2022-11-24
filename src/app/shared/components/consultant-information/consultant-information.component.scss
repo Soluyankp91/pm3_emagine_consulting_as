@@ -1,0 +1,14 @@
+@import "/src/app/shared/styles/config/_colors";
+@import "/src/app/shared/styles/config/_mixins";
+
+.consultant {
+    &--name {
+        @include fontOpenSans(14px, 800);
+        color: $dark-grey-color;
+    }
+    &--information {
+        @include fontOpenSans(12px, 600);
+        line-height: 150%;
+        color: rgba(56, 72, 83, 0.87);
+    }
+}
