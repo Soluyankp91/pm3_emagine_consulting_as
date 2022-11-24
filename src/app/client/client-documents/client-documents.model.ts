@@ -1,5 +1,4 @@
 import { FormArray, FormGroup } from "@angular/forms";
-import * as moment from "moment";
 
 export class GeneralDocumentForm extends FormGroup {
     constructor() {

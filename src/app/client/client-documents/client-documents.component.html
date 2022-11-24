@@ -155,7 +155,7 @@
                                 <ng-template matExpansionPanelContent>
                                     <mat-accordion [multi]="true" togglePosition="before" class="mat-elevation-z0">
                                         <ng-container *ngIf="contractsDocuments?.frameAgreements?.length; else noFilesTemplate">
-                                            <mat-expansion-panel *ngFor="let frame of contractsDocuments?.frameAgreements; trackBy: contractsTrackBy" class="mat-elevation-z0">
+                                            <mat-expansion-panel *ngFor="let frame of contractsDocuments?.frameAgreements; trackBy: trackById" class="mat-elevation-z0">
                                                 <mat-expansion-panel-header
                                                     [collapsedHeight]="'44px'"
                                                     [expandedHeight]="'44px'">
@@ -191,7 +191,7 @@
                                 <ng-template matExpansionPanelContent>
                                     <mat-accordion [multi]="true" togglePosition="before" class="mat-elevation-z0">
                                         <ng-container *ngIf="contractsDocuments?.workflows?.length; else noFilesTemplate">
-                                            <mat-expansion-panel *ngFor="let workflow of contractsDocuments?.workflows; trackBy: workflowsTrackBy" class="mat-elevation-z0">
+                                            <mat-expansion-panel *ngFor="let workflow of contractsDocuments?.workflows; trackBy: trackById" class="mat-elevation-z0">
                                                 <mat-expansion-panel-header
                                                     [collapsedHeight]="'44px'"
                                                     [expandedHeight]="'44px'">
@@ -215,7 +215,7 @@
                                                             <ng-template matExpansionPanelContent>
                                                                 <mat-accordion [multi]="true" togglePosition="before" class="mat-elevation-z0">
                                                                     <ng-container *ngIf="workflow.clientContracts?.length; else noFilesTemplate">
-                                                                        <mat-expansion-panel *ngFor="let clientContract of workflow.clientContracts; trackBy: contractsTrackBy" class="mat-elevation-z0">
+                                                                        <mat-expansion-panel *ngFor="let clientContract of workflow.clientContracts; trackBy: trackById" class="mat-elevation-z0">
                                                                             <mat-expansion-panel-header
                                                                                 [collapsedHeight]="'44px'"
                                                                                 [expandedHeight]="'44px'">
@@ -256,7 +256,7 @@
                                                             <ng-template matExpansionPanelContent>
                                                                 <mat-accordion [multi]="true" togglePosition="before" class="mat-elevation-z0">
                                                                     <ng-container *ngIf="workflow.consultantContracts?.length; else noFilesTemplate">
-                                                                        <mat-expansion-panel *ngFor="let consultantContract of workflow.consultantContracts; trackBy: contractsTrackBy" class="mat-elevation-z0">
+                                                                        <mat-expansion-panel *ngFor="let consultantContract of workflow.consultantContracts; trackBy: trackById" class="mat-elevation-z0">
                                                                             <mat-expansion-panel-header
                                                                                 [collapsedHeight]="'44px'"
                                                                                 [expandedHeight]="'44px'">
@@ -298,7 +298,7 @@
                                                             <ng-template matExpansionPanelContent>
                                                                 <mat-accordion [multi]="true" togglePosition="before" class="mat-elevation-z0">
                                                                     <ng-container *ngIf="workflow.internalContracts?.length; else noFilesTemplate">
-                                                                        <mat-expansion-panel *ngFor="let internalContract of workflow.internalContracts; trackBy: contractsTrackBy" class="mat-elevation-z0">
+                                                                        <mat-expansion-panel *ngFor="let internalContract of workflow.internalContracts; trackBy: trackById" class="mat-elevation-z0">
                                                                             <mat-expansion-panel-header
                                                                                 [collapsedHeight]="'44px'"
                                                                                 [expandedHeight]="'44px'">
