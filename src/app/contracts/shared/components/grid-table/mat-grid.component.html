@@ -52,6 +52,7 @@
     <mat-paginator
         [showFirstLastButtons]="true"
         [length]="tableConfig.totalCount"
+        [pageSizeOptions]="pageSizeOptions"
         [pageSize]="tableConfig.pageSize"
         [pageIndex]="tableConfig.pageIndex"
         (page)="pageChange.emit($event)"

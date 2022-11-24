@@ -20,6 +20,7 @@ import { PageEvent } from '@angular/material/paginator';
 import { Sort } from '@angular/material/sort';
 import { FormGroup } from '@angular/forms';
 import { ICell, IFilter, ITableConfig } from './mat-grid.interfaces';
+import { PAGE_SIZE_OPTIONS } from './master-templates/entities/master-templates.constants';
 
 @Component({
     selector: 'app-mat-grid',
@@ -44,6 +45,7 @@ export class MatGridComponent implements OnInit, OnDestroy, AfterViewInit {
     formGroup: FormGroup;
 
     matChips: string[] = [];
+    pageSizeOptions: number[] = PAGE_SIZE_OPTIONS;
     private unSubscribe$ = new Subject<void>();
     constructor(
         private componentFactoryResolver: ComponentFactoryResolver,
