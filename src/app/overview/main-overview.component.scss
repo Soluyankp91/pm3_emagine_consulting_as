@@ -13,14 +13,15 @@
             align-items: center;
             background-color: #4a4e60;
             font-weight: 700;
-            width: 40px;
-            height: 40px;
+            font-size: 12px;
+            width: 30px;
+            height: 30px;
             border-radius: 50%;
             color: $white-color;
         }
         &-country {
             mat-icon {
-                @include fontLineHeightAndSize(40px, 40px, 40px, 40px);
+                @include fontLineHeightAndSize(30px, 30px, 30px, 30px);
             }
             &__btn {
                 background-color: #4a4e60;
@@ -31,27 +32,25 @@
                 justify-content: center;
                 align-items: center;
             }
-            @media screen and (max-width: 1366px) {
-                @include fontLineHeightAndSize(30px, 30px, 30px, 30px);
-            }
+            @include fontLineHeightAndSize(30px, 30px, 30px, 30px);
         }
         &-country__flag {
-            @include fontLineHeightAndSize(40px, 40px, 40px, 40px);
+            @include fontLineHeightAndSize(30px, 30px, 30px, 30px);
         }
         &__add-btn mat-icon {
             @include fontLineHeightAndSize(34px, 34px, 34px, 34px);
         }
         &-type {
             @include flexCentered;
-            height: 40px;
+            height: 30px;
             line-height: 24px;
-            padding: 6px 10px;
+            padding: 6px 8px;
             border: 1px solid $light-grey-color;
             border-radius: 40px;
             &__name {
                 font-weight: 700;
                 color: #384853;
-                font-size: 14px;
+                font-size: 12px;
             }
             &__quantity {
                 font-weight: 800;
@@ -81,13 +80,8 @@
             display: flex;
             align-items: center;
             img {
-                width: 40px;
-                height: 40px;
-
-                @media screen and (max-width: 1366px) {
-                    width: 30px;
-                    height: 30px;
-                }
+                width: 30px;
+                height: 30px;
             }
         }
         &-additional {
@@ -167,15 +161,16 @@
 
 .clear-all-button {
     font-weight: 700;
-    font-size: 14px;
+    font-size: 12px;
     line-height: 140%;
     color: #B6B4B2;
 }
 
 .reset-button {
+    min-width: 50px;
     @media screen and (max-width: 1366px) {
         line-height: 30px !important;
-        padding: 0 8px !important;
+        padding: 0 0 0 15px !important;
     }
 }
 
@@ -186,7 +181,7 @@
 }
 
 .divider-height {
-    height: 40px;
+    height: 30px;
 }
 
 .country-flag {
@@ -194,14 +189,9 @@
     height: 24px;
     line-height: 24px;
     &--big {
-        width: 40px;
-        height: 40px;
-        line-height: 40px;
-        @media screen and (max-width: 1366px) {
-            width: 30px;
-            line-height: 30px;
-            height: 30px;
-        }
+        width: 30px;
+        line-height: 30px;
+        height: 30px;
     }
 }
 

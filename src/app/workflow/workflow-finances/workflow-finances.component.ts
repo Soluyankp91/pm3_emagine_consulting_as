@@ -4,7 +4,7 @@ import { ScrollToConfigOptions, ScrollToService } from '@nicky-lenaers/ngx-scrol
 import { Subject } from 'rxjs';
 import { finalize, takeUntil } from 'rxjs/operators';
 import { AppComponentBase } from 'src/shared/app-component-base';
-import { ClientFinanceServiceProxy, ClientPeriodFinanceDataDto, ClientPeriodServiceProxy, ConsultantFinanceServiceProxy, ConsultantPeriodFinanceDataDto, ConsultantPeriodServiceProxy, WorkflowProcessType } from 'src/shared/service-proxies/service-proxies';
+import { ClientPeriodFinanceDataDto, ClientPeriodServiceProxy, ConsultantPeriodFinanceDataDto, ConsultantPeriodServiceProxy, WorkflowProcessType } from 'src/shared/service-proxies/service-proxies';
 import { WorkflowDataService } from '../workflow-data.service';
 import { WorkflowProcessWithAnchorsDto } from '../workflow-period/workflow-period.model';
 import { FinancesClientForm, FinancesConsultantsForm } from './workflow-finances.model';
@@ -35,8 +35,6 @@ export class WorkflowFinancesComponent extends AppComponentBase implements OnIni
         private _workflowDataService: WorkflowDataService,
         private _clientPeriodSerivce: ClientPeriodServiceProxy,
         private _consultantPeriodSerivce: ConsultantPeriodServiceProxy,
-        private _financeService: ClientFinanceServiceProxy,
-        private _consutlantFinanceService: ConsultantFinanceServiceProxy,
         private scrollToService: ScrollToService
     ) {
         super(injector);
@@ -184,7 +182,7 @@ export class WorkflowFinancesComponent extends AppComponentBase implements OnIni
 
     startEditClientPeriodFinance() {
         this.showMainSpinner();
-        this._financeService.editStart(this.periodId!)
+        this._clientPeriodSerivce.editStart2(this.periodId!)
             .pipe(finalize(() => this.hideMainSpinner()))
             .subscribe(result => {
                 this._workflowDataService.workflowSideSectionUpdated.emit({isStatusUpdate: true});
@@ -194,7 +192,7 @@ export class WorkflowFinancesComponent extends AppComponentBase implements OnIni
 
     startEditConsultantPeriodFinance() {
         this.showMainSpinner();
-        this._consutlantFinanceService.editStart(this.periodId!)
+        this._consultantPeriodSerivce.editStart4(this.periodId!)
             .pipe(finalize(() => this.hideMainSpinner()))
             .subscribe(result => {
                 this._workflowDataService.workflowSideSectionUpdated.emit({isStatusUpdate: true});
@@ -205,7 +203,7 @@ export class WorkflowFinancesComponent extends AppComponentBase implements OnIni
     getStartChangeOrExtendClientPeriodFinances() {
         this.resetForms();
         this.showMainSpinner();
-        this._clientPeriodSerivce.clientFinanceGet(this.periodId!)
+        this._clientPeriodSerivce.clientFinanceGET(this.periodId!)
             .pipe(finalize(() => this.hideMainSpinner()))
             .subscribe(result => {
                 this.financesClientForm.clientCreatedInNavision?.setValue(result.debtorCreatedInNavision, {emitEvent: false});
@@ -231,13 +229,13 @@ export class WorkflowFinancesComponent extends AppComponentBase implements OnIni
         });
         this.showMainSpinner();
         if (isDraft) {
-            this._clientPeriodSerivce.clientFinancePut(this.periodId!, input)
+            this._clientPeriodSerivce.clientFinancePUT(this.periodId!, input)
                 .pipe(finalize(() => this.hideMainSpinner()))
                 .subscribe(result => {
                     this._workflowDataService.workflowOverviewUpdated.emit(true);
                 });
         } else {
-            this._financeService.editFinish(this.periodId!, input)
+            this._clientPeriodSerivce.editFinish3(this.periodId!, input)
                 .pipe(finalize(() => this.hideMainSpinner()))
                 .subscribe(result => {
                     this._workflowDataService.workflowSideSectionUpdated.emit({isStatusUpdate: true});
@@ -249,7 +247,7 @@ export class WorkflowFinancesComponent extends AppComponentBase implements OnIni
     getStartConsultantPeriodFinance() {
         this.resetForms();
         this.showMainSpinner();
-        this._consultantPeriodSerivce.consultantFinanceGet(this.periodId!)
+        this._consultantPeriodSerivce.consultantFinanceGET(this.periodId!)
             .pipe(finalize(() => this.hideMainSpinner()))
             .subscribe(result => {
                 this.addConsultantToForm(result);
@@ -264,13 +262,13 @@ export class WorkflowFinancesComponent extends AppComponentBase implements OnIni
         input.consultant = this.consultants.at(0).value.get('consultant').value;
         this.showMainSpinner();
         if (isDraft) {
-            this._consultantPeriodSerivce.consultantFinancePut(this.periodId!, input)
+            this._consultantPeriodSerivce.consultantFinancePUT(this.periodId!, input)
                 .pipe(finalize(() => this.hideMainSpinner()))
                 .subscribe(result => {
                     this._workflowDataService.workflowOverviewUpdated.emit(true);
                 });
         } else {
-            this._consutlantFinanceService.editFinish(this.periodId!, input)
+            this._consultantPeriodSerivce.editFinish6(this.periodId!, input)
                 .pipe(finalize(() => this.hideMainSpinner()))
                 .subscribe(result => {
                     this._workflowDataService.workflowSideSectionUpdated.emit({isStatusUpdate: true});

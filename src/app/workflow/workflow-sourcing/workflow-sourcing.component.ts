@@ -177,7 +177,7 @@ export class WorkflowSourcingComponent extends AppComponentBase implements OnIni
     }
 
     getWorkflowSourcingStepConsultantTermination() {
-        this._workflowServiceProxy.terminationConsultantSourcingGet(this.workflowId!, this.consultant.id!)
+        this._workflowServiceProxy.terminationConsultantSourcingGET(this.workflowId!, this.consultant.id!)
             .pipe(finalize(() => {
 
             }))
@@ -194,7 +194,7 @@ export class WorkflowSourcingComponent extends AppComponentBase implements OnIni
 
         this.showMainSpinner();
         if (isDraft) {
-            this._workflowServiceProxy.terminationConsultantSourcingPut(this.workflowId!, input)
+            this._workflowServiceProxy.terminationConsultantSourcingPUT(this.workflowId!, input)
                 .pipe(finalize(() => this.hideMainSpinner()))
                 .subscribe(result => {
                     this._workflowDataService.workflowOverviewUpdated.emit(true);
@@ -213,7 +213,7 @@ export class WorkflowSourcingComponent extends AppComponentBase implements OnIni
     }
 
     getWorkflowSourcingStepTermination() {
-        this._workflowServiceProxy.terminationSourcingGet(this.workflowId!)
+        this._workflowServiceProxy.terminationSourcingGET(this.workflowId!)
             .pipe(finalize(() => {
 
             }))
@@ -241,7 +241,7 @@ export class WorkflowSourcingComponent extends AppComponentBase implements OnIni
 
         this.showMainSpinner();
         if (isDraft) {
-            this._workflowServiceProxy.terminationSourcingPut(this.workflowId!, input)
+            this._workflowServiceProxy.terminationSourcingPUT(this.workflowId!, input)
                 .pipe(finalize(() => this.hideMainSpinner()))
                 .subscribe(result => {
                     this._workflowDataService.workflowOverviewUpdated.emit(true);

@@ -197,7 +197,7 @@ export class ClientDocumentsComponent extends AppComponentBase implements OnInit
 
     deleteGeneralDocument(clientAttachmentGuid: string) {
         this.showMainSpinner();
-        this._clientDocumentsService.generalFileDelete(this.clientId, clientAttachmentGuid)
+        this._clientDocumentsService.generalFileDELETE(this.clientId, clientAttachmentGuid)
             .pipe(finalize(() => this.hideMainSpinner()))
             .subscribe(result => {
                 this.getGeneralDocuments();
@@ -237,7 +237,7 @@ export class ClientDocumentsComponent extends AppComponentBase implements OnInit
         input.headline = form.headline;
         input.fileType = form.attachmentTypeId?.id;
         this.showMainSpinner();
-        this._clientDocumentsService.generalFilePut(this.clientId!, input)
+        this._clientDocumentsService.generalFilePUT(this.clientId!, input)
             .pipe(finalize(() => {
                 this.hideMainSpinner();
                 this.getGeneralDocuments();
@@ -269,7 +269,7 @@ export class ClientDocumentsComponent extends AppComponentBase implements OnInit
                     data: result.file.internalFile
                 }
                 this.showMainSpinner();
-                this._clientDocumentsService.generalFilePost(this.clientId!, result.attachmentTypeId, fileInput)
+                this._clientDocumentsService.generalFilePOST(this.clientId!, result.attachmentTypeId, fileInput)
                     .pipe(finalize(() => {
                         this.hideMainSpinner();
                         this.fileUploader.clear();

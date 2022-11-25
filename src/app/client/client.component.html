@@ -1,8 +1,8 @@
 <div class="client-list">
     <div fxLayout="column" fxLayoutAlign="start start" class="client-list--filter u-w--100">
         <h2 class="page-main-header u-mb--20">Client list</h2>
-        <div fxLayout="row" fxLayoutAlign="space-between start" class="u-w--100">
-            <div fxFlex="1 0 40%" fxLayout="row" fxLayoutAlign="start start" class="u-w--100">
+        <div fxLayout="row" fxLayoutAlign="space-between center" class="u-w--100">
+            <div fxFlex="1 0 40%" fxLayout="row" fxLayoutAlign="start center" class="u-w--100">
                 <div class="client-list--filter-manager cursor-pointer u-mr--16"
                     [matMenuTriggerFor]="managerMenu"
                     (menuOpened)="onManagersMenuOpened(); accountManagerFilterInput.focus()"
@@ -172,8 +172,10 @@
                     <input autocomplete="off" matInput [formControl]="clientFilter" placeholder="Search" type="text">
                     <mat-icon matPrefix class="search-icon u-ml--10">search</mat-icon>
                 </mat-form-field>
-                <mat-slide-toggle class="green-slide-toggle" color="primary" labelPosition="before" (change)="getClientsGrid()" [(ngModel)]="includeDeleted">Show deleted</mat-slide-toggle>
             </div>
+        </div>
+        <div fxLayout="row" fxLayoutAlign="flex-end center" class="u-w--100">
+            <mat-slide-toggle class="green-slide-toggle" color="primary" labelPosition="before" (change)="getClientsGrid()" [(ngModel)]="includeDeleted">Show deleted</mat-slide-toggle>
         </div>
     </div>
     <div fxLayout="column" fxLayoutAlign="start center" class="client-list--content u-w--100">

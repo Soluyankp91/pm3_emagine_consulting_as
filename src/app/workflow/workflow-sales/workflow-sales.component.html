@@ -3324,10 +3324,10 @@
                 <app-validator [withoutFormField]="true" *ngIf="salesTerminateConsultantForm.terminationReason?.touched" [control]="salesTerminateConsultantForm.terminationReason"></app-validator>
             </mat-error>
 
-            <div fxLayout="row" fxLayoutAlign="start start" class="u-w--100"  *ngIf="salesTerminateConsultantForm?.terminationTime?.value === 2 || salesTerminateConsultantForm?.terminationTime?.value === 3">
+            <div fxLayout="row" fxLayoutAlign="start start" class="u-w--100" [fxHide]="salesTerminateConsultantForm?.terminationTime?.value !== 2 && salesTerminateConsultantForm?.terminationTime?.value !== 3">
                 <mat-form-field appearance="outline" class="u-w--100 textarea-input formFieldNoMarginPadding" fxFlex="0 0 calc(66% + 16px)">
                     <mat-label>Cause</mat-label>
-                    <textarea required matInput autocomplete="new-password" name="causeOfTerminationBeforeEndOfContract" formControlName="causeOfNonStandardTerminationTime" [matTextareaAutosize]="true" [matAutosizeMinRows]="2">
+                    <textarea [required]="salesTerminateConsultantForm?.terminationTime?.value === 2 || salesTerminateConsultantForm?.terminationTime?.value === 3" matInput autocomplete="new-password" name="causeOfTerminationBeforeEndOfContract" formControlName="causeOfNonStandardTerminationTime" [matTextareaAutosize]="true" [matAutosizeMinRows]="2">
                     </textarea>
                     <mat-error>
                         <app-validator [control]="salesTerminateConsultantForm.causeOfNonStandardTerminationTime"></app-validator>
