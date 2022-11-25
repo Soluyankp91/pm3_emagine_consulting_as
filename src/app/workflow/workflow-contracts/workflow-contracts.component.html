@@ -53,7 +53,8 @@
                 <form fxLayout="column" fxLayoutAlign="start start" [formGroup]="contractsTerminationConsultantForm" class="workflow-form u-w--100" id="consultantData">
                     <ng-container formArrayName="consultantTerminationContractData">
                         <div *ngFor="let consultant of contractsTerminationConsultantForm.consultantTerminationContractData.controls; index as i; last as last" [formGroupName]="i" class="workflow-contracts--block-consultants u-mt--20" [ngClass]="{'last-block': last}" [id]="'consultantDataAnchor' + i">
-                            <div fxLayout="row" fxLayoutAlign="start center" class="u-mb--20">
+                            <app-consultant-information [consultantData]="consultant?.value?.consultantData"></app-consultant-information>
+                            <!-- <div fxLayout="row" fxLayoutAlign="start center" class="u-mb--20">
                                 <img *ngIf="consultant.value?.consultantData?.id" class="border-rounded-50 u-mr--16 image-thumbnail-responsive" [src]="consultantProfileUrl(consultant.value?.consultantData?.externalId)" />
                                 <div fxLayout="column">
                                     <div fxLayout="row" fxLayoutAlign="start center">
@@ -68,7 +69,7 @@
                                         <app-consultant-information [consultantData]="consultant?.value?.consultantData"></app-consultant-information>
                                     </span>
                                 </div>
-                            </div>
+                            </div> -->
                             <div fxLayout="row" fxLayoutAlign="start center" class="u-w--100 u-mb--10">
                                 <ng-container *ngIf="readOnlyMode; else nameremovedConsultantFromAnyManualChecklistsInput">
                                     <mat-icon class="termination-cancel-icon u-mr--5" [svgIcon]="'cancel-fill'" [ngClass]="{'icon-cancel': !contractsTerminationConsultantForm.consultantTerminationContractData.at(i).get('nameremovedConsultantFromAnyManualChecklists')?.value}"
@@ -548,7 +549,8 @@
 
                             <div fxLayout="column">
                                 <h3 class="workflow-step-readonly--gray-header">Consultant</h3>
-                                <div fxLayout="row" fxLayoutAlign="start center" class="u-mb--20" *ngIf="consultant.value.employmentType?.id !== employmentTypesEnum.FeeOnly && consultant.value.employmentType?.id !== employmentTypesEnum.Recruitment">
+                                <app-consultant-information [consultantData]="consultant?.value?.consultant"></app-consultant-information>
+                                <!-- <div fxLayout="row" fxLayoutAlign="start center" class="u-mb--20" *ngIf="consultant.value.employmentType?.id !== employmentTypesEnum.FeeOnly && consultant.value.employmentType?.id !== employmentTypesEnum.Recruitment">
                                     <img *ngIf="consultant.value?.consultant?.id" class="border-rounded-50 u-mr--16 image-thumbnail-responsive" [src]="consultantProfileUrl(consultant.value?.consultant?.externalId)" />
                                     <div fxLayout="column">
                                         <div fxLayout="row" fxLayoutAlign="start center">
@@ -563,7 +565,7 @@
                                             <app-consultant-information [consultantData]="consultant?.value?.consultant"></app-consultant-information>
                                         </span>
                                     </div>
-                                </div>
+                                </div> -->
                             </div>
 
                             <div fxLayout="row" fxLayoutAlign="start start" class="u-w--100">
@@ -1277,7 +1279,8 @@
                         <ng-container formArrayName="consultants">
                             <div *ngFor="let consultant of contractsSyncDataForm.consultants.controls; let consultantIndex = index" [formGroupName]="consultantIndex" class="workflow-form--consultants u-w--100">
                                 <span class="u-mt--20" [ngClass]="{'workflow-gray--header': readOnlyMode, 'workflow-darkblue--text': !readOnlyMode}">Consultant legal contracts</span>
-                                <div fxLayout="row" fxLayoutAlign="start center" class="u-mb--20" *ngIf="consultant.value.employmentType?.id !== employmentTypesEnum.FeeOnly && consultant.value.employmentType?.id !== employmentTypesEnum.Recruitment; else consultantNameOnly">
+                                <app-consultant-information [consultantData]="consultant?.value?.consultant"></app-consultant-information>
+                                <!-- <div fxLayout="row" fxLayoutAlign="start center" class="u-mb--20" *ngIf="consultant.value.employmentType?.id !== employmentTypesEnum.FeeOnly && consultant.value.employmentType?.id !== employmentTypesEnum.Recruitment; else consultantNameOnly">
                                     <img *ngIf="consultant.value?.consultant?.id" class="border-rounded-50 u-mr--16 image-thumbnail-responsive" [src]="consultantProfileUrl(consultant.value?.consultant?.externalId)" />
                                     <div fxLayout="column">
                                         <div fxLayout="row" fxLayoutAlign="start center">
@@ -1292,7 +1295,7 @@
                                             <app-consultant-information [consultantData]="consultant?.value?.consultant"></app-consultant-information>
                                         </span>
                                     </div>
-                                </div>
+                                </div> -->
                                 <ng-template #consultantNameOnly>
                                     <p class="workflow-contracts--consultant-name">
                                         {{consultant.value?.nameOnly}}

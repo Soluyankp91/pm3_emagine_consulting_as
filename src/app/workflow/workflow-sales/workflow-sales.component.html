@@ -2337,7 +2337,8 @@
                                             </span>
                                         </div>
                                     </div>
-                                    <div fxLayout="row" fxLayoutAlign="start start" class="u-w--100 u-mb--20">
+                                    <app-consultant-information [consultantData]="consultant?.value?.consultantName?.consultant"></app-consultant-information>
+                                    <!-- <div fxLayout="row" fxLayoutAlign="start start" class="u-w--100 u-mb--20">
                                         <div fxLayout="column">
                                             <h3 class="workflow-step-readonly--gray-header">Consultant</h3>
                                             <div fxLayout="row" fxLayoutAlign="start center" class="u-mb--20">
@@ -2357,7 +2358,7 @@
                                                 </div>
                                             </div>
                                         </div>
-                                    </div>
+                                    </div> -->
                                 </ng-container>
                             </div>
                             <ng-container *ngIf="consultant.value?.employmentType?.id  && (consultant.value?.employmentType?.id !== employmentTypesEnum.FeeOnly && consultant.value?.employmentType?.id !== employmentTypesEnum.Recruitment)">
