@@ -48,40 +48,36 @@ export class NewFileUploaderComponent
                 return this.fileServiceProxy
                     .temporaryPost({ data: file, fileName: file.name })
                     .pipe(
-                        map((temporaryFileId) =>
-                            Object.assign(
-                                {},
-                                {
-                                    ...file,
-                                    name: file.name,
-                                    temporaryFileId: temporaryFileId,
-                                }
-                            )
-                        )
+                        map((temporaryFileId) => ({
+                            ...file,
+                            name: file.name,
+                            temporaryFileId: temporaryFileId,
+                        }))
                     );
             });
             return forkJoin(filesObservablesArr);
         }),
         startWith([]),
         scan((acc, current) => [...acc, ...current]),
-        map((files) => {
-            this.isFilesLoading = false;
-            return (this.files = files
+        map((files) =>
+            files
                 .filter((file) => {
-                    return !this.deletedFiles.find((deletedFile) => {
-                        return deletedFile === file.temporaryFileId;
-                    });
+                    const isDeleted: boolean = !!this.deletedFiles.find(
+                        (deletedFile) => deletedFile === file.temporaryFileId
+                    );
+
+                    return !isDeleted;
                 })
-                .map((file) => {
-                    return this._modifyFileUpload(file, true);
-                }));
-        }),
+                .map((file) => this._modifyFileUpload(file, true))
+        ),
         tap((files) => {
+            this.files = files;
+            this.isFilesLoading = false;
             files.length ? this.onTouched() : null;
             this.onChange({
-                selectedInheritedFiles: [
-                    ...this._mapInheritedFile(this.selectedInheritedFiles),
-                ],
+                selectedInheritedFiles: this._mapInheritedFile(
+                    this.selectedInheritedFiles
+                ),
                 uploadedFiles: [...this.files],
             });
         })

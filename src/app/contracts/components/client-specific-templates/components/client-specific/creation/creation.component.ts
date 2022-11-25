@@ -62,18 +62,18 @@ export class CreationComponent
     implements OnInit, OnDestroy
 {
     constructor(
-        private readonly injector: Injector,
-        private readonly cdr: ChangeDetectorRef,
-        private readonly dirtyCheckService: DirtyCheckService,
-        private readonly apiServiceProxy: ApiServiceProxy,
-        private readonly contractService: ContractsService,
-        private readonly lookupServiceProxy: LookupServiceProxy,
-        private readonly agreementTemplateServiceProxy: AgreementTemplateServiceProxy,
+        private readonly _injector: Injector,
+        private readonly _cdr: ChangeDetectorRef,
+        private readonly _dirtyCheckService: DirtyCheckService,
+        private readonly _apiServiceProxy: ApiServiceProxy,
+        private readonly _contractService: ContractsService,
+        private readonly _lookupServiceProxy: LookupServiceProxy,
+        private readonly _agreementTemplateServiceProxy: AgreementTemplateServiceProxy,
         private readonly route: ActivatedRoute,
         private readonly router: Router,
-        public dialog: MatDialog
+        public _dialog: MatDialog
     ) {
-        super(injector);
+        super(_injector);
     }
     get currentMode() {
         return this.creationModeControl.value;
@@ -87,20 +87,20 @@ export class CreationComponent
     isDuplicateFromInherited = false;
     requiredValidationMessage = REQUIRED_VALIDATION_MESSAGE;
     //parent template && client template controls
-    parentMasterTemplateControl = new FormControl({});
-    clientTemplateControl = new FormControl({});
+    parentMasterTemplateControl = new FormControl();
+    clientTemplateControl = new FormControl();
     creationModeControl = new FormControl(AgreementCreationMode.FromScratch);
 
     clientTemplateFormGroup = new ClientTemplatesModel();
 
-    agreementTypes$ = this.contractService.getAgreementTypes$();
-    recipientTypes$ = this.contractService.getRecipientTypes$();
+    agreementTypes$ = this._contractService.getAgreementTypes$();
+    recipientTypes$ = this._contractService.getRecipientTypes$();
 
-    legalEntities$ = this.contractService.getLegalEntities$();
-    salesTypes$ = this.contractService.getSalesTypes$();
-    deliveryTypes$ = this.contractService.getDeliveryTypes$();
-    contractTypes$ = this.contractService.getEmploymentTypes$();
-    languages$ = this.contractService.getAgreementLanguages$();
+    legalEntities$ = this._contractService.getLegalEntities$();
+    salesTypes$ = this._contractService.getSalesTypes$();
+    deliveryTypes$ = this._contractService.getDeliveryTypes$();
+    contractTypes$ = this._contractService.getEmploymentTypes$();
+    languages$ = this._contractService.getAgreementLanguages$();
 
     preselectedFiles: FileUpload[] = [];
     optionsObservable$: [
@@ -176,7 +176,7 @@ export class CreationComponent
         return this.masterTemplateOptionsChanged$.pipe(
             startWith(''),
             switchMap((searchInput) => {
-                return this.agreementTemplateServiceProxy.simpleList(
+                return this._agreementTemplateServiceProxy.simpleList(
                     isClientTemplate,
                     searchInput,
                     1,
@@ -193,7 +193,7 @@ export class CreationComponent
         this.clientOptions$ = this.clientOptionsChanged$.pipe(
             startWith(''),
             switchMap((searchInput) => {
-                return this.lookupServiceProxy.clients(searchInput, 20);
+                return this._lookupServiceProxy.clients(searchInput, 20);
             })
         );
     }
@@ -274,7 +274,7 @@ export class CreationComponent
                 break;
             }
         }
-        this.apiServiceProxy
+        this._apiServiceProxy
             .agreementTemplatePost(
                 new SaveAgreementTemplateDto(agreementPostDto)
             )
@@ -288,7 +288,7 @@ export class CreationComponent
             .pipe(
                 takeUntil(this.unSubscribe$),
                 map(() => this.clientTemplateFormGroup.getRawValue()),
-                dirtyCheck(this.dirtyCheckService.initialFormValue$)
+                dirtyCheck(this._dirtyCheckService.initialFormValue$)
             )
             .subscribe((isDirty) => {
                 this.isDirty = isDirty;
@@ -300,8 +300,8 @@ export class CreationComponent
             .pipe(
                 takeUntil(this.unSubscribe$),
                 switchMap((agreementTemplateId: number) => {
-                    return this.apiServiceProxy.agreementTemplateGet(
-                        agreementTemplateId as number
+                    return this._apiServiceProxy.agreementTemplateGet(
+                        agreementTemplateId
                     );
                 }),
                 tap((data: AgreementTemplateDetailsDto) => {
@@ -314,9 +314,9 @@ export class CreationComponent
         this.clientTemplateControl.valueChanges
             .pipe(
                 takeUntil(this.unSubscribe$),
-                switchMap((agreementTemplateId) => {
-                    return this.apiServiceProxy.agreementTemplateGet(
-                        agreementTemplateId as number
+                switchMap((agreementTemplateId: number) => {
+                    return this._apiServiceProxy.agreementTemplateGet(
+                        agreementTemplateId
                     );
                 }),
                 tap((agreementTemplate) => {
@@ -376,7 +376,7 @@ export class CreationComponent
         ];
         this.isDuplicateFromInherited = !!data.parentAgreementTemplateId;
         this._updateDisabledStateForDuplicate();
-        this.cdr.detectChanges();
+        this._cdr.detectChanges();
     }
     private _updateDisabledStateForDuplicate(): void {
         if (this.isDuplicateFromInherited) {
@@ -392,21 +392,21 @@ export class CreationComponent
                 skip(1),
                 switchMap((mode) => {
                     if (this.isDirty) {
-                        let dialogRef = this.dialog.open(
+                        let dialogRef = this._dialog.open(
                             ConfirmDialogComponent,
                             {
                                 width: '280px',
                             }
                         );
-                        return forkJoin([of(mode), dialogRef.afterClosed()]);
+                        return dialogRef.afterClosed();
                     }
-                    return forkJoin([of(mode), of(true)]);
+                    return of(true);
                 })
             )
-            .subscribe(([mode, discard]) => {
+            .subscribe((discard) => {
                 if (discard) {
-                    this.creationModeControl.setValue(mode);
-                    this.onCreationModeChange(mode);
+                    this.creationModeControl.setValue(this.modeControl.value);
+                    this.onCreationModeChange(this.modeControl.value);
                 }
             });
     }
@@ -415,20 +415,20 @@ export class CreationComponent
             case AgreementCreationMode.FromScratch: {
                 this._enableControls();
                 this.clientTemplateFormGroup.reset(
-                    this.dirtyCheckService.initialFormValue$.value
+                    this._dirtyCheckService.initialFormValue$.value
                 );
                 break;
             }
             case AgreementCreationMode.InheritedFromParent: {
                 this._disableControls();
                 this.clientTemplateFormGroup.reset(
-                    this.dirtyCheckService.initialFormValue$.value
+                    this._dirtyCheckService.initialFormValue$.value
                 );
                 break;
             }
             case AgreementCreationMode.Duplicated: {
                 this.clientTemplateFormGroup.reset(
-                    this.dirtyCheckService.initialFormValue$.value
+                    this._dirtyCheckService.initialFormValue$.value
                 );
                 break;
             }

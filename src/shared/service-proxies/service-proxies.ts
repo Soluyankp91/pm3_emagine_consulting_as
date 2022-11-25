@@ -9653,11 +9653,11 @@ export class FileServiceProxy {
         let _headers: any = {}; if (response.headers) { for (let key of response.headers.keys()) { _headers[key] = response.headers.get(key); }}
         if (status === 200) {
             return blobToText(responseBlob).pipe(_observableMergeMap(_responseText => {
-            let result200: any = null;
-            let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
-                result200 = resultData200 !== undefined ? resultData200 : <any>null;
+            // let result200: any = null;
+            // let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
+            //     result200 = resultData200 !== undefined ? resultData200 : <any>null;
 
-            return _observableOf(result200);
+            return _observableOf(_responseText);
             }));
         } else if (status !== 200 && status !== 204) {
             return blobToText(responseBlob).pipe(_observableMergeMap(_responseText => {

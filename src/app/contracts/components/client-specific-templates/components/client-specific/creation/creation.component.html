@@ -9,20 +9,20 @@
                 <mat-radio-button
                     [value]="creationModes.InheritedFromParent"
                     (click)="
-                        this.modeControl.next(creationModes.InheritedFromParent)
+                        modeControl.next(creationModes.InheritedFromParent)
                     "
                 >
                     Inherit from master template
                 </mat-radio-button>
                 <mat-radio-button
                     [value]="creationModes.Duplicated"
-                    (click)="this.modeControl.next(creationModes.Duplicated)"
+                    (click)="modeControl.next(creationModes.Duplicated)"
                 >
                     Duplicate from client specific template</mat-radio-button
                 >
                 <mat-radio-button
                     [value]="creationModes.FromScratch"
-                    (click)="this.modeControl.next(creationModes.FromScratch)"
+                    (click)="modeControl.next(creationModes.FromScratch)"
                 >
                     Create from scratch
                 </mat-radio-button>
