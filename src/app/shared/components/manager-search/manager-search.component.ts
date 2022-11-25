@@ -119,7 +119,7 @@ export class ManagerSearchComponent extends AppComponentBase implements OnInit, 
 
     changeResponsibleForConsultantPeriodStep(responsiblePerson: EmployeeDto) {
         this.showMainSpinner();
-        this._consultantPeriodService.stepResponsible(this.consultantPeriodId, this.stepType,  responsiblePerson.id)
+        this._consultantPeriodService.stepResponsible2(this.consultantPeriodId, this.stepType,  responsiblePerson.id)
             .pipe(finalize(() => this.hideMainSpinner()))
             .subscribe(() => {
                 this.responsiblePerson = responsiblePerson;

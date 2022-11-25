@@ -267,7 +267,7 @@ export class ClientComponent extends AppComponentBase implements OnInit, OnDestr
         if (filterChanged) {
             this.pageNumber = 1;
         }
-        this.clientListSubscription = this._clientService.list(searchFilter, selectedCountryIds, ownerIds, isActiveFlag, !this.includeDeleted, this.onlyWrongfullyDeletedInHubspot, this.pageNumber, this.deafultPageSize, this.sorting)
+        this.clientListSubscription = this._clientService.list3(searchFilter, selectedCountryIds, ownerIds, isActiveFlag, !this.includeDeleted, this.onlyWrongfullyDeletedInHubspot, this.pageNumber, this.deafultPageSize, this.sorting)
             .pipe(finalize(() => {
                 this.isDataLoading = false;
             }))
