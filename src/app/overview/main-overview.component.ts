@@ -365,18 +365,18 @@ export class MainOverviewComponent extends AppComponentBase implements OnInit {
                     }))
                     .subscribe(result => {
                         if (result.items?.length) {
-                            let oldestDateArray = result.items.reduce((r, o) => o.lastClientPeriodEndDate! > r.lastClientPeriodEndDate! ? o : r);
+                            let oldestDateArray = result.items.reduce((r, o) => o.actualEndDate! > r.actualEndDate! ? o : r);
 
                             let endDate = new Date();
-                            if (oldestDateArray.lastClientPeriodEndDate === undefined || (oldestDateArray.lastClientPeriodEndDate.toDate().getTime() < this.formatDate(date).getTime())) {
+                            if (oldestDateArray.actualEndDate === undefined || (oldestDateArray.actualEndDate.toDate().getTime() < this.formatDate(date).getTime())) {
                                 endDate = this.formatDate(date);
                             }
 
                             this.startDateOfChart = getUnixTime(date);
                             this.viewOptions.start = new GanttDate(getUnixTime(date));
-                            this.viewOptions.end = new Date(endDate.setHours(0,0,0,0)).getTime() !== new Date(new Date().setHours(0,0,0,0)).getTime() ? new GanttDate(getUnixTime(endDate)) : new GanttDate(getUnixTime(new Date(oldestDateArray.lastClientPeriodEndDate?.toDate()!)));
+                            this.viewOptions.end = new Date(endDate.setHours(0,0,0,0)).getTime() !== new Date(new Date().setHours(0,0,0,0)).getTime() ? new GanttDate(getUnixTime(endDate)) : new GanttDate(getUnixTime(new Date(oldestDateArray.actualEndDate?.toDate()!)));
                             this.viewOptions.min = new GanttDate(getUnixTime(date));
-                            this.viewOptions.max = new Date(endDate.setHours(0,0,0,0)).getTime() !== new Date(new Date().setHours(0,0,0,0)).getTime() ? new GanttDate(getUnixTime(endDate)) : new GanttDate(getUnixTime(new Date(oldestDateArray.lastClientPeriodEndDate?.toDate()!)));
+                            this.viewOptions.max = new Date(endDate.setHours(0,0,0,0)).getTime() !== new Date(new Date().setHours(0,0,0,0)).getTime() ? new GanttDate(getUnixTime(endDate)) : new GanttDate(getUnixTime(new Date(oldestDateArray.actualEndDate?.toDate()!)));
 
                             let groups: GanttGroup<any>[] = [];
                             let items: GanttItem[] = [];
@@ -428,18 +428,18 @@ export class MainOverviewComponent extends AppComponentBase implements OnInit {
                     }))
                     .subscribe(result => {
                         if (result.items?.length) {
-                            let oldestDateArray = result.items.reduce((r, o) => o?.lastConsultantPeriodEndDate! > r?.lastConsultantPeriodEndDate! ? o : r);
+                            let oldestDateArray = result.items.reduce((r, o) => o?.actualEndDate! > r?.actualEndDate! ? o : r);
 
                             let endDate = new Date();
-                            if (oldestDateArray.lastConsultantPeriodEndDate === undefined || oldestDateArray.lastConsultantPeriodEndDate.toDate().getTime() < this.formatDate(date).getTime()) {
+                            if (oldestDateArray.actualEndDate === undefined || oldestDateArray.actualEndDate.toDate().getTime() < this.formatDate(date).getTime()) {
                                 endDate = this.formatDate(date);
                             }
 
                             this.startDateOfChart = getUnixTime(date);
                             this.viewOptions.start = new GanttDate(getUnixTime(new Date(date)));
-                            this.viewOptions.end = endDate.getTime() !== new Date().getTime() ? new GanttDate(getUnixTime(endDate)) : new GanttDate(getUnixTime(new Date(oldestDateArray.lastConsultantPeriodEndDate?.toDate()!)));
+                            this.viewOptions.end = endDate.getTime() !== new Date().getTime() ? new GanttDate(getUnixTime(endDate)) : new GanttDate(getUnixTime(new Date(oldestDateArray.actualEndDate?.toDate()!)));
                             this.viewOptions.min = new GanttDate(getUnixTime(new Date(date)));
-                            this.viewOptions.max = endDate.getTime() !== new Date().getTime() ? new GanttDate(getUnixTime(endDate)) : new GanttDate(getUnixTime(new Date(oldestDateArray.lastConsultantPeriodEndDate?.toDate()!)));
+                            this.viewOptions.max = endDate.getTime() !== new Date().getTime() ? new GanttDate(getUnixTime(endDate)) : new GanttDate(getUnixTime(new Date(oldestDateArray.actualEndDate?.toDate()!)));
 
                             let groups: GanttGroup<any>[] = [];
                             let items: GanttItem[] = [];

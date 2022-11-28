@@ -372,8 +372,8 @@ export class ClientDocumentsComponent extends AppComponentBase implements OnInit
         this._clientDocumentsService.evaluations(this.clientId, this.evaluationDocumentsIncludeLinked.value, this.evaluationDocumentDate.value)
             .pipe(finalize(() => this.isDataLoading = false))
             .subscribe(result => {
-                this.evalsDocumentsDataSource = new MatTableDataSource<ClientEvaluationOutputDto>(result);
-                this.totalCount = result.length;
+                this.evalsDocumentsDataSource = new MatTableDataSource<ClientEvaluationOutputDto>(result.items);
+                this.totalCount = result.totalCount;
             });
     }
 
