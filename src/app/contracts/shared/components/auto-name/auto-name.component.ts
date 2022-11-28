@@ -16,10 +16,7 @@ import {
 } from '@angular/forms';
 import { forkJoin, Subject } from 'rxjs';
 import { mergeMap, tap, takeUntil } from 'rxjs/operators';
-import {
-    AgreementTemplateServiceProxy,
-    MergeFieldsServiceProxy,
-} from 'src/shared/service-proxies/service-proxies';
+import { MergeFieldsServiceProxy } from 'src/shared/service-proxies/service-proxies';
 import { REQUIRED_VALIDATION_MESSAGE } from '../../entities/contracts.constants';
 import { AutoNameErrorStateMatcher } from '../../matchers/autoNameErrorMatcher';
 import { autoNameRequiredValidator } from '../../validators/autoNameRequireValidator';
@@ -30,9 +27,8 @@ export type AutoName = { [key: string]: any } & {
     id: number;
 };
 @Component({
-    selector: 'app-auto-name',
+    selector: 'emg-auto-name',
     templateUrl: './auto-name.component.html',
-    styleUrls: ['./auto-name.component.scss'],
     providers: [
         {
             provide: NG_VALUE_ACCESSOR,

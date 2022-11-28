@@ -16,7 +16,7 @@ import { IDropdownItem } from './emagine-menu-multi-select.interfaces';
 import { isEqual, uniqBy } from 'lodash';
 import { MatMenuTrigger } from '@angular/material/menu';
 @Component({
-    selector: 'app-multi-select',
+    selector: 'emg-multi-select',
     templateUrl: './emagine-menu-multi-select.component.html',
     styleUrls: ['./emagine-menu-multi-select.component.scss'],
     providers: [

@@ -23,7 +23,7 @@ import { ICell, IFilter, ITableConfig } from './mat-grid.interfaces';
 import { PAGE_SIZE_OPTIONS } from './master-templates/entities/master-templates.constants';
 
 @Component({
-    selector: 'app-mat-grid',
+    selector: 'emg-mat-grid',
     templateUrl: './mat-grid.component.html',
     styleUrls: ['./mat-grid.component.scss'],
     changeDetection: ChangeDetectionStrategy.OnPush,

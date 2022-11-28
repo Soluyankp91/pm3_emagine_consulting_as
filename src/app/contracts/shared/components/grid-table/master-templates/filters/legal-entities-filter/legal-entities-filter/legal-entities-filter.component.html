@@ -1,8 +1,8 @@
-<app-multi-select
+<emg-multi-select
     *ngIf="legalEntities$ | async as legalEntities"
     [options]="legalEntities"
     [displayedProperty]="'name'"
     [formControl]="filterFormControl"
 >
-    <div #triggerButton>Legal Entities</div></app-multi-select
+    <div #triggerButton>Legal Entities</div></emg-multi-select
 >

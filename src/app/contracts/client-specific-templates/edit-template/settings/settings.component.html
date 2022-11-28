@@ -28,7 +28,7 @@
                 </mat-radio-button>
             </mat-radio-group>
             <ng-container *ngIf="currentMode === creationModes.Duplicated">
-                <app-dropdown-autocomplete-single-select
+                <emg-dropdown-autocomplete-single-select
                 *ngIf="
                     clientTemplatesOptions$
                         | async as clientTemplatesOptions
@@ -40,13 +40,13 @@
                 [formControl]="clientTemplateControl"
                 (inputEmitter)="masterTemplateOptionsChanged$.next($event)"
             >
-            </app-dropdown-autocomplete-single-select>
+            </emg-dropdown-autocomplete-single-select>
             </ng-container>
             <div></div>
             <ng-container
                 *ngIf="currentMode === creationModes.InheritedFromParent"
             >
-                <app-dropdown-autocomplete-single-select
+                <emg-dropdown-autocomplete-single-select
                     *ngIf="
                         masterTemplatesOptions$
                             | async as masterTemplatesOptions
@@ -57,7 +57,7 @@
                     [label]="'Parent master template'"
                     [formControl]="parentMasterTemplateControl"
                     (inputEmitter)="masterTemplateOptionsChanged$.next($event)"
-                ></app-dropdown-autocomplete-single-select>
+                ></emg-dropdown-autocomplete-single-select>
             </ng-container>
 
             <div></div>
@@ -92,7 +92,7 @@
                 <mat-error>{{ requiredValidationMessage }}</mat-error>
             </mat-form-field>
             <div></div>
-            <app-dropdown-autocomplete-single-select
+            <emg-dropdown-autocomplete-single-select
                 *ngIf="clientOptions$ | async as clientOptions"
                 [options]="clientOptions"
                 formControlName="clientId"
@@ -101,7 +101,7 @@
                 [outputProperty]="'clientId'"
                 (inputEmitter)="clientOptionsChanged$.next($event)"
             >
-            </app-dropdown-autocomplete-single-select>
+            </emg-dropdown-autocomplete-single-select>
             <div></div>
             <mat-form-field appearance="outline">
                 <mat-label> Template name</mat-label>
@@ -109,8 +109,8 @@
                 <mat-error>{{ requiredValidationMessage }}</mat-error>
             </mat-form-field>
             <div></div>
-            <app-auto-name formControlName="agreementNameTemplate">
-            </app-auto-name>
+            <emg-auto-name formControlName="agreementNameTemplate">
+            </emg-auto-name>
             <div></div>
             <mat-form-field appearance="outline">
                 <mat-label> Definition </mat-label>
@@ -235,8 +235,8 @@
         </div>
         <div class="attachments-section">
             <div class="attachments-section">
-                <app-file-selector [inheritedFiles]="preselectedFiles" formControlName="selectedInheritedFiles"></app-file-selector>
-                <app-file-uploader_ formControlName="uploadedFiles"></app-file-uploader_>
+                <emg-file-selector [inheritedFiles]="preselectedFiles" formControlName="selectedInheritedFiles"></emg-file-selector>
+                <emg-file-uploader formControlName="uploadedFiles"></emg-file-uploader>
             </div>
         </div>
     </form>

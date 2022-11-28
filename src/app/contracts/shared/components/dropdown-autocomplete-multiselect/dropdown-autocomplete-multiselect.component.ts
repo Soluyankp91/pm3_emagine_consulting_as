@@ -20,7 +20,7 @@ import {
 import { isEqualWith } from 'lodash';
 
 @Component({
-    selector: 'app-dropdown-autocomplete-multiselect',
+    selector: 'emg-dropdown-autocomplete-multiselect',
     templateUrl: './dropdown-autocomplete-multiselect.component.html',
     styleUrls: ['./dropdown-autocomplete-multiselect.component.scss'],
     changeDetection: ChangeDetectionStrategy.OnPush,

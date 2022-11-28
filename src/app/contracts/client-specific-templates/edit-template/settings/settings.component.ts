@@ -42,7 +42,6 @@ import {
     ClientTemplatesModel,
     INITIAL_CLIENT_TEMPLATE_FORM_VALUE,
 } from '../../../shared/models/client-templates.model';
-import { FileUpload } from 'src/app/contracts/shared/components/new-file-uploader/new-file-uploader.interface';
 import { MatDialog } from '@angular/material/dialog';
 import { dirtyCheck } from '../../../shared/operators/dirtyCheckOperator';
 import { ConfirmDialogComponent } from 'src/app/contracts/shared/components/popUps/confirm-dialog/confirm-dialog.component';
@@ -50,6 +49,7 @@ import { AppComponentBase } from 'src/shared/app-component-base';
 import { REQUIRED_VALIDATION_MESSAGE } from 'src/app/contracts/shared/entities/contracts.constants';
 import { ActivatedRoute, Router } from '@angular/router';
 import { ContractsService } from 'src/app/contracts/shared/services/contracts.service';
+import { FileUpload } from 'src/app/contracts/shared/components/file-uploader/files';
 @Component({
     selector: 'app-creation',
     templateUrl: './settings.component.html',
@@ -144,7 +144,7 @@ export class CreationComponent
     masterTemplateOptionsChanged$ = new Subject<string>();
     clientTemplateOptionsChanged$ = new Subject<string>();
 
-    private unSubscribe$ = new Subject<void>();
+    private _unSubscribe$ = new Subject<void>();
 
     trackByRecipientId(index: number, item: EnumEntityTypeDto) {
         return item.id;
@@ -200,7 +200,7 @@ export class CreationComponent
     }
     private _subscribeOnStatusChanges(): void {
         this.clientTemplateFormGroup.statusChanges
-            .pipe(takeUntil(this.unSubscribe$))
+            .pipe(takeUntil(this._unSubscribe$))
             .subscribe((status) => {
                 if (status === 'VALID') {
                     return (this.isValid = true);
@@ -220,8 +220,8 @@ export class CreationComponent
         this._subscribeOnStatusChanges();
     }
     ngOnDestroy(): void {
-        this.unSubscribe$.next();
-        this.unSubscribe$.complete();
+        this._unSubscribe$.next();
+        this._unSubscribe$.complete();
     }
     onSave() {
         let creationMode = this.creationModeControl.value;
@@ -287,7 +287,7 @@ export class CreationComponent
     private _subscribeOnDirtyStatus(): void {
         this.clientTemplateFormGroup.valueChanges
             .pipe(
-                takeUntil(this.unSubscribe$),
+                takeUntil(this._unSubscribe$),
                 map(() => this.clientTemplateFormGroup.getRawValue()),
                 dirtyCheck(this.initialFormValue$)
             )
@@ -299,7 +299,7 @@ export class CreationComponent
     private _subscribeOnMasterTemplateChanges(): void {
         this.parentMasterTemplateControl.valueChanges
             .pipe(
-                takeUntil(this.unSubscribe$),
+                takeUntil(this._unSubscribe$),
                 switchMap((agreementTemplateId: number) => {
                     return this._apiServiceProxy.agreementTemplateGET(
                         agreementTemplateId
@@ -314,7 +314,7 @@ export class CreationComponent
     private _subscribeOnClientTemplateChanges(): void {
         this.clientTemplateControl.valueChanges
             .pipe(
-                takeUntil(this.unSubscribe$),
+                takeUntil(this._unSubscribe$),
                 switchMap((agreementTemplateId: number) => {
                     return this._apiServiceProxy.agreementTemplateGET(
                         agreementTemplateId
@@ -389,7 +389,7 @@ export class CreationComponent
     private _subscribeOnCreationModeResolver(): void {
         this.modeControl
             .pipe(
-                takeUntil(this.unSubscribe$),
+                takeUntil(this._unSubscribe$),
                 skip(1),
                 switchMap(() => {
                     if (this.isDirty) {

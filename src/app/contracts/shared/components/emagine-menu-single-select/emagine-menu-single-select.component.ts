@@ -16,7 +16,7 @@ import { MatSelect, MAT_SELECT_CONFIG } from '@angular/material/select';
 type IDropdownItem = object & { [key: string]: any; selected?: boolean };
 
 @Component({
-    selector: 'app-mat-menu-single-select',
+    selector: 'emg-mat-menu-single-select',
     templateUrl: './emagine-menu-single-select.component.html',
     styleUrls: ['./emagine-menu-single-select.component.scss'],
     encapsulation: ViewEncapsulation.None,

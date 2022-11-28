@@ -8,13 +8,10 @@ import {
 } from '@angular/core';
 import { ControlValueAccessor, NG_VALUE_ACCESSOR } from '@angular/forms';
 import { AgreementTemplateServiceProxy } from 'src/shared/service-proxies/service-proxies';
-import {
-    FileUpload,
-    FileUploadItem,
-} from '../new-file-uploader/new-file-uploader.interface';
+import { FileUpload, FileUploadItem } from '../file-uploader/files';
 
 @Component({
-    selector: 'app-file-selector',
+    selector: 'emg-file-selector',
     templateUrl: './file-selector.component.html',
     styleUrls: ['./file-selector.component.scss'],
     providers: [

@@ -1,5 +1,5 @@
 <app-master-template-filter-header> </app-master-template-filter-header>
-<app-mat-grid
+<emg-mat-grid
     #table
     *ngIf="table$ | async as table"
     [displayedColumns]="displayedColumns"
@@ -9,4 +9,4 @@
     (formControlChange)="onFormControlChange($event)"
     (pageChange)="onPageChange($event)"
     (tableRow)="onSelectTableRow($event)">
-</app-mat-grid>
+</emg-mat-grid>

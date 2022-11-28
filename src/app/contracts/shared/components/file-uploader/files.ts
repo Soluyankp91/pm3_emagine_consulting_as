@@ -1,10 +1,9 @@
 export type FileUpload = object & {
-    name: string;
-    agreementTemplateAttachmentId?: number;
     temporaryFileId?: string;
+    agreementTemplateAttachmentId?: number;
+    name: string;
 };
 export type FileUploadItem = FileUpload & {
     icon?: string;
     selected?: boolean;
-    index?: string;
 };

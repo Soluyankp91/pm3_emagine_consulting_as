@@ -13,7 +13,7 @@ import { requiredValidator } from '../../validators/customRequireValidator';
 import { Item } from './entities/interfaces';
 
 @Component({
-    selector: 'app-dropdown-autocomplete-single-select',
+    selector: 'emg-dropdown-autocomplete-single-select',
     templateUrl: './dropdown-autocomplete-single-select.component.html',
     styleUrls: ['./dropdown-autocomplete-single-select.component.scss'],
     providers: [

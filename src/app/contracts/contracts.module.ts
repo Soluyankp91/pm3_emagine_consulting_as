@@ -24,7 +24,6 @@ import { MatMenuSingleSelectComponent } from './shared/components/emagine-menu-s
 import { MultiSelectComponent } from './shared/components/emagine-menu-multi-select/emagine-menu-multi-select.component';
 import { CustomTooltipDirective } from './shared/directives/customTooltip/custom-tooltip.directive';
 import { DropdownAutocompleteMultiselectComponent } from './shared/components/dropdown-autocomplete-multiselect/dropdown-autocomplete-multiselect.component';
-import { NewFileUploaderDirective } from './shared/components/new-file-uploader/new-file-uploader.directive';
 import { DropdownAutocompleteSingleSelectComponent } from './shared/components/dropdown-autocomplete-single-select/dropdown-autocomplete-single-select.component';
 import { ConfirmDialogComponent } from './shared/components/popUps/confirm-dialog/confirm-dialog.component';
 import { DateCellComponent } from './shared/components/grid-table/master-templates/cells/date-cell/date-cell.component';
@@ -39,10 +38,10 @@ import { ClientSpecificTemplatesComponent } from './client-specific-templates/li
 import { CreateMasterTemplateComponent } from './master-templates/template-editor/settings/settings.component';
 import { ContractsService } from './shared/services/contracts.service';
 import { ClientSpecificComponent } from './client-specific-templates/edit-template/client-specific.component';
-import { NewFileUploaderComponent } from './shared/components/new-file-uploader/new-file-uploader.component';
 import { CreationComponent } from './client-specific-templates/edit-template/settings/settings.component';
 import { FileUploaderComponent } from './shared/components/file-uploader/file-uploader.component';
 import { FileSelectorComponent } from './shared/components/file-selector/file-selector.component';
+import { NewFileUploaderDirective } from './shared/components/file-uploader/new-file-uploader.directive';
 
 @NgModule({
     declarations: [
@@ -68,7 +67,6 @@ import { FileSelectorComponent } from './shared/components/file-selector/file-se
         MultiSelectComponent,
         CustomTooltipDirective,
         DropdownAutocompleteMultiselectComponent,
-        NewFileUploaderComponent,
         NewFileUploaderDirective,
         CreationComponent,
         ClientSpecificComponent,

@@ -1,6 +1,5 @@
-import { map } from 'rxjs/operators';
 import { ActivatedRoute } from '@angular/router';
-import { Component, OnInit, ChangeDetectionStrategy } from '@angular/core';
+import { Component, ChangeDetectionStrategy } from '@angular/core';
 import { Tab } from 'src/app/contracts/shared/entities/contracts.interfaces';
 import { BaseTab } from 'src/app/contracts/shared/abstracts/base-tab';
 import { CREATIONS_TABS } from 'src/app/contracts/shared/entities/contracts.constants';

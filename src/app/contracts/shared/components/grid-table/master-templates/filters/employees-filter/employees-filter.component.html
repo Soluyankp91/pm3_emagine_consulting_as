@@ -1,7 +1,7 @@
-<app-dropdown-autocomplete-multiselect
+<emg-dropdown-autocomplete-multiselect
     *ngIf="employees$ | async as employees"
     [options]="employees"
     [formControl]="filterFormControl"
     (emitText)="emitText($event)"
-></app-dropdown-autocomplete-multiselect>
+></emg-dropdown-autocomplete-multiselect>
 

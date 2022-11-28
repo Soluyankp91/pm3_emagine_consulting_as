@@ -1,8 +1,8 @@
-<app-multi-select
+<emg-multi-select
     *ngIf="recipientTypes$ | async as agreementTypes"
     [options]="agreementTypes"
     [displayedProperty]="'name'"
     [formControl]="filterFormControl"
 >
-    <div #triggerButton>Recipients</div></app-multi-select
+    <div #triggerButton>Recipients</div></emg-multi-select
 >

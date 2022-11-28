@@ -2,10 +2,10 @@ import { Component, OnInit, forwardRef } from '@angular/core';
 import { FileServiceProxy } from 'src/shared/service-proxies/service-proxies';
 import { Subject, Observable, forkJoin, of } from 'rxjs';
 import { switchMap, map, tap } from 'rxjs/operators';
-import { FileUploadItem } from '../new-file-uploader/new-file-uploader.interface';
 import { ControlValueAccessor, NG_VALUE_ACCESSOR } from '@angular/forms';
+import { FileUploadItem } from './files';
 @Component({
-    selector: 'app-file-uploader_',
+    selector: 'emg-file-uploader_',
     templateUrl: './file-uploader.component.html',
     styleUrls: ['./file-uploader.component.scss'],
     providers: [

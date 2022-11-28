@@ -67,7 +67,7 @@
             <ng-container
                 *ngIf="agreementCreationMode.value === creationModes.Duplicated"
             >
-                <app-dropdown-autocomplete-single-select
+                <emg-dropdown-autocomplete-single-select
                     *ngIf="
                         masterTemplateOptions$ | async as masterTemplateOptions
                     "
@@ -78,7 +78,7 @@
                     [formControl]="duplicateTemplateControl"
                     (inputEmitter)="masterTemplateOptionsChanged$.next($event)"
                 >
-                </app-dropdown-autocomplete-single-select>
+                </emg-dropdown-autocomplete-single-select>
             </ng-container>
             <mat-divider></mat-divider>
             <mat-form-field appearance="outline" floatLabel="never">
@@ -92,9 +92,9 @@
                 <mat-error>{{ requiredValidationMessage }}</mat-error>
             </mat-form-field>
             <div></div>
-            <app-auto-name
+            <emg-auto-name
                 formControlName="agreementNameTemplate"
-            ></app-auto-name>
+            ></emg-auto-name>
             <div></div>
             <mat-form-field appearance="outline" floatLabel="never">
                 <mat-label> Definition </mat-label>
@@ -229,8 +229,8 @@
             <mat-checkbox formControlName="isEnabled">Enable</mat-checkbox>
         </div>
         <div class="attachments-section">
-            <app-file-selector [inheritedFiles]="preselectedFiles" formControlName="selectedInheritedFiles"></app-file-selector>
-            <app-file-uploader_ formControlName="uploadedFiles"></app-file-uploader_>
+            <emg-file-selector [inheritedFiles]="preselectedFiles" formControlName="selectedInheritedFiles"></emg-file-selector>
+            <emg-file-uploader_ formControlName="uploadedFiles"></emg-file-uploader_>
         </div>
     </div>
     <button mat-button (click)="onSave()" [disabled]="masterTemplateFormGroup.invalid">

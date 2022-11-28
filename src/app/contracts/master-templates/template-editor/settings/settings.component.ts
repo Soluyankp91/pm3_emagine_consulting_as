@@ -24,7 +24,6 @@ import {
     SimpleAgreementTemplatesListItemDto,
 } from 'src/shared/service-proxies/service-proxies';
 import { ActivatedRoute, Router } from '@angular/router';
-import { FileUpload } from 'src/app/contracts/shared/components/new-file-uploader/new-file-uploader.interface';
 import {
     INITIAL_MASTER_TEMPLATE_FORM_VALUE,
     MasterTemplateModel,
@@ -35,6 +34,7 @@ import { MatDialog } from '@angular/material/dialog';
 import { dirtyCheck } from 'src/app/contracts/shared/operators/dirtyCheckOperator';
 import { ContractsService } from 'src/app/contracts/shared/services/contracts.service';
 import { SettingsOptions } from 'src/app/contracts/shared/models/settings.model';
+import { FileUpload } from 'src/app/contracts/shared/components/file-uploader/files';
 
 @Component({
     selector: 'app-settings',

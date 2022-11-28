@@ -1,7 +1,7 @@
 <div [formGroup]="topFiltersFormGroup" class="top-filters">
     <div class="left-panel">
         <div class="country-filter" *ngIf="countryFilter$ | async as countries">
-            <app-multi-select [options]="countries" formControlName="tenantIds">
+            <emg-multi-select [options]="countries" formControlName="tenantIds">
                 <!-- <mat-icon
                     svgIcon="euro-union"
                     class="country-filter-icon"
@@ -12,7 +12,7 @@
                         matPrefix
                         class="fi fi-{{ option.code | lowercase }}"></span>
                 </ng-template>
-            </app-multi-select>
+            </emg-multi-select>
         </div>
         <h4 class="master-templates-header">Master Templates</h4>
     </div>
