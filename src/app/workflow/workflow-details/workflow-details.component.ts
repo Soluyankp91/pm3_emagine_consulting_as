@@ -297,7 +297,7 @@ export class WorkflowDetailsComponent
             )
             .subscribe((result) => {
                 this.clientPeriods = result.clientPeriods;
-                this.workflowClient = (result as any).clientName;
+                this.workflowClient = result.clientName;
                 this.workflowDirectClientid = result.directClientId;
                 this.workflowConsultants =
                     result.consultantNamesWithRequestUrls!;
