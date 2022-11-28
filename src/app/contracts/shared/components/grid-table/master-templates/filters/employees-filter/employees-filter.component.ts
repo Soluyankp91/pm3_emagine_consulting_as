@@ -4,7 +4,7 @@ import { startWith, switchMap, tap, take, pluck } from 'rxjs/operators';
 import { Component, EventEmitter, Output } from '@angular/core';
 import { FormControl } from '@angular/forms';
 import { LookupServiceProxy } from 'src/shared/service-proxies/service-proxies';
-import { MasterTemplatesService } from 'src/app/contracts/components/master-templates/master-templates.service';
+import { MasterTemplatesService } from 'src/app/contracts/master-templates/listAndPreviews/services/master-templates.service';
 
 @Component({
     selector: 'app-employees-filter',

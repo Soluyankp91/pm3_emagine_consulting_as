@@ -1,45 +1,25 @@
-import {
-    Component,
-    Input,
-    OnChanges,
-    OnInit,
-    SimpleChanges,
-    EventEmitter,
-    ChangeDetectionStrategy,
-    Output,
-    ChangeDetectorRef,
-    forwardRef,
-} from '@angular/core';
+import { Component, Input, OnInit, EventEmitter, Output } from '@angular/core';
 import {
     AbstractControl,
     ControlValueAccessor,
     FormControl,
-    FormGroupDirective,
-    NgForm,
     NG_VALIDATORS,
     NG_VALUE_ACCESSOR,
     ValidationErrors,
     Validator,
-    ValidatorFn,
 } from '@angular/forms';
-import { ErrorStateMatcher } from '@angular/material/core';
-import { isEmpty } from 'lodash';
-import { REQUIRED_VALIDATION_MESSAGE } from '../../entities/contracts.constants';
-import { SingleAutoErrorStateMatcher } from './entities/customMatcher';
-import { customRequiredValidator } from './entities/customRequireValidator';
+import { SingleAutoErrorStateMatcher } from '../../matchers/customMatcher';
+import { requiredValidator } from '../../validators/customRequireValidator';
 import { Item } from './entities/interfaces';
 
 @Component({
     selector: 'app-dropdown-autocomplete-single-select',
     templateUrl: './dropdown-autocomplete-single-select.component.html',
     styleUrls: ['./dropdown-autocomplete-single-select.component.scss'],
-    changeDetection: ChangeDetectionStrategy.OnPush,
     providers: [
         {
             provide: NG_VALUE_ACCESSOR,
-            useExisting: forwardRef(
-                () => DropdownAutocompleteSingleSelectComponent
-            ),
+            useExisting: DropdownAutocompleteSingleSelectComponent,
             multi: true,
         },
         {
@@ -50,60 +30,52 @@ import { Item } from './entities/interfaces';
     ],
 })
 export class DropdownAutocompleteSingleSelectComponent
-    implements OnInit, OnChanges, ControlValueAccessor, Validator
+    implements OnInit, ControlValueAccessor, Validator
 {
-    @Input() options: Item[] = [];
-    @Input() displayedProperty: string = 'name';
+    @Input() options: Item[];
+    @Input() labelKey: string = 'name';
     @Input() outputProperty: string = 'id';
     @Input() label: string = 'label';
 
     @Output() inputEmitter = new EventEmitter<string>();
 
+    context = this;
     matcher = new SingleAutoErrorStateMatcher();
-    inputControl = new FormControl('', [customRequiredValidator()]);
-    optionSelected = false;
+    inputControl = new FormControl(null, [requiredValidator()]);
 
-    requiredValidationMessage = REQUIRED_VALIDATION_MESSAGE;
-    constructor(private readonly cdr: ChangeDetectorRef) {}
+    constructor() {}
 
     ngOnInit(): void {
         this._subsribeOnInputControl();
-        this.inputControl.setErrors({ customRequired: true });
-    }
-    ngOnChanges(changes: SimpleChanges): void {
-        if (changes['options']) {
-            this.cdr.detectChanges();
-        }
     }
     displayFn(option: Item) {
-        if (option) {
-            return option[this.displayedProperty];
-        }
+        return option ? option[this.labelKey] : null;
     }
     onSelect(selectedOption: Item) {
-        this.optionSelected = true;
         this.onChange(selectedOption[this.outputProperty]);
     }
 
     trackByOptionProp(index: number, item: Item) {
-        return index;
+        return item[this.labelKey];
     }
 
     private _subsribeOnInputControl() {
-        this.inputControl.valueChanges.subscribe((input) => {
-            this.optionSelected = false;
-            this.inputEmitter.emit(input);
-            if (input[this.outputProperty]) {
+        this.inputControl.valueChanges.pipe().subscribe((input) => {
+            console.log(input);
+            if (typeof input === 'object') {
+                this.inputEmitter.emit(input[this.labelKey]);
                 this.onChange(input[this.outputProperty]);
+                return;
             }
+            this.inputEmitter.emit(input);
         });
     }
 
     validate(control: AbstractControl): ValidationErrors | null {
-        if (this.optionSelected) {
+        if (!this.inputControl.invalid) {
             return null;
         }
-        return { customRequired: true };
+        return { required: true };
     }
 
     onChange: any = () => {};
@@ -116,16 +88,11 @@ export class DropdownAutocompleteSingleSelectComponent
         this.onTouch = fn;
     }
     writeValue(preselectedItem: Item): void {
-        if (isEmpty(preselectedItem)) {
-            this.inputControl.setValue('', { emitEvent: false });
-            this.onChange('');
+        if (preselectedItem === null) {
+            this.inputControl.reset(null, { emitEvent: false });
             this.inputControl.markAsPristine();
-            this.inputControl.markAsUntouched();
-            this.inputControl.updateValueAndValidity();
             return;
         }
-        this.optionSelected = true;
-        this.inputControl.setValue(preselectedItem, { emitEvent: false });
-        this.onChange(preselectedItem[this.outputProperty]);
+        this.inputControl.patchValue(preselectedItem);
     }
 }

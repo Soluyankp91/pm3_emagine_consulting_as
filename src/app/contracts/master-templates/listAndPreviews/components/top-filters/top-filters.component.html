@@ -1,0 +1,31 @@
+<div [formGroup]="topFiltersFormGroup" class="top-filters">
+    <div class="left-panel">
+        <div class="country-filter" *ngIf="countryFilter$ | async as countries">
+            <app-multi-select [options]="countries" formControlName="tenantIds">
+                <!-- <mat-icon
+                    svgIcon="euro-union"
+                    class="country-filter-icon"
+                    #triggerButton>
+                </mat-icon> -->
+                <ng-template #optionPrefix let-option>
+                    <span
+                        matPrefix
+                        class="fi fi-{{ option.code | lowercase }}"></span>
+                </ng-template>
+            </app-multi-select>
+        </div>
+        <h4 class="master-templates-header">Master Templates</h4>
+    </div>
+    <div class="right-panel">
+        <div class="search-block">
+            <mat-form-field appearance="fill">
+                <mat-label>Search text</mat-label>
+                <input matInput formControlName="search" placeholder="search" />
+            </mat-form-field>
+        </div>
+        <div class="add-button" (click)="navigateTo()" [style.display]="'flex'" [style.align-items]="'center'">
+            <mat-icon svgIcon="create-icon" [style.height.px]="50" [style.width.px]="50"></mat-icon>
+            <div>Create</div>
+        </div>
+    </div>
+</div>

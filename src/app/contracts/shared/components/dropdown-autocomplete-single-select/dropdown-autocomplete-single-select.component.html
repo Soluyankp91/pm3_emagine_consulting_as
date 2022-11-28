@@ -10,16 +10,14 @@
     />
     <mat-autocomplete
         #auto="matAutocomplete"
-        [displayWith]="displayFn.bind(this)"
+        [displayWith]="displayFn.bind(context)"
         (optionSelected)="onSelect($event.option.value)"
     >
     <ng-container *ngFor="let option of options; trackBy:trackByOptionProp" >
         <mat-option  [value]="option">{{
-            option[displayedProperty]
+            option[labelKey]
         }}</mat-option>
     </ng-container>
     </mat-autocomplete>
-    <mat-error *ngIf="inputControl.hasError('customRequired')">
-        {{ requiredValidationMessage }}
-    </mat-error>
+    <mat-error><app-validator [control]="inputControl"></app-validator></mat-error>
 </mat-form-field>

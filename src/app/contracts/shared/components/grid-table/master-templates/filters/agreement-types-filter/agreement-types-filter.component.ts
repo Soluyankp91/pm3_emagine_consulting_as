@@ -1,9 +1,9 @@
 import { take, pluck } from 'rxjs/operators';
-import { ContractsService } from './../../../../../../contracts.service';
-import { Component, OnInit } from '@angular/core';
+import { Component } from '@angular/core';
 import { FormControl } from '@angular/forms';
 import { IFilter } from 'src/app/contracts/shared/components/grid-table/mat-grid.interfaces';
-import { MasterTemplatesService } from 'src/app/contracts/components/master-templates/master-templates.service';
+import { ContractsService } from 'src/app/contracts/shared/services/contracts.service';
+import { MasterTemplatesService } from 'src/app/contracts/master-templates/listAndPreviews/services/master-templates.service';
 
 @Component({
     selector: 'app-agreement-types-filter',

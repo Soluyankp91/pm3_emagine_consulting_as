@@ -1,8 +1,6 @@
 import {
-    ChangeDetectorRef,
     Component,
     ElementRef,
-    forwardRef,
     OnInit,
     ViewChild,
     OnDestroy,
@@ -11,31 +9,23 @@ import {
     AbstractControl,
     ControlValueAccessor,
     FormControl,
-    FormGroupDirective,
-    NgForm,
     NG_VALIDATORS,
     NG_VALUE_ACCESSOR,
     ValidationErrors,
     Validator,
-    ValidatorFn,
 } from '@angular/forms';
-import { ErrorStateMatcher } from '@angular/material/core';
 import { forkJoin, Subject } from 'rxjs';
 import { mergeMap, tap, takeUntil } from 'rxjs/operators';
 import { AgreementNameTemplateServiceProxy } from 'src/shared/service-proxies/service-proxies';
 import { REQUIRED_VALIDATION_MESSAGE } from '../../entities/contracts.constants';
+import { AutoNameErrorStateMatcher } from '../../matchers/autoNameErrorMatcher';
+import { autoNameRequiredValidator } from '../../validators/autoNameRequireValidator';
 
 export type AutoName = { [key: string]: any } & {
     selected: boolean;
     name: string;
     id: number;
 };
-export function customAutoNameRequiredValidator(): ValidatorFn {
-    return (control: AbstractControl): ValidationErrors | null => {
-        console.log(control.value);
-        return !control.value.length ? { customRequired: true } : null;
-    };
-}
 @Component({
     selector: 'app-auto-name',
     templateUrl: './auto-name.component.html',
@@ -43,7 +33,7 @@ export function customAutoNameRequiredValidator(): ValidatorFn {
     providers: [
         {
             provide: NG_VALUE_ACCESSOR,
-            useExisting: forwardRef(() => AutoNameComponent),
+            useExisting: AutoNameComponent,
             multi: true,
         },
         {
@@ -68,7 +58,11 @@ export class AutoNameComponent
 
     matcher = new AutoNameErrorStateMatcher();
     textControl = new FormControl('');
-    chipsControl = new FormControl([], [customAutoNameRequiredValidator()]);
+    chipsControl = new FormControl([], [autoNameRequiredValidator()]);
+
+    onChange: any = () => {};
+    onTouch: any = () => {};
+
     private unSubscribe$ = new Subject();
 
     constructor(
@@ -82,6 +76,7 @@ export class AutoNameComponent
     }
     ngOnDestroy(): void {
         this.unSubscribe$.next();
+        this.unSubscribe$.complete();
     }
 
     toggleCheckbox(optionItem: AutoName) {
@@ -95,14 +90,13 @@ export class AutoNameComponent
             this.selectedOptions.splice(foundedIndex, 1);
         }
         this.chipsControl.setValue(this.selectedOptions);
-        this.matcher.matchipsLength = this.selectedOptions.length;
         this.onChange(this._buildChangesOutput());
     }
 
     onShowSampleChanged(checked: boolean) {
         this.sampleData = checked;
         if (this.sampleData) {
-            const buildedAutoName = this._buildForAutoName();
+            const buildedAutoName = this._buildAutoName();
             this.textControl.setValue(buildedAutoName);
             this.input.nativeElement.value = buildedAutoName;
             this.textControl.disable();
@@ -116,7 +110,7 @@ export class AutoNameComponent
         return item.name;
     }
 
-    private _buildForAutoName(): string {
+    private _buildAutoName(): string {
         return this.selectedOptions.reduce((acc, current, index) => {
             if (!index) {
                 acc = this.autoNameMap.get(current.name) as string;
@@ -164,7 +158,33 @@ export class AutoNameComponent
         if (this.selectedOptions.length) {
             return null;
         }
-        return { customRequired: true };
+        return { required: true };
+    }
+
+    writeValue(value: string): void {
+        if (value === null) {
+            this.chipsControl.markAsPristine();
+            if (this.input) {
+                this.input.nativeElement.value = '';
+            }
+            this.textControl.enable();
+            this.textControl.setValue('');
+            this.displayedOptionItems.forEach(
+                (option) => (option.selected = false)
+            );
+            this.selectedOptions = [];
+            this.sampleData = false;
+            this.onChange(null);
+            return;
+        }
+        this._preselectAutoNames(value);
+        this.sampleData = true;
+        const buildedView = this._buildAutoName();
+        this.displayedOptionItems = this.optionItems;
+        this.textControl.setValue(buildedView, { emitEvent: false });
+        this.input.nativeElement.value = buildedView;
+        this.chipsControl.setValue(this.selectedOptions);
+        this.textControl.disable();
     }
 
     private _initFields() {
@@ -205,17 +225,13 @@ export class AutoNameComponent
             });
     }
 
-    private _parseSetValue(val: string) {
+    private _preselectAutoNames(val: string) {
         const regExp = new RegExp(/{(.*?)}/gm);
         const autoName: string[] = [];
         let match;
         while ((match = regExp.exec(val)) !== null) {
             autoName.push(match[1]);
         }
-        return autoName;
-    }
-
-    private _preselectAutoNames(autoName: string[]) {
         this.selectedOptions = autoName.reduce((acc, current) => {
             acc.push(
                 this.optionItems.find((existedOption) => {
@@ -228,47 +244,6 @@ export class AutoNameComponent
             );
             return acc;
         }, [] as AutoName[]);
-    }
-
-    writeValue(val: string): void {
-        if (val && val.length) {
-            const autoNames = this._parseSetValue(val);
-            this._preselectAutoNames(autoNames);
-            this.sampleData = true;
-            const buildedView = this._buildForAutoName();
-            this.displayedOptionItems = this.optionItems;
-            this.textControl.setValue(buildedView, { emitEvent: false });
-            this.input.nativeElement.value = buildedView;
-            this.chipsControl.setValue(this.selectedOptions);
-            this.matcher.matchipsLength = this.selectedOptions.length;
-            this.textControl.disable();
-        } else {
-            this.chipsControl.markAsPristine();
-            this.chipsControl.markAsUntouched();
-            if (this.input) {
-                this.input.nativeElement.value = '';
-            }
-            this._preselectAutoNames([]);
-            this.textControl.enable();
-            this.textControl.setValue('');
-            this.displayedOptionItems.forEach(
-                (option) => (option.selected = false)
-            );
-            this.selectedOptions = [];
-            this.sampleData = false;
-            this.onChange('');
-        }
-    }
-    onChange: any = () => {};
-    onTouch: any = () => {};
-}
-export class AutoNameErrorStateMatcher implements ErrorStateMatcher {
-    constructor() {}
-    matchipsLength: number = 0;
-    isErrorState(
-        control: FormControl | null,
-        form: FormGroupDirective | NgForm | null
-    ): boolean {
-        return !this.matchipsLength && !!control?.touched;
+        autoName;
     }
 }

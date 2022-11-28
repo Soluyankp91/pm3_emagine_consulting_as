@@ -36,7 +36,6 @@ export class ContractComponent implements OnInit {
         this.route.children[0].url
             .pipe(map((urlSegments) => urlSegments[0].path))
             .subscribe((currentPath) => {
-                console.log(currentPath);
                 this.activeTab = currentPath;
             });
     }

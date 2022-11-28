@@ -24,7 +24,7 @@
             placeholder="New field..."
         />
     </mat-chip-list>
-    <mat-error>{{ requiredValidationMessage }}</mat-error>
+    <mat-error><app-validator [control]="chipsControl"></app-validator></mat-error>
     <mat-autocomplete #auto="matAutocomplete">
         <ng-container *ngFor="let optionItem of displayedOptionItems; trackBy:trackByOptionName">
             <mat-option>

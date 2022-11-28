@@ -1,14 +1,14 @@
 import { ContractComponent } from './contract.component';
 import { RouterModule, Routes } from '@angular/router';
 import { NgModule } from '@angular/core';
-import { ClientSpecificTemplatesComponent } from './components/client-specific-templates/client-specific-templates.component';
-import { AgreementsComponent } from './components/agreements/agreements.component';
-import { MasterTemplatesComponent } from './components/master-templates/master-templates.component';
-import { MasterTemplateCreationComponent } from './components/master-templates/components/master-template-creation/master-template-creation.component';
-import { CreateMasterTemplateComponent } from './components/master-templates/components/master-template-creation/components/settings/settings.component';
-import { EditorComponent } from './components/master-templates/components/master-template-creation/components/editor/editor.component';
-import { ClientSpecificComponent } from './components/client-specific-templates/components/client-specific/client-specific.component';
-import { CreationComponent } from './components/client-specific-templates/components/client-specific/creation/creation.component';
+import { AgreementsComponent } from './agreements/agreements.component';
+import { ClientSpecificTemplatesComponent } from './client-specific-templates/listAndPreviews/client-specific-templates.component';
+import { ClientSpecificComponent } from './client-specific-templates/edit-template/client-specific.component';
+import { MasterTemplatesComponent } from './master-templates/listAndPreviews/master-templates.component';
+import { MasterTemplateCreationComponent } from './master-templates/template-editor/template-editor.component';
+import { CreateMasterTemplateComponent } from './master-templates/template-editor/settings/settings.component';
+import { EditorComponent } from './master-templates/template-editor/editor/editor.component';
+import { CreationComponent } from './client-specific-templates/edit-template/settings/settings.component';
 
 const routes: Routes = [
     {
