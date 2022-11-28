@@ -301,7 +301,7 @@
                     </mat-cell>
                 </ng-container>
                 <ng-container matColumnDef="WorkflowStatus">
-                    <mat-header-cell *matHeaderCellDef fxFlex="5%" mat-sort-header fxLayoutAlign="center center"> WF Status </mat-header-cell>
+                    <mat-header-cell *matHeaderCellDef fxFlex="5%" mat-sort-header fxLayoutAlign="center center"> Status </mat-header-cell>
                     <mat-cell *matCellDef="let row" fxFlex="5%" fxLayoutAlign="center center">
                         <mat-icon class="workflow-status" [matTooltip]="row.statusName + ' workflow'" matTooltipClass="white-tooltip" [ngClass]="row?.statusIcon">fiber_manual_record</mat-icon>
                     </mat-cell>
@@ -319,7 +319,7 @@
                                         <span class="flex-row flex-items-center">
                                             <mat-icon svgIcon="workflowAdd"></mat-icon>
                                             <span class="workflow-list--process-name">
-                                                Start workflow
+                                                Start WF
                                             </span>
                                         </span>
                                     </ng-container>
@@ -327,7 +327,7 @@
                                         <span class="flex-row flex-items-center">
                                             <mat-icon svgIcon="workflowStartOrExtend"></mat-icon>
                                             <span class="workflow-list--process-name">
-                                                Extend workflow
+                                                Extend WF
                                             </span>
                                         </span>
                                     </ng-container>
@@ -335,7 +335,7 @@
                                         <span class="flex-row flex-items-center">
                                             <mat-icon svgIcon="workflowTerminate"></mat-icon>
                                             <span class="workflow-list--process-name">
-                                                Terminate workflow
+                                                Terminate WF
                                             </span>
                                         </span>
                                     </ng-container>
@@ -343,7 +343,7 @@
                                         <span class="flex-row flex-items-center">
                                             <mat-icon svgIcon="workflowEdit"></mat-icon>
                                             <span class="workflow-list--process-name">
-                                                Change workflow
+                                                Change WF
                                             </span>
                                         </span>
                                     </ng-container>
@@ -418,7 +418,7 @@
                     </mat-cell>
                 </ng-container>
                 <ng-container matColumnDef="startDateOfOpenedPeriodOrLastClientPeriod">
-                    <mat-header-cell *matHeaderCellDef mat-sort-header fxFlex="8%"> Start date of step </mat-header-cell>
+                    <mat-header-cell *matHeaderCellDef mat-sort-header fxFlex="8%"> Step start </mat-header-cell>
                     <mat-cell *matCellDef="let row" fxFlex="8%">
                         <span class="text-truncate-ellipsis" [matTooltip]="(row.startDateOfOpenedPeriodOrLastClientPeriod | date: 'dd.MM.YYYY') ?? '-'" matTooltipClass="white-tooltip" appShowIfTruncated>
                             {{(row.startDateOfOpenedPeriodOrLastClientPeriod | date: 'dd.MM.YYYY') ?? '-'}}
