@@ -69,19 +69,7 @@
         &--sales,
         &--consultants,
         &--summary {
-
             border-bottom: 1px solid $sand-color;
-            .workflow-darkblue--text {
-                @include fontOpenSans(14px, 700);
-                line-height: 14px;
-                color: rgba(56, 72, 83, 0.87);
-            }
-            .workflow-gray--header {
-                @include fontOpenSans(14px, 700);
-                margin-bottom: 8px !important;
-                line-height: 14px;
-                color: #B6B4B2
-            }
         }
     }
     &-section--header {
@@ -154,4 +142,16 @@
         height: 20px;
         line-height: 20px;
     }
+}
+
+.workflow-darkblue--text {
+    @include fontOpenSans(14px, 700);
+    line-height: 14px;
+    color: rgba(56, 72, 83, 0.87);
+}
+.workflow-gray--header {
+    @include fontOpenSans(14px, 700);
+    margin-bottom: 8px !important;
+    line-height: 14px;
+    color: #B6B4B2
 }

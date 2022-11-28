@@ -6,14 +6,14 @@
                 Client
                 <ng-container *ngTemplateOutlet="sortArrow"></ng-container>
             </div>
-            <div class="gantt-flat-side-column" fxFlex="25%" fxLayoutAlign="start center">
+            <div class="gantt-flat-side-column" fxFlex="30%" fxLayoutAlign="start center">
                 Consultants
             </div>
-            <div class="gantt-flat-side-column sort-container pos-relative" [ngClass]="{'active': sortName === (isWorkflow ? 'lastClientPeriodEndDate' : 'lastConsultantPeriodEndDate'), 'desc': sortName === (isWorkflow ? 'lastClientPeriodEndDate' : 'lastConsultantPeriodEndDate') && sortDirection === sortDirections.Desc}" fxFlex="15%" fxLayoutAlign="end center" (click)="sortChanged(isWorkflow ? 'lastClientPeriodEndDate' : 'lastConsultantPeriodEndDate')">
+            <div class="gantt-flat-side-column sort-container pos-relative" [ngClass]="{'active': sortName === (isWorkflow ? 'lastClientPeriodEndDate' : 'lastConsultantPeriodEndDate'), 'desc': sortName === (isWorkflow ? 'lastClientPeriodEndDate' : 'lastConsultantPeriodEndDate') && sortDirection === sortDirections.Desc}" fxFlex="13%" fxLayoutAlign="start center" (click)="sortChanged(isWorkflow ? 'lastClientPeriodEndDate' : 'lastConsultantPeriodEndDate')">
                 End date
                 <ng-container *ngTemplateOutlet="sortArrow"></ng-container>
             </div>
-            <div class="gantt-flat-side-column text-truncate-ellipsis" fxLayoutAlign="flex-end center" fxFlex="20%">
+            <div class="gantt-flat-side-column text-truncate-ellipsis" fxLayoutAlign="flex-end center" fxFlex="17%">
                 Sales manager
             </div>
         </div>
@@ -62,7 +62,7 @@
                         {{group!.origin!.origin!.clientDisplayName}}
                     </span>
                 </div>
-                <div class="gantt-group-content text-truncate-ellipsis" fxFlex="25%">
+                <div class="gantt-group-content text-truncate-ellipsis" fxFlex="30%">
                     <span class="text-truncate-ellipsis" [matTooltip]="mapListByProperty(group?.origin?.origin?.consultants!, 'name')" matTooltipClass="white-tooltip" *ngIf="isWorkflow" appShowIfTruncated>
                         <ng-container *ngIf="group?.origin?.origin?.consultants!.length > 1; else singleConsultantDisplay">
                             {{group?.origin?.origin?.consultants?.length + 'Consultants'}}
@@ -75,8 +75,8 @@
                         {{group?.origin?.origin?.consultant?.name}}
                     </span>
                 </div>
-                <div class="gantt-group-content text-truncate-ellipsis" fxFlex="15%" fxLayoutAlign="end center">
-                    <span class="u-mr--20">
+                <div class="gantt-group-content text-truncate-ellipsis" fxFlex="13%" fxLayoutAlign="start center">
+                    <span>
                         <ng-container *ngIf="isWorkflow">
                             {{group!.origin!.origin!.lastClientPeriodEndDate ? (group!.origin!.origin!.lastClientPeriodEndDate | momentFormat: momentFormatType) : '-'}}
                         </ng-container>
@@ -85,10 +85,10 @@
                         </ng-container>
                     </span>
                 </div>
-                <div class="gantt-group-content" fxFlex="20%">
+                <div class="gantt-group-content" fxFlex="17%">
                     <div fxLayout="row" fxLayoutAlign="flex-end center" fxLayoutGap="15px" class="u-w-100">
                         <img class="manager-search--photo" [matTooltip]="group?.origin?.origin?.salesManager?.name!" matTooltipClass="white-tooltip" [src]="employeeProfileUrl(group?.origin?.origin?.salesManager?.externalId!)" />
-                        <button mat-icon-button matTooltip="Go to workflow" matTooltipClass="white-tooltip" appPreventDoubleClick (throttledClick)="redirectToWorkflow(group?.origin?.origin?.workflowId!)">
+                        <button mat-icon-button matTooltip="Go to workflow" matTooltipClass="white-tooltip" class="gantt-group-content--redirect-button u-mr--15" appPreventDoubleClick (throttledClick)="redirectToWorkflow(group?.origin?.origin?.workflowId!)">
                             <mat-icon class="icon-arrow-rotate180" svgIcon="arrow"></mat-icon>
                         </button>
                     </div>
