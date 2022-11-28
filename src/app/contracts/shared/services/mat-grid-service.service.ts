@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
 import {
     ICell,
-    HeaderCell,
+    IHeaderCell,
     EHeaderCells,
 } from '../components/grid-table/mat-grid.interfaces';
 
@@ -11,7 +11,7 @@ import {
 export class GridHelpService {
     constructor() {}
 
-    generateTableConfig(headerCells: HeaderCell[]) {
+    generateTableConfig(headerCells: IHeaderCell[]) {
         return headerCells.reduce((acc, current) => {
             switch (current.type) {
                 case EHeaderCells.SORT:

@@ -1,6 +1,5 @@
 import { Tab } from './shared/entities/contracts.interfaces';
-import { ActivatedRoute, Router } from '@angular/router';
-import { map } from 'rxjs/operators';
+import { ActivatedRoute } from '@angular/router';
 import { Component, OnInit } from '@angular/core';
 import { ChangeDetectionStrategy } from '@angular/core';
 const tabs: Tab[] = [
@@ -25,18 +24,8 @@ const tabs: Tab[] = [
 })
 export class ContractComponent implements OnInit {
     public tabs: Tab[] = tabs;
-    public activeTab: string = this.tabs[0].link;
 
     constructor(private readonly route: ActivatedRoute) {}
 
-    public ngOnInit(): void {
-        if (!this.route.children.length) {
-            return;
-        }
-        this.route.children[0].url
-            .pipe(map((urlSegments) => urlSegments[0].path))
-            .subscribe((currentPath) => {
-                this.activeTab = currentPath;
-            });
-    }
+    public ngOnInit(): void {}
 }

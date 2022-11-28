@@ -4,7 +4,6 @@ import { ActivatedRoute, Router } from '@angular/router';
 @Component({
     selector: 'app-client-specific-templates',
     templateUrl: './client-specific-templates.component.html',
-    styleUrls: ['./client-specific-templates.component.scss'],
 })
 export class ClientSpecificTemplatesComponent implements OnInit {
     constructor(

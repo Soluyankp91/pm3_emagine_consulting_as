@@ -3,10 +3,10 @@
         mat-tab-link
         *ngFor="let tab of tabs"
         class="tab"
-        [active]="activeTab === tab.link"
+        [active]="contracts.isActive"
         [routerLink]="tab.link"
-        (click)="activeTab = tab.link"
-        routerLinkActive="active">
+        routerLinkActive="active"
+        #contracts="routerLinkActive">
         {{ tab.label }}
     </a>
 </nav>

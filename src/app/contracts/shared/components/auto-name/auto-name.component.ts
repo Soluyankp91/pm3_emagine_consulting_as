@@ -17,7 +17,6 @@ import {
 import { forkJoin, Subject } from 'rxjs';
 import { mergeMap, tap, takeUntil } from 'rxjs/operators';
 import { MergeFieldsServiceProxy } from 'src/shared/service-proxies/service-proxies';
-import { REQUIRED_VALIDATION_MESSAGE } from '../../entities/contracts.constants';
 import { AutoNameErrorStateMatcher } from '../../matchers/autoNameErrorMatcher';
 import { autoNameRequiredValidator } from '../../validators/autoNameRequireValidator';
 import { AutoName } from './auto-name.interfaces';
@@ -48,8 +47,6 @@ export class AutoNameComponent
     displayedOptionItems: AutoName[] = [];
     selectedOptions: AutoName[] = [];
     autoNameMap = new Map<string, string>();
-
-    requiredValidationMessage = REQUIRED_VALIDATION_MESSAGE;
 
     matcher = new AutoNameErrorStateMatcher();
     textControl = new FormControl('');
@@ -107,32 +104,6 @@ export class AutoNameComponent
         return item.name;
     }
 
-    private _buildAutoName(): string {
-        return this.selectedOptions.reduce((acc, current, index) => {
-            if (!index) {
-                acc = this.autoNameMap.get(current.name) as string;
-            } else {
-                acc = acc + ',' + this.autoNameMap.get(current.name);
-            }
-            return acc;
-        }, '');
-    }
-
-    private _buildChangesOutput(): string {
-        return this.selectedOptions
-            .reduce((acc, current, index) => {
-                if (!index) {
-                    acc = current.name;
-                } else {
-                    acc = acc + ',' + current.name;
-                }
-                return acc;
-            }, '')
-            .replace(/,/gm, '} {')
-            .replace(/^/, '{')
-            .replace(/$/, '}');
-    }
-
     registerOnChange(fn: any): void {
         this.onChange = fn;
     }
@@ -172,6 +143,32 @@ export class AutoNameComponent
         this.input.nativeElement.value = buildedView;
         this.chipsControl.setValue(this.selectedOptions);
         this.textControl.disable();
+    }
+
+    private _buildAutoName(): string {
+        return this.selectedOptions.reduce((acc, current, index) => {
+            if (!index) {
+                acc = this.autoNameMap.get(current.name) as string;
+            } else {
+                acc = acc + ',' + this.autoNameMap.get(current.name);
+            }
+            return acc;
+        }, '');
+    }
+
+    private _buildChangesOutput(): string {
+        return this.selectedOptions
+            .reduce((acc, current, index) => {
+                if (!index) {
+                    acc = current.name;
+                } else {
+                    acc = acc + ',' + current.name;
+                }
+                return acc;
+            }, '')
+            .replace(/,/gm, '} {')
+            .replace(/^/, '{')
+            .replace(/$/, '}');
     }
 
     private _setOptionItems(optionsRaw: string[], selected: boolean) {

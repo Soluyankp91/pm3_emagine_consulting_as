@@ -31,9 +31,25 @@ export class MasterTemplatesComponent implements OnInit {
         private readonly masterTemplatesService: MasterTemplatesService,
         private gridHelpService: GridHelpService
     ) {}
+
     ngOnInit(): void {
         this._initTable$();
     }
+
+    onSortChange($event: Sort) {
+        this.masterTemplatesService.updateSort($event);
+    }
+
+    onFormControlChange($event: TableFiltersEnum) {
+        this.masterTemplatesService.updateTableFilters($event);
+    }
+
+    onPageChange($event: PageEvent) {
+        this.masterTemplatesService.updatePage($event);
+    }
+
+    onSelectTableRow(row: { [key: string]: string }) {}
+
     private _initTable$() {
         this.table$ = this.dataSource$.pipe(
             map((data) => {
@@ -49,14 +65,4 @@ export class MasterTemplatesComponent implements OnInit {
             })
         );
     }
-    onSortChange($event: Sort) {
-        this.masterTemplatesService.updateSort($event);
-    }
-    onFormControlChange($event: TableFiltersEnum) {
-        this.masterTemplatesService.updateTableFilters($event);
-    }
-    onPageChange($event: PageEvent) {
-        this.masterTemplatesService.updatePage($event);
-    }
-    onSelectTableRow(row: { [key: string]: string }) {}
 }

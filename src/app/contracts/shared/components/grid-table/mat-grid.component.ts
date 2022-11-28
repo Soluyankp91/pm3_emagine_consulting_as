@@ -25,7 +25,6 @@ import { PAGE_SIZE_OPTIONS } from './master-templates/entities/master-templates.
 @Component({
     selector: 'emg-mat-grid',
     templateUrl: './mat-grid.component.html',
-    styleUrls: ['./mat-grid.component.scss'],
     changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class MatGridComponent implements OnInit, OnDestroy, AfterViewInit {

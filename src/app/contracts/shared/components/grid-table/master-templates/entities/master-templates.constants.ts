@@ -1,5 +1,5 @@
 import {
-    HeaderCell,
+    IHeaderCell,
     EHeaderCells,
 } from 'src/app/contracts/shared/components/grid-table/mat-grid.interfaces';
 import { AgreementLanguagesFilterComponent } from '../filters/agreement-languages-filter/agreement-filter.component';
@@ -25,7 +25,7 @@ export const DISPLAYED_COLUMNS: string[] = [
     'lastUpdatedByLowerCaseInitials',
 ];
 
-export const MASTER_TEMPLATE_HEADER_CELLS: HeaderCell[] = [
+export const MASTER_TEMPLATE_HEADER_CELLS: IHeaderCell[] = [
     {
         field: 'agreementTemplateId',
         type: EHeaderCells.SORT,

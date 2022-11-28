@@ -8,7 +8,6 @@ import { MasterTemplatesService } from 'src/app/contracts/master-templates/listA
 @Component({
     selector: 'app-agreement-filter',
     templateUrl: './agreement-filter.component.html',
-    styleUrls: ['./agreement-filter.component.scss'],
 })
 export class AgreementLanguagesFilterComponent implements IFilter {
     agreementLanguages$ = this.contractsService.getAgreementLanguages$();

@@ -59,6 +59,14 @@ export class MatMenuSingleSelectComponent
 
     ngOnInit(): void {}
 
+    registerOnChange(fn: any): void {
+        this.onChange = fn;
+    }
+
+    registerOnTouched(fn: any): void {
+        this.onTouched = fn;
+    }
+
     trackByIndex(index: number, item: IDropdownItem) {
         return index;
     }
@@ -90,13 +98,5 @@ export class MatMenuSingleSelectComponent
             this.selectedItem = null;
         }
         this.cdr.detectChanges();
-    }
-
-    registerOnChange(fn: any): void {
-        this.onChange = fn;
-    }
-
-    registerOnTouched(fn: any): void {
-        this.onTouched = fn;
     }
 }

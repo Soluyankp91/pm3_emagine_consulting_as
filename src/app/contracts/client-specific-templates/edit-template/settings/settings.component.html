@@ -68,12 +68,12 @@
                     formControlName="agreementType"
                 >
                     <mat-option
-                        *ngFor="let aggreementType of options.agreementType"
+                        *ngFor="let aggreementType of options.agreementTypes"
                         [value]="aggreementType.id"
                         >{{ aggreementType.name }}</mat-option
                     >
                 </mat-select>
-                <mat-error>{{ requiredValidationMessage }}</mat-error>
+                <mat-error><app-validator [control]="clientTemplateFormGroup.controls['agreementType']"></app-validator></mat-error>
             </mat-form-field>
             <div></div>
             <mat-form-field appearance="outline">
@@ -82,14 +82,14 @@
                     placeholder="Recipient type"
                     formControlName="recipientTypeId"
                 >
-                <ng-container *ngFor="let recipientType of options.recipientTypeId; trackBy:trackByRecipientId">
+                <ng-container *ngFor="let recipientType of options.recipientTypes; trackBy:trackByRecipientId">
                     <mat-option
                     [value]="recipientType.id"
                     >{{ recipientType.name }}</mat-option
                 >
                 </ng-container>
                 </mat-select>
-                <mat-error>{{ requiredValidationMessage }}</mat-error>
+                <mat-error><app-validator [control]="clientTemplateFormGroup.controls['recipientTypeId']"></app-validator></mat-error>
             </mat-form-field>
             <div></div>
             <emg-dropdown-autocomplete-single-select
@@ -106,7 +106,7 @@
             <mat-form-field appearance="outline">
                 <mat-label> Template name</mat-label>
                 <input matInput type="text" formControlName="name" />
-                <mat-error>{{ requiredValidationMessage }}</mat-error>
+                <mat-error><app-validator [control]="clientTemplateFormGroup.controls['name']"></app-validator></mat-error>
             </mat-form-field>
             <div></div>
             <emg-auto-name formControlName="agreementNameTemplate">
@@ -120,7 +120,7 @@
                     formControlName="definition"
                     placeholder="Definition"
                 />
-                <mat-error>{{ requiredValidationMessage }}</mat-error>
+                <mat-error><app-validator [control]="clientTemplateFormGroup.controls['definition']"></app-validator></mat-error>
             </mat-form-field>
             <div></div>
             <mat-form-field appearance="outline">
@@ -137,7 +137,7 @@
                 >
                 </ng-container>
                 </mat-select>
-                <mat-error>{{ requiredValidationMessage }}</mat-error>
+                <mat-error><app-validator [control]="clientTemplateFormGroup.controls['legalEntities']"></app-validator></mat-error>
             </mat-form-field>
             <div></div>
             <mat-form-field appearance="outline">
@@ -154,7 +154,7 @@
                         {{ salesType.name }}</mat-option
                     >
                 </mat-select>
-                <mat-error>{{ requiredValidationMessage }}</mat-error>
+                <mat-error><app-validator [control]="clientTemplateFormGroup.controls['salesTypes']"></app-validator></mat-error>
             </mat-form-field>
             <div></div>
             <mat-form-field appearance="outline">
@@ -172,7 +172,7 @@
                 >
                 </ng-container>
                 </mat-select>
-                <mat-error>{{ requiredValidationMessage }}</mat-error>
+                <mat-error><app-validator [control]="clientTemplateFormGroup.controls['deliveryTypes']"></app-validator></mat-error>
             </mat-form-field>
             <div></div>
             <mat-form-field appearance="outline">
@@ -190,7 +190,7 @@
                 >
                 </ng-container>
                 </mat-select>
-                <mat-error>{{ requiredValidationMessage }}</mat-error>
+                <mat-error><app-validator [control]="clientTemplateFormGroup.controls['contractTypes']"></app-validator></mat-error>
             </mat-form-field>
             <div></div>
             <mat-form-field appearance="outline">
@@ -205,6 +205,7 @@
                         >{{ language.name }}</mat-option
                     >
                 </mat-select>
+                <mat-error><app-validator [control]="clientTemplateFormGroup.controls['language']"></app-validator></mat-error>
             </mat-form-field>
             <div></div>
             <mat-form-field

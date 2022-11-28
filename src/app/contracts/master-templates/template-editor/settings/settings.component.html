@@ -10,14 +10,12 @@
                 class="radio-button-group"
             >
                 <mat-radio-button
-                    [value]="true"
                     class="option"
                     [value]="creationModes.Duplicated"
                     (click)="modeControl$.next(creationModes.Duplicated)"
                     >Duplicate from master template</mat-radio-button
                 >
                 <mat-radio-button
-                    [value]="false"
                     class="option"
                     [value]="creationModes.FromScratch"
                     (click)="modeControl$.next(creationModes.FromScratch)"
@@ -43,7 +41,7 @@
                         {{ agreementType.name }}
                     </mat-option>
                 </mat-select>
-                <mat-error>{{ requiredValidationMessage }}</mat-error>
+                <mat-error><app-validator [control]="masterTemplateFormGroup.controls['agreementType']"></app-validator></mat-error>
             </mat-form-field>
             <mat-form-field
                 class="dropdown"
@@ -62,7 +60,7 @@
                         {{ recipientType.name }}
                     </mat-option>
                 </mat-select>
-                <mat-error>{{ requiredValidationMessage }}</mat-error>
+                <mat-error><app-validator [control]="masterTemplateFormGroup.controls['recipientTypeId']"></app-validator></mat-error>
             </mat-form-field>
             <ng-container
                 *ngIf="agreementCreationMode.value === creationModes.Duplicated"
@@ -89,7 +87,7 @@
                     formControlName="name"
                     placeholder="Master template name"
                 />
-                <mat-error>{{ requiredValidationMessage }}</mat-error>
+                <mat-error><app-validator [control]="masterTemplateFormGroup.controls['name']"></app-validator></mat-error>
             </mat-form-field>
             <div></div>
             <emg-auto-name
@@ -120,7 +118,7 @@
                         {{ legalEntity.name }}
                     </mat-option>
                 </mat-select>
-                <mat-error>{{ requiredValidationMessage }}</mat-error>
+                <mat-error><app-validator [control]="masterTemplateFormGroup.controls['legalEntities']"></app-validator></mat-error>
             </mat-form-field>
             <div></div>
             <mat-form-field
@@ -141,7 +139,7 @@
                         {{ salesType.name }}
                     </mat-option>
                 </mat-select>
-                <mat-error>{{ requiredValidationMessage }}</mat-error>
+                <mat-error><app-validator [control]="masterTemplateFormGroup.controls['salesTypes']"></app-validator></mat-error>
             </mat-form-field>
             <mat-form-field
                 class="dropdown"
@@ -161,7 +159,7 @@
                         {{ deliveryType.name }}
                     </mat-option>
                 </mat-select>
-                <mat-error>{{ requiredValidationMessage }}</mat-error>
+                <mat-error><app-validator [control]="masterTemplateFormGroup.controls['deliveryTypes']"></app-validator></mat-error>
             </mat-form-field>
             <div></div>
             <mat-form-field
@@ -181,8 +179,8 @@
                     >
                         {{ contractType.name }}
                     </mat-option>
-                    <mat-error>{{ requiredValidationMessage }}</mat-error>
                 </mat-select>
+                <mat-error><app-validator [control]="masterTemplateFormGroup.controls['contractTypes']"></app-validator></mat-error>
             </mat-form-field>
             <mat-form-field
                 class="dropdown"
@@ -201,7 +199,7 @@
                         {{ language.name }}
                     </mat-option></mat-select
                 >
-                <mat-error>{{ requiredValidationMessage }}</mat-error>
+                <mat-error><app-validator [control]="masterTemplateFormGroup.controls['language']"></app-validator></mat-error>
             </mat-form-field>
             <mat-form-field
                 [style.width.px]="564"
@@ -230,7 +228,7 @@
         </div>
         <div class="attachments-section">
             <emg-file-selector [inheritedFiles]="preselectedFiles" formControlName="selectedInheritedFiles"></emg-file-selector>
-            <emg-file-uploader_ formControlName="uploadedFiles"></emg-file-uploader_>
+            <emg-file-uploader formControlName="uploadedFiles"></emg-file-uploader>
         </div>
     </div>
     <button mat-button (click)="onSave()" [disabled]="masterTemplateFormGroup.invalid">

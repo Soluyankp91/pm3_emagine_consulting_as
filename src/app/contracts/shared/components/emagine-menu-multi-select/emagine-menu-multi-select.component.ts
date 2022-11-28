@@ -86,7 +86,6 @@ export class MultiSelectComponent implements OnInit, ControlValueAccessor {
     writeValue(outer: object[]): void {
         this.selectedItems = [];
         if (outer?.length > 0) {
-            this.unselectAll();
             this.getUnique(outer).forEach((outerOption) => {
                 let foundedOption: IDropdownItem = this._options.find(
                     (option) => {
@@ -98,9 +97,8 @@ export class MultiSelectComponent implements OnInit, ControlValueAccessor {
                 foundedOption.selected = true;
             });
             this.onChange([...this.selectedItems]);
-        } else {
-            this.unselectAll();
         }
+        this.unselectAll();
         this.cdr.detectChanges();
     }
 

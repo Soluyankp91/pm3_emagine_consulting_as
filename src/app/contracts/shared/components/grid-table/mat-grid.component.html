@@ -1,13 +1,13 @@
 <div class="container">
     <mat-chip-list>
         <mat-chip *ngFor="let chip of matChips">
-            <mat-icon svgIcon="close-button" (click)="closeFilter(chip)">
+            <mat-icon svgIcon="close-button-icon" (click)="closeFilter(chip)">
             </mat-icon>
             <span>{{ chip }}</span>
         </mat-chip>
         <span *ngIf="matChips.length > 0">
             <mat-icon
-                svgIcon="close-button"
+                svgIcon="close-button-icon"
                 (click)="closeAllFilters()"
             ></mat-icon>
             Reset all Filters

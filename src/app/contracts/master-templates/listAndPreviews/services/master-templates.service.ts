@@ -14,8 +14,9 @@ import {
 
 @Injectable()
 export class MasterTemplatesService {
-    public contractsLoading$: BehaviorSubject<boolean> =
-        new BehaviorSubject<boolean>(false);
+    contractsLoading$: BehaviorSubject<boolean> = new BehaviorSubject<boolean>(
+        false
+    );
     private contractsData$: Observable<any>;
 
     private page$: BehaviorSubject<{ pageIndex: number; pageSize: number }> =
@@ -23,6 +24,7 @@ export class MasterTemplatesService {
             pageIndex: INITIAL_PAGE_INDEX,
             pageSize: DEFAULT_SIZE_OPTION,
         });
+
     private tableFilters$ = new BehaviorSubject<TableFiltersEnum>({
         agreementLanguages: [],
         agreementTypes: [],
@@ -33,8 +35,10 @@ export class MasterTemplatesService {
         employmentTypes: [],
         employees: [],
     });
+
     private tenantIds$$ = new BehaviorSubject<CountryDto[]>([]);
     private searchFilter$$ = new BehaviorSubject<string>('');
+
     private sort$: BehaviorSubject<{
         active: string;
         direction: SortDirection;
@@ -47,15 +51,19 @@ export class MasterTemplatesService {
     getTableFilters$() {
         return this.tableFilters$.asObservable();
     }
+
     getSort$() {
         return this.sort$.asObservable();
     }
+
     getPage$() {
         return this.page$.asObservable();
     }
+
     updateTableFilters(data: any) {
         this.tableFilters$.next(data);
     }
+
     updateCountryFilter(data: any) {
         this.tenantIds$$.next(data);
     }
@@ -67,9 +75,11 @@ export class MasterTemplatesService {
     updateSort(data: any) {
         this.sort$.next(data);
     }
+
     updatePage(page: { pageIndex: number; pageSize: number }) {
         this.page$.next(page);
     }
+
     constructor(
         private readonly agreementTemplateServiceProxy: AgreementTemplateServiceProxy
     ) {

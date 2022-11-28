@@ -8,9 +8,13 @@ import { MasterTemplatesService } from 'src/app/contracts/master-templates/listA
 @Component({
     selector: 'app-agreement-types-filter',
     templateUrl: './agreement-types-filter.component.html',
-    styleUrls: ['./agreement-types-filter.component.scss'],
 })
 export class AgreementTypesFilterComponent implements IFilter {
+    agreementTypes$ = this.contractsService.getAgreementTypes$();
+    filterFormControl: FormControl;
+
+    private tableFilter = 'agreementTypes';
+
     constructor(
         private contractsService: ContractsService,
         private masterTemplateService: MasterTemplatesService
@@ -22,8 +26,4 @@ export class AgreementTypesFilterComponent implements IFilter {
                 this.filterFormControl = new FormControl(agreementTypes);
             });
     }
-
-    agreementTypes$ = this.contractsService.getAgreementTypes$();
-    filterFormControl: FormControl;
-    private tableFilter = 'agreementTypes';
 }

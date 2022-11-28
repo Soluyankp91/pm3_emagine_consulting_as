@@ -11,9 +11,7 @@ import {
 } from 'src/shared/service-proxies/service-proxies';
 import { BaseEnumDto } from '../entities/contracts.interfaces';
 
-@Injectable({
-    providedIn: 'root',
-})
+@Injectable()
 export class ContractsService {
     private countries$$ = new ReplaySubject<CountryDto[]>(1);
 

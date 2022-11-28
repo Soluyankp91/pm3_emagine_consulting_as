@@ -8,9 +8,13 @@ import { MasterTemplatesService } from 'src/app/contracts/master-templates/listA
 @Component({
     selector: 'app-delivery-types-filter',
     templateUrl: './delivery-types-filter.component.html',
-    styleUrls: ['./delivery-types-filter.component.scss'],
 })
 export class DeliveryTypesFilterComponent implements IFilter {
+    deliveryTypes$ = this.contractService.getDeliveryTypes$();
+    filterFormControl: FormControl;
+
+    private tableFilter = 'deliveryTypes';
+
     constructor(
         private contractService: ContractsService,
         private masterTemplateService: MasterTemplatesService
@@ -22,8 +26,4 @@ export class DeliveryTypesFilterComponent implements IFilter {
                 this.filterFormControl = new FormControl(deliveryTypes);
             });
     }
-
-    deliveryTypes$ = this.contractService.getDeliveryTypes$();
-    filterFormControl: FormControl;
-    private tableFilter = 'deliveryTypes';
 }

@@ -8,7 +8,6 @@ import { MasterTemplatesService } from 'src/app/contracts/master-templates/listA
 @Component({
     selector: 'app-legal-entities-filter',
     templateUrl: './legal-entities-filter.component.html',
-    styleUrls: ['./legal-entities-filter.component.scss'],
 })
 export class LegalEntitiesFilterComponent implements IFilter {
     constructor(

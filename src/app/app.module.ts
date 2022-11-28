@@ -751,5 +751,12 @@ export class AppModule {
                 'assets/common/images/duplicate-icon-green.svg'
             )
         );
+
+        iconRegistry.addSvgIcon(
+            'contracts-icon',
+            sanitizer.bypassSecurityTrustResourceUrl(
+                'assets/common/images/contracts-icon.svg'
+            )
+        );
     }
 }

@@ -58,6 +58,9 @@ export class DropdownAutocompleteMultiselectComponent
 
     private unSubscribe$ = new Subject<void>();
 
+    private onChange = (val: any) => {};
+    private onTouched = () => {};
+
     constructor(private cdr: ChangeDetectorRef) {}
 
     ngOnInit(): void {
@@ -67,6 +70,33 @@ export class DropdownAutocompleteMultiselectComponent
     ngOnDestroy(): void {
         this.unSubscribe$.next();
         this.unSubscribe$.complete();
+    }
+
+    registerOnChange(fn: any): void {
+        this.onChange = fn;
+    }
+
+    registerOnTouched(fn: any): void {
+        this.onTouched = fn;
+    }
+
+    trackById(_: number, option: IDropdownItem) {
+        return option.id;
+    }
+
+    writeValue(values: any[]): void {
+        this.selectedOptions.clear();
+        values?.forEach((setValueOption) => {
+            this.initialOptions.forEach((option) => {
+                if (setValueOption.id === option.id) {
+                    this.selectedOptions.add(option);
+                    this.availableOptions.delete(option);
+                }
+            });
+        });
+        this.selectedAll = this.selectedOptions.size !== 0;
+
+        this.cdr.detectChanges();
     }
 
     toggleSelectAll() {
@@ -91,8 +121,7 @@ export class DropdownAutocompleteMultiselectComponent
     selectCheckBox(option: IDropdownItem) {
         this.selectedOptions.add(option);
         this.availableOptions.delete(option);
-        this.selectedAll = this.selectedOptions.size !== 0;
-        this._onChangeSelectedOptions();
+        this._checkSelectionStatus();
     }
 
     unSelectCheckBox(option: IDropdownItem) {
@@ -100,6 +129,10 @@ export class DropdownAutocompleteMultiselectComponent
             this.availableOptions.add(option);
         }
         this.selectedOptions.delete(option);
+        this._checkSelectionStatus();
+    }
+
+    private _checkSelectionStatus() {
         this.selectedAll = this.selectedOptions.size !== 0;
         this._onChangeSelectedOptions();
     }
@@ -110,10 +143,6 @@ export class DropdownAutocompleteMultiselectComponent
                 return Object.assign({}, selectedOption);
             })
         );
-    }
-
-    trackById(_: number, option: IDropdownItem) {
-        return option.id;
     }
 
     private _subscribeOnTextInput(): void {
@@ -129,31 +158,5 @@ export class DropdownAutocompleteMultiselectComponent
                     idsToExclude: this.idsToExclude,
                 });
             });
-    }
-
-    private onChange = (val: any) => {};
-    private onTouched = () => {};
-
-    registerOnChange(fn: any): void {
-        this.onChange = fn;
-    }
-
-    registerOnTouched(fn: any): void {
-        this.onTouched = fn;
-    }
-
-    writeValue(values: any[]): void {
-        this.selectedOptions.clear();
-        values?.forEach((setValueOption) => {
-            this.initialOptions.forEach((option) => {
-                if (setValueOption.id === option.id) {
-                    this.selectedOptions.add(option);
-                    this.availableOptions.delete(option);
-                }
-            });
-        });
-        this.selectedAll = this.selectedOptions.size !== 0;
-
-        this.cdr.detectChanges();
     }
 }

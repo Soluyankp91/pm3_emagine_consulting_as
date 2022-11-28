@@ -99,5 +99,19 @@ export class ContractsModule {
                 'assets/common/images/create-icon.svg'
             )
         );
+
+        iconRegistry.addSvgIcon(
+            'euro-union-icon',
+            sanitizer.bypassSecurityTrustResourceUrl(
+                'assets/common/images/euro-union.svg'
+            )
+        );
+
+        iconRegistry.addSvgIcon(
+            'close-button-icon',
+            sanitizer.bypassSecurityTrustResourceUrl(
+                'assets/common/images/close-button-icon.svg'
+            )
+        );
     }
 }

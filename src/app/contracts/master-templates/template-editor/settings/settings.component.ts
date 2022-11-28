@@ -28,7 +28,6 @@ import {
     INITIAL_MASTER_TEMPLATE_FORM_VALUE,
     MasterTemplateModel,
 } from '../../../shared/models/master-template.model';
-import { REQUIRED_VALIDATION_MESSAGE } from 'src/app/contracts/shared/entities/contracts.constants';
 import { ConfirmDialogComponent } from 'src/app/contracts/shared/components/popUps/confirm-dialog/confirm-dialog.component';
 import { MatDialog } from '@angular/material/dialog';
 import { dirtyCheck } from 'src/app/contracts/shared/operators/dirtyCheckOperator';
@@ -58,8 +57,6 @@ export class CreateMasterTemplateComponent implements OnInit, OnDestroy {
     attachmentFiles: FileUpload[] = [];
 
     masterTemplateFormGroup = new MasterTemplateModel();
-
-    requiredValidationMessage = REQUIRED_VALIDATION_MESSAGE;
 
     autoNames: string[];
 
@@ -168,7 +165,9 @@ export class CreateMasterTemplateComponent implements OnInit, OnDestroy {
 
     private onCreationModeChange(mode: AgreementCreationMode) {
         if (mode === AgreementCreationMode.FromScratch) {
+            this.duplicateTemplateControl.reset(null, { emitEvent: false });
         } else {
+            this.masterTemplateOptionsChanged$.next('');
         }
         this.masterTemplateFormGroup.reset(INITIAL_MASTER_TEMPLATE_FORM_VALUE);
         this.preselectedFiles = [];

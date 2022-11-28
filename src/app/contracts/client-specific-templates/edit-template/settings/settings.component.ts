@@ -27,16 +27,7 @@ import {
     skip,
     takeUntil,
 } from 'rxjs/operators';
-import {
-    combineLatest,
-    Observable,
-    Subject,
-    forkJoin,
-    of,
-    BehaviorSubject,
-    ReplaySubject,
-} from 'rxjs';
-import { BaseEnumDto } from 'src/app/contracts/shared/entities/contracts.interfaces';
+import { Observable, Subject, of, BehaviorSubject } from 'rxjs';
 import { FormControl } from '@angular/forms';
 import {
     ClientTemplatesModel,
@@ -46,7 +37,6 @@ import { MatDialog } from '@angular/material/dialog';
 import { dirtyCheck } from '../../../shared/operators/dirtyCheckOperator';
 import { ConfirmDialogComponent } from 'src/app/contracts/shared/components/popUps/confirm-dialog/confirm-dialog.component';
 import { AppComponentBase } from 'src/shared/app-component-base';
-import { REQUIRED_VALIDATION_MESSAGE } from 'src/app/contracts/shared/entities/contracts.constants';
 import { ActivatedRoute, Router } from '@angular/router';
 import { ContractsService } from 'src/app/contracts/shared/services/contracts.service';
 import { FileUpload } from 'src/app/contracts/shared/components/file-uploader/files';
@@ -65,62 +55,22 @@ export class CreationComponent
         return this.creationModeControl.value;
     }
 
-    // to use in template
     creationModes = AgreementCreationMode;
 
     isDirty: boolean = false;
     isValid: boolean = false;
 
     isDuplicateFromInherited = false;
-    requiredValidationMessage = REQUIRED_VALIDATION_MESSAGE;
-    //parent template && client template controls
+
     parentMasterTemplateControl = new FormControl();
     clientTemplateControl = new FormControl(null);
     creationModeControl = new FormControl(AgreementCreationMode.FromScratch);
 
     clientTemplateFormGroup = new ClientTemplatesModel();
 
-    agreementTypes$ = this._contractService.getAgreementTypes$();
-    recipientTypes$ = this._contractService.getRecipientTypes$();
-
-    legalEntities$ = this._contractService.getLegalEntities$();
-    salesTypes$ = this._contractService.getSalesTypes$();
-    deliveryTypes$ = this._contractService.getDeliveryTypes$();
-    contractTypes$ = this._contractService.getEmploymentTypes$();
-    languages$ = this._contractService.getAgreementLanguages$();
-
-    private initialFormValue$ = of(INITIAL_CLIENT_TEMPLATE_FORM_VALUE);
     preselectedFiles: FileUpload[] = [];
-    optionsObservable$: [
-        ReplaySubject<BaseEnumDto[]>,
-        ReplaySubject<EnumEntityTypeDto[]>,
-        ReplaySubject<LegalEntityDto[]>,
-        ReplaySubject<EnumEntityTypeDto[]>,
-        ReplaySubject<EnumEntityTypeDto[]>,
-        ReplaySubject<EnumEntityTypeDto[]>,
-        ReplaySubject<BaseEnumDto[]>
-    ] = [
-        this.agreementTypes$,
-        this.recipientTypes$,
-        this.legalEntities$,
-        this.salesTypes$,
-        this.deliveryTypes$,
-        this.contractTypes$,
-        this.languages$,
-    ];
-    options$ = combineLatest(this.optionsObservable$).pipe(
-        map((combined) => {
-            return {
-                agreementType: combined[0] as unknown as BaseEnumDto[],
-                recipientTypeId: combined[1] as unknown as EnumEntityTypeDto[],
-                legalEntities: combined[2] as unknown as LegalEntityDto[],
-                salesTypes: combined[3] as unknown as EnumEntityTypeDto[],
-                deliveryTypes: combined[4] as unknown as EnumEntityTypeDto[],
-                contractTypes: combined[5] as unknown as EnumEntityTypeDto[],
-                languages: combined[6] as unknown as BaseEnumDto[],
-            };
-        })
-    );
+
+    options$ = this._contractService.settingsPageOptions$();
 
     modeControl = new BehaviorSubject(AgreementCreationMode.FromScratch);
 
@@ -133,6 +83,7 @@ export class CreationComponent
     clientTemplateOptionsChanged$ = new Subject<string>();
 
     private _unSubscribe$ = new Subject<void>();
+    private initialFormValue$ = of(INITIAL_CLIENT_TEMPLATE_FORM_VALUE);
 
     constructor(
         private readonly _injector: Injector,
@@ -158,6 +109,7 @@ export class CreationComponent
         this._subscribeOnCreationModeResolver();
         this._subscribeOnStatusChanges();
     }
+
     ngOnDestroy(): void {
         this._unSubscribe$.next();
         this._unSubscribe$.complete();
@@ -172,16 +124,20 @@ export class CreationComponent
     trackByRecipientId(index: number, item: EnumEntityTypeDto) {
         return item.id;
     }
+
     trackByLegalEntityId(index: number, item: LegalEntityDto) {
         return item.id;
     }
+
     trackByDeliveryTypeId(index: number, item: EnumEntityTypeDto) {
         return item.id;
     }
+
     trackByContractTypeId(index: number, item: EnumEntityTypeDto) {
         return item.id;
     }
 
+    //delete as any after nswag fix
     onSave() {
         let creationMode = this.creationModeControl.value;
         const agreementPostDto = Object.assign(
@@ -267,6 +223,7 @@ export class CreationComponent
             )
         );
     }
+
     private _initClients(): void {
         this.clientOptions$ = this.clientOptionsChanged$.pipe(
             startWith(''),
@@ -314,6 +271,7 @@ export class CreationComponent
             )
             .subscribe();
     }
+
     private _subscribeOnClientTemplateChanges(): void {
         this.clientTemplateControl.valueChanges
             .pipe(
@@ -329,6 +287,7 @@ export class CreationComponent
             )
             .subscribe();
     }
+
     private _setDataFromRetrievedTemplate(
         data: AgreementTemplateDetailsDto
     ): void {
@@ -382,6 +341,7 @@ export class CreationComponent
         this._updateDisabledStateForDuplicate();
         this._cdr.detectChanges();
     }
+
     private _updateDisabledStateForDuplicate(): void {
         if (this.isDuplicateFromInherited) {
             this._disableControls();
@@ -389,6 +349,7 @@ export class CreationComponent
             this._enableControls();
         }
     }
+
     private _subscribeOnCreationModeResolver(): void {
         this.modeControl
             .pipe(
@@ -414,22 +375,34 @@ export class CreationComponent
                 }
             });
     }
+
     private onCreationModeChange(mode: AgreementCreationMode): void {
         this.clientTemplateFormGroup.reset();
         switch (mode) {
             case AgreementCreationMode.FromScratch: {
+                this.clientTemplateControl.reset(null, { emitEvent: false });
+                this.parentMasterTemplateControl.reset(null, {
+                    emitEvent: false,
+                });
                 this._enableControls();
                 break;
             }
             case AgreementCreationMode.InheritedFromParent: {
+                this.clientTemplateControl.reset(null, { emitEvent: false });
+                this.masterTemplateOptionsChanged$.next('');
                 this._disableControls();
                 break;
             }
             case AgreementCreationMode.Duplicated: {
+                this.parentMasterTemplateControl.reset(null, {
+                    emitEvent: false,
+                });
+                this.clientTemplateOptionsChanged$.next('');
                 break;
             }
         }
     }
+
     private _enableControls(): void {
         this.clientTemplateFormGroup.agreementType?.enable({
             emitEvent: false,
@@ -441,6 +414,7 @@ export class CreationComponent
             emitEvent: false,
         });
     }
+
     private _disableControls(): void {
         this.clientTemplateFormGroup.agreementType?.disable({
             emitEvent: false,

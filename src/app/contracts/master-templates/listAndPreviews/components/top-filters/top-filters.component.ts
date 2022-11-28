@@ -14,6 +14,9 @@ import { ContractsService } from 'src/app/contracts/shared/services/contracts.se
 export class MasterTemplateFilterHeaderComponent implements OnInit, OnDestroy {
     countryFilter$ = this.contractsService.getCountries$();
     preselectedCountries$ = this.masterTemplatesService.getCountries$();
+    topFiltersFormGroup: FormGroup;
+
+    private unSubscribe$ = new Subject<void>();
 
     constructor(
         private readonly masterTemplatesService: MasterTemplatesService,
@@ -22,18 +25,17 @@ export class MasterTemplateFilterHeaderComponent implements OnInit, OnDestroy {
         private readonly route: ActivatedRoute
     ) {}
 
-    topFiltersFormGroup: FormGroup;
-
-    private unSubscribe$ = new Subject<void>();
     ngOnInit() {
         this.initFilters();
         this._subscribeOnCountryChanged();
         this._subscribeOnTextChanged();
     }
+
     ngOnDestroy(): void {
         this.unSubscribe$.next();
         this.unSubscribe$.complete();
     }
+
     navigateTo() {
         this.router.navigate(['settings'], { relativeTo: this.route });
     }
@@ -53,6 +55,7 @@ export class MasterTemplateFilterHeaderComponent implements OnInit, OnDestroy {
                 this.masterTemplatesService.updateSearchFilter(search);
             });
     }
+
     private initFilters() {
         this.preselectedCountries$
             .pipe(takeUntil(this.unSubscribe$), take(1))

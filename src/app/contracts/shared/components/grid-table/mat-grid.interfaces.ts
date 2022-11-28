@@ -2,7 +2,7 @@ import { ComponentType } from '@angular/cdk/portal';
 import { FormControl } from '@angular/forms';
 import { SortDirection } from '@angular/material/sort';
 
-export interface HeaderCell {
+export interface IHeaderCell {
     field: string;
     type: EHeaderCells;
     title?: string;

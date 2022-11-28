@@ -2,11 +2,13 @@
     <div class="left-panel">
         <div class="country-filter" *ngIf="countryFilter$ | async as countries">
             <emg-multi-select [options]="countries" formControlName="tenantIds">
-                <!-- <mat-icon
-                    svgIcon="euro-union"
+                <mat-icon
+                    svgIcon="euro-union-icon"
                     class="country-filter-icon"
+                    [style.width]="'32px !important'"
+                    [style.height]="'32px !important'"
                     #triggerButton>
-                </mat-icon> -->
+                </mat-icon>
                 <ng-template #optionPrefix let-option>
                     <span
                         matPrefix
