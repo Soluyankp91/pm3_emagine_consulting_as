@@ -1,5 +1,5 @@
 import { take, pluck } from 'rxjs/operators';
-import { Component, OnInit } from '@angular/core';
+import { Component } from '@angular/core';
 import { FormControl } from '@angular/forms';
 import { IFilter } from 'src/app/contracts/shared/components/grid-table/mat-grid.interfaces';
 import { ContractsService } from 'src/app/contracts/shared/services/contracts.service';

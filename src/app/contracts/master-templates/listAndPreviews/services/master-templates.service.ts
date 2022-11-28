@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
 import { SortDirection } from '@angular/material/sort';
 import { Observable, BehaviorSubject, combineLatest } from 'rxjs';
-import { map, switchMap, finalize, debounceTime, tap } from 'rxjs/operators';
+import { switchMap, debounceTime, tap } from 'rxjs/operators';
 import {
     DEFAULT_SIZE_OPTION,
     INITIAL_PAGE_INDEX,

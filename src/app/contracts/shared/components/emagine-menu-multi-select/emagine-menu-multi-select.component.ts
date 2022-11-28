@@ -6,8 +6,6 @@ import {
     ViewEncapsulation,
     ChangeDetectionStrategy,
     ChangeDetectorRef,
-    OnChanges,
-    SimpleChanges,
     ContentChild,
     TemplateRef,
 } from '@angular/core';

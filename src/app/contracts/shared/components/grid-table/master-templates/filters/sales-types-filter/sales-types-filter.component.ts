@@ -8,7 +8,6 @@ import { MasterTemplatesService } from 'src/app/contracts/master-templates/listA
 @Component({
     selector: 'app-sales-types-filter',
     templateUrl: './sales-types-filter.component.html',
-    styleUrls: ['./sales-types-filter.component.scss'],
 })
 export class SalesTypesFilterComponent implements IFilter {
     constructor(
