@@ -29,10 +29,6 @@ import { PAGE_SIZE_OPTIONS } from './master-templates/entities/master-templates.
     changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class MatGridComponent implements OnInit, OnDestroy, AfterViewInit {
-    @ViewChildren('filterContainer', { read: ViewContainerRef })
-    children: QueryList<ViewContainerRef>;
-    @ViewChildren('cell_', { read: ViewContainerRef })
-    cells_: QueryList<ViewContainerRef>;
     @Input() displayedColumns: string[];
     @Input() tableConfig: ITableConfig;
     @Input() cells: ICell[];
@@ -42,21 +38,30 @@ export class MatGridComponent implements OnInit, OnDestroy, AfterViewInit {
     @Output() formControlChange = new EventEmitter();
     @Output() tableRow = new EventEmitter<{ [key: string]: any }>();
 
+    @ViewChildren('filterContainer', { read: ViewContainerRef })
+    children: QueryList<ViewContainerRef>;
+    @ViewChildren('cell_', { read: ViewContainerRef })
+    cells_: QueryList<ViewContainerRef>;
+
     formGroup: FormGroup;
 
     matChips: string[] = [];
     pageSizeOptions: number[] = PAGE_SIZE_OPTIONS;
+
     private unSubscribe$ = new Subject<void>();
+
     constructor(
         private componentFactoryResolver: ComponentFactoryResolver,
         private readonly cdr: ChangeDetectorRef
     ) {}
+
     ngOnInit(): void {
         this.formGroup = new FormGroup({});
     }
 
     ngOnDestroy(): void {
         this.unSubscribe$.next();
+        this.unSubscribe$.complete();
     }
 
     ngAfterViewInit(): void {
@@ -115,6 +120,7 @@ export class MatGridComponent implements OnInit, OnDestroy, AfterViewInit {
                 this.formControlChange.emit(value);
             });
     }
+
     private _subscribeOnEachFormControl() {
         Object.keys(this.formGroup.controls).forEach((controlName) => {
             this.formGroup.controls[controlName].valueChanges

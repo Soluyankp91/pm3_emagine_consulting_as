@@ -20,12 +20,8 @@ import { MergeFieldsServiceProxy } from 'src/shared/service-proxies/service-prox
 import { REQUIRED_VALIDATION_MESSAGE } from '../../entities/contracts.constants';
 import { AutoNameErrorStateMatcher } from '../../matchers/autoNameErrorMatcher';
 import { autoNameRequiredValidator } from '../../validators/autoNameRequireValidator';
+import { AutoName } from './auto-name.interfaces';
 
-export type AutoName = { [key: string]: any } & {
-    selected: boolean;
-    name: string;
-    id: number;
-};
 @Component({
     selector: 'emg-auto-name',
     templateUrl: './auto-name.component.html',
@@ -62,7 +58,7 @@ export class AutoNameComponent
     onChange: any = () => {};
     onTouch: any = () => {};
 
-    private unSubscribe$ = new Subject();
+    private _unSubscribe$ = new Subject();
 
     constructor(
         private readonly mergeFieldsServiceProxy: MergeFieldsServiceProxy
@@ -73,9 +69,10 @@ export class AutoNameComponent
         this._subscribeOnTextChanges();
         this.onChange(this._buildChangesOutput());
     }
+
     ngOnDestroy(): void {
-        this.unSubscribe$.next();
-        this.unSubscribe$.complete();
+        this._unSubscribe$.next();
+        this._unSubscribe$.complete();
     }
 
     toggleCheckbox(optionItem: AutoName) {
@@ -105,6 +102,7 @@ export class AutoNameComponent
             this.input.nativeElement.value = '';
         }
     }
+
     trackByOptionName(index: number, item: AutoName) {
         return item.name;
     }
@@ -133,16 +131,6 @@ export class AutoNameComponent
             .replace(/,/gm, '} {')
             .replace(/^/, '{')
             .replace(/$/, '}');
-    }
-
-    private _setOptionItems(optionsRaw: string[], selected: boolean) {
-        return optionsRaw.map((optionName, index) => {
-            return {
-                name: optionName,
-                id: index,
-                selected: selected,
-            } as AutoName;
-        });
     }
 
     registerOnChange(fn: any): void {
@@ -186,16 +174,26 @@ export class AutoNameComponent
         this.textControl.disable();
     }
 
+    private _setOptionItems(optionsRaw: string[], selected: boolean) {
+        return optionsRaw.map((optionName, index) => {
+            return {
+                name: optionName,
+                id: index,
+                selected: selected,
+            } as AutoName;
+        });
+    }
+
     private _initFields() {
         this.mergeFieldsServiceProxy
             .fields()
             .pipe(
-                takeUntil(this.unSubscribe$),
+                takeUntil(this._unSubscribe$),
                 mergeMap((keys) => {
                     this.optionItems = this._setOptionItems(keys, false);
                     this.displayedOptionItems = this.optionItems;
                     return forkJoin(
-                        keys.map((item) =>
+                        keys.map((item: string) =>
                             this.mergeFieldsServiceProxy.templatePreview(
                                 '{' + item + '}'
                             )
@@ -214,7 +212,7 @@ export class AutoNameComponent
 
     private _subscribeOnTextChanges() {
         this.textControl.valueChanges
-            .pipe(takeUntil(this.unSubscribe$))
+            .pipe(takeUntil(this._unSubscribe$))
             .subscribe((text) => {
                 this.displayedOptionItems = this.optionItems.filter(
                     (optionItem) => {

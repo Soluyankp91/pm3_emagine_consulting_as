@@ -32,6 +32,7 @@ export class MasterTemplateFilterHeaderComponent implements OnInit, OnDestroy {
     }
     ngOnDestroy(): void {
         this.unSubscribe$.next();
+        this.unSubscribe$.complete();
     }
     navigateTo() {
         this.router.navigate(['settings'], { relativeTo: this.route });

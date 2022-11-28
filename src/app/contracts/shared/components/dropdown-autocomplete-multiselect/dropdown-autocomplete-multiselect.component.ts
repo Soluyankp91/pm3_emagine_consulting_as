@@ -17,12 +17,10 @@ import {
     FormControl,
     NG_VALUE_ACCESSOR,
 } from '@angular/forms';
-import { isEqualWith } from 'lodash';
 
 @Component({
     selector: 'emg-dropdown-autocomplete-multiselect',
     templateUrl: './dropdown-autocomplete-multiselect.component.html',
-    styleUrls: ['./dropdown-autocomplete-multiselect.component.scss'],
     changeDetection: ChangeDetectionStrategy.OnPush,
     providers: [
         {
@@ -49,6 +47,7 @@ export class DropdownAutocompleteMultiselectComponent
             (selectedOption: IDropdownItem) => selectedOption.id
         );
     }
+
     isSearchNull: boolean;
     selectedAll = false;
 
@@ -64,9 +63,12 @@ export class DropdownAutocompleteMultiselectComponent
     ngOnInit(): void {
         this._subscribeOnTextInput();
     }
+
     ngOnDestroy(): void {
         this.unSubscribe$.next();
+        this.unSubscribe$.complete();
     }
+
     toggleSelectAll() {
         if (!this.selectedAll) {
             this.availableOptions.forEach((option) => {
@@ -85,12 +87,14 @@ export class DropdownAutocompleteMultiselectComponent
         }
         this.selectedAll = !this.selectedAll;
     }
+
     selectCheckBox(option: IDropdownItem) {
         this.selectedOptions.add(option);
         this.availableOptions.delete(option);
         this.selectedAll = this.selectedOptions.size !== 0;
         this._onChangeSelectedOptions();
     }
+
     unSelectCheckBox(option: IDropdownItem) {
         if (this.initialOptions.has(option)) {
             this.availableOptions.add(option);
@@ -99,6 +103,7 @@ export class DropdownAutocompleteMultiselectComponent
         this.selectedAll = this.selectedOptions.size !== 0;
         this._onChangeSelectedOptions();
     }
+
     private _onChangeSelectedOptions() {
         this.onChange(
             Array.from(this.selectedOptions).map((selectedOption) => {
@@ -106,9 +111,11 @@ export class DropdownAutocompleteMultiselectComponent
             })
         );
     }
+
     trackById(_: number, option: IDropdownItem) {
         return option.id;
     }
+
     private _subscribeOnTextInput(): void {
         this.inputControl.valueChanges
             .pipe(
@@ -123,14 +130,18 @@ export class DropdownAutocompleteMultiselectComponent
                 });
             });
     }
+
     private onChange = (val: any) => {};
     private onTouched = () => {};
+
     registerOnChange(fn: any): void {
         this.onChange = fn;
     }
+
     registerOnTouched(fn: any): void {
         this.onTouched = fn;
     }
+
     writeValue(values: any[]): void {
         this.selectedOptions.clear();
         values?.forEach((setValueOption) => {

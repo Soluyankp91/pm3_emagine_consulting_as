@@ -691,7 +691,7 @@ export class InternalLookupService {
             } else {
                 this._enumService.workflowStatuses()
                     .subscribe(response => {
-                        this.workflowStatuses = response as any;
+                        this.workflowStatuses = response;
                         observer.next(this.workflowStatuses);
                         observer.complete();
                     }, error => {

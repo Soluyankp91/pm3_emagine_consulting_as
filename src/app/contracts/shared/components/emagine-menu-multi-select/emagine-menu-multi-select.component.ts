@@ -29,28 +29,25 @@ import { MatMenuTrigger } from '@angular/material/menu';
     changeDetection: ChangeDetectionStrategy.OnPush,
     encapsulation: ViewEncapsulation.None,
 })
-export class MultiSelectComponent
-    implements OnInit, ControlValueAccessor, OnChanges
-{
+export class MultiSelectComponent implements OnInit, ControlValueAccessor {
     @Input() set options(options: any[]) {
         this._options = options;
     }
-    @Input() public displayedProperty: string = 'name';
-    @ContentChild('triggerButton') public triggerButton: MatMenuTrigger;
-    @ContentChild('optionPrefix') public optionPrefix: TemplateRef<any>;
-    /** options that we display in menu*/
-    /** since we have reference to option in outerComponent, and we can use them in outer setValue(),
-     *  it is better to clone it, because in other way we should also cut 'selected' from outer value
-     */
-    /** Toggle button label */
+    @Input() displayedProperty: string = 'name';
+    @ContentChild('triggerButton') triggerButton: MatMenuTrigger;
+    @ContentChild('optionPrefix') optionPrefix: TemplateRef<any>;
 
-    public selectedItems: IDropdownItem[] = [];
-    public isOpened: boolean = false;
-    public maxLength: number = 10;
-    public threeDotsLength: number = 3;
     get options() {
         return this._options;
     }
+
+    selectedItems: IDropdownItem[] = [];
+    isOpened: boolean = false;
+    maxLength: number = 10;
+    threeDotsLength: number = 3;
+
+    onChange = (val: any) => {};
+    onTouched = (val: any) => {};
 
     private _options: IDropdownItem[];
 
@@ -59,7 +56,8 @@ export class MultiSelectComponent
     ngOnInit(): void {
         this.unselectAll();
     }
-    public toggleSelect(toggledItem: IDropdownItem) {
+
+    toggleSelect(toggledItem: IDropdownItem) {
         toggledItem.selected = !toggledItem.selected;
         const { selected, ...baseItem } = toggledItem;
         if (toggledItem.selected) {
@@ -73,17 +71,19 @@ export class MultiSelectComponent
         this.onChange([...this.selectedItems]);
     }
 
-    public registerOnChange(fn: any): void {
+    registerOnChange(fn: any): void {
         this.onChange = fn;
     }
 
-    public registerOnTouched(fn: any): void {
+    registerOnTouched(fn: any): void {
         this.onTouched = fn;
     }
+
     trackByIndex(index: number, item: any) {
         return index;
     }
-    public writeValue(outer: object[]): void {
+
+    writeValue(outer: object[]): void {
         this.selectedItems = [];
         if (outer?.length > 0) {
             this.unselectAll();
@@ -103,7 +103,7 @@ export class MultiSelectComponent
         }
         this.cdr.detectChanges();
     }
-    public ngOnChanges(changes: SimpleChanges): void {}
+
     private unselectAll() {
         this._options.forEach((option) => {
             (option as IDropdownItem).selected = false;
@@ -113,7 +113,4 @@ export class MultiSelectComponent
     private getUnique(items: IDropdownItem[]) {
         return uniqBy(items, (i) => i[this.displayedProperty]);
     }
-
-    private onChange = (val: any) => {};
-    private onTouched = (val: any) => {};
 }

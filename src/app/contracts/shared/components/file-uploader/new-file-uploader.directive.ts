@@ -10,29 +10,29 @@ import {
     selector: '[appNewFileUploader]',
 })
 export class NewFileUploaderDirective {
-    private colorRgb = 'unset';
-    private hoveredColor = 'rgb(245,245,245)';
+    private _colorRgb = 'unset';
+    private _hoveredColor = 'rgb(245,245,245)';
 
     @Output() filesEmitter = new EventEmitter();
     @HostBinding('style.backgroundColor')
     get backgroundColor() {
-        return this.colorRgb;
+        return this._colorRgb;
     }
 
     @HostListener('dragover', ['$event']) onDragOver(evt: Event) {
         evt.stopPropagation();
         evt.preventDefault();
-        this.colorRgb = this.hoveredColor;
+        this._colorRgb = this._hoveredColor;
     }
     @HostListener('dragleave', ['$event']) onDragLeave(evt: Event) {
         evt.preventDefault();
         evt.stopPropagation();
-        this.colorRgb = 'unset';
+        this._colorRgb = 'unset';
     }
     @HostListener('drop', ['$event']) onDrop(evt: DragEvent) {
         evt.preventDefault();
         evt.stopPropagation();
-        this.colorRgb = 'unset';
+        this._colorRgb = 'unset';
         const files = evt.dataTransfer;
         this.filesEmitter.emit(files);
     }
