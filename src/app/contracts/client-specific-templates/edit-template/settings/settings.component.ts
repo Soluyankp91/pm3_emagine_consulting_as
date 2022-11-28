@@ -65,18 +65,6 @@ export class CreationComponent
         return this.creationModeControl.value;
     }
 
-    constructor(
-        private readonly _injector: Injector,
-        private readonly _contractService: ContractsService,
-        private readonly _cdr: ChangeDetectorRef,
-        private readonly _apiServiceProxy: AgreementTemplateServiceProxy,
-        private readonly _lookupServiceProxy: LookupServiceProxy,
-        private readonly route: ActivatedRoute,
-        private readonly router: Router,
-        public _dialog: MatDialog
-    ) {
-        super(_injector);
-    }
     // to use in template
     creationModes = AgreementCreationMode;
 
@@ -146,68 +134,19 @@ export class CreationComponent
 
     private _unSubscribe$ = new Subject<void>();
 
-    trackByRecipientId(index: number, item: EnumEntityTypeDto) {
-        return item.id;
-    }
-    trackByLegalEntityId(index: number, item: LegalEntityDto) {
-        return item.id;
-    }
-    trackByDeliveryTypeId(index: number, item: EnumEntityTypeDto) {
-        return item.id;
-    }
-    trackByContractTypeId(index: number, item: EnumEntityTypeDto) {
-        return item.id;
-    }
-
-    navigateOnAction() {
-        this.router.navigate(['../../client-specific-templates'], {
-            relativeTo: this.route,
-        });
+    constructor(
+        private readonly _injector: Injector,
+        private readonly _contractService: ContractsService,
+        private readonly _cdr: ChangeDetectorRef,
+        private readonly _apiServiceProxy: AgreementTemplateServiceProxy,
+        private readonly _lookupServiceProxy: LookupServiceProxy,
+        private readonly route: ActivatedRoute,
+        private readonly router: Router,
+        public _dialog: MatDialog
+    ) {
+        super(_injector);
     }
 
-    private _initExistingTemplates(): void {
-        this.clientTemplatesOptions$ =
-            this._getExistingTemplatesObservable$(true);
-        this.masterTemplatesOptions$ =
-            this._getExistingTemplatesObservable$(false);
-    }
-
-    private _getExistingTemplatesObservable$(isClientTemplate: boolean) {
-        return this.masterTemplateOptionsChanged$.pipe(
-            startWith(''),
-            switchMap((searchInput) => {
-                return this._apiServiceProxy.simpleList2(
-                    isClientTemplate,
-                    searchInput,
-                    1,
-                    20
-                );
-            }),
-            map(
-                (paginatedList) =>
-                    paginatedList.items as SimpleAgreementTemplatesListItemDto[]
-            )
-        );
-    }
-    private _initClients(): void {
-        this.clientOptions$ = this.clientOptionsChanged$.pipe(
-            startWith(''),
-            switchMap((searchInput) => {
-                let search = searchInput ? searchInput : '';
-                return this._lookupServiceProxy.clientsAll(search, 20);
-            })
-        );
-    }
-    private _subscribeOnStatusChanges(): void {
-        this.clientTemplateFormGroup.statusChanges
-            .pipe(takeUntil(this._unSubscribe$))
-            .subscribe((status) => {
-                if (status === 'VALID') {
-                    return (this.isValid = true);
-                }
-                this.isValid = false;
-            });
-    }
     ngOnInit(): void {
         //disable creation mode changes, so we can make resolver for radio buttons
         this.creationModeControl.disable();
@@ -223,6 +162,26 @@ export class CreationComponent
         this._unSubscribe$.next();
         this._unSubscribe$.complete();
     }
+
+    navigateOnAction() {
+        this.router.navigate(['../../client-specific-templates'], {
+            relativeTo: this.route,
+        });
+    }
+
+    trackByRecipientId(index: number, item: EnumEntityTypeDto) {
+        return item.id;
+    }
+    trackByLegalEntityId(index: number, item: LegalEntityDto) {
+        return item.id;
+    }
+    trackByDeliveryTypeId(index: number, item: EnumEntityTypeDto) {
+        return item.id;
+    }
+    trackByContractTypeId(index: number, item: EnumEntityTypeDto) {
+        return item.id;
+    }
+
     onSave() {
         let creationMode = this.creationModeControl.value;
         const agreementPostDto = Object.assign(
@@ -281,6 +240,50 @@ export class CreationComponent
             )
             .subscribe(() => {
                 this.navigateOnAction();
+            });
+    }
+
+    private _initExistingTemplates(): void {
+        this.clientTemplatesOptions$ =
+            this._getExistingTemplatesObservable$(true);
+        this.masterTemplatesOptions$ =
+            this._getExistingTemplatesObservable$(false);
+    }
+
+    private _getExistingTemplatesObservable$(isClientTemplate: boolean) {
+        return this.masterTemplateOptionsChanged$.pipe(
+            startWith(''),
+            switchMap((searchInput) => {
+                return this._apiServiceProxy.simpleList2(
+                    isClientTemplate,
+                    searchInput,
+                    1,
+                    20
+                );
+            }),
+            map(
+                (paginatedList) =>
+                    paginatedList.items as SimpleAgreementTemplatesListItemDto[]
+            )
+        );
+    }
+    private _initClients(): void {
+        this.clientOptions$ = this.clientOptionsChanged$.pipe(
+            startWith(''),
+            switchMap((searchInput) => {
+                let search = searchInput ? searchInput : '';
+                return this._lookupServiceProxy.clientsAll(search, 20);
+            })
+        );
+    }
+    private _subscribeOnStatusChanges(): void {
+        this.clientTemplateFormGroup.statusChanges
+            .pipe(takeUntil(this._unSubscribe$))
+            .subscribe((status) => {
+                if (status === 'VALID') {
+                    return (this.isValid = true);
+                }
+                this.isValid = false;
             });
     }
 
