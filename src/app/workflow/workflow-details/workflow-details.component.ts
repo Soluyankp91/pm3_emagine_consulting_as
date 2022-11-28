@@ -6,7 +6,7 @@ import { ActivatedRoute } from '@angular/router';
 import { NgScrollbar } from 'ngx-scrollbar';
 import { Subject } from 'rxjs';
 import { finalize, takeUntil } from 'rxjs/operators';
-import { AvailableConsultantDto, ChangeClientPeriodDto, ClientPeriodDto, ClientPeriodServiceProxy, ConsultantNameWithRequestUrl, ConsultantPeriodAddDto, EnumEntityTypeDto, ExtendClientPeriodDto, StepType, WorkflowDto, WorkflowProcessType, WorkflowServiceProxy } from 'src/shared/service-proxies/service-proxies';
+import { AvailableConsultantDto, ChangeClientPeriodDto, ClientPeriodDto, ClientPeriodServiceProxy, ConsultantNameWithRequestUrl, ConsultantPeriodAddDto, EnumEntityTypeDto, ExtendClientPeriodDto, StepType, WorkflowDto, WorkflowProcessType, WorkflowServiceProxy, WorkflowStatus } from 'src/shared/service-proxies/service-proxies';
 import { WorkflowDataService } from '../workflow-data.service';
 import { WorkflowProgressStatus, WorkflowTopSections, WorkflowSteps, WorkflowDiallogAction } from '../workflow.model';
 import { InternalLookupService } from 'src/app/shared/common/internal-lookup.service';
@@ -35,6 +35,8 @@ export class WorkflowDetailsComponent extends AppComponentBase implements OnInit
     @ViewChild('topMenuTabs', {static: false}) topMenuTabs: MatTabGroup;
     @ViewChild('workflowPeriod', {static: false}) workflowPeriod: WorkflowPeriodComponent;
     @ViewChild('menuActionsTrigger', {static: false}) menuActionsTrigger: MatMenuTrigger;
+    @ViewChild('menuWorkflowStatusesTrigger', {static: false}) menuWorkflowStatusesTrigger: MatMenuTrigger;
+
 
     menuIndex = 0;
     workflowId: string;
@@ -58,9 +60,16 @@ export class WorkflowDetailsComponent extends AppComponentBase implements OnInit
 
     workflowResponse: WorkflowDto;
     clientPeriods: ClientPeriodDto[] | undefined = [];
-    workflowClient: string | undefined;
-    workflowDirectClientid: number | undefined;
+    // workflowClient: string | undefined;
+    workflowDirectClient: string | undefined;
+    workflowEndClient: string | undefined;
+    workflowDirectClientId: number | undefined;
+    workflowEndClientId: number | undefined;
     workflowConsultants: ConsultantNameWithRequestUrl[] = [];
+    workflowStatusId: number | undefined;
+    workflowStatusName: string;
+    workflowStatusIcon: string;
+    workflowStatus = WorkflowStatus;
 
     workflowClientPeriodTypes: EnumEntityTypeDto[] = [];
     workflowConsultantPeriodTypes: EnumEntityTypeDto[] = [];
@@ -240,10 +249,18 @@ export class WorkflowDetailsComponent extends AppComponentBase implements OnInit
             }))
             .subscribe(result => {
                 this.clientPeriods = result.clientPeriods;
-                this.workflowClient = result.clientName;
-                this.workflowDirectClientid = result.directClientId;
+                // this.workflowClient = result.endClientName ? result.endClientName + '[via ' + result.directClientName + ']' : result.directClientName;
+                this.workflowDirectClient = result.directClientName;
+                this.workflowEndClient = result.endClientName;
+                this.workflowDirectClientId = result.directClientId;
+                this.workflowEndClientId = result.endClientId;
                 this.workflowConsultants = result.consultantNamesWithRequestUrls!;
                 this.workflowId = result.workflowId!;
+                if (result.workflowStatusId) {
+                    this.workflowStatusId = result.workflowStatusId;
+                    this.workflowStatusName = this.getWorkflowStatus(result.workflowStatusId);
+                    this.workflowStatusIcon = this.getStatusIcon(result.workflowStatusId);
+                }
                 if (value) {
                     this.selectedIndex = 1;
                     this.topMenuTabs.realignInkBar();
@@ -550,4 +567,41 @@ export class WorkflowDetailsComponent extends AppComponentBase implements OnInit
         window.open(requestUrl, '_blank');
     }
 
+    getStatusIcon(status: number) {
+        switch (status) {
+            case WorkflowStatus.Active:
+                return 'active-status';
+            case WorkflowStatus.Pending:
+                return 'pending-status';
+            case WorkflowStatus.PendingDataMissing:
+                return 'pending-data-missing-status';
+            case WorkflowStatus.Finished:
+                return 'finished-status';
+            default:
+                return '';
+        }
+    }
+
+    getWorkflowStatus(status: number) {
+        switch (status) {
+            case WorkflowStatus.Active:
+                return 'Active workflow';
+            case WorkflowStatus.Pending:
+                return 'Pending workflow';
+            case WorkflowStatus.PendingDataMissing:
+                return 'Pending - data missing';
+            case WorkflowStatus.Finished:
+                return 'Completed workflow';
+            default:
+                return '';
+        }
+    }
+
+    setWorkflowStatus(workflowId: string, workflowStatus: WorkflowStatus) {
+        this.menuWorkflowStatusesTrigger.closeMenu();
+        this.showMainSpinner();
+        this._workflowServiceProxy.setWorkflowStatus(workflowId, workflowStatus)
+            .pipe(finalize(() => this.hideMainSpinner()))
+            .subscribe(() => {})
+    }
 }
