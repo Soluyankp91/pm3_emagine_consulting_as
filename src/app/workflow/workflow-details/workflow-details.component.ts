@@ -60,7 +60,6 @@ export class WorkflowDetailsComponent extends AppComponentBase implements OnInit
 
     workflowResponse: WorkflowDto;
     clientPeriods: ClientPeriodDto[] | undefined = [];
-    // workflowClient: string | undefined;
     workflowDirectClient: string | undefined;
     workflowEndClient: string | undefined;
     workflowDirectClientId: number | undefined;
@@ -249,7 +248,6 @@ export class WorkflowDetailsComponent extends AppComponentBase implements OnInit
             }))
             .subscribe(result => {
                 this.clientPeriods = result.clientPeriods;
-                // this.workflowClient = result.endClientName ? result.endClientName + '[via ' + result.directClientName + ']' : result.directClientName;
                 this.workflowDirectClient = result.directClientName;
                 this.workflowEndClient = result.endClientName;
                 this.workflowDirectClientId = result.directClientId;
