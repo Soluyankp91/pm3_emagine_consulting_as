@@ -8,7 +8,6 @@ import { ServiceProxyModule } from 'src/shared/service-proxies/service-proxy.mod
 import { MatGridComponent } from './shared/components/grid-table/mat-grid.component';
 import { AgreementLanguagesFilterComponent } from './shared/components/grid-table/master-templates/filters/agreement-languages-filter/agreement-filter.component';
 import {
-    AgreementNameTemplateServiceProxy,
     AgreementTemplateServiceProxy,
     FileServiceProxy,
 } from 'src/shared/service-proxies/service-proxies';
@@ -90,7 +89,6 @@ import { FileSelectorComponent } from './shared/components/file-selector/file-se
         AgreementTemplateServiceProxy,
         FileServiceProxy,
         AgreementTemplateServiceProxy,
-        AgreementNameTemplateServiceProxy,
     ],
 })
 export class ContractsModule {

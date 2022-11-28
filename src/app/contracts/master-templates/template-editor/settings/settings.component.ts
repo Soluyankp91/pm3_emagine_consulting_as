@@ -20,7 +20,6 @@ import {
     AgreementCreationMode,
     AgreementTemplateAttachmentDto,
     AgreementTemplateServiceProxy,
-    ApiServiceProxy,
     SaveAgreementTemplateDto,
     SimpleAgreementTemplatesListItemDto,
 } from 'src/shared/service-proxies/service-proxies';
@@ -77,8 +76,7 @@ export class CreateMasterTemplateComponent implements OnInit, OnDestroy {
     constructor(
         private readonly _dialog: MatDialog,
         private readonly _contractsService: ContractsService,
-        private readonly apiServiceProxy: ApiServiceProxy,
-        private readonly agreementServiceProxy: AgreementTemplateServiceProxy,
+        private readonly apiServiceProxy: AgreementTemplateServiceProxy,
         private readonly cdr: ChangeDetectorRef,
         private readonly router: Router,
         private readonly route: ActivatedRoute
@@ -129,13 +127,13 @@ export class CreateMasterTemplateComponent implements OnInit, OnDestroy {
                 ].map((attachment: FileUpload) => {
                     return new AgreementTemplateAttachmentDto(attachment);
                 });
-                agreementPostDto.duplicationSourceAgreementTemplateId =
+                agreementPostDto.sourceAgreementTemplateId =
                     this.duplicateTemplateControl.value;
                 break;
             }
         }
         this.apiServiceProxy
-            .agreementTemplatePost(
+            .agreementTemplatePOST(
                 new SaveAgreementTemplateDto(
                     new SaveAgreementTemplateDto(agreementPostDto)
                 )
@@ -154,7 +152,7 @@ export class CreateMasterTemplateComponent implements OnInit, OnDestroy {
         return this.masterTemplateOptionsChanged$.pipe(
             startWith(''),
             switchMap((searchStr) => {
-                return this.agreementServiceProxy.simpleList(
+                return this.apiServiceProxy.simpleList2(
                     false,
                     searchStr,
                     1,
@@ -187,7 +185,7 @@ export class CreateMasterTemplateComponent implements OnInit, OnDestroy {
             .pipe(
                 takeUntil(this.unSubscribe$),
                 switchMap((templateId) => {
-                    return this.apiServiceProxy.agreementTemplateGet(
+                    return this.apiServiceProxy.agreementTemplateGET(
                         templateId
                     );
                 }),

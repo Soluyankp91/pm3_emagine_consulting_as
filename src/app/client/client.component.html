@@ -258,7 +258,7 @@
                     <mat-header-cell *matHeaderCellDef fxFlex="3%"> </mat-header-cell>
                     <mat-cell *matCellDef="let row" fxFlex="3%">
                         <button mat-icon-button appPreventDoubleClick (throttledClick)="$event.stopPropagation();" [matMenuTriggerFor]="clientListMenu" class="three-dots-actions-btn">
-                            <mat-icon>more_horiz</mat-icon>
+                            <mat-icon svgIcon="3-dots"></mat-icon>
                         </button>
                         <mat-menu #clientListMenu>
                             <!-- <button

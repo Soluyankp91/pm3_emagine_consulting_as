@@ -6,7 +6,7 @@ import { ActivatedRoute } from '@angular/router';
 import { Subject } from 'rxjs';
 import { finalize, takeUntil } from 'rxjs/operators';
 import { InternalLookupService } from 'src/app/shared/common/internal-lookup.service';
-import { AddClientSpecialFeeDto, AddClientSpecialRateDto, ClientSpecialFeeDto, ClientSpecialRateDto, ClientsServiceProxy, EnumEntityTypeDto, SpecialFeesServiceProxy, SpecialRatesServiceProxy, UpdateClientSpecialFeeDto, UpdateClientSpecialRateDto } from 'src/shared/service-proxies/service-proxies';
+import { AddClientSpecialFeeDto, AddClientSpecialRateDto, ClientSpecialFeeDto, ClientSpecialRateDto, ClientsServiceProxy, EnumEntityTypeDto, UpdateClientSpecialFeeDto, UpdateClientSpecialRateDto } from 'src/shared/service-proxies/service-proxies';
 import { ClientFeesForm, ClientSpecailRateForm } from './client-rates-and-fees.model';
 
 @Component({
@@ -44,8 +44,6 @@ export class ClientRatesAndFeesComponent implements OnInit, OnDestroy {
         private _fb: FormBuilder,
         private _internalLookupService: InternalLookupService,
         private _clientService: ClientsServiceProxy,
-        private _specialRatesService: SpecialRatesServiceProxy,
-        private _specialFeesService: SpecialFeesServiceProxy,
         private _activatedSnapshot: ActivatedRoute,
         private _snackBar: MatSnackBar
     ) {
@@ -118,7 +116,7 @@ export class ClientRatesAndFeesComponent implements OnInit, OnDestroy {
     }
 
     getClientRates() {
-        this._clientService.specialRatesGet(this.clientId, this.showHiddenSpecialRates)
+        this._clientService.specialRatesAll(this.clientId, this.showHiddenSpecialRates)
             .subscribe(result => {
                 this.clientSpecailRateForm = new ClientSpecailRateForm();
                 this.rateIsEditing = false;
@@ -129,7 +127,7 @@ export class ClientRatesAndFeesComponent implements OnInit, OnDestroy {
     }
 
     getClientFees() {
-        this._clientService.specialFeesGet(this.clientId, this.showHiddenSpecialFees)
+        this._clientService.specialFeesAll(this.clientId, this.showHiddenSpecialFees)
             .subscribe(result => {
                 this.clientFeesForm = new ClientFeesForm();
                 this.feeIsEditing = false;
@@ -184,7 +182,7 @@ export class ClientRatesAndFeesComponent implements OnInit, OnDestroy {
                 duration: 5000
             });
         }
-        this._specialRatesService.delete(this.clientId, rateId)
+        this._clientService.delete(this.clientId, rateId)
             .pipe(finalize(() => {
 
             }))
@@ -220,7 +218,7 @@ export class ClientRatesAndFeesComponent implements OnInit, OnDestroy {
         input.consultantCurrencyId = clientRate.consultantRateCurrency?.id;
         input.isHidden = clientRate.hidden ?? false;
         if (clientRate?.id === null || clientRate?.id === undefined) {
-            this._clientService.specialRatesPost(this.clientId, input)
+            this._clientService.specialRatesPOST(this.clientId, input)
                 .pipe(finalize(() => {
                     this.rateIsSaving = false;
                     this.rateIsEditing = false;
@@ -231,7 +229,7 @@ export class ClientRatesAndFeesComponent implements OnInit, OnDestroy {
         } else {
             let updateInput = new UpdateClientSpecialRateDto(input);
             updateInput.id = clientRate.id;
-            this._clientService.specialRatesPut(this.clientId, updateInput)
+            this._clientService.specialRatesPUT(this.clientId, updateInput)
                 .pipe(finalize(() => {
                     this.rateIsSaving = false;
                     this.rateIsEditing = false;
@@ -293,7 +291,7 @@ export class ClientRatesAndFeesComponent implements OnInit, OnDestroy {
                 duration: 5000
             });
         }
-        this._specialFeesService.delete(this.clientId, feeId)
+        this._clientService.delete2(this.clientId, feeId)
             .pipe(finalize(() => {
 
             }))
@@ -329,7 +327,7 @@ export class ClientRatesAndFeesComponent implements OnInit, OnDestroy {
     input.isHidden = clientFee.hidden ?? false;
         this.feeIsSaving = true;
         if (clientFee.id === null || clientFee.id === undefined) {
-            this._clientService.specialFeesPost(this.clientId, input)
+            this._clientService.specialFeesPOST(this.clientId, input)
                 .pipe(finalize(() => {
                     this.feeIsSaving = false;
                     this.feeIsEditing = false;
@@ -340,7 +338,7 @@ export class ClientRatesAndFeesComponent implements OnInit, OnDestroy {
         } else {
             let updateInput = new UpdateClientSpecialFeeDto(input);
             updateInput.id = clientFee.id;
-            this._clientService.specialFeesPut(this.clientId, updateInput)
+            this._clientService.specialFeesPUT(this.clientId, updateInput)
                 .pipe(finalize(() => {
                     this.feeIsSaving = false;
                     this.feeIsEditing = false;

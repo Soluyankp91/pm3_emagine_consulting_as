@@ -1,9 +1,10 @@
 import { Component, Injector, Input, OnDestroy, OnInit } from '@angular/core';
-import { FormArray, FormBuilder, FormControl } from '@angular/forms';
+import { FormArray, FormBuilder, FormControl, Validators } from '@angular/forms';
+import { ScrollToConfigOptions, ScrollToService } from '@nicky-lenaers/ngx-scroll-to';
 import { Subject } from 'rxjs';
 import { finalize, takeUntil } from 'rxjs/operators';
 import { AppComponentBase } from 'src/shared/app-component-base';
-import { ConsultantResultDto, ConsultantTerminationSourcingDataCommandDto, ConsultantTerminationSourcingDataQueryDto, WorkflowProcessDto, WorkflowProcessType, WorkflowServiceProxy, WorkflowTerminationSourcingDataCommandDto } from 'src/shared/service-proxies/service-proxies';
+import { ConsultantResultDto, ConsultantTerminationSourcingDataCommandDto, ConsultantTerminationSourcingDataQueryDto, WorkflowProcessType, WorkflowServiceProxy, WorkflowTerminationSourcingDataCommandDto } from 'src/shared/service-proxies/service-proxies';
 import { WorkflowDataService } from '../workflow-data.service';
 import { WorkflowProcessWithAnchorsDto } from '../workflow-period/workflow-period.model';
 import { WorkflowSourcingConsultantsDataForm } from './workflow-sourcing.model';
@@ -14,7 +15,6 @@ import { WorkflowSourcingConsultantsDataForm } from './workflow-sourcing.model';
     styleUrls: ['./workflow-sourcing.component.scss']
 })
 export class WorkflowSourcingComponent extends AppComponentBase implements OnInit, OnDestroy {
-    // @Input() activeSideSection: WorkflowProcessDto;
     @Input() activeSideSection: WorkflowProcessWithAnchorsDto;
     @Input() workflowId: string;
     @Input() isCompleted: boolean;
@@ -22,17 +22,8 @@ export class WorkflowSourcingComponent extends AppComponentBase implements OnIni
     @Input() permissionsForCurrentUser: { [key: string]: boolean; } | undefined;
 
     editEnabledForcefuly = false;
-
     workflowSideSections = WorkflowProcessType;
-
     sourcingConsultantsDataForm: WorkflowSourcingConsultantsDataForm;
-    consultantList = [
-        {
-            name: 'Robertsen Oscar'
-        },
-        {
-            name: 'Van Trier Mia'
-        }];
 
     private _unsubscribe = new Subject();
 
@@ -40,7 +31,8 @@ export class WorkflowSourcingComponent extends AppComponentBase implements OnIni
         injector: Injector,
         private _fb: FormBuilder,
         private _workflowServiceProxy: WorkflowServiceProxy,
-        private _workflowDataService: WorkflowDataService
+        private _workflowDataService: WorkflowDataService,
+        private scrollToService: ScrollToService
     ) {
         super(injector);
         this.sourcingConsultantsDataForm = new WorkflowSourcingConsultantsDataForm();
@@ -57,19 +49,35 @@ export class WorkflowSourcingComponent extends AppComponentBase implements OnIni
 
         this._workflowDataService.workflowConsultantTerminationSourcingSaved
             .pipe(takeUntil(this._unsubscribe))
-            .subscribe((value: boolean) => {
-                this.saveTerminationConsultantSourcingStep(value);
+            .subscribe((isDraft: boolean) => {
+                if (isDraft && !this.editEnabledForcefuly) {
+                    this.saveTerminationConsultantSourcingStep(isDraft);
+                } else {
+                    if (this.validateFinanceForm()) {
+                        this.saveTerminationConsultantSourcingStep(isDraft);
+                    } else {
+                        this.scrollToFirstError(isDraft);
+                    }
+                }
             });
 
         this._workflowDataService.workflowTerminationSourcingSaved
             .pipe(takeUntil(this._unsubscribe))
-            .subscribe((value: boolean) => {
-                this.saveWorkflowTerminationSourcingStep(value);
+            .subscribe((isDraft: boolean) => {
+                if (isDraft && !this.editEnabledForcefuly) {
+                    this.saveWorkflowTerminationSourcingStep(isDraft);
+                } else {
+                    if (this.validateFinanceForm()) {
+                        this.saveWorkflowTerminationSourcingStep(isDraft);
+                    } else {
+                        this.scrollToFirstError(isDraft);
+                    }
+                }
             });
 
         this._workflowDataService.cancelForceEdit
             .pipe(takeUntil(this._unsubscribe))
-            .subscribe((value: boolean) => {
+            .subscribe(() => {
                 this.isCompleted = true;
                 this.editEnabledForcefuly = false;
                 this._workflowDataService.updateWorkflowProgressStatus({currentStepIsCompleted: this.isCompleted, currentStepIsForcefullyEditing: this.editEnabledForcefuly});
@@ -82,7 +90,25 @@ export class WorkflowSourcingComponent extends AppComponentBase implements OnIni
         this._unsubscribe.complete();
     }
 
-    // Termination
+    validateFinanceForm() {
+        this.sourcingConsultantsDataForm.markAllAsTouched();
+        return this.sourcingConsultantsDataForm.valid;
+    }
+
+    scrollToFirstError(isDraft: boolean) {
+        setTimeout(() => {
+            let firstError = document.getElementsByClassName('mat-form-field-invalid')[0] as HTMLElement;
+            if (firstError) {
+                let config: ScrollToConfigOptions = {
+                    target: firstError,
+                    offset: -115
+                }
+                this.scrollToService.scrollTo(config);
+            } else {
+                this.saveSourcingStepData(isDraft);
+            }
+        }, 0);
+    }
 
     getSourcingStepData() {
         switch (this.activeSideSection.typeId) {
@@ -91,6 +117,17 @@ export class WorkflowSourcingComponent extends AppComponentBase implements OnIni
                 break;
             case this.workflowSideSections.TerminateConsultant:
                 this.getWorkflowSourcingStepConsultantTermination();
+                break;
+        }
+    }
+
+    saveSourcingStepData(isDraft: boolean) {
+        switch (this.activeSideSection.typeId) {
+            case this.workflowSideSections.TerminateWorkflow:
+                this.saveWorkflowTerminationSourcingStep(isDraft);
+                break;
+            case this.workflowSideSections.TerminateConsultant:
+                this.saveTerminationConsultantSourcingStep(isDraft);
                 break;
         }
     }
@@ -110,7 +147,7 @@ export class WorkflowSourcingComponent extends AppComponentBase implements OnIni
         this.showMainSpinner();
         this._workflowServiceProxy.terminationSourcingStartEdit(this.workflowId)
             .pipe(finalize(() => this.hideMainSpinner()))
-            .subscribe(result => {
+            .subscribe(() => {
                 this._workflowDataService.workflowSideSectionUpdated.emit({isStatusUpdate: true});
                 this.getSourcingStepData();
             });
@@ -120,7 +157,7 @@ export class WorkflowSourcingComponent extends AppComponentBase implements OnIni
         this.showMainSpinner();
         this._workflowServiceProxy.terminationConsultantSourcingStartEdit(this.workflowId, this.consultant.id)
             .pipe(finalize(() => this.hideMainSpinner()))
-            .subscribe(result => {
+            .subscribe(() => {
                 this._workflowDataService.workflowSideSectionUpdated.emit({isStatusUpdate: true});
                 this.getSourcingStepData();
             });
@@ -130,7 +167,7 @@ export class WorkflowSourcingComponent extends AppComponentBase implements OnIni
         const form = this._fb.group({
             consultantId: new FormControl(consultant?.consultant?.id),
             consultantData: new FormControl(consultant?.consultant),
-            cvUpdated: new FormControl(consultant.cvUpdated)
+            cvUpdated: new FormControl(consultant.cvUpdated, Validators.required)
         });
         this.sourcingConsultantsDataForm.consultantTerminationSourcingData.push(form);
     }
@@ -140,7 +177,7 @@ export class WorkflowSourcingComponent extends AppComponentBase implements OnIni
     }
 
     getWorkflowSourcingStepConsultantTermination() {
-        this._workflowServiceProxy.terminationConsultantSourcingGet(this.workflowId!, this.consultant.id!)
+        this._workflowServiceProxy.terminationConsultantSourcingGET(this.workflowId!, this.consultant.id!)
             .pipe(finalize(() => {
 
             }))
@@ -157,7 +194,7 @@ export class WorkflowSourcingComponent extends AppComponentBase implements OnIni
 
         this.showMainSpinner();
         if (isDraft) {
-            this._workflowServiceProxy.terminationConsultantSourcingPut(this.workflowId!, input)
+            this._workflowServiceProxy.terminationConsultantSourcingPUT(this.workflowId!, input)
                 .pipe(finalize(() => this.hideMainSpinner()))
                 .subscribe(result => {
                     this._workflowDataService.workflowOverviewUpdated.emit(true);
@@ -176,7 +213,7 @@ export class WorkflowSourcingComponent extends AppComponentBase implements OnIni
     }
 
     getWorkflowSourcingStepTermination() {
-        this._workflowServiceProxy.terminationSourcingGet(this.workflowId!)
+        this._workflowServiceProxy.terminationSourcingGET(this.workflowId!)
             .pipe(finalize(() => {
 
             }))
@@ -204,7 +241,7 @@ export class WorkflowSourcingComponent extends AppComponentBase implements OnIni
 
         this.showMainSpinner();
         if (isDraft) {
-            this._workflowServiceProxy.terminationSourcingPut(this.workflowId!, input)
+            this._workflowServiceProxy.terminationSourcingPUT(this.workflowId!, input)
                 .pipe(finalize(() => this.hideMainSpinner()))
                 .subscribe(result => {
                     this._workflowDataService.workflowOverviewUpdated.emit(true);

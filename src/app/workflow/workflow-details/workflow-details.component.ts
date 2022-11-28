@@ -208,7 +208,7 @@ export class WorkflowDetailsComponent
     saveNotes() {
         this.showMainSpinner();
         this._workflowServiceProxy
-            .notesPut(this.workflowId, this.workflowNote.value)
+            .notesPUT(this.workflowId, this.workflowNote.value)
             .pipe(finalize(() => this.hideMainSpinner()))
             .subscribe(
                 () => (this.workflowNoteOldValue = this.workflowNote.value)
@@ -315,7 +315,8 @@ export class WorkflowDetailsComponent
         newStatus.currentlyActiveStep = WorkflowSteps.Sales;
         if (this.selectedTabIndex > 0) {
             // if not overview - active period
-            newStatus.currentlyActivePeriodId = this.clientPeriods![this.selectedTabIndex - 1]?.id; // first period, as index = 0 - Overview tab
+            newStatus.currentlyActivePeriodId =
+                this.clientPeriods![this.selectedTabIndex - 1]?.id; // first period, as index = 0 - Overview tab
         } else {
             // if overview - most recent period
             newStatus.currentlyActivePeriodId = this.clientPeriods![0]?.id;
@@ -323,7 +324,9 @@ export class WorkflowDetailsComponent
         if (this.selectedTabName === 'Overview') {
             newStatus.currentlyActiveSection = WorkflowTopSections.Overview;
         } else {
-            newStatus.currentlyActiveSection = this.detectTopLevelMenu(this.selectedTabName);
+            newStatus.currentlyActiveSection = this.detectTopLevelMenu(
+                this.selectedTabName
+            );
         }
         this._workflowDataService.updateWorkflowProgressStatus(newStatus);
     }

@@ -16,7 +16,10 @@ import {
 } from '@angular/forms';
 import { forkJoin, Subject } from 'rxjs';
 import { mergeMap, tap, takeUntil } from 'rxjs/operators';
-import { AgreementNameTemplateServiceProxy } from 'src/shared/service-proxies/service-proxies';
+import {
+    AgreementTemplateServiceProxy,
+    MergeFieldsServiceProxy,
+} from 'src/shared/service-proxies/service-proxies';
 import { REQUIRED_VALIDATION_MESSAGE } from '../../entities/contracts.constants';
 import { AutoNameErrorStateMatcher } from '../../matchers/autoNameErrorMatcher';
 import { autoNameRequiredValidator } from '../../validators/autoNameRequireValidator';
@@ -66,7 +69,8 @@ export class AutoNameComponent
     private unSubscribe$ = new Subject();
 
     constructor(
-        private readonly agreementNameTemplateServiceProxy: AgreementNameTemplateServiceProxy
+        private readonly mergeFieldsServiceProxy: MergeFieldsServiceProxy,
+        private readonly agreementNameTemplateServiceProxy: AgreementTemplateServiceProxy
     ) {}
 
     ngOnInit(): void {
@@ -188,7 +192,7 @@ export class AutoNameComponent
     }
 
     private _initFields() {
-        this.agreementNameTemplateServiceProxy
+        this.mergeFieldsServiceProxy
             .fields()
             .pipe(
                 takeUntil(this.unSubscribe$),
@@ -197,7 +201,7 @@ export class AutoNameComponent
                     this.displayedOptionItems = this.optionItems;
                     return forkJoin(
                         keys.map((item) =>
-                            this.agreementNameTemplateServiceProxy.templatePreview(
+                            this.mergeFieldsServiceProxy.templatePreview(
                                 '{' + item + '}'
                             )
                         )

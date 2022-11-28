@@ -11,7 +11,7 @@ import { merge, Observable, Subject, Subscription } from 'rxjs';
 import { debounceTime, finalize, map, switchMap, takeUntil } from 'rxjs/operators';
 import { AppComponentBase } from 'src/shared/app-component-base';
 import { AppConsts } from 'src/shared/AppConsts';
-import { ApiServiceProxy, EmployeeDto, EmployeeServiceProxy, EnumEntityTypeDto, LegalEntityDto, LookupServiceProxy, StartNewWorkflowInputDto, SyncStateStatus, WorkflowAlreadyExistsDto, WorkflowListItemDto, WorkflowProcessType, WorkflowServiceProxy, WorkflowStatus, WorkflowStepStatus } from 'src/shared/service-proxies/service-proxies';
+import { EmployeeDto, EmployeeServiceProxy, EnumEntityTypeDto, LegalEntityDto, LookupServiceProxy, StartNewWorkflowInputDto, SyncStateStatus, WorkflowAlreadyExistsDto, WorkflowListItemDto, WorkflowProcessType, WorkflowServiceProxy, WorkflowStatus, WorkflowStepStatus } from 'src/shared/service-proxies/service-proxies';
 import { SelectableCountry, SelectableIdNameDto } from '../client/client.model';
 import { InternalLookupService } from '../shared/common/internal-lookup.service';
 import { ConfirmationDialogComponent } from '../shared/components/confirmation-dialog/confirmation-dialog.component';
@@ -102,7 +102,6 @@ export class WorkflowComponent extends AppComponentBase implements OnInit, OnDes
     constructor(
         injector: Injector,
         private router: Router,
-        private _apiService: ApiServiceProxy,
         private _workflowService: WorkflowServiceProxy,
         private overlay: Overlay,
         private dialog: MatDialog,
@@ -306,7 +305,7 @@ export class WorkflowComponent extends AppComponentBase implements OnInit, OnDes
         const scrollStrategy = this.overlay.scrollStrategies.reposition();
         DialogConfig.scrollStrategy = scrollStrategy;
         DialogConfig.data = {
-            confirmationMessageTitle: `Are you sure you want to delete workflow?`,
+            confirmationMessageTitle: `Are you sure you want to delete this workflow?`,
             confirmationMessage: `This workflow will be hidden from lists and statistics.\n
             Note that if it contained periods which were synced, it should be terminated first.\n
             If not terminated -  the contract lines will still appear in Legacy PM,\n
@@ -325,7 +324,7 @@ export class WorkflowComponent extends AppComponentBase implements OnInit, OnDes
 
     deleteWorkflow(workflowId: string) {
         this.isDataLoading = true;
-        this._workflowService.delete(workflowId)
+        this._workflowService.delete3(workflowId)
             .pipe(finalize(() => this.isDataLoading = false ))
             .subscribe(() => this.getWorkflowList());
     }
@@ -418,7 +417,7 @@ export class WorkflowComponent extends AppComponentBase implements OnInit, OnDes
             this.pageNumber = 1;
         }
 
-        this.workflowListSubscription = this._apiService.workflow(
+        this.workflowListSubscription = this._workflowService.workflow(
             invoicingEntity,
             paymentEntity,
             salesType,
@@ -451,7 +450,7 @@ export class WorkflowComponent extends AppComponentBase implements OnInit, OnDes
                         endDate: x.endDate,
                         salesType: this.findItemById(this.saleTypes, x.salesTypeId),
                         deliveryType: this.findItemById(this.deliveryTypes, x.deliveryTypeId),
-                        statusName: x.isDeleted ? 'Deleted' : WorkflowStatus[x.workflowStatus!],
+                        statusName: x.isDeleted ? 'Finished' : WorkflowStatus[x.workflowStatus!],
                         statusIcon: x.isDeleted ? 'deleted-status' : this.getStatusIcon(x.workflowStatus!),
                         isDeleted: x.isDeleted,
                         consultants: x.consultants,

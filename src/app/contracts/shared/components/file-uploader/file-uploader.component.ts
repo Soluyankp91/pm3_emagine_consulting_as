@@ -43,7 +43,7 @@ export class FileUploaderComponent implements OnInit, ControlValueAccessor {
 
     onFileDelete(fileToDelete: FileUploadItem) {
         this.fileServiceProxy
-            .temporaryDelete(fileToDelete.temporaryFileId)
+            .temporaryDELETE(fileToDelete.temporaryFileId)
             .subscribe(() => {
                 this.files = this.files.filter(
                     (file) =>
@@ -73,7 +73,7 @@ export class FileUploaderComponent implements OnInit, ControlValueAccessor {
             switchMap((files) => {
                 let filesObservablesArr = files.map((file) =>
                     this.fileServiceProxy
-                        .temporaryPost({ data: file, fileName: file.name })
+                        .temporaryPOST({ data: file, fileName: file.name })
                         .pipe(
                             map((temporaryFileId: string) => ({
                                 ...file,
@@ -93,9 +93,9 @@ export class FileUploaderComponent implements OnInit, ControlValueAccessor {
                 return this.files;
             }),
             tap((files) => {
-                if(files && files.length) {
+                if (files && files.length) {
                     this.onChange(files);
-                    return
+                    return;
                 }
                 this.onChange(null);
             })

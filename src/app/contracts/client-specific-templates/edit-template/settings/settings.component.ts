@@ -12,7 +12,6 @@ import {
     AgreementTemplateAttachmentDto,
     AgreementTemplateDetailsDto,
     AgreementTemplateServiceProxy,
-    ApiServiceProxy,
     ClientResultDto,
     EnumEntityTypeDto,
     LegalEntityDto,
@@ -70,9 +69,8 @@ export class CreationComponent
         private readonly _injector: Injector,
         private readonly _contractService: ContractsService,
         private readonly _cdr: ChangeDetectorRef,
-        private readonly _apiServiceProxy: ApiServiceProxy,
+        private readonly _apiServiceProxy: AgreementTemplateServiceProxy,
         private readonly _lookupServiceProxy: LookupServiceProxy,
-        private readonly _agreementTemplateServiceProxy: AgreementTemplateServiceProxy,
         private readonly route: ActivatedRoute,
         private readonly router: Router,
         public _dialog: MatDialog
@@ -178,7 +176,7 @@ export class CreationComponent
         return this.masterTemplateOptionsChanged$.pipe(
             startWith(''),
             switchMap((searchInput) => {
-                return this._agreementTemplateServiceProxy.simpleList(
+                return this._apiServiceProxy.simpleList2(
                     isClientTemplate,
                     searchInput,
                     1,
@@ -196,7 +194,7 @@ export class CreationComponent
             startWith(''),
             switchMap((searchInput) => {
                 let search = searchInput ? searchInput : '';
-                return this._lookupServiceProxy.clients(search, 20);
+                return this._lookupServiceProxy.clientsAll(search, 20);
             })
         );
     }
@@ -276,13 +274,13 @@ export class CreationComponent
                 ].map((attachment: FileUpload) => {
                     return new AgreementTemplateAttachmentDto(attachment);
                 });
-                agreementPostDto.duplicationSourceAgreementTemplateId =
+                agreementPostDto.sourceAgreementTemplateId =
                     this.clientTemplateControl.value;
                 break;
             }
         }
         this._apiServiceProxy
-            .agreementTemplatePost(
+            .agreementTemplatePOST(
                 new SaveAgreementTemplateDto(agreementPostDto)
             )
             .subscribe(() => {
@@ -307,7 +305,7 @@ export class CreationComponent
             .pipe(
                 takeUntil(this.unSubscribe$),
                 switchMap((agreementTemplateId: number) => {
-                    return this._apiServiceProxy.agreementTemplateGet(
+                    return this._apiServiceProxy.agreementTemplateGET(
                         agreementTemplateId
                     );
                 }),
@@ -322,7 +320,7 @@ export class CreationComponent
             .pipe(
                 takeUntil(this.unSubscribe$),
                 switchMap((agreementTemplateId: number) => {
-                    return this._apiServiceProxy.agreementTemplateGet(
+                    return this._apiServiceProxy.agreementTemplateGET(
                         agreementTemplateId
                     );
                 }),
@@ -381,7 +379,7 @@ export class CreationComponent
                   )
                 : []),
         ];
-        this.isDuplicateFromInherited = !!data.parentAgreementTemplateId;
+        //this.isDuplicateFromInherited = !!data.parentAgreementTemplateId;
         this._updateDisabledStateForDuplicate();
         this._cdr.detectChanges();
     }

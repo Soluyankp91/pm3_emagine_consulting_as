@@ -148,7 +148,7 @@ export class InternalLookupService {
                 observer.next(this.projectTypes);
                 observer.complete();
             } else {
-                this._enumService.projectType()
+                this._enumService.projectTypeAll()
                     .subscribe(response => {
                         this.projectTypes = response;
                         observer.next(this.projectTypes);

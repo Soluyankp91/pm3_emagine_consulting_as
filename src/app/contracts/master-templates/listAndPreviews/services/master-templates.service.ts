@@ -94,7 +94,7 @@ export class MasterTemplatesService {
                     return acc;
                 }, {} as any);
                 filters;
-                return this.agreementTemplateServiceProxy.list(
+                return this.agreementTemplateServiceProxy.list2(
                     false, //isClientTemplate
                     search, //search
                     filters.tenantIds, // tenantId []

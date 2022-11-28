@@ -132,7 +132,7 @@
             <ng-container *ngIf="individualConsultantActionsAvailable">
                 <div *ngFor="let item of overviewGroups" class="workflow-overview--timeline-actions">
                     <button  mat-icon-button appPreventDoubleClick (throttledClick)="$event.stopPropagation();" type="button" [matMenuTriggerFor]="consultantMenu" class="three-dots-actions-btn workflow-overview--three-dots">
-                        <mat-icon>more_horiz</mat-icon>
+                        <mat-icon svgIcon="3-dots"></mat-icon>
                     </button>
                     <mat-menu #consultantMenu>
                         <button

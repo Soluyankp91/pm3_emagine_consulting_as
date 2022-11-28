@@ -8,7 +8,7 @@ import { Subject } from 'rxjs';
 import { finalize, takeUntil } from 'rxjs/operators';
 import { AppComponentBase } from 'src/shared/app-component-base';
 import { LocalHttpService } from 'src/shared/service-proxies/local-http.service';
-import { ApiServiceProxy, ClientDetailsDto, ClientsServiceProxy, SyncClientFromCrmResultDto } from 'src/shared/service-proxies/service-proxies';
+import { ClientDetailsDto, ClientsServiceProxy, SyncClientFromCrmResultDto } from 'src/shared/service-proxies/service-proxies';
 import { ClientDocumentsComponent } from '../client-documents/client-documents.component';
 import { HubspotSyncModalComponent } from './hubspot-sync-modal/hubspot-sync-modal.component';
 
@@ -32,7 +32,6 @@ export class ClientDetailsComponent extends AppComponentBase implements OnInit {
         injector: Injector,
         private router: Router,
         private activatedRoute: ActivatedRoute,
-        private _apiService: ApiServiceProxy,
         private _clientService: ClientsServiceProxy,
         private httpClient: HttpClient,
         private localHttpService: LocalHttpService,
@@ -57,7 +56,7 @@ export class ClientDetailsComponent extends AppComponentBase implements OnInit {
     }
 
     getClientDetails() {
-        this._apiService.clients(this.clientId)
+        this._clientService.clients(this.clientId)
             .pipe(finalize(() => {}))
             .subscribe(result => {
                 this.client = result;

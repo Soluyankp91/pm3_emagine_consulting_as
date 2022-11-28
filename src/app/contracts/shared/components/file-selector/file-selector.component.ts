@@ -7,7 +7,7 @@ import {
     SimpleChanges,
 } from '@angular/core';
 import { ControlValueAccessor, NG_VALUE_ACCESSOR } from '@angular/forms';
-import { ApiServiceProxy } from 'src/shared/service-proxies/service-proxies';
+import { AgreementTemplateServiceProxy } from 'src/shared/service-proxies/service-proxies';
 import {
     FileUpload,
     FileUploadItem,
@@ -36,7 +36,9 @@ export class FileSelectorComponent
     private onChange = (val: any) => {};
     private onTouched = () => {};
 
-    constructor(private readonly apiServiceProxy: ApiServiceProxy) {}
+    constructor(
+        private readonly apiServiceProxy: AgreementTemplateServiceProxy
+    ) {}
 
     ngOnInit(): void {}
 
@@ -55,9 +57,7 @@ export class FileSelectorComponent
 
     downloadAttachment(file: FileUploadItem): void {
         this.apiServiceProxy
-            .agreementTemplateAttachment(
-                file.agreementTemplateAttachmentId as number
-            )
+            .agreementTemplateGET(file.agreementTemplateAttachmentId as number)
             .subscribe((d) => {
                 const blob = new Blob([d as any]);
                 const a = document.createElement('a');

@@ -29,7 +29,7 @@ export class AccountServiceProxy {
     }
 
     /**
-     * @param redirectUri (optional)
+     * @param redirectUri (optional) 
      * @return Success
      */
     signIn(scheme: string, redirectUri?: string | undefined): Observable<void> {
@@ -84,12 +84,12 @@ export class AccountServiceProxy {
     }
 
     /**
-     * @param redirectUri (optional)
-     * @param scope (optional)
-     * @param loginHint (optional)
-     * @param domainHint (optional)
-     * @param claims (optional)
-     * @param policy (optional)
+     * @param redirectUri (optional) 
+     * @param scope (optional) 
+     * @param loginHint (optional) 
+     * @param domainHint (optional) 
+     * @param claims (optional) 
+     * @param policy (optional) 
      * @return Success
      */
     challenge(scheme: string, redirectUri?: string | undefined, scope?: string | undefined, loginHint?: string | undefined, domainHint?: string | undefined, claims?: string | undefined, policy?: string | undefined): Observable<void> {
@@ -314,10 +314,8 @@ export class AccountServiceProxy {
     }
 }
 
-
-
 @Injectable()
-export class WorkflowStatusServiceServiceProxy {
+export class AdminServiceProxy {
     private http: HttpClient;
     private baseUrl: string;
     protected jsonParseReviver: ((key: string, value: any) => any) | undefined = undefined;
@@ -325,6 +323,220 @@ export class WorkflowStatusServiceServiceProxy {
     constructor(@Inject(HttpClient) http: HttpClient, @Optional() @Inject(API_BASE_URL) baseUrl?: string) {
         this.http = http;
         this.baseUrl = baseUrl !== undefined && baseUrl !== null ? baseUrl : "";
+    }
+
+    /**
+     * @return Success
+     */
+    dropAndCreateWorkflowIndex(): Observable<void> {
+        let url_ = this.baseUrl + "/api/Admin/search-service/drop-and-create-workflow-index";
+        url_ = url_.replace(/[?&]$/, "");
+
+        let options_ : any = {
+            observe: "response",
+            responseType: "blob",
+            headers: new HttpHeaders({
+            })
+        };
+
+        return this.http.request("post", url_, options_).pipe(_observableMergeMap((response_ : any) => {
+            return this.processDropAndCreateWorkflowIndex(response_);
+        })).pipe(_observableCatch((response_: any) => {
+            if (response_ instanceof HttpResponseBase) {
+                try {
+                    return this.processDropAndCreateWorkflowIndex(response_ as any);
+                } catch (e) {
+                    return _observableThrow(e) as any as Observable<void>;
+                }
+            } else
+                return _observableThrow(response_) as any as Observable<void>;
+        }));
+    }
+
+    protected processDropAndCreateWorkflowIndex(response: HttpResponseBase): Observable<void> {
+        const status = response.status;
+        const responseBlob =
+            response instanceof HttpResponse ? response.body :
+            (response as any).error instanceof Blob ? (response as any).error : undefined;
+
+        let _headers: any = {}; if (response.headers) { for (let key of response.headers.keys()) { _headers[key] = response.headers.get(key); }}
+        if (status === 200) {
+            return blobToText(responseBlob).pipe(_observableMergeMap(_responseText => {
+            return _observableOf<void>(null as any);
+            }));
+        } else if (status !== 200 && status !== 204) {
+            return blobToText(responseBlob).pipe(_observableMergeMap(_responseText => {
+            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+            }));
+        }
+        return _observableOf<void>(null as any);
+    }
+
+    /**
+     * @return Success
+     */
+    fillIndexWithData(): Observable<void> {
+        let url_ = this.baseUrl + "/api/Admin/search-service/fill-index-with-data";
+        url_ = url_.replace(/[?&]$/, "");
+
+        let options_ : any = {
+            observe: "response",
+            responseType: "blob",
+            headers: new HttpHeaders({
+            })
+        };
+
+        return this.http.request("post", url_, options_).pipe(_observableMergeMap((response_ : any) => {
+            return this.processFillIndexWithData(response_);
+        })).pipe(_observableCatch((response_: any) => {
+            if (response_ instanceof HttpResponseBase) {
+                try {
+                    return this.processFillIndexWithData(response_ as any);
+                } catch (e) {
+                    return _observableThrow(e) as any as Observable<void>;
+                }
+            } else
+                return _observableThrow(response_) as any as Observable<void>;
+        }));
+    }
+
+    protected processFillIndexWithData(response: HttpResponseBase): Observable<void> {
+        const status = response.status;
+        const responseBlob =
+            response instanceof HttpResponse ? response.body :
+            (response as any).error instanceof Blob ? (response as any).error : undefined;
+
+        let _headers: any = {}; if (response.headers) { for (let key of response.headers.keys()) { _headers[key] = response.headers.get(key); }}
+        if (status === 200) {
+            return blobToText(responseBlob).pipe(_observableMergeMap(_responseText => {
+            return _observableOf<void>(null as any);
+            }));
+        } else if (status !== 200 && status !== 204) {
+            return blobToText(responseBlob).pipe(_observableMergeMap(_responseText => {
+            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+            }));
+        }
+        return _observableOf<void>(null as any);
+    }
+
+    /**
+     * @param workflowId (optional) 
+     * @return Success
+     */
+    fillSingleWorkflowIndexWithData(workflowId?: string | undefined): Observable<void> {
+        let url_ = this.baseUrl + "/api/Admin/search-service/fill-single-workflow-index-with-data?";
+        if (workflowId === null)
+            throw new Error("The parameter 'workflowId' cannot be null.");
+        else if (workflowId !== undefined)
+            url_ += "workflowId=" + encodeURIComponent("" + workflowId) + "&";
+        url_ = url_.replace(/[?&]$/, "");
+
+        let options_ : any = {
+            observe: "response",
+            responseType: "blob",
+            headers: new HttpHeaders({
+            })
+        };
+
+        return this.http.request("post", url_, options_).pipe(_observableMergeMap((response_ : any) => {
+            return this.processFillSingleWorkflowIndexWithData(response_);
+        })).pipe(_observableCatch((response_: any) => {
+            if (response_ instanceof HttpResponseBase) {
+                try {
+                    return this.processFillSingleWorkflowIndexWithData(response_ as any);
+                } catch (e) {
+                    return _observableThrow(e) as any as Observable<void>;
+                }
+            } else
+                return _observableThrow(response_) as any as Observable<void>;
+        }));
+    }
+
+    protected processFillSingleWorkflowIndexWithData(response: HttpResponseBase): Observable<void> {
+        const status = response.status;
+        const responseBlob =
+            response instanceof HttpResponse ? response.body :
+            (response as any).error instanceof Blob ? (response as any).error : undefined;
+
+        let _headers: any = {}; if (response.headers) { for (let key of response.headers.keys()) { _headers[key] = response.headers.get(key); }}
+        if (status === 200) {
+            return blobToText(responseBlob).pipe(_observableMergeMap(_responseText => {
+            return _observableOf<void>(null as any);
+            }));
+        } else if (status !== 200 && status !== 204) {
+            return blobToText(responseBlob).pipe(_observableMergeMap(_responseText => {
+            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+            }));
+        }
+        return _observableOf<void>(null as any);
+    }
+
+    /**
+     * @param maxResultCount (optional) 
+     * @param testsCount (optional) 
+     * @return Success
+     */
+    testOfFetchingDataFromAzureSearchIndex(maxResultCount?: number | undefined, testsCount?: number | undefined): Observable<string[]> {
+        let url_ = this.baseUrl + "/api/Admin/search-service/test-of-fetching-data-from-AzureSearchIndex?";
+        if (maxResultCount === null)
+            throw new Error("The parameter 'maxResultCount' cannot be null.");
+        else if (maxResultCount !== undefined)
+            url_ += "maxResultCount=" + encodeURIComponent("" + maxResultCount) + "&";
+        if (testsCount === null)
+            throw new Error("The parameter 'testsCount' cannot be null.");
+        else if (testsCount !== undefined)
+            url_ += "testsCount=" + encodeURIComponent("" + testsCount) + "&";
+        url_ = url_.replace(/[?&]$/, "");
+
+        let options_ : any = {
+            observe: "response",
+            responseType: "blob",
+            headers: new HttpHeaders({
+                "Accept": "text/plain"
+            })
+        };
+
+        return this.http.request("get", url_, options_).pipe(_observableMergeMap((response_ : any) => {
+            return this.processTestOfFetchingDataFromAzureSearchIndex(response_);
+        })).pipe(_observableCatch((response_: any) => {
+            if (response_ instanceof HttpResponseBase) {
+                try {
+                    return this.processTestOfFetchingDataFromAzureSearchIndex(response_ as any);
+                } catch (e) {
+                    return _observableThrow(e) as any as Observable<string[]>;
+                }
+            } else
+                return _observableThrow(response_) as any as Observable<string[]>;
+        }));
+    }
+
+    protected processTestOfFetchingDataFromAzureSearchIndex(response: HttpResponseBase): Observable<string[]> {
+        const status = response.status;
+        const responseBlob =
+            response instanceof HttpResponse ? response.body :
+            (response as any).error instanceof Blob ? (response as any).error : undefined;
+
+        let _headers: any = {}; if (response.headers) { for (let key of response.headers.keys()) { _headers[key] = response.headers.get(key); }}
+        if (status === 200) {
+            return blobToText(responseBlob).pipe(_observableMergeMap(_responseText => {
+            let result200: any = null;
+            let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
+            if (Array.isArray(resultData200)) {
+                result200 = [] as any;
+                for (let item of resultData200)
+                    result200!.push(item);
+            }
+            else {
+                result200 = <any>null;
+            }
+            return _observableOf(result200);
+            }));
+        } else if (status !== 200 && status !== 204) {
+            return blobToText(responseBlob).pipe(_observableMergeMap(_responseText => {
+            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+            }));
+        }
+        return _observableOf<string[]>(null as any);
     }
 
     /**
@@ -373,17 +585,52 @@ export class WorkflowStatusServiceServiceProxy {
         }
         return _observableOf<void>(null as any);
     }
-}
 
-@Injectable()
-export class TenantConfigServiceServiceProxy {
-    private http: HttpClient;
-    private baseUrl: string;
-    protected jsonParseReviver: ((key: string, value: any) => any) | undefined = undefined;
+    /**
+     * @return Success
+     */
+    updateWorkflowsStatusesWithEmployee(): Observable<void> {
+        let url_ = this.baseUrl + "/api/Admin/workflow-status-service/update-workflows-statuses-with-employee";
+        url_ = url_.replace(/[?&]$/, "");
 
-    constructor(@Inject(HttpClient) http: HttpClient, @Optional() @Inject(API_BASE_URL) baseUrl?: string) {
-        this.http = http;
-        this.baseUrl = baseUrl !== undefined && baseUrl !== null ? baseUrl : "";
+        let options_ : any = {
+            observe: "response",
+            responseType: "blob",
+            headers: new HttpHeaders({
+            })
+        };
+
+        return this.http.request("post", url_, options_).pipe(_observableMergeMap((response_ : any) => {
+            return this.processUpdateWorkflowsStatusesWithEmployee(response_);
+        })).pipe(_observableCatch((response_: any) => {
+            if (response_ instanceof HttpResponseBase) {
+                try {
+                    return this.processUpdateWorkflowsStatusesWithEmployee(response_ as any);
+                } catch (e) {
+                    return _observableThrow(e) as any as Observable<void>;
+                }
+            } else
+                return _observableThrow(response_) as any as Observable<void>;
+        }));
+    }
+
+    protected processUpdateWorkflowsStatusesWithEmployee(response: HttpResponseBase): Observable<void> {
+        const status = response.status;
+        const responseBlob =
+            response instanceof HttpResponse ? response.body :
+            (response as any).error instanceof Blob ? (response as any).error : undefined;
+
+        let _headers: any = {}; if (response.headers) { for (let key of response.headers.keys()) { _headers[key] = response.headers.get(key); }}
+        if (status === 200) {
+            return blobToText(responseBlob).pipe(_observableMergeMap(_responseText => {
+            return _observableOf<void>(null as any);
+            }));
+        } else if (status !== 200 && status !== 204) {
+            return blobToText(responseBlob).pipe(_observableMergeMap(_responseText => {
+            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+            }));
+        }
+        return _observableOf<void>(null as any);
     }
 
     /**
@@ -443,18 +690,63 @@ export class TenantConfigServiceServiceProxy {
         }
         return _observableOf<TenantConfigDto[]>(null as any);
     }
-}
 
+    /**
+     * @return Success
+     */
+    backfillRequestIdFromSourcingToWorkflowConsultants(): Observable<string[]> {
+        let url_ = this.baseUrl + "/api/Admin/Backfill-RequestId-from-Sourcing-to-WorkflowConsultants";
+        url_ = url_.replace(/[?&]$/, "");
 
-@Injectable()
-export class ConfigServiceProxy {
-    private http: HttpClient;
-    private baseUrl: string;
-    protected jsonParseReviver: ((key: string, value: any) => any) | undefined = undefined;
+        let options_ : any = {
+            observe: "response",
+            responseType: "blob",
+            headers: new HttpHeaders({
+                "Accept": "text/plain"
+            })
+        };
 
-    constructor(@Inject(HttpClient) http: HttpClient, @Optional() @Inject(API_BASE_URL) baseUrl?: string) {
-        this.http = http;
-        this.baseUrl = baseUrl !== undefined && baseUrl !== null ? baseUrl : "";
+        return this.http.request("post", url_, options_).pipe(_observableMergeMap((response_ : any) => {
+            return this.processBackfillRequestIdFromSourcingToWorkflowConsultants(response_);
+        })).pipe(_observableCatch((response_: any) => {
+            if (response_ instanceof HttpResponseBase) {
+                try {
+                    return this.processBackfillRequestIdFromSourcingToWorkflowConsultants(response_ as any);
+                } catch (e) {
+                    return _observableThrow(e) as any as Observable<string[]>;
+                }
+            } else
+                return _observableThrow(response_) as any as Observable<string[]>;
+        }));
+    }
+
+    protected processBackfillRequestIdFromSourcingToWorkflowConsultants(response: HttpResponseBase): Observable<string[]> {
+        const status = response.status;
+        const responseBlob =
+            response instanceof HttpResponse ? response.body :
+            (response as any).error instanceof Blob ? (response as any).error : undefined;
+
+        let _headers: any = {}; if (response.headers) { for (let key of response.headers.keys()) { _headers[key] = response.headers.get(key); }}
+        if (status === 200) {
+            return blobToText(responseBlob).pipe(_observableMergeMap(_responseText => {
+            let result200: any = null;
+            let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
+            if (Array.isArray(resultData200)) {
+                result200 = [] as any;
+                for (let item of resultData200)
+                    result200!.push(item);
+            }
+            else {
+                result200 = <any>null;
+            }
+            return _observableOf(result200);
+            }));
+        } else if (status !== 200 && status !== 204) {
+            return blobToText(responseBlob).pipe(_observableMergeMap(_responseText => {
+            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+            }));
+        }
+        return _observableOf<string[]>(null as any);
     }
 
     /**
@@ -516,53 +808,37 @@ export class ConfigServiceProxy {
         }
         return _observableOf<{ [key: string]: string; }>(null as any);
     }
-}
-
-@Injectable()
-export class AdminServiceProxy {
-    private http: HttpClient;
-    private baseUrl: string;
-    protected jsonParseReviver: ((key: string, value: any) => any) | undefined = undefined;
-
-    constructor(@Inject(HttpClient) http: HttpClient, @Optional() @Inject(API_BASE_URL) baseUrl?: string) {
-        this.http = http;
-        this.baseUrl = baseUrl !== undefined && baseUrl !== null ? baseUrl : "";
-    }
 
     /**
-     * @param body (optional)
      * @return Success
      */
-    updateEnvelopeStatus(body?: UpdateEnvelopeStatusCommand | undefined): Observable<void> {
-        let url_ = this.baseUrl + "/api/Admin/update-envelope-status";
+    clientsFullHubspotToPm3Sync(): Observable<string[]> {
+        let url_ = this.baseUrl + "/api/Admin/clients-full-hubspot-to-pm3-sync";
         url_ = url_.replace(/[?&]$/, "");
 
-        const content_ = JSON.stringify(body);
-
         let options_ : any = {
-            body: content_,
             observe: "response",
             responseType: "blob",
             headers: new HttpHeaders({
-                "Content-Type": "application/json",
+                "Accept": "text/plain"
             })
         };
 
         return this.http.request("post", url_, options_).pipe(_observableMergeMap((response_ : any) => {
-            return this.processUpdateEnvelopeStatus(response_);
+            return this.processClientsFullHubspotToPm3Sync(response_);
         })).pipe(_observableCatch((response_: any) => {
             if (response_ instanceof HttpResponseBase) {
                 try {
-                    return this.processUpdateEnvelopeStatus(response_ as any);
+                    return this.processClientsFullHubspotToPm3Sync(response_ as any);
                 } catch (e) {
-                    return _observableThrow(e) as any as Observable<void>;
+                    return _observableThrow(e) as any as Observable<string[]>;
                 }
             } else
-                return _observableThrow(response_) as any as Observable<void>;
+                return _observableThrow(response_) as any as Observable<string[]>;
         }));
     }
 
-    protected processUpdateEnvelopeStatus(response: HttpResponseBase): Observable<void> {
+    protected processClientsFullHubspotToPm3Sync(response: HttpResponseBase): Observable<string[]> {
         const status = response.status;
         const responseBlob =
             response instanceof HttpResponse ? response.body :
@@ -571,14 +847,24 @@ export class AdminServiceProxy {
         let _headers: any = {}; if (response.headers) { for (let key of response.headers.keys()) { _headers[key] = response.headers.get(key); }}
         if (status === 200) {
             return blobToText(responseBlob).pipe(_observableMergeMap(_responseText => {
-            return _observableOf<void>(null as any);
+            let result200: any = null;
+            let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
+            if (Array.isArray(resultData200)) {
+                result200 = [] as any;
+                for (let item of resultData200)
+                    result200!.push(item);
+            }
+            else {
+                result200 = <any>null;
+            }
+            return _observableOf(result200);
             }));
         } else if (status !== 200 && status !== 204) {
             return blobToText(responseBlob).pipe(_observableMergeMap(_responseText => {
             return throwException("An unexpected server error occurred.", status, _responseText, _headers);
             }));
         }
-        return _observableOf<void>(null as any);
+        return _observableOf<string[]>(null as any);
     }
 }
 
@@ -594,98 +880,13 @@ export class AgreementServiceProxy {
     }
 
     /**
-     * @param agreementName (optional)
-     * @param languages (optional)
-     * @param clientName (optional)
-     * @param consultantName (optional)
-     * @param companyName (optional)
-     * @param actualRecipientName (optional)
-     * @param legalEntities (optional)
-     * @param agreementTypes (optional)
-     * @param recipientTypes (optional)
-     * @param salesTypes (optional)
-     * @param deliveryTypes (optional)
-     * @param contractTypes (optional)
-     * @param mode (optional)
-     * @param status (optional)
-     * @param salesManagers (optional)
-     * @param contractManagers (optional)
-     * @param search (optional)
-     * @param pageNumber (optional)
-     * @param pageSize (optional)
-     * @param sort (optional)
+     * @param pageNumber (optional) 
+     * @param pageSize (optional) 
+     * @param sort (optional) 
      * @return Success
      */
-    list(agreementName?: string | undefined, languages?: number[] | undefined, clientName?: string | undefined, consultantName?: string | undefined, companyName?: string | undefined, actualRecipientName?: string | undefined, legalEntities?: number[] | undefined, agreementTypes?: number[] | undefined, recipientTypes?: number[] | undefined, salesTypes?: number[] | undefined, deliveryTypes?: number[] | undefined, contractTypes?: number[] | undefined, mode?: number | undefined, status?: number | undefined, salesManagers?: number[] | undefined, contractManagers?: number[] | undefined, search?: string | undefined, pageNumber?: number | undefined, pageSize?: number | undefined, sort?: string | undefined): Observable<AgreementListItemDtoPaginatedList> {
+    list(pageNumber?: number | undefined, pageSize?: number | undefined, sort?: string | undefined): Observable<AgreementListItemDtoPaginatedList> {
         let url_ = this.baseUrl + "/api/Agreement/list?";
-        if (agreementName === null)
-            throw new Error("The parameter 'agreementName' cannot be null.");
-        else if (agreementName !== undefined)
-            url_ += "AgreementName=" + encodeURIComponent("" + agreementName) + "&";
-        if (languages === null)
-            throw new Error("The parameter 'languages' cannot be null.");
-        else if (languages !== undefined)
-            languages && languages.forEach(item => { url_ += "Languages=" + encodeURIComponent("" + item) + "&"; });
-        if (clientName === null)
-            throw new Error("The parameter 'clientName' cannot be null.");
-        else if (clientName !== undefined)
-            url_ += "ClientName=" + encodeURIComponent("" + clientName) + "&";
-        if (consultantName === null)
-            throw new Error("The parameter 'consultantName' cannot be null.");
-        else if (consultantName !== undefined)
-            url_ += "ConsultantName=" + encodeURIComponent("" + consultantName) + "&";
-        if (companyName === null)
-            throw new Error("The parameter 'companyName' cannot be null.");
-        else if (companyName !== undefined)
-            url_ += "CompanyName=" + encodeURIComponent("" + companyName) + "&";
-        if (actualRecipientName === null)
-            throw new Error("The parameter 'actualRecipientName' cannot be null.");
-        else if (actualRecipientName !== undefined)
-            url_ += "ActualRecipientName=" + encodeURIComponent("" + actualRecipientName) + "&";
-        if (legalEntities === null)
-            throw new Error("The parameter 'legalEntities' cannot be null.");
-        else if (legalEntities !== undefined)
-            legalEntities && legalEntities.forEach(item => { url_ += "LegalEntities=" + encodeURIComponent("" + item) + "&"; });
-        if (agreementTypes === null)
-            throw new Error("The parameter 'agreementTypes' cannot be null.");
-        else if (agreementTypes !== undefined)
-            agreementTypes && agreementTypes.forEach(item => { url_ += "AgreementTypes=" + encodeURIComponent("" + item) + "&"; });
-        if (recipientTypes === null)
-            throw new Error("The parameter 'recipientTypes' cannot be null.");
-        else if (recipientTypes !== undefined)
-            recipientTypes && recipientTypes.forEach(item => { url_ += "RecipientTypes=" + encodeURIComponent("" + item) + "&"; });
-        if (salesTypes === null)
-            throw new Error("The parameter 'salesTypes' cannot be null.");
-        else if (salesTypes !== undefined)
-            salesTypes && salesTypes.forEach(item => { url_ += "SalesTypes=" + encodeURIComponent("" + item) + "&"; });
-        if (deliveryTypes === null)
-            throw new Error("The parameter 'deliveryTypes' cannot be null.");
-        else if (deliveryTypes !== undefined)
-            deliveryTypes && deliveryTypes.forEach(item => { url_ += "DeliveryTypes=" + encodeURIComponent("" + item) + "&"; });
-        if (contractTypes === null)
-            throw new Error("The parameter 'contractTypes' cannot be null.");
-        else if (contractTypes !== undefined)
-            contractTypes && contractTypes.forEach(item => { url_ += "ContractTypes=" + encodeURIComponent("" + item) + "&"; });
-        if (mode === null)
-            throw new Error("The parameter 'mode' cannot be null.");
-        else if (mode !== undefined)
-            url_ += "Mode=" + encodeURIComponent("" + mode) + "&";
-        if (status === null)
-            throw new Error("The parameter 'status' cannot be null.");
-        else if (status !== undefined)
-            url_ += "Status=" + encodeURIComponent("" + status) + "&";
-        if (salesManagers === null)
-            throw new Error("The parameter 'salesManagers' cannot be null.");
-        else if (salesManagers !== undefined)
-            salesManagers && salesManagers.forEach(item => { url_ += "SalesManagers=" + encodeURIComponent("" + item) + "&"; });
-        if (contractManagers === null)
-            throw new Error("The parameter 'contractManagers' cannot be null.");
-        else if (contractManagers !== undefined)
-            contractManagers && contractManagers.forEach(item => { url_ += "ContractManagers=" + encodeURIComponent("" + item) + "&"; });
-        if (search === null)
-            throw new Error("The parameter 'search' cannot be null.");
-        else if (search !== undefined)
-            url_ += "Search=" + encodeURIComponent("" + search) + "&";
         if (pageNumber === null)
             throw new Error("The parameter 'pageNumber' cannot be null.");
         else if (pageNumber !== undefined)
@@ -745,33 +946,18 @@ export class AgreementServiceProxy {
     }
 
     /**
-     * @param search (optional)
-     * @param clientId (optional)
-     * @param agreementType (optional)
-     * @param validity (optional)
-     * @param pageNumber (optional)
-     * @param pageSize (optional)
-     * @param sort (optional)
+     * @param search (optional) 
+     * @param pageNumber (optional) 
+     * @param pageSize (optional) 
+     * @param sort (optional) 
      * @return Success
      */
-    simpleList(search?: string | undefined, clientId?: number | undefined, agreementType?: AgreementType | undefined, validity?: AgreementValidityState | undefined, pageNumber?: number | undefined, pageSize?: number | undefined, sort?: string | undefined): Observable<SimpleAgreementListItemDtoPaginatedList> {
+    simpleList(search?: string | undefined, pageNumber?: number | undefined, pageSize?: number | undefined, sort?: string | undefined): Observable<SimpleAgreementListItemDtoPaginatedList> {
         let url_ = this.baseUrl + "/api/Agreement/simple-list?";
         if (search === null)
             throw new Error("The parameter 'search' cannot be null.");
         else if (search !== undefined)
             url_ += "Search=" + encodeURIComponent("" + search) + "&";
-        if (clientId === null)
-            throw new Error("The parameter 'clientId' cannot be null.");
-        else if (clientId !== undefined)
-            url_ += "ClientId=" + encodeURIComponent("" + clientId) + "&";
-        if (agreementType === null)
-            throw new Error("The parameter 'agreementType' cannot be null.");
-        else if (agreementType !== undefined)
-            url_ += "AgreementType=" + encodeURIComponent("" + agreementType) + "&";
-        if (validity === null)
-            throw new Error("The parameter 'validity' cannot be null.");
-        else if (validity !== undefined)
-            url_ += "Validity=" + encodeURIComponent("" + validity) + "&";
         if (pageNumber === null)
             throw new Error("The parameter 'pageNumber' cannot be null.");
         else if (pageNumber !== undefined)
@@ -831,355 +1017,10 @@ export class AgreementServiceProxy {
     }
 
     /**
-     * @param body (optional)
+     * @param body (optional) 
      * @return Success
      */
-    documentFilePut(agreementId: number, forceUpdate: boolean, body?: string | undefined): Observable<void> {
-        let url_ = this.baseUrl + "/api/Agreement/{agreementId}/document-file/{forceUpdate}";
-        if (agreementId === undefined || agreementId === null)
-            throw new Error("The parameter 'agreementId' must be defined.");
-        url_ = url_.replace("{agreementId}", encodeURIComponent("" + agreementId));
-        if (forceUpdate === undefined || forceUpdate === null)
-            throw new Error("The parameter 'forceUpdate' must be defined.");
-        url_ = url_.replace("{forceUpdate}", encodeURIComponent("" + forceUpdate));
-        url_ = url_.replace(/[?&]$/, "");
-
-        const content_ = JSON.stringify(body);
-
-        let options_ : any = {
-            body: content_,
-            observe: "response",
-            responseType: "blob",
-            headers: new HttpHeaders({
-                "Content-Type": "application/json",
-            })
-        };
-
-        return this.http.request("put", url_, options_).pipe(_observableMergeMap((response_ : any) => {
-            return this.processDocumentFilePut(response_);
-        })).pipe(_observableCatch((response_: any) => {
-            if (response_ instanceof HttpResponseBase) {
-                try {
-                    return this.processDocumentFilePut(response_ as any);
-                } catch (e) {
-                    return _observableThrow(e) as any as Observable<void>;
-                }
-            } else
-                return _observableThrow(response_) as any as Observable<void>;
-        }));
-    }
-
-    protected processDocumentFilePut(response: HttpResponseBase): Observable<void> {
-        const status = response.status;
-        const responseBlob =
-            response instanceof HttpResponse ? response.body :
-            (response as any).error instanceof Blob ? (response as any).error : undefined;
-
-        let _headers: any = {}; if (response.headers) { for (let key of response.headers.keys()) { _headers[key] = response.headers.get(key); }}
-        if (status === 200) {
-            return blobToText(responseBlob).pipe(_observableMergeMap(_responseText => {
-            return _observableOf<void>(null as any);
-            }));
-        } else if (status !== 200 && status !== 204) {
-            return blobToText(responseBlob).pipe(_observableMergeMap(_responseText => {
-            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
-            }));
-        }
-        return _observableOf<void>(null as any);
-    }
-
-    /**
-     * @return Success
-     */
-    documentFileGet(agreementId: number, documentFileVersion: number): Observable<void> {
-        let url_ = this.baseUrl + "/api/Agreement/{agreementId}/document-file/{documentFileVersion}";
-        if (agreementId === undefined || agreementId === null)
-            throw new Error("The parameter 'agreementId' must be defined.");
-        url_ = url_.replace("{agreementId}", encodeURIComponent("" + agreementId));
-        if (documentFileVersion === undefined || documentFileVersion === null)
-            throw new Error("The parameter 'documentFileVersion' must be defined.");
-        url_ = url_.replace("{documentFileVersion}", encodeURIComponent("" + documentFileVersion));
-        url_ = url_.replace(/[?&]$/, "");
-
-        let options_ : any = {
-            observe: "response",
-            responseType: "blob",
-            headers: new HttpHeaders({
-            })
-        };
-
-        return this.http.request("get", url_, options_).pipe(_observableMergeMap((response_ : any) => {
-            return this.processDocumentFileGet(response_);
-        })).pipe(_observableCatch((response_: any) => {
-            if (response_ instanceof HttpResponseBase) {
-                try {
-                    return this.processDocumentFileGet(response_ as any);
-                } catch (e) {
-                    return _observableThrow(e) as any as Observable<void>;
-                }
-            } else
-                return _observableThrow(response_) as any as Observable<void>;
-        }));
-    }
-
-    protected processDocumentFileGet(response: HttpResponseBase): Observable<void> {
-        const status = response.status;
-        const responseBlob =
-            response instanceof HttpResponse ? response.body :
-            (response as any).error instanceof Blob ? (response as any).error : undefined;
-
-        let _headers: any = {}; if (response.headers) { for (let key of response.headers.keys()) { _headers[key] = response.headers.get(key); }}
-        if (status === 200) {
-            return blobToText(responseBlob).pipe(_observableMergeMap(_responseText => {
-            return _observableOf<void>(null as any);
-            }));
-        } else if (status !== 200 && status !== 204) {
-            return blobToText(responseBlob).pipe(_observableMergeMap(_responseText => {
-            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
-            }));
-        }
-        return _observableOf<void>(null as any);
-    }
-
-    /**
-     * @param agreementIds (optional)
-     * @return Success
-     */
-    bulkEnvelopeRecipientsPreview(agreementIds?: number[] | undefined): Observable<SingleEnvelopeRecipientPreviewDto[]> {
-        let url_ = this.baseUrl + "/api/Agreement/bulk-envelope-recipients-preview?";
-        if (agreementIds === null)
-            throw new Error("The parameter 'agreementIds' cannot be null.");
-        else if (agreementIds !== undefined)
-            agreementIds && agreementIds.forEach(item => { url_ += "agreementIds=" + encodeURIComponent("" + item) + "&"; });
-        url_ = url_.replace(/[?&]$/, "");
-
-        let options_ : any = {
-            observe: "response",
-            responseType: "blob",
-            headers: new HttpHeaders({
-                "Accept": "text/plain"
-            })
-        };
-
-        return this.http.request("get", url_, options_).pipe(_observableMergeMap((response_ : any) => {
-            return this.processBulkEnvelopeRecipientsPreview(response_);
-        })).pipe(_observableCatch((response_: any) => {
-            if (response_ instanceof HttpResponseBase) {
-                try {
-                    return this.processBulkEnvelopeRecipientsPreview(response_ as any);
-                } catch (e) {
-                    return _observableThrow(e) as any as Observable<SingleEnvelopeRecipientPreviewDto[]>;
-                }
-            } else
-                return _observableThrow(response_) as any as Observable<SingleEnvelopeRecipientPreviewDto[]>;
-        }));
-    }
-
-    protected processBulkEnvelopeRecipientsPreview(response: HttpResponseBase): Observable<SingleEnvelopeRecipientPreviewDto[]> {
-        const status = response.status;
-        const responseBlob =
-            response instanceof HttpResponse ? response.body :
-            (response as any).error instanceof Blob ? (response as any).error : undefined;
-
-        let _headers: any = {}; if (response.headers) { for (let key of response.headers.keys()) { _headers[key] = response.headers.get(key); }}
-        if (status === 200) {
-            return blobToText(responseBlob).pipe(_observableMergeMap(_responseText => {
-            let result200: any = null;
-            let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
-            if (Array.isArray(resultData200)) {
-                result200 = [] as any;
-                for (let item of resultData200)
-                    result200!.push(SingleEnvelopeRecipientPreviewDto.fromJS(item));
-            }
-            else {
-                result200 = <any>null;
-            }
-            return _observableOf(result200);
-            }));
-        } else if (status !== 200 && status !== 204) {
-            return blobToText(responseBlob).pipe(_observableMergeMap(_responseText => {
-            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
-            }));
-        }
-        return _observableOf<SingleEnvelopeRecipientPreviewDto[]>(null as any);
-    }
-
-    /**
-     * @param body (optional)
-     * @return Success
-     */
-    sendEnvelope(body?: SendEnvelopeCommand | undefined): Observable<void> {
-        let url_ = this.baseUrl + "/api/Agreement/send-envelope";
-        url_ = url_.replace(/[?&]$/, "");
-
-        const content_ = JSON.stringify(body);
-
-        let options_ : any = {
-            body: content_,
-            observe: "response",
-            responseType: "blob",
-            headers: new HttpHeaders({
-                "Content-Type": "application/json",
-            })
-        };
-
-        return this.http.request("post", url_, options_).pipe(_observableMergeMap((response_ : any) => {
-            return this.processSendEnvelope(response_);
-        })).pipe(_observableCatch((response_: any) => {
-            if (response_ instanceof HttpResponseBase) {
-                try {
-                    return this.processSendEnvelope(response_ as any);
-                } catch (e) {
-                    return _observableThrow(e) as any as Observable<void>;
-                }
-            } else
-                return _observableThrow(response_) as any as Observable<void>;
-        }));
-    }
-
-    protected processSendEnvelope(response: HttpResponseBase): Observable<void> {
-        const status = response.status;
-        const responseBlob =
-            response instanceof HttpResponse ? response.body :
-            (response as any).error instanceof Blob ? (response as any).error : undefined;
-
-        let _headers: any = {}; if (response.headers) { for (let key of response.headers.keys()) { _headers[key] = response.headers.get(key); }}
-        if (status === 200) {
-            return blobToText(responseBlob).pipe(_observableMergeMap(_responseText => {
-            return _observableOf<void>(null as any);
-            }));
-        } else if (status !== 200 && status !== 204) {
-            return blobToText(responseBlob).pipe(_observableMergeMap(_responseText => {
-            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
-            }));
-        }
-        return _observableOf<void>(null as any);
-    }
-
-    /**
-     * @return Success
-     */
-    signedDocument(agreementId: number): Observable<void> {
-        let url_ = this.baseUrl + "/api/Agreement/{agreementId}/signed-document";
-        if (agreementId === undefined || agreementId === null)
-            throw new Error("The parameter 'agreementId' must be defined.");
-        url_ = url_.replace("{agreementId}", encodeURIComponent("" + agreementId));
-        url_ = url_.replace(/[?&]$/, "");
-
-        let options_ : any = {
-            observe: "response",
-            responseType: "blob",
-            headers: new HttpHeaders({
-            })
-        };
-
-        return this.http.request("get", url_, options_).pipe(_observableMergeMap((response_ : any) => {
-            return this.processSignedDocument(response_);
-        })).pipe(_observableCatch((response_: any) => {
-            if (response_ instanceof HttpResponseBase) {
-                try {
-                    return this.processSignedDocument(response_ as any);
-                } catch (e) {
-                    return _observableThrow(e) as any as Observable<void>;
-                }
-            } else
-                return _observableThrow(response_) as any as Observable<void>;
-        }));
-    }
-
-    protected processSignedDocument(response: HttpResponseBase): Observable<void> {
-        const status = response.status;
-        const responseBlob =
-            response instanceof HttpResponse ? response.body :
-            (response as any).error instanceof Blob ? (response as any).error : undefined;
-
-        let _headers: any = {}; if (response.headers) { for (let key of response.headers.keys()) { _headers[key] = response.headers.get(key); }}
-        if (status === 200) {
-            return blobToText(responseBlob).pipe(_observableMergeMap(_responseText => {
-            return _observableOf<void>(null as any);
-            }));
-        } else if (status !== 200 && status !== 204) {
-            return blobToText(responseBlob).pipe(_observableMergeMap(_responseText => {
-            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
-            }));
-        }
-        return _observableOf<void>(null as any);
-    }
-
-    /**
-     * @return Success
-     */
-    logs(agreementId: number, newestFirst: boolean): Observable<AgreementLogQueryResultDto> {
-        let url_ = this.baseUrl + "/api/Agreement/{agreementId}/logs/{newestFirst}";
-        if (agreementId === undefined || agreementId === null)
-            throw new Error("The parameter 'agreementId' must be defined.");
-        url_ = url_.replace("{agreementId}", encodeURIComponent("" + agreementId));
-        if (newestFirst === undefined || newestFirst === null)
-            throw new Error("The parameter 'newestFirst' must be defined.");
-        url_ = url_.replace("{newestFirst}", encodeURIComponent("" + newestFirst));
-        url_ = url_.replace(/[?&]$/, "");
-
-        let options_ : any = {
-            observe: "response",
-            responseType: "blob",
-            headers: new HttpHeaders({
-                "Accept": "text/plain"
-            })
-        };
-
-        return this.http.request("get", url_, options_).pipe(_observableMergeMap((response_ : any) => {
-            return this.processLogs(response_);
-        })).pipe(_observableCatch((response_: any) => {
-            if (response_ instanceof HttpResponseBase) {
-                try {
-                    return this.processLogs(response_ as any);
-                } catch (e) {
-                    return _observableThrow(e) as any as Observable<AgreementLogQueryResultDto>;
-                }
-            } else
-                return _observableThrow(response_) as any as Observable<AgreementLogQueryResultDto>;
-        }));
-    }
-
-    protected processLogs(response: HttpResponseBase): Observable<AgreementLogQueryResultDto> {
-        const status = response.status;
-        const responseBlob =
-            response instanceof HttpResponse ? response.body :
-            (response as any).error instanceof Blob ? (response as any).error : undefined;
-
-        let _headers: any = {}; if (response.headers) { for (let key of response.headers.keys()) { _headers[key] = response.headers.get(key); }}
-        if (status === 200) {
-            return blobToText(responseBlob).pipe(_observableMergeMap(_responseText => {
-            let result200: any = null;
-            let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
-            result200 = AgreementLogQueryResultDto.fromJS(resultData200);
-            return _observableOf(result200);
-            }));
-        } else if (status !== 200 && status !== 204) {
-            return blobToText(responseBlob).pipe(_observableMergeMap(_responseText => {
-            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
-            }));
-        }
-        return _observableOf<AgreementLogQueryResultDto>(null as any);
-    }
-}
-
-@Injectable()
-export class ApiServiceProxy {
-    private http: HttpClient;
-    private baseUrl: string;
-    protected jsonParseReviver: ((key: string, value: any) => any) | undefined = undefined;
-
-    constructor(@Inject(HttpClient) http: HttpClient, @Optional() @Inject(API_BASE_URL) baseUrl?: string) {
-        this.http = http;
-        this.baseUrl = baseUrl !== undefined && baseUrl !== null ? baseUrl : "";
-    }
-
-    /**
-     * @param body (optional)
-     * @return Success
-     */
-    agreementPost(body?: SaveAgreementDto | undefined): Observable<SaveAgreementCommandResult> {
+    agreementPOST(body?: SaveAgreementDto | undefined): Observable<SaveAgreementCommandResult> {
         let url_ = this.baseUrl + "/api/Agreement";
         url_ = url_.replace(/[?&]$/, "");
 
@@ -1196,11 +1037,11 @@ export class ApiServiceProxy {
         };
 
         return this.http.request("post", url_, options_).pipe(_observableMergeMap((response_ : any) => {
-            return this.processAgreementPost(response_);
+            return this.processAgreementPOST(response_);
         })).pipe(_observableCatch((response_: any) => {
             if (response_ instanceof HttpResponseBase) {
                 try {
-                    return this.processAgreementPost(response_ as any);
+                    return this.processAgreementPOST(response_ as any);
                 } catch (e) {
                     return _observableThrow(e) as any as Observable<SaveAgreementCommandResult>;
                 }
@@ -1209,7 +1050,7 @@ export class ApiServiceProxy {
         }));
     }
 
-    protected processAgreementPost(response: HttpResponseBase): Observable<SaveAgreementCommandResult> {
+    protected processAgreementPOST(response: HttpResponseBase): Observable<SaveAgreementCommandResult> {
         const status = response.status;
         const responseBlob =
             response instanceof HttpResponse ? response.body :
@@ -1232,10 +1073,10 @@ export class ApiServiceProxy {
     }
 
     /**
-     * @param body (optional)
+     * @param body (optional) 
      * @return Success
      */
-    agreementPatch(agreementId: number, body?: SaveAgreementDto | undefined): Observable<SaveAgreementCommandResult> {
+    agreementPATCH(agreementId: number, body?: SaveAgreementDto | undefined): Observable<SaveAgreementCommandResult> {
         let url_ = this.baseUrl + "/api/Agreement/{agreementId}";
         if (agreementId === undefined || agreementId === null)
             throw new Error("The parameter 'agreementId' must be defined.");
@@ -1255,11 +1096,11 @@ export class ApiServiceProxy {
         };
 
         return this.http.request("patch", url_, options_).pipe(_observableMergeMap((response_ : any) => {
-            return this.processAgreementPatch(response_);
+            return this.processAgreementPATCH(response_);
         })).pipe(_observableCatch((response_: any) => {
             if (response_ instanceof HttpResponseBase) {
                 try {
-                    return this.processAgreementPatch(response_ as any);
+                    return this.processAgreementPATCH(response_ as any);
                 } catch (e) {
                     return _observableThrow(e) as any as Observable<SaveAgreementCommandResult>;
                 }
@@ -1268,7 +1109,7 @@ export class ApiServiceProxy {
         }));
     }
 
-    protected processAgreementPatch(response: HttpResponseBase): Observable<SaveAgreementCommandResult> {
+    protected processAgreementPATCH(response: HttpResponseBase): Observable<SaveAgreementCommandResult> {
         const status = response.status;
         const responseBlob =
             response instanceof HttpResponse ? response.body :
@@ -1293,7 +1134,7 @@ export class ApiServiceProxy {
     /**
      * @return Success
      */
-    agreementGet(agreementId: number): Observable<AgreementDetailsDto> {
+    agreementGET(agreementId: number): Observable<AgreementDetailsDto> {
         let url_ = this.baseUrl + "/api/Agreement/{agreementId}";
         if (agreementId === undefined || agreementId === null)
             throw new Error("The parameter 'agreementId' must be defined.");
@@ -1309,11 +1150,11 @@ export class ApiServiceProxy {
         };
 
         return this.http.request("get", url_, options_).pipe(_observableMergeMap((response_ : any) => {
-            return this.processAgreementGet(response_);
+            return this.processAgreementGET(response_);
         })).pipe(_observableCatch((response_: any) => {
             if (response_ instanceof HttpResponseBase) {
                 try {
-                    return this.processAgreementGet(response_ as any);
+                    return this.processAgreementGET(response_ as any);
                 } catch (e) {
                     return _observableThrow(e) as any as Observable<AgreementDetailsDto>;
                 }
@@ -1322,7 +1163,7 @@ export class ApiServiceProxy {
         }));
     }
 
-    protected processAgreementGet(response: HttpResponseBase): Observable<AgreementDetailsDto> {
+    protected processAgreementGET(response: HttpResponseBase): Observable<AgreementDetailsDto> {
         const status = response.status;
         const responseBlob =
             response instanceof HttpResponse ? response.body :
@@ -1345,61 +1186,17 @@ export class ApiServiceProxy {
     }
 
     /**
+     * @param body (optional) 
      * @return Success
      */
-    agreementAttachment(agreementAttachmentId: number): Observable<void> {
-        let url_ = this.baseUrl + "/api/AgreementAttachment/{agreementAttachmentId}";
-        if (agreementAttachmentId === undefined || agreementAttachmentId === null)
-            throw new Error("The parameter 'agreementAttachmentId' must be defined.");
-        url_ = url_.replace("{agreementAttachmentId}", encodeURIComponent("" + agreementAttachmentId));
-        url_ = url_.replace(/[?&]$/, "");
-
-        let options_ : any = {
-            observe: "response",
-            responseType: "blob",
-            headers: new HttpHeaders({
-            })
-        };
-
-        return this.http.request("get", url_, options_).pipe(_observableMergeMap((response_ : any) => {
-            return this.processAgreementAttachment(response_);
-        })).pipe(_observableCatch((response_: any) => {
-            if (response_ instanceof HttpResponseBase) {
-                try {
-                    return this.processAgreementAttachment(response_ as any);
-                } catch (e) {
-                    return _observableThrow(e) as any as Observable<void>;
-                }
-            } else
-                return _observableThrow(response_) as any as Observable<void>;
-        }));
-    }
-
-    protected processAgreementAttachment(response: HttpResponseBase): Observable<void> {
-        const status = response.status;
-        const responseBlob =
-            response instanceof HttpResponse ? response.body :
-            (response as any).error instanceof Blob ? (response as any).error : undefined;
-
-        let _headers: any = {}; if (response.headers) { for (let key of response.headers.keys()) { _headers[key] = response.headers.get(key); }}
-        if (status === 200) {
-            return blobToText(responseBlob).pipe(_observableMergeMap(_responseText => {
-            return _observableOf<void>(null as any);
-            }));
-        } else if (status !== 200 && status !== 204) {
-            return blobToText(responseBlob).pipe(_observableMergeMap(_responseText => {
-            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
-            }));
-        }
-        return _observableOf<void>(null as any);
-    }
-
-    /**
-     * @param body (optional)
-     * @return Success
-     */
-    agreementTemplatePost(body?: SaveAgreementTemplateDto | undefined): Observable<SaveAgreementTemplateCommandResult> {
-        let url_ = this.baseUrl + "/api/AgreementTemplate";
+    documentFilePUT(agreementId: number, forceUpdate: boolean, body?: string | undefined): Observable<void> {
+        let url_ = this.baseUrl + "/api/Agreement/{agreementId}/document-file/{forceUpdate}";
+        if (agreementId === undefined || agreementId === null)
+            throw new Error("The parameter 'agreementId' must be defined.");
+        url_ = url_.replace("{agreementId}", encodeURIComponent("" + agreementId));
+        if (forceUpdate === undefined || forceUpdate === null)
+            throw new Error("The parameter 'forceUpdate' must be defined.");
+        url_ = url_.replace("{forceUpdate}", encodeURIComponent("" + forceUpdate));
         url_ = url_.replace(/[?&]$/, "");
 
         const content_ = JSON.stringify(body);
@@ -1410,182 +1207,15 @@ export class ApiServiceProxy {
             responseType: "blob",
             headers: new HttpHeaders({
                 "Content-Type": "application/json",
-                "Accept": "text/plain"
             })
         };
 
-        return this.http.request("post", url_, options_).pipe(_observableMergeMap((response_ : any) => {
-            return this.processAgreementTemplatePost(response_);
+        return this.http.request("put", url_, options_).pipe(_observableMergeMap((response_ : any) => {
+            return this.processDocumentFilePUT(response_);
         })).pipe(_observableCatch((response_: any) => {
             if (response_ instanceof HttpResponseBase) {
                 try {
-                    return this.processAgreementTemplatePost(response_ as any);
-                } catch (e) {
-                    return _observableThrow(e) as any as Observable<SaveAgreementTemplateCommandResult>;
-                }
-            } else
-                return _observableThrow(response_) as any as Observable<SaveAgreementTemplateCommandResult>;
-        }));
-    }
-
-    protected processAgreementTemplatePost(response: HttpResponseBase): Observable<SaveAgreementTemplateCommandResult> {
-        const status = response.status;
-        const responseBlob =
-            response instanceof HttpResponse ? response.body :
-            (response as any).error instanceof Blob ? (response as any).error : undefined;
-
-        let _headers: any = {}; if (response.headers) { for (let key of response.headers.keys()) { _headers[key] = response.headers.get(key); }}
-        if (status === 200) {
-            return blobToText(responseBlob).pipe(_observableMergeMap(_responseText => {
-            let result200: any = null;
-            let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
-            result200 = SaveAgreementTemplateCommandResult.fromJS(resultData200);
-            return _observableOf(result200);
-            }));
-        } else if (status !== 200 && status !== 204) {
-            return blobToText(responseBlob).pipe(_observableMergeMap(_responseText => {
-            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
-            }));
-        }
-        return _observableOf<SaveAgreementTemplateCommandResult>(null as any);
-    }
-
-    /**
-     * @param body (optional)
-     * @return Success
-     */
-    agreementTemplatePatch(agreementTemplateId: number, body?: SaveAgreementTemplateDto | undefined): Observable<SaveAgreementTemplateCommandResult> {
-        let url_ = this.baseUrl + "/api/AgreementTemplate/{agreementTemplateId}";
-        if (agreementTemplateId === undefined || agreementTemplateId === null)
-            throw new Error("The parameter 'agreementTemplateId' must be defined.");
-        url_ = url_.replace("{agreementTemplateId}", encodeURIComponent("" + agreementTemplateId));
-        url_ = url_.replace(/[?&]$/, "");
-
-        const content_ = JSON.stringify(body);
-
-        let options_ : any = {
-            body: content_,
-            observe: "response",
-            responseType: "blob",
-            headers: new HttpHeaders({
-                "Content-Type": "application/json",
-                "Accept": "text/plain"
-            })
-        };
-
-        return this.http.request("patch", url_, options_).pipe(_observableMergeMap((response_ : any) => {
-            return this.processAgreementTemplatePatch(response_);
-        })).pipe(_observableCatch((response_: any) => {
-            if (response_ instanceof HttpResponseBase) {
-                try {
-                    return this.processAgreementTemplatePatch(response_ as any);
-                } catch (e) {
-                    return _observableThrow(e) as any as Observable<SaveAgreementTemplateCommandResult>;
-                }
-            } else
-                return _observableThrow(response_) as any as Observable<SaveAgreementTemplateCommandResult>;
-        }));
-    }
-
-    protected processAgreementTemplatePatch(response: HttpResponseBase): Observable<SaveAgreementTemplateCommandResult> {
-        const status = response.status;
-        const responseBlob =
-            response instanceof HttpResponse ? response.body :
-            (response as any).error instanceof Blob ? (response as any).error : undefined;
-
-        let _headers: any = {}; if (response.headers) { for (let key of response.headers.keys()) { _headers[key] = response.headers.get(key); }}
-        if (status === 200) {
-            return blobToText(responseBlob).pipe(_observableMergeMap(_responseText => {
-            let result200: any = null;
-            let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
-            result200 = SaveAgreementTemplateCommandResult.fromJS(resultData200);
-            return _observableOf(result200);
-            }));
-        } else if (status !== 200 && status !== 204) {
-            return blobToText(responseBlob).pipe(_observableMergeMap(_responseText => {
-            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
-            }));
-        }
-        return _observableOf<SaveAgreementTemplateCommandResult>(null as any);
-    }
-
-    /**
-     * @return Success
-     */
-    agreementTemplateGet(agreementTemplateId: number): Observable<AgreementTemplateDetailsDto> {
-        let url_ = this.baseUrl + "/api/AgreementTemplate/{agreementTemplateId}";
-        if (agreementTemplateId === undefined || agreementTemplateId === null)
-            throw new Error("The parameter 'agreementTemplateId' must be defined.");
-        url_ = url_.replace("{agreementTemplateId}", encodeURIComponent("" + agreementTemplateId));
-        url_ = url_.replace(/[?&]$/, "");
-
-        let options_ : any = {
-            observe: "response",
-            responseType: "blob",
-            headers: new HttpHeaders({
-                "Accept": "text/plain"
-            })
-        };
-
-        return this.http.request("get", url_, options_).pipe(_observableMergeMap((response_ : any) => {
-            return this.processAgreementTemplateGet(response_);
-        })).pipe(_observableCatch((response_: any) => {
-            if (response_ instanceof HttpResponseBase) {
-                try {
-                    return this.processAgreementTemplateGet(response_ as any);
-                } catch (e) {
-                    return _observableThrow(e) as any as Observable<AgreementTemplateDetailsDto>;
-                }
-            } else
-                return _observableThrow(response_) as any as Observable<AgreementTemplateDetailsDto>;
-        }));
-    }
-
-    protected processAgreementTemplateGet(response: HttpResponseBase): Observable<AgreementTemplateDetailsDto> {
-        const status = response.status;
-        const responseBlob =
-            response instanceof HttpResponse ? response.body :
-            (response as any).error instanceof Blob ? (response as any).error : undefined;
-
-        let _headers: any = {}; if (response.headers) { for (let key of response.headers.keys()) { _headers[key] = response.headers.get(key); }}
-        if (status === 200) {
-            return blobToText(responseBlob).pipe(_observableMergeMap(_responseText => {
-            let result200: any = null;
-            let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
-            result200 = AgreementTemplateDetailsDto.fromJS(resultData200);
-            return _observableOf(result200);
-            }));
-        } else if (status !== 200 && status !== 204) {
-            return blobToText(responseBlob).pipe(_observableMergeMap(_responseText => {
-            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
-            }));
-        }
-        return _observableOf<AgreementTemplateDetailsDto>(null as any);
-    }
-
-    /**
-     * @return Success
-     */
-    agreementTemplateAttachment(agreementTemplateAttachmentId: number): Observable<void> {
-        let url_ = this.baseUrl + "/api/AgreementTemplateAttachment/{agreementTemplateAttachmentId}";
-        if (agreementTemplateAttachmentId === undefined || agreementTemplateAttachmentId === null)
-            throw new Error("The parameter 'agreementTemplateAttachmentId' must be defined.");
-        url_ = url_.replace("{agreementTemplateAttachmentId}", encodeURIComponent("" + agreementTemplateAttachmentId));
-        url_ = url_.replace(/[?&]$/, "");
-
-        let options_ : any = {
-            observe: "response",
-            responseType: "blob",
-            headers: new HttpHeaders({
-            })
-        };
-
-        return this.http.request("get", url_, options_).pipe(_observableMergeMap((response_ : any) => {
-            return this.processAgreementTemplateAttachment(response_);
-        })).pipe(_observableCatch((response_: any) => {
-            if (response_ instanceof HttpResponseBase) {
-                try {
-                    return this.processAgreementTemplateAttachment(response_ as any);
+                    return this.processDocumentFilePUT(response_ as any);
                 } catch (e) {
                     return _observableThrow(e) as any as Observable<void>;
                 }
@@ -1594,7 +1224,7 @@ export class ApiServiceProxy {
         }));
     }
 
-    protected processAgreementTemplateAttachment(response: HttpResponseBase): Observable<void> {
+    protected processDocumentFilePUT(response: HttpResponseBase): Observable<void> {
         const status = response.status;
         const responseBlob =
             response instanceof HttpResponse ? response.body :
@@ -1614,444 +1244,7 @@ export class ApiServiceProxy {
     }
 
     /**
-     * @return Success
-     */
-    clientPeriod(clientPeriodId: string): Observable<void> {
-        let url_ = this.baseUrl + "/api/ClientPeriod/{clientPeriodId}";
-        if (clientPeriodId === undefined || clientPeriodId === null)
-            throw new Error("The parameter 'clientPeriodId' must be defined.");
-        url_ = url_.replace("{clientPeriodId}", encodeURIComponent("" + clientPeriodId));
-        url_ = url_.replace(/[?&]$/, "");
-
-        let options_ : any = {
-            observe: "response",
-            responseType: "blob",
-            headers: new HttpHeaders({
-            })
-        };
-
-        return this.http.request("delete", url_, options_).pipe(_observableMergeMap((response_ : any) => {
-            return this.processClientPeriod(response_);
-        })).pipe(_observableCatch((response_: any) => {
-            if (response_ instanceof HttpResponseBase) {
-                try {
-                    return this.processClientPeriod(response_ as any);
-                } catch (e) {
-                    return _observableThrow(e) as any as Observable<void>;
-                }
-            } else
-                return _observableThrow(response_) as any as Observable<void>;
-        }));
-    }
-
-    protected processClientPeriod(response: HttpResponseBase): Observable<void> {
-        const status = response.status;
-        const responseBlob =
-            response instanceof HttpResponse ? response.body :
-            (response as any).error instanceof Blob ? (response as any).error : undefined;
-
-        let _headers: any = {}; if (response.headers) { for (let key of response.headers.keys()) { _headers[key] = response.headers.get(key); }}
-        if (status === 200) {
-            return blobToText(responseBlob).pipe(_observableMergeMap(_responseText => {
-            return _observableOf<void>(null as any);
-            }));
-        } else if (status !== 200 && status !== 204) {
-            return blobToText(responseBlob).pipe(_observableMergeMap(_responseText => {
-            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
-            }));
-        }
-        return _observableOf<void>(null as any);
-    }
-
-    /**
-     * @return Success
-     */
-    clients(clientId: number): Observable<ClientDetailsDto> {
-        let url_ = this.baseUrl + "/api/Clients/{clientId}";
-        if (clientId === undefined || clientId === null)
-            throw new Error("The parameter 'clientId' must be defined.");
-        url_ = url_.replace("{clientId}", encodeURIComponent("" + clientId));
-        url_ = url_.replace(/[?&]$/, "");
-
-        let options_ : any = {
-            observe: "response",
-            responseType: "blob",
-            headers: new HttpHeaders({
-                "Accept": "text/plain"
-            })
-        };
-
-        return this.http.request("get", url_, options_).pipe(_observableMergeMap((response_ : any) => {
-            return this.processClients(response_);
-        })).pipe(_observableCatch((response_: any) => {
-            if (response_ instanceof HttpResponseBase) {
-                try {
-                    return this.processClients(response_ as any);
-                } catch (e) {
-                    return _observableThrow(e) as any as Observable<ClientDetailsDto>;
-                }
-            } else
-                return _observableThrow(response_) as any as Observable<ClientDetailsDto>;
-        }));
-    }
-
-    protected processClients(response: HttpResponseBase): Observable<ClientDetailsDto> {
-        const status = response.status;
-        const responseBlob =
-            response instanceof HttpResponse ? response.body :
-            (response as any).error instanceof Blob ? (response as any).error : undefined;
-
-        let _headers: any = {}; if (response.headers) { for (let key of response.headers.keys()) { _headers[key] = response.headers.get(key); }}
-        if (status === 200) {
-            return blobToText(responseBlob).pipe(_observableMergeMap(_responseText => {
-            let result200: any = null;
-            let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
-            result200 = ClientDetailsDto.fromJS(resultData200);
-            return _observableOf(result200);
-            }));
-        } else if (status !== 200 && status !== 204) {
-            return blobToText(responseBlob).pipe(_observableMergeMap(_responseText => {
-            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
-            }));
-        }
-        return _observableOf<ClientDetailsDto>(null as any);
-    }
-
-    /**
-     * @return Success
-     */
-    consultantPeriod(consultantPeriodId: string): Observable<void> {
-        let url_ = this.baseUrl + "/api/ConsultantPeriod/{consultantPeriodId}";
-        if (consultantPeriodId === undefined || consultantPeriodId === null)
-            throw new Error("The parameter 'consultantPeriodId' must be defined.");
-        url_ = url_.replace("{consultantPeriodId}", encodeURIComponent("" + consultantPeriodId));
-        url_ = url_.replace(/[?&]$/, "");
-
-        let options_ : any = {
-            observe: "response",
-            responseType: "blob",
-            headers: new HttpHeaders({
-            })
-        };
-
-        return this.http.request("delete", url_, options_).pipe(_observableMergeMap((response_ : any) => {
-            return this.processConsultantPeriod(response_);
-        })).pipe(_observableCatch((response_: any) => {
-            if (response_ instanceof HttpResponseBase) {
-                try {
-                    return this.processConsultantPeriod(response_ as any);
-                } catch (e) {
-                    return _observableThrow(e) as any as Observable<void>;
-                }
-            } else
-                return _observableThrow(response_) as any as Observable<void>;
-        }));
-    }
-
-    protected processConsultantPeriod(response: HttpResponseBase): Observable<void> {
-        const status = response.status;
-        const responseBlob =
-            response instanceof HttpResponse ? response.body :
-            (response as any).error instanceof Blob ? (response as any).error : undefined;
-
-        let _headers: any = {}; if (response.headers) { for (let key of response.headers.keys()) { _headers[key] = response.headers.get(key); }}
-        if (status === 200) {
-            return blobToText(responseBlob).pipe(_observableMergeMap(_responseText => {
-            return _observableOf<void>(null as any);
-            }));
-        } else if (status !== 200 && status !== 204) {
-            return blobToText(responseBlob).pipe(_observableMergeMap(_responseText => {
-            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
-            }));
-        }
-        return _observableOf<void>(null as any);
-    }
-
-    /**
-     * @param body (optional)
-     * @return Success
-     */
-    docuSignTest(body?: SendToDocuSignTestCommand | undefined): Observable<string> {
-        let url_ = this.baseUrl + "/api/DocuSignTest";
-        url_ = url_.replace(/[?&]$/, "");
-
-        const content_ = JSON.stringify(body);
-
-        let options_ : any = {
-            body: content_,
-            observe: "response",
-            responseType: "blob",
-            headers: new HttpHeaders({
-                "Content-Type": "application/json",
-                "Accept": "text/plain"
-            })
-        };
-
-        return this.http.request("post", url_, options_).pipe(_observableMergeMap((response_ : any) => {
-            return this.processDocuSignTest(response_);
-        })).pipe(_observableCatch((response_: any) => {
-            if (response_ instanceof HttpResponseBase) {
-                try {
-                    return this.processDocuSignTest(response_ as any);
-                } catch (e) {
-                    return _observableThrow(e) as any as Observable<string>;
-                }
-            } else
-                return _observableThrow(response_) as any as Observable<string>;
-        }));
-    }
-
-    protected processDocuSignTest(response: HttpResponseBase): Observable<string> {
-        const status = response.status;
-        const responseBlob =
-            response instanceof HttpResponse ? response.body :
-            (response as any).error instanceof Blob ? (response as any).error : undefined;
-
-        let _headers: any = {}; if (response.headers) { for (let key of response.headers.keys()) { _headers[key] = response.headers.get(key); }}
-        if (status === 200) {
-            return blobToText(responseBlob).pipe(_observableMergeMap(_responseText => {
-            let result200: any = null;
-            let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
-                result200 = resultData200 !== undefined ? resultData200 : <any>null;
-
-            return _observableOf(result200);
-            }));
-        } else if (status !== 200 && status !== 204) {
-            return blobToText(responseBlob).pipe(_observableMergeMap(_responseText => {
-            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
-            }));
-        }
-        return _observableOf<string>(null as any);
-    }
-
-    /**
-     * @param invoicingEntity (optional)
-     * @param paymentEntity (optional)
-     * @param salesType (optional)
-     * @param deliveryType (optional)
-     * @param workflowStatus (optional)
-     * @param responsibleEmployees (optional)
-     * @param syncStateStatuses (optional)
-     * @param showNewSales (optional)
-     * @param showExtensions (optional)
-     * @param showPendingSteps (optional)
-     * @param showPendingStepType (optional)
-     * @param showUpcomingSteps (optional)
-     * @param showUpcomingStepType (optional)
-     * @param showCompleted (optional)
-     * @param showDeleted (optional)
-     * @param search (optional)
-     * @param pageNumber (optional)
-     * @param pageSize (optional)
-     * @param sort (optional)
-     * @return Success
-     */
-    workflow(invoicingEntity?: number | undefined, paymentEntity?: number | undefined, salesType?: number | undefined, deliveryType?: number | undefined, workflowStatus?: WorkflowStatus | undefined, responsibleEmployees?: number[] | undefined, syncStateStatuses?: SyncStateStatus[] | undefined, showNewSales?: boolean | undefined, showExtensions?: boolean | undefined, showPendingSteps?: boolean | undefined, showPendingStepType?: StepType | undefined, showUpcomingSteps?: boolean | undefined, showUpcomingStepType?: StepType | undefined, showCompleted?: boolean | undefined, showDeleted?: boolean | undefined, search?: string | undefined, pageNumber?: number | undefined, pageSize?: number | undefined, sort?: string | undefined): Observable<WorkflowListItemDtoPaginatedList> {
-        let url_ = this.baseUrl + "/api/Workflow?";
-        if (invoicingEntity === null)
-            throw new Error("The parameter 'invoicingEntity' cannot be null.");
-        else if (invoicingEntity !== undefined)
-            url_ += "InvoicingEntity=" + encodeURIComponent("" + invoicingEntity) + "&";
-        if (paymentEntity === null)
-            throw new Error("The parameter 'paymentEntity' cannot be null.");
-        else if (paymentEntity !== undefined)
-            url_ += "PaymentEntity=" + encodeURIComponent("" + paymentEntity) + "&";
-        if (salesType === null)
-            throw new Error("The parameter 'salesType' cannot be null.");
-        else if (salesType !== undefined)
-            url_ += "SalesType=" + encodeURIComponent("" + salesType) + "&";
-        if (deliveryType === null)
-            throw new Error("The parameter 'deliveryType' cannot be null.");
-        else if (deliveryType !== undefined)
-            url_ += "DeliveryType=" + encodeURIComponent("" + deliveryType) + "&";
-        if (workflowStatus === null)
-            throw new Error("The parameter 'workflowStatus' cannot be null.");
-        else if (workflowStatus !== undefined)
-            url_ += "WorkflowStatus=" + encodeURIComponent("" + workflowStatus) + "&";
-        if (responsibleEmployees === null)
-            throw new Error("The parameter 'responsibleEmployees' cannot be null.");
-        else if (responsibleEmployees !== undefined)
-            responsibleEmployees && responsibleEmployees.forEach(item => { url_ += "ResponsibleEmployees=" + encodeURIComponent("" + item) + "&"; });
-        if (syncStateStatuses === null)
-            throw new Error("The parameter 'syncStateStatuses' cannot be null.");
-        else if (syncStateStatuses !== undefined)
-            syncStateStatuses && syncStateStatuses.forEach(item => { url_ += "SyncStateStatuses=" + encodeURIComponent("" + item) + "&"; });
-        if (showNewSales === null)
-            throw new Error("The parameter 'showNewSales' cannot be null.");
-        else if (showNewSales !== undefined)
-            url_ += "ShowNewSales=" + encodeURIComponent("" + showNewSales) + "&";
-        if (showExtensions === null)
-            throw new Error("The parameter 'showExtensions' cannot be null.");
-        else if (showExtensions !== undefined)
-            url_ += "ShowExtensions=" + encodeURIComponent("" + showExtensions) + "&";
-        if (showPendingSteps === null)
-            throw new Error("The parameter 'showPendingSteps' cannot be null.");
-        else if (showPendingSteps !== undefined)
-            url_ += "ShowPendingSteps=" + encodeURIComponent("" + showPendingSteps) + "&";
-        if (showPendingStepType === null)
-            throw new Error("The parameter 'showPendingStepType' cannot be null.");
-        else if (showPendingStepType !== undefined)
-            url_ += "ShowPendingStepType=" + encodeURIComponent("" + showPendingStepType) + "&";
-        if (showUpcomingSteps === null)
-            throw new Error("The parameter 'showUpcomingSteps' cannot be null.");
-        else if (showUpcomingSteps !== undefined)
-            url_ += "ShowUpcomingSteps=" + encodeURIComponent("" + showUpcomingSteps) + "&";
-        if (showUpcomingStepType === null)
-            throw new Error("The parameter 'showUpcomingStepType' cannot be null.");
-        else if (showUpcomingStepType !== undefined)
-            url_ += "ShowUpcomingStepType=" + encodeURIComponent("" + showUpcomingStepType) + "&";
-        if (showCompleted === null)
-            throw new Error("The parameter 'showCompleted' cannot be null.");
-        else if (showCompleted !== undefined)
-            url_ += "ShowCompleted=" + encodeURIComponent("" + showCompleted) + "&";
-        if (showDeleted === null)
-            throw new Error("The parameter 'showDeleted' cannot be null.");
-        else if (showDeleted !== undefined)
-            url_ += "ShowDeleted=" + encodeURIComponent("" + showDeleted) + "&";
-        if (search === null)
-            throw new Error("The parameter 'search' cannot be null.");
-        else if (search !== undefined)
-            url_ += "Search=" + encodeURIComponent("" + search) + "&";
-        if (pageNumber === null)
-            throw new Error("The parameter 'pageNumber' cannot be null.");
-        else if (pageNumber !== undefined)
-            url_ += "PageNumber=" + encodeURIComponent("" + pageNumber) + "&";
-        if (pageSize === null)
-            throw new Error("The parameter 'pageSize' cannot be null.");
-        else if (pageSize !== undefined)
-            url_ += "PageSize=" + encodeURIComponent("" + pageSize) + "&";
-        if (sort === null)
-            throw new Error("The parameter 'sort' cannot be null.");
-        else if (sort !== undefined)
-            url_ += "Sort=" + encodeURIComponent("" + sort) + "&";
-        url_ = url_.replace(/[?&]$/, "");
-
-        let options_ : any = {
-            observe: "response",
-            responseType: "blob",
-            headers: new HttpHeaders({
-                "Accept": "text/plain"
-            })
-        };
-
-        return this.http.request("get", url_, options_).pipe(_observableMergeMap((response_ : any) => {
-            return this.processWorkflow(response_);
-        })).pipe(_observableCatch((response_: any) => {
-            if (response_ instanceof HttpResponseBase) {
-                try {
-                    return this.processWorkflow(response_ as any);
-                } catch (e) {
-                    return _observableThrow(e) as any as Observable<WorkflowListItemDtoPaginatedList>;
-                }
-            } else
-                return _observableThrow(response_) as any as Observable<WorkflowListItemDtoPaginatedList>;
-        }));
-    }
-
-    protected processWorkflow(response: HttpResponseBase): Observable<WorkflowListItemDtoPaginatedList> {
-        const status = response.status;
-        const responseBlob =
-            response instanceof HttpResponse ? response.body :
-            (response as any).error instanceof Blob ? (response as any).error : undefined;
-
-        let _headers: any = {}; if (response.headers) { for (let key of response.headers.keys()) { _headers[key] = response.headers.get(key); }}
-        if (status === 200) {
-            return blobToText(responseBlob).pipe(_observableMergeMap(_responseText => {
-            let result200: any = null;
-            let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
-            result200 = WorkflowListItemDtoPaginatedList.fromJS(resultData200);
-            return _observableOf(result200);
-            }));
-        } else if (status !== 200 && status !== 204) {
-            return blobToText(responseBlob).pipe(_observableMergeMap(_responseText => {
-            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
-            }));
-        }
-        return _observableOf<WorkflowListItemDtoPaginatedList>(null as any);
-    }
-
-    /**
-     * @param isInternalContract (optional)
-     * @param pm3ConsultantId (optional)
-     * @return Success
-     */
-    workflowIntegration(periodId: string, isInternalContract?: boolean | undefined, pm3ConsultantId?: number | undefined): Observable<WorkflowPeriodForLegacyContractDto> {
-        let url_ = this.baseUrl + "/api/WorkflowIntegration/{periodId}?";
-        if (periodId === undefined || periodId === null)
-            throw new Error("The parameter 'periodId' must be defined.");
-        url_ = url_.replace("{periodId}", encodeURIComponent("" + periodId));
-        if (isInternalContract === null)
-            throw new Error("The parameter 'isInternalContract' cannot be null.");
-        else if (isInternalContract !== undefined)
-            url_ += "isInternalContract=" + encodeURIComponent("" + isInternalContract) + "&";
-        if (pm3ConsultantId === null)
-            throw new Error("The parameter 'pm3ConsultantId' cannot be null.");
-        else if (pm3ConsultantId !== undefined)
-            url_ += "pm3ConsultantId=" + encodeURIComponent("" + pm3ConsultantId) + "&";
-        url_ = url_.replace(/[?&]$/, "");
-
-        let options_ : any = {
-            observe: "response",
-            responseType: "blob",
-            headers: new HttpHeaders({
-                "Accept": "text/plain"
-            })
-        };
-
-        return this.http.request("get", url_, options_).pipe(_observableMergeMap((response_ : any) => {
-            return this.processWorkflowIntegration(response_);
-        })).pipe(_observableCatch((response_: any) => {
-            if (response_ instanceof HttpResponseBase) {
-                try {
-                    return this.processWorkflowIntegration(response_ as any);
-                } catch (e) {
-                    return _observableThrow(e) as any as Observable<WorkflowPeriodForLegacyContractDto>;
-                }
-            } else
-                return _observableThrow(response_) as any as Observable<WorkflowPeriodForLegacyContractDto>;
-        }));
-    }
-
-    protected processWorkflowIntegration(response: HttpResponseBase): Observable<WorkflowPeriodForLegacyContractDto> {
-        const status = response.status;
-        const responseBlob =
-            response instanceof HttpResponse ? response.body :
-            (response as any).error instanceof Blob ? (response as any).error : undefined;
-
-        let _headers: any = {}; if (response.headers) { for (let key of response.headers.keys()) { _headers[key] = response.headers.get(key); }}
-        if (status === 200) {
-            return blobToText(responseBlob).pipe(_observableMergeMap(_responseText => {
-            let result200: any = null;
-            let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
-            result200 = WorkflowPeriodForLegacyContractDto.fromJS(resultData200);
-            return _observableOf(result200);
-            }));
-        } else if (status === 401) {
-            return blobToText(responseBlob).pipe(_observableMergeMap(_responseText => {
-            return throwException("Unauthorized", status, _responseText, _headers);
-            }));
-        } else if (status !== 200 && status !== 204) {
-            return blobToText(responseBlob).pipe(_observableMergeMap(_responseText => {
-            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
-            }));
-        }
-        return _observableOf<WorkflowPeriodForLegacyContractDto>(null as any);
-    }
-}
-
-@Injectable()
-export class DocumentFileServiceProxy {
-    private http: HttpClient;
-    private baseUrl: string;
-    protected jsonParseReviver: ((key: string, value: any) => any) | undefined = undefined;
-
-    constructor(@Inject(HttpClient) http: HttpClient, @Optional() @Inject(API_BASE_URL) baseUrl?: string) {
-        this.http = http;
-        this.baseUrl = baseUrl !== undefined && baseUrl !== null ? baseUrl : "";
-    }
-
-    /**
-     * @param body (optional)
+     * @param body (optional) 
      * @return Success
      */
     completeAgreement(agreementId: number, forceUpdate: boolean, body?: CompleteAgreementDocumentFileDraftDto | undefined): Observable<void> {
@@ -2164,6 +1357,59 @@ export class DocumentFileServiceProxy {
     /**
      * @return Success
      */
+    documentFileGET(agreementId: number, documentFileVersion: number): Observable<void> {
+        let url_ = this.baseUrl + "/api/Agreement/{agreementId}/document-file/{documentFileVersion}";
+        if (agreementId === undefined || agreementId === null)
+            throw new Error("The parameter 'agreementId' must be defined.");
+        url_ = url_.replace("{agreementId}", encodeURIComponent("" + agreementId));
+        if (documentFileVersion === undefined || documentFileVersion === null)
+            throw new Error("The parameter 'documentFileVersion' must be defined.");
+        url_ = url_.replace("{documentFileVersion}", encodeURIComponent("" + documentFileVersion));
+        url_ = url_.replace(/[?&]$/, "");
+
+        let options_ : any = {
+            observe: "response",
+            responseType: "blob",
+            headers: new HttpHeaders({
+            })
+        };
+
+        return this.http.request("get", url_, options_).pipe(_observableMergeMap((response_ : any) => {
+            return this.processDocumentFileGET(response_);
+        })).pipe(_observableCatch((response_: any) => {
+            if (response_ instanceof HttpResponseBase) {
+                try {
+                    return this.processDocumentFileGET(response_ as any);
+                } catch (e) {
+                    return _observableThrow(e) as any as Observable<void>;
+                }
+            } else
+                return _observableThrow(response_) as any as Observable<void>;
+        }));
+    }
+
+    protected processDocumentFileGET(response: HttpResponseBase): Observable<void> {
+        const status = response.status;
+        const responseBlob =
+            response instanceof HttpResponse ? response.body :
+            (response as any).error instanceof Blob ? (response as any).error : undefined;
+
+        let _headers: any = {}; if (response.headers) { for (let key of response.headers.keys()) { _headers[key] = response.headers.get(key); }}
+        if (status === 200) {
+            return blobToText(responseBlob).pipe(_observableMergeMap(_responseText => {
+            return _observableOf<void>(null as any);
+            }));
+        } else if (status !== 200 && status !== 204) {
+            return blobToText(responseBlob).pipe(_observableMergeMap(_responseText => {
+            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+            }));
+        }
+        return _observableOf<void>(null as any);
+    }
+
+    /**
+     * @return Success
+     */
     agreementVersions(agreementId: number): Observable<AgreementDocumentFileVersionDto[]> {
         let url_ = this.baseUrl + "/api/Agreement/{agreementId}/document-file/agreement-versions";
         if (agreementId === undefined || agreementId === null)
@@ -2221,9 +1467,532 @@ export class DocumentFileServiceProxy {
         }
         return _observableOf<AgreementDocumentFileVersionDto[]>(null as any);
     }
+}
+
+@Injectable()
+export class AgreementAttachmentServiceProxy {
+    private http: HttpClient;
+    private baseUrl: string;
+    protected jsonParseReviver: ((key: string, value: any) => any) | undefined = undefined;
+
+    constructor(@Inject(HttpClient) http: HttpClient, @Optional() @Inject(API_BASE_URL) baseUrl?: string) {
+        this.http = http;
+        this.baseUrl = baseUrl !== undefined && baseUrl !== null ? baseUrl : "";
+    }
 
     /**
-     * @param body (optional)
+     * @return Success
+     */
+    agreementAttachment(agreementAttachmentId: number): Observable<void> {
+        let url_ = this.baseUrl + "/api/AgreementAttachment/{agreementAttachmentId}";
+        if (agreementAttachmentId === undefined || agreementAttachmentId === null)
+            throw new Error("The parameter 'agreementAttachmentId' must be defined.");
+        url_ = url_.replace("{agreementAttachmentId}", encodeURIComponent("" + agreementAttachmentId));
+        url_ = url_.replace(/[?&]$/, "");
+
+        let options_ : any = {
+            observe: "response",
+            responseType: "blob",
+            headers: new HttpHeaders({
+            })
+        };
+
+        return this.http.request("get", url_, options_).pipe(_observableMergeMap((response_ : any) => {
+            return this.processAgreementAttachment(response_);
+        })).pipe(_observableCatch((response_: any) => {
+            if (response_ instanceof HttpResponseBase) {
+                try {
+                    return this.processAgreementAttachment(response_ as any);
+                } catch (e) {
+                    return _observableThrow(e) as any as Observable<void>;
+                }
+            } else
+                return _observableThrow(response_) as any as Observable<void>;
+        }));
+    }
+
+    protected processAgreementAttachment(response: HttpResponseBase): Observable<void> {
+        const status = response.status;
+        const responseBlob =
+            response instanceof HttpResponse ? response.body :
+            (response as any).error instanceof Blob ? (response as any).error : undefined;
+
+        let _headers: any = {}; if (response.headers) { for (let key of response.headers.keys()) { _headers[key] = response.headers.get(key); }}
+        if (status === 200) {
+            return blobToText(responseBlob).pipe(_observableMergeMap(_responseText => {
+            return _observableOf<void>(null as any);
+            }));
+        } else if (status !== 200 && status !== 204) {
+            return blobToText(responseBlob).pipe(_observableMergeMap(_responseText => {
+            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+            }));
+        }
+        return _observableOf<void>(null as any);
+    }
+}
+
+@Injectable()
+export class AgreementTemplateServiceProxy {
+    private http: HttpClient;
+    private baseUrl: string;
+    protected jsonParseReviver: ((key: string, value: any) => any) | undefined = undefined;
+
+    constructor(@Inject(HttpClient) http: HttpClient, @Optional() @Inject(API_BASE_URL) baseUrl?: string) {
+        this.http = http;
+        this.baseUrl = baseUrl !== undefined && baseUrl !== null ? baseUrl : "";
+    }
+
+    /**
+     * @param isClientTemplate (optional) 
+     * @param search (optional) 
+     * @param tenantId (optional) 
+     * @param legalEntityId (optional) 
+     * @param name (optional) 
+     * @param clientId (optional) 
+     * @param language (optional) 
+     * @param agreementType (optional) 
+     * @param agreementRecipients (optional) 
+     * @param contractTypes (optional) 
+     * @param salesTypes (optional) 
+     * @param deliveryTypes (optional) 
+     * @param lastUpdatedByEmployeeId (optional) 
+     * @param isEnabled (optional) 
+     * @param linkState (optional) 
+     * @param linkStateAccepted (optional) 
+     * @param pageNumber (optional) 
+     * @param pageSize (optional) 
+     * @param sort (optional) 
+     * @return Success
+     */
+    list2(isClientTemplate?: boolean | undefined, search?: string | undefined, tenantId?: number[] | undefined, legalEntityId?: number[] | undefined, name?: string | undefined, clientId?: number[] | undefined, language?: AgreementLanguage[] | undefined, agreementType?: AgreementType[] | undefined, agreementRecipients?: number[] | undefined, contractTypes?: number[] | undefined, salesTypes?: number[] | undefined, deliveryTypes?: number[] | undefined, lastUpdatedByEmployeeId?: number[] | undefined, isEnabled?: boolean | undefined, linkState?: number | undefined, linkStateAccepted?: boolean | undefined, pageNumber?: number | undefined, pageSize?: number | undefined, sort?: string | undefined): Observable<AgreementTemplatesListItemDtoPaginatedList> {
+        let url_ = this.baseUrl + "/api/AgreementTemplate/list?";
+        if (isClientTemplate === null)
+            throw new Error("The parameter 'isClientTemplate' cannot be null.");
+        else if (isClientTemplate !== undefined)
+            url_ += "IsClientTemplate=" + encodeURIComponent("" + isClientTemplate) + "&";
+        if (search === null)
+            throw new Error("The parameter 'search' cannot be null.");
+        else if (search !== undefined)
+            url_ += "Search=" + encodeURIComponent("" + search) + "&";
+        if (tenantId === null)
+            throw new Error("The parameter 'tenantId' cannot be null.");
+        else if (tenantId !== undefined)
+            tenantId && tenantId.forEach(item => { url_ += "TenantId=" + encodeURIComponent("" + item) + "&"; });
+        if (legalEntityId === null)
+            throw new Error("The parameter 'legalEntityId' cannot be null.");
+        else if (legalEntityId !== undefined)
+            legalEntityId && legalEntityId.forEach(item => { url_ += "LegalEntityId=" + encodeURIComponent("" + item) + "&"; });
+        if (name === null)
+            throw new Error("The parameter 'name' cannot be null.");
+        else if (name !== undefined)
+            url_ += "Name=" + encodeURIComponent("" + name) + "&";
+        if (clientId === null)
+            throw new Error("The parameter 'clientId' cannot be null.");
+        else if (clientId !== undefined)
+            clientId && clientId.forEach(item => { url_ += "ClientId=" + encodeURIComponent("" + item) + "&"; });
+        if (language === null)
+            throw new Error("The parameter 'language' cannot be null.");
+        else if (language !== undefined)
+            language && language.forEach(item => { url_ += "Language=" + encodeURIComponent("" + item) + "&"; });
+        if (agreementType === null)
+            throw new Error("The parameter 'agreementType' cannot be null.");
+        else if (agreementType !== undefined)
+            agreementType && agreementType.forEach(item => { url_ += "AgreementType=" + encodeURIComponent("" + item) + "&"; });
+        if (agreementRecipients === null)
+            throw new Error("The parameter 'agreementRecipients' cannot be null.");
+        else if (agreementRecipients !== undefined)
+            agreementRecipients && agreementRecipients.forEach(item => { url_ += "AgreementRecipients=" + encodeURIComponent("" + item) + "&"; });
+        if (contractTypes === null)
+            throw new Error("The parameter 'contractTypes' cannot be null.");
+        else if (contractTypes !== undefined)
+            contractTypes && contractTypes.forEach(item => { url_ += "ContractTypes=" + encodeURIComponent("" + item) + "&"; });
+        if (salesTypes === null)
+            throw new Error("The parameter 'salesTypes' cannot be null.");
+        else if (salesTypes !== undefined)
+            salesTypes && salesTypes.forEach(item => { url_ += "SalesTypes=" + encodeURIComponent("" + item) + "&"; });
+        if (deliveryTypes === null)
+            throw new Error("The parameter 'deliveryTypes' cannot be null.");
+        else if (deliveryTypes !== undefined)
+            deliveryTypes && deliveryTypes.forEach(item => { url_ += "DeliveryTypes=" + encodeURIComponent("" + item) + "&"; });
+        if (lastUpdatedByEmployeeId === null)
+            throw new Error("The parameter 'lastUpdatedByEmployeeId' cannot be null.");
+        else if (lastUpdatedByEmployeeId !== undefined)
+            lastUpdatedByEmployeeId && lastUpdatedByEmployeeId.forEach(item => { url_ += "LastUpdatedByEmployeeId=" + encodeURIComponent("" + item) + "&"; });
+        if (isEnabled === null)
+            throw new Error("The parameter 'isEnabled' cannot be null.");
+        else if (isEnabled !== undefined)
+            url_ += "IsEnabled=" + encodeURIComponent("" + isEnabled) + "&";
+        if (linkState === null)
+            throw new Error("The parameter 'linkState' cannot be null.");
+        else if (linkState !== undefined)
+            url_ += "LinkState=" + encodeURIComponent("" + linkState) + "&";
+        if (linkStateAccepted === null)
+            throw new Error("The parameter 'linkStateAccepted' cannot be null.");
+        else if (linkStateAccepted !== undefined)
+            url_ += "LinkStateAccepted=" + encodeURIComponent("" + linkStateAccepted) + "&";
+        if (pageNumber === null)
+            throw new Error("The parameter 'pageNumber' cannot be null.");
+        else if (pageNumber !== undefined)
+            url_ += "PageNumber=" + encodeURIComponent("" + pageNumber) + "&";
+        if (pageSize === null)
+            throw new Error("The parameter 'pageSize' cannot be null.");
+        else if (pageSize !== undefined)
+            url_ += "PageSize=" + encodeURIComponent("" + pageSize) + "&";
+        if (sort === null)
+            throw new Error("The parameter 'sort' cannot be null.");
+        else if (sort !== undefined)
+            url_ += "Sort=" + encodeURIComponent("" + sort) + "&";
+        url_ = url_.replace(/[?&]$/, "");
+
+        let options_ : any = {
+            observe: "response",
+            responseType: "blob",
+            headers: new HttpHeaders({
+                "Accept": "text/plain"
+            })
+        };
+
+        return this.http.request("get", url_, options_).pipe(_observableMergeMap((response_ : any) => {
+            return this.processList2(response_);
+        })).pipe(_observableCatch((response_: any) => {
+            if (response_ instanceof HttpResponseBase) {
+                try {
+                    return this.processList2(response_ as any);
+                } catch (e) {
+                    return _observableThrow(e) as any as Observable<AgreementTemplatesListItemDtoPaginatedList>;
+                }
+            } else
+                return _observableThrow(response_) as any as Observable<AgreementTemplatesListItemDtoPaginatedList>;
+        }));
+    }
+
+    protected processList2(response: HttpResponseBase): Observable<AgreementTemplatesListItemDtoPaginatedList> {
+        const status = response.status;
+        const responseBlob =
+            response instanceof HttpResponse ? response.body :
+            (response as any).error instanceof Blob ? (response as any).error : undefined;
+
+        let _headers: any = {}; if (response.headers) { for (let key of response.headers.keys()) { _headers[key] = response.headers.get(key); }}
+        if (status === 200) {
+            return blobToText(responseBlob).pipe(_observableMergeMap(_responseText => {
+            let result200: any = null;
+            let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
+            result200 = AgreementTemplatesListItemDtoPaginatedList.fromJS(resultData200);
+            return _observableOf(result200);
+            }));
+        } else if (status !== 200 && status !== 204) {
+            return blobToText(responseBlob).pipe(_observableMergeMap(_responseText => {
+            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+            }));
+        }
+        return _observableOf<AgreementTemplatesListItemDtoPaginatedList>(null as any);
+    }
+
+    /**
+     * @param isClientTemplate (optional) 
+     * @param search (optional) 
+     * @param pageNumber (optional) 
+     * @param pageSize (optional) 
+     * @param sort (optional) 
+     * @return Success
+     */
+    simpleList2(isClientTemplate?: boolean | undefined, search?: string | undefined, pageNumber?: number | undefined, pageSize?: number | undefined, sort?: string | undefined): Observable<SimpleAgreementTemplatesListItemDtoPaginatedList> {
+        let url_ = this.baseUrl + "/api/AgreementTemplate/simple-list?";
+        if (isClientTemplate === null)
+            throw new Error("The parameter 'isClientTemplate' cannot be null.");
+        else if (isClientTemplate !== undefined)
+            url_ += "IsClientTemplate=" + encodeURIComponent("" + isClientTemplate) + "&";
+        if (search === null)
+            throw new Error("The parameter 'search' cannot be null.");
+        else if (search !== undefined)
+            url_ += "Search=" + encodeURIComponent("" + search) + "&";
+        if (pageNumber === null)
+            throw new Error("The parameter 'pageNumber' cannot be null.");
+        else if (pageNumber !== undefined)
+            url_ += "PageNumber=" + encodeURIComponent("" + pageNumber) + "&";
+        if (pageSize === null)
+            throw new Error("The parameter 'pageSize' cannot be null.");
+        else if (pageSize !== undefined)
+            url_ += "PageSize=" + encodeURIComponent("" + pageSize) + "&";
+        if (sort === null)
+            throw new Error("The parameter 'sort' cannot be null.");
+        else if (sort !== undefined)
+            url_ += "Sort=" + encodeURIComponent("" + sort) + "&";
+        url_ = url_.replace(/[?&]$/, "");
+
+        let options_ : any = {
+            observe: "response",
+            responseType: "blob",
+            headers: new HttpHeaders({
+                "Accept": "text/plain"
+            })
+        };
+
+        return this.http.request("get", url_, options_).pipe(_observableMergeMap((response_ : any) => {
+            return this.processSimpleList2(response_);
+        })).pipe(_observableCatch((response_: any) => {
+            if (response_ instanceof HttpResponseBase) {
+                try {
+                    return this.processSimpleList2(response_ as any);
+                } catch (e) {
+                    return _observableThrow(e) as any as Observable<SimpleAgreementTemplatesListItemDtoPaginatedList>;
+                }
+            } else
+                return _observableThrow(response_) as any as Observable<SimpleAgreementTemplatesListItemDtoPaginatedList>;
+        }));
+    }
+
+    protected processSimpleList2(response: HttpResponseBase): Observable<SimpleAgreementTemplatesListItemDtoPaginatedList> {
+        const status = response.status;
+        const responseBlob =
+            response instanceof HttpResponse ? response.body :
+            (response as any).error instanceof Blob ? (response as any).error : undefined;
+
+        let _headers: any = {}; if (response.headers) { for (let key of response.headers.keys()) { _headers[key] = response.headers.get(key); }}
+        if (status === 200) {
+            return blobToText(responseBlob).pipe(_observableMergeMap(_responseText => {
+            let result200: any = null;
+            let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
+            result200 = SimpleAgreementTemplatesListItemDtoPaginatedList.fromJS(resultData200);
+            return _observableOf(result200);
+            }));
+        } else if (status !== 200 && status !== 204) {
+            return blobToText(responseBlob).pipe(_observableMergeMap(_responseText => {
+            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+            }));
+        }
+        return _observableOf<SimpleAgreementTemplatesListItemDtoPaginatedList>(null as any);
+    }
+
+    /**
+     * @param body (optional) 
+     * @return Success
+     */
+    agreementTemplatePOST(body?: SaveAgreementTemplateDto | undefined): Observable<SaveAgreementTemplateCommandResult> {
+        let url_ = this.baseUrl + "/api/AgreementTemplate";
+        url_ = url_.replace(/[?&]$/, "");
+
+        const content_ = JSON.stringify(body);
+
+        let options_ : any = {
+            body: content_,
+            observe: "response",
+            responseType: "blob",
+            headers: new HttpHeaders({
+                "Content-Type": "application/json",
+                "Accept": "text/plain"
+            })
+        };
+
+        return this.http.request("post", url_, options_).pipe(_observableMergeMap((response_ : any) => {
+            return this.processAgreementTemplatePOST(response_);
+        })).pipe(_observableCatch((response_: any) => {
+            if (response_ instanceof HttpResponseBase) {
+                try {
+                    return this.processAgreementTemplatePOST(response_ as any);
+                } catch (e) {
+                    return _observableThrow(e) as any as Observable<SaveAgreementTemplateCommandResult>;
+                }
+            } else
+                return _observableThrow(response_) as any as Observable<SaveAgreementTemplateCommandResult>;
+        }));
+    }
+
+    protected processAgreementTemplatePOST(response: HttpResponseBase): Observable<SaveAgreementTemplateCommandResult> {
+        const status = response.status;
+        const responseBlob =
+            response instanceof HttpResponse ? response.body :
+            (response as any).error instanceof Blob ? (response as any).error : undefined;
+
+        let _headers: any = {}; if (response.headers) { for (let key of response.headers.keys()) { _headers[key] = response.headers.get(key); }}
+        if (status === 200) {
+            return blobToText(responseBlob).pipe(_observableMergeMap(_responseText => {
+            let result200: any = null;
+            let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
+            result200 = SaveAgreementTemplateCommandResult.fromJS(resultData200);
+            return _observableOf(result200);
+            }));
+        } else if (status !== 200 && status !== 204) {
+            return blobToText(responseBlob).pipe(_observableMergeMap(_responseText => {
+            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+            }));
+        }
+        return _observableOf<SaveAgreementTemplateCommandResult>(null as any);
+    }
+
+    /**
+     * @param body (optional) 
+     * @return Success
+     */
+    agreementTemplatePATCH(agreementTemplateId: number, body?: SaveAgreementTemplateDto | undefined): Observable<SaveAgreementTemplateCommandResult> {
+        let url_ = this.baseUrl + "/api/AgreementTemplate/{agreementTemplateId}";
+        if (agreementTemplateId === undefined || agreementTemplateId === null)
+            throw new Error("The parameter 'agreementTemplateId' must be defined.");
+        url_ = url_.replace("{agreementTemplateId}", encodeURIComponent("" + agreementTemplateId));
+        url_ = url_.replace(/[?&]$/, "");
+
+        const content_ = JSON.stringify(body);
+
+        let options_ : any = {
+            body: content_,
+            observe: "response",
+            responseType: "blob",
+            headers: new HttpHeaders({
+                "Content-Type": "application/json",
+                "Accept": "text/plain"
+            })
+        };
+
+        return this.http.request("patch", url_, options_).pipe(_observableMergeMap((response_ : any) => {
+            return this.processAgreementTemplatePATCH(response_);
+        })).pipe(_observableCatch((response_: any) => {
+            if (response_ instanceof HttpResponseBase) {
+                try {
+                    return this.processAgreementTemplatePATCH(response_ as any);
+                } catch (e) {
+                    return _observableThrow(e) as any as Observable<SaveAgreementTemplateCommandResult>;
+                }
+            } else
+                return _observableThrow(response_) as any as Observable<SaveAgreementTemplateCommandResult>;
+        }));
+    }
+
+    protected processAgreementTemplatePATCH(response: HttpResponseBase): Observable<SaveAgreementTemplateCommandResult> {
+        const status = response.status;
+        const responseBlob =
+            response instanceof HttpResponse ? response.body :
+            (response as any).error instanceof Blob ? (response as any).error : undefined;
+
+        let _headers: any = {}; if (response.headers) { for (let key of response.headers.keys()) { _headers[key] = response.headers.get(key); }}
+        if (status === 200) {
+            return blobToText(responseBlob).pipe(_observableMergeMap(_responseText => {
+            let result200: any = null;
+            let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
+            result200 = SaveAgreementTemplateCommandResult.fromJS(resultData200);
+            return _observableOf(result200);
+            }));
+        } else if (status !== 200 && status !== 204) {
+            return blobToText(responseBlob).pipe(_observableMergeMap(_responseText => {
+            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+            }));
+        }
+        return _observableOf<SaveAgreementTemplateCommandResult>(null as any);
+    }
+
+    /**
+     * @return Success
+     */
+    agreementTemplateGET(agreementTemplateId: number): Observable<AgreementTemplateDetailsDto> {
+        let url_ = this.baseUrl + "/api/AgreementTemplate/{agreementTemplateId}";
+        if (agreementTemplateId === undefined || agreementTemplateId === null)
+            throw new Error("The parameter 'agreementTemplateId' must be defined.");
+        url_ = url_.replace("{agreementTemplateId}", encodeURIComponent("" + agreementTemplateId));
+        url_ = url_.replace(/[?&]$/, "");
+
+        let options_ : any = {
+            observe: "response",
+            responseType: "blob",
+            headers: new HttpHeaders({
+                "Accept": "text/plain"
+            })
+        };
+
+        return this.http.request("get", url_, options_).pipe(_observableMergeMap((response_ : any) => {
+            return this.processAgreementTemplateGET(response_);
+        })).pipe(_observableCatch((response_: any) => {
+            if (response_ instanceof HttpResponseBase) {
+                try {
+                    return this.processAgreementTemplateGET(response_ as any);
+                } catch (e) {
+                    return _observableThrow(e) as any as Observable<AgreementTemplateDetailsDto>;
+                }
+            } else
+                return _observableThrow(response_) as any as Observable<AgreementTemplateDetailsDto>;
+        }));
+    }
+
+    protected processAgreementTemplateGET(response: HttpResponseBase): Observable<AgreementTemplateDetailsDto> {
+        const status = response.status;
+        const responseBlob =
+            response instanceof HttpResponse ? response.body :
+            (response as any).error instanceof Blob ? (response as any).error : undefined;
+
+        let _headers: any = {}; if (response.headers) { for (let key of response.headers.keys()) { _headers[key] = response.headers.get(key); }}
+        if (status === 200) {
+            return blobToText(responseBlob).pipe(_observableMergeMap(_responseText => {
+            let result200: any = null;
+            let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
+            result200 = AgreementTemplateDetailsDto.fromJS(resultData200);
+            return _observableOf(result200);
+            }));
+        } else if (status !== 200 && status !== 204) {
+            return blobToText(responseBlob).pipe(_observableMergeMap(_responseText => {
+            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+            }));
+        }
+        return _observableOf<AgreementTemplateDetailsDto>(null as any);
+    }
+
+    /**
+     * @param body (optional) 
+     * @return Success
+     */
+    documentFilePUT2(agreementTemplateId: number, forceUpdate: boolean, body?: string | undefined): Observable<void> {
+        let url_ = this.baseUrl + "/api/AgreementTemplate/{agreementTemplateId}/document-file/{forceUpdate}";
+        if (agreementTemplateId === undefined || agreementTemplateId === null)
+            throw new Error("The parameter 'agreementTemplateId' must be defined.");
+        url_ = url_.replace("{agreementTemplateId}", encodeURIComponent("" + agreementTemplateId));
+        if (forceUpdate === undefined || forceUpdate === null)
+            throw new Error("The parameter 'forceUpdate' must be defined.");
+        url_ = url_.replace("{forceUpdate}", encodeURIComponent("" + forceUpdate));
+        url_ = url_.replace(/[?&]$/, "");
+
+        const content_ = JSON.stringify(body);
+
+        let options_ : any = {
+            body: content_,
+            observe: "response",
+            responseType: "blob",
+            headers: new HttpHeaders({
+                "Content-Type": "application/json",
+            })
+        };
+
+        return this.http.request("put", url_, options_).pipe(_observableMergeMap((response_ : any) => {
+            return this.processDocumentFilePUT2(response_);
+        })).pipe(_observableCatch((response_: any) => {
+            if (response_ instanceof HttpResponseBase) {
+                try {
+                    return this.processDocumentFilePUT2(response_ as any);
+                } catch (e) {
+                    return _observableThrow(e) as any as Observable<void>;
+                }
+            } else
+                return _observableThrow(response_) as any as Observable<void>;
+        }));
+    }
+
+    protected processDocumentFilePUT2(response: HttpResponseBase): Observable<void> {
+        const status = response.status;
+        const responseBlob =
+            response instanceof HttpResponse ? response.body :
+            (response as any).error instanceof Blob ? (response as any).error : undefined;
+
+        let _headers: any = {}; if (response.headers) { for (let key of response.headers.keys()) { _headers[key] = response.headers.get(key); }}
+        if (status === 200) {
+            return blobToText(responseBlob).pipe(_observableMergeMap(_responseText => {
+            return _observableOf<void>(null as any);
+            }));
+        } else if (status !== 200 && status !== 204) {
+            return blobToText(responseBlob).pipe(_observableMergeMap(_responseText => {
+            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+            }));
+        }
+        return _observableOf<void>(null as any);
+    }
+
+    /**
+     * @param body (optional) 
      * @return Success
      */
     completeTemplate(agreementTemplateId: number, forceUpdate: boolean, body?: CompleteTemplateDocumentFileDraftDto | undefined): Observable<void> {
@@ -2336,6 +2105,59 @@ export class DocumentFileServiceProxy {
     /**
      * @return Success
      */
+    documentFileGET2(agreementTemplateId: number, documentFileVersion: number): Observable<void> {
+        let url_ = this.baseUrl + "/api/AgreementTemplate/{agreementTemplateId}/document-file/{documentFileVersion}";
+        if (agreementTemplateId === undefined || agreementTemplateId === null)
+            throw new Error("The parameter 'agreementTemplateId' must be defined.");
+        url_ = url_.replace("{agreementTemplateId}", encodeURIComponent("" + agreementTemplateId));
+        if (documentFileVersion === undefined || documentFileVersion === null)
+            throw new Error("The parameter 'documentFileVersion' must be defined.");
+        url_ = url_.replace("{documentFileVersion}", encodeURIComponent("" + documentFileVersion));
+        url_ = url_.replace(/[?&]$/, "");
+
+        let options_ : any = {
+            observe: "response",
+            responseType: "blob",
+            headers: new HttpHeaders({
+            })
+        };
+
+        return this.http.request("get", url_, options_).pipe(_observableMergeMap((response_ : any) => {
+            return this.processDocumentFileGET2(response_);
+        })).pipe(_observableCatch((response_: any) => {
+            if (response_ instanceof HttpResponseBase) {
+                try {
+                    return this.processDocumentFileGET2(response_ as any);
+                } catch (e) {
+                    return _observableThrow(e) as any as Observable<void>;
+                }
+            } else
+                return _observableThrow(response_) as any as Observable<void>;
+        }));
+    }
+
+    protected processDocumentFileGET2(response: HttpResponseBase): Observable<void> {
+        const status = response.status;
+        const responseBlob =
+            response instanceof HttpResponse ? response.body :
+            (response as any).error instanceof Blob ? (response as any).error : undefined;
+
+        let _headers: any = {}; if (response.headers) { for (let key of response.headers.keys()) { _headers[key] = response.headers.get(key); }}
+        if (status === 200) {
+            return blobToText(responseBlob).pipe(_observableMergeMap(_responseText => {
+            return _observableOf<void>(null as any);
+            }));
+        } else if (status !== 200 && status !== 204) {
+            return blobToText(responseBlob).pipe(_observableMergeMap(_responseText => {
+            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+            }));
+        }
+        return _observableOf<void>(null as any);
+    }
+
+    /**
+     * @return Success
+     */
     templateVersions(agreementTemplateId: number): Observable<AgreementTemplateDocumentFileVersionDto[]> {
         let url_ = this.baseUrl + "/api/AgreementTemplate/{agreementTemplateId}/document-file/template-versions";
         if (agreementTemplateId === undefined || agreementTemplateId === null)
@@ -2393,357 +2215,12 @@ export class DocumentFileServiceProxy {
         }
         return _observableOf<AgreementTemplateDocumentFileVersionDto[]>(null as any);
     }
-}
-
-@Injectable()
-export class AgreementTemplateServiceProxy {
-    private http: HttpClient;
-    private baseUrl: string;
-    protected jsonParseReviver: ((key: string, value: any) => any) | undefined = undefined;
-
-    constructor(@Inject(HttpClient) http: HttpClient, @Optional() @Inject(API_BASE_URL) baseUrl?: string) {
-        this.http = http;
-        this.baseUrl = baseUrl !== undefined && baseUrl !== null ? baseUrl : "";
-    }
 
     /**
-     * @param isClientTemplate (optional)
-     * @param search (optional)
-     * @param tenantId (optional)
-     * @param legalEntityId (optional)
-     * @param name (optional)
-     * @param clientId (optional)
-     * @param language (optional)
-     * @param agreementType (optional)
-     * @param agreementRecipients (optional)
-     * @param contractTypes (optional)
-     * @param salesTypes (optional)
-     * @param deliveryTypes (optional)
-     * @param lastUpdatedByEmployeeId (optional)
-     * @param isEnabled (optional)
-     * @param linkState (optional)
-     * @param linkStateAccepted (optional)
-     * @param pageNumber (optional)
-     * @param pageSize (optional)
-     * @param sort (optional)
-     * @return Success
-     */
-    list(isClientTemplate?: boolean | undefined, search?: string | undefined, tenantId?: number[] | undefined, legalEntityId?: number[] | undefined, name?: string | undefined, clientId?: number[] | undefined, language?: AgreementLanguage[] | undefined, agreementType?: AgreementType[] | undefined, agreementRecipients?: number[] | undefined, contractTypes?: number[] | undefined, salesTypes?: number[] | undefined, deliveryTypes?: number[] | undefined, lastUpdatedByEmployeeId?: number[] | undefined, isEnabled?: boolean | undefined, linkState?: number | undefined, linkStateAccepted?: boolean | undefined, pageNumber?: number | undefined, pageSize?: number | undefined, sort?: string | undefined): Observable<AgreementTemplatesListItemDtoPaginatedList> {
-        let url_ = this.baseUrl + "/api/AgreementTemplate/list?";
-        if (isClientTemplate === null)
-            throw new Error("The parameter 'isClientTemplate' cannot be null.");
-        else if (isClientTemplate !== undefined)
-            url_ += "IsClientTemplate=" + encodeURIComponent("" + isClientTemplate) + "&";
-        if (search === null)
-            throw new Error("The parameter 'search' cannot be null.");
-        else if (search !== undefined)
-            url_ += "Search=" + encodeURIComponent("" + search) + "&";
-        if (tenantId === null)
-            throw new Error("The parameter 'tenantId' cannot be null.");
-        else if (tenantId !== undefined)
-            tenantId && tenantId.forEach(item => { url_ += "TenantId=" + encodeURIComponent("" + item) + "&"; });
-        if (legalEntityId === null)
-            throw new Error("The parameter 'legalEntityId' cannot be null.");
-        else if (legalEntityId !== undefined)
-            legalEntityId && legalEntityId.forEach(item => { url_ += "LegalEntityId=" + encodeURIComponent("" + item) + "&"; });
-        if (name === null)
-            throw new Error("The parameter 'name' cannot be null.");
-        else if (name !== undefined)
-            url_ += "Name=" + encodeURIComponent("" + name) + "&";
-        if (clientId === null)
-            throw new Error("The parameter 'clientId' cannot be null.");
-        else if (clientId !== undefined)
-            clientId && clientId.forEach(item => { url_ += "ClientId=" + encodeURIComponent("" + item) + "&"; });
-        if (language === null)
-            throw new Error("The parameter 'language' cannot be null.");
-        else if (language !== undefined)
-            language && language.forEach(item => { url_ += "Language=" + encodeURIComponent("" + item) + "&"; });
-        if (agreementType === null)
-            throw new Error("The parameter 'agreementType' cannot be null.");
-        else if (agreementType !== undefined)
-            agreementType && agreementType.forEach(item => { url_ += "AgreementType=" + encodeURIComponent("" + item) + "&"; });
-        if (agreementRecipients === null)
-            throw new Error("The parameter 'agreementRecipients' cannot be null.");
-        else if (agreementRecipients !== undefined)
-            agreementRecipients && agreementRecipients.forEach(item => { url_ += "AgreementRecipients=" + encodeURIComponent("" + item) + "&"; });
-        if (contractTypes === null)
-            throw new Error("The parameter 'contractTypes' cannot be null.");
-        else if (contractTypes !== undefined)
-            contractTypes && contractTypes.forEach(item => { url_ += "ContractTypes=" + encodeURIComponent("" + item) + "&"; });
-        if (salesTypes === null)
-            throw new Error("The parameter 'salesTypes' cannot be null.");
-        else if (salesTypes !== undefined)
-            salesTypes && salesTypes.forEach(item => { url_ += "SalesTypes=" + encodeURIComponent("" + item) + "&"; });
-        if (deliveryTypes === null)
-            throw new Error("The parameter 'deliveryTypes' cannot be null.");
-        else if (deliveryTypes !== undefined)
-            deliveryTypes && deliveryTypes.forEach(item => { url_ += "DeliveryTypes=" + encodeURIComponent("" + item) + "&"; });
-        if (lastUpdatedByEmployeeId === null)
-            throw new Error("The parameter 'lastUpdatedByEmployeeId' cannot be null.");
-        else if (lastUpdatedByEmployeeId !== undefined)
-            lastUpdatedByEmployeeId && lastUpdatedByEmployeeId.forEach(item => { url_ += "LastUpdatedByEmployeeId=" + encodeURIComponent("" + item) + "&"; });
-        if (isEnabled === null)
-            throw new Error("The parameter 'isEnabled' cannot be null.");
-        else if (isEnabled !== undefined)
-            url_ += "IsEnabled=" + encodeURIComponent("" + isEnabled) + "&";
-        if (linkState === null)
-            throw new Error("The parameter 'linkState' cannot be null.");
-        else if (linkState !== undefined)
-            url_ += "LinkState=" + encodeURIComponent("" + linkState) + "&";
-        if (linkStateAccepted === null)
-            throw new Error("The parameter 'linkStateAccepted' cannot be null.");
-        else if (linkStateAccepted !== undefined)
-            url_ += "LinkStateAccepted=" + encodeURIComponent("" + linkStateAccepted) + "&";
-        if (pageNumber === null)
-            throw new Error("The parameter 'pageNumber' cannot be null.");
-        else if (pageNumber !== undefined)
-            url_ += "PageNumber=" + encodeURIComponent("" + pageNumber) + "&";
-        if (pageSize === null)
-            throw new Error("The parameter 'pageSize' cannot be null.");
-        else if (pageSize !== undefined)
-            url_ += "PageSize=" + encodeURIComponent("" + pageSize) + "&";
-        if (sort === null)
-            throw new Error("The parameter 'sort' cannot be null.");
-        else if (sort !== undefined)
-            url_ += "Sort=" + encodeURIComponent("" + sort) + "&";
-        url_ = url_.replace(/[?&]$/, "");
-
-        let options_ : any = {
-            observe: "response",
-            responseType: "blob",
-            headers: new HttpHeaders({
-                "Accept": "text/plain"
-            })
-        };
-
-        return this.http.request("get", url_, options_).pipe(_observableMergeMap((response_ : any) => {
-            return this.processList(response_);
-        })).pipe(_observableCatch((response_: any) => {
-            if (response_ instanceof HttpResponseBase) {
-                try {
-                    return this.processList(response_ as any);
-                } catch (e) {
-                    return _observableThrow(e) as any as Observable<AgreementTemplatesListItemDtoPaginatedList>;
-                }
-            } else
-                return _observableThrow(response_) as any as Observable<AgreementTemplatesListItemDtoPaginatedList>;
-        }));
-    }
-
-    protected processList(response: HttpResponseBase): Observable<AgreementTemplatesListItemDtoPaginatedList> {
-        const status = response.status;
-        const responseBlob =
-            response instanceof HttpResponse ? response.body :
-            (response as any).error instanceof Blob ? (response as any).error : undefined;
-
-        let _headers: any = {}; if (response.headers) { for (let key of response.headers.keys()) { _headers[key] = response.headers.get(key); }}
-        if (status === 200) {
-            return blobToText(responseBlob).pipe(_observableMergeMap(_responseText => {
-            let result200: any = null;
-            let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
-            result200 = AgreementTemplatesListItemDtoPaginatedList.fromJS(resultData200);
-            return _observableOf(result200);
-            }));
-        } else if (status !== 200 && status !== 204) {
-            return blobToText(responseBlob).pipe(_observableMergeMap(_responseText => {
-            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
-            }));
-        }
-        return _observableOf<AgreementTemplatesListItemDtoPaginatedList>(null as any);
-    }
-
-    /**
-     * @param isClientTemplate (optional)
-     * @param search (optional)
-     * @param pageNumber (optional)
-     * @param pageSize (optional)
-     * @param sort (optional)
-     * @return Success
-     */
-    simpleList(isClientTemplate?: boolean | undefined, search?: string | undefined, pageNumber?: number | undefined, pageSize?: number | undefined, sort?: string | undefined): Observable<SimpleAgreementTemplatesListItemDtoPaginatedList> {
-        let url_ = this.baseUrl + "/api/AgreementTemplate/simple-list?";
-        if (isClientTemplate === null)
-            throw new Error("The parameter 'isClientTemplate' cannot be null.");
-        else if (isClientTemplate !== undefined)
-            url_ += "IsClientTemplate=" + encodeURIComponent("" + isClientTemplate) + "&";
-        if (search === null)
-            throw new Error("The parameter 'search' cannot be null.");
-        else if (search !== undefined)
-            url_ += "Search=" + encodeURIComponent("" + search) + "&";
-        if (pageNumber === null)
-            throw new Error("The parameter 'pageNumber' cannot be null.");
-        else if (pageNumber !== undefined)
-            url_ += "PageNumber=" + encodeURIComponent("" + pageNumber) + "&";
-        if (pageSize === null)
-            throw new Error("The parameter 'pageSize' cannot be null.");
-        else if (pageSize !== undefined)
-            url_ += "PageSize=" + encodeURIComponent("" + pageSize) + "&";
-        if (sort === null)
-            throw new Error("The parameter 'sort' cannot be null.");
-        else if (sort !== undefined)
-            url_ += "Sort=" + encodeURIComponent("" + sort) + "&";
-        url_ = url_.replace(/[?&]$/, "");
-
-        let options_ : any = {
-            observe: "response",
-            responseType: "blob",
-            headers: new HttpHeaders({
-                "Accept": "text/plain"
-            })
-        };
-
-        return this.http.request("get", url_, options_).pipe(_observableMergeMap((response_ : any) => {
-            return this.processSimpleList(response_);
-        })).pipe(_observableCatch((response_: any) => {
-            if (response_ instanceof HttpResponseBase) {
-                try {
-                    return this.processSimpleList(response_ as any);
-                } catch (e) {
-                    return _observableThrow(e) as any as Observable<SimpleAgreementTemplatesListItemDtoPaginatedList>;
-                }
-            } else
-                return _observableThrow(response_) as any as Observable<SimpleAgreementTemplatesListItemDtoPaginatedList>;
-        }));
-    }
-
-    protected processSimpleList(response: HttpResponseBase): Observable<SimpleAgreementTemplatesListItemDtoPaginatedList> {
-        const status = response.status;
-        const responseBlob =
-            response instanceof HttpResponse ? response.body :
-            (response as any).error instanceof Blob ? (response as any).error : undefined;
-
-        let _headers: any = {}; if (response.headers) { for (let key of response.headers.keys()) { _headers[key] = response.headers.get(key); }}
-        if (status === 200) {
-            return blobToText(responseBlob).pipe(_observableMergeMap(_responseText => {
-            let result200: any = null;
-            let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
-            result200 = SimpleAgreementTemplatesListItemDtoPaginatedList.fromJS(resultData200);
-            return _observableOf(result200);
-            }));
-        } else if (status !== 200 && status !== 204) {
-            return blobToText(responseBlob).pipe(_observableMergeMap(_responseText => {
-            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
-            }));
-        }
-        return _observableOf<SimpleAgreementTemplatesListItemDtoPaginatedList>(null as any);
-    }
-
-    /**
-     * @param body (optional)
-     * @return Success
-     */
-    documentFilePut(agreementTemplateId: number, forceUpdate: boolean, body?: string | undefined): Observable<void> {
-        let url_ = this.baseUrl + "/api/AgreementTemplate/{agreementTemplateId}/document-file/{forceUpdate}";
-        if (agreementTemplateId === undefined || agreementTemplateId === null)
-            throw new Error("The parameter 'agreementTemplateId' must be defined.");
-        url_ = url_.replace("{agreementTemplateId}", encodeURIComponent("" + agreementTemplateId));
-        if (forceUpdate === undefined || forceUpdate === null)
-            throw new Error("The parameter 'forceUpdate' must be defined.");
-        url_ = url_.replace("{forceUpdate}", encodeURIComponent("" + forceUpdate));
-        url_ = url_.replace(/[?&]$/, "");
-
-        const content_ = JSON.stringify(body);
-
-        let options_ : any = {
-            body: content_,
-            observe: "response",
-            responseType: "blob",
-            headers: new HttpHeaders({
-                "Content-Type": "application/json",
-            })
-        };
-
-        return this.http.request("put", url_, options_).pipe(_observableMergeMap((response_ : any) => {
-            return this.processDocumentFilePut(response_);
-        })).pipe(_observableCatch((response_: any) => {
-            if (response_ instanceof HttpResponseBase) {
-                try {
-                    return this.processDocumentFilePut(response_ as any);
-                } catch (e) {
-                    return _observableThrow(e) as any as Observable<void>;
-                }
-            } else
-                return _observableThrow(response_) as any as Observable<void>;
-        }));
-    }
-
-    protected processDocumentFilePut(response: HttpResponseBase): Observable<void> {
-        const status = response.status;
-        const responseBlob =
-            response instanceof HttpResponse ? response.body :
-            (response as any).error instanceof Blob ? (response as any).error : undefined;
-
-        let _headers: any = {}; if (response.headers) { for (let key of response.headers.keys()) { _headers[key] = response.headers.get(key); }}
-        if (status === 200) {
-            return blobToText(responseBlob).pipe(_observableMergeMap(_responseText => {
-            return _observableOf<void>(null as any);
-            }));
-        } else if (status !== 200 && status !== 204) {
-            return blobToText(responseBlob).pipe(_observableMergeMap(_responseText => {
-            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
-            }));
-        }
-        return _observableOf<void>(null as any);
-    }
-
-    /**
-     * @return Success
-     */
-    documentFileGet(agreementTemplateId: number, documentFileVersion: number): Observable<void> {
-        let url_ = this.baseUrl + "/api/AgreementTemplate/{agreementTemplateId}/document-file/{documentFileVersion}";
-        if (agreementTemplateId === undefined || agreementTemplateId === null)
-            throw new Error("The parameter 'agreementTemplateId' must be defined.");
-        url_ = url_.replace("{agreementTemplateId}", encodeURIComponent("" + agreementTemplateId));
-        if (documentFileVersion === undefined || documentFileVersion === null)
-            throw new Error("The parameter 'documentFileVersion' must be defined.");
-        url_ = url_.replace("{documentFileVersion}", encodeURIComponent("" + documentFileVersion));
-        url_ = url_.replace(/[?&]$/, "");
-
-        let options_ : any = {
-            observe: "response",
-            responseType: "blob",
-            headers: new HttpHeaders({
-            })
-        };
-
-        return this.http.request("get", url_, options_).pipe(_observableMergeMap((response_ : any) => {
-            return this.processDocumentFileGet(response_);
-        })).pipe(_observableCatch((response_: any) => {
-            if (response_ instanceof HttpResponseBase) {
-                try {
-                    return this.processDocumentFileGet(response_ as any);
-                } catch (e) {
-                    return _observableThrow(e) as any as Observable<void>;
-                }
-            } else
-                return _observableThrow(response_) as any as Observable<void>;
-        }));
-    }
-
-    protected processDocumentFileGet(response: HttpResponseBase): Observable<void> {
-        const status = response.status;
-        const responseBlob =
-            response instanceof HttpResponse ? response.body :
-            (response as any).error instanceof Blob ? (response as any).error : undefined;
-
-        let _headers: any = {}; if (response.headers) { for (let key of response.headers.keys()) { _headers[key] = response.headers.get(key); }}
-        if (status === 200) {
-            return blobToText(responseBlob).pipe(_observableMergeMap(_responseText => {
-            return _observableOf<void>(null as any);
-            }));
-        } else if (status !== 200 && status !== 204) {
-            return blobToText(responseBlob).pipe(_observableMergeMap(_responseText => {
-            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
-            }));
-        }
-        return _observableOf<void>(null as any);
-    }
-
-    /**
-     * @param search (optional)
-     * @param pageNumber (optional)
-     * @param pageSize (optional)
-     * @param sort (optional)
+     * @param search (optional) 
+     * @param pageNumber (optional) 
+     * @param pageSize (optional) 
+     * @param sort (optional) 
      * @return Success
      */
     childTemplates(agreementTemplateId: number, search?: string | undefined, pageNumber?: number | undefined, pageSize?: number | undefined, sort?: string | undefined): Observable<AgreementTemplateChildTemplateDtoPaginatedList> {
@@ -2909,6 +2386,68 @@ export class AgreementTemplateServiceProxy {
     }
 
     protected processAcceptLinkState(response: HttpResponseBase): Observable<void> {
+        const status = response.status;
+        const responseBlob =
+            response instanceof HttpResponse ? response.body :
+            (response as any).error instanceof Blob ? (response as any).error : undefined;
+
+        let _headers: any = {}; if (response.headers) { for (let key of response.headers.keys()) { _headers[key] = response.headers.get(key); }}
+        if (status === 200) {
+            return blobToText(responseBlob).pipe(_observableMergeMap(_responseText => {
+            return _observableOf<void>(null as any);
+            }));
+        } else if (status !== 200 && status !== 204) {
+            return blobToText(responseBlob).pipe(_observableMergeMap(_responseText => {
+            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+            }));
+        }
+        return _observableOf<void>(null as any);
+    }
+}
+
+@Injectable()
+export class AgreementTemplateAttachmentServiceProxy {
+    private http: HttpClient;
+    private baseUrl: string;
+    protected jsonParseReviver: ((key: string, value: any) => any) | undefined = undefined;
+
+    constructor(@Inject(HttpClient) http: HttpClient, @Optional() @Inject(API_BASE_URL) baseUrl?: string) {
+        this.http = http;
+        this.baseUrl = baseUrl !== undefined && baseUrl !== null ? baseUrl : "";
+    }
+
+    /**
+     * @return Success
+     */
+    agreementTemplateAttachment(agreementTemplateAttachmentId: number): Observable<void> {
+        let url_ = this.baseUrl + "/api/AgreementTemplateAttachment/{agreementTemplateAttachmentId}";
+        if (agreementTemplateAttachmentId === undefined || agreementTemplateAttachmentId === null)
+            throw new Error("The parameter 'agreementTemplateAttachmentId' must be defined.");
+        url_ = url_.replace("{agreementTemplateAttachmentId}", encodeURIComponent("" + agreementTemplateAttachmentId));
+        url_ = url_.replace(/[?&]$/, "");
+
+        let options_ : any = {
+            observe: "response",
+            responseType: "blob",
+            headers: new HttpHeaders({
+            })
+        };
+
+        return this.http.request("get", url_, options_).pipe(_observableMergeMap((response_ : any) => {
+            return this.processAgreementTemplateAttachment(response_);
+        })).pipe(_observableCatch((response_: any) => {
+            if (response_ instanceof HttpResponseBase) {
+                try {
+                    return this.processAgreementTemplateAttachment(response_ as any);
+                } catch (e) {
+                    return _observableThrow(e) as any as Observable<void>;
+                }
+            } else
+                return _observableThrow(response_) as any as Observable<void>;
+        }));
+    }
+
+    protected processAgreementTemplateAttachment(response: HttpResponseBase): Observable<void> {
         const status = response.status;
         const responseBlob =
             response instanceof HttpResponse ? response.body :
@@ -3174,10 +2713,10 @@ export class ClientDocumentsServiceProxy {
     }
 
     /**
-     * @param formFile (optional)
+     * @param formFile (optional) 
      * @return Success
      */
-    generalFilePost(clientId: number, attachmentFileTypeId: number, formFile?: FileParameter | undefined): Observable<void> {
+    generalFilePOST(clientId: number, attachmentFileTypeId: number, formFile?: FileParameter | undefined): Observable<void> {
         let url_ = this.baseUrl + "/api/ClientDocuments/{clientId}/GeneralFile/{attachmentFileTypeId}";
         if (clientId === undefined || clientId === null)
             throw new Error("The parameter 'clientId' must be defined.");
@@ -3202,11 +2741,11 @@ export class ClientDocumentsServiceProxy {
         };
 
         return this.http.request("post", url_, options_).pipe(_observableMergeMap((response_ : any) => {
-            return this.processGeneralFilePost(response_);
+            return this.processGeneralFilePOST(response_);
         })).pipe(_observableCatch((response_: any) => {
             if (response_ instanceof HttpResponseBase) {
                 try {
-                    return this.processGeneralFilePost(response_ as any);
+                    return this.processGeneralFilePOST(response_ as any);
                 } catch (e) {
                     return _observableThrow(e) as any as Observable<void>;
                 }
@@ -3215,7 +2754,7 @@ export class ClientDocumentsServiceProxy {
         }));
     }
 
-    protected processGeneralFilePost(response: HttpResponseBase): Observable<void> {
+    protected processGeneralFilePOST(response: HttpResponseBase): Observable<void> {
         const status = response.status;
         const responseBlob =
             response instanceof HttpResponse ? response.body :
@@ -3237,7 +2776,7 @@ export class ClientDocumentsServiceProxy {
     /**
      * @return Success
      */
-    generalFileDelete(clientId: number, clientAttachmentGuid: string): Observable<void> {
+    generalFileDELETE(clientId: number, clientAttachmentGuid: string): Observable<void> {
         let url_ = this.baseUrl + "/api/ClientDocuments/{clientId}/GeneralFile/{clientAttachmentGuid}";
         if (clientId === undefined || clientId === null)
             throw new Error("The parameter 'clientId' must be defined.");
@@ -3255,11 +2794,11 @@ export class ClientDocumentsServiceProxy {
         };
 
         return this.http.request("delete", url_, options_).pipe(_observableMergeMap((response_ : any) => {
-            return this.processGeneralFileDelete(response_);
+            return this.processGeneralFileDELETE(response_);
         })).pipe(_observableCatch((response_: any) => {
             if (response_ instanceof HttpResponseBase) {
                 try {
-                    return this.processGeneralFileDelete(response_ as any);
+                    return this.processGeneralFileDELETE(response_ as any);
                 } catch (e) {
                     return _observableThrow(e) as any as Observable<void>;
                 }
@@ -3268,7 +2807,7 @@ export class ClientDocumentsServiceProxy {
         }));
     }
 
-    protected processGeneralFileDelete(response: HttpResponseBase): Observable<void> {
+    protected processGeneralFileDELETE(response: HttpResponseBase): Observable<void> {
         const status = response.status;
         const responseBlob =
             response instanceof HttpResponse ? response.body :
@@ -3288,10 +2827,10 @@ export class ClientDocumentsServiceProxy {
     }
 
     /**
-     * @param body (optional)
+     * @param body (optional) 
      * @return Success
      */
-    generalFilePut(clientId: number, body?: UpdateClientAttachmentFileInfoInputDto | undefined): Observable<void> {
+    generalFilePUT(clientId: number, body?: UpdateClientAttachmentFileInfoInputDto | undefined): Observable<void> {
         let url_ = this.baseUrl + "/api/ClientDocuments/{clientId}/GeneralFile";
         if (clientId === undefined || clientId === null)
             throw new Error("The parameter 'clientId' must be defined.");
@@ -3310,11 +2849,11 @@ export class ClientDocumentsServiceProxy {
         };
 
         return this.http.request("put", url_, options_).pipe(_observableMergeMap((response_ : any) => {
-            return this.processGeneralFilePut(response_);
+            return this.processGeneralFilePUT(response_);
         })).pipe(_observableCatch((response_: any) => {
             if (response_ instanceof HttpResponseBase) {
                 try {
-                    return this.processGeneralFilePut(response_ as any);
+                    return this.processGeneralFilePUT(response_ as any);
                 } catch (e) {
                     return _observableThrow(e) as any as Observable<void>;
                 }
@@ -3323,7 +2862,7 @@ export class ClientDocumentsServiceProxy {
         }));
     }
 
-    protected processGeneralFilePut(response: HttpResponseBase): Observable<void> {
+    protected processGeneralFilePUT(response: HttpResponseBase): Observable<void> {
         const status = response.status;
         const responseBlob =
             response instanceof HttpResponse ? response.body :
@@ -3343,13 +2882,10 @@ export class ClientDocumentsServiceProxy {
     }
 
     /**
-     * @param pageNumber (optional)
-     * @param pageSize (optional)
-     * @param sort (optional)
      * @return Success
      */
-    evaluations(clientId: number, includeLinkedClients: boolean, maxAnswerDate: moment.Moment, pageNumber?: number | undefined, pageSize?: number | undefined, sort?: string | undefined): Observable<ClientEvaluationOutputDtoPaginatedList> {
-        let url_ = this.baseUrl + "/api/ClientDocuments/{clientId}/Evaluations/{includeLinkedClients}/{maxAnswerDate}?";
+    evaluations(clientId: number, includeLinkedClients: boolean, maxAnswerDate: moment.Moment): Observable<ClientEvaluationOutputDto[]> {
+        let url_ = this.baseUrl + "/api/ClientDocuments/{clientId}/Evaluations/{includeLinkedClients}/{maxAnswerDate}";
         if (clientId === undefined || clientId === null)
             throw new Error("The parameter 'clientId' must be defined.");
         url_ = url_.replace("{clientId}", encodeURIComponent("" + clientId));
@@ -3359,18 +2895,6 @@ export class ClientDocumentsServiceProxy {
         if (maxAnswerDate === undefined || maxAnswerDate === null)
             throw new Error("The parameter 'maxAnswerDate' must be defined.");
         url_ = url_.replace("{maxAnswerDate}", encodeURIComponent(maxAnswerDate ? "" + maxAnswerDate.toISOString() : "null"));
-        if (pageNumber === null)
-            throw new Error("The parameter 'pageNumber' cannot be null.");
-        else if (pageNumber !== undefined)
-            url_ += "PageNumber=" + encodeURIComponent("" + pageNumber) + "&";
-        if (pageSize === null)
-            throw new Error("The parameter 'pageSize' cannot be null.");
-        else if (pageSize !== undefined)
-            url_ += "PageSize=" + encodeURIComponent("" + pageSize) + "&";
-        if (sort === null)
-            throw new Error("The parameter 'sort' cannot be null.");
-        else if (sort !== undefined)
-            url_ += "Sort=" + encodeURIComponent("" + sort) + "&";
         url_ = url_.replace(/[?&]$/, "");
 
         let options_ : any = {
@@ -3388,14 +2912,14 @@ export class ClientDocumentsServiceProxy {
                 try {
                     return this.processEvaluations(response_ as any);
                 } catch (e) {
-                    return _observableThrow(e) as any as Observable<ClientEvaluationOutputDtoPaginatedList>;
+                    return _observableThrow(e) as any as Observable<ClientEvaluationOutputDto[]>;
                 }
             } else
-                return _observableThrow(response_) as any as Observable<ClientEvaluationOutputDtoPaginatedList>;
+                return _observableThrow(response_) as any as Observable<ClientEvaluationOutputDto[]>;
         }));
     }
 
-    protected processEvaluations(response: HttpResponseBase): Observable<ClientEvaluationOutputDtoPaginatedList> {
+    protected processEvaluations(response: HttpResponseBase): Observable<ClientEvaluationOutputDto[]> {
         const status = response.status;
         const responseBlob =
             response instanceof HttpResponse ? response.body :
@@ -3406,7 +2930,14 @@ export class ClientDocumentsServiceProxy {
             return blobToText(responseBlob).pipe(_observableMergeMap(_responseText => {
             let result200: any = null;
             let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
-            result200 = ClientEvaluationOutputDtoPaginatedList.fromJS(resultData200);
+            if (Array.isArray(resultData200)) {
+                result200 = [] as any;
+                for (let item of resultData200)
+                    result200!.push(ClientEvaluationOutputDto.fromJS(item));
+            }
+            else {
+                result200 = <any>null;
+            }
             return _observableOf(result200);
             }));
         } else if (status !== 200 && status !== 204) {
@@ -3414,7 +2945,7 @@ export class ClientDocumentsServiceProxy {
             return throwException("An unexpected server error occurred.", status, _responseText, _headers);
             }));
         }
-        return _observableOf<ClientEvaluationOutputDtoPaginatedList>(null as any);
+        return _observableOf<ClientEvaluationOutputDto[]>(null as any);
     }
 
     /**
@@ -3494,10 +3025,10 @@ export class ClientPeriodServiceProxy {
     }
 
     /**
-     * @param body (optional)
+     * @param body (optional) 
      * @return Success
      */
-    clientSalesPut(clientPeriodId: string, body?: ClientPeriodSalesDataDto | undefined): Observable<void> {
+    clientSalesPUT(clientPeriodId: string, body?: ClientPeriodSalesDataDto | undefined): Observable<void> {
         let url_ = this.baseUrl + "/api/ClientPeriod/{clientPeriodId}/client-sales";
         if (clientPeriodId === undefined || clientPeriodId === null)
             throw new Error("The parameter 'clientPeriodId' must be defined.");
@@ -3516,11 +3047,11 @@ export class ClientPeriodServiceProxy {
         };
 
         return this.http.request("put", url_, options_).pipe(_observableMergeMap((response_ : any) => {
-            return this.processClientSalesPut(response_);
+            return this.processClientSalesPUT(response_);
         })).pipe(_observableCatch((response_: any) => {
             if (response_ instanceof HttpResponseBase) {
                 try {
-                    return this.processClientSalesPut(response_ as any);
+                    return this.processClientSalesPUT(response_ as any);
                 } catch (e) {
                     return _observableThrow(e) as any as Observable<void>;
                 }
@@ -3529,7 +3060,7 @@ export class ClientPeriodServiceProxy {
         }));
     }
 
-    protected processClientSalesPut(response: HttpResponseBase): Observable<void> {
+    protected processClientSalesPUT(response: HttpResponseBase): Observable<void> {
         const status = response.status;
         const responseBlob =
             response instanceof HttpResponse ? response.body :
@@ -3551,7 +3082,7 @@ export class ClientPeriodServiceProxy {
     /**
      * @return Success
      */
-    clientSalesGet(clientPeriodId: string): Observable<ClientPeriodSalesDataDto> {
+    clientSalesGET(clientPeriodId: string): Observable<ClientPeriodSalesDataDto> {
         let url_ = this.baseUrl + "/api/ClientPeriod/{clientPeriodId}/client-sales";
         if (clientPeriodId === undefined || clientPeriodId === null)
             throw new Error("The parameter 'clientPeriodId' must be defined.");
@@ -3567,11 +3098,11 @@ export class ClientPeriodServiceProxy {
         };
 
         return this.http.request("get", url_, options_).pipe(_observableMergeMap((response_ : any) => {
-            return this.processClientSalesGet(response_);
+            return this.processClientSalesGET(response_);
         })).pipe(_observableCatch((response_: any) => {
             if (response_ instanceof HttpResponseBase) {
                 try {
-                    return this.processClientSalesGet(response_ as any);
+                    return this.processClientSalesGET(response_ as any);
                 } catch (e) {
                     return _observableThrow(e) as any as Observable<ClientPeriodSalesDataDto>;
                 }
@@ -3580,7 +3111,7 @@ export class ClientPeriodServiceProxy {
         }));
     }
 
-    protected processClientSalesGet(response: HttpResponseBase): Observable<ClientPeriodSalesDataDto> {
+    protected processClientSalesGET(response: HttpResponseBase): Observable<ClientPeriodSalesDataDto> {
         const status = response.status;
         const responseBlob =
             response instanceof HttpResponse ? response.body :
@@ -3603,11 +3134,11 @@ export class ClientPeriodServiceProxy {
     }
 
     /**
-     * @param body (optional)
+     * @param body (optional) 
      * @return Success
      */
-    clientContractsPut(clientPeriodId: string, body?: ClientPeriodContractsDataCommandDto | undefined): Observable<void> {
-        let url_ = this.baseUrl + "/api/ClientPeriod/{clientPeriodId}/client-contracts";
+    editFinish(clientPeriodId: string, body?: ClientPeriodSalesDataDto | undefined): Observable<void> {
+        let url_ = this.baseUrl + "/api/ClientPeriod/{clientPeriodId}/client-sales/edit-finish";
         if (clientPeriodId === undefined || clientPeriodId === null)
             throw new Error("The parameter 'clientPeriodId' must be defined.");
         url_ = url_.replace("{clientPeriodId}", encodeURIComponent("" + clientPeriodId));
@@ -3624,12 +3155,12 @@ export class ClientPeriodServiceProxy {
             })
         };
 
-        return this.http.request("put", url_, options_).pipe(_observableMergeMap((response_ : any) => {
-            return this.processClientContractsPut(response_);
+        return this.http.request("post", url_, options_).pipe(_observableMergeMap((response_ : any) => {
+            return this.processEditFinish(response_);
         })).pipe(_observableCatch((response_: any) => {
             if (response_ instanceof HttpResponseBase) {
                 try {
-                    return this.processClientContractsPut(response_ as any);
+                    return this.processEditFinish(response_ as any);
                 } catch (e) {
                     return _observableThrow(e) as any as Observable<void>;
                 }
@@ -3638,7 +3169,7 @@ export class ClientPeriodServiceProxy {
         }));
     }
 
-    protected processClientContractsPut(response: HttpResponseBase): Observable<void> {
+    protected processEditFinish(response: HttpResponseBase): Observable<void> {
         const status = response.status;
         const responseBlob =
             response instanceof HttpResponse ? response.body :
@@ -3660,7 +3191,162 @@ export class ClientPeriodServiceProxy {
     /**
      * @return Success
      */
-    clientContractsGet(clientPeriodId: string): Observable<ClientPeriodContractsDataQueryDto> {
+    reopen(clientPeriodId: string): Observable<void> {
+        let url_ = this.baseUrl + "/api/ClientPeriod/{clientPeriodId}/client-sales/reopen";
+        if (clientPeriodId === undefined || clientPeriodId === null)
+            throw new Error("The parameter 'clientPeriodId' must be defined.");
+        url_ = url_.replace("{clientPeriodId}", encodeURIComponent("" + clientPeriodId));
+        url_ = url_.replace(/[?&]$/, "");
+
+        let options_ : any = {
+            observe: "response",
+            responseType: "blob",
+            headers: new HttpHeaders({
+            })
+        };
+
+        return this.http.request("post", url_, options_).pipe(_observableMergeMap((response_ : any) => {
+            return this.processReopen(response_);
+        })).pipe(_observableCatch((response_: any) => {
+            if (response_ instanceof HttpResponseBase) {
+                try {
+                    return this.processReopen(response_ as any);
+                } catch (e) {
+                    return _observableThrow(e) as any as Observable<void>;
+                }
+            } else
+                return _observableThrow(response_) as any as Observable<void>;
+        }));
+    }
+
+    protected processReopen(response: HttpResponseBase): Observable<void> {
+        const status = response.status;
+        const responseBlob =
+            response instanceof HttpResponse ? response.body :
+            (response as any).error instanceof Blob ? (response as any).error : undefined;
+
+        let _headers: any = {}; if (response.headers) { for (let key of response.headers.keys()) { _headers[key] = response.headers.get(key); }}
+        if (status === 200) {
+            return blobToText(responseBlob).pipe(_observableMergeMap(_responseText => {
+            return _observableOf<void>(null as any);
+            }));
+        } else if (status !== 200 && status !== 204) {
+            return blobToText(responseBlob).pipe(_observableMergeMap(_responseText => {
+            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+            }));
+        }
+        return _observableOf<void>(null as any);
+    }
+
+    /**
+     * @return Success
+     */
+    editStart(clientPeriodId: string): Observable<void> {
+        let url_ = this.baseUrl + "/api/ClientPeriod/{clientPeriodId}/client-contracts/edit-start";
+        if (clientPeriodId === undefined || clientPeriodId === null)
+            throw new Error("The parameter 'clientPeriodId' must be defined.");
+        url_ = url_.replace("{clientPeriodId}", encodeURIComponent("" + clientPeriodId));
+        url_ = url_.replace(/[?&]$/, "");
+
+        let options_ : any = {
+            observe: "response",
+            responseType: "blob",
+            headers: new HttpHeaders({
+            })
+        };
+
+        return this.http.request("post", url_, options_).pipe(_observableMergeMap((response_ : any) => {
+            return this.processEditStart(response_);
+        })).pipe(_observableCatch((response_: any) => {
+            if (response_ instanceof HttpResponseBase) {
+                try {
+                    return this.processEditStart(response_ as any);
+                } catch (e) {
+                    return _observableThrow(e) as any as Observable<void>;
+                }
+            } else
+                return _observableThrow(response_) as any as Observable<void>;
+        }));
+    }
+
+    protected processEditStart(response: HttpResponseBase): Observable<void> {
+        const status = response.status;
+        const responseBlob =
+            response instanceof HttpResponse ? response.body :
+            (response as any).error instanceof Blob ? (response as any).error : undefined;
+
+        let _headers: any = {}; if (response.headers) { for (let key of response.headers.keys()) { _headers[key] = response.headers.get(key); }}
+        if (status === 200) {
+            return blobToText(responseBlob).pipe(_observableMergeMap(_responseText => {
+            return _observableOf<void>(null as any);
+            }));
+        } else if (status !== 200 && status !== 204) {
+            return blobToText(responseBlob).pipe(_observableMergeMap(_responseText => {
+            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+            }));
+        }
+        return _observableOf<void>(null as any);
+    }
+
+    /**
+     * @param body (optional) 
+     * @return Success
+     */
+    clientContractsPUT(clientPeriodId: string, body?: ClientPeriodContractsDataCommandDto | undefined): Observable<void> {
+        let url_ = this.baseUrl + "/api/ClientPeriod/{clientPeriodId}/client-contracts";
+        if (clientPeriodId === undefined || clientPeriodId === null)
+            throw new Error("The parameter 'clientPeriodId' must be defined.");
+        url_ = url_.replace("{clientPeriodId}", encodeURIComponent("" + clientPeriodId));
+        url_ = url_.replace(/[?&]$/, "");
+
+        const content_ = JSON.stringify(body);
+
+        let options_ : any = {
+            body: content_,
+            observe: "response",
+            responseType: "blob",
+            headers: new HttpHeaders({
+                "Content-Type": "application/json",
+            })
+        };
+
+        return this.http.request("put", url_, options_).pipe(_observableMergeMap((response_ : any) => {
+            return this.processClientContractsPUT(response_);
+        })).pipe(_observableCatch((response_: any) => {
+            if (response_ instanceof HttpResponseBase) {
+                try {
+                    return this.processClientContractsPUT(response_ as any);
+                } catch (e) {
+                    return _observableThrow(e) as any as Observable<void>;
+                }
+            } else
+                return _observableThrow(response_) as any as Observable<void>;
+        }));
+    }
+
+    protected processClientContractsPUT(response: HttpResponseBase): Observable<void> {
+        const status = response.status;
+        const responseBlob =
+            response instanceof HttpResponse ? response.body :
+            (response as any).error instanceof Blob ? (response as any).error : undefined;
+
+        let _headers: any = {}; if (response.headers) { for (let key of response.headers.keys()) { _headers[key] = response.headers.get(key); }}
+        if (status === 200) {
+            return blobToText(responseBlob).pipe(_observableMergeMap(_responseText => {
+            return _observableOf<void>(null as any);
+            }));
+        } else if (status !== 200 && status !== 204) {
+            return blobToText(responseBlob).pipe(_observableMergeMap(_responseText => {
+            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+            }));
+        }
+        return _observableOf<void>(null as any);
+    }
+
+    /**
+     * @return Success
+     */
+    clientContractsGET(clientPeriodId: string): Observable<ClientPeriodContractsDataQueryDto> {
         let url_ = this.baseUrl + "/api/ClientPeriod/{clientPeriodId}/client-contracts";
         if (clientPeriodId === undefined || clientPeriodId === null)
             throw new Error("The parameter 'clientPeriodId' must be defined.");
@@ -3676,11 +3362,11 @@ export class ClientPeriodServiceProxy {
         };
 
         return this.http.request("get", url_, options_).pipe(_observableMergeMap((response_ : any) => {
-            return this.processClientContractsGet(response_);
+            return this.processClientContractsGET(response_);
         })).pipe(_observableCatch((response_: any) => {
             if (response_ instanceof HttpResponseBase) {
                 try {
-                    return this.processClientContractsGet(response_ as any);
+                    return this.processClientContractsGET(response_ as any);
                 } catch (e) {
                     return _observableThrow(e) as any as Observable<ClientPeriodContractsDataQueryDto>;
                 }
@@ -3689,7 +3375,7 @@ export class ClientPeriodServiceProxy {
         }));
     }
 
-    protected processClientContractsGet(response: HttpResponseBase): Observable<ClientPeriodContractsDataQueryDto> {
+    protected processClientContractsGET(response: HttpResponseBase): Observable<ClientPeriodContractsDataQueryDto> {
         const status = response.status;
         const responseBlob =
             response instanceof HttpResponse ? response.body :
@@ -3712,11 +3398,11 @@ export class ClientPeriodServiceProxy {
     }
 
     /**
-     * @param body (optional)
+     * @param body (optional) 
      * @return Success
      */
-    clientFinancePut(clientPeriodId: string, body?: ClientPeriodFinanceDataDto | undefined): Observable<void> {
-        let url_ = this.baseUrl + "/api/ClientPeriod/{clientPeriodId}/client-finance";
+    editFinish2(clientPeriodId: string, body?: ClientPeriodContractsDataCommandDto | undefined): Observable<void> {
+        let url_ = this.baseUrl + "/api/ClientPeriod/{clientPeriodId}/client-contracts/edit-finish";
         if (clientPeriodId === undefined || clientPeriodId === null)
             throw new Error("The parameter 'clientPeriodId' must be defined.");
         url_ = url_.replace("{clientPeriodId}", encodeURIComponent("" + clientPeriodId));
@@ -3733,12 +3419,12 @@ export class ClientPeriodServiceProxy {
             })
         };
 
-        return this.http.request("put", url_, options_).pipe(_observableMergeMap((response_ : any) => {
-            return this.processClientFinancePut(response_);
+        return this.http.request("post", url_, options_).pipe(_observableMergeMap((response_ : any) => {
+            return this.processEditFinish2(response_);
         })).pipe(_observableCatch((response_: any) => {
             if (response_ instanceof HttpResponseBase) {
                 try {
-                    return this.processClientFinancePut(response_ as any);
+                    return this.processEditFinish2(response_ as any);
                 } catch (e) {
                     return _observableThrow(e) as any as Observable<void>;
                 }
@@ -3747,7 +3433,7 @@ export class ClientPeriodServiceProxy {
         }));
     }
 
-    protected processClientFinancePut(response: HttpResponseBase): Observable<void> {
+    protected processEditFinish2(response: HttpResponseBase): Observable<void> {
         const status = response.status;
         const responseBlob =
             response instanceof HttpResponse ? response.body :
@@ -3769,7 +3455,112 @@ export class ClientPeriodServiceProxy {
     /**
      * @return Success
      */
-    clientFinanceGet(clientPeriodId: string): Observable<ClientPeriodFinanceDataDto> {
+    editStart2(clientPeriodId: string): Observable<void> {
+        let url_ = this.baseUrl + "/api/ClientPeriod/{clientPeriodId}/client-finance/edit-start";
+        if (clientPeriodId === undefined || clientPeriodId === null)
+            throw new Error("The parameter 'clientPeriodId' must be defined.");
+        url_ = url_.replace("{clientPeriodId}", encodeURIComponent("" + clientPeriodId));
+        url_ = url_.replace(/[?&]$/, "");
+
+        let options_ : any = {
+            observe: "response",
+            responseType: "blob",
+            headers: new HttpHeaders({
+            })
+        };
+
+        return this.http.request("post", url_, options_).pipe(_observableMergeMap((response_ : any) => {
+            return this.processEditStart2(response_);
+        })).pipe(_observableCatch((response_: any) => {
+            if (response_ instanceof HttpResponseBase) {
+                try {
+                    return this.processEditStart2(response_ as any);
+                } catch (e) {
+                    return _observableThrow(e) as any as Observable<void>;
+                }
+            } else
+                return _observableThrow(response_) as any as Observable<void>;
+        }));
+    }
+
+    protected processEditStart2(response: HttpResponseBase): Observable<void> {
+        const status = response.status;
+        const responseBlob =
+            response instanceof HttpResponse ? response.body :
+            (response as any).error instanceof Blob ? (response as any).error : undefined;
+
+        let _headers: any = {}; if (response.headers) { for (let key of response.headers.keys()) { _headers[key] = response.headers.get(key); }}
+        if (status === 200) {
+            return blobToText(responseBlob).pipe(_observableMergeMap(_responseText => {
+            return _observableOf<void>(null as any);
+            }));
+        } else if (status !== 200 && status !== 204) {
+            return blobToText(responseBlob).pipe(_observableMergeMap(_responseText => {
+            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+            }));
+        }
+        return _observableOf<void>(null as any);
+    }
+
+    /**
+     * @param body (optional) 
+     * @return Success
+     */
+    clientFinancePUT(clientPeriodId: string, body?: ClientPeriodFinanceDataDto | undefined): Observable<void> {
+        let url_ = this.baseUrl + "/api/ClientPeriod/{clientPeriodId}/client-finance";
+        if (clientPeriodId === undefined || clientPeriodId === null)
+            throw new Error("The parameter 'clientPeriodId' must be defined.");
+        url_ = url_.replace("{clientPeriodId}", encodeURIComponent("" + clientPeriodId));
+        url_ = url_.replace(/[?&]$/, "");
+
+        const content_ = JSON.stringify(body);
+
+        let options_ : any = {
+            body: content_,
+            observe: "response",
+            responseType: "blob",
+            headers: new HttpHeaders({
+                "Content-Type": "application/json",
+            })
+        };
+
+        return this.http.request("put", url_, options_).pipe(_observableMergeMap((response_ : any) => {
+            return this.processClientFinancePUT(response_);
+        })).pipe(_observableCatch((response_: any) => {
+            if (response_ instanceof HttpResponseBase) {
+                try {
+                    return this.processClientFinancePUT(response_ as any);
+                } catch (e) {
+                    return _observableThrow(e) as any as Observable<void>;
+                }
+            } else
+                return _observableThrow(response_) as any as Observable<void>;
+        }));
+    }
+
+    protected processClientFinancePUT(response: HttpResponseBase): Observable<void> {
+        const status = response.status;
+        const responseBlob =
+            response instanceof HttpResponse ? response.body :
+            (response as any).error instanceof Blob ? (response as any).error : undefined;
+
+        let _headers: any = {}; if (response.headers) { for (let key of response.headers.keys()) { _headers[key] = response.headers.get(key); }}
+        if (status === 200) {
+            return blobToText(responseBlob).pipe(_observableMergeMap(_responseText => {
+            return _observableOf<void>(null as any);
+            }));
+        } else if (status !== 200 && status !== 204) {
+            return blobToText(responseBlob).pipe(_observableMergeMap(_responseText => {
+            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+            }));
+        }
+        return _observableOf<void>(null as any);
+    }
+
+    /**
+     * @return Success
+     */
+    clientFinanceGET(clientPeriodId: string): Observable<ClientPeriodFinanceDataDto> {
         let url_ = this.baseUrl + "/api/ClientPeriod/{clientPeriodId}/client-finance";
         if (clientPeriodId === undefined || clientPeriodId === null)
             throw new Error("The parameter 'clientPeriodId' must be defined.");
@@ -3785,11 +3576,11 @@ export class ClientPeriodServiceProxy {
         };
 
         return this.http.request("get", url_, options_).pipe(_observableMergeMap((response_ : any) => {
-            return this.processClientFinanceGet(response_);
+            return this.processClientFinanceGET(response_);
         })).pipe(_observableCatch((response_: any) => {
             if (response_ instanceof HttpResponseBase) {
                 try {
-                    return this.processClientFinanceGet(response_ as any);
+                    return this.processClientFinanceGET(response_ as any);
                 } catch (e) {
                     return _observableThrow(e) as any as Observable<ClientPeriodFinanceDataDto>;
                 }
@@ -3798,7 +3589,7 @@ export class ClientPeriodServiceProxy {
         }));
     }
 
-    protected processClientFinanceGet(response: HttpResponseBase): Observable<ClientPeriodFinanceDataDto> {
+    protected processClientFinanceGET(response: HttpResponseBase): Observable<ClientPeriodFinanceDataDto> {
         const status = response.status;
         const responseBlob =
             response instanceof HttpResponse ? response.body :
@@ -3821,7 +3612,62 @@ export class ClientPeriodServiceProxy {
     }
 
     /**
-     * @param body (optional)
+     * @param body (optional) 
+     * @return Success
+     */
+    editFinish3(clientPeriodId: string, body?: ClientPeriodFinanceDataDto | undefined): Observable<void> {
+        let url_ = this.baseUrl + "/api/ClientPeriod/{clientPeriodId}/client-finance/edit-finish";
+        if (clientPeriodId === undefined || clientPeriodId === null)
+            throw new Error("The parameter 'clientPeriodId' must be defined.");
+        url_ = url_.replace("{clientPeriodId}", encodeURIComponent("" + clientPeriodId));
+        url_ = url_.replace(/[?&]$/, "");
+
+        const content_ = JSON.stringify(body);
+
+        let options_ : any = {
+            body: content_,
+            observe: "response",
+            responseType: "blob",
+            headers: new HttpHeaders({
+                "Content-Type": "application/json",
+            })
+        };
+
+        return this.http.request("post", url_, options_).pipe(_observableMergeMap((response_ : any) => {
+            return this.processEditFinish3(response_);
+        })).pipe(_observableCatch((response_: any) => {
+            if (response_ instanceof HttpResponseBase) {
+                try {
+                    return this.processEditFinish3(response_ as any);
+                } catch (e) {
+                    return _observableThrow(e) as any as Observable<void>;
+                }
+            } else
+                return _observableThrow(response_) as any as Observable<void>;
+        }));
+    }
+
+    protected processEditFinish3(response: HttpResponseBase): Observable<void> {
+        const status = response.status;
+        const responseBlob =
+            response instanceof HttpResponse ? response.body :
+            (response as any).error instanceof Blob ? (response as any).error : undefined;
+
+        let _headers: any = {}; if (response.headers) { for (let key of response.headers.keys()) { _headers[key] = response.headers.get(key); }}
+        if (status === 200) {
+            return blobToText(responseBlob).pipe(_observableMergeMap(_responseText => {
+            return _observableOf<void>(null as any);
+            }));
+        } else if (status !== 200 && status !== 204) {
+            return blobToText(responseBlob).pipe(_observableMergeMap(_responseText => {
+            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+            }));
+        }
+        return _observableOf<void>(null as any);
+    }
+
+    /**
+     * @param body (optional) 
      * @return Success
      */
     clientExtend(clientPeriodId: string, body?: ExtendClientPeriodDto | undefined): Observable<ExtendClientPeriodResultDto> {
@@ -3880,7 +3726,7 @@ export class ClientPeriodServiceProxy {
     }
 
     /**
-     * @param body (optional)
+     * @param body (optional) 
      * @return Success
      */
     clientChange(clientPeriodId: string, body?: ChangeClientPeriodDto | undefined): Observable<ChangeClientPeriodResultDto> {
@@ -3939,7 +3785,7 @@ export class ClientPeriodServiceProxy {
     }
 
     /**
-     * @param body (optional)
+     * @param body (optional) 
      * @return Success
      */
     addConsultantPeriod(clientPeriodId: string, body?: ConsultantPeriodAddDto | undefined): Observable<string> {
@@ -3987,7 +3833,7 @@ export class ClientPeriodServiceProxy {
             let result200: any = null;
             let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
                 result200 = resultData200 !== undefined ? resultData200 : <any>null;
-
+    
             return _observableOf(result200);
             }));
         } else if (status !== 200 && status !== 204) {
@@ -4114,7 +3960,7 @@ export class ClientPeriodServiceProxy {
     }
 
     /**
-     * @param newResponsibleEmployeeId (optional)
+     * @param newResponsibleEmployeeId (optional) 
      * @return Success
      */
     stepResponsible(clientPeriodId: string, stepType: StepType, newResponsibleEmployeeId?: number | undefined): Observable<void> {
@@ -4172,7 +4018,7 @@ export class ClientPeriodServiceProxy {
     }
 
     /**
-     * @param newSalesAccountManagerId (optional)
+     * @param newSalesAccountManagerId (optional) 
      * @return Success
      */
     salesAccountManager(clientPeriodId: string, newSalesAccountManagerId?: number | undefined): Observable<void> {
@@ -4225,79 +4071,12 @@ export class ClientPeriodServiceProxy {
         }
         return _observableOf<void>(null as any);
     }
-}
-
-@Injectable()
-export class ClientSalesServiceProxy {
-    private http: HttpClient;
-    private baseUrl: string;
-    protected jsonParseReviver: ((key: string, value: any) => any) | undefined = undefined;
-
-    constructor(@Inject(HttpClient) http: HttpClient, @Optional() @Inject(API_BASE_URL) baseUrl?: string) {
-        this.http = http;
-        this.baseUrl = baseUrl !== undefined && baseUrl !== null ? baseUrl : "";
-    }
-
-    /**
-     * @param body (optional)
-     * @return Success
-     */
-    editFinish(clientPeriodId: string, body?: ClientPeriodSalesDataDto | undefined): Observable<void> {
-        let url_ = this.baseUrl + "/api/ClientPeriod/{clientPeriodId}/client-sales/edit-finish";
-        if (clientPeriodId === undefined || clientPeriodId === null)
-            throw new Error("The parameter 'clientPeriodId' must be defined.");
-        url_ = url_.replace("{clientPeriodId}", encodeURIComponent("" + clientPeriodId));
-        url_ = url_.replace(/[?&]$/, "");
-
-        const content_ = JSON.stringify(body);
-
-        let options_ : any = {
-            body: content_,
-            observe: "response",
-            responseType: "blob",
-            headers: new HttpHeaders({
-                "Content-Type": "application/json",
-            })
-        };
-
-        return this.http.request("post", url_, options_).pipe(_observableMergeMap((response_ : any) => {
-            return this.processEditFinish(response_);
-        })).pipe(_observableCatch((response_: any) => {
-            if (response_ instanceof HttpResponseBase) {
-                try {
-                    return this.processEditFinish(response_ as any);
-                } catch (e) {
-                    return _observableThrow(e) as any as Observable<void>;
-                }
-            } else
-                return _observableThrow(response_) as any as Observable<void>;
-        }));
-    }
-
-    protected processEditFinish(response: HttpResponseBase): Observable<void> {
-        const status = response.status;
-        const responseBlob =
-            response instanceof HttpResponse ? response.body :
-            (response as any).error instanceof Blob ? (response as any).error : undefined;
-
-        let _headers: any = {}; if (response.headers) { for (let key of response.headers.keys()) { _headers[key] = response.headers.get(key); }}
-        if (status === 200) {
-            return blobToText(responseBlob).pipe(_observableMergeMap(_responseText => {
-            return _observableOf<void>(null as any);
-            }));
-        } else if (status !== 200 && status !== 204) {
-            return blobToText(responseBlob).pipe(_observableMergeMap(_responseText => {
-            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
-            }));
-        }
-        return _observableOf<void>(null as any);
-    }
 
     /**
      * @return Success
      */
-    reopen(clientPeriodId: string): Observable<void> {
-        let url_ = this.baseUrl + "/api/ClientPeriod/{clientPeriodId}/client-sales/reopen";
+    clientPeriod(clientPeriodId: string): Observable<void> {
+        let url_ = this.baseUrl + "/api/ClientPeriod/{clientPeriodId}";
         if (clientPeriodId === undefined || clientPeriodId === null)
             throw new Error("The parameter 'clientPeriodId' must be defined.");
         url_ = url_.replace("{clientPeriodId}", encodeURIComponent("" + clientPeriodId));
@@ -4310,12 +4089,12 @@ export class ClientSalesServiceProxy {
             })
         };
 
-        return this.http.request("post", url_, options_).pipe(_observableMergeMap((response_ : any) => {
-            return this.processReopen(response_);
+        return this.http.request("delete", url_, options_).pipe(_observableMergeMap((response_ : any) => {
+            return this.processClientPeriod(response_);
         })).pipe(_observableCatch((response_: any) => {
             if (response_ instanceof HttpResponseBase) {
                 try {
-                    return this.processReopen(response_ as any);
+                    return this.processClientPeriod(response_ as any);
                 } catch (e) {
                     return _observableThrow(e) as any as Observable<void>;
                 }
@@ -4324,241 +4103,7 @@ export class ClientSalesServiceProxy {
         }));
     }
 
-    protected processReopen(response: HttpResponseBase): Observable<void> {
-        const status = response.status;
-        const responseBlob =
-            response instanceof HttpResponse ? response.body :
-            (response as any).error instanceof Blob ? (response as any).error : undefined;
-
-        let _headers: any = {}; if (response.headers) { for (let key of response.headers.keys()) { _headers[key] = response.headers.get(key); }}
-        if (status === 200) {
-            return blobToText(responseBlob).pipe(_observableMergeMap(_responseText => {
-            return _observableOf<void>(null as any);
-            }));
-        } else if (status !== 200 && status !== 204) {
-            return blobToText(responseBlob).pipe(_observableMergeMap(_responseText => {
-            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
-            }));
-        }
-        return _observableOf<void>(null as any);
-    }
-}
-
-@Injectable()
-export class ClientContractsServiceProxy {
-    private http: HttpClient;
-    private baseUrl: string;
-    protected jsonParseReviver: ((key: string, value: any) => any) | undefined = undefined;
-
-    constructor(@Inject(HttpClient) http: HttpClient, @Optional() @Inject(API_BASE_URL) baseUrl?: string) {
-        this.http = http;
-        this.baseUrl = baseUrl !== undefined && baseUrl !== null ? baseUrl : "";
-    }
-
-    /**
-     * @return Success
-     */
-    editStart(clientPeriodId: string): Observable<void> {
-        let url_ = this.baseUrl + "/api/ClientPeriod/{clientPeriodId}/client-contracts/edit-start";
-        if (clientPeriodId === undefined || clientPeriodId === null)
-            throw new Error("The parameter 'clientPeriodId' must be defined.");
-        url_ = url_.replace("{clientPeriodId}", encodeURIComponent("" + clientPeriodId));
-        url_ = url_.replace(/[?&]$/, "");
-
-        let options_ : any = {
-            observe: "response",
-            responseType: "blob",
-            headers: new HttpHeaders({
-            })
-        };
-
-        return this.http.request("post", url_, options_).pipe(_observableMergeMap((response_ : any) => {
-            return this.processEditStart(response_);
-        })).pipe(_observableCatch((response_: any) => {
-            if (response_ instanceof HttpResponseBase) {
-                try {
-                    return this.processEditStart(response_ as any);
-                } catch (e) {
-                    return _observableThrow(e) as any as Observable<void>;
-                }
-            } else
-                return _observableThrow(response_) as any as Observable<void>;
-        }));
-    }
-
-    protected processEditStart(response: HttpResponseBase): Observable<void> {
-        const status = response.status;
-        const responseBlob =
-            response instanceof HttpResponse ? response.body :
-            (response as any).error instanceof Blob ? (response as any).error : undefined;
-
-        let _headers: any = {}; if (response.headers) { for (let key of response.headers.keys()) { _headers[key] = response.headers.get(key); }}
-        if (status === 200) {
-            return blobToText(responseBlob).pipe(_observableMergeMap(_responseText => {
-            return _observableOf<void>(null as any);
-            }));
-        } else if (status !== 200 && status !== 204) {
-            return blobToText(responseBlob).pipe(_observableMergeMap(_responseText => {
-            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
-            }));
-        }
-        return _observableOf<void>(null as any);
-    }
-
-    /**
-     * @param body (optional)
-     * @return Success
-     */
-    editFinish(clientPeriodId: string, body?: ClientPeriodContractsDataCommandDto | undefined): Observable<void> {
-        let url_ = this.baseUrl + "/api/ClientPeriod/{clientPeriodId}/client-contracts/edit-finish";
-        if (clientPeriodId === undefined || clientPeriodId === null)
-            throw new Error("The parameter 'clientPeriodId' must be defined.");
-        url_ = url_.replace("{clientPeriodId}", encodeURIComponent("" + clientPeriodId));
-        url_ = url_.replace(/[?&]$/, "");
-
-        const content_ = JSON.stringify(body);
-
-        let options_ : any = {
-            body: content_,
-            observe: "response",
-            responseType: "blob",
-            headers: new HttpHeaders({
-                "Content-Type": "application/json",
-            })
-        };
-
-        return this.http.request("post", url_, options_).pipe(_observableMergeMap((response_ : any) => {
-            return this.processEditFinish(response_);
-        })).pipe(_observableCatch((response_: any) => {
-            if (response_ instanceof HttpResponseBase) {
-                try {
-                    return this.processEditFinish(response_ as any);
-                } catch (e) {
-                    return _observableThrow(e) as any as Observable<void>;
-                }
-            } else
-                return _observableThrow(response_) as any as Observable<void>;
-        }));
-    }
-
-    protected processEditFinish(response: HttpResponseBase): Observable<void> {
-        const status = response.status;
-        const responseBlob =
-            response instanceof HttpResponse ? response.body :
-            (response as any).error instanceof Blob ? (response as any).error : undefined;
-
-        let _headers: any = {}; if (response.headers) { for (let key of response.headers.keys()) { _headers[key] = response.headers.get(key); }}
-        if (status === 200) {
-            return blobToText(responseBlob).pipe(_observableMergeMap(_responseText => {
-            return _observableOf<void>(null as any);
-            }));
-        } else if (status !== 200 && status !== 204) {
-            return blobToText(responseBlob).pipe(_observableMergeMap(_responseText => {
-            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
-            }));
-        }
-        return _observableOf<void>(null as any);
-    }
-}
-
-@Injectable()
-export class ClientFinanceServiceProxy {
-    private http: HttpClient;
-    private baseUrl: string;
-    protected jsonParseReviver: ((key: string, value: any) => any) | undefined = undefined;
-
-    constructor(@Inject(HttpClient) http: HttpClient, @Optional() @Inject(API_BASE_URL) baseUrl?: string) {
-        this.http = http;
-        this.baseUrl = baseUrl !== undefined && baseUrl !== null ? baseUrl : "";
-    }
-
-    /**
-     * @return Success
-     */
-    editStart(clientPeriodId: string): Observable<void> {
-        let url_ = this.baseUrl + "/api/ClientPeriod/{clientPeriodId}/client-finance/edit-start";
-        if (clientPeriodId === undefined || clientPeriodId === null)
-            throw new Error("The parameter 'clientPeriodId' must be defined.");
-        url_ = url_.replace("{clientPeriodId}", encodeURIComponent("" + clientPeriodId));
-        url_ = url_.replace(/[?&]$/, "");
-
-        let options_ : any = {
-            observe: "response",
-            responseType: "blob",
-            headers: new HttpHeaders({
-            })
-        };
-
-        return this.http.request("post", url_, options_).pipe(_observableMergeMap((response_ : any) => {
-            return this.processEditStart(response_);
-        })).pipe(_observableCatch((response_: any) => {
-            if (response_ instanceof HttpResponseBase) {
-                try {
-                    return this.processEditStart(response_ as any);
-                } catch (e) {
-                    return _observableThrow(e) as any as Observable<void>;
-                }
-            } else
-                return _observableThrow(response_) as any as Observable<void>;
-        }));
-    }
-
-    protected processEditStart(response: HttpResponseBase): Observable<void> {
-        const status = response.status;
-        const responseBlob =
-            response instanceof HttpResponse ? response.body :
-            (response as any).error instanceof Blob ? (response as any).error : undefined;
-
-        let _headers: any = {}; if (response.headers) { for (let key of response.headers.keys()) { _headers[key] = response.headers.get(key); }}
-        if (status === 200) {
-            return blobToText(responseBlob).pipe(_observableMergeMap(_responseText => {
-            return _observableOf<void>(null as any);
-            }));
-        } else if (status !== 200 && status !== 204) {
-            return blobToText(responseBlob).pipe(_observableMergeMap(_responseText => {
-            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
-            }));
-        }
-        return _observableOf<void>(null as any);
-    }
-
-    /**
-     * @param body (optional)
-     * @return Success
-     */
-    editFinish(clientPeriodId: string, body?: ClientPeriodFinanceDataDto | undefined): Observable<void> {
-        let url_ = this.baseUrl + "/api/ClientPeriod/{clientPeriodId}/client-finance/edit-finish";
-        if (clientPeriodId === undefined || clientPeriodId === null)
-            throw new Error("The parameter 'clientPeriodId' must be defined.");
-        url_ = url_.replace("{clientPeriodId}", encodeURIComponent("" + clientPeriodId));
-        url_ = url_.replace(/[?&]$/, "");
-
-        const content_ = JSON.stringify(body);
-
-        let options_ : any = {
-            body: content_,
-            observe: "response",
-            responseType: "blob",
-            headers: new HttpHeaders({
-                "Content-Type": "application/json",
-            })
-        };
-
-        return this.http.request("post", url_, options_).pipe(_observableMergeMap((response_ : any) => {
-            return this.processEditFinish(response_);
-        })).pipe(_observableCatch((response_: any) => {
-            if (response_ instanceof HttpResponseBase) {
-                try {
-                    return this.processEditFinish(response_ as any);
-                } catch (e) {
-                    return _observableThrow(e) as any as Observable<void>;
-                }
-            } else
-                return _observableThrow(response_) as any as Observable<void>;
-        }));
-    }
-
-    protected processEditFinish(response: HttpResponseBase): Observable<void> {
+    protected processClientPeriod(response: HttpResponseBase): Observable<void> {
         const status = response.status;
         const responseBlob =
             response instanceof HttpResponse ? response.body :
@@ -4590,18 +4135,18 @@ export class ClientsServiceProxy {
     }
 
     /**
-     * @param search (optional)
-     * @param countryFilter (optional)
-     * @param ownerFilter (optional)
-     * @param isActive (optional)
-     * @param excludeDeleted (optional)
-     * @param onlyWrongfullyDeletedInHubspot (optional)
-     * @param pageNumber (optional)
-     * @param pageSize (optional)
-     * @param sort (optional)
+     * @param search (optional) 
+     * @param countryFilter (optional) 
+     * @param ownerFilter (optional) 
+     * @param isActive (optional) 
+     * @param excludeDeleted (optional) 
+     * @param onlyWrongfullyDeletedInHubspot (optional) 
+     * @param pageNumber (optional) 
+     * @param pageSize (optional) 
+     * @param sort (optional) 
      * @return Success
      */
-    list(search?: string | undefined, countryFilter?: number[] | undefined, ownerFilter?: number[] | undefined, isActive?: boolean | undefined, excludeDeleted?: boolean | undefined, onlyWrongfullyDeletedInHubspot?: boolean | undefined, pageNumber?: number | undefined, pageSize?: number | undefined, sort?: string | undefined): Observable<ClientListItemDtoPaginatedList> {
+    list3(search?: string | undefined, countryFilter?: number[] | undefined, ownerFilter?: number[] | undefined, isActive?: boolean | undefined, excludeDeleted?: boolean | undefined, onlyWrongfullyDeletedInHubspot?: boolean | undefined, pageNumber?: number | undefined, pageSize?: number | undefined, sort?: string | undefined): Observable<ClientListItemDtoPaginatedList> {
         let url_ = this.baseUrl + "/api/Clients/list?";
         if (search === null)
             throw new Error("The parameter 'search' cannot be null.");
@@ -4650,11 +4195,11 @@ export class ClientsServiceProxy {
         };
 
         return this.http.request("get", url_, options_).pipe(_observableMergeMap((response_ : any) => {
-            return this.processList(response_);
+            return this.processList3(response_);
         })).pipe(_observableCatch((response_: any) => {
             if (response_ instanceof HttpResponseBase) {
                 try {
-                    return this.processList(response_ as any);
+                    return this.processList3(response_ as any);
                 } catch (e) {
                     return _observableThrow(e) as any as Observable<ClientListItemDtoPaginatedList>;
                 }
@@ -4663,7 +4208,7 @@ export class ClientsServiceProxy {
         }));
     }
 
-    protected processList(response: HttpResponseBase): Observable<ClientListItemDtoPaginatedList> {
+    protected processList3(response: HttpResponseBase): Observable<ClientListItemDtoPaginatedList> {
         const status = response.status;
         const responseBlob =
             response instanceof HttpResponse ? response.body :
@@ -4686,11 +4231,65 @@ export class ClientsServiceProxy {
     }
 
     /**
-     * @param search (optional)
-     * @param projectTypeFilter (optional)
-     * @param pageNumber (optional)
-     * @param pageSize (optional)
-     * @param sort (optional)
+     * @return Success
+     */
+    clients(clientId: number): Observable<ClientDetailsDto> {
+        let url_ = this.baseUrl + "/api/Clients/{clientId}";
+        if (clientId === undefined || clientId === null)
+            throw new Error("The parameter 'clientId' must be defined.");
+        url_ = url_.replace("{clientId}", encodeURIComponent("" + clientId));
+        url_ = url_.replace(/[?&]$/, "");
+
+        let options_ : any = {
+            observe: "response",
+            responseType: "blob",
+            headers: new HttpHeaders({
+                "Accept": "text/plain"
+            })
+        };
+
+        return this.http.request("get", url_, options_).pipe(_observableMergeMap((response_ : any) => {
+            return this.processClients(response_);
+        })).pipe(_observableCatch((response_: any) => {
+            if (response_ instanceof HttpResponseBase) {
+                try {
+                    return this.processClients(response_ as any);
+                } catch (e) {
+                    return _observableThrow(e) as any as Observable<ClientDetailsDto>;
+                }
+            } else
+                return _observableThrow(response_) as any as Observable<ClientDetailsDto>;
+        }));
+    }
+
+    protected processClients(response: HttpResponseBase): Observable<ClientDetailsDto> {
+        const status = response.status;
+        const responseBlob =
+            response instanceof HttpResponse ? response.body :
+            (response as any).error instanceof Blob ? (response as any).error : undefined;
+
+        let _headers: any = {}; if (response.headers) { for (let key of response.headers.keys()) { _headers[key] = response.headers.get(key); }}
+        if (status === 200) {
+            return blobToText(responseBlob).pipe(_observableMergeMap(_responseText => {
+            let result200: any = null;
+            let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
+            result200 = ClientDetailsDto.fromJS(resultData200);
+            return _observableOf(result200);
+            }));
+        } else if (status !== 200 && status !== 204) {
+            return blobToText(responseBlob).pipe(_observableMergeMap(_responseText => {
+            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+            }));
+        }
+        return _observableOf<ClientDetailsDto>(null as any);
+    }
+
+    /**
+     * @param search (optional) 
+     * @param projectTypeFilter (optional) 
+     * @param pageNumber (optional) 
+     * @param pageSize (optional) 
+     * @param sort (optional) 
      * @return Success
      */
     clientOverview(search?: string | undefined, projectTypeFilter?: string[] | undefined, pageNumber?: number | undefined, pageSize?: number | undefined, sort?: string | undefined): Observable<ClientOverviewListItemDtoPaginatedList> {
@@ -4764,7 +4363,7 @@ export class ClientsServiceProxy {
     /**
      * @return Success
      */
-    specialRatesGet(clientId: number, showHidden: boolean): Observable<ClientSpecialRateDto[]> {
+    specialRatesAll(clientId: number, showHidden: boolean): Observable<ClientSpecialRateDto[]> {
         let url_ = this.baseUrl + "/api/Clients/{clientId}/special-rates/{showHidden}";
         if (clientId === undefined || clientId === null)
             throw new Error("The parameter 'clientId' must be defined.");
@@ -4783,11 +4382,11 @@ export class ClientsServiceProxy {
         };
 
         return this.http.request("get", url_, options_).pipe(_observableMergeMap((response_ : any) => {
-            return this.processSpecialRatesGet(response_);
+            return this.processSpecialRatesAll(response_);
         })).pipe(_observableCatch((response_: any) => {
             if (response_ instanceof HttpResponseBase) {
                 try {
-                    return this.processSpecialRatesGet(response_ as any);
+                    return this.processSpecialRatesAll(response_ as any);
                 } catch (e) {
                     return _observableThrow(e) as any as Observable<ClientSpecialRateDto[]>;
                 }
@@ -4796,7 +4395,7 @@ export class ClientsServiceProxy {
         }));
     }
 
-    protected processSpecialRatesGet(response: HttpResponseBase): Observable<ClientSpecialRateDto[]> {
+    protected processSpecialRatesAll(response: HttpResponseBase): Observable<ClientSpecialRateDto[]> {
         const status = response.status;
         const responseBlob =
             response instanceof HttpResponse ? response.body :
@@ -4826,10 +4425,10 @@ export class ClientsServiceProxy {
     }
 
     /**
-     * @param body (optional)
+     * @param body (optional) 
      * @return Success
      */
-    specialRatesPost(clientId: number, body?: AddClientSpecialRateDto | undefined): Observable<void> {
+    specialRatesPOST(clientId: number, body?: AddClientSpecialRateDto | undefined): Observable<void> {
         let url_ = this.baseUrl + "/api/Clients/{clientId}/special-rates";
         if (clientId === undefined || clientId === null)
             throw new Error("The parameter 'clientId' must be defined.");
@@ -4848,11 +4447,11 @@ export class ClientsServiceProxy {
         };
 
         return this.http.request("post", url_, options_).pipe(_observableMergeMap((response_ : any) => {
-            return this.processSpecialRatesPost(response_);
+            return this.processSpecialRatesPOST(response_);
         })).pipe(_observableCatch((response_: any) => {
             if (response_ instanceof HttpResponseBase) {
                 try {
-                    return this.processSpecialRatesPost(response_ as any);
+                    return this.processSpecialRatesPOST(response_ as any);
                 } catch (e) {
                     return _observableThrow(e) as any as Observable<void>;
                 }
@@ -4861,7 +4460,7 @@ export class ClientsServiceProxy {
         }));
     }
 
-    protected processSpecialRatesPost(response: HttpResponseBase): Observable<void> {
+    protected processSpecialRatesPOST(response: HttpResponseBase): Observable<void> {
         const status = response.status;
         const responseBlob =
             response instanceof HttpResponse ? response.body :
@@ -4881,10 +4480,10 @@ export class ClientsServiceProxy {
     }
 
     /**
-     * @param body (optional)
+     * @param body (optional) 
      * @return Success
      */
-    specialRatesPut(clientId: number, body?: UpdateClientSpecialRateDto | undefined): Observable<void> {
+    specialRatesPUT(clientId: number, body?: UpdateClientSpecialRateDto | undefined): Observable<void> {
         let url_ = this.baseUrl + "/api/Clients/{clientId}/special-rates";
         if (clientId === undefined || clientId === null)
             throw new Error("The parameter 'clientId' must be defined.");
@@ -4903,11 +4502,11 @@ export class ClientsServiceProxy {
         };
 
         return this.http.request("put", url_, options_).pipe(_observableMergeMap((response_ : any) => {
-            return this.processSpecialRatesPut(response_);
+            return this.processSpecialRatesPUT(response_);
         })).pipe(_observableCatch((response_: any) => {
             if (response_ instanceof HttpResponseBase) {
                 try {
-                    return this.processSpecialRatesPut(response_ as any);
+                    return this.processSpecialRatesPUT(response_ as any);
                 } catch (e) {
                     return _observableThrow(e) as any as Observable<void>;
                 }
@@ -4916,7 +4515,7 @@ export class ClientsServiceProxy {
         }));
     }
 
-    protected processSpecialRatesPut(response: HttpResponseBase): Observable<void> {
+    protected processSpecialRatesPUT(response: HttpResponseBase): Observable<void> {
         const status = response.status;
         const responseBlob =
             response instanceof HttpResponse ? response.body :
@@ -4938,7 +4537,60 @@ export class ClientsServiceProxy {
     /**
      * @return Success
      */
-    specialFeesGet(clientId: number, showHidden: boolean): Observable<ClientSpecialFeeDto[]> {
+    delete(clientId: number, clientSpecialRateId: number): Observable<void> {
+        let url_ = this.baseUrl + "/api/Clients/{clientId}/special-rates/{clientSpecialRateId}/delete";
+        if (clientId === undefined || clientId === null)
+            throw new Error("The parameter 'clientId' must be defined.");
+        url_ = url_.replace("{clientId}", encodeURIComponent("" + clientId));
+        if (clientSpecialRateId === undefined || clientSpecialRateId === null)
+            throw new Error("The parameter 'clientSpecialRateId' must be defined.");
+        url_ = url_.replace("{clientSpecialRateId}", encodeURIComponent("" + clientSpecialRateId));
+        url_ = url_.replace(/[?&]$/, "");
+
+        let options_ : any = {
+            observe: "response",
+            responseType: "blob",
+            headers: new HttpHeaders({
+            })
+        };
+
+        return this.http.request("delete", url_, options_).pipe(_observableMergeMap((response_ : any) => {
+            return this.processDelete(response_);
+        })).pipe(_observableCatch((response_: any) => {
+            if (response_ instanceof HttpResponseBase) {
+                try {
+                    return this.processDelete(response_ as any);
+                } catch (e) {
+                    return _observableThrow(e) as any as Observable<void>;
+                }
+            } else
+                return _observableThrow(response_) as any as Observable<void>;
+        }));
+    }
+
+    protected processDelete(response: HttpResponseBase): Observable<void> {
+        const status = response.status;
+        const responseBlob =
+            response instanceof HttpResponse ? response.body :
+            (response as any).error instanceof Blob ? (response as any).error : undefined;
+
+        let _headers: any = {}; if (response.headers) { for (let key of response.headers.keys()) { _headers[key] = response.headers.get(key); }}
+        if (status === 200) {
+            return blobToText(responseBlob).pipe(_observableMergeMap(_responseText => {
+            return _observableOf<void>(null as any);
+            }));
+        } else if (status !== 200 && status !== 204) {
+            return blobToText(responseBlob).pipe(_observableMergeMap(_responseText => {
+            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+            }));
+        }
+        return _observableOf<void>(null as any);
+    }
+
+    /**
+     * @return Success
+     */
+    specialFeesAll(clientId: number, showHidden: boolean): Observable<ClientSpecialFeeDto[]> {
         let url_ = this.baseUrl + "/api/Clients/{clientId}/special-fees/{showHidden}";
         if (clientId === undefined || clientId === null)
             throw new Error("The parameter 'clientId' must be defined.");
@@ -4957,11 +4609,11 @@ export class ClientsServiceProxy {
         };
 
         return this.http.request("get", url_, options_).pipe(_observableMergeMap((response_ : any) => {
-            return this.processSpecialFeesGet(response_);
+            return this.processSpecialFeesAll(response_);
         })).pipe(_observableCatch((response_: any) => {
             if (response_ instanceof HttpResponseBase) {
                 try {
-                    return this.processSpecialFeesGet(response_ as any);
+                    return this.processSpecialFeesAll(response_ as any);
                 } catch (e) {
                     return _observableThrow(e) as any as Observable<ClientSpecialFeeDto[]>;
                 }
@@ -4970,7 +4622,7 @@ export class ClientsServiceProxy {
         }));
     }
 
-    protected processSpecialFeesGet(response: HttpResponseBase): Observable<ClientSpecialFeeDto[]> {
+    protected processSpecialFeesAll(response: HttpResponseBase): Observable<ClientSpecialFeeDto[]> {
         const status = response.status;
         const responseBlob =
             response instanceof HttpResponse ? response.body :
@@ -5000,10 +4652,10 @@ export class ClientsServiceProxy {
     }
 
     /**
-     * @param body (optional)
+     * @param body (optional) 
      * @return Success
      */
-    specialFeesPost(clientId: number, body?: AddClientSpecialFeeDto | undefined): Observable<void> {
+    specialFeesPOST(clientId: number, body?: AddClientSpecialFeeDto | undefined): Observable<void> {
         let url_ = this.baseUrl + "/api/Clients/{clientId}/special-fees";
         if (clientId === undefined || clientId === null)
             throw new Error("The parameter 'clientId' must be defined.");
@@ -5022,11 +4674,11 @@ export class ClientsServiceProxy {
         };
 
         return this.http.request("post", url_, options_).pipe(_observableMergeMap((response_ : any) => {
-            return this.processSpecialFeesPost(response_);
+            return this.processSpecialFeesPOST(response_);
         })).pipe(_observableCatch((response_: any) => {
             if (response_ instanceof HttpResponseBase) {
                 try {
-                    return this.processSpecialFeesPost(response_ as any);
+                    return this.processSpecialFeesPOST(response_ as any);
                 } catch (e) {
                     return _observableThrow(e) as any as Observable<void>;
                 }
@@ -5035,7 +4687,7 @@ export class ClientsServiceProxy {
         }));
     }
 
-    protected processSpecialFeesPost(response: HttpResponseBase): Observable<void> {
+    protected processSpecialFeesPOST(response: HttpResponseBase): Observable<void> {
         const status = response.status;
         const responseBlob =
             response instanceof HttpResponse ? response.body :
@@ -5055,10 +4707,10 @@ export class ClientsServiceProxy {
     }
 
     /**
-     * @param body (optional)
+     * @param body (optional) 
      * @return Success
      */
-    specialFeesPut(clientId: number, body?: UpdateClientSpecialFeeDto | undefined): Observable<void> {
+    specialFeesPUT(clientId: number, body?: UpdateClientSpecialFeeDto | undefined): Observable<void> {
         let url_ = this.baseUrl + "/api/Clients/{clientId}/special-fees";
         if (clientId === undefined || clientId === null)
             throw new Error("The parameter 'clientId' must be defined.");
@@ -5077,11 +4729,11 @@ export class ClientsServiceProxy {
         };
 
         return this.http.request("put", url_, options_).pipe(_observableMergeMap((response_ : any) => {
-            return this.processSpecialFeesPut(response_);
+            return this.processSpecialFeesPUT(response_);
         })).pipe(_observableCatch((response_: any) => {
             if (response_ instanceof HttpResponseBase) {
                 try {
-                    return this.processSpecialFeesPut(response_ as any);
+                    return this.processSpecialFeesPUT(response_ as any);
                 } catch (e) {
                     return _observableThrow(e) as any as Observable<void>;
                 }
@@ -5090,7 +4742,7 @@ export class ClientsServiceProxy {
         }));
     }
 
-    protected processSpecialFeesPut(response: HttpResponseBase): Observable<void> {
+    protected processSpecialFeesPUT(response: HttpResponseBase): Observable<void> {
         const status = response.status;
         const responseBlob =
             response instanceof HttpResponse ? response.body :
@@ -5110,9 +4762,62 @@ export class ClientsServiceProxy {
     }
 
     /**
-     * @param pageNumber (optional)
-     * @param pageSize (optional)
-     * @param sort (optional)
+     * @return Success
+     */
+    delete2(clientId: number, clientSpecialFeeId: number): Observable<void> {
+        let url_ = this.baseUrl + "/api/Clients/{clientId}/special-fees/{clientSpecialFeeId}/delete";
+        if (clientId === undefined || clientId === null)
+            throw new Error("The parameter 'clientId' must be defined.");
+        url_ = url_.replace("{clientId}", encodeURIComponent("" + clientId));
+        if (clientSpecialFeeId === undefined || clientSpecialFeeId === null)
+            throw new Error("The parameter 'clientSpecialFeeId' must be defined.");
+        url_ = url_.replace("{clientSpecialFeeId}", encodeURIComponent("" + clientSpecialFeeId));
+        url_ = url_.replace(/[?&]$/, "");
+
+        let options_ : any = {
+            observe: "response",
+            responseType: "blob",
+            headers: new HttpHeaders({
+            })
+        };
+
+        return this.http.request("delete", url_, options_).pipe(_observableMergeMap((response_ : any) => {
+            return this.processDelete2(response_);
+        })).pipe(_observableCatch((response_: any) => {
+            if (response_ instanceof HttpResponseBase) {
+                try {
+                    return this.processDelete2(response_ as any);
+                } catch (e) {
+                    return _observableThrow(e) as any as Observable<void>;
+                }
+            } else
+                return _observableThrow(response_) as any as Observable<void>;
+        }));
+    }
+
+    protected processDelete2(response: HttpResponseBase): Observable<void> {
+        const status = response.status;
+        const responseBlob =
+            response instanceof HttpResponse ? response.body :
+            (response as any).error instanceof Blob ? (response as any).error : undefined;
+
+        let _headers: any = {}; if (response.headers) { for (let key of response.headers.keys()) { _headers[key] = response.headers.get(key); }}
+        if (status === 200) {
+            return blobToText(responseBlob).pipe(_observableMergeMap(_responseText => {
+            return _observableOf<void>(null as any);
+            }));
+        } else if (status !== 200 && status !== 204) {
+            return blobToText(responseBlob).pipe(_observableMergeMap(_responseText => {
+            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+            }));
+        }
+        return _observableOf<void>(null as any);
+    }
+
+    /**
+     * @param pageNumber (optional) 
+     * @param pageSize (optional) 
+     * @param sort (optional) 
      * @return Success
      */
     requestTrack(clientId: number, pageNumber?: number | undefined, pageSize?: number | undefined, sort?: string | undefined): Observable<ClientRequestTrackItemDtoPaginatedList> {
@@ -5179,9 +4884,9 @@ export class ClientsServiceProxy {
     }
 
     /**
-     * @param pageNumber (optional)
-     * @param pageSize (optional)
-     * @param sort (optional)
+     * @param pageNumber (optional) 
+     * @param pageSize (optional) 
+     * @param sort (optional) 
      * @return Success
      */
     workflowTrack(clientId: number, pageNumber?: number | undefined, pageSize?: number | undefined, sort?: string | undefined): Observable<ClientWorkflowTrackItemDtoPaginatedList> {
@@ -5248,7 +4953,7 @@ export class ClientsServiceProxy {
     }
 
     /**
-     * @param excludeDeleted (optional)
+     * @param excludeDeleted (optional) 
      * @return Success
      */
     contacts(clientId: number, excludeDeleted?: boolean | undefined): Observable<ContactDto[]> {
@@ -5357,7 +5062,7 @@ export class ClientsServiceProxy {
             let result200: any = null;
             let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
                 result200 = resultData200 !== undefined ? resultData200 : <any>null;
-
+    
             return _observableOf(result200);
             }));
         } else if (status !== 200 && status !== 204) {
@@ -5415,7 +5120,7 @@ export class ClientsServiceProxy {
             let result200: any = null;
             let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
                 result200 = resultData200 !== undefined ? resultData200 : <any>null;
-
+    
             return _observableOf(result200);
             }));
         } else if (status !== 200 && status !== 204) {
@@ -5470,7 +5175,7 @@ export class ClientsServiceProxy {
             let result200: any = null;
             let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
                 result200 = resultData200 !== undefined ? resultData200 : <any>null;
-
+    
             return _observableOf(result200);
             }));
         } else if (status !== 200 && status !== 204) {
@@ -5522,7 +5227,7 @@ export class ClientsServiceProxy {
             let result200: any = null;
             let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
                 result200 = resultData200 !== undefined ? resultData200 : <any>null;
-
+    
             return _observableOf(result200);
             }));
         } else if (status !== 200 && status !== 204) {
@@ -5589,136 +5294,6 @@ export class ClientsServiceProxy {
 }
 
 @Injectable()
-export class SpecialRatesServiceProxy {
-    private http: HttpClient;
-    private baseUrl: string;
-    protected jsonParseReviver: ((key: string, value: any) => any) | undefined = undefined;
-
-    constructor(@Inject(HttpClient) http: HttpClient, @Optional() @Inject(API_BASE_URL) baseUrl?: string) {
-        this.http = http;
-        this.baseUrl = baseUrl !== undefined && baseUrl !== null ? baseUrl : "";
-    }
-
-    /**
-     * @return Success
-     */
-    delete(clientId: number, clientSpecialRateId: number): Observable<void> {
-        let url_ = this.baseUrl + "/api/Clients/{clientId}/special-rates/{clientSpecialRateId}/delete";
-        if (clientId === undefined || clientId === null)
-            throw new Error("The parameter 'clientId' must be defined.");
-        url_ = url_.replace("{clientId}", encodeURIComponent("" + clientId));
-        if (clientSpecialRateId === undefined || clientSpecialRateId === null)
-            throw new Error("The parameter 'clientSpecialRateId' must be defined.");
-        url_ = url_.replace("{clientSpecialRateId}", encodeURIComponent("" + clientSpecialRateId));
-        url_ = url_.replace(/[?&]$/, "");
-
-        let options_ : any = {
-            observe: "response",
-            responseType: "blob",
-            headers: new HttpHeaders({
-            })
-        };
-
-        return this.http.request("delete", url_, options_).pipe(_observableMergeMap((response_ : any) => {
-            return this.processDelete(response_);
-        })).pipe(_observableCatch((response_: any) => {
-            if (response_ instanceof HttpResponseBase) {
-                try {
-                    return this.processDelete(response_ as any);
-                } catch (e) {
-                    return _observableThrow(e) as any as Observable<void>;
-                }
-            } else
-                return _observableThrow(response_) as any as Observable<void>;
-        }));
-    }
-
-    protected processDelete(response: HttpResponseBase): Observable<void> {
-        const status = response.status;
-        const responseBlob =
-            response instanceof HttpResponse ? response.body :
-            (response as any).error instanceof Blob ? (response as any).error : undefined;
-
-        let _headers: any = {}; if (response.headers) { for (let key of response.headers.keys()) { _headers[key] = response.headers.get(key); }}
-        if (status === 200) {
-            return blobToText(responseBlob).pipe(_observableMergeMap(_responseText => {
-            return _observableOf<void>(null as any);
-            }));
-        } else if (status !== 200 && status !== 204) {
-            return blobToText(responseBlob).pipe(_observableMergeMap(_responseText => {
-            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
-            }));
-        }
-        return _observableOf<void>(null as any);
-    }
-}
-
-@Injectable()
-export class SpecialFeesServiceProxy {
-    private http: HttpClient;
-    private baseUrl: string;
-    protected jsonParseReviver: ((key: string, value: any) => any) | undefined = undefined;
-
-    constructor(@Inject(HttpClient) http: HttpClient, @Optional() @Inject(API_BASE_URL) baseUrl?: string) {
-        this.http = http;
-        this.baseUrl = baseUrl !== undefined && baseUrl !== null ? baseUrl : "";
-    }
-
-    /**
-     * @return Success
-     */
-    delete(clientId: number, clientSpecialFeeId: number): Observable<void> {
-        let url_ = this.baseUrl + "/api/Clients/{clientId}/special-fees/{clientSpecialFeeId}/delete";
-        if (clientId === undefined || clientId === null)
-            throw new Error("The parameter 'clientId' must be defined.");
-        url_ = url_.replace("{clientId}", encodeURIComponent("" + clientId));
-        if (clientSpecialFeeId === undefined || clientSpecialFeeId === null)
-            throw new Error("The parameter 'clientSpecialFeeId' must be defined.");
-        url_ = url_.replace("{clientSpecialFeeId}", encodeURIComponent("" + clientSpecialFeeId));
-        url_ = url_.replace(/[?&]$/, "");
-
-        let options_ : any = {
-            observe: "response",
-            responseType: "blob",
-            headers: new HttpHeaders({
-            })
-        };
-
-        return this.http.request("delete", url_, options_).pipe(_observableMergeMap((response_ : any) => {
-            return this.processDelete(response_);
-        })).pipe(_observableCatch((response_: any) => {
-            if (response_ instanceof HttpResponseBase) {
-                try {
-                    return this.processDelete(response_ as any);
-                } catch (e) {
-                    return _observableThrow(e) as any as Observable<void>;
-                }
-            } else
-                return _observableThrow(response_) as any as Observable<void>;
-        }));
-    }
-
-    protected processDelete(response: HttpResponseBase): Observable<void> {
-        const status = response.status;
-        const responseBlob =
-            response instanceof HttpResponse ? response.body :
-            (response as any).error instanceof Blob ? (response as any).error : undefined;
-
-        let _headers: any = {}; if (response.headers) { for (let key of response.headers.keys()) { _headers[key] = response.headers.get(key); }}
-        if (status === 200) {
-            return blobToText(responseBlob).pipe(_observableMergeMap(_responseText => {
-            return _observableOf<void>(null as any);
-            }));
-        } else if (status !== 200 && status !== 204) {
-            return blobToText(responseBlob).pipe(_observableMergeMap(_responseText => {
-            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
-            }));
-        }
-        return _observableOf<void>(null as any);
-    }
-}
-
-@Injectable()
 export class ConsultantPeriodServiceProxy {
     private http: HttpClient;
     private baseUrl: string;
@@ -5732,7 +5307,7 @@ export class ConsultantPeriodServiceProxy {
     /**
      * @return Success
      */
-    consultantSalesGet(consultantPeriodId: string): Observable<ConsultantPeriodSalesDataDto> {
+    consultantSalesGET(consultantPeriodId: string): Observable<ConsultantPeriodSalesDataDto> {
         let url_ = this.baseUrl + "/api/ConsultantPeriod/{consultantPeriodId}/consultant-sales";
         if (consultantPeriodId === undefined || consultantPeriodId === null)
             throw new Error("The parameter 'consultantPeriodId' must be defined.");
@@ -5748,11 +5323,11 @@ export class ConsultantPeriodServiceProxy {
         };
 
         return this.http.request("get", url_, options_).pipe(_observableMergeMap((response_ : any) => {
-            return this.processConsultantSalesGet(response_);
+            return this.processConsultantSalesGET(response_);
         })).pipe(_observableCatch((response_: any) => {
             if (response_ instanceof HttpResponseBase) {
                 try {
-                    return this.processConsultantSalesGet(response_ as any);
+                    return this.processConsultantSalesGET(response_ as any);
                 } catch (e) {
                     return _observableThrow(e) as any as Observable<ConsultantPeriodSalesDataDto>;
                 }
@@ -5761,7 +5336,7 @@ export class ConsultantPeriodServiceProxy {
         }));
     }
 
-    protected processConsultantSalesGet(response: HttpResponseBase): Observable<ConsultantPeriodSalesDataDto> {
+    protected processConsultantSalesGET(response: HttpResponseBase): Observable<ConsultantPeriodSalesDataDto> {
         const status = response.status;
         const responseBlob =
             response instanceof HttpResponse ? response.body :
@@ -5784,10 +5359,10 @@ export class ConsultantPeriodServiceProxy {
     }
 
     /**
-     * @param body (optional)
+     * @param body (optional) 
      * @return Success
      */
-    consultantSalesPut(consultantPeriodId: string, body?: ConsultantPeriodSalesDataDto | undefined): Observable<void> {
+    consultantSalesPUT(consultantPeriodId: string, body?: ConsultantPeriodSalesDataDto | undefined): Observable<void> {
         let url_ = this.baseUrl + "/api/ConsultantPeriod/{consultantPeriodId}/consultant-sales";
         if (consultantPeriodId === undefined || consultantPeriodId === null)
             throw new Error("The parameter 'consultantPeriodId' must be defined.");
@@ -5806,11 +5381,11 @@ export class ConsultantPeriodServiceProxy {
         };
 
         return this.http.request("put", url_, options_).pipe(_observableMergeMap((response_ : any) => {
-            return this.processConsultantSalesPut(response_);
+            return this.processConsultantSalesPUT(response_);
         })).pipe(_observableCatch((response_: any) => {
             if (response_ instanceof HttpResponseBase) {
                 try {
-                    return this.processConsultantSalesPut(response_ as any);
+                    return this.processConsultantSalesPUT(response_ as any);
                 } catch (e) {
                     return _observableThrow(e) as any as Observable<void>;
                 }
@@ -5819,7 +5394,62 @@ export class ConsultantPeriodServiceProxy {
         }));
     }
 
-    protected processConsultantSalesPut(response: HttpResponseBase): Observable<void> {
+    protected processConsultantSalesPUT(response: HttpResponseBase): Observable<void> {
+        const status = response.status;
+        const responseBlob =
+            response instanceof HttpResponse ? response.body :
+            (response as any).error instanceof Blob ? (response as any).error : undefined;
+
+        let _headers: any = {}; if (response.headers) { for (let key of response.headers.keys()) { _headers[key] = response.headers.get(key); }}
+        if (status === 200) {
+            return blobToText(responseBlob).pipe(_observableMergeMap(_responseText => {
+            return _observableOf<void>(null as any);
+            }));
+        } else if (status !== 200 && status !== 204) {
+            return blobToText(responseBlob).pipe(_observableMergeMap(_responseText => {
+            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+            }));
+        }
+        return _observableOf<void>(null as any);
+    }
+
+    /**
+     * @param body (optional) 
+     * @return Success
+     */
+    editFinish4(consultantPeriodId: string, body?: ConsultantPeriodSalesDataDto | undefined): Observable<void> {
+        let url_ = this.baseUrl + "/api/ConsultantPeriod/{consultantPeriodId}/consultant-sales/edit-finish";
+        if (consultantPeriodId === undefined || consultantPeriodId === null)
+            throw new Error("The parameter 'consultantPeriodId' must be defined.");
+        url_ = url_.replace("{consultantPeriodId}", encodeURIComponent("" + consultantPeriodId));
+        url_ = url_.replace(/[?&]$/, "");
+
+        const content_ = JSON.stringify(body);
+
+        let options_ : any = {
+            body: content_,
+            observe: "response",
+            responseType: "blob",
+            headers: new HttpHeaders({
+                "Content-Type": "application/json",
+            })
+        };
+
+        return this.http.request("post", url_, options_).pipe(_observableMergeMap((response_ : any) => {
+            return this.processEditFinish4(response_);
+        })).pipe(_observableCatch((response_: any) => {
+            if (response_ instanceof HttpResponseBase) {
+                try {
+                    return this.processEditFinish4(response_ as any);
+                } catch (e) {
+                    return _observableThrow(e) as any as Observable<void>;
+                }
+            } else
+                return _observableThrow(response_) as any as Observable<void>;
+        }));
+    }
+
+    protected processEditFinish4(response: HttpResponseBase): Observable<void> {
         const status = response.status;
         const responseBlob =
             response instanceof HttpResponse ? response.body :
@@ -5841,7 +5471,57 @@ export class ConsultantPeriodServiceProxy {
     /**
      * @return Success
      */
-    consultantContractsGet(consultantPeriodId: string): Observable<ConsultantPeriodContractsDataQueryDto> {
+    reopen2(consultantPeriodId: string): Observable<void> {
+        let url_ = this.baseUrl + "/api/ConsultantPeriod/{consultantPeriodId}/consultant-sales/reopen";
+        if (consultantPeriodId === undefined || consultantPeriodId === null)
+            throw new Error("The parameter 'consultantPeriodId' must be defined.");
+        url_ = url_.replace("{consultantPeriodId}", encodeURIComponent("" + consultantPeriodId));
+        url_ = url_.replace(/[?&]$/, "");
+
+        let options_ : any = {
+            observe: "response",
+            responseType: "blob",
+            headers: new HttpHeaders({
+            })
+        };
+
+        return this.http.request("post", url_, options_).pipe(_observableMergeMap((response_ : any) => {
+            return this.processReopen2(response_);
+        })).pipe(_observableCatch((response_: any) => {
+            if (response_ instanceof HttpResponseBase) {
+                try {
+                    return this.processReopen2(response_ as any);
+                } catch (e) {
+                    return _observableThrow(e) as any as Observable<void>;
+                }
+            } else
+                return _observableThrow(response_) as any as Observable<void>;
+        }));
+    }
+
+    protected processReopen2(response: HttpResponseBase): Observable<void> {
+        const status = response.status;
+        const responseBlob =
+            response instanceof HttpResponse ? response.body :
+            (response as any).error instanceof Blob ? (response as any).error : undefined;
+
+        let _headers: any = {}; if (response.headers) { for (let key of response.headers.keys()) { _headers[key] = response.headers.get(key); }}
+        if (status === 200) {
+            return blobToText(responseBlob).pipe(_observableMergeMap(_responseText => {
+            return _observableOf<void>(null as any);
+            }));
+        } else if (status !== 200 && status !== 204) {
+            return blobToText(responseBlob).pipe(_observableMergeMap(_responseText => {
+            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+            }));
+        }
+        return _observableOf<void>(null as any);
+    }
+
+    /**
+     * @return Success
+     */
+    consultantContractsGET(consultantPeriodId: string): Observable<ConsultantPeriodContractsDataQueryDto> {
         let url_ = this.baseUrl + "/api/ConsultantPeriod/{consultantPeriodId}/consultant-contracts";
         if (consultantPeriodId === undefined || consultantPeriodId === null)
             throw new Error("The parameter 'consultantPeriodId' must be defined.");
@@ -5857,11 +5537,11 @@ export class ConsultantPeriodServiceProxy {
         };
 
         return this.http.request("get", url_, options_).pipe(_observableMergeMap((response_ : any) => {
-            return this.processConsultantContractsGet(response_);
+            return this.processConsultantContractsGET(response_);
         })).pipe(_observableCatch((response_: any) => {
             if (response_ instanceof HttpResponseBase) {
                 try {
-                    return this.processConsultantContractsGet(response_ as any);
+                    return this.processConsultantContractsGET(response_ as any);
                 } catch (e) {
                     return _observableThrow(e) as any as Observable<ConsultantPeriodContractsDataQueryDto>;
                 }
@@ -5870,7 +5550,7 @@ export class ConsultantPeriodServiceProxy {
         }));
     }
 
-    protected processConsultantContractsGet(response: HttpResponseBase): Observable<ConsultantPeriodContractsDataQueryDto> {
+    protected processConsultantContractsGET(response: HttpResponseBase): Observable<ConsultantPeriodContractsDataQueryDto> {
         const status = response.status;
         const responseBlob =
             response instanceof HttpResponse ? response.body :
@@ -5893,10 +5573,10 @@ export class ConsultantPeriodServiceProxy {
     }
 
     /**
-     * @param body (optional)
+     * @param body (optional) 
      * @return Success
      */
-    consultantContractsPut(consultantPeriodId: string, body?: ConsultantPeriodContractsDataCommandDto | undefined): Observable<void> {
+    consultantContractsPUT(consultantPeriodId: string, body?: ConsultantPeriodContractsDataCommandDto | undefined): Observable<void> {
         let url_ = this.baseUrl + "/api/ConsultantPeriod/{consultantPeriodId}/consultant-contracts";
         if (consultantPeriodId === undefined || consultantPeriodId === null)
             throw new Error("The parameter 'consultantPeriodId' must be defined.");
@@ -5915,11 +5595,11 @@ export class ConsultantPeriodServiceProxy {
         };
 
         return this.http.request("put", url_, options_).pipe(_observableMergeMap((response_ : any) => {
-            return this.processConsultantContractsPut(response_);
+            return this.processConsultantContractsPUT(response_);
         })).pipe(_observableCatch((response_: any) => {
             if (response_ instanceof HttpResponseBase) {
                 try {
-                    return this.processConsultantContractsPut(response_ as any);
+                    return this.processConsultantContractsPUT(response_ as any);
                 } catch (e) {
                     return _observableThrow(e) as any as Observable<void>;
                 }
@@ -5928,7 +5608,7 @@ export class ConsultantPeriodServiceProxy {
         }));
     }
 
-    protected processConsultantContractsPut(response: HttpResponseBase): Observable<void> {
+    protected processConsultantContractsPUT(response: HttpResponseBase): Observable<void> {
         const status = response.status;
         const responseBlob =
             response instanceof HttpResponse ? response.body :
@@ -5950,7 +5630,112 @@ export class ConsultantPeriodServiceProxy {
     /**
      * @return Success
      */
-    consultantFinanceGet(consultantPeriodId: string): Observable<ConsultantPeriodFinanceDataDto> {
+    editStart3(consultantPeriodId: string): Observable<void> {
+        let url_ = this.baseUrl + "/api/ConsultantPeriod/{consultantPeriodId}/consultant-contracts/edit-start";
+        if (consultantPeriodId === undefined || consultantPeriodId === null)
+            throw new Error("The parameter 'consultantPeriodId' must be defined.");
+        url_ = url_.replace("{consultantPeriodId}", encodeURIComponent("" + consultantPeriodId));
+        url_ = url_.replace(/[?&]$/, "");
+
+        let options_ : any = {
+            observe: "response",
+            responseType: "blob",
+            headers: new HttpHeaders({
+            })
+        };
+
+        return this.http.request("post", url_, options_).pipe(_observableMergeMap((response_ : any) => {
+            return this.processEditStart3(response_);
+        })).pipe(_observableCatch((response_: any) => {
+            if (response_ instanceof HttpResponseBase) {
+                try {
+                    return this.processEditStart3(response_ as any);
+                } catch (e) {
+                    return _observableThrow(e) as any as Observable<void>;
+                }
+            } else
+                return _observableThrow(response_) as any as Observable<void>;
+        }));
+    }
+
+    protected processEditStart3(response: HttpResponseBase): Observable<void> {
+        const status = response.status;
+        const responseBlob =
+            response instanceof HttpResponse ? response.body :
+            (response as any).error instanceof Blob ? (response as any).error : undefined;
+
+        let _headers: any = {}; if (response.headers) { for (let key of response.headers.keys()) { _headers[key] = response.headers.get(key); }}
+        if (status === 200) {
+            return blobToText(responseBlob).pipe(_observableMergeMap(_responseText => {
+            return _observableOf<void>(null as any);
+            }));
+        } else if (status !== 200 && status !== 204) {
+            return blobToText(responseBlob).pipe(_observableMergeMap(_responseText => {
+            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+            }));
+        }
+        return _observableOf<void>(null as any);
+    }
+
+    /**
+     * @param body (optional) 
+     * @return Success
+     */
+    editFinish5(consultantPeriodId: string, body?: ConsultantPeriodContractsDataCommandDto | undefined): Observable<void> {
+        let url_ = this.baseUrl + "/api/ConsultantPeriod/{consultantPeriodId}/consultant-contracts/edit-finish";
+        if (consultantPeriodId === undefined || consultantPeriodId === null)
+            throw new Error("The parameter 'consultantPeriodId' must be defined.");
+        url_ = url_.replace("{consultantPeriodId}", encodeURIComponent("" + consultantPeriodId));
+        url_ = url_.replace(/[?&]$/, "");
+
+        const content_ = JSON.stringify(body);
+
+        let options_ : any = {
+            body: content_,
+            observe: "response",
+            responseType: "blob",
+            headers: new HttpHeaders({
+                "Content-Type": "application/json",
+            })
+        };
+
+        return this.http.request("post", url_, options_).pipe(_observableMergeMap((response_ : any) => {
+            return this.processEditFinish5(response_);
+        })).pipe(_observableCatch((response_: any) => {
+            if (response_ instanceof HttpResponseBase) {
+                try {
+                    return this.processEditFinish5(response_ as any);
+                } catch (e) {
+                    return _observableThrow(e) as any as Observable<void>;
+                }
+            } else
+                return _observableThrow(response_) as any as Observable<void>;
+        }));
+    }
+
+    protected processEditFinish5(response: HttpResponseBase): Observable<void> {
+        const status = response.status;
+        const responseBlob =
+            response instanceof HttpResponse ? response.body :
+            (response as any).error instanceof Blob ? (response as any).error : undefined;
+
+        let _headers: any = {}; if (response.headers) { for (let key of response.headers.keys()) { _headers[key] = response.headers.get(key); }}
+        if (status === 200) {
+            return blobToText(responseBlob).pipe(_observableMergeMap(_responseText => {
+            return _observableOf<void>(null as any);
+            }));
+        } else if (status !== 200 && status !== 204) {
+            return blobToText(responseBlob).pipe(_observableMergeMap(_responseText => {
+            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+            }));
+        }
+        return _observableOf<void>(null as any);
+    }
+
+    /**
+     * @return Success
+     */
+    consultantFinanceGET(consultantPeriodId: string): Observable<ConsultantPeriodFinanceDataDto> {
         let url_ = this.baseUrl + "/api/ConsultantPeriod/{consultantPeriodId}/consultant-finance";
         if (consultantPeriodId === undefined || consultantPeriodId === null)
             throw new Error("The parameter 'consultantPeriodId' must be defined.");
@@ -5966,11 +5751,11 @@ export class ConsultantPeriodServiceProxy {
         };
 
         return this.http.request("get", url_, options_).pipe(_observableMergeMap((response_ : any) => {
-            return this.processConsultantFinanceGet(response_);
+            return this.processConsultantFinanceGET(response_);
         })).pipe(_observableCatch((response_: any) => {
             if (response_ instanceof HttpResponseBase) {
                 try {
-                    return this.processConsultantFinanceGet(response_ as any);
+                    return this.processConsultantFinanceGET(response_ as any);
                 } catch (e) {
                     return _observableThrow(e) as any as Observable<ConsultantPeriodFinanceDataDto>;
                 }
@@ -5979,7 +5764,7 @@ export class ConsultantPeriodServiceProxy {
         }));
     }
 
-    protected processConsultantFinanceGet(response: HttpResponseBase): Observable<ConsultantPeriodFinanceDataDto> {
+    protected processConsultantFinanceGET(response: HttpResponseBase): Observable<ConsultantPeriodFinanceDataDto> {
         const status = response.status;
         const responseBlob =
             response instanceof HttpResponse ? response.body :
@@ -6002,10 +5787,10 @@ export class ConsultantPeriodServiceProxy {
     }
 
     /**
-     * @param body (optional)
+     * @param body (optional) 
      * @return Success
      */
-    consultantFinancePut(consultantPeriodId: string, body?: ConsultantPeriodFinanceDataDto | undefined): Observable<void> {
+    consultantFinancePUT(consultantPeriodId: string, body?: ConsultantPeriodFinanceDataDto | undefined): Observable<void> {
         let url_ = this.baseUrl + "/api/ConsultantPeriod/{consultantPeriodId}/consultant-finance";
         if (consultantPeriodId === undefined || consultantPeriodId === null)
             throw new Error("The parameter 'consultantPeriodId' must be defined.");
@@ -6024,11 +5809,11 @@ export class ConsultantPeriodServiceProxy {
         };
 
         return this.http.request("put", url_, options_).pipe(_observableMergeMap((response_ : any) => {
-            return this.processConsultantFinancePut(response_);
+            return this.processConsultantFinancePUT(response_);
         })).pipe(_observableCatch((response_: any) => {
             if (response_ instanceof HttpResponseBase) {
                 try {
-                    return this.processConsultantFinancePut(response_ as any);
+                    return this.processConsultantFinancePUT(response_ as any);
                 } catch (e) {
                     return _observableThrow(e) as any as Observable<void>;
                 }
@@ -6037,7 +5822,7 @@ export class ConsultantPeriodServiceProxy {
         }));
     }
 
-    protected processConsultantFinancePut(response: HttpResponseBase): Observable<void> {
+    protected processConsultantFinancePUT(response: HttpResponseBase): Observable<void> {
         const status = response.status;
         const responseBlob =
             response instanceof HttpResponse ? response.body :
@@ -6057,7 +5842,112 @@ export class ConsultantPeriodServiceProxy {
     }
 
     /**
-     * @param body (optional)
+     * @return Success
+     */
+    editStart4(consultantPeriodId: string): Observable<void> {
+        let url_ = this.baseUrl + "/api/ConsultantPeriod/{consultantPeriodId}/consultant-finance/edit-start";
+        if (consultantPeriodId === undefined || consultantPeriodId === null)
+            throw new Error("The parameter 'consultantPeriodId' must be defined.");
+        url_ = url_.replace("{consultantPeriodId}", encodeURIComponent("" + consultantPeriodId));
+        url_ = url_.replace(/[?&]$/, "");
+
+        let options_ : any = {
+            observe: "response",
+            responseType: "blob",
+            headers: new HttpHeaders({
+            })
+        };
+
+        return this.http.request("post", url_, options_).pipe(_observableMergeMap((response_ : any) => {
+            return this.processEditStart4(response_);
+        })).pipe(_observableCatch((response_: any) => {
+            if (response_ instanceof HttpResponseBase) {
+                try {
+                    return this.processEditStart4(response_ as any);
+                } catch (e) {
+                    return _observableThrow(e) as any as Observable<void>;
+                }
+            } else
+                return _observableThrow(response_) as any as Observable<void>;
+        }));
+    }
+
+    protected processEditStart4(response: HttpResponseBase): Observable<void> {
+        const status = response.status;
+        const responseBlob =
+            response instanceof HttpResponse ? response.body :
+            (response as any).error instanceof Blob ? (response as any).error : undefined;
+
+        let _headers: any = {}; if (response.headers) { for (let key of response.headers.keys()) { _headers[key] = response.headers.get(key); }}
+        if (status === 200) {
+            return blobToText(responseBlob).pipe(_observableMergeMap(_responseText => {
+            return _observableOf<void>(null as any);
+            }));
+        } else if (status !== 200 && status !== 204) {
+            return blobToText(responseBlob).pipe(_observableMergeMap(_responseText => {
+            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+            }));
+        }
+        return _observableOf<void>(null as any);
+    }
+
+    /**
+     * @param body (optional) 
+     * @return Success
+     */
+    editFinish6(consultantPeriodId: string, body?: ConsultantPeriodFinanceDataDto | undefined): Observable<void> {
+        let url_ = this.baseUrl + "/api/ConsultantPeriod/{consultantPeriodId}/consultant-finance/edit-finish";
+        if (consultantPeriodId === undefined || consultantPeriodId === null)
+            throw new Error("The parameter 'consultantPeriodId' must be defined.");
+        url_ = url_.replace("{consultantPeriodId}", encodeURIComponent("" + consultantPeriodId));
+        url_ = url_.replace(/[?&]$/, "");
+
+        const content_ = JSON.stringify(body);
+
+        let options_ : any = {
+            body: content_,
+            observe: "response",
+            responseType: "blob",
+            headers: new HttpHeaders({
+                "Content-Type": "application/json",
+            })
+        };
+
+        return this.http.request("post", url_, options_).pipe(_observableMergeMap((response_ : any) => {
+            return this.processEditFinish6(response_);
+        })).pipe(_observableCatch((response_: any) => {
+            if (response_ instanceof HttpResponseBase) {
+                try {
+                    return this.processEditFinish6(response_ as any);
+                } catch (e) {
+                    return _observableThrow(e) as any as Observable<void>;
+                }
+            } else
+                return _observableThrow(response_) as any as Observable<void>;
+        }));
+    }
+
+    protected processEditFinish6(response: HttpResponseBase): Observable<void> {
+        const status = response.status;
+        const responseBlob =
+            response instanceof HttpResponse ? response.body :
+            (response as any).error instanceof Blob ? (response as any).error : undefined;
+
+        let _headers: any = {}; if (response.headers) { for (let key of response.headers.keys()) { _headers[key] = response.headers.get(key); }}
+        if (status === 200) {
+            return blobToText(responseBlob).pipe(_observableMergeMap(_responseText => {
+            return _observableOf<void>(null as any);
+            }));
+        } else if (status !== 200 && status !== 204) {
+            return blobToText(responseBlob).pipe(_observableMergeMap(_responseText => {
+            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+            }));
+        }
+        return _observableOf<void>(null as any);
+    }
+
+    /**
+     * @param body (optional) 
      * @return Success
      */
     extend(consultantPeriodId: string, body?: ExtendConsultantPeriodDto | undefined): Observable<string> {
@@ -6105,7 +5995,7 @@ export class ConsultantPeriodServiceProxy {
             let result200: any = null;
             let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
                 result200 = resultData200 !== undefined ? resultData200 : <any>null;
-
+    
             return _observableOf(result200);
             }));
         } else if (status !== 200 && status !== 204) {
@@ -6117,7 +6007,7 @@ export class ConsultantPeriodServiceProxy {
     }
 
     /**
-     * @param body (optional)
+     * @param body (optional) 
      * @return Success
      */
     change(consultantPeriodId: string, body?: ChangeConsultantPeriodDto | undefined): Observable<string> {
@@ -6165,7 +6055,7 @@ export class ConsultantPeriodServiceProxy {
             let result200: any = null;
             let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
                 result200 = resultData200 !== undefined ? resultData200 : <any>null;
-
+    
             return _observableOf(result200);
             }));
         } else if (status !== 200 && status !== 204) {
@@ -6177,10 +6067,10 @@ export class ConsultantPeriodServiceProxy {
     }
 
     /**
-     * @param newResponsibleEmployeeId (optional)
+     * @param newResponsibleEmployeeId (optional) 
      * @return Success
      */
-    stepResponsible(consultantPeriodId: string, stepType: StepType, newResponsibleEmployeeId?: number | undefined): Observable<void> {
+    stepResponsible2(consultantPeriodId: string, stepType: StepType, newResponsibleEmployeeId?: number | undefined): Observable<void> {
         let url_ = this.baseUrl + "/api/ConsultantPeriod/{consultantPeriodId}/{stepType}/step-responsible?";
         if (consultantPeriodId === undefined || consultantPeriodId === null)
             throw new Error("The parameter 'consultantPeriodId' must be defined.");
@@ -6202,11 +6092,11 @@ export class ConsultantPeriodServiceProxy {
         };
 
         return this.http.request("put", url_, options_).pipe(_observableMergeMap((response_ : any) => {
-            return this.processStepResponsible(response_);
+            return this.processStepResponsible2(response_);
         })).pipe(_observableCatch((response_: any) => {
             if (response_ instanceof HttpResponseBase) {
                 try {
-                    return this.processStepResponsible(response_ as any);
+                    return this.processStepResponsible2(response_ as any);
                 } catch (e) {
                     return _observableThrow(e) as any as Observable<void>;
                 }
@@ -6215,74 +6105,7 @@ export class ConsultantPeriodServiceProxy {
         }));
     }
 
-    protected processStepResponsible(response: HttpResponseBase): Observable<void> {
-        const status = response.status;
-        const responseBlob =
-            response instanceof HttpResponse ? response.body :
-            (response as any).error instanceof Blob ? (response as any).error : undefined;
-
-        let _headers: any = {}; if (response.headers) { for (let key of response.headers.keys()) { _headers[key] = response.headers.get(key); }}
-        if (status === 200) {
-            return blobToText(responseBlob).pipe(_observableMergeMap(_responseText => {
-            return _observableOf<void>(null as any);
-            }));
-        } else if (status !== 200 && status !== 204) {
-            return blobToText(responseBlob).pipe(_observableMergeMap(_responseText => {
-            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
-            }));
-        }
-        return _observableOf<void>(null as any);
-    }
-}
-
-@Injectable()
-export class ConsultantSalesServiceProxy {
-    private http: HttpClient;
-    private baseUrl: string;
-    protected jsonParseReviver: ((key: string, value: any) => any) | undefined = undefined;
-
-    constructor(@Inject(HttpClient) http: HttpClient, @Optional() @Inject(API_BASE_URL) baseUrl?: string) {
-        this.http = http;
-        this.baseUrl = baseUrl !== undefined && baseUrl !== null ? baseUrl : "";
-    }
-
-    /**
-     * @param body (optional)
-     * @return Success
-     */
-    editFinish(consultantPeriodId: string, body?: ConsultantPeriodSalesDataDto | undefined): Observable<void> {
-        let url_ = this.baseUrl + "/api/ConsultantPeriod/{consultantPeriodId}/consultant-sales/edit-finish";
-        if (consultantPeriodId === undefined || consultantPeriodId === null)
-            throw new Error("The parameter 'consultantPeriodId' must be defined.");
-        url_ = url_.replace("{consultantPeriodId}", encodeURIComponent("" + consultantPeriodId));
-        url_ = url_.replace(/[?&]$/, "");
-
-        const content_ = JSON.stringify(body);
-
-        let options_ : any = {
-            body: content_,
-            observe: "response",
-            responseType: "blob",
-            headers: new HttpHeaders({
-                "Content-Type": "application/json",
-            })
-        };
-
-        return this.http.request("post", url_, options_).pipe(_observableMergeMap((response_ : any) => {
-            return this.processEditFinish(response_);
-        })).pipe(_observableCatch((response_: any) => {
-            if (response_ instanceof HttpResponseBase) {
-                try {
-                    return this.processEditFinish(response_ as any);
-                } catch (e) {
-                    return _observableThrow(e) as any as Observable<void>;
-                }
-            } else
-                return _observableThrow(response_) as any as Observable<void>;
-        }));
-    }
-
-    protected processEditFinish(response: HttpResponseBase): Observable<void> {
+    protected processStepResponsible2(response: HttpResponseBase): Observable<void> {
         const status = response.status;
         const responseBlob =
             response instanceof HttpResponse ? response.body :
@@ -6304,8 +6127,8 @@ export class ConsultantSalesServiceProxy {
     /**
      * @return Success
      */
-    reopen(consultantPeriodId: string): Observable<void> {
-        let url_ = this.baseUrl + "/api/ConsultantPeriod/{consultantPeriodId}/consultant-sales/reopen";
+    consultantPeriod(consultantPeriodId: string): Observable<void> {
+        let url_ = this.baseUrl + "/api/ConsultantPeriod/{consultantPeriodId}";
         if (consultantPeriodId === undefined || consultantPeriodId === null)
             throw new Error("The parameter 'consultantPeriodId' must be defined.");
         url_ = url_.replace("{consultantPeriodId}", encodeURIComponent("" + consultantPeriodId));
@@ -6318,12 +6141,12 @@ export class ConsultantSalesServiceProxy {
             })
         };
 
-        return this.http.request("post", url_, options_).pipe(_observableMergeMap((response_ : any) => {
-            return this.processReopen(response_);
+        return this.http.request("delete", url_, options_).pipe(_observableMergeMap((response_ : any) => {
+            return this.processConsultantPeriod(response_);
         })).pipe(_observableCatch((response_: any) => {
             if (response_ instanceof HttpResponseBase) {
                 try {
-                    return this.processReopen(response_ as any);
+                    return this.processConsultantPeriod(response_ as any);
                 } catch (e) {
                     return _observableThrow(e) as any as Observable<void>;
                 }
@@ -6332,241 +6155,7 @@ export class ConsultantSalesServiceProxy {
         }));
     }
 
-    protected processReopen(response: HttpResponseBase): Observable<void> {
-        const status = response.status;
-        const responseBlob =
-            response instanceof HttpResponse ? response.body :
-            (response as any).error instanceof Blob ? (response as any).error : undefined;
-
-        let _headers: any = {}; if (response.headers) { for (let key of response.headers.keys()) { _headers[key] = response.headers.get(key); }}
-        if (status === 200) {
-            return blobToText(responseBlob).pipe(_observableMergeMap(_responseText => {
-            return _observableOf<void>(null as any);
-            }));
-        } else if (status !== 200 && status !== 204) {
-            return blobToText(responseBlob).pipe(_observableMergeMap(_responseText => {
-            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
-            }));
-        }
-        return _observableOf<void>(null as any);
-    }
-}
-
-@Injectable()
-export class ConsultantContractsServiceProxy {
-    private http: HttpClient;
-    private baseUrl: string;
-    protected jsonParseReviver: ((key: string, value: any) => any) | undefined = undefined;
-
-    constructor(@Inject(HttpClient) http: HttpClient, @Optional() @Inject(API_BASE_URL) baseUrl?: string) {
-        this.http = http;
-        this.baseUrl = baseUrl !== undefined && baseUrl !== null ? baseUrl : "";
-    }
-
-    /**
-     * @return Success
-     */
-    editStart(consultantPeriodId: string): Observable<void> {
-        let url_ = this.baseUrl + "/api/ConsultantPeriod/{consultantPeriodId}/consultant-contracts/edit-start";
-        if (consultantPeriodId === undefined || consultantPeriodId === null)
-            throw new Error("The parameter 'consultantPeriodId' must be defined.");
-        url_ = url_.replace("{consultantPeriodId}", encodeURIComponent("" + consultantPeriodId));
-        url_ = url_.replace(/[?&]$/, "");
-
-        let options_ : any = {
-            observe: "response",
-            responseType: "blob",
-            headers: new HttpHeaders({
-            })
-        };
-
-        return this.http.request("post", url_, options_).pipe(_observableMergeMap((response_ : any) => {
-            return this.processEditStart(response_);
-        })).pipe(_observableCatch((response_: any) => {
-            if (response_ instanceof HttpResponseBase) {
-                try {
-                    return this.processEditStart(response_ as any);
-                } catch (e) {
-                    return _observableThrow(e) as any as Observable<void>;
-                }
-            } else
-                return _observableThrow(response_) as any as Observable<void>;
-        }));
-    }
-
-    protected processEditStart(response: HttpResponseBase): Observable<void> {
-        const status = response.status;
-        const responseBlob =
-            response instanceof HttpResponse ? response.body :
-            (response as any).error instanceof Blob ? (response as any).error : undefined;
-
-        let _headers: any = {}; if (response.headers) { for (let key of response.headers.keys()) { _headers[key] = response.headers.get(key); }}
-        if (status === 200) {
-            return blobToText(responseBlob).pipe(_observableMergeMap(_responseText => {
-            return _observableOf<void>(null as any);
-            }));
-        } else if (status !== 200 && status !== 204) {
-            return blobToText(responseBlob).pipe(_observableMergeMap(_responseText => {
-            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
-            }));
-        }
-        return _observableOf<void>(null as any);
-    }
-
-    /**
-     * @param body (optional)
-     * @return Success
-     */
-    editFinish(consultantPeriodId: string, body?: ConsultantPeriodContractsDataCommandDto | undefined): Observable<void> {
-        let url_ = this.baseUrl + "/api/ConsultantPeriod/{consultantPeriodId}/consultant-contracts/edit-finish";
-        if (consultantPeriodId === undefined || consultantPeriodId === null)
-            throw new Error("The parameter 'consultantPeriodId' must be defined.");
-        url_ = url_.replace("{consultantPeriodId}", encodeURIComponent("" + consultantPeriodId));
-        url_ = url_.replace(/[?&]$/, "");
-
-        const content_ = JSON.stringify(body);
-
-        let options_ : any = {
-            body: content_,
-            observe: "response",
-            responseType: "blob",
-            headers: new HttpHeaders({
-                "Content-Type": "application/json",
-            })
-        };
-
-        return this.http.request("post", url_, options_).pipe(_observableMergeMap((response_ : any) => {
-            return this.processEditFinish(response_);
-        })).pipe(_observableCatch((response_: any) => {
-            if (response_ instanceof HttpResponseBase) {
-                try {
-                    return this.processEditFinish(response_ as any);
-                } catch (e) {
-                    return _observableThrow(e) as any as Observable<void>;
-                }
-            } else
-                return _observableThrow(response_) as any as Observable<void>;
-        }));
-    }
-
-    protected processEditFinish(response: HttpResponseBase): Observable<void> {
-        const status = response.status;
-        const responseBlob =
-            response instanceof HttpResponse ? response.body :
-            (response as any).error instanceof Blob ? (response as any).error : undefined;
-
-        let _headers: any = {}; if (response.headers) { for (let key of response.headers.keys()) { _headers[key] = response.headers.get(key); }}
-        if (status === 200) {
-            return blobToText(responseBlob).pipe(_observableMergeMap(_responseText => {
-            return _observableOf<void>(null as any);
-            }));
-        } else if (status !== 200 && status !== 204) {
-            return blobToText(responseBlob).pipe(_observableMergeMap(_responseText => {
-            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
-            }));
-        }
-        return _observableOf<void>(null as any);
-    }
-}
-
-@Injectable()
-export class ConsultantFinanceServiceProxy {
-    private http: HttpClient;
-    private baseUrl: string;
-    protected jsonParseReviver: ((key: string, value: any) => any) | undefined = undefined;
-
-    constructor(@Inject(HttpClient) http: HttpClient, @Optional() @Inject(API_BASE_URL) baseUrl?: string) {
-        this.http = http;
-        this.baseUrl = baseUrl !== undefined && baseUrl !== null ? baseUrl : "";
-    }
-
-    /**
-     * @return Success
-     */
-    editStart(consultantPeriodId: string): Observable<void> {
-        let url_ = this.baseUrl + "/api/ConsultantPeriod/{consultantPeriodId}/consultant-finance/edit-start";
-        if (consultantPeriodId === undefined || consultantPeriodId === null)
-            throw new Error("The parameter 'consultantPeriodId' must be defined.");
-        url_ = url_.replace("{consultantPeriodId}", encodeURIComponent("" + consultantPeriodId));
-        url_ = url_.replace(/[?&]$/, "");
-
-        let options_ : any = {
-            observe: "response",
-            responseType: "blob",
-            headers: new HttpHeaders({
-            })
-        };
-
-        return this.http.request("post", url_, options_).pipe(_observableMergeMap((response_ : any) => {
-            return this.processEditStart(response_);
-        })).pipe(_observableCatch((response_: any) => {
-            if (response_ instanceof HttpResponseBase) {
-                try {
-                    return this.processEditStart(response_ as any);
-                } catch (e) {
-                    return _observableThrow(e) as any as Observable<void>;
-                }
-            } else
-                return _observableThrow(response_) as any as Observable<void>;
-        }));
-    }
-
-    protected processEditStart(response: HttpResponseBase): Observable<void> {
-        const status = response.status;
-        const responseBlob =
-            response instanceof HttpResponse ? response.body :
-            (response as any).error instanceof Blob ? (response as any).error : undefined;
-
-        let _headers: any = {}; if (response.headers) { for (let key of response.headers.keys()) { _headers[key] = response.headers.get(key); }}
-        if (status === 200) {
-            return blobToText(responseBlob).pipe(_observableMergeMap(_responseText => {
-            return _observableOf<void>(null as any);
-            }));
-        } else if (status !== 200 && status !== 204) {
-            return blobToText(responseBlob).pipe(_observableMergeMap(_responseText => {
-            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
-            }));
-        }
-        return _observableOf<void>(null as any);
-    }
-
-    /**
-     * @param body (optional)
-     * @return Success
-     */
-    editFinish(consultantPeriodId: string, body?: ConsultantPeriodFinanceDataDto | undefined): Observable<void> {
-        let url_ = this.baseUrl + "/api/ConsultantPeriod/{consultantPeriodId}/consultant-finance/edit-finish";
-        if (consultantPeriodId === undefined || consultantPeriodId === null)
-            throw new Error("The parameter 'consultantPeriodId' must be defined.");
-        url_ = url_.replace("{consultantPeriodId}", encodeURIComponent("" + consultantPeriodId));
-        url_ = url_.replace(/[?&]$/, "");
-
-        const content_ = JSON.stringify(body);
-
-        let options_ : any = {
-            body: content_,
-            observe: "response",
-            responseType: "blob",
-            headers: new HttpHeaders({
-                "Content-Type": "application/json",
-            })
-        };
-
-        return this.http.request("post", url_, options_).pipe(_observableMergeMap((response_ : any) => {
-            return this.processEditFinish(response_);
-        })).pipe(_observableCatch((response_: any) => {
-            if (response_ instanceof HttpResponseBase) {
-                try {
-                    return this.processEditFinish(response_ as any);
-                } catch (e) {
-                    return _observableThrow(e) as any as Observable<void>;
-                }
-            } else
-                return _observableThrow(response_) as any as Observable<void>;
-        }));
-    }
-
-    protected processEditFinish(response: HttpResponseBase): Observable<void> {
+    protected processConsultantPeriod(response: HttpResponseBase): Observable<void> {
         const status = response.status;
         const responseBlob =
             response instanceof HttpResponse ? response.body :
@@ -6760,7 +6349,7 @@ export class ContractSyncServiceProxy {
     }
 
     /**
-     * @param workflowTerminationId (optional)
+     * @param workflowTerminationId (optional) 
      * @return Success
      */
     consultantTerminationSync(consultantTerminationId: string, workflowTerminationId?: string | undefined): Observable<ContractSyncResultDto> {
@@ -6816,6 +6405,75 @@ export class ContractSyncServiceProxy {
             }));
         }
         return _observableOf<ContractSyncResultDto>(null as any);
+    }
+}
+
+@Injectable()
+export class DocuSignTestServiceProxy {
+    private http: HttpClient;
+    private baseUrl: string;
+    protected jsonParseReviver: ((key: string, value: any) => any) | undefined = undefined;
+
+    constructor(@Inject(HttpClient) http: HttpClient, @Optional() @Inject(API_BASE_URL) baseUrl?: string) {
+        this.http = http;
+        this.baseUrl = baseUrl !== undefined && baseUrl !== null ? baseUrl : "";
+    }
+
+    /**
+     * @param body (optional) 
+     * @return Success
+     */
+    docuSignTest(body?: SendToDocuSignTestCommand | undefined): Observable<string> {
+        let url_ = this.baseUrl + "/api/DocuSignTest";
+        url_ = url_.replace(/[?&]$/, "");
+
+        const content_ = JSON.stringify(body);
+
+        let options_ : any = {
+            body: content_,
+            observe: "response",
+            responseType: "blob",
+            headers: new HttpHeaders({
+                "Content-Type": "application/json",
+                "Accept": "text/plain"
+            })
+        };
+
+        return this.http.request("post", url_, options_).pipe(_observableMergeMap((response_ : any) => {
+            return this.processDocuSignTest(response_);
+        })).pipe(_observableCatch((response_: any) => {
+            if (response_ instanceof HttpResponseBase) {
+                try {
+                    return this.processDocuSignTest(response_ as any);
+                } catch (e) {
+                    return _observableThrow(e) as any as Observable<string>;
+                }
+            } else
+                return _observableThrow(response_) as any as Observable<string>;
+        }));
+    }
+
+    protected processDocuSignTest(response: HttpResponseBase): Observable<string> {
+        const status = response.status;
+        const responseBlob =
+            response instanceof HttpResponse ? response.body :
+            (response as any).error instanceof Blob ? (response as any).error : undefined;
+
+        let _headers: any = {}; if (response.headers) { for (let key of response.headers.keys()) { _headers[key] = response.headers.get(key); }}
+        if (status === 200) {
+            return blobToText(responseBlob).pipe(_observableMergeMap(_responseText => {
+            let result200: any = null;
+            let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
+                result200 = resultData200 !== undefined ? resultData200 : <any>null;
+    
+            return _observableOf(result200);
+            }));
+        } else if (status !== 200 && status !== 204) {
+            return blobToText(responseBlob).pipe(_observableMergeMap(_responseText => {
+            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+            }));
+        }
+        return _observableOf<string>(null as any);
     }
 }
 
@@ -6952,8 +6610,8 @@ export class EmployeeNotificationServiceProxy {
     }
 
     /**
-     * @param notificationId (optional)
-     * @param tenantId (optional)
+     * @param notificationId (optional) 
+     * @param tenantId (optional) 
      * @return Success
      */
     addNotification(notificationId?: number | undefined, tenantId?: number | undefined): Observable<void> {
@@ -7009,8 +6667,8 @@ export class EmployeeNotificationServiceProxy {
     }
 
     /**
-     * @param notificationId (optional)
-     * @param tenantId (optional)
+     * @param notificationId (optional) 
+     * @param tenantId (optional) 
      * @return Success
      */
     removeNotification(notificationId?: number | undefined, tenantId?: number | undefined): Observable<void> {
@@ -8008,7 +7666,7 @@ export class EnumServiceProxy {
     /**
      * @return Success
      */
-    projectType(): Observable<EnumEntityTypeDto[]> {
+    projectTypeAll(): Observable<EnumEntityTypeDto[]> {
         let url_ = this.baseUrl + "/api/Enum/project-type";
         url_ = url_.replace(/[?&]$/, "");
 
@@ -8021,11 +7679,11 @@ export class EnumServiceProxy {
         };
 
         return this.http.request("get", url_, options_).pipe(_observableMergeMap((response_ : any) => {
-            return this.processProjectType(response_);
+            return this.processProjectTypeAll(response_);
         })).pipe(_observableCatch((response_: any) => {
             if (response_ instanceof HttpResponseBase) {
                 try {
-                    return this.processProjectType(response_ as any);
+                    return this.processProjectTypeAll(response_ as any);
                 } catch (e) {
                     return _observableThrow(e) as any as Observable<EnumEntityTypeDto[]>;
                 }
@@ -8034,7 +7692,7 @@ export class EnumServiceProxy {
         }));
     }
 
-    protected processProjectType(response: HttpResponseBase): Observable<EnumEntityTypeDto[]> {
+    protected processProjectTypeAll(response: HttpResponseBase): Observable<EnumEntityTypeDto[]> {
         const status = response.status;
         const responseBlob =
             response instanceof HttpResponse ? response.body :
@@ -8298,7 +7956,7 @@ export class EnumServiceProxy {
     /**
      * @return Success
      */
-    workflowStatuses(): Observable<WorkflowStatusDto[]> {
+    workflowStatuses(): Observable<{ [key: string]: string; }> {
         let url_ = this.baseUrl + "/api/Enum/workflow-statuses";
         url_ = url_.replace(/[?&]$/, "");
 
@@ -8317,14 +7975,14 @@ export class EnumServiceProxy {
                 try {
                     return this.processWorkflowStatuses(response_ as any);
                 } catch (e) {
-                    return _observableThrow(e) as any as Observable<WorkflowStatusDto[]>;
+                    return _observableThrow(e) as any as Observable<{ [key: string]: string; }>;
                 }
             } else
-                return _observableThrow(response_) as any as Observable<WorkflowStatusDto[]>;
+                return _observableThrow(response_) as any as Observable<{ [key: string]: string; }>;
         }));
     }
 
-    protected processWorkflowStatuses(response: HttpResponseBase): Observable<WorkflowStatusDto[]> {
+    protected processWorkflowStatuses(response: HttpResponseBase): Observable<{ [key: string]: string; }> {
         const status = response.status;
         const responseBlob =
             response instanceof HttpResponse ? response.body :
@@ -8335,10 +7993,12 @@ export class EnumServiceProxy {
             return blobToText(responseBlob).pipe(_observableMergeMap(_responseText => {
             let result200: any = null;
             let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
-            if (Array.isArray(resultData200)) {
-                result200 = [] as any;
-                for (let item of resultData200)
-                    result200!.push(WorkflowStatusDto.fromJS(item));
+            if (resultData200) {
+                result200 = {} as any;
+                for (let key in resultData200) {
+                    if (resultData200.hasOwnProperty(key))
+                        (<any>result200)![key] = resultData200[key] !== undefined ? resultData200[key] : <any>null;
+                }
             }
             else {
                 result200 = <any>null;
@@ -8350,7 +8010,7 @@ export class EnumServiceProxy {
             return throwException("An unexpected server error occurred.", status, _responseText, _headers);
             }));
         }
-        return _observableOf<WorkflowStatusDto[]>(null as any);
+        return _observableOf<{ [key: string]: string; }>(null as any);
     }
 
     /**
@@ -9608,10 +9268,10 @@ export class FileServiceProxy {
     }
 
     /**
-     * @param file (optional)
+     * @param file (optional) 
      * @return Success
      */
-    temporaryPost(file?: FileParameter | undefined): Observable<string> {
+    temporaryPOST(file?: FileParameter | undefined): Observable<string> {
         let url_ = this.baseUrl + "/api/File/temporary";
         url_ = url_.replace(/[?&]$/, "");
 
@@ -9631,11 +9291,11 @@ export class FileServiceProxy {
         };
 
         return this.http.request("post", url_, options_).pipe(_observableMergeMap((response_ : any) => {
-            return this.processTemporaryPost(response_);
+            return this.processTemporaryPOST(response_);
         })).pipe(_observableCatch((response_: any) => {
             if (response_ instanceof HttpResponseBase) {
                 try {
-                    return this.processTemporaryPost(response_ as any);
+                    return this.processTemporaryPOST(response_ as any);
                 } catch (e) {
                     return _observableThrow(e) as any as Observable<string>;
                 }
@@ -9644,7 +9304,7 @@ export class FileServiceProxy {
         }));
     }
 
-    protected processTemporaryPost(response: HttpResponseBase): Observable<string> {
+    protected processTemporaryPOST(response: HttpResponseBase): Observable<string> {
         const status = response.status;
         const responseBlob =
             response instanceof HttpResponse ? response.body :
@@ -9653,11 +9313,11 @@ export class FileServiceProxy {
         let _headers: any = {}; if (response.headers) { for (let key of response.headers.keys()) { _headers[key] = response.headers.get(key); }}
         if (status === 200) {
             return blobToText(responseBlob).pipe(_observableMergeMap(_responseText => {
-            // let result200: any = null;
-            // let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
-            //     result200 = resultData200 !== undefined ? resultData200 : <any>null;
-
-            return _observableOf(_responseText);
+            let result200: any = null;
+            let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
+                result200 = resultData200 !== undefined ? resultData200 : <any>null;
+    
+            return _observableOf(result200);
             }));
         } else if (status !== 200 && status !== 204) {
             return blobToText(responseBlob).pipe(_observableMergeMap(_responseText => {
@@ -9668,10 +9328,10 @@ export class FileServiceProxy {
     }
 
     /**
-     * @param fileId (optional)
+     * @param fileId (optional) 
      * @return Success
      */
-    temporaryDelete(fileId?: string | undefined): Observable<void> {
+    temporaryDELETE(fileId?: string | undefined): Observable<void> {
         let url_ = this.baseUrl + "/api/File/temporary?";
         if (fileId === null)
             throw new Error("The parameter 'fileId' cannot be null.");
@@ -9687,11 +9347,11 @@ export class FileServiceProxy {
         };
 
         return this.http.request("delete", url_, options_).pipe(_observableMergeMap((response_ : any) => {
-            return this.processTemporaryDelete(response_);
+            return this.processTemporaryDELETE(response_);
         })).pipe(_observableCatch((response_: any) => {
             if (response_ instanceof HttpResponseBase) {
                 try {
-                    return this.processTemporaryDelete(response_ as any);
+                    return this.processTemporaryDELETE(response_ as any);
                 } catch (e) {
                     return _observableThrow(e) as any as Observable<void>;
                 }
@@ -9700,7 +9360,7 @@ export class FileServiceProxy {
         }));
     }
 
-    protected processTemporaryDelete(response: HttpResponseBase): Observable<void> {
+    protected processTemporaryDELETE(response: HttpResponseBase): Observable<void> {
         const status = response.status;
         const responseBlob =
             response instanceof HttpResponse ? response.body :
@@ -9732,8 +9392,8 @@ export class HubSpotCardDataFetchServiceProxy {
     }
 
     /**
-     * @param hs_object_id (optional)
-     * @param associatedcompanyid (optional)
+     * @param hs_object_id (optional) 
+     * @param associatedcompanyid (optional) 
      * @return Success
      */
     workflows(hs_object_id?: string | undefined, associatedcompanyid?: string | undefined): Observable<string> {
@@ -9782,7 +9442,7 @@ export class HubSpotCardDataFetchServiceProxy {
             let result200: any = null;
             let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
                 result200 = resultData200 !== undefined ? resultData200 : <any>null;
-
+    
             return _observableOf(result200);
             }));
         } else if (status !== 200 && status !== 204) {
@@ -9794,8 +9454,8 @@ export class HubSpotCardDataFetchServiceProxy {
     }
 
     /**
-     * @param hs_object_id (optional)
-     * @param associatedcompanyid (optional)
+     * @param hs_object_id (optional) 
+     * @param associatedcompanyid (optional) 
      * @return Success
      */
     requests(hs_object_id?: string | undefined, associatedcompanyid?: string | undefined): Observable<string> {
@@ -9844,7 +9504,7 @@ export class HubSpotCardDataFetchServiceProxy {
             let result200: any = null;
             let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
                 result200 = resultData200 !== undefined ? resultData200 : <any>null;
-
+    
             return _observableOf(result200);
             }));
         } else if (status !== 200 && status !== 204) {
@@ -9856,8 +9516,8 @@ export class HubSpotCardDataFetchServiceProxy {
     }
 
     /**
-     * @param hs_object_id (optional)
-     * @param userEmail (optional)
+     * @param hs_object_id (optional) 
+     * @param userEmail (optional) 
      * @return Success
      */
     contactPerson(hs_object_id?: string | undefined, userEmail?: string | undefined): Observable<string> {
@@ -9906,7 +9566,7 @@ export class HubSpotCardDataFetchServiceProxy {
             let result200: any = null;
             let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
                 result200 = resultData200 !== undefined ? resultData200 : <any>null;
-
+    
             return _observableOf(result200);
             }));
         } else if (status !== 200 && status !== 204) {
@@ -9918,8 +9578,8 @@ export class HubSpotCardDataFetchServiceProxy {
     }
 
     /**
-     * @param hs_object_id (optional)
-     * @param userEmail (optional)
+     * @param hs_object_id (optional) 
+     * @param userEmail (optional) 
      * @return Success
      */
     camLoginLink(hs_object_id?: string | undefined, userEmail?: string | undefined): Observable<string> {
@@ -9968,7 +9628,7 @@ export class HubSpotCardDataFetchServiceProxy {
             let result200: any = null;
             let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
                 result200 = resultData200 !== undefined ? resultData200 : <any>null;
-
+    
             return _observableOf(result200);
             }));
         } else if (status !== 200 && status !== 204) {
@@ -9992,8 +9652,8 @@ export class HubSpotContractFetchServiceProxy {
     }
 
     /**
-     * @param userId (optional)
-     * @param userEmail (optional)
+     * @param userId (optional) 
+     * @param userEmail (optional) 
      * @return Success
      */
     listContracts(userId?: string | undefined, userEmail?: string | undefined): Observable<string> {
@@ -10042,7 +9702,7 @@ export class HubSpotContractFetchServiceProxy {
             let result200: any = null;
             let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
                 result200 = resultData200 !== undefined ? resultData200 : <any>null;
-
+    
             return _observableOf(result200);
             }));
         } else if (status !== 200 && status !== 204) {
@@ -10066,7 +9726,7 @@ export class HubSpotInstallServiceProxy {
     }
 
     /**
-     * @param code (optional)
+     * @param code (optional) 
      * @return Success
      */
     auth(code?: string | undefined): Observable<string> {
@@ -10111,7 +9771,7 @@ export class HubSpotInstallServiceProxy {
             let result200: any = null;
             let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
                 result200 = resultData200 !== undefined ? resultData200 : <any>null;
-
+    
             return _observableOf(result200);
             }));
         } else if (status !== 200 && status !== 204) {
@@ -10586,9 +10246,9 @@ export class LookupServiceProxy {
     }
 
     /**
-     * @param nameFilter (optional)
-     * @param showAll (optional)
-     * @param idsToExclude (optional)
+     * @param nameFilter (optional) 
+     * @param showAll (optional) 
+     * @param idsToExclude (optional) 
      * @return Success
      */
     employees(nameFilter?: string | undefined, showAll?: boolean | undefined, idsToExclude?: number[] | undefined): Observable<EmployeeDto[]> {
@@ -10659,9 +10319,9 @@ export class LookupServiceProxy {
     }
 
     /**
-     * @param filter (optional)
-     * @param maxRecords (optional)
-     * @param idsToExclude (optional)
+     * @param filter (optional) 
+     * @param maxRecords (optional) 
+     * @param idsToExclude (optional) 
      * @return Success
      */
     consultants(filter?: string | undefined, maxRecords?: number | undefined, idsToExclude?: number[] | undefined): Observable<ConsultantResultDto[]> {
@@ -10732,9 +10392,9 @@ export class LookupServiceProxy {
     }
 
     /**
-     * @param clientId (optional)
-     * @param filter (optional)
-     * @param maxRecords (optional)
+     * @param clientId (optional) 
+     * @param filter (optional) 
+     * @param maxRecords (optional) 
      * @return Success
      */
     consultantsWithSourcingRequest(clientId?: number | undefined, filter?: string | undefined, maxRecords?: number | undefined): Observable<ConsultantWithSourcingRequestResultDto[]> {
@@ -10805,9 +10465,9 @@ export class LookupServiceProxy {
     }
 
     /**
-     * @param filter (optional)
-     * @param maxRecords (optional)
-     * @param idsToExclude (optional)
+     * @param filter (optional) 
+     * @param maxRecords (optional) 
+     * @param idsToExclude (optional) 
      * @return Success
      */
     suppliers(filter?: string | undefined, maxRecords?: number | undefined, idsToExclude?: number[] | undefined): Observable<SupplierResultDto[]> {
@@ -10878,11 +10538,11 @@ export class LookupServiceProxy {
     }
 
     /**
-     * @param filter (optional)
-     * @param maxRecords (optional)
+     * @param filter (optional) 
+     * @param maxRecords (optional) 
      * @return Success
      */
-    clients(filter?: string | undefined, maxRecords?: number | undefined): Observable<ClientResultDto[]> {
+    clientsAll(filter?: string | undefined, maxRecords?: number | undefined): Observable<ClientResultDto[]> {
         let url_ = this.baseUrl + "/api/Lookup/Clients?";
         if (filter === null)
             throw new Error("The parameter 'filter' cannot be null.");
@@ -10903,11 +10563,11 @@ export class LookupServiceProxy {
         };
 
         return this.http.request("get", url_, options_).pipe(_observableMergeMap((response_ : any) => {
-            return this.processClients(response_);
+            return this.processClientsAll(response_);
         })).pipe(_observableCatch((response_: any) => {
             if (response_ instanceof HttpResponseBase) {
                 try {
-                    return this.processClients(response_ as any);
+                    return this.processClientsAll(response_ as any);
                 } catch (e) {
                     return _observableThrow(e) as any as Observable<ClientResultDto[]>;
                 }
@@ -10916,7 +10576,7 @@ export class LookupServiceProxy {
         }));
     }
 
-    protected processClients(response: HttpResponseBase): Observable<ClientResultDto[]> {
+    protected processClientsAll(response: HttpResponseBase): Observable<ClientResultDto[]> {
         const status = response.status;
         const responseBlob =
             response instanceof HttpResponse ? response.body :
@@ -10946,10 +10606,10 @@ export class LookupServiceProxy {
     }
 
     /**
-     * @param clientId1 (optional)
-     * @param clientId2 (optional)
-     * @param filter (optional)
-     * @param maxRecords (optional)
+     * @param clientId1 (optional) 
+     * @param clientId2 (optional) 
+     * @param filter (optional) 
+     * @param maxRecords (optional) 
      * @return Success
      */
     contacts(clientId1?: number | undefined, clientId2?: number | undefined, filter?: string | undefined, maxRecords?: number | undefined): Observable<ContactResultDto[]> {
@@ -11036,19 +10696,19 @@ export class MainOverviewServiceProxy {
     }
 
     /**
-     * @param mainOverviewStatusesForSales (optional)
-     * @param accountManagers (optional)
-     * @param invoicingEntity (optional)
-     * @param paymentEntity (optional)
-     * @param salesTypes (optional)
-     * @param deliveryTypes (optional)
-     * @param margins (optional)
-     * @param search (optional)
-     * @param cutOffDate (optional)
-     * @param showDeleted (optional)
-     * @param pageNumber (optional)
-     * @param pageSize (optional)
-     * @param sort (optional)
+     * @param mainOverviewStatusesForSales (optional) 
+     * @param accountManagers (optional) 
+     * @param invoicingEntity (optional) 
+     * @param paymentEntity (optional) 
+     * @param salesTypes (optional) 
+     * @param deliveryTypes (optional) 
+     * @param margins (optional) 
+     * @param search (optional) 
+     * @param cutOffDate (optional) 
+     * @param showDeleted (optional) 
+     * @param pageNumber (optional) 
+     * @param pageSize (optional) 
+     * @param sort (optional) 
      * @return Success
      */
     workflows(mainOverviewStatusesForSales?: MainOverviewStatus[] | undefined, accountManagers?: number[] | undefined, invoicingEntity?: number | undefined, paymentEntity?: number | undefined, salesTypes?: number[] | undefined, deliveryTypes?: number[] | undefined, margins?: number[] | undefined, search?: string | undefined, cutOffDate?: moment.Moment | undefined, showDeleted?: boolean | undefined, pageNumber?: number | undefined, pageSize?: number | undefined, sort?: string | undefined): Observable<MainOverviewItemForWorkflowDtoPaginatedList> {
@@ -11152,19 +10812,19 @@ export class MainOverviewServiceProxy {
     }
 
     /**
-     * @param mainOverviewStatusesForSales (optional)
-     * @param accountManagers (optional)
-     * @param invoicingEntity (optional)
-     * @param paymentEntity (optional)
-     * @param salesTypes (optional)
-     * @param deliveryTypes (optional)
-     * @param margins (optional)
-     * @param search (optional)
-     * @param cutOffDate (optional)
-     * @param showDeleted (optional)
-     * @param pageNumber (optional)
-     * @param pageSize (optional)
-     * @param sort (optional)
+     * @param mainOverviewStatusesForSales (optional) 
+     * @param accountManagers (optional) 
+     * @param invoicingEntity (optional) 
+     * @param paymentEntity (optional) 
+     * @param salesTypes (optional) 
+     * @param deliveryTypes (optional) 
+     * @param margins (optional) 
+     * @param search (optional) 
+     * @param cutOffDate (optional) 
+     * @param showDeleted (optional) 
+     * @param pageNumber (optional) 
+     * @param pageSize (optional) 
+     * @param sort (optional) 
      * @return Success
      */
     consultants(mainOverviewStatusesForSales?: MainOverviewStatus[] | undefined, accountManagers?: number[] | undefined, invoicingEntity?: number | undefined, paymentEntity?: number | undefined, salesTypes?: number[] | undefined, deliveryTypes?: number[] | undefined, margins?: number[] | undefined, search?: string | undefined, cutOffDate?: moment.Moment | undefined, showDeleted?: boolean | undefined, pageNumber?: number | undefined, pageSize?: number | undefined, sort?: string | undefined): Observable<MainOverviewItemForConsultantDtoPaginatedList> {
@@ -11268,8 +10928,8 @@ export class MainOverviewServiceProxy {
     }
 
     /**
-     * @param workflowId (optional)
-     * @param mainOverviewUserSelectedStatusForSales (optional)
+     * @param workflowId (optional) 
+     * @param mainOverviewUserSelectedStatusForSales (optional) 
      * @return Success
      */
     setUserSelectedStatusForWorkflow(workflowId?: string | undefined, mainOverviewUserSelectedStatusForSales?: MainOverviewStatus | undefined): Observable<void> {
@@ -11325,9 +10985,9 @@ export class MainOverviewServiceProxy {
     }
 
     /**
-     * @param workflowId (optional)
-     * @param consultantId (optional)
-     * @param mainOverviewUserSelectedStatusForSales (optional)
+     * @param workflowId (optional) 
+     * @param consultantId (optional) 
+     * @param mainOverviewUserSelectedStatusForSales (optional) 
      * @return Success
      */
     setUserSelectedStatusForConsultant(workflowId?: string | undefined, consultantId?: number | undefined, mainOverviewUserSelectedStatusForSales?: MainOverviewStatus | undefined): Observable<void> {
@@ -11641,18 +11301,6 @@ export class MergeFieldsServiceProxy {
         }
         return _observableOf<{ [key: string]: string; }>(null as any);
     }
-}
-
-@Injectable()
-export class AgreementNameTemplateServiceProxy {
-    private http: HttpClient;
-    private baseUrl: string;
-    protected jsonParseReviver: ((key: string, value: any) => any) | undefined = undefined;
-
-    constructor(@Inject(HttpClient) http: HttpClient, @Optional() @Inject(API_BASE_URL) baseUrl?: string) {
-        this.http = http;
-        this.baseUrl = baseUrl !== undefined && baseUrl !== null ? baseUrl : "";
-    }
 
     /**
      * @return Success
@@ -11713,7 +11361,7 @@ export class AgreementNameTemplateServiceProxy {
     }
 
     /**
-     * @param agreementNameTemplate (optional)
+     * @param agreementNameTemplate (optional) 
      * @return Success
      */
     templatePreview(agreementNameTemplate?: string | undefined): Observable<string> {
@@ -11758,7 +11406,7 @@ export class AgreementNameTemplateServiceProxy {
             let result200: any = null;
             let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
                 result200 = resultData200 !== undefined ? resultData200 : <any>null;
-
+    
             return _observableOf(result200);
             }));
         } else if (status !== 200 && status !== 204) {
@@ -11770,9 +11418,9 @@ export class AgreementNameTemplateServiceProxy {
     }
 
     /**
-     * @param agreementTemplateId (optional)
-     * @param clientId (optional)
-     * @param consultantId (optional)
+     * @param agreementTemplateId (optional) 
+     * @param clientId (optional) 
+     * @param consultantId (optional) 
      * @return Success
      */
     actual(agreementTemplateId?: number | undefined, clientId?: number | undefined, consultantId?: number | undefined): Observable<string> {
@@ -11825,7 +11473,7 @@ export class AgreementNameTemplateServiceProxy {
             let result200: any = null;
             let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
                 result200 = resultData200 !== undefined ? resultData200 : <any>null;
-
+    
             return _observableOf(result200);
             }));
         } else if (status !== 200 && status !== 204) {
@@ -11849,7 +11497,7 @@ export class NotificationTestServiceProxy {
     }
 
     /**
-     * @param email (optional)
+     * @param email (optional) 
      * @return Success
      * @deprecated
      */
@@ -11902,7 +11550,7 @@ export class NotificationTestServiceProxy {
     }
 
     /**
-     * @param email (optional)
+     * @param email (optional) 
      * @return Success
      * @deprecated
      */
@@ -11955,7 +11603,7 @@ export class NotificationTestServiceProxy {
     }
 
     /**
-     * @param email (optional)
+     * @param email (optional) 
      * @return Success
      * @deprecated
      */
@@ -12008,7 +11656,7 @@ export class NotificationTestServiceProxy {
     }
 
     /**
-     * @param email (optional)
+     * @param email (optional) 
      * @return Success
      * @deprecated
      */
@@ -12073,44 +11721,130 @@ export class WorkflowServiceProxy {
     }
 
     /**
-     * @param workflowId (optional)
-     * @param workflowStatus (optional)
+     * @param invoicingEntity (optional) 
+     * @param paymentEntity (optional) 
+     * @param salesType (optional) 
+     * @param deliveryType (optional) 
+     * @param workflowStatus (optional) 
+     * @param responsibleEmployees (optional) 
+     * @param syncStateStatuses (optional) 
+     * @param showNewSales (optional) 
+     * @param showExtensions (optional) 
+     * @param showPendingSteps (optional) 
+     * @param showPendingStepType (optional) 
+     * @param showUpcomingSteps (optional) 
+     * @param showUpcomingStepType (optional) 
+     * @param showCompleted (optional) 
+     * @param showDeleted (optional) 
+     * @param search (optional) 
+     * @param pageNumber (optional) 
+     * @param pageSize (optional) 
+     * @param sort (optional) 
      * @return Success
      */
-    setWorkflowStatus(workflowId?: string | undefined, workflowStatus?: WorkflowStatus | undefined): Observable<void> {
-        let url_ = this.baseUrl + "/api/Workflow/set-workflow-status?";
-        if (workflowId === null)
-            throw new Error("The parameter 'workflowId' cannot be null.");
-        else if (workflowId !== undefined)
-            url_ += "WorkflowId=" + encodeURIComponent("" + workflowId) + "&";
+    workflow(invoicingEntity?: number | undefined, paymentEntity?: number | undefined, salesType?: number | undefined, deliveryType?: number | undefined, workflowStatus?: WorkflowStatus | undefined, responsibleEmployees?: number[] | undefined, syncStateStatuses?: SyncStateStatus[] | undefined, showNewSales?: boolean | undefined, showExtensions?: boolean | undefined, showPendingSteps?: boolean | undefined, showPendingStepType?: StepType | undefined, showUpcomingSteps?: boolean | undefined, showUpcomingStepType?: StepType | undefined, showCompleted?: boolean | undefined, showDeleted?: boolean | undefined, search?: string | undefined, pageNumber?: number | undefined, pageSize?: number | undefined, sort?: string | undefined): Observable<WorkflowListItemDtoPaginatedList> {
+        let url_ = this.baseUrl + "/api/Workflow?";
+        if (invoicingEntity === null)
+            throw new Error("The parameter 'invoicingEntity' cannot be null.");
+        else if (invoicingEntity !== undefined)
+            url_ += "InvoicingEntity=" + encodeURIComponent("" + invoicingEntity) + "&";
+        if (paymentEntity === null)
+            throw new Error("The parameter 'paymentEntity' cannot be null.");
+        else if (paymentEntity !== undefined)
+            url_ += "PaymentEntity=" + encodeURIComponent("" + paymentEntity) + "&";
+        if (salesType === null)
+            throw new Error("The parameter 'salesType' cannot be null.");
+        else if (salesType !== undefined)
+            url_ += "SalesType=" + encodeURIComponent("" + salesType) + "&";
+        if (deliveryType === null)
+            throw new Error("The parameter 'deliveryType' cannot be null.");
+        else if (deliveryType !== undefined)
+            url_ += "DeliveryType=" + encodeURIComponent("" + deliveryType) + "&";
         if (workflowStatus === null)
             throw new Error("The parameter 'workflowStatus' cannot be null.");
         else if (workflowStatus !== undefined)
             url_ += "WorkflowStatus=" + encodeURIComponent("" + workflowStatus) + "&";
+        if (responsibleEmployees === null)
+            throw new Error("The parameter 'responsibleEmployees' cannot be null.");
+        else if (responsibleEmployees !== undefined)
+            responsibleEmployees && responsibleEmployees.forEach(item => { url_ += "ResponsibleEmployees=" + encodeURIComponent("" + item) + "&"; });
+        if (syncStateStatuses === null)
+            throw new Error("The parameter 'syncStateStatuses' cannot be null.");
+        else if (syncStateStatuses !== undefined)
+            syncStateStatuses && syncStateStatuses.forEach(item => { url_ += "SyncStateStatuses=" + encodeURIComponent("" + item) + "&"; });
+        if (showNewSales === null)
+            throw new Error("The parameter 'showNewSales' cannot be null.");
+        else if (showNewSales !== undefined)
+            url_ += "ShowNewSales=" + encodeURIComponent("" + showNewSales) + "&";
+        if (showExtensions === null)
+            throw new Error("The parameter 'showExtensions' cannot be null.");
+        else if (showExtensions !== undefined)
+            url_ += "ShowExtensions=" + encodeURIComponent("" + showExtensions) + "&";
+        if (showPendingSteps === null)
+            throw new Error("The parameter 'showPendingSteps' cannot be null.");
+        else if (showPendingSteps !== undefined)
+            url_ += "ShowPendingSteps=" + encodeURIComponent("" + showPendingSteps) + "&";
+        if (showPendingStepType === null)
+            throw new Error("The parameter 'showPendingStepType' cannot be null.");
+        else if (showPendingStepType !== undefined)
+            url_ += "ShowPendingStepType=" + encodeURIComponent("" + showPendingStepType) + "&";
+        if (showUpcomingSteps === null)
+            throw new Error("The parameter 'showUpcomingSteps' cannot be null.");
+        else if (showUpcomingSteps !== undefined)
+            url_ += "ShowUpcomingSteps=" + encodeURIComponent("" + showUpcomingSteps) + "&";
+        if (showUpcomingStepType === null)
+            throw new Error("The parameter 'showUpcomingStepType' cannot be null.");
+        else if (showUpcomingStepType !== undefined)
+            url_ += "ShowUpcomingStepType=" + encodeURIComponent("" + showUpcomingStepType) + "&";
+        if (showCompleted === null)
+            throw new Error("The parameter 'showCompleted' cannot be null.");
+        else if (showCompleted !== undefined)
+            url_ += "ShowCompleted=" + encodeURIComponent("" + showCompleted) + "&";
+        if (showDeleted === null)
+            throw new Error("The parameter 'showDeleted' cannot be null.");
+        else if (showDeleted !== undefined)
+            url_ += "ShowDeleted=" + encodeURIComponent("" + showDeleted) + "&";
+        if (search === null)
+            throw new Error("The parameter 'search' cannot be null.");
+        else if (search !== undefined)
+            url_ += "Search=" + encodeURIComponent("" + search) + "&";
+        if (pageNumber === null)
+            throw new Error("The parameter 'pageNumber' cannot be null.");
+        else if (pageNumber !== undefined)
+            url_ += "PageNumber=" + encodeURIComponent("" + pageNumber) + "&";
+        if (pageSize === null)
+            throw new Error("The parameter 'pageSize' cannot be null.");
+        else if (pageSize !== undefined)
+            url_ += "PageSize=" + encodeURIComponent("" + pageSize) + "&";
+        if (sort === null)
+            throw new Error("The parameter 'sort' cannot be null.");
+        else if (sort !== undefined)
+            url_ += "Sort=" + encodeURIComponent("" + sort) + "&";
         url_ = url_.replace(/[?&]$/, "");
 
         let options_ : any = {
             observe: "response",
             responseType: "blob",
             headers: new HttpHeaders({
+                "Accept": "text/plain"
             })
         };
 
-        return this.http.request("post", url_, options_).pipe(_observableMergeMap((response_ : any) => {
-            return this.processSetWorkflowStatus(response_);
+        return this.http.request("get", url_, options_).pipe(_observableMergeMap((response_ : any) => {
+            return this.processWorkflow(response_);
         })).pipe(_observableCatch((response_: any) => {
             if (response_ instanceof HttpResponseBase) {
                 try {
-                    return this.processSetWorkflowStatus(response_ as any);
+                    return this.processWorkflow(response_ as any);
                 } catch (e) {
-                    return _observableThrow(e) as any as Observable<void>;
+                    return _observableThrow(e) as any as Observable<WorkflowListItemDtoPaginatedList>;
                 }
             } else
-                return _observableThrow(response_) as any as Observable<void>;
+                return _observableThrow(response_) as any as Observable<WorkflowListItemDtoPaginatedList>;
         }));
     }
 
-    protected processSetWorkflowStatus(response: HttpResponseBase): Observable<void> {
+    protected processWorkflow(response: HttpResponseBase): Observable<WorkflowListItemDtoPaginatedList> {
         const status = response.status;
         const responseBlob =
             response instanceof HttpResponse ? response.body :
@@ -12119,18 +11853,21 @@ export class WorkflowServiceProxy {
         let _headers: any = {}; if (response.headers) { for (let key of response.headers.keys()) { _headers[key] = response.headers.get(key); }}
         if (status === 200) {
             return blobToText(responseBlob).pipe(_observableMergeMap(_responseText => {
-            return _observableOf<void>(null as any);
+            let result200: any = null;
+            let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
+            result200 = WorkflowListItemDtoPaginatedList.fromJS(resultData200);
+            return _observableOf(result200);
             }));
         } else if (status !== 200 && status !== 204) {
             return blobToText(responseBlob).pipe(_observableMergeMap(_responseText => {
             return throwException("An unexpected server error occurred.", status, _responseText, _headers);
             }));
         }
-        return _observableOf<void>(null as any);
+        return _observableOf<WorkflowListItemDtoPaginatedList>(null as any);
     }
 
     /**
-     * @param body (optional)
+     * @param body (optional) 
      * @return Success
      */
     start(body?: StartNewWorkflowInputDto | undefined): Observable<NewWorkflowCreatedDto> {
@@ -12240,8 +11977,8 @@ export class WorkflowServiceProxy {
     }
 
     /**
-     * @param clientPeriodId (optional)
-     * @param includeProcesses (optional)
+     * @param clientPeriodId (optional) 
+     * @param includeProcesses (optional) 
      * @return Success
      */
     clientPeriods(workflowId: string, clientPeriodId?: string | undefined, includeProcesses?: boolean | undefined): Observable<WorkflowDto> {
@@ -12358,8 +12095,8 @@ export class WorkflowServiceProxy {
     }
 
     /**
-     * @param pageNumber (optional)
-     * @param pageSize (optional)
+     * @param pageNumber (optional) 
+     * @param pageSize (optional) 
      * @return Success
      */
     history(workflowId: string, pageNumber?: number | undefined, pageSize?: number | undefined): Observable<WorkflowHistoryDtoPaginatedList> {
@@ -12424,7 +12161,7 @@ export class WorkflowServiceProxy {
     /**
      * @return Success
      */
-    notesGet(workflowId: string): Observable<string> {
+    notesGET(workflowId: string): Observable<string> {
         let url_ = this.baseUrl + "/api/Workflow/{workflowId}/notes";
         if (workflowId === undefined || workflowId === null)
             throw new Error("The parameter 'workflowId' must be defined.");
@@ -12440,11 +12177,11 @@ export class WorkflowServiceProxy {
         };
 
         return this.http.request("get", url_, options_).pipe(_observableMergeMap((response_ : any) => {
-            return this.processNotesGet(response_);
+            return this.processNotesGET(response_);
         })).pipe(_observableCatch((response_: any) => {
             if (response_ instanceof HttpResponseBase) {
                 try {
-                    return this.processNotesGet(response_ as any);
+                    return this.processNotesGET(response_ as any);
                 } catch (e) {
                     return _observableThrow(e) as any as Observable<string>;
                 }
@@ -12453,7 +12190,7 @@ export class WorkflowServiceProxy {
         }));
     }
 
-    protected processNotesGet(response: HttpResponseBase): Observable<string> {
+    protected processNotesGET(response: HttpResponseBase): Observable<string> {
         const status = response.status;
         const responseBlob =
             response instanceof HttpResponse ? response.body :
@@ -12465,7 +12202,7 @@ export class WorkflowServiceProxy {
             let result200: any = null;
             let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
                 result200 = resultData200 !== undefined ? resultData200 : <any>null;
-
+    
             return _observableOf(result200);
             }));
         } else if (status !== 200 && status !== 204) {
@@ -12477,10 +12214,10 @@ export class WorkflowServiceProxy {
     }
 
     /**
-     * @param body (optional)
+     * @param body (optional) 
      * @return Success
      */
-    notesPut(workflowId: string, body?: string | undefined): Observable<void> {
+    notesPUT(workflowId: string, body?: string | undefined): Observable<void> {
         let url_ = this.baseUrl + "/api/Workflow/{workflowId}/notes";
         if (workflowId === undefined || workflowId === null)
             throw new Error("The parameter 'workflowId' must be defined.");
@@ -12499,11 +12236,11 @@ export class WorkflowServiceProxy {
         };
 
         return this.http.request("put", url_, options_).pipe(_observableMergeMap((response_ : any) => {
-            return this.processNotesPut(response_);
+            return this.processNotesPUT(response_);
         })).pipe(_observableCatch((response_: any) => {
             if (response_ instanceof HttpResponseBase) {
                 try {
-                    return this.processNotesPut(response_ as any);
+                    return this.processNotesPUT(response_ as any);
                 } catch (e) {
                     return _observableThrow(e) as any as Observable<void>;
                 }
@@ -12512,7 +12249,7 @@ export class WorkflowServiceProxy {
         }));
     }
 
-    protected processNotesPut(response: HttpResponseBase): Observable<void> {
+    protected processNotesPUT(response: HttpResponseBase): Observable<void> {
         const status = response.status;
         const responseBlob =
             response instanceof HttpResponse ? response.body :
@@ -12584,7 +12321,7 @@ export class WorkflowServiceProxy {
     /**
      * @return Success
      */
-    terminationSalesGet(workflowId: string): Observable<WorkflowTerminationSalesDataQueryDto> {
+    terminationSalesGET(workflowId: string): Observable<WorkflowTerminationSalesDataQueryDto> {
         let url_ = this.baseUrl + "/api/Workflow/{workflowId}/termination-sales";
         if (workflowId === undefined || workflowId === null)
             throw new Error("The parameter 'workflowId' must be defined.");
@@ -12600,11 +12337,11 @@ export class WorkflowServiceProxy {
         };
 
         return this.http.request("get", url_, options_).pipe(_observableMergeMap((response_ : any) => {
-            return this.processTerminationSalesGet(response_);
+            return this.processTerminationSalesGET(response_);
         })).pipe(_observableCatch((response_: any) => {
             if (response_ instanceof HttpResponseBase) {
                 try {
-                    return this.processTerminationSalesGet(response_ as any);
+                    return this.processTerminationSalesGET(response_ as any);
                 } catch (e) {
                     return _observableThrow(e) as any as Observable<WorkflowTerminationSalesDataQueryDto>;
                 }
@@ -12613,7 +12350,7 @@ export class WorkflowServiceProxy {
         }));
     }
 
-    protected processTerminationSalesGet(response: HttpResponseBase): Observable<WorkflowTerminationSalesDataQueryDto> {
+    protected processTerminationSalesGET(response: HttpResponseBase): Observable<WorkflowTerminationSalesDataQueryDto> {
         const status = response.status;
         const responseBlob =
             response instanceof HttpResponse ? response.body :
@@ -12636,10 +12373,10 @@ export class WorkflowServiceProxy {
     }
 
     /**
-     * @param body (optional)
+     * @param body (optional) 
      * @return Success
      */
-    terminationSalesPut(workflowId: string, body?: WorkflowTerminationSalesDataCommandDto | undefined): Observable<void> {
+    terminationSalesPUT(workflowId: string, body?: WorkflowTerminationSalesDataCommandDto | undefined): Observable<void> {
         let url_ = this.baseUrl + "/api/Workflow/{workflowId}/termination-sales";
         if (workflowId === undefined || workflowId === null)
             throw new Error("The parameter 'workflowId' must be defined.");
@@ -12658,11 +12395,11 @@ export class WorkflowServiceProxy {
         };
 
         return this.http.request("put", url_, options_).pipe(_observableMergeMap((response_ : any) => {
-            return this.processTerminationSalesPut(response_);
+            return this.processTerminationSalesPUT(response_);
         })).pipe(_observableCatch((response_: any) => {
             if (response_ instanceof HttpResponseBase) {
                 try {
-                    return this.processTerminationSalesPut(response_ as any);
+                    return this.processTerminationSalesPUT(response_ as any);
                 } catch (e) {
                     return _observableThrow(e) as any as Observable<void>;
                 }
@@ -12671,7 +12408,7 @@ export class WorkflowServiceProxy {
         }));
     }
 
-    protected processTerminationSalesPut(response: HttpResponseBase): Observable<void> {
+    protected processTerminationSalesPUT(response: HttpResponseBase): Observable<void> {
         const status = response.status;
         const responseBlob =
             response instanceof HttpResponse ? response.body :
@@ -12691,7 +12428,7 @@ export class WorkflowServiceProxy {
     }
 
     /**
-     * @param body (optional)
+     * @param body (optional) 
      * @return Success
      */
     terminationSalesComplete(workflowId: string, body?: WorkflowTerminationSalesDataCommandDto | undefined): Observable<void> {
@@ -12798,7 +12535,7 @@ export class WorkflowServiceProxy {
     /**
      * @return Success
      */
-    terminationContractGet(workflowId: string): Observable<WorkflowTerminationContractDataQueryDto> {
+    terminationContractGET(workflowId: string): Observable<WorkflowTerminationContractDataQueryDto> {
         let url_ = this.baseUrl + "/api/Workflow/{workflowId}/termination-contract";
         if (workflowId === undefined || workflowId === null)
             throw new Error("The parameter 'workflowId' must be defined.");
@@ -12814,11 +12551,11 @@ export class WorkflowServiceProxy {
         };
 
         return this.http.request("get", url_, options_).pipe(_observableMergeMap((response_ : any) => {
-            return this.processTerminationContractGet(response_);
+            return this.processTerminationContractGET(response_);
         })).pipe(_observableCatch((response_: any) => {
             if (response_ instanceof HttpResponseBase) {
                 try {
-                    return this.processTerminationContractGet(response_ as any);
+                    return this.processTerminationContractGET(response_ as any);
                 } catch (e) {
                     return _observableThrow(e) as any as Observable<WorkflowTerminationContractDataQueryDto>;
                 }
@@ -12827,7 +12564,7 @@ export class WorkflowServiceProxy {
         }));
     }
 
-    protected processTerminationContractGet(response: HttpResponseBase): Observable<WorkflowTerminationContractDataQueryDto> {
+    protected processTerminationContractGET(response: HttpResponseBase): Observable<WorkflowTerminationContractDataQueryDto> {
         const status = response.status;
         const responseBlob =
             response instanceof HttpResponse ? response.body :
@@ -12850,10 +12587,10 @@ export class WorkflowServiceProxy {
     }
 
     /**
-     * @param body (optional)
+     * @param body (optional) 
      * @return Success
      */
-    terminationContractPut(workflowId: string, body?: WorkflowTerminationContractDataCommandDto | undefined): Observable<void> {
+    terminationContractPUT(workflowId: string, body?: WorkflowTerminationContractDataCommandDto | undefined): Observable<void> {
         let url_ = this.baseUrl + "/api/Workflow/{workflowId}/termination-contract";
         if (workflowId === undefined || workflowId === null)
             throw new Error("The parameter 'workflowId' must be defined.");
@@ -12872,11 +12609,11 @@ export class WorkflowServiceProxy {
         };
 
         return this.http.request("put", url_, options_).pipe(_observableMergeMap((response_ : any) => {
-            return this.processTerminationContractPut(response_);
+            return this.processTerminationContractPUT(response_);
         })).pipe(_observableCatch((response_: any) => {
             if (response_ instanceof HttpResponseBase) {
                 try {
-                    return this.processTerminationContractPut(response_ as any);
+                    return this.processTerminationContractPUT(response_ as any);
                 } catch (e) {
                     return _observableThrow(e) as any as Observable<void>;
                 }
@@ -12885,7 +12622,7 @@ export class WorkflowServiceProxy {
         }));
     }
 
-    protected processTerminationContractPut(response: HttpResponseBase): Observable<void> {
+    protected processTerminationContractPUT(response: HttpResponseBase): Observable<void> {
         const status = response.status;
         const responseBlob =
             response instanceof HttpResponse ? response.body :
@@ -12955,7 +12692,7 @@ export class WorkflowServiceProxy {
     }
 
     /**
-     * @param body (optional)
+     * @param body (optional) 
      * @return Success
      */
     terminationContractComplete(workflowId: string, body?: WorkflowTerminationContractDataCommandDto | undefined): Observable<void> {
@@ -13012,7 +12749,7 @@ export class WorkflowServiceProxy {
     /**
      * @return Success
      */
-    terminationSourcingGet(workflowId: string): Observable<WorkflowTerminationSourcingDataQueryDto> {
+    terminationSourcingGET(workflowId: string): Observable<WorkflowTerminationSourcingDataQueryDto> {
         let url_ = this.baseUrl + "/api/Workflow/{workflowId}/termination-sourcing";
         if (workflowId === undefined || workflowId === null)
             throw new Error("The parameter 'workflowId' must be defined.");
@@ -13028,11 +12765,11 @@ export class WorkflowServiceProxy {
         };
 
         return this.http.request("get", url_, options_).pipe(_observableMergeMap((response_ : any) => {
-            return this.processTerminationSourcingGet(response_);
+            return this.processTerminationSourcingGET(response_);
         })).pipe(_observableCatch((response_: any) => {
             if (response_ instanceof HttpResponseBase) {
                 try {
-                    return this.processTerminationSourcingGet(response_ as any);
+                    return this.processTerminationSourcingGET(response_ as any);
                 } catch (e) {
                     return _observableThrow(e) as any as Observable<WorkflowTerminationSourcingDataQueryDto>;
                 }
@@ -13041,7 +12778,7 @@ export class WorkflowServiceProxy {
         }));
     }
 
-    protected processTerminationSourcingGet(response: HttpResponseBase): Observable<WorkflowTerminationSourcingDataQueryDto> {
+    protected processTerminationSourcingGET(response: HttpResponseBase): Observable<WorkflowTerminationSourcingDataQueryDto> {
         const status = response.status;
         const responseBlob =
             response instanceof HttpResponse ? response.body :
@@ -13064,10 +12801,10 @@ export class WorkflowServiceProxy {
     }
 
     /**
-     * @param body (optional)
+     * @param body (optional) 
      * @return Success
      */
-    terminationSourcingPut(workflowId: string, body?: WorkflowTerminationSourcingDataCommandDto | undefined): Observable<void> {
+    terminationSourcingPUT(workflowId: string, body?: WorkflowTerminationSourcingDataCommandDto | undefined): Observable<void> {
         let url_ = this.baseUrl + "/api/Workflow/{workflowId}/termination-sourcing";
         if (workflowId === undefined || workflowId === null)
             throw new Error("The parameter 'workflowId' must be defined.");
@@ -13086,11 +12823,11 @@ export class WorkflowServiceProxy {
         };
 
         return this.http.request("put", url_, options_).pipe(_observableMergeMap((response_ : any) => {
-            return this.processTerminationSourcingPut(response_);
+            return this.processTerminationSourcingPUT(response_);
         })).pipe(_observableCatch((response_: any) => {
             if (response_ instanceof HttpResponseBase) {
                 try {
-                    return this.processTerminationSourcingPut(response_ as any);
+                    return this.processTerminationSourcingPUT(response_ as any);
                 } catch (e) {
                     return _observableThrow(e) as any as Observable<void>;
                 }
@@ -13099,7 +12836,7 @@ export class WorkflowServiceProxy {
         }));
     }
 
-    protected processTerminationSourcingPut(response: HttpResponseBase): Observable<void> {
+    protected processTerminationSourcingPUT(response: HttpResponseBase): Observable<void> {
         const status = response.status;
         const responseBlob =
             response instanceof HttpResponse ? response.body :
@@ -13169,7 +12906,7 @@ export class WorkflowServiceProxy {
     }
 
     /**
-     * @param body (optional)
+     * @param body (optional) 
      * @return Success
      */
     terminationSourcingComplete(workflowId: string, body?: WorkflowTerminationSourcingDataCommandDto | undefined): Observable<void> {
@@ -13224,7 +12961,7 @@ export class WorkflowServiceProxy {
     }
 
     /**
-     * @param newResponsibleEmployeeId (optional)
+     * @param newResponsibleEmployeeId (optional) 
      * @return Success
      */
     terminationStepResponsible(workflowId: string, stepType: StepType, newResponsibleEmployeeId?: number | undefined): Observable<void> {
@@ -13332,7 +13069,7 @@ export class WorkflowServiceProxy {
     }
 
     /**
-     * @param consultantId (optional)
+     * @param consultantId (optional) 
      * @return Success
      */
     terminationConsultantStart(workflowId: string, consultantId?: number | undefined): Observable<void> {
@@ -13387,10 +13124,10 @@ export class WorkflowServiceProxy {
     }
 
     /**
-     * @param consultantId (optional)
+     * @param consultantId (optional) 
      * @return Success
      */
-    terminationConsultantSalesGet(workflowId: string, consultantId?: number | undefined): Observable<ConsultantTerminationSalesDataQueryDto> {
+    terminationConsultantSalesGET(workflowId: string, consultantId?: number | undefined): Observable<ConsultantTerminationSalesDataQueryDto> {
         let url_ = this.baseUrl + "/api/Workflow/{workflowId}/termination-consultant-sales?";
         if (workflowId === undefined || workflowId === null)
             throw new Error("The parameter 'workflowId' must be defined.");
@@ -13410,11 +13147,11 @@ export class WorkflowServiceProxy {
         };
 
         return this.http.request("get", url_, options_).pipe(_observableMergeMap((response_ : any) => {
-            return this.processTerminationConsultantSalesGet(response_);
+            return this.processTerminationConsultantSalesGET(response_);
         })).pipe(_observableCatch((response_: any) => {
             if (response_ instanceof HttpResponseBase) {
                 try {
-                    return this.processTerminationConsultantSalesGet(response_ as any);
+                    return this.processTerminationConsultantSalesGET(response_ as any);
                 } catch (e) {
                     return _observableThrow(e) as any as Observable<ConsultantTerminationSalesDataQueryDto>;
                 }
@@ -13423,7 +13160,7 @@ export class WorkflowServiceProxy {
         }));
     }
 
-    protected processTerminationConsultantSalesGet(response: HttpResponseBase): Observable<ConsultantTerminationSalesDataQueryDto> {
+    protected processTerminationConsultantSalesGET(response: HttpResponseBase): Observable<ConsultantTerminationSalesDataQueryDto> {
         const status = response.status;
         const responseBlob =
             response instanceof HttpResponse ? response.body :
@@ -13446,11 +13183,11 @@ export class WorkflowServiceProxy {
     }
 
     /**
-     * @param consultantId (optional)
-     * @param body (optional)
+     * @param consultantId (optional) 
+     * @param body (optional) 
      * @return Success
      */
-    terminationConsultantSalesPut(workflowId: string, consultantId?: number | undefined, body?: ConsultantTerminationSalesDataCommandDto | undefined): Observable<void> {
+    terminationConsultantSalesPUT(workflowId: string, consultantId?: number | undefined, body?: ConsultantTerminationSalesDataCommandDto | undefined): Observable<void> {
         let url_ = this.baseUrl + "/api/Workflow/{workflowId}/termination-consultant-sales?";
         if (workflowId === undefined || workflowId === null)
             throw new Error("The parameter 'workflowId' must be defined.");
@@ -13473,11 +13210,11 @@ export class WorkflowServiceProxy {
         };
 
         return this.http.request("put", url_, options_).pipe(_observableMergeMap((response_ : any) => {
-            return this.processTerminationConsultantSalesPut(response_);
+            return this.processTerminationConsultantSalesPUT(response_);
         })).pipe(_observableCatch((response_: any) => {
             if (response_ instanceof HttpResponseBase) {
                 try {
-                    return this.processTerminationConsultantSalesPut(response_ as any);
+                    return this.processTerminationConsultantSalesPUT(response_ as any);
                 } catch (e) {
                     return _observableThrow(e) as any as Observable<void>;
                 }
@@ -13486,7 +13223,7 @@ export class WorkflowServiceProxy {
         }));
     }
 
-    protected processTerminationConsultantSalesPut(response: HttpResponseBase): Observable<void> {
+    protected processTerminationConsultantSalesPUT(response: HttpResponseBase): Observable<void> {
         const status = response.status;
         const responseBlob =
             response instanceof HttpResponse ? response.body :
@@ -13506,8 +13243,8 @@ export class WorkflowServiceProxy {
     }
 
     /**
-     * @param consultantId (optional)
-     * @param body (optional)
+     * @param consultantId (optional) 
+     * @param body (optional) 
      * @return Success
      */
     terminationConsultantSalesComplete(workflowId: string, consultantId?: number | undefined, body?: ConsultantTerminationSalesDataCommandDto | undefined): Observable<void> {
@@ -13566,7 +13303,7 @@ export class WorkflowServiceProxy {
     }
 
     /**
-     * @param consultantId (optional)
+     * @param consultantId (optional) 
      * @return Success
      */
     terminationConsultantSalesReopen(workflowId: string, consultantId?: number | undefined): Observable<void> {
@@ -13621,10 +13358,10 @@ export class WorkflowServiceProxy {
     }
 
     /**
-     * @param consultantId (optional)
+     * @param consultantId (optional) 
      * @return Success
      */
-    terminationConsultantContractGet(workflowId: string, consultantId?: number | undefined): Observable<ConsultantTerminationContractDataQueryDto> {
+    terminationConsultantContractGET(workflowId: string, consultantId?: number | undefined): Observable<ConsultantTerminationContractDataQueryDto> {
         let url_ = this.baseUrl + "/api/Workflow/{workflowId}/termination-consultant-contract?";
         if (workflowId === undefined || workflowId === null)
             throw new Error("The parameter 'workflowId' must be defined.");
@@ -13644,11 +13381,11 @@ export class WorkflowServiceProxy {
         };
 
         return this.http.request("get", url_, options_).pipe(_observableMergeMap((response_ : any) => {
-            return this.processTerminationConsultantContractGet(response_);
+            return this.processTerminationConsultantContractGET(response_);
         })).pipe(_observableCatch((response_: any) => {
             if (response_ instanceof HttpResponseBase) {
                 try {
-                    return this.processTerminationConsultantContractGet(response_ as any);
+                    return this.processTerminationConsultantContractGET(response_ as any);
                 } catch (e) {
                     return _observableThrow(e) as any as Observable<ConsultantTerminationContractDataQueryDto>;
                 }
@@ -13657,7 +13394,7 @@ export class WorkflowServiceProxy {
         }));
     }
 
-    protected processTerminationConsultantContractGet(response: HttpResponseBase): Observable<ConsultantTerminationContractDataQueryDto> {
+    protected processTerminationConsultantContractGET(response: HttpResponseBase): Observable<ConsultantTerminationContractDataQueryDto> {
         const status = response.status;
         const responseBlob =
             response instanceof HttpResponse ? response.body :
@@ -13680,10 +13417,10 @@ export class WorkflowServiceProxy {
     }
 
     /**
-     * @param body (optional)
+     * @param body (optional) 
      * @return Success
      */
-    terminationConsultantContractPut(workflowId: string, body?: ConsultantTerminationContractDataCommandDto | undefined): Observable<void> {
+    terminationConsultantContractPUT(workflowId: string, body?: ConsultantTerminationContractDataCommandDto | undefined): Observable<void> {
         let url_ = this.baseUrl + "/api/Workflow/{workflowId}/termination-consultant-contract";
         if (workflowId === undefined || workflowId === null)
             throw new Error("The parameter 'workflowId' must be defined.");
@@ -13702,11 +13439,11 @@ export class WorkflowServiceProxy {
         };
 
         return this.http.request("put", url_, options_).pipe(_observableMergeMap((response_ : any) => {
-            return this.processTerminationConsultantContractPut(response_);
+            return this.processTerminationConsultantContractPUT(response_);
         })).pipe(_observableCatch((response_: any) => {
             if (response_ instanceof HttpResponseBase) {
                 try {
-                    return this.processTerminationConsultantContractPut(response_ as any);
+                    return this.processTerminationConsultantContractPUT(response_ as any);
                 } catch (e) {
                     return _observableThrow(e) as any as Observable<void>;
                 }
@@ -13715,7 +13452,7 @@ export class WorkflowServiceProxy {
         }));
     }
 
-    protected processTerminationConsultantContractPut(response: HttpResponseBase): Observable<void> {
+    protected processTerminationConsultantContractPUT(response: HttpResponseBase): Observable<void> {
         const status = response.status;
         const responseBlob =
             response instanceof HttpResponse ? response.body :
@@ -13735,7 +13472,7 @@ export class WorkflowServiceProxy {
     }
 
     /**
-     * @param consultantId (optional)
+     * @param consultantId (optional) 
      * @return Success
      */
     terminationConsultantContractStartEdit(workflowId: string, consultantId?: number | undefined): Observable<void> {
@@ -13790,7 +13527,7 @@ export class WorkflowServiceProxy {
     }
 
     /**
-     * @param body (optional)
+     * @param body (optional) 
      * @return Success
      */
     terminationConsultantContractComplete(workflowId: string, body?: ConsultantTerminationContractDataCommandDto | undefined): Observable<void> {
@@ -13845,10 +13582,10 @@ export class WorkflowServiceProxy {
     }
 
     /**
-     * @param consultantId (optional)
+     * @param consultantId (optional) 
      * @return Success
      */
-    terminationConsultantSourcingGet(workflowId: string, consultantId?: number | undefined): Observable<ConsultantTerminationSourcingDataQueryDto> {
+    terminationConsultantSourcingGET(workflowId: string, consultantId?: number | undefined): Observable<ConsultantTerminationSourcingDataQueryDto> {
         let url_ = this.baseUrl + "/api/Workflow/{workflowId}/termination-consultant-sourcing?";
         if (workflowId === undefined || workflowId === null)
             throw new Error("The parameter 'workflowId' must be defined.");
@@ -13868,11 +13605,11 @@ export class WorkflowServiceProxy {
         };
 
         return this.http.request("get", url_, options_).pipe(_observableMergeMap((response_ : any) => {
-            return this.processTerminationConsultantSourcingGet(response_);
+            return this.processTerminationConsultantSourcingGET(response_);
         })).pipe(_observableCatch((response_: any) => {
             if (response_ instanceof HttpResponseBase) {
                 try {
-                    return this.processTerminationConsultantSourcingGet(response_ as any);
+                    return this.processTerminationConsultantSourcingGET(response_ as any);
                 } catch (e) {
                     return _observableThrow(e) as any as Observable<ConsultantTerminationSourcingDataQueryDto>;
                 }
@@ -13881,7 +13618,7 @@ export class WorkflowServiceProxy {
         }));
     }
 
-    protected processTerminationConsultantSourcingGet(response: HttpResponseBase): Observable<ConsultantTerminationSourcingDataQueryDto> {
+    protected processTerminationConsultantSourcingGET(response: HttpResponseBase): Observable<ConsultantTerminationSourcingDataQueryDto> {
         const status = response.status;
         const responseBlob =
             response instanceof HttpResponse ? response.body :
@@ -13904,10 +13641,10 @@ export class WorkflowServiceProxy {
     }
 
     /**
-     * @param body (optional)
+     * @param body (optional) 
      * @return Success
      */
-    terminationConsultantSourcingPut(workflowId: string, body?: ConsultantTerminationSourcingDataCommandDto | undefined): Observable<void> {
+    terminationConsultantSourcingPUT(workflowId: string, body?: ConsultantTerminationSourcingDataCommandDto | undefined): Observable<void> {
         let url_ = this.baseUrl + "/api/Workflow/{workflowId}/termination-consultant-sourcing";
         if (workflowId === undefined || workflowId === null)
             throw new Error("The parameter 'workflowId' must be defined.");
@@ -13926,11 +13663,11 @@ export class WorkflowServiceProxy {
         };
 
         return this.http.request("put", url_, options_).pipe(_observableMergeMap((response_ : any) => {
-            return this.processTerminationConsultantSourcingPut(response_);
+            return this.processTerminationConsultantSourcingPUT(response_);
         })).pipe(_observableCatch((response_: any) => {
             if (response_ instanceof HttpResponseBase) {
                 try {
-                    return this.processTerminationConsultantSourcingPut(response_ as any);
+                    return this.processTerminationConsultantSourcingPUT(response_ as any);
                 } catch (e) {
                     return _observableThrow(e) as any as Observable<void>;
                 }
@@ -13939,7 +13676,7 @@ export class WorkflowServiceProxy {
         }));
     }
 
-    protected processTerminationConsultantSourcingPut(response: HttpResponseBase): Observable<void> {
+    protected processTerminationConsultantSourcingPUT(response: HttpResponseBase): Observable<void> {
         const status = response.status;
         const responseBlob =
             response instanceof HttpResponse ? response.body :
@@ -13959,7 +13696,7 @@ export class WorkflowServiceProxy {
     }
 
     /**
-     * @param consultantId (optional)
+     * @param consultantId (optional) 
      * @return Success
      */
     terminationConsultantSourcingStartEdit(workflowId: string, consultantId?: number | undefined): Observable<void> {
@@ -14014,7 +13751,7 @@ export class WorkflowServiceProxy {
     }
 
     /**
-     * @param body (optional)
+     * @param body (optional) 
      * @return Success
      */
     terminationConsultantSourcingComplete(workflowId: string, body?: ConsultantTerminationSourcingDataCommandDto | undefined): Observable<void> {
@@ -14069,8 +13806,8 @@ export class WorkflowServiceProxy {
     }
 
     /**
-     * @param consultantTerminationId (optional)
-     * @param newResponsibleEmployeeId (optional)
+     * @param consultantTerminationId (optional) 
+     * @param newResponsibleEmployeeId (optional) 
      * @return Success
      */
     terminationConsultantStepResponsible(stepType: StepType, workflowId: string, consultantTerminationId?: string | undefined, newResponsibleEmployeeId?: number | undefined): Observable<void> {
@@ -14132,7 +13869,7 @@ export class WorkflowServiceProxy {
     }
 
     /**
-     * @param consultantId (optional)
+     * @param consultantId (optional) 
      * @return Success
      */
     terminationConsultantDelete(workflowId: string, consultantId?: number | undefined): Observable<void> {
@@ -14189,7 +13926,7 @@ export class WorkflowServiceProxy {
     /**
      * @return Success
      */
-    delete(workflowId: string): Observable<void> {
+    delete3(workflowId: string): Observable<void> {
         let url_ = this.baseUrl + "/api/Workflow/{workflowId}/delete";
         if (workflowId === undefined || workflowId === null)
             throw new Error("The parameter 'workflowId' must be defined.");
@@ -14204,11 +13941,11 @@ export class WorkflowServiceProxy {
         };
 
         return this.http.request("delete", url_, options_).pipe(_observableMergeMap((response_ : any) => {
-            return this.processDelete(response_);
+            return this.processDelete3(response_);
         })).pipe(_observableCatch((response_: any) => {
             if (response_ instanceof HttpResponseBase) {
                 try {
-                    return this.processDelete(response_ as any);
+                    return this.processDelete3(response_ as any);
                 } catch (e) {
                     return _observableThrow(e) as any as Observable<void>;
                 }
@@ -14217,7 +13954,7 @@ export class WorkflowServiceProxy {
         }));
     }
 
-    protected processDelete(response: HttpResponseBase): Observable<void> {
+    protected processDelete3(response: HttpResponseBase): Observable<void> {
         const status = response.status;
         const responseBlob =
             response instanceof HttpResponse ? response.body :
@@ -14299,7 +14036,75 @@ export class WorkflowIntegrationServiceProxy {
     }
 
     /**
-     * @param body (optional)
+     * @param isInternalContract (optional) 
+     * @param pm3ConsultantId (optional) 
+     * @return Success
+     */
+    workflowIntegration(periodId: string, isInternalContract?: boolean | undefined, pm3ConsultantId?: number | undefined): Observable<WorkflowPeriodForLegacyContractDto> {
+        let url_ = this.baseUrl + "/api/WorkflowIntegration/{periodId}?";
+        if (periodId === undefined || periodId === null)
+            throw new Error("The parameter 'periodId' must be defined.");
+        url_ = url_.replace("{periodId}", encodeURIComponent("" + periodId));
+        if (isInternalContract === null)
+            throw new Error("The parameter 'isInternalContract' cannot be null.");
+        else if (isInternalContract !== undefined)
+            url_ += "isInternalContract=" + encodeURIComponent("" + isInternalContract) + "&";
+        if (pm3ConsultantId === null)
+            throw new Error("The parameter 'pm3ConsultantId' cannot be null.");
+        else if (pm3ConsultantId !== undefined)
+            url_ += "pm3ConsultantId=" + encodeURIComponent("" + pm3ConsultantId) + "&";
+        url_ = url_.replace(/[?&]$/, "");
+
+        let options_ : any = {
+            observe: "response",
+            responseType: "blob",
+            headers: new HttpHeaders({
+                "Accept": "text/plain"
+            })
+        };
+
+        return this.http.request("get", url_, options_).pipe(_observableMergeMap((response_ : any) => {
+            return this.processWorkflowIntegration(response_);
+        })).pipe(_observableCatch((response_: any) => {
+            if (response_ instanceof HttpResponseBase) {
+                try {
+                    return this.processWorkflowIntegration(response_ as any);
+                } catch (e) {
+                    return _observableThrow(e) as any as Observable<WorkflowPeriodForLegacyContractDto>;
+                }
+            } else
+                return _observableThrow(response_) as any as Observable<WorkflowPeriodForLegacyContractDto>;
+        }));
+    }
+
+    protected processWorkflowIntegration(response: HttpResponseBase): Observable<WorkflowPeriodForLegacyContractDto> {
+        const status = response.status;
+        const responseBlob =
+            response instanceof HttpResponse ? response.body :
+            (response as any).error instanceof Blob ? (response as any).error : undefined;
+
+        let _headers: any = {}; if (response.headers) { for (let key of response.headers.keys()) { _headers[key] = response.headers.get(key); }}
+        if (status === 200) {
+            return blobToText(responseBlob).pipe(_observableMergeMap(_responseText => {
+            let result200: any = null;
+            let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
+            result200 = WorkflowPeriodForLegacyContractDto.fromJS(resultData200);
+            return _observableOf(result200);
+            }));
+        } else if (status === 401) {
+            return blobToText(responseBlob).pipe(_observableMergeMap(_responseText => {
+            return throwException("Unauthorized", status, _responseText, _headers);
+            }));
+        } else if (status !== 200 && status !== 204) {
+            return blobToText(responseBlob).pipe(_observableMergeMap(_responseText => {
+            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+            }));
+        }
+        return _observableOf<WorkflowPeriodForLegacyContractDto>(null as any);
+    }
+
+    /**
+     * @param body (optional) 
      * @return Success
      */
     workflowPeriodLegalContractStatus(body?: WorkflowPeriodLegalContractStatusUpdateInputDto | undefined): Observable<void> {
@@ -14355,11 +14160,11 @@ export class WorkflowIntegrationServiceProxy {
     }
 
     /**
-     * @param tenantId (optional)
-     * @param fromDate (optional)
-     * @param toDate (optional)
-     * @param includeCommissionFromOtherTenants (optional)
-     * @param body (optional)
+     * @param tenantId (optional) 
+     * @param fromDate (optional) 
+     * @param toDate (optional) 
+     * @param includeCommissionFromOtherTenants (optional) 
+     * @param body (optional) 
      * @return Success
      */
     workflowPeriodInfosForIncomeReport(tenantId?: number | undefined, fromDate?: moment.Moment | undefined, toDate?: moment.Moment | undefined, includeCommissionFromOtherTenants?: boolean | undefined, body?: InputWorkflowPeriodInfoForIncomeReportDto[] | undefined): Observable<OutputWorkflowPeriodInfoForIncomeReportDto> {
@@ -14435,7 +14240,7 @@ export class WorkflowIntegrationServiceProxy {
     }
 
     /**
-     * @param body (optional)
+     * @param body (optional) 
      * @return Success
      */
     getWorkflowPeriodInfoForEvaluations(body?: number[] | undefined): Observable<WorkflowPeriodInfoForEvaluationDto[]> {
@@ -14502,9 +14307,9 @@ export class WorkflowIntegrationServiceProxy {
     }
 
     /**
-     * @param tenantIdForAllLegacyClientIds (optional)
-     * @param includeExpiredPeriods (optional)
-     * @param body (optional)
+     * @param tenantIdForAllLegacyClientIds (optional) 
+     * @param includeExpiredPeriods (optional) 
+     * @param body (optional) 
      * @return Success
      */
     getConsultantPeriodInfoBasicsForLegacyClient(tenantIdForAllLegacyClientIds?: number | undefined, includeExpiredPeriods?: boolean | undefined, body?: number[] | undefined): Observable<ConsultantPeriodMainDataBasicDto[]> {
@@ -14825,11 +14630,11 @@ export interface IAgreementDetailsAttachmentDto {
 export class AgreementDetailsDto implements IAgreementDetailsDto {
     agreementId?: number;
     creationMode?: AgreementCreationMode;
-    parentAgreementTemplateId?: number | undefined;
-    parentAgreementTemplateVersion?: number | undefined;
-    parentAgreementTemplateName?: string | undefined;
-    duplicationSourceAgreementId?: number | undefined;
-    duplicationSourceAgreementName?: string | undefined;
+    sourceAgreementTemplateId?: number | undefined;
+    sourceAgreementTemplateVersion?: number | undefined;
+    sourceAgreementTemplateName?: string | undefined;
+    sourceAgreementId?: number | undefined;
+    sourceAgreementName?: string | undefined;
     agreementType?: AgreementType;
     recipientTypeId?: number;
     recipientId?: number;
@@ -14852,8 +14657,6 @@ export class AgreementDetailsDto implements IAgreementDetailsDto {
     lastUpdatedBy?: EmployeeDto;
     lastUpdateDateUtc?: moment.Moment;
     outdatedMergeFieldsInUse?: boolean;
-    agreementStatus?: EnvelopeStatus;
-    validity?: AgreementValidityState;
 
     constructor(data?: IAgreementDetailsDto) {
         if (data) {
@@ -14868,11 +14671,11 @@ export class AgreementDetailsDto implements IAgreementDetailsDto {
         if (_data) {
             this.agreementId = _data["agreementId"];
             this.creationMode = _data["creationMode"];
-            this.parentAgreementTemplateId = _data["parentAgreementTemplateId"];
-            this.parentAgreementTemplateVersion = _data["parentAgreementTemplateVersion"];
-            this.parentAgreementTemplateName = _data["parentAgreementTemplateName"];
-            this.duplicationSourceAgreementId = _data["duplicationSourceAgreementId"];
-            this.duplicationSourceAgreementName = _data["duplicationSourceAgreementName"];
+            this.sourceAgreementTemplateId = _data["sourceAgreementTemplateId"];
+            this.sourceAgreementTemplateVersion = _data["sourceAgreementTemplateVersion"];
+            this.sourceAgreementTemplateName = _data["sourceAgreementTemplateName"];
+            this.sourceAgreementId = _data["sourceAgreementId"];
+            this.sourceAgreementName = _data["sourceAgreementName"];
             this.agreementType = _data["agreementType"];
             this.recipientTypeId = _data["recipientTypeId"];
             this.recipientId = _data["recipientId"];
@@ -14919,8 +14722,6 @@ export class AgreementDetailsDto implements IAgreementDetailsDto {
             this.lastUpdatedBy = _data["lastUpdatedBy"] ? EmployeeDto.fromJS(_data["lastUpdatedBy"]) : <any>undefined;
             this.lastUpdateDateUtc = _data["lastUpdateDateUtc"] ? moment(_data["lastUpdateDateUtc"].toString()) : <any>undefined;
             this.outdatedMergeFieldsInUse = _data["outdatedMergeFieldsInUse"];
-            this.agreementStatus = _data["agreementStatus"];
-            this.validity = _data["validity"];
         }
     }
 
@@ -14935,11 +14736,11 @@ export class AgreementDetailsDto implements IAgreementDetailsDto {
         data = typeof data === 'object' ? data : {};
         data["agreementId"] = this.agreementId;
         data["creationMode"] = this.creationMode;
-        data["parentAgreementTemplateId"] = this.parentAgreementTemplateId;
-        data["parentAgreementTemplateVersion"] = this.parentAgreementTemplateVersion;
-        data["parentAgreementTemplateName"] = this.parentAgreementTemplateName;
-        data["duplicationSourceAgreementId"] = this.duplicationSourceAgreementId;
-        data["duplicationSourceAgreementName"] = this.duplicationSourceAgreementName;
+        data["sourceAgreementTemplateId"] = this.sourceAgreementTemplateId;
+        data["sourceAgreementTemplateVersion"] = this.sourceAgreementTemplateVersion;
+        data["sourceAgreementTemplateName"] = this.sourceAgreementTemplateName;
+        data["sourceAgreementId"] = this.sourceAgreementId;
+        data["sourceAgreementName"] = this.sourceAgreementName;
         data["agreementType"] = this.agreementType;
         data["recipientTypeId"] = this.recipientTypeId;
         data["recipientId"] = this.recipientId;
@@ -14986,8 +14787,6 @@ export class AgreementDetailsDto implements IAgreementDetailsDto {
         data["lastUpdatedBy"] = this.lastUpdatedBy ? this.lastUpdatedBy.toJSON() : <any>undefined;
         data["lastUpdateDateUtc"] = this.lastUpdateDateUtc ? this.lastUpdateDateUtc.toISOString() : <any>undefined;
         data["outdatedMergeFieldsInUse"] = this.outdatedMergeFieldsInUse;
-        data["agreementStatus"] = this.agreementStatus;
-        data["validity"] = this.validity;
         return data;
     }
 }
@@ -14995,11 +14794,11 @@ export class AgreementDetailsDto implements IAgreementDetailsDto {
 export interface IAgreementDetailsDto {
     agreementId?: number;
     creationMode?: AgreementCreationMode;
-    parentAgreementTemplateId?: number | undefined;
-    parentAgreementTemplateVersion?: number | undefined;
-    parentAgreementTemplateName?: string | undefined;
-    duplicationSourceAgreementId?: number | undefined;
-    duplicationSourceAgreementName?: string | undefined;
+    sourceAgreementTemplateId?: number | undefined;
+    sourceAgreementTemplateVersion?: number | undefined;
+    sourceAgreementTemplateName?: string | undefined;
+    sourceAgreementId?: number | undefined;
+    sourceAgreementName?: string | undefined;
     agreementType?: AgreementType;
     recipientTypeId?: number;
     recipientId?: number;
@@ -15022,8 +14821,6 @@ export interface IAgreementDetailsDto {
     lastUpdatedBy?: EmployeeDto;
     lastUpdateDateUtc?: moment.Moment;
     outdatedMergeFieldsInUse?: boolean;
-    agreementStatus?: EnvelopeStatus;
-    validity?: AgreementValidityState;
 }
 
 export class AgreementDetailsSignerDto implements IAgreementDetailsSignerDto {
@@ -15147,22 +14944,9 @@ export enum AgreementLanguage {
 }
 
 export class AgreementListItemDto implements IAgreementListItemDto {
-    languageId?: AgreementLanguage;
     agreementId?: number;
-    agreementName?: string | undefined;
-    clientName?: string | undefined;
-    consultantName?: string | undefined;
-    companyName?: string | undefined;
-    actualRecipientName?: string | undefined;
-    legalEntityId?: number;
+    name?: string | undefined;
     agreementType?: AgreementType;
-    recipientTypeId?: number;
-    startDate?: moment.Moment;
-    endDate?: moment.Moment | undefined;
-    mode?: AgreementValidityState;
-    status?: EnvelopeStatus;
-    saleManager?: EmployeeDto;
-    contractManager?: EmployeeDto;
 
     constructor(data?: IAgreementListItemDto) {
         if (data) {
@@ -15175,22 +14959,9 @@ export class AgreementListItemDto implements IAgreementListItemDto {
 
     init(_data?: any) {
         if (_data) {
-            this.languageId = _data["languageId"];
             this.agreementId = _data["agreementId"];
-            this.agreementName = _data["agreementName"];
-            this.clientName = _data["clientName"];
-            this.consultantName = _data["consultantName"];
-            this.companyName = _data["companyName"];
-            this.actualRecipientName = _data["actualRecipientName"];
-            this.legalEntityId = _data["legalEntityId"];
+            this.name = _data["name"];
             this.agreementType = _data["agreementType"];
-            this.recipientTypeId = _data["recipientTypeId"];
-            this.startDate = _data["startDate"] ? moment(_data["startDate"].toString()) : <any>undefined;
-            this.endDate = _data["endDate"] ? moment(_data["endDate"].toString()) : <any>undefined;
-            this.mode = _data["mode"];
-            this.status = _data["status"];
-            this.saleManager = _data["saleManager"] ? EmployeeDto.fromJS(_data["saleManager"]) : <any>undefined;
-            this.contractManager = _data["contractManager"] ? EmployeeDto.fromJS(_data["contractManager"]) : <any>undefined;
         }
     }
 
@@ -15203,43 +14974,17 @@ export class AgreementListItemDto implements IAgreementListItemDto {
 
     toJSON(data?: any) {
         data = typeof data === 'object' ? data : {};
-        data["languageId"] = this.languageId;
         data["agreementId"] = this.agreementId;
-        data["agreementName"] = this.agreementName;
-        data["clientName"] = this.clientName;
-        data["consultantName"] = this.consultantName;
-        data["companyName"] = this.companyName;
-        data["actualRecipientName"] = this.actualRecipientName;
-        data["legalEntityId"] = this.legalEntityId;
+        data["name"] = this.name;
         data["agreementType"] = this.agreementType;
-        data["recipientTypeId"] = this.recipientTypeId;
-        data["startDate"] = this.startDate ? this.startDate.format('YYYY-MM-DD') : <any>undefined;
-        data["endDate"] = this.endDate ? this.endDate.format('YYYY-MM-DD') : <any>undefined;
-        data["mode"] = this.mode;
-        data["status"] = this.status;
-        data["saleManager"] = this.saleManager ? this.saleManager.toJSON() : <any>undefined;
-        data["contractManager"] = this.contractManager ? this.contractManager.toJSON() : <any>undefined;
         return data;
     }
 }
 
 export interface IAgreementListItemDto {
-    languageId?: AgreementLanguage;
     agreementId?: number;
-    agreementName?: string | undefined;
-    clientName?: string | undefined;
-    consultantName?: string | undefined;
-    companyName?: string | undefined;
-    actualRecipientName?: string | undefined;
-    legalEntityId?: number;
+    name?: string | undefined;
     agreementType?: AgreementType;
-    recipientTypeId?: number;
-    startDate?: moment.Moment;
-    endDate?: moment.Moment | undefined;
-    mode?: AgreementValidityState;
-    status?: EnvelopeStatus;
-    saleManager?: EmployeeDto;
-    contractManager?: EmployeeDto;
 }
 
 export class AgreementListItemDtoPaginatedList implements IAgreementListItemDtoPaginatedList {
@@ -15308,118 +15053,6 @@ export interface IAgreementListItemDtoPaginatedList {
     pageSize?: number;
     hasPreviousPage?: boolean;
     hasNextPage?: boolean;
-}
-
-export class AgreementLogQueryResultDto implements IAgreementLogQueryResultDto {
-    metadataLogs?: AgreementMetadataLogListItemDto[] | undefined;
-    signingStatuses?: EnvelopeEventListItemDto[] | undefined;
-
-    constructor(data?: IAgreementLogQueryResultDto) {
-        if (data) {
-            for (var property in data) {
-                if (data.hasOwnProperty(property))
-                    (<any>this)[property] = (<any>data)[property];
-            }
-        }
-    }
-
-    init(_data?: any) {
-        if (_data) {
-            if (Array.isArray(_data["metadataLogs"])) {
-                this.metadataLogs = [] as any;
-                for (let item of _data["metadataLogs"])
-                    this.metadataLogs!.push(AgreementMetadataLogListItemDto.fromJS(item));
-            }
-            if (Array.isArray(_data["signingStatuses"])) {
-                this.signingStatuses = [] as any;
-                for (let item of _data["signingStatuses"])
-                    this.signingStatuses!.push(EnvelopeEventListItemDto.fromJS(item));
-            }
-        }
-    }
-
-    static fromJS(data: any): AgreementLogQueryResultDto {
-        data = typeof data === 'object' ? data : {};
-        let result = new AgreementLogQueryResultDto();
-        result.init(data);
-        return result;
-    }
-
-    toJSON(data?: any) {
-        data = typeof data === 'object' ? data : {};
-        if (Array.isArray(this.metadataLogs)) {
-            data["metadataLogs"] = [];
-            for (let item of this.metadataLogs)
-                data["metadataLogs"].push(item.toJSON());
-        }
-        if (Array.isArray(this.signingStatuses)) {
-            data["signingStatuses"] = [];
-            for (let item of this.signingStatuses)
-                data["signingStatuses"].push(item.toJSON());
-        }
-        return data;
-    }
-}
-
-export interface IAgreementLogQueryResultDto {
-    metadataLogs?: AgreementMetadataLogListItemDto[] | undefined;
-    signingStatuses?: EnvelopeEventListItemDto[] | undefined;
-}
-
-export class AgreementMetadataLogListItemDto implements IAgreementMetadataLogListItemDto {
-    operationType?: LogOperationType;
-    employee?: EmployeeDto;
-    propertyName?: string | undefined;
-    oldValue?: string | undefined;
-    newValue?: string | undefined;
-    dateTime?: moment.Moment;
-
-    constructor(data?: IAgreementMetadataLogListItemDto) {
-        if (data) {
-            for (var property in data) {
-                if (data.hasOwnProperty(property))
-                    (<any>this)[property] = (<any>data)[property];
-            }
-        }
-    }
-
-    init(_data?: any) {
-        if (_data) {
-            this.operationType = _data["operationType"];
-            this.employee = _data["employee"] ? EmployeeDto.fromJS(_data["employee"]) : <any>undefined;
-            this.propertyName = _data["propertyName"];
-            this.oldValue = _data["oldValue"];
-            this.newValue = _data["newValue"];
-            this.dateTime = _data["dateTime"] ? moment(_data["dateTime"].toString()) : <any>undefined;
-        }
-    }
-
-    static fromJS(data: any): AgreementMetadataLogListItemDto {
-        data = typeof data === 'object' ? data : {};
-        let result = new AgreementMetadataLogListItemDto();
-        result.init(data);
-        return result;
-    }
-
-    toJSON(data?: any) {
-        data = typeof data === 'object' ? data : {};
-        data["operationType"] = this.operationType;
-        data["employee"] = this.employee ? this.employee.toJSON() : <any>undefined;
-        data["propertyName"] = this.propertyName;
-        data["oldValue"] = this.oldValue;
-        data["newValue"] = this.newValue;
-        data["dateTime"] = this.dateTime ? this.dateTime.toISOString() : <any>undefined;
-        return data;
-    }
-}
-
-export interface IAgreementMetadataLogListItemDto {
-    operationType?: LogOperationType;
-    employee?: EmployeeDto;
-    propertyName?: string | undefined;
-    oldValue?: string | undefined;
-    newValue?: string | undefined;
-    dateTime?: moment.Moment;
 }
 
 export class AgreementSignerDto implements IAgreementSignerDto {
@@ -15698,10 +15331,8 @@ export class AgreementTemplateDetailsDto implements IAgreementTemplateDetailsDto
     agreementTemplateId?: number;
     creationMode?: AgreementCreationMode;
     isEnabled?: boolean;
-    parentAgreementTemplateId?: number | undefined;
-    parentAgreementTemplateName?: string | undefined;
-    duplicationSourceAgreementTemplateId?: number | undefined;
-    duplicationSourceAgreementTemplateName?: string | undefined;
+    sourceAgreementTemplateId?: number | undefined;
+    sourceAgreementTemplateName?: string | undefined;
     agreementType?: AgreementType;
     recipientTypeId?: number;
     clientId?: number | undefined;
@@ -15742,10 +15373,8 @@ export class AgreementTemplateDetailsDto implements IAgreementTemplateDetailsDto
             this.agreementTemplateId = _data["agreementTemplateId"];
             this.creationMode = _data["creationMode"];
             this.isEnabled = _data["isEnabled"];
-            this.parentAgreementTemplateId = _data["parentAgreementTemplateId"];
-            this.parentAgreementTemplateName = _data["parentAgreementTemplateName"];
-            this.duplicationSourceAgreementTemplateId = _data["duplicationSourceAgreementTemplateId"];
-            this.duplicationSourceAgreementTemplateName = _data["duplicationSourceAgreementTemplateName"];
+            this.sourceAgreementTemplateId = _data["sourceAgreementTemplateId"];
+            this.sourceAgreementTemplateName = _data["sourceAgreementTemplateName"];
             this.agreementType = _data["agreementType"];
             this.recipientTypeId = _data["recipientTypeId"];
             this.clientId = _data["clientId"];
@@ -15810,10 +15439,8 @@ export class AgreementTemplateDetailsDto implements IAgreementTemplateDetailsDto
         data["agreementTemplateId"] = this.agreementTemplateId;
         data["creationMode"] = this.creationMode;
         data["isEnabled"] = this.isEnabled;
-        data["parentAgreementTemplateId"] = this.parentAgreementTemplateId;
-        data["parentAgreementTemplateName"] = this.parentAgreementTemplateName;
-        data["duplicationSourceAgreementTemplateId"] = this.duplicationSourceAgreementTemplateId;
-        data["duplicationSourceAgreementTemplateName"] = this.duplicationSourceAgreementTemplateName;
+        data["sourceAgreementTemplateId"] = this.sourceAgreementTemplateId;
+        data["sourceAgreementTemplateName"] = this.sourceAgreementTemplateName;
         data["agreementType"] = this.agreementType;
         data["recipientTypeId"] = this.recipientTypeId;
         data["clientId"] = this.clientId;
@@ -15871,10 +15498,8 @@ export interface IAgreementTemplateDetailsDto {
     agreementTemplateId?: number;
     creationMode?: AgreementCreationMode;
     isEnabled?: boolean;
-    parentAgreementTemplateId?: number | undefined;
-    parentAgreementTemplateName?: string | undefined;
-    duplicationSourceAgreementTemplateId?: number | undefined;
-    duplicationSourceAgreementTemplateName?: string | undefined;
+    sourceAgreementTemplateId?: number | undefined;
+    sourceAgreementTemplateName?: string | undefined;
     agreementType?: AgreementType;
     recipientTypeId?: number;
     clientId?: number | undefined;
@@ -16235,12 +15860,6 @@ export enum AgreementType {
     Frame = 1,
     ServiceOrder = 2,
     Other = 3,
-}
-
-export enum AgreementValidityState {
-    Active = 0,
-    ActiveOutdatedTemplate = 1,
-    Inactive = 2,
 }
 
 export class AvailableConsultantDto implements IAvailableConsultantDto {
@@ -16841,74 +16460,6 @@ export interface IClientEvaluationOutputDto {
     evaluationDate?: moment.Moment;
     evaluationFormName?: string | undefined;
     comment?: string | undefined;
-}
-
-export class ClientEvaluationOutputDtoPaginatedList implements IClientEvaluationOutputDtoPaginatedList {
-    items?: ClientEvaluationOutputDto[] | undefined;
-    pageIndex?: number;
-    readonly totalPages?: number;
-    totalCount?: number;
-    pageSize?: number;
-    readonly hasPreviousPage?: boolean;
-    readonly hasNextPage?: boolean;
-
-    constructor(data?: IClientEvaluationOutputDtoPaginatedList) {
-        if (data) {
-            for (var property in data) {
-                if (data.hasOwnProperty(property))
-                    (<any>this)[property] = (<any>data)[property];
-            }
-        }
-    }
-
-    init(_data?: any) {
-        if (_data) {
-            if (Array.isArray(_data["items"])) {
-                this.items = [] as any;
-                for (let item of _data["items"])
-                    this.items!.push(ClientEvaluationOutputDto.fromJS(item));
-            }
-            this.pageIndex = _data["pageIndex"];
-            (<any>this).totalPages = _data["totalPages"];
-            this.totalCount = _data["totalCount"];
-            this.pageSize = _data["pageSize"];
-            (<any>this).hasPreviousPage = _data["hasPreviousPage"];
-            (<any>this).hasNextPage = _data["hasNextPage"];
-        }
-    }
-
-    static fromJS(data: any): ClientEvaluationOutputDtoPaginatedList {
-        data = typeof data === 'object' ? data : {};
-        let result = new ClientEvaluationOutputDtoPaginatedList();
-        result.init(data);
-        return result;
-    }
-
-    toJSON(data?: any) {
-        data = typeof data === 'object' ? data : {};
-        if (Array.isArray(this.items)) {
-            data["items"] = [];
-            for (let item of this.items)
-                data["items"].push(item.toJSON());
-        }
-        data["pageIndex"] = this.pageIndex;
-        data["totalPages"] = this.totalPages;
-        data["totalCount"] = this.totalCount;
-        data["pageSize"] = this.pageSize;
-        data["hasPreviousPage"] = this.hasPreviousPage;
-        data["hasNextPage"] = this.hasNextPage;
-        return data;
-    }
-}
-
-export interface IClientEvaluationOutputDtoPaginatedList {
-    items?: ClientEvaluationOutputDto[] | undefined;
-    pageIndex?: number;
-    totalPages?: number;
-    totalCount?: number;
-    pageSize?: number;
-    hasPreviousPage?: boolean;
-    hasNextPage?: boolean;
 }
 
 export class ClientGanttRow implements IClientGanttRow {
@@ -19588,7 +19139,6 @@ export class ConsultantResultDto implements IConsultantResultDto {
     externalId?: string;
     city?: string | undefined;
     countryId?: number | undefined;
-    supplierId?: number | undefined;
 
     constructor(data?: IConsultantResultDto) {
         if (data) {
@@ -19609,7 +19159,6 @@ export class ConsultantResultDto implements IConsultantResultDto {
             this.externalId = _data["externalId"];
             this.city = _data["city"];
             this.countryId = _data["countryId"];
-            this.supplierId = _data["supplierId"];
         }
     }
 
@@ -19630,7 +19179,6 @@ export class ConsultantResultDto implements IConsultantResultDto {
         data["externalId"] = this.externalId;
         data["city"] = this.city;
         data["countryId"] = this.countryId;
-        data["supplierId"] = this.supplierId;
         return data;
     }
 }
@@ -19644,7 +19192,6 @@ export interface IConsultantResultDto {
     externalId?: string;
     city?: string | undefined;
     countryId?: number | undefined;
-    supplierId?: number | undefined;
 }
 
 export class ConsultantSalesDataDto implements IConsultantSalesDataDto {
@@ -20806,29 +20353,6 @@ export enum DocumentTypeEnum {
     Excel = 4,
 }
 
-export enum DocuSignEvent {
-    EnvelopeCompleted = 0,
-    EnvelopeCorrected = 1,
-    EnvelopeDeclined = 2,
-    EnvelopeDeleted = 3,
-    EnvelopeDelivered = 4,
-    EnvelopeDiscard = 5,
-    EnvelopePurge = 6,
-    EnvelopeResent = 7,
-    EnvelopeSent = 8,
-    EnvelopeVoided = 9,
-    RecipientAuthenticationFailed = 10,
-    RecipientAutoResponded = 11,
-    RecipientCompleted = 12,
-    RecipientDeclined = 13,
-    RecipientDelegate = 14,
-    RecipientDelivered = 15,
-    RecipientFinishLater = 16,
-    RecipientReassign = 17,
-    RecipientResent = 18,
-    RecipientSent = 19,
-}
-
 export class DomainEventBase implements IDomainEventBase {
     readonly id?: string;
     readonly dateOccurredUtc?: moment.Moment;
@@ -21165,76 +20689,6 @@ export class EnumEntityTypeDto implements IEnumEntityTypeDto {
 export interface IEnumEntityTypeDto {
     id?: number;
     name?: string | undefined;
-}
-
-export class EnvelopeEventListItemDto implements IEnvelopeEventListItemDto {
-    envelopeId?: number;
-    envelopeDocuSignEnvelopeId?: string;
-    docuSignEvent?: DocuSignEvent;
-    receivedDateUtc?: moment.Moment;
-    envelopeRecipientName?: string | undefined;
-    envelopeRecipientEmail?: string | undefined;
-
-    constructor(data?: IEnvelopeEventListItemDto) {
-        if (data) {
-            for (var property in data) {
-                if (data.hasOwnProperty(property))
-                    (<any>this)[property] = (<any>data)[property];
-            }
-        }
-    }
-
-    init(_data?: any) {
-        if (_data) {
-            this.envelopeId = _data["envelopeId"];
-            this.envelopeDocuSignEnvelopeId = _data["envelopeDocuSignEnvelopeId"];
-            this.docuSignEvent = _data["docuSignEvent"];
-            this.receivedDateUtc = _data["receivedDateUtc"] ? moment(_data["receivedDateUtc"].toString()) : <any>undefined;
-            this.envelopeRecipientName = _data["envelopeRecipientName"];
-            this.envelopeRecipientEmail = _data["envelopeRecipientEmail"];
-        }
-    }
-
-    static fromJS(data: any): EnvelopeEventListItemDto {
-        data = typeof data === 'object' ? data : {};
-        let result = new EnvelopeEventListItemDto();
-        result.init(data);
-        return result;
-    }
-
-    toJSON(data?: any) {
-        data = typeof data === 'object' ? data : {};
-        data["envelopeId"] = this.envelopeId;
-        data["envelopeDocuSignEnvelopeId"] = this.envelopeDocuSignEnvelopeId;
-        data["docuSignEvent"] = this.docuSignEvent;
-        data["receivedDateUtc"] = this.receivedDateUtc ? this.receivedDateUtc.toISOString() : <any>undefined;
-        data["envelopeRecipientName"] = this.envelopeRecipientName;
-        data["envelopeRecipientEmail"] = this.envelopeRecipientEmail;
-        return data;
-    }
-}
-
-export interface IEnvelopeEventListItemDto {
-    envelopeId?: number;
-    envelopeDocuSignEnvelopeId?: string;
-    docuSignEvent?: DocuSignEvent;
-    receivedDateUtc?: moment.Moment;
-    envelopeRecipientName?: string | undefined;
-    envelopeRecipientEmail?: string | undefined;
-}
-
-export enum EnvelopeStatus {
-    Created = 1,
-    Sent = 2,
-    Viewed = 3,
-    DeliveryFailure = 4,
-    Voided = 5,
-    Signed = 6,
-    Declined = 7,
-    WaitingForOthers = 8,
-    Completed = 9,
-    AboutToExpire = 10,
-    Expired = 11,
 }
 
 export class ExpectedWorkload implements IExpectedWorkload {
@@ -23453,9 +22907,9 @@ export interface ISaveAgreementCommandResult {
 
 export class SaveAgreementDto implements ISaveAgreementDto {
     creationMode?: AgreementCreationMode;
-    parentAgreementTemplateId?: number | undefined;
-    parentAgreementTemplateVersion?: number | undefined;
-    duplicationSourceAgreementId?: number | undefined;
+    sourceAgreementTemplateId?: number | undefined;
+    sourceAgreementTemplateVersion?: number | undefined;
+    sourceAgreementId?: number | undefined;
     agreementType?: AgreementType;
     recipientTypeId?: number;
     recipientId?: number;
@@ -23486,9 +22940,9 @@ export class SaveAgreementDto implements ISaveAgreementDto {
     init(_data?: any) {
         if (_data) {
             this.creationMode = _data["creationMode"];
-            this.parentAgreementTemplateId = _data["parentAgreementTemplateId"];
-            this.parentAgreementTemplateVersion = _data["parentAgreementTemplateVersion"];
-            this.duplicationSourceAgreementId = _data["duplicationSourceAgreementId"];
+            this.sourceAgreementTemplateId = _data["sourceAgreementTemplateId"];
+            this.sourceAgreementTemplateVersion = _data["sourceAgreementTemplateVersion"];
+            this.sourceAgreementId = _data["sourceAgreementId"];
             this.agreementType = _data["agreementType"];
             this.recipientTypeId = _data["recipientTypeId"];
             this.recipientId = _data["recipientId"];
@@ -23543,9 +22997,9 @@ export class SaveAgreementDto implements ISaveAgreementDto {
     toJSON(data?: any) {
         data = typeof data === 'object' ? data : {};
         data["creationMode"] = this.creationMode;
-        data["parentAgreementTemplateId"] = this.parentAgreementTemplateId;
-        data["parentAgreementTemplateVersion"] = this.parentAgreementTemplateVersion;
-        data["duplicationSourceAgreementId"] = this.duplicationSourceAgreementId;
+        data["sourceAgreementTemplateId"] = this.sourceAgreementTemplateId;
+        data["sourceAgreementTemplateVersion"] = this.sourceAgreementTemplateVersion;
+        data["sourceAgreementId"] = this.sourceAgreementId;
         data["agreementType"] = this.agreementType;
         data["recipientTypeId"] = this.recipientTypeId;
         data["recipientId"] = this.recipientId;
@@ -23593,9 +23047,9 @@ export class SaveAgreementDto implements ISaveAgreementDto {
 
 export interface ISaveAgreementDto {
     creationMode?: AgreementCreationMode;
-    parentAgreementTemplateId?: number | undefined;
-    parentAgreementTemplateVersion?: number | undefined;
-    duplicationSourceAgreementId?: number | undefined;
+    sourceAgreementTemplateId?: number | undefined;
+    sourceAgreementTemplateVersion?: number | undefined;
+    sourceAgreementId?: number | undefined;
     agreementType?: AgreementType;
     recipientTypeId?: number;
     recipientId?: number;
@@ -23654,8 +23108,7 @@ export interface ISaveAgreementTemplateCommandResult {
 export class SaveAgreementTemplateDto implements ISaveAgreementTemplateDto {
     isEnabled?: boolean;
     creationMode?: AgreementCreationMode;
-    parentAgreementTemplateId?: number | undefined;
-    duplicationSourceAgreementTemplateId?: number | undefined;
+    sourceAgreementTemplateId?: number | undefined;
     agreementType?: AgreementType;
     recipientTypeId?: number;
     clientId?: number | undefined;
@@ -23687,8 +23140,7 @@ export class SaveAgreementTemplateDto implements ISaveAgreementTemplateDto {
         if (_data) {
             this.isEnabled = _data["isEnabled"];
             this.creationMode = _data["creationMode"];
-            this.parentAgreementTemplateId = _data["parentAgreementTemplateId"];
-            this.duplicationSourceAgreementTemplateId = _data["duplicationSourceAgreementTemplateId"];
+            this.sourceAgreementTemplateId = _data["sourceAgreementTemplateId"];
             this.agreementType = _data["agreementType"];
             this.recipientTypeId = _data["recipientTypeId"];
             this.clientId = _data["clientId"];
@@ -23744,8 +23196,7 @@ export class SaveAgreementTemplateDto implements ISaveAgreementTemplateDto {
         data = typeof data === 'object' ? data : {};
         data["isEnabled"] = this.isEnabled;
         data["creationMode"] = this.creationMode;
-        data["parentAgreementTemplateId"] = this.parentAgreementTemplateId;
-        data["duplicationSourceAgreementTemplateId"] = this.duplicationSourceAgreementTemplateId;
+        data["sourceAgreementTemplateId"] = this.sourceAgreementTemplateId;
         data["agreementType"] = this.agreementType;
         data["recipientTypeId"] = this.recipientTypeId;
         data["clientId"] = this.clientId;
@@ -23794,8 +23245,7 @@ export class SaveAgreementTemplateDto implements ISaveAgreementTemplateDto {
 export interface ISaveAgreementTemplateDto {
     isEnabled?: boolean;
     creationMode?: AgreementCreationMode;
-    parentAgreementTemplateId?: number | undefined;
-    duplicationSourceAgreementTemplateId?: number | undefined;
+    sourceAgreementTemplateId?: number | undefined;
     agreementType?: AgreementType;
     recipientTypeId?: number;
     clientId?: number | undefined;
@@ -23813,110 +23263,6 @@ export interface ISaveAgreementTemplateDto {
     receiveAgreementsFromOtherParty?: boolean | undefined;
     attachments?: AgreementTemplateAttachmentDto[] | undefined;
     parentSelectedAttachmentIds?: number[] | undefined;
-}
-
-export class SendEnvelopeCommand implements ISendEnvelopeCommand {
-    agreementIds?: number[] | undefined;
-    singleEnvelope?: boolean;
-    createDraftOnly?: boolean;
-    signers?: SendEnvelopeSignerDto[] | undefined;
-
-    constructor(data?: ISendEnvelopeCommand) {
-        if (data) {
-            for (var property in data) {
-                if (data.hasOwnProperty(property))
-                    (<any>this)[property] = (<any>data)[property];
-            }
-        }
-    }
-
-    init(_data?: any) {
-        if (_data) {
-            if (Array.isArray(_data["agreementIds"])) {
-                this.agreementIds = [] as any;
-                for (let item of _data["agreementIds"])
-                    this.agreementIds!.push(item);
-            }
-            this.singleEnvelope = _data["singleEnvelope"];
-            this.createDraftOnly = _data["createDraftOnly"];
-            if (Array.isArray(_data["signers"])) {
-                this.signers = [] as any;
-                for (let item of _data["signers"])
-                    this.signers!.push(SendEnvelopeSignerDto.fromJS(item));
-            }
-        }
-    }
-
-    static fromJS(data: any): SendEnvelopeCommand {
-        data = typeof data === 'object' ? data : {};
-        let result = new SendEnvelopeCommand();
-        result.init(data);
-        return result;
-    }
-
-    toJSON(data?: any) {
-        data = typeof data === 'object' ? data : {};
-        if (Array.isArray(this.agreementIds)) {
-            data["agreementIds"] = [];
-            for (let item of this.agreementIds)
-                data["agreementIds"].push(item);
-        }
-        data["singleEnvelope"] = this.singleEnvelope;
-        data["createDraftOnly"] = this.createDraftOnly;
-        if (Array.isArray(this.signers)) {
-            data["signers"] = [];
-            for (let item of this.signers)
-                data["signers"].push(item.toJSON());
-        }
-        return data;
-    }
-}
-
-export interface ISendEnvelopeCommand {
-    agreementIds?: number[] | undefined;
-    singleEnvelope?: boolean;
-    createDraftOnly?: boolean;
-    signers?: SendEnvelopeSignerDto[] | undefined;
-}
-
-export class SendEnvelopeSignerDto implements ISendEnvelopeSignerDto {
-    agreementSignerId?: number;
-    signOrder?: number;
-
-    constructor(data?: ISendEnvelopeSignerDto) {
-        if (data) {
-            for (var property in data) {
-                if (data.hasOwnProperty(property))
-                    (<any>this)[property] = (<any>data)[property];
-            }
-        }
-    }
-
-    init(_data?: any) {
-        if (_data) {
-            this.agreementSignerId = _data["agreementSignerId"];
-            this.signOrder = _data["signOrder"];
-        }
-    }
-
-    static fromJS(data: any): SendEnvelopeSignerDto {
-        data = typeof data === 'object' ? data : {};
-        let result = new SendEnvelopeSignerDto();
-        result.init(data);
-        return result;
-    }
-
-    toJSON(data?: any) {
-        data = typeof data === 'object' ? data : {};
-        data["agreementSignerId"] = this.agreementSignerId;
-        data["signOrder"] = this.signOrder;
-        return data;
-    }
-}
-
-export interface ISendEnvelopeSignerDto {
-    agreementSignerId?: number;
-    signOrder?: number;
 }
 
 export class SendToDocuSignTestCommand implements ISendToDocuSignTestCommand {
@@ -24038,9 +23384,6 @@ export class SimpleAgreementListItemDto implements ISimpleAgreementListItemDto {
     agreementId?: number;
     name?: string | undefined;
     agreementType?: AgreementType;
-    validity?: AgreementValidityState;
-    startDate?: moment.Moment;
-    endDate?: moment.Moment;
 
     constructor(data?: ISimpleAgreementListItemDto) {
         if (data) {
@@ -24056,9 +23399,6 @@ export class SimpleAgreementListItemDto implements ISimpleAgreementListItemDto {
             this.agreementId = _data["agreementId"];
             this.name = _data["name"];
             this.agreementType = _data["agreementType"];
-            this.validity = _data["validity"];
-            this.startDate = _data["startDate"] ? moment(_data["startDate"].toString()) : <any>undefined;
-            this.endDate = _data["endDate"] ? moment(_data["endDate"].toString()) : <any>undefined;
         }
     }
 
@@ -24074,9 +23414,6 @@ export class SimpleAgreementListItemDto implements ISimpleAgreementListItemDto {
         data["agreementId"] = this.agreementId;
         data["name"] = this.name;
         data["agreementType"] = this.agreementType;
-        data["validity"] = this.validity;
-        data["startDate"] = this.startDate ? this.startDate.format('YYYY-MM-DD') : <any>undefined;
-        data["endDate"] = this.endDate ? this.endDate.format('YYYY-MM-DD') : <any>undefined;
         return data;
     }
 }
@@ -24085,9 +23422,6 @@ export interface ISimpleAgreementListItemDto {
     agreementId?: number;
     name?: string | undefined;
     agreementType?: AgreementType;
-    validity?: AgreementValidityState;
-    startDate?: moment.Moment;
-    endDate?: moment.Moment;
 }
 
 export class SimpleAgreementListItemDtoPaginatedList implements ISimpleAgreementListItemDtoPaginatedList {
@@ -24415,58 +23749,6 @@ export interface ISimpleRequestLocationDto {
     id?: number;
     country?: IdNameDto;
     city?: IdNameDto;
-}
-
-export class SingleEnvelopeRecipientPreviewDto implements ISingleEnvelopeRecipientPreviewDto {
-    agreementSignerId?: number;
-    name?: string | undefined;
-    email?: string | undefined;
-    roleId?: number;
-    signOrder?: number;
-
-    constructor(data?: ISingleEnvelopeRecipientPreviewDto) {
-        if (data) {
-            for (var property in data) {
-                if (data.hasOwnProperty(property))
-                    (<any>this)[property] = (<any>data)[property];
-            }
-        }
-    }
-
-    init(_data?: any) {
-        if (_data) {
-            this.agreementSignerId = _data["agreementSignerId"];
-            this.name = _data["name"];
-            this.email = _data["email"];
-            this.roleId = _data["roleId"];
-            this.signOrder = _data["signOrder"];
-        }
-    }
-
-    static fromJS(data: any): SingleEnvelopeRecipientPreviewDto {
-        data = typeof data === 'object' ? data : {};
-        let result = new SingleEnvelopeRecipientPreviewDto();
-        result.init(data);
-        return result;
-    }
-
-    toJSON(data?: any) {
-        data = typeof data === 'object' ? data : {};
-        data["agreementSignerId"] = this.agreementSignerId;
-        data["name"] = this.name;
-        data["email"] = this.email;
-        data["roleId"] = this.roleId;
-        data["signOrder"] = this.signOrder;
-        return data;
-    }
-}
-
-export interface ISingleEnvelopeRecipientPreviewDto {
-    agreementSignerId?: number;
-    name?: string | undefined;
-    email?: string | undefined;
-    roleId?: number;
-    signOrder?: number;
 }
 
 export class SpecialRateReportingUnit implements ISpecialRateReportingUnit {
@@ -25113,54 +24395,6 @@ export interface IUpdateClientSpecialRateDto {
     id?: number;
 }
 
-export class UpdateEnvelopeStatusCommand implements IUpdateEnvelopeStatusCommand {
-    docuSignEnvelopeId?: string;
-    event?: DocuSignEvent;
-    timestampUtc?: moment.Moment;
-    docuSignRecipientId?: string | undefined;
-
-    constructor(data?: IUpdateEnvelopeStatusCommand) {
-        if (data) {
-            for (var property in data) {
-                if (data.hasOwnProperty(property))
-                    (<any>this)[property] = (<any>data)[property];
-            }
-        }
-    }
-
-    init(_data?: any) {
-        if (_data) {
-            this.docuSignEnvelopeId = _data["docuSignEnvelopeId"];
-            this.event = _data["event"];
-            this.timestampUtc = _data["timestampUtc"] ? moment(_data["timestampUtc"].toString()) : <any>undefined;
-            this.docuSignRecipientId = _data["docuSignRecipientId"];
-        }
-    }
-
-    static fromJS(data: any): UpdateEnvelopeStatusCommand {
-        data = typeof data === 'object' ? data : {};
-        let result = new UpdateEnvelopeStatusCommand();
-        result.init(data);
-        return result;
-    }
-
-    toJSON(data?: any) {
-        data = typeof data === 'object' ? data : {};
-        data["docuSignEnvelopeId"] = this.docuSignEnvelopeId;
-        data["event"] = this.event;
-        data["timestampUtc"] = this.timestampUtc ? this.timestampUtc.toISOString() : <any>undefined;
-        data["docuSignRecipientId"] = this.docuSignRecipientId;
-        return data;
-    }
-}
-
-export interface IUpdateEnvelopeStatusCommand {
-    docuSignEnvelopeId?: string;
-    event?: DocuSignEvent;
-    timestampUtc?: moment.Moment;
-    docuSignRecipientId?: string | undefined;
-}
-
 export class WorkflowAlreadyExistsDto implements IWorkflowAlreadyExistsDto {
     existingWorkflowId?: string | undefined;
 
@@ -25199,11 +24433,8 @@ export interface IWorkflowAlreadyExistsDto {
 
 export class WorkflowDto implements IWorkflowDto {
     workflowId?: string;
-    workflowStatusId?: WorkflowStatus;
     directClientId?: number | undefined;
-    directClientName?: string | undefined;
-    endClientId?: number | undefined;
-    endClientName?: string | undefined;
+    clientName?: string | undefined;
     clientPeriods?: ClientPeriodDto[] | undefined;
     consultantNamesWithRequestUrls?: ConsultantNameWithRequestUrl[] | undefined;
 
@@ -25219,11 +24450,8 @@ export class WorkflowDto implements IWorkflowDto {
     init(_data?: any) {
         if (_data) {
             this.workflowId = _data["workflowId"];
-            this.workflowStatusId = _data["workflowStatusId"];
             this.directClientId = _data["directClientId"];
-            this.directClientName = _data["directClientName"];
-            this.endClientId = _data["endClientId"];
-            this.endClientName = _data["endClientName"];
+            this.clientName = _data["clientName"];
             if (Array.isArray(_data["clientPeriods"])) {
                 this.clientPeriods = [] as any;
                 for (let item of _data["clientPeriods"])
@@ -25247,11 +24475,8 @@ export class WorkflowDto implements IWorkflowDto {
     toJSON(data?: any) {
         data = typeof data === 'object' ? data : {};
         data["workflowId"] = this.workflowId;
-        data["workflowStatusId"] = this.workflowStatusId;
         data["directClientId"] = this.directClientId;
-        data["directClientName"] = this.directClientName;
-        data["endClientId"] = this.endClientId;
-        data["endClientName"] = this.endClientName;
+        data["clientName"] = this.clientName;
         if (Array.isArray(this.clientPeriods)) {
             data["clientPeriods"] = [];
             for (let item of this.clientPeriods)
@@ -25268,11 +24493,8 @@ export class WorkflowDto implements IWorkflowDto {
 
 export interface IWorkflowDto {
     workflowId?: string;
-    workflowStatusId?: WorkflowStatus;
     directClientId?: number | undefined;
-    directClientName?: string | undefined;
-    endClientId?: number | undefined;
-    endClientName?: string | undefined;
+    clientName?: string | undefined;
     clientPeriods?: ClientPeriodDto[] | undefined;
     consultantNamesWithRequestUrls?: ConsultantNameWithRequestUrl[] | undefined;
 }
@@ -25788,6 +25010,8 @@ export class WorkflowOverviewDto implements IWorkflowOverviewDto {
     incompleteWorkflowProcesses?: WorkflowProcessDto[] | undefined;
     clientGanttRows?: ClientGanttRow[] | undefined;
     consultantGanttRows?: ConsultantGanttRow[] | undefined;
+    workflowStatusWithEmployeeDto?: WorkflowStatusWithEmployeeDto;
+    mainOverviewStatusForSales?: MainOverviewStatus;
 
     constructor(data?: IWorkflowOverviewDto) {
         if (data) {
@@ -25815,6 +25039,8 @@ export class WorkflowOverviewDto implements IWorkflowOverviewDto {
                 for (let item of _data["consultantGanttRows"])
                     this.consultantGanttRows!.push(ConsultantGanttRow.fromJS(item));
             }
+            this.workflowStatusWithEmployeeDto = _data["workflowStatusWithEmployeeDto"] ? WorkflowStatusWithEmployeeDto.fromJS(_data["workflowStatusWithEmployeeDto"]) : <any>undefined;
+            this.mainOverviewStatusForSales = _data["mainOverviewStatusForSales"];
         }
     }
 
@@ -25842,6 +25068,8 @@ export class WorkflowOverviewDto implements IWorkflowOverviewDto {
             for (let item of this.consultantGanttRows)
                 data["consultantGanttRows"].push(item.toJSON());
         }
+        data["workflowStatusWithEmployeeDto"] = this.workflowStatusWithEmployeeDto ? this.workflowStatusWithEmployeeDto.toJSON() : <any>undefined;
+        data["mainOverviewStatusForSales"] = this.mainOverviewStatusForSales;
         return data;
     }
 }
@@ -25850,6 +25078,8 @@ export interface IWorkflowOverviewDto {
     incompleteWorkflowProcesses?: WorkflowProcessDto[] | undefined;
     clientGanttRows?: ClientGanttRow[] | undefined;
     consultantGanttRows?: ConsultantGanttRow[] | undefined;
+    workflowStatusWithEmployeeDto?: WorkflowStatusWithEmployeeDto;
+    mainOverviewStatusForSales?: MainOverviewStatus;
 }
 
 export class WorkflowPeriodForLegacyContractDto implements IWorkflowPeriodForLegacyContractDto {
@@ -26191,51 +25421,6 @@ export enum WorkflowStatus {
     Pending = 1,
     Active = 2,
     Finished = 3,
-    PendingDataMissing = 101,
-}
-
-export class WorkflowStatusDto implements IWorkflowStatusDto {
-    id?: WorkflowStatus;
-    disaplyName?: string | undefined;
-    parentId?: WorkflowStatus;
-
-    constructor(data?: IWorkflowStatusDto) {
-        if (data) {
-            for (var property in data) {
-                if (data.hasOwnProperty(property))
-                    (<any>this)[property] = (<any>data)[property];
-            }
-        }
-    }
-
-    init(_data?: any) {
-        if (_data) {
-            this.id = _data["id"];
-            this.disaplyName = _data["disaplyName"];
-            this.parentId = _data["parentId"];
-        }
-    }
-
-    static fromJS(data: any): WorkflowStatusDto {
-        data = typeof data === 'object' ? data : {};
-        let result = new WorkflowStatusDto();
-        result.init(data);
-        return result;
-    }
-
-    toJSON(data?: any) {
-        data = typeof data === 'object' ? data : {};
-        data["id"] = this.id;
-        data["disaplyName"] = this.disaplyName;
-        data["parentId"] = this.parentId;
-        return data;
-    }
-}
-
-export interface IWorkflowStatusDto {
-    id?: WorkflowStatus;
-    disaplyName?: string | undefined;
-    parentId?: WorkflowStatus;
 }
 
 export class WorkflowStatusWithEmployeeDto implements IWorkflowStatusWithEmployeeDto {

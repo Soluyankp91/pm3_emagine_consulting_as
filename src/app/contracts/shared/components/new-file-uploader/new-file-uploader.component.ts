@@ -9,7 +9,7 @@ import { ControlValueAccessor, NG_VALUE_ACCESSOR } from '@angular/forms';
 import { forkJoin, Subject, of } from 'rxjs';
 import { map, switchMap, startWith, scan, tap } from 'rxjs/operators';
 import {
-    ApiServiceProxy,
+    AgreementTemplateAttachmentServiceProxy,
     FileServiceProxy,
 } from 'src/shared/service-proxies/service-proxies';
 import { FileUpload, FileUploadItem } from './new-file-uploader.interface';
@@ -30,7 +30,7 @@ export class NewFileUploaderComponent
 {
     constructor(
         private fileServiceProxy: FileServiceProxy,
-        private apiServiceProxy: ApiServiceProxy
+        private apiServiceProxy: AgreementTemplateAttachmentServiceProxy
     ) {}
 
     @Input() inheritedFiles: FileUpload[] = [];
@@ -44,7 +44,7 @@ export class NewFileUploaderComponent
             }
             let filesObservablesArr = files.map((file) => {
                 return this.fileServiceProxy
-                    .temporaryPost({ data: file, fileName: file.name })
+                    .temporaryPOST({ data: file, fileName: file.name })
                     .pipe(
                         map((temporaryFileId) => ({
                             ...file,
@@ -145,7 +145,7 @@ export class NewFileUploaderComponent
 
     onFileDelete(file: FileUploadItem) {
         this.fileServiceProxy
-            .temporaryDelete(file.temporaryFileId as string)
+            .temporaryDELETE(file.temporaryFileId as string)
             .subscribe(() => {
                 this.deletedFiles.push(file.temporaryFileId as string);
                 this.files.splice(
