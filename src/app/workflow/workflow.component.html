@@ -155,6 +155,10 @@
                 <span class="advanced-filterd--btn-text u-ml--5">Advanced filters</span>
             </button>
         </div>
+        <div fxLayout="row" fxLayoutAlign="end start" fxLayoutGap="25px" class="u-w--100 u-mt--10">
+            <mat-slide-toggle class="green-slide-toggle" color="primary" labelPosition="before" (change)="getWorkflowList()" [(ngModel)]="includeDeleted">Show deleted</mat-slide-toggle>
+            <mat-slide-toggle class="green-slide-toggle" color="primary" labelPosition="before" (change)="getWorkflowList()" [(ngModel)]="includeTerminated">Show finished</mat-slide-toggle>
+        </div>
     </div>
     <div fxLayout="row" fxLayoutAlign="start center" class="workflow-list--filter-additional u-w--100 u-mb--20" *ngIf="isAdvancedFilters">
         <mat-form-field appearance="outline" class="filter-select u-mr--16" fxFlex="20%">
@@ -218,10 +222,6 @@
         </mat-form-field>
     </div>
     <div fxLayout="column" fxLayoutAlign="start center" class="workflow-list--content u-w--100">
-        <div fxLayout="row" fxLayoutAlign="end start" fxLayoutGap="25px" class="u-w--100">
-            <mat-slide-toggle class="green-slide-toggle" color="primary" labelPosition="before" (change)="getWorkflowList()" [(ngModel)]="includeDeleted">Show deleted</mat-slide-toggle>
-            <mat-slide-toggle class="green-slide-toggle" color="primary" labelPosition="before" (change)="getWorkflowList()" [(ngModel)]="includeTerminated">Show finished</mat-slide-toggle>
-        </div>
         <div fxLayout="column" class="u-w--100">
             <mat-table #table [dataSource]="workflowDataSource" class="workflow-list--table white-table u-w--100" matSort matSortStart="asc" (matSortChange)="sortChanged($event)">
                 <ng-container matColumnDef="flag">
