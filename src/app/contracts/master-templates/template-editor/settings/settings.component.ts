@@ -88,9 +88,6 @@ export class CreateMasterTemplateComponent implements OnInit, OnDestroy {
         this.masterTemplateOptions$ = this._getExistingTemplate$();
         this._subscribeOnDirtyStatus();
         this._subscribeOnCreationModeResolver();
-        this.masterTemplateFormGroup.valueChanges.subscribe((x) =>
-            console.log(x)
-        );
     }
 
     ngOnDestroy(): void {
@@ -106,28 +103,31 @@ export class CreateMasterTemplateComponent implements OnInit, OnDestroy {
                 ...this.masterTemplateFormGroup.value,
                 creationMode: creationMode,
             }
-        ) as SaveAgreementTemplateDto;
+        ) as any;
+        const uploadedFiles = this.masterTemplateFormGroup.uploadedFiles?.value
+            ? this.masterTemplateFormGroup.uploadedFiles?.value
+            : [];
+        const selectedInheritedFiles = this.masterTemplateFormGroup
+            .selectedInheritedFiles?.value
+            ? this.masterTemplateFormGroup.selectedInheritedFiles?.value
+            : [];
         switch (creationMode) {
             case AgreementCreationMode.FromScratch: {
-                agreementPostDto.attachments =
-                    this.masterTemplateFormGroup.uploadedFiles?.value.map(
-                        (attachment: any) => {
-                            return new AgreementTemplateAttachmentDto(
-                                attachment
-                            );
-                        }
-                    );
+                agreementPostDto.attachments = uploadedFiles.map(
+                    (attachment: any) => {
+                        return new AgreementTemplateAttachmentDto(attachment);
+                    }
+                );
                 break;
             }
             case AgreementCreationMode.Duplicated: {
                 agreementPostDto.attachments = [
-                    ...this.masterTemplateFormGroup.uploadedFiles?.value,
-                    ...this.masterTemplateFormGroup.selectedInheritedFiles
-                        ?.value,
+                    ...uploadedFiles,
+                    ...selectedInheritedFiles,
                 ].map((attachment: FileUpload) => {
                     return new AgreementTemplateAttachmentDto(attachment);
                 });
-                agreementPostDto.sourceAgreementTemplateId =
+                agreementPostDto.duplicationSourceAgreementTemplateId =
                     this.duplicateTemplateControl.value;
                 break;
             }
@@ -139,7 +139,7 @@ export class CreateMasterTemplateComponent implements OnInit, OnDestroy {
                 )
             )
             .pipe(takeUntil(this.unSubscribe$))
-            .subscribe((x) => {
+            .subscribe(() => {
                 this.navigateOnAction();
             });
     }

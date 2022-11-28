@@ -6,7 +6,6 @@ export function dirtyCheck<U>(source: Observable<U>) {
         const isDirty$ = combineLatest([source, valueChanges]).pipe(
             debounceTime(300),
             map(([a, b]) => {
-                console.log(a,b);
                 return isEqual(a, b) === false;
             }),
             shareReplay({ bufferSize: 1, refCount: true })

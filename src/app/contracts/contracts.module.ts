@@ -10,6 +10,7 @@ import { AgreementLanguagesFilterComponent } from './shared/components/grid-tabl
 import {
     AgreementTemplateServiceProxy,
     FileServiceProxy,
+    MergeFieldsServiceProxy,
 } from 'src/shared/service-proxies/service-proxies';
 import { EmployeesFilterComponent } from './shared/components/grid-table/master-templates/filters/employees-filter/employees-filter.component';
 import { AgreementTypesFilterComponent } from './shared/components/grid-table/master-templates/filters/agreement-types-filter/agreement-types-filter.component';
@@ -89,6 +90,7 @@ import { FileSelectorComponent } from './shared/components/file-selector/file-se
         AgreementTemplateServiceProxy,
         FileServiceProxy,
         AgreementTemplateServiceProxy,
+        MergeFieldsServiceProxy,
     ],
 })
 export class ContractsModule {

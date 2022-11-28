@@ -7,7 +7,6 @@ export class SingleAutoErrorStateMatcher implements ErrorStateMatcher {
         control: FormControl | null,
         form: FormGroupDirective | NgForm | null
     ): boolean {
-        // console.log(control?.touched, control?.invalid);
         return !!(control?.touched && control?.invalid);
     }
 }

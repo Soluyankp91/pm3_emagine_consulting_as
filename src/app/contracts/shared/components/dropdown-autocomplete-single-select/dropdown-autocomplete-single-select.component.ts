@@ -61,7 +61,6 @@ export class DropdownAutocompleteSingleSelectComponent
 
     private _subsribeOnInputControl() {
         this.inputControl.valueChanges.pipe().subscribe((input) => {
-            console.log(input);
             if (typeof input === 'object') {
                 this.inputEmitter.emit(input[this.labelKey]);
                 this.onChange(input[this.outputProperty]);

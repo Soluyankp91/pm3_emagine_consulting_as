@@ -69,8 +69,7 @@ export class AutoNameComponent
     private unSubscribe$ = new Subject();
 
     constructor(
-        private readonly mergeFieldsServiceProxy: MergeFieldsServiceProxy,
-        private readonly agreementNameTemplateServiceProxy: AgreementTemplateServiceProxy
+        private readonly mergeFieldsServiceProxy: MergeFieldsServiceProxy
     ) {}
 
     ngOnInit(): void {

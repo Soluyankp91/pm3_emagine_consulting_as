@@ -218,10 +218,6 @@ export class CreationComponent
         this._subscribeOnClientTemplateChanges();
         this._subscribeOnCreationModeResolver();
         this._subscribeOnStatusChanges();
-
-        this.clientTemplateFormGroup.valueChanges.subscribe((x) =>
-            console.log(x)
-        );
     }
     ngOnDestroy(): void {
         this.unSubscribe$.next();
@@ -237,40 +233,40 @@ export class CreationComponent
                 documentFileProvidedByClient: false,
             }
         ) as SaveAgreementTemplateDto;
+        const uploadedFiles = this.clientTemplateFormGroup.uploadedFiles?.value
+            ? this.clientTemplateFormGroup.uploadedFiles?.value
+            : [];
+        const selectedInheritedFiles = this.clientTemplateFormGroup
+            .selectedInheritedFiles?.value
+            ? this.clientTemplateFormGroup.selectedInheritedFiles?.value
+            : [];
         switch (creationMode) {
             case AgreementCreationMode.FromScratch: {
-                agreementPostDto.attachments =
-                    this.clientTemplateFormGroup.uploadedFiles?.value.uploadedFiles.map(
-                        (attachment: any) => {
-                            return new AgreementTemplateAttachmentDto(
-                                attachment
-                            );
-                        }
-                    );
+                agreementPostDto.attachments = uploadedFiles.map(
+                    (attachment: any) => {
+                        return new AgreementTemplateAttachmentDto(attachment);
+                    }
+                );
                 break;
             }
             case AgreementCreationMode.InheritedFromParent: {
                 (agreementPostDto as any).parentAgreementTemplateId =
                     this.parentMasterTemplateControl.value;
-                agreementPostDto.attachments =
-                    this.clientTemplateFormGroup.uploadedFiles?.value.map(
-                        (attachment: any) => {
-                            return new AgreementTemplateAttachmentDto(
-                                attachment
-                            );
-                        }
-                    );
+                agreementPostDto.attachments = uploadedFiles.map(
+                    (attachment: any) => {
+                        return new AgreementTemplateAttachmentDto(attachment);
+                    }
+                );
                 agreementPostDto.parentSelectedAttachmentIds =
-                    this.clientTemplateFormGroup.selectedInheritedFiles?.value.map(
+                    selectedInheritedFiles.map(
                         (file: any) => file.agreementTemplateAttachmentId
                     );
                 break;
             }
             case AgreementCreationMode.Duplicated: {
                 agreementPostDto.attachments = [
-                    ...this.clientTemplateFormGroup.uploadedFiles?.value,
-                    ...this.clientTemplateFormGroup.selectedInheritedFiles
-                        ?.value,
+                    ...uploadedFiles,
+                    ...selectedInheritedFiles?.value,
                 ].map((attachment: FileUpload) => {
                     return new AgreementTemplateAttachmentDto(attachment);
                 });

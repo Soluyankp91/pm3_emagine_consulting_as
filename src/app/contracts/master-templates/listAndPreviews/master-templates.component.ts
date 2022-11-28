@@ -37,7 +37,6 @@ export class MasterTemplatesComponent implements OnInit {
     private _initTable$() {
         this.table$ = this.dataSource$.pipe(
             map((data) => {
-                console.log(data);
                 const tableConfig: ITableConfig = {
                     pageSize: data.pageSize,
                     pageIndex: data.pageIndex - 1,
