@@ -589,6 +589,53 @@ export class AdminServiceProxy {
     /**
      * @return Success
      */
+    updateWorkflowsStatusesWithEmployee(): Observable<void> {
+        let url_ = this.baseUrl + "/api/Admin/workflow-status-service/update-workflows-statuses-with-employee";
+        url_ = url_.replace(/[?&]$/, "");
+
+        let options_ : any = {
+            observe: "response",
+            responseType: "blob",
+            headers: new HttpHeaders({
+            })
+        };
+
+        return this.http.request("post", url_, options_).pipe(_observableMergeMap((response_ : any) => {
+            return this.processUpdateWorkflowsStatusesWithEmployee(response_);
+        })).pipe(_observableCatch((response_: any) => {
+            if (response_ instanceof HttpResponseBase) {
+                try {
+                    return this.processUpdateWorkflowsStatusesWithEmployee(response_ as any);
+                } catch (e) {
+                    return _observableThrow(e) as any as Observable<void>;
+                }
+            } else
+                return _observableThrow(response_) as any as Observable<void>;
+        }));
+    }
+
+    protected processUpdateWorkflowsStatusesWithEmployee(response: HttpResponseBase): Observable<void> {
+        const status = response.status;
+        const responseBlob =
+            response instanceof HttpResponse ? response.body :
+            (response as any).error instanceof Blob ? (response as any).error : undefined;
+
+        let _headers: any = {}; if (response.headers) { for (let key of response.headers.keys()) { _headers[key] = response.headers.get(key); }}
+        if (status === 200) {
+            return blobToText(responseBlob).pipe(_observableMergeMap(_responseText => {
+            return _observableOf<void>(null as any);
+            }));
+        } else if (status !== 200 && status !== 204) {
+            return blobToText(responseBlob).pipe(_observableMergeMap(_responseText => {
+            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+            }));
+        }
+        return _observableOf<void>(null as any);
+    }
+
+    /**
+     * @return Success
+     */
     workflowStepEmployeeAssignments(): Observable<TenantConfigDto[]> {
         let url_ = this.baseUrl + "/api/Admin/tenant-config-service/workflow-step-employee-assignments";
         url_ = url_.replace(/[?&]$/, "");
@@ -24963,6 +25010,8 @@ export class WorkflowOverviewDto implements IWorkflowOverviewDto {
     incompleteWorkflowProcesses?: WorkflowProcessDto[] | undefined;
     clientGanttRows?: ClientGanttRow[] | undefined;
     consultantGanttRows?: ConsultantGanttRow[] | undefined;
+    workflowStatusWithEmployeeDto?: WorkflowStatusWithEmployeeDto;
+    mainOverviewStatusForSales?: MainOverviewStatus;
 
     constructor(data?: IWorkflowOverviewDto) {
         if (data) {
@@ -24990,6 +25039,8 @@ export class WorkflowOverviewDto implements IWorkflowOverviewDto {
                 for (let item of _data["consultantGanttRows"])
                     this.consultantGanttRows!.push(ConsultantGanttRow.fromJS(item));
             }
+            this.workflowStatusWithEmployeeDto = _data["workflowStatusWithEmployeeDto"] ? WorkflowStatusWithEmployeeDto.fromJS(_data["workflowStatusWithEmployeeDto"]) : <any>undefined;
+            this.mainOverviewStatusForSales = _data["mainOverviewStatusForSales"];
         }
     }
 
@@ -25017,6 +25068,8 @@ export class WorkflowOverviewDto implements IWorkflowOverviewDto {
             for (let item of this.consultantGanttRows)
                 data["consultantGanttRows"].push(item.toJSON());
         }
+        data["workflowStatusWithEmployeeDto"] = this.workflowStatusWithEmployeeDto ? this.workflowStatusWithEmployeeDto.toJSON() : <any>undefined;
+        data["mainOverviewStatusForSales"] = this.mainOverviewStatusForSales;
         return data;
     }
 }
@@ -25025,6 +25078,8 @@ export interface IWorkflowOverviewDto {
     incompleteWorkflowProcesses?: WorkflowProcessDto[] | undefined;
     clientGanttRows?: ClientGanttRow[] | undefined;
     consultantGanttRows?: ConsultantGanttRow[] | undefined;
+    workflowStatusWithEmployeeDto?: WorkflowStatusWithEmployeeDto;
+    mainOverviewStatusForSales?: MainOverviewStatus;
 }
 
 export class WorkflowPeriodForLegacyContractDto implements IWorkflowPeriodForLegacyContractDto {

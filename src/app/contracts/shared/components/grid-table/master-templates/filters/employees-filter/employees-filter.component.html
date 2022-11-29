@@ -1,0 +1,8 @@
+<emg-dropdown-autocomplete-multiselect
+    *ngIf="employees$ | async as employees"
+    [options]="employees"
+    [formControl]="filterFormControl"
+    [idProperty]="'id'"
+    (emitText)="emitText($event)"
+></emg-dropdown-autocomplete-multiselect>
+

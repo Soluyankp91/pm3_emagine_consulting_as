@@ -1,0 +1,23 @@
+<mat-form-field appearance="outline">
+    <mat-label>{{ label }}</mat-label>
+    <input
+        matInput
+        type="text"
+        [placeholder]="label"
+        [formControl]="inputControl"
+        [matAutocomplete]="auto"
+        [errorStateMatcher]="matcher"
+    />
+    <mat-autocomplete
+        #auto="matAutocomplete"
+        [displayWith]="displayFn.bind(context)"
+        (optionSelected)="onSelect($event.option.value)"
+    >
+    <ng-container *ngFor="let option of options; trackBy:trackById.bind(this)" >
+        <mat-option  [value]="option">{{
+            option[labelKey]
+        }}</mat-option>
+    </ng-container>
+    </mat-autocomplete>
+    <mat-error><app-validator [control]="inputControl"></app-validator></mat-error>
+</mat-form-field>
