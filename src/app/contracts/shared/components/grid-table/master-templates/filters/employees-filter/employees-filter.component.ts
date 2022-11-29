@@ -23,7 +23,7 @@ export class EmployeesFilterComponent {
     filterFormControl: FormControl;
     employees$: Observable<EmployeeDto[]>;
 
-    private tableFilter = 'employees';
+    private tableFilter = 'lastUpdatedByLowerCaseInitials';
 
     constructor(
         private lookupServiceProxy: LookupServiceProxy,

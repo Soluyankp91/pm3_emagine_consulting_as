@@ -10,6 +10,11 @@ import { MasterTemplatesService } from 'src/app/contracts/master-templates/listA
     templateUrl: './recipient-types-filter.component.html',
 })
 export class RecipientTypesFilterComponent implements IFilter {
+    recipientTypes$ = this.contractsService.getRecipientTypes$();
+    filterFormControl: FormControl;
+
+    private tableFilter = 'recipientTypeId';
+
     constructor(
         private contractsService: ContractsService,
         private masterTemplateService: MasterTemplatesService
@@ -21,7 +26,4 @@ export class RecipientTypesFilterComponent implements IFilter {
                 this.filterFormControl = new FormControl(recipientTypes);
             });
     }
-    recipientTypes$ = this.contractsService.getRecipientTypes$();
-    filterFormControl: FormControl;
-    private tableFilter = 'recipientTypes';
 }

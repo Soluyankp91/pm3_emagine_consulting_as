@@ -13,7 +13,7 @@ export class AgreementLanguagesFilterComponent implements IFilter {
     agreementLanguages$ = this.contractsService.getAgreementLanguages$();
     filterFormControl: FormControl;
 
-    private tableFilter = 'agreementLanguages';
+    private tableFilter = 'language';
 
     constructor(
         private readonly contractsService: ContractsService,

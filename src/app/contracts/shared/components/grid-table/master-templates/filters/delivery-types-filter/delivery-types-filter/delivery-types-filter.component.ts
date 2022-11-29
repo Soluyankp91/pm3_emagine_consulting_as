@@ -13,7 +13,7 @@ export class DeliveryTypesFilterComponent implements IFilter {
     deliveryTypes$ = this.contractService.getDeliveryTypes$();
     filterFormControl: FormControl;
 
-    private tableFilter = 'deliveryTypes';
+    private tableFilter = 'deliveryTypeIds';
 
     constructor(
         private contractService: ContractsService,

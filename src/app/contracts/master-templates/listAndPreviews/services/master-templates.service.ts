@@ -26,14 +26,14 @@ export class MasterTemplatesService {
         });
 
     private tableFilters$ = new BehaviorSubject<TableFiltersEnum>({
-        agreementLanguages: [],
-        agreementTypes: [],
-        recipientTypes: [],
-        legalEntities: [],
-        salesTypes: [],
-        deliveryTypes: [],
-        employmentTypes: [],
-        employees: [],
+        language: [],
+        agreementType: [],
+        recipientTypeId: [],
+        legalEntityIds: [],
+        salesTypeIds: [],
+        deliveryTypeIds: [],
+        contractTypeIds: [],
+        lastUpdatedByLowerCaseInitials: [],
     });
 
     private tenantIds$$ = new BehaviorSubject<CountryDto[]>([]);

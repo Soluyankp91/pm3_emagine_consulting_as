@@ -10,6 +10,11 @@ import { MasterTemplatesService } from 'src/app/contracts/master-templates/listA
     templateUrl: './employment-types-filter.component.html',
 })
 export class EmploymentTypesFilterComponent implements IFilter {
+    employmentTypes$ = this.contractsService.getEmploymentTypes$();
+    filterFormControl: FormControl;
+
+    private tableFilter = 'contractTypeIds';
+
     constructor(
         private contractsService: ContractsService,
         private masterTemplateService: MasterTemplatesService
@@ -21,8 +26,4 @@ export class EmploymentTypesFilterComponent implements IFilter {
                 this.filterFormControl = new FormControl(employmentTypes);
             });
     }
-
-    employmentTypes$ = this.contractsService.getEmploymentTypes$();
-    filterFormControl: FormControl;
-    private tableFilter = 'employmentTypes';
 }

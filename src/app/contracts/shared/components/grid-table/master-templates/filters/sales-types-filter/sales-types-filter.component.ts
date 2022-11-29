@@ -10,6 +10,11 @@ import { MasterTemplatesService } from 'src/app/contracts/master-templates/listA
     templateUrl: './sales-types-filter.component.html',
 })
 export class SalesTypesFilterComponent implements IFilter {
+    salesTypes$ = this.contractsService.getSalesTypes$();
+    filterFormControl: FormControl;
+
+    private tableFilter = 'salesTypeIds';
+
     constructor(
         private contractsService: ContractsService,
         private masterTemplateService: MasterTemplatesService
@@ -21,8 +26,4 @@ export class SalesTypesFilterComponent implements IFilter {
                 this.filterFormControl = new FormControl(salesTypes);
             });
     }
-
-    salesTypes$ = this.contractsService.getSalesTypes$();
-    filterFormControl: FormControl;
-    private tableFilter = 'salesTypes';
 }

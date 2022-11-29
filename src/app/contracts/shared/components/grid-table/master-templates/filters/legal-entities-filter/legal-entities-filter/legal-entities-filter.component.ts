@@ -10,6 +10,11 @@ import { MasterTemplatesService } from 'src/app/contracts/master-templates/listA
     templateUrl: './legal-entities-filter.component.html',
 })
 export class LegalEntitiesFilterComponent implements IFilter {
+    legalEntities$ = this.contractsService.getLegalEntities$();
+    filterFormControl: FormControl;
+
+    private tableFilter = 'legalEntityIds';
+
     constructor(
         private contractsService: ContractsService,
         private masterTemplateService: MasterTemplatesService
@@ -21,8 +26,4 @@ export class LegalEntitiesFilterComponent implements IFilter {
                 this.filterFormControl = new FormControl(legalEntities);
             });
     }
-
-    legalEntities$ = this.contractsService.getLegalEntities$();
-    filterFormControl: FormControl;
-    private tableFilter = 'legalEntities';
 }

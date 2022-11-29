@@ -13,7 +13,7 @@ export class AgreementTypesFilterComponent implements IFilter {
     agreementTypes$ = this.contractsService.getAgreementTypes$();
     filterFormControl: FormControl;
 
-    private tableFilter = 'agreementTypes';
+    private tableFilter = 'agreementType';
 
     constructor(
         private contractsService: ContractsService,
