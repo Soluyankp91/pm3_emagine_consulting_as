@@ -40,6 +40,9 @@ export class DropdownAutocompleteMultiselectComponent
         this.availableOptions = new Set(options);
         this.isSearchNull = options.length === 0 ? true : false;
     }
+
+    @Input() idProperty: string | number = 'id';
+
     @Output() emitText = new EventEmitter();
 
     get idsToExclude() {
@@ -81,7 +84,7 @@ export class DropdownAutocompleteMultiselectComponent
     }
 
     trackById(_: number, option: IDropdownItem) {
-        return option.id;
+        return option[this.idProperty];
     }
 
     writeValue(values: any[]): void {

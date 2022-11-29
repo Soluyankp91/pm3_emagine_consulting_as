@@ -17,7 +17,7 @@
                 {{ selectedAll ? "unselect" : "selectAll" }}
             </mat-checkbox>
         </mat-option>
-        <ng-container *ngFor="let selectedOption of selectedOptions;trackBy: trackById">
+        <ng-container *ngFor="let selectedOption of selectedOptions;trackBy: trackById.bind(this)">
             <mat-option>
                 <mat-checkbox
                     *ngIf="selectedOption"
@@ -31,7 +31,7 @@
         </ng-container>
         <mat-divider></mat-divider>
         <ng-container *ngIf="!isSearchNull ; else notFound">
-            <ng-container *ngFor="let option of availableOptions;trackBy: trackById">
+            <ng-container *ngFor="let option of availableOptions;trackBy: trackById.bind(this)">
                 <mat-option >
                     <mat-checkbox
                         (click)="$event.stopPropagation()"

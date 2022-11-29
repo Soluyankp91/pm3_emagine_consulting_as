@@ -28,10 +28,11 @@ import { MatMenuTrigger } from '@angular/material/menu';
     encapsulation: ViewEncapsulation.None,
 })
 export class MultiSelectComponent implements OnInit, ControlValueAccessor {
+    @Input() idProperty: string | number = 'id';
+    @Input() displayedProperty: string = 'name';
     @Input() set options(options: any[]) {
         this._options = options;
     }
-    @Input() displayedProperty: string = 'name';
     @ContentChild('triggerButton') triggerButton: MatMenuTrigger;
     @ContentChild('optionPrefix') optionPrefix: TemplateRef<any>;
 
@@ -77,8 +78,8 @@ export class MultiSelectComponent implements OnInit, ControlValueAccessor {
         this.onTouched = fn;
     }
 
-    trackByIndex(index: number, item: any) {
-        return index;
+    trackById(index: number, item: any) {
+        return item[this.idProperty];
     }
 
     writeValue(outer: object[]): void {

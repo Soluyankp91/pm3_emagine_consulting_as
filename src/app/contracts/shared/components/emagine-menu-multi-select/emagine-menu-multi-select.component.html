@@ -22,7 +22,7 @@
         backdropClass="mat-menu-content-wrapper"
     >
         <div class="scrollbar-container" fuseScrollbar>
-            <ng-container *ngFor="let option of options;trackBy:trackByIndex">
+            <ng-container *ngFor="let option of options;trackBy:trackById.bind(this)">
                 <mat-checkbox
 
                 (click)="$event.stopPropagation()"

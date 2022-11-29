@@ -82,7 +82,7 @@
                     placeholder="Recipient type"
                     formControlName="recipientTypeId"
                 >
-                <ng-container *ngFor="let recipientType of options.recipientTypes; trackBy:trackByRecipientId">
+                <ng-container *ngFor="let recipientType of options.recipientTypes;">
                     <mat-option
                     [value]="recipientType.id"
                     >{{ recipientType.name }}</mat-option
@@ -130,7 +130,7 @@
                     placeholder="Internal legal entity"
                     multiple
                 >
-                <ng-container *ngFor="let legalEntity of options.legalEntities;trackBy:trackByLegalEntityId">
+                <ng-container *ngFor="let legalEntity of options.legalEntities;">
                     <mat-option
                     [value]="legalEntity.id"
                     >{{ legalEntity.name }}</mat-option
@@ -164,7 +164,7 @@
                     placeholder="Delivery type"
                     multiple
                 >
-                <ng-container *ngFor="let deliveryType of options.deliveryTypes;trackBy:trackByDeliveryTypeId">
+                <ng-container *ngFor="let deliveryType of options.deliveryTypes;">
                     <mat-option
 
                     [value]="deliveryType.id"
@@ -182,7 +182,7 @@
                     placeholder="Contract type"
                     multiple
                 >
-                <ng-container *ngFor="let contractType of options.contractTypes;trackBy:trackByContractTypeId">
+                <ng-container *ngFor="let contractType of options.contractTypes;">
                     <mat-option
 
                     [value]="contractType.id"

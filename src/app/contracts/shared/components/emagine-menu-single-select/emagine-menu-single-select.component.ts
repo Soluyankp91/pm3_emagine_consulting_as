@@ -36,6 +36,7 @@ type IDropdownItem = object & { [key: string]: any; selected?: boolean };
 export class MatMenuSingleSelectComponent
     implements OnInit, ControlValueAccessor
 {
+    @Input() idProperty: string | number = 'id';
     @Input() label: string;
     @Input() set options(items: IDropdownItem[]) {
         this.options_ = cloneDeep(items);
@@ -66,8 +67,8 @@ export class MatMenuSingleSelectComponent
         this.onTouched = fn;
     }
 
-    trackByIndex(index: number, item: IDropdownItem) {
-        return index;
+    trackById(index: number, item: IDropdownItem) {
+        return item[this.idProperty];
     }
     onMatMenuOpened() {
         this.myselect.open();

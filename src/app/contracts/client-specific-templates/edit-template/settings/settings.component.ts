@@ -121,22 +121,6 @@ export class CreationComponent
         });
     }
 
-    trackByRecipientId(index: number, item: EnumEntityTypeDto) {
-        return item.id;
-    }
-
-    trackByLegalEntityId(index: number, item: LegalEntityDto) {
-        return item.id;
-    }
-
-    trackByDeliveryTypeId(index: number, item: EnumEntityTypeDto) {
-        return item.id;
-    }
-
-    trackByContractTypeId(index: number, item: EnumEntityTypeDto) {
-        return item.id;
-    }
-
     //delete as any after nswag fix
     onSave() {
         let creationMode = this.creationModeControl.value;

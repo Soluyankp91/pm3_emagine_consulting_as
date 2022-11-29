@@ -75,8 +75,8 @@ export class DropdownAutocompleteSingleSelectComponent
         this.onChange(selectedOption[this.outputProperty]);
     }
 
-    trackByOptionProp(index: number, item: Item) {
-        return item[this.labelKey];
+    trackById(index: number, item: Item) {
+        return item[this.outputProperty];
     }
 
     registerOnChange(fn: any) {
