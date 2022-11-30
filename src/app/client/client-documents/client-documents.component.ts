@@ -138,7 +138,6 @@ export class ClientDocumentsComponent extends AppComponentBase implements OnInit
             .pipe(finalize(() => {}))
             .subscribe(result => {
                 this.generalFileTypes = result;
-                this.getGeneralDocuments();
             });
     }
 
