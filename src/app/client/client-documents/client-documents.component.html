@@ -156,7 +156,7 @@
                                                 [collapsedHeight]="'44px'"
                                                 [expandedHeight]="'44px'">
                                                 <h4 class="u-mb--0">
-                                                    {{frame.name}} {{frame.startDate | momentFormat: 'DD.MM.YYYY'}} - {{frame.endDate ? (frame.endDate | momentFormat: 'DD.MM.YYYY') : 'No end date'}}
+                                                    {{frame.name}} {{frame.startDate | momentFormat: 'DD.MM.YYYY'}}
                                                 </h4>
                                             </mat-expansion-panel-header>
                                             <div *ngIf="frame.documents?.length" class="column u-ml--32">
@@ -190,7 +190,7 @@
                                                 [collapsedHeight]="'44px'"
                                                 [expandedHeight]="'44px'">
                                                 <h4 class="u-mb--0">
-                                                    {{workflow.name}} {{workflow.startDate | momentFormat: 'DD.MM.YYYY'}} - {{workflow.endDate ? (workflow.endDate | momentFormat: 'DD.MM.YYYY') : 'No end date'}}
+                                                    {{workflow.name}} {{workflow.startDate | momentFormat: 'DD.MM.YYYY'}}
                                                 </h4>
                                             </mat-expansion-panel-header>
                                             <!-- client contracts -->
