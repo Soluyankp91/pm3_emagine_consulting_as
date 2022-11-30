@@ -4,6 +4,7 @@ import { Component, ChangeDetectionStrategy, OnInit } from '@angular/core';
 import { map } from 'rxjs/operators';
 import {
     DISPLAYED_COLUMNS,
+    MASTER_TEMPLATE_ACTIONS,
     MASTER_TEMPLATE_CELLS,
     MASTER_TEMPLATE_HEADER_CELLS,
 } from '../../shared/components/grid-table/master-templates/entities/master-templates.constants';
@@ -28,6 +29,7 @@ export class MasterTemplatesComponent implements OnInit {
     dataSource$ = this.masterTemplatesService.getContracts$();
 
     displayedColumns = DISPLAYED_COLUMNS;
+    actions = MASTER_TEMPLATE_ACTIONS;
     table$: Observable<any>;
 
     constructor(

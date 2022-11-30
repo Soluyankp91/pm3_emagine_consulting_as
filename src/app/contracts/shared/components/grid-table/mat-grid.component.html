@@ -21,17 +21,27 @@
         (matSortChange)="sortChange.emit($event)"
         [formGroup]="formGroup"
     >
-    <ng-container *ngIf="selection">
-        <ng-container matColumnDef="select">
-            <mat-header-cell *matHeaderCellDef>
-
-                <mat-checkbox [checked]="selection_.hasValue() && isAllSelected()" [indeterminate]="selection_.hasValue() && !isAllSelected()" (change)="toggleAllRows()"></mat-checkbox>
-            </mat-header-cell>
-            <mat-cell *matCellDef="let row">
-                <mat-checkbox [checked]="selection_.isSelected(row)" (click)="$event.stopPropagation()" (change)="selection_.toggle(row)"></mat-checkbox>
-            </mat-cell>
+        <ng-container *ngIf="selection">
+            <ng-container matColumnDef="select">
+                <mat-header-cell *matHeaderCellDef>
+                    <mat-checkbox
+                        [checked]="selection_.hasValue() && isAllSelected()"
+                        [indeterminate]="
+                            selection_.hasValue() && !isAllSelected()
+                        "
+                        (change)="toggleAllRows()"
+                    >
+                    </mat-checkbox>
+                </mat-header-cell>
+                <mat-cell *matCellDef="let row">
+                    <mat-checkbox
+                        [checked]="selection_.isSelected(row)"
+                        (click)="$event.stopPropagation()"
+                        (change)="selection_.toggle(row)"
+                    ></mat-checkbox>
+                </mat-cell>
+            </ng-container>
         </ng-container>
-    </ng-container>
         <ng-container
             *ngFor="let cell of cells; trackBy: trackByCellColumnDef"
             [matColumnDef]="cell.matColumnDef"
@@ -51,7 +61,7 @@
             <mat-cell *matCellDef="let element">
                 <ng-container [ngSwitch]="cell.cell.type">
                     <ng-container *ngSwitchCase="tableCellEnum.DEFAULT">
-                        {{element[cell.matColumnDef]}}
+                        {{ element[cell.matColumnDef] }}
                     </ng-container>
                     <ng-container *ngSwitchCase="tableCellEnum.CUSTOM">
                         <ng-container #cellContainer></ng-container>
@@ -61,14 +71,17 @@
         </ng-container>
         <ng-container *ngIf="actions">
             <ng-container matColumnDef="actions">
-                <mat-header-cell></mat-header-cell>
+                <mat-header-cell *matHeaderCellDef=""></mat-header-cell>
                 <mat-cell *matCellDef="let actionRow">
-                    <button mat-icon-button [matMenuTriggerFor]="menu"><mat-icon>more_horz</mat-icon></button>
+                    <button mat-icon-button [matMenuTriggerFor]="menu">
+                        <mat-icon>more_vert</mat-icon>
+                    </button>
                     <mat-menu #menu="matMenu">
-                        <button mat-menu-item>
-                            <mat-icon>dialpad</mat-icon>
-                            <span>Redial</span>
-                          </button>
+                        <ng-container *ngFor="let action of actionsList">
+                            <button mat-menu-item (click)="chooseAction(action.actionType, actionRow)">
+                                <span> {{ action.label }}</span>
+                            </button>
+                        </ng-container>
                     </mat-menu>
                 </mat-cell>
             </ng-container>
@@ -87,5 +100,6 @@
         [pageSize]="tableConfig.pageSize"
         [pageIndex]="tableConfig.pageIndex"
         (page)="pageChange.emit($event)"
-    ></mat-paginator>
+    >
+    </mat-paginator>
 </div>

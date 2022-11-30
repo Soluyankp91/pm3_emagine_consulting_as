@@ -3,10 +3,12 @@
     #table
     *ngIf="table$ | async as table"
     [displayedColumns]="displayedColumns"
+    [actionsList]="actions"
     [tableConfig]="table"
     [cells]="cells"
     (sortChange)="onSortChange($event)"
     (formControlChange)="onFormControlChange($event)"
     (pageChange)="onPageChange($event)"
-    (tableRow)="onSelectTableRow($event)">
+    (tableRow)="onSelectTableRow($event)"
+>
 </emg-mat-grid>

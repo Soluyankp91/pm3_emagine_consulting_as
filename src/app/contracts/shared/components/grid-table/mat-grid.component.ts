@@ -31,6 +31,7 @@ import {
 import { PAGE_SIZE_OPTIONS } from './master-templates/entities/master-templates.constants';
 import { ComponentType } from '@angular/cdk/portal';
 import { SelectionModel } from '@angular/cdk/collections';
+import { Actions } from './master-templates/entities/master-templates.interfaces';
 
 @Component({
     selector: 'emg-mat-grid',
@@ -45,6 +46,7 @@ export class MatGridComponent
     @Input() cells: IColumn[];
     @Input() selection: boolean = true;
     @Input() actions: boolean = true;
+    @Input() actionsList: Actions[] = [];
 
     @Output() sortChange = new EventEmitter<Sort>();
     @Output() pageChange = new EventEmitter<PageEvent>();
@@ -86,11 +88,15 @@ export class MatGridComponent
 
     ngOnChanges(changes: SimpleChanges): void {
         const displayedColumns = changes['displayedColumns'];
+        const tableConfig = changes['tableConfig'];
         if (displayedColumns && this.selection) {
-            displayedColumns.currentValue.unshift('select');
+            this.displayedColumns.unshift('select');
         }
         if (displayedColumns && this.actions) {
-            displayedColumns.currentValue.push('actions');
+            this.displayedColumns.push('actions');
+        }
+        if (tableConfig.currentValue && !tableConfig.firstChange) {
+            this.insertCells();
         }
     }
 
@@ -99,6 +105,8 @@ export class MatGridComponent
         this._subscribeOnSelectionChange();
         this._subscribeOnFormControlChanges();
         this._subscribeOnEachFormControl();
+        console.log('start');
+        this.insertCells();
         this.cdr.detectChanges();
     }
 
@@ -144,6 +152,8 @@ export class MatGridComponent
                     );
                 }
             });
+    }
+    insertCells() {
         let j = 0;
         this.cells.forEach((column, index) => {
             if (column.cell.type === this.tableCellEnum.CUSTOM) {
@@ -152,7 +162,6 @@ export class MatGridComponent
                     i < (j + 1) * this.tableConfig.pageSize;
                     i++
                 ) {
-                    console.log(i);
                     const factory =
                         this.componentFactoryResolver.resolveComponentFactory(
                             column.cell.component as ComponentType<any>
@@ -183,9 +192,13 @@ export class MatGridComponent
         this.tableRow.emit(row);
     }
 
+    chooseAction(actionType: string, row: any) {
+        console.log(actionType, row);
+    }
+
     private _subscribeOnSelectionChange() {
         this.selection_.changed
-            .pipe(takeUntil(this.unSubscribe$), debounceTime(300))
+            .pipe(takeUntil(this.unSubscribe$), debounceTime(100))
             .subscribe((changeModel) => {
                 console.log(changeModel.source.selected);
                 this.selectionChange.emit(changeModel.source.selected);
@@ -196,6 +209,7 @@ export class MatGridComponent
         this.formGroup.valueChanges
             .pipe(takeUntil(this.unSubscribe$))
             .subscribe((value) => {
+                console.log(value);
                 this.formControlChange.emit(value);
             });
     }

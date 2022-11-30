@@ -13,6 +13,7 @@ import { EmploymentTypesFilterComponent } from '../filters/employment-types-filt
 import { LegalEntitiesFilterComponent } from '../filters/legal-entities-filter/legal-entities-filter/legal-entities-filter.component';
 import { RecipientTypesFilterComponent } from '../filters/recipient-types-filter/recipient-types-filter/recipient-types-filter.component';
 import { SalesTypesFilterComponent } from '../filters/sales-types-filter/sales-types-filter.component';
+import { Actions } from './master-templates.interfaces';
 
 export const DISPLAYED_COLUMNS: string[] = [
     'language',
@@ -138,4 +139,14 @@ export const MASTER_TEMPLATE_HEADER_CELLS: IHeaderCell[] = [
 
 export const PAGE_SIZE_OPTIONS: number[] = [5, 10, 20, 50, 100];
 export const DEFAULT_SIZE_OPTION: number = PAGE_SIZE_OPTIONS[0];
+export const MASTER_TEMPLATE_ACTIONS: Actions[] = [
+    {
+        label: 'Edit',
+        actionType: 'EDIT',
+    },
+    {
+        label: 'Copy',
+        actionType: 'COPY',
+    },
+];
 export const INITIAL_PAGE_INDEX = 0;
