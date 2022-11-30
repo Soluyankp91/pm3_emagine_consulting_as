@@ -11,15 +11,15 @@ import { merge, Observable, Subject, Subscription } from 'rxjs';
 import { debounceTime, finalize, map, switchMap, takeUntil } from 'rxjs/operators';
 import { AppComponentBase } from 'src/shared/app-component-base';
 import { AppConsts } from 'src/shared/AppConsts';
-import { EmployeeDto, EmployeeServiceProxy, EnumEntityTypeDto, LegalEntityDto, LookupServiceProxy, StartNewWorkflowInputDto, SyncStateStatus, WorkflowAlreadyExistsDto, WorkflowListItemDto, WorkflowProcessType, WorkflowServiceProxy, WorkflowStatus, WorkflowStepStatus } from 'src/shared/service-proxies/service-proxies';
+import { EmployeeDto, EmployeeServiceProxy, EnumEntityTypeDto, LegalEntityDto, LookupServiceProxy, StartNewWorkflowInputDto, SyncStateStatus, WorkflowAlreadyExistsDto, WorkflowListItemDto, WorkflowProcessType, WorkflowServiceProxy, WorkflowStatus, WorkflowStatusDto, WorkflowStepStatus } from 'src/shared/service-proxies/service-proxies';
 import { SelectableCountry, SelectableIdNameDto } from '../client/client.model';
 import { InternalLookupService } from '../shared/common/internal-lookup.service';
 import { ConfirmationDialogComponent } from '../shared/components/confirmation-dialog/confirmation-dialog.component';
 import { ManagerStatus } from '../shared/components/manager-search/manager-search.model';
 import { CreateWorkflowDialogComponent } from './create-workflow-dialog/create-workflow-dialog.component';
-import { DialogConfig, ISelectableIdNameDto, SelectableEmployeeDto, StepTypes, SyncStatusIcon } from './workflow.model';
+import { DialogConfig, getStatusIcon, getWorkflowStatus, ISelectableIdNameDto, SelectableEmployeeDto, StepTypes, SyncStatusIcon } from './workflow.model';
 
-const WorkflowGridOptionsKey = 'WorkflowGridFILTERS.1.0.4';
+const WorkflowGridOptionsKey = 'WorkflowGridFILTERS.1.0.5';
 @Component({
     selector: 'app-workflow',
     templateUrl: './workflow.component.html',
@@ -29,6 +29,7 @@ const WorkflowGridOptionsKey = 'WorkflowGridFILTERS.1.0.4';
 export class WorkflowComponent extends AppComponentBase implements OnInit, OnDestroy {
     @ViewChild('trigger', { read: MatAutocompleteTrigger }) trigger: MatAutocompleteTrigger;
     @ViewChild('menuDeleteTrigger', {static: false}) menuDeleteTrigger: MatMenuTrigger;
+    @ViewChild('menuWorkflowStatusesTrigger', {static: false}) menuWorkflowStatusesTrigger: MatMenuTrigger;
     @ViewChild('clientsPaginator') paginator: MatPaginator;
     isLoading: boolean;
 
@@ -38,7 +39,7 @@ export class WorkflowComponent extends AppComponentBase implements OnInit, OnDes
     deafultPageSize = AppConsts.grid.defaultPageSize;
     pageSizeOptions = [5, 10, 20, 50, 100];
     totalCount: number | undefined = 0;
-    sorting = 'EndDate desc';
+    sorting = 'ActualEndDate desc';
     isDataLoading = true;
 
     workflowDisplayColumns = [
@@ -48,7 +49,7 @@ export class WorkflowComponent extends AppComponentBase implements OnInit, OnDes
         'SalesTypeId',
         'DeliveryTypeId',
         'StartDate',
-        'EndDate',
+        'ActualEndDate',
         'ConsultantName',
         'WorkflowStatus',
         'openProcess',
@@ -60,11 +61,11 @@ export class WorkflowComponent extends AppComponentBase implements OnInit, OnDes
 
     workflowDataSource: MatTableDataSource<WorkflowListItemDto>;
     workflowProcess = WorkflowProcessType;
-
+    workflowStatus = WorkflowStatus;
     legalEntities: LegalEntityDto[] = [];
     saleTypes: EnumEntityTypeDto[] = [];
     deliveryTypes: EnumEntityTypeDto[] = [];
-    workflowStatuses: { [key: string]: string; };
+    workflowStatuses: WorkflowStatusDto[] = [];
     workflowStepStatuses = WorkflowStepStatus;
     isAdvancedFilters = false;
     showOnlyWorkflowsWithNewSales = false;
@@ -346,6 +347,14 @@ export class WorkflowComponent extends AppComponentBase implements OnInit, OnDes
         });
     }
 
+    setWorkflowStatus(workflowId: string, workflowStatus: WorkflowStatus) {
+        this.menuWorkflowStatusesTrigger.closeMenu();
+        this.showMainSpinner();
+        this._workflowService.setWorkflowStatus(workflowId, workflowStatus)
+            .pipe(finalize(() => this.hideMainSpinner()))
+            .subscribe(() => this.getWorkflowList())
+    }
+
     restoreWorkflow(workflowId: string) {
         this.isDataLoading = true;
         this._workflowService.restore(workflowId)
@@ -447,11 +456,12 @@ export class WorkflowComponent extends AppComponentBase implements OnInit, OnDes
                         clientName: x.clientName,
                         startDate: x.startDate,
                         startDateOfOpenedPeriodOrLastClientPeriod: x.startDateOfOpenedPeriodOrLastClientPeriod,
-                        endDate: x.endDate,
+                        endDate: x.actualEndDate,
                         salesType: this.findItemById(this.saleTypes, x.salesTypeId),
                         deliveryType: this.findItemById(this.deliveryTypes, x.deliveryTypeId),
-                        statusName: x.isDeleted ? 'Finished' : WorkflowStatus[x.workflowStatus!],
-                        statusIcon: x.isDeleted ? 'deleted-status' : this.getStatusIcon(x.workflowStatus!),
+                        statusName: x.isDeleted ? 'Deleted workflow' : getWorkflowStatus(x.workflowStatus!),
+                        statusIcon: x.isDeleted ? 'deleted-status' : getStatusIcon(x.workflowStatus!),
+                        status: x.workflowStatus,
                         isDeleted: x.isDeleted,
                         consultants: x.consultants,
                         consultantName: x.consultantName,
@@ -467,19 +477,6 @@ export class WorkflowComponent extends AppComponentBase implements OnInit, OnDes
                 this.totalCount = result.totalCount;
                 this.saveGridOptions();
             });
-    }
-
-    getStatusIcon(status: number) {
-        switch (status) {
-            case WorkflowStatus.Active:
-                return 'active-status';
-            case WorkflowStatus.Pending:
-                return 'pending-status';
-            case WorkflowStatus.Finished:
-                return 'finished-status';
-            default:
-                return '';
-        }
     }
 
     pageChanged(event?: any): void {

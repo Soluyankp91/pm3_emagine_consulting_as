@@ -215,8 +215,8 @@
                 <mat-option class="mat-select-clear-option" *ngIf="workflowStatusControl.value">
                     Clear
                 </mat-option>
-                <mat-option *ngFor="let item of workflowStatuses | keyvalue" [value]="item.key">
-                    {{ item.value }}
+                <mat-option *ngFor="let item of workflowStatuses" [value]="item.id">
+                    {{ item.disaplyName }}
                 </mat-option>
             </mat-select>
         </mat-form-field>
@@ -271,7 +271,7 @@
                         </span>
                     </mat-cell>
                 </ng-container>
-                <ng-container matColumnDef="EndDate">
+                <ng-container matColumnDef="ActualEndDate">
                     <mat-header-cell *matHeaderCellDef mat-sort-header fxFlex="6%"> End </mat-header-cell>
                     <mat-cell *matCellDef="let row" fxFlex="6%">
                         <span class="text-truncate-ellipsis" [matTooltip]="(row.endDate | date: 'dd.MM.YYYY') ?? '-'" matTooltipClass="white-tooltip" appShowIfTruncated>
@@ -303,7 +303,23 @@
                 <ng-container matColumnDef="WorkflowStatus">
                     <mat-header-cell *matHeaderCellDef fxFlex="5%" mat-sort-header fxLayoutAlign="center center"> Status </mat-header-cell>
                     <mat-cell *matCellDef="let row" fxFlex="5%" fxLayoutAlign="center center">
-                        <mat-icon class="workflow-status" [matTooltip]="row.statusName + ' workflow'" matTooltipClass="white-tooltip" [ngClass]="row?.statusIcon">fiber_manual_record</mat-icon>
+                        <ng-container *ngIf="row.status === workflowStatus.Pending || row.status === workflowStatus.PendingDataMissing; else readOnlyWorkflowStatusTemplate">
+                            <mat-icon class="workflow-status" [matTooltip]="row.statusName" matTooltipClass="white-tooltip" [ngClass]="row?.statusIcon"
+                                #menuWorkflowStatusesTrigger="matMenuTrigger" [matMenuTriggerFor]="workflowStatusesMenu" appPreventDoubleClick (throttledClick)="$event.stopPropagation();">fiber_manual_record</mat-icon>
+                            <mat-menu #workflowStatusesMenu backdropClass="workflow-list--workflow-status-menu">
+                                <button mat-menu-item class="workflow-list--workflow-status--menu-item" (click)="setWorkflowStatus(row?.workflowId, workflowStatus.Pending)">
+                                    <mat-icon class="workflow-status pending-status">fiber_manual_record</mat-icon>
+                                    <span>Pending workflow</span>
+                                </button>
+                                <button mat-menu-item class="workflow-list--workflow-status--menu-item" (click)="setWorkflowStatus(row?.workflowId, workflowStatus.PendingDataMissing)">
+                                    <mat-icon class="workflow-status pending-data-missing-status">fiber_manual_record</mat-icon>
+                                    <span>Pending - data missing</span>
+                                </button>
+                            </mat-menu>
+                        </ng-container>
+                        <ng-template #readOnlyWorkflowStatusTemplate>
+                            <mat-icon class="workflow-status" [matTooltip]="row.statusName" matTooltipClass="white-tooltip" [ngClass]="row?.statusIcon">fiber_manual_record</mat-icon>
+                        </ng-template>
                     </mat-cell>
                 </ng-container>
                 <ng-container matColumnDef="openProcess">
@@ -396,7 +412,7 @@
                                  class="flex-items-center flex-row"
                                  [ngStyle]="{'border-bottom' : last ? '0' : '1px solid #E7E3E8'}">
                                 <ng-container *ngFor="let step of item.steps; let i = index;">
-                                    <div class="workflow-list--step u-mr--16" [ngClass]="{'completed-step': step.status === workflowStatuses.Completed}">
+                                    <div class="workflow-list--step u-mr--16" [ngClass]="{'completed-step': step.status === workflowStatus.Finished}">
                                         <app-manager-search
                                             appPreventDoubleClick (throttledClick)="$event.stopPropagation()"
                                             [formFieldLabel]="step.name + ' Manager'"

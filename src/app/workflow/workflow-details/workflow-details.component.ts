@@ -28,6 +28,7 @@ import {
     WorkflowDto,
     WorkflowProcessType,
     WorkflowServiceProxy,
+    WorkflowStatus
 } from 'src/shared/service-proxies/service-proxies';
 import { WorkflowDataService } from '../workflow-data.service';
 import {
@@ -35,6 +36,8 @@ import {
     WorkflowTopSections,
     WorkflowSteps,
     WorkflowDiallogAction,
+    getWorkflowStatus,
+    getStatusIcon
 } from '../workflow.model';
 import { InternalLookupService } from 'src/app/shared/common/internal-lookup.service';
 import { WorkflowActionsDialogComponent } from '../workflow-actions-dialog/workflow-actions-dialog.component';
@@ -69,6 +72,9 @@ export class WorkflowDetailsComponent
     workflowPeriod: WorkflowPeriodComponent;
     @ViewChild('menuActionsTrigger', { static: false })
     menuActionsTrigger: MatMenuTrigger;
+    @ViewChild('menuWorkflowStatusesTrigger', {static: false})
+    menuWorkflowStatusesTrigger: MatMenuTrigger;
+
 
     menuIndex = 0;
     workflowId: string;
@@ -92,9 +98,15 @@ export class WorkflowDetailsComponent
 
     workflowResponse: WorkflowDto;
     clientPeriods: ClientPeriodDto[] | undefined = [];
-    workflowClient: string | undefined;
-    workflowDirectClientid: number | undefined;
+    workflowDirectClient: string | undefined;
+    workflowEndClient: string | undefined;
+    workflowDirectClientId: number | undefined;
+    workflowEndClientId: number | undefined;
     workflowConsultants: ConsultantNameWithRequestUrl[] = [];
+    workflowStatusId: number | undefined;
+    workflowStatusName: string | undefined;
+    workflowStatusIcon: string;
+    workflowStatus = WorkflowStatus;
 
     workflowClientPeriodTypes: EnumEntityTypeDto[] = [];
     workflowConsultantPeriodTypes: EnumEntityTypeDto[] = [];
@@ -297,11 +309,17 @@ export class WorkflowDetailsComponent
             )
             .subscribe((result) => {
                 this.clientPeriods = result.clientPeriods;
-                this.workflowClient = result.clientName;
-                this.workflowDirectClientid = result.directClientId;
-                this.workflowConsultants =
-                    result.consultantNamesWithRequestUrls!;
+                this.workflowDirectClient = result.directClientName;
+                this.workflowEndClient = result.endClientName;
+                this.workflowDirectClientId = result.directClientId;
+                this.workflowEndClientId = result.endClientId;
+                this.workflowConsultants = result.consultantNamesWithRequestUrls!;
                 this.workflowId = result.workflowId!;
+                if (result.workflowStatusId) {
+                    this.workflowStatusId = result.workflowStatusId;
+                    this.workflowStatusName = getWorkflowStatus(result.workflowStatusId);
+                    this.workflowStatusIcon = getStatusIcon(result.workflowStatusId);
+                }
                 if (value) {
                     this.selectedIndex = 1;
                     this.topMenuTabs.realignInkBar();
@@ -730,5 +748,13 @@ export class WorkflowDetailsComponent
 
     navigateToRequest(requestUrl: string) {
         window.open(requestUrl, '_blank');
+    }
+
+    setWorkflowStatus(workflowId: string, workflowStatus: WorkflowStatus) {
+        this.menuWorkflowStatusesTrigger.closeMenu();
+        this.showMainSpinner();
+        this._workflowServiceProxy.setWorkflowStatus(workflowId, workflowStatus)
+            .pipe(finalize(() => this.hideMainSpinner()))
+            .subscribe(() => this.getTopLevelMenu())
     }
 }

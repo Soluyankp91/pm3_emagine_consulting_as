@@ -15,15 +15,13 @@
         padding: 0 75px;
         &--title {
             color: $dark-grey-color;
-            font-size: 14px;
+            @include fontOpenSans(12px, 700);
             line-height: 14px;
-            font-weight: 700;
         }
         &--client {
             color: $dark-grey-color;
-            font-size: 14px;
+            @include fontOpenSans(12px, 700);
             line-height: 14px;
-            font-weight: 700;
         }
     }
     &-header {
@@ -31,9 +29,11 @@
         height: $white-header-height;
         background-color: $white-color;
         &--title {
-            @include fontOpenSans(14px, 'inherit');
+            display: flex;
+            align-items: center;
+            @include fontOpenSans(12px, 'inherit');
             color: $dark-grey-color;
-            line-height: 18px;
+            line-height: 140%;
         }
         &--status {
             @include fontOpenSans(14px, 'inherit');
@@ -171,5 +171,28 @@
         button {
             width: 150px;
         }
+    }
+}
+
+.workflow-status {
+    font-size: 16px;
+    width: 16px;
+    height: 16px;
+    line-height: 16px;
+
+    &.active-status {
+        color: #6BC87A;
+    }
+    &.pending-status {
+        color: #FBD344;
+    }
+    &.pending-data-missing-status {
+        color: #FB9101;
+    }
+    &.finished-status { 
+        color: $purple-color;
+    }
+    &.deleted-status {
+        color: #D80027;
     }
 }
