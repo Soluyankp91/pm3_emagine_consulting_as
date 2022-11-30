@@ -4,6 +4,7 @@ import { Component, ChangeDetectionStrategy, OnInit } from '@angular/core';
 import { map } from 'rxjs/operators';
 import {
     DISPLAYED_COLUMNS,
+    MASTER_TEMPLATE_CELLS,
     MASTER_TEMPLATE_HEADER_CELLS,
 } from '../../shared/components/grid-table/master-templates/entities/master-templates.constants';
 import { Sort } from '@angular/material/sort';
@@ -20,7 +21,9 @@ import { Observable } from 'rxjs';
 })
 export class MasterTemplatesComponent implements OnInit {
     cells = this.gridHelpService.generateTableConfig(
-        MASTER_TEMPLATE_HEADER_CELLS
+        DISPLAYED_COLUMNS,
+        MASTER_TEMPLATE_HEADER_CELLS,
+        MASTER_TEMPLATE_CELLS
     );
     dataSource$ = this.masterTemplatesService.getContracts$();
 

@@ -26,19 +26,26 @@
             [matColumnDef]="cell.matColumnDef"
         >
             <ng-container [ngSwitch]="cell.headerCell.type">
-                <ng-container *ngSwitchCase="'sort'">
+                <ng-container *ngSwitchCase="headerCellEnum.SORT">
                     <mat-header-cell *matHeaderCellDef mat-sort-header>
                         {{ cell.headerCell.title }}
                     </mat-header-cell>
                 </ng-container>
-                <ng-container *ngSwitchCase="'filter'">
+                <ng-container *ngSwitchCase="headerCellEnum.FILTER">
                     <mat-header-cell *matHeaderCellDef>
                         <ng-container #filterContainer></ng-container>
                     </mat-header-cell>
                 </ng-container>
             </ng-container>
             <mat-cell *matCellDef="let element">
-                {{ element[cell.matColumnDef] }}
+                <ng-container [ngSwitch]="cell.cell.type">
+                    <ng-container *ngSwitchCase="tableCellEnum.DEFAULT">
+                        {{element[cell.matColumnDef]}}
+                    </ng-container>
+                    <ng-container *ngSwitchCase="tableCellEnum.CUSTOM">
+                        <ng-container #cellContainer></ng-container>
+                    </ng-container>
+                </ng-container>
             </mat-cell>
         </ng-container>
 

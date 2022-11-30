@@ -19,8 +19,15 @@ import {
 import { PageEvent } from '@angular/material/paginator';
 import { Sort } from '@angular/material/sort';
 import { FormGroup } from '@angular/forms';
-import { ICell, IFilter, ITableConfig } from './mat-grid.interfaces';
+import {
+    EHeaderCells,
+    ETableCells,
+    IColumn,
+    IFilter,
+    ITableConfig,
+} from './mat-grid.interfaces';
 import { PAGE_SIZE_OPTIONS } from './master-templates/entities/master-templates.constants';
+import { ComponentType } from '@angular/cdk/portal';
 
 @Component({
     selector: 'emg-mat-grid',
@@ -30,7 +37,7 @@ import { PAGE_SIZE_OPTIONS } from './master-templates/entities/master-templates.
 export class MatGridComponent implements OnInit, OnDestroy, AfterViewInit {
     @Input() displayedColumns: string[];
     @Input() tableConfig: ITableConfig;
-    @Input() cells: ICell[];
+    @Input() cells: IColumn[];
 
     @Output() sortChange = new EventEmitter<Sort>();
     @Output() pageChange = new EventEmitter<PageEvent>();
@@ -39,13 +46,16 @@ export class MatGridComponent implements OnInit, OnDestroy, AfterViewInit {
 
     @ViewChildren('filterContainer', { read: ViewContainerRef })
     children: QueryList<ViewContainerRef>;
-    @ViewChildren('cell_', { read: ViewContainerRef })
-    cells_: QueryList<ViewContainerRef>;
+    @ViewChildren('cellContainer', { read: ViewContainerRef })
+    cellContainer: QueryList<ViewContainerRef>;
 
     formGroup: FormGroup;
 
     matChips: string[] = [];
     pageSizeOptions: number[] = PAGE_SIZE_OPTIONS;
+
+    headerCellEnum = EHeaderCells;
+    tableCellEnum = ETableCells;
 
     private unSubscribe$ = new Subject<void>();
 
@@ -70,7 +80,7 @@ export class MatGridComponent implements OnInit, OnDestroy, AfterViewInit {
         this.cdr.detectChanges();
     }
 
-    trackByCellColumnDef(index: number, item: ICell) {
+    trackByCellColumnDef(index: number, item: IColumn) {
         return item.matColumnDef;
     }
 
@@ -93,6 +103,22 @@ export class MatGridComponent implements OnInit, OnDestroy, AfterViewInit {
                     );
                 }
             });
+        let j = 0;
+        this.cells.forEach((column, index) => {
+            if (column.cell.type === this.tableCellEnum.CUSTOM) {
+                for (let i = j; i < j + this.tableConfig.pageSize; i++) {
+                    console.log(i);
+                    const factory =
+                        this.componentFactoryResolver.resolveComponentFactory(
+                            column.cell.component as ComponentType<any>
+                        );
+                    const component = this.cellContainer
+                        .get(i)
+                        ?.createComponent(factory);
+                }
+                j++;
+            }
+        });
     }
 
     closeFilter(chip: string) {

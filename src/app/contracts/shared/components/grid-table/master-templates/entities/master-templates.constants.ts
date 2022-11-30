@@ -1,7 +1,10 @@
 import {
     IHeaderCell,
     EHeaderCells,
+    ICell,
+    ETableCells,
 } from 'src/app/contracts/shared/components/grid-table/mat-grid.interfaces';
+import { DateCellComponent } from '../cells/date-cell/date-cell.component';
 import { AgreementLanguagesFilterComponent } from '../filters/agreement-languages-filter/agreement-filter.component';
 import { AgreementTypesFilterComponent } from '../filters/agreement-types-filter/agreement-types-filter.component';
 import { DeliveryTypesFilterComponent } from '../filters/delivery-types-filter/delivery-types-filter/delivery-types-filter.component';
@@ -24,62 +27,112 @@ export const DISPLAYED_COLUMNS: string[] = [
     'lastUpdateDateUtc',
     'lastUpdatedByLowerCaseInitials',
 ];
-
+export const MASTER_TEMPLATE_CELLS: ICell[] = [
+    {
+        type: ETableCells.DEFAULT,
+    },
+    {
+        type: ETableCells.CUSTOM,
+        component: DateCellComponent,
+    },
+    {
+        type: ETableCells.DEFAULT,
+    },
+    {
+        type: ETableCells.DEFAULT,
+    },
+    {
+        type: ETableCells.DEFAULT,
+    },
+    {
+        type: ETableCells.CUSTOM,
+        component: DateCellComponent,
+    },
+    {
+        type: ETableCells.DEFAULT,
+    },
+    {
+        type: ETableCells.DEFAULT,
+    },
+    {
+        type: ETableCells.DEFAULT,
+    },
+    {
+        type: ETableCells.CUSTOM,
+        component: DateCellComponent,
+    },
+    {
+        type: ETableCells.DEFAULT,
+    },
+];
 export const MASTER_TEMPLATE_HEADER_CELLS: IHeaderCell[] = [
     {
-        field: 'agreementTemplateId',
+        type: EHeaderCells.FILTER,
+        filter: {
+            formControlName: 'language',
+            component: AgreementLanguagesFilterComponent,
+        },
+    },
+    {
         type: EHeaderCells.SORT,
         title: 'agreementTemplateId',
     },
     {
-        field: 'name',
         type: EHeaderCells.SORT,
         title: 'Name',
     },
     {
-        field: 'language',
         type: EHeaderCells.FILTER,
-        component: AgreementLanguagesFilterComponent,
+        filter: {
+            formControlName: 'agreementType',
+            component: AgreementTypesFilterComponent,
+        },
     },
     {
-        field: 'agreementType',
         type: EHeaderCells.FILTER,
-        component: AgreementTypesFilterComponent,
+        filter: {
+            formControlName: 'recipientTypeId',
+            component: RecipientTypesFilterComponent,
+        },
     },
     {
-        field: 'recipientTypeId',
         type: EHeaderCells.FILTER,
-        component: RecipientTypesFilterComponent,
+        filter: {
+            formControlName: 'legalEntityIds',
+            component: LegalEntitiesFilterComponent,
+        },
     },
     {
-        field: 'legalEntityIds',
         type: EHeaderCells.FILTER,
-        component: LegalEntitiesFilterComponent,
+        filter: {
+            formControlName: 'salesTypeIds',
+            component: SalesTypesFilterComponent,
+        },
     },
     {
-        field: 'salesTypeIds',
         type: EHeaderCells.FILTER,
-        component: SalesTypesFilterComponent,
+        filter: {
+            formControlName: 'deliveryTypeIds',
+            component: DeliveryTypesFilterComponent,
+        },
     },
     {
-        field: 'deliveryTypeIds',
         type: EHeaderCells.FILTER,
-        component: DeliveryTypesFilterComponent,
+        filter: {
+            formControlName: 'contractTypeIds',
+            component: EmploymentTypesFilterComponent,
+        },
     },
     {
-        field: 'contractTypeIds',
-        type: EHeaderCells.FILTER,
-        component: EmploymentTypesFilterComponent,
-    },
-    {
-        field: 'lastUpdateDateUtc',
         type: EHeaderCells.SORT,
         title: 'Last updated',
     },
     {
-        field: 'lastUpdatedByLowerCaseInitials',
         type: EHeaderCells.FILTER,
-        component: EmployeesFilterComponent,
+        filter: {
+            formControlName: 'lastUpdatedByLowerCaseInitials',
+            component: EmployeesFilterComponent,
+        },
     },
 ];
 
