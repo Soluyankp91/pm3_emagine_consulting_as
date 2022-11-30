@@ -1,4 +1,4 @@
-import { startWith, pairwise, takeUntil } from 'rxjs/operators';
+import { startWith, pairwise, takeUntil, debounceTime } from 'rxjs/operators';
 import { Subject } from 'rxjs';
 import {
     Component,
@@ -15,6 +15,8 @@ import {
     QueryList,
     ComponentRef,
     OnDestroy,
+    OnChanges,
+    SimpleChanges,
 } from '@angular/core';
 import { PageEvent } from '@angular/material/paginator';
 import { Sort } from '@angular/material/sort';
@@ -28,21 +30,26 @@ import {
 } from './mat-grid.interfaces';
 import { PAGE_SIZE_OPTIONS } from './master-templates/entities/master-templates.constants';
 import { ComponentType } from '@angular/cdk/portal';
+import { SelectionModel } from '@angular/cdk/collections';
 
 @Component({
     selector: 'emg-mat-grid',
     templateUrl: './mat-grid.component.html',
     changeDetection: ChangeDetectionStrategy.OnPush,
 })
-export class MatGridComponent implements OnInit, OnDestroy, AfterViewInit {
+export class MatGridComponent
+    implements OnInit, OnChanges, OnDestroy, AfterViewInit
+{
     @Input() displayedColumns: string[];
     @Input() tableConfig: ITableConfig;
     @Input() cells: IColumn[];
+    @Input() selection: boolean = true;
 
     @Output() sortChange = new EventEmitter<Sort>();
     @Output() pageChange = new EventEmitter<PageEvent>();
     @Output() formControlChange = new EventEmitter();
     @Output() tableRow = new EventEmitter<{ [key: string]: any }>();
+    @Output() selectionChange = new EventEmitter();
 
     @ViewChildren('filterContainer', { read: ViewContainerRef })
     children: QueryList<ViewContainerRef>;
@@ -57,6 +64,14 @@ export class MatGridComponent implements OnInit, OnDestroy, AfterViewInit {
     headerCellEnum = EHeaderCells;
     tableCellEnum = ETableCells;
 
+    initialSelection = [];
+    allowMultiSelect = true;
+
+    selection_ = new SelectionModel<any>(
+        this.allowMultiSelect,
+        this.initialSelection
+    );
+
     private unSubscribe$ = new Subject<void>();
 
     constructor(
@@ -68,16 +83,38 @@ export class MatGridComponent implements OnInit, OnDestroy, AfterViewInit {
         this.formGroup = new FormGroup({});
     }
 
+    ngOnChanges(changes: SimpleChanges): void {
+        const displayedColumns = changes['displayedColumns'];
+        if (displayedColumns && this.selection) {
+            displayedColumns.currentValue.unshift('select');
+        }
+    }
+
+    ngAfterViewInit(): void {
+        this.loadFilters();
+        this._subscribeOnSelectionChange();
+        this._subscribeOnFormControlChanges();
+        this._subscribeOnEachFormControl();
+        this.cdr.detectChanges();
+    }
+
     ngOnDestroy(): void {
         this.unSubscribe$.next();
         this.unSubscribe$.complete();
     }
 
-    ngAfterViewInit(): void {
-        this.loadFilters();
-        this._subscribeOnFormControlChanges();
-        this._subscribeOnEachFormControl();
-        this.cdr.detectChanges();
+    isAllSelected() {
+        const numSelected = this.selection_.selected.length;
+        const numRows = this.tableConfig.items.length;
+        return numSelected === numRows;
+    }
+
+    toggleAllRows() {
+        this.isAllSelected()
+            ? this.selection_.clear()
+            : this.tableConfig.items.forEach((row) =>
+                  this.selection_.select(row)
+              );
     }
 
     trackByCellColumnDef(index: number, item: IColumn) {
@@ -106,7 +143,11 @@ export class MatGridComponent implements OnInit, OnDestroy, AfterViewInit {
         let j = 0;
         this.cells.forEach((column, index) => {
             if (column.cell.type === this.tableCellEnum.CUSTOM) {
-                for (let i = j; i < j + this.tableConfig.pageSize; i++) {
+                for (
+                    let i = j * this.tableConfig.pageSize;
+                    i < (j + 1) * this.tableConfig.pageSize;
+                    i++
+                ) {
                     console.log(i);
                     const factory =
                         this.componentFactoryResolver.resolveComponentFactory(
@@ -136,6 +177,15 @@ export class MatGridComponent implements OnInit, OnDestroy, AfterViewInit {
 
     getTableRow(row: { [key: string]: any }) {
         this.tableRow.emit(row);
+    }
+
+    private _subscribeOnSelectionChange() {
+        this.selection_.changed
+            .pipe(takeUntil(this.unSubscribe$), debounceTime(300))
+            .subscribe((changeModel) => {
+                console.log(changeModel.source.selected);
+                this.selectionChange.emit(changeModel.source.selected);
+            });
     }
 
     private _subscribeOnFormControlChanges() {

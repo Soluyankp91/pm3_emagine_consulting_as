@@ -21,6 +21,17 @@
         (matSortChange)="sortChange.emit($event)"
         [formGroup]="formGroup"
     >
+    <ng-container *ngIf="selection">
+        <ng-container matColumnDef="select">
+            <mat-header-cell *matHeaderCellDef>
+
+                <mat-checkbox [checked]="selection_.hasValue() && isAllSelected()" [indeterminate]="selection_.hasValue() && !isAllSelected()" (change)="toggleAllRows()"></mat-checkbox>
+            </mat-header-cell>
+            <mat-cell *matCellDef="let row">
+                <mat-checkbox [checked]="selection_.isSelected(row)" (click)="$event.stopPropagation()" (change)="selection_.toggle(row)"></mat-checkbox>
+            </mat-cell>
+        </ng-container>
+    </ng-container>
         <ng-container
             *ngFor="let cell of cells; trackBy: trackByCellColumnDef"
             [matColumnDef]="cell.matColumnDef"
