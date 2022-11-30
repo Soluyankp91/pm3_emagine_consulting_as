@@ -9,8 +9,25 @@ import { HttpClientModule, HTTP_INTERCEPTORS } from '@angular/common/http';
 import { ServiceProxyModule } from 'src/shared/service-proxies/service-proxy.module';
 import { API_BASE_URL } from 'src/shared/service-proxies/service-proxies';
 import { AppConsts } from 'src/shared/AppConsts';
-import { MsalBroadcastService, MsalGuard, MsalGuardConfiguration, MsalInterceptor, MsalInterceptorConfiguration, MsalModule, MsalService, MSAL_GUARD_CONFIG, MSAL_INSTANCE, MSAL_INTERCEPTOR_CONFIG } from '@azure/msal-angular';
-import { BrowserCacheLocation, InteractionType, IPublicClientApplication, LogLevel, PublicClientApplication } from '@azure/msal-browser';
+import {
+    MsalBroadcastService,
+    MsalGuard,
+    MsalGuardConfiguration,
+    MsalInterceptor,
+    MsalInterceptorConfiguration,
+    MsalModule,
+    MsalService,
+    MSAL_GUARD_CONFIG,
+    MSAL_INSTANCE,
+    MSAL_INTERCEPTOR_CONFIG,
+} from '@azure/msal-angular';
+import {
+    BrowserCacheLocation,
+    InteractionType,
+    IPublicClientApplication,
+    LogLevel,
+    PublicClientApplication,
+} from '@azure/msal-browser';
 import { LoginGuard } from './login/login.guard';
 import { LoginComponent } from './login/login.component';
 import { environment } from 'src/environments/environment';
@@ -18,7 +35,9 @@ import { NgxSpinnerModule, NgxSpinnerService } from 'ngx-spinner';
 import { CommonModule } from '@angular/common';
 import { LocalHttpService } from 'src/shared/service-proxies/local-http.service';
 
-const isIE = window.navigator.userAgent.indexOf("MSIE ") > -1 || window.navigator.userAgent.indexOf("Trident/") > -1; // Remove this line to use Angular Universal
+const isIE =
+    window.navigator.userAgent.indexOf('MSIE ') > -1 ||
+    window.navigator.userAgent.indexOf('Trident/') > -1; // Remove this line to use Angular Universal
 
 export function loggerCallback(logLevel: LogLevel, message: string) {
     // console.log(message);
@@ -30,7 +49,7 @@ export function MSALInstanceFactory(): IPublicClientApplication {
             clientId: environment.msalClientId,
             authority: environment.msalAuthorityUrl,
             redirectUri: '/',
-            postLogoutRedirectUri: '/'
+            postLogoutRedirectUri: '/',
         },
         cache: {
             cacheLocation: BrowserCacheLocation.LocalStorage,
@@ -40,19 +59,23 @@ export function MSALInstanceFactory(): IPublicClientApplication {
             loggerOptions: {
                 loggerCallback,
                 logLevel: LogLevel.Info,
-                piiLoggingEnabled: false
-            }
-        }
+                piiLoggingEnabled: false,
+            },
+        },
     });
 }
 
 export function MSALInterceptorConfigFactory(): MsalInterceptorConfiguration {
     const protectedResourceMap = new Map<string, Array<string>>();
-    protectedResourceMap.set(environment.apiUrl, ['openid', 'profile', environment.msalInterceptorConfigUrl]);
+    protectedResourceMap.set(environment.apiUrl, [
+        'openid',
+        'profile',
+        environment.msalInterceptorConfigUrl,
+    ]);
 
     return {
         interactionType: InteractionType.Redirect,
-        protectedResourceMap
+        protectedResourceMap,
     };
 }
 
@@ -60,9 +83,9 @@ export function MSALGuardConfigFactory(): MsalGuardConfiguration {
     return {
         interactionType: InteractionType.Redirect,
         authRequest: {
-            scopes: ['openid', 'profile', environment.msalInterceptorConfigUrl]
+            scopes: ['openid', 'profile', environment.msalInterceptorConfigUrl],
         },
-        loginFailedRoute: '/login'
+        loginFailedRoute: '/login',
     };
 }
 
@@ -71,10 +94,7 @@ export function getRemoteServiceBaseUrl(): string {
 }
 
 @NgModule({
-    declarations: [
-        AppComponent,
-        LoginComponent,
-    ],
+    declarations: [AppComponent, LoginComponent],
     imports: [
         CommonModule,
         AppRoutingModule,
@@ -88,34 +108,32 @@ export function getRemoteServiceBaseUrl(): string {
         LoginGuard,
         {
             provide: API_BASE_URL,
-            useFactory: getRemoteServiceBaseUrl
+            useFactory: getRemoteServiceBaseUrl,
         },
         {
             provide: HTTP_INTERCEPTORS,
             useClass: MsalInterceptor,
-            multi: true
+            multi: true,
         },
         {
             provide: MSAL_INSTANCE,
-            useFactory: MSALInstanceFactory
+            useFactory: MSALInstanceFactory,
         },
         {
             provide: MSAL_GUARD_CONFIG,
-            useFactory: MSALGuardConfigFactory
+            useFactory: MSALGuardConfigFactory,
         },
         {
             provide: MSAL_INTERCEPTOR_CONFIG,
-            useFactory: MSALInterceptorConfigFactory
+            useFactory: MSALInterceptorConfigFactory,
         },
         MsalService,
         MsalGuard,
         MsalBroadcastService,
         NgxSpinnerService,
-        LocalHttpService
+        LocalHttpService,
     ],
-    bootstrap: [
-        AppComponent
-    ]
+    bootstrap: [AppComponent],
 })
 export class AppModule {
     constructor(iconRegistry: MatIconRegistry, sanitizer: DomSanitizer) {
@@ -332,7 +350,6 @@ export class AppModule {
                 'assets/common/images/file-uploader/folder.svg'
             )
         );
-
 
         iconRegistry.addSvgIcon(
             'file-folder',
@@ -732,6 +749,13 @@ export class AppModule {
             'duplicate-icon-green',
             sanitizer.bypassSecurityTrustResourceUrl(
                 'assets/common/images/duplicate-icon-green.svg'
+            )
+        );
+
+        iconRegistry.addSvgIcon(
+            'contracts-icon',
+            sanitizer.bypassSecurityTrustResourceUrl(
+                'assets/common/images/contracts-icon.svg'
             )
         );
     }

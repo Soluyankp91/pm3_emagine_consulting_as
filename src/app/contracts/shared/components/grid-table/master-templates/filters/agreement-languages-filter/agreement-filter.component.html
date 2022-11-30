@@ -1,0 +1,8 @@
+<emg-multi-select
+    *ngIf="agreementLanguages$ | async as agreementTypes"
+    [options]="agreementTypes"
+    [displayedProperty]="'name'"
+    [formControl]="filterFormControl"
+>
+    <div #triggerButton>Languages</div></emg-multi-select
+>
