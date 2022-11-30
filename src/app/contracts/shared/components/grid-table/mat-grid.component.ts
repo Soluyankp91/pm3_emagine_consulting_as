@@ -96,6 +96,7 @@ export class MatGridComponent
             this.displayedColumns.push('actions');
         }
         if (tableConfig.currentValue && !tableConfig.firstChange) {
+            console.log('change');
             this.insertCells();
         }
     }
@@ -105,7 +106,6 @@ export class MatGridComponent
         this._subscribeOnSelectionChange();
         this._subscribeOnFormControlChanges();
         this._subscribeOnEachFormControl();
-        console.log('start');
         this.insertCells();
         this.cdr.detectChanges();
     }
@@ -162,10 +162,12 @@ export class MatGridComponent
                     i < (j + 1) * this.tableConfig.pageSize;
                     i++
                 ) {
+                    console.log(i);
                     const factory =
                         this.componentFactoryResolver.resolveComponentFactory(
                             column.cell.component as ComponentType<any>
                         );
+                    console.log(this.cellContainer);
                     const component = this.cellContainer
                         .get(i)
                         ?.createComponent(factory);
