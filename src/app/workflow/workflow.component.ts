@@ -17,7 +17,7 @@ import { InternalLookupService } from '../shared/common/internal-lookup.service'
 import { ConfirmationDialogComponent } from '../shared/components/confirmation-dialog/confirmation-dialog.component';
 import { ManagerStatus } from '../shared/components/manager-search/manager-search.model';
 import { CreateWorkflowDialogComponent } from './create-workflow-dialog/create-workflow-dialog.component';
-import { DialogConfig, ISelectableIdNameDto, SelectableEmployeeDto, StepTypes, SyncStatusIcon } from './workflow.model';
+import { DialogConfig, getStatusIcon, getWorkflowStatus, ISelectableIdNameDto, SelectableEmployeeDto, StepTypes, SyncStatusIcon } from './workflow.model';
 
 const WorkflowGridOptionsKey = 'WorkflowGridFILTERS.1.0.5';
 @Component({
@@ -459,8 +459,8 @@ export class WorkflowComponent extends AppComponentBase implements OnInit, OnDes
                         endDate: x.actualEndDate,
                         salesType: this.findItemById(this.saleTypes, x.salesTypeId),
                         deliveryType: this.findItemById(this.deliveryTypes, x.deliveryTypeId),
-                        statusName: x.isDeleted ? 'Deleted workflow' :  this.getWorkflowStatus(x.workflowStatus!),
-                        statusIcon: x.isDeleted ? 'deleted-status' : this.getStatusIcon(x.workflowStatus!),
+                        statusName: x.isDeleted ? 'Deleted workflow' : getWorkflowStatus(x.workflowStatus!),
+                        statusIcon: x.isDeleted ? 'deleted-status' : getStatusIcon(x.workflowStatus!),
                         status: x.workflowStatus,
                         isDeleted: x.isDeleted,
                         consultants: x.consultants,
@@ -477,36 +477,6 @@ export class WorkflowComponent extends AppComponentBase implements OnInit, OnDes
                 this.totalCount = result.totalCount;
                 this.saveGridOptions();
             });
-    }
-
-    getStatusIcon(status: number) {
-        switch (status) {
-            case WorkflowStatus.Active:
-                return 'active-status';
-            case WorkflowStatus.Pending:
-                return 'pending-status';
-            case WorkflowStatus.PendingDataMissing:
-                return 'pending-data-missing-status';
-            case WorkflowStatus.Finished:
-                return 'finished-status';
-            default:
-                return '';
-        }
-    }
-
-    getWorkflowStatus(status: number) {
-        switch (status) {
-            case WorkflowStatus.Active:
-                return 'Active workflow';
-            case WorkflowStatus.Pending:
-                return 'Pending workflow';
-            case WorkflowStatus.PendingDataMissing:
-                return 'Pending - data missing';
-            case WorkflowStatus.Finished:
-                return 'Completed workflow';
-            default:
-                break;
-        }
     }
 
     pageChanged(event?: any): void {

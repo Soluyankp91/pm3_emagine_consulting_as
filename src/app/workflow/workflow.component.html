@@ -303,7 +303,7 @@
                 <ng-container matColumnDef="WorkflowStatus">
                     <mat-header-cell *matHeaderCellDef fxFlex="5%" mat-sort-header fxLayoutAlign="center center"> WF Status </mat-header-cell>
                     <mat-cell *matCellDef="let row" fxFlex="5%" fxLayoutAlign="center center">
-                        <ng-container *ngIf="row.status == workflowStatus.Pending || row.status == workflowStatus.PendingDataMissing; else readOnlyWorkflowStatusTemplate">
+                        <ng-container *ngIf="row.status === workflowStatus.Pending || row.status === workflowStatus.PendingDataMissing; else readOnlyWorkflowStatusTemplate">
                             <mat-icon class="workflow-status" [matTooltip]="row.statusName" matTooltipClass="white-tooltip" [ngClass]="row?.statusIcon"
                                 #menuWorkflowStatusesTrigger="matMenuTrigger" [matMenuTriggerFor]="workflowStatusesMenu" appPreventDoubleClick (throttledClick)="$event.stopPropagation();">fiber_manual_record</mat-icon>
                             <mat-menu #workflowStatusesMenu backdropClass="workflow-list--workflow-status-menu">
