@@ -169,7 +169,8 @@ export class CreationComponent
                 ].map((attachment: FileUpload) => {
                     return new AgreementTemplateAttachmentDto(attachment);
                 });
-                agreementPostDto.sourceAgreementTemplateId =
+                // FIXME: changed from sourceAgreementTemplateId to parentAgreementTemplateId because of error
+                agreementPostDto.parentAgreementTemplateId =
                     this.clientTemplateControl.value;
                 break;
             }
