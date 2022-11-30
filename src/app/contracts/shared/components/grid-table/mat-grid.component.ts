@@ -44,6 +44,7 @@ export class MatGridComponent
     @Input() tableConfig: ITableConfig;
     @Input() cells: IColumn[];
     @Input() selection: boolean = true;
+    @Input() actions: boolean = true;
 
     @Output() sortChange = new EventEmitter<Sort>();
     @Output() pageChange = new EventEmitter<PageEvent>();
@@ -87,6 +88,9 @@ export class MatGridComponent
         const displayedColumns = changes['displayedColumns'];
         if (displayedColumns && this.selection) {
             displayedColumns.currentValue.unshift('select');
+        }
+        if (displayedColumns && this.actions) {
+            displayedColumns.currentValue.push('actions');
         }
     }
 
