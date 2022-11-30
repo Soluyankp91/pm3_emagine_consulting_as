@@ -240,31 +240,6 @@
     }
 }
 
-.inline-edit-form {
-    &--btn {
-        &__save.mat-flat-button {
-            color: $green-color;
-            font-weight: 700;
-            line-height: 40px;
-            height: 37px;
-        }
-        &__cancel.mat-flat-button {
-            color: $dark-grey-color;
-            font-weight: 700;
-            line-height: 40px;
-            height: 37px;
-        }
-        @media screen and (max-width: 1440px) {
-            &__save.mat-flat-button,
-            &__cancel.mat-flat-button {
-                font-size: 14px;
-                min-width: unset;
-                padding: 0 5px;
-            }
-        }
-    }
-}
-
 .advanced-filterd--btn {
     min-width: 155px;
     .mat-button-wrapper {
@@ -393,6 +368,26 @@
         @include flexCentered();
         mat-icon {
             @include fontLineHeightAndSize(14px, 14px, 14px, 14px);
+        }
+    }
+}
+
+.rates-and-fees--inline-edit-form {
+    &--btn {
+        &__save.mat-icon-button {
+            color: $green-color;
+            @include fontLineHeightAndSize(20px, 20px, 20px, 20px);
+            margin-right: 15px;
+        }
+        &__cancel.mat-icon-button {
+            color: $dark-grey-color;
+            @include fontLineHeightAndSize(20px, 20px, 20px, 20px);
+            margin-right: 10px;
+        }
+        &__clear.mat-icon-button {
+            color: 'inherit';
+            @include fontLineHeightAndSize(20px, 20px, 20px, 20px);
+            // margin-right: 10px;
         }
     }
 }

@@ -1297,11 +1297,12 @@
                                                 </mat-form-field>
                                             </div>
                                             <div fxFlex="10%" class="u-w--100 text-truncate-ellipsis flex-items-center">
-                                                <button [disabled]="!salesMainDataForm.commissions.at(i).valid" mat-flat-button type="button" appPreventDoubleClick (throttledClick)="editOrSaveCommissionRow(i)" class="inline-edit-form--btn__save">
-                                                    Save
+                                                <button [disabled]="!salesMainDataForm.commissions.at(i).valid" mat-icon-button type="button" appPreventDoubleClick (throttledClick)="editOrSaveCommissionRow(i)" class="rates-and-fees--inline-edit-form--btn__save">
+                                                    <mat-icon svgIcon="rates-save-icon"></mat-icon>
                                                 </button>
-                                                <button mat-icon-button type="button" appPreventDoubleClick (throttledClick)="isCommissionInitialAdd ? removeCommission(i) : cancelEditCommissionRow(i)" class="inline-edit-form--btn__cancel">
-                                                    <mat-icon>close</mat-icon>
+                                                <button mat-icon-button type="button" appPreventDoubleClick (throttledClick)="isCommissionInitialAdd ? removeCommission(i) : cancelEditCommissionRow(i)" class="rates-and-fees--inline-edit-form--btn__cancel">
+                                                    
+                                                    <mat-icon svgIcon="rates-cancel-icon"></mat-icon>
                                                 </button>
                                             </div>
                                         </ng-container>
@@ -1920,13 +1921,13 @@
 
                             <div class="inline-edit-form u-w--100">
                                 <div fxLayout="row" fxLayoutAlign="space-between start" fxLayoutGap="10px" class="workflow-sales-inline--form__header-container u-w--100" *ngIf="salesClientDataForm.clientRates?.controls?.length">
-                                    <span fxFlex="30%" class="workflow-sales-inline--form__header u-w--100">
+                                    <span fxFlex="35%" class="workflow-sales-inline--form__header u-w--100">
                                         Rate name
                                     </span>
                                     <span fxFlex="30%" class="workflow-sales-inline--form__header u-w--100">
                                         Reporting unit
                                     </span>
-                                    <span fxFlex="30%" class="workflow-sales-inline--form__header u-w--100">
+                                    <span fxFlex="25%" class="workflow-sales-inline--form__header u-w--100">
                                         Client rate
                                     </span>
                                     <span fxFlex="10%" class="workflow-sales-inline--form__header u-w--100">
@@ -1937,7 +1938,7 @@
                                         *ngFor="let rate of salesClientDataForm.clientRates.controls; index as i"
                                         [formArrayName]="i">
                                         <ng-container>
-                                            <span fxFlex="30%" class="u-w--100 text-truncate-ellipsis" [matTooltip]="rate.value.rateName" matTooltipClass="white-tooltip" appShowIfTruncated>
+                                            <span fxFlex="35%" class="u-w--100 text-truncate-ellipsis" [matTooltip]="rate.value.rateName" matTooltipClass="white-tooltip" appShowIfTruncated>
                                                 {{rate.value.rateName ?? '-'}}
                                             </span>
                                             <span fxFlex="30%" class="u-w--100 text-truncate-ellipsis" [matTooltip]="rate.value.reportingUnit?.name" matTooltipClass="white-tooltip" appShowIfTruncated>
@@ -1945,11 +1946,11 @@
                                             </span>
 
                                             <ng-container *ngIf="rate.value.editable; else clientRateCurrencyDisplay">
-                                                <div fxFlex="30%" fxLayout="row" fxLayoutAlign="start start">
-                                                    <mat-form-field appearance="fill" class="u-w--100 formFieldNoMarginPadding filter-select" fxFlex="40%">
+                                                <div fxFlex="25%" fxLayout="row" fxLayoutAlign="start start">
+                                                    <mat-form-field appearance="fill" class="u-w--100 formFieldNoMarginPadding filter-select u-mr--10" fxFlex="30%">
                                                         <input required matInput type="number" placeholder="Rate" formControlName="clientRateValue">
                                                     </mat-form-field>
-                                                    <mat-form-field appearance="fill" class="u-w--100 formFieldNoMarginPadding filter-select" fxFlex="60%">
+                                                    <mat-form-field appearance="fill" class="u-w--100 formFieldNoMarginPadding filter-select" fxFlex="50%">
                                                         <mat-select required formControlName="clientRateCurrency" placeholder="Currency" [disableOptionCentering]="true" [compareWith]="compareWithFn">
                                                             <mat-option *ngFor="let item of currencies" [value]="item">
                                                                 {{ item.name }}
@@ -1959,17 +1960,17 @@
                                                 </div>
                                             </ng-container>
                                             <ng-template #clientRateCurrencyDisplay>
-                                                <span fxFlex="30%" class="u-w--100 text-truncate-ellipsis" [matTooltip]="rate.value.clientRateValue + ' ' + rate.value.clientRateCurrency?.name" matTooltipClass="white-tooltip" appShowIfTruncated>
+                                                <span fxFlex="25%" class="u-w--100 text-truncate-ellipsis" [matTooltip]="rate.value.clientRateValue + ' ' + rate.value.clientRateCurrency?.name" matTooltipClass="white-tooltip" appShowIfTruncated>
                                                     {{rate.value.clientRateValue || rate.value.clientRateCurrency?.name ? rate.value.clientRateValue + ' ' + rate.value.clientRateCurrency?.name : '-'}}
                                                 </span>
                                             </ng-template>
                                             <ng-container *ngIf="rate.value.editable; else clientRateActionDisplay">
                                                 <div fxFlex="10%" class="u-w--100 text-truncate-ellipsis" fxLayoutAlign="end center">
-                                                    <button mat-flat-button type="button" [disabled]="!rate.valid" appPreventDoubleClick (throttledClick)="editOrSaveSpecialRate(rate.value.editable, i)" class="inline-edit-form--btn__save">
-                                                        Save
+                                                    <button mat-icon-button type="button" [disabled]="!rate.valid" appPreventDoubleClick (throttledClick)="editOrSaveSpecialRate(rate.value.editable, i)" class="rates-and-fees--inline-edit-form--btn__save">
+                                                        <mat-icon svgIcon="rates-save-icon"></mat-icon>
                                                     </button>
-                                                    <button mat-icon-button type="button" appPreventDoubleClick (throttledClick)="cancelEditClientRate(i)" class="inline-edit-form--btn__cancel">
-                                                        <mat-icon>close</mat-icon>
+                                                    <button mat-icon-button type="button" appPreventDoubleClick (throttledClick)="cancelEditClientRate(i)" class="rates-and-fees--inline-edit-form--btn__cancel">
+                                                        <mat-icon svgIcon="rates-cancel-icon"></mat-icon>
                                                     </button>
                                                 </div>
                                             </ng-container>
@@ -2028,13 +2029,13 @@
                             </div>
                             <div class="inline-edit-form u-w--100">
                                 <div fxLayout="row" fxLayoutAlign="space-between start" fxLayoutGap="10px" class="workflow-sales-inline--form__header-container u-w--100" *ngIf="salesClientDataForm.clientFees?.controls?.length">
-                                    <span fxFlex="30%" class="workflow-sales-inline--form__header u-w--100">
+                                    <span fxFlex="35%" class="workflow-sales-inline--form__header u-w--100">
                                         Fee name
                                     </span>
                                     <span fxFlex="30%" class="workflow-sales-inline--form__header u-w--100">
                                         Frequency
                                     </span>
-                                    <span fxFlex="30%" class="workflow-sales-inline--form__header u-w--100">
+                                    <span fxFlex="25%" class="workflow-sales-inline--form__header u-w--100">
                                         Client fee
                                     </span>
                                     <span fxFlex="10%" class="workflow-sales-inline--form__header u-w--100">
@@ -2046,7 +2047,7 @@
                                         *ngFor="let fee of salesClientDataForm.clientFees.controls; index as i"
                                         [formArrayName]="i">
                                         <ng-container>
-                                            <span fxFlex="30%" class="u-w--100 text-truncate-ellipsis" [matTooltip]="fee.value.feeName ?? '-'" matTooltipClass="white-tooltip" appShowIfTruncated>
+                                            <span fxFlex="35%" class="u-w--100 text-truncate-ellipsis" [matTooltip]="fee.value.feeName ?? '-'" matTooltipClass="white-tooltip" appShowIfTruncated>
                                                 {{fee.value.feeName ?? '-'}}
                                             </span>
                                             <span fxFlex="30%" class="u-w--100 text-truncate-ellipsis" [matTooltip]="fee.value.feeFrequency?.name ?? '-'" matTooltipClass="white-tooltip" appShowIfTruncated>
@@ -2054,11 +2055,11 @@
                                             </span>
 
                                             <ng-container *ngIf="fee.value.editable; else clientFeeCurrencyDisplay">
-                                                <div fxFlex="30%" fxLayout="row" fxLayoutAlign="start start">
-                                                    <mat-form-field appearance="fill" class="u-w--100 formFieldNoMarginPadding filter-select" fxFlex="40%">
+                                                <div fxFlex="25%" fxLayout="row" fxLayoutAlign="start start">
+                                                    <mat-form-field appearance="fill" class="u-w--100 formFieldNoMarginPadding filter-select u-mr--10" fxFlex="30%">
                                                         <input required matInput type="number" placeholder="Rate" formControlName="clientRateValue">
                                                     </mat-form-field>
-                                                    <mat-form-field appearance="fill" class="u-w--100 formFieldNoMarginPadding filter-select" fxFlex="60%">
+                                                    <mat-form-field appearance="fill" class="u-w--100 formFieldNoMarginPadding filter-select" fxFlex="50%">
                                                         <mat-select required formControlName="clientRateCurrency" placeholder="Currency" [disableOptionCentering]="true" [compareWith]="compareWithFn">
                                                             <mat-option *ngFor="let item of currencies" [value]="item">
                                                                 {{ item.name }}
@@ -2068,18 +2069,19 @@
                                                 </div>
                                             </ng-container>
                                             <ng-template #clientFeeCurrencyDisplay>
-                                                <span fxFlex="30%" class="u-w--100 text-truncate-ellipsis" [matTooltip]="fee.value.clientRateValue + ' ' + fee.value.clientRateCurrency?.name" matTooltipClass="white-tooltip" appShowIfTruncated>
+                                                <span fxFlex="25%" class="u-w--100 text-truncate-ellipsis" [matTooltip]="fee.value.clientRateValue + ' ' + fee.value.clientRateCurrency?.name" matTooltipClass="white-tooltip" appShowIfTruncated>
                                                     {{fee.value.clientRateValue || fee.value.clientRateCurrency?.name ? fee.value.clientRateValue + ' ' + fee.value.clientRateCurrency?.name : '-'}}
                                                 </span>
                                             </ng-template>
 
                                             <ng-container *ngIf="fee.value.editable; else clientFeeActionDisplay">
                                                 <div fxFlex="10%" class="u-w--100 text-truncate-ellipsis" fxLayoutAlign="end center">
-                                                    <button mat-flat-button type="button" [disabled]="!fee.valid" appPreventDoubleClick (throttledClick)="editOrSaveClientFee(fee.value.editable, i)" class="inline-edit-form--btn__save">
-                                                        Save
+                                                    <button mat-icon-button type="button" [disabled]="!fee.valid" appPreventDoubleClick (throttledClick)="editOrSaveClientFee(fee.value.editable, i)" class="rates-and-fees--inline-edit-form--btn__save">
+                                                        <mat-icon svgIcon="rates-save-icon"></mat-icon>
                                                     </button>
-                                                    <button mat-icon-button type="button" appPreventDoubleClick (throttledClick)="cancelEditClientFee(i)" class="inline-edit-form--btn__cancel">
-                                                        <mat-icon>close</mat-icon>
+                                                    <button mat-icon-button type="button" appPreventDoubleClick (throttledClick)="cancelEditClientFee(i)" class="rates-and-fees--inline-edit-form--btn__cancel">
+                                                        
+                                                        <mat-icon svgIcon="rates-cancel-icon"></mat-icon>
                                                     </button>
                                                 </div>
                                             </ng-container>
@@ -2897,10 +2899,10 @@
                                                     <ng-container *ngIf="consultant.value?.consultantProdataEntity?.id !== salesClientDataForm.value?.pdcInvoicingEntityId?.id">
                                                         <ng-container *ngIf="rate.value.editable; else consutlantProDataRateCurrencyDisplay">
                                                             <div fxFlex="25%" fxLayout="row" fxLayoutAlign="start start">
-                                                                <mat-form-field appearance="fill" class="u-w--100 formFieldNoMarginPadding filter-select" fxFlex="40%">
+                                                                <mat-form-field appearance="fill" class="u-w--100 formFieldNoMarginPadding filter-select u-mr--10" fxFlex="30%">
                                                                     <input [required]="consultant.value?.consultantProdataEntity?.id !== salesClientDataForm.value?.pdcInvoicingEntityId?.id" matInput type="number" placeholder="Rate" formControlName="prodataToProdataRate">
                                                                 </mat-form-field>
-                                                                <mat-form-field appearance="fill" class="u-w--100 formFieldNoMarginPadding filter-select" fxFlex="60%">
+                                                                <mat-form-field appearance="fill" class="u-w--100 formFieldNoMarginPadding filter-select" fxFlex="50%">
                                                                     <mat-select [required]="consultant.value?.consultantProdataEntity?.id !== salesClientDataForm.value?.pdcInvoicingEntityId?.id" formControlName="prodataToProdataRateCurrency" placeholder="Currency" [disableOptionCentering]="true" [compareWith]="compareWithFn">
                                                                         <mat-option *ngFor="let item of currencies" [value]="item">
                                                                             {{ item.name }}
@@ -2918,10 +2920,10 @@
 
                                                     <ng-container *ngIf="rate.value.editable; else consutlantRateCurrencyDisplay">
                                                         <div fxFlex="25%" fxLayout="row" fxLayoutAlign="start start">
-                                                            <mat-form-field appearance="fill" class="u-w--100 formFieldNoMarginPadding filter-select" fxFlex="40%">
+                                                            <mat-form-field appearance="fill" class="u-w--100 formFieldNoMarginPadding filter-select u-mr--10" fxFlex="30%">
                                                                 <input required matInput type="number" placeholder="Rate" formControlName="consultantRate">
                                                             </mat-form-field>
-                                                            <mat-form-field appearance="fill" class="u-w--100 formFieldNoMarginPadding filter-select" fxFlex="60%">
+                                                            <mat-form-field appearance="fill" class="u-w--100 formFieldNoMarginPadding filter-select" fxFlex="50%">
                                                                 <mat-select required formControlName="consultantRateCurrency" placeholder="Currency" [disableOptionCentering]="true" [compareWith]="compareWithFn">
                                                                     <mat-option *ngFor="let item of currencies" [value]="item">
                                                                         {{ item.name }}
@@ -2937,11 +2939,12 @@
                                                     </ng-template>
                                                     <ng-container *ngIf="rate.value.editable; else consultantRateActionDisplay">
                                                         <div fxFlex="10%" class="u-w--100 text-truncate-ellipsis flex-items-center">
-                                                            <button mat-flat-button type="button" [disabled]="!rate.valid" appPreventDoubleClick (throttledClick)="editOrSaveConsultantRate(consultantIndex, specialRateIndex, rate.value.editable)" class="inline-edit-form--btn__save">
-                                                                Save
+                                                            <button mat-icon-button type="button" [disabled]="!rate.valid" appPreventDoubleClick (throttledClick)="editOrSaveConsultantRate(consultantIndex, specialRateIndex, rate.value.editable)" class="rates-and-fees--inline-edit-form--btn__save">
+                                                                <mat-icon svgIcon="rates-save-icon"></mat-icon>
                                                             </button>
-                                                            <button mat-icon-button type="button" appPreventDoubleClick (throttledClick)="cancelEditConsultantRate(consultantIndex, specialRateIndex)" class="inline-edit-form--btn__cancel">
-                                                                <mat-icon>close</mat-icon>
+                                                            <button mat-icon-button type="button" appPreventDoubleClick (throttledClick)="cancelEditConsultantRate(consultantIndex, specialRateIndex)" class="rates-and-fees--inline-edit-form--btn__cancel">
+                                                              
+                                                                <mat-icon svgIcon="rates-cancel-icon"></mat-icon>
                                                             </button>
                                                         </div>
                                                     </ng-container>
@@ -3033,10 +3036,10 @@
                                                     <ng-container *ngIf="consultant.value?.consultantProdataEntity?.id !== salesClientDataForm.value?.pdcInvoicingEntityId?.id">
                                                         <ng-container *ngIf="fee.value.editable; else proDataFeeCurrencyDisplay">
                                                             <div fxFlex="25%" fxLayout="row" fxLayoutAlign="start start">
-                                                                <mat-form-field appearance="fill" class="u-w--100 formFieldNoMarginPadding filter-select" fxFlex="40%">
+                                                                <mat-form-field appearance="fill" class="u-w--100 formFieldNoMarginPadding filter-select u-mr--10" fxFlex="30%">
                                                                     <input [required]="consultant.value?.consultantProdataEntity?.id !== salesClientDataForm.value?.pdcInvoicingEntityId?.id" matInput type="number" placeholder="Rate" formControlName="prodataToProdataRate">
                                                                 </mat-form-field>
-                                                                <mat-form-field appearance="fill" class="u-w--100 formFieldNoMarginPadding filter-select" fxFlex="60%">
+                                                                <mat-form-field appearance="fill" class="u-w--100 formFieldNoMarginPadding filter-select" fxFlex="50%">
                                                                     <mat-select [required]="consultant.value?.consultantProdataEntity?.id !== salesClientDataForm.value?.pdcInvoicingEntityId?.id" formControlName="prodataToProdataRateCurrency" placeholder="Currency" [disableOptionCentering]="true" [compareWith]="compareWithFn">
                                                                         <mat-option *ngFor="let item of currencies" [value]="item">
                                                                             {{ item.name }}
@@ -3054,10 +3057,10 @@
 
                                                     <ng-container *ngIf="fee.value.editable; else consultantFeeCurrencyDisplay">
                                                         <div fxFlex="25%" fxLayout="row" fxLayoutAlign="start start">
-                                                            <mat-form-field appearance="fill" class="u-w--100 formFieldNoMarginPadding filter-select" fxFlex="40%">
+                                                            <mat-form-field appearance="fill" class="u-w--100 formFieldNoMarginPadding filter-select u-mr--10" fxFlex="30%">
                                                                 <input required matInput type="number" placeholder="Rate" formControlName="consultantRate">
                                                             </mat-form-field>
-                                                            <mat-form-field appearance="fill" class="u-w--100 formFieldNoMarginPadding filter-select" fxFlex="60%">
+                                                            <mat-form-field appearance="fill" class="u-w--100 formFieldNoMarginPadding filter-select" fxFlex="50%">
                                                                 <mat-select required formControlName="consultantRateCurrency" placeholder="Currency" [disableOptionCentering]="true" [compareWith]="compareWithFn">
                                                                     <mat-option *ngFor="let item of currencies" [value]="item">
                                                                         {{ item.name }}
@@ -3074,11 +3077,11 @@
 
                                                     <ng-container *ngIf="fee.value.editable; else clientFeeActionDisplay">
                                                         <div fxFlex="10%" class="u-w--100 text-truncate-ellipsis flex-items-center">
-                                                            <button mat-flat-button type="button" [disabled]="!fee.valid" appPreventDoubleClick (throttledClick)="editOrSaveConsultantFee(consultantIndex, specialFeeIndex, fee.value.editable)" class="inline-edit-form--btn__save">
-                                                                Save
+                                                            <button mat-icon-button type="button" [disabled]="!fee.valid" appPreventDoubleClick (throttledClick)="editOrSaveConsultantFee(consultantIndex, specialFeeIndex, fee.value.editable)" class="rates-and-fees--inline-edit-form--btn__save">
+                                                                <mat-icon svgIcon="rates-save-icon"></mat-icon>
                                                             </button>
-                                                            <button mat-icon-button type="button" appPreventDoubleClick (throttledClick)="cancelEditConsultantFee(consultantIndex, specialFeeIndex)" class="inline-edit-form--btn__cancel">
-                                                                <mat-icon>close</mat-icon>
+                                                            <button mat-icon-button type="button" appPreventDoubleClick (throttledClick)="cancelEditConsultantFee(consultantIndex, specialFeeIndex)" class="rates-and-fees--inline-edit-form--btn__cancel">
+                                                                <mat-icon svgIcon="rates-cancel-icon"></mat-icon>
                                                             </button>
                                                         </div>
                                                     </ng-container>
