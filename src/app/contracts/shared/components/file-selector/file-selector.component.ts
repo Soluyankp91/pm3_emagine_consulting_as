@@ -89,6 +89,8 @@ export class FileSelectorComponent
 
     writeValue(value: any): void {
         if (value === null) {
+            this.inheritedFilesModified = [];
+            this.selectedInheritedFiles = [];
         }
     }
 

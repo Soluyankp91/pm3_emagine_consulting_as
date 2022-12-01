@@ -97,10 +97,10 @@ export class CreateMasterTemplateComponent implements OnInit, OnDestroy {
         const agreementPostDto = Object.assign(
             {},
             {
-                ...this.masterTemplateFormGroup.value,
+                ...this.masterTemplateFormGroup.getRawValue(),
                 creationMode: creationMode,
             }
-        ) as any;
+        ) as SaveAgreementTemplateDto;
         const uploadedFiles = this.masterTemplateFormGroup.uploadedFiles?.value
             ? this.masterTemplateFormGroup.uploadedFiles?.value
             : [];
@@ -164,13 +164,21 @@ export class CreateMasterTemplateComponent implements OnInit, OnDestroy {
     }
 
     private onCreationModeChange(mode: AgreementCreationMode) {
+        this.masterTemplateFormGroup.reset();
+        this.preselectedFiles = [];
+
         if (mode === AgreementCreationMode.FromScratch) {
             this.duplicateTemplateControl.reset(null, { emitEvent: false });
-        } else {
-            this.masterTemplateOptionsChanged$.next('');
+            this.masterTemplateFormGroup.enable({
+                emitEvent: false,
+            });
+            return;
         }
-        this.masterTemplateFormGroup.reset(INITIAL_MASTER_TEMPLATE_FORM_VALUE);
-        this.preselectedFiles = [];
+
+        this.masterTemplateOptionsChanged$.next('');
+        this.masterTemplateFormGroup.disable({
+            emitEvent: false,
+        });
     }
 
     private navigateOnAction() {
@@ -189,6 +197,8 @@ export class CreateMasterTemplateComponent implements OnInit, OnDestroy {
                     );
                 }),
                 tap((template) => {
+                    this.masterTemplateFormGroup.enable({ emitEvent: false });
+                    this._disableControls();
                     this.masterTemplateFormGroup.patchValue({
                         isEnabled: template.isEnabled,
                         agreementType: template.agreementType,
@@ -257,5 +267,17 @@ export class CreateMasterTemplateComponent implements OnInit, OnDestroy {
             .subscribe((isDirty) => {
                 this.isFormDirty = isDirty;
             });
+    }
+
+    private _disableControls(): void {
+        this.masterTemplateFormGroup.agreementType?.disable({
+            emitEvent: false,
+        });
+        this.masterTemplateFormGroup.recipientTypeId?.disable({
+            emitEvent: false,
+        });
+        this.masterTemplateFormGroup.language?.disable({
+            emitEvent: false,
+        });
     }
 }

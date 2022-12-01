@@ -43,6 +43,7 @@ export class AutoNameComponent
     @ViewChild('input') input: ElementRef<HTMLInputElement>;
 
     sampleData = false;
+    isDisabled = false;
     optionItems: AutoName[] = [];
     displayedOptionItems: AutoName[] = [];
     selectedOptions: AutoName[] = [];
@@ -145,6 +146,15 @@ export class AutoNameComponent
         this.textControl.disable();
     }
 
+    setDisabledState(isDisabled: boolean): void {
+        this.isDisabled = isDisabled;
+        if (isDisabled) {
+            this.textControl.disable();
+            return;
+        }
+        this.textControl.enable();
+    }
+
     private _buildAutoName(): string {
         return this.selectedOptions.reduce((acc, current, index) => {
             if (!index) {
@@ -198,7 +208,10 @@ export class AutoNameComponent
                     ).pipe(
                         tap((values) => {
                             values.forEach((val, index) => {
-                                this.autoNameMap.set(keys[index], val);
+                                this.autoNameMap.set(
+                                    keys[index],
+                                    val.value as string
+                                );
                             });
                         })
                     );
