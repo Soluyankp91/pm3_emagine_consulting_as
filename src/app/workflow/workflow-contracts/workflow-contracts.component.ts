@@ -1413,9 +1413,7 @@ export class WorkflowContractsComponent extends AppComponentBase implements OnIn
         if (isDraft) {
             this._consultantPeriodService.consultantContractsPUT(this.activeSideSection.consultantPeriodId!, input)
                 .pipe(finalize(() => {
-                    if (!isSyncToLegacy) {
-                        this.hideMainSpinner();
-                    }
+                    this.hideMainSpinner();
                 }))
                 .subscribe(() => {
                     this.validationTriggered = false;
