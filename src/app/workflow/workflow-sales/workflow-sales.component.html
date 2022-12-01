@@ -2324,8 +2324,9 @@
                                             </mat-error>
                                         </mat-form-field>
                                     </div>
-                                    <ng-container [ngTemplateOutlet]="consultantAdditionalInfo" [ngTemplateOutletContext]="{consultant: consultant.get('consultantName')}">
-                                    </ng-container>
+                                    <!-- <ng-container> -->
+                                    <app-consultant-information [onlyAdditionalInfo]="true" [consultantData]="consultant?.value?.consultantName?.consultant"></app-consultant-information>
+                                    <!-- </ng-container> -->
 
                                 </ng-container>
                                 <ng-container *ngIf="activeSideSection.typeId === workflowSideSections.ExtendClientPeriod || activeSideSection.typeId === workflowSideSections.ChangeClientPeriod  || activeSideSection.typeId === workflowSideSections.ChangeConsultantPeriod || activeSideSection.typeId === workflowSideSections.ExtendConsultantPeriod">

@@ -1,20 +1,55 @@
 <div fxLayout="row" fxLayoutAlign="start center" class="u-mb--20">
     <img class="border-rounded-50 image-thumbnail-responsive u-mr--16"
-        [src]="consultantProfileUrl(consultantData?.externalId)">
+        [src]="consultantProfileUrl(consultantData?.externalId)" *ngIf="!onlyAdditionalInfo">
     <div fxLayout="column">
-        <div fxLayout="row" fxLayoutAlign="start center">
+        <div fxLayout="row" fxLayoutAlign="start center" *ngIf="!onlyAdditionalInfo">
             <p class="consultant--name">
                 {{consultantData?.name}}
             </p>
-            <button *ngIf="consultantData?.id" mat-icon-button class="consultant-deeplink--btn" appPreventDoubleClick
-                (throttledClick)="$event.stopPropagation(); deepLinkToSourcing(consultantData?.id)"
-                matTooltip="Preview in Sourcing" matTooltipClass="white-tooltip">
-                <mat-icon svgIcon="sourcing-deeplink"></mat-icon>
-            </button>
         </div>
-        <span class="consultant--information">
-            {{consultantData?.companyName}}  {{consultantData?.city && consultantData?.companyName ? '| ' + consultantData?.city : ''}}, {{tenantEnum[consultantData?.tenantId]}} |
-            #{{consultantData?.id}} / {{tenantEnum[consultantData?.tenantId]}}-{{consultantData?.legacyId}}
-        </span>
+        <div fxLayout="row wrap" fxLayoutAlign="start center" class="consultant--information u-w--100">
+            <ng-container *ngIf="consultantData?.companyName">
+                <span class="consultant--information-label u-mr--5">
+                    Copmpany name:
+                </span>
+                <span class="consultant--information-value u-mr--5">
+                    {{consultantData?.companyName}}
+                </span>
+            </ng-container>
+            <ng-container *ngIf="consultantData?.city">
+                <span class="consultant--information-label u-mr--5">
+                    {{consultantData?.companyName ? '| ' : ''}}Address:
+                </span>
+                <span class="consultant--information-value u-mr--5">
+                    {{consultantData?.city}}
+                </span>
+            </ng-container>
+            <ng-container *ngIf="consultantData?.id">
+                <span class="consultant--information-label u-mr--5">
+                    {{consultantData?.companyName || consultantData?.city ? '| ' : ''}}Consultant ID:
+                </span>
+                <span class="consultant--information-value">
+                    # {{consultantData?.id}} {{consultantData?.legacyId ? ' / ' + consultantData?.legacyId : ''}}
+                </span>
+                <button *ngIf="consultantData?.id" mat-icon-button class="consultant-deeplink--btn" appPreventDoubleClick
+                    (throttledClick)="$event.stopPropagation(); deepLinkToSourcing(consultantData?.id)" matTooltip="Preview in Sourcing"
+                    matTooltipClass="white-tooltip">
+                    <mat-icon svgIcon="sourcing-deeplink"></mat-icon>
+                </button>
+            </ng-container>
+            <ng-container *ngIf="consultantData?.id">
+                <span class="consultant--information-label u-mr--5">
+                    {{consultantData?.companyName || consultantData?.city || consultantData?.id ? '| ' : ''}}Supplier ID:
+                </span>
+                <span class="consultant--information-value">
+                    {{consultantData?.supplierId}}
+                </span>
+                <button *ngIf="consultantData?.id" mat-icon-button class="consultant-deeplink--btn" appPreventDoubleClick
+                    (throttledClick)="$event.stopPropagation(); deepLinkToSourcing(consultantData?.id)" matTooltip="Link to Supplier profile"
+                    matTooltipClass="white-tooltip">
+                    <mat-icon svgIcon="supplier-icon"></mat-icon>
+                </button>
+            </ng-container>
+        </div>
     </div>
 </div>

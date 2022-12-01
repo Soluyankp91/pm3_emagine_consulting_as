@@ -447,7 +447,7 @@ export class WorkflowComponent extends AppComponentBase implements OnInit, OnDes
                         clientName: x.clientName,
                         startDate: x.startDate,
                         startDateOfOpenedPeriodOrLastClientPeriod: x.startDateOfOpenedPeriodOrLastClientPeriod,
-                        endDate: x.endDate,
+                        endDate: x.actualEndDate,
                         salesType: this.findItemById(this.saleTypes, x.salesTypeId),
                         deliveryType: this.findItemById(this.deliveryTypes, x.deliveryTypeId),
                         statusName: x.isDeleted ? 'Finished' : WorkflowStatus[x.workflowStatus!],

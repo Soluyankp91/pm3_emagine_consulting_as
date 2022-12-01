@@ -9,6 +9,7 @@ import { TenantEnum } from './consultant-information.model';
 })
 export class ConsultantInformationComponent extends AppComponentBase implements OnInit {
     @Input() consultantData: any;
+    @Input() onlyAdditionalInfo: boolean;
     tenantEnum = TenantEnum;
     constructor(
         injector: Injector
@@ -17,6 +18,10 @@ export class ConsultantInformationComponent extends AppComponentBase implements 
     }
 
     ngOnInit(): void {
+    }
+
+    openSupplierProfile(supplierId: number) {
+        console.log(supplierId);
     }
 
 }

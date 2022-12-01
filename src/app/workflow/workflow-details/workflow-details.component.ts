@@ -240,7 +240,7 @@ export class WorkflowDetailsComponent extends AppComponentBase implements OnInit
             }))
             .subscribe(result => {
                 this.clientPeriods = result.clientPeriods;
-                this.workflowClient = result.clientName;
+                // this.workflowClient = result.clientName;
                 this.workflowDirectClientid = result.directClientId;
                 this.workflowConsultants = result.consultantNamesWithRequestUrls!;
                 this.workflowId = result.workflowId!;
