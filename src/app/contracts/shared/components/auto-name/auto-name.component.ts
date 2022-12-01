@@ -198,7 +198,8 @@ export class AutoNameComponent
                     ).pipe(
                         tap((values) => {
                             values.forEach((val, index) => {
-                                this.autoNameMap.set(keys[index], val);
+                                // FIXME: commented out because of errors (after service regenerate)
+                                // this.autoNameMap.set(keys[index], val);
                             });
                         })
                     );
