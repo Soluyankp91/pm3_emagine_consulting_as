@@ -17,6 +17,8 @@ import {
     OnDestroy,
     OnChanges,
     SimpleChanges,
+    ContentChildren,
+    TemplateRef,
 } from '@angular/core';
 import { PageEvent } from '@angular/material/paginator';
 import { Sort } from '@angular/material/sort';
@@ -54,10 +56,11 @@ export class MatGridComponent
     @Output() tableRow = new EventEmitter<{ [key: string]: any }>();
     @Output() selectionChange = new EventEmitter();
 
+    @ContentChildren('customCells')
+    customCells: QueryList<TemplateRef<any>>;
+
     @ViewChildren('filterContainer', { read: ViewContainerRef })
     children: QueryList<ViewContainerRef>;
-    @ViewChildren('cellContainer', { read: ViewContainerRef })
-    cellContainer: QueryList<ViewContainerRef>;
 
     formGroup: FormGroup;
 
@@ -89,30 +92,34 @@ export class MatGridComponent
     ngOnChanges(changes: SimpleChanges): void {
         const displayedColumns = changes['displayedColumns'];
         const tableConfig = changes['tableConfig'];
+        const displayedColumnsCopy = [...this.displayedColumns];
         if (displayedColumns && this.selection) {
-            this.displayedColumns.unshift('select');
+            displayedColumnsCopy.unshift('select');
         }
         if (displayedColumns && this.actions) {
-            this.displayedColumns.push('actions');
+            displayedColumnsCopy.push('actions');
         }
+        this.displayedColumns = displayedColumnsCopy;
         if (tableConfig.currentValue && !tableConfig.firstChange) {
-            console.log('change');
-            this.insertCells();
         }
     }
-
+    firstTime = true;
     ngAfterViewInit(): void {
+        console.log('view init');
         this.loadFilters();
         this._subscribeOnSelectionChange();
         this._subscribeOnFormControlChanges();
         this._subscribeOnEachFormControl();
-        this.insertCells();
-        this.cdr.detectChanges();
     }
 
     ngOnDestroy(): void {
         this.unSubscribe$.next();
         this.unSubscribe$.complete();
+    }
+
+    output(val: any, cell: any) {
+        console.log(val);
+        return val;
     }
 
     isAllSelected() {
@@ -152,29 +159,6 @@ export class MatGridComponent
                     );
                 }
             });
-    }
-    insertCells() {
-        let j = 0;
-        this.cells.forEach((column, index) => {
-            if (column.cell.type === this.tableCellEnum.CUSTOM) {
-                for (
-                    let i = j * this.tableConfig.pageSize;
-                    i < (j + 1) * this.tableConfig.pageSize;
-                    i++
-                ) {
-                    console.log(i);
-                    const factory =
-                        this.componentFactoryResolver.resolveComponentFactory(
-                            column.cell.component as ComponentType<any>
-                        );
-                    console.log(this.cellContainer);
-                    const component = this.cellContainer
-                        .get(i)
-                        ?.createComponent(factory);
-                }
-                j++;
-            }
-        });
     }
 
     closeFilter(chip: string) {

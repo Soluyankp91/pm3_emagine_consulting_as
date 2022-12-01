@@ -1,6 +1,20 @@
-import { Directive, Input, TemplateRef, OnInit, ElementRef, HostListener, ViewContainerRef } from '@angular/core';
+import {
+    Directive,
+    Input,
+    TemplateRef,
+    OnInit,
+    ElementRef,
+    HostListener,
+    ViewContainerRef,
+    Renderer2,
+} from '@angular/core';
 import { TemplatePortal } from '@angular/cdk/portal';
-import { OverlayRef, Overlay, OverlayPositionBuilder } from '@angular/cdk/overlay';
+import {
+    OverlayRef,
+    Overlay,
+    OverlayPositionBuilder,
+    OverlayConfig,
+} from '@angular/cdk/overlay';
 
 @Directive({
     selector: '[customTooltip]',
@@ -11,6 +25,7 @@ export class CustomTooltipDirective implements OnInit {
     private _overlayRef: OverlayRef;
 
     constructor(
+        private renderer: Renderer2,
         private overlay: Overlay,
         private overlayPositionBuilder: OverlayPositionBuilder,
         private elementRef: ElementRef,
@@ -19,16 +34,18 @@ export class CustomTooltipDirective implements OnInit {
 
     ngOnInit(): void {
         if (this.tooltipTemplate) {
-            const position = this.overlayPositionBuilder.flexibleConnectedTo(this.elementRef).withPositions([
-                {
-                    originX: 'end',
-                    originY: 'bottom',
-                    overlayX: 'start',
-                    overlayY: 'top',
-                    offsetX: -20,
-                    offsetY: 0,
-                },
-            ]);
+            const position = this.overlayPositionBuilder
+                .flexibleConnectedTo(this.elementRef)
+                .withPositions([
+                    {
+                        originX: 'end',
+                        originY: 'bottom',
+                        overlayX: 'start',
+                        overlayY: 'top',
+                        offsetX: -20,
+                        offsetY: 0,
+                    },
+                ]);
 
             this._overlayRef = this.overlay.create({
                 positionStrategy: position,
@@ -39,17 +56,29 @@ export class CustomTooltipDirective implements OnInit {
     }
 
     @HostListener('mouseenter')
-    private _show(): void {
+    private _show($event: MouseEvent): void {
         if (this._overlayRef) {
-            const containerPortal = new TemplatePortal(this.tooltipTemplate, this.viewContainerRef);
+            const containerPortal = new TemplatePortal(
+                this.tooltipTemplate,
+                this.viewContainerRef
+            );
+            this._overlayRef.detach();
             this._overlayRef.attach(containerPortal);
         }
     }
 
-    @HostListener('mouseout')
-    private _hide(): void {
-        if (this._overlayRef) {
+    @HostListener('mouseleave', ['$event'])
+    private _hide($event: MouseEvent): void {
+        const newTarget = ($event as MouseEvent).relatedTarget as Node | null;
+        if (!this._overlayRef?.overlayElement.contains(newTarget)) {
             this._overlayRef.detach();
         }
+        this.renderer.listen(
+            this._overlayRef.overlayElement,
+            'mouseleave',
+            () => {
+                this._overlayRef.detach();
+            }
+        );
     }
 }

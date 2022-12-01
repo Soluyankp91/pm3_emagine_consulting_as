@@ -11,4 +11,22 @@
     (pageChange)="onPageChange($event)"
     (tableRow)="onSelectTableRow($event)"
 >
+    <ng-template let-cell="element" #customCells
+        ><p [customTooltip]="tooltipTemplate1">
+            {{ cell.agreementTemplateId }}
+            <ng-template #tooltipTemplate1>
+                THIS IS agreementTemplateId: {{ cell.agreementTemplateId }}
+            </ng-template>
+        </p></ng-template
+    >
+    <ng-template let-cell="element" #customCells
+        ><p>{{ cell.legalEntityIds }}</p></ng-template
+    >
+    <ng-template let-cell="element" #customCells
+        ><p [customTooltip]="tooltipTemplate2">{{ cell.lastUpdateDateUtc }}</p>
+        <ng-template #tooltipTemplate2>
+            <div>Created {{ cell.createdDateUtc }}</div>
+            <div>Last Updated {{ cell.lastUpdateDateUtc }}</div>
+        </ng-template></ng-template
+    >
 </emg-mat-grid>

@@ -17,6 +17,7 @@ export interface IHeaderCell {
 
 export interface ICell {
     type: ETableCells;
+    index?: number,
     component?: ComponentType<any>;
 }
 

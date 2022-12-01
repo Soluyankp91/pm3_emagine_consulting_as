@@ -4,7 +4,6 @@ import {
     ICell,
     ETableCells,
 } from 'src/app/contracts/shared/components/grid-table/mat-grid.interfaces';
-import { DateCellComponent } from '../cells/date-cell/date-cell.component';
 import { AgreementLanguagesFilterComponent } from '../filters/agreement-languages-filter/agreement-filter.component';
 import { AgreementTypesFilterComponent } from '../filters/agreement-types-filter/agreement-types-filter.component';
 import { DeliveryTypesFilterComponent } from '../filters/delivery-types-filter/delivery-types-filter/delivery-types-filter.component';
@@ -34,7 +33,7 @@ export const MASTER_TEMPLATE_CELLS: ICell[] = [
     },
     {
         type: ETableCells.CUSTOM,
-        component: DateCellComponent,
+        index: 1,
     },
     {
         type: ETableCells.DEFAULT,
@@ -47,7 +46,7 @@ export const MASTER_TEMPLATE_CELLS: ICell[] = [
     },
     {
         type: ETableCells.CUSTOM,
-        component: DateCellComponent,
+        index: 2,
     },
     {
         type: ETableCells.DEFAULT,
@@ -60,7 +59,7 @@ export const MASTER_TEMPLATE_CELLS: ICell[] = [
     },
     {
         type: ETableCells.CUSTOM,
-        component: DateCellComponent,
+        index: 3,
     },
     {
         type: ETableCells.DEFAULT,

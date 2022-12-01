@@ -43,13 +43,13 @@
             </ng-container>
         </ng-container>
         <ng-container
-            *ngFor="let cell of cells; trackBy: trackByCellColumnDef"
-            [matColumnDef]="cell.matColumnDef"
+            *ngFor="let item of cells; trackBy: trackByCellColumnDef"
+            [matColumnDef]="item.matColumnDef"
         >
-            <ng-container [ngSwitch]="cell.headerCell.type">
+            <ng-container [ngSwitch]="item.headerCell.type">
                 <ng-container *ngSwitchCase="headerCellEnum.SORT">
                     <mat-header-cell *matHeaderCellDef mat-sort-header>
-                        {{ cell.headerCell.title }}
+                        {{ item.headerCell.title }}
                     </mat-header-cell>
                 </ng-container>
                 <ng-container *ngSwitchCase="headerCellEnum.FILTER">
@@ -59,12 +59,20 @@
                 </ng-container>
             </ng-container>
             <mat-cell *matCellDef="let element">
-                <ng-container [ngSwitch]="cell.cell.type">
+                <ng-container [ngSwitch]="item.cell.type">
                     <ng-container *ngSwitchCase="tableCellEnum.DEFAULT">
-                        {{ element[cell.matColumnDef] }}
+                        {{ element[item.matColumnDef] }}
                     </ng-container>
                     <ng-container *ngSwitchCase="tableCellEnum.CUSTOM">
-                        <ng-container #cellContainer></ng-container>
+                        <ng-container
+                            *ngIf="
+                                item.cell.index &&
+                                customCells.get(item.cell.index - 1) as customCell
+                            "
+                            [ngTemplateOutlet]="customCell"
+                            [ngTemplateOutletContext]="{ element: element }"
+                            ></ng-container
+                        >
                     </ng-container>
                 </ng-container>
             </mat-cell>
@@ -78,7 +86,12 @@
                     </button>
                     <mat-menu #menu="matMenu">
                         <ng-container *ngFor="let action of actionsList">
-                            <button mat-menu-item (click)="chooseAction(action.actionType, actionRow)">
+                            <button
+                                mat-menu-item
+                                (click)="
+                                    chooseAction(action.actionType, actionRow)
+                                "
+                            >
                                 <span> {{ action.label }}</span>
                             </button>
                         </ng-container>

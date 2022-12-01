@@ -39,9 +39,6 @@ const routes: Routes = [
                             {
                                 path: 'settings',
                                 component: CreationComponent,
-                                data: {
-                                    reuse: true,
-                                },
                             },
                         ],
                     },
@@ -62,16 +59,10 @@ const routes: Routes = [
                             {
                                 path: 'settings',
                                 component: CreateMasterTemplateComponent,
-                                data: {
-                                    reuse: true,
-                                },
                             },
                             {
                                 path: 'editor',
                                 component: EditorComponent,
-                                data: {
-                                    reuse: true,
-                                },
                             },
                         ],
                     },

@@ -26,7 +26,6 @@ import { CustomTooltipDirective } from './shared/directives/customTooltip/custom
 import { DropdownAutocompleteMultiselectComponent } from './shared/components/dropdown-autocomplete-multiselect/dropdown-autocomplete-multiselect.component';
 import { DropdownAutocompleteSingleSelectComponent } from './shared/components/dropdown-autocomplete-single-select/dropdown-autocomplete-single-select.component';
 import { ConfirmDialogComponent } from './shared/components/popUps/confirm-dialog/confirm-dialog.component';
-import { DateCellComponent } from './shared/components/grid-table/master-templates/cells/date-cell/date-cell.component';
 import { MatIconRegistry } from '@angular/material/icon';
 import { DomSanitizer } from '@angular/platform-browser';
 import { MasterTemplatesService } from './master-templates/listAndPreviews/services/master-templates.service';
@@ -72,7 +71,6 @@ import { NewFileUploaderDirective } from './shared/components/file-uploader/new-
         ClientSpecificComponent,
         DropdownAutocompleteSingleSelectComponent,
         ConfirmDialogComponent,
-        DateCellComponent,
         FileUploaderComponent,
         FileSelectorComponent,
     ],
