@@ -69,38 +69,38 @@ export class FileUploaderComponent implements OnInit, ControlValueAccessor {
     }
 
     private initializeFileObs() {
-        // FIXME: commented out because of errors (after service regenerate)
-        // this.uploadedFiles$ = this._uploadedFiles$.pipe(
-        //     switchMap((files) => {
-        //         let filesObservablesArr = files.map((file) =>
-        //             this.fileServiceProxy
-        //                 .temporaryPOST({ data: file, fileName: file.name })
-        //                 .pipe(
-        //                     map((temporaryFileId: string) => ({
-        //                         ...file,
-        //                         name: file.name,
-        //                         temporaryFileId: temporaryFileId,
-        //                         icon: this._getIconName(file.name),
-        //                     }))
-        //                 )
-        //         );
-        //         if (filesObservablesArr.length) {
-        //             return forkJoin(filesObservablesArr);
-        //         }
-        //         return of([]);
-        //     }),
-        //     map((files) => {
-        //         this.files = [...this.files, ...files];
-        //         return this.files;
-        //     }),
-        //     tap((files) => {
-        //         if (files && files.length) {
-        //             this.onChange(files);
-        //             return;
-        //         }
-        //         this.onChange(null);
-        //     })
-        // );
+        this.uploadedFiles$ = this._uploadedFiles$.pipe(
+            switchMap((files) => {
+                let filesObservablesArr = files.map((file) =>
+                    this.fileServiceProxy
+                        .temporaryPOST({ data: file, fileName: file.name })
+                        .pipe(
+                            map((temporaryFileId) => ({
+                                ...file,
+                                name: file.name,
+                                temporaryFileId:
+                                    temporaryFileId.value as string,
+                                icon: this._getIconName(file.name),
+                            }))
+                        )
+                );
+                if (filesObservablesArr.length) {
+                    return forkJoin(filesObservablesArr);
+                }
+                return of([]);
+            }),
+            map((files) => {
+                this.files = [...this.files, ...files];
+                return this.files;
+            }),
+            tap((files) => {
+                if (files && files.length) {
+                    this.onChange(files);
+                    return;
+                }
+                this.onChange(null);
+            })
+        );
     }
 
     private _getIconName(fileName: string): string {

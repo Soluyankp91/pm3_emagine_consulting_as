@@ -6,7 +6,7 @@ import { TenantList } from "src/app/workflow/workflow-sales/workflow-sales.model
 import { ISelectableIdNameDto } from "src/app/workflow/workflow.model";
 import { environment } from "src/environments/environment";
 import { AppConsts } from "./AppConsts";
-import { API_BASE_URL, CountryDto, EnumEntityTypeDto, IdNameDto } from "./service-proxies/service-proxies";
+import { API_BASE_URL, ContractDocumentInfoDto, CountryDto, EnumEntityTypeDto, IdNameDto } from "./service-proxies/service-proxies";
 
 export enum NotifySeverity {
     Info = 1,
@@ -158,5 +158,14 @@ export abstract class AppComponentBase {
             result.push({ id: Number(key), name: enumme[key].replace(/[A-Z]/g, ' $&').trim(), selected: false });
         }
         return result;
+    }
+
+    // TODO: move all others trackBy methods here
+    trackById(index: number, item: any) {
+        return item.id;
+    }
+
+    documentsTrackBy(index: number, item: ContractDocumentInfoDto) {
+        return item.documentStorageGuid;
     }
 }
