@@ -1,4 +1,4 @@
-import { Component, Injector, Input, OnInit } from '@angular/core';
+import { Component, Injector, Input } from '@angular/core';
 import { AppComponentBase } from 'src/shared/app-component-base';
 import { TenantEnum } from './consultant-information.model';
 
@@ -7,7 +7,7 @@ import { TenantEnum } from './consultant-information.model';
     templateUrl: './consultant-information.component.html',
     styleUrls: ['./consultant-information.component.scss']
 })
-export class ConsultantInformationComponent extends AppComponentBase implements OnInit {
+export class ConsultantInformationComponent extends AppComponentBase {
     @Input() consultantData: any;
     @Input() onlyAdditionalInfo: boolean;
     tenantEnum = TenantEnum;
@@ -16,12 +16,4 @@ export class ConsultantInformationComponent extends AppComponentBase implements 
     ) {
         super(injector);
     }
-
-    ngOnInit(): void {
-    }
-
-    openSupplierProfile(supplierId: number) {
-        console.log(supplierId);
-    }
-
 }

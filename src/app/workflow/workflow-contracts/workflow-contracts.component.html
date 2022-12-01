@@ -52,28 +52,11 @@
                         </mat-checkbox>
                     </ng-template>
                 </div>
-                <!-- remove ngIf on mat-divider when we will have readonly Sync to legacy system button -->
                 <mat-divider *ngIf="readOnlyMode && syncNotPossible && contractsSyncDataForm.showManualOption?.value" class="u-w--100"></mat-divider>
                 <form fxLayout="column" fxLayoutAlign="start start" [formGroup]="contractsTerminationConsultantForm" class="workflow-form u-w--100" id="consultantData">
                     <ng-container formArrayName="consultantTerminationContractData">
                         <div *ngFor="let consultant of contractsTerminationConsultantForm.consultantTerminationContractData.controls; index as i; last as last" [formGroupName]="i" class="workflow-contracts--block-consultants u-mt--20" [ngClass]="{'last-block': last}" [id]="'consultantDataAnchor' + i">
                             <app-consultant-information [consultantData]="consultant?.value?.consultantData"></app-consultant-information>
-                            <!-- <div fxLayout="row" fxLayoutAlign="start center" class="u-mb--20">
-                                <img *ngIf="consultant.value?.consultantData?.id" class="border-rounded-50 u-mr--16 image-thumbnail-responsive" [src]="consultantProfileUrl(consultant.value?.consultantData?.externalId)" />
-                                <div fxLayout="column">
-                                    <div fxLayout="row" fxLayoutAlign="start center">
-                                        <p class="workflow-contracts--consultant-name">
-                                            {{ consultant.value?.consultantData?.name }}
-                                        </p>
-                                        <button *ngIf="consultant.value?.consultantData?.id" mat-icon-button class="consultant-deeplink--btn" appPreventDoubleClick (throttledClick)="$event.stopPropagation(); deepLinkToSourcing(consultant.value?.consultantData?.id)" matTooltip="Preview in Sourcing" matTooltipClass="white-tooltip">
-                                            <mat-icon svgIcon="sourcing-deeplink"></mat-icon>
-                                        </button>
-                                    </div>
-                                    <span class="workflow-contracts--consultant-text">
-                                        <app-consultant-information [consultantData]="consultant?.value?.consultantData"></app-consultant-information>
-                                    </span>
-                                </div>
-                            </div> -->
                             <div fxLayout="row" fxLayoutAlign="start center" class="u-w--100 u-mb--10">
                                 <ng-container *ngIf="readOnlyMode; else nameremovedConsultantFromAnyManualChecklistsInput">
                                     <mat-icon class="termination-cancel-icon u-mr--5" [svgIcon]="'cancel-fill'" [ngClass]="{'icon-cancel': !contractsTerminationConsultantForm.consultantTerminationContractData.at(i).get('removedConsultantFromAnyManualChecklists')?.value}"
@@ -121,14 +104,6 @@
                         <span class="anchor-name">Main data</span>
                     </h1>
                     <div fxLayout="row" fxLayoutAlign="start start" class="u-w--100 u-mb--20 u-mt--20">
-                        <!-- <div fxLayout="column" fxFlex="25%">
-                            <h3 class="workflow-gray--header">Sales Type</h3>
-                            <span class="workflow-darkblue--text">{{contractsMainForm.salesType?.value?.name}}</span>
-                        </div>
-                        <div fxLayout="column" fxFlex="25%">
-                            <h3 class="workflow-gray--header">Delivery Type</h3>
-                            <span class="workflow-darkblue--text">{{contractsMainForm.deliveryType?.value?.name}}</span>
-                        </div> -->
                         <div fxLayout="column" fxFlex="25%">
                             <h3 class="workflow-step-readonly--gray-header">Project Type (Legacy)</h3>
                             <span class="workflow-step-readonly--blue-text-bold">
@@ -554,22 +529,6 @@
                             <div fxLayout="column">
                                 <h3 class="workflow-step-readonly--gray-header">Consultant</h3>
                                 <app-consultant-information [consultantData]="consultant?.value?.consultant"></app-consultant-information>
-                                <!-- <div fxLayout="row" fxLayoutAlign="start center" class="u-mb--20" *ngIf="consultant.value.employmentType?.id !== employmentTypesEnum.FeeOnly && consultant.value.employmentType?.id !== employmentTypesEnum.Recruitment">
-                                    <img *ngIf="consultant.value?.consultant?.id" class="border-rounded-50 u-mr--16 image-thumbnail-responsive" [src]="consultantProfileUrl(consultant.value?.consultant?.externalId)" />
-                                    <div fxLayout="column">
-                                        <div fxLayout="row" fxLayoutAlign="start center">
-                                            <p class="workflow-contracts--consultant-name">
-                                                {{ consultant.value?.consultant?.name }}
-                                            </p>
-                                            <button *ngIf="consultant.value?.consultant?.id" mat-icon-button class="consultant-deeplink--btn" appPreventDoubleClick (throttledClick)="$event.stopPropagation(); deepLinkToSourcing(consultant.value?.consultant?.id)" matTooltip="Preview in Sourcing" matTooltipClass="white-tooltip">
-                                                <mat-icon svgIcon="sourcing-deeplink"></mat-icon>
-                                            </button>
-                                        </div>
-                                        <span class="workflow-contracts--consultant-text">
-                                            <app-consultant-information [consultantData]="consultant?.value?.consultant"></app-consultant-information>
-                                        </span>
-                                    </div>
-                                </div> -->
                             </div>
 
                             <div fxLayout="row" fxLayoutAlign="start start" class="u-w--100">
@@ -1275,22 +1234,6 @@
                             <div *ngFor="let consultant of contractsSyncDataForm.consultants.controls; let consultantIndex = index" [formGroupName]="consultantIndex" class="workflow-form--consultants u-w--100">
                                 <span class="u-mt--20" [ngClass]="{'workflow-gray--header': readOnlyMode, 'workflow-darkblue--text': !readOnlyMode}">Consultant legal contracts</span>
                                 <app-consultant-information [consultantData]="consultant?.value?.consultant"></app-consultant-information>
-                                <!-- <div fxLayout="row" fxLayoutAlign="start center" class="u-mb--20" *ngIf="consultant.value.employmentType?.id !== employmentTypesEnum.FeeOnly && consultant.value.employmentType?.id !== employmentTypesEnum.Recruitment; else consultantNameOnly">
-                                    <img *ngIf="consultant.value?.consultant?.id" class="border-rounded-50 u-mr--16 image-thumbnail-responsive" [src]="consultantProfileUrl(consultant.value?.consultant?.externalId)" />
-                                    <div fxLayout="column">
-                                        <div fxLayout="row" fxLayoutAlign="start center">
-                                            <p class="workflow-contracts--consultant-name">
-                                                {{ consultant.value?.consultant?.name }}
-                                            </p>
-                                            <button *ngIf="consultant.value?.consultant?.id" mat-icon-button class="consultant-deeplink--btn" appPreventDoubleClick (throttledClick)="$event.stopPropagation(); deepLinkToSourcing(consultant.value?.consultant?.id)" matTooltip="Preview in Sourcing" matTooltipClass="white-tooltip">
-                                                <mat-icon svgIcon="sourcing-deeplink"></mat-icon>
-                                            </button>
-                                        </div>
-                                        <span class="workflow-contracts--consultant-text">
-                                            <app-consultant-information [consultantData]="consultant?.value?.consultant"></app-consultant-information>
-                                        </span>
-                                    </div>
-                                </div> -->
                                 <ng-template #consultantNameOnly>
                                     <p class="workflow-contracts--consultant-name">
                                         {{consultant.value?.nameOnly}}
