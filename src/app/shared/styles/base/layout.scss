@@ -296,6 +296,13 @@ html {
     line-height: 120%;
 }
 
+.page-main-subheader {
+    @include fontOpenSans(18px, 800);
+    color: $dark-grey-color;
+    line-height: 120%;
+    margin-bottom: 5px;
+}
+
 .is-loading {
     &-container {
         position: absolute;

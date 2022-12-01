@@ -1,0 +1,44 @@
+<div class="loaded-files" *ngIf="uploadedFiles$ | async as files">
+    <h4>Current master template</h4>
+    <div *ngFor="let file of files" class="file-container">
+        <div class="file-item-left">
+            <mat-icon *ngIf="file.icon" [svgIcon]="file.icon"></mat-icon>
+            <div class="file-label">{{ file.name }}</div>
+        </div>
+        <button mat-icon-button [matMenuTriggerFor]="menu">
+            <mat-icon>more_horiz</mat-icon>
+        </button>
+        <mat-menu #menu="matMenu">
+            <button mat-menu-item (click)="onFileDelete(file)">
+                Delete
+            </button>
+        </mat-menu>
+    </div>
+</div>
+<div
+    class="file-uploader"
+    appNewFileUploader
+    (filesEmitter)="onFileAdded($event)"
+>
+    <div (click)="file.click()">
+        <button mat-button class="add-attachment-cell">
+            <div class="button-labels">
+                <div class="add-button">
+                    <!-- <mat-icon svgIcon="add-button"></mat-icon> -->
+                    <span class="add-label"> Add attachment</span>
+                </div>
+                <div class="upload-tip">
+                    Upload or drag and drop file here
+                </div>
+            </div>
+        </button>
+    </div>
+    <input
+        #file
+        multiple
+        type="file"
+        [accept]="'.pdf,.doc'"
+        (change)="onFileAdded($event.target)"
+        [style.display]="'none'"
+    />
+</div>

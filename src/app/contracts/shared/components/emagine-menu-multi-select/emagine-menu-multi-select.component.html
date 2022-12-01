@@ -1,0 +1,50 @@
+<div class="menu-component-wrapper">
+    <button
+        mat-icon-button
+        [matMenuTriggerFor]="menu"
+        class="toggle-button"
+        (menuOpened)="isOpened = true"
+    >
+        <div class="align-items">
+            <span
+                [ngClass]="
+                    isOpened
+                        ? ['opened__green', 'icon__margin']
+                        : 'closed__grey'
+                "
+                ><ng-content [ngTemplateOutlet]="triggerButton"></ng-content>
+            </span>
+        </div>
+    </button>
+    <mat-menu
+        #menu="matMenu"
+        (closed)="isOpened = false"
+        backdropClass="mat-menu-content-wrapper"
+    >
+        <div class="scrollbar-container" fuseScrollbar>
+            <ng-container *ngFor="let option of options;trackBy:trackById.bind(this)">
+                <mat-checkbox
+
+                (click)="$event.stopPropagation()"
+                [matTooltip]="
+                    option[displayedProperty].length > maxLength
+                        ? option[displayedProperty]
+                        : ''
+                "
+                [value]="option"
+                (change)="toggleSelect(option)"
+                [checked]="option.selected"
+            >
+                <ng-container
+                    *ngIf="optionPrefix"
+                    [ngTemplateOutlet]="optionPrefix"
+                    [ngTemplateOutletContext]="{ $implicit: option }"
+                >
+                </ng-container>
+                {{option[displayedProperty]}}
+                </mat-checkbox
+            >
+            </ng-container>
+        </div>
+    </mat-menu>
+</div>

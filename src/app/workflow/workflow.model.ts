@@ -1,6 +1,6 @@
 import { FormArray, FormControl, FormGroup } from "@angular/forms";
 import { MatDialogConfig } from "@angular/material/dialog";
-import { EnumEntityTypeDto, WorkflowProcessType } from "src/shared/service-proxies/service-proxies";
+import { EnumEntityTypeDto, WorkflowProcessType, WorkflowStatus } from "src/shared/service-proxies/service-proxies";
 
 export class WorkflowSalesExtensionForm extends FormGroup {
     constructor() {
@@ -313,4 +313,34 @@ export enum SyncStatusIcon {
     'no-sync-icon' = 1,
     'new-sync-needed-icon'= 2,
     'synced-icon' = 3
+}
+
+export function getStatusIcon(status: number) {
+    switch (status) {
+        case WorkflowStatus.Active:
+            return 'active-status';
+        case WorkflowStatus.Pending:
+            return 'pending-status';
+        case WorkflowStatus.PendingDataMissing:
+            return 'pending-data-missing-status';
+        case WorkflowStatus.Finished:
+            return 'finished-status';
+        default:
+            return '';
+    }
+}
+
+export function getWorkflowStatus(status: number) {
+    switch (status) {
+        case WorkflowStatus.Active:
+            return 'Active workflow';
+        case WorkflowStatus.Pending:
+            return 'Pending workflow';
+        case WorkflowStatus.PendingDataMissing:
+            return 'Pending - data missing';
+        case WorkflowStatus.Finished:
+            return 'Completed workflow';
+        default:
+            break;
+    }
 }

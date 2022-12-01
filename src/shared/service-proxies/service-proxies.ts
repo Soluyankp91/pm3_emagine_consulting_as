@@ -1006,6 +1006,53 @@ export class AdminServiceProxy {
         }
         return _observableOf<void>(null as any);
     }
+
+    /**
+     * @return Success
+     */
+    clearUsersCache(): Observable<void> {
+        let url_ = this.baseUrl + "/api/Admin/clear-users-cache";
+        url_ = url_.replace(/[?&]$/, "");
+
+        let options_ : any = {
+            observe: "response",
+            responseType: "blob",
+            headers: new HttpHeaders({
+            })
+        };
+
+        return this.http.request("post", url_, options_).pipe(_observableMergeMap((response_ : any) => {
+            return this.processClearUsersCache(response_);
+        })).pipe(_observableCatch((response_: any) => {
+            if (response_ instanceof HttpResponseBase) {
+                try {
+                    return this.processClearUsersCache(response_ as any);
+                } catch (e) {
+                    return _observableThrow(e) as any as Observable<void>;
+                }
+            } else
+                return _observableThrow(response_) as any as Observable<void>;
+        }));
+    }
+
+    protected processClearUsersCache(response: HttpResponseBase): Observable<void> {
+        const status = response.status;
+        const responseBlob =
+            response instanceof HttpResponse ? response.body :
+            (response as any).error instanceof Blob ? (response as any).error : undefined;
+
+        let _headers: any = {}; if (response.headers) { for (let key of response.headers.keys()) { _headers[key] = response.headers.get(key); }}
+        if (status === 200) {
+            return blobToText(responseBlob).pipe(_observableMergeMap(_responseText => {
+            return _observableOf<void>(null as any);
+            }));
+        } else if (status !== 200 && status !== 204) {
+            return blobToText(responseBlob).pipe(_observableMergeMap(_responseText => {
+            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+            }));
+        }
+        return _observableOf<void>(null as any);
+    }
 }
 
 @Injectable()
@@ -1032,8 +1079,8 @@ export class AgreementServiceProxy {
      * @param salesTypes (optional) 
      * @param deliveryTypes (optional) 
      * @param contractTypes (optional) 
-     * @param mode (optional) 
-     * @param status (optional) 
+     * @param modes (optional) 
+     * @param statuses (optional) 
      * @param salesManagers (optional) 
      * @param contractManagers (optional) 
      * @param search (optional) 
@@ -1042,7 +1089,7 @@ export class AgreementServiceProxy {
      * @param sort (optional) 
      * @return Success
      */
-    list(agreementName?: string | undefined, languages?: number[] | undefined, clientName?: string | undefined, consultantName?: string | undefined, companyName?: string | undefined, actualRecipientName?: string | undefined, legalEntities?: number[] | undefined, agreementTypes?: number[] | undefined, recipientTypes?: number[] | undefined, salesTypes?: number[] | undefined, deliveryTypes?: number[] | undefined, contractTypes?: number[] | undefined, mode?: number | undefined, status?: number | undefined, salesManagers?: number[] | undefined, contractManagers?: number[] | undefined, search?: string | undefined, pageNumber?: number | undefined, pageSize?: number | undefined, sort?: string | undefined): Observable<AgreementListItemDtoPaginatedList> {
+    list(agreementName?: string | undefined, languages?: number[] | undefined, clientName?: string | undefined, consultantName?: string | undefined, companyName?: string | undefined, actualRecipientName?: string | undefined, legalEntities?: number[] | undefined, agreementTypes?: number[] | undefined, recipientTypes?: number[] | undefined, salesTypes?: number[] | undefined, deliveryTypes?: number[] | undefined, contractTypes?: number[] | undefined, modes?: number[] | undefined, statuses?: number[] | undefined, salesManagers?: number[] | undefined, contractManagers?: number[] | undefined, search?: string | undefined, pageNumber?: number | undefined, pageSize?: number | undefined, sort?: string | undefined): Observable<AgreementListItemDtoPaginatedList> {
         let url_ = this.baseUrl + "/api/Agreement/list?";
         if (agreementName === null)
             throw new Error("The parameter 'agreementName' cannot be null.");
@@ -1092,14 +1139,14 @@ export class AgreementServiceProxy {
             throw new Error("The parameter 'contractTypes' cannot be null.");
         else if (contractTypes !== undefined)
             contractTypes && contractTypes.forEach(item => { url_ += "ContractTypes=" + encodeURIComponent("" + item) + "&"; });
-        if (mode === null)
-            throw new Error("The parameter 'mode' cannot be null.");
-        else if (mode !== undefined)
-            url_ += "Mode=" + encodeURIComponent("" + mode) + "&";
-        if (status === null)
-            throw new Error("The parameter 'status' cannot be null.");
-        else if (status !== undefined)
-            url_ += "Status=" + encodeURIComponent("" + status) + "&";
+        if (modes === null)
+            throw new Error("The parameter 'modes' cannot be null.");
+        else if (modes !== undefined)
+            modes && modes.forEach(item => { url_ += "Modes=" + encodeURIComponent("" + item) + "&"; });
+        if (statuses === null)
+            throw new Error("The parameter 'statuses' cannot be null.");
+        else if (statuses !== undefined)
+            statuses && statuses.forEach(item => { url_ += "Statuses=" + encodeURIComponent("" + item) + "&"; });
         if (salesManagers === null)
             throw new Error("The parameter 'salesManagers' cannot be null.");
         else if (salesManagers !== undefined)
@@ -9739,7 +9786,7 @@ export class FileServiceProxy {
      * @param file (optional) 
      * @return Success
      */
-    temporaryPOST(file?: FileParameter | undefined): Observable<string> {
+    temporaryPOST(file?: FileParameter | undefined): Observable<StringResultDto> {
         let url_ = this.baseUrl + "/api/File/temporary";
         url_ = url_.replace(/[?&]$/, "");
 
@@ -9765,14 +9812,14 @@ export class FileServiceProxy {
                 try {
                     return this.processTemporaryPOST(response_ as any);
                 } catch (e) {
-                    return _observableThrow(e) as any as Observable<string>;
+                    return _observableThrow(e) as any as Observable<StringResultDto>;
                 }
             } else
-                return _observableThrow(response_) as any as Observable<string>;
+                return _observableThrow(response_) as any as Observable<StringResultDto>;
         }));
     }
 
-    protected processTemporaryPOST(response: HttpResponseBase): Observable<string> {
+    protected processTemporaryPOST(response: HttpResponseBase): Observable<StringResultDto> {
         const status = response.status;
         const responseBlob =
             response instanceof HttpResponse ? response.body :
@@ -9783,8 +9830,7 @@ export class FileServiceProxy {
             return blobToText(responseBlob).pipe(_observableMergeMap(_responseText => {
             let result200: any = null;
             let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
-                result200 = resultData200 !== undefined ? resultData200 : <any>null;
-    
+            result200 = StringResultDto.fromJS(resultData200);
             return _observableOf(result200);
             }));
         } else if (status !== 200 && status !== 204) {
@@ -9792,7 +9838,7 @@ export class FileServiceProxy {
             return throwException("An unexpected server error occurred.", status, _responseText, _headers);
             }));
         }
-        return _observableOf<string>(null as any);
+        return _observableOf<StringResultDto>(null as any);
     }
 
     /**
@@ -11832,7 +11878,7 @@ export class MergeFieldsServiceProxy {
      * @param agreementNameTemplate (optional) 
      * @return Success
      */
-    templatePreview(agreementNameTemplate?: string | undefined): Observable<string> {
+    templatePreview(agreementNameTemplate?: string | undefined): Observable<StringResultDto> {
         let url_ = this.baseUrl + "/api/MergeFields/agreementNameTemplate/template-preview?";
         if (agreementNameTemplate === null)
             throw new Error("The parameter 'agreementNameTemplate' cannot be null.");
@@ -11855,14 +11901,14 @@ export class MergeFieldsServiceProxy {
                 try {
                     return this.processTemplatePreview(response_ as any);
                 } catch (e) {
-                    return _observableThrow(e) as any as Observable<string>;
+                    return _observableThrow(e) as any as Observable<StringResultDto>;
                 }
             } else
-                return _observableThrow(response_) as any as Observable<string>;
+                return _observableThrow(response_) as any as Observable<StringResultDto>;
         }));
     }
 
-    protected processTemplatePreview(response: HttpResponseBase): Observable<string> {
+    protected processTemplatePreview(response: HttpResponseBase): Observable<StringResultDto> {
         const status = response.status;
         const responseBlob =
             response instanceof HttpResponse ? response.body :
@@ -11873,8 +11919,7 @@ export class MergeFieldsServiceProxy {
             return blobToText(responseBlob).pipe(_observableMergeMap(_responseText => {
             let result200: any = null;
             let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
-                result200 = resultData200 !== undefined ? resultData200 : <any>null;
-    
+            result200 = StringResultDto.fromJS(resultData200);
             return _observableOf(result200);
             }));
         } else if (status !== 200 && status !== 204) {
@@ -11882,7 +11927,7 @@ export class MergeFieldsServiceProxy {
             return throwException("An unexpected server error occurred.", status, _responseText, _headers);
             }));
         }
-        return _observableOf<string>(null as any);
+        return _observableOf<StringResultDto>(null as any);
     }
 
     /**
@@ -12174,6 +12219,69 @@ export class NotificationTestServiceProxy {
             }));
         }
         return _observableOf<void>(null as any);
+    }
+}
+
+@Injectable()
+export class UserManagementServiceProxy {
+    private http: HttpClient;
+    private baseUrl: string;
+    protected jsonParseReviver: ((key: string, value: any) => any) | undefined = undefined;
+
+    constructor(@Inject(HttpClient) http: HttpClient, @Optional() @Inject(API_BASE_URL) baseUrl?: string) {
+        this.http = http;
+        this.baseUrl = baseUrl !== undefined && baseUrl !== null ? baseUrl : "";
+    }
+
+    /**
+     * @return Success
+     */
+    permissions(): Observable<ClientApplicationPermissionsModel> {
+        let url_ = this.baseUrl + "/api/UserManagement/permissions";
+        url_ = url_.replace(/[?&]$/, "");
+
+        let options_ : any = {
+            observe: "response",
+            responseType: "blob",
+            headers: new HttpHeaders({
+                "Accept": "text/plain"
+            })
+        };
+
+        return this.http.request("get", url_, options_).pipe(_observableMergeMap((response_ : any) => {
+            return this.processPermissions(response_);
+        })).pipe(_observableCatch((response_: any) => {
+            if (response_ instanceof HttpResponseBase) {
+                try {
+                    return this.processPermissions(response_ as any);
+                } catch (e) {
+                    return _observableThrow(e) as any as Observable<ClientApplicationPermissionsModel>;
+                }
+            } else
+                return _observableThrow(response_) as any as Observable<ClientApplicationPermissionsModel>;
+        }));
+    }
+
+    protected processPermissions(response: HttpResponseBase): Observable<ClientApplicationPermissionsModel> {
+        const status = response.status;
+        const responseBlob =
+            response instanceof HttpResponse ? response.body :
+            (response as any).error instanceof Blob ? (response as any).error : undefined;
+
+        let _headers: any = {}; if (response.headers) { for (let key of response.headers.keys()) { _headers[key] = response.headers.get(key); }}
+        if (status === 200) {
+            return blobToText(responseBlob).pipe(_observableMergeMap(_responseText => {
+            let result200: any = null;
+            let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
+            result200 = ClientApplicationPermissionsModel.fromJS(resultData200);
+            return _observableOf(result200);
+            }));
+        } else if (status !== 200 && status !== 204) {
+            return blobToText(responseBlob).pipe(_observableMergeMap(_responseText => {
+            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+            }));
+        }
+        return _observableOf<ClientApplicationPermissionsModel>(null as any);
     }
 }
 
@@ -14907,6 +15015,66 @@ export class WorkflowIntegrationServiceProxy {
         }
         return _observableOf<ConsultantPeriodMainDataBasicDto[]>(null as any);
     }
+
+    /**
+     * @param body (optional) 
+     * @return Success
+     */
+    projectLineUpdate(body?: UpdateProjectLineFromLegacyCommand | undefined): Observable<None> {
+        let url_ = this.baseUrl + "/api/WorkflowIntegration/ProjectLineUpdate";
+        url_ = url_.replace(/[?&]$/, "");
+
+        const content_ = JSON.stringify(body);
+
+        let options_ : any = {
+            body: content_,
+            observe: "response",
+            responseType: "blob",
+            headers: new HttpHeaders({
+                "Content-Type": "application/json",
+                "Accept": "text/plain"
+            })
+        };
+
+        return this.http.request("put", url_, options_).pipe(_observableMergeMap((response_ : any) => {
+            return this.processProjectLineUpdate(response_);
+        })).pipe(_observableCatch((response_: any) => {
+            if (response_ instanceof HttpResponseBase) {
+                try {
+                    return this.processProjectLineUpdate(response_ as any);
+                } catch (e) {
+                    return _observableThrow(e) as any as Observable<None>;
+                }
+            } else
+                return _observableThrow(response_) as any as Observable<None>;
+        }));
+    }
+
+    protected processProjectLineUpdate(response: HttpResponseBase): Observable<None> {
+        const status = response.status;
+        const responseBlob =
+            response instanceof HttpResponse ? response.body :
+            (response as any).error instanceof Blob ? (response as any).error : undefined;
+
+        let _headers: any = {}; if (response.headers) { for (let key of response.headers.keys()) { _headers[key] = response.headers.get(key); }}
+        if (status === 200) {
+            return blobToText(responseBlob).pipe(_observableMergeMap(_responseText => {
+            let result200: any = null;
+            let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
+            result200 = None.fromJS(resultData200);
+            return _observableOf(result200);
+            }));
+        } else if (status === 401) {
+            return blobToText(responseBlob).pipe(_observableMergeMap(_responseText => {
+            return throwException("Unauthorized", status, _responseText, _headers);
+            }));
+        } else if (status !== 200 && status !== 204) {
+            return blobToText(responseBlob).pipe(_observableMergeMap(_responseText => {
+            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+            }));
+        }
+        return _observableOf<None>(null as any);
+    }
 }
 
 export class AddClientSpecialFeeDto implements IAddClientSpecialFeeDto {
@@ -16825,6 +16993,54 @@ export interface IClientAddressDto {
     countryName?: string | undefined;
 }
 
+export class ClientApplicationPermissionsModel implements IClientApplicationPermissionsModel {
+    permissionsVersion?: string | undefined;
+    permissions?: string[] | undefined;
+
+    constructor(data?: IClientApplicationPermissionsModel) {
+        if (data) {
+            for (var property in data) {
+                if (data.hasOwnProperty(property))
+                    (<any>this)[property] = (<any>data)[property];
+            }
+        }
+    }
+
+    init(_data?: any) {
+        if (_data) {
+            this.permissionsVersion = _data["permissionsVersion"];
+            if (Array.isArray(_data["permissions"])) {
+                this.permissions = [] as any;
+                for (let item of _data["permissions"])
+                    this.permissions!.push(item);
+            }
+        }
+    }
+
+    static fromJS(data: any): ClientApplicationPermissionsModel {
+        data = typeof data === 'object' ? data : {};
+        let result = new ClientApplicationPermissionsModel();
+        result.init(data);
+        return result;
+    }
+
+    toJSON(data?: any) {
+        data = typeof data === 'object' ? data : {};
+        data["permissionsVersion"] = this.permissionsVersion;
+        if (Array.isArray(this.permissions)) {
+            data["permissions"] = [];
+            for (let item of this.permissions)
+                data["permissions"].push(item);
+        }
+        return data;
+    }
+}
+
+export interface IClientApplicationPermissionsModel {
+    permissionsVersion?: string | undefined;
+    permissions?: string[] | undefined;
+}
+
 export class ClientAttachmentInfoOutputDto implements IClientAttachmentInfoOutputDto {
     clientAttachmentGuid?: string;
     documentStorageGuid?: string;
@@ -16901,7 +17117,7 @@ export class ClientContractBaseDto implements IClientContractBaseDto {
     id?: string;
     name?: string | undefined;
     startDate?: moment.Moment | undefined;
-    endDate?: string | undefined;
+    endDate?: moment.Moment | undefined;
     statusColorEnum?: ContractPaperStatusColorEnum;
     documents?: ContractDocumentInfoDto[] | undefined;
 
@@ -16919,7 +17135,7 @@ export class ClientContractBaseDto implements IClientContractBaseDto {
             this.id = _data["id"];
             this.name = _data["name"];
             this.startDate = _data["startDate"] ? moment(_data["startDate"].toString()) : <any>undefined;
-            this.endDate = _data["endDate"];
+            this.endDate = _data["endDate"] ? moment(_data["endDate"].toString()) : <any>undefined;
             this.statusColorEnum = _data["statusColorEnum"];
             if (Array.isArray(_data["documents"])) {
                 this.documents = [] as any;
@@ -16941,7 +17157,7 @@ export class ClientContractBaseDto implements IClientContractBaseDto {
         data["id"] = this.id;
         data["name"] = this.name;
         data["startDate"] = this.startDate ? this.startDate.format('YYYY-MM-DD') : <any>undefined;
-        data["endDate"] = this.endDate;
+        data["endDate"] = this.endDate ? this.endDate.format('YYYY-MM-DD') : <any>undefined;
         data["statusColorEnum"] = this.statusColorEnum;
         if (Array.isArray(this.documents)) {
             data["documents"] = [];
@@ -16956,7 +17172,7 @@ export interface IClientContractBaseDto {
     id?: string;
     name?: string | undefined;
     startDate?: moment.Moment | undefined;
-    endDate?: string | undefined;
+    endDate?: moment.Moment | undefined;
     statusColorEnum?: ContractPaperStatusColorEnum;
     documents?: ContractDocumentInfoDto[] | undefined;
 }
@@ -18653,7 +18869,7 @@ export class ClientWorkflowTreeItemDto implements IClientWorkflowTreeItemDto {
     id?: string;
     name?: string | undefined;
     startDate?: moment.Moment | undefined;
-    endDate?: string | undefined;
+    endDate?: moment.Moment | undefined;
     statusColorEnum?: ContractPaperStatusColorEnum;
     clientContracts?: ClientContractBaseDto[] | undefined;
     consultantContracts?: ClientContractBaseDto[] | undefined;
@@ -18673,7 +18889,7 @@ export class ClientWorkflowTreeItemDto implements IClientWorkflowTreeItemDto {
             this.id = _data["id"];
             this.name = _data["name"];
             this.startDate = _data["startDate"] ? moment(_data["startDate"].toString()) : <any>undefined;
-            this.endDate = _data["endDate"];
+            this.endDate = _data["endDate"] ? moment(_data["endDate"].toString()) : <any>undefined;
             this.statusColorEnum = _data["statusColorEnum"];
             if (Array.isArray(_data["clientContracts"])) {
                 this.clientContracts = [] as any;
@@ -18705,7 +18921,7 @@ export class ClientWorkflowTreeItemDto implements IClientWorkflowTreeItemDto {
         data["id"] = this.id;
         data["name"] = this.name;
         data["startDate"] = this.startDate ? this.startDate.format('YYYY-MM-DD') : <any>undefined;
-        data["endDate"] = this.endDate;
+        data["endDate"] = this.endDate ? this.endDate.format('YYYY-MM-DD') : <any>undefined;
         data["statusColorEnum"] = this.statusColorEnum;
         if (Array.isArray(this.clientContracts)) {
             data["clientContracts"] = [];
@@ -18730,7 +18946,7 @@ export interface IClientWorkflowTreeItemDto {
     id?: string;
     name?: string | undefined;
     startDate?: moment.Moment | undefined;
-    endDate?: string | undefined;
+    endDate?: moment.Moment | undefined;
     statusColorEnum?: ContractPaperStatusColorEnum;
     clientContracts?: ClientContractBaseDto[] | undefined;
     consultantContracts?: ClientContractBaseDto[] | undefined;
@@ -22721,6 +22937,36 @@ export interface INewWorkflowCreatedDto {
     clientPeriodId?: string | undefined;
 }
 
+export class None implements INone {
+
+    constructor(data?: INone) {
+        if (data) {
+            for (var property in data) {
+                if (data.hasOwnProperty(property))
+                    (<any>this)[property] = (<any>data)[property];
+            }
+        }
+    }
+
+    init(_data?: any) {
+    }
+
+    static fromJS(data: any): None {
+        data = typeof data === 'object' ? data : {};
+        let result = new None();
+        result.init(data);
+        return result;
+    }
+
+    toJSON(data?: any) {
+        data = typeof data === 'object' ? data : {};
+        return data;
+    }
+}
+
+export interface INone {
+}
+
 export class OutputWorkflowPeriodInfoForIncomeReportDto implements IOutputWorkflowPeriodInfoForIncomeReportDto {
     periodMainDataDtos?: ClientPeriodMainDataDto[] | undefined;
     emagineCommissionsFromOtherTenantsDtos?: InternalCommissionDetailsDto[] | undefined;
@@ -25026,6 +25272,42 @@ export enum StepType {
     Sourcing = 4,
 }
 
+export class StringResultDto implements IStringResultDto {
+    value?: string | undefined;
+
+    constructor(data?: IStringResultDto) {
+        if (data) {
+            for (var property in data) {
+                if (data.hasOwnProperty(property))
+                    (<any>this)[property] = (<any>data)[property];
+            }
+        }
+    }
+
+    init(_data?: any) {
+        if (_data) {
+            this.value = _data["value"];
+        }
+    }
+
+    static fromJS(data: any): StringResultDto {
+        data = typeof data === 'object' ? data : {};
+        let result = new StringResultDto();
+        result.init(data);
+        return result;
+    }
+
+    toJSON(data?: any) {
+        data = typeof data === 'object' ? data : {};
+        data["value"] = this.value;
+        return data;
+    }
+}
+
+export interface IStringResultDto {
+    value?: string | undefined;
+}
+
 export class SupplierResultDto implements ISupplierResultDto {
     supplierId?: number;
     supplierName?: string | undefined;
@@ -25489,6 +25771,50 @@ export interface IUpdateEnvelopeStatusCommand {
     event?: DocuSignEvent;
     timestampUtc?: moment.Moment;
     docuSignRecipientId?: string | undefined;
+}
+
+export class UpdateProjectLineFromLegacyCommand implements IUpdateProjectLineFromLegacyCommand {
+    projectLineId?: number;
+    referenceNumber?: string | undefined;
+    optionalInvoiceText?: string | undefined;
+
+    constructor(data?: IUpdateProjectLineFromLegacyCommand) {
+        if (data) {
+            for (var property in data) {
+                if (data.hasOwnProperty(property))
+                    (<any>this)[property] = (<any>data)[property];
+            }
+        }
+    }
+
+    init(_data?: any) {
+        if (_data) {
+            this.projectLineId = _data["projectLineId"];
+            this.referenceNumber = _data["referenceNumber"];
+            this.optionalInvoiceText = _data["optionalInvoiceText"];
+        }
+    }
+
+    static fromJS(data: any): UpdateProjectLineFromLegacyCommand {
+        data = typeof data === 'object' ? data : {};
+        let result = new UpdateProjectLineFromLegacyCommand();
+        result.init(data);
+        return result;
+    }
+
+    toJSON(data?: any) {
+        data = typeof data === 'object' ? data : {};
+        data["projectLineId"] = this.projectLineId;
+        data["referenceNumber"] = this.referenceNumber;
+        data["optionalInvoiceText"] = this.optionalInvoiceText;
+        return data;
+    }
+}
+
+export interface IUpdateProjectLineFromLegacyCommand {
+    projectLineId?: number;
+    referenceNumber?: string | undefined;
+    optionalInvoiceText?: string | undefined;
 }
 
 export class WorkflowAlreadyExistsDto implements IWorkflowAlreadyExistsDto {

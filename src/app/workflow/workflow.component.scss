@@ -198,16 +198,19 @@
         opacity: 0.5;
     }
     &.active-status {
-        color: $green-color;
+        color: #6BC87A;
     }
     &.pending-status {
         color: #FBD344;
     }
-    &.finished-status {
-        color: $red-color;
+    &.pending-data-missing-status {
+        color: #FB9101;
+    }
+    &.finished-status { 
+        color: $purple-color;
     }
     &.deleted-status {
-        color: $light-grey-color;
+        color: #D80027;
     }
 }
 
