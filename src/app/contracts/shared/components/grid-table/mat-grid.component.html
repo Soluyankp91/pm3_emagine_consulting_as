@@ -1,0 +1,59 @@
+<div class="container">
+    <mat-chip-list>
+        <mat-chip *ngFor="let chip of matChips">
+            <mat-icon svgIcon="close-button-icon" (click)="closeFilter(chip)">
+            </mat-icon>
+            <span>{{ chip }}</span>
+        </mat-chip>
+        <span *ngIf="matChips.length > 0">
+            <mat-icon
+                svgIcon="close-button-icon"
+                (click)="closeAllFilters()"
+            ></mat-icon>
+            Reset all Filters
+        </span>
+    </mat-chip-list>
+    <mat-table
+        [dataSource]="tableConfig.items"
+        matSort
+        [matSortDirection]="tableConfig.sortDirection"
+        [matSortActive]="tableConfig.sortActive"
+        (matSortChange)="sortChange.emit($event)"
+        [formGroup]="formGroup"
+    >
+        <ng-container
+            *ngFor="let cell of cells; trackBy: trackByCellColumnDef"
+            [matColumnDef]="cell.matColumnDef"
+        >
+            <ng-container [ngSwitch]="cell.headerCell.type">
+                <ng-container *ngSwitchCase="'sort'">
+                    <mat-header-cell *matHeaderCellDef mat-sort-header>
+                        {{ cell.headerCell.title }}
+                    </mat-header-cell>
+                </ng-container>
+                <ng-container *ngSwitchCase="'filter'">
+                    <mat-header-cell *matHeaderCellDef>
+                        <ng-container #filterContainer></ng-container>
+                    </mat-header-cell>
+                </ng-container>
+            </ng-container>
+            <mat-cell *matCellDef="let element">
+                {{ element[cell.matColumnDef] }}
+            </mat-cell>
+        </ng-container>
+
+        <mat-header-row *matHeaderRowDef="displayedColumns"></mat-header-row>
+        <mat-row
+            *matRowDef="let row; columns: displayedColumns"
+            (click)="getTableRow(row)"
+        ></mat-row>
+    </mat-table>
+    <mat-paginator
+        [showFirstLastButtons]="true"
+        [length]="tableConfig.totalCount"
+        [pageSizeOptions]="pageSizeOptions"
+        [pageSize]="tableConfig.pageSize"
+        [pageIndex]="tableConfig.pageIndex"
+        (page)="pageChange.emit($event)"
+    ></mat-paginator>
+</div>

@@ -1,0 +1,8 @@
+<emg-multi-select
+    *ngIf="salesTypes$ | async as salesTypes"
+    [options]="salesTypes"
+    [displayedProperty]="'name'"
+    [formControl]="filterFormControl"
+>
+    <div #triggerButton>Sales Types</div></emg-multi-select
+>

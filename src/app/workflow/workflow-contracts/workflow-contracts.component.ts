@@ -8,7 +8,7 @@ import { of, Subject } from 'rxjs';
 import { finalize, takeUntil } from 'rxjs/operators';
 import { InternalLookupService } from 'src/app/shared/common/internal-lookup.service';
 import { AppComponentBase } from 'src/shared/app-component-base';
-import { ClientPeriodContractsDataCommandDto, WorkflowProcessType, WorkflowServiceProxy, ClientPeriodServiceProxy, ConsultantContractsDataCommandDto, ContractsClientDataDto, ContractsMainDataDto, EnumEntityTypeDto, PeriodClientSpecialFeeDto, PeriodClientSpecialRateDto, PeriodConsultantSpecialFeeDto, PeriodConsultantSpecialRateDto, ProjectLineDto, ConsultantTerminationContractDataCommandDto, WorkflowTerminationContractDataCommandDto, ConsultantTerminationContractDataQueryDto, ClientContractsServiceProxy, ConsultantPeriodServiceProxy, ConsultantContractsServiceProxy, ConsultantPeriodContractsDataCommandDto, ClientsServiceProxy, ClientSpecialRateDto, ClientSpecialFeeDto, ConsultantResultDto, ContractSyncServiceProxy, StepType, ConsultantContractsDataQueryDto, ContractSyncResultDto } from 'src/shared/service-proxies/service-proxies';
+import { ClientPeriodContractsDataCommandDto, WorkflowProcessType, WorkflowServiceProxy, ClientPeriodServiceProxy, ConsultantContractsDataCommandDto, ContractsClientDataDto, ContractsMainDataDto, EnumEntityTypeDto, PeriodClientSpecialFeeDto, PeriodClientSpecialRateDto, PeriodConsultantSpecialFeeDto, PeriodConsultantSpecialRateDto, ProjectLineDto, ConsultantTerminationContractDataCommandDto, WorkflowTerminationContractDataCommandDto, ConsultantTerminationContractDataQueryDto, ConsultantPeriodServiceProxy, ConsultantPeriodContractsDataCommandDto, ClientsServiceProxy, ClientSpecialRateDto, ClientSpecialFeeDto, ConsultantResultDto, ContractSyncServiceProxy, StepType, ConsultantContractsDataQueryDto, ContractSyncResultDto } from 'src/shared/service-proxies/service-proxies';
 import { WorkflowDataService } from '../workflow-data.service';
 import { WorkflowProcessWithAnchorsDto } from '../workflow-period/workflow-period.model';
 import { EmploymentTypes, ProjectLineDiallogMode } from '../workflow.model';
@@ -91,9 +91,7 @@ export class WorkflowContractsComponent extends AppComponentBase implements OnIn
         private _workflowDataService: WorkflowDataService,
         private _internalLookupService: InternalLookupService,
         private _workflowServiceProxy: WorkflowServiceProxy,
-        private _clientContractsService: ClientContractsServiceProxy,
         private _consultantPeriodService: ConsultantPeriodServiceProxy,
-        private _consultantContractsService: ConsultantContractsServiceProxy,
         private _clientService: ClientsServiceProxy,
         private _contractSyncService: ContractSyncServiceProxy,
         private scrollToService: ScrollToService
@@ -312,7 +310,7 @@ export class WorkflowContractsComponent extends AppComponentBase implements OnIn
 
     startEditClientPeriod() {
         this.showMainSpinner();
-        this._clientContractsService.editStart(this.periodId!)
+        this._clientPeriodService.editStart(this.periodId!)
             .pipe(finalize(() => this.hideMainSpinner()))
             .subscribe(result => {
                 this._workflowDataService.workflowSideSectionUpdated.emit({isStatusUpdate: true});
@@ -332,7 +330,7 @@ export class WorkflowContractsComponent extends AppComponentBase implements OnIn
 
     startEditConsultantPeriod() {
         this.showMainSpinner();
-        this._consultantContractsService.editStart(this.activeSideSection.consultantPeriodId!)
+        this._consultantPeriodService.editStart3(this.activeSideSection.consultantPeriodId!)
             .pipe(finalize(() => this.hideMainSpinner()))
             .subscribe(result => {
                 this._workflowDataService.workflowSideSectionUpdated.emit({isStatusUpdate: true});
@@ -635,14 +633,14 @@ export class WorkflowContractsComponent extends AppComponentBase implements OnIn
     }
 
     getRatesAndFees(clientId: number) {
-        this._clientService.specialRatesGet(clientId, true)
+        this._clientService.specialRatesAll(clientId, true)
             .pipe(finalize(() => {
 
             }))
             .subscribe(result => {
                 this.clientSpecialRateList = result.filter(x => !x.isHidden);
             });
-        this._clientService.specialFeesGet(clientId, true)
+        this._clientService.specialFeesAll(clientId, true)
             .pipe(finalize(() => {
 
             }))
@@ -972,7 +970,7 @@ export class WorkflowContractsComponent extends AppComponentBase implements OnIn
     getStartChangeOrExtendClientPeriodContracts(isFromSyncToLegacy?: boolean, syncResult?: ContractSyncResultDto) {
         this.resetForms();
         this.showMainSpinner();
-        this._clientPeriodService.clientContractsGet(this.periodId!)
+        this._clientPeriodService.clientContractsGET(this.periodId!)
             .pipe(finalize(() => {
                 this.hideMainSpinner();
             }))
@@ -1227,7 +1225,7 @@ export class WorkflowContractsComponent extends AppComponentBase implements OnIn
         }
         this.showMainSpinner();
         if (isDraft) {
-            this._clientPeriodService.clientContractsPut(this.periodId!, input)
+            this._clientPeriodService.clientContractsPUT(this.periodId!, input)
                 .pipe(finalize(() => {
                     this.hideMainSpinner();
                 }))
@@ -1244,7 +1242,7 @@ export class WorkflowContractsComponent extends AppComponentBase implements OnIn
                     }
                 });
         } else {
-            this._clientContractsService.editFinish(this.periodId!, input)
+            this._clientPeriodService.editFinish2(this.periodId!, input)
                 .pipe(finalize(() => {
                     this.bypassLegalValidation = false;
                     this.hideMainSpinner();
@@ -1263,7 +1261,7 @@ export class WorkflowContractsComponent extends AppComponentBase implements OnIn
     getStartChangeOrExtendConsultantPeriodContracts(isFromSyncToLegacy?: boolean, syncResult?: ContractSyncResultDto) {
         this.resetForms();
         this.showMainSpinner();
-        this._consultantPeriodService.consultantContractsGet(this.activeSideSection.consultantPeriodId!)
+        this._consultantPeriodService.consultantContractsGET(this.activeSideSection.consultantPeriodId!)
             .pipe(finalize(() => {
                 if (!isFromSyncToLegacy) {
                     this.hideMainSpinner();
@@ -1413,7 +1411,7 @@ export class WorkflowContractsComponent extends AppComponentBase implements OnIn
         input.newLegalContractRequired = this.contractsSyncDataForm.newLegalContract?.value;
         this.showMainSpinner();
         if (isDraft) {
-            this._consultantPeriodService.consultantContractsPut(this.activeSideSection.consultantPeriodId!, input)
+            this._consultantPeriodService.consultantContractsPUT(this.activeSideSection.consultantPeriodId!, input)
                 .pipe(finalize(() => {
                     if (!isSyncToLegacy) {
                         this.hideMainSpinner();
@@ -1433,7 +1431,7 @@ export class WorkflowContractsComponent extends AppComponentBase implements OnIn
                 },
                 () => this.hideMainSpinner());
         } else {
-            this._consultantContractsService.editFinish(this.activeSideSection.consultantPeriodId!, input)
+            this._consultantPeriodService.editFinish5(this.activeSideSection.consultantPeriodId!, input)
                 .pipe(finalize(() => {
                     this.bypassLegalValidation = false;
                     this.hideMainSpinner();
@@ -1468,7 +1466,7 @@ export class WorkflowContractsComponent extends AppComponentBase implements OnIn
     getWorkflowContractsStepConsultantTermination(isFromSyncToLegacy?: boolean, syncResult?: ContractSyncResultDto) {
         this.resetForms();
         this.showMainSpinner();
-        this._workflowServiceProxy.terminationConsultantContractGet(this.workflowId!, this.consultant.id!)
+        this._workflowServiceProxy.terminationConsultantContractGET(this.workflowId!, this.consultant.id!)
             .pipe(finalize(() => {
                 if (!isFromSyncToLegacy) {
                     this.hideMainSpinner();
@@ -1493,7 +1491,7 @@ export class WorkflowContractsComponent extends AppComponentBase implements OnIn
 
         this.showMainSpinner();
         if (isDraft) {
-            this._workflowServiceProxy.terminationConsultantContractPut(this.workflowId!, input)
+            this._workflowServiceProxy.terminationConsultantContractPUT(this.workflowId!, input)
                 .pipe(finalize(() => {
                     this.hideMainSpinner();
                 }))
@@ -1526,7 +1524,7 @@ export class WorkflowContractsComponent extends AppComponentBase implements OnIn
     getWorkflowContractStepTermination(isFromSyncToLegacy?: boolean, syncResult?: ContractSyncResultDto) {
         this.resetForms();
         this.showMainSpinner();
-        this._workflowServiceProxy.terminationContractGet(this.workflowId!)
+        this._workflowServiceProxy.terminationContractGET(this.workflowId!)
             .pipe(finalize(() => {
                 if (!isFromSyncToLegacy) {
                     this.hideMainSpinner();
@@ -1535,6 +1533,9 @@ export class WorkflowContractsComponent extends AppComponentBase implements OnIn
             .subscribe(result => {
                 // End of Consultant Contract
                 this.contractLinesDoneManuallyInOldPMControl?.setValue(result?.contractLinesDoneManuallyInOldPM, {emitEvent: false});
+                this.contractsSyncDataForm.manualCheckbox?.setValue(result?.contractLinesDoneManuallyInOldPM, {emitEvent: false})
+                this.contractsSyncDataForm.isNewSyncNeeded?.setValue(result?.isNewSyncNeeded, {emitEvent: false});
+                this.contractsSyncDataForm.lastSyncedDate?.setValue(result?.lastSyncedDate, {emitEvent: false});
                 result.consultantTerminationContractData?.forEach(data => {
                     this.addConsultantDataToTerminationForm(data);
                 })
@@ -1563,7 +1564,7 @@ export class WorkflowContractsComponent extends AppComponentBase implements OnIn
         }
         this.showMainSpinner();
         if (isDraft) {
-            this._workflowServiceProxy.terminationContractPut(this.workflowId!, input)
+            this._workflowServiceProxy.terminationContractPUT(this.workflowId!, input)
                 .pipe(finalize(() => {
                     this.hideMainSpinner();
                 }))

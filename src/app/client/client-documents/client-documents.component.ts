@@ -2,7 +2,7 @@ import { Component, Injector, OnDestroy, OnInit, ViewChild } from '@angular/core
 import { FormArray, FormBuilder, FormControl } from '@angular/forms';
 import { MatTableDataSource } from '@angular/material/table';
 import { AppConsts } from 'src/shared/AppConsts';
-import { ContractsData, DocumentSideNavDto, DocumentSideNavigation, DocumentSideNavItem, GeneralDocumentForm } from './client-documents.model';
+import { DocumentSideNavDto, DocumentSideNavigation, DocumentSideNavItem, GeneralDocumentForm } from './client-documents.model';
 import { AddFileDialogComponent } from './add-file-dialog/add-file-dialog.component';
 import { Overlay } from '@angular/cdk/overlay';
 import { MatDialog } from '@angular/material/dialog';
@@ -75,8 +75,6 @@ export class ClientDocumentsComponent extends AppComponentBase implements OnInit
     contractDocumentsIncludeExpired = new FormControl(false);
     evaluationDocumentDate = new FormControl(new Date());
     evaluationDocumentsIncludeLinked = new FormControl(false);
-
-    contractsData = ContractsData;
 
     contractsDocuments: ClientContractViewRootDto;
 
@@ -197,7 +195,7 @@ export class ClientDocumentsComponent extends AppComponentBase implements OnInit
 
     deleteGeneralDocument(clientAttachmentGuid: string) {
         this.showMainSpinner();
-        this._clientDocumentsService.generalFileDelete(this.clientId, clientAttachmentGuid)
+        this._clientDocumentsService.generalFileDELETE(this.clientId, clientAttachmentGuid)
             .pipe(finalize(() => this.hideMainSpinner()))
             .subscribe(result => {
                 this.getGeneralDocuments();
@@ -237,7 +235,7 @@ export class ClientDocumentsComponent extends AppComponentBase implements OnInit
         input.headline = form.headline;
         input.fileType = form.attachmentTypeId?.id;
         this.showMainSpinner();
-        this._clientDocumentsService.generalFilePut(this.clientId!, input)
+        this._clientDocumentsService.generalFilePUT(this.clientId!, input)
             .pipe(finalize(() => {
                 this.hideMainSpinner();
                 this.getGeneralDocuments();
@@ -269,7 +267,7 @@ export class ClientDocumentsComponent extends AppComponentBase implements OnInit
                     data: result.file.internalFile
                 }
                 this.showMainSpinner();
-                this._clientDocumentsService.generalFilePost(this.clientId!, result.attachmentTypeId, fileInput)
+                this._clientDocumentsService.generalFilePOST(this.clientId!, result.attachmentTypeId, fileInput)
                     .pipe(finalize(() => {
                         this.hideMainSpinner();
                         this.fileUploader.clear();
@@ -372,8 +370,8 @@ export class ClientDocumentsComponent extends AppComponentBase implements OnInit
         this._clientDocumentsService.evaluations(this.clientId, this.evaluationDocumentsIncludeLinked.value, this.evaluationDocumentDate.value)
             .pipe(finalize(() => this.isDataLoading = false))
             .subscribe(result => {
-                this.evalsDocumentsDataSource = new MatTableDataSource<ClientEvaluationOutputDto>(result);
-                this.totalCount = result.length;
+                this.evalsDocumentsDataSource = new MatTableDataSource<ClientEvaluationOutputDto>(result.items);
+                this.totalCount = result.totalCount;
             });
     }
 

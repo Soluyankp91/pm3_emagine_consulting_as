@@ -81,7 +81,7 @@ export class AddOrEditProjectLineDialogComponent extends AppComponentBase implem
                                 ? value.clientName
                                 : value;
                         }
-                        return this._lookupService.clients(toSend.name, toSend.maxRecordsCount);
+                        return this._lookupService.clientsAll(toSend.name, toSend.maxRecordsCount);
                     } else {
                         return of([]);
                     }

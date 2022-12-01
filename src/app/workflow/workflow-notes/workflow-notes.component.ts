@@ -75,7 +75,7 @@ export class WorkflowNotesComponent extends AppComponentBase implements OnInit, 
 
     saveNotes() {
         this.showMainSpinner();
-        this._workflowServiceProxy.notesPut(this.workflowId, this.workflowNote.value)
+        this._workflowServiceProxy.notesPUT(this.workflowId, this.workflowNote.value)
             .pipe(finalize(() => this.hideMainSpinner() ))
             .subscribe(() => {
                 this.workflowNoteOldValue = this.workflowNote.value;
