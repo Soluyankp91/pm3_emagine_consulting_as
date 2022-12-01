@@ -29,7 +29,7 @@
                     {{consultantData?.companyName || consultantData?.city ? '| ' : ''}}Consultant ID:
                 </span>
                 <span class="consultant--information-value">
-                    # {{consultantData?.id}} {{consultantData?.legacyId ? ' / ' + consultantData?.legacyId : ''}}
+                    # {{consultantData?.id}} {{consultantData?.legacyId ? ' / ' + tenantEnum[consultantData?.tenantId] + '-' + consultantData?.legacyId : ''}}
                 </span>
                 <button *ngIf="consultantData?.id" mat-icon-button class="consultant-deeplink--btn" appPreventDoubleClick
                     (throttledClick)="$event.stopPropagation(); deepLinkToSourcing(consultantData?.id)" matTooltip="Preview in Sourcing"
