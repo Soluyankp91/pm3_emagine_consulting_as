@@ -37,7 +37,7 @@
                     <mat-icon svgIcon="sourcing-deeplink"></mat-icon>
                 </button>
             </ng-container>
-            <ng-container *ngIf="consultantData?.id">
+            <ng-container *ngIf="consultantData?.supplierId">
                 <span class="consultant--information-label u-mr--5">
                     {{consultantData?.companyName || consultantData?.city || consultantData?.id ? '| ' : ''}}Supplier ID:
                 </span>
@@ -45,7 +45,7 @@
                     {{consultantData?.supplierId}}
                 </span>
                 <button *ngIf="consultantData?.id" mat-icon-button class="consultant-deeplink--btn" appPreventDoubleClick
-                    (throttledClick)="$event.stopPropagation(); deepLinkToSourcing(consultantData?.id)" matTooltip="Link to Supplier profile"
+                    (throttledClick)="$event.stopPropagation(); openSupplierProfile(consultantData?.supplierId)" matTooltip="Link to Supplier Profile"
                     matTooltipClass="white-tooltip">
                     <mat-icon svgIcon="supplier-icon"></mat-icon>
                 </button>

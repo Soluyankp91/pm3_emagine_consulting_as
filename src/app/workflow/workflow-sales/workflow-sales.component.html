@@ -2264,9 +2264,6 @@
                                             <span class="workflow-form--consultants__name">
                                                 {{consultant.value?.consultantName?.consultant?.name}}
                                             </span>
-                                            <button *ngIf="consultant.value?.consultantName?.consultant?.id" mat-icon-button class="consultant-deeplink--btn u-mr--16" appPreventDoubleClick (throttledClick)="$event.stopPropagation(); deepLinkToSourcing(consultant.value?.consultantName?.consultant?.id)" matTooltip="Preview in Sourcing" matTooltipClass="white-tooltip">
-                                                <mat-icon svgIcon="sourcing-deeplink"></mat-icon>
-                                            </button>
                                         </ng-container>
                                         <button class="form-icon--delete-row" type="button" *ngIf="consultantsForm.consultantData?.controls?.length && (activeSideSection.typeId === workflowSideSections.StartClientPeriod && (isCompleted === editEnabledForcefuly))"
                                             mat-icon-button appPreventDoubleClick (throttledClick)="$event.stopPropagation();confirmRemoveConsultant(consultantIndex)">
