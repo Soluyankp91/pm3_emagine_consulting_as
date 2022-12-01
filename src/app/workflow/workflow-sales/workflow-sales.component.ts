@@ -541,6 +541,7 @@ export class WorkflowSalesComponent extends AppComponentBase implements OnInit, 
         this._workflowDataService.workflowSideSectionChanged
             .pipe(takeUntil(this._unsubscribe))
             .subscribe((value: {consultant?: ConsultantResultDto | undefined, consultantPeriodId?: string | undefined}) => {
+                this.editEnabledForcefuly = false;
                 this.getSalesStepData(value?.consultant, value?.consultantPeriodId);
             });
 
