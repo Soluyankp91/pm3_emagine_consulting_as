@@ -96,6 +96,16 @@ export class DropdownAutocompleteSingleSelectComponent
         this.inputControl.patchValue(preselectedItem);
     }
 
+    setDisabledState(isDisabled: boolean): void {
+        if (isDisabled) {
+            this.inputControl.disable({
+                emitEvent: false,
+            });
+            return;
+        }
+        this.inputControl.enable();
+    }
+
     validate(control: AbstractControl): ValidationErrors | null {
         if (!this.inputControl.invalid) {
             return null;

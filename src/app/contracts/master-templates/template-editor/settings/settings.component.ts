@@ -100,7 +100,7 @@ export class CreateMasterTemplateComponent implements OnInit, OnDestroy {
                 ...this.masterTemplateFormGroup.value,
                 creationMode: creationMode,
             }
-        ) as any;
+        ) as SaveAgreementTemplateDto;
         const uploadedFiles = this.masterTemplateFormGroup.uploadedFiles?.value
             ? this.masterTemplateFormGroup.uploadedFiles?.value
             : [];
