@@ -396,24 +396,3 @@
         }
     }
 }
-
-
-.disabledWithTooltip {
-    color: $light-grey-color !important;
-    mat-icon {
-        background: rgba($color: $light-grey-color, $alpha: 0.2) !important;
-        color: $light-grey-color !important;
-        path {
-            fill: $light-grey-color !important;
-        }
-    }
-    cursor: default;
-    pointer-events: none;
-    &:hover {
-        mat-icon {
-            path {
-                fill: $light-grey-color !important;
-            }
-        }
-    }
-}
