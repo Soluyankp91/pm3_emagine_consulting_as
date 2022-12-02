@@ -65,7 +65,7 @@ export class ClientDocumentsComponent extends AppComponentBase implements OnInit
     clientFilter = new FormControl();
     dataFilter = new FormControl();
 
-    documentSideNavigation = DocumentSideNavigation;
+    documentSideNavigation = new Array<DocumentSideNavDto>(...DocumentSideNavigation);
     documentSideItems = DocumentSideNavItem;
     selectedItem = DocumentSideNavItem.General;
     isContractsLoading = false;
