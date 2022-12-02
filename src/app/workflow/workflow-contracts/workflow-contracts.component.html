@@ -330,7 +330,7 @@
                                     </ng-template>
                                     <ng-container *ngIf="rate.value.editable && !readOnlyMode; else clientRatesActions">
                                         <div fxFlex="10%" class="u-w--100 text-truncate-ellipsis" fxLayoutAlign="end center">
-                                            <button mat-icon-button type="button" [disabled]="!rate.valid" appPreventDoubleClick (throttledClick)="editOrSaveSpecialRate(contractClientForm.clientRates.at(i).get('editable')?.value, i)" class="rates-and-fees--inline-edit-form--btn__save">
+                                            <button mat-icon-button type="button" [disabled]="!rate.valid" appPreventDoubleClick (throttledClick)="editOrSaveSpecialRate(rate.value.editable, i)" class="rates-and-fees--inline-edit-form--btn__save">
                                                 <mat-icon svgIcon="rates-save-icon"></mat-icon>
                                             </button>
                                             <button mat-icon-button type="button" appPreventDoubleClick (throttledClick)="cancelEditClientRate(i)" class="rates-and-fees--inline-edit-form--btn__cancel">
@@ -441,7 +441,7 @@
 
                                     <ng-container *ngIf="fee.value.editable && !readOnlyMode; else clientFeeActions">
                                         <div fxFlex="10%" class="u-w--100 text-truncate-ellipsis" fxLayoutAlign="end center">
-                                            <button mat-icon-button type="button" [disabled]="!fee.valid" appPreventDoubleClick (throttledClick)="editOrSaveClientFee(contractClientForm.clientFees.at(i).get('editable')?.value, i)" class="rates-and-fees--inline-edit-form--btn__save">
+                                            <button mat-icon-button type="button" [disabled]="!fee.valid" appPreventDoubleClick (throttledClick)="editOrSaveClientFee(fee.value.editable, i)" class="rates-and-fees--inline-edit-form--btn__save">
                                                 <mat-icon svgIcon="rates-save-icon"></mat-icon>
                                             </button>
                                             <button mat-icon-button type="button" appPreventDoubleClick (throttledClick)="cancelEditClientFee(i)" class="rates-and-fees--inline-edit-form--btn__cancel">
