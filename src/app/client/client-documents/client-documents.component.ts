@@ -2,7 +2,7 @@ import { Component, Injector, OnDestroy, OnInit, ViewChild } from '@angular/core
 import { FormArray, FormBuilder, FormControl } from '@angular/forms';
 import { MatTableDataSource } from '@angular/material/table';
 import { AppConsts } from 'src/shared/AppConsts';
-import { ContractsData, DocumentSideNavDto, DocumentSideNavigation, DocumentSideNavItem, GeneralDocumentForm } from './client-documents.model';
+import { DocumentSideNavDto, DocumentSideNavigation, DocumentSideNavItem, GeneralDocumentForm } from './client-documents.model';
 import { AddFileDialogComponent } from './add-file-dialog/add-file-dialog.component';
 import { Overlay } from '@angular/cdk/overlay';
 import { MatDialog } from '@angular/material/dialog';
@@ -75,8 +75,6 @@ export class ClientDocumentsComponent extends AppComponentBase implements OnInit
     contractDocumentsIncludeExpired = new FormControl(false);
     evaluationDocumentDate = new FormControl(new Date());
     evaluationDocumentsIncludeLinked = new FormControl(false);
-
-    contractsData = ContractsData;
 
     contractsDocuments: ClientContractViewRootDto;
 
@@ -372,8 +370,8 @@ export class ClientDocumentsComponent extends AppComponentBase implements OnInit
         this._clientDocumentsService.evaluations(this.clientId, this.evaluationDocumentsIncludeLinked.value, this.evaluationDocumentDate.value)
             .pipe(finalize(() => this.isDataLoading = false))
             .subscribe(result => {
-                this.evalsDocumentsDataSource = new MatTableDataSource<ClientEvaluationOutputDto>(result);
-                this.totalCount = result.length;
+                this.evalsDocumentsDataSource = new MatTableDataSource<ClientEvaluationOutputDto>(result.items);
+                this.totalCount = result.totalCount;
             });
     }
 

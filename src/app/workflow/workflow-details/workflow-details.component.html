@@ -3,26 +3,44 @@
     <div fxLayout="row" fxLayoutAlign="start start" class="workflow-header u-w--100">
         <div fxFlex="1 0 40%" fxLayout="column">
             <h2 class="workflow-header--title">
-                <span *ngIf="workflowConsultants.length && workflowConsultants.length === 1">
-                    {{workflowConsultants[0].consultantName}}
-                </span>
-                <span *ngIf="workflowConsultants.length && workflowConsultants.length > 1" [matTooltip]="mapListByProperty(workflowConsultants, 'consultantName')" matTooltipClass="white-tooltip">
-                    {{workflowConsultants.length + ' Consultants'}}
-                </span>
-                <span *ngIf="workflowConsultants.length === 0">
-                    No consultants
-                </span>
+                <ng-container *ngIf="workflowStatusId === workflowStatus.Pending || workflowStatusId === workflowStatus.PendingDataMissing; else readOnlyWorkflowStatusTemplate">
+                    <mat-icon class="workflow-status u-mr--5" [matTooltip]="workflowStatusName!" matTooltipClass="white-tooltip" [ngClass]="workflowStatusIcon"
+                        #menuWorkflowStatusesTrigger="matMenuTrigger" [matMenuTriggerFor]="workflowStatusesMenu" appPreventDoubleClick (throttledClick)="$event.stopPropagation()">fiber_manual_record</mat-icon>
+                    <mat-menu #workflowStatusesMenu backdropClass="workflow-list--workflow-status-menu">
+                        <button mat-menu-item class="workflow-list--workflow-status--menu-item" (click)="setWorkflowStatus(workflowId, workflowStatus.Pending)">
+                            <mat-icon class="workflow-status pending-status">fiber_manual_record</mat-icon>
+                            <span>Pending workflow</span>
+                        </button>
+                        <button mat-menu-item class="workflow-list--workflow-status--menu-item" (click)="setWorkflowStatus(workflowId, workflowStatus.PendingDataMissing)">
+                            <mat-icon class="workflow-status pending-data-missing-status">fiber_manual_record</mat-icon>
+                            <span>Pending - data missing</span>
+                        </button>
+                    </mat-menu>
+                </ng-container>
+                <ng-template #readOnlyWorkflowStatusTemplate>
+                    <mat-icon class="workflow-status u-mr--5" [matTooltip]="workflowStatusName!" matTooltipClass="white-tooltip" [ngClass]="workflowStatusIcon">fiber_manual_record</mat-icon>
+                </ng-template>
                 <span [matTooltip]="workflowId" matTooltipClass="white-tooltip">
-                    / Workflow ID: {{workflowId | slice: 0:4}}...
+                    Workflow ID: {{workflowId | slice: 0:4}}...
                 </span>
                 <span *ngIf="workflowConsultants.length && workflowConsultants[0].requestId" class="workflow-header--request cursor-pointer" matTooltip="Open request on Sourcing" matTooltipClass="white-tooltip" appPreventDoubleClick (throttledClick)="navigateToRequest(workflowConsultants![0].requestUrl!)">
                     / Request ID: {{workflowConsultants[0].requestId}}
                 </span>
+                <span *ngIf="workflowConsultants.length && workflowConsultants.length === 1">
+                    / {{workflowConsultants[0].consultantName}}
+                </span>
+                <span *ngIf="workflowConsultants.length && workflowConsultants.length > 1" [matTooltip]="mapListByProperty(workflowConsultants, 'consultantName')" matTooltipClass="white-tooltip">
+                    / {{workflowConsultants.length + ' Consultants'}}
+                </span>
+                <span *ngIf="workflowConsultants.length === 0">
+                    / No consultants
+                </span>
             </h2>
-            <p class="page-main-header">{{workflowClient?.length ? workflowClient : 'New workflow'}}</p>
+            <p class="page-main-header">{{workflowDirectClient?.length ? workflowDirectClient : 'New workflow'}}</p>
+            <p *ngIf="workflowEndClient?.length" class="page-main-subheader">via {{workflowEndClient}}</p>
             <h2 class="workflow-header--title u-mb--20">
                 <span matTooltipClass="white-tooltip">
-                    Client ID: {{workflowDirectClientid}}
+                    Client ID: {{workflowDirectClientId}} {{workflowEndClientId ? '| via ' + workflowEndClientId : ''}}
                 </span>
             </h2>
         </div>
@@ -86,7 +104,24 @@
     </div>
 
     <div *ngIf="topToolbarVisible" fxLayout="row" fxLayoutAlign="start center" class="workflow-toolbar u-w--100">
-        <p class="workflow-toolbar--client u-mr--20">{{workflowClient?.length ? workflowClient : 'New workflow'}}</p>
+        <ng-container *ngIf="workflowStatusId === workflowStatus.Pending || workflowStatusId === workflowStatus.PendingDataMissing; else readOnlyWorkflowStatusTemplate">
+            <mat-icon class="workflow-status u-mr--5" [matTooltip]="workflowStatusName!" matTooltipClass="white-tooltip" [ngClass]="workflowStatusIcon"
+                #menuWorkflowStatusesTrigger="matMenuTrigger" [matMenuTriggerFor]="workflowStatusesMenu" appPreventDoubleClick (throttledClick)="$event.stopPropagation()">fiber_manual_record</mat-icon>
+            <mat-menu #workflowStatusesMenu backdropClass="workflow-list--workflow-status-menu">
+                <button mat-menu-item class="workflow-list--workflow-status--menu-item" (click)="setWorkflowStatus(workflowId, workflowStatus.Pending)">
+                    <mat-icon class="workflow-status pending-status">fiber_manual_record</mat-icon>
+                    <span>Pending workflow</span>
+                </button>
+                <button mat-menu-item class="workflow-list--workflow-status--menu-item" (click)="setWorkflowStatus(workflowId, workflowStatus.PendingDataMissing)">
+                    <mat-icon class="workflow-status pending-data-missing-status">fiber_manual_record</mat-icon>
+                    <span>Pending - data missing</span>
+                </button>
+            </mat-menu>
+        </ng-container>
+        <ng-template #readOnlyWorkflowStatusTemplate>
+            <mat-icon class="workflow-status u-mr--5" [matTooltip]="workflowStatusName!" matTooltipClass="white-tooltip" [ngClass]="workflowStatusIcon">fiber_manual_record</mat-icon>
+        </ng-template>
+        <p class="workflow-toolbar--client u-mr--20">{{workflowDirectClient?.length ? workflowDirectClient + (workflowDirectClientId ? ' | Client ID: ' + workflowDirectClientId : '') + (workflowEndClientId ? ' | via ' + workflowEndClientId : '') : 'New workflow'}}</p>
     </div>
 
     <div class="workflow-content pos-relative u-w--100" id="workflowDetails">

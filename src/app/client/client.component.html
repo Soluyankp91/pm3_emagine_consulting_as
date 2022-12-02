@@ -1,8 +1,8 @@
 <div class="client-list">
     <div fxLayout="column" fxLayoutAlign="start start" class="client-list--filter u-w--100">
         <h2 class="page-main-header u-mb--20">Client list</h2>
-        <div fxLayout="row" fxLayoutAlign="space-between start" class="u-w--100">
-            <div fxFlex="1 0 40%" fxLayout="row" fxLayoutAlign="start start" class="u-w--100">
+        <div fxLayout="row" fxLayoutAlign="space-between center" class="u-w--100">
+            <div fxFlex="1 0 40%" fxLayout="row" fxLayoutAlign="start center" class="u-w--100">
                 <div class="client-list--filter-manager cursor-pointer u-mr--16"
                     [matMenuTriggerFor]="managerMenu"
                     (menuOpened)="onManagersMenuOpened(); accountManagerFilterInput.focus()"
@@ -75,7 +75,7 @@
                 </div>
                 <div class="client-list--filter-country cursor-pointer u-mr--16"
                     [matMenuTriggerFor]="countryMenu"
-                    (menuOpened)="onCountriesMenuOpened(); countriesTrigger.focus();"
+                    (menuOpened)="onCountriesMenuOpened(); countriesFilterInput.focus();"
                     [ngClass]="{ 'client-list--filter-country__btn': selectedCountries.length > 1 }"
                     [matTooltip]="selectedCountries.length ? mapListByProperty(selectedCountries, 'name') : 'Select country'"
                     matTooltipClass="white-tooltip"
@@ -93,9 +93,9 @@
                         <mat-icon class="client-list--filter-country u-mr--16" svgIcon="Country-filter-flag"></mat-icon>
                     </ng-template>
                     <mat-menu #countryMenu backdropClass="client-list--filter-country-menu">
-                        <div mat-menu-item appPreventDoubleClick (throttledClick)="$event.stopPropagation()" class="u-pg--0">
-                            <mat-form-field class="client-list--filter-country-dropdown" appearance="fill" appPreventDoubleClick (throttledClick)="$event.stopPropagation()">
-                                <input type="text" #countriesTrigger matInput [matAutocomplete]="countryAutocomplete" [formControl]="countryFilter" appPreventDoubleClick (throttledClick)="$event.stopPropagation()" placeholder="Select client country">
+                        <div mat-menu-item (click)="$event.stopPropagation()" class="u-pg--0">
+                            <mat-form-field class="client-list--filter-country-dropdown" appearance="fill" (click)="$event.stopPropagation()">
+                                <input #countriesFilterInput type="text" #countriesTrigger matInput [matAutocomplete]="countryAutocomplete" [formControl]="countryFilter" (click)="$event.stopPropagation()" placeholder="Select client country">
                             </mat-form-field>
                             <mat-autocomplete #countryAutocomplete="matAutocomplete" [displayWith]="displayNameFn">
                                 <mat-option *ngIf="isCountriesLoading" class="is-loading">
@@ -172,8 +172,10 @@
                     <input autocomplete="off" matInput [formControl]="clientFilter" placeholder="Search" type="text">
                     <mat-icon matPrefix class="search-icon u-ml--10">search</mat-icon>
                 </mat-form-field>
-                <mat-slide-toggle class="green-slide-toggle" color="primary" labelPosition="before" (change)="getClientsGrid()" [(ngModel)]="includeDeleted">Show deleted</mat-slide-toggle>
             </div>
+        </div>
+        <div fxLayout="row" fxLayoutAlign="flex-end center" class="u-w--100">
+            <mat-slide-toggle class="green-slide-toggle" color="primary" labelPosition="before" (change)="getClientsGrid()" [(ngModel)]="includeDeleted">Show deleted</mat-slide-toggle>
         </div>
     </div>
     <div fxLayout="column" fxLayoutAlign="start center" class="client-list--content u-w--100">

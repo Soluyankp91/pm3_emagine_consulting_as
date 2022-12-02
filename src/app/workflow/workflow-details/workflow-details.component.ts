@@ -1,17 +1,50 @@
 import { CdkScrollable, Overlay, ScrollDispatcher } from '@angular/cdk/overlay';
-import { AfterViewInit, Component, ElementRef, Injector, NgZone, OnDestroy, OnInit, ViewChild } from '@angular/core';
+import {
+    AfterViewInit,
+    Component,
+    ElementRef,
+    Injector,
+    NgZone,
+    OnDestroy,
+    OnInit,
+    ViewChild,
+} from '@angular/core';
 import { MatDialog } from '@angular/material/dialog';
 import { MatTabChangeEvent, MatTabGroup } from '@angular/material/tabs';
 import { ActivatedRoute } from '@angular/router';
 import { NgScrollbar } from 'ngx-scrollbar';
 import { Subject } from 'rxjs';
 import { finalize, takeUntil } from 'rxjs/operators';
-import { AvailableConsultantDto, ChangeClientPeriodDto, ClientPeriodDto, ClientPeriodServiceProxy, ConsultantNameWithRequestUrl, ConsultantPeriodAddDto, EnumEntityTypeDto, ExtendClientPeriodDto, StepType, WorkflowDto, WorkflowProcessType, WorkflowServiceProxy } from 'src/shared/service-proxies/service-proxies';
+import {
+    AvailableConsultantDto,
+    ChangeClientPeriodDto,
+    ClientPeriodDto,
+    ClientPeriodServiceProxy,
+    ConsultantNameWithRequestUrl,
+    ConsultantPeriodAddDto,
+    EnumEntityTypeDto,
+    ExtendClientPeriodDto,
+    StepType,
+    WorkflowDto,
+    WorkflowProcessType,
+    WorkflowServiceProxy,
+    WorkflowStatus
+} from 'src/shared/service-proxies/service-proxies';
 import { WorkflowDataService } from '../workflow-data.service';
-import { WorkflowProgressStatus, WorkflowTopSections, WorkflowSteps, WorkflowDiallogAction } from '../workflow.model';
+import {
+    WorkflowProgressStatus,
+    WorkflowTopSections,
+    WorkflowSteps,
+    WorkflowDiallogAction,
+    getWorkflowStatus,
+    getStatusIcon
+} from '../workflow.model';
 import { InternalLookupService } from 'src/app/shared/common/internal-lookup.service';
 import { WorkflowActionsDialogComponent } from '../workflow-actions-dialog/workflow-actions-dialog.component';
-import { AppComponentBase, NotifySeverity } from 'src/shared/app-component-base';
+import {
+    AppComponentBase,
+    NotifySeverity,
+} from 'src/shared/app-component-base';
 import { ConfirmationDialogComponent } from 'src/app/shared/components/confirmation-dialog/confirmation-dialog.component';
 import { environment } from 'src/environments/environment';
 import { FormControl, Validators } from '@angular/forms';
@@ -24,17 +57,24 @@ import { RateAndFeesWarningsDialogComponent } from '../rate-and-fees-warnings-di
 import { DialogConfig } from './workflow-details.model';
 
 @Component({
-  selector: 'app-workflow-details',
-  templateUrl: './workflow-details.component.html',
-  styleUrls: ['./workflow-details.component.scss']
+    selector: 'app-workflow-details',
+    templateUrl: './workflow-details.component.html',
+    styleUrls: ['./workflow-details.component.scss'],
 })
+export class WorkflowDetailsComponent
+    extends AppComponentBase
+    implements OnInit, OnDestroy, AfterViewInit
+{
+    @ViewChild('scroller', { static: true }) scroller: ElementRef<HTMLElement>;
+    @ViewChild('scrollable', { static: true }) scrollBar: NgScrollbar;
+    @ViewChild('topMenuTabs', { static: false }) topMenuTabs: MatTabGroup;
+    @ViewChild('workflowPeriod', { static: false })
+    workflowPeriod: WorkflowPeriodComponent;
+    @ViewChild('menuActionsTrigger', { static: false })
+    menuActionsTrigger: MatMenuTrigger;
+    @ViewChild('menuWorkflowStatusesTrigger', {static: false})
+    menuWorkflowStatusesTrigger: MatMenuTrigger;
 
-export class WorkflowDetailsComponent extends AppComponentBase implements OnInit, OnDestroy, AfterViewInit {
-    @ViewChild('scroller', {static: true}) scroller: ElementRef<HTMLElement>;
-    @ViewChild('scrollable', {static: true}) scrollBar: NgScrollbar;
-    @ViewChild('topMenuTabs', {static: false}) topMenuTabs: MatTabGroup;
-    @ViewChild('workflowPeriod', {static: false}) workflowPeriod: WorkflowPeriodComponent;
-    @ViewChild('menuActionsTrigger', {static: false}) menuActionsTrigger: MatMenuTrigger;
 
     menuIndex = 0;
     workflowId: string;
@@ -58,9 +98,15 @@ export class WorkflowDetailsComponent extends AppComponentBase implements OnInit
 
     workflowResponse: WorkflowDto;
     clientPeriods: ClientPeriodDto[] | undefined = [];
-    workflowClient: string | undefined;
-    workflowDirectClientid: number | undefined;
+    workflowDirectClient: string | undefined;
+    workflowEndClient: string | undefined;
+    workflowDirectClientId: number | undefined;
+    workflowEndClientId: number | undefined;
     workflowConsultants: ConsultantNameWithRequestUrl[] = [];
+    workflowStatusId: number | undefined;
+    workflowStatusName: string | undefined;
+    workflowStatusIcon: string;
+    workflowStatus = WorkflowStatus;
 
     workflowClientPeriodTypes: EnumEntityTypeDto[] = [];
     workflowConsultantPeriodTypes: EnumEntityTypeDto[] = [];
@@ -91,16 +137,25 @@ export class WorkflowDetailsComponent extends AppComponentBase implements OnInit
     }
 
     get bottomToolbarVisible() {
-        if (this.selectedTabName === 'Overview' ||
-            (!this._workflowDataService.getWorkflowProgress.stepSpecificPermissions!['StartEdit'] &&
-            !this._workflowDataService.getWorkflowProgress.stepSpecificPermissions!['Edit'] &&
-            !this._workflowDataService.getWorkflowProgress.stepSpecificPermissions!['Completion'])
-            ) {
+        if (
+            this.selectedTabName === 'Overview' ||
+            (!this._workflowDataService.getWorkflowProgress
+                .stepSpecificPermissions!['StartEdit'] &&
+                !this._workflowDataService.getWorkflowProgress
+                    .stepSpecificPermissions!['Edit'] &&
+                !this._workflowDataService.getWorkflowProgress
+                    .stepSpecificPermissions!['Completion'])
+        ) {
             return false;
         } else {
-            return (this._workflowDataService.getWorkflowProgress.stepSpecificPermissions!['Edit'] ||
-                    this._workflowDataService.getWorkflowProgress.stepSpecificPermissions!['Completion']) &&
-                    !this._workflowDataService.getWorkflowProgress.currentStepIsCompleted
+            return (
+                (this._workflowDataService.getWorkflowProgress
+                    .stepSpecificPermissions!['Edit'] ||
+                    this._workflowDataService.getWorkflowProgress
+                        .stepSpecificPermissions!['Completion']) &&
+                !this._workflowDataService.getWorkflowProgress
+                    .currentStepIsCompleted
+            );
             // return  this._workflowDataService.getWorkflowProgress.stepSpecificPermissions!["Edit"] && this._workflowDataService.getWorkflowProgress.stepSpecificPermissions!["Complete"];
         }
     }
@@ -110,11 +165,11 @@ export class WorkflowDetailsComponent extends AppComponentBase implements OnInit
     }
 
     ngOnInit(): void {
-        this.activatedRoute.paramMap.pipe(
-            takeUntil(this._unsubscribe)
-        ).subscribe(params => {
-            this.workflowId = params.get('id')!;
-        });
+        this.activatedRoute.paramMap
+            .pipe(takeUntil(this._unsubscribe))
+            .subscribe((params) => {
+                this.workflowId = params.get('id')!;
+            });
         this.resetWorkflowProgress();
         this._internalLookupService.getData();
         this.getClientPeriodTypes();
@@ -141,26 +196,35 @@ export class WorkflowDetailsComponent extends AppComponentBase implements OnInit
     }
 
     getNotes() {
-        this.localHttpService.getTokenPromise().then((response: AuthenticationResult) => {
-            this.httpClient.get(`${this.apiUrl}/api/Workflow/${this.workflowId}/notes`, {
-                    headers: new HttpHeaders({
-                        'Authorization': `Bearer ${response.accessToken}`
-                    }),
-                    responseType: 'text'
-                })
-                .pipe(finalize(() => {}))
-                .subscribe((result: any) => {
-                    this.workflowNoteOldValue = result;
-                    this.workflowNote.setValue(result);
-                })
-        });
+        this.localHttpService
+            .getTokenPromise()
+            .then((response: AuthenticationResult) => {
+                this.httpClient
+                    .get(
+                        `${this.apiUrl}/api/Workflow/${this.workflowId}/notes`,
+                        {
+                            headers: new HttpHeaders({
+                                Authorization: `Bearer ${response.accessToken}`,
+                            }),
+                            responseType: 'text',
+                        }
+                    )
+                    .pipe(finalize(() => {}))
+                    .subscribe((result: any) => {
+                        this.workflowNoteOldValue = result;
+                        this.workflowNote.setValue(result);
+                    });
+            });
     }
 
     saveNotes() {
         this.showMainSpinner();
-        this._workflowServiceProxy.notesPUT(this.workflowId, this.workflowNote.value)
-            .pipe(finalize(() => this.hideMainSpinner() ))
-            .subscribe(() => this.workflowNoteOldValue = this.workflowNote.value);
+        this._workflowServiceProxy
+            .notesPUT(this.workflowId, this.workflowNote.value)
+            .pipe(finalize(() => this.hideMainSpinner()))
+            .subscribe(
+                () => (this.workflowNoteOldValue = this.workflowNote.value)
+            );
     }
 
     resetWorkflowProgress() {
@@ -172,7 +236,11 @@ export class WorkflowDetailsComponent extends AppComponentBase implements OnInit
         newStatus.currentlyActiveSection = 0;
         newStatus.currentlyActiveSideSection = 0;
         newStatus.currentlyActiveStep = 0;
-        newStatus.stepSpecificPermissions = {StartEdit: false, Edit: false, Completion: false};
+        newStatus.stepSpecificPermissions = {
+            StartEdit: false,
+            Edit: false,
+            Completion: false,
+        };
         this._workflowDataService.updateWorkflowProgressStatus(newStatus);
     }
 
@@ -181,44 +249,42 @@ export class WorkflowDetailsComponent extends AppComponentBase implements OnInit
     }
 
     getClientPeriodTypes() {
-        this._internalLookupService.getWorkflowClientPeriodTypes()
-            .pipe(finalize(() => {
-
-            }))
-            .subscribe(result => {
+        this._internalLookupService
+            .getWorkflowClientPeriodTypes()
+            .pipe(finalize(() => {}))
+            .subscribe((result) => {
                 this.workflowClientPeriodTypes = result;
             });
     }
 
     getConsultantPeriodTypes() {
-        this._internalLookupService.getWorkflowConsultantPeriodTypes()
-            .pipe(finalize(() => {
-
-            }))
-            .subscribe(result => {
+        this._internalLookupService
+            .getWorkflowConsultantPeriodTypes()
+            .pipe(finalize(() => {}))
+            .subscribe((result) => {
                 this.workflowConsultantPeriodTypes = result;
             });
     }
 
     getPeriodStepTypes() {
-        this._internalLookupService.getWorkflowPeriodStepTypes()
-            .pipe(finalize(() => {
-
-            }))
-            .subscribe(result => {
+        this._internalLookupService
+            .getWorkflowPeriodStepTypes()
+            .pipe(finalize(() => {}))
+            .subscribe((result) => {
                 this.workflowPeriodStepTypes = result;
             });
     }
 
     ngAfterViewInit(): void {
-        this.scrollDispatcher.scrolled()
-            .pipe(
-                takeUntil(this._unsubscribe)
-            )
+        this.scrollDispatcher
+            .scrolled()
+            .pipe(takeUntil(this._unsubscribe))
             .subscribe((cdk: CdkScrollable | any) => {
                 this.zone.run(() => {
-                    const scrollPosition = cdk.getElementRef().nativeElement.scrollTop;
-                    if (scrollPosition > 120) { // 120 - header height
+                    const scrollPosition =
+                        cdk.getElementRef().nativeElement.scrollTop;
+                    if (scrollPosition > 120) {
+                        // 120 - header height
                         this.topToolbarVisible = true;
                     } else {
                         this.topToolbarVisible = false;
@@ -234,16 +300,26 @@ export class WorkflowDetailsComponent extends AppComponentBase implements OnInit
 
     getTopLevelMenu(value?: boolean) {
         this.showMainSpinner();
-        this._workflowServiceProxy.clientPeriods(this.workflowId)
-            .pipe(finalize(() => {
-                this.hideMainSpinner();
-            }))
-            .subscribe(result => {
+        this._workflowServiceProxy
+            .clientPeriods(this.workflowId)
+            .pipe(
+                finalize(() => {
+                    this.hideMainSpinner();
+                })
+            )
+            .subscribe((result) => {
                 this.clientPeriods = result.clientPeriods;
-                this.workflowClient = result.clientName;
-                this.workflowDirectClientid = result.directClientId;
+                this.workflowDirectClient = result.directClientName;
+                this.workflowEndClient = result.endClientName;
+                this.workflowDirectClientId = result.directClientId;
+                this.workflowEndClientId = result.endClientId;
                 this.workflowConsultants = result.consultantNamesWithRequestUrls!;
                 this.workflowId = result.workflowId!;
+                if (result.workflowStatusId) {
+                    this.workflowStatusId = result.workflowStatusId;
+                    this.workflowStatusName = getWorkflowStatus(result.workflowStatusId);
+                    this.workflowStatusIcon = getStatusIcon(result.workflowStatusId);
+                }
                 if (value) {
                     this.selectedIndex = 1;
                     this.topMenuTabs.realignInkBar();
@@ -257,7 +333,8 @@ export class WorkflowDetailsComponent extends AppComponentBase implements OnInit
         newStatus.currentlyActiveStep = WorkflowSteps.Sales;
         if (this.selectedTabIndex > 0) {
             // if not overview - active period
-            newStatus.currentlyActivePeriodId = this.clientPeriods![this.selectedTabIndex - 1]?.id; // first period, as index = 0 - Overview tab
+            newStatus.currentlyActivePeriodId =
+                this.clientPeriods![this.selectedTabIndex - 1]?.id; // first period, as index = 0 - Overview tab
         } else {
             // if overview - most recent period
             newStatus.currentlyActivePeriodId = this.clientPeriods![0]?.id;
@@ -265,7 +342,9 @@ export class WorkflowDetailsComponent extends AppComponentBase implements OnInit
         if (this.selectedTabName === 'Overview') {
             newStatus.currentlyActiveSection = WorkflowTopSections.Overview;
         } else {
-            newStatus.currentlyActiveSection = this.detectTopLevelMenu(this.selectedTabName);
+            newStatus.currentlyActiveSection = this.detectTopLevelMenu(
+                this.selectedTabName
+            );
         }
         this._workflowDataService.updateWorkflowProgressStatus(newStatus);
     }
@@ -277,7 +356,8 @@ export class WorkflowDetailsComponent extends AppComponentBase implements OnInit
         newStatus.currentlyActiveStep = WorkflowSteps.Sales;
         if (event.index > 0) {
             // if not overview - active period
-            newStatus.currentlyActivePeriodId = this.clientPeriods![event.index - 1]?.id;
+            newStatus.currentlyActivePeriodId =
+                this.clientPeriods![event.index - 1]?.id;
         } else {
             // if overview - most recent period
             newStatus.currentlyActivePeriodId = this.clientPeriods![0]?.id;
@@ -285,14 +365,20 @@ export class WorkflowDetailsComponent extends AppComponentBase implements OnInit
         if (this.selectedTabName === 'Overview') {
             newStatus.currentlyActiveSection = WorkflowTopSections.Overview;
         } else {
-            newStatus.currentlyActiveSection = this.detectTopLevelMenu(this.selectedTabName);
+            newStatus.currentlyActiveSection = this.detectTopLevelMenu(
+                this.selectedTabName
+            );
         }
         this._workflowDataService.updateWorkflowProgressStatus(newStatus);
     }
 
     detectTopLevelMenu(clientPeriodName: string) {
-        const selectedTopMenu = this.clientPeriods?.find(x => x.name === clientPeriodName);
-        const clientPeriodType = this.workflowClientPeriodTypes.find(type => type.id === selectedTopMenu?.typeId);
+        const selectedTopMenu = this.clientPeriods?.find(
+            (x) => x.name === clientPeriodName
+        );
+        const clientPeriodType = this.workflowClientPeriodTypes.find(
+            (type) => type.id === selectedTopMenu?.typeId
+        );
         switch (clientPeriodType?.id) {
             case 1: // Start period
                 return WorkflowTopSections.StartPeriod;
@@ -316,48 +402,82 @@ export class WorkflowDetailsComponent extends AppComponentBase implements OnInit
     }
 
     saveOrCompleteStep(isDraft: boolean, event?: KeyboardEvent) {
-        switch (this._workflowDataService.workflowProgress.currentlyActiveSideSection) {
+        switch (
+            this._workflowDataService.workflowProgress
+                .currentlyActiveSideSection
+        ) {
             case WorkflowProcessType.StartClientPeriod:
             case WorkflowProcessType.ChangeClientPeriod:
             case WorkflowProcessType.ExtendClientPeriod:
-                switch (this._workflowDataService.workflowProgress.currentlyActiveStep) {
+                switch (
+                    this._workflowDataService.workflowProgress
+                        .currentlyActiveStep
+                ) {
                     case StepType.Sales:
-                        this._workflowDataService.startClientPeriodSalesSaved.emit(isDraft);
+                        this._workflowDataService.startClientPeriodSalesSaved.emit(
+                            isDraft
+                        );
                         break;
                     case StepType.Contract:
-                        let bypassLegalValidation = event?.altKey && event?.shiftKey;
-                        this._workflowDataService.startClientPeriodContractsSaved.emit({isDraft: isDraft, bypassLegalValidation: bypassLegalValidation});
+                        let bypassLegalValidation =
+                            event?.altKey && event?.shiftKey;
+                        this._workflowDataService.startClientPeriodContractsSaved.emit(
+                            {
+                                isDraft: isDraft,
+                                bypassLegalValidation: bypassLegalValidation,
+                            }
+                        );
                         break;
                     case StepType.Finance:
-                        this._workflowDataService.startClientPeriodFinanceSaved.emit(isDraft);
+                        this._workflowDataService.startClientPeriodFinanceSaved.emit(
+                            isDraft
+                        );
                         break;
                 }
                 break;
 
             case WorkflowProcessType.TerminateWorkflow:
-                switch (this._workflowDataService.workflowProgress.currentlyActiveStep) {
+                switch (
+                    this._workflowDataService.workflowProgress
+                        .currentlyActiveStep
+                ) {
                     case StepType.Sales:
-                        this._workflowDataService.workflowTerminationSalesSaved.emit(isDraft);
+                        this._workflowDataService.workflowTerminationSalesSaved.emit(
+                            isDraft
+                        );
                         break;
                     case StepType.Contract:
-                        this._workflowDataService.workflowTerminationContractsSaved.emit(isDraft);
+                        this._workflowDataService.workflowTerminationContractsSaved.emit(
+                            isDraft
+                        );
                         break;
                     case StepType.Sourcing:
-                        this._workflowDataService.workflowTerminationSourcingSaved.emit(isDraft);
+                        this._workflowDataService.workflowTerminationSourcingSaved.emit(
+                            isDraft
+                        );
                         break;
                 }
                 break;
 
             case WorkflowProcessType.TerminateConsultant:
-                switch (this._workflowDataService.workflowProgress.currentlyActiveStep) {
+                switch (
+                    this._workflowDataService.workflowProgress
+                        .currentlyActiveStep
+                ) {
                     case StepType.Sales:
-                        this._workflowDataService.consultantTerminationSalesSaved.emit(isDraft);
+                        this._workflowDataService.consultantTerminationSalesSaved.emit(
+                            isDraft
+                        );
                         break;
                     case StepType.Contract:
-                        this._workflowDataService.workflowConsultantTerminationContractsSaved.emit(isDraft);
+                        this._workflowDataService.workflowConsultantTerminationContractsSaved.emit(
+                            isDraft
+                        );
                         break;
                     case StepType.Sourcing:
-                        this._workflowDataService.workflowConsultantTerminationSourcingSaved.emit(isDraft);
+                        this._workflowDataService.workflowConsultantTerminationSourcingSaved.emit(
+                            isDraft
+                        );
                         break;
                 }
                 break;
@@ -365,22 +485,34 @@ export class WorkflowDetailsComponent extends AppComponentBase implements OnInit
             case WorkflowProcessType.StartConsultantPeriod:
             case WorkflowProcessType.ChangeConsultantPeriod:
             case WorkflowProcessType.ExtendConsultantPeriod:
-                switch (this._workflowDataService.workflowProgress.currentlyActiveStep) {
+                switch (
+                    this._workflowDataService.workflowProgress
+                        .currentlyActiveStep
+                ) {
                     case StepType.Sales:
-                        this._workflowDataService.consultantStartChangeOrExtendSalesSaved.emit(isDraft);
+                        this._workflowDataService.consultantStartChangeOrExtendSalesSaved.emit(
+                            isDraft
+                        );
                         break;
                     case StepType.Contract:
-                        let bypassLegalValidation = event?.altKey && event?.shiftKey;
-                        this._workflowDataService.consultantStartChangeOrExtendContractsSaved.emit({isDraft, bypassLegalValidation: bypassLegalValidation});
+                        let bypassLegalValidation =
+                            event?.altKey && event?.shiftKey;
+                        this._workflowDataService.consultantStartChangeOrExtendContractsSaved.emit(
+                            {
+                                isDraft,
+                                bypassLegalValidation: bypassLegalValidation,
+                            }
+                        );
                         break;
                     case StepType.Finance:
-                        this._workflowDataService.consultantStartChangeOrExtendFinanceSaved.emit(isDraft);
+                        this._workflowDataService.consultantStartChangeOrExtendFinanceSaved.emit(
+                            isDraft
+                        );
                         break;
                 }
                 break;
         }
     }
-
 
     // add Termiantion
 
@@ -399,8 +531,8 @@ export class WorkflowDetailsComponent extends AppComponentBase implements OnInit
                 confirmationMessageTitle: `Are you sure you want to terminate workflow?`,
                 rejectButtonText: 'Cancel',
                 confirmButtonText: 'Terminate',
-                isNegative: true
-            }
+                isNegative: true,
+            },
         });
 
         dialogRef.componentInstance.onConfirmed.subscribe(() => {
@@ -410,28 +542,38 @@ export class WorkflowDetailsComponent extends AppComponentBase implements OnInit
 
     terminateWorkflowStart() {
         this.showMainSpinner();
-        this._workflowServiceProxy.terminationStart(this.workflowId!)
-        .pipe(finalize(() => {
-            this.hideMainSpinner();
-        }))
-        .subscribe(result => {
-            this._workflowDataService.workflowSideSectionAdded.emit(true);
-            this._workflowDataService.workflowOverviewUpdated.emit(true);
-        });
+        this._workflowServiceProxy
+            .terminationStart(this.workflowId!)
+            .pipe(
+                finalize(() => {
+                    this.hideMainSpinner();
+                })
+            )
+            .subscribe((result) => {
+                this._workflowDataService.workflowSideSectionAdded.emit(true);
+                this._workflowDataService.workflowOverviewUpdated.emit(true);
+            });
     }
 
     getAvailableConsultantForChangeOrExtend(workflowAction: number) {
         this.menuActionsTrigger.closeMenu();
-        if (!this._workflowDataService.getWorkflowProgress.currentlyActivePeriodId) {
+        if (
+            !this._workflowDataService.getWorkflowProgress
+                .currentlyActivePeriodId
+        ) {
             let newStatus = new WorkflowProgressStatus();
             newStatus.currentlyActivePeriodId = this.clientPeriods![0].id;
             this._workflowDataService.updateWorkflowProgressStatus(newStatus);
         }
 
         this.showMainSpinner();
-        this._clientPeriodService.availableConsultants(this._workflowDataService.getWorkflowProgress.currentlyActivePeriodId!)
+        this._clientPeriodService
+            .availableConsultants(
+                this._workflowDataService.getWorkflowProgress
+                    .currentlyActivePeriodId!
+            )
             .pipe(finalize(() => this.hideMainSpinner()))
-            .subscribe(result => {
+            .subscribe((result) => {
                 if (result.length) {
                     switch (workflowAction) {
                         case WorkflowDiallogAction.Change:
@@ -442,7 +584,11 @@ export class WorkflowDetailsComponent extends AppComponentBase implements OnInit
                             break;
                     }
                 } else {
-                    this.showNotify(NotifySeverity.Error, 'There are no available consultants for this action', 'Ok');
+                    this.showNotify(
+                        NotifySeverity.Error,
+                        'There are no available consultants for this action',
+                        'Ok'
+                    );
                 }
             });
     }
@@ -456,25 +602,44 @@ export class WorkflowDetailsComponent extends AppComponentBase implements OnInit
             rejectButtonText: 'Cancel',
             confirmButtonText: 'Create',
             isNegative: false,
-            consultantData: availableConsultants
-        }
-        const dialogRef = this.dialog.open(WorkflowActionsDialogComponent, DialogConfig);
+            consultantData: availableConsultants,
+        };
+        const dialogRef = this.dialog.open(
+            WorkflowActionsDialogComponent,
+            DialogConfig
+        );
 
-        dialogRef.componentInstance.onConfirmed.subscribe((result: ExtendClientPeriodDto) => {
-            if (result) {
-                this.showMainSpinner();
-                this._clientPeriodService.clientExtend(this._workflowDataService.getWorkflowProgress.currentlyActivePeriodId!, result)
-                    .pipe(finalize(() => this.hideMainSpinner()))
-                    .subscribe(result => {
-                        this._workflowDataService.workflowTopSectionUpdated.emit(true);
-                        this._workflowDataService.workflowOverviewUpdated.emit(true);
-                        if (result?.specialFeesChangesWarnings?.length || result?.specialRatesChangesWarnings?.length) {
-                            this.processRatesAfterChangeOrExtend(result.specialRatesChangesWarnings, result.specialFeesChangesWarnings);
-                        }
-                    });
+        dialogRef.componentInstance.onConfirmed.subscribe(
+            (result: ExtendClientPeriodDto) => {
+                if (result) {
+                    this.showMainSpinner();
+                    this._clientPeriodService
+                        .clientExtend(
+                            this._workflowDataService.getWorkflowProgress
+                                .currentlyActivePeriodId!,
+                            result
+                        )
+                        .pipe(finalize(() => this.hideMainSpinner()))
+                        .subscribe((result) => {
+                            this._workflowDataService.workflowTopSectionUpdated.emit(
+                                true
+                            );
+                            this._workflowDataService.workflowOverviewUpdated.emit(
+                                true
+                            );
+                            if (
+                                result?.specialFeesChangesWarnings?.length ||
+                                result?.specialRatesChangesWarnings?.length
+                            ) {
+                                this.processRatesAfterChangeOrExtend(
+                                    result.specialRatesChangesWarnings,
+                                    result.specialFeesChangesWarnings
+                                );
+                            }
+                        });
+                }
             }
-        });
-
+        );
     }
 
     changeWorkflow(availableConsultants: AvailableConsultantDto[]) {
@@ -486,33 +651,56 @@ export class WorkflowDetailsComponent extends AppComponentBase implements OnInit
             rejectButtonText: 'Cancel',
             confirmButtonText: 'Create',
             isNegative: false,
-            consultantData: availableConsultants
-        }
-        const dialogRef = this.dialog.open(WorkflowActionsDialogComponent, DialogConfig);
+            consultantData: availableConsultants,
+        };
+        const dialogRef = this.dialog.open(
+            WorkflowActionsDialogComponent,
+            DialogConfig
+        );
 
-        dialogRef.componentInstance.onConfirmed.subscribe((result: ChangeClientPeriodDto) => {
-            if (result) {
-                this.showMainSpinner();
-                this._clientPeriodService.clientChange(this._workflowDataService.getWorkflowProgress.currentlyActivePeriodId!, result)
-                    .pipe(finalize(() => this.hideMainSpinner()))
-                    .subscribe(result => {
-                        if (result?.specialFeesChangesWarnings?.length || result?.specialRatesChangesWarnings?.length) {
-                            this.processRatesAfterChangeOrExtend(result.specialRatesChangesWarnings, result.specialFeesChangesWarnings);
-                        }
-                        this._workflowDataService.workflowTopSectionUpdated.emit(true);
-                        this._workflowDataService.workflowOverviewUpdated.emit(true);
-                    });
+        dialogRef.componentInstance.onConfirmed.subscribe(
+            (result: ChangeClientPeriodDto) => {
+                if (result) {
+                    this.showMainSpinner();
+                    this._clientPeriodService
+                        .clientChange(
+                            this._workflowDataService.getWorkflowProgress
+                                .currentlyActivePeriodId!,
+                            result
+                        )
+                        .pipe(finalize(() => this.hideMainSpinner()))
+                        .subscribe((result) => {
+                            if (
+                                result?.specialFeesChangesWarnings?.length ||
+                                result?.specialRatesChangesWarnings?.length
+                            ) {
+                                this.processRatesAfterChangeOrExtend(
+                                    result.specialRatesChangesWarnings,
+                                    result.specialFeesChangesWarnings
+                                );
+                            }
+                            this._workflowDataService.workflowTopSectionUpdated.emit(
+                                true
+                            );
+                            this._workflowDataService.workflowOverviewUpdated.emit(
+                                true
+                            );
+                        });
+                }
             }
-        });
+        );
     }
 
-    processRatesAfterChangeOrExtend(specialRatesWarnings: string[] | undefined, specialFeesWarnings: string[] | undefined) {
+    processRatesAfterChangeOrExtend(
+        specialRatesWarnings: string[] | undefined,
+        specialFeesWarnings: string[] | undefined
+    ) {
         const scrollStrategy = this.overlay.scrollStrategies.reposition();
         DialogConfig.scrollStrategy = scrollStrategy;
         DialogConfig.data = {
             specialRatesWarnings: specialRatesWarnings,
-            specialFeesWarnings: specialFeesWarnings
-        }
+            specialFeesWarnings: specialFeesWarnings,
+        };
         this.dialog.open(RateAndFeesWarningsDialogComponent, DialogConfig);
     }
 
@@ -525,22 +713,34 @@ export class WorkflowDetailsComponent extends AppComponentBase implements OnInit
             dialogTitle: 'Add consultant',
             rejectButtonText: 'Cancel',
             confirmButtonText: 'Create',
-            isNegative: false
-        }
-        const dialogRef = this.dialog.open(WorkflowActionsDialogComponent, DialogConfig);
+            isNegative: false,
+        };
+        const dialogRef = this.dialog.open(
+            WorkflowActionsDialogComponent,
+            DialogConfig
+        );
 
         dialogRef.componentInstance.onConfirmed.subscribe((result) => {
             if (result) {
                 this.showMainSpinner();
                 let input = new ConsultantPeriodAddDto();
-                input.startDate = result.startDate
+                input.startDate = result.startDate;
                 input.endDate = result.endDate;
                 input.noEndDate = result.noEndDate;
-                this._clientPeriodService.addConsultantPeriod(this._workflowDataService.getWorkflowProgress.currentlyActivePeriodId!, input)
+                this._clientPeriodService
+                    .addConsultantPeriod(
+                        this._workflowDataService.getWorkflowProgress
+                            .currentlyActivePeriodId!,
+                        input
+                    )
                     .pipe(finalize(() => this.hideMainSpinner()))
-                    .subscribe(result => {
-                        this._workflowDataService.workflowSideSectionAdded.emit(true);
-                        this._workflowDataService.workflowOverviewUpdated.emit(true);
+                    .subscribe((result) => {
+                        this._workflowDataService.workflowSideSectionAdded.emit(
+                            true
+                        );
+                        this._workflowDataService.workflowOverviewUpdated.emit(
+                            true
+                        );
                     });
             }
         });
@@ -550,4 +750,11 @@ export class WorkflowDetailsComponent extends AppComponentBase implements OnInit
         window.open(requestUrl, '_blank');
     }
 
+    setWorkflowStatus(workflowId: string, workflowStatus: WorkflowStatus) {
+        this.menuWorkflowStatusesTrigger.closeMenu();
+        this.showMainSpinner();
+        this._workflowServiceProxy.setWorkflowStatus(workflowId, workflowStatus)
+            .pipe(finalize(() => this.hideMainSpinner()))
+            .subscribe(() => this.getTopLevelMenu())
+    }
 }

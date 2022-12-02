@@ -408,7 +408,7 @@ export class ClientComponent extends AppComponentBase implements OnInit, OnDestr
         setTimeout(() => {
             this.countryFilter.setValue('');
             this.countryFilter.markAsTouched();
-        }, 0);
+        }, 500);
     }
 
     displayNameFn(option: any) {

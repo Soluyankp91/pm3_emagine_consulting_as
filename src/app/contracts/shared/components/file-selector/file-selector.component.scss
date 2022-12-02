@@ -1,0 +1,50 @@
+.files-container {
+    padding: 24px;
+    box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.05);
+    background-color: #fff;
+}
+.section-header {
+    margin-bottom: 32px;
+    font-size: 16px;
+}
+.file-uploader {
+    width: 564px;
+}
+.add-attachment-cell {
+    width: 100%;
+    border: 2px dashed #e7e3e8;
+    padding: 12px;
+}
+.button-labels {
+    display: flex;
+    justify-content: space-between;
+}
+.upload-tip {
+    color: #696964;
+}
+.add-button {
+    display: flex;
+    align-items: center;
+}
+.add-label {
+    margin-left: 10px;
+    font-weight: 700;
+    color: #17a297;
+    font-size: 16px;
+}
+.file-container {
+    width: 564px;
+    padding: 16px;
+    border: 1px solid #e7e3e8;
+    margin-bottom: 16px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+.file-item-left {
+    display: flex;
+}
+.file-label {
+    padding-left: 15px;
+    font-weight: 700;
+}

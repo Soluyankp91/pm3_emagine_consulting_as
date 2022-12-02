@@ -451,7 +451,7 @@ mat-table.white-table {
             width: 50%;
             border-right: none !important;
             box-shadow: none !important;
-            padding-right: 30px;
+            margin-right: 30px;
             padding-bottom: 17px;
             &-container {
                 background: transparent !important;
@@ -470,7 +470,7 @@ mat-table.white-table {
                             display: flex;
                             justify-content: flex-start;
                             &:last-of-type {
-                                padding-right: 32px;
+                                padding-right: 15px;
                             }
                         }
                     }
@@ -555,8 +555,12 @@ mat-table.white-table {
         }
     }
     ngx-gantt-bar {
+        height: 14px !important;
+        border-radius: 10px !important;
+        margin-top: 6px;
         .gantt-bar-content {
             border-radius: 10px;
+            height: 14px;
         }
     }
 }

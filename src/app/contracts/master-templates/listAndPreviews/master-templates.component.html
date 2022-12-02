@@ -1,0 +1,12 @@
+<app-master-template-filter-header> </app-master-template-filter-header>
+<emg-mat-grid
+    #table
+    *ngIf="table$ | async as table"
+    [displayedColumns]="displayedColumns"
+    [tableConfig]="table"
+    [cells]="cells"
+    (sortChange)="onSortChange($event)"
+    (formControlChange)="onFormControlChange($event)"
+    (pageChange)="onPageChange($event)"
+    (tableRow)="onSelectTableRow($event)">
+</emg-mat-grid>

@@ -1,0 +1,8 @@
+<emg-multi-select
+    class=""
+    *ngIf="agreementTypes$ | async as agreementTypes"
+    [options]="agreementTypes"
+    [displayedProperty]="'name'"
+    [formControl]="filterFormControl">
+    <div #triggerButton>Agreement Types</div></emg-multi-select
+>

@@ -1,8 +1,8 @@
 <div class="workflow-list" fxFlexFill>
     <div fxLayout="column" fxLayoutAlign="start start" class="workflow-list--filter">
         <h2 class="page-main-header u-mb--20">Workflows</h2>
-        <div fxLayout="row" fxLayoutAlign="start start" class="u-w--100">
-            <div fxFlex fxLayout="row wrap" fxLayoutAlign="start start" class="u-w--100 flex-row-gap--10">
+        <div fxLayout="row" fxLayoutAlign="start center" class="u-w--100 u-mb--10">
+            <div fxFlex fxLayout="row wrap" fxLayoutAlign="start center" class="u-w--100 flex-row-gap--10">
                 <div class="workflow-list--filter-manager cursor-pointer u-mr--16" [matTooltip]="selectedAccountManagers.length ? mapListByProperty(selectedAccountManagers, 'name') : 'Select account manager(s)'" matTooltipClass="white-tooltip" [matMenuTriggerFor]="managerMenu" (menuOpened)="accountManagerFilterInput.click(); onOpenedMenu();" (click)="openMenu($event)">
                     <img *ngIf="selectedAccountManagers.length === 1" class="border-rounded-50 image-thumbnail-small" [src]="employeeProfileUrl(selectedAccountManagers[0].externalId!)" />
                     <img *ngIf="selectedAccountManagers.length === 0" src="../../../assets/common/images/no-img.svg">
@@ -80,7 +80,7 @@
                         Extensions
                     </span>
                 </span>
-                <mat-divider class="u-mr--16" [vertical]="true" style="height: 40px;"></mat-divider>
+                <mat-divider class="divider-height u-mr--16" [vertical]="true"></mat-divider>
                 <span class="workflow-list--filter-type-dropdown cursor-pointer u-mr--20" [matMenuTriggerFor]="pendingSteps" [ngClass]="{'selected-status': pendingStepType !== null && pendingStepType >= 0}">
                     <span class="workflow-list--filter-type-dropdown__name">
                         {{pendingStepType !== null && pendingStepType >= 0 ? stepTypes[pendingStepType].name + ' pending steps' : 'Pending steps'}}
@@ -129,7 +129,7 @@
                 </mat-menu>
 
                 <div fxLayout="row" fxLayoutAlign="start center" fxFlex="10%">
-                    <mat-divider class="u-mr--10 divider-height" [vertical]="true"></mat-divider>
+                    <mat-divider class="divider-height" [vertical]="true"></mat-divider>
                     <button mat-button appPreventDoubleClick (throttledClick)="clearAllFilters()">
                         <span class="clear-all-button" >
                             Reset
@@ -137,21 +137,27 @@
                     </button>
                 </div>
             </div>
-            <div fxFlex="25%" fxLayout="column" fxLayoutAlign="start end">
-                <div fxLayout="row" fxLayoutAlign="space-between center" fxLayoutGap="16px" class="u-w--100 u-mb--20">
-                    <mat-form-field appearance="fill" class="search-filter-input u-w--100 mat-elevation-z0 formFieldNoMarginPadding">
-                        <input autocomplete="off" matInput [formControl]="workflowFilter" placeholder="Search" type="text">
-                        <mat-icon class="search-icon u-ml--10" matPrefix>search</mat-icon>
-                    </mat-form-field>
-                    <button mat-icon-button appPreventDoubleClick (throttledClick)="createWorkflow()" class="workflow-list--filter__add-btn" matTooltip="Create workflow" matTooltipClass="white-tooltip">
-                        <mat-icon svgIcon="plus-button-icon"></mat-icon>
-                    </button>
-                </div>
-                <button class="advanced-filterd--btn" mat-flat-button [ngClass]="{'active': isAdvancedFilters}" (click)="isAdvancedFilters = !isAdvancedFilters" matTooltip="Advanced filters" matTooltipClass="white-tooltip">
-                    <mat-icon svgIcon="filter-icon"></mat-icon>
-                    <span class="advanced-filterd--btn-text u-ml--5">Advanced filters</span>
+            <!-- <div fxFlex="25%" fxLayout="column" fxLayoutAlign="start end"> -->
+            <div fxLayout="row" fxLayoutAlign="space-between end" fxLayoutGap="16px" class="u-w--100" fxFlex="25%">
+                <mat-form-field appearance="fill" class="search-filter-input u-w--100 mat-elevation-z0 formFieldNoMarginPadding">
+                    <input autocomplete="off" matInput [formControl]="workflowFilter" placeholder="Search" type="text">
+                    <mat-icon class="search-icon u-ml--10" matPrefix>search</mat-icon>
+                </mat-form-field>
+                <button mat-icon-button appPreventDoubleClick (throttledClick)="createWorkflow()" class="workflow-list--filter__add-btn" matTooltip="Create workflow" matTooltipClass="white-tooltip">
+                    <mat-icon svgIcon="plus-button-icon"></mat-icon>
                 </button>
             </div>
+            <!-- </div> -->
+        </div>
+        <div fxLayout="row" fxLayoutAlign="flex-end center" class="u-w--100">
+            <button class="advanced-filterd--btn" mat-flat-button [ngClass]="{'active': isAdvancedFilters}" (click)="isAdvancedFilters = !isAdvancedFilters" matTooltip="Advanced filters" matTooltipClass="white-tooltip">
+                <mat-icon svgIcon="filter-icon"></mat-icon>
+                <span class="advanced-filterd--btn-text u-ml--5">Advanced filters</span>
+            </button>
+        </div>
+        <div fxLayout="row" fxLayoutAlign="end start" fxLayoutGap="25px" class="u-w--100 u-mt--10">
+            <mat-slide-toggle class="green-slide-toggle" color="primary" labelPosition="before" (change)="getWorkflowList()" [(ngModel)]="includeDeleted">Show deleted</mat-slide-toggle>
+            <mat-slide-toggle class="green-slide-toggle" color="primary" labelPosition="before" (change)="getWorkflowList()" [(ngModel)]="includeTerminated">Show finished</mat-slide-toggle>
         </div>
     </div>
     <div fxLayout="row" fxLayoutAlign="start center" class="workflow-list--filter-additional u-w--100 u-mb--20" *ngIf="isAdvancedFilters">
@@ -209,17 +215,13 @@
                 <mat-option class="mat-select-clear-option" *ngIf="workflowStatusControl.value">
                     Clear
                 </mat-option>
-                <mat-option *ngFor="let item of workflowStatuses | keyvalue" [value]="item.key">
-                    {{ item.value }}
+                <mat-option *ngFor="let item of workflowStatuses" [value]="item.id">
+                    {{ item.disaplyName }}
                 </mat-option>
             </mat-select>
         </mat-form-field>
     </div>
     <div fxLayout="column" fxLayoutAlign="start center" class="workflow-list--content u-w--100">
-        <div fxLayout="row" fxLayoutAlign="end start" fxLayoutGap="25px" class="u-w--100">
-            <mat-slide-toggle class="green-slide-toggle" color="primary" labelPosition="before" (change)="getWorkflowList()" [(ngModel)]="includeDeleted">Show deleted</mat-slide-toggle>
-            <mat-slide-toggle class="green-slide-toggle" color="primary" labelPosition="before" (change)="getWorkflowList()" [(ngModel)]="includeTerminated">Show finished</mat-slide-toggle>
-        </div>
         <div fxLayout="column" class="u-w--100">
             <mat-table #table [dataSource]="workflowDataSource" class="workflow-list--table white-table u-w--100" matSort matSortStart="asc" (matSortChange)="sortChanged($event)">
                 <ng-container matColumnDef="flag">
@@ -269,7 +271,7 @@
                         </span>
                     </mat-cell>
                 </ng-container>
-                <ng-container matColumnDef="EndDate">
+                <ng-container matColumnDef="ActualEndDate">
                     <mat-header-cell *matHeaderCellDef mat-sort-header fxFlex="6%"> End </mat-header-cell>
                     <mat-cell *matCellDef="let row" fxFlex="6%">
                         <span class="text-truncate-ellipsis" [matTooltip]="(row.endDate | date: 'dd.MM.YYYY') ?? '-'" matTooltipClass="white-tooltip" appShowIfTruncated>
@@ -299,9 +301,25 @@
                     </mat-cell>
                 </ng-container>
                 <ng-container matColumnDef="WorkflowStatus">
-                    <mat-header-cell *matHeaderCellDef fxFlex="5%" mat-sort-header fxLayoutAlign="center center"> WF Status </mat-header-cell>
+                    <mat-header-cell *matHeaderCellDef fxFlex="5%" mat-sort-header fxLayoutAlign="center center"> Status </mat-header-cell>
                     <mat-cell *matCellDef="let row" fxFlex="5%" fxLayoutAlign="center center">
-                        <mat-icon class="workflow-status" [matTooltip]="row.statusName + ' workflow'" matTooltipClass="white-tooltip" [ngClass]="row?.statusIcon">fiber_manual_record</mat-icon>
+                        <ng-container *ngIf="row.status === workflowStatus.Pending || row.status === workflowStatus.PendingDataMissing; else readOnlyWorkflowStatusTemplate">
+                            <mat-icon class="workflow-status" [matTooltip]="row.statusName" matTooltipClass="white-tooltip" [ngClass]="row?.statusIcon"
+                                #menuWorkflowStatusesTrigger="matMenuTrigger" [matMenuTriggerFor]="workflowStatusesMenu" appPreventDoubleClick (throttledClick)="$event.stopPropagation();">fiber_manual_record</mat-icon>
+                            <mat-menu #workflowStatusesMenu backdropClass="workflow-list--workflow-status-menu">
+                                <button mat-menu-item class="workflow-list--workflow-status--menu-item" (click)="setWorkflowStatus(row?.workflowId, workflowStatus.Pending)">
+                                    <mat-icon class="workflow-status pending-status">fiber_manual_record</mat-icon>
+                                    <span>Pending workflow</span>
+                                </button>
+                                <button mat-menu-item class="workflow-list--workflow-status--menu-item" (click)="setWorkflowStatus(row?.workflowId, workflowStatus.PendingDataMissing)">
+                                    <mat-icon class="workflow-status pending-data-missing-status">fiber_manual_record</mat-icon>
+                                    <span>Pending - data missing</span>
+                                </button>
+                            </mat-menu>
+                        </ng-container>
+                        <ng-template #readOnlyWorkflowStatusTemplate>
+                            <mat-icon class="workflow-status" [matTooltip]="row.statusName" matTooltipClass="white-tooltip" [ngClass]="row?.statusIcon">fiber_manual_record</mat-icon>
+                        </ng-template>
                     </mat-cell>
                 </ng-container>
                 <ng-container matColumnDef="openProcess">
@@ -317,7 +335,7 @@
                                         <span class="flex-row flex-items-center">
                                             <mat-icon svgIcon="workflowAdd"></mat-icon>
                                             <span class="workflow-list--process-name">
-                                                Start workflow
+                                                Start WF
                                             </span>
                                         </span>
                                     </ng-container>
@@ -325,7 +343,7 @@
                                         <span class="flex-row flex-items-center">
                                             <mat-icon svgIcon="workflowStartOrExtend"></mat-icon>
                                             <span class="workflow-list--process-name">
-                                                Extend workflow
+                                                Extend WF
                                             </span>
                                         </span>
                                     </ng-container>
@@ -333,7 +351,7 @@
                                         <span class="flex-row flex-items-center">
                                             <mat-icon svgIcon="workflowTerminate"></mat-icon>
                                             <span class="workflow-list--process-name">
-                                                Terminate workflow
+                                                Terminate WF
                                             </span>
                                         </span>
                                     </ng-container>
@@ -341,7 +359,7 @@
                                         <span class="flex-row flex-items-center">
                                             <mat-icon svgIcon="workflowEdit"></mat-icon>
                                             <span class="workflow-list--process-name">
-                                                Change workflow
+                                                Change WF
                                             </span>
                                         </span>
                                     </ng-container>
@@ -394,7 +412,7 @@
                                  class="flex-items-center flex-row"
                                  [ngStyle]="{'border-bottom' : last ? '0' : '1px solid #E7E3E8'}">
                                 <ng-container *ngFor="let step of item.steps; let i = index;">
-                                    <div class="workflow-list--step u-mr--16" [ngClass]="{'completed-step': step.status === workflowStatuses.Completed}">
+                                    <div class="workflow-list--step u-mr--16" [ngClass]="{'completed-step': step.status === workflowStatus.Finished}">
                                         <app-manager-search
                                             appPreventDoubleClick (throttledClick)="$event.stopPropagation()"
                                             [formFieldLabel]="step.name + ' Manager'"
@@ -416,7 +434,7 @@
                     </mat-cell>
                 </ng-container>
                 <ng-container matColumnDef="startDateOfOpenedPeriodOrLastClientPeriod">
-                    <mat-header-cell *matHeaderCellDef mat-sort-header fxFlex="8%"> Start date of step </mat-header-cell>
+                    <mat-header-cell *matHeaderCellDef mat-sort-header fxFlex="8%"> Step start </mat-header-cell>
                     <mat-cell *matCellDef="let row" fxFlex="8%">
                         <span class="text-truncate-ellipsis" [matTooltip]="(row.startDateOfOpenedPeriodOrLastClientPeriod | date: 'dd.MM.YYYY') ?? '-'" matTooltipClass="white-tooltip" appShowIfTruncated>
                             {{(row.startDateOfOpenedPeriodOrLastClientPeriod | date: 'dd.MM.YYYY') ?? '-'}}

@@ -12,24 +12,24 @@
             align-items: center;
             background-color: #4a4e60;
             font-weight: 700;
-            width: 40px;
-            height: 40px;
+            width: 30px;
+            height: 30px;
             border-radius: 50%;
             color: #fff;
         }
         &-country__flag {
-            line-height: 40px;
-            height: 40px;
-            width: 40px;
-            font-size: 40px;
+            line-height: 30px;
+            height: 30px;
+            width: 30px;
+            font-size: 30px;
         }
         &__add-btn mat-icon {
             @include fontLineHeightAndSize(34px, 34px, 34px, 34px);
         }
         &-type {
             @include flexCentered;
-            height: 40px;
-            padding: 8px 16px;
+            height: 30px;
+            padding: 8px 6px;
             border: 1px solid $light-grey-color;
             border-radius: 40px;
             line-height: 16px;
@@ -37,7 +37,7 @@
             &__name {
                 font-weight: 700;
                 color: #384853;
-                font-size: 14px;
+                font-size: 12px;
             }
             &.selected-status {
                 &.new-sales-status {
@@ -53,7 +53,7 @@
                 display: flex;
                 align-items: center;
                 justify-content: space-between;
-                height: 40px;
+                height: 30px;
                 padding: 8px 10px 8px 16px;
                 border: 1px solid $light-grey-color;
                 border-radius: 40px;
@@ -70,7 +70,7 @@
                 &__name {
                     font-weight: 700;
                     color: #384853;
-                    font-size: 14px;
+                    font-size: 12px;
                     margin-right: 5px;
                 }
 
@@ -94,11 +94,11 @@
             }
         }
         &-manager {
-            width: 40px;
-            height: 40px;
+            width: 30px;
+            height: 30px;
             img {
-                width: 40px;
-                height: 40px;
+                width: 30px;
+                height: 30px;
             }
         }
         &-additional {
@@ -178,7 +178,7 @@
 
 .clear-all-button {
     font-weight: 700;
-    font-size: 14px;
+    font-size: 12px;
     line-height: 140%;
     color: #B6B4B2;
 }
@@ -198,16 +198,19 @@
         opacity: 0.5;
     }
     &.active-status {
-        color: $green-color;
+        color: #6BC87A;
     }
     &.pending-status {
         color: #FBD344;
     }
-    &.finished-status {
-        color: $red-color;
+    &.pending-data-missing-status {
+        color: #FB9101;
+    }
+    &.finished-status { 
+        color: $purple-color;
     }
     &.deleted-status {
-        color: $light-grey-color;
+        color: #D80027;
     }
 }
 
@@ -261,5 +264,5 @@
 }
 
 .divider-height {
-    height: 40px;
+    height: 30px;
 }

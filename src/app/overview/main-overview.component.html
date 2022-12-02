@@ -1,15 +1,15 @@
 <div class="main-overview" fxFlexFill>
     <div fxLayout="column" fxLayoutAlign="start start" class="main-overview--filter">
         <h2 class="page-main-header u-mb--20">Overview</h2>
-        <div fxLayout="row" fxLayoutAlign="start start" class="u-w--100">
-            <div fxLayout="row wrap" fxLayoutAlign="start start" fxLayoutGap="6px" class="u-w--100" fxFlex="80%" class="main-overview--filter-leftside">
+        <div fxLayout="row" fxLayoutAlign="start center" class="u-w--100">
+            <div fxLayout="row wrap" fxLayoutAlign="start center" fxLayoutGap="6px" class="u-w--100" fxFlex="82%" class="main-overview--filter-leftside">
                 <button
                     mat-icon-button
                     [matTooltip]="invoicingEntityControl.value?.name ?? 'Select invoicing entity'"
                     matTooltipClass="white-tooltip"
                     appPreventDoubleClick (throttledClick)=select.open()
                     type="button"
-                    class="select-button main-overview--filter-country  u-mb--10">
+                    class="select-button main-overview--filter-country">
                     <span class="country-flag--big fi fi-{{invoicingEntityControl.value?.code | lowercase }} fis border-rounded-50" *ngIf="invoicingEntityControl.value; else iconCountry"></span>
                     <ng-template #iconCountry>
                         <mat-icon class="main-overview--filter-country u-mr--16" svgIcon="Country-filter-flag"></mat-icon>
@@ -20,19 +20,24 @@
                         [disableOptionCentering]="true"
                         panelClass="main-overview-dropdowns country-filter-dropdown"
                         [formControl]="invoicingEntityControl">
-                        <mat-option class="mat-select-header-option" [disabled]="true">
-                            Select invoicing entity
+                        <mat-option *ngIf="invoicingEntityControl.value">
+                            <div class="u-w--100">
+                                <span class="country-flag fi fi-{{invoicingEntityControl.value.code | lowercase }} fis border-rounded-50 u-mr--16" *ngIf="invoicingEntityControl.value.id !== 0"></span>
+                                <span class="tenant-name">{{invoicingEntityControl.value.tenantName}}</span>
+                                {{' (' + invoicingEntityControl.value.name + ')' }}
+                            </div>
+                            <button (click)="resetInvoicingEntity()" class="cancel-invoicing-entitity" mat-icon-button><mat-icon>close</mat-icon></button>
                         </mat-option>
-                        <mat-option class="mat-select-clear-option" *ngIf="invoicingEntityControl.value">
-                            Clear
-                        </mat-option>
-                        <mat-option *ngFor="let item of legalEntities" [value]="item">
-                            <span class="country-flag fi fi-{{item.code | lowercase }} fis border-rounded-50 u-mr--16" *ngIf="item.id !== 0"></span>
-                            {{ item.tenantName + ' ' + '(' + item.name + ')' }}
+                        <mat-option [fxHide]="invoicingEntityControl.value?.id === item.id" *ngFor="let item of legalEntities" [value]="item">
+                            <div class="u-w--100" [ngStyle]="{'display: none': invoicingEntityControl.value?.id === item.id}">
+                                <span class="country-flag fi fi-{{item.code | lowercase }} fis border-rounded-50 u-mr--16" *ngIf="item.id !== 0"></span>
+                                <span class="tenant-name">{{item.tenantName}}</span>
+                                {{' (' + item.name + ')' }}
+                            </div>
                         </mat-option>
                     </mat-select>
                 </button>
-                <div class="main-overview--filter-manager cursor-pointer u-mb--10" [matTooltip]="selectedAccountManagers.length ? mapListByProperty(selectedAccountManagers, 'name') : 'Selected account manager(s)'" matTooltipClass="white-tooltip" [matMenuTriggerFor]="managerMenu" (menuOpened)="accountManagerFilterInput.click(); onOpenedMenu();" (click)="openMenu($event)">
+                <div class="main-overview--filter-manager cursor-pointer" [matTooltip]="selectedAccountManagers.length ? mapListByProperty(selectedAccountManagers, 'name') : 'Selected account manager(s)'" matTooltipClass="white-tooltip" [matMenuTriggerFor]="managerMenu" (menuOpened)="accountManagerFilterInput.click(); onOpenedMenu();" (click)="openMenu($event)">
                     <img *ngIf="selectedAccountManagers.length === 1" class="border-rounded-50 image-thumbnail-small" [src]="employeeProfileUrl(selectedAccountManagers[0].externalId!)" />
                     <img *ngIf="selectedAccountManagers.length === 0" src="../../../assets/common/images/no-img.svg">
                     <div *ngIf="selectedAccountManagers.length > 1" class="main-overview--filter__badge">
@@ -97,14 +102,14 @@
                         </div>
                     </mat-menu>
                 </div>
-                <div class="main-overview--filter-type cursor-pointer u-mb--10" [ngClass]="detectSelectedStatusColor(status)" *ngFor="let status of filteredMainOverviewStatuses; trackBy: statusesTrackBy"
+                <div class="main-overview--filter-type cursor-pointer" [ngClass]="detectSelectedStatusColor(status)" *ngFor="let status of filteredMainOverviewStatuses; trackBy: statusesTrackBy"
                     appPreventDoubleClick (throttledClick)="changeOverviewStatus(status)">
                     <mat-icon class="main-overview-icon-type" svgIcon="{{status.flag}}" [ngClass]="detectProcessColor(status.id)"></mat-icon>
                     <span class="main-overview--filter-type__name">
                         {{status.name}}
                     </span>
                 </div>
-                <div class="flex-row u-mb--10">
+                <div fxLayout="row" fxLayoutAlign="start center">
                     <mat-divider [vertical]="true" class="divider-height"></mat-divider>
                     <button mat-button appPreventDoubleClick (throttledClick)="clearAllFilters()" class="reset-button">
                         <span class="clear-all-button" >
@@ -113,18 +118,18 @@
                     </button>
                 </div>
             </div>
-            <div fxLayout="column" fxLayoutAlign="start end" fxFlex>
-                <div fxLayout="column" fxLayoutAlign="space-between end" fxLayoutGap="16px" class="u-w--100">
-                    <mat-form-field appearance="fill" class="search-filter-input u-w--100 mat-elevation-z0 formFieldNoMarginPadding">
-                        <input autocomplete="off" matInput [formControl]="workflowFilter" placeholder="Search" type="text">
-                        <mat-icon matPrefix class="search-icon u-ml--10">search</mat-icon>
-                    </mat-form-field>
-                    <button class="advanced-filterd--btn u-mt--10 u-mb--10" [ngClass]="{'active': isAdvancedFilters}" mat-flat-button (click)="isAdvancedFilters = !isAdvancedFilters" matTooltip="Advanced filters" matTooltipClass="white-tooltip">
-                        <mat-icon svgIcon="filter-icon"></mat-icon>
-                        <span class="advanced-filterd--btn-text u-ml--5">Advanced filters</span>
-                    </button>
-                </div>
+            <div fxLayout="column" fxLayoutAlign="space-between end" class="u-w--100" fxFlex>
+                <mat-form-field appearance="fill" class="search-filter-input u-w--100 mat-elevation-z0 formFieldNoMarginPadding">
+                    <input autocomplete="off" matInput [formControl]="workflowFilter" placeholder="Search" type="text">
+                    <mat-icon matPrefix class="search-icon u-ml--10">search</mat-icon>
+                </mat-form-field>
             </div>
+        </div>
+        <div fxLayout="row" fxLayoutAlign="flex-end center" class="u-w--100">
+            <button class="advanced-filterd--btn u-mt--10 u-mb--10" [ngClass]="{'active': isAdvancedFilters}" mat-flat-button (click)="isAdvancedFilters = !isAdvancedFilters" matTooltip="Advanced filters" matTooltipClass="white-tooltip">
+                <mat-icon svgIcon="filter-icon"></mat-icon>
+                <span class="advanced-filterd--btn-text u-ml--5">Advanced filters</span>
+            </button>
         </div>
     </div>
     <div fxLayout="row" fxLayoutAlign="start center" class="main-overview--filter-additional u-w--100 u-mb--20" *ngIf="isAdvancedFilters">

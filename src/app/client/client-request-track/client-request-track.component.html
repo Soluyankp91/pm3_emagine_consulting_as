@@ -49,16 +49,16 @@
                     </mat-cell>
                 </ng-container>
                 <ng-container matColumnDef="priority">
-                    <mat-header-cell *matHeaderCellDef mat-sort-header fxFlex="5%"> Priority </mat-header-cell>
-                    <mat-cell *matCellDef="let row" fxFlex="5%">
+                    <mat-header-cell *matHeaderCellDef mat-sort-header fxFlex="5%" fxLayoutAlign="center center"> Priority </mat-header-cell>
+                    <mat-cell *matCellDef="let row" fxFlex="5%" fxLayoutAlign="center center">
                         <span class="text-truncate-ellipsis" [matTooltip]="row.priority" matTooltipClass="white-tooltip" appShowIfTruncated>
                             {{row.priority}}
                         </span>
                     </mat-cell>
                 </ng-container>
                 <ng-container matColumnDef="numberOfConsultants">
-                    <mat-header-cell *matHeaderCellDef mat-sort-header fxFlex="5%"> Consultants </mat-header-cell>
-                    <mat-cell *matCellDef="let row" fxFlex="5%">
+                    <mat-header-cell *matHeaderCellDef mat-sort-header fxFlex="7%" fxLayoutAlign="center center"> Consultants </mat-header-cell>
+                    <mat-cell *matCellDef="let row" fxFlex="7%" fxLayoutAlign="center center">
                         <span class="text-truncate-ellipsis" [matTooltip]="row.numberOfConsultants" matTooltipClass="white-tooltip" appShowIfTruncated>
                             {{row.numberOfConsultants}}
                         </span>
@@ -74,8 +74,8 @@
                 </ng-container>
 
                 <ng-container matColumnDef="salesManager">
-                    <mat-header-cell *matHeaderCellDef fxFlex="12%"> Sales manager </mat-header-cell>
-                    <mat-cell *matCellDef="let row" fxFlex="12%">
+                    <mat-header-cell *matHeaderCellDef fxFlex="11%"> Sales manager </mat-header-cell>
+                    <mat-cell *matCellDef="let row" fxFlex="11%">
                         <span class="text-truncate-ellipsis" [matTooltip]="row.accountManagers" matTooltipClass="white-tooltip" appShowIfTruncated>
                             {{row.accountManagers}}
                         </span>
@@ -83,8 +83,8 @@
                 </ng-container>
 
                 <ng-container matColumnDef="sourcer">
-                    <mat-header-cell *matHeaderCellDef fxFlex="12%"> Sourcer </mat-header-cell>
-                    <mat-cell *matCellDef="let row" fxFlex="12%">
+                    <mat-header-cell *matHeaderCellDef fxFlex="11%"> Sourcer </mat-header-cell>
+                    <mat-cell *matCellDef="let row" fxFlex="11%">
                         <span class="text-truncate-ellipsis" [matTooltip]="row.requestSourcers" matTooltipClass="white-tooltip" appShowIfTruncated>
                             {{row.requestSourcers}}
                         </span>

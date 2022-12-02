@@ -995,7 +995,7 @@ export class WorkflowSalesComponent extends AppComponentBase implements OnInit, 
             consultantRate = this.findItemById(this.clientRateTypes, 2); // 2: fixed
         }
         let consultantDto = null;
-        if (consultant) {
+        if (consultant?.consultantId) {
             consultantDto = new ConsultantWithSourcingRequestResultDto();
             consultantDto.consultant = consultant?.consultant;
             consultantDto.sourcingRequestConsultantId = consultant?.soldRequestConsultantId;
@@ -1046,7 +1046,7 @@ export class WorkflowSalesComponent extends AppComponentBase implements OnInit, 
             specialFees: new FormArray([]),
 
             consultantSpecialContractTermsNone: new FormControl(consultant?.noSpecialContractTerms ?? false),
-            consultantSpecialContractTerms: new FormControl({value: consultant?.specialContractTerms ?? null, disabled: consultant?.noSpecialContractTerms}, Validators.required),
+            consultantSpecialContractTerms: new FormControl({value: consultant?.specialContractTerms ?? null, disabled: consultant?.noSpecialContractTerms}),
 
             deliveryManagerSameAsAccountManager: new FormControl(consultant?.deliveryManagerSameAsAccountManager ?? false),
             deliveryAccountManager: new FormControl({value: consultant?.deliveryAccountManager ?? '', disabled: consultant?.deliveryManagerSameAsAccountManager}, CustomValidators.autocompleteValidator(['id'])),
@@ -2602,4 +2602,15 @@ export class WorkflowSalesComponent extends AppComponentBase implements OnInit, 
             });
         }
     }
+
+    focusInMethod() {
+        let b = document.getElementsByTagName('mat-drawer-content')[0] as HTMLElement;
+        b.style.overflow = "hidden";
+    }
+
+    focusOutMethod(){
+        let b = document.getElementsByTagName('mat-drawer-content')[0] as HTMLElement;
+        b.style.overflow = "auto";
+    }
+
 }

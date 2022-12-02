@@ -1,0 +1,28 @@
+.container {
+    margin-left: 50px;
+}
+.top-filters {
+    margin-top: 25px;
+    margin-bottom: 25px;
+    width: 1152px;
+    display: flex;
+    justify-content: space-between;
+}
+.left-panel {
+    display: flex;
+    align-items: center;
+}
+.country-filter {
+    margin-right: 15px;
+    .country-filter-icon {
+        width: 32px;
+        height: 32px;
+    }
+}
+.master-templates-header {
+    font-size: 28px;
+    line-height: 38px;
+}
+.right-panel {
+    display: flex;
+}
