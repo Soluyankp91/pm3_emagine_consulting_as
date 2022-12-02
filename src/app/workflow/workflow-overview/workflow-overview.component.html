@@ -36,7 +36,7 @@
                         {{item.name ? item.name : 'What next?'}}
                     </span>
                 </span>
-                <span class="workflow-overview--process-daterange u-ml--5">{{item.periodStartDate | momentFormat: 'DD.MM.YYYY' + ' - ' + (item.periodEndDate ? (item.periodEndDate | momentFormat: 'DD.MM.YYYY') : '...')}}</span>
+                <span class="workflow-overview--process-daterange u-ml--5">{{(item.periodStartDate | momentFormat) + ' - ' + (item.periodEndDate ? (item.periodEndDate | momentFormat) : '...')}}</span>
             </div>
             <div fxLayout="row" fxLayoutAlign="start center" *ngFor="let step of item.steps; trackBy: stepsTrackBy" [fxFlex]="step.isFakeActiveStep ? 'auto' : '20%'">
                 <ng-container *ngIf="!step.isFakeActiveStep; else fakeActiveStepTemplate">

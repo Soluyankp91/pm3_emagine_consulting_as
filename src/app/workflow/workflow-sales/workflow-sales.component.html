@@ -173,7 +173,7 @@
                                             <span fxFlex="20%" class="u-w--100 text-truncate-ellipsis" [matTooltip]="salesMainDataForm.commissions.at(i).get('frequency')?.value?.name" matTooltipClass="white-tooltip" appShowIfTruncated>
                                                 <!-- frequency id === 2 -- 'One time' -->
                                                 <ng-container *ngIf="salesMainDataForm.commissions.at(i).get('frequency')?.value?.id === 2; else commissionFrequency">
-                                                    {{salesMainDataForm.commissions.at(i).get('frequency')?.value?.name}} {{salesMainDataForm.commissions.at(i).get('oneTimeDate')?.value | momentFormat: 'DD.MM.YYYY'}}
+                                                    {{salesMainDataForm.commissions.at(i).get('frequency')?.value?.name}} {{salesMainDataForm.commissions.at(i).get('oneTimeDate')?.value | momentFormat}}
                                                 </ng-container>
                                                 <ng-template #commissionFrequency>
                                                     {{salesMainDataForm.commissions.at(i).get('frequency')?.value?.name}}
@@ -212,7 +212,7 @@
                             <div fxLayout="column" fxLayoutAlign="start start" class="u-w--100 u-mb--10" fxFlex="25%" *ngIf="salesMainDataForm.contractExpirationNotification?.value?.includes(999)">
                                 <h3 class="workflow-step-readonly--gray-header">Notification date</h3>
                                 <span class="workflow-step-readonly--blue-text-bold">
-                                    {{salesMainDataForm.customContractExpirationNotificationDate?.value | momentFormat: 'DD.MM.YYYY'}}
+                                    {{salesMainDataForm.customContractExpirationNotificationDate?.value | momentFormat}}
                                 </span>
                             </div>
                         </div>
@@ -281,13 +281,13 @@
                             <div fxLayout="column" fxFlex="25%">
                                 <h3 class="workflow-step-readonly--gray-header">Start date</h3>
                                 <span class="workflow-step-readonly--blue-text-bold">
-                                    {{salesClientDataForm.clientContractStartDate?.value ? (salesClientDataForm.clientContractStartDate?.value | momentFormat: 'DD.MM.YYYY') : '-'}}
+                                    {{salesClientDataForm.clientContractStartDate?.value ? (salesClientDataForm.clientContractStartDate?.value | momentFormat) : '-'}}
                                 </span>
                             </div>
                             <div fxLayout="column" fxFlex="25%">
                                 <h3 class="workflow-step-readonly--gray-header">End date</h3>
                                 <span class="workflow-step-readonly--blue-text-bold">
-                                    {{salesClientDataForm.clientContractNoEndDate?.value ? 'No end date' : (salesClientDataForm.clientContractEndDate?.value ? (salesClientDataForm.clientContractEndDate?.value | momentFormat: 'DD.MM.YYYY') : '-')}}
+                                    {{salesClientDataForm.clientContractNoEndDate?.value ? 'No end date' : (salesClientDataForm.clientContractEndDate?.value ? (salesClientDataForm.clientContractEndDate?.value | momentFormat) : '-')}}
                                 </span>
                             </div>
                         </div>
@@ -657,7 +657,7 @@
                                         <div fxLayout="column" fxFlex="25%">
                                             <h3 class="workflow-step-readonly--gray-header">Start date</h3>
                                             <span class="workflow-step-readonly--blue-text-bold">
-                                                {{item?.value?.consultantProjectStartDate ? (item?.value?.consultantProjectStartDate | momentFormat: 'DD.MM.YYYY') : '-'}}
+                                                {{item?.value?.consultantProjectStartDate ? (item?.value?.consultantProjectStartDate | momentFormat) : '-'}}
                                             </span>
                                         </div>
                                         <div fxLayout="column" fxFlex="25%">
@@ -667,7 +667,7 @@
                                             </span>
                                             <ng-template #consultantProjectEndDateTemplate>
                                                 <span class="workflow-step-readonly--blue-text-bold">
-                                                    {{item?.value?.consultantProjectEndDate ? (item?.value?.consultantProjectEndDate | momentFormat: 'DD.MM.YYYY') : '-'}}
+                                                    {{item?.value?.consultantProjectEndDate ? (item?.value?.consultantProjectEndDate | momentFormat) : '-'}}
                                                 </span>
                                             </ng-template>
                                         </div>
@@ -777,7 +777,7 @@
                                                 <div fxLayout="column" fxFlex="25%" *ngIf="item.value.consultantInvoicingFrequency?.name === 'Manual date'">
                                                     <h3 class="workflow-step-readonly--gray-header">Date</h3>
                                                     <span class="workflow-step-readonly--blue-text-bold">
-                                                        {{item?.value?.consultantInvoicingManualDate ? (item?.value?.consultantInvoicingManualDate | momentFormat: 'DD.MM.YYYY') : '-'}}
+                                                        {{item?.value?.consultantInvoicingManualDate ? (item?.value?.consultantInvoicingManualDate | momentFormat) : '-'}}
                                                     </span>
                                                 </div>
                                             </ng-container>
@@ -791,7 +791,7 @@
                                                 <div fxLayout="column" fxFlex="25%" *ngIf="item.value?.consultantInvoicingTime?.name === 'Manual date'">
                                                     <h3 class="workflow-step-readonly--gray-header">Date</h3>
                                                     <span class="workflow-step-readonly--blue-text-bold">
-                                                        {{item?.value?.consultantInvoicingManualDate ? (item?.value?.consultantInvoicingManualDate | momentFormat: 'DD.MM.YYYY') : '-'}}
+                                                        {{item?.value?.consultantInvoicingManualDate ? (item?.value?.consultantInvoicingManualDate | momentFormat) : '-'}}
                                                     </span>
                                                 </div>
                                             </ng-container>
@@ -1362,7 +1362,7 @@
                                             <span fxFlex="20%" class="u-w--100 text-truncate-ellipsis" [matTooltip]="salesMainDataForm.commissions.at(i).get('frequency')?.value?.name" matTooltipClass="white-tooltip" appShowIfTruncated>
                                                 <!-- frequency id === 2 -- 'One time' -->
                                                 <ng-container *ngIf="salesMainDataForm.commissions.at(i).get('frequency')?.value?.id === 2; else commissionFrequency">
-                                                    {{salesMainDataForm.commissions.at(i).get('frequency')?.value?.name}} {{salesMainDataForm.commissions.at(i).get('oneTimeDate')?.value | momentFormat: 'DD.MM.YYYY'}}
+                                                    {{salesMainDataForm.commissions.at(i).get('frequency')?.value?.name}} {{salesMainDataForm.commissions.at(i).get('oneTimeDate')?.value | momentFormat}}
                                                 </ng-container>
                                                 <ng-template #commissionFrequency>
                                                     {{salesMainDataForm.commissions.at(i).get('frequency')?.value?.name}}
@@ -2286,7 +2286,7 @@
 
                                     <div fxFlex="20%" fxLayoutAlign="end center">
                                         <span class="workflow-form--consultants__period u-mr--8" *ngIf="consultant.value?.consultantProjectStartDate">
-                                            {{consultant.value?.consultantProjectStartDate | momentFormat: 'DD.MM.YYYY'}} - {{consultant.value?.consultantProjectEndDate | momentFormat: 'DD.MM.YYYY'}}
+                                            {{consultant.value?.consultantProjectStartDate | momentFormat}} - {{consultant.value?.consultantProjectEndDate | momentFormat}}
                                         </span>
                                     </div>
                                 </ng-container>
@@ -3249,7 +3249,7 @@
                 <div fxLayout="column" class="u-w--100 u-mb--20" *ngIf="salesTerminateConsultantForm?.terminationTime?.value === 2">
                     <h3 class="workflow-step-readonly--gray-header">End date</h3>
                     <span class="workflow-step-readonly--blue-text-bold">
-                        {{salesTerminateConsultantForm.endDate?.value ? (salesTerminateConsultantForm.endDate?.value | momentFormat: 'DD.MM.YYYY') : '-'}}
+                        {{salesTerminateConsultantForm.endDate?.value ? (salesTerminateConsultantForm.endDate?.value | momentFormat) : '-'}}
                     </span>
                 </div>
 

@@ -1044,11 +1044,11 @@
                                                         <span fxFlex="25%" class="u-w--100 text-truncate-ellipsis workflow-contracts--list-item" [matTooltip]="projectLine.value.invoicingReferenceNumber ?? '-'" matTooltipClass="white-tooltip" appShowIfTruncated>
                                                             {{projectLine.value.invoicingReferenceNumber && projectLine.value.invoicingReferenceNumber !== '' ? projectLine.value.invoicingReferenceNumber : '-'}}
                                                         </span>
-                                                        <span fxFlex="10%" class="u-w--100 text-truncate-ellipsis workflow-contracts--list-item" [matTooltip]="projectLine.value.startDate ? (projectLine.value.startDate | momentFormat: 'DD.MM.YYYY') : '-'" matTooltipClass="white-tooltip" appShowIfTruncated>
-                                                            {{projectLine.value.startDate ? (projectLine.value.startDate | momentFormat: 'DD.MM.YYYY') : '-'}}
+                                                        <span fxFlex="10%" class="u-w--100 text-truncate-ellipsis workflow-contracts--list-item" [matTooltip]="projectLine.value.startDate ? (projectLine.value.startDate | momentFormat) : '-'" matTooltipClass="white-tooltip" appShowIfTruncated>
+                                                            {{projectLine.value.startDate ? (projectLine.value.startDate | momentFormat) : '-'}}
                                                         </span>
-                                                        <span fxFlex="10%" class="u-w--100 text-truncate-ellipsis workflow-contracts--list-item" [matTooltip]="projectLine.value.endDate ? (projectLine.value.endDate | momentFormat: 'DD.MM.YYYY') : '-'" matTooltipClass="white-tooltip" appShowIfTruncated>
-                                                            {{projectLine.value.endDate ? (projectLine.value.endDate | momentFormat: 'DD.MM.YYYY') : '-'}}
+                                                        <span fxFlex="10%" class="u-w--100 text-truncate-ellipsis workflow-contracts--list-item" [matTooltip]="projectLine.value.endDate ? (projectLine.value.endDate | momentFormat) : '-'" matTooltipClass="white-tooltip" appShowIfTruncated>
+                                                            {{projectLine.value.endDate ? (projectLine.value.endDate | momentFormat) : '-'}}
                                                         </span>
                                                         <span fxFlex="1 0 15%" class="u-w--100 text-truncate-ellipsis__multilne workflow-contracts--list-item" [matTooltip]="projectLine.value.optionalInvoicingInfo ?? '-'" matTooltipClass="white-tooltip" appShowIfTruncated>
                                                             {{projectLine.value.optionalInvoicingInfo && projectLine.value.optionalInvoicingInfo !== '' ? projectLine.value.optionalInvoicingInfo : '-'}}
@@ -1163,7 +1163,7 @@
                                                 <div fxLayout="row" class="project-line--expansion-additional">
                                                     <span fxFlex="15%" class="project-line--expansion-additional__header">Changed</span>
                                                     <span class="project-line--expansion-additional__content">
-                                                        {{projectLine.value.modificationDate ? (projectLine.value.modificationDate | momentFormat: 'DD.MM.YYYY') : '-'}}
+                                                        {{projectLine.value.modificationDate ? (projectLine.value.modificationDate | momentFormat) : '-'}}
                                                     </span>
                                                 </div>
                                                 <div fxLayout="row" class="project-line--expansion-additional">
