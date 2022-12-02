@@ -75,10 +75,11 @@ export class FileUploaderComponent implements OnInit, ControlValueAccessor {
                     this.fileServiceProxy
                         .temporaryPOST({ data: file, fileName: file.name })
                         .pipe(
-                            map((temporaryFileId: string) => ({
+                            map((temporaryFileId) => ({
                                 ...file,
                                 name: file.name,
-                                temporaryFileId: temporaryFileId,
+                                temporaryFileId:
+                                    temporaryFileId.value as string,
                                 icon: this._getIconName(file.name),
                             }))
                         )

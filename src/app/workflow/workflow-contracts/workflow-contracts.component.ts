@@ -4,7 +4,7 @@ import { AbstractControl, FormArray, FormBuilder, FormControl, Validators } from
 import { MatDialog } from '@angular/material/dialog';
 import { MatMenuTrigger } from '@angular/material/menu';
 import { ScrollToConfigOptions, ScrollToService } from '@nicky-lenaers/ngx-scroll-to';
-import { Subject } from 'rxjs';
+import { of, Subject } from 'rxjs';
 import { finalize, takeUntil } from 'rxjs/operators';
 import { InternalLookupService } from 'src/app/shared/common/internal-lookup.service';
 import { AppComponentBase } from 'src/shared/app-component-base';
@@ -1227,9 +1227,7 @@ export class WorkflowContractsComponent extends AppComponentBase implements OnIn
         if (isDraft) {
             this._clientPeriodService.clientContractsPUT(this.periodId!, input)
                 .pipe(finalize(() => {
-                    if (!isSyncToLegacy) {
-                        this.hideMainSpinner();
-                    }
+                    this.hideMainSpinner();
                 }))
                 .subscribe(() => {
                     this.validationTriggered = false;
@@ -1415,9 +1413,7 @@ export class WorkflowContractsComponent extends AppComponentBase implements OnIn
         if (isDraft) {
             this._consultantPeriodService.consultantContractsPUT(this.activeSideSection.consultantPeriodId!, input)
                 .pipe(finalize(() => {
-                    if (!isSyncToLegacy) {
-                        this.hideMainSpinner();
-                    }
+                    this.hideMainSpinner();
                 }))
                 .subscribe(() => {
                     this.validationTriggered = false;
@@ -1430,7 +1426,8 @@ export class WorkflowContractsComponent extends AppComponentBase implements OnIn
                     } else {
                         this.getContractStepData();
                     }
-                });
+                },
+                () => this.hideMainSpinner());
         } else {
             this._consultantPeriodService.editFinish5(this.activeSideSection.consultantPeriodId!, input)
                 .pipe(finalize(() => {
@@ -1494,9 +1491,7 @@ export class WorkflowContractsComponent extends AppComponentBase implements OnIn
         if (isDraft) {
             this._workflowServiceProxy.terminationConsultantContractPUT(this.workflowId!, input)
                 .pipe(finalize(() => {
-                    if (!isSyncToLegacy) {
-                        this.hideMainSpinner();
-                    }
+                    this.hideMainSpinner();
                 }))
                 .subscribe(() => {
                     this.validationTriggered = false;
@@ -1569,9 +1564,7 @@ export class WorkflowContractsComponent extends AppComponentBase implements OnIn
         if (isDraft) {
             this._workflowServiceProxy.terminationContractPUT(this.workflowId!, input)
                 .pipe(finalize(() => {
-                    if (!isSyncToLegacy) {
-                        this.hideMainSpinner();
-                    }
+                    this.hideMainSpinner();
                 }))
                 .subscribe(() => {
                     this.validationTriggered = false;
@@ -1700,6 +1693,7 @@ export class WorkflowContractsComponent extends AppComponentBase implements OnIn
     }
 
     processAfterSync(result: ContractSyncResultDto) {
+        this.showMainSpinner();
         this.statusAfterSync = true;
         this.syncNotPossible = !result.success!;
         this.contractsSyncDataForm.enableLegalContractsButtons?.setValue(result.enableLegalContractsButtons!);

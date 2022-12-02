@@ -13,8 +13,6 @@ import {
     AgreementTemplateDetailsDto,
     AgreementTemplateServiceProxy,
     ClientResultDto,
-    EnumEntityTypeDto,
-    LegalEntityDto,
     LookupServiceProxy,
     SaveAgreementTemplateDto,
     SimpleAgreementTemplatesListItemDto,
@@ -132,6 +130,7 @@ export class CreationComponent
                 documentFileProvidedByClient: false,
             }
         ) as SaveAgreementTemplateDto;
+
         const uploadedFiles = this.clientTemplateFormGroup.uploadedFiles?.value
             ? this.clientTemplateFormGroup.uploadedFiles?.value
             : [];
@@ -149,7 +148,7 @@ export class CreationComponent
                 break;
             }
             case AgreementCreationMode.InheritedFromParent: {
-                (agreementPostDto as any).parentAgreementTemplateId =
+                agreementPostDto.parentAgreementTemplateId =
                     this.parentMasterTemplateControl.value;
                 agreementPostDto.attachments = uploadedFiles.map(
                     (attachment: any) => {
@@ -165,12 +164,11 @@ export class CreationComponent
             case AgreementCreationMode.Duplicated: {
                 agreementPostDto.attachments = [
                     ...uploadedFiles,
-                    ...selectedInheritedFiles?.value,
+                    ...selectedInheritedFiles,
                 ].map((attachment: FileUpload) => {
                     return new AgreementTemplateAttachmentDto(attachment);
                 });
-                // FIXME: changed from sourceAgreementTemplateId to parentAgreementTemplateId because of error
-                agreementPostDto.parentAgreementTemplateId =
+                agreementPostDto.duplicationSourceAgreementTemplateId =
                     this.clientTemplateControl.value;
                 break;
             }
@@ -250,8 +248,12 @@ export class CreationComponent
                         agreementTemplateId
                     );
                 }),
-                tap((data: AgreementTemplateDetailsDto) => {
-                    this._setDataFromRetrievedTemplate(data);
+                tap((agreementTemplate: AgreementTemplateDetailsDto) => {
+                    this._setDataFromRetrievedTemplate(agreementTemplate);
+                    this.clientTemplateFormGroup.enable({
+                        emitEvent: false,
+                    });
+                    this._disableControls();
                 })
             )
             .subscribe();
@@ -268,6 +270,12 @@ export class CreationComponent
                 }),
                 tap((agreementTemplate) => {
                     this._setDataFromRetrievedTemplate(agreementTemplate);
+                    this.clientTemplateFormGroup.enable({
+                        emitEvent: false,
+                    });
+                    if (this.isDuplicateFromInherited) {
+                        this._disableControls();
+                    }
                 })
             )
             .subscribe();
@@ -294,7 +302,6 @@ export class CreationComponent
             note: data.note,
             isSignatureRequired: data.isSignatureRequired,
             isEnabled: data.isEnabled,
-            attachments: [],
         });
         this.preselectedFiles = [
             ...(data.attachments?.map(
@@ -322,7 +329,7 @@ export class CreationComponent
                   )
                 : []),
         ];
-        //this.isDuplicateFromInherited = !!data.parentAgreementTemplateId;
+        this.isDuplicateFromInherited = !!data.parentAgreementTemplateId;
         this._updateDisabledStateForDuplicate();
         this._cdr.detectChanges();
     }
@@ -369,13 +376,15 @@ export class CreationComponent
                 this.parentMasterTemplateControl.reset(null, {
                     emitEvent: false,
                 });
-                this._enableControls();
+                this.clientTemplateFormGroup.enable({ emitEvent: false });
                 break;
             }
             case AgreementCreationMode.InheritedFromParent: {
                 this.clientTemplateControl.reset(null, { emitEvent: false });
                 this.masterTemplateOptionsChanged$.next('');
-                this._disableControls();
+                this.clientTemplateFormGroup.disable({
+                    emitEvent: false,
+                });
                 break;
             }
             case AgreementCreationMode.Duplicated: {
@@ -383,6 +392,9 @@ export class CreationComponent
                     emitEvent: false,
                 });
                 this.clientTemplateOptionsChanged$.next('');
+                this.clientTemplateFormGroup.disable({
+                    emitEvent: false,
+                });
                 break;
             }
         }
