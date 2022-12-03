@@ -24,11 +24,11 @@
                                 <button mat-icon-button #menuDeleteTrigger="matMenuTrigger" [matMenuTriggerFor]="consultantMenu" type="button" appPreventDoubleClick (throttledClick)="$event.stopPropagation();" class="workflow-period--delete u-mr--16"><mat-icon>more_horiz</mat-icon></button>
                                 <mat-menu #consultantMenu>
                                     <button
-                                        class="menu-item menu-item--delete"
+                                        class="menu-item menu-item--cancel"
                                         mat-menu-item
                                         [disabled]="false"
                                         (click)="deleteSideSection(item)">
-                                        <mat-icon>clear</mat-icon>
+                                        <mat-icon svgIcon="close-icon"></mat-icon>
                                         Delete
                                     </button>
                                 </mat-menu>

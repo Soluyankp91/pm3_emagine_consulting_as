@@ -1292,7 +1292,7 @@
                                                     Save
                                                 </button>
                                                 <button mat-icon-button type="button" appPreventDoubleClick (throttledClick)="isCommissionInitialAdd ? removeCommission(i) : cancelEditCommissionRow(i)" class="inline-edit-form--btn__cancel">
-                                                    <mat-icon>close</mat-icon>
+                                                    <mat-icon svgIcon="close-icon"></mat-icon>
                                                 </button>
                                             </div>
                                         </ng-container>
@@ -1370,14 +1370,14 @@
                                                         mat-menu-item
                                                         [disabled]="isCommissionEditing"
                                                         appPreventDoubleClick (throttledClick)="editOrSaveCommissionRow(i)">
-                                                        <mat-icon>{{salesMainDataForm.commissions.at(i).get('editable')?.value ? 'save' : 'create'}}</mat-icon>
+                                                        <mat-icon>{{commissions.value.editable ? 'save' : 'create'}}</mat-icon>
                                                         {{salesMainDataForm.commissions.at(i).get('editable')?.value ? 'Save' : 'Edit'}}
                                                     </button>
                                                     <button
                                                         class="menu-item menu-item--cancel"
                                                         mat-menu-item
                                                         appPreventDoubleClick (throttledClick)="removeCommission(i)">
-                                                        <mat-icon>clear</mat-icon>
+                                                        <mat-icon svgIcon="close-icon"></mat-icon>
                                                         Remove
                                                     </button>
                                                 </mat-menu>
@@ -1960,7 +1960,7 @@
                                                         Save
                                                     </button>
                                                     <button mat-icon-button type="button" appPreventDoubleClick (throttledClick)="cancelEditClientRate(i)" class="inline-edit-form--btn__cancel">
-                                                        <mat-icon>close</mat-icon>
+                                                        <mat-icon svgIcon="close-icon"></mat-icon>
                                                     </button>
                                                 </div>
                                             </ng-container>
@@ -2070,7 +2070,7 @@
                                                         Save
                                                     </button>
                                                     <button mat-icon-button type="button" appPreventDoubleClick (throttledClick)="cancelEditClientFee(i)" class="inline-edit-form--btn__cancel">
-                                                        <mat-icon>close</mat-icon>
+                                                        <mat-icon svgIcon="close-icon"></mat-icon>
                                                     </button>
                                                 </div>
                                             </ng-container>
@@ -2907,7 +2907,7 @@
                                                                 Save
                                                             </button>
                                                             <button mat-icon-button type="button" appPreventDoubleClick (throttledClick)="cancelEditConsultantRate(consultantIndex, specialRateIndex)" class="inline-edit-form--btn__cancel">
-                                                                <mat-icon>close</mat-icon>
+                                                                <mat-icon svgIcon="close-icon"></mat-icon>
                                                             </button>
                                                         </div>
                                                     </ng-container>
@@ -3044,7 +3044,7 @@
                                                                 Save
                                                             </button>
                                                             <button mat-icon-button type="button" appPreventDoubleClick (throttledClick)="cancelEditConsultantFee(consultantIndex, specialFeeIndex)" class="inline-edit-form--btn__cancel">
-                                                                <mat-icon>close</mat-icon>
+                                                                <mat-icon svgIcon="close-icon"></mat-icon>
                                                             </button>
                                                         </div>
                                                     </ng-container>

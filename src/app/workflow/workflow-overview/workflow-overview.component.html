@@ -136,17 +136,17 @@
                     </button>
                     <mat-menu #consultantMenu>
                         <button
-                            class="menu-item menu-item--edit"
+                            class="menu-item green-color"
                             mat-menu-item
                             appPreventDoubleClick (throttledClick)="changeConsultantData(item.origin)">
-                            <mat-icon>create</mat-icon>
+                            <mat-icon svgIcon="edit-icon-green"></mat-icon>
                             Change consultant data
                         </button>
                         <button
-                            class="menu-item menu-item--edit"
+                            class="menu-item green-color"
                             mat-menu-item
                             appPreventDoubleClick (throttledClick)="extendConsultant(item.origin)">
-                            <mat-icon>add</mat-icon>
+                            <mat-icon svgIcon="add-icon-green"></mat-icon>
                             Extend consultant
                         </button>
                         <!-- FIXME: uncomment when BE will return cons id -->
@@ -154,7 +154,7 @@
                             class="menu-item menu-item--cancel"
                             mat-menu-item
                             appPreventDoubleClick (throttledClick)="terminateConsultant(item.origin)">
-                            <mat-icon>clear</mat-icon>
+                            <mat-icon svgIcon="close-icon"></mat-icon>
                             Terminate consultant
                         </button> -->
                     </mat-menu>
