@@ -29,6 +29,7 @@ import { ConsultantDiallogAction, SalesTerminateConsultantForm, WorkflowSalesCli
 
 @Component({
     selector: 'app-workflow-sales',
+    // templateUrl: './workflow-sales-new.component.html',
     templateUrl: './workflow-sales.component.html',
     styleUrls: ['./workflow-sales.component.scss']
 })
