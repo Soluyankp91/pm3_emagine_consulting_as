@@ -79,22 +79,7 @@
                 <div fxLayout="column" fxLayoutAlign="start start" class="u-w--100">
                     <h2 class="workflow-section--header">Consultants</h2>
                     <div *ngFor="let consultant of financesConsultantsForm.consultants.controls; let i = index; last as last" [formGroupName]="i" class="workflow-finances--block-consultants u-w--100" [ngClass]="{'last-block': last}">
-                        <div fxLayout="row" fxLayoutAlign="start center" class="u-mb--20" *ngIf="consultant.value.employmentType?.id !== 10 && consultant.value.employmentType?.id !== 11">
-                            <img *ngIf="consultant.value?.consultant?.id" class="border-rounded-50 u-mr--16 image-thumbnail-responsive" [src]="consultantProfileUrl(consultant.value?.consultant?.externalId)" />
-                            <div fxLayout="column">
-                                <div fxLayout="row" fxLayoutAlign="start center">
-                                    <p class="workflow-finances--consultant-name">
-                                        {{ consultant.value?.consultant?.name }}
-                                    </p>
-                                    <button *ngIf="consultant.value?.consultant?.id" mat-icon-button class="consultant-deeplink--btn" appPreventDoubleClick (throttledClick)="$event.stopPropagation(); deepLinkToSourcing(consultant.value?.consultant?.id)" matTooltip="Preview in Sourcing" matTooltipClass="white-tooltip">
-                                        <mat-icon svgIcon="sourcing-deeplink"></mat-icon>
-                                    </button>
-                                </div>
-                                <span class="workflow-finances--consultant-text">
-                                    <app-consultant-information [consultantData]="consultant?.value?.consultant"></app-consultant-information>
-                                </span>
-                            </div>
-                        </div>
+                        <app-consultant-information [consultantData]="consultant?.value?.consultant"></app-consultant-information>
 
                         <ng-container *ngIf="readOnlyMode; else checkboxInvoicingInput">
                             <div fxLayout="row" fxLayoutAlign="start center" class="u-mb--10">

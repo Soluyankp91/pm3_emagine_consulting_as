@@ -144,6 +144,9 @@ export abstract class AppComponentBase {
     deepLinkToSourcing(consultantId: number) {
         window.open(`${environment.sourcingUrl}/app/overview/consultants/consultant/${consultantId}`, '_blank');
     }
+    openSupplierProfile(supplierId: number) {
+        window.open(`${environment.sourcingUrl}/app/overview/suppliers/supplier/${supplierId}`, '_blank');
+    }
     getTenantCodeFromId(tenantId: number) {
         const tenant = TenantList.find(x => x.id === tenantId);
         return tenant?.code;

@@ -621,23 +621,10 @@
                                     </div>
                                     <div fxLayout="column">
                                         <h3 class="workflow-step-readonly--gray-header">Consultant</h3>
+                                        <ng-container *ngIf="item.value.employmentType?.id !== employmentTypesEnum.FeeOnly && item.value.employmentType?.id !== employmentTypesEnum.Recruitment; else consultantNameOnly">
+                                            <app-consultant-information [consultantData]="item?.value?.consultantName?.consultant"></app-consultant-information>
+                                        </ng-container>
                                         <div fxLayout="row" fxLayoutAlign="start center" class="u-mb--20">
-                                            <ng-container *ngIf="item.value.employmentType?.id !== employmentTypesEnum.FeeOnly && item.value.employmentType?.id !== employmentTypesEnum.Recruitment; else consultantNameOnly">
-                                                <img class="border-rounded-50 image-thumbnail-responsive u-mr--16" [src]="consultantProfileUrl(item.value.consultantName?.consultant?.externalId)" >
-                                                <div fxLayout="column">
-                                                    <div fxLayout="row" fxLayoutAlign="start center">
-                                                        <p class="workflow-extension--consultant-data--consultant-name">
-                                                            {{item?.value?.consultantName?.consultant?.name}}
-                                                        </p>
-                                                        <button *ngIf="item.value?.consultantName?.consultant?.id" mat-icon-button class="consultant-deeplink--btn" appPreventDoubleClick (throttledClick)="$event.stopPropagation(); deepLinkToSourcing(item.value?.consultantName?.consultant?.id)" matTooltip="Preview in Sourcing" matTooltipClass="white-tooltip">
-                                                            <mat-icon svgIcon="sourcing-deeplink"></mat-icon>
-                                                        </button>
-                                                    </div>
-                                                    <span class="workflow-extension--consultant-data--consultant-text">
-                                                        <app-consultant-information [consultantData]="item?.value?.consultantName?.consultant"></app-consultant-information>
-                                                    </span>
-                                                </div>
-                                            </ng-container>
                                             <ng-template #consultantNameOnly>
                                                 <p class="workflow-extension--consultant-data--consultant-name">
                                                     {{item.value.consultantNameOnly ?? '-'}}
@@ -2278,9 +2265,6 @@
                                             <span class="workflow-form--consultants__name">
                                                 {{consultant.value?.consultantName?.consultant?.name}}
                                             </span>
-                                            <button *ngIf="consultant.value?.consultantName?.consultant?.id" mat-icon-button class="consultant-deeplink--btn u-mr--16" appPreventDoubleClick (throttledClick)="$event.stopPropagation(); deepLinkToSourcing(consultant.value?.consultantName?.consultant?.id)" matTooltip="Preview in Sourcing" matTooltipClass="white-tooltip">
-                                                <mat-icon svgIcon="sourcing-deeplink"></mat-icon>
-                                            </button>
                                         </ng-container>
                                         <button class="form-icon--delete-row" type="button" *ngIf="consultantsForm.consultantData?.controls?.length && (activeSideSection.typeId === workflowSideSections.StartClientPeriod && (isCompleted === editEnabledForcefuly))"
                                             mat-icon-button appPreventDoubleClick (throttledClick)="$event.stopPropagation();confirmRemoveConsultant(consultantIndex)">
@@ -2339,9 +2323,7 @@
                                             </mat-error>
                                         </mat-form-field>
                                     </div>
-                                    <ng-container [ngTemplateOutlet]="consultantAdditionalInfo" [ngTemplateOutletContext]="{consultant: consultant.get('consultantName')}">
-                                    </ng-container>
-
+                                    <app-consultant-information [onlyAdditionalInfo]="true" [consultantData]="consultant?.value?.consultantName?.consultant"></app-consultant-information>
                                 </ng-container>
                                 <ng-container *ngIf="activeSideSection.typeId === workflowSideSections.ExtendClientPeriod || activeSideSection.typeId === workflowSideSections.ChangeClientPeriod  || activeSideSection.typeId === workflowSideSections.ChangeConsultantPeriod || activeSideSection.typeId === workflowSideSections.ExtendConsultantPeriod">
                                     <div fxLayout="row" fxLayoutAlign="start start" class="u-w--100 u-mb--20">
@@ -2352,27 +2334,7 @@
                                             </span>
                                         </div>
                                     </div>
-                                    <div fxLayout="row" fxLayoutAlign="start start" class="u-w--100 u-mb--20">
-                                        <div fxLayout="column">
-                                            <h3 class="workflow-step-readonly--gray-header">Consultant</h3>
-                                            <div fxLayout="row" fxLayoutAlign="start center" class="u-mb--20">
-                                                <img class="border-rounded-50 image-thumbnail-responsive u-mr--16" [src]="consultantProfileUrl(consultant.value.consultantName?.consultant?.externalId)">
-                                                <div fxLayout="column">
-                                                    <div fxLayout="row" fxLayoutAlign="start center">
-                                                        <p class="workflow-extension--consultant-data--consultant-name">
-                                                            {{consultant?.value?.consultantName?.consultant?.name}}
-                                                        </p>
-                                                        <button *ngIf="consultant.value?.consultantName?.consultant?.id" mat-icon-button class="consultant-deeplink--btn" appPreventDoubleClick (throttledClick)="$event.stopPropagation(); deepLinkToSourcing(consultant.value?.consultantName?.consultant?.id)" matTooltip="Preview in Sourcing" matTooltipClass="white-tooltip">
-                                                            <mat-icon svgIcon="sourcing-deeplink"></mat-icon>
-                                                        </button>
-                                                    </div>
-                                                    <span class="workflow-extension--consultant-data--consultant-text">
-                                                        <app-consultant-information [consultantData]="consultant?.value?.consultantName?.consultant"></app-consultant-information>
-                                                    </span>
-                                                </div>
-                                            </div>
-                                        </div>
-                                    </div>
+                                    <app-consultant-information [consultantData]="consultant?.value?.consultantName?.consultant"></app-consultant-information>
                                 </ng-container>
                             </div>
                             <ng-container *ngIf="consultant.value?.employmentType?.id  && (consultant.value?.employmentType?.id !== employmentTypesEnum.FeeOnly && consultant.value?.employmentType?.id !== employmentTypesEnum.Recruitment)">
