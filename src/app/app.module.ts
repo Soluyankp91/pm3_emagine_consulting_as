@@ -772,5 +772,12 @@ export class AppModule {
                 'assets/common/images/supplier-icon.svg'
             )
         );
+
+        iconRegistry.addSvgIcon(
+            'dialog-close-icon',
+            sanitizer.bypassSecurityTrustResourceUrl(
+                'assets/common/images/dialog-close-icon.svg'
+            )
+        );
     }
 }
