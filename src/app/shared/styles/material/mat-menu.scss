@@ -2,6 +2,7 @@
 
 .mat-menu-panel {
     min-height: 40px !important;
+    min-width: unset;
     .mat-menu-content:not(:empty) {
         padding: 0;
         .mat-menu-item {
@@ -30,8 +31,7 @@
     mat-icon {
         margin-right: 8px !important;
         border-radius: 50%;
-        @include fontLineHeightAndSize(24px, 24px, 24px, 24px);
-        padding: 4px;
+        @include fontLineHeightAndSize(16px, 16px, 16px, 16px);
     }
     &--cancel {
         color: $dark-red-color;

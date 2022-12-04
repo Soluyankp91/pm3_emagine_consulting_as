@@ -43,5 +43,6 @@
 <mat-checkbox
     (change)="onShowSampleChanged($event.checked)"
     [checked]="sampleData"
+    [disabled]="isDisabled"
     >Show sample data</mat-checkbox
 >

@@ -758,5 +758,19 @@ export class AppModule {
                 'assets/common/images/contracts-icon.svg'
             )
         );
+
+        iconRegistry.addSvgIcon(
+            'restore-icon',
+            sanitizer.bypassSecurityTrustResourceUrl(
+                'assets/common/images/restore-icon.svg'
+            )
+        );
+
+        iconRegistry.addSvgIcon(
+            'supplier-icon',
+            sanitizer.bypassSecurityTrustResourceUrl(
+                'assets/common/images/supplier-icon.svg'
+            )
+        );
     }
 }

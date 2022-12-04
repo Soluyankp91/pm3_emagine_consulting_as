@@ -452,8 +452,8 @@
                     <mat-cell *matCellDef="let row" fxFlex="3%">
                         <button mat-icon-button class="three-dots-actions-btn" #menuDeleteTrigger="matMenuTrigger" [matMenuTriggerFor]="workflowActions" appPreventDoubleClick (throttledClick)="$event.stopPropagation();"><mat-icon svgIcon="3-dots"></mat-icon></button>
                         <mat-menu #workflowActions>
-                            <button *ngIf="row.isDeleted" class="menu-item menu-item--edit" mat-menu-item (click)="confirmRestoreWorkflow(row?.workflowId)">
-                                    <mat-icon>settings_backup_restore</mat-icon>
+                            <button *ngIf="row.isDeleted" class="menu-item green-color" mat-menu-item (click)="confirmRestoreWorkflow(row?.workflowId)">
+                                    <mat-icon svgIcon="restore-icon"></mat-icon>
                                     <span>Restore workflow</span>
                             </button>
                             <button *ngIf="!row.isDeleted" class="menu-item menu-item--cancel" mat-menu-item (click)="confirmDeleteWorkflow(row?.workflowId)">
