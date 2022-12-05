@@ -29,8 +29,8 @@ import { ConsultantDiallogAction, SalesTerminateConsultantForm, WorkflowSalesCli
 
 @Component({
     selector: 'app-workflow-sales',
-    // templateUrl: './workflow-sales-new.component.html',
-    templateUrl: './workflow-sales.component.html',
+    templateUrl: './workflow-sales-new.component.html',
+    // templateUrl: './workflow-sales.component.html',
     styleUrls: ['./workflow-sales.component.scss']
 })
 export class WorkflowSalesComponent extends AppComponentBase implements OnInit, OnDestroy {

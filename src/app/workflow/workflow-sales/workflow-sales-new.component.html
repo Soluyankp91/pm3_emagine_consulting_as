@@ -24,122 +24,155 @@
             <ng-template #startClientPeriodTemplate>
                 <div fxLayout="column" fxLayoutAlign="start start" class="workflow-sales--process-data u-w--100" id="salesMainDataAnchor">
                     <div fxLayout="column" fxLayoutAlign="start start" class="u-w--100">
-                        <h1 class="workflow-section--header-main">Main data</h1>
-                        <h2 class="workflow-section--header">Project</h2>
-                        <ng-container *ngIf="activeSideSection.typeId === workflowSideSections.StartClientPeriod || activeSideSection.typeId === workflowSideSections.ExtendClientPeriod || activeSideSection.typeId === workflowSideSections.ChangeClientPeriod">
-                            <h3 class="workflow-gray--header">Project Type (Legacy)</h3>
-                            <div fxLayout="row" fxLayoutAlign="start start" class="u-w--100 u-mb--10 u-mt--10">
-                                <mat-form-field appearance="outline" class="u-w--100 formFieldNoMarginPadding filter-select u-mb--10" fxFlex="33%">
-                                    <mat-label>Project type</mat-label>
-                                    <mat-select required formControlName="projectType" [disableOptionCentering]="true" [compareWith]="compareWithFn" (selectionChange)="getDataBasedOnProjectType($event)">
-                                        <mat-option *ngFor="let item of projectTypes" [value]="item">
-                                            {{ item.name }}
-                                        </mat-option>
-                                    </mat-select>
-                                    <mat-error>
-                                        <app-validator [control]="salesMainDataForm.projectType"></app-validator>
-                                    </mat-error>
-                                </mat-form-field>
-                            </div>
-
-                            <h3 class="workflow-gray--header">Sales Type</h3>
-                            <div fxLayout="column" fxLayoutAlign="start start" class="u-mb--20">
-                                <div fxLayout="row" fxLayoutAlign="start start" class="u-w--100">
-                                    <mat-button-toggle-group class="workflow-toggle-buttons u-mt--10" [ngClass]="{'mat-form-field-invalid': !salesMainDataForm.salesType?.value}" formControlName="salesType" (change)="salesTypeChange($event.value)">
-                                        <mat-button-toggle [value]="item" *ngFor="let item of saleTypes">
-                                            {{ item.name }}
-                                        </mat-button-toggle>
-                                    </mat-button-toggle-group>
-                                </div>
-                                <mat-error>
-                                    <app-validator [withoutFormField]="true" *ngIf="salesMainDataForm.salesType?.touched" [control]="salesMainDataForm.salesType"></app-validator>
-                                </mat-error>
-                            </div>
-
-                            <h3 class="workflow-gray--header">Delivery Type</h3>
-                            <div fxLayout="column" fxLayoutAlign="start start" class="u-w--100 u-mb--20">
-                                <!-- // salesTpye id 3 = Managed Service -->
-                                <!-- // deliveryTpye id 1 = Managed Service -->
-                                <mat-button-toggle-group [ngClass]="{'mat-form-field-invalid': !salesMainDataForm.deliveryType?.value}" class="workflow-toggle-buttons u-mt--10" formControlName="deliveryType" required>
-                                    <mat-button-toggle
-                                        [value]="item"
-                                        *ngFor="let item of deliveryTypes"
-                                        [ngClass]="{'display-none':
-                                                item.id === 1 && salesMainDataForm.salesType?.value?.id !== 3 ||
-                                                item.id !== 1 && salesMainDataForm.salesType?.value?.id === 3
-                                        }">
-                                        {{ item.name }}
-                                    </mat-button-toggle>
-                                </mat-button-toggle-group>
-                                <mat-error>
-                                    <app-validator [withoutFormField]="true" *ngIf="salesMainDataForm.deliveryType?.touched" [control]="salesMainDataForm.deliveryType"></app-validator>
-                                </mat-error>
-                            </div>
-                            <div fxLayout="row" fxLayoutAlign="start start" class="u-w--100 u-mb--10">
-                                <mat-form-field appearance="outline" class="u-w--100 formFieldNoMarginPadding filter-select u-mr--16" fxFlex="33%">
-                                    <mat-label>Margin</mat-label>
-                                    <mat-select formControlName="margin" [disableOptionCentering]="true" [compareWith]="compareWithFn" required>
-                                        <mat-option class="mat-select-clear-option">
-                                            Clear
-                                        </mat-option>
-                                        <mat-option *ngFor="let item of margins" [value]="item">
-                                            {{ item.name }}
-                                        </mat-option>
-                                    </mat-select>
-                                    <mat-error>
-                                        <app-validator [control]="salesMainDataForm.margin"></app-validator>
-                                    </mat-error>
-                                </mat-form-field>
-                            </div>
-                        </ng-container>
-
-                        <ng-container *ngIf="activeSideSection.typeId === workflowSideSections.ExtendClientPeriod || activeSideSection.typeId === workflowSideSections.ChangeClientPeriod; else startClientPeriodProjectCategory">
-                            <div fxLayout="column" class="u-w--100 u-mb--20">
-                                <h3 class="workflow-step-readonly--gray-header">Project Category</h3>
-                                <span class="workflow-step-readonly--blue-text-bold">
-                                    {{salesMainDataForm.projectCategory?.value?.name ?? '-'}}
-                                </span>
-                            </div>
-                        </ng-container>
-                        <ng-template #startClientPeriodProjectCategory>
-                            <div fxLayout="row" fxLayoutAlign="start start" class="u-w--100 u-mb--10">
-                                <mat-form-field appearance="outline" class="u-w--100 formFieldNoMarginPadding filter-select u-mr--16" fxFlex="33%">
-                                    <mat-label>Project Category</mat-label>
-                                    <mat-select required formControlName="projectCategory" [disableOptionCentering]="true" [compareWith]="compareWithFn">
-                                        <mat-option *ngFor="let item of projectCategories" [value]="item">
-                                            {{ item.name }}
-                                        </mat-option>
-                                    </mat-select>
-                                    <mat-error>
-                                        <app-validator [control]="salesMainDataForm.projectCategory"></app-validator>
-                                    </mat-error>
-                                </mat-form-field>
-                            </div>
-                        </ng-template>
-
-                        <div fxLayout="column" fxLayoutAlign="start start" class="u-w--100 u-mb--10">
-                            <div fxLayout="row" fxLayoutAlign="start start" class="u-w--100">
-                                <mat-form-field appearance="outline" class="u-w--100 formFieldNoMarginPadding textarea-input" fxFlex="0 0 calc(66% + 16px)">
-                                    <mat-label>Project Name</mat-label>
-                                    <textarea matInput autocomplete="new-password" name="projectName" required formControlName="projectName" [matTextareaAutosize]="true" [matAutosizeMinRows]="2">
-                                    </textarea>
-                                    <mat-error>
-                                        <app-validator [control]="salesMainDataForm.projectName"></app-validator>
-                                    </mat-error>
-                                </mat-form-field>
+                        <div fxLayout="row" fxLayoutAlign="space-between center" class="u-w--100">
+                            <h1 class="workflow-section--header-main">Main data</h1>
+                            <div fxLayout="row" fxLayoutAlign="start start">
+                                <button
+                                    *ngIf="canToggleEditMode"
+                                    class="absolute-edit-toggle contract-manager-action u-mr--8"
+                                    mat-icon-button
+                                    appPreventDoubleClick (throttledClick)="toggleEditMode()">
+                                    <mat-icon svgIcon="edit-icon"></mat-icon>
+                                </button>
+                                <button mat-icon-button appPreventDoubleClick (throttledClick)="$event.stopPropagation();" type="button" [matMenuTriggerFor]="returnToSalesMenu" class="three-dots-actions-btn contract-manager-action">
+                                    <mat-icon svgIcon="3-dots"></mat-icon>
+                                </button>
+                                <mat-menu #returnToSalesMenu>
+                                    <button
+                                        class="menu-item menu-item--edit contract-manager-action"
+                                        mat-menu-item
+                                        [disabled]="!permissionsForCurrentUser!['Reopen']"
+                                        appPreventDoubleClick (throttledClick)="returnToSales()">
+                                        <mat-icon svgIcon="return-icon"></mat-icon>
+                                        Return to Sales
+                                    </button>
+                                </mat-menu>
                             </div>
                         </div>
+                        <div fxLayout="row" fxLayoutAlign="start start" class="u-w--100">
+                            <div class="workflow-step--number" fxFlex="5%" fxLayout="column" fxLayoutAlign="start center" fxFlexFill>
+                                <span>1</span>
+                                <mat-divider [vertical]="true"></mat-divider>
+                            </div>
+                            <div class="workflow-step--content" fxFlex="95%">
+                                <h2 class="workflow-section--header">Project</h2>
+                                <ng-container *ngIf="activeSideSection.typeId === workflowSideSections.StartClientPeriod || activeSideSection.typeId === workflowSideSections.ExtendClientPeriod || activeSideSection.typeId === workflowSideSections.ChangeClientPeriod">
+                                    <h3 class="workflow-gray--header">Project Type (Legacy)</h3>
+                                    <div fxLayout="row" fxLayoutAlign="start start" class="u-w--100 u-mb--10 u-mt--10">
+                                        <mat-form-field appearance="outline" class="u-w--100 formFieldNoMarginPadding filter-select u-mb--10" fxFlex="33%">
+                                            <mat-label>Project type</mat-label>
+                                            <mat-select required formControlName="projectType" [disableOptionCentering]="true" [compareWith]="compareWithFn" (selectionChange)="getDataBasedOnProjectType($event)">
+                                                <mat-option *ngFor="let item of projectTypes" [value]="item">
+                                                    {{ item.name }}
+                                                </mat-option>
+                                            </mat-select>
+                                            <mat-error>
+                                                <app-validator [control]="salesMainDataForm.projectType"></app-validator>
+                                            </mat-error>
+                                        </mat-form-field>
+                                    </div>
 
-                        <div fxLayout="column" fxLayoutAlign="start start" class="u-w--100 u-mb--10">
-                            <div fxLayout="row" fxLayoutAlign="start start" class="u-w--100">
-                                <mat-form-field appearance="outline" class="u-w--100 formFieldNoMarginPadding textarea-input" fxFlex="0 0 calc(66% + 16px)">
-                                    <mat-label>Project Description</mat-label>
-                                    <textarea matInput autocomplete="new-password" name="projectDescription" required formControlName="projectDescription" [matTextareaAutosize]="true" [matAutosizeMinRows]="2">
-                                    </textarea>
-                                    <mat-error>
-                                        <app-validator [control]="salesMainDataForm.projectDescription"></app-validator>
-                                    </mat-error>
-                                </mat-form-field>
+                                    <h3 class="workflow-gray--header">Sales Type</h3>
+                                    <div fxLayout="column" fxLayoutAlign="start start" class="u-mb--20">
+                                        <div fxLayout="row" fxLayoutAlign="start start" class="u-w--100">
+                                            <mat-button-toggle-group class="workflow-toggle-buttons u-mt--10" [ngClass]="{'mat-form-field-invalid': !salesMainDataForm.salesType?.value}" formControlName="salesType" (change)="salesTypeChange($event.value)">
+                                                <mat-button-toggle [value]="item" *ngFor="let item of saleTypes">
+                                                    {{ item.name }}
+                                                </mat-button-toggle>
+                                            </mat-button-toggle-group>
+                                        </div>
+                                        <mat-error>
+                                            <app-validator [withoutFormField]="true" *ngIf="salesMainDataForm.salesType?.touched" [control]="salesMainDataForm.salesType"></app-validator>
+                                        </mat-error>
+                                    </div>
+
+                                    <h3 class="workflow-gray--header">Delivery Type</h3>
+                                    <div fxLayout="column" fxLayoutAlign="start start" class="u-w--100 u-mb--20">
+                                        <!-- // salesTpye id 3 = Managed Service -->
+                                        <!-- // deliveryTpye id 1 = Managed Service -->
+                                        <mat-button-toggle-group [ngClass]="{'mat-form-field-invalid': !salesMainDataForm.deliveryType?.value}" class="workflow-toggle-buttons u-mt--10" formControlName="deliveryType" required>
+                                            <mat-button-toggle
+                                                [value]="item"
+                                                *ngFor="let item of deliveryTypes"
+                                                [ngClass]="{'display-none':
+                                                        item.id === 1 && salesMainDataForm.salesType?.value?.id !== 3 ||
+                                                        item.id !== 1 && salesMainDataForm.salesType?.value?.id === 3
+                                                }">
+                                                {{ item.name }}
+                                            </mat-button-toggle>
+                                        </mat-button-toggle-group>
+                                        <mat-error>
+                                            <app-validator [withoutFormField]="true" *ngIf="salesMainDataForm.deliveryType?.touched" [control]="salesMainDataForm.deliveryType"></app-validator>
+                                        </mat-error>
+                                    </div>
+                                    <div fxLayout="row" fxLayoutAlign="start start" class="u-w--100 u-mb--10">
+                                        <mat-form-field appearance="outline" class="u-w--100 formFieldNoMarginPadding filter-select u-mr--16" fxFlex="33%">
+                                            <mat-label>Margin</mat-label>
+                                            <mat-select formControlName="margin" [disableOptionCentering]="true" [compareWith]="compareWithFn" required>
+                                                <mat-option class="mat-select-clear-option">
+                                                    Clear
+                                                </mat-option>
+                                                <mat-option *ngFor="let item of margins" [value]="item">
+                                                    {{ item.name }}
+                                                </mat-option>
+                                            </mat-select>
+                                            <mat-error>
+                                                <app-validator [control]="salesMainDataForm.margin"></app-validator>
+                                            </mat-error>
+                                        </mat-form-field>
+                                    </div>
+                                </ng-container>
+
+                                <ng-container *ngIf="activeSideSection.typeId === workflowSideSections.ExtendClientPeriod || activeSideSection.typeId === workflowSideSections.ChangeClientPeriod; else startClientPeriodProjectCategory">
+                                    <div fxLayout="column" class="u-w--100 u-mb--20">
+                                        <h3 class="workflow-step-readonly--gray-header">Project Category</h3>
+                                        <span class="workflow-step-readonly--blue-text-bold">
+                                            {{salesMainDataForm.projectCategory?.value?.name ?? '-'}}
+                                        </span>
+                                    </div>
+                                </ng-container>
+                                <ng-template #startClientPeriodProjectCategory>
+                                    <div fxLayout="row" fxLayoutAlign="start start" class="u-w--100 u-mb--10">
+                                        <mat-form-field appearance="outline" class="u-w--100 formFieldNoMarginPadding filter-select u-mr--16" fxFlex="33%">
+                                            <mat-label>Project Category</mat-label>
+                                            <mat-select required formControlName="projectCategory" [disableOptionCentering]="true" [compareWith]="compareWithFn">
+                                                <mat-option *ngFor="let item of projectCategories" [value]="item">
+                                                    {{ item.name }}
+                                                </mat-option>
+                                            </mat-select>
+                                            <mat-error>
+                                                <app-validator [control]="salesMainDataForm.projectCategory"></app-validator>
+                                            </mat-error>
+                                        </mat-form-field>
+                                    </div>
+                                </ng-template>
+
+                                <div fxLayout="column" fxLayoutAlign="start start" class="u-w--100 u-mb--10">
+                                    <div fxLayout="row" fxLayoutAlign="start start" class="u-w--100">
+                                        <mat-form-field appearance="outline" class="u-w--100 formFieldNoMarginPadding textarea-input" fxFlex="0 0 calc(66% + 16px)">
+                                            <mat-label>Project Name</mat-label>
+                                            <textarea matInput autocomplete="new-password" name="projectName" required formControlName="projectName" [matTextareaAutosize]="true" [matAutosizeMinRows]="2">
+                                            </textarea>
+                                            <mat-error>
+                                                <app-validator [control]="salesMainDataForm.projectName"></app-validator>
+                                            </mat-error>
+                                        </mat-form-field>
+                                    </div>
+                                </div>
+
+                                <div fxLayout="column" fxLayoutAlign="start start" class="u-w--100 u-mb--10">
+                                    <div fxLayout="row" fxLayoutAlign="start start" class="u-w--100">
+                                        <mat-form-field appearance="outline" class="u-w--100 formFieldNoMarginPadding textarea-input" fxFlex="0 0 calc(66% + 16px)">
+                                            <mat-label>Project Description</mat-label>
+                                            <textarea matInput autocomplete="new-password" name="projectDescription" required formControlName="projectDescription" [matTextareaAutosize]="true" [matAutosizeMinRows]="2">
+                                            </textarea>
+                                            <mat-error>
+                                                <app-validator [control]="salesMainDataForm.projectDescription"></app-validator>
+                                            </mat-error>
+                                        </mat-form-field>
+                                    </div>
+                                </div>
+
                             </div>
                         </div>
                     </div>
