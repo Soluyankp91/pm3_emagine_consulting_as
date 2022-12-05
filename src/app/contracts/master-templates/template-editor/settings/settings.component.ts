@@ -43,6 +43,9 @@ import { FileUpload } from 'src/app/contracts/shared/components/file-uploader/fi
     encapsulation: ViewEncapsulation.None,
 })
 export class CreateMasterTemplateComponent implements OnInit, OnDestroy {
+    editMode = false;
+    templateId: number;
+
     preselectedFiles: FileUpload[] = [];
 
     creationModes = AgreementCreationMode;
@@ -80,6 +83,12 @@ export class CreateMasterTemplateComponent implements OnInit, OnDestroy {
     ) {}
 
     ngOnInit(): void {
+        if (this.route.snapshot.params.id) {
+            this.editMode = true;
+            this.templateId = this.route.snapshot.params.id;
+            this._prefillForm();
+            return;
+        }
         this.agreementCreationMode.disable();
         this._subscribeOnDuplicateControlChanges();
         this.masterTemplateOptions$ = this._getExistingTemplate$();
@@ -257,5 +266,40 @@ export class CreateMasterTemplateComponent implements OnInit, OnDestroy {
             .subscribe((isDirty) => {
                 this.isFormDirty = isDirty;
             });
+    }
+
+    private _prefillForm() {
+        this.apiServiceProxy
+            .agreementTemplateGET(this.templateId)
+            .subscribe(
+                ({
+                    agreementType,
+                    recipientTypeId,
+                    name,
+                    agreementNameTemplate,
+                    definition,
+                    salesTypeIds,
+                    deliveryTypeIds,
+                    contractTypeIds,
+                    language,
+                    isSignatureRequired,
+                    isEnabled,
+                    attachments,
+                }) => {
+                    this.masterTemplateFormGroup.patchValue({
+                        agreementType,
+                        recipientTypeId,
+                        name,
+                        agreementNameTemplate,
+                        definition,
+                        salesTypes: salesTypeIds,
+                        deliveryTypes: deliveryTypeIds,
+                        contractTypes: contractTypeIds,
+                        language,
+                        isSignatureRequired,
+                        isEnabled,
+                    });
+                }
+            );
     }
 }

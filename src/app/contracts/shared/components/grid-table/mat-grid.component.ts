@@ -31,7 +31,6 @@ import {
     ITableConfig,
 } from './mat-grid.interfaces';
 import { PAGE_SIZE_OPTIONS } from './master-templates/entities/master-templates.constants';
-import { ComponentType } from '@angular/cdk/portal';
 import { SelectionModel } from '@angular/cdk/collections';
 import { Actions } from './master-templates/entities/master-templates.interfaces';
 
@@ -55,9 +54,10 @@ export class MatGridComponent
     @Output() formControlChange = new EventEmitter();
     @Output() tableRow = new EventEmitter<{ [key: string]: any }>();
     @Output() selectionChange = new EventEmitter();
+    @Output() onAction = new EventEmitter();
 
     @ContentChildren('customCells')
-    customCells: QueryList<TemplateRef<any>>;
+    customCells: QueryList<TemplateRef<ViewContainerRef>>;
 
     @ViewChildren('filterContainer', { read: ViewContainerRef })
     children: QueryList<ViewContainerRef>;
@@ -92,6 +92,7 @@ export class MatGridComponent
     ngOnChanges(changes: SimpleChanges): void {
         const displayedColumns = changes['displayedColumns'];
         const tableConfig = changes['tableConfig'];
+        const cells = changes['cells'];
         const displayedColumnsCopy = [...this.displayedColumns];
         if (displayedColumns && this.selection) {
             displayedColumnsCopy.unshift('select');
@@ -99,13 +100,14 @@ export class MatGridComponent
         if (displayedColumns && this.actions) {
             displayedColumnsCopy.push('actions');
         }
+        if (cells) {
+        }
         this.displayedColumns = displayedColumnsCopy;
         if (tableConfig.currentValue && !tableConfig.firstChange) {
         }
     }
-    firstTime = true;
+
     ngAfterViewInit(): void {
-        console.log('view init');
         this.loadFilters();
         this._subscribeOnSelectionChange();
         this._subscribeOnFormControlChanges();
@@ -115,11 +117,6 @@ export class MatGridComponent
     ngOnDestroy(): void {
         this.unSubscribe$.next();
         this.unSubscribe$.complete();
-    }
-
-    output(val: any, cell: any) {
-        console.log(val);
-        return val;
     }
 
     isAllSelected() {
@@ -179,14 +176,13 @@ export class MatGridComponent
     }
 
     chooseAction(actionType: string, row: any) {
-        console.log(actionType, row);
+        this.onAction.emit({ action: actionType, row });
     }
 
     private _subscribeOnSelectionChange() {
         this.selection_.changed
             .pipe(takeUntil(this.unSubscribe$), debounceTime(100))
             .subscribe((changeModel) => {
-                console.log(changeModel.source.selected);
                 this.selectionChange.emit(changeModel.source.selected);
             });
     }
@@ -195,7 +191,6 @@ export class MatGridComponent
         this.formGroup.valueChanges
             .pipe(takeUntil(this.unSubscribe$))
             .subscribe((value) => {
-                console.log(value);
                 this.formControlChange.emit(value);
             });
     }

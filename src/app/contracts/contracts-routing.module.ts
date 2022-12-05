@@ -7,7 +7,6 @@ import { ClientSpecificComponent } from './client-specific-templates/edit-templa
 import { MasterTemplatesComponent } from './master-templates/listAndPreviews/master-templates.component';
 import { MasterTemplateCreationComponent } from './master-templates/template-editor/template-editor.component';
 import { CreateMasterTemplateComponent } from './master-templates/template-editor/settings/settings.component';
-import { EditorComponent } from './master-templates/template-editor/editor/editor.component';
 import { CreationComponent } from './client-specific-templates/edit-template/settings/settings.component';
 
 const routes: Routes = [
@@ -37,7 +36,11 @@ const routes: Routes = [
                         component: ClientSpecificComponent,
                         children: [
                             {
-                                path: 'settings',
+                                path: 'create',
+                                component: CreationComponent,
+                            },
+                            {
+                                path: ':id/settings',
                                 component: CreationComponent,
                             },
                         ],
@@ -57,15 +60,16 @@ const routes: Routes = [
                         component: MasterTemplateCreationComponent,
                         children: [
                             {
-                                path: 'settings',
+                                path: 'create',
                                 component: CreateMasterTemplateComponent,
                             },
                             {
-                                path: 'editor',
-                                component: EditorComponent,
+                                path: ':id/settings',
+                                component: CreateMasterTemplateComponent,
                             },
                         ],
                     },
+                    {},
                 ],
             },
         ],

@@ -10,6 +10,7 @@
     (formControlChange)="onFormControlChange($event)"
     (pageChange)="onPageChange($event)"
     (tableRow)="onSelectTableRow($event)"
+    (onAction)="onAction($event)"
 >
     <ng-template let-cell="element" #customCells
         ><p [customTooltip]="tooltipTemplate1">

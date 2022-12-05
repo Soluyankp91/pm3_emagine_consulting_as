@@ -13,6 +13,8 @@ import { PageEvent } from '@angular/material/paginator';
 import { TableFiltersEnum } from '../../shared/components/grid-table/master-templates/entities/master-templates.interfaces';
 import { GridHelpService } from '../../shared/services/mat-grid-service.service';
 import { Observable } from 'rxjs';
+import { ActivatedRoute, Router } from '@angular/router';
+import { AgreementTemplatesListItemDto } from 'src/shared/service-proxies/service-proxies';
 @Component({
     selector: 'app-master-templates',
     templateUrl: './master-templates.component.html',
@@ -34,7 +36,9 @@ export class MasterTemplatesComponent implements OnInit {
 
     constructor(
         private readonly masterTemplatesService: MasterTemplatesService,
-        private gridHelpService: GridHelpService
+        private readonly gridHelpService: GridHelpService,
+        private readonly route: ActivatedRoute,
+        private readonly router: Router
     ) {}
 
     ngOnInit(): void {
@@ -51,6 +55,16 @@ export class MasterTemplatesComponent implements OnInit {
 
     onPageChange($event: PageEvent) {
         this.masterTemplatesService.updatePage($event);
+    }
+    onAction($event: { row: AgreementTemplatesListItemDto; action: string }) {
+        switch ($event.action) {
+            case 'EDIT': {
+                this.router.navigate(
+                    [`${$event.row.agreementTemplateId}`, 'settings'],
+                    { relativeTo: this.route }
+                );
+            }
+        }
     }
 
     onSelectTableRow(row: { [key: string]: string }) {}

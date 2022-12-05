@@ -2,7 +2,7 @@ import { Tab } from './contracts.interfaces';
 
 export const CREATIONS_TABS: Tab[] = [
     {
-        link: 'settings',
+        link: 'create',
         label: 'Settings',
     },
     {

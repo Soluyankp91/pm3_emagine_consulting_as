@@ -6,6 +6,7 @@
         <div class="template-settings-section">
             <h3 class="template-settings-header">Template settings</h3>
             <mat-radio-group
+                *ngIf="!editMode"
                 [formControl]="agreementCreationMode"
                 class="radio-button-group"
             >

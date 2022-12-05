@@ -13,7 +13,6 @@ import {
     OverlayRef,
     Overlay,
     OverlayPositionBuilder,
-    OverlayConfig,
 } from '@angular/cdk/overlay';
 
 @Directive({
@@ -72,6 +71,7 @@ export class CustomTooltipDirective implements OnInit {
         const newTarget = ($event as MouseEvent).relatedTarget as Node | null;
         if (!this._overlayRef?.overlayElement.contains(newTarget)) {
             this._overlayRef.detach();
+            return;
         }
         this.renderer.listen(
             this._overlayRef.overlayElement,

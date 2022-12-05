@@ -15,7 +15,7 @@ import {
     Validator,
 } from '@angular/forms';
 import { forkJoin, Subject } from 'rxjs';
-import { mergeMap, tap, takeUntil } from 'rxjs/operators';
+import { mergeMap, tap, takeUntil, map } from 'rxjs/operators';
 import { MergeFieldsServiceProxy } from 'src/shared/service-proxies/service-proxies';
 import { AutoNameErrorStateMatcher } from '../../matchers/autoNameErrorMatcher';
 import { autoNameRequiredValidator } from '../../validators/autoNameRequireValidator';
@@ -43,6 +43,7 @@ export class AutoNameComponent
     @ViewChild('input') input: ElementRef<HTMLInputElement>;
 
     sampleData = false;
+    dataLoaded$ = new Subject();
     optionItems: AutoName[] = [];
     displayedOptionItems: AutoName[] = [];
     selectedOptions: AutoName[] = [];
@@ -135,14 +136,17 @@ export class AutoNameComponent
             this.onChange(null);
             return;
         }
-        this._preselectAutoNames(value);
-        this.sampleData = true;
-        const buildedView = this._buildAutoName();
-        this.displayedOptionItems = this.optionItems;
-        this.textControl.setValue(buildedView, { emitEvent: false });
-        this.input.nativeElement.value = buildedView;
-        this.chipsControl.setValue(this.selectedOptions);
-        this.textControl.disable();
+        this.dataLoaded$.subscribe(() => {
+            this._preselectAutoNames(value);
+            this.sampleData = true;
+            const buildedView = this._buildAutoName();
+            this.displayedOptionItems = this.optionItems;
+            console.log(buildedView);
+            this.textControl.setValue(buildedView, { emitEvent: false });
+            this.input.nativeElement.value = buildedView;
+            this.chipsControl.setValue(this.selectedOptions);
+            this.textControl.disable();
+        });
     }
 
     private _buildAutoName(): string {
@@ -191,20 +195,26 @@ export class AutoNameComponent
                     this.displayedOptionItems = this.optionItems;
                     return forkJoin(
                         keys.map((item: string) =>
-                            this.mergeFieldsServiceProxy.templatePreview(
-                                '{' + item + '}'
-                            )
+                            this.mergeFieldsServiceProxy
+                                .templatePreview('{' + item + '}')
+                                .pipe(map((i) => i.value))
                         )
                     ).pipe(
                         tap((values) => {
+                            console.log(values);
                             values.forEach((val, index) => {
-                                this.autoNameMap.set(keys[index], val);
+                                this.autoNameMap.set(
+                                    keys[index],
+                                    val as string
+                                );
                             });
                         })
                     );
                 })
             )
-            .subscribe();
+            .subscribe(() => {
+                this.dataLoaded$.next();
+            });
     }
 
     private _subscribeOnTextChanges() {
@@ -238,6 +248,5 @@ export class AutoNameComponent
             );
             return acc;
         }, [] as AutoName[]);
-        autoName;
     }
 }
