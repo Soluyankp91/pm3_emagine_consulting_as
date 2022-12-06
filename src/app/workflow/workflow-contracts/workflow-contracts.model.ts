@@ -51,7 +51,7 @@ export class WorkflowContractsMainForm extends FormGroup {
 export class WorkflowContractsSyncForm extends FormGroup {
     constructor() {
         super({
-            manualCheckbox: new FormControl(false),
+            contractLinesDoneManuallyInOldPm: new FormControl(false),
             newLegalContract: new FormControl(false),
             clientLegalContractDoneStatusId: new FormControl(null),
             enableLegalContractsButtons: new FormControl(false),
@@ -62,8 +62,8 @@ export class WorkflowContractsSyncForm extends FormGroup {
         });
     }
 
-    get manualCheckbox() {
-        return this.get('manualCheckbox');
+    get contractLinesDoneManuallyInOldPm() {
+        return this.get('contractLinesDoneManuallyInOldPm');
     }
     get newLegalContract() {
         return this.get('newLegalContract');
