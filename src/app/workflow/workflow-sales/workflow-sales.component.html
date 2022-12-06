@@ -1760,7 +1760,7 @@
                                                 <app-validator [control]="salesClientDataForm.clientInvoiceFrequency"></app-validator>
                                             </mat-error>
                                         </mat-form-field>
-                                        <mat-form-field class="formFieldNoMarginPadding" fxFlex="0 0 calc(16.5% - 8px)" [fxHide]="salesClientDataForm.clientInvoiceFrequency?.value?.name !== 'Manual date'" appearance="outline">
+                                        <mat-form-field class="formFieldNoMarginPadding" fxFlex="0 0 calc(20% - 8px)" [fxHide]="salesClientDataForm.clientInvoiceFrequency?.value?.name !== 'Manual date'" appearance="outline">
                                             <mat-label>Date</mat-label>
                                             <input [required]="salesClientDataForm.clientInvoiceFrequency?.value?.name === 'Manual date'" autocomplete="off" matInput
                                                     [matDatepicker]="clientInvoicingDatePicker"
@@ -1787,7 +1787,7 @@
                                             </mat-error>
                                         </mat-form-field>
                                         <!-- id: 2 - manual date -->
-                                        <mat-form-field class="formFieldNoMarginPadding" [fxHide]="salesClientDataForm.clientInvoiceTime?.value?.id !== 2" appearance="outline" fxFlex="0 0 calc(16.5% - 8px)">
+                                        <mat-form-field class="formFieldNoMarginPadding" [fxHide]="salesClientDataForm.clientInvoiceTime?.value?.id !== 2" appearance="outline" fxFlex="0 0 calc(20% - 8px)">
                                             <mat-label>Date</mat-label>
                                             <input [required]="salesClientDataForm.clientInvoiceTime?.value?.id === 2" autocomplete="off" matInput
                                                     [matDatepicker]="clientInvoicingDateDatePicker"
