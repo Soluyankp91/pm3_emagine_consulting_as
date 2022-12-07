@@ -541,6 +541,7 @@ export class WorkflowSalesComponent extends AppComponentBase implements OnInit, 
         this._workflowDataService.workflowSideSectionChanged
             .pipe(takeUntil(this._unsubscribe))
             .subscribe((value: {consultant?: ConsultantResultDto | undefined, consultantPeriodId?: string | undefined}) => {
+                this.editEnabledForcefuly = false;
                 this.getSalesStepData(value?.consultant, value?.consultantPeriodId);
             });
 
@@ -1567,6 +1568,7 @@ export class WorkflowSalesComponent extends AppComponentBase implements OnInit, 
                 consultantInput.employmentTypeId = consultant.employmentType?.id;
                 if (consultant.employmentType?.id === EmploymentTypes.FeeOnly || consultant.employmentType?.id === EmploymentTypes.Recruitment) {
                     consultantInput.nameOnly = consultant.consultantNameOnly;
+                    consultantInput.consultantPeriodId = consultant.consultantPeriodId;
                 } else {
                     consultantInput.consultantId = consultant.consultantName?.consultant?.id
                     consultantInput.soldRequestConsultantId = consultant.consultantName?.sourcingRequestConsultantId;
@@ -2342,6 +2344,7 @@ export class WorkflowSalesComponent extends AppComponentBase implements OnInit, 
         consultantInput.employmentTypeId = consultant.employmentType?.id;
         if (consultant.employmentType?.id === EmploymentTypes.FeeOnly || consultant.employmentType?.id === EmploymentTypes.Recruitment) {
             consultantInput.nameOnly = consultant.consultantNameOnly;
+            consultantInput.consultantPeriodId = consultant.consultantPeriodId;
         } else {
             consultantInput.consultantId = consultant.consultantName?.consultant?.id
             consultantInput.soldRequestConsultantId = consultant.consultantName?.sourcingRequestConsultantId;

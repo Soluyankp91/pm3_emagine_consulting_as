@@ -40,6 +40,7 @@
         &-text {
             color: $dark-grey-color;
             font-weight: 600;
+            white-space: pre-wrap;
         }
     }
     &--empty {

@@ -156,7 +156,6 @@ export class WorkflowDetailsComponent
                 !this._workflowDataService.getWorkflowProgress
                     .currentStepIsCompleted
             );
-            // return  this._workflowDataService.getWorkflowProgress.stepSpecificPermissions!["Edit"] && this._workflowDataService.getWorkflowProgress.stepSpecificPermissions!["Complete"];
         }
     }
 
