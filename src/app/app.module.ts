@@ -753,6 +753,20 @@ export class AppModule {
         );
 
         iconRegistry.addSvgIcon(
+            'rates-cancel-icon',
+            sanitizer.bypassSecurityTrustResourceUrl(
+                'assets/common/images/rates-cancel-icon.svg'
+            )
+        );
+
+        iconRegistry.addSvgIcon(
+            'rates-save-icon',
+            sanitizer.bypassSecurityTrustResourceUrl(
+                'assets/common/images/rates-save-icon.svg'
+            )
+        );
+
+        iconRegistry.addSvgIcon(
             'contracts-icon',
             sanitizer.bypassSecurityTrustResourceUrl(
                 'assets/common/images/contracts-icon.svg'
