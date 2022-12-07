@@ -647,6 +647,7 @@ export class WorkflowSalesComponent extends AppComponentBase implements OnInit, 
     directClientSelected(event: MatAutocompleteSelectedEvent) {
         this.salesClientDataForm.clientInvoicingRecipientIdValue?.setValue(event.option.value, {emitEvent: false});
         this.getRatesAndFees(event.option.value?.clientId);
+        this.focusOutMethod();
     }
 
     getRatesAndFees(clientId: number) {
