@@ -87,9 +87,27 @@ export class FileSelectorComponent
         this.onChange([...this.selectedInheritedFiles]);
     }
 
-    writeValue(value: any): void {
-        if (value === null) {
+    writeValue(preselectedFiles: FileUpload[]): void {
+        if (preselectedFiles === null && !this.inheritedFiles.length) {
+            return;
         }
+        this.selectedInheritedFiles = [];
+        preselectedFiles.forEach((preselectedFile) => {
+            let founded = this.inheritedFilesModified.find((f) => {
+                return (
+                    f.agreementTemplateAttachmentId ===
+                    preselectedFile.agreementTemplateAttachmentId
+                );
+            });
+            if (founded) {
+                founded.selected = true;
+                const originalFile = this._getOriginalFileById(
+                    founded.agreementTemplateAttachmentId as number
+                );
+                this.selectedInheritedFiles.push(originalFile);
+            }
+        });
+        this.onChange([...this.selectedInheritedFiles]);
     }
 
     registerOnChange(fn: any): void {

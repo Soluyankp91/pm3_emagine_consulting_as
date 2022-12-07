@@ -14,8 +14,14 @@ import {
     ValidationErrors,
     Validator,
 } from '@angular/forms';
-import { forkJoin, Subject } from 'rxjs';
-import { mergeMap, tap, takeUntil, map } from 'rxjs/operators';
+import {
+    forkJoin,
+    Subject,
+    Observable,
+    ReplaySubject,
+    combineLatest,
+} from 'rxjs';
+import { mergeMap, tap, takeUntil, map, shareReplay } from 'rxjs/operators';
 import { MergeFieldsServiceProxy } from 'src/shared/service-proxies/service-proxies';
 import { AutoNameErrorStateMatcher } from '../../matchers/autoNameErrorMatcher';
 import { autoNameRequiredValidator } from '../../validators/autoNameRequireValidator';
@@ -41,9 +47,10 @@ export class AutoNameComponent
     implements OnInit, OnDestroy, ControlValueAccessor, Validator
 {
     @ViewChild('input') input: ElementRef<HTMLInputElement>;
-
+    private _dataLoaded$ = new ReplaySubject(1);
+    private _selectOptions$ = new Subject<string>();
     sampleData = false;
-    dataLoaded$ = new Subject();
+
     optionItems: AutoName[] = [];
     displayedOptionItems: AutoName[] = [];
     selectedOptions: AutoName[] = [];
@@ -65,6 +72,7 @@ export class AutoNameComponent
     ngOnInit(): void {
         this._initFields();
         this._subscribeOnTextChanges();
+        this._subscribeOnPatchValue();
         this.onChange(this._buildChangesOutput());
     }
 
@@ -136,17 +144,7 @@ export class AutoNameComponent
             this.onChange(null);
             return;
         }
-        this.dataLoaded$.subscribe(() => {
-            this._preselectAutoNames(value);
-            this.sampleData = true;
-            const buildedView = this._buildAutoName();
-            this.displayedOptionItems = this.optionItems;
-            console.log(buildedView);
-            this.textControl.setValue(buildedView, { emitEvent: false });
-            this.input.nativeElement.value = buildedView;
-            this.chipsControl.setValue(this.selectedOptions);
-            this.textControl.disable();
-        });
+        this._selectOptions$.next(value);
     }
 
     private _buildAutoName(): string {
@@ -201,7 +199,6 @@ export class AutoNameComponent
                         )
                     ).pipe(
                         tap((values) => {
-                            console.log(values);
                             values.forEach((val, index) => {
                                 this.autoNameMap.set(
                                     keys[index],
@@ -213,7 +210,7 @@ export class AutoNameComponent
                 })
             )
             .subscribe(() => {
-                this.dataLoaded$.next();
+                this._dataLoaded$.next();
             });
     }
 
@@ -227,6 +224,22 @@ export class AutoNameComponent
                     }
                 );
             });
+    }
+
+    private _subscribeOnPatchValue() {
+        combineLatest([this._dataLoaded$, this._selectOptions$]).subscribe(
+            ([, optionsToSelect]) => {
+                this._preselectAutoNames(optionsToSelect);
+                this.sampleData = true;
+                const buildedView = this._buildAutoName();
+                this.displayedOptionItems = this.optionItems;
+                this.textControl.setValue(buildedView, { emitEvent: false });
+                this.input.nativeElement.value = buildedView;
+                this.chipsControl.setValue(this.selectedOptions);
+                this.textControl.disable();
+                this.onChange(this._buildChangesOutput());
+            }
+        );
     }
 
     private _preselectAutoNames(val: string) {

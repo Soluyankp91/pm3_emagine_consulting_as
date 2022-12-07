@@ -4,6 +4,7 @@
         mat-tab-link
         *ngFor="let tab of tabs"
         [active]="masterTemplate.isActive"
+        [disabled]="tab.disabled"
         [routerLink]="tab.link"
         routerLinkActive="active"
         #masterTemplate="routerLinkActive">

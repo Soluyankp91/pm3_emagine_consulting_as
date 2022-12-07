@@ -45,6 +45,7 @@ import { FileUpload } from 'src/app/contracts/shared/components/file-uploader/fi
 export class CreateMasterTemplateComponent implements OnInit, OnDestroy {
     editMode = false;
     templateId: number;
+    currentTemplate: SaveAgreementTemplateDto;
 
     preselectedFiles: FileUpload[] = [];
 
@@ -107,9 +108,9 @@ export class CreateMasterTemplateComponent implements OnInit, OnDestroy {
             {},
             {
                 ...this.masterTemplateFormGroup.value,
-                creationMode: creationMode,
+                creationMode,
             }
-        ) as any;
+        ) as SaveAgreementTemplateDto;
         const uploadedFiles = this.masterTemplateFormGroup.uploadedFiles?.value
             ? this.masterTemplateFormGroup.uploadedFiles?.value
             : [];
@@ -117,6 +118,25 @@ export class CreateMasterTemplateComponent implements OnInit, OnDestroy {
             .selectedInheritedFiles?.value
             ? this.masterTemplateFormGroup.selectedInheritedFiles?.value
             : [];
+
+        if (this.editMode) {
+            agreementPostDto.attachments = [
+                ...uploadedFiles,
+                ...selectedInheritedFiles,
+            ].map((attachment: FileUpload) => {
+                return new AgreementTemplateAttachmentDto(attachment);
+            });
+            agreementPostDto.creationMode = this.currentTemplate.creationMode;
+            agreementPostDto.duplicationSourceAgreementTemplateId =
+                this.currentTemplate.duplicationSourceAgreementTemplateId;
+            this.apiServiceProxy
+                .agreementTemplatePATCH(this.templateId, agreementPostDto)
+                .subscribe(() => {
+                    this.navigateOnAction();
+                });
+            return;
+        }
+        agreementPostDto.creationMode = creationMode;
         switch (creationMode) {
             case AgreementCreationMode.FromScratch: {
                 agreementPostDto.attachments = uploadedFiles.map(
@@ -144,9 +164,12 @@ export class CreateMasterTemplateComponent implements OnInit, OnDestroy {
                     new SaveAgreementTemplateDto(agreementPostDto)
                 )
             )
-            .pipe(takeUntil(this.unSubscribe$))
-            .subscribe(() => {
-                this.navigateOnAction();
+            .pipe(
+                takeUntil(this.unSubscribe$),
+                map((result) => result.agreementTemplateId)
+            )
+            .subscribe((templateId) => {
+                this.navigateOnAction(templateId);
             });
     }
 
@@ -182,8 +205,14 @@ export class CreateMasterTemplateComponent implements OnInit, OnDestroy {
         this.preselectedFiles = [];
     }
 
-    private navigateOnAction() {
-        this.router.navigate(['../../master-templates'], {
+    private navigateOnAction(templateId?: number) {
+        if (!this.editMode) {
+            this.router.navigate([`../${templateId}/settings`], {
+                relativeTo: this.route,
+            });
+            return;
+        }
+        this.router.navigate(['../../'], {
             relativeTo: this.route,
         });
     }
@@ -271,35 +300,25 @@ export class CreateMasterTemplateComponent implements OnInit, OnDestroy {
     private _prefillForm() {
         this.apiServiceProxy
             .agreementTemplateGET(this.templateId)
-            .subscribe(
-                ({
-                    agreementType,
-                    recipientTypeId,
-                    name,
-                    agreementNameTemplate,
-                    definition,
-                    salesTypeIds,
-                    deliveryTypeIds,
-                    contractTypeIds,
-                    language,
-                    isSignatureRequired,
-                    isEnabled,
-                    attachments,
-                }) => {
-                    this.masterTemplateFormGroup.patchValue({
-                        agreementType,
-                        recipientTypeId,
-                        name,
-                        agreementNameTemplate,
-                        definition,
-                        salesTypes: salesTypeIds,
-                        deliveryTypes: deliveryTypeIds,
-                        contractTypes: contractTypeIds,
-                        language,
-                        isSignatureRequired,
-                        isEnabled,
-                    });
-                }
-            );
+            .subscribe((template) => {
+                this.currentTemplate = template;
+                this.preselectedFiles = template.attachments as FileUpload[];
+                this.cdr.detectChanges();
+                this.masterTemplateFormGroup.patchValue({
+                    agreementType: template.agreementType,
+                    recipientTypeId: template.recipientTypeId,
+                    name: template.name,
+                    agreementNameTemplate: template.agreementNameTemplate,
+                    definition: template.definition,
+                    legalEntities: template.legalEntityIds,
+                    salesTypes: template.salesTypeIds,
+                    deliveryTypes: template.deliveryTypeIds,
+                    contractTypes: template.contractTypeIds,
+                    language: template.language,
+                    isSignatureRequired: template.isSignatureRequired,
+                    isEnabled: template.isEnabled,
+                    selectedInheritedFiles: template.attachments,
+                });
+            });
     }
 }

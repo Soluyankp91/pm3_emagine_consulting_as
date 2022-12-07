@@ -100,8 +100,6 @@ export class MatGridComponent
         if (displayedColumns && this.actions) {
             displayedColumnsCopy.push('actions');
         }
-        if (cells) {
-        }
         this.displayedColumns = displayedColumnsCopy;
         if (tableConfig.currentValue && !tableConfig.firstChange) {
         }

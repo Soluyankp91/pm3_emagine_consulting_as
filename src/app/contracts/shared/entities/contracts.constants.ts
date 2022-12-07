@@ -10,5 +10,3 @@ export const CREATIONS_TABS: Tab[] = [
         label: 'Editor',
     },
 ];
-
-export const REQUIRED_VALIDATION_MESSAGE = 'This field is required';
