@@ -231,13 +231,16 @@ export class WorkflowFinancesComponent extends AppComponentBase implements OnIni
         if (isDraft) {
             this._clientPeriodSerivce.clientFinancePUT(this.periodId!, input)
                 .pipe(finalize(() => this.hideMainSpinner()))
-                .subscribe(result => {
+                .subscribe(() => {
+                    if (this.editEnabledForcefuly) {
+                        this.toggleEditMode();
+                    }
                     this._workflowDataService.workflowOverviewUpdated.emit(true);
                 });
         } else {
             this._clientPeriodSerivce.editFinish3(this.periodId!, input)
                 .pipe(finalize(() => this.hideMainSpinner()))
-                .subscribe(result => {
+                .subscribe(() => {
                     this._workflowDataService.workflowSideSectionUpdated.emit({isStatusUpdate: true});
                     this._workflowDataService.workflowOverviewUpdated.emit(true);
                 });
@@ -264,13 +267,16 @@ export class WorkflowFinancesComponent extends AppComponentBase implements OnIni
         if (isDraft) {
             this._consultantPeriodSerivce.consultantFinancePUT(this.periodId!, input)
                 .pipe(finalize(() => this.hideMainSpinner()))
-                .subscribe(result => {
+                .subscribe(() => {
+                    if (this.editEnabledForcefuly) {
+                        this.toggleEditMode();
+                    }
                     this._workflowDataService.workflowOverviewUpdated.emit(true);
                 });
         } else {
             this._consultantPeriodSerivce.editFinish6(this.periodId!, input)
                 .pipe(finalize(() => this.hideMainSpinner()))
-                .subscribe(result => {
+                .subscribe(() => {
                     this._workflowDataService.workflowSideSectionUpdated.emit({isStatusUpdate: true});
                     this._workflowDataService.workflowOverviewUpdated.emit(true);
                 });
