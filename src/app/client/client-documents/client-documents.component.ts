@@ -2,7 +2,7 @@ import { Component, Injector, OnDestroy, OnInit, ViewChild } from '@angular/core
 import { FormArray, FormBuilder, FormControl } from '@angular/forms';
 import { MatTableDataSource } from '@angular/material/table';
 import { AppConsts } from 'src/shared/AppConsts';
-import { ContractsData, DocumentSideNavDto, DocumentSideNavigation, DocumentSideNavItem, GeneralDocumentForm } from './client-documents.model';
+import { DocumentSideNavDto, DocumentSideNavigation, DocumentSideNavItem, GeneralDocumentForm } from './client-documents.model';
 import { AddFileDialogComponent } from './add-file-dialog/add-file-dialog.component';
 import { Overlay } from '@angular/cdk/overlay';
 import { MatDialog } from '@angular/material/dialog';
@@ -76,8 +76,6 @@ export class ClientDocumentsComponent extends AppComponentBase implements OnInit
     evaluationDocumentDate = new FormControl(new Date());
     evaluationDocumentsIncludeLinked = new FormControl(false);
 
-    contractsData = ContractsData;
-
     contractsDocuments: ClientContractViewRootDto;
 
     private _unsubscribe = new Subject();
@@ -131,6 +129,7 @@ export class ClientDocumentsComponent extends AppComponentBase implements OnInit
     ngOnDestroy(): void {
         this._unsubscribe.next();
         this._unsubscribe.complete();
+        this.selectSideNav(this.documentSideNavigation[0]);
     }
 
     getGeneralFileTypes() {
@@ -138,7 +137,6 @@ export class ClientDocumentsComponent extends AppComponentBase implements OnInit
             .pipe(finalize(() => {}))
             .subscribe(result => {
                 this.generalFileTypes = result;
-                this.getGeneralDocuments();
             });
     }
 
@@ -369,7 +367,7 @@ export class ClientDocumentsComponent extends AppComponentBase implements OnInit
 
     getEvaluations() {
         this.isDataLoading = true;
-        this._clientDocumentsService.evaluations(this.clientId, this.evaluationDocumentsIncludeLinked.value, this.evaluationDocumentDate.value)
+        this._clientDocumentsService.evaluations(this.clientId, this.evaluationDocumentsIncludeLinked.value, this.evaluationDocumentDate.value, this.pageNumber, this.deafultPageSize, this.sorting)
             .pipe(finalize(() => this.isDataLoading = false))
             .subscribe(result => {
                 this.evalsDocumentsDataSource = new MatTableDataSource<ClientEvaluationOutputDto>(result.items);

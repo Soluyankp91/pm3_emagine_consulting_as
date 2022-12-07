@@ -541,6 +541,7 @@ export class WorkflowSalesComponent extends AppComponentBase implements OnInit, 
         this._workflowDataService.workflowSideSectionChanged
             .pipe(takeUntil(this._unsubscribe))
             .subscribe((value: {consultant?: ConsultantResultDto | undefined, consultantPeriodId?: string | undefined}) => {
+                this.editEnabledForcefuly = false;
                 this.getSalesStepData(value?.consultant, value?.consultantPeriodId);
             });
 
@@ -646,6 +647,7 @@ export class WorkflowSalesComponent extends AppComponentBase implements OnInit, 
     directClientSelected(event: MatAutocompleteSelectedEvent) {
         this.salesClientDataForm.clientInvoicingRecipientIdValue?.setValue(event.option.value, {emitEvent: false});
         this.getRatesAndFees(event.option.value?.clientId);
+        this.focusOutMethod();
     }
 
     getRatesAndFees(clientId: number) {
@@ -995,7 +997,7 @@ export class WorkflowSalesComponent extends AppComponentBase implements OnInit, 
             consultantRate = this.findItemById(this.clientRateTypes, 2); // 2: fixed
         }
         let consultantDto = null;
-        if (consultant) {
+        if (consultant?.consultantId) {
             consultantDto = new ConsultantWithSourcingRequestResultDto();
             consultantDto.consultant = consultant?.consultant;
             consultantDto.sourcingRequestConsultantId = consultant?.soldRequestConsultantId;
@@ -1046,7 +1048,7 @@ export class WorkflowSalesComponent extends AppComponentBase implements OnInit, 
             specialFees: new FormArray([]),
 
             consultantSpecialContractTermsNone: new FormControl(consultant?.noSpecialContractTerms ?? false),
-            consultantSpecialContractTerms: new FormControl({value: consultant?.specialContractTerms ?? null, disabled: consultant?.noSpecialContractTerms}, Validators.required),
+            consultantSpecialContractTerms: new FormControl({value: consultant?.specialContractTerms ?? null, disabled: consultant?.noSpecialContractTerms}),
 
             deliveryManagerSameAsAccountManager: new FormControl(consultant?.deliveryManagerSameAsAccountManager ?? false),
             deliveryAccountManager: new FormControl({value: consultant?.deliveryAccountManager ?? '', disabled: consultant?.deliveryManagerSameAsAccountManager}, CustomValidators.autocompleteValidator(['id'])),
@@ -1397,8 +1399,9 @@ export class WorkflowSalesComponent extends AppComponentBase implements OnInit, 
             autoFocus: false,
             panelClass: 'confirmation-modal',
             data: {
-                confirmationMessageTitle: `Are you sure you want to delete consultant ${consultant.consultantName?.consultant?.name ?? ''}?`,
-                confirmationMessage: 'When you confirm the deletion, all the info contained inside this block will disappear.',
+                confirmationMessageTitle: `Delete consultant`,
+                confirmationMessage: `Are you sure you want to delete consultant ${consultant.consultantName?.consultant?.name ?? ''}?\n
+                    When you confirm the deletion, all the info contained inside this block will disappear.`,
                 rejectButtonText: 'Cancel',
                 confirmButtonText: 'Delete',
                 isNegative: true
@@ -1567,6 +1570,7 @@ export class WorkflowSalesComponent extends AppComponentBase implements OnInit, 
                 consultantInput.employmentTypeId = consultant.employmentType?.id;
                 if (consultant.employmentType?.id === EmploymentTypes.FeeOnly || consultant.employmentType?.id === EmploymentTypes.Recruitment) {
                     consultantInput.nameOnly = consultant.consultantNameOnly;
+                    consultantInput.consultantPeriodId = consultant.consultantPeriodId;
                 } else {
                     consultantInput.consultantId = consultant.consultantName?.consultant?.id
                     consultantInput.soldRequestConsultantId = consultant.consultantName?.sourcingRequestConsultantId;
@@ -2235,7 +2239,8 @@ export class WorkflowSalesComponent extends AppComponentBase implements OnInit, 
             autoFocus: false,
             panelClass: 'confirmation-modal',
             data: {
-                confirmationMessageTitle: `Are you sure you want to terminate consultant ${consultantInformation?.consultant?.name ?? ''}?`,
+                confirmationMessageTitle: `Terminate consultant`,
+                confirmationMessage: `Are you sure you want to terminate consultant ${consultantInformation?.consultant?.name ?? ''}?`,
                 // confirmationMessage: 'When you confirm the termination, all the info contained inside this block will disappear.',
                 rejectButtonText: 'Cancel',
                 confirmButtonText: 'Terminate',
@@ -2342,6 +2347,7 @@ export class WorkflowSalesComponent extends AppComponentBase implements OnInit, 
         consultantInput.employmentTypeId = consultant.employmentType?.id;
         if (consultant.employmentType?.id === EmploymentTypes.FeeOnly || consultant.employmentType?.id === EmploymentTypes.Recruitment) {
             consultantInput.nameOnly = consultant.consultantNameOnly;
+            consultantInput.consultantPeriodId = consultant.consultantPeriodId;
         } else {
             consultantInput.consultantId = consultant.consultantName?.consultant?.id
             consultantInput.soldRequestConsultantId = consultant.consultantName?.sourcingRequestConsultantId;

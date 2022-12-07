@@ -211,7 +211,7 @@
 
 .mat-flat-button {
     &.dialog-btn {
-        width: 150px;
+        width: 130px;
         font-weight: 700;
 
         &__outlined {
@@ -236,31 +236,6 @@
             border: 2px solid $red-color;
             box-sizing: border-box;
             border-radius: 5px;
-        }
-    }
-}
-
-.inline-edit-form {
-    &--btn {
-        &__save.mat-flat-button {
-            color: $green-color;
-            font-weight: 700;
-            line-height: 40px;
-            height: 37px;
-        }
-        &__cancel.mat-flat-button {
-            color: $dark-grey-color;
-            font-weight: 700;
-            line-height: 40px;
-            height: 37px;
-        }
-        @media screen and (max-width: 1440px) {
-            &__save.mat-flat-button,
-            &__cancel.mat-flat-button {
-                font-size: 14px;
-                min-width: unset;
-                padding: 0 5px;
-            }
         }
     }
 }
@@ -384,7 +359,7 @@
 }
 
 .dialog-close--button {
-    @include fontLineHeightAndSize(24px, 24px, 24px, 24px);
+    @include fontLineHeightAndSize(20px, 20px, 20px, 20px);
 }
 
 .gantt-group-content--redirect-button.mat-icon-button {
@@ -393,6 +368,25 @@
         @include flexCentered();
         mat-icon {
             @include fontLineHeightAndSize(14px, 14px, 14px, 14px);
+        }
+    }
+}
+
+.rates-and-fees--inline-edit-form {
+    &--btn {
+        &__save.mat-icon-button {
+            color: $green-color;
+            @include fontLineHeightAndSize(20px, 20px, 20px, 20px);
+            margin-right: 15px;
+        }
+        &__cancel.mat-icon-button {
+            color: $dark-grey-color;
+            @include fontLineHeightAndSize(20px, 20px, 20px, 20px);
+            margin-right: 10px;
+        }
+        &__clear.mat-icon-button {
+            color: 'inherit';
+            @include fontLineHeightAndSize(20px, 20px, 20px, 20px);
         }
     }
 }

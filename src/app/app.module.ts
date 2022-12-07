@@ -753,9 +753,44 @@ export class AppModule {
         );
 
         iconRegistry.addSvgIcon(
+            'rates-cancel-icon',
+            sanitizer.bypassSecurityTrustResourceUrl(
+                'assets/common/images/rates-cancel-icon.svg'
+            )
+        );
+
+        iconRegistry.addSvgIcon(
+            'rates-save-icon',
+            sanitizer.bypassSecurityTrustResourceUrl(
+                'assets/common/images/rates-save-icon.svg'
+            )
+        );
+
+        iconRegistry.addSvgIcon(
             'contracts-icon',
             sanitizer.bypassSecurityTrustResourceUrl(
                 'assets/common/images/contracts-icon.svg'
+            )
+        );
+
+        iconRegistry.addSvgIcon(
+            'restore-icon',
+            sanitizer.bypassSecurityTrustResourceUrl(
+                'assets/common/images/restore-icon.svg'
+            )
+        );
+
+        iconRegistry.addSvgIcon(
+            'supplier-icon',
+            sanitizer.bypassSecurityTrustResourceUrl(
+                'assets/common/images/supplier-icon.svg'
+            )
+        );
+
+        iconRegistry.addSvgIcon(
+            'dialog-close-icon',
+            sanitizer.bypassSecurityTrustResourceUrl(
+                'assets/common/images/dialog-close-icon.svg'
             )
         );
     }

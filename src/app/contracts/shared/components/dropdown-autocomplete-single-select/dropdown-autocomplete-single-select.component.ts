@@ -19,7 +19,7 @@ import { SingleAutoErrorStateMatcher } from '../../matchers/customMatcher';
 import { requiredValidator } from '../../validators/customRequireValidator';
 import { Item } from './entities/interfaces';
 import { Subject } from 'rxjs';
-import { takeUntil } from 'rxjs/operators';
+import { takeUntil, filter } from 'rxjs/operators';
 
 @Component({
     selector: 'emg-dropdown-autocomplete-single-select',
@@ -96,6 +96,16 @@ export class DropdownAutocompleteSingleSelectComponent
         this.inputControl.patchValue(preselectedItem);
     }
 
+    setDisabledState(isDisabled: boolean): void {
+        if (isDisabled) {
+            this.inputControl.disable({
+                emitEvent: false,
+            });
+            return;
+        }
+        this.inputControl.enable();
+    }
+
     validate(control: AbstractControl): ValidationErrors | null {
         if (!this.inputControl.invalid) {
             return null;
@@ -105,7 +115,10 @@ export class DropdownAutocompleteSingleSelectComponent
 
     private _subsribeOnInputControl() {
         this.inputControl.valueChanges
-            .pipe(takeUntil(this._unSubscribe$))
+            .pipe(
+                takeUntil(this._unSubscribe$),
+                filter((val) => val !== null)
+            )
             .subscribe((input) => {
                 if (typeof input === 'object') {
                     this.inputEmitter.emit(input[this.labelKey]);

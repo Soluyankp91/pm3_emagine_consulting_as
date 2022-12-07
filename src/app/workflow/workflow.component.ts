@@ -306,8 +306,9 @@ export class WorkflowComponent extends AppComponentBase implements OnInit, OnDes
         const scrollStrategy = this.overlay.scrollStrategies.reposition();
         DialogConfig.scrollStrategy = scrollStrategy;
         DialogConfig.data = {
-            confirmationMessageTitle: `Are you sure you want to delete this workflow?`,
-            confirmationMessage: `This workflow will be hidden from lists and statistics.\n
+            confirmationMessageTitle: `Delete workflow`,
+            confirmationMessage: `Are you sure you want to delete this workflow?\n
+            This workflow will be hidden from lists and statistics.\n
             Note that if it contained periods which were synced, it should be terminated first.\n
             If not terminated -  the contract lines will still appear in Legacy PM,\n
             on the consultant website and inside the client module.`,
@@ -335,10 +336,11 @@ export class WorkflowComponent extends AppComponentBase implements OnInit, OnDes
         const scrollStrategy = this.overlay.scrollStrategies.reposition();
         DialogConfig.scrollStrategy = scrollStrategy;
         DialogConfig.data = {
-            confirmationMessageTitle: `Are you sure you want to restore workflow?`,
-                rejectButtonText: 'Cancel',
-                confirmButtonText: 'Yes',
-                isNegative: false
+            confirmationMessageTitle: `Restore workflow`,
+            confirmationMessage: `Are you sure you want to restore workflow?`,
+            rejectButtonText: 'Cancel',
+            confirmButtonText: 'Yes',
+            isNegative: false
         }
         const dialogRef = this.dialog.open(ConfirmationDialogComponent, DialogConfig);
 

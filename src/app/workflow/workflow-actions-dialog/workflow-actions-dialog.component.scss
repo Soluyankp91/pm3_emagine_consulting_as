@@ -1,4 +1,5 @@
 @import "/src/app/shared/styles/config/_colors";
+@import "/src/app/shared/styles/config/_mixins";
 
 .confirmation-dialog {
     &--content {
@@ -7,32 +8,23 @@
     &--actions{
         justify-content: space-between;
         border-top: 1px solid $sand-color;
-        // button {
-        //     width: 150px;
-        //     font-weight: 700;
-        //     // text-transform: uppercase;
-        // }
-        // &-btn {
-        //     &-negative {
-        //         color: #FFF !important;
-        //         background-color: $red-color !important;
-        //         border: 2px solid $red-color !important;
-        //         box-sizing: border-box;
-        //         border-radius: 5px;
-        //     }
-        //     &-outlined {
-        //         color: $green-color !important;
-        //         background-color: transparent;
-        //         // border: 2px solid #CDFF96;
-        //         border: 0;
-        //         border-radius: 5px;
-        //     }
-        //     &-positive {
-        //         color: $white-color !important;
-        //         background: $green-color;
-        //         border-radius: 5px;
-        //     }
-        // }
+    }
+    &--header {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        margin: 0 0 24px !important;
+        h1 {
+            @include fontOpenSans(30px, 800);
+            color: #4A4E60;
+            line-height: 120%;
+        }
+    }
+    h3 {
+        @include fontOpenSans(14px, 600);
+        line-height: 160%;
+        color: #4A4E60;
+        margin-bottom: 8px;
     }
 }
 
@@ -43,32 +35,12 @@
                 display: flex;
                 justify-content: space-between;
                 border-top: 1px solid $sand-color;
-                // button {
-                //     width: 150px;
-                //     font-weight: 700;
-                // }
-                // &-btn {
-                //     &__outlined {
-                //         color: $green-color !important;
-                //         background-color: transparent;
-                //         // border: 2px solid #CDFF96;
-                //         border: 0;
-                //         border-radius: 5px;
-                //     }
-                //     &__positive {
-                //         color: $white-color !important;
-                //         background: $green-color;
-                //         border-radius: 5px;
-                //     }
-                // }
             }
-
             &--header {
                 font-size: 26px;
                 font-weight: 700;
                 line-height: 32px
             }
-
             &--label {
                 font-weight: 600;
             }
@@ -82,12 +54,11 @@
                     border-radius: 50%;
                     width: 35px;
                     height: 35px;
+                    margin-left: 4px;
                 }
-
             }
             &--checkbox {
-                font-size: 14px;
-                font-weight: 600px;
+                @include fontOpenSans(12px, 600);
             }
         }
     }
