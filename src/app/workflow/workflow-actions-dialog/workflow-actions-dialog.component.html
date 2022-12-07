@@ -1,15 +1,14 @@
 <mat-dialog-content class="confirmation-dialog">
-    <div mat-dialog-title class="confirmation-dialog--header" align="center">
-        {{ data.dialogTitle }}
+    <div mat-dialog-title class="confirmation-dialog--header">
+        <h1>
+            {{ data.dialogTitle }}
+        </h1>
+        <button class="dialog-close--button" mat-icon-button (click)="reject()"><mat-icon svgIcon="dialog-close-icon"></mat-icon></button>
     </div>
-    <!-- <div fxLayout="row" fxLayoutAlign="start center">
-        <img class="border-rounded-50 u-mr--16" src="https://picsum.photos/35/35" />
-        <p>{{consultant.consultantName ?? 'N/A'}}</p>
-    </div> -->
     <ng-container [ngSwitch]="data.dialogType">
         <ng-container *ngSwitchCase="dialogTypes.AddConsultant">
             <h3>Select start and end dates</h3>
-            <div fxLayout="row" fxLayoutAlign="space-between start" fxLayoutGap="16px" class="u-w--100">
+            <div fxLayout="row" fxLayoutAlign="space-between start" fxLayoutGap="12px" class="u-w--100">
                 <mat-form-field appearance="outline" fxFlex="50%">
                     <mat-label>Start date</mat-label>
                     <input autocomplete="off" matInput
@@ -59,14 +58,14 @@
                     </mat-checkbox>
                 </div>
 
-                <mat-divider class="u-mb--15">
+                <mat-divider class="u-mb--24 u-mt--24">
                 </mat-divider>
 
-                <h2 class="workflow-change-dialog--label">Select consultants the change applies to</h2>
+                <h3>Select consultants the change applies to</h3>
                 <ng-container formArrayName="consultants">
                     <div fxLayout="row" fxLayoutAlign="space-between center" class="u-w--100" *ngFor="let consultant of changeWorkflowForm.consultants.controls; index as i" [formGroupName]="i">
-                        <div fxLayout="row" fxLayoutAlign="start center" class="text-truncate-ellipsis u-mr--16">
-                            <img class="border-rounded-50 u-mr--16 image-thumbnail" [src]="consultantProfileUrl(consultant.value?.externalId)">
+                        <div fxLayout="row" fxLayoutAlign="start center" class="text-truncate-ellipsis u-mr--12">
+                            <img class="border-rounded-50 u-mr--12 image-thumbnail-small" [src]="consultantProfileUrl(consultant.value?.externalId)">
                             <p class="workflow-change-dialog--consultant-name text-truncate-ellipsis" fxFlex="75%">
                                 {{consultant?.value?.consulantName}}
                             </p>
@@ -82,7 +81,7 @@
             <form [formGroup]="extendWorkflowForm">
                 <h3>Select extension end date</h3>
                 <div fxLayout="row" fxLayoutAlign="start start" class="u-w--100 u-mt--10">
-                    <div class="u-mr--10" fxFlex="50%">
+                    <div class="u-mr--12" fxFlex="50%">
                         <mat-form-field appearance="outline" class="u-w--100">
                             <mat-label>Start date</mat-label>
                             <input autocomplete="off" placeholder="New end date" matInput
@@ -95,8 +94,8 @@
                             <mat-datepicker #startDatePicker></mat-datepicker>
                         </mat-form-field>
                     </div>
-                    <div fxLayout="column" fxLayoutAlign="center start" fxFlex="50%" class="u-mb--20">
-                        <mat-form-field appearance="outline" class="u-w--100">
+                    <div fxLayout="column" fxLayoutAlign="center start" fxFlex="50%">
+                        <mat-form-field appearance="outline" class="u-w--100 u-mb--5">
                             <mat-label>New end date</mat-label>
                             <input autocomplete="off" placeholder="New end date" matInput
                                     [matDatepicker]="extensionDatePicker"
@@ -114,15 +113,15 @@
                         </mat-checkbox>
                     </div>
                 </div>
-                <mat-divider class="u-mb--15">
+                <mat-divider class="u-mb--24 u-mt--24">
                 </mat-divider>
 
-                <h2>Select consultants to be extended</h2>
-                <div fxLayout="column" fxLayoutAlign="center start" fxLayoutGap="10px" class="u-mt--10" formArrayName="consultants">
+                <h3>Select consultants to be extended</h3>
+                <div fxLayout="column" fxLayoutAlign="center start" fxLayoutGap="10px" class="u-mt--16" formArrayName="consultants">
                     <div fxLayout="row" fxLayoutAlign="start center" class="u-w--100" *ngFor="let consultant of extendWorkflowForm.consultants.controls; index as i" [formGroupName]="i">
                         <mat-checkbox color="accent" name="extendConsultant" formControlName="extendConsultant" class="black-checkbox u-mr--16">
-                            <div fxLayout="row" fxLayoutAlign="start center" class="text-truncate-ellipsis u-mr--16">
-                                <img class="border-rounded-50 u-mr--16 image-thumbnail" [src]="consultantProfileUrl(consultant.value?.externalId)">
+                            <div fxLayout="row" fxLayoutAlign="start center" class="text-truncate-ellipsis u-mr--12">
+                                <img class="workflow-change-dialog--consultant-img u-mr--12" [src]="consultantProfileUrl(consultant.value?.externalId)">
                                 <p class="workflow-change-dialog--consultant-name text-truncate-ellipsis" fxFlex="75%">
                                     {{consultant?.value?.consulantName}}
                                 </p>

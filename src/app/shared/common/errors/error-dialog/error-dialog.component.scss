@@ -1,6 +1,23 @@
-.error-message {
-    background: #eee;
-    padding: 1rem;
-    // font-family: monospace;
-    word-break: break-all;
+@import "/src/app/shared/styles/config/_colors";
+@import "/src/app/shared/styles/config/_mixins";
+
+.error-dialog {
+    &--header {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        h1 {
+            @include fontOpenSans(30px, 800);
+            line-height: 120%;
+        }
+    }
+    &--content {
+        color: $red-color;
+        font-weight: 600;
+        word-break: break-all;
+    }
+    &--actions{
+        justify-content: space-between;
+        border-top: 1px solid $sand-color;
+    }
 }

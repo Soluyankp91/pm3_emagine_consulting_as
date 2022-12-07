@@ -1,9 +1,12 @@
 <mat-dialog-content class="confirmation-dialog">
-    <div mat-dialog-title class="confirmation-dialog--header" align="center">
-        Create workflow
+    <div mat-dialog-title class="confirmation-dialog--header">
+        <h1>
+            Create workflow
+        </h1>
+        <button class="dialog-close--button" mat-icon-button (click)="reject()"><mat-icon svgIcon="dialog-close-icon"></mat-icon></button>
     </div>
     <h3>Select workflow start and end dates</h3>
-    <div fxLayout="row" fxLayoutAlign="space-between start" fxLayoutGap="16px" class="u-w--100 u-mt--20">
+    <div fxLayout="row" fxLayoutAlign="space-between start" fxLayoutGap="12px" class="u-w--100 u-mt--10">
         <mat-form-field appearance="outline" floatLabel="never" fxFlex="50%">
             <mat-label>Start date</mat-label>
             <input autocomplete="off" matInput
@@ -35,7 +38,7 @@
                     <app-validator [control]="endDate"></app-validator>
                 </mat-error>
             </mat-form-field>
-            <mat-checkbox color="accent" [formControl]="noEndDate" name="noEndDate" class="black-checkbox u-mr--10 u-mt--10" (change)="disableOrEnableInput(noEndDate.value, endDate)">
+            <mat-checkbox color="accent" [formControl]="noEndDate" name="noEndDate" class="black-checkbox u-mt--10" (change)="disableOrEnableInput(noEndDate.value, endDate)">
                 No end date
             </mat-checkbox>
         </div>

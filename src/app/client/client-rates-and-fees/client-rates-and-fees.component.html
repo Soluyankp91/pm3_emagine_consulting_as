@@ -66,11 +66,11 @@
                                 </mat-select>
                             </mat-form-field>
                             <div fxFlex="12%" fxLayout="row" fxLayoutAlign="start start">
-                                <mat-form-field appearance="fill" class="u-w--100 formFieldNoMarginPadding filter-select" [ngClass]="{'text-right': rate.value.rateSpecifiedAs?.id === 1}" fxFlex="1 0 40%">
+                                <mat-form-field appearance="fill" class="u-w--100 formFieldNoMarginPadding filter-select u-mr--10" [ngClass]="{'text-right': rate.value.rateSpecifiedAs?.id === 1}" fxFlex="1 0 30%">
                                     <input matInput type="number" [placeholder]="rate.value.rateSpecifiedAs?.id === 1 ? 'Percentage' : 'Rate'" formControlName="clientRateValue">
                                     <span *ngIf="rate.value.rateSpecifiedAs?.id === 1" matSuffix>%</span>
                                 </mat-form-field>
-                                <mat-form-field appearance="fill" class="u-w--100 formFieldNoMarginPadding filter-select" fxFlex="60%" *ngIf="rate.value.rateSpecifiedAs?.id !== 1">
+                                <mat-form-field appearance="fill" class="u-w--100 formFieldNoMarginPadding filter-select" fxFlex="50%" *ngIf="rate.value.rateSpecifiedAs?.id !== 1">
                                     <mat-select formControlName="clientRateCurrency" placeholder="Currency" [disableOptionCentering]="true" [compareWith]="compareWithFn">
                                         <mat-option *ngFor="let item of currencies" [value]="item">
                                             {{ item.name }}
@@ -79,11 +79,11 @@
                                 </mat-form-field>
                             </div>
                             <div fxFlex="12%" fxLayout="row" fxLayoutAlign="start start">
-                                <mat-form-field appearance="fill" class="u-w--100 formFieldNoMarginPadding filter-select" [ngClass]="{'text-right': rate.value.rateSpecifiedAs?.id === 1}" fxFlex="1 0 40%">
+                                <mat-form-field appearance="fill" class="u-w--100 formFieldNoMarginPadding filter-select u-mr--10" [ngClass]="{'text-right': rate.value.rateSpecifiedAs?.id === 1}" fxFlex="1 0 30%">
                                     <input matInput type="number" [placeholder]="rate.value.rateSpecifiedAs?.id === 1 ? 'Percentage' : 'Rate'" formControlName="proDataRate">
                                     <span *ngIf="rate.value.rateSpecifiedAs?.id === 1" matSuffix>%</span>
                                 </mat-form-field>
-                                <mat-form-field appearance="fill" class="u-w--100 formFieldNoMarginPadding filter-select" fxFlex="60%" *ngIf="rate.value.rateSpecifiedAs?.id !== 1">
+                                <mat-form-field appearance="fill" class="u-w--100 formFieldNoMarginPadding filter-select" fxFlex="50%" *ngIf="rate.value.rateSpecifiedAs?.id !== 1">
                                     <mat-select formControlName="proDataRateCurrency" placeholder="Currency" [disableOptionCentering]="true" [compareWith]="compareWithFn">
                                         <mat-option *ngFor="let item of currencies" [value]="item">
                                             {{ item.name }}
@@ -92,11 +92,11 @@
                                 </mat-form-field>
                             </div>
                             <div fxFlex="12%" fxLayout="row" fxLayoutAlign="start start">
-                                <mat-form-field appearance="fill" class="u-w--100 formFieldNoMarginPadding filter-select" [ngClass]="{'text-right': rate.value.rateSpecifiedAs?.id === 1}" fxFlex="1 0 40%">
+                                <mat-form-field appearance="fill" class="u-w--100 formFieldNoMarginPadding filter-select u-mr--10" [ngClass]="{'text-right': rate.value.rateSpecifiedAs?.id === 1}" fxFlex="1 0 30%">
                                     <input matInput type="number" [placeholder]="rate.value.rateSpecifiedAs?.id === 1 ? 'Percentage' : 'Rate'" formControlName="consultantRate">
                                     <span *ngIf="rate.value.rateSpecifiedAs?.id === 1" matSuffix>%</span>
                                 </mat-form-field>
-                                <mat-form-field appearance="fill" class="u-w--100 formFieldNoMarginPadding filter-select" fxFlex="60%" *ngIf="rate.value.rateSpecifiedAs?.id !== 1">
+                                <mat-form-field appearance="fill" class="u-w--100 formFieldNoMarginPadding filter-select" fxFlex="50%" *ngIf="rate.value.rateSpecifiedAs?.id !== 1">
                                     <mat-select formControlName="consultantRateCurrency" placeholder="Currency" [disableOptionCentering]="true" [compareWith]="compareWithFn">
                                         <mat-option *ngFor="let item of currencies" [value]="item">
                                             {{ item.name }}
@@ -104,15 +104,15 @@
                                     </mat-select>
                                 </mat-form-field>
                             </div>
-                            <div fxFlex="15%" class="u-w--100 text-truncate-ellipsis flex-items-center">
-                                <button mat-flat-button appPreventDoubleClick (throttledClick)="saveOrUpdateSpecialRate(i)" class="inline-edit-form--btn__save" [disabled]="rateIsSaving">
-                                    Save
+                            <div fxFlex="15%" fxLayoutAlign="end center" class="u-w--100 text-truncate-ellipsis">
+                                <button mat-icon-button appPreventDoubleClick (throttledClick)="saveOrUpdateSpecialRate(i)" class="rates-and-fees--inline-edit-form--btn__save" [disabled]="rateIsSaving">
+                                    <mat-icon svgIcon="rates-save-icon"></mat-icon>
                                 </button>
-                                <button mat-flat-button *ngIf="rate.value.id" appPreventDoubleClick (throttledClick)="cancelRateEdit(i)" class="inline-edit-form--btn__cancel">
-                                    Cancel
+                                <button mat-icon-button *ngIf="rate.value.id" appPreventDoubleClick (throttledClick)="cancelRateEdit(i)" class="rates-and-fees--inline-edit-form--btn__cancel">
+                                    <mat-icon svgIcon="rates-cancel-icon"></mat-icon>
                                 </button>
-                                <button mat-icon-button appPreventDoubleClick (throttledClick)="removeSpecialRate(rate.value.id, rate.value.inUse, i)">
-                                    <mat-icon>clear</mat-icon>
+                                <button mat-icon-button appPreventDoubleClick (throttledClick)="removeSpecialRate(rate.value.id, rate.value.inUse, i)" class="rates-and-fees--inline-edit-form--btn__clear u-mr--15">
+                                    <mat-icon svgIcon="close-icon"></mat-icon>
                                 </button>
                             </div>
                         </ng-container>
@@ -260,10 +260,10 @@
                                 </mat-select>
                             </mat-form-field>
                             <div fxFlex="12%" fxLayout="row" fxLayoutAlign="start start">
-                                <mat-form-field appearance="fill" class="u-w--100 formFieldNoMarginPadding filter-select" fxFlex="40%">
+                                <mat-form-field appearance="fill" class="u-w--100 formFieldNoMarginPadding filter-select u-mr--10" fxFlex="30%">
                                     <input matInput type="number" placeholder="Rate" formControlName="clientRateValue">
                                 </mat-form-field>
-                                <mat-form-field appearance="fill" class="u-w--100 formFieldNoMarginPadding filter-select" fxFlex="60%">
+                                <mat-form-field appearance="fill" class="u-w--100 formFieldNoMarginPadding filter-select" fxFlex="50%">
                                     <mat-select formControlName="clientRateCurrency" placeholder="Currency" [disableOptionCentering]="true" [compareWith]="compareWithFn">
                                         <mat-option *ngFor="let item of currencies" [value]="item">
                                             {{ item.name }}
@@ -272,10 +272,10 @@
                                 </mat-form-field>
                             </div>
                             <div fxFlex="12%" fxLayout="row" fxLayoutAlign="start start">
-                                <mat-form-field appearance="fill" class="u-w--100 formFieldNoMarginPadding filter-select" fxFlex="40%">
+                                <mat-form-field appearance="fill" class="u-w--100 formFieldNoMarginPadding filter-select u-mr--10" fxFlex="30%">
                                     <input matInput type="number" placeholder="Rate" formControlName="proDataRate">
                                 </mat-form-field>
-                                <mat-form-field appearance="fill" class="u-w--100 formFieldNoMarginPadding filter-select" fxFlex="60%">
+                                <mat-form-field appearance="fill" class="u-w--100 formFieldNoMarginPadding filter-select" fxFlex="50%">
                                     <mat-select formControlName="proDataRateCurrency" placeholder="Currency" [disableOptionCentering]="true" [compareWith]="compareWithFn">
                                         <mat-option *ngFor="let item of currencies" [value]="item">
                                             {{ item.name }}
@@ -284,10 +284,10 @@
                                 </mat-form-field>
                             </div>
                             <div fxFlex="12%" fxLayout="row" fxLayoutAlign="start start">
-                                <mat-form-field appearance="fill" class="u-w--100 formFieldNoMarginPadding filter-select" fxFlex="40%">
+                                <mat-form-field appearance="fill" class="u-w--100 formFieldNoMarginPadding filter-select u-mr--10" fxFlex="30%">
                                     <input matInput type="number" placeholder="Rate" formControlName="consultantRate">
                                 </mat-form-field>
-                                <mat-form-field appearance="fill" class="u-w--100 formFieldNoMarginPadding filter-select" fxFlex="60%">
+                                <mat-form-field appearance="fill" class="u-w--100 formFieldNoMarginPadding filter-select" fxFlex="50%">
                                     <mat-select formControlName="consultantRateCurrency" placeholder="Currency" [disableOptionCentering]="true" [compareWith]="compareWithFn">
                                         <mat-option *ngFor="let item of currencies" [value]="item">
                                             {{ item.name }}
@@ -295,15 +295,15 @@
                                     </mat-select>
                                 </mat-form-field>
                             </div>
-                            <div fxFlex="15%" class="u-w--100 text-truncate-ellipsis flex-items-center">
-                                <button mat-flat-button appPreventDoubleClick (throttledClick)="saveOrUpdateSpecialFee(i)" class="inline-edit-form--btn__save" [disabled]="feeIsSaving">
-                                    Save
+                            <div fxFlex="15%" fxLayoutAlign="end center" class="u-w--100 text-truncate-ellipsis">
+                                <button mat-icon-button appPreventDoubleClick (throttledClick)="saveOrUpdateSpecialFee(i)" class="rates-and-fees--inline-edit-form--btn__save" [disabled]="feeIsSaving">
+                                    <mat-icon svgIcon="rates-save-icon"></mat-icon>
                                 </button>
-                                <button mat-flat-button appPreventDoubleClick (throttledClick)="cancelFeeEdit(i)" class="inline-edit-form--btn__cancel">
-                                    Cancel
+                                <button mat-icon-button appPreventDoubleClick (throttledClick)="cancelFeeEdit(i)" class="rates-and-fees--inline-edit-form--btn__cancel">
+                                    <mat-icon svgIcon="rates-cancel-icon"></mat-icon>
                                 </button>
-                                <button mat-icon-button appPreventDoubleClick (throttledClick)="removeClientFee(fee.value.id, fee.value.inUse, i)">
-                                    <mat-icon>clear</mat-icon>
+                                <button mat-icon-button appPreventDoubleClick (throttledClick)="removeClientFee(fee.value.id, fee.value.inUse, i)" class="rates-and-fees--inline-edit-form--btn__clear u-mr--15">
+                                    <mat-icon svgIcon="close-icon"></mat-icon>
                                 </button>
                             </div>
                         </ng-container>

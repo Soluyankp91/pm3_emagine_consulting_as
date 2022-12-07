@@ -1,9 +1,9 @@
 @import "/src/app/shared/styles/config/_colors";
+@import "/src/app/shared/styles/config/_mixins";
 
 .confirmation-dialog {
     .consultant-name {
-        font-weight: 800;
-        font-size: 14px;
+        @include fontOpenSans(14px, 800);
         color: $dark-grey-color;
     }
     &--content {
@@ -12,5 +12,23 @@
     &--actions{
         justify-content: space-between;
         border-top: 1px solid $sand-color;
+    }
+    &--header {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        margin: 0 0 24px !important;
+        h1 {
+            @include fontOpenSans(30px, 800);
+            color: #4A4E60;
+            line-height: 120%;
+        }
+    }
+
+    h3 {
+        @include fontOpenSans(14px, 600);
+        line-height: 160%;
+        color: #4A4E60;
+        margin-bottom: 8px;
     }
 }

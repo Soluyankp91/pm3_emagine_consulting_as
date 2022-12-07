@@ -242,7 +242,8 @@ export class WorkflowOverviewComponent extends AppComponentBase implements OnIni
         const scrollStrategy = this.overlay.scrollStrategies.reposition();
         DialogConfig.scrollStrategy = scrollStrategy;
         DialogConfig.data = {
-            confirmationMessageTitle: `Are you sure you want to terminate consultant ${consultantInfo?.name}?`,
+            confirmationMessageTitle: `Terminate consultant`,
+            confirmationMessage: `Are you sure you want to terminate consultant ${consultantInfo?.name}?`,
             rejectButtonText: 'Cancel',
             confirmButtonText: 'Terminate',
             isNegative: true
