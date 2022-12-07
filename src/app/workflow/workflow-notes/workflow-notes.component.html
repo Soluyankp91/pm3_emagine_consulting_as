@@ -19,9 +19,7 @@
         <ng-template #notesReadonly>
             <ng-container *ngIf="workflowNote.value?.length; else notesEmpty">
                 <ng-scrollbar class="u-w--100 u-h--100">
-                    <span class="workflow-notes--content-text">
-                        {{workflowNote.value}}
-                    </span>
+                    <p class="workflow-notes--content-text" [innerHTML]="workflowNote.value"></p>
                 </ng-scrollbar>
             </ng-container>
         </ng-template>
