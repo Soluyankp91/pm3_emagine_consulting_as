@@ -1,4 +1,23 @@
 @import "/src/app/shared/styles/config/_colors";
+@import "/src/app/shared/styles/config/_mixins";
+
+.add-file--modal {
+    &-header {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        margin: 0 0 24px !important;
+        h1 {
+            @include fontOpenSans(30px, 800);
+            color: #4A4E60;
+            line-height: 120%;
+        }
+    }
+    &-actions{
+        justify-content: space-between;
+        border-top: 1px solid $sand-color;
+    }
+}
 
 .file {
     z-index: 1;

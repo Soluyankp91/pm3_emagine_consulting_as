@@ -3,9 +3,11 @@
         <h1>
             Upload file
         </h1>
+        <button class="dialog-close--button" mat-icon-button (click)="reject()"><mat-icon svgIcon="dialog-close-icon"></mat-icon></button>
     </div>
     <div fxLayout="column" fxLayoutAlign="start center">
         <mat-form-field appearance="outline" class="u-w--100 filter-select u-mb--20" fxFlex="15%">
+            <mat-label>File type</mat-label>
             <mat-select [formControl]="attachmentTypeId" required placeholder="File type" [disableOptionCentering]="true" [compareWith]="compareWithFn">
                 <mat-option *ngFor="let item of generalFileTypes" [value]="item.id">
                     {{ item.name }}
@@ -23,7 +25,7 @@
         </div>
     </div>
 </mat-dialog-content>
-<mat-dialog-actions class="add-file--actions flex-justify-between">
+<mat-dialog-actions class="add-file--modal-actions">
     <button appPreventDoubleClick (throttledClick)="reject()" mat-flat-button class="add-file--actions-btn dialog-btn dialog-btn__outlined">
         Cancel
     </button>

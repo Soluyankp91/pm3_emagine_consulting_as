@@ -36,7 +36,7 @@
                         {{item.name ? item.name : 'What next?'}}
                     </span>
                 </span>
-                <span class="workflow-overview--process-daterange u-ml--5">{{item.periodStartDate | momentFormat: 'DD.MM.YYYY' + ' - ' + (item.periodEndDate ? (item.periodEndDate | momentFormat: 'DD.MM.YYYY') : '...')}}</span>
+                <span class="workflow-overview--process-daterange u-ml--5">{{(item.periodStartDate | momentFormat) + ' - ' + (item.periodEndDate ? (item.periodEndDate | momentFormat) : '...')}}</span>
             </div>
             <div fxLayout="row" fxLayoutAlign="start center" *ngFor="let step of item.steps; trackBy: stepsTrackBy" [fxFlex]="step.isFakeActiveStep ? 'auto' : '20%'">
                 <ng-container *ngIf="!step.isFakeActiveStep; else fakeActiveStepTemplate">
@@ -136,17 +136,17 @@
                     </button>
                     <mat-menu #consultantMenu>
                         <button
-                            class="menu-item menu-item--edit"
+                            class="menu-item green-color"
                             mat-menu-item
                             appPreventDoubleClick (throttledClick)="changeConsultantData(item.origin)">
-                            <mat-icon>create</mat-icon>
+                            <mat-icon svgIcon="edit-icon-green"></mat-icon>
                             Change consultant data
                         </button>
                         <button
-                            class="menu-item menu-item--edit"
+                            class="menu-item green-color"
                             mat-menu-item
                             appPreventDoubleClick (throttledClick)="extendConsultant(item.origin)">
-                            <mat-icon>add</mat-icon>
+                            <mat-icon svgIcon="add-icon-green"></mat-icon>
                             Extend consultant
                         </button>
                         <!-- FIXME: uncomment when BE will return cons id -->
@@ -154,7 +154,7 @@
                             class="menu-item menu-item--cancel"
                             mat-menu-item
                             appPreventDoubleClick (throttledClick)="terminateConsultant(item.origin)">
-                            <mat-icon>clear</mat-icon>
+                            <mat-icon svgIcon="close-icon"></mat-icon>
                             Terminate consultant
                         </button> -->
                     </mat-menu>
