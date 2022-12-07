@@ -147,7 +147,7 @@
                     <div fxLayout="row" fxLayoutAlign="center center">
                         <span class="tab-header">{{tab.name}}</span>
                     </div>
-                    <span class="tab-subheader">{{tab.startDate | momentFormat: 'DD.MM.YYYY'}} - {{tab.endDate ? (tab.endDate | momentFormat: 'DD.MM.YYYY') : '...'}}</span>
+                    <span class="tab-subheader">{{tab.startDate | momentFormat}} - {{tab.endDate ? (tab.endDate | momentFormat) : '...'}}</span>
                 </ng-template>
                 <div fxLayout="row" fxLayoutAlign="start start" class="workflow-form--panel u-w--100 u-mb--50">
                     <div fxFlex="80%">

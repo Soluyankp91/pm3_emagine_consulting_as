@@ -16,7 +16,7 @@
                                     {{item.consultant?.name ?? ''}}
                                 </span>
                                 <span class="sidenav-expansion--header__date">
-                                    {{item.periodStartDate | momentFormat: 'DD.MM.YYYY'}} - {{item.periodEndDate ? (item.periodEndDate | momentFormat: 'DD.MM.YYYY') : '...'}}
+                                    {{item.periodStartDate | momentFormat}} - {{item.periodEndDate ? (item.periodEndDate | momentFormat) : '...'}}
                                 </span>
                             </div>
                             <!-- Change WF || terminate WF || terminateConsultant when BE will have termination -->

@@ -3,11 +3,12 @@ import * as moment from 'moment';
 
 @Pipe({ name: 'momentFormat' })
 export class MomentFormatPipe implements PipeTransform {
-    transform(value: moment.MomentInput, format: string) {
+    dateFormat = 'DD.MM.YYYY';
+    transform(value: moment.MomentInput, format?: string) {
         if (!value) {
             return '';
         }
 
-        return moment(value).local().format(format);
+        return moment(value).local().format(format ? format : this.dateFormat);
     }
 }
