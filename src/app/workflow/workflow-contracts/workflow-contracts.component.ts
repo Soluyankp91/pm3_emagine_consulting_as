@@ -4,7 +4,7 @@ import { AbstractControl, FormArray, FormBuilder, FormControl, Validators } from
 import { MatDialog } from '@angular/material/dialog';
 import { MatMenuTrigger } from '@angular/material/menu';
 import { ScrollToConfigOptions, ScrollToService } from '@nicky-lenaers/ngx-scroll-to';
-import { of, Subject } from 'rxjs';
+import { Subject } from 'rxjs';
 import { finalize, takeUntil } from 'rxjs/operators';
 import { InternalLookupService } from 'src/app/shared/common/internal-lookup.service';
 import { AppComponentBase } from 'src/shared/app-component-base';
@@ -51,7 +51,6 @@ export class WorkflowContractsComponent extends AppComponentBase implements OnIn
     legalContractStatuses: { [key: string]: string; };
     consultantInsuranceOptions: { [key: string]: string; };
 
-    contractLinesDoneManuallyInOldPMControl = new FormControl();
     contractsTerminationConsultantForm: WorkflowContractsTerminationConsultantsDataForm;
 
     consultantRateToEdit: PeriodConsultantSpecialRateDto;
@@ -213,17 +212,21 @@ export class WorkflowContractsComponent extends AppComponentBase implements OnIn
             case WorkflowProcessType.StartConsultantPeriod:
             case WorkflowProcessType.ChangeConsultantPeriod:
             case WorkflowProcessType.ExtendConsultantPeriod:
-                return this.contractsMainForm.valid &&
-                        this.contractClientForm.valid &&
-                        this.contractsSyncDataForm.valid &&
-                        this.contractsConsultantsDataForm.valid &&
-                        (this.statusAfterSync ||
-                            (
-                                !this.contractsSyncDataForm.value.isNewSyncNeeded &&
-                                this.contractsSyncDataForm.value.lastSyncedDate !== null &&
-                                this.contractsSyncDataForm.value.lastSyncedDate !== undefined
-                            )
-                        );
+                return (
+                    this.contractsMainForm.valid &&
+                    this.contractClientForm.valid &&
+                    this.contractsSyncDataForm.valid &&
+                    this.contractsConsultantsDataForm.valid &&
+                    (this.statusAfterSync ||
+                        (this.contractsSyncDataForm.showManualOption?.value &&
+                            this.contractsSyncDataForm
+                                .contractLinesDoneManuallyInOldPm?.value) ||
+                        (!this.contractsSyncDataForm.value.isNewSyncNeeded &&
+                            this.contractsSyncDataForm.value.lastSyncedDate !==
+                                null &&
+                            this.contractsSyncDataForm.value.lastSyncedDate !==
+                                undefined))
+                );
             case WorkflowProcessType.TerminateWorkflow:
             case WorkflowProcessType.TerminateConsultant:
                 return this.contractsTerminationConsultantForm.valid;
@@ -1014,7 +1017,7 @@ export class WorkflowContractsComponent extends AppComponentBase implements OnIn
                 this.contractsSyncDataForm.clientLegalContractDoneStatusId?.setValue(result?.clientLegalContractDoneStatusId, {emitEvent: false});
                 this.contractsSyncDataForm.enableLegalContractsButtons?.setValue(result?.enableLegalContractsButtons, {emitEvent: false});
                 this.contractsSyncDataForm.showManualOption?.setValue(result?.showManualOption, {emitEvent: false});
-                this.contractsSyncDataForm.manualCheckbox?.setValue(result.contractLinesDoneManuallyInOldPm, {emitEvent: false});
+                this.contractsSyncDataForm.contractLinesDoneManuallyInOldPm?.setValue(result.contractLinesDoneManuallyInOldPm, {emitEvent: false});
                 this.contractsSyncDataForm.isNewSyncNeeded?.setValue(result?.isNewSyncNeeded, {emitEvent: false});
                 this.contractsSyncDataForm.lastSyncedDate?.setValue(result?.lastSyncedDate, {emitEvent: false});
                 if (result.clientData?.periodClientSpecialRates?.length) {
@@ -1115,7 +1118,7 @@ export class WorkflowContractsComponent extends AppComponentBase implements OnIn
             }
         }
         input.clientData.noSpecialFee = this.contractClientForm.clientFees.value?.length === 0;
-        input.contractLinesDoneManuallyInOldPm = this.contractsSyncDataForm.manualCheckbox?.value ?? false;
+        input.contractLinesDoneManuallyInOldPm = this.contractsSyncDataForm.contractLinesDoneManuallyInOldPm?.value ?? false;
 
         input.mainData = new ContractsMainDataDto();
         input.mainData.projectDescription = this.contractsMainForm.projectDescription?.value;
@@ -1288,7 +1291,7 @@ export class WorkflowContractsComponent extends AppComponentBase implements OnIn
                 this.contractClientForm.invoicingReferencePersonIdValue?.setValue(result.clientData?.invoicingReferencePersonIdValue, {emitEvent: false});
                 this.contractClientForm.invoicingReferencePerson?.setValue(result.clientData?.invoicingReferencePerson, {emitEvent: false});
 
-                this.contractsSyncDataForm.manualCheckbox?.setValue(result?.contractLinesDoneManuallyInOldPm, {emitEvent: false})
+                this.contractsSyncDataForm.contractLinesDoneManuallyInOldPm?.setValue(result?.contractLinesDoneManuallyInOldPm, {emitEvent: false})
                 this.contractsSyncDataForm.newLegalContract?.setValue(result?.newLegalContractRequired, {emitEvent: false});
                 this.contractsSyncDataForm.isNewSyncNeeded?.setValue(result?.isNewSyncNeeded, {emitEvent: false});
                 this.contractsSyncDataForm.lastSyncedDate?.setValue(result?.lastSyncedDate, {emitEvent: false});
@@ -1407,7 +1410,7 @@ export class WorkflowContractsComponent extends AppComponentBase implements OnIn
             }
             input.consultantData = consultantData;
         }
-        input.contractLinesDoneManuallyInOldPm = this.contractsSyncDataForm.manualCheckbox?.value;
+        input.contractLinesDoneManuallyInOldPm = this.contractsSyncDataForm.contractLinesDoneManuallyInOldPm?.value;
         input.newLegalContractRequired = this.contractsSyncDataForm.newLegalContract?.value;
         this.showMainSpinner();
         if (isDraft) {
@@ -1472,7 +1475,7 @@ export class WorkflowContractsComponent extends AppComponentBase implements OnIn
             }))
             .subscribe(result => {
                 // End of Consultant Contract
-                this.contractLinesDoneManuallyInOldPMControl?.setValue(result?.contractLinesDoneManuallyInOldPM, {emitEvent: false});
+                this.contractsSyncDataForm.contractLinesDoneManuallyInOldPm?.setValue(result?.contractLinesDoneManuallyInOldPM, {emitEvent: false});
                 this.addConsultantDataToTerminationForm(result);
                 if (isFromSyncToLegacy) {
                     this.processAfterSync(syncResult!);
@@ -1483,7 +1486,7 @@ export class WorkflowContractsComponent extends AppComponentBase implements OnIn
     saveTerminationConsultantContractStep(isDraft: boolean, isSyncToLegacy?: boolean) {
         let input = new ConsultantTerminationContractDataCommandDto();
         input.consultantId = this.contractsTerminationConsultantForm.consultantTerminationContractData?.value.consultantId;
-        input.contractLinesDoneManuallyInOldPM = this.contractLinesDoneManuallyInOldPMControl?.value;
+        input.contractLinesDoneManuallyInOldPM = this.contractsSyncDataForm.contractLinesDoneManuallyInOldPm?.value;
         input.removedConsultantFromAnyManualChecklists = this.contractsTerminationConsultantForm.consultantTerminationContractData?.value.removedConsultantFromAnyManualChecklists;
         input.deletedAnySensitiveDocumentsForGDPR = this.contractsTerminationConsultantForm.consultantTerminationContractData?.value.deletedAnySensitiveDocumentsForGDPR;
 
@@ -1530,8 +1533,7 @@ export class WorkflowContractsComponent extends AppComponentBase implements OnIn
             }))
             .subscribe(result => {
                 // End of Consultant Contract
-                this.contractLinesDoneManuallyInOldPMControl?.setValue(result?.contractLinesDoneManuallyInOldPM, {emitEvent: false});
-                this.contractsSyncDataForm.manualCheckbox?.setValue(result?.contractLinesDoneManuallyInOldPM, {emitEvent: false})
+                this.contractsSyncDataForm.contractLinesDoneManuallyInOldPm?.setValue(result?.contractLinesDoneManuallyInOldPM, {emitEvent: false});
                 this.contractsSyncDataForm.isNewSyncNeeded?.setValue(result?.isNewSyncNeeded, {emitEvent: false});
                 this.contractsSyncDataForm.lastSyncedDate?.setValue(result?.lastSyncedDate, {emitEvent: false});
                 result.consultantTerminationContractData?.forEach(data => {
@@ -1545,7 +1547,7 @@ export class WorkflowContractsComponent extends AppComponentBase implements OnIn
 
     saveWorkflowTerminationContractStep(isDraft: boolean, isSyncToLegacy?: boolean) {
         let input = new WorkflowTerminationContractDataCommandDto();
-        input.contractLinesDoneManuallyInOldPM = this.contractLinesDoneManuallyInOldPMControl?.value;
+        input.contractLinesDoneManuallyInOldPM = this.contractsSyncDataForm.contractLinesDoneManuallyInOldPm?.value;
         input.consultantTerminationContractData = this.contractsTerminationConsultantForm.consultantTerminationContractData?.value
 
         input.consultantTerminationContractData = new Array<ConsultantTerminationContractDataCommandDto>();

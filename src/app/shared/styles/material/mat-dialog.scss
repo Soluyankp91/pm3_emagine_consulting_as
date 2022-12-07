@@ -9,14 +9,16 @@
 
     .mat-dialog-content {
         margin: 0px !important;
-        padding: 30px !important;
+        padding: 32px 40px !important;
         max-height: none;
         overflow: hidden !important;
     }
 
     .mat-dialog-actions {
         margin-bottom: 0 !important;
-        padding: 8px 30px;
+        padding: 16px 40px;
+        min-height: 40px !important;
+        align-items: unset;
     }
 }
 

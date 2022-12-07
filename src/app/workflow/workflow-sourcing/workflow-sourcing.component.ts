@@ -196,7 +196,7 @@ export class WorkflowSourcingComponent extends AppComponentBase implements OnIni
         if (isDraft) {
             this._workflowServiceProxy.terminationConsultantSourcingPUT(this.workflowId!, input)
                 .pipe(finalize(() => this.hideMainSpinner()))
-                .subscribe(result => {
+                .subscribe(() => {
                     this._workflowDataService.workflowOverviewUpdated.emit(true);
                     if (this.editEnabledForcefuly) {
                         this.toggleEditMode();
@@ -205,7 +205,7 @@ export class WorkflowSourcingComponent extends AppComponentBase implements OnIni
         } else {
             this._workflowServiceProxy.terminationConsultantSourcingComplete(this.workflowId!, input)
                 .pipe(finalize(() => this.hideMainSpinner()))
-                .subscribe(result => {
+                .subscribe(() => {
                     this._workflowDataService.workflowSideSectionUpdated.emit({isStatusUpdate: true});
                     this._workflowDataService.workflowOverviewUpdated.emit(true);
                 })
@@ -243,7 +243,7 @@ export class WorkflowSourcingComponent extends AppComponentBase implements OnIni
         if (isDraft) {
             this._workflowServiceProxy.terminationSourcingPUT(this.workflowId!, input)
                 .pipe(finalize(() => this.hideMainSpinner()))
-                .subscribe(result => {
+                .subscribe(() => {
                     this._workflowDataService.workflowOverviewUpdated.emit(true);
                     if (this.editEnabledForcefuly) {
                         this.toggleEditMode();
@@ -252,7 +252,7 @@ export class WorkflowSourcingComponent extends AppComponentBase implements OnIni
         } else {
             this._workflowServiceProxy.terminationSourcingComplete(this.workflowId!, input)
                 .pipe(finalize(() => this.hideMainSpinner()))
-                .subscribe(result => {
+                .subscribe(() => {
                     this._workflowDataService.workflowSideSectionUpdated.emit({isStatusUpdate: true});
                     this._workflowDataService.workflowOverviewUpdated.emit(true);
                 })
