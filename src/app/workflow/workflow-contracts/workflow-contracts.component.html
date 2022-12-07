@@ -38,18 +38,20 @@
 
                 <div fxLayout="row" fxLayoutAlign="start start" class="u-w--100 u-mb--20" *ngIf="contractsSyncDataForm.showManualOption?.value">
                     <ng-container *ngIf="readOnlyMode; else contractLinesDoneManuallyInOldPMInput">
-                        <mat-icon class="termination-cancel-icon u-mr--5" [svgIcon]="'cancel-fill'" [ngClass]="{'icon-cancel': !contractLinesDoneManuallyInOldPMControl.value}"
-                            *ngIf="!contractLinesDoneManuallyInOldPMControl?.value"></mat-icon>
+                        <mat-icon class="termination-cancel-icon u-mr--5" [svgIcon]="'cancel-fill'" [ngClass]="{'icon-cancel': !contractsSyncDataForm.contractLinesDoneManuallyInOldPm?.value}"
+                            *ngIf="!contractsSyncDataForm.contractLinesDoneManuallyInOldPm?.value"></mat-icon>
                         <mat-icon class="termination-complete-icon u-mr--5" [svgIcon]="'completed-icon'" height="22px" width="22px"
-                            *ngIf="contractLinesDoneManuallyInOldPMControl?.value"></mat-icon>
+                            *ngIf="contractsSyncDataForm.contractLinesDoneManuallyInOldPm?.value"></mat-icon>
                         <span class="workflow-step-readonly--blue-text">
                             Contract lines done manually in old PM
                         </span>
                     </ng-container>
                     <ng-template #contractLinesDoneManuallyInOldPMInput>
-                        <mat-checkbox color="accent" name="contractLinesDoneManuallyInOldPM" [formControl]="contractLinesDoneManuallyInOldPMControl" class="black-checkbox u-mt--10">
-                            Contract lines done manually in old PM
-                        </mat-checkbox>
+                        <form [formGroup]="contractsSyncDataForm">
+                            <mat-checkbox color="accent" name="contractLinesDoneManuallyInOldPM" formControlName="contractLinesDoneManuallyInOldPm" class="black-checkbox u-mt--10">
+                                Contract lines done manually in old PM
+                            </mat-checkbox>
+                        </form>
                     </ng-template>
                 </div>
                 <mat-divider *ngIf="readOnlyMode && syncNotPossible && contractsSyncDataForm.showManualOption?.value" class="u-w--100"></mat-divider>
@@ -1185,7 +1187,7 @@
                             </div>
 
                             <div fxLayout="row" fxLayoutAlign="start start" class="u-w--100 u-mb--20" *ngIf="contractsSyncDataForm.showManualOption?.value">
-                                <mat-checkbox color="accent" formControlName="manualCheckbox" name="manualCheckbox" class="black-checkbox u-mt--10">
+                                <mat-checkbox color="accent" formControlName="contractLinesDoneManuallyInOldPm" name="contractLinesDoneManuallyInOldPm" class="black-checkbox u-mt--10">
                                     Contract lines done manually in old PM
                                 </mat-checkbox>
                             </div>

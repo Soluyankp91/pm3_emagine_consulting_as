@@ -22,14 +22,18 @@
                                     <mat-icon svgIcon="3-dots"></mat-icon>
                                 </button>
                                 <mat-menu #returnToSalesMenu>
-                                    <button
-                                        class="menu-item menu-item--edit contract-manager-action"
-                                        mat-menu-item
-                                        [disabled]="!permissionsForCurrentUser!['Reopen']"
-                                        appPreventDoubleClick (throttledClick)="returnToSales()">
-                                        <mat-icon svgIcon="return-icon"></mat-icon>
-                                        Return to Sales
-                                    </button>
+                                    <div class="u-w--100 u-h--100"
+                                        [matTooltip]="permissionsForCurrentUser!['Reopen'] ? '' : 'Not available after the Contracts step has been completed'"
+                                        matTooltipClass="white-tooltip">
+                                        <button
+                                            class="menu-item menu-item--edit contract-manager-action"
+                                            mat-menu-item
+                                            [disabled]="!permissionsForCurrentUser!['Reopen']"
+                                            appPreventDoubleClick (throttledClick)="returnToSales()">
+                                            <mat-icon svgIcon="return-icon"></mat-icon>
+                                            Return to Sales
+                                        </button>
+                                    </div>
                                 </mat-menu>
                             </div>
                         </div>
@@ -1367,14 +1371,14 @@
                                                         mat-menu-item
                                                         [disabled]="isCommissionEditing"
                                                         appPreventDoubleClick (throttledClick)="editOrSaveCommissionRow(i)">
-                                                        <mat-icon>{{salesMainDataForm.commissions.at(i).get('editable')?.value ? 'save' : 'create'}}</mat-icon>
+                                                        <mat-icon>{{commissions.value.editable ? 'save' : 'create'}}</mat-icon>
                                                         {{salesMainDataForm.commissions.at(i).get('editable')?.value ? 'Save' : 'Edit'}}
                                                     </button>
                                                     <button
                                                         class="menu-item menu-item--cancel"
                                                         mat-menu-item
                                                         appPreventDoubleClick (throttledClick)="removeCommission(i)">
-                                                        <mat-icon>clear</mat-icon>
+                                                        <mat-icon svgIcon="close-icon"></mat-icon>
                                                         Remove
                                                     </button>
                                                 </mat-menu>

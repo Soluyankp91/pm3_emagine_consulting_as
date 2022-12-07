@@ -774,6 +774,13 @@ export class AppModule {
         );
 
         iconRegistry.addSvgIcon(
+            'restore-icon',
+            sanitizer.bypassSecurityTrustResourceUrl(
+                'assets/common/images/restore-icon.svg'
+            )
+        );
+
+        iconRegistry.addSvgIcon(
             'supplier-icon',
             sanitizer.bypassSecurityTrustResourceUrl(
                 'assets/common/images/supplier-icon.svg'
