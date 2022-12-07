@@ -50,7 +50,6 @@ export class CreateMasterTemplateComponent implements OnInit, OnDestroy {
     preselectedFiles: FileUpload[] = [];
 
     creationModes = AgreementCreationMode;
-
     agreementCreationMode = new FormControl(AgreementCreationMode.FromScratch);
 
     createControl = new FormControl();
