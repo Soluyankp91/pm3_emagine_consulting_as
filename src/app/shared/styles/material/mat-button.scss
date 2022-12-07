@@ -211,7 +211,7 @@
 
 .mat-flat-button {
     &.dialog-btn {
-        width: 150px;
+        width: 130px;
         font-weight: 700;
 
         &__outlined {
@@ -359,7 +359,7 @@
 }
 
 .dialog-close--button {
-    @include fontLineHeightAndSize(24px, 24px, 24px, 24px);
+    @include fontLineHeightAndSize(20px, 20px, 20px, 20px);
 }
 
 .gantt-group-content--redirect-button.mat-icon-button {

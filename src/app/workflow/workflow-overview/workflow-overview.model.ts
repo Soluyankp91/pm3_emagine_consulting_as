@@ -94,10 +94,11 @@ export class OverviewData {
 }
 
 export const DialogConfig: MatDialogConfig = {
-    minWidth: '450px',
+    minWidth: '500px',
     minHeight: '180px',
     height: 'auto',
     width: 'auto',
+    maxHeight: '560px',
     backdropClass: 'backdrop-modal--wrapper',
     autoFocus: false,
     panelClass: 'confirmation-modal'

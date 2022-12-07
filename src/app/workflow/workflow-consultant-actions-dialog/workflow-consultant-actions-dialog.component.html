@@ -1,16 +1,20 @@
 <mat-dialog-content class="confirmation-dialog">
-    <div mat-dialog-title class="confirmation-dialog--header" align="center">
-        {{ data.dialogTitle }}
+    <div mat-dialog-title class="confirmation-dialog--header">
+        <h1>
+            {{ data.dialogTitle }}
+        </h1>
+        <button class="dialog-close--button" mat-icon-button (click)="reject()"><mat-icon svgIcon="dialog-close-icon"></mat-icon></button>
     </div>
-    <div fxLayout="row" fxLayoutAlign="start center">
-        <img class="border-rounded-50 u-mr--16 image-thumbnail" [src]="consultantProfileUrl(consultant.externalId)">
+    <div fxLayout="row" fxLayoutAlign="start center" class="u-mb--24">
+        <img class="border-rounded-50 u-mr--12 image-thumbnail-small" [src]="consultantProfileUrl(consultant.externalId)">
         <p class="consultant-name">{{consultant.name}}</p>
     </div>
+    <mat-divider class="u-w--100 u-mb--24"></mat-divider>
     <ng-container [ngSwitch]="data.dialogType">
         <ng-container *ngSwitchCase="dialogTypes.Change">
             <h3>Select new cutover date</h3>
-            <div fxLayout="row" fxLayoutAlign="start center">
-                <mat-form-field appearance="outline" class="u-mr--10">
+            <div fxLayout="column" fxLayoutAlign="start start">
+                <mat-form-field appearance="outline" class="u-mb--5">
                     <mat-label>Specific date</mat-label>
                     <input autocomplete="off" matInput
                             [matDatepicker]="consultantCutoverDatePicker"
@@ -20,14 +24,14 @@
                     <mat-icon class="calendar-icon" matSuffix svgIcon="calendar"></mat-icon>
                     <mat-datepicker #consultantCutoverDatePicker></mat-datepicker>
                 </mat-form-field>
-                <mat-checkbox color="accent" [formControl]="newLegalContractRequired" name="newLegalContractRequired" class="black-checkbox u-mr--10">
-                    New legal contract contract required
+                <mat-checkbox color="accent" [formControl]="newLegalContractRequired" name="newLegalContractRequired" class="black-checkbox">
+                    New legal contract required
                 </mat-checkbox>
             </div>
         </ng-container>
         <ng-container *ngSwitchCase="dialogTypes.Extend">
             <h3>Select extension end date</h3>
-            <div fxLayout="row" fxLayoutAlign="space-between start" fxLayoutGap="16px" class="u-w--100">
+            <div fxLayout="row" fxLayoutAlign="space-between start" fxLayoutGap="12px" class="u-w--100">
                 <mat-form-field appearance="outline" fxFlex="50%">
                     <mat-label>Start date</mat-label>
                     <input autocomplete="off" matInput
@@ -40,7 +44,7 @@
                 </mat-form-field>
 
                 <div fxLayout="column" fxLayoutAlign="start start" fxFlex="50%">
-                    <mat-form-field appearance="outline">
+                    <mat-form-field appearance="outline" class="u-mb--5">
                         <mat-label>End date</mat-label>
                         <input autocomplete="off" matInput
                                 [matDatepicker]="endDatePicker"
