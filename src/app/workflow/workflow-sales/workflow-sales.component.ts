@@ -1398,8 +1398,9 @@ export class WorkflowSalesComponent extends AppComponentBase implements OnInit, 
             autoFocus: false,
             panelClass: 'confirmation-modal',
             data: {
-                confirmationMessageTitle: `Are you sure you want to delete consultant ${consultant.consultantName?.consultant?.name ?? ''}?`,
-                confirmationMessage: 'When you confirm the deletion, all the info contained inside this block will disappear.',
+                confirmationMessageTitle: `Delete consultant`,
+                confirmationMessage: `Are you sure you want to delete consultant ${consultant.consultantName?.consultant?.name ?? ''}?\n
+                    When you confirm the deletion, all the info contained inside this block will disappear.`,
                 rejectButtonText: 'Cancel',
                 confirmButtonText: 'Delete',
                 isNegative: true
@@ -1568,6 +1569,7 @@ export class WorkflowSalesComponent extends AppComponentBase implements OnInit, 
                 consultantInput.employmentTypeId = consultant.employmentType?.id;
                 if (consultant.employmentType?.id === EmploymentTypes.FeeOnly || consultant.employmentType?.id === EmploymentTypes.Recruitment) {
                     consultantInput.nameOnly = consultant.consultantNameOnly;
+                    consultantInput.consultantPeriodId = consultant.consultantPeriodId;
                 } else {
                     consultantInput.consultantId = consultant.consultantName?.consultant?.id
                     consultantInput.soldRequestConsultantId = consultant.consultantName?.sourcingRequestConsultantId;
@@ -2236,7 +2238,8 @@ export class WorkflowSalesComponent extends AppComponentBase implements OnInit, 
             autoFocus: false,
             panelClass: 'confirmation-modal',
             data: {
-                confirmationMessageTitle: `Are you sure you want to terminate consultant ${consultantInformation?.consultant?.name ?? ''}?`,
+                confirmationMessageTitle: `Terminate consultant`,
+                confirmationMessage: `Are you sure you want to terminate consultant ${consultantInformation?.consultant?.name ?? ''}?`,
                 // confirmationMessage: 'When you confirm the termination, all the info contained inside this block will disappear.',
                 rejectButtonText: 'Cancel',
                 confirmButtonText: 'Terminate',
@@ -2343,6 +2346,7 @@ export class WorkflowSalesComponent extends AppComponentBase implements OnInit, 
         consultantInput.employmentTypeId = consultant.employmentType?.id;
         if (consultant.employmentType?.id === EmploymentTypes.FeeOnly || consultant.employmentType?.id === EmploymentTypes.Recruitment) {
             consultantInput.nameOnly = consultant.consultantNameOnly;
+            consultantInput.consultantPeriodId = consultant.consultantPeriodId;
         } else {
             consultantInput.consultantId = consultant.consultantName?.consultant?.id
             consultantInput.soldRequestConsultantId = consultant.consultantName?.sourcingRequestConsultantId;
