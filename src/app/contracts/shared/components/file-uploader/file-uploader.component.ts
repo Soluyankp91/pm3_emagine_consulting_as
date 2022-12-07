@@ -4,6 +4,7 @@ import { Subject, Observable, forkJoin, of } from 'rxjs';
 import { switchMap, map, tap } from 'rxjs/operators';
 import { ControlValueAccessor, NG_VALUE_ACCESSOR } from '@angular/forms';
 import { FileUploadItem } from './files';
+
 @Component({
     selector: 'emg-file-uploader',
     templateUrl: './file-uploader.component.html',
