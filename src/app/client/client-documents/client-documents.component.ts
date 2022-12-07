@@ -129,6 +129,7 @@ export class ClientDocumentsComponent extends AppComponentBase implements OnInit
     ngOnDestroy(): void {
         this._unsubscribe.next();
         this._unsubscribe.complete();
+        this.selectSideNav(this.documentSideNavigation[0]);
     }
 
     getGeneralFileTypes() {
@@ -136,7 +137,6 @@ export class ClientDocumentsComponent extends AppComponentBase implements OnInit
             .pipe(finalize(() => {}))
             .subscribe(result => {
                 this.generalFileTypes = result;
-                this.getGeneralDocuments();
             });
     }
 
@@ -367,7 +367,7 @@ export class ClientDocumentsComponent extends AppComponentBase implements OnInit
 
     getEvaluations() {
         this.isDataLoading = true;
-        this._clientDocumentsService.evaluations(this.clientId, this.evaluationDocumentsIncludeLinked.value, this.evaluationDocumentDate.value)
+        this._clientDocumentsService.evaluations(this.clientId, this.evaluationDocumentsIncludeLinked.value, this.evaluationDocumentDate.value, this.pageNumber, this.deafultPageSize, this.sorting)
             .pipe(finalize(() => this.isDataLoading = false))
             .subscribe(result => {
                 this.evalsDocumentsDataSource = new MatTableDataSource<ClientEvaluationOutputDto>(result.items);
