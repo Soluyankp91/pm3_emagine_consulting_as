@@ -29,7 +29,7 @@
                                     </ngx-gantt-bar>
                                     <div class="tooltip" [style.left.px]="menuTopLeftPosition.x"[style.top.px]="menuTopLeftPosition.y">
                                         <span><b>{{item?.origin?.title!}}</b></span>
-                                        <span>{{tooltipStartDate ? (tooltipStartDate | momentFormat: 'DD.MM.YYYY' + ' - ' + (tooltipEndDate ? (tooltipEndDate | momentFormat: 'DD.MM.YYYY') : '...')) : 'Contract did not start'}}</span>
+                                        <span>{{tooltipStartDate ? ((tooltipStartDate | momentFormat) + ' - ' + (tooltipEndDate ? (tooltipEndDate | momentFormat) : '...')) : 'Contract did not start'}}</span>
                                     </div>
                                 </ng-container>
                             </div>

@@ -3,7 +3,7 @@
         <h1 class="rate-warning-dialog--header-text">
             Rates & Fees updates
         </h1>
-        <mat-icon class="rate-warning-dialog--header-close-icon" (click)="close()">close</mat-icon>
+        <mat-icon svgIcon="dialog-close-icon" class="rate-warning-dialog--header-close-icon" (click)="close()"></mat-icon>
     </div>
     <div class="u-w--100 u-h--100">
         <ng-container *ngIf="data.specialRatesWarnings?.length">

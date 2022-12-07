@@ -527,7 +527,8 @@ export class WorkflowDetailsComponent
             autoFocus: false,
             panelClass: 'confirmation-modal',
             data: {
-                confirmationMessageTitle: `Are you sure you want to terminate workflow?`,
+                confirmationMessageTitle: `Terminate workflow`,
+                confirmationMessage: `Are you sure you want to terminate workflow?`,
                 rejectButtonText: 'Cancel',
                 confirmButtonText: 'Terminate',
                 isNegative: true,

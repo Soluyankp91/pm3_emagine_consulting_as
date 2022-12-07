@@ -16,7 +16,7 @@
                                     {{item.consultant?.name ?? ''}}
                                 </span>
                                 <span class="sidenav-expansion--header__date">
-                                    {{item.periodStartDate | momentFormat: 'DD.MM.YYYY'}} - {{item.periodEndDate ? (item.periodEndDate | momentFormat: 'DD.MM.YYYY') : '...'}}
+                                    {{item.periodStartDate | momentFormat}} - {{item.periodEndDate ? (item.periodEndDate | momentFormat) : '...'}}
                                 </span>
                             </div>
                             <!-- Change WF || terminate WF || terminateConsultant when BE will have termination -->
@@ -24,11 +24,11 @@
                                 <button mat-icon-button #menuDeleteTrigger="matMenuTrigger" [matMenuTriggerFor]="consultantMenu" type="button" appPreventDoubleClick (throttledClick)="$event.stopPropagation();" class="workflow-period--delete u-mr--16"><mat-icon>more_horiz</mat-icon></button>
                                 <mat-menu #consultantMenu>
                                     <button
-                                        class="menu-item menu-item--delete"
+                                        class="menu-item menu-item--cancel"
                                         mat-menu-item
                                         [disabled]="false"
                                         (click)="deleteSideSection(item)">
-                                        <mat-icon>clear</mat-icon>
+                                        <mat-icon svgIcon="close-icon"></mat-icon>
                                         Delete
                                     </button>
                                 </mat-menu>
