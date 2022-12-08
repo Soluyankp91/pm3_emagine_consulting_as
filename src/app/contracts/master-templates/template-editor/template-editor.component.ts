@@ -5,7 +5,7 @@ import {
     OnDestroy,
 } from '@angular/core';
 import { Tab } from 'src/app/contracts/shared/entities/contracts.interfaces';
-import { ActivatedRoute, NavigationEnd, Router } from '@angular/router';
+import { NavigationEnd, Router } from '@angular/router';
 import { getAllRouteParams } from '../../shared/utils/allRouteParams';
 import { Subject } from 'rxjs';
 import { filter, takeUntil } from 'rxjs/operators';

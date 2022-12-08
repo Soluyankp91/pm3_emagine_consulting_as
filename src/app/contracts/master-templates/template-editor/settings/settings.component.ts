@@ -106,7 +106,7 @@ export class CreateMasterTemplateComponent implements OnInit, OnDestroy {
         const agreementPostDto = Object.assign(
             {},
             {
-                ...this.masterTemplateFormGroup.value,
+                ...this.masterTemplateFormGroup.getRawValue(),
                 creationMode,
             }
         ) as SaveAgreementTemplateDto;

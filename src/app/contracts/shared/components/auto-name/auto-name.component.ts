@@ -17,11 +17,10 @@ import {
 import {
     forkJoin,
     Subject,
-    Observable,
     ReplaySubject,
     combineLatest,
 } from 'rxjs';
-import { mergeMap, tap, takeUntil, map, shareReplay } from 'rxjs/operators';
+import { mergeMap, tap, takeUntil, map } from 'rxjs/operators';
 import { MergeFieldsServiceProxy } from 'src/shared/service-proxies/service-proxies';
 import { AutoNameErrorStateMatcher } from '../../matchers/autoNameErrorMatcher';
 import { autoNameRequiredValidator } from '../../validators/autoNameRequireValidator';
