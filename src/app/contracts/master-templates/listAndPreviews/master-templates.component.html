@@ -13,7 +13,7 @@
     (onAction)="onAction($event)"
 >
 <ng-template let-cell="element" #customCells
-><p [customTooltip]="tooltipTemplate1">
+><p>
     {{ cell.agreementTemplateId }}
     <ng-template #tooltipTemplate1>
         THIS IS agreementTemplateId: {{ cell.agreementTemplateId }}
@@ -24,7 +24,7 @@
 ><p>{{ cell.legalEntityIds }}</p></ng-template
 >
 <ng-template let-cell="element" #customCells
-><p [customTooltip]="tooltipTemplate2">{{ cell.lastUpdateDateUtc }}</p>
+><p >{{ cell.lastUpdateDateUtc }}</p>
 <ng-template #tooltipTemplate2>
     <div>Created {{ cell.createdDateUtc }}</div>
     <div>Last Updated {{ cell.lastUpdateDateUtc }}</div>
