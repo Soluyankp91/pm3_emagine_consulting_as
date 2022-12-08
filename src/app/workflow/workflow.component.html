@@ -305,16 +305,16 @@
                     <mat-cell *matCellDef="let row" fxFlex="5%" fxLayoutAlign="center center">
                         <ng-container *ngIf="row.status === workflowStatus.Pending || row.status === workflowStatus.PendingDataMissing; else readOnlyWorkflowStatusTemplate">
                             <mat-icon class="workflow-status" [matTooltip]="row.statusName" matTooltipClass="white-tooltip" [ngClass]="row?.statusIcon"
-                                #menuWorkflowStatusesTrigger="matMenuTrigger" [matMenuTriggerFor]="workflowStatusesMenu" appPreventDoubleClick (throttledClick)="$event.stopPropagation();">fiber_manual_record</mat-icon>
+                                #menuWorkflowStatusesTrigger="matMenuTrigger" [matMenuTriggerFor]="workflowStatusesMenu" [matMenuTriggerData]="{selectedStatus: row.status}" appPreventDoubleClick (throttledClick)="$event.stopPropagation();">fiber_manual_record</mat-icon>
                             <mat-menu #workflowStatusesMenu backdropClass="workflow-list--workflow-status-menu">
-                                <button mat-menu-item class="workflow-list--workflow-status--menu-item" (click)="setWorkflowStatus(row?.workflowId, workflowStatus.Pending)">
-                                    <mat-icon class="workflow-status pending-status">fiber_manual_record</mat-icon>
-                                    <span>Pending workflow</span>
-                                </button>
-                                <button mat-menu-item class="workflow-list--workflow-status--menu-item" (click)="setWorkflowStatus(row?.workflowId, workflowStatus.PendingDataMissing)">
-                                    <mat-icon class="workflow-status pending-data-missing-status">fiber_manual_record</mat-icon>
-                                    <span>Pending - data missing</span>
-                                </button>
+                                <ng-template matMenuContent let-selectedStatus="selectedStatus">
+                                        <ng-container *ngFor="let item of workflowStatusMenuList">
+                                        <button mat-menu-item class="workflow-list--workflow-status--menu-item" [ngClass]="{'workflow-list--workflow-status--menu-item-selected': selectedStatus === item.code}" (click)="setWorkflowStatus(row?.workflowId, item.code)">
+                                            <mat-icon class="workflow-status {{item.icon}}">fiber_manual_record</mat-icon>
+                                            <span>{{item.name}}</span>
+                                        </button>
+                                    </ng-container>
+                                </ng-template>
                             </mat-menu>
                         </ng-container>
                         <ng-template #readOnlyWorkflowStatusTemplate>

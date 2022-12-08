@@ -344,3 +344,20 @@ export function getWorkflowStatus(status: number) {
             break;
     }
 }
+
+export const WorkflowStatusMenuList = [
+    {
+        id: 1,
+        name: 'Pending',
+        code: WorkflowStatus.Pending,
+        icon: 'pending-status',
+        selected: false
+    },
+    {
+        id: 101,
+        name: 'Pending - data missing',
+        code: WorkflowStatus.PendingDataMissing,
+        icon: 'pending-data-missing-status',
+        selected: false
+    }
+];

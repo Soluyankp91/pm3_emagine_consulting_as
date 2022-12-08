@@ -146,6 +146,11 @@
             background-color: rgba($color: $sand-color, $alpha: 0.5);
         }
     }
+    &--workflow-status {
+        &--menu-item-selected {
+            background-color: rgba($color: $sand-color, $alpha: 0.5);
+        }
+    }
 }
 
 .workflow-flag {
