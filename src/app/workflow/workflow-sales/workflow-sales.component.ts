@@ -1846,7 +1846,7 @@ export class WorkflowSalesComponent extends AppComponentBase implements OnInit, 
         }
     }
 
-    updateConsultantDates(event: MatButtonToggleChange, consultantIndex: number) {
+    updateConsultantDates(event: MatSelectChange, consultantIndex: number) {
         if (event.value) {
             this.consultantData.at(consultantIndex).get('consultantProjectStartDate')?.setValue(this.salesClientDataForm.clientContractStartDate?.value, {emitEvent: false});
             this.consultantData.at(consultantIndex).get('consultantProjectEndDate')?.setValue(this.salesClientDataForm.clientContractEndDate?.value, {emitEvent: false});
