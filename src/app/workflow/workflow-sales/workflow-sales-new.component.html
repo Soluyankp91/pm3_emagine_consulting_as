@@ -56,7 +56,7 @@
                         <div class="workflow-section--content">
                             <ng-container *ngIf="activeSideSection.typeId === workflowSideSections.StartClientPeriod || activeSideSection.typeId === workflowSideSections.ExtendClientPeriod || activeSideSection.typeId === workflowSideSections.ChangeClientPeriod">
                                 <div fxLayout="row" fxLayoutAlign="start start" class="u-w--100 u-mb--10 u-mt--10">
-                                    <mat-form-field appearance="outline" class="u-w--100 formFieldNoMarginPadding filter-select u-mr--16" fxFlex="35%">
+                                    <mat-form-field appearance="outline" class="u-w--100 formFieldNoMarginPadding filter-select u-mr--12" fxFlex="35%">
                                         <mat-label>Project Type (Legacy)</mat-label>
                                         <mat-select required formControlName="projectType" [disableOptionCentering]="true" [compareWith]="compareWithFn" (selectionChange)="getDataBasedOnProjectType($event)">
                                             <mat-option *ngFor="let item of projectTypes" [value]="item">
@@ -67,7 +67,7 @@
                                             <app-validator [control]="salesMainDataForm.projectType"></app-validator>
                                         </mat-error>
                                     </mat-form-field>
-                                    <mat-form-field appearance="outline" class="u-w--100 formFieldNoMarginPadding filter-select u-mr--16" fxFlex="23%">
+                                    <mat-form-field appearance="outline" class="u-w--100 formFieldNoMarginPadding filter-select u-mr--12" fxFlex="23%">
                                         <mat-label>Sales Type</mat-label>
                                         <mat-select required formControlName="salesType" [disableOptionCentering]="true" [compareWith]="compareWithFn" (selectionChange)="salesTypeChange($event.value)">
                                             <mat-option *ngFor="let item of saleTypes" [value]="item">
@@ -75,7 +75,7 @@
                                             </mat-option>
                                         </mat-select>
                                         <mat-error>
-                                            <app-validator [control]="salesMainDataForm.projectType"></app-validator>
+                                            <app-validator [control]="salesMainDataForm.salesType"></app-validator>
                                         </mat-error>
                                     </mat-form-field>
                                     <mat-form-field appearance="outline" class="u-w--100 formFieldNoMarginPadding filter-select" fxFlex="23%">
@@ -88,12 +88,12 @@
                                             </ng-container>
                                         </mat-select>
                                         <mat-error>
-                                            <app-validator [control]="salesMainDataForm.projectType"></app-validator>
+                                            <app-validator [control]="salesMainDataForm.deliveryType"></app-validator>
                                         </mat-error>
                                     </mat-form-field>
                                 </div>
                                 <div fxLayout="row" fxLayoutAlign="start start" class="u-w--100 u-mb--10">
-                                    <mat-form-field appearance="outline" class="u-w--100 formFieldNoMarginPadding filter-select u-mr--16" fxFlex="35%">
+                                    <mat-form-field appearance="outline" class="u-w--100 formFieldNoMarginPadding filter-select u-mr--12" fxFlex="35%">
                                         <mat-label>Project Category</mat-label>
                                         <mat-select required formControlName="projectCategory" [disableOptionCentering]="true" [compareWith]="compareWithFn" [disabled]="activeSideSection.typeId === workflowSideSections.ExtendClientPeriod || activeSideSection.typeId === workflowSideSections.ChangeClientPeriod || readOnlyMode">
                                             <mat-option *ngFor="let item of projectCategories" [value]="item">
@@ -208,7 +208,7 @@
                             </ng-template> -->
 
                             <div fxLayout="row" fxLayoutAlign="start start" class="u-w--100 u-mb--10">
-                                <mat-form-field appearance="outline" class="u-w--100 formFieldNoMarginPadding textarea-input" fxFlex="0 0 calc(81% + 32px)">
+                                <mat-form-field appearance="outline" class="u-w--100 formFieldNoMarginPadding textarea-input" fxFlex="0 0 calc(81% + 24px)">
                                     <mat-label>Project Name</mat-label>
                                     <textarea matInput autocomplete="new-password" name="projectName" required formControlName="projectName" [matTextareaAutosize]="true" [matAutosizeMinRows]="2">
                                     </textarea>
@@ -219,7 +219,7 @@
                             </div>
 
                             <div fxLayout="row" fxLayoutAlign="start start" class="u-w--100">
-                                <mat-form-field appearance="outline" class="u-w--100 formFieldNoMarginPadding textarea-input" fxFlex="0 0 calc(81% + 32px)">
+                                <mat-form-field appearance="outline" class="u-w--100 formFieldNoMarginPadding textarea-input" fxFlex="0 0 calc(81% + 24px)">
                                     <mat-label>Project Description</mat-label>
                                     <textarea matInput autocomplete="new-password" name="projectDescription" required formControlName="projectDescription" [matTextareaAutosize]="true" [matAutosizeMinRows]="2">
                                     </textarea>
@@ -237,11 +237,25 @@
                         </div>
                         <div class="workflow-section--content">
                             <div fxLayout="row" fxLayoutAlign="start start" class="u-w--100 u-mb--20">
-                                <mat-button-toggle-group class="workflow-toggle-buttons" formControlName="discounts">
+                                <!-- <mat-button-toggle-group class="workflow-toggle-buttons" formControlName="discounts">
                                     <mat-button-toggle [value]="item" *ngFor="let item of discounts">
                                         {{ item.name }}
                                     </mat-button-toggle>
-                                </mat-button-toggle-group>
+                                </mat-button-toggle-group> -->
+                                <mat-form-field appearance="outline" class="u-w--100 formFieldNoMarginPadding filter-select" fxFlex="23%">
+                                    <mat-label>Discounts</mat-label>
+                                    <mat-select formControlName="discounts" [disableOptionCentering]="true" [compareWith]="compareWithFn" required>
+                                        <mat-option class="mat-select-clear-option">
+                                            Clear
+                                        </mat-option>
+                                        <mat-option *ngFor="let item of discounts" [value]="item">
+                                            {{ item.name }}
+                                        </mat-option>
+                                    </mat-select>
+                                    <mat-error>
+                                        <app-validator [control]="salesMainDataForm.discounts"></app-validator>
+                                    </mat-error>
+                                </mat-form-field>
                             </div>
 
                             <h3 class="workflow-gray--header">Commission</h3>
@@ -444,19 +458,18 @@
                                                 </button>
                                                 <mat-menu #commissionMenu>
                                                     <button
-                                                        class="menu-item"
-                                                        [ngClass]="salesMainDataForm.commissions.at(i).get('editable')?.value ? 'menu-item--add': 'menu-item--edit'"
+                                                        class="menu-item green-color"
                                                         mat-menu-item
                                                         [disabled]="isCommissionEditing"
                                                         appPreventDoubleClick (throttledClick)="editOrSaveCommissionRow(i)">
-                                                        <mat-icon>{{salesMainDataForm.commissions.at(i).get('editable')?.value ? 'save' : 'create'}}</mat-icon>
-                                                        {{salesMainDataForm.commissions.at(i).get('editable')?.value ? 'Save' : 'Edit'}}
+                                                        <mat-icon svgIcon="edit-icon-green"></mat-icon>
+                                                        Edit
                                                     </button>
                                                     <button
                                                         class="menu-item menu-item--cancel"
                                                         mat-menu-item
                                                         appPreventDoubleClick (throttledClick)="removeCommission(i)">
-                                                        <mat-icon>clear</mat-icon>
+                                                        <mat-icon svgIcon="close-icon"></mat-icon>
                                                         Remove
                                                     </button>
                                                 </mat-menu>
@@ -479,7 +492,7 @@
                         </div>
                         <div class="workflow-section--content">
                             <div fxLayout="row" fxLayoutAlign="start start" class="u-w--100 u-mb--10">
-                                <mat-form-field appearance="outline" class="u-w--100 formFieldNoMarginPadding filter-select u-mr--16" fxFlex="33%">
+                                <mat-form-field appearance="outline" class="u-w--100 formFieldNoMarginPadding filter-select u-mr--12" fxFlex="35%">
                                     <mat-label>Sales Account Manager</mat-label>
                                     <input required #salesAccountManagerFilterInput type="text" matInput [matAutocomplete]="salesManagerAutocomplete" formControlName="salesAccountManagerIdValue" appPreventDoubleClick (throttledClick)="$event.stopPropagation()" placeholder="Select account manager(s)"
                                         (focus)="focusInMethod()" (focusout)="focusOutMethod()">
@@ -497,7 +510,7 @@
                                     </mat-error>
                                 </mat-form-field>
 
-                                <mat-form-field appearance="outline" class="u-w--100 formFieldNoMarginPadding filter-select" fxFlex="33%">
+                                <mat-form-field appearance="outline" class="u-w--100 formFieldNoMarginPadding filter-select" fxFlex="35%">
                                     <mat-label>Commission Account Manager</mat-label>
                                     <input #commissionManagerFilterInput type="text" matInput [matAutocomplete]="commissionManagerAutocomplete" formControlName="commissionAccountManagerIdValue" appPreventDoubleClick (throttledClick)="$event.stopPropagation()" placeholder="Select account manager(s)"
                                         (focus)="focusInMethod()" (focusout)="focusOutMethod()">
@@ -513,7 +526,7 @@
                                 </mat-autocomplete>
                             </div>
                             <div fxLayout="row" fxLayoutAlign="start start" class="u-w--100 u-mb--10">
-                                <mat-form-field appearance="outline" class="u-w--100 formFieldNoMarginPadding filter-select u-mr--16" fxFlex="33%">
+                                <mat-form-field appearance="outline" class="u-w--100 formFieldNoMarginPadding filter-select u-mr--12" fxFlex="35%">
                                     <mat-label>Contract expiration notification</mat-label>
                                     <mat-select formControlName="contractExpirationNotification" [disableOptionCentering]="true" [multiple]="true">
                                         <mat-option [value]="999">
@@ -524,7 +537,7 @@
                                         </mat-option>
                                     </mat-select>
                                 </mat-form-field>
-                                <mat-form-field appearance="outline" fxFlex="33%" *ngIf="salesMainDataForm.contractExpirationNotification?.value?.includes(999)" class="formFieldNoMarginPadding">
+                                <mat-form-field appearance="outline" fxFlex="35%" *ngIf="salesMainDataForm.contractExpirationNotification?.value?.includes(999)" class="formFieldNoMarginPadding">
                                     <mat-label>Contract expiration notification date</mat-label>
                                     <input autocomplete="off" matInput
                                             [matDatepicker]="customContractExpirationNotificationDatePicker"
@@ -538,7 +551,7 @@
 
                             <div fxLayout="column" fxLayoutAlign="start start" class="u-w--100 u-mb--10">
                                 <div fxLayout="row" fxLayoutAlign="start start" class="u-w--100">
-                                    <mat-form-field appearance="outline" class="u-w--100 formFieldNoMarginPadding textarea-input" fxFlex="0 0 calc(66% + 16px)">
+                                    <mat-form-field appearance="outline" class="u-w--100 formFieldNoMarginPadding textarea-input u-mr--12" fxFlex="0 0 calc(81% + 24px)">
                                         <mat-label>Remarks</mat-label>
                                         <textarea required matInput autocomplete="new-password" name="remarks" formControlName="remarks" [matTextareaAutosize]="true" [matAutosizeMinRows]="2">
                                         </textarea>
@@ -546,13 +559,13 @@
                                             <app-validator [control]="salesMainDataForm.remarks"></app-validator>
                                         </mat-error>
                                     </mat-form-field>
+                                    <mat-checkbox color="accent" formControlName="noRemarks" name="noRemarks" class="black-checkbox u-mt--8" (change)="disableOrEnableInput(salesMainDataForm.noRemarks?.value, salesMainDataForm.remarks)">
+                                        None
+                                    </mat-checkbox>
                                 </div>
                             </div>
-                            <div fxLayout="row" fxLayoutAlign="start start" class="u-w--100">
-                                <mat-checkbox color="accent" formControlName="noRemarks" name="noRemarks" class="black-checkbox" (change)="disableOrEnableInput(salesMainDataForm.noRemarks?.value, salesMainDataForm.remarks)">
-                                    None
-                                </mat-checkbox>
-                            </div>
+                            <!-- <div fxLayout="row" fxLayoutAlign="start start" class="u-w--100">
+                            </div> -->
                         </div>
                     </div>
                 </div>
@@ -570,12 +583,25 @@
                         </div>
                         <div class="workflow-section--content">
                             <div fxLayout="row" fxLayoutAlign="start start" class="u-w--100 u-mb--20">
-                                <mat-button-toggle-group class="workflow-toggle-buttons" formControlName="differentEndClient">
+                                <!-- <mat-button-toggle-group class="workflow-toggle-buttons" formControlName="differentEndClient">
                                     <mat-button-toggle [value]="item.value" *ngFor="let item of [{name: 'Direct Client', value: false}, {name: 'Different end-client', value: true}]">
                                         {{ item.name }}
                                     </mat-button-toggle>
-                                </mat-button-toggle-group>
-
+                                </mat-button-toggle-group> -->
+                                <mat-form-field appearance="outline" class="u-w--100 formFieldNoMarginPadding filter-select" fxFlex="33%">
+                                    <mat-label>Client relation</mat-label>
+                                    <mat-select formControlName="differentEndClient" [disableOptionCentering]="true" required>
+                                        <mat-option [value]="false">
+                                            Direct client
+                                        </mat-option>
+                                        <mat-option [value]="true">
+                                            Different end-client
+                                        </mat-option>
+                                    </mat-select>
+                                    <mat-error>
+                                        <app-validator [control]="salesClientDataForm.differentEndClient"></app-validator>
+                                    </mat-error>
+                                </mat-form-field>
                             </div>
                             <div fxLayout="column" fxLayoutAlign="start start" class="u-w--100 u-mb--10">
                                 <div fxLayout="row" fxLayoutAlign="start start" class="u-w--100">
@@ -640,7 +666,7 @@
                         </div>
                         <div class="workflow-section--content">
                             <div fxLayout="row" fxLayoutAlign="start center" class="u-w--100 u-mb--10">
-                                <mat-form-field appearance="outline" class="u-mr--16 formFieldNoMarginPadding" fxFlex="0 0 calc(16.5% - 8px)">
+                                <mat-form-field appearance="outline" class="u-mr--12 formFieldNoMarginPadding" fxFlex="23%">
                                     <mat-label>Start date</mat-label>
                                     <input required autocomplete="off" matInput
                                             [matDatepicker]="clientContractStartDatePicker"
@@ -653,7 +679,7 @@
                                         <app-validator [control]="salesClientDataForm.clientContractStartDate"></app-validator>
                                     </mat-error>
                                 </mat-form-field>
-                                <mat-form-field appearance="outline" class="u-mr--16 formFieldNoMarginPadding" fxFlex="0 0 calc(16.5% - 8px)">
+                                <mat-form-field appearance="outline" class="u-mr--12 formFieldNoMarginPadding" fxFlex="23%">
                                     <mat-label>End date</mat-label>
                                     <input required autocomplete="off" matInput
                                             [matDatepicker]="clientContractEndDatePicker"
@@ -673,54 +699,66 @@
 
                             <h3 class="workflow-gray--header u-mb--10">Option to extend</h3>
                             <div fxLayout="row" fxLayoutAlign="start start" class="u-w--100 u-mb--20">
-                                <mat-button-toggle-group class="workflow-toggle-buttons" formControlName="noClientExtensionOption">
+                                <!-- <mat-button-toggle-group class="workflow-toggle-buttons" formControlName="noClientExtensionOption">
                                     <mat-button-toggle [value]="false">
                                         Option to extend
                                     </mat-button-toggle>
                                     <mat-button-toggle [value]="true">
                                         No option
                                     </mat-button-toggle>
-                                </mat-button-toggle-group>
-                            </div>
-
-                            <div fxLayout="row" fxLayoutAlign="start start" class="u-w--100 u-mb--10" [fxHide]="salesClientDataForm.noClientExtensionOption?.value">
-                                <mat-form-field appearance="outline" class="filter-select formFieldNoMarginPadding u-mr--16" fxFlex="0 0 calc(16.5% - 8px)">
-                                    <mat-label> Duration</mat-label>
-                                    <mat-select [required]="!salesClientDataForm.noClientExtensionOption?.value" formControlName="clientExtensionDuration" [disableOptionCentering]="true" [compareWith]="compareWithFn">
-                                        <mat-option *ngFor="let item of clientExtensionDurations" [value]="item">
-                                            {{ item.name }}
+                                </mat-button-toggle-group> -->
+                                <mat-form-field appearance="outline" class="u-w--100 formFieldNoMarginPadding filter-select u-mr--12" fxFlex="23%">
+                                    <mat-label>Option to extend</mat-label>
+                                    <mat-select formControlName="noClientExtensionOption" [disableOptionCentering]="true" required>
+                                        <mat-option [value]="false">
+                                            Option to extend
+                                        </mat-option>
+                                        <mat-option [value]="true">
+                                            No option
                                         </mat-option>
                                     </mat-select>
                                     <mat-error>
-                                        <app-validator [control]="salesClientDataForm.clientExtensionDuration"></app-validator>
+                                        <app-validator [control]="salesClientDataForm.noClientExtensionOption"></app-validator>
                                     </mat-error>
                                 </mat-form-field>
+                                <ng-container *ngIf="!salesClientDataForm.noClientExtensionOption?.value">
+                                    <mat-form-field appearance="outline" class="filter-select formFieldNoMarginPadding u-mr--12" fxFlex="23%">
+                                        <mat-label> Duration</mat-label>
+                                        <mat-select [required]="!salesClientDataForm.noClientExtensionOption?.value" formControlName="clientExtensionDuration" [disableOptionCentering]="true" [compareWith]="compareWithFn">
+                                            <mat-option *ngFor="let item of clientExtensionDurations" [value]="item">
+                                                {{ item.name }}
+                                            </mat-option>
+                                        </mat-select>
+                                        <mat-error>
+                                            <app-validator [control]="salesClientDataForm.clientExtensionDuration"></app-validator>
+                                        </mat-error>
+                                    </mat-form-field>
+                                    <mat-form-field appearance="outline" class="filter-select formFieldNoMarginPadding u-mr--12" fxFlex="23%">
+                                        <mat-label> Deadline</mat-label>
+                                        <mat-select [required]="!salesClientDataForm.noClientExtensionOption?.value" formControlName="clientExtensionDeadline" [disableOptionCentering]="true" [compareWith]="compareWithFn">
+                                            <mat-option *ngFor="let item of clientExtensionDeadlines" [value]="item">
+                                                {{ item.name }}
+                                            </mat-option>
+                                        </mat-select>
+                                        <mat-error>
+                                            <app-validator [control]="salesClientDataForm.clientExtensionDeadline"></app-validator>
+                                        </mat-error>
+                                    </mat-form-field>
 
-                                <mat-form-field appearance="outline" class="filter-select formFieldNoMarginPadding u-mr--16" fxFlex="0 0 calc(16.5% - 8px)">
-                                    <mat-label> Deadline</mat-label>
-                                    <mat-select [required]="!salesClientDataForm.noClientExtensionOption?.value" formControlName="clientExtensionDeadline" [disableOptionCentering]="true" [compareWith]="compareWithFn">
-                                        <mat-option *ngFor="let item of clientExtensionDeadlines" [value]="item">
-                                            {{ item.name }}
-                                        </mat-option>
-                                    </mat-select>
-                                    <mat-error>
-                                        <app-validator [control]="salesClientDataForm.clientExtensionDeadline"></app-validator>
-                                    </mat-error>
-                                </mat-form-field>
-
-                                <mat-form-field class="formFieldNoMarginPadding" appearance="outline" [fxHide]="salesClientDataForm.clientExtensionDeadline?.value?.name !== 'Manual date'" fxFlex="0 0 calc(16.5% - 8px)">
-                                    <mat-label>Specific date</mat-label>
-                                    <input [required]="salesClientDataForm.clientExtensionDeadline?.value?.name === 'Manual date'" autocomplete="off" matInput
-                                            [matDatepicker]="clientExtensionEndDatePicker"
-                                            name="clientExtensionEndDate" formControlName="clientExtensionEndDate"
-                                            (focus)="clientExtensionEndDatePicker.open()"
-                                            appPreventDoubleClick (throttledClick)="clientExtensionEndDatePicker.open()" readonly>
-                                    <mat-icon class="calendar-icon" matSuffix svgIcon="calendar"></mat-icon>
-                                    <mat-datepicker #clientExtensionEndDatePicker></mat-datepicker>
-                                    <mat-error>
-                                        <app-validator [control]="salesClientDataForm.clientExtensionEndDate"></app-validator>
-                                    </mat-error>
-                                </mat-form-field>
+                                    <mat-form-field class="formFieldNoMarginPadding" appearance="outline" [fxHide]="salesClientDataForm.clientExtensionDeadline?.value?.name !== 'Manual date'" fxFlex="23%">
+                                        <mat-label>Specific date</mat-label>
+                                        <input [required]="salesClientDataForm.clientExtensionDeadline?.value?.name === 'Manual date'" autocomplete="off" matInput
+                                                [matDatepicker]="clientExtensionEndDatePicker"
+                                                name="clientExtensionEndDate" formControlName="clientExtensionEndDate"
+                                                (focus)="clientExtensionEndDatePicker.open()"
+                                                appPreventDoubleClick (throttledClick)="clientExtensionEndDatePicker.open()" readonly>
+                                        <mat-icon class="calendar-icon" matSuffix svgIcon="calendar"></mat-icon>
+                                        <mat-datepicker #clientExtensionEndDatePicker></mat-datepicker>
+                                        <mat-error>
+                                            <app-validator [control]="salesClientDataForm.clientExtensionEndDate"></app-validator>
+                                        </mat-error>
+                                    </mat-form-field>
+                                </ng-container>
                             </div>
                         </div>
                     </div>
@@ -744,128 +782,10 @@
                                     </mat-error>
                                 </mat-form-field>
                             </div>
-
                             <ng-container *ngIf="salesClientDataForm.value?.pdcInvoicingEntityId?.id">
-                                <h3 class="workflow-gray--header u-mb--10">Price</h3>
-                                <div fxLayout="row" fxLayoutAlign="start start" class="u-w--100 u-mb--20">
-                                    <mat-button-toggle-group class="workflow-toggle-buttons" formControlName="clientRateAndInvoicing" (change)="clientRateTypeChange($event.value)">
-                                        <mat-button-toggle [value]="item" *ngFor="let item of clientRateTypes">
-                                            {{ item.name }}
-                                        </mat-button-toggle>
-                                    </mat-button-toggle-group>
-                                </div>
-                                <div fxLayout="row" fxLayoutAlign="start start" class="u-w--100 u-mb--10">
-                                    <mat-form-field appearance="outline" class="u-w--100 formFieldNoMarginPadding u-mr--16" fxFlex="0 0 calc(16.5% - 8px)">
-                                        <mat-label>Price</mat-label>
-                                        <input required autocomplete="off" matInput formControlName="clientPrice" type="number">
-                                        <mat-error>
-                                            <app-validator [control]="salesClientDataForm.clientPrice"></app-validator>
-                                        </mat-error>
-                                    </mat-form-field>
-
-                                    <mat-form-field appearance="outline" class="u-w--100 formFieldNoMarginPadding filter-select u-mr--16" fxFlex="0 0 calc(16.5% - 8px)" [fxHide]="salesClientDataForm.clientRateAndInvoicing?.value?.id !== 1">
-                                        <mat-label>Unit type</mat-label>
-                                        <mat-select [required]="salesClientDataForm.clientRateAndInvoicing?.value?.id === 1" formControlName="rateUnitTypeId" [disableOptionCentering]="true" [compareWith]="compareWithFn">
-                                            <mat-option *ngFor="let item of rateUnitTypes" [value]="item">
-                                                {{ item.name }}
-                                            </mat-option>
-                                        </mat-select>
-                                        <mat-error>
-                                            <app-validator [control]="salesClientDataForm.rateUnitTypeId"></app-validator>
-                                        </mat-error>
-                                    </mat-form-field>
-
-                                    <mat-form-field appearance="outline" class="u-w--100 formFieldNoMarginPadding filter-select" fxFlex="0 0 calc(16.5% - 8px)">
-                                        <mat-label>Currency</mat-label>
-                                        <mat-select required formControlName="clientCurrency" [disableOptionCentering]="true" [compareWith]="compareWithFn">
-                                            <mat-option *ngFor="let item of currencies" [value]="item">
-                                                {{ item.name }}
-                                            </mat-option>
-                                        </mat-select>
-                                        <mat-error>
-                                            <app-validator [control]="salesClientDataForm.clientCurrency"></app-validator>
-                                        </mat-error>
-                                    </mat-form-field>
-                                </div>
-                                <h3 class="workflow-gray--header u-mb--10">Invoicing information</h3>
-                                <div fxLayout="row" fxLayoutAlign="start start" class="u-w--100 u-mb--10">
-                                    <mat-form-field appearance="outline" class="filter-select formFieldNoMarginPadding u-mr--16" fxFlex="0 0 calc(16.5% - 8px)">
-                                        <mat-label>Invoicing currency</mat-label>
-                                        <mat-select required formControlName="clientInvoiceCurrency" [disableOptionCentering]="true" [compareWith]="compareWithFn">
-                                            <mat-option *ngFor="let item of currencies" [value]="item">
-                                                {{ item.name }}
-                                            </mat-option>
-                                        </mat-select>
-                                        <mat-error>
-                                            <app-validator [control]="salesClientDataForm.clientInvoiceCurrency"></app-validator>
-                                        </mat-error>
-                                    </mat-form-field>
-
-                                    <div fxLayout="row" fxLayoutAlign="start start" class="u-w--100 u-mb--10" [fxHide]="salesClientDataForm.clientRateAndInvoicing?.value?.id !== 1"> <!-- id: 1 - Time based -->
-                                        <mat-form-field appearance="outline" class="u-w--100 formFieldNoMarginPadding filter-select" fxFlex="33%" [ngClass]="{'u-mr--16': salesClientDataForm.clientInvoiceFrequency?.value?.name === 'Manual date'}">
-                                            <mat-label>Invoicing frequency</mat-label>
-                                            <mat-select [required]="salesClientDataForm.clientRateAndInvoicing?.value?.id === 1" formControlName="clientInvoiceFrequency" [disableOptionCentering]="true" [compareWith]="compareWithFn">
-                                                <mat-option *ngFor="let item of invoiceFrequencies" [value]="item">
-                                                    {{ item.name }}
-                                                </mat-option>
-                                            </mat-select>
-                                            <mat-error>
-                                                <app-validator [control]="salesClientDataForm.clientInvoiceFrequency"></app-validator>
-                                            </mat-error>
-                                        </mat-form-field>
-                                        <mat-form-field class="formFieldNoMarginPadding" fxFlex="0 0 calc(16.5% - 8px)" [fxHide]="salesClientDataForm.clientInvoiceFrequency?.value?.name !== 'Manual date'" appearance="outline">
-                                            <mat-label>Date</mat-label>
-                                            <input [required]="salesClientDataForm.clientInvoiceFrequency?.value?.name === 'Manual date'" autocomplete="off" matInput
-                                                    [matDatepicker]="clientInvoicingDatePicker"
-                                                    name="clientInvoicingDate" formControlName="clientInvoicingDate"
-                                                    (focus)="clientInvoicingDatePicker.open()"
-                                                    appPreventDoubleClick (throttledClick)="clientInvoicingDatePicker.open()" readonly>
-                                            <mat-icon class="calendar-icon" matSuffix svgIcon="calendar"></mat-icon>
-                                            <mat-datepicker #clientInvoicingDatePicker></mat-datepicker>
-                                            <mat-error>
-                                                <app-validator [control]="salesClientDataForm.clientInvoicingDate"></app-validator>
-                                            </mat-error>
-                                        </mat-form-field>
-                                    </div>
-                                    <div fxLayout="row" fxLayoutAlign="start start" class="u-w--100 u-mb--10" [fxHide]="salesClientDataForm.clientRateAndInvoicing?.value?.id !== 2"> <!-- id: 2 - Fixed -->
-                                        <mat-form-field appearance="outline" class="u-w--100 formFieldNoMarginPadding filter-select" fxFlex="33%" [ngClass]="{'u-mr--16': salesClientDataForm.clientInvoiceTime?.value?.name === 'Manual date'}">
-                                            <mat-label>Invoicing time</mat-label>
-                                            <mat-select [required]="salesClientDataForm.clientRateAndInvoicing?.value?.id === 2" formControlName="clientInvoiceTime" [disableOptionCentering]="true" [compareWith]="compareWithFn">
-                                                <mat-option *ngFor="let item of invoicingTimes" [value]="item">
-                                                    {{ item.name }}
-                                                </mat-option>
-                                            </mat-select>
-                                            <mat-error>
-                                                <app-validator [control]="salesClientDataForm.clientInvoiceTime"></app-validator>
-                                            </mat-error>
-                                        </mat-form-field>
-                                        <!-- id: 2 - manual date -->
-                                        <mat-form-field class="formFieldNoMarginPadding" [fxHide]="salesClientDataForm.clientInvoiceTime?.value?.id !== 2" appearance="outline" fxFlex="0 0 calc(16.5% - 8px)">
-                                            <mat-label>Date</mat-label>
-                                            <input [required]="salesClientDataForm.clientInvoiceTime?.value?.id === 2" autocomplete="off" matInput
-                                                    [matDatepicker]="clientInvoicingDateDatePicker"
-                                                    name="clientInvoicingDate" formControlName="clientInvoicingDate"
-                                                    (focus)="clientInvoicingDateDatePicker.open()"
-                                                    appPreventDoubleClick (throttledClick)="clientInvoicingDateDatePicker.open()" readonly>
-                                            <mat-icon class="calendar-icon" matSuffix svgIcon="calendar"></mat-icon>
-                                            <mat-datepicker #clientInvoicingDateDatePicker></mat-datepicker>
-                                            <mat-error>
-                                                <app-validator [control]="salesClientDataForm.clientInvoicingDate"></app-validator>
-                                            </mat-error>
-                                        </mat-form-field>
-                                    </div>
-                                </div>
-
-                                <div fxLayout="row" fxLayoutAlign="start start" class="u-w--100 u-mb--10">
-                                    <mat-form-field appearance="outline" class="u-w--100 formFieldNoMarginPadding" fxFlex="33%">
-                                        <mat-label>Invoicing Reference Number</mat-label>
-                                        <input autocomplete="off" matInput formControlName="invoicingReferenceNumber" type="text">
-                                    </mat-form-field>
-                                </div>
-
                                 <div fxLayout="column" fxLayoutAlign="start start" class="u-w--100 u-mb--10">
                                     <div fxLayout="row" fxLayoutAlign="start center" class="u-w--100">
-                                        <mat-form-field appearance="outline" class="formFieldNoMarginPadding client-and-consultant-autocomplete u-mr--16">
+                                        <mat-form-field appearance="outline" class="formFieldNoMarginPadding client-and-consultant-autocomplete u-mr--12">
                                             <mat-label>Client invoicing recipient</mat-label>
                                             <input #clientInvoicingRecipientInput type="text" matInput [matAutocomplete]="clientInvoicingRecipientAutocomplete" formControlName="clientInvoicingRecipientIdValue" appPreventDoubleClick (throttledClick)="$event.stopPropagation()" placeholder="Client invoicing recipient"
                                                 (focus)="focusInMethod()" (focusout)="focusOutMethod()">
@@ -885,16 +805,154 @@
                                                 <app-validator [control]="salesClientDataForm.clientInvoicingRecipientIdValue"></app-validator>
                                             </mat-error>
                                         </mat-form-field>
-                                        <mat-checkbox color="accent" formControlName="clientInvoicingRecipientSameAsDirectClient" name="clientInvoicingRecipientSameAsDirectClient" class="black-checkbox u-mr--10" (change)="setValueAndToggleDisalbeState(salesClientDataForm.clientInvoicingRecipientSameAsDirectClient?.value, salesClientDataForm.clientInvoicingRecipientIdValue, salesClientDataForm.directClientIdValue?.value)">
+                                        <mat-checkbox color="accent" formControlName="clientInvoicingRecipientSameAsDirectClient" name="clientInvoicingRecipientSameAsDirectClient" class="black-checkbox" (change)="setValueAndToggleDisalbeState(salesClientDataForm.clientInvoicingRecipientSameAsDirectClient?.value, salesClientDataForm.clientInvoicingRecipientIdValue, salesClientDataForm.directClientIdValue?.value)">
                                             Same as direct client
                                         </mat-checkbox>
                                     </div>
                                     <ng-container [ngTemplateOutlet]="clientAdditionalInfo" [ngTemplateOutletContext]="{client: salesClientDataForm.clientInvoicingRecipientIdValue?.value}">
                                     </ng-container>
                                 </div>
+                                <div fxLayout="row" fxLayoutAlign="start start" class="u-w--100 u-mb--20">
+                                    <!-- <mat-button-toggle-group class="workflow-toggle-buttons" formControlName="clientRateAndInvoicing" (change)="clientRateTypeChange($event.value)">
+                                        <mat-button-toggle [value]="item" *ngFor="let item of clientRateTypes">
+                                            {{ item.name }}
+                                        </mat-button-toggle>
+                                    </mat-button-toggle-group> -->
+                                    <mat-form-field appearance="outline" class="u-w--100 formFieldNoMarginPadding filter-select u-mr--12" fxFlex="23%">
+                                        <mat-label>Price type</mat-label>
+                                        <mat-select required formControlName="clientRateAndInvoicing" [disableOptionCentering]="true" [compareWith]="compareWithFn">
+                                            <mat-option *ngFor="let item of clientRateTypes" [value]="item">
+                                                {{ item.name }}
+                                            </mat-option>
+                                        </mat-select>
+                                        <mat-error>
+                                            <app-validator [control]="salesClientDataForm.clientRateAndInvoicing"></app-validator>
+                                        </mat-error>
+                                    </mat-form-field>
+                                <!-- </div> -->
+                                <!-- <div fxLayout="row" fxLayoutAlign="start start" class="u-w--100 u-mb--10"> -->
+                                    <mat-form-field appearance="outline" class="u-w--100 formFieldNoMarginPadding u-mr--12" fxFlex="23%">
+                                        <mat-label>Rate</mat-label>
+                                        <input required autocomplete="off" matInput formControlName="clientPrice" type="number">
+                                        <mat-error>
+                                            <app-validator [control]="salesClientDataForm.clientPrice"></app-validator>
+                                        </mat-error>
+                                    </mat-form-field>
+
+                                    <mat-form-field appearance="outline" class="u-w--100 formFieldNoMarginPadding filter-select u-mr--12" fxFlex="23%" [fxHide]="salesClientDataForm.clientRateAndInvoicing?.value?.id !== 1">
+                                        <mat-label>Unit type</mat-label>
+                                        <mat-select [required]="salesClientDataForm.clientRateAndInvoicing?.value?.id === 1" formControlName="rateUnitTypeId" [disableOptionCentering]="true" [compareWith]="compareWithFn">
+                                            <mat-option *ngFor="let item of rateUnitTypes" [value]="item">
+                                                {{ item.name }}
+                                            </mat-option>
+                                        </mat-select>
+                                        <mat-error>
+                                            <app-validator [control]="salesClientDataForm.rateUnitTypeId"></app-validator>
+                                        </mat-error>
+                                    </mat-form-field>
+
+                                    <mat-form-field appearance="outline" class="u-w--100 formFieldNoMarginPadding filter-select" fxFlex="23%">
+                                        <mat-label>Currency</mat-label>
+                                        <mat-select required formControlName="clientCurrency" [disableOptionCentering]="true" [compareWith]="compareWithFn">
+                                            <mat-option *ngFor="let item of currencies" [value]="item">
+                                                {{ item.name }}
+                                            </mat-option>
+                                        </mat-select>
+                                        <mat-error>
+                                            <app-validator [control]="salesClientDataForm.clientCurrency"></app-validator>
+                                        </mat-error>
+                                    </mat-form-field>
+                                </div>
+                                <h3 class="workflow-gray--header u-mb--10">Invoicing information</h3>
+                                <div fxLayout="row" fxLayoutAlign="start start" class="u-w--100 u-mb--10">
+                                    <mat-form-field appearance="outline" class="filter-select formFieldNoMarginPadding u-mr--12" fxFlex="23%">
+                                        <mat-label>Invoicing currency</mat-label>
+                                        <mat-select required formControlName="clientInvoiceCurrency" [disableOptionCentering]="true" [compareWith]="compareWithFn">
+                                            <mat-option *ngFor="let item of currencies" [value]="item">
+                                                {{ item.name }}
+                                            </mat-option>
+                                        </mat-select>
+                                        <mat-error>
+                                            <app-validator [control]="salesClientDataForm.clientInvoiceCurrency"></app-validator>
+                                        </mat-error>
+                                    </mat-form-field>
+
+                                    <!-- <div fxLayout="row" fxLayoutAlign="start start" class="u-w--100 u-mb--10" [fxHide]="salesClientDataForm.clientRateAndInvoicing?.value?.id !== 1"> id: 1 - Time based -->
+                                    <mat-form-field appearance="outline" class="u-w--100 formFieldNoMarginPadding filter-select" fxFlex="0 0 calc(46% + 12px)" [ngClass]="{'u-mr--12': salesClientDataForm.clientInvoiceFrequency?.value?.name === 'Manual date'}" [fxHide]="salesClientDataForm.clientRateAndInvoicing?.value?.id !== 1">
+                                        <mat-label>Invoicing frequency</mat-label>
+                                        <mat-select [required]="salesClientDataForm.clientRateAndInvoicing?.value?.id === 1" formControlName="clientInvoiceFrequency" [disableOptionCentering]="true" [compareWith]="compareWithFn">
+                                            <mat-option *ngFor="let item of invoiceFrequencies" [value]="item">
+                                                {{ item.name }}
+                                            </mat-option>
+                                        </mat-select>
+                                        <mat-error>
+                                            <app-validator [control]="salesClientDataForm.clientInvoiceFrequency"></app-validator>
+                                        </mat-error>
+                                    </mat-form-field>
+                                    <mat-form-field class="formFieldNoMarginPadding" fxFlex="23%" [fxHide]="salesClientDataForm.clientInvoiceFrequency?.value?.name !== 'Manual date'" appearance="outline">
+                                        <mat-label>Date</mat-label>
+                                        <input [required]="salesClientDataForm.clientInvoiceFrequency?.value?.name === 'Manual date'" autocomplete="off" matInput
+                                                [matDatepicker]="clientInvoicingDatePicker"
+                                                name="clientInvoicingDate" formControlName="clientInvoicingDate"
+                                                (focus)="clientInvoicingDatePicker.open()"
+                                                appPreventDoubleClick (throttledClick)="clientInvoicingDatePicker.open()" readonly>
+                                        <mat-icon class="calendar-icon" matSuffix svgIcon="calendar"></mat-icon>
+                                        <mat-datepicker #clientInvoicingDatePicker></mat-datepicker>
+                                        <mat-error>
+                                            <app-validator [control]="salesClientDataForm.clientInvoicingDate"></app-validator>
+                                        </mat-error>
+                                    </mat-form-field>
+                                <!-- </div> -->
+                                <!-- <div fxLayout="row" fxLayoutAlign="start start" class="u-w--100 u-mb--10" [fxHide]="salesClientDataForm.clientRateAndInvoicing?.value?.id !== 2"> id: 2 - Fixed -->
+                                    <mat-form-field appearance="outline" class="u-w--100 formFieldNoMarginPadding filter-select" fxFlex="33%" [ngClass]="{'u-mr--12': salesClientDataForm.clientInvoiceTime?.value?.name === 'Manual date'}" [fxHide]="salesClientDataForm.clientRateAndInvoicing?.value?.id !== 2">
+                                        <mat-label>Invoicing time</mat-label>
+                                        <mat-select [required]="salesClientDataForm.clientRateAndInvoicing?.value?.id === 2" formControlName="clientInvoiceTime" [disableOptionCentering]="true" [compareWith]="compareWithFn">
+                                            <mat-option *ngFor="let item of invoicingTimes" [value]="item">
+                                                {{ item.name }}
+                                            </mat-option>
+                                        </mat-select>
+                                        <mat-error>
+                                            <app-validator [control]="salesClientDataForm.clientInvoiceTime"></app-validator>
+                                        </mat-error>
+                                    </mat-form-field>
+                                    <!-- id: 2 - manual date -->
+                                    <mat-form-field class="formFieldNoMarginPadding" [fxHide]="salesClientDataForm.clientRateAndInvoicing?.value?.id !== 2 && salesClientDataForm.clientInvoiceTime?.value?.name !== 'Manual date'" appearance="outline" fxFlex="23%">
+                                        <mat-label>Date</mat-label>
+                                        <input [required]="salesClientDataForm.clientInvoiceTime?.value?.id === 2" autocomplete="off" matInput
+                                                [matDatepicker]="clientInvoicingDateDatePicker"
+                                                name="clientInvoicingDate" formControlName="clientInvoicingDate"
+                                                (focus)="clientInvoicingDateDatePicker.open()"
+                                                appPreventDoubleClick (throttledClick)="clientInvoicingDateDatePicker.open()" readonly>
+                                        <mat-icon class="calendar-icon" matSuffix svgIcon="calendar"></mat-icon>
+                                        <mat-datepicker #clientInvoicingDateDatePicker></mat-datepicker>
+                                        <mat-error>
+                                            <app-validator [control]="salesClientDataForm.clientInvoicingDate"></app-validator>
+                                        </mat-error>
+                                    </mat-form-field>
+                                </div>
+                                <!-- </div> -->
+
+                            </ng-container>
+                        </div>
+
+                    </div>
+
+                    <div fxLayout="column" fxLayoutAlign="start start" class="u-w--100">
+                        <div fxLayout="row" fxLayoutAlign="start center" class="u-mt--16 u-mb--16">
+                            <span class="workflow-section--number">4</span>
+                            <h2 class="workflow-section--header">Invoicing number</h2>
+                        </div>
+                        <div class="workflow-section--content">
+                            <ng-container *ngIf="salesClientDataForm.value?.pdcInvoicingEntityId?.id">
+                                <div fxLayout="row" fxLayoutAlign="start start" class="u-w--100 u-mb--10">
+                                    <mat-form-field appearance="outline" class="u-w--100 formFieldNoMarginPadding" fxFlex="0 0 calc(46% + 12px)">
+                                        <mat-label>Invoicing Reference Number</mat-label>
+                                        <input autocomplete="off" matInput formControlName="invoicingReferenceNumber" type="text">
+                                    </mat-form-field>
+                                </div>
 
                                 <div fxLayout="row" fxLayoutAlign="start center" class="u-w--100 u-mb--10">
-                                    <mat-form-field appearance="outline" class="u-w--100 formFieldNoMarginPadding filter-select u-mr--16" fxFlex="33%">
+                                    <mat-form-field appearance="outline" class="u-w--100 formFieldNoMarginPadding filter-select u-mr--12" fxFlex="0 0 calc(46% + 12px)">
                                         <mat-label>Invoicing Reference Person</mat-label>
                                         <input required #invoicingReferencePersonInput type="text" matInput [matAutocomplete]="invoicingReferencePersonAutocomplete" formControlName="invoicingReferencePersonIdValue" appPreventDoubleClick (throttledClick)="$event.stopPropagation()" placeholder="Invoicing Reference Person"
                                             (focus)="focusInMethod()" (focusout)="focusOutMethod()">
@@ -909,31 +967,33 @@
                                             <app-validator [control]="salesClientDataForm.invoicingReferencePersonIdValue"></app-validator>
                                         </mat-error>
                                     </mat-form-field>
-                                    <mat-checkbox color="accent" formControlName="noInvoicingReferencePerson" name="noInvoicingReferencePerson" class="black-checkbox u-mr--10" (change)="disableOrEnableInput(salesClientDataForm.noInvoicingReferencePerson?.value, salesClientDataForm.invoicingReferencePersonIdValue)">
+                                    <mat-checkbox color="accent" formControlName="noInvoicingReferencePerson" name="noInvoicingReferencePerson" class="black-checkbox u-mt--8" (change)="disableOrEnableInput(salesClientDataForm.noInvoicingReferencePerson?.value, salesClientDataForm.invoicingReferencePersonIdValue)">
                                         None
                                     </mat-checkbox>
                                 </div>
                             </ng-container>
-                        </div>
 
-                    </div>
-
-                    <div fxLayout="column" fxLayoutAlign="start start" class="u-w--100">
-                        <div fxLayout="row" fxLayoutAlign="start center" class="u-mt--16 u-mb--16">
-                            <span class="workflow-section--number">4</span>
-                            <h2 class="workflow-section--header">Invoicing number</h2>
-                        </div>
-                        <div class="workflow-section--content">
                             <div fxLayout="row" fxLayoutAlign="start start" class="u-w--100 u-mb--20">
-                                <mat-button-toggle-group class="workflow-toggle-buttons" formControlName="capOnTimeReporting">
+                                <!-- <mat-button-toggle-group class="workflow-toggle-buttons" formControlName="capOnTimeReporting">
                                     <mat-button-toggle *ngFor="let item of clientTimeReportingCap" [value]="item">
                                         {{ item.name }}
                                     </mat-button-toggle>
-                                </mat-button-toggle-group>
+                                </mat-button-toggle-group> -->
+                                <mat-form-field appearance="outline" class="u-w--100 formFieldNoMarginPadding filter-select" fxFlex="0 0 calc(46% + 12px)">
+                                    <mat-label>Shared cap on time reporting</mat-label>
+                                    <mat-select required formControlName="capOnTimeReporting" [disableOptionCentering]="true" [compareWith]="compareWithFn">
+                                        <mat-option *ngFor="let item of clientTimeReportingCap" [value]="item">
+                                            {{ item.name }}
+                                        </mat-option>
+                                    </mat-select>
+                                    <mat-error>
+                                        <app-validator [control]="salesClientDataForm.capOnTimeReporting"></app-validator>
+                                    </mat-error>
+                                </mat-form-field>
                             </div>
                             <!--not visible if 'Individual cap' Id = 3 'No cap' id = 4 -->
                             <div fxLayout="row" fxLayoutAlign="start center" class="u-w--100 u-mb--10" [fxHide]="salesClientDataForm.capOnTimeReporting?.value?.id === 3 || salesClientDataForm.capOnTimeReporting?.value?.id === 4">
-                                <mat-form-field appearance="outline" class="u-w--100 formFieldNoMarginPadding u-mr--16" fxFlex="0 0 calc(16.5% - 8px)">
+                                <mat-form-field appearance="outline" class="u-w--100 formFieldNoMarginPadding u-mr--12" fxFlex="23%">
                                     <mat-label>Max value</mat-label>
                                     <input [required]="salesClientDataForm.capOnTimeReporting?.value?.id !== 3 && salesClientDataForm.capOnTimeReporting?.value?.id !== 4" autocomplete="off" matInput formControlName="capOnTimeReportingValue" type="number">
                                     <mat-error>
@@ -1200,18 +1260,32 @@
                         </div>
                         <div class="workflow-section--content">
                             <div fxLayout="row" fxLayoutAlign="start start" class="u-w--100 u-mb--20">
-                                <mat-button-toggle-group class="workflow-toggle-buttons" formControlName="evaluationsDisabled">
+                                <!-- <mat-button-toggle-group class="workflow-toggle-buttons" formControlName="evaluationsDisabled">
                                     <mat-button-toggle [value]="false">
                                         Enable
                                     </mat-button-toggle>
                                     <mat-button-toggle [value]="true">
                                         Disable
                                     </mat-button-toggle>
-                                </mat-button-toggle-group>
+                                </mat-button-toggle-group> -->
+                                <mat-form-field appearance="outline" class="u-w--100 formFieldNoMarginPadding filter-select" fxFlex="33%">
+                                    <mat-label>Evaluations</mat-label>
+                                    <mat-select required formControlName="evaluationsDisabled" [disableOptionCentering]="true">
+                                        <mat-option [value]="false">
+                                            Enable
+                                        </mat-option>
+                                        <mat-option [value]="true">
+                                            Disable
+                                        </mat-option>
+                                    </mat-select>
+                                    <mat-error>
+                                        <app-validator [control]="salesClientDataForm.evaluationsDisabled"></app-validator>
+                                    </mat-error>
+                                </mat-form-field>
                             </div>
 
                             <div fxLayout="row" fxLayoutAlign="start start" class="u-w--100 u-mb--10">
-                                <mat-form-field appearance="outline" class="u-w--100 formFieldNoMarginPadding filter-select u-mr--16" fxFlex="33%" [fxHide]="salesClientDataForm.value?.evaluationsDisabled">
+                                <mat-form-field appearance="outline" class="u-w--100 formFieldNoMarginPadding filter-select" fxFlex="46%" [fxHide]="salesClientDataForm.value?.evaluationsDisabled">
                                     <mat-label>Evaluation Reference Person</mat-label>
                                     <input [required]="!salesClientDataForm.value?.evaluationsDisabled" type="text" matInput [matAutocomplete]="evaluationReferencePersonAutocomplete" name="evaluationsReferencePerson" formControlName="evaluationsReferencePersonIdValue" appPreventDoubleClick (throttledClick)="$event.stopPropagation()" placeholder="Final Evaluation Reference Person"
                                         (focus)="focusInMethod()" (focusout)="focusOutMethod()">
@@ -1227,17 +1301,17 @@
                                     </mat-error>
                                 </mat-form-field>
 
-                                <div fxLayout="column" fxLayoutAlign="start start" class="u-w--100" [fxHide]="!salesClientDataForm.value?.evaluationsDisabled">
-                                    <div fxLayout="row" fxLayoutAlign="start start" class="u-w--100">
-                                        <mat-form-field appearance="outline" class="u-w--100 formFieldNoMarginPadding textarea-input" fxFlex="0 0 calc(66% + 16px)">
-                                            <mat-label>Disable Evaluations Reason</mat-label>
-                                            <textarea [required]="salesClientDataForm.value?.evaluationsDisabled" matInput autocomplete="new-password" name="evaluationsDisabledReason" formControlName="evaluationsDisabledReason" [matTextareaAutosize]="true" [matAutosizeMinRows]="2">
-                                            </textarea>
-                                            <mat-error>
-                                                <app-validator [control]="salesClientDataForm.evaluationsDisabledReason"></app-validator>
-                                            </mat-error>
-                                        </mat-form-field>
-                                    </div>
+                                <div fxLayout="row" fxLayoutAlign="start start" class="u-w--100" [fxHide]="!salesClientDataForm.value?.evaluationsDisabled">
+                                    <!-- <div fxLayout="row" fxLayoutAlign="start start" class="u-w--100"> -->
+                                    <mat-form-field appearance="outline" class="u-w--100 formFieldNoMarginPadding textarea-input" fxFlex="0 0 calc(81% + 24px)">
+                                        <mat-label>Disable Evaluations Reason</mat-label>
+                                        <textarea [required]="salesClientDataForm.value?.evaluationsDisabled" matInput autocomplete="new-password" name="evaluationsDisabledReason" formControlName="evaluationsDisabledReason" [matTextareaAutosize]="true" [matAutosizeMinRows]="2">
+                                        </textarea>
+                                        <mat-error>
+                                            <app-validator [control]="salesClientDataForm.evaluationsDisabledReason"></app-validator>
+                                        </mat-error>
+                                    </mat-form-field>
+                                    <!-- </div> -->
                                 </div>
                             </div>
                         </div>
@@ -1248,21 +1322,21 @@
                             <h2 class="workflow-section--header">Client contract</h2>
                         </div>
                         <div class="workflow-section--content">
-                            <div fxLayout="column" fxLayoutAlign="start start" class="u-w--100 u-mb--10">
-                                <div fxLayout="row" fxLayoutAlign="start start" fxLayoutGap="10px" class="u-w--100">
-                                    <mat-form-field appearance="outline" class="u-w--100 formFieldNoMarginPadding textarea-input" fxFlex="0 0 calc(66% + 16px)">
-                                        <mat-label>Special Contract Terms</mat-label>
-                                        <textarea required matInput autocomplete="new-password" name="specialContractTerms" formControlName="specialContractTerms" [matTextareaAutosize]="true" [matAutosizeMinRows]="2">
-                                        </textarea>
-                                        <mat-error>
-                                            <app-validator [control]="salesClientDataForm.specialContractTerms"></app-validator>
-                                        </mat-error>
-                                    </mat-form-field>
-                                    <mat-checkbox color="accent" formControlName="noSpecialContractTerms" name="noSpecialContractTerms" class="black-checkbox u-mt--10" (change)="disableOrEnableInput(salesClientDataForm.noSpecialContractTerms?.value, salesClientDataForm.specialContractTerms)" >
-                                        None
-                                    </mat-checkbox>
-                                </div>
+                            <!-- <div fxLayout="column" fxLayoutAlign="start start" class="u-w--100 u-mb--10"> -->
+                            <div fxLayout="row" fxLayoutAlign="start start" fxLayoutGap="10px" class="u-w--100 u-mb--10">
+                                <mat-form-field appearance="outline" class="u-w--100 formFieldNoMarginPadding textarea-input" fxFlex="0 0 calc(81% + 24px)">
+                                    <mat-label>Special Contract Terms</mat-label>
+                                    <textarea required matInput autocomplete="new-password" name="specialContractTerms" formControlName="specialContractTerms" [matTextareaAutosize]="true" [matAutosizeMinRows]="2">
+                                    </textarea>
+                                    <mat-error>
+                                        <app-validator [control]="salesClientDataForm.specialContractTerms"></app-validator>
+                                    </mat-error>
+                                </mat-form-field>
+                                <mat-checkbox color="accent" formControlName="noSpecialContractTerms" name="noSpecialContractTerms" class="black-checkbox u-mt--8" (change)="disableOrEnableInput(salesClientDataForm.noSpecialContractTerms?.value, salesClientDataForm.specialContractTerms)" >
+                                    None
+                                </mat-checkbox>
                             </div>
+                            <!-- </div> -->
                             <h3 class="workflow-gray--header u-mb--10">Client Contract Signers</h3>
                             <div formArrayName="contractSigners" class="u-w--100 u-mb--10">
                                 <div fxLayout="row" fxLayoutAlign="start center" class="u-w--100 u-mb--10" *ngFor="let signer of contractSigners.controls; let i = index" [formGroupName]="i">
