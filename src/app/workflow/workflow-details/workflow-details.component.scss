@@ -185,14 +185,20 @@
     }
     &.pending-status {
         color: #FBD344;
+        cursor: pointer;
     }
     &.pending-data-missing-status {
         color: #FB9101;
+        cursor: pointer;
     }
     &.finished-status { 
         color: $purple-color;
     }
     &.deleted-status {
         color: #D80027;
+    }
+
+    &--menu-item-selected {
+        background-color: rgba($color: $sand-color, $alpha: 0.5);
     }
 }
