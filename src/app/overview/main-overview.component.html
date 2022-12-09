@@ -7,7 +7,7 @@
                     mat-icon-button
                     [matTooltip]="invoicingEntityControl.value?.name ?? 'Select invoicing entity'"
                     matTooltipClass="white-tooltip"
-                    appPreventDoubleClick (throttledClick)=select.open()
+                    appPreventDoubleClick (throttledClick)="select.open()"
                     type="button"
                     class="select-button main-overview--filter-country">
                     <span class="country-flag--big fi fi-{{invoicingEntityControl.value?.code | lowercase }} fis border-rounded-50" *ngIf="invoicingEntityControl.value; else iconCountry"></span>
@@ -20,7 +20,7 @@
                         [disableOptionCentering]="true"
                         panelClass="main-overview-dropdowns country-filter-dropdown"
                         [formControl]="invoicingEntityControl">
-                        <mat-option *ngIf="invoicingEntityControl.value">
+                        <mat-option *ngIf="invoicingEntityControl.value" class="selected-option">
                             <div class="u-w--100">
                                 <span class="country-flag fi fi-{{invoicingEntityControl.value.code | lowercase }} fis border-rounded-50 u-mr--16" *ngIf="invoicingEntityControl.value.id !== 0"></span>
                                 <span class="tenant-name">{{invoicingEntityControl.value.tenantName}}</span>
