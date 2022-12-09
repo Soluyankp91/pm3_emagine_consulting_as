@@ -20,16 +20,16 @@
                 <ng-template #readOnlyWorkflowStatusTemplate>
                     <mat-icon class="workflow-status u-mr--5" [matTooltip]="workflowStatusName!" matTooltipClass="white-tooltip" [ngClass]="workflowStatusIcon">fiber_manual_record</mat-icon>
                 </ng-template>
-                <span [matTooltip]="workflowId" matTooltipClass="white-tooltip">
+                <span [matTooltip]="'Workflow ID: ' + workflowId" matTooltipClass="white-tooltip" class="u-mr--5">
                     Workflow ID: {{workflowId | slice: 0:4}}...
                 </span>
-                <span *ngIf="workflowConsultants.length && workflowConsultants[0].requestId" class="workflow-header--request cursor-pointer" matTooltip="Open request on Sourcing" matTooltipClass="white-tooltip" appPreventDoubleClick (throttledClick)="navigateToRequest(workflowConsultants![0].requestUrl!)">
+                <span *ngIf="workflowConsultants.length && workflowConsultants[0].requestId" class="workflow-header--request cursor-pointer u-mr--5" matTooltip="Open request on Sourcing" matTooltipClass="white-tooltip" appPreventDoubleClick (throttledClick)="navigateToRequest(workflowConsultants![0].requestUrl!)">
                     / Request ID: {{workflowConsultants[0].requestId}}
                 </span>
-                <span *ngIf="workflowConsultants.length && workflowConsultants.length === 1">
+                <span *ngIf="workflowConsultants.length && workflowConsultants.length === 1" class="u-mr--5">
                     / {{workflowConsultants[0].consultantName}}
                 </span>
-                <span *ngIf="workflowConsultants.length && workflowConsultants.length > 1" [matTooltip]="mapListByProperty(workflowConsultants, 'consultantName')" matTooltipClass="white-tooltip">
+                <span *ngIf="workflowConsultants.length && workflowConsultants.length > 1" [matTooltip]="mapListByProperty(workflowConsultants, 'consultantName')" matTooltipClass="white-tooltip" class="u-mr--5">
                     / {{workflowConsultants.length + ' Consultants'}}
                 </span>
                 <span *ngIf="workflowConsultants.length === 0">
