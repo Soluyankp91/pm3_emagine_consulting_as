@@ -37,7 +37,8 @@ import {
     WorkflowSteps,
     WorkflowDiallogAction,
     getWorkflowStatus,
-    getStatusIcon
+    getStatusIcon,
+    WorkflowStatusMenuList
 } from '../workflow.model';
 import { InternalLookupService } from 'src/app/shared/common/internal-lookup.service';
 import { WorkflowActionsDialogComponent } from '../workflow-actions-dialog/workflow-actions-dialog.component';
@@ -107,6 +108,7 @@ export class WorkflowDetailsComponent
     workflowStatusName: string | undefined;
     workflowStatusIcon: string;
     workflowStatus = WorkflowStatus;
+    workflowStatusMenuList = WorkflowStatusMenuList;
 
     workflowClientPeriodTypes: EnumEntityTypeDto[] = [];
     workflowConsultantPeriodTypes: EnumEntityTypeDto[] = [];
