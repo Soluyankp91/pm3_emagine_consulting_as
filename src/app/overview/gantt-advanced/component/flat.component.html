@@ -9,11 +9,11 @@
             <div class="gantt-flat-side-column" fxFlex="30%" fxLayoutAlign="start center">
                 Consultants
             </div>
-            <div class="gantt-flat-side-column sort-container pos-relative" [ngClass]="{'active': sortName === 'actualEndDate', 'desc': sortName === 'actualEndDate' && sortDirection === sortDirections.Desc}" fxFlex="13%" fxLayoutAlign="start center" (click)="sortChanged('actualEndDate')">
+            <div class="gantt-flat-side-column sort-container pos-relative" [ngClass]="{'active': sortName === 'actualEndDate', 'desc': sortName === 'actualEndDate' && sortDirection === sortDirections.Desc}" fxFlex="14%" fxLayoutAlign="start center" (click)="sortChanged('actualEndDate')">
                 End date
                 <ng-container *ngTemplateOutlet="sortArrow"></ng-container>
             </div>
-            <div class="gantt-flat-side-column text-truncate-ellipsis" fxLayoutAlign="flex-end center" fxFlex="17%">
+            <div class="gantt-flat-side-column text-truncate-ellipsis" fxLayoutAlign="flex-end center" fxFlex="16%">
                 Sales manager
             </div>
         </div>
@@ -75,17 +75,17 @@
                         {{group?.origin?.origin?.consultant?.name}}
                     </span>
                 </div>
-                <div class="gantt-group-content text-truncate-ellipsis" fxFlex="13%" fxLayoutAlign="start center">
+                <div class="gantt-group-content text-truncate-ellipsis" fxFlex="14%" fxLayoutAlign="start center">
                     <span>
                         <ng-container *ngIf="isWorkflow">
-                            {{group!.origin!.origin!.lastClientPeriodEndDate ? (group!.origin!.origin!.lastClientPeriodEndDate | momentFormat: momentFormatType) : '-'}}
+                            {{group!.origin!.origin!.actualEndDate ? (group!.origin!.origin!.actualEndDate | momentFormat: momentFormatType) : '-'}}
                         </ng-container>
                         <ng-container *ngIf="isConsultants">
-                            {{group!.origin!.origin!.lastConsultantPeriodEndDate ? (group!.origin!.origin!.lastConsultantPeriodEndDate | momentFormat: momentFormatType) : '-'}}
+                            {{group!.origin!.origin!.actualEndDate ? (group!.origin!.origin!.actualEndDate | momentFormat: momentFormatType) : '-'}}
                         </ng-container>
                     </span>
                 </div>
-                <div class="gantt-group-content" fxFlex="17%">
+                <div class="gantt-group-content" fxFlex="16%">
                     <div fxLayout="row" fxLayoutAlign="flex-end center" fxLayoutGap="15px" class="u-w-100">
                         <img class="manager-search--photo" [matTooltip]="group?.origin?.origin?.salesManager?.name!" matTooltipClass="white-tooltip" [src]="employeeProfileUrl(group?.origin?.origin?.salesManager?.externalId!)" />
                         <button mat-icon-button matTooltip="Go to workflow" matTooltipClass="white-tooltip" class="gantt-group-content--redirect-button u-mr--15" appPreventDoubleClick (throttledClick)="redirectToWorkflow(group?.origin?.origin?.workflowId!)">

@@ -17,7 +17,7 @@ import { InternalLookupService } from '../shared/common/internal-lookup.service'
 import { ConfirmationDialogComponent } from '../shared/components/confirmation-dialog/confirmation-dialog.component';
 import { ManagerStatus } from '../shared/components/manager-search/manager-search.model';
 import { CreateWorkflowDialogComponent } from './create-workflow-dialog/create-workflow-dialog.component';
-import { DialogConfig, getStatusIcon, getWorkflowStatus, ISelectableIdNameDto, SelectableEmployeeDto, StepTypes, SyncStatusIcon } from './workflow.model';
+import { DialogConfig, getStatusIcon, getWorkflowStatus, ISelectableIdNameDto, SelectableEmployeeDto, StepTypes, SyncStatusIcon, WorkflowStatusMenuList } from './workflow.model';
 
 const WorkflowGridOptionsKey = 'WorkflowGridFILTERS.1.0.5';
 @Component({
@@ -62,6 +62,7 @@ export class WorkflowComponent extends AppComponentBase implements OnInit, OnDes
     workflowDataSource: MatTableDataSource<WorkflowListItemDto>;
     workflowProcess = WorkflowProcessType;
     workflowStatus = WorkflowStatus;
+    workflowStatusMenuList = WorkflowStatusMenuList;
     legalEntities: LegalEntityDto[] = [];
     saleTypes: EnumEntityTypeDto[] = [];
     deliveryTypes: EnumEntityTypeDto[] = [];

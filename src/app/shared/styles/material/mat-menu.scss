@@ -12,7 +12,7 @@
             line-height: 40px;
             padding: 0 12px;
             &:hover:not([disabled]) {
-                background: unset !important;
+                background: transparent !important;
             }
         }
     }
@@ -108,13 +108,16 @@
 
 .workflow-list--workflow-status-menu + * .cdk-overlay-pane {
     .mat-menu-panel, .mat-select-panel {
-        min-height: 40px !important;
+        min-height: 35px !important;
         border-radius: unset !important;
+        transform: translateX(-12px);
         .mat-menu-content {
             padding: 0 !important;
             .mat-menu-item {
                 @include fontOpenSans(12px, 700);
                 color: rgba(56, 72, 83, 0.8);
+                height: 35px !important;
+                line-height: 35px !important;
                 mat-icon {
                     margin-right: 12px !important;
                 }
