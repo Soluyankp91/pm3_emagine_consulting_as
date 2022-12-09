@@ -1761,7 +1761,7 @@
                                                 <app-validator [control]="salesClientDataForm.clientInvoiceFrequency"></app-validator>
                                             </mat-error>
                                         </mat-form-field>
-                                        <mat-form-field class="formFieldNoMarginPadding" fxFlex="0 0 calc(16.5% - 8px)" [fxHide]="salesClientDataForm.clientInvoiceFrequency?.value?.name !== 'Manual date'" appearance="outline">
+                                        <mat-form-field class="formFieldNoMarginPadding" fxFlex="0 0 calc(20% - 8px)" [fxHide]="salesClientDataForm.clientInvoiceFrequency?.value?.name !== 'Manual date'" appearance="outline">
                                             <mat-label>Date</mat-label>
                                             <input [required]="salesClientDataForm.clientInvoiceFrequency?.value?.name === 'Manual date'" autocomplete="off" matInput
                                                     [matDatepicker]="clientInvoicingDatePicker"
@@ -1788,7 +1788,7 @@
                                             </mat-error>
                                         </mat-form-field>
                                         <!-- id: 2 - manual date -->
-                                        <mat-form-field class="formFieldNoMarginPadding" [fxHide]="salesClientDataForm.clientInvoiceTime?.value?.id !== 2" appearance="outline" fxFlex="0 0 calc(16.5% - 8px)">
+                                        <mat-form-field class="formFieldNoMarginPadding" [fxHide]="salesClientDataForm.clientInvoiceTime?.value?.id !== 2" appearance="outline" fxFlex="0 0 calc(20% - 8px)">
                                             <mat-label>Date</mat-label>
                                             <input [required]="salesClientDataForm.clientInvoiceTime?.value?.id === 2" autocomplete="off" matInput
                                                     [matDatepicker]="clientInvoicingDateDatePicker"
@@ -3401,34 +3401,5 @@
             [matTooltip]="'Link to Hubspot'" matTooltipClass="white-tooltip">
             <mat-icon svgIcon="link-to-client-hubspot-icon"></mat-icon>
         </button>
-    </div>
-</ng-template>
-
-<ng-template #consultantAdditionalInfo let-consultant="consultant">
-    <div fxLayout="row" fxLayoutAlign="start flex-end" class="u-w--100">
-        <ng-container *ngIf="consultant?.value?.consultant?.companyName">
-            <span class="workflow-sales--additional-address-hint-label u-mr--5">
-                Copmpany name:
-            </span>
-            <span class="workflow-sales--additional-address-hint u-mr--5">
-                {{consultant?.value?.consultant?.companyName}}
-            </span>
-        </ng-container>
-        <ng-container *ngIf="consultant?.value?.consultant?.city">
-            <span class="workflow-sales--additional-address-hint-label u-mr--5">
-                {{consultant?.value?.consultant?.companyName ? '| ' : ''}}Address:
-            </span>
-            <span class="workflow-sales--additional-address-hint u-mr--5">
-                {{consultant?.value?.consultant?.city}}
-            </span>
-        </ng-container>
-        <ng-container *ngIf="consultant?.value?.consultant?.id">
-            <span class="workflow-sales--additional-address-hint-label u-mr--5">
-                {{consultant?.value?.consultant?.companyName || consultant?.value?.consultant?.city ? '| ' : ''}}Consultant ID:
-            </span>
-            <span class="workflow-sales--additional-address-hint">
-                # {{consultant?.value?.consultant?.id}} {{consultant?.value?.consultant?.legacyId ? ' / ' + consultant?.value?.consultant?.legacyId : ''}}
-            </span>
-        </ng-container>
     </div>
 </ng-template>

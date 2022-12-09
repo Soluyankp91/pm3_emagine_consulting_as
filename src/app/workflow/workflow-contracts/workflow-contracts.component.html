@@ -734,7 +734,7 @@
                                                             <mat-icon svgIcon="rates-save-icon"></mat-icon>
                                                         </button>
                                                         <button mat-icon-button type="button" appPreventDoubleClick (throttledClick)="cancelEditConsultantRate(consultantIndex, specialRateIndex)" class="rates-and-fees--inline-edit-form--btn__cancel">
-                                                          
+
                                                             <mat-icon svgIcon="rates-cancel-icon"></mat-icon>
                                                         </button>
                                                     </div>
@@ -906,7 +906,7 @@
                                                             <mat-icon svgIcon="rates-save-icon"></mat-icon>
                                                         </button>
                                                         <button mat-icon-button type="button" appPreventDoubleClick (throttledClick)="cancelEditConsultantFee(consultantIndex, clientFeeIndex)" class="rates-and-fees--inline-edit-form--btn__cancel">
-                                                           
+
                                                             <mat-icon svgIcon="rates-cancel-icon"></mat-icon>
                                                         </button>
                                                     </div>
@@ -1003,7 +1003,7 @@
                                                         <span fxFlex="5%" class="u-w--100 text-truncate-ellipsis workflow-contracts--list-item" [matTooltip]="projectLine.value.id ?? '-'" matTooltipClass="white-tooltip" appShowIfTruncated>
                                                             {{projectLine.value.id ?? '-'}}
                                                         </span>
-                                                        <span fxFlex="25%" class="u-w--100 text-truncate-ellipsis__multilne workflow-contracts--list-item" [matTooltip]="projectLine.value.projectName ?? '-'" matTooltipClass="white-tooltip" appShowIfTruncated>
+                                                        <span fxFlex="25%" class="u-w--100 text-truncate-ellipsis workflow-contracts--list-item" [matTooltip]="projectLine.value.projectName ?? '-'" matTooltipClass="white-tooltip" appShowIfTruncated>
                                                             {{projectLine.value.projectName && projectLine.value.projectName !== '' ? projectLine.value.projectName : '-'}}
                                                         </span>
                                                         <span fxFlex="25%" class="u-w--100 text-truncate-ellipsis workflow-contracts--list-item" [matTooltip]="projectLine.value.invoicingReferenceNumber ?? '-'" matTooltipClass="white-tooltip" appShowIfTruncated>
@@ -1015,7 +1015,7 @@
                                                         <span fxFlex="10%" class="u-w--100 text-truncate-ellipsis workflow-contracts--list-item" [matTooltip]="projectLine.value.endDate ? (projectLine.value.endDate | momentFormat) : '-'" matTooltipClass="white-tooltip" appShowIfTruncated>
                                                             {{projectLine.value.endDate ? (projectLine.value.endDate | momentFormat) : '-'}}
                                                         </span>
-                                                        <span fxFlex="1 0 15%" class="u-w--100 text-truncate-ellipsis__multilne workflow-contracts--list-item" [matTooltip]="projectLine.value.optionalInvoicingInfo ?? '-'" matTooltipClass="white-tooltip" appShowIfTruncated>
+                                                        <span fxFlex="1 0 15%" class="u-w--100 text-truncate-ellipsis workflow-contracts--list-item" [matTooltip]="projectLine.value.optionalInvoicingInfo ?? '-'" matTooltipClass="white-tooltip" appShowIfTruncated>
                                                             {{projectLine.value.optionalInvoicingInfo && projectLine.value.optionalInvoicingInfo !== '' ? projectLine.value.optionalInvoicingInfo : '-'}}
                                                         </span>
                                                         <span fxFlex="5%" class="u-w--100 text-truncate-ellipsis workflow-contracts--list-item">

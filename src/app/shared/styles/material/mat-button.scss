@@ -242,6 +242,7 @@
 
 .advanced-filterd--btn {
     min-width: 155px;
+    padding: 0 !important;
     .mat-button-wrapper {
         @include flexCentered();
         mat-icon {
