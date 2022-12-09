@@ -5,7 +5,6 @@
             <div class="workflow-finances--block">
                 <div fxLayout="column" fxLayoutAlign="start start" class="u-w--100">
                     <h2 class="workflow-section--header">Client</h2>
-
                     <ng-container *ngIf="readOnlyMode; else clientDebitorInput">
                         <div fxLayout="row" fxLayoutAlign="start center" class="u-mb--20">
                             <span class="icon-done u-mr--5">
@@ -17,12 +16,14 @@
                         </div>
                     </ng-container>
                     <ng-template #clientDebitorInput>
-                        <div fxLayout="row" fxLayoutAlign="start center" class="u-w--100 u-mb--20">
+                        <div fxLayout="column" fxLayoutAlign="start start" class="u-w--100 u-mb--20">
                             <mat-checkbox required color="accent" formControlName="clientCreatedInNavision" name="clientCreatedInNavision" class="black-checkbox u-mr--10">
                                 Client (debitor) created in Navision
                             </mat-checkbox>
                             <mat-error>
-                                <app-validator [control]="financesClientForm.clientCreatedInNavision"></app-validator>
+                                <ng-container *ngIf="financesClientForm.clientCreatedInNavision!.touched && !financesClientForm.clientCreatedInNavision!.valid">
+                                    <app-validator [withoutFormField]="true" [control]="financesClientForm.clientCreatedInNavision"></app-validator>
+                                </ng-container>
                             </mat-error>
                         </div>
                     </ng-template>
@@ -92,12 +93,14 @@
                             </div>
                         </ng-container>
                         <ng-template #checkboxInvoicingInput>
-                            <div fxLayout="row" fxLayoutAlign="start center" class="u-w--100 u-mb--10">
-                                <mat-checkbox color="accent" formControlName="checkInvoicingSettingsOnConsultant" name="checkInvoicingSettingsOnConsultant" class="black-checkbox u-mr--10">
+                            <div fxLayout="column" fxLayoutAlign="start start" class="u-w--100 u-mb--10">
+                                <mat-checkbox color="accent" formControlName="checkInvoicingSettingsOnConsultant" name="checkInvoicingSettingsOnConsultant" class="black-checkbox u-mr--10" required>
                                     Check invoicing settings on consultant
                                 </mat-checkbox>
                                 <mat-error>
-                                    <app-validator [control]="consultant.get('checkInvoicingSettingsOnConsultant')"></app-validator>
+                                    <ng-container *ngIf="consultant.get('checkInvoicingSettingsOnConsultant')!.touched && !consultant.get('checkInvoicingSettingsOnConsultant')!.valid">
+                                        <app-validator [withoutFormField]="true" [control]="consultant.get('checkInvoicingSettingsOnConsultant')"></app-validator>
+                                    </ng-container>                                    
                                 </mat-error>
                             </div>
                         </ng-template>
@@ -113,12 +116,14 @@
                             </div>
                         </ng-container>
                         <ng-template #checkboxCompanyCreatedInput>
-                            <div fxLayout="row" fxLayoutAlign="start center" class="u-w--100 u-mb--20">
+                            <div fxLayout="column" fxLayoutAlign="start start" class="u-w--100 u-mb--20">
                                 <mat-checkbox required color="accent" formControlName="creditorCreatedInNavision" name="creditorCreatedInNavision" class="black-checkbox u-mr--10">
                                     Consultant company (creditor) created in Navision
                                 </mat-checkbox>
                                 <mat-error>
-                                    <app-validator [control]="consultant.get('creditorCreatedInNavision')"></app-validator>
+                                    <ng-container *ngIf="consultant.get('creditorCreatedInNavision')!.touched && !consultant.get('creditorCreatedInNavision')!.valid">
+                                        <app-validator [withoutFormField]="true" [control]="consultant.get('creditorCreatedInNavision')"></app-validator>                                    
+                                    </ng-container>                                    
                                 </mat-error>
                             </div>
                         </ng-template>
