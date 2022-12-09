@@ -2379,104 +2379,132 @@
 </div>
 <ng-template #terminationTemplate>
     <form [formGroup]="salesTerminateConsultantForm" class="workflow-form--consultants workflow--termination u-mb--20 u-w--100">
-        <h3 class="workflow-gray--header u-mt--20" *ngIf="activeSideSection.typeId === workflowSideSections.TerminateConsultant">End of Consultant Contract</h3>
-        <h3 class="workflow-gray--header u-mt--20" *ngIf="activeSideSection.typeId === workflowSideSections.TerminateWorkflow">End of Client Contract</h3>
-
-        <div fxLayout="row" fxLayoutAlign="start start" class="u-w--100 u-mb--10">
-            <mat-button-toggle-group [ngClass]="{'mat-form-field-invalid': !salesTerminateConsultantForm.terminationTime?.value}" class="workflow-toggle-buttons u-mt--10" formControlName="terminationTime">
-                <mat-button-toggle
-                    *ngFor="let item of nonStandartTerminationTimes | keyvalue"
-                    [value]="+item.key">
-                        {{ item.value }}
-                </mat-button-toggle>
-            </mat-button-toggle-group>
-        </div>
-        <mat-error>
-            <app-validator [withoutFormField]="true" *ngIf="salesTerminateConsultantForm.terminationTime?.touched" [control]="salesTerminateConsultantForm.terminationTime"></app-validator>
-        </mat-error>
-
-        <div fxLayout="row" fxLayoutAlign="start start" class="u-w--100 u-mb--10" *ngIf="salesTerminateConsultantForm?.terminationTime?.value === 2">
-            <mat-form-field appearance="outline" class="formFieldNoMarginPadding">
-                <mat-label>End date</mat-label>
-                <input required autocomplete="off" matInput
-                        [matDatepicker]="endClientContractEndDatePicker"
-                        name="clientContractEndDate" formControlName="endDate"
-                        (focus)="endClientContractEndDatePicker.open()"
-                        appPreventDoubleClick (throttledClick)="endClientContractEndDatePicker.open()" readonly>
-                <mat-icon class="calendar-icon" matSuffix svgIcon="calendar"></mat-icon>
-                <mat-datepicker #endClientContractEndDatePicker></mat-datepicker>
-                <mat-error>
-                    <app-validator [control]="salesTerminateConsultantForm.endDate"></app-validator>
-                </mat-error>
-            </mat-form-field>
-        </div>
-
-        <div fxLayout="row" fxLayoutAlign="start start" class="u-w--100 u-mb--10" *ngIf="salesTerminateConsultantForm?.terminationTime?.value === 2 || salesTerminateConsultantForm?.terminationTime?.value === 3">
-            <mat-button-toggle-group [ngClass]="{'mat-form-field-invalid': !salesTerminateConsultantForm.terminationReason?.value}" class="workflow-toggle-buttons" formControlName="terminationReason">
-                <mat-button-toggle
-                    [value]="+item.key"
-                    *ngFor="let item of terminationReasons | keyvalue">
-                    {{ item.value }}
-                </mat-button-toggle>
-            </mat-button-toggle-group>
-        </div>
-        <mat-error>
-            <app-validator [withoutFormField]="true" *ngIf="salesTerminateConsultantForm.terminationReason?.touched" [control]="salesTerminateConsultantForm.terminationReason"></app-validator>
-        </mat-error>
-
-        <div fxLayout="row" fxLayoutAlign="start start" class="u-w--100" [fxHide]="salesTerminateConsultantForm?.terminationTime?.value !== 2 && salesTerminateConsultantForm?.terminationTime?.value !== 3">
-            <mat-form-field appearance="outline" class="u-w--100 textarea-input formFieldNoMarginPadding" fxFlex="0 0 calc(66% + 16px)">
-                <mat-label>Cause</mat-label>
-                <textarea [required]="salesTerminateConsultantForm?.terminationTime?.value === 2 || salesTerminateConsultantForm?.terminationTime?.value === 3" matInput autocomplete="new-password" name="causeOfTerminationBeforeEndOfContract" formControlName="causeOfNonStandardTerminationTime" [matTextareaAutosize]="true" [matAutosizeMinRows]="2">
-                </textarea>
-                <mat-error>
-                    <app-validator [control]="salesTerminateConsultantForm.causeOfNonStandardTerminationTime"></app-validator>
-                </mat-error>
-            </mat-form-field>
-        </div>
-
-        <div fxLayout="row" fxLayoutAlign="start start" class="u-w--100 u-mb--20 u-mt--10">
-            <mat-form-field appearance="outline" class="u-w--100 textarea-input formFieldNoMarginPadding" fxFlex="0 0 calc(66% + 16px)">
-                <mat-label>Additional comments</mat-label>
-                <textarea matInput autocomplete="new-password" name="additionalComments" formControlName="additionalComments" [matTextareaAutosize]="true" [matAutosizeMinRows]="2">
-                </textarea>
-            </mat-form-field>
-        </div>
-
-        <div fxLayout="column" fxLayoutAlign="start start" class="u-w--100" *ngIf="salesTerminateConsultantForm.terminationTime?.value === 1 || salesTerminateConsultantForm.terminationTime?.value === 2">
-            <h3 class="workflow-gray--header">Final Evaluation</h3>
-            <div fxLayout="row" fxLayoutAlign="start start" class="u-w--100 u-mb--10 u-mt--10">
-                <mat-form-field appearance="outline" class="u-w--100 formFieldNoMarginPadding filter-select u-mr--16" fxFlex="33%" [ngClass]="{'disabled-input': salesTerminateConsultantForm.noEvaluation?.value}">
-                    <mat-label>Final Evaluation Reference Person</mat-label>
-                    <input rqeuired #finalEvaluationReferencePersonInput type="text" matInput [matAutocomplete]="finalEvaluationReferencePersonAutocomplete" formControlName="finalEvaluationReferencePerson" appPreventDoubleClick (throttledClick)="$event.stopPropagation()" placeholder="Final Evaluation Reference Person"
-                        (focus)="focusInMethod()" (focusout)="focusOutMethod()">
-                    <mat-autocomplete #finalEvaluationReferencePersonAutocomplete="matAutocomplete" [displayWith]="displayFullNameFn">
-                        <ng-container>
-                            <mat-option *ngFor="let contact of filteredFinalEvaluationReferencePersons" [value]="contact" [ngClass]="{ 'no-data': contact.id === 'no-data' }">
-                                    <span class="autocopmlete-option-name">{{ contact.firstName + ' ' + contact.lastName }}</span>
-                            </mat-option>
+        <div fxLayout="column" fxLayoutAlign="start start" class="workflow-sales--process-data u-w--100">
+            <div fxLayout="column" fxLayoutAlign="start start" class="u-w--100">
+                <h1 class="workflow-section--header-main">Termination data</h1>
+                <div fxLayout="row" fxLayoutAlign="start center" class="u-mb--16">
+                    <span class="workflow-section--number">1</span>
+                    <h2 class="workflow-section--header">
+                        <ng-container *ngIf="activeSideSection.typeId === workflowSideSections.TerminateConsultant">
+                            End of Consultant Contract
                         </ng-container>
-                    </mat-autocomplete>
-                    <mat-error>
-                        <app-validator [control]="salesTerminateConsultantForm.finalEvaluationReferencePerson"></app-validator>
-                    </mat-error>
-                </mat-form-field>
+                        <ng-container *ngIf="activeSideSection.typeId === workflowSideSections.TerminateWorkflow">
+                            End of Client Contract
+                        </ng-container>
+                    </h2>
+                </div>
+                <div class="workflow-section--content">
+                    <div fxLayout="row" fxLayoutAlign="start start" class="u-w--100 u-mb--10">
+                        <mat-form-field appearance="outline" class="u-w--100 formFieldNoMarginPadding filter-select" fxFlex="35%">
+                            <mat-label>
+                                <ng-container *ngIf="activeSideSection.typeId === workflowSideSections.TerminateConsultant">
+                                    End of Consultant Contract
+                                </ng-container>
+                                <ng-container *ngIf="activeSideSection.typeId === workflowSideSections.TerminateWorkflow">
+                                    End of Client Contract
+                                </ng-container>
+                            </mat-label>
+                            <mat-select required formControlName="terminationTime" [disableOptionCentering]="true">
+                                <mat-option *ngFor="let item of nonStandartTerminationTimes | keyvalue" [value]="+item.key">
+                                    {{ item.value }}
+                                </mat-option>
+                            </mat-select>
+                            <mat-error>
+                                <app-validator [control]="salesTerminateConsultantForm.terminationTime"></app-validator>
+                            </mat-error>
+                        </mat-form-field>
+                    </div>
+
+                    <div fxLayout="row" fxLayoutAlign="start start" class="u-w--100 u-mb--10" *ngIf="salesTerminateConsultantForm?.terminationTime?.value === 2">
+                        <mat-form-field appearance="outline" class="formFieldNoMarginPadding" fxFlex="22%">
+                            <mat-label>End date</mat-label>
+                            <input required autocomplete="off" matInput
+                                    [matDatepicker]="endClientContractEndDatePicker"
+                                    name="clientContractEndDate" formControlName="endDate"
+                                    (focus)="endClientContractEndDatePicker.open()"
+                                    appPreventDoubleClick (throttledClick)="endClientContractEndDatePicker.open()" readonly>
+                            <mat-icon class="calendar-icon" matSuffix svgIcon="calendar"></mat-icon>
+                            <mat-datepicker #endClientContractEndDatePicker></mat-datepicker>
+                            <mat-error>
+                                <app-validator [control]="salesTerminateConsultantForm.endDate"></app-validator>
+                            </mat-error>
+                        </mat-form-field>
+                    </div>
+
+                    <div fxLayout="row" fxLayoutAlign="start start" class="u-w--100 u-mb--10" *ngIf="salesTerminateConsultantForm?.terminationTime?.value === 2 || salesTerminateConsultantForm?.terminationTime?.value === 3">
+                        <mat-form-field appearance="outline" class="u-w--100 formFieldNoMarginPadding filter-select" fxFlex="35%">
+                            <mat-label>Termination reason</mat-label>
+                            <mat-select required formControlName="terminationReason" [disableOptionCentering]="true">
+                                <mat-option *ngFor="let item of terminationReasons | keyvalue" [value]="+item.key">
+                                    {{ item.value }}
+                                </mat-option>
+                            </mat-select>
+                            <mat-error>
+                                <app-validator [control]="salesTerminateConsultantForm.terminationReason"></app-validator>
+                            </mat-error>
+                        </mat-form-field>
+                    </div>
+
+                    <div fxLayout="row" fxLayoutAlign="start start" class="u-w--100" [fxHide]="salesTerminateConsultantForm?.terminationTime?.value !== 2 && salesTerminateConsultantForm?.terminationTime?.value !== 3">
+                        <mat-form-field appearance="outline" class="u-w--100 textarea-input formFieldNoMarginPadding" fxFlex="0 0 calc(79% + 24px)">
+                            <mat-label>Cause</mat-label>
+                            <textarea [required]="salesTerminateConsultantForm?.terminationTime?.value === 2 || salesTerminateConsultantForm?.terminationTime?.value === 3" matInput autocomplete="new-password" name="causeOfTerminationBeforeEndOfContract" formControlName="causeOfNonStandardTerminationTime" [matTextareaAutosize]="true" [matAutosizeMinRows]="2">
+                            </textarea>
+                            <mat-error>
+                                <app-validator [control]="salesTerminateConsultantForm.causeOfNonStandardTerminationTime"></app-validator>
+                            </mat-error>
+                        </mat-form-field>
+                    </div>
+
+                    <div fxLayout="row" fxLayoutAlign="start start" class="u-w--100 u-mb--20 u-mt--10">
+                        <mat-form-field appearance="outline" class="u-w--100 textarea-input formFieldNoMarginPadding" fxFlex="0 0 calc(79% + 24px)">
+                            <mat-label>Additional comments</mat-label>
+                            <textarea matInput autocomplete="new-password" name="additionalComments" formControlName="additionalComments" [matTextareaAutosize]="true" [matAutosizeMinRows]="2">
+                            </textarea>
+                        </mat-form-field>
+                    </div>
+                </div>
             </div>
-            <div fxLayout="row" fxLayoutAlign="start start" class="u-w--100 u-mb--20">
-                <mat-checkbox color="accent" formControlName="noEvaluation" name="noEvaluation" class="black-checkbox" (change)="disableOrEnableInput(salesTerminateConsultantForm.noEvaluation?.value, salesTerminateConsultantForm.finalEvaluationReferencePerson)">
-                    No evaluation
-                </mat-checkbox>
-            </div>
-            <div fxLayout="column" fxLayoutAlign="start start" class="u-w--100 u-mb--10" [fxHide]="!salesTerminateConsultantForm.noEvaluation?.value">
-                <div fxLayout="row" fxLayoutAlign="start start" class="u-w--100">
-                    <mat-form-field appearance="outline" class="u-w--100 textarea-input formFieldNoMarginPadding" fxFlex="0 0 calc(66% + 16px)">
-                        <mat-label>Cause</mat-label>
-                        <textarea [required]="salesTerminateConsultantForm.noEvaluation?.value" matInput autocomplete="new-password" name="causeOfNoEvaluation" formControlName="causeOfNoEvaluation" [matTextareaAutosize]="true" [matAutosizeMinRows]="2">
-                        </textarea>
-                        <mat-error>
-                            <app-validator [control]="salesTerminateConsultantForm.causeOfNoEvaluation"></app-validator>
-                        </mat-error>
-                    </mat-form-field>
+            <div fxLayout="column" fxLayoutAlign="start start" class="u-w--100" *ngIf="salesTerminateConsultantForm.terminationTime?.value === 1 || salesTerminateConsultantForm.terminationTime?.value === 2">
+                <div fxLayout="row" fxLayoutAlign="start center" class="u-mt--16 u-mb--16">
+                    <span class="workflow-section--number">2</span>
+                    <h2 class="workflow-section--header">Final evaluation</h2>
+                </div>
+                <div class="workflow-section--content">
+                    <div fxLayout="row" fxLayoutAlign="start start" class="u-w--100 u-mb--10 u-mt--10">
+                        <mat-form-field appearance="outline" class="u-w--100 formFieldNoMarginPadding filter-select" fxFlex="35%" [ngClass]="{'disabled-input': salesTerminateConsultantForm.noEvaluation?.value}">
+                            <mat-label>Final Evaluation Reference Person</mat-label>
+                            <input rqeuired #finalEvaluationReferencePersonInput type="text" matInput [matAutocomplete]="finalEvaluationReferencePersonAutocomplete" formControlName="finalEvaluationReferencePerson" appPreventDoubleClick (throttledClick)="$event.stopPropagation()" placeholder="Final Evaluation Reference Person"
+                                (focus)="focusInMethod()" (focusout)="focusOutMethod()">
+                            <mat-autocomplete #finalEvaluationReferencePersonAutocomplete="matAutocomplete" [displayWith]="displayFullNameFn">
+                                <ng-container>
+                                    <mat-option *ngFor="let contact of filteredFinalEvaluationReferencePersons" [value]="contact" [ngClass]="{ 'no-data': contact.id === 'no-data' }">
+                                            <span class="autocopmlete-option-name">{{ contact.firstName + ' ' + contact.lastName }}</span>
+                                    </mat-option>
+                                </ng-container>
+                            </mat-autocomplete>
+                            <mat-error>
+                                <app-validator [control]="salesTerminateConsultantForm.finalEvaluationReferencePerson"></app-validator>
+                            </mat-error>
+                        </mat-form-field>
+                    </div>
+                    <div fxLayout="row" fxLayoutAlign="start start" class="u-w--100 u-mb--20">
+                        <mat-checkbox color="accent" formControlName="noEvaluation" name="noEvaluation" class="black-checkbox" (change)="disableOrEnableInput(salesTerminateConsultantForm.noEvaluation?.value, salesTerminateConsultantForm.finalEvaluationReferencePerson)">
+                            No evaluation
+                        </mat-checkbox>
+                    </div>
+                    <div fxLayout="column" fxLayoutAlign="start start" class="u-w--100 u-mb--10" [fxHide]="!salesTerminateConsultantForm.noEvaluation?.value">
+                        <div fxLayout="row" fxLayoutAlign="start start" class="u-w--100">
+                            <mat-form-field appearance="outline" class="u-w--100 textarea-input formFieldNoMarginPadding" fxFlex="0 0 calc(79% + 24px)">
+                                <mat-label>Cause</mat-label>
+                                <textarea [required]="salesTerminateConsultantForm.noEvaluation?.value" matInput autocomplete="new-password" name="causeOfNoEvaluation" formControlName="causeOfNoEvaluation" [matTextareaAutosize]="true" [matAutosizeMinRows]="2">
+                                </textarea>
+                                <mat-error>
+                                    <app-validator [control]="salesTerminateConsultantForm.causeOfNoEvaluation"></app-validator>
+                                </mat-error>
+                            </mat-form-field>
+                        </div>
+                    </div>
                 </div>
             </div>
         </div>
@@ -2518,34 +2546,5 @@
             [matTooltip]="'Link to Hubspot'" matTooltipClass="white-tooltip">
             <mat-icon svgIcon="link-to-client-hubspot-icon"></mat-icon>
         </button>
-    </div>
-</ng-template>
-
-<ng-template #consultantAdditionalInfo let-consultant="consultant">
-    <div fxLayout="row" fxLayoutAlign="start flex-end" class="u-w--100">
-        <ng-container *ngIf="consultant?.value?.consultant?.companyName">
-            <span class="workflow-sales--additional-address-hint-label u-mr--5">
-                Copmpany name:
-            </span>
-            <span class="workflow-sales--additional-address-hint u-mr--5">
-                {{consultant?.value?.consultant?.companyName}}
-            </span>
-        </ng-container>
-        <ng-container *ngIf="consultant?.value?.consultant?.city">
-            <span class="workflow-sales--additional-address-hint-label u-mr--5">
-                {{consultant?.value?.consultant?.companyName ? '| ' : ''}}Address:
-            </span>
-            <span class="workflow-sales--additional-address-hint u-mr--5">
-                {{consultant?.value?.consultant?.city}}
-            </span>
-        </ng-container>
-        <ng-container *ngIf="consultant?.value?.consultant?.id">
-            <span class="workflow-sales--additional-address-hint-label u-mr--5">
-                {{consultant?.value?.consultant?.companyName || consultant?.value?.consultant?.city ? '| ' : ''}}Consultant ID:
-            </span>
-            <span class="workflow-sales--additional-address-hint">
-                # {{consultant?.value?.consultant?.id}} {{consultant?.value?.consultant?.legacyId ? ' / ' + consultant?.value?.consultant?.legacyId : ''}}
-            </span>
-        </ng-container>
     </div>
 </ng-template>
