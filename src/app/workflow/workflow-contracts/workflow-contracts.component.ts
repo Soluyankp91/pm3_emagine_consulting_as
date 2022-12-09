@@ -1230,7 +1230,9 @@ export class WorkflowContractsComponent extends AppComponentBase implements OnIn
         if (isDraft) {
             this._clientPeriodService.clientContractsPUT(this.periodId!, input)
                 .pipe(finalize(() => {
-                    this.hideMainSpinner();
+                    if (!isSyncToLegacy) {
+                        this.hideMainSpinner();
+                    }
                 }))
                 .subscribe(() => {
                     this.validationTriggered = false;
@@ -1243,7 +1245,8 @@ export class WorkflowContractsComponent extends AppComponentBase implements OnIn
                     } else {
                         this.getContractStepData();
                     }
-                });
+                },
+                () => this.hideMainSpinner());
         } else {
             this._clientPeriodService.editFinish2(this.periodId!, input)
                 .pipe(finalize(() => {
@@ -1416,7 +1419,9 @@ export class WorkflowContractsComponent extends AppComponentBase implements OnIn
         if (isDraft) {
             this._consultantPeriodService.consultantContractsPUT(this.activeSideSection.consultantPeriodId!, input)
                 .pipe(finalize(() => {
-                    this.hideMainSpinner();
+                    if (!isSyncToLegacy) {
+                        this.hideMainSpinner();
+                    }
                 }))
                 .subscribe(() => {
                     this.validationTriggered = false;
@@ -1494,7 +1499,9 @@ export class WorkflowContractsComponent extends AppComponentBase implements OnIn
         if (isDraft) {
             this._workflowServiceProxy.terminationConsultantContractPUT(this.workflowId!, input)
                 .pipe(finalize(() => {
-                    this.hideMainSpinner();
+                    if (!isSyncToLegacy) {
+                        this.hideMainSpinner();
+                    }
                 }))
                 .subscribe(() => {
                     this.validationTriggered = false;
@@ -1507,7 +1514,8 @@ export class WorkflowContractsComponent extends AppComponentBase implements OnIn
                     } else {
                         this.getContractStepData();
                     }
-                })
+                },
+                () => this.hideMainSpinner());
         } else {
             this._workflowServiceProxy.terminationConsultantContractComplete(this.workflowId!, input)
             .pipe(finalize(() => {
@@ -1566,7 +1574,9 @@ export class WorkflowContractsComponent extends AppComponentBase implements OnIn
         if (isDraft) {
             this._workflowServiceProxy.terminationContractPUT(this.workflowId!, input)
                 .pipe(finalize(() => {
-                    this.hideMainSpinner();
+                    if (!isSyncToLegacy) {
+                        this.hideMainSpinner();
+                    }
                 }))
                 .subscribe(() => {
                     this.validationTriggered = false;
@@ -1579,7 +1589,8 @@ export class WorkflowContractsComponent extends AppComponentBase implements OnIn
                     } else {
                         this.getContractStepData();
                     }
-                })
+                },
+                () => this.hideMainSpinner());
         } else {
             this._workflowServiceProxy.terminationContractComplete(this.workflowId!, input)
             .pipe(finalize(() => {
