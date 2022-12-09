@@ -36,11 +36,11 @@
                     / No consultants
                 </span>
             </h2>
-            <p class="page-main-header">{{workflowDirectClient?.length ? workflowDirectClient : 'New workflow'}}</p>
-            <p *ngIf="workflowEndClient?.length" class="page-main-subheader">via {{workflowEndClient}}</p>
+            <p class="page-main-header">{{workflowEndClient?.length ? workflowEndClient : (workflowDirectClient?.length ? workflowDirectClient : 'New workflow')}}</p>
+            <p *ngIf="workflowEndClient?.length" class="page-main-subheader">[via {{workflowDirectClient}}]</p>
             <h2 class="workflow-header--title u-mb--20">
                 <span matTooltipClass="white-tooltip">
-                    Client ID: {{workflowDirectClientId}} {{workflowEndClientId ? '| via ' + workflowEndClientId : ''}}
+                    Client ID: {{workflowEndClientId ? workflowEndClientId : workflowDirectClientId}} {{workflowEndClientId ? '| via ' + workflowDirectClientId : ''}}
                 </span>
             </h2>
         </div>
