@@ -78,10 +78,10 @@
                 <div class="gantt-group-content text-truncate-ellipsis" fxFlex="14%" fxLayoutAlign="start center">
                     <span>
                         <ng-container *ngIf="isWorkflow">
-                            {{group!.origin!.origin!.lastClientPeriodEndDate ? (group!.origin!.origin!.lastClientPeriodEndDate | momentFormat: momentFormatType) : '-'}}
+                            {{group!.origin!.origin!.actualEndDate ? (group!.origin!.origin!.actualEndDate | momentFormat: momentFormatType) : '-'}}
                         </ng-container>
                         <ng-container *ngIf="isConsultants">
-                            {{group!.origin!.origin!.lastConsultantPeriodEndDate ? (group!.origin!.origin!.lastConsultantPeriodEndDate | momentFormat: momentFormatType) : '-'}}
+                            {{group!.origin!.origin!.actualEndDate ? (group!.origin!.origin!.actualEndDate | momentFormat: momentFormatType) : '-'}}
                         </ng-container>
                     </span>
                 </div>
