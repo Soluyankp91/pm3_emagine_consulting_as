@@ -728,19 +728,18 @@
                                                         {{rate.value.consultantRateValue !== null && rate.value.consultantRateCurrency?.name ? rate.value.consultantRateValue + ' ' + rate.value.consultantRateCurrency?.name : '-'}}
                                                     </span>
                                                 </ng-template>
-                                                <ng-container *ngIf="rate.value.editable; else consultantRateACtions">
-                                                    <div fxFlex="10%" class="u-w--100 text-truncate-ellipsis flex-items-center">
+                                                <ng-container *ngIf="rate.value.editable; else consultantRateActions">
+                                                    <div fxFlex="10%" class="u-w--100 text-truncate-ellipsis" fxLayoutAlign="end center">
                                                         <button mat-icon-button type="button" [disabled]="!rate.valid" appPreventDoubleClick (throttledClick)="editOrSaveConsultantSpecialRate(rate?.value.editable, consultantIndex, specialRateIndex)" class="rates-and-fees--inline-edit-form--btn__save">
                                                             <mat-icon svgIcon="rates-save-icon"></mat-icon>
                                                         </button>
                                                         <button mat-icon-button type="button" appPreventDoubleClick (throttledClick)="cancelEditConsultantRate(consultantIndex, specialRateIndex)" class="rates-and-fees--inline-edit-form--btn__cancel">
-
                                                             <mat-icon svgIcon="rates-cancel-icon"></mat-icon>
                                                         </button>
                                                     </div>
                                                 </ng-container>
-                                                <ng-template #consultantRateACtions>
-                                                    <div fxFlex="10%" fxLayoutAlign="center center" class="u-w--100 workflow-contracts--list-item">
+                                                <ng-template #consultantRateActions>
+                                                    <div fxFlex="10%" fxLayoutAlign="end center" class="u-w--100 workflow-contracts--list-item">
                                                         <button mat-icon-button appPreventDoubleClick (throttledClick)="$event.stopPropagation();" [matMenuTriggerFor]="clientRateMenu" class="three-dots-actions-btn">
                                                             <mat-icon svgIcon="3-dots"></mat-icon>
                                                         </button>
@@ -901,18 +900,17 @@
                                                 </ng-template>
 
                                                 <ng-container *ngIf="fee.value.editable; else consultantFeeActions">
-                                                    <div fxFlex="10%" class="u-w--100 text-truncate-ellipsis flex-items-center">
+                                                    <div fxFlex="10%" class="u-w--100 text-truncate-ellipsis" fxLayoutAlign="end center">
                                                         <button mat-icon-button type="button" [disabled]="!fee.valid" appPreventDoubleClick (throttledClick)="editOrSaveConsultantSpecialFee(fee.value.editable, consultantIndex, clientFeeIndex)" class="rates-and-fees--inline-edit-form--btn__save">
                                                             <mat-icon svgIcon="rates-save-icon"></mat-icon>
                                                         </button>
                                                         <button mat-icon-button type="button" appPreventDoubleClick (throttledClick)="cancelEditConsultantFee(consultantIndex, clientFeeIndex)" class="rates-and-fees--inline-edit-form--btn__cancel">
-
                                                             <mat-icon svgIcon="rates-cancel-icon"></mat-icon>
                                                         </button>
                                                     </div>
                                                 </ng-container>
                                                 <ng-template #consultantFeeActions>
-                                                    <div fxFlex="10%" fxLayoutAlign="center center" class="u-w--100 workflow-contracts--list-item">
+                                                    <div fxFlex="10%" fxLayoutAlign="end center" class="u-w--100 workflow-contracts--list-item">
                                                         <button mat-icon-button appPreventDoubleClick (throttledClick)="$event.stopPropagation();" [matMenuTriggerFor]="clientFeeMenu" class="three-dots-actions-btn">
                                                             <mat-icon svgIcon="3-dots"></mat-icon>
                                                         </button>
