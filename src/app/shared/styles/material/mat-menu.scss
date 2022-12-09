@@ -28,6 +28,11 @@
             transform: scale(1.25);
         }
     }
+    &.menu-item--big-icon {
+        mat-icon {
+            @include fontLineHeightAndSize(20px, 20px, 20px, 20px);
+        }
+    }
     mat-icon {
         margin-right: 8px !important;
         border-radius: 50%;
