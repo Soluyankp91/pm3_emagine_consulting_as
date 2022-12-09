@@ -294,7 +294,7 @@
                             <span class="flex-items-center" fxFlex="100%">
                                 <img *ngIf="row.consultants[0]?.name" class="border-rounded-50 image-settings--dropdown u-mr--10" [src]="consultantProfileUrl(row?.consultants[0]?.externalId)" />
                                 <span class="text-truncate-ellipsis" [matTooltip]="row.consultantNamesTooltip" matTooltipClass="white-tooltip" appShowIfTruncated>
-                                    {{row.consultantName}}
+                                    {{row.consultantName && row.consultantName !== '' ? row.consultantName : '-'}}
                                 </span>
                             </span>
                         </ng-template>
