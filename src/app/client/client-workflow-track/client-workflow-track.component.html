@@ -22,7 +22,7 @@
                     <mat-header-cell *matHeaderCellDef fxFlex="10%"> Sales Type </mat-header-cell>
                     <mat-cell *matCellDef="let row" fxFlex="10%">
                         <span class="text-truncate-ellipsis" [matTooltip]="row?.salesTypeId?.name" matTooltipClass="white-tooltip" appShowIfTruncated>
-                            {{row?.salesTypeId?.name}}
+                            {{row?.salesTypeId?.name ?? '-'}}
                         </span>
                     </mat-cell>
                 </ng-container>
@@ -30,7 +30,7 @@
                     <mat-header-cell *matHeaderCellDef fxFlex="10%"> Delivery Type </mat-header-cell>
                     <mat-cell *matCellDef="let row" fxFlex="10%">
                         <span class="text-truncate-ellipsis" matTooltipClass="white-tooltip" [matTooltip]="row?.deliveryTypeId?.name" matTooltipClass="white-tooltip" appShowIfTruncated>
-                            {{row?.deliveryTypeId?.name}}
+                            {{row?.deliveryTypeId?.name ?? '-'}}
                         </span>
                     </mat-cell>
                 </ng-container>
@@ -38,7 +38,7 @@
                     <mat-header-cell *matHeaderCellDef fxFlex="10%"> Start </mat-header-cell>
                     <mat-cell *matCellDef="let row" fxFlex="10%">
                         <span class="text-truncate-ellipsis" [matTooltip]="row.startDate | momentFormat" matTooltipClass="white-tooltip" appShowIfTruncated>
-                            {{row.startDate | momentFormat}}
+                            {{(row.startDate | momentFormat) ?? '-'}}
                         </span>
                     </mat-cell>
                 </ng-container>
@@ -46,14 +46,14 @@
                     <mat-header-cell *matHeaderCellDef fxFlex="10%"> End </mat-header-cell>
                     <mat-cell *matCellDef="let row" fxFlex="10%">
                         <span class="text-truncate-ellipsis" [matTooltip]="row?.endDate | momentFormat" matTooltipClass="white-tooltip" appShowIfTruncated>
-                            {{row?.endDate | momentFormat}}
+                            {{(row?.endDate | momentFormat) ?? '-'}}
                         </span>
                     </mat-cell>
                 </ng-container>
                 <ng-container matColumnDef="invoicing">
                     <mat-header-cell *matHeaderCellDef fxFlex="10%"> Invoicing </mat-header-cell>
                     <mat-cell *matCellDef="let row" fxFlex="10%">
-                        <span class="text-truncate-ellipsis flex-items-center" [matTooltip]="row?.invoicingReferencePerson?.firstName + ' ' + row?.invoicingReferencePerson?.lastName" matTooltipClass="white-tooltip">
+                        <span class="text-truncate-ellipsis flex-items-center" [matTooltip]="row?.invoicingReferencePerson?.id ? (row?.invoicingReferencePerson?.firstName + ' ' + row?.invoicingReferencePerson?.lastName) : '-'" matTooltipClass="white-tooltip">
                             <img class="border-rounded-50 image-thumbnail-small" [src]="employeeProfileUrl(row?.invoicingReferencePerson?.id)" />
                         </span>
                     </mat-cell>
