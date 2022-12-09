@@ -321,13 +321,13 @@
                                 {{fee.value.feeSpecifiedAs?.name ?? '-'}}
                             </span>
                             <span fxFlex="12%" class="u-w--100 text-truncate-ellipsis" [matTooltip]="fee.value.clientRateValue + ' ' + fee.value.clientRateCurrency?.name" matTooltipClass="white-tooltip" appShowIfTruncated>
-                                {{fee.value.clientRateValue || fee.value.clientRateCurrency?.name ? fee.value.clientRateValue + ' ' + fee.value.clientRateCurrency?.name : ''}}
+                                {{fee.value.clientRateValue || fee.value.clientRateCurrency?.name ? fee.value.clientRateValue + ' ' + fee.value.clientRateCurrency?.name : '-'}}
                             </span>
                             <span fxFlex="12%" class="u-w--100 text-truncate-ellipsis" [matTooltip]="fee.value.proDataRate + ' ' + fee.value.proDataRateCurrency?.name" matTooltipClass="white-tooltip" appShowIfTruncated>
-                                {{fee.value.proDataRate || fee.value.proDataRateCurrency?.name ? fee.value.proDataRate + ' ' + fee.value.proDataRateCurrency?.name : ''}}
+                                {{fee.value.proDataRate || fee.value.proDataRateCurrency?.name ? fee.value.proDataRate + ' ' + fee.value.proDataRateCurrency?.name : '-'}}
                             </span>
                             <span fxFlex="12%" class="u-w--100 text-truncate-ellipsis" [matTooltip]="fee.value.consultantRate + ' ' + fee.value.consultantRateCurrency?.name" matTooltipClass="white-tooltip" appShowIfTruncated>
-                                {{fee.value.consultantRate || fee.value.consultantRateCurrency?.name ? fee.value.consultantRate + ' ' + fee.value.consultantRateCurrency?.name : ''}}
+                                {{fee.value.consultantRate || fee.value.consultantRateCurrency?.name ? fee.value.consultantRate + ' ' + fee.value.consultantRateCurrency?.name : '-'}}
                             </span>
                             <div fxFlex="15%" fxLayoutAlign="end center" class="u-w--100 u-pr--10">
                                 <button mat-icon-button [matMenuTriggerFor]="clientFeeMenu" class="client-rates-icon--actions"><mat-icon svgIcon="3-dots"></mat-icon></button>
