@@ -8,7 +8,7 @@ import {
     filter,
     finalize,
 } from 'rxjs/operators';
-import { BehaviorSubject, Observable, Subject, of, forkJoin } from 'rxjs';
+import { BehaviorSubject, Observable, Subject, of } from 'rxjs';
 import {
     Component,
     OnInit,
@@ -129,9 +129,15 @@ export class CreateMasterTemplateComponent
 
         if (this.editMode) {
             agreementPostDto.duplicationSourceAgreementTemplateId =
-                this.currentTemplate.duplicationSourceAgreementTemplateId.agreementTemplateId;
+                this.currentTemplate.duplicationSourceAgreementTemplateId;
+            this.showMainSpinner();
             this.apiServiceProxy
                 .agreementTemplatePATCH(this.templateId, agreementPostDto)
+                .pipe(
+                    finalize(() => {
+                        this.hideMainSpinner();
+                    })
+                )
                 .subscribe(() => {
                     this.navigateOnAction();
                 });

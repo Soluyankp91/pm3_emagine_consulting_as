@@ -121,6 +121,7 @@ export class DropdownAutocompleteSingleSelectComponent
             this.inputControl.setValue(this.selectedItem, {
                 emitEvent: false,
             });
+            this.control.setErrors(this.inputControl.errors);
         }
     }
 
