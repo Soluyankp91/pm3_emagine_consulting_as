@@ -293,7 +293,7 @@ html {
 .page-main-header {
     @include fontOpenSans(36px, 800);
     color: $dark-grey-color;
-    line-height: 120%;
+    line-height: 36px;
 }
 
 .page-main-subheader {
