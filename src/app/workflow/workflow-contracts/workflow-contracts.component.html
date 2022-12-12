@@ -1174,7 +1174,7 @@
                     </ng-container>
                     <ng-template #syncInput>
                         <div fxLayout="column" fxLayoutAlign="start start" class="u-w--100">
-                            <button class="button-accept u-mb--10" mat-flat-button appPreventDoubleClick (throttledClick)="processSaveBeforeSyncToLegacySystem()">
+                            <button class="button-accept u-mb--10" mat-flat-button appPreventDoubleClick (throttledClick)="processSyncToLegacySystem()">
                                 Sync to legacy system
                             </button>
                             <ng-container *ngTemplateOutlet="syncStatus"></ng-container>

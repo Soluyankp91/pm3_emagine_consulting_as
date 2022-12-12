@@ -8,7 +8,7 @@ import { Subject } from 'rxjs';
 import { finalize, takeUntil } from 'rxjs/operators';
 import { InternalLookupService } from 'src/app/shared/common/internal-lookup.service';
 import { AppComponentBase } from 'src/shared/app-component-base';
-import { ClientPeriodContractsDataCommandDto, WorkflowProcessType, WorkflowServiceProxy, ClientPeriodServiceProxy, ConsultantContractsDataCommandDto, ContractsClientDataDto, ContractsMainDataDto, EnumEntityTypeDto, PeriodClientSpecialFeeDto, PeriodClientSpecialRateDto, PeriodConsultantSpecialFeeDto, PeriodConsultantSpecialRateDto, ProjectLineDto, ConsultantTerminationContractDataCommandDto, WorkflowTerminationContractDataCommandDto, ConsultantTerminationContractDataQueryDto, ConsultantPeriodServiceProxy, ConsultantPeriodContractsDataCommandDto, ClientsServiceProxy, ClientSpecialRateDto, ClientSpecialFeeDto, ConsultantResultDto, ContractSyncServiceProxy, StepType, ConsultantContractsDataQueryDto, ContractSyncResultDto } from 'src/shared/service-proxies/service-proxies';
+import { ClientPeriodContractsDataCommandDto, WorkflowProcessType, WorkflowServiceProxy, ClientPeriodServiceProxy, ConsultantContractsDataCommandDto, ContractsClientDataDto, ContractsMainDataDto, EnumEntityTypeDto, PeriodClientSpecialFeeDto, PeriodClientSpecialRateDto, PeriodConsultantSpecialFeeDto, PeriodConsultantSpecialRateDto, ProjectLineDto, ConsultantTerminationContractDataCommandDto, WorkflowTerminationContractDataCommandDto, ConsultantTerminationContractDataQueryDto, ConsultantPeriodServiceProxy, ConsultantPeriodContractsDataCommandDto, ClientsServiceProxy, ClientSpecialRateDto, ClientSpecialFeeDto, ConsultantResultDto, ContractSyncServiceProxy, StepType, ConsultantContractsDataQueryDto, ContractSyncResultDto, ClientPeriodContractsDataQueryDto, ConsultantPeriodContractsDataQueryDto, WorkflowTerminationContractDataQueryDto } from 'src/shared/service-proxies/service-proxies';
 import { WorkflowDataService } from '../workflow-data.service';
 import { WorkflowProcessWithAnchorsDto } from '../workflow-period/workflow-period.model';
 import { EmploymentTypes, ProjectLineDiallogMode } from '../workflow.model';
@@ -248,23 +248,23 @@ export class WorkflowContractsComponent extends AppComponentBase implements OnIn
         }, 0);
     }
 
-    getContractStepData(isFromSyncToLegacy?: boolean, syncResult?: ContractSyncResultDto) {
+    getContractStepData() {
         switch (this.activeSideSection.typeId) {
             case this.workflowSideSections.StartClientPeriod:
             case this.workflowSideSections.ChangeClientPeriod:
             case this.workflowSideSections.ExtendClientPeriod:
-                this.getStartChangeOrExtendClientPeriodContracts(isFromSyncToLegacy, syncResult);
+                this.getStartChangeOrExtendClientPeriodContracts();
                 break;
             case this.workflowSideSections.TerminateWorkflow:
-                this.getWorkflowContractStepTermination(isFromSyncToLegacy, syncResult);
+                this.getWorkflowContractStepTermination();
                 break;
             case this.workflowSideSections.StartConsultantPeriod:
             case this.workflowSideSections.ChangeConsultantPeriod:
             case this.workflowSideSections.ExtendConsultantPeriod:
-                this.getStartChangeOrExtendConsultantPeriodContracts(isFromSyncToLegacy, syncResult);
+                this.getStartChangeOrExtendConsultantPeriodContracts();
                 break;
             case this.workflowSideSections.TerminateConsultant:
-                this.getWorkflowContractsStepConsultantTermination(isFromSyncToLegacy, syncResult);
+                this.getWorkflowContractsStepConsultantTermination();
                 break;
         }
     }
@@ -970,7 +970,7 @@ export class WorkflowContractsComponent extends AppComponentBase implements OnIn
     }
 
     //#region Start client period
-    getStartChangeOrExtendClientPeriodContracts(isFromSyncToLegacy?: boolean, syncResult?: ContractSyncResultDto) {
+    getStartChangeOrExtendClientPeriodContracts() {
         this.resetForms();
         this.showMainSpinner();
         this._clientPeriodService.clientContractsGET(this.periodId!)
@@ -978,70 +978,7 @@ export class WorkflowContractsComponent extends AppComponentBase implements OnIn
                 this.hideMainSpinner();
             }))
             .subscribe(result => {
-                // Main data
-                this.contractsMainForm.salesType?.setValue(this.findItemById(this.saleTypes, result.mainData?.salesTypeId), {emitEvent: false});
-                this.contractsMainForm.deliveryType?.setValue(this.findItemById(this.deliveryTypes, result.mainData?.deliveryTypeId), {emitEvent: false});
-                this.contractsMainForm.discounts?.setValue(this.findItemById(this.discounts, result.mainData?.discountId), {emitEvent: false});
-                this.contractsMainForm.projectType?.setValue(this.findItemById(this.projectTypes, result.mainData?.projectTypeId), {emitEvent: false});
-                this.contractsMainForm.margin?.setValue(this.findItemById(this.margins, result.mainData?.marginId), {emitEvent: false});
-                this.contractsMainForm.projectDescription?.setValue(result.mainData?.projectDescription, {emitEvent: false});
-                this.contractsMainForm.projectName?.setValue(result.mainData?.projectName, {emitEvent: false});
-                this.contractsMainForm.noRemarks?.setValue(result.mainData?.noRemarks, {emitEvent: false});
-                this.contractsMainForm.remarks?.setValue(result.mainData?.remarks, {emitEvent: false});
-                if (result.mainData?.noRemarks) {
-                    this.contractsMainForm.remarks?.disable();
-                }
-                // Client data
-                this.contractClientForm.directClientId?.setValue(result.clientData?.directClientId);
-                if (result?.clientData?.directClientId) {
-                    this.getRatesAndFees(result?.clientData?.directClientId);
-                }
-                this.contractClientForm.pdcInvoicingEntityId?.setValue(result.clientData?.pdcInvoicingEntityId);
-                this.contractClientForm.clientTimeReportingCapId?.setValue(this.findItemById(this.clientTimeReportingCap, result.clientData?.clientTimeReportingCapId), {emitEvent: false});
-                this.contractClientForm.rateUnitType?.setValue(this.findItemById(this.rateUnitTypes, result.clientData?.clientRate?.rateUnitTypeId), {emitEvent: false});
-                this.contractClientForm.currency?.setValue(this.findItemById(this.currencies, result.clientData?.clientRate?.currencyId), {emitEvent: false});
-                this.contractClientForm.clientRate?.setValue(result.clientData?.clientRate),
-                this.contractClientForm.clientTimeReportingCapMaxValue?.setValue(result.clientData?.clientTimeReportingCapMaxValue, {emitEvent: false});
-                this.contractClientForm.clientTimeReportingCapCurrencyId?.setValue(this.findItemById(this.currencies, result.clientData?.clientTimeReportingCapCurrencyId), {emitEvent: false});
-                this.contractClientForm.specialContractTerms?.setValue(result.clientData?.specialContractTerms, {emitEvent: false});
-                this.contractClientForm.noSpecialContractTerms?.setValue(result.clientData?.noSpecialContractTerms, {emitEvent: false});
-                if (result.clientData?.noSpecialContractTerms) {
-                    this.contractClientForm.specialContractTerms?.disable();
-                }
-                this.contractClientForm.invoicingReferenceNumber?.setValue(result.clientData?.invoicingReferenceNumber, {emitEvent: false});
-                this.contractClientForm.clientInvoicingRecipientIdValue?.setValue(result.clientData?.clientInvoicingRecipientIdValue, {emitEvent: false});
-                this.contractClientForm.clientInvoicingRecipient?.setValue(result.clientData?.clientInvoicingRecipient, {emitEvent: false});
-                this.contractClientForm.invoicingReferencePersonIdValue?.setValue(result.clientData?.invoicingReferencePersonIdValue, {emitEvent: false});
-                this.contractClientForm.invoicingReferencePerson?.setValue(result.clientData?.invoicingReferencePerson, {emitEvent: false});
-
-                this.contractsSyncDataForm.clientLegalContractDoneStatusId?.setValue(result?.clientLegalContractDoneStatusId, {emitEvent: false});
-                this.contractsSyncDataForm.enableLegalContractsButtons?.setValue(result?.enableLegalContractsButtons, {emitEvent: false});
-                this.contractsSyncDataForm.showManualOption?.setValue(result?.showManualOption, {emitEvent: false});
-                this.contractsSyncDataForm.contractLinesDoneManuallyInOldPm?.setValue(result.contractLinesDoneManuallyInOldPm, {emitEvent: false});
-                this.contractsSyncDataForm.isNewSyncNeeded?.setValue(result?.isNewSyncNeeded, {emitEvent: false});
-                this.contractsSyncDataForm.lastSyncedDate?.setValue(result?.lastSyncedDate, {emitEvent: false});
-                if (result.clientData?.periodClientSpecialRates?.length) {
-                    result.clientData.periodClientSpecialRates.forEach((rate: PeriodClientSpecialRateDto) => {
-                        this.addSpecialRate(rate);
-                    });
-                }
-
-                if (result.clientData?.periodClientSpecialFees?.length) {
-                    result.clientData.periodClientSpecialFees.forEach((fee: PeriodClientSpecialFeeDto) => {
-                        this.addClientFee(fee);
-                    });
-                }
-
-                if (result.consultantData?.length) {
-                    result.consultantData.forEach((consultant: ConsultantContractsDataQueryDto, index) => {
-                        this.addConsultantDataToForm(consultant, index);
-                        this.addConsultantLegalContract(consultant);
-                    });
-                    this.updateConsultantStepAnchors();
-                }
-                if (isFromSyncToLegacy) {
-                    this.processAfterSync(syncResult!);
-                }
+                this.fillClientPeriodForm(result);
             });
     }
 
@@ -1079,7 +1016,380 @@ export class WorkflowContractsComponent extends AppComponentBase implements OnIn
         return result;
     }
 
-    saveStartChangeOrExtendClientPeriodContracts(isDraft: boolean, isSyncToLegacy?: boolean) {
+    saveStartChangeOrExtendClientPeriodContracts(isDraft: boolean) {
+        let input = this.packClientPeriodData();
+        this.showMainSpinner();
+        if (isDraft) {
+            this._clientPeriodService.clientContractsPUT(this.periodId!, input)
+                .pipe(finalize(() => {
+                    this.hideMainSpinner();
+                }))
+                .subscribe(() => {
+                    this.validationTriggered = false;
+                    this._workflowDataService.workflowOverviewUpdated.emit(true);
+                    if (this.editEnabledForcefuly) {
+                        this.toggleEditMode();
+                    }
+                    this.getContractStepData();
+                });
+        } else {
+            this._clientPeriodService.editFinish2(this.periodId!, input)
+                .pipe(finalize(() => {
+                    this.bypassLegalValidation = false;
+                    this.hideMainSpinner();
+                }))
+                .subscribe(() => {
+                    this.validationTriggered = false;
+                    this._workflowDataService.workflowSideSectionUpdated.emit({isStatusUpdate: true});
+                    this._workflowDataService.workflowOverviewUpdated.emit(true);
+                    this.getContractStepData();
+                });
+        }
+    }
+    //#endregion Start client period
+
+    //#region Start consultant period
+    getStartChangeOrExtendConsultantPeriodContracts() {
+        this.resetForms();
+        this.showMainSpinner();
+        this._consultantPeriodService.consultantContractsGET(this.activeSideSection.consultantPeriodId!)
+            .pipe(finalize(() => {
+                this.hideMainSpinner();
+            }))
+            .subscribe(result => {
+                this.fillConsultantPeriodForm(result);
+            });
+    }
+
+    saveStartChangeOrExtendConsultantPeriodContracts(isDraft: boolean) {
+        let input = this.packConsultantPeriodData();
+        this.showMainSpinner();
+        if (isDraft) {
+            this._consultantPeriodService.consultantContractsPUT(this.activeSideSection.consultantPeriodId!, input)
+                .pipe(finalize(() => {
+                    this.hideMainSpinner();
+                }))
+                .subscribe(() => {
+                    this.validationTriggered = false;
+                    this._workflowDataService.workflowOverviewUpdated.emit(true);
+                    if (this.editEnabledForcefuly) {
+                        this.toggleEditMode();
+                    }
+                    this.getContractStepData();
+                });
+        } else {
+            this._consultantPeriodService.editFinish5(this.activeSideSection.consultantPeriodId!, input)
+                .pipe(finalize(() => {
+                    this.bypassLegalValidation = false;
+                    this.hideMainSpinner();
+                }))
+                .subscribe(() => {
+                    this.validationTriggered = false;
+                    this._workflowDataService.workflowSideSectionUpdated.emit({isStatusUpdate: true});
+                    this._workflowDataService.workflowOverviewUpdated.emit(true);
+                    this.getContractStepData();
+                });
+        }
+    }
+    //#endregion Start consultant period
+
+    // Termination
+
+    addConsultantDataToTerminationForm(consultant: ConsultantTerminationContractDataQueryDto) {
+        const form = this._fb.group({
+            consultantId: new FormControl(consultant?.consultant?.id),
+            consultantData: new FormControl(consultant?.consultant),
+            removedConsultantFromAnyManualChecklists: new FormControl(consultant.removedConsultantFromAnyManualChecklists, Validators.required),
+            deletedAnySensitiveDocumentsForGDPR: new FormControl(consultant.deletedAnySensitiveDocumentsForGDPR, Validators.required),
+
+        });
+        this.contractsTerminationConsultantForm.consultantTerminationContractData.push(form);
+    }
+
+    get consultantTerminationContractData(): FormArray {
+        return this.contractsTerminationConsultantForm.get('consultantTerminationContractData') as FormArray;
+    }
+
+    getWorkflowContractsStepConsultantTermination() {
+        this.resetForms();
+        this.showMainSpinner();
+        this._workflowServiceProxy.terminationConsultantContractGET(this.workflowId!, this.consultant.id!)
+            .pipe(finalize(() => {
+                this.hideMainSpinner();
+            }))
+            .subscribe(result => {
+                this.fillConsultantTerminationForm(result);
+            });
+    }
+
+    saveTerminationConsultantContractStep(isDraft: boolean) {
+        let input = this.packConsultantTerminationData();
+        this.showMainSpinner();
+        if (isDraft) {
+            this._workflowServiceProxy.terminationConsultantContractPUT(this.workflowId!, input)
+                .pipe(finalize(() => {
+                    this.hideMainSpinner();
+                }))
+                .subscribe(() => {
+                    this.validationTriggered = false;
+                    this._workflowDataService.workflowOverviewUpdated.emit(true);
+                    if (this.editEnabledForcefuly) {
+                        this.toggleEditMode();
+                    }
+                    this.getContractStepData();
+                });
+        } else {
+            this._workflowServiceProxy.terminationConsultantContractComplete(this.workflowId!, input)
+            .pipe(finalize(() => {
+                this.hideMainSpinner();
+            }))
+            .subscribe(() => {
+                this.validationTriggered = false;
+                this._workflowDataService.workflowSideSectionUpdated.emit({isStatusUpdate: true});
+                this._workflowDataService.workflowOverviewUpdated.emit(true);
+                this.getContractStepData();
+            })
+        }
+    }
+
+    getWorkflowContractStepTermination() {
+        this.resetForms();
+        this.showMainSpinner();
+        this._workflowServiceProxy.terminationContractGET(this.workflowId!)
+            .pipe(finalize(() => {
+                this.hideMainSpinner();
+            }))
+            .subscribe(result => {
+                this.fillWorkflowTerminationForm(result);
+            });
+    }
+
+    saveWorkflowTerminationContractStep(isDraft: boolean) {
+        let input = this.packWorkflowTerminationData();
+        this.showMainSpinner();
+        if (isDraft) {
+            this._workflowServiceProxy.terminationContractPUT(this.workflowId!, input)
+                .pipe(finalize(() => {
+                    this.hideMainSpinner();
+                }))
+                .subscribe(() => {
+                    this.validationTriggered = false;
+                    this._workflowDataService.workflowOverviewUpdated.emit(true);
+                    if (this.editEnabledForcefuly) {
+                        this.toggleEditMode();
+                    }
+                    this.getContractStepData();
+                },
+                () => this.hideMainSpinner());
+        } else {
+            this._workflowServiceProxy.terminationContractComplete(this.workflowId!, input)
+            .pipe(finalize(() => {
+                this.hideMainSpinner();
+            }))
+            .subscribe(() => {
+                this.validationTriggered = false;
+                this._workflowDataService.workflowSideSectionUpdated.emit({isStatusUpdate: true});
+                this._workflowDataService.workflowOverviewUpdated.emit(true);
+                this.getContractStepData();
+            })
+        }
+    }
+
+    terminateConsultantStart(index: number) {
+        this.showMainSpinner();
+        this._workflowServiceProxy.terminationConsultantStart(this.workflowId!, index)
+            .pipe(finalize(() => {
+                this.hideMainSpinner();
+            }))
+            .subscribe(() => {
+                this._workflowDataService.workflowSideSectionAdded.emit(true);
+                this._workflowDataService.workflowOverviewUpdated.emit(true);
+            });
+    }
+
+    processSyncToLegacySystem() {
+        switch (this._workflowDataService.workflowProgress.currentlyActiveSideSection) {
+            case WorkflowProcessType.StartClientPeriod:
+            case WorkflowProcessType.ChangeClientPeriod:
+            case WorkflowProcessType.ExtendClientPeriod:
+                this.syncClientPeriodToLegacySystem();
+                break;
+            case WorkflowProcessType.TerminateWorkflow:
+                this.syncWorkflowTerminationToLegacySystem();
+                break;
+            case WorkflowProcessType.TerminateConsultant:
+                this.syncConsultantTerminationToLegacySystem();
+                break;
+            case WorkflowProcessType.StartConsultantPeriod:
+            case WorkflowProcessType.ChangeConsultantPeriod:
+            case WorkflowProcessType.ExtendConsultantPeriod:
+                this.syncConsultantPeriodToLegacySystem();
+                break;
+        }
+    }
+
+    syncClientPeriodToLegacySystem() {
+        this.showMainSpinner();
+        let input = this.packClientPeriodData();
+        this._contractSyncService.clientPeriodSync(this.periodId!, input)
+            .pipe(finalize(() => this.hideMainSpinner()))
+            .subscribe(result => {
+                this.fillClientPeriodForm(result?.clientPeriodContractsData!);
+                this.processAfterSync(result.contractSyncResult);
+            },
+            () => {
+                this.hideMainSpinner();
+            });
+    }
+
+    syncConsultantPeriodToLegacySystem() {
+        this.showMainSpinner();
+        let input = this.packConsultantPeriodData();
+        this._contractSyncService.consultantPeriodSync(this.activeSideSection.consultantPeriodId!, input)
+            .pipe(finalize(() => this.hideMainSpinner()))
+            .subscribe(result => {
+                this.fillConsultantPeriodForm(result?.consultantPeriodContractsData!);
+                this.processAfterSync(result.contractSyncResult);
+            },
+            () => {
+                this.hideMainSpinner();
+            });
+    }
+
+    syncWorkflowTerminationToLegacySystem() {
+        this.showMainSpinner();
+        let input = this.packWorkflowTerminationData();
+        this._contractSyncService.workflowTerminationSync(this.workflowId!, input)
+            .pipe(finalize(() => this.hideMainSpinner()))
+            .subscribe(result => {
+                this.fillWorkflowTerminationForm(result.workflowTerminationContractData!);
+                this.processAfterSync(result.contractSyncResult);
+            },
+            () => {
+                this.hideMainSpinner();
+            });
+    }
+
+    syncConsultantTerminationToLegacySystem() {
+        this.showMainSpinner();
+        let input = this.packConsultantTerminationData();
+        this._contractSyncService.consultantTerminationSync(this.activeSideSection.consultantPeriodId!, input)
+            .pipe(finalize(() => this.hideMainSpinner()))
+            .subscribe(result => {
+                this.fillConsultantTerminationForm(result.consultantTerminationContractData!);
+                this.processAfterSync(result.contractSyncResult);
+            },
+            () => {
+                this.hideMainSpinner();
+            });
+    }
+
+    processAfterSync(result: ContractSyncResultDto | undefined) {
+        if (!result) {
+            return;
+        }
+        this.showMainSpinner();
+        this.statusAfterSync = true;
+        this.syncNotPossible = !result.success!;
+        this.contractsSyncDataForm.enableLegalContractsButtons?.setValue(result.enableLegalContractsButtons!);
+        this.contractsSyncDataForm.showManualOption?.setValue(result?.showManualOption, {emitEvent: false});
+        this.syncMessage = result.success ? 'Sync successfull' : result.message!;
+        if (result.success) {
+            this.contractsConsultantsDataForm.consultants.controls.forEach((consultant: any) => {
+                consultant.controls.projectLines.controls.forEach((x: any) => {
+                    x.controls.wasSynced.setValue(true, {emitEvent: false});
+                })
+            })
+        }
+        this.hideMainSpinner();
+    }
+
+    openContractModule(periodId: string, legalContractStatus: number, isInternal: boolean, tenantId: number, consultant?: ConsultantResultDto) {
+        let isFrameworkAgreement = false;
+        window.open(`pmpapercontractpm3:${periodId}/${isInternal ? 'True' : 'False'}/${legalContractStatus <= 1 ? 'True' : 'False'}/${isFrameworkAgreement ? 'True' : 'False'}/${tenantId}${consultant?.id ? '/' + consultant.id : ''}`);
+    }
+
+    detectContractModuleIcon(legalContractStatus: number | string): string {
+        switch (legalContractStatus) {
+            case LegalContractStatus.NotAcceessible:
+                return 'cancel-fill';
+            case LegalContractStatus.NotYetCreated:
+                return 'in-progress-icon';
+            case LegalContractStatus.SavedButNotGenerated:
+                return 'completed-icon';
+            case LegalContractStatus.Done:
+                return 'completed-icon';
+            default:
+                return '';
+        }
+    }
+
+    fillClientPeriodForm(data: ClientPeriodContractsDataQueryDto) {
+        this.resetForms();
+        // Main data
+        this.contractsMainForm.salesType?.setValue(this.findItemById(this.saleTypes, data?.mainData?.salesTypeId), {emitEvent: false});
+        this.contractsMainForm.deliveryType?.setValue(this.findItemById(this.deliveryTypes, data?.mainData?.deliveryTypeId), {emitEvent: false});
+        this.contractsMainForm.discounts?.setValue(this.findItemById(this.discounts, data?.mainData?.discountId), {emitEvent: false});
+        this.contractsMainForm.projectType?.setValue(this.findItemById(this.projectTypes, data?.mainData?.projectTypeId), {emitEvent: false});
+        this.contractsMainForm.margin?.setValue(this.findItemById(this.margins, data?.mainData?.marginId), {emitEvent: false});
+        this.contractsMainForm.projectDescription?.setValue(data?.mainData?.projectDescription, {emitEvent: false});
+        this.contractsMainForm.projectName?.setValue(data?.mainData?.projectName, {emitEvent: false});
+        this.contractsMainForm.noRemarks?.setValue(data?.mainData?.noRemarks, {emitEvent: false});
+        this.contractsMainForm.remarks?.setValue(data?.mainData?.remarks, {emitEvent: false});
+        if (data?.mainData?.noRemarks) {
+            this.contractsMainForm.remarks?.disable();
+        }
+        // Client data
+        this.contractClientForm.directClientId?.setValue(data?.clientData?.directClientId);
+        if (data?.clientData?.directClientId) {
+            this.getRatesAndFees(data?.clientData?.directClientId);
+        }
+        this.contractClientForm.pdcInvoicingEntityId?.setValue(data?.clientData?.pdcInvoicingEntityId);
+        this.contractClientForm.clientTimeReportingCapId?.setValue(this.findItemById(this.clientTimeReportingCap, data?.clientData?.clientTimeReportingCapId), {emitEvent: false});
+        this.contractClientForm.rateUnitType?.setValue(this.findItemById(this.rateUnitTypes, data?.clientData?.clientRate?.rateUnitTypeId), {emitEvent: false});
+        this.contractClientForm.currency?.setValue(this.findItemById(this.currencies, data?.clientData?.clientRate?.currencyId), {emitEvent: false});
+        this.contractClientForm.clientRate?.setValue(data?.clientData?.clientRate),
+        this.contractClientForm.clientTimeReportingCapMaxValue?.setValue(data?.clientData?.clientTimeReportingCapMaxValue, {emitEvent: false});
+        this.contractClientForm.clientTimeReportingCapCurrencyId?.setValue(this.findItemById(this.currencies, data?.clientData?.clientTimeReportingCapCurrencyId), {emitEvent: false});
+        this.contractClientForm.specialContractTerms?.setValue(data?.clientData?.specialContractTerms, {emitEvent: false});
+        this.contractClientForm.noSpecialContractTerms?.setValue(data?.clientData?.noSpecialContractTerms, {emitEvent: false});
+        if (data?.clientData?.noSpecialContractTerms) {
+            this.contractClientForm.specialContractTerms?.disable();
+        }
+        this.contractClientForm.invoicingReferenceNumber?.setValue(data?.clientData?.invoicingReferenceNumber, {emitEvent: false});
+        this.contractClientForm.clientInvoicingRecipientIdValue?.setValue(data?.clientData?.clientInvoicingRecipientIdValue, {emitEvent: false});
+        this.contractClientForm.clientInvoicingRecipient?.setValue(data?.clientData?.clientInvoicingRecipient, {emitEvent: false});
+        this.contractClientForm.invoicingReferencePersonIdValue?.setValue(data?.clientData?.invoicingReferencePersonIdValue, {emitEvent: false});
+        this.contractClientForm.invoicingReferencePerson?.setValue(data?.clientData?.invoicingReferencePerson, {emitEvent: false});
+
+        this.contractsSyncDataForm.clientLegalContractDoneStatusId?.setValue(data?.clientLegalContractDoneStatusId, {emitEvent: false});
+        this.contractsSyncDataForm.enableLegalContractsButtons?.setValue(data?.enableLegalContractsButtons, {emitEvent: false});
+        this.contractsSyncDataForm.showManualOption?.setValue(data?.showManualOption, {emitEvent: false});
+        this.contractsSyncDataForm.contractLinesDoneManuallyInOldPm?.setValue(data?.contractLinesDoneManuallyInOldPm, {emitEvent: false});
+        this.contractsSyncDataForm.isNewSyncNeeded?.setValue(data?.isNewSyncNeeded, {emitEvent: false});
+        this.contractsSyncDataForm.lastSyncedDate?.setValue(data?.lastSyncedDate, {emitEvent: false});
+        if (data?.clientData?.periodClientSpecialRates?.length) {
+            data?.clientData.periodClientSpecialRates.forEach((rate: PeriodClientSpecialRateDto) => {
+                this.addSpecialRate(rate);
+            });
+        }
+
+        if (data?.clientData?.periodClientSpecialFees?.length) {
+            data?.clientData.periodClientSpecialFees.forEach((fee: PeriodClientSpecialFeeDto) => {
+                this.addClientFee(fee);
+            });
+        }
+
+        if (data?.consultantData?.length) {
+            data?.consultantData.forEach((consultant: ConsultantContractsDataQueryDto, index) => {
+                this.addConsultantDataToForm(consultant, index);
+                this.addConsultantLegalContract(consultant);
+            });
+            this.updateConsultantStepAnchors();
+        }
+    }
+
+    packClientPeriodData(): ClientPeriodContractsDataCommandDto {
         let input = new ClientPeriodContractsDataCommandDto();
         input.bypassLegalValidation = this.bypassLegalValidation;
         input.clientData = new ContractsClientDataDto();
@@ -1226,89 +1536,42 @@ export class WorkflowContractsComponent extends AppComponentBase implements OnIn
 
             }
         }
-        this.showMainSpinner();
-        if (isDraft) {
-            this._clientPeriodService.clientContractsPUT(this.periodId!, input)
-                .pipe(finalize(() => {
-                    if (!isSyncToLegacy) {
-                        this.hideMainSpinner();
-                    }
-                }))
-                .subscribe(() => {
-                    this.validationTriggered = false;
-                    this._workflowDataService.workflowOverviewUpdated.emit(true);
-                    if (this.editEnabledForcefuly && !isSyncToLegacy) {
-                        this.toggleEditMode();
-                    }
-                    if (isSyncToLegacy) {
-                        this.processSyncToLegacySystem();
-                    } else {
-                        this.getContractStepData();
-                    }
-                },
-                () => this.hideMainSpinner());
-        } else {
-            this._clientPeriodService.editFinish2(this.periodId!, input)
-                .pipe(finalize(() => {
-                    this.bypassLegalValidation = false;
-                    this.hideMainSpinner();
-                }))
-                .subscribe(() => {
-                    this.validationTriggered = false;
-                    this._workflowDataService.workflowSideSectionUpdated.emit({isStatusUpdate: true});
-                    this._workflowDataService.workflowOverviewUpdated.emit(true);
-                    this.getContractStepData();
-                });
-        }
+        return input;
     }
-    //#endregion Start client period
 
-    //#region Start consultant period
-    getStartChangeOrExtendConsultantPeriodContracts(isFromSyncToLegacy?: boolean, syncResult?: ContractSyncResultDto) {
+    fillConsultantPeriodForm(data: ConsultantPeriodContractsDataQueryDto) {
         this.resetForms();
-        this.showMainSpinner();
-        this._consultantPeriodService.consultantContractsGET(this.activeSideSection.consultantPeriodId!)
-            .pipe(finalize(() => {
-                if (!isFromSyncToLegacy) {
-                    this.hideMainSpinner();
-                }
-            }))
-            .subscribe(result => {
-                this.contractsMainForm.remarks?.setValue(result?.remarks, {emitEvent: false});
-                this.contractsMainForm.noRemarks?.setValue(result?.noRemarks, {emitEvent: false});
-                if (result?.noRemarks) {
-                    this.contractsMainForm.remarks?.disable();
-                }
-                this.contractsMainForm.projectDescription?.setValue(result?.projectDescription, {emitEvent: false});
-                this.contractsMainForm.projectName?.setValue(result?.projectName, {emitEvent: false});
-                this.contractsMainForm.salesType?.setValue(this.findItemById(this.saleTypes, result?.mainData?.salesTypeId), {emitEvent: false});
-                this.contractsMainForm.deliveryType?.setValue(this.findItemById(this.deliveryTypes, result?.mainData?.deliveryTypeId), {emitEvent: false});
-                this.contractsMainForm.projectType?.setValue(this.findItemById(this.projectTypes, result?.mainData?.projectTypeId), {emitEvent: false});
-                this.contractsMainForm.margin?.setValue(this.findItemById(this.margins, result?.mainData?.marginId), {emitEvent: false});
-                this.contractsMainForm.discounts?.setValue(this.findItemById(this.discounts, result?.mainData?.discountId), {emitEvent: false});
-                this.contractsMainForm.customDebtorNumber?.setValue(result?.customDebtorNumber, {emitEvent: false});
+        this.contractsMainForm.remarks?.setValue(data?.remarks, {emitEvent: false});
+        this.contractsMainForm.noRemarks?.setValue(data?.noRemarks, {emitEvent: false});
+        if (data?.noRemarks) {
+            this.contractsMainForm.remarks?.disable();
+        }
+        this.contractsMainForm.projectDescription?.setValue(data?.projectDescription, {emitEvent: false});
+        this.contractsMainForm.projectName?.setValue(data?.projectName, {emitEvent: false});
+        this.contractsMainForm.salesType?.setValue(this.findItemById(this.saleTypes, data?.mainData?.salesTypeId), {emitEvent: false});
+        this.contractsMainForm.deliveryType?.setValue(this.findItemById(this.deliveryTypes, data?.mainData?.deliveryTypeId), {emitEvent: false});
+        this.contractsMainForm.projectType?.setValue(this.findItemById(this.projectTypes, data?.mainData?.projectTypeId), {emitEvent: false});
+        this.contractsMainForm.margin?.setValue(this.findItemById(this.margins, data?.mainData?.marginId), {emitEvent: false});
+        this.contractsMainForm.discounts?.setValue(this.findItemById(this.discounts, data?.mainData?.discountId), {emitEvent: false});
+        this.contractsMainForm.customDebtorNumber?.setValue(data?.customDebtorNumber, {emitEvent: false});
 
-                this.contractClientForm.invoicingReferenceNumber?.setValue(result.clientData?.invoicingReferenceNumber, {emitEvent: false});
-                this.contractClientForm.clientInvoicingRecipientIdValue?.setValue(result.clientData?.clientInvoicingRecipientIdValue, {emitEvent: false});
-                this.contractClientForm.clientInvoicingRecipient?.setValue(result.clientData?.clientInvoicingRecipient, {emitEvent: false});
-                this.contractClientForm.invoicingReferencePersonIdValue?.setValue(result.clientData?.invoicingReferencePersonIdValue, {emitEvent: false});
-                this.contractClientForm.invoicingReferencePerson?.setValue(result.clientData?.invoicingReferencePerson, {emitEvent: false});
+        this.contractClientForm.invoicingReferenceNumber?.setValue(data.clientData?.invoicingReferenceNumber, {emitEvent: false});
+        this.contractClientForm.clientInvoicingRecipientIdValue?.setValue(data.clientData?.clientInvoicingRecipientIdValue, {emitEvent: false});
+        this.contractClientForm.clientInvoicingRecipient?.setValue(data.clientData?.clientInvoicingRecipient, {emitEvent: false});
+        this.contractClientForm.invoicingReferencePersonIdValue?.setValue(data.clientData?.invoicingReferencePersonIdValue, {emitEvent: false});
+        this.contractClientForm.invoicingReferencePerson?.setValue(data.clientData?.invoicingReferencePerson, {emitEvent: false});
 
-                this.contractsSyncDataForm.contractLinesDoneManuallyInOldPm?.setValue(result?.contractLinesDoneManuallyInOldPm, {emitEvent: false})
-                this.contractsSyncDataForm.newLegalContract?.setValue(result?.newLegalContractRequired, {emitEvent: false});
-                this.contractsSyncDataForm.isNewSyncNeeded?.setValue(result?.isNewSyncNeeded, {emitEvent: false});
-                this.contractsSyncDataForm.lastSyncedDate?.setValue(result?.lastSyncedDate, {emitEvent: false});
+        this.contractsSyncDataForm.contractLinesDoneManuallyInOldPm?.setValue(data?.contractLinesDoneManuallyInOldPm, {emitEvent: false})
+        this.contractsSyncDataForm.newLegalContract?.setValue(data?.newLegalContractRequired, {emitEvent: false});
+        this.contractsSyncDataForm.isNewSyncNeeded?.setValue(data?.isNewSyncNeeded, {emitEvent: false});
+        this.contractsSyncDataForm.lastSyncedDate?.setValue(data?.lastSyncedDate, {emitEvent: false});
 
-                this.addConsultantDataToForm(result?.consultantData!, 0);
-                this.addConsultantLegalContract(result.consultantData!);
-                this.updateConsultantStepAnchors();
-                if (isFromSyncToLegacy) {
-                    this.processAfterSync(syncResult!);
-                }
-            });
+        this.addConsultantDataToForm(data?.consultantData!, 0);
+        this.addConsultantLegalContract(data.consultantData!);
+        this.updateConsultantStepAnchors();
     }
 
-    saveStartChangeOrExtendConsultantPeriodContracts(isDraft: boolean, isSyncToLegacy?: boolean) {
+    packConsultantPeriodData(): ConsultantPeriodContractsDataCommandDto {
         let input = new ConsultantPeriodContractsDataCommandDto();
         input.bypassLegalValidation = this.bypassLegalValidation;
         input.remarks =  this.contractsMainForm.remarks?.value;
@@ -1415,145 +1678,20 @@ export class WorkflowContractsComponent extends AppComponentBase implements OnIn
         }
         input.contractLinesDoneManuallyInOldPm = this.contractsSyncDataForm.contractLinesDoneManuallyInOldPm?.value;
         input.newLegalContractRequired = this.contractsSyncDataForm.newLegalContract?.value;
-        this.showMainSpinner();
-        if (isDraft) {
-            this._consultantPeriodService.consultantContractsPUT(this.activeSideSection.consultantPeriodId!, input)
-                .pipe(finalize(() => {
-                    if (!isSyncToLegacy) {
-                        this.hideMainSpinner();
-                    }
-                }))
-                .subscribe(() => {
-                    this.validationTriggered = false;
-                    this._workflowDataService.workflowOverviewUpdated.emit(true);
-                    if (this.editEnabledForcefuly && !isSyncToLegacy) {
-                        this.toggleEditMode();
-                    }
-                    if (isSyncToLegacy) {
-                        this.processSyncToLegacySystem();
-                    } else {
-                        this.getContractStepData();
-                    }
-                },
-                () => this.hideMainSpinner());
-        } else {
-            this._consultantPeriodService.editFinish5(this.activeSideSection.consultantPeriodId!, input)
-                .pipe(finalize(() => {
-                    this.bypassLegalValidation = false;
-                    this.hideMainSpinner();
-                }))
-                .subscribe(() => {
-                    this.validationTriggered = false;
-                    this._workflowDataService.workflowSideSectionUpdated.emit({isStatusUpdate: true});
-                    this._workflowDataService.workflowOverviewUpdated.emit(true);
-                    this.getContractStepData();
-                });
-        }
-    }
-    //#endregion Start consultant period
-
-    // Termination
-
-    addConsultantDataToTerminationForm(consultant: ConsultantTerminationContractDataQueryDto) {
-        const form = this._fb.group({
-            consultantId: new FormControl(consultant?.consultant?.id),
-            consultantData: new FormControl(consultant?.consultant),
-            removedConsultantFromAnyManualChecklists: new FormControl(consultant.removedConsultantFromAnyManualChecklists, Validators.required),
-            deletedAnySensitiveDocumentsForGDPR: new FormControl(consultant.deletedAnySensitiveDocumentsForGDPR, Validators.required),
-
-        });
-        this.contractsTerminationConsultantForm.consultantTerminationContractData.push(form);
+        return input;
     }
 
-    get consultantTerminationContractData(): FormArray {
-        return this.contractsTerminationConsultantForm.get('consultantTerminationContractData') as FormArray;
-    }
-
-    getWorkflowContractsStepConsultantTermination(isFromSyncToLegacy?: boolean, syncResult?: ContractSyncResultDto) {
+    fillWorkflowTerminationForm(data: WorkflowTerminationContractDataQueryDto) {
         this.resetForms();
-        this.showMainSpinner();
-        this._workflowServiceProxy.terminationConsultantContractGET(this.workflowId!, this.consultant.id!)
-            .pipe(finalize(() => {
-                if (!isFromSyncToLegacy) {
-                    this.hideMainSpinner();
-                }
-            }))
-            .subscribe(result => {
-                // End of Consultant Contract
-                this.contractsSyncDataForm.contractLinesDoneManuallyInOldPm?.setValue(result?.contractLinesDoneManuallyInOldPM, {emitEvent: false});
-                this.addConsultantDataToTerminationForm(result);
-                if (isFromSyncToLegacy) {
-                    this.processAfterSync(syncResult!);
-                }
-            });
+        this.contractsSyncDataForm.contractLinesDoneManuallyInOldPm?.setValue(data?.contractLinesDoneManuallyInOldPM, {emitEvent: false});
+        this.contractsSyncDataForm.isNewSyncNeeded?.setValue(data?.isNewSyncNeeded, {emitEvent: false});
+        this.contractsSyncDataForm.lastSyncedDate?.setValue(data?.lastSyncedDate, {emitEvent: false});
+        data.consultantTerminationContractData?.forEach(consultant => {
+            this.addConsultantDataToTerminationForm(consultant);
+        })
     }
 
-    saveTerminationConsultantContractStep(isDraft: boolean, isSyncToLegacy?: boolean) {
-        let input = new ConsultantTerminationContractDataCommandDto();
-        input.consultantId = this.contractsTerminationConsultantForm.consultantTerminationContractData?.value.consultantId;
-        input.contractLinesDoneManuallyInOldPM = this.contractsSyncDataForm.contractLinesDoneManuallyInOldPm?.value;
-        input.removedConsultantFromAnyManualChecklists = this.contractsTerminationConsultantForm.consultantTerminationContractData?.value.removedConsultantFromAnyManualChecklists;
-        input.deletedAnySensitiveDocumentsForGDPR = this.contractsTerminationConsultantForm.consultantTerminationContractData?.value.deletedAnySensitiveDocumentsForGDPR;
-
-        this.showMainSpinner();
-        if (isDraft) {
-            this._workflowServiceProxy.terminationConsultantContractPUT(this.workflowId!, input)
-                .pipe(finalize(() => {
-                    if (!isSyncToLegacy) {
-                        this.hideMainSpinner();
-                    }
-                }))
-                .subscribe(() => {
-                    this.validationTriggered = false;
-                    this._workflowDataService.workflowOverviewUpdated.emit(true);
-                    if (this.editEnabledForcefuly && !isSyncToLegacy) {
-                        this.toggleEditMode();
-                    }
-                    if (isSyncToLegacy) {
-                        this.processSyncToLegacySystem();
-                    } else {
-                        this.getContractStepData();
-                    }
-                },
-                () => this.hideMainSpinner());
-        } else {
-            this._workflowServiceProxy.terminationConsultantContractComplete(this.workflowId!, input)
-            .pipe(finalize(() => {
-                this.hideMainSpinner();
-            }))
-            .subscribe(() => {
-                this.validationTriggered = false;
-                this._workflowDataService.workflowSideSectionUpdated.emit({isStatusUpdate: true});
-                this._workflowDataService.workflowOverviewUpdated.emit(true);
-                this.getContractStepData();
-            })
-        }
-    }
-
-    getWorkflowContractStepTermination(isFromSyncToLegacy?: boolean, syncResult?: ContractSyncResultDto) {
-        this.resetForms();
-        this.showMainSpinner();
-        this._workflowServiceProxy.terminationContractGET(this.workflowId!)
-            .pipe(finalize(() => {
-                if (!isFromSyncToLegacy) {
-                    this.hideMainSpinner();
-                }
-            }))
-            .subscribe(result => {
-                // End of Consultant Contract
-                this.contractsSyncDataForm.contractLinesDoneManuallyInOldPm?.setValue(result?.contractLinesDoneManuallyInOldPM, {emitEvent: false});
-                this.contractsSyncDataForm.isNewSyncNeeded?.setValue(result?.isNewSyncNeeded, {emitEvent: false});
-                this.contractsSyncDataForm.lastSyncedDate?.setValue(result?.lastSyncedDate, {emitEvent: false});
-                result.consultantTerminationContractData?.forEach(data => {
-                    this.addConsultantDataToTerminationForm(data);
-                })
-                if (isFromSyncToLegacy) {
-                    this.processAfterSync(syncResult!);
-                }
-            });
-    }
-
-    saveWorkflowTerminationContractStep(isDraft: boolean, isSyncToLegacy?: boolean) {
+    packWorkflowTerminationData(): WorkflowTerminationContractDataCommandDto {
         let input = new WorkflowTerminationContractDataCommandDto();
         input.contractLinesDoneManuallyInOldPM = this.contractsSyncDataForm.contractLinesDoneManuallyInOldPm?.value;
         input.consultantTerminationContractData = this.contractsTerminationConsultantForm.consultantTerminationContractData?.value
@@ -1570,176 +1708,22 @@ export class WorkflowContractsComponent extends AppComponentBase implements OnIn
                 input.consultantTerminationContractData!.push(consultantInput);
             });
         }
-        this.showMainSpinner();
-        if (isDraft) {
-            this._workflowServiceProxy.terminationContractPUT(this.workflowId!, input)
-                .pipe(finalize(() => {
-                    if (!isSyncToLegacy) {
-                        this.hideMainSpinner();
-                    }
-                }))
-                .subscribe(() => {
-                    this.validationTriggered = false;
-                    this._workflowDataService.workflowOverviewUpdated.emit(true);
-                    if (this.editEnabledForcefuly && !isSyncToLegacy) {
-                        this.toggleEditMode();
-                    }
-                    if (isSyncToLegacy) {
-                        this.processSyncToLegacySystem();
-                    } else {
-                        this.getContractStepData();
-                    }
-                },
-                () => this.hideMainSpinner());
-        } else {
-            this._workflowServiceProxy.terminationContractComplete(this.workflowId!, input)
-            .pipe(finalize(() => {
-                this.hideMainSpinner();
-            }))
-            .subscribe(() => {
-                this.validationTriggered = false;
-                this._workflowDataService.workflowSideSectionUpdated.emit({isStatusUpdate: true});
-                this._workflowDataService.workflowOverviewUpdated.emit(true);
-                this.getContractStepData();
-            })
-        }
+        return input;
     }
 
-    terminateConsultantStart(index: number) {
-        this.showMainSpinner();
-        this._workflowServiceProxy.terminationConsultantStart(this.workflowId!, index)
-            .pipe(finalize(() => {
-                this.hideMainSpinner();
-            }))
-            .subscribe(result => {
-                this._workflowDataService.workflowSideSectionAdded.emit(true);
-                this._workflowDataService.workflowOverviewUpdated.emit(true);
-            });
+    fillConsultantTerminationForm(data: ConsultantTerminationContractDataQueryDto) {
+        this.resetForms();
+        this.contractsSyncDataForm.contractLinesDoneManuallyInOldPm?.setValue(data?.contractLinesDoneManuallyInOldPM, {emitEvent: false});
+        this.addConsultantDataToTerminationForm(data);
     }
 
-    processSaveBeforeSyncToLegacySystem() {
-        let isDraft = true;
-        let isSyncToLegacy = true;
-        switch (this._workflowDataService.workflowProgress.currentlyActiveSideSection) {
-            case WorkflowProcessType.StartClientPeriod:
-            case WorkflowProcessType.ChangeClientPeriod:
-            case WorkflowProcessType.ExtendClientPeriod:
-                this.saveStartChangeOrExtendClientPeriodContracts(isDraft, isSyncToLegacy);
-                break;
-            case WorkflowProcessType.TerminateWorkflow:
-                this.saveWorkflowTerminationContractStep(isDraft, isSyncToLegacy);
-                break;
-            case WorkflowProcessType.TerminateConsultant:
-                this.saveTerminationConsultantContractStep(isDraft, isSyncToLegacy);
-                break;
-            case WorkflowProcessType.StartConsultantPeriod:
-            case WorkflowProcessType.ChangeConsultantPeriod:
-            case WorkflowProcessType.ExtendConsultantPeriod:
-                this.saveStartChangeOrExtendConsultantPeriodContracts(isDraft, isSyncToLegacy);
-                break;
-        }
-    }
-
-    processSyncToLegacySystem() {
-        switch (this._workflowDataService.workflowProgress.currentlyActiveSideSection) {
-            case WorkflowProcessType.StartClientPeriod:
-            case WorkflowProcessType.ChangeClientPeriod:
-            case WorkflowProcessType.ExtendClientPeriod:
-                this.syncClientPeriodToLegacySystem();
-                break;
-            case WorkflowProcessType.TerminateWorkflow:
-                this.syncWorkflowTerminationToLegacySystem();
-                break;
-            case WorkflowProcessType.TerminateConsultant:
-                this.syncConsultantTerminationToLegacySystem();
-                break;
-            case WorkflowProcessType.StartConsultantPeriod:
-            case WorkflowProcessType.ChangeConsultantPeriod:
-            case WorkflowProcessType.ExtendConsultantPeriod:
-                this.syncConsultantPeriodToLegacySystem();
-                break;
-        }
-    }
-
-    syncClientPeriodToLegacySystem() {
-        this.showMainSpinner();
-        this._contractSyncService.clientPeriodSync(this.periodId!)
-            .subscribe(result => {
-                this.getContractStepData(true, result);
-            },
-            () => {
-                this.hideMainSpinner();
-            });
-    }
-
-    syncConsultantPeriodToLegacySystem() {
-        this.showMainSpinner();
-        this._contractSyncService.consultantPeriodSync(this.activeSideSection.consultantPeriodId!)
-            .subscribe(result => {
-                this.getContractStepData(true, result);
-            },
-            () => {
-                this.hideMainSpinner();
-            });
-    }
-
-    syncWorkflowTerminationToLegacySystem() {
-        this.showMainSpinner();
-        this._contractSyncService.workflowTerminationSync(this.workflowId!)
-            .subscribe(result => {
-                this.getContractStepData(true, result);
-            },
-            () => {
-                this.hideMainSpinner();
-            });
-    }
-
-    syncConsultantTerminationToLegacySystem() {
-        this.showMainSpinner();
-        this._contractSyncService.consultantTerminationSync(this.activeSideSection.consultantPeriodId!)
-            .subscribe(result => {
-                this.getContractStepData(true, result);
-            },
-            () => {
-                this.hideMainSpinner();
-            });
-    }
-
-    processAfterSync(result: ContractSyncResultDto) {
-        this.showMainSpinner();
-        this.statusAfterSync = true;
-        this.syncNotPossible = !result.success!;
-        this.contractsSyncDataForm.enableLegalContractsButtons?.setValue(result.enableLegalContractsButtons!);
-        this.contractsSyncDataForm.showManualOption?.setValue(result?.showManualOption, {emitEvent: false});
-        this.syncMessage = result.success ? 'Sync successfull' : result.message!;
-        if (result.success) {
-            this.contractsConsultantsDataForm.consultants.controls.forEach((consultant: any) => {
-                consultant.controls.projectLines.controls.forEach((x: any) => {
-                    x.controls.wasSynced.setValue(true, {emitEvent: false});
-                })
-            })
-        }
-        this.hideMainSpinner();
-    }
-
-    openContractModule(periodId: string, legalContractStatus: number, isInternal: boolean, tenantId: number, consultant?: ConsultantResultDto) {
-        let isFrameworkAgreement = false;
-        window.open(`pmpapercontractpm3:${periodId}/${isInternal ? 'True' : 'False'}/${legalContractStatus <= 1 ? 'True' : 'False'}/${isFrameworkAgreement ? 'True' : 'False'}/${tenantId}${consultant?.id ? '/' + consultant.id : ''}`);
-    }
-
-    detectContractModuleIcon(legalContractStatus: number | string): string {
-        switch (legalContractStatus) {
-            case LegalContractStatus.NotAcceessible:
-                return 'cancel-fill';
-            case LegalContractStatus.NotYetCreated:
-                return 'in-progress-icon';
-            case LegalContractStatus.SavedButNotGenerated:
-                return 'completed-icon';
-            case LegalContractStatus.Done:
-                return 'completed-icon';
-            default:
-                return '';
-        }
+    packConsultantTerminationData(): ConsultantTerminationContractDataCommandDto {
+        let input = new ConsultantTerminationContractDataCommandDto();
+        input.consultantId = this.contractsTerminationConsultantForm.consultantTerminationContractData?.value.consultantId;
+        input.contractLinesDoneManuallyInOldPM = this.contractsSyncDataForm.contractLinesDoneManuallyInOldPm?.value;
+        input.removedConsultantFromAnyManualChecklists = this.contractsTerminationConsultantForm.consultantTerminationContractData?.value.removedConsultantFromAnyManualChecklists;
+        input.deletedAnySensitiveDocumentsForGDPR = this.contractsTerminationConsultantForm.consultantTerminationContractData?.value.deletedAnySensitiveDocumentsForGDPR;
+        return input;
     }
 
 }
