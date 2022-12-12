@@ -1,6 +1,11 @@
-import { Component, OnInit, forwardRef } from '@angular/core';
+import {
+    Component,
+    OnInit,
+    forwardRef,
+    ChangeDetectorRef,
+} from '@angular/core';
 import { FileServiceProxy } from 'src/shared/service-proxies/service-proxies';
-import { Subject, Observable, forkJoin, of } from 'rxjs';
+import { Subject, Observable, forkJoin, EMPTY, of } from 'rxjs';
 import { switchMap, map, tap } from 'rxjs/operators';
 import { ControlValueAccessor, NG_VALUE_ACCESSOR } from '@angular/forms';
 import { FileUploadItem } from './files';
@@ -25,7 +30,10 @@ export class FileUploaderComponent implements OnInit, ControlValueAccessor {
     private onChange = (val: any) => {};
     private onTouched = () => {};
 
-    constructor(private readonly fileServiceProxy: FileServiceProxy) {}
+    constructor(
+        private readonly fileServiceProxy: FileServiceProxy,
+        private readonly cdr: ChangeDetectorRef
+    ) {}
 
     ngOnInit(): void {
         this.initializeFileObs();
@@ -56,8 +64,7 @@ export class FileUploaderComponent implements OnInit, ControlValueAccessor {
 
     writeValue(value: any): void {
         if (value === null) {
-            this.files = [];
-            this._uploadedFiles$.next([]);
+            this.clearAllFiles();
         }
     }
 
@@ -72,6 +79,9 @@ export class FileUploaderComponent implements OnInit, ControlValueAccessor {
     private initializeFileObs() {
         this.uploadedFiles$ = this._uploadedFiles$.pipe(
             switchMap((files) => {
+                if (!files.length) {
+                    return of(files);
+                }
                 let filesObservablesArr = files.map((file) =>
                     this.fileServiceProxy
                         .temporaryPOST({ data: file, fileName: file.name })
@@ -84,17 +94,14 @@ export class FileUploaderComponent implements OnInit, ControlValueAccessor {
                             }))
                         )
                 );
-                if (filesObservablesArr.length) {
-                    return forkJoin(filesObservablesArr);
-                }
-                return of([]);
+                return forkJoin(filesObservablesArr);
             }),
             map((files) => {
                 this.files = [...this.files, ...files];
                 return this.files;
             }),
             tap((files) => {
-                if (files && files.length) {
+                if (files.length) {
                     this.onChange(files);
                     return;
                 }
@@ -106,5 +113,18 @@ export class FileUploaderComponent implements OnInit, ControlValueAccessor {
     private _getIconName(fileName: string): string {
         let splittetFileName = fileName.split('.');
         return splittetFileName[splittetFileName.length - 1];
+    }
+
+    private clearAllFiles() {
+        let observableArr: Observable<void>[] = [];
+        this.files.forEach((file) => {
+            observableArr.push(
+                this.fileServiceProxy.temporaryDELETE(file.temporaryFileId)
+            );
+        });
+        forkJoin(observableArr).subscribe(() => {
+            this.files = [];
+            this._uploadedFiles$.next([]);
+        });
     }
 }

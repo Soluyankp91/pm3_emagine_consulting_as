@@ -111,5 +111,11 @@ export class ContractsModule {
                 'assets/common/images/close-button-icon.svg'
             )
         );
+        iconRegistry.addSvgIcon(
+            'plus-icon',
+            sanitizer.bypassSecurityTrustResourceUrl(
+                'assets/common/images/plus-icon.svg'
+            )
+        );
     }
 }

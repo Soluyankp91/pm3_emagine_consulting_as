@@ -1,9 +1,14 @@
 import { AbstractControl, ValidationErrors, ValidatorFn } from '@angular/forms';
 
-export function requiredValidator(): ValidatorFn {
+export function requiredValidator(parentControl: AbstractControl): ValidatorFn {
     return (control: AbstractControl): ValidationErrors | null => {
-        return !(control.value !== null && typeof control.value === 'object')
-            ? { required: true }
-            : null;
+        if (!(control.value !== null && typeof control.value === 'object')) {
+            let errors = {
+                required: true,
+            };
+            parentControl.setErrors(errors);
+            return errors;
+        }
+        return null;
     };
 }

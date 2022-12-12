@@ -88,7 +88,7 @@ export class FileSelectorComponent
     }
 
     writeValue(preselectedFiles: FileUpload[]): void {
-        if (preselectedFiles === null && !this.inheritedFiles.length) {
+        if (preselectedFiles === null || !preselectedFiles.length) {
             return;
         }
         this.selectedInheritedFiles = [];

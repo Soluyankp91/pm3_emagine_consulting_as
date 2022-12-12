@@ -64,19 +64,22 @@
                 <mat-error><app-validator [control]="masterTemplateFormGroup.controls['recipientTypeId']"></app-validator></mat-error>
             </mat-form-field>
             <ng-container
-                *ngIf="agreementCreationMode.value === creationModes.Duplicated"
+                *ngIf="agreementCreationMode.value === creationModes.Duplicated || (editMode && isDuplicated)"
             >
                 <emg-dropdown-autocomplete-single-select
                     *ngIf="
                         masterTemplateOptions$ | async as masterTemplateOptions
                     "
                     [options]="masterTemplateOptions"
-                    [labelKey]="'agreementTemplateId'"
+                    [labelKey]="'name'"
                     [outputProperty]="'agreementTemplateId'"
                     [label]="'Master Template'"
                     [formControl]="duplicateTemplateControl"
                     (inputEmitter)="masterTemplateOptionsChanged$.next($event)"
                 >
+                <ng-template let-cell="option" #optionTemplate>
+                    <span>{{cell.name}}</span>
+                </ng-template>
                 </emg-dropdown-autocomplete-single-select>
             </ng-container>
             <mat-divider></mat-divider>
@@ -232,7 +235,7 @@
             <emg-file-uploader formControlName="uploadedFiles"></emg-file-uploader>
         </div>
     </div>
-    <button mat-button (click)="onSave()" [disabled]="masterTemplateFormGroup.invalid">
+    <button mat-button (click)="onSave()">
         Save
     </button>
     <button mat-button (click)="onCancel()">Cancel</button>
