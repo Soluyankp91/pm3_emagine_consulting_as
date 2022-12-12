@@ -8,6 +8,7 @@ import { ServiceProxyModule } from 'src/shared/service-proxies/service-proxy.mod
 import { MatGridComponent } from './shared/components/grid-table/mat-grid.component';
 import { AgreementLanguagesFilterComponent } from './shared/components/grid-table/master-templates/filters/agreement-languages-filter/agreement-filter.component';
 import {
+    AgreementTemplateAttachmentServiceProxy,
     AgreementTemplateServiceProxy,
     FileServiceProxy,
     MergeFieldsServiceProxy,
@@ -87,6 +88,7 @@ import { NewFileUploaderDirective } from './shared/components/file-uploader/new-
         FileServiceProxy,
         AgreementTemplateServiceProxy,
         MergeFieldsServiceProxy,
+        AgreementTemplateAttachmentServiceProxy,
     ],
 })
 export class ContractsModule {
