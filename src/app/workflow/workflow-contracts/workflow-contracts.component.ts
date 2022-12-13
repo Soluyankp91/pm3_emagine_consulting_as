@@ -17,8 +17,8 @@ import { LegalContractStatus, WorkflowConsultantsLegalContractForm, WorkflowCont
 
 @Component({
     selector: 'app-workflow-contracts',
-    // templateUrl: './workflow-contracts.component.html',
     templateUrl: './workflow-contracts-new.component.html',
+    // templateUrl: './workflow-contracts.component.html',
     styleUrls: ['./workflow-contracts.component.scss']
 })
 export class WorkflowContractsComponent extends AppComponentBase implements OnInit, OnDestroy {
@@ -52,6 +52,7 @@ export class WorkflowContractsComponent extends AppComponentBase implements OnIn
     legalContractStatuses: { [key: string]: string; };
     consultantInsuranceOptions: { [key: string]: string; };
     projectCategories: EnumEntityTypeDto[] = [];
+    filteredConsultants: any[] = [];
 
     contractLinesDoneManuallyInOldPMControl = new FormControl();
     contractsTerminationConsultantForm: WorkflowContractsTerminationConsultantsDataForm;
@@ -122,6 +123,7 @@ export class WorkflowContractsComponent extends AppComponentBase implements OnIn
         this.getUnitTypes();
         this.getLegalContractStatuses();
         this.getConsultantInsuranceOptions();
+        this.getProjectCategory();
 
         this._workflowDataService.updateWorkflowProgressStatus({currentStepIsCompleted: this.isCompleted, currentStepIsForcefullyEditing: false});
         if (this.permissionsForCurrentUser!["StartEdit"]) {
@@ -611,6 +613,7 @@ export class WorkflowContractsComponent extends AppComponentBase implements OnIn
         consultant.periodConsultantSpecialRates?.forEach((rate: any) => {
             this.addSpecialRateToConsultantData(consultantIndex, rate);
         });
+        this.filteredConsultants.push(consultant);
 
         this.manageConsultantRateAutocomplete(consultantIndex);
         this.manageConsultantFeeAutocomplete(consultantIndex);
@@ -970,6 +973,7 @@ export class WorkflowContractsComponent extends AppComponentBase implements OnIn
         this.contractsConsultantsDataForm.consultants.controls = [];
         this.contractsTerminationConsultantForm.consultantTerminationContractData.controls = [];
         this.contractsSyncDataForm.consultants.controls = [];
+        this.filteredConsultants = [];
     }
 
     //#region Start client period
@@ -1733,6 +1737,10 @@ export class WorkflowContractsComponent extends AppComponentBase implements OnIn
             default:
                 return '';
         }
+    }
+
+    displayConsultantNameFn(option: any) {
+        return option?.name;
     }
 
 }

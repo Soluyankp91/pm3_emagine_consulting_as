@@ -1295,69 +1295,56 @@
                         </div>
 
                         <div fxLayout="column" fxLayoutAlign="start start" class="u-w--100">
-                            <!-- <ng-container *ngIf="activeSideSection.typeId === workflowSideSections.StartClientPeriod || activeSideSection.typeId === workflowSideSections.StartConsultantPeriod"> -->
-                                <div fxLayout="row" fxLayoutAlign="start center" class="u-mb--16">
-                                    <span class="workflow-section--number">1</span>
-                                    <h2 class="workflow-section--header">Employment type</h2>
-                                </div>
-                                <div class="workflow-section--content">
-                                    <div fxLayout="row" fxLayoutAlign="start start" class="u-w--100 u-mb--20">
-                                        <mat-form-field appearance="outline" class="u-w--100 formFieldNoMarginPadding filter-select" fxFlex="33%">
-                                            <mat-label>Employment type</mat-label>
-                                            <mat-select [disabled]="(activeSideSection.typeId !== workflowSideSections.StartClientPeriod && activeSideSection.typeId !== workflowSideSections.StartConsultantPeriod) || readOnlyMode" required formControlName="employmentType" [disableOptionCentering]="true" [compareWith]="compareWithFn">
-                                                <mat-option *ngFor="let item of employmentTypes" [value]="item">
-                                                    {{ item.name }}
-                                                </mat-option>
-                                            </mat-select>
-                                            <mat-error>
-                                                <app-validator [control]="consultant.get('employmentType')"></app-validator>
-                                            </mat-error>
-                                        </mat-form-field>
-                                    </div>
-                                    <div fxLayout="row" fxLayoutAlign="start start" class="u-w--100" *ngIf="consultant.value?.employmentType?.id">
-                                        <mat-form-field appearance="outline" class="formFieldNoMarginPadding client-and-consultant-autocomplete" [fxHide]="consultant.value?.employmentType?.id === 10 || consultant.value?.employmentType?.id === 11" [ngClass]="{'disabled-input': (activeSideSection.typeId !== workflowSideSections.StartClientPeriod && activeSideSection.typeId !== workflowSideSections.StartConsultantPeriod) || readOnlyMode}">
-                                            <mat-label>Consultant Name</mat-label>
-                                            <input [disabled]="(activeSideSection.typeId !== workflowSideSections.StartClientPeriod && activeSideSection.typeId !== workflowSideSections.StartConsultantPeriod) || readOnlyMode" [required]="consultant.value?.employmentType?.id !== 10 && consultant.value?.employmentType?.id !== 11" type="text" matInput [matAutocomplete]="consultantAutocomplete" name="consutlantNameAutocomplete" formControlName="consultantName" appPreventDoubleClick (throttledClick)="$event.stopPropagation()" placeholder="Consultant name"
-                                                (focus)="focusInMethod()" (focusout)="focusOutMethod()">
-                                            <mat-autocomplete #consultantAutocomplete="matAutocomplete" [displayWith]="displayConsultantNameFn">
-                                                <mat-option *ngFor="let item of filteredConsultants" [value]="item" [ngClass]="{ 'no-data': item.id === 'no-data' }" appPreventDoubleClick (throttledClick)="updateConsultantStepAnchors()">
-                                                    <div class="multilineDropdown-option--row">
-                                                        <img *ngIf="item.id !== 'no-data'" class="image-thumbnail-small border-rounded-50 u-mr--10" [src]="consultantProfileUrl(item.consultant.externalId)" />
-                                                        <div class="multilineDropdown-option--column text-truncate-ellipsis">
-                                                            <span class="multilineDropdown-option--column-client-name">{{ item.consultant.name }}</span>
-                                                            <span *ngIf="item.id !== 'no-data'" class="multilineDropdown-option--column-client-info text-truncate-ellipsis">
-                                                                    {{item.consultant.companyName ? item.consultant.companyName + ' | ' : ''}} {{item.consultant.city ? item.consultant.city + ' | ' : ''}} #{{item.consultant.id}} / {{item.consultant.legacyId}}
-                                                            </span>
-                                                        </div>
-                                                    </div>
-                                                </mat-option>
-                                            </mat-autocomplete>
-                                            <mat-error>
-                                                <app-validator [control]="consultant.get('consultantName')"></app-validator>
-                                            </mat-error>
-                                        </mat-form-field>
-                                        <mat-form-field appearance="outline" class="u-w--100 formFieldNoMarginPadding filter-select" fxFlex="33%" [fxHide]="consultant.value?.employmentType?.id !== 10 && consultant.value?.employmentType?.id !== 11" [ngClass]="{'disabled-input': (activeSideSection.typeId !== workflowSideSections.StartClientPeriod && activeSideSection.typeId !== workflowSideSections.StartConsultantPeriod) || readOnlyMode}">
-                                            <mat-label>Consultant Name only</mat-label>
-                                            <input [disabled]="(activeSideSection.typeId !== workflowSideSections.StartClientPeriod && activeSideSection.typeId !== workflowSideSections.StartConsultantPeriod) || readOnlyMode" [required]="consultant.value?.employmentType?.id === 10 || consultant.value?.employmentType?.id === 11" type="text" matInput formControlName="consultantNameOnly" placeholder="Consultant name only">
-                                            <mat-error>
-                                                <app-validator [control]="consultant.get('consultantNameOnly')"></app-validator>
-                                            </mat-error>
-                                        </mat-form-field>
-                                    </div>
-                                    <app-consultant-information [onlyAdditionalInfo]="true" [consultantData]="consultant?.value?.consultantName?.consultant"></app-consultant-information>
-                                </div>
-                            <!-- </ng-container> -->
-                            <!-- <ng-container *ngIf="activeSideSection.typeId === workflowSideSections.ExtendClientPeriod || activeSideSection.typeId === workflowSideSections.ChangeClientPeriod  || activeSideSection.typeId === workflowSideSections.ChangeConsultantPeriod || activeSideSection.typeId === workflowSideSections.ExtendConsultantPeriod">
+                            <div fxLayout="row" fxLayoutAlign="start center" class="u-mb--16">
+                                <span class="workflow-section--number">1</span>
+                                <h2 class="workflow-section--header">Employment type</h2>
+                            </div>
+                            <div class="workflow-section--content">
                                 <div fxLayout="row" fxLayoutAlign="start start" class="u-w--100 u-mb--20">
-                                    <div fxLayout="column" fxFlex="25%">
-                                        <h3 class="workflow-step-readonly--gray-header">Employment type</h3>
-                                        <span class="workflow-step-readonly--blue-text-bold">
-                                            {{consultant?.value?.employmentType?.name ? consultant?.value?.employmentType?.name : '-'}}
-                                        </span>
-                                    </div>
+                                    <mat-form-field appearance="outline" class="u-w--100 formFieldNoMarginPadding filter-select" fxFlex="33%">
+                                        <mat-label>Employment type</mat-label>
+                                        <mat-select [disabled]="(activeSideSection.typeId !== workflowSideSections.StartClientPeriod && activeSideSection.typeId !== workflowSideSections.StartConsultantPeriod) || readOnlyMode" required formControlName="employmentType" [disableOptionCentering]="true" [compareWith]="compareWithFn">
+                                            <mat-option *ngFor="let item of employmentTypes" [value]="item">
+                                                {{ item.name }}
+                                            </mat-option>
+                                        </mat-select>
+                                        <mat-error>
+                                            <app-validator [control]="consultant.get('employmentType')"></app-validator>
+                                        </mat-error>
+                                    </mat-form-field>
                                 </div>
-                                <app-consultant-information [consultantData]="consultant?.value?.consultantName?.consultant"></app-consultant-information>
-                            </ng-container> -->
+                                <div fxLayout="row" fxLayoutAlign="start start" class="u-w--100" *ngIf="consultant.value?.employmentType?.id">
+                                    <mat-form-field appearance="outline" class="formFieldNoMarginPadding client-and-consultant-autocomplete" [fxHide]="consultant.value?.employmentType?.id === 10 || consultant.value?.employmentType?.id === 11" [ngClass]="{'disabled-input': (activeSideSection.typeId !== workflowSideSections.StartClientPeriod && activeSideSection.typeId !== workflowSideSections.StartConsultantPeriod) || readOnlyMode}">
+                                        <mat-label>Consultant Name</mat-label>
+                                        <input [disabled]="(activeSideSection.typeId !== workflowSideSections.StartClientPeriod && activeSideSection.typeId !== workflowSideSections.StartConsultantPeriod) || readOnlyMode" [required]="consultant.value?.employmentType?.id !== 10 && consultant.value?.employmentType?.id !== 11" type="text" matInput [matAutocomplete]="consultantAutocomplete" name="consutlantNameAutocomplete" formControlName="consultantName" appPreventDoubleClick (throttledClick)="$event.stopPropagation()" placeholder="Consultant name"
+                                            (focus)="focusInMethod()" (focusout)="focusOutMethod()">
+                                        <mat-autocomplete #consultantAutocomplete="matAutocomplete" [displayWith]="displayConsultantNameFn">
+                                            <mat-option *ngFor="let item of filteredConsultants" [value]="item" [ngClass]="{ 'no-data': item.id === 'no-data' }" appPreventDoubleClick (throttledClick)="updateConsultantStepAnchors()">
+                                                <div class="multilineDropdown-option--row">
+                                                    <img *ngIf="item.id !== 'no-data'" class="image-thumbnail-small border-rounded-50 u-mr--10" [src]="consultantProfileUrl(item.consultant.externalId)" />
+                                                    <div class="multilineDropdown-option--column text-truncate-ellipsis">
+                                                        <span class="multilineDropdown-option--column-client-name">{{ item.consultant.name }}</span>
+                                                        <span *ngIf="item.id !== 'no-data'" class="multilineDropdown-option--column-client-info text-truncate-ellipsis">
+                                                                {{item.consultant.companyName ? item.consultant.companyName + ' | ' : ''}} {{item.consultant.city ? item.consultant.city + ' | ' : ''}} #{{item.consultant.id}} / {{item.consultant.legacyId}}
+                                                        </span>
+                                                    </div>
+                                                </div>
+                                            </mat-option>
+                                        </mat-autocomplete>
+                                        <mat-error>
+                                            <app-validator [control]="consultant.get('consultantName')"></app-validator>
+                                        </mat-error>
+                                    </mat-form-field>
+                                    <mat-form-field appearance="outline" class="u-w--100 formFieldNoMarginPadding filter-select" fxFlex="33%" [fxHide]="consultant.value?.employmentType?.id !== 10 && consultant.value?.employmentType?.id !== 11" [ngClass]="{'disabled-input': (activeSideSection.typeId !== workflowSideSections.StartClientPeriod && activeSideSection.typeId !== workflowSideSections.StartConsultantPeriod) || readOnlyMode}">
+                                        <mat-label>Consultant Name only</mat-label>
+                                        <input [disabled]="(activeSideSection.typeId !== workflowSideSections.StartClientPeriod && activeSideSection.typeId !== workflowSideSections.StartConsultantPeriod) || readOnlyMode" [required]="consultant.value?.employmentType?.id === 10 || consultant.value?.employmentType?.id === 11" type="text" matInput formControlName="consultantNameOnly" placeholder="Consultant name only">
+                                        <mat-error>
+                                            <app-validator [control]="consultant.get('consultantNameOnly')"></app-validator>
+                                        </mat-error>
+                                    </mat-form-field>
+                                </div>
+                                <app-consultant-information [onlyAdditionalInfo]="true" [consultantData]="consultant?.value?.consultantName?.consultant"></app-consultant-information>
+                            </div>
                         </div>
                         <ng-container *ngIf="consultant.value?.employmentType?.id  && (consultant.value?.employmentType?.id !== employmentTypesEnum.FeeOnly && consultant.value?.employmentType?.id !== employmentTypesEnum.Recruitment)">
 
