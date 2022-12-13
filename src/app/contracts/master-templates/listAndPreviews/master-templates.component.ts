@@ -13,7 +13,7 @@ import { PageEvent } from '@angular/material/paginator';
 import { TableFiltersEnum } from '../../shared/components/grid-table/master-templates/entities/master-templates.interfaces';
 import { GridHelpService } from '../../shared/services/mat-grid-service.service';
 import { Observable } from 'rxjs';
-import { ActivatedRoute, Router } from '@angular/router';
+import { ActivatedRoute, Params, Router } from '@angular/router';
 import { AgreementTemplatesListItemDto } from 'src/shared/service-proxies/service-proxies';
 @Component({
     selector: 'app-master-templates',
@@ -63,6 +63,17 @@ export class MasterTemplatesComponent implements OnInit {
                     [`${$event.row.agreementTemplateId}`, 'settings'],
                     { relativeTo: this.route }
                 );
+                break;
+            }
+            case 'DUPLICATE': {
+                const params: Params = {
+                    parentTemplateId: $event.row.agreementTemplateId,
+                };
+                this.router.navigate(['create'], {
+                    relativeTo: this.route,
+                    queryParams: params,
+                });
+                break;
             }
         }
     }

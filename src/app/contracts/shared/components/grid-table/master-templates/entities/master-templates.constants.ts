@@ -150,8 +150,8 @@ export const MASTER_TEMPLATE_ACTIONS: Actions[] = [
         actionType: 'EDIT',
     },
     {
-        label: 'Copy',
-        actionType: 'COPY',
+        label: 'Duplicate',
+        actionType: 'DUPLICATE',
     },
 ];
 export const INITIAL_PAGE_INDEX = 0;

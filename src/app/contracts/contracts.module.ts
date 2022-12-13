@@ -43,6 +43,7 @@ import { FileUploaderComponent } from './shared/components/file-uploader/file-up
 import { FileSelectorComponent } from './shared/components/file-selector/file-selector.component';
 import { NewFileUploaderDirective } from './shared/components/file-uploader/new-file-uploader.directive';
 import { CreationTitleService } from './master-templates/template-editor/creation-title.service';
+import { TenantsComponent } from './shared/components/tenants/tenants.component';
 
 @NgModule({
     declarations: [
@@ -75,6 +76,7 @@ import { CreationTitleService } from './master-templates/template-editor/creatio
         ConfirmDialogComponent,
         FileUploaderComponent,
         FileSelectorComponent,
+        TenantsComponent,
     ],
     imports: [
         CommonModule,
@@ -139,5 +141,11 @@ export class ContractsModule {
                 'assets/common/images/editor-icon.svg'
             )
         );
+        iconRegistry.addSvgIcon(
+            'chevron-down',
+            sanitizer.bypassSecurityTrustResourceUrl(
+                'assets/common/images/chevron-down.svg'
+            )
+        )
     }
 }

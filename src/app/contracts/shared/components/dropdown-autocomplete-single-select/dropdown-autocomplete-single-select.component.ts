@@ -9,6 +9,7 @@ import {
     DoCheck,
     ContentChild,
     TemplateRef,
+    ChangeDetectorRef,
 } from '@angular/core';
 import {
     AbstractControl,
@@ -53,7 +54,10 @@ export class DropdownAutocompleteSingleSelectComponent
 
     private _unSubscribe$ = new Subject();
 
-    constructor(@Self() private readonly ngControl: NgControl) {
+    constructor(
+        @Self() private readonly ngControl: NgControl,
+        private readonly _cdr: ChangeDetectorRef
+    ) {
         ngControl.valueAccessor = this;
     }
 
@@ -102,7 +106,6 @@ export class DropdownAutocompleteSingleSelectComponent
             this.inputControl.reset(null, { emitEvent: false });
             return;
         }
-        console.log(preselectedItem);
         this.inputControl.patchValue(preselectedItem);
     }
 
@@ -132,6 +135,7 @@ export class DropdownAutocompleteSingleSelectComponent
                 filter((val) => val !== null)
             )
             .subscribe((input) => {
+                console.log(input);
                 if (typeof input === 'object') {
                     this.inputEmitter.emit(input[this.labelKey]);
                     return;

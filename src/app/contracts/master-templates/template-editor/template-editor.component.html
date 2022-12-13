@@ -1,12 +1,6 @@
 <div [style.display]="'flex'" [style.align-items]="'center'">
     <ng-container *ngIf="tenants$ | async as tenants; else defaultTenants">
-        <span
-            *ngFor="let tenant of tenants"
-            class="fi-{{ tenant.code | lowercase }}"
-            [style.width.px]="32"
-            [style.height.px]="32"
-            [style.border-radius.px]="16"
-        ></span>
+        <emg-tenants [tenants]="tenants"></emg-tenants>
     </ng-container>
     <ng-template #defaultTenants>
         <span>

@@ -1,0 +1,49 @@
+<ng-container *ngIf="tenants">
+    <div
+        *ngIf="tenants.length <= countryLimit; else beyondLimit"
+        [style.margin-right.px]="-(tenants.length - 1) * 20"
+    >
+        <span
+            *ngFor="let tenant of tenants; let i = index"
+            class="fi fi-{{ tenant.code | lowercase }}"
+            [style.width.px]="40"
+            [style.height.px]="30"
+            [style.border-radius.%]="50"
+            [style.right.px]="20 * i"
+        ></span>
+    </div>
+    <ng-template #beyondLimit>
+        <div [style.display]="'flex'">
+            <div class="circle-counter">
+                <span>{{ tenants.length }}</span>
+            </div>
+            <button
+                mat-icon-button
+                [matMenuTriggerFor]="menu"
+                [style.width.px]="24"
+                [style.height.px]="24"
+                [style.align-self]="'end'"
+            >
+                <mat-icon svgIcon="chevron-down"></mat-icon>
+            </button>
+            <mat-menu #menu="matMenu">
+                <div
+                    *ngFor="let tenant of tenants; let i = index"
+                    [style.width.px]="213"
+                    [style.display]="'flex'"
+                    [style.align-items]="'center'"
+                >
+                <div [style.padding.px]="7">
+                    <span
+                    class="fi fi-{{ tenant.code | lowercase }}"
+                    [style.width.px]="40"
+                    [style.height.px]="30"
+                    [style.border-radius.%]="50"
+                ></span>
+                </div>
+                    <span>{{ tenant.name }}</span>
+                </div>
+            </mat-menu>
+        </div>
+    </ng-template>
+</ng-container>
