@@ -42,6 +42,7 @@ import { CreationComponent } from './client-specific-templates/edit-template/set
 import { FileUploaderComponent } from './shared/components/file-uploader/file-uploader.component';
 import { FileSelectorComponent } from './shared/components/file-selector/file-selector.component';
 import { NewFileUploaderDirective } from './shared/components/file-uploader/new-file-uploader.directive';
+import { CreationTitleService } from './master-templates/template-editor/creation-title.service';
 
 @NgModule({
     declarations: [
@@ -89,6 +90,7 @@ import { NewFileUploaderDirective } from './shared/components/file-uploader/new-
         AgreementTemplateServiceProxy,
         MergeFieldsServiceProxy,
         AgreementTemplateAttachmentServiceProxy,
+        CreationTitleService,
     ],
 })
 export class ContractsModule {
@@ -117,6 +119,24 @@ export class ContractsModule {
             'plus-icon',
             sanitizer.bypassSecurityTrustResourceUrl(
                 'assets/common/images/plus-icon.svg'
+            )
+        );
+        iconRegistry.addSvgIcon(
+            'worldwide-icon',
+            sanitizer.bypassSecurityTrustResourceUrl(
+                'assets/common/images/worldwide-icon.svg'
+            )
+        );
+        iconRegistry.addSvgIcon(
+            'cog-icon',
+            sanitizer.bypassSecurityTrustResourceUrl(
+                'assets/common/images/cog-icon.svg'
+            )
+        );
+        iconRegistry.addSvgIcon(
+            'editor-icon',
+            sanitizer.bypassSecurityTrustResourceUrl(
+                'assets/common/images/editor-icon.svg'
             )
         );
     }

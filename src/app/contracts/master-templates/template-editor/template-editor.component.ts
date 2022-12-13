@@ -7,8 +7,10 @@ import {
 import { Tab } from 'src/app/contracts/shared/entities/contracts.interfaces';
 import { NavigationEnd, Router } from '@angular/router';
 import { getAllRouteParams } from '../../shared/utils/allRouteParams';
-import { Subject } from 'rxjs';
+import { Subject, Observable } from 'rxjs';
 import { filter, takeUntil } from 'rxjs/operators';
+import { CreationTitleService } from './creation-title.service';
+import { LegalEntityDto } from 'src/shared/service-proxies/service-proxies';
 
 @Component({
     selector: 'app-master-template-creation',
@@ -18,13 +20,21 @@ import { filter, takeUntil } from 'rxjs/operators';
 export class MasterTemplateCreationComponent implements OnInit, OnDestroy {
     tabs: Tab[];
 
+    templateName$: Observable<string>;
+    tenants$: Observable<(LegalEntityDto & { code: string })[] | null>;
+
     private _unSubscribe$ = new Subject<void>();
 
-    constructor(private readonly router: Router) {}
+    constructor(
+        private readonly router: Router,
+        private readonly creationTitleService: CreationTitleService
+    ) {}
 
     ngOnInit(): void {
         this._setTabs();
         this._subscribeOnRouteChanges();
+        this.templateName$ = this.creationTitleService.templateName$;
+        this.tenants$ = this.creationTitleService.tenants$;
     }
 
     ngOnDestroy(): void {
@@ -53,10 +63,12 @@ export class MasterTemplateCreationComponent implements OnInit, OnDestroy {
                 {
                     link: `${templateId}/settings`,
                     label: 'Settings',
+                    icon: 'cog-icon',
                 },
                 {
                     link: `${templateId}/editor`,
                     label: 'Editor',
+                    icon: 'editor-icon',
                 },
             ];
             return;
@@ -65,11 +77,13 @@ export class MasterTemplateCreationComponent implements OnInit, OnDestroy {
             {
                 link: 'create',
                 label: 'Settings',
+                icon: 'cog-icon',
             },
             {
                 link: '',
                 label: 'Editor',
                 disabled: true,
+                icon: 'editor-icon',
             },
         ];
     }

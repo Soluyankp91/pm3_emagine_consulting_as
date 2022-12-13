@@ -23,6 +23,7 @@ import {
     AgreementCreationMode,
     AgreementTemplateAttachmentDto,
     AgreementTemplateServiceProxy,
+    LegalEntityDto,
     SaveAgreementTemplateDto,
     SimpleAgreementTemplatesListItemDto,
 } from 'src/shared/service-proxies/service-proxies';
@@ -35,6 +36,7 @@ import { ContractsService } from 'src/app/contracts/shared/services/contracts.se
 import { SettingsOptions } from 'src/app/contracts/shared/models/settings.model';
 import { FileUpload } from 'src/app/contracts/shared/components/file-uploader/files';
 import { AppComponentBase } from 'src/shared/app-component-base';
+import { CreationTitleService } from '../creation-title.service';
 
 @Component({
     selector: 'app-settings',
@@ -52,6 +54,8 @@ export class CreateMasterTemplateComponent
     currentTemplate: { [key: string]: any };
     isDuplicated = false;
 
+    legalEntities: LegalEntityDto[];
+
     preselectedFiles: FileUpload[] = [];
 
     creationModes = AgreementCreationMode;
@@ -68,8 +72,13 @@ export class CreateMasterTemplateComponent
 
     autoNames: string[];
 
-    options$: Observable<SettingsOptions> =
-        this._contractsService.settingsPageOptions$();
+    options$: Observable<SettingsOptions> = this._contractsService
+        .settingsPageOptions$()
+        .pipe(
+            tap(({ legalEntities }) => {
+                this.legalEntities = legalEntities;
+            })
+        );
 
     modeControl$ = new BehaviorSubject(AgreementCreationMode.FromScratch);
     masterTemplateOptions$: Observable<SimpleAgreementTemplatesListItemDto[]>;
@@ -85,6 +94,7 @@ export class CreateMasterTemplateComponent
         private readonly cdr: ChangeDetectorRef,
         private readonly router: Router,
         private readonly route: ActivatedRoute,
+        private readonly creationTitleService: CreationTitleService,
         private injector: Injector
     ) {
         super(injector);
@@ -102,6 +112,8 @@ export class CreateMasterTemplateComponent
             this._prefillForm();
         } else {
             this.agreementCreationMode.disable({ emitEvent: false });
+            this._subscribeOnTemplateNameChanges();
+            this._subsribeOnLegEntitiesChanges();
             this._subscribeOnDuplicateControlChanges();
             this._subscribeOnDirtyStatus();
             this._subscribeOnCreationModeResolver();
@@ -292,6 +304,27 @@ export class CreateMasterTemplateComponent
                     );
                     this.onCreationModeChange(this.modeControl$.value);
                 }
+            });
+    }
+
+    private _subscribeOnTemplateNameChanges() {
+        this.masterTemplateFormGroup.controls['name'].valueChanges.subscribe(
+            (name) => {
+                this.creationTitleService.updateTemplateName(name);
+            }
+        );
+    }
+
+    private _subsribeOnLegEntitiesChanges() {
+        this.masterTemplateFormGroup.controls['legalEntities'].valueChanges
+            .pipe(filter((val) => !!val))
+            .subscribe((legalEntities: number[]) => {
+                let entities = this.legalEntities.filter((extendedEntity) =>
+                    legalEntities.find(
+                        (simpleEntity) => extendedEntity.id === simpleEntity
+                    )
+                );
+                this.creationTitleService.updateTenants(entities);
             });
     }
 

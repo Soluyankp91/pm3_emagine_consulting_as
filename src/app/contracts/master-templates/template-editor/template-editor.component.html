@@ -1,4 +1,30 @@
-<div class="">New master template</div>
+<div [style.display]="'flex'" [style.align-items]="'center'">
+    <ng-container *ngIf="tenants$ | async as tenants; else defaultTenants">
+        <span
+            *ngFor="let tenant of tenants"
+            class="fi-{{ tenant.code | lowercase }}"
+            [style.width.px]="32"
+            [style.height.px]="32"
+            [style.border-radius.px]="16"
+        ></span>
+    </ng-container>
+    <ng-template #defaultTenants>
+        <span>
+            <mat-icon
+                svgIcon="worldwide-icon"
+                [style.width.px]="32"
+                [style.height.px]="32"
+                [style.margin.px]="7"
+            ></mat-icon>
+        </span>
+    </ng-template>
+    <ng-container
+        *ngIf="templateName$ | async as templateName; else defaultName"
+    >
+        <p>{{ templateName }}</p>
+    </ng-container>
+    <ng-template #defaultName> <p>New master template</p> </ng-template>
+</div>
 <nav mat-tab-nav-bar>
     <a
         mat-tab-link
@@ -7,8 +33,10 @@
         [disabled]="tab.disabled"
         [routerLink]="tab.link"
         routerLinkActive="active"
-        #masterTemplate="routerLinkActive">
-        {{ tab.label }}
+        #masterTemplate="routerLinkActive"
+    >
+        <mat-icon *ngIf="tab.icon" [svgIcon]="tab.icon"></mat-icon>
+        <span>{{ tab.label }}</span>
     </a>
 </nav>
 <router-outlet></router-outlet>
