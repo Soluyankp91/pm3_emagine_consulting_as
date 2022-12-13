@@ -17,7 +17,8 @@ import { LegalContractStatus, WorkflowConsultantsLegalContractForm, WorkflowCont
 
 @Component({
     selector: 'app-workflow-contracts',
-    templateUrl: './workflow-contracts.component.html',
+    // templateUrl: './workflow-contracts.component.html',
+    templateUrl: './workflow-contracts-new.component.html',
     styleUrls: ['./workflow-contracts.component.scss']
 })
 export class WorkflowContractsComponent extends AppComponentBase implements OnInit, OnDestroy {
@@ -50,6 +51,7 @@ export class WorkflowContractsComponent extends AppComponentBase implements OnIn
     rateUnitTypes: EnumEntityTypeDto[] = [];
     legalContractStatuses: { [key: string]: string; };
     consultantInsuranceOptions: { [key: string]: string; };
+    projectCategories: EnumEntityTypeDto[] = [];
 
     contractLinesDoneManuallyInOldPMControl = new FormControl();
     contractsTerminationConsultantForm: WorkflowContractsTerminationConsultantsDataForm;
@@ -407,6 +409,10 @@ export class WorkflowContractsComponent extends AppComponentBase implements OnIn
 
     getConsultantInsuranceOptions() {
         this._internalLookupService.getConsultantInsuranceOptions().subscribe(result => this.consultantInsuranceOptions = result);
+    }
+
+    getProjectCategory() {
+        this._internalLookupService.getProjectCategory().subscribe(result => this.projectCategories = result);
     }
 
     toggleEditMode(isToggledFromUi?: boolean) {
