@@ -3,7 +3,7 @@
         <h2 class="page-main-header u-mb--20">Client list</h2>
         <div fxLayout="row" fxLayoutAlign="space-between center" class="u-w--100">
             <div fxFlex="1 0 40%" fxLayout="row" fxLayoutAlign="start center" class="u-w--100">
-                <div class="client-list--filter-manager cursor-pointer u-mr--16"
+                <div class="client-list--filter-manager cursor-pointer u-mr--12"
                     [matMenuTriggerFor]="managerMenu"
                     (menuOpened)="onManagersMenuOpened(); accountManagerFilterInput.focus()"
                     [matTooltip]="selectedAccountManagers.length ? mapListByProperty(selectedAccountManagers, 'name') : 'Select account manager(s)'"
@@ -73,7 +73,7 @@
                         </div>
                     </mat-menu>
                 </div>
-                <div class="client-list--filter-country cursor-pointer u-mr--16"
+                <div class="client-list--filter-country cursor-pointer u-mr--12"
                     [matMenuTriggerFor]="countryMenu"
                     (menuOpened)="onCountriesMenuOpened(); countriesFilterInput.focus();"
                     [ngClass]="{ 'client-list--filter-country__btn': selectedCountries.length > 1 }"
@@ -150,16 +150,16 @@
                         </div>
                     </mat-menu>
                 </div>
-                <span class="client-list--filter-status__badge flex-items-center cursor-pointer u-mr--16" [ngClass]="{'selected-status': isActiveClients}" appPreventDoubleClick (throttledClick)="isActiveClients = !isActiveClients; getClientsGrid(true)">
+                <span class="client-list--filter-status__badge flex-items-center cursor-pointer u-mr--12" [ngClass]="{'selected-status': isActiveClients}" appPreventDoubleClick (throttledClick)="isActiveClients = !isActiveClients; getClientsGrid(true)">
                     <mat-icon class="status-dot green-dot u-mr--5">fiber_manual_record</mat-icon>
                     Active clients
                 </span>
-                <span class="client-list--filter-status__badge flex-items-center cursor-pointer u-mr--16" [ngClass]="{'selected-status': nonActiveClient}" appPreventDoubleClick (throttledClick)="nonActiveClient = !nonActiveClient; getClientsGrid(true)">
+                <span class="client-list--filter-status__badge flex-items-center cursor-pointer u-mr--12" [ngClass]="{'selected-status': nonActiveClient}" appPreventDoubleClick (throttledClick)="nonActiveClient = !nonActiveClient; getClientsGrid(true)">
                     <mat-icon class="status-dot grey-dot u-mr--5">fiber_manual_record</mat-icon>
                     Non-active clients
                 </span>
-                <div fxLayout="row" fxLayoutAlign="start center" class="u-ml--10">
-                    <mat-divider class="divider-height u-mr--10" [vertical]="true"></mat-divider>
+                <div fxLayout="row" fxLayoutAlign="start center">
+                    <mat-divider class="divider-height" [vertical]="true"></mat-divider>
                     <button mat-button appPreventDoubleClick (throttledClick)="clearAllFilters()">
                         <span class="clear-all-button">
                             Reset
