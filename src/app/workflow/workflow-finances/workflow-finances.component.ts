@@ -11,8 +11,7 @@ import { FinancesClientForm, FinancesConsultantsForm } from './workflow-finances
 
 @Component({
     selector: 'app-workflow-finances',
-    templateUrl: './workflow-finances-new.component.html',
-    // templateUrl: './workflow-finances.component.html',
+    templateUrl: './workflow-finances.component.html',
     styleUrls: ['./workflow-finances.component.scss']
 })
 export class WorkflowFinancesComponent extends AppComponentBase implements OnInit, OnDestroy {
