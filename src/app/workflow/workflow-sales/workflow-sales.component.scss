@@ -3,22 +3,6 @@
 @import "../workflow.component";
 
 .workflow {
-    &-step {
-        &--number {
-            border: 1px solid green;
-            span {
-                background-color: #898785;
-                border-radius: 50%;
-            }
-            mat-divider {
-                height: 100%;
-                border-color: #898785;
-            }
-        }
-        &--content {
-            border: 1px solid red;
-        }
-    }
     &-form {
         &--main,
         &--client,
