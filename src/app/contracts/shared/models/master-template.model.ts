@@ -53,6 +53,18 @@ export class MasterTemplateModel extends FormGroup {
         super.removeControl(name, options);
     }
 
+    reset(
+        formState?: any,
+        options?: { onlySelf?: boolean; emitEvent?: boolean }
+    ): void {
+        super.reset(
+            formState
+                ? formState
+                : this.INITIAL_MASTER_TEMPLATE_FORM_VALUE$.value,
+            options
+        );
+    }
+
     get agreementType() {
         return this.get('agreementType');
     }

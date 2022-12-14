@@ -101,12 +101,20 @@ export class DropdownAutocompleteSingleSelectComponent
         this.onTouch = fn;
     }
 
-    writeValue(preselectedItem: Item): void {
-        if (preselectedItem === null) {
+    writeValue(id: string | number): void {
+        if (id === null) {
             this.inputControl.reset(null, { emitEvent: false });
             return;
         }
-        this.inputControl.patchValue(preselectedItem);
+        console.log(id);
+        let preselectedOption = this.options.find(
+            (option) => option[this.outputProperty] == id
+        );
+        this.selectedItem = preselectedOption as Item;
+        this.inputControl.setValue(preselectedOption, {
+            emitEvent: false,
+            onlySelf: true,
+        });
     }
 
     setDisabledState(isDisabled: boolean): void {
@@ -135,7 +143,6 @@ export class DropdownAutocompleteSingleSelectComponent
                 filter((val) => val !== null)
             )
             .subscribe((input) => {
-                console.log(input);
                 if (typeof input === 'object') {
                     this.inputEmitter.emit(input[this.labelKey]);
                     return;

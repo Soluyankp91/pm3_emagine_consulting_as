@@ -61,7 +61,7 @@ export class AutoNameComponent implements OnInit, DoCheck {
             this.textControl.reset('');
             return;
         }
-        this.textControl.setValue(val);
+        this.textControl.setValue(val, { emitEvent: false });
     }
 
     onChange: any = () => {};
