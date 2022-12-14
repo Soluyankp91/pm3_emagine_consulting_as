@@ -347,7 +347,7 @@
                                             </button>
                                             <mat-menu #clientRateMenu>
                                                 <button
-                                                    class="menu-item menu-item--edit"
+                                                    class="menu-item green-color"
                                                     mat-menu-item
                                                     [disabled]="isConsultantRateEditing"
                                                     appPreventDoubleClick (throttledClick)="editOrSaveSpecialRate(rate.value.editable, i)">
@@ -464,7 +464,7 @@
                                             </button>
                                             <mat-menu #clientFeeMenu>
                                                 <button
-                                                    class="menu-item menu-item--edit"
+                                                    class="menu-item green-color"
                                                     *ngIf="!fee.value.editable"
                                                     mat-menu-item
                                                     [disabled]="isClientFeeEditing"
@@ -746,7 +746,7 @@
                                                         </button>
                                                         <mat-menu #clientRateMenu>
                                                             <button
-                                                                class="menu-item menu-item--edit"
+                                                                class="menu-item green-color"
                                                                 mat-menu-item
                                                                 [disabled]="isConsultantRateEditing"
                                                                 appPreventDoubleClick (throttledClick)="editOrSaveConsultantSpecialRate(rate.value.editable, consultantIndex, specialRateIndex)">
@@ -918,7 +918,7 @@
                                                         </button>
                                                         <mat-menu #clientFeeMenu>
                                                             <button
-                                                                class="menu-item menu-item--edit"
+                                                                class="menu-item green-color"
                                                                 mat-menu-item
                                                                 [disabled]="isConsultantFeeEditing"
                                                                 appPreventDoubleClick (throttledClick)="editOrSaveConsultantSpecialFee(fee.value.editable, consultantIndex, clientFeeIndex)">
@@ -1053,7 +1053,7 @@
                                                                     mat-menu-item
                                                                     (click)="removeConsultantDataProjectLines(consultantIndex, projectLinesIndex)">
                                                                     <mat-icon svgIcon="close-icon"></mat-icon>
-                                                                    Remove
+                                                                    Delete
                                                                 </button>
                                                                 <div class="menu-item" mat-menu-item (click)="$event.stopPropagation(); toggleMarkProjectLineForDeletion(projectLine.value.markedForLegacyDeletion, consultantIndex, projectLinesIndex)" *ngIf="projectLine.value.wasSynced">
                                                                     <mat-checkbox color="accent" class="black-checkbox" id="markedForLegacyDeletion" name="markedForLegacyDeletion"
