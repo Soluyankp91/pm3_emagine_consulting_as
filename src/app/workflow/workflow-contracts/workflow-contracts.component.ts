@@ -17,8 +17,7 @@ import { LegalContractStatus, WorkflowConsultantsLegalContractForm, WorkflowCont
 
 @Component({
     selector: 'app-workflow-contracts',
-    templateUrl: './workflow-contracts-new.component.html',
-    // templateUrl: './workflow-contracts.component.html',
+    templateUrl: './workflow-contracts.component.html',
     styleUrls: ['./workflow-contracts.component.scss']
 })
 export class WorkflowContractsComponent extends AppComponentBase implements OnInit, OnDestroy {
