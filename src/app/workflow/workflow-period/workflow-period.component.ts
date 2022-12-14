@@ -325,11 +325,12 @@ export class WorkflowPeriodComponent extends AppComponentBase implements OnInit,
             autoFocus: false,
             panelClass: 'confirmation-modal',
             data: {
-                confirmationMessageTitle: `Are you sure you want to delete ${item.name} ?`,
-                confirmationMessage: 'The data, which has been filled until now - will be removed.',
+                confirmationMessageTitle: `Delete ${this.detectNameOfSideSection(item.typeId)}`,
+                confirmationMessage: `Are you sure you want to delete ${item.name}? \n
+                    The data, which has been filled until now - will be removed.`,
                 rejectButtonText: 'Cancel',
                 confirmButtonText: 'Yes',
-                isNegative: false
+                isNegative: true
             }
         });
 
@@ -396,5 +397,21 @@ export class WorkflowPeriodComponent extends AppComponentBase implements OnInit,
                 this._workflowDataService.workflowSideSectionUpdated.emit({isStatusUpdate: false, autoUpdate: true});
                 this._workflowDataService.workflowOverviewUpdated.emit(true);
             });
+    }
+
+    detectNameOfSideSection(type: WorkflowProcessType | undefined) {
+        switch (type) {
+            case WorkflowProcessType.ChangeClientPeriod:
+            case WorkflowProcessType.ExtendClientPeriod:
+                return 'client period';
+            case WorkflowProcessType.StartConsultantPeriod:
+            case WorkflowProcessType.ChangeConsultantPeriod:
+            case WorkflowProcessType.ExtendConsultantPeriod:
+                return 'consultant period';
+            case WorkflowProcessType.TerminateConsultant:
+                return 'consultant termination';
+            case WorkflowProcessType.TerminateWorkflow:
+                return 'workflow termination';
+        }
     }
 }

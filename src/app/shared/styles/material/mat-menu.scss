@@ -2,6 +2,7 @@
 
 .mat-menu-panel {
     min-height: 40px !important;
+    min-width: unset !important;
     .mat-menu-content:not(:empty) {
         padding: 0;
         .mat-menu-item {
@@ -30,8 +31,7 @@
     mat-icon {
         margin-right: 8px !important;
         border-radius: 50%;
-        @include fontLineHeightAndSize(24px, 24px, 24px, 24px);
-        padding: 4px;
+        @include fontLineHeightAndSize(16px, 16px, 16px, 16px);
     }
     &--cancel {
         color: $dark-red-color;
@@ -108,13 +108,16 @@
 
 .workflow-list--workflow-status-menu + * .cdk-overlay-pane {
     .mat-menu-panel, .mat-select-panel {
-        min-height: 40px !important;
+        min-height: 35px !important;
         border-radius: unset !important;
+        transform: translateX(-12px);
         .mat-menu-content {
             padding: 0 !important;
             .mat-menu-item {
                 @include fontOpenSans(12px, 700);
                 color: rgba(56, 72, 83, 0.8);
+                height: 35px !important;
+                line-height: 35px !important;
                 mat-icon {
                     margin-right: 12px !important;
                 }

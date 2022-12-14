@@ -5,16 +5,16 @@
             <h2 class="workflow-header--title">
                 <ng-container *ngIf="workflowStatusId === workflowStatus.Pending || workflowStatusId === workflowStatus.PendingDataMissing; else readOnlyWorkflowStatusTemplate">
                     <mat-icon class="workflow-status u-mr--5" [matTooltip]="workflowStatusName!" matTooltipClass="white-tooltip" [ngClass]="workflowStatusIcon"
-                        #menuWorkflowStatusesTrigger="matMenuTrigger" [matMenuTriggerFor]="workflowStatusesMenu" appPreventDoubleClick (throttledClick)="$event.stopPropagation()">fiber_manual_record</mat-icon>
+                        #menuWorkflowStatusesTrigger="matMenuTrigger" [matMenuTriggerFor]="workflowStatusesMenu" [matMenuTriggerData]="{selectedStatus: workflowStatusId}" appPreventDoubleClick (throttledClick)="$event.stopPropagation()">fiber_manual_record</mat-icon>
                     <mat-menu #workflowStatusesMenu backdropClass="workflow-list--workflow-status-menu">
-                        <button mat-menu-item class="workflow-list--workflow-status--menu-item" (click)="setWorkflowStatus(workflowId, workflowStatus.Pending)">
-                            <mat-icon class="workflow-status pending-status">fiber_manual_record</mat-icon>
-                            <span>Pending workflow</span>
-                        </button>
-                        <button mat-menu-item class="workflow-list--workflow-status--menu-item" (click)="setWorkflowStatus(workflowId, workflowStatus.PendingDataMissing)">
-                            <mat-icon class="workflow-status pending-data-missing-status">fiber_manual_record</mat-icon>
-                            <span>Pending - data missing</span>
-                        </button>
+                        <ng-template matMenuContent let-selectedStatus="selectedStatus">
+                            <ng-container *ngFor="let item of workflowStatusMenuList">
+                            <button mat-menu-item class="workflow-list--workflow-status--menu-item" [ngClass]="{'workflow-status--menu-item-selected': selectedStatus === item.code}" (click)="setWorkflowStatus(workflowId, item.code)">
+                                <mat-icon class="workflow-status {{item.icon}}">fiber_manual_record</mat-icon>
+                                <span>{{item.name}}</span>
+                            </button>
+                        </ng-container>
+                    </ng-template>
                     </mat-menu>
                 </ng-container>
                 <ng-template #readOnlyWorkflowStatusTemplate>
@@ -70,7 +70,7 @@
             <mat-menu #workflowMenu>
                 <button
                     *ngIf="individualConsultantActionsAvailable"
-                    class="menu-item menu-item--edit"
+                    class="menu-item green-color"
                     mat-menu-item
                     [disabled]="false"
                     appPreventDoubleClick (throttledClick)="addConsultant()">
@@ -78,7 +78,7 @@
                     Add consultant
                 </button>
                 <button
-                    class="menu-item menu-item--edit"
+                    class="menu-item green-color"
                     mat-menu-item
                     [disabled]="false"
                     appPreventDoubleClick (throttledClick)="getAvailableConsultantForChangeOrExtend(workflowDiallogActions.Change)">
@@ -86,7 +86,7 @@
                     Change Workflow Data
                 </button>
                 <button
-                    class="menu-item menu-item--add"
+                    class="menu-item green-color"
                     mat-menu-item
                     appPreventDoubleClick (throttledClick)="getAvailableConsultantForChangeOrExtend(workflowDiallogActions.Extend)">
                     <mat-icon svgIcon="add-icon-green"></mat-icon>
@@ -147,7 +147,7 @@
                     <div fxLayout="row" fxLayoutAlign="center center">
                         <span class="tab-header">{{tab.name}}</span>
                     </div>
-                    <span class="tab-subheader">{{tab.startDate | momentFormat: 'DD.MM.YYYY'}} - {{tab.endDate ? (tab.endDate | momentFormat: 'DD.MM.YYYY') : '...'}}</span>
+                    <span class="tab-subheader">{{tab.startDate | momentFormat}} - {{tab.endDate ? (tab.endDate | momentFormat) : '...'}}</span>
                 </ng-template>
                 <div fxLayout="row" fxLayoutAlign="start start" class="workflow-form--panel u-w--100 u-mb--50">
                     <div fxFlex="80%">

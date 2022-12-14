@@ -17,7 +17,7 @@ import { InternalLookupService } from '../shared/common/internal-lookup.service'
 import { ConfirmationDialogComponent } from '../shared/components/confirmation-dialog/confirmation-dialog.component';
 import { ManagerStatus } from '../shared/components/manager-search/manager-search.model';
 import { CreateWorkflowDialogComponent } from './create-workflow-dialog/create-workflow-dialog.component';
-import { DialogConfig, getStatusIcon, getWorkflowStatus, ISelectableIdNameDto, SelectableEmployeeDto, StepTypes, SyncStatusIcon } from './workflow.model';
+import { DialogConfig, getStatusIcon, getWorkflowStatus, ISelectableIdNameDto, SelectableEmployeeDto, StepTypes, SyncStatusIcon, WorkflowStatusMenuList } from './workflow.model';
 
 const WorkflowGridOptionsKey = 'WorkflowGridFILTERS.1.0.5';
 @Component({
@@ -62,6 +62,7 @@ export class WorkflowComponent extends AppComponentBase implements OnInit, OnDes
     workflowDataSource: MatTableDataSource<WorkflowListItemDto>;
     workflowProcess = WorkflowProcessType;
     workflowStatus = WorkflowStatus;
+    workflowStatusMenuList = WorkflowStatusMenuList;
     legalEntities: LegalEntityDto[] = [];
     saleTypes: EnumEntityTypeDto[] = [];
     deliveryTypes: EnumEntityTypeDto[] = [];
@@ -306,8 +307,9 @@ export class WorkflowComponent extends AppComponentBase implements OnInit, OnDes
         const scrollStrategy = this.overlay.scrollStrategies.reposition();
         DialogConfig.scrollStrategy = scrollStrategy;
         DialogConfig.data = {
-            confirmationMessageTitle: `Are you sure you want to delete this workflow?`,
-            confirmationMessage: `This workflow will be hidden from lists and statistics.\n
+            confirmationMessageTitle: `Delete workflow`,
+            confirmationMessage: `Are you sure you want to delete this workflow?\n
+            This workflow will be hidden from lists and statistics.\n
             Note that if it contained periods which were synced, it should be terminated first.\n
             If not terminated -  the contract lines will still appear in Legacy PM,\n
             on the consultant website and inside the client module.`,
@@ -335,10 +337,11 @@ export class WorkflowComponent extends AppComponentBase implements OnInit, OnDes
         const scrollStrategy = this.overlay.scrollStrategies.reposition();
         DialogConfig.scrollStrategy = scrollStrategy;
         DialogConfig.data = {
-            confirmationMessageTitle: `Are you sure you want to restore workflow?`,
-                rejectButtonText: 'Cancel',
-                confirmButtonText: 'Yes',
-                isNegative: false
+            confirmationMessageTitle: `Restore workflow`,
+            confirmationMessage: `Are you sure you want to restore workflow?`,
+            rejectButtonText: 'Cancel',
+            confirmButtonText: 'Yes',
+            isNegative: false
         }
         const dialogRef = this.dialog.open(ConfirmationDialogComponent, DialogConfig);
 

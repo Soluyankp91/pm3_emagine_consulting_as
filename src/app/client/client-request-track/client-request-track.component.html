@@ -27,16 +27,16 @@
                 <ng-container matColumnDef="clientDeadline">
                     <mat-header-cell *matHeaderCellDef mat-sort-header fxFlex="8%"> Client deadline </mat-header-cell>
                     <mat-cell *matCellDef="let row" fxFlex="8%">
-                        <span class="text-truncate-ellipsis" [matTooltip]="row.clientDeadline | momentFormat: 'DD.MM.YYYY'" matTooltipClass="white-tooltip" appShowIfTruncated>
-                            {{row.clientDeadline | momentFormat: 'DD.MM.YYYY'}}
+                        <span class="text-truncate-ellipsis" [matTooltip]="row.clientDeadline | momentFormat" matTooltipClass="white-tooltip" appShowIfTruncated>
+                            {{(row.clientDeadline | momentFormat) ?? '-'}}
                         </span>
                     </mat-cell>
                 </ng-container>
                 <ng-container matColumnDef="dateAdded">
                     <mat-header-cell *matHeaderCellDef mat-sort-header fxFlex="8%"> Date added </mat-header-cell>
                     <mat-cell *matCellDef="let row" fxFlex="8%">
-                        <span class="text-truncate-ellipsis" [matTooltip]="row?.dateAdded | momentFormat: 'DD.MM.YYYY'" matTooltipClass="white-tooltip" appShowIfTruncated>
-                            {{row?.dateAdded | momentFormat: 'DD.MM.YYYY'}}
+                        <span class="text-truncate-ellipsis" [matTooltip]="row?.dateAdded | momentFormat" matTooltipClass="white-tooltip" appShowIfTruncated>
+                            {{row?.dateAdded | momentFormat}}
                         </span>
                     </mat-cell>
                 </ng-container>

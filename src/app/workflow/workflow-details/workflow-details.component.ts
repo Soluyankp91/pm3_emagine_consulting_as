@@ -37,7 +37,8 @@ import {
     WorkflowSteps,
     WorkflowDiallogAction,
     getWorkflowStatus,
-    getStatusIcon
+    getStatusIcon,
+    WorkflowStatusMenuList
 } from '../workflow.model';
 import { InternalLookupService } from 'src/app/shared/common/internal-lookup.service';
 import { WorkflowActionsDialogComponent } from '../workflow-actions-dialog/workflow-actions-dialog.component';
@@ -107,6 +108,7 @@ export class WorkflowDetailsComponent
     workflowStatusName: string | undefined;
     workflowStatusIcon: string;
     workflowStatus = WorkflowStatus;
+    workflowStatusMenuList = WorkflowStatusMenuList;
 
     workflowClientPeriodTypes: EnumEntityTypeDto[] = [];
     workflowConsultantPeriodTypes: EnumEntityTypeDto[] = [];
@@ -156,7 +158,6 @@ export class WorkflowDetailsComponent
                 !this._workflowDataService.getWorkflowProgress
                     .currentStepIsCompleted
             );
-            // return  this._workflowDataService.getWorkflowProgress.stepSpecificPermissions!["Edit"] && this._workflowDataService.getWorkflowProgress.stepSpecificPermissions!["Complete"];
         }
     }
 
@@ -528,7 +529,8 @@ export class WorkflowDetailsComponent
             autoFocus: false,
             panelClass: 'confirmation-modal',
             data: {
-                confirmationMessageTitle: `Are you sure you want to terminate workflow?`,
+                confirmationMessageTitle: `Terminate workflow`,
+                confirmationMessage: `Are you sure you want to terminate workflow?`,
                 rejectButtonText: 'Cancel',
                 confirmButtonText: 'Terminate',
                 isNegative: true,

@@ -73,19 +73,19 @@
                                             {{document.value.attachmentTypeId?.name}}
                                         </div>
                                     </ng-template>
-                                    <div fxFlex="10%" class="text-truncate-ellipsis" [matTooltip]="document.value.dateUpdated | momentFormat: 'DD.MM.YYYY'" matTooltipClass="white-tooltip" appShowIfTruncated>
-                                        {{document.value.dateUpdated | momentFormat: 'DD.MM.YYYY'}}
+                                    <div fxFlex="10%" class="text-truncate-ellipsis" [matTooltip]="document.value.dateUpdated | momentFormat" matTooltipClass="white-tooltip" appShowIfTruncated>
+                                        {{document.value.dateUpdated | momentFormat}}
                                     </div>
                                     <div fxFlex="10%" class="text-truncate-ellipsis" [matTooltip]="document.value.updatedBy" matTooltipClass="white-tooltip" appShowIfTruncated>
                                         {{document.value.updatedBy}}
                                     </div>
                                     <ng-container *ngIf="document.value.editable; else generalDocumentActionsDisplay">
-                                        <div fxFlex="10%" class="u-w--100 text-truncate-ellipsis flex-items-center">
-                                            <button mat-flat-button appPreventDoubleClick (throttledClick)="editOrSaveGeneralDocument(document.value.editable, i)" class="inline-edit-form--btn__save">
-                                                Save
+                                        <div fxFlex="10%" fxLayoutAlign="end center" class="u-w--100 text-truncate-ellipsis">
+                                            <button mat-icon-button appPreventDoubleClick (throttledClick)="editOrSaveGeneralDocument(document.value.editable, i)" class="rates-and-fees--inline-edit-form--btn__save">
+                                                <mat-icon svgIcon="rates-save-icon"></mat-icon>
                                             </button>
-                                            <button mat-flat-button appPreventDoubleClick (throttledClick)="cancelEditGeneralDocument(i)" class="inline-edit-form--btn__cancel">
-                                                Cancel
+                                            <button mat-icon-button appPreventDoubleClick (throttledClick)="cancelEditGeneralDocument(i)" class="rates-and-fees--inline-edit-form--btn__cancel">
+                                                <mat-icon svgIcon="rates-cancel-icon"></mat-icon>
                                             </button>
                                         </div>
                                     </ng-container>
@@ -157,7 +157,7 @@
                                                     [collapsedHeight]="'44px'"
                                                     [expandedHeight]="'44px'">
                                                     <h4 class="u-mb--0">
-                                                        {{frame.name}} {{frame.startDate | momentFormat: 'DD.MM.YYYY'}}
+                                                        {{frame.name}} {{frame.startDate | momentFormat}}
                                                     </h4>
                                                 </mat-expansion-panel-header>
                                                 <div *ngIf="frame.documents?.length" class="column u-ml--32">
@@ -193,7 +193,7 @@
                                                     [collapsedHeight]="'44px'"
                                                     [expandedHeight]="'44px'">
                                                     <h4 class="u-mb--0">
-                                                        {{workflow.name}} {{workflow.startDate | momentFormat: 'DD.MM.YYYY'}}
+                                                        {{workflow.name}} {{workflow.startDate | momentFormat}}
                                                     </h4>
                                                 </mat-expansion-panel-header>
                                                 <ng-template matExpansionPanelContent>
@@ -218,7 +218,7 @@
                                                                                 [expandedHeight]="'44px'">
                                                                                 <div class="flex-row flex-justify-between flex-items-center u-w--100">
                                                                                     <h4 class="u-mb--0">
-                                                                                        {{clientContract.name}} {{clientContract.startDate | momentFormat: 'DD.MM.YYYY'}}
+                                                                                        {{clientContract.name}} {{clientContract.startDate | momentFormat}} - {{clientContract.endDate ? (clientContract.endDate | momentFormat) : 'No end date'}}
                                                                                     </h4>
                                                                                 </div>
                                                                             </mat-expansion-panel-header>
@@ -259,7 +259,7 @@
                                                                                 [expandedHeight]="'44px'">
                                                                                 <div class="flex-row flex-justify-between flex-items-center u-w--100">
                                                                                     <h4 class="u-mb--0">
-                                                                                        {{consultantContract.name}} {{consultantContract.startDate | momentFormat: 'DD.MM.YYYY'}}
+                                                                                        {{consultantContract.name}} {{consultantContract.startDate | momentFormat}} - {{consultantContract.endDate ? (consultantContract.endDate | momentFormat) : 'No end date'}}
                                                                                     </h4>
                                                                                 </div>
                                                                             </mat-expansion-panel-header>
@@ -301,7 +301,7 @@
                                                                                 [expandedHeight]="'44px'">
                                                                                 <div class="flex-row flex-justify-between flex-items-center u-w--100">
                                                                                     <h4 class="u-mb--0">
-                                                                                        {{internalContract.name}} {{internalContract.startDate | momentFormat: 'DD.MM.YYYY'}}
+                                                                                        {{internalContract.name}} {{internalContract.startDate | momentFormat}} - {{internalContract.endDate ? (internalContract.endDate | momentFormat) : 'No end date'}}
                                                                                     </h4>
                                                                                 </div>
                                                                             </mat-expansion-panel-header>
@@ -364,15 +364,15 @@
                             <ng-container matColumnDef="evaluationDate">
                                 <mat-header-cell *matHeaderCellDef fxFlex="10%"> Date</mat-header-cell>
                                 <mat-cell *matCellDef="let row" fxFlex="10%">
-                                    <span class="text-truncate-ellipsis" [matTooltip]="row.evaluationDate | momentFormat: 'DD.MM.YYYY'" matTooltipClass="white-tooltip" appShowIfTruncated>
-                                        {{row.evaluationDate | momentFormat: 'DD.MM.YYYY'}}
+                                    <span class="text-truncate-ellipsis" [matTooltip]="row.evaluationDate | momentFormat" matTooltipClass="white-tooltip" appShowIfTruncated>
+                                        {{row.evaluationDate | momentFormat}}
                                     </span>
                                 </mat-cell>
                             </ng-container>
                             <ng-container matColumnDef="consultantName">
                                 <mat-header-cell *matHeaderCellDef fxFlex="20%"> Consultant name </mat-header-cell>
                                 <mat-cell *matCellDef="let row" fxFlex="20%">
-                                    <img class="image-settings" [src]="consultantProfileUrl(row?.externalId)" />
+                                    <img class="image-settings u-mr--12" [src]="consultantProfileUrl(row?.externalId)" />
                                     <span class="text-truncate-ellipsis" [matTooltip]="row?.consultantName" matTooltipClass="white-tooltip" appShowIfTruncated>
                                         {{row?.consultantName}}
                                     </span>

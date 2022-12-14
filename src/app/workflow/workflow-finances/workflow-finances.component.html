@@ -15,7 +15,9 @@
                                 Client (debitor) created in Navision
                             </mat-checkbox>
                             <mat-error>
-                                <app-validator [control]="financesClientForm.clientCreatedInNavision"></app-validator>
+                                <ng-container *ngIf="financesClientForm.clientCreatedInNavision!.touched && !financesClientForm.clientCreatedInNavision!.valid">
+                                    <app-validator [withoutFormField]="true" [control]="financesClientForm.clientCreatedInNavision"></app-validator>
+                                </ng-container>
                             </mat-error>
                         </div>
                         <div fxLayout="row" fxLayoutAlign="start start" class="u-w--100">
@@ -65,7 +67,9 @@
                                     Check invoicing settings on consultant
                                 </mat-checkbox>
                                 <mat-error>
-                                    <app-validator [control]="consultant.get('checkInvoicingSettingsOnConsultant')"></app-validator>
+                                    <ng-container *ngIf="consultant.get('checkInvoicingSettingsOnConsultant')!.touched && !consultant.get('checkInvoicingSettingsOnConsultant')!.valid">
+                                        <app-validator [withoutFormField]="true" [control]="consultant.get('checkInvoicingSettingsOnConsultant')"></app-validator>
+                                    </ng-container>
                                 </mat-error>
                             </div>
                             <div fxLayout="row" fxLayoutAlign="start center" class="u-w--100 u-mb--20" *ngIf="!readOnlyMode || consultant.get('creditorCreatedInNavision')?.value">
@@ -73,7 +77,9 @@
                                     Consultant company (creditor) created in Navision
                                 </mat-checkbox>
                                 <mat-error>
-                                    <app-validator [control]="consultant.get('creditorCreatedInNavision')"></app-validator>
+                                    <ng-container *ngIf="consultant.get('creditorCreatedInNavision')!.touched && !consultant.get('creditorCreatedInNavision')!.valid">
+                                        <app-validator [withoutFormField]="true" [control]="consultant.get('creditorCreatedInNavision')"></app-validator>
+                                    </ng-container>
                                 </mat-error>
                             </div>
                         </div>
