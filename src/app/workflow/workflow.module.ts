@@ -19,6 +19,7 @@ import { WorkflowComponent, WorkflowCreateResolver } from './workflow.component'
 import { GanttChartComponent } from './workflow-overview/gantt-chart/gantt-chart.component';
 import { WorkflowNotesComponent } from './workflow-notes/workflow-notes.component';
 import { RateAndFeesWarningsDialogComponent } from './rate-and-fees-warnings-dialog/rate-and-fees-warnings-dialog.component';
+import { WorkflowDocumentsComponent } from './workflow-documents/workflow-documents.component';
 
 @NgModule({
     declarations: [
@@ -36,7 +37,8 @@ import { RateAndFeesWarningsDialogComponent } from './rate-and-fees-warnings-dia
         AddOrEditProjectLineDialogComponent,
         GanttChartComponent,
         WorkflowNotesComponent,
-        RateAndFeesWarningsDialogComponent
+        RateAndFeesWarningsDialogComponent,
+        WorkflowDocumentsComponent
     ],
     imports: [
         CommonModule,

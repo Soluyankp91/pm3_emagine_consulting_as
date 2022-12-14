@@ -138,7 +138,14 @@
                 <div class="workflow-form--panel pos-relative u-w--100">
                     <app-workflow-overview [periodId]="clientPeriods![0]?.id"></app-workflow-overview>
                     <div *ngIf="isNoteVisible" class="workflow-notes-wrapper wrapper-overlay">
-                        <app-workflow-notes (noteHidden)="isNoteVisible = !isNoteVisible" [topToolbarVisible]="topToolbarVisible" [workflowId]="workflowId" [alwaysVisible]="false"></app-workflow-notes>
+                        <mat-tab-group>
+                            <mat-tab label="Notes">
+                                <app-workflow-notes (noteHidden)="isNoteVisible = !isNoteVisible" [topToolbarVisible]="topToolbarVisible" [workflowId]="workflowId" [alwaysVisible]="false"></app-workflow-notes>
+                            </mat-tab>
+                            <mat-tab label="Documents"> 
+                                <app-workflow-documents (noteHidden)="isNoteVisible = !isNoteVisible" [topToolbarVisible]="topToolbarVisible" [workflowId]="workflowId" [alwaysVisible]="false"></app-workflow-documents>
+                            </mat-tab>
+                          </mat-tab-group>
                     </div>
                 </div>
             </mat-tab>
@@ -157,7 +164,17 @@
             </mat-tab>
         </mat-tab-group>
         <div class="workflow-notes-wrapper">
-            <app-workflow-notes *ngIf="selectedTabName !== 'Overview'" [topToolbarVisible]="topToolbarVisible" [workflowId]="workflowId" [alwaysVisible]="true"></app-workflow-notes>
+            <ng-container *ngIf="selectedTabName !== 'Overview'">
+                <mat-tab-group>
+                    <mat-tab label="Notes">
+                        <app-workflow-notes [topToolbarVisible]="topToolbarVisible" [workflowId]="workflowId" [alwaysVisible]="true"></app-workflow-notes>
+                    </mat-tab>
+                    <mat-tab label="Documents"> 
+                        <app-workflow-documents [topToolbarVisible]="topToolbarVisible" [workflowId]="workflowId" [alwaysVisible]="true"></app-workflow-documents>
+                    </mat-tab>
+                </mat-tab-group>
+            </ng-container>
+            
         </div>
         <div fxLayout="row" [fxLayoutAlign]="_workflowDataService.getWorkflowProgress.currentStepIsForcefullyEditing ? 'space-between center' : 'end center'" class="workflow-controls" *ngIf="bottomToolbarVisible">
             <button mat-flat-button

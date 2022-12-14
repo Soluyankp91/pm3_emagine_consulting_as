@@ -209,3 +209,26 @@
         padding: 0 16px !important;
     }
 }
+
+.workflow-documents {
+    .mat-accordion {
+        .mat-expansion-panel {
+            border-bottom: 1px solid #E7E3E8;
+            .mat-expansion-panel-header {
+                padding: 6px 24px 6px 16px;
+            }
+            .mat-expansion-panel-content:visible {
+                margin-top: 12px;
+                .mat-expansion-panel-body {
+                    padding: 0 16px 16px !important;
+                }
+            }
+        }
+        .mat-expansion-panel-body {
+            padding: 0 16px !important;
+        }
+        .mat-expansion-panel-spacing {
+            margin: 0 !important;
+        }
+    }
+}

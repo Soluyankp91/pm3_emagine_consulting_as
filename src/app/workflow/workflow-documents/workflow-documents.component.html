@@ -1,0 +1,81 @@
+<div class="workflow-documents" [ngStyle]="{'height': 'calc(100vh - ' + height + 'px)'}" [ngClass]="{'top-toolbar-shown': topToolbarVisible}" #documentsContainer>
+    <div fxLayout="column" [fxLayoutAlign]="workflowDocuments.length ? 'start start' : 'center center'" class="workflow-documents--content" [ngStyle]="{'height': 'calc(100vh - ' + (height + 135) + 'px)'}">
+        <ng-scrollbar class="u-w--100 u-h--100">
+            <ng-container *ngIf="workflowDocuments.length; else documentsEmpty">
+                <mat-accordion class="mat-elevation-z0">
+                    <ng-container *ngFor="let item of workflowDocuments">
+                        <mat-expansion-panel class="mat-elevation-z0">
+                            <mat-expansion-panel-header 
+                                        [collapsedHeight]="'48px'"
+                                        [expandedHeight]="'48px'">
+                                <mat-panel-title>
+                                    <div fxLayout="column" fxLayoutAlign="start start" fxLayoutGap="4px">
+                                        <span class="workflow-documents--header-name">
+                                            {{item.periodName}}
+                                        </span>
+                                        <span class="workflow-documents--header-dates">{{(item.periodStartDate | momentFormat) + ' - ' + (item.periodEndDate | momentFormat)}}</span>
+                                    </div>
+                                </mat-panel-title>
+                            </mat-expansion-panel-header>
+                            <ng-container *ngIf="item.periodSteps">
+                                <div *ngFor="let step of item.periodSteps" class="column">
+                                    <h2 class="workflow-documents--content-header u-mb--16">{{step.name}}</h2>
+                                    <ng-container *ngIf="step.consultants.length; else noDocumentsTemplate">
+                                        <ng-container *ngFor="let consultant of step.consultants">
+                                            <div fxLayout="row" fxLayoutAlign="start center" class="u-mb--12">
+                                                <img class="image-settings--dropdown u-mr--8" [src]="consultantProfileUrl(consultant.consultantExternalId)">
+                                                <span class="workflow-documents--content-consultant__name">{{consultant.consultantName}}</span>
+                                            </div>
+                                            <ng-container *ngIf="consultant.consultantDocuments.length; else noDocumentsTemplate">
+                                                <ng-container *ngFor="let document of consultant.consultantDocuments">
+                                                    <div fxLayout="row" fxLayoutAlign="space-between center" class="workflow-documents--content-documents u-mb--24">
+                                                        <div fxLayout="row" fxLayoutAlign="start center" fxLayoutGap="14px">
+                                                            <mat-icon class="icon" [svgIcon]="document.icon"></mat-icon>
+                                                            <span class="workflow-documents--content-documents__name">
+                                                                {{ document.name }}
+                                                            </span>
+                                                        </div>
+                                                        <button mat-icon-button type="button" appPreventDoubleClick (throttledClick)="$event.stopPropagation();" [matMenuTriggerFor]="documentActionsMenu" class="three-dots-actions-btn">
+                                                            <mat-icon svgIcon="3-dots"></mat-icon>
+                                                        </button>
+                                                        <mat-menu #documentActionsMenu>
+                                                            <button
+                                                                class="menu-item menu-item--edit"
+                                                                mat-menu-item
+                                                                appPreventDoubleClick (throttledClick)="downloadDocument()">
+                                                                <mat-icon svgIcon="download-icon"></mat-icon>
+                                                                Download
+                                                            </button>
+                                                            <button
+                                                                class="menu-item menu-item--cancel"
+                                                                mat-menu-item
+                                                                appPreventDoubleClick (throttledClick)="removeDocument()">
+                                                                <mat-icon svgIcon="close-icon"></mat-icon>
+                                                                Delete
+                                                            </button>
+                                                        </mat-menu>
+                                                    </div>
+                                                </ng-container>
+                                            </ng-container>
+                                        </ng-container>
+                                    </ng-container>
+                                    <ng-template #noDocumentsTemplate>
+                                        <span class="workflow-documents--content-documents__empty u-mb--24">No documents added</span>
+                                    </ng-template>
+                                </div>
+                            </ng-container>
+                        </mat-expansion-panel>
+                    </ng-container>
+                </mat-accordion>
+            </ng-container>
+            <ng-template #documentsEmpty>
+                <div fxLayout="column" fxLayoutAlign="center center" class="workflow-documents--empty">
+                    <mat-icon class="workflow-documents--empty-icon" svgIcon="empty-notes-icon"></mat-icon>
+                    <span class="workflow-documents--empty-text">
+                        No documents added yet
+                    </span>
+                </div>
+            </ng-template>
+        </ng-scrollbar>
+    </div>
+</div>
