@@ -62,7 +62,7 @@
                     <div class="workflow-section--content">
                         <div *ngFor="let consultant of financesConsultantsForm.consultants.controls; let i = index; last as last" [formGroupName]="i" class="workflow-finances--block-consultants u-w--100" [ngClass]="{'last-block': last}">
                             <app-consultant-information [consultantData]="consultant?.value?.consultant"></app-consultant-information>
-                            <div fxLayout="row" fxLayoutAlign="start center" class="u-w--100 u-mb--10"*ngIf="!readOnlyMode || consultant.get('checkInvoicingSettingsOnConsultant')?.value">
+                            <div fxLayout="column" fxLayoutAlign="start start" class="u-w--100 u-mb--10"*ngIf="!readOnlyMode || consultant.get('checkInvoicingSettingsOnConsultant')?.value">
                                 <mat-checkbox [disabled]="readOnlyMode" color="accent" formControlName="checkInvoicingSettingsOnConsultant" name="checkInvoicingSettingsOnConsultant" class="black-checkbox u-mr--10">
                                     Check invoicing settings on consultant
                                 </mat-checkbox>
@@ -72,7 +72,7 @@
                                     </ng-container>
                                 </mat-error>
                             </div>
-                            <div fxLayout="row" fxLayoutAlign="start center" class="u-w--100 u-mb--20" *ngIf="!readOnlyMode || consultant.get('creditorCreatedInNavision')?.value">
+                            <div fxLayout="column" fxLayoutAlign="start start" class="u-w--100 u-mb--20" *ngIf="!readOnlyMode || consultant.get('creditorCreatedInNavision')?.value">
                                 <mat-checkbox [disabled]="readOnlyMode" required color="accent" formControlName="creditorCreatedInNavision" name="creditorCreatedInNavision" class="black-checkbox u-mr--10">
                                     Consultant company (creditor) created in Navision
                                 </mat-checkbox>
