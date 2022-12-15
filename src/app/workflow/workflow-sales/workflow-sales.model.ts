@@ -90,8 +90,7 @@ export class WorkflowSalesClientDataForm extends FormGroup {
             clientInvoicingRecipientIdValue: new FormControl(null, [Validators.required, CustomValidators.autocompleteValidator(['clientId'])]),
 
             // Client Invoicing Reference Person
-            invoicingReferencePersonIdValue: new FormControl(null, [Validators.required, CustomValidators.autocompleteValidator(['id'])]),
-            noInvoicingReferencePerson: new FormControl(false, Validators.required),
+            invoicePaperworkContactIdValue: new FormControl(null, [Validators.required, CustomValidators.autocompleteValidator(['id'])]),
 
             // Client Evaluations - Consultant
             evaluationsReferencePersonIdValue: new FormControl(null, CustomValidators.autocompleteValidator(['id'])),
@@ -160,11 +159,8 @@ export class WorkflowSalesClientDataForm extends FormGroup {
     get clientInvoicingRecipientIdValue() {
         return this.get('clientInvoicingRecipientIdValue');
     }
-    get invoicingReferencePersonIdValue() {
-        return this.get('invoicingReferencePersonIdValue');
-    }
-    get noInvoicingReferencePerson() {
-        return this.get('noInvoicingReferencePerson');
+    get invoicePaperworkContactIdValue() {
+        return this.get('invoicePaperworkContactIdValue');
     }
     get evaluationsReferencePersonIdValue() {
         return this.get('evaluationsReferencePersonIdValue');

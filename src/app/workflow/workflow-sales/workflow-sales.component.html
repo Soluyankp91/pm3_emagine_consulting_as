@@ -845,8 +845,8 @@
 
                                 <div fxLayout="row" fxLayoutAlign="start center" class="u-w--100 u-mb--10">
                                     <mat-form-field appearance="outline" class="u-w--100 formFieldNoMarginPadding filter-select u-mr--12" fxFlex="0 0 calc(44% + 12px)" [ngClass]="{'disabled-input': readOnlyMode}">
-                                        <mat-label>Invoicing Reference Person</mat-label>
-                                        <input [disabled]="readOnlyMode" required #invoicingReferencePersonInput type="text" matInput [matAutocomplete]="invoicingReferencePersonAutocomplete" formControlName="invoicingReferencePersonIdValue" appPreventDoubleClick (throttledClick)="$event.stopPropagation()" placeholder="Invoicing Reference Person">
+                                        <mat-label>Invoice / Paperwork Contact</mat-label>
+                                        <input [disabled]="readOnlyMode" required #invoicingReferencePersonInput type="text" matInput [matAutocomplete]="invoicingReferencePersonAutocomplete" formControlName="invoicePaperworkContactIdValue" appPreventDoubleClick (throttledClick)="$event.stopPropagation()" placeholder="Invoice / Paperwork Contact">
                                         <mat-autocomplete #invoicingReferencePersonAutocomplete="matAutocomplete" [displayWith]="displayFullNameFn"
                                             (optionSelected)="focusOutMethod()" (opened)="focusInMethod()" (closed)="focusOutMethod()">
                                             <ng-container>
@@ -856,14 +856,9 @@
                                             </ng-container>
                                         </mat-autocomplete>
                                         <mat-error>
-                                            <app-validator [control]="salesClientDataForm.invoicingReferencePersonIdValue"></app-validator>
+                                            <app-validator [control]="salesClientDataForm.invoicePaperworkContactIdValue"></app-validator>
                                         </mat-error>
                                     </mat-form-field>
-                                    <ng-container *ngIf="!readOnlyMode || salesClientDataForm.noInvoicingReferencePerson?.value">
-                                        <mat-checkbox [disabled]="readOnlyMode" color="accent" formControlName="noInvoicingReferencePerson" name="noInvoicingReferencePerson" class="black-checkbox u-mt--8" (change)="disableOrEnableInput(salesClientDataForm.noInvoicingReferencePerson?.value, salesClientDataForm.invoicingReferencePersonIdValue)">
-                                            None
-                                        </mat-checkbox>
-                                    </ng-container>
                                 </div>
                             </ng-container>
 
