@@ -8,6 +8,7 @@ import {
     filter,
     finalize,
     distinctUntilChanged,
+    catchError,
 } from 'rxjs/operators';
 import {
     BehaviorSubject,
@@ -48,6 +49,7 @@ import { FileUpload } from 'src/app/contracts/shared/components/file-uploader/fi
 import { AppComponentBase } from 'src/shared/app-component-base';
 import { CreationTitleService } from '../creation-title.service';
 import { tapOnce } from 'src/app/contracts/shared/operators/tapOnce';
+import { Location } from '@angular/common';
 
 @Component({
     selector: 'app-settings',
@@ -102,13 +104,13 @@ export class CreateMasterTemplateComponent
         private readonly router: Router,
         private readonly route: ActivatedRoute,
         private readonly creationTitleService: CreationTitleService,
+        private readonly location: Location,
         private injector: Injector
     ) {
         super(injector);
     }
 
     ngOnInit(): void {
-        console.log('ngOnInit');
         if (this.route.snapshot.params.id) {
             this.editMode = true;
             this.templateId = this.route.snapshot.params.id;
@@ -205,7 +207,7 @@ export class CreateMasterTemplateComponent
             distinctUntilChanged(),
             switchMap((searchStr) => {
                 return this.apiServiceProxy
-                    .simpleList2(false, searchStr, 1, 100)
+                    .simpleList2(false, searchStr, 1, 1000)
                     .pipe(
                         map(
                             (response) =>
@@ -262,7 +264,6 @@ export class CreateMasterTemplateComponent
                         parentTemplateId: `${agreementTemplateId}`,
                     };
                     this.router.navigate([], {
-                        relativeTo: this.route,
                         queryParams: queryParams,
                     });
                 })
@@ -364,53 +365,63 @@ export class CreateMasterTemplateComponent
             });
     }
 
-    test(val: any) {
-        console.log(val);
-        return val;
-    }
-
     private _subscribeOnRouteParamsChange() {
         this.route.queryParams
             .pipe(
                 switchMap((queryParams) => {
-                    return EMPTY;
                     let parentId = queryParams.parentTemplateId;
-                    if (parentId) {
-                        this.showMainSpinner();
-                        if (
-                            this.agreementCreationMode.value ===
+                    if (!parentId) {
+                        this.masterTemplateOptions$ =
+                            this._getExistingTemplate$();
+                        this.agreementCreationMode.setValue(
                             this.creationModes.FromScratch
-                        ) {
-                            this.agreementCreationMode.setValue(
-                                this.creationModes.Duplicated
-                            );
-                        }
+                        );
                         this.onCreationModeChange();
-                        return this.apiServiceProxy
-                            .agreementTemplateGET(parentId)
-                            .pipe(
-                                tap((parentTemplate) => {
-                                    this.masterTemplateOptions$ =
-                                        this._getExistingTemplate$(
-                                            parentTemplate.name
-                                        ).pipe(
-                                            tapOnce(() => {
-                                                this.hideMainSpinner();
-                                                this.duplicateTemplateControl.setValue(
-                                                    parentId,
-                                                    { emitEvent: false }
-                                                );
-                                                this._onDuplicateChanges(
-                                                    parentTemplate
-                                                );
-                                                this.hideMainSpinner();
-                                            })
-                                        );
-                                    this.cdr.detectChanges();
-                                })
-                            );
+                        this._resetForm();
+                        return EMPTY;
                     }
-                    return EMPTY;
+                    this.showMainSpinner();
+                    return this.apiServiceProxy
+                        .agreementTemplateGET(parentId)
+                        .pipe(
+                            tap(() => {
+                                if (
+                                    this.agreementCreationMode.value ===
+                                    this.creationModes.FromScratch
+                                ) {
+                                    this.agreementCreationMode.setValue(
+                                        this.creationModes.Duplicated
+                                    );
+                                }
+                                this.onCreationModeChange();
+                            }),
+                            catchError(() => {
+                                this.agreementCreationMode.setValue(
+                                    this.creationModes.FromScratch
+                                );
+                                this.onCreationModeChange();
+                                this.hideMainSpinner();
+                                return EMPTY;
+                            }),
+                            tap((parentTemplate) => {
+                                this.masterTemplateOptions$ =
+                                    this._getExistingTemplate$(
+                                        parentTemplate.name
+                                    ).pipe(
+                                        tapOnce(() => {
+                                            this.duplicateTemplateControl.setValue(
+                                                parentId,
+                                                { emitEvent: false }
+                                            );
+                                            this._onDuplicateChanges(
+                                                parentTemplate
+                                            );
+                                            this.hideMainSpinner();
+                                        })
+                                    );
+                                this.cdr.detectChanges();
+                            })
+                        );
                 })
             )
             .subscribe();

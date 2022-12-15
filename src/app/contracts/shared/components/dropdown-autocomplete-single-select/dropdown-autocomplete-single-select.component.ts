@@ -106,7 +106,6 @@ export class DropdownAutocompleteSingleSelectComponent
             this.inputControl.reset(null, { emitEvent: false });
             return;
         }
-        console.log(id);
         let preselectedOption = this.options.find(
             (option) => option[this.outputProperty] == id
         );
@@ -132,6 +131,7 @@ export class DropdownAutocompleteSingleSelectComponent
             this.inputControl.setValue(this.selectedItem, {
                 emitEvent: false,
             });
+            this.inputEmitter.emit(this.selectedItem[this.labelKey]);
             this.control.setErrors(this.inputControl.errors);
         }
     }
