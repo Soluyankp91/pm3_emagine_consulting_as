@@ -3,12 +3,7 @@
     <ng-container [ngSwitch]="true">
         <ng-container *ngSwitchCase="activeSideSection.typeId === workflowSideSections.TerminateWorkflow || activeSideSection.typeId === workflowSideSections.TerminateConsultant">
             <div class="workflow--termination">
-                <h2 *ngIf="!readOnlyMode" class="workflow-section--header">Finish contract in PM</h2>
-                <h1  *ngIf="readOnlyMode" class="workflow-step-readonly--header-main">
-                    <span class="process-name">Contract.</span>
-                    <span class="anchor-name">Finish contract in PM</span>
-                </h1>
-
+                <h2 class="workflow-section--header u-mb--20">Finish contract in PM</h2>
                 <div fxLayout="column" fxLayoutAlign="start start" class="u-w--100">
                     <ng-container *ngIf="readOnlyMode; else contractLinesDoneManuallyInOldPMInput">
                         <h2 class="workflow-section--header u-mt--20">Sync</h2>
@@ -54,44 +49,24 @@
                         </form>
                     </ng-template>
                 </div>
-                <mat-divider *ngIf="readOnlyMode && syncNotPossible && contractsSyncDataForm.showManualOption?.value" class="u-w--100"></mat-divider>
                 <form fxLayout="column" fxLayoutAlign="start start" [formGroup]="contractsTerminationConsultantForm" class="workflow-form u-w--100" id="consultantData">
                     <ng-container formArrayName="consultantTerminationContractData">
                         <div *ngFor="let consultant of contractsTerminationConsultantForm.consultantTerminationContractData.controls; index as i; last as last" [formGroupName]="i" class="workflow-contracts--block-consultants u-mt--20" [ngClass]="{'last-block': last}" [id]="'consultantDataAnchor' + i">
                             <app-consultant-information [consultantData]="consultant?.value?.consultantData"></app-consultant-information>
-                            <div fxLayout="row" fxLayoutAlign="start center" class="u-w--100 u-mb--10">
-                                <ng-container *ngIf="readOnlyMode; else nameremovedConsultantFromAnyManualChecklistsInput">
-                                    <mat-icon class="termination-cancel-icon u-mr--5" [svgIcon]="'cancel-fill'" [ngClass]="{'icon-cancel': !contractsTerminationConsultantForm.consultantTerminationContractData.at(i).get('removedConsultantFromAnyManualChecklists')?.value}"
-                                        *ngIf="!contractsTerminationConsultantForm.consultantTerminationContractData.at(i).get('removedConsultantFromAnyManualChecklists')?.value"></mat-icon>
-                                    <mat-icon class="termination-complete-icon u-mr--5" [svgIcon]="'completed-icon'" height="22px" width="22px"
-                                        *ngIf="contractsTerminationConsultantForm.consultantTerminationContractData.at(i).get('removedConsultantFromAnyManualChecklists')?.value"></mat-icon>
-                                    <span class="workflow-step-readonly--blue-text">
-                                        Removed Consultant from any manual checklists
-                                    </span>
-                                </ng-container>
-                                <ng-template #nameremovedConsultantFromAnyManualChecklistsInput>
-                                    <mat-checkbox color="accent" name="removedConsultantFromAnyManualChecklists" formControlName="removedConsultantFromAnyManualChecklists" class="black-checkbox u-mr--10">
+                            <div fxLayout="row" fxLayoutAlign="start center" class="u-w--100">
+                                <ng-container *ngIf="!readOnlyMode || consultant.get('removedConsultantFromAnyManualChecklists')?.value">
+                                    <mat-checkbox [disabled]="readOnlyMode" color="accent" name="removedConsultantFromAnyManualChecklists" formControlName="removedConsultantFromAnyManualChecklists" class="black-checkbox u-mr--10">
                                         Removed Consultant from any manual checklists
                                     </mat-checkbox>
-                                </ng-template>
+                                </ng-container>
                             </div>
 
-                            <div fxLayout="row" fxLayoutAlign="start center" class="u-w--100 u-mb--20">
-                                <ng-container *ngIf="readOnlyMode; else deletedAnySensitiveDocumentsForGDPRInput">
-                                    <mat-icon class="termination-cancel-icon u-mr--5" [svgIcon]="'cancel-fill'" [ngClass]="{'icon-cancel': !contractsTerminationConsultantForm.consultantTerminationContractData.at(i).get('deletedAnySensitiveDocumentsForGDPR')?.value}"
-                                        *ngIf="!contractsTerminationConsultantForm.consultantTerminationContractData.at(i).get('deletedAnySensitiveDocumentsForGDPR')?.value"></mat-icon>
-                                    <mat-icon class="termination-complete-icon u-mr--5" [svgIcon]="'completed-icon'"
-                                        *ngIf="contractsTerminationConsultantForm.consultantTerminationContractData.at(i).get('deletedAnySensitiveDocumentsForGDPR')?.value"></mat-icon>
-                                    <span class="workflow-step-readonly--blue-text">
-                                        Deleted any sensitive documents (GDPR)
-                                    </span>
-                                </ng-container>
-                                <ng-template #deletedAnySensitiveDocumentsForGDPRInput>
-                                    <mat-checkbox color="accent" name="deletedAnySensitiveDocumentsForGDPR" formControlName="deletedAnySensitiveDocumentsForGDPR" class="black-checkbox u-mr--10">
+                            <div fxLayout="row" fxLayoutAlign="start center" class="u-w--100">
+                                <ng-container *ngIf="!readOnlyMode || consultant.get('deletedAnySensitiveDocumentsForGDPR')?.value">
+                                    <mat-checkbox [disabled]="readOnlyMode" color="accent" name="deletedAnySensitiveDocumentsForGDPR" formControlName="deletedAnySensitiveDocumentsForGDPR" class="black-checkbox u-mr--10">
                                         Deleted any sensitive documents (GDPR)
                                     </mat-checkbox>
-                                </ng-template>
-
+                                </ng-container>
                             </div>
                         </div>
                     </ng-container>
