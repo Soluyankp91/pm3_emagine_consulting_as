@@ -681,3 +681,40 @@ input[type=number] {
         padding: 0 1em 0 1em !important;
     }
 }
+
+
+.wf-responsible-person-autocomplete.mat-form-field-appearance-outline {
+    width: 450px;
+    .mat-form-field-outline {
+        height: 48px;
+    }
+    .mat-form-field-infix {
+        border-top-width: 1.2em !important;
+        .mat-input-element {
+            line-height: 120%;
+        }
+    }
+    .mat-form-field-flex {
+        height: 48px;
+    }
+    &.selected-person {
+        .mat-form-field-flex > .mat-form-field-infix .mat-input-element {
+            margin-left: 40px;
+            width: calc(100% - 40px);
+        }
+    }
+    .mat-form-field-flex > .mat-form-field-infix {
+        padding: 0.3em 0 0.6em !important;
+    }
+    .mat-form-field-prefix {
+        top: .75em;
+        position: absolute;
+    }
+    .mat-form-field-label-wrapper {
+        top: -1.3em !important;
+        padding-top: 0.65em !important;
+    }
+    &.mat-form-field-can-float.mat-form-field-should-float .mat-form-field-label {
+        transform: translateY(-1.35em) scale(0.75) !important;
+    }
+}
