@@ -23,7 +23,7 @@ import { AgreementTemplatesListItemDto } from 'src/shared/service-proxies/servic
     providers: [GridHelpService],
 })
 export class MasterTemplatesComponent implements OnInit {
-    cells = this.gridHelpService.generateTableConfig(
+    cells = this._gridHelpService.generateTableConfig(
         DISPLAYED_COLUMNS,
         MASTER_TEMPLATE_HEADER_CELLS,
         MASTER_TEMPLATE_CELLS
@@ -36,7 +36,7 @@ export class MasterTemplatesComponent implements OnInit {
 
     constructor(
         private readonly _masterTemplatesService: MasterTemplatesService,
-        private readonly gridHelpService: GridHelpService,
+        private readonly _gridHelpService: GridHelpService,
         private readonly _route: ActivatedRoute,
         private readonly _router: Router
     ) {}

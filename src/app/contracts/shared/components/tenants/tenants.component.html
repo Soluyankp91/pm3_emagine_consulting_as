@@ -5,10 +5,7 @@
     >
         <span
             *ngFor="let tenant of tenants; let i = index"
-            class="fi fi-{{ tenant.code | lowercase }}"
-            [style.width.px]="40"
-            [style.height.px]="30"
-            [style.border-radius.%]="50"
+            class="fi fi-{{ tenant.code | lowercase }} tenant"
             [style.right.px]="20 * i"
         ></span>
     </div>
@@ -18,27 +15,21 @@
                 <span>{{ tenants.length }}</span>
             </div>
             <button
+            class="trigger-button"
                 mat-icon-button
                 [matMenuTriggerFor]="menu"
-                [style.width.px]="24"
-                [style.height.px]="24"
                 [style.align-self]="'end'"
             >
                 <mat-icon svgIcon="chevron-down"></mat-icon>
             </button>
             <mat-menu #menu="matMenu">
                 <div
+                class="tenant-menu"
                     *ngFor="let tenant of tenants; let i = index"
-                    [style.width.px]="213"
-                    [style.display]="'flex'"
-                    [style.align-items]="'center'"
                 >
                 <div [style.padding.px]="7">
                     <span
-                    class="fi fi-{{ tenant.code | lowercase }}"
-                    [style.width.px]="40"
-                    [style.height.px]="30"
-                    [style.border-radius.%]="50"
+                    class="fi fi-{{ tenant.code | lowercase }} tenant"
                 ></span>
                 </div>
                     <span>{{ tenant.name }}</span>

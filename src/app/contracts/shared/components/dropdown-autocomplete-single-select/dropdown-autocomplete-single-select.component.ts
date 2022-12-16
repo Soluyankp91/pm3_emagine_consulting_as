@@ -6,12 +6,8 @@ import {
     EventEmitter,
     Output,
     Self,
-    DoCheck,
     ContentChild,
     TemplateRef,
-    ChangeDetectorRef,
-    OnChanges,
-    SimpleChanges,
 } from '@angular/core';
 import {
     AbstractControl,
@@ -59,7 +55,6 @@ export class DropdownAutocompleteSingleSelectComponent
 
     constructor(
         @Self() private readonly ngControl: NgControl,
-        private readonly _cdr: ChangeDetectorRef
     ) {
         ngControl.valueAccessor = this;
     }
@@ -68,7 +63,6 @@ export class DropdownAutocompleteSingleSelectComponent
         this._subsribeOnInputControl();
         this._initValidators();
     }
-
 
     ngDoCheck(): void {
         if (this.control?.touched) {
@@ -85,7 +79,7 @@ export class DropdownAutocompleteSingleSelectComponent
     }
 
     displayFn(option: Item) {
-        return option && option[this.labelKey] ? option[this.labelKey] : option;
+        return option[this.labelKey];
     }
 
     onSelect(selectedOption: Item) {

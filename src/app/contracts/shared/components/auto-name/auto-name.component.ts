@@ -28,7 +28,7 @@ export class AutoNameComponent implements OnInit, DoCheck {
 
     retriewTemplate$ = new Subject<void>();
 
-    private templatePreview$: Observable<string | undefined>;
+    private _templatePreview: Observable<string | undefined>;
 
     textControlBufferValue: string;
     showSample = false;
@@ -98,7 +98,7 @@ export class AutoNameComponent implements OnInit, DoCheck {
     }
 
     private _subscribeOnShowSampleToggle() {
-        this.templatePreview$ = this.retriewTemplate$.pipe(
+        this._templatePreview = this.retriewTemplate$.pipe(
             switchMap(() => {
                 this.showSample = !this.showSample;
                 if (this.showSample) {
@@ -122,7 +122,7 @@ export class AutoNameComponent implements OnInit, DoCheck {
                 return EMPTY;
             })
         );
-        this.templatePreview$.subscribe();
+        this._templatePreview.subscribe();
     }
 
     private _initValidators() {

@@ -11,3 +11,17 @@ span:not(:first-child) {
     border-radius: 50%;
     color: rgb(255, 255, 255);
 }
+.tenant {
+    width: 40px;
+    height: 30px;
+    border-radius: 50%;
+}
+.trigger-button {
+    width: 24px;
+    height: 24px;
+}
+.tenant-menu {
+    width: 213px;
+    display: flex;
+    align-items: center;
+}

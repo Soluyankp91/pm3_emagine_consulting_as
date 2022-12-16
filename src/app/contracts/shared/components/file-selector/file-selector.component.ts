@@ -30,7 +30,7 @@ export class FileSelectorComponent
     inheritedFilesModified: FileUploadItem[] = [];
     selectedInheritedFiles: FileUpload[] = [];
 
-    private onChange = (val: any) => {};
+    private _onChange = (val: any) => {};
     private onTouched = () => {};
 
     constructor(
@@ -86,7 +86,7 @@ export class FileSelectorComponent
             );
         }
 
-        this.onChange([...this.selectedInheritedFiles]);
+        this._onChange([...this.selectedInheritedFiles]);
     }
 
     writeValue(preSelectedFiles: FileUpload[]): void {
@@ -109,11 +109,11 @@ export class FileSelectorComponent
                 this.selectedInheritedFiles.push(originalFile);
             }
         });
-        this.onChange([...this.selectedInheritedFiles]);
+        this._onChange([...this.selectedInheritedFiles]);
     }
 
     registerOnChange(fn: any): void {
-        this.onChange = fn;
+        this._onChange = fn;
     }
     registerOnTouched(fn: any): void {
         this.onTouched = fn;

@@ -5,7 +5,7 @@ import {
     ChangeDetectorRef,
 } from '@angular/core';
 import { FileServiceProxy } from 'src/shared/service-proxies/service-proxies';
-import { Subject, Observable, forkJoin, EMPTY, of } from 'rxjs';
+import { Subject, Observable, forkJoin, of } from 'rxjs';
 import { switchMap, map, tap } from 'rxjs/operators';
 import { ControlValueAccessor, NG_VALUE_ACCESSOR } from '@angular/forms';
 import { FileUploadItem } from './files';
