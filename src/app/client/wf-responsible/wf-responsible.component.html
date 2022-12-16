@@ -22,7 +22,7 @@
         <div fxLayout="row" fxLayoutAlign="start start" class="u-w--100">
             <mat-form-field appearance="outline" class="formFieldNoMarginPadding filter-select wf-responsible-person-autocomplete" [ngClass]="{'selected-person': financeStepResponsible.value?.id}">
                 <mat-label>Finance step responsible</mat-label>
-                <img *ngIf="contractStepResponsible.value?.id" matPrefix class="border-rounded-50 image-thumbnail-small" [src]="employeeProfileUrl(financeStepResponsible.value?.externalId!)" />
+                <img *ngIf="financeStepResponsible.value?.id" matPrefix class="border-rounded-50 image-thumbnail-small" [src]="employeeProfileUrl(financeStepResponsible.value?.externalId!)" />
                 <input #financeResponsibleInput type="text" matInput [matAutocomplete]="financeResponsibleAutocomplete" [formControl]="financeStepResponsible" appPreventDoubleClick (throttledClick)="$event.stopPropagation()" placeholder="Select finance responsible">
                 <mat-autocomplete #financeResponsibleAutocomplete="matAutocomplete" [displayWith]="displayNameFn">
                     <ng-container>
