@@ -1,15 +1,21 @@
 <div class="client-workflow-track">
-    <div fxLayout="column" fxLayoutAlign="start start" class="client-workflow--content u-w--100"  fxFlexFill>
+    <div fxLayout="column" fxLayoutAlign="start start" class="client-workflow--content u-w--100" fxFlexFill>
         <div fxLayout="row" fxLayoutAlign="start start" class="u-w--100 u-mb--20">
-            <mat-form-field appearance="outline" class="formFieldNoMarginPadding filter-select wf-responsible-person-autocomplete" [ngClass]="{'selected-person': contractStepResponsible.value?.id}">
+            <mat-form-field appearance="outline"
+                class="formFieldNoMarginPadding filter-select wf-responsible-person-autocomplete"
+                [ngClass]="{'selected-person': contractStepResponsible.value?.id}">
                 <mat-label>Contract step responsible</mat-label>
-                <img *ngIf="contractStepResponsible.value?.id" matPrefix class="border-rounded-50 image-thumbnail-small" [src]="employeeProfileUrl(contractStepResponsible.value?.externalId!)" />
-                <input #contractResponsibleInput type="text" matInput [matAutocomplete]="contractResponsibleAutocomplete" [formControl]="contractStepResponsible" appPreventDoubleClick (throttledClick)="$event.stopPropagation()" placeholder="Select contract responsible">
+                <ng-container *ngIf="contractStepResponsible.value?.id">
+                    <img matPrefix class="border-rounded-50 image-thumbnail-small"
+                        [src]="employeeProfileUrl(contractStepResponsible.value?.externalId!)" />
+                </ng-container>
+                <input #contractResponsibleInput type="text" matInput
+                    [matAutocomplete]="contractResponsibleAutocomplete" [formControl]="contractStepResponsible"
+                    appPreventDoubleClick (throttledClick)="$event.stopPropagation()"
+                    placeholder="Select contract responsible">
                 <mat-autocomplete #contractResponsibleAutocomplete="matAutocomplete" [displayWith]="displayNameFn">
-                    <ng-container>
-                        <mat-option *ngFor="let manager of filteredAccountManagers"
-                            [value]="manager"
-                            [ngClass]="{ 'no-data': manager.id === 'no-data' }">
+                    <ng-container *ngFor="let manager of filteredAccountManagers; trackBy: trackById">
+                        <mat-option [value]="manager" [ngClass]="{ 'no-data': manager.id === undefined }">
                             <span class="autocopmlete-option-name">{{ manager.name }}</span>
                         </mat-option>
                     </ng-container>
@@ -20,15 +26,20 @@
             </mat-form-field>
         </div>
         <div fxLayout="row" fxLayoutAlign="start start" class="u-w--100">
-            <mat-form-field appearance="outline" class="formFieldNoMarginPadding filter-select wf-responsible-person-autocomplete" [ngClass]="{'selected-person': financeStepResponsible.value?.id}">
+            <mat-form-field appearance="outline"
+                class="formFieldNoMarginPadding filter-select wf-responsible-person-autocomplete"
+                [ngClass]="{'selected-person': financeStepResponsible.value?.id}">
                 <mat-label>Finance step responsible</mat-label>
-                <img *ngIf="financeStepResponsible.value?.id" matPrefix class="border-rounded-50 image-thumbnail-small" [src]="employeeProfileUrl(financeStepResponsible.value?.externalId!)" />
-                <input #financeResponsibleInput type="text" matInput [matAutocomplete]="financeResponsibleAutocomplete" [formControl]="financeStepResponsible" appPreventDoubleClick (throttledClick)="$event.stopPropagation()" placeholder="Select finance responsible">
+                <ng-container *ngIf="financeStepResponsible.value?.id">
+                    <img matPrefix class="border-rounded-50 image-thumbnail-small"
+                        [src]="employeeProfileUrl(financeStepResponsible.value?.externalId!)" />
+                </ng-container>
+                <input #financeResponsibleInput type="text" matInput [matAutocomplete]="financeResponsibleAutocomplete"
+                    [formControl]="financeStepResponsible" appPreventDoubleClick
+                    (throttledClick)="$event.stopPropagation()" placeholder="Select finance responsible">
                 <mat-autocomplete #financeResponsibleAutocomplete="matAutocomplete" [displayWith]="displayNameFn">
-                    <ng-container>
-                        <mat-option *ngFor="let manager of filteredAccountManagers"
-                            [value]="manager"
-                            [ngClass]="{ 'no-data': manager.id === 'no-data' }">
+                    <ng-container *ngFor="let manager of filteredAccountManagers; trackBy: trackById">
+                        <mat-option [value]="manager" [ngClass]="{ 'no-data': manager.id === undefined }">
                             <span class="autocopmlete-option-name">{{ manager.name }}</span>
                         </mat-option>
                     </ng-container>

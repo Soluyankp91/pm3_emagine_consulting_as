@@ -10,13 +10,12 @@ import { merge } from 'lodash';
 
 @Component({
     selector: 'app-wf-responsible',
-    templateUrl: './wf-responsible.component.html',
-    styleUrls: ['./wf-responsible.component.scss'],
+    templateUrl: './wf-responsible.component.html'
 })
 export class WfResponsibleComponent extends AppComponentBase {
     contractStepResponsible = new FormControl(null, CustomValidators.autocompleteValidator(['id']));
     financeStepResponsible = new FormControl(null, CustomValidators.autocompleteValidator(['id']));
-    filteredAccountManagers: any[] = [];
+    filteredAccountManagers: EmployeeDto[] = [];
     private _unsubscribe = new Subject();
     constructor(
         injector: Injector,
@@ -46,7 +45,7 @@ export class WfResponsibleComponent extends AppComponentBase {
                 if (list.length) {
                     this.filteredAccountManagers = list;
                 } else {
-                    this.filteredAccountManagers = [{ name: 'No managers found', externalId: '', id: 'no-data', selected: false }];
+                    this.filteredAccountManagers = [new EmployeeDto({ name: 'No managers found', externalId: '', id: undefined })];
                 }
             });
     }
