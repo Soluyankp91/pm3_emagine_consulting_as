@@ -31,3 +31,15 @@ export class FinancesConsultantsForm extends FormGroup {
         return this.get('consultants') as FormArray;
     }
 }
+
+export class DocumentForm extends FormGroup {
+    constructor() {
+        super({
+            documents: new FormArray([])
+        })
+
+    }
+    get documents() {
+        return this.get('documents') as FormArray;
+    }
+}

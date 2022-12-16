@@ -1,7 +1,7 @@
 import { Overlay } from '@angular/cdk/overlay';
 import { NumberSymbol } from '@angular/common';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
-import { Component, Injector, Input, OnDestroy, OnInit } from '@angular/core';
+import { Component, Injector, Input, OnDestroy, OnInit, ViewChild } from '@angular/core';
 import { AbstractControl, FormArray, FormBuilder, FormControl, Validators } from '@angular/forms';
 import { MatAutocompleteSelectedEvent } from '@angular/material/autocomplete';
 import { MatButtonToggleChange } from '@angular/material/button-toggle';
@@ -16,16 +16,18 @@ import { merge, Observable, of, Subject } from 'rxjs';
 import { debounceTime, finalize, map, switchMap, takeUntil } from 'rxjs/operators';
 import { InternalLookupService } from 'src/app/shared/common/internal-lookup.service';
 import { ConfirmationDialogComponent } from 'src/app/shared/components/confirmation-dialog/confirmation-dialog.component';
+import { FileUploaderComponent } from 'src/app/shared/components/file-uploader/file-uploader.component';
+import { FileUploaderFile } from 'src/app/shared/components/file-uploader/file-uploader.model';
 import { environment } from 'src/environments/environment';
 import { AppComponentBase, NotifySeverity } from 'src/shared/app-component-base';
 import { LocalHttpService } from 'src/shared/service-proxies/local-http.service';
-import { ClientPeriodSalesDataDto, ClientPeriodServiceProxy, ClientRateDto, CommissionDto, ConsultantRateDto, ConsultantSalesDataDto, ContractSignerDto, EmployeeDto, EnumEntityTypeDto, LookupServiceProxy, PeriodClientSpecialFeeDto, PeriodClientSpecialRateDto, SalesClientDataDto, SalesMainDataDto, WorkflowProcessType, WorkflowServiceProxy, ConsultantResultDto, ClientResultDto, ContactResultDto, ConsultantTerminationSalesDataCommandDto, WorkflowTerminationSalesDataCommandDto, PeriodConsultantSpecialFeeDto, PeriodConsultantSpecialRateDto, ClientSpecialRateDto, ClientsServiceProxy, ClientSpecialFeeDto, ConsultantPeriodServiceProxy, ConsultantPeriodSalesDataDto, ExtendConsultantPeriodDto, ChangeConsultantPeriodDto, ConsultantWithSourcingRequestResultDto, CountryDto, StepType, LegalEntityDto } from 'src/shared/service-proxies/service-proxies';
+import { ClientPeriodSalesDataDto, ClientPeriodServiceProxy, ClientRateDto, CommissionDto, ConsultantRateDto, ConsultantSalesDataDto, ContractSignerDto, EmployeeDto, EnumEntityTypeDto, LookupServiceProxy, PeriodClientSpecialFeeDto, PeriodClientSpecialRateDto, SalesClientDataDto, SalesMainDataDto, WorkflowProcessType, WorkflowServiceProxy, ConsultantResultDto, ClientResultDto, ContactResultDto, ConsultantTerminationSalesDataCommandDto, WorkflowTerminationSalesDataCommandDto, PeriodConsultantSpecialFeeDto, PeriodConsultantSpecialRateDto, ClientSpecialRateDto, ClientsServiceProxy, ClientSpecialFeeDto, ConsultantPeriodServiceProxy, ConsultantPeriodSalesDataDto, ExtendConsultantPeriodDto, ChangeConsultantPeriodDto, ConsultantWithSourcingRequestResultDto, CountryDto, StepType, LegalEntityDto, FileParameter, DocumentTypeEnum } from 'src/shared/service-proxies/service-proxies';
 import { CustomValidators } from 'src/shared/utils/custom-validators';
 import { WorkflowConsultantActionsDialogComponent } from '../workflow-consultant-actions-dialog/workflow-consultant-actions-dialog.component';
 import { WorkflowDataService } from '../workflow-data.service';
 import { WorkflowProcessWithAnchorsDto } from '../workflow-period/workflow-period.model';
 import { EmploymentTypes } from '../workflow.model';
-import { ConsultantDiallogAction, SalesTerminateConsultantForm, WorkflowSalesClientDataForm, WorkflowSalesConsultantsForm, WorkflowSalesMainForm } from './workflow-sales.model';
+import { ConsultantDiallogAction, SalesTerminateConsultantForm, WorkflowSalesClientDataForm, WorkflowSalesConsultantsForm, WorkflowSalesMainForm, DocumentForm } from './workflow-sales.model';
 
 @Component({
     selector: 'app-workflow-sales',
@@ -33,6 +35,8 @@ import { ConsultantDiallogAction, SalesTerminateConsultantForm, WorkflowSalesCli
     styleUrls: ['./workflow-sales.component.scss']
 })
 export class WorkflowSalesComponent extends AppComponentBase implements OnInit, OnDestroy {
+    @ViewChild('fileUploader') fileUploader: FileUploaderComponent;
+
     @Input() workflowId: string;
     @Input() periodId: string | undefined;
     @Input() consultant: ConsultantResultDto;
@@ -49,7 +53,10 @@ export class WorkflowSalesComponent extends AppComponentBase implements OnInit, 
     salesMainDataForm: WorkflowSalesMainForm;
     consultantsForm: WorkflowSalesConsultantsForm;
     salesTerminateConsultantForm: SalesTerminateConsultantForm;
+    documentForm: DocumentForm;
 
+    isDocumentsLoading = true;
+    documensNoData = true;
     clientSpecialRateActive = false;
     clientSpecialFeesActive = false;
 
@@ -180,6 +187,7 @@ export class WorkflowSalesComponent extends AppComponentBase implements OnInit, 
         this.salesMainDataForm = new WorkflowSalesMainForm();
         this.consultantsForm = new WorkflowSalesConsultantsForm();
         this.salesTerminateConsultantForm = new SalesTerminateConsultantForm();
+        this.documentForm = new DocumentForm();
 
         //#region form subscriptions
         this.salesMainDataForm.salesAccountManagerIdValue?.valueChanges
@@ -481,7 +489,7 @@ export class WorkflowSalesComponent extends AppComponentBase implements OnInit, 
         this.getLegalEntities();
 
         this.getSalesStepData();
-
+        this.getDocuments();
         this._workflowDataService.startClientPeriodSalesSaved
             .pipe(takeUntil(this._unsubscribe))
             .subscribe((isDraft: boolean) => {
@@ -654,8 +662,7 @@ export class WorkflowSalesComponent extends AppComponentBase implements OnInit, 
         this._clientService.specialRatesAll(clientId, true).subscribe(result => this.clientSpecialRateList = result.filter(x => !x.isHidden));
         this._clientService.specialFeesAll(clientId, true).subscribe(result => this.clientSpecialFeeList = result.filter(x => !x.isHidden));
     }
-
-
+    
     ngOnDestroy(): void {
         this._unsubscribe.next();
         this._unsubscribe.complete();
@@ -2619,4 +2626,109 @@ export class WorkflowSalesComponent extends AppComponentBase implements OnInit, 
         b.style.overflow = "auto";
     }
 
+    openDialogToAddFile(files: FileUploaderFile[]) {
+        this.showMainSpinner();
+        const fileToUpload = files[0];
+        let fileInput: FileParameter;
+        fileInput = {
+            fileName: fileToUpload.name,
+            // fileType: 'pdf',
+            data: fileToUpload.internalFile
+        }
+        this.fileUploader.clear();
+        this.hideMainSpinner();
+        this.getDocuments(fileInput);
+    }
+
+    getDocuments(documents?: any) {
+        // this.isDocumentsLoading = true;
+        // this._clientDocumentsService.generalAttachments(this.clientId, this.generalDocumentsIncludeLinked.value)
+            // .pipe(finalize(() => this.isDocumentsLoading = false))
+            // .subscribe(result => {
+                this.documentForm.documents.clear();
+                // documents.forEach((dcument: any) => {
+                    if (documents !== null && documents !== undefined) {
+                        this.addDocument(documents)
+                        this.documensNoData = documents?.length === 0;
+                    }
+                // });
+                console.log(this.documensNoData)
+            // });
+    }
+
+    addDocument(document?: any) {
+        const form = this._fb.group({
+            // clientAttachmentGuid: new FormControl(document?.clientAttachmentGuid ?? null),
+            // documentStorageGuid: new FormControl(document?.documentStorageGuid ?? null),
+            // icon: new FormControl(this.getFileTypeIcon(document?.documentType!) ?? null),
+            icon: new FormControl('pdf'),
+            headline: new FormControl(document?.headline ?? null),
+            filename: new FormControl(document?.fileName ?? null),
+            // attachmentTypeId: new FormControl(this.findItemById(this.generalFileTypes, document?.attachmentTypeId) ?? null),
+            // dateUpdated: new FormControl(document?.dateUpdated ?? null),
+            dateUpdated: new FormControl(new Date()),
+            updatedBy: new FormControl(document?.updatedBy ?? null),
+            editable: new FormControl(document ? false : true)
+        });
+        this.documentForm.documents.push(form);
+    }
+
+    get documents(): FormArray {
+        return this.documentForm.get('documents') as FormArray;
+    }
+
+    getFileTypeIcon(fileIcon: number) {
+        switch (fileIcon) {
+            case DocumentTypeEnum.Pdf:
+                return 'pdf';
+            case DocumentTypeEnum.Word:
+                return 'doc';
+            case DocumentTypeEnum.Excel:
+                return 'xls';
+            case DocumentTypeEnum.Image:
+                return 'jpg';
+            case DocumentTypeEnum.Misc:
+                return 'txt';
+            default:
+                return '';
+        }
+    }
+
+    deleteGeneralDocument(clientAttachmentGuid: string) {
+        // this.showMainSpinner();
+        // this._clientDocumentsService.generalFileDELETE(this.clientId, clientAttachmentGuid)
+        //     .pipe(finalize(() => this.hideMainSpinner()))
+        //     .subscribe(result => {
+        //         this.getGeneralDocuments();
+        //     });
+    }
+
+    downloadDocument(clientAttachmentGuid: string) {
+        // this.localHttpService.getTokenPromise().then((response: AuthenticationResult) => {
+        //     const fileUrl = `${this.apiUrl}/api/ClientDocuments/Document/${clientAttachmentGuid}`;
+        //     this.httpClient.get(fileUrl, {
+        //         headers: new HttpHeaders({
+        //             'Authorization': `Bearer ${response.accessToken}`,
+        //         }), responseType: 'blob',
+        //         observe: 'response'
+        //     }).subscribe((data: HttpResponse<Blob>) => {
+        //         const blob = new Blob([data.body!], { type: data.body!.type });
+        //         const contentDispositionHeader = data.headers.get('Content-Disposition');
+        //         if (contentDispositionHeader !== null) {
+        //             const contentDispositionHeaderResult = contentDispositionHeader.split(';')[1].trim().split('=')[1];
+        //             const contentDispositionFileName = contentDispositionHeaderResult.replace(/"/g, '');
+        //             const downloadlink = document.createElement('a');
+        //             downloadlink.href = window.URL.createObjectURL(blob);
+        //             downloadlink.download = contentDispositionFileName;
+        //             const nav = (window.navigator as any);
+
+        //             if (nav.msSaveOrOpenBlob) {
+        //                 nav.msSaveBlob(blob, contentDispositionFileName);
+        //             } else {
+        //                 downloadlink.click();
+        //             }
+        //         }
+        //     });
+        // });
+    }
 }

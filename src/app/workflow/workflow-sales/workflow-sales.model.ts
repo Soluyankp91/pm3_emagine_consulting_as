@@ -363,3 +363,15 @@ export const TenantList = [
         code: 'SE'
     }
 ];
+
+export class DocumentForm extends FormGroup {
+    constructor() {
+        super({
+            documents: new FormArray([])
+        })
+
+    }
+    get documents() {
+        return this.get('documents') as FormArray;
+    }
+}

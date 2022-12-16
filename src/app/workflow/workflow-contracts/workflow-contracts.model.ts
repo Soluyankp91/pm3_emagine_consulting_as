@@ -210,3 +210,15 @@ export enum LegalContractStatus {
     SavedButNotGenerated = 2,
     Done = 10
 }
+
+export class DocumentForm extends FormGroup {
+    constructor() {
+        super({
+            documents: new FormArray([])
+        })
+
+    }
+    get documents() {
+        return this.get('documents') as FormArray;
+    }
+}
