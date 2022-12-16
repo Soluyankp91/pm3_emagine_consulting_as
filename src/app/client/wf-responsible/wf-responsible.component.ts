@@ -1,4 +1,4 @@
-import { Component, Injector, OnInit } from '@angular/core';
+import { Component, Injector } from '@angular/core';
 import { FormControl } from '@angular/forms';
 import { AppComponentBase } from 'src/shared/app-component-base';
 import { Subject } from 'rxjs';
@@ -13,7 +13,7 @@ import { merge } from 'lodash';
     templateUrl: './wf-responsible.component.html',
     styleUrls: ['./wf-responsible.component.scss'],
 })
-export class WfResponsibleComponent extends AppComponentBase implements OnInit {
+export class WfResponsibleComponent extends AppComponentBase {
     contractStepResponsible = new FormControl(null, CustomValidators.autocompleteValidator(['id']));
     financeStepResponsible = new FormControl(null, CustomValidators.autocompleteValidator(['id']));
     filteredAccountManagers: any[] = [];
@@ -51,10 +51,10 @@ export class WfResponsibleComponent extends AppComponentBase implements OnInit {
             });
     }
 
-    ngOnInit(): void {}
-
     ngOnDestroy(): void {
         this._unsubscribe.next();
         this._unsubscribe.complete();
     }
+
+    // TODO: add call to BE to cahnge responsible person once BE is deployed
 }
