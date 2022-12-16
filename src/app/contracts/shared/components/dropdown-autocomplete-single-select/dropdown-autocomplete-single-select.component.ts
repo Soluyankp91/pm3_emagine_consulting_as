@@ -79,7 +79,7 @@ export class DropdownAutocompleteSingleSelectComponent
     }
 
     displayFn(option: Item) {
-        return option[this.labelKey];
+       return option && option[this.labelKey] ? option[this.labelKey] : option
     }
 
     onSelect(selectedOption: Item) {
