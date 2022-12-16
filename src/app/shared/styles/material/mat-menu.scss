@@ -1,16 +1,16 @@
 @import "/src/app/shared/styles/config/_colors";
 
 .mat-menu-panel {
-    min-height: 30px !important;
+    min-height: 27px !important;
     min-width: unset !important;
     .mat-menu-content:not(:empty) {
-        padding: 7px;
+        padding: 8px;
         .mat-menu-item {
             display: flex;
             align-items: center;
-            height: 30px;
-            line-height: 30px;
-            padding: 0 7px;
+            height: 27px;
+            line-height: 27px;
+            padding: 0 8px;
             &:hover:not([disabled]) {
                 background: transparent !important;
             }
@@ -19,7 +19,7 @@
 }
 
 .menu-item {
-    padding: 0 7px;
+    padding: 0 8px;
     @include fontOpenSans(14px, 700);
     display: flex;
     align-items: center;
