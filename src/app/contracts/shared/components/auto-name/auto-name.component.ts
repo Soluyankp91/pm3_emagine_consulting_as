@@ -12,6 +12,7 @@ import { map, switchMap, tap } from 'rxjs/operators';
 
 @Component({
     selector: 'emg-auto-name',
+    styleUrls: ['./auto-name.component.scss'],
     templateUrl: './auto-name.component.html',
     encapsulation: ViewEncapsulation.None,
 })
@@ -77,6 +78,10 @@ export class AutoNameComponent implements OnInit, DoCheck {
     addAutoName(autoName: string) {
         let textControlValue = this.textControl.value;
         this.textControl.setValue(textControlValue + ` {${autoName}} `);
+    }
+
+    trackBy(index: number, item: string) {
+        return item;
     }
 
     private _initOptions() {

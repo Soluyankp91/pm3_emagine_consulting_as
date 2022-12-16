@@ -42,7 +42,13 @@
                         {{ agreementType.name }}
                     </mat-option>
                 </mat-select>
-                <mat-error><app-validator [control]="masterTemplateFormGroup.controls['agreementType']"></app-validator></mat-error>
+                <mat-error
+                    ><app-validator
+                        [control]="
+                            masterTemplateFormGroup.controls['agreementType']
+                        "
+                    ></app-validator
+                ></mat-error>
             </mat-form-field>
             <mat-form-field
                 class="dropdown"
@@ -61,27 +67,27 @@
                         {{ recipientType.name }}
                     </mat-option>
                 </mat-select>
-                <mat-error><app-validator [control]="masterTemplateFormGroup.controls['recipientTypeId']"></app-validator></mat-error>
+                <mat-error
+                    ><app-validator
+                        [control]="
+                            masterTemplateFormGroup.controls['recipientTypeId']
+                        "
+                    ></app-validator
+                ></mat-error>
             </mat-form-field>
-            <ng-container
-                *ngIf="agreementCreationMode.value === creationModes.Duplicated || (editMode && isDuplicated)"
+            <emg-dropdown-autocomplete-single-select
+                *ngIf="(masterTemplateOptions$ | async) as masterTemplateOptions"
+                [options]="masterTemplateOptions"
+                [labelKey]="'name'"
+                [outputProperty]="'agreementTemplateId'"
+                [label]="'Master Template'"
+                [formControl]="duplicateTemplateControl"
+                (inputEmitter)="masterTemplateOptionsChanged$.next($event)"
             >
-                <emg-dropdown-autocomplete-single-select
-                    *ngIf="
-                        masterTemplateOptions$ | async as masterTemplateOptions
-                    "
-                    [options]="masterTemplateOptions"
-                    [labelKey]="'name'"
-                    [outputProperty]="'agreementTemplateId'"
-                    [label]="'Master Template'"
-                    [formControl]="duplicateTemplateControl"
-                    (inputEmitter)="masterTemplateOptionsChanged$.next($event)"
-                >
                 <ng-template let-cell="option" #optionTemplate>
-                    <span>{{cell.name}}</span>
+                    <span>{{ cell.name }}</span>
                 </ng-template>
-                </emg-dropdown-autocomplete-single-select>
-            </ng-container>
+            </emg-dropdown-autocomplete-single-select>
             <mat-divider></mat-divider>
             <mat-form-field appearance="outline" floatLabel="never">
                 <mat-label> Master template name</mat-label>
@@ -91,7 +97,11 @@
                     formControlName="name"
                     placeholder="Master template name"
                 />
-                <mat-error><app-validator [control]="masterTemplateFormGroup.controls['name']"></app-validator></mat-error>
+                <mat-error
+                    ><app-validator
+                        [control]="masterTemplateFormGroup.controls['name']"
+                    ></app-validator
+                ></mat-error>
             </mat-form-field>
             <div></div>
             <emg-auto-name
@@ -122,7 +132,13 @@
                         {{ legalEntity.name }}
                     </mat-option>
                 </mat-select>
-                <mat-error><app-validator [control]="masterTemplateFormGroup.controls['legalEntities']"></app-validator></mat-error>
+                <mat-error
+                    ><app-validator
+                        [control]="
+                            masterTemplateFormGroup.controls['legalEntities']
+                        "
+                    ></app-validator
+                ></mat-error>
             </mat-form-field>
             <div></div>
             <mat-form-field
@@ -143,7 +159,13 @@
                         {{ salesType.name }}
                     </mat-option>
                 </mat-select>
-                <mat-error><app-validator [control]="masterTemplateFormGroup.controls['salesTypes']"></app-validator></mat-error>
+                <mat-error
+                    ><app-validator
+                        [control]="
+                            masterTemplateFormGroup.controls['salesTypes']
+                        "
+                    ></app-validator
+                ></mat-error>
             </mat-form-field>
             <mat-form-field
                 class="dropdown"
@@ -163,7 +185,13 @@
                         {{ deliveryType.name }}
                     </mat-option>
                 </mat-select>
-                <mat-error><app-validator [control]="masterTemplateFormGroup.controls['deliveryTypes']"></app-validator></mat-error>
+                <mat-error
+                    ><app-validator
+                        [control]="
+                            masterTemplateFormGroup.controls['deliveryTypes']
+                        "
+                    ></app-validator
+                ></mat-error>
             </mat-form-field>
             <div></div>
             <mat-form-field
@@ -184,7 +212,13 @@
                         {{ contractType.name }}
                     </mat-option>
                 </mat-select>
-                <mat-error><app-validator [control]="masterTemplateFormGroup.controls['contractTypes']"></app-validator></mat-error>
+                <mat-error
+                    ><app-validator
+                        [control]="
+                            masterTemplateFormGroup.controls['contractTypes']
+                        "
+                    ></app-validator
+                ></mat-error>
             </mat-form-field>
             <mat-form-field
                 class="dropdown"
@@ -203,7 +237,11 @@
                         {{ language.name }}
                     </mat-option></mat-select
                 >
-                <mat-error><app-validator [control]="masterTemplateFormGroup.controls['language']"></app-validator></mat-error>
+                <mat-error
+                    ><app-validator
+                        [control]="masterTemplateFormGroup.controls['language']"
+                    ></app-validator
+                ></mat-error>
             </mat-form-field>
             <mat-form-field
                 [style.width.px]="564"
@@ -231,12 +269,15 @@
             <mat-checkbox formControlName="isEnabled">Enable</mat-checkbox>
         </div>
         <div class="attachments-section">
-            <emg-file-selector [inheritedFiles]="preselectedFiles" formControlName="selectedInheritedFiles"></emg-file-selector>
-            <emg-file-uploader formControlName="uploadedFiles"></emg-file-uploader>
+            <emg-file-selector
+                [inheritedFiles]="preselectedFiles"
+                formControlName="selectedInheritedFiles"
+            ></emg-file-selector>
+            <emg-file-uploader
+                formControlName="uploadedFiles"
+            ></emg-file-uploader>
         </div>
     </div>
-    <button mat-button (click)="onSave()">
-        Save
-    </button>
+    <button mat-button (click)="onSave()">Save</button>
     <button mat-button (click)="onCancel()">Cancel</button>
 </ng-container>

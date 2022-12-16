@@ -7,7 +7,6 @@ import {
     Output,
     EventEmitter,
     ChangeDetectionStrategy,
-    ChangeDetectorRef,
     ViewContainerRef,
     ComponentFactoryResolver,
     AfterViewInit,
@@ -73,7 +72,7 @@ export class MatGridComponent
     initialSelection = [];
     allowMultiSelect = true;
 
-    selection_ = new SelectionModel<any>(
+    selectionModel = new SelectionModel<any>(
         this.allowMultiSelect,
         this.initialSelection
     );
@@ -81,8 +80,7 @@ export class MatGridComponent
     private unSubscribe$ = new Subject<void>();
 
     constructor(
-        private componentFactoryResolver: ComponentFactoryResolver,
-        private readonly cdr: ChangeDetectorRef
+        private _componentFactoryResolver: ComponentFactoryResolver,
     ) {}
 
     ngOnInit(): void {
@@ -92,7 +90,6 @@ export class MatGridComponent
     ngOnChanges(changes: SimpleChanges): void {
         const displayedColumns = changes['displayedColumns'];
         const tableConfig = changes['tableConfig'];
-        const cells = changes['cells'];
         const displayedColumnsCopy = [...this.displayedColumns];
         if (displayedColumns && this.selection) {
             displayedColumnsCopy.unshift('select');
@@ -118,16 +115,16 @@ export class MatGridComponent
     }
 
     isAllSelected() {
-        const numSelected = this.selection_.selected.length;
+        const numSelected = this.selectionModel.selected.length;
         const numRows = this.tableConfig.items.length;
         return numSelected === numRows;
     }
 
     toggleAllRows() {
         this.isAllSelected()
-            ? this.selection_.clear()
+            ? this.selectionModel.clear()
             : this.tableConfig.items.forEach((row) =>
-                  this.selection_.select(row)
+                  this.selectionModel.select(row)
               );
     }
 
@@ -141,7 +138,7 @@ export class MatGridComponent
             .forEach((cell, index) => {
                 if (cell.headerCell.filter) {
                     const factory =
-                        this.componentFactoryResolver.resolveComponentFactory<IFilter>(
+                        this._componentFactoryResolver.resolveComponentFactory<IFilter>(
                             cell.headerCell.filter.component
                         );
                     const component = this.children
@@ -178,8 +175,8 @@ export class MatGridComponent
     }
 
     private _subscribeOnSelectionChange() {
-        this.selection_.changed
-            .pipe(takeUntil(this.unSubscribe$), debounceTime(100))
+        this.selectionModel.changed
+            .pipe(takeUntil(this.unSubscribe$), debounceTime(500))
             .subscribe((changeModel) => {
                 this.selectionChange.emit(changeModel.source.selected);
             });

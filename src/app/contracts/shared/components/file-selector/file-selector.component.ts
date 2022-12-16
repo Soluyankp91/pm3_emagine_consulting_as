@@ -90,10 +90,10 @@ export class FileSelectorComponent
     }
 
     writeValue(preselectedFiles: FileUpload[]): void {
+        this.selectedInheritedFiles = [];
         if (preselectedFiles === null || !preselectedFiles.length) {
             return;
         }
-        this.selectedInheritedFiles = [];
         preselectedFiles.forEach((preselectedFile) => {
             let founded = this.inheritedFilesModified.find((f) => {
                 return (

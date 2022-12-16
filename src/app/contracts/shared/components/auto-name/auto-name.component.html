@@ -16,7 +16,7 @@
         ><app-validator [control]="textControl"></app-validator
     ></mat-error>
     <mat-autocomplete #auto="matAutocomplete">
-        <mat-option *ngFor="let option of options">
+        <mat-option *ngFor="let option of options;trackBy:trackBy">
             <div
                 [style.display]="'flex'"
                 [style.justify-content]="'space-between'"

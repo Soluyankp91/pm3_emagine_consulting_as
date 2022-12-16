@@ -25,9 +25,9 @@
             <ng-container matColumnDef="select">
                 <mat-header-cell *matHeaderCellDef>
                     <mat-checkbox
-                        [checked]="selection_.hasValue() && isAllSelected()"
+                        [checked]="selectionModel.hasValue() && isAllSelected()"
                         [indeterminate]="
-                            selection_.hasValue() && !isAllSelected()
+                            selectionModel.hasValue() && !isAllSelected()
                         "
                         (change)="toggleAllRows()"
                     >
@@ -35,9 +35,9 @@
                 </mat-header-cell>
                 <mat-cell *matCellDef="let row">
                     <mat-checkbox
-                        [checked]="selection_.isSelected(row)"
+                        [checked]="selectionModel.isSelected(row)"
                         (click)="$event.stopPropagation()"
-                        (change)="selection_.toggle(row)"
+                        (change)="selectionModel.toggle(row)"
                     ></mat-checkbox>
                 </mat-cell>
             </ng-container>

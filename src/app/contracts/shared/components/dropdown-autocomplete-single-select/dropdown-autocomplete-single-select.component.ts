@@ -10,6 +10,8 @@ import {
     ContentChild,
     TemplateRef,
     ChangeDetectorRef,
+    OnChanges,
+    SimpleChanges,
 } from '@angular/core';
 import {
     AbstractControl,
@@ -20,7 +22,7 @@ import {
 import { SingleAutoErrorStateMatcher } from '../../matchers/customMatcher';
 import { Item } from './entities/interfaces';
 import { Subject } from 'rxjs';
-import { takeUntil, filter } from 'rxjs/operators';
+import { takeUntil, filter, distinctUntilChanged } from 'rxjs/operators';
 import { requiredValidator } from '../../validators/customRequireValidator';
 
 @Component({
@@ -28,7 +30,7 @@ import { requiredValidator } from '../../validators/customRequireValidator';
     templateUrl: './dropdown-autocomplete-single-select.component.html',
 })
 export class DropdownAutocompleteSingleSelectComponent
-    implements OnInit, DoCheck, OnDestroy, ControlValueAccessor
+    implements OnInit, OnDestroy, ControlValueAccessor
 {
     @Input() options: Item[];
     @Input() labelKey: string = 'name';
@@ -44,10 +46,11 @@ export class DropdownAutocompleteSingleSelectComponent
     }
 
     context = this;
+
     matcher = new SingleAutoErrorStateMatcher();
     inputControl = new FormControl(null);
 
-    selectedItem: Item;
+    selectedItem: Item | null;
 
     onChange: any = () => {};
     onTouch: any = () => {};
@@ -65,6 +68,7 @@ export class DropdownAutocompleteSingleSelectComponent
         this._subsribeOnInputControl();
         this._initValidators();
     }
+
 
     ngDoCheck(): void {
         if (this.control?.touched) {
@@ -101,8 +105,9 @@ export class DropdownAutocompleteSingleSelectComponent
         this.onTouch = fn;
     }
 
-    writeValue(id: string | number): void {
-        if (id === null) {
+    writeValue(id: string | number | null): void {
+        if (!id) {
+            this.selectedItem = null;
             this.inputControl.reset(null, { emitEvent: false });
             return;
         }
@@ -128,10 +133,6 @@ export class DropdownAutocompleteSingleSelectComponent
 
     onFocusOut() {
         if (this.selectedItem) {
-            this.inputControl.setValue(this.selectedItem, {
-                emitEvent: false,
-            });
-            this.inputEmitter.emit(this.selectedItem[this.labelKey]);
             this.control.setErrors(this.inputControl.errors);
         }
     }
@@ -140,6 +141,7 @@ export class DropdownAutocompleteSingleSelectComponent
         this.inputControl.valueChanges
             .pipe(
                 takeUntil(this._unSubscribe$),
+                distinctUntilChanged(),
                 filter((val) => val !== null)
             )
             .subscribe((input) => {
