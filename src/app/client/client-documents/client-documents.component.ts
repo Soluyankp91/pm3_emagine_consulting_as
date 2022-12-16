@@ -17,7 +17,7 @@ import { FileUploaderFile } from 'src/app/shared/components/file-uploader/file-u
 import { LocalHttpService } from 'src/shared/service-proxies/local-http.service';
 import { HttpClient, HttpHeaders, HttpResponse } from '@angular/common/http';
 import { AuthenticationResult } from '@azure/msal-browser';
-import { MediumDialogConfig } from 'src/shared/DialogConfigs';
+import { MediumDialogConfig } from 'src/shared/dialog.configs';
 
 @Component({
     selector: 'app-client-documents',

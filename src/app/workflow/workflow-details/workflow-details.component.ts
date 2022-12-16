@@ -55,7 +55,7 @@ import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { WorkflowPeriodComponent } from '../workflow-period/workflow-period.component';
 import { MatMenuTrigger } from '@angular/material/menu';
 import { RateAndFeesWarningsDialogComponent } from '../rate-and-fees-warnings-dialog/rate-and-fees-warnings-dialog.component';
-import { BigDialogConfig, MediumDialogConfig } from 'src/shared/DialogConfigs';
+import { BigDialogConfig, MediumDialogConfig } from 'src/shared/dialog.configs';
 
 @Component({
     selector: 'app-workflow-details',
