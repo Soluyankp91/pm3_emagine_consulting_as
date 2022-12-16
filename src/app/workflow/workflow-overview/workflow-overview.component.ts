@@ -10,13 +10,13 @@ import { ConfirmationDialogComponent } from 'src/app/shared/components/confirmat
 import { environment } from 'src/environments/environment';
 import { AppComponentBase, NotifySeverity } from 'src/shared/app-component-base';
 import { AppConsts } from 'src/shared/AppConsts';
+import { MediumDialogConfig } from 'src/shared/DialogConfigs';
 import { AvailableConsultantDto, ChangeConsultantPeriodDto, ClientPeriodServiceProxy, ConsultantGanttRow, ConsultantPeriodServiceProxy, ExtendClientPeriodDto, ExtendConsultantPeriodDto, GanttRowItem, StepDto, WorkflowHistoryDto, WorkflowProcessDto, WorkflowProcessType, WorkflowServiceProxy, WorkflowStepStatus } from 'src/shared/service-proxies/service-proxies';
 import { WorkflowActionsDialogComponent } from '../workflow-actions-dialog/workflow-actions-dialog.component';
 import { WorkflowConsultantActionsDialogComponent } from '../workflow-consultant-actions-dialog/workflow-consultant-actions-dialog.component';
 import { WorkflowDataService } from '../workflow-data.service';
 import { ConsultantDiallogAction } from '../workflow-sales/workflow-sales.model';
 import { WorkflowDiallogAction, WorkflowProgressStatus } from '../workflow.model';
-import { DialogConfig } from './workflow-overview.model';
 
 @Component({
     selector: 'app-workflow-overview',
@@ -240,15 +240,15 @@ export class WorkflowOverviewComponent extends AppComponentBase implements OnIni
 
     terminateConsultant(consultantInfo: ConsultantGanttRow) {
         const scrollStrategy = this.overlay.scrollStrategies.reposition();
-        DialogConfig.scrollStrategy = scrollStrategy;
-        DialogConfig.data = {
+        MediumDialogConfig.scrollStrategy = scrollStrategy;
+        MediumDialogConfig.data = {
             confirmationMessageTitle: `Terminate consultant`,
             confirmationMessage: `Are you sure you want to terminate consultant ${consultantInfo?.name}?`,
             rejectButtonText: 'Cancel',
             confirmButtonText: 'Terminate',
             isNegative: true
         }
-        const dialogRef = this.dialog.open(ConfirmationDialogComponent, DialogConfig);
+        const dialogRef = this.dialog.open(ConfirmationDialogComponent, MediumDialogConfig);
         dialogRef.componentInstance.onConfirmed.subscribe(() => {
             this.terminateConsultantStart(1); //FIXME: add real id when BE will be fixed
         });
@@ -263,8 +263,8 @@ export class WorkflowOverviewComponent extends AppComponentBase implements OnIni
 
     changeConsultantData(consultantInfo: ConsultantGanttRow) {
         const scrollStrategy = this.overlay.scrollStrategies.reposition();
-        DialogConfig.scrollStrategy = scrollStrategy;
-        DialogConfig.data = {
+        MediumDialogConfig.scrollStrategy = scrollStrategy;
+        MediumDialogConfig.data = {
             dialogType: ConsultantDiallogAction.Change,
             consultantData: {externalId: consultantInfo.consultantExternalId, name: consultantInfo.name},
             dialogTitle: `Change consultant`,
@@ -272,7 +272,7 @@ export class WorkflowOverviewComponent extends AppComponentBase implements OnIni
             confirmButtonText: 'Create',
             isNegative: false
         }
-        const dialogRef = this.dialog.open(WorkflowConsultantActionsDialogComponent, DialogConfig);
+        const dialogRef = this.dialog.open(WorkflowConsultantActionsDialogComponent, MediumDialogConfig);
         dialogRef.componentInstance.onConfirmed.subscribe((result) => {
             let input = new ChangeConsultantPeriodDto();
             input.cutoverDate = result.newCutoverDate;
@@ -286,8 +286,8 @@ export class WorkflowOverviewComponent extends AppComponentBase implements OnIni
 
     extendConsultant(consultantInfo: ConsultantGanttRow) {
         const scrollStrategy = this.overlay.scrollStrategies.reposition();
-        DialogConfig.scrollStrategy = scrollStrategy;
-        DialogConfig.data = {
+        MediumDialogConfig.scrollStrategy = scrollStrategy;
+        MediumDialogConfig.data = {
             dialogType: ConsultantDiallogAction.Extend,
             consultantData: {externalId: consultantInfo.consultantExternalId, name: consultantInfo.name},
             dialogTitle: `Extend consultant`,
@@ -295,7 +295,7 @@ export class WorkflowOverviewComponent extends AppComponentBase implements OnIni
             confirmButtonText: 'Create',
             isNegative: false
         }
-        const dialogRef = this.dialog.open(WorkflowConsultantActionsDialogComponent, DialogConfig);
+        const dialogRef = this.dialog.open(WorkflowConsultantActionsDialogComponent, MediumDialogConfig);
         dialogRef.componentInstance.onConfirmed.subscribe((result) => {
             let input = new ExtendConsultantPeriodDto();
             input.startDate = result.startDate;
@@ -335,8 +335,8 @@ export class WorkflowOverviewComponent extends AppComponentBase implements OnIni
 
     addExtension(availableConsultants: AvailableConsultantDto[]) {
         const scrollStrategy = this.overlay.scrollStrategies.reposition();
-        DialogConfig.scrollStrategy = scrollStrategy;
-        DialogConfig.data = {
+        MediumDialogConfig.scrollStrategy = scrollStrategy;
+        MediumDialogConfig.data = {
             dialogType: WorkflowDiallogAction.Extend,
             dialogTitle: 'Extend Workflow',
             rejectButtonText: 'Cancel',
@@ -344,7 +344,7 @@ export class WorkflowOverviewComponent extends AppComponentBase implements OnIni
             isNegative: false,
             consultantData: availableConsultants
         }
-        const dialogRef = this.dialog.open(WorkflowActionsDialogComponent, DialogConfig);
+        const dialogRef = this.dialog.open(WorkflowActionsDialogComponent, MediumDialogConfig);
         dialogRef.componentInstance.onConfirmed.subscribe((result: ExtendClientPeriodDto) => {
             if (result) {
                 this.showMainSpinner();
