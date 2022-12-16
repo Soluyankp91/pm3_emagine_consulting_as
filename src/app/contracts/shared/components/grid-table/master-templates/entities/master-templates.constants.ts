@@ -134,12 +134,6 @@ export const MASTER_TEMPLATE_HEADER_CELLS: IHeaderCell[] = [
             component: EmployeesFilterComponent,
         },
     },
-    // {
-    //     type: EHeaderCells.FILTER,
-    //     filter: {
-    //         formControlName: ''
-    //     }
-    // }
 ];
 
 export const PAGE_SIZE_OPTIONS: number[] = [5, 10, 20, 50, 100];

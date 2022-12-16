@@ -31,7 +31,7 @@ export class FileUploaderComponent implements OnInit, ControlValueAccessor {
     private onTouched = () => {};
 
     constructor(
-        private readonly fileServiceProxy: FileServiceProxy,
+        private readonly _fileServiceProxy: FileServiceProxy,
         private readonly cdr: ChangeDetectorRef
     ) {}
 
@@ -51,7 +51,7 @@ export class FileUploaderComponent implements OnInit, ControlValueAccessor {
     }
 
     onFileDelete(fileToDelete: FileUploadItem) {
-        this.fileServiceProxy
+        this._fileServiceProxy
             .temporaryDELETE(fileToDelete.temporaryFileId)
             .subscribe(() => {
                 this.files = this.files.filter(
@@ -64,7 +64,7 @@ export class FileUploaderComponent implements OnInit, ControlValueAccessor {
 
     writeValue(value: any): void {
         if (value === null) {
-            this.clearAllFiles();
+            this._clearAllFiles();
         }
     }
 
@@ -80,10 +80,10 @@ export class FileUploaderComponent implements OnInit, ControlValueAccessor {
         this.uploadedFiles$ = this._uploadedFiles$.pipe(
             switchMap((files) => {
                 if (!files.length) {
-                    return of(files);
+                    return of([ ]);
                 }
                 let filesObservablesArr = files.map((file) =>
-                    this.fileServiceProxy
+                    this._fileServiceProxy
                         .temporaryPOST({ data: file, fileName: file.name })
                         .pipe(
                             map(({ value }) => ({
@@ -115,11 +115,11 @@ export class FileUploaderComponent implements OnInit, ControlValueAccessor {
         return splittetFileName[splittetFileName.length - 1];
     }
 
-    private clearAllFiles() {
+    private _clearAllFiles() {
         let observableArr: Observable<void>[] = [];
-        this.files.forEach((file) => {
+        this.files.forEach((file: FileUploadItem) => {
             observableArr.push(
-                this.fileServiceProxy.temporaryDELETE(file.temporaryFileId)
+                this._fileServiceProxy.temporaryDELETE(file.temporaryFileId)
             );
         });
         forkJoin(observableArr).subscribe(() => {

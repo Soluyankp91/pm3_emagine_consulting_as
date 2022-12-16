@@ -26,15 +26,15 @@ export class MasterTemplateCreationComponent implements OnInit, OnDestroy {
     private _unSubscribe$ = new Subject<void>();
 
     constructor(
-        private readonly router: Router,
-        private readonly creationTitleService: CreationTitleService
+        private readonly _router: Router,
+        private readonly _creationTitleService: CreationTitleService
     ) {}
 
     ngOnInit(): void {
         this._setTabs();
         this._subscribeOnRouteChanges();
-        this.templateName$ = this.creationTitleService.templateName$;
-        this.tenants$ = this.creationTitleService.tenants$;
+        this.templateName$ = this._creationTitleService.templateName$;
+        this.tenants$ = this._creationTitleService.tenants$;
     }
 
     ngOnDestroy(): void {
@@ -43,7 +43,7 @@ export class MasterTemplateCreationComponent implements OnInit, OnDestroy {
     }
 
     private _subscribeOnRouteChanges() {
-        this.router.events
+        this._router.events
             .pipe(
                 takeUntil(this._unSubscribe$),
                 filter((event) => event instanceof NavigationEnd)
@@ -55,7 +55,7 @@ export class MasterTemplateCreationComponent implements OnInit, OnDestroy {
 
     private _setTabs() {
         let routeParamsArr = getAllRouteParams(
-            this.router.routerState.snapshot.root
+            this._router.routerState.snapshot.root
         );
         if (routeParamsArr[7] && routeParamsArr[7].id) {
             let templateId = routeParamsArr[7].id;

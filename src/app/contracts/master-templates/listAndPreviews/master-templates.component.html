@@ -12,22 +12,15 @@
     (tableRow)="onSelectTableRow($event)"
     (onAction)="onAction($event)"
 >
-<ng-template let-cell="element" #customCells
-><p>
-    {{ cell.agreementTemplateId }}
-    <ng-template #tooltipTemplate1>
-        THIS IS agreementTemplateId: {{ cell.agreementTemplateId }}
-    </ng-template>
-</p></ng-template
->
-<ng-template let-cell="element" #customCells
-><p>{{ cell.legalEntityIds }}</p></ng-template
->
-<ng-template let-cell="element" #customCells
-><p >{{ cell.lastUpdateDateUtc }}</p>
-<ng-template #tooltipTemplate2>
-    <div>Created {{ cell.createdDateUtc }}</div>
-    <div>Last Updated {{ cell.lastUpdateDateUtc }}</div>
-</ng-template></ng-template
->
+    <ng-template let-cell="element" #customCells
+        ><p>
+            {{ cell.agreementTemplateId }}
+        </p></ng-template
+    >
+    <ng-template let-cell="element" #customCells
+        ><p>{{ cell.legalEntityIds }}</p></ng-template
+    >
+    <ng-template let-cell="element" #customCells
+        ><p>{{ cell.lastUpdateDateUtc }}</p></ng-template
+    >
 </emg-mat-grid>

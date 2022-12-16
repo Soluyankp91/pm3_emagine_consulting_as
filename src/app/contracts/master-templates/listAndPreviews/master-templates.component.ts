@@ -28,17 +28,17 @@ export class MasterTemplatesComponent implements OnInit {
         MASTER_TEMPLATE_HEADER_CELLS,
         MASTER_TEMPLATE_CELLS
     );
-    dataSource$ = this.masterTemplatesService.getContracts$();
+    dataSource$ = this._masterTemplatesService.getContracts$();
 
     displayedColumns = DISPLAYED_COLUMNS;
     actions = MASTER_TEMPLATE_ACTIONS;
     table$: Observable<any>;
 
     constructor(
-        private readonly masterTemplatesService: MasterTemplatesService,
+        private readonly _masterTemplatesService: MasterTemplatesService,
         private readonly gridHelpService: GridHelpService,
-        private readonly route: ActivatedRoute,
-        private readonly router: Router
+        private readonly _route: ActivatedRoute,
+        private readonly _router: Router
     ) {}
 
     ngOnInit(): void {
@@ -46,22 +46,22 @@ export class MasterTemplatesComponent implements OnInit {
     }
 
     onSortChange($event: Sort) {
-        this.masterTemplatesService.updateSort($event);
+        this._masterTemplatesService.updateSort($event);
     }
 
     onFormControlChange($event: TableFiltersEnum) {
-        this.masterTemplatesService.updateTableFilters($event);
+        this._masterTemplatesService.updateTableFilters($event);
     }
 
     onPageChange($event: PageEvent) {
-        this.masterTemplatesService.updatePage($event);
+        this._masterTemplatesService.updatePage($event);
     }
     onAction($event: { row: AgreementTemplatesListItemDto; action: string }) {
         switch ($event.action) {
             case 'EDIT': {
-                this.router.navigate(
+                this._router.navigate(
                     [`${$event.row.agreementTemplateId}`, 'settings'],
-                    { relativeTo: this.route }
+                    { relativeTo: this._route }
                 );
                 break;
             }
@@ -69,8 +69,8 @@ export class MasterTemplatesComponent implements OnInit {
                 const params: Params = {
                     parentTemplateId: $event.row.agreementTemplateId,
                 };
-                this.router.navigate(['create'], {
-                    relativeTo: this.route,
+                this._router.navigate(['create'], {
+                    relativeTo: this._route,
                     queryParams: params,
                 });
                 break;

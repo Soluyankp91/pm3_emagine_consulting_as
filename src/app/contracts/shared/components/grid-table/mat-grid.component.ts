@@ -77,11 +77,9 @@ export class MatGridComponent
         this.initialSelection
     );
 
-    private unSubscribe$ = new Subject<void>();
+    private _unSubscribe$ = new Subject<void>();
 
-    constructor(
-        private _componentFactoryResolver: ComponentFactoryResolver,
-    ) {}
+    constructor(private _componentFactoryResolver: ComponentFactoryResolver) {}
 
     ngOnInit(): void {
         this.formGroup = new FormGroup({});
@@ -89,7 +87,6 @@ export class MatGridComponent
 
     ngOnChanges(changes: SimpleChanges): void {
         const displayedColumns = changes['displayedColumns'];
-        const tableConfig = changes['tableConfig'];
         const displayedColumnsCopy = [...this.displayedColumns];
         if (displayedColumns && this.selection) {
             displayedColumnsCopy.unshift('select');
@@ -98,8 +95,6 @@ export class MatGridComponent
             displayedColumnsCopy.push('actions');
         }
         this.displayedColumns = displayedColumnsCopy;
-        if (tableConfig.currentValue && !tableConfig.firstChange) {
-        }
     }
 
     ngAfterViewInit(): void {
@@ -110,8 +105,8 @@ export class MatGridComponent
     }
 
     ngOnDestroy(): void {
-        this.unSubscribe$.next();
-        this.unSubscribe$.complete();
+        this._unSubscribe$.next();
+        this._unSubscribe$.complete();
     }
 
     isAllSelected() {
@@ -174,9 +169,13 @@ export class MatGridComponent
         this.onAction.emit({ action: actionType, row });
     }
 
+    trackByAction(index: number, item: Actions) {
+        return item.actionType;
+    }
+
     private _subscribeOnSelectionChange() {
         this.selectionModel.changed
-            .pipe(takeUntil(this.unSubscribe$), debounceTime(500))
+            .pipe(takeUntil(this._unSubscribe$), debounceTime(500))
             .subscribe((changeModel) => {
                 this.selectionChange.emit(changeModel.source.selected);
             });
@@ -184,7 +183,7 @@ export class MatGridComponent
 
     private _subscribeOnFormControlChanges() {
         this.formGroup.valueChanges
-            .pipe(takeUntil(this.unSubscribe$))
+            .pipe(takeUntil(this._unSubscribe$))
             .subscribe((value) => {
                 this.formControlChange.emit(value);
             });
@@ -194,7 +193,7 @@ export class MatGridComponent
         Object.keys(this.formGroup.controls).forEach((controlName) => {
             this.formGroup.controls[controlName].valueChanges
                 .pipe(
-                    takeUntil(this.unSubscribe$),
+                    takeUntil(this._unSubscribe$),
                     startWith(this.formGroup.controls[controlName].value),
                     pairwise()
                 )

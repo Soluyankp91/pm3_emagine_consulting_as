@@ -24,17 +24,17 @@ export class CustomTooltipDirective implements OnInit {
     private _overlayRef: OverlayRef;
 
     constructor(
-        private renderer: Renderer2,
-        private overlay: Overlay,
-        private overlayPositionBuilder: OverlayPositionBuilder,
-        private elementRef: ElementRef,
-        private viewContainerRef: ViewContainerRef
+        private _renderer: Renderer2,
+        private _overlay: Overlay,
+        private _overlayPositionBuilder: OverlayPositionBuilder,
+        private _elementRef: ElementRef,
+        private _viewContainerRef: ViewContainerRef
     ) {}
 
     ngOnInit(): void {
         if (this.tooltipTemplate) {
-            const position = this.overlayPositionBuilder
-                .flexibleConnectedTo(this.elementRef)
+            const position = this._overlayPositionBuilder
+                .flexibleConnectedTo(this._elementRef)
                 .withPositions([
                     {
                         originX: 'end',
@@ -46,9 +46,9 @@ export class CustomTooltipDirective implements OnInit {
                     },
                 ]);
 
-            this._overlayRef = this.overlay.create({
+            this._overlayRef = this._overlay.create({
                 positionStrategy: position,
-                scrollStrategy: this.overlay.scrollStrategies.close(),
+                scrollStrategy: this._overlay.scrollStrategies.close(),
                 panelClass: 'custom-tooltip',
             });
         }
@@ -59,7 +59,7 @@ export class CustomTooltipDirective implements OnInit {
         if (this._overlayRef) {
             const containerPortal = new TemplatePortal(
                 this.tooltipTemplate,
-                this.viewContainerRef
+                this._viewContainerRef
             );
             this._overlayRef.detach();
             this._overlayRef.attach(containerPortal);
@@ -73,7 +73,7 @@ export class CustomTooltipDirective implements OnInit {
             this._overlayRef.detach();
             return;
         }
-        this.renderer.listen(
+        this._renderer.listen(
             this._overlayRef.overlayElement,
             'mouseleave',
             () => {

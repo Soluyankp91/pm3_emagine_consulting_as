@@ -89,12 +89,12 @@ export class FileSelectorComponent
         this.onChange([...this.selectedInheritedFiles]);
     }
 
-    writeValue(preselectedFiles: FileUpload[]): void {
+    writeValue(preSelectedFiles: FileUpload[]): void {
         this.selectedInheritedFiles = [];
-        if (preselectedFiles === null || !preselectedFiles.length) {
+        if (preSelectedFiles === null || !preSelectedFiles.length) {
             return;
         }
-        preselectedFiles.forEach((preselectedFile) => {
+        preSelectedFiles.forEach((preselectedFile) => {
             let founded = this.inheritedFilesModified.find((f) => {
                 return (
                     f.agreementTemplateAttachmentId ===

@@ -371,7 +371,7 @@ export class CreateMasterTemplateComponent
                         false,
                         freeText,
                         1,
-                        1000
+                        100
                     );
                 })
             );
@@ -414,7 +414,7 @@ export class CreateMasterTemplateComponent
                 }),
                 switchMap((parentTemplate) =>
                     this._apiServiceProxy
-                        .simpleList2(false, parentTemplate.name, 1, 1000)
+                        .simpleList2(false, parentTemplate.name, 1, 100)
                         .pipe(
                             finalize(() => {
                                 setTimeout(() => {
