@@ -183,4 +183,8 @@ export abstract class AppComponentBase {
     displayConsultantNameFn(option: any) {
         return option?.consultant?.name;
     }
+
+    displayNameFn(option: any) {
+        return option?.name;
+    }
 }
