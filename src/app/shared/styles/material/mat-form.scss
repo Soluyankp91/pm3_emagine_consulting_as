@@ -251,7 +251,7 @@
     }
 
     &.mat-form-field-can-float.mat-form-field-should-float .mat-form-field-label {
-        transform: translateY(-1.2em) scale(.75) !important;
+        transform: translateY(-1em) scale(.75) !important;
     }
 
     &.mat-focused {
@@ -266,6 +266,7 @@
 
     &.mat-form-field-disabled,
     &.disabled-input {
+        pointer-events: none !important;
         .mat-form-field-outline {
             background-color: $sand-25-color !important;
             pointer-events: none !important;
@@ -463,6 +464,7 @@
         }
 
         &.disabled-input {
+            pointer-events: none !important;
             .mat-form-field-flex {
                 background-color: $sand-25-color !important;
                 pointer-events: none !important;

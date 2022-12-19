@@ -287,7 +287,7 @@ export class WorkflowSalesComponent extends AppComponentBase implements OnInit, 
                 }
             });
 
-        this.salesClientDataForm.invoicingReferencePersonIdValue?.valueChanges
+        this.salesClientDataForm.invoicePaperworkContactIdValue?.valueChanges
             .pipe(
                 takeUntil(this._unsubscribe),
                 debounceTime(300),
@@ -1505,8 +1505,7 @@ export class WorkflowSalesComponent extends AppComponentBase implements OnInit, 
         input.salesClientData.invoicingReferenceNumber = this.salesClientDataForm.invoicingReferenceNumber?.value;
         input.salesClientData.clientInvoicingRecipientSameAsDirectClient = this.salesClientDataForm.clientInvoicingRecipientSameAsDirectClient?.value;
         input.salesClientData.clientInvoicingRecipientIdValue = this.salesClientDataForm.clientInvoicingRecipientIdValue?.value?.clientId;
-        input.salesClientData.noInvoicingReferencePerson = this.salesClientDataForm.noInvoicingReferencePerson?.value;
-        input.salesClientData.invoicingReferencePersonIdValue = this.salesClientDataForm.invoicingReferencePersonIdValue?.value?.id;
+        input.salesClientData.invoicingReferencePersonIdValue = this.salesClientDataForm.invoicePaperworkContactIdValue?.value?.id;
 
         if (this.salesClientDataForm.clientRates.value.length) {
             input.salesClientData.periodClientSpecialRates = new Array<PeriodClientSpecialRateDto>();
@@ -1783,11 +1782,7 @@ export class WorkflowSalesComponent extends AppComponentBase implements OnInit, 
                 if (result?.salesClientData?.clientInvoicingRecipientSameAsDirectClient) {
                     this.salesClientDataForm.clientInvoicingRecipientIdValue?.disable({emitEvent: false});
                 }
-                this.salesClientDataForm.invoicingReferencePersonIdValue?.setValue(result?.salesClientData?.invoicingReferencePerson, {emitEvent: false});
-                this.salesClientDataForm.noInvoicingReferencePerson?.setValue(result?.salesClientData?.noInvoicingReferencePerson, {emitEvent: false});
-                if (result?.salesClientData?.noInvoicingReferencePerson) {
-                    this.salesClientDataForm.invoicingReferencePersonIdValue?.disable({emitEvent: false});
-                }
+                this.salesClientDataForm.invoicePaperworkContactIdValue?.setValue(result?.salesClientData?.invoicingReferencePerson, {emitEvent: false});
 
                 // Rates & Fees
                 result.salesClientData?.periodClientSpecialRates?.forEach((specialRate: PeriodClientSpecialRateDto) => {
@@ -1843,7 +1838,7 @@ export class WorkflowSalesComponent extends AppComponentBase implements OnInit, 
         }
     }
 
-    updateConsultantDates(event: MatButtonToggleChange, consultantIndex: number) {
+    updateConsultantDates(event: MatSelectChange, consultantIndex: number) {
         if (event.value) {
             this.consultantData.at(consultantIndex).get('consultantProjectStartDate')?.setValue(this.salesClientDataForm.clientContractStartDate?.value, {emitEvent: false});
             this.consultantData.at(consultantIndex).get('consultantProjectEndDate')?.setValue(this.salesClientDataForm.clientContractEndDate?.value, {emitEvent: false});
