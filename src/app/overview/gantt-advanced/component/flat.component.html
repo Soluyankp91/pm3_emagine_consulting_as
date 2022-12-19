@@ -22,14 +22,18 @@
                 <div class="gantt-group-content" fxFlex="5%">
                     <span class="text-bold-800" *ngIf="isWorkflow">
                         <div fxLayout="row" fxLayoutAlign="start center" class="u-w-100" [matTooltip]="overviewFlagNames[group?.origin?.origin?.mainOverviewStatusOfWorkflowForSales!]" matTooltipClass="white-tooltip">
-                            <mat-icon class="main-overview-icon cursor-pointer" [matMenuTriggerFor]="workflowMenu" [matMenuTriggerData]="{selectedStatus: group?.origin?.origin?.mainOverviewStatusOfWorkflowForSales!}" svgIcon="{{detectIcon(group?.origin?.origin?.mainOverviewStatusOfWorkflowForSales!)}}" [ngClass]="detectProcessColor(group?.origin?.origin?.mainOverviewStatusOfWorkflowForSales!)"></mat-icon>
+                            <mat-icon class="main-overview-icon cursor-pointer" [matMenuTriggerFor]="workflowMenu"
+                                [matMenuTriggerData]="{selectedStatus: group?.origin?.origin?.mainOverviewStatusOfWorkflowForSales!}"
+                                [svgIcon]="overviewProcessIcons[group?.origin?.origin?.mainOverviewStatusOfWorkflowForSales!]"
+                                [ngClass]="overviewProcessColors[group?.origin?.origin?.mainOverviewStatusOfWorkflowForSales!]"></mat-icon>
                             <mat-menu #workflowMenu backdropClass="main-overview--user-status-menu">
                                 <ng-template matMenuContent let-selectedStatus="selectedStatus">
                                     <button *ngFor="let status of userSelectedStatuses"
                                         class="menu-item"
                                         mat-menu-item
+                                        [ngClass]="{'main-overview--user-status-selected': selectedStatus === status.id}"
                                         appPreventDoubleClick (throttledClick)="setUserSelectedStatusForWorflow(group?.origin?.id!, status?.id)">
-                                        <mat-icon class="main-overview-icon-status" svgIcon="{{detectIcon(status?.id)}}" [ngClass]="detectProcessColor(status?.id)"></mat-icon>
+                                        <mat-icon class="main-overview-icon-status" [svgIcon]="overviewProcessIcons[status?.id]" [ngClass]="overviewProcessColors[status?.id]"></mat-icon>
                                         <span [ngClass]="{'text-bold-800': selectedStatus === status.id}">
                                             {{status?.name}}
                                         </span>
@@ -46,8 +50,9 @@
                                     <button *ngFor="let status of userSelectedStatuses"
                                         class="menu-item"
                                         mat-menu-item
+                                        [ngClass]="{'main-overview--user-status-selected': selectedStatus === status.id}"
                                         appPreventDoubleClick (throttledClick)="setUserSelectedStatusForConsultant(group?.origin?.origin?.workflowId, group?.origin?.origin?.consultant?.id, status?.id)">
-                                        <mat-icon class="main-overview-icon-status" svgIcon="{{detectIcon(status?.id)}}" [ngClass]="detectProcessColor(status?.id)"></mat-icon>
+                                        <mat-icon class="main-overview-icon-status" [svgIcon]="overviewProcessIcons[status?.id]" [ngClass]="overviewProcessColors[status?.id]"></mat-icon>
                                         <span [ngClass]="{'text-bold-800': selectedStatus === status.id}">
                                             {{status?.name}}
                                         </span>

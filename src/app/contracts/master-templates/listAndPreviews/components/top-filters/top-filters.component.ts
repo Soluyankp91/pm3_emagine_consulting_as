@@ -37,7 +37,7 @@ export class MasterTemplateFilterHeaderComponent implements OnInit, OnDestroy {
     }
 
     navigateTo() {
-        this.router.navigate(['settings'], { relativeTo: this.route });
+        this.router.navigate(['create'], { relativeTo: this.route });
     }
 
     private _subscribeOnCountryChanged() {
