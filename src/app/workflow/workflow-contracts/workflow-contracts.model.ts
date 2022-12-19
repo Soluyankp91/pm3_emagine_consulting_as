@@ -214,3 +214,27 @@ export enum LegalContractStatus {
     SavedButNotGenerated = 2,
     Done = 10
 }
+
+
+export enum ClientTimeReportingCaps {
+    CapOnUnits = 1,
+    CapOnValue = 2,
+    IndividualCap = 3,
+    NoCap = 4
+}
+
+export enum DeliveryTypes {
+    ManagedService = 1,
+    Normal = 2,
+    Offshore = 3,
+    Nearshore = 4
+}
+
+export enum SalesTypes {
+    TimeAndMaterial = 1,
+    ThirdPartyMgmt = 2 ,
+    ManagedService = 3,
+    FeeOnly = 4,
+    Recruitment = 5,
+    Other = 6
+}
