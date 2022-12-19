@@ -20968,6 +20968,102 @@ export enum ContractPaperStatusColorEnum {
     Black = 10,
 }
 
+export class ContractSignerDto implements IContractSignerDto {
+    signOrder?: number;
+    contactId?: number;
+    contact?: ContactResultDto;
+    signerRoleId?: number;
+
+    constructor(data?: IContractSignerDto) {
+        if (data) {
+            for (var property in data) {
+                if (data.hasOwnProperty(property))
+                    (<any>this)[property] = (<any>data)[property];
+            }
+        }
+    }
+
+    init(_data?: any) {
+        if (_data) {
+            this.signOrder = _data["signOrder"];
+            this.contactId = _data["contactId"];
+            this.contact = _data["contact"] ? ContactResultDto.fromJS(_data["contact"]) : <any>undefined;
+            this.signerRoleId = _data["signerRoleId"];
+        }
+    }
+
+    static fromJS(data: any): ContractSignerDto {
+        data = typeof data === 'object' ? data : {};
+        let result = new ContractSignerDto();
+        result.init(data);
+        return result;
+    }
+
+    toJSON(data?: any) {
+        data = typeof data === 'object' ? data : {};
+        data["signOrder"] = this.signOrder;
+        data["contactId"] = this.contactId;
+        data["contact"] = this.contact ? this.contact.toJSON() : <any>undefined;
+        data["signerRoleId"] = this.signerRoleId;
+        return data;
+    }
+}
+
+export interface IContractSignerDto {
+    signOrder?: number;
+    contactId?: number;
+    contact?: ContactResultDto;
+    signerRoleId?: number;
+}
+
+export class ContractSyncResultDto implements IContractSyncResultDto {
+    success?: boolean;
+    showManualOption?: boolean;
+    message?: string | undefined;
+    enableLegalContractsButtons?: boolean;
+
+    constructor(data?: IContractSyncResultDto) {
+        if (data) {
+            for (var property in data) {
+                if (data.hasOwnProperty(property))
+                    (<any>this)[property] = (<any>data)[property];
+            }
+        }
+    }
+
+    init(_data?: any) {
+        if (_data) {
+            this.success = _data["success"];
+            this.showManualOption = _data["showManualOption"];
+            this.message = _data["message"];
+            this.enableLegalContractsButtons = _data["enableLegalContractsButtons"];
+        }
+    }
+
+    static fromJS(data: any): ContractSyncResultDto {
+        data = typeof data === 'object' ? data : {};
+        let result = new ContractSyncResultDto();
+        result.init(data);
+        return result;
+    }
+
+    toJSON(data?: any) {
+        data = typeof data === 'object' ? data : {};
+        data["success"] = this.success;
+        data["showManualOption"] = this.showManualOption;
+        data["message"] = this.message;
+        data["enableLegalContractsButtons"] = this.enableLegalContractsButtons;
+        return data;
+    }
+}
+
+export interface IContractSyncResultDto {
+    success?: boolean;
+    showManualOption?: boolean;
+    message?: string | undefined;
+    enableLegalContractsButtons?: boolean;
+}
+
 export class ContractsClientDataDto implements IContractsClientDataDto {
     specialContractTerms?: string | undefined;
     noSpecialContractTerms?: boolean;
@@ -21088,54 +21184,6 @@ export interface IContractsClientDataDto {
     invoicingReferencePerson?: ContactResultDto;
 }
 
-export class ContractSignerDto implements IContractSignerDto {
-    signOrder?: number;
-    contactId?: number;
-    contact?: ContactResultDto;
-    signerRoleId?: number;
-
-    constructor(data?: IContractSignerDto) {
-        if (data) {
-            for (var property in data) {
-                if (data.hasOwnProperty(property))
-                    (<any>this)[property] = (<any>data)[property];
-            }
-        }
-    }
-
-    init(_data?: any) {
-        if (_data) {
-            this.signOrder = _data["signOrder"];
-            this.contactId = _data["contactId"];
-            this.contact = _data["contact"] ? ContactResultDto.fromJS(_data["contact"]) : <any>undefined;
-            this.signerRoleId = _data["signerRoleId"];
-        }
-    }
-
-    static fromJS(data: any): ContractSignerDto {
-        data = typeof data === 'object' ? data : {};
-        let result = new ContractSignerDto();
-        result.init(data);
-        return result;
-    }
-
-    toJSON(data?: any) {
-        data = typeof data === 'object' ? data : {};
-        data["signOrder"] = this.signOrder;
-        data["contactId"] = this.contactId;
-        data["contact"] = this.contact ? this.contact.toJSON() : <any>undefined;
-        data["signerRoleId"] = this.signerRoleId;
-        return data;
-    }
-}
-
-export interface IContractSignerDto {
-    signOrder?: number;
-    contactId?: number;
-    contact?: ContactResultDto;
-    signerRoleId?: number;
-}
-
 export class ContractsMainDataDto implements IContractsMainDataDto {
     projectTypeId?: number | undefined;
     salesTypeId?: number | undefined;
@@ -21202,54 +21250,6 @@ export interface IContractsMainDataDto {
     discountId?: number | undefined;
     remarks?: string | undefined;
     noRemarks?: boolean;
-}
-
-export class ContractSyncResultDto implements IContractSyncResultDto {
-    success?: boolean;
-    showManualOption?: boolean;
-    message?: string | undefined;
-    enableLegalContractsButtons?: boolean;
-
-    constructor(data?: IContractSyncResultDto) {
-        if (data) {
-            for (var property in data) {
-                if (data.hasOwnProperty(property))
-                    (<any>this)[property] = (<any>data)[property];
-            }
-        }
-    }
-
-    init(_data?: any) {
-        if (_data) {
-            this.success = _data["success"];
-            this.showManualOption = _data["showManualOption"];
-            this.message = _data["message"];
-            this.enableLegalContractsButtons = _data["enableLegalContractsButtons"];
-        }
-    }
-
-    static fromJS(data: any): ContractSyncResultDto {
-        data = typeof data === 'object' ? data : {};
-        let result = new ContractSyncResultDto();
-        result.init(data);
-        return result;
-    }
-
-    toJSON(data?: any) {
-        data = typeof data === 'object' ? data : {};
-        data["success"] = this.success;
-        data["showManualOption"] = this.showManualOption;
-        data["message"] = this.message;
-        data["enableLegalContractsButtons"] = this.enableLegalContractsButtons;
-        return data;
-    }
-}
-
-export interface IContractSyncResultDto {
-    success?: boolean;
-    showManualOption?: boolean;
-    message?: string | undefined;
-    enableLegalContractsButtons?: boolean;
 }
 
 export class CountryDto implements ICountryDto {
@@ -21344,14 +21344,6 @@ export interface ICurrentEmployeeDto {
     employeeRole?: EmployeeRole;
 }
 
-export enum DocumentTypeEnum {
-    Misc = 0,
-    Pdf = 1,
-    Word = 2,
-    Image = 3,
-    Excel = 4,
-}
-
 export enum DocuSignEvent {
     EnvelopeCompleted = 0,
     EnvelopeCorrected = 1,
@@ -21373,6 +21365,14 @@ export enum DocuSignEvent {
     RecipientReassign = 17,
     RecipientResent = 18,
     RecipientSent = 19,
+}
+
+export enum DocumentTypeEnum {
+    Misc = 0,
+    Pdf = 1,
+    Word = 2,
+    Image = 3,
+    Excel = 4,
 }
 
 export class DomainEventBase implements IDomainEventBase {
