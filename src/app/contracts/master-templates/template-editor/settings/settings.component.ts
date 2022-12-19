@@ -86,7 +86,7 @@ export class CreateMasterTemplateComponent
         SimpleAgreementTemplatesListItemDto[] | null
     >;
     masterTemplateOptionsChanged$ = new Subject<string>();
-    null$ = new Subject<null>();
+    nullOptions$ = new Subject<null>();
     creationChange$ = new Subject<null | ''>();
 
     private _initialFormValue$ = this.masterTemplateFormGroup.initial$;
@@ -392,7 +392,7 @@ export class CreateMasterTemplateComponent
                         this.agreementCreationMode.setValue(
                             this.creationModes.FromScratch
                         );
-                        this.null$.next(null);
+                        this.nullOptions$.next(null);
                         return EMPTY;
                     }
                     this.showMainSpinner();
@@ -441,7 +441,7 @@ export class CreateMasterTemplateComponent
                         )
                 )
             );
-        const null$: Observable<null> = this.null$.pipe(
+        const nullOptions$: Observable<null> = this.nullOptions$.pipe(
             takeUntil(this._unSubscribe$),
             tap(() => {
                 this._onCreationModeChange();
@@ -453,7 +453,7 @@ export class CreateMasterTemplateComponent
                 takeUntil(this._unSubscribe$),
                 switchMap((val) => {
                     if (val === null) {
-                        this.null$.next(null);
+                        this.nullOptions$.next(null);
                         return EMPTY;
                     }
                     return this._apiServiceProxy.simpleList2(
@@ -467,7 +467,7 @@ export class CreateMasterTemplateComponent
         this.masterTemplateOptions$ = merge(
             freeText$,
             routeParams$,
-            null$,
+            nullOptions$,
             creationChange$
         ).pipe(
             map((response) => {
