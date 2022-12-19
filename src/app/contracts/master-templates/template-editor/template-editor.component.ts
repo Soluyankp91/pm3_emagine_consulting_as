@@ -9,7 +9,7 @@ import { NavigationEnd, Router } from '@angular/router';
 import { getAllRouteParams } from '../../shared/utils/allRouteParams';
 import { Subject, Observable } from 'rxjs';
 import { filter, takeUntil } from 'rxjs/operators';
-import { CreationTitleService } from './creation-title.service';
+import { CreationTitleService } from '../../shared/services/creation-title.service';
 import { LegalEntityDto } from 'src/shared/service-proxies/service-proxies';
 
 @Component({

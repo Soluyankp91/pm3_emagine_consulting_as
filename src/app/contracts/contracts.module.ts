@@ -42,7 +42,7 @@ import { CreationComponent } from './client-specific-templates/edit-template/set
 import { FileUploaderComponent } from './shared/components/file-uploader/file-uploader.component';
 import { FileSelectorComponent } from './shared/components/file-selector/file-selector.component';
 import { NewFileUploaderDirective } from './shared/components/file-uploader/new-file-uploader.directive';
-import { CreationTitleService } from './master-templates/template-editor/creation-title.service';
+import { CreationTitleService } from './shared/services/creation-title.service';
 import { TenantsComponent } from './shared/components/tenants/tenants.component';
 
 @NgModule({
@@ -146,6 +146,6 @@ export class ContractsModule {
             sanitizer.bypassSecurityTrustResourceUrl(
                 'assets/common/images/chevron-down.svg'
             )
-        )
+        );
     }
 }

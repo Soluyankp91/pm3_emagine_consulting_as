@@ -40,7 +40,7 @@ import { ContractsService } from 'src/app/contracts/shared/services/contracts.se
 import { SettingsOptions } from 'src/app/contracts/shared/models/settings.model';
 import { FileUpload } from 'src/app/contracts/shared/components/file-uploader/files';
 import { AppComponentBase } from 'src/shared/app-component-base';
-import { CreationTitleService } from '../creation-title.service';
+import { CreationTitleService } from '../../../shared/services/creation-title.service';
 import { AUTOCOMPLETE_SEARCH_ITEMS_COUNT } from 'src/app/contracts/shared/components/grid-table/master-templates/entities/master-templates.constants';
 
 @Component({
@@ -183,7 +183,7 @@ export class CreateMasterTemplateComponent
         this._navigateOnAction();
     }
 
-    private _agreementTemplateAttachmentDto(): AgreementTemplateAttachmentDto [] {
+    private _agreementTemplateAttachmentDto(): AgreementTemplateAttachmentDto[] {
         const uploadedFiles = this.masterTemplateFormGroup.uploadedFiles?.value
             ? this.masterTemplateFormGroup.uploadedFiles?.value
             : [];
@@ -340,7 +340,8 @@ export class CreateMasterTemplateComponent
             if (legalEntities) {
                 let entities = this.legalEntities.filter((extendedEntity) =>
                     legalEntities.find(
-                        (simpleEntity: number) => extendedEntity.id === simpleEntity
+                        (simpleEntity: number) =>
+                            extendedEntity.id === simpleEntity
                     )
                 );
                 this._creationTitleService.updateTenants(entities);
@@ -416,7 +417,12 @@ export class CreateMasterTemplateComponent
                 }),
                 switchMap((parentTemplate) =>
                     this._apiServiceProxy
-                        .simpleList2(false, parentTemplate.name, 1, AUTOCOMPLETE_SEARCH_ITEMS_COUNT)
+                        .simpleList2(
+                            false,
+                            parentTemplate.name,
+                            1,
+                            AUTOCOMPLETE_SEARCH_ITEMS_COUNT
+                        )
                         .pipe(
                             finalize(() => {
                                 setTimeout(() => {
@@ -446,7 +452,12 @@ export class CreateMasterTemplateComponent
                         this.null$.next(null);
                         return EMPTY;
                     }
-                    return this._apiServiceProxy.simpleList2(false, val, 1, AUTOCOMPLETE_SEARCH_ITEMS_COUNT);
+                    return this._apiServiceProxy.simpleList2(
+                        false,
+                        val,
+                        1,
+                        AUTOCOMPLETE_SEARCH_ITEMS_COUNT
+                    );
                 })
             );
         this.masterTemplateOptions$ = merge(
