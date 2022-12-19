@@ -1017,7 +1017,7 @@ export class WorkflowContractsComponent extends AppComponentBase implements OnIn
     }
 
     saveStartChangeOrExtendClientPeriodContracts(isDraft: boolean) {
-        let input = this.packClientPeriodData();
+        let input = this._packClientPeriodData();
         this.showMainSpinner();
         if (isDraft) {
             this._clientPeriodService.clientContractsPUT(this.periodId!, input)
@@ -1062,7 +1062,7 @@ export class WorkflowContractsComponent extends AppComponentBase implements OnIn
     }
 
     saveStartChangeOrExtendConsultantPeriodContracts(isDraft: boolean) {
-        let input = this.packConsultantPeriodData();
+        let input = this._packConsultantPeriodData();
         this.showMainSpinner();
         if (isDraft) {
             this._consultantPeriodService.consultantContractsPUT(this.activeSideSection.consultantPeriodId!, input)
@@ -1123,7 +1123,7 @@ export class WorkflowContractsComponent extends AppComponentBase implements OnIn
     }
 
     saveTerminationConsultantContractStep(isDraft: boolean) {
-        let input = this.packConsultantTerminationData();
+        let input = this._packConsultantTerminationData();
         this.showMainSpinner();
         if (isDraft) {
             this._workflowServiceProxy.terminationConsultantContractPUT(this.workflowId!, input)
@@ -1165,7 +1165,7 @@ export class WorkflowContractsComponent extends AppComponentBase implements OnIn
     }
 
     saveWorkflowTerminationContractStep(isDraft: boolean) {
-        let input = this.packWorkflowTerminationData();
+        let input = this._packWorkflowTerminationData();
         this.showMainSpinner();
         if (isDraft) {
             this._workflowServiceProxy.terminationContractPUT(this.workflowId!, input)
@@ -1195,18 +1195,6 @@ export class WorkflowContractsComponent extends AppComponentBase implements OnIn
         }
     }
 
-    terminateConsultantStart(index: number) {
-        this.showMainSpinner();
-        this._workflowServiceProxy.terminationConsultantStart(this.workflowId!, index)
-            .pipe(finalize(() => {
-                this.hideMainSpinner();
-            }))
-            .subscribe(() => {
-                this._workflowDataService.workflowSideSectionAdded.emit(true);
-                this._workflowDataService.workflowOverviewUpdated.emit(true);
-            });
-    }
-
     processSyncToLegacySystem() {
         switch (this._workflowDataService.workflowProgress.currentlyActiveSideSection) {
             case WorkflowProcessType.StartClientPeriod:
@@ -1230,7 +1218,7 @@ export class WorkflowContractsComponent extends AppComponentBase implements OnIn
 
     syncClientPeriodToLegacySystem() {
         this.showMainSpinner();
-        let input = this.packClientPeriodData();
+        let input = this._packClientPeriodData();
         this._contractSyncService.clientPeriodSync(this.periodId!, input)
             .pipe(finalize(() => this.hideMainSpinner()))
             .subscribe(result => {
@@ -1244,7 +1232,7 @@ export class WorkflowContractsComponent extends AppComponentBase implements OnIn
 
     syncConsultantPeriodToLegacySystem() {
         this.showMainSpinner();
-        let input = this.packConsultantPeriodData();
+        let input = this._packConsultantPeriodData();
         this._contractSyncService.consultantPeriodSync(this.activeSideSection.consultantPeriodId!, input)
             .pipe(finalize(() => this.hideMainSpinner()))
             .subscribe(result => {
@@ -1258,7 +1246,7 @@ export class WorkflowContractsComponent extends AppComponentBase implements OnIn
 
     syncWorkflowTerminationToLegacySystem() {
         this.showMainSpinner();
-        let input = this.packWorkflowTerminationData();
+        let input = this._packWorkflowTerminationData();
         this._contractSyncService.workflowTerminationSync(this.workflowId!, input)
             .pipe(finalize(() => this.hideMainSpinner()))
             .subscribe(result => {
@@ -1272,7 +1260,7 @@ export class WorkflowContractsComponent extends AppComponentBase implements OnIn
 
     syncConsultantTerminationToLegacySystem() {
         this.showMainSpinner();
-        let input = this.packConsultantTerminationData();
+        let input = this._packConsultantTerminationData();
         this._contractSyncService.consultantTerminationSync(this.activeSideSection.consultantPeriodId!, input)
             .pipe(finalize(() => this.hideMainSpinner()))
             .subscribe(result => {
@@ -1326,62 +1314,43 @@ export class WorkflowContractsComponent extends AppComponentBase implements OnIn
 
     fillClientPeriodForm(data: ClientPeriodContractsDataQueryDto) {
         this.resetForms();
-        // Main data
-        this.contractsMainForm.salesType?.setValue(this.findItemById(this.saleTypes, data?.mainData?.salesTypeId), {emitEvent: false});
-        this.contractsMainForm.deliveryType?.setValue(this.findItemById(this.deliveryTypes, data?.mainData?.deliveryTypeId), {emitEvent: false});
-        this.contractsMainForm.discounts?.setValue(this.findItemById(this.discounts, data?.mainData?.discountId), {emitEvent: false});
-        this.contractsMainForm.projectType?.setValue(this.findItemById(this.projectTypes, data?.mainData?.projectTypeId), {emitEvent: false});
-        this.contractsMainForm.margin?.setValue(this.findItemById(this.margins, data?.mainData?.marginId), {emitEvent: false});
-        this.contractsMainForm.projectDescription?.setValue(data?.mainData?.projectDescription, {emitEvent: false});
-        this.contractsMainForm.projectName?.setValue(data?.mainData?.projectName, {emitEvent: false});
-        this.contractsMainForm.noRemarks?.setValue(data?.mainData?.noRemarks, {emitEvent: false});
-        this.contractsMainForm.remarks?.setValue(data?.mainData?.remarks, {emitEvent: false});
-        if (data?.mainData?.noRemarks) {
-            this.contractsMainForm.remarks?.disable();
+        if (data?.mainData !== undefined) {
+            this.contractsMainForm.patchValue(data?.mainData, {emitEvent: false});
+            this.contractsMainForm.salesType?.setValue(this.findItemById(this.saleTypes, data.mainData.salesTypeId), {emitEvent: false});
+            this.contractsMainForm.deliveryType?.setValue(this.findItemById(this.deliveryTypes, data.mainData.deliveryTypeId), {emitEvent: false});
+            this.contractsMainForm.discounts?.setValue(this.findItemById(this.discounts, data.mainData.discountId), {emitEvent: false});
+            this.contractsMainForm.projectType?.setValue(this.findItemById(this.projectTypes, data.mainData.projectTypeId), {emitEvent: false});
+            this.contractsMainForm.margin?.setValue(this.findItemById(this.margins, data.mainData.marginId), {emitEvent: false});
+            if (data.mainData.noRemarks) {
+                this.contractsMainForm.remarks?.disable();
+            }
         }
-        // Client data
-        this.contractClientForm.directClientId?.setValue(data?.clientData?.directClientId);
-        if (data?.clientData?.directClientId) {
-            this.getRatesAndFees(data?.clientData?.directClientId);
+        if (data?.clientData !== undefined) {
+            this.contractClientForm.patchValue(data.clientData, {emitEvent: false});
+            this.contractClientForm.clientTimeReportingCapId?.setValue(this.findItemById(this.clientTimeReportingCap, data.clientData.clientTimeReportingCapId), {emitEvent: false});
+            this.contractClientForm.rateUnitType?.setValue(this.findItemById(this.rateUnitTypes, data.clientData.clientRate?.rateUnitTypeId), {emitEvent: false});
+            this.contractClientForm.currency?.setValue(this.findItemById(this.currencies, data.clientData.clientRate?.currencyId), {emitEvent: false});
+            this.contractClientForm.clientTimeReportingCapCurrencyId?.setValue(this.findItemById(this.currencies, data.clientData.clientTimeReportingCapCurrencyId), {emitEvent: false});
+            if (data.clientData.noSpecialContractTerms) {
+                this.contractClientForm.specialContractTerms?.disable();
+            }
+            if (data.clientData.directClientId) {
+                this.getRatesAndFees(data.clientData.directClientId);
+            }
         }
-        this.contractClientForm.pdcInvoicingEntityId?.setValue(data?.clientData?.pdcInvoicingEntityId);
-        this.contractClientForm.clientTimeReportingCapId?.setValue(this.findItemById(this.clientTimeReportingCap, data?.clientData?.clientTimeReportingCapId), {emitEvent: false});
-        this.contractClientForm.rateUnitType?.setValue(this.findItemById(this.rateUnitTypes, data?.clientData?.clientRate?.rateUnitTypeId), {emitEvent: false});
-        this.contractClientForm.currency?.setValue(this.findItemById(this.currencies, data?.clientData?.clientRate?.currencyId), {emitEvent: false});
-        this.contractClientForm.clientRate?.setValue(data?.clientData?.clientRate),
-        this.contractClientForm.clientTimeReportingCapMaxValue?.setValue(data?.clientData?.clientTimeReportingCapMaxValue, {emitEvent: false});
-        this.contractClientForm.clientTimeReportingCapCurrencyId?.setValue(this.findItemById(this.currencies, data?.clientData?.clientTimeReportingCapCurrencyId), {emitEvent: false});
-        this.contractClientForm.specialContractTerms?.setValue(data?.clientData?.specialContractTerms, {emitEvent: false});
-        this.contractClientForm.noSpecialContractTerms?.setValue(data?.clientData?.noSpecialContractTerms, {emitEvent: false});
-        if (data?.clientData?.noSpecialContractTerms) {
-            this.contractClientForm.specialContractTerms?.disable();
-        }
-        this.contractClientForm.invoicingReferenceNumber?.setValue(data?.clientData?.invoicingReferenceNumber, {emitEvent: false});
-        this.contractClientForm.clientInvoicingRecipientIdValue?.setValue(data?.clientData?.clientInvoicingRecipientIdValue, {emitEvent: false});
-        this.contractClientForm.clientInvoicingRecipient?.setValue(data?.clientData?.clientInvoicingRecipient, {emitEvent: false});
-        this.contractClientForm.invoicingReferencePersonIdValue?.setValue(data?.clientData?.invoicingReferencePersonIdValue, {emitEvent: false});
-        this.contractClientForm.invoicingReferencePerson?.setValue(data?.clientData?.invoicingReferencePerson, {emitEvent: false});
-
-        this.contractsSyncDataForm.clientLegalContractDoneStatusId?.setValue(data?.clientLegalContractDoneStatusId, {emitEvent: false});
-        this.contractsSyncDataForm.enableLegalContractsButtons?.setValue(data?.enableLegalContractsButtons, {emitEvent: false});
-        this.contractsSyncDataForm.showManualOption?.setValue(data?.showManualOption, {emitEvent: false});
-        this.contractsSyncDataForm.contractLinesDoneManuallyInOldPm?.setValue(data?.contractLinesDoneManuallyInOldPm, {emitEvent: false});
-        this.contractsSyncDataForm.isNewSyncNeeded?.setValue(data?.isNewSyncNeeded, {emitEvent: false});
-        this.contractsSyncDataForm.lastSyncedDate?.setValue(data?.lastSyncedDate, {emitEvent: false});
+        this.contractsSyncDataForm.patchValue(data, {emitEvent: false});
         if (data?.clientData?.periodClientSpecialRates?.length) {
-            data?.clientData.periodClientSpecialRates.forEach((rate: PeriodClientSpecialRateDto) => {
+            data.clientData.periodClientSpecialRates.forEach((rate: PeriodClientSpecialRateDto) => {
                 this.addSpecialRate(rate);
             });
         }
-
         if (data?.clientData?.periodClientSpecialFees?.length) {
-            data?.clientData.periodClientSpecialFees.forEach((fee: PeriodClientSpecialFeeDto) => {
+            data.clientData.periodClientSpecialFees.forEach((fee: PeriodClientSpecialFeeDto) => {
                 this.addClientFee(fee);
             });
         }
-
         if (data?.consultantData?.length) {
-            data?.consultantData.forEach((consultant: ConsultantContractsDataQueryDto, index) => {
+            data.consultantData.forEach((consultant: ConsultantContractsDataQueryDto, index) => {
                 this.addConsultantDataToForm(consultant, index);
                 this.addConsultantLegalContract(consultant);
             });
@@ -1389,7 +1358,7 @@ export class WorkflowContractsComponent extends AppComponentBase implements OnIn
         }
     }
 
-    packClientPeriodData(): ClientPeriodContractsDataCommandDto {
+    private _packClientPeriodData(): ClientPeriodContractsDataCommandDto {
         let input = new ClientPeriodContractsDataCommandDto();
         input.bypassLegalValidation = this.bypassLegalValidation;
         input.clientData = new ContractsClientDataDto();
@@ -1443,97 +1412,8 @@ export class WorkflowContractsComponent extends AppComponentBase implements OnIn
 
         input.consultantData = new Array<ConsultantContractsDataCommandDto>();
         if (this.contractsConsultantsDataForm?.consultants?.value?.length) {
-            for (let consultant of this.contractsConsultantsDataForm.consultants.value) {
-                let consultantData = new ConsultantContractsDataCommandDto();
-                consultantData.consultantPeriodId = consultant.consultantPeriodId;
-                consultantData.employmentTypeId = consultant.consultantType?.id;
-                consultantData.consultantId = consultant.consultantId;
-                consultantData.nameOnly = consultant.nameOnly;
-                consultantData.consultantTimeReportingCapId = consultant.consultantCapOnTimeReporting?.id;
-                consultantData.consultantTimeReportingCapMaxValue = consultant.consultantCapOnTimeReportingValue;
-                consultantData.consultantTimeReportingCapCurrencyId = consultant.consultantCapOnTimeReportingCurrency?.id;
-                consultantData.noSpecialContractTerms = consultant.noSpecialContractTerms;
-                consultantData.specialContractTerms = consultant.specialContractTerms;
-                consultantData.consultantRate = consultant.consultantRate;
-                consultantData.pdcPaymentEntityId = consultant.pdcPaymentEntityId;
-
-                consultantData.periodConsultantSpecialFees = new Array<PeriodConsultantSpecialFeeDto>();
-                if (consultant.clientFees?.length) {
-                    for (let specialFee of consultant.clientFees) {
-                        let consultantFee = new PeriodConsultantSpecialFeeDto();
-                        consultantFee.id = specialFee.id;
-                        consultantFee.clientSpecialFeeId = specialFee.clientSpecialFeeId;
-                        consultantFee.feeName = specialFee.feeName;
-                        consultantFee.frequency = specialFee.feeFrequency;
-                        consultantFee.prodataToProdataRate = specialFee.proDataRateValue;
-                        consultantFee.prodataToProdataRateCurrencyId = specialFee.proDataRateCurrency?.id;
-                        consultantFee.consultantRate = specialFee.consultantRateValue;
-                        consultantFee.consultantRateCurrencyId = specialFee.consultantRateCurrency?.id;
-                        consultantData.periodConsultantSpecialFees.push(consultantFee);
-                    }
-                }
-                consultantData.noSpecialFee = consultant.clientFees?.length === 0;
-                consultantData.periodConsultantSpecialRates = new Array<PeriodConsultantSpecialRateDto>();
-                if (consultant.specialRates?.length) {
-                    for (let specialRate of consultant.specialRates) {
-                        let consultantRate = new PeriodConsultantSpecialRateDto();
-                        consultantRate.id = specialRate.id;
-                        consultantRate.clientSpecialRateId = specialRate.clientSpecialRateId;
-                        consultantRate.rateName = specialRate.rateName;
-                        consultantRate.reportingUnit = specialRate.reportingUnit;
-                        consultantRate.prodataToProdataRate = specialRate.proDataRateValue;
-                        consultantRate.prodataToProdataRateCurrencyId = specialRate.proDataRateCurrency?.id;
-                        consultantRate.consultantRate = specialRate.consultantRateValue;
-                        consultantRate.consultantRateCurrencyId = specialRate.consultantRateCurrency?.id;
-                        consultantData.periodConsultantSpecialRates.push(consultantRate);
-                    }
-                }
-                consultantData.noSpecialRate = consultant.clientSpecialRates?.length === 0;
-                consultantData.projectLines = new Array<ProjectLineDto>();
-                if (consultant.projectLines?.length) {
-                    for (let projectLine of consultant.projectLines) {
-                        let projectLineInput = new ProjectLineDto();
-                        projectLineInput.id = projectLine.id;
-                        projectLineInput.projectName = projectLine.projectName;
-                        projectLineInput.startDate = projectLine.startDate;
-                        projectLineInput.endDate = projectLine.endDate;
-                        projectLineInput.noEndDate = projectLine.noEndDate;
-                        projectLineInput.differentInvoicingReferenceNumber = projectLine.differentInvoicingReferenceNumber;
-                        if (projectLineInput.differentInvoicingReferenceNumber) {
-                            projectLineInput.invoicingReferenceNumber = projectLine.invoicingReferenceNumber;
-                        }
-                        projectLineInput.differentInvoicingReferencePerson = projectLine.differentInvoicingReferencePerson;
-                        if (projectLineInput.differentInvoicingReferencePerson) {
-                            if (projectLine.invoicingReferencePerson?.id) {
-                                projectLineInput.invoicingReferencePersonId = projectLine.invoicingReferencePersonId;
-                                projectLineInput.invoicingReferencePerson = projectLine.invoicingReferencePerson;
-                            } else {
-                                projectLineInput.invoicingReferenceString = projectLine.invoicingReferencePersonId;
-                            }
-                        }
-                        projectLineInput.optionalInvoicingInfo = projectLine.optionalInvoicingInfo;
-                        projectLineInput.differentDebtorNumber = projectLine.differentDebtorNumber;
-                        if (projectLineInput.differentDebtorNumber) {
-                            projectLineInput.debtorNumber = projectLine.debtorNumber;
-                        }
-                        projectLineInput.differentInvoiceRecipient = projectLine.differentInvoiceRecipient;
-                        if (projectLineInput.differentInvoiceRecipient) {
-                            projectLineInput.invoiceRecipientId = projectLine.invoiceRecipientId;
-                            projectLineInput.invoiceRecipient = projectLine.invoiceRecipient;
-                        }
-                        projectLineInput.modifiedById = projectLine.modifiedById;
-                        projectLineInput.modifiedBy = projectLine.modifiedBy;
-                        projectLineInput.modificationDate = projectLine.modificationDate;
-                        projectLineInput.consultantInsuranceOptionId = projectLine.consultantInsuranceOptionId;
-                        projectLineInput.markedForLegacyDeletion = projectLine.markedForLegacyDeletion;
-                        projectLineInput.wasSynced = projectLine.wasSynced;
-                        projectLineInput.isLineForFees = projectLine.isLineForFees;
-
-                        consultantData.projectLines.push(projectLineInput);
-                    }
-                }
-                input.consultantData.push(consultantData);
-
+            for (let consultantInput of this.contractsConsultantsDataForm.consultants.value) {
+                input.consultantData.push(this._packConsultantFormData(consultantInput));
             }
         }
         return input;
@@ -1541,43 +1421,30 @@ export class WorkflowContractsComponent extends AppComponentBase implements OnIn
 
     fillConsultantPeriodForm(data: ConsultantPeriodContractsDataQueryDto) {
         this.resetForms();
-        this.contractsMainForm.remarks?.setValue(data?.remarks, {emitEvent: false});
-        this.contractsMainForm.noRemarks?.setValue(data?.noRemarks, {emitEvent: false});
-        if (data?.noRemarks) {
-            this.contractsMainForm.remarks?.disable();
+        if (data?.mainData !== undefined) {
+            this.contractsMainForm.patchValue(data, {emitEvent: false});
+            this.contractsMainForm.salesType?.setValue(this.findItemById(this.saleTypes, data?.mainData?.salesTypeId), {emitEvent: false});
+            this.contractsMainForm.deliveryType?.setValue(this.findItemById(this.deliveryTypes, data?.mainData?.deliveryTypeId), {emitEvent: false});
+            this.contractsMainForm.projectType?.setValue(this.findItemById(this.projectTypes, data?.mainData?.projectTypeId), {emitEvent: false});
+            this.contractsMainForm.margin?.setValue(this.findItemById(this.margins, data?.mainData?.marginId), {emitEvent: false});
+            this.contractsMainForm.discounts?.setValue(this.findItemById(this.discounts, data?.mainData?.discountId), {emitEvent: false});
+            if (data?.noRemarks) {
+                this.contractsMainForm.remarks?.disable();
+            }
         }
-        this.contractsMainForm.projectDescription?.setValue(data?.projectDescription, {emitEvent: false});
-        this.contractsMainForm.projectName?.setValue(data?.projectName, {emitEvent: false});
-        this.contractsMainForm.salesType?.setValue(this.findItemById(this.saleTypes, data?.mainData?.salesTypeId), {emitEvent: false});
-        this.contractsMainForm.deliveryType?.setValue(this.findItemById(this.deliveryTypes, data?.mainData?.deliveryTypeId), {emitEvent: false});
-        this.contractsMainForm.projectType?.setValue(this.findItemById(this.projectTypes, data?.mainData?.projectTypeId), {emitEvent: false});
-        this.contractsMainForm.margin?.setValue(this.findItemById(this.margins, data?.mainData?.marginId), {emitEvent: false});
-        this.contractsMainForm.discounts?.setValue(this.findItemById(this.discounts, data?.mainData?.discountId), {emitEvent: false});
-        this.contractsMainForm.customDebtorNumber?.setValue(data?.customDebtorNumber, {emitEvent: false});
-
-        this.contractClientForm.invoicingReferenceNumber?.setValue(data.clientData?.invoicingReferenceNumber, {emitEvent: false});
-        this.contractClientForm.clientInvoicingRecipientIdValue?.setValue(data.clientData?.clientInvoicingRecipientIdValue, {emitEvent: false});
-        this.contractClientForm.clientInvoicingRecipient?.setValue(data.clientData?.clientInvoicingRecipient, {emitEvent: false});
-        this.contractClientForm.invoicingReferencePersonIdValue?.setValue(data.clientData?.invoicingReferencePersonIdValue, {emitEvent: false});
-        this.contractClientForm.invoicingReferencePerson?.setValue(data.clientData?.invoicingReferencePerson, {emitEvent: false});
-
-        this.contractsSyncDataForm.contractLinesDoneManuallyInOldPm?.setValue(data?.contractLinesDoneManuallyInOldPm, {emitEvent: false})
-        this.contractsSyncDataForm.newLegalContract?.setValue(data?.newLegalContractRequired, {emitEvent: false});
-        this.contractsSyncDataForm.isNewSyncNeeded?.setValue(data?.isNewSyncNeeded, {emitEvent: false});
-        this.contractsSyncDataForm.lastSyncedDate?.setValue(data?.lastSyncedDate, {emitEvent: false});
-
+        if (data?.clientData !== undefined) {
+            this.contractClientForm.patchValue(data.clientData, {emitEvent: false});
+        }
+        this.contractsSyncDataForm.patchValue(data, {emitEvent: false});
         this.addConsultantDataToForm(data?.consultantData!, 0);
         this.addConsultantLegalContract(data.consultantData!);
         this.updateConsultantStepAnchors();
     }
 
-    packConsultantPeriodData(): ConsultantPeriodContractsDataCommandDto {
+    private _packConsultantPeriodData(): ConsultantPeriodContractsDataCommandDto {
         let input = new ConsultantPeriodContractsDataCommandDto();
         input.bypassLegalValidation = this.bypassLegalValidation;
-        input.remarks =  this.contractsMainForm.remarks?.value;
-        input.noRemarks =  this.contractsMainForm.noRemarks?.value
-        input.projectDescription =  this.contractsMainForm.projectDescription?.value;
-        input.projectName =  this.contractsMainForm.projectName?.value;
+        input = this.contractsMainForm.value;
         input.mainData = new ContractsMainDataDto();
         input.mainData.projectTypeId = this.contractsMainForm.projectType?.value?.id;;
         input.mainData.salesTypeId =  this.contractsMainForm.salesType?.value?.id;
@@ -1588,93 +1455,7 @@ export class WorkflowContractsComponent extends AppComponentBase implements OnIn
         input.consultantData = new ConsultantContractsDataCommandDto();
         const consultantInput = this.contractsConsultantsDataForm.consultants.at(0).value;
         if (consultantInput) {
-            let consultantData = new ConsultantContractsDataCommandDto();
-            consultantData.consultantPeriodId = consultantInput.consultantPeriodId;
-            consultantData.employmentTypeId = consultantInput.consultantType?.id;
-            consultantData.consultantId = consultantInput.consultantId;
-            consultantData.nameOnly = consultantInput.nameOnly;
-            consultantData.consultantTimeReportingCapId = consultantInput.consultantCapOnTimeReporting?.id;
-            consultantData.consultantTimeReportingCapMaxValue = consultantInput.consultantCapOnTimeReportingValue;
-            consultantData.consultantTimeReportingCapCurrencyId = consultantInput.consultantCapOnTimeReportingCurrency?.id;
-            consultantData.noSpecialContractTerms = consultantInput.noSpecialContractTerms;
-            consultantData.specialContractTerms = consultantInput.specialContractTerms;
-
-            consultantData.periodConsultantSpecialFees = new Array<PeriodConsultantSpecialFeeDto>();
-            if (consultantInput.clientFees?.length) {
-                for (let specialFee of consultantInput.clientFees) {
-                    let consultantFee = new PeriodConsultantSpecialFeeDto();
-                    consultantFee.id = specialFee.id;
-                    consultantFee.clientSpecialFeeId = specialFee.clientSpecialFeeId;
-                    consultantFee.feeName = specialFee.feeName;
-                    consultantFee.frequency = specialFee.feeFrequency;
-                    consultantFee.prodataToProdataRate = specialFee.proDataRateValue;
-                    consultantFee.prodataToProdataRateCurrencyId = specialFee.proDataRateCurrency?.id;
-                    consultantFee.consultantRate = specialFee.consultantRateValue;
-                    consultantFee.consultantRateCurrencyId = specialFee.consultantRateCurrency?.id;
-                    consultantData.periodConsultantSpecialFees.push(consultantFee);
-                }
-            }
-            consultantData.noSpecialFee = consultantInput.clientFees?.length === 0;
-            consultantData.periodConsultantSpecialRates = new Array<PeriodConsultantSpecialRateDto>();
-            if (consultantInput.clientSpecialRates?.length) {
-                for (let specialRate of consultantInput.clientSpecialRates) {
-                    let consultantRate = new PeriodConsultantSpecialRateDto();
-                    consultantRate.id = specialRate.id;
-                    consultantRate.clientSpecialRateId = specialRate.clientSpecialRateId;
-                    consultantRate.rateName = specialRate.rateName;
-                    consultantRate.reportingUnit = specialRate.reportingUnit;
-                    consultantRate.prodataToProdataRate = specialRate.proDataRateValue;
-                    consultantRate.prodataToProdataRateCurrencyId = specialRate.proDataRateCurrency?.id;
-                    consultantRate.consultantRate = specialRate.consultantRateValue;
-                    consultantRate.consultantRateCurrencyId = specialRate.consultantRateCurrency?.id;
-                    consultantData.periodConsultantSpecialRates.push(consultantRate);
-                }
-            }
-            consultantData.noSpecialRate = consultantInput.clientSpecialRates?.length === 0;
-            consultantData.projectLines = new Array<ProjectLineDto>();
-            if (consultantInput.projectLines?.length) {
-                for (let projectLine of consultantInput.projectLines) {
-                    let projectLineInput = new ProjectLineDto();
-                    projectLineInput.id = projectLine.id;
-                    projectLineInput.projectName = projectLine.projectName;
-                    projectLineInput.startDate = projectLine.startDate;
-                    projectLineInput.endDate = projectLine.endDate;
-                    projectLineInput.noEndDate = projectLine.noEndDate;
-                    projectLineInput.differentInvoicingReferenceNumber = projectLine.differentInvoicingReferenceNumber;
-                    if (projectLineInput.differentInvoicingReferenceNumber) {
-                        projectLineInput.invoicingReferenceNumber = projectLine.invoicingReferenceNumber;
-                    }
-                    projectLineInput.differentInvoicingReferencePerson = projectLine.differentInvoicingReferencePerson;
-                    if (projectLineInput.differentInvoicingReferencePerson) {
-                        if (projectLine.invoicingReferencePerson?.id) {
-                            projectLineInput.invoicingReferencePersonId = projectLine.invoicingReferencePersonId;
-                            projectLineInput.invoicingReferencePerson = projectLine.invoicingReferencePerson;
-                        } else {
-                            projectLineInput.invoicingReferenceString = projectLine.invoicingReferencePersonId;
-                        }
-                    }
-                    projectLineInput.optionalInvoicingInfo = projectLine.optionalInvoicingInfo;
-                    projectLineInput.differentDebtorNumber = projectLine.differentDebtorNumber;
-                    if (projectLineInput.differentDebtorNumber) {
-                        projectLineInput.debtorNumber = projectLine.debtorNumber;
-                    }
-                    projectLineInput.differentInvoiceRecipient = projectLine.differentInvoiceRecipient;
-                    if (projectLineInput.differentInvoiceRecipient) {
-                        projectLineInput.invoiceRecipientId = projectLine.invoiceRecipientId;
-                        projectLineInput.invoiceRecipient = projectLine.invoiceRecipient;
-                    }
-                    projectLineInput.modifiedById = projectLine.modifiedById;
-                    projectLineInput.modifiedBy = projectLine.modifiedBy;
-                    projectLineInput.modificationDate = projectLine.modificationDate;
-                    projectLineInput.consultantInsuranceOptionId = projectLine.consultantInsuranceOptionId;
-                    projectLineInput.markedForLegacyDeletion = projectLine.markedForLegacyDeletion;
-                    projectLineInput.wasSynced = projectLine.wasSynced;
-                    projectLineInput.isLineForFees = projectLine.isLineForFees;
-
-                    consultantData.projectLines.push(projectLineInput);
-                }
-            }
-            input.consultantData = consultantData;
+            input.consultantData = this._packConsultantFormData(consultantInput);
         }
         input.contractLinesDoneManuallyInOldPm = this.contractsSyncDataForm.contractLinesDoneManuallyInOldPm?.value;
         input.newLegalContractRequired = this.contractsSyncDataForm.newLegalContract?.value;
@@ -1683,28 +1464,20 @@ export class WorkflowContractsComponent extends AppComponentBase implements OnIn
 
     fillWorkflowTerminationForm(data: WorkflowTerminationContractDataQueryDto) {
         this.resetForms();
-        this.contractsSyncDataForm.contractLinesDoneManuallyInOldPm?.setValue(data?.contractLinesDoneManuallyInOldPM, {emitEvent: false});
-        this.contractsSyncDataForm.isNewSyncNeeded?.setValue(data?.isNewSyncNeeded, {emitEvent: false});
-        this.contractsSyncDataForm.lastSyncedDate?.setValue(data?.lastSyncedDate, {emitEvent: false});
+        this.contractsSyncDataForm.patchValue(data, {emitEvent: false});
         data.consultantTerminationContractData?.forEach(consultant => {
             this.addConsultantDataToTerminationForm(consultant);
         })
     }
 
-    packWorkflowTerminationData(): WorkflowTerminationContractDataCommandDto {
+    private _packWorkflowTerminationData(): WorkflowTerminationContractDataCommandDto {
         let input = new WorkflowTerminationContractDataCommandDto();
-        input.contractLinesDoneManuallyInOldPM = this.contractsSyncDataForm.contractLinesDoneManuallyInOldPm?.value;
-        input.consultantTerminationContractData = this.contractsTerminationConsultantForm.consultantTerminationContractData?.value
-
+        input = this.contractsSyncDataForm.value;
         input.consultantTerminationContractData = new Array<ConsultantTerminationContractDataCommandDto>();
         if (this.contractsTerminationConsultantForm.consultantTerminationContractData.value?.length) {
             this.contractsTerminationConsultantForm.consultantTerminationContractData.value.forEach((consultant: any) => {
                 let consultantInput = new ConsultantTerminationContractDataCommandDto();
-                consultantInput.consultantId = consultant.consultantId;
-                consultantInput.contractLinesDoneManuallyInOldPM = consultant.contractLinesDoneManuallyInOldPM;
-                consultantInput.removedConsultantFromAnyManualChecklists = consultant.removedConsultantFromAnyManualChecklists;
-                consultantInput.deletedAnySensitiveDocumentsForGDPR = consultant.deletedAnySensitiveDocumentsForGDPR;
-
+                consultantInput = consultant;
                 input.consultantTerminationContractData!.push(consultantInput);
             });
         }
@@ -1717,13 +1490,104 @@ export class WorkflowContractsComponent extends AppComponentBase implements OnIn
         this.addConsultantDataToTerminationForm(data);
     }
 
-    packConsultantTerminationData(): ConsultantTerminationContractDataCommandDto {
+    private _packConsultantTerminationData(): ConsultantTerminationContractDataCommandDto {
         let input = new ConsultantTerminationContractDataCommandDto();
         input.consultantId = this.contractsTerminationConsultantForm.consultantTerminationContractData?.value.consultantId;
         input.contractLinesDoneManuallyInOldPM = this.contractsSyncDataForm.contractLinesDoneManuallyInOldPm?.value;
         input.removedConsultantFromAnyManualChecklists = this.contractsTerminationConsultantForm.consultantTerminationContractData?.value.removedConsultantFromAnyManualChecklists;
         input.deletedAnySensitiveDocumentsForGDPR = this.contractsTerminationConsultantForm.consultantTerminationContractData?.value.deletedAnySensitiveDocumentsForGDPR;
         return input;
+    }
+
+
+    private _packConsultantFormData(consultantInput: any): ConsultantContractsDataCommandDto {
+        let consultantData = new ConsultantContractsDataCommandDto();
+        consultantData.consultantPeriodId = consultantInput.consultantPeriodId;
+        consultantData.employmentTypeId = consultantInput.consultantType?.id;
+        consultantData.consultantId = consultantInput.consultantId;
+        consultantData.nameOnly = consultantInput.nameOnly;
+        consultantData.consultantTimeReportingCapId = consultantInput.consultantCapOnTimeReporting?.id;
+        consultantData.consultantTimeReportingCapMaxValue = consultantInput.consultantCapOnTimeReportingValue;
+        consultantData.consultantTimeReportingCapCurrencyId = consultantInput.consultantCapOnTimeReportingCurrency?.id;
+        consultantData.noSpecialContractTerms = consultantInput.noSpecialContractTerms;
+        consultantData.specialContractTerms = consultantInput.specialContractTerms;
+
+        consultantData.periodConsultantSpecialFees = new Array<PeriodConsultantSpecialFeeDto>();
+        if (consultantInput.clientFees?.length) {
+            for (let specialFee of consultantInput.clientFees) {
+                let consultantFee = new PeriodConsultantSpecialFeeDto();
+                consultantFee.id = specialFee.id;
+                consultantFee.clientSpecialFeeId = specialFee.clientSpecialFeeId;
+                consultantFee.feeName = specialFee.feeName;
+                consultantFee.frequency = specialFee.feeFrequency;
+                consultantFee.prodataToProdataRate = specialFee.proDataRateValue;
+                consultantFee.consultantRate = specialFee.consultantRateValue;
+                consultantFee.prodataToProdataRateCurrencyId = specialFee.proDataRateCurrency?.id;
+                consultantFee.consultantRateCurrencyId = specialFee.consultantRateCurrency?.id;
+                consultantData.periodConsultantSpecialFees.push(consultantFee);
+            }
+        }
+        consultantData.noSpecialFee = consultantInput.clientFees?.length === 0;
+        consultantData.periodConsultantSpecialRates = new Array<PeriodConsultantSpecialRateDto>();
+        if (consultantInput.specialRates?.length) {
+            for (let specialRate of consultantInput.specialRates) {
+                let consultantRate = new PeriodConsultantSpecialRateDto();
+                consultantRate.id = specialRate.id;
+                consultantRate.clientSpecialRateId = specialRate.clientSpecialRateId;
+                consultantRate.rateName = specialRate.rateName;
+                consultantRate.reportingUnit = specialRate.reportingUnit;
+                consultantRate.prodataToProdataRate = specialRate.proDataRateValue;
+                consultantRate.consultantRate = specialRate.consultantRateValue;
+                consultantRate.prodataToProdataRateCurrencyId = specialRate.proDataRateCurrency?.id;
+                consultantRate.consultantRateCurrencyId = specialRate.consultantRateCurrency?.id;
+                consultantData.periodConsultantSpecialRates.push(consultantRate);
+            }
+        }
+        consultantData.noSpecialRate = consultantInput.clientSpecialRates?.length === 0;
+        consultantData.projectLines = new Array<ProjectLineDto>();
+        if (consultantInput.projectLines?.length) {
+            for (let projectLine of consultantInput.projectLines) {
+                let projectLineInput = new ProjectLineDto();
+                projectLineInput.id = projectLine.id;
+                projectLineInput.projectName = projectLine.projectName;
+                projectLineInput.startDate = projectLine.startDate;
+                projectLineInput.endDate = projectLine.endDate;
+                projectLineInput.noEndDate = projectLine.noEndDate;
+                projectLineInput.differentInvoicingReferenceNumber = projectLine.differentInvoicingReferenceNumber;
+                if (projectLineInput.differentInvoicingReferenceNumber) {
+                    projectLineInput.invoicingReferenceNumber = projectLine.invoicingReferenceNumber;
+                }
+                projectLineInput.differentInvoicingReferencePerson = projectLine.differentInvoicingReferencePerson;
+                if (projectLineInput.differentInvoicingReferencePerson) {
+                    if (projectLine.invoicingReferencePerson?.id) {
+                        projectLineInput.invoicingReferencePersonId = projectLine.invoicingReferencePersonId;
+                        projectLineInput.invoicingReferencePerson = projectLine.invoicingReferencePerson;
+                    } else {
+                        projectLineInput.invoicingReferenceString = projectLine.invoicingReferencePersonId;
+                    }
+                }
+                projectLineInput.optionalInvoicingInfo = projectLine.optionalInvoicingInfo;
+                projectLineInput.differentDebtorNumber = projectLine.differentDebtorNumber;
+                if (projectLineInput.differentDebtorNumber) {
+                    projectLineInput.debtorNumber = projectLine.debtorNumber;
+                }
+                projectLineInput.differentInvoiceRecipient = projectLine.differentInvoiceRecipient;
+                if (projectLineInput.differentInvoiceRecipient) {
+                    projectLineInput.invoiceRecipientId = projectLine.invoiceRecipientId;
+                    projectLineInput.invoiceRecipient = projectLine.invoiceRecipient;
+                }
+                projectLineInput.modifiedById = projectLine.modifiedById;
+                projectLineInput.modifiedBy = projectLine.modifiedBy;
+                projectLineInput.modificationDate = projectLine.modificationDate;
+                projectLineInput.consultantInsuranceOptionId = projectLine.consultantInsuranceOptionId;
+                projectLineInput.markedForLegacyDeletion = projectLine.markedForLegacyDeletion;
+                projectLineInput.wasSynced = projectLine.wasSynced;
+                projectLineInput.isLineForFees = projectLine.isLineForFees;
+
+                consultantData.projectLines.push(projectLineInput);
+            }
+        }
+        return consultantData;
     }
 
 }
