@@ -569,7 +569,8 @@ export class MainOverviewComponent extends AppComponentBase implements OnInit {
                     canBeSetAutomatically: x.canBeSetAutomatically!,
                     canBeSetByUser: x.canBeSetByUser!,
                     selected: false,
-                    flag: this.detectIcon(x.id!)
+                    flag: this.detectIcon(x.id!),
+                    color: this.detectProcessColor(x.id!)
                 })
             });
         })
