@@ -4,11 +4,13 @@ import {
     ViewEncapsulation,
     OnInit,
     DoCheck,
+    Injector
 } from '@angular/core';
 import { FormControl, NgControl, Validators } from '@angular/forms';
 import { MergeFieldsServiceProxy } from 'src/shared/service-proxies/service-proxies';
 import { Subject, Observable, EMPTY } from 'rxjs';
 import { map, switchMap, tap } from 'rxjs/operators';
+import { AppComponentBase } from 'src/shared/app-component-base';
 
 @Component({
     selector: 'emg-auto-name',
@@ -16,7 +18,7 @@ import { map, switchMap, tap } from 'rxjs/operators';
     templateUrl: './auto-name.component.html',
     encapsulation: ViewEncapsulation.None,
 })
-export class AutoNameComponent implements OnInit, DoCheck {
+export class AutoNameComponent extends AppComponentBase implements OnInit, DoCheck {
     get control() {
         return this.ngControl.control;
     }
@@ -35,8 +37,10 @@ export class AutoNameComponent implements OnInit, DoCheck {
 
     constructor(
         private readonly mergeFieldsServiceProxy: MergeFieldsServiceProxy,
+        private readonly injector: Injector,
         @Self() private ngControl: NgControl
     ) {
+        super(injector);
         ngControl.valueAccessor = this;
     }
 
@@ -80,18 +84,15 @@ export class AutoNameComponent implements OnInit, DoCheck {
         this.textControl.setValue(textControlValue + ` {${autoName}} `);
     }
 
-    trackBy(index: number, item: string) {
-        return item;
-    }
 
     private _initOptions() {
-        this.mergeFieldsServiceProxy.fields().subscribe((fields) => {
+        this.mergeFieldsServiceProxy.fields().subscribe((fields: string []) => {
             this.options = fields;
         });
     }
 
     private _subsribeOnTextControlChanges() {
-        this.textControl.valueChanges.subscribe((value) => {
+        this.textControl.valueChanges.subscribe((value: string) => {
             this.onChange(value);
             this.control?.setErrors(this.textControl.errors);
         });
@@ -108,7 +109,7 @@ export class AutoNameComponent implements OnInit, DoCheck {
                         .templatePreview(this.textControlBufferValue)
                         .pipe(
                             map((v) => v.value),
-                            tap((templatePreview) => {
+                            tap((templatePreview: string | undefined) => {
                                 this.textControl.setValue(templatePreview, {
                                     emitEvent: false,
                                 });

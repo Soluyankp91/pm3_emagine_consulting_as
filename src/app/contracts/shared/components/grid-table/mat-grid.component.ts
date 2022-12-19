@@ -18,6 +18,7 @@ import {
     SimpleChanges,
     ContentChildren,
     TemplateRef,
+    Injector,
 } from '@angular/core';
 import { PageEvent } from '@angular/material/paginator';
 import { Sort } from '@angular/material/sort';
@@ -32,6 +33,7 @@ import {
 import { PAGE_SIZE_OPTIONS } from './master-templates/entities/master-templates.constants';
 import { SelectionModel } from '@angular/cdk/collections';
 import { Actions } from './master-templates/entities/master-templates.interfaces';
+import { AppComponentBase } from 'src/shared/app-component-base';
 
 @Component({
     selector: 'emg-mat-grid',
@@ -39,6 +41,7 @@ import { Actions } from './master-templates/entities/master-templates.interfaces
     changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class MatGridComponent
+    extends AppComponentBase
     implements OnInit, OnChanges, OnDestroy, AfterViewInit
 {
     @Input() displayedColumns: string[];
@@ -79,7 +82,12 @@ export class MatGridComponent
 
     private _unSubscribe$ = new Subject<void>();
 
-    constructor(private _componentFactoryResolver: ComponentFactoryResolver) {}
+    constructor(
+        private readonly injector: Injector,
+        private _componentFactoryResolver: ComponentFactoryResolver
+    ) {
+        super(injector);
+    }
 
     ngOnInit(): void {
         this.formGroup = new FormGroup({});

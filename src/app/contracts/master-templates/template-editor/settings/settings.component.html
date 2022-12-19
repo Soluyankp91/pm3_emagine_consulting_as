@@ -5,24 +5,25 @@
     <div class="page-container">
         <div class="template-settings-section">
             <h3 class="template-settings-header">Template settings</h3>
-            <mat-radio-group
-                *ngIf="!editMode"
-                [formControl]="agreementCreationMode"
-                class="radio-button-group"
-            >
-                <mat-radio-button
-                    class="option"
-                    [value]="creationModes.Duplicated"
-                    (click)="modeControl$.next(creationModes.Duplicated)"
-                    >Duplicate from master template</mat-radio-button
+            <ng-container *ngIf="!editMode">
+                <mat-radio-group
+                    [formControl]="agreementCreationMode"
+                    class="radio-button-group"
                 >
-                <mat-radio-button
-                    class="option"
-                    [value]="creationModes.FromScratch"
-                    (click)="modeControl$.next(creationModes.FromScratch)"
-                    >Create from scratch</mat-radio-button
-                >
-            </mat-radio-group>
+                    <mat-radio-button
+                        class="option"
+                        [value]="creationModes.Duplicated"
+                        (click)="modeControl$.next(creationModes.Duplicated)"
+                        >Duplicate from master template</mat-radio-button
+                    >
+                    <mat-radio-button
+                        class="option"
+                        [value]="creationModes.FromScratch"
+                        (click)="modeControl$.next(creationModes.FromScratch)"
+                        >Create from scratch</mat-radio-button
+                    >
+                </mat-radio-group>
+            </ng-container>
             <mat-divider></mat-divider>
             <mat-form-field
                 class="dropdown"
@@ -75,19 +76,22 @@
                     ></app-validator
                 ></mat-error>
             </mat-form-field>
-            <emg-dropdown-autocomplete-single-select
-                *ngIf="(masterTemplateOptions$ | async) as masterTemplateOptions"
-                [options]="masterTemplateOptions"
-                [labelKey]="'name'"
-                [outputProperty]="'agreementTemplateId'"
-                [label]="'Master Template'"
-                [formControl]="duplicateTemplateControl"
-                (inputEmitter)="masterTemplateOptionsChanged$.next($event)"
+            <ng-container
+                *ngIf="masterTemplateOptions$ | async as masterTemplateOptions"
             >
-                <ng-template let-cell="option" #optionTemplate>
-                    <span>{{ cell.name }}</span>
-                </ng-template>
-            </emg-dropdown-autocomplete-single-select>
+                <emg-dropdown-autocomplete-single-select
+                    [options]="masterTemplateOptions"
+                    [labelKey]="'name'"
+                    [outputProperty]="'agreementTemplateId'"
+                    [label]="'Master Template'"
+                    [formControl]="duplicateTemplateControl"
+                    (inputEmitter)="masterTemplateOptionsChanged$.next($event)"
+                >
+                    <ng-template let-cell="option" #optionTemplate>
+                        <span>{{ cell.name }}</span>
+                    </ng-template>
+                </emg-dropdown-autocomplete-single-select>
+            </ng-container>
             <mat-divider></mat-divider>
             <mat-form-field appearance="outline" floatLabel="never">
                 <mat-label> Master template name</mat-label>

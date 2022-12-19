@@ -2,6 +2,7 @@ import { Injector } from "@angular/core";
 import { AbstractControl } from "@angular/forms";
 import { MatSnackBar } from "@angular/material/snack-bar";
 import { NgxSpinnerService } from "ngx-spinner";
+import { Actions } from "src/app/contracts/shared/components/grid-table/master-templates/entities/master-templates.interfaces";
 import { TenantList } from "src/app/workflow/workflow-sales/workflow-sales.model";
 import { ISelectableIdNameDto } from "src/app/workflow/workflow.model";
 import { environment } from "src/environments/environment";
@@ -163,6 +164,14 @@ export abstract class AppComponentBase {
     // TODO: move all others trackBy methods here
     trackById(index: number, item: any) {
         return item.id;
+    }
+
+    trackByAction(index: number, item: Actions) {
+        return item.actionType;
+    }
+
+    trackByItem(index: number, item: string) {
+        return item;
     }
 
     documentsTrackBy(index: number, item: ContractDocumentInfoDto) {

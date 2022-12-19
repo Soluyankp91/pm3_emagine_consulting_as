@@ -14,6 +14,7 @@ import { LegalEntityDto } from 'src/shared/service-proxies/service-proxies';
 
 @Component({
     selector: 'app-master-template-creation',
+    styleUrls: ['./template-editor.component.scss'],
     templateUrl: './template-editor.component.html',
     changeDetection: ChangeDetectionStrategy.OnPush,
 })

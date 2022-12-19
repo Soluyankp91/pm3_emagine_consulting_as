@@ -1,4 +1,4 @@
-import { Component, Input, OnInit } from '@angular/core';
+import { Component, Input } from '@angular/core';
 import { LegalEntityDto } from 'src/shared/service-proxies/service-proxies';
 
 @Component({
@@ -6,10 +6,13 @@ import { LegalEntityDto } from 'src/shared/service-proxies/service-proxies';
     templateUrl: './tenants.component.html',
     styleUrls: ['./tenants.component.scss'],
 })
-export class TenantsComponent implements OnInit {
+export class TenantsComponent {
     @Input() tenants: (LegalEntityDto & { code: string })[];
     constructor() {}
 
     countryLimit = 3;
-    ngOnInit(): void {}
+
+    trackByLegalEntity(index: number, legalEntity:LegalEntityDto) {
+        return legalEntity.id;
+    }
 }

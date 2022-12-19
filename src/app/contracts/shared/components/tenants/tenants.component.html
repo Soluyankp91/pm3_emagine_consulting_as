@@ -1,21 +1,20 @@
 <ng-container *ngIf="tenants">
-    <div
-        *ngIf="tenants.length <= countryLimit; else beyondLimit"
-        [style.margin-right.px]="-(tenants.length - 1) * 20"
-    >
-        <span
-            *ngFor="let tenant of tenants; let i = index"
-            class="fi fi-{{ tenant.code | lowercase }} tenant"
-            [style.right.px]="20 * i"
-        ></span>
-    </div>
+    <ng-container *ngIf="tenants.length <= countryLimit; else beyondLimit">
+        <div [style.margin-right.px]="-(tenants.length - 1) * 20">
+            <span
+                *ngFor="let tenant of tenants; let i = index;trackByLegalEntity"
+                class="fi fi-{{ tenant.code | lowercase }} tenant"
+                [style.right.px]="20 * i"
+            ></span>
+        </div>
+    </ng-container>
     <ng-template #beyondLimit>
         <div [style.display]="'flex'">
             <div class="circle-counter">
                 <span>{{ tenants.length }}</span>
             </div>
             <button
-            class="trigger-button"
+                class="trigger-button"
                 mat-icon-button
                 [matMenuTriggerFor]="menu"
                 [style.align-self]="'end'"
@@ -23,17 +22,18 @@
                 <mat-icon svgIcon="chevron-down"></mat-icon>
             </button>
             <mat-menu #menu="matMenu">
-                <div
-                class="tenant-menu"
-                    *ngFor="let tenant of tenants; let i = index"
-                >
-                <div [style.padding.px]="7">
-                    <span
-                    class="fi fi-{{ tenant.code | lowercase }} tenant"
-                ></span>
-                </div>
-                    <span>{{ tenant.name }}</span>
-                </div>
+                <ng-container *ngFor="let tenant of tenants; let i = index; trackBy:trackByLegalEntity">
+                    <div class="tenant-menu">
+                        <div [style.padding.px]="7">
+                            <span
+                                class="fi fi-{{
+                                    tenant.code | lowercase
+                                }} tenant"
+                            ></span>
+                        </div>
+                        <span>{{ tenant.name }}</span>
+                    </div>
+                </ng-container>
             </mat-menu>
         </div>
     </ng-template>

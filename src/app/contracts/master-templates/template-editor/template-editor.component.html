@@ -1,4 +1,4 @@
-<div [style.display]="'flex'" [style.align-items]="'center'">
+<div class="align-items">
     <ng-container *ngIf="tenants$ | async as tenants; else defaultTenants">
         <emg-tenants [tenants]="tenants"></emg-tenants>
     </ng-container>
@@ -6,9 +6,7 @@
         <span>
             <mat-icon
                 svgIcon="worldwide-icon"
-                [style.width.px]="32"
-                [style.height.px]="32"
-                [style.margin.px]="7"
+                class="worldwide-icon"
             ></mat-icon>
         </span>
     </ng-template>

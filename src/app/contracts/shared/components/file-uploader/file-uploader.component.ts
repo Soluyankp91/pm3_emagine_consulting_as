@@ -32,7 +32,6 @@ export class FileUploaderComponent implements OnInit, ControlValueAccessor {
 
     constructor(
         private readonly _fileServiceProxy: FileServiceProxy,
-        private readonly cdr: ChangeDetectorRef
     ) {}
 
     ngOnInit(): void {

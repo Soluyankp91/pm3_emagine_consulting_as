@@ -137,6 +137,7 @@ export const MASTER_TEMPLATE_HEADER_CELLS: IHeaderCell[] = [
 ];
 
 export const PAGE_SIZE_OPTIONS: number[] = [5, 10, 20, 50, 100];
+export const AUTOCOMPLETE_SEARCH_ITEMS_COUNT = 100;
 export const DEFAULT_SIZE_OPTION: number = PAGE_SIZE_OPTIONS[0];
 export const MASTER_TEMPLATE_ACTIONS: Actions[] = [
     {

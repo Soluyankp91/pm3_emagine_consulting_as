@@ -19,7 +19,7 @@ import { SingleAutoErrorStateMatcher } from '../../matchers/customMatcher';
 import { Item } from './entities/interfaces';
 import { Subject } from 'rxjs';
 import { takeUntil, filter, distinctUntilChanged } from 'rxjs/operators';
-import { requiredValidator } from '../../validators/customRequireValidator';
+import { RequiredValidator } from '../../validators/customRequireValidator';
 
 @Component({
     selector: 'emg-dropdown-autocomplete-single-select',
@@ -53,9 +53,7 @@ export class DropdownAutocompleteSingleSelectComponent
 
     private _unSubscribe$ = new Subject();
 
-    constructor(
-        @Self() private readonly ngControl: NgControl,
-    ) {
+    constructor(@Self() private readonly ngControl: NgControl) {
         ngControl.valueAccessor = this;
     }
 
@@ -79,7 +77,7 @@ export class DropdownAutocompleteSingleSelectComponent
     }
 
     displayFn(option: Item) {
-       return option && option[this.labelKey] ? option[this.labelKey] : option
+        return option && option[this.labelKey] ? option[this.labelKey] : option;
     }
 
     onSelect(selectedOption: Item) {
@@ -106,7 +104,7 @@ export class DropdownAutocompleteSingleSelectComponent
             return;
         }
         let preselectedOption = this.options.find(
-            (option) => option[this.outputProperty] == id
+            (option: Item) => option[this.outputProperty] == id
         );
         this.selectedItem = preselectedOption as Item;
         this.inputControl.setValue(preselectedOption, {
@@ -148,7 +146,7 @@ export class DropdownAutocompleteSingleSelectComponent
     }
 
     private _initValidators() {
-        let validators = [requiredValidator(this.control)];
+        let validators = [RequiredValidator(this.control)];
         this.inputControl.setValidators(validators);
         this.inputControl.updateValueAndValidity();
     }

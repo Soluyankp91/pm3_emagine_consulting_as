@@ -16,7 +16,7 @@
         ><app-validator [control]="textControl"></app-validator
     ></mat-error>
     <mat-autocomplete #auto="matAutocomplete">
-        <mat-option *ngFor="let option of options;trackBy:trackBy">
+        <mat-option *ngFor="let option of options;trackBy:trackByItem">
             <div class="auto-name-alignment"
                 (click)="$event.stopPropagation(); addAutoName(option)"
             >

@@ -34,7 +34,7 @@ export class FileSelectorComponent
     private onTouched = () => {};
 
     constructor(
-        private readonly agreementTemplateAttachmentServiceProxy: AgreementTemplateAttachmentServiceProxy
+        private readonly _agreementTemplateAttachmentServiceProxy: AgreementTemplateAttachmentServiceProxy
     ) {}
 
     ngOnInit(): void {}
@@ -53,7 +53,7 @@ export class FileSelectorComponent
     }
 
     downloadAttachment(file: FileUploadItem): void {
-        this.agreementTemplateAttachmentServiceProxy
+        this._agreementTemplateAttachmentServiceProxy
             .agreementTemplateAttachment(
                 file.agreementTemplateAttachmentId as number
             )
@@ -94,7 +94,7 @@ export class FileSelectorComponent
         if (preSelectedFiles === null || !preSelectedFiles.length) {
             return;
         }
-        preSelectedFiles.forEach((preselectedFile) => {
+        preSelectedFiles.forEach((preselectedFile: FileUpload) => {
             let founded = this.inheritedFilesModified.find((f) => {
                 return (
                     f.agreementTemplateAttachmentId ===
