@@ -18,6 +18,7 @@ import { InternalLookupService } from 'src/app/shared/common/internal-lookup.ser
 import { ConfirmationDialogComponent } from 'src/app/shared/components/confirmation-dialog/confirmation-dialog.component';
 import { environment } from 'src/environments/environment';
 import { AppComponentBase, NotifySeverity } from 'src/shared/app-component-base';
+import { MediumDialogConfig } from 'src/shared/dialog.configs';
 import { LocalHttpService } from 'src/shared/service-proxies/local-http.service';
 import { ClientPeriodSalesDataDto, ClientPeriodServiceProxy, ClientRateDto, CommissionDto, ConsultantRateDto, ConsultantSalesDataDto, ContractSignerDto, EmployeeDto, EnumEntityTypeDto, LookupServiceProxy, PeriodClientSpecialFeeDto, PeriodClientSpecialRateDto, SalesClientDataDto, SalesMainDataDto, WorkflowProcessType, WorkflowServiceProxy, ConsultantResultDto, ClientResultDto, ContactResultDto, ConsultantTerminationSalesDataCommandDto, WorkflowTerminationSalesDataCommandDto, PeriodConsultantSpecialFeeDto, PeriodConsultantSpecialRateDto, ClientSpecialRateDto, ClientsServiceProxy, ClientSpecialFeeDto, ConsultantPeriodServiceProxy, ConsultantPeriodSalesDataDto, ExtendConsultantPeriodDto, ChangeConsultantPeriodDto, ConsultantWithSourcingRequestResultDto, CountryDto, StepType, LegalEntityDto } from 'src/shared/service-proxies/service-proxies';
 import { CustomValidators } from 'src/shared/utils/custom-validators';
@@ -1390,23 +1391,16 @@ export class WorkflowSalesComponent extends AppComponentBase implements OnInit, 
     confirmRemoveConsultant(index: number) {
         const consultant = this.consultantsForm.consultantData.at(index).value;
         const scrollStrategy = this.overlay.scrollStrategies.reposition();
-        const dialogRef = this.dialog.open(ConfirmationDialogComponent, {
-            width: '450px',
-            minHeight: '180px',
-            height: 'auto',
-            scrollStrategy,
-            backdropClass: 'backdrop-modal--wrapper',
-            autoFocus: false,
-            panelClass: 'confirmation-modal',
-            data: {
-                confirmationMessageTitle: `Delete consultant`,
-                confirmationMessage: `Are you sure you want to delete consultant ${consultant.consultantName?.consultant?.name ?? ''}?\n
-                    When you confirm the deletion, all the info contained inside this block will disappear.`,
-                rejectButtonText: 'Cancel',
-                confirmButtonText: 'Delete',
-                isNegative: true
-            }
-        });
+        MediumDialogConfig.scrollStrategy = scrollStrategy;
+        MediumDialogConfig.data = {
+            confirmationMessageTitle: `Delete consultant`,
+            confirmationMessage: `Are you sure you want to delete consultant ${consultant.consultantName?.consultant?.name ?? ''}?\n
+                When you confirm the deletion, all the info contained inside this block will disappear.`,
+            rejectButtonText: 'Cancel',
+            confirmButtonText: 'Delete',
+            isNegative: true
+        }
+        const dialogRef = this.dialog.open(ConfirmationDialogComponent, MediumDialogConfig);
 
         dialogRef.componentInstance.onConfirmed.subscribe(() => {
             this.removeConsultant(index);
@@ -1866,24 +1860,16 @@ export class WorkflowSalesComponent extends AppComponentBase implements OnInit, 
     changeConsultantData(index: number) {
         const consultantData = this.consultantsForm.consultantData.at(index).value;
         const scrollStrategy = this.overlay.scrollStrategies.reposition();
-        const dialogRef = this.dialog.open(WorkflowConsultantActionsDialogComponent, {
-            minWidth: '450px',
-            minHeight: '180px',
-            height: 'auto',
-            width: 'auto',
-            scrollStrategy,
-            backdropClass: 'backdrop-modal--wrapper',
-            autoFocus: false,
-            panelClass: 'confirmation-modal',
-            data: {
-                dialogType: ConsultantDiallogAction.Change,
-                consultantData: {externalId: consultantData.consultantName.consultant.externalId, name: consultantData.consultantName.consultant.name},
-                dialogTitle: `Change consultant`,
-                rejectButtonText: 'Cancel',
-                confirmButtonText: 'Create',
-                isNegative: false
-            }
-        });
+        MediumDialogConfig.scrollStrategy = scrollStrategy;
+        MediumDialogConfig.data = {
+            dialogType: ConsultantDiallogAction.Change,
+            consultantData: {externalId: consultantData.consultantName.consultant.externalId, name: consultantData.consultantName.consultant.name},
+            dialogTitle: `Change consultant`,
+            rejectButtonText: 'Cancel',
+            confirmButtonText: 'Create',
+            isNegative: false
+        }
+        const dialogRef = this.dialog.open(WorkflowConsultantActionsDialogComponent, MediumDialogConfig);
 
         dialogRef.componentInstance.onConfirmed.subscribe((result) => {
             let input = new ChangeConsultantPeriodDto();
@@ -1905,24 +1891,16 @@ export class WorkflowSalesComponent extends AppComponentBase implements OnInit, 
     extendConsultant(index: number) {
         const consultantData = this.consultantsForm.consultantData.at(index).value;
         const scrollStrategy = this.overlay.scrollStrategies.reposition();
-        const dialogRef = this.dialog.open(WorkflowConsultantActionsDialogComponent, {
-            minWidth: '450px',
-            minHeight: '180px',
-            height: 'auto',
-            width: 'auto',
-            scrollStrategy,
-            backdropClass: 'backdrop-modal--wrapper',
-            autoFocus: false,
-            panelClass: 'confirmation-modal',
-            data: {
-                dialogType: ConsultantDiallogAction.Extend,
-                consultantData: {externalId: consultantData.consultantName.consultant.externalId, name: consultantData.consultantName.consultant.name},
-                dialogTitle: `Extend consultant`,
-                rejectButtonText: 'Cancel',
-                confirmButtonText: 'Create',
-                isNegative: false
-            }
-        });
+        MediumDialogConfig.scrollStrategy = scrollStrategy;
+        MediumDialogConfig.data = {
+            dialogType: ConsultantDiallogAction.Extend,
+            consultantData: {externalId: consultantData.consultantName.consultant.externalId, name: consultantData.consultantName.consultant.name},
+            dialogTitle: `Extend consultant`,
+            rejectButtonText: 'Cancel',
+            confirmButtonText: 'Create',
+            isNegative: false
+        }
+        const dialogRef = this.dialog.open(WorkflowConsultantActionsDialogComponent, MediumDialogConfig);
 
         dialogRef.componentInstance.onConfirmed.subscribe((result) => {
             let input = new ExtendConsultantPeriodDto();
@@ -2230,23 +2208,15 @@ export class WorkflowSalesComponent extends AppComponentBase implements OnInit, 
     terminateConsultant(index: number) {
         let consultantInformation = this.consultantsForm.consultantData.at(index).value.consultantName;
         const scrollStrategy = this.overlay.scrollStrategies.reposition();
-        const dialogRef = this.dialog.open(ConfirmationDialogComponent, {
-            width: '450px',
-            minHeight: '180px',
-            height: 'auto',
-            scrollStrategy,
-            backdropClass: 'backdrop-modal--wrapper',
-            autoFocus: false,
-            panelClass: 'confirmation-modal',
-            data: {
-                confirmationMessageTitle: `Terminate consultant`,
-                confirmationMessage: `Are you sure you want to terminate consultant ${consultantInformation?.consultant?.name ?? ''}?`,
-                // confirmationMessage: 'When you confirm the termination, all the info contained inside this block will disappear.',
-                rejectButtonText: 'Cancel',
-                confirmButtonText: 'Terminate',
-                isNegative: true
-            }
-        });
+        MediumDialogConfig.scrollStrategy = scrollStrategy;
+        MediumDialogConfig.data = {
+            confirmationMessageTitle: `Terminate consultant`,
+            confirmationMessage: `Are you sure you want to terminate consultant ${consultantInformation?.consultant?.name ?? ''}?`,
+            rejectButtonText: 'Cancel',
+            confirmButtonText: 'Terminate',
+            isNegative: true
+        }
+        const dialogRef = this.dialog.open(ConfirmationDialogComponent, MediumDialogConfig);
 
         dialogRef.componentInstance.onConfirmed.subscribe(() => {
             this.terminateConsultantStart(consultantInformation?.consultant?.id!);

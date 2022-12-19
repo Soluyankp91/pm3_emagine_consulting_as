@@ -106,19 +106,19 @@ export class ClientDetailsComponent extends AppComponentBase implements OnInit {
     }
 
     openHubspotSyncDialog(syncMessage: SyncClientFromCrmResultDto) {
-       const dialogRef = this.dialog.open(HubspotSyncModalComponent, {
-            width: '450px',
-            height: 'calc(100vh - 201px)',
-            panelClass: 'hubspot-sync-modal',
-            autoFocus: false,
-            hasBackdrop: false,
-            data: {
-                message: syncMessage.message?.split('.\n').filter(item => item)
-            }
-        });
+        const dialogRef = this.dialog.open(HubspotSyncModalComponent, {
+                width: '500px',
+                height: 'calc(100vh - 201px)',
+                panelClass: 'hubspot-sync-modal',
+                autoFocus: false,
+                hasBackdrop: false,
+                data: {
+                    message: syncMessage.message?.split('.\n').filter(item => item)
+                }
+            });
 
-        dialogRef.afterClosed().subscribe(() => {
-            this.isDialogOpened = false;
-        });
+            dialogRef.afterClosed().subscribe(() => {
+                this.isDialogOpened = false;
+            });
     }
 }

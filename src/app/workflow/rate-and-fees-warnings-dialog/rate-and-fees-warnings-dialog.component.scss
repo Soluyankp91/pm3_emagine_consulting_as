@@ -1,3 +1,6 @@
+@import "/src/app/shared/styles/config/_colors";
+@import "/src/app/shared/styles/config/_mixins";
+
 .rate-warning-dialog {
     &--header {
         display: flex;
@@ -6,9 +9,7 @@
         align-items: center;
 
         &-text {
-            font-style: normal;
-            font-weight: 800;
-            font-size: 30px;
+            @include fontOpenSans(30px, 800);
             line-height: 36px;
             color: #4A4E60;
         }
@@ -19,22 +20,22 @@
     }
     &--content {
         &-text {
-            font-style: normal;
-            font-size: 12px;
-            font-weight: 400;
+            @include fontOpenSans(12px, 400);
             line-height: 24px;
             color: #4A4E60;
         }
         &-header {
-            font-weight: 800;
-            font-size: 12px;
+            @include fontOpenSans(12px, 800);
             line-height: 24px;
         }
     }
     &--actions{
+        justify-content: flex-end;
+        border-top: 1px solid $sand-color;
+        padding: 8px 30px 8px 0;
         &-btn {
-            width: 64px;
             padding: 0 !important;
+            width: 100px;
         }
     }
 }
