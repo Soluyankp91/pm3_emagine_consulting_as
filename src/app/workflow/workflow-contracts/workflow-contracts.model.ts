@@ -8,6 +8,7 @@ export class WorkflowContractsMainForm extends FormGroup {
             projectType: new FormControl(null),
             margin: new FormControl(null),
             projectDescription: new FormControl(null, Validators.required),
+            projectCategory: new FormControl(null),
             projectName: new FormControl(null, Validators.required),
             discounts: new FormControl(null),
             remarks: new FormControl(null, Validators.required),
@@ -30,6 +31,9 @@ export class WorkflowContractsMainForm extends FormGroup {
     }
     get projectDescription() {
         return this.get('projectDescription');
+    }
+    get projectCategory() {
+        return this.get('projectCategory');
     }
     get projectName() {
         return this.get('projectName');
@@ -209,4 +213,28 @@ export enum LegalContractStatus {
     NotYetCreated = 1,
     SavedButNotGenerated = 2,
     Done = 10
+}
+
+
+export enum ClientTimeReportingCaps {
+    CapOnUnits = 1,
+    CapOnValue = 2,
+    IndividualCap = 3,
+    NoCap = 4
+}
+
+export enum DeliveryTypes {
+    ManagedService = 1,
+    Normal = 2,
+    Offshore = 3,
+    Nearshore = 4
+}
+
+export enum SalesTypes {
+    TimeAndMaterial = 1,
+    ThirdPartyMgmt = 2 ,
+    ManagedService = 3,
+    FeeOnly = 4,
+    Recruitment = 5,
+    Other = 6
 }

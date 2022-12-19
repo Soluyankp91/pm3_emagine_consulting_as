@@ -8,6 +8,7 @@ import { ServiceProxyModule } from 'src/shared/service-proxies/service-proxy.mod
 import { MatGridComponent } from './shared/components/grid-table/mat-grid.component';
 import { AgreementLanguagesFilterComponent } from './shared/components/grid-table/master-templates/filters/agreement-languages-filter/agreement-filter.component';
 import {
+    AgreementTemplateAttachmentServiceProxy,
     AgreementTemplateServiceProxy,
     FileServiceProxy,
     MergeFieldsServiceProxy,
@@ -26,7 +27,6 @@ import { CustomTooltipDirective } from './shared/directives/customTooltip/custom
 import { DropdownAutocompleteMultiselectComponent } from './shared/components/dropdown-autocomplete-multiselect/dropdown-autocomplete-multiselect.component';
 import { DropdownAutocompleteSingleSelectComponent } from './shared/components/dropdown-autocomplete-single-select/dropdown-autocomplete-single-select.component';
 import { ConfirmDialogComponent } from './shared/components/popUps/confirm-dialog/confirm-dialog.component';
-import { DateCellComponent } from './shared/components/grid-table/master-templates/cells/date-cell/date-cell.component';
 import { MatIconRegistry } from '@angular/material/icon';
 import { DomSanitizer } from '@angular/platform-browser';
 import { MasterTemplatesService } from './master-templates/listAndPreviews/services/master-templates.service';
@@ -42,6 +42,8 @@ import { CreationComponent } from './client-specific-templates/edit-template/set
 import { FileUploaderComponent } from './shared/components/file-uploader/file-uploader.component';
 import { FileSelectorComponent } from './shared/components/file-selector/file-selector.component';
 import { NewFileUploaderDirective } from './shared/components/file-uploader/new-file-uploader.directive';
+import { CreationTitleService } from './shared/services/creation-title.service';
+import { TenantsComponent } from './shared/components/tenants/tenants.component';
 
 @NgModule({
     declarations: [
@@ -72,9 +74,9 @@ import { NewFileUploaderDirective } from './shared/components/file-uploader/new-
         ClientSpecificComponent,
         DropdownAutocompleteSingleSelectComponent,
         ConfirmDialogComponent,
-        DateCellComponent,
         FileUploaderComponent,
         FileSelectorComponent,
+        TenantsComponent,
     ],
     imports: [
         CommonModule,
@@ -89,6 +91,8 @@ import { NewFileUploaderDirective } from './shared/components/file-uploader/new-
         FileServiceProxy,
         AgreementTemplateServiceProxy,
         MergeFieldsServiceProxy,
+        AgreementTemplateAttachmentServiceProxy,
+        CreationTitleService,
     ],
 })
 export class ContractsModule {
@@ -111,6 +115,36 @@ export class ContractsModule {
             'close-button-icon',
             sanitizer.bypassSecurityTrustResourceUrl(
                 'assets/common/images/close-button-icon.svg'
+            )
+        );
+        iconRegistry.addSvgIcon(
+            'plus-icon',
+            sanitizer.bypassSecurityTrustResourceUrl(
+                'assets/common/images/plus-icon.svg'
+            )
+        );
+        iconRegistry.addSvgIcon(
+            'worldwide-icon',
+            sanitizer.bypassSecurityTrustResourceUrl(
+                'assets/common/images/worldwide-icon.svg'
+            )
+        );
+        iconRegistry.addSvgIcon(
+            'cog-icon',
+            sanitizer.bypassSecurityTrustResourceUrl(
+                'assets/common/images/cog-icon.svg'
+            )
+        );
+        iconRegistry.addSvgIcon(
+            'editor-icon',
+            sanitizer.bypassSecurityTrustResourceUrl(
+                'assets/common/images/editor-icon.svg'
+            )
+        );
+        iconRegistry.addSvgIcon(
+            'chevron-down',
+            sanitizer.bypassSecurityTrustResourceUrl(
+                'assets/common/images/chevron-down.svg'
             )
         );
     }

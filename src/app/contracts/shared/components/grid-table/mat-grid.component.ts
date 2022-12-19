@@ -1,4 +1,4 @@
-import { startWith, pairwise, takeUntil } from 'rxjs/operators';
+import { startWith, pairwise, takeUntil, debounceTime } from 'rxjs/operators';
 import { Subject } from 'rxjs';
 import {
     Component,
@@ -7,7 +7,6 @@ import {
     Output,
     EventEmitter,
     ChangeDetectionStrategy,
-    ChangeDetectorRef,
     ViewContainerRef,
     ComponentFactoryResolver,
     AfterViewInit,
@@ -15,62 +14,128 @@ import {
     QueryList,
     ComponentRef,
     OnDestroy,
+    OnChanges,
+    SimpleChanges,
+    ContentChildren,
+    TemplateRef,
+    Injector,
+    TrackByFunction,
 } from '@angular/core';
 import { PageEvent } from '@angular/material/paginator';
 import { Sort } from '@angular/material/sort';
 import { FormGroup } from '@angular/forms';
-import { ICell, IFilter, ITableConfig } from './mat-grid.interfaces';
+import {
+    EHeaderCells,
+    ETableCells,
+    IColumn,
+    IFilter,
+    ITableConfig,
+} from './mat-grid.interfaces';
 import { PAGE_SIZE_OPTIONS } from './master-templates/entities/master-templates.constants';
+import { SelectionModel } from '@angular/cdk/collections';
+import { Actions } from './master-templates/entities/master-templates.interfaces';
+import { AppComponentBase } from 'src/shared/app-component-base';
 
 @Component({
     selector: 'emg-mat-grid',
     templateUrl: './mat-grid.component.html',
     changeDetection: ChangeDetectionStrategy.OnPush,
 })
-export class MatGridComponent implements OnInit, OnDestroy, AfterViewInit {
+export class MatGridComponent
+    extends AppComponentBase
+    implements OnInit, OnChanges, OnDestroy, AfterViewInit
+{
     @Input() displayedColumns: string[];
     @Input() tableConfig: ITableConfig;
-    @Input() cells: ICell[];
+    @Input() cells: IColumn[];
+    @Input() selection: boolean = true;
+    @Input() actions: boolean = true;
+    @Input() actionsList: Actions[] = [];
 
     @Output() sortChange = new EventEmitter<Sort>();
     @Output() pageChange = new EventEmitter<PageEvent>();
     @Output() formControlChange = new EventEmitter();
     @Output() tableRow = new EventEmitter<{ [key: string]: any }>();
+    @Output() selectionChange = new EventEmitter();
+    @Output() onAction = new EventEmitter();
+
+    @ContentChildren('customCells')
+    customCells: QueryList<TemplateRef<ViewContainerRef>>;
 
     @ViewChildren('filterContainer', { read: ViewContainerRef })
     children: QueryList<ViewContainerRef>;
-    @ViewChildren('cell_', { read: ViewContainerRef })
-    cells_: QueryList<ViewContainerRef>;
 
     formGroup: FormGroup;
 
     matChips: string[] = [];
     pageSizeOptions: number[] = PAGE_SIZE_OPTIONS;
 
-    private unSubscribe$ = new Subject<void>();
+    headerCellEnum = EHeaderCells;
+    tableCellEnum = ETableCells;
+
+    initialSelection = [];
+    allowMultiSelect = true;
+
+    selectionModel = new SelectionModel<any>(
+        this.allowMultiSelect,
+        this.initialSelection
+    );
+
+    trackByAction: TrackByFunction<Actions>;
+
+    private _unSubscribe$ = new Subject<void>();
 
     constructor(
-        private componentFactoryResolver: ComponentFactoryResolver,
-        private readonly cdr: ChangeDetectorRef
-    ) {}
+        private readonly injector: Injector,
+        private _componentFactoryResolver: ComponentFactoryResolver
+    ) {
+        super(injector);
+        this.trackByAction = this.createTrackByFn('actionType');
+    }
 
     ngOnInit(): void {
         this.formGroup = new FormGroup({});
     }
 
-    ngOnDestroy(): void {
-        this.unSubscribe$.next();
-        this.unSubscribe$.complete();
+    ngOnChanges(changes: SimpleChanges): void {
+        const displayedColumns = changes['displayedColumns'];
+        const displayedColumnsCopy = [...this.displayedColumns];
+        if (displayedColumns && this.selection) {
+            displayedColumnsCopy.unshift('select');
+        }
+        if (displayedColumns && this.actions) {
+            displayedColumnsCopy.push('actions');
+        }
+        this.displayedColumns = displayedColumnsCopy;
     }
 
     ngAfterViewInit(): void {
         this.loadFilters();
+        this._subscribeOnSelectionChange();
         this._subscribeOnFormControlChanges();
         this._subscribeOnEachFormControl();
-        this.cdr.detectChanges();
     }
 
-    trackByCellColumnDef(index: number, item: ICell) {
+    ngOnDestroy(): void {
+        this._unSubscribe$.next();
+        this._unSubscribe$.complete();
+    }
+
+    isAllSelected() {
+        const numSelected = this.selectionModel.selected.length;
+        const numRows = this.tableConfig.items.length;
+        return numSelected === numRows;
+    }
+
+    toggleAllRows() {
+        this.isAllSelected()
+            ? this.selectionModel.clear()
+            : this.tableConfig.items.forEach((row) =>
+                  this.selectionModel.select(row)
+              );
+    }
+
+    trackByCellColumnDef(index: number, item: IColumn) {
         return item.matColumnDef;
     }
 
@@ -80,7 +145,7 @@ export class MatGridComponent implements OnInit, OnDestroy, AfterViewInit {
             .forEach((cell, index) => {
                 if (cell.headerCell.filter) {
                     const factory =
-                        this.componentFactoryResolver.resolveComponentFactory<IFilter>(
+                        this._componentFactoryResolver.resolveComponentFactory<IFilter>(
                             cell.headerCell.filter.component
                         );
                     const component = this.children
@@ -112,9 +177,22 @@ export class MatGridComponent implements OnInit, OnDestroy, AfterViewInit {
         this.tableRow.emit(row);
     }
 
+    chooseAction(actionType: string, row: any) {
+        this.onAction.emit({ action: actionType, row });
+    }
+
+
+    private _subscribeOnSelectionChange() {
+        this.selectionModel.changed
+            .pipe(takeUntil(this._unSubscribe$), debounceTime(500))
+            .subscribe((changeModel) => {
+                this.selectionChange.emit(changeModel.source.selected);
+            });
+    }
+
     private _subscribeOnFormControlChanges() {
         this.formGroup.valueChanges
-            .pipe(takeUntil(this.unSubscribe$))
+            .pipe(takeUntil(this._unSubscribe$))
             .subscribe((value) => {
                 this.formControlChange.emit(value);
             });
@@ -124,7 +202,7 @@ export class MatGridComponent implements OnInit, OnDestroy, AfterViewInit {
         Object.keys(this.formGroup.controls).forEach((controlName) => {
             this.formGroup.controls[controlName].valueChanges
                 .pipe(
-                    takeUntil(this.unSubscribe$),
+                    takeUntil(this._unSubscribe$),
                     startWith(this.formGroup.controls[controlName].value),
                     pairwise()
                 )

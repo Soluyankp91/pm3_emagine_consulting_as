@@ -7,7 +7,7 @@ import {
     SimpleChanges,
 } from '@angular/core';
 import { ControlValueAccessor, NG_VALUE_ACCESSOR } from '@angular/forms';
-import { AgreementTemplateServiceProxy } from 'src/shared/service-proxies/service-proxies';
+import { AgreementTemplateAttachmentServiceProxy } from 'src/shared/service-proxies/service-proxies';
 import { FileUpload, FileUploadItem } from '../file-uploader/files';
 
 @Component({
@@ -30,11 +30,11 @@ export class FileSelectorComponent
     inheritedFilesModified: FileUploadItem[] = [];
     selectedInheritedFiles: FileUpload[] = [];
 
-    private onChange = (val: any) => {};
+    private _onChange = (val: any) => {};
     private onTouched = () => {};
 
     constructor(
-        private readonly apiServiceProxy: AgreementTemplateServiceProxy
+        private readonly _agreementTemplateAttachmentServiceProxy: AgreementTemplateAttachmentServiceProxy
     ) {}
 
     ngOnInit(): void {}
@@ -53,8 +53,10 @@ export class FileSelectorComponent
     }
 
     downloadAttachment(file: FileUploadItem): void {
-        this.apiServiceProxy
-            .agreementTemplateGET(file.agreementTemplateAttachmentId as number)
+        this._agreementTemplateAttachmentServiceProxy
+            .agreementTemplateAttachment(
+                file.agreementTemplateAttachmentId as number
+            )
             .subscribe((d) => {
                 const blob = new Blob([d as any]);
                 const a = document.createElement('a');
@@ -84,18 +86,34 @@ export class FileSelectorComponent
             );
         }
 
-        this.onChange([...this.selectedInheritedFiles]);
+        this._onChange([...this.selectedInheritedFiles]);
     }
 
-    writeValue(value: any): void {
-        if (value === null) {
-            this.inheritedFilesModified = [];
-            this.selectedInheritedFiles = [];
+    writeValue(preSelectedFiles: FileUpload[]): void {
+        this.selectedInheritedFiles = [];
+        if (preSelectedFiles === null || !preSelectedFiles.length) {
+            return;
         }
+        preSelectedFiles.forEach((preselectedFile: FileUpload) => {
+            let founded = this.inheritedFilesModified.find((f) => {
+                return (
+                    f.agreementTemplateAttachmentId ===
+                    preselectedFile.agreementTemplateAttachmentId
+                );
+            });
+            if (founded) {
+                founded.selected = true;
+                const originalFile = this._getOriginalFileById(
+                    founded.agreementTemplateAttachmentId as number
+                );
+                this.selectedInheritedFiles.push(originalFile);
+            }
+        });
+        this._onChange([...this.selectedInheritedFiles]);
     }
 
     registerOnChange(fn: any): void {
-        this.onChange = fn;
+        this._onChange = fn;
     }
     registerOnTouched(fn: any): void {
         this.onTouched = fn;

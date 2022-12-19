@@ -14,6 +14,6 @@ export class ClientSpecificTemplatesComponent implements OnInit {
     ngOnInit(): void {}
 
     navigateTo() {
-        this.router.navigate(['settings'], { relativeTo: this.route });
+        this.router.navigate(['create'], { relativeTo: this.route });
     }
 }

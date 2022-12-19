@@ -1,48 +1,36 @@
-<mat-form-field appearance="fill" [style.width.px]="480">
-    <mat-label> Auto-name for actual agreements </mat-label>
-    <mat-chip-list
-        #chiplist
-        [formControl]="chipsControl"
-        [errorStateMatcher]="matcher"
-    >
-        <ng-container *ngIf="!sampleData">
-            <ng-container *ngFor="let chip of selectedOptions;trackBy:trackByOptionName">
-                <mat-chip  [value]="chip.name">
-                    {{ "{" + chip.name + "}" }}
-                </mat-chip>
-            </ng-container>
-
-        </ng-container>
-        <input
-            #input
-            type="text"
-            matInput
-            [formControl]="textControl"
-            placeholder="Auto-name for actual agreements"
-            [matAutocomplete]="auto"
-            [matChipInputFor]="chiplist"
-            placeholder="New field..."
-        />
-    </mat-chip-list>
-    <mat-error><app-validator [control]="chipsControl"></app-validator></mat-error>
+<mat-form-field
+    class="example-full-width"
+    appearance="fill"
+    [style.width.px]="382"
+>
+    <mat-label>{{ label }}</mat-label>
+    <input
+        type="text"
+        aria-label="text"
+        matInput
+        [formControl]="textControl"
+        [placeholder]="label"
+        [matAutocomplete]="auto"
+    />
+    <mat-error
+        ><app-validator [control]="textControl"></app-validator
+    ></mat-error>
     <mat-autocomplete #auto="matAutocomplete">
-        <ng-container *ngFor="let optionItem of displayedOptionItems; trackBy:trackByOptionName">
-            <mat-option>
-                <mat-checkbox
-                    (click)="$event.stopPropagation()"
-                    [checked]="optionItem.selected"
-                    (change)="toggleCheckbox(optionItem)"
-                >
-                    {{ optionItem.name }}
-                </mat-checkbox>
-            </mat-option>
-        </ng-container>
+        <mat-option *ngFor="let option of options;trackBy:trackByItem">
+            <div class="auto-name-alignment"
+                (click)="$event.stopPropagation(); addAutoName(option)"
+            >
+                <span>{{ option }}</span>
+                <mat-icon svgIcon="plus-icon"></mat-icon>
+            </div>
+        </mat-option>
     </mat-autocomplete>
 </mat-form-field>
-<div></div>
+<mat-divider></mat-divider>
 <mat-checkbox
-    (change)="onShowSampleChanged($event.checked)"
-    [checked]="sampleData"
-    [disabled]="isDisabled"
-    >Show sample data</mat-checkbox
+    [disabled]="!textControl.valid && !textControl.disabled"
+    [checked]="showSample"
+    (change)="this.retriewTemplate$.next()"
 >
+    Show sample data
+</mat-checkbox>

@@ -3,10 +3,24 @@
     #table
     *ngIf="table$ | async as table"
     [displayedColumns]="displayedColumns"
+    [actionsList]="actions"
     [tableConfig]="table"
     [cells]="cells"
     (sortChange)="onSortChange($event)"
     (formControlChange)="onFormControlChange($event)"
     (pageChange)="onPageChange($event)"
-    (tableRow)="onSelectTableRow($event)">
+    (tableRow)="onSelectTableRow($event)"
+    (onAction)="onAction($event)"
+>
+    <ng-template let-cell="element" #customCells
+        ><p>
+            {{ cell.agreementTemplateId }}
+        </p></ng-template
+    >
+    <ng-template let-cell="element" #customCells
+        ><p>{{ cell.legalEntityIds }}</p></ng-template
+    >
+    <ng-template let-cell="element" #customCells
+        ><p>{{ cell.lastUpdateDateUtc }}</p></ng-template
+    >
 </emg-mat-grid>

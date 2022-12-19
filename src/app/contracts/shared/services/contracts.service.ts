@@ -45,35 +45,35 @@ export class ContractsService {
     }
 
     getCountries$() {
-        return this.countries$$;
+        return this.countries$$.asObservable();
     }
 
     getAgreementLanguages$() {
-        return this.agreementLanguages$$;
+        return this.agreementLanguages$$.asObservable();
     }
 
     getAgreementTypes$() {
-        return this.agreementTypes$$;
+        return this.agreementTypes$$.asObservable();
     }
 
     getDeliveryTypes$() {
-        return this.deliveryTypes$$;
+        return this.deliveryTypes$$.asObservable();
     }
 
     getEmploymentTypes$() {
-        return this.employmentTypes$$;
+        return this.employmentTypes$$.asObservable();
     }
 
     getLegalEntities$() {
-        return this.legalEntities$$;
+        return this.legalEntities$$.asObservable();
     }
 
     getRecipientTypes$() {
-        return this.recipientTypes$$;
+        return this.recipientTypes$$.asObservable();
     }
 
     getSalesTypes$() {
-        return this.salesTypes$$;
+        return this.salesTypes$$.asObservable();
     }
 
     initBaseEnums$() {

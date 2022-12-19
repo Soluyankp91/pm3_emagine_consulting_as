@@ -21,25 +21,83 @@
         (matSortChange)="sortChange.emit($event)"
         [formGroup]="formGroup"
     >
+        <ng-container *ngIf="selection">
+            <ng-container matColumnDef="select">
+                <mat-header-cell *matHeaderCellDef>
+                    <mat-checkbox
+                        [checked]="selectionModel.hasValue() && isAllSelected()"
+                        [indeterminate]="
+                            selectionModel.hasValue() && !isAllSelected()
+                        "
+                        (change)="toggleAllRows()"
+                    >
+                    </mat-checkbox>
+                </mat-header-cell>
+                <mat-cell *matCellDef="let row">
+                    <mat-checkbox
+                        [checked]="selectionModel.isSelected(row)"
+                        (click)="$event.stopPropagation()"
+                        (change)="selectionModel.toggle(row)"
+                    ></mat-checkbox>
+                </mat-cell>
+            </ng-container>
+        </ng-container>
         <ng-container
-            *ngFor="let cell of cells; trackBy: trackByCellColumnDef"
-            [matColumnDef]="cell.matColumnDef"
+            *ngFor="let item of cells; trackBy: trackByCellColumnDef"
+            [matColumnDef]="item.matColumnDef"
         >
-            <ng-container [ngSwitch]="cell.headerCell.type">
-                <ng-container *ngSwitchCase="'sort'">
+            <ng-container [ngSwitch]="item.headerCell.type">
+                <ng-container *ngSwitchCase="headerCellEnum.SORT">
                     <mat-header-cell *matHeaderCellDef mat-sort-header>
-                        {{ cell.headerCell.title }}
+                        {{ item.headerCell.title }}
                     </mat-header-cell>
                 </ng-container>
-                <ng-container *ngSwitchCase="'filter'">
+                <ng-container *ngSwitchCase="headerCellEnum.FILTER;">
                     <mat-header-cell *matHeaderCellDef>
                         <ng-container #filterContainer></ng-container>
                     </mat-header-cell>
                 </ng-container>
             </ng-container>
             <mat-cell *matCellDef="let element">
-                {{ element[cell.matColumnDef] }}
+                <ng-container [ngSwitch]="item.cell.type">
+                    <ng-container *ngSwitchCase="tableCellEnum.DEFAULT">
+                        {{ element[item.matColumnDef] }}
+                    </ng-container>
+                    <ng-container *ngSwitchCase="tableCellEnum.CUSTOM">
+                        <ng-container
+                            *ngIf="
+                                item.cell.index &&
+                                customCells.get(item.cell.index - 1) as customCell
+                            "
+                            [ngTemplateOutlet]="customCell"
+                            [ngTemplateOutletContext]="{ element: element }"
+                            ></ng-container
+                        >
+                    </ng-container>
+                </ng-container>
             </mat-cell>
+        </ng-container>
+        <ng-container *ngIf="actions">
+            <ng-container matColumnDef="actions">
+                <mat-header-cell *matHeaderCellDef=""></mat-header-cell>
+                <mat-cell *matCellDef="let actionRow">
+                    <button mat-icon-button [matMenuTriggerFor]="menu">
+                        <mat-icon>more_vert</mat-icon>
+                    </button>
+                    <mat-menu #menu="matMenu">
+                        <ng-container *ngFor="let action of actionsList;trackBy:trackByAction">
+                            <button
+                                mat-menu-item
+                                (click)="
+                                    chooseAction(action.actionType, actionRow)
+                                "
+                            >
+                                <span> {{ action.label }}</span>
+                            </button>
+                        </ng-container>
+                    </mat-menu>
+                </mat-cell>
+            </ng-container>
         </ng-container>
 
         <mat-header-row *matHeaderRowDef="displayedColumns"></mat-header-row>
@@ -55,5 +113,6 @@
         [pageSize]="tableConfig.pageSize"
         [pageIndex]="tableConfig.pageIndex"
         (page)="pageChange.emit($event)"
-    ></mat-paginator>
+    >
+    </mat-paginator>
 </div>

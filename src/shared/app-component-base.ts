@@ -1,7 +1,8 @@
-import { Injector } from "@angular/core";
+import { Injector, TrackByFunction } from "@angular/core";
 import { AbstractControl } from "@angular/forms";
 import { MatSnackBar } from "@angular/material/snack-bar";
 import { NgxSpinnerService } from "ngx-spinner";
+import { Actions } from "src/app/contracts/shared/components/grid-table/master-templates/entities/master-templates.interfaces";
 import { TenantList } from "src/app/workflow/workflow-sales/workflow-sales.model";
 import { ISelectableIdNameDto } from "src/app/workflow/workflow.model";
 import { environment } from "src/environments/environment";
@@ -160,6 +161,16 @@ export abstract class AppComponentBase {
         return result;
     }
 
+    /** Function to create your own custom trackBy
+	 *  In cases where basic trackByFn cannot be used and you need specific property in comparator.
+	 *
+	 * @param key     Key to be used in comparator
+	 * @returns       trackBy function
+	 */
+	createTrackByFn<T>(key: keyof T): TrackByFunction<T> {
+        return (index: number, value: T) => value[key];
+	}
+
     // TODO: move all others trackBy methods here
     trackById(index: number, item: any) {
         return item.id;
@@ -167,5 +178,13 @@ export abstract class AppComponentBase {
 
     documentsTrackBy(index: number, item: ContractDocumentInfoDto) {
         return item.documentStorageGuid;
+    }
+
+    displayConsultantNameFn(option: any) {
+        return option?.consultant?.name;
+    }
+
+    displayNameFn(option: any) {
+        return option?.name;
     }
 }
