@@ -344,7 +344,11 @@ export class CreateMasterTemplateComponent
                             extendedEntity.id === simpleEntity
                     )
                 );
-                this._creationTitleService.updateTenants(entities);
+                let modifiedEntities = entities.map((entity) => ({
+                    ...entity,
+                    code: this.getTenantCodeFromId(entity.id as number),
+                })) as (LegalEntityDto & { code: string })[];
+                this._creationTitleService.updateTenants(modifiedEntities);
                 return;
             }
             this._creationTitleService.updateTenants([]);

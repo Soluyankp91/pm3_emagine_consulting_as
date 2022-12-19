@@ -19,6 +19,7 @@ import {
     ContentChildren,
     TemplateRef,
     Injector,
+    TrackByFunction,
 } from '@angular/core';
 import { PageEvent } from '@angular/material/paginator';
 import { Sort } from '@angular/material/sort';
@@ -80,6 +81,8 @@ export class MatGridComponent
         this.initialSelection
     );
 
+    trackByAction: TrackByFunction<Actions>;
+
     private _unSubscribe$ = new Subject<void>();
 
     constructor(
@@ -87,6 +90,7 @@ export class MatGridComponent
         private _componentFactoryResolver: ComponentFactoryResolver
     ) {
         super(injector);
+        this.trackByAction = this.createTrackByFn('actionType');
     }
 
     ngOnInit(): void {
@@ -177,9 +181,6 @@ export class MatGridComponent
         this.onAction.emit({ action: actionType, row });
     }
 
-    trackByAction(index: number, item: Actions) {
-        return item.actionType;
-    }
 
     private _subscribeOnSelectionChange() {
         this.selectionModel.changed

@@ -1,4 +1,4 @@
-import { Injector } from "@angular/core";
+import { Injector, TrackByFunction } from "@angular/core";
 import { AbstractControl } from "@angular/forms";
 import { MatSnackBar } from "@angular/material/snack-bar";
 import { NgxSpinnerService } from "ngx-spinner";
@@ -161,17 +161,22 @@ export abstract class AppComponentBase {
         return result;
     }
 
+    /** Function to create your own custom trackBy
+	 *  In cases where basic trackByFn cannot be used and you need specific property in comparator.
+	 *
+	 * @param key     Key to be used in comparator
+	 * @returns       trackBy function
+	 */
+	createTrackByFn<T>(key: keyof T): TrackByFunction<T> {
+        if(key) {
+            return (index: number, value: T) => value[key];
+        }
+        return (index: number, value: T) => value
+	}
+
     // TODO: move all others trackBy methods here
     trackById(index: number, item: any) {
         return item.id;
-    }
-
-    trackByAction(index: number, item: Actions) {
-        return item.actionType;
-    }
-
-    trackByItem(index: number, item: string) {
-        return item;
     }
 
     documentsTrackBy(index: number, item: ContractDocumentInfoDto) {

@@ -4,7 +4,8 @@ import {
     ViewEncapsulation,
     OnInit,
     DoCheck,
-    Injector
+    Injector,
+    TrackByFunction
 } from '@angular/core';
 import { FormControl, NgControl, Validators } from '@angular/forms';
 import { MergeFieldsServiceProxy } from 'src/shared/service-proxies/service-proxies';
@@ -30,10 +31,12 @@ export class AutoNameComponent extends AppComponentBase implements OnInit, DoChe
 
     retriewTemplate$ = new Subject<void>();
 
-    private _templatePreview: Observable<string | undefined>;
+    trackByItem: TrackByFunction<string>;
 
     textControlBufferValue: string;
     showSample = false;
+
+    private _templatePreview: Observable<string | undefined>;
 
     constructor(
         private readonly mergeFieldsServiceProxy: MergeFieldsServiceProxy,
@@ -42,6 +45,7 @@ export class AutoNameComponent extends AppComponentBase implements OnInit, DoChe
     ) {
         super(injector);
         ngControl.valueAccessor = this;
+        this.trackByItem = this.createTrackByFn('');
     }
 
     ngOnInit(): void {
