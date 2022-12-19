@@ -168,10 +168,7 @@ export abstract class AppComponentBase {
 	 * @returns       trackBy function
 	 */
 	createTrackByFn<T>(key: keyof T): TrackByFunction<T> {
-        if(key) {
-            return (index: number, value: T) => value[key];
-        }
-        return (index: number, value: T) => value
+        return (index: number, value: T) => value[key];
 	}
 
     // TODO: move all others trackBy methods here

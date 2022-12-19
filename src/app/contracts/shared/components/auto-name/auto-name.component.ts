@@ -4,14 +4,11 @@ import {
     ViewEncapsulation,
     OnInit,
     DoCheck,
-    Injector,
-    TrackByFunction
 } from '@angular/core';
 import { FormControl, NgControl, Validators } from '@angular/forms';
 import { MergeFieldsServiceProxy } from 'src/shared/service-proxies/service-proxies';
 import { Subject, Observable, EMPTY } from 'rxjs';
 import { map, switchMap, tap } from 'rxjs/operators';
-import { AppComponentBase } from 'src/shared/app-component-base';
 
 @Component({
     selector: 'emg-auto-name',
@@ -19,7 +16,7 @@ import { AppComponentBase } from 'src/shared/app-component-base';
     templateUrl: './auto-name.component.html',
     encapsulation: ViewEncapsulation.None,
 })
-export class AutoNameComponent extends AppComponentBase implements OnInit, DoCheck {
+export class AutoNameComponent implements OnInit, DoCheck {
     get control() {
         return this.ngControl.control;
     }
@@ -31,8 +28,6 @@ export class AutoNameComponent extends AppComponentBase implements OnInit, DoChe
 
     retriewTemplate$ = new Subject<void>();
 
-    trackByItem: TrackByFunction<string>;
-
     textControlBufferValue: string;
     showSample = false;
 
@@ -40,12 +35,9 @@ export class AutoNameComponent extends AppComponentBase implements OnInit, DoChe
 
     constructor(
         private readonly mergeFieldsServiceProxy: MergeFieldsServiceProxy,
-        private readonly injector: Injector,
         @Self() private ngControl: NgControl
     ) {
-        super(injector);
         ngControl.valueAccessor = this;
-        this.trackByItem = this.createTrackByFn('');
     }
 
     ngOnInit(): void {
@@ -88,9 +80,12 @@ export class AutoNameComponent extends AppComponentBase implements OnInit, DoChe
         this.textControl.setValue(textControlValue + ` {${autoName}} `);
     }
 
+    trackByItem(index: number, value: string) {
+        return value;
+    }
 
     private _initOptions() {
-        this.mergeFieldsServiceProxy.fields().subscribe((fields: string []) => {
+        this.mergeFieldsServiceProxy.fields().subscribe((fields: string[]) => {
             this.options = fields;
         });
     }
