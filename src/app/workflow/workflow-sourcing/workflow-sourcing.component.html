@@ -1,22 +1,31 @@
 <form fxLayout="column" fxLayoutAlign="start start" [formGroup]="sourcingConsultantsDataForm" class="workflow-sourcing u-w--100" id="consultantData">
-    <button class="absolute-edit-toggle" mat-icon-button *ngIf="canToggleEditMode" type="button" appPreventDoubleClick (throttledClick)="toggleEditMode()"><mat-icon svgIcon="edit-icon"></mat-icon></button>
+    <ng-container *ngIf="canToggleEditMode">
+        <button class="absolute-edit-toggle" mat-icon-button type="button" appPreventDoubleClick (throttledClick)="toggleEditMode()"><mat-icon svgIcon="edit-icon"></mat-icon></button>
+    </ng-container>
     <ng-container formArrayName="consultantTerminationSourcingData">
-        <div *ngFor="let consultant of sourcingConsultantsDataForm.consultantTerminationSourcingData.controls; let i = index; last as last" [formGroupName]="i" class="workflow-contracts--block-consultants u-mt--20" [ngClass]="{'last-block': last}">
-            <div fxLayout="row" fxLayoutAlign="start center" class="u-mb--20">
-                <img *ngIf="consultant.value?.consultantData?.id" class="border-rounded-50 image-thumbnail-responsive u-mr--16" [src]="consultantProfileUrl(consultant.value.consultantData?.externalId)">
-                <p class="workflow-sourcing--consultant-name">
-                    {{sourcingConsultantsDataForm.consultantTerminationSourcingData.at(i).get('consultantData')?.value?.name}}
-                </p>
-                <button *ngIf="consultant.value?.consultantData?.id" mat-icon-button class="consultant-deeplink--btn" appPreventDoubleClick (throttledClick)="$event.stopPropagation(); deepLinkToSourcing(consultant.value?.consultantData?.id)" matTooltip="Preview in Sourcing" matTooltipClass="white-tooltip">
-                    <mat-icon svgIcon="sourcing-deeplink"></mat-icon>
-                </button>
+        <ng-container *ngFor="let consultant of sourcingConsultantsDataForm.consultantTerminationSourcingData.controls; let i = index; last as last" [formGroupName]="i">
+            <div class="workflow-contracts--block-consultants u-mt--20" [ngClass]="{'last-block': last}">
+                <div fxLayout="row" fxLayoutAlign="start center" class="u-mb--20">
+                    <ng-container *ngIf="consultant.value?.consultantData?.id">
+                        <img class="border-rounded-50 image-thumbnail-responsive u-mr--16" [src]="consultantProfileUrl(consultant.value.consultantData?.externalId)">
+                    </ng-container>
+                    <p class="workflow-sourcing--consultant-name">
+                        {{sourcingConsultantsDataForm.consultantTerminationSourcingData.at(i).get('consultantData')?.value?.name}}
+                    </p>
+                    <ng-container *ngIf="consultant.value?.consultantData?.id">
+                        <button mat-icon-button class="consultant-deeplink--btn" appPreventDoubleClick (throttledClick)="$event.stopPropagation(); deepLinkToSourcing(consultant.value?.consultantData?.id)" matTooltip="Preview in Sourcing" matTooltipClass="white-tooltip">
+                            <mat-icon svgIcon="sourcing-deeplink"></mat-icon>
+                        </button>
+                    </ng-container>
+                </div>
+                <ng-container *ngIf="!readOnlyMode || consultant.get('cvUpdated')?.value">
+                    <div fxLayout="row" fxLayoutAlign="start center" class="u-w--100">
+                        <mat-checkbox [disabled]="readOnlyMode" color="accent" name="isCvUpdated" formControlName="cvUpdated" class="black-checkbox">
+                            CV Updated
+                        </mat-checkbox>
+                    </div>
+                </ng-container>
             </div>
-
-            <div fxLayout="row" fxLayoutAlign="start center" class="u-w--100" *ngIf="!readOnlyMode || consultant.get('cvUpdated')?.value">
-                <mat-checkbox [disabled]="readOnlyMode" color="accent" name="isCvUpdated" formControlName="cvUpdated" class="black-checkbox">
-                    CV Updated
-                </mat-checkbox>
-            </div>
-        </div>
+        </ng-container>
     </ng-container>
 </form>
