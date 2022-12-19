@@ -21,7 +21,7 @@ export class ErrorDialogService {
                 data: { message, header, status },
                 minHeight: '150px',
                 height: 'auto',
-                width: '540px',
+                width: '500px',
                 maxWidth: '100%',
                 disableClose: true,
                 hasBackdrop: true,

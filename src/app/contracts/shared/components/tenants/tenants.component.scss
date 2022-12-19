@@ -1,0 +1,27 @@
+span:not(:first-child) {
+    right: 20px;
+}
+.circle-counter {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    width: 32px;
+    height: 32px;
+    background-color: #4a4e60;
+    border-radius: 50%;
+    color: rgb(255, 255, 255);
+}
+.tenant {
+    width: 40px;
+    height: 30px;
+    border-radius: 50%;
+}
+.trigger-button {
+    width: 24px;
+    height: 24px;
+}
+.tenant-menu {
+    width: 213px;
+    display: flex;
+    align-items: center;
+}

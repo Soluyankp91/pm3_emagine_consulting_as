@@ -11,13 +11,14 @@ import { merge, Observable, Subject, Subscription } from 'rxjs';
 import { debounceTime, finalize, map, switchMap, takeUntil } from 'rxjs/operators';
 import { AppComponentBase } from 'src/shared/app-component-base';
 import { AppConsts } from 'src/shared/AppConsts';
+import { MediumDialogConfig } from 'src/shared/dialog.configs';
 import { EmployeeDto, EmployeeServiceProxy, EnumEntityTypeDto, LegalEntityDto, LookupServiceProxy, StartNewWorkflowInputDto, SyncStateStatus, WorkflowAlreadyExistsDto, WorkflowListItemDto, WorkflowProcessType, WorkflowServiceProxy, WorkflowStatus, WorkflowStatusDto, WorkflowStepStatus } from 'src/shared/service-proxies/service-proxies';
 import { SelectableCountry, SelectableIdNameDto } from '../client/client.model';
 import { InternalLookupService } from '../shared/common/internal-lookup.service';
 import { ConfirmationDialogComponent } from '../shared/components/confirmation-dialog/confirmation-dialog.component';
 import { ManagerStatus } from '../shared/components/manager-search/manager-search.model';
 import { CreateWorkflowDialogComponent } from './create-workflow-dialog/create-workflow-dialog.component';
-import { DialogConfig, getStatusIcon, getWorkflowStatus, ISelectableIdNameDto, SelectableEmployeeDto, StepTypes, SyncStatusIcon, WorkflowStatusMenuList } from './workflow.model';
+import { getStatusIcon, getWorkflowStatus, ISelectableIdNameDto, SelectableEmployeeDto, StepTypes, SyncStatusIcon, WorkflowStatusMenuList } from './workflow.model';
 
 const WorkflowGridOptionsKey = 'WorkflowGridFILTERS.1.0.5';
 @Component({
@@ -269,19 +270,12 @@ export class WorkflowComponent extends AppComponentBase implements OnInit, OnDes
 
     createWorkflow(requestId?: number, requestConsultantId?: number) {
         const scrollStrategy = this.overlay.scrollStrategies.reposition();
-        const dialogRef = this.dialog.open(CreateWorkflowDialogComponent, {
-            minWidth: '450px',
-            minHeight: '180px',
-            height: 'auto',
-            width: 'auto',
-            scrollStrategy,
-            backdropClass: 'backdrop-modal--wrapper',
-            autoFocus: false,
-            data: {
-                requestId: requestId,
-                requestConsultantId: requestConsultantId
-            }
-        });
+        MediumDialogConfig.scrollStrategy = scrollStrategy;
+        MediumDialogConfig.data = {
+            requestId: requestId,
+            requestConsultantId: requestConsultantId
+        }
+        const dialogRef = this.dialog.open(CreateWorkflowDialogComponent, MediumDialogConfig);
 
         dialogRef.componentInstance.onConfirmed.subscribe((result) => {
             if (result) {
@@ -305,8 +299,8 @@ export class WorkflowComponent extends AppComponentBase implements OnInit, OnDes
     confirmDeleteWorkflow(workflowId: string) {
         this.menuDeleteTrigger.closeMenu();
         const scrollStrategy = this.overlay.scrollStrategies.reposition();
-        DialogConfig.scrollStrategy = scrollStrategy;
-        DialogConfig.data = {
+        MediumDialogConfig.scrollStrategy = scrollStrategy;
+        MediumDialogConfig.data = {
             confirmationMessageTitle: `Delete workflow`,
             confirmationMessage: `Are you sure you want to delete this workflow?\n
             This workflow will be hidden from lists and statistics.\n
@@ -317,7 +311,7 @@ export class WorkflowComponent extends AppComponentBase implements OnInit, OnDes
             confirmButtonText: 'Delete',
             isNegative: true
         }
-        const dialogRef = this.dialog.open(ConfirmationDialogComponent, DialogConfig);
+        const dialogRef = this.dialog.open(ConfirmationDialogComponent, MediumDialogConfig);
 
         dialogRef.componentInstance.onConfirmed.subscribe(() => {
             this.deleteWorkflow(workflowId);
@@ -335,15 +329,15 @@ export class WorkflowComponent extends AppComponentBase implements OnInit, OnDes
     confirmRestoreWorkflow(workflowId: string) {
         this.menuDeleteTrigger.closeMenu();
         const scrollStrategy = this.overlay.scrollStrategies.reposition();
-        DialogConfig.scrollStrategy = scrollStrategy;
-        DialogConfig.data = {
+        MediumDialogConfig.scrollStrategy = scrollStrategy;
+        MediumDialogConfig.data = {
             confirmationMessageTitle: `Restore workflow`,
             confirmationMessage: `Are you sure you want to restore workflow?`,
             rejectButtonText: 'Cancel',
             confirmButtonText: 'Yes',
             isNegative: false
         }
-        const dialogRef = this.dialog.open(ConfirmationDialogComponent, DialogConfig);
+        const dialogRef = this.dialog.open(ConfirmationDialogComponent, MediumDialogConfig);
 
         dialogRef.componentInstance.onConfirmed.subscribe(() => {
             this.restoreWorkflow(workflowId);
