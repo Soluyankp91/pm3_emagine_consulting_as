@@ -67,6 +67,7 @@ import {
     ConsultantWithSourcingRequestResultDto,
     CountryDto,
     StepType,
+    LegalEntityDto,
 } from 'src/shared/service-proxies/service-proxies';
 import { CustomValidators } from 'src/shared/utils/custom-validators';
 import { WorkflowConsultantActionsDialogComponent } from '../workflow-consultant-actions-dialog/workflow-consultant-actions-dialog.component';

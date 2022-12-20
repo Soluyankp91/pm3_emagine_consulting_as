@@ -1,6 +1,4 @@
 import { Component, OnInit, Injector, Input, Output, EventEmitter, ViewChild, OnDestroy, NgZone, ElementRef, AfterViewInit } from '@angular/core';
-import { FormControl, Validators } from '@angular/forms';
-import { Component, OnInit, Injector, Input, Output, EventEmitter } from '@angular/core';
 import { UntypedFormControl, Validators } from '@angular/forms';
 import { AppComponentBase } from 'src/shared/app-component-base';
 import { finalize, takeUntil } from 'rxjs/operators';

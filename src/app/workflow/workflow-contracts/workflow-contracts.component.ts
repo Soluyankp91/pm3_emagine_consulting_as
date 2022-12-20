@@ -1,13 +1,10 @@
 import { Overlay } from '@angular/cdk/overlay';
-import { Component, Injector, Input, OnDestroy, OnInit } from '@angular/core';
-import { AbstractControl, FormArray, FormBuilder, FormControl, Validators } from '@angular/forms';
 import {
     Component,
     Injector,
     Input,
     OnDestroy,
     OnInit,
-    ViewChild,
 } from '@angular/core';
 import {
     AbstractControl,
@@ -18,6 +15,7 @@ import {
 } from '@angular/forms';
 import { MatDialog } from '@angular/material/dialog';
 import { MatMenuTrigger } from '@angular/material/menu';
+import { ScrollToConfigOptions, ScrollToService } from '@nicky-lenaers/ngx-scroll-to';
 import { Subject } from 'rxjs';
 import { finalize, takeUntil } from 'rxjs/operators';
 import { InternalLookupService } from 'src/app/shared/common/internal-lookup.service';
@@ -39,9 +37,7 @@ import {
     ConsultantTerminationContractDataCommandDto,
     WorkflowTerminationContractDataCommandDto,
     ConsultantTerminationContractDataQueryDto,
-    ClientContractsServiceProxy,
     ConsultantPeriodServiceProxy,
-    ConsultantContractsServiceProxy,
     ConsultantPeriodContractsDataCommandDto,
     ClientsServiceProxy,
     ClientSpecialRateDto,
@@ -51,8 +47,11 @@ import {
     StepType,
     ConsultantContractsDataQueryDto,
     ContractSyncResultDto,
+    ClientPeriodContractsDataQueryDto,
+    ConsultantPeriodContractsDataQueryDto,
+    WorkflowTerminationContractDataQueryDto
 } from 'src/shared/service-proxies/service-proxies';
-import { ClientPeriodContractsDataCommandDto, WorkflowProcessType, WorkflowServiceProxy, ClientPeriodServiceProxy, ConsultantContractsDataCommandDto, ContractsClientDataDto, ContractsMainDataDto, EnumEntityTypeDto, PeriodClientSpecialFeeDto, PeriodClientSpecialRateDto, PeriodConsultantSpecialFeeDto, PeriodConsultantSpecialRateDto, ProjectLineDto, ConsultantTerminationContractDataCommandDto, WorkflowTerminationContractDataCommandDto, ConsultantTerminationContractDataQueryDto, ConsultantPeriodServiceProxy, ConsultantPeriodContractsDataCommandDto, ClientsServiceProxy, ClientSpecialRateDto, ClientSpecialFeeDto, ConsultantResultDto, ContractSyncServiceProxy, StepType, ConsultantContractsDataQueryDto, ContractSyncResultDto, ClientPeriodContractsDataQueryDto, ConsultantPeriodContractsDataQueryDto, WorkflowTerminationContractDataQueryDto } from 'src/shared/service-proxies/service-proxies';
+import {  } from 'src/shared/service-proxies/service-proxies';
 import { WorkflowDataService } from '../workflow-data.service';
 import { WorkflowProcessWithAnchorsDto } from '../workflow-period/workflow-period.model';
 import { EmploymentTypes, ProjectLineDiallogMode } from '../workflow.model';
@@ -152,7 +151,8 @@ export class WorkflowContractsComponent
         private _workflowServiceProxy: WorkflowServiceProxy,
         private _consultantPeriodService: ConsultantPeriodServiceProxy,
         private _clientService: ClientsServiceProxy,
-        private _contractSyncService: ContractSyncServiceProxy
+        private _contractSyncService: ContractSyncServiceProxy,
+        private _scrollToService: ScrollToService
     ) {
         super(injector);
         this.contractsMainForm = new WorkflowContractsMainForm();
@@ -312,7 +312,7 @@ export class WorkflowContractsComponent
                     target: firstError,
                     offset: -115
                 }
-                this.scrollToService.scrollTo(config)
+                this._scrollToService.scrollTo(config)
             } else {
                 this.saveContractStepData(isDraft);
             }
@@ -989,7 +989,7 @@ export class WorkflowContractsComponent
     }
 
     cancelEditConsultantRate(consultantIndex: number, specialRateIndex: number) {
-        const rateRow = (this.consultants.at(consultantIndex).get('specialRates') as FormArray).at(specialRateIndex);
+        const rateRow = (this.consultants.at(consultantIndex).get('specialRates') as UntypedFormArray).at(specialRateIndex);
         rateRow?.get('proDataRateValue')?.setValue(this.consultantRateToEdit.prodataToProdataRate, {emitEvent: false});
         rateRow?.get('proDataRateCurrency')?.setValue(this.findItemById(this.currencies, this.consultantRateToEdit.prodataToProdataRateCurrencyId), {emitEvent: false});
         rateRow?.get('consultantRateValue')?.setValue(this.consultantRateToEdit.consultantRate, {emitEvent: false});
@@ -1123,7 +1123,7 @@ export class WorkflowContractsComponent
     }
 
     cancelEditConsultantFee(consultantIndex: number, specialFeeIndex: number) {
-        const feeRow = (this.consultants.at(consultantIndex).get('clientFees') as FormArray).at(specialFeeIndex);
+        const feeRow = (this.consultants.at(consultantIndex).get('clientFees') as UntypedFormArray).at(specialFeeIndex);
         feeRow?.get('proDataRateValue')?.setValue(this.consultantFeeToEdit?.prodataToProdataRate, {emitEvent: false});
         feeRow?.get('proDataRateCurrency')?.setValue(this.findItemById(this.currencies, this.consultantFeeToEdit?.prodataToProdataRateCurrencyId), {emitEvent: false});
         feeRow?.get('consultantRateValue')?.setValue(this.consultantFeeToEdit?.consultantRate, {emitEvent: false});
@@ -1652,10 +1652,10 @@ export class WorkflowContractsComponent
         consultant: ConsultantTerminationContractDataQueryDto
     ) {
         const form = this._fb.group({
-            consultantId: new FormControl(consultant?.consultant?.id),
-            consultantData: new FormControl(consultant?.consultant),
-            removedConsultantFromAnyManualChecklists: new FormControl(consultant.removedConsultantFromAnyManualChecklists, Validators.required),
-            deletedAnySensitiveDocumentsForGDPR: new FormControl(consultant.deletedAnySensitiveDocumentsForGDPR, Validators.required),
+            consultantId: new UntypedFormControl(consultant?.consultant?.id),
+            consultantData: new UntypedFormControl(consultant?.consultant),
+            removedConsultantFromAnyManualChecklists: new UntypedFormControl(consultant.removedConsultantFromAnyManualChecklists, Validators.required),
+            deletedAnySensitiveDocumentsForGDPR: new UntypedFormControl(consultant.deletedAnySensitiveDocumentsForGDPR, Validators.required),
 
         });
         this.contractsTerminationConsultantForm.consultantTerminationContractData.push(

@@ -1,6 +1,6 @@
 import { take, pluck } from 'rxjs/operators';
 import { Component } from '@angular/core';
-import { FormControl } from '@angular/forms';
+import { UntypedFormControl } from '@angular/forms';
 import { IFilter } from 'src/app/contracts/shared/components/grid-table/mat-grid.interfaces';
 import { ContractsService } from 'src/app/contracts/shared/services/contracts.service';
 import { MasterTemplatesService } from 'src/app/contracts/master-templates/listAndPreviews/services/master-templates.service';
@@ -11,7 +11,7 @@ import { MasterTemplatesService } from 'src/app/contracts/master-templates/listA
 })
 export class DeliveryTypesFilterComponent implements IFilter {
     deliveryTypes$ = this.contractService.getDeliveryTypes$();
-    filterFormControl: FormControl;
+    filterFormControl: UntypedFormControl;
 
     private tableFilter = 'deliveryTypeIds';
 
@@ -23,7 +23,7 @@ export class DeliveryTypesFilterComponent implements IFilter {
             .getTableFilters$()
             .pipe(take(1), pluck(this.tableFilter))
             .subscribe((deliveryTypes) => {
-                this.filterFormControl = new FormControl(deliveryTypes);
+                this.filterFormControl = new UntypedFormControl(deliveryTypes);
             });
     }
 }

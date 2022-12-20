@@ -7,7 +7,7 @@
                     <div fxLayout="column" fxLayoutAlign="start start" class="u-w--100 u-mb--10  u-mt--10">
                         <mat-form-field appearance="outline" class="u-w--100 textarea-input formFieldNoMarginPadding" fxFlex="0 0 calc(66% + 16px)" [ngClass]="{'disabled-input': readOnlyMode}">
                             <mat-label>Remarks</mat-label>
-                            <textarea required matInput autocomplete="new-password" name="remarks" formControlName="remarks" [matTextareaAutosize]="true" [matAutosizeMinRows]="2" [disabled]="readOnlyMode">
+                            <textarea required matInput autocomplete="new-password" name="remarks" formControlName="remarks" [cdkTextareaAutosize]="true" [cdkAutosizeMinRows]="2" [disabled]="readOnlyMode">
                             </textarea>
                             <mat-error>
                                 <app-validator [control]="salesMainDataForm.remarks"></app-validator>
@@ -141,7 +141,7 @@
                             <div fxLayout="row" fxLayoutAlign="start start" class="u-w--100 u-mb--10">
                                 <mat-form-field appearance="outline" class="u-w--100 formFieldNoMarginPadding textarea-input" fxFlex="0 0 calc(79% + 24px)" [ngClass]="{'disabled-input': readOnlyMode}">
                                     <mat-label>Project Name</mat-label>
-                                    <textarea matInput [disabled]="readOnlyMode" autocomplete="new-password" name="projectName" required formControlName="projectName" [matTextareaAutosize]="true" [matAutosizeMinRows]="2">
+                                    <textarea matInput [disabled]="readOnlyMode" autocomplete="new-password" name="projectName" required formControlName="projectName" [cdkTextareaAutosize]="true" [cdkAutosizeMinRows]="2">
                                     </textarea>
                                     <mat-error>
                                         <app-validator [control]="salesMainDataForm.projectName"></app-validator>
@@ -152,7 +152,7 @@
                             <div fxLayout="row" fxLayoutAlign="start start" class="u-w--100">
                                 <mat-form-field appearance="outline" class="u-w--100 formFieldNoMarginPadding textarea-input" fxFlex="0 0 calc(79% + 24px)" [ngClass]="{'disabled-input': readOnlyMode}">
                                     <mat-label>Project Description</mat-label>
-                                    <textarea matInput [disabled]="readOnlyMode" autocomplete="new-password" name="projectDescription" required formControlName="projectDescription" [matTextareaAutosize]="true" [matAutosizeMinRows]="2">
+                                    <textarea matInput [disabled]="readOnlyMode" autocomplete="new-password" name="projectDescription" required formControlName="projectDescription" [cdkTextareaAutosize]="true" [cdkAutosizeMinRows]="2">
                                     </textarea>
                                     <mat-error>
                                         <app-validator [control]="salesMainDataForm.projectDescription"></app-validator>
@@ -502,7 +502,7 @@
                                 <div fxLayout="row" fxLayoutAlign="start start" class="u-w--100">
                                     <mat-form-field appearance="outline" class="u-w--100 formFieldNoMarginPadding textarea-input u-mr--12" fxFlex="0 0 calc(79% + 24px)" [ngClass]="{'disabled-input': readOnlyMode}">
                                         <mat-label>Remarks</mat-label>
-                                        <textarea [disabled]="readOnlyMode" required matInput autocomplete="new-password" name="remarks" formControlName="remarks" [matTextareaAutosize]="true" [matAutosizeMinRows]="2">
+                                        <textarea [disabled]="readOnlyMode" required matInput autocomplete="new-password" name="remarks" formControlName="remarks" [cdkTextareaAutosize]="true" [cdkAutosizeMinRows]="2">
                                         </textarea>
                                         <mat-error>
                                             <app-validator [control]="salesMainDataForm.remarks"></app-validator>
@@ -1269,7 +1269,7 @@
                                 <div fxLayout="row" fxLayoutAlign="start start" class="u-w--100" [fxHide]="!salesClientDataForm.value?.evaluationsDisabled">
                                     <mat-form-field appearance="outline" class="u-w--100 formFieldNoMarginPadding textarea-input" fxFlex="0 0 calc(79% + 24px)" [ngClass]="{'disabled-input': readOnlyMode}">
                                         <mat-label>Disable Evaluations Reason</mat-label>
-                                        <textarea [disabled]="readOnlyMode" [required]="salesClientDataForm.value?.evaluationsDisabled" matInput autocomplete="new-password" name="evaluationsDisabledReason" formControlName="evaluationsDisabledReason" [matTextareaAutosize]="true" [matAutosizeMinRows]="2">
+                                        <textarea [disabled]="readOnlyMode" [required]="salesClientDataForm.value?.evaluationsDisabled" matInput autocomplete="new-password" name="evaluationsDisabledReason" formControlName="evaluationsDisabledReason" [cdkTextareaAutosize]="true" [cdkAutosizeMinRows]="2">
                                         </textarea>
                                         <mat-error>
                                             <app-validator [control]="salesClientDataForm.evaluationsDisabledReason"></app-validator>
@@ -1288,7 +1288,7 @@
                             <div fxLayout="row" fxLayoutAlign="start start" fxLayoutGap="10px" class="u-w--100 u-mb--10">
                                 <mat-form-field appearance="outline" class="u-w--100 formFieldNoMarginPadding textarea-input" fxFlex="0 0 calc(79% + 24px)" [ngClass]="{'disabled-input': readOnlyMode}">
                                     <mat-label>Special Contract Terms</mat-label>
-                                    <textarea [disabled]="readOnlyMode" required matInput autocomplete="new-password" name="specialContractTerms" formControlName="specialContractTerms" [matTextareaAutosize]="true" [matAutosizeMinRows]="2">
+                                    <textarea [disabled]="readOnlyMode" required matInput autocomplete="new-password" name="specialContractTerms" formControlName="specialContractTerms" [cdkTextareaAutosize]="true" [cdkAutosizeMinRows]="2">
                                     </textarea>
                                     <mat-error>
                                         <app-validator [control]="salesClientDataForm.specialContractTerms"></app-validator>
@@ -2345,7 +2345,7 @@
                                         <div fxLayout="row" fxLayoutAlign="start center" class="u-w--100 u-mb--10">
                                             <mat-form-field appearance="outline" class="u-w--100 formFieldNoMarginPadding textarea-input u-mr--12" fxFlex="0 0 calc(79% + 24px)" [ngClass]="{'disabled-input': readOnlyMode}">
                                                 <mat-label>Consultant Special Contract Terms</mat-label>
-                                                <textarea [disabled]="readOnlyMode" [required]="consultant.value?.employmentType?.id !== employmentTypesEnum.FeeOnly && consultant.value?.employmentType?.id !== employmentTypesEnum.Recruitment" matInput autocomplete="new-password" name="consultantSpecialContractTerms" formControlName="consultantSpecialContractTerms" [matTextareaAutosize]="true" [matAutosizeMinRows]="2">
+                                                <textarea [disabled]="readOnlyMode" [required]="consultant.value?.employmentType?.id !== employmentTypesEnum.FeeOnly && consultant.value?.employmentType?.id !== employmentTypesEnum.Recruitment" matInput autocomplete="new-password" name="consultantSpecialContractTerms" formControlName="consultantSpecialContractTerms" [cdkTextareaAutosize]="true" [cdkAutosizeMinRows]="2">
                                                 </textarea>
                                                 <mat-error>
                                                     <app-validator [control]="consultant.get('consultantSpecialContractTerms')"></app-validator>
@@ -2487,10 +2487,10 @@
                         </div>
                     </ng-container>
 
-                    <div fxLayout="row" fxLayoutAlign="start start" class="u-w--100" [fxHide]="salesTerminateConsultantForm?.terminationTime?.value !== 2 && salesTerminateConsultantForm?.terminationTime?.value !== 3">
+                    <div fxLayout="row" fxLayoutAlign="start start" class="u-w--100" [fxHide]="salesTerminateConsultantForm.terminationTime?.value !== 2 && salesTerminateConsultantForm.terminationTime?.value !== 3">
                         <mat-form-field appearance="outline" class="u-w--100 textarea-input formFieldNoMarginPadding" fxFlex="0 0 calc(79% + 24px)" [ngClass]="{'disabled-input': readOnlyMode}">
                             <mat-label>Cause</mat-label>
-                            <textarea [disabled]="readOnlyMode" [required]="salesTerminateConsultantForm?.terminationTime?.value === 2 || salesTerminateConsultantForm?.terminationTime?.value === 3" matInput autocomplete="new-password" name="causeOfTerminationBeforeEndOfContract" formControlName="causeOfNonStandardTerminationTime" [matTextareaAutosize]="true" [matAutosizeMinRows]="2">
+                            <textarea [disabled]="readOnlyMode" [required]="salesTerminateConsultantForm.terminationTime?.value === 2 || salesTerminateConsultantForm.terminationTime?.value === 3" matInput autocomplete="new-password" name="causeOfTerminationBeforeEndOfContract" formControlName="causeOfNonStandardTerminationTime" [cdkTextareaAutosize]="true" [cdkAutosizeMinRows]="2">
                             </textarea>
                             <mat-error>
                                 <app-validator [control]="salesTerminateConsultantForm.causeOfNonStandardTerminationTime"></app-validator>
@@ -2501,7 +2501,7 @@
                     <div fxLayout="row" fxLayoutAlign="start start" class="u-w--100 u-mb--20 u-mt--10">
                         <mat-form-field appearance="outline" class="u-w--100 textarea-input formFieldNoMarginPadding" fxFlex="0 0 calc(79% + 24px)" [ngClass]="{'disabled-input': readOnlyMode}">
                             <mat-label>Additional comments</mat-label>
-                            <textarea [disabled]="readOnlyMode" [readonly]="readOnlyMode" matInput autocomplete="new-password" name="additionalComments" formControlName="additionalComments" [matTextareaAutosize]="true" [matAutosizeMinRows]="2">
+                            <textarea [disabled]="readOnlyMode" [readonly]="readOnlyMode" matInput autocomplete="new-password" name="additionalComments" formControlName="additionalComments" [cdkTextareaAutosize]="true" [cdkAutosizeMinRows]="2">
                             </textarea>
                         </mat-form-field>
                     </div>
@@ -2542,7 +2542,7 @@
                             <div fxLayout="row" fxLayoutAlign="start start" class="u-w--100">
                                 <mat-form-field appearance="outline" class="u-w--100 textarea-input formFieldNoMarginPadding" fxFlex="0 0 calc(79% + 24px)" [ngClass]="{'disabled-input': readOnlyMode}">
                                     <mat-label>Cause</mat-label>
-                                    <textarea [disabled]="readOnlyMode" [required]="salesTerminateConsultantForm.noEvaluation?.value" matInput autocomplete="new-password" name="causeOfNoEvaluation" formControlName="causeOfNoEvaluation" [matTextareaAutosize]="true" [matAutosizeMinRows]="2">
+                                    <textarea [disabled]="readOnlyMode" [required]="salesTerminateConsultantForm.noEvaluation?.value" matInput autocomplete="new-password" name="causeOfNoEvaluation" formControlName="causeOfNoEvaluation" [cdkTextareaAutosize]="true" [cdkAutosizeMinRows]="2">
                                     </textarea>
                                     <mat-error>
                                         <app-validator [control]="salesTerminateConsultantForm.causeOfNoEvaluation"></app-validator>

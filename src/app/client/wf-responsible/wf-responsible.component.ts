@@ -1,5 +1,5 @@
 import { Component, Injector } from '@angular/core';
-import { FormControl } from '@angular/forms';
+import { UntypedFormControl } from '@angular/forms';
 import { AppComponentBase } from 'src/shared/app-component-base';
 import { Subject } from 'rxjs';
 import { takeUntil, debounceTime, switchMap } from 'rxjs/operators';
@@ -13,8 +13,8 @@ import { merge } from 'lodash';
     templateUrl: './wf-responsible.component.html'
 })
 export class WfResponsibleComponent extends AppComponentBase {
-    contractStepResponsible = new FormControl(null, CustomValidators.autocompleteValidator(['id']));
-    financeStepResponsible = new FormControl(null, CustomValidators.autocompleteValidator(['id']));
+    contractStepResponsible = new UntypedFormControl(null, CustomValidators.autocompleteValidator(['id']));
+    financeStepResponsible = new UntypedFormControl(null, CustomValidators.autocompleteValidator(['id']));
     filteredAccountManagers: EmployeeDto[] = [];
     private _unsubscribe = new Subject();
     constructor(
