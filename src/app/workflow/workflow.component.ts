@@ -1,6 +1,6 @@
 import { Overlay } from '@angular/cdk/overlay';
 import { Component, Injectable, Injector, OnDestroy, OnInit, ViewChild } from '@angular/core';
-import { FormControl } from '@angular/forms';
+import { UntypedFormControl } from '@angular/forms';
 import { MatAutocompleteTrigger } from '@angular/material/autocomplete';
 import { MatDialog } from '@angular/material/dialog';
 import { MatMenuTrigger } from '@angular/material/menu';
@@ -34,7 +34,7 @@ export class WorkflowComponent extends AppComponentBase implements OnInit, OnDes
     @ViewChild('clientsPaginator') paginator: MatPaginator;
     isLoading: boolean;
 
-    workflowFilter = new FormControl(null);
+    workflowFilter = new UntypedFormControl(null);
 
     pageNumber = 1;
     deafultPageSize = AppConsts.grid.defaultPageSize;
@@ -76,16 +76,16 @@ export class WorkflowComponent extends AppComponentBase implements OnInit, OnDes
     showUpcomingSteps = false;
     includeTerminated = false;
     includeDeleted = false;
-    invoicingEntityControl = new FormControl();
-    paymentEntityControl = new FormControl();
-    salesTypeControl = new FormControl();
-    deliveryTypesControl = new FormControl();
-    workflowStatusControl = new FormControl();
+    invoicingEntityControl = new UntypedFormControl();
+    paymentEntityControl = new UntypedFormControl();
+    salesTypeControl = new UntypedFormControl();
+    deliveryTypesControl = new UntypedFormControl();
+    workflowStatusControl = new UntypedFormControl();
 
     managerStatus = ManagerStatus;
     selectedAccountManagers: SelectableEmployeeDto[] = [];
     filteredAccountManagers: SelectableEmployeeDto[] = [];
-    accountManagerFilter = new FormControl();
+    accountManagerFilter = new UntypedFormControl();
 
     // we create an object that contains coordinates
     menuTopLeftPosition =  {x: 0, y: 0}

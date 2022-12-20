@@ -3,7 +3,8 @@
         <button class="absolute-edit-toggle" mat-icon-button appPreventDoubleClick (throttledClick)="toggleEditMode(true)"><mat-icon svgIcon="edit-icon"></mat-icon></button>
     </ng-container>
     <ng-container [ngSwitch]="true">
-        <ng-container *ngSwitchCase="activeSideSection.typeId === workflowSideSections.TerminateWorkflow || activeSideSection.typeId === workflowSideSections.TerminateConsultant">
+        <ng-container
+            *ngSwitchCase="activeSideSection.typeId === workflowSideSections.TerminateWorkflow || activeSideSection.typeId === workflowSideSections.TerminateConsultant">
             <div class="workflow--termination">
                 <h2 class="workflow-section--header u-mb--20">Finish contract in PM</h2>
                 <div fxLayout="column" fxLayoutAlign="start start" class="u-w--100">
@@ -22,7 +23,8 @@
                         </ng-container>
                     </ng-container>
                     <ng-template #contractLinesDoneManuallyInOldPMInput>
-                        <button class="button-accept u-mb--10" mat-flat-button appPreventDoubleClick (throttledClick)="processSyncToLegacySystem()">
+                        <button class="button-accept u-mb--10" mat-flat-button appPreventDoubleClick
+                            (throttledClick)="processSyncToLegacySystem()">
                             Sync to legacy system
                         </button>
                     </ng-template>
@@ -86,7 +88,8 @@
             </div>
         </ng-container>
         <ng-container *ngSwitchDefault>
-            <form [formGroup]="contractsMainForm" id="mainDataAnchor" class="workflow-form workflow-form--main u-w--100">
+            <form [formGroup]="contractsMainForm" id="mainDataAnchor"
+                class="workflow-form workflow-form--main u-w--100">
                 <div fxLayout="column" fxLayoutAlign="start start" class="workflow-contracts--process-data u-w--100">
                     <div fxLayout="column" fxLayoutAlign="start start" class="u-w--100">
                         <h1 class="workflow-section--header-main">Main data</h1>
@@ -1371,7 +1374,8 @@
                 </ng-container>
             </form>
 
-            <form [formGroup]="contractsSyncDataForm" id="syncLegalContractAnchor" class="workflow-form workflow-form--main u-w--100">
+            <form [formGroup]="contractsSyncDataForm" id="syncLegalContractAnchor"
+                class="workflow-form workflow-form--main u-w--100">
                 <div fxLayout="column" fxLayoutAlign="start start" class="workflow-contracts--process-data u-w--100">
                     <div fxLayout="column" fxLayoutAlign="start start" class="u-w--100">
                         <h1 class="workflow-section--header-main">Sync & legal contracts</h1>

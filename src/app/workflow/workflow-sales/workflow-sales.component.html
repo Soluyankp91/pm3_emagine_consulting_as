@@ -761,7 +761,8 @@
                                             </mat-checkbox>
                                         </ng-container>
                                     </div>
-                                    <ng-container [ngTemplateOutlet]="clientAdditionalInfo" [ngTemplateOutletContext]="{client: salesClientDataForm.clientInvoicingRecipientIdValue?.value}">
+                                    <ng-container [ngTemplateOutlet]="clientAdditionalInfo"
+                                        [ngTemplateOutletContext]="{client: salesClientDataForm.clientInvoicingRecipientIdValue?.value}">
                                     </ng-container>
                                 </div>
                                 <div fxLayout="row" fxLayoutAlign="start start" class="u-w--100 u-mb--20">
@@ -948,21 +949,27 @@
                                 </mat-form-field>
                                 <span class="workflow-step-readonly--blue-text-bold">
                                     <ng-container [ngSwitch]="salesClientDataForm.capOnTimeReporting?.value?.id">
-                                        <ng-container *ngSwitchCase="1"> <!-- Cap on units -->
+                                        <ng-container *ngSwitchCase="1">
+                                            <!-- Cap on units -->
                                             <ng-container [ngSwitch]="salesClientDataForm.rateUnitTypeId?.value?.id">
-                                                <ng-container *ngSwitchCase="1"> <!-- Per hour -->
+                                                <ng-container *ngSwitchCase="1">
+                                                    <!-- Per hour -->
                                                     hours
                                                 </ng-container>
-                                                <ng-container *ngSwitchCase="2"> <!-- Per day -->
+                                                <ng-container *ngSwitchCase="2">
+                                                    <!-- Per day -->
                                                     days
                                                 </ng-container>
-                                                <ng-container *ngSwitchCase="4"> <!-- Per month -->
+                                                <ng-container *ngSwitchCase="4">
+                                                    <!-- Per month -->
                                                     months
                                                 </ng-container>
                                             </ng-container>
                                         </ng-container>
-                                        <ng-container *ngSwitchCase="2"> <!-- Cap on value -->
-                                            {{salesClientDataForm.clientCurrency?.value?.name ? salesClientDataForm.clientCurrency?.value?.name : '-'}}
+                                        <ng-container *ngSwitchCase="2">
+                                            <!-- Cap on value -->
+                                            {{salesClientDataForm.clientCurrency?.value?.name ?
+                                            salesClientDataForm.clientCurrency?.value?.name : '-'}}
                                         </ng-container>
                                     </ng-container>
                                 </span>
@@ -1074,8 +1081,10 @@
                                     Add special rates
                                 </button>
                                 <mat-menu #clientSpecialRateMenu backdropClass="add-rates-button--menu">
-                                    <div mat-menu-item appPreventDoubleClick (throttledClick)="$event.stopPropagation()" class="u-pg--0">
-                                        <mat-form-field appearance="fill" class="add-rates-button--dropdown filter-select u-w--100">
+                                    <div mat-menu-item appPreventDoubleClick (throttledClick)="$event.stopPropagation()"
+                                        class="u-pg--0">
+                                        <mat-form-field appearance="fill"
+                                            class="add-rates-button--dropdown filter-select u-w--100">
                                             <mat-label>Choose special rate</mat-label>
                                             <mat-select #clientSpecialRateSelect [formControl]="clientSpecialRateFilter" [disableOptionCentering]="true">
                                                 <ng-container *ngIf="clientSpecialRateList.length == 0">
@@ -1184,11 +1193,8 @@
                             <div fxLayout="row" fxLayoutAlign="start start" class="u-mb--20" [fxHide]="readOnlyMode">
                                 <button
                                     [ngClass]="salesClientDataForm!.clientFees!.controls!.length > 0 ? 'button-add' : 'button-outlined'"
-                                    class="rates-and-fees--btn"
-                                    mat-flat-button
-                                    type="button"
-                                    [disabled]="isClientFeeEditing"
-                                    [matMenuTriggerFor]="clientSpecialFeeMenu"
+                                    class="rates-and-fees--btn" mat-flat-button type="button"
+                                    [disabled]="isClientFeeEditing" [matMenuTriggerFor]="clientSpecialFeeMenu"
                                     (menuOpened)="clientSpecialFeeFilter.setValue(''); clientSpecialFeeSelect.open()"
                                     #clientFeeMenuTrigger="matMenuTrigger">
                                     <ng-container *ngIf="salesClientDataForm.clientFees?.controls?.length">
@@ -1197,8 +1203,10 @@
                                     Add special fees
                                 </button>
                                 <mat-menu #clientSpecialFeeMenu backdropClass="add-rates-button--menu">
-                                    <div mat-menu-item appPreventDoubleClick (throttledClick)="$event.stopPropagation()" class="u-pg--0">
-                                        <mat-form-field appearance="fill" class="add-rates-button--dropdown filter-select u-w--100">
+                                    <div mat-menu-item appPreventDoubleClick (throttledClick)="$event.stopPropagation()"
+                                        class="u-pg--0">
+                                        <mat-form-field appearance="fill"
+                                            class="add-rates-button--dropdown filter-select u-w--100">
                                             <mat-label>Choose special fee</mat-label>
                                             <mat-select #clientSpecialFeeSelect [formControl]="clientSpecialFeeFilter" [disableOptionCentering]="true">
                                                 <ng-container *ngIf="clientSpecialFeeList.length == 0">
