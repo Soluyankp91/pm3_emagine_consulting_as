@@ -18,6 +18,7 @@ import { ValidatorComponent } from '../components/validator/validator.component'
 import { ReplacePipe } from 'src/shared/common/pipes/replace.pipe';
 import { ConsultantInformationComponent } from '../components/consultant-information/consultant-information.component';
 import { ExcludeIdsPipe } from 'src/shared/common/pipes/exclude-ids.pipe';
+import { ImageFallbackDirective } from 'src/shared/common/directives/image-fallback.directive';
 
 @NgModule({
     declarations: [
@@ -32,7 +33,8 @@ import { ExcludeIdsPipe } from 'src/shared/common/pipes/exclude-ids.pipe';
         ValidatorComponent,
         ReplacePipe,
         ConsultantInformationComponent,
-        ExcludeIdsPipe
+        ExcludeIdsPipe,
+        ImageFallbackDirective
     ],
     imports: [
         CommonModule,
@@ -58,7 +60,8 @@ import { ExcludeIdsPipe } from 'src/shared/common/pipes/exclude-ids.pipe';
         ValidatorComponent,
         ReplacePipe,
         ConsultantInformationComponent,
-        ExcludeIdsPipe
+        ExcludeIdsPipe,
+        ImageFallbackDirective
     ],
     providers: [
         ErrorDialogService,

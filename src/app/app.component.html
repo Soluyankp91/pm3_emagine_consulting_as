@@ -69,10 +69,10 @@
                         </a>
                     </li>
                     <li class="main-navigation--list-item" [matMenuTriggerFor]="menu" #trigger="matMenuTrigger" [matTooltip]="'User profile'" matTooltipClass="white-tooltip">
-                        <img class="border-rounded-50 image-thumbnail--logout" [src]="employeeProfileUrl(currentEmployee?.externalId!)" />
+                        <img class="border-rounded-50 image-thumbnail--logout" [src]="employeePhotoUrl + currentEmployee?.externalId! + '.jpg'" loading="lazy" appImageFallback />
                         <mat-menu #menu="matMenu" backdropClass="main-navigation--logout-menu">
                             <div fxLayout="row" fxLayoutAlign="start center" fxLayoutGap="15px" class="main-navigation--list-item-logout">
-                                <img class="border-rounded-50 image-thumbnail--logout-menu" [src]="employeeProfileUrl(currentEmployee?.externalId!)" />
+                                <img class="border-rounded-50 image-thumbnail--logout-menu" [src]="employeePhotoUrl + currentEmployee?.externalId! + '.jpg'" loading="lazy" appImageFallback/>
                                 <div fxLayout="column" >
                                     <span class="main-navigation--list-item-logout-username u-mb--5">{{currentEmployee?.name}}</span>
                                     <span class="main-navigation--list-item-logout-name">{{accountInfo?.username}}</span>

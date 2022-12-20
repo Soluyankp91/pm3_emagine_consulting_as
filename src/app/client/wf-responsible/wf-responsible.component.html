@@ -7,7 +7,7 @@
                 <mat-label>Contract step responsible</mat-label>
                 <ng-container *ngIf="contractStepResponsible.value?.id">
                     <img matPrefix class="border-rounded-50 image-thumbnail-small"
-                        [src]="employeeProfileUrl(contractStepResponsible.value?.externalId!)" />
+                        [src]="employeePhotoUrl + contractStepResponsible?.value?.externalId! + '.jpg'" loading="lazy" appImageFallback />
                 </ng-container>
                 <input #contractResponsibleInput type="text" matInput
                     [matAutocomplete]="contractResponsibleAutocomplete" [formControl]="contractStepResponsible"
@@ -32,7 +32,7 @@
                 <mat-label>Finance step responsible</mat-label>
                 <ng-container *ngIf="financeStepResponsible.value?.id">
                     <img matPrefix class="border-rounded-50 image-thumbnail-small"
-                        [src]="employeeProfileUrl(financeStepResponsible.value?.externalId!)" />
+                        [src]="employeePhotoUrl + financeStepResponsible?.value?.externalId! + '.jpg'" loading="lazy" appImageFallback />
                 </ng-container>
                 <input #financeResponsibleInput type="text" matInput [matAutocomplete]="financeResponsibleAutocomplete"
                     [formControl]="financeStepResponsible" appPreventDoubleClick

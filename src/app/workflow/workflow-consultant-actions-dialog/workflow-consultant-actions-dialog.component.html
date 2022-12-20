@@ -6,7 +6,7 @@
         <button class="dialog-close--button" mat-icon-button (click)="reject()"><mat-icon svgIcon="dialog-close-icon"></mat-icon></button>
     </div>
     <div fxLayout="row" fxLayoutAlign="start center" class="u-mb--24">
-        <img class="border-rounded-50 u-mr--12 image-thumbnail-small" [src]="consultantProfileUrl(consultant.externalId)">
+        <img class="border-rounded-50 u-mr--12 image-thumbnail-small" [src]="consultantPhotoUrl + consultant.externalId + '.jpg'" loading="lazy" appImageFallback />
         <p class="consultant-name">{{consultant.name}}</p>
     </div>
     <mat-divider class="u-w--100 u-mb--24"></mat-divider>

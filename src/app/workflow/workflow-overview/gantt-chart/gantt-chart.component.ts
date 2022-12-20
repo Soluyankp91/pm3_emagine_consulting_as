@@ -27,6 +27,8 @@ export class GanttChartComponent extends GanttUpper implements OnInit {
 
     @HostBinding('class.gantt-flat') ganttFlatClass = true;
 
+    consultantPhotoUrl = AppConsts.consultantPhotoUrl;
+    employeePhotoUrl = AppConsts.employeePhotoUrl;
     constructor(
         elementRef: ElementRef<HTMLElement>,
         cdr: ChangeDetectorRef,
@@ -82,20 +84,6 @@ export class GanttChartComponent extends GanttUpper implements OnInit {
 
     redirectToWorkflow(id: string) {
         this.router.navigate(['app/workflow', id]);
-    }
-
-    employeeProfileUrl(fileToken: string): string {
-        if (!fileToken) {
-            return 'assets/common/images/no-img.svg';
-        }
-        return environment.sharedAssets + `/EmployeePicture/${fileToken}.jpg`;
-    }
-
-    consultantProfileUrl(fileToken: string): string {
-        if (!fileToken) {
-            return 'assets/common/images/no-img.svg';
-        }
-        return `${environment.sharedAssets}/ProfilePicture/${fileToken}.jpg`;
     }
 
     setPosition(event: MouseEvent, item: any) {

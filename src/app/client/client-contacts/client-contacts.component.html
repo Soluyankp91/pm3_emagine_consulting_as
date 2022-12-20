@@ -59,7 +59,7 @@
                 <ng-container matColumnDef="owner">
                     <mat-header-cell *matHeaderCellDef fxFlex="8%"> Owner </mat-header-cell>
                     <mat-cell *matCellDef="let row" fxFlex="8%">
-                        <img class="image-settings--dropdown" [matTooltip]="row?.owner?.name" matTooltipClass="white-tooltip" [src]="employeeProfileUrl(row?.owner?.externalId!)"/>
+                        <img class="image-settings--dropdown" [matTooltip]="row?.owner?.name" matTooltipClass="white-tooltip" [src]="employeePhotoUrl + row?.owner?.externalId! + '.jpg'" loading="lazy" appImageFallback />
                     </mat-cell>
                 </ng-container>
                 <mat-header-row *matHeaderRowDef="clientDisplayColumns"></mat-header-row>

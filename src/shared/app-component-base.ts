@@ -21,6 +21,8 @@ export abstract class AppComponentBase {
     spinnerService: NgxSpinnerService;
     matSnackbar: MatSnackBar;
     momentFormatType = AppConsts.momentFormatType;
+    consultantPhotoUrl = AppConsts.consultantPhotoUrl;
+    employeePhotoUrl = AppConsts.employeePhotoUrl;
     constructor(injector: Injector) {
         this.apiUrl = injector.get(API_BASE_URL);
         this.spinnerService = injector.get(NgxSpinnerService);
@@ -126,20 +128,6 @@ export abstract class AppComponentBase {
 
     hideMainSpinner(): void {
         this.spinnerService.hide();
-    }
-
-    consultantProfileUrl(fileToken: string): string {
-        if (!fileToken) {
-            return 'assets/common/images/no-img.svg';
-        }
-        return `${environment.sharedAssets}/ProfilePicture/${fileToken}.jpg`;
-    }
-
-    employeeProfileUrl(fileToken: string): string {
-        if (!fileToken) {
-            return 'assets/common/images/no-img.svg';
-        }
-        return environment.sharedAssets + `/EmployeePicture/${fileToken}.jpg`;
     }
 
     deepLinkToSourcing(consultantId: number) {
