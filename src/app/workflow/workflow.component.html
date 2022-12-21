@@ -137,7 +137,6 @@
                     </button>
                 </div>
             </div>
-            <!-- <div fxFlex="25%" fxLayout="column" fxLayoutAlign="start end"> -->
             <div fxLayout="row" fxLayoutAlign="space-between end" fxLayoutGap="16px" class="u-w--100" fxFlex="25%">
                 <mat-form-field appearance="fill" class="search-filter-input u-w--100 mat-elevation-z0 formFieldNoMarginPadding">
                     <input autocomplete="off" matInput [formControl]="workflowFilter" placeholder="Search" type="text">
@@ -147,7 +146,6 @@
                     <mat-icon svgIcon="plus-button-icon"></mat-icon>
                 </button>
             </div>
-            <!-- </div> -->
         </div>
         <div fxLayout="row" fxLayoutAlign="flex-end center" class="u-w--100">
             <button class="advanced-filterd--btn" mat-flat-button [ngClass]="{'active': isAdvancedFilters}" (click)="isAdvancedFilters = !isAdvancedFilters" matTooltip="Advanced filters" matTooltipClass="white-tooltip">
@@ -155,7 +153,7 @@
                 <span class="advanced-filterd--btn-text u-ml--5">Advanced filters</span>
             </button>
         </div>
-        <div fxLayout="row" fxLayoutAlign="end start" fxLayoutGap="25px" class="u-w--100 u-mt--10">
+        <div fxLayout="row" fxLayoutAlign="end start" fxLayoutGap="25px" class="u-w--100 u-mt--5">
             <mat-slide-toggle class="green-slide-toggle" color="primary" labelPosition="before" (change)="getWorkflowList()" [(ngModel)]="includeDeleted">Show deleted</mat-slide-toggle>
             <mat-slide-toggle class="green-slide-toggle" color="primary" labelPosition="before" (change)="getWorkflowList()" [(ngModel)]="includeTerminated">Show finished</mat-slide-toggle>
         </div>
