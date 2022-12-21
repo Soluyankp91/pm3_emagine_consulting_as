@@ -245,3 +245,56 @@
         }
     }
 }
+
+
+.client-documents--filter-select.mat-form-field-appearance-fill {
+    width: auto;
+    min-width: 100px;
+    .mat-form-field-flex {
+        background-color: transparent !important;
+        padding: 0 !important;
+    }
+    .mat-form-field-underline {
+        display: none !important;
+    }
+    .mat-select-arrow-wrapper {
+        transform: translateY(0);
+    }
+    .mat-select-value-text {
+        font-weight: 600;
+        color: #000;
+    }
+
+    .mat-select-arrow {
+        border: solid $dark-grey-color;
+        border-width: 0 2px 2px 0;
+        display: inline-block;
+        padding: 4px;
+        transform: rotate(45deg);
+        width: 8px;
+        height: 8px;
+        transition: all .3s ease-in-out;
+        margin-bottom: 3px;
+    }
+    .mat-select-value {
+        width: fit-content;
+        padding-right: 10px;
+        max-width: unset;
+        font-weight: 600;
+        font-size: 14px;
+        line-height: 14px;
+        color: #000;
+    }
+    .mat-form-field-infix {
+        width: auto;
+        padding: 0 !important;
+        border-top: unset !important;
+    }
+
+    mat-select[aria-expanded="true"] {
+        .mat-select-arrow {
+            transform: rotate(225deg);
+            margin-bottom: -2px;
+        }
+    }
+}

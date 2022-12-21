@@ -75,6 +75,7 @@ export class ClientDocumentsComponent extends AppComponentBase implements OnInit
     contractDocumentsIncludeLinked = new FormControl(false);
     contractDocumentsIncludeExpired = new FormControl(false);
     evaluationDocumentDate = new FormControl(new Date());
+    evaluationDocumentFilter = new FormControl(1);
     evaluationDocumentsIncludeLinked = new FormControl(false);
 
     contractsDocuments: ClientContractViewRootDto;
@@ -103,6 +104,7 @@ export class ClientDocumentsComponent extends AppComponentBase implements OnInit
             ).subscribe(() => this.getContracts());
 
 
+        // FIXME: add new formControl once BE is ready
         merge(this.evaluationDocumentDate.valueChanges, this.evaluationDocumentsIncludeLinked.valueChanges)
             .pipe(
                 takeUntil(this._unsubscribe)
