@@ -37,7 +37,8 @@ import {
     WorkflowSteps,
     WorkflowDiallogAction,
     getWorkflowStatus,
-    getStatusIcon
+    getStatusIcon,
+    WorkflowStatusMenuList
 } from '../workflow.model';
 import { InternalLookupService } from 'src/app/shared/common/internal-lookup.service';
 import { WorkflowActionsDialogComponent } from '../workflow-actions-dialog/workflow-actions-dialog.component';
@@ -54,7 +55,7 @@ import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { WorkflowPeriodComponent } from '../workflow-period/workflow-period.component';
 import { MatMenuTrigger } from '@angular/material/menu';
 import { RateAndFeesWarningsDialogComponent } from '../rate-and-fees-warnings-dialog/rate-and-fees-warnings-dialog.component';
-import { DialogConfig } from './workflow-details.model';
+import { BigDialogConfig, MediumDialogConfig } from 'src/shared/dialog.configs';
 
 @Component({
     selector: 'app-workflow-details',
@@ -107,6 +108,7 @@ export class WorkflowDetailsComponent
     workflowStatusName: string | undefined;
     workflowStatusIcon: string;
     workflowStatus = WorkflowStatus;
+    workflowStatusMenuList = WorkflowStatusMenuList;
 
     workflowClientPeriodTypes: EnumEntityTypeDto[] = [];
     workflowConsultantPeriodTypes: EnumEntityTypeDto[] = [];
@@ -518,22 +520,15 @@ export class WorkflowDetailsComponent
     addTermination() {
         this.menuActionsTrigger.closeMenu();
         const scrollStrategy = this.overlay.scrollStrategies.reposition();
-        const dialogRef = this.dialog.open(ConfirmationDialogComponent, {
-            width: '450px',
-            minHeight: '180px',
-            height: 'auto',
-            scrollStrategy,
-            backdropClass: 'backdrop-modal--wrapper',
-            autoFocus: false,
-            panelClass: 'confirmation-modal',
-            data: {
-                confirmationMessageTitle: `Terminate workflow`,
-                confirmationMessage: `Are you sure you want to terminate workflow?`,
-                rejectButtonText: 'Cancel',
-                confirmButtonText: 'Terminate',
-                isNegative: true,
-            },
-        });
+        MediumDialogConfig.scrollStrategy = scrollStrategy;
+        MediumDialogConfig.data = {
+            confirmationMessageTitle: `Terminate workflow`,
+            confirmationMessage: `Are you sure you want to terminate workflow?`,
+            rejectButtonText: 'Cancel',
+            confirmButtonText: 'Terminate',
+            isNegative: true,
+        }
+        const dialogRef = this.dialog.open(ConfirmationDialogComponent, MediumDialogConfig);
 
         dialogRef.componentInstance.onConfirmed.subscribe(() => {
             this.terminateWorkflowStart();
@@ -595,8 +590,8 @@ export class WorkflowDetailsComponent
 
     addExtension(availableConsultants: AvailableConsultantDto[]) {
         const scrollStrategy = this.overlay.scrollStrategies.reposition();
-        DialogConfig.scrollStrategy = scrollStrategy;
-        DialogConfig.data = {
+        MediumDialogConfig.scrollStrategy = scrollStrategy;
+        MediumDialogConfig.data = {
             dialogType: WorkflowDiallogAction.Extend,
             dialogTitle: 'Extend Workflow',
             rejectButtonText: 'Cancel',
@@ -606,7 +601,7 @@ export class WorkflowDetailsComponent
         };
         const dialogRef = this.dialog.open(
             WorkflowActionsDialogComponent,
-            DialogConfig
+            MediumDialogConfig
         );
 
         dialogRef.componentInstance.onConfirmed.subscribe(
@@ -644,8 +639,8 @@ export class WorkflowDetailsComponent
 
     changeWorkflow(availableConsultants: AvailableConsultantDto[]) {
         const scrollStrategy = this.overlay.scrollStrategies.reposition();
-        DialogConfig.scrollStrategy = scrollStrategy;
-        DialogConfig.data = {
+        MediumDialogConfig.scrollStrategy = scrollStrategy;
+        MediumDialogConfig.data = {
             dialogType: WorkflowDiallogAction.Change,
             dialogTitle: 'Change Workflow data',
             rejectButtonText: 'Cancel',
@@ -655,7 +650,7 @@ export class WorkflowDetailsComponent
         };
         const dialogRef = this.dialog.open(
             WorkflowActionsDialogComponent,
-            DialogConfig
+            MediumDialogConfig
         );
 
         dialogRef.componentInstance.onConfirmed.subscribe(
@@ -696,19 +691,19 @@ export class WorkflowDetailsComponent
         specialFeesWarnings: string[] | undefined
     ) {
         const scrollStrategy = this.overlay.scrollStrategies.reposition();
-        DialogConfig.scrollStrategy = scrollStrategy;
-        DialogConfig.data = {
+        BigDialogConfig.scrollStrategy = scrollStrategy;
+        BigDialogConfig.data = {
             specialRatesWarnings: specialRatesWarnings,
             specialFeesWarnings: specialFeesWarnings,
         };
-        this.dialog.open(RateAndFeesWarningsDialogComponent, DialogConfig);
+        this.dialog.open(RateAndFeesWarningsDialogComponent, BigDialogConfig);
     }
 
     addConsultant() {
         this.menuActionsTrigger.closeMenu();
         const scrollStrategy = this.overlay.scrollStrategies.reposition();
-        DialogConfig.scrollStrategy = scrollStrategy;
-        DialogConfig.data = {
+        MediumDialogConfig.scrollStrategy = scrollStrategy;
+        MediumDialogConfig.data = {
             dialogType: WorkflowDiallogAction.AddConsultant,
             dialogTitle: 'Add consultant',
             rejectButtonText: 'Cancel',
@@ -717,7 +712,7 @@ export class WorkflowDetailsComponent
         };
         const dialogRef = this.dialog.open(
             WorkflowActionsDialogComponent,
-            DialogConfig
+            MediumDialogConfig
         );
 
         dialogRef.componentInstance.onConfirmed.subscribe((result) => {

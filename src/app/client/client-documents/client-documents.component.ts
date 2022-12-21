@@ -17,6 +17,7 @@ import { FileUploaderFile } from 'src/app/shared/components/file-uploader/file-u
 import { LocalHttpService } from 'src/shared/service-proxies/local-http.service';
 import { HttpClient, HttpHeaders, HttpResponse } from '@angular/common/http';
 import { AuthenticationResult } from '@azure/msal-browser';
+import { MediumDialogConfig } from 'src/shared/dialog.configs';
 
 @Component({
     selector: 'app-client-documents',
@@ -248,16 +249,11 @@ export class ClientDocumentsComponent extends AppComponentBase implements OnInit
     openDialogToAddFile(files: FileUploaderFile[]) {
         const fileToUpload = files[0];
         const scrollStrategy = this.overlay.scrollStrategies.reposition();
-        const dialogRef = this.dialog.open(AddFileDialogComponent, {
-            width: '525px',
-            minHeight: '150px',
-            height: 'auto',
-            scrollStrategy,
-            backdropClass: 'backdrop-modal--wrapper',
-            data: {
-                fileToUpload
-            }
-        });
+        MediumDialogConfig.scrollStrategy = scrollStrategy;
+        MediumDialogConfig.data = {
+            fileToUpload
+        }
+        const dialogRef = this.dialog.open(AddFileDialogComponent, MediumDialogConfig);
 
         dialogRef.componentInstance.onConfirmed.subscribe((result: {attachmentTypeId: number, file: FileUploaderFile}) => {
             if (result?.attachmentTypeId) {

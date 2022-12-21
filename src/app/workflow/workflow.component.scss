@@ -28,8 +28,8 @@
         }
         &-type {
             @include flexCentered;
-            height: 30px;
-            padding: 8px 6px;
+            height: 32px;
+            padding: 8px 12px;
             border: 1px solid $light-grey-color;
             border-radius: 40px;
             line-height: 16px;
@@ -53,8 +53,8 @@
                 display: flex;
                 align-items: center;
                 justify-content: space-between;
-                height: 30px;
-                padding: 8px 10px 8px 16px;
+                height: 32px;
+                padding: 8px 12px 8px 12px;
                 border: 1px solid $light-grey-color;
                 border-radius: 40px;
                 line-height: 16px;
@@ -143,6 +143,11 @@
         display: flex;
         cursor: pointer;
         &:hover {
+            background-color: rgba($color: $sand-color, $alpha: 0.5);
+        }
+    }
+    &--workflow-status {
+        &--menu-item-selected {
             background-color: rgba($color: $sand-color, $alpha: 0.5);
         }
     }

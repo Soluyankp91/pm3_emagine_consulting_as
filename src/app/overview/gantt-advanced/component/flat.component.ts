@@ -4,7 +4,7 @@ import { GANTT_UPPER_TOKEN, GanttUpper, GanttItemInternal, GANTT_GLOBAL_CONFIG, 
 import { environment } from 'src/environments/environment';
 import { AppConsts } from 'src/shared/AppConsts';
 import { SortDirections } from 'src/shared/entities/shared-enums';
-import { OverviewFlag, OverviewFlagNames } from '../../main-overview.model';
+import { OverviewFlag, OverviewFlagNames, OverviewProcessColors, OverviewProcessIcons } from '../../main-overview.model';
 import { GanttGroupInternal } from '../mocks';
 
 @Component({
@@ -30,6 +30,8 @@ export class AppGanttFlatComponent extends GanttUpper implements OnInit {
 
     momentFormatType = AppConsts.momentFormatType;
     overviewFlagNames = OverviewFlagNames;
+    overviewProcessColors = OverviewProcessColors;
+    overviewProcessIcons = OverviewProcessIcons;
     mergeIntervalDays = 3;
 
     menuTopLeftPosition =  {x: 0, y: 0}

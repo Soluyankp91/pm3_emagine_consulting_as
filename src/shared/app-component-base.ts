@@ -179,4 +179,12 @@ export abstract class AppComponentBase {
     documentsTrackBy(index: number, item: ContractDocumentInfoDto) {
         return item.documentStorageGuid;
     }
+
+    displayConsultantNameFn(option: any) {
+        return option?.consultant?.name;
+    }
+
+    displayNameFn(option: any) {
+        return option?.name;
+    }
 }

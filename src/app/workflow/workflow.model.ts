@@ -1,162 +1,4 @@
-import { FormArray, FormControl, FormGroup } from "@angular/forms";
-import { MatDialogConfig } from "@angular/material/dialog";
-import { EnumEntityTypeDto, WorkflowProcessType, WorkflowStatus } from "src/shared/service-proxies/service-proxies";
-
-export class WorkflowSalesExtensionForm extends FormGroup {
-    constructor() {
-        super({
-            salesExtension: new FormArray([])
-        })
-
-    }
-    get salesExtension() {
-        return this.get('salesExtension') as FormArray;
-    }
-}
-
-export class WorkflowExtensionForm extends FormGroup {
-    constructor() {
-        super({
-            // salesExtension: new FormArray([])
-            extensionEndDate: new FormControl(null),
-            noExtensionEndDate: new FormControl(null),
-            workflowInformation: new FormControl(null)
-        })
-    }
-    // get salesExtension() {
-    //     return this.get('salesExtension') as FormArray;
-    // }
-    get extensionEndDate() {
-        return this.get('extensionEndDate');
-    }
-    get noExtensionEndDate() {
-        return this.get('noExtensionEndDate');
-    }
-    get workflowInformation() {
-        return this.get('workflowInformation');
-    }
-}
-
-export class WorkflowChangeForm extends FormGroup {
-    constructor() {
-        super({
-            // salesExtension: new FormArray([])
-            extensionEndDate: new FormControl(null),
-            noExtensionEndDate: new FormControl(null),
-            workflowInformation: new FormControl(null)
-        })
-
-    }
-    // get salesExtension() {
-    //     return this.get('salesExtension') as FormArray;
-    // }
-    get extensionEndDate() {
-        return this.get('extensionEndDate');
-    }
-    get noExtensionEndDate() {
-        return this.get('noExtensionEndDate');
-    }
-    get workflowInformation() {
-        return this.get('workflowInformation');
-    }
-}
-
-export class WorkflowTerminationSalesForm extends FormGroup {
-    constructor() {
-        super({
-            cause: new FormControl(null),
-            comments: new FormControl(null),
-            clientEvaluationConsultant: new FormControl(null),
-            clientEvaluationProData: new FormControl(null),
-            endDate: new FormControl(null)
-        })
-
-    }
-    get cause() {
-        return this.get('cause');
-    }
-    get comments() {
-        return this.get('comments');
-    }
-    get clientEvaluationConsultant() {
-        return this.get('clientEvaluationConsultant');
-    }
-    get clientEvaluationProData() {
-        return this.get('clientEvaluationProData');
-    }
-    get endDate() {
-        return this.get('endDate');
-    }
-}
-
-export interface IWorkflowNavigationStep {
-    id: number;
-    name: string;
-    displayName: string;
-    selected: boolean;
-    finished: boolean;
-    state: string;
-    index: number;
-}
-
-export const WorkflowNavigation: IWorkflowNavigationStep[] = [
-    {
-        id: 1,
-        name: 'Sales',
-        displayName: 'Sales',
-        selected: true,
-        finished: false,
-        state: '',
-        index: 0
-    },
-    {
-        id: 2,
-        name: 'Contracts',
-        displayName: 'Contracts',
-        selected: false,
-        finished: false,
-        state: '',
-        index: 0
-    },
-    {
-        id: 3,
-        name: 'Account',
-        displayName: 'Account',
-        selected: false,
-        finished: false,
-        state: '',
-        index: 0
-    },
-    {
-        id: 9997,
-        name: 'Whatsnext',
-        displayName: 'What\'s next?',
-        selected: false,
-        finished: false,
-        state: '',
-        index: 0
-    },
-    {
-        id: 9998,
-        name: 'CVupdate',
-        displayName: 'CV update',
-        selected: false,
-        finished: false,
-        state: '',
-        index: 0
-    },
-    {
-        id: 9999,
-        name: 'ChangeinWFData',
-        displayName: 'Change in WF Data',
-        selected: false,
-        finished: false,
-        state: '',
-        index: 0
-    }
-];
-
-// Workflow progress status
+import { WorkflowStatus } from "src/shared/service-proxies/service-proxies";
 
 export class WorkflowProgressStatus implements IWorkflowProgressStatus {
     started: boolean | undefined;
@@ -282,16 +124,6 @@ export const StepTypes = [
     }
 ];
 
-export const DialogConfig: MatDialogConfig = {
-    minWidth: '450px',
-    minHeight: '180px',
-    height: 'auto',
-    width: 'auto',
-    backdropClass: 'backdrop-modal--wrapper',
-    autoFocus: false,
-    panelClass: 'confirmation-modal'
-}
-
 export interface ISelectableIdNameDto {
     id: number;
     name: string;
@@ -344,3 +176,20 @@ export function getWorkflowStatus(status: number) {
             break;
     }
 }
+
+export const WorkflowStatusMenuList = [
+    {
+        id: 1,
+        name: 'Pending',
+        code: WorkflowStatus.Pending,
+        icon: 'pending-status',
+        selected: false
+    },
+    {
+        id: 101,
+        name: 'Pending - data missing',
+        code: WorkflowStatus.PendingDataMissing,
+        icon: 'pending-data-missing-status',
+        selected: false
+    }
+];
