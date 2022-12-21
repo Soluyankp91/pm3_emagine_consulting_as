@@ -26,6 +26,7 @@ export const DISPLAYED_COLUMNS: string[] = [
     'contractTypeIds',
     'lastUpdateDateUtc',
     'lastUpdatedByLowerCaseInitials',
+    'isEnabled'
 ];
 export const MASTER_TEMPLATE_CELLS: ICell[] = [
     {
@@ -63,6 +64,10 @@ export const MASTER_TEMPLATE_CELLS: ICell[] = [
     },
     {
         type: ETableCells.DEFAULT,
+    },
+    {
+        type: ETableCells.CUSTOM,
+        index: 4,
     },
 ];
 export const MASTER_TEMPLATE_HEADER_CELLS: IHeaderCell[] = [
@@ -134,6 +139,10 @@ export const MASTER_TEMPLATE_HEADER_CELLS: IHeaderCell[] = [
             component: EmployeesFilterComponent,
         },
     },
+    {
+        type: EHeaderCells.SORT,
+        title: 'Status'
+    }
 ];
 
 export const PAGE_SIZE_OPTIONS: number[] = [5, 10, 20, 50, 100];

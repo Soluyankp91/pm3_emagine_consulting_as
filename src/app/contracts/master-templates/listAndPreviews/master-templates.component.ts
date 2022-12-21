@@ -84,10 +84,10 @@ export class MasterTemplatesComponent implements OnInit {
         this.table$ = this.dataSource$.pipe(
             map((data) => {
                 const tableConfig: ITableConfig = {
-                    pageSize: data.pageSize,
-                    pageIndex: data.pageIndex - 1,
-                    totalCount: data.totalCount,
-                    items: data.items,
+                    pageSize: data.pageSize as number,
+                    pageIndex: data.pageIndex as number - 1,
+                    totalCount: data.totalCount as number,
+                    items: data.items as AgreementTemplatesListItemDto [],
                     sortDirection: 'asc',
                     sortActive: '',
                 };

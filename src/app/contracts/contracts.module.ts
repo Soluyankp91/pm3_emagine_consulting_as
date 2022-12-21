@@ -44,6 +44,7 @@ import { FileSelectorComponent } from './shared/components/file-selector/file-se
 import { NewFileUploaderDirective } from './shared/components/file-uploader/new-file-uploader.directive';
 import { CreationTitleService } from './shared/services/creation-title.service';
 import { TenantsComponent } from './shared/components/tenants/tenants.component';
+import { IsEnabledComponent } from './shared/components/grid-table/master-templates/filters/enabled-filter/is-enabled/is-enabled.component';
 
 @NgModule({
     declarations: [
@@ -77,6 +78,7 @@ import { TenantsComponent } from './shared/components/tenants/tenants.component'
         FileUploaderComponent,
         FileSelectorComponent,
         TenantsComponent,
+        IsEnabledComponent,
     ],
     imports: [
         CommonModule,
@@ -147,5 +149,17 @@ export class ContractsModule {
                 'assets/common/images/chevron-down.svg'
             )
         );
+        iconRegistry.addSvgIcon(
+            'enabled',
+            sanitizer.bypassSecurityTrustResourceUrl(
+                'assets/common/images/enabled-icon.svg'
+            )
+        );
+        iconRegistry.addSvgIcon(
+            'disabled',
+            sanitizer.bypassSecurityTrustResourceUrl(
+                'assets/common/images/disabled-icon.svg'
+            )
+        )
     }
 }

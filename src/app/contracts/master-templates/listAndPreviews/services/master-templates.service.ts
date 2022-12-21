@@ -9,6 +9,7 @@ import {
 import { TableFiltersEnum } from 'src/app/contracts/shared/components/grid-table/master-templates/entities/master-templates.interfaces';
 import {
     AgreementTemplateServiceProxy,
+    AgreementTemplatesListItemDtoPaginatedList,
     CountryDto,
 } from 'src/shared/service-proxies/service-proxies';
 
@@ -86,7 +87,7 @@ export class MasterTemplatesService {
         this.contractsData$ = this.getContracts$();
     }
 
-    getContracts$(): Observable<any> {
+    getContracts$(): Observable<AgreementTemplatesListItemDtoPaginatedList> {
         return combineLatest([
             this.tableFilters$,
             this.sort$,
@@ -118,7 +119,7 @@ export class MasterTemplatesService {
                     filters.salesTypeIds,
                     filters.deliveryTypeIds,
                     filters.lastUpdatedByLowerCaseInitials,
-                    true, //isEnabled,
+                    filters.isEnabled, //isEnabled,
                     undefined,
                     undefined,
                     page.pageIndex + 1, //pageIndex
