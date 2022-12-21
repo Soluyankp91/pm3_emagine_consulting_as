@@ -5,6 +5,6 @@ export interface Tab {
     icon?: string;
 }
 export interface BaseEnumDto {
-    id: number;
+    id: number | string;
     name: string;
 }

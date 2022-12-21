@@ -89,7 +89,11 @@
                     (inputEmitter)="masterTemplateOptionsChanged$.next($event)"
                 >
                     <ng-template let-cell="option" #optionTemplate>
-                        <span>{{ cell.name }}</span>
+                        <!-- <span>{{cell.name}}</span> -->
+                        <div>
+                            {{ mappedAgreementTypes[cell.agreementType] }}
+                            <span *ngFor="let tenantId of cell.tenantIds=">{{tenantId}}</span>
+                        </div>
                     </ng-template>
                 </emg-dropdown-autocomplete-single-select>
             </ng-container>

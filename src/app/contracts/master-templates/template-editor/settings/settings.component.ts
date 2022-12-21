@@ -43,6 +43,7 @@ import { AppComponentBase } from 'src/shared/app-component-base';
 import { CreationTitleService } from '../../../shared/services/creation-title.service';
 import { AUTOCOMPLETE_SEARCH_ITEMS_COUNT } from 'src/app/contracts/shared/components/grid-table/master-templates/entities/master-templates.constants';
 
+export type KeyType = string | number;
 @Component({
     selector: 'app-settings',
     templateUrl: './settings.component.html',
@@ -61,6 +62,9 @@ export class CreateMasterTemplateComponent
 
     legalEntities: LegalEntityDto[];
 
+    mappedAgreementTypes: Record<KeyType,string> ;
+    mappedTenants: Record<KeyType,string> ;
+
     preselectedFiles: FileUpload[] = [];
 
     creationModes = AgreementCreationMode;
@@ -76,8 +80,10 @@ export class CreateMasterTemplateComponent
     options$: Observable<SettingsOptions> = this._contractsService
         .settingsPageOptions$()
         .pipe(
-            tap(({ legalEntities }) => {
+            tap(({ legalEntities, agreementTypes }) => {
                 this.legalEntities = legalEntities;
+                this.mappedAgreementTypes = this._mapItems(agreementTypes);
+                this.mappedTenants = this._mapItems(legalEntities);
             })
         );
 
@@ -105,6 +111,11 @@ export class CreateMasterTemplateComponent
         private _injector: Injector
     ) {
         super(_injector);
+    }
+
+    test(val: any) {
+        console.log(val);
+        return val;
     }
 
     ngOnInit(): void {
@@ -181,6 +192,15 @@ export class CreateMasterTemplateComponent
 
     onCancel() {
         this._navigateOnAction();
+    }
+
+    private _mapItems(items: { id?: string | number; name?: string }[]): Record<KeyType,string> {
+        return items.reduce((acc, currentItem) => {
+            if(currentItem.id && currentItem.name) {
+                acc[currentItem.id] = currentItem.name;
+            }
+            return acc;
+        }, {} as Record<KeyType,string> );
     }
 
     private _agreementTemplateAttachmentDto(): AgreementTemplateAttachmentDto[] {
@@ -376,6 +396,7 @@ export class CreateMasterTemplateComponent
                 switchMap((freeText: string) => {
                     return this._apiServiceProxy.simpleList2(
                         false,
+                        undefined,
                         freeText,
                         1,
                         AUTOCOMPLETE_SEARCH_ITEMS_COUNT
@@ -423,6 +444,7 @@ export class CreateMasterTemplateComponent
                     this._apiServiceProxy
                         .simpleList2(
                             false,
+                            undefined,
                             parentTemplate.name,
                             1,
                             AUTOCOMPLETE_SEARCH_ITEMS_COUNT
@@ -458,6 +480,7 @@ export class CreateMasterTemplateComponent
                     }
                     return this._apiServiceProxy.simpleList2(
                         false,
+                        undefined,
                         val,
                         1,
                         AUTOCOMPLETE_SEARCH_ITEMS_COUNT
