@@ -175,7 +175,7 @@
                 }
             }
             &:hover {
-                background: rgba($color: $green-color-25, $alpha: 0.33) !important;
+                background: #FAF9FB !important;
             }
         }
     }
@@ -215,7 +215,7 @@
     .mat-menu-panel {
         .mat-menu-content:not(:empty) {
             .mat-menu-item:hover:not([disabled]) {
-                background: rgba($color: $green-color-25, $alpha: 0.33) !important;
+                background: #FAF9FB !important;
             }
         }
     }
