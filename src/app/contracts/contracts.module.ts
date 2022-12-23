@@ -45,6 +45,8 @@ import { NewFileUploaderDirective } from './shared/components/file-uploader/new-
 import { CreationTitleService } from './shared/services/creation-title.service';
 import { TenantsComponent } from './shared/components/tenants/tenants.component';
 import { IsEnabledComponent } from './shared/components/grid-table/master-templates/filters/enabled-filter/is-enabled/is-enabled.component';
+import { FuseScrollbarModule } from './shared/directives/scroll/scrollbar.module';
+import { TruncateTextCustomPipe } from './shared/pipes/truncate-text-custom.pipe';
 
 @NgModule({
     declarations: [
@@ -79,12 +81,14 @@ import { IsEnabledComponent } from './shared/components/grid-table/master-templa
         FileSelectorComponent,
         TenantsComponent,
         IsEnabledComponent,
+        TruncateTextCustomPipe,
     ],
     imports: [
         CommonModule,
         ContractsRoutingModule,
         ServiceProxyModule,
         AppCommonModule,
+        FuseScrollbarModule
     ],
     providers: [
         ContractsService,
@@ -159,6 +163,18 @@ export class ContractsModule {
             'disabled',
             sanitizer.bypassSecurityTrustResourceUrl(
                 'assets/common/images/disabled-icon.svg'
+            )
+        );
+        iconRegistry.addSvgIcon(
+            'three-lines',
+            sanitizer.bypassSecurityTrustResourceUrl(
+                'assets/common/images/three-lines-icon.svg'
+            )
+        )
+        iconRegistry.addSvgIcon(
+            'three-hor-dots',
+            sanitizer.bypassSecurityTrustResourceUrl(
+                'assets/common/images/three-hor-dots.svg'
             )
         )
     }

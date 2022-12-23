@@ -11,12 +11,15 @@ import {
     ChangeDetectionStrategy,
     forwardRef,
     ChangeDetectorRef,
+    ViewChild
 } from '@angular/core';
 import {
     ControlValueAccessor,
     FormControl,
     NG_VALUE_ACCESSOR,
 } from '@angular/forms';
+import { MatInput } from '@angular/material/input';
+import { MatAutocomplete, MatAutocompleteTrigger } from '@angular/material/autocomplete';
 
 @Component({
     selector: 'emg-dropdown-autocomplete-multiselect',
@@ -41,9 +44,13 @@ export class DropdownAutocompleteMultiselectComponent
         this.isSearchNull = options.length === 0 ? true : false;
     }
 
+    @Input() label:string;
+
     @Input() idProperty: string | number = 'id';
 
     @Output() emitText = new EventEmitter();
+
+    @ViewChild('trigger', { read: MatAutocompleteTrigger}) trigger: MatAutocompleteTrigger;
 
     get idsToExclude() {
         return Array.from(this.selectedOptions).map(
@@ -108,7 +115,6 @@ export class DropdownAutocompleteMultiselectComponent
                 this.selectedOptions.add(option);
             });
             this.availableOptions.clear();
-            this._onChangeSelectedOptions();
         } else {
             this.selectedOptions.forEach((option) => {
                 if (this.initialOptions.has(option)) {
@@ -116,7 +122,6 @@ export class DropdownAutocompleteMultiselectComponent
                 }
             });
             this.selectedOptions.clear();
-            this.onChange([]);
         }
         this.selectedAll = !this.selectedAll;
     }
@@ -135,9 +140,18 @@ export class DropdownAutocompleteMultiselectComponent
         this._checkSelectionStatus();
     }
 
+    openPanel() {
+        setTimeout(() => {
+            this.trigger.openPanel();
+        }, 100)
+    }
+
+    menuClosed() {
+        this._onChangeSelectedOptions();
+    }
+
     private _checkSelectionStatus() {
         this.selectedAll = this.selectedOptions.size !== 0;
-        this._onChangeSelectedOptions();
     }
 
     private _onChangeSelectedOptions() {

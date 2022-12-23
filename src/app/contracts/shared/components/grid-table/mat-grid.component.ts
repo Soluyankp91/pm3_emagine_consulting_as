@@ -20,6 +20,7 @@ import {
     TemplateRef,
     Injector,
     TrackByFunction,
+    ViewEncapsulation
 } from '@angular/core';
 import { PageEvent } from '@angular/material/paginator';
 import { Sort } from '@angular/material/sort';
@@ -35,11 +36,14 @@ import { PAGE_SIZE_OPTIONS } from './master-templates/entities/master-templates.
 import { SelectionModel } from '@angular/cdk/collections';
 import { Actions } from './master-templates/entities/master-templates.interfaces';
 import { AppComponentBase } from 'src/shared/app-component-base';
+import { MatTableDataSource } from '@angular/material/table';
 
 @Component({
     selector: 'emg-mat-grid',
+    styleUrls: ['./mat-grid.component.scss'],
     templateUrl: './mat-grid.component.html',
     changeDetection: ChangeDetectionStrategy.OnPush,
+    encapsulation: ViewEncapsulation.None,
 })
 export class MatGridComponent
     extends AppComponentBase
@@ -64,6 +68,8 @@ export class MatGridComponent
 
     @ViewChildren('filterContainer', { read: ViewContainerRef })
     children: QueryList<ViewContainerRef>;
+
+    dataSource = new MatTableDataSource<any>();
 
     formGroup: FormGroup;
 

@@ -23,7 +23,6 @@ export class LegalEntitiesFilterComponent implements IFilter {
             .getTableFilters$()
             .pipe(take(1), pluck(this.tableFilter))
             .subscribe((legalEntities) => {
-                console.log(legalEntities);
                 this.filterFormControl = new FormControl(legalEntities);
             });
     }

@@ -21,7 +21,7 @@ export class AgreementTypesFilterComponent implements IFilter {
     ) {
         this.masterTemplateService
             .getTableFilters$()
-            .pipe(take(1), pluck(this.tableFilter))
+            .pipe(take(1),pluck(this.tableFilter))
             .subscribe((agreementTypes) => {
                 this.filterFormControl = new FormControl(agreementTypes);
             });

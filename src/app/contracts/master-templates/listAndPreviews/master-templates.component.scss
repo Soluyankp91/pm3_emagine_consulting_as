@@ -83,3 +83,19 @@
     width: 8px;
     height: 8px;
 }
+.country-icon {
+    width: 32px;
+    height: 24px;
+    border-radius: 50%;
+}
+.tenant-menu {
+	width: 213px;
+	display: flex;
+	align-items: center;
+}
+.tooltip-container {
+    box-shadow: 7px 7px 7px 7px #00000005;
+    border: 1px solid #E7E3E8;
+    background-color: #fff;
+    padding: 6px 8px;
+}

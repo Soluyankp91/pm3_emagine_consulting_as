@@ -13,6 +13,7 @@ export interface IHeaderCell {
         formControlName: string;
         component: ComponentType<any>;
     };
+    width?: number;
 }
 
 export interface ICell {

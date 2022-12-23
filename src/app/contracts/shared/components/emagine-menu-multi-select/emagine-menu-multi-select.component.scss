@@ -46,7 +46,8 @@
       align-items: center;
     }
     .mat-menu-panel {
-      max-width: 200px !important;
+      max-width: 335px;
+      min-width: 153px !important;
     }
     .mat-menu-content {
       padding: 0;
@@ -54,4 +55,6 @@
   }
 .scrollbar-container {
     max-height: 300px;
+    display: flex;
+    flex-direction: column;
 }

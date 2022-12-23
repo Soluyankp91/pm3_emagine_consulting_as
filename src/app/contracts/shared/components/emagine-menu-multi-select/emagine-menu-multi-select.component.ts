@@ -1,113 +1,105 @@
 import {
-    Component,
-    forwardRef,
-    Input,
-    OnInit,
-    ViewEncapsulation,
-    ChangeDetectionStrategy,
-    ChangeDetectorRef,
-    ContentChild,
-    TemplateRef,
+	Component,
+	forwardRef,
+	Input,
+	OnInit,
+	ViewEncapsulation,
+	ChangeDetectionStrategy,
+	ChangeDetectorRef,
+	ContentChild,
+	TemplateRef,
 } from '@angular/core';
 import { ControlValueAccessor, NG_VALUE_ACCESSOR } from '@angular/forms';
 import { IDropdownItem } from './emagine-menu-multi-select.interfaces';
-import { isEqual, uniqBy } from 'lodash';
+import { cloneDeep, isEqual } from 'lodash';
 import { MatMenuTrigger } from '@angular/material/menu';
 @Component({
-    selector: 'emg-multi-select',
-    templateUrl: './emagine-menu-multi-select.component.html',
-    styleUrls: ['./emagine-menu-multi-select.component.scss'],
-    providers: [
-        {
-            provide: NG_VALUE_ACCESSOR,
-            useExisting: forwardRef(() => MultiSelectComponent),
-            multi: true,
-        },
-    ],
-    changeDetection: ChangeDetectionStrategy.OnPush,
-    encapsulation: ViewEncapsulation.None,
+	selector: 'emg-multi-select',
+	templateUrl: './emagine-menu-multi-select.component.html',
+	styleUrls: ['./emagine-menu-multi-select.component.scss'],
+	providers: [
+		{
+			provide: NG_VALUE_ACCESSOR,
+			useExisting: forwardRef(() => MultiSelectComponent),
+			multi: true,
+		},
+	],
+	changeDetection: ChangeDetectionStrategy.OnPush,
+	encapsulation: ViewEncapsulation.None,
 })
 export class MultiSelectComponent implements OnInit, ControlValueAccessor {
-    @Input() idProperty: string | number = 'id';
-    @Input() displayedProperty: string = 'name';
-    @Input() set options(options: any[]) {
-        this._options = options;
-    }
-    @ContentChild('triggerButton') triggerButton: MatMenuTrigger;
-    @ContentChild('optionPrefix') optionPrefix: TemplateRef<any>;
+	@Input() idProperty: string | number = 'id';
+	@Input() displayedProperty: string = 'name';
+	@Input() set options(options: any[]) {
+		this._options = cloneDeep(options);
+	}
+	@ContentChild('triggerButton') triggerButton: MatMenuTrigger;
+	@ContentChild('optionPrefix') optionPrefix: TemplateRef<any>;
 
-    get options() {
-        return this._options;
-    }
+	get options() {
+		return this._options;
+	}
 
-    selectedItems: IDropdownItem[] = [];
-    isOpened: boolean = false;
-    maxLength: number = 10;
-    threeDotsLength: number = 3;
+	selectedItems: IDropdownItem[] = [];
+	isOpened: boolean = false;
+	maxLength: number = 10;
+	threeDotsLength: number = 3;
 
-    onChange = (val: any) => {};
-    onTouched = (val: any) => {};
+	onChange = (val: any) => {};
+	onTouched = (val: any) => {};
 
-    private _options: IDropdownItem[];
+	private _options: IDropdownItem[];
 
-    constructor(private readonly cdr: ChangeDetectorRef) {}
+	constructor(private readonly cdr: ChangeDetectorRef) {}
 
-    ngOnInit(): void {
-        this.unselectAll();
-    }
+	ngOnInit(): void {
+		this.unselectAll();
+	}
 
-    toggleSelect(toggledItem: IDropdownItem) {
-        toggledItem.selected = !toggledItem.selected;
-        const { selected, ...baseItem } = toggledItem;
-        if (toggledItem.selected) {
-            this.selectedItems.push(baseItem);
-        } else {
-            this.selectedItems = this.selectedItems.filter(
-                (i) => !isEqual(i, baseItem)
-            );
-        }
+	toggleSelect(toggledItem: IDropdownItem) {
+		toggledItem.selected = !toggledItem.selected;
+		const { selected, ...baseItem } = toggledItem;
+		if (toggledItem.selected) {
+			this.selectedItems.push(baseItem);
+		} else {
+			this.selectedItems = this.selectedItems.filter((i) => !isEqual(i, baseItem));
+		}
+	}
 
-        this.onChange([...this.selectedItems]);
-    }
+	registerOnChange(fn: any): void {
+		this.onChange = fn;
+	}
 
-    registerOnChange(fn: any): void {
-        this.onChange = fn;
-    }
+	registerOnTouched(fn: any): void {
+		this.onTouched = fn;
+	}
 
-    registerOnTouched(fn: any): void {
-        this.onTouched = fn;
-    }
+	trackById(index: number, item: any) {
+		return item[this.idProperty];
+	}
 
-    trackById(index: number, item: any) {
-        return item[this.idProperty];
-    }
+	onMenuClosed() {
+		this.onChange([...this.selectedItems]);
+	}
 
-    writeValue(outer: object[]): void {
-        this.selectedItems = [];
-        if (outer?.length > 0) {
-            this.getUnique(outer).forEach((outerOption) => {
-                let foundedOption: IDropdownItem = this._options.find(
-                    (option) => {
-                        const { selected, ...baseOption } = option;
-                        return isEqual(outerOption, baseOption);
-                    }
-                ) as IDropdownItem;
-                this.selectedItems.push(outerOption);
-                foundedOption.selected = true;
-            });
-            this.onChange([...this.selectedItems]);
-        }
-        this.unselectAll();
-        this.cdr.detectChanges();
-    }
+	writeValue(preselectedItems: ({ id: number | string } & { [key: string]: any })[]): void {
+		let optionsToPreselect: (string | number)[] = preselectedItems.map((item) => item.id);
+		this.unselectAll();
+		if (!preselectedItems || !preselectedItems.length) {
+			return;
+		}
+		optionsToPreselect.forEach((preselectedItem) => {
+			let foundedOption = this.options.find((option) => option.id === preselectedItem) as IDropdownItem;
+			if (foundedOption) {
+				foundedOption.selected = true;
+			}
+		});
+		this.cdr.detectChanges();
+	}
 
-    private unselectAll() {
-        this._options.forEach((option) => {
-            (option as IDropdownItem).selected = false;
-        });
-    }
-
-    private getUnique(items: IDropdownItem[]) {
-        return uniqBy(items, (i) => i[this.displayedProperty]);
-    }
+	private unselectAll() {
+		this._options.forEach((option) => {
+			(option as IDropdownItem).selected = false;
+		});
+	}
 }

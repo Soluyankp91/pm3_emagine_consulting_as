@@ -1,118 +1,103 @@
 <div class="container">
-    <mat-chip-list>
-        <mat-chip *ngFor="let chip of matChips">
-            <mat-icon svgIcon="close-button-icon" (click)="closeFilter(chip)">
-            </mat-icon>
-            <span>{{ chip }}</span>
-        </mat-chip>
-        <span *ngIf="matChips.length > 0">
-            <mat-icon
-                svgIcon="close-button-icon"
-                (click)="closeAllFilters()"
-            ></mat-icon>
-            Reset all Filters
-        </span>
-    </mat-chip-list>
-    <mat-table
-        [dataSource]="tableConfig.items"
-        matSort
-        [matSortDirection]="tableConfig.sortDirection"
-        [matSortActive]="tableConfig.sortActive"
-        (matSortChange)="sortChange.emit($event)"
-        [formGroup]="formGroup"
-    >
-        <ng-container *ngIf="selection">
-            <ng-container matColumnDef="select">
-                <mat-header-cell *matHeaderCellDef>
-                    <mat-checkbox
-                        [checked]="selectionModel.hasValue() && isAllSelected()"
-                        [indeterminate]="
-                            selectionModel.hasValue() && !isAllSelected()
-                        "
-                        (change)="toggleAllRows()"
-                    >
-                    </mat-checkbox>
-                </mat-header-cell>
-                <mat-cell *matCellDef="let row">
-                    <mat-checkbox
-                        [checked]="selectionModel.isSelected(row)"
-                        (click)="$event.stopPropagation()"
-                        (change)="selectionModel.toggle(row)"
-                    ></mat-checkbox>
-                </mat-cell>
-            </ng-container>
-        </ng-container>
-        <ng-container
-            *ngFor="let item of cells; trackBy: trackByCellColumnDef"
-            [matColumnDef]="item.matColumnDef"
-        >
-            <ng-container [ngSwitch]="item.headerCell.type">
-                <ng-container *ngSwitchCase="headerCellEnum.SORT">
-                    <mat-header-cell *matHeaderCellDef mat-sort-header>
-                        {{ item.headerCell.title }}
-                    </mat-header-cell>
-                </ng-container>
-                <ng-container *ngSwitchCase="headerCellEnum.FILTER;">
-                    <mat-header-cell *matHeaderCellDef>
-                        <ng-container #filterContainer></ng-container>
-                    </mat-header-cell>
-                </ng-container>
-            </ng-container>
-            <mat-cell *matCellDef="let element">
-                <ng-container [ngSwitch]="item.cell.type">
-                    <ng-container *ngSwitchCase="tableCellEnum.DEFAULT">
-                        {{ element[item.matColumnDef] }}
-                    </ng-container>
-                    <ng-container *ngSwitchCase="tableCellEnum.CUSTOM">
-                        <ng-container
-                            *ngIf="
-                                item.cell.index &&
-                                customCells.get(item.cell.index - 1) as customCell
-                            "
-                            [ngTemplateOutlet]="customCell"
-                            [ngTemplateOutletContext]="{ element: element }"
-                            ></ng-container
-                        >
-                    </ng-container>
-                </ng-container>
-            </mat-cell>
-        </ng-container>
-        <ng-container *ngIf="actions">
-            <ng-container matColumnDef="actions">
-                <mat-header-cell *matHeaderCellDef=""></mat-header-cell>
-                <mat-cell *matCellDef="let actionRow">
-                    <button mat-icon-button [matMenuTriggerFor]="menu">
-                        <mat-icon>more_vert</mat-icon>
-                    </button>
-                    <mat-menu #menu="matMenu">
-                        <ng-container *ngFor="let action of actionsList;trackBy:trackByAction">
-                            <button
-                                mat-menu-item
-                                (click)="
-                                    chooseAction(action.actionType, actionRow)
-                                "
-                            >
-                                <span> {{ action.label }}</span>
-                            </button>
-                        </ng-container>
-                    </mat-menu>
-                </mat-cell>
-            </ng-container>
-        </ng-container>
+	<mat-chip-list>
+		<mat-chip *ngFor="let chip of matChips">
+			<mat-icon svgIcon="close-button-icon" (click)="closeFilter(chip)"> </mat-icon>
+			<span>{{ chip }}</span>
+		</mat-chip>
+		<span *ngIf="matChips.length > 0">
+			<mat-icon svgIcon="close-button-icon" (click)="closeAllFilters()"></mat-icon>
+			Reset all Filters
+		</span>
+	</mat-chip-list>
+	<mat-table
+		[dataSource]="dataSource"
+		matSort
+		[matSortDirection]="tableConfig.sortDirection"
+		[matSortActive]="tableConfig.sortActive"
+		(matSortChange)="sortChange.emit($event)"
+		[formGroup]="formGroup">
+		<ng-container *ngIf="selection">
+			<ng-container matColumnDef="select">
+				<mat-header-cell *matHeaderCellDef>
+					<mat-checkbox
+						[checked]="selectionModel.hasValue() && isAllSelected()"
+						[indeterminate]="selectionModel.hasValue() && !isAllSelected()"
+						(change)="toggleAllRows()">
+					</mat-checkbox>
+				</mat-header-cell>
+				<mat-cell *matCellDef="let row">
+					<mat-checkbox
+						[checked]="selectionModel.isSelected(row)"
+						(click)="$event.stopPropagation()"
+						(change)="selectionModel.toggle(row)"></mat-checkbox>
+				</mat-cell>
+			</ng-container>
+		</ng-container>
+		<ng-container *ngFor="let item of cells; trackBy: trackByCellColumnDef" [matColumnDef]="item.matColumnDef">
+			<ng-container [ngSwitch]="item.headerCell.type">
+				<ng-container *ngSwitchCase="headerCellEnum.SORT">
+					<mat-header-cell
+						*matHeaderCellDef
+						mat-sort-header
+						[style.min-width.px]="item.headerCell.width"
+						[style.max-width.px]="item.headerCell.width">
+						{{ item.headerCell.title }}
+					</mat-header-cell>
+				</ng-container>
+				<ng-container *ngSwitchCase="headerCellEnum.FILTER">
+					<mat-header-cell
+						*matHeaderCellDef
+						[style.min-width.px]="item.headerCell.width"
+						[style.max-width.px]="item.headerCell.width">
+						<ng-container #filterContainer></ng-container>
+                        <span mat-sort-header></span>
+					</mat-header-cell>
+				</ng-container>
+			</ng-container>
+			<mat-cell
+				*matCellDef="let element"
+				[style.min-width.px]="item.headerCell.width"
+				[style.max-width.px]="item.headerCell.width">
+				<ng-container [ngSwitch]="item.cell.type">
+					<ng-container *ngSwitchCase="tableCellEnum.DEFAULT">
+						{{ element[item.matColumnDef] }}
+					</ng-container>
+					<ng-container *ngSwitchCase="tableCellEnum.CUSTOM">
+						<ng-container
+							*ngIf="item.cell.index && customCells.get(item.cell.index - 1) as customCell"
+							[ngTemplateOutlet]="customCell"
+							[ngTemplateOutletContext]="{ element: element }"></ng-container>
+					</ng-container>
+				</ng-container>
+			</mat-cell>
+		</ng-container>
+		<ng-container *ngIf="actions">
+			<ng-container matColumnDef="actions">
+				<mat-header-cell *matHeaderCellDef=""></mat-header-cell>
+				<mat-cell *matCellDef="let actionRow">
+					<button mat-icon-button [matMenuTriggerFor]="menu">
+						<mat-icon svgIcon="three-hor-dots"></mat-icon>
+					</button>
+					<mat-menu #menu="matMenu">
+						<ng-container *ngFor="let action of actionsList; trackBy: trackByAction">
+							<button mat-menu-item (click)="chooseAction(action.actionType, actionRow)">
+								<span> {{ action.label }}</span>
+							</button>
+						</ng-container>
+					</mat-menu>
+				</mat-cell>
+			</ng-container>
+		</ng-container>
 
-        <mat-header-row *matHeaderRowDef="displayedColumns"></mat-header-row>
-        <mat-row
-            *matRowDef="let row; columns: displayedColumns"
-            (click)="getTableRow(row)"
-        ></mat-row>
-    </mat-table>
-    <mat-paginator
-        [showFirstLastButtons]="true"
-        [length]="tableConfig.totalCount"
-        [pageSizeOptions]="pageSizeOptions"
-        [pageSize]="tableConfig.pageSize"
-        [pageIndex]="tableConfig.pageIndex"
-        (page)="pageChange.emit($event)"
-    >
-    </mat-paginator>
+		<mat-header-row *matHeaderRowDef="displayedColumns"></mat-header-row>
+		<mat-row *matRowDef="let row; columns: displayedColumns" (click)="getTableRow(row)"></mat-row>
+	</mat-table>
+	<mat-paginator
+		[showFirstLastButtons]="true"
+		[length]="tableConfig.totalCount"
+		[pageSizeOptions]="pageSizeOptions"
+		[pageSize]="tableConfig.pageSize"
+		[pageIndex]="tableConfig.pageIndex"
+		(page)="pageChange.emit($event)">
+	</mat-paginator>
 </div>

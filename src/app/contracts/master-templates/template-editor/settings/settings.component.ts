@@ -106,11 +106,6 @@ export class CreateMasterTemplateComponent extends AppComponentBase implements O
 		super(_injector);
 	}
 
-	test(val: any) {
-		console.log(val);
-		return val;
-	}
-
 	ngOnInit(): void {
 		if (this._route.snapshot.params.id) {
 			this.editMode = true;
