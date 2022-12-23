@@ -17,6 +17,7 @@ import { ValidatorComponent } from '../components/validator/validator.component'
 import { ReplacePipe } from 'src/shared/common/pipes/replace.pipe';
 import { ConsultantInformationComponent } from '../components/consultant-information/consultant-information.component';
 import { ExcludeIdsPipe } from 'src/shared/common/pipes/exclude-ids.pipe';
+import { ScrollToModule } from '@nicky-lenaers/ngx-scroll-to';
 
 @NgModule({
     declarations: [
@@ -39,6 +40,7 @@ import { ExcludeIdsPipe } from 'src/shared/common/pipes/exclude-ids.pipe';
         FormsModule,
         ReactiveFormsModule,
         NgScrollbarModule,
+        ScrollToModule.forRoot()
     ],
     exports: [
         MaterialModule,
@@ -55,7 +57,8 @@ import { ExcludeIdsPipe } from 'src/shared/common/pipes/exclude-ids.pipe';
         ValidatorComponent,
         ReplacePipe,
         ConsultantInformationComponent,
-        ExcludeIdsPipe
+        ExcludeIdsPipe,
+        ScrollToModule
     ],
     providers: [ErrorDialogService, InternalLookupService],
 })

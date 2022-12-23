@@ -67,6 +67,8 @@
                                     <div *ngFor="let item of step.menuAnchors"
                                         class="workflow-navigation--step__anchor u-mb--10" appPreventDoubleClick
                                         (throttledClick)="$event.stopPropagation(); changeAnchorSelection(item.anchor!)"
+                                        [ngxScrollTo]="item.anchor!"
+                                        [ngxScrollToOffset]="-120"
                                         [ngClass]="{'active-anchor': item.anchor === selectedAnchor}">
                                         {{item.name}}
                                         <span *ngIf="item?.consultantName"

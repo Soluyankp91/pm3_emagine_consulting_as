@@ -1,6 +1,6 @@
 import { Component, Injector, Input, OnDestroy, OnInit } from '@angular/core';
-// import { ScrollToConfigOptions, ScrollToService } from '@nicky-lenaers/ngx-scroll-to';
 import { UntypedFormArray, UntypedFormBuilder, UntypedFormControl, Validators } from '@angular/forms';
+import { ScrollToConfigOptions, ScrollToService } from '@nicky-lenaers/ngx-scroll-to';
 import { Subject } from 'rxjs';
 import { finalize, takeUntil } from 'rxjs/operators';
 import { AppComponentBase } from 'src/shared/app-component-base';
@@ -32,7 +32,7 @@ export class WorkflowSourcingComponent extends AppComponentBase implements OnIni
         private _fb: UntypedFormBuilder,
         private _workflowServiceProxy: WorkflowServiceProxy,
         private _workflowDataService: WorkflowDataService,
-        // private scrollToService: any
+        private _scrollToService: ScrollToService
     ) {
         super(injector);
         this.sourcingConsultantsDataForm = new WorkflowSourcingConsultantsDataForm();
@@ -97,16 +97,16 @@ export class WorkflowSourcingComponent extends AppComponentBase implements OnIni
 
     scrollToFirstError(isDraft: boolean) {
         setTimeout(() => {
-            // let firstError = document.getElementsByClassName('mat-form-field-invalid')[0] as HTMLElement;
-            // if (firstError) {
-            //     let config: ScrollToConfigOptions = {
-            //         target: firstError,
-            //         offset: -115
-            //     }
-            //     this.scrollToService.scrollTo(config);
-            // } else {
-            //     this.saveSourcingStepData(isDraft);
-            // }
+            let firstError = document.getElementsByClassName('mat-form-field-invalid')[0] as HTMLElement;
+            if (firstError) {
+                let config: ScrollToConfigOptions = {
+                    target: firstError,
+                    offset: -115
+                }
+                this._scrollToService.scrollTo(config);
+            } else {
+                this.saveSourcingStepData(isDraft);
+            }
         }, 0);
     }
 

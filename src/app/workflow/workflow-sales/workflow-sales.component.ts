@@ -16,6 +16,7 @@ import { MatMenuTrigger } from '@angular/material/menu';
 import { MatSelectChange } from '@angular/material/select';
 import { ActivatedRoute, Router } from '@angular/router';
 import { AuthenticationResult } from '@azure/msal-browser';
+import { ScrollToConfigOptions, ScrollToService } from '@nicky-lenaers/ngx-scroll-to';
 import { merge, Observable, of, Subject } from 'rxjs';
 import {
     debounceTime,
@@ -223,7 +224,8 @@ export class WorkflowSalesComponent extends AppComponentBase implements OnInit, 
         private _clientService: ClientsServiceProxy,
         private _consultantPeriodSerivce: ConsultantPeriodServiceProxy,
         private httpClient: HttpClient,
-        private localHttpService: LocalHttpService
+        private localHttpService: LocalHttpService,
+        private _scrollToService: ScrollToService
     ) {
         super(injector);
         this.salesClientDataForm = new WorkflowSalesClientDataForm();
@@ -705,15 +707,13 @@ export class WorkflowSalesComponent extends AppComponentBase implements OnInit, 
 
     scrollToFirstError(isDraft: boolean) {
         setTimeout(() => {
-            let firstError = document.getElementsByClassName(
-                'mat-form-field-invalid'
-            )[0] as HTMLElement;
+            let firstError = document.getElementsByClassName('mat-form-field-invalid')[0] as HTMLElement;
             if (firstError) {
-                firstError.scrollIntoView({
-                    behavior: 'smooth',
-                    block: 'start',
-                    inline: 'nearest',
-                });
+                let config: ScrollToConfigOptions = {
+                    target: firstError,
+                    offset: -115
+                }
+                this._scrollToService.scrollTo(config)
             } else {
                 this.saveSalesStep(isDraft);
             }
