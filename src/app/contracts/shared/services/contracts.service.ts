@@ -2,7 +2,6 @@ import { Injectable } from '@angular/core';
 import { ReplaySubject, forkJoin, combineLatest } from 'rxjs';
 import { map, tap } from 'rxjs/operators';
 import {
-	CountryDto,
 	EmployeeDto,
 	EnumEntityTypeDto,
 	EnumServiceProxy,

@@ -1,7 +1,7 @@
 import { ITableConfig } from '../../shared/components/grid-table/mat-grid.interfaces';
 import { MasterTemplatesService } from './services/master-templates.service';
 import { Component, ChangeDetectionStrategy, OnInit, OnDestroy, Injector } from '@angular/core';
-import { map, tap, takeUntil, withLatestFrom } from 'rxjs/operators';
+import { map, takeUntil, withLatestFrom } from 'rxjs/operators';
 import {
 	DISPLAYED_COLUMNS,
 	MASTER_TEMPLATE_ACTIONS,
