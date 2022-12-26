@@ -31,17 +31,14 @@ export const MASTER_TEMPLATE_HEADER_CELLS: IHeaderCell[] = [
 			formControlName: 'language',
 			component: AgreementLanguagesFilterComponent,
 		},
-		width: 120,
 	},
 	{
 		type: EHeaderCells.SORT,
 		title: 'ID',
-		width: 120,
 	},
 	{
 		type: EHeaderCells.SORT,
 		title: 'Template Name',
-		width: 320,
 	},
 	{
 		type: EHeaderCells.FILTER,
@@ -49,7 +46,6 @@ export const MASTER_TEMPLATE_HEADER_CELLS: IHeaderCell[] = [
 			formControlName: 'agreementType',
 			component: AgreementTypesFilterComponent,
 		},
-		width: 120,
 	},
 	{
 		type: EHeaderCells.FILTER,
@@ -57,7 +53,6 @@ export const MASTER_TEMPLATE_HEADER_CELLS: IHeaderCell[] = [
 			formControlName: 'recipientTypeId',
 			component: RecipientTypesFilterComponent,
 		},
-		width: 120,
 	},
 	{
 		type: EHeaderCells.FILTER,
@@ -65,7 +60,6 @@ export const MASTER_TEMPLATE_HEADER_CELLS: IHeaderCell[] = [
 			formControlName: 'legalEntityIds',
 			component: LegalEntitiesFilterComponent,
 		},
-		width: 120,
 	},
 	{
 		type: EHeaderCells.FILTER,
@@ -73,7 +67,6 @@ export const MASTER_TEMPLATE_HEADER_CELLS: IHeaderCell[] = [
 			formControlName: 'salesTypeIds',
 			component: SalesTypesFilterComponent,
 		},
-		width: 120,
 	},
 	{
 		type: EHeaderCells.FILTER,
@@ -81,7 +74,6 @@ export const MASTER_TEMPLATE_HEADER_CELLS: IHeaderCell[] = [
 			formControlName: 'deliveryTypeIds',
 			component: DeliveryTypesFilterComponent,
 		},
-		width: 120,
 	},
 	{
 		type: EHeaderCells.FILTER,
@@ -89,12 +81,10 @@ export const MASTER_TEMPLATE_HEADER_CELLS: IHeaderCell[] = [
 			formControlName: 'contractTypeIds',
 			component: EmploymentTypesFilterComponent,
 		},
-		width: 120,
 	},
 	{
 		type: EHeaderCells.SORT,
 		title: 'Last updated',
-		width: 120,
 	},
 	{
 		type: EHeaderCells.FILTER,
@@ -102,7 +92,6 @@ export const MASTER_TEMPLATE_HEADER_CELLS: IHeaderCell[] = [
 			formControlName: 'lastUpdatedByLowerCaseInitials',
 			component: EmployeesFilterComponent,
 		},
-		width: 120,
 	},
 	{
 		type: EHeaderCells.FILTER,
@@ -111,7 +100,6 @@ export const MASTER_TEMPLATE_HEADER_CELLS: IHeaderCell[] = [
 			formControlName: 'isEnabled',
 			component: IsEnabledComponent,
 		},
-		width: 120,
 	},
 ];
 export const FILTER_LABEL_MAP: { [key: string]: string } = {

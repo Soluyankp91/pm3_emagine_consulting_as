@@ -1,5 +1,6 @@
-import { AgreementLanguage, AgreementTemplateParentChildLinkState, AgreementType } from "src/shared/service-proxies/service-proxies";
-import { KeyType } from "../../master-templates/template-editor/settings/settings.component";
+import {  AgreementTemplateParentChildLinkState } from "src/shared/service-proxies/service-proxies";
+
+export type KeyType = string | number;
 
 export interface Tab {
     link: string;

@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
 import { SortDirection } from '@angular/material/sort';
 import { isEqual } from 'lodash';
-import { Observable, BehaviorSubject, combineLatest, EMPTY, ReplaySubject } from 'rxjs';
+import { Observable, BehaviorSubject, combineLatest, ReplaySubject } from 'rxjs';
 import { switchMap, debounceTime, distinctUntilChanged, tap } from 'rxjs/operators';
 import {
 	DEFAULT_SIZE_OPTION,
@@ -17,7 +17,6 @@ import {
 @Injectable()
 export class MasterTemplatesService {
 	contractsLoading$: ReplaySubject<boolean> = new ReplaySubject<boolean>(1);
-	private contractsData$: Observable<any>;
 
 	private page$: BehaviorSubject<{ pageIndex: number; pageSize: number }> = new BehaviorSubject<{
 		pageIndex: number;
@@ -84,7 +83,6 @@ export class MasterTemplatesService {
 	}
 
 	constructor(private readonly agreementTemplateServiceProxy: AgreementTemplateServiceProxy) {
-		this.contractsData$ = this.getContracts$();
 	}
 
 	getContracts$(): Observable<AgreementTemplatesListItemDtoPaginatedList> {

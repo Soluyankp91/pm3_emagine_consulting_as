@@ -28,7 +28,6 @@ import {
 	AgreementTemplateAttachmentDto,
 	AgreementTemplateDetailsDto,
 	AgreementTemplateServiceProxy,
-	AgreementType,
 	LegalEntityDto,
 	SaveAgreementTemplateDto,
 	SimpleAgreementTemplatesListItemDto,
@@ -45,9 +44,8 @@ import { FileUpload } from 'src/app/contracts/shared/components/file-uploader/fi
 import { AppComponentBase } from 'src/shared/app-component-base';
 import { CreationTitleService } from '../../../shared/services/creation-title.service';
 import { AUTOCOMPLETE_SEARCH_ITEMS_COUNT } from 'src/app/contracts/shared/components/grid-table/master-templates/entities/master-templates.constants';
-import { MappedTableCells } from 'src/app/contracts/shared/entities/contracts.interfaces';
+import { KeyType, MappedTableCells } from 'src/app/contracts/shared/entities/contracts.interfaces';
 
-export type KeyType = string | number;
 @Component({
 	selector: 'app-settings',
 	templateUrl: './settings.component.html',

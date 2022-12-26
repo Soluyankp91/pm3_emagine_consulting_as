@@ -9,8 +9,7 @@ import {
 	LegalEntityDto,
 	LookupServiceProxy,
 } from 'src/shared/service-proxies/service-proxies';
-import { KeyType } from '../../master-templates/template-editor/settings/settings.component';
-import { BaseEnumDto, MappedTableCells } from '../entities/contracts.interfaces';
+import { BaseEnumDto, KeyType, MappedTableCells } from '../entities/contracts.interfaces';
 import { GetCountryCodeByLanguage } from '../utils/GetCountryCodeByLanguage';
 import { GetCountryCodeByTenantName } from '../utils/GetCountryCodeByTenantName';
 
@@ -120,7 +119,6 @@ export class ContractsService {
 					employmentTypes,
 					employees,
 				}) => {
-                    console.log(agreementLanguages);
 					this.tenants$$.next(tenants);
 					this.agreementLanguages$$.next(agreementLanguages);
 					this.agreementTypes$$.next(agreementTypes);
