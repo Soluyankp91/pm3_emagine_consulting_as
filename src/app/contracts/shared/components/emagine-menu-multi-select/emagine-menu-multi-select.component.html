@@ -23,15 +23,10 @@
         backdropClass="mat-menu-content-wrapper"
     >
         <div class="scrollbar-container">
-            <ng-container *ngFor="let option of options;">
+            <ng-container *ngFor="let option of options;trackBy:trackById.bind(this)">
                 <mat-checkbox
 
                 (click)="$event.stopPropagation()"
-                [matTooltip]="
-                    option[displayedProperty].length > maxLength
-                        ? option[displayedProperty]
-                        : ''
-                "
                 [value]="option"
                 (change)="toggleSelect(option)"
                 [checked]="option.selected"

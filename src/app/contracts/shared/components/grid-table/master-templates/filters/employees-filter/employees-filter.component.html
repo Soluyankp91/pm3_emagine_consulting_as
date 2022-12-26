@@ -3,7 +3,7 @@
     [options]="employees"
     [formControl]="filterFormControl"
     [idProperty]="'id'"
-    [label]="'By'"
+    [label]="labelMap[tableFilter]"
     (emitText)="emitText($event)"
 ></emg-dropdown-autocomplete-multiselect>
 

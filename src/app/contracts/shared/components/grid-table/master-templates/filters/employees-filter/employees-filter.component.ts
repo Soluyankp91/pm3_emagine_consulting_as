@@ -8,6 +8,7 @@ import {
     LookupServiceProxy,
 } from 'src/shared/service-proxies/service-proxies';
 import { MasterTemplatesService } from 'src/app/contracts/master-templates/listAndPreviews/services/master-templates.service';
+import { FILTER_LABEL_MAP } from '../../entities/master-templates.constants';
 
 @Component({
     selector: 'app-employees-filter',
@@ -23,7 +24,9 @@ export class EmployeesFilterComponent {
     filterFormControl: FormControl;
     employees$: Observable<EmployeeDto[]>;
 
-    private tableFilter = 'lastUpdatedByLowerCaseInitials';
+    labelMap = FILTER_LABEL_MAP;
+
+    tableFilter = 'lastUpdatedByLowerCaseInitials';
 
     constructor(
         private lookupServiceProxy: LookupServiceProxy,

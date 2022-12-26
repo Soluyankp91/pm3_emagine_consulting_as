@@ -16,16 +16,9 @@ export interface IHeaderCell {
     width?: number;
 }
 
-export interface ICell {
-    type: ETableCells;
-    index?: number,
-    component?: ComponentType<any>;
-}
-
 export interface IColumn {
     matColumnDef: string;
     headerCell: IHeaderCell;
-    cell: ICell;
 }
 
 export interface ITableConfig {

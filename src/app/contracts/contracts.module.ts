@@ -47,6 +47,7 @@ import { TenantsComponent } from './shared/components/tenants/tenants.component'
 import { IsEnabledComponent } from './shared/components/grid-table/master-templates/filters/enabled-filter/is-enabled/is-enabled.component';
 import { FuseScrollbarModule } from './shared/directives/scroll/scrollbar.module';
 import { TruncateTextCustomPipe } from './shared/pipes/truncate-text-custom.pipe';
+import { MaterialModule } from '../shared/common/material/material.module';
 
 @NgModule({
     declarations: [
@@ -88,7 +89,8 @@ import { TruncateTextCustomPipe } from './shared/pipes/truncate-text-custom.pipe
         ContractsRoutingModule,
         ServiceProxyModule,
         AppCommonModule,
-        FuseScrollbarModule
+        FuseScrollbarModule,
+        MaterialModule,
     ],
     providers: [
         ContractsService,

@@ -1,21 +1,23 @@
 <div class="container">
 	<mat-chip-list>
-		<mat-chip *ngFor="let chip of matChips">
-			<mat-icon svgIcon="close-button-icon" (click)="closeFilter(chip)"> </mat-icon>
-			<span>{{ chip }}</span>
+		<mat-chip *ngFor="let chip of matChips" (click)="closeFilter(chip.formControl)">
+			<mat-icon svgIcon="close-button-icon"> </mat-icon>
+			<span>{{ chip.label }}</span>
 		</mat-chip>
 		<span *ngIf="matChips.length > 0">
-			<mat-icon svgIcon="close-button-icon" (click)="closeAllFilters()"></mat-icon>
-			Reset all Filters
+			<mat-chip (click)="closeAllFilters()">
+				<mat-icon svgIcon="close-button-icon"></mat-icon>
+				<p>Reset all Filters</p>
+			</mat-chip>
 		</span>
 	</mat-chip-list>
 	<mat-table
-		[dataSource]="dataSource"
 		matSort
-		[matSortDirection]="tableConfig.sortDirection"
+		[dataSource]="tableConfig.items"
 		[matSortActive]="tableConfig.sortActive"
-		(matSortChange)="sortChange.emit($event)"
-		[formGroup]="formGroup">
+		[matSortDirection]="tableConfig.sortDirection"
+		[formGroup]="formGroup"
+		(matSortChange)="sortChange.emit($event)">
 		<ng-container *ngIf="selection">
 			<ng-container matColumnDef="select">
 				<mat-header-cell *matHeaderCellDef>
@@ -33,41 +35,22 @@
 				</mat-cell>
 			</ng-container>
 		</ng-container>
-		<ng-container *ngFor="let item of cells; trackBy: trackByCellColumnDef" [matColumnDef]="item.matColumnDef">
+		<ng-container *ngFor="let item of cells; let i = index; trackBy: trackByCellColumnDef" [matColumnDef]="item.matColumnDef">
 			<ng-container [ngSwitch]="item.headerCell.type">
 				<ng-container *ngSwitchCase="headerCellEnum.SORT">
-					<mat-header-cell
-						*matHeaderCellDef
-						mat-sort-header
-						[style.min-width.px]="item.headerCell.width"
-						[style.max-width.px]="item.headerCell.width">
+					<mat-header-cell *matHeaderCellDef mat-sort-header class="column-filter">
 						{{ item.headerCell.title }}
 					</mat-header-cell>
 				</ng-container>
 				<ng-container *ngSwitchCase="headerCellEnum.FILTER">
-					<mat-header-cell
-						*matHeaderCellDef
-						[style.min-width.px]="item.headerCell.width"
-						[style.max-width.px]="item.headerCell.width">
+					<mat-header-cell *matHeaderCellDef>
 						<ng-container #filterContainer></ng-container>
-                        <span mat-sort-header></span>
+						<span mat-sort-header></span>
 					</mat-header-cell>
 				</ng-container>
 			</ng-container>
-			<mat-cell
-				*matCellDef="let element"
-				[style.min-width.px]="item.headerCell.width"
-				[style.max-width.px]="item.headerCell.width">
-				<ng-container [ngSwitch]="item.cell.type">
-					<ng-container *ngSwitchCase="tableCellEnum.DEFAULT">
-						{{ element[item.matColumnDef] }}
-					</ng-container>
-					<ng-container *ngSwitchCase="tableCellEnum.CUSTOM">
-						<ng-container
-							*ngIf="item.cell.index && customCells.get(item.cell.index - 1) as customCell"
-							[ngTemplateOutlet]="customCell"
-							[ngTemplateOutletContext]="{ element: element }"></ng-container>
-					</ng-container>
+			<mat-cell *matCellDef="let element">
+				<ng-container *ngIf="cells_" [ngTemplateOutlet]="cells_[i]" [ngTemplateOutletContext]="{ element: element }">
 				</ng-container>
 			</mat-cell>
 		</ng-container>
@@ -92,12 +75,12 @@
 		<mat-header-row *matHeaderRowDef="displayedColumns"></mat-header-row>
 		<mat-row *matRowDef="let row; columns: displayedColumns" (click)="getTableRow(row)"></mat-row>
 	</mat-table>
-	<mat-paginator
-		[showFirstLastButtons]="true"
-		[length]="tableConfig.totalCount"
-		[pageSizeOptions]="pageSizeOptions"
-		[pageSize]="tableConfig.pageSize"
-		[pageIndex]="tableConfig.pageIndex"
-		(page)="pageChange.emit($event)">
-	</mat-paginator>
 </div>
+<mat-paginator
+	[showFirstLastButtons]="true"
+	[length]="tableConfig.totalCount"
+	[pageSizeOptions]="pageSizeOptions"
+	[pageSize]="tableConfig.pageSize"
+	[pageIndex]="tableConfig.pageIndex"
+	(page)="pageChange.emit($event)">
+</mat-paginator>

@@ -18,6 +18,8 @@ export function GetCountryCodeByTenantName(name: string) {
 			return 'PL';
 		case 'Sweden':
 			return 'SE';
+		case 'International':
+			return 'EU';
 		default:
 			return;
 	}

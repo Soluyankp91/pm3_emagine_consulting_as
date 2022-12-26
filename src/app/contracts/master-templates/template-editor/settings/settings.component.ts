@@ -9,8 +9,10 @@ import {
 	distinctUntilChanged,
 	catchError,
 	debounceTime,
+	withLatestFrom,
+	take,
 } from 'rxjs/operators';
-import { BehaviorSubject, Observable, Subject, of, EMPTY, merge } from 'rxjs';
+import { BehaviorSubject, Observable, Subject, of, EMPTY, merge, combineLatest } from 'rxjs';
 import {
 	Component,
 	OnInit,
@@ -26,6 +28,7 @@ import {
 	AgreementTemplateAttachmentDto,
 	AgreementTemplateDetailsDto,
 	AgreementTemplateServiceProxy,
+	AgreementType,
 	LegalEntityDto,
 	SaveAgreementTemplateDto,
 	SimpleAgreementTemplatesListItemDto,
@@ -42,6 +45,7 @@ import { FileUpload } from 'src/app/contracts/shared/components/file-uploader/fi
 import { AppComponentBase } from 'src/shared/app-component-base';
 import { CreationTitleService } from '../../../shared/services/creation-title.service';
 import { AUTOCOMPLETE_SEARCH_ITEMS_COUNT } from 'src/app/contracts/shared/components/grid-table/master-templates/entities/master-templates.constants';
+import { MappedTableCells } from 'src/app/contracts/shared/entities/contracts.interfaces';
 
 export type KeyType = string | number;
 @Component({
@@ -59,9 +63,6 @@ export class CreateMasterTemplateComponent extends AppComponentBase implements O
 
 	legalEntities: LegalEntityDto[];
 
-	mappedAgreementTypes: Record<KeyType, string>;
-	mappedTenants: Record<KeyType, string>;
-
 	preselectedFiles: FileUpload[] = [];
 
 	creationModes = AgreementCreationMode;
@@ -74,11 +75,13 @@ export class CreateMasterTemplateComponent extends AppComponentBase implements O
 
 	masterTemplateFormGroup = new MasterTemplateModel();
 
-	options$: Observable<SettingsOptions> = this._contractsService.settingsPageOptions$().pipe(
-		tap(({ legalEntities, agreementTypes }) => {
-			this.legalEntities = legalEntities;
-			this.mappedAgreementTypes = this._mapItems(agreementTypes, 'name');
-			this.mappedTenants = this._mapItems(legalEntities, 'tenantName');
+	options$: Observable<[SettingsOptions, MappedTableCells]> = combineLatest([
+		this._contractsService.settingsPageOptions$(),
+		this._contractsService.getEnumMap$().pipe(take(1)),
+	]).pipe(
+		tap(([{ legalEntities }, maps]) => {
+			maps.legalEntityIds;
+			this.legalEntities = legalEntities.map((i) => <LegalEntityDto>{ ...i, name: maps.legalEntityIds[i.id as number] });
 		})
 	);
 
@@ -321,7 +324,7 @@ export class CreateMasterTemplateComponent extends AppComponentBase implements O
 				);
 				let modifiedEntities = entities.map((entity) => ({
 					...entity,
-					code: this.getTenantCodeFromId(entity.id as number),
+					code: this.getCountryCodeByTenantName(entity.tenantName as string),
 				})) as (LegalEntityDto & { code: string })[];
 				this._creationTitleService.updateTenants(modifiedEntities);
 				return;
@@ -406,8 +409,17 @@ export class CreateMasterTemplateComponent extends AppComponentBase implements O
 			})
 		);
 		this.masterTemplateOptions$ = merge(freeText$, routeParams$, nullOptions$, creationChange$).pipe(
-			map((response) => {
-				return response ? (response.items as SimpleAgreementTemplatesListItemDto[]) : null;
+			withLatestFrom(this._contractsService.getEnumMap$()),
+			map(([response, maps]) => {
+				return response && response.items
+					? response.items?.map(
+							(item) =>
+								<SimpleAgreementTemplatesListItemDto>{
+									...item,
+									tenantIds: item.tenantIds?.map((i) => maps.legalEntityIds[i]),
+								}
+					  )
+					: null;
 			})
 		);
 	}

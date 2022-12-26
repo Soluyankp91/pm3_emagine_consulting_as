@@ -2,11 +2,11 @@ import { Component, OnInit } from '@angular/core';
 import { FormControl } from '@angular/forms';
 import { take, pluck } from 'rxjs/operators';
 import { MasterTemplatesService } from 'src/app/contracts/master-templates/listAndPreviews/services/master-templates.service';
+import { FILTER_LABEL_MAP } from '../../../entities/master-templates.constants';
 
 @Component({
 	selector: 'app-is-enabled',
 	templateUrl: './is-enabled.component.html',
-	styleUrls: ['./is-enabled.component.scss'],
 })
 export class IsEnabledComponent implements OnInit {
 	options = [
@@ -21,7 +21,9 @@ export class IsEnabledComponent implements OnInit {
 	];
 
 	filterFormControl = new FormControl();
-	private tableFilter = 'isEnabled';
+	tableFilter = 'isEnabled';
+
+    labelMap = FILTER_LABEL_MAP;
 
 	constructor(private masterTemplateService: MasterTemplatesService) {
 		this.masterTemplateService

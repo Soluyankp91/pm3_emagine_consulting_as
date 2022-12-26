@@ -6,5 +6,10 @@
 >
     <div #triggerButton>
         <mat-icon svgIcon="three-lines"></mat-icon>
-    </div></emg-multi-select
+    </div>
+    <ng-template let-option #optionPrefix>
+        <span  class="fi fi-{{ option.code | lowercase }} flag">
+        </span>
+    </ng-template>
+    </emg-multi-select
 >

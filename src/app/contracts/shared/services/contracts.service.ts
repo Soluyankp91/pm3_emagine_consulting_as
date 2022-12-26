@@ -10,12 +10,13 @@ import {
 	LookupServiceProxy,
 } from 'src/shared/service-proxies/service-proxies';
 import { KeyType } from '../../master-templates/template-editor/settings/settings.component';
-import { BaseEnumDto } from '../entities/contracts.interfaces';
+import { BaseEnumDto, MappedTableCells } from '../entities/contracts.interfaces';
+import { GetCountryCodeByLanguage } from '../utils/GetCountryCodeByLanguage';
 import { GetCountryCodeByTenantName } from '../utils/GetCountryCodeByTenantName';
 
 @Injectable()
 export class ContractsService {
-	private countries$$ = new ReplaySubject<CountryDto[]>(1);
+	private tenants$$ = new ReplaySubject<(EnumEntityTypeDto & { code: string })[]>(1);
 
 	private agreementLanguages$$ = new ReplaySubject<BaseEnumDto[]>(1);
 	private agreementLanguages$ = this.enumServiceProxy
@@ -37,14 +38,14 @@ export class ContractsService {
 
 	private employees$$ = new ReplaySubject<EmployeeDto[]>(1);
 
-	private mappedValues$$ = new ReplaySubject<{ [key: string]: any }>(1);
+	private mappedValues$$ = new ReplaySubject<MappedTableCells>(1);
 
 	constructor(private readonly enumServiceProxy: EnumServiceProxy, private readonly lookupServiceProxy: LookupServiceProxy) {
 		this.initBaseEnums$().subscribe();
 	}
 
 	getCountries$() {
-		return this.countries$$.asObservable();
+		return this.tenants$$.asObservable();
 	}
 
 	getAgreementLanguages$() {
@@ -75,14 +76,30 @@ export class ContractsService {
 		return this.salesTypes$$.asObservable();
 	}
 
-	getMappedValues$() {
+	getEnumMap$() {
 		return this.mappedValues$$.asObservable();
 	}
 
 	initBaseEnums$() {
 		return forkJoin({
-			countries: this.enumServiceProxy.countries(),
-			agreementLanguages: this.agreementLanguages$,
+			tenants: this.enumServiceProxy.tenants().pipe(
+				map((tenants) => {
+					return tenants.map((tenant) => {
+						return <EnumEntityTypeDto & { code: string }>{
+							...tenant,
+							code: GetCountryCodeByTenantName(tenant.name as string),
+						};
+					});
+				})
+			),
+			agreementLanguages: this.agreementLanguages$.pipe(map((agreementLanguages) => {
+                return agreementLanguages.map((agreementLanguage) => {
+                    return <BaseEnumDto & { code: string }>{
+                        ...agreementLanguage,
+                        code: GetCountryCodeByLanguage(agreementLanguage.name)
+                    }
+                })
+            })),
 			agreementTypes: this.agreementTypes$,
 			recipientTypes: this.enumServiceProxy.recipientTypes(),
 			legalEntities: this.enumServiceProxy.legalEntities(),
@@ -93,7 +110,7 @@ export class ContractsService {
 		}).pipe(
 			tap(
 				({
-					countries,
+					tenants,
 					agreementLanguages,
 					agreementTypes,
 					recipientTypes,
@@ -103,7 +120,8 @@ export class ContractsService {
 					employmentTypes,
 					employees,
 				}) => {
-					this.countries$$.next(countries);
+                    console.log(agreementLanguages);
+					this.tenants$$.next(tenants);
 					this.agreementLanguages$$.next(agreementLanguages);
 					this.agreementTypes$$.next(agreementTypes);
 					this.recipientTypes$$.next(recipientTypes);
@@ -113,7 +131,7 @@ export class ContractsService {
 					this.employmentTypes$$.next(employmentTypes);
 					this.employees$$.next(employees);
 
-					let mappedValues = {
+					let mappedValues: MappedTableCells = {
 						language: this._mapItems(agreementLanguages),
 						agreementType: this._mapItems(agreementTypes),
 						recipientTypeId: this._mapItems(recipientTypes),
@@ -171,7 +189,10 @@ export class ContractsService {
 		}, {} as Record<KeyType, string>);
 	}
 
-	private _mapLegalEntities(legalEntities: LegalEntityDto[]) {
-		return legalEntities.map((item) => `${GetCountryCodeByTenantName(item.tenantName as string)}·${item.name}`);
+	private _mapLegalEntities(legalEntities: LegalEntityDto[]): Record<KeyType, string> {
+		return legalEntities.reduce((acc, item) => {
+			acc[item.id as number] = `${GetCountryCodeByTenantName(item.tenantName as string)}·${item.name}`;
+			return acc;
+		}, {} as Record<KeyType, string>);
 	}
 }

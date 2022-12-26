@@ -17,8 +17,34 @@
 	</ng-template>
 
 	<ng-template let-cell="element" #customCells>
+		<p [customTooltip]="agreementTemplateIdTooltip">
+			{{ cell.agreementTemplateId | truncateTextCustom : [7] }}
+		</p>
+		<ng-template #agreementTemplateIdTooltip>
+			<div class="tooltip-container">
+				{{ cell.agreementTemplateId }}
+			</div>
+		</ng-template>
+	</ng-template>
+
+	<ng-template let-cell="element" #customCells>
+		<p [customTooltip]="nameTooltip">
+			{{ cell.name | truncateTextCustom : [50] }}
+		</p>
+		<ng-template #nameTooltip>
+			<div class="tooltip-container">{{ cell.name }}</div>
+		</ng-template>
+	</ng-template>
+
+	<ng-template let-cell="element" #customCells>
 		<p>
-			{{ cell.agreementTemplateId }}
+			{{ cell.agreementType }}
+		</p></ng-template
+	>
+
+	<ng-template let-cell="element" #customCells>
+		<p>
+			{{ cell.recipientTypeId }}
 		</p></ng-template
 	>
 
@@ -74,15 +100,42 @@
 	>
 
 	<ng-template let-cell="element" #customCells
-		><p>{{ cell.lastUpdateDateUtc }}</p></ng-template
+		><p [customTooltip]="lastUpdateDateUtcTooltip">{{ cell.lastUpdateDateUtc }}</p>
+		<ng-template #lastUpdateDateUtcTooltip>
+			<div class="tooltip-container">
+				<div class="date-row">
+					<div>Created</div>
+					<div>{{ cell.createdDateUtc }}</div>
+				</div>
+				<div class="date-row">
+					<div>Last updated</div>
+					<div>
+						{{ cell.lastUpdateDateUtc }}
+					</div>
+				</div>
+			</div>
+		</ng-template>
+	</ng-template>
+
+	<ng-template let-cell="element" #customCells>
+		<p>
+			{{ cell.lastUpdatedByLowerCaseInitials }}
+		</p></ng-template
 	>
 
 	<ng-template let-cell="element" #customCells>
 		<ng-container *ngIf="cell.isEnabled; else notEnabled">
-			<mat-icon svgIcon="enabled" class="icon enable-icon"></mat-icon>
+			<mat-icon  [customTooltip]="enabledTooltip" svgIcon="enabled" class="icon enable-icon">
+            </mat-icon>
 		</ng-container>
-		<ng-template #notEnabled>
+		<ng-template #enabledTooltip>
+			<div class="tooltip-container">Enabled</div>
+		</ng-template>
+		<ng-template #notEnabled [customTooltip]="notEnabledTooltip">
 			<mat-icon svgIcon="disabled" class="icon disable-icon"></mat-icon>
+		</ng-template>
+		<ng-template #notEnabledTooltip>
+			<div class="tooltip-container">Disabled</div>
 		</ng-template>
 	</ng-template>
 </emg-mat-grid>

@@ -79,11 +79,12 @@ export class MultiSelectComponent implements OnInit, ControlValueAccessor {
 	}
 
 	onMenuClosed() {
-		this.onChange([...this.selectedItems]);
+        this.onChange([...this.selectedItems]);
 	}
 
 	writeValue(preselectedItems: ({ id: number | string } & { [key: string]: any })[]): void {
 		let optionsToPreselect: (string | number)[] = preselectedItems.map((item) => item.id);
+        this.selectedItems = [];
 		this.unselectAll();
 		if (!preselectedItems || !preselectedItems.length) {
 			return;
@@ -94,7 +95,6 @@ export class MultiSelectComponent implements OnInit, ControlValueAccessor {
 				foundedOption.selected = true;
 			}
 		});
-		this.cdr.detectChanges();
 	}
 
 	private unselectAll() {

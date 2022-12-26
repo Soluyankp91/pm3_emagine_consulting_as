@@ -95,7 +95,8 @@ const MaterialModules = [
     MatBottomSheetModule,
     MatStepperModule,
     FlexLayoutModule,
-    MatProgressSpinnerModule
+    MatProgressSpinnerModule,
+    MatTooltipModule,
 ]
 
 @NgModule({
