@@ -1516,7 +1516,7 @@
                                     </div>
                                     <div class="workflow-section--content">
                                         <div fxLayout="column" fxLayoutAlign="start start" class="u-w--100">
-                                            <div fxLayout="row" fxLayoutAlign="start center" class="u-w--100 u-mb--10" [fxHide]="readOnlyMode && !consultantsForm.consultantData.at(consultantIndex).get('consultantIsOnsiteWorkplace')?.value">
+                                            <div fxLayout="row" fxLayoutAlign="start center" class="u-w--100" [fxHide]="readOnlyMode && !consultantsForm.consultantData.at(consultantIndex).get('consultantIsOnsiteWorkplace')?.value">
                                                 <mat-checkbox [disabled]="readOnlyMode" color="accent" [required]="!consultant.value.consultantIsEmagineOfficeWorkplace && !consultant.value.consultantIsRemoteWorkplace" formControlName="consultantIsOnsiteWorkplace" name="consultantIsOnsiteWorkplace" class="black-checkbox u-mr--12 u-mt--8" fxFlex="20%">
                                                     Onsite
                                                 </mat-checkbox>
@@ -1565,7 +1565,7 @@
                                                     </div>
                                                 </div>
                                             </ng-container>
-                                            <div fxLayout="row" fxLayoutAlign="start center" class="u-w--100 u-mb--20" [fxHide]="readOnlyMode && !consultantsForm.consultantData.at(consultantIndex).get('consultantIsEmagineOfficeWorkplace')?.value">
+                                            <div fxLayout="row" fxLayoutAlign="start center" class="u-w--100" [fxHide]="readOnlyMode && !consultantsForm.consultantData.at(consultantIndex).get('consultantIsEmagineOfficeWorkplace')?.value">
                                                 <mat-checkbox [disabled]="readOnlyMode" color="accent" [required]="!consultant.value.consultantIsOnsiteWorkplace && !consultant.value.consultantIsRemoteWorkplace" formControlName="consultantIsEmagineOfficeWorkplace" name="consultantIsEmagineOfficeWorkplace" class="black-checkbox u-mr--12 u-mt--8" fxFlex="20%">
                                                     emagine Office
                                                 </mat-checkbox>
@@ -1583,7 +1583,7 @@
                                                     </mat-error>
                                                 </mat-form-field>
                                             </div>
-                                            <div fxLayout="row" fxLayoutAlign="start center" class="u-w--100 u-mb--10" [fxHide]="readOnlyMode && !consultantsForm.consultantData.at(consultantIndex).get('consultantIsRemoteWorkplace')?.value">
+                                            <div fxLayout="row" fxLayoutAlign="start center" class="u-w--100" [fxHide]="readOnlyMode && !consultantsForm.consultantData.at(consultantIndex).get('consultantIsRemoteWorkplace')?.value">
                                                 <mat-checkbox [disabled]="readOnlyMode" color="accent" [required]="!consultant.value.consultantIsOnsiteWorkplace && !consultant.value.consultantIsEmagineOfficeWorkplace" formControlName="consultantIsRemoteWorkplace" name="consultantIsRemoteWorkplace" class="black-checkbox u-mr--12 u-mt--8" fxFlex="20%">
                                                     Remote
                                                 </mat-checkbox>

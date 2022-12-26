@@ -193,7 +193,7 @@
     .mat-form-field-outline-gap,
     .mat-form-field-outline-start,
     .mat-form-field-outline-end {
-        border-width: 2px !important;
+        border-width: 1px !important;
     }
     .mat-form-field-outline {
         color: rgba(182, 180, 178, 0.77) !important;
@@ -252,6 +252,8 @@
 
     &.mat-form-field-can-float.mat-form-field-should-float .mat-form-field-label {
         transform: translateY(-1em) scale(.75) !important;
+        color: rgba($color: #384853, $alpha: .87) !important;
+        font-weight: 700;
     }
 
     &.mat-focused {
@@ -724,8 +726,12 @@ input[type=number] {
 
 
 .form-width {
+    width: var(--size);
     &-150 {
         width: 150px !important;
+    }
+    &-235 {
+        width: 235px !important;
     }
     &-235 {
         width: 235px !important;
