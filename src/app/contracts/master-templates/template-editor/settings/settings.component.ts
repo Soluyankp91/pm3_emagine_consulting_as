@@ -78,7 +78,6 @@ export class CreateMasterTemplateComponent extends AppComponentBase implements O
 		this._contractsService.getEnumMap$().pipe(take(1)),
 	]).pipe(
 		tap(([{ legalEntities }, maps]) => {
-			maps.legalEntityIds;
 			this.legalEntities = legalEntities.map((i) => <LegalEntityDto>{ ...i, name: maps.legalEntityIds[i.id as number] });
 		})
 	);
@@ -171,18 +170,6 @@ export class CreateMasterTemplateComponent extends AppComponentBase implements O
 
 	onCancel() {
 		this._navigateOnAction();
-	}
-
-	private _mapItems(
-		items: { id?: string | number } & { [key: string]: any }[],
-		valueProp: string = 'name'
-	): Record<KeyType, string> {
-		return items.reduce((acc, currentItem) => {
-			if (currentItem.id && currentItem[valueProp]) {
-				acc[currentItem.id] = currentItem[valueProp];
-			}
-			return acc;
-		}, {} as Record<KeyType, string>);
 	}
 
 	private _agreementTemplateAttachmentDto(): AgreementTemplateAttachmentDto[] {

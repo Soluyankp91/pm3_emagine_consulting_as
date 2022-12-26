@@ -1,6 +1,6 @@
 import { ITableConfig } from '../../shared/components/grid-table/mat-grid.interfaces';
 import { MasterTemplatesService } from './services/master-templates.service';
-import { Component, ChangeDetectionStrategy, OnInit, OnDestroy, Injector, ViewEncapsulation } from '@angular/core';
+import { Component, ChangeDetectionStrategy, OnInit, OnDestroy, Injector } from '@angular/core';
 import { map, tap, takeUntil, withLatestFrom } from 'rxjs/operators';
 import {
 	DISPLAYED_COLUMNS,
@@ -102,8 +102,7 @@ export class MasterTemplatesComponent extends AppComponentBase implements OnInit
 					sortActive: '',
 				};
 				return tableConfig;
-			}),
-			tap(() => this.hideMainSpinner())
+			})
 		);
 	}
 

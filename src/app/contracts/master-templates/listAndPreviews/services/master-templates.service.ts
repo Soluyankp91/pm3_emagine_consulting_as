@@ -66,7 +66,7 @@ export class MasterTemplatesService {
 		this.tableFilters$.next(data);
 	}
 
-	updateCountryFilter(data: any) {
+	updateTenantFilter(data: any) {
 		this.tenantIds$$.next(data);
 	}
 

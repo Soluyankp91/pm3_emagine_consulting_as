@@ -37,7 +37,7 @@ export class ContractsService {
 
 	private employees$$ = new ReplaySubject<EmployeeDto[]>(1);
 
-	private mappedValues$$ = new ReplaySubject<MappedTableCells>(1);
+	private mappedEnums$$ = new ReplaySubject<MappedTableCells>(1);
 
 	constructor(private readonly enumServiceProxy: EnumServiceProxy, private readonly lookupServiceProxy: LookupServiceProxy) {
 		this.initBaseEnums$().subscribe();
@@ -76,7 +76,7 @@ export class ContractsService {
 	}
 
 	getEnumMap$() {
-		return this.mappedValues$$.asObservable();
+		return this.mappedEnums$$.asObservable();
 	}
 
 	initBaseEnums$() {
@@ -129,7 +129,7 @@ export class ContractsService {
 					this.employmentTypes$$.next(employmentTypes);
 					this.employees$$.next(employees);
 
-					let mappedValues: MappedTableCells = {
+					let mappedEnums: MappedTableCells = {
 						language: this._mapItems(agreementLanguages),
 						agreementType: this._mapItems(agreementTypes),
 						recipientTypeId: this._mapItems(recipientTypes),
@@ -138,7 +138,7 @@ export class ContractsService {
 						deliveryTypeIds: this._mapItems(deliveryTypes),
 						contractTypeIds: this._mapItems(employmentTypes),
 					};
-					this.mappedValues$$.next(mappedValues);
+					this.mappedEnums$$.next(mappedEnums);
 				}
 			)
 		);

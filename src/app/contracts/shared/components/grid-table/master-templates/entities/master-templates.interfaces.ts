@@ -13,7 +13,7 @@ export type TableFiltersEnum = {
         | EnumEntityTypeDto[]
         | LegalEntityDto[]
         | EmployeeDto[]
-        | undefined;
+        | BaseEnumDto [];
 };
 export interface Actions {
     label: string;

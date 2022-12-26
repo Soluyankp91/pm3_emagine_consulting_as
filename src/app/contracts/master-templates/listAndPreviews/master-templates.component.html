@@ -12,6 +12,8 @@
 	(pageChange)="onPageChange($event)"
 	(tableRow)="onSelectTableRow($event)"
 	(onAction)="onAction($event)">
+
+
 	<ng-template let-cell="element" #customCells>
 		<span class="fi fi-{{ cell.language | lowercase }} country-icon"></span>
 	</ng-template>
@@ -29,7 +31,7 @@
 
 	<ng-template let-cell="element" #customCells>
 		<p [customTooltip]="nameTooltip">
-			{{ cell.name | truncateTextCustom : [50] }}
+			{{ cell.name | truncateTextCustom : [30] }}
 		</p>
 		<ng-template #nameTooltip>
 			<div class="tooltip-container">{{ cell.name }}</div>

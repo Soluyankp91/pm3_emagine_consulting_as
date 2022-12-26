@@ -13,7 +13,7 @@ import { ContractsService } from 'src/app/contracts/shared/services/contracts.se
 })
 export class MasterTemplateFilterHeaderComponent implements OnInit, OnDestroy {
 	countryFilter$ = this.contractsService.getCountries$();
-	preselectedCountries$ = this.masterTemplatesService.getCountries$();
+	preselectedTenants$ = this.masterTemplatesService.getCountries$();
 	topFiltersFormGroup: FormGroup;
 
 	private unSubscribe$ = new Subject<void>();
@@ -27,7 +27,7 @@ export class MasterTemplateFilterHeaderComponent implements OnInit, OnDestroy {
 
 	ngOnInit() {
 		this.initFilters();
-		this._subscribeOnCountryChanged();
+		this._subscribeOnTenantChanged();
 		this._subscribeOnTextChanged();
 	}
 
@@ -40,9 +40,9 @@ export class MasterTemplateFilterHeaderComponent implements OnInit, OnDestroy {
 		this.router.navigate(['create'], { relativeTo: this.route });
 	}
 
-	private _subscribeOnCountryChanged() {
-		this.topFiltersFormGroup.controls['tenantIds'].valueChanges.pipe(takeUntil(this.unSubscribe$)).subscribe((countries) => {
-			this.masterTemplatesService.updateCountryFilter(countries);
+	private _subscribeOnTenantChanged() {
+		this.topFiltersFormGroup.controls['tenantIds'].valueChanges.pipe(takeUntil(this.unSubscribe$)).subscribe((tenants) => {
+			this.masterTemplatesService.updateTenantFilter(tenants);
 		});
 	}
 
@@ -55,9 +55,9 @@ export class MasterTemplateFilterHeaderComponent implements OnInit, OnDestroy {
 	}
 
 	private initFilters() {
-		this.preselectedCountries$.pipe(takeUntil(this.unSubscribe$), take(1)).subscribe((countries) => {
+		this.preselectedTenants$.pipe(takeUntil(this.unSubscribe$), take(1)).subscribe((tenants) => {
 			this.topFiltersFormGroup = new FormGroup({
-				tenantIds: new FormControl(countries),
+				tenantIds: new FormControl(tenants),
 				search: new FormControl(),
 			});
 		});
