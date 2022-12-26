@@ -15,6 +15,7 @@ export class WorkflowSalesMainForm extends FormGroup {
             discounts: new FormControl(null),
 
             commissions: new FormArray([]),
+            commissionedUsers: new FormArray([]),
 
             salesAccountManagerIdValue: new FormControl(null, [Validators.required, CustomValidators.autocompleteValidator(['id'])]),
             commissionAccountManagerIdValue: new FormControl(null),
@@ -52,6 +53,9 @@ export class WorkflowSalesMainForm extends FormGroup {
     }
     get commissions() {
         return this.get('commissions') as FormArray;
+    }
+    get commissionedUsers() {
+        return this.get('commissionedUsers') as FormArray;
     }
     get salesAccountManagerIdValue () {
         return this.get('salesAccountManagerIdValue');

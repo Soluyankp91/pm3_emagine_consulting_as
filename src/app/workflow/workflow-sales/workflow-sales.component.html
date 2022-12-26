@@ -470,8 +470,36 @@
                                         </mat-autocomplete>
                                 </mat-form-field>
                             </div>
-                            <div fxLayout="row" fxLayoutAlign="start start" class="u-w--100 u-mb--10">
-                                <!-- commissioned user formArray -->
+                            <div fxLayout="column" fxLayoutAlign="start start" class="u-w--100 u-mb--10">
+                                <ng-container formArrayName="commissionedUsers" class="u-w--100">
+                                    <ng-container *ngFor="let user of salesMainDataForm.commissionedUsers.controls; index as i" [formArrayName]="i">
+                                        <div fxLayout="row" fxLayoutAlign="start center" class="u-w--100">
+                                            <mat-form-field appearance="outline" class="u-w--100 formFieldNoMarginPadding filter-select u-mr--12" fxFlex="35%" [ngClass]="{'disabled-input': readOnlyMode}">
+                                                <mat-label>Commissioned user</mat-label>
+                                                <input required [disabled]="readOnlyMode" #commissionedUserInput type="text" matInput [matAutocomplete]="commissionedUserAutocomplete" formControlName="commissionedUser" appPreventDoubleClick (throttledClick)="$event.stopPropagation()" placeholder="Type something">
+                                                <mat-autocomplete #commissionedUserAutocomplete="matAutocomplete" [displayWith]="displayNameFn"
+                                                    (optionSelected)="focusOutMethod()" (opened)="focusInMethod()" (closed)="focusOutMethod()">
+                                                    <!-- FIXME: change to propert list once BE is ready -->
+                                                    <ng-container *ngFor="let manager of filteredSalesAccountManagers; trackBy: trackById">
+                                                        <mat-option [value]="manager" [ngClass]="{ 'no-data': manager.id === 'no-data' }">
+                                                            <span class="autocopmlete-option-name">{{ manager.name }}</span>
+                                                        </mat-option>
+                                                    </ng-container>
+                                                </mat-autocomplete>
+                                                <mat-error>
+                                                    <app-validator [control]="user.get('commissionedUser')"></app-validator>
+                                                </mat-error>
+                                            </mat-form-field>
+                                            <button mat-icon-button type="button" appPreventDoubleClick (throttledClick)="removeCommissionedUser(i)" class="u-mt--5">
+                                                <mat-icon svgIcon="dialog-close-icon"></mat-icon>
+                                            </button>
+                                        </div>
+                                    </ng-container>
+                                </ng-container>
+                                <button class="rates-and-fees--btn button-add" mat-flat-button type="button" appPreventDoubleClick (throttledClick)="addCommissionedUser()">
+                                    <mat-icon>add</mat-icon>
+                                    Add commissioned user
+                                </button>
                             </div>
                             <div fxLayout="row" fxLayoutAlign="start start" class="u-w--100 u-mb--10">
                                 <mat-form-field appearance="outline" class="u-w--100 formFieldNoMarginPadding filter-select u-mr--12" fxFlex="35%">

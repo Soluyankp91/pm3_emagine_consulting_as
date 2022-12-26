@@ -2084,6 +2084,47 @@ export class WorkflowSalesComponent extends AppComponentBase implements OnInit, 
 
     //#endregion commissions form array
 
+    //#region commissionedUsers form array
+    addCommissionedUser() {
+        const form = this._fb.group({
+           commissionedUser: new FormControl('', CustomValidators.autocompleteValidator(['id']))
+        });
+        this.salesMainDataForm.commissionedUsers.push(form);
+        this.manageCommissionedUserAutocomplete(this.salesMainDataForm.commissionedUsers.length - 1);
+    }
+
+    manageCommissionedUserAutocomplete(index: number) {
+        let arrayControl = this.commissionedUsers.at(index);
+        arrayControl!.get('commissionedUser')!.valueChanges
+            .pipe(
+                takeUntil(this._unsubscribe),
+                debounceTime(300),
+                switchMap((value: any) => {
+                    let toSend = {
+                        name: value,
+                        maxRecordsCount: 1000,
+                    };
+                    // FIXME: change to proper API once BE is ready
+                    return this._lookupService.clientsAll(toSend.name, toSend.maxRecordsCount);
+                }),
+            ).subscribe((list: any[]) => {
+                if (list.length) {
+                    this.filteredRecipients = list;
+                } else {
+                    this.filteredRecipients = [{ name: 'No records found', supplierName: 'No supplier found', clientName: 'No clients found', id: 'no-data' }];
+                }
+            });
+    }
+
+    removeCommissionedUser(index: number) {
+        this.commissionedUsers.removeAt(index);
+    }
+
+    get commissionedUsers() {
+        return this.salesMainDataForm.commissionedUsers as FormArray;
+    }
+    //#endregion commissionedUsers form array
+
     //#region termination
 
     getWorkflowSalesStepConsultantTermination(consultant: ConsultantResultDto) {
