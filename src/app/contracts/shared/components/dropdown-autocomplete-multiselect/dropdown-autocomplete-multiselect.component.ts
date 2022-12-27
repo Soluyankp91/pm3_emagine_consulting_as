@@ -14,7 +14,7 @@ import {
 } from '@angular/core';
 import {
     ControlValueAccessor,
-    FormControl,
+    UntypedFormControl,
     NG_VALUE_ACCESSOR,
 } from '@angular/forms';
 
@@ -57,7 +57,7 @@ export class DropdownAutocompleteMultiselectComponent
     initialOptions: Set<IDropdownItem>;
     availableOptions: Set<IDropdownItem>;
     selectedOptions = new Set<IDropdownItem>();
-    inputControl = new FormControl('');
+    inputControl = new UntypedFormControl('');
 
     private unSubscribe$ = new Subject<void>();
 

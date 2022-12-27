@@ -1,5 +1,5 @@
 import { Component, OnDestroy, OnInit } from '@angular/core';
-import { FormArray, FormBuilder, FormControl } from '@angular/forms';
+import { UntypedFormArray, UntypedFormBuilder, UntypedFormControl } from '@angular/forms';
 import { MatSelectChange } from '@angular/material/select';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { ActivatedRoute } from '@angular/router';
@@ -41,7 +41,7 @@ export class ClientRatesAndFeesComponent implements OnInit, OnDestroy {
 
     private _unsubscribe = new Subject();
     constructor(
-        private _fb: FormBuilder,
+        private _fb: UntypedFormBuilder,
         private _internalLookupService: InternalLookupService,
         private _clientService: ClientsServiceProxy,
         private _activatedSnapshot: ActivatedRoute,
@@ -139,20 +139,20 @@ export class ClientRatesAndFeesComponent implements OnInit, OnDestroy {
 
     addSpecialRate(clientRate?: ClientSpecialRateDto) {
         const form = this._fb.group({
-            id: new FormControl(clientRate?.id ?? null),
-            rateName: new FormControl(clientRate?.internalName ?? null),
-            nameForInvoices: new FormControl(clientRate?.publicName ?? null),
-            reportingUnit: new FormControl(clientRate?.specialRateReportingUnit ?? null),
-            rateSpecifiedAs: new FormControl(clientRate?.specialRateSpecifiedAs ?? null),
-            clientRateValue: new FormControl(clientRate?.clientRate ?? null),
-            clientRateCurrency: new FormControl(clientRate?.clientRateCurrency ?? null),
-            proDataRate: new FormControl(clientRate?.proDataToProDataRate ?? null),
-            proDataRateCurrency: new FormControl(clientRate?.proDataToProDataRateCurrency ?? null),
-            consultantRate: new FormControl(clientRate?.consultantRate ?? null),
-            consultantRateCurrency: new FormControl(clientRate?.consultantCurrency ?? null),
-            editable: new FormControl(clientRate?.id ? false : true),
-            inUse: new FormControl(clientRate?.inUse ? clientRate?.inUse : false),
-            hidden: new FormControl(clientRate?.isHidden ?? false)
+            id: new UntypedFormControl(clientRate?.id ?? null),
+            rateName: new UntypedFormControl(clientRate?.internalName ?? null),
+            nameForInvoices: new UntypedFormControl(clientRate?.publicName ?? null),
+            reportingUnit: new UntypedFormControl(clientRate?.specialRateReportingUnit ?? null),
+            rateSpecifiedAs: new UntypedFormControl(clientRate?.specialRateSpecifiedAs ?? null),
+            clientRateValue: new UntypedFormControl(clientRate?.clientRate ?? null),
+            clientRateCurrency: new UntypedFormControl(clientRate?.clientRateCurrency ?? null),
+            proDataRate: new UntypedFormControl(clientRate?.proDataToProDataRate ?? null),
+            proDataRateCurrency: new UntypedFormControl(clientRate?.proDataToProDataRateCurrency ?? null),
+            consultantRate: new UntypedFormControl(clientRate?.consultantRate ?? null),
+            consultantRateCurrency: new UntypedFormControl(clientRate?.consultantCurrency ?? null),
+            editable: new UntypedFormControl(clientRate?.id ? false : true),
+            inUse: new UntypedFormControl(clientRate?.inUse ? clientRate?.inUse : false),
+            hidden: new UntypedFormControl(clientRate?.isHidden ?? false)
         });
         if (!clientRate?.id) {
             this.rateIsEditing = true;
@@ -160,8 +160,8 @@ export class ClientRatesAndFeesComponent implements OnInit, OnDestroy {
         this.clientSpecailRateForm.specialRates.push(form);
     }
 
-    get specialRates(): FormArray {
-        return this.clientSpecailRateForm.get('specialRates') as FormArray;
+    get specialRates(): UntypedFormArray {
+        return this.clientSpecailRateForm.get('specialRates') as UntypedFormArray;
     }
 
     removeSpecialRate(rateId: number, isUsed: boolean, index: number) {
@@ -247,21 +247,21 @@ export class ClientRatesAndFeesComponent implements OnInit, OnDestroy {
 
     addClientFee(clientFee?: ClientSpecialFeeDto) {
         const form = this._fb.group({
-            id: new FormControl(clientFee?.id ?? null),
-            feeName: new FormControl(clientFee?.internalName ?? null),
-            nameForInvoices: new FormControl(clientFee?.publicName ?? null),
-            feeFrequency: new FormControl(clientFee?.clientSpecialFeeFrequency ?? null),
-            feeSpecifiedAs: new FormControl(clientFee?.clientSpecialFeeSpecifiedAs ?? null),
-            clientRateValue: new FormControl(clientFee?.clientRate ?? null),
-            clientRateCurrency: new FormControl(clientFee?.clientRateCurrency ?? null),
-            proDataRate: new FormControl(clientFee?.prodataToProdataRate ?? null),
-            proDataRateCurrency: new FormControl(clientFee?.prodataToProdataRateCurrency ?? null),
-            consultantRate: new FormControl(clientFee?.consultantRate ?? null),
-            consultantRateCurrency: new FormControl(clientFee?.consultantCurrency ?? null),
-            category: new FormControl(null), // missing category in a response
-            editable: new FormControl(clientFee ? false : true),
-            inUse: new FormControl(clientFee?.inUse ? clientFee?.inUse : false),
-            hidden: new FormControl(clientFee?.isHidden ?? false)
+            id: new UntypedFormControl(clientFee?.id ?? null),
+            feeName: new UntypedFormControl(clientFee?.internalName ?? null),
+            nameForInvoices: new UntypedFormControl(clientFee?.publicName ?? null),
+            feeFrequency: new UntypedFormControl(clientFee?.clientSpecialFeeFrequency ?? null),
+            feeSpecifiedAs: new UntypedFormControl(clientFee?.clientSpecialFeeSpecifiedAs ?? null),
+            clientRateValue: new UntypedFormControl(clientFee?.clientRate ?? null),
+            clientRateCurrency: new UntypedFormControl(clientFee?.clientRateCurrency ?? null),
+            proDataRate: new UntypedFormControl(clientFee?.prodataToProdataRate ?? null),
+            proDataRateCurrency: new UntypedFormControl(clientFee?.prodataToProdataRateCurrency ?? null),
+            consultantRate: new UntypedFormControl(clientFee?.consultantRate ?? null),
+            consultantRateCurrency: new UntypedFormControl(clientFee?.consultantCurrency ?? null),
+            category: new UntypedFormControl(null), // missing category in a response
+            editable: new UntypedFormControl(clientFee ? false : true),
+            inUse: new UntypedFormControl(clientFee?.inUse ? clientFee?.inUse : false),
+            hidden: new UntypedFormControl(clientFee?.isHidden ?? false)
         });
         if (!clientFee?.id) {
             this.feeIsEditing = true;
@@ -269,8 +269,8 @@ export class ClientRatesAndFeesComponent implements OnInit, OnDestroy {
         this.clientFeesForm.clientFees.push(form);
     }
 
-    get clientFees(): FormArray {
-        return this.clientFeesForm.get('clientFees') as FormArray;
+    get clientFees(): UntypedFormArray {
+        return this.clientFeesForm.get('clientFees') as UntypedFormArray;
     }
 
     removeClientFee(feeId: number, isUsed: boolean, index: number) {
