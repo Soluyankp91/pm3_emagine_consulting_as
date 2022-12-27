@@ -376,6 +376,7 @@ export class CreateMasterTemplateComponent
                 switchMap((freeText: string) => {
                     return this._apiServiceProxy.simpleList2(
                         false,
+                        true, // FIXME: hardcoded
                         freeText,
                         1,
                         AUTOCOMPLETE_SEARCH_ITEMS_COUNT
@@ -423,6 +424,7 @@ export class CreateMasterTemplateComponent
                     this._apiServiceProxy
                         .simpleList2(
                             false,
+                            true, // FIXME: hardcoded
                             parentTemplate.name,
                             1,
                             AUTOCOMPLETE_SEARCH_ITEMS_COUNT
@@ -458,6 +460,7 @@ export class CreateMasterTemplateComponent
                     }
                     return this._apiServiceProxy.simpleList2(
                         false,
+                        true, // FIXME: hardcoded
                         val,
                         1,
                         AUTOCOMPLETE_SEARCH_ITEMS_COUNT

@@ -1,0 +1,12 @@
+@import "/src/app/shared/styles/config/_colors";
+@import "/src/app/shared/styles/config/_mixins";
+
+.workflow-responsible {
+    &--content {
+        //
+    }
+    &--header {
+        color: $medium-grey-color;
+        @include fontOpenSans(12px, 600);
+    }
+}

@@ -195,6 +195,7 @@ export class CreationComponent
             switchMap((searchInput) => {
                 return this._apiServiceProxy.simpleList2(
                     isClientTemplate,
+                    true, // FIXME: hardcoded
                     searchInput,
                     1,
                     20
