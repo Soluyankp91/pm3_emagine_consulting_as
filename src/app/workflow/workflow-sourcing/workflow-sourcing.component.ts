@@ -1,5 +1,5 @@
 import { Component, Injector, Input, OnDestroy, OnInit } from '@angular/core';
-import { FormArray, FormBuilder, FormControl, Validators } from '@angular/forms';
+import { UntypedFormArray, UntypedFormBuilder, UntypedFormControl, Validators } from '@angular/forms';
 import { ScrollToConfigOptions, ScrollToService } from '@nicky-lenaers/ngx-scroll-to';
 import { Subject } from 'rxjs';
 import { finalize, takeUntil } from 'rxjs/operators';
@@ -29,10 +29,10 @@ export class WorkflowSourcingComponent extends AppComponentBase implements OnIni
 
     constructor(
         injector: Injector,
-        private _fb: FormBuilder,
+        private _fb: UntypedFormBuilder,
         private _workflowServiceProxy: WorkflowServiceProxy,
         private _workflowDataService: WorkflowDataService,
-        private scrollToService: ScrollToService
+        private _scrollToService: ScrollToService
     ) {
         super(injector);
         this.sourcingConsultantsDataForm = new WorkflowSourcingConsultantsDataForm();
@@ -103,7 +103,7 @@ export class WorkflowSourcingComponent extends AppComponentBase implements OnIni
                     target: firstError,
                     offset: -115
                 }
-                this.scrollToService.scrollTo(config);
+                this._scrollToService.scrollTo(config);
             } else {
                 this.saveSourcingStepData(isDraft);
             }
@@ -165,15 +165,15 @@ export class WorkflowSourcingComponent extends AppComponentBase implements OnIni
 
     addConsultantDataToTerminationForm(consultant: ConsultantTerminationSourcingDataQueryDto) {
         const form = this._fb.group({
-            consultantId: new FormControl(consultant?.consultant?.id),
-            consultantData: new FormControl(consultant?.consultant),
-            cvUpdated: new FormControl(consultant.cvUpdated, Validators.required)
+            consultantId: new UntypedFormControl(consultant?.consultant?.id),
+            consultantData: new UntypedFormControl(consultant?.consultant),
+            cvUpdated: new UntypedFormControl(consultant.cvUpdated, Validators.required)
         });
         this.sourcingConsultantsDataForm.consultantTerminationSourcingData.push(form);
     }
 
-    get consultantTerminationSourcingData(): FormArray {
-        return this.sourcingConsultantsDataForm.get('consultantTerminationSourcingData') as FormArray;
+    get consultantTerminationSourcingData(): UntypedFormArray {
+        return this.sourcingConsultantsDataForm.get('consultantTerminationSourcingData') as UntypedFormArray;
     }
 
     getWorkflowSourcingStepConsultantTermination() {

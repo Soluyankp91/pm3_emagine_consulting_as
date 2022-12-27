@@ -168,6 +168,12 @@
         border: solid 5px transparent;
         border-radius: 9999px;
     }
+    .mat-option:hover:not(.mat-option-disabled),
+    .mat-option:focus:not(.mat-option-disabled),
+    .mat-option.mat-active,
+    .mat-option.mat-selected:not(.mat-option-disabled) {
+        background: #FAF9FB !important;
+    }
 }
 
 .pm-mat-select-pane {
