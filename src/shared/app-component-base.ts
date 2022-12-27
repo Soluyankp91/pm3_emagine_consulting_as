@@ -187,4 +187,13 @@ export abstract class AppComponentBase {
     displayNameFn(option: any) {
         return option?.name;
     }
+
+    displayFullNameFn(option: any) {
+        return option ? option?.firstName + ' ' + option?.lastName : '';
+    }
+
+    displayClientNameFn(option: any) {
+        return option?.clientName?.trim();
+    }
+
 }

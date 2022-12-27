@@ -1421,251 +1421,7 @@ export class WorkflowSalesComponent extends AppComponentBase implements OnInit, 
     }
 
     saveStartChangeOrExtendClientPeriodSales(isDraft: boolean) {
-        let input = new ClientPeriodSalesDataDto();
-        input.salesMainData = new SalesMainDataDto();
-        input.salesClientData = new SalesClientDataDto();
-        input.consultantSalesData = new Array<ConsultantSalesDataDto>();
-
-        input.salesMainData.projectTypeId = this.salesMainDataForm.projectType?.value?.id;
-        input.salesMainData.salesTypeId = this.salesMainDataForm.salesType?.value?.id;
-        input.salesMainData.deliveryTypeId = this.salesMainDataForm.deliveryType?.value?.id;
-        input.salesMainData.marginId = this.salesMainDataForm.margin?.value?.id;
-        input.salesMainData.projectCategoryId = this.salesMainDataForm.projectCategory?.value?.id;
-        input.salesMainData.projectDescription = this.salesMainDataForm.projectDescription?.value;
-        input.salesMainData.projectName = this.salesMainDataForm.projectName?.value;
-
-        input.salesMainData.discountId = this.salesMainDataForm.discounts?.value?.id;
-        input.salesMainData.salesAccountManagerIdValue = this.salesMainDataForm.salesAccountManagerIdValue?.value?.id;
-        input.salesMainData.commissionAccountManagerIdValue = this.salesMainDataForm.commissionAccountManagerIdValue?.value?.id;
-        input.salesMainData.customContractExpirationNotificationDate = this.salesMainDataForm.contractExpirationNotification?.value?.includes(999) ? this.salesMainDataForm.customContractExpirationNotificationDate?.value : null;
-        input.salesMainData.contractExpirationNotificationIntervalIds = this.salesMainDataForm.contractExpirationNotification?.value?.filter((x: number) => x !== 999);
-
-        input.salesMainData.remarks = this.salesMainDataForm.remarks?.value;
-        input.salesMainData.noRemarks = this.salesMainDataForm.noRemarks?.value;
-
-        input.salesMainData.commissions = new Array<CommissionDto>();
-        if (this.salesMainDataForm.commissions.value?.length) {
-            this.salesMainDataForm.commissions.value.forEach((commission: any) => {
-                let commissionInput = new CommissionDto();
-                commissionInput.id = commission.id;
-                commissionInput.commissionTypeId = commission.type?.id;
-                commissionInput.amount = commission.amount;
-                commissionInput.currencyId = commission.currency?.id;
-                commissionInput.commissionFrequencyId = commission.frequency?.id;
-                commissionInput.recipientTypeId = commission.recipientType?.id;
-                switch (commission.recipientType?.id) {
-                    case 1: // Supplier
-                        commissionInput.supplierId = commission.recipient?.supplierId;
-                        break;
-                    case 2: //Consultant
-                        commissionInput.consultantId = commission.recipient?.id;
-                        break;
-                    case 3: // client
-                        commissionInput.clientId = commission.recipient?.clientId;
-                        break;
-                    case 4: // PDC entity
-                        commissionInput.legalEntityId = commission.recipient?.id;
-                        break;
-                }
-                // id = 2 == 'One time'
-                if (commission.frequency?.id === 2) {
-                    commissionInput.oneTimeDate = commission.oneTimeDate;
-                }
-
-                input.salesMainData!.commissions?.push(commissionInput);
-            });
-        }
-
-        input.salesClientData.differentEndClient = this.salesClientDataForm.differentEndClient?.value;
-        input.salesClientData.directClientIdValue = this.salesClientDataForm.directClientIdValue?.value?.clientId;
-        input.salesClientData.endClientIdValue = this.salesClientDataForm.endClientIdValue?.value?.clientId;
-        input.startDate = this.salesClientDataForm.clientContractStartDate?.value;
-        input.noEndDate = this.salesClientDataForm.clientContractNoEndDate?.value;
-        input.endDate = this.salesClientDataForm.clientContractEndDate?.value;
-        input.salesClientData.noClientExtensionOption = this.salesClientDataForm.noClientExtensionOption?.value;
-        input.salesClientData.clientExtensionDurationId = this.salesClientDataForm.clientExtensionDuration?.value?.id;
-        input.salesClientData.clientExtensionDeadlineId = this.salesClientDataForm.clientExtensionDeadline?.value?.id;
-        input.salesClientData.clientExtensionSpecificDate = this.salesClientDataForm.clientExtensionEndDate?.value;
-        input.salesClientData.clientTimeReportingCapId = this.salesClientDataForm.capOnTimeReporting?.value?.id;
-        input.salesClientData.clientTimeReportingCapMaxValue = this.salesClientDataForm.capOnTimeReportingValue?.value;
-        input.salesClientData.pdcInvoicingEntityId = this.salesClientDataForm.pdcInvoicingEntityId?.value?.id;
-
-        input.salesClientData.clientRate = new ClientRateDto();
-        input.salesClientData.clientRate.isTimeBasedRate = this.salesClientDataForm.clientRateAndInvoicing?.value?.id === 1; // 1: 'Time based';
-        input.salesClientData.clientRate.isFixedRate = this.salesClientDataForm.clientRateAndInvoicing?.value?.id === 2; // 2: 'Fixed';
-        input.salesClientData.clientRate.currencyId = this.salesClientDataForm.clientCurrency?.value?.id
-        input.salesClientData.clientRate.invoiceCurrencyId = this.salesClientDataForm.clientInvoiceCurrency?.value?.id;
-        input.salesClientData.clientRate.normalRate = this.salesClientDataForm.clientPrice?.value;
-        input.salesClientData.clientRate.rateUnitTypeId = this.salesClientDataForm.rateUnitTypeId?.value?.id;
-        input.salesClientData.clientRate.invoiceFrequencyId = this.salesClientDataForm.clientInvoiceFrequency?.value?.id;
-        input.salesClientData.clientRate.invoicingTimeId = this.salesClientDataForm.clientInvoiceTime?.value?.id;
-        input.salesClientData.clientRate.manualDate = this.salesClientDataForm.clientInvoicingDate?.value;
-
-        input.salesClientData.noInvoicingReferenceNumber = this.salesClientDataForm.invoicingReferenceNumber?.value ? false : true;
-        input.salesClientData.invoicingReferenceNumber = this.salesClientDataForm.invoicingReferenceNumber?.value;
-        input.salesClientData.clientInvoicingRecipientSameAsDirectClient = this.salesClientDataForm.clientInvoicingRecipientSameAsDirectClient?.value;
-        input.salesClientData.clientInvoicingRecipientIdValue = this.salesClientDataForm.clientInvoicingRecipientIdValue?.value?.clientId;
-        input.salesClientData.invoicingReferencePersonIdValue = this.salesClientDataForm.invoicePaperworkContactIdValue?.value?.id;
-
-        if (this.salesClientDataForm.clientRates.value.length) {
-            input.salesClientData.periodClientSpecialRates = new Array<PeriodClientSpecialRateDto>();
-            this.salesClientDataForm.clientRates.value.forEach((rate: any) => {
-                const clientRate = new PeriodClientSpecialRateDto();
-                clientRate.id = rate.id;
-                clientRate.clientSpecialRateId = rate.clientSpecialRateId;
-                clientRate.rateName = rate.rateName;
-                clientRate.reportingUnit = rate.reportingUnit;
-                clientRate.clientRate = rate.clientRateValue;
-                clientRate.clientRateCurrencyId = rate.clientRateCurrency?.id;
-                input.salesClientData!.periodClientSpecialRates?.push(clientRate);
-            });
-        } else {
-            input.salesClientData.noSpecialRate = true;
-        }
-
-        if (this.salesClientDataForm.clientFees.value.length) {
-            input.salesClientData.periodClientSpecialFees = new Array<PeriodClientSpecialFeeDto>();
-            this.salesClientDataForm.clientFees.value.forEach((fee: any) => {
-                const clientFee = new PeriodClientSpecialFeeDto();
-                clientFee.id = fee.id;
-                clientFee.clientSpecialFeeId = fee.clientSpecialFeeId;
-                clientFee.feeName = fee.feeName;
-                clientFee.frequency = fee.feeFrequency;
-                clientFee.clientRate = fee.clientRateValue;
-                clientFee.clientRateCurrencyId = fee.clientRateCurrency?.id;
-                input.salesClientData!.periodClientSpecialFees?.push(clientFee);
-            });
-        } else {
-            input.salesClientData.noSpecialFee = true;
-        }
-
-        input.salesClientData.evaluationsReferencePersonIdValue = this.salesClientDataForm.evaluationsReferencePersonIdValue?.value?.id;
-        input.salesClientData.evaluationsDisabled = this.salesClientDataForm.evaluationsDisabled?.value;
-        input.salesClientData.evaluationsDisabledReason = this.salesClientDataForm.evaluationsDisabledReason?.value;
-        input.salesClientData.noSpecialContractTerms = this.salesClientDataForm.noSpecialContractTerms?.value;
-        input.salesClientData.specialContractTerms = this.salesClientDataForm.specialContractTerms?.value;
-
-        input.salesClientData.contractSigners = new Array<ContractSignerDto>();
-        if (this.salesClientDataForm.contractSigners.value?.length) {
-            this.salesClientDataForm.contractSigners.value.forEach((signer: any) => {
-                let signerInput = new ContractSignerDto();
-                signerInput.signOrder = signer.clientSequence;
-                signerInput.contactId = signer.clientContact?.id;
-                signerInput.contact = signer.clientContact;
-                signerInput.signerRoleId = signer.clientRole?.id;
-                input.salesClientData!.contractSigners?.push(signerInput);
-            });
-        }
-        input.consultantSalesData = new Array<ConsultantSalesDataDto>();
-        if (this.consultantsForm.consultantData.value?.length) {
-            this.consultantsForm.consultantData.value.forEach((consultant: any) => {
-                let consultantInput = new ConsultantSalesDataDto();
-                consultantInput.employmentTypeId = consultant.employmentType?.id;
-                if (consultant.employmentType?.id === EmploymentTypes.FeeOnly || consultant.employmentType?.id === EmploymentTypes.Recruitment) {
-                    consultantInput.nameOnly = consultant.consultantNameOnly;
-                    consultantInput.consultantPeriodId = consultant.consultantPeriodId;
-                } else {
-                    consultantInput.consultantId = consultant.consultantName?.consultant?.id
-                    consultantInput.soldRequestConsultantId = consultant.consultantName?.sourcingRequestConsultantId;
-                    consultantInput.consultantPeriodId = consultant.consultantPeriodId;
-                    consultantInput.consultant = new ConsultantResultDto();
-                    consultantInput.consultant.id = consultant.consultantName?.consultant?.id
-                    consultantInput.consultant.name = consultant.consultantName?.consultant?.name;
-                    consultantInput.consultant.legacyId = consultant.consultantName?.consultant?.legacyId;
-                    consultantInput.consultant.companyName = consultant.consultantName?.consultant?.companyName;
-                    consultantInput.consultant.tenantId = consultant.consultantName?.consultant?.tenantId;
-                    consultantInput.consultant.externalId = consultant.consultantName?.consultant?.externalId;
-                    consultantInput.consultant.city = consultant.consultantName?.consultant?.city;
-                    consultantInput.consultant.countryId = consultant.consultantName?.consultant?.contryId;
-
-                    consultantInput.requestId = consultant.consultantName?.consultant?.sourcingRequestId;
-
-                    consultantInput.durationSameAsClientPeriod = consultant.consultantProjectDurationSameAsClient;
-                    consultantInput.startDate = consultant.consultantProjectStartDate;
-                    consultantInput.noEndDate = consultant.consultantProjectNoEndDate;
-                    consultantInput.endDate = consultant.consultantProjectEndDate;
-
-                    consultantInput.isOnsiteWorkplace = consultant.consultantIsOnsiteWorkplace;
-                    consultantInput.onsiteClientId = consultant.consultantWorkplaceClientAddress?.clientId;
-                    consultantInput.percentageOnSite = consultant.consultantWorkplacePercentageOnSite;
-
-                    consultantInput.isEmagineOfficeWorkplace = consultant.consultantIsEmagineOfficeWorkplace;
-                    consultantInput.emagineOfficeId = consultant.consultantWorkplaceEmagineOffice?.id;
-
-                    consultantInput.isRemoteWorkplace = consultant.consultantIsRemoteWorkplace;
-                    consultantInput.remoteAddressCountryId = consultant.consultantWorkplaceRemote?.id;
-
-                    consultantInput.noExpectedWorkload = consultant.noExpectedWorkload;
-                    consultantInput.expectedWorkloadHours = consultant.expectedWorkloadHours;
-                    consultantInput.expectedWorkloadUnitId = consultant.expectedWorkloadUnitId?.id;
-                    consultantInput.consultantTimeReportingCapId = consultant.consultantCapOnTimeReporting?.id;
-                    consultantInput.consultantTimeReportingCapMaxValue = consultant.consultantTimeReportingCapMaxValue;
-                    consultantInput.pdcPaymentEntityId = consultant.consultantProdataEntity?.id;
-
-                    consultantInput.consultantRate = new ConsultantRateDto();
-                    consultantInput.consultantRate.isTimeBasedRate = consultant.consultantPaymentType?.id === 1; // 1: 'Time based';
-                    consultantInput.consultantRate.isFixedRate = consultant.consultantPaymentType?.id === 2;  // 2: 'Fixed';
-                    consultantInput.consultantRate.normalRate = consultant.consultantRate;
-                    consultantInput.consultantRate.currencyId = consultant.consultantRateCurrency?.id;
-                    consultantInput.consultantRate.rateUnitTypeId = consultant.consultantRateUnitType?.id;
-                    consultantInput.consultantRate.prodataToProdataRate = consultant.consultantPDCRate;
-                    consultantInput.consultantRate.prodataToProdataCurrencyId = consultant.consultantPDCRateCurrency?.id;
-                    consultantInput.consultantRate.prodataToProdataInvoiceCurrencyId = consultant.prodataToProdataInvoiceCurrency?.id;
-                    if (consultantInput.consultantRate.isTimeBasedRate) {
-                        consultantInput.consultantRate.invoiceFrequencyId = consultant.consultantInvoicingFrequency?.id;
-                    }
-                    if (consultantInput.consultantRate.isFixedRate) {
-                        consultantInput.consultantRate.invoicingTimeId = consultant.consultantInvoicingTime?.id;
-                    }
-                    if (consultant.consultantInvoicingTime?.name === 'Manual date') {
-                        consultantInput.consultantRate.manualDate = consultant.consultantInvoicingManualDate;
-                    }
-
-                    if (consultant.specialRates.length) {
-                        consultantInput.periodConsultantSpecialRates = new Array<PeriodConsultantSpecialRateDto>();
-                        for (let rate of consultant.specialRates) {
-                            const consultantSpecialRate = new PeriodConsultantSpecialRateDto();
-                            consultantSpecialRate.id = rate.id;
-                            consultantSpecialRate.clientSpecialRateId = rate.clientSpecialRateId;
-                            consultantSpecialRate.rateName = rate.rateName;
-                            consultantSpecialRate.reportingUnit = rate.reportingUnit;
-                            consultantSpecialRate.prodataToProdataRate = rate.prodataToProdataRate;
-                            consultantSpecialRate.prodataToProdataRateCurrencyId = rate.prodataToProdataRateCurrency?.id;
-                            consultantSpecialRate.consultantRate = rate.consultantRate;
-                            consultantSpecialRate.consultantRateCurrencyId = rate.consultantRateCurrency?.id;
-                            consultantInput.periodConsultantSpecialRates.push(consultantSpecialRate);
-                        }
-                    } else {
-                        consultantInput.noSpecialRate = true;
-                    }
-
-                    if (consultant.specialFees.length) {
-                        consultantInput.periodConsultantSpecialFees = new Array<PeriodConsultantSpecialFeeDto>();
-                        for (let fee of consultant.specialFees) {
-                            const consultantSpecialFee = new PeriodConsultantSpecialFeeDto();
-                            consultantSpecialFee.id = fee.id;
-                            consultantSpecialFee.clientSpecialFeeId = fee.clientSpecialFeeId;
-                            consultantSpecialFee.feeName = fee.feeName;
-                            consultantSpecialFee.frequency = fee.frequency;
-                            consultantSpecialFee.prodataToProdataRate = fee.prodataToProdataRate;
-                            consultantSpecialFee.prodataToProdataRateCurrencyId = fee.prodataToProdataRateCurrency?.id;
-                            consultantSpecialFee.consultantRate = fee.consultantRate;
-                            consultantSpecialFee.consultantRateCurrencyId = fee.consultantRateCurrency?.id;
-                            consultantInput.periodConsultantSpecialFees.push(consultantSpecialFee);
-                        }
-                    } else {
-                        consultantInput.noSpecialFee = true;
-                    }
-
-                    consultantInput.noSpecialContractTerms = consultant.consultantSpecialContractTermsNone;
-                    consultantInput.specialContractTerms = consultant.consultantSpecialContractTerms;
-                    consultantInput.deliveryManagerSameAsAccountManager = consultant.deliveryManagerSameAsAccountManager;
-                    consultantInput.deliveryAccountManagerIdValue = consultant.deliveryAccountManager?.id;
-                }
-
-                input.consultantSalesData!.push(consultantInput);
-            });
-        }
+        let input = this._packStartClientPeriodData();
         this.showMainSpinner();
         if (isDraft) {
             this._clientPeriodService.clientSalesPUT(this.periodId!, input)
@@ -2448,28 +2204,6 @@ export class WorkflowSalesComponent extends AppComponentBase implements OnInit, 
         return listOfItems && selectedItem && listOfItems.id === selectedItem.id;;
     }
 
-    displayNameFn(option: any) {
-        return option?.name;
-    }
-
-    displayConsultantNameFn(option: any) {
-        return option?.consultant?.name;
-    }
-
-    displayInternalNameFn(option: any) {
-        return option?.internalName;
-    }
-
-    displayClientNameFn(option: any) {
-        return option?.clientName?.trim();
-    }
-
-    displayRecipient(recipientTypeName: string) {
-        if (recipientTypeName === 'Client') {
-            return
-        }
-    }
-
     displayRecipientFn(option: any) {
         if (option?.name) {
             return option?.name;
@@ -2478,10 +2212,6 @@ export class WorkflowSalesComponent extends AppComponentBase implements OnInit, 
         } else if (option?.supplierName) {
             return option?.supplierName;
         }
-    }
-
-    displayFullNameFn(option: any) {
-        return option ? option?.firstName + ' ' + option?.lastName : '';
     }
 
     formatExpirationNotificationsForDisplay(data: number[] | undefined): string {
@@ -2582,6 +2312,255 @@ export class WorkflowSalesComponent extends AppComponentBase implements OnInit, 
     focusOutMethod(){
         let b = document.getElementsByTagName('mat-drawer-content')[0] as HTMLElement;
         b.style.overflow = "auto";
+    }
+
+    private _packStartClientPeriodData(): ClientPeriodSalesDataDto {
+        let input = new ClientPeriodSalesDataDto();
+        input.salesMainData = new SalesMainDataDto();
+        input.salesClientData = new SalesClientDataDto();
+        input.consultantSalesData = new Array<ConsultantSalesDataDto>();
+
+        input.salesMainData.projectTypeId = this.salesMainDataForm.projectType?.value?.id;
+        input.salesMainData.salesTypeId = this.salesMainDataForm.salesType?.value?.id;
+        input.salesMainData.deliveryTypeId = this.salesMainDataForm.deliveryType?.value?.id;
+        input.salesMainData.marginId = this.salesMainDataForm.margin?.value?.id;
+        input.salesMainData.projectCategoryId = this.salesMainDataForm.projectCategory?.value?.id;
+        input.salesMainData.projectDescription = this.salesMainDataForm.projectDescription?.value;
+        input.salesMainData.projectName = this.salesMainDataForm.projectName?.value;
+
+        input.salesMainData.discountId = this.salesMainDataForm.discounts?.value?.id;
+        input.salesMainData.salesAccountManagerIdValue = this.salesMainDataForm.salesAccountManagerIdValue?.value?.id;
+        input.salesMainData.commissionAccountManagerIdValue = this.salesMainDataForm.commissionAccountManagerIdValue?.value?.id;
+        input.salesMainData.customContractExpirationNotificationDate = this.salesMainDataForm.contractExpirationNotification?.value?.includes(999) ? this.salesMainDataForm.customContractExpirationNotificationDate?.value : null;
+        input.salesMainData.contractExpirationNotificationIntervalIds = this.salesMainDataForm.contractExpirationNotification?.value?.filter((x: number) => x !== 999);
+
+        input.salesMainData.remarks = this.salesMainDataForm.remarks?.value;
+        input.salesMainData.noRemarks = this.salesMainDataForm.noRemarks?.value;
+
+        input.salesMainData.commissions = new Array<CommissionDto>();
+        if (this.salesMainDataForm.commissions.value?.length) {
+            this.salesMainDataForm.commissions.value.forEach((commission: any) => {
+                let commissionInput = new CommissionDto();
+                commissionInput.id = commission.id;
+                commissionInput.commissionTypeId = commission.type?.id;
+                commissionInput.amount = commission.amount;
+                commissionInput.currencyId = commission.currency?.id;
+                commissionInput.commissionFrequencyId = commission.frequency?.id;
+                commissionInput.recipientTypeId = commission.recipientType?.id;
+                switch (commission.recipientType?.id) {
+                    case 1: // Supplier
+                        commissionInput.supplierId = commission.recipient?.supplierId;
+                        break;
+                    case 2: //Consultant
+                        commissionInput.consultantId = commission.recipient?.id;
+                        break;
+                    case 3: // client
+                        commissionInput.clientId = commission.recipient?.clientId;
+                        break;
+                    case 4: // PDC entity
+                        commissionInput.legalEntityId = commission.recipient?.id;
+                        break;
+                }
+                // id = 2 == 'One time'
+                if (commission.frequency?.id === 2) {
+                    commissionInput.oneTimeDate = commission.oneTimeDate;
+                }
+
+                input.salesMainData!.commissions?.push(commissionInput);
+            });
+        }
+
+        input.salesClientData.differentEndClient = this.salesClientDataForm.differentEndClient?.value;
+        input.salesClientData.directClientIdValue = this.salesClientDataForm.directClientIdValue?.value?.clientId;
+        input.salesClientData.endClientIdValue = this.salesClientDataForm.endClientIdValue?.value?.clientId;
+        input.startDate = this.salesClientDataForm.clientContractStartDate?.value;
+        input.noEndDate = this.salesClientDataForm.clientContractNoEndDate?.value;
+        input.endDate = this.salesClientDataForm.clientContractEndDate?.value;
+        input.salesClientData.noClientExtensionOption = this.salesClientDataForm.noClientExtensionOption?.value;
+        input.salesClientData.clientExtensionDurationId = this.salesClientDataForm.clientExtensionDuration?.value?.id;
+        input.salesClientData.clientExtensionDeadlineId = this.salesClientDataForm.clientExtensionDeadline?.value?.id;
+        input.salesClientData.clientExtensionSpecificDate = this.salesClientDataForm.clientExtensionEndDate?.value;
+        input.salesClientData.clientTimeReportingCapId = this.salesClientDataForm.capOnTimeReporting?.value?.id;
+        input.salesClientData.clientTimeReportingCapMaxValue = this.salesClientDataForm.capOnTimeReportingValue?.value;
+        input.salesClientData.pdcInvoicingEntityId = this.salesClientDataForm.pdcInvoicingEntityId?.value?.id;
+
+        input.salesClientData.clientRate = new ClientRateDto();
+        input.salesClientData.clientRate.isTimeBasedRate = this.salesClientDataForm.clientRateAndInvoicing?.value?.id === 1; // 1: 'Time based';
+        input.salesClientData.clientRate.isFixedRate = this.salesClientDataForm.clientRateAndInvoicing?.value?.id === 2; // 2: 'Fixed';
+        input.salesClientData.clientRate.currencyId = this.salesClientDataForm.clientCurrency?.value?.id
+        input.salesClientData.clientRate.invoiceCurrencyId = this.salesClientDataForm.clientInvoiceCurrency?.value?.id;
+        input.salesClientData.clientRate.normalRate = this.salesClientDataForm.clientPrice?.value;
+        input.salesClientData.clientRate.rateUnitTypeId = this.salesClientDataForm.rateUnitTypeId?.value?.id;
+        input.salesClientData.clientRate.invoiceFrequencyId = this.salesClientDataForm.clientInvoiceFrequency?.value?.id;
+        input.salesClientData.clientRate.invoicingTimeId = this.salesClientDataForm.clientInvoiceTime?.value?.id;
+        input.salesClientData.clientRate.manualDate = this.salesClientDataForm.clientInvoicingDate?.value;
+
+        input.salesClientData.noInvoicingReferenceNumber = this.salesClientDataForm.invoicingReferenceNumber?.value ? false : true;
+        input.salesClientData.invoicingReferenceNumber = this.salesClientDataForm.invoicingReferenceNumber?.value;
+        input.salesClientData.clientInvoicingRecipientSameAsDirectClient = this.salesClientDataForm.clientInvoicingRecipientSameAsDirectClient?.value;
+        input.salesClientData.clientInvoicingRecipientIdValue = this.salesClientDataForm.clientInvoicingRecipientIdValue?.value?.clientId;
+        input.salesClientData.invoicingReferencePersonIdValue = this.salesClientDataForm.invoicePaperworkContactIdValue?.value?.id;
+
+        if (this.salesClientDataForm.clientRates.value.length) {
+            input.salesClientData.periodClientSpecialRates = new Array<PeriodClientSpecialRateDto>();
+            this.salesClientDataForm.clientRates.value.forEach((rate: any) => {
+                const clientRate = new PeriodClientSpecialRateDto();
+                clientRate.id = rate.id;
+                clientRate.clientSpecialRateId = rate.clientSpecialRateId;
+                clientRate.rateName = rate.rateName;
+                clientRate.reportingUnit = rate.reportingUnit;
+                clientRate.clientRate = rate.clientRateValue;
+                clientRate.clientRateCurrencyId = rate.clientRateCurrency?.id;
+                input.salesClientData!.periodClientSpecialRates?.push(clientRate);
+            });
+        } else {
+            input.salesClientData.noSpecialRate = true;
+        }
+
+        if (this.salesClientDataForm.clientFees.value.length) {
+            input.salesClientData.periodClientSpecialFees = new Array<PeriodClientSpecialFeeDto>();
+            this.salesClientDataForm.clientFees.value.forEach((fee: any) => {
+                const clientFee = new PeriodClientSpecialFeeDto();
+                clientFee.id = fee.id;
+                clientFee.clientSpecialFeeId = fee.clientSpecialFeeId;
+                clientFee.feeName = fee.feeName;
+                clientFee.frequency = fee.feeFrequency;
+                clientFee.clientRate = fee.clientRateValue;
+                clientFee.clientRateCurrencyId = fee.clientRateCurrency?.id;
+                input.salesClientData!.periodClientSpecialFees?.push(clientFee);
+            });
+        } else {
+            input.salesClientData.noSpecialFee = true;
+        }
+
+        input.salesClientData.evaluationsReferencePersonIdValue = this.salesClientDataForm.evaluationsReferencePersonIdValue?.value?.id;
+        input.salesClientData.evaluationsDisabled = this.salesClientDataForm.evaluationsDisabled?.value;
+        input.salesClientData.evaluationsDisabledReason = this.salesClientDataForm.evaluationsDisabledReason?.value;
+        input.salesClientData.noSpecialContractTerms = this.salesClientDataForm.noSpecialContractTerms?.value;
+        input.salesClientData.specialContractTerms = this.salesClientDataForm.specialContractTerms?.value;
+
+        input.salesClientData.contractSigners = new Array<ContractSignerDto>();
+        if (this.salesClientDataForm.contractSigners.value?.length) {
+            this.salesClientDataForm.contractSigners.value.forEach((signer: any) => {
+                let signerInput = new ContractSignerDto();
+                signerInput.signOrder = signer.clientSequence;
+                signerInput.contactId = signer.clientContact?.id;
+                signerInput.contact = signer.clientContact;
+                signerInput.signerRoleId = signer.clientRole?.id;
+                input.salesClientData!.contractSigners?.push(signerInput);
+            });
+        }
+        input.consultantSalesData = new Array<ConsultantSalesDataDto>();
+        if (this.consultantsForm.consultantData.value?.length) {
+            this.consultantsForm.consultantData.value.forEach((consultant: any) => {
+                let consultantInput = new ConsultantSalesDataDto();
+                consultantInput.employmentTypeId = consultant.employmentType?.id;
+                if (consultant.employmentType?.id === EmploymentTypes.FeeOnly || consultant.employmentType?.id === EmploymentTypes.Recruitment) {
+                    consultantInput.nameOnly = consultant.consultantNameOnly;
+                    consultantInput.consultantPeriodId = consultant.consultantPeriodId;
+                } else {
+                    consultantInput.consultantId = consultant.consultantName?.consultant?.id
+                    consultantInput.soldRequestConsultantId = consultant.consultantName?.sourcingRequestConsultantId;
+                    consultantInput.consultantPeriodId = consultant.consultantPeriodId;
+                    consultantInput.consultant = new ConsultantResultDto();
+                    consultantInput.consultant.id = consultant.consultantName?.consultant?.id
+                    consultantInput.consultant.name = consultant.consultantName?.consultant?.name;
+                    consultantInput.consultant.legacyId = consultant.consultantName?.consultant?.legacyId;
+                    consultantInput.consultant.companyName = consultant.consultantName?.consultant?.companyName;
+                    consultantInput.consultant.tenantId = consultant.consultantName?.consultant?.tenantId;
+                    consultantInput.consultant.externalId = consultant.consultantName?.consultant?.externalId;
+                    consultantInput.consultant.city = consultant.consultantName?.consultant?.city;
+                    consultantInput.consultant.countryId = consultant.consultantName?.consultant?.contryId;
+
+                    consultantInput.requestId = consultant.consultantName?.consultant?.sourcingRequestId;
+
+                    consultantInput.durationSameAsClientPeriod = consultant.consultantProjectDurationSameAsClient;
+                    consultantInput.startDate = consultant.consultantProjectStartDate;
+                    consultantInput.noEndDate = consultant.consultantProjectNoEndDate;
+                    consultantInput.endDate = consultant.consultantProjectEndDate;
+
+                    consultantInput.isOnsiteWorkplace = consultant.consultantIsOnsiteWorkplace;
+                    consultantInput.onsiteClientId = consultant.consultantWorkplaceClientAddress?.clientId;
+                    consultantInput.percentageOnSite = consultant.consultantWorkplacePercentageOnSite;
+
+                    consultantInput.isEmagineOfficeWorkplace = consultant.consultantIsEmagineOfficeWorkplace;
+                    consultantInput.emagineOfficeId = consultant.consultantWorkplaceEmagineOffice?.id;
+
+                    consultantInput.isRemoteWorkplace = consultant.consultantIsRemoteWorkplace;
+                    consultantInput.remoteAddressCountryId = consultant.consultantWorkplaceRemote?.id;
+
+                    consultantInput.noExpectedWorkload = consultant.noExpectedWorkload;
+                    consultantInput.expectedWorkloadHours = consultant.expectedWorkloadHours;
+                    consultantInput.expectedWorkloadUnitId = consultant.expectedWorkloadUnitId?.id;
+                    consultantInput.consultantTimeReportingCapId = consultant.consultantCapOnTimeReporting?.id;
+                    consultantInput.consultantTimeReportingCapMaxValue = consultant.consultantTimeReportingCapMaxValue;
+                    consultantInput.pdcPaymentEntityId = consultant.consultantProdataEntity?.id;
+
+                    consultantInput.consultantRate = new ConsultantRateDto();
+                    consultantInput.consultantRate.isTimeBasedRate = consultant.consultantPaymentType?.id === 1; // 1: 'Time based';
+                    consultantInput.consultantRate.isFixedRate = consultant.consultantPaymentType?.id === 2;  // 2: 'Fixed';
+                    consultantInput.consultantRate.normalRate = consultant.consultantRate;
+                    consultantInput.consultantRate.currencyId = consultant.consultantRateCurrency?.id;
+                    consultantInput.consultantRate.rateUnitTypeId = consultant.consultantRateUnitType?.id;
+                    consultantInput.consultantRate.prodataToProdataRate = consultant.consultantPDCRate;
+                    consultantInput.consultantRate.prodataToProdataCurrencyId = consultant.consultantPDCRateCurrency?.id;
+                    consultantInput.consultantRate.prodataToProdataInvoiceCurrencyId = consultant.prodataToProdataInvoiceCurrency?.id;
+                    if (consultantInput.consultantRate.isTimeBasedRate) {
+                        consultantInput.consultantRate.invoiceFrequencyId = consultant.consultantInvoicingFrequency?.id;
+                    }
+                    if (consultantInput.consultantRate.isFixedRate) {
+                        consultantInput.consultantRate.invoicingTimeId = consultant.consultantInvoicingTime?.id;
+                    }
+                    if (consultant.consultantInvoicingTime?.name === 'Manual date') {
+                        consultantInput.consultantRate.manualDate = consultant.consultantInvoicingManualDate;
+                    }
+
+                    if (consultant.specialRates.length) {
+                        consultantInput.periodConsultantSpecialRates = new Array<PeriodConsultantSpecialRateDto>();
+                        for (let rate of consultant.specialRates) {
+                            const consultantSpecialRate = new PeriodConsultantSpecialRateDto();
+                            consultantSpecialRate.id = rate.id;
+                            consultantSpecialRate.clientSpecialRateId = rate.clientSpecialRateId;
+                            consultantSpecialRate.rateName = rate.rateName;
+                            consultantSpecialRate.reportingUnit = rate.reportingUnit;
+                            consultantSpecialRate.prodataToProdataRate = rate.prodataToProdataRate;
+                            consultantSpecialRate.prodataToProdataRateCurrencyId = rate.prodataToProdataRateCurrency?.id;
+                            consultantSpecialRate.consultantRate = rate.consultantRate;
+                            consultantSpecialRate.consultantRateCurrencyId = rate.consultantRateCurrency?.id;
+                            consultantInput.periodConsultantSpecialRates.push(consultantSpecialRate);
+                        }
+                    } else {
+                        consultantInput.noSpecialRate = true;
+                    }
+
+                    if (consultant.specialFees.length) {
+                        consultantInput.periodConsultantSpecialFees = new Array<PeriodConsultantSpecialFeeDto>();
+                        for (let fee of consultant.specialFees) {
+                            const consultantSpecialFee = new PeriodConsultantSpecialFeeDto();
+                            consultantSpecialFee.id = fee.id;
+                            consultantSpecialFee.clientSpecialFeeId = fee.clientSpecialFeeId;
+                            consultantSpecialFee.feeName = fee.feeName;
+                            consultantSpecialFee.frequency = fee.frequency;
+                            consultantSpecialFee.prodataToProdataRate = fee.prodataToProdataRate;
+                            consultantSpecialFee.prodataToProdataRateCurrencyId = fee.prodataToProdataRateCurrency?.id;
+                            consultantSpecialFee.consultantRate = fee.consultantRate;
+                            consultantSpecialFee.consultantRateCurrencyId = fee.consultantRateCurrency?.id;
+                            consultantInput.periodConsultantSpecialFees.push(consultantSpecialFee);
+                        }
+                    } else {
+                        consultantInput.noSpecialFee = true;
+                    }
+
+                    consultantInput.noSpecialContractTerms = consultant.consultantSpecialContractTermsNone;
+                    consultantInput.specialContractTerms = consultant.consultantSpecialContractTerms;
+                    consultantInput.deliveryManagerSameAsAccountManager = consultant.deliveryManagerSameAsAccountManager;
+                    consultantInput.deliveryAccountManagerIdValue = consultant.deliveryAccountManager?.id;
+                }
+
+                input.consultantSalesData!.push(consultantInput);
+            });
+        }
+        return input;
     }
 
 }
