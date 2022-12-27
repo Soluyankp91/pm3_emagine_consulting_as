@@ -1,5 +1,5 @@
 import { Component, EventEmitter, Inject, Injector, OnInit, Output } from '@angular/core';
-import { FormControl } from '@angular/forms';
+import { UntypedFormControl } from '@angular/forms';
 import { MAT_DIALOG_DATA, MatDialogRef } from '@angular/material/dialog';
 import { AppComponentBase } from 'src/shared/app-component-base';
 import { ConsultantDiallogAction } from '../workflow-sales/workflow-sales.model';
@@ -13,12 +13,12 @@ export class WorkflowConsultantActionsDialogComponent extends AppComponentBase i
     @Output() onConfirmed: EventEmitter<any> = new EventEmitter<any>();
     @Output() onRejected: EventEmitter<any> = new EventEmitter<any>();
     // Change consultant
-    newCutoverDate = new FormControl(null);
-    newLegalContractRequired = new FormControl(false);
+    newCutoverDate = new UntypedFormControl(null);
+    newLegalContractRequired = new UntypedFormControl(false);
     // Extend consultant
-    startDate = new FormControl(null);
-    endDate = new FormControl(null);
-    noEndDate = new FormControl(false);
+    startDate = new UntypedFormControl(null);
+    endDate = new UntypedFormControl(null);
+    noEndDate = new UntypedFormControl(false);
     // Terminate consultant
     // TBD
 

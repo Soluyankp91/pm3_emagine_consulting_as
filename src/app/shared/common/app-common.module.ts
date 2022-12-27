@@ -7,7 +7,6 @@ import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { ConfirmationDialogComponent } from '../components/confirmation-dialog/confirmation-dialog.component';
 import { FileUploaderComponent } from '../components/file-uploader/file-uploader.component';
 import { FileDragAndDropDirective } from '../components/file-uploader/file-drag-and-drop.directive';
-import { ScrollToModule } from '@nicky-lenaers/ngx-scroll-to';
 import { NgScrollbarModule } from 'ngx-scrollbar';
 import { InternalLookupService } from './internal-lookup.service';
 import { ManagerSearchComponent } from '../components/manager-search/manager-search.component';
@@ -18,6 +17,7 @@ import { ValidatorComponent } from '../components/validator/validator.component'
 import { ReplacePipe } from 'src/shared/common/pipes/replace.pipe';
 import { ConsultantInformationComponent } from '../components/consultant-information/consultant-information.component';
 import { ExcludeIdsPipe } from 'src/shared/common/pipes/exclude-ids.pipe';
+import { ScrollToModule } from '@nicky-lenaers/ngx-scroll-to';
 
 @NgModule({
     declarations: [
@@ -39,8 +39,8 @@ import { ExcludeIdsPipe } from 'src/shared/common/pipes/exclude-ids.pipe';
         MaterialModule,
         FormsModule,
         ReactiveFormsModule,
-        ScrollToModule.forRoot(),
-        NgScrollbarModule
+        NgScrollbarModule,
+        ScrollToModule.forRoot()
     ],
     exports: [
         MaterialModule,
@@ -49,7 +49,6 @@ import { ExcludeIdsPipe } from 'src/shared/common/pipes/exclude-ids.pipe';
         FileDragAndDropDirective,
         FileUploaderComponent,
         ConfirmationDialogComponent,
-        ScrollToModule,
         NgScrollbarModule,
         ManagerSearchComponent,
         MomentFormatPipe,
@@ -58,14 +57,9 @@ import { ExcludeIdsPipe } from 'src/shared/common/pipes/exclude-ids.pipe';
         ValidatorComponent,
         ReplacePipe,
         ConsultantInformationComponent,
-        ExcludeIdsPipe
+        ExcludeIdsPipe,
+        ScrollToModule
     ],
-    providers: [
-        ErrorDialogService,
-        InternalLookupService,
-    ],
-    entryComponents: [
-        ErrorDialogComponent
-    ]
+    providers: [ErrorDialogService, InternalLookupService],
 })
-export class AppCommonModule { }
+export class AppCommonModule {}

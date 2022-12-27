@@ -1,6 +1,6 @@
 import { Component, Injector } from '@angular/core';
 import { OnDestroy, OnInit } from '@angular/core';
-import { FormControl } from '@angular/forms';
+import { UntypedFormControl } from '@angular/forms';
 import { AppComponentBase } from 'src/shared/app-component-base';
 import { merge, Subject } from 'rxjs';
 import { takeUntil, debounceTime, switchMap, finalize} from 'rxjs/operators';
@@ -16,8 +16,8 @@ import { ActivatedRoute } from '@angular/router';
 })
 export class WfResponsibleComponent extends AppComponentBase implements OnInit, OnDestroy {
     clientId: number;
-    contractStepResponsible = new FormControl(null, CustomValidators.autocompleteValidator(['id']));
-    financeStepResponsible = new FormControl(null, CustomValidators.autocompleteValidator(['id']));
+    contractStepResponsible = new UntypedFormControl(null, CustomValidators.autocompleteValidator(['id']));
+    financeStepResponsible = new UntypedFormControl(null, CustomValidators.autocompleteValidator(['id']));
     filteredAccountManagers: EmployeeDto[] = [];
     private _unsubscribe = new Subject();
     constructor(
