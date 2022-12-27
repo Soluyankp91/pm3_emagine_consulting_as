@@ -1,5 +1,5 @@
 import { Component, Injector, Input, OnDestroy, OnInit } from '@angular/core';
-import { FormArray, FormBuilder, FormControl } from '@angular/forms';
+import { UntypedFormArray, UntypedFormBuilder, UntypedFormControl } from '@angular/forms';
 import { ScrollToConfigOptions, ScrollToService } from '@nicky-lenaers/ngx-scroll-to';
 import { Subject } from 'rxjs';
 import { finalize, takeUntil } from 'rxjs/operators';
@@ -31,7 +31,7 @@ export class WorkflowFinancesComponent extends AppComponentBase implements OnIni
     private _unsubscribe = new Subject();
     constructor(
         injector: Injector,
-        private _fb: FormBuilder,
+        private _fb: UntypedFormBuilder,
         private _workflowDataService: WorkflowDataService,
         private _clientPeriodSerivce: ClientPeriodServiceProxy,
         private _consultantPeriodSerivce: ConsultantPeriodServiceProxy,
@@ -290,16 +290,16 @@ export class WorkflowFinancesComponent extends AppComponentBase implements OnIni
 
     addConsultantToForm(consultant: ConsultantPeriodFinanceDataDto) {
         const form = this._fb.group({
-            id: new FormControl(consultant.consultantId),
-            checkInvoicingSettingsOnConsultant: new FormControl(consultant.checkInvoicingSettingsOnConsultant),
-            creditorCreatedInNavision: new FormControl(consultant.creditorCreatedInNavision),
-            consultant: new FormControl(consultant?.consultant)
+            id: new UntypedFormControl(consultant.consultantId),
+            checkInvoicingSettingsOnConsultant: new UntypedFormControl(consultant.checkInvoicingSettingsOnConsultant),
+            creditorCreatedInNavision: new UntypedFormControl(consultant.creditorCreatedInNavision),
+            consultant: new UntypedFormControl(consultant?.consultant)
         });
         this.financesConsultantsForm.consultants.push(form);
     }
 
-    get consultants(): FormArray {
-        return this.financesConsultantsForm.get('consultants') as FormArray;
+    get consultants(): UntypedFormArray {
+        return this.financesConsultantsForm.get('consultants') as UntypedFormArray;
     }
 
     removeConsultant(index: number) {

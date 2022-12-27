@@ -1,5 +1,5 @@
 import { Component, EventEmitter, Inject, Injector, OnInit, Output } from '@angular/core';
-import { FormControl } from '@angular/forms';
+import { UntypedFormControl } from '@angular/forms';
 import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
 import { AppComponentBase } from 'src/shared/app-component-base';
 
@@ -12,9 +12,9 @@ export class CreateWorkflowDialogComponent extends AppComponentBase implements O
     @Output() onConfirmed: EventEmitter<any> = new EventEmitter<any>();
     @Output() onRejected: EventEmitter<any> = new EventEmitter<any>();
 
-    startDate = new FormControl();
-    endDate = new FormControl();
-    noEndDate = new FormControl(false);
+    startDate = new UntypedFormControl();
+    endDate = new UntypedFormControl();
+    noEndDate = new UntypedFormControl(false);
     constructor(
         injector: Injector,
         @Inject(MAT_DIALOG_DATA)

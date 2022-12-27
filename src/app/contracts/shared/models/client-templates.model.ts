@@ -1,24 +1,24 @@
-import { FormControl, FormGroup, Validators } from '@angular/forms';
+import { UntypedFormControl, UntypedFormGroup, Validators } from '@angular/forms';
 
-export class ClientTemplatesModel extends FormGroup {
+export class ClientTemplatesModel extends UntypedFormGroup {
     constructor() {
         super({
-            agreementType: new FormControl(null, [Validators.required]),
-            recipientTypeId: new FormControl(null, [Validators.required]),
-            clientId: new FormControl(null, [Validators.required]),
-            name: new FormControl(null, [Validators.required]),
-            agreementNameTemplate: new FormControl(null, [Validators.required]),
-            definition: new FormControl(null, []),
-            legalEntities: new FormControl(null, [Validators.required]),
-            salesTypes: new FormControl(null, [Validators.required]),
-            deliveryTypes: new FormControl(null, [Validators.required]),
-            contractTypes: new FormControl(null, [Validators.required]),
-            language: new FormControl(null, [Validators.required]),
-            note: new FormControl(null, []),
-            isSignatureRequired: new FormControl(null, []),
-            isEnabled: new FormControl(null, []),
-            selectedInheritedFiles: new FormControl(),
-            uploadedFiles: new FormControl(),
+            agreementType: new UntypedFormControl(null, [Validators.required]),
+            recipientTypeId: new UntypedFormControl(null, [Validators.required]),
+            clientId: new UntypedFormControl(null, [Validators.required]),
+            name: new UntypedFormControl(null, [Validators.required]),
+            agreementNameTemplate: new UntypedFormControl(null, [Validators.required]),
+            definition: new UntypedFormControl(null, []),
+            legalEntities: new UntypedFormControl(null, [Validators.required]),
+            salesTypes: new UntypedFormControl(null, [Validators.required]),
+            deliveryTypes: new UntypedFormControl(null, [Validators.required]),
+            contractTypes: new UntypedFormControl(null, [Validators.required]),
+            language: new UntypedFormControl(null, [Validators.required]),
+            note: new UntypedFormControl(null, []),
+            isSignatureRequired: new UntypedFormControl(null, []),
+            isEnabled: new UntypedFormControl(null, []),
+            selectedInheritedFiles: new UntypedFormControl(),
+            uploadedFiles: new UntypedFormControl(),
         });
     }
     get agreementType() {

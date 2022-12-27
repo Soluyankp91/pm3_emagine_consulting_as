@@ -1,5 +1,5 @@
 import { Component, Injector, OnDestroy, OnInit, ViewChild } from '@angular/core';
-import { FormControl } from '@angular/forms';
+import { UntypedFormControl } from '@angular/forms';
 import { MatTableDataSource } from '@angular/material/table';
 import { Router } from '@angular/router';
 import { Observable, Subject, Subscription } from 'rxjs';
@@ -33,8 +33,8 @@ export class ClientComponent extends AppComponentBase implements OnInit, OnDestr
     menuTopLeftPosition =  {x: 0, y: 0}
 
 
-    clientFilter = new FormControl();
-    accountManagerFilter = new FormControl();
+    clientFilter = new UntypedFormControl();
+    accountManagerFilter = new UntypedFormControl();
     clientsList: any[] = [];
     isDataLoading = false;
     countryList: SelectableCountry[] = [];
@@ -59,7 +59,7 @@ export class ClientComponent extends AppComponentBase implements OnInit, OnDestr
     selectedAccountManagers: SelectableEmployeeDto[] = [];
     filteredAccountManagers: SelectableEmployeeDto[] = [];
 
-    countryFilter = new FormControl(null);
+    countryFilter = new UntypedFormControl(null);
     selectedCountries: SelectableCountry[] = [];
     filteredCountries: Observable<SelectableCountry[] | undefined>;
 

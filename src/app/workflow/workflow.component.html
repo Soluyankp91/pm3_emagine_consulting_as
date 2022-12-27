@@ -103,7 +103,7 @@
                 </mat-menu>
 
                 <span class="workflow-list--filter-type-dropdown cursor-pointer u-mr--12" [matMenuTriggerFor]="syncStatuses" [ngClass]="{'selected-status': selectedSyncStateStatuses !== undefined && selectedSyncStateStatuses!.length > 0}">
-                    <span class="workflow-list--filter-type-dropdown__name" [ngSwitch]="selectedSyncStateStatuses?.length">
+                    <span class="workflow-list--filter-type-dropdown__name" [ngSwitch]="selectedSyncStateStatuses.length">
                         <ng-container *ngSwitchCase="0">
                             All sync statuses
                         </ng-container>

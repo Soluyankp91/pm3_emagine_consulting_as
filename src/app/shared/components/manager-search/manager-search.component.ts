@@ -1,5 +1,5 @@
 import { Component, EventEmitter, Injector, Input, OnDestroy, OnInit, Output, ViewChild } from '@angular/core';
-import { FormControl } from '@angular/forms';
+import { UntypedFormControl } from '@angular/forms';
 import { MatMenuTrigger } from '@angular/material/menu';
 import { Observable, Subject } from 'rxjs';
 import { debounceTime, finalize, switchMap, takeUntil } from 'rxjs/operators';
@@ -33,7 +33,7 @@ export class ManagerSearchComponent extends AppComponentBase implements OnInit, 
 
     managerStatuses = ManagerStatus;
 
-    managerFilter = new FormControl('');
+    managerFilter = new UntypedFormControl('');
     filteredManagers: any[] = [];
     private _unsubscribe = new Subject();
     constructor(
