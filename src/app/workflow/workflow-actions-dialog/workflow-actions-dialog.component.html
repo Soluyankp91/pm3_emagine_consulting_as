@@ -65,7 +65,7 @@
                 <ng-container formArrayName="consultants">
                     <div fxLayout="row" fxLayoutAlign="space-between center" class="u-w--100" *ngFor="let consultant of changeWorkflowForm.consultants.controls; index as i" [formGroupName]="i">
                         <div fxLayout="row" fxLayoutAlign="start center" class="text-truncate-ellipsis u-mr--12">
-                            <img class="border-rounded-50 u-mr--12 image-thumbnail-small" [src]="consultantPhotoUrl + consultant.value?.externalId + '.jpg'" loading="lazy" appImageFallback />
+                            <img class="border-rounded-50 u-mr--12 image-thumbnail-small" [ngSrc]="consultantPhotoUrl + consultant.value?.externalId + '.jpg'" width="35" height="35" appImageFallback />
                             <p class="workflow-change-dialog--consultant-name text-truncate-ellipsis" fxFlex="75%">
                                 {{consultant?.value?.consulantName}}
                             </p>
@@ -121,7 +121,7 @@
                     <div fxLayout="row" fxLayoutAlign="start center" class="u-w--100" *ngFor="let consultant of extendWorkflowForm.consultants.controls; index as i" [formGroupName]="i">
                         <mat-checkbox color="accent" name="extendConsultant" formControlName="extendConsultant" class="black-checkbox u-mr--16">
                             <div fxLayout="row" fxLayoutAlign="start center" class="text-truncate-ellipsis u-mr--12">
-                                <img class="workflow-change-dialog--consultant-img u-mr--12" [src]="consultantPhotoUrl + consultant.value?.externalId + '.jpg'" loading="lazy" appImageFallback />
+                                <img class="workflow-change-dialog--consultant-img u-mr--12" [ngSrc]="consultantPhotoUrl + consultant.value?.externalId + '.jpg'" width="35" height="35" appImageFallback />
                                 <p class="workflow-change-dialog--consultant-name text-truncate-ellipsis" fxFlex="75%">
                                     {{consultant?.value?.consulantName}}
                                 </p>

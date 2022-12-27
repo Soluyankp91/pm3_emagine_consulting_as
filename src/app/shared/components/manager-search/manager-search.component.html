@@ -1,14 +1,18 @@
 <div class="manager-search">
     <ng-container *ngIf="readonly">
         <div class="manager-search--image-wrapper">
-            <img class="border-rounded-50" [width]="width" [height]="height" [matTooltip]="responsiblePerson?.name!" matTooltipClass="white-tooltip" [src]="employeePhotoUrl + responsiblePerson?.externalId! + '.jpg'" loading="lazy" appImageFallback />
+            <ng-container *ngIf="responsiblePerson?.externalId">
+                <img class="border-rounded-50" [width]="width" [height]="height" [matTooltip]="responsiblePerson.name!" matTooltipClass="white-tooltip" [ngSrc]="employeePhotoUrl + responsiblePerson.externalId + '.jpg'" appImageFallback />
+            </ng-container>
             <mat-icon class="manager-search--status" [svgIcon]="detectManagerStatus(managerStatus)" [matTooltip]="detectStatusTooltip(managerStatus)" matTooltipClass="white-tooltip"></mat-icon>
         </div>
     </ng-container>
     <ng-container *ngIf="!readonly">
         <div class="manager-search--image-wrapper" [matMenuTriggerFor]="managerSearch">
-            <img class="border-rounded-50" [width]="width" [height]="height" [matTooltip]="responsiblePerson?.name!" matTooltipClass="white-tooltip" [src]="employeePhotoUrl + responsiblePerson?.externalId! + '.jpg'" loading="lazy" appImageFallback />
-            <mat-icon class="manager-search--status" [svgIcon]="detectManagerStatus(managerStatus)" [matTooltip]="detectStatusTooltip(managerStatus)" matTooltipClass="white-tooltip"></mat-icon>
+            <ng-container *ngIf="responsiblePerson?.externalId">
+                <img class="border-rounded-50" [width]="width" [height]="height" [matTooltip]="responsiblePerson.name!" matTooltipClass="white-tooltip" [ngSrc]="employeePhotoUrl + responsiblePerson.externalId + '.jpg'" appImageFallback />
+                <mat-icon class="manager-search--status" [svgIcon]="detectManagerStatus(managerStatus)" [matTooltip]="detectStatusTooltip(managerStatus)" matTooltipClass="white-tooltip"></mat-icon>
+            </ng-container>
         </div>
     </ng-container>
     <mat-menu #managerSearch="matMenu" backdropClass="filter-manager--menu">
@@ -18,7 +22,7 @@
                 <mat-option *ngFor="let option of filteredManagers" [value]="option" appPreventDoubleClick (throttledClick)="selectOption($event, option)">
                     <div class="multilineDropdown-option--row flex-items-center" [matTooltip]="option.name" matTooltipClass="white-tooltip" appShowIfTruncated>
                         <ng-container *ngIf="option.id !== 'no-data'">
-                            <img class="image-settings--dropdown u-mr--8" [src]="employeePhotoUrl + option.externalId! + '.jpg'" loading="lazy" appImageFallback />
+                            <img class="image-settings--dropdown u-mr--8" [ngSrc]="employeePhotoUrl + option.externalId! + '.jpg'" width="24" height="24" appImageFallback />
                             <b>{{ option.name }}</b>
                         </ng-container>
                         <ng-container *ngIf="option.id === 'no-data'">

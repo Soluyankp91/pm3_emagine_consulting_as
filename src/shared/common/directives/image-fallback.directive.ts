@@ -4,17 +4,17 @@ import { Directive, Input } from '@angular/core';
     selector: '[appImageFallback]',
     host: {
         '(error)': 'updateImageOnError()',
-        '[src]': 'src'
+        '[ngSrc]': 'ngSrc'
     }
 })
 export class ImageFallbackDirective {
-    @Input() src: string;
+    @Input() ngSrc: string;
     defaultSrc = 'https://web-sourcing-qa.prodataconsult.com/api/shared-assets/EmployeePicture/da71d494-6678-4e1d-9002-5fb50e7050e1.jpg';
     internalSrc: string;
     constructor() { }
 
     updateImageOnError() {
-        this.src = this.defaultSrc;
+        // this.ngSrc = this.defaultSrc;
     }
 
 }

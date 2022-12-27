@@ -1,5 +1,5 @@
 import { NgModule } from '@angular/core';
-import { CommonModule } from '@angular/common';
+import { CommonModule, ImageLoaderConfig, IMAGE_LOADER, NgOptimizedImage, provideImgixLoader } from '@angular/common';
 import { MaterialModule } from './material/material.module';
 import { ErrorDialogComponent } from './errors/error-dialog/error-dialog.component';
 import { ErrorDialogService } from './errors/error-dialog.service';
@@ -19,6 +19,7 @@ import { ConsultantInformationComponent } from '../components/consultant-informa
 import { ExcludeIdsPipe } from 'src/shared/common/pipes/exclude-ids.pipe';
 import { ImageFallbackDirective } from 'src/shared/common/directives/image-fallback.directive';
 import { ScrollToModule } from '@nicky-lenaers/ngx-scroll-to';
+import { environment } from 'src/environments/environment';
 
 @NgModule({
     declarations: [
@@ -42,7 +43,8 @@ import { ScrollToModule } from '@nicky-lenaers/ngx-scroll-to';
         FormsModule,
         ReactiveFormsModule,
         NgScrollbarModule,
-        ScrollToModule.forRoot()
+        ScrollToModule.forRoot(),
+        NgOptimizedImage
     ],
     exports: [
         MaterialModule,
@@ -61,8 +63,13 @@ import { ScrollToModule } from '@nicky-lenaers/ngx-scroll-to';
         ConsultantInformationComponent,
         ExcludeIdsPipe,
         ImageFallbackDirective,
-        ScrollToModule
+        ScrollToModule,
+        NgOptimizedImage
     ],
-    providers: [ErrorDialogService, InternalLookupService],
+    providers: [
+        ErrorDialogService,
+        InternalLookupService,
+        provideImgixLoader(`${environment.sharedAssets}`)
+    ],
 })
 export class AppCommonModule {}

@@ -13,7 +13,7 @@ import { EmployeeServiceProxy, CurrentEmployeeDto } from 'src/shared/service-pro
 export class AppComponent extends AppComponentBase implements OnInit {
     production = environment.production;
     accountInfo: any;
-    currentEmployee: CurrentEmployeeDto;
+    currentEmployee: CurrentEmployeeDto | undefined;
     constructor(
         injector: Injector,
         private router: Router,

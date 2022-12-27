@@ -102,7 +102,9 @@
                 </div>
                 <div class="gantt-group-content" fxFlex="16%">
                     <div fxLayout="row" fxLayoutAlign="flex-end center" fxLayoutGap="15px" class="u-w-100">
-                        <img class="manager-search--photo" [matTooltip]="group?.origin?.origin?.salesManager?.name!" matTooltipClass="white-tooltip" [src]="employeePhotoUrl + group?.origin?.origin?.salesManager?.externalId! + '.jpg'" loading="lazy" appImageFallback />
+                        <ng-container *ngIf="group?.origin?.origin?.salesManager?.externalId">
+                            <img class="manager-search--photo" [matTooltip]="group?.origin?.origin?.salesManager?.name!" matTooltipClass="white-tooltip" [ngSrc]="employeePhotoUrl + group?.origin?.origin?.salesManager?.externalId! + '.jpg'" width="32" height="32" appImageFallback />
+                        </ng-container>
                         <button mat-icon-button matTooltip="Go to workflow" matTooltipClass="white-tooltip" class="gantt-group-content--redirect-button u-mr--15" appPreventDoubleClick (throttledClick)="redirectToWorkflow(group?.origin?.origin?.workflowId!)">
                             <mat-icon class="icon-arrow-rotate180" svgIcon="arrow"></mat-icon>
                         </button>

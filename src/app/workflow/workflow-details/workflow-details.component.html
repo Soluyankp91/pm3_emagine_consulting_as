@@ -138,7 +138,9 @@
                     </div>
                 </ng-template>
                 <div class="workflow-form--panel pos-relative u-w--100">
-                    <app-workflow-overview [periodId]="clientPeriods![0]?.id"></app-workflow-overview>
+                    <ng-container *ngIf="clientPeriods?.length">
+                        <app-workflow-overview [periodId]="clientPeriods![0].id"></app-workflow-overview>
+                    </ng-container>
                     <div *ngIf="isNoteVisible" class="workflow-notes-wrapper wrapper-overlay">
                         <app-workflow-notes (noteHidden)="isNoteVisible = !isNoteVisible" [topToolbarVisible]="topToolbarVisible" [workflowId]="workflowId" [alwaysVisible]="false"></app-workflow-notes>
                     </div>
