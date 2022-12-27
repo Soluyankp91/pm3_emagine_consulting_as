@@ -502,7 +502,7 @@
                             <div fxLayout="row" fxLayoutAlign="start start" class="u-w--100">
                                 <mat-form-field appearance="outline" class="formFieldNoMarginPadding textarea-input u-mr--12 form-width-559" [ngClass]="{'disabled-input': readOnlyMode}">
                                     <mat-label>Remarks</mat-label>
-                                    <textarea [disabled]="readOnlyMode" required matInput autocomplete="new-password" name="remarks" formControlName="remarks" [matTextareaAutosize]="true" [matAutosizeMinRows]="2">
+                                    <textarea [disabled]="readOnlyMode" required matInput autocomplete="new-password" name="remarks" formControlName="remarks" [cdkTextareaAutosize]="true" [cdkTextareaAutosize]="2">
                                     </textarea>
                                     <mat-error>
                                         <app-validator [control]="salesMainDataForm.remarks"></app-validator>
