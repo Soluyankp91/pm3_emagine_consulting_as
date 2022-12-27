@@ -2,11 +2,8 @@
 @import "/src/app/shared/styles/config/_mixins";
 
 .workflow-responsible {
-    &--content {
-        //
-    }
     &--header {
         color: $medium-grey-color;
-        @include fontOpenSans(12px, 600);
+        @include fontOpenSans(14px, 600);
     }
 }

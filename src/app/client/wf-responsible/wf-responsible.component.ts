@@ -84,7 +84,7 @@ export class WfResponsibleComponent extends AppComponentBase implements OnInit, 
         input.clientId = this.clientId;
         input.contractStepResponsibleEmployeeId = this.contractStepResponsible.value?.id;
         input.financeStepResponsibleEmployeeId = this.financeStepResponsible.value?.id;
-        this._clientService.postWFResponsible(this.clientId, input)
+        this._clientService.postWFResponsible(input)
             .pipe(finalize(() => this.hideMainSpinner()))
             .subscribe();
     }

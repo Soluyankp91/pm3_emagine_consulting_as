@@ -5987,11 +5987,8 @@ export class ClientsServiceProxy {
      * @param body (optional) 
      * @return Success
      */
-    postWFResponsible(clientId: number, body?: UpdateClientWFResponsibleCommand | undefined): Observable<void> {
-        let url_ = this.baseUrl + "/api/Clients/{clientId}/PostWFResponsible";
-        if (clientId === undefined || clientId === null)
-            throw new Error("The parameter 'clientId' must be defined.");
-        url_ = url_.replace("{clientId}", encodeURIComponent("" + clientId));
+    postWFResponsible(body?: UpdateClientWFResponsibleCommand | undefined): Observable<void> {
+        let url_ = this.baseUrl + "/api/Clients/PostWFResponsible";
         url_ = url_.replace(/[?&]$/, "");
 
         const content_ = JSON.stringify(body);
