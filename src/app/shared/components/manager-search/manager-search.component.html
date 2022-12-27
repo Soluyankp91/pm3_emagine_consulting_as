@@ -15,7 +15,7 @@
         <mat-form-field appearance="fill" class="filter-manager--dropdown">
             <input type="text" matInput [matAutocomplete]="auto" [formControl]="managerFilter" appPreventDoubleClick (throttledClick)="$event.stopPropagation()" [placeholder]="formFieldLabel">
             <mat-autocomplete #auto="matAutocomplete" [displayWith]="displayNameFn">
-                <mat-option *ngFor="let option of filteredManagers" [value]="option" appPreventDoubleClick (throttledClick)="selectOption($event, option)" [ngClass]="{ 'no-data': option.id === 'no-data' }">
+                <mat-option *ngFor="let option of filteredManagers" [value]="option" appPreventDoubleClick (throttledClick)="selectOption($event, option)">
                     <div class="multilineDropdown-option--row flex-items-center" [matTooltip]="option.name" matTooltipClass="white-tooltip" appShowIfTruncated>
                         <ng-container *ngIf="option.id !== 'no-data'">
                             <img class="image-settings--dropdown u-mr--8" [src]="employeePhotoUrl + option.externalId! + '.jpg'" loading="lazy" appImageFallback />

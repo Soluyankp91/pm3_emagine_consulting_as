@@ -1,6 +1,5 @@
 @import "/src/app/shared/styles/config/_colors";
-@import '~@worktile/gantt/main.bundle.scss';
-
+@import "../../../../../node_modules/@worktile/gantt/gantt.component.scss";
 $gantt-bar-handle-height: 12px;
 
 :host {
@@ -18,7 +17,6 @@ $gantt-bar-handle-height: 12px;
         height: 24px;
         width: 24px;
     }
-
 }
 
 .icon-arrow-rotate180 {
@@ -37,7 +35,7 @@ $gantt-bar-handle-height: 12px;
 }
 
 .overview-negotiation-icon {
-    color: #2d9cdb
+    color: #2d9cdb;
 }
 
 .overview-attention-icon {
@@ -50,7 +48,6 @@ $gantt-bar-handle-height: 12px;
         @media screen and (max-width: 1366px) {
             transform: scale(0.8);
             line-height: 42px;
-
         }
         &-type {
             line-height: 40px;
@@ -63,7 +60,7 @@ $gantt-bar-handle-height: 12px;
 }
 
 .period-item--bar:hover {
-    &+.tooltip {
+    & + .tooltip {
         position: fixed;
         z-index: 999;
         display: flex;
@@ -71,8 +68,8 @@ $gantt-bar-handle-height: 12px;
         align-items: center;
         width: auto;
         padding: 8px 16px;
-        background: #FFFFFF;
-        border: 1px solid #E7E3E8;
+        background: #ffffff;
+        border: 1px solid #e7e3e8;
         box-shadow: 0px 0px 11px rgba(0, 0, 0, 0.11);
         color: rgba(56, 72, 83, 0.8);
     }

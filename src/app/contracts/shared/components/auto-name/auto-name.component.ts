@@ -5,7 +5,7 @@ import {
     OnInit,
     DoCheck,
 } from '@angular/core';
-import { FormControl, NgControl, Validators } from '@angular/forms';
+import { UntypedFormControl, NgControl, Validators } from '@angular/forms';
 import { MergeFieldsServiceProxy } from 'src/shared/service-proxies/service-proxies';
 import { Subject, Observable, EMPTY } from 'rxjs';
 import { map, switchMap, tap } from 'rxjs/operators';
@@ -24,7 +24,7 @@ export class AutoNameComponent implements OnInit, DoCheck {
     label = 'Auto-name for actual agreements';
     options: string[];
 
-    textControl = new FormControl('');
+    textControl = new UntypedFormControl('');
 
     retriewTemplate$ = new Subject<void>();
 

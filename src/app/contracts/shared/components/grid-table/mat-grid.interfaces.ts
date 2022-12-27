@@ -1,9 +1,9 @@
 import { ComponentType } from '@angular/cdk/portal';
-import { FormControl } from '@angular/forms';
+import { UntypedFormControl } from '@angular/forms';
 import { SortDirection } from '@angular/material/sort';
 
 export interface IFilter {
-    filterFormControl: FormControl;
+    filterFormControl: UntypedFormControl;
 }
 
 export interface IHeaderCell {

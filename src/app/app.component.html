@@ -74,7 +74,7 @@
                             <div fxLayout="row" fxLayoutAlign="start center" fxLayoutGap="15px" class="main-navigation--list-item-logout">
                                 <img class="border-rounded-50 image-thumbnail--logout-menu" [src]="employeePhotoUrl + currentEmployee?.externalId! + '.jpg'" loading="lazy" appImageFallback/>
                                 <div fxLayout="column" >
-                                    <span class="main-navigation--list-item-logout-username u-mb--5">{{currentEmployee?.name}}</span>
+                                    <span class="main-navigation--list-item-logout-username u-mb--5">{{currentEmployee.name}}</span>
                                     <span class="main-navigation--list-item-logout-name">{{accountInfo?.username}}</span>
                                 </div>
                             </div>
