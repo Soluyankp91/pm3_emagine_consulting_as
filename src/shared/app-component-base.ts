@@ -196,4 +196,8 @@ export abstract class AppComponentBase {
         return option?.clientName?.trim();
     }
 
+    compareWithFn(listOfItems: any, selectedItem: any) {
+        return listOfItems && selectedItem && listOfItems.id === selectedItem.id;;
+    }
+
 }
