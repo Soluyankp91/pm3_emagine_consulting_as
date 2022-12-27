@@ -3094,7 +3094,7 @@ export class WorkflowSalesComponent extends AppComponentBase implements OnInit, 
     //#region commissionedUsers form array
     addCommissionedUser() {
         const form = this._fb.group({
-           commissionedUser: new FormControl('', CustomValidators.autocompleteValidator(['id']))
+           commissionedUser: new UntypedFormControl('', CustomValidators.autocompleteValidator(['id']))
         });
         this.salesMainDataForm.commissionedUsers.push(form);
         this.manageCommissionedUserAutocomplete(this.salesMainDataForm.commissionedUsers.length - 1);
@@ -3128,7 +3128,7 @@ export class WorkflowSalesComponent extends AppComponentBase implements OnInit, 
     }
 
     get commissionedUsers() {
-        return this.salesMainDataForm.commissionedUsers as FormArray;
+        return this.salesMainDataForm.commissionedUsers as UntypedFormArray;
     }
     //#endregion commissionedUsers form array
 
