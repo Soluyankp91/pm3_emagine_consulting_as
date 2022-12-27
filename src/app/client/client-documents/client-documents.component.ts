@@ -2,7 +2,7 @@ import { Component, Injector, OnDestroy, OnInit, ViewChild } from '@angular/core
 import { UntypedFormArray, UntypedFormBuilder, UntypedFormControl } from '@angular/forms';
 import { MatTableDataSource } from '@angular/material/table';
 import { AppConsts } from 'src/shared/AppConsts';
-import { DocumentSideNavDto, DocumentSideNavigation, DocumentSideNavItem, GeneralDocumentForm } from './client-documents.model';
+import { DocumentSideNavDto, DocumentSideNavigation, DocumentSideNavItem, EvaluationFromDateList, EvaluationFromDateOption, GeneralDocumentForm } from './client-documents.model';
 import { AddFileDialogComponent } from './add-file-dialog/add-file-dialog.component';
 import { Overlay } from '@angular/cdk/overlay';
 import { MatDialog } from '@angular/material/dialog';
@@ -18,6 +18,7 @@ import { LocalHttpService } from 'src/shared/service-proxies/local-http.service'
 import { HttpClient, HttpHeaders, HttpResponse } from '@angular/common/http';
 import { AuthenticationResult } from '@azure/msal-browser';
 import { MediumDialogConfig } from 'src/shared/dialog.configs';
+import * as moment from 'moment';
 
 @Component({
     selector: 'app-client-documents',
@@ -74,11 +75,12 @@ export class ClientDocumentsComponent extends AppComponentBase implements OnInit
     generalDocumentsIncludeLinked = new UntypedFormControl(false);
     contractDocumentsIncludeLinked = new UntypedFormControl(false);
     contractDocumentsIncludeExpired = new UntypedFormControl(false);
-    evaluationDocumentDate = new UntypedFormControl(new Date());
-    evaluationDocumentFilter = new UntypedFormControl(1);
+    evaluationDocumentFromDate = new UntypedFormControl(1);
     evaluationDocumentsIncludeLinked = new UntypedFormControl(false);
 
     contractsDocuments: ClientContractViewRootDto;
+
+    evaluationFromDateList = EvaluationFromDateList;
 
     private _unsubscribe = new Subject();
     constructor(
@@ -103,9 +105,7 @@ export class ClientDocumentsComponent extends AppComponentBase implements OnInit
                 takeUntil(this._unsubscribe)
             ).subscribe(() => this.getContracts());
 
-
-        // FIXME: add new formControl once BE is ready
-        merge(this.evaluationDocumentDate.valueChanges, this.evaluationDocumentsIncludeLinked.valueChanges)
+        merge(this.evaluationDocumentFromDate.valueChanges, this.evaluationDocumentsIncludeLinked.valueChanges)
             .pipe(
                 takeUntil(this._unsubscribe)
             ).subscribe(() => this.getEvaluations());
@@ -365,7 +365,8 @@ export class ClientDocumentsComponent extends AppComponentBase implements OnInit
 
     getEvaluations() {
         this.isDataLoading = true;
-        this._clientDocumentsService.evaluations(this.clientId, this.evaluationDocumentsIncludeLinked.value, this.evaluationDocumentDate.value, this.pageNumber, this.deafultPageSize, this.sorting)
+        let evaluationsFromDate = this._calculateEvalsFromDate(this.evaluationDocumentFromDate.value);
+        this._clientDocumentsService.evaluations(this.clientId, this.evaluationDocumentsIncludeLinked.value, evaluationsFromDate ?? undefined, this.pageNumber, this.deafultPageSize, this.sorting)
             .pipe(finalize(() => this.isDataLoading = false))
             .subscribe(result => {
                 this.evalsDocumentsDataSource = new MatTableDataSource<ClientEvaluationOutputDto>(result.items);
@@ -373,11 +374,29 @@ export class ClientDocumentsComponent extends AppComponentBase implements OnInit
             });
     }
 
+    private _calculateEvalsFromDate(fromDateOption: number): moment.Moment | null | undefined {
+        switch (fromDateOption) {
+            case EvaluationFromDateOption.LastMonth:
+                return this._subtractMonthsFromDate(1);
+                case EvaluationFromDateOption.Last6Months:
+                    return this._subtractMonthsFromDate(6);
+            case EvaluationFromDateOption.Last12Months:
+                return this._subtractMonthsFromDate(12);
+            case EvaluationFromDateOption.AllPeriods:
+                return null;
+        }
+    }
+
+    private _subtractMonthsFromDate(numOfMonths: number): moment.Moment {
+        const date = moment();
+        date.subtract(numOfMonths, 'months');
+        return date;
+    }
+
     downloadEvaluationDocument(row: ClientEvaluationOutputDto, useLocalLanguage: boolean, forcePdf: boolean) {
         this._clientDocumentsService.evaluation(row.legacyConsultantId!, row.evaluationTenantId!, row.evaluationGuid!, useLocalLanguage, forcePdf)
             .pipe(finalize(() => {}))
-            .subscribe(result => {
-            });
+            .subscribe(() => {});
     }
 
 }

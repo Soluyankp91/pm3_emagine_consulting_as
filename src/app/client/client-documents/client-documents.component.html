@@ -347,20 +347,12 @@
                                 Evaluations from
                             </span>
                             <mat-form-field appearance="fill" class="client-documents--filter-select formFieldNoMarginPadding u-mr--20">
-                                <mat-select [formControl]="evaluationDocumentFilter" name="overviewViewType" [disableOptionCentering]="true">
-                                    <!-- FIXME: add ngFor once BE is ready -->
-                                    <mat-option [value]="1">
-                                        Last months
-                                    </mat-option>
-                                    <mat-option [value]="2">
-                                        Last 6 months
-                                    </mat-option>
-                                    <mat-option [value]="3">
-                                        Last 12 months
-                                    </mat-option>
-                                    <mat-option [value]="4">
-                                        All periods
-                                    </mat-option>
+                                <mat-select [formControl]="evaluationDocumentFromDate" name="overviewViewType" [disableOptionCentering]="true">
+                                    <ng-container *ngFor="let item of evaluationFromDateList; trackBy: trackById">
+                                        <mat-option [value]="item.id">
+                                            {{item.name}}
+                                        </mat-option>
+                                    </ng-container>
                                 </mat-select>
                             </mat-form-field>
                         </div>
