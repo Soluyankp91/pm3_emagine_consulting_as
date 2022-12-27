@@ -20,7 +20,7 @@ import {
     OnDestroy,
     Injector,
 } from '@angular/core';
-import { FormControl } from '@angular/forms';
+import { UntypedFormControl } from '@angular/forms';
 import {
     AgreementCreationMode,
     AgreementTemplateAttachmentDto,
@@ -64,10 +64,10 @@ export class CreateMasterTemplateComponent
     preselectedFiles: FileUpload[] = [];
 
     creationModes = AgreementCreationMode;
-    agreementCreationMode = new FormControl(AgreementCreationMode.FromScratch);
+    agreementCreationMode = new UntypedFormControl(AgreementCreationMode.FromScratch);
 
-    createControl = new FormControl();
-    duplicateTemplateControl = new FormControl(null);
+    createControl = new UntypedFormControl();
+    duplicateTemplateControl = new UntypedFormControl(null);
 
     isFormDirty = false;
 
@@ -376,6 +376,7 @@ export class CreateMasterTemplateComponent
                 switchMap((freeText: string) => {
                     return this._apiServiceProxy.simpleList2(
                         false,
+                        true, // FIXME: hardcodewd _isEnabled_ - new property
                         freeText,
                         1,
                         AUTOCOMPLETE_SEARCH_ITEMS_COUNT
@@ -423,6 +424,7 @@ export class CreateMasterTemplateComponent
                     this._apiServiceProxy
                         .simpleList2(
                             false,
+                            true, // FIXME: hardcodewd _isEnabled_ - new property
                             parentTemplate.name,
                             1,
                             AUTOCOMPLETE_SEARCH_ITEMS_COUNT
@@ -458,6 +460,7 @@ export class CreateMasterTemplateComponent
                     }
                     return this._apiServiceProxy.simpleList2(
                         false,
+                        true, // FIXME: hardcodewd _isEnabled_ - new property
                         val,
                         1,
                         AUTOCOMPLETE_SEARCH_ITEMS_COUNT
