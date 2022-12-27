@@ -1,12 +1,8 @@
 import { Injectable } from '@angular/core';
-import { SortDirection } from '@angular/material/sort';
 import { isEqual } from 'lodash';
-import { Observable, BehaviorSubject, combineLatest, ReplaySubject } from 'rxjs';
+import { Observable, BehaviorSubject, combineLatest } from 'rxjs';
 import { switchMap, debounceTime, distinctUntilChanged, tap } from 'rxjs/operators';
-import {
-	DEFAULT_SIZE_OPTION,
-	INITIAL_PAGE_INDEX,
-} from 'src/app/contracts/shared/components/grid-table/master-templates/entities/master-templates.constants';
+import { BaseContract } from 'src/app/contracts/shared/base/base-contract';
 import { TableFiltersEnum } from 'src/app/contracts/shared/components/grid-table/master-templates/entities/master-templates.interfaces';
 import {
 	AgreementTemplateServiceProxy,
@@ -15,83 +11,26 @@ import {
 } from 'src/shared/service-proxies/service-proxies';
 
 @Injectable()
-export class MasterTemplatesService {
-	contractsLoading$: ReplaySubject<boolean> = new ReplaySubject<boolean>(1);
-
-	private page$: BehaviorSubject<{ pageIndex: number; pageSize: number }> = new BehaviorSubject<{
-		pageIndex: number;
-		pageSize: number;
-	}>({
-		pageIndex: INITIAL_PAGE_INDEX,
-		pageSize: DEFAULT_SIZE_OPTION,
-	});
-
-	private tableFilters$ = new BehaviorSubject<TableFiltersEnum>({
-		language: [],
-		agreementType: [],
-		recipientTypeId: [],
-		legalEntityIds: [],
-		salesTypeIds: [],
-		deliveryTypeIds: [],
-		contractTypeIds: [],
-		lastUpdatedByLowerCaseInitials: [],
-		isEnabled: [],
-	});
-
-	private tenantIds$$ = new BehaviorSubject<CountryDto[]>([]);
-	private searchFilter$$ = new BehaviorSubject<string>('');
-
-	private sort$: BehaviorSubject<{
-		active: string;
-		direction: SortDirection;
-	}> = new BehaviorSubject({ active: '', direction: '' as SortDirection });
-
-	getCountries$() {
-		return this.tenantIds$$.asObservable();
-	}
-
-	getTableFilters$() {
-		return this.tableFilters$.asObservable();
-	}
-
-	getSort$() {
-		return this.sort$.asObservable();
-	}
-
-	getPage$() {
-		return this.page$.asObservable();
-	}
-
-	updateTableFilters(data: any) {
-		this.tableFilters$.next(data);
-	}
-
-	updateTenantFilter(data: any) {
-		this.tenantIds$$.next(data);
-	}
-
-	updateSearchFilter(data: any) {
-		this.searchFilter$$.next(data);
-	}
-
-	updateSort(data: any) {
-		this.sort$.next(data);
-	}
-
-	updatePage(page: { pageIndex: number; pageSize: number }) {
-		this.page$.next(page);
-	}
-
+export class MasterTemplatesService extends BaseContract<TableFiltersEnum> {
 	constructor(private readonly agreementTemplateServiceProxy: AgreementTemplateServiceProxy) {
+		super();
 	}
-
+    tableFilters$ = new BehaviorSubject<TableFiltersEnum>(<TableFiltersEnum>{
+        
+    })
 	getContracts$(): Observable<AgreementTemplatesListItemDtoPaginatedList> {
-		return combineLatest([this.tableFilters$, this.sort$, this.page$, this.tenantIds$$, this.searchFilter$$]).pipe(
+		return combineLatest([
+			this.getTableFilters$(),
+			this.getSort$(),
+			this.getPage$(),
+			this.getTenats$(),
+			this.getSearch$(),
+		]).pipe(
 			debounceTime(300),
 			distinctUntilChanged((previous, current) => isEqual(previous, current)),
 			tap(() => this.contractsLoading$.next(true)),
 			switchMap(([tableFilters, sort, page, tenantIds, search]) => {
-				const filters = Object.entries({
+				const filters: any = Object.entries({
 					...tableFilters,
 					tenantIds,
 				}).reduce((acc, current) => {
@@ -123,15 +62,5 @@ export class MasterTemplatesService {
 			}),
 			tap(() => this.contractsLoading$.next(false))
 		);
-	}
-
-	private _enabledToSend(enabled: number[]) {
-		if (!enabled.length || enabled.length === 2) {
-			return undefined;
-		}
-		if (enabled[0] === 1 || enabled[1] === 1) {
-			return true;
-		}
-		return false;
 	}
 }

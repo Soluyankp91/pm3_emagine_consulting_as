@@ -6,10 +6,16 @@ import { ContractsService } from 'src/app/contracts/shared/services/contracts.se
 import { MasterTemplatesService } from 'src/app/contracts/master-templates/listAndPreviews/services/master-templates.service';
 import { FILTER_LABEL_MAP } from '../../../entities/master-templates.constants';
 import { LegalEntityDto } from 'src/shared/service-proxies/service-proxies';
+import { contractsInjector } from 'src/app/contracts/contracts.module';
+import { ActivatedRoute, Router } from '@angular/router';
 
 @Component({
 	selector: 'app-legal-entities-filter',
 	templateUrl: './legal-entities-filter.component.html',
+    providers: [{provide: MasterTemplatesService, useFactory: (router: Router) => {
+        console.log(router.url);
+        return contractsInjector.get(MasterTemplatesService);
+    }, deps: [Router]}]
 })
 export class LegalEntitiesFilterComponent implements IFilter {
 	legalEntities$ = this.contractsService.getLegalEntities$().pipe(

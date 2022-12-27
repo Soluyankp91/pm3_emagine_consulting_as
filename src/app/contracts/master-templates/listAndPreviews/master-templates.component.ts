@@ -1,7 +1,7 @@
 import { ITableConfig } from '../../shared/components/grid-table/mat-grid.interfaces';
 import { MasterTemplatesService } from './services/master-templates.service';
-import { Component, ChangeDetectionStrategy, OnInit, OnDestroy, Injector } from '@angular/core';
-import { map, takeUntil, withLatestFrom } from 'rxjs/operators';
+import { Component, ChangeDetectionStrategy, OnInit, OnDestroy, Injector, SkipSelf} from '@angular/core';
+import { map, takeUntil } from 'rxjs/operators';
 import {
 	DISPLAYED_COLUMNS,
 	MASTER_TEMPLATE_ACTIONS,
@@ -11,7 +11,7 @@ import { Sort } from '@angular/material/sort';
 import { PageEvent } from '@angular/material/paginator';
 import { TableFiltersEnum } from '../../shared/components/grid-table/master-templates/entities/master-templates.interfaces';
 import { GridHelpService } from '../../shared/services/mat-grid-service.service';
-import { Observable, Subject } from 'rxjs';
+import { Observable, Subject, combineLatest } from 'rxjs';
 import { ActivatedRoute, Params, Router } from '@angular/router';
 import { AgreementLanguage, AgreementTemplatesListItemDto, AgreementType } from 'src/shared/service-proxies/service-proxies';
 import { ContractsService } from '../../shared/services/contracts.service';
@@ -41,7 +41,7 @@ export class MasterTemplatesComponent extends AppComponentBase implements OnInit
 		private readonly _gridHelpService: GridHelpService,
 		private readonly _route: ActivatedRoute,
 		private readonly _router: Router,
-		private readonly _injetor: Injector
+		private readonly _injetor: Injector,
 	) {
 		super(_injetor);
 	}
@@ -89,17 +89,20 @@ export class MasterTemplatesComponent extends AppComponentBase implements OnInit
 	onSelectTableRow(row: { [key: string]: string }) {}
 
 	private _initTable$() {
-		this.table$ = this.dataSource$.pipe(
+		this.table$ = combineLatest([
+			this.dataSource$,
+			this._contractService.getEnumMap$(),
+			this._masterTemplatesService.getSort$(),
+		]).pipe(
 			takeUntil(this._unSubscribe$),
-			withLatestFrom(this._contractService.getEnumMap$()),
-			map(([data, maps]) => {
+			map(([data, maps, sort]) => {
 				const tableConfig: ITableConfig = {
 					pageSize: data.pageSize as number,
 					pageIndex: (data.pageIndex as number) - 1,
 					totalCount: data.totalCount as number,
 					items: this._mapTableItems(data.items as AgreementTemplatesListItemDto[], maps),
-					sortDirection: 'asc',
-					sortActive: '',
+					direction: sort.direction,
+					active: sort.active,
 				};
 				return tableConfig;
 			})
@@ -111,22 +114,22 @@ export class MasterTemplatesComponent extends AppComponentBase implements OnInit
 		maps: MappedTableCells
 	): MappedAgreementTemplatesListItemDto[] {
 		return items.map((item: AgreementTemplatesListItemDto) => {
-			return <MappedAgreementTemplatesListItemDto> {
-                agreementTemplateId: item.agreementTemplateId,
-                name: item.name,
-                agreementType: maps.agreementType[item.agreementType as AgreementType],
-                recipientTypeId: maps.recipientTypeId[item.recipientTypeId as number],
-                language: this.getCountryCodeByLanguage(maps.language[item.language as AgreementLanguage]),
-                legalEntityIds: item.legalEntityIds?.map((i) => maps.legalEntityIds[i]),
-                contractTypeIds: item.contractTypeIds?.map((i) => maps.contractTypeIds[i]),
-                salesTypeIds: item.salesTypeIds?.map((i) => maps.salesTypeIds[i]),
-                deliveryTypeIds: item.deliveryTypeIds?.map((i) => maps.deliveryTypeIds[i]),
-                createdByLowerCaseInitials: item.createdByLowerCaseInitials,
-                createdDateUtc: moment(item.createdDateUtc).format('DD.MM.YYYY'),
-                lastUpdatedByLowerCaseInitials: item.lastUpdatedByLowerCaseInitials,
-                lastUpdateDateUtc: moment(item.lastUpdateDateUtc).format('DD.MM.YYYY'),
-                isEnabled: item.isEnabled,
-            } 
+			return <MappedAgreementTemplatesListItemDto>{
+				agreementTemplateId: item.agreementTemplateId,
+				name: item.name,
+				agreementType: maps.agreementType[item.agreementType as AgreementType],
+				recipientTypeId: maps.recipientTypeId[item.recipientTypeId as number],
+				language: this.getCountryCodeByLanguage(maps.language[item.language as AgreementLanguage]),
+				legalEntityIds: item.legalEntityIds?.map((i) => maps.legalEntityIds[i]),
+				contractTypeIds: item.contractTypeIds?.map((i) => maps.contractTypeIds[i]),
+				salesTypeIds: item.salesTypeIds?.map((i) => maps.salesTypeIds[i]),
+				deliveryTypeIds: item.deliveryTypeIds?.map((i) => maps.deliveryTypeIds[i]),
+				createdByLowerCaseInitials: item.createdByLowerCaseInitials,
+				createdDateUtc: moment(item.createdDateUtc).format('DD.MM.YYYY'),
+				lastUpdatedByLowerCaseInitials: item.lastUpdatedByLowerCaseInitials,
+				lastUpdateDateUtc: moment(item.lastUpdateDateUtc).format('DD.MM.YYYY'),
+				isEnabled: item.isEnabled,
+			};
 		});
 	}
 

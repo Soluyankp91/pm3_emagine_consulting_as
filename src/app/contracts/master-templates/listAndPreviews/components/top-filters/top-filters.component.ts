@@ -12,8 +12,8 @@ import { ContractsService } from 'src/app/contracts/shared/services/contracts.se
 	styleUrls: ['./top-filters.component.scss'],
 })
 export class MasterTemplateFilterHeaderComponent implements OnInit, OnDestroy {
-	countryFilter$ = this.contractsService.getCountries$();
-	preselectedTenants$ = this.masterTemplatesService.getCountries$();
+	countryFilter$ = this.contractsService.getTenats$();
+	preselectedTenants$ = this.masterTemplatesService.getTenats$();
 	topFiltersFormGroup: FormGroup;
 
 	private unSubscribe$ = new Subject<void>();

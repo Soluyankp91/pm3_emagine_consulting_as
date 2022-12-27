@@ -1,6 +1,6 @@
 import { AppCommonModule } from './../shared/common/app-common.module';
 import { ContractsRoutingModule } from './contracts-routing.module';
-import { NgModule } from '@angular/core';
+import { NgModule, Injector } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { ContractComponent } from './contract.component';
 import { AgreementsComponent } from './agreements/agreements.component';
@@ -49,6 +49,7 @@ import { FuseScrollbarModule } from './shared/directives/scroll/scrollbar.module
 import { TruncateTextCustomPipe } from './shared/pipes/truncate-text-custom.pipe';
 import { MaterialModule } from '../shared/common/material/material.module';
 
+export let contractsInjector: Injector;
 @NgModule({
     declarations: [
         ContractComponent,
@@ -104,7 +105,8 @@ import { MaterialModule } from '../shared/common/material/material.module';
     ],
 })
 export class ContractsModule {
-    constructor(iconRegistry: MatIconRegistry, sanitizer: DomSanitizer) {
+    constructor(iconRegistry: MatIconRegistry, sanitizer: DomSanitizer, private readonly injector: Injector) {
+        contractsInjector = injector;
         iconRegistry.addSvgIcon(
             'create-icon',
             sanitizer.bypassSecurityTrustResourceUrl(

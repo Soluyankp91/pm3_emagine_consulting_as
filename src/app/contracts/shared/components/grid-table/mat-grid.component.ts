@@ -1,5 +1,5 @@
 import { startWith, pairwise, takeUntil, debounceTime } from 'rxjs/operators';
-import { Subject } from 'rxjs';
+import { Subject, merge, of } from 'rxjs';
 import {
 	Component,
 	OnInit,
@@ -61,17 +61,15 @@ export class MatGridComponent extends AppComponentBase implements OnInit, OnChan
 	customCells: QueryList<TemplateRef<ViewContainerRef>>;
 
 	@ViewChildren('filterContainer', { read: ViewContainerRef })
-
 	children: QueryList<ViewContainerRef>;
 
-    cells_: TemplateRef<ViewContainerRef>[];
+	cells_: TemplateRef<ViewContainerRef>[];
 
 	dataSource = new MatTableDataSource<any>();
 
 	formGroup: FormGroup;
 
-
-	matChips: {label: string, formControl: string}[] = [];
+	matChips: { label: string; formControl: string }[] = [];
 	pageSizeOptions: number[] = PAGE_SIZE_OPTIONS;
 
 	headerCellEnum = EHeaderCells;
@@ -108,7 +106,7 @@ export class MatGridComponent extends AppComponentBase implements OnInit, OnChan
 	}
 
 	ngAfterViewInit(): void {
-        this.cells_ = this.customCells.toArray();
+		this.cells_ = this.customCells.toArray();
 		this.loadFilters();
 		this._subscribeOnSelectionChange();
 		this._subscribeOnFormControlChanges();
@@ -188,11 +186,17 @@ export class MatGridComponent extends AppComponentBase implements OnInit, OnChan
 
 	private _subscribeOnEachFormControl() {
 		Object.keys(this.formGroup.controls).forEach((controlName) => {
-			this.formGroup.controls[controlName].valueChanges
-				.pipe(takeUntil(this._unSubscribe$), startWith(this.formGroup.controls[controlName].value), pairwise())
+			merge(
+				of([]),
+				this.formGroup.controls[controlName].valueChanges.pipe(
+					takeUntil(this._unSubscribe$),
+					startWith(this.formGroup.controls[controlName].value)
+				)
+			)
+				.pipe(pairwise())
 				.subscribe(([previousValue, currentValue]: [[], []]) => {
 					if (previousValue.length === 0 && currentValue.length > 0) {
-						this.matChips.push({ formControl: controlName, label: FILTER_LABEL_MAP[controlName]});
+						this.matChips.push({ formControl: controlName, label: FILTER_LABEL_MAP[controlName] });
 					} else if (previousValue.length > 0 && currentValue.length === 0) {
 						this.matChips = this.matChips.filter((matChip) => matChip.formControl !== controlName);
 					}

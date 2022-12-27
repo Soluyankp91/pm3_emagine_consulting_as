@@ -42,7 +42,7 @@ export class ContractsService {
 		this.initBaseEnums$().subscribe();
 	}
 
-	getCountries$() {
+	getTenats$() {
 		return this.tenants$$.asObservable();
 	}
 
@@ -90,14 +90,16 @@ export class ContractsService {
 					});
 				})
 			),
-			agreementLanguages: this.agreementLanguages$.pipe(map((agreementLanguages) => {
-                return agreementLanguages.map((agreementLanguage) => {
-                    return <BaseEnumDto & { code: string }>{
-                        ...agreementLanguage,
-                        code: GetCountryCodeByLanguage(agreementLanguage.name)
-                    }
-                })
-            })),
+			agreementLanguages: this.agreementLanguages$.pipe(
+				map((agreementLanguages) => {
+					return agreementLanguages.map((agreementLanguage) => {
+						return <BaseEnumDto & { code: string }>{
+							...agreementLanguage,
+							code: GetCountryCodeByLanguage(agreementLanguage.name),
+						};
+					});
+				})
+			),
 			agreementTypes: this.agreementTypes$,
 			recipientTypes: this.enumServiceProxy.recipientTypes(),
 			legalEntities: this.enumServiceProxy.legalEntities(),

@@ -14,8 +14,8 @@
 	<mat-table
 		matSort
 		[dataSource]="tableConfig.items"
-		[matSortActive]="tableConfig.sortActive"
-		[matSortDirection]="tableConfig.sortDirection"
+		[matSortActive]="tableConfig.active"
+		[matSortDirection]="tableConfig.direction"
 		[formGroup]="formGroup"
 		(matSortChange)="sortChange.emit($event)">
 		<ng-container *ngIf="selection">

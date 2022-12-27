@@ -26,8 +26,8 @@ export interface ITableConfig {
     pageSize: number;
     totalCount: number;
     pageIndex: number;
-    sortDirection: SortDirection;
-    sortActive: string;
+    direction: SortDirection;
+    active: string;
 }
 
 export enum EHeaderCells {
