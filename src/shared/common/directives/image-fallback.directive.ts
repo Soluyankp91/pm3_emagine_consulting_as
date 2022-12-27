@@ -14,7 +14,7 @@ export class ImageFallbackDirective {
     constructor() { }
 
     updateImageOnError() {
-        // this.ngSrc = this.defaultSrc;
+        this.ngSrc = this.defaultSrc;
     }
 
 }
