@@ -2122,6 +2122,14 @@ export class WorkflowSalesComponent extends AppComponentBase implements OnInit, 
                 }
             );
         }
+        input.salesMainData!.commissionedEmployeesIdValues = [];
+        input.salesMainData!.commissionedEmployeesData = new Array<EmployeeDto>();
+        if (this.salesMainDataForm.commissionedUsers.value?.length) {
+            this.salesMainDataForm.commissionedUsers.value.forEach((user: any) => {
+                input.salesMainData!.commissionedEmployeesIdValues?.push(user.id);
+                input.salesMainData!.commissionedEmployeesData?.push(user);
+            })
+        }
 
         input.salesClientData.differentEndClient =
             this.salesClientDataForm.differentEndClient?.value;
@@ -2475,6 +2483,11 @@ export class WorkflowSalesComponent extends AppComponentBase implements OnInit, 
                         this.addCommission(false, commission);
                     }
                 );
+                result.salesMainData?.commissionedEmployeesData?.forEach(
+                    (employee: EmployeeDto) => {
+                        this.addCommissionedUser(employee);
+                    }
+                )
                 this.salesMainDataForm.discounts?.setValue(
                     this.findItemById(
                         this.discounts,
@@ -3092,9 +3105,9 @@ export class WorkflowSalesComponent extends AppComponentBase implements OnInit, 
     //#endregion commissions form array
 
     //#region commissionedUsers form array
-    addCommissionedUser() {
+    addCommissionedUser(employee?: EmployeeDto) {
         const form = this._fb.group({
-           commissionedUser: new UntypedFormControl('', CustomValidators.autocompleteValidator(['id']))
+           commissionedUser: new UntypedFormControl(employee?.id ? employee : '', CustomValidators.autocompleteValidator(['id']))
         });
         this.salesMainDataForm.commissionedUsers.push(form);
         this.manageCommissionedUserAutocomplete(this.salesMainDataForm.commissionedUsers.length - 1);
