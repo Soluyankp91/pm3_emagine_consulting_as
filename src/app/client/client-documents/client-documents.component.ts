@@ -36,6 +36,7 @@ import { HttpClient, HttpHeaders, HttpResponse } from '@angular/common/http';
 import { AuthenticationResult } from '@azure/msal-browser';
 import { MediumDialogConfig } from 'src/shared/dialog.configs';
 import * as moment from 'moment';
+import { SubtractMonthsFromDate } from 'src/shared/helpers/helperFunctions';
 
 @Component({
 	selector: 'app-client-documents',
@@ -414,11 +415,11 @@ export class ClientDocumentsComponent extends AppComponentBase implements OnInit
 	private _calculateEvalsFromDate(fromDateOption: number): moment.Moment | null | undefined {
 		switch (fromDateOption) {
 			case EvaluationFromDateOption.LastMonth:
-				return this.subtractMonthsFromDate(1);
+				return SubtractMonthsFromDate(1);
 			case EvaluationFromDateOption.Last6Months:
-				return this.subtractMonthsFromDate(6);
+				return SubtractMonthsFromDate(6);
 			case EvaluationFromDateOption.Last12Months:
-				return this.subtractMonthsFromDate(12);
+				return SubtractMonthsFromDate(12);
 			case EvaluationFromDateOption.AllPeriods:
 				return null;
 		}
