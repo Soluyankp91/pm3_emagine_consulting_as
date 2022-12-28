@@ -1,27 +1,27 @@
-import { FormControl, FormGroup, Validators } from "@angular/forms";
+import { UntypedFormControl, UntypedFormGroup, Validators } from "@angular/forms";
 
-export class ProjectLineForm extends FormGroup {
+export class ProjectLineForm extends UntypedFormGroup {
     constructor() {
         super({
-            id: new FormControl(null),
-            projectName: new FormControl(null, Validators.maxLength(250)),
-            startDate: new FormControl(null),
-            endDate: new FormControl(null),
-            noEndDate: new FormControl(false),
-            invoicingReferenceNumber: new FormControl(null),
-            differentInvoicingReferenceNumber: new FormControl(false),
-            invoicingReferencePersonId: new FormControl(null),
-            differentInvoicingReferencePerson: new FormControl(false),
-            optionalInvoicingInfo: new FormControl(null, Validators.maxLength(250)),
-            debtorNumber: new FormControl(null),
-            differentDebtorNumber: new FormControl(false),
-            invoiceRecipientId: new FormControl(null),
-            differentInvoiceRecipient: new FormControl(false),
-            modifiedById: new FormControl(null),
-            modificationDate: new FormControl(null),
-            consultantInsuranceOptionId: new FormControl(null),
-            wasSynced: new FormControl(false),
-            isLineForFees: new FormControl(false)
+            id: new UntypedFormControl(null),
+            projectName: new UntypedFormControl(null, Validators.maxLength(250)),
+            startDate: new UntypedFormControl(null),
+            endDate: new UntypedFormControl(null),
+            noEndDate: new UntypedFormControl(false),
+            invoicingReferenceNumber: new UntypedFormControl(null),
+            differentInvoicingReferenceNumber: new UntypedFormControl(false),
+            invoicingReferencePersonId: new UntypedFormControl(null),
+            differentInvoicingReferencePerson: new UntypedFormControl(false),
+            optionalInvoicingInfo: new UntypedFormControl(null, Validators.maxLength(250)),
+            debtorNumber: new UntypedFormControl(null),
+            differentDebtorNumber: new UntypedFormControl(false),
+            invoiceRecipientId: new UntypedFormControl(null),
+            differentInvoiceRecipient: new UntypedFormControl(false),
+            modifiedById: new UntypedFormControl(null),
+            modificationDate: new UntypedFormControl(null),
+            consultantInsuranceOptionId: new UntypedFormControl(null),
+            wasSynced: new UntypedFormControl(false),
+            isLineForFees: new UntypedFormControl(false)
         })
 
     }

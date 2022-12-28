@@ -2,7 +2,7 @@ import { take, takeUntil } from 'rxjs/operators';
 import { Subject } from 'rxjs';
 import { MasterTemplatesService } from '../../services/master-templates.service';
 import { Component, OnInit, OnDestroy } from '@angular/core';
-import { FormControl, FormGroup } from '@angular/forms';
+import { UntypedFormControl, FormGroup } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
 import { ContractsService } from 'src/app/contracts/shared/services/contracts.service';
 
@@ -61,8 +61,8 @@ export class MasterTemplateFilterHeaderComponent implements OnInit, OnDestroy {
             .pipe(takeUntil(this.unSubscribe$), take(1))
             .subscribe((countries) => {
                 this.topFiltersFormGroup = new FormGroup({
-                    tenantIds: new FormControl(countries),
-                    search: new FormControl(),
+                    tenantIds: new UntypedFormControl(countries),
+                    search: new UntypedFormControl(),
                 });
             });
     }

@@ -1,5 +1,5 @@
 import { Component, EventEmitter, Inject, Injector, OnDestroy, OnInit, Output } from '@angular/core';
-import { FormBuilder, FormControl } from '@angular/forms';
+import { UntypedFormBuilder, UntypedFormControl } from '@angular/forms';
 import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
 import * as moment from 'moment';
 import { Subject } from 'rxjs';
@@ -18,13 +18,13 @@ export class WorkflowActionsDialogComponent extends AppComponentBase implements 
     @Output() onConfirmed: EventEmitter<any> = new EventEmitter<any>();
     @Output() onRejected: EventEmitter<any> = new EventEmitter<any>();
     // Change workflow
-    newCutoverDate = new FormControl(null);
-    newLegalContractRequired = new FormControl(false);
+    newCutoverDate = new UntypedFormControl(null);
+    newLegalContractRequired = new UntypedFormControl(false);
     // Extend workflow
-    workflowChangesForm = new FormControl();
-    startDate = new FormControl(null);
-    endDate = new FormControl(null);
-    noEndDate = new FormControl(false);
+    workflowChangesForm = new UntypedFormControl();
+    startDate = new UntypedFormControl(null);
+    endDate = new UntypedFormControl(null);
+    noEndDate = new UntypedFormControl(false);
     minEndDate: Date;
     // Terminate workflow
     // TBD
@@ -47,7 +47,7 @@ export class WorkflowActionsDialogComponent extends AppComponentBase implements 
             isNegative: boolean
         },
         private dialogRef: MatDialogRef<WorkflowActionsDialogComponent>,
-        private _fb: FormBuilder
+        private _fb: UntypedFormBuilder
         ) {
             super(injector);
             this.changeWorkflowForm = new ChangeWorkflowForm();
@@ -86,20 +86,20 @@ export class WorkflowActionsDialogComponent extends AppComponentBase implements 
 
     addConsutlantToChangeForm(consultant: AvailableConsultantDto) {
         const form = this._fb.group({
-            consulantName: new FormControl(consultant.consultantName),
-            consultantId: new FormControl(consultant.consultantId),
-            externalId: new FormControl(consultant.externalId),
-            newLegalContractRequired: new FormControl(false)
+            consulantName: new UntypedFormControl(consultant.consultantName),
+            consultantId: new UntypedFormControl(consultant.consultantId),
+            externalId: new UntypedFormControl(consultant.externalId),
+            newLegalContractRequired: new UntypedFormControl(false)
         });
         this.changeWorkflowForm.consultants.push(form);
     }
 
     addConsutlantToExtendForm(consultant: AvailableConsultantDto) {
         const form = this._fb.group({
-            consulantName: new FormControl(consultant.consultantName),
-            consultantId: new FormControl(consultant.consultantId),
-            externalId: new FormControl(consultant.externalId),
-            extendConsultant: new FormControl(false)
+            consulantName: new UntypedFormControl(consultant.consultantName),
+            consultantId: new UntypedFormControl(consultant.consultantId),
+            externalId: new UntypedFormControl(consultant.externalId),
+            extendConsultant: new UntypedFormControl(false)
         });
         this.extendWorkflowForm.consultants.push(form);
     }

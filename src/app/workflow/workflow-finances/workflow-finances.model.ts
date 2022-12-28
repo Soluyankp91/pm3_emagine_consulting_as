@@ -1,11 +1,11 @@
-import { FormArray, FormControl, FormGroup, Validators } from "@angular/forms";
+import { UntypedFormArray, UntypedFormControl, UntypedFormGroup } from "@angular/forms";
 
-export class FinancesClientForm extends FormGroup {
+export class FinancesClientForm extends UntypedFormGroup {
     constructor() {
         super({
-            clientCreatedInNavision: new FormControl(false),
-            differentDebtorNumberForInvoicing: new FormControl(false),
-            customDebtorNumber: new FormControl(null)
+            clientCreatedInNavision: new UntypedFormControl(false),
+            differentDebtorNumberForInvoicing: new UntypedFormControl(false),
+            customDebtorNumber: new UntypedFormControl(null)
         });
     }
 
@@ -20,14 +20,14 @@ export class FinancesClientForm extends FormGroup {
     }
 }
 
-export class FinancesConsultantsForm extends FormGroup {
+export class FinancesConsultantsForm extends UntypedFormGroup {
     constructor() {
         super({
-            consultants: new FormArray([])
+            consultants: new UntypedFormArray([])
         });
     }
 
     get consultants() {
-        return this.get('consultants') as FormArray;
+        return this.get('consultants') as UntypedFormArray;
     }
 }
