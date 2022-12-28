@@ -5,11 +5,11 @@ import { AppComponentBase } from 'src/shared/app-component-base';
 import { merge, Subject } from 'rxjs';
 import { takeUntil, debounceTime, switchMap, finalize } from 'rxjs/operators';
 import {
-	AdminServiceProxy,
 	ClientsServiceProxy,
 	EmployeeDto,
 	LookupServiceProxy,
 	StepType,
+	TenantConfigServiceProxy,
 	UpdateClientWFResponsibleCommand,
 } from 'src/shared/service-proxies/service-proxies';
 import { CustomValidators } from 'src/shared/utils/custom-validators';
@@ -33,7 +33,7 @@ export class WfResponsibleComponent extends AppComponentBase implements OnInit, 
 		private activatedRoute: ActivatedRoute,
 		private _lookupService: LookupServiceProxy,
 		private _clientService: ClientsServiceProxy,
-		private _adminService: AdminServiceProxy
+		private _tenantConfifService: TenantConfigServiceProxy
 	) {
 		super(injector);
 		merge(this.financeStepResponsible.valueChanges, this.contractStepResponsible.valueChanges)
@@ -99,14 +99,14 @@ export class WfResponsibleComponent extends AppComponentBase implements OnInit, 
 
 	getWorkflowEmployeeAssignments() {
 		this.showMainSpinner();
-		this._adminService
+		this._tenantConfifService
 			.workflowStepEmployeeAssignments()
 			.pipe(finalize(() => this.hideMainSpinner()))
 			.subscribe((result) => {
 				let formattedData = result.map((item) => {
 					return {
-						tenantFlag: this._mapFlagFromTenantId(item.tenantConfigId!),
-						tenantId: item.tenantConfigId,
+						tenantFlag: this._mapFlagFromTenantId(item.tenantId!),
+						tenantId: item.tenantId,
 						tenantName: item.tenantName,
 						contractStepResponsible: item.workflowStepEmployeeAssignments?.find(
 							(employee) => employee.stepType === StepType.Contract

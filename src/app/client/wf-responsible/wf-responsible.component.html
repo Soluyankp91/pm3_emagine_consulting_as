@@ -60,7 +60,7 @@
             <ng-container matColumnDef="tenantFlag">
                 <mat-header-cell *matHeaderCellDef fxFlex="60px"> </mat-header-cell>
                 <mat-cell *matCellDef="let row" fxFlex="60px">
-                    <span class="tenant-image fi fi-{{row?.tenantFlag | lowercase }} fis border-rounded-50"></span>
+                    <span class="tenant-flag fi fi-{{row?.tenantFlag | lowercase }} fis border-rounded-50"></span>
                 </mat-cell>
             </ng-container>
             <ng-container matColumnDef="tenant">
@@ -72,17 +72,17 @@
             <ng-container matColumnDef="contractStep">
                 <mat-header-cell *matHeaderCellDef fxFlex="470px"> Default Contracts step responsible </mat-header-cell>
                 <mat-cell *matCellDef="let row" fxFlex="470px">
-                    <img class="border-rounded-50 tenant-image u-mr--10"
+                    <img class="border-rounded-50 image-settings--dropdown u-mr--10"
                         [src]="employeeProfileUrl(row.contractStepResponsible?.externalId!)" />
-                    {{row.contractStepResponsible?.name}}
+                    {{row.contractStepResponsible?.name ?? 'Contract manager'}}
                 </mat-cell>
             </ng-container>
             <ng-container matColumnDef="financeStep">
                 <mat-header-cell *matHeaderCellDef fxFlex="470px"> Default Finance step responsible </mat-header-cell>
                 <mat-cell *matCellDef="let row" fxFlex="470px">
-                    <img class="border-rounded-50 tenant-image u-mr--10"
+                    <img class="border-rounded-50 image-settings--dropdown u-mr--10"
                         [src]="employeeProfileUrl(row.financeStepResponsible?.externalId!)" />
-                    {{row.financeStepResponsible?.name}}
+                    {{row.financeStepResponsible?.name ?? 'Finance manager'}}
                 </mat-cell>
             </ng-container>
             <mat-header-row *matHeaderRowDef="displayedColumns"></mat-header-row>
