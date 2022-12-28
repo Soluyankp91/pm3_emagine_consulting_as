@@ -20,6 +20,7 @@ import * as ApiServiceProxies from './service-proxies';
         ApiServiceProxies.MainOverviewServiceProxy,
         ApiServiceProxies.EmployeeServiceProxy,
         ApiServiceProxies.ContractSyncServiceProxy,
+        ApiServiceProxies.AdminServiceProxy,
         {
             provide: HTTP_INTERCEPTORS,
             useClass: GlobalHttpInterceptorService,

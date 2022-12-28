@@ -3505,22 +3505,24 @@ export class ClientDocumentsServiceProxy {
     }
 
     /**
+     * @param fromDate (optional) 
      * @param pageNumber (optional) 
      * @param pageSize (optional) 
      * @param sort (optional) 
      * @return Success
      */
-    evaluations(clientId: number, includeLinkedClients: boolean, fromDate: moment.Moment, pageNumber?: number | undefined, pageSize?: number | undefined, sort?: string | undefined): Observable<ClientEvaluationOutputDtoPaginatedList> {
-        let url_ = this.baseUrl + "/api/ClientDocuments/{clientId}/Evaluations/{includeLinkedClients}/{fromDate}?";
+    evaluations(clientId: number, includeLinkedClients: boolean, fromDate?: moment.Moment | undefined, pageNumber?: number | undefined, pageSize?: number | undefined, sort?: string | undefined): Observable<ClientEvaluationOutputDtoPaginatedList> {
+        let url_ = this.baseUrl + "/api/ClientDocuments/{clientId}/Evaluations/{includeLinkedClients}?";
         if (clientId === undefined || clientId === null)
             throw new Error("The parameter 'clientId' must be defined.");
         url_ = url_.replace("{clientId}", encodeURIComponent("" + clientId));
         if (includeLinkedClients === undefined || includeLinkedClients === null)
             throw new Error("The parameter 'includeLinkedClients' must be defined.");
         url_ = url_.replace("{includeLinkedClients}", encodeURIComponent("" + includeLinkedClients));
-        if (fromDate === undefined || fromDate === null)
-            throw new Error("The parameter 'fromDate' must be defined.");
-        url_ = url_.replace("{fromDate}", encodeURIComponent(fromDate ? "" + fromDate.toISOString() : "null"));
+        if (fromDate === null)
+            throw new Error("The parameter 'fromDate' cannot be null.");
+        else if (fromDate !== undefined)
+            url_ += "fromDate=" + encodeURIComponent(fromDate ? "" + fromDate.toISOString() : "") + "&";
         if (pageNumber === null)
             throw new Error("The parameter 'pageNumber' cannot be null.");
         else if (pageNumber !== undefined)
@@ -27791,6 +27793,8 @@ export interface IWorkflowStepEmployeeAssignmentDto {
 }
 
 export class WorkflowStepEmployeeAssignmentEmployeeDto implements IWorkflowStepEmployeeAssignmentEmployeeDto {
+    id?: number;
+    externalId?: string;
     name?: string | undefined;
     employeeRole?: EmployeeRole;
     emailAddress?: string | undefined;
@@ -27806,6 +27810,8 @@ export class WorkflowStepEmployeeAssignmentEmployeeDto implements IWorkflowStepE
 
     init(_data?: any) {
         if (_data) {
+            this.id = _data["id"];
+            this.externalId = _data["externalId"];
             this.name = _data["name"];
             this.employeeRole = _data["employeeRole"];
             this.emailAddress = _data["emailAddress"];
@@ -27821,6 +27827,8 @@ export class WorkflowStepEmployeeAssignmentEmployeeDto implements IWorkflowStepE
 
     toJSON(data?: any) {
         data = typeof data === 'object' ? data : {};
+        data["id"] = this.id;
+        data["externalId"] = this.externalId;
         data["name"] = this.name;
         data["employeeRole"] = this.employeeRole;
         data["emailAddress"] = this.emailAddress;
@@ -27829,6 +27837,8 @@ export class WorkflowStepEmployeeAssignmentEmployeeDto implements IWorkflowStepE
 }
 
 export interface IWorkflowStepEmployeeAssignmentEmployeeDto {
+    id?: number;
+    externalId?: string;
     name?: string | undefined;
     employeeRole?: EmployeeRole;
     emailAddress?: string | undefined;
