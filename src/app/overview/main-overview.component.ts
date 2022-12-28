@@ -14,6 +14,7 @@ import * as moment from 'moment';
 import { Router } from '@angular/router';
 import { AppComponentBase } from 'src/shared/app-component-base';
 import { MatAutocompleteTrigger } from '@angular/material/autocomplete';
+import { MapTenantCountryCode } from 'src/shared/helpers/tenantHelper';
 
 const MainOverviewGridOptionsKey = 'MainOverviewGridFILTERS.1.0.3';
 
@@ -491,7 +492,7 @@ export class MainOverviewComponent extends AppComponentBase implements OnInit {
                         id: x.id!,
                         name: x.name!,
                         tenantName: x.tenantName!,
-                        code: this.getTenantCountryCode(x.tenantName!)!,
+                        code: MapTenantCountryCode(x.tenantName!)!,
                         selected: false,
                         flag: x.tenantName!
                     });
@@ -499,34 +500,6 @@ export class MainOverviewComponent extends AppComponentBase implements OnInit {
             .subscribe(result => {
                 this.legalEntities = result;
             });
-    }
-
-
-    getTenantCountryCode(name: string) {
-        switch (name) {
-            case 'Denmark':
-                return 'DK';
-            case 'Sweden':
-                return 'SE';
-            case 'Poland':
-                return 'PL';
-            case 'Netherlands':
-                return 'NL';
-            case 'Germany':
-                return 'DE';
-            case 'Norway':
-                return 'NO';
-            case 'France':
-                return 'FR';
-            case 'India':
-                return 'IN';
-            case 'International':
-                return 'EU';
-            case 'United Kingdom':
-                return 'GB';
-            default:
-                break;
-        }
     }
 
     getSalesType() {

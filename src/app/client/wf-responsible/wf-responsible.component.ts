@@ -9,12 +9,15 @@ import {
 	EmployeeDto,
 	LookupServiceProxy,
 	StepType,
+	TenantConfigDto,
 	TenantConfigServiceProxy,
 	UpdateClientWFResponsibleCommand,
 } from 'src/shared/service-proxies/service-proxies';
 import { CustomValidators } from 'src/shared/utils/custom-validators';
 import { ActivatedRoute } from '@angular/router';
 import { MatTableDataSource } from '@angular/material/table';
+import { IWorkflowAssignees } from './wf-responsible.model';
+import { MapFlagFromTenantId } from 'src/shared/helpers/tenantHelper';
 @Component({
 	selector: 'app-wf-responsible',
 	styleUrls: ['./wf-responsible.component.scss'],
@@ -25,7 +28,7 @@ export class WfResponsibleComponent extends AppComponentBase implements OnInit, 
 	contractStepResponsible = new UntypedFormControl(null, CustomValidators.autocompleteValidator(['id']));
 	financeStepResponsible = new UntypedFormControl(null, CustomValidators.autocompleteValidator(['id']));
 	filteredAccountManagers: EmployeeDto[] = [];
-	stepEmployeesDataSource: MatTableDataSource<any> = new MatTableDataSource<any>();
+	stepEmployeesDataSource: MatTableDataSource<IWorkflowAssignees> = new MatTableDataSource<IWorkflowAssignees>();
 	displayedColumns = ['tenantFlag', 'tenant', 'contractStep', 'financeStep'];
 	private _unsubscribe = new Subject();
 	constructor(
@@ -65,9 +68,9 @@ export class WfResponsibleComponent extends AppComponentBase implements OnInit, 
 	ngOnInit(): void {
 		this.activatedRoute.parent!.paramMap.pipe(takeUntil(this._unsubscribe)).subscribe((params) => {
 			this.clientId = +params.get('id')!;
-			this.getResponsiblePersons();
+			this._getResponsiblePersons();
 		});
-		this.getWorkflowEmployeeAssignments();
+		this._getWorkflowEmployeeAssignments();
 	}
 
 	ngOnDestroy(): void {
@@ -75,7 +78,7 @@ export class WfResponsibleComponent extends AppComponentBase implements OnInit, 
 		this._unsubscribe.complete();
 	}
 
-	getResponsiblePersons() {
+	private _getResponsiblePersons() {
 		this.showMainSpinner();
 		this._clientService
 			.getWFResponsible(this.clientId)
@@ -97,15 +100,15 @@ export class WfResponsibleComponent extends AppComponentBase implements OnInit, 
 			.subscribe();
 	}
 
-	getWorkflowEmployeeAssignments() {
+	private _getWorkflowEmployeeAssignments() {
 		this.showMainSpinner();
 		this._tenantConfifService
 			.workflowStepEmployeeAssignments()
 			.pipe(finalize(() => this.hideMainSpinner()))
-			.subscribe((result) => {
-				let formattedData = result.map((item) => {
-					return {
-						tenantFlag: this._mapFlagFromTenantId(item.tenantId!),
+			.subscribe((result: TenantConfigDto[]) => {
+				let formattedData: IWorkflowAssignees[] = result.map((item) => {
+					return <IWorkflowAssignees>{
+						tenantFlag: MapFlagFromTenantId(item.tenantId!),
 						tenantId: item.tenantId,
 						tenantName: item.tenantName,
 						contractStepResponsible: item.workflowStepEmployeeAssignments?.find(
@@ -116,34 +119,7 @@ export class WfResponsibleComponent extends AppComponentBase implements OnInit, 
 						)?.responsibleEmployee,
 					};
 				});
-				this.stepEmployeesDataSource = new MatTableDataSource<any>(formattedData);
+				this.stepEmployeesDataSource = new MatTableDataSource<IWorkflowAssignees>(formattedData);
 			});
-	}
-
-	private _mapFlagFromTenantId(tenantId: number) {
-		switch (tenantId) {
-			case 1:
-				return 'DK';
-			case 2:
-				return 'SE';
-			case 4:
-				return 'PL';
-			case 8:
-				return 'NL';
-			case 10:
-				return 'DE';
-			case 17:
-				return 'NO';
-			case 20:
-				return 'GB';
-			case 25:
-				return 'EU';
-			case 27:
-				return 'FR';
-			case 29:
-				return 'IN';
-			default:
-				return '';
-		}
 	}
 }
