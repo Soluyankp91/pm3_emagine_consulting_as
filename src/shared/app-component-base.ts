@@ -1,6 +1,7 @@
 import { Injector, TrackByFunction } from "@angular/core";
 import { AbstractControl } from "@angular/forms";
 import { MatSnackBar } from "@angular/material/snack-bar";
+import * as moment from "moment";
 import { NgxSpinnerService } from "ngx-spinner";
 import { Actions } from "src/app/contracts/shared/components/grid-table/master-templates/entities/master-templates.interfaces";
 import { TenantList } from "src/app/workflow/workflow-sales/workflow-sales.model";
@@ -186,5 +187,11 @@ export abstract class AppComponentBase {
 
     displayNameFn(option: any) {
         return option?.name;
+    }
+
+    subtractMonthsFromDate(numOfMonths: number): moment.Moment {
+        const date = moment();
+        date.subtract(numOfMonths, 'months');
+        return date;
     }
 }
