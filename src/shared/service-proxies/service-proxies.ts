@@ -3505,22 +3505,24 @@ export class ClientDocumentsServiceProxy {
     }
 
     /**
+     * @param fromDate (optional) 
      * @param pageNumber (optional) 
      * @param pageSize (optional) 
      * @param sort (optional) 
      * @return Success
      */
-    evaluations(clientId: number, includeLinkedClients: boolean, maxAnswerDate: moment.Moment, pageNumber?: number | undefined, pageSize?: number | undefined, sort?: string | undefined): Observable<ClientEvaluationOutputDtoPaginatedList> {
-        let url_ = this.baseUrl + "/api/ClientDocuments/{clientId}/Evaluations/{includeLinkedClients}/{maxAnswerDate}?";
+    evaluations(clientId: number, includeLinkedClients: boolean, fromDate?: moment.Moment | undefined, pageNumber?: number | undefined, pageSize?: number | undefined, sort?: string | undefined): Observable<ClientEvaluationOutputDtoPaginatedList> {
+        let url_ = this.baseUrl + "/api/ClientDocuments/{clientId}/Evaluations/{includeLinkedClients}?";
         if (clientId === undefined || clientId === null)
             throw new Error("The parameter 'clientId' must be defined.");
         url_ = url_.replace("{clientId}", encodeURIComponent("" + clientId));
         if (includeLinkedClients === undefined || includeLinkedClients === null)
             throw new Error("The parameter 'includeLinkedClients' must be defined.");
         url_ = url_.replace("{includeLinkedClients}", encodeURIComponent("" + includeLinkedClients));
-        if (maxAnswerDate === undefined || maxAnswerDate === null)
-            throw new Error("The parameter 'maxAnswerDate' must be defined.");
-        url_ = url_.replace("{maxAnswerDate}", encodeURIComponent(maxAnswerDate ? "" + maxAnswerDate.toISOString() : "null"));
+        if (fromDate === null)
+            throw new Error("The parameter 'fromDate' cannot be null.");
+        else if (fromDate !== undefined)
+            url_ += "fromDate=" + encodeURIComponent(fromDate ? "" + fromDate.toISOString() : "") + "&";
         if (pageNumber === null)
             throw new Error("The parameter 'pageNumber' cannot be null.");
         else if (pageNumber !== undefined)
@@ -5987,11 +5989,8 @@ export class ClientsServiceProxy {
      * @param body (optional) 
      * @return Success
      */
-    postWFResponsible(clientId: number, body?: UpdateClientWFResponsibleCommand | undefined): Observable<void> {
-        let url_ = this.baseUrl + "/api/Clients/{clientId}/PostWFResponsible";
-        if (clientId === undefined || clientId === null)
-            throw new Error("The parameter 'clientId' must be defined.");
-        url_ = url_.replace("{clientId}", encodeURIComponent("" + clientId));
+    postWFResponsible(body?: UpdateClientWFResponsibleCommand | undefined): Observable<void> {
+        let url_ = this.baseUrl + "/api/Clients/PostWFResponsible";
         url_ = url_.replace(/[?&]$/, "");
 
         const content_ = JSON.stringify(body);
@@ -21706,6 +21705,7 @@ export interface IContractSyncResultDto {
 export class ContractsClientDataDto implements IContractsClientDataDto {
     specialContractTerms?: string | undefined;
     noSpecialContractTerms?: boolean;
+    frameAgreementId?: number | undefined;
     clientTimeReportingCapId?: number | undefined;
     clientTimeReportingCapMaxValue?: number | undefined;
     clientTimeReportingCapCurrencyId?: number | undefined;
@@ -21736,6 +21736,7 @@ export class ContractsClientDataDto implements IContractsClientDataDto {
         if (_data) {
             this.specialContractTerms = _data["specialContractTerms"];
             this.noSpecialContractTerms = _data["noSpecialContractTerms"];
+            this.frameAgreementId = _data["frameAgreementId"];
             this.clientTimeReportingCapId = _data["clientTimeReportingCapId"];
             this.clientTimeReportingCapMaxValue = _data["clientTimeReportingCapMaxValue"];
             this.clientTimeReportingCapCurrencyId = _data["clientTimeReportingCapCurrencyId"];
@@ -21774,6 +21775,7 @@ export class ContractsClientDataDto implements IContractsClientDataDto {
         data = typeof data === 'object' ? data : {};
         data["specialContractTerms"] = this.specialContractTerms;
         data["noSpecialContractTerms"] = this.noSpecialContractTerms;
+        data["frameAgreementId"] = this.frameAgreementId;
         data["clientTimeReportingCapId"] = this.clientTimeReportingCapId;
         data["clientTimeReportingCapMaxValue"] = this.clientTimeReportingCapMaxValue;
         data["clientTimeReportingCapCurrencyId"] = this.clientTimeReportingCapCurrencyId;
@@ -21805,6 +21807,7 @@ export class ContractsClientDataDto implements IContractsClientDataDto {
 export interface IContractsClientDataDto {
     specialContractTerms?: string | undefined;
     noSpecialContractTerms?: boolean;
+    frameAgreementId?: number | undefined;
     clientTimeReportingCapId?: number | undefined;
     clientTimeReportingCapMaxValue?: number | undefined;
     clientTimeReportingCapCurrencyId?: number | undefined;
@@ -26202,7 +26205,7 @@ export interface ITenant {
 }
 
 export class TenantConfigDto implements ITenantConfigDto {
-    tenantConfigId?: number;
+    tenantId?: number;
     tenantName?: string | undefined;
     workflowStepEmployeeAssignments?: WorkflowStepEmployeeAssignmentDto[] | undefined;
 
@@ -26217,7 +26220,7 @@ export class TenantConfigDto implements ITenantConfigDto {
 
     init(_data?: any) {
         if (_data) {
-            this.tenantConfigId = _data["tenantConfigId"];
+            this.tenantId = _data["tenantId"];
             this.tenantName = _data["tenantName"];
             if (Array.isArray(_data["workflowStepEmployeeAssignments"])) {
                 this.workflowStepEmployeeAssignments = [] as any;
@@ -26236,7 +26239,7 @@ export class TenantConfigDto implements ITenantConfigDto {
 
     toJSON(data?: any) {
         data = typeof data === 'object' ? data : {};
-        data["tenantConfigId"] = this.tenantConfigId;
+        data["tenantId"] = this.tenantId;
         data["tenantName"] = this.tenantName;
         if (Array.isArray(this.workflowStepEmployeeAssignments)) {
             data["workflowStepEmployeeAssignments"] = [];
@@ -26248,7 +26251,7 @@ export class TenantConfigDto implements ITenantConfigDto {
 }
 
 export interface ITenantConfigDto {
-    tenantConfigId?: number;
+    tenantId?: number;
     tenantName?: string | undefined;
     workflowStepEmployeeAssignments?: WorkflowStepEmployeeAssignmentDto[] | undefined;
 }
@@ -27790,6 +27793,8 @@ export interface IWorkflowStepEmployeeAssignmentDto {
 }
 
 export class WorkflowStepEmployeeAssignmentEmployeeDto implements IWorkflowStepEmployeeAssignmentEmployeeDto {
+    id?: number;
+    externalId?: string;
     name?: string | undefined;
     employeeRole?: EmployeeRole;
     emailAddress?: string | undefined;
@@ -27805,6 +27810,8 @@ export class WorkflowStepEmployeeAssignmentEmployeeDto implements IWorkflowStepE
 
     init(_data?: any) {
         if (_data) {
+            this.id = _data["id"];
+            this.externalId = _data["externalId"];
             this.name = _data["name"];
             this.employeeRole = _data["employeeRole"];
             this.emailAddress = _data["emailAddress"];
@@ -27820,6 +27827,8 @@ export class WorkflowStepEmployeeAssignmentEmployeeDto implements IWorkflowStepE
 
     toJSON(data?: any) {
         data = typeof data === 'object' ? data : {};
+        data["id"] = this.id;
+        data["externalId"] = this.externalId;
         data["name"] = this.name;
         data["employeeRole"] = this.employeeRole;
         data["emailAddress"] = this.emailAddress;
@@ -27828,6 +27837,8 @@ export class WorkflowStepEmployeeAssignmentEmployeeDto implements IWorkflowStepE
 }
 
 export interface IWorkflowStepEmployeeAssignmentEmployeeDto {
+    id?: number;
+    externalId?: string;
     name?: string | undefined;
     employeeRole?: EmployeeRole;
     emailAddress?: string | undefined;
