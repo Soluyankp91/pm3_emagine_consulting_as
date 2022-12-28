@@ -1,6 +1,7 @@
 import { Component, Injector, OnInit } from '@angular/core';
 import { finalize } from 'rxjs/operators';
 import { AppComponentBase } from 'src/shared/app-component-base';
+import { MapFlagFromTenantId, MapTenantNameFromId } from 'src/shared/helpers/tenantHelper';
 import { EmployeeNotificationServiceProxy, EmployeeTenantNotificationItem, EnumEntityTypeDto } from 'src/shared/service-proxies/service-proxies';
 import { EmployeeNotifications } from './notification.model';
 
@@ -30,63 +31,9 @@ export class NotificationComponent extends AppComponentBase implements OnInit {
             }))
             .subscribe(result => {
                 this.tenantWithNotifications = result.map(x => {
-                    return new EmployeeNotifications(x.tenantId!, this.mapTenantNameFromId(x.tenantId!), this.mapFlagFromTenantId(x.tenantId!), x.notifications!);
+                    return new EmployeeNotifications(x.tenantId!, MapTenantNameFromId(x.tenantId!), MapFlagFromTenantId(x.tenantId!), x.notifications!);
                 });
             })
-    }
-
-    mapTenantNameFromId(tenantId: number) {
-        switch (tenantId) {
-            case 1:
-                return 'Denmark';
-            case 2:
-                return 'Sweden';
-            case 4:
-                return 'Poland';
-            case 8:
-                return 'Netherlands';
-            case 10:
-                return 'Germany';
-            case 17:
-                return 'Norway';
-            case 20:
-                return 'United Kingdom';
-            case 25:
-                return 'International';
-            case 27:
-                return 'France';
-            case 29:
-                return 'India';
-            default:
-                return '';
-        }
-    }
-
-    mapFlagFromTenantId(tenantId: number) {
-        switch (tenantId) {
-            case 1:
-                return 'DK';
-            case 2:
-                return 'SE';
-            case 4:
-                return 'PL';
-            case 8:
-                return 'NL';
-            case 10:
-                return 'DE';
-            case 17:
-                return 'NO';
-            case 20:
-                return 'GB';
-            case 25:
-                return 'EU';
-            case 27:
-                return 'FR';
-            case 29:
-                return 'IN';
-            default:
-                return '';
-        }
     }
 
     tenantTrackBy(index: number, item: EmployeeNotifications) {
@@ -101,7 +48,7 @@ export class NotificationComponent extends AppComponentBase implements OnInit {
         const tenant = this.tenantWithNotifications.find(x => x.tenantId === tenantId)!;
         return tenant?.notifications?.every(x => x.enabled) ?? false;
     }
-    
+
     someChecked(tenantId: number) {
         const tenant = this.tenantWithNotifications.find(x => x.tenantId === tenantId)!;
         return tenant?.notifications?.filter(x => x.enabled).length! > 0 && !tenant.notifications?.every(x => x.enabled);
