@@ -41,7 +41,7 @@
                             </mat-form-field>
                         </div>
                         <div fxLayout="row" fxLayoutAlign="start start" class="u-w--100" [fxHide]="!financesClientForm.differentDebtorNumberForInvoicing?.value">
-                            <mat-form-field appearance="outline" class="form-width u-mr--16" [ngClass]="{'disabled-input': readOnlyMode}" style="--size: 272px">
+                            <mat-form-field appearance="outline" class="form-width-272 u-mr--16" [ngClass]="{'disabled-input': readOnlyMode}">
                                 <mat-label>Debitor number</mat-label>
                                 <input [disabled]="readOnlyMode" [required]="financesClientForm.differentDebtorNumberForInvoicing?.value" autocomplete="off" matInput formControlName="customDebtorNumber" type="text">
                                 <mat-error>
