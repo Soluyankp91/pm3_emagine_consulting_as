@@ -1,21 +1,19 @@
 import { Injectable } from '@angular/core';
 import { SortDirection } from '@angular/material/sort';
 import { isEqual } from 'lodash';
-import { Observable, BehaviorSubject, combineLatest } from 'rxjs';
+import { BehaviorSubject, combineLatest } from 'rxjs';
 import { switchMap, debounceTime, distinctUntilChanged, tap } from 'rxjs/operators';
 import { BaseContract } from 'src/app/contracts/shared/base/base-contract';
 import { TableFiltersEnum } from 'src/app/contracts/shared/components/grid-table/master-templates/entities/master-templates.interfaces';
 import {
 	AgreementTemplateServiceProxy,
-	AgreementTemplatesListItemDtoPaginatedList,
 	CountryDto,
 } from 'src/shared/service-proxies/service-proxies';
 
 @Injectable()
-export class MasterTemplatesService extends BaseContract {
+export class ClientTemplatesService extends BaseContract {
 	constructor(private readonly agreementTemplateServiceProxy: AgreementTemplateServiceProxy) {
 		super();
-        console.log('init');
 	}
 	override tableFilters$ = new BehaviorSubject<TableFiltersEnum>(<TableFiltersEnum>{
 		language: [],
@@ -28,7 +26,6 @@ export class MasterTemplatesService extends BaseContract {
 		lastUpdatedByLowerCaseInitials: [],
 		isEnabled: [],
 	});
-
 	override sendPayload$([tableFilters, sort, page, tenantIds, search]: [
 		TableFiltersEnum,
 		{
@@ -51,7 +48,7 @@ export class MasterTemplatesService extends BaseContract {
 		}, {} as any);
 		filters.isEnabled = this._enabledToSend(filters.isEnabled);
 		return this.agreementTemplateServiceProxy.list2(
-			false, //isClientTemplate
+			true, //isClientTemplate
 			search, //search
 			filters.tenantIds, // tenantId []
 			filters.legalEntityIds, //legalEntities []

@@ -1,29 +1,30 @@
 import { take, pluck } from 'rxjs/operators';
-import { Component } from '@angular/core';
+import { Component, Inject} from '@angular/core';
 import { FormControl } from '@angular/forms';
 import { IFilter } from 'src/app/contracts/shared/components/grid-table/mat-grid.interfaces';
 import { ContractsService } from 'src/app/contracts/shared/services/contracts.service';
 import { MasterTemplatesService } from 'src/app/contracts/master-templates/listAndPreviews/services/master-templates.service';
+import { Router } from '@angular/router';
+import { BASE_CONTRACT, contractsInjector } from 'src/app/contracts/contracts.module';
+import { ClientTemplatesService } from 'src/app/contracts/client-specific-templates/listAndPreviews/service/client-templates.service';
+import { BaseContract } from 'src/app/contracts/shared/base/base-contract';
 
 @Component({
-    selector: 'app-recipient-types-filter',
-    templateUrl: './recipient-types-filter.component.html',
+	selector: 'app-recipient-types-filter',
+	templateUrl: './recipient-types-filter.component.html',
 })
 export class RecipientTypesFilterComponent implements IFilter {
-    recipientTypes$ = this.contractsService.getRecipientTypes$();
-    filterFormControl: FormControl;
+	recipientTypes$ = this.contractsService.getRecipientTypes$();
+	filterFormControl: FormControl;
 
-    private tableFilter = 'recipientTypeId';
+	private tableFilter = 'recipientTypeId';
 
-    constructor(
-        private contractsService: ContractsService,
-        private masterTemplateService: MasterTemplatesService
-    ) {
-        this.masterTemplateService
-            .getTableFilters$()
-            .pipe(take(1), pluck(this.tableFilter))
-            .subscribe((recipientTypes) => {
-                this.filterFormControl = new FormControl(recipientTypes);
-            });
-    }
+	constructor(private contractsService: ContractsService, @Inject(BASE_CONTRACT) masterTemplateService: BaseContract) {
+		masterTemplateService
+			.getTableFilters$()
+			.pipe(take(1), pluck(this.tableFilter))
+			.subscribe((recipientTypes) => {
+				this.filterFormControl = new FormControl(recipientTypes);
+			});
+	}
 }

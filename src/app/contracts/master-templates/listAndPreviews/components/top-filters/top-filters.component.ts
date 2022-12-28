@@ -5,15 +5,18 @@ import { Component, OnInit, OnDestroy } from '@angular/core';
 import { FormControl, FormGroup } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
 import { ContractsService } from 'src/app/contracts/shared/services/contracts.service';
+import { BaseContract } from 'src/app/contracts/shared/base/base-contract';
+import { ClientTemplatesService } from 'src/app/contracts/client-specific-templates/listAndPreviews/service/client-templates.service';
 
 @Component({
 	selector: 'app-master-template-filter-header',
 	templateUrl: './top-filters.component.html',
 	styleUrls: ['./top-filters.component.scss'],
+	providers: [],
 })
 export class MasterTemplateFilterHeaderComponent implements OnInit, OnDestroy {
-	countryFilter$ = this.contractsService.getTenats$();
-	preselectedTenants$ = this.masterTemplatesService.getTenats$();
+	countryFilter$ = this.contractsService.getTenants$();
+	preselectedTenants$ = this.masterTemplatesService.getTenants$();
 	topFiltersFormGroup: FormGroup;
 
 	private unSubscribe$ = new Subject<void>();

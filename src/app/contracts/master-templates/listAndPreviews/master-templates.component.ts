@@ -61,6 +61,7 @@ export class MasterTemplatesComponent extends AppComponentBase implements OnInit
 	}
 
 	onFormControlChange($event: TableFiltersEnum) {
+        console.log($event);
 		this._masterTemplatesService.updateTableFilters($event);
 	}
 

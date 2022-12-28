@@ -31,6 +31,10 @@ import { SelectionModel } from '@angular/cdk/collections';
 import { Actions } from './master-templates/entities/master-templates.interfaces';
 import { AppComponentBase } from 'src/shared/app-component-base';
 import { MatTableDataSource } from '@angular/material/table';
+import { MasterTemplatesService } from 'src/app/contracts/master-templates/listAndPreviews/services/master-templates.service';
+import { contractsInjector } from 'src/app/contracts/contracts.module';
+import { Router } from '@angular/router';
+import { ClientTemplatesService } from 'src/app/contracts/client-specific-templates/listAndPreviews/service/client-templates.service';
 
 @Component({
 	selector: 'emg-mat-grid',
@@ -84,7 +88,11 @@ export class MatGridComponent extends AppComponentBase implements OnInit, OnChan
 
 	private _unSubscribe$ = new Subject<void>();
 
-	constructor(private readonly injector: Injector, private _componentFactoryResolver: ComponentFactoryResolver) {
+	constructor(
+		private readonly injector: Injector,
+		private _componentFactoryResolver: ComponentFactoryResolver,
+		private readonly router: Router
+	) {
 		super(injector);
 		this.trackByAction = this.createTrackByFn('actionType');
 	}
@@ -105,9 +113,9 @@ export class MatGridComponent extends AppComponentBase implements OnInit, OnChan
 		this.displayedColumns = displayedColumnsCopy;
 	}
 
-	ngAfterViewInit(): void {
+	async ngAfterViewInit() {
 		this.cells_ = this.customCells.toArray();
-		this.loadFilters();
+		await this.loadFilters();
 		this._subscribeOnSelectionChange();
 		this._subscribeOnFormControlChanges();
 		this._subscribeOnEachFormControl();
@@ -134,21 +142,23 @@ export class MatGridComponent extends AppComponentBase implements OnInit, OnChan
 		return item.matColumnDef;
 	}
 
-	loadFilters() {
-		this.cells
-			.filter((cell) => cell.headerCell.type !== 'sort')
-			.forEach((cell, index) => {
-				if (cell.headerCell.filter) {
-					const factory = this._componentFactoryResolver.resolveComponentFactory<IFilter>(
-						cell.headerCell.filter.component
-					);
-					const component = this.children.get(index)?.createComponent(factory);
-					this.formGroup.addControl(
-						cell.headerCell.filter.formControlName,
-						(component as ComponentRef<IFilter>).instance.filterFormControl
-					);
-				}
-			});
+	async loadFilters() {
+		await Promise.all(
+			this.cells
+				.filter((cell) => cell.headerCell.type !== 'sort')
+				.map(async (cell, index) => {
+					if (cell.headerCell.filter) {
+						const componentInstance = await cell.headerCell.filter.component();
+						const factory = this._componentFactoryResolver.resolveComponentFactory<IFilter>(componentInstance);
+						const component = this.children.get(index)?.createComponent(factory, 0);
+						this.formGroup.addControl(
+							cell.headerCell.filter.formControlName,
+							(component as ComponentRef<IFilter>).instance.filterFormControl,
+							{ emitEvent: false }
+						);
+					}
+				})
+		);
 	}
 
 	closeFilter(chip: string) {

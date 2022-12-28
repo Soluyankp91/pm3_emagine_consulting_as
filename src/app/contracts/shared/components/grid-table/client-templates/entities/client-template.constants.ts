@@ -1,15 +1,17 @@
-import { contractsInjector, } from 'src/app/contracts/contracts.module';
-import { IHeaderCell, EHeaderCells } from 'src/app/contracts/shared/components/grid-table/mat-grid.interfaces';
-import { AgreementLanguagesFilterComponent } from '../filters/agreement-languages-filter/agreement-filter.component';
-import { AgreementTypesFilterComponent } from '../filters/agreement-types-filter/agreement-types-filter.component';
-import { DeliveryTypesFilterComponent } from '../filters/delivery-types-filter/delivery-types-filter/delivery-types-filter.component';
-import { EmployeesFilterComponent } from '../filters/employees-filter/employees-filter.component';
-import { EmploymentTypesFilterComponent } from '../filters/employment-types-filter/employment-types-filter/employment-types-filter.component';
-import { IsEnabledComponent } from '../filters/enabled-filter/is-enabled/is-enabled.component';
-import { LegalEntitiesFilterComponent } from '../filters/legal-entities-filter/legal-entities-filter/legal-entities-filter.component';
-import { RecipientTypesFilterComponent } from '../filters/recipient-types-filter/recipient-types-filter/recipient-types-filter.component';
-import { SalesTypesFilterComponent } from '../filters/sales-types-filter/sales-types-filter.component';
-import { Actions } from './master-templates.interfaces';
+import { contractsInjector } from "src/app/contracts/contracts.module";
+import { Actions } from "../../master-templates/entities/master-templates.interfaces";
+import { AgreementLanguagesFilterComponent } from "../../master-templates/filters/agreement-languages-filter/agreement-filter.component";
+import { AgreementTypesFilterComponent } from "../../master-templates/filters/agreement-types-filter/agreement-types-filter.component";
+import { DeliveryTypesFilterComponent } from "../../master-templates/filters/delivery-types-filter/delivery-types-filter/delivery-types-filter.component";
+import { EmployeesFilterComponent } from "../../master-templates/filters/employees-filter/employees-filter.component";
+import { EmploymentTypesFilterComponent } from "../../master-templates/filters/employment-types-filter/employment-types-filter/employment-types-filter.component";
+import { IsEnabledComponent } from "../../master-templates/filters/enabled-filter/is-enabled/is-enabled.component";
+import { LegalEntitiesFilterComponent } from "../../master-templates/filters/legal-entities-filter/legal-entities-filter/legal-entities-filter.component";
+import { RecipientTypesFilterComponent } from "../../master-templates/filters/recipient-types-filter/recipient-types-filter/recipient-types-filter.component";
+import { SalesTypesFilterComponent } from "../../master-templates/filters/sales-types-filter/sales-types-filter.component";
+import { EHeaderCells, IHeaderCell } from "../../mat-grid.interfaces";
+
+
 
 export const DISPLAYED_COLUMNS: string[] = [
 	'language',
@@ -25,7 +27,7 @@ export const DISPLAYED_COLUMNS: string[] = [
 	'lastUpdatedByLowerCaseInitials',
 	'isEnabled',
 ];
-export const MASTER_TEMPLATE_HEADER_CELLS: any[] = [
+export const CLIENT_TEMPLATE_HEADER_CELLS: any[] = [
     {
 		type: EHeaderCells.FILTER,
 		filter: {
@@ -118,7 +120,7 @@ export const FILTER_LABEL_MAP: { [key: string]: string } = {
 export const PAGE_SIZE_OPTIONS: number[] = [5, 20, 50, 100];
 export const AUTOCOMPLETE_SEARCH_ITEMS_COUNT = 100;
 export const DEFAULT_SIZE_OPTION: number = PAGE_SIZE_OPTIONS[0];
-export const MASTER_TEMPLATE_ACTIONS: Actions[] = [
+export const CLIENT_TEMPLATE_ACTIONS: Actions[] = [
 	{
 		label: 'Edit',
 		actionType: 'EDIT',
