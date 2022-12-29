@@ -189,6 +189,12 @@
         padding-right: 8px !important;
         color: $medium-grey-color !important;
         font-weight: 600;
+        &.mat-active:not(.mat-option:hover) {
+            background: unset !important;
+        }
+        &.selected-option {
+            background: rgba($color: $green-color-25, $alpha: 0.33) !important;
+        }
         .mat-option-text {
             display: flex;
             align-items: center;
