@@ -16,7 +16,7 @@ export class MasterTemplateFilterHeaderComponent implements OnInit, OnDestroy {
 	preselectedTenants$ = this.masterTemplatesService.getTenats$();
 	topFiltersFormGroup: FormGroup;
 
-	private unSubscribe$ = new Subject<void>();
+	private _unSubscribe$ = new Subject<void>();
 
 	constructor(
 		private readonly masterTemplatesService: MasterTemplatesService,
@@ -32,8 +32,8 @@ export class MasterTemplateFilterHeaderComponent implements OnInit, OnDestroy {
 	}
 
 	ngOnDestroy(): void {
-		this.unSubscribe$.next();
-		this.unSubscribe$.complete();
+		this._unSubscribe$.next();
+		this._unSubscribe$.complete();
 	}
 
 	navigateTo() {
@@ -41,21 +41,21 @@ export class MasterTemplateFilterHeaderComponent implements OnInit, OnDestroy {
 	}
 
 	private _subscribeOnTenantChanged() {
-		this.topFiltersFormGroup.controls['tenantIds'].valueChanges.pipe(takeUntil(this.unSubscribe$)).subscribe((tenants) => {
+		this.topFiltersFormGroup.controls['tenantIds'].valueChanges.pipe(takeUntil(this._unSubscribe$)).subscribe((tenants) => {
 			this.masterTemplatesService.updateTenantFilter(tenants);
 		});
 	}
 
 	private _subscribeOnTextChanged() {
 		this.topFiltersFormGroup.controls['search'].valueChanges
-			.pipe(takeUntil(this.unSubscribe$), debounceTime(600))
+			.pipe(takeUntil(this._unSubscribe$), debounceTime(600))
 			.subscribe((search) => {
 				this.masterTemplatesService.updateSearchFilter(search);
 			});
 	}
 
 	private initFilters() {
-		this.preselectedTenants$.pipe(takeUntil(this.unSubscribe$), take(1)).subscribe((tenants) => {
+		this.preselectedTenants$.pipe(take(1)).subscribe((tenants) => {
 			this.topFiltersFormGroup = new FormGroup({
 				tenantIds: new FormControl(tenants),
 				search: new FormControl(),

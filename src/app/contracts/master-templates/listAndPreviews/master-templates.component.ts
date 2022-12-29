@@ -1,6 +1,6 @@
 import { ITableConfig } from '../../shared/components/grid-table/mat-grid.interfaces';
 import { MasterTemplatesService } from './services/master-templates.service';
-import { Component, ChangeDetectionStrategy, OnInit, OnDestroy, Injector, SkipSelf} from '@angular/core';
+import { Component, ChangeDetectionStrategy, OnInit, OnDestroy, Injector, TrackByFunction } from '@angular/core';
 import { map, takeUntil } from 'rxjs/operators';
 import {
 	DISPLAYED_COLUMNS,
@@ -33,6 +33,8 @@ export class MasterTemplatesComponent extends AppComponentBase implements OnInit
 	actions = MASTER_TEMPLATE_ACTIONS;
 	table$: Observable<any>;
 
+    trackById: TrackByFunction<number>;
+
 	private _unSubscribe$ = new Subject<void>();
 
 	constructor(
@@ -44,6 +46,8 @@ export class MasterTemplatesComponent extends AppComponentBase implements OnInit
 		private readonly _injetor: Injector,
 	) {
 		super(_injetor);
+        this.trackById = this.createTrackByFn('id');
+
 	}
 
 	ngOnInit(): void {
@@ -134,7 +138,7 @@ export class MasterTemplatesComponent extends AppComponentBase implements OnInit
 	}
 
 	private _subscribeOnDataLoading() {
-		this._masterTemplatesService.contractsLoading$.subscribe((isLoading) => {
+		this._masterTemplatesService.contractsLoading$.pipe(takeUntil(this._unSubscribe$)).subscribe((isLoading) => {
 			if (isLoading) {
 				this.showMainSpinner();
 				return;

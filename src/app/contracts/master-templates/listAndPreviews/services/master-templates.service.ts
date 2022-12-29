@@ -12,7 +12,7 @@ import {
 
 @Injectable()
 export class MasterTemplatesService extends BaseContract<TableFiltersEnum> {
-	constructor(private readonly agreementTemplateServiceProxy: AgreementTemplateServiceProxy) {
+	constructor(private readonly _agreementTemplateServiceProxy: AgreementTemplateServiceProxy) {
 		super();
 	}
     tableFilters$ = new BehaviorSubject<TableFiltersEnum>(<TableFiltersEnum>{
@@ -38,7 +38,7 @@ export class MasterTemplatesService extends BaseContract<TableFiltersEnum> {
 					return acc;
 				}, {} as any);
 				filters.isEnabled = this._enabledToSend(filters.isEnabled);
-				return this.agreementTemplateServiceProxy.list2(
+				return this._agreementTemplateServiceProxy.list2(
 					false, //isClientTemplate
 					search, //search
 					filters.tenantIds, // tenantId []
