@@ -152,7 +152,7 @@ export class WorkflowSalesComponent extends AppComponentBase implements OnInit, 
             name: 'Fixed',
         })
     );
-
+    filteredEmployees: EmployeeDto[] = []
     filteredAccountManagers: any[] = [];
     filteredSalesAccountManagers: any[] = [];
     filteredCommisionAccountManagers: any[] = [];
@@ -3122,16 +3122,18 @@ export class WorkflowSalesComponent extends AppComponentBase implements OnInit, 
                 switchMap((value: any) => {
                     let toSend = {
                         name: value,
-                        maxRecordsCount: 1000,
+                        showAll: true,
+                        idsToExclude: this.commissionedUsers.value?.length ? this.commissionedUsers.value.map((x: EmployeeDto) => x.id) : []
                     };
-                    // FIXME: change to proper API once BE is ready
-                    return this._lookupService.clientsAll(toSend.name, toSend.maxRecordsCount);
+                    console.log(toSend);
+                    console.log(this.commissionedUsers.value.map((x: EmployeeDto) => x.id));
+                    return this._lookupService.employees(toSend.name, toSend.showAll, toSend.idsToExclude);
                 }),
-            ).subscribe((list: any[]) => {
+            ).subscribe((list: EmployeeDto[]) => {
                 if (list.length) {
-                    this.filteredRecipients = list;
+                    this.filteredEmployees = list;
                 } else {
-                    this.filteredRecipients = [{ name: 'No records found', supplierName: 'No supplier found', clientName: 'No clients found', id: 'no-data' }];
+                    this.filteredEmployees = [new EmployeeDto({ name: 'No records found', externalId: '', id: undefined })];
                 }
             });
     }

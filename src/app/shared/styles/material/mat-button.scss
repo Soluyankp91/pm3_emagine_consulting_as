@@ -391,3 +391,9 @@
         }
     }
 }
+
+.small-icon-button.mat-icon-button {
+    mat-icon {
+        @include fontLineHeightAndSize(14px, 14px, 14px, 14px);
+    }
+}
