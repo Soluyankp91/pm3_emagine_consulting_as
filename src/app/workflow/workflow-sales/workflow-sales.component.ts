@@ -1,7 +1,7 @@
 import { Overlay } from '@angular/cdk/overlay';
 import { NumberSymbol } from '@angular/common';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
-import { Component, Injector, Input, OnDestroy, OnInit } from '@angular/core';
+import { Component, Injector, Input, OnDestroy, OnInit, ViewChild } from '@angular/core';
 import { AbstractControl, UntypedFormArray, UntypedFormBuilder, UntypedFormControl, Validators } from '@angular/forms';
 import { MatAutocompleteSelectedEvent } from '@angular/material/autocomplete';
 import { MatCheckboxChange } from '@angular/material/checkbox';
@@ -11,8 +11,8 @@ import { MatSelectChange } from '@angular/material/select';
 import { ActivatedRoute, Router } from '@angular/router';
 import { AuthenticationResult } from '@azure/msal-browser';
 import { ScrollToConfigOptions, ScrollToService } from '@nicky-lenaers/ngx-scroll-to';
-import { forkJoin, merge, Observable, of, Subject } from 'rxjs';
-import { debounceTime, finalize, map, mergeAll, switchMap, takeUntil } from 'rxjs/operators';
+import { forkJoin, merge, of, Subject } from 'rxjs';
+import { debounceTime, finalize, switchMap, takeUntil } from 'rxjs/operators';
 import { InternalLookupService } from 'src/app/shared/common/internal-lookup.service';
 import { ConfirmationDialogComponent } from 'src/app/shared/components/confirmation-dialog/confirmation-dialog.component';
 import { environment } from 'src/environments/environment';
@@ -60,6 +60,7 @@ import { WorkflowConsultantActionsDialogComponent } from '../workflow-consultant
 import { WorkflowDataService } from '../workflow-data.service';
 import { WorkflowProcessWithAnchorsDto } from '../workflow-period/workflow-period.model';
 import { EmploymentTypes } from '../workflow.model';
+import { MainDataComponent } from './main-data/main-data.component';
 import {
 	ConsultantDiallogAction,
 	SalesTerminateConsultantForm,
@@ -74,6 +75,8 @@ import {
 	styleUrls: ['./workflow-sales.component.scss'],
 })
 export class WorkflowSalesComponent extends AppComponentBase implements OnInit, OnDestroy {
+    @ViewChild('mainDataComponent', {static: false}) mainDataComponent: MainDataComponent
+
 	@Input() workflowId: string;
 	@Input() periodId: string | undefined;
 	@Input() consultant: ConsultantResultDto;
@@ -85,7 +88,7 @@ export class WorkflowSalesComponent extends AppComponentBase implements OnInit, 
 	workflowSideSections = WorkflowProcessType;
 	// SalesStep
 	salesClientDataForm: WorkflowSalesClientDataForm;
-	salesMainDataForm: WorkflowSalesMainForm;
+	// salesMainDataForm: WorkflowSalesMainForm;
 	consultantsForm: WorkflowSalesConsultantsForm;
 	salesTerminateConsultantForm: SalesTerminateConsultantForm;
 
@@ -199,78 +202,78 @@ export class WorkflowSalesComponent extends AppComponentBase implements OnInit, 
 	) {
 		super(injector);
 		this.salesClientDataForm = new WorkflowSalesClientDataForm();
-		this.salesMainDataForm = new WorkflowSalesMainForm();
+		// this.salesMainDataForm = new WorkflowSalesMainForm();
 		this.consultantsForm = new WorkflowSalesConsultantsForm();
 		this.salesTerminateConsultantForm = new SalesTerminateConsultantForm();
 
 		//#region form subscriptions
-		this.salesMainDataForm.salesAccountManagerIdValue?.valueChanges
-			.pipe(
-				takeUntil(this._unsubscribe),
-				debounceTime(300),
-				switchMap((value: any) => {
-					if (value) {
-						let toSend = {
-							name: value,
-							maxRecordsCount: 1000,
-						};
-						if (value?.id) {
-							toSend.name = value.id ? value.name : value;
-						}
-						return this._lookupService.employees(value);
-					} else {
-						return of([]);
-					}
-				})
-			)
-			.subscribe((list: EmployeeDto[]) => {
-				if (list.length) {
-					this.filteredSalesAccountManagers = list;
-				} else {
-					this.filteredSalesAccountManagers = [
-						{
-							name: 'No managers found',
-							externalId: '',
-							id: 'no-data',
-							selected: false,
-						},
-					];
-				}
-			});
+		// this.salesMainDataForm.salesAccountManagerIdValue?.valueChanges
+		// 	.pipe(
+		// 		takeUntil(this._unsubscribe),
+		// 		debounceTime(300),
+		// 		switchMap((value: any) => {
+		// 			if (value) {
+		// 				let toSend = {
+		// 					name: value,
+		// 					maxRecordsCount: 1000,
+		// 				};
+		// 				if (value?.id) {
+		// 					toSend.name = value.id ? value.name : value;
+		// 				}
+		// 				return this._lookupService.employees(value);
+		// 			} else {
+		// 				return of([]);
+		// 			}
+		// 		})
+		// 	)
+		// 	.subscribe((list: EmployeeDto[]) => {
+		// 		if (list.length) {
+		// 			this.filteredSalesAccountManagers = list;
+		// 		} else {
+		// 			this.filteredSalesAccountManagers = [
+		// 				{
+		// 					name: 'No managers found',
+		// 					externalId: '',
+		// 					id: 'no-data',
+		// 					selected: false,
+		// 				},
+		// 			];
+		// 		}
+		// 	});
 
-		this.salesMainDataForm.commissionAccountManagerIdValue?.valueChanges
-			.pipe(
-				takeUntil(this._unsubscribe),
-				debounceTime(300),
-				switchMap((value: any) => {
-					if (value) {
-						let toSend = {
-							name: value,
-							maxRecordsCount: 1000,
-						};
-						if (value?.id) {
-							toSend.name = value.id ? value.name : value;
-						}
-						return this._lookupService.employees(value);
-					} else {
-						return of([]);
-					}
-				})
-			)
-			.subscribe((list: EmployeeDto[]) => {
-				if (list.length) {
-					this.filteredCommisionAccountManagers = list;
-				} else {
-					this.filteredCommisionAccountManagers = [
-						{
-							name: 'No managers found',
-							externalId: '',
-							id: 'no-data',
-							selected: false,
-						},
-					];
-				}
-			});
+		// this.salesMainDataForm.commissionAccountManagerIdValue?.valueChanges
+		// 	.pipe(
+		// 		takeUntil(this._unsubscribe),
+		// 		debounceTime(300),
+		// 		switchMap((value: any) => {
+		// 			if (value) {
+		// 				let toSend = {
+		// 					name: value,
+		// 					maxRecordsCount: 1000,
+		// 				};
+		// 				if (value?.id) {
+		// 					toSend.name = value.id ? value.name : value;
+		// 				}
+		// 				return this._lookupService.employees(value);
+		// 			} else {
+		// 				return of([]);
+		// 			}
+		// 		})
+		// 	)
+		// 	.subscribe((list: EmployeeDto[]) => {
+		// 		if (list.length) {
+		// 			this.filteredCommisionAccountManagers = list;
+		// 		} else {
+		// 			this.filteredCommisionAccountManagers = [
+		// 				{
+		// 					name: 'No managers found',
+		// 					externalId: '',
+		// 					id: 'no-data',
+		// 					selected: false,
+		// 				},
+		// 			];
+		// 		}
+		// 	});
 
 		this.salesClientDataForm.directClientIdValue?.valueChanges
 			.pipe(
@@ -563,7 +566,7 @@ export class WorkflowSalesComponent extends AppComponentBase implements OnInit, 
 
 	validateSalesForm() {
 		this.salesClientDataForm.markAllAsTouched();
-		this.salesMainDataForm.markAllAsTouched();
+		this.mainDataComponent?.salesMainDataForm.markAllAsTouched();
 		this.consultantsForm.markAllAsTouched();
 		this.salesTerminateConsultantForm.markAllAsTouched();
 		switch (this.activeSideSection.typeId) {
@@ -573,7 +576,7 @@ export class WorkflowSalesComponent extends AppComponentBase implements OnInit, 
 			case WorkflowProcessType.StartConsultantPeriod:
 			case WorkflowProcessType.ChangeConsultantPeriod:
 			case WorkflowProcessType.ExtendConsultantPeriod:
-				return this.salesClientDataForm.valid && this.salesMainDataForm.valid && this.consultantsForm.valid;
+				return this.salesClientDataForm.valid && this.mainDataComponent?.salesMainDataForm.valid && this.consultantsForm.valid;
 			case WorkflowProcessType.TerminateWorkflow:
 			case WorkflowProcessType.TerminateConsultant:
 				return this.salesTerminateConsultantForm.valid;
@@ -737,9 +740,9 @@ export class WorkflowSalesComponent extends AppComponentBase implements OnInit, 
 				})
 			)
 			.subscribe((result) => {
-				this.salesMainDataForm.deliveryTypeId?.setValue(result.deliveryTypeId, { emitEvent: false });
-				this.salesMainDataForm.salesTypeId?.setValue(result.salesTypeId, { emitEvent: false });
-				this.salesMainDataForm.marginId?.setValue(result.marginId, { emitEvent: false });
+				this.mainDataComponent?.salesMainDataForm.deliveryTypeId?.setValue(result.deliveryTypeId, { emitEvent: false });
+				this.mainDataComponent?.salesMainDataForm.salesTypeId?.setValue(result.salesTypeId, { emitEvent: false });
+				this.mainDataComponent?.salesMainDataForm.marginId?.setValue(result.marginId, { emitEvent: false });
 			});
 	}
 
@@ -1477,15 +1480,15 @@ export class WorkflowSalesComponent extends AppComponentBase implements OnInit, 
 			)
 			.subscribe((result) => {
 				this.resetForms();
-				this.salesMainDataForm.patchValue(result?.salesMainData!, { emitEvent: false });
+				this.mainDataComponent?.salesMainDataForm.patchValue(result?.salesMainData!, { emitEvent: false });
 				result.salesMainData?.commissions?.forEach((commission: CommissionDto) => {
-					this.addCommission(false, commission);
+					this.mainDataComponent?.addCommission(false, commission);
 				});
-				this.salesMainDataForm.discountId?.setValue(result?.salesMainData?.discountId ?? 1, { emitEvent: false }); // 1 - default value 'None'
-				this.salesMainDataForm.salesAccountManagerIdValue?.setValue(result?.salesMainData?.salesAccountManagerData, {
+				this.mainDataComponent?.salesMainDataForm.discountId?.setValue(result?.salesMainData?.discountId ?? 1, { emitEvent: false }); // 1 - default value 'None'
+				this.mainDataComponent?.salesMainDataForm.salesAccountManagerIdValue?.setValue(result?.salesMainData?.salesAccountManagerData, {
 					emitEvent: false,
 				});
-				this.salesMainDataForm.commissionAccountManagerIdValue?.setValue(
+				this.mainDataComponent?.salesMainDataForm.commissionAccountManagerIdValue?.setValue(
 					result?.salesMainData?.commissionAccountManagerData,
 					{ emitEvent: false }
 				);
@@ -1496,11 +1499,11 @@ export class WorkflowSalesComponent extends AppComponentBase implements OnInit, 
 				) {
 					expirationNotificationIntervals!.push(999);
 				}
-				this.salesMainDataForm.contractExpirationNotification?.setValue(expirationNotificationIntervals, {
+				this.mainDataComponent?.salesMainDataForm.contractExpirationNotification?.setValue(expirationNotificationIntervals, {
 					emitEvent: false,
 				});
 				if (result?.salesMainData?.noRemarks) {
-					this.salesMainDataForm.remarks?.disable({
+					this.mainDataComponent?.salesMainDataForm.remarks?.disable({
 						emitEvent: false,
 					});
 				}
@@ -1617,7 +1620,7 @@ export class WorkflowSalesComponent extends AppComponentBase implements OnInit, 
 		if (value === 3) {
 			// Managed Service
 			const itemToPreselct = this.deliveryTypes.find((x) => x.id === 1); // Managed Service
-			this.salesMainDataForm.deliveryTypeId?.setValue(itemToPreselct?.id, {
+			this.mainDataComponent?.salesMainDataForm.deliveryTypeId?.setValue(itemToPreselct?.id, {
 				emitEvent: false,
 			});
 		}
@@ -1720,185 +1723,185 @@ export class WorkflowSalesComponent extends AppComponentBase implements OnInit, 
 	//#endregion Consultant menu actions
 
 	//#region commissions form array
-	commissionRecipientTypeChanged(event: MatSelectChange, index: number) {
-		this.commissions.at(index).get('recipient')?.setValue(null, { emitEvent: false });
-		this.filteredRecipients = [];
-	}
+	// commissionRecipientTypeChanged(event: MatSelectChange, index: number) {
+	// 	this.commissions.at(index).get('recipient')?.setValue(null, { emitEvent: false });
+	// 	this.filteredRecipients = [];
+	// }
 
-	addCommission(isInitial?: boolean, commission?: CommissionDto) {
-		let commissionRecipient;
-		switch (commission?.recipientTypeId) {
-			case 1: // Supplier
-				commissionRecipient = commission.supplier;
-				break;
-			case 2: // Consultant
-				commissionRecipient = commission.consultant;
-				break;
-			case 3: // Client
-				commissionRecipient = commission.client;
-				break;
-			case 4: // PDC entity
-				commissionRecipient = this.findItemById(this.legalEntities, commission.legalEntityId);
-				break;
-		}
-		const form = this._fb.group({
-			id: new UntypedFormControl(commission?.id ?? null),
-			type: new UntypedFormControl(
-				this.findItemById(this.commissionTypes, commission?.commissionTypeId) ?? null,
-				Validators.required
-			),
-			amount: new UntypedFormControl(commission?.amount ?? null, Validators.required),
-			currency: new UntypedFormControl(
-				this.findItemById(this.currencies, commission?.currencyId) ?? null,
-				Validators.required
-			),
-			recipientType: new UntypedFormControl(
-				this.findItemById(this.commissionRecipientTypeList, commission?.recipientTypeId) ?? null,
-				Validators.required
-			),
-			recipient: new UntypedFormControl(commissionRecipient ?? null, [
-				Validators.required,
-				CustomValidators.autocompleteValidator(['clientId', 'id', 'supplierId']),
-			]),
-			frequency: new UntypedFormControl(
-				this.findItemById(this.commissionFrequencies, commission?.commissionFrequencyId) ?? null,
-				Validators.required
-			),
-			oneTimeDate: new UntypedFormControl(commission?.oneTimeDate ?? null),
-			editable: new UntypedFormControl(commission?.id ? false : true),
-		});
-		this.salesMainDataForm.commissions.push(form);
-		if (isInitial) {
-			this.isCommissionEditing = true;
-			this.isCommissionInitialAdd = true;
-		}
-		this.manageCommissionAutocomplete(this.salesMainDataForm.commissions.length - 1);
-	}
+	// addCommission(isInitial?: boolean, commission?: CommissionDto) {
+	// 	let commissionRecipient;
+	// 	switch (commission?.recipientTypeId) {
+	// 		case 1: // Supplier
+	// 			commissionRecipient = commission.supplier;
+	// 			break;
+	// 		case 2: // Consultant
+	// 			commissionRecipient = commission.consultant;
+	// 			break;
+	// 		case 3: // Client
+	// 			commissionRecipient = commission.client;
+	// 			break;
+	// 		case 4: // PDC entity
+	// 			commissionRecipient = this.findItemById(this.legalEntities, commission.legalEntityId);
+	// 			break;
+	// 	}
+	// 	const form = this._fb.group({
+	// 		id: new UntypedFormControl(commission?.id ?? null),
+	// 		type: new UntypedFormControl(
+	// 			this.findItemById(this.commissionTypes, commission?.commissionTypeId) ?? null,
+	// 			Validators.required
+	// 		),
+	// 		amount: new UntypedFormControl(commission?.amount ?? null, Validators.required),
+	// 		currency: new UntypedFormControl(
+	// 			this.findItemById(this.currencies, commission?.currencyId) ?? null,
+	// 			Validators.required
+	// 		),
+	// 		recipientType: new UntypedFormControl(
+	// 			this.findItemById(this.commissionRecipientTypeList, commission?.recipientTypeId) ?? null,
+	// 			Validators.required
+	// 		),
+	// 		recipient: new UntypedFormControl(commissionRecipient ?? null, [
+	// 			Validators.required,
+	// 			CustomValidators.autocompleteValidator(['clientId', 'id', 'supplierId']),
+	// 		]),
+	// 		frequency: new UntypedFormControl(
+	// 			this.findItemById(this.commissionFrequencies, commission?.commissionFrequencyId) ?? null,
+	// 			Validators.required
+	// 		),
+	// 		oneTimeDate: new UntypedFormControl(commission?.oneTimeDate ?? null),
+	// 		editable: new UntypedFormControl(commission?.id ? false : true),
+	// 	});
+	// 	this.salesMainDataForm.commissions.push(form);
+	// 	if (isInitial) {
+	// 		this.isCommissionEditing = true;
+	// 		this.isCommissionInitialAdd = true;
+	// 	}
+	// 	this.manageCommissionAutocomplete(this.salesMainDataForm.commissions.length - 1);
+	// }
 
-	manageCommissionAutocomplete(commissionIndex: number) {
-		let arrayControl = this.salesMainDataForm.commissions.at(commissionIndex);
-		arrayControl!
-			.get('recipient')!
-			.valueChanges.pipe(
-				takeUntil(this._unsubscribe),
-				debounceTime(300),
-				switchMap((value: any) => {
-					let toSend = {
-						name: value,
-						maxRecordsCount: 1000,
-					};
-					switch (arrayControl.value.recipientType.id) {
-						case 3: // Client
-							if (value) {
-								if (value?.id) {
-									toSend.name = value.id ? value.clientName : value;
-								}
-								return this._lookupService.clientsAll(toSend.name, toSend.maxRecordsCount);
-							} else {
-								return of([]);
-							}
-						case 2: // Consultant
-							if (value) {
-								if (value?.id) {
-									toSend.name = value.id ? value.name : value;
-								}
-								return this._lookupService.consultants(toSend.name, toSend.maxRecordsCount);
-							} else {
-								return of([]);
-							}
-						case 1: // Supplier
-							if (value) {
-								if (value?.id) {
-									toSend.name = value.id ? value.supplierName : value;
-								}
-								return this._lookupService.suppliers(toSend.name, toSend.maxRecordsCount);
-							} else {
-								return of([]);
-							}
-						default:
-							return of([]);
-					}
-				})
-			)
-			.subscribe((list: any[]) => {
-				if (list.length) {
-					this.filteredRecipients = list;
-				} else {
-					this.filteredRecipients = [
-						{
-							name: 'No records found',
-							supplierName: 'No supplier found',
-							clientName: 'No clients found',
-							id: 'no-data',
-						},
-					];
-				}
-			});
-	}
+	// manageCommissionAutocomplete(commissionIndex: number) {
+	// 	let arrayControl = this.salesMainDataForm.commissions.at(commissionIndex);
+	// 	arrayControl!
+	// 		.get('recipient')!
+	// 		.valueChanges.pipe(
+	// 			takeUntil(this._unsubscribe),
+	// 			debounceTime(300),
+	// 			switchMap((value: any) => {
+	// 				let toSend = {
+	// 					name: value,
+	// 					maxRecordsCount: 1000,
+	// 				};
+	// 				switch (arrayControl.value.recipientType.id) {
+	// 					case 3: // Client
+	// 						if (value) {
+	// 							if (value?.id) {
+	// 								toSend.name = value.id ? value.clientName : value;
+	// 							}
+	// 							return this._lookupService.clientsAll(toSend.name, toSend.maxRecordsCount);
+	// 						} else {
+	// 							return of([]);
+	// 						}
+	// 					case 2: // Consultant
+	// 						if (value) {
+	// 							if (value?.id) {
+	// 								toSend.name = value.id ? value.name : value;
+	// 							}
+	// 							return this._lookupService.consultants(toSend.name, toSend.maxRecordsCount);
+	// 						} else {
+	// 							return of([]);
+	// 						}
+	// 					case 1: // Supplier
+	// 						if (value) {
+	// 							if (value?.id) {
+	// 								toSend.name = value.id ? value.supplierName : value;
+	// 							}
+	// 							return this._lookupService.suppliers(toSend.name, toSend.maxRecordsCount);
+	// 						} else {
+	// 							return of([]);
+	// 						}
+	// 					default:
+	// 						return of([]);
+	// 				}
+	// 			})
+	// 		)
+	// 		.subscribe((list: any[]) => {
+	// 			if (list.length) {
+	// 				this.filteredRecipients = list;
+	// 			} else {
+	// 				this.filteredRecipients = [
+	// 					{
+	// 						name: 'No records found',
+	// 						supplierName: 'No supplier found',
+	// 						clientName: 'No clients found',
+	// 						id: 'no-data',
+	// 					},
+	// 				];
+	// 			}
+	// 		});
+	// }
 
-	get commissions() {
-		return this.salesMainDataForm.commissions as UntypedFormArray;
-	}
+	// get commissions() {
+	// 	return this.salesMainDataForm.commissions as UntypedFormArray;
+	// }
 
-	removeCommission(index: number) {
-		this.isCommissionInitialAdd = false;
-		this.isCommissionEditing = false;
-		this.commissions.removeAt(index);
-	}
+	// removeCommission(index: number) {
+	// 	this.isCommissionInitialAdd = false;
+	// 	this.isCommissionEditing = false;
+	// 	this.commissions.removeAt(index);
+	// }
 
-	editOrSaveCommissionRow(index: number) {
-		const isEditable = this.commissions.at(index).get('editable')?.value;
-		if (isEditable) {
-			this.commissionToEdit = {
-				id: undefined,
-				commissionType: undefined,
-				amount: undefined,
-				currency: undefined,
-				commissionFrequency: undefined,
-				recipientType: undefined,
-				recipient: undefined,
-			};
-			this.isCommissionInitialAdd = false;
-			this.isCommissionEditing = false;
-		} else {
-			const commissionValue = this.commissions.at(index).value;
-			this.commissionToEdit = {
-				id: commissionValue.id,
-				commissionType: commissionValue.type,
-				amount: commissionValue.amount,
-				currency: commissionValue.currency,
-				commissionFrequency: commissionValue.frequency,
-				recipientType: commissionValue.recipientType,
-				recipient: commissionValue.recipient,
-			};
+	// editOrSaveCommissionRow(index: number) {
+	// 	const isEditable = this.commissions.at(index).get('editable')?.value;
+	// 	if (isEditable) {
+	// 		this.commissionToEdit = {
+	// 			id: undefined,
+	// 			commissionType: undefined,
+	// 			amount: undefined,
+	// 			currency: undefined,
+	// 			commissionFrequency: undefined,
+	// 			recipientType: undefined,
+	// 			recipient: undefined,
+	// 		};
+	// 		this.isCommissionInitialAdd = false;
+	// 		this.isCommissionEditing = false;
+	// 	} else {
+	// 		const commissionValue = this.commissions.at(index).value;
+	// 		this.commissionToEdit = {
+	// 			id: commissionValue.id,
+	// 			commissionType: commissionValue.type,
+	// 			amount: commissionValue.amount,
+	// 			currency: commissionValue.currency,
+	// 			commissionFrequency: commissionValue.frequency,
+	// 			recipientType: commissionValue.recipientType,
+	// 			recipient: commissionValue.recipient,
+	// 		};
 
-			this.isCommissionEditing = true;
-		}
-		this.commissions.at(index).get('editable')?.setValue(!isEditable);
-	}
+	// 		this.isCommissionEditing = true;
+	// 	}
+	// 	this.commissions.at(index).get('editable')?.setValue(!isEditable);
+	// }
 
-	cancelEditCommissionRow(index: number) {
-		const commissionRow = this.commissions.at(index);
-		commissionRow.get('id')?.setValue(this.commissionToEdit?.id);
-		commissionRow.get('commissionType')?.setValue(this.commissionToEdit?.commissionType);
-		commissionRow.get('amount')?.setValue(this.commissionToEdit?.amount);
-		commissionRow.get('currency')?.setValue(this.commissionToEdit?.currency);
-		commissionRow.get('commissionFrequency')?.setValue(this.commissionToEdit?.commissionFrequency);
-		commissionRow.get('recipientType')?.setValue(this.commissionToEdit?.recipientType);
-		commissionRow.get('recipient')?.setValue(this.commissionToEdit?.recipient);
-		this.commissionToEdit = {
-			id: undefined,
-			commissionType: undefined,
-			amount: undefined,
-			currency: undefined,
-			commissionFrequency: undefined,
-			recipientType: undefined,
-			recipient: undefined,
-		};
-		this.isCommissionEditing = false;
-		this.isCommissionInitialAdd = false;
-		this.commissions.at(index).get('editable')?.setValue(false);
-	}
+	// cancelEditCommissionRow(index: number) {
+	// 	const commissionRow = this.commissions.at(index);
+	// 	commissionRow.get('id')?.setValue(this.commissionToEdit?.id);
+	// 	commissionRow.get('commissionType')?.setValue(this.commissionToEdit?.commissionType);
+	// 	commissionRow.get('amount')?.setValue(this.commissionToEdit?.amount);
+	// 	commissionRow.get('currency')?.setValue(this.commissionToEdit?.currency);
+	// 	commissionRow.get('commissionFrequency')?.setValue(this.commissionToEdit?.commissionFrequency);
+	// 	commissionRow.get('recipientType')?.setValue(this.commissionToEdit?.recipientType);
+	// 	commissionRow.get('recipient')?.setValue(this.commissionToEdit?.recipient);
+	// 	this.commissionToEdit = {
+	// 		id: undefined,
+	// 		commissionType: undefined,
+	// 		amount: undefined,
+	// 		currency: undefined,
+	// 		commissionFrequency: undefined,
+	// 		recipientType: undefined,
+	// 		recipient: undefined,
+	// 	};
+	// 	this.isCommissionEditing = false;
+	// 	this.isCommissionInitialAdd = false;
+	// 	this.commissions.at(index).get('editable')?.setValue(false);
+	// }
 	//#endregion commissions form array
 
 	//#region termination
@@ -2093,17 +2096,17 @@ export class WorkflowSalesComponent extends AppComponentBase implements OnInit, 
 				}
 				this.salesClientDataForm.manualDate?.setValue(result.clientRate?.manualDate, { emitEVent: false });
 
-				this.salesMainDataForm.remarks?.setValue(result?.remarks, {
+				this.mainDataComponent?.salesMainDataForm.remarks?.setValue(result?.remarks, {
 					emitEvent: false,
 				});
-				this.salesMainDataForm.noRemarks?.setValue(result?.noRemarks, {
+				this.mainDataComponent?.salesMainDataForm.noRemarks?.setValue(result?.noRemarks, {
 					emitEvent: false,
 				});
 				if (result?.noRemarks) {
-					this.salesMainDataForm.remarks?.disable();
+					this.mainDataComponent?.salesMainDataForm.remarks?.disable();
 				}
-				this.salesMainDataForm.projectDescription?.setValue(result?.projectDescription, { emitEvent: false });
-				this.salesMainDataForm.projectName?.setValue(result?.projectName, { emitEvent: false });
+				this.mainDataComponent?.salesMainDataForm.projectDescription?.setValue(result?.projectDescription, { emitEvent: false });
+				this.mainDataComponent?.salesMainDataForm.projectName?.setValue(result?.projectName, { emitEvent: false });
 				this.addConsultantForm(result?.consultantSalesData);
 				this.updateConsultantStepAnchors();
 			});
@@ -2111,7 +2114,7 @@ export class WorkflowSalesComponent extends AppComponentBase implements OnInit, 
 
 	saveStartChangeOrExtendConsultantPeriodSales(isDraft: boolean) {
 		let input = new ConsultantPeriodSalesDataDto();
-		input = this.salesMainDataForm.value;
+		input = this.mainDataComponent?.salesMainDataForm.value;
 		const consultant = this.consultants.at(0).value;
 		let consultantInput = this._packConsultantFormData(consultant);
 		input.consultantSalesData = consultantInput;
@@ -2141,11 +2144,11 @@ export class WorkflowSalesComponent extends AppComponentBase implements OnInit, 
 	}
 
 	resetForms() {
-		this.salesMainDataForm.reset('', { emitEvent: false });
+		this.mainDataComponent?.salesMainDataForm.reset('', { emitEvent: false });
 		this.salesClientDataForm.clientRates.controls = [];
 		this.salesClientDataForm.clientFees.controls = [];
 		this.salesClientDataForm.contractSigners.controls = [];
-		this.salesMainDataForm.commissions.controls = [];
+		this.mainDataComponent.salesMainDataForm.commissions.controls = [];
 		this.salesClientDataForm.reset('', { emitEvent: false });
 		this.consultantsForm.consultants.controls = [];
 		this.directClientIdTerminationSales = null;
@@ -2240,30 +2243,20 @@ export class WorkflowSalesComponent extends AppComponentBase implements OnInit, 
 		}
 	}
 
-	focusInMethod() {
-		let b = document.getElementsByTagName('mat-drawer-content')[0] as HTMLElement;
-		b.style.overflow = 'hidden';
-	}
-
-	focusOutMethod() {
-		let b = document.getElementsByTagName('mat-drawer-content')[0] as HTMLElement;
-		b.style.overflow = 'auto';
-	}
-
 	private _packClientPeriodData(): ClientPeriodSalesDataDto {
 		let input = new ClientPeriodSalesDataDto();
-		input.salesMainData = new SalesMainDataDto(this.salesMainDataForm.value);
-		input.salesMainData.salesAccountManagerIdValue = this.salesMainDataForm.salesAccountManagerIdValue?.value?.id;
-		input.salesMainData.commissionAccountManagerIdValue = this.salesMainDataForm.commissionAccountManagerIdValue?.value?.id;
+		input.salesMainData = new SalesMainDataDto(this.mainDataComponent?.salesMainDataForm.value);
+		input.salesMainData.salesAccountManagerIdValue = this.mainDataComponent?.salesMainDataForm.salesAccountManagerIdValue?.value?.id;
+		input.salesMainData.commissionAccountManagerIdValue = this.mainDataComponent?.salesMainDataForm.commissionAccountManagerIdValue?.value?.id;
 		input.salesMainData.customContractExpirationNotificationDate =
-			this.salesMainDataForm.contractExpirationNotification?.value?.includes(999)
-				? this.salesMainDataForm.customContractExpirationNotificationDate?.value
+			this.mainDataComponent?.salesMainDataForm.contractExpirationNotification?.value?.includes(999)
+				? this.mainDataComponent?.salesMainDataForm.customContractExpirationNotificationDate?.value
 				: null;
 		input.salesMainData.contractExpirationNotificationIntervalIds =
-			this.salesMainDataForm.contractExpirationNotification?.value?.filter((x: number) => x !== 999);
+			this.mainDataComponent?.salesMainDataForm.contractExpirationNotification?.value?.filter((x: number) => x !== 999);
 		input.salesMainData.commissions = new Array<CommissionDto>();
-		if (this.salesMainDataForm.commissions.value?.length) {
-			this.salesMainDataForm.commissions.value.forEach((commission: any) => {
+		if (this.mainDataComponent?.salesMainDataForm.commissions.value?.length) {
+			this.mainDataComponent?.salesMainDataForm.commissions.value.forEach((commission: any) => {
 				let commissionInput = new CommissionDto();
 				commissionInput.id = commission.id;
 				commissionInput.amount = commission.amount;

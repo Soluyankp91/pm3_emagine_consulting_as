@@ -177,4 +177,14 @@ export abstract class AppComponentBase {
 	compareWithFn(listOfItems: any, selectedItem: any) {
 		return listOfItems && selectedItem && listOfItems.id === selectedItem.id;
 	}
+
+    focusInMethod() {
+		let b = document.getElementsByTagName('mat-drawer-content')[0] as HTMLElement;
+		b.style.overflow = 'hidden';
+	}
+
+	focusOutMethod() {
+		let b = document.getElementsByTagName('mat-drawer-content')[0] as HTMLElement;
+		b.style.overflow = 'auto';
+	}
 }
