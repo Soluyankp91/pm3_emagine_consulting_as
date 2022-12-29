@@ -1686,7 +1686,6 @@ export class WorkflowSalesComponent extends AppComponentBase implements OnInit, 
 					});
 				}
 
-				// Client
 				this.salesClientDataForm.differentEndClient?.setValue(result.salesClientData?.differentEndClient ?? false, {
 					emitEvent: false,
 				}); // default value if false
@@ -1767,17 +1766,16 @@ export class WorkflowSalesComponent extends AppComponentBase implements OnInit, 
 				this.salesClientDataForm.manualDate?.setValue(result.salesClientData?.clientRate?.manualDate, {
 					emitEVent: false,
 				});
-
 				this.salesClientDataForm.invoicingReferenceNumber?.setValue(result.salesClientData?.invoicingReferenceNumber, {
 					emitEVent: false,
 				});
+                this.salesClientDataForm.clientInvoicingRecipientSameAsDirectClient?.setValue(
+                    result?.salesClientData?.clientInvoicingRecipientSameAsDirectClient,
+                    { emitEvent: false }
+                );
 				this.salesClientDataForm.clientInvoicingRecipientIdValue?.setValue(
 					result.salesClientData?.clientInvoicingRecipient,
 					{ emitEVent: false }
-				);
-				this.salesClientDataForm.clientInvoicingRecipientSameAsDirectClient?.setValue(
-					result?.salesClientData?.clientInvoicingRecipientSameAsDirectClient,
-					{ emitEvent: false }
 				);
 				if (result?.salesClientData?.clientInvoicingRecipientSameAsDirectClient) {
 					this.salesClientDataForm.clientInvoicingRecipientIdValue?.disable({ emitEvent: false });
@@ -1807,7 +1805,6 @@ export class WorkflowSalesComponent extends AppComponentBase implements OnInit, 
 				this.salesClientDataForm.evaluationsDisabledReason?.setValue(result?.salesClientData?.evaluationsDisabledReason, {
 					emitEvent: false,
 				});
-				// Contract
 				this.salesClientDataForm.noSpecialContractTerms?.setValue(result?.salesClientData?.noSpecialContractTerms, {
 					emitEvent: false,
 				});
@@ -2407,18 +2404,6 @@ export class WorkflowSalesComponent extends AppComponentBase implements OnInit, 
 		this.directClientIdTerminationSales = null;
 		this.endClientIdTerminationSales = null;
 	}
-
-	//#region formatting
-	displayRecipientFn(option: any) {
-		if (option?.name) {
-			return option?.name;
-		} else if (option?.clientName) {
-			return option?.clientName;
-		} else if (option?.supplierName) {
-			return option?.supplierName;
-		}
-	}
-	//#endregion formatting
 
 	returnToSales() {
 		switch (this._workflowDataService.workflowProgress.currentlyActiveSideSection) {
