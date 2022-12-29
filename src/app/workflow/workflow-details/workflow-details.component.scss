@@ -12,7 +12,7 @@
         position: sticky;
         top: 0;
         z-index: 999;
-        padding: 0 75px;
+        padding: 0 50px;
         &--title {
             color: $dark-grey-color;
             @include fontOpenSans(12px, 700);
@@ -34,6 +34,14 @@
             @include fontOpenSans(12px, 'inherit');
             color: $dark-grey-color;
             line-height: 140%;
+            &__clientId {
+                &:hover {
+                    color: $green-color;
+                }
+            }
+            span:not(.workflow-header--title__clientId) {
+                margin-right: 5px;
+            }
         }
         &--status {
             @include fontOpenSans(14px, 'inherit');
