@@ -481,11 +481,13 @@
                                                     (optionSelected)="focusOutMethod()" (opened)="focusInMethod()" (closed)="focusOutMethod()">
                                                     <ng-container *ngFor="let employee of filteredEmployees; trackBy: trackById">
                                                         <mat-option [value]="employee" [ngClass]="{ 'no-data': employee.id === undefined }">
-                                                            <ng-container *ngIf="employee.id !== undefined">
-                                                                <img class="border-rounded-50 image-settings--dropdown u-mr--5"
-                                                                    [src]="employeeProfileUrl(employee?.externalId!)" />
-                                                            </ng-container>
-                                                            <span class="autocopmlete-option-name">{{ employee.name }}</span>
+                                                            <div fxLayout="row" fxLayoutAlign="start center" class="u-w--100">
+                                                                <ng-container *ngIf="employee.id !== undefined">
+                                                                    <img class="border-rounded-50 image-settings--dropdown u-mr--5"
+                                                                        [src]="employeeProfileUrl(employee?.externalId!)" />
+                                                                </ng-container>
+                                                                <span class="autocopmlete-option-name">{{ employee.name }}</span>
+                                                            </div>
                                                         </mat-option>
                                                     </ng-container>
                                                 </mat-autocomplete>
@@ -500,7 +502,7 @@
                                     </ng-container>
                                 </ng-container>
                                 <ng-container *ngIf="!readOnlyMode">
-                                    <button class="button-add" mat-flat-button type="button" appPreventDoubleClick (throttledClick)="addCommissionedUser()">
+                                    <button class="button-add u-mt--5" mat-flat-button type="button" appPreventDoubleClick (throttledClick)="addCommissionedUser()">
                                         <mat-icon>add</mat-icon>
                                         Add commissioned user
                                     </button>

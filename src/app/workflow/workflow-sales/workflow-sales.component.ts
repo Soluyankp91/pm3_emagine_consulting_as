@@ -22,6 +22,7 @@ import {
     debounceTime,
     finalize,
     map,
+    startWith,
     switchMap,
     takeUntil,
 } from 'rxjs/operators';
@@ -2125,9 +2126,12 @@ export class WorkflowSalesComponent extends AppComponentBase implements OnInit, 
         input.salesMainData!.commissionedEmployeesIdValues = [];
         input.salesMainData!.commissionedEmployeesData = new Array<EmployeeDto>();
         if (this.salesMainDataForm.commissionedUsers.value?.length) {
-            this.salesMainDataForm.commissionedUsers.value.forEach((user: any) => {
-                input.salesMainData!.commissionedEmployeesIdValues?.push(user.id);
-                input.salesMainData!.commissionedEmployeesData?.push(user);
+            this.salesMainDataForm.commissionedUsers.value.forEach((form: any) => {
+                const user: EmployeeDto = form.commissionedUser;
+                if (user.id) {
+                    input.salesMainData!.commissionedEmployeesIdValues?.push(user.id);
+                    input.salesMainData!.commissionedEmployeesData?.push(user);
+                }
             })
         }
 
@@ -3119,14 +3123,18 @@ export class WorkflowSalesComponent extends AppComponentBase implements OnInit, 
             .pipe(
                 takeUntil(this._unsubscribe),
                 debounceTime(300),
+                startWith({ nameFilter: '', showAll: true, idsToExclude: [] }),
                 switchMap((value: any) => {
                     let toSend = {
                         name: value,
                         showAll: true,
-                        idsToExclude: this.commissionedUsers.value?.length ? this.commissionedUsers.value.map((x: EmployeeDto) => x.id) : []
+                        idsToExclude: this.commissionedUsers.value.map((x: any) => x?.commissionedUser?.id).filter((item: number) => item !== null && item !== undefined)
                     };
-                    console.log(toSend);
-                    console.log(this.commissionedUsers.value.map((x: EmployeeDto) => x.id));
+                    if (value?.id) {
+                        toSend.name = value.id
+                            ? value.clientName
+                            : value;
+                    }
                     return this._lookupService.employees(toSend.name, toSend.showAll, toSend.idsToExclude);
                 }),
             ).subscribe((list: EmployeeDto[]) => {
