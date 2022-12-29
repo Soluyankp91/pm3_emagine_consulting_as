@@ -740,64 +740,6 @@ export class AdminServiceProxy {
     /**
      * @return Success
      */
-    workflowStepEmployeeAssignments(): Observable<TenantConfigDto[]> {
-        let url_ = this.baseUrl + "/api/Admin/config/tenant/workflow-step-employee-assignments";
-        url_ = url_.replace(/[?&]$/, "");
-
-        let options_ : any = {
-            observe: "response",
-            responseType: "blob",
-            headers: new HttpHeaders({
-                "Accept": "text/plain"
-            })
-        };
-
-        return this.http.request("get", url_, options_).pipe(_observableMergeMap((response_ : any) => {
-            return this.processWorkflowStepEmployeeAssignments(response_);
-        })).pipe(_observableCatch((response_: any) => {
-            if (response_ instanceof HttpResponseBase) {
-                try {
-                    return this.processWorkflowStepEmployeeAssignments(response_ as any);
-                } catch (e) {
-                    return _observableThrow(e) as any as Observable<TenantConfigDto[]>;
-                }
-            } else
-                return _observableThrow(response_) as any as Observable<TenantConfigDto[]>;
-        }));
-    }
-
-    protected processWorkflowStepEmployeeAssignments(response: HttpResponseBase): Observable<TenantConfigDto[]> {
-        const status = response.status;
-        const responseBlob =
-            response instanceof HttpResponse ? response.body :
-            (response as any).error instanceof Blob ? (response as any).error : undefined;
-
-        let _headers: any = {}; if (response.headers) { for (let key of response.headers.keys()) { _headers[key] = response.headers.get(key); }}
-        if (status === 200) {
-            return blobToText(responseBlob).pipe(_observableMergeMap(_responseText => {
-            let result200: any = null;
-            let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
-            if (Array.isArray(resultData200)) {
-                result200 = [] as any;
-                for (let item of resultData200)
-                    result200!.push(TenantConfigDto.fromJS(item));
-            }
-            else {
-                result200 = <any>null;
-            }
-            return _observableOf(result200);
-            }));
-        } else if (status !== 200 && status !== 204) {
-            return blobToText(responseBlob).pipe(_observableMergeMap(_responseText => {
-            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
-            }));
-        }
-        return _observableOf<TenantConfigDto[]>(null as any);
-    }
-
-    /**
-     * @return Success
-     */
     values(): Observable<{ [key: string]: string; }> {
         let url_ = this.baseUrl + "/api/Admin/config/values";
         url_ = url_.replace(/[?&]$/, "");
@@ -12513,6 +12455,76 @@ export class NotificationTestServiceProxy {
             }));
         }
         return _observableOf<void>(null as any);
+    }
+}
+
+@Injectable()
+export class TenantConfigServiceProxy {
+    private http: HttpClient;
+    private baseUrl: string;
+    protected jsonParseReviver: ((key: string, value: any) => any) | undefined = undefined;
+
+    constructor(@Inject(HttpClient) http: HttpClient, @Optional() @Inject(API_BASE_URL) baseUrl?: string) {
+        this.http = http;
+        this.baseUrl = baseUrl !== undefined && baseUrl !== null ? baseUrl : "";
+    }
+
+    /**
+     * @return Success
+     */
+    workflowStepEmployeeAssignments(): Observable<TenantConfigDto[]> {
+        let url_ = this.baseUrl + "/api/TenantConfig/workflow-step-employee-assignments";
+        url_ = url_.replace(/[?&]$/, "");
+
+        let options_ : any = {
+            observe: "response",
+            responseType: "blob",
+            headers: new HttpHeaders({
+                "Accept": "text/plain"
+            })
+        };
+
+        return this.http.request("get", url_, options_).pipe(_observableMergeMap((response_ : any) => {
+            return this.processWorkflowStepEmployeeAssignments(response_);
+        })).pipe(_observableCatch((response_: any) => {
+            if (response_ instanceof HttpResponseBase) {
+                try {
+                    return this.processWorkflowStepEmployeeAssignments(response_ as any);
+                } catch (e) {
+                    return _observableThrow(e) as any as Observable<TenantConfigDto[]>;
+                }
+            } else
+                return _observableThrow(response_) as any as Observable<TenantConfigDto[]>;
+        }));
+    }
+
+    protected processWorkflowStepEmployeeAssignments(response: HttpResponseBase): Observable<TenantConfigDto[]> {
+        const status = response.status;
+        const responseBlob =
+            response instanceof HttpResponse ? response.body :
+            (response as any).error instanceof Blob ? (response as any).error : undefined;
+
+        let _headers: any = {}; if (response.headers) { for (let key of response.headers.keys()) { _headers[key] = response.headers.get(key); }}
+        if (status === 200) {
+            return blobToText(responseBlob).pipe(_observableMergeMap(_responseText => {
+            let result200: any = null;
+            let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
+            if (Array.isArray(resultData200)) {
+                result200 = [] as any;
+                for (let item of resultData200)
+                    result200!.push(TenantConfigDto.fromJS(item));
+            }
+            else {
+                result200 = <any>null;
+            }
+            return _observableOf(result200);
+            }));
+        } else if (status !== 200 && status !== 204) {
+            return blobToText(responseBlob).pipe(_observableMergeMap(_responseText => {
+            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+            }));
+        }
+        return _observableOf<TenantConfigDto[]>(null as any);
     }
 }
 
@@ -24611,6 +24623,8 @@ export class SalesMainDataDto implements ISalesMainDataDto {
     salesAccountManagerData?: EmployeeDto;
     commissionAccountManagerIdValue?: number | undefined;
     commissionAccountManagerData?: EmployeeDto;
+    commissionedEmployeesIdValues?: number[] | undefined;
+    commissionedEmployeesData?: EmployeeDto[] | undefined;
     contractExpirationNotificationIntervalIds?: ContractExpirationNotificationInterval[] | undefined;
     customContractExpirationNotificationDate?: moment.Moment | undefined;
     remarks?: string | undefined;
@@ -24644,6 +24658,16 @@ export class SalesMainDataDto implements ISalesMainDataDto {
             this.salesAccountManagerData = _data["salesAccountManagerData"] ? EmployeeDto.fromJS(_data["salesAccountManagerData"]) : <any>undefined;
             this.commissionAccountManagerIdValue = _data["commissionAccountManagerIdValue"];
             this.commissionAccountManagerData = _data["commissionAccountManagerData"] ? EmployeeDto.fromJS(_data["commissionAccountManagerData"]) : <any>undefined;
+            if (Array.isArray(_data["commissionedEmployeesIdValues"])) {
+                this.commissionedEmployeesIdValues = [] as any;
+                for (let item of _data["commissionedEmployeesIdValues"])
+                    this.commissionedEmployeesIdValues!.push(item);
+            }
+            if (Array.isArray(_data["commissionedEmployeesData"])) {
+                this.commissionedEmployeesData = [] as any;
+                for (let item of _data["commissionedEmployeesData"])
+                    this.commissionedEmployeesData!.push(EmployeeDto.fromJS(item));
+            }
             if (Array.isArray(_data["contractExpirationNotificationIntervalIds"])) {
                 this.contractExpirationNotificationIntervalIds = [] as any;
                 for (let item of _data["contractExpirationNotificationIntervalIds"])
@@ -24681,6 +24705,16 @@ export class SalesMainDataDto implements ISalesMainDataDto {
         data["salesAccountManagerData"] = this.salesAccountManagerData ? this.salesAccountManagerData.toJSON() : <any>undefined;
         data["commissionAccountManagerIdValue"] = this.commissionAccountManagerIdValue;
         data["commissionAccountManagerData"] = this.commissionAccountManagerData ? this.commissionAccountManagerData.toJSON() : <any>undefined;
+        if (Array.isArray(this.commissionedEmployeesIdValues)) {
+            data["commissionedEmployeesIdValues"] = [];
+            for (let item of this.commissionedEmployeesIdValues)
+                data["commissionedEmployeesIdValues"].push(item);
+        }
+        if (Array.isArray(this.commissionedEmployeesData)) {
+            data["commissionedEmployeesData"] = [];
+            for (let item of this.commissionedEmployeesData)
+                data["commissionedEmployeesData"].push(item.toJSON());
+        }
         if (Array.isArray(this.contractExpirationNotificationIntervalIds)) {
             data["contractExpirationNotificationIntervalIds"] = [];
             for (let item of this.contractExpirationNotificationIntervalIds)
@@ -24707,6 +24741,8 @@ export interface ISalesMainDataDto {
     salesAccountManagerData?: EmployeeDto;
     commissionAccountManagerIdValue?: number | undefined;
     commissionAccountManagerData?: EmployeeDto;
+    commissionedEmployeesIdValues?: number[] | undefined;
+    commissionedEmployeesData?: EmployeeDto[] | undefined;
     contractExpirationNotificationIntervalIds?: ContractExpirationNotificationInterval[] | undefined;
     customContractExpirationNotificationDate?: moment.Moment | undefined;
     remarks?: string | undefined;
