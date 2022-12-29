@@ -1,6 +1,6 @@
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { Component, Injector, OnInit, ViewChild } from '@angular/core';
-import { FormControl } from '@angular/forms';
+import { UntypedFormControl } from '@angular/forms';
 import { MatDialog } from '@angular/material/dialog';
 import { ActivatedRoute, Router } from '@angular/router';
 import { AuthenticationResult } from '@azure/msal-browser';
@@ -22,7 +22,7 @@ export class ClientDetailsComponent extends AppComponentBase implements OnInit {
 
     client = new ClientDetailsDto();
 
-    clientFilterInput = new FormControl();
+    clientFilterInput = new UntypedFormControl();
     clientId: number;
 
     private _unsubscribe = new Subject();
@@ -106,19 +106,19 @@ export class ClientDetailsComponent extends AppComponentBase implements OnInit {
     }
 
     openHubspotSyncDialog(syncMessage: SyncClientFromCrmResultDto) {
-       const dialogRef = this.dialog.open(HubspotSyncModalComponent, {
-            width: '450px',
-            height: 'calc(100vh - 201px)',
-            panelClass: 'hubspot-sync-modal',
-            autoFocus: false,
-            hasBackdrop: false,
-            data: {
-                message: syncMessage.message?.split('.\n').filter(item => item)
-            }
-        });
+        const dialogRef = this.dialog.open(HubspotSyncModalComponent, {
+                width: '500px',
+                height: 'calc(100vh - 201px)',
+                panelClass: 'hubspot-sync-modal',
+                autoFocus: false,
+                hasBackdrop: false,
+                data: {
+                    message: syncMessage.message?.split('.\n').filter(item => item)
+                }
+            });
 
-        dialogRef.afterClosed().subscribe(() => {
-            this.isDialogOpened = false;
-        });
+            dialogRef.afterClosed().subscribe(() => {
+                this.isDialogOpened = false;
+            });
     }
 }

@@ -30,7 +30,7 @@ export class GlobalHttpInterceptorService implements HttpInterceptor {
                         console.error(`Error Status : ${error.status} ${error.statusText}`);
                         switch (error.status) {
                             case 400:
-                                return this.transformBlobToJson(error)
+                                 this.transformBlobToJson(error)
                                     .then(response => {
                                         if (response?.error?.message?.length > 0) {
                                             message = response?.error?.message;
@@ -43,7 +43,8 @@ export class GlobalHttpInterceptorService implements HttpInterceptor {
                                         header = 'Bad request!';
                                         handled = true;
                                         this.showDialog(message, header);
-                                    });;
+                                    });
+                                    return throwError(error);
                             case 401:      //login
                                 header = 'Current user did not login to the application!';
                                 message = 'You will be redirected to login page.';

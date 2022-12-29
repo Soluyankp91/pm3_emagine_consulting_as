@@ -1,9 +1,15 @@
-import { Component, OnInit, forwardRef } from '@angular/core';
+import {
+    Component,
+    OnInit,
+    forwardRef,
+    ChangeDetectorRef,
+} from '@angular/core';
 import { FileServiceProxy } from 'src/shared/service-proxies/service-proxies';
 import { Subject, Observable, forkJoin, of } from 'rxjs';
 import { switchMap, map, tap } from 'rxjs/operators';
 import { ControlValueAccessor, NG_VALUE_ACCESSOR } from '@angular/forms';
 import { FileUploadItem } from './files';
+
 @Component({
     selector: 'emg-file-uploader',
     templateUrl: './file-uploader.component.html',
@@ -24,7 +30,9 @@ export class FileUploaderComponent implements OnInit, ControlValueAccessor {
     private onChange = (val: any) => {};
     private onTouched = () => {};
 
-    constructor(private readonly fileServiceProxy: FileServiceProxy) {}
+    constructor(
+        private readonly _fileServiceProxy: FileServiceProxy,
+    ) {}
 
     ngOnInit(): void {
         this.initializeFileObs();
@@ -42,7 +50,7 @@ export class FileUploaderComponent implements OnInit, ControlValueAccessor {
     }
 
     onFileDelete(fileToDelete: FileUploadItem) {
-        this.fileServiceProxy
+        this._fileServiceProxy
             .temporaryDELETE(fileToDelete.temporaryFileId)
             .subscribe(() => {
                 this.files = this.files.filter(
@@ -55,8 +63,7 @@ export class FileUploaderComponent implements OnInit, ControlValueAccessor {
 
     writeValue(value: any): void {
         if (value === null) {
-            this.files = [];
-            this._uploadedFiles$.next([]);
+            this._clearAllFiles();
         }
     }
 
@@ -71,30 +78,29 @@ export class FileUploaderComponent implements OnInit, ControlValueAccessor {
     private initializeFileObs() {
         this.uploadedFiles$ = this._uploadedFiles$.pipe(
             switchMap((files) => {
+                if (!files.length) {
+                    return of([ ]);
+                }
                 let filesObservablesArr = files.map((file) =>
-                    this.fileServiceProxy
+                    this._fileServiceProxy
                         .temporaryPOST({ data: file, fileName: file.name })
                         .pipe(
-                            map((temporaryFileId) => ({
+                            map(({ value }) => ({
                                 ...file,
                                 name: file.name,
-                                temporaryFileId:
-                                    temporaryFileId.value as string,
+                                temporaryFileId: value,
                                 icon: this._getIconName(file.name),
                             }))
                         )
                 );
-                if (filesObservablesArr.length) {
-                    return forkJoin(filesObservablesArr);
-                }
-                return of([]);
+                return forkJoin(filesObservablesArr);
             }),
             map((files) => {
                 this.files = [...this.files, ...files];
                 return this.files;
             }),
             tap((files) => {
-                if (files && files.length) {
+                if (files.length) {
                     this.onChange(files);
                     return;
                 }
@@ -106,5 +112,18 @@ export class FileUploaderComponent implements OnInit, ControlValueAccessor {
     private _getIconName(fileName: string): string {
         let splittetFileName = fileName.split('.');
         return splittetFileName[splittetFileName.length - 1];
+    }
+
+    private _clearAllFiles() {
+        let observableArr: Observable<void>[] = [];
+        this.files.forEach((file: FileUploadItem) => {
+            observableArr.push(
+                this._fileServiceProxy.temporaryDELETE(file.temporaryFileId)
+            );
+        });
+        forkJoin(observableArr).subscribe(() => {
+            this.files = [];
+            this._uploadedFiles$.next([]);
+        });
     }
 }

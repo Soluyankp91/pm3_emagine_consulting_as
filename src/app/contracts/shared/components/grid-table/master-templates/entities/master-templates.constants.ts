@@ -1,6 +1,8 @@
 import {
     IHeaderCell,
     EHeaderCells,
+    ICell,
+    ETableCells,
 } from 'src/app/contracts/shared/components/grid-table/mat-grid.interfaces';
 import { AgreementLanguagesFilterComponent } from '../filters/agreement-languages-filter/agreement-filter.component';
 import { AgreementTypesFilterComponent } from '../filters/agreement-types-filter/agreement-types-filter.component';
@@ -10,6 +12,7 @@ import { EmploymentTypesFilterComponent } from '../filters/employment-types-filt
 import { LegalEntitiesFilterComponent } from '../filters/legal-entities-filter/legal-entities-filter/legal-entities-filter.component';
 import { RecipientTypesFilterComponent } from '../filters/recipient-types-filter/recipient-types-filter/recipient-types-filter.component';
 import { SalesTypesFilterComponent } from '../filters/sales-types-filter/sales-types-filter.component';
+import { Actions } from './master-templates.interfaces';
 
 export const DISPLAYED_COLUMNS: string[] = [
     'language',
@@ -24,65 +27,126 @@ export const DISPLAYED_COLUMNS: string[] = [
     'lastUpdateDateUtc',
     'lastUpdatedByLowerCaseInitials',
 ];
-
+export const MASTER_TEMPLATE_CELLS: ICell[] = [
+    {
+        type: ETableCells.DEFAULT,
+    },
+    {
+        type: ETableCells.CUSTOM,
+        index: 1,
+    },
+    {
+        type: ETableCells.DEFAULT,
+    },
+    {
+        type: ETableCells.DEFAULT,
+    },
+    {
+        type: ETableCells.DEFAULT,
+    },
+    {
+        type: ETableCells.CUSTOM,
+        index: 2,
+    },
+    {
+        type: ETableCells.DEFAULT,
+    },
+    {
+        type: ETableCells.DEFAULT,
+    },
+    {
+        type: ETableCells.DEFAULT,
+    },
+    {
+        type: ETableCells.CUSTOM,
+        index: 3,
+    },
+    {
+        type: ETableCells.DEFAULT,
+    },
+];
 export const MASTER_TEMPLATE_HEADER_CELLS: IHeaderCell[] = [
     {
-        field: 'agreementTemplateId',
+        type: EHeaderCells.FILTER,
+        filter: {
+            formControlName: 'language',
+            component: AgreementLanguagesFilterComponent,
+        },
+    },
+    {
         type: EHeaderCells.SORT,
         title: 'agreementTemplateId',
     },
     {
-        field: 'name',
         type: EHeaderCells.SORT,
         title: 'Name',
     },
     {
-        field: 'language',
         type: EHeaderCells.FILTER,
-        component: AgreementLanguagesFilterComponent,
+        filter: {
+            formControlName: 'agreementType',
+            component: AgreementTypesFilterComponent,
+        },
     },
     {
-        field: 'agreementType',
         type: EHeaderCells.FILTER,
-        component: AgreementTypesFilterComponent,
+        filter: {
+            formControlName: 'recipientTypeId',
+            component: RecipientTypesFilterComponent,
+        },
     },
     {
-        field: 'recipientTypeId',
         type: EHeaderCells.FILTER,
-        component: RecipientTypesFilterComponent,
+        filter: {
+            formControlName: 'legalEntityIds',
+            component: LegalEntitiesFilterComponent,
+        },
     },
     {
-        field: 'legalEntityIds',
         type: EHeaderCells.FILTER,
-        component: LegalEntitiesFilterComponent,
+        filter: {
+            formControlName: 'salesTypeIds',
+            component: SalesTypesFilterComponent,
+        },
     },
     {
-        field: 'salesTypeIds',
         type: EHeaderCells.FILTER,
-        component: SalesTypesFilterComponent,
+        filter: {
+            formControlName: 'deliveryTypeIds',
+            component: DeliveryTypesFilterComponent,
+        },
     },
     {
-        field: 'deliveryTypeIds',
         type: EHeaderCells.FILTER,
-        component: DeliveryTypesFilterComponent,
+        filter: {
+            formControlName: 'contractTypeIds',
+            component: EmploymentTypesFilterComponent,
+        },
     },
     {
-        field: 'contractTypeIds',
-        type: EHeaderCells.FILTER,
-        component: EmploymentTypesFilterComponent,
-    },
-    {
-        field: 'lastUpdateDateUtc',
         type: EHeaderCells.SORT,
         title: 'Last updated',
     },
     {
-        field: 'lastUpdatedByLowerCaseInitials',
         type: EHeaderCells.FILTER,
-        component: EmployeesFilterComponent,
+        filter: {
+            formControlName: 'lastUpdatedByLowerCaseInitials',
+            component: EmployeesFilterComponent,
+        },
     },
 ];
 
 export const PAGE_SIZE_OPTIONS: number[] = [5, 10, 20, 50, 100];
+export const AUTOCOMPLETE_SEARCH_ITEMS_COUNT = 100;
 export const DEFAULT_SIZE_OPTION: number = PAGE_SIZE_OPTIONS[0];
+export const MASTER_TEMPLATE_ACTIONS: Actions[] = [
+    {
+        label: 'Edit',
+        actionType: 'EDIT',
+    },
+    {
+        label: 'Duplicate',
+        actionType: 'DUPLICATE',
+    },
+];
 export const INITIAL_PAGE_INDEX = 0;

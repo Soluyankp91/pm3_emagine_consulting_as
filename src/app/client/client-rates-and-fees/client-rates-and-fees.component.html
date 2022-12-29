@@ -4,8 +4,9 @@
             <mat-icon svgIcon="info_icon" class="u-mr--16"></mat-icon>
             <p class="client-rates--hint">
                 Changing these will only create new easy to apply defaults for future workflow steps.
-                <br/>
-                It <strong>will not</strong> change any active contracts without also making a new Workflow extension or Change to apply them.
+                <br />
+                It <strong>will not</strong> change any active contracts without also making a new Workflow extension or
+                Change to apply them.
             </p>
         </div>
     </div>
@@ -13,7 +14,9 @@
         <div fxLayout="column" fxLayoutAlign="start start" class="u-w--100 u-mb--40">
             <h3 class="client-rates--section__header u-mb--15">Special Rates</h3>
             <form [formGroup]="clientSpecailRateForm" class="client-rates--form inline-edit-form u-w--100">
-                <div fxLayout="row" fxLayoutAlign="space-between start" fxLayoutGap="10px" class="client-rates--form__header-container u-w--100" *ngIf="clientSpecailRateForm.specialRates?.controls?.length">
+                <div fxLayout="row" fxLayoutAlign="space-between start" fxLayoutGap="10px"
+                    class="client-rates--form__header-container u-w--100"
+                    *ngIf="clientSpecailRateForm.specialRates?.controls?.length">
                     <span fxFlex="12%" class="client-rates--form__header u-w--100">
                         Rate name
                     </span>
@@ -40,19 +43,24 @@
                     </span>
                 </div>
                 <ng-container formArrayName="specialRates" class="u-w--100">
-                    <div fxLayout="row" fxLayoutAlign="space-between center" fxLayoutGap="10px" class="client-rates--form__row u-w--100"
-                        [fxHide]="rate.value.hidden && !showHiddenSpecialRates"
+                    <div fxLayout="row" fxLayoutAlign="space-between center" fxLayoutGap="10px"
+                        class="client-rates--form__row u-w--100" [fxHide]="rate.value.hidden && !showHiddenSpecialRates"
                         *ngFor="let rate of clientSpecailRateForm.specialRates.controls; index as i"
                         [formArrayName]="i">
                         <ng-container *ngIf="rate.value.editable">
-                            <mat-form-field appearance="fill" class="u-pl--20 u-w--100 formFieldNoMarginPadding filter-select" fxFlex="12%">
+                            <mat-form-field appearance="fill"
+                                class="u-pl--20 u-w--100 formFieldNoMarginPadding filter-select" fxFlex="12%">
                                 <input matInput type="text" formControlName="rateName" placeholder="Rate name" />
                             </mat-form-field>
-                            <mat-form-field appearance="fill" class="u-w--100 formFieldNoMarginPadding filter-select" fxFlex="12%">
-                                <input matInput type="text" formControlName="nameForInvoices" placeholder="Name for invoicing" />
+                            <mat-form-field appearance="fill" class="u-w--100 formFieldNoMarginPadding filter-select"
+                                fxFlex="12%">
+                                <input matInput type="text" formControlName="nameForInvoices"
+                                    placeholder="Name for invoicing" />
                             </mat-form-field>
-                            <mat-form-field appearance="fill" class="u-w--100 formFieldNoMarginPadding filter-select" fxFlex="10%">
-                                <mat-select formControlName="reportingUnit" placeholder="Reporting Unit" [disableOptionCentering]="true" [compareWith]="compareWithFn">
+                            <mat-form-field appearance="fill" class="u-w--100 formFieldNoMarginPadding filter-select"
+                                fxFlex="10%">
+                                <mat-select formControlName="reportingUnit" placeholder="Reporting Unit"
+                                    [disableOptionCentering]="true" [compareWith]="compareWithFn">
                                     <mat-option *ngFor="let item of clientSpecialRateReportUnits" [value]="item">
                                         {{ item.name }}
                                     </mat-option>
@@ -117,48 +125,71 @@
                             </div>
                         </ng-container>
                         <ng-container *ngIf="!rate.value.editable">
-                            <span fxFlex="12%" class="u-pl--20 u-w--100 text-truncate-ellipsis" [matTooltip]="rate.value.rateName ?? ''" matTooltipClass="white-tooltip" appShowIfTruncated>
+                            <span fxFlex="12%" class="u-pl--20 u-w--100 text-truncate-ellipsis"
+                                [matTooltip]="rate.value.rateName ?? ''" matTooltipClass="white-tooltip"
+                                appShowIfTruncated>
                                 {{rate.value.rateName ?? '-'}}
                             </span>
-                            <span fxFlex="12%" class="u-w--100 text-truncate-ellipsis" [matTooltip]="rate.value.nameForInvoices ?? ''" matTooltipClass="white-tooltip" appShowIfTruncated>
+                            <span fxFlex="12%" class="u-w--100 text-truncate-ellipsis"
+                                [matTooltip]="rate.value.nameForInvoices ?? ''" matTooltipClass="white-tooltip"
+                                appShowIfTruncated>
                                 {{rate.value.nameForInvoices ?? '-'}}
                             </span>
-                            <span fxFlex="10%" class="u-w--100 text-truncate-ellipsis" [matTooltip]="rate.value.reportingUnit?.name ?? ''" matTooltipClass="white-tooltip" appShowIfTruncated>
+                            <span fxFlex="10%" class="u-w--100 text-truncate-ellipsis"
+                                [matTooltip]="rate.value.reportingUnit?.name ?? ''" matTooltipClass="white-tooltip"
+                                appShowIfTruncated>
                                 {{rate.value.reportingUnit?.name ?? '-'}}
                             </span>
-                            <span fxFlex="15%" class="u-w--100 text-truncate-ellipsis" [matTooltip]="rate.value.rateSpecifiedAs?.name ?? ''" matTooltipClass="white-tooltip" appShowIfTruncated>
+                            <span fxFlex="15%" class="u-w--100 text-truncate-ellipsis"
+                                [matTooltip]="rate.value.rateSpecifiedAs?.name ?? ''" matTooltipClass="white-tooltip"
+                                appShowIfTruncated>
                                 {{rate.value.rateSpecifiedAs?.name ?? '-'}}
                             </span>
                             <ng-container *ngIf="rate.value.rateSpecifiedAs?.id === 1; else clientRateValue">
-                                <span fxFlex="12%" class="u-w--100 text-truncate-ellipsis" [matTooltip]="rate.value.clientRateValue + '%'" matTooltipClass="white-tooltip" appShowIfTruncated>
+                                <span fxFlex="12%" class="u-w--100 text-truncate-ellipsis"
+                                    [matTooltip]="rate.value.clientRateValue + '%'" matTooltipClass="white-tooltip"
+                                    appShowIfTruncated>
                                     {{rate.value.clientRateValue ? rate.value.clientRateValue + '%' : '-'}}
                                 </span>
                             </ng-container>
                             <ng-template #clientRateValue>
-                                <span fxFlex="12%" class="u-w--100 text-truncate-ellipsis" [matTooltip]="rate.value.clientRateValue + ' ' + rate.value.clientRateCurrency?.name" matTooltipClass="white-tooltip" appShowIfTruncated>
-                                    {{rate.value.clientRateValue || rate.value.clientRateCurrency?.name ? rate.value.clientRateValue + ' ' + rate.value.clientRateCurrency?.name : '-'}}
+                                <span fxFlex="12%" class="u-w--100 text-truncate-ellipsis"
+                                    [matTooltip]="rate.value.clientRateValue + ' ' + rate.value.clientRateCurrency?.name"
+                                    matTooltipClass="white-tooltip" appShowIfTruncated>
+                                    {{rate.value.clientRateValue || rate.value.clientRateCurrency?.name ?
+                                    rate.value.clientRateValue + ' ' + rate.value.clientRateCurrency?.name : '-'}}
                                 </span>
                             </ng-template>
 
                             <ng-container *ngIf="rate.value.rateSpecifiedAs?.id === 1; else proDataRateValue">
-                                <span fxFlex="12%" class="u-w--100 text-truncate-ellipsis" [matTooltip]="rate.value.proDataRate + '%'" matTooltipClass="white-tooltip" appShowIfTruncated>
+                                <span fxFlex="12%" class="u-w--100 text-truncate-ellipsis"
+                                    [matTooltip]="rate.value.proDataRate + '%'" matTooltipClass="white-tooltip"
+                                    appShowIfTruncated>
                                     {{rate.value.proDataRate ? rate.value.proDataRate + '%' : '-'}}
                                 </span>
                             </ng-container>
                             <ng-template #proDataRateValue>
-                                <span fxFlex="12%" class="u-w--100 text-truncate-ellipsis" [matTooltip]="rate.value.proDataRate + ' ' + rate.value.proDataRateCurrency?.name" matTooltipClass="white-tooltip" appShowIfTruncated>
-                                    {{rate.value.proDataRate || rate.value.proDataRateCurrency?.name ? rate.value.proDataRate + ' ' + rate.value.proDataRateCurrency?.name : '-'}}
+                                <span fxFlex="12%" class="u-w--100 text-truncate-ellipsis"
+                                    [matTooltip]="rate.value.proDataRate + ' ' + rate.value.proDataRateCurrency?.name"
+                                    matTooltipClass="white-tooltip" appShowIfTruncated>
+                                    {{rate.value.proDataRate || rate.value.proDataRateCurrency?.name ?
+                                    rate.value.proDataRate + ' ' + rate.value.proDataRateCurrency?.name : '-'}}
                                 </span>
                             </ng-template>
 
                             <ng-container *ngIf="rate.value.rateSpecifiedAs?.id === 1; else consultantRateValue">
-                                <span fxFlex="12%" class="u-w--100 text-truncate-ellipsis" [matTooltip]="rate.value.consultantRate + '%'" matTooltipClass="white-tooltip" appShowIfTruncated>
+                                <span fxFlex="12%" class="u-w--100 text-truncate-ellipsis"
+                                    [matTooltip]="rate.value.consultantRate + '%'" matTooltipClass="white-tooltip"
+                                    appShowIfTruncated>
                                     {{rate.value.consultantRate ? rate.value.consultantRate + '%' : '-'}}
                                 </span>
                             </ng-container>
                             <ng-template #consultantRateValue>
-                                <span fxFlex="12%" class="u-w--100 text-truncate-ellipsis" [matTooltip]="rate.value.consultantRate + ' ' + rate.value.consultantRateCurrency?.name" matTooltipClass="white-tooltip" appShowIfTruncated>
-                                    {{rate.value.consultantRate || rate.value.consultantRateCurrency?.name ? rate.value.consultantRate + ' ' + rate.value.consultantRateCurrency?.name : '-'}}
+                                <span fxFlex="12%" class="u-w--100 text-truncate-ellipsis"
+                                    [matTooltip]="rate.value.consultantRate + ' ' + rate.value.consultantRateCurrency?.name"
+                                    matTooltipClass="white-tooltip" appShowIfTruncated>
+                                    {{rate.value.consultantRate || rate.value.consultantRateCurrency?.name ?
+                                    rate.value.consultantRate + ' ' + rate.value.consultantRateCurrency?.name : '-'}}
                                 </span>
                             </ng-template>
                             <div fxFlex="15%" fxLayoutAlign="end center" class="u-w--100 u-pr--10">
@@ -194,11 +225,13 @@
                 </ng-container>
             </form>
             <div fxLayout="row" fxLayoutAlign="space-between center" class="u-w--100 u-mt--10">
-                <button class="button-add u-ml--8" mat-flat-button appPreventDoubleClick (throttledClick)="addSpecialRate()" [disabled]="rateIsEditing && specialRates?.length! > 0">
+                <button class="button-add u-ml--8" mat-flat-button appPreventDoubleClick
+                    (throttledClick)="addSpecialRate()" [disabled]="rateIsEditing && specialRates.length! > 0">
                     <mat-icon>add</mat-icon>
                     Add Special Rate
                 </button>
-                <mat-slide-toggle class="green-slide-toggle" color="primary" [(ngModel)]="showHiddenSpecialRates" labelPosition="before" (change)="getClientRates()">
+                <mat-slide-toggle class="green-slide-toggle" color="primary" [(ngModel)]="showHiddenSpecialRates"
+                    labelPosition="before" (change)="getClientRates()">
                     Show hidden
                 </mat-slide-toggle>
             </div>
@@ -207,7 +240,9 @@
         <div fxLayout="column" fxLayoutAlign="start start" class="u-w--100">
             <h3 class="client-rates--section__header u-mb--15">Fees</h3>
             <form [formGroup]="clientFeesForm" class="client-rates--form inline-edit-form u-w--100">
-                <div fxLayout="row" fxLayoutAlign="space-between start" fxLayoutGap="10px" class="client-rates--form__header-container u-w--100" *ngIf="clientFeesForm.clientFees?.controls?.length">
+                <div fxLayout="row" fxLayoutAlign="space-between start" fxLayoutGap="10px"
+                    class="client-rates--form__header-container u-w--100"
+                    *ngIf="clientFeesForm.clientFees?.controls?.length">
                     <span fxFlex="12%" class="client-rates--form__header u-w--100">
                         Fee name
                     </span>
@@ -234,26 +269,32 @@
                     </span>
                 </div>
                 <ng-container formArrayName="clientFees" class="u-w--100">
-                    <div fxLayout="row" fxLayoutAlign="space-between center" fxLayoutGap="10px" class="client-rates--form__row u-w--100"
-                        [fxHide]="fee.value.hidden && !showHiddenSpecialFees"
-                        *ngFor="let fee of clientFeesForm.clientFees.controls; index as i"
-                        [formArrayName]="i">
+                    <div fxLayout="row" fxLayoutAlign="space-between center" fxLayoutGap="10px"
+                        class="client-rates--form__row u-w--100" [fxHide]="fee.value.hidden && !showHiddenSpecialFees"
+                        *ngFor="let fee of clientFeesForm.clientFees.controls; index as i" [formArrayName]="i">
                         <ng-container *ngIf="fee.value.editable">
-                            <mat-form-field appearance="fill" class="u-pl--20 u-w--100 formFieldNoMarginPadding filter-select" fxFlex="12%">
+                            <mat-form-field appearance="fill"
+                                class="u-pl--20 u-w--100 formFieldNoMarginPadding filter-select" fxFlex="12%">
                                 <input matInput type="text" formControlName="feeName" placeholder="Fee name" />
                             </mat-form-field>
-                            <mat-form-field appearance="fill" class="u-w--100 formFieldNoMarginPadding filter-select" fxFlex="12%">
-                                <input matInput type="text" formControlName="nameForInvoices" placeholder="Name for invoicing" />
+                            <mat-form-field appearance="fill" class="u-w--100 formFieldNoMarginPadding filter-select"
+                                fxFlex="12%">
+                                <input matInput type="text" formControlName="nameForInvoices"
+                                    placeholder="Name for invoicing" />
                             </mat-form-field>
-                            <mat-form-field appearance="fill" class="u-w--100 formFieldNoMarginPadding filter-select" fxFlex="12%">
-                                <mat-select formControlName="feeFrequency" placeholder="Frequency" [disableOptionCentering]="true" [compareWith]="compareWithFn">
+                            <mat-form-field appearance="fill" class="u-w--100 formFieldNoMarginPadding filter-select"
+                                fxFlex="12%">
+                                <mat-select formControlName="feeFrequency" placeholder="Frequency"
+                                    [disableOptionCentering]="true" [compareWith]="compareWithFn">
                                     <mat-option *ngFor="let item of clientSpecialFeeFrequencies" [value]="item">
                                         {{ item.name }}
                                     </mat-option>
                                 </mat-select>
                             </mat-form-field>
-                            <mat-form-field appearance="fill" class="u-w--100 formFieldNoMarginPadding filter-select" fxFlex="13%">
-                                <mat-select formControlName="feeSpecifiedAs" placeholder="Fee specified as" [disableOptionCentering]="true" [compareWith]="compareWithFn">
+                            <mat-form-field appearance="fill" class="u-w--100 formFieldNoMarginPadding filter-select"
+                                fxFlex="13%">
+                                <mat-select formControlName="feeSpecifiedAs" placeholder="Fee specified as"
+                                    [disableOptionCentering]="true" [compareWith]="compareWithFn">
                                     <mat-option *ngFor="let item of clientSpecialFeeSpecifications" [value]="item">
                                         {{ item.name }}
                                     </mat-option>
@@ -308,16 +349,24 @@
                             </div>
                         </ng-container>
                         <ng-container *ngIf="!fee.value.editable">
-                            <span fxFlex="12%" class="u-pl--20 u-w--100 text-truncate-ellipsis" [matTooltip]="fee.value.feeName ?? ''" matTooltipClass="white-tooltip" appShowIfTruncated>
+                            <span fxFlex="12%" class="u-pl--20 u-w--100 text-truncate-ellipsis"
+                                [matTooltip]="fee.value.feeName ?? ''" matTooltipClass="white-tooltip"
+                                appShowIfTruncated>
                                 {{fee.value.feeName ?? '-'}}
                             </span>
-                            <span fxFlex="12%" class="u-w--100 text-truncate-ellipsis" [matTooltip]="fee.value.nameForInvoices ?? ''" matTooltipClass="white-tooltip" appShowIfTruncated>
+                            <span fxFlex="12%" class="u-w--100 text-truncate-ellipsis"
+                                [matTooltip]="fee.value.nameForInvoices ?? ''" matTooltipClass="white-tooltip"
+                                appShowIfTruncated>
                                 {{fee.value.nameForInvoices ?? '-'}}
                             </span>
-                            <span fxFlex="12%" class="u-w--100 text-truncate-ellipsis" [matTooltip]="fee.value.feeFrequency?.name ?? ''" matTooltipClass="white-tooltip" appShowIfTruncated>
+                            <span fxFlex="12%" class="u-w--100 text-truncate-ellipsis"
+                                [matTooltip]="fee.value.feeFrequency?.name ?? ''" matTooltipClass="white-tooltip"
+                                appShowIfTruncated>
                                 {{fee.value.feeFrequency?.name ?? '-'}}
                             </span>
-                            <span fxFlex="13%" class="u-w--100 text-truncate-ellipsis" [matTooltip]="fee.value.feeSpecifiedAs?.name ?? ''" matTooltipClass="white-tooltip" appShowIfTruncated>
+                            <span fxFlex="13%" class="u-w--100 text-truncate-ellipsis"
+                                [matTooltip]="fee.value.feeSpecifiedAs?.name ?? ''" matTooltipClass="white-tooltip"
+                                appShowIfTruncated>
                                 {{fee.value.feeSpecifiedAs?.name ?? '-'}}
                             </span>
                             <span fxFlex="12%" class="u-w--100 text-truncate-ellipsis" [matTooltip]="fee.value.clientRateValue + ' ' + fee.value.clientRateCurrency?.name" matTooltipClass="white-tooltip" appShowIfTruncated>
@@ -363,11 +412,13 @@
                 </ng-container>
             </form>
             <div fxLayout="row" fxLayoutAlign="space-between center" class="u-w--100 u-mt--10">
-                <button class="button-add u-ml--8" mat-flat-button appPreventDoubleClick (throttledClick)="addClientFee()" [disabled]="feeIsEditing && clientFees?.length! > 0">
+                <button class="button-add u-ml--8" mat-flat-button appPreventDoubleClick
+                    (throttledClick)="addClientFee()" [disabled]="feeIsEditing && clientFees.length! > 0">
                     <mat-icon>add</mat-icon>
                     Add Fee
                 </button>
-                <mat-slide-toggle class="green-slide-toggle" color="primary" [(ngModel)]="showHiddenSpecialFees" labelPosition="before" (change)="getClientFees()">
+                <mat-slide-toggle class="green-slide-toggle" color="primary" [(ngModel)]="showHiddenSpecialFees"
+                    labelPosition="before" (change)="getClientFees()">
                     Show hidden
                 </mat-slide-toggle>
             </div>
