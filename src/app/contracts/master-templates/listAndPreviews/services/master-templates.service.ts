@@ -15,7 +15,15 @@ export class MasterTemplatesService extends BaseContract<TableFiltersEnum> {
 		super();
 	}
     tableFilters$ = new BehaviorSubject<TableFiltersEnum>(<TableFiltersEnum>{
-        
+        language: [],
+		agreementType: [],
+		recipientTypeId: [],
+		legalEntityIds: [],
+		salesTypeIds: [],
+		deliveryTypeIds: [],
+		contractTypeIds: [],
+		lastUpdatedByLowerCaseInitials: [],
+		isEnabled: [],
     })
 	getContracts$(): Observable<AgreementTemplatesListItemDtoPaginatedList> {
 		return combineLatest([
