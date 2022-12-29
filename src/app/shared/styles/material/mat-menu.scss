@@ -28,6 +28,11 @@
             transform: scale(1.25);
         }
     }
+    &.menu-item--big-icon {
+        mat-icon {
+            @include fontLineHeightAndSize(20px, 20px, 20px, 20px);
+        }
+    }
     mat-icon {
         margin-right: 8px !important;
         border-radius: 50%;
@@ -37,6 +42,16 @@
         color: $dark-red-color;
         mat-icon {
             color: $dark-red-color !important;
+        }
+    }
+    &[disabled] {
+        color: $light-grey-color !important;
+        mat-icon {
+            color: $light-grey-color !important;
+            path {
+                fill: $light-grey-color !important;
+                stroke: $light-grey-color !important;
+            }
         }
     }
     &--edit {
@@ -52,6 +67,7 @@
                 color: $light-grey-color !important;
                 path {
                     fill: $light-grey-color !important;
+                    stroke: $light-grey-color !important;
                 }
             }
         }
@@ -175,7 +191,7 @@
                 }
             }
             &:hover {
-                background: rgba($color: $green-color-25, $alpha: 0.33) !important;
+                background: #FAF9FB !important;
             }
         }
     }
@@ -215,7 +231,7 @@
     .mat-menu-panel {
         .mat-menu-content:not(:empty) {
             .mat-menu-item:hover:not([disabled]) {
-                background: rgba($color: $green-color-25, $alpha: 0.33) !important;
+                background: #FAF9FB !important;
             }
         }
     }

@@ -22,7 +22,7 @@ import {
 	OnDestroy,
 	Injector,
 } from '@angular/core';
-import { FormControl } from '@angular/forms';
+import { UntypedFormControl } from '@angular/forms';
 import {
 	AgreementCreationMode,
 	AgreementTemplateAttachmentDto,

@@ -1,0 +1,13 @@
+@import "/src/app/shared/styles/config/_colors";
+@import "/src/app/shared/styles/config/_mixins";
+
+.workflow-responsible {
+    &--header {
+        color: $medium-grey-color;
+        @include fontOpenSans(14px, 600);
+    }
+    .tenant-flag {
+        width: 24px;
+        height: 24px;
+    }
+}
