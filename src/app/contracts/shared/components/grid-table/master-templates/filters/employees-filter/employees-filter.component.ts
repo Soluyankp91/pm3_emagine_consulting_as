@@ -2,7 +2,7 @@ import { ReplaySubject, Observable } from 'rxjs';
 import { startWith, switchMap, tap, take, pluck } from 'rxjs/operators';
 
 import { Component, EventEmitter, Output } from '@angular/core';
-import { FormControl } from '@angular/forms';
+import { UntypedFormControl } from '@angular/forms';
 import {
     EmployeeDto,
     LookupServiceProxy,
@@ -21,7 +21,7 @@ export class EmployeesFilterComponent {
 
     textEmitter = new EventEmitter();
 
-    filterFormControl: FormControl;
+    filterFormControl: UntypedFormControl;
     employees$: Observable<EmployeeDto[]>;
 
     labelMap = FILTER_LABEL_MAP;
@@ -37,7 +37,7 @@ export class EmployeesFilterComponent {
             .getTableFilters$()
             .pipe(take(1), pluck(this.tableFilter))
             .subscribe((salesTypes) => {
-                this.filterFormControl = new FormControl(salesTypes);
+                this.filterFormControl = new UntypedFormControl(salesTypes);
             });
     }
 

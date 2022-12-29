@@ -7,7 +7,6 @@ import { TableFiltersEnum } from 'src/app/contracts/shared/components/grid-table
 import {
 	AgreementTemplateServiceProxy,
 	AgreementTemplatesListItemDtoPaginatedList,
-	CountryDto,
 } from 'src/shared/service-proxies/service-proxies';
 
 @Injectable()

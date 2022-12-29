@@ -67,7 +67,7 @@ export class CreateMasterTemplateComponent extends AppComponentBase implements O
 	agreementCreationMode = new FormControl(AgreementCreationMode.FromScratch);
 
 	createControl = new FormControl();
-	duplicateTemplateControl = new FormControl(null);
+	duplicateTemplateControl = new FormControl();
 
 	isFormDirty = false;
 

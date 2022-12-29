@@ -12,7 +12,7 @@ import {
 import {
     AbstractControl,
     ControlValueAccessor,
-    FormControl,
+    UntypedFormControl,
     NgControl,
 } from '@angular/forms';
 import { SingleAutoErrorStateMatcher } from '../../matchers/customMatcher';
@@ -44,7 +44,7 @@ export class DropdownAutocompleteSingleSelectComponent
     context = this;
 
     matcher = new SingleAutoErrorStateMatcher();
-    inputControl = new FormControl(null);
+    inputControl = new UntypedFormControl(null);
 
     selectedItem: Item | null;
 

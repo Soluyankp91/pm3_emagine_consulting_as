@@ -340,21 +340,23 @@
                 </div>
             </ng-container>
             <ng-container *ngSwitchCase="documentSideItems.Evaluations">
-                <div fxLayout="column" fxLayoutAlign="start end" class="client-documents--table u-w--100">
-                    <div fxLayout="row" fxLayoutAlign="space-between center"class=" u-mb--15">
-                        <mat-form-field appearance="outline" class="u-w--100 u-mr--16">
-                            <mat-label>Max answer date</mat-label>
-                            <input autocomplete="off" placeholder="New end date" matInput
-                                    [matDatepicker]="evaluationDocumentDatePicker"
-                                    name="evaluationDocumentDate"
-                                    [formControl]="evaluationDocumentDate"
-                                    (focus)="evaluationDocumentDatePicker.open()"
-                                    appPreventDoubleClick (throttledClick)="evaluationDocumentDatePicker.open()" readonly>
-                            <mat-icon class="calendar-icon" matSuffix svgIcon="calendar"></mat-icon>
-                            <mat-datepicker #evaluationDocumentDatePicker></mat-datepicker>
-                        </mat-form-field>
-
-                        <mat-checkbox  color="accent" name="contractDocumentsIncludeLinked" [formControl]="evaluationDocumentsIncludeLinked" class="black-checkbox u-w--100 u-mr--15">
+                <div fxLayout="column" fxLayoutAlign="start start" class="client-documents--table u-w--100">
+                    <div fxLayout="row" fxLayoutAlign="space-between center"class="u-w--100 u-mb--15">
+                        <div fxLayout="row" fxLayoutAlign="start center"class="u-w--100 u-mb--15">
+                            <span class="client-documents--filter-label u-mr--5">
+                                Evaluations from
+                            </span>
+                            <mat-form-field appearance="fill" class="client-documents--filter-select formFieldNoMarginPadding u-mr--20">
+                                <mat-select [formControl]="evaluationDocumentFromDate" name="overviewViewType" [disableOptionCentering]="true">
+                                    <ng-container *ngFor="let item of evaluationFromDateList; trackBy: trackById">
+                                        <mat-option [value]="item.id">
+                                            {{item.name}}
+                                        </mat-option>
+                                    </ng-container>
+                                </mat-select>
+                            </mat-form-field>
+                        </div>
+                        <mat-checkbox  color="accent" name="contractDocumentsIncludeLinked" [formControl]="evaluationDocumentsIncludeLinked" class="black-checkbox u-mr--15">
                             Include linked clients
                         </mat-checkbox>
                     </div>

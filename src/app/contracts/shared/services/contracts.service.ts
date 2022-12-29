@@ -139,6 +139,7 @@ export class ContractsService {
 						deliveryTypeIds: this._mapItems(deliveryTypes),
 						contractTypeIds: this._mapItems(employmentTypes),
 					};
+                    console.log(mappedEnums);
 					this.mappedEnums$$.next(mappedEnums);
 				}
 			)

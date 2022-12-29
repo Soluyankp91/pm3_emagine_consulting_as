@@ -61,7 +61,7 @@ export class CreationComponent
     isDuplicateFromInherited = false;
 
     parentMasterTemplateControl = new FormControl();
-    clientTemplateControl = new FormControl(null);
+    clientTemplateControl = new FormControl();
     creationModeControl = new FormControl(AgreementCreationMode.FromScratch);
 
     clientTemplateFormGroup = new ClientTemplatesModel();

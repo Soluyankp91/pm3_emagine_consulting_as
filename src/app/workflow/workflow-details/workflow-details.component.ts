@@ -11,7 +11,7 @@ import {
 } from '@angular/core';
 import { MatDialog } from '@angular/material/dialog';
 import { MatTabChangeEvent, MatTabGroup } from '@angular/material/tabs';
-import { ActivatedRoute } from '@angular/router';
+import { ActivatedRoute, Router } from '@angular/router';
 import { NgScrollbar } from 'ngx-scrollbar';
 import { Subject } from 'rxjs';
 import { finalize, takeUntil } from 'rxjs/operators';
@@ -48,7 +48,7 @@ import {
 } from 'src/shared/app-component-base';
 import { ConfirmationDialogComponent } from 'src/app/shared/components/confirmation-dialog/confirmation-dialog.component';
 import { environment } from 'src/environments/environment';
-import { FormControl, Validators } from '@angular/forms';
+import { UntypedFormControl, Validators } from '@angular/forms';
 import { LocalHttpService } from 'src/shared/service-proxies/local-http.service';
 import { AuthenticationResult } from '@azure/msal-browser';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
@@ -104,10 +104,13 @@ export class WorkflowDetailsComponent
     workflowDirectClientId: number | undefined;
     workflowEndClientId: number | undefined;
     workflowConsultants: ConsultantNameWithRequestUrl[] = [];
+    workflowConsultantsList: string | undefined;
     workflowStatusId: number | undefined;
     workflowStatusName: string | undefined;
     workflowStatusIcon: string;
     workflowStatus = WorkflowStatus;
+    endClientCrmId: number | undefined;
+    directClientCrmId: number | undefined;
     workflowStatusMenuList = WorkflowStatusMenuList;
 
     workflowClientPeriodTypes: EnumEntityTypeDto[] = [];
@@ -116,7 +119,7 @@ export class WorkflowDetailsComponent
     individualConsultantActionsAvailable: boolean;
 
     isNoteVisible = false;
-    workflowNote = new FormControl('', Validators.maxLength(4000));
+    workflowNote = new UntypedFormControl('', Validators.maxLength(4000));
     workflowNoteOldValue: string;
     disabledOverview = true;
     notesEditable = false;
@@ -133,7 +136,8 @@ export class WorkflowDetailsComponent
         private _workflowServiceProxy: WorkflowServiceProxy,
         private _clientPeriodService: ClientPeriodServiceProxy,
         private localHttpService: LocalHttpService,
-        private httpClient: HttpClient
+        private httpClient: HttpClient,
+        private router: Router
     ) {
         super(injector);
     }
@@ -316,6 +320,19 @@ export class WorkflowDetailsComponent
                 this.workflowEndClientId = result.endClientId;
                 this.workflowConsultants = result.consultantNamesWithRequestUrls!;
                 this.workflowId = result.workflowId!;
+                this.workflowConsultantsList = result.consultantNamesWithRequestUrls?.map(x => {
+                    let result = '• ';
+                    if (x.consultantName) {
+                        result += x.consultantName;
+                    }
+                    if (x.consultantId) {
+                        result += (x.consultantName?.length ? ' | ' : '' ) + '#' + x.consultantId;
+                    }
+                    if (x.companyName) {
+                        result += (x.consultantName?.length || x.consultantId ? ' | ' : '' ) + x.companyName;
+                    }
+                    return result;
+                }).join('\n');
                 if (result.workflowStatusId) {
                     this.workflowStatusId = result.workflowStatusId;
                     this.workflowStatusName = getWorkflowStatus(result.workflowStatusId);
@@ -751,5 +768,34 @@ export class WorkflowDetailsComponent
         this._workflowServiceProxy.setWorkflowStatus(workflowId, workflowStatus)
             .pipe(finalize(() => this.hideMainSpinner()))
             .subscribe(() => this.getTopLevelMenu())
+    }
+
+    openClientProfile(clientId: number) {
+        const url = this.router.serializeUrl(
+            this.router.createUrlTree([`/app/clients/${clientId}/rates-and-fees`])
+        );
+        window.open(url, '_blank');
+    }
+
+    openInHubspot(clientCrmId: number) {
+        if (this._internalLookupService.hubspotClientUrl?.length) {
+            if (clientCrmId !== null && clientCrmId !== undefined) {
+                window.open(this._internalLookupService.hubspotClientUrl.replace('{CrmClientId}', clientCrmId!.toString()), '_blank');
+            }
+        } else {
+            this.localHttpService.getTokenPromise().then((response: AuthenticationResult) => {
+                this.httpClient.get(`${this.apiUrl}/api/Clients/HubspotPartialUrlAsync`, {
+                        headers: new HttpHeaders({
+                            'Authorization': `Bearer ${response.accessToken}`
+                        }),
+                        responseType: 'text'
+                    }).subscribe((result: string) => {
+                        this._internalLookupService.hubspotClientUrl = result;
+                        if (clientCrmId !== null && clientCrmId !== undefined) {
+                            window.open(result.replace('{CrmClientId}', clientCrmId!.toString()), '_blank');
+                        }
+                })
+            });
+        }
     }
 }
