@@ -26,7 +26,7 @@ import {
     takeUntil,
 } from 'rxjs/operators';
 import { Observable, Subject, of, BehaviorSubject } from 'rxjs';
-import { UntypedFormControl } from '@angular/forms';
+import { FormControl } from '@angular/forms';
 import {
     ClientTemplatesModel,
     INITIAL_CLIENT_TEMPLATE_FORM_VALUE,
@@ -60,9 +60,9 @@ export class CreationComponent
 
     isDuplicateFromInherited = false;
 
-    parentMasterTemplateControl = new UntypedFormControl();
-    clientTemplateControl = new UntypedFormControl(null);
-    creationModeControl = new UntypedFormControl(AgreementCreationMode.FromScratch);
+    parentMasterTemplateControl = new FormControl();
+    clientTemplateControl = new FormControl();
+    creationModeControl = new FormControl(AgreementCreationMode.FromScratch);
 
     clientTemplateFormGroup = new ClientTemplatesModel();
 
