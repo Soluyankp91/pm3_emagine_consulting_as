@@ -1,6 +1,6 @@
 import { SortDirection } from '@angular/material/sort';
 import { BehaviorSubject, combineLatest, EMPTY, Observable, ReplaySubject } from 'rxjs';
-import { AgreementTemplateServiceProxy, CountryDto } from 'src/shared/service-proxies/service-proxies';
+import { AgreementTemplatesListItemDtoPaginatedList, CountryDto } from 'src/shared/service-proxies/service-proxies';
 import { switchMap, debounceTime, distinctUntilChanged, tap } from 'rxjs/operators';
 import { Injectable } from '@angular/core';
 import {
@@ -8,43 +8,26 @@ import {
 	INITIAL_PAGE_INDEX,
 } from '../components/grid-table/master-templates/entities/master-templates.constants';
 import { isEqual } from 'lodash';
+import { PageDto, SortDto, TableFiltersEnum, TemplatePayload } from '../entities/contracts.interfaces';
 
-Injectable()
-export  class BaseContract {
+export abstract class BaseContract {
 	constructor() {}
 
 	contractsLoading$: ReplaySubject<boolean> = new ReplaySubject<boolean>(1);
 
-	private page$: BehaviorSubject<{ pageIndex: number; pageSize: number }> = new BehaviorSubject<{
-		pageIndex: number;
-		pageSize: number;
-	}>({ pageIndex: INITIAL_PAGE_INDEX, pageSize: DEFAULT_SIZE_OPTION });
+	abstract tableFilters$: BehaviorSubject<TableFiltersEnum>;
+	abstract sendPayload$(templatePayload: TemplatePayload): Observable<AgreementTemplatesListItemDtoPaginatedList>;
 
-	 tableFilters$: BehaviorSubject<any>;
+	private page$: BehaviorSubject<{ pageIndex: number; pageSize: number }> = new BehaviorSubject<PageDto>({
+		pageIndex: INITIAL_PAGE_INDEX,
+		pageSize: DEFAULT_SIZE_OPTION,
+	});
 
 	private tenantIds$$ = new BehaviorSubject<CountryDto[]>([]);
+
 	private searchFilter$$ = new BehaviorSubject<string>('');
 
-	private sort$: BehaviorSubject<{
-		active: string;
-		direction: SortDirection;
-	}> = new BehaviorSubject({ active: '', direction: '' as SortDirection });
-
-	 sendPayload$([tableFilters, sort, page, tenantIds, search]: [
-		any,
-		{
-			active: string;
-			direction: SortDirection;
-		},
-		{
-			pageIndex: number;
-			pageSize: number;
-		},
-		CountryDto[],
-		string
-	]): Observable<any> {
-        return EMPTY;
-    }
+	private sort$: BehaviorSubject<SortDto> = new BehaviorSubject({ active: '', direction: '' as SortDirection });
 
 	getContracts$() {
 		return combineLatest([
@@ -84,19 +67,19 @@ export  class BaseContract {
 		return this.searchFilter$$.asObservable();
 	}
 
-	updateTableFilters(data: any) {
+	updateTableFilters(data: TableFiltersEnum) {
 		this.tableFilters$.next(data);
 	}
 
-	updateTenantFilter(data: any) {
+	updateTenantFilter(data: CountryDto[]) {
 		this.tenantIds$$.next(data);
 	}
 
-	updateSearchFilter(data: any) {
+	updateSearchFilter(data: string) {
 		this.searchFilter$$.next(data);
 	}
 
-	updateSort(data: any) {
+	updateSort(data: SortDto) {
 		this.sort$.next(data);
 	}
 

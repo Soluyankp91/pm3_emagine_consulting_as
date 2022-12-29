@@ -1,28 +1,30 @@
 import { take, takeUntil, debounceTime } from 'rxjs/operators';
 import { Subject } from 'rxjs';
-import { MasterTemplatesService } from '../../services/master-templates.service';
-import { Component, OnInit, OnDestroy } from '@angular/core';
+import { Component, OnInit, OnDestroy, Inject } from '@angular/core';
 import { FormControl, FormGroup } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
 import { ContractsService } from 'src/app/contracts/shared/services/contracts.service';
-import { BaseContract } from 'src/app/contracts/shared/base/base-contract';
-import { ClientTemplatesService } from 'src/app/contracts/client-specific-templates/listAndPreviews/service/client-templates.service';
+import {
+	ITemplatesService,
+	TEMPLATE_SERVICE_PROVIDER,
+	TEMPLATE_SERVICE_TOKEN,
+} from 'src/app/contracts/shared/services/template-service-factory';
 
 @Component({
 	selector: 'app-master-template-filter-header',
 	templateUrl: './top-filters.component.html',
 	styleUrls: ['./top-filters.component.scss'],
-	providers: [],
+	providers: [TEMPLATE_SERVICE_PROVIDER],
 })
 export class MasterTemplateFilterHeaderComponent implements OnInit, OnDestroy {
-	countryFilter$ = this.contractsService.getTenants$();
-	preselectedTenants$ = this.masterTemplatesService.getTenants$();
+	tenantFilter$ = this.contractsService.getTenants$();
+	preselectedTenants$ = this.templatesService.getTenants$();
 	topFiltersFormGroup: FormGroup;
 
 	private unSubscribe$ = new Subject<void>();
 
 	constructor(
-		private readonly masterTemplatesService: MasterTemplatesService,
+		@Inject(TEMPLATE_SERVICE_TOKEN) private templatesService: ITemplatesService,
 		private readonly contractsService: ContractsService,
 		private readonly router: Router,
 		private readonly route: ActivatedRoute
@@ -45,7 +47,7 @@ export class MasterTemplateFilterHeaderComponent implements OnInit, OnDestroy {
 
 	private _subscribeOnTenantChanged() {
 		this.topFiltersFormGroup.controls['tenantIds'].valueChanges.pipe(takeUntil(this.unSubscribe$)).subscribe((tenants) => {
-			this.masterTemplatesService.updateTenantFilter(tenants);
+			this.templatesService.updateTenantFilter(tenants);
 		});
 	}
 
@@ -53,7 +55,7 @@ export class MasterTemplateFilterHeaderComponent implements OnInit, OnDestroy {
 		this.topFiltersFormGroup.controls['search'].valueChanges
 			.pipe(takeUntil(this.unSubscribe$), debounceTime(600))
 			.subscribe((search) => {
-				this.masterTemplatesService.updateSearchFilter(search);
+				this.templatesService.updateSearchFilter(search);
 			});
 	}
 

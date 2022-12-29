@@ -1,6 +1,6 @@
 import { ITableConfig } from '../../shared/components/grid-table/mat-grid.interfaces';
 import { MasterTemplatesService } from './services/master-templates.service';
-import { Component, ChangeDetectionStrategy, OnInit, OnDestroy, Injector, SkipSelf} from '@angular/core';
+import { Component, ChangeDetectionStrategy, OnInit, OnDestroy, Injector, SkipSelf } from '@angular/core';
 import { map, takeUntil } from 'rxjs/operators';
 import {
 	DISPLAYED_COLUMNS,
@@ -9,7 +9,6 @@ import {
 } from '../../shared/components/grid-table/master-templates/entities/master-templates.constants';
 import { Sort } from '@angular/material/sort';
 import { PageEvent } from '@angular/material/paginator';
-import { TableFiltersEnum } from '../../shared/components/grid-table/master-templates/entities/master-templates.interfaces';
 import { GridHelpService } from '../../shared/services/mat-grid-service.service';
 import { Observable, Subject, combineLatest } from 'rxjs';
 import { ActivatedRoute, Params, Router } from '@angular/router';
@@ -17,7 +16,11 @@ import { AgreementLanguage, AgreementTemplatesListItemDto, AgreementType } from 
 import { ContractsService } from '../../shared/services/contracts.service';
 import { AppComponentBase } from 'src/shared/app-component-base';
 import * as moment from 'moment';
-import { MappedAgreementTemplatesListItemDto, MappedTableCells } from '../../shared/entities/contracts.interfaces';
+import {
+	BaseMappedAgreementTemplatesListItemDto,
+	MappedTableCells,
+	TableFiltersEnum,
+} from '../../shared/entities/contracts.interfaces';
 @Component({
 	selector: 'app-master-templates',
 	templateUrl: './master-templates.component.html',
@@ -41,7 +44,7 @@ export class MasterTemplatesComponent extends AppComponentBase implements OnInit
 		private readonly _gridHelpService: GridHelpService,
 		private readonly _route: ActivatedRoute,
 		private readonly _router: Router,
-		private readonly _injetor: Injector,
+		private readonly _injetor: Injector
 	) {
 		super(_injetor);
 	}
@@ -61,7 +64,6 @@ export class MasterTemplatesComponent extends AppComponentBase implements OnInit
 	}
 
 	onFormControlChange($event: TableFiltersEnum) {
-        console.log($event);
 		this._masterTemplatesService.updateTableFilters($event);
 	}
 
@@ -113,9 +115,9 @@ export class MasterTemplatesComponent extends AppComponentBase implements OnInit
 	private _mapTableItems(
 		items: AgreementTemplatesListItemDto[],
 		maps: MappedTableCells
-	): MappedAgreementTemplatesListItemDto[] {
+	): BaseMappedAgreementTemplatesListItemDto[] {
 		return items.map((item: AgreementTemplatesListItemDto) => {
-			return <MappedAgreementTemplatesListItemDto>{
+			return <BaseMappedAgreementTemplatesListItemDto>{
 				agreementTemplateId: item.agreementTemplateId,
 				name: item.name,
 				agreementType: maps.agreementType[item.agreementType as AgreementType],

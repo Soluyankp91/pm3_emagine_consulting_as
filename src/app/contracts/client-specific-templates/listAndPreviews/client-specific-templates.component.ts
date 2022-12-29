@@ -7,7 +7,7 @@ import {
 	CLIENT_TEMPLATE_HEADER_CELLS,
 	DISPLAYED_COLUMNS,
 } from '../../shared/components/grid-table/client-templates/entities/client-template.constants';
-import { MappedAgreementTemplatesListItemDto, MappedTableCells } from '../../shared/entities/contracts.interfaces';
+import { BaseMappedAgreementTemplatesListItemDto, ClientMappedTemplatesListDto, MappedTableCells } from '../../shared/entities/contracts.interfaces';
 import { GridHelpService } from '../../shared/services/mat-grid-service.service';
 import { combineLatest, Observable, Subject } from 'rxjs';
 import { takeUntil, map } from 'rxjs/operators';
@@ -93,11 +93,12 @@ export class ClientSpecificTemplatesComponent extends AppComponentBase implement
 	private _mapTableItems(
 		items: AgreementTemplatesListItemDto[],
 		maps: MappedTableCells
-	): MappedAgreementTemplatesListItemDto[] {
+	): ClientMappedTemplatesListDto[] {
 		return items.map((item: AgreementTemplatesListItemDto) => {
-			return <MappedAgreementTemplatesListItemDto>{
+			return <ClientMappedTemplatesListDto>{
 				agreementTemplateId: item.agreementTemplateId,
 				name: item.name,
+                clientName: item.clientName,
 				agreementType: maps.agreementType[item.agreementType as AgreementType],
 				recipientTypeId: maps.recipientTypeId[item.recipientTypeId as number],
 				language: this.getCountryCodeByLanguage(maps.language[item.language as AgreementLanguage]),

@@ -1,15 +1,4 @@
-<p>client-specific-templates works!</p>
-<button
-	mat-button
-	class="add-button"
-	(click)="navigateTo()"
-	[style.display]="'flex'"
-	[style.align-items]="'center'"
-	(click)="navigateTo()">
-	<mat-icon svgIcon="create-icon" [style.height.px]="50" [style.width.px]="50"></mat-icon>
-	<span mat-button>Create</span>
-</button>
-
+<app-master-template-filter-header> </app-master-template-filter-header>
 <emg-mat-grid
 	#table
 	*ngIf="table$ | async as table"
@@ -38,10 +27,19 @@
 
 	<ng-template let-cell="element" #customCells>
 		<p [customTooltip]="nameTooltip">
-			{{ cell.name | truncateTextCustom : [30] }}
+			{{ cell.name | truncateTextCustom : [20] }}
 		</p>
 		<ng-template #nameTooltip>
 			<div class="tooltip-container">{{ cell.name }}</div>
+		</ng-template>
+	</ng-template>
+
+    <ng-template let-cell="element" #customCells>
+		<p [customTooltip]="nameTooltip">
+			{{ cell.clientName | truncateTextCustom : [10] }}
+		</p>
+		<ng-template #nameTooltip>
+			<div class="tooltip-container">{{ cell.clientName }}</div>
 		</ng-template>
 	</ng-template>
 

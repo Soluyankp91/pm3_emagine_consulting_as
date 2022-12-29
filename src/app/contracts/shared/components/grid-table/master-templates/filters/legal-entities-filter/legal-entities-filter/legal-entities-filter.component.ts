@@ -3,17 +3,18 @@ import { Component, Inject } from '@angular/core';
 import { FormControl } from '@angular/forms';
 import { IFilter } from 'src/app/contracts/shared/components/grid-table/mat-grid.interfaces';
 import { ContractsService } from 'src/app/contracts/shared/services/contracts.service';
-import { MasterTemplatesService } from 'src/app/contracts/master-templates/listAndPreviews/services/master-templates.service';
 import { FILTER_LABEL_MAP } from '../../../entities/master-templates.constants';
 import { LegalEntityDto } from 'src/shared/service-proxies/service-proxies';
-import { BASE_CONTRACT, contractsInjector } from 'src/app/contracts/contracts.module';
-import { ActivatedRoute, Router } from '@angular/router';
-import { ClientTemplatesService } from 'src/app/contracts/client-specific-templates/listAndPreviews/service/client-templates.service';
-import { BaseContract } from 'src/app/contracts/shared/base/base-contract';
+import {
+	ITemplatesService,
+	TEMPLATE_SERVICE_PROVIDER,
+	TEMPLATE_SERVICE_TOKEN,
+} from 'src/app/contracts/shared/services/template-service-factory';
 
 @Component({
 	selector: 'app-legal-entities-filter',
 	templateUrl: './legal-entities-filter.component.html',
+	providers: [TEMPLATE_SERVICE_PROVIDER],
 })
 export class LegalEntitiesFilterComponent implements IFilter {
 	legalEntities$ = this.contractsService.getLegalEntities$().pipe(
@@ -28,8 +29,11 @@ export class LegalEntitiesFilterComponent implements IFilter {
 
 	tableFilter = 'legalEntityIds';
 
-	constructor(private contractsService: ContractsService, @Inject(BASE_CONTRACT) masterTemplateService: BaseContract) {
-		masterTemplateService
+	constructor(
+		private contractsService: ContractsService,
+		@Inject(TEMPLATE_SERVICE_TOKEN) private templatesService: ITemplatesService
+	) {
+		templatesService
 			.getTableFilters$()
 			.pipe(take(1), pluck(this.tableFilter))
 			.subscribe((legalEntities) => {

@@ -1,19 +1,20 @@
 import { ReplaySubject, Observable } from 'rxjs';
 import { startWith, switchMap, tap, take, pluck } from 'rxjs/operators';
 
-import { Component, EventEmitter, Output, Inject, Injector } from '@angular/core';
+import { Component, EventEmitter, Output, Inject } from '@angular/core';
 import { FormControl } from '@angular/forms';
 import { EmployeeDto, LookupServiceProxy } from 'src/shared/service-proxies/service-proxies';
-import { MasterTemplatesService } from 'src/app/contracts/master-templates/listAndPreviews/services/master-templates.service';
 import { FILTER_LABEL_MAP } from '../../entities/master-templates.constants';
-import { BASE_CONTRACT, contractsInjector } from 'src/app/contracts/contracts.module';
-import { ClientTemplatesService } from 'src/app/contracts/client-specific-templates/listAndPreviews/service/client-templates.service';
-import { Router } from '@angular/router';
-import { BaseContract } from 'src/app/contracts/shared/base/base-contract';
+import {
+	ITemplatesService,
+	TEMPLATE_SERVICE_PROVIDER,
+	TEMPLATE_SERVICE_TOKEN,
+} from 'src/app/contracts/shared/services/template-service-factory';
 
 @Component({
 	selector: 'app-employees-filter',
 	templateUrl: './employees-filter.component.html',
+	providers: [TEMPLATE_SERVICE_PROVIDER],
 })
 export class EmployeesFilterComponent {
 	@Output() initialLoading = new ReplaySubject<boolean>(1).pipe(take(1)) as ReplaySubject<boolean>;
@@ -27,9 +28,12 @@ export class EmployeesFilterComponent {
 
 	tableFilter = 'lastUpdatedByLowerCaseInitials';
 
-	constructor(private lookupServiceProxy: LookupServiceProxy, @Inject(BASE_CONTRACT) masterTemplateService: BaseContract) {
+	constructor(
+		private lookupServiceProxy: LookupServiceProxy,
+		@Inject(TEMPLATE_SERVICE_TOKEN) private templatesService: ITemplatesService
+	) {
 		this._initEmployees();
-		masterTemplateService
+		templatesService
 			.getTableFilters$()
 			.pipe(take(1), pluck(this.tableFilter))
 			.subscribe((employees) => {

@@ -28,13 +28,10 @@ import { FormGroup } from '@angular/forms';
 import { EHeaderCells, ETableCells, IColumn, IFilter, ITableConfig } from './mat-grid.interfaces';
 import { FILTER_LABEL_MAP, PAGE_SIZE_OPTIONS } from './master-templates/entities/master-templates.constants';
 import { SelectionModel } from '@angular/cdk/collections';
-import { Actions } from './master-templates/entities/master-templates.interfaces';
 import { AppComponentBase } from 'src/shared/app-component-base';
 import { MatTableDataSource } from '@angular/material/table';
-import { MasterTemplatesService } from 'src/app/contracts/master-templates/listAndPreviews/services/master-templates.service';
-import { contractsInjector } from 'src/app/contracts/contracts.module';
 import { Router } from '@angular/router';
-import { ClientTemplatesService } from 'src/app/contracts/client-specific-templates/listAndPreviews/service/client-templates.service';
+import { Actions } from '../../entities/contracts.interfaces';
 
 @Component({
 	selector: 'emg-mat-grid',

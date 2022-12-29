@@ -1,16 +1,17 @@
-import { Component, OnInit, Inject } from '@angular/core';
+import { Component, OnInit, Inject, Injector } from '@angular/core';
 import { FormControl } from '@angular/forms';
-import { Router } from '@angular/router';
 import { take, pluck } from 'rxjs/operators';
-import { ClientTemplatesService } from 'src/app/contracts/client-specific-templates/listAndPreviews/service/client-templates.service';
-import { BASE_CONTRACT, contractsInjector } from 'src/app/contracts/contracts.module';
-import { MasterTemplatesService } from 'src/app/contracts/master-templates/listAndPreviews/services/master-templates.service';
-import { BaseContract } from 'src/app/contracts/shared/base/base-contract';
+import {
+	ITemplatesService,
+	TEMPLATE_SERVICE_PROVIDER,
+	TEMPLATE_SERVICE_TOKEN,
+} from 'src/app/contracts/shared/services/template-service-factory';
 import { FILTER_LABEL_MAP } from '../../../entities/master-templates.constants';
 
 @Component({
 	selector: 'app-is-enabled',
 	templateUrl: './is-enabled.component.html',
+	providers: [TEMPLATE_SERVICE_PROVIDER],
 })
 export class IsEnabledComponent implements OnInit {
 	options = [
@@ -29,8 +30,8 @@ export class IsEnabledComponent implements OnInit {
 
 	labelMap = FILTER_LABEL_MAP;
 
-	constructor(@Inject(BASE_CONTRACT) masterTemplateService: BaseContract) {
-		masterTemplateService
+	constructor(@Inject(TEMPLATE_SERVICE_TOKEN) private templatesService: ITemplatesService) {
+		templatesService
 			.getTableFilters$()
 			.pipe(take(1), pluck(this.tableFilter))
 			.subscribe((enabled) => {

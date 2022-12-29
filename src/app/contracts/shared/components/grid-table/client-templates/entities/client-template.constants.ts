@@ -1,21 +1,10 @@
-import { contractsInjector } from "src/app/contracts/contracts.module";
-import { Actions } from "../../master-templates/entities/master-templates.interfaces";
-import { AgreementLanguagesFilterComponent } from "../../master-templates/filters/agreement-languages-filter/agreement-filter.component";
-import { AgreementTypesFilterComponent } from "../../master-templates/filters/agreement-types-filter/agreement-types-filter.component";
-import { DeliveryTypesFilterComponent } from "../../master-templates/filters/delivery-types-filter/delivery-types-filter/delivery-types-filter.component";
-import { EmployeesFilterComponent } from "../../master-templates/filters/employees-filter/employees-filter.component";
-import { EmploymentTypesFilterComponent } from "../../master-templates/filters/employment-types-filter/employment-types-filter/employment-types-filter.component";
-import { IsEnabledComponent } from "../../master-templates/filters/enabled-filter/is-enabled/is-enabled.component";
-import { LegalEntitiesFilterComponent } from "../../master-templates/filters/legal-entities-filter/legal-entities-filter/legal-entities-filter.component";
-import { RecipientTypesFilterComponent } from "../../master-templates/filters/recipient-types-filter/recipient-types-filter/recipient-types-filter.component";
-import { SalesTypesFilterComponent } from "../../master-templates/filters/sales-types-filter/sales-types-filter.component";
-import { EHeaderCells, IHeaderCell } from "../../mat-grid.interfaces";
-
-
+import { Actions } from 'src/app/contracts/shared/entities/contracts.interfaces';
+import { EHeaderCells, IHeaderCell } from '../../mat-grid.interfaces';
 
 export const DISPLAYED_COLUMNS: string[] = [
 	'language',
 	'agreementTemplateId',
+	'clientName',
 	'name',
 	'agreementType',
 	'recipientTypeId',
@@ -27,12 +16,15 @@ export const DISPLAYED_COLUMNS: string[] = [
 	'lastUpdatedByLowerCaseInitials',
 	'isEnabled',
 ];
-export const CLIENT_TEMPLATE_HEADER_CELLS: any[] = [
-    {
+export const CLIENT_TEMPLATE_HEADER_CELLS: IHeaderCell[] = [
+	{
 		type: EHeaderCells.FILTER,
 		filter: {
 			formControlName: 'language',
-			component: () => import('../../master-templates/filters/agreement-languages-filter/agreement-filter.component').then((it) => it.AgreementLanguagesFilterComponent)
+			component: () =>
+				import('../../master-templates/filters/agreement-languages-filter/agreement-filter.component').then(
+					(it) => it.AgreementLanguagesFilterComponent
+				),
 		},
 	},
 	{
@@ -44,45 +36,67 @@ export const CLIENT_TEMPLATE_HEADER_CELLS: any[] = [
 		title: 'Template Name',
 	},
 	{
+		type: EHeaderCells.SORT,
+		title: 'Client',
+	},
+	{
 		type: EHeaderCells.FILTER,
 		filter: {
 			formControlName: 'agreementType',
-			component: () => import('../../master-templates/filters/agreement-types-filter/agreement-types-filter.component').then((it) => it.AgreementTypesFilterComponent)
+			component: () =>
+				import('../../master-templates/filters/agreement-types-filter/agreement-types-filter.component').then(
+					(it) => it.AgreementTypesFilterComponent
+				),
 		},
 	},
 	{
 		type: EHeaderCells.FILTER,
 		filter: {
 			formControlName: 'recipientTypeId',
-			component: () => import('../../master-templates/filters/recipient-types-filter/recipient-types-filter/recipient-types-filter.component').then((it) => it.RecipientTypesFilterComponent)
+			component: () =>
+				import(
+					'../../master-templates/filters/recipient-types-filter/recipient-types-filter/recipient-types-filter.component'
+				).then((it) => it.RecipientTypesFilterComponent),
 		},
 	},
 	{
 		type: EHeaderCells.FILTER,
 		filter: {
 			formControlName: 'legalEntityIds',
-			component: () => import('../../master-templates/filters/legal-entities-filter/legal-entities-filter/legal-entities-filter.component').then((it) => it.LegalEntitiesFilterComponent)
+			component: () =>
+				import(
+					'../../master-templates/filters/legal-entities-filter/legal-entities-filter/legal-entities-filter.component'
+				).then((it) => it.LegalEntitiesFilterComponent),
 		},
 	},
 	{
 		type: EHeaderCells.FILTER,
 		filter: {
 			formControlName: 'salesTypeIds',
-			component: () => import('../../master-templates/filters/sales-types-filter/sales-types-filter.component').then((it) => it.SalesTypesFilterComponent)
+			component: () =>
+				import('../../master-templates/filters/sales-types-filter/sales-types-filter.component').then(
+					(it) => it.SalesTypesFilterComponent
+				),
 		},
 	},
 	{
 		type: EHeaderCells.FILTER,
 		filter: {
 			formControlName: 'deliveryTypeIds',
-			component: () => import('../../master-templates/filters/delivery-types-filter/delivery-types-filter/delivery-types-filter.component').then((it) => it.DeliveryTypesFilterComponent)
+			component: () =>
+				import(
+					'../../master-templates/filters/delivery-types-filter/delivery-types-filter/delivery-types-filter.component'
+				).then((it) => it.DeliveryTypesFilterComponent),
 		},
 	},
 	{
 		type: EHeaderCells.FILTER,
 		filter: {
 			formControlName: 'contractTypeIds',
-			component: () => import('../../master-templates/filters/employment-types-filter/employment-types-filter/employment-types-filter.component').then((it) => it.EmploymentTypesFilterComponent)
+			component: () =>
+				import(
+					'../../master-templates/filters/employment-types-filter/employment-types-filter/employment-types-filter.component'
+				).then((it) => it.EmploymentTypesFilterComponent),
 		},
 	},
 	{
@@ -93,7 +107,10 @@ export const CLIENT_TEMPLATE_HEADER_CELLS: any[] = [
 		type: EHeaderCells.FILTER,
 		filter: {
 			formControlName: 'lastUpdatedByLowerCaseInitials',
-			component: () => import('../../master-templates/filters/employees-filter/employees-filter.component').then((it) => it.EmployeesFilterComponent)
+			component: () =>
+				import('../../master-templates/filters/employees-filter/employees-filter.component').then(
+					(it) => it.EmployeesFilterComponent
+				),
 		},
 	},
 	{
@@ -101,7 +118,10 @@ export const CLIENT_TEMPLATE_HEADER_CELLS: any[] = [
 		title: 'Status',
 		filter: {
 			formControlName: 'isEnabled',
-			component: () => import('../../master-templates/filters/enabled-filter/is-enabled/is-enabled.component').then((it) => it.IsEnabledComponent)
+			component: () =>
+				import('../../master-templates/filters/enabled-filter/is-enabled/is-enabled.component').then(
+					(it) => it.IsEnabledComponent
+				),
 		},
 	},
 ];

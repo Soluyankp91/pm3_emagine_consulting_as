@@ -1,20 +1,15 @@
 import { Injectable } from '@angular/core';
-import { SortDirection } from '@angular/material/sort';
-import { isEqual } from 'lodash';
-import { BehaviorSubject, combineLatest } from 'rxjs';
-import { switchMap, debounceTime, distinctUntilChanged, tap } from 'rxjs/operators';
+import { BehaviorSubject } from 'rxjs';
 import { BaseContract } from 'src/app/contracts/shared/base/base-contract';
-import { TableFiltersEnum } from 'src/app/contracts/shared/components/grid-table/master-templates/entities/master-templates.interfaces';
-import {
-	AgreementTemplateServiceProxy,
-	CountryDto,
-} from 'src/shared/service-proxies/service-proxies';
+import { TableFiltersEnum, TemplatePayload } from 'src/app/contracts/shared/entities/contracts.interfaces';
+import { AgreementTemplateServiceProxy } from 'src/shared/service-proxies/service-proxies';
 
 @Injectable()
 export class ClientTemplatesService extends BaseContract {
 	constructor(private readonly agreementTemplateServiceProxy: AgreementTemplateServiceProxy) {
 		super();
 	}
+
 	override tableFilters$ = new BehaviorSubject<TableFiltersEnum>(<TableFiltersEnum>{
 		language: [],
 		agreementType: [],
@@ -26,42 +21,23 @@ export class ClientTemplatesService extends BaseContract {
 		lastUpdatedByLowerCaseInitials: [],
 		isEnabled: [],
 	});
-	override sendPayload$([tableFilters, sort, page, tenantIds, search]: [
-		TableFiltersEnum,
-		{
-			active: string;
-			direction: SortDirection;
-		},
-		{
-			pageIndex: number;
-			pageSize: number;
-		},
-		CountryDto[],
-		string
-	]) {
-		const filters: any = Object.entries({
-			...tableFilters,
-			tenantIds,
-		}).reduce((acc, current) => {
-			acc[current[0]] = current[1].map((item) => item.id);
-			return acc;
-		}, {} as any);
-		filters.isEnabled = this._enabledToSend(filters.isEnabled);
+
+	override sendPayload$([tableFilters, sort, page, tenantIds, search]: TemplatePayload) {
 		return this.agreementTemplateServiceProxy.list2(
 			true, //isClientTemplate
 			search, //search
-			filters.tenantIds, // tenantId []
-			filters.legalEntityIds, //legalEntities []
+			tenantIds.map((item) => item.id as number), // tenantId []
+			tableFilters.legalEntityIds.map((item) => item.id as number), //legalEntities []
 			'', // name
 			[], // client id []
-			filters.language, //  languages []
-			filters.agreementType, // agreementTypes []
-			filters.recipientTypeId, //recipientTypes [],
-			filters.contractTypeIds, //contract types,
-			filters.salesTypeIds,
-			filters.deliveryTypeIds,
-			filters.lastUpdatedByLowerCaseInitials,
-			filters.isEnabled, //isEnabled,
+			tableFilters.language.map((item) => item.id as number), //  languages []
+			tableFilters.agreementType.map((item) => item.id as number), // agreementTypes []
+			tableFilters.recipientTypeId.map((item) => item.id as number), //recipientTypes [],
+			tableFilters.contractTypeIds.map((item) => item.id as number), //contract types,
+			tableFilters.salesTypeIds.map((item) => item.id as number),
+			tableFilters.deliveryTypeIds.map((item) => item.id as number),
+			tableFilters.lastUpdatedByLowerCaseInitials.map((item) => item.id as number),
+			this._enabledToSend(tableFilters.isEnabled.map((item) => item.id as number)), //isEnabled,
 			undefined,
 			undefined,
 			page.pageIndex + 1, //pageIndex

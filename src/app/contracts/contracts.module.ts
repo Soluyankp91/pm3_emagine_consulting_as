@@ -1,6 +1,6 @@
 import { AppCommonModule } from './../shared/common/app-common.module';
 import { ContractsRoutingModule } from './contracts-routing.module';
-import { NgModule, Injector, InjectionToken } from '@angular/core';
+import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { ContractComponent } from './contract.component';
 import { AgreementsComponent } from './agreements/agreements.component';
@@ -49,11 +49,6 @@ import { FuseScrollbarModule } from './shared/directives/scroll/scrollbar.module
 import { TruncateTextCustomPipe } from './shared/pipes/truncate-text-custom.pipe';
 import { MaterialModule } from '../shared/common/material/material.module';
 import { ClientTemplatesService } from './client-specific-templates/listAndPreviews/service/client-templates.service';
-import { ComponentType } from '@angular/cdk/portal';
-import { Router } from '@angular/router';
-
-export let contractsInjector: Injector;
-export const BASE_CONTRACT = new InjectionToken('BaseConract');
 
 @NgModule({
 	declarations: [
@@ -101,25 +96,10 @@ export const BASE_CONTRACT = new InjectionToken('BaseConract');
 		MergeFieldsServiceProxy,
 		AgreementTemplateAttachmentServiceProxy,
 		CreationTitleService,
-		{
-			provide: BASE_CONTRACT,
-			useFactory: (router: Router, agreementTemplateServiceProxy: AgreementTemplateServiceProxy) => {
-				if (router.url.split('/')[3] === 'master-templates') {
-					return  new MasterTemplatesService(agreementTemplateServiceProxy)
-				}
-				return  new ClientTemplatesService(agreementTemplateServiceProxy)
-			},
-			deps: [Router, AgreementTemplateServiceProxy],
-		},
 	],
 })
 export class ContractsModule {
-	constructor(
-		iconRegistry: MatIconRegistry,
-		sanitizer: DomSanitizer,
-		private readonly injector: Injector,
-	) {
-		contractsInjector = injector;
+	constructor(iconRegistry: MatIconRegistry, sanitizer: DomSanitizer) {
 		iconRegistry.addSvgIcon('create-icon', sanitizer.bypassSecurityTrustResourceUrl('assets/common/images/create-icon.svg'));
 
 		iconRegistry.addSvgIcon(
@@ -151,6 +131,10 @@ export class ContractsModule {
 		iconRegistry.addSvgIcon(
 			'three-hor-dots',
 			sanitizer.bypassSecurityTrustResourceUrl('assets/common/images/three-hor-dots.svg')
+		);
+		iconRegistry.addSvgIcon(
+			'dropdown-icon',
+			sanitizer.bypassSecurityTrustResourceUrl('assets/common/images/dropdown-icon.svg')
 		);
 	}
 }
