@@ -45,6 +45,7 @@ import { AppComponentBase } from 'src/shared/app-component-base';
 import { CreationTitleService } from '../../../shared/services/creation-title.service';
 import { AUTOCOMPLETE_SEARCH_ITEMS_COUNT } from 'src/app/contracts/shared/components/grid-table/master-templates/entities/master-templates.constants';
 import { KeyType, MappedTableCells } from 'src/app/contracts/shared/entities/contracts.interfaces';
+import { MapFlagFromTenantId } from 'src/shared/helpers/tenantHelper';
 
 @Component({
 	selector: 'app-settings',
@@ -309,7 +310,7 @@ export class CreateMasterTemplateComponent extends AppComponentBase implements O
 				);
 				let modifiedEntities = entities.map((entity) => ({
 					...entity,
-					code: this.getCountryCodeByTenantName(entity.tenantName as string),
+					code: MapFlagFromTenantId(entity.id as number),
 				})) as (LegalEntityDto & { code: string })[];
 				this._creationTitleService.updateTenants(modifiedEntities);
 				return;

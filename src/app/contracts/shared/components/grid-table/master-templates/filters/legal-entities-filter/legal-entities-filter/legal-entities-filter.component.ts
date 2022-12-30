@@ -12,10 +12,6 @@ import { ActivatedRoute, Router } from '@angular/router';
 @Component({
 	selector: 'app-legal-entities-filter',
 	templateUrl: './legal-entities-filter.component.html',
-    providers: [{provide: MasterTemplatesService, useFactory: (router: Router) => {
-        console.log(router.url);
-        return contractsInjector.get(MasterTemplatesService);
-    }, deps: [Router]}]
 })
 export class LegalEntitiesFilterComponent implements IFilter {
 	legalEntities$ = this.contractsService.getLegalEntities$().pipe(

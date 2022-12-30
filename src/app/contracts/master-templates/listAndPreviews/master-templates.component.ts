@@ -18,6 +18,7 @@ import { ContractsService } from '../../shared/services/contracts.service';
 import { AppComponentBase } from 'src/shared/app-component-base';
 import * as moment from 'moment';
 import { MappedAgreementTemplatesListItemDto, MappedTableCells } from '../../shared/entities/contracts.interfaces';
+import { GetCountryCodeByLanguage } from '../../shared/utils/GetCountryCodeByLanguage';
 @Component({
 	selector: 'app-master-templates',
 	templateUrl: './master-templates.component.html',
@@ -117,13 +118,14 @@ export class MasterTemplatesComponent extends AppComponentBase implements OnInit
 		items: AgreementTemplatesListItemDto[],
 		maps: MappedTableCells
 	): MappedAgreementTemplatesListItemDto[] {
+        console.log(maps);
 		return items.map((item: AgreementTemplatesListItemDto) => {
 			return <MappedAgreementTemplatesListItemDto>{
 				agreementTemplateId: item.agreementTemplateId,
 				name: item.name,
 				agreementType: maps.agreementType[item.agreementType as AgreementType],
 				recipientTypeId: maps.recipientTypeId[item.recipientTypeId as number],
-				language: this.getCountryCodeByLanguage(maps.language[item.language as AgreementLanguage]),
+				language: GetCountryCodeByLanguage(maps.language[item.language as AgreementLanguage]),
 				legalEntityIds: item.legalEntityIds?.map((i) => maps.legalEntityIds[i]),
 				contractTypeIds: item.contractTypeIds?.map((i) => maps.contractTypeIds[i]),
 				salesTypeIds: item.salesTypeIds?.map((i) => maps.salesTypeIds[i]),
