@@ -2,7 +2,7 @@ import { Component, OnInit, Injector } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import * as moment from 'moment';
 import { AppComponentBase } from 'src/shared/app-component-base';
-import { AgreementLanguage, AgreementTemplatesListItemDto, AgreementType } from 'src/shared/service-proxies/service-proxies';
+import { AgreementLanguage, AgreementTemplatesListItemDto, AgreementTemplatesListItemDtoPaginatedList, AgreementType } from 'src/shared/service-proxies/service-proxies';
 import {
 	CLIENT_TEMPLATE_HEADER_CELLS,
 	DISPLAYED_COLUMNS,
@@ -10,6 +10,7 @@ import {
 import {
 	ClientMappedTemplatesListDto,
 	MappedTableCells,
+    TableFiltersEnum,
 } from '../../shared/entities/contracts.interfaces';
 import { GridHelpService } from '../../shared/services/mat-grid-service.service';
 import { combineLatest, Observable, Subject } from 'rxjs';
@@ -40,14 +41,14 @@ export class ClientSpecificTemplatesComponent extends AppComponentBase implement
 		private readonly route: ActivatedRoute,
 		private readonly router: Router,
 		private readonly _gridHelpService: GridHelpService,
-		private readonly injector: Injector,
+		private readonly _injector: Injector,
 		private readonly _clientTemplatesService: ClientTemplatesService,
 		private readonly _contractService: ContractsService
 	) {
-		super(injector);
+		super(_injector);
 	}
 
-	table$: Observable<any>;
+	table$: Observable<ITableConfig>;
 
 	dataSource$ = this._clientTemplatesService.getContracts$();
 
@@ -64,7 +65,7 @@ export class ClientSpecificTemplatesComponent extends AppComponentBase implement
 		this._clientTemplatesService.updateSort($event);
 	}
 
-	onFormControlChange($event: any) {
+	onFormControlChange($event: TableFiltersEnum) {
 		this._clientTemplatesService.updateTableFilters($event);
 	}
 
@@ -116,7 +117,7 @@ export class ClientSpecificTemplatesComponent extends AppComponentBase implement
 	}
 
 	private _subscribeOnDataLoading() {
-		this._clientTemplatesService.contractsLoading$.subscribe((isLoading) => {
+		this._clientTemplatesService.contractsLoading$$.subscribe((isLoading) => {
 			if (isLoading) {
 				this.showMainSpinner();
 				return;

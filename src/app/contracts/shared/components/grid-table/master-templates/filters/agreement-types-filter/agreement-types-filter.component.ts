@@ -25,9 +25,9 @@ export class AgreementTypesFilterComponent implements IFilter {
 
 	constructor(
 		private contractsService: ContractsService,
-		@Inject(TEMPLATE_SERVICE_TOKEN) private templatesService: ITemplatesService
+		@Inject(TEMPLATE_SERVICE_TOKEN) private _templatesService: ITemplatesService
 	) {
-		templatesService
+		_templatesService
 			.getTableFilters$()
 			.pipe(take(1), pluck(this.tableFilter))
 			.subscribe((agreementTypes) => {

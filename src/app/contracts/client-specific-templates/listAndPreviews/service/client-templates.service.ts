@@ -38,8 +38,8 @@ export class ClientTemplatesService extends BaseContract {
 			tableFilters.deliveryTypeIds.map((item) => item.id as number),
 			tableFilters.lastUpdatedByLowerCaseInitials.map((item) => item.id as number),
 			this.enabledToSend(tableFilters.isEnabled.map((item) => item.id as number)), //isEnabled,
-			undefined,
-			undefined,
+			undefined, //linkState
+			undefined, //linkStateAccepted
 			page.pageIndex + 1, //pageIndex
 			page.pageSize, //pageSize,
 			sort.direction.length ? sort.active + ' ' + sort.direction : ''

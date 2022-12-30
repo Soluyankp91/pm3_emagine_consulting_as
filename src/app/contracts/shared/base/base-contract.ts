@@ -1,8 +1,7 @@
 import { SortDirection } from '@angular/material/sort';
-import { BehaviorSubject, combineLatest, EMPTY, Observable, ReplaySubject } from 'rxjs';
+import { BehaviorSubject, combineLatest, Observable, ReplaySubject } from 'rxjs';
 import { AgreementTemplatesListItemDtoPaginatedList, CountryDto } from 'src/shared/service-proxies/service-proxies';
 import { switchMap, debounceTime, distinctUntilChanged, tap } from 'rxjs/operators';
-import { Injectable } from '@angular/core';
 import {
 	DEFAULT_SIZE_OPTION,
 	INITIAL_PAGE_INDEX,
@@ -15,9 +14,9 @@ export abstract class BaseContract {
     abstract tableFilters$: BehaviorSubject<TableFiltersEnum>;
 	abstract sendPayload$(templatePayload: TemplatePayload): Observable<AgreementTemplatesListItemDtoPaginatedList>;
 
-	contractsLoading$: ReplaySubject<boolean> = new ReplaySubject<boolean>(1);
+	contractsLoading$$: ReplaySubject<boolean> = new ReplaySubject<boolean>(1);
 
-	private _page$: BehaviorSubject<{ pageIndex: number; pageSize: number }> = new BehaviorSubject<PageDto>({
+	private _page$$: BehaviorSubject<{ pageIndex: number; pageSize: number }> = new BehaviorSubject<PageDto>({
 		pageIndex: INITIAL_PAGE_INDEX,
 		pageSize: DEFAULT_SIZE_OPTION,
 	});
@@ -37,11 +36,11 @@ export abstract class BaseContract {
 		]).pipe(
 			debounceTime(300),
 			distinctUntilChanged((previous, current) => isEqual(previous, current)),
-			tap(() => this.contractsLoading$.next(true)),
+			tap(() => this.contractsLoading$$.next(true)),
 			switchMap((combined) => {
 				return this.sendPayload$(combined);
 			}),
-			tap(() => this.contractsLoading$.next(false))
+			tap(() => this.contractsLoading$$.next(false))
 		);
 	}
 
@@ -58,7 +57,7 @@ export abstract class BaseContract {
 	}
 
 	getPage$() {
-		return this._page$.asObservable();
+		return this._page$$.asObservable();
 	}
 
 	getSearch$() {
@@ -82,7 +81,7 @@ export abstract class BaseContract {
 	}
 
 	updatePage(page: { pageIndex: number; pageSize: number }) {
-		this._page$.next(page);
+		this._page$$.next(page);
 	}
 
 	enabledToSend(enabled: number[]) {

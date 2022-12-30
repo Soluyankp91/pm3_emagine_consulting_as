@@ -11,7 +11,7 @@ export interface IHeaderCell {
     title?: string;
     filter?: {
         formControlName: string;
-        component: () => Promise<any>
+        component: () => Promise<ComponentType<any>>
     };
     width?: number;
 }

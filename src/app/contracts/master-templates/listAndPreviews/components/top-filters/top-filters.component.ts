@@ -11,23 +11,23 @@ import {
 } from 'src/app/contracts/shared/services/template-service-factory';
 
 @Component({
-	selector: 'app-master-template-filter-header',
+	selector: 'app-template-filter-header',
 	templateUrl: './top-filters.component.html',
 	styleUrls: ['./top-filters.component.scss'],
 	providers: [TEMPLATE_SERVICE_PROVIDER],
 })
 export class MasterTemplateFilterHeaderComponent implements OnInit, OnDestroy {
-	tenantFilter$ = this.contractsService.getTenants$();
-	preselectedTenants$ = this.templatesService.getTenants$();
+	tenantFilter$ = this._contractsService.getTenants$();
+	preselectedTenants$ = this._templatesService.getTenants$();
 	topFiltersFormGroup: FormGroup;
 
 	private _unSubscribe$ = new Subject<void>();
 
 	constructor(
-		@Inject(TEMPLATE_SERVICE_TOKEN) private templatesService: ITemplatesService,
-		private readonly contractsService: ContractsService,
-		private readonly router: Router,
-		private readonly route: ActivatedRoute
+		@Inject(TEMPLATE_SERVICE_TOKEN) private _templatesService: ITemplatesService,
+		private readonly _contractsService: ContractsService,
+		private readonly _router: Router,
+		private readonly _route: ActivatedRoute
 	) {}
 
 	ngOnInit() {
@@ -42,12 +42,12 @@ export class MasterTemplateFilterHeaderComponent implements OnInit, OnDestroy {
 	}
 
 	navigateTo() {
-		this.router.navigate(['create'], { relativeTo: this.route });
+		this._router.navigate(['create'], { relativeTo: this._route });
 	}
 
 	private _subscribeOnTenantChanged() {
 		this.topFiltersFormGroup.controls['tenantIds'].valueChanges.pipe(takeUntil(this._unSubscribe$)).subscribe((tenants) => {
-			this.templatesService.updateTenantFilter(tenants);
+			this._templatesService.updateTenantFilter(tenants);
 		});
 	}
 
@@ -55,7 +55,7 @@ export class MasterTemplateFilterHeaderComponent implements OnInit, OnDestroy {
 		this.topFiltersFormGroup.controls['search'].valueChanges
 			.pipe(takeUntil(this._unSubscribe$), debounceTime(600))
 			.subscribe((search) => {
-				this.templatesService.updateSearchFilter(search);
+				this._templatesService.updateSearchFilter(search);
 			});
 	}
 

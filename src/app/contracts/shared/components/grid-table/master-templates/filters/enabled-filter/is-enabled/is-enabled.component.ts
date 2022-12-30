@@ -1,4 +1,4 @@
-import { Component, OnInit, Inject, Injector } from '@angular/core';
+import { Component, Inject } from '@angular/core';
 import { FormControl } from '@angular/forms';
 import { take, pluck } from 'rxjs/operators';
 import {
@@ -30,8 +30,8 @@ export class IsEnabledComponent {
 
 	labelMap = FILTER_LABEL_MAP;
 
-	constructor(@Inject(TEMPLATE_SERVICE_TOKEN) private templatesService: ITemplatesService) {
-		templatesService
+	constructor(@Inject(TEMPLATE_SERVICE_TOKEN) private _templatesService: ITemplatesService) {
+		_templatesService
 			.getTableFilters$()
 			.pipe(take(1), pluck(this.tableFilter))
 			.subscribe((enabled) => {

@@ -30,10 +30,10 @@ export class EmployeesFilterComponent {
 
 	constructor(
 		private lookupServiceProxy: LookupServiceProxy,
-		@Inject(TEMPLATE_SERVICE_TOKEN) private templatesService: ITemplatesService
+		@Inject(TEMPLATE_SERVICE_TOKEN) private _templatesService: ITemplatesService
 	) {
 		this._initEmployees();
-		templatesService
+		_templatesService
 			.getTableFilters$()
 			.pipe(take(1), pluck(this.tableFilter))
 			.subscribe((employees) => {

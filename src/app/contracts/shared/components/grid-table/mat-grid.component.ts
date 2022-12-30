@@ -30,7 +30,6 @@ import { FILTER_LABEL_MAP, PAGE_SIZE_OPTIONS } from './master-templates/entities
 import { SelectionModel } from '@angular/cdk/collections';
 import { AppComponentBase } from 'src/shared/app-component-base';
 import { MatTableDataSource } from '@angular/material/table';
-import { Router } from '@angular/router';
 import { Actions } from '../../entities/contracts.interfaces';
 
 @Component({
@@ -87,11 +86,10 @@ export class MatGridComponent extends AppComponentBase implements OnInit, OnChan
 	private _unSubscribe$ = new Subject<void>();
 
 	constructor(
-		private readonly injector: Injector,
+		private readonly _injector: Injector,
 		private _componentFactoryResolver: ComponentFactoryResolver,
-		private readonly router: Router
 	) {
-		super(injector);
+		super(_injector);
 		this.trackByAction = this.createTrackByFn('actionType');
 		this.trackByFormControlName = this.createTrackByFn('formControl');
 	}
@@ -115,6 +113,8 @@ export class MatGridComponent extends AppComponentBase implements OnInit, OnChan
 	async ngAfterViewInit() {
 		this.cellArr = this.customCells.toArray();
 		await this.loadFilters();
+
+        //await for filters to be inited then subscribe to formControls:
 		this._subscribeOnSelectionChange();
 		this._subscribeOnFormControlChanges();
 		this._subscribeOnEachFormControl();

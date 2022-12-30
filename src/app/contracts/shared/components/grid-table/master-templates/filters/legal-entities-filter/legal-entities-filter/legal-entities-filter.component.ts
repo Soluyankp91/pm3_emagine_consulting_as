@@ -10,6 +10,7 @@ import {
 	TEMPLATE_SERVICE_PROVIDER,
 	TEMPLATE_SERVICE_TOKEN,
 } from 'src/app/contracts/shared/services/template-service-factory';
+import { Observable } from 'rxjs';
 
 @Component({
 	selector: 'app-legal-entities-filter',
@@ -17,12 +18,7 @@ import {
 	providers: [TEMPLATE_SERVICE_PROVIDER],
 })
 export class LegalEntitiesFilterComponent implements IFilter {
-	legalEntities$ = this.contractsService.getLegalEntities$().pipe(
-		withLatestFrom(this.contractsService.getEnumMap$()),
-		map(([legalEntities, maps]) =>
-			legalEntities.map((i) => <LegalEntityDto>{ ...i, name: maps.legalEntityIds[i.id as number] })
-		)
-	);
+	legalEntities$: Observable<LegalEntityDto[]>;
 	filterFormControl: FormControl;
 
 	labelMap = FILTER_LABEL_MAP;
@@ -31,9 +27,15 @@ export class LegalEntitiesFilterComponent implements IFilter {
 
 	constructor(
 		private contractsService: ContractsService,
-		@Inject(TEMPLATE_SERVICE_TOKEN) private templatesService: ITemplatesService
+		@Inject(TEMPLATE_SERVICE_TOKEN) private _templatesService: ITemplatesService
 	) {
-		templatesService
+		this.legalEntities$ = this.contractsService.getLegalEntities$().pipe(
+			withLatestFrom(this.contractsService.getEnumMap$()),
+			map(([legalEntities, maps]) =>
+				legalEntities.map((i) => <LegalEntityDto>{ ...i, name: maps.legalEntityIds[i.id as number] })
+			)
+		);
+		_templatesService
 			.getTableFilters$()
 			.pipe(take(1), pluck(this.tableFilter))
 			.subscribe((legalEntities) => {

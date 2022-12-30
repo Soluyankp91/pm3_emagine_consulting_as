@@ -1,4 +1,4 @@
-<app-master-template-filter-header> </app-master-template-filter-header>
+<app-template-filter-header> </app-template-filter-header>
 <emg-mat-grid
 	#table
 	*ngIf="table$ | async as table"
@@ -52,7 +52,7 @@
 		><p [customTooltip]="legalEntityIdsTooltip">{{ cell.legalEntityIds | truncateTextCustom : 10 }}</p>
 		<ng-template #legalEntityIdsTooltip>
 			<div class="tooltip-container">
-				<ng-container *ngFor="let legalEntity of cell.legalEntityIds; trackBy:trackById">
+				<ng-container *ngFor="let legalEntity of cell.legalEntityIds; trackBy: trackById">
 					<div class="tooltip-menu">
 						<span>{{ legalEntity }}</span>
 					</div>
@@ -65,7 +65,7 @@
 		><p [customTooltip]="salesTypeIdsTooltip">{{ cell.salesTypeIds | truncateTextCustom : 10 }}</p>
 		<ng-template #salesTypeIdsTooltip>
 			<div class="tooltip-container">
-				<ng-container *ngFor="let saleType of cell.salesTypeIds;trackBy:trackById">
+				<ng-container *ngFor="let saleType of cell.salesTypeIds; trackBy: trackById">
 					<div class="tooltip-menu">
 						<span>{{ saleType }}</span>
 					</div>
@@ -77,7 +77,7 @@
 		><p [customTooltip]="deliveryTypeIdsTooltip">{{ cell.deliveryTypeIds | truncateTextCustom : 10 }}</p>
 		<ng-template #deliveryTypeIdsTooltip>
 			<div class="tooltip-container">
-				<ng-container *ngFor="let deliveryType of cell.deliveryTypeIds;trackBy:trackById">
+				<ng-container *ngFor="let deliveryType of cell.deliveryTypeIds; trackBy: trackById">
 					<div class="tooltip-menu">
 						<span>{{ deliveryType }}</span>
 					</div>
@@ -90,7 +90,7 @@
 		><p [customTooltip]="contractTypeIdsTooltip">{{ cell.contractTypeIds | truncateTextCustom : 10 }}</p>
 		<ng-template #contractTypeIdsTooltip>
 			<div class="tooltip-container">
-				<ng-container *ngFor="let contractType of cell.contractTypeIds;trackBy:trackById">
+				<ng-container *ngFor="let contractType of cell.contractTypeIds; trackBy: trackById">
 					<div class="tooltip-menu">
 						<span>{{ contractType }}</span>
 					</div>

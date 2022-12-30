@@ -6,10 +6,6 @@
     padding: 0px 14px 14px 0px;
     max-width: 1300px;
 }
-@mixin table-cell($widthValue) {
-    min-width: $widthValue;
-    max-width: $widthValue;
-}
 .mat-cell:first-of-type {
     padding: 0px;
 }

@@ -35,7 +35,8 @@ export class MasterTemplatesComponent extends AppComponentBase implements OnInit
 
 	displayedColumns = DISPLAYED_COLUMNS;
 	actions = MASTER_TEMPLATE_ACTIONS;
-	table$: Observable<any>;
+
+	table$: Observable<ITableConfig>;
 
 	trackById: TrackByFunction<number>;
 
@@ -141,7 +142,7 @@ export class MasterTemplatesComponent extends AppComponentBase implements OnInit
 	}
 
 	private _subscribeOnDataLoading() {
-		this._masterTemplatesService.contractsLoading$.pipe(takeUntil(this._unSubscribe$)).subscribe((isLoading) => {
+		this._masterTemplatesService.contractsLoading$$.pipe(takeUntil(this._unSubscribe$)).subscribe((isLoading) => {
 			if (isLoading) {
 				this.showMainSpinner();
 				return;
