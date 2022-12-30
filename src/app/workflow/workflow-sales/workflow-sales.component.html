@@ -470,6 +470,44 @@
                                         </mat-autocomplete>
                                 </mat-form-field>
                             </div>
+                            <div fxLayout="column" fxLayoutAlign="start start" class="u-w--100 u-mb--10">
+                                <ng-container formArrayName="commissionedUsers" class="u-w--100">
+                                    <ng-container *ngFor="let user of salesMainDataForm.commissionedUsers.controls; trackBy: trackByFormArray; index as i" [formArrayName]="i">
+                                        <div fxLayout="row" fxLayoutAlign="start center" class="u-w--100">
+                                            <mat-form-field appearance="outline" class="u-w--100 formFieldNoMarginPadding filter-select u-mr--12" fxFlex="35%" [ngClass]="{'disabled-input': readOnlyMode}">
+                                                <mat-label>Commissioned user</mat-label>
+                                                <input required [disabled]="readOnlyMode" #commissionedUserInput type="text" matInput [matAutocomplete]="commissionedUserAutocomplete" formControlName="commissionedUser" appPreventDoubleClick (throttledClick)="$event.stopPropagation()" placeholder="Type something">
+                                                <mat-autocomplete #commissionedUserAutocomplete="matAutocomplete" [displayWith]="displayNameFn"
+                                                    (optionSelected)="focusOutMethod()" (opened)="focusInMethod()" (closed)="focusOutMethod()">
+                                                    <ng-container *ngFor="let employee of filteredEmployees; trackBy: trackById">
+                                                        <mat-option [value]="employee" [ngClass]="{ 'no-data': employee.id === undefined }">
+                                                            <div fxLayout="row" fxLayoutAlign="start center" class="u-w--100">
+                                                                <ng-container *ngIf="employee.id !== undefined">
+                                                                    <img class="border-rounded-50 image-settings--dropdown u-mr--5"
+                                                                        [src]="employeeProfileUrl(employee?.externalId!)" />
+                                                                </ng-container>
+                                                                <span class="autocopmlete-option-name">{{ employee.name }}</span>
+                                                            </div>
+                                                        </mat-option>
+                                                    </ng-container>
+                                                </mat-autocomplete>
+                                                <mat-error>
+                                                    <app-validator [control]="user.get('commissionedUser')"></app-validator>
+                                                </mat-error>
+                                            </mat-form-field>
+                                            <button mat-icon-button type="button" appPreventDoubleClick (throttledClick)="removeCommissionedUser(i)" class="small-icon-button u-mt--5">
+                                                <mat-icon svgIcon="dialog-close-icon"></mat-icon>
+                                            </button>
+                                        </div>
+                                    </ng-container>
+                                </ng-container>
+                                <ng-container *ngIf="!readOnlyMode">
+                                    <button class="button-add u-mt--5" mat-flat-button type="button" appPreventDoubleClick (throttledClick)="addCommissionedUser()">
+                                        <mat-icon>add</mat-icon>
+                                        Add commissioned user
+                                    </button>
+                                </ng-container>
+                            </div>
                             <div fxLayout="row" fxLayoutAlign="start start" class="u-w--100 u-mb--10">
                                 <mat-form-field appearance="outline" class="u-w--100 formFieldNoMarginPadding filter-select u-mr--12" fxFlex="35%">
                                     <mat-label>Contract expiration notification</mat-label>
@@ -2332,6 +2370,21 @@
                                                 </mat-form-field>
                                             </div>
                                         </ng-container>
+                                        <div fxLayout="row" fxLayoutAlign="start start" class="u-w--100 u-mb--10">
+                                            <mat-form-field appearance="outline" class="u-w--100 formFieldNoMarginPadding textarea-input u-mr--12" fxFlex="0 0 calc(79% + 24px)" [ngClass]="{'disabled-input': readOnlyMode}">
+                                                <mat-label>Special Payment Terms</mat-label>
+                                                <textarea [disabled]="readOnlyMode" [required]="consultant.value?.employmentType?.id !== employmentTypesEnum.FeeOnly && consultant.value?.employmentType?.id !== employmentTypesEnum.Recruitment" matInput autocomplete="new-password" name="specialPaymentTerms" formControlName="specialPaymentTerms" [cdkTextareaAutosize]="true" [cdkAutosizeMinRows]="2">
+                                                </textarea>
+                                                <mat-error>
+                                                    <app-validator [control]="consultant.get('specialPaymentTerms')"></app-validator>
+                                                </mat-error>
+                                            </mat-form-field>
+                                            <ng-container *ngIf="!readOnlyMode || consultant.get('noSpecialPaymentTerms')?.value">
+                                                <mat-checkbox [disabled]="readOnlyMode" color="accent" formControlName="noSpecialPaymentTerms" name="noSpecialPaymentTerms" class="black-checkbox u-mt--8" (change)="disableOrEnableInput(consultant?.value?.noSpecialPaymentTerms, consultant?.get('specialPaymentTerms'))">
+                                                    None
+                                                </mat-checkbox>
+                                            </ng-container>
+                                        </div>
                                     </div>
                                 </div>
 

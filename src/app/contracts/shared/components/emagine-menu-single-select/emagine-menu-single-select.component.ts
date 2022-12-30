@@ -2,7 +2,6 @@ import { cloneDeep, isArray, isEqual } from 'lodash';
 import { ControlValueAccessor, NG_VALUE_ACCESSOR } from '@angular/forms';
 import {
     Component,
-    OnInit,
     Input,
     ViewChild,
     ViewEncapsulation,
@@ -34,7 +33,7 @@ type IDropdownItem = object & { [key: string]: any; selected?: boolean };
     ],
 })
 export class MatMenuSingleSelectComponent
-    implements OnInit, ControlValueAccessor
+    implements ControlValueAccessor
 {
     @Input() idProperty: string | number = 'id';
     @Input() label: string;
@@ -56,8 +55,6 @@ export class MatMenuSingleSelectComponent
     selectedItem: IDropdownItem | null = null;
 
     private options_: IDropdownItem[];
-
-    ngOnInit(): void {}
 
     registerOnChange(fn: any): void {
         this.onChange = fn;

@@ -15,6 +15,7 @@ export class WorkflowSalesMainForm extends UntypedFormGroup {
             discounts: new UntypedFormControl(null),
 
             commissions: new UntypedFormArray([]),
+            commissionedUsers: new UntypedFormArray([]),
 
             salesAccountManagerIdValue: new UntypedFormControl(null, [Validators.required, CustomValidators.autocompleteValidator(['id'])]),
             commissionAccountManagerIdValue: new UntypedFormControl(null),
@@ -52,6 +53,9 @@ export class WorkflowSalesMainForm extends UntypedFormGroup {
     }
     get commissions() {
         return this.get('commissions') as UntypedFormArray;
+    }
+    get commissionedUsers() {
+        return this.get('commissionedUsers') as UntypedFormArray;
     }
     get salesAccountManagerIdValue () {
         return this.get('salesAccountManagerIdValue');
@@ -318,44 +322,44 @@ export class SalesTerminateConsultantForm extends UntypedFormGroup {
 }
 
 export const TenantList = [
-    {
-        id: 1,
-        name: "Denmark",
-        code: 'DK'
-    },
-    {
-        id: 27,
-        name: "France",
-        code: 'FR'
-    },
-    {
-        id: 10,
-        name: "Germany",
-        code: 'DE'
-    },
-    {
-        id: 25,
-        name: "International",
-        code: 'EU'
-    },
-    {
-        id: 8,
-        name: "Netherlands",
-        code: 'NL'
-    },
-    {
-        id: 17,
-        name: "Norway",
-        code: 'NO'
-    },
-    {
-        id: 4,
-        name: "Poland",
-        code: 'PL'
-    },
-    {
-        id: 2,
-        name: "Sweden",
-        code: 'SE'
-    }
+	{
+		id: 1,
+		name: 'Denmark',
+		code: 'DK',
+	},
+	{
+		id: 27,
+		name: 'France',
+		code: 'FR',
+	},
+	{
+		id: 10,
+		name: 'Germany',
+		code: 'DE',
+	},
+	{
+		id: 25,
+		name: 'International',
+		code: 'EU',
+	},
+	{
+		id: 8,
+		name: 'Netherlands',
+		code: 'NL',
+	},
+	{
+		id: 17,
+		name: 'Norway',
+		code: 'NO',
+	},
+	{
+		id: 4,
+		name: 'Poland',
+		code: 'PL',
+	},
+	{
+		id: 2,
+		name: 'Sweden',
+		code: 'SE',
+	},
 ];

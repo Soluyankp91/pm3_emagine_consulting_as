@@ -1,7 +1,7 @@
 <div [formGroup]="topFiltersFormGroup" class="top-filters">
     <div class="left-panel">
-        <div class="country-filter" *ngIf="countryFilter$ | async as countries">
-            <emg-multi-select [options]="countries" formControlName="tenantIds">
+        <div class="country-filter" *ngIf="countryFilter$ | async as tenants">
+            <emg-multi-select [options]="tenants" formControlName="tenantIds">
                 <mat-icon
                     svgIcon="euro-union-icon"
                     class="country-filter-icon"
@@ -12,7 +12,7 @@
                 <ng-template #optionPrefix let-option>
                     <span
                         matPrefix
-                        class="fi fi-{{ option.code | lowercase }}"></span>
+                        class="fi fi-{{ option.code | lowercase }} flag"></span>
                 </ng-template>
             </emg-multi-select>
         </div>
@@ -20,8 +20,8 @@
     </div>
     <div class="right-panel">
         <div class="search-block">
-            <mat-form-field appearance="fill">
-                <mat-label>Search text</mat-label>
+            <mat-form-field appearance="outline">
+                <mat-label>Search</mat-label>
                 <input matInput formControlName="search" placeholder="search" />
             </mat-form-field>
         </div>
