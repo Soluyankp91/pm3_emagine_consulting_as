@@ -7,6 +7,7 @@ import {
 	MASTER_TEMPLATE_ACTIONS,
 	MASTER_TEMPLATE_HEADER_CELLS,
 } from '../../shared/components/grid-table/master-templates/entities/master-templates.constants';
+import { GetCountryCodeByLanguage } from 'src/shared/helpers/tenantHelper';
 import { Sort } from '@angular/material/sort';
 import { PageEvent } from '@angular/material/paginator';
 import { TableFiltersEnum } from '../../shared/components/grid-table/master-templates/entities/master-templates.interfaces';
@@ -18,7 +19,6 @@ import { ContractsService } from '../../shared/services/contracts.service';
 import { AppComponentBase } from 'src/shared/app-component-base';
 import * as moment from 'moment';
 import { MappedAgreementTemplatesListItemDto, MappedTableCells } from '../../shared/entities/contracts.interfaces';
-import { GetCountryCodeByLanguage } from '../../shared/utils/GetCountryCodeByLanguage';
 @Component({
 	selector: 'app-master-templates',
 	templateUrl: './master-templates.component.html',
@@ -118,7 +118,6 @@ export class MasterTemplatesComponent extends AppComponentBase implements OnInit
 		items: AgreementTemplatesListItemDto[],
 		maps: MappedTableCells
 	): MappedAgreementTemplatesListItemDto[] {
-        console.log(maps);
 		return items.map((item: AgreementTemplatesListItemDto) => {
 			return <MappedAgreementTemplatesListItemDto>{
 				agreementTemplateId: item.agreementTemplateId,

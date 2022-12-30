@@ -44,7 +44,7 @@ import { FileUpload } from 'src/app/contracts/shared/components/file-uploader/fi
 import { AppComponentBase } from 'src/shared/app-component-base';
 import { CreationTitleService } from '../../../shared/services/creation-title.service';
 import { AUTOCOMPLETE_SEARCH_ITEMS_COUNT } from 'src/app/contracts/shared/components/grid-table/master-templates/entities/master-templates.constants';
-import { KeyType, MappedTableCells } from 'src/app/contracts/shared/entities/contracts.interfaces';
+import { MappedTableCells } from 'src/app/contracts/shared/entities/contracts.interfaces';
 import { MapFlagFromTenantId } from 'src/shared/helpers/tenantHelper';
 
 @Component({

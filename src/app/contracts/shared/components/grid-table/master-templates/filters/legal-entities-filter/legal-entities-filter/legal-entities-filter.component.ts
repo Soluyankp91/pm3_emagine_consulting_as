@@ -6,8 +6,6 @@ import { ContractsService } from 'src/app/contracts/shared/services/contracts.se
 import { MasterTemplatesService } from 'src/app/contracts/master-templates/listAndPreviews/services/master-templates.service';
 import { FILTER_LABEL_MAP } from '../../../entities/master-templates.constants';
 import { LegalEntityDto } from 'src/shared/service-proxies/service-proxies';
-import { contractsInjector } from 'src/app/contracts/contracts.module';
-import { ActivatedRoute, Router } from '@angular/router';
 
 @Component({
 	selector: 'app-legal-entities-filter',

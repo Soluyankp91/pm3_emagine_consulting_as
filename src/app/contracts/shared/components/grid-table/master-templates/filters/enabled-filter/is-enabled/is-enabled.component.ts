@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component } from '@angular/core';
 import { FormControl } from '@angular/forms';
 import { take, pluck } from 'rxjs/operators';
 import { MasterTemplatesService } from 'src/app/contracts/master-templates/listAndPreviews/services/master-templates.service';
@@ -8,7 +8,7 @@ import { FILTER_LABEL_MAP } from '../../../entities/master-templates.constants';
 	selector: 'app-is-enabled',
 	templateUrl: './is-enabled.component.html',
 })
-export class IsEnabledComponent implements OnInit {
+export class IsEnabledComponent {
 	options = [
 		{
 			id: 1,
@@ -33,6 +33,4 @@ export class IsEnabledComponent implements OnInit {
 				this.filterFormControl = new FormControl(enabled);
 			});
 	}
-
-	ngOnInit(): void {}
 }

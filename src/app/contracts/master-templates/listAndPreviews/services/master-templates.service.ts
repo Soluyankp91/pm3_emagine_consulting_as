@@ -14,8 +14,8 @@ export class MasterTemplatesService extends BaseContract<TableFiltersEnum> {
 	constructor(private readonly _agreementTemplateServiceProxy: AgreementTemplateServiceProxy) {
 		super();
 	}
-    tableFilters$ = new BehaviorSubject<TableFiltersEnum>(<TableFiltersEnum>{
-        language: [],
+	tableFilters$ = new BehaviorSubject<TableFiltersEnum>(<TableFiltersEnum>{
+		language: [],
 		agreementType: [],
 		recipientTypeId: [],
 		legalEntityIds: [],
@@ -24,7 +24,7 @@ export class MasterTemplatesService extends BaseContract<TableFiltersEnum> {
 		contractTypeIds: [],
 		lastUpdatedByLowerCaseInitials: [],
 		isEnabled: [],
-    })
+	});
 	getContracts$(): Observable<AgreementTemplatesListItemDtoPaginatedList> {
 		return combineLatest([
 			this.getTableFilters$(),
@@ -44,7 +44,7 @@ export class MasterTemplatesService extends BaseContract<TableFiltersEnum> {
 					acc[current[0]] = current[1].map((item) => item.id);
 					return acc;
 				}, {} as any);
-				filters.isEnabled = this._enabledToSend(filters.isEnabled);
+				filters.isEnabled = this.enabledToSend(filters.isEnabled);
 				return this._agreementTemplateServiceProxy.list2(
 					false, //isClientTemplate
 					search, //search

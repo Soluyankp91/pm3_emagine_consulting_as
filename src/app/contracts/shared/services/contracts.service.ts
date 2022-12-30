@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
 import { ReplaySubject, forkJoin, combineLatest } from 'rxjs';
 import { map, tap } from 'rxjs/operators';
-import { MapFlagFromTenantId } from 'src/shared/helpers/tenantHelper';
+import { MapFlagFromTenantId, GetCountryCodeByLanguage } from 'src/shared/helpers/tenantHelper';
 import {
 	EmployeeDto,
 	EnumEntityTypeDto,
@@ -10,7 +10,6 @@ import {
 	LookupServiceProxy,
 } from 'src/shared/service-proxies/service-proxies';
 import { BaseEnumDto, KeyType, MappedTableCells } from '../entities/contracts.interfaces';
-import { GetCountryCodeByLanguage } from '../utils/GetCountryCodeByLanguage';
 
 @Injectable()
 export class ContractsService {

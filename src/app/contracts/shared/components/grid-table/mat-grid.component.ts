@@ -81,12 +81,14 @@ export class MatGridComponent extends AppComponentBase implements OnInit, OnChan
 	selectionModel = new SelectionModel<any>(this.allowMultiSelect, this.initialSelection);
 
 	trackByAction: TrackByFunction<Actions>;
+    trackByFormControlName: TrackByFunction<string>;
 
 	private _unSubscribe$ = new Subject<void>();
 
 	constructor(private readonly injector: Injector, private _componentFactoryResolver: ComponentFactoryResolver) {
 		super(injector);
 		this.trackByAction = this.createTrackByFn('actionType');
+        this.trackByFormControlName = this.createTrackByFn('formControl')
 	}
 
 	ngOnInit(): void {
