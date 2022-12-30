@@ -755,6 +755,31 @@
                                             <span class="workflow-section--number">
                                                 {{contractClientForm.clientTimeReportingCapId?.value?.id === clientTimeReportingCaps.IndividualCap ? '4' : '3'}}
                                             </span>
+                                            <h2 class="workflow-section--header">Consultant payment</h2>
+                                        </div>
+                                        <div class="workflow-section--content">
+                                            <div fxLayout="row" fxLayoutAlign="start center" class="u-w--100 u-mb--10">
+                                                <mat-form-field appearance="outline" class="u-w--100 formFieldNoMarginPadding textarea-input u-mr--12" fxFlex="0 0 calc(79% + 24px)" [ngClass]="{'disabled-input': readOnlyMode}">
+                                                    <mat-label>Consultant Special Contract Terms</mat-label>
+                                                    <textarea [disabled]="readOnlyMode" required matInput autocomplete="new-password" name="specialPaymentTerms" formControlName="specialPaymentTerms" [cdkTextareaAutosize]="true" [cdkAutosizeMinRows]="2">
+                                                    </textarea>
+                                                    <mat-error>
+                                                        <app-validator [control]="consultant.get('specialPaymentTerms')"></app-validator>
+                                                    </mat-error>
+                                                </mat-form-field>
+                                                <ng-container *ngIf="!readOnlyMode || consultant.get('noSpecialPaymentTerms')?.value">
+                                                    <mat-checkbox [disabled]="readOnlyMode" color="accent" formControlName="noSpecialPaymentTerms" name="noSpecialPaymentTerms" class="black-checkbox u-mt--8" (change)="disableOrEnableInput(consultant?.value?.noSpecialPaymentTerms, consultant?.get('specialPaymentTerms'))">
+                                                        None
+                                                    </mat-checkbox>
+                                                </ng-container>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div fxLayout="column" fxLayoutAlign="start start" class="u-w--100">
+                                        <div fxLayout="row" fxLayoutAlign="start center" class="u-mt--16 u-mb--16">
+                                            <span class="workflow-section--number">
+                                                {{contractClientForm.clientTimeReportingCapId?.value?.id === clientTimeReportingCaps.IndividualCap ? '5' : '4'}}
+                                            </span>
                                             <h2 class="workflow-section--header">Consultant rates and fees</h2>
                                         </div>
                                         <div class="workflow-section--content">
@@ -1161,7 +1186,7 @@
                                     <div fxLayout="column" fxLayoutAlign="start start" class="u-w--100">
                                         <div fxLayout="row" fxLayoutAlign="start center" class="u-mt--16 u-mb--16">
                                             <span class="workflow-section--number">
-                                                {{contractClientForm.clientTimeReportingCapId?.value?.id === clientTimeReportingCaps.IndividualCap ? '4' : '3'}}
+                                                {{contractClientForm.clientTimeReportingCapId?.value?.id === clientTimeReportingCaps.IndividualCap ? '6' : '5'}}
                                             </span>
                                             <h2 class="workflow-section--header">Project lines</h2>
                                         </div>
