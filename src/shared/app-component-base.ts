@@ -110,7 +110,7 @@ export abstract class AppComponentBase {
             case 'Norway':
                 return 'NO';
             case 'Poland':
-                return 'PL';            
+                return 'PL';
 			case 'Sweden':
 				return 'SE';
 			default:
@@ -203,6 +203,10 @@ export abstract class AppComponentBase {
 	documentsTrackBy(index: number, item: ContractDocumentInfoDto) {
 		return item.documentStorageGuid;
 	}
+
+    trackByFormArray(item: any) {
+        return item;
+    }
 
 	displayConsultantNameFn(option: any) {
 		return option?.consultant?.name;

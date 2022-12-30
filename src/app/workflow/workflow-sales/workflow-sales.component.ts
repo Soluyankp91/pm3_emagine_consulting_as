@@ -22,6 +22,7 @@ import {
     debounceTime,
     finalize,
     map,
+    startWith,
     switchMap,
     takeUntil,
 } from 'rxjs/operators';
@@ -152,7 +153,7 @@ export class WorkflowSalesComponent extends AppComponentBase implements OnInit, 
             name: 'Fixed',
         })
     );
-
+    filteredEmployees: EmployeeDto[] = []
     filteredAccountManagers: any[] = [];
     filteredSalesAccountManagers: any[] = [];
     filteredCommisionAccountManagers: any[] = [];
@@ -2123,6 +2124,17 @@ export class WorkflowSalesComponent extends AppComponentBase implements OnInit, 
                 }
             );
         }
+        input.salesMainData!.commissionedEmployeesIdValues = [];
+        input.salesMainData!.commissionedEmployeesData = new Array<EmployeeDto>();
+        if (this.salesMainDataForm.commissionedUsers.value?.length) {
+            this.salesMainDataForm.commissionedUsers.value.forEach((form: any) => {
+                const user: EmployeeDto = form.commissionedUser;
+                if (user.id) {
+                    input.salesMainData!.commissionedEmployeesIdValues?.push(user.id);
+                    input.salesMainData!.commissionedEmployeesData?.push(user);
+                }
+            })
+        }
 
         input.salesClientData.differentEndClient =
             this.salesClientDataForm.differentEndClient?.value;
@@ -2477,6 +2489,11 @@ export class WorkflowSalesComponent extends AppComponentBase implements OnInit, 
                         this.addCommission(false, commission);
                     }
                 );
+                result.salesMainData?.commissionedEmployeesData?.forEach(
+                    (employee: EmployeeDto) => {
+                        this.addCommissionedUser(employee);
+                    }
+                )
                 this.salesMainDataForm.discounts?.setValue(
                     this.findItemById(
                         this.discounts,
@@ -3093,6 +3110,53 @@ export class WorkflowSalesComponent extends AppComponentBase implements OnInit, 
 
     //#endregion commissions form array
 
+    //#region commissionedUsers form array
+    addCommissionedUser(employee?: EmployeeDto) {
+        const form = this._fb.group({
+           commissionedUser: new UntypedFormControl(employee?.id ? employee : '', CustomValidators.autocompleteValidator(['id']))
+        });
+        this.salesMainDataForm.commissionedUsers.push(form);
+        this.manageCommissionedUserAutocomplete(this.salesMainDataForm.commissionedUsers.length - 1);
+    }
+
+    manageCommissionedUserAutocomplete(index: number) {
+        let arrayControl = this.commissionedUsers.at(index);
+        arrayControl!.get('commissionedUser')!.valueChanges
+            .pipe(
+                takeUntil(this._unsubscribe),
+                debounceTime(300),
+                startWith({ nameFilter: '', showAll: true, idsToExclude: [] }),
+                switchMap((value: any) => {
+                    let toSend = {
+                        name: value,
+                        showAll: true,
+                        idsToExclude: this.commissionedUsers.value.map((x: any) => x?.commissionedUser?.id).filter((item: number) => item !== null && item !== undefined)
+                    };
+                    if (value?.id) {
+                        toSend.name = value.id
+                            ? value.clientName
+                            : value;
+                    }
+                    return this._lookupService.employees(toSend.name, toSend.showAll, toSend.idsToExclude);
+                }),
+            ).subscribe((list: EmployeeDto[]) => {
+                if (list.length) {
+                    this.filteredEmployees = list;
+                } else {
+                    this.filteredEmployees = [new EmployeeDto({ name: 'No records found', externalId: '', id: undefined })];
+                }
+            });
+    }
+
+    removeCommissionedUser(index: number) {
+        this.commissionedUsers.removeAt(index);
+    }
+
+    get commissionedUsers() {
+        return this.salesMainDataForm.commissionedUsers as UntypedFormArray;
+    }
+    //#endregion commissionedUsers form array
+
     //#region termination
 
     getWorkflowSalesStepConsultantTermination(consultant: ConsultantResultDto) {
@@ -3603,6 +3667,7 @@ export class WorkflowSalesComponent extends AppComponentBase implements OnInit, 
 
     resetForms() {
         this.salesMainDataForm.reset('', { emitEvent: false });
+        this.salesMainDataForm.commissionedUsers.controls = [];
         this.salesClientDataForm.clientRates.controls = [];
         this.salesClientDataForm.clientFees.controls = [];
         this.salesClientDataForm.contractSigners.controls = [];
