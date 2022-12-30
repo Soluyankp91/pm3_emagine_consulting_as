@@ -1393,7 +1393,8 @@ export class WorkflowSalesComponent extends AppComponentBase implements OnInit, 
             specialRates: new UntypedFormArray([]),
             consultantSpecialFeeFilter: new UntypedFormControl(''),
             specialFees: new UntypedFormArray([]),
-
+            noSpecialPaymentTerms: new UntypedFormControl(consultant?.noSpecialPaymentTerms),
+            specialPaymentTerms: new UntypedFormControl({value: consultant?.specialPaymentTerms ?? null, disabled: consultant?.noSpecialPaymentTerms}),
             consultantSpecialContractTermsNone: new UntypedFormControl(consultant?.noSpecialContractTerms ?? false),
             consultantSpecialContractTerms: new UntypedFormControl({value: consultant?.specialContractTerms ?? null, disabled: consultant?.noSpecialContractTerms}),
 
@@ -2257,47 +2258,47 @@ export class WorkflowSalesComponent extends AppComponentBase implements OnInit, 
                     consultantInput.consultant.city = consultant.consultantName?.consultant?.city;
                     consultantInput.consultant.countryId = consultant.consultantName?.consultant?.contryId;
 
-                        consultantInput.requestId =
-                            consultant.consultantName?.consultant?.sourcingRequestId;
+                    consultantInput.requestId =
+                        consultant.consultantName?.consultant?.sourcingRequestId;
 
-                        consultantInput.durationSameAsClientPeriod =
-                            consultant.consultantProjectDurationSameAsClient;
-                        consultantInput.startDate =
-                            consultant.consultantProjectStartDate;
-                        consultantInput.noEndDate =
-                            consultant.consultantProjectNoEndDate;
-                        consultantInput.endDate =
-                            consultant.consultantProjectEndDate;
+                    consultantInput.durationSameAsClientPeriod =
+                        consultant.consultantProjectDurationSameAsClient;
+                    consultantInput.startDate =
+                        consultant.consultantProjectStartDate;
+                    consultantInput.noEndDate =
+                        consultant.consultantProjectNoEndDate;
+                    consultantInput.endDate =
+                        consultant.consultantProjectEndDate;
 
-                        consultantInput.isOnsiteWorkplace =
-                            consultant.consultantIsOnsiteWorkplace;
-                        consultantInput.onsiteClientId =
-                            consultant.consultantWorkplaceClientAddress?.clientId;
-                        consultantInput.percentageOnSite =
-                            consultant.consultantWorkplacePercentageOnSite;
+                    consultantInput.isOnsiteWorkplace =
+                        consultant.consultantIsOnsiteWorkplace;
+                    consultantInput.onsiteClientId =
+                        consultant.consultantWorkplaceClientAddress?.clientId;
+                    consultantInput.percentageOnSite =
+                        consultant.consultantWorkplacePercentageOnSite;
 
-                        consultantInput.isEmagineOfficeWorkplace =
-                            consultant.consultantIsEmagineOfficeWorkplace;
-                        consultantInput.emagineOfficeId =
-                            consultant.consultantWorkplaceEmagineOffice?.id;
+                    consultantInput.isEmagineOfficeWorkplace =
+                        consultant.consultantIsEmagineOfficeWorkplace;
+                    consultantInput.emagineOfficeId =
+                        consultant.consultantWorkplaceEmagineOffice?.id;
 
-                        consultantInput.isRemoteWorkplace =
-                            consultant.consultantIsRemoteWorkplace;
-                        consultantInput.remoteAddressCountryId =
-                            consultant.consultantWorkplaceRemote?.id;
+                    consultantInput.isRemoteWorkplace =
+                        consultant.consultantIsRemoteWorkplace;
+                    consultantInput.remoteAddressCountryId =
+                        consultant.consultantWorkplaceRemote?.id;
 
-                        consultantInput.noExpectedWorkload =
-                            consultant.noExpectedWorkload;
-                        consultantInput.expectedWorkloadHours =
-                            consultant.expectedWorkloadHours;
-                        consultantInput.expectedWorkloadUnitId =
-                            consultant.expectedWorkloadUnitId?.id;
-                        consultantInput.consultantTimeReportingCapId =
-                            consultant.consultantCapOnTimeReporting?.id;
-                        consultantInput.consultantTimeReportingCapMaxValue =
-                            consultant.consultantTimeReportingCapMaxValue;
-                        consultantInput.pdcPaymentEntityId =
-                            consultant.consultantProdataEntity?.id;
+                    consultantInput.noExpectedWorkload =
+                        consultant.noExpectedWorkload;
+                    consultantInput.expectedWorkloadHours =
+                        consultant.expectedWorkloadHours;
+                    consultantInput.expectedWorkloadUnitId =
+                        consultant.expectedWorkloadUnitId?.id;
+                    consultantInput.consultantTimeReportingCapId =
+                        consultant.consultantCapOnTimeReporting?.id;
+                    consultantInput.consultantTimeReportingCapMaxValue =
+                        consultant.consultantTimeReportingCapMaxValue;
+                    consultantInput.pdcPaymentEntityId =
+                        consultant.consultantProdataEntity?.id;
 
                     consultantInput.consultantRate = new ConsultantRateDto();
                     consultantInput.consultantRate.isTimeBasedRate = consultant.consultantPaymentType?.id === 1; // 1: 'Time based';
@@ -2372,7 +2373,8 @@ export class WorkflowSalesComponent extends AppComponentBase implements OnInit, 
                         } else {
                             consultantInput.noSpecialFee = true;
                         }
-
+                        consultantInput.specialPaymentTerms = consultant.specialPaymentTerms;
+                        consultantInput.noSpecialPaymentTerms = consultant.noSpecialPaymentTerms;
                         consultantInput.noSpecialContractTerms =
                             consultant.consultantSpecialContractTermsNone;
                         consultantInput.specialContractTerms =
@@ -3560,7 +3562,8 @@ export class WorkflowSalesComponent extends AppComponentBase implements OnInit, 
             } else {
                 consultantInput.noSpecialFee = true;
             }
-
+            consultantInput.specialPaymentTerms = consultant.specialPaymentTerms;
+            consultantInput.noSpecialPaymentTerms = consultant.noSpecialPaymentTerms;
             consultantInput.noSpecialContractTerms =
                 consultant.consultantSpecialContractTermsNone;
             consultantInput.specialContractTerms =
