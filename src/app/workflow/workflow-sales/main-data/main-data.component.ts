@@ -158,21 +158,10 @@ export class MainDataComponent extends AppComponentBase implements OnInit, OnDes
     private _getEnums() {
         forkJoin({
             currencies: this._internalLookupService.getCurrencies(),
-            // rateUnitTypes: this._internalLookupService.getCurrencies(),
             deliveryTypes: this._internalLookupService.getDeliveryTypes(),
             saleTypes: this._internalLookupService.getSaleTypes(),
             projectTypes: this._internalLookupService.getProjectTypes(),
-            invoicingTimes: this._internalLookupService.getInvoicingTimes(),
-            invoiceFrequencies: this._internalLookupService.getInvoiceFrequencies(),
-            signerRoles: this._internalLookupService.getSignerRoles(),
-            emagineOffices: this._internalLookupService.getEmagineOfficeList(),
             margins: this._internalLookupService.getMargins(),
-            clientExtensionDeadlines: this._internalLookupService.getExtensionDeadlines(),
-            clientExtensionDurations: this._internalLookupService.getExtensionDurations(),
-            clientSpecialFeeFrequencies: this._internalLookupService.getSpecialFeeFrequencies(),
-            clientSpecialFeeSpecifications: this._internalLookupService.getSpecialFeeSpecifications(),
-            clientSpecialRateReportUnits: this._internalLookupService.getSpecialRateReportUnits(),
-            clientSpecialRateSpecifications: this._internalLookupService.getSpecialRateSpecifications(),
             contractExpirationNotificationDuration: this._internalLookupService.getContractExpirationNotificationInterval(),
             clientTimeReportingCap: this._internalLookupService.getClientTimeReportingCap(),
             commissionFrequencies: this._internalLookupService.getCommissionFrequency(),
@@ -181,12 +170,6 @@ export class MainDataComponent extends AppComponentBase implements OnInit, OnDes
             legalEntities: this._internalLookupService.getLegalEntities(),
             projectCategories: this._internalLookupService.getProjectCategory(),
             discounts: this._internalLookupService.getDiscounts(),
-            nonStandartTerminationTimes: this._internalLookupService.getTerminationTimes(),
-            terminationReasons: this._internalLookupService.getTerminationReasons(),
-            expectedWorkloadUnits: this._internalLookupService.getExpectedWorkloadUnit(),
-            employmentTypes: this._internalLookupService.getEmploymentTypes(),
-            countries: this._internalLookupService.getCountries(),
-            consultantTimeReportingCapList: this._internalLookupService.getConsultantTimeReportingCap()
         })
         .subscribe(result => {
             this.currencies = result.currencies;
@@ -201,24 +184,6 @@ export class MainDataComponent extends AppComponentBase implements OnInit, OnDes
             this.legalEntities = result.legalEntities;
             this.projectCategories = result.projectCategories;
             this.discounts = result.discounts;
-            // this.rateUnitTypes = result.rateUnitTypes;
-            // this.invoicingTimes = result.invoicingTimes;
-            // this.invoiceFrequencies = result.invoiceFrequencies;
-            // this.signerRoles = result.signerRoles;
-            // this.emagineOffices = result.emagineOffices;
-            // this.clientExtensionDeadlines = result.clientExtensionDeadlines;
-            // this.clientExtensionDurations = result.clientExtensionDurations;
-            // this.clientSpecialFeeFrequencies = result.clientSpecialFeeFrequencies;
-            // this.clientSpecialFeeSpecifications = result.clientSpecialFeeSpecifications;
-            // this.clientSpecialRateReportUnits = result.clientSpecialRateReportUnits;
-            // this.clientSpecialRateSpecifications = result.clientSpecialRateSpecifications;
-            // this.clientTimeReportingCap = result.clientTimeReportingCap;
-            // this.nonStandartTerminationTimes = result.nonStandartTerminationTimes;
-            // this.terminationReasons = result.terminationReasons;
-            // this.expectedWorkloadUnits = result.expectedWorkloadUnits;
-            // this.employmentTypes = result.employmentTypes;
-            // this.countries = result.countries;
-            // this.consultantTimeReportingCapList = result.consultantTimeReportingCapList;
         });
     }
 
