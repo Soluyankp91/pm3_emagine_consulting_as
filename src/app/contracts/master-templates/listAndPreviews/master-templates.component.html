@@ -12,15 +12,13 @@
 	(pageChange)="onPageChange($event)"
 	(tableRow)="onSelectTableRow($event)"
 	(onAction)="onAction($event)">
-
-
 	<ng-template let-cell="element" #customCells>
 		<span class="fi fi-{{ cell.language | lowercase }} country-icon"></span>
 	</ng-template>
 
 	<ng-template let-cell="element" #customCells>
 		<p [customTooltip]="agreementTemplateIdTooltip">
-			{{ cell.agreementTemplateId | truncateTextCustom : [7] }}
+			{{ cell.agreementTemplateId | truncateTextCustom : 7 }}
 		</p>
 		<ng-template #agreementTemplateIdTooltip>
 			<div class="tooltip-container">
@@ -31,7 +29,7 @@
 
 	<ng-template let-cell="element" #customCells>
 		<p [customTooltip]="nameTooltip">
-			{{ cell.name | truncateTextCustom : [30] }}
+			{{ cell.name | truncateTextCustom : 30 }}
 		</p>
 		<ng-template #nameTooltip>
 			<div class="tooltip-container">{{ cell.name }}</div>
@@ -51,10 +49,10 @@
 	>
 
 	<ng-template let-cell="element" #customCells
-		><p [customTooltip]="legalEntityIdsTooltip">{{ cell.legalEntityIds | truncateTextCustom : [10] }}</p>
+		><p [customTooltip]="legalEntityIdsTooltip">{{ cell.legalEntityIds | truncateTextCustom : 10 }}</p>
 		<ng-template #legalEntityIdsTooltip>
 			<div class="tooltip-container">
-				<ng-container *ngFor="let legalEntity of cell.legalEntityIds">
+				<ng-container *ngFor="let legalEntity of cell.legalEntityIds; trackBy:trackById">
 					<div class="tooltip-menu">
 						<span>{{ legalEntity }}</span>
 					</div>
@@ -64,10 +62,10 @@
 	</ng-template>
 
 	<ng-template let-cell="element" #customCells
-		><p [customTooltip]="salesTypeIdsTooltip">{{ cell.salesTypeIds | truncateTextCustom : [10] }}</p>
+		><p [customTooltip]="salesTypeIdsTooltip">{{ cell.salesTypeIds | truncateTextCustom : 10 }}</p>
 		<ng-template #salesTypeIdsTooltip>
 			<div class="tooltip-container">
-				<ng-container *ngFor="let saleType of cell.salesTypeIds">
+				<ng-container *ngFor="let saleType of cell.salesTypeIds;trackBy:trackById">
 					<div class="tooltip-menu">
 						<span>{{ saleType }}</span>
 					</div>
@@ -76,10 +74,10 @@
 		</ng-template></ng-template
 	>
 	<ng-template let-cell="element" #customCells
-		><p [customTooltip]="deliveryTypeIdsTooltip">{{ cell.deliveryTypeIds | truncateTextCustom : [10] }}</p>
+		><p [customTooltip]="deliveryTypeIdsTooltip">{{ cell.deliveryTypeIds | truncateTextCustom : 10 }}</p>
 		<ng-template #deliveryTypeIdsTooltip>
 			<div class="tooltip-container">
-				<ng-container *ngFor="let deliveryType of cell.deliveryTypeIds">
+				<ng-container *ngFor="let deliveryType of cell.deliveryTypeIds;trackBy:trackById">
 					<div class="tooltip-menu">
 						<span>{{ deliveryType }}</span>
 					</div>
@@ -89,10 +87,10 @@
 	</ng-template>
 
 	<ng-template let-cell="element" #customCells
-		><p [customTooltip]="contractTypeIdsTooltip">{{ cell.contractTypeIds | truncateTextCustom : [10] }}</p>
+		><p [customTooltip]="contractTypeIdsTooltip">{{ cell.contractTypeIds | truncateTextCustom : 10 }}</p>
 		<ng-template #contractTypeIdsTooltip>
 			<div class="tooltip-container">
-				<ng-container *ngFor="let contractType of cell.contractTypeIds">
+				<ng-container *ngFor="let contractType of cell.contractTypeIds;trackBy:trackById">
 					<div class="tooltip-menu">
 						<span>{{ contractType }}</span>
 					</div>
@@ -127,8 +125,7 @@
 
 	<ng-template let-cell="element" #customCells>
 		<ng-container *ngIf="cell.isEnabled; else notEnabled">
-			<mat-icon  [customTooltip]="enabledTooltip" svgIcon="enabled" class="icon enable-icon">
-            </mat-icon>
+			<mat-icon [customTooltip]="enabledTooltip" svgIcon="enabled" class="icon enable-icon"> </mat-icon>
 		</ng-container>
 		<ng-template #enabledTooltip>
 			<div class="tooltip-container">Enabled</div>

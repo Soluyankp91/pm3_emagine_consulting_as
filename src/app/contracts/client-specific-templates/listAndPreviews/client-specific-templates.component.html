@@ -16,7 +16,7 @@
 
 	<ng-template let-cell="element" #customCells>
 		<p [customTooltip]="agreementTemplateIdTooltip">
-			{{ cell.agreementTemplateId | truncateTextCustom : [7] }}
+			{{ cell.agreementTemplateId | truncateTextCustom : 7 }}
 		</p>
 		<ng-template #agreementTemplateIdTooltip>
 			<div class="tooltip-container">
@@ -27,7 +27,7 @@
 
 	<ng-template let-cell="element" #customCells>
 		<p [customTooltip]="nameTooltip">
-			{{ cell.name | truncateTextCustom : [20] }}
+			{{ cell.name | truncateTextCustom : 20 }}
 		</p>
 		<ng-template #nameTooltip>
 			<div class="tooltip-container">{{ cell.name }}</div>
@@ -36,7 +36,7 @@
 
     <ng-template let-cell="element" #customCells>
 		<p [customTooltip]="nameTooltip">
-			{{ cell.clientName | truncateTextCustom : [10] }}
+			{{ cell.clientName | truncateTextCustom : 10 }}
 		</p>
 		<ng-template #nameTooltip>
 			<div class="tooltip-container">{{ cell.clientName }}</div>
@@ -56,7 +56,7 @@
 	>
 
 	<ng-template let-cell="element" #customCells
-		><p [customTooltip]="legalEntityIdsTooltip">{{ cell.legalEntityIds | truncateTextCustom : [10] }}</p>
+		><p [customTooltip]="legalEntityIdsTooltip">{{ cell.legalEntityIds | truncateTextCustom : 10 }}</p>
 		<ng-template #legalEntityIdsTooltip>
 			<div class="tooltip-container">
 				<ng-container *ngFor="let legalEntity of cell.legalEntityIds">
@@ -69,7 +69,7 @@
 	</ng-template>
 
 	<ng-template let-cell="element" #customCells
-		><p [customTooltip]="salesTypeIdsTooltip">{{ cell.salesTypeIds | truncateTextCustom : [10] }}</p>
+		><p [customTooltip]="salesTypeIdsTooltip">{{ cell.salesTypeIds | truncateTextCustom : 10 }}</p>
 		<ng-template #salesTypeIdsTooltip>
 			<div class="tooltip-container">
 				<ng-container *ngFor="let saleType of cell.salesTypeIds">
@@ -81,7 +81,7 @@
 		</ng-template></ng-template
 	>
 	<ng-template let-cell="element" #customCells
-		><p [customTooltip]="deliveryTypeIdsTooltip">{{ cell.deliveryTypeIds | truncateTextCustom : [10] }}</p>
+		><p [customTooltip]="deliveryTypeIdsTooltip">{{ cell.deliveryTypeIds | truncateTextCustom : 10 }}</p>
 		<ng-template #deliveryTypeIdsTooltip>
 			<div class="tooltip-container">
 				<ng-container *ngFor="let deliveryType of cell.deliveryTypeIds">
@@ -94,7 +94,7 @@
 	</ng-template>
 
 	<ng-template let-cell="element" #customCells
-		><p [customTooltip]="contractTypeIdsTooltip">{{ cell.contractTypeIds | truncateTextCustom : [10] }}</p>
+		><p [customTooltip]="contractTypeIdsTooltip">{{ cell.contractTypeIds | truncateTextCustom : 10 }}</p>
 		<ng-template #contractTypeIdsTooltip>
 			<div class="tooltip-container">
 				<ng-container *ngFor="let contractType of cell.contractTypeIds">

@@ -1,6 +1,6 @@
 <div class="container">
 	<mat-chip-list>
-		<mat-chip *ngFor="let chip of matChips" (click)="closeFilter(chip.formControl)">
+		<mat-chip *ngFor="let chip of matChips;trackBy:trackByFormControlName" (click)="closeFilter(chip.formControl)">
 			<mat-icon svgIcon="close-button-icon"> </mat-icon>
 			<span>{{ chip.label }}</span>
 		</mat-chip>
@@ -50,7 +50,7 @@
 				</ng-container>
 			</ng-container>
 			<mat-cell *matCellDef="let element">
-				<ng-container *ngIf="cells_" [ngTemplateOutlet]="cells_[i]" [ngTemplateOutletContext]="{ element: element }">
+				<ng-container *ngIf="cellArr" [ngTemplateOutlet]="cellArr[i]" [ngTemplateOutletContext]="{ element: element }">
 				</ng-container>
 			</mat-cell>
 		</ng-container>

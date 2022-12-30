@@ -13,7 +13,7 @@ import { FILTER_LABEL_MAP } from '../../../entities/master-templates.constants';
 	templateUrl: './is-enabled.component.html',
 	providers: [TEMPLATE_SERVICE_PROVIDER],
 })
-export class IsEnabledComponent implements OnInit {
+export class IsEnabledComponent {
 	options = [
 		{
 			id: 1,
@@ -38,6 +38,4 @@ export class IsEnabledComponent implements OnInit {
 				this.filterFormControl = new FormControl(enabled);
 			});
 	}
-
-	ngOnInit(): void {}
 }

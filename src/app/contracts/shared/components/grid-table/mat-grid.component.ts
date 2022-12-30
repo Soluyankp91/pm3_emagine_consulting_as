@@ -64,7 +64,7 @@ export class MatGridComponent extends AppComponentBase implements OnInit, OnChan
 	@ViewChildren('filterContainer', { read: ViewContainerRef })
 	children: QueryList<ViewContainerRef>;
 
-	cells_: TemplateRef<ViewContainerRef>[];
+	cellArr: TemplateRef<ViewContainerRef>[];
 
 	dataSource = new MatTableDataSource<any>();
 
@@ -82,6 +82,7 @@ export class MatGridComponent extends AppComponentBase implements OnInit, OnChan
 	selectionModel = new SelectionModel<any>(this.allowMultiSelect, this.initialSelection);
 
 	trackByAction: TrackByFunction<Actions>;
+	trackByFormControlName: TrackByFunction<string>;
 
 	private _unSubscribe$ = new Subject<void>();
 
@@ -92,6 +93,7 @@ export class MatGridComponent extends AppComponentBase implements OnInit, OnChan
 	) {
 		super(injector);
 		this.trackByAction = this.createTrackByFn('actionType');
+		this.trackByFormControlName = this.createTrackByFn('formControl');
 	}
 
 	ngOnInit(): void {
@@ -111,7 +113,7 @@ export class MatGridComponent extends AppComponentBase implements OnInit, OnChan
 	}
 
 	async ngAfterViewInit() {
-		this.cells_ = this.customCells.toArray();
+		this.cellArr = this.customCells.toArray();
 		await this.loadFilters();
 		this._subscribeOnSelectionChange();
 		this._subscribeOnFormControlChanges();

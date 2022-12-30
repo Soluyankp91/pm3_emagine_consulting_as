@@ -11,23 +11,21 @@ import { isEqual } from 'lodash';
 import { PageDto, SortDto, TableFiltersEnum, TemplatePayload } from '../entities/contracts.interfaces';
 
 export abstract class BaseContract {
-	constructor() {}
+
+    abstract tableFilters$: BehaviorSubject<TableFiltersEnum>;
+	abstract sendPayload$(templatePayload: TemplatePayload): Observable<AgreementTemplatesListItemDtoPaginatedList>;
 
 	contractsLoading$: ReplaySubject<boolean> = new ReplaySubject<boolean>(1);
 
-	abstract tableFilters$: BehaviorSubject<TableFiltersEnum>;
-	abstract sendPayload$(templatePayload: TemplatePayload): Observable<AgreementTemplatesListItemDtoPaginatedList>;
-
-	private page$: BehaviorSubject<{ pageIndex: number; pageSize: number }> = new BehaviorSubject<PageDto>({
+	private _page$: BehaviorSubject<{ pageIndex: number; pageSize: number }> = new BehaviorSubject<PageDto>({
 		pageIndex: INITIAL_PAGE_INDEX,
 		pageSize: DEFAULT_SIZE_OPTION,
 	});
 
-	private tenantIds$$ = new BehaviorSubject<CountryDto[]>([]);
+	private _tenantIds$$ = new BehaviorSubject<CountryDto[]>([]);
+	private _searchFilter$$ = new BehaviorSubject<string>('');
 
-	private searchFilter$$ = new BehaviorSubject<string>('');
-
-	private sort$: BehaviorSubject<SortDto> = new BehaviorSubject({ active: '', direction: '' as SortDirection });
+	private _sort$: BehaviorSubject<SortDto> = new BehaviorSubject({ active: '', direction: '' as SortDirection });
 
 	getContracts$() {
 		return combineLatest([
@@ -48,7 +46,7 @@ export abstract class BaseContract {
 	}
 
 	getTenants$() {
-		return this.tenantIds$$.asObservable();
+		return this._tenantIds$$.asObservable();
 	}
 
 	getTableFilters$() {
@@ -56,15 +54,15 @@ export abstract class BaseContract {
 	}
 
 	getSort$() {
-		return this.sort$.asObservable();
+		return this._sort$.asObservable();
 	}
 
 	getPage$() {
-		return this.page$.asObservable();
+		return this._page$.asObservable();
 	}
 
 	getSearch$() {
-		return this.searchFilter$$.asObservable();
+		return this._searchFilter$$.asObservable();
 	}
 
 	updateTableFilters(data: TableFiltersEnum) {
@@ -72,22 +70,22 @@ export abstract class BaseContract {
 	}
 
 	updateTenantFilter(data: CountryDto[]) {
-		this.tenantIds$$.next(data);
+		this._tenantIds$$.next(data);
 	}
 
 	updateSearchFilter(data: string) {
-		this.searchFilter$$.next(data);
+		this._searchFilter$$.next(data);
 	}
 
 	updateSort(data: SortDto) {
-		this.sort$.next(data);
+		this._sort$.next(data);
 	}
 
 	updatePage(page: { pageIndex: number; pageSize: number }) {
-		this.page$.next(page);
+		this._page$.next(page);
 	}
 
-	_enabledToSend(enabled: number[]) {
+	enabledToSend(enabled: number[]) {
 		if (!enabled.length || enabled.length === 2) {
 			return undefined;
 		}

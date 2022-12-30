@@ -7,7 +7,10 @@ import {
 	CLIENT_TEMPLATE_HEADER_CELLS,
 	DISPLAYED_COLUMNS,
 } from '../../shared/components/grid-table/client-templates/entities/client-template.constants';
-import { BaseMappedAgreementTemplatesListItemDto, ClientMappedTemplatesListDto, MappedTableCells } from '../../shared/entities/contracts.interfaces';
+import {
+	ClientMappedTemplatesListDto,
+	MappedTableCells,
+} from '../../shared/entities/contracts.interfaces';
 import { GridHelpService } from '../../shared/services/mat-grid-service.service';
 import { combineLatest, Observable, Subject } from 'rxjs';
 import { takeUntil, map } from 'rxjs/operators';
@@ -17,10 +20,11 @@ import { ITableConfig } from '../../shared/components/grid-table/mat-grid.interf
 import { MASTER_TEMPLATE_ACTIONS } from '../../shared/components/grid-table/master-templates/entities/master-templates.constants';
 import { Sort } from '@angular/material/sort';
 import { PageEvent } from '@angular/material/paginator';
+import { GetCountryCodeByLanguage } from 'src/shared/helpers/tenantHelper';
 
 @Component({
 	selector: 'app-client-specific-templates',
-    styleUrls: ['./client-specific-templates.component.scss'],
+	styleUrls: ['./client-specific-templates.component.scss'],
 	templateUrl: './client-specific-templates.component.html',
 	providers: [GridHelpService],
 })
@@ -41,7 +45,6 @@ export class ClientSpecificTemplatesComponent extends AppComponentBase implement
 		private readonly _contractService: ContractsService
 	) {
 		super(injector);
-
 	}
 
 	table$: Observable<any>;
@@ -49,15 +52,15 @@ export class ClientSpecificTemplatesComponent extends AppComponentBase implement
 	dataSource$ = this._clientTemplatesService.getContracts$();
 
 	ngOnInit(): void {
-        this._initTable$();
-        this._subscribeOnDataLoading();
-    }
+		this._initTable$();
+		this._subscribeOnDataLoading();
+	}
 
 	navigateTo() {
 		this.router.navigate(['create'], { relativeTo: this.route });
 	}
 
-    onSortChange($event: Sort) {
+	onSortChange($event: Sort) {
 		this._clientTemplatesService.updateSort($event);
 	}
 
@@ -90,18 +93,15 @@ export class ClientSpecificTemplatesComponent extends AppComponentBase implement
 		);
 	}
 
-	private _mapTableItems(
-		items: AgreementTemplatesListItemDto[],
-		maps: MappedTableCells
-	): ClientMappedTemplatesListDto[] {
+	private _mapTableItems(items: AgreementTemplatesListItemDto[], maps: MappedTableCells): ClientMappedTemplatesListDto[] {
 		return items.map((item: AgreementTemplatesListItemDto) => {
 			return <ClientMappedTemplatesListDto>{
 				agreementTemplateId: item.agreementTemplateId,
 				name: item.name,
-                clientName: item.clientName,
+				clientName: item.clientName,
 				agreementType: maps.agreementType[item.agreementType as AgreementType],
 				recipientTypeId: maps.recipientTypeId[item.recipientTypeId as number],
-				language: this.getCountryCodeByLanguage(maps.language[item.language as AgreementLanguage]),
+				language: GetCountryCodeByLanguage(maps.language[item.language as AgreementLanguage]),
 				legalEntityIds: item.legalEntityIds?.map((i) => maps.legalEntityIds[i]),
 				contractTypeIds: item.contractTypeIds?.map((i) => maps.contractTypeIds[i]),
 				salesTypeIds: item.salesTypeIds?.map((i) => maps.salesTypeIds[i]),
@@ -115,7 +115,7 @@ export class ClientSpecificTemplatesComponent extends AppComponentBase implement
 		});
 	}
 
-    private _subscribeOnDataLoading() {
+	private _subscribeOnDataLoading() {
 		this._clientTemplatesService.contractsLoading$.subscribe((isLoading) => {
 			if (isLoading) {
 				this.showMainSpinner();

@@ -1,12 +1,13 @@
 import { ITableConfig } from '../../shared/components/grid-table/mat-grid.interfaces';
 import { MasterTemplatesService } from './services/master-templates.service';
-import { Component, ChangeDetectionStrategy, OnInit, OnDestroy, Injector, SkipSelf } from '@angular/core';
+import { Component, ChangeDetectionStrategy, OnInit, OnDestroy, Injector, TrackByFunction } from '@angular/core';
 import { map, takeUntil } from 'rxjs/operators';
 import {
 	DISPLAYED_COLUMNS,
 	MASTER_TEMPLATE_ACTIONS,
 	MASTER_TEMPLATE_HEADER_CELLS,
 } from '../../shared/components/grid-table/master-templates/entities/master-templates.constants';
+import { GetCountryCodeByLanguage } from 'src/shared/helpers/tenantHelper';
 import { Sort } from '@angular/material/sort';
 import { PageEvent } from '@angular/material/paginator';
 import { GridHelpService } from '../../shared/services/mat-grid-service.service';
@@ -36,6 +37,8 @@ export class MasterTemplatesComponent extends AppComponentBase implements OnInit
 	actions = MASTER_TEMPLATE_ACTIONS;
 	table$: Observable<any>;
 
+	trackById: TrackByFunction<number>;
+
 	private _unSubscribe$ = new Subject<void>();
 
 	constructor(
@@ -47,6 +50,7 @@ export class MasterTemplatesComponent extends AppComponentBase implements OnInit
 		private readonly _injetor: Injector
 	) {
 		super(_injetor);
+		this.trackById = this.createTrackByFn('id');
 	}
 
 	ngOnInit(): void {
@@ -122,7 +126,7 @@ export class MasterTemplatesComponent extends AppComponentBase implements OnInit
 				name: item.name,
 				agreementType: maps.agreementType[item.agreementType as AgreementType],
 				recipientTypeId: maps.recipientTypeId[item.recipientTypeId as number],
-				language: this.getCountryCodeByLanguage(maps.language[item.language as AgreementLanguage]),
+				language: GetCountryCodeByLanguage(maps.language[item.language as AgreementLanguage]),
 				legalEntityIds: item.legalEntityIds?.map((i) => maps.legalEntityIds[i]),
 				contractTypeIds: item.contractTypeIds?.map((i) => maps.contractTypeIds[i]),
 				salesTypeIds: item.salesTypeIds?.map((i) => maps.salesTypeIds[i]),
@@ -137,7 +141,7 @@ export class MasterTemplatesComponent extends AppComponentBase implements OnInit
 	}
 
 	private _subscribeOnDataLoading() {
-		this._masterTemplatesService.contractsLoading$.subscribe((isLoading) => {
+		this._masterTemplatesService.contractsLoading$.pipe(takeUntil(this._unSubscribe$)).subscribe((isLoading) => {
 			if (isLoading) {
 				this.showMainSpinner();
 				return;

@@ -1,6 +1,7 @@
 import { Injectable } from '@angular/core';
 import { ReplaySubject, forkJoin, combineLatest } from 'rxjs';
 import { map, tap } from 'rxjs/operators';
+import { MapFlagFromTenantId, GetCountryCodeByLanguage } from 'src/shared/helpers/tenantHelper';
 import {
 	EmployeeDto,
 	EnumEntityTypeDto,
@@ -9,8 +10,6 @@ import {
 	LookupServiceProxy,
 } from 'src/shared/service-proxies/service-proxies';
 import { BaseEnumDto, KeyType, MappedTableCells } from '../entities/contracts.interfaces';
-import { GetCountryCodeByLanguage } from '../utils/GetCountryCodeByLanguage';
-import { GetCountryCodeByTenantName } from '../utils/GetCountryCodeByTenantName';
 
 @Injectable()
 export class ContractsService {
@@ -85,7 +84,7 @@ export class ContractsService {
 					return tenants.map((tenant) => {
 						return <EnumEntityTypeDto & { code: string }>{
 							...tenant,
-							code: GetCountryCodeByTenantName(tenant.name as string),
+							code: MapFlagFromTenantId(tenant.id as number),
 						};
 					});
 				})
@@ -190,7 +189,7 @@ export class ContractsService {
 
 	private _mapLegalEntities(legalEntities: LegalEntityDto[]): Record<KeyType, string> {
 		return legalEntities.reduce((acc, item) => {
-			acc[item.id as number] = `${GetCountryCodeByTenantName(item.tenantName as string)}·${item.name}`;
+			acc[item.id as number] = `${MapFlagFromTenantId(item.id as number)}·${item.name}`;
 			return acc;
 		}, {} as Record<KeyType, string>);
 	}
