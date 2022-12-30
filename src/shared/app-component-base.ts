@@ -179,6 +179,10 @@ export abstract class AppComponentBase {
         return item.documentStorageGuid;
     }
 
+    trackByFormArray(item: any) {
+        return item;
+    }
+
     displayConsultantNameFn(option: any) {
         return option?.consultant?.name;
     }
