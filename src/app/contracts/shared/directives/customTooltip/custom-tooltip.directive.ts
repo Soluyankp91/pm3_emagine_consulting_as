@@ -1,12 +1,26 @@
-import { Directive, Input, TemplateRef, OnInit, ElementRef, HostListener, ViewContainerRef, OnDestroy } from '@angular/core';
+import { Directive, Input, TemplateRef, ElementRef, HostListener, ViewContainerRef, OnDestroy } from '@angular/core';
 import { TemplatePortal } from '@angular/cdk/portal';
 import { OverlayRef, Overlay, OverlayPositionBuilder } from '@angular/cdk/overlay';
 
 @Directive({
 	selector: '[customTooltip]',
 })
-export class CustomTooltipDirective implements OnInit {
+export class CustomTooltipDirective implements OnDestroy {
 	@Input('customTooltip') tooltipTemplate: TemplateRef<any>;
+
+    @HostListener('mouseout')
+	private _hide(): void {
+		if (this._overlayRef) {
+			this._overlayRef.detach();
+		}
+	}
+
+    @HostListener('mouseenter')
+	private _show(): void {
+		this._createOverlay();
+		const containerPortal = new TemplatePortal(this.tooltipTemplate, this.viewContainerRef);
+		this._overlayRef.attach(containerPortal);
+	}
 
 	private _overlayRef: OverlayRef;
 
@@ -17,7 +31,6 @@ export class CustomTooltipDirective implements OnInit {
 		private viewContainerRef: ViewContainerRef
 	) {}
 
-	ngOnInit(): void {}
 
 	ngOnDestroy() {
 		if (this._overlayRef) {
@@ -42,18 +55,5 @@ export class CustomTooltipDirective implements OnInit {
 			scrollStrategy: this.overlay.scrollStrategies.close(),
 			panelClass: 'custom-tooltip',
 		});
-	}
-	@HostListener('mouseenter')
-	private _show(): void {
-		this._createOverlay();
-		const containerPortal = new TemplatePortal(this.tooltipTemplate, this.viewContainerRef);
-		this._overlayRef.attach(containerPortal);
-	}
-
-	@HostListener('mouseout')
-	private _hide(): void {
-		if (this._overlayRef) {
-			this._overlayRef.detach();
-		}
 	}
 }

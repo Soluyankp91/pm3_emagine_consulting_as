@@ -63,7 +63,7 @@ export class MatGridComponent extends AppComponentBase implements OnInit, OnChan
 	@ViewChildren('filterContainer', { read: ViewContainerRef })
 	children: QueryList<ViewContainerRef>;
 
-	cells_: TemplateRef<ViewContainerRef>[];
+	cellArr: TemplateRef<ViewContainerRef>[];
 
 	dataSource = new MatTableDataSource<any>();
 
@@ -106,7 +106,7 @@ export class MatGridComponent extends AppComponentBase implements OnInit, OnChan
 	}
 
 	ngAfterViewInit(): void {
-		this.cells_ = this.customCells.toArray();
+		this.cellArr = this.customCells.toArray();
 		this.loadFilters();
 		this._subscribeOnSelectionChange();
 		this._subscribeOnFormControlChanges();

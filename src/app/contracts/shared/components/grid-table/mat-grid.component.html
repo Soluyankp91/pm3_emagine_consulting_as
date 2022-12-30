@@ -50,7 +50,7 @@
 				</ng-container>
 			</ng-container>
 			<mat-cell *matCellDef="let element">
-				<ng-container *ngIf="cells_" [ngTemplateOutlet]="cells_[i]" [ngTemplateOutletContext]="{ element: element }">
+				<ng-container *ngIf="cellArr" [ngTemplateOutlet]="cellArr[i]" [ngTemplateOutletContext]="{ element: element }">
 				</ng-container>
 			</mat-cell>
 		</ng-container>
