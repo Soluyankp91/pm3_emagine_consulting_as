@@ -1,6 +1,5 @@
 import {
     Component,
-    OnInit,
     forwardRef,
     Input,
     OnChanges,
@@ -23,7 +22,7 @@ import { FileUpload, FileUploadItem } from '../file-uploader/files';
     ],
 })
 export class FileSelectorComponent
-    implements OnInit, OnChanges, ControlValueAccessor
+    implements OnChanges, ControlValueAccessor
 {
     @Input() inheritedFiles: FileUpload[] = [];
 
@@ -36,8 +35,6 @@ export class FileSelectorComponent
     constructor(
         private readonly _agreementTemplateAttachmentServiceProxy: AgreementTemplateAttachmentServiceProxy
     ) {}
-
-    ngOnInit(): void {}
 
     ngOnChanges(changes: SimpleChanges): void {
         if (

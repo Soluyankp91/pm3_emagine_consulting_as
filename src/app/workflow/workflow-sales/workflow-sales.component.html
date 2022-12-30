@@ -327,7 +327,7 @@
                                                         <mat-datepicker #oneTimeDatePicker></mat-datepicker>
                                                     </mat-form-field>
                                                 </div>
-                                                <div fxFlex="10%" class="u-w--100 text-truncate-ellipsis flex-items-center">
+                                                <div fxFlex="10%" class="u-w--100 text-truncate-ellipsis" fxLayoutAlign="end center">
                                                     <button [disabled]="!salesMainDataForm.commissions.at(i).valid" mat-icon-button type="button" appPreventDoubleClick (throttledClick)="editOrSaveCommissionRow(i)" class="rates-and-fees--inline-edit-form--btn__save">
                                                         <mat-icon svgIcon="rates-save-icon"></mat-icon>
                                                     </button>
@@ -1834,7 +1834,7 @@
                                                                 </span>
                                                             </ng-template>
                                                             <ng-container *ngIf="rate.value.editable; else consultantRateActionDisplay">
-                                                                <div fxFlex="10%" class="u-w--100 text-truncate-ellipsis flex-items-center" [fxHide]="readOnlyMode">
+                                                                <div fxFlex="10%" class="u-w--100 text-truncate-ellipsis" fxLayoutAlign="end center" [fxHide]="readOnlyMode">
                                                                     <button mat-icon-button type="button" [disabled]="!rate.valid" appPreventDoubleClick (throttledClick)="editOrSaveConsultantRate(consultantIndex, specialRateIndex, rate.value.editable)" class="rates-and-fees--inline-edit-form--btn__save">
                                                                         <mat-icon svgIcon="rates-save-icon"></mat-icon>
                                                                     </button>
@@ -1984,7 +1984,7 @@
                                                             </ng-template>
 
                                                             <ng-container *ngIf="fee.value.editable; else clientFeeActionDisplay">
-                                                                <div fxFlex="10%" class="u-w--100 text-truncate-ellipsis flex-items-center" [fxHide]="readOnlyMode">
+                                                                <div fxFlex="10%" class="u-w--100 text-truncate-ellipsis" fxLayoutAlign="end center" [fxHide]="readOnlyMode">
                                                                     <button mat-icon-button type="button" [disabled]="!fee.valid" appPreventDoubleClick (throttledClick)="editOrSaveConsultantFee(consultantIndex, specialFeeIndex, fee.value.editable)" class="rates-and-fees--inline-edit-form--btn__save">
                                                                         <mat-icon svgIcon="rates-save-icon"></mat-icon>
                                                                     </button>

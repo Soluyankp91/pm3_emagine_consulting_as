@@ -1,17 +1,15 @@
-import { Component, OnInit } from '@angular/core';
+import { Component } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 
 @Component({
     selector: 'app-client-specific-templates',
     templateUrl: './client-specific-templates.component.html',
 })
-export class ClientSpecificTemplatesComponent implements OnInit {
+export class ClientSpecificTemplatesComponent {
     constructor(
         private readonly route: ActivatedRoute,
         private readonly router: Router
     ) {}
-
-    ngOnInit(): void {}
 
     navigateTo() {
         this.router.navigate(['create'], { relativeTo: this.route });
