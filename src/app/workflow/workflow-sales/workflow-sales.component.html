@@ -2332,9 +2332,9 @@
                                                 </mat-form-field>
                                             </div>
                                         </ng-container>
-                                        <div fxLayout="row" fxLayoutAlign="start center" class="u-w--100 u-mb--10">
+                                        <div fxLayout="row" fxLayoutAlign="start start" class="u-w--100 u-mb--10">
                                             <mat-form-field appearance="outline" class="u-w--100 formFieldNoMarginPadding textarea-input u-mr--12" fxFlex="0 0 calc(79% + 24px)" [ngClass]="{'disabled-input': readOnlyMode}">
-                                                <mat-label>Consultant Special Contract Terms</mat-label>
+                                                <mat-label>Special Payment Terms</mat-label>
                                                 <textarea [disabled]="readOnlyMode" [required]="consultant.value?.employmentType?.id !== employmentTypesEnum.FeeOnly && consultant.value?.employmentType?.id !== employmentTypesEnum.Recruitment" matInput autocomplete="new-password" name="specialPaymentTerms" formControlName="specialPaymentTerms" [cdkTextareaAutosize]="true" [cdkAutosizeMinRows]="2">
                                                 </textarea>
                                                 <mat-error>
