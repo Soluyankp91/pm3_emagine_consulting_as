@@ -71,6 +71,11 @@
                                         <mat-checkbox [disabled]="readOnlyMode" color="accent" name="removedConsultantFromAnyManualChecklists" formControlName="removedConsultantFromAnyManualChecklists" class="black-checkbox u-mr--10">
                                             Removed Consultant from any manual checklists
                                         </mat-checkbox>
+                                        <mat-error>
+                                            <ng-container *ngIf="consultant.get('removedConsultantFromAnyManualChecklists')!.touched && !consultant.get('removedConsultantFromAnyManualChecklists')!.valid">
+                                                <app-validator [withoutFormField]="true" [control]="consultant.get('removedConsultantFromAnyManualChecklists')"></app-validator>
+                                            </ng-container>
+                                        </mat-error>
                                     </ng-container>
                                 </div>
 
@@ -79,6 +84,11 @@
                                         <mat-checkbox [disabled]="readOnlyMode" color="accent" name="deletedAnySensitiveDocumentsForGDPR" formControlName="deletedAnySensitiveDocumentsForGDPR" class="black-checkbox u-mr--10">
                                             Deleted any sensitive documents (GDPR)
                                         </mat-checkbox>
+                                        <mat-error>
+                                            <ng-container *ngIf="consultant.get('deletedAnySensitiveDocumentsForGDPR')!.touched && !consultant.get('deletedAnySensitiveDocumentsForGDPR')!.valid">
+                                                <app-validator [withoutFormField]="true" [control]="consultant.get('deletedAnySensitiveDocumentsForGDPR')"></app-validator>
+                                            </ng-container>
+                                        </mat-error>
                                     </ng-container>
                                 </div>
                             </div>
@@ -759,7 +769,7 @@
                                         </div>
                                         <div class="workflow-section--content">
                                             <div fxLayout="row" fxLayoutAlign="start start" class="u-w--100 u-mb--10">
-                                                <mat-form-field appearance="outline" class="u-w--100 formFieldNoMarginPadding textarea-input u-mr--12" fxFlex="0 0 calc(79% + 24px)" [ngClass]="{'disabled-input': readOnlyMode}">
+                                                <mat-form-field appearance="outline" class="form-width-559 formFieldNoMarginPadding textarea-input u-mr--12" [ngClass]="{'disabled-input': readOnlyMode}">
                                                     <mat-label>Special Payment Terms</mat-label>
                                                     <textarea [disabled]="readOnlyMode" required matInput autocomplete="new-password" name="specialPaymentTerms" formControlName="specialPaymentTerms" [cdkTextareaAutosize]="true" [cdkAutosizeMinRows]="2">
                                                     </textarea>

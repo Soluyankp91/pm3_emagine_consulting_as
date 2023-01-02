@@ -511,7 +511,7 @@
                                 </ng-container>
                             </div>
                             <div fxLayout="row" fxLayoutAlign="start start" class="u-w--100 u-mb--10">
-                                <mat-form-field appearance="outline" class="u-w--100 formFieldNoMarginPadding filter-select u-mr--12 form-width-235">
+                                <mat-form-field appearance="outline" class="formFieldNoMarginPadding filter-select u-mr--12 form-width-235">
                                     <mat-label>Contract expiration notification</mat-label>
                                     <mat-select [disabled]="readOnlyMode" formControlName="contractExpirationNotification" [disableOptionCentering]="true" [multiple]="true">
                                         <mat-option [value]="999">
@@ -1104,6 +1104,13 @@
                                             </ng-container>
                                         </div>
                                     </ng-container>
+                                    <ng-container *ngIf="salesClientDataForm.clientRates.controls?.length === 0 && readOnlyMode">
+                                        <div fxLayout="row" fxLayoutAlign="start center" fxLayoutGap="10px" class="workflow-sales-inline--form__row u-w--100">
+                                            <span>
+                                                No client rates
+                                            </span>
+                                        </div>
+                                    </ng-container>
                                 </ng-container>
                             </div>
                             <div fxLayout="row" fxLayoutAlign="start start" class="u-mb--10" [fxHide]="readOnlyMode">
@@ -1219,6 +1226,13 @@
                                                     </div>
                                                 </ng-template>
                                             </ng-container>
+                                        </div>
+                                    </ng-container>
+                                    <ng-container *ngIf="salesClientDataForm.clientFees.controls?.length === 0 && readOnlyMode">
+                                        <div fxLayout="row" fxLayoutAlign="start center" fxLayoutGap="10px" class="workflow-sales-inline--form__row u-w--100">
+                                            <span>
+                                                No client fees
+                                            </span>
                                         </div>
                                     </ng-container>
                                 </ng-container>
@@ -1383,6 +1397,13 @@
                                         <ng-container *ngIf="!readOnlyMode">
                                             <button class="form-icon--delete-row" type="button" mat-icon-button appPreventDoubleClick (throttledClick)="removeSigner(i)"><mat-icon svgIcon="remove-icon"></mat-icon></button>
                                         </ng-container>
+                                    </div>
+                                </ng-container>
+                                <ng-container *ngIf="contractSigners.controls?.length === 0 && readOnlyMode">
+                                    <div fxLayout="row" fxLayoutAlign="start center" fxLayoutGap="10px" class="workflow-sales-inline--form__row u-w--100">
+                                        <span>
+                                            No contract signers
+                                        </span>
                                     </div>
                                 </ng-container>
                                 <ng-container *ngIf="!readOnlyMode">
@@ -1865,6 +1886,13 @@
                                                         </ng-container>
                                                     </div>
                                                 </ng-container>
+                                                <ng-container *ngIf="consultant.value.specialRates?.length && readOnlyMode">
+                                                    <div fxLayout="row" fxLayoutAlign="start center" fxLayoutGap="10px" class="workflow-sales-inline--form__row u-w--100">
+                                                        <span>
+                                                            No consultant rates
+                                                        </span>
+                                                    </div>
+                                                </ng-container>
                                             </ng-container>
                                         </div>
 
@@ -2010,6 +2038,13 @@
                                                                 </div>
                                                             </ng-template>
                                                         </ng-container>
+                                                    </div>
+                                                </ng-container>
+                                                <ng-container *ngIf="consultant.value.specialFees?.length && readOnlyMode">
+                                                    <div fxLayout="row" fxLayoutAlign="start center" fxLayoutGap="10px" class="workflow-sales-inline--form__row u-w--100">
+                                                        <span>
+                                                            No consultant fees
+                                                        </span>
                                                     </div>
                                                 </ng-container>
                                             </ng-container>
@@ -2356,7 +2391,7 @@
                                             </div>
                                         </ng-container>
                                         <div fxLayout="row" fxLayoutAlign="start start" class="u-w--100 u-mb--10">
-                                            <mat-form-field appearance="outline" class="u-w--100 formFieldNoMarginPadding textarea-input u-mr--12" fxFlex="0 0 calc(79% + 24px)" [ngClass]="{'disabled-input': readOnlyMode}">
+                                            <mat-form-field appearance="outline" class="form-width-559 formFieldNoMarginPadding textarea-input u-mr--12" [ngClass]="{'disabled-input': readOnlyMode}">
                                                 <mat-label>Special Payment Terms</mat-label>
                                                 <textarea [disabled]="readOnlyMode" [required]="consultant.value?.employmentType?.id !== employmentTypesEnum.FeeOnly && consultant.value?.employmentType?.id !== employmentTypesEnum.Recruitment" matInput autocomplete="new-password" name="specialPaymentTerms" formControlName="specialPaymentTerms" [cdkTextareaAutosize]="true" [cdkAutosizeMinRows]="2">
                                                 </textarea>
@@ -2379,7 +2414,7 @@
                                         <h2 class="workflow-section--header">Consultant contract</h2>
                                     </div>
                                     <div class="workflow-section--content">
-                                        <div fxLayout="row" fxLayoutAlign="start center" class="u-w--100 u-mb--10">
+                                        <div fxLayout="row" fxLayoutAlign="start start" class="u-w--100 u-mb--10">
                                             <mat-form-field appearance="outline" class="formFieldNoMarginPadding textarea-input u-mr--12 form-width-559" [ngClass]="{'disabled-input': readOnlyMode}">
                                                 <mat-label>Consultant Special Contract Terms</mat-label>
                                                 <textarea [disabled]="readOnlyMode" [required]="consultant.value?.employmentType?.id !== employmentTypesEnum.FeeOnly && consultant.value?.employmentType?.id !== employmentTypesEnum.Recruitment" matInput autocomplete="new-password" name="consultantSpecialContractTerms" formControlName="consultantSpecialContractTerms" [cdkTextareaAutosize]="true" [cdkAutosizeMinRows]="2">
