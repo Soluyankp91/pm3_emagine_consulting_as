@@ -4,6 +4,7 @@
         [matMenuTriggerFor]="menu"
         class="toggle-button"
         (menuOpened)="isOpened = true"
+        (menuClosed)="onMenuClosed()"
     >
         <div class="align-items">
             <span
@@ -21,16 +22,11 @@
         (closed)="isOpened = false"
         backdropClass="mat-menu-content-wrapper"
     >
-        <div class="scrollbar-container" fuseScrollbar>
+        <div class="scrollbar-container">
             <ng-container *ngFor="let option of options;trackBy:trackById.bind(this)">
                 <mat-checkbox
 
                 (click)="$event.stopPropagation()"
-                [matTooltip]="
-                    option[displayedProperty].length > maxLength
-                        ? option[displayedProperty]
-                        : ''
-                "
                 [value]="option"
                 (change)="toggleSelect(option)"
                 [checked]="option.selected"

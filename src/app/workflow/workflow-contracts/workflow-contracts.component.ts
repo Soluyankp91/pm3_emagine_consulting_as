@@ -769,6 +769,16 @@ export class WorkflowContractsComponent
             pdcPaymentEntityId: new UntypedFormControl(
                 consultant?.pdcPaymentEntityId
             ),
+            specialPaymentTerms: new UntypedFormControl(
+                {
+                    value: consultant?.specialPaymentTerms,
+                    disabled: consultant?.noSpecialPaymentTerms,
+                },
+                Validators.required
+            ),
+            noSpecialPaymentTerms: new UntypedFormControl(
+                consultant?.noSpecialPaymentTerms ?? false
+            ),
             specialRates: new UntypedFormArray([]),
             consultantSpecialRateFilter: new UntypedFormControl(''),
             clientFees: new UntypedFormArray([]),
@@ -1945,8 +1955,8 @@ export class WorkflowContractsComponent
         input.clientData = new ContractsClientDataDto();
         input.clientData.specialContractTerms = this.contractClientForm.specialContractTerms?.value;
         input.clientData.noSpecialContractTerms = this.contractClientForm.noSpecialContractTerms?.value;
-        input.clientData.clientTimeReportingCapId = this.contractClientForm.clientTimeReportingCapId?.value?.id;
         input.clientData.clientTimeReportingCapMaxValue = this.contractClientForm.clientTimeReportingCapMaxValue?.value;
+        input.clientData.clientTimeReportingCapId = this.contractClientForm.clientTimeReportingCapId?.value?.id;
         input.clientData.clientTimeReportingCapCurrencyId = this.contractClientForm.clientTimeReportingCapCurrencyId?.value?.id;
         input.clientData.clientRate = this.contractClientForm.clientRate?.value;
         input.clientData.pdcInvoicingEntityId = this.contractClientForm.pdcInvoicingEntityId?.value;
@@ -2092,6 +2102,8 @@ export class WorkflowContractsComponent
         consultantData.consultantTimeReportingCapCurrencyId = consultantInput.consultantCapOnTimeReportingCurrency?.id;
         consultantData.noSpecialContractTerms = consultantInput.noSpecialContractTerms;
         consultantData.specialContractTerms = consultantInput.specialContractTerms;
+        consultantData.specialPaymentTerms = consultantInput.specialPaymentTerms;
+        consultantData.noSpecialPaymentTerms = consultantInput.noSpecialPaymentTerms;
 
         consultantData.periodConsultantSpecialFees = new Array<PeriodConsultantSpecialFeeDto>();
         if (consultantInput.clientFees?.length) {

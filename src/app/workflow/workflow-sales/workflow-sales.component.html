@@ -325,7 +325,7 @@
                                                         <mat-datepicker #oneTimeDatePicker></mat-datepicker>
                                                     </mat-form-field>
                                                 </div>
-                                                <div fxFlex="10%" class="u-w--100 text-truncate-ellipsis flex-items-center">
+                                                <div fxFlex="10%" class="u-w--100 text-truncate-ellipsis" fxLayoutAlign="end center">
                                                     <button [disabled]="!salesMainDataForm.commissions.at(i).valid" mat-icon-button type="button" appPreventDoubleClick (throttledClick)="editOrSaveCommissionRow(i)" class="rates-and-fees--inline-edit-form--btn__save">
                                                         <mat-icon svgIcon="rates-save-icon"></mat-icon>
                                                     </button>
@@ -472,8 +472,46 @@
                                         </mat-autocomplete>
                                 </mat-form-field>
                             </div>
-                            <div fxLayout="row" fxLayoutAlign="start start" class="u-w--100">
-                                <mat-form-field appearance="outline" class="formFieldNoMarginPadding filter-select u-mr--12 form-width-235">
+                            <div fxLayout="column" fxLayoutAlign="start start" class="u-w--100 u-mb--10">
+                                <ng-container formArrayName="commissionedUsers" class="u-w--100">
+                                    <ng-container *ngFor="let user of salesMainDataForm.commissionedUsers.controls; trackBy: trackByFormArray; index as i" [formArrayName]="i">
+                                        <div fxLayout="row" fxLayoutAlign="start center" class="u-w--100">
+                                            <mat-form-field appearance="outline" class="u-w--100 formFieldNoMarginPadding filter-select u-mr--12" fxFlex="35%" [ngClass]="{'disabled-input': readOnlyMode}">
+                                                <mat-label>Commissioned user</mat-label>
+                                                <input required [disabled]="readOnlyMode" #commissionedUserInput type="text" matInput [matAutocomplete]="commissionedUserAutocomplete" formControlName="commissionedUser" appPreventDoubleClick (throttledClick)="$event.stopPropagation()" placeholder="Type something">
+                                                <mat-autocomplete #commissionedUserAutocomplete="matAutocomplete" [displayWith]="displayNameFn"
+                                                    (optionSelected)="focusOutMethod()" (opened)="focusInMethod()" (closed)="focusOutMethod()">
+                                                    <ng-container *ngFor="let employee of filteredEmployees; trackBy: trackById">
+                                                        <mat-option [value]="employee" [ngClass]="{ 'no-data': employee.id === undefined }">
+                                                            <div fxLayout="row" fxLayoutAlign="start center" class="u-w--100">
+                                                                <ng-container *ngIf="employee.id !== undefined">
+                                                                    <img class="border-rounded-50 image-settings--dropdown u-mr--5"
+                                                                        [src]="employeeProfileUrl(employee?.externalId!)" />
+                                                                </ng-container>
+                                                                <span class="autocopmlete-option-name">{{ employee.name }}</span>
+                                                            </div>
+                                                        </mat-option>
+                                                    </ng-container>
+                                                </mat-autocomplete>
+                                                <mat-error>
+                                                    <app-validator [control]="user.get('commissionedUser')"></app-validator>
+                                                </mat-error>
+                                            </mat-form-field>
+                                            <button mat-icon-button type="button" appPreventDoubleClick (throttledClick)="removeCommissionedUser(i)" class="small-icon-button u-mt--5">
+                                                <mat-icon svgIcon="dialog-close-icon"></mat-icon>
+                                            </button>
+                                        </div>
+                                    </ng-container>
+                                </ng-container>
+                                <ng-container *ngIf="!readOnlyMode">
+                                    <button class="button-add u-mt--5" mat-flat-button type="button" appPreventDoubleClick (throttledClick)="addCommissionedUser()">
+                                        <mat-icon>add</mat-icon>
+                                        Add commissioned user
+                                    </button>
+                                </ng-container>
+                            </div>
+                            <div fxLayout="row" fxLayoutAlign="start start" class="u-w--100 u-mb--10">
+                                <mat-form-field appearance="outline" class="u-w--100 formFieldNoMarginPadding filter-select u-mr--12 form-width-235">
                                     <mat-label>Contract expiration notification</mat-label>
                                     <mat-select [disabled]="readOnlyMode" formControlName="contractExpirationNotification" [disableOptionCentering]="true" [multiple]="true">
                                         <mat-option [value]="999">
@@ -1791,7 +1829,7 @@
                                                                 </span>
                                                             </ng-template>
                                                             <ng-container *ngIf="rate.value.editable; else consultantRateActionDisplay">
-                                                                <div fxFlex="10%" class="u-w--100 text-truncate-ellipsis flex-items-center" [fxHide]="readOnlyMode">
+                                                                <div fxFlex="10%" class="u-w--100 text-truncate-ellipsis" fxLayoutAlign="end center" [fxHide]="readOnlyMode">
                                                                     <button mat-icon-button type="button" [disabled]="!rate.valid" appPreventDoubleClick (throttledClick)="editOrSaveConsultantRate(consultantIndex, specialRateIndex, rate.value.editable)" class="rates-and-fees--inline-edit-form--btn__save">
                                                                         <mat-icon svgIcon="rates-save-icon"></mat-icon>
                                                                     </button>
@@ -1939,7 +1977,7 @@
                                                             </ng-template>
 
                                                             <ng-container *ngIf="fee.value.editable; else clientFeeActionDisplay">
-                                                                <div fxFlex="10%" class="u-w--100 text-truncate-ellipsis flex-items-center" [fxHide]="readOnlyMode">
+                                                                <div fxFlex="10%" class="u-w--100 text-truncate-ellipsis" fxLayoutAlign="end center" [fxHide]="readOnlyMode">
                                                                     <button mat-icon-button type="button" [disabled]="!fee.valid" appPreventDoubleClick (throttledClick)="editOrSaveConsultantFee(consultantIndex, specialFeeIndex, fee.value.editable)" class="rates-and-fees--inline-edit-form--btn__save">
                                                                         <mat-icon svgIcon="rates-save-icon"></mat-icon>
                                                                     </button>
@@ -2317,6 +2355,21 @@
                                                 </mat-form-field>
                                             </div>
                                         </ng-container>
+                                        <div fxLayout="row" fxLayoutAlign="start start" class="u-w--100 u-mb--10">
+                                            <mat-form-field appearance="outline" class="u-w--100 formFieldNoMarginPadding textarea-input u-mr--12" fxFlex="0 0 calc(79% + 24px)" [ngClass]="{'disabled-input': readOnlyMode}">
+                                                <mat-label>Special Payment Terms</mat-label>
+                                                <textarea [disabled]="readOnlyMode" [required]="consultant.value?.employmentType?.id !== employmentTypesEnum.FeeOnly && consultant.value?.employmentType?.id !== employmentTypesEnum.Recruitment" matInput autocomplete="new-password" name="specialPaymentTerms" formControlName="specialPaymentTerms" [cdkTextareaAutosize]="true" [cdkAutosizeMinRows]="2">
+                                                </textarea>
+                                                <mat-error>
+                                                    <app-validator [control]="consultant.get('specialPaymentTerms')"></app-validator>
+                                                </mat-error>
+                                            </mat-form-field>
+                                            <ng-container *ngIf="!readOnlyMode || consultant.get('noSpecialPaymentTerms')?.value">
+                                                <mat-checkbox [disabled]="readOnlyMode" color="accent" formControlName="noSpecialPaymentTerms" name="noSpecialPaymentTerms" class="black-checkbox u-mt--8" (change)="disableOrEnableInput(consultant?.value?.noSpecialPaymentTerms, consultant?.get('specialPaymentTerms'))">
+                                                    None
+                                                </mat-checkbox>
+                                            </ng-container>
+                                        </div>
                                     </div>
                                 </div>
 

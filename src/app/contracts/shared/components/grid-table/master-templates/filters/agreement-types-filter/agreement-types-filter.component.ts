@@ -4,6 +4,7 @@ import { UntypedFormControl } from '@angular/forms';
 import { IFilter } from 'src/app/contracts/shared/components/grid-table/mat-grid.interfaces';
 import { ContractsService } from 'src/app/contracts/shared/services/contracts.service';
 import { MasterTemplatesService } from 'src/app/contracts/master-templates/listAndPreviews/services/master-templates.service';
+import { FILTER_LABEL_MAP } from '../../entities/master-templates.constants';
 
 @Component({
     selector: 'app-agreement-types-filter',
@@ -13,7 +14,9 @@ export class AgreementTypesFilterComponent implements IFilter {
     agreementTypes$ = this.contractsService.getAgreementTypes$();
     filterFormControl: UntypedFormControl;
 
-    private tableFilter = 'agreementType';
+    labelMap = FILTER_LABEL_MAP;
+
+    tableFilter = 'agreementType';
 
     constructor(
         private contractsService: ContractsService,
@@ -21,7 +24,7 @@ export class AgreementTypesFilterComponent implements IFilter {
     ) {
         this.masterTemplateService
             .getTableFilters$()
-            .pipe(take(1), pluck(this.tableFilter))
+            .pipe(take(1),pluck(this.tableFilter))
             .subscribe((agreementTypes) => {
                 this.filterFormControl = new UntypedFormControl(agreementTypes);
             });
