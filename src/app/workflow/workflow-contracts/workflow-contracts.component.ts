@@ -770,7 +770,10 @@ export class WorkflowContractsComponent
                 consultant?.pdcPaymentEntityId
             ),
             specialPaymentTerms: new UntypedFormControl(
-                consultant?.specialPaymentTerms,
+                {
+                    value: consultant?.specialPaymentTerms,
+                    disabled: consultant?.noSpecialPaymentTerms,
+                },
                 Validators.required
             ),
             noSpecialPaymentTerms: new UntypedFormControl(
