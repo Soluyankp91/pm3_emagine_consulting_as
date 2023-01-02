@@ -774,7 +774,7 @@ export class WorkflowContractsComponent
                 Validators.required
             ),
             noSpecialPaymentTerms: new UntypedFormControl(
-                consultant?.noSpecialPaymentTerms
+                consultant?.noSpecialPaymentTerms ?? false
             ),
             specialRates: new UntypedFormArray([]),
             consultantSpecialRateFilter: new UntypedFormControl(''),
