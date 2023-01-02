@@ -1,4 +1,4 @@
-import { Component, Injector, Input, OnDestroy, OnInit } from '@angular/core';
+import { Component, EventEmitter, Injector, Input, OnDestroy, OnInit, Output } from '@angular/core';
 import { MatSelectChange } from '@angular/material/select';
 import { debounceTime, finalize,  switchMap, takeUntil} from 'rxjs/operators';
 import { forkJoin, of, Subject } from 'rxjs';
@@ -24,6 +24,7 @@ export class MainDataComponent extends AppComponentBase implements OnInit, OnDes
     @Input() canToggleEditMode: boolean;
     @Input() activeSideSection: WorkflowProcessWithAnchorsDto;
     @Input() permissionsForCurrentUser: { [key: string]: boolean } | undefined;
+    @Output() editModeToggled = new EventEmitter<any>();
 
     workflowSideSections = WorkflowProcessType;
 	salesMainDataForm: WorkflowSalesMainForm;
@@ -188,12 +189,13 @@ export class MainDataComponent extends AppComponentBase implements OnInit, OnDes
     }
 
     toggleEditMode() {
-		this.isCompleted = !this.isCompleted;
-		this.editEnabledForcefuly = !this.editEnabledForcefuly;
-		this._workflowDataService.updateWorkflowProgressStatus({
-			currentStepIsCompleted: this.isCompleted,
-			currentStepIsForcefullyEditing: this.editEnabledForcefuly,
-		});
+        this.editModeToggled.emit();
+		// this.isCompleted = !this.isCompleted;
+		// this.editEnabledForcefuly = !this.editEnabledForcefuly;
+		// this._workflowDataService.updateWorkflowProgressStatus({
+		// 	currentStepIsCompleted: this.isCompleted,
+		// 	currentStepIsForcefullyEditing: this.editEnabledForcefuly,
+		// });
 		// this.getSalesStepData();
 	}
 

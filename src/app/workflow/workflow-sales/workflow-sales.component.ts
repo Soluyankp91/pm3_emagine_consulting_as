@@ -60,8 +60,10 @@ import { WorkflowConsultantActionsDialogComponent } from '../workflow-consultant
 import { WorkflowDataService } from '../workflow-data.service';
 import { WorkflowProcessWithAnchorsDto } from '../workflow-period/workflow-period.model';
 import { EmploymentTypes } from '../workflow.model';
+import { ClientDataComponent } from './client-data/client-data.component';
 import { MainDataComponent } from './main-data/main-data.component';
 import {
+    ClientRateTypes,
 	ConsultantDiallogAction,
 	SalesTerminateConsultantForm,
 	WorkflowSalesClientDataForm,
@@ -75,8 +77,8 @@ import {
 	styleUrls: ['./workflow-sales.component.scss'],
 })
 export class WorkflowSalesComponent extends AppComponentBase implements OnInit, OnDestroy {
-    @ViewChild('mainDataComponent', {static: false}) mainDataComponent: MainDataComponent
-
+    @ViewChild('mainDataComponent', {static: false}) mainDataComponent: MainDataComponent;
+    @ViewChild('clientDataComponent', {static: false}) clientDataComponent: ClientDataComponent;
 	@Input() workflowId: string;
 	@Input() periodId: string | undefined;
 	@Input() consultant: ConsultantResultDto;
@@ -87,7 +89,7 @@ export class WorkflowSalesComponent extends AppComponentBase implements OnInit, 
 	editEnabledForcefuly = false;
 	workflowSideSections = WorkflowProcessType;
 	// SalesStep
-	salesClientDataForm: WorkflowSalesClientDataForm;
+	// salesClientDataForm: WorkflowSalesClientDataForm;
 	// salesMainDataForm: WorkflowSalesMainForm;
 	consultantsForm: WorkflowSalesConsultantsForm;
 	salesTerminateConsultantForm: SalesTerminateConsultantForm;
@@ -124,16 +126,17 @@ export class WorkflowSalesComponent extends AppComponentBase implements OnInit, 
 	consultantTimeReportingCapList: EnumEntityTypeDto[] = [];
 
 	employmentTypesEnum = EmploymentTypes;
-	clientRateTypes: EnumEntityTypeDto[] = new Array<EnumEntityTypeDto>(
-		new EnumEntityTypeDto({
-			id: 1,
-			name: 'Time based',
-		}),
-		new EnumEntityTypeDto({
-			id: 2,
-			name: 'Fixed',
-		})
-	);
+    clientRateTypes = ClientRateTypes;
+	// clientRateTypes: EnumEntityTypeDto[] = new Array<EnumEntityTypeDto>(
+	// 	new EnumEntityTypeDto({
+	// 		id: 1,
+	// 		name: 'Time based',
+	// 	}),
+	// 	new EnumEntityTypeDto({
+	// 		id: 2,
+	// 		name: 'Fixed',
+	// 	})
+	// );
 
 	filteredAccountManagers: any[] = [];
 	filteredSalesAccountManagers: any[] = [];
@@ -146,17 +149,17 @@ export class WorkflowSalesComponent extends AppComponentBase implements OnInit, 
 	filteredEvaluationReferencePersons: any[] = [];
 	filteredClientInvoicingRecipients: any[] = [];
 	filteredFinalEvaluationReferencePersons: any[] = [];
-	clientRateToEdit: PeriodClientSpecialRateDto;
-	isClientRateEditing = false;
-	clientFeeToEdit: PeriodClientSpecialFeeDto;
-	isClientFeeEditing = false;
+	// clientRateToEdit: PeriodClientSpecialRateDto;
+	// isClientRateEditing = false;
+	// clientFeeToEdit: PeriodClientSpecialFeeDto;
+	// isClientFeeEditing = false;
 	consultantRateToEdit: PeriodConsultantSpecialRateDto;
 	isConsultantRateEditing = false;
 	consultantFeeToEdit: PeriodConsultantSpecialFeeDto;
 	isConsultantFeeEditing = false;
-	clientSpecialRateFilter = new UntypedFormControl('');
+	// clientSpecialRateFilter = new UntypedFormControl('');
 	clientSpecialRateList: ClientSpecialRateDto[] = [];
-	clientSpecialFeeFilter = new UntypedFormControl('');
+	// clientSpecialFeeFilter = new UntypedFormControl('');
 	clientSpecialFeeList: ClientSpecialFeeDto[] = [];
 	filteredConsultantCountries: EnumEntityTypeDto[];
 	filteredConsultantClientAddresses: any[] = [];
@@ -201,7 +204,7 @@ export class WorkflowSalesComponent extends AppComponentBase implements OnInit, 
 		private _scrollToService: ScrollToService
 	) {
 		super(injector);
-		this.salesClientDataForm = new WorkflowSalesClientDataForm();
+		// this.salesClientDataForm = new WorkflowSalesClientDataForm();
 		// this.salesMainDataForm = new WorkflowSalesMainForm();
 		this.consultantsForm = new WorkflowSalesConsultantsForm();
 		this.salesTerminateConsultantForm = new SalesTerminateConsultantForm();
@@ -275,147 +278,147 @@ export class WorkflowSalesComponent extends AppComponentBase implements OnInit, 
 		// 		}
 		// 	});
 
-		this.salesClientDataForm.directClientIdValue?.valueChanges
-			.pipe(
-				takeUntil(this._unsubscribe),
-				debounceTime(300),
-				switchMap((value: any) => {
-					let toSend = {
-						name: value ?? '',
-						maxRecordsCount: 1000,
-					};
-					if (value?.clientId) {
-						toSend.name = value.clientId ? value.clientName?.trim() : value?.trim();
-					}
-					return this._lookupService.clientsAll(toSend.name, toSend.maxRecordsCount);
-				})
-			)
-			.subscribe((list: ClientResultDto[]) => {
-				if (list.length) {
-					this.filteredDirectClients = list;
-				} else {
-					this.filteredDirectClients = [
-						{
-							clientName: 'No records found',
-							externalId: '',
-							id: 'no-data',
-							selected: false,
-						},
-					];
-				}
-			});
+		// this.salesClientDataForm.directClientIdValue?.valueChanges
+		// 	.pipe(
+		// 		takeUntil(this._unsubscribe),
+		// 		debounceTime(300),
+		// 		switchMap((value: any) => {
+		// 			let toSend = {
+		// 				name: value ?? '',
+		// 				maxRecordsCount: 1000,
+		// 			};
+		// 			if (value?.clientId) {
+		// 				toSend.name = value.clientId ? value.clientName?.trim() : value?.trim();
+		// 			}
+		// 			return this._lookupService.clientsAll(toSend.name, toSend.maxRecordsCount);
+		// 		})
+		// 	)
+		// 	.subscribe((list: ClientResultDto[]) => {
+		// 		if (list.length) {
+		// 			this.filteredDirectClients = list;
+		// 		} else {
+		// 			this.filteredDirectClients = [
+		// 				{
+		// 					clientName: 'No records found',
+		// 					externalId: '',
+		// 					id: 'no-data',
+		// 					selected: false,
+		// 				},
+		// 			];
+		// 		}
+		// 	});
 
-		this.salesClientDataForm.endClientIdValue?.valueChanges
-			.pipe(
-				takeUntil(this._unsubscribe),
-				debounceTime(300),
-				switchMap((value: any) => {
-					let toSend = {
-						name: value ?? '',
-						maxRecordsCount: 1000,
-					};
-					if (value?.clientId) {
-						toSend.name = value.clientId ? value.clientName?.trim() : value?.trim();
-					}
-					return this._lookupService.clientsAll(toSend.name, toSend.maxRecordsCount);
-				})
-			)
-			.subscribe((list: ClientResultDto[]) => {
-				if (list.length) {
-					this.filteredEndClients = list;
-				} else {
-					this.filteredEndClients = [
-						{
-							clientName: 'No records found',
-							externalId: '',
-							id: 'no-data',
-							selected: false,
-						},
-					];
-				}
-			});
+		// this.salesClientDataForm.endClientIdValue?.valueChanges
+		// 	.pipe(
+		// 		takeUntil(this._unsubscribe),
+		// 		debounceTime(300),
+		// 		switchMap((value: any) => {
+		// 			let toSend = {
+		// 				name: value ?? '',
+		// 				maxRecordsCount: 1000,
+		// 			};
+		// 			if (value?.clientId) {
+		// 				toSend.name = value.clientId ? value.clientName?.trim() : value?.trim();
+		// 			}
+		// 			return this._lookupService.clientsAll(toSend.name, toSend.maxRecordsCount);
+		// 		})
+		// 	)
+		// 	.subscribe((list: ClientResultDto[]) => {
+		// 		if (list.length) {
+		// 			this.filteredEndClients = list;
+		// 		} else {
+		// 			this.filteredEndClients = [
+		// 				{
+		// 					clientName: 'No records found',
+		// 					externalId: '',
+		// 					id: 'no-data',
+		// 					selected: false,
+		// 				},
+		// 			];
+		// 		}
+		// 	});
 
-		this.salesClientDataForm.invoicePaperworkContactIdValue?.valueChanges
-			.pipe(
-				takeUntil(this._unsubscribe),
-				debounceTime(300),
-				switchMap((value: any) => {
-					let toSend = {
-						clientId1: this.salesClientDataForm.directClientIdValue?.value?.clientId,
-						clientId2: this.salesClientDataForm.endClientIdValue?.value?.clientId ?? undefined,
-						name: value,
-						maxRecordsCount: 1000,
-					};
-					if (value?.id) {
-						toSend.name = value.id ? value.firstName : value;
-					}
-					return this._lookupService.contacts(toSend.clientId1, toSend.clientId2, toSend.name, toSend.maxRecordsCount);
-				})
-			)
-			.subscribe((list: ContactResultDto[]) => {
-				if (list.length) {
-					this.filteredReferencePersons = list;
-				} else {
-					this.filteredReferencePersons = [{firstName: 'No records found', lastName: '', id: 'no-data'}];
-				}
-			});
+		// this.salesClientDataForm.invoicePaperworkContactIdValue?.valueChanges
+		// 	.pipe(
+		// 		takeUntil(this._unsubscribe),
+		// 		debounceTime(300),
+		// 		switchMap((value: any) => {
+		// 			let toSend = {
+		// 				clientId1: this.salesClientDataForm.directClientIdValue?.value?.clientId,
+		// 				clientId2: this.salesClientDataForm.endClientIdValue?.value?.clientId ?? undefined,
+		// 				name: value,
+		// 				maxRecordsCount: 1000,
+		// 			};
+		// 			if (value?.id) {
+		// 				toSend.name = value.id ? value.firstName : value;
+		// 			}
+		// 			return this._lookupService.contacts(toSend.clientId1, toSend.clientId2, toSend.name, toSend.maxRecordsCount);
+		// 		})
+		// 	)
+		// 	.subscribe((list: ContactResultDto[]) => {
+		// 		if (list.length) {
+		// 			this.filteredReferencePersons = list;
+		// 		} else {
+		// 			this.filteredReferencePersons = [{firstName: 'No records found', lastName: '', id: 'no-data'}];
+		// 		}
+		// 	});
 
-		this.salesClientDataForm.clientInvoicingRecipientIdValue?.valueChanges
-			.pipe(
-				takeUntil(this._unsubscribe),
-				debounceTime(300),
-				switchMap((value: any) => {
-					let toSend = {
-						name: value ?? '',
-						maxRecordsCount: 1000,
-					};
-					if (value?.clientId) {
-						toSend.name = value.clientId ? value.clientName : value;
-					}
-					return this._lookupService.clientsAll(toSend.name, toSend.maxRecordsCount);
-				})
-			)
-			.subscribe((list: ClientResultDto[]) => {
-				if (list.length) {
-					this.filteredClientInvoicingRecipients = list;
-				} else {
-					this.filteredClientInvoicingRecipients = [{ clientName: 'No records found', id: 'no-data' }];
-				}
-			});
+		// this.salesClientDataForm.clientInvoicingRecipientIdValue?.valueChanges
+		// 	.pipe(
+		// 		takeUntil(this._unsubscribe),
+		// 		debounceTime(300),
+		// 		switchMap((value: any) => {
+		// 			let toSend = {
+		// 				name: value ?? '',
+		// 				maxRecordsCount: 1000,
+		// 			};
+		// 			if (value?.clientId) {
+		// 				toSend.name = value.clientId ? value.clientName : value;
+		// 			}
+		// 			return this._lookupService.clientsAll(toSend.name, toSend.maxRecordsCount);
+		// 		})
+		// 	)
+		// 	.subscribe((list: ClientResultDto[]) => {
+		// 		if (list.length) {
+		// 			this.filteredClientInvoicingRecipients = list;
+		// 		} else {
+		// 			this.filteredClientInvoicingRecipients = [{ clientName: 'No records found', id: 'no-data' }];
+		// 		}
+		// 	});
 
-		this.salesClientDataForm.evaluationsReferencePersonIdValue?.valueChanges
-			.pipe(
-				takeUntil(this._unsubscribe),
-				debounceTime(300),
-				switchMap((value: any) => {
-					if (value) {
-						let toSend = {
-							clientId1: this.salesClientDataForm.directClientIdValue?.value?.clientId,
-							clientId2: this.salesClientDataForm.endClientIdValue?.value?.clientId ?? undefined,
-							name: value,
-							maxRecordsCount: 1000,
-						};
-						if (value?.id) {
-							toSend.name = value.id ? value.firstName : value;
-						}
-						return this._lookupService.contacts(
-							toSend.clientId1,
-							toSend.clientId2,
-							toSend.name,
-							toSend.maxRecordsCount
-						);
-					} else {
-						return of([]);
-					}
-				})
-			)
-			.subscribe((list: ContactResultDto[]) => {
-				if (list.length) {
-					this.filteredEvaluationReferencePersons = list;
-				} else {
-					this.filteredEvaluationReferencePersons = [{firstName: 'No records found', lastName: '', id: 'no-data' }];
-				}
-			});
+		// this.salesClientDataForm.evaluationsReferencePersonIdValue?.valueChanges
+		// 	.pipe(
+		// 		takeUntil(this._unsubscribe),
+		// 		debounceTime(300),
+		// 		switchMap((value: any) => {
+		// 			if (value) {
+		// 				let toSend = {
+		// 					clientId1: this.salesClientDataForm.directClientIdValue?.value?.clientId,
+		// 					clientId2: this.salesClientDataForm.endClientIdValue?.value?.clientId ?? undefined,
+		// 					name: value,
+		// 					maxRecordsCount: 1000,
+		// 				};
+		// 				if (value?.id) {
+		// 					toSend.name = value.id ? value.firstName : value;
+		// 				}
+		// 				return this._lookupService.contacts(
+		// 					toSend.clientId1,
+		// 					toSend.clientId2,
+		// 					toSend.name,
+		// 					toSend.maxRecordsCount
+		// 				);
+		// 			} else {
+		// 				return of([]);
+		// 			}
+		// 		})
+		// 	)
+		// 	.subscribe((list: ContactResultDto[]) => {
+		// 		if (list.length) {
+		// 			this.filteredEvaluationReferencePersons = list;
+		// 		} else {
+		// 			this.filteredEvaluationReferencePersons = [{firstName: 'No records found', lastName: '', id: 'no-data' }];
+		// 		}
+		// 	});
 
 		this.salesTerminateConsultantForm.finalEvaluationReferencePerson?.valueChanges
 			.pipe(
@@ -451,32 +454,32 @@ export class WorkflowSalesComponent extends AppComponentBase implements OnInit, 
 				}
 			});
 
-		merge(
-			this.salesClientDataForm.startDate!.valueChanges,
-			this.salesClientDataForm.endDate!.valueChanges,
-			this.salesClientDataForm.noEndDate!.valueChanges
-		)
-			.pipe(takeUntil(this._unsubscribe), debounceTime(300))
-			.subscribe(() => {
-				for (let consultant of this.consultants.controls) {
-					if (consultant.get('consultantProjectDurationSameAsClient')!.value) {
-						consultant
-							.get('consultantProjectStartDate')
-							?.setValue(this.salesClientDataForm.startDate?.value, { emitEvent: false });
-						consultant
-							.get('consultantProjectEndDate')
-							?.setValue(this.salesClientDataForm.endDate?.value, { emitEvent: false });
-						consultant
-							.get('consultantProjectNoEndDate')
-							?.setValue(this.salesClientDataForm.noEndDate?.value, { emitEvent: false });
-						if (this.salesClientDataForm.noEndDate?.value) {
-							consultant.get('consultantProjectEndDate')?.disable();
-						} else {
-							consultant.get('consultantProjectEndDate')?.enable();
-						}
-					}
-				}
-			});
+		// merge(
+		// 	this.salesClientDataForm.startDate!.valueChanges,
+		// 	this.salesClientDataForm.endDate!.valueChanges,
+		// 	this.salesClientDataForm.noEndDate!.valueChanges
+		// )
+		// 	.pipe(takeUntil(this._unsubscribe), debounceTime(300))
+		// 	.subscribe(() => {
+		// 		for (let consultant of this.consultants.controls) {
+		// 			if (consultant.get('consultantProjectDurationSameAsClient')!.value) {
+		// 				consultant
+		// 					.get('consultantProjectStartDate')
+		// 					?.setValue(this.salesClientDataForm.startDate?.value, { emitEvent: false });
+		// 				consultant
+		// 					.get('consultantProjectEndDate')
+		// 					?.setValue(this.salesClientDataForm.endDate?.value, { emitEvent: false });
+		// 				consultant
+		// 					.get('consultantProjectNoEndDate')
+		// 					?.setValue(this.salesClientDataForm.noEndDate?.value, { emitEvent: false });
+		// 				if (this.salesClientDataForm.noEndDate?.value) {
+		// 					consultant.get('consultantProjectEndDate')?.disable();
+		// 				} else {
+		// 					consultant.get('consultantProjectEndDate')?.enable();
+		// 				}
+		// 			}
+		// 		}
+		// 	});
 	}
 
 	ngOnInit(): void {
@@ -565,7 +568,7 @@ export class WorkflowSalesComponent extends AppComponentBase implements OnInit, 
 	}
 
 	validateSalesForm() {
-		this.salesClientDataForm.markAllAsTouched();
+		this.clientDataComponent?.salesClientDataForm.markAllAsTouched();
 		this.mainDataComponent?.salesMainDataForm.markAllAsTouched();
 		this.consultantsForm.markAllAsTouched();
 		this.salesTerminateConsultantForm.markAllAsTouched();
@@ -576,7 +579,7 @@ export class WorkflowSalesComponent extends AppComponentBase implements OnInit, 
 			case WorkflowProcessType.StartConsultantPeriod:
 			case WorkflowProcessType.ChangeConsultantPeriod:
 			case WorkflowProcessType.ExtendConsultantPeriod:
-				return this.salesClientDataForm.valid && this.mainDataComponent?.salesMainDataForm.valid && this.consultantsForm.valid;
+				return this.clientDataComponent?.salesClientDataForm.valid && this.mainDataComponent?.salesMainDataForm.valid && this.consultantsForm.valid;
 			case WorkflowProcessType.TerminateWorkflow:
 			case WorkflowProcessType.TerminateConsultant:
 				return this.salesTerminateConsultantForm.valid;
@@ -642,20 +645,20 @@ export class WorkflowSalesComponent extends AppComponentBase implements OnInit, 
 		);
 	}
 
-	directClientSelected(event: MatAutocompleteSelectedEvent) {
-		this.salesClientDataForm.clientInvoicingRecipientIdValue?.setValue(event.option.value, { emitEvent: false });
-		this.getRatesAndFees(event.option.value?.clientId);
-		this.focusOutMethod();
-	}
+	// directClientSelected(event: MatAutocompleteSelectedEvent) {
+	// 	this.salesClientDataForm.clientInvoicingRecipientIdValue?.setValue(event.option.value, { emitEvent: false });
+	// 	this.getRatesAndFees(event.option.value?.clientId);
+	// 	this.focusOutMethod();
+	// }
 
-	getRatesAndFees(clientId: number) {
-		this._clientService
-			.specialRatesAll(clientId, false)
-			.subscribe((result) => this.clientSpecialRateList = result);
-		this._clientService
-			.specialFeesAll(clientId, false)
-			.subscribe((result) => this.clientSpecialFeeList = result);
-	}
+	// getRatesAndFees(clientId: number) {
+	// 	this._clientService
+	// 		.specialRatesAll(clientId, false)
+	// 		.subscribe((result) => this.clientSpecialRateList = result);
+	// 	this._clientService
+	// 		.specialFeesAll(clientId, false)
+	// 		.subscribe((result) => this.clientSpecialFeeList = result);
+	// }
 
 	ngOnDestroy(): void {
 		this._unsubscribe.next();
@@ -746,195 +749,195 @@ export class WorkflowSalesComponent extends AppComponentBase implements OnInit, 
 			});
 	}
 
-	selectClientSpecialRate(event: any, rate: ClientSpecialRateDto, clientRateMenuTrigger: MatMenuTrigger) {
-		event.stopPropagation();
-		const formattedRate = new PeriodClientSpecialRateDto();
-		formattedRate.id = undefined;
-		formattedRate.clientSpecialRateId = rate.id;
-		formattedRate.rateName = rate.internalName;
-		formattedRate.reportingUnit = rate.specialRateReportingUnit;
-		formattedRate.rateSpecifiedAs = rate.specialRateSpecifiedAs;
-		if (formattedRate.rateSpecifiedAs?.id === 1) {
-			formattedRate.clientRate = +((this.salesClientDataForm?.normalRate?.value * rate.clientRate!) / 100).toFixed(2);
-			formattedRate.clientRateCurrencyId = this.salesClientDataForm.clientCurrency?.value?.id;
-		} else {
-			formattedRate.clientRate = rate.clientRate;
-			formattedRate.clientRateCurrencyId = rate.clientRateCurrency?.id;
-		}
-		this.clientSpecialRateFilter.setValue('');
-		clientRateMenuTrigger.closeMenu();
-		this.addSpecialRate(formattedRate);
-	}
+	// selectClientSpecialRate(event: any, rate: ClientSpecialRateDto, clientRateMenuTrigger: MatMenuTrigger) {
+	// 	event.stopPropagation();
+	// 	const formattedRate = new PeriodClientSpecialRateDto();
+	// 	formattedRate.id = undefined;
+	// 	formattedRate.clientSpecialRateId = rate.id;
+	// 	formattedRate.rateName = rate.internalName;
+	// 	formattedRate.reportingUnit = rate.specialRateReportingUnit;
+	// 	formattedRate.rateSpecifiedAs = rate.specialRateSpecifiedAs;
+	// 	if (formattedRate.rateSpecifiedAs?.id === 1) {
+	// 		formattedRate.clientRate = +((this.salesClientDataForm?.normalRate?.value * rate.clientRate!) / 100).toFixed(2);
+	// 		formattedRate.clientRateCurrencyId = this.salesClientDataForm.clientCurrency?.value?.id;
+	// 	} else {
+	// 		formattedRate.clientRate = rate.clientRate;
+	// 		formattedRate.clientRateCurrencyId = rate.clientRateCurrency?.id;
+	// 	}
+	// 	this.clientSpecialRateFilter.setValue('');
+	// 	clientRateMenuTrigger.closeMenu();
+	// 	this.addSpecialRate(formattedRate);
+	// }
 
-	addSpecialRate(clientRate?: PeriodClientSpecialRateDto) {
-		const form = this._fb.group({
-			id: new UntypedFormControl(clientRate?.id ?? null),
-			clientSpecialRateId: new UntypedFormControl(clientRate?.clientSpecialRateId ?? null),
-			rateName: new UntypedFormControl(clientRate?.rateName ?? null),
-			reportingUnit: new UntypedFormControl(clientRate?.reportingUnit ?? null),
-			rateSpecifiedAs: new UntypedFormControl(clientRate?.rateSpecifiedAs ?? null),
-			clientRate: new UntypedFormControl(clientRate?.clientRate ?? null),
-			clientRateCurrency: new UntypedFormControl(
-				this.findItemById(this.currencies, clientRate?.clientRateCurrencyId) ?? null
-			),
-			editable: new UntypedFormControl(clientRate ? false : true),
-		});
-		this.salesClientDataForm.clientRates.push(form);
-	}
+	// addSpecialRate(clientRate?: PeriodClientSpecialRateDto) {
+	// 	const form = this._fb.group({
+	// 		id: new UntypedFormControl(clientRate?.id ?? null),
+	// 		clientSpecialRateId: new UntypedFormControl(clientRate?.clientSpecialRateId ?? null),
+	// 		rateName: new UntypedFormControl(clientRate?.rateName ?? null),
+	// 		reportingUnit: new UntypedFormControl(clientRate?.reportingUnit ?? null),
+	// 		rateSpecifiedAs: new UntypedFormControl(clientRate?.rateSpecifiedAs ?? null),
+	// 		clientRate: new UntypedFormControl(clientRate?.clientRate ?? null),
+	// 		clientRateCurrency: new UntypedFormControl(
+	// 			this.findItemById(this.currencies, clientRate?.clientRateCurrencyId) ?? null
+	// 		),
+	// 		editable: new UntypedFormControl(clientRate ? false : true),
+	// 	});
+	// 	this.salesClientDataForm.clientRates.push(form);
+	// }
 
-	get clientRates(): UntypedFormArray {
-		return this.salesClientDataForm.get('clientRates') as UntypedFormArray;
-	}
+	// get clientRates(): UntypedFormArray {
+	// 	return this.salesClientDataForm.get('clientRates') as UntypedFormArray;
+	// }
 
-	removeClientRate(index: number) {
-		this.clientRates.removeAt(index);
-	}
+	// removeClientRate(index: number) {
+	// 	this.clientRates.removeAt(index);
+	// }
 
-	editOrSaveSpecialRate(isEditable: boolean, rateIndex: number) {
-		if (isEditable) {
-			// save
-			this.clientRateToEdit = new PeriodClientSpecialRateDto();
-			this.isClientRateEditing = false;
-		} else {
-			// make editable
-			const clientRateValue = this.clientRates.at(rateIndex).value;
-			this.clientRateToEdit = new PeriodClientSpecialRateDto({
-				id: clientRateValue.id,
-				clientSpecialRateId: clientRateValue.clientSpecialRateId,
-				rateName: clientRateValue.rateName,
-				reportingUnit: clientRateValue.reportingUnit,
-				clientRate: clientRateValue.clientRate,
-				clientRateCurrencyId: clientRateValue.clientRateCurrency?.id,
-			});
-			this.isClientRateEditing = true;
-		}
-		this.clientRates.at(rateIndex).get('editable')?.setValue(!isEditable, { emitEvent: false });
-	}
+	// editOrSaveSpecialRate(isEditable: boolean, rateIndex: number) {
+	// 	if (isEditable) {
+	// 		// save
+	// 		this.clientRateToEdit = new PeriodClientSpecialRateDto();
+	// 		this.isClientRateEditing = false;
+	// 	} else {
+	// 		// make editable
+	// 		const clientRateValue = this.clientRates.at(rateIndex).value;
+	// 		this.clientRateToEdit = new PeriodClientSpecialRateDto({
+	// 			id: clientRateValue.id,
+	// 			clientSpecialRateId: clientRateValue.clientSpecialRateId,
+	// 			rateName: clientRateValue.rateName,
+	// 			reportingUnit: clientRateValue.reportingUnit,
+	// 			clientRate: clientRateValue.clientRate,
+	// 			clientRateCurrencyId: clientRateValue.clientRateCurrency?.id,
+	// 		});
+	// 		this.isClientRateEditing = true;
+	// 	}
+	// 	this.clientRates.at(rateIndex).get('editable')?.setValue(!isEditable, { emitEvent: false });
+	// }
 
-	cancelEditClientRate(rateIndex: number) {
-		const rateRow = this.clientRates.at(rateIndex);
-		rateRow.get('clientRate')?.setValue(this.clientRateToEdit.clientRate, { emitEvent: false });
-		rateRow
-			.get('clientRateCurrency')
-			?.setValue(this.findItemById(this.currencies, this.clientRateToEdit.clientRateCurrencyId), { emitEvent: false });
-		this.clientRateToEdit = new PeriodClientSpecialFeeDto();
-		this.isClientRateEditing = false;
-		this.clientRates.at(rateIndex).get('editable')?.setValue(false, { emitEvent: false });
-	}
+	// cancelEditClientRate(rateIndex: number) {
+	// 	const rateRow = this.clientRates.at(rateIndex);
+	// 	rateRow.get('clientRate')?.setValue(this.clientRateToEdit.clientRate, { emitEvent: false });
+	// 	rateRow
+	// 		.get('clientRateCurrency')
+	// 		?.setValue(this.findItemById(this.currencies, this.clientRateToEdit.clientRateCurrencyId), { emitEvent: false });
+	// 	this.clientRateToEdit = new PeriodClientSpecialFeeDto();
+	// 	this.isClientRateEditing = false;
+	// 	this.clientRates.at(rateIndex).get('editable')?.setValue(false, { emitEvent: false });
+	// }
 
-	selectClientSpecialFee(event: any, fee: ClientSpecialFeeDto, clientFeeMenuTrigger: MatMenuTrigger) {
-        event.stopPropagation();
-		const formattedFee = new PeriodClientSpecialFeeDto();
-		formattedFee.id = undefined;
-		formattedFee.clientSpecialFeeId = fee.id;
-		formattedFee.feeName = fee.internalName;
-		formattedFee.frequency = fee.clientSpecialFeeFrequency;
-		formattedFee.clientRate = fee.clientRate;
-		formattedFee.clientRateCurrencyId = fee.clientRateCurrency?.id;
-		this.clientSpecialFeeFilter.setValue('');
-		clientFeeMenuTrigger.closeMenu();
-		this.addClientFee(formattedFee);
-	}
+	// selectClientSpecialFee(event: any, fee: ClientSpecialFeeDto, clientFeeMenuTrigger: MatMenuTrigger) {
+    //     event.stopPropagation();
+	// 	const formattedFee = new PeriodClientSpecialFeeDto();
+	// 	formattedFee.id = undefined;
+	// 	formattedFee.clientSpecialFeeId = fee.id;
+	// 	formattedFee.feeName = fee.internalName;
+	// 	formattedFee.frequency = fee.clientSpecialFeeFrequency;
+	// 	formattedFee.clientRate = fee.clientRate;
+	// 	formattedFee.clientRateCurrencyId = fee.clientRateCurrency?.id;
+	// 	this.clientSpecialFeeFilter.setValue('');
+	// 	clientFeeMenuTrigger.closeMenu();
+	// 	this.addClientFee(formattedFee);
+	// }
 
-	addClientFee(clientFee?: PeriodClientSpecialFeeDto) {
-		const form = this._fb.group({
-			id: new UntypedFormControl(clientFee?.id ?? null),
-			clientSpecialFeeId: new UntypedFormControl(clientFee?.clientSpecialFeeId ?? null),
-			feeName: new UntypedFormControl(clientFee?.feeName ?? null),
-			frequency: new UntypedFormControl(clientFee?.frequency ?? null),
-			clientRate: new UntypedFormControl(clientFee?.clientRate ?? null),
-			clientRateCurrency: new UntypedFormControl(
-				this.findItemById(this.currencies, clientFee?.clientRateCurrencyId) ?? null
-			),
-			editable: new UntypedFormControl(clientFee ? false : true),
-		});
-		this.salesClientDataForm.clientFees.push(form);
-	}
+	// addClientFee(clientFee?: PeriodClientSpecialFeeDto) {
+	// 	const form = this._fb.group({
+	// 		id: new UntypedFormControl(clientFee?.id ?? null),
+	// 		clientSpecialFeeId: new UntypedFormControl(clientFee?.clientSpecialFeeId ?? null),
+	// 		feeName: new UntypedFormControl(clientFee?.feeName ?? null),
+	// 		frequency: new UntypedFormControl(clientFee?.frequency ?? null),
+	// 		clientRate: new UntypedFormControl(clientFee?.clientRate ?? null),
+	// 		clientRateCurrency: new UntypedFormControl(
+	// 			this.findItemById(this.currencies, clientFee?.clientRateCurrencyId) ?? null
+	// 		),
+	// 		editable: new UntypedFormControl(clientFee ? false : true),
+	// 	});
+	// 	this.salesClientDataForm.clientFees.push(form);
+	// }
 
-	get clientFees(): UntypedFormArray {
-		return this.salesClientDataForm.get('clientFees') as UntypedFormArray;
-	}
+	// get clientFees(): UntypedFormArray {
+	// 	return this.salesClientDataForm.get('clientFees') as UntypedFormArray;
+	// }
 
-	removeClientFee(index: number) {
-		this.clientFees.removeAt(index);
-	}
+	// removeClientFee(index: number) {
+	// 	this.clientFees.removeAt(index);
+	// }
 
-	editOrSaveClientFee(isEditable: boolean, feeIndex: number) {
-		if (isEditable) {
-			this.clientFeeToEdit = new PeriodClientSpecialFeeDto();
-			this.isClientFeeEditing = false;
-		} else {
-			const consultantFeeValue = this.clientFees.at(feeIndex).value;
-			this.clientFeeToEdit = new PeriodClientSpecialFeeDto({
-				id: consultantFeeValue.id,
-				clientSpecialFeeId: consultantFeeValue.clientSpecialRateId,
-				feeName: consultantFeeValue.rateName,
-				frequency: consultantFeeValue.reportingUnit,
-				clientRate: consultantFeeValue.proDataRateValue,
-				clientRateCurrencyId: consultantFeeValue.proDataRateCurrency?.id,
-			});
-			this.isClientFeeEditing = true;
-		}
-		this.clientFees.at(feeIndex).get('editable')?.setValue(!isEditable, { emitEvent: false });
-	}
+	// editOrSaveClientFee(isEditable: boolean, feeIndex: number) {
+	// 	if (isEditable) {
+	// 		this.clientFeeToEdit = new PeriodClientSpecialFeeDto();
+	// 		this.isClientFeeEditing = false;
+	// 	} else {
+	// 		const consultantFeeValue = this.clientFees.at(feeIndex).value;
+	// 		this.clientFeeToEdit = new PeriodClientSpecialFeeDto({
+	// 			id: consultantFeeValue.id,
+	// 			clientSpecialFeeId: consultantFeeValue.clientSpecialRateId,
+	// 			feeName: consultantFeeValue.rateName,
+	// 			frequency: consultantFeeValue.reportingUnit,
+	// 			clientRate: consultantFeeValue.proDataRateValue,
+	// 			clientRateCurrencyId: consultantFeeValue.proDataRateCurrency?.id,
+	// 		});
+	// 		this.isClientFeeEditing = true;
+	// 	}
+	// 	this.clientFees.at(feeIndex).get('editable')?.setValue(!isEditable, { emitEvent: false });
+	// }
 
-	cancelEditClientFee(feeIndex: number) {
-		const feeRow = this.clientFees.at(feeIndex);
-		feeRow.get('clientRate')?.setValue(this.clientFeeToEdit.clientRate, { emitEvent: false });
-		feeRow
-			.get('clientRateCurrencyId')
-			?.setValue(this.findItemById(this.currencies, this.clientFeeToEdit.clientRateCurrencyId), { emitEvent: false });
-		this.clientFeeToEdit = new PeriodClientSpecialFeeDto();
-		this.isClientFeeEditing = false;
-		this.clientFees.at(feeIndex).get('editable')?.setValue(false, { emitEvent: false });
-	}
+	// cancelEditClientFee(feeIndex: number) {
+	// 	const feeRow = this.clientFees.at(feeIndex);
+	// 	feeRow.get('clientRate')?.setValue(this.clientFeeToEdit.clientRate, { emitEvent: false });
+	// 	feeRow
+	// 		.get('clientRateCurrencyId')
+	// 		?.setValue(this.findItemById(this.currencies, this.clientFeeToEdit.clientRateCurrencyId), { emitEvent: false });
+	// 	this.clientFeeToEdit = new PeriodClientSpecialFeeDto();
+	// 	this.isClientFeeEditing = false;
+	// 	this.clientFees.at(feeIndex).get('editable')?.setValue(false, { emitEvent: false });
+	// }
 
-	addSignerToForm(signer?: ContractSignerDto) {
-		const form = this._fb.group({
-			clientContact: new UntypedFormControl(signer?.contact ?? null, CustomValidators.autocompleteValidator(['id'])),
-			clientRole: new UntypedFormControl(this.findItemById(this.signerRoles, signer?.signerRoleId) ?? null),
-			clientSequence: new UntypedFormControl(signer?.signOrder ?? null),
-		});
-		this.salesClientDataForm.contractSigners.push(form);
-		this.manageSignersContactAutocomplete(this.salesClientDataForm.contractSigners.length - 1);
-	}
+	// addSignerToForm(signer?: ContractSignerDto) {
+	// 	const form = this._fb.group({
+	// 		clientContact: new UntypedFormControl(signer?.contact ?? null, CustomValidators.autocompleteValidator(['id'])),
+	// 		clientRole: new UntypedFormControl(this.findItemById(this.signerRoles, signer?.signerRoleId) ?? null),
+	// 		clientSequence: new UntypedFormControl(signer?.signOrder ?? null),
+	// 	});
+	// 	this.salesClientDataForm.contractSigners.push(form);
+	// 	this.manageSignersContactAutocomplete(this.salesClientDataForm.contractSigners.length - 1);
+	// }
 
-	manageSignersContactAutocomplete(signerIndex: number) {
-		let arrayControl = this.salesClientDataForm.contractSigners.at(signerIndex);
-		arrayControl!
-			.get('clientContact')!
-			.valueChanges.pipe(
-				takeUntil(this._unsubscribe),
-				debounceTime(300),
-				switchMap((value: any) => {
-					let toSend = {
-						clientId1: this.salesClientDataForm.directClientIdValue?.value?.clientId,
-						clientId2: this.salesClientDataForm.endClientIdValue?.value?.clientId ?? undefined,
-						name: value,
-						maxRecordsCount: 1000,
-					};
-					if (value?.id) {
-						toSend.name = value.id ? value.firstName : value;
-					}
-					return this._lookupService.contacts(toSend.clientId1, toSend.clientId2, toSend.name, toSend.maxRecordsCount);
-				})
-			)
-			.subscribe((list: ContactResultDto[]) => {
-				if (list.length) {
-					this.filteredContractSigners = list;
-				} else {
-					this.filteredContractSigners = [{firstName: 'No records found', lastName: '', id: 'no-data'}];
-				}
-			});
-	}
+	// manageSignersContactAutocomplete(signerIndex: number) {
+	// 	let arrayControl = this.salesClientDataForm.contractSigners.at(signerIndex);
+	// 	arrayControl!
+	// 		.get('clientContact')!
+	// 		.valueChanges.pipe(
+	// 			takeUntil(this._unsubscribe),
+	// 			debounceTime(300),
+	// 			switchMap((value: any) => {
+	// 				let toSend = {
+	// 					clientId1: this.salesClientDataForm.directClientIdValue?.value?.clientId,
+	// 					clientId2: this.salesClientDataForm.endClientIdValue?.value?.clientId ?? undefined,
+	// 					name: value,
+	// 					maxRecordsCount: 1000,
+	// 				};
+	// 				if (value?.id) {
+	// 					toSend.name = value.id ? value.firstName : value;
+	// 				}
+	// 				return this._lookupService.contacts(toSend.clientId1, toSend.clientId2, toSend.name, toSend.maxRecordsCount);
+	// 			})
+	// 		)
+	// 		.subscribe((list: ContactResultDto[]) => {
+	// 			if (list.length) {
+	// 				this.filteredContractSigners = list;
+	// 			} else {
+	// 				this.filteredContractSigners = [{firstName: 'No records found', lastName: '', id: 'no-data'}];
+	// 			}
+	// 		});
+	// }
 
-	get contractSigners(): UntypedFormArray {
-		return this.salesClientDataForm.get('contractSigners') as UntypedFormArray;
-	}
+	// get contractSigners(): UntypedFormArray {
+	// 	return this.salesClientDataForm.get('contractSigners') as UntypedFormArray;
+	// }
 
-	removeSigner(index: number) {
-		this.contractSigners.removeAt(index);
-	}
+	// removeSigner(index: number) {
+	// 	this.contractSigners.removeAt(index);
+	// }
 
 	addConsultantForm(consultant?: ConsultantSalesDataDto) {
 		let consultantRate = this.findItemById(this.clientRateTypes, 1); // 1: time based
@@ -1371,7 +1374,7 @@ export class WorkflowSalesComponent extends AppComponentBase implements OnInit, 
 				switchMap((value: any) => {
 					let toSend = {
 						name: value ? value : '',
-						clientId: this.salesClientDataForm.directClientIdValue!.value?.clientId,
+						clientId: this.clientDataComponent?.salesClientDataForm.directClientIdValue!.value?.clientId,
 						maxRecordsCount: 1000,
 					};
 					if (value) {
@@ -1507,28 +1510,28 @@ export class WorkflowSalesComponent extends AppComponentBase implements OnInit, 
 						emitEvent: false,
 					});
 				}
-				this.salesClientDataForm.patchValue(result, { emitEvent: false });
-				this.salesClientDataForm.patchValue(result.salesClientData!, { emitEvent: false });
-				this.salesClientDataForm.differentEndClient?.setValue(result.salesClientData?.differentEndClient ?? false, {
+				this.clientDataComponent?.salesClientDataForm.patchValue(result, { emitEvent: false });
+				this.clientDataComponent?.salesClientDataForm.patchValue(result.salesClientData!, { emitEvent: false });
+				this.clientDataComponent?.salesClientDataForm.differentEndClient?.setValue(result.salesClientData?.differentEndClient ?? false, {
 					emitEvent: false,
 				}); // default value if false
-				this.salesClientDataForm.directClientIdValue?.setValue(result?.salesClientData?.directClient, {
+				this.clientDataComponent?.salesClientDataForm.directClientIdValue?.setValue(result?.salesClientData?.directClient, {
 					emitEvent: false,
 				});
 				if (result?.salesClientData?.directClient?.clientId) {
-					this.getRatesAndFees(result?.salesClientData?.directClient?.clientId);
+					this.clientDataComponent?.getRatesAndFees(result?.salesClientData?.directClient?.clientId);
 				}
-				this.salesClientDataForm.endClientIdValue?.setValue(result?.salesClientData?.endClient, { emitEvent: false });
+				this.clientDataComponent?.salesClientDataForm.endClientIdValue?.setValue(result?.salesClientData?.endClient, { emitEvent: false });
 				if (result?.noEndDate) {
-					this.salesClientDataForm.endDate?.disable({
+					this.clientDataComponent?.salesClientDataForm.endDate?.disable({
 						emitEvent: false,
 					});
 				}
-				this.salesClientDataForm.noClientExtensionOption?.setValue(
+				this.clientDataComponent?.salesClientDataForm.noClientExtensionOption?.setValue(
 					result?.salesClientData?.noClientExtensionOption ?? true,
 					{ emitEvent: false }
 				); // no topion - default value
-				this.salesClientDataForm.clientTimeReportingCapId?.setValue(
+				this.clientDataComponent?.salesClientDataForm.clientTimeReportingCapId?.setValue(
 					result?.salesClientData?.clientTimeReportingCapId ?? 1,
 					{ emitEvent: false }
 				); // default idValue = 1
@@ -1538,66 +1541,66 @@ export class WorkflowSalesComponent extends AppComponentBase implements OnInit, 
 				} else if (result.salesClientData?.clientRate?.isTimeBasedRate) {
 					clientRateType = this.findItemById(this.clientRateTypes, 1); // 1: 'Time based'
 				}
-				this.salesClientDataForm.clientRateAndInvoicing?.setValue(clientRateType, { emitEVent: false });
-				this.salesClientDataForm.normalRate?.setValue(result.salesClientData?.clientRate?.normalRate, {
+				this.clientDataComponent?.salesClientDataForm.clientRateAndInvoicing?.setValue(clientRateType, { emitEVent: false });
+				this.clientDataComponent?.salesClientDataForm.normalRate?.setValue(result.salesClientData?.clientRate?.normalRate, {
 					emitEVent: false,
 				});
-				this.salesClientDataForm.rateUnitTypeId?.setValue(result.salesClientData?.clientRate?.rateUnitTypeId, {
+				this.clientDataComponent?.salesClientDataForm.rateUnitTypeId?.setValue(result.salesClientData?.clientRate?.rateUnitTypeId, {
 					emitEVent: false,
 				});
-				this.salesClientDataForm.clientCurrency?.setValue(
+				this.clientDataComponent?.salesClientDataForm.clientCurrency?.setValue(
 					this.findItemById(this.currencies, result.salesClientData?.clientRate?.currencyId),
 					{ emitEVent: false }
 				);
-				this.salesClientDataForm.manualDate?.setValue(result.salesClientData?.clientRate?.manualDate, {
+				this.clientDataComponent?.salesClientDataForm.manualDate?.setValue(result.salesClientData?.clientRate?.manualDate, {
 					emitEVent: false,
 				});
-				this.salesClientDataForm.invoiceCurrencyId?.setValue(result.salesClientData?.clientRate?.invoiceCurrencyId, {
+				this.clientDataComponent?.salesClientDataForm.invoiceCurrencyId?.setValue(result.salesClientData?.clientRate?.invoiceCurrencyId, {
 					emitEVent: false,
 				});
-				if (this.salesClientDataForm.clientRateAndInvoicing?.value?.id === 1) {
+				if (this.clientDataComponent?.salesClientDataForm.clientRateAndInvoicing?.value?.id === 1) {
 					// Time based
-					this.salesClientDataForm.clientInvoiceFrequency?.setValue(
+					this.clientDataComponent?.salesClientDataForm.clientInvoiceFrequency?.setValue(
 						this.findItemById(this.invoiceFrequencies, result.salesClientData?.clientRate?.invoiceFrequencyId),
 						{ emitEVent: false }
 					);
 				}
-				if (this.salesClientDataForm.clientRateAndInvoicing?.value?.id === 2) {
+				if (this.clientDataComponent?.salesClientDataForm.clientRateAndInvoicing?.value?.id === 2) {
 					// Fixed
-					this.salesClientDataForm.clientInvoiceTime?.setValue(
+					this.clientDataComponent?.salesClientDataForm.clientInvoiceTime?.setValue(
 						this.findItemById(this.invoicingTimes, result.salesClientData?.clientRate?.invoicingTimeId),
 						{ emitEVent: false }
 					);
 				}
-				this.salesClientDataForm.clientInvoicingRecipientIdValue?.setValue(
+				this.clientDataComponent?.salesClientDataForm.clientInvoicingRecipientIdValue?.setValue(
 					result.salesClientData?.clientInvoicingRecipient,
 					{ emitEVent: false }
 				);
 				if (result?.salesClientData?.clientInvoicingRecipientSameAsDirectClient) {
-					this.salesClientDataForm.clientInvoicingRecipientIdValue?.disable({ emitEvent: false });
+					this.clientDataComponent?.salesClientDataForm.clientInvoicingRecipientIdValue?.disable({ emitEvent: false });
 				}
-				this.salesClientDataForm.invoicePaperworkContactIdValue?.setValue(
+				this.clientDataComponent?.salesClientDataForm.invoicePaperworkContactIdValue?.setValue(
 					result?.salesClientData?.invoicingReferencePerson,
 					{ emitEvent: false }
 				);
-				this.salesClientDataForm.evaluationsReferencePersonIdValue?.setValue(
+				this.clientDataComponent?.salesClientDataForm.evaluationsReferencePersonIdValue?.setValue(
 					result?.salesClientData?.evaluationsReferencePerson,
 					{ emitEvent: false }
 				);
-				this.salesClientDataForm.evaluationsDisabled?.setValue(result?.salesClientData?.evaluationsDisabled ?? false, {
+				this.clientDataComponent?.salesClientDataForm.evaluationsDisabled?.setValue(result?.salesClientData?.evaluationsDisabled ?? false, {
 					emitEvent: false,
 				}); // enabled - defalut value
 				if (result?.salesClientData?.noSpecialContractTerms) {
-					this.salesClientDataForm.specialContractTerms?.disable();
+					this.clientDataComponent?.salesClientDataForm.specialContractTerms?.disable();
 				}
 				result.salesClientData?.periodClientSpecialRates?.forEach((specialRate: PeriodClientSpecialRateDto) => {
-					this.addSpecialRate(specialRate);
+					this.clientDataComponent?.addSpecialRate(specialRate);
 				});
 				result.salesClientData?.periodClientSpecialFees?.forEach((specialFee: PeriodClientSpecialFeeDto) => {
-					this.addClientFee(specialFee);
+					this.clientDataComponent?.addClientFee(specialFee);
 				});
 				result?.salesClientData?.contractSigners?.forEach((signer: ContractSignerDto) => {
-					this.addSignerToForm(signer);
+					this.clientDataComponent?.addSignerToForm(signer);
 				});
 				if (result.consultantSalesData?.length) {
 					result.consultantSalesData?.forEach((consultant) => {
@@ -1608,13 +1611,13 @@ export class WorkflowSalesComponent extends AppComponentBase implements OnInit, 
 			});
 	}
 
-	clientRateTypeChange(value: EnumEntityTypeDto) {
-		if (value.id) {
-			this.salesClientDataForm.rateUnitTypeId?.setValue(null, { emitEvent: false });
-			this.salesClientDataForm.normalRate?.setValue(null, { emitEvent: false });
-			this.salesClientDataForm.clientCurrency?.setValue(null, { emitEvent: false });
-		}
-	}
+	// clientRateTypeChange(value: EnumEntityTypeDto) {
+	// 	if (value.id) {
+	// 		this.salesClientDataForm.rateUnitTypeId?.setValue(null, { emitEvent: false });
+	// 		this.salesClientDataForm.normalRate?.setValue(null, { emitEvent: false });
+	// 		this.salesClientDataForm.clientCurrency?.setValue(null, { emitEvent: false });
+	// 	}
+	// }
 
 	salesTypeChange(value: number) {
 		if (value === 3) {
@@ -1631,7 +1634,7 @@ export class WorkflowSalesComponent extends AppComponentBase implements OnInit, 
 			this.consultants
 				.at(consultantIndex)
 				.get('consultantWorkplaceClientAddress')
-				?.setValue(this.salesClientDataForm.directClientIdValue?.value, { emitEvent: false });
+				?.setValue(this.clientDataComponent?.salesClientDataForm.directClientIdValue?.value, { emitEvent: false });
 		}
 	}
 
@@ -1640,16 +1643,16 @@ export class WorkflowSalesComponent extends AppComponentBase implements OnInit, 
 			this.consultants
 				.at(consultantIndex)
 				.get('consultantProjectStartDate')
-				?.setValue(this.salesClientDataForm.startDate?.value, { emitEvent: false });
+				?.setValue(this.clientDataComponent?.salesClientDataForm.startDate?.value, { emitEvent: false });
 			this.consultants
 				.at(consultantIndex)
 				.get('consultantProjectEndDate')
-				?.setValue(this.salesClientDataForm.endDate?.value, { emitEvent: false });
+				?.setValue(this.clientDataComponent?.salesClientDataForm.endDate?.value, { emitEvent: false });
 			this.consultants
 				.at(consultantIndex)
 				.get('consultantProjectNoEndDate')
-				?.setValue(this.salesClientDataForm.noEndDate?.value, { emitEvent: false });
-			if (this.salesClientDataForm.noEndDate?.value) {
+				?.setValue(this.clientDataComponent?.salesClientDataForm.noEndDate?.value, { emitEvent: false });
+			if (this.clientDataComponent?.salesClientDataForm.noEndDate?.value) {
 				this.consultants.at(consultantIndex).get('consultantProjectEndDate')?.disable();
 			} else {
 				this.consultants.at(consultantIndex).get('consultantProjectEndDate')?.enable();
@@ -2062,39 +2065,39 @@ export class WorkflowSalesComponent extends AppComponentBase implements OnInit, 
 				this.resetForms();
 				let clientDto = new ClientResultDto();
 				clientDto.clientId = result.directClientIdValue;
-				this.salesClientDataForm.directClientIdValue?.setValue(clientDto, { emitEvent: false });
+				this.clientDataComponent?.salesClientDataForm.directClientIdValue?.setValue(clientDto, { emitEvent: false });
 				let clientRateType = this.findItemById(this.clientRateTypes, 1); // default value is 'Time based'
 				if (result.clientRate?.isFixedRate) {
 					clientRateType = this.findItemById(this.clientRateTypes, 2); // 2: 'Fixed'
 				} else if (result.clientRate?.isTimeBasedRate) {
 					clientRateType = this.findItemById(this.clientRateTypes, 1); // 1: 'Time based'
 				}
-				this.salesClientDataForm.clientRateAndInvoicing?.setValue(clientRateType, { emitEVent: false });
-				this.salesClientDataForm.pdcInvoicingEntityId?.setValue(result?.clientPeriodPdcInvoicingEntityId, {
+				this.clientDataComponent?.salesClientDataForm.clientRateAndInvoicing?.setValue(clientRateType, { emitEVent: false });
+				this.clientDataComponent?.salesClientDataForm.pdcInvoicingEntityId?.setValue(result?.clientPeriodPdcInvoicingEntityId, {
 					emitEvent: false,
 				});
-				this.salesClientDataForm.normalRate?.setValue(result.clientRate?.normalRate, { emitEVent: false });
-				this.salesClientDataForm.rateUnitTypeId?.setValue(result.clientRate?.rateUnitTypeId, { emitEVent: false });
-				this.salesClientDataForm.clientCurrency?.setValue(
+				this.clientDataComponent?.salesClientDataForm.normalRate?.setValue(result.clientRate?.normalRate, { emitEVent: false });
+				this.clientDataComponent?.salesClientDataForm.rateUnitTypeId?.setValue(result.clientRate?.rateUnitTypeId, { emitEVent: false });
+				this.clientDataComponent?.salesClientDataForm.clientCurrency?.setValue(
 					this.findItemById(this.currencies, result.clientRate?.currencyId),
 					{ emitEVent: false }
 				);
-				this.salesClientDataForm.invoiceCurrencyId?.setValue(result.clientRate?.invoiceCurrencyId, { emitEVent: false });
-				if (this.salesClientDataForm.clientRateAndInvoicing?.value?.id === 1) {
+				this.clientDataComponent?.salesClientDataForm.invoiceCurrencyId?.setValue(result.clientRate?.invoiceCurrencyId, { emitEVent: false });
+				if (this.clientDataComponent?.salesClientDataForm.clientRateAndInvoicing?.value?.id === 1) {
 					// Time based
-					this.salesClientDataForm.clientInvoiceFrequency?.setValue(
+					this.clientDataComponent?.salesClientDataForm.clientInvoiceFrequency?.setValue(
 						this.findItemById(this.invoiceFrequencies, result.clientRate?.invoiceFrequencyId),
 						{ emitEVent: false }
 					);
 				}
-				if (this.salesClientDataForm.clientRateAndInvoicing?.value?.id === 2) {
+				if (this.clientDataComponent?.salesClientDataForm.clientRateAndInvoicing?.value?.id === 2) {
 					// Fixed
-					this.salesClientDataForm.clientInvoiceFrequency?.setValue(
+					this.clientDataComponent?.salesClientDataForm.clientInvoiceFrequency?.setValue(
 						this.findItemById(this.invoicingTimes, result.clientRate?.invoicingTimeId),
 						{ emitEVent: false }
 					);
 				}
-				this.salesClientDataForm.manualDate?.setValue(result.clientRate?.manualDate, { emitEVent: false });
+				this.clientDataComponent?.salesClientDataForm.manualDate?.setValue(result.clientRate?.manualDate, { emitEVent: false });
 
 				this.mainDataComponent?.salesMainDataForm.remarks?.setValue(result?.remarks, {
 					emitEvent: false,
@@ -2145,11 +2148,11 @@ export class WorkflowSalesComponent extends AppComponentBase implements OnInit, 
 
 	resetForms() {
 		this.mainDataComponent?.salesMainDataForm.reset('', { emitEvent: false });
-		this.salesClientDataForm.clientRates.controls = [];
-		this.salesClientDataForm.clientFees.controls = [];
-		this.salesClientDataForm.contractSigners.controls = [];
+		this.clientDataComponent.salesClientDataForm.clientRates.controls = [];
+		this.clientDataComponent.salesClientDataForm.clientFees.controls = [];
+		this.clientDataComponent.salesClientDataForm.contractSigners.controls = [];
 		this.mainDataComponent.salesMainDataForm.commissions.controls = [];
-		this.salesClientDataForm.reset('', { emitEvent: false });
+		this.clientDataComponent?.salesClientDataForm.reset('', { emitEvent: false });
 		this.consultantsForm.consultants.controls = [];
 		this.directClientIdTerminationSales = null;
 		this.endClientIdTerminationSales = null;
@@ -2285,28 +2288,28 @@ export class WorkflowSalesComponent extends AppComponentBase implements OnInit, 
 				input.salesMainData!.commissions?.push(commissionInput);
 			});
 		}
-		input.salesClientData = new SalesClientDataDto(this.salesClientDataForm.value);
-		input.startDate = this.salesClientDataForm.startDate?.value;
-		input.noEndDate = this.salesClientDataForm.noEndDate?.value;
-		input.endDate = this.salesClientDataForm.endDate?.value;
-		input.salesClientData.directClientIdValue = this.salesClientDataForm.directClientIdValue?.value?.clientId;
-		input.salesClientData.endClientIdValue = this.salesClientDataForm.endClientIdValue?.value?.clientId;
-		input.salesClientData.clientRate = new ClientRateDto(this.salesClientDataForm.value);
-		input.salesClientData.clientRate!.isTimeBasedRate = this.salesClientDataForm.clientRateAndInvoicing?.value?.id === 1; // 1: 'Time based';
-		input.salesClientData.clientRate!.isFixedRate = this.salesClientDataForm.clientRateAndInvoicing?.value?.id === 2; // 2: 'Fixed';
-		input.salesClientData.clientRate!.currencyId = this.salesClientDataForm.clientCurrency?.value?.id;
-		input.salesClientData.clientRate!.invoiceFrequencyId = this.salesClientDataForm.clientInvoiceFrequency?.value?.id;
-		input.salesClientData.clientRate!.invoicingTimeId = this.salesClientDataForm.clientInvoiceTime?.value?.id;
-		input.salesClientData.noInvoicingReferenceNumber = this.salesClientDataForm.invoicingReferenceNumber?.value
+		input.salesClientData = new SalesClientDataDto(this.clientDataComponent?.salesClientDataForm.value);
+		input.startDate = this.clientDataComponent?.salesClientDataForm.startDate?.value;
+		input.noEndDate = this.clientDataComponent?.salesClientDataForm.noEndDate?.value;
+		input.endDate = this.clientDataComponent?.salesClientDataForm.endDate?.value;
+		input.salesClientData.directClientIdValue = this.clientDataComponent?.salesClientDataForm.directClientIdValue?.value?.clientId;
+		input.salesClientData.endClientIdValue = this.clientDataComponent?.salesClientDataForm.endClientIdValue?.value?.clientId;
+		input.salesClientData.clientRate = new ClientRateDto(this.clientDataComponent?.salesClientDataForm.value);
+		input.salesClientData.clientRate!.isTimeBasedRate = this.clientDataComponent?.salesClientDataForm.clientRateAndInvoicing?.value?.id === 1; // 1: 'Time based';
+		input.salesClientData.clientRate!.isFixedRate = this.clientDataComponent?.salesClientDataForm.clientRateAndInvoicing?.value?.id === 2; // 2: 'Fixed';
+		input.salesClientData.clientRate!.currencyId = this.clientDataComponent?.salesClientDataForm.clientCurrency?.value?.id;
+		input.salesClientData.clientRate!.invoiceFrequencyId = this.clientDataComponent?.salesClientDataForm.clientInvoiceFrequency?.value?.id;
+		input.salesClientData.clientRate!.invoicingTimeId = this.clientDataComponent?.salesClientDataForm.clientInvoiceTime?.value?.id;
+		input.salesClientData.noInvoicingReferenceNumber = this.clientDataComponent?.salesClientDataForm.invoicingReferenceNumber?.value
 			? false
 			: true;
 		input.salesClientData.clientInvoicingRecipientIdValue =
-			this.salesClientDataForm.clientInvoicingRecipientIdValue?.value?.clientId;
+			this.clientDataComponent?.salesClientDataForm.clientInvoicingRecipientIdValue?.value?.clientId;
 		input.salesClientData.invoicingReferencePersonIdValue =
-			this.salesClientDataForm.invoicePaperworkContactIdValue?.value?.id;
-		if (this.salesClientDataForm.clientRates.value.length) {
+			this.clientDataComponent?.salesClientDataForm.invoicePaperworkContactIdValue?.value?.id;
+		if (this.clientDataComponent?.salesClientDataForm.clientRates.value.length) {
 			input.salesClientData!.periodClientSpecialRates = new Array<PeriodClientSpecialRateDto>();
-			this.salesClientDataForm.clientRates.value.forEach((rate: any) => {
+			this.clientDataComponent?.salesClientDataForm.clientRates.value.forEach((rate: any) => {
 				let clientRate = new PeriodClientSpecialRateDto(rate);
 				clientRate.clientRateCurrencyId = rate.clientRateCurrency?.id;
 				input.salesClientData!.periodClientSpecialRates?.push(clientRate);
@@ -2314,9 +2317,9 @@ export class WorkflowSalesComponent extends AppComponentBase implements OnInit, 
 		} else {
 			input.salesClientData!.noSpecialRate = true;
 		}
-		if (this.salesClientDataForm.clientFees.value.length) {
+		if (this.clientDataComponent?.salesClientDataForm.clientFees.value.length) {
 			input.salesClientData!.periodClientSpecialFees = new Array<PeriodClientSpecialFeeDto>();
-			this.salesClientDataForm.clientFees.value.forEach((fee: any) => {
+			this.clientDataComponent?.salesClientDataForm.clientFees.value.forEach((fee: any) => {
 				let clientFee = new PeriodClientSpecialFeeDto(fee);
 				clientFee.clientRateCurrencyId = fee.clientRateCurrency?.id;
 				input.salesClientData!.periodClientSpecialFees?.push(clientFee);
@@ -2325,10 +2328,10 @@ export class WorkflowSalesComponent extends AppComponentBase implements OnInit, 
 			input.salesClientData!.noSpecialFee = true;
 		}
 		input.salesClientData!.evaluationsReferencePersonIdValue =
-			this.salesClientDataForm.evaluationsReferencePersonIdValue?.value?.id;
+			this.clientDataComponent?.salesClientDataForm.evaluationsReferencePersonIdValue?.value?.id;
 		input.salesClientData!.contractSigners = new Array<ContractSignerDto>();
-		if (this.salesClientDataForm.contractSigners.value?.length) {
-			this.salesClientDataForm.contractSigners.value.forEach((signer: any) => {
+		if (this.clientDataComponent?.salesClientDataForm.contractSigners.value?.length) {
+			this.clientDataComponent?.salesClientDataForm.contractSigners.value.forEach((signer: any) => {
 				let signerInput = new ContractSignerDto();
 				signerInput.signOrder = signer.clientSequence;
 				signerInput.contactId = signer.clientContact?.id;

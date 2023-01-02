@@ -1,4 +1,5 @@
 import { UntypedFormArray, UntypedFormControl, UntypedFormGroup, Validators } from "@angular/forms";
+import { EnumEntityTypeDto } from "src/shared/service-proxies/service-proxies";
 import { CustomValidators } from "src/shared/utils/custom-validators";
 
 export class WorkflowSalesMainForm extends UntypedFormGroup {
@@ -357,4 +358,16 @@ export const TenantList = [
         name: "Sweden",
         code: 'SE'
     }
+];
+
+
+export const ClientRateTypes: EnumEntityTypeDto[] = [
+    new EnumEntityTypeDto({
+        id: 1,
+        name: 'Time based',
+    }),
+    new EnumEntityTypeDto({
+        id: 2,
+        name: 'Fixed',
+    })
 ];

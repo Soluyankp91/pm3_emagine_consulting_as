@@ -20,6 +20,7 @@ import { GanttChartComponent } from './workflow-overview/gantt-chart/gantt-chart
 import { WorkflowNotesComponent } from './workflow-notes/workflow-notes.component';
 import { RateAndFeesWarningsDialogComponent } from './rate-and-fees-warnings-dialog/rate-and-fees-warnings-dialog.component';
 import { MainDataComponent } from './workflow-sales/main-data/main-data.component';
+import { ClientDataComponent } from './workflow-sales/client-data/client-data.component';
 
 @NgModule({
     declarations: [
@@ -38,7 +39,8 @@ import { MainDataComponent } from './workflow-sales/main-data/main-data.componen
         GanttChartComponent,
         WorkflowNotesComponent,
         RateAndFeesWarningsDialogComponent,
-        MainDataComponent
+        MainDataComponent,
+        ClientDataComponent
     ],
     imports: [
         CommonModule,
