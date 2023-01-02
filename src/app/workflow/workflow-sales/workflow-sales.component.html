@@ -476,7 +476,7 @@
                                 <ng-container formArrayName="commissionedUsers" class="u-w--100">
                                     <ng-container *ngFor="let user of salesMainDataForm.commissionedUsers.controls; trackBy: trackByFormArray; index as i" [formArrayName]="i">
                                         <div fxLayout="row" fxLayoutAlign="start center" class="u-w--100">
-                                            <mat-form-field appearance="outline" class="u-w--100 formFieldNoMarginPadding filter-select u-mr--12" fxFlex="35%" [ngClass]="{'disabled-input': readOnlyMode}">
+                                            <mat-form-field appearance="outline" class="u-w--100 formFieldNoMarginPadding filter-select u-mr--12 form-width-235" [ngClass]="{'disabled-input': readOnlyMode}">
                                                 <mat-label>Commissioned user</mat-label>
                                                 <input required [disabled]="readOnlyMode" #commissionedUserInput type="text" matInput [matAutocomplete]="commissionedUserAutocomplete" formControlName="commissionedUser" appPreventDoubleClick (throttledClick)="$event.stopPropagation()" placeholder="Type something">
                                                 <mat-autocomplete #commissionedUserAutocomplete="matAutocomplete" [displayWith]="displayNameFn"
