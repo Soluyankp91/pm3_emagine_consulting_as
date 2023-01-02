@@ -190,7 +190,7 @@
                 <div fxLayout="row" fxLayoutAlign="start start" class="workflow-form--panel u-w--100 u-mb--50">
                     <div fxFlex="80%">
                         <app-workflow-period #workflowPeriod *ngIf="selectedIndex === i + 1" [periodId]="tab.id"
-                            [workflowId]="workflowId"></app-workflow-period>
+                            [workflowId]="workflowId" [topToolbarVisible]="topToolbarVisible"></app-workflow-period>
                     </div>
                 </div>
             </mat-tab>

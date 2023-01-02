@@ -1,5 +1,5 @@
 <div fxLayout="row" fxLayoutAlign="start start" class="primary-workflow">
-    <div fxFlex="25%" class="workflow-navigation--wrapper">
+    <div fxFlex="25%" class="workflow-navigation--wrapper" [ngClass]="{'topToolbarVisible': topToolbarVisible}">
         <ng-scrollbar>
             <mat-accordion class="workflow-sidenav--expansion" [togglePosition]="'before'">
                 <mat-expansion-panel class="mat-elevation-z0" *ngFor="let item of sideMenuItems; index as i"

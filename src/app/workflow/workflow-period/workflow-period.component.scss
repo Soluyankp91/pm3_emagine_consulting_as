@@ -9,10 +9,13 @@
     padding-left: 25px;
 
     &--wrapper {
-        height: 65vh;
+        height: calc(100vh - 215px);
         position: sticky;
         top: 115px;
         border-right: 1px solid #E7E3E8;
+        &.topToolbarVisible {
+            height: calc(100vh - 115px);
+        }
     }
     &--step {
         display: flex;

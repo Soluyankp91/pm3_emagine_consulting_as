@@ -28,17 +28,16 @@ export class WorkflowPeriodComponent extends AppComponentBase implements OnInit,
 
     @Input() workflowId: string;
     @Input() periodId: string | undefined;
+    @Input() topToolbarVisible: boolean;
 
     sideMenuItems: WorkflowProcessWithAnchorsDto[] = [];
     workflowProcessTypes = WorkflowProcessType;
     workflowPeriodStepTypes: { [key: string]: string };
-    // selectedStep: StepDto;
     selectedStep: StepWithAnchorsDto;
     selectedAnchor: string;
 
     workflowSteps = StepType;
     selectedStepEnum: StepType;
-    // selectedSideSection: WorkflowProcessDto;
     selectedSideSection: WorkflowProcessWithAnchorsDto;
     sectionIndex = 0;
     consultant: ConsultantResultDto;
