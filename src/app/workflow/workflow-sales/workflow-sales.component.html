@@ -1460,7 +1460,7 @@
                                     <h2 class="workflow-section--header">Employment type</h2>
                                 </div>
                                 <div class="workflow-section--content">
-                                    <div fxLayout="row" fxLayoutAlign="start start" class="u-w--100 u-mb--20">
+                                    <div fxLayout="row" fxLayoutAlign="start start" class="u-w--100">
                                         <mat-form-field appearance="outline" class="formFieldNoMarginPadding filter-select form-width-235">
                                             <mat-label>Employment type</mat-label>
                                             <mat-select [disabled]="(activeSideSection.typeId !== workflowSideSections.StartClientPeriod && activeSideSection.typeId !== workflowSideSections.StartConsultantPeriod) || readOnlyMode" required formControlName="employmentType" [disableOptionCentering]="true" [compareWith]="compareWithFn">
@@ -2089,7 +2089,7 @@
                                         <h2 class="workflow-section--header">Consultant payment</h2>
                                     </div>
                                     <div class="workflow-section--content">
-                                        <div fxLayout="row" fxLayoutAlign="start start" class="u-w--100 u-mb--10">
+                                        <div fxLayout="row" fxLayoutAlign="start start" class="u-w--100">
                                             <mat-form-field appearance="outline" class="formFieldNoMarginPadding filter-select form-width-312">
                                                 <mat-label>emagine Entity</mat-label>
                                                 <mat-select [disabled]="readOnlyMode" required formControlName="consultantProdataEntity" [disableOptionCentering]="true" [compareWith]="compareWithFn">
@@ -2344,7 +2344,7 @@
                                                     </mat-error>
                                                 </mat-form-field>
                                             </div>
-                                            <div fxLayout="row" fxLayoutAlign="start center" class="u-w--100 u-mb--10" [fxHide]="consultant.value.consultantPaymentType?.id !== 2"> <!-- id: 2 - Fixed -->
+                                            <div fxLayout="row" fxLayoutAlign="start center" class="u-w--100" [fxHide]="consultant.value.consultantPaymentType?.id !== 2"> <!-- id: 2 - Fixed -->
                                                 <mat-form-field appearance="outline" class="formFieldNoMarginPadding filter-select form-width-312" [ngClass]="{'u-mr--12': consultant.value.consultantInvoicingTime?.name === 'Manual date'}">
                                                     <mat-label>Invoicing time</mat-label>
                                                     <mat-select [disabled]="readOnlyMode" [required]="consultant.value.consultantPaymentType?.id === 2" formControlName="consultantInvoicingTime" [disableOptionCentering]="true" [compareWith]="compareWithFn">
