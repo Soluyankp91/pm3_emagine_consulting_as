@@ -20,9 +20,11 @@
                     #contractResponsibleAutocomplete="matAutocomplete" [displayWith]="displayNameFn">
                     <ng-container *ngFor="let manager of filteredAccountManagers; trackBy: trackById">
                         <mat-option [value]="manager" [ngClass]="{ 'no-data': manager.id === undefined }">
-                            <img class="border-rounded-50 image-settings--dropdown"
-                                [src]="employeeProfileUrl(manager?.externalId!)" />
-                            <span class="autocopmlete-option-name">{{ manager.name }}</span>
+                            <div fxLayout="row" fxLayoutAlign="start center" class="u-w--100">
+                                <img class="border-rounded-50 image-settings--dropdown u-mr--5"
+                                    [src]="employeeProfileUrl(manager?.externalId!)" />
+                                <span class="autocopmlete-option-name">{{ manager.name }}</span>
+                            </div>
                         </mat-option>
                     </ng-container>
                 </mat-autocomplete>
@@ -45,9 +47,11 @@
                     #financeResponsibleAutocomplete="matAutocomplete" [displayWith]="displayNameFn">
                     <ng-container *ngFor="let manager of filteredAccountManagers; trackBy: trackById">
                         <mat-option [value]="manager" [ngClass]="{ 'no-data': manager.id === undefined }">
-                            <img class="border-rounded-50 image-settings--dropdown"
-                                [src]="employeeProfileUrl(manager?.externalId!)" />
-                            <span class="autocopmlete-option-name">{{ manager.name }}</span>
+                            <div fxLayout="row" fxLayoutAlign="start center" class="u-w--100">
+                                <img class="border-rounded-50 image-settings--dropdown u-mr--5"
+                                    [src]="employeeProfileUrl(manager?.externalId!)" />
+                                <span class="autocopmlete-option-name">{{ manager.name }}</span>
+                            </div>
                         </mat-option>
                     </ng-container>
                 </mat-autocomplete>
