@@ -14,7 +14,7 @@ import { CustomValidators } from 'src/shared/utils/custom-validators';
 @Component({
 	selector: 'app-main-data',
 	templateUrl: './main-data.component.html',
-	styleUrls: ['../workflow-sales.component.scss'],
+	styleUrls: ['../workflow-sales.component.scss']
 })
 export class MainDataComponent extends AppComponentBase implements OnInit, OnDestroy {
 	@Input() periodId: string | undefined;

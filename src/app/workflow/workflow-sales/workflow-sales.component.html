@@ -4,7 +4,7 @@
             [isCompleted]="isCompleted" [canToggleEditMode]="canToggleEditMode" [activeSideSection]="activeSideSection"
             [permissionsForCurrentUser]="permissionsForCurrentUser" (editModeToggled)="toggleEditMode()"></app-main-data>
         <ng-container *ngIf="(activeSideSection.typeId !== workflowSideSections.StartConsultantPeriod) && (activeSideSection.typeId !== workflowSideSections.ChangeConsultantPeriod) && (activeSideSection.typeId !== workflowSideSections.ExtendConsultantPeriod)">
-            <app-client-data #clientDataComponent>
+            <app-client-data #clientDataComponent [readOnlyMode]="readOnlyMode">
             </app-client-data>
         </ng-container>
         <form [formGroup]="consultantsForm" id="consultantData" class="workflow-form--consultants u-w--100">

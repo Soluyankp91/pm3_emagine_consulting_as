@@ -1,10 +1,11 @@
 import { HttpClient, HttpHeaders } from '@angular/common/http';
-import { Component, Injector, Input, OnDestroy, OnInit } from '@angular/core';
+import { Component, EventEmitter, Injector, Input, OnDestroy, OnInit, Output } from '@angular/core';
 import { UntypedFormArray, UntypedFormBuilder, UntypedFormControl } from '@angular/forms';
 import { MatAutocompleteSelectedEvent } from '@angular/material/autocomplete';
 import { MatMenuTrigger } from '@angular/material/menu';
 import { Router } from '@angular/router';
 import { AuthenticationResult } from '@azure/msal-browser';
+import * as moment from 'moment';
 import { forkJoin, merge, of, Subject } from 'rxjs';
 import { takeUntil, debounceTime, switchMap } from 'rxjs/operators';
 import { InternalLookupService } from 'src/app/shared/common/internal-lookup.service';
@@ -17,30 +18,32 @@ import { ClientRateTypes, WorkflowSalesClientDataForm } from '../workflow-sales.
 @Component({
 	selector: 'app-client-data',
 	templateUrl: './client-data.component.html',
-	styleUrls: ['./client-data.component.scss'],
+	styleUrls: ['../workflow-sales.component.scss']
 })
 export class ClientDataComponent extends AppComponentBase implements OnInit, OnDestroy {
-    @Input() readOnlyMode: boolean;
-    salesClientDataForm: WorkflowSalesClientDataForm;
-    filteredDirectClients: ClientResultDto[];
-    filteredEndClients: ClientResultDto[];
-    filteredReferencePersons: ContactResultDto[];
-    filteredClientInvoicingRecipients: ClientResultDto[];
-    filteredEvaluationReferencePersons: ContactResultDto[];
-    filteredContractSigners: ContactResultDto[];
+	@Input() readOnlyMode: boolean;
+	// @Output() clientPeriodDatesChanged: EventEmitter<{startDate: moment.Moment, endDate: moment.Moment, noEndDate: moment.Moment}> = new EventEmitter<{ startDate: moment.Moment, endDate: moment.Moment, noEndDate: moment.Moment }>();
+	@Output() clientPeriodDatesChanged: EventEmitter<any> = new EventEmitter<any>();
+	salesClientDataForm: WorkflowSalesClientDataForm;
+	filteredDirectClients: ClientResultDto[];
+	filteredEndClients: ClientResultDto[];
+	filteredReferencePersons: ContactResultDto[];
+	filteredClientInvoicingRecipients: ClientResultDto[];
+	filteredEvaluationReferencePersons: ContactResultDto[];
+	filteredContractSigners: ContactResultDto[];
 
-    currencies: EnumEntityTypeDto[];
-    signerRoles: EnumEntityTypeDto[];
-    clientExtensionDurations: EnumEntityTypeDto[];
-    clientExtensionDeadlines: EnumEntityTypeDto[];
-    legalEntities: LegalEntityDto[];
-    rateUnitTypes: EnumEntityTypeDto[];
-    invoiceFrequencies: EnumEntityTypeDto[];
-    invoicingTimes: EnumEntityTypeDto[];
-    clientTimeReportingCap: EnumEntityTypeDto[];
-    clientRateTypes = ClientRateTypes;
+	currencies: EnumEntityTypeDto[];
+	signerRoles: EnumEntityTypeDto[];
+	clientExtensionDurations: EnumEntityTypeDto[];
+	clientExtensionDeadlines: EnumEntityTypeDto[];
+	legalEntities: LegalEntityDto[];
+	rateUnitTypes: EnumEntityTypeDto[];
+	invoiceFrequencies: EnumEntityTypeDto[];
+	invoicingTimes: EnumEntityTypeDto[];
+	clientTimeReportingCap: EnumEntityTypeDto[];
+	clientRateTypes = ClientRateTypes;
 
-    clientRateToEdit: PeriodClientSpecialRateDto;
+	clientRateToEdit: PeriodClientSpecialRateDto;
 	isClientRateEditing = false;
 	clientFeeToEdit: PeriodClientSpecialFeeDto;
 	isClientFeeEditing = false;
@@ -50,18 +53,18 @@ export class ClientDataComponent extends AppComponentBase implements OnInit, OnD
 	clientSpecialFeeList: ClientSpecialFeeDto[] = [];
 	private _unsubscribe = new Subject();
 	constructor(
-        injector: Injector,
-        private _fb: UntypedFormBuilder,
-        private _lookupService: LookupServiceProxy,
-        private _clientService: ClientsServiceProxy,
-        private _internalLookupService: InternalLookupService,
-        private httpClient: HttpClient,
-        private localHttpService: LocalHttpService,
-        private router: Router
-        ) {
+		injector: Injector,
+		private _fb: UntypedFormBuilder,
+		private _lookupService: LookupServiceProxy,
+		private _clientService: ClientsServiceProxy,
+		private _internalLookupService: InternalLookupService,
+		private httpClient: HttpClient,
+		private localHttpService: LocalHttpService,
+		private router: Router
+	) {
 		super(injector);
-        this.salesClientDataForm = new WorkflowSalesClientDataForm();
-        this.salesClientDataForm.directClientIdValue?.valueChanges
+		this.salesClientDataForm = new WorkflowSalesClientDataForm();
+		this.salesClientDataForm.directClientIdValue?.valueChanges
 			.pipe(
 				takeUntil(this._unsubscribe),
 				debounceTime(300),
@@ -81,12 +84,10 @@ export class ClientDataComponent extends AppComponentBase implements OnInit, OnD
 					this.filteredDirectClients = list;
 				} else {
 					this.filteredDirectClients = [
-                        new ClientResultDto(
-                            {
-                                clientName: 'No records found',
-                                clientId: undefined
-                            }
-                        )
+						new ClientResultDto({
+							clientName: 'No records found',
+							clientId: undefined,
+						}),
 					];
 				}
 			});
@@ -111,12 +112,10 @@ export class ClientDataComponent extends AppComponentBase implements OnInit, OnD
 					this.filteredEndClients = list;
 				} else {
 					this.filteredEndClients = [
-						new ClientResultDto(
-                            {
-                                clientName: 'No records found',
-                                clientId: undefined
-                            }
-                        )
+						new ClientResultDto({
+							clientName: 'No records found',
+							clientId: undefined,
+						}),
 					];
 				}
 			});
@@ -142,7 +141,9 @@ export class ClientDataComponent extends AppComponentBase implements OnInit, OnD
 				if (list.length) {
 					this.filteredReferencePersons = list;
 				} else {
-					this.filteredReferencePersons = [new ContactResultDto({firstName: 'No records found', lastName: '', id: undefined})];
+					this.filteredReferencePersons = [
+						new ContactResultDto({ firstName: 'No records found', lastName: '', id: undefined }),
+					];
 				}
 			});
 
@@ -165,7 +166,9 @@ export class ClientDataComponent extends AppComponentBase implements OnInit, OnD
 				if (list.length) {
 					this.filteredClientInvoicingRecipients = list;
 				} else {
-					this.filteredClientInvoicingRecipients = [new ClientResultDto({ clientName: 'No records found', clientId: undefined })];
+					this.filteredClientInvoicingRecipients = [
+						new ClientResultDto({ clientName: 'No records found', clientId: undefined }),
+					];
 				}
 			});
 
@@ -199,75 +202,63 @@ export class ClientDataComponent extends AppComponentBase implements OnInit, OnD
 				if (list.length) {
 					this.filteredEvaluationReferencePersons = list;
 				} else {
-					this.filteredEvaluationReferencePersons = [new ContactResultDto({firstName: 'No records found', lastName: '', id: undefined })];
+					this.filteredEvaluationReferencePersons = [
+						new ContactResultDto({ firstName: 'No records found', lastName: '', id: undefined }),
+					];
 				}
 			});
 
-            merge(
-                this.salesClientDataForm.startDate!.valueChanges,
-                this.salesClientDataForm.endDate!.valueChanges,
-                this.salesClientDataForm.noEndDate!.valueChanges
-            )
-                .pipe(takeUntil(this._unsubscribe), debounceTime(300))
-                .subscribe(() => {
-                    // this.periodDateChanged.emit({startDate: this.salesClientDataForm.startDate?.value, endDate: this.salesClientDataForm.endDate?.value, noEndDate: this.salesClientDataForm.noEndDate?.value})
-
-                    // for (let consultant of this.consultants.controls) {
-                    //     if (consultant.get('consultantProjectDurationSameAsClient')!.value) {
-                    //         consultant
-                    //             .get('consultantProjectStartDate')
-                    //             ?.setValue(this.salesClientDataForm.startDate?.value, { emitEvent: false });
-                    //         consultant
-                    //             .get('consultantProjectEndDate')
-                    //             ?.setValue(this.salesClientDataForm.endDate?.value, { emitEvent: false });
-                    //         consultant
-                    //             .get('consultantProjectNoEndDate')
-                    //             ?.setValue(this.salesClientDataForm.noEndDate?.value, { emitEvent: false });
-                    //         if (this.salesClientDataForm.noEndDate?.value) {
-                    //             consultant.get('consultantProjectEndDate')?.disable();
-                    //         } else {
-                    //             consultant.get('consultantProjectEndDate')?.enable();
-                    //         }
-                    //     }
-                    // }
-                });
+		merge(
+			this.salesClientDataForm.startDate!.valueChanges,
+			this.salesClientDataForm.endDate!.valueChanges,
+			this.salesClientDataForm.noEndDate!.valueChanges
+		)
+			.pipe(takeUntil(this._unsubscribe), debounceTime(300))
+			.subscribe(() => {
+				this.clientPeriodDatesChanged.emit(
+                    // {
+                    //     startDate: this.salesClientDataForm.startDate?.value,
+                    //     endDate: this.salesClientDataForm.endDate?.value,
+                    //     noEndDate: this.salesClientDataForm.noEndDate?.value,
+				    // }
+                );
+			});
 	}
 
 	ngOnInit(): void {
-        this._getEnums();
-    }
+		this._getEnums();
+	}
 
 	ngOnDestroy(): void {
 		this._unsubscribe.next();
 		this._unsubscribe.complete();
 	}
 
-    private _getEnums() {
-        forkJoin({
-            currencies: this._internalLookupService.getCurrencies(),
-            legalEntities: this._internalLookupService.getLegalEntities(),
-            signerRoles: this._internalLookupService.getSignerRoles(),
-            clientExtensionDurations: this._internalLookupService.getExtensionDurations(),
-            clientExtensionDeadlines: this._internalLookupService.getExtensionDeadlines(),
-            rateUnitTypes: this._internalLookupService.getUnitTypes(),
-            invoiceFrequencies: this._internalLookupService.getInvoiceFrequencies(),
-            invoicingTimes: this._internalLookupService.getInvoicingTimes(),
-            clientTimeReportingCap: this._internalLookupService.getClientTimeReportingCap()
-        })
-        .subscribe(result => {
-            this.currencies = result.currencies;
-            this.legalEntities = result.legalEntities;
-            this.signerRoles = result.signerRoles;
-            this.clientExtensionDurations = result.clientExtensionDurations;
-            this.clientExtensionDeadlines = result.clientExtensionDeadlines;
-            this.rateUnitTypes = result.rateUnitTypes;
-            this.invoiceFrequencies = result.invoiceFrequencies;
-            this.invoicingTimes = result.invoicingTimes;
-            this.clientTimeReportingCap = result.clientTimeReportingCap;
-        });
-    }
+	private _getEnums() {
+		forkJoin({
+			currencies: this._internalLookupService.getCurrencies(),
+			legalEntities: this._internalLookupService.getLegalEntities(),
+			signerRoles: this._internalLookupService.getSignerRoles(),
+			clientExtensionDurations: this._internalLookupService.getExtensionDurations(),
+			clientExtensionDeadlines: this._internalLookupService.getExtensionDeadlines(),
+			rateUnitTypes: this._internalLookupService.getUnitTypes(),
+			invoiceFrequencies: this._internalLookupService.getInvoiceFrequencies(),
+			invoicingTimes: this._internalLookupService.getInvoicingTimes(),
+			clientTimeReportingCap: this._internalLookupService.getClientTimeReportingCap(),
+		}).subscribe((result) => {
+			this.currencies = result.currencies;
+			this.legalEntities = result.legalEntities;
+			this.signerRoles = result.signerRoles;
+			this.clientExtensionDurations = result.clientExtensionDurations;
+			this.clientExtensionDeadlines = result.clientExtensionDeadlines;
+			this.rateUnitTypes = result.rateUnitTypes;
+			this.invoiceFrequencies = result.invoiceFrequencies;
+			this.invoicingTimes = result.invoicingTimes;
+			this.clientTimeReportingCap = result.clientTimeReportingCap;
+		});
+	}
 
-    clientRateTypeChange(value: EnumEntityTypeDto) {
+	clientRateTypeChange(value: EnumEntityTypeDto) {
 		if (value.id) {
 			this.salesClientDataForm.rateUnitTypeId?.setValue(null, { emitEvent: false });
 			this.salesClientDataForm.normalRate?.setValue(null, { emitEvent: false });
@@ -275,22 +266,18 @@ export class ClientDataComponent extends AppComponentBase implements OnInit, OnD
 		}
 	}
 
-    directClientSelected(event: MatAutocompleteSelectedEvent) {
+	directClientSelected(event: MatAutocompleteSelectedEvent) {
 		this.salesClientDataForm.clientInvoicingRecipientIdValue?.setValue(event.option.value, { emitEvent: false });
 		this.getRatesAndFees(event.option.value?.clientId);
 		this.focusOutMethod();
 	}
 
-    getRatesAndFees(clientId: number) {
-		this._clientService
-			.specialRatesAll(clientId, false)
-			.subscribe((result) => this.clientSpecialRateList = result);
-		this._clientService
-			.specialFeesAll(clientId, false)
-			.subscribe((result) => this.clientSpecialFeeList = result);
+	getRatesAndFees(clientId: number) {
+		this._clientService.specialRatesAll(clientId, false).subscribe((result) => (this.clientSpecialRateList = result));
+		this._clientService.specialFeesAll(clientId, false).subscribe((result) => (this.clientSpecialFeeList = result));
 	}
 
-    selectClientSpecialRate(event: any, rate: ClientSpecialRateDto, clientRateMenuTrigger: MatMenuTrigger) {
+	selectClientSpecialRate(event: any, rate: ClientSpecialRateDto, clientRateMenuTrigger: MatMenuTrigger) {
 		event.stopPropagation();
 		const formattedRate = new PeriodClientSpecialRateDto();
 		formattedRate.id = undefined;
@@ -336,11 +323,9 @@ export class ClientDataComponent extends AppComponentBase implements OnInit, OnD
 
 	editOrSaveSpecialRate(isEditable: boolean, rateIndex: number) {
 		if (isEditable) {
-			// save
 			this.clientRateToEdit = new PeriodClientSpecialRateDto();
 			this.isClientRateEditing = false;
 		} else {
-			// make editable
 			const clientRateValue = this.clientRates.at(rateIndex).value;
 			this.clientRateToEdit = new PeriodClientSpecialRateDto({
 				id: clientRateValue.id,
@@ -367,7 +352,7 @@ export class ClientDataComponent extends AppComponentBase implements OnInit, OnD
 	}
 
 	selectClientSpecialFee(event: any, fee: ClientSpecialFeeDto, clientFeeMenuTrigger: MatMenuTrigger) {
-        event.stopPropagation();
+		event.stopPropagation();
 		const formattedFee = new PeriodClientSpecialFeeDto();
 		formattedFee.id = undefined;
 		formattedFee.clientSpecialFeeId = fee.id;
@@ -433,7 +418,7 @@ export class ClientDataComponent extends AppComponentBase implements OnInit, OnD
 		this.clientFees.at(feeIndex).get('editable')?.setValue(false, { emitEvent: false });
 	}
 
-    addSignerToForm(signer?: ContractSignerDto) {
+	addSignerToForm(signer?: ContractSignerDto) {
 		const form = this._fb.group({
 			clientContact: new UntypedFormControl(signer?.contact ?? null, CustomValidators.autocompleteValidator(['id'])),
 			clientRole: new UntypedFormControl(this.findItemById(this.signerRoles, signer?.signerRoleId) ?? null),
@@ -467,7 +452,9 @@ export class ClientDataComponent extends AppComponentBase implements OnInit, OnD
 				if (list.length) {
 					this.filteredContractSigners = list;
 				} else {
-					this.filteredContractSigners = [new ContactResultDto({firstName: 'No records found', lastName: '', id: undefined})];
+					this.filteredContractSigners = [
+						new ContactResultDto({ firstName: 'No records found', lastName: '', id: undefined }),
+					];
 				}
 			});
 	}
@@ -480,7 +467,7 @@ export class ClientDataComponent extends AppComponentBase implements OnInit, OnD
 		this.contractSigners.removeAt(index);
 	}
 
-    	openClientInNewTab(clientId: string) {
+	openClientInNewTab(clientId: string) {
 		const url = this.router.serializeUrl(this.router.createUrlTree([`/app/clients/${clientId}/rates-and-fees`]));
 		window.open(url, '_blank');
 	}
@@ -511,5 +498,4 @@ export class ClientDataComponent extends AppComponentBase implements OnInit, OnD
 			});
 		}
 	}
-
 }

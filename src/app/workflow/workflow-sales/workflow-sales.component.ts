@@ -645,6 +645,27 @@ export class WorkflowSalesComponent extends AppComponentBase implements OnInit, 
 		);
 	}
 
+    clientPeriodDatesChanged() {
+        for (let consultant of this.consultants.controls) {
+            if (consultant.get('consultantProjectDurationSameAsClient')!.value) {
+                consultant
+                    .get('consultantProjectStartDate')
+                    ?.setValue(this.clientDataComponent?.salesClientDataForm.startDate?.value, { emitEvent: false });
+                consultant
+                    .get('consultantProjectEndDate')
+                    ?.setValue(this.clientDataComponent?.salesClientDataForm.endDate?.value, { emitEvent: false });
+                consultant
+                    .get('consultantProjectNoEndDate')
+                    ?.setValue(this.clientDataComponent?.salesClientDataForm.noEndDate?.value, { emitEvent: false });
+                if (this.clientDataComponent?.salesClientDataForm.noEndDate?.value) {
+                    consultant.get('consultantProjectEndDate')?.disable();
+                } else {
+                    consultant.get('consultantProjectEndDate')?.enable();
+                }
+            }
+        }
+    }
+
 	// directClientSelected(event: MatAutocompleteSelectedEvent) {
 	// 	this.salesClientDataForm.clientInvoicingRecipientIdValue?.setValue(event.option.value, { emitEvent: false });
 	// 	this.getRatesAndFees(event.option.value?.clientId);
