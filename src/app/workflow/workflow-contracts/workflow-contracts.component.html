@@ -104,7 +104,7 @@
                                     <mat-select [disabled]="true" formControlName="projectType" [disableOptionCentering]="true" [compareWith]="compareWithFn">
                                         <ng-container *ngFor="let item of projectTypes; trackBy: trackById">
                                             <mat-option [value]="item">
-                                                {{ item.name }}
+                                                {{ item?.name }}
                                             </mat-option>
                                         </ng-container>
                                     </mat-select>
@@ -117,7 +117,7 @@
                                     <mat-select [disabled]="true" formControlName="salesType" [disableOptionCentering]="true" [compareWith]="compareWithFn">
                                         <ng-container *ngFor="let item of saleTypes; trackBy: trackById">
                                             <mat-option [value]="item">
-                                                {{ item.name }}
+                                                {{ item?.name }}
                                             </mat-option>
                                         </ng-container>
                                     </mat-select>
@@ -129,9 +129,9 @@
                                     <mat-label>Delivery Type</mat-label>
                                     <mat-select [disabled]="true" formControlName="deliveryType" [disableOptionCentering]="true" [compareWith]="compareWithFn">
                                         <ng-container *ngFor="let item of deliveryTypes; trackBy: trackById">
-                                            <ng-container *ngIf="(item.id === deliveryTypesEnum.ManagedService && contractsMainForm.salesType?.value?.id === salesTypesEnum.ManagedService) || (item.id !== deliveryTypesEnum.ManagedService && contractsMainForm.salesType?.value?.id !== salesTypesEnum.ManagedService)">
+                                            <ng-container *ngIf="(item?.id === deliveryTypesEnum.ManagedService && contractsMainForm.salesType?.value?.id === salesTypesEnum.ManagedService) || (item?.id !== deliveryTypesEnum.ManagedService && contractsMainForm.salesType?.value?.id !== salesTypesEnum.ManagedService)">
                                                 <mat-option [value]="item">
-                                                    {{ item.name }}
+                                                    {{ item?.name }}
                                                 </mat-option>
                                             </ng-container>
                                         </ng-container>
@@ -147,7 +147,7 @@
                                     <mat-select [disabled]="true" formControlName="projectCategory" [disableOptionCentering]="true" [compareWith]="compareWithFn">
                                         <ng-container *ngFor="let item of projectCategories; trackBy: trackById">
                                             <mat-option [value]="item">
-                                                {{ item.name }}
+                                                {{ item?.name }}
                                             </mat-option>
                                         </ng-container>
                                     </mat-select>
@@ -163,7 +163,7 @@
                                         </mat-option>
                                         <ng-container *ngFor="let item of margins; trackBy: trackById">
                                             <mat-option [value]="item">
-                                                {{ item.name }}
+                                                {{ item?.name }}
                                             </mat-option>
                                         </ng-container>
                                     </mat-select>
@@ -209,7 +209,7 @@
                                         </mat-option>
                                         <ng-container *ngFor="let item of discounts; trackBy: trackById">
                                             <mat-option [value]="item">
-                                                {{ item.name }}
+                                                {{ item?.name }}
                                             </mat-option>
                                         </ng-container>
                                     </mat-select>
@@ -254,7 +254,7 @@
                                         <mat-select [disabled]="true" formControlName="clientTimeReportingCapId" [disableOptionCentering]="true" [compareWith]="compareWithFn">
                                             <ng-container *ngFor="let item of clientTimeReportingCap; trackBy: trackById">
                                                 <mat-option [value]="item">
-                                                    {{ item.name }}
+                                                    {{ item?.name }}
                                                 </mat-option>
                                             </ng-container>
                                         </mat-select>
@@ -364,7 +364,7 @@
                                                             <mat-select required formControlName="clientRateCurrency" placeholder="Currency" [disableOptionCentering]="true" [compareWith]="compareWithFn">
                                                                 <ng-container *ngFor="let item of currencies; trackBy: trackById">
                                                                     <mat-option [value]="item">
-                                                                        {{ item.name }}
+                                                                        {{ item?.name }}
                                                                     </mat-option>
                                                                 </ng-container>
                                                             </mat-select>
@@ -489,7 +489,7 @@
                                                             <mat-select required formControlName="clientRateCurrency" placeholder="Currency" [disableOptionCentering]="true" [compareWith]="compareWithFn">
                                                                 <ng-container *ngFor="let item of currencies; trackBy: trackById">
                                                                     <mat-option [value]="item">
-                                                                        {{ item.name }}
+                                                                        {{ item?.name }}
                                                                     </mat-option>
                                                                 </ng-container>
                                                             </mat-select>
@@ -621,7 +621,7 @@
                                                 <mat-select [disabled]="true" required formControlName="consultantType" [disableOptionCentering]="true" [compareWith]="compareWithFn">
                                                     <ng-container *ngFor="let item of employmentTypes; trackBy: trackById">
                                                         <mat-option [value]="item">
-                                                            {{ item.name }}
+                                                            {{ item?.name }}
                                                         </mat-option>
                                                     </ng-container>
                                                 </mat-select>
@@ -634,18 +634,18 @@
                                             <mat-form-field appearance="outline" class="formFieldNoMarginPadding client-and-consultant-autocomplete disabled-input" [fxHide]="consultant.value?.consultantType?.id === 10 || consultant.value?.consultantType?.id === 11">
                                                 <mat-label>Consultant Name</mat-label>
                                                 <input [disabled]="true" type="text" matInput name="consutlantNameAutocomplete" formControlName="consultant" [matAutocomplete]="consultantAutocomplete" appPreventDoubleClick (throttledClick)="$event.stopPropagation()" placeholder="Consultant name" >
-                                                <mat-autocomplete #consultantAutocomplete="matAutocomplete" [displayWith]="displayConsultantNameFn">
+                                                <mat-autocomplete #consultantAutocomplete="matAutocomplete" [displayWith]="displayNameFn">
                                                     <ng-container *ngFor="let item of filteredConsultants; trackBy: trackById">
-                                                        <mat-option [value]="item" [ngClass]="{ 'no-data': item.id === undefined }" appPreventDoubleClick (throttledClick)="updateConsultantStepAnchors()">
+                                                        <mat-option [value]="item" [ngClass]="{ 'no-data': item?.id === undefined }" appPreventDoubleClick (throttledClick)="updateConsultantStepAnchors()">
                                                             <div class="multilineDropdown-option--row">
-                                                                <ng-container *ngIf="item.id !== undefined">
-                                                                    <img class="image-thumbnail-small border-rounded-50 u-mr--10" [src]="consultantProfileUrl(item.externalId!)" />
+                                                                <ng-container *ngIf="item?.id !== undefined">
+                                                                    <img class="image-thumbnail-small border-rounded-50 u-mr--10" [src]="consultantProfileUrl(item?.externalId!)" />
                                                                 </ng-container>
                                                                 <div class="multilineDropdown-option--column text-truncate-ellipsis">
-                                                                    <span class="multilineDropdown-option--column-client-name">{{ item.name }}</span>
-                                                                    <ng-container *ngIf="item.id !== undefined">
+                                                                    <span class="multilineDropdown-option--column-client-name">{{ item?.name }}</span>
+                                                                    <ng-container *ngIf="item?.id !== undefined">
                                                                         <span class="multilineDropdown-option--column-client-info text-truncate-ellipsis">
-                                                                            {{item.companyName ? item.companyName + ' | ' : ''}} {{item.city ? item.city + ' | ' : ''}} #{{item.id}} / {{item.legacyId}}
+                                                                            {{item?.companyName ? item.companyName + ' | ' : ''}} {{item?.city ? item.city + ' | ' : ''}} #{{item?.id}} / {{item?.legacyId}}
                                                                         </span>
                                                                     </ng-container>
                                                                 </div>
@@ -684,7 +684,7 @@
                                                         <mat-select [disabled]="true" formControlName="consultantCapOnTimeReporting" [disableOptionCentering]="true" [compareWith]="compareWithFn">
                                                             <ng-container *ngFor="let item of consultantTimeReportingCapList; trackBy: trackById">
                                                                 <mat-option [value]="item">
-                                                                    {{ item.name }}
+                                                                    {{ item?.name }}
                                                                 </mat-option>
                                                             </ng-container>
                                                         </mat-select>
@@ -870,7 +870,7 @@
                                                                                 <mat-select [required]="consultant.value?.pdcPaymentEntityId !== contractClientForm.value?.pdcInvoicingEntityId" formControlName="proDataRateCurrency" placeholder="Currency" [disableOptionCentering]="true" [compareWith]="compareWithFn">
                                                                                     <ng-container *ngFor="let item of currencies; trackBy: trackById">
                                                                                         <mat-option [value]="item">
-                                                                                            {{ item.name }}
+                                                                                            {{ item?.name }}
                                                                                         </mat-option>
                                                                                     </ng-container>
                                                                                 </mat-select>
@@ -893,7 +893,7 @@
                                                                             <mat-select required formControlName="consultantRateCurrency" placeholder="Currency" [disableOptionCentering]="true" [compareWith]="compareWithFn">
                                                                                 <ng-container *ngFor="let item of currencies; trackBy: trackById">
                                                                                     <mat-option [value]="item">
-                                                                                        {{ item.name }}
+                                                                                        {{ item?.name }}
                                                                                     </mat-option>
                                                                                 </ng-container>
                                                                             </mat-select>
@@ -1073,7 +1073,7 @@
                                                                                 <mat-select [required]="consultant.value?.pdcPaymentEntityId !== contractClientForm.value?.pdcInvoicingEntityId" formControlName="proDataRateCurrency" placeholder="Currency" [disableOptionCentering]="true" [compareWith]="compareWithFn">
                                                                                     <ng-container *ngFor="let item of currencies; trackBy: trackById">
                                                                                         <mat-option [value]="item">
-                                                                                            {{ item.name }}
+                                                                                            {{ item?.name }}
                                                                                         </mat-option>
                                                                                     </ng-container>
                                                                                 </mat-select>
@@ -1095,7 +1095,7 @@
                                                                             <mat-select required formControlName="consultantRateCurrency" placeholder="Currency" [disableOptionCentering]="true" [compareWith]="compareWithFn">
                                                                                 <ng-container *ngFor="let item of currencies; trackBy: trackById">
                                                                                     <mat-option [value]="item">
-                                                                                        {{ item.name }}
+                                                                                        {{ item?.name }}
                                                                                     </mat-option>
                                                                                 </ng-container>
                                                                             </mat-select>

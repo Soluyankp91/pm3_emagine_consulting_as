@@ -197,11 +197,11 @@ export abstract class AppComponentBase {
 
 	// TODO: move all others trackBy methods here
 	trackById(index: number, item: any) {
-		return item.id;
+		return item?.id;
 	}
 
 	documentsTrackBy(index: number, item: ContractDocumentInfoDto) {
-		return item.documentStorageGuid;
+		return item?.documentStorageGuid;
 	}
 
     trackByFormArray(item: any) {

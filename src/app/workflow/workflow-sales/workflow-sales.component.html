@@ -93,7 +93,7 @@
                                         <mat-label>Delivery Type</mat-label>
                                         <mat-select required [disabled]="readOnlyMode" formControlName="deliveryType" [disableOptionCentering]="true" [compareWith]="compareWithFn">
                                             <ng-container *ngFor="let item of deliveryTypes; trackBy: trackById">
-                                                <ng-container *ngIf="(item.id === 1 && salesMainDataForm.salesType?.value?.id === 3) || (item.id !== 1 && salesMainDataForm.salesType?.value?.id !== 3)">
+                                                <ng-container *ngIf="(item?.id === 1 && salesMainDataForm.salesType?.value?.id === 3) || (item?.id !== 1 && salesMainDataForm.salesType?.value?.id !== 3)">
                                                     <mat-option [value]="item">
                                                         {{ item.name }}
                                                     </mat-option>
@@ -1467,14 +1467,14 @@
                                                 <mat-autocomplete #consultantAutocomplete="matAutocomplete" [displayWith]="displayConsultantNameFn"
                                                     (optionSelected)="focusOutMethod()" (opened)="focusInMethod()" (closed)="focusOutMethod()">
                                                     <ng-container *ngFor="let item of filteredConsultants; trackBy: trackById">
-                                                        <mat-option [value]="item" [ngClass]="{ 'no-data': item.id === 'no-data' }" appPreventDoubleClick (throttledClick)="updateConsultantStepAnchors()">
+                                                        <mat-option [value]="item" [ngClass]="{ 'no-data': item?.id === 'no-data' }" appPreventDoubleClick (throttledClick)="updateConsultantStepAnchors()">
                                                             <div class="multilineDropdown-option--row">
-                                                                <ng-container *ngIf="item.id !== 'no-data'">
+                                                                <ng-container *ngIf="item?.id !== 'no-data'">
                                                                     <img class="image-thumbnail-small border-rounded-50 u-mr--10" [src]="consultantProfileUrl(item.consultant.externalId)" />
                                                                 </ng-container>
                                                                 <div class="multilineDropdown-option--column text-truncate-ellipsis">
                                                                     <span class="multilineDropdown-option--column-client-name">{{ item.consultant.name }}</span>
-                                                                    <ng-container *ngIf="item.id !== 'no-data'">
+                                                                    <ng-container *ngIf="item?.id !== 'no-data'">
                                                                         <span class="multilineDropdown-option--column-client-info text-truncate-ellipsis">
                                                                             {{item.consultant.companyName ? item.consultant.companyName + ' | ' : ''}} {{item.consultant.city ? item.consultant.city + ' | ' : ''}} #{{item.consultant.id}} / {{item.consultant.legacyId}}
                                                                         </span>

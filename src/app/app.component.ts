@@ -6,14 +6,13 @@ import { AppComponentBase } from 'src/shared/app-component-base';
 import { EmployeeServiceProxy, CurrentEmployeeDto } from 'src/shared/service-proxies/service-proxies';
 
 @Component({
-    // selector: 'app-root',
     templateUrl: './app.component.html',
     styleUrls: ['./app.component.scss']
 })
 export class AppComponent extends AppComponentBase implements OnInit {
     production = environment.production;
     accountInfo: any;
-    currentEmployee: CurrentEmployeeDto;
+    currentEmployee: CurrentEmployeeDto | undefined;
     constructor(
         injector: Injector,
         private router: Router,
