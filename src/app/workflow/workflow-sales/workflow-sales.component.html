@@ -425,7 +425,7 @@
                                 </ng-container>
                                 <ng-container *ngIf="!readOnlyMode">
                                     <div fxLayout="row" fxLayoutAlign="start start" class="u-w--100">
-                                        <button color="primary" class="rates-and-fees--btn button-add" mat-flat-button type="button" [disabled]="isCommissionEditing"
+                                        <button class="button-add" mat-flat-button type="button" [disabled]="isCommissionEditing"
                                             appPreventDoubleClick (throttledClick)="addCommission(true)">
                                             <mat-icon>add</mat-icon>
                                             Add commission
@@ -476,7 +476,7 @@
                                 <ng-container formArrayName="commissionedUsers" class="u-w--100">
                                     <ng-container *ngFor="let user of salesMainDataForm.commissionedUsers.controls; trackBy: trackByFormArray; index as i" [formArrayName]="i">
                                         <div fxLayout="row" fxLayoutAlign="start center" class="u-w--100">
-                                            <mat-form-field appearance="outline" class="u-w--100 formFieldNoMarginPadding filter-select u-mr--12 form-width-235" [ngClass]="{'disabled-input': readOnlyMode}">
+                                            <mat-form-field appearance="outline" class="formFieldNoMarginPadding filter-select u-mr--12 form-width-235" [ngClass]="{'disabled-input': readOnlyMode}">
                                                 <mat-label>Commissioned user</mat-label>
                                                 <input required [disabled]="readOnlyMode" #commissionedUserInput type="text" matInput [matAutocomplete]="commissionedUserAutocomplete" formControlName="commissionedUser" appPreventDoubleClick (throttledClick)="$event.stopPropagation()" placeholder="Type something">
                                                 <mat-autocomplete #commissionedUserAutocomplete="matAutocomplete" [displayWith]="displayNameFn"
@@ -497,9 +497,11 @@
                                                     <app-validator [control]="user.get('commissionedUser')"></app-validator>
                                                 </mat-error>
                                             </mat-form-field>
-                                            <button mat-icon-button type="button" appPreventDoubleClick (throttledClick)="removeCommissionedUser(i)" class="small-icon-button u-mt--5">
-                                                <mat-icon svgIcon="dialog-close-icon"></mat-icon>
-                                            </button>
+                                            <ng-container *ngIf="!readOnlyMode">
+                                                <button mat-icon-button type="button" appPreventDoubleClick (throttledClick)="removeCommissionedUser(i)" class="small-icon-button u-mt--5">
+                                                    <mat-icon svgIcon="dialog-close-icon"></mat-icon>
+                                                </button>
+                                            </ng-container>
                                         </div>
                                     </ng-container>
                                 </ng-container>
