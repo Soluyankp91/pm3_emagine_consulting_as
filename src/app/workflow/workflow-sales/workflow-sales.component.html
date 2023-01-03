@@ -472,10 +472,10 @@
                             </div>
                             <div fxLayout="column" fxLayoutAlign="start start" class="u-w--100 u-mb--10">
                                 <ng-container formArrayName="commissionedUsers" class="u-w--100">
-                                    <ng-container *ngFor="let user of salesMainDataForm.commissionedUsers.controls; trackBy: trackByFormArray; index as i" [formArrayName]="i">
-                                        <div fxLayout="row" fxLayoutAlign="start center" class="u-w--100">
+                                    <ng-container *ngFor="let user of salesMainDataForm.commissionedUsers.controls; index as i" [formArrayName]="i">
+                                        <div fxLayout="row" fxLayoutAlign="start start" class="u-w--100 u-mb--10">
                                             <mat-form-field appearance="outline" class="u-w--100 formFieldNoMarginPadding filter-select u-mr--12" fxFlex="35%" [ngClass]="{'disabled-input': readOnlyMode}">
-                                                <mat-label>Commissioned user</mat-label>
+                                                <mat-label>Commissioned employee</mat-label>
                                                 <input required [disabled]="readOnlyMode" #commissionedUserInput type="text" matInput [matAutocomplete]="commissionedUserAutocomplete" formControlName="commissionedUser" appPreventDoubleClick (throttledClick)="$event.stopPropagation()" placeholder="Type something">
                                                 <mat-autocomplete #commissionedUserAutocomplete="matAutocomplete" [displayWith]="displayNameFn"
                                                     (optionSelected)="focusOutMethod()" (opened)="focusInMethod()" (closed)="focusOutMethod()">
@@ -495,16 +495,18 @@
                                                     <app-validator [control]="user.get('commissionedUser')"></app-validator>
                                                 </mat-error>
                                             </mat-form-field>
-                                            <button mat-icon-button type="button" appPreventDoubleClick (throttledClick)="removeCommissionedUser(i)" class="small-icon-button u-mt--5">
-                                                <mat-icon svgIcon="dialog-close-icon"></mat-icon>
-                                            </button>
+                                            <ng-container *ngIf="!readOnlyMode">
+                                                <button mat-icon-button type="button" appPreventDoubleClick (throttledClick)="removeCommissionedUser(i)" class="small-icon-button u-mt--8">
+                                                    <mat-icon svgIcon="dialog-close-icon"></mat-icon>
+                                                </button>
+                                            </ng-container>
                                         </div>
                                     </ng-container>
                                 </ng-container>
                                 <ng-container *ngIf="!readOnlyMode">
                                     <button class="button-add u-mt--5" mat-flat-button type="button" appPreventDoubleClick (throttledClick)="addCommissionedUser()">
                                         <mat-icon>add</mat-icon>
-                                        Add commissioned user
+                                        Add commissioned employees
                                     </button>
                                 </ng-container>
                             </div>
