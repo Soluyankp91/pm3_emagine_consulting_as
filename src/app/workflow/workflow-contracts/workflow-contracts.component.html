@@ -108,7 +108,7 @@
                             <h2 class="workflow-section--header">Project</h2>
                         </div>
                         <div class="workflow-section--content">
-                            <div fxLayout="row" fxLayoutAlign="start start" class="u-w--100 u-mb--10 u-mt--10">
+                            <div fxLayout="row" fxLayoutAlign="start start" class="u-w--100 u-mt--10">
                                 <mat-form-field appearance="outline" class="formFieldNoMarginPadding filter-select u-mr--12 form-width-235">
                                     <mat-label>Project Type (Legacy)</mat-label>
                                     <mat-select [disabled]="true" formControlName="projectType" [disableOptionCentering]="true" [compareWith]="compareWithFn">
@@ -151,7 +151,7 @@
                                     </mat-error>
                                 </mat-form-field>
                             </div>
-                            <div fxLayout="row" fxLayoutAlign="start start" class="u-w--100 u-mb--10">
+                            <div fxLayout="row" fxLayoutAlign="start start" class="u-w--100">
                                 <mat-form-field appearance="outline" class="formFieldNoMarginPadding filter-select u-mr--12 form-width-235">
                                     <mat-label>Project Category</mat-label>
                                     <mat-select [disabled]="true" formControlName="projectCategory" [disableOptionCentering]="true" [compareWith]="compareWithFn">
@@ -182,7 +182,7 @@
                                     </mat-error>
                                 </mat-form-field>
                             </div>
-                            <div fxLayout="row" fxLayoutAlign="start start" class="u-w--100 u-mb--20">
+                            <div fxLayout="row" fxLayoutAlign="start start" class="u-w--100">
                                 <mat-form-field appearance="outline" class="textarea-input formFieldNoMarginPadding form-width-559" [ngClass]="{'disabled-input': readOnlyMode}">
                                     <mat-label>Project Name</mat-label>
                                     <textarea [disabled]="readOnlyMode" matInput autocomplete="new-password" name="projectName" formControlName="projectName" [cdkTextareaAutosize]="true" [cdkAutosizeMinRows]="2">
@@ -192,7 +192,7 @@
                                     </mat-error>
                                 </mat-form-field>
                             </div>
-                            <div fxLayout="row" fxLayoutAlign="start start" class="u-w--100 u-mb--20">
+                            <div fxLayout="row" fxLayoutAlign="start start" class="u-w--100">
                                 <mat-form-field appearance="outline" class="textarea-input formFieldNoMarginPadding form-width-559" [ngClass]="{'disabled-input': readOnlyMode}">
                                     <mat-label>Project Description</mat-label>
                                     <textarea [disabled]="readOnlyMode" matInput autocomplete="new-password" name="projectDescription" formControlName="projectDescription" [cdkTextareaAutosize]="true" [cdkAutosizeMinRows]="2">
@@ -314,7 +314,6 @@
                                 <h2 class="workflow-section--header">Client contract</h2>
                             </div>
                             <div class="workflow-section--content">
-                                <h3 class="workflow-gray--header">Special Contract Terms</h3>
                                 <div fxLayout="row" fxLayoutAlign="start start" class="u-w--100">
                                     <mat-form-field appearance="outline" class="formFieldNoMarginPadding textarea-input u-mr--12 form-width-559" [ngClass]="{'disabled-input': readOnlyMode}">
                                         <mat-label>Special Contract Terms</mat-label>
@@ -424,21 +423,25 @@
                                                 </ng-template>
                                             </div>
                                         </ng-container>
+                                        <ng-container *ngIf="contractClientForm.clientRates?.controls?.length === 0 && readOnlyMode">
+                                            <div fxLayout="row" fxLayoutAlign="start center" fxLayoutGap="10px" class="workflow-contracts--list u-w--100 u-pl--16 u-pr--16">
+                                                <span>
+                                                    No special rates
+                                                </span>
+                                            </div>
+                                        </ng-container>
                                     </ng-container>
                                 </div>
                                 <ng-container *ngIf="!readOnlyMode">
                                     <div fxLayout="row" fxLayoutAlign="start start" class="u-mb--10">
                                         <button
-                                            [ngClass]="contractClientForm!.clientRates!.controls!.length > 0 ? 'button-add' : 'button-outlined'"
-                                            class="rates-and-fees--btn"
+                                            class="rates-and-fees--btn button-add"
                                             mat-flat-button
                                             [matMenuTriggerFor]="clientSpecialRateMenu"
                                             [disabled]="isConsultantRateEditing"
                                             #clientRateMenuTrigger="matMenuTrigger"
                                             (menuOpened)="clientSpecialRateFilter!.setValue(''); clientSpecialRateSelect.open();">
-                                            <ng-container *ngIf="contractClientForm.clientRates?.controls?.length">
-                                                <mat-icon>add</mat-icon>
-                                            </ng-container>
+                                            <mat-icon>add</mat-icon>
                                             Add special rates
                                         </button>
                                         <mat-menu #clientSpecialRateMenu backdropClass="add-rates-button--menu">
@@ -559,21 +562,25 @@
                                                 </ng-template>
                                             </div>
                                         </ng-container>
+                                        <ng-container *ngIf="contractClientForm.clientFees?.controls?.length === 0 && readOnlyMode">
+                                            <div fxLayout="row" fxLayoutAlign="start center" fxLayoutGap="10px" class="workflow-contracts--list u-w--100 u-pl--16 u-pr--16">
+                                                <span>
+                                                    No special fees
+                                                </span>
+                                            </div>
+                                        </ng-container>
                                     </ng-container>
                                 </div>
                                 <ng-container *ngIf="!readOnlyMode">
                                     <div fxLayout="row" fxLayoutAlign="start start">
                                         <button
-                                            [ngClass]="contractClientForm!.clientFees!.controls!.length > 0 ? 'button-add' : 'button-outlined'"
-                                            class="rates-and-fees--btn"
+                                            class="rates-and-fees--btn button-add"
                                             mat-flat-button
                                             [matMenuTriggerFor]="clientSpecialFeeMenu"
                                             [disabled]="isConsultantFeeEditing"
                                             #clientFeeMenuTrigger="matMenuTrigger"
                                             (menuOpened)="clientSpecialFeeFilter!.setValue(''); clientSpecialFeeSelect.open();">
-                                            <ng-container *ngIf="contractClientForm.clientFees?.controls?.length">
-                                                <mat-icon>add</mat-icon>
-                                            </ng-container>
+                                            <mat-icon>add</mat-icon>
                                             Add special fees
                                         </button>
                                         <mat-menu #clientSpecialFeeMenu backdropClass="add-rates-button--menu">
@@ -625,7 +632,7 @@
                                         <h2 class="workflow-section--header">Employment type</h2>
                                     </div>
                                     <div class="workflow-section--content">
-                                        <div fxLayout="row" fxLayoutAlign="start start" class="u-w--100 u-mb--20">
+                                        <div fxLayout="row" fxLayoutAlign="start start" class="u-w--100">
                                             <mat-form-field appearance="outline" class="formFieldNoMarginPadding filter-select form-width-235">
                                                 <mat-label>Employment type</mat-label>
                                                 <mat-select [disabled]="true" required formControlName="consultantType" [disableOptionCentering]="true" [compareWith]="compareWithFn">
@@ -644,7 +651,7 @@
                                             <mat-form-field appearance="outline" class="formFieldNoMarginPadding client-and-consultant-autocomplete disabled-input" [fxHide]="consultant.value?.consultantType?.id === 10 || consultant.value?.consultantType?.id === 11">
                                                 <mat-label>Consultant Name</mat-label>
                                                 <input [disabled]="true" type="text" matInput name="consutlantNameAutocomplete" formControlName="consultant" [matAutocomplete]="consultantAutocomplete" appPreventDoubleClick (throttledClick)="$event.stopPropagation()" placeholder="Consultant name" >
-                                                <mat-autocomplete #consultantAutocomplete="matAutocomplete" [displayWith]="displayConsultantNameFn">
+                                                <mat-autocomplete #consultantAutocomplete="matAutocomplete" [displayWith]="displayNameFn">
                                                     <ng-container *ngFor="let item of filteredConsultants; trackBy: trackById">
                                                         <mat-option [value]="item" [ngClass]="{ 'no-data': item.id === undefined }" appPreventDoubleClick (throttledClick)="updateConsultantStepAnchors()">
                                                             <div class="multilineDropdown-option--row">
@@ -688,7 +695,7 @@
                                                 <h2 class="workflow-section--header">Invoicing</h2>
                                             </div>
                                             <div class="workflow-section--content">
-                                                <div fxLayout="row" fxLayoutAlign="start center" class="u-w--100 u-mb--20">
+                                                <div fxLayout="row" fxLayoutAlign="start center" class="u-w--100">
                                                     <mat-form-field appearance="outline" class="formFieldNoMarginPadding filter-select u-mr--12 form-width-150">
                                                         <mat-label>Cap type</mat-label>
                                                         <mat-select [disabled]="true" formControlName="consultantCapOnTimeReporting" [disableOptionCentering]="true" [compareWith]="compareWithFn">
@@ -736,7 +743,6 @@
                                             <h2 class="workflow-section--header">Consultant contract terms</h2>
                                         </div>
                                         <div class="workflow-section--content">
-                                            <h3 class="workflow-gray--header">Special Contract Terms</h3>
                                             <div fxLayout="row" fxLayoutAlign="start start" class="u-w--100">
                                                 <mat-form-field appearance="outline" class="formFieldNoMarginPadding textarea-input u-mr--12 form-width-559" [ngClass]="{'disabled-input': readOnlyMode}">
                                                     <mat-label>Special Contract Terms</mat-label>
@@ -768,7 +774,7 @@
                                             <h2 class="workflow-section--header">Consultant payment</h2>
                                         </div>
                                         <div class="workflow-section--content">
-                                            <div fxLayout="row" fxLayoutAlign="start start" class="u-w--100 u-mb--10">
+                                            <div fxLayout="row" fxLayoutAlign="start start" class="u-w--100">
                                                 <mat-form-field appearance="outline" class="form-width-559 formFieldNoMarginPadding textarea-input u-mr--12" [ngClass]="{'disabled-input': readOnlyMode}">
                                                     <mat-label>Special Payment Terms</mat-label>
                                                     <textarea [disabled]="readOnlyMode" required matInput autocomplete="new-password" name="specialPaymentTerms" formControlName="specialPaymentTerms" [cdkTextareaAutosize]="true" [cdkAutosizeMinRows]="2">
@@ -833,6 +839,13 @@
                                                                         {{rate.value.consultantRateValue !== null && rate.value.consultantRateCurrency?.name ? rate.value.consultantRateValue + ' ' + rate.value.consultantRateCurrency?.name : '-'}}
                                                                     </span>
                                                                 </ng-container>
+                                                            </div>
+                                                        </ng-container>
+                                                        <ng-container *ngIf="consultant.value.specialRates?.length === 0 && readOnlyMode">
+                                                            <div fxLayout="row" fxLayoutAlign="space-between center" fxLayoutGap="10px" class="workflow-contracts--list u-w--100 u-pl--16 u-pr--16">
+                                                                <span>
+                                                                    No special rates
+                                                                </span>
                                                             </div>
                                                         </ng-container>
                                                     </ng-container>
@@ -956,16 +969,13 @@
                                                 </div>
                                                 <div fxLayout="row" fxLayoutAlign="start start" class="u-mb--10">
                                                     <button
-                                                        [ngClass]="consultant.value.specialRates?.length > 0 ? 'button-add' : 'button-outlined'"
-                                                        class="rates-and-fees--btn"
+                                                        class="rates-and-fees--btn button-add"
                                                         mat-flat-button
                                                         [matMenuTriggerFor]="consultantSpecialRateMenu"
                                                         [disabled]="isConsultantRateEditing"
                                                         (menuOpened)="contractsConsultantsDataForm.consultants.at(consultantIndex).get('consultantSpecialRateFilter')!.setValue(''); consultantSpecialRateSelect.open();"
                                                         #consultantRateMenuTrigger="matMenuTrigger">
-                                                        <ng-container *ngIf="consultant.value.specialRates?.length">
-                                                            <mat-icon>add</mat-icon>
-                                                        </ng-container>
+                                                        <mat-icon>add</mat-icon>
                                                         Add special rate
                                                     </button>
                                                     <mat-menu #consultantSpecialRateMenu backdropClass="add-rates-button--menu">
@@ -1036,6 +1046,13 @@
                                                                     matTooltipClass="white-tooltip" appShowIfTruncated>
                                                                     {{fee.value.consultantRateValue !== null && fee.value.consultantRateCurrency?.name ?
                                                                     fee.value.consultantRateValue + ' ' + fee.value.consultantRateCurrency?.name : '-'}}
+                                                                </span>
+                                                            </div>
+                                                        </ng-container>
+                                                        <ng-container *ngIf="consultant.value.clientFees?.length === 0 && readOnlyMode">
+                                                            <div fxLayout="row" fxLayoutAlign="space-between center" fxLayoutGap="10px" class="workflow-contracts--list u-w--100 u-pl--16 u-pr--16">
+                                                                <span>
+                                                                    No special fees
                                                                 </span>
                                                             </div>
                                                         </ng-container>
@@ -1158,16 +1175,13 @@
                                                 </div>
                                                 <div fxLayout="row" fxLayoutAlign="start start" class="u-mb--10">
                                                     <button
-                                                        [ngClass]="consultant.value.clientFees?.length > 0 ? 'button-add' : 'button-outlined'"
-                                                        class="rates-and-fees--btn"
+                                                        class="rates-and-fees--btn button-add"
                                                         mat-flat-button
                                                         [matMenuTriggerFor]="consultantSpecialFeeMenu"
                                                         [disabled]="isConsultantFeeEditing"
                                                         #consultantFeeMenuTrigger="matMenuTrigger"
                                                         (menuOpened)="contractsConsultantsDataForm.consultants.at(consultantIndex).get('consultantSpecialFeeFilter')!.setValue(''); consultantSpecialFeeSelect.open();">
-                                                        <ng-container *ngIf="consultant.value.clientFees?.length">
-                                                            <mat-icon>add</mat-icon>
-                                                        </ng-container>
+                                                        <mat-icon>add</mat-icon>
                                                         Add special fees
                                                     </button>
                                                     <mat-menu #consultantSpecialFeeMenu backdropClass="add-rates-button--menu">
@@ -1389,13 +1403,18 @@
                                                         </ng-container>
                                                     </mat-accordion>
                                                 </ng-container>
+                                                <ng-container *ngIf="consultant.value.projectLines?.length === 0 && readOnlyMode">
+                                                    <div fxLayout="row" fxLayoutAlign="space-between center" fxLayoutGap="10px" class="workflow-contracts--list u-w--100 u-pl--16 u-pr--16">
+                                                        <span>
+                                                            No project lines
+                                                        </span>
+                                                    </div>
+                                                </ng-container>
                                             </div>
                                             <ng-container *ngIf="!readOnlyMode">
                                                 <div fxLayout="row" fxLayoutAlign="start start" class="u-mb--10">
-                                                    <button [ngClass]="consultant.value.projectLines?.length > 0 ? 'button-add' : 'button-outlined'" class="rates-and-fees--btn" mat-flat-button appPreventDoubleClick (throttledClick)="createOrEditProjectLine(consultantIndex)">
-                                                        <ng-container *ngIf="consultant.value.projectLines?.length">
-                                                            <mat-icon>add</mat-icon>
-                                                        </ng-container>
+                                                    <button class="rates-and-fees--btn button-add" mat-flat-button appPreventDoubleClick (throttledClick)="createOrEditProjectLine(consultantIndex)">
+                                                        <mat-icon>add</mat-icon>
                                                         Add project line
                                                     </button>
                                                 </div>
