@@ -1,10 +1,14 @@
 @import "/src/app/shared/styles/config/_colors";
 
+.mat-form-field-appearance-outline .mat-select-arrow-wrapper {
+    transform: translateY(-35%) !important;
+}
 .filter-select,
 .client-documents--contract-filter__select {
     .mat-select-value {
         color: rgba(56, 72, 83, 0.87);
         font-weight: 700;
+        line-height: 1.2rem;
     }
 
     .mat-option.mat-selected:not(.mat-option-disabled) {
@@ -275,6 +279,7 @@
     .mat-select-value-text {
         font-weight: 600;
         color: #000;
+        line-height: 1;
     }
 
     .mat-select-arrow {

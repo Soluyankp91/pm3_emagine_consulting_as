@@ -2091,7 +2091,7 @@
                                     <div class="workflow-section--content">
                                         <div fxLayout="row" fxLayoutAlign="start start" class="u-w--100">
                                             <mat-form-field appearance="outline" class="formFieldNoMarginPadding filter-select form-width-312">
-                                                <mat-label>emagine Entity</mat-label>
+                                                <mat-label>emagine payment entity (consultant)</mat-label>
                                                 <mat-select [disabled]="readOnlyMode" required formControlName="consultantProdataEntity" [disableOptionCentering]="true" [compareWith]="compareWithFn">
                                                     <ng-container *ngFor="let item of legalEntities; trackBy: trackById">
                                                         <mat-option [value]="item">
@@ -2415,7 +2415,7 @@
                                     <div class="workflow-section--content">
                                         <div fxLayout="row" fxLayoutAlign="start start" class="u-w--100">
                                             <mat-form-field appearance="outline" class="formFieldNoMarginPadding textarea-input u-mr--12 form-width-559" [ngClass]="{'disabled-input': readOnlyMode}">
-                                                <mat-label>Consultant Special Contract Terms</mat-label>
+                                                <mat-label>Special Contract Terms</mat-label>
                                                 <textarea [disabled]="readOnlyMode" [required]="consultant.value?.employmentType?.id !== employmentTypesEnum.FeeOnly && consultant.value?.employmentType?.id !== employmentTypesEnum.Recruitment" matInput autocomplete="new-password" name="consultantSpecialContractTerms" formControlName="consultantSpecialContractTerms" [cdkTextareaAutosize]="true" [cdkAutosizeMinRows]="2">
                                                 </textarea>
                                                 <mat-error>
