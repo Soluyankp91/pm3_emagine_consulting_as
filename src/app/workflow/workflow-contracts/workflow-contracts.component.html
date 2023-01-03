@@ -66,20 +66,38 @@
                         <ng-container *ngFor="let consultant of contractsTerminationConsultantForm.consultantTerminationContractData.controls; index as i; last as last" [formGroupName]="i">
                             <div class="workflow-contracts--block-consultants u-mt--20" [ngClass]="{'last-block': last}" [id]="'consultantDataAnchor' + i">
                                 <app-consultant-information [consultantData]="consultant?.value?.consultantData"></app-consultant-information>
-                                <div fxLayout="row" fxLayoutAlign="start center" class="u-w--100">
+                                <div fxLayout="column" fxLayoutAlign="start start" class="u-w--100">
                                     <ng-container *ngIf="!readOnlyMode || consultant.get('removedConsultantFromAnyManualChecklists')?.value">
-                                        <mat-checkbox [disabled]="readOnlyMode" color="accent" name="removedConsultantFromAnyManualChecklists" formControlName="removedConsultantFromAnyManualChecklists" class="black-checkbox u-mr--10">
+                                        <mat-checkbox required [disabled]="readOnlyMode" color="accent" name="removedConsultantFromAnyManualChecklists"
+                                            formControlName="removedConsultantFromAnyManualChecklists" class="black-checkbox u-mr--10"
+                                            [ngClass]="{'mat-form-field-invalid': consultant.get('removedConsultantFromAnyManualChecklists')!.touched && !consultant.get('removedConsultantFromAnyManualChecklists')!.valid}">
                                             Removed Consultant from any manual checklists
                                         </mat-checkbox>
                                     </ng-container>
+                                    <mat-error>
+                                        <ng-container
+                                            *ngIf="consultant.get('removedConsultantFromAnyManualChecklists')!.touched && !consultant.get('removedConsultantFromAnyManualChecklists')!.valid">
+                                            <app-validator [withoutFormField]="true"
+                                                [control]="consultant.get('removedConsultantFromAnyManualChecklists')"></app-validator>
+                                        </ng-container>
+                                    </mat-error>
                                 </div>
 
-                                <div fxLayout="row" fxLayoutAlign="start center" class="u-w--100">
+                                <div fxLayout="column" fxLayoutAlign="start start" class="u-w--100">
                                     <ng-container *ngIf="!readOnlyMode || consultant.get('deletedAnySensitiveDocumentsForGDPR')?.value">
-                                        <mat-checkbox [disabled]="readOnlyMode" color="accent" name="deletedAnySensitiveDocumentsForGDPR" formControlName="deletedAnySensitiveDocumentsForGDPR" class="black-checkbox u-mr--10">
+                                        <mat-checkbox required [disabled]="readOnlyMode" color="accent" name="deletedAnySensitiveDocumentsForGDPR"
+                                            formControlName="deletedAnySensitiveDocumentsForGDPR" class="black-checkbox u-mr--10"
+                                            [ngClass]="{'mat-form-field-invalid': consultant.get('deletedAnySensitiveDocumentsForGDPR')!.touched && !consultant.get('deletedAnySensitiveDocumentsForGDPR')!.valid}">
                                             Deleted any sensitive documents (GDPR)
                                         </mat-checkbox>
                                     </ng-container>
+                                    <mat-error>
+                                        <ng-container
+                                            *ngIf="consultant.get('deletedAnySensitiveDocumentsForGDPR')!.touched && !consultant.get('deletedAnySensitiveDocumentsForGDPR')!.valid">
+                                            <app-validator [withoutFormField]="true"
+                                                [control]="consultant.get('deletedAnySensitiveDocumentsForGDPR')"></app-validator>
+                                        </ng-container>
+                                    </mat-error>
                                 </div>
                             </div>
                         </ng-container>
