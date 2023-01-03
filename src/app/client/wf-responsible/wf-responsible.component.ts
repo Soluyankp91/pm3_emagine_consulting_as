@@ -51,6 +51,9 @@ export class WfResponsibleComponent extends AppComponentBase implements OnInit, 
 					if (value?.id) {
 						toSend.name = value.id ? value.name : value;
 					}
+                    if (!value || value?.length === 0) {
+                        this.setResponsiblePerson();
+                    }
 					return this._lookupService.employees(toSend.name);
 				})
 			)
@@ -92,8 +95,8 @@ export class WfResponsibleComponent extends AppComponentBase implements OnInit, 
 	setResponsiblePerson() {
 		let input = new UpdateClientWFResponsibleCommand();
 		input.clientId = this.clientId;
-		input.contractStepResponsibleEmployeeId = this.contractStepResponsible.value?.id;
-		input.financeStepResponsibleEmployeeId = this.financeStepResponsible.value?.id;
+		input.contractStepResponsibleEmployeeId = this.contractStepResponsible.value?.id ?? null;
+		input.financeStepResponsibleEmployeeId = this.financeStepResponsible.value?.id ?? null;
 		this._clientService
 			.postWFResponsible(input)
 			.pipe(finalize(() => this.hideMainSpinner()))
