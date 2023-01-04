@@ -108,7 +108,7 @@
                                 <div fxLayout="row" fxLayoutAlign="start start" class="u-w--100 u-mb--10">
                                     <mat-form-field appearance="outline" class="u-w--100 formFieldNoMarginPadding filter-select u-mr--12" fxFlex="35%">
                                         <mat-label>Project Category</mat-label>
-                                        <mat-select required [disabled]="readOnlyMode" formControlName="projectCategory" [disableOptionCentering]="true" [compareWith]="compareWithFn" [disabled]="activeSideSection.typeId === workflowSideSections.ExtendClientPeriod || activeSideSection.typeId === workflowSideSections.ChangeClientPeriod || readOnlyMode">
+                                        <mat-select required formControlName="projectCategory" [disableOptionCentering]="true" [compareWith]="compareWithFn" [disabled]="readOnlyMode">
                                             <ng-container *ngFor="let item of projectCategories; trackBy: trackById">
                                                 <mat-option [value]="item">
                                                     {{ item.name }}
