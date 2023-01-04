@@ -70,7 +70,9 @@
                                     <app-consultant-information [consultantData]="consultant?.value?.consultant"></app-consultant-information>
                                     <ng-container *ngIf="!readOnlyMode || consultant.get('checkInvoicingSettingsOnConsultant')?.value">
                                         <div fxLayout="column" fxLayoutAlign="start start" class="u-w--100 u-mb--10">
-                                            <mat-checkbox [disabled]="readOnlyMode" color="accent" formControlName="checkInvoicingSettingsOnConsultant" name="checkInvoicingSettingsOnConsultant" class="black-checkbox u-mr--10">
+                                            <mat-checkbox [disabled]="readOnlyMode" color="accent" required formControlName="checkInvoicingSettingsOnConsultant"
+                                                name="checkInvoicingSettingsOnConsultant" class="black-checkbox u-mr--10"
+                                                [ngClass]="{'mat-form-field-invalid': consultant.get('checkInvoicingSettingsOnConsultant')!.touched && !consultant.get('checkInvoicingSettingsOnConsultant')!.valid}">
                                                 Check invoicing settings on consultant
                                             </mat-checkbox>
                                             <mat-error>
@@ -82,7 +84,9 @@
                                     </ng-container>
                                     <ng-container *ngIf="!readOnlyMode || consultant.get('creditorCreatedInNavision')?.value">
                                         <div fxLayout="column" fxLayoutAlign="start start" class="u-w--100 u-mb--20">
-                                            <mat-checkbox [disabled]="readOnlyMode" required color="accent" formControlName="creditorCreatedInNavision" name="creditorCreatedInNavision" class="black-checkbox u-mr--10">
+                                            <mat-checkbox [disabled]="readOnlyMode" required color="accent" formControlName="creditorCreatedInNavision"
+                                                name="creditorCreatedInNavision" class="black-checkbox u-mr--10"
+                                                [ngClass]="{'mat-form-field-invalid': consultant.get('creditorCreatedInNavision')!.touched && !consultant.get('creditorCreatedInNavision')!.valid}">
                                                 Consultant company (creditor) created in Navision
                                             </mat-checkbox>
                                             <mat-error>

@@ -154,14 +154,14 @@ export abstract class AppComponentBase {
 
 	consultantProfileUrl(fileToken: string): string {
 		if (!fileToken) {
-			return 'assets/common/images/no-img.svg';
+			return 'assets/common/images/no-img.jpg';
 		}
 		return `${environment.sharedAssets}/ProfilePicture/${fileToken}.jpg`;
 	}
 
 	employeeProfileUrl(fileToken: string): string {
 		if (!fileToken) {
-			return 'assets/common/images/no-img.svg';
+			return 'assets/common/images/no-img.jpg';
 		}
 		return environment.sharedAssets + `/EmployeePicture/${fileToken}.jpg`;
 	}
@@ -197,11 +197,11 @@ export abstract class AppComponentBase {
 
 	// TODO: move all others trackBy methods here
 	trackById(index: number, item: any) {
-		return item.id;
+		return item?.id;
 	}
 
 	documentsTrackBy(index: number, item: ContractDocumentInfoDto) {
-		return item.documentStorageGuid;
+		return item?.documentStorageGuid;
 	}
 
     trackByFormArray(item: any) {

@@ -42,15 +42,16 @@
         }
         &-type {
             @include flexCentered;
-            height: 30px;
-            line-height: 24px;
-            padding: 6px 8px;
+            height: 32px;
+            padding: 8px 12px 8px 12px;
+            border-radius: 40px;
+            line-height: 16px;
             border: 1px solid $light-grey-color;
             border-radius: 40px;
             &__name {
                 font-weight: 700;
                 color: #384853;
-                font-size: 12px;
+                font-size: 11px;
             }
             &__quantity {
                 font-weight: 800;
@@ -104,11 +105,8 @@
     }
     &-icon {
         &-type {
-            width: 20px;
-            height: 20px;
-            font-size: 20px;
-            line-height: 20px;
-            margin-right: 5px;
+            @include fontLineHeightAndSize(20px, 20px, 20px, 20px);
+            transform: scale(0.8);
         }
     }
     &-search-button {
