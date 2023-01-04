@@ -911,7 +911,7 @@
                                         </mat-error>
                                     </mat-form-field>
                                     <!-- id: 2 - manual date -->
-                                    <mat-form-field class="formFieldNoMarginPadding" [fxHide]="salesClientDataForm.clientRateAndInvoicing?.value?.id !== 2 && salesClientDataForm.clientInvoiceTime?.value?.name !== 'Manual date'" appearance="outline" fxFlex="22%" [ngClass]="{'disabled-input': readOnlyMode}">
+                                    <mat-form-field class="formFieldNoMarginPadding" [fxHide]="salesClientDataForm.clientRateAndInvoicing?.value?.id !== 2 || salesClientDataForm.clientInvoiceTime?.value?.name !== 'Manual date'" appearance="outline" fxFlex="22%" [ngClass]="{'disabled-input': readOnlyMode}">
                                         <mat-label>Date</mat-label>
                                         <input [disabled]="readOnlyMode" [required]="salesClientDataForm.clientInvoiceTime?.value?.id === 2" autocomplete="off" matInput
                                                 [matDatepicker]="clientInvoicingDateDatePicker"
@@ -1846,7 +1846,7 @@
                                                                 </div>
                                                             </ng-container>
                                                             <ng-template #consultantRateActionDisplay>
-                                                                <div fxFlex="10%" fxLayoutAlign="center center" class="u-w--100" [fxHide]="readOnlyMode">
+                                                                <div fxFlex="10%" fxLayoutAlign="end center" class="u-w--100" [fxHide]="readOnlyMode">
                                                                     <button mat-icon-button type="button" appPreventDoubleClick (throttledClick)="$event.stopPropagation();" [matMenuTriggerFor]="consutlantRateMenu" class="three-dots-actions-btn">
                                                                         <mat-icon svgIcon="3-dots"></mat-icon>
                                                                     </button>
@@ -1996,7 +1996,7 @@
                                                                 </div>
                                                             </ng-container>
                                                             <ng-template #clientFeeActionDisplay>
-                                                                <div fxFlex="10%" fxLayoutAlign="center center" class="u-w--100" [fxHide]="readOnlyMode">
+                                                                <div fxFlex="10%" fxLayoutAlign="end center" class="u-w--100" [fxHide]="readOnlyMode">
                                                                     <button mat-icon-button type="button" appPreventDoubleClick (throttledClick)="$event.stopPropagation();" [matMenuTriggerFor]="consultantFeeMenu" class="three-dots-actions-btn">
                                                                         <mat-icon svgIcon="3-dots"></mat-icon>
                                                                     </button>
