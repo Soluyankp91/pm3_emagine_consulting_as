@@ -21,6 +21,7 @@ import { WorkflowNotesComponent } from './workflow-notes/workflow-notes.componen
 import { RateAndFeesWarningsDialogComponent } from './rate-and-fees-warnings-dialog/rate-and-fees-warnings-dialog.component';
 import { MainDataComponent } from './workflow-sales/main-data/main-data.component';
 import { ClientDataComponent } from './workflow-sales/client-data/client-data.component';
+import { ConsultantDataComponent } from './workflow-sales/consultant-data/consultant-data.component';
 
 @NgModule({
     declarations: [
@@ -40,7 +41,8 @@ import { ClientDataComponent } from './workflow-sales/client-data/client-data.co
         WorkflowNotesComponent,
         RateAndFeesWarningsDialogComponent,
         MainDataComponent,
-        ClientDataComponent
+        ClientDataComponent,
+        ConsultantDataComponent
     ],
     imports: [
         CommonModule,

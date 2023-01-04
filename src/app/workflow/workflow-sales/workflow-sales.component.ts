@@ -61,6 +61,7 @@ import { WorkflowDataService } from '../workflow-data.service';
 import { WorkflowProcessWithAnchorsDto } from '../workflow-period/workflow-period.model';
 import { EmploymentTypes } from '../workflow.model';
 import { ClientDataComponent } from './client-data/client-data.component';
+import { ConsultantDataComponent } from './consultant-data/consultant-data.component';
 import { MainDataComponent } from './main-data/main-data.component';
 import {
     ClientRateTypes,
@@ -79,6 +80,8 @@ import {
 export class WorkflowSalesComponent extends AppComponentBase implements OnInit, OnDestroy {
     @ViewChild('mainDataComponent', {static: false}) mainDataComponent: MainDataComponent;
     @ViewChild('clientDataComponent', {static: false}) clientDataComponent: ClientDataComponent;
+    @ViewChild('consutlantDataComponent', {static: false}) consutlantDataComponent: ConsultantDataComponent;
+
 	@Input() workflowId: string;
 	@Input() periodId: string | undefined;
 	@Input() consultant: ConsultantResultDto;
@@ -91,7 +94,7 @@ export class WorkflowSalesComponent extends AppComponentBase implements OnInit, 
 	// SalesStep
 	// salesClientDataForm: WorkflowSalesClientDataForm;
 	// salesMainDataForm: WorkflowSalesMainForm;
-	consultantsForm: WorkflowSalesConsultantsForm;
+	// consultantsForm: WorkflowSalesConsultantsForm;
 	salesTerminateConsultantForm: SalesTerminateConsultantForm;
 
 	deliveryTypes: EnumEntityTypeDto[] = [];
@@ -153,10 +156,10 @@ export class WorkflowSalesComponent extends AppComponentBase implements OnInit, 
 	// isClientRateEditing = false;
 	// clientFeeToEdit: PeriodClientSpecialFeeDto;
 	// isClientFeeEditing = false;
-	consultantRateToEdit: PeriodConsultantSpecialRateDto;
-	isConsultantRateEditing = false;
-	consultantFeeToEdit: PeriodConsultantSpecialFeeDto;
-	isConsultantFeeEditing = false;
+	// consultantRateToEdit: PeriodConsultantSpecialRateDto;
+	// isConsultantRateEditing = false;
+	// consultantFeeToEdit: PeriodConsultantSpecialFeeDto;
+	// isConsultantFeeEditing = false;
 	// clientSpecialRateFilter = new UntypedFormControl('');
 	clientSpecialRateList: ClientSpecialRateDto[] = [];
 	// clientSpecialFeeFilter = new UntypedFormControl('');
@@ -206,7 +209,7 @@ export class WorkflowSalesComponent extends AppComponentBase implements OnInit, 
 		super(injector);
 		// this.salesClientDataForm = new WorkflowSalesClientDataForm();
 		// this.salesMainDataForm = new WorkflowSalesMainForm();
-		this.consultantsForm = new WorkflowSalesConsultantsForm();
+		// this.consultantsForm = new WorkflowSalesConsultantsForm();
 		this.salesTerminateConsultantForm = new SalesTerminateConsultantForm();
 
 		//#region form subscriptions
@@ -570,7 +573,7 @@ export class WorkflowSalesComponent extends AppComponentBase implements OnInit, 
 	validateSalesForm() {
 		this.clientDataComponent?.salesClientDataForm.markAllAsTouched();
 		this.mainDataComponent?.salesMainDataForm.markAllAsTouched();
-		this.consultantsForm.markAllAsTouched();
+		this.consutlantDataComponent?.consultantsForm.markAllAsTouched();
 		this.salesTerminateConsultantForm.markAllAsTouched();
 		switch (this.activeSideSection.typeId) {
 			case WorkflowProcessType.StartClientPeriod:
@@ -579,7 +582,7 @@ export class WorkflowSalesComponent extends AppComponentBase implements OnInit, 
 			case WorkflowProcessType.StartConsultantPeriod:
 			case WorkflowProcessType.ChangeConsultantPeriod:
 			case WorkflowProcessType.ExtendConsultantPeriod:
-				return this.clientDataComponent?.salesClientDataForm.valid && this.mainDataComponent?.salesMainDataForm.valid && this.consultantsForm.valid;
+				return this.clientDataComponent?.salesClientDataForm.valid && this.mainDataComponent?.salesMainDataForm.valid && this.consutlantDataComponent?.consultantsForm.valid;
 			case WorkflowProcessType.TerminateWorkflow:
 			case WorkflowProcessType.TerminateConsultant:
 				return this.salesTerminateConsultantForm.valid;
@@ -646,7 +649,7 @@ export class WorkflowSalesComponent extends AppComponentBase implements OnInit, 
 	}
 
     clientPeriodDatesChanged() {
-        for (let consultant of this.consultants.controls) {
+        for (let consultant of this.consutlantDataComponent?.consultants.controls) {
             if (consultant.get('consultantProjectDurationSameAsClient')!.value) {
                 consultant
                     .get('consultantProjectStartDate')
@@ -960,503 +963,503 @@ export class WorkflowSalesComponent extends AppComponentBase implements OnInit, 
 	// 	this.contractSigners.removeAt(index);
 	// }
 
-	addConsultantForm(consultant?: ConsultantSalesDataDto) {
-		let consultantRate = this.findItemById(this.clientRateTypes, 1); // 1: time based
-		if (consultant?.consultantRate?.isFixedRate) {
-			consultantRate = this.findItemById(this.clientRateTypes, 2); // 2: fixed
-		}
-		let consultantDto = null;
-		if (consultant?.consultantId) {
-			consultantDto = new ConsultantWithSourcingRequestResultDto();
-			consultantDto.consultant = consultant?.consultant;
-			consultantDto.sourcingRequestConsultantId = consultant?.soldRequestConsultantId;
-			consultantDto.sourcingRequestId = consultant?.requestId;
-		}
-		const form = this._fb.group({
-			employmentType: new UntypedFormControl(this.findItemById(this.employmentTypes, consultant?.employmentTypeId) ?? null),
-			consultantName: new UntypedFormControl(consultantDto ?? null, CustomValidators.autocompleteConsultantValidator()),
-			consultantPeriodId: new UntypedFormControl(consultant?.consultantPeriodId ?? null),
-			consultantNameOnly: new UntypedFormControl(consultant?.nameOnly ?? null),
+	// addConsultantForm(consultant?: ConsultantSalesDataDto) {
+	// 	let consultantRate = this.findItemById(this.clientRateTypes, 1); // 1: time based
+	// 	if (consultant?.consultantRate?.isFixedRate) {
+	// 		consultantRate = this.findItemById(this.clientRateTypes, 2); // 2: fixed
+	// 	}
+	// 	let consultantDto = null;
+	// 	if (consultant?.consultantId) {
+	// 		consultantDto = new ConsultantWithSourcingRequestResultDto();
+	// 		consultantDto.consultant = consultant?.consultant;
+	// 		consultantDto.sourcingRequestConsultantId = consultant?.soldRequestConsultantId;
+	// 		consultantDto.sourcingRequestId = consultant?.requestId;
+	// 	}
+	// 	const form = this._fb.group({
+	// 		employmentType: new UntypedFormControl(this.findItemById(this.employmentTypes, consultant?.employmentTypeId) ?? null),
+	// 		consultantName: new UntypedFormControl(consultantDto ?? null, CustomValidators.autocompleteConsultantValidator()),
+	// 		consultantPeriodId: new UntypedFormControl(consultant?.consultantPeriodId ?? null),
+	// 		consultantNameOnly: new UntypedFormControl(consultant?.nameOnly ?? null),
 
-			consultantProjectDurationSameAsClient: new UntypedFormControl(consultant?.durationSameAsClientPeriod ?? true),
-			consultantProjectStartDate: new UntypedFormControl(consultant?.startDate ?? null),
-			consultantProjectEndDate: new UntypedFormControl({
-				value: consultant?.endDate ?? null,
-				disabled: consultant?.noEndDate,
-			}),
-			consultantProjectNoEndDate: new UntypedFormControl(consultant?.noEndDate ?? false),
+	// 		consultantProjectDurationSameAsClient: new UntypedFormControl(consultant?.durationSameAsClientPeriod ?? true),
+	// 		consultantProjectStartDate: new UntypedFormControl(consultant?.startDate ?? null),
+	// 		consultantProjectEndDate: new UntypedFormControl({
+	// 			value: consultant?.endDate ?? null,
+	// 			disabled: consultant?.noEndDate,
+	// 		}),
+	// 		consultantProjectNoEndDate: new UntypedFormControl(consultant?.noEndDate ?? false),
 
-			consultantWorkplace: new UntypedFormControl(null),
-			consultantWorkplaceClientAddress: new UntypedFormControl(consultant?.onsiteClient ?? null),
-			consultantWorkplaceEmagineOffice: new UntypedFormControl(
-				this.findItemById(this.emagineOffices, consultant?.emagineOfficeId) ?? null
-			),
-			consultantWorkplaceRemote: new UntypedFormControl(
-				this.findItemById(this.countries, consultant?.remoteAddressCountryId) ?? null,
-				CustomValidators.autocompleteValidator(['id'])
-			),
-			consultantWorkplacePercentageOnSite: new UntypedFormControl(consultant?.percentageOnSite ?? null, [
-				Validators.min(1),
-				Validators.max(100),
-			]),
+	// 		consultantWorkplace: new UntypedFormControl(null),
+	// 		consultantWorkplaceClientAddress: new UntypedFormControl(consultant?.onsiteClient ?? null),
+	// 		consultantWorkplaceEmagineOffice: new UntypedFormControl(
+	// 			this.findItemById(this.emagineOffices, consultant?.emagineOfficeId) ?? null
+	// 		),
+	// 		consultantWorkplaceRemote: new UntypedFormControl(
+	// 			this.findItemById(this.countries, consultant?.remoteAddressCountryId) ?? null,
+	// 			CustomValidators.autocompleteValidator(['id'])
+	// 		),
+	// 		consultantWorkplacePercentageOnSite: new UntypedFormControl(consultant?.percentageOnSite ?? null, [
+	// 			Validators.min(1),
+	// 			Validators.max(100),
+	// 		]),
 
-			consultantIsOnsiteWorkplace: new UntypedFormControl(consultant?.isOnsiteWorkplace ?? false),
-			consultantIsEmagineOfficeWorkplace: new UntypedFormControl(consultant?.isEmagineOfficeWorkplace ?? false),
-			consultantIsRemoteWorkplace: new UntypedFormControl(consultant?.isRemoteWorkplace ?? false),
+	// 		consultantIsOnsiteWorkplace: new UntypedFormControl(consultant?.isOnsiteWorkplace ?? false),
+	// 		consultantIsEmagineOfficeWorkplace: new UntypedFormControl(consultant?.isEmagineOfficeWorkplace ?? false),
+	// 		consultantIsRemoteWorkplace: new UntypedFormControl(consultant?.isRemoteWorkplace ?? false),
 
-			expectedWorkloadHours: new UntypedFormControl(consultant?.expectedWorkloadHours ?? null),
-			expectedWorkloadUnitId: new UntypedFormControl(
-				this.findItemById(this.expectedWorkloadUnits, consultant?.expectedWorkloadUnitId) ?? null
-			),
-			consultantCapOnTimeReporting: new UntypedFormControl(
-				this.findItemById(this.consultantTimeReportingCapList, consultant?.consultantTimeReportingCapId ?? 4)
-			), // ?? default value = no cap - id:4
-			consultantTimeReportingCapMaxValue: new UntypedFormControl(consultant?.consultantTimeReportingCapMaxValue ?? null),
-			consultantProdataEntity: new UntypedFormControl(
-				this.findItemById(this.legalEntities, consultant?.pdcPaymentEntityId) ?? null
-			),
-			consultantPaymentType: new UntypedFormControl(consultantRate),
-			consultantRate: new UntypedFormControl(consultant?.consultantRate?.normalRate ?? null),
-			consultantRateUnitType: new UntypedFormControl(
-				this.findItemById(this.rateUnitTypes, consultant?.consultantRate?.rateUnitTypeId) ?? null
-			),
-			consultantRateCurrency: new UntypedFormControl(
-				this.findItemById(this.currencies, consultant?.consultantRate?.currencyId) ?? null
-			),
-			consultantPDCRate: new UntypedFormControl(consultant?.consultantRate?.prodataToProdataRate ?? null),
-			consultantPDCRateUnitType: new UntypedFormControl(
-				this.findItemById(this.rateUnitTypes, consultant?.consultantRate?.rateUnitTypeId) ?? null
-			),
-			consultantPDCRateCurrency: new UntypedFormControl(
-				this.findItemById(this.currencies, consultant?.consultantRate?.prodataToProdataCurrencyId) ?? null
-			),
-			consultantInvoicingFrequency: new UntypedFormControl(
-				this.findItemById(this.invoiceFrequencies, consultant?.consultantRate?.invoiceFrequencyId) ?? null
-			),
-			consultantInvoicingTime: new UntypedFormControl(
-				this.findItemById(this.invoicingTimes, consultant?.consultantRate?.invoicingTimeId) ?? null
-			),
-			consultantInvoicingManualDate: new UntypedFormControl(consultant?.consultantRate?.manualDate ?? null),
-			prodataToProdataInvoiceCurrency: new UntypedFormControl(
-				this.findItemById(this.currencies, consultant?.consultantRate?.prodataToProdataInvoiceCurrencyId) ?? null
-			),
-			consultantSpecialRateFilter: new UntypedFormControl(''),
-			specialRates: new UntypedFormArray([]),
-			consultantSpecialFeeFilter: new UntypedFormControl(''),
-			specialFees: new UntypedFormArray([]),
-			consultantSpecialContractTermsNone: new UntypedFormControl(consultant?.noSpecialContractTerms ?? false),
-			consultantSpecialContractTerms: new UntypedFormControl({
-				value: consultant?.specialContractTerms ?? null,
-				disabled: consultant?.noSpecialContractTerms,
-			}),
-			deliveryManagerSameAsAccountManager: new UntypedFormControl(consultant?.deliveryManagerSameAsAccountManager ?? false),
-			deliveryAccountManager: new UntypedFormControl(
-				{
-					value: consultant?.deliveryAccountManager ?? '',
-					disabled: consultant?.deliveryManagerSameAsAccountManager,
-				},
-				CustomValidators.autocompleteValidator(['id'])
-			),
-		});
-		this.consultants.push(form);
-		if (consultant?.periodConsultantSpecialRates?.length) {
-			for (let rate of consultant?.periodConsultantSpecialRates) {
-				this.addConsultantSpecialRate(this.consultants.length - 1, rate);
-			}
-		}
-		if (consultant?.periodConsultantSpecialFees?.length) {
-			for (let fee of consultant?.periodConsultantSpecialFees) {
-				this.addConsultantSpecialFee(this.consultants.length - 1, fee);
-			}
-		}
-		this.manageManagerAutocomplete(this.consultants.length - 1);
-		this.manageConsultantAutocomplete(this.consultants.length - 1);
-		this.manageConsultantClientAddressAutocomplete(this.consultants.length - 1);
-		this.manageConsultantCountryAutocomplete(this.consultants.length - 1);
-	}
+	// 		expectedWorkloadHours: new UntypedFormControl(consultant?.expectedWorkloadHours ?? null),
+	// 		expectedWorkloadUnitId: new UntypedFormControl(
+	// 			this.findItemById(this.expectedWorkloadUnits, consultant?.expectedWorkloadUnitId) ?? null
+	// 		),
+	// 		consultantCapOnTimeReporting: new UntypedFormControl(
+	// 			this.findItemById(this.consultantTimeReportingCapList, consultant?.consultantTimeReportingCapId ?? 4)
+	// 		), // ?? default value = no cap - id:4
+	// 		consultantTimeReportingCapMaxValue: new UntypedFormControl(consultant?.consultantTimeReportingCapMaxValue ?? null),
+	// 		consultantProdataEntity: new UntypedFormControl(
+	// 			this.findItemById(this.legalEntities, consultant?.pdcPaymentEntityId) ?? null
+	// 		),
+	// 		consultantPaymentType: new UntypedFormControl(consultantRate),
+	// 		consultantRate: new UntypedFormControl(consultant?.consultantRate?.normalRate ?? null),
+	// 		consultantRateUnitType: new UntypedFormControl(
+	// 			this.findItemById(this.rateUnitTypes, consultant?.consultantRate?.rateUnitTypeId) ?? null
+	// 		),
+	// 		consultantRateCurrency: new UntypedFormControl(
+	// 			this.findItemById(this.currencies, consultant?.consultantRate?.currencyId) ?? null
+	// 		),
+	// 		consultantPDCRate: new UntypedFormControl(consultant?.consultantRate?.prodataToProdataRate ?? null),
+	// 		consultantPDCRateUnitType: new UntypedFormControl(
+	// 			this.findItemById(this.rateUnitTypes, consultant?.consultantRate?.rateUnitTypeId) ?? null
+	// 		),
+	// 		consultantPDCRateCurrency: new UntypedFormControl(
+	// 			this.findItemById(this.currencies, consultant?.consultantRate?.prodataToProdataCurrencyId) ?? null
+	// 		),
+	// 		consultantInvoicingFrequency: new UntypedFormControl(
+	// 			this.findItemById(this.invoiceFrequencies, consultant?.consultantRate?.invoiceFrequencyId) ?? null
+	// 		),
+	// 		consultantInvoicingTime: new UntypedFormControl(
+	// 			this.findItemById(this.invoicingTimes, consultant?.consultantRate?.invoicingTimeId) ?? null
+	// 		),
+	// 		consultantInvoicingManualDate: new UntypedFormControl(consultant?.consultantRate?.manualDate ?? null),
+	// 		prodataToProdataInvoiceCurrency: new UntypedFormControl(
+	// 			this.findItemById(this.currencies, consultant?.consultantRate?.prodataToProdataInvoiceCurrencyId) ?? null
+	// 		),
+	// 		consultantSpecialRateFilter: new UntypedFormControl(''),
+	// 		specialRates: new UntypedFormArray([]),
+	// 		consultantSpecialFeeFilter: new UntypedFormControl(''),
+	// 		specialFees: new UntypedFormArray([]),
+	// 		consultantSpecialContractTermsNone: new UntypedFormControl(consultant?.noSpecialContractTerms ?? false),
+	// 		consultantSpecialContractTerms: new UntypedFormControl({
+	// 			value: consultant?.specialContractTerms ?? null,
+	// 			disabled: consultant?.noSpecialContractTerms,
+	// 		}),
+	// 		deliveryManagerSameAsAccountManager: new UntypedFormControl(consultant?.deliveryManagerSameAsAccountManager ?? false),
+	// 		deliveryAccountManager: new UntypedFormControl(
+	// 			{
+	// 				value: consultant?.deliveryAccountManager ?? '',
+	// 				disabled: consultant?.deliveryManagerSameAsAccountManager,
+	// 			},
+	// 			CustomValidators.autocompleteValidator(['id'])
+	// 		),
+	// 	});
+	// 	this.consultants.push(form);
+	// 	if (consultant?.periodConsultantSpecialRates?.length) {
+	// 		for (let rate of consultant?.periodConsultantSpecialRates) {
+	// 			this.addConsultantSpecialRate(this.consultants.length - 1, rate);
+	// 		}
+	// 	}
+	// 	if (consultant?.periodConsultantSpecialFees?.length) {
+	// 		for (let fee of consultant?.periodConsultantSpecialFees) {
+	// 			this.addConsultantSpecialFee(this.consultants.length - 1, fee);
+	// 		}
+	// 	}
+	// 	this.manageManagerAutocomplete(this.consultants.length - 1);
+	// 	this.manageConsultantAutocomplete(this.consultants.length - 1);
+	// 	this.manageConsultantClientAddressAutocomplete(this.consultants.length - 1);
+	// 	this.manageConsultantCountryAutocomplete(this.consultants.length - 1);
+	// }
 
-	updateConsultantStepAnchors() {
-		let consultantNames = this.consultants.value.map((item: any) => {
-			if (item.employmentType?.id === EmploymentTypes.FeeOnly || item.employmentType?.id === EmploymentTypes.Recruitment) {
-				return item.consultantNameOnly;
-			} else {
-				return item.consultantName?.consultant?.name;
-			}
-		});
-		this._workflowDataService.consultantsAddedToStep.emit({
-			stepType: StepType.Sales,
-			processTypeId: this.activeSideSection.typeId!,
-			consultantNames: consultantNames,
-		});
-		this._workflowDataService.workflowOverviewUpdated.emit(true);
-	}
+	// updateConsultantStepAnchors() {
+	// 	let consultantNames = this.consultants.value.map((item: any) => {
+	// 		if (item.employmentType?.id === EmploymentTypes.FeeOnly || item.employmentType?.id === EmploymentTypes.Recruitment) {
+	// 			return item.consultantNameOnly;
+	// 		} else {
+	// 			return item.consultantName?.consultant?.name;
+	// 		}
+	// 	});
+	// 	this._workflowDataService.consultantsAddedToStep.emit({
+	// 		stepType: StepType.Sales,
+	// 		processTypeId: this.activeSideSection.typeId!,
+	// 		consultantNames: consultantNames,
+	// 	});
+	// 	this._workflowDataService.workflowOverviewUpdated.emit(true);
+	// }
 
-	manageManagerAutocomplete(consultantIndex: number) {
-		let arrayControl = this.consultants.at(consultantIndex);
-		arrayControl!
-			.get('deliveryAccountManager')!
-			.valueChanges.pipe(
-				takeUntil(this._unsubscribe),
-				debounceTime(300),
-				switchMap((value: any) => {
-					let toSend = {
-						name: value,
-						maxRecordsCount: 1000,
-					};
-					if (value?.id) {
-						toSend.name = value.id ? value.name : value;
-					}
-					return this._lookupService.employees(value);
-				})
-			)
-			.subscribe((list: EmployeeDto[]) => {
-				if (list.length) {
-					this.filteredAccountManagers = list;
-				} else {
-					this.filteredAccountManagers = [{name: 'No managers found', externalId: '', id: 'no-data', selected: false}];
-				}
-			});
-	}
+	// manageManagerAutocomplete(consultantIndex: number) {
+	// 	let arrayControl = this.consultants.at(consultantIndex);
+	// 	arrayControl!
+	// 		.get('deliveryAccountManager')!
+	// 		.valueChanges.pipe(
+	// 			takeUntil(this._unsubscribe),
+	// 			debounceTime(300),
+	// 			switchMap((value: any) => {
+	// 				let toSend = {
+	// 					name: value,
+	// 					maxRecordsCount: 1000,
+	// 				};
+	// 				if (value?.id) {
+	// 					toSend.name = value.id ? value.name : value;
+	// 				}
+	// 				return this._lookupService.employees(value);
+	// 			})
+	// 		)
+	// 		.subscribe((list: EmployeeDto[]) => {
+	// 			if (list.length) {
+	// 				this.filteredAccountManagers = list;
+	// 			} else {
+	// 				this.filteredAccountManagers = [{name: 'No managers found', externalId: '', id: 'no-data', selected: false}];
+	// 			}
+	// 		});
+	// }
 
-	manageConsultantClientAddressAutocomplete(consultantIndex: number) {
-		let arrayControl = this.consultants.at(consultantIndex);
-		arrayControl!
-			.get('consultantWorkplaceClientAddress')!
-			.valueChanges.pipe(
-				takeUntil(this._unsubscribe),
-				debounceTime(300),
-				switchMap((value: any) => {
-					if (value) {
-						let toSend = {
-							name: value,
-							maxRecordsCount: 1000,
-						};
-						if (value?.id) {
-							toSend.name = value.id ? value.clientName : value;
-						}
-						return this._lookupService.clientsAll(toSend.name, toSend.maxRecordsCount);
-					} else {
-						return of([]);
-					}
-				})
-			)
-			.subscribe((list: EmployeeDto[]) => {
-				if (list.length) {
-					this.filteredConsultantClientAddresses = list;
-				} else {
-					this.filteredConsultantClientAddresses = [{ clientName: 'No records found', id: 'no-data' }];
-				}
-			});
-	}
+	// manageConsultantClientAddressAutocomplete(consultantIndex: number) {
+	// 	let arrayControl = this.consultants.at(consultantIndex);
+	// 	arrayControl!
+	// 		.get('consultantWorkplaceClientAddress')!
+	// 		.valueChanges.pipe(
+	// 			takeUntil(this._unsubscribe),
+	// 			debounceTime(300),
+	// 			switchMap((value: any) => {
+	// 				if (value) {
+	// 					let toSend = {
+	// 						name: value,
+	// 						maxRecordsCount: 1000,
+	// 					};
+	// 					if (value?.id) {
+	// 						toSend.name = value.id ? value.clientName : value;
+	// 					}
+	// 					return this._lookupService.clientsAll(toSend.name, toSend.maxRecordsCount);
+	// 				} else {
+	// 					return of([]);
+	// 				}
+	// 			})
+	// 		)
+	// 		.subscribe((list: EmployeeDto[]) => {
+	// 			if (list.length) {
+	// 				this.filteredConsultantClientAddresses = list;
+	// 			} else {
+	// 				this.filteredConsultantClientAddresses = [{ clientName: 'No records found', id: 'no-data' }];
+	// 			}
+	// 		});
+	// }
 
-	manageConsultantCountryAutocomplete(consultantIndex: number) {
-		let arrayControl = this.consultants.at(consultantIndex);
-		arrayControl!
-			.get('consultantWorkplaceRemote')!
-			.valueChanges.pipe(takeUntil(this._unsubscribe))
-			.subscribe((value) => {
-				if (typeof value === 'string') {
-					this.filteredConsultantCountries = this._filterConsultantCountry(value);
-				}
-			});
-	}
+	// manageConsultantCountryAutocomplete(consultantIndex: number) {
+	// 	let arrayControl = this.consultants.at(consultantIndex);
+	// 	arrayControl!
+	// 		.get('consultantWorkplaceRemote')!
+	// 		.valueChanges.pipe(takeUntil(this._unsubscribe))
+	// 		.subscribe((value) => {
+	// 			if (typeof value === 'string') {
+	// 				this.filteredConsultantCountries = this._filterConsultantCountry(value);
+	// 			}
+	// 		});
+	// }
 
-	private _filterConsultantCountry(value: string): CountryDto[] {
-		const filterValue = value.toLowerCase();
-		const result = this.countries.filter((option) => option.name!.toLowerCase().includes(filterValue));
-		return result;
-	}
+	// private _filterConsultantCountry(value: string): CountryDto[] {
+	// 	const filterValue = value.toLowerCase();
+	// 	const result = this.countries.filter((option) => option.name!.toLowerCase().includes(filterValue));
+	// 	return result;
+	// }
 
-	updateProdataUnitType(event: MatSelectChange, consultantIndex: number) {
-		this.consultants.at(consultantIndex).get('consultantPDCRateUnitType')?.setValue(event.value, { emitEvent: false });
-	}
+	// updateProdataUnitType(event: MatSelectChange, consultantIndex: number) {
+	// 	this.consultants.at(consultantIndex).get('consultantPDCRateUnitType')?.setValue(event.value, { emitEvent: false });
+	// }
 
-	getConsultantRateControls(consultantIndex: number): AbstractControl[] | null {
-		return (this.consultants.at(consultantIndex).get('specialRates') as UntypedFormArray).controls;
-	}
+	// getConsultantRateControls(consultantIndex: number): AbstractControl[] | null {
+	// 	return (this.consultants.at(consultantIndex).get('specialRates') as UntypedFormArray).controls;
+	// }
 
-	removeConsutlantRate(consultantIndex: number, specialRateIndex: number) {
-		(this.consultants.at(consultantIndex).get('specialRates') as UntypedFormArray).removeAt(specialRateIndex);
-	}
+	// removeConsutlantRate(consultantIndex: number, specialRateIndex: number) {
+	// 	(this.consultants.at(consultantIndex).get('specialRates') as UntypedFormArray).removeAt(specialRateIndex);
+	// }
 
-	editOrSaveConsultantRate(consultantIndex: number, specialRateIndex: number, isEditable: boolean) {
-		if (isEditable) {
-			this.consultantRateToEdit = new PeriodConsultantSpecialRateDto();
-			this.isConsultantRateEditing = false;
-		} else {
-			const consultantRateValue = (this.consultants.at(consultantIndex).get('specialRates') as UntypedFormArray).at(
-				specialRateIndex
-			).value;
-			this.consultantRateToEdit = new PeriodConsultantSpecialRateDto({
-				id: consultantRateValue.id,
-				clientSpecialRateId: consultantRateValue.clientSpecialRateId,
-				rateName: consultantRateValue.rateName,
-				reportingUnit: consultantRateValue.reportingUnit,
-				prodataToProdataRate: consultantRateValue.prodataToProdataRate,
-				prodataToProdataRateCurrencyId: consultantRateValue.prodataToProdataRateCurrency?.id,
-				consultantRate: consultantRateValue.consultantRate,
-				consultantRateCurrencyId: consultantRateValue.consultantRateCurrency?.id,
-			});
-			this.isConsultantRateEditing = true;
-		}
-		(this.consultants.at(consultantIndex).get('specialRates') as UntypedFormArray)
-			.at(specialRateIndex)
-			.get('editable')
-			?.setValue(!isEditable, { emitEvent: false });
-	}
+	// editOrSaveConsultantRate(consultantIndex: number, specialRateIndex: number, isEditable: boolean) {
+	// 	if (isEditable) {
+	// 		this.consultantRateToEdit = new PeriodConsultantSpecialRateDto();
+	// 		this.isConsultantRateEditing = false;
+	// 	} else {
+	// 		const consultantRateValue = (this.consultants.at(consultantIndex).get('specialRates') as UntypedFormArray).at(
+	// 			specialRateIndex
+	// 		).value;
+	// 		this.consultantRateToEdit = new PeriodConsultantSpecialRateDto({
+	// 			id: consultantRateValue.id,
+	// 			clientSpecialRateId: consultantRateValue.clientSpecialRateId,
+	// 			rateName: consultantRateValue.rateName,
+	// 			reportingUnit: consultantRateValue.reportingUnit,
+	// 			prodataToProdataRate: consultantRateValue.prodataToProdataRate,
+	// 			prodataToProdataRateCurrencyId: consultantRateValue.prodataToProdataRateCurrency?.id,
+	// 			consultantRate: consultantRateValue.consultantRate,
+	// 			consultantRateCurrencyId: consultantRateValue.consultantRateCurrency?.id,
+	// 		});
+	// 		this.isConsultantRateEditing = true;
+	// 	}
+	// 	(this.consultants.at(consultantIndex).get('specialRates') as UntypedFormArray)
+	// 		.at(specialRateIndex)
+	// 		.get('editable')
+	// 		?.setValue(!isEditable, { emitEvent: false });
+	// }
 
-	cancelEditConsultantRate(consultantIndex: number, specialRateIndex: number) {
-		const rateRow = (this.consultants.at(consultantIndex).get('specialRates') as UntypedFormArray).at(specialRateIndex);
-		rateRow.get('prodataToProdataRate')?.setValue(this.consultantRateToEdit.prodataToProdataRate, {
-			emitEvent: false,
-		});
-		rateRow
-			.get('prodataToProdataRateCurrency')
-			?.setValue(this.findItemById(this.currencies, this.consultantRateToEdit.prodataToProdataRateCurrencyId), {
-				emitEvent: false,
-			});
-		rateRow.get('consultantRate')?.setValue(this.consultantRateToEdit.consultantRate, {
-			emitEvent: false,
-		});
-		rateRow
-			.get('consultantRateCurrency')
-			?.setValue(this.findItemById(this.currencies, this.consultantRateToEdit.consultantRateCurrencyId), {
-				emitEvent: false,
-			});
-		this.isConsultantRateEditing = false;
-		(this.consultants.at(consultantIndex).get('specialRates') as UntypedFormArray)
-			.at(specialRateIndex)
-			.get('editable')
-			?.setValue(false, { emitEvent: false });
-	}
+	// cancelEditConsultantRate(consultantIndex: number, specialRateIndex: number) {
+	// 	const rateRow = (this.consultants.at(consultantIndex).get('specialRates') as UntypedFormArray).at(specialRateIndex);
+	// 	rateRow.get('prodataToProdataRate')?.setValue(this.consultantRateToEdit.prodataToProdataRate, {
+	// 		emitEvent: false,
+	// 	});
+	// 	rateRow
+	// 		.get('prodataToProdataRateCurrency')
+	// 		?.setValue(this.findItemById(this.currencies, this.consultantRateToEdit.prodataToProdataRateCurrencyId), {
+	// 			emitEvent: false,
+	// 		});
+	// 	rateRow.get('consultantRate')?.setValue(this.consultantRateToEdit.consultantRate, {
+	// 		emitEvent: false,
+	// 	});
+	// 	rateRow
+	// 		.get('consultantRateCurrency')
+	// 		?.setValue(this.findItemById(this.currencies, this.consultantRateToEdit.consultantRateCurrencyId), {
+	// 			emitEvent: false,
+	// 		});
+	// 	this.isConsultantRateEditing = false;
+	// 	(this.consultants.at(consultantIndex).get('specialRates') as UntypedFormArray)
+	// 		.at(specialRateIndex)
+	// 		.get('editable')
+	// 		?.setValue(false, { emitEvent: false });
+	// }
 
-	selectConsultantSpecialRate(
-		event: any,
-		consultantIndex: number,
-		rate: ClientSpecialRateDto,
-		consultantRateMenuTrigger: MatMenuTrigger
-	) {
-        event.stopPropagation();
-		const consultantRate = new PeriodConsultantSpecialRateDto();
-		consultantRate.id = undefined;
-		consultantRate.clientSpecialRateId = rate.id;
-		consultantRate.rateName = rate.internalName;
-		consultantRate.reportingUnit = rate.specialRateReportingUnit;
-		consultantRate.rateSpecifiedAs = rate.specialRateSpecifiedAs;
-		if (consultantRate.rateSpecifiedAs?.id === 1) {
-			consultantRate.prodataToProdataRate = +(
-				(this.consultants.at(consultantIndex)!.get('consultantRate')!.value * rate.proDataToProDataRate!) /
-				100
-			).toFixed(2);
-			consultantRate.prodataToProdataRateCurrencyId = this.consultants
-				.at(consultantIndex)!
-				.get('consultantRateCurrency')!.value?.id;
-			consultantRate.consultantRate = +(
-				(this.consultants.at(consultantIndex)!.get('consultantRate')!.value * rate.consultantRate!) /
-				100
-			).toFixed(2);
-			consultantRate.consultantRateCurrencyId = this.consultants
-				.at(consultantIndex)!
-				.get('consultantRateCurrency')!.value?.id;
-		} else {
-			consultantRate.prodataToProdataRate = rate.proDataToProDataRate;
-			consultantRate.prodataToProdataRateCurrencyId = rate.proDataToProDataRateCurrency?.id;
-			consultantRate.consultantRate = rate.consultantRate;
-			consultantRate.consultantRateCurrencyId = rate.consultantCurrency?.id;
-		}
-		consultantRateMenuTrigger.closeMenu();
-		this.addConsultantSpecialRate(consultantIndex, consultantRate);
-	}
+	// selectConsultantSpecialRate(
+	// 	event: any,
+	// 	consultantIndex: number,
+	// 	rate: ClientSpecialRateDto,
+	// 	consultantRateMenuTrigger: MatMenuTrigger
+	// ) {
+    //     event.stopPropagation();
+	// 	const consultantRate = new PeriodConsultantSpecialRateDto();
+	// 	consultantRate.id = undefined;
+	// 	consultantRate.clientSpecialRateId = rate.id;
+	// 	consultantRate.rateName = rate.internalName;
+	// 	consultantRate.reportingUnit = rate.specialRateReportingUnit;
+	// 	consultantRate.rateSpecifiedAs = rate.specialRateSpecifiedAs;
+	// 	if (consultantRate.rateSpecifiedAs?.id === 1) {
+	// 		consultantRate.prodataToProdataRate = +(
+	// 			(this.consultants.at(consultantIndex)!.get('consultantRate')!.value * rate.proDataToProDataRate!) /
+	// 			100
+	// 		).toFixed(2);
+	// 		consultantRate.prodataToProdataRateCurrencyId = this.consultants
+	// 			.at(consultantIndex)!
+	// 			.get('consultantRateCurrency')!.value?.id;
+	// 		consultantRate.consultantRate = +(
+	// 			(this.consultants.at(consultantIndex)!.get('consultantRate')!.value * rate.consultantRate!) /
+	// 			100
+	// 		).toFixed(2);
+	// 		consultantRate.consultantRateCurrencyId = this.consultants
+	// 			.at(consultantIndex)!
+	// 			.get('consultantRateCurrency')!.value?.id;
+	// 	} else {
+	// 		consultantRate.prodataToProdataRate = rate.proDataToProDataRate;
+	// 		consultantRate.prodataToProdataRateCurrencyId = rate.proDataToProDataRateCurrency?.id;
+	// 		consultantRate.consultantRate = rate.consultantRate;
+	// 		consultantRate.consultantRateCurrencyId = rate.consultantCurrency?.id;
+	// 	}
+	// 	consultantRateMenuTrigger.closeMenu();
+	// 	this.addConsultantSpecialRate(consultantIndex, consultantRate);
+	// }
 
-	addConsultantSpecialRate(consultantIndex: NumberSymbol, consultantRate?: PeriodConsultantSpecialRateDto) {
-		const form = this._fb.group({
-			id: new UntypedFormControl(consultantRate?.id ?? null),
-			clientSpecialRateId: new UntypedFormControl(consultantRate?.clientSpecialRateId ?? null),
-			rateName: new UntypedFormControl(consultantRate?.rateName ?? null),
-			reportingUnit: new UntypedFormControl(consultantRate?.reportingUnit ?? null),
-			prodataToProdataRate: new UntypedFormControl(consultantRate?.prodataToProdataRate ?? null),
-			prodataToProdataRateCurrency: new UntypedFormControl(
-				this.findItemById(this.currencies, consultantRate?.prodataToProdataRateCurrencyId) ?? null
-			),
-			consultantRate: new UntypedFormControl(consultantRate?.consultantRate ?? null),
-			consultantRateCurrency: new UntypedFormControl(
-				this.findItemById(this.currencies, consultantRate?.consultantRateCurrencyId) ?? null
-			),
-			editable: new UntypedFormControl(false),
-		});
-		(this.consultants.at(consultantIndex).get('specialRates') as UntypedFormArray).push(form);
-	}
+	// addConsultantSpecialRate(consultantIndex: NumberSymbol, consultantRate?: PeriodConsultantSpecialRateDto) {
+	// 	const form = this._fb.group({
+	// 		id: new UntypedFormControl(consultantRate?.id ?? null),
+	// 		clientSpecialRateId: new UntypedFormControl(consultantRate?.clientSpecialRateId ?? null),
+	// 		rateName: new UntypedFormControl(consultantRate?.rateName ?? null),
+	// 		reportingUnit: new UntypedFormControl(consultantRate?.reportingUnit ?? null),
+	// 		prodataToProdataRate: new UntypedFormControl(consultantRate?.prodataToProdataRate ?? null),
+	// 		prodataToProdataRateCurrency: new UntypedFormControl(
+	// 			this.findItemById(this.currencies, consultantRate?.prodataToProdataRateCurrencyId) ?? null
+	// 		),
+	// 		consultantRate: new UntypedFormControl(consultantRate?.consultantRate ?? null),
+	// 		consultantRateCurrency: new UntypedFormControl(
+	// 			this.findItemById(this.currencies, consultantRate?.consultantRateCurrencyId) ?? null
+	// 		),
+	// 		editable: new UntypedFormControl(false),
+	// 	});
+	// 	(this.consultants.at(consultantIndex).get('specialRates') as UntypedFormArray).push(form);
+	// }
 
-	getConsultantFeeControls(consultantIndex: number): AbstractControl[] | null {
-		return (this.consultants.at(consultantIndex).get('specialFees') as UntypedFormArray).controls;
-	}
+	// getConsultantFeeControls(consultantIndex: number): AbstractControl[] | null {
+	// 	return (this.consultants.at(consultantIndex).get('specialFees') as UntypedFormArray).controls;
+	// }
 
-	removeConsutlantFee(consultantIndex: number, specialFeeIndex: number) {
-		(this.consultants.at(consultantIndex).get('specialFees') as UntypedFormArray).removeAt(specialFeeIndex);
-	}
+	// removeConsutlantFee(consultantIndex: number, specialFeeIndex: number) {
+	// 	(this.consultants.at(consultantIndex).get('specialFees') as UntypedFormArray).removeAt(specialFeeIndex);
+	// }
 
-	editOrSaveConsultantFee(consultantIndex: number, specialFeeIndex: number, isEditable: boolean) {
-		if (isEditable) {
-			this.consultantFeeToEdit = new PeriodConsultantSpecialRateDto();
-			this.isConsultantFeeEditing = false;
-		} else {
-			const consultantFeeValue = (this.consultants.at(consultantIndex).get('specialFees') as UntypedFormArray).at(
-				specialFeeIndex
-			).value;
-			this.consultantFeeToEdit = new PeriodConsultantSpecialFeeDto({
-				id: consultantFeeValue.id,
-				clientSpecialFeeId: consultantFeeValue.clientSpecialFeeId,
-				feeName: consultantFeeValue.feeName,
-				frequency: consultantFeeValue.frequency,
-				prodataToProdataRate: consultantFeeValue.prodataToProdataRate,
-				prodataToProdataRateCurrencyId: consultantFeeValue.prodataToProdataRateCurrency?.id,
-				consultantRate: consultantFeeValue.consultantRate,
-				consultantRateCurrencyId: consultantFeeValue.consultantRateCurrency?.id,
-			});
-			this.isConsultantFeeEditing = true;
-		}
-		(this.consultants.at(consultantIndex).get('specialFees') as UntypedFormArray)
-			.at(specialFeeIndex)
-			.get('editable')
-			?.setValue(!isEditable, { emitEvent: false });
-	}
+	// editOrSaveConsultantFee(consultantIndex: number, specialFeeIndex: number, isEditable: boolean) {
+	// 	if (isEditable) {
+	// 		this.consultantFeeToEdit = new PeriodConsultantSpecialRateDto();
+	// 		this.isConsultantFeeEditing = false;
+	// 	} else {
+	// 		const consultantFeeValue = (this.consultants.at(consultantIndex).get('specialFees') as UntypedFormArray).at(
+	// 			specialFeeIndex
+	// 		).value;
+	// 		this.consultantFeeToEdit = new PeriodConsultantSpecialFeeDto({
+	// 			id: consultantFeeValue.id,
+	// 			clientSpecialFeeId: consultantFeeValue.clientSpecialFeeId,
+	// 			feeName: consultantFeeValue.feeName,
+	// 			frequency: consultantFeeValue.frequency,
+	// 			prodataToProdataRate: consultantFeeValue.prodataToProdataRate,
+	// 			prodataToProdataRateCurrencyId: consultantFeeValue.prodataToProdataRateCurrency?.id,
+	// 			consultantRate: consultantFeeValue.consultantRate,
+	// 			consultantRateCurrencyId: consultantFeeValue.consultantRateCurrency?.id,
+	// 		});
+	// 		this.isConsultantFeeEditing = true;
+	// 	}
+	// 	(this.consultants.at(consultantIndex).get('specialFees') as UntypedFormArray)
+	// 		.at(specialFeeIndex)
+	// 		.get('editable')
+	// 		?.setValue(!isEditable, { emitEvent: false });
+	// }
 
-	cancelEditConsultantFee(consultantIndex: number, specialFeeIndex: number) {
-		const rateRow = (this.consultants.at(consultantIndex).get('specialFees') as UntypedFormArray).at(specialFeeIndex);
-		rateRow.get('prodataToProdataRate')?.setValue(this.consultantFeeToEdit.prodataToProdataRate, {
-			emitEvent: false,
-		});
-		rateRow
-			.get('prodataToProdataRateCurrency')
-			?.setValue(this.findItemById(this.currencies, this.consultantFeeToEdit.prodataToProdataRateCurrencyId), {
-				emitEvent: false,
-			});
-		rateRow.get('consultantRate')?.setValue(this.consultantFeeToEdit.consultantRate, {
-			emitEvent: false,
-		});
-		rateRow
-			.get('consultantRateCurrency')
-			?.setValue(this.findItemById(this.currencies, this.consultantFeeToEdit.consultantRateCurrencyId), {
-				emitEvent: false,
-			});
-		this.isConsultantFeeEditing = false;
-		(this.consultants.at(consultantIndex).get('specialFees') as UntypedFormArray)
-			.at(specialFeeIndex)
-			.get('editable')
-			?.setValue(false, { emitEvent: false });
-	}
+	// cancelEditConsultantFee(consultantIndex: number, specialFeeIndex: number) {
+	// 	const rateRow = (this.consultants.at(consultantIndex).get('specialFees') as UntypedFormArray).at(specialFeeIndex);
+	// 	rateRow.get('prodataToProdataRate')?.setValue(this.consultantFeeToEdit.prodataToProdataRate, {
+	// 		emitEvent: false,
+	// 	});
+	// 	rateRow
+	// 		.get('prodataToProdataRateCurrency')
+	// 		?.setValue(this.findItemById(this.currencies, this.consultantFeeToEdit.prodataToProdataRateCurrencyId), {
+	// 			emitEvent: false,
+	// 		});
+	// 	rateRow.get('consultantRate')?.setValue(this.consultantFeeToEdit.consultantRate, {
+	// 		emitEvent: false,
+	// 	});
+	// 	rateRow
+	// 		.get('consultantRateCurrency')
+	// 		?.setValue(this.findItemById(this.currencies, this.consultantFeeToEdit.consultantRateCurrencyId), {
+	// 			emitEvent: false,
+	// 		});
+	// 	this.isConsultantFeeEditing = false;
+	// 	(this.consultants.at(consultantIndex).get('specialFees') as UntypedFormArray)
+	// 		.at(specialFeeIndex)
+	// 		.get('editable')
+	// 		?.setValue(false, { emitEvent: false });
+	// }
 
-	selectConsultantSpecialFee(
-		event: any,
-		consultantIndex: number,
-		fee: ClientSpecialFeeDto,
-		consultantFeeMenuTrigger: MatMenuTrigger
-	) {
-        event.stopPropagation();
-		const consultantFee = new PeriodConsultantSpecialFeeDto();
-		consultantFee.id = undefined;
-		consultantFee.clientSpecialFeeId = fee.id;
-		consultantFee.feeName = fee.internalName;
-		consultantFee.frequency = fee.clientSpecialFeeFrequency;
-		consultantFee.prodataToProdataRate = fee.prodataToProdataRate;
-		consultantFee.prodataToProdataRateCurrencyId = fee.prodataToProdataRateCurrency?.id;
-		consultantFee.consultantRate = fee.consultantRate;
-		consultantFee.consultantRateCurrencyId = fee.consultantCurrency?.id;
-		consultantFeeMenuTrigger.closeMenu();
-		this.addConsultantSpecialFee(consultantIndex, consultantFee);
-	}
+	// selectConsultantSpecialFee(
+	// 	event: any,
+	// 	consultantIndex: number,
+	// 	fee: ClientSpecialFeeDto,
+	// 	consultantFeeMenuTrigger: MatMenuTrigger
+	// ) {
+    //     event.stopPropagation();
+	// 	const consultantFee = new PeriodConsultantSpecialFeeDto();
+	// 	consultantFee.id = undefined;
+	// 	consultantFee.clientSpecialFeeId = fee.id;
+	// 	consultantFee.feeName = fee.internalName;
+	// 	consultantFee.frequency = fee.clientSpecialFeeFrequency;
+	// 	consultantFee.prodataToProdataRate = fee.prodataToProdataRate;
+	// 	consultantFee.prodataToProdataRateCurrencyId = fee.prodataToProdataRateCurrency?.id;
+	// 	consultantFee.consultantRate = fee.consultantRate;
+	// 	consultantFee.consultantRateCurrencyId = fee.consultantCurrency?.id;
+	// 	consultantFeeMenuTrigger.closeMenu();
+	// 	this.addConsultantSpecialFee(consultantIndex, consultantFee);
+	// }
 
-	addConsultantSpecialFee(consultantIndex: number, consultantFee?: PeriodConsultantSpecialFeeDto) {
-		const form = this._fb.group({
-			id: new UntypedFormControl(consultantFee?.id ?? null),
-			clientSpecialFeeId: new UntypedFormControl(consultantFee?.clientSpecialFeeId ?? null),
-			feeName: new UntypedFormControl(consultantFee?.feeName ?? null),
-			frequency: new UntypedFormControl(consultantFee?.frequency ?? null),
-			prodataToProdataRate: new UntypedFormControl(consultantFee?.prodataToProdataRate ?? null),
-			prodataToProdataRateCurrency: new UntypedFormControl(
-				this.findItemById(this.currencies, consultantFee?.prodataToProdataRateCurrencyId) ?? null
-			),
-			consultantRate: new UntypedFormControl(consultantFee?.consultantRate ?? null),
-			consultantRateCurrency: new UntypedFormControl(
-				this.findItemById(this.currencies, consultantFee?.consultantRateCurrencyId) ?? null
-			),
-			editable: new UntypedFormControl(false),
-		});
-		(this.consultants.at(consultantIndex).get('specialFees') as UntypedFormArray).push(form);
-	}
+	// addConsultantSpecialFee(consultantIndex: number, consultantFee?: PeriodConsultantSpecialFeeDto) {
+	// 	const form = this._fb.group({
+	// 		id: new UntypedFormControl(consultantFee?.id ?? null),
+	// 		clientSpecialFeeId: new UntypedFormControl(consultantFee?.clientSpecialFeeId ?? null),
+	// 		feeName: new UntypedFormControl(consultantFee?.feeName ?? null),
+	// 		frequency: new UntypedFormControl(consultantFee?.frequency ?? null),
+	// 		prodataToProdataRate: new UntypedFormControl(consultantFee?.prodataToProdataRate ?? null),
+	// 		prodataToProdataRateCurrency: new UntypedFormControl(
+	// 			this.findItemById(this.currencies, consultantFee?.prodataToProdataRateCurrencyId) ?? null
+	// 		),
+	// 		consultantRate: new UntypedFormControl(consultantFee?.consultantRate ?? null),
+	// 		consultantRateCurrency: new UntypedFormControl(
+	// 			this.findItemById(this.currencies, consultantFee?.consultantRateCurrencyId) ?? null
+	// 		),
+	// 		editable: new UntypedFormControl(false),
+	// 	});
+	// 	(this.consultants.at(consultantIndex).get('specialFees') as UntypedFormArray).push(form);
+	// }
 
-	manageConsultantAutocomplete(consultantIndex: number) {
-		let arrayControl = this.consultants.at(consultantIndex);
-		arrayControl!
-			.get('consultantName')!
-			.valueChanges.pipe(
-				takeUntil(this._unsubscribe),
-				debounceTime(300),
-				switchMap((value: any) => {
-					let toSend = {
-						name: value ? value : '',
-						clientId: this.clientDataComponent?.salesClientDataForm.directClientIdValue!.value?.clientId,
-						maxRecordsCount: 1000,
-					};
-					if (value) {
-						toSend.name = value?.consultant?.id ? value.consultant.name : value;
-					}
-					if (toSend?.clientId && value) {
-						return this._lookupService.consultantsWithSourcingRequest(
-							toSend.clientId,
-							toSend.name,
-							toSend.maxRecordsCount
-						);
-					} else {
-						return of([]);
-					}
-				})
-			)
-			.subscribe((list: ConsultantWithSourcingRequestResultDto[]) => {
-				if (list.length) {
-					this.filteredConsultants = list;
-				} else {
-					this.filteredConsultants = [{ consultant: { name: 'No consultant found' }, externalId: '', id: 'no-data'}];
-				}
-			});
+	// manageConsultantAutocomplete(consultantIndex: number) {
+	// 	let arrayControl = this.consultants.at(consultantIndex);
+	// 	arrayControl!
+	// 		.get('consultantName')!
+	// 		.valueChanges.pipe(
+	// 			takeUntil(this._unsubscribe),
+	// 			debounceTime(300),
+	// 			switchMap((value: any) => {
+	// 				let toSend = {
+	// 					name: value ? value : '',
+	// 					clientId: this.clientDataComponent?.salesClientDataForm.directClientIdValue!.value?.clientId,
+	// 					maxRecordsCount: 1000,
+	// 				};
+	// 				if (value) {
+	// 					toSend.name = value?.consultant?.id ? value.consultant.name : value;
+	// 				}
+	// 				if (toSend?.clientId && value) {
+	// 					return this._lookupService.consultantsWithSourcingRequest(
+	// 						toSend.clientId,
+	// 						toSend.name,
+	// 						toSend.maxRecordsCount
+	// 					);
+	// 				} else {
+	// 					return of([]);
+	// 				}
+	// 			})
+	// 		)
+	// 		.subscribe((list: ConsultantWithSourcingRequestResultDto[]) => {
+	// 			if (list.length) {
+	// 				this.filteredConsultants = list;
+	// 			} else {
+	// 				this.filteredConsultants = [{ consultant: { name: 'No consultant found' }, externalId: '', id: 'no-data'}];
+	// 			}
+	// 		});
 
-		arrayControl!
-			.get('consultantNameOnly')
-			?.valueChanges.pipe(takeUntil(this._unsubscribe), debounceTime(2000))
-			.subscribe((value: string) => {
-				this.updateConsultantStepAnchors();
-			});
-	}
+	// 	arrayControl!
+	// 		.get('consultantNameOnly')
+	// 		?.valueChanges.pipe(takeUntil(this._unsubscribe), debounceTime(2000))
+	// 		.subscribe((value: string) => {
+	// 			this.updateConsultantStepAnchors();
+	// 		});
+	// }
 
-	confirmRemoveConsultant(index: number) {
-		const consultant = this.consultants.at(index).value;
-		const scrollStrategy = this.overlay.scrollStrategies.reposition();
-		MediumDialogConfig.scrollStrategy = scrollStrategy;
-		MediumDialogConfig.data = {
-			confirmationMessageTitle: `Delete consultant`,
-			confirmationMessage: `Are you sure you want to delete consultant ${
-				consultant.consultantName?.consultant?.name ?? ''
-			}?\n
-                When you confirm the deletion, all the info contained inside this block will disappear.`,
-			rejectButtonText: 'Cancel',
-			confirmButtonText: 'Delete',
-			isNegative: true,
-		};
-		const dialogRef = this.dialog.open(ConfirmationDialogComponent, MediumDialogConfig);
+	// confirmRemoveConsultant(index: number) {
+	// 	const consultant = this.consultants.at(index).value;
+	// 	const scrollStrategy = this.overlay.scrollStrategies.reposition();
+	// 	MediumDialogConfig.scrollStrategy = scrollStrategy;
+	// 	MediumDialogConfig.data = {
+	// 		confirmationMessageTitle: `Delete consultant`,
+	// 		confirmationMessage: `Are you sure you want to delete consultant ${
+	// 			consultant.consultantName?.consultant?.name ?? ''
+	// 		}?\n
+    //             When you confirm the deletion, all the info contained inside this block will disappear.`,
+	// 		rejectButtonText: 'Cancel',
+	// 		confirmButtonText: 'Delete',
+	// 		isNegative: true,
+	// 	};
+	// 	const dialogRef = this.dialog.open(ConfirmationDialogComponent, MediumDialogConfig);
 
-		dialogRef.componentInstance.onConfirmed.subscribe(() => {
-			this.removeConsultant(index);
-		});
-	}
+	// 	dialogRef.componentInstance.onConfirmed.subscribe(() => {
+	// 		this.removeConsultant(index);
+	// 	});
+	// }
 
-	removeConsultant(index: number) {
-		this.consultantsForm.consultants.removeAt(index);
-		this.updateConsultantStepAnchors();
-	}
+	// removeConsultant(index: number) {
+	// 	this.consultantsForm.consultants.removeAt(index);
+	// 	this.updateConsultantStepAnchors();
+	// }
 
-	get consultants(): UntypedFormArray {
-		return this.consultantsForm.get('consultants') as UntypedFormArray;
-	}
+	// get consultants(): UntypedFormArray {
+	// 	return this.consultantsForm.get('consultants') as UntypedFormArray;
+	// }
 
 	saveStartChangeOrExtendClientPeriodSales(isDraft: boolean) {
 		let input = this._packClientPeriodData();
@@ -1625,9 +1628,9 @@ export class WorkflowSalesComponent extends AppComponentBase implements OnInit, 
 				});
 				if (result.consultantSalesData?.length) {
 					result.consultantSalesData?.forEach((consultant) => {
-						this.addConsultantForm(consultant);
+						this.consutlantDataComponent?.addConsultantForm(consultant);
 					});
-					this.updateConsultantStepAnchors();
+					this.consutlantDataComponent?.updateConsultantStepAnchors();
 				}
 			});
 	}
@@ -1650,40 +1653,40 @@ export class WorkflowSalesComponent extends AppComponentBase implements OnInit, 
 		}
 	}
 
-	changeConsultantWorkplace(event: MatCheckboxChange, consultantIndex: number) {
-		if (event.checked) {
-			this.consultants
-				.at(consultantIndex)
-				.get('consultantWorkplaceClientAddress')
-				?.setValue(this.clientDataComponent?.salesClientDataForm.directClientIdValue?.value, { emitEvent: false });
-		}
-	}
+	// changeConsultantWorkplace(event: MatCheckboxChange, consultantIndex: number) {
+	// 	if (event.checked) {
+	// 		this.consultants
+	// 			.at(consultantIndex)
+	// 			.get('consultantWorkplaceClientAddress')
+	// 			?.setValue(this.clientDataComponent?.salesClientDataForm.directClientIdValue?.value, { emitEvent: false });
+	// 	}
+	// }
 
-	updateConsultantDates(event: MatSelectChange, consultantIndex: number) {
-		if (event.value) {
-			this.consultants
-				.at(consultantIndex)
-				.get('consultantProjectStartDate')
-				?.setValue(this.clientDataComponent?.salesClientDataForm.startDate?.value, { emitEvent: false });
-			this.consultants
-				.at(consultantIndex)
-				.get('consultantProjectEndDate')
-				?.setValue(this.clientDataComponent?.salesClientDataForm.endDate?.value, { emitEvent: false });
-			this.consultants
-				.at(consultantIndex)
-				.get('consultantProjectNoEndDate')
-				?.setValue(this.clientDataComponent?.salesClientDataForm.noEndDate?.value, { emitEvent: false });
-			if (this.clientDataComponent?.salesClientDataForm.noEndDate?.value) {
-				this.consultants.at(consultantIndex).get('consultantProjectEndDate')?.disable();
-			} else {
-				this.consultants.at(consultantIndex).get('consultantProjectEndDate')?.enable();
-			}
-		}
-	}
+	// updateConsultantDates(event: MatSelectChange, consultantIndex: number) {
+	// 	if (event.value) {
+	// 		this.consultants
+	// 			.at(consultantIndex)
+	// 			.get('consultantProjectStartDate')
+	// 			?.setValue(this.clientDataComponent?.salesClientDataForm.startDate?.value, { emitEvent: false });
+	// 		this.consultants
+	// 			.at(consultantIndex)
+	// 			.get('consultantProjectEndDate')
+	// 			?.setValue(this.clientDataComponent?.salesClientDataForm.endDate?.value, { emitEvent: false });
+	// 		this.consultants
+	// 			.at(consultantIndex)
+	// 			.get('consultantProjectNoEndDate')
+	// 			?.setValue(this.clientDataComponent?.salesClientDataForm.noEndDate?.value, { emitEvent: false });
+	// 		if (this.clientDataComponent?.salesClientDataForm.noEndDate?.value) {
+	// 			this.consultants.at(consultantIndex).get('consultantProjectEndDate')?.disable();
+	// 		} else {
+	// 			this.consultants.at(consultantIndex).get('consultantProjectEndDate')?.enable();
+	// 		}
+	// 	}
+	// }
 
 	//#region Consultant menu actions
 	changeConsultantData(index: number) {
-		const consultantData = this.consultants.at(index).value;
+		const consultantData = this.consutlantDataComponent?.consultants.at(index).value;
 		const scrollStrategy = this.overlay.scrollStrategies.reposition();
 		MediumDialogConfig.scrollStrategy = scrollStrategy;
 		MediumDialogConfig.data = {
@@ -1714,7 +1717,7 @@ export class WorkflowSalesComponent extends AppComponentBase implements OnInit, 
 	}
 
 	extendConsultant(index: number) {
-		const consultantData = this.consultants.at(index).value;
+		const consultantData = this.consutlantDataComponent?.consultants.at(index).value;
 		const scrollStrategy = this.overlay.scrollStrategies.reposition();
 		MediumDialogConfig.scrollStrategy = scrollStrategy;
 		MediumDialogConfig.data = {
@@ -2025,7 +2028,7 @@ export class WorkflowSalesComponent extends AppComponentBase implements OnInit, 
 	}
 
 	terminateConsultant(index: number) {
-		let consultantInformation = this.consultants.at(index).value.consultantName;
+		let consultantInformation = this.consutlantDataComponent?.consultants.at(index).value.consultantName;
 		const scrollStrategy = this.overlay.scrollStrategies.reposition();
 		MediumDialogConfig.scrollStrategy = scrollStrategy;
 		MediumDialogConfig.data = {
@@ -2131,15 +2134,15 @@ export class WorkflowSalesComponent extends AppComponentBase implements OnInit, 
 				}
 				this.mainDataComponent?.salesMainDataForm.projectDescription?.setValue(result?.projectDescription, { emitEvent: false });
 				this.mainDataComponent?.salesMainDataForm.projectName?.setValue(result?.projectName, { emitEvent: false });
-				this.addConsultantForm(result?.consultantSalesData);
-				this.updateConsultantStepAnchors();
+				this.consutlantDataComponent?.addConsultantForm(result?.consultantSalesData);
+				this.consutlantDataComponent?.updateConsultantStepAnchors();
 			});
 	}
 
 	saveStartChangeOrExtendConsultantPeriodSales(isDraft: boolean) {
 		let input = new ConsultantPeriodSalesDataDto();
 		input = this.mainDataComponent?.salesMainDataForm.value;
-		const consultant = this.consultants.at(0).value;
+		const consultant = this.consutlantDataComponent?.consultants.at(0).value;
 		let consultantInput = this._packConsultantFormData(consultant);
 		input.consultantSalesData = consultantInput;
 		this.showMainSpinner();
@@ -2174,7 +2177,7 @@ export class WorkflowSalesComponent extends AppComponentBase implements OnInit, 
 		this.clientDataComponent.salesClientDataForm.contractSigners.controls = [];
 		this.mainDataComponent.salesMainDataForm.commissions.controls = [];
 		this.clientDataComponent?.salesClientDataForm.reset('', { emitEvent: false });
-		this.consultantsForm.consultants.controls = [];
+		this.consutlantDataComponent.consultantsForm.consultants.controls = [];
 		this.directClientIdTerminationSales = null;
 		this.endClientIdTerminationSales = null;
 	}
@@ -2362,8 +2365,8 @@ export class WorkflowSalesComponent extends AppComponentBase implements OnInit, 
 			});
 		}
 		input.consultantSalesData = new Array<ConsultantSalesDataDto>();
-		if (this.consultants.value?.length) {
-			this.consultants.value.forEach((consultant: any) => {
+		if (this.consutlantDataComponent?.consultants.value?.length) {
+			this.consutlantDataComponent?.consultants.value.forEach((consultant: any) => {
 				let consultantInput = this._packConsultantFormData(consultant);
 				input.consultantSalesData!.push(consultantInput);
 			});

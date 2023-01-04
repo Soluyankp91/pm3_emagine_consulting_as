@@ -155,9 +155,9 @@
                         </mat-form-field>
                         <mat-form-field appearance="outline" class="filter-select formFieldNoMarginPadding u-mr--12" fxFlex="22%">
                             <mat-label> Deadline</mat-label>
-                            <mat-select [disabled]="readOnlyMode" [required]="!salesClientDataForm.noClientExtensionOption?.value" formControlName="clientExtensionDeadlineId" [disableOptionCentering]="true" [compareWith]="compareWithFn">
+                            <mat-select [disabled]="readOnlyMode" [required]="!salesClientDataForm.noClientExtensionOption?.value" formControlName="clientExtensionDeadlineId" [disableOptionCentering]="true">
                                 <ng-container *ngFor="let item of clientExtensionDeadlines; trackBy: trackById">
-                                    <mat-option [value]="item">
+                                    <mat-option [value]="item.id">
                                         {{ item.name }}
                                     </mat-option>
                                 </ng-container>
