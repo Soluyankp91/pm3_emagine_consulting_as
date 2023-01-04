@@ -44,7 +44,7 @@
         &:focus:not(.mat-option-disabled),
         &.mat-active,
         &.mat-selected:not(.mat-option-disabled) {
-            background: #FAF9FB !important;
+            background: #f9f9f9 !important;
         }
         &.mat-select-clear-option {
             color: rgba(0, 0, 0, 0.47) !important;
@@ -172,7 +172,7 @@
     .mat-option:focus:not(.mat-option-disabled),
     .mat-option.mat-active,
     .mat-option.mat-selected:not(.mat-option-disabled) {
-        background: #FAF9FB !important;
+        background: #f9f9f9 !important;
     }
 }
 
@@ -193,7 +193,7 @@
             background: unset !important;
         }
         &.selected-option {
-            background: #FAF9FB !important;
+            background: #f9f9f9 !important;
         }
         .mat-option-text {
             display: flex;
