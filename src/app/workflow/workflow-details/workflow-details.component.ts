@@ -780,7 +780,6 @@ export class WorkflowDetailsComponent
     }
 
     openInHubspot(clientCrmId: number) {
-        debugger;
         if (this._internalLookupService.hubspotClientUrl?.length) {
             if (clientCrmId !== null && clientCrmId !== undefined) {
                 window.open(this._internalLookupService.hubspotClientUrl.replace('{CrmClientId}', clientCrmId!.toString()), '_blank');
