@@ -28,6 +28,9 @@
                             Sync to legacy system
                         </button>
                     </ng-template>
+                    <span class="workflow-darkblue--text">
+                        <ng-container *ngTemplateOutlet="syncStatus"></ng-container>
+                        </span>
                     <ng-container *ngIf="statusAfterSync">
                         <div fxLayout="row" fxLayoutAlign="start center" class="u-mb--10">
                             <mat-icon class="u-mr--5" [ngClass]="{'icon-cancel': syncNotPossible}" [svgIcon]="syncNotPossible ? 'cancel-fill' : 'completed-icon'"></mat-icon>
