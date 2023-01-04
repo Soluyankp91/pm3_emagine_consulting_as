@@ -56,6 +56,15 @@
         color: $medium-grey-color;
         @include fontOpenSans(12px, 600);
     }
+
+    .document-date {
+        @include fontOpenSans(14px, 600);
+        color: $medium-grey-color;
+        &::before {
+            content: '•';
+            margin-right: 5px;
+        }
+    }
 }
 
 .tree-invisible {
