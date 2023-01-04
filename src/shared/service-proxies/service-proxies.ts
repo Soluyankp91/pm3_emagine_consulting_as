@@ -1876,6 +1876,56 @@ export class AgreementServiceProxy {
         }
         return _observableOf<AgreementLogQueryResultDto>(null as any);
     }
+
+    /**
+     * @return Success
+     */
+    openEdit(agreementId: number): Observable<void> {
+        let url_ = this.baseUrl + "/api/Agreement/{agreementId}/open-edit";
+        if (agreementId === undefined || agreementId === null)
+            throw new Error("The parameter 'agreementId' must be defined.");
+        url_ = url_.replace("{agreementId}", encodeURIComponent("" + agreementId));
+        url_ = url_.replace(/[?&]$/, "");
+
+        let options_ : any = {
+            observe: "response",
+            responseType: "blob",
+            headers: new HttpHeaders({
+            })
+        };
+
+        return this.http.request("patch", url_, options_).pipe(_observableMergeMap((response_ : any) => {
+            return this.processOpenEdit(response_);
+        })).pipe(_observableCatch((response_: any) => {
+            if (response_ instanceof HttpResponseBase) {
+                try {
+                    return this.processOpenEdit(response_ as any);
+                } catch (e) {
+                    return _observableThrow(e) as any as Observable<void>;
+                }
+            } else
+                return _observableThrow(response_) as any as Observable<void>;
+        }));
+    }
+
+    protected processOpenEdit(response: HttpResponseBase): Observable<void> {
+        const status = response.status;
+        const responseBlob =
+            response instanceof HttpResponse ? response.body :
+            (response as any).error instanceof Blob ? (response as any).error : undefined;
+
+        let _headers: any = {}; if (response.headers) { for (let key of response.headers.keys()) { _headers[key] = response.headers.get(key); }}
+        if (status === 200) {
+            return blobToText(responseBlob).pipe(_observableMergeMap(_responseText => {
+            return _observableOf<void>(null as any);
+            }));
+        } else if (status !== 200 && status !== 204) {
+            return blobToText(responseBlob).pipe(_observableMergeMap(_responseText => {
+            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+            }));
+        }
+        return _observableOf<void>(null as any);
+    }
 }
 
 @Injectable()
@@ -10888,7 +10938,7 @@ export class HubSpotTestServiceProxy {
     /**
      * @return Success
      */
-    getBigCompany(): Observable<void> {
+    getBigCompany(): Observable<HubSpotClientDto> {
         let url_ = this.baseUrl + "/api/HubSpotTest/GetBigCompanyAsync";
         url_ = url_.replace(/[?&]$/, "");
 
@@ -10896,6 +10946,7 @@ export class HubSpotTestServiceProxy {
             observe: "response",
             responseType: "blob",
             headers: new HttpHeaders({
+                "Accept": "text/plain"
             })
         };
 
@@ -10906,14 +10957,14 @@ export class HubSpotTestServiceProxy {
                 try {
                     return this.processGetBigCompany(response_ as any);
                 } catch (e) {
-                    return _observableThrow(e) as any as Observable<void>;
+                    return _observableThrow(e) as any as Observable<HubSpotClientDto>;
                 }
             } else
-                return _observableThrow(response_) as any as Observable<void>;
+                return _observableThrow(response_) as any as Observable<HubSpotClientDto>;
         }));
     }
 
-    protected processGetBigCompany(response: HttpResponseBase): Observable<void> {
+    protected processGetBigCompany(response: HttpResponseBase): Observable<HubSpotClientDto> {
         const status = response.status;
         const responseBlob =
             response instanceof HttpResponse ? response.body :
@@ -10922,14 +10973,17 @@ export class HubSpotTestServiceProxy {
         let _headers: any = {}; if (response.headers) { for (let key of response.headers.keys()) { _headers[key] = response.headers.get(key); }}
         if (status === 200) {
             return blobToText(responseBlob).pipe(_observableMergeMap(_responseText => {
-            return _observableOf<void>(null as any);
+            let result200: any = null;
+            let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
+            result200 = HubSpotClientDto.fromJS(resultData200);
+            return _observableOf(result200);
             }));
         } else if (status !== 200 && status !== 204) {
             return blobToText(responseBlob).pipe(_observableMergeMap(_responseText => {
             return throwException("An unexpected server error occurred.", status, _responseText, _headers);
             }));
         }
-        return _observableOf<void>(null as any);
+        return _observableOf<HubSpotClientDto>(null as any);
     }
 }
 
@@ -15668,6 +15722,7 @@ export interface IAgreementDetailsAttachmentDto {
 
 export class AgreementDetailsDto implements IAgreementDetailsDto {
     agreementId?: number;
+    contractNumber?: string | undefined;
     creationMode?: AgreementCreationMode;
     parentAgreementTemplateId?: number | undefined;
     parentAgreementTemplateVersion?: number | undefined;
@@ -15698,6 +15753,7 @@ export class AgreementDetailsDto implements IAgreementDetailsDto {
     outdatedMergeFieldsInUse?: boolean;
     agreementStatus?: EnvelopeStatus;
     validity?: AgreementValidityState;
+    isLocked?: boolean;
 
     constructor(data?: IAgreementDetailsDto) {
         if (data) {
@@ -15711,6 +15767,7 @@ export class AgreementDetailsDto implements IAgreementDetailsDto {
     init(_data?: any) {
         if (_data) {
             this.agreementId = _data["agreementId"];
+            this.contractNumber = _data["contractNumber"];
             this.creationMode = _data["creationMode"];
             this.parentAgreementTemplateId = _data["parentAgreementTemplateId"];
             this.parentAgreementTemplateVersion = _data["parentAgreementTemplateVersion"];
@@ -15765,6 +15822,7 @@ export class AgreementDetailsDto implements IAgreementDetailsDto {
             this.outdatedMergeFieldsInUse = _data["outdatedMergeFieldsInUse"];
             this.agreementStatus = _data["agreementStatus"];
             this.validity = _data["validity"];
+            this.isLocked = _data["isLocked"];
         }
     }
 
@@ -15778,6 +15836,7 @@ export class AgreementDetailsDto implements IAgreementDetailsDto {
     toJSON(data?: any) {
         data = typeof data === 'object' ? data : {};
         data["agreementId"] = this.agreementId;
+        data["contractNumber"] = this.contractNumber;
         data["creationMode"] = this.creationMode;
         data["parentAgreementTemplateId"] = this.parentAgreementTemplateId;
         data["parentAgreementTemplateVersion"] = this.parentAgreementTemplateVersion;
@@ -15832,12 +15891,14 @@ export class AgreementDetailsDto implements IAgreementDetailsDto {
         data["outdatedMergeFieldsInUse"] = this.outdatedMergeFieldsInUse;
         data["agreementStatus"] = this.agreementStatus;
         data["validity"] = this.validity;
+        data["isLocked"] = this.isLocked;
         return data;
     }
 }
 
 export interface IAgreementDetailsDto {
     agreementId?: number;
+    contractNumber?: string | undefined;
     creationMode?: AgreementCreationMode;
     parentAgreementTemplateId?: number | undefined;
     parentAgreementTemplateVersion?: number | undefined;
@@ -15868,6 +15929,7 @@ export interface IAgreementDetailsDto {
     outdatedMergeFieldsInUse?: boolean;
     agreementStatus?: EnvelopeStatus;
     validity?: AgreementValidityState;
+    isLocked?: boolean;
 }
 
 export class AgreementDetailsSignerDto implements IAgreementDetailsSignerDto {
@@ -18546,6 +18608,9 @@ export class ClientPeriodMainDataDto implements IClientPeriodMainDataDto {
     deliveryTypeDto?: EnumEntityTypeDto;
     projectTypeDto?: EnumEntityTypeDto;
     projectCategoryDto?: EnumEntityTypeDto;
+    primaryCategoryArea?: ProfessionalRoleDto;
+    primaryCategoryType?: ProfessionalRoleDto;
+    primaryCategoryRole?: ProfessionalRoleDto;
     marginTypeDto?: EnumEntityTypeDto;
     commissionAccountManager?: Pm3EmployeeDto;
     salesAccountManager?: Pm3EmployeeDto;
@@ -18574,6 +18639,9 @@ export class ClientPeriodMainDataDto implements IClientPeriodMainDataDto {
             this.deliveryTypeDto = _data["deliveryTypeDto"] ? EnumEntityTypeDto.fromJS(_data["deliveryTypeDto"]) : <any>undefined;
             this.projectTypeDto = _data["projectTypeDto"] ? EnumEntityTypeDto.fromJS(_data["projectTypeDto"]) : <any>undefined;
             this.projectCategoryDto = _data["projectCategoryDto"] ? EnumEntityTypeDto.fromJS(_data["projectCategoryDto"]) : <any>undefined;
+            this.primaryCategoryArea = _data["primaryCategoryArea"] ? ProfessionalRoleDto.fromJS(_data["primaryCategoryArea"]) : <any>undefined;
+            this.primaryCategoryType = _data["primaryCategoryType"] ? ProfessionalRoleDto.fromJS(_data["primaryCategoryType"]) : <any>undefined;
+            this.primaryCategoryRole = _data["primaryCategoryRole"] ? ProfessionalRoleDto.fromJS(_data["primaryCategoryRole"]) : <any>undefined;
             this.marginTypeDto = _data["marginTypeDto"] ? EnumEntityTypeDto.fromJS(_data["marginTypeDto"]) : <any>undefined;
             this.commissionAccountManager = _data["commissionAccountManager"] ? Pm3EmployeeDto.fromJS(_data["commissionAccountManager"]) : <any>undefined;
             this.salesAccountManager = _data["salesAccountManager"] ? Pm3EmployeeDto.fromJS(_data["salesAccountManager"]) : <any>undefined;
@@ -18606,6 +18674,9 @@ export class ClientPeriodMainDataDto implements IClientPeriodMainDataDto {
         data["deliveryTypeDto"] = this.deliveryTypeDto ? this.deliveryTypeDto.toJSON() : <any>undefined;
         data["projectTypeDto"] = this.projectTypeDto ? this.projectTypeDto.toJSON() : <any>undefined;
         data["projectCategoryDto"] = this.projectCategoryDto ? this.projectCategoryDto.toJSON() : <any>undefined;
+        data["primaryCategoryArea"] = this.primaryCategoryArea ? this.primaryCategoryArea.toJSON() : <any>undefined;
+        data["primaryCategoryType"] = this.primaryCategoryType ? this.primaryCategoryType.toJSON() : <any>undefined;
+        data["primaryCategoryRole"] = this.primaryCategoryRole ? this.primaryCategoryRole.toJSON() : <any>undefined;
         data["marginTypeDto"] = this.marginTypeDto ? this.marginTypeDto.toJSON() : <any>undefined;
         data["commissionAccountManager"] = this.commissionAccountManager ? this.commissionAccountManager.toJSON() : <any>undefined;
         data["salesAccountManager"] = this.salesAccountManager ? this.salesAccountManager.toJSON() : <any>undefined;
@@ -18631,6 +18702,9 @@ export interface IClientPeriodMainDataDto {
     deliveryTypeDto?: EnumEntityTypeDto;
     projectTypeDto?: EnumEntityTypeDto;
     projectCategoryDto?: EnumEntityTypeDto;
+    primaryCategoryArea?: ProfessionalRoleDto;
+    primaryCategoryType?: ProfessionalRoleDto;
+    primaryCategoryRole?: ProfessionalRoleDto;
     marginTypeDto?: EnumEntityTypeDto;
     commissionAccountManager?: Pm3EmployeeDto;
     salesAccountManager?: Pm3EmployeeDto;
@@ -21843,6 +21917,10 @@ export class ContractsMainDataDto implements IContractsMainDataDto {
     salesTypeId?: number | undefined;
     deliveryTypeId?: number | undefined;
     marginId?: number | undefined;
+    projectCategoryId?: number | undefined;
+    primaryCategoryArea?: ProfessionalRoleDto;
+    primaryCategoryType?: ProfessionalRoleDto;
+    primaryCategoryRole?: ProfessionalRoleDto;
     projectName?: string | undefined;
     projectDescription?: string | undefined;
     discountId?: number | undefined;
@@ -21864,6 +21942,10 @@ export class ContractsMainDataDto implements IContractsMainDataDto {
             this.salesTypeId = _data["salesTypeId"];
             this.deliveryTypeId = _data["deliveryTypeId"];
             this.marginId = _data["marginId"];
+            this.projectCategoryId = _data["projectCategoryId"];
+            this.primaryCategoryArea = _data["primaryCategoryArea"] ? ProfessionalRoleDto.fromJS(_data["primaryCategoryArea"]) : <any>undefined;
+            this.primaryCategoryType = _data["primaryCategoryType"] ? ProfessionalRoleDto.fromJS(_data["primaryCategoryType"]) : <any>undefined;
+            this.primaryCategoryRole = _data["primaryCategoryRole"] ? ProfessionalRoleDto.fromJS(_data["primaryCategoryRole"]) : <any>undefined;
             this.projectName = _data["projectName"];
             this.projectDescription = _data["projectDescription"];
             this.discountId = _data["discountId"];
@@ -21885,6 +21967,10 @@ export class ContractsMainDataDto implements IContractsMainDataDto {
         data["salesTypeId"] = this.salesTypeId;
         data["deliveryTypeId"] = this.deliveryTypeId;
         data["marginId"] = this.marginId;
+        data["projectCategoryId"] = this.projectCategoryId;
+        data["primaryCategoryArea"] = this.primaryCategoryArea ? this.primaryCategoryArea.toJSON() : <any>undefined;
+        data["primaryCategoryType"] = this.primaryCategoryType ? this.primaryCategoryType.toJSON() : <any>undefined;
+        data["primaryCategoryRole"] = this.primaryCategoryRole ? this.primaryCategoryRole.toJSON() : <any>undefined;
         data["projectName"] = this.projectName;
         data["projectDescription"] = this.projectDescription;
         data["discountId"] = this.discountId;
@@ -21899,6 +21985,10 @@ export interface IContractsMainDataDto {
     salesTypeId?: number | undefined;
     deliveryTypeId?: number | undefined;
     marginId?: number | undefined;
+    projectCategoryId?: number | undefined;
+    primaryCategoryArea?: ProfessionalRoleDto;
+    primaryCategoryType?: ProfessionalRoleDto;
+    primaryCategoryRole?: ProfessionalRoleDto;
     projectName?: string | undefined;
     projectDescription?: string | undefined;
     discountId?: number | undefined;
@@ -21948,6 +22038,78 @@ export interface ICountryDto {
     id?: number;
     code?: string | undefined;
     name?: string | undefined;
+}
+
+export class CrmClientId implements ICrmClientId {
+    readonly value?: number;
+
+    constructor(data?: ICrmClientId) {
+        if (data) {
+            for (var property in data) {
+                if (data.hasOwnProperty(property))
+                    (<any>this)[property] = (<any>data)[property];
+            }
+        }
+    }
+
+    init(_data?: any) {
+        if (_data) {
+            (<any>this).value = _data["value"];
+        }
+    }
+
+    static fromJS(data: any): CrmClientId {
+        data = typeof data === 'object' ? data : {};
+        let result = new CrmClientId();
+        result.init(data);
+        return result;
+    }
+
+    toJSON(data?: any) {
+        data = typeof data === 'object' ? data : {};
+        data["value"] = this.value;
+        return data;
+    }
+}
+
+export interface ICrmClientId {
+    value?: number;
+}
+
+export class CrmContactId implements ICrmContactId {
+    readonly value?: number;
+
+    constructor(data?: ICrmContactId) {
+        if (data) {
+            for (var property in data) {
+                if (data.hasOwnProperty(property))
+                    (<any>this)[property] = (<any>data)[property];
+            }
+        }
+    }
+
+    init(_data?: any) {
+        if (_data) {
+            (<any>this).value = _data["value"];
+        }
+    }
+
+    static fromJS(data: any): CrmContactId {
+        data = typeof data === 'object' ? data : {};
+        let result = new CrmContactId();
+        result.init(data);
+        return result;
+    }
+
+    toJSON(data?: any) {
+        data = typeof data === 'object' ? data : {};
+        data["value"] = this.value;
+        return data;
+    }
+}
+
+export interface ICrmContactId {
+    value?: number;
 }
 
 export class CurrentEmployeeDto implements ICurrentEmployeeDto {
@@ -22775,6 +22937,134 @@ export interface IGanttRowItem {
     processTypeId?: WorkflowProcessType;
     startDate?: moment.Moment | undefined;
     endDate?: moment.Moment | undefined;
+}
+
+export class HubSpotClientDto implements IHubSpotClientDto {
+    id?: string | undefined;
+    name?: string | undefined;
+    address?: string | undefined;
+    address2?: string | undefined;
+    postCode?: string | undefined;
+    city?: string | undefined;
+    country?: string | undefined;
+    tenantForCreation?: string | undefined;
+    webDomain?: string | undefined;
+    phone?: string | undefined;
+    legacyClientId?: string | undefined;
+    pmTenantId?: string | undefined;
+    isArchived?: boolean;
+    owner?: string | undefined;
+    petName?: string | undefined;
+    industry?: string | undefined;
+    numberOfEmployees?: string | undefined;
+    contactAssociationIds?: CrmContactId[] | undefined;
+    childrenCrmClientIds?: CrmClientId[] | undefined;
+    parentCrmClientId?: CrmClientId;
+
+    constructor(data?: IHubSpotClientDto) {
+        if (data) {
+            for (var property in data) {
+                if (data.hasOwnProperty(property))
+                    (<any>this)[property] = (<any>data)[property];
+            }
+        }
+    }
+
+    init(_data?: any) {
+        if (_data) {
+            this.id = _data["id"];
+            this.name = _data["name"];
+            this.address = _data["address"];
+            this.address2 = _data["address2"];
+            this.postCode = _data["postCode"];
+            this.city = _data["city"];
+            this.country = _data["country"];
+            this.tenantForCreation = _data["tenantForCreation"];
+            this.webDomain = _data["webDomain"];
+            this.phone = _data["phone"];
+            this.legacyClientId = _data["legacyClientId"];
+            this.pmTenantId = _data["pmTenantId"];
+            this.isArchived = _data["isArchived"];
+            this.owner = _data["owner"];
+            this.petName = _data["petName"];
+            this.industry = _data["industry"];
+            this.numberOfEmployees = _data["numberOfEmployees"];
+            if (Array.isArray(_data["contactAssociationIds"])) {
+                this.contactAssociationIds = [] as any;
+                for (let item of _data["contactAssociationIds"])
+                    this.contactAssociationIds!.push(CrmContactId.fromJS(item));
+            }
+            if (Array.isArray(_data["childrenCrmClientIds"])) {
+                this.childrenCrmClientIds = [] as any;
+                for (let item of _data["childrenCrmClientIds"])
+                    this.childrenCrmClientIds!.push(CrmClientId.fromJS(item));
+            }
+            this.parentCrmClientId = _data["parentCrmClientId"] ? CrmClientId.fromJS(_data["parentCrmClientId"]) : <any>undefined;
+        }
+    }
+
+    static fromJS(data: any): HubSpotClientDto {
+        data = typeof data === 'object' ? data : {};
+        let result = new HubSpotClientDto();
+        result.init(data);
+        return result;
+    }
+
+    toJSON(data?: any) {
+        data = typeof data === 'object' ? data : {};
+        data["id"] = this.id;
+        data["name"] = this.name;
+        data["address"] = this.address;
+        data["address2"] = this.address2;
+        data["postCode"] = this.postCode;
+        data["city"] = this.city;
+        data["country"] = this.country;
+        data["tenantForCreation"] = this.tenantForCreation;
+        data["webDomain"] = this.webDomain;
+        data["phone"] = this.phone;
+        data["legacyClientId"] = this.legacyClientId;
+        data["pmTenantId"] = this.pmTenantId;
+        data["isArchived"] = this.isArchived;
+        data["owner"] = this.owner;
+        data["petName"] = this.petName;
+        data["industry"] = this.industry;
+        data["numberOfEmployees"] = this.numberOfEmployees;
+        if (Array.isArray(this.contactAssociationIds)) {
+            data["contactAssociationIds"] = [];
+            for (let item of this.contactAssociationIds)
+                data["contactAssociationIds"].push(item.toJSON());
+        }
+        if (Array.isArray(this.childrenCrmClientIds)) {
+            data["childrenCrmClientIds"] = [];
+            for (let item of this.childrenCrmClientIds)
+                data["childrenCrmClientIds"].push(item.toJSON());
+        }
+        data["parentCrmClientId"] = this.parentCrmClientId ? this.parentCrmClientId.toJSON() : <any>undefined;
+        return data;
+    }
+}
+
+export interface IHubSpotClientDto {
+    id?: string | undefined;
+    name?: string | undefined;
+    address?: string | undefined;
+    address2?: string | undefined;
+    postCode?: string | undefined;
+    city?: string | undefined;
+    country?: string | undefined;
+    tenantForCreation?: string | undefined;
+    webDomain?: string | undefined;
+    phone?: string | undefined;
+    legacyClientId?: string | undefined;
+    pmTenantId?: string | undefined;
+    isArchived?: boolean;
+    owner?: string | undefined;
+    petName?: string | undefined;
+    industry?: string | undefined;
+    numberOfEmployees?: string | undefined;
+    contactAssociationIds?: CrmContactId[] | undefined;
+    childrenCrmClientIds?: CrmClientId[] | undefined;
+    parentCrmClientId?: CrmClientId;
 }
 
 export class IdNameDto implements IIdNameDto {
@@ -24029,6 +24319,46 @@ export interface IPm3EmployeeDto {
     lowerCaseInitials?: string | undefined;
 }
 
+export class ProfessionalRoleDto implements IProfessionalRoleDto {
+    id?: number;
+    name?: string | undefined;
+
+    constructor(data?: IProfessionalRoleDto) {
+        if (data) {
+            for (var property in data) {
+                if (data.hasOwnProperty(property))
+                    (<any>this)[property] = (<any>data)[property];
+            }
+        }
+    }
+
+    init(_data?: any) {
+        if (_data) {
+            this.id = _data["id"];
+            this.name = _data["name"];
+        }
+    }
+
+    static fromJS(data: any): ProfessionalRoleDto {
+        data = typeof data === 'object' ? data : {};
+        let result = new ProfessionalRoleDto();
+        result.init(data);
+        return result;
+    }
+
+    toJSON(data?: any) {
+        data = typeof data === 'object' ? data : {};
+        data["id"] = this.id;
+        data["name"] = this.name;
+        return data;
+    }
+}
+
+export interface IProfessionalRoleDto {
+    id?: number;
+    name?: string | undefined;
+}
+
 export class ProjectLineDto implements IProjectLineDto {
     id?: number | undefined;
     projectName?: string | undefined;
@@ -24615,6 +24945,9 @@ export class SalesMainDataDto implements ISalesMainDataDto {
     deliveryTypeId?: number | undefined;
     marginId?: number | undefined;
     projectCategoryId?: number | undefined;
+    primaryCategoryArea?: ProfessionalRoleDto;
+    primaryCategoryType?: ProfessionalRoleDto;
+    primaryCategoryRole?: ProfessionalRoleDto;
     projectName?: string | undefined;
     projectDescription?: string | undefined;
     discountId?: number | undefined;
@@ -24646,6 +24979,9 @@ export class SalesMainDataDto implements ISalesMainDataDto {
             this.deliveryTypeId = _data["deliveryTypeId"];
             this.marginId = _data["marginId"];
             this.projectCategoryId = _data["projectCategoryId"];
+            this.primaryCategoryArea = _data["primaryCategoryArea"] ? ProfessionalRoleDto.fromJS(_data["primaryCategoryArea"]) : <any>undefined;
+            this.primaryCategoryType = _data["primaryCategoryType"] ? ProfessionalRoleDto.fromJS(_data["primaryCategoryType"]) : <any>undefined;
+            this.primaryCategoryRole = _data["primaryCategoryRole"] ? ProfessionalRoleDto.fromJS(_data["primaryCategoryRole"]) : <any>undefined;
             this.projectName = _data["projectName"];
             this.projectDescription = _data["projectDescription"];
             this.discountId = _data["discountId"];
@@ -24693,6 +25029,9 @@ export class SalesMainDataDto implements ISalesMainDataDto {
         data["deliveryTypeId"] = this.deliveryTypeId;
         data["marginId"] = this.marginId;
         data["projectCategoryId"] = this.projectCategoryId;
+        data["primaryCategoryArea"] = this.primaryCategoryArea ? this.primaryCategoryArea.toJSON() : <any>undefined;
+        data["primaryCategoryType"] = this.primaryCategoryType ? this.primaryCategoryType.toJSON() : <any>undefined;
+        data["primaryCategoryRole"] = this.primaryCategoryRole ? this.primaryCategoryRole.toJSON() : <any>undefined;
         data["projectName"] = this.projectName;
         data["projectDescription"] = this.projectDescription;
         data["discountId"] = this.discountId;
@@ -24733,6 +25072,9 @@ export interface ISalesMainDataDto {
     deliveryTypeId?: number | undefined;
     marginId?: number | undefined;
     projectCategoryId?: number | undefined;
+    primaryCategoryArea?: ProfessionalRoleDto;
+    primaryCategoryType?: ProfessionalRoleDto;
+    primaryCategoryRole?: ProfessionalRoleDto;
     projectName?: string | undefined;
     projectDescription?: string | undefined;
     discountId?: number | undefined;
