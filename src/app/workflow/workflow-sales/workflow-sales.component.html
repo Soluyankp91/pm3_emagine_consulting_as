@@ -397,7 +397,7 @@
                                                         {{salesMainDataForm.commissions.at(i).get('frequency')?.value?.name}}
                                                     </ng-template>
                                                 </span>
-                                                <div fxFlex="10%" fxLayoutAlign="center center" class="u-w--100" [fxHide]="readOnlyMode">
+                                                <div fxFlex="10%" fxLayoutAlign="end center" class="u-w--100" [fxHide]="readOnlyMode">
                                                     <button mat-icon-button type="button" appPreventDoubleClick (throttledClick)="$event.stopPropagation();" [matMenuTriggerFor]="commissionMenu" class="three-dots-actions-btn">
                                                         <mat-icon svgIcon="3-dots"></mat-icon>
                                                     </button>
@@ -472,11 +472,38 @@
                                         </mat-autocomplete>
                                 </mat-form-field>
                             </div>
+                            <div fxLayout="row" fxLayoutAlign="start start" class="u-w--100 u-mb--10">
+                                <mat-form-field appearance="outline" class="formFieldNoMarginPadding filter-select u-mr--12 form-width-180">
+                                    <mat-label>Expiration notification</mat-label>
+                                    <mat-select [disabled]="readOnlyMode" formControlName="contractExpirationNotification" [disableOptionCentering]="true" [multiple]="true">
+                                        <mat-option [value]="999">
+                                            Manual date
+                                        </mat-option>
+                                        <ng-container *ngFor="let item of contractExpirationNotificationDuration | keyvalue">
+                                            <mat-option [value]="+item.key">
+                                                {{ item.value }}
+                                            </mat-option>
+                                        </ng-container>
+                                    </mat-select>
+                                </mat-form-field>
+                                <ng-container *ngIf="salesMainDataForm.contractExpirationNotification?.value?.includes(999)">
+                                    <mat-form-field appearance="outline" class="formFieldNoMarginPadding form-width-180" [ngClass]="{'disabled-input': readOnlyMode}">
+                                        <mat-label>Expiration notification date</mat-label>
+                                        <input [disabled]="readOnlyMode" autocomplete="off" matInput
+                                                [matDatepicker]="customContractExpirationNotificationDatePicker"
+                                                name="customContractExpirationNotificationDate" formControlName="customContractExpirationNotificationDate"
+                                                (focus)="customContractExpirationNotificationDatePicker.open()"
+                                                appPreventDoubleClick (throttledClick)="customContractExpirationNotificationDatePicker.open()" readonly>
+                                        <mat-icon class="calendar-icon" matSuffix svgIcon="calendar"></mat-icon>
+                                        <mat-datepicker #customContractExpirationNotificationDatePicker></mat-datepicker>
+                                    </mat-form-field>
+                                </ng-container>
+                            </div>
                             <div fxLayout="column" fxLayoutAlign="start start" class="u-w--100 u-mb--10">
                                 <ng-container formArrayName="commissionedUsers" class="u-w--100">
                                     <ng-container *ngFor="let user of salesMainDataForm.commissionedUsers.controls; index as i" [formArrayName]="i">
                                         <div fxLayout="row" fxLayoutAlign="start start" class="u-w--100 u-mb--10">
-                                            <mat-form-field appearance="outline" class="formFieldNoMarginPadding filter-select u-mr--12 form-width-235" [ngClass]="{'disabled-input': readOnlyMode}">
+                                            <mat-form-field appearance="outline" class="formFieldNoMarginPadding filter-select form-width-235" [ngClass]="{'disabled-input': readOnlyMode}">
                                                 <mat-label>Commissioned employee</mat-label>
                                                 <input required [disabled]="readOnlyMode" #commissionedUserInput type="text" matInput [matAutocomplete]="commissionedUserAutocomplete" formControlName="commissionedUser" appPreventDoubleClick (throttledClick)="$event.stopPropagation()" placeholder="Type something">
                                                 <mat-autocomplete #commissionedUserAutocomplete="matAutocomplete" [displayWith]="displayNameFn"
@@ -508,35 +535,8 @@
                                 <ng-container *ngIf="!readOnlyMode">
                                     <button class="button-add u-mt--5" mat-flat-button type="button" appPreventDoubleClick (throttledClick)="addCommissionedUser()">
                                         <mat-icon>add</mat-icon>
-                                        Add commissioned employees
+                                        Add commissioned employee
                                     </button>
-                                </ng-container>
-                            </div>
-                            <div fxLayout="row" fxLayoutAlign="start start" class="u-w--100 u-mb--10">
-                                <mat-form-field appearance="outline" class="formFieldNoMarginPadding filter-select u-mr--12 form-width-235">
-                                    <mat-label>Contract expiration notification</mat-label>
-                                    <mat-select [disabled]="readOnlyMode" formControlName="contractExpirationNotification" [disableOptionCentering]="true" [multiple]="true">
-                                        <mat-option [value]="999">
-                                            Manual date
-                                        </mat-option>
-                                        <ng-container *ngFor="let item of contractExpirationNotificationDuration | keyvalue">
-                                            <mat-option [value]="+item.key">
-                                                {{ item.value }}
-                                            </mat-option>
-                                        </ng-container>
-                                    </mat-select>
-                                </mat-form-field>
-                                <ng-container *ngIf="salesMainDataForm.contractExpirationNotification?.value?.includes(999)">
-                                    <mat-form-field appearance="outline" class="formFieldNoMarginPadding form-width-235" [ngClass]="{'disabled-input': readOnlyMode}">
-                                        <mat-label>Contract expiration notification date</mat-label>
-                                        <input [disabled]="readOnlyMode" autocomplete="off" matInput
-                                                [matDatepicker]="customContractExpirationNotificationDatePicker"
-                                                name="customContractExpirationNotificationDate" formControlName="customContractExpirationNotificationDate"
-                                                (focus)="customContractExpirationNotificationDatePicker.open()"
-                                                appPreventDoubleClick (throttledClick)="customContractExpirationNotificationDatePicker.open()" readonly>
-                                        <mat-icon class="calendar-icon" matSuffix svgIcon="calendar"></mat-icon>
-                                        <mat-datepicker #customContractExpirationNotificationDatePicker></mat-datepicker>
-                                    </mat-form-field>
                                 </ng-container>
                             </div>
                             <div fxLayout="row" fxLayoutAlign="start start" class="u-w--100">
