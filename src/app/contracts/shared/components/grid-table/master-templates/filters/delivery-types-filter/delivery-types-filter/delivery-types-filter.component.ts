@@ -27,7 +27,7 @@ export class DeliveryTypesFilterComponent implements IFilter {
 		private contractService: ContractsService,
 		@Inject(TEMPLATE_SERVICE_TOKEN) private _templatesService: ITemplatesService
 	) {
-		_templatesService
+		this._templatesService
 			.getTableFilters$()
 			.pipe(take(1), pluck(this.tableFilter))
 			.subscribe((deliveryTypes) => {

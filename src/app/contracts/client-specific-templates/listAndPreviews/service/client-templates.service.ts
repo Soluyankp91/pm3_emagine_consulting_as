@@ -6,7 +6,7 @@ import { AgreementTemplateServiceProxy } from 'src/shared/service-proxies/servic
 
 @Injectable()
 export class ClientTemplatesService extends BaseContract {
-	constructor(private readonly agreementTemplateServiceProxy: AgreementTemplateServiceProxy) {
+	constructor(private readonly _agreementTemplateServiceProxy: AgreementTemplateServiceProxy) {
 		super();
 	}
 
@@ -23,7 +23,7 @@ export class ClientTemplatesService extends BaseContract {
 	});
 
 	override sendPayload$([tableFilters, sort, page, tenantIds, search]: TemplatePayload) {
-		return this.agreementTemplateServiceProxy.list2(
+		return this._agreementTemplateServiceProxy.list2(
 			true, //isClientTemplate
 			search, //search
 			tenantIds.map((item) => item.id as number), // tenantId []

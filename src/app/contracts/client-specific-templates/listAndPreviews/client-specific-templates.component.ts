@@ -2,16 +2,17 @@ import { Component, OnInit, Injector } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import * as moment from 'moment';
 import { AppComponentBase } from 'src/shared/app-component-base';
-import { AgreementLanguage, AgreementTemplatesListItemDto, AgreementTemplatesListItemDtoPaginatedList, AgreementType } from 'src/shared/service-proxies/service-proxies';
+import {
+	AgreementLanguage,
+	AgreementTemplatesListItemDto,
+	AgreementTemplatesListItemDtoPaginatedList,
+	AgreementType,
+} from 'src/shared/service-proxies/service-proxies';
 import {
 	CLIENT_TEMPLATE_HEADER_CELLS,
 	DISPLAYED_COLUMNS,
 } from '../../shared/components/grid-table/client-templates/entities/client-template.constants';
-import {
-	ClientMappedTemplatesListDto,
-	MappedTableCells,
-    TableFiltersEnum,
-} from '../../shared/entities/contracts.interfaces';
+import { ClientMappedTemplatesListDto, MappedTableCells, TableFiltersEnum } from '../../shared/entities/contracts.interfaces';
 import { GridHelpService } from '../../shared/services/mat-grid-service.service';
 import { combineLatest, Observable, Subject } from 'rxjs';
 import { takeUntil, map } from 'rxjs/operators';
@@ -117,7 +118,7 @@ export class ClientSpecificTemplatesComponent extends AppComponentBase implement
 	}
 
 	private _subscribeOnDataLoading() {
-		this._clientTemplatesService.contractsLoading$$.subscribe((isLoading) => {
+		this._clientTemplatesService.contractsLoading$$.pipe(takeUntil(this._unSubscribe$)).subscribe((isLoading) => {
 			if (isLoading) {
 				this.showMainSpinner();
 				return;

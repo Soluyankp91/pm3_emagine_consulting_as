@@ -31,7 +31,7 @@ export class IsEnabledComponent {
 	labelMap = FILTER_LABEL_MAP;
 
 	constructor(@Inject(TEMPLATE_SERVICE_TOKEN) private _templatesService: ITemplatesService) {
-		_templatesService
+		this._templatesService
 			.getTableFilters$()
 			.pipe(take(1), pluck(this.tableFilter))
 			.subscribe((enabled) => {
