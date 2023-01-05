@@ -22,7 +22,6 @@ export const BigDialogConfig: MatDialogConfig = {
     minHeight: '180px',
     width: '800px',
     height: 'auto',
-    maxHeight: '560px',
     backdropClass: 'backdrop-modal--wrapper',
     autoFocus: false,
     panelClass: 'confirmation-modal'

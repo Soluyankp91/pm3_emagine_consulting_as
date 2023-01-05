@@ -204,7 +204,7 @@ export abstract class AppComponentBase {
 		return item?.documentStorageGuid;
 	}
 
-    trackByFormArray(item: any) {
+    trackByItem(index: number, item: any) {
         return item;
     }
 

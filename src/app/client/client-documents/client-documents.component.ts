@@ -330,6 +330,9 @@ export class ClientDocumentsComponent extends AppComponentBase implements OnInit
 	}
 
 	downloadDocument(clientAttachmentGuid: string) {
+        if (!clientAttachmentGuid || clientAttachmentGuid?.length === 0) {
+            return;
+        }
 		this.localHttpService.getTokenPromise().then((response: AuthenticationResult) => {
 			const fileUrl = `${this.apiUrl}/api/ClientDocuments/Document/${clientAttachmentGuid}`;
 			this.httpClient

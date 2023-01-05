@@ -25,7 +25,7 @@
                             </div>
                         </ng-container>
                         <div fxLayout="row" fxLayoutAlign="start start" class="u-w--100">
-                            <mat-form-field appearance="outline" class="u-w--100 formFieldNoMarginPadding filter-select u-mr--12" fxFlex="35%">
+                            <mat-form-field appearance="outline" class="form-width-272 formFieldNoMarginPadding filter-select u-mr--12">
                                 <mat-label>Project Type (Legacy)</mat-label>
                                 <mat-select [disabled]="readOnlyMode" formControlName="differentDebtorNumberForInvoicing" [disableOptionCentering]="true">
                                     <mat-option [value]="false">
@@ -41,7 +41,7 @@
                             </mat-form-field>
                         </div>
                         <div fxLayout="row" fxLayoutAlign="start start" class="u-w--100" [fxHide]="!financesClientForm.differentDebtorNumberForInvoicing?.value">
-                            <mat-form-field appearance="outline" class="u-w--100  u-mr--16" fxFlex="35%" [ngClass]="{'disabled-input': readOnlyMode}">
+                            <mat-form-field appearance="outline" class="form-width-272 u-mr--16" [ngClass]="{'disabled-input': readOnlyMode}">
                                 <mat-label>Debitor number</mat-label>
                                 <input [disabled]="readOnlyMode" [required]="financesClientForm.differentDebtorNumberForInvoicing?.value" autocomplete="off" matInput formControlName="customDebtorNumber" type="text">
                                 <mat-error>
