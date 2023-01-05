@@ -88,7 +88,8 @@
             </div>
         </ng-container>
         <ng-container *ngSwitchDefault>
-            <form [formGroup]="contractsMainForm" id="mainDataAnchor"
+            <app-contracts-main-data></app-contracts-main-data>
+            <!-- <form [formGroup]="contractsMainForm" id="mainDataAnchor"
                 class="workflow-form workflow-form--main u-w--100">
                 <div fxLayout="column" fxLayoutAlign="start start" class="workflow-contracts--process-data u-w--100">
                     <div fxLayout="column" fxLayoutAlign="start start" class="u-w--100">
@@ -236,7 +237,7 @@
                         </div>
                     </div>
                 </div>
-            </form>
+            </form> -->
             <!-- hidden on AddConsultant, ChangeConsultant, Extend Consultant -->
             <ng-container *ngIf="activeSideSection.typeId === workflowSideSections.StartClientPeriod || activeSideSection.typeId === workflowSideSections.ExtendClientPeriod || activeSideSection.typeId === workflowSideSections.ChangeClientPeriod">
                 <form fxLayout="column" fxLayoutAlign="start start" id="clientDataAnchor" [formGroup]="contractClientForm" class="workflow-form workflow-form--sales u-w--100">

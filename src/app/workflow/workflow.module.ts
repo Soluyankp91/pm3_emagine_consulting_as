@@ -22,6 +22,9 @@ import { RateAndFeesWarningsDialogComponent } from './rate-and-fees-warnings-dia
 import { MainDataComponent } from './workflow-sales/main-data/main-data.component';
 import { ClientDataComponent } from './workflow-sales/client-data/client-data.component';
 import { ConsultantDataComponent } from './workflow-sales/consultant-data/consultant-data.component';
+import { ContractsConsultantDataComponent } from './workflow-contracts/contracts-consultant-data/contracts-consultant-data.component';
+import { ContractsMainDataComponent } from './workflow-contracts/contracts-main-data/contracts-main-data.component';
+import { ContractsSyncDataComponent } from './workflow-contracts/contracts-sync-data/contracts-sync-data.component';
 
 @NgModule({
     declarations: [
@@ -42,7 +45,10 @@ import { ConsultantDataComponent } from './workflow-sales/consultant-data/consul
         RateAndFeesWarningsDialogComponent,
         MainDataComponent,
         ClientDataComponent,
-        ConsultantDataComponent
+        ConsultantDataComponent,
+        ContractsConsultantDataComponent,
+        ContractsMainDataComponent,
+        ContractsSyncDataComponent
     ],
     imports: [
         CommonModule,

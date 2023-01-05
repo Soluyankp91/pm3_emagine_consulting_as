@@ -43,19 +43,16 @@ import {
 	ClientSpecialFeeDto,
 	ConsultantPeriodServiceProxy,
 	ConsultantPeriodSalesDataDto,
-	ExtendConsultantPeriodDto,
-	ChangeConsultantPeriodDto,
 	CountryDto,
 	LegalEntityDto,
 } from 'src/shared/service-proxies/service-proxies';
-import { WorkflowConsultantActionsDialogComponent } from '../workflow-consultant-actions-dialog/workflow-consultant-actions-dialog.component';
 import { WorkflowDataService } from '../workflow-data.service';
 import { WorkflowProcessWithAnchorsDto } from '../workflow-period/workflow-period.model';
 import { EmploymentTypes } from '../workflow.model';
 import { ClientDataComponent } from './client-data/client-data.component';
 import { ConsultantDataComponent } from './consultant-data/consultant-data.component';
 import { MainDataComponent } from './main-data/main-data.component';
-import { ClientRateTypes, ConsultantDiallogAction, SalesTerminateConsultantForm } from './workflow-sales.model';
+import { ClientRateTypes, SalesTerminateConsultantForm } from './workflow-sales.model';
 
 @Component({
 	selector: 'app-workflow-sales',
@@ -78,55 +75,16 @@ export class WorkflowSalesComponent extends AppComponentBase implements OnInit, 
 	workflowSideSections = WorkflowProcessType;
 	salesTerminateConsultantForm: SalesTerminateConsultantForm;
 
-	deliveryTypes: EnumEntityTypeDto[] = [];
 	currencies: EnumEntityTypeDto[] = [];
-	saleTypes: EnumEntityTypeDto[] = [];
-	projectTypes: EnumEntityTypeDto[] = [];
 	invoicingTimes: EnumEntityTypeDto[] = [];
-	rateUnitTypes: EnumEntityTypeDto[] = [];
 	invoiceFrequencies: EnumEntityTypeDto[] = [];
-	signerRoles: EnumEntityTypeDto[] = [];
-	margins: EnumEntityTypeDto[] = [];
-	emagineOffices: EnumEntityTypeDto[] = [];
-	clientExtensionDeadlines: EnumEntityTypeDto[] = [];
-	clientExtensionDurations: EnumEntityTypeDto[] = [];
-	clientSpecialFeeFrequencies: EnumEntityTypeDto[] = [];
-	clientSpecialFeeSpecifications: EnumEntityTypeDto[] = [];
-	clientSpecialRateReportUnits: EnumEntityTypeDto[] = [];
-	clientSpecialRateSpecifications: EnumEntityTypeDto[] = [];
-	contractExpirationNotificationDuration: { [key: string]: string };
-	clientTimeReportingCap: EnumEntityTypeDto[] = [];
-	commissionFrequencies: EnumEntityTypeDto[] = [];
-	commissionTypes: EnumEntityTypeDto[] = [];
-	commissionRecipientTypeList: EnumEntityTypeDto[] = [];
-	legalEntities: LegalEntityDto[] = [];
-	projectCategories: EnumEntityTypeDto[] = [];
-	discounts: EnumEntityTypeDto[] = [];
-	expectedWorkloadUnits: EnumEntityTypeDto[] = [];
-	nonStandartTerminationTimes: { [key: string]: string };
-	terminationReasons: { [key: string]: string };
-	employmentTypes: EnumEntityTypeDto[] = [];
-	countries: CountryDto[] = [];
-	consultantTimeReportingCapList: EnumEntityTypeDto[] = [];
+    nonStandartTerminationTimes: {[key: string]: string;};
+    terminationReasons: {[key: string]: string;};
 
-	employmentTypesEnum = EmploymentTypes;
 	clientRateTypes = ClientRateTypes;
-	filteredAccountManagers: any[] = [];
-	filteredSalesAccountManagers: any[] = [];
-	filteredCommisionAccountManagers: any[] = [];
-	filteredDirectClients: any[] = [];
-	filteredEndClients: any[] = [];
-	filteredConsultants: any[] = [];
-	filteredRecipients: any[] = [];
-	filteredReferencePersons: any[] = [];
-	filteredEvaluationReferencePersons: any[] = [];
-	filteredClientInvoicingRecipients: any[] = [];
 	filteredFinalEvaluationReferencePersons: any[] = [];
 	clientSpecialRateList: ClientSpecialRateDto[] = [];
 	clientSpecialFeeList: ClientSpecialFeeDto[] = [];
-	filteredConsultantCountries: EnumEntityTypeDto[];
-	filteredConsultantClientAddresses: any[] = [];
-	filteredContractSigners: any[] = [];
 
 	directClientIdTerminationSales: number | null;
 	endClientIdTerminationSales: number | null;
@@ -134,23 +92,10 @@ export class WorkflowSalesComponent extends AppComponentBase implements OnInit, 
 	individualConsultantActionsAvailable: boolean;
 	appEnv = environment;
 
-	isCommissionEditing = false;
-	isCommissionInitialAdd = false;
-	commissionToEdit: {
-		id: number | undefined;
-		commissionType: any;
-		amount: any;
-		currency: any;
-		commissionFrequency: any;
-		recipientType: any;
-		recipient: any;
-	};
-
 	private _unsubscribe = new Subject();
 
 	constructor(
 		injector: Injector,
-		private _fb: UntypedFormBuilder,
 		private _workflowDataService: WorkflowDataService,
 		private activatedRoute: ActivatedRoute,
 		private overlay: Overlay,
@@ -415,66 +360,16 @@ export class WorkflowSalesComponent extends AppComponentBase implements OnInit, 
 	private _getEnums() {
 		forkJoin({
 			currencies: this._internalLookupService.getCurrencies(),
-			rateUnitTypes: this._internalLookupService.getCurrencies(),
-			deliveryTypes: this._internalLookupService.getDeliveryTypes(),
-			saleTypes: this._internalLookupService.getSaleTypes(),
-			projectTypes: this._internalLookupService.getProjectTypes(),
 			invoicingTimes: this._internalLookupService.getInvoicingTimes(),
 			invoiceFrequencies: this._internalLookupService.getInvoiceFrequencies(),
-			signerRoles: this._internalLookupService.getSignerRoles(),
-			emagineOffices: this._internalLookupService.getEmagineOfficeList(),
-			margins: this._internalLookupService.getMargins(),
-			clientExtensionDeadlines: this._internalLookupService.getExtensionDeadlines(),
-			clientExtensionDurations: this._internalLookupService.getExtensionDurations(),
-			clientSpecialFeeFrequencies: this._internalLookupService.getSpecialFeeFrequencies(),
-			clientSpecialFeeSpecifications: this._internalLookupService.getSpecialFeeSpecifications(),
-			clientSpecialRateReportUnits: this._internalLookupService.getSpecialRateReportUnits(),
-			clientSpecialRateSpecifications: this._internalLookupService.getSpecialRateSpecifications(),
-			contractExpirationNotificationDuration: this._internalLookupService.getContractExpirationNotificationInterval(),
-			clientTimeReportingCap: this._internalLookupService.getClientTimeReportingCap(),
-			commissionFrequencies: this._internalLookupService.getCommissionFrequency(),
-			commissionTypes: this._internalLookupService.getCommissionTypes(),
-			commissionRecipientTypeList: this._internalLookupService.getCommissionRecipientTypes(),
-			legalEntities: this._internalLookupService.getLegalEntities(),
-			projectCategories: this._internalLookupService.getProjectCategory(),
-			discounts: this._internalLookupService.getDiscounts(),
-			nonStandartTerminationTimes: this._internalLookupService.getTerminationTimes(),
-			terminationReasons: this._internalLookupService.getTerminationReasons(),
-			expectedWorkloadUnits: this._internalLookupService.getExpectedWorkloadUnit(),
-			employmentTypes: this._internalLookupService.getEmploymentTypes(),
-			countries: this._internalLookupService.getCountries(),
-			consultantTimeReportingCapList: this._internalLookupService.getConsultantTimeReportingCap(),
+            nonStandartTerminationTimes: this._internalLookupService.getTerminationTimes(),
+            terminationReasons: this._internalLookupService.getTerminationReasons()
 		}).subscribe((result) => {
 			this.currencies = result.currencies;
-			this.rateUnitTypes = result.rateUnitTypes;
-			this.deliveryTypes = result.deliveryTypes;
-			this.saleTypes = result.saleTypes;
-			this.projectTypes = result.projectTypes;
 			this.invoicingTimes = result.invoicingTimes;
 			this.invoiceFrequencies = result.invoiceFrequencies;
-			this.signerRoles = result.signerRoles;
-			this.emagineOffices = result.emagineOffices;
-			this.margins = result.margins;
-			this.clientExtensionDeadlines = result.clientExtensionDeadlines;
-			this.clientExtensionDurations = result.clientExtensionDurations;
-			this.clientSpecialFeeFrequencies = result.clientSpecialFeeFrequencies;
-			this.clientSpecialFeeSpecifications = result.clientSpecialFeeSpecifications;
-			this.clientSpecialRateReportUnits = result.clientSpecialRateReportUnits;
-			this.clientSpecialRateSpecifications = result.clientSpecialRateSpecifications;
-			this.contractExpirationNotificationDuration = result.contractExpirationNotificationDuration;
-			this.clientTimeReportingCap = result.clientTimeReportingCap;
-			this.commissionFrequencies = result.commissionFrequencies;
-			this.commissionTypes = result.commissionTypes;
-			this.commissionRecipientTypeList = result.commissionRecipientTypeList;
-			this.legalEntities = result.legalEntities;
-			this.projectCategories = result.projectCategories;
-			this.discounts = result.discounts;
 			this.nonStandartTerminationTimes = result.nonStandartTerminationTimes;
 			this.terminationReasons = result.terminationReasons;
-			this.expectedWorkloadUnits = result.expectedWorkloadUnits;
-			this.employmentTypes = result.employmentTypes;
-			this.countries = result.countries;
-			this.consultantTimeReportingCapList = result.consultantTimeReportingCapList;
 		});
 	}
 
@@ -942,62 +837,6 @@ export class WorkflowSalesComponent extends AppComponentBase implements OnInit, 
 		this.directClientIdTerminationSales = null;
 		this.endClientIdTerminationSales = null;
 	}
-
-	// returnToSales() {
-	// 	switch (this._workflowDataService.workflowProgress.currentlyActiveSideSection) {
-	// 		case WorkflowProcessType.StartClientPeriod:
-	// 		case WorkflowProcessType.ChangeClientPeriod:
-	// 		case WorkflowProcessType.ExtendClientPeriod:
-	// 			this.showMainSpinner();
-	// 			this._clientPeriodService
-	// 				.reopen(this.periodId!)
-	// 				.pipe(
-	// 					finalize(() => {
-	// 						this.hideMainSpinner();
-	// 					})
-	// 				)
-	// 				.subscribe(() => this._workflowDataService.workflowSideSectionUpdated.emit({ isStatusUpdate: true }));
-	// 			break;
-
-	// 		case WorkflowProcessType.TerminateWorkflow:
-	// 			this.showMainSpinner();
-	// 			this._workflowServiceProxy
-	// 				.terminationSalesReopen(this.periodId!)
-	// 				.pipe(
-	// 					finalize(() => {
-	// 						this.hideMainSpinner();
-	// 					})
-	// 				)
-	// 				.subscribe(() => this._workflowDataService.workflowSideSectionUpdated.emit({ isStatusUpdate: true }));
-	// 			break;
-
-	// 		case WorkflowProcessType.TerminateConsultant:
-	// 			this.showMainSpinner();
-	// 			this._workflowServiceProxy
-	// 				.terminationConsultantSalesReopen(this.periodId!)
-	// 				.pipe(
-	// 					finalize(() => {
-	// 						this.hideMainSpinner();
-	// 					})
-	// 				)
-	// 				.subscribe(() => this._workflowDataService.workflowSideSectionUpdated.emit({ isStatusUpdate: true }));
-	// 			break;
-
-	// 		case WorkflowProcessType.StartConsultantPeriod:
-	// 		case WorkflowProcessType.ChangeConsultantPeriod:
-	// 		case WorkflowProcessType.ExtendConsultantPeriod:
-	// 			this.showMainSpinner();
-	// 			this._consultantPeriodSerivce
-	// 				.reopen2(this.periodId!)
-	// 				.pipe(
-	// 					finalize(() => {
-	// 						this.hideMainSpinner();
-	// 					})
-	// 				)
-	// 				.subscribe(() => this._workflowDataService.workflowSideSectionUpdated.emit({ isStatusUpdate: true }));
-	// 			break;
-	// 	}
-	// }
 
 	openClientInNewTab(clientId: string) {
 		const url = this.router.serializeUrl(this.router.createUrlTree([`/app/clients/${clientId}/rates-and-fees`]));
