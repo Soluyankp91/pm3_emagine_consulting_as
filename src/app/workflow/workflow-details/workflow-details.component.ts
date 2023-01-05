@@ -98,7 +98,7 @@ export class WorkflowDetailsComponent
     sectionIndex: number;
 
     workflowResponse: WorkflowDto;
-    clientPeriods: ClientPeriodDto[] | undefined = [];
+    clientPeriods: ClientPeriodDto[] | undefined;
     workflowDirectClient: string | undefined;
     workflowEndClient: string | undefined;
     workflowDirectClientId: number | undefined;

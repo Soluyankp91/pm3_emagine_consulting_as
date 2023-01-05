@@ -93,7 +93,7 @@
                                         <mat-label>Delivery Type</mat-label>
                                         <mat-select required [disabled]="readOnlyMode" formControlName="deliveryType" [disableOptionCentering]="true" [compareWith]="compareWithFn">
                                             <ng-container *ngFor="let item of deliveryTypes; trackBy: trackById">
-                                                <ng-container *ngIf="(item.id === 1 && salesMainDataForm.salesType?.value?.id === 3) || (item.id !== 1 && salesMainDataForm.salesType?.value?.id !== 3)">
+                                                <ng-container *ngIf="(item?.id === 1 && salesMainDataForm.salesType?.value?.id === 3) || (item?.id !== 1 && salesMainDataForm.salesType?.value?.id !== 3)">
                                                     <mat-option [value]="item">
                                                         {{ item.name }}
                                                     </mat-option>
@@ -108,7 +108,7 @@
                                 <div fxLayout="row" fxLayoutAlign="start start" class="u-w--100">
                                     <mat-form-field appearance="outline" class="formFieldNoMarginPadding filter-select u-mr--12 form-width-235">
                                         <mat-label>Project Category</mat-label>
-                                        <mat-select required [disabled]="readOnlyMode" formControlName="projectCategory" [disableOptionCentering]="true" [compareWith]="compareWithFn" [disabled]="activeSideSection.typeId === workflowSideSections.ExtendClientPeriod || activeSideSection.typeId === workflowSideSections.ChangeClientPeriod || readOnlyMode">
+                                        <mat-select required formControlName="projectCategory" [disableOptionCentering]="true" [compareWith]="compareWithFn" [disabled]="readOnlyMode">
                                             <ng-container *ngFor="let item of projectCategories; trackBy: trackById">
                                                 <mat-option [value]="item">
                                                     {{ item.name }}
@@ -474,10 +474,10 @@
                             </div>
                             <div fxLayout="column" fxLayoutAlign="start start" class="u-w--100 u-mb--10">
                                 <ng-container formArrayName="commissionedUsers" class="u-w--100">
-                                    <ng-container *ngFor="let user of salesMainDataForm.commissionedUsers.controls; trackBy: trackByFormArray; index as i" [formArrayName]="i">
-                                        <div fxLayout="row" fxLayoutAlign="start center" class="u-w--100">
+                                    <ng-container *ngFor="let user of salesMainDataForm.commissionedUsers.controls; index as i" [formArrayName]="i">
+                                        <div fxLayout="row" fxLayoutAlign="start start" class="u-w--100 u-mb--10">
                                             <mat-form-field appearance="outline" class="formFieldNoMarginPadding filter-select u-mr--12 form-width-235" [ngClass]="{'disabled-input': readOnlyMode}">
-                                                <mat-label>Commissioned user</mat-label>
+                                                <mat-label>Commissioned employee</mat-label>
                                                 <input required [disabled]="readOnlyMode" #commissionedUserInput type="text" matInput [matAutocomplete]="commissionedUserAutocomplete" formControlName="commissionedUser" appPreventDoubleClick (throttledClick)="$event.stopPropagation()" placeholder="Type something">
                                                 <mat-autocomplete #commissionedUserAutocomplete="matAutocomplete" [displayWith]="displayNameFn"
                                                     (optionSelected)="focusOutMethod()" (opened)="focusInMethod()" (closed)="focusOutMethod()">
@@ -508,7 +508,7 @@
                                 <ng-container *ngIf="!readOnlyMode">
                                     <button class="button-add u-mt--5" mat-flat-button type="button" appPreventDoubleClick (throttledClick)="addCommissionedUser()">
                                         <mat-icon>add</mat-icon>
-                                        Add commissioned user
+                                        Add commissioned employees
                                     </button>
                                 </ng-container>
                             </div>
@@ -1485,14 +1485,14 @@
                                                 <mat-autocomplete #consultantAutocomplete="matAutocomplete" [displayWith]="displayConsultantNameFn"
                                                     (optionSelected)="focusOutMethod()" (opened)="focusInMethod()" (closed)="focusOutMethod()">
                                                     <ng-container *ngFor="let item of filteredConsultants; trackBy: trackById">
-                                                        <mat-option [value]="item" [ngClass]="{ 'no-data': item.id === 'no-data' }" appPreventDoubleClick (throttledClick)="updateConsultantStepAnchors()">
+                                                        <mat-option [value]="item" [ngClass]="{ 'no-data': item?.id === 'no-data' }" appPreventDoubleClick (throttledClick)="updateConsultantStepAnchors()">
                                                             <div class="multilineDropdown-option--row">
-                                                                <ng-container *ngIf="item.id !== 'no-data'">
+                                                                <ng-container *ngIf="item?.id !== 'no-data'">
                                                                     <img class="image-thumbnail-small border-rounded-50 u-mr--10" [src]="consultantProfileUrl(item.consultant.externalId)" />
                                                                 </ng-container>
                                                                 <div class="multilineDropdown-option--column text-truncate-ellipsis">
                                                                     <span class="multilineDropdown-option--column-client-name">{{ item.consultant.name }}</span>
-                                                                    <ng-container *ngIf="item.id !== 'no-data'">
+                                                                    <ng-container *ngIf="item?.id !== 'no-data'">
                                                                         <span class="multilineDropdown-option--column-client-info text-truncate-ellipsis">
                                                                             {{item.consultant.companyName ? item.consultant.companyName + ' | ' : ''}} {{item.consultant.city ? item.consultant.city + ' | ' : ''}} #{{item.consultant.id}} / {{item.consultant.legacyId}}
                                                                         </span>
@@ -1862,7 +1862,7 @@
                                                                 </div>
                                                             </ng-container>
                                                             <ng-template #consultantRateActionDisplay>
-                                                                <div fxFlex="10%" fxLayoutAlign="center center" class="u-w--100" [fxHide]="readOnlyMode">
+                                                                <div fxFlex="10%" fxLayoutAlign="end center" class="u-w--100" [fxHide]="readOnlyMode">
                                                                     <button mat-icon-button type="button" appPreventDoubleClick (throttledClick)="$event.stopPropagation();" [matMenuTriggerFor]="consutlantRateMenu" class="three-dots-actions-btn">
                                                                         <mat-icon svgIcon="3-dots"></mat-icon>
                                                                     </button>
@@ -2017,7 +2017,7 @@
                                                                 </div>
                                                             </ng-container>
                                                             <ng-template #clientFeeActionDisplay>
-                                                                <div fxFlex="10%" fxLayoutAlign="center center" class="u-w--100" [fxHide]="readOnlyMode">
+                                                                <div fxFlex="10%" fxLayoutAlign="end center" class="u-w--100" [fxHide]="readOnlyMode">
                                                                     <button mat-icon-button type="button" appPreventDoubleClick (throttledClick)="$event.stopPropagation();" [matMenuTriggerFor]="consultantFeeMenu" class="three-dots-actions-btn">
                                                                         <mat-icon svgIcon="3-dots"></mat-icon>
                                                                     </button>
